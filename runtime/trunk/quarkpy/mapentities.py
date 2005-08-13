@@ -337,8 +337,14 @@ def drawdistnet(o,view):
       for dists in o.dists:
         cc=[]
         cp.append(cc)
-        pa=line(u,vtx[3],vtx[0])
-        pb=line(u,vtx[2],vtx[1])
+
+## cdunde - to reverse v1.42 entries causing views
+## to go gray on poly face drag. 8-12-05
+   #     pa=line(u,vtx[3],vtx[0])
+   #     pb=line(u,vtx[2],vtx[1])
+        pa=line(u,vtx[2],vtx[1])
+        pb=line(u,vtx[3],vtx[0])
+
         #print u,pa,pb
         u=u+delta
         #print dists
@@ -380,13 +386,17 @@ class FaceType(EntityManager):
         drawdistnet(o,view)
 
     def drawsel(o, view, mode):
-        if len(o.dists)!=0:
-          color=0xffff00
-          print 'color',color
-        else:
-          color= view.setup.getint("SelFaceColor")
-        print 'color',color
-        view.drawmap(o, mode | DM_SELECTED,color )
+## cdunde - to reverse v1.42 entries causing views
+## to go gray on poly face drag. 8-12-05
+   #     if len(o.dists)!=0:
+   #       color=0xffff00
+   #       print 'color',color
+   #     else:
+   #       color= view.setup.getint("SelFaceColor")
+   #     print 'color',color
+   #     view.drawmap(o, mode | DM_SELECTED,color )
+        view.drawmap(o, mode | DM_SELECTED, view.setup.getint("SelFaceColor"))
+
         drawdistnet(o,view)
 
 
@@ -443,8 +453,13 @@ class FaceType(EntityManager):
             #print delta
             u=delta/2.0
             for dists in o.dists:
-              pa=line(u,vtx[3],vtx[0])
-              pb=line(u,vtx[2],vtx[1])
+## cdunde - to reverse v1.42 entries causing views
+## to go gray on poly face drag. 8-12-05
+     #         pa=line(u,vtx[3],vtx[0])
+     #         pb=line(u,vtx[2],vtx[1])
+              pa=line(u,vtx[2],vtx[1])
+              pb=line(u,vtx[3],vtx[0])
+
               #print u,pa,pb
               u=u+delta
               #print dists
@@ -453,8 +468,12 @@ class FaceType(EntityManager):
               for d in dists:
                 p=line(v,pa,pb)
                 #print u,v,p,d
-                pointpos= d*o.normal+p               
-                h=h+ [maphandles.SpecialHandle(pointpos,o)]
+                pointpos= d*o.normal+p
+## cdunde - to reverse v1.42 entries causing views
+## to go gray on poly face drag. 8-12-05
+      #          h=h+ [maphandles.SpecialHandle(pointpos,o)]
+                h=h+ [maphandles.SpecialHandle(pointpos,100)]
+
                 v=v+delta
         except:
           exctype, value = sys.exc_info()[:2]
@@ -819,6 +838,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.42  2005/08/11 21:24:23  alexander
+#displacement display and handles
+#
 #Revision 1.41  2005/08/04 20:40:27  alexander
 #draw distance net for displacements
 #
