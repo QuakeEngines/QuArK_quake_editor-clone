@@ -16,6 +16,8 @@ $Id$
 6.4.1 alpha 4
 =============
 
+ * [cdunde] : Fixed Duplicators to include entities.
+
  * [Fred] :  Q2 / HL1
 
      - Updated waypoint data types.
