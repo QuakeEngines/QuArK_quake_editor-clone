@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2004/12/27 10:57:44  alexander
+added a userdata pointer. This is needed to access context data from on_access callbacks
+
 Revision 1.73  2004/01/05 22:16:18  silverpaladin
 Clearing is done from end down now with a assigned check added an assigned check to find name
 
@@ -245,7 +248,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$ENDIF}
 
 const
-  QuArKVersion            = 'QuArK 6.4 alpha';
+  QuArKVersion            = 'QuArK 6.5 alpha';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;

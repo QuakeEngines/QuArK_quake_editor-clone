@@ -13,7 +13,7 @@ $Id$
         #####    Quake Army Knife 6.4 Changelog
 
 
-6.4.1 alpha 4
+6.5.0 alpha 1
 =============
 
  * [cdunde] : Added QuArK Terrain Gennerator and Infobase documentation.

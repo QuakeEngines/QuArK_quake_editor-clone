@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.4 alpha",
+    0: "QuArK 6.5 alpha",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -978,6 +978,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.70  2005/07/03 20:24:32  alexander
+#text for parse error in material
+#
 #Revision 1.69  2005/06/23 23:30:39  alexander
 #vmt file string
 #

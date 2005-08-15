@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.259  2005/08/15 05:46:22  cdunde
+//To commit all files for Terrain Generator
+//
 //Revision 1.258  2005/08/02 23:02:10  cbxpm
 //Added "gamesounds-hl2.qrk" as new default addon
 //
@@ -826,7 +829,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.4 alpha"
+      Version = "QuArK 6.5 alpha"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
