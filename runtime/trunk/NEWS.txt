@@ -16,6 +16,18 @@ $Id$
 6.4.1 alpha 4
 =============
 
+ * [cdunde] : Added QuArK Terrain Gennerator and Infobase documentation.
+
+     - New Terrain Modes Toolbar linked to the Infobase and documentation detail.
+     - Contains three terrain Shape Builder patterns for making surfaces.
+     - Converter for other imported terrains such as GenSurf and Nem's Tools.
+     - Face Converters for top, bottom or both faces for shape movement together.
+     - Adjacent Faces Selector tool for selecting other faces touching a single one.
+     - Selector Dialog Input for variations of terrain movement and shaping.
+     - Basic Selector allows selections through all normal polys and entities.
+
+ * [cdunde] : Added Infobase link and info for use of saving camera possessions.
+
  * [cdunde] : Fixed Duplicators to include entities.
 
  * [Fred] :  Q2 / HL1
