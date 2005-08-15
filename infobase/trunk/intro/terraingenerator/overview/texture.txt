@@ -1,0 +1,24 @@
+title: Texture
+author: cdunde
+
+Now that you have created your terrain surface, it is time to do some texturing to it. The texture that it starts with is the default texture that is set in <a href="intro.configuration.games.html#specificgame">QuArK's Configuration Settings</a>. You could, just as easily selected your texture prior to creating the terrain all together. Sometimes this may be desirable as a base and other times it may be better to apply it last or even <b>during</b> the creation process. Here, we will apply it now that the terrain <ref>../shaping</ref> has been completed.
+
+To start with, select the desired area or, as here, the entire terrain surface. You can use the <a href="intro.terraingenerator.selection.html">Terrain Selector</a> that you have been using thus far, but only the <g>faces</g> that are movable will receive texturing. If you wish to texture the entire <g>polys</g> then you must use one of <a href="intro.mapeditor.toolpalettes.mousemodes.html">QuArK's  Standard Selectors</a>.
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>texture1.png</img>
+</td></tr></table>
+
+Then open <a href="intro.texturebrowser.overview.html">QuArK's Texture Browser</a>, select your texture as you would for any other <g>poly</g> and basically your terrain is complete!
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right>texture2.png</img>
+</td><td valign=top>
+<img border=1 align=right>texture3.png</img>
+</td></tr></table>
+
+For other suggestions about <ref>../texture</ref> see the individual page on that subject as well as <a href="intro.terraingenerator.html#sections">the other items</a> covered on this page.
+
+In addition, there are <b>many more</b> features that <a href="intro.terraingenerator.html#sections"><b>QuArK's Terrain Generator</b></a> has to offer and <b>have not</b> been covered here.

@@ -1,0 +1,7 @@
+title: Introduction
+author: cdunde
+
+There are four fundamental steps in using <a href="intro.terraingenerator.html">QuArK's Terrain Generator</a>. They are <a href="intro.terraingenerator.selection.html">Selection</a>, <a href="intro.terraingenerator.setup.html">Setup</a>, <a href="intro.terraingenerator.shaping.html">Shaping</a>, and <a href="intro.terraingenerator.texture.html">Texture</a>.
+
+<b>More detail</b> about these steps, additional features and functions are given on their <a href="intro.terraingenerator.html">individual Infobase pages</a>.<br>
+But for now we just want to go over a general highlight of its operation.
