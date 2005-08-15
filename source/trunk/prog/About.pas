@@ -21,11 +21,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 
 {
 $Header$
- ----------- REVISION HISTORY ------------
+ ----------- REVISION HISTORY ------------ 
 $Log$
+Revision 1.18  2005/08/13 05:00:31  cdunde
+To reverse Logo test by cybox.
+
 Revision 1.17  2005/08/03 21:08:34  cbxpm
 no changes
 
+$Log$
 Revision 1.16  2005/08/03 20:54:27  cbxpm
 added two new labels (done by delphi form designer)
 
@@ -110,6 +114,8 @@ type
     Label1: TLabel;
     Label8: TLabel;
     Label9: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
