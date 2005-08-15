@@ -1412,7 +1412,6 @@ class EyePositionMap(qhandles.EyePosition):
 
 def BuildHandles(editor, ex, view):
     "Build a list of handles to display on the map views."
-
     fs = ex.uniquesel
     if (fs is None) or editor.linearbox:
         #
@@ -1423,8 +1422,25 @@ def BuildHandles(editor, ex, view):
         if box is None:
             h = []
         else:
-            manager = qhandles.LinHandlesManager(MapColor("Linear"), box, list)
-            h = manager.BuildHandles(editor.interestingpoint())
+
+## This section to setup for Terrain handels - cdunde 04-23-05
+
+            if editor.layout.toolbars["tb_terrmodes"] is not None:
+                tb2 = editor.layout.toolbars["tb_terrmodes"]
+                for b in tb2.tb.buttons:
+                    if b.state == 2:
+                        manager = plugins.mapterrainmodes.TerrainLinHandlesManager(MapColor("Duplicator"), box, list, view)
+                        h = manager.BuildHandles(editor.interestingpoint())
+
+            if editor.layout.toolbars["tb_dragmodes"] is not None:
+                tb1 = editor.layout.toolbars["tb_dragmodes"]
+                for b in tb1.tb.buttons:
+                    if b.state == 2:
+                        manager = qhandles.LinHandlesManager(MapColor("Linear"), box, list)
+                        h = manager.BuildHandles(editor.interestingpoint())
+
+## End of above section for Terrain handels
+
     else:
         #
         # Get the list of handles from the entity manager.
@@ -1902,6 +1918,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.40  2005/08/11 21:24:23  alexander
+#displacement display and handles
+#
 #Revision 1.39  2005/07/30 23:07:07  alexander
 #cone showed for light spots and pitch value automatically set when seleting the entity
 #showing height points for displacements

@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.258  2005/08/02 23:02:10  cbxpm
+//Added "gamesounds-hl2.qrk" as new default addon
+//
 //Revision 1.257  2005/07/31 14:29:22  alexander
 //include soundscape file
 //
@@ -5969,6 +5972,27 @@ QQRKSRC1
       target: = {Txt="&" Typ="E" Hint="should be managed automatically"}
       usercenterform = !
     }
+    dup terrain2:form =
+    {
+      wedgeunits:      = {Txt="&"            Hint="number of units per 'block' of wedges in the terrain surface"}
+      sameheight: = {Txt="&" Typ="X"    Hint="if wedge heights should be the same (down face moves) = checked"$0D"or all down faces remain aligned to the bottom = unchecked"}
+      detailmesh: =   {Txt="&" Typ="X"    Hint="if this is checked, smaller wedges can be used for detail terrains."$0D""$0D"Not recommended for large areas due to large brush count."$0D"Which can slow the editor way down or seem to cause lockup."}
+      macro:      = {Txt="&" Typ="ESR"  Hint="This one is not for you, Saruman"}
+    }
+    dup terrain2X:form =
+    {
+      wedgeunits:      = {Txt="&"            Hint="number of units per 'block' of wedges in the terrain surface"}
+      sameheight: = {Txt="&" Typ="X"    Hint="if wedge heights should be the same (down face moves) = checked"$0D"or all down faces remain aligned to the bottom = unchecked"}
+      detailmesh: =   {Txt="&" Typ="X"    Hint="if this is checked, smaller wedges can be used for detail terrains."$0D""$0D"Not recommended for large areas due to large brush count."$0D"Which can slow the editor way down or seem to cause lockup."}
+      macro:      = {Txt="&" Typ="ESR"  Hint="This one is not for you, Saruman"}
+    }
+    dup terrain4:form =
+    {
+      wedgeunits:      = {Txt="&"            Hint="number of units per 'block' of wedges in the terrain surface"}
+      sameheight: = {Txt="&" Typ="X"    Hint="if wedge heights should be the same (down face moves) = checked"$0D"or all down faces remain aligned to the bottom = unchecked"}
+      detailmesh: =   {Txt="&" Typ="X"    Hint="if this is checked, smaller wedges can be used for detail terrains."$0D""$0D"Not recommended for large areas due to large brush count."$0D"Which can slow the editor way down or seem to cause lockup."}
+      macro:      = {Txt="&" Typ="ESR"  Hint="This one is not for you, Saruman"}
+    }
     dup stair:form =
     {
       steps:      = {Txt="&"            Hint="number of steps in the staircase"}
@@ -6567,6 +6591,20 @@ QQRKSRC1
     Target = ".qkm"                 // ".qkm" : QuArK Map
     Root = "New Polyhedrons.qtxfolder"   // needed only in ".qtx" objects when you actually want it to add a root in the toolbox (i.e. almost always)
 
+    t_terrainbuilder_cube:incl =
+    {
+      cube:p =
+      {
+        ;desc = "cube to put in the map and then resize and reshape"
+        up:f    = { v = '0 0 32 128 0 32 0 128 32' tex = "[auto]" }
+        down:f  = { v = '0 0 0 0 128 0 128 0 0' tex = "[auto]" m = "1" }
+        left:f  = { v = '-64 0 0 -64 0 128 -64 128 0' tex = "[auto]" m = "1" }
+        back:f  = { v = '0 64 0 0 64 128 128 64 0' tex = "[auto]" m = "1" }
+        right:f = { v = '64 0 0 64 128 0 64 0 128' tex = "[auto]" }
+        front:f = { v = '0 -64 0 128 -64 0 0 -64 128' tex = "[auto]" }
+      }
+    }
+
     t_shapebuilder_cube:incl =
     {
       cube:p =
@@ -7147,6 +7185,33 @@ QQRKSRC1
           sameheight = ""
           oldstyle = ""
           t_shapebuilder_cube = !
+        }
+        Terrain Maker 2:d =
+        {
+          ;desc = "build a terrain from a cubic polyhedron shape - 2 triangles per square"
+          macro = "dup terrain2"
+          wedgeunits = "32"
+          sameheight = ""
+          detailmesh = ""
+          t_terrainbuilder_cube = !
+        }
+        Terrain Maker 2X:d =
+        {
+          ;desc = "build a terrain from a cubic polyhedron shape - 2 triangles per square for X pattern"
+          macro = "dup terrain2X"
+          wedgeunits = "32"
+          sameheight = ""
+          detailmesh = ""
+          t_terrainbuilder_cube = !
+        }
+        Terrain Maker 4:d =
+        {
+          ;desc = "build a terrain from a cubic polyhedron shape - 4 triangles per square"
+          macro = "dup terrain4"
+          wedgeunits = "32"
+          sameheight = ""
+          detailmesh = ""
+          t_terrainbuilder_cube = !
         }
       }
       Game specific.qtxfolder =

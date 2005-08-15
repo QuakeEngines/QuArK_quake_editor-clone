@@ -22,7 +22,6 @@ from qdictionnary import Strings
 import qmenu
 import qbaseeditor
 
-
 MOUSEZOOMFACTOR = math.sqrt(2)     # with this value, the zoom factor doubles every two click
 STEP3DVIEW = 64.0
 
@@ -41,10 +40,8 @@ grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
 
-
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
-
 
 
 def aligntogrid(v, mode):
@@ -394,7 +391,7 @@ class IconHandle(CenterHandle):
 
 class EyePosition(GenericHandle):
 
-    hint = "camera for the 3D view||This 'eye' represents the position of the camera of the 3D perspective view. You can use it to quickly move the camera elsewhere.\n\nIf several 3D views are opened, you will see several 'eyes', one for each camera."
+    hint = "camera for the 3D view||This 'eye' represents the position of the camera of the 3D perspective view. You can use it to quickly move the camera elsewhere.\n\nIf several 3D views are opened, you will see several 'eyes', one for each camera.\n\nCamera position views can also be set and stored for quick viewing. See the Infobase for details on how to use this feature.|intro.mapeditor.floating3dview.html#camera"
 
     def __init__(self, view, view3D):
         pos, roll, pitch = view3D.cameraposition
@@ -454,7 +451,7 @@ class EyePosition(GenericHandle):
 
 class EyeDirection(Rotate3DHandle):
 
-    hint = "camera direction||This is the direction the 'eye' is looking to. You can use it to quickly rotate the camera with the mouse.\n\nThe 'eye' itself represents the position of the camera of the 3D perspective view. You can use it to quickly move the camera elsewhere.\n\nIf several 3D views are opened, you will see several 'eyes', one for each camera."
+    hint = "camera direction||This is the direction the 'eye' is looking to. You can use it to quickly rotate the camera with the mouse.\n\nThe 'eye' itself represents the position of the camera of the 3D perspective view. You can use it to quickly move the camera elsewhere.\n\nIf several 3D views are opened, you will see several 'eyes', one for each camera.\n\nCamera position views can also be set and stored for quick viewing. See the Infobase for details on how to use this feature.|intro.mapeditor.floating3dview.html#camera"
     # MODE required !
 
     def __init__(self, view, view3D):
@@ -472,8 +469,6 @@ class EyeDirection(Rotate3DHandle):
             if flags&MB_DRAGGING:
                 return [], [], av
         return None, None, av
-
-
 
 #
 # Linear Mapping Circle handles.
@@ -522,6 +517,7 @@ class LinRedHandle(LinearHandle):
         self.cursor = CR_MULTIDRAG
 
     def draw(self, view, cv, draghandle=None):
+
         p = view.proj(self.pos)
         if p.visible:
             cv.reset()
@@ -656,8 +652,6 @@ def AutoScrollTimer(info):
     sender.y0 = sender.y0 - y
     return 80
 
-
-
 #
 # Setup Handle hints.
 #
@@ -671,8 +665,6 @@ def FilterHandles(handlelist, mode):
             except:
                 pass
     return handlelist
-
-
 
 #
 # Function that computes a rotation matrix out of a mouse movement.
@@ -720,7 +712,6 @@ def UserRotationMatrix(normal, texpdest, texp4, g1):
     v = orthogonalvect(normal, None)
     base = quarkx.matrix(v, v^normal, -normal)
     return base * m * (~base)
-
 
 #
 # Drag Objects are created when a mouse drag begins and
@@ -798,14 +789,20 @@ class RedImageDragObject(DragObject):
 
     def __init__(self, view, x, y, z, redcolor):
         DragObject.__init__(self, view, x, y, z)
+        self.view = view  ## Added this for Terrain objects - cdunde 05-14-05
+        self.x = x        ## Added this for Terrain objects - cdunde 05-14-05
+        self.y = y        ## Added this for Terrain objects - cdunde 05-14-05
+        self.z = z        ## Added this for Terrain objects - cdunde 05-14-05
         self.redcolor = redcolor
         self.redhandledata = None
+## the lines below where added for the Terrain Generator
         if mapeditor() is not None:
             editor = mapeditor()
         else:
             quarkx.clickform = view.owner  # Rowdys -important, gets the editor
             editor = mapeditor()
         self.editor = editor
+## the lines above where added for the Terrain Generator
 
     def buildredimages(self, x, y, flags):
         return None, None   # abstract
@@ -814,10 +811,10 @@ class RedImageDragObject(DragObject):
         return None, refreshtimer     # default behaviour
 
     def dragto(self, x, y, flags):
+        self.flags = flags
         if flags&MB_DRAGGING:
             self.autoscroll(x,y)
         old, ri = self.buildredimages(x, y, flags)
-
         self.drawredimages(self.view, 1)
         self.redimages = ri
         if flags&MB_DRAGGING:
@@ -825,11 +822,25 @@ class RedImageDragObject(DragObject):
         return old
 
     def drawredimages(self, view, internal=0):
-        if mapeditor() is not None:
-            editor = mapeditor()
-        else:
-            quarkx.clickform = view.owner  # Rowdys -important, gets the editor
-            editor = mapeditor()
+        editor = self.editor
+
+## Deals with Terrain Selector 3D face drawing, movement is in ok section
+
+        if (editor is not None) and (editor.layout.toolbars["tb_terrmodes"] is not None):
+
+            tb2 = editor.layout.toolbars["tb_terrmodes"]
+            for b in tb2.tb.buttons:
+                if b.state == 2:
+                    if len(editor.layout.explorer.sellist) > 1:
+                        if self.redimages is not None:
+                            for r in self.redimages:
+                                if r.name == ("redbox:p"):
+                                    continue
+                                else:
+                                    type = view.info["type"]
+                                    if type == "3D":
+                                        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                                        return
 
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -843,15 +854,17 @@ class RedImageDragObject(DragObject):
 ## 3d Textured view from erasing other items
 ## in the view when dragging redline objects in it.
 
+## Deals with Standard Selector 3D face drawing, movement is in ok section
                     type = view.info["type"]
                     if type == "3D":
+                        # during 1 face drag both go here but TG better, no hang
                         view.repaint()
-                        view.invalidate()
+                  #      view.invalidate()  # might want to put back in
+                        return
                     if self.redhandledata is not None:
                         self.handle.drawred(self.redimages, view, view.color, self.redhandledata)
                 else:
                     if editor is None:
-
                         for r in self.redimages:
                             if r.name != ("redbox:p"):
                                 return
@@ -861,10 +874,33 @@ class RedImageDragObject(DragObject):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
-                        for r in self.redimages:
-                            view.drawmap(r, mode, self.redcolor)
-                        if self.handle is not None:
-                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+## Deals with Terrain Selector 2D face drawing, movement is in ok section and
+## Deals with Standard Selector 2D face drawing, movement is in ok section
+                        if editor.layout.toolbars["tb_terrmodes"] is not None:
+                            tb2 = editor.layout.toolbars["tb_terrmodes"]
+                            for b in tb2.tb.buttons:
+                                if b.state == 2:
+                                    if len(editor.layout.explorer.sellist) > 1:
+                                        for r in self.redimages:
+                                            if r.name != ("redbox:p"):
+                                             #   TG goes here AFTER mouse release
+                                             #   for multi faces drag in 3D view
+                                                view.update()
+                                                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                                                return
+                                            else:
+                                                view.drawmap(r, mode, self.redcolor)
+                                          #      self.view.invalidate()
+                                                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+
+                                                return
+                                        if self.handle is not None:
+                                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+                            for r in self.redimages:
+                                view.drawmap(r, mode, self.redcolor)
+                            if self.handle is not None:
+                                self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
             else:   # must redraw everything
                 if internal==2:
@@ -887,15 +923,54 @@ class RedImageDragObject(DragObject):
         self.autoscroll_stop()
         old = self.dragto(x, y, flags)
         if (self.redimages is None) or (len(old)!=len(self.redimages)):
-            self.view.invalidate()
-            editor.invalidateviews()
+# Took these out, seemed to make things worse, used finishdrawing instead
+       #     self.view.invalidate()   # not nessisary
+            editor.invalidateviews()  # does all views
+            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
             return
 
-        undo = quarkx.action()
-        for i in range(0,len(old)):
-            undo.exchange(old[i], self.redimages[i])
-        self.handle.ok(editor, undo, old, self.redimages)
-        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+## This section added for Terrain Generator - stops broken faces - cdunde 05-19-05
+
+        if editor.layout.toolbars["tb_terrmodes"] is not None:
+            tb2 = editor.layout.toolbars["tb_terrmodes"]
+## Deals with Terrain Selector movement, face drawing is in drawredimages section
+            for b in tb2.tb.buttons:
+                if b.state == 2:
+                    if len(editor.layout.explorer.sellist) > 1:
+                        type = self.view.info["type"]
+                        if type == "3D":
+                            self.view.invalidate()
+                   #     self.view.invalidate()   # not nessisary
+                        editor.invalidateviews()  # does all views
+                        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                        break
+                    else:
+                        undo = quarkx.action()
+                        for i in range(0,len(old)):
+                            undo.exchange(old[i], self.redimages[i])
+                        self.handle.ok(editor, undo, old, self.redimages)
+                        type = self.view.info["type"]
+                        if type == "3D":
+                            self.view.invalidate()
+                   #     self.view.invalidate()   # not nessisary
+                        editor.invalidateviews()  # does all views
+                        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                        break
+## Deals with Sandard Selector movement, face drawing is in drawredimages section
+            else:
+                undo = quarkx.action()
+                for i in range(0,len(old)):
+                    undo.exchange(old[i], self.redimages[i])
+                self.handle.ok(editor, undo, old, self.redimages)
+                type = self.view.info["type"]
+                if type == "3D":
+                    self.view.invalidate()
+            #    self.view.invalidate()   # not nessisary
+                editor.invalidateviews()  # does all views
+                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                return
+
+## End of above section for Terrain Generator changes
 
 
 class HandleDragObject(RedImageDragObject):
@@ -928,7 +1003,6 @@ def refreshtimertex(self):
     for v in self.views:
         if (v.viewmode in texturedmodes) and (v is not self.view):
             v.invalidate(1)
-
 
 #
 # Free Zoom in/out following the mouse move.
@@ -965,8 +1039,6 @@ class FreeZoomDragObject(DragObject):
         elif scale>self.AbsoluteMaximum: scale=self.AbsoluteMaximum
         setviews(self.viewlist, "scale", scale)
         self.view.repaint()
-
-
 
 #
 # Scroll the view while the mouse moves.
@@ -1009,7 +1081,6 @@ class ScrollViewDragObject(DragObject):
         y = self.y0-y
         self.scroller(x, y)
 
-
 #
 # Mouse Free View like in Quake.
 #
@@ -1046,7 +1117,6 @@ class FreeViewDragObject(AnimatedDragObject):
         self.view.animation = 1
         self.view.cameraposition = self.pos0, roll, pitch
 
-
 #
 # Mouse Walk like in Quake.
 #
@@ -1077,7 +1147,6 @@ class WalkDragObject(AnimatedDragObject):
         self.view.animation = 1
         self.view.cameraposition = pos, roll, self.pitch0
         self.pos0 = pos
-
 
 #
 # Mouse SideStep walk (left-right-up-down).
@@ -1143,7 +1212,6 @@ class CircleStrafeDragObject(SideStepDragObject):
             self.view.cameraposition = newpos, yaw, pitch
         else:
             SideStepDragObject.dragto(self, x, y, flags)
-    
 
 #
 # Displays a red rectangle created by the mouse movement.
@@ -1208,8 +1276,6 @@ class RectangleDragObject(RedImageDragObject):
         "Called when the drag is over."
         pass   # abstract
 
-
-
 #
 # Class RectZoomDragObject:
 # Zoom in or out of a rectangle drawn by the mouse movement.
@@ -1231,7 +1297,6 @@ class RectZoomDragObject(RectangleDragObject):
         if "-" in self.todo:
             zoom = 1.0/zoom
         ZoomView(editor, view, zoom, view.space((self.x0+x)*0.5, (self.y0+y)*0.5, view.screencenter.z))
-
 
 #
 # Class Rotator2D: a DragObject to rotate flat 3D views with the mouse.
@@ -1277,7 +1342,6 @@ class Rotator2D(DragObject):
 
 def MouseDragging(editor, view, x, y, s, handle, redcolor):
     "Called when the user drags the mouse on a map view."
-
     
     if handle is None:
         if getAttr(editor,'frozenselection') is not None:
@@ -1315,8 +1379,6 @@ def MouseDragging(editor, view, x, y, s, handle, redcolor):
             return ScrollViewDragObject(editor, view, x, y)
     else:
         return HandleDragObject(view, x, y, handle, redcolor)
-
-
 
 #
 # Function called in answer to simple clicks (not drags).
@@ -1378,7 +1440,6 @@ def MouseClicked(editor, view, x, y, s, handle):
     ZoomView(editor, view, zoom, view.space(x,y,view.screencenter.z))
     return ""
 
-
 #
 # Class that manages the linear box... er... circle.
 #
@@ -1388,6 +1449,7 @@ class LinHandlesManager:
 
     def __init__(self, color, bbox, list):
         self.color = color
+        self.bbox = bbox
         bmin, bmax = bbox
         bmin1 = bmax1 = ()
         for dir in "xyz":
@@ -1495,8 +1557,6 @@ class LinHandlesManager:
       # line1( X,mY,mZ,  X,mY, Z)
       # line1( X, Y,mZ,  X, Y, Z)
 
-
-
 #
 # Utility functions to multiselect objects.
 #
@@ -1541,8 +1601,6 @@ def findlastsel(choice,keep=0):
             else:
                 return i
     return 0
-
-
 
 #
 # Creation of flat 3D views that rotate with the mouse.
@@ -1604,6 +1662,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.14  2005/07/16 19:41:31  cdunde
+#To remove improper items to fix broken handles
+#
 #Revision 1.13  2005/07/12 00:39:10  cdunde
 #Minor correction.
 #
@@ -1643,6 +1704,4 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
-#
-#
 #

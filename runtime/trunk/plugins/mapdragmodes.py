@@ -363,17 +363,23 @@ def selectmode(btn):
     editor = mapeditor(SS_MAP)
     if editor is None: return
     try:
-        tb = editor.layout.toolbars["tb_dragmodes"]
+        tb1 = editor.layout.toolbars["tb_dragmodes"]
+        tb2 = editor.layout.toolbars["tb_terrmodes"]
     except:
         return
-    for b in tb.tb.buttons:
+    for b in tb1.tb.buttons:
         b.state = quarkpy.qtoolbar.normal
-    select1(btn, tb, editor)
+    select1(btn, tb1, editor)
+    for b in tb2.tb.buttons:
+        b.state = quarkpy.qtoolbar.normal
+ #   select1(btn, tb2, editor)
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MAP, "Building").setint("DragMode", btn.i)
+    quarkx.setupsubset(SS_MAP, "Building").setint("TerrMode", 20)
 
 def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = DragModes[btn.i]
+ #   editor.MouseDragMode, dummyicon = plugins.mapterrainmodes.TerrModes[btn.i]
     btn.state = quarkpy.qtoolbar.selected
 
 
@@ -391,8 +397,11 @@ class DragModesBar(ToolBar):
             btn.i = i
             btns.append(btn)
         i = quarkx.setupsubset(SS_MAP, "Building").getint("DragMode")
-        if i>=len(DragModes): i=0
-        select1(btns[i], self, layout.editor)
+   #     if i>=len(DragModes): i=0
+        if i == 5:
+            leave = 0
+        else:
+            select1(btns[i], self, layout.editor)
         return btns
 
 
@@ -405,6 +414,9 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2005/03/16 10:17:15  cdunde
+# To fix non-selection of Shape Builder items for Select Everyting function.
+#
 # Revision 1.8  2004/01/24 16:28:34  cdunde
 # To reset defaults for toolbars
 #
