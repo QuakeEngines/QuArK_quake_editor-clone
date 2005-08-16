@@ -10,7 +10,7 @@ $Id$
   ####  ####   ####   #### ####    #### ####         ####   ####
    ########     ########## ####    #### ####         ####    ####
        #####
-        #####    Quake Army Knife 6.4 Changelog
+        #####       Quake Army Knife Changelog
 
 
 6.5.0 alpha 1
