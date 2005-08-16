@@ -41,8 +41,8 @@ $Id$
      - Added HL2-Soundscapes (default addon).
 
  * [alexander]: HL2/Source
-     - enable display of trigger links in map
-     - enable display of cones of light spots
+     - enable display of trigger links in map (postponed)
+     - enable display of cones of light spots (postponed)
 
  * [cbxpm]:  HL2
 
