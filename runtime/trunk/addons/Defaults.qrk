@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.260  2005/08/15 21:19:26  cdunde
+//update version to QuArK 6.5.0 alpha 1
+//
 //Revision 1.259  2005/08/15 05:46:22  cdunde
 //To commit all files for Terrain Generator
 //
@@ -2487,7 +2490,7 @@ QQRKSRC1
       }
       Layouts:config =
       {
-        _layout = "Classic"
+        _layout = "4 views (a)"
       }
       Display:config =
       {

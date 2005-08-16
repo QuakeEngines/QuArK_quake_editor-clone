@@ -301,7 +301,7 @@ class TagModesBar(ToolBar):
     "The Tag Commands Tool Palette."
 
     Caption = "Tag Tool Palette"
-    DefaultPos = ((102, 163, 570, 213), 'topdock', 335, 1, 1)
+    DefaultPos = ((0, 0, 0, 0), 'topdock', 0, 2, 1)
 
     def buildbuttons(self, layout):
         if not ico_dict.has_key('ico_tagside'):
@@ -401,6 +401,9 @@ quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.6  2004/11/13 11:03:25  peter-b
+# Better error handling for "wrap around pillar" function.
+#
 # Revision 1.5  2004/01/24 16:28:39  cdunde
 # To reset defaults for toolbars
 #

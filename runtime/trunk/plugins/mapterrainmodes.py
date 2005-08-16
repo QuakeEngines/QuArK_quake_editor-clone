@@ -1251,7 +1251,7 @@ class TerrModesBar(ToolBar):
     "The new toolbar with TerrModes buttons. Created from plugins\mapdragmodes.py"
 
     Caption = "Terrain modes"
-    DefaultPos = ((0, 0, 0, 0), 'topdock', 0, 2, 1)
+    DefaultPos = ((0, 0, 0, 0), 'topdock', 350, 2, 1)
 
     def buildbuttons(self, layout):
                           # to build the single click button
@@ -1311,6 +1311,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2005/08/15 05:49:23  cdunde
+# To commit all files for Terrain Generator
+#
 
 #
 
