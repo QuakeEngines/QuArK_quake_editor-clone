@@ -138,6 +138,7 @@ def moveTriangleFaces(oldface, oldverpos, facemoved, polyofface, TGlockvertex, p
 ### Movement adjustors and factors, creates changes by user input
 
         from plugins.mapterrainpos import scalex,scaley,tilt,shear,flat
+        if flat == None: flat = "0"
         
         if scalex is None and scaley is None:
             if (quarkx.setupsubset(SS_MAP, "Options")["Selector1_scale"] is not None):
@@ -293,4 +294,7 @@ def moveTriangleFaces(oldface, oldverpos, facemoved, polyofface, TGlockvertex, p
     return old, result
 
 # $Log$
+# Revision 1.1  2005/08/15 05:49:23  cdunde
+# To commit all files for Terrain Generator
+#
 #
