@@ -88,7 +88,7 @@ mapicons_c = -1
 #
 def DialogClick(m):
     editor = mapeditor()
-    if quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode") < 20:
+    if quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode") < 20 and quarkx.setupsubset(SS_MAP, "Building").getint("DragMode") > 4:
         if quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode") == 0:
             if editor.layout.explorer.sellist == []:
                 quarkx.msgbox("No selection has been made.\n\nYou must first select a group\nof faces to activate this tool and\nchange your settings for this selector.", MT_ERROR, MB_OK)
@@ -1284,7 +1284,10 @@ class TerrModesBar(ToolBar):
             btn.i = i
             btns.append(btn)
         i = quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode")
-        if i == 20:
+
+        dm = quarkx.setupsubset(SS_MAP, "Building").getint("DragMode")
+        if i == 20 or dm == 0:
+
             leave = 0
         else:
             select1(btns[i], self, layout.editor)
@@ -1311,6 +1314,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2005/08/16 04:03:12  cdunde
+# Fix toolbar arraignment
+#
 # Revision 1.1  2005/08/15 05:49:23  cdunde
 # To commit all files for Terrain Generator
 #
