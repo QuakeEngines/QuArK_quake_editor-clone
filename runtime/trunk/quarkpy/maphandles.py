@@ -450,7 +450,7 @@ class SpecialHandle(FaceHandle):
             delta = qhandles.aligntogrid(delta, 0)
         self.draghint = vtohint(delta)
         if delta or (flags&MB_REDIMAGE):
-          print "moved",delta
+        #  print "moved",delta
            # new = self.face.copy()
            # if self.face.faceof[0].type == ":p":
            #     delta = self.face.normal * (self.face.normal*delta)  # projection of 'delta' on the 'normal' line
@@ -1918,6 +1918,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.41  2005/08/15 05:50:17  cdunde
+#To commit all files for Terrain Generator
+#
 #Revision 1.40  2005/08/11 21:24:23  alexander
 #displacement display and handles
 #
