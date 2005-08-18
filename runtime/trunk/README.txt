@@ -10,7 +10,7 @@ $Id$
   ####  ####   ####   #### ####    #### ####         ####   ####
    ########     ########## ####    #### ####         ####    ####
        #####
-        #####    Quake Army Knife 6.4 Readme
+        #####    Quake Army Knife Readme
 
 
 Contents
@@ -22,6 +22,8 @@ Contents
 4. How do I get help?
 5. What's New
 6. License
+7. Who works on QuArK?
+8. What is the GameCodeList.txt file?
 
 1. What is QuArK?
 -----------------
@@ -94,18 +96,41 @@ look at the bottom left corner of the editor.  If some help is
 available on that item, a message saying "Press F1 for help" should
 appear.  Well, you guessed it, you press F1 for help.  If any further
 info is available, an Infobase button will be in the bottom corner of
-the help snippet, and will take you to the relevant Infobase page.
+the help snippet, and will take you to the relevant Infobase page
+or you can simply press F1 a second time to go to that page.
 
-If you're still stuck, people will be happy to help you on the QuArK
-mailing lists (see http://quark.sf.net/cgi-bin/moin.cgi/UserGuide/GettingHelp).
+The Help menu also has links you can click on that will take you directly
+to the 'QuArK web site' where you will find other links to assist you
+and the 'QuArK Forums site' for a wealth of information on the use of QuArK,
+specific game it supports, tutorials and the opportunity to join the forums
+and post questions and get answers to suit your particular needs.
 
 5. What's New
 -------------
 
-See `NEWS.txt` in the same directory as this file.
+Read the `NEWS.txt` file in the same directory as this file, which is the
+folder that QuArK was installed in. This file gives a listing of new and
+improved items for this installation and previous versions of QuArK in
+their distribution order.
 
 6. License
 ----------
 
-QuArK is distributed under the Gnu Public License.  See `COPYING.txt`
-in the same directory as this file.
+QuArK is distributed under the Gnu Public License.  See `COPYING.txt` in the
+same directory as this file, which is the folder that QuArK was installed in.
+
+7. Who works on QuArK?
+----------------------
+
+A list of past and present developers of QuArK can be found in the 'AUTHORS.txt'
+file in the same directory as this file, which is the folder that QuArK was
+installed in. This file also tries to give their last known e-mail address.
+However, because some have moved on they may not always still be active.
+
+8. What is the GameCodeList.txt file?
+-------------------------------------
+
+When ever a new game is introduced and supported by QuArK a 'Game Code' must be
+assigned to it for various reasons of organization and control as to how that
+game support is handled by QuArK. This file, located in the QuArK install folder,
+gives further detail of how that structure is set up and used as games are added.

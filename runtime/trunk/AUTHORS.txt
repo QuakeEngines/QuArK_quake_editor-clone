@@ -10,7 +10,7 @@ $Id$
   ####  ####   ####   #### ####    #### ####         ####   ####
    ########     ########## ####    #### ####         ####    ####
        #####
-        #####    Quake Army Knife 6.4 Developers
+        #####    Quake Army Knife Developers
 
 
 The original author of QuArK
@@ -66,3 +66,7 @@ The contributing developers of QuArK
 
 - Brian "silverpaladin" Layman
         e-mail:         SilverPaladin@neo.rr.com
+
+- "Fredrick Vamstad"
+        e-mail:         fredrick.vamstad@gmail.com
+
