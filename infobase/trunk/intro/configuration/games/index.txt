@@ -1,3 +1,3 @@
 title: Games
-desc: specificgame
+subdir: specificgames
 
