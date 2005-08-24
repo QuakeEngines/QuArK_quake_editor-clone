@@ -28,6 +28,54 @@ For better performance,
 you can use the 'make texture links' button in the texture toolbox and
 check 'static' to produce a list of the textures in the .PK3.
 
+<ul><u>
+<li>Access of Mod & Custom Textures
+</u><br>
+</ul>
+
+Another way of setting up access to textures for Mods and Custom Textures
+is to set the "path" to that specific Mod folder and use the blanket
+command name "build" with a value of "1" setting as shown in the example
+below for the Mod "ET", a Quake 3 base game:
+<code>
+{
+  Description = "Enemy Terror Add-on"
+  Game Context.qctx =
+  {
+    Game = "Quake 3"
+    SourceDir = "ET"
+    GameDir = "baseq3"
+  }
+  Textures.qtx =
+  {
+    ToolBox = "Texture Browser..."
+    Root = "ET (Enemy Terror).qtxfolder"
+    ET (Enemy Terror).qtxfolder =
+    {
+      ET Textures & Shaders.osfolder =
+      {
+        path = "ET"
+        build = "1"
+      }
+    }
+  }
+}
+</code>
+Basically what this does is tell QuArK to search the given path folder for
+all texture folders and files in all .pak files, no matter what their name
+is, and folders that have been named "textures" and, if the game supports
+them, "scripts" which are shader texture files like the ones used in Quake 3.
+
+In addition, any custom textures and shader files will also be included
+that are placed in the "textures" and "scripts" folders or in their own
+sub-folder placed in these folders, with any name you wish to give them.
+These custom sub-folders can also have sub-folder within them as well for
+a better grouping of files. All of the folders will then be grouped in the
+<a href="intro.texturebrowser.overview.html">Texture Browser</a> under the
+caption "Directories" and will be displayed by their individual folder and
+sub-folder names.
+
+
 For entities, if the game has a <g>.DEF</g> or <g>.FGD</g> file, you can use the
 <act>File|Convert from</act> facility from the QuArK-Explorer main menu, to produce a basic entity toolbox entry
 which in the case of SoF2 might start look like this:

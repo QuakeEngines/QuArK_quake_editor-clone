@@ -7,6 +7,9 @@ QuArK, there are some basic standards you must include in the add-on:
 <li>The Default Room
 <li>Grouping of Entities
 <li>Grouping of Textures
+<ul>
+<li>Access of Mod & Custom Textures
+</ul>
 <li>A Nice Layout in the Add-on Data*.QRK File
 </ul>
 
@@ -47,6 +50,31 @@ follow that structure too.
 You may need to sort and group the textures, directly in the add-on .QRK
 text-file, this will usually be a little bit faster, if you have all the
 texture filenames ready at hand.
+
+
+<ul><u>
+<li>Access of Mod & Custom Textures
+</u><br>
+</ul>
+
+Another way of setting up access to textures for Mods and Custom Textures
+is to use the blanket command name "build" with a value of "1" setting.
+This is covered in detail in the 
+<a href="adv.newgame.html#gamedata">Game Data Addons</a> section.
+
+Basically what this does is tell QuArK to search the given path folder for
+all texture folders and files in all .pak files, no matter what their name
+is, and folders that have been named "textures" and, if the game supports
+them, "scripts" which are shader texture files like the ones used in Quake 3.
+
+In addition, any custom textures and shader files will also be included
+that are placed in the "textures" and "scripts" folders or in their own
+sub-folder placed in these folders, with any name you wish to give them.
+These custom sub-folders can also have sub-folder within them as well for
+a better grouping of files. All of the folders will then be grouped in the
+<a href="intro.texturebrowser.overview.html">Texture Browser</a> under the
+caption "Directories" and will be displayed by their individual folder and
+sub-folder names.
 
 
 <u>A Nice Layout in the Add-on Data*.QRK File</u><br>
