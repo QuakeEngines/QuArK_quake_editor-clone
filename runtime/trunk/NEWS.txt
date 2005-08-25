@@ -12,6 +12,10 @@ $Id$
        #####
         #####       Quake Army Knife Changelog
 
+6.5.0 alpha 2
+=============
+
+ * [cdunde] : Added basic Textures Flags form to Half-Life to fix console error.
 
 6.5.0 alpha 1
 =============
