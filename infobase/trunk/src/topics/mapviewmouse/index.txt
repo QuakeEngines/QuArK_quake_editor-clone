@@ -11,9 +11,9 @@ line like this (from quarkpy.qbaseeditor):
 <code>
         v.onmouse = self.mousemap
 </code>
-Every type the mouse is moved, the mousemap function of 'self' (an editor)
+Every time the mouse is moved, the mousemap function of 'self' (an editor)
 is called.  For editors as defined in qbaseeditor, the mousemap function
-starts outlike this:
+starts out like this:
 <code>
     def mousemap(self, view, x, y, flags, handle):
 </code>
