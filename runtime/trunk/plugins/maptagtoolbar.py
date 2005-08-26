@@ -279,6 +279,10 @@ def posTexClick(m):
 
 def texflagsClick(m):
     editor = mapeditor()
+    flist = quarkx.getqctxlist(":form", "TextureFlags")
+    if not len(flist):
+        quarkx.msgbox("The 'Texture Flags' function is inoperable in this game mode\nbecause this game does not support texture flags or\nthe form has not been setup in the addons Data.qrk file", MT_INFORMATION, MB_OK)
+        return
     if editor.layout.explorer.uniquesel is None:
         quarkx.msgbox("No selection has been made\nor you have selected multipal brushes\n\nYou must first select a brush or single face\nto activate this tool to set its texture flags", MT_ERROR, MB_OK)
         return
@@ -401,6 +405,9 @@ quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.7  2005/08/16 04:03:12  cdunde
+# Fix toolbar arraignment
+#
 # Revision 1.6  2004/11/13 11:03:25  peter-b
 # Better error handling for "wrap around pillar" function.
 #
