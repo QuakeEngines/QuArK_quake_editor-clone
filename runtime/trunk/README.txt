@@ -10,7 +10,7 @@ $Id$
   ####  ####   ####   #### ####    #### ####         ####   ####
    ########     ########## ####    #### ####         ####    ####
        #####
-        #####    Quake Army Knife Readme
+        #####    Quake Army Knife 6.5 Readme
 
 
 Contents
@@ -41,7 +41,8 @@ Quark.
 
 You can find out more about QuArK from the official website at
 http://www.planetquake.com/quark/.  See also the QuArK wiki, located
-at http://quark.sf.net/cgi-bin/moin.cgi.
+at http://quark.sf.net/, and the QuArK Resource Forums at
+http://quark.ironfoot.co.uk/.
 
 2. Where can I get QuArK?
 -------------------------
@@ -50,14 +51,11 @@ QuArK for 32-bit Windows is available as a free download from the
 QuArK website as an executable installer or as a zip archive.
 
 The latest release is always available from
-http://quark.sf.net/cgi-bin/moin.cgi/LatestRelease.
+http://quark.sf.net/wiki/LatestRelease.
 
 Source archives are also available, or you could use anonymous cvs to
 checkout the sources from our SourceForge cvs repository (our project
 name is `quark`).
-
-Development snapshots are available every couple of weeks from 
-http://quark.sourceforge.net/
 
 3. How do I install QuArK?
 --------------------------

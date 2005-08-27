@@ -10,7 +10,7 @@ $Id$
   ####  ####   ####   #### ####    #### ####         ####   ####
    ########     ########## ####    #### ####         ####    ####
        #####
-        #####    Quake Army Knife Developers
+        #####    Quake Army Knife 6.5 Developers
 
 
 The original author of QuArK

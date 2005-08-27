@@ -10,39 +10,49 @@ $Id$
   ####  ####   ####   #### ####    #### ####         ####   ####
    ########     ########## ####    #### ####         ####    ####
        #####
-        #####       Quake Army Knife Changelog
+        #####       Quake Army Knife 6.5 Changelog
 
 6.5.0 alpha 2
 =============
 
- * [cdunde] : Fixed error caused by "Tag Tool Palette" for games without Texture Flags forms.
+ * [peter-b]: Top directory text file updates
 
- * [cdunde] : Added basic Textures Flags form to Half-Life to fix console error.
+ * [cdunde]: Fixed error caused by "Tag Tool Palette" for games
+     without Texture Flags forms.
+
+ * [cdunde]: Added basic Textures Flags form to Half-Life to fix
+     console error.
 
 6.5.0 alpha 1
 =============
 
- * [cdunde] : Added QuArK Terrain Gennerator and Infobase documentation.
+ * [cdunde]: Added QuArK Terrain Gennerator and Infobase documentation.
+     - New Terrain Modes Toolbar linked to the Infobase and
+       documentation detail.
+     - Contains three terrain Shape Builder patterns for making
+       surfaces.
+     - Converter for other imported terrains such as GenSurf and
+       Nem's Tools.
+     - Face Converters for top, bottom or both faces for shape
+       movement together.
+     - Adjacent Faces Selector tool for selecting other faces touching
+       a single one.
+     - Selector Dialog Input for variations of terrain movement and
+       shaping.
+     - Basic Selector allows selections through all normal polys and
+       entities.
 
-     - New Terrain Modes Toolbar linked to the Infobase and documentation detail.
-     - Contains three terrain Shape Builder patterns for making surfaces.
-     - Converter for other imported terrains such as GenSurf and Nem's Tools.
-     - Face Converters for top, bottom or both faces for shape movement together.
-     - Adjacent Faces Selector tool for selecting other faces touching a single one.
-     - Selector Dialog Input for variations of terrain movement and shaping.
-     - Basic Selector allows selections through all normal polys and entities.
+ * [cdunde]: Added Infobase link and info for use of saving camera
+     possessions.
 
- * [cdunde] : Added Infobase link and info for use of saving camera possessions.
+ * [cdunde]: Fixed Duplicators to include entities.
 
- * [cdunde] : Fixed Duplicators to include entities.
-
- * [Fred] :  Q2 / HL1
-
+ * [Fred]:  Q2 / HL1
      - Updated waypoint data types.
 
  * [cbxpm]:  HL2 / Source
-
-     - New default addon that supports HL2-Game Sounds via ambient_generic.
+     - New default addon that supports HL2-Game Sounds via
+       ambient_generic.
      - Improved HL2 NPC_entities.
      - Added HL2-Soundscapes (default addon).
 
@@ -54,33 +64,36 @@ $Id$
 
      - Added HL2-Prefabs (custom addon)
      - Defaults.qrk: Added file association .vmf (Valve map format)
-     - DataHL2.qrk / base.qrk: Added custom polys for use with specific brush entities
+     - DataHL2.qrk / base.qrk: Added custom polys for use with
+       specific brush entities
 
  * [alexander]: HL2
-     - fixed problem with different material path lengths (decals folder)
-     - try several entries of a material as image source: 
-       %tooltexture then  $basetexture and if that doesnt help $envmap
+     - fixed problem with different material path lengths (decals
+       folder)
+     - try several entries of a material as image source: %tooltexture
+       then $basetexture and if that doesnt help $envmap
      - fixed bug that quark cant load its own exported .vmf
      - quark trys to load a .vmf with the same name as fall
        back if loading a material fails
-     - better exception forwarding from load material to display of image
+     - better exception forwarding from load material to display of
+       image
      - reduced overall logging of dlls
-     - introduced an environment "QUARK_LOG_LEVEL" variable to increase
-       logging verbosity of quark. 
+     - introduced an environment "QUARK_LOG_LEVEL" variable to
+       increase logging verbosity of quark.
 
- * [cdunde]: Major updates and changes by dannsdinosaurs DannJ
-      - to the Heretic_II DataHr2.qrk file.
+ * [cdunde]: Major updates and changes by dannsdinosaurs DannJ to the
+     Heretic_II DataHr2.qrk file.
  
  * [cbxpm]:  HL2 / Source engine content update
-    -  Entity files are now alphabetically sorted
-    -  Some entities fixed / improved
+      -  Entity files are now alphabetically sorted
+      -  Some entities fixed / improved
 
  * [alexander]: HL2
      - QuArK can display HL2 Materials now
 
  * [cbxpm]:  HL2 / Source engine content update
      - Prepared material files to work with shaders
-     - UserData Half-Life2 updated (more quick selectable entities)     
+     - UserData Half-Life2 updated (more quick selectable entities)
 
  * [alexander]: HL2
      - HL2 split up entity files in base, and game specific files
@@ -95,32 +108,34 @@ $Id$
 =============
 
  * [cbxpm]: HL2 content update;
- 		-  updated material files for HL2 / CS-Source
-		-  improved / updated HL2 build menu (several new commands).
+     - updated material files for HL2 / CS-Source
+     - improved / updated HL2 build menu (several new commands).
 
  * [cdunde]: Fixed red wire drag objects from erasing
-    - other items in the textured 3D views when dragged.
+     - other items in the textured 3D views when dragged.
 
  * [dannsdinosaurs]: Improvements to DataHr2.qrk file;
-    - Added pulldown menu for door messages
-    - Moved fishtrap into Commercial & Industrial folder
-    - Moved fountain fish into Statues folder
-    - Added mdl paths for info_player entities
-    - Added 'Not Deathmatch' spawnflags to trigger_once and trigger_multiple
+     - Added pulldown menu for door messages
+     - Moved fishtrap into Commercial & Industrial folder
+     - Moved fountain fish into Statues folder
+     - Added mdl paths for info_player entities
+     - Added 'Not Deathmatch' spawnflags to trigger_once and
+       trigger_multiple
 
- * [alexander]:
-   general(all games):
-    - unneded copy operation for proxy views removed
-    - more progress indicators added (textures and polys)
-   HL2 / Source specific
-    - added saving textures as vtf
-    - vtf format variant selection added to HL2 configuration
-    - export used textures to materials folder added
-    - user menu configuration with export textures feature
+ * [alexander]: general(all games):
+     - unneded copy operation for proxy views removed
+     - more progress indicators added (textures and polys)
+
+ * [alexander]: HL2 / Source specific
+     - added saving textures as vtf
+     - vtf format variant selection added to HL2 configuration
+     - export used textures to materials folder added
+     - user menu configuration with export textures feature
 
  * [cdunde]: Fix by Fredrick Vamstad for the bot way pointer.
 
- * [cdunde]: Fixed Select Everything function to include Shape Builders.
+ * [cdunde]: Fixed Select Everything function to include Shape
+     Builders.
 
 6.4.1 alpha 2
 =============
