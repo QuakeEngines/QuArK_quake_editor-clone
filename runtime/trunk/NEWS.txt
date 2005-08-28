@@ -173,9 +173,9 @@ $Id$
         with the models size and orientation in the open gl
         viever. Note that lights must be enabled an a light entity
         must be in the map to make this work.
-      - QuArK understands now  a mdlrendermode setup for model rendering
-        additionally to the "mdl", "mdlbase" and "mdlopacity" form
-        date specifics.
+      - QuArK understands now a mdlrendermode setup for model
+        rendering additionally to the "mdl", "mdlbase" and
+        "mdlopacity" form date specifics.
       - fixed bogus mdlopacity specific reading
       - The model selection form has been improved
       - the quarksteamfs.dll allows now retry of a steam
@@ -188,8 +188,8 @@ $Id$
         config
 
  * [alexander]: QuArK understands now how to access Steam directly.
-      (Steam must be running for that). Some new configuration entries have
-      to be set up for steam access.
+      (Steam must be running for that). Some new configuration entries
+      have to be set up for steam access.
 
  * [cdunde]: Added support for Q3 based mods CoD (Call of Duty), ET
       (Enemy Territory) and UT (Urban Terror - 2 data unit files).
