@@ -823,24 +823,27 @@ class RedImageDragObject(DragObject):
 
     def drawredimages(self, view, internal=0):
         editor = self.editor
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            pass
+        else:
 
 ## Deals with Terrain Selector 3D face drawing, movement is in ok section
 
-        if (editor is not None) and (editor.layout.toolbars["tb_terrmodes"] is not None):
-
-            tb2 = editor.layout.toolbars["tb_terrmodes"]
-            for b in tb2.tb.buttons:
-                if b.state == 2:
-                    if len(editor.layout.explorer.sellist) > 1:
-                        if self.redimages is not None:
-                            for r in self.redimages:
-                                if r.name == ("redbox:p"):
-                                    continue
-                                else:
-                                    type = view.info["type"]
-                                    if type == "3D":
-                                        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
-                                        return
+            if (editor is not None) and (editor.layout.toolbars["tb_terrmodes"] is not None):
+                tb2 = editor.layout.toolbars["tb_terrmodes"]
+                for b in tb2.tb.buttons:
+                    if b.state == 2:
+                        if len(editor.layout.explorer.sellist) > 1:
+                            if self.redimages is not None:
+                                for r in self.redimages:
+                                    if r.name == ("redbox:p"):
+                                        continue
+                                    else:
+                                        type = view.info["type"]
+                                        if type == "3D":
+                                            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                                            return
 
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -874,6 +877,9 @@ class RedImageDragObject(DragObject):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
+                        import mdleditor
+                        if isinstance(editor, mdleditor.ModelEditor):
+                            return
 ## Deals with Terrain Selector 2D face drawing, movement is in ok section and
 ## Deals with Standard Selector 2D face drawing, movement is in ok section
                         if editor.layout.toolbars["tb_terrmodes"] is not None:
@@ -931,7 +937,8 @@ class RedImageDragObject(DragObject):
 
 ## This section added for Terrain Generator - stops broken faces - cdunde 05-19-05
 
-        if editor.layout.toolbars["tb_terrmodes"] is not None:
+        import mapeditor
+        if isinstance(editor, mapeditor.MapEditor):
             tb2 = editor.layout.toolbars["tb_terrmodes"]
 ## Deals with Terrain Selector movement, face drawing is in drawredimages section
             for b in tb2.tb.buttons:
@@ -940,22 +947,11 @@ class RedImageDragObject(DragObject):
                         type = self.view.info["type"]
                         if type == "3D":
                             self.view.invalidate()
-                   #     self.view.invalidate()   # not nessisary
+               #     self.view.invalidate()   # not nessisary
                         editor.invalidateviews()  # does all views
                         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                         break
-                    else:
-                        undo = quarkx.action()
-                        for i in range(0,len(old)):
-                            undo.exchange(old[i], self.redimages[i])
-                        self.handle.ok(editor, undo, old, self.redimages)
-                        type = self.view.info["type"]
-                        if type == "3D":
-                            self.view.invalidate()
-                   #     self.view.invalidate()   # not nessisary
-                        editor.invalidateviews()  # does all views
-                        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
-                        break
+
 ## Deals with Sandard Selector movement, face drawing is in drawredimages section
             else:
                 undo = quarkx.action()
@@ -969,6 +965,20 @@ class RedImageDragObject(DragObject):
                 editor.invalidateviews()  # does all views
                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 return
+
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            undo = quarkx.action()
+            for i in range(0,len(old)):
+                undo.exchange(old[i], self.redimages[i])
+            self.handle.ok(editor, undo, old, self.redimages)
+            type = self.view.info["type"]
+            if type == "3D":
+                self.view.invalidate()
+        #    self.view.invalidate()   # not nessisary
+            editor.invalidateviews()  # does all views
+            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+            return
 
 ## End of above section for Terrain Generator changes
 
@@ -1662,6 +1672,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.15  2005/08/15 05:50:17  cdunde
+#To commit all files for Terrain Generator
+#
 #Revision 1.14  2005/07/16 19:41:31  cdunde
 #To remove improper items to fix broken handles
 #

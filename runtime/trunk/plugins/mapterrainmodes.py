@@ -1310,14 +1310,13 @@ class TerrModesBar(ToolBar):
 
 quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 
-# To temporarily fix interference with Model Editor
-import quarkpy.mdltools
-quarkpy.mdltools.toolbars["tb_terrmodes"] = TerrModesBar
-
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2005/08/26 07:11:13  cdunde
+# To temporarily fix interference with Model Editor
+#
 # Revision 1.3  2005/08/16 22:46:32  cdunde
 # To fix 2 first time start bugs:
 # terrain button was selected and
