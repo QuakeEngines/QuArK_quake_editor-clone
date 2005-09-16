@@ -141,9 +141,18 @@ def prepareobjecttodrop(editor, obj):
     if not ("TreeMap" in obj.classes):
         return
 
-    # replace the textures "[auto]", "[trigger]", "[clip]", "[origin]" and "[caulk]"
+    # replace the textures "[auto]", "[terrain]", "[trigger]", "[clip]", "[origin]" and "[caulk]"
     tex = textureof(editor)
     obj.replacetex("[auto]", tex)
+    if obj.shortname.startswith("Terrain Maker"):
+        if quarkx.setupsubset()["DefaultTextureTerrain"] is not None:
+            tex_for_terrain = quarkx.setupsubset()["DefaultTextureTerrain"]
+            obj.replacetex("[terrain]", tex_for_terrain)
+        else:
+            if quarkx.msgbox("The 'Default terrain texture' has not been\nchosen in the 'Games' configuration section.\nWould you like to go there now to do so?\n\nThis Terrain Maker will still be created using\nthe standard 'Default texture' setting instead.", MT_CONFIRMATION, MB_YES | MB_NO) == MR_YES:
+                quarkx.openconfigdlg(":")
+            tex_for_terrain = quarkx.setupsubset()["DefaultTexture"]
+            obj.replacetex("[terrain]", tex_for_terrain)
     try:
         tex_for_trigger = quarkx.setupsubset()["DefaultTextureTrigger"]
         obj.replacetex("[trigger]", tex_for_trigger)
@@ -697,6 +706,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.16  2003/12/18 21:51:46  peter-b
+#Removed reliance on external string library from Python scripts (second try ;-)
+#
 #Revision 1.15  2003/12/17 13:58:59  peter-b
 #- Rewrote defines for setting Python version
 #- Removed back-compatibility with Python 1.5

@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.261  2005/08/16 04:01:52  cdunde
+//Fix toolbar arraignment
+//
 //Revision 1.260  2005/08/15 21:19:26  cdunde
 //update version to QuArK 6.5.0 alpha 1
 //
@@ -2835,6 +2838,12 @@ QQRKSRC1
       Hint = "Default texture when inserting polyhedrons in maps."
           $0D"An '[auto]' texture."
     }
+    t_DefaultTextureTerrain:incl = {
+      Txt = "Default terrain texture"
+      Typ = "ET"      // Edit Texture
+      Hint = "Default terrain texture when inserting terrain shape builders in maps."
+          $0D"An '[terrain]' texture."
+    }
     t_DefaultTextureTrigger:incl = {
       Txt = "Default trigger texture"
       Typ = "ET"      // Edit Texture
@@ -2913,6 +2922,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "6DX"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "6DX"
       }
       DefaultTextureTrigger: =
@@ -3000,6 +3014,11 @@ QQRKSRC1
         t_DefaultTexture = !
         GameCfg = "Crystal Space"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Crystal Space"
+      }
       3DLight: =
       {
         Txt = "Game Light saturation"
@@ -3071,6 +3090,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "Doom 3"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "Doom 3"
       }
       DefaultTextureTrigger: =
@@ -3158,6 +3182,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "Half-Life"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "Half-Life"
       }
       DefaultTextureTrigger: =
@@ -3339,6 +3368,11 @@ QQRKSRC1
         t_DefaultTexture = !
         GameCfg = "Half-Life2"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Half-Life2"
+      }
       DefaultTextureTrigger: =
       {
         t_DefaultTextureTrigger = !
@@ -3440,6 +3474,11 @@ QQRKSRC1
         t_DefaultTexture = !
         GameCfg = "Heretic II"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Heretic II"
+      }
       DefaultTextureTrigger: =
       {
         t_DefaultTextureTrigger = !
@@ -3528,6 +3567,11 @@ QQRKSRC1
         t_DefaultTexture = !
         GameCfg = "Hexen II"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Hexen II"
+      }
       DefaultTextureTrigger: =
       {
         t_DefaultTextureTrigger = !
@@ -3602,6 +3646,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "JA"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "JA"
       }
       DefaultTextureTrigger: =
@@ -3688,6 +3737,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "JK2"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "JK2"
       }
       DefaultTextureTrigger: =
@@ -3778,6 +3832,11 @@ QQRKSRC1
         t_DefaultTexture = !
         GameCfg = "KingPin"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "KingPin"
+      }
       DefaultTextureTrigger: =
       {
         t_DefaultTextureTrigger = !
@@ -3863,6 +3922,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "MOHAA"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "MOHAA"
       }
       DefaultTextureTrigger: =
@@ -3957,6 +4021,11 @@ QQRKSRC1
         t_DefaultTexture = !
         GameCfg = "Quake 1"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Quake 1"
+      }
       DefaultTextureTrigger: =
       {
         t_DefaultTextureTrigger = !
@@ -4038,6 +4107,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "Quake 2"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "Quake 2"
       }
       DefaultTextureTrigger: =
@@ -4128,6 +4202,11 @@ QQRKSRC1
         t_DefaultTexture = !
         GameCfg = "Quake 3"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Quake 3"
+      }
       DefaultTextureTrigger: =
       {
         t_DefaultTextureTrigger = !
@@ -4212,6 +4291,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "RTCW"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "RTCW"
       }
       DefaultTextureTrigger: =
@@ -4307,6 +4391,11 @@ QQRKSRC1
         t_DefaultTexture = !
         GameCfg = "Sin"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Sin"
+      }
       DefaultTextureTrigger: =
       {
         t_DefaultTextureTrigger = !
@@ -4383,6 +4472,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "SOF"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "SOF"
       }
       DefaultTextureTrigger: =
@@ -4470,6 +4564,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "SoF2"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "SoF2"
       }
       DefaultTextureTrigger: =
@@ -4564,6 +4663,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "STVEF"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "STVEF"
       }
       DefaultTextureTrigger: =
@@ -4695,6 +4799,11 @@ QQRKSRC1
          "uto]' texture."
         GameCfg = "Sylphis"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Sylphis"
+      }
       3DLight: =
       {
         Txt = "Game Light saturation"
@@ -4763,6 +4872,11 @@ QQRKSRC1
         t_DefaultTexture = !
         GameCfg = "Torque"
       }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Torque"
+      }
       3DLight: =
       {
         Txt = "Game Light saturation"
@@ -4827,6 +4941,11 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
+        GameCfg = "WildWest"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
         GameCfg = "WildWest"
       }
       DefaultTextureTrigger: =
@@ -6602,12 +6721,12 @@ QQRKSRC1
       cube:p =
       {
         ;desc = "cube to put in the map and then resize and reshape"
-        up:f    = { v = '0 0 32 128 0 32 0 128 32' tex = "[auto]" }
-        down:f  = { v = '0 0 0 0 128 0 128 0 0' tex = "[auto]" m = "1" }
-        left:f  = { v = '-64 0 0 -64 0 128 -64 128 0' tex = "[auto]" m = "1" }
-        back:f  = { v = '0 64 0 0 64 128 128 64 0' tex = "[auto]" m = "1" }
-        right:f = { v = '64 0 0 64 128 0 64 0 128' tex = "[auto]" }
-        front:f = { v = '0 -64 0 128 -64 0 0 -64 128' tex = "[auto]" }
+        up:f    = { v = '0 0 32 128 0 32 0 128 32' tex = "[terrain]" }
+        down:f  = { v = '0 0 0 0 128 0 128 0 0' tex = "[terrain]" m = "1" }
+        left:f  = { v = '-64 0 0 -64 0 128 -64 128 0' tex = "[terrain]" m = "1" }
+        back:f  = { v = '0 64 0 0 64 128 128 64 0' tex = "[terrain]" m = "1" }
+        right:f = { v = '64 0 0 64 128 0 64 0 128' tex = "[terrain]" }
+        front:f = { v = '0 -64 0 128 -64 0 0 -64 128' tex = "[terrain]" }
       }
     }
 

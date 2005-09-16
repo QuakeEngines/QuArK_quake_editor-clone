@@ -10,7 +10,7 @@ This will drop a default sized <g>Shape Builder</g> into the editor's view and e
 Before it can actually be used to create a terrain there are some basic settings that can be made and the <g>Shape Builder</g> must be <b>Dissociated</b> to create the individual triangular <g>polys</g> that you will be working with.
 </td>
 <td valign=top align=middle>
-<img border=1>toolbar.jpg</img>
+<img border=1>toolbar.png</img>
 
 <img border=1>select2.png</img>
 </td></tr>

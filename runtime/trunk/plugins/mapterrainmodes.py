@@ -44,6 +44,7 @@ import maptagpoint
 from math import *
 
 import quarkpy.qhandles
+from quarkpy.qhandles import *
 
 ## think I need these below
 
@@ -98,6 +99,12 @@ def DialogClick(m):
                 m = qmenu.item("Dummy", None, "")
                 m.o = o
                 mapterrainpos.Selector1Click(m)
+
+        elif quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode") == 1:
+
+            m = qmenu.item("Dummy", None, "")
+            mapterrainpos.PaintBrushClick(m)
+
         else:
             quarkx.msgbox("Your current Terrain Selector does not use this function.\n\nIt only applyies to one that shows it (uses 'Dialog Box')\n                      in its discription popup.", MT_INFORMATION, MB_OK)
             return
@@ -336,45 +343,43 @@ class BasicPoly2:
         dup["detailmesh"]=""
         undo=quarkx.action()
         undo.exchange(dup, face)
-        editor.ok(undo, "create Terrain Maker 2")
-        editor.invalidateviews()
 
         p = quarkx.newobj("cube:p");
 
         face = quarkx.newobj("up:f")
         face["v"] = (0,0,32, 128,0,32, 0,128,32)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("down:f")
         face["v"] = (0,0,0, 0,128,0, 128,0,0)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("left:f")
         face["v"] = (-64,0,0, -64,0,128, -64,128,0)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("back:f")
         face["v"] = (0,64,0, 0,64,128, 128,64,0)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("right:f")
         face["v"] = (64,0,0, 64,128,0, 64,0,128)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("front:f")
         face["v"] = (0,-64,0, 128,-64,0, 0,-64,128)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         dup.appenditem(p)
 
-        quarkpy.mapbtns.dropitemsnow(editor, [dup], "draw poly")
-
+        quarkpy.mapbtns.dropitemsnow(editor, [dup], "create Terrain Maker 2")
+        editor.invalidateviews()
 
 def MakeTerrain2Click(m):
 
@@ -396,45 +401,43 @@ class BasicPoly2X:
         dup["detailmesh"]=""
         undo=quarkx.action()
         undo.exchange(dup, face)
-        editor.ok(undo, "create Terrain Maker 2X")
-        editor.invalidateviews()
 
         p = quarkx.newobj("cube:p");
 
         face = quarkx.newobj("up:f")
         face["v"] = (0,0,32, 128,0,32, 0,128,32)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("down:f")
         face["v"] = (0,0,0, 0,128,0, 128,0,0)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("left:f")
         face["v"] = (-64,0,0, -64,0,128, -64,128,0)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("back:f")
         face["v"] = (0,64,0, 0,64,128, 128,64,0)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("right:f")
         face["v"] = (64,0,0, 64,128,0, 64,0,128)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("front:f")
         face["v"] = (0,-64,0, 128,-64,0, 0,-64,128)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         dup.appenditem(p)
 
-        quarkpy.mapbtns.dropitemsnow(editor, [dup], "draw poly")
-
+        quarkpy.mapbtns.dropitemsnow(editor, [dup], "create Terrain Maker 2X")
+        editor.invalidateviews()
 
 def MakeTerrain2XClick(m):
 
@@ -456,45 +459,43 @@ class BasicPoly4:
         dup["detailmesh"]=""
         undo=quarkx.action()
         undo.exchange(dup, face)
-        editor.ok(undo, "create Terrain Maker 4")
-        editor.invalidateviews()
 
         p = quarkx.newobj("cube:p");
 
         face = quarkx.newobj("up:f")
         face["v"] = (0,0,32, 128,0,32, 0,128,32)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("down:f")
         face["v"] = (0,0,0, 0,128,0, 128,0,0)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("left:f")
         face["v"] = (-64,0,0, -64,0,128, -64,128,0)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("back:f")
         face["v"] = (0,64,0, 0,64,128, 128,64,0)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("right:f")
         face["v"] = (64,0,0, 64,128,0, 64,0,128)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         face = quarkx.newobj("front:f")
         face["v"] = (0,-64,0, 128,-64,0, 0,-64,128)
-        face["tex"] = "[auto]"
+        face["tex"] = "[terrain]"
         p.appenditem(face)
 
         dup.appenditem(p)
 
-        quarkpy.mapbtns.dropitemsnow(editor, [dup], "draw poly")
-
+        quarkpy.mapbtns.dropitemsnow(editor, [dup], "create Terrain Maker 4")
+        editor.invalidateviews()
 
 def MakeTerrain4Click(m):
 
@@ -735,7 +736,6 @@ class TerrainRectSelDragObject(quarkpy.qhandles.RectangleDragObject):
         z = 0
         quarkx.clickform = view.owner  # Rowdys -important, gets the
                                        # mapeditor and view clicked in
-        type = view.info["type"]
         editor = mapeditor()
 
     def rectanglesel(self, editor, x,y, rectangle):
@@ -1119,7 +1119,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
             for new in newface:
                 newfaces.append(new)
 
-        # swap them into the map
+        # swap the old and new faces into the map
         undo=quarkx.action()
         for i in range(len(oldfaces)):
             undo.exchange(oldfaces[i], newfaces[i])
@@ -1213,6 +1213,206 @@ class TerrainRedImageDragObject(quarkpy.qhandles.RedImageDragObject):
         self.handle.ok(editor, undo, old, self.redimages)
 
 
+#====================================================
+# Below deals with the TerrainManager to pass mouse actions to specific buttons
+
+def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+    oldfinish(editor, view)
+
+def TerrainManager(editor, view, x, y, flags, handle):
+    redcolor = RED
+    todo = "RS"
+    tb2 = editor.layout.toolbars["tb_terrmodes"]
+    color = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]
+    if tb2.tb.buttons[10].state == 2 and color == "1":
+        type = view.info["type"]
+        if type == "3D":
+            editor.layout.setupdepth(view)
+            choice = quarkpy.maphandles.ClickOnView(editor, view, x, y) #checks if pointing at poly or something
+            for lists in choice:
+                poly = lists[1]
+                if poly.shortname.startswith("terrain wedge"):
+
+### draws the individual FUCHSIA (terrain "up") faces
+### and Dk. blue (terrain "downmove") faces
+### outlines but nothing is selected
+                    cv = view.canvas()
+                    cv.penwidth = 1
+                    cv.penstyle = PS_SOLID
+                    if poly.findname("up:f") is not None:
+                        face = poly.findname("up:f")
+                        cv.pencolor = FUCHSIA
+                        cv.fontcolor = FUCHSIA
+                        for vtx in face.vertices: # is a list of lists
+                            sum = quarkx.vect(0, 0, 0)
+                            p2 = view.proj(vtx[-1])  # the last one
+                            for v in vtx:
+                                p1 = p2
+                                p2 = view.proj(v)
+                                sum = sum + p2
+                                cv.line(p1,p2)
+                        quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+
+                    if poly.findname("downmoves:f") is not None:
+                        face = poly.findname("downmoves:f")
+                        cv.pencolor = MapColor("Duplicator")   # Dk. blue
+                        cv.fontcolor = MapColor("Duplicator")  # Dk. blue
+                        for vtx in face.vertices: # is a list of lists
+                            sum = quarkx.vect(0, 0, 0)
+                            p2 = view.proj(vtx[-1])  # the last one
+                            for v in vtx:
+                                p1 = p2
+                                p2 = view.proj(v)
+                                sum = sum + p2
+                                cv.line(p1,p2)
+                        quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+
+        plugins.mapterrainmodes.TerrainPaintClick(view, x, y, redcolor, todo).terrainpaint(view, flags)
+
+    else:
+        plugins.mapterrainmodes.TerrainPaintClick(view, x, y, redcolor, todo).terrainpaint(view, flags)
+
+
+### 10th button -- or 2nd selector -- paints Terrain Mesh area ###
+
+class TerrainPaintClick(TerrainRectSelDragObject):
+
+    "A pass over selector when the LMB is held down to"
+    "apply the current texture to a 'moveable' face."
+
+    Hint = hintPlusInfobaselink("Texture Applicator of\nTerrain Wedge Faces\n(uses 'Dialog Box')||Texture Applicator of Terrain Wedge Faces:\n\nThis works like a 'Paint Brush Selector' that will apply the current texture to movable Terrain Wedge ('up') Faces on top, or the ('down') bottom faces if any are set for movement. In which case, the texture will be applied to those faces as well.\n\nThis function only works in the '3D' views. To apply the texture hold down the LMB as you pass the cursor over the desired faces.", "intro.terraingenerator.selection.html#paintbrush")
+
+    def __init__(self, view, x, y, redcolor, todo):
+        self.todo = todo
+        self.view = view
+        self.x = x
+        self.y = y
+
+        plugins.mapterrainmodes.TerrainRectSelDragObject.__init__(self, view, x, y, redcolor, todo)
+
+        z = 0
+        quarkx.clickform = view.owner  # Rowdys -important, gets the
+                                       # mapeditor and view clicked in
+        self.editor = mapeditor()
+
+
+    def dragto(self, x, y, flags):
+        editor = self.editor
+        view = self.view
+        type = view.info["type"]
+        if type == "3D" and view.viewmode == "tex" or view.viewmode == "opengl":
+
+### Start of new section to get face and apply texture in 3D view only
+
+            editor.layout.setupdepth(view)
+            choicelist = quarkpy.maphandles.ClickOnView(editor, view, x, y) #checks if pointing at poly or something
+
+### Draws the YELLOW face that will be "painted" (re-textured).
+
+            for items in choicelist:
+
+                poly = items[1]
+                if poly.shortname.startswith("terrain wedge"):
+                    for face in poly.subitems:
+                        if face.name == ("up:f") or face.name == ("downmoves:f"):
+
+             # sets up to draw YELLOW outline of faces to get texture
+                            cv = view.canvas()
+                            cv.pencolor = YELLOW
+                            cv.penwidth = 1
+                            cv.penstyle = PS_SOLID
+                            cv.fontcolor = YELLOW
+
+             # Draws YELLOW outline of faces to get texture
+                            for vtx in face.vertices: # is a list of lists
+                                sum = quarkx.vect(0, 0, 0)
+                                p2 = view.proj(vtx[-1])  # the last one
+                                for v in vtx:
+                                    p1 = p2
+                                    p2 = view.proj(v)
+                                    sum = sum + p2
+                                    cv.line(p1,p2)
+
+### This part changes the face texture.
+# This part gets the "Actual" texture image size.
+                            tex = face.texturename
+                            texobj = quarkx.loadtexture (tex, editor.TexSource)
+                            if texobj is not None:
+                                try:
+                                    texobj = texobj.disktexture # this gets "linked"
+                                except quarkx.error:    # and non-linked textures size
+                                    texobj = None
+                            texX, texY = texobj['Size']
+
+### Gets the stored dialog box values to be used below.
+
+                            texname = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"]
+                            originX, originY, originZ = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"]
+                            retain = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"]
+                            scaleX, scaleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"]
+                            angleX, angleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]
+
+## The texX and texY are the size of the actual texture image
+## and are used here to be applied to the scale x and y factors.
+## .01 sets the percentage factor that 1 in the dialog gives the texture.
+
+                            scaleX = scaleX * texX * .01
+                            scaleY = scaleY * texY * .01
+
+## Start of "modified" formula from maptexpos.py "def action" section
+
+                            angleY = angleX - angleY*-1
+                            angleY = angleX - angleY
+                            angleX, angleY = angleX*deg2rad, angleY*deg2rad
+                            if  quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"] == "1":
+                                p0 = vc = quarkx.vect(originX, originY, originZ)
+                            else:
+                                p0 = vc = face.origin  # center of the face
+                            n = face.normal   # 1 0 0 or x,y,z direction textured side of face is facing - = opposite direction
+                            v1, v2 = bestaxes(n, editor.layout.views[0])
+
+                            p1 = p0 + (v1*math.cos(angleX) + v2*math.sin(angleX))*scaleX
+                            p2 = p0 + (v1*math.cos(angleY*-1) + v2*math.sin(angleY*-1))*scaleY
+
+                            face.setthreepoints((p0, p1, p2), 2) # Applies distortion. 2nd augment "2" only
+                                                                 # applies to positioning texture on the face.
+                            tx1 = face.texturename
+                            if texname is None:
+                                texname = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"]
+                            tx2 = texname
+
+                            face.replacetex(tx1, tx2)
+
+            # Rebuilds 3D views only
+            view.invalidate(1)
+            editor.invalidateviews()
+            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+
+
+### End of new section to get face and apply texture in 3D view only
+### below to get the "red rectangle" to work in 2D views only
+
+        else:
+            if flags&MB_DRAGGING:
+                self.autoscroll(x,y)
+            old, ri = self.buildredimages(x, y, flags)
+            self.drawredimages(self.view, 1)
+            self.redimages = ri
+            self.old = old     # trying to move actual faces 051505
+            if flags&MB_DRAGGING:
+                self.drawredimages(self.view, 2)
+            return old
+
+
+    def terrainpaint(self, view, flags):
+        "Changes cursor in views based on view type"
+        type = view.info["type"]
+        if type == "3D" and flags & MB_CLICKED is not None and view.viewmode == "tex" or view.viewmode == "opengl":
+            view.cursor = CR_HAND
+        else:
+            view.cursor = CR_DEFAULT
+
+
 ### START OF THE TOOLBAR AND BUTTON SETUP ###########
 #
 # The SELECTION PART of the tool bar with the available terrain modes.
@@ -1220,6 +1420,7 @@ class TerrainRedImageDragObject(quarkpy.qhandles.RedImageDragObject):
 #
 
 TerrModes = [(TerrainRectSelDragObject                 ,9)
+            ,(TerrainPaintClick                       ,10)
             ]
 
 ### this part effects each buttons selection mode
@@ -1314,6 +1515,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2005/08/31 22:46:21  cdunde
+# To properly fix interference with Model Editor
+#
 # Revision 1.4  2005/08/26 07:11:13  cdunde
 # To temporarily fix interference with Model Editor
 #

@@ -527,6 +527,25 @@ class BaseEditor:
 
         elif flags & MB_MOUSEMOVE:
             if handle is None:
+                if mapeditor() is not None:
+                    editor = mapeditor()
+                else:
+                    quarkx.clickform = view.owner  # Rowdys -important, gets the editor
+                    editor = mapeditor()
+                if editor == None: return
+                else:
+                    import mdleditor
+                    if isinstance(editor, mdleditor.ModelEditor):
+                        return
+                    if editor.layout.toolbars["tb_terrmodes"] is not None:
+                        tb2 = editor.layout.toolbars["tb_terrmodes"]
+                        i = quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode")
+                        if i < 20 and i != 0:
+                            plugins.mapterrainmodes.TerrainManager(editor, view, x, y, flags, handle)
+                        else:
+                            view.cursor = CR_DEFAULT
+
+            if handle is None:
                 min, max = view.depth
                 list = map(quarkx.ftos, self.aligntogrid(view.space(quarkx.vect(x, y, min))).tuple + self.aligntogrid(view.space(quarkx.vect(x, y, max))).tuple)
                 tag = 0
@@ -842,6 +861,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.15  2001/10/22 10:26:17  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.14  2001/05/08 11:07:57  tiglari
 #remove debug
 #

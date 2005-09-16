@@ -5,6 +5,7 @@ desc: importconverter
 desc: faceconverters
 desc: adjacentfaces
 desc: basicselector
+desc: paintbrush
 
 <noscript>
   <div class="warning">Please enable JavaScript to get the most out of this page</div>
@@ -16,7 +17,8 @@ imgsA = new Array("builders",
                   "importconvert",
                   "faceconvert",
                   "adjacentfaces",
-                  "basicselector");
+                  "basicselector",
+                  "paintbrush");
 imgsB = new Array();
 for (i=0; i<20; i+=2) {
   imgsB[i] = new Image();
@@ -34,7 +36,7 @@ document[imgname].src = imgsB[num*2+typ].src;
 <center>
 Move your mouse over the toolbar to highlight an area<br>for its function(s) description that will appear shortly<br>then click that area to go to its information section.
 
-<table cellpadding=0 cellspacing=0 border=0 width=236 height=29>
+<table cellpadding=0 cellspacing=0 border=0 width=262 height=29>
   <tr>
   <!-- menu -->
                                      <!-- HACK/FIX -->
@@ -57,6 +59,11 @@ Move your mouse over the toolbar to highlight an area<br>for its function(s) des
     <td width=47><a href="intro.terraingenerator.selection.html#basicselector" onMouseover='imgchange("4basicselector",4,0)' onMouseout='imgchange("4basicselector",4,1)'><img name="4basicselector" width=47 height=29 border=0 alt="Basic Selector & Dialog Box">basicselector_s.png</img></a>
     </td>
 
+
+    <td width=26><a href="intro.terraingenerator.selection.html#paintbrush" onMouseover='imgchange("5paintbrush",5,0)' onMouseout='imgchange("5paintbrush",5,1)'><img name="5paintbrush" width=26 height=29 border=0 alt="Texture Applicator & Dialog Box">paintbrush_s.png</img></a>
+    </td>
+
+
   </tr>
 </table>
 <!-- hack/fix to load the non-shaded images -->
@@ -65,4 +72,5 @@ Move your mouse over the toolbar to highlight an area<br>for its function(s) des
 <img border=0 width=0 height=0>faceconvert.png  </img>
 <img border=0 width=0 height=0>adjacentfaces.png  </img>
 <img border=0 width=0 height=0>basicselector.png  </img>
+<img border=0 width=0 height=0>paintbrush.png  </img>
 </center>
