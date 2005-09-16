@@ -1,0 +1,6 @@
+title: Quick cube creation
+author: Decker
+
+<img border=0 align=right>createcube.png</img>
+To quickly create a cube with the default texture, select this icon, and drag
+in a map-view to size the new cube.

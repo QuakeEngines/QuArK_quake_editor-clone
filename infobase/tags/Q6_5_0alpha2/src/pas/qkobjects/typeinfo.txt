@@ -1,0 +1,12 @@
+title: TypeInfo
+author: Tiglari / Armin
+
+This class method simply returns the 'extension' of the object. For files, it's
+the usual extension with the dot; for non-file objects, it should begin with
+'<tt>:</tt>' (colon). For example for TTreeMapEntity it is '<tt>:e</tt>'. This
+is a class function, but it is virtual; it's a feature that I've only seen
+possible in Delphi, not in C++. This lets the code below in QkObjects.pas build
+a list of all the classes ("pointer to class" is something the C++ doesn't know
+about) and when loading a object from a file or from inside a file we compare
+the end of the name with all the TypeInfo's of the classes to know which class
+should be the object we're about to build.

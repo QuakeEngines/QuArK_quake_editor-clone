@@ -1,0 +1,17 @@
+title: Selection
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+First, a <ref> ../setup </ref> needs to be selected from the <a href="intro.terraingenerator.selection.html">Terrain Toolbar</a>. There are three patterns to chose from. Here we have chosen the second button from your left, which is the 2X pattern.
+
+This will drop a default sized <g>Shape Builder</g> into the editor's view and even though it shows the triangular grid pattern, it is really a single <g>poly</g> at this point.
+
+Before it can actually be used to create a terrain there are some basic settings that can be made and the <g>Shape Builder</g> must be <b>Dissociated</b> to create the individual triangular <g>polys</g> that you will be working with.
+</td>
+<td valign=top align=middle>
+<img border=1>toolbar.png</img>
+
+<img border=1>select2.png</img>
+</td></tr>
+</table>

@@ -1,0 +1,103 @@
+title: Windows (forms)
+author: Armin Rigo
+
+Window Objects (commonly called “ forms ”) are the Python objects with which you can control a window’s aspect. In the current
+versions, only the map and model editors are Window objects; other windows cannot be accessed from Python. Here are the
+attributes of Window objects.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+begincolor<br>
+endcolor
+</td><td>
+The colors used for the gradient caption. begincolor is the color at the left and endcolor is the color at the right. Please follow the convention that begincolor represents the window type (blue for editors, black for toolboxes,...) and endcolor represents the file type (black for maps,...)
+</td></tr>
+
+<tr><td class="doccode">
+fileobject
+</td><td>
+The Internal File Object displayed in this window
+</td></tr>
+
+<tr><td class="doccode">
+mainpanel
+</td><td>
+The main panel. See below for more information on Panel objects.
+</td></tr>
+
+<tr><td class="doccode">
+windowrect
+</td><td>
+The window position (left,top,right,bottom) in screen coordinates
+</td></tr>
+
+<tr><td class="doccode">
+windowstate
+</td><td>
+Window state: maximized, minimized, or normal. See qutils.py.
+</td></tr>
+
+<tr><td class="doccode">
+info
+</td><td>
+Any data for Python code use
+</td></tr>
+
+<tr><td class="doccode">
+menubar<br>
+shortcuts<br>
+numshortcuts
+</td><td>
+The menu bar and the key shortcuts. See Menus below.
+</td></tr>
+
+<tr><td class="doccode">
+focus
+</td><td>
+The control currently focused inside this window, if any. (read-only, ask me if you need it to be writeable)
+</td></tr>
+
+<tr><td class="doccode">
+macro(cmd)
+</td><td>
+Fires a macro command. Returns False if the macro failed or True otherwise. See the file TECHINFO.TXT in the tech info package for a list of macros. Note that macros are more or less obsolete now that QuArK supports Python.
+</td></tr>
+
+<tr><td class="doccode">
+newtoolbar(caption, buttons, canclose)
+</td><td>
+Makes a new floating tool bar. See below for more information on Toolbar objects. All parameters are optional; caption defaults to "tool bar" and canclose defaults to False. If canclose is True, when the toolbar is not docked (padded along a border of the window), it has a close box that hides it. The user should have a way to make the toolbar reappear, for example from the menus.
+</td></tr>
+
+<tr><td class="doccode">
+toolbars()
+</td><td>
+Returns a list of all toolbars in this window.
+</td></tr>
+
+<tr><td class="doccode">
+allbuttons()
+</td><td>
+Returns a list of all buttons used in this window, either on toolbars or on button panels.
+</td></tr>
+
+<tr><td class="doccode">
+newfloating(flags, caption)
+</td><td>
+Makes a new floating window attached to this window. See below for more infos. Parameters are optional: flags default to 0 and caption defaults to "". See qutils.FWF_XXX for flags values.
+</td></tr>
+
+<tr><td class="doccode">
+floatings()
+</td><td>
+Returns a list of floating windows attached to this window.
+</td></tr>
+
+<tr><td class="doccode">
+choosecolor(color)
+</td><td>
+Displays a color picking dialog box. color is the default color. Returns the choosen color or None if the user cancelled the dialog box.
+</td></tr>
+
+</table>

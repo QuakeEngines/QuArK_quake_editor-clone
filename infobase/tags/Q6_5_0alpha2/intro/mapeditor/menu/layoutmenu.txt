@@ -1,0 +1,40 @@
+title: Layout menu
+author: Decker
+
+<img border=0 align=right>layout.png</img>
+<i>Wireframe</i> will change all map-views to show polyhedrons and entities as
+wireframe-graphics. This is the fastest drawing-method of the map-views.
+
+<i>Solid</i> will change all map-views to show polyhedrons as solid object.
+This means that you won't be able to 'see-through' polyhedrons once they are in
+view.
+
+<i>Textured</i> will change all map-views to show polyhedrons with their
+applied textures and alignment. It will also show 3D-models of entities, if
+QuArK can find the 3D-representation.
+
+<i>New 3D-window</i> will create a new free-floating 3D edit window. An 'eye'
+with an angle-handle will be shown in the map-views, to illustrate from where
+the camera sees the world. You can actually edit polyhedrons in the 3D-window,
+and manipulate textures.
+
+<i>OpenGL view</i>, does the same as the previous command "New 3D-window" but
+the 3D viewer uses the OpenGL standard 3D graphic library. In QuArK v5.10 (and
+higher) it is also the only way to preview (colored-) light effects.
+<span class="sm">(Silicon Graphics' OpenGL drivers for Windows:
+<a href="http://www.berkelium.com/OpenGL/sgi-opengl.html">http://www.berkelium.com/OpenGL/sgi-opengl.html</a>.)</span>
+
+<i>Show whole level</i> will in wireframe-mode, draw all lines the level
+consists of, even those that can't be seen simultaneously in all map-views.
+
+<i>Gray out of view</i> will in wireframe-mode, draw grey lines of those parts
+of the level, which can't be seen within the map-views.
+
+<i>Hide out of view</i> will in wireframe-mode, only draw lines for those parts
+of the level, which is within the map-views.
+
+<i>Panel at right</i>. Check this menu-item, if you want the compass, dataform
+and that area, moved to the right of the map-views.
+
+<i>Layouts</i>. These menu-item are used to change between the different
+map-layouts.

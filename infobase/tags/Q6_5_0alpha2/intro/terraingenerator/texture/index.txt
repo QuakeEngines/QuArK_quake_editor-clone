@@ -1,0 +1,6 @@
+title: Texture
+author: cdunde
+desc: general
+desc: paintbrush
+
+Now that you have created your terrain surface, it is time to do some texturing to it. The texture that it starts with is the <b>Standard</b> default texture that is set in <a href="intro.configuration.games.specificgames.html">QuArK's Configuration Settings</a> <b>unless</b> you have set its <b>own</b> default texture in the same area. You could, just as easily selected your texture prior to creating the terrain all together. Sometimes this may be desirable as a base and other times it may be better to reapply it or use a different texture last or even <b>during</b> the creation process. Here we started with just the Standard default texture and will apply our actual terrain texture now that the <ref>../shaping</ref> has been completed.

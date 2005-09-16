@@ -1,0 +1,14 @@
+title: Attributes of Internal objects of class "Duplicator"
+author: Armin Rigo
+
+Here is the additionnal attribute of Internal objects with "<tt>Duplicator</tt>" in their class tuple.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+images
+</td><td>
+List of all images built by the Duplicator.
+</td></tr>
+
+</table>
