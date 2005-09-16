@@ -14,6 +14,22 @@ $Id$
 
 6.5.0 alpha 2
 =============
+ * [cdunde] : Added new Paint Brush function to the Terrain Generator.
+     - Allows the changing of texture on an individual or group bases
+       in all 3D Textured and OpenGL views with complete terrain 
+       selection and full movement capabilities in all 2D views.
+     - Displays color face shapes as a guide to their locations using
+       cursor passover detection method with on and off option.
+     - Displays color face shapes for those receiving new texture.
+     - Added default setting in the config. section for terrain texture.
+     - New dialog input for the Paint Brush to select, place and adjust
+       textures with 'quick' selection input, default reset and origin
+       retention capabilities, which will also work for standard faces.
+     - Added full documentation to the Infobase on its use and functions
+       linked to its activation toolbar button in the editor.
+
+ * [cdunde] : Reset Texture Positioning dialog to stay open for use.
+
  * [cdunde] : To properly fix interference with Model Editor
      by terrain toolbar key error when dragging.
 
