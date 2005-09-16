@@ -49,6 +49,7 @@ class TexPosDlg (quarkpy.dlgclasses.LiveEditDlg):
 
     endcolor = AQUA
     size = (180,200)
+    dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
     dfsep = 0.35
 
     dlgdef = """
@@ -176,6 +177,9 @@ quarkpy.mapentities.FaceType.menu = texmenu
 #
 #
 # $Log$
+# Revision 1.6  2003/12/18 21:51:46  peter-b
+# Removed reliance on external string library from Python scripts (second try ;-)
+#
 # Revision 1.5  2001/06/17 21:10:56  tiglari
 # fix button captions
 #
