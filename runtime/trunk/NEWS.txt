@@ -14,6 +14,10 @@ $Id$
 
 6.5.0 alpha 2
 =============
+ * [cdunde] : Added a new Advanced vertex dragging plugin by tiglari
+       and mbassie that has been around a long time but never added.
+       Press and hold the "N" HotKey before selecting a vertex to drag.
+
  * [cdunde] : Added new Paint Brush function to the Terrain Generator.
      - Allows the changing of texture on an individual or group bases
        in all 3D Textured and OpenGL views with complete terrain 
