@@ -203,6 +203,11 @@ Uses callback functions set using tagdrawfunc().
   oldmore(editor, view)
   cv = view.canvas()
 
+  # Make the pen the correct colour, so callback functions don't
+  # need to
+  oldcolour = cv.pencolor
+  cv.pencolor = MapColor("Tag")
+
   t = gettagging(editor)
   for k in _drawcallbacks.keys():
     f = t.drawcallbacks(k)
@@ -211,8 +216,14 @@ Uses callback functions set using tagdrawfunc().
     
     for obj in gettaglist(editor, k):
       f(view, cv, obj)
+
+  # Restore the pen colour
+  cv.pencolor = oldcolour
  
 BaseEditor.finishdrawing = tagfinishdrawing
 
 #$Log$
+#Revision 1.1  2005/09/18 23:06:16  peter-b
+#New uber-powerful tagging API
+#
 #
