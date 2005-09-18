@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2005/04/01 19:32:45  alexander
+more progress indicators (textures and polys)
+
 Revision 1.9  2005/03/14 22:43:32  alexander
 textures with alpha channel are rendered transparent in open gl
 
@@ -697,8 +700,32 @@ begin
      Gauche:=0;
      Brush:=0;
 
-     // Setup a progress-bar
-     ProgressIndicatorStart(5454, NewTextures);
+     { Setup a progress-bar, depending on what type of device-context
+       thats been rendering to }
+     if DC=HDC(-1) then
+       ProgressIndicatorStart(5454, NewTextures)
+     else
+     begin
+       if DC<>0 then
+       begin
+         GetClipBox(DC, R);
+         Gauche:=(R.Right+R.Left-cProgressBarWidth) div 2;
+         R.Left:=Gauche;
+         R.Right:=Gauche+cProgressBarWidth;
+         R.Top:=(R.Top+R.Bottom-cProgressBarHeight) div 2;
+         R.Bottom:=R.Top+cProgressBarHeight;
+         SetBkColor(DC, $FFFFFF);
+         SetTextColor(DC, $000000);
+         TextePreparation:=LoadStr1(5454);
+         ExtTextOut(DC, Gauche+38, R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
+         InflateRect(R, +1, +1);
+         FrameRect(DC, R, GetStockObject(Black_brush));
+         InflateRect(R, -1, -1);
+         GdiFlush;
+         R.Right:=R.Left;
+         Brush:=CreateSolidBrush($FF0000);
+       end;
+     end;
 
      { begin building the textures one by one, while updating the
        progress-bar at the same time }
@@ -709,8 +736,21 @@ begin
        begin
          if PList^.Texture=Nil then
          begin
-           // progressindicator
-           ProgressIndicatorIncrement;
+           { update progressbar }
+           if DC=HDC(-1) then
+           begin
+             ProgressIndicatorIncrement;
+           end
+           else
+           begin
+             if DC<>0 then
+             begin
+               Inc(NewTexCount);
+               R.Right:=Gauche + MulDiv(cProgressBarWidth, NewTexCount, NewTextures);
+               FillRect(DC, R, Brush);
+               R.Left:=R.Right;
+             end;
+           end;
 
            TextureManager.GetTexture(PList, True, AltTexSrc{, PalWarning});
            BuildTexture(PList^.Texture);
@@ -721,29 +761,18 @@ begin
 
      finally
        { clean up the progress-bar }
-       ProgressIndicatorStop;
+       if DC=HDC(-1) then
+         ProgressIndicatorStop;
        if Brush<>0 then
          DeleteObject(Brush);
      end;
    end;  {end build and load new textures}
-
-
-
-
-
-   // progress indicator for faces
-   ProgressIndicatorStart(5459, PolyFaces.Count);
-
 
    { do something major with the polys }
    CurrentColor:=$FFFFFF; // what does the CurrentColor do?
    I:=0;
    while I<PolyFaces.Count do
    begin
-
-     // progress indicator for faces
-     ProgressIndicatorIncrement;
-
      PolySurface:=PSurface(PolyFaces[I]);
      if PolySurface=Nil then
      begin
@@ -924,21 +953,10 @@ begin
      end;
    end;
 
-   // face progress indicator
-   ProgressIndicatorStop;
-
-
-   // progress indicator for models
-   ProgressIndicatorStart(5460, ModelInfo.Count);
-
    CurrentColor:=$FFFFFF;  {same deal for models}
    I:=0;
    while I<ModelInfo.Count do
    begin
-
-     // progress indicator for models
-     ProgressIndicatorIncrement;
-
      Model3DInfo:=PModel3DInfo(ModelInfo[I]);
      if Model3DInfo=Nil then
      begin
@@ -1039,8 +1057,6 @@ begin
        Inc(I);
      end;
    end;
-   // model progress indicator
-   ProgressIndicatorStop;
 
    CurrentColor:=$FFFFFF;  { and sprites }
    I:=0;
@@ -1260,10 +1276,6 @@ begin
        Inc(I);
      end;
    end;
-
-
-
-
  finally
    TexNames.Free;
  end;
