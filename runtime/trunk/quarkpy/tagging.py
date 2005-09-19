@@ -32,12 +32,11 @@ __all__ = ['cleartags', 'untag', 'istagged', 'tag',
            'uniquetag', 'gettaglist', 'getuniquetag',
            'tagdrawfunc']
 
-from quarkpy.qbaseeditor import BaseEditor
+from quarkpy.qbaseeditor import BaseEditor, MapColor
 
 
 class Tagging:
-  """A place to stick tagging stuff, to be attached to editor;
-  only real purpose is to forestall name-collisions.
+  """A place to stick tagging stuff.
 
   Plugins should never manipulate objects of this class directly.
   """
@@ -97,10 +96,10 @@ category.
   for k in t.uniquetags.keys():
     if key is not None and k != key:
       continue
-    if obj == uniquetags[k]:
-      uniquetags[k] = None
-    if obj in taglists[k]:
-      taglists[k].remove(obj)
+    if obj == t.uniquetags[k]:
+      t.uniquetags[k] = None
+    if obj in t.taglists[k]:
+      t.taglists[k].remove(obj)
   editor.invalidateviews()
 
 def istagged(editor, obj, key=None):
@@ -115,7 +114,7 @@ particular tag category.
   for k in t.uniquetags.keys():
     if key is not None and k != key:
       continue
-    if obj in taglists[k]:
+    if obj in t.taglists[k]:
       return 1
   return 0
 
@@ -125,9 +124,9 @@ def tag(editor, obj, key):
 Tag an object in the tag category specified by key.
 """
   t = _gettagging(editor)
-  if not obj in t.taglists[k]:
-    t.taglists[k].append(obj)
-  t.uniquetags[k] = obj
+  if not obj in t.taglists[key]:
+    t.taglists[key].append(obj)
+  t.uniquetags[key] = obj
 
 def uniquetag(editor, obj, key):
   """uniquetag(editor, obj, key)
@@ -208,9 +207,8 @@ Uses callback functions set using tagdrawfunc().
   oldcolour = cv.pencolor
   cv.pencolor = MapColor("Tag")
 
-  t = gettagging(editor)
   for k in _drawcallbacks.keys():
-    f = t.drawcallbacks(k)
+    f = _drawcallbacks[k]
     if f is None:
       continue
     
@@ -223,6 +221,9 @@ Uses callback functions set using tagdrawfunc().
 BaseEditor.finishdrawing = tagfinishdrawing
 
 #$Log$
+#Revision 1.2  2005/09/18 23:55:33  peter-b
+#Make tagfinishdrawing() set and restore the pen colour
+#
 #Revision 1.1  2005/09/18 23:06:16  peter-b
 #New uber-powerful tagging API
 #
