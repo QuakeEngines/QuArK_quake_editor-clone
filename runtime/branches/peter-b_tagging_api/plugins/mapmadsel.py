@@ -53,6 +53,7 @@ import quarkpy.dlgclasses
 import maptagside
 import faceutils
 from quarkpy.maputils import *
+import quarkpy.tagging as nt
 
 import mapfacemenu
 
@@ -64,7 +65,45 @@ types = {
     ":b": "brush entity",
     ":p": "polyhedron",
     ":f": "face"  }
+    
+#
+# --------- stashing ---------
+# Uses tagging API
+# This actually the 'Mark selection' backend
 
+STASH_KEY = 'mapmadsel_stash'
+
+def StashMe(m):
+    editor = mapeditor()
+    if editor is None: return
+    nt.uniquetag(editor, m, STASH_KEY)
+  
+def getstashed(e):
+    return nt.getuniquetag(e, STASH_KEY)
+  
+def clearstashed(e):
+    nt.cleartags(e, STASH_KEY)
+
+#
+# -------------  restrictor -----------
+# Uses tagging API
+#
+
+RESTRICT_KEY = 'mapmadsel_restrict'
+
+def getrestrictor(e):
+    return nt.getuniquetag(e, RESTRICT_KEY)
+
+def setrestrictor(e, o):
+    nt.uniquetag(e, o, RESTRICT_KEY)
+    menrestsel.state = qmenu.checked
+    editor.invalidateviews()
+
+def clearrestrictor(e):
+    nt.cleartags(e, RESTRICT_KEY)
+    #menrestsel.state = qmenu.disabled
+    menrestsel.state = qmenu.normal
+    e.invalidateviews()
 
 #
 #-----------  Right-menu tree-view manipulation --------
@@ -138,13 +177,9 @@ def RestrictByMe(m):
   if editor is None:
     maptagside.squawk("no editor")
   if m.object.name == "worldspawn:b":
-    del editor.restrictor
-    menrestsel.state = qmenu.disabled
-    editor.invalidateviews()
+    clearrestrictor(editor)
     return
-  editor.restrictor = m.object
-  editor.invalidateviews()
-  menrestsel.state = qmenu.checked
+  setrestrictor(editor, m.object)
 
 def vec2rads(v):
     "returns pitch, yaw, in radians"
@@ -316,44 +351,7 @@ def selectMeFunc(editor, object):
     for current in olist:
         explorer.expand(current)
     explorer.sellist=[object]
-    
-#
-# --------- stashing ---------
-# (like tagging, maybe should be an extension of tagging)
-#
 
-
-
-def stashitem(o):
-  item = qmenu.item('Mark '+types[o.type], StashMe, "mark for tree-restructuring")
-  item.object = o
-  return item
-
-def StashMe(m):
-  editor = mapeditor()
-  if editor is None: return
-  editor.marker = m.object
-  
-def getstashed(e):
-  try:
-    return e.marker
-  except (AttributeError) : return None
-  
-def clearstashed(e):
-    try:
-        del e.marker
-    except (AttributeError) : pass
-
-#
-# -------------  restrictor -----------
-#   (like stash, for marking but just for restricting
-#    the selection)
-#
-
-def getrestrictor(e):
-  try:
-    return e.restrictor
-  except (AttributeError) : return None
 
 
 #
@@ -538,7 +536,6 @@ def madpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
     "the new right-mouse menu for polys"
     menu = oldmenu(o, editor)
     menu[:0] = [extmenuitem("Extend Selection",ExtendSelClick,o,grptext),
-                #stashitem(o),
                 navTreePopup(o, editor),
                 restructurepopup(o),
   #              menrestsel,
@@ -558,7 +555,6 @@ def madgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   "the new right-mouse menu for groups"
   menu = oldmenu(o, editor)
   menu[:0] = [#extmenuitem("Extended Selection",ExtendSelClick,o,grptext),
-              #stashitem(o),
               navTreePopup(o, editor),
               restructurepopup(o),
 #              menrestsel,
@@ -587,8 +583,7 @@ quarkpy.mapentities.BezierType.menu = madbezmenu
 def madentmenu(o, editor, oldmenu=quarkpy.mapentities.EntityType.menu.im_func):
   "point entity menu"
   menu = oldmenu(o, editor)
-  menu[:0] = [#stashitem(o),
-              navTreePopup(o, editor),
+  menu[:0] = [navTreePopup(o, editor),
               restructurepopup(o),
 #              menrestsel,
               qmenu.sep]
@@ -599,8 +594,7 @@ quarkpy.mapentities.EntityType.menu = madentmenu
 
 def madbrushentmenu(o, editor, oldmenu=quarkpy.mapentities.BrushEntityType.menu.im_func):
   menu = oldmenu(o, editor)
-  menu[:0] = [#stashitem(o),
-              navTreePopup(o, editor),
+  menu[:0] = [navTreePopup(o, editor),
               restructurepopup(o),
               qmenu.sep]
   return menu
@@ -793,9 +787,7 @@ quarkpy.qbaseeditor.drawview = maddrawview
 def RestSelClick(m):
   editor=mapeditor()
   if editor==None: return
-  editor.restrictor = editor.layout.explorer.uniquesel
-  menrestsel.state = qmenu.checked
-  editor.invalidateviews()
+  setrestrictor(editor, editor.layout.explorer.uniquesel)
     
 def NoSelClick(m):
   editor=mapeditor()
@@ -804,22 +796,13 @@ def NoSelClick(m):
     mennosel.state = qmenu.normal
   else:
     mennosel.state = qmenu.checked
-     
-
-def Unrestrict(editor):
-  del editor.restrictor
-  menunrestsel.state = qmenu.disabled
-  editor.invalidateviews()
 
 
 def UnrestrictClick(m):
     editor = mapeditor()
     if editor is None: return
-  #    maptagside.squawk("no editor")
-    del editor.restrictor
-    menrestsel.state = qmenu.normal
-    editor.invalidateviews()
-    return
+    #    maptagside.squawk("no editor")
+    clearrestrictor(editor)
 
 def ClearMarkClick(m):
     editor = mapeditor()
@@ -1102,6 +1085,12 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.30  2005/09/19 09:02:05  peter-b
+# Make selection marking/restricting use the new tagging API
+#
+# Revision 1.29  2004/01/06 01:22:55  cdunde
+# To add Make Detail function and HotKeys by Decker-cdunde
+#
 # Revision 1.28  2003/11/27 08:17:22  cdunde
 # To update 3D Zoom to selection feature for faces
 #

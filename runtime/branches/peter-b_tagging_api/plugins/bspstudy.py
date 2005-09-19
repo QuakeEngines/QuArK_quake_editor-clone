@@ -65,7 +65,7 @@ class ClosePlanesDlg (quarkpy.dlgclasses.LiveEditDlg):
 
         num: = {
           Typ = "EF1"
-          Txt = "# found"
+          Txt = "No. found"
         }
 
         close: = {
@@ -288,7 +288,7 @@ class NearPlanesDlg (quarkpy.dlgclasses.LiveEditDlg):
 
         num: = {
           Typ = "EF1"
-          Txt = "# found"
+          Txt = "No. found"
         }
         
         close: = {
