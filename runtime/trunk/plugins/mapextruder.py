@@ -32,6 +32,7 @@ from quarkpy.qeditor import deg2rad
 from quarkpy.maphandles import MapRotateHandle
 #from mapmadsel import getstashed
 from quarkpy.maputils import *
+import quarkpy.tagging as nt
 from tagging import *
 #from faceutils import *
 from quarkpy.dlgclasses import placepersistent_dialogbox
@@ -1865,19 +1866,32 @@ class TweenHandle(quarkpy.maphandles.EdgeHandle):
 # -- The Duplicator at Last
 #
 
+CORDUP_KEY = 'mapextruder_cordup'
+
 def tagcordup(dup, editor):
-  editor.tagging = Tagging()
-  editor.tagging.taggedcor = dup
+  nt.uniquetag(editor, dup, CORDUP_KEY)
   editor.invalidateviews()
   
 def gettaggedcordup(editor):
-  try:
-    cor = editor.tagging.taggedcor
-    if checktree(editor.Root, cor):
-      return cor
-  except (AttributeError):
-    return None
+  cor = nt.getuniquetag(editor, CORDUP_KEY)
+  if cor is not None and checktree(editor.Root, cor):
+    return cor
+  return None
     
+def CORDUP_KEY_dcb(view, cv, dup):
+    data = ExtruderDupData(dup)
+    cv = view.canvas()
+    cv.pencolor = MapColor("Tag")
+    cv.penstyle = PS_DOT
+    prev_pos = view.proj(dup.origin)
+    for j in range(1, len(data.PathPoints())):
+      pos = view.proj(data.PathPos(j))
+      cv.line(prev_pos, pos)
+      prev_pos = pos
+
+nt.tagdrawfunc(CORDUP_KEY, CORDUP_KEY_dcb)
+
+
   
 def extrudermenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_func):
   "duplicator entity menu"
@@ -2085,27 +2099,6 @@ class ExtruderDuplicator(StandardDuplicator):
     return [group, info]
 
 #
-# This stuff could have been stuck into n2dfinishdrawing, but I
-#  decided to keep it separate
-#
-def cortagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
-    oldmore(editor, view)
-    dup = gettaggedcordup(editor)
-    if dup is None: return
-    data = ExtruderDupData(dup)
-    cv = view.canvas()
-    cv.pencolor = MapColor("Tag")
-    cv.penstyle = PS_DOT
-    prev_pos = view.proj(dup.origin)
-    for j in range(1, len(data.PathPoints())):
-      pos = view.proj(data.PathPos(j))
-      cv.line(prev_pos, pos)
-      prev_pos = pos
-
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = cortagfinishdrawing
-
-
-#
 #  Register the duplicator
 #
 quarkpy.mapduplicator.DupCodes.update({
@@ -2266,6 +2259,7 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
     fromtagged = qmenu.item("From &tagged",WrapClick,"|Wrap texture from first segment to others")
     type = data.dup["type"]
     if type == "p":
+      # FIXME: WTF? This module/function doesn't exist!
       import maptagzbezier
       tagged = gettaggedbzcplist(editor)
     else:
@@ -2421,6 +2415,7 @@ def cordupmenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_fun
     fromtagged = qmenu.item("From &tagged",WrapClick,"|Wrap texture from first segment to others")
     type = data.dup["type"]
     if type == "p":
+      # FIXME: WTF? This module/function doesn't exist!
       import maptagzbezier
       tagged = gettaggedbzcplist(editor)
     else:
@@ -2896,6 +2891,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.16  2003/12/18 21:51:46  peter-b
+#Removed reliance on external string library from Python scripts (second try ;-)
+#
 #Revision 1.15  2003/09/18 02:55:16  cdunde
 #to fix dialog sep
 #
