@@ -1,0 +1,4406 @@
+QQRKSRC1
+// STVEF definition file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.6  2002/04/29 00:18:30  tiglari
+//minor polishing (Quake=>STVEF)
+//
+//Revision 1.5  2001/05/21 11:54:45  tiglari
+//added some 'holdable' entities (from Jeff Tunink)
+//
+//Revision 1.4  2001/04/19 09:38:12  tiglari
+//CTF entities from Jeff[EFR]Scorpion
+//
+//Revision 1.3  2001/04/17 23:36:42  tiglari
+//merge in entity changes from REL_62 branch
+//
+//
+//Revision 1.1.6.1  2001/04/15 02:59:57  tiglari
+//add brushes to trigger and func entities; change type to :b
+//
+//Revision 1.2  2001/03/20 21:55:03  decker_dk
+//Added log-header / misc.
+//
+//Revision 1.1  2001/02/11 11:24:48  decker_dk
+//Moved from addons directory
+//
+//Revision 1.1  2000/10/15 16:49:12  alexander
+//rename StarTrek EF to STVEF
+//
+//Revision 1.2  2000/09/18 01:42:12  alexander
+//fixed typo
+//
+//Revision 1.1  2000/09/18 01:34:00  alexander
+//new: StarTrek Voyager Elite Force Support file
+//
+//
+//
+//template 2000-09-17
+//
+{
+  QuArKProtected = "1"
+  Description = "Base StarTrek data"
+  Default forms.qctx =
+  {
+    dup arenafilemaker:form =
+    {
+      help = "put one in your map to create a .arena script automatically"
+      bots: =
+      {
+        Txt = "&"
+        Hint = "bots that are default for this map"
+      }
+      longname: =
+      {
+        Txt = "&"
+        Hint = "This name will be shown in StarTrekEF"
+      }
+      fraglimit: =
+      {
+        Txt = "&"
+        Typ = "EF1"
+        Hint = "default fraglimit for map"
+      }
+      type: =
+      {
+        Txt = "&"
+        Hint = "ffa tourney etc."
+      }
+    }
+  }
+  STVEF setup.qctx =
+  {
+    Game = "STVEF"
+    HTML = "help/index.html"
+    Palette = $0000000F0F0F1F1F1F2F2F2F3F3F3F4B4B4B5B5B5B6B6B6B7B7B7B8B8B8B9B9B
+     $9BABABABBBBBBBCBCBCBDBDBDBEBEBEB634B235B431F533F1F4F3B1B47371B3F2F173B2B
+     $173327132F23132B1F13271B0F23170F1B130B170F0B130F070F0B075F5F6F5B5B675B53
+     $5F574F5B534B534F474B473F433F3B3B3B3737332F2F2F2B2B2727272323231B1B1B1717
+     $171313138F77537B6343735B3B674F2FCF974BA77B3B8B672F6F5327EB9F27CB8B23AF77
+     $1F93631B774F175B3B0F3F270B231707A73B2B9F2F23972B1B8B27137F1F0F73170B6717
+     $075713004B0F00430F003B0F00330B002B0B00230B001B07001307007B5F4B7357436B53
+     $3F674F3B5F4737574333533F2F4B372B4333273F2F2337271B2F2317271B131F170F170F
+     $0B0F0B076F3B175F3717532F17432B17372313271B0F1B130B0F0B07B35B4FBF7B6FCB9B
+     $93D7BBB7CBD7DFB3C7D39FB7C387A7B77397A75B879B47778B2F677F17536F134B670F43
+     $5B0B3F5307374B072F3F072733001F2B00171F000F1300070B0000008B5757834F4F7B47
+     $477343436B3B3B6333335B2F2F572B2B4B23233F1F1F331B1B2B13131F0F0F130B0B0B07
+     $07000000979F7B8F9773878B6B7F8363777B5F7373576B6B4F6363475B5B434F4F3B4343
+     $3337372B2F2F2323231B1717130F0F0B9F4B3F9343378B3B2F7F3727772F236B2B1B6323
+     $17571F134F1B0F43170B37130B2B0F071F0B071707000B0000000000777BCF6F73C3676B
+     $B76363A75B5B9B53578F4B4F7F4747733F3F673737572F2F4B27273F231F2F1B1723130F
+     $170B07079BAB7B8F9F6F8797637B8B5773834B6777435F6F3B5767334B5B273F4F1B3743
+     $132F3B0B232F071B23001317000B0F0000FF0023E70F3FD31B53BB275FA72F5F8F335F7B
+     $33FFFFFFFFFFD3FFFFA7FFFF7FFFFF53FFFF27FFEB1FFFD717FFBF0FFFAB07FF9300EF7F
+     $00E36B00D35700C74700B73B00AB2B009B1F008F17007F0F007307005F00004700002F00
+     $001B0000EF00003737FFFF00000000FF2B2B231B1B1713130FEB977FC373539F57337B3F
+     $1BEBD3C7C7AB9BA78B77876B579F5B53
+    ShaderFiles: =
+    {
+      scripts/shaderlist.txt =
+      {
+        Data = "// Created by QuArK"$0D0A"// All shaders are extracted to a si"
+         "ngle file called 'quark.shader'"$0D0A"quark"$0D0A
+      }
+      scripts/shaderlist.txt =
+      {
+        Data = "// Created by QuArK"$0D0A"// No shader in this map"$0D0A
+      }
+    }
+    TextureFlags:form =
+    {
+      Style = "5"
+      Reset: =
+      {
+        Cap = "Reset to default"
+        Typ = "B"
+        Hint = "Reset all flags to the texture's default"
+        Delete: =
+        {
+          Flags = ""
+          Contents = ""
+          Value = ""
+        }
+      }
+      Contents: =
+      {
+        Cap = "detail"
+        Typ = "X134217728"
+        Hint = "for small, detail brushes that QVIS3 can ignore"
+      }
+    }
+  }
+  NewFiles.qtx =
+  {
+    ToolBox = "New files..."
+    Root = "STVEF file types.qtxfolder"
+    STVEF file types.qtxfolder =
+    {
+      Pk3.pk3 =
+      {
+      }
+    }
+  }
+  walltex:incl =
+  {
+    tex = "cargo/walllow"
+  }
+  floortex:incl =
+  {
+    tex = "cargo/tile"
+  }
+  ceiltex:incl =
+  {
+    tex = "cargo/cargotop"
+  }
+  NewMap:incl =
+  {
+    Game = "STVEF"
+    Root = "worldspawn:b"
+  worldspawn:b =
+  {
+    Border walls:g =
+    {
+      East wall:p =
+      {
+        west:f =
+        {
+          v = '256 -80 -96 256 -208 -96 256 -80 32'
+          tex = "cargo/walllow"
+        }
+        east:f =
+        {
+          v = '272 0 272 272 128 272 272 0 400'
+          tex = "cargo/walllow"
+        }
+        south:f =
+        {
+          v = '432 -192 272 560 -192 272 432 -192 400'
+          tex = "cargo/walllow"
+        }
+        north:f =
+        {
+          v = '432 192 272 304 192 272 432 192 400'
+          tex = "cargo/walllow"
+        }
+        down:f =
+        {
+          v = '432 0 -96 560 0 -96 432 -128 -96'
+          tex = "cargo/walllow"
+        }
+        up:f =
+        {
+          v = '432 0 96 560 0 96 432 128 96'
+          tex = "cargo/walllow"
+        }
+      }
+      West wall:p =
+      {
+        west:f =
+        {
+          v = '-272 0 272 -272 -128 272 -272 0 400'
+          tex = "cargo/walllow"
+        }
+        east:f =
+        {
+          v = '-256 -192 -96 -256 -64 -96 -256 -192 32'
+          tex = "cargo/walllow"
+        }
+        south:f =
+        {
+          v = '432 -192 272 560 -192 272 432 -192 400'
+          tex = "cargo/walllow"
+        }
+        north:f =
+        {
+          v = '432 192 272 304 192 272 432 192 400'
+          tex = "cargo/walllow"
+        }
+        down:f =
+        {
+          v = '432 0 -96 560 0 -96 432 -128 -96'
+          tex = "cargo/walllow"
+        }
+        up:f =
+        {
+          v = '432 0 96 560 0 96 432 128 96'
+          tex = "cargo/walllow"
+        }
+      }
+      North wall:p =
+      {
+        west:f =
+        {
+          v = '-256 0 272 -256 -128 272 -256 0 400'
+          tex = "cargo/walllow"
+        }
+        east:f =
+        {
+          v = '256 0 272 256 128 272 256 0 400'
+          tex = "cargo/walllow"
+        }
+        south:f =
+        {
+          v = '-256 192 -96 -128 192 -96 -256 192 32'
+          tex = "cargo/walllow"
+        }
+        north:f =
+        {
+          v = '432 208 272 304 208 272 432 208 400'
+          tex = "cargo/walllow"
+        }
+        down:f =
+        {
+          v = '432 0 -96 560 0 -96 432 -128 -96'
+          tex = "cargo/walllow"
+        }
+        up:f =
+        {
+          v = '432 0 96 560 0 96 432 128 96'
+          tex = "cargo/walllow"
+        }
+      }
+      South wall:p =
+      {
+        west:f =
+        {
+          v = '-256 0 272 -256 -128 272 -256 0 400'
+          tex = "cargo/walllow"
+        }
+        east:f =
+        {
+          v = '256 0 272 256 128 272 256 0 400'
+          tex = "cargo/walllow"
+        }
+        south:f =
+        {
+          v = '432 -208 272 560 -208 272 432 -208 400'
+          tex = "cargo/walllow"
+        }
+        north:f =
+        {
+          v = '0 -192 -96 -128 -192 -96 0 -192 32'
+          tex = "cargo/walllow"
+        }
+        down:f =
+        {
+          v = '432 0 -96 560 0 -96 432 -128 -96'
+          tex = "cargo/walllow"
+        }
+        up:f =
+        {
+          v = '432 0 96 560 0 96 432 128 96'
+          tex = "cargo/walllow"
+        }
+      }
+      Sky:p =
+      {
+        west:f =
+        {
+          v = '-256 0 272 -256 -128 272 -256 0 400'
+          tex = "cargo/cargotop"
+        }
+        east:f =
+        {
+          v = '256 0 272 256 128 272 256 0 400'
+          tex = "cargo/cargotop"
+        }
+        south:f =
+        {
+          v = '432 -192 272 560 -192 272 432 -192 400'
+          tex = "cargo/cargotop"
+        }
+        north:f =
+        {
+          v = '432 192 272 304 192 272 432 192 400'
+          tex = "cargo/cargotop"
+        }
+        down:f =
+        {
+          v = '432 0 96 560 0 96 432 -128 96'
+          tex = "cargo/cargotop"
+        }
+        up:f =
+        {
+          v = '432 0 112 560 0 112 432 128 112'
+          tex = "cargo/cargotop"
+        }
+      }
+      Floor:p =
+      {
+        west:f =
+        {
+          v = '-256 0 272 -256 -128 272 -256 0 400'
+          tex = "cargo/tile"
+        }
+        east:f =
+        {
+          v = '256 0 272 256 128 272 256 0 400'
+          tex = "cargo/tile"
+        }
+        south:f =
+        {
+          v = '432 -192 272 560 -192 272 432 -192 400'
+          tex = "cargo/tile"
+        }
+        north:f =
+        {
+          v = '432 192 272 304 192 272 432 192 400'
+          tex = "cargo/tile"
+        }
+        down:f =
+        {
+          v = '432 0 -112 560 0 -112 432 -128 -112'
+          tex = "cargo/tile"
+        }
+        up:f =
+        {
+          v = '432 0 -96 560 0 -96 432 128 -96'
+          tex = "cargo/tile"
+        }
+      }
+    }
+    info_player_deathmatch:e =
+    {
+      origin = "-144 0 -64"
+      angle = "360"
+    }
+    light:e =
+    {
+      origin = "0 0 0"
+      light = "300"
+      _color = "1 1 1"
+    }
+  }
+}
+  Toolbox Folders.qtx =
+  {
+    ToolBox = "Texture Browser..."
+    Root = "STVEF Textures and Shaders.qtxfolder"
+    STVEF Textures and Shaders.qtxfolder =
+    {
+      BaseEF.osfolder =
+      {
+        path = "BaseEF"
+      }
+    }
+  }
+
+//@AUTOGENERATED@ -- do not modify after this point --   
+// File written by perlkp.pl 0.3 2000-06-04 
+
+
+  NewEntities.qtx =
+  {
+    ToolBox = "New map items..."
+    Root = "STVEF Entities.qtxfolder"
+    STVEF Entities.qtxfolder =
+    {
+      ambient.qtxfolder =
+      {
+        ambient_etherian_fixits:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ambient_etherian_mine:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ambient_etherian_fliers:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      NPC.qtxfolder =
+      {
+        NPC_Chell:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Munro:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Headbot:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Desperado:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_Vohrsoth:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_MunroScav:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Species8472:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_Vorik:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Jurot:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_HunterSeeker:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_Tuvok:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Torres:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Chang:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_starfleet_random:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_borg:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Doctor:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Hirogen:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Imperial:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Foster:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Avatar:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_spawner:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_Seven:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Stasis:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Imperial_Gold:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_Parasite:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Reaver:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Neelix:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_starfleet:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_warriorbot:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Janeway:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Chakotay:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Malon:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Telsia:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Imperial_Raider:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_Biessman:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Paladin:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_Paris:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Kim:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Hirogen_Alpha:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_klingon:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_scoutbot:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        NPC_Harvester:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        NPC_Imperial_Blue:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      trigger.qtxfolder =
+      {
+        trigger_visible:b =
+        {
+          ;incl = "defpoly"
+          ;desc = ""
+        }
+        trigger_once:b =
+        {
+          ;incl = "defpoly"
+        }
+        trigger_teleport:b =
+        {
+          ;incl = "defpoly"
+        }
+        trigger_hurt:b =
+        {
+          ;incl = "defpoly"
+        }
+        trigger_push:b =
+        {
+          ;incl = "defpoly"
+        }
+        trigger_multiple:b =
+        {
+          ;incl = "defpoly"
+        }
+        trigger_formation:b =
+        {
+          ;incl = "defpoly"
+        }
+        trigger_location:b =
+        {
+          ;incl = "defpoly"
+        }
+        trigger_entdist:b =
+        {
+          ;incl = "defpoly"
+        }
+      }
+      target.qtxfolder =
+      {
+        target_autosave:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_interest:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_deactivate:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_counter:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_give:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_push:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_teleporter:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_gravity_change:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_scriptrunner:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_activate:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_speaker:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_print:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_position:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        target_level_change:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_delay:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_relay:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_random:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_play_music:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_change_parm:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        target_location:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      object.qtxfolder =
+      {
+        object_cargo_barrel1:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      light.qtxfolder =
+      {
+        light:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+      }
+      ammo.qtxfolder =
+      {
+        ammo_stasis:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ammo_quantumburst:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ammo_imod:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ammo_dreadnought:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ammo_grenades:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ammo_scavenger:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ammo_crystal_forge:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ammo_tetriondisruptor:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        ammo_compressionrifle:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      holdable.qtxfolder =
+      {
+        holdable_detpack:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        holdable_transporter:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        holdable_medkit:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      waypoint.qtxfolder =
+      {
+        waypoint_squadpath:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        waypoint_navgoal_1:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        waypoint_navgoal_2:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        waypoint_navgoal_4:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        waypoint_navgoal_8:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        waypoint_navgoal:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        waypoint_small:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      func.qtxfolder =
+      {
+        func_plat:b =
+        {
+          ;incl = "defpoly"
+        }
+        func_door:b =
+        {
+          ;incl = "defpoly"
+        }
+        func_wall:b =
+        {
+          ;incl = "defpoly"
+        }
+        func_usable:b =
+        {
+          ;incl = "defpoly"
+        }
+        func_stasis_door:b =
+        {
+          ;incl = "defpoly"
+        }
+        func_breakable:b =
+        {
+          ;incl = "defpoly"
+        }
+        func_bobbing:b =
+        {
+          ;incl = "defpoly"
+        }
+        func_train:b =
+        {
+          ;incl = "defpoly"
+        }
+        func_static:b =
+        {
+          ;incl = "defpoly"
+        }
+      }
+      info.qtxfolder =
+      {
+        info_player_deathmatch:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        info_null:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        info_player_intermission:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        info_player_start:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        info_notnull:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      misc.qtxfolder =
+      {
+        misc_teleporter_dest:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_model_stasis_health_floor:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_model_forge_ammo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_dreadnought_ammo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_forge_health:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_scavenger_health:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_camera_focus:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_borg_health:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_forge_panel:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_scavenger_ammo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_portal_camera:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_borg_ammo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_plasma_filter:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_laser_arm:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_stasis_shooter:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_borg_disnode:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_model_breakable:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_model_stasis_ammo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_model_stasis_control_switch:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_borg_crystal_station:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_camera_track:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_stasis_crystal_station:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_model_dreadnought_health:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_stasis_health:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_model_dn_crystal_station:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_turret:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        misc_model_forge_reaver_container:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_stasis_ammo_floor:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_forge_defence_grid:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_portal_surface:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_scav_crystal_station:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        misc_model_forge_mega_ammo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        worldspawn:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        ref_tag:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+      }
+      path.qtxfolder =
+      {
+        path_corner:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      weapons.qtxfolder =
+      {
+        weapon_quantum_burst:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_dreadnought:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_phaser:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_blue_hypo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_red_hypo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_scavenger:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_stasisweapon:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_grenadelauncher:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_klingon_blade:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_IMOD:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_tricorder:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_tetrion_disruptor:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_tetriondisruptor:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_compressionrifle:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_grenade_launcher:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_stasis:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_compression_rifle:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_imperial_blade:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_scavenger_rifle:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_quantumburst:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_voyager_hypo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_melee:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        weapon_imod:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      FX.qtxfolder =
+      {
+        fx_transporter_stream:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_drip:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_surface_explosion:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_dn_beam_glow:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_blow_chunks:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_steam:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        fx_crew_beam_in:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_smoke:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_psycho_jism:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_borg_bolt:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_electrical_explosion:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_plasma:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_elecfire:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        fx_cooking_steam:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_teleporter:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_borg_energy_beam:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_bolt:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_explosion_trail:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        fx_spark:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+      }
+      item.qtxfolder =
+      {
+        item_armor_body:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_invis:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_armor_shard:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_armor_combat:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_quad:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_haste:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_hypo_small:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_seeker:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_flight:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_enviro:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_hypo:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_regen:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+      }
+      team.qtxfolder =
+      {
+        Blue Team.qtxfolder =
+        {
+          team_CTF_blueflag:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Blue Team Flag"
+          }
+          team_CTF_blueplayer:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Blue Team Spawnpoint"
+          }
+          team_CTF_bluespawn:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Blue Team respawning point"
+          }
+        }
+        Red Team.qtxfolder =
+        {
+          team_CTF_redflag:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Red Team Flag"
+          }
+          team_CTF_redplayer:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Red Team Spawnpoint"
+          }
+          team_CTF_redspawn:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Red Team respawning point"
+          }
+
+        }
+        misc_model_breakable:e =
+        {
+           ;desc = "flag holder; flag must be offset to show flagpole"
+           origin = "0 0 0"
+           model = "models/powerups/trek/flag_base.md3"
+           autobound = "1"
+           mins  = "-10 -10 0"
+           maxs = "10 10 7"
+        }
+
+      }
+    }
+  }
+  
+// File written by perlkp.pl 0.3 2000-06-04 
+
+
+  Entity forms.qctx =
+  {
+    NPC_Avatar:form =
+    {
+      help =""
+      angerscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Biessman:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_type: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Chakotay:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      cameragroup: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm1: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm3: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm4: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm5: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Chang:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_type: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm1: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm3: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm4: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm5: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Chell:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_type: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Doctor:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Foster:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_type: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Headbot:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Hirogen:form =
+    {
+      help =""
+      NPC_target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_HunterSeeker:form =
+    {
+      help =""
+      painscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Imperial:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angerscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm6: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm7: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm8: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Imperial_Blue:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Imperial_Gold:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Imperial_Raider:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Janeway:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Jurot:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      groupname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm1: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm3: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm4: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm5: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Kim:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Malon:form =
+    {
+      help =""
+      NPC_target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      health: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Munro:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_MunroScav:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Neelix:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Parasite:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Paris:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm1: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm3: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm4: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm5: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Reaver:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Seven:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Stasis:form =
+    {
+      help =""
+      NPC_target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      count: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Telsia:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Torres:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Tuvok:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_type: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      cameraGroup: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_Vorik:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm1: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm3: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm4: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm5: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_borg:form =
+    {
+      help =""
+      NPC_target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      delay: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      painscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      paintarget: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      usescript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_klingon:form =
+    {
+      help =""
+      NPC_target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_type: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angerscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      awakescript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      deathscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      health: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      painscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      paintarget: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      usescript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_scoutbot:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm1: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      playerTeam: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_starfleet:form =
+    {
+      help =""
+      NPC_target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      NPC_type: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      ffdeathscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      groupname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_type: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      usescript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_starfleet_random:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      ffdeathscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      health: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    NPC_warriorbot:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      npc_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    ambient_etherian_fixits:form =
+    {
+      help =""
+      count: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      random: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    ambient_etherian_fliers:form =
+    {
+      help =""
+    }
+    ambient_etherian_mine:form =
+    {
+      help =""
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      splashDamage: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      splashRadius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    func_breakable:form =
+    {
+      help =""
+      health: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      material: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      splashDamage: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      splashRadius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    func_door:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      delay: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      dmg: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      groupname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      height: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      lip: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      soundSet: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      sounds: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "1"$0D"2"
+        values = "1"$0D"2"
+      }
+      speed: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      wait: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    func_plat:form =
+    {
+      help =""
+      height: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      speed: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    func_static:form =
+    {
+      help =""
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    func_train:form =
+    {
+      help =""
+      speed: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    func_usable:form =
+    {
+      help =""
+      health: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm1: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      usescript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      wait: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    func_wall:form =
+    {
+      help =""
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_blow_chunks:form =
+    {
+      help =""
+      count: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_bolt:form =
+    {
+      help =""
+      soundSet: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_borg_bolt:form =
+    {
+      help =""
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_borg_energy_beam:form =
+    {
+      help =""
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_crew_beam_in:form =
+    {
+      help =""
+      groupname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_drip:form =
+    {
+      help =""
+      _color: =
+      {
+        Txt = "&"
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint = "Click here to pick the light color"
+      }
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      random: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      startRGBA: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      wait: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_elecfire:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_electrical_explosion:form =
+    {
+      help =""
+      damage: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_explosion_trail:form =
+    {
+      help =""
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_plasma:form =
+    {
+      help =""
+      _color: =
+      {
+        Txt = "&"
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint = "Click here to pick the light color"
+      }
+      damage: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      finalRGBA: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      startRGBA: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_smoke:form =
+    {
+      help =""
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_spark:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_steam:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_surface_explosion:form =
+    {
+      help =""
+      damage: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      speed: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_teleporter:form =
+    {
+      help =""
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    fx_transporter_stream:form =
+    {
+      help =""
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    info_notnull:form =
+    {
+      help =""
+      cameraGroup: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    info_null:form =
+    {
+      help =""
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    info_player_deathmatch:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    info_player_start:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    isodesium_pickup:form =
+    {
+      help =""
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    light:form =
+    {
+      help =""
+      _color: =
+      {
+        Txt = "&"
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint = "Click here to pick the light color"
+      }
+      _cone: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      color: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      light: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      scale: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    misc_camera_track:form =
+    {
+      help =""
+      speed: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    misc_laser_arm:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      maxs: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      mins: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/mapobjects/forge/probe.md3"
+        values = "models/mapobjects/forge/probe.md3"
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    misc_model:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      autobound: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      maxs: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      mins: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/mapobjects/borg/borgcrew1.md3"$0D"models/mapobjects/bridge/cchair.md3"$0D"models/mapobjects/bridge/ceiling.md3"$0D"models/mapobjects/bridge/chair.md3"$0D"models/mapobjects/bridge/confchair.md3"$0D"models/mapobjects/bridge/conflight.md3"$0D"models/mapobjects/bridge/hazardchair.md3"$0D"models/mapobjects/bridge/helm.md3"$0D"models/mapobjects/bridge/railing.md3"$0D"models/mapobjects/bridge/station.md3"$0D"models/mapobjects/bridge/stationsleft.md3"$0D"models/mapobjects/cargo/rack.md3"$0D"models/mapobjects/cargo/s_chair.md3"$0D"models/mapobjects/cargo/stool.md3"$0D"models/mapobjects/confroom/confplant.md3"$0D"models/mapobjects/confroom/conftable.md3"$0D"models/mapobjects/scavenger/k_chair1.md3"$0D"models/mapobjects/scavenger/k_crate.md3"$0D"models/mapobjects/scavenger/sc_handle.md3"
+        values = "models/mapobjects/borg/borgcrew1.md3"$0D"models/mapobjects/bridge/cchair.md3"$0D"models/mapobjects/bridge/ceiling.md3"$0D"models/mapobjects/bridge/chair.md3"$0D"models/mapobjects/bridge/confchair.md3"$0D"models/mapobjects/bridge/conflight.md3"$0D"models/mapobjects/bridge/hazardchair.md3"$0D"models/mapobjects/bridge/helm.md3"$0D"models/mapobjects/bridge/railing.md3"$0D"models/mapobjects/bridge/station.md3"$0D"models/mapobjects/bridge/stationsleft.md3"$0D"models/mapobjects/cargo/rack.md3"$0D"models/mapobjects/cargo/s_chair.md3"$0D"models/mapobjects/cargo/stool.md3"$0D"models/mapobjects/confroom/confplant.md3"$0D"models/mapobjects/confroom/conftable.md3"$0D"models/mapobjects/scavenger/k_chair1.md3"$0D"models/mapobjects/scavenger/k_crate.md3"$0D"models/mapobjects/scavenger/sc_handle.md3"
+      }
+    }
+    misc_model_borg_ammo:form =
+    {
+      help =""
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/mapobjects/borg/plugin.md3"
+        values = "models/mapobjects/borg/plugin.md3"
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    misc_model_borg_disnode:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      maxs: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      mins: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/mapobjects/borg/disnode.md3"
+        values = "models/mapobjects/borg/disnode.md3"
+      }
+      splashDamage: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      splashRadius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    misc_model_breakable:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angles: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      autobound: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      health: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      maxs: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      mins: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/boltons/helmet.md3"$0D"models/mapobjects/borg/blite.md3"$0D"models/mapobjects/borg/blite_d1.md3"$0D"models/mapobjects/borg/circuit_1.md3"$0D"models/mapobjects/borg/circuit_2.md3"$0D"models/mapobjects/borg/circuit_3.md3"$0D"models/mapobjects/borg/tank.md3"$0D"models/mapobjects/bridge/cchair.md3"$0D"models/mapobjects/bridge/chair.md3"$0D"models/mapobjects/bridge/confchair.md3"$0D"models/mapobjects/cargo/barrel1.md3"$0D"models/mapobjects/cargo/control_stand.md3"$0D"models/mapobjects/cargo/delta_flyer.md3"$0D"models/mapobjects/cargo/jetpack.md3"$0D"models/mapobjects/cargo/stool.md3"$0D"models/mapobjects/cargo/suit.md3"$0D"models/mapobjects/cargo/suitb.md3"$0D"models/mapobjects/confroom/confplant.md3"$0D"models/mapobjects/confroom/egg.md3"$0D"models/mapobjects/confroom/sm_chair.md3"$0D"models/mapobjects/dn/chair.md3"$0D"models/mapobjects/dn/chair_d1.md3"$0D"models/mapobjects/dn/headbot_plug.md3"$0D"models/mapobjects/dn/light.md3"$0D"models/mapobjects/dn/machine.md3"$0D"models/mapobjects/dn/machine2.md3"$0D"models/mapobjects/dn/sleep_chamber.md3"$0D"models/mapobjects/forge/capsule2.md3"$0D"models/mapobjects/forge/monitor.md3"$0D"models/mapobjects/forge/panels.md3"$0D"models/mapobjects/scavenger/alienlight.md3"$0D"models/mapobjects/scavenger/chessboard.md3"$0D"models/mapobjects/scavenger/h_control.md3"$0D"models/mapobjects/scavenger/hypospray.md3"$0D"models/mapobjects/scavenger/k_cup.md3"$0D"models/mapobjects/scavenger/k_plate.md3"$0D"models/mapobjects/scavenger/m_tank.md3"$0D"models/mapobjects/scavenger/sc_chair1.md3"$0D"models/mapobjects/scavenger/sc_monitor.md3"$0D"models/mapobjects/scavenger/sc_wallthing1.md3"$0D"models/mapobjects/scavenger/sc_wallthing2.md3"$0D"models/mapobjects/scavenger/sc_wallthing3.md3"$0D"models/mapobjects/scavenger/toolbox.md3"$0D"models/mapobjects/stasis/control1.md3"$0D"models/mapobjects/stasis/control1left.md3"$0D"models/mapobjects/stasis/control2.md3"$0D"models/mapobjects/stasis/generator.md3"$0D"models/mapobjects/stasis/jumppad.md3"$0D"models/mapobjects/stasis/light2.md3"$0D"models/mapobjects/stasis/pod.md3"$0D"models/mapobjects/stasis/teleporter_base.md3"$0D"models/mapobjects/stasis/teleporter_top.md3"
+        values = "models/boltons/helmet.md3"$0D"models/mapobjects/borg/blite.md3"$0D"models/mapobjects/borg/blite_d1.md3"$0D"models/mapobjects/borg/circuit_1.md3"$0D"models/mapobjects/borg/circuit_2.md3"$0D"models/mapobjects/borg/circuit_3.md3"$0D"models/mapobjects/borg/tank.md3"$0D"models/mapobjects/bridge/cchair.md3"$0D"models/mapobjects/bridge/chair.md3"$0D"models/mapobjects/bridge/confchair.md3"$0D"models/mapobjects/cargo/barrel1.md3"$0D"models/mapobjects/cargo/control_stand.md3"$0D"models/mapobjects/cargo/delta_flyer.md3"$0D"models/mapobjects/cargo/jetpack.md3"$0D"models/mapobjects/cargo/stool.md3"$0D"models/mapobjects/cargo/suit.md3"$0D"models/mapobjects/cargo/suitb.md3"$0D"models/mapobjects/confroom/confplant.md3"$0D"models/mapobjects/confroom/egg.md3"$0D"models/mapobjects/confroom/sm_chair.md3"$0D"models/mapobjects/dn/chair.md3"$0D"models/mapobjects/dn/chair_d1.md3"$0D"models/mapobjects/dn/headbot_plug.md3"$0D"models/mapobjects/dn/light.md3"$0D"models/mapobjects/dn/machine.md3"$0D"models/mapobjects/dn/machine2.md3"$0D"models/mapobjects/dn/sleep_chamber.md3"$0D"models/mapobjects/forge/capsule2.md3"$0D"models/mapobjects/forge/monitor.md3"$0D"models/mapobjects/forge/panels.md3"$0D"models/mapobjects/scavenger/alienlight.md3"$0D"models/mapobjects/scavenger/chessboard.md3"$0D"models/mapobjects/scavenger/h_control.md3"$0D"models/mapobjects/scavenger/hypospray.md3"$0D"models/mapobjects/scavenger/k_cup.md3"$0D"models/mapobjects/scavenger/k_plate.md3"$0D"models/mapobjects/scavenger/m_tank.md3"$0D"models/mapobjects/scavenger/sc_chair1.md3"$0D"models/mapobjects/scavenger/sc_monitor.md3"$0D"models/mapobjects/scavenger/sc_wallthing1.md3"$0D"models/mapobjects/scavenger/sc_wallthing2.md3"$0D"models/mapobjects/scavenger/sc_wallthing3.md3"$0D"models/mapobjects/scavenger/toolbox.md3"$0D"models/mapobjects/stasis/control1.md3"$0D"models/mapobjects/stasis/control1left.md3"$0D"models/mapobjects/stasis/control2.md3"$0D"models/mapobjects/stasis/generator.md3"$0D"models/mapobjects/stasis/jumppad.md3"$0D"models/mapobjects/stasis/light2.md3"$0D"models/mapobjects/stasis/pod.md3"$0D"models/mapobjects/stasis/teleporter_base.md3"$0D"models/mapobjects/stasis/teleporter_top.md3"
+      }
+      paintarget: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm1: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm3: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      splashDamage: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      splashRadius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      usescript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    misc_model_plasma_filter:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      maxs: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      mins: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/mapobjects/borg/tank.md3"
+        values = "models/mapobjects/borg/tank.md3"
+      }
+    }
+    misc_model_stasis_ammo:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/mapobjects/stasis/plugin.md3"
+        values = "models/mapobjects/stasis/plugin.md3"
+      }
+    }
+    misc_model_stasis_ammo_floor:form =
+    {
+      help =""
+      maxs: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      mins: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/mapobjects/stasis/plugin_floor.md3"
+        values = "models/mapobjects/stasis/plugin_floor.md3"
+      }
+    }
+    misc_model_stasis_health:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/mapobjects/stasis/plugin2.md3"
+        values = "models/mapobjects/stasis/plugin2.md3"
+      }
+    }
+    misc_model_stasis_health_floor:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      maxs: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      mins: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "models/mapobjects/stasis/plugin2_floor.md3"
+        values = "models/mapobjects/stasis/plugin2_floor.md3"
+      }
+    }
+    misc_portal_surface:form =
+    {
+      help =""
+    }
+    misc_teleporter_dest:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    misc_turret:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    object_cargo_barrel1:form =
+    {
+      help =""
+      splashdamage: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      splashradius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    path_corner:form =
+    {
+      help =""
+      speed: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    ref_tag:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angles: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      fov: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      groupname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      ownername: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_activate:form =
+    {
+      help =""
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_change_parm:form =
+    {
+      help =""
+      parm7: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm8: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_counter:form =
+    {
+      help =""
+      count: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_deactivate:form =
+    {
+      help =""
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_delay:form =
+    {
+      help =""
+      random: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      wait: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_gravity_change:form =
+    {
+      help =""
+      gravity: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_level_change:form =
+    {
+      help =""
+      mapname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_position:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_relay:form =
+    {
+      help =""
+      delay: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      wait: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_scriptrunner:form =
+    {
+      help =""
+      count: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      delay: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm1: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      parm3: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      usescript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_speaker:form =
+    {
+      help =""
+      noise: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      soundSet: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    target_teleporter:form =
+    {
+      help =""
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    trigger_hurt:form =
+    {
+      help =""
+      dmg: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      groupname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    trigger_location:form =
+    {
+      help =""
+      message: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    trigger_multiple:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      script_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      soundSet: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      soundset: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      usescript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      wait: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    trigger_once:form =
+    {
+      help =""
+      NPC_targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      delay: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      usescript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      wait: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    trigger_teleport:form =
+    {
+      help =""
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    waypoint:form =
+    {
+      help =""
+      leaddist: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target3: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    waypoint_navgoal:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    waypoint_navgoal_1:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    waypoint_navgoal_2:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    waypoint_navgoal_4:form =
+    {
+      help =""
+      radius: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    waypoint_navgoal_8:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    waypoint_small:form =
+    {
+      help =""
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    waypoint_squadpath:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      leadDist: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      leaddist: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      ownername: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+    weapon_compression_rifle:form =
+    {
+      help =""
+    }
+    weapon_phaser:form =
+    {
+      help =""
+    }
+    weapon_scavenger_rifle:form =
+    {
+      help =""
+    }
+    angleform:incl =
+    {
+       angle:= {Txt="&"}
+    }
+    team_CTF_redflag:form =
+    {
+      angleform = !
+    }
+    team_CTF_redplayer:form =
+    {
+      angleform = !
+    }
+    team_CTF_redspawn:form =
+    {
+      angleform = !
+    }
+    team_CTF_blueflag:form =
+    {
+      angleform = !
+    }
+    team_CTF_blueplayer:form =
+    {
+      angleform = !
+    }
+    team_CTF_bluespawn:form =
+    {
+      angleform = !
+    }
+    worldspawn:form =
+    {
+      help =""
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      gravity: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      music: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      soundset: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      spawnscript: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      target2: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+    }
+  }
+}
