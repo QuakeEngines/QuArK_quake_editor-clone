@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.262  2005/09/16 18:06:27  cdunde
+//Commit and update files for Terrain Paintbrush addition
+//
 //Revision 1.261  2005/08/16 04:01:52  cdunde
 //Fix toolbar arraignment
 //
@@ -3251,8 +3254,9 @@ QQRKSRC1
       {
         DefExt="dll"
         Txt = "Steam Filesystem Dll"
-        Typ = "EP"     
+        Typ = "ED"     
         Hint = "chose FileSystem_Steam.dll from sourcesdk/bin directory"
+        CheckFile = "FileSystem_Steam.dll"
       }
       SteamAppUser =
       {
