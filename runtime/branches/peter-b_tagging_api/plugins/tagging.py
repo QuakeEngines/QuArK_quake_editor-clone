@@ -84,7 +84,7 @@ def gettaggedfaces(editor):
   # Check the tagged faces actually exist in the map
   for f in faces:
     if not checktree(editor.Root, f):
-      nt.untag(editor, f, '_FACE')
+      nt.untag(editor, '_FACE', f)
       
   return nt.gettaglist(editor, '_FACE')
 
@@ -149,55 +149,43 @@ def gettaggedtexplane(editor):
 #
 
 def cleartag(editor):
-  nt.cleartags(editor, '_PLANE')
-  nt.cleartags(editor, '_POINT')
-  nt.cleartags(editor, '_FACE')
-  nt.cleartags(editor, '_FACEEDGE')
-  nt.cleartags(editor, '_VTXEDGE')
-  nt.cleartags(editor, '_B2CP')
-  editor.invalidateviews()
+  nt.cleartags(editor, '_PLANE', '_POINT', '_FACE', '_FACEEDGE',
+               '_VTXEDGE', '_B2CP')
   
 def tagface(face, editor):
   cleartag(editor)
-  nt.uniquetag(editor, face, '_FACE')
-  editor.invalidateviews()
+  nt.uniquetag(editor, '_FACE', face)
   
 def tagplane(plane, editor):
   cleartag(editor)
-  nt.uniquetag(editor, plane, '_PLANE')
-  editor.invalidateviews()
+  nt.uniquetag(editor, '_PLANE', plane)
 
 def tagpoint(point, editor):
   cleartag(editor)
-  nt.uniquetag(editor, point, '_POINT')
-  editor.invalidateviews()
+  nt.uniquetag(editor, '_POINT', point)
 
 def tagedge(p1, p2, editor):
   cleartag(editor)
-  nt.uniquetag(editor, (p1, p2), '_VTXEDGE')
-  editor.invalidateviews()  
+  nt.uniquetag(editor, '_VTXEDGE', (p1, p2))
 
 def tagfaceedge(edge, editor):
   cleartag(editor)
-  nt.uniquetag(editor, edge, '_FACEEDGE')
-  editor.invalidateviews()
+  nt.uniquetag(editor, '_FACEEDGE', edge)
 
 #
 # Maybe this one shouldn't be here, but in quarkpy.mapbezier.py
 #
 def tagb2cp(cp, editor):
     tagpoint(cp.pos, editor)
-    nt.uniquetag(editor, cp, '_B2CP')
+    nt.uniquetag(editor, '_B2CP', cp)
 
 def addtotaggedfaces(face, editor):
   tagged = gettagged(editor)
-  if not tagged is None:
-    nt.tag(editor, face, '_FACE')
-  editor.invalidateviews()
+  if (tagged is not None) or (gettaggedfaces(editor) is not None):
+    nt.tag(editor, '_FACE', face)
   
 def removefromtaggedfaces(face, editor):
-  nt.untag(editor, face, '_FACE')
-  editor.invalidateviews()
+  nt.untag(editor, '_FACE', face)
 
 
 #
@@ -224,6 +212,11 @@ def drawredface(view, cv, face):
 
 
 # Callback functions for drawing tags
+
+def _FACE_dcb(v,cv,face):
+    e = quarkpy.qeditor.mapeditor()
+    if checktree(e.Root, face):
+      drawredface(v,cv,face)
 
 def _FACEEDGE_dcb(v,cv,e):
   p1, p2 = v.proj(e.vtx1), v.proj(e.vtx2)
@@ -254,11 +247,14 @@ def _PLANE_dcb(v,cv,e):
     pt = v.proj(pt)
     cv.line(center,pt)
         
-nt.tagdrawfunc('_FACE', drawredface)
+nt.tagdrawfunc('_FACE', _FACE_dcb)
 nt.tagdrawfunc('_FACEEDGE', _FACEEDGE_dcb)
 nt.tagdrawfunc('_POINT', _POINT_dcb)
 nt.tagdrawfunc('_VTXEDGE', _VTXEDGE_dcb)
 nt.tagdrawfunc('_PLANE', _PLANE_dcb)
-  
-#$Log$ #
+
+#$Log$
+#Revision 1.5.8.1  2005/09/19 10:37:51  peter-b
+#Emulate old behaviour using new tagging API
+#
 #
