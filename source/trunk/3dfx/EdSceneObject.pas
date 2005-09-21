@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2005/09/18 09:42:43  cdunde
+To reverse 1.10 changes. Causes slow down
+of regeneration of all views and locks up editor.
+
 Revision 1.10  2005/04/01 19:32:45  alexander
 more progress indicators (textures and polys)
 
@@ -271,11 +275,11 @@ end;
 destructor TSceneObject.Destroy;
 begin
  ClearScene;
- TTextureManager.RemoveScene(Self);
- BezierInfo.Free;
- ModelInfo.Free;
- SpriteInfo.Free;
+ TTextureManager.RemoveScene(Self); 
  PolyFaces.Free;
+ ModelInfo.Free;
+ BezierInfo.Free;
+ SpriteInfo.Free;
  TemporaryStuff.Free;
  inherited;
 end;
@@ -700,6 +704,7 @@ begin
      Gauche:=0;
      Brush:=0;
 
+     // needed to backup to version 1.09, due to version 1.10 causing constant editor lockups.
      { Setup a progress-bar, depending on what type of device-context
        thats been rendering to }
      if DC=HDC(-1) then
@@ -823,14 +828,15 @@ begin
            end;
            Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
 
+      (*   // version 1.9 caused 6.4.1 alpha 2 slowdown with code below.
            // if the texture has alpha channel its probably transparent
            if assigned (PList^.Texture^.SourceTexture) then
              if PList^.Texture^.SourceTexture.Description.AlphaBits = psa8bpp then
-           begin
-             Include(PList^.Transparent,True);
-             TextureMode:=2;
-             AlphaColor:=CurrentColor or (254 shl 24);
-           end
+               begin
+                 Include(PList^.Transparent,True);
+                 TextureMode:=2;
+                 AlphaColor:=CurrentColor or (254 shl 24);
+               end   *)
          end;
 
          if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
