@@ -509,7 +509,7 @@ Strings = {
 
     4614: "&More >>",
     4616: "                     *** EXCEPTION REPORT ***\n\n%s       Address in the program : %p (%p)\n",
-    4617: "\n\nIf you think this is a bug, please copy the above information in your bug report.",
+    4617: "\n\nPlease report this error to the QuArK development team, so that they can fix the issue promptly.",
     4618: "//Description of the invalid polygon :",
     4620: "Impossible to create the surface for a polygon//Three aligned points don't define a plane.",
 
@@ -978,6 +978,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.71  2005/08/15 21:18:53  cdunde
+#update version to QuArK 6.5.0 alpha 1
+#
 #Revision 1.70  2005/07/03 20:24:32  alexander
 #text for parse error in material
 #
