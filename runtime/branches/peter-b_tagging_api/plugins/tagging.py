@@ -21,6 +21,7 @@ import quarkx
 import quarkpy.qbaseeditor
 from quarkpy.maputils import *
 from quarkpy import tagging as nt
+from plugins.mapgeomtags import *
 
 """
 plugins.tagging
@@ -32,17 +33,6 @@ plugins.tagging
 
 Emulation of old-style tagging API.  Code which uses this should
 be phased out ASAP.
-
-This uses the following 'special' tag keys.  They're not used in the
-Right Way, so DO NOT write code which uses them, because they may
-disappear at any moment.
-
-'_PLANE'
-'_POINT'
-'_FACE'
-'_FACEEDGE'
-'_VTXEDGE'
-'_B2CP'
 """
 
 Info = {
@@ -72,7 +62,7 @@ def gettaggedplane(editor):
     tagged = gettagged(editor)
     if tagged is not None:
         return tagged
-    plane = nt.getuniquetag(editor, '_PLANE')
+    plane = nt.getuniquetag(editor, PLANE)
     if plane is not None:
         face = quarkx.newobj("tagged:f")
         face.setthreepoints(plane,0)
@@ -82,7 +72,7 @@ def gettaggedplane(editor):
   
 def gettaggedpt(editor):
   "Returns the tagged point."
-  return nt.getuniquetag(editor, '_POINT')
+  return nt.getuniquetag(editor, POINT)
 
 def gettaggedlist(editor):
   "Returns a list of tagged faces"
@@ -95,26 +85,26 @@ def gettaggedlist(editor):
   
 def gettaggedfaces(editor):
   "tagged face or faces"
-  faces = nt.gettaglist(editor, '_FACE')
+  faces = nt.gettaglist(editor, FACE)
 
   # Check the tagged faces actually exist in the map
   for f in faces:
     if not checktree(editor.Root, f):
-      nt.untag(editor, '_FACE', f)
+      nt.untag(editor, FACE, f)
       
-  return nt.gettaglist(editor, '_FACE')
+  return nt.gettaglist(editor, FACE)
 
 #
 # 2-point edges only
 #
 def gettaggedvtxedge(editor):
-  return nt.getuniquetag(editor, '_VTXEDGE')
+  return nt.getuniquetag(editor, VTXEDGE)
 
 #
 # face edges
 #
 def gettaggedfaceedge(editor):
-  return nt.getuniquetag(editor, '_FACEEDGE')
+  return nt.getuniquetag(editor, FACEEDGE)
 
 #
 # both kinds
@@ -144,7 +134,7 @@ def gettaggedface(editor):
 # Maybe this one shouldn't be here, but in quarkpy.mapbezier.py
 #
 def gettaggedb2cp(editor):
-  return nt.getuniquetag(editor, '_B2CP')
+  return nt.getuniquetag(editor, B2CP)
 
 def anytag(o):
   "Is anything tagged ?"
@@ -165,43 +155,43 @@ def gettaggedtexplane(editor):
 #
 
 def cleartag(editor):
-  nt.cleartags(editor, '_PLANE', '_POINT', '_FACE', '_FACEEDGE',
-               '_VTXEDGE', '_B2CP')
+  nt.cleartags(editor, PLANE, POINT, FACE, FACEEDGE,
+               VTXEDGE, B2CP)
   
 def tagface(face, editor):
   cleartag(editor)
-  nt.uniquetag(editor, '_FACE', face)
+  nt.uniquetag(editor, FACE, face)
   
 def tagplane(plane, editor):
   cleartag(editor)
-  nt.uniquetag(editor, '_PLANE', plane)
+  nt.uniquetag(editor, PLANE, plane)
 
 def tagpoint(point, editor):
   cleartag(editor)
-  nt.uniquetag(editor, '_POINT', point)
+  nt.uniquetag(editor, POINT, point)
 
 def tagedge(p1, p2, editor):
   cleartag(editor)
-  nt.uniquetag(editor, '_VTXEDGE', (p1, p2))
+  nt.uniquetag(editor, VTXEDGE, (p1, p2))
 
 def tagfaceedge(edge, editor):
   cleartag(editor)
-  nt.uniquetag(editor, '_FACEEDGE', edge)
+  nt.uniquetag(editor, FACEEDGE, edge)
 
 #
 # Maybe this one shouldn't be here, but in quarkpy.mapbezier.py
 #
 def tagb2cp(cp, editor):
     tagpoint(cp.pos, editor)
-    nt.uniquetag(editor, '_B2CP', cp)
+    nt.uniquetag(editor, B2CP, cp)
 
 def addtotaggedfaces(face, editor):
   tagged = gettagged(editor)
   if (tagged is not None) or (gettaggedfaces(editor) is not None):
-    nt.tag(editor, '_FACE', face)
+    nt.tag(editor, FACE, face)
   
 def removefromtaggedfaces(face, editor):
-  nt.untag(editor, '_FACE', face)
+  nt.untag(editor, FACE, face)
 
 
 #
@@ -226,50 +216,13 @@ def drawredface(view, cv, face):
         cv.line(p1,p2)
       drawsquare(cv, sum/len(vtx), 8)
 
-
-# Callback functions for drawing tags
-
-def _FACE_dcb(v,cv,face):
-    e = quarkpy.qeditor.mapeditor()
-    if checktree(e.Root, face):
-      drawredface(v,cv,face)
-
-def _FACEEDGE_dcb(v,cv,e):
-  p1, p2 = v.proj(e.vtx1), v.proj(e.vtx2)
-  p = (p1+p2)/2
-  radius = 2
-  oldwidth = cv.penwidth
-  cv.penwidth = 3
-  cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
-  cv.penwidth=2
-  cv.line(p1, p2)
-  cv.penwidth = oldwidth
-
-def _POINT_dcb(v,cv,e):
-  drawsquare(cv, v.proj(e), 8)
-
-def _VTXEDGE_dcb(v,cv,e):
-  pt1, pt2 = e
-  p1 = v.proj(pt1)
-  p2 = v.proj(pt2)
-  cv.line(p1,p2)
-  drawsquare(cv, (p1+p2)/2, 8)
-
-def _PLANE_dcb(v,cv,e):
-  p1, p2, p3 = e
-  center = (p1+p2+p3)/3.0
-  center = v.proj(center)
-  for pt in (p1, p2, p3):
-    pt = v.proj(pt)
-    cv.line(center,pt)
-        
-nt.tagdrawfunc('_FACE', _FACE_dcb)
-nt.tagdrawfunc('_FACEEDGE', _FACEEDGE_dcb)
-nt.tagdrawfunc('_POINT', _POINT_dcb)
-nt.tagdrawfunc('_VTXEDGE', _VTXEDGE_dcb)
-nt.tagdrawfunc('_PLANE', _PLANE_dcb)
-
+# ------------------------------------------------------------------ #
+# CVS log - make no changes below this line
+#
 #$Log$
+#Revision 1.5.8.3  2005/09/21 14:09:19  peter-b
+#Update docstring and create plugin Info dictionary
+#
 #Revision 1.5.8.2  2005/09/21 10:43:09  peter-b
 # - Arg order of some tagging API functions changed
 # - Fix tagging of multiple faces
