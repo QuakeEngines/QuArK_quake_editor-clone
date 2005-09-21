@@ -22,12 +22,20 @@ import quarkpy.qbaseeditor
 from quarkpy.maputils import *
 from quarkpy import tagging as nt
 
-"""Emulation of old-style tagging API.  Code which uses this should
+"""
+plugins.tagging
+---------------
+
+  DEPRECATED.  New plugins should use the quarkpy.tagging module with
+  keys defined in plugins.mapgeomtags.  This module will disappear
+  soon(tm).
+
+Emulation of old-style tagging API.  Code which uses this should
 be phased out ASAP.
 
-This uses the following 'special' tag categories.  They're not used
-in the Right Way, so DO NOT write code which uses them, because they
-may disappear at any moment.
+This uses the following 'special' tag keys.  They're not used in the
+Right Way, so DO NOT write code which uses them, because they may
+disappear at any moment.
 
 '_PLANE'
 '_POINT'
@@ -36,6 +44,14 @@ may disappear at any moment.
 '_VTXEDGE'
 '_B2CP'
 """
+
+Info = {
+   "plug-in":       "Legacy map geometry tagging",
+   "desc":          "Provides old-style functions for user tagging of map geometry",
+   "date":          "2005-09-21",
+   "author":        "peter-b",
+   "author e-mail": "peter@peter-b.co.uk",
+   "quark":         "6.5 or later" }
 
 
 #
@@ -254,6 +270,12 @@ nt.tagdrawfunc('_VTXEDGE', _VTXEDGE_dcb)
 nt.tagdrawfunc('_PLANE', _PLANE_dcb)
 
 #$Log$
+#Revision 1.5.8.2  2005/09/21 10:43:09  peter-b
+# - Arg order of some tagging API functions changed
+# - Fix tagging of multiple faces
+# - Eliminate unnecessary calls to invalidateviews()
+# - Don't draw tags on faces that don't exist in document tree
+#
 #Revision 1.5.8.1  2005/09/19 10:37:51  peter-b
 #Emulate old behaviour using new tagging API
 #
