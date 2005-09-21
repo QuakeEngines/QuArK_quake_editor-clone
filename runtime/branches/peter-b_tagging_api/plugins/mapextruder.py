@@ -1878,9 +1878,8 @@ def gettaggedcordup(editor):
     return cor
   return None
     
-def CORDUP_KEY_dcb(view, cv, dup):
+def CORDUP_KEY_dcb(e, view, cv, dup):
     data = ExtruderDupData(dup)
-    cv = view.canvas()
     cv.pencolor = MapColor("Tag")
     cv.penstyle = PS_DOT
     prev_pos = view.proj(dup.origin)
@@ -2891,6 +2890,12 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.16.2.2  2005/09/21 10:40:27  peter-b
+#More tagging API
+#  - Make tagging API funcs accept variable-length arg lists where
+#    appropriate
+#  - Update code which uses it as appropriate
+#
 #Revision 1.16.2.1  2005/09/19 10:06:59  peter-b
 #Accidentally committed some stuff to mainline because I forgot to update
 #working copy with sticky tag.  Propagate those changes to my branch.
