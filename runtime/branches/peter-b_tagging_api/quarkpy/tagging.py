@@ -40,7 +40,8 @@ class Tagging:
 
   Plugins should never manipulate objects of this class directly.
   """
-  taglists = {}
+  def __init__(self):
+    self.taglists = {}
 
 """Stores all Tagging objects for all editors.
 
@@ -49,6 +50,11 @@ function below.
 """
 _tagsets = {}
 
+def _diag():
+  for k in _tagsets.keys():
+    print " == %s ==\n == %s ==\n" % (k, _tagsets[k])
+    for j in _tagsets[k].taglists.keys():
+      print "    -- %s --\n%s" % (j, _tagsets[k].taglists[j])
 
 # -- Private utility functions ------------------------------------- #
 #   ===========================
@@ -63,7 +69,7 @@ this module.
 The tagging object should never be accessed except via this function.
 """
   try:
-    t =_tagsets[editor]
+    t = _tagsets[editor]
   except (KeyError):
     t = Tagging()
     _tagsets[editor] = t
@@ -160,13 +166,17 @@ tagged.
     objlist += _gettaglist(editor, k)
   return objlist
 
+
 def getuniquetag(editor, key):
   """getuniquetag(editor, key)
 
 Get the most recently tagged object in the tag category specified
 by key.
 """
-  return _gettaglist(editor, key)[-1]
+  t = _gettaglist(editor, key)
+  if t:
+    return t[-1]
+  return None
 
 
 # -- Map drawing routines ------------------------------------------ #
@@ -177,6 +187,7 @@ The ONLY code that may access this dictionary is the tagdrawfunc()
 function below."""
 _drawcallbacks = {}
 
+
 def tagdrawfunc(key, function):
   """tagdrawfunc(key, function)
 
@@ -185,44 +196,51 @@ a particular tag category.
 
 Functions must be of the form
 
-  f(view, canvas, obj)
+  f(editor, view, canvas, obj)
 
-where: view is the view to be drawn on
-       canvas is the canvas to be drawn on
+where: editor is the editor being redrawn
+       view is the view to be drawn on
        obj is the tagged object to draw.
 
 Callback functions are used for _all_ editors.
 """
   _drawcallbacks[key] = function
 
-def tagfinishdrawing(editor, view, oldmore=BaseEditor.finishdrawing):
+
+def _tagfinishdrawing(editor, view, oldmore=BaseEditor.finishdrawing):
   """Finishdrawing routine for handling tagged objects.
 
 Uses callback functions set using tagdrawfunc().
 """
-      
+  
   oldmore(editor, view)
   cv = view.canvas()
-
+  
   # Make the pen the correct colour, so callback functions don't
   # need to
   oldcolour = cv.pencolor
   cv.pencolor = MapColor("Tag")
-
+  
   for k in _drawcallbacks.keys():
     f = _drawcallbacks[k]
     if f is None:
       continue
     
     for obj in _gettaglist(editor, k): # _gettaglist is faster 
-      f(view, cv, obj)
-
+      f(editor, view, cv, obj)
+      
   # Restore the pen colour
   cv.pencolor = oldcolour
- 
-BaseEditor.finishdrawing = tagfinishdrawing
+  
+BaseEditor.finishdrawing = _tagfinishdrawing
 
 #$Log$
+#Revision 1.3.2.1  2005/09/21 10:40:27  peter-b
+#More tagging API
+#  - Make tagging API funcs accept variable-length arg lists where
+#    appropriate
+#  - Update code which uses it as appropriate
+#
 #Revision 1.3  2005/09/19 00:23:45  peter-b
 #Fix more silly tagging errors
 #
