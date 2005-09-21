@@ -459,7 +459,7 @@ class SpecialHandle(FaceHandle):
            #     new = completeredimage(self.face, new)
            # else:
            #     new = [new]
-        else:
+   #     else:
             new = None
         return [self.face], None #new
 
@@ -1918,6 +1918,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.44  2005/09/21 21:33:36  cdunde
+#To comment out print statement
+#
 #Revision 1.43  2005/08/18 02:20:50  cdunde
 #Needed to reverse, still under testing of displacement display and handles
 #Does not appear to effect other liner or movement  handle usage.
