@@ -76,7 +76,7 @@ STASH_KEY = 'mapmadsel_stash'
 def StashMe(m):
     editor = mapeditor()
     if editor is None: return
-    nt.uniquetag(editor, m, STASH_KEY)
+    nt.uniquetag(editor, STASH_KEY, m)
   
 def getstashed(e):
     return nt.getuniquetag(e, STASH_KEY)
@@ -95,7 +95,7 @@ def getrestrictor(e):
     return nt.getuniquetag(e, RESTRICT_KEY)
 
 def setrestrictor(e, o):
-    nt.uniquetag(e, o, RESTRICT_KEY)
+    nt.uniquetag(e, RESTRICT_KEY, o)
     menrestsel.state = qmenu.checked
     editor.invalidateviews()
 
@@ -1085,6 +1085,10 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.29.2.1  2005/09/19 10:06:59  peter-b
+# Accidentally committed some stuff to mainline because I forgot to update
+# working copy with sticky tag.  Propagate those changes to my branch.
+#
 # Revision 1.30  2005/09/19 09:02:05  peter-b
 # Make selection marking/restricting use the new tagging API
 #

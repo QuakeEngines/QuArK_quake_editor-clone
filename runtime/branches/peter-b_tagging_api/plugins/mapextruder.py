@@ -1869,7 +1869,7 @@ class TweenHandle(quarkpy.maphandles.EdgeHandle):
 CORDUP_KEY = 'mapextruder_cordup'
 
 def tagcordup(dup, editor):
-  nt.uniquetag(editor, dup, CORDUP_KEY)
+  nt.uniquetag(editor, CORDUP_KEY, dup)
   editor.invalidateviews()
   
 def gettaggedcordup(editor):
@@ -2891,6 +2891,10 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.16.2.1  2005/09/19 10:06:59  peter-b
+#Accidentally committed some stuff to mainline because I forgot to update
+#working copy with sticky tag.  Propagate those changes to my branch.
+#
 #Revision 1.17  2005/09/19 08:58:39  peter-b
 #Make extruder plugin use the new-style tagging API
 #
