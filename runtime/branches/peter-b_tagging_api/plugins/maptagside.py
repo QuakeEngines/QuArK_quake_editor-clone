@@ -1440,7 +1440,7 @@ def LinkFaceClick(m, glue=1):
     newtagged.setint("_tag",tag)
 #    squawk("new: "+`newtagged.getint("_tag")`)
     undo.exchange(tagged, newtagged)
-    tagface(newtagged)
+    tagface(newtagged, editor)
   newside = m.side.copy()
   newside.setint("_tag",tag)
   oldtag = m.side.getint("_tag")
@@ -1916,6 +1916,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.32.2.1  2005/09/19 10:41:27  peter-b
+#Direct access of editor.tagging is a Bad Thing
+#
 #Revision 1.32  2003/10/07 21:37:31  cdunde
 #Update for Tagside Infobase detail link
 #
