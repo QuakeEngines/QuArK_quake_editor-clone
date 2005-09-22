@@ -1,0 +1,338 @@
+QQRKSRC1
+// This file has been written by QuArK QuArK 6.4 alpha
+// It's the text version of file: UserData Half-Life2.qrk
+
+// Last changes june/25/2005 by cbxpm
+
+{
+  Description = "Custom configuration file for Half-Life 2."
+  MapObjPanel.qrk =
+  {
+    cube: =
+    {
+      new cube:p =
+      {
+        east:f =
+        {
+          v = '64 0 0 64 128 0 64 0 128'
+          tex = "[auto]"
+        }
+        west:f =
+        {
+          v = '-64 0 0 -64 -128 0 -64 0 128'
+          tex = "[auto]"
+        }
+        north:f =
+        {
+          v = '0 64 0 -128 64 0 0 64 128'
+          tex = "[auto]"
+        }
+        south:f =
+        {
+          v = '0 -64 0 128 -64 0 0 -64 128'
+          tex = "[auto]"
+        }
+        up:f =
+        {
+          v = '0 0 64 128 0 64 0 128 64'
+          tex = "[auto]"
+        }
+        down:f =
+        {
+          v = '0 0 -64 128 0 -64 0 -128 -64'
+          tex = "[auto]"
+        }
+      }
+    }
+    light: =
+    {
+      light:e =
+      {
+        origin = "0 0 0"
+        _light = "255 255 255 300"
+        fixedscale = "1"
+      }
+    }
+    light_spot: =
+    {
+      light_spot:e =
+      {
+        origin = "0 0 0"
+        angles = "0 0 0"
+        _light = "255 255 255 500"
+        _inner_cone = "35"
+        _cone = "45"
+        _exponent = "1"
+        _distance = "0"
+        pitch = "-90"
+      }
+    }
+    point_spotlight: =
+    {
+      point_spotlight:e =
+      {
+        origin = "0 0 0"
+        angles = "0 0 0"
+        spawnflags = "3"
+        spotlightlength = "500"
+        spotlightwidth = "50"
+        rendercolor = "255 255 255"
+      }
+    }
+
+    light_environment: =
+    {
+      light_environment:e =
+      {
+         origin = "0 0 0"
+         angles = "0 0 0"
+         pitch = "0"
+         _light = "255 201 128 210"
+         _ambient = "103 143 184 50"
+      }
+		}
+    infodecal: =
+    {
+      infodecal:e =
+      {
+        origin = "0 0 0"
+        LowPriority = "0"
+        fixedscale = "1"
+      }
+    }
+    prop_static: =
+    {
+      prop_static:e =
+      {
+        origin = "0 0 0"
+        angles = "0 0 0"
+        fademindist = "-1"
+        fadescale = "1"
+      }
+    }
+    prop_physics: =
+    {
+      prop_physics:e =
+      {
+        origin = "0 0 0"
+        angles = "0 0 0"
+        fademindist = "-1"
+        fadescale = "1"
+      }
+    }
+    env_cubemap: =
+    {
+      env_cubemap:e =
+      {
+        origin = "0 0 0"
+        cubemapsize = "0"
+      }
+    }
+    ambient_generic: =
+    {
+      ambient_generic:e =
+      {
+        origin = "0 0 0"
+         "e sound."
+        health = "10"
+        preset = "0"
+        volstart = "0"
+        fadein = "0"
+        fadeout = "0"
+        pitch = "100"
+        pitchstart = "100"
+        spinup = "0"
+        spindown = "0"
+        lfotype = "0"
+        lforate = "0"
+        lfomodpitch = "0"
+        lfomodvol = "0"
+        cspinup = "0"
+        radius = "1250"
+        spawnflags = "48"
+      }
+    }
+    env_soundscape: =
+    {
+      env_soundscape:e =
+      {
+        origin = "0 0 0"
+        radius = "128"
+        soundscape = "Nothing"
+      }
+		}
+  }
+  Menu.qrk =
+  {
+    item: =
+    {
+      Txt = "&GO ! (Complete Rebuild + Run game)"
+      Shortcut = "Ctrl+R"
+      RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
+      BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+      BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+      BuildArgs3 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "Quic&kGO ! (VBSP + VVIS + Run game)"
+      Shortcut = "Ctrl+K"
+      RunGame = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      ExportMapFile = "1"
+      BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+      BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "QuickGO on &selection only"
+      Shortcut = "Ctrl+P"
+      SelOnly = "1"
+      RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+      BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "Prepare Materials (create external VTF files)"
+      Pause = "1"
+      Textures = "1"
+    }
+    item: =
+    {
+      Txt = "Complete Reb&uild (VBSP + VVIS + VRAD)"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
+      BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+      BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+      BuildArgs3 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "&Run Half-Life 2"
+      RunGame = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "V&BSP (create BSP file)"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "V&VIS (create visibility list)"
+      Pause = "1"
+      BuildPgm2 = "1"
+      BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "VRA&D (create radiosity)"
+      Pause = "1"
+      BuildPgm3 = "1"
+      BuildArgs3 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "Update ENTITIES within BSP file (using VBSP)"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildArgs1 = "-onlyents -game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+      BuildPgm1 = "1"
+    }
+    item: =
+    {
+      Txt = "Update PROPS within BSP file (using VBSP)"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildArgs1 = "-onlyprops -game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "VBSP (without detail / only world brushes)"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildArgs1 = "-nodetail -game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "VBSP (build map with .gl file for Glview)"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildArgs1 = "-glview -game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "VBSP (disables writing linux physics data)"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildArgs1 = "-nolinuxdata -game "$22"%basepath%/%gamedir%"$22" %mapfile"
+       "%"
+    }
+    item: =
+    {
+      Txt = "VVIS (fast VIS)"
+      Pause = "1"
+      BuildPgm2 = "1"
+      BuildArgs2 = "-fast -game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "VRAD (fast RAD / quick and dirty lighting :)"
+      Pause = "1"
+      BuildPgm3 = "1"
+      BuildArgs3 = "-fast -game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "Glview (run Glview to visualize map leaves)"
+      Pause = "1"
+      BuildPgm4 = "1"
+      BuildArgs4 = "-portals "$22"%basepath%/%gamedir%/%file%.gl"$22
+    }
+    item: =
+    {
+      Txt = "Bspzip (view possible embedded BSP content)"
+      Pause = "1"
+      BuildPgm5 = "1"
+      BuildArgs5 = "-dir %file%.bsp"
+    }
+  }
+}
