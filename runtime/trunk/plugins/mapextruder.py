@@ -1869,7 +1869,7 @@ class TweenHandle(quarkpy.maphandles.EdgeHandle):
 CORDUP_KEY = 'mapextruder_cordup'
 
 def tagcordup(dup, editor):
-  nt.uniquetag(editor, dup, CORDUP_KEY)
+  nt.uniquetag(editor, CORDUP_KEY, dup)
   editor.invalidateviews()
   
 def gettaggedcordup(editor):
@@ -1878,9 +1878,8 @@ def gettaggedcordup(editor):
     return cor
   return None
     
-def CORDUP_KEY_dcb(view, cv, dup):
+def CORDUP_KEY_dcb(e, view, cv, dup):
     data = ExtruderDupData(dup)
-    cv = view.canvas()
     cv.pencolor = MapColor("Tag")
     cv.penstyle = PS_DOT
     prev_pos = view.proj(dup.origin)
@@ -1889,7 +1888,7 @@ def CORDUP_KEY_dcb(view, cv, dup):
       cv.line(prev_pos, pos)
       prev_pos = pos
 
-nt.tagdrawfunc(CORDUP_KEY, CORDUP_KEY_dcb)
+nt.tagdrawfunc(CORDUP_KEY_dcb, CORDUP_KEY)
 
 
   
@@ -2891,6 +2890,31 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+<<<<<<< mapextruder.py
+#Revision 1.17  2005/09/19 08:58:39  peter-b
+#Make extruder plugin use the new-style tagging API
+#
+=======
+#Revision 1.16.2.4  2005/09/22 10:41:27  peter-b
+#Change order of arguments to tagdrawfunc() to match tagchangefunc()
+#
+#Revision 1.16.2.3  2005/09/21 18:28:08  peter-b
+#Add editor as first argument of drawing callbacks
+#
+#Revision 1.16.2.2  2005/09/21 10:40:27  peter-b
+#More tagging API
+#  - Make tagging API funcs accept variable-length arg lists where
+#    appropriate
+#  - Update code which uses it as appropriate
+#
+#Revision 1.16.2.1  2005/09/19 10:06:59  peter-b
+#Accidentally committed some stuff to mainline because I forgot to update
+#working copy with sticky tag.  Propagate those changes to my branch.
+#
+#Revision 1.17  2005/09/19 08:58:39  peter-b
+#Make extruder plugin use the new-style tagging API
+#
+>>>>>>> 1.16.2.4
 #Revision 1.16  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #
