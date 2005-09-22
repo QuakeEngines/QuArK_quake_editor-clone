@@ -1,0 +1,56 @@
+$Id$
+
+   ########                    ####                  ####    ####
+  ####  ####                 ########                ####   ####
+ ####    #### ####    #### ####    #### ####    #### ####  ####
+ ####    #### ####    #### ####    #### #### ####### #### ####
+ ####    #### ####    #### ####    #### #######      ######
+ ####    #### ####    #### ############ ####         #### ####
+ ####    #### ####    #### ####    #### ####         ####  ####
+  ####  ####   ####   #### ####    #### ####         ####   ####
+   ########     ########## ####    #### ####         ####    ####
+       #####
+        #####     ########    ###     ######         ###
+                     ##     ##   ##    ##   ##     ##   ## 
+                     ##    ##     ##   ##    ##   ##     ##
+                     ##    ##     ##   ##    ##   ##     ##
+                     ##     ##   ##    ##   ##     ##   ## 
+                     ##       ###     ######         ###
+
+
+ * [cdunde] Files Invoulved:
+            - source\3dfx\EdOpenGL.pas
+                  Commented out and reverse changes in version 1.24 2004/12/14
+                  that broke OpenGL for odd sized textures. My effect H-L2
+                  texturing or transparencies and should be verified.
+
+            - source\3dfx\GL1.pas
+                  v1.9 broke OpenGL with PChar at end, changed back to v1.8 items.
+
+ * [cdunde] Files Invoulved:
+            - source\3dfx\EdSceneObject.pas
+              Revision 1.12 Sep 21 2005 18 22:52:01 2005 UTC
+                  To comment out 1.9 changes. Caused editor to lockup on any
+                  selection or input of large maps due to constant H-L2 texture
+                  transparency processing. May be going through all map faces
+                  instead of what is just needed.
+                  Should be redone qualifying only for H-L2 game mode in QuArK.
+
+ * [cdunde] Files Invoulved:
+            - source\3dfx\EdSceneObject.pas
+              Revision 1.11 Sep 18 09:42:43 2005 UTC
+                  To reverse 1.10 changes. Causes slow down
+                  of regeneration of all views and locks up editor.
+                  with handling of progress indicators (textures and polys)
+                  Needs to be redone for processing only at start of QuArK.
+
+ * [cdunde] Files Invoulved:
+            - quarkpy/mapentities.py
+              Revision 1.44
+                  Needed to step back to v1.36 content to remove
+                  console unknown entity error message.
+
+              Revision 1.43
+                  Commented out, to reverse v1.42 entries
+                  causing views to go gray on poly face drag.
+
