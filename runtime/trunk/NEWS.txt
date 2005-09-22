@@ -14,6 +14,9 @@ $Id$
 
 6.5.0 alpha 2
 =============
+ * [cdunde] : Fixed OpenGL gray out and errors for odd size textures
+     and loss of transparency for older game modes.
+ 
  * [cdunde] : Fixed slowdown/lockup problem on startup and in editor.
 
  * [cdunde] : Started new TODO.txt file for things to fix or change.
