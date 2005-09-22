@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2004/12/14 00:32:08  alexander
+removed unnecessary resampling and gamma conversion for open gl true color textures
+
 Revision 1.8  2003/03/13 20:19:22  decker_dk
 Added glBlendFunc.
 
@@ -669,7 +672,9 @@ var
   glTexCoord2fv: procedure (var v); stdcall;
   glVertex3fv: procedure (var v ); stdcall;
   glFlush: procedure; stdcall;
-  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; pixels:PChar ); stdcall;
+ {v1.9 broke OpenGL with PChar at end, changed back to v1.8 items - cdunde 09-21-2005}
+//  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; pixels:PChar ); stdcall;
+  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
   glDeleteTextures: procedure (n: GLsizei; const textures); stdcall;
   glAreTexturesResident: function (n: GLsizei; const textures; var residences) : GLboolean; stdcall;
   glBindTexture: procedure (target: GLenum; texture: GLuint); stdcall;
