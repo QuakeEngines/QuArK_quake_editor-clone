@@ -13,7 +13,7 @@ Info = {
    "quark":         "Version 6.4" }
 
 
-import math, string
+import math
 from quarkpy.maputils import *
 import quarkpy.mapentities
 import quarkpy.qeditor
@@ -32,7 +32,7 @@ class SylphisDrawEntityLines(DefaultDrawEntityLines):
         rad = entity['radius']
         
         if rad:
-            o = string.split(entity['radius'])
+            o = entity['radius'].split()
             if len(o) == 1: o = (o[0], o[0], o[0])
             elif len(o) == 2: o = (o[0], o[1], (o[0] + o[1]) / 2)
             try:
@@ -76,7 +76,7 @@ class SylphisDrawEntityLines(DefaultDrawEntityLines):
 
         parent = entity['parent']
         if parent:
-            o = string.split(parent, '.')
+            o = parent.split('.')
             parent = o[0]
             cv = view.canvas()
             for i in entities:
