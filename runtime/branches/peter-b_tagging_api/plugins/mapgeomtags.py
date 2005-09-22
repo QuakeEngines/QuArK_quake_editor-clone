@@ -45,7 +45,7 @@ Info = {
     
 __all__ = ['FACE', 'PLANE', 'POINT', 'VTXEDGE', 'FACEEDGE', 'B2CP']
 
-from quarkx import vect
+import quarkx
 from quarkpy.maputils import checktree, BS_CLEAR
 from quarkpy.qeditor import mapeditor
 import quarkpy.tagging as nt
@@ -60,6 +60,17 @@ VTXEDGE = 'mapgeomtags_vtxedge'
 FACEEDGE = 'mapgeomtags_faceedge'
 B2CP = 'mapgeomtags_b2cp'
 
+# -- Checking that items are the right type ------------------------ #
+#   ========================================
+
+# Callback for validating tagged POINTs
+def _POINT_ccb(editor, key, tagged, untagged):
+  for o in tagged:
+    if not isinstance(o, quarkx.vector_type):
+      raise TypeError("Tagged points must be of type quarkx.vector_type")
+
+nt.tagchangefunc(POINT, _POINT_ccb)
+
 # -- Drawing tagged items ------------------------------------------ #
 #   ======================
 
@@ -73,7 +84,7 @@ def _drawsquare(cv, o, side):
 
 def _drawhighlightface(view, cv, face):
     for vtx in face.vertices: # is a list of lists
-      sum = vect(0, 0, 0)
+      sum = quarkx.vect(0, 0, 0)
       p2 = view.proj(vtx[-1])  # the last one
       for v in vtx:
         p1 = p2
@@ -134,3 +145,7 @@ nt.tagdrawfunc(B2CP, _B2CP_dcb)
 # CVS log - make no changes below this line
 #
 # $Log$
+# Revision 1.1.2.1  2005/09/21 18:30:14  peter-b
+# New mapgeomtags plugin provides infrastructure for tagging map geometry.
+# Deprecated tagging plugin now uses mapgeomtags to do its thing.
+#
