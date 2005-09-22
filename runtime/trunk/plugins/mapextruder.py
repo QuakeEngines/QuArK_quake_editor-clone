@@ -2890,11 +2890,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
-<<<<<<< mapextruder.py
-#Revision 1.17  2005/09/19 08:58:39  peter-b
-#Make extruder plugin use the new-style tagging API
+#Revision 1.18  2005/09/22 11:10:40  peter-b
+#Resolve merge conflicts
 #
-=======
 #Revision 1.16.2.4  2005/09/22 10:41:27  peter-b
 #Change order of arguments to tagdrawfunc() to match tagchangefunc()
 #
@@ -2914,7 +2912,6 @@ def ExtrudeClick(btn):
 #Revision 1.17  2005/09/19 08:58:39  peter-b
 #Make extruder plugin use the new-style tagging API
 #
->>>>>>> 1.16.2.4
 #Revision 1.16  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #
