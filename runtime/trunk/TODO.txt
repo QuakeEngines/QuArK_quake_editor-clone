@@ -17,6 +17,16 @@ $Id$
                      ##     ##   ##    ##   ##     ##   ## 
                      ##       ###     ######         ###
 
+
+ * [cdunde] Files Invoulved:
+            - source\3dfx\EdOpenGL.pas
+                  Commented out and reverse changes in version 1.24 2004/12/14
+                  that broke OpenGL for odd sized textures. My effect H-L2
+                  texturing or transparencies and should be verified.
+
+            - source\3dfx\GL1.pas
+                  v1.9 broke OpenGL with PChar at end, changed back to v1.8 items.
+
  * [cdunde] Files Invoulved:
             - source\3dfx\EdSceneObject.pas
               Revision 1.12 Sep 21 2005 18 22:52:01 2005 UTC
