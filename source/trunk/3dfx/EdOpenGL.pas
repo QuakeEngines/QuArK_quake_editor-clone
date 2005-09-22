@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2005/04/01 19:30:16  alexander
+remove unneded copy operation for proxy views
+
 Revision 1.26  2005/03/14 22:43:33  alexander
 textures with alpha channel are rendered transparent in open gl
 
@@ -1158,7 +1161,7 @@ begin
       DebugOpenGL(-104, 'BuildTexture(<Nil>)', []);
     {$ENDIF}
 
-
+ (*   // This broke OpenGL for odd sized textures in version 1.24 2004/12/14
     PSD:=GetTex3Description(Texture^);
 
     //normally this would also handle paletted textures, but it breaks
@@ -1217,7 +1220,7 @@ begin
     end;
     end
     else
-    begin //handle paletted textures
+    begin //handle paletted textures   *)
 
     GetwhForTexture(Texture^.info, W, H);
 
@@ -1230,6 +1233,8 @@ begin
 
     PSD2.Init;
     {PSD2.AlphaBits:=psaNoAlpha;}
+   // Removing line below broke OpenGL for odd sized textures in version 1.24 2004/12/14
+    PSD:=GetTex3Description(Texture^);
 
     try
       PSD2.Size.X:=W;
@@ -1360,9 +1365,10 @@ begin
     glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
     {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
 
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
-
-    end;//paletted textures
+  // To reverse changes that broke OpenGL for odd sized textures in version 1.24 2004/12/14
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
+  (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
+    end;//paletted textures   *)
 
     {$IFDEF DebugGLErr} DebugOpenGL(106, '', []); {$ENDIF}
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
