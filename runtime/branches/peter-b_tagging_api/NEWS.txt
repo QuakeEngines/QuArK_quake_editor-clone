@@ -14,23 +14,34 @@ $Id$
 
 6.5.0 alpha 2
 =============
+ * [cdunde] : Fixed OpenGL gray out and errors for odd size textures
+     and loss of transparency for older game modes.
+ 
+ * [cdunde] : Fixed slowdown/lockup problem on startup and in editor.
+
+ * [cdunde] : Started new TODO.txt file for things to fix or change.
+
+ * [peter-b] : New tagging API in `quarkpy.tagging' module.
+
  * [cdunde] : Added a new Advanced vertex dragging plugin by tiglari
-       and mbassie that has been around a long time but never added.
-       Press and hold the "N" HotKey before selecting a vertex to drag.
+     and mbassie that has been around a long time but never added.
+     Press and hold the "N" HotKey before selecting a vertex to drag.
 
  * [cdunde] : Added new Paint Brush function to the Terrain Generator.
      - Allows the changing of texture on an individual or group bases
-       in all 3D Textured and OpenGL views with complete terrain 
+       in all 3D Textured and OpenGL views with complete terrain
        selection and full movement capabilities in all 2D views.
      - Displays color face shapes as a guide to their locations using
        cursor passover detection method with on and off option.
      - Displays color face shapes for those receiving new texture.
      - Added default setting in the config. section for terrain texture.
-     - New dialog input for the Paint Brush to select, place and adjust
-       textures with 'quick' selection input, default reset and origin
-       retention capabilities, which will also work for standard faces.
-     - Added full documentation to the Infobase on its use and functions
-       linked to its activation toolbar button in the editor.
+     - New dialog input for the Paint Brush to select, place and
+       adjust textures with 'quick' selection input, default reset and
+       origin retention capabilities, which will also work for
+       standard faces.
+     - Added full documentation to the Infobase on its use and
+       functions linked to its activation toolbar button in the
+       editor.
 
  * [cdunde] : Reset Texture Positioning dialog to stay open for use.
 

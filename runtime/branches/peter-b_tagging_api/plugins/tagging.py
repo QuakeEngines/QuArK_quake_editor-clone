@@ -220,6 +220,13 @@ def drawredface(view, cv, face):
 # CVS log - make no changes below this line
 #
 #$Log$
+#Revision 1.6  2005/09/22 11:25:12  peter-b
+#Resolve merge conflicts (3nd try)
+#
+#Revision 1.5.8.4  2005/09/21 18:30:14  peter-b
+#New mapgeomtags plugin provides infrastructure for tagging map geometry.
+#Deprecated tagging plugin now uses mapgeomtags to do its thing.
+#
 #Revision 1.5.8.3  2005/09/21 14:09:19  peter-b
 #Update docstring and create plugin Info dictionary
 #

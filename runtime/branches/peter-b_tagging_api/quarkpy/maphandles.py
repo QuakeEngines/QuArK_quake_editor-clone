@@ -450,7 +450,7 @@ class SpecialHandle(FaceHandle):
             delta = qhandles.aligntogrid(delta, 0)
         self.draghint = vtohint(delta)
         if delta or (flags&MB_REDIMAGE):
-          print "moved",delta
+           # print "moved",delta
            # new = self.face.copy()
            # if self.face.faceof[0].type == ":p":
            #     delta = self.face.normal * (self.face.normal*delta)  # projection of 'delta' on the 'normal' line
@@ -459,7 +459,7 @@ class SpecialHandle(FaceHandle):
            #     new = completeredimage(self.face, new)
            # else:
            #     new = [new]
-        else:
+   #     else:
             new = None
         return [self.face], None #new
 
@@ -1918,6 +1918,17 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.45  2005/09/21 22:42:25  cdunde
+#To comment out else statement causing error after
+#commenting out print statement previously.
+#
+#Revision 1.44  2005/09/21 21:33:36  cdunde
+#To comment out print statement
+#
+#Revision 1.43  2005/08/18 02:20:50  cdunde
+#Needed to reverse, still under testing of displacement display and handles
+#Does not appear to effect other liner or movement  handle usage.
+#
 #Revision 1.42  2005/08/18 01:17:15  cdunde
 #To comment out 1 print statement left open.
 #

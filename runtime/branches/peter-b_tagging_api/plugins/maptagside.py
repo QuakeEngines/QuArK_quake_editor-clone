@@ -1916,6 +1916,12 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.33  2005/09/22 11:25:12  peter-b
+#Resolve merge conflicts (3nd try)
+#
+#Revision 1.32.2.2  2005/09/21 18:34:39  peter-b
+#Fix malformed call to tagside()
+#
 #Revision 1.32.2.1  2005/09/19 10:41:27  peter-b
 #Direct access of editor.tagging is a Bad Thing
 #

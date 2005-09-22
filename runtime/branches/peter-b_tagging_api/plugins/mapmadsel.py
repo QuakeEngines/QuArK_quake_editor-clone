@@ -1085,6 +1085,18 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.32  2005/09/22 11:25:12  peter-b
+# Resolve merge conflicts (3nd try)
+#
+# Revision 1.31  2005/09/22 11:10:40  peter-b
+# Resolve merge conflicts
+#
+# Revision 1.29.2.2  2005/09/21 10:40:27  peter-b
+# More tagging API
+#   - Make tagging API funcs accept variable-length arg lists where
+#     appropriate
+#   - Update code which uses it as appropriate
+#
 # Revision 1.29.2.1  2005/09/19 10:06:59  peter-b
 # Accidentally committed some stuff to mainline because I forgot to update
 # working copy with sticky tag.  Propagate those changes to my branch.

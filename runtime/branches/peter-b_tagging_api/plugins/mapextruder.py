@@ -2890,6 +2890,18 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.20  2005/09/22 11:25:12  peter-b
+#Resolve merge conflicts (3nd try)
+#
+#Revision 1.19  2005/09/22 11:11:33  peter-b
+#Resolve merge conflicts (2nd try)
+#
+#Revision 1.18  2005/09/22 11:10:40  peter-b
+#Resolve merge conflicts
+#
+#Revision 1.16.2.4  2005/09/22 10:41:27  peter-b
+#Change order of arguments to tagdrawfunc() to match tagchangefunc()
+#
 #Revision 1.16.2.3  2005/09/21 18:28:08  peter-b
 #Add editor as first argument of drawing callbacks
 #
