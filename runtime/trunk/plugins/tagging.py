@@ -1,42 +1,48 @@
-########################################################
+# QuArK -- Quake Army Knife
+# Copyright (C) 1999-2005 tiglari, Peter Brett
 #
-#               Tagging Support Facilities
-#                   v1.0, Nov 5 1999
-#                 works with Quark5.11
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#        by tiglari@hexenworld.com, with lots of advice
-#          code snippets and additions from Armin Rigo
-#
-#   Basic tagging facilities (non-interface) removed from
-#     matagside.py
-#
-#   You may freely distribute modified & extended versions of
-#   this plugin as long as you give due credit to tiglari &
-#   Armin Rigo. (It's free software, just like Quark itself.)
-#
-#   Please notify bugs & possible improvements to
-#   tiglari@hexenworld.com
-#  
-#
-##########################################################
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #$Header$
 
 import quarkx
 import quarkpy.qbaseeditor
 from quarkpy.maputils import *
+from quarkpy import tagging as nt
+from plugins.mapgeomtags import *
 
-#
-# ----------- Tag storing & fetching --------------
-#
+"""
+plugins.tagging
+---------------
 
-class Tagging:
-  "a place to stick side-tagging stuff, to be attached to editor;"
-  "only real purpose is to forestall name-collisions"
+  DEPRECATED.  New plugins should use the quarkpy.tagging module with
+  keys defined in plugins.mapgeomtags.  This module will disappear
+  soon(tm).
 
-#
-# Acessing Tags
+Emulation of old-style tagging API.  Code which uses this should
+be phased out ASAP.
+"""
+
+Info = {
+   "plug-in":       "Legacy map geometry tagging",
+   "desc":          "Provides old-style functions for user tagging of map geometry",
+   "date":          "2005-09-21",
+   "author":        "peter-b",
+   "author e-mail": "peter@peter-b.co.uk",
+   "quark":         "6.5 or later" }
+
 
 #
 # This is the oldest and first - it should be phased out
@@ -44,64 +50,61 @@ class Tagging:
 #
 def gettagged(editor):
     "safe fetch of tagging.tagged attribute"
-    try:
-        return editor.tagging.tagged
-    except (AttributeError):
-        pass
-
+    # According to this module, this should return a face, if only
+    # one face is tagged.
+    faces = gettaggedfaces(editor)
+    if len(faces) == 1:
+      return faces[0]
+    else:
+      return None
 
 def gettaggedplane(editor):
     tagged = gettagged(editor)
     if tagged is not None:
         return tagged
-    try:
-        plane = editor.tagging.taggedplane
+    plane = nt.getuniquetag(editor, PLANE)
+    if plane is not None:
         face = quarkx.newobj("tagged:f")
         face.setthreepoints(plane,0)
         return face
-    except (AttributeError):
-        pass
+    return None
   
   
 def gettaggedpt(editor):
   "Returns the tagged point."
-  try:
-    return editor.tagging.tagpt
-  except (AttributeError): return None
+  return nt.getuniquetag(editor, POINT)
 
 def gettaggedlist(editor):
   "Returns a list of tagged faces"
-  try:
-    return editor.tagging.taglist
-  except (AttributeError): return None
-  
+  # This is daft. The original version of this returned None if
+  # one or fewer faces were tagged. WTF?
+  faces = gettaggedfaces(editor)
+  if len(faces) > 1:
+    return faces
+  return None
   
 def gettaggedfaces(editor):
   "tagged face or faces"
-  tagged = gettagged(editor)
-  if tagged is None:
-    return gettaggedlist(editor)
-  else:
-    return [tagged]
-    
+  faces = nt.gettaglist(editor, FACE)
+
+  # Check the tagged faces actually exist in the map
+  for f in faces:
+    if not checktree(editor.Root, f):
+      nt.untag(editor, FACE, f)
+      
+  return nt.gettaglist(editor, FACE)
 
 #
 # 2-point edges only
 #
 def gettaggedvtxedge(editor):
-    try:
-        return editor.tagging.taggededge
-    except (AttributeError): return None
+  return nt.getuniquetag(editor, VTXEDGE)
 
 #
 # face edges
 #
 def gettaggedfaceedge(editor):
-  try:
-    tagged = editor.tagging.taggedfaceedge
-    return tagged
-  except AttributeError:
-    return None
+  return nt.getuniquetag(editor, FACEEDGE)
 
 #
 # both kinds
@@ -124,16 +127,14 @@ def gettaggedface(editor):
     tagged = gettaggedfaceedge(editor)
     if tagged is not None:
       return tagged.face
+    return None
 
 
 #
 # Maybe this one shouldn't be here, but in quarkpy.mapbezier.py
 #
 def gettaggedb2cp(editor):
-    try:
-        return editor.tagging.tagb2cp
-    except (AttributeError):
-        return None
+  return nt.getuniquetag(editor, B2CP)
 
 def anytag(o):
   "Is anything tagged ?"
@@ -154,70 +155,48 @@ def gettaggedtexplane(editor):
 #
 
 def cleartag(editor):
-  try:
-    del editor.tagging
-    editor.invalidateviews()
-  except AttributeError: pass
+  nt.cleartags(editor, PLANE, POINT, FACE, FACEEDGE,
+               VTXEDGE, B2CP)
   
 def tagface(face, editor):
-  editor.tagging = Tagging()
-  editor.tagging.tagged = face
-  editor.invalidateviews()
+  cleartag(editor)
+  nt.uniquetag(editor, FACE, face)
   
 def tagplane(plane, editor):
-  editor.tagging = Tagging()
-  editor.tagging.taggedplane = plane
-  editor.invalidateviews()
+  cleartag(editor)
+  nt.uniquetag(editor, PLANE, plane)
 
 def tagpoint(point, editor):
-  editor.tagging = Tagging()
-  editor.tagging.tagpt = point
-  editor.invalidateviews()
+  cleartag(editor)
+  nt.uniquetag(editor, POINT, point)
 
 def tagedge(p1, p2, editor):
-  editor.tagging = Tagging()
-  editor.tagging.taggededge = p1, p2
-  editor.invalidateviews()  
+  cleartag(editor)
+  nt.uniquetag(editor, VTXEDGE, (p1, p2))
 
 def tagfaceedge(edge, editor):
-  editor.tagging = Tagging()
-  editor.tagging.taggedfaceedge = edge
-  editor.invalidateviews()
+  cleartag(editor)
+  nt.uniquetag(editor, FACEEDGE, edge)
 
 #
 # Maybe this one shouldn't be here, but in quarkpy.mapbezier.py
 #
 def tagb2cp(cp, editor):
     tagpoint(cp.pos, editor)
-    editor.tagging.tagb2cp = cp
-
+    nt.uniquetag(editor, B2CP, cp)
 
 def addtotaggedfaces(face, editor):
   tagged = gettagged(editor)
-  if not tagged is None:
-    editor.tagging = Tagging()
-    editor.tagging.taglist = [tagged, face]
-  else:
-    taglist = gettaggedlist(editor)
-    if not taglist is None:
-      taglist.append(face)
-  editor.invalidateviews()
+  if (tagged is not None) or (gettaggedfaces(editor) is not None):
+    nt.tag(editor, FACE, face)
   
 def removefromtaggedfaces(face, editor):
-  tagged = gettagged(editor)
-  if not tagged is None:
-    cleartag(editor)
-  else:
-    taglist = gettaggedlist(editor)
-    if not taglist is None:
-      if face in taglist:
-        taglist.remove(face)
-        editor.invalidateviews()
+  nt.untag(editor, FACE, face)
 
 
 #
-# -------- map drawing routines
-#
+# -------- map drawing routines --------
+# These have got to stay the same, they're used elsewhere (WTF?)
 
 def drawsquare(cv, o, side):
   "function to draw a square around o"
@@ -237,65 +216,24 @@ def drawredface(view, cv, face):
         cv.line(p1,p2)
       drawsquare(cv, sum/len(vtx), 8)
 
-def tagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
-  "the new finishdrawing routine"
-
-  def checktagged(tagged, editor=editor):
-    if not checktree(editor.Root, tagged):
-      cleartag(editor)
-      return 0
-    return 1
-      
-  oldmore(editor, view)
-  cv = view.canvas()
-  cv.pencolor = MapColor("Tag")
-  tagged = gettaggedface(editor)
-  if tagged is not None and checktagged(tagged):
-     drawredface(view, cv, tagged)
-     # don't return since there might also be a face edge
-  tagged = gettaggedfaceedge(editor)
-  if tagged is not None:
-    p1, p2 = view.proj(tagged.vtx1), view.proj(tagged.vtx2)
-    p = (p1+p2)/2
-    radius = 2
-    oldwidth = cv.penwidth
-    cv.penwidth=3
-    cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
-    cv.penwidth=2
-    cv.line(p1, p2)
-    cv.penwidth = oldwidth
-    return
-  tagpt = gettaggedpt(editor)
-  if tagpt is not None:
-    drawsquare(cv, view.proj(tagpt), 8)
-    return
-  taglist = gettaggedlist(editor)
-  if not taglist is None:
-    for face in taglist:
-      if not checktagged(face):
-        return
-    for face in taglist:
-      drawredface(view, cv, face)
-    return
-  tagged = gettaggedvtxedge(editor)
-  if tagged:
-    pt1, pt2 = tagged
-    p1 = view.proj(pt1)
-    p2 = view.proj(pt2)
-    cv.line(p1,p2)
-    drawsquare(cv, (p1+p2)/2, 8)
-    return
-  tagged=gettaggedplane(editor)
-  if tagged is not None and gettagged(editor) is None:
-    p1, p2, p3 = editor.tagging.taggedplane
-    center = (p1+p2+p3)/3.0
-    center = view.proj(center)
-    for pt in (p1, p2, p3):
-        pt = view.proj(pt)
-        cv.line(center,pt)
-    return
- 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = tagfinishdrawing
-
-#$Log: #
+# ------------------------------------------------------------------ #
+# CVS log - make no changes below this line
+#
+#$Log$
+#Revision 1.5.8.4  2005/09/21 18:30:14  peter-b
+#New mapgeomtags plugin provides infrastructure for tagging map geometry.
+#Deprecated tagging plugin now uses mapgeomtags to do its thing.
+#
+#Revision 1.5.8.3  2005/09/21 14:09:19  peter-b
+#Update docstring and create plugin Info dictionary
+#
+#Revision 1.5.8.2  2005/09/21 10:43:09  peter-b
+# - Arg order of some tagging API functions changed
+# - Fix tagging of multiple faces
+# - Eliminate unnecessary calls to invalidateviews()
+# - Don't draw tags on faces that don't exist in document tree
+#
+#Revision 1.5.8.1  2005/09/19 10:37:51  peter-b
+#Emulate old behaviour using new tagging API
+#
 #

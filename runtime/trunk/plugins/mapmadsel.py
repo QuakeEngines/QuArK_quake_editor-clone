@@ -1085,6 +1085,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.31  2005/09/22 11:10:40  peter-b
+# Resolve merge conflicts
+#
 # Revision 1.29.2.2  2005/09/21 10:40:27  peter-b
 # More tagging API
 #   - Make tagging API funcs accept variable-length arg lists where

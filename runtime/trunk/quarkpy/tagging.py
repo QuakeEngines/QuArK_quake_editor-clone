@@ -34,14 +34,14 @@ __all__ = ['cleartags', 'untag', 'istagged', 'tag',
 
 from quarkpy.qbaseeditor import BaseEditor, MapColor
 
-
+# -- Tagging ------------------------------------------------------- #
 class Tagging:
   """A place to stick tagging stuff.
 
   Plugins should never manipulate objects of this class directly.
   """
-  taglists = {}
-  uniquetags = {}
+  def __init__(self):
+    self.taglists = {}
 
 """Stores all Tagging objects for all editors.
 
@@ -50,177 +50,297 @@ function below.
 """
 _tagsets = {}
 
+def _diag():
+  for k in _tagsets.keys():
+    print " == %s ==\n == %s ==\n" % (k, _tagsets[k])
+    for j in _tagsets[k].taglists.keys():
+      print "    -- %s --\n%s" % (j, _tagsets[k].taglists[j])
+
+# -- Private utility functions ------------------------------------- #
+#   ===========================
 def _gettagging(editor):
-  """_gettagging(editor)
+  """   _gettagging(editor)
   
-  Get the Tagging object associated with editor.
+Get the Tagging object associated with editor.
 
-  Should never be called by any methods other than the ones in
-  this module.
+Should never be called by any methods other than the ones in
+this module.
 
-  The tagging object should never be accessed directly except by
-  this function.
-  """
+The tagging object should never be accessed except via this function.
+"""
   try:
-    t =_tagsets[editor]
+    t = _tagsets[editor]
   except (KeyError):
     t = Tagging()
     _tagsets[editor] = t
   return t
 
-def cleartags(editor, key=None):
-  """cleartags(editor, key=None)
 
-Clear all tags.
+def _gettaglist(editor, key):
+  """   _gettaglist(editor, key):
 
-Optionally, only clear tags in a particular tag category.
-  """
-  t = _gettagging(editor)
-  if key is not None:
-    t.taglists[key] = []
-    t.uniquetags[key] = None
-  else:
-    t.taglists = {}
-    t.uniquetags = {}
+Gets the actual tag list associated with key.
+
+Should never be called by any methods other than the ones in
+this module.
+"""
+  try:
+    t = _gettagging(editor).taglists[key]
+  except (KeyError):
+    t = []
+    _gettagging(editor).taglists[key] = t
+  return t
+
+
+# -- Exported functions -------------------------------------------- #
+#   ====================      
+def cleartags(editor, *keys):
+  """   cleartags(editor, key[, key2, ..., keyN])
+
+Clear all tags in the specified categories.
+"""
+  for k in keys:
+    # We do this via untag() so that callback functions are called
+
+    # Get a copy of the list of tagged items so callback functions
+    # don't modify the actual list (that would be bad)
+    objs = gettaglist(editor, k)
+    untag(editor, k, *objs)
+
+
+def untag(editor, key, *objs):
+  """   untag(editor, key, obj[, obj2, ..., objN])
+  
+If any of the specified objects are tagged in the specified category,
+untag them.
+"""
+  t = _gettaglist(editor, key)
+  
+  # Find out which objects are already tagged
+  objstountag = []
+  for o in objs:
+    if o in t:
+      objstountag.append(o)
+
+  # Call callback functions
+  _applytagchangefuncs(editor, key, [], objstountag)
+
+  # Do removal
+  for o in objstountag:
+    t.remove(o)
+
   editor.invalidateviews()
 
-def untag(editor, obj, key=None):
-  """untag(editor, obj, key=None)
-  
-If obj is tagged, untag it.
 
-Optionally, only untag the object if it's in a particular tag
-category.
+def istagged(editor, key, *obj):
+  """   istagged(editor, key, obj[, obj2, ..., objN])
+
+If all specified objects are tagged in the specified category, return
+1.  Otherwise, return 0.
 """
-  t = _gettagging(editor)
-  for k in t.uniquetags.keys():
-    if key is not None and k != key:
-      continue
-    if obj == t.uniquetags[k]:
-      t.uniquetags[k] = None
-    if obj in t.taglists[k]:
-      t.taglists[k].remove(obj)
+  t = _gettaglist(editor, key)
+  for o in obj:
+    if not o in t:
+      return 0
+  return 1
+
+
+def tag(editor, key, *objs):
+  """   tag(editor, key, obj[, obj2, ..., objN])
+  
+Tag objects in the tag category specified by key.
+"""
+  t = _gettaglist(editor, key)
+
+  # Find out which objects aren't already tagged
+  objstotag = []
+  for o in objs:
+    if not o in t:
+      objstotag.append(o)
+
+  # Call callback functions
+  _applytagchangefuncs(editor, key, objstotag, [])
+
+  # Do addition
+  for o in objstotag:
+    t.append(o)
+      
   editor.invalidateviews()
 
-def istagged(editor, obj, key=None):
-  """istagged(editor, obj, key=None)
 
-If object is tagged, return 1. Otherwise, return 0.
-
-Optionally, only return 1 if the object if it's tagged in a
-particular tag category.
-"""
-  t = _gettagging(editor)
-  for k in t.uniquetags.keys():
-    if key is not None and k != key:
-      continue
-    if obj in t.taglists[k]:
-      return 1
-  return 0
-
-def tag(editor, obj, key):
-  """tag(editor, obj, key)
-  
-Tag an object in the tag category specified by key.
-"""
-  t = _gettagging(editor)
-  if not obj in t.taglists[key]:
-    t.taglists[key].append(obj)
-  t.uniquetags[key] = obj
-
-def uniquetag(editor, obj, key):
-  """uniquetag(editor, obj, key)
+def uniquetag(editor, key, obj):
+  """   uniquetag(editor, key, obj)
 
 Tag an object, and remove all other tags in the same category.
-  """
-  cleartags(editor, key)
-  tag(editor, obj, key)
-
-def gettaglist(editor, key=None):
-  """gettaglist(editor, key=None)
-
-Get all tagged objects in the tag category specified by key.
-
-key may be omitted to get all tagged objects; however, this is heavily
-deprecated.
 """
-  t = _gettagging(editor)
+  cleartags(editor, key)
+  tag(editor, key, obj)
+
+
+def gettaglist(editor, *keys):
+  """   gettaglist(editor, key[, key2, ..., keyN])
+
+Get all tagged objects in the specified tag categories.
+
+Modifications to the returned list will not affect which items are
+tagged.
+"""
   objlist = []
-  for k in t.taglists.keys():
-    if key is not None and k != key:
-      continue
-    for o in t.taglists[k]:
-      if o not in objlist:
-        objlist.append(o)
+  for k in keys:
+    objlist += _gettaglist(editor, k)
   return objlist
 
+
 def getuniquetag(editor, key):
-  """getuniquetag(editor, key)
+  """   getuniquetag(editor, key)
 
 Get the most recently tagged object in the tag category specified
 by key.
 """
-  t = _gettagging(editor)
-  for k in t.uniquetags.keys():
-    if key is not None and k != key:
-      continue
-    return t.uniquetags[k]
+  t = _gettaglist(editor, key)
+  if t:
+    return t[-1]
   return None
 
-# -------- map drawing routines -------- #
 
-"""Stores callbacks for drawing tagged objects
+# -- Tag change callback functions --------------------------------- #
+#   ===============================
 
-The ONLY code that may access this dictionary is the tagdrawfunc()
-function below."""
-_drawcallbacks = {}
+# Stores functions called when the items are tagged or untagged
+#
+# The ONLY code that may access this dictionary are the tagchangefunc()
+# and _applytagchangefuncs() functions below
+_changecallbacks = {}
 
-def tagdrawfunc(key, function):
-  """tagdrawfunc(key, function)
 
-Set the function to be used to draw tagged items in
-a particular tag category.
+def tagchangefunc(function, *keys):
+  """   tagchangefunc(function, *key...)
+
+Set a function called when a tag category/categories changes
+(i.e. items are tagged or untagged).
 
 Functions must be of the form
 
-  f(view, canvas, obj)
+  f(editor, key, tagged, untagged)
 
-where: view is the view to be drawn on
-       canvas is the canvas to be drawn on
+where: editor is the editor where tags have changed
+       key is the key of the tag category being changed
+       tagged is a list of items being added to the category
+       untagged is a list of items being removed from the category
+
+Functions *must not* add or remove tags.
+
+The callback function is called before making changes to what's tagged
+or not tagged.  This means that a callback function can modify the
+tagged and untagged lists if necessary, or raise exceptions to prevent
+changes to tags.
+
+Callback functions are used for _all_ editors.
+"""
+  for k in keys:
+    if not k in _changecallbacks.keys():
+      _changecallbacks[k] = []
+    l = _changecallbacks[k]
+    l.append(function)
+
+
+def _applytagchangefuncs(editor, key, tagged, untagged):
+  """   _applytagchangefuncs(editor, key, tagged, untagged)
+
+Call any defined change callback functions.
+
+Should never be called by any methods other than the ones in
+this module.
+"""
+  if key in _changecallbacks.keys():
+    for f in _changecallbacks[key]:
+      f(editor, key, tagged, untagged)
+
+
+# -- Map drawing routines ------------------------------------------ #
+#   ======================
+
+# Stores callbacks for drawing tagged objects
+# 
+# The ONLY code that may access this dictionary are the tagdrawfunc()
+# and _tagfinishdrawing functions below.
+_drawcallbacks = {}
+
+
+def tagdrawfunc(function, *keys):
+  """   tagdrawfunc(function, *key...)
+
+Set the function to be used to draw tagged items in
+a particular tag category or categories.
+
+Functions must be of the form
+
+  f(editor, view, canvas, obj)
+
+where: editor is the editor being redrawn
+       view is the view to be drawn on
        obj is the tagged object to draw.
 
 Callback functions are used for _all_ editors.
 """
-  _drawcallbacks[key] = function
+  for k in keys:
+    _drawcallbacks[k] = function
 
-def tagfinishdrawing(editor, view, oldmore=BaseEditor.finishdrawing):
+
+def _tagfinishdrawing(editor, view, oldmore=BaseEditor.finishdrawing):
   """Finishdrawing routine for handling tagged objects.
 
 Uses callback functions set using tagdrawfunc().
 """
-      
+  
   oldmore(editor, view)
   cv = view.canvas()
-
+  
   # Make the pen the correct colour, so callback functions don't
   # need to
   oldcolour = cv.pencolor
   cv.pencolor = MapColor("Tag")
-
+  
   for k in _drawcallbacks.keys():
     f = _drawcallbacks[k]
     if f is None:
       continue
     
-    for obj in gettaglist(editor, k):
-      f(view, cv, obj)
-
+    for obj in _gettaglist(editor, k): # _gettaglist is faster 
+      f(editor, view, cv, obj)
+      
   # Restore the pen colour
   cv.pencolor = oldcolour
- 
-BaseEditor.finishdrawing = tagfinishdrawing
+  
+BaseEditor.finishdrawing = _tagfinishdrawing
 
+# ------------------------------------------------------------------ #
+# CVS log - make no changes below this line
+#
 #$Log$
+#Revision 1.3.2.4  2005/09/22 10:41:28  peter-b
+#Change order of arguments to tagdrawfunc() to match tagchangefunc()
+#
+#Revision 1.3.2.3  2005/09/22 10:30:16  peter-b
+#- Add support for callback functions run when tags change.
+#- Some small formatting changes
+#
+#Revision 1.3.2.2  2005/09/21 18:17:27  peter-b
+#- Correctly store tags for different editors in different Tagging objects
+#- Add diagnostics printing function
+#- Make getuniquetag() work correctly if no tags are set
+#- Add editor as first argument of drawing callbacks
+#- Rename tagfinishdrawing as private function
+#
+#Revision 1.3.2.1  2005/09/21 10:40:27  peter-b
+#More tagging API
+#  - Make tagging API funcs accept variable-length arg lists where
+#    appropriate
+#  - Update code which uses it as appropriate
+#
+#Revision 1.3  2005/09/19 00:23:45  peter-b
+#Fix more silly tagging errors
+#
 #Revision 1.2  2005/09/18 23:55:33  peter-b
 #Make tagfinishdrawing() set and restore the pen colour
 #

@@ -1440,7 +1440,7 @@ def LinkFaceClick(m, glue=1):
     newtagged.setint("_tag",tag)
 #    squawk("new: "+`newtagged.getint("_tag")`)
     undo.exchange(tagged, newtagged)
-    editor.tagging.tagged = newtagged    
+    tagface(newtagged, editor)
   newside = m.side.copy()
   newside.setint("_tag",tag)
   oldtag = m.side.getint("_tag")
@@ -1855,10 +1855,7 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
     else:
       menaligntex.state = qmenu.normal
       aligntexstate(menaligntex, tagged, face)
-  try:
-    if not editor.tagging is None:
-       mencleartag.state = qmenu.normal
-  except AttributeError: pass
+  mencleartag.state = qmenu.normal
 
 mentagside  = qmenu.item("&Tag side", TagSideClick, tagtext)
 mencleartag = qmenu.item("&Clear Tag", ClearTagClick, "|Clear Tag:\n\nClears (cancels) all the tags that have been set.|intro.mapeditor.menu.html#commandsmenu")
@@ -1919,6 +1916,15 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.32.2.2  2005/09/21 18:34:39  peter-b
+#Fix malformed call to tagside()
+#
+#Revision 1.32.2.1  2005/09/19 10:41:27  peter-b
+#Direct access of editor.tagging is a Bad Thing
+#
+#Revision 1.32  2003/10/07 21:37:31  cdunde
+#Update for Tagside Infobase detail link
+#
 #Revision 1.31  2003/05/21 06:39:35  cdunde
 #To remove error message box causing cleartag for tagged point not to work properly
 #
