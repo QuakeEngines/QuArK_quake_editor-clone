@@ -3,14 +3,6 @@ QQRKSRC1
 // It's the text version of file: UserData Doom 3.qrk
 
 //$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2004/12/22 11:45:35  rowdy
-//Rowdy - first pass of support for Doom 3
-//
-//Revision 1.2  2001/03/20 21:56:26  decker_dk
-//Added log-header / misc.
-//
 
 {
   Description = "Custom configuration file for Doom 3."
