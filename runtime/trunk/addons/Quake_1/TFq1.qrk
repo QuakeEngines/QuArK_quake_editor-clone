@@ -1,8 +1,7 @@
 QQRKSRC1
 // Team Fortress Entities, Brian Wagener
 //$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
+
 {
 	QuArKProtected = "1"
 	Description = "Team Fortress Add-On"

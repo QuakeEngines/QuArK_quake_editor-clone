@@ -5,8 +5,6 @@ QQRKSRC1
 // about this file format.
 
 //$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
 
 {
   Description = "Custom configuration file."

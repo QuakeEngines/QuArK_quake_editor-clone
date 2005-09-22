@@ -1,14 +1,6 @@
 QQRKSRC1
 
 //$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.5  2001/03/17 15:08:49  decker_dk
-//Added CVS-headers.
-//
-// This is the first release of the Team Arena Data file. v1.0
-// By Maleficus.
-// 26*1*00, 9.46
 
 {
   Description = "Team Arena data - By: Maleficus"
