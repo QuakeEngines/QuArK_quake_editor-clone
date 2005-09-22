@@ -314,37 +314,3 @@ Uses callback functions set using tagdrawfunc().
   
 BaseEditor.finishdrawing = _tagfinishdrawing
 
-# ------------------------------------------------------------------ #
-# CVS log - make no changes below this line
-#
-#$Log$
-#Revision 1.3.2.4  2005/09/22 10:41:28  peter-b
-#Change order of arguments to tagdrawfunc() to match tagchangefunc()
-#
-#Revision 1.3.2.3  2005/09/22 10:30:16  peter-b
-#- Add support for callback functions run when tags change.
-#- Some small formatting changes
-#
-#Revision 1.3.2.2  2005/09/21 18:17:27  peter-b
-#- Correctly store tags for different editors in different Tagging objects
-#- Add diagnostics printing function
-#- Make getuniquetag() work correctly if no tags are set
-#- Add editor as first argument of drawing callbacks
-#- Rename tagfinishdrawing as private function
-#
-#Revision 1.3.2.1  2005/09/21 10:40:27  peter-b
-#More tagging API
-#  - Make tagging API funcs accept variable-length arg lists where
-#    appropriate
-#  - Update code which uses it as appropriate
-#
-#Revision 1.3  2005/09/19 00:23:45  peter-b
-#Fix more silly tagging errors
-#
-#Revision 1.2  2005/09/18 23:55:33  peter-b
-#Make tagfinishdrawing() set and restore the pen colour
-#
-#Revision 1.1  2005/09/18 23:06:16  peter-b
-#New uber-powerful tagging API
-#
-#

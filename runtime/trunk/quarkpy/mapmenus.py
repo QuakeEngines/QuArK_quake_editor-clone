@@ -430,33 +430,3 @@ def BaseMenu(sellist, editor):
 
     return [Force1, qmenu.sep, Cancel1, qmenu.sep, Cut1, Copy1, Delete1]
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.11  2003/07/04 19:59:57  cdunde
-#To add new Addons main menu item and sub-menus
-#
-#Revision 1.10  2003/03/21 05:57:05  cdunde
-#Update infobase and add links
-#
-#Revision 1.9  2003/02/01 07:37:50  cdunde
-#To add Cancel Selections to RMB menu
-#
-#Revision 1.8  2001/07/27 11:32:57  tiglari
-#bsp study: special commands menu when bsp is loaded
-#
-#Revision 1.7  2001/04/28 02:21:04  tiglari
-#move 'remove' to mapselection.py, add selection menu therefrom
-#
-#Revision 1.6  2001/03/20 07:59:40  tiglari
-#customizable hot key support
-#
-#Revision 1.5  2001/01/26 19:07:04  decker_dk
-#Clamped the scalefactors for keyboard zoom-modification to in:100 and out:0.01.
-#
-#Revision 1.4  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

@@ -66,12 +66,3 @@ def CommandsMenu():
     return qmenu.popup("&Commands", items, onclick), shortcuts
 
 
-# ----------- REVISION HISTORY ------------
-# $Log$
-# Revision 1.3  2001/02/01 22:03:15  aiv
-# RemoveVertex Code now in Python
-#
-# Revision 1.2  2000/10/11 19:09:00  aiv
-# added cvs header and triangle adding dialog (not finished)
-#
-#

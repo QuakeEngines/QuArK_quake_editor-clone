@@ -90,17 +90,3 @@ def OptionsMenu():
     Options1 = qmenu.popup("&Options", items+[qmenu.sep, PlugIns, Config1], Options1Click)
     return Options1, shortcuts
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.3  2003/12/17 13:58:59  peter-b
-#- Rewrote defines for setting Python version
-#- Removed back-compatibility with Python 1.5
-#- Removed reliance on external string library from Python scripts
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

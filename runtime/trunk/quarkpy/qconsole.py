@@ -75,9 +75,3 @@ def runprogram(cmdline, currentdir, stdout=0, stderr=None):
         quarkx.msgbox("Cannot execute this program :\n\n    %s\n\nCheck the path and required DLLs." % cmdline, 1, 4)
         raise quarkx.aborted
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#
-#

@@ -150,9 +150,3 @@ def setupchanged(level):
 
 SetupRoutines.append(setupchanged)
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#
-#

@@ -196,18 +196,3 @@ class GameConsole(BatchConsole):
         except:
             pass
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.6  2001/07/08 20:56:30  tiglari
-#fix crash when ExtraCMDLine=""
-#
-#Revision 1.5  2001/06/21 17:34:12  decker_dk
-#quarkx.openconfigdlg()
-#
-#Revision 1.4  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

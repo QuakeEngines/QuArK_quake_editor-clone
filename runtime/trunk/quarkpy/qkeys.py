@@ -122,9 +122,3 @@ def keynames():
                 _keynames[value] = item
         return _keynames
         
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#
-#

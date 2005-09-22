@@ -17,6 +17,3 @@ def RegisterEntityConverter(Text, Ext, Desc, Proc):
     import quarkx
     quarkx.entitymenuitem(Text)
     
-# ----------- REVISION HISTORY ------------
-# $Log$
-#

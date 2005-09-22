@@ -139,21 +139,3 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
 mapeditor.MapEditor.finishdrawing = DrawLines
 
 
-#$Log$
-#Revision 1.5  2003/03/21 10:56:08  tiglari
-#support for line-thickness specified by mapoption
-#
-#Revision 1.4  2003/03/19 22:24:10  tiglari
-#fix bug in parsing
-#
-#Revision 1.3  2003/03/19 11:27:47  tiglari
-#remove debug statement
-#
-#Revision 1.2  2003/03/19 11:26:15  tiglari
-#expand info in dialog box
-#
-#Revision 1.1  2003/03/19 11:07:52  tiglari
-#first version, only tested for Q1
-#
-#
-

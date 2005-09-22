@@ -169,21 +169,3 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
 
 mapeditor.MapEditor.finishdrawing = DrawLines
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.5  2003/03/19 22:27:10  tiglari
-#remove debug; there was no parsing error in this file (previous commit mistaken)
-#
-#Revision 1.4  2003/03/19 22:23:35  tiglari
-#fix bug in parsing
-#
-#Revision 1.3  2001/06/17 21:05:27  tiglari
-#fix button captions
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

@@ -863,36 +863,3 @@ LayoutsList = []
 #
 mppages = []
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.11  2003/07/07 07:18:31  cdunde
-#To correct caption exclusion error and hint display
-#
-#Revision 1.10  2003/03/17 01:51:13  cdunde
-#Update hints and add infobase links where needed
-#
-#Revision 1.9  2002/05/05 10:19:59  tiglari
-#Support for texture flag defaults in layout.loadtfflist (a long run for a shortish slide)
-#
-#Revision 1.8  2002/04/07 12:46:31  decker_dk
-#Made the texture/face-flags window bigger.
-#
-#Revision 1.7  2001/10/22 10:24:32  tiglari
-#live pointer hunt, revise icon loading
-#
-#Revision 1.6  2001/03/01 19:14:40  decker_dk
-#changed bs_additionalpages() so it checks 'BezierPatchSupport' for the bezier-page.
-#
-#Revision 1.5  2001/02/25 11:22:51  tiglari
-#bezier page support, transplanted with permission from CryEd (CryTek)
-#
-#Revision 1.3  2001/01/02 19:29:51  decker_dk
-#Small changes in hint-descriptions
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

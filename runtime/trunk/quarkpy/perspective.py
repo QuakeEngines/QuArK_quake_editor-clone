@@ -240,7 +240,3 @@ def facedict_vflip(fd):
     fd2['d']=fd['u']
     return fd2
 
-#$Log$
-#Revision 1.1  2001/02/14 10:06:47  tiglari
-#extracted from mb2curves, etc
-#

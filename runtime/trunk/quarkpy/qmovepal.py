@@ -206,30 +206,3 @@ class ToolMoveBar(ToolBar):
         return [btn1, btn2, btn3, btn13, qtoolbar.sep, btn4, btn5, btn6,
           btn7, btn8, btn9, btn10, btn11, btn12, qtoolbar.sep, btncfg]
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.8  2003/03/15 20:41:07  cdunde
-#To update hints and add infobase links
-#
-#Revision 1.7  2003/02/14 04:23:11  cdunde
-#To add and update F1 popup info.
-#
-#Revision 1.6  2002/12/27 07:38:02  cdunde
-#Rearranged icons with added help info
-#
-#Revision 1.5  2001/10/22 10:28:20  tiglari
-#live pointer hunt, revise icon loading
-#
-#Revision 1.4  2001/06/17 21:05:27  tiglari
-#fix button captions
-#
-#Revision 1.3  2001/06/16 03:20:48  tiglari
-#add Txt="" to separators that need it
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

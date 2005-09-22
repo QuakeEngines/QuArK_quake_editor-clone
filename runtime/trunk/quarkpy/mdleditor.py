@@ -141,15 +141,3 @@ def commonhandles(self, redraw=1):
             for h in hlist:
                 h.draw(v, cv, None)
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.4  2000/08/21 21:33:04  aiv
-#Misc. Changes / bugfixes
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

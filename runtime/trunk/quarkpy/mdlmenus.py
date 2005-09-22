@@ -135,12 +135,3 @@ def BaseMenu(sellist, editor):
 
     return [Force1, qmenu.sep, Cut1, Copy1, Delete1]
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

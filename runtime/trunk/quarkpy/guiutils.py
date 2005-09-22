@@ -79,8 +79,3 @@ def buildParentPopupList(o, parentpopupitems, editor):
 
 
 
-# $Log$
-# Revision 1.1  2002/04/01 08:29:10  tiglari
-# start off with some stuff from mapmadsel.py, and abstracted from mapmicrobrush.py
-#
-#

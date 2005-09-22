@@ -264,21 +264,3 @@ class MdlUserDataPanel(UserDataPanel):
         #            list = [group2folder(list[0])]
         #UserDataPanel.drop(self, btnpanel, list, i, source)
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.6  2001/02/01 22:03:15  aiv
-#RemoveVertex Code now in Python
-#
-#Revision 1.5  2000/10/11 19:07:47  aiv
-#Bones, and some kinda skin vertice viewer
-#
-#Revision 1.4  2000/08/21 21:33:04  aiv
-#Misc. Changes / bugfixes
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

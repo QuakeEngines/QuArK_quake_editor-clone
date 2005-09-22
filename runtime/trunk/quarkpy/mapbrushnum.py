@@ -139,8 +139,3 @@ def LoadBrushNums(editor, filename):
     except corrupt, info:
         quarkx.helppopup("Brush number discrepancy at brush labelled %s; this probably means that the file is corrupt"%info)
        
-#$Log$
-#Revision 1.1  2003/03/24 10:34:24  tiglari
-#support for brush-number finder
-#
-

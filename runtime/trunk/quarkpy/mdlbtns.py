@@ -307,12 +307,3 @@ def groupcolor(m):
         undo.setspec(group, "_color", nval)
         undo.ok(editor.Root, Strings[622])
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#
