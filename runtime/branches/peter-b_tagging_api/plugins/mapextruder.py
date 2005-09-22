@@ -1888,7 +1888,7 @@ def CORDUP_KEY_dcb(e, view, cv, dup):
       cv.line(prev_pos, pos)
       prev_pos = pos
 
-nt.tagdrawfunc(CORDUP_KEY, CORDUP_KEY_dcb)
+nt.tagdrawfunc(CORDUP_KEY_dcb, CORDUP_KEY)
 
 
   
@@ -2890,6 +2890,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.16.2.3  2005/09/21 18:28:08  peter-b
+#Add editor as first argument of drawing callbacks
+#
 #Revision 1.16.2.2  2005/09/21 10:40:27  peter-b
 #More tagging API
 #  - Make tagging API funcs accept variable-length arg lists where

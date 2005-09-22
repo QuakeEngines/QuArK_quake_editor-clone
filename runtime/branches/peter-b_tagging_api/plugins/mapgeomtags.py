@@ -134,17 +134,20 @@ def _PLANE_dcb(e,v,cv,obj):
 def _B2CP_dcb(e,v,cv,obj):
     _POINT_dcb(e,v,cv,obj.pos)
         
-nt.tagdrawfunc(FACE, _FACE_dcb)
-nt.tagdrawfunc(FACEEDGE, _FACEEDGE_dcb)
-nt.tagdrawfunc(POINT, _POINT_dcb)
-nt.tagdrawfunc(VTXEDGE, _VTXEDGE_dcb)
-nt.tagdrawfunc(PLANE, _PLANE_dcb)
-nt.tagdrawfunc(B2CP, _B2CP_dcb)
+nt.tagdrawfunc(_FACE_dcb, FACE)
+nt.tagdrawfunc(_FACEEDGE_dcb, FACEEDGE)
+nt.tagdrawfunc(_POINT_dcb, POINT)
+nt.tagdrawfunc(_VTXEDGE_dcb, VTXEDGE)
+nt.tagdrawfunc(_PLANE_dcb, PLANE)
+nt.tagdrawfunc(_B2CP_dcb, B2CP)
 
 # ------------------------------------------------------------------ #
 # CVS log - make no changes below this line
 #
 # $Log$
+# Revision 1.1.2.2  2005/09/22 10:32:11  peter-b
+# Check type of tagged points (using tag change callback)
+#
 # Revision 1.1.2.1  2005/09/21 18:30:14  peter-b
 # New mapgeomtags plugin provides infrastructure for tagging map geometry.
 # Deprecated tagging plugin now uses mapgeomtags to do its thing.

@@ -208,8 +208,8 @@ by key.
 
 # Stores functions called when the items are tagged or untagged
 #
-# The ONLY code that may access this dictionary is the tagdrawfunc()
-# function below.
+# The ONLY code that may access this dictionary are the tagchangefunc()
+# and _applytagchangefuncs() functions below
 _changecallbacks = {}
 
 
@@ -262,16 +262,16 @@ this module.
 
 # Stores callbacks for drawing tagged objects
 # 
-# The ONLY code that may access this dictionary is the tagdrawfunc()
-# function below.
+# The ONLY code that may access this dictionary are the tagdrawfunc()
+# and _tagfinishdrawing functions below.
 _drawcallbacks = {}
 
 
-def tagdrawfunc(key, function):
-  """   tagdrawfunc(key, function)
+def tagdrawfunc(function, *keys):
+  """   tagdrawfunc(function, *key...)
 
 Set the function to be used to draw tagged items in
-a particular tag category.
+a particular tag category or categories.
 
 Functions must be of the form
 
@@ -283,7 +283,8 @@ where: editor is the editor being redrawn
 
 Callback functions are used for _all_ editors.
 """
-  _drawcallbacks[key] = function
+  for k in keys:
+    _drawcallbacks[k] = function
 
 
 def _tagfinishdrawing(editor, view, oldmore=BaseEditor.finishdrawing):
@@ -317,6 +318,10 @@ BaseEditor.finishdrawing = _tagfinishdrawing
 # CVS log - make no changes below this line
 #
 #$Log$
+#Revision 1.3.2.3  2005/09/22 10:30:16  peter-b
+#- Add support for callback functions run when tags change.
+#- Some small formatting changes
+#
 #Revision 1.3.2.2  2005/09/21 18:17:27  peter-b
 #- Correctly store tags for different editors in different Tagging objects
 #- Add diagnostics printing function
