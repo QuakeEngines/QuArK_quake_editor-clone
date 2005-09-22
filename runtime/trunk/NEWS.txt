@@ -14,6 +14,9 @@ $Id$
 
 6.5.0 alpha 2
 =============
+
+ * [peter-b] : Remove all CVS Log keywords
+
  * [cdunde] : Fixed OpenGL gray out and errors for odd size textures
      and loss of transparency for older game modes.
  
@@ -22,6 +25,10 @@ $Id$
  * [cdunde] : Started new TODO.txt file for things to fix or change.
 
  * [peter-b] : New tagging API in `quarkpy.tagging' module.
+     - New `mapgeomtags' plugin
+     - Make `tagging' plugin emulate old behaviour using `mapgeomtags' 
+       and the new tagging API
+     - Mark `tagging' API as deprecated
 
  * [cdunde] : Added a new Advanced vertex dragging plugin by tiglari
      and mbassie that has been around a long time but never added.
