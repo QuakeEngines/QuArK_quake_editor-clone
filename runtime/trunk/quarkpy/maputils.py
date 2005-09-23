@@ -8,7 +8,6 @@ Various Map editor utilities.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 import quarkx

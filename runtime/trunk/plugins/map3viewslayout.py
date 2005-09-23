@@ -8,7 +8,6 @@ Plug-in which define the Classical screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

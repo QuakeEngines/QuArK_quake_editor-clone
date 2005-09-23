@@ -8,7 +8,6 @@ The map editor's "Commands" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

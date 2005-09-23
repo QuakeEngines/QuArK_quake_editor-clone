@@ -9,8 +9,6 @@ of vertices
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#
-# $Header$
 
 Info = {
    "plug-in":       "Axis Locking",

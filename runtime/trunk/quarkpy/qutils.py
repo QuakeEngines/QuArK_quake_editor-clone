@@ -9,7 +9,6 @@ Various constants and routines
 #
 
 
-#$Header$
 
 import quarkx
 

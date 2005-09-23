@@ -19,22 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.5  2001/02/28 19:03:25  aiv
-Fixed ref count prob.
-
-Revision 1.4  2001/01/21 15:51:01  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.3  2001/01/15 19:23:05  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.2  2000/10/11 19:01:08  aiv
-Small updates
-}
 
 unit QkMd2;
 

@@ -8,7 +8,6 @@ Python code to find thin faces
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Thin Face Finder",

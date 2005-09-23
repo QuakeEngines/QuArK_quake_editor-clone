@@ -26,19 +26,6 @@ allowed - that should be enough for PK3 support) from one stream to another.
    -- SORRY ABOUT THE MESSYNESS OF THIS UNIT. I DIDNOT WRITE THIS CODE, A FRIEND DID --
 }
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.4  2001/03/20 21:41:11  decker_dk
-Updated copyright-header
-
-Revision 1.3  2000/10/16 22:14:39  aiv
-zip files now handled entirely in pascal (no dlls!)
-
-Revision 1.2  2000/06/03 10:46:49  alexander
-added cvs headers
-}
 
 unit UNZIP;
 

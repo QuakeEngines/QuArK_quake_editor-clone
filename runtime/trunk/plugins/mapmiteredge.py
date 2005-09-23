@@ -8,7 +8,6 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 #
-# $Header$
 #
 
 Info = {

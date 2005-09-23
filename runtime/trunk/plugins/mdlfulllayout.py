@@ -8,7 +8,6 @@ Example Plug-in which define a new screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 Info = {

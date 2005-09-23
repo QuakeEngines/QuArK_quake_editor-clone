@@ -8,7 +8,6 @@ Implementation of QuArK Map editor features for the "Search" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 Info = {

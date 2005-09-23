@@ -8,7 +8,6 @@ Map editor views, grid scale numbering feature.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Display grid scale",

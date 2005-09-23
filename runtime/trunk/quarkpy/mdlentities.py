@@ -8,7 +8,6 @@ Model Editor Entities manager
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

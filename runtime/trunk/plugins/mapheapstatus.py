@@ -1,5 +1,4 @@
 
-#$Header$
 
 import quarkx
 import quarkpy.mapmenus

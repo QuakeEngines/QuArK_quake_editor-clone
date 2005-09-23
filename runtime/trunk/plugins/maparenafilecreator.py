@@ -7,7 +7,6 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Quake3 Arena script generator",

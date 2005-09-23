@@ -8,7 +8,6 @@ Map Duplicator abstract classes.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 #
 # Duplicators are really implemented in the plug-in "mapdups.py".

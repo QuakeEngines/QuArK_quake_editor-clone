@@ -8,7 +8,6 @@ Triangular Vertex moving plugin
 # FOUND IN FILE "COPYING.TXT"
 #
 
-# $Header$
 
 Info = {
    "plug-in":       "Triangular Vertex Movement",

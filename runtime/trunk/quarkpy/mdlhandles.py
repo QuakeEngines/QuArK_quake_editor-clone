@@ -8,7 +8,6 @@ Model editor mouse handles.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

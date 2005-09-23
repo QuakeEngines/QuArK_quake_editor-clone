@@ -19,9 +19,6 @@
 #
 
 
-#$Header$
-# ----------- REVISION HISTORY ------------
-#$Log$
 
 TARGETS=../runtime/dxtdecode.dll ../runtime/Quark.exe
 
@@ -33,7 +30,7 @@ all: $(TARGETS)
 
 ../runtime/dxtdecode.dll: 
 	gmake -C dllsource/dxtdecode copy
-	
+
 clean:
 	-rm Rubbish/*.dcu
 	-rm  $(TARGETS)

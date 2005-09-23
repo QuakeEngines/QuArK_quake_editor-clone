@@ -19,23 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.10  2001/02/05 11:38:57  tiglari
-framework for filters in texture-list building (don't work yet,
-  just the preliminaries I hope)
-
-Revision 1.9  2001/02/04 18:30:56  tiglari
-filter shaders by shaderlist.txt
-
-Revision 1.8  2001/02/04 01:41:00  tiglari
-changed visibility of QOsFolder.ReadFolder
-
-Revision 1.7  2001/02/01 20:46:26  decker_dk
-added revision history
-}
 
 unit OsFolder;
 

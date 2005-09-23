@@ -8,7 +8,6 @@ Start-up code launched by QuArK to initialize the package "quarkpy"
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

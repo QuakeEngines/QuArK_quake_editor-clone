@@ -15,7 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# $Header$
 
 """Version 2 of QuArK tagging support, moved to the quarkpy module as
 it isn't just used by plugins any more.

@@ -8,7 +8,6 @@ Implementation of "Addons" menu Load Any Map function
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Map1 Load Any Map",

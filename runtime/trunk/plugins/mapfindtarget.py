@@ -8,7 +8,6 @@ Python code to find things targetting and targetted by an entity
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Target Finder",

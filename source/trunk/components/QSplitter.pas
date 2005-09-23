@@ -1,10 +1,4 @@
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-
-
-}unit QSplitter;
+unit QSplitter;
 
 interface
 

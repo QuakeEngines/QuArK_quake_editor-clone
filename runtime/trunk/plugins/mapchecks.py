@@ -8,7 +8,6 @@ Basic map validity checking
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

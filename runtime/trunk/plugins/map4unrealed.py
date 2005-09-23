@@ -8,8 +8,6 @@ Plug-in which define the 4-views screen layouts.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#
-# $Header$
 
 
 Info = {

@@ -19,10 +19,6 @@
 ;
 ;
 ;
-;$Header$
-; ----------- REVISION HISTORY ------------
-;$Log$
-;
 
 LIBRARY         dxtdecode
 

@@ -8,7 +8,6 @@ Generic Mouse handles code.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 #
 # Generic handles. See maphandles.py for more information.

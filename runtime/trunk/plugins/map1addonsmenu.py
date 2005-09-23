@@ -8,7 +8,6 @@ Implementation of QuArK Map editor's "Addons" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Addons Main Menu",

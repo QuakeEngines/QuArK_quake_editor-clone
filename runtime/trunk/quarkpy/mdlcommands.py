@@ -3,8 +3,7 @@
 Model editor commands menu.
 """
 
-#
-# $Header$
+
 
 
 import quarkx

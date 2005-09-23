@@ -8,7 +8,6 @@ Implementation of the menu commands related to faces
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 Info = {

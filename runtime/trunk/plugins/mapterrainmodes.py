@@ -8,7 +8,6 @@ Terrain mouse dragging  and other modes
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

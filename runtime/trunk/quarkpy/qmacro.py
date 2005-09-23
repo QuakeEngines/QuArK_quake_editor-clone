@@ -7,7 +7,6 @@ Python macros available for direct call by QuArK
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-#$Header$
 
 #
 # Macros are called by QuArK based on name. These are the

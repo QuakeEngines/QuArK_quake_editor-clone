@@ -8,7 +8,6 @@ Various constants and Screen Controls for editors.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 import quarkx

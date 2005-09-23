@@ -19,31 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.9  2001/03/20 21:37:04  decker_dk
-Updated copyright-header
-
-Revision 1.8  2001/02/28 19:03:25  aiv
-Fixed ref count prob.
-
-Revision 1.7  2001/02/23 02:14:27  aiv
-more on md3 linking
-
-Revision 1.6  2001/02/18 20:03:46  aiv
-attaching models to tags almost finished
-
-Revision 1.5  2001/02/01 22:00:56  aiv
-Remove Vertex code now in python.
-
-Revision 1.4  2001/01/21 15:51:31  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.3  2000/10/11 19:01:08  aiv
-Small updates
-}
 
 unit QkModelRoot;
 

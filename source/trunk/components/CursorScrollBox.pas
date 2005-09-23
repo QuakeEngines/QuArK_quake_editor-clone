@@ -1,10 +1,3 @@
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-
-
-}
 unit CursorScrollBox;
 
 interface

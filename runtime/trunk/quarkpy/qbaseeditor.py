@@ -8,7 +8,6 @@ Core of the Map and Model editors.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

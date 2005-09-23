@@ -8,7 +8,6 @@ Core of the Model editor.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

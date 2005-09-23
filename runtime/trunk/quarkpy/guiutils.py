@@ -9,7 +9,6 @@ Various utilities for making gui devices.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 import quarkx

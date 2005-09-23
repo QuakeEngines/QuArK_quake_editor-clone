@@ -3,9 +3,6 @@
 Python macros available for direct call by QuArK
 """
 
-#
-#$Header$
-#
 
 import time, sys
 

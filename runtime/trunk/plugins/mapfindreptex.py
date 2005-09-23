@@ -11,15 +11,6 @@
 #       Description:
 #
 #-------------------------------------------------------------------------------
-#
-#       $History: mapfindreptex $
-#
-#-------------------------------------------------------------------------------
-
-#$Header$
-
-
-
 Info = {
    "plug-in":       "Search and replace textures",
    "desc":          "Search/replace textures dialog box, available from the Search menu.",

@@ -19,61 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.13  2001/01/28 17:22:14  decker_dk
-Renamed 'Charger1' to 'LoadTextureData'
-
-Revision 1.12  2001/01/21 15:49:03  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.11  2001/01/15 19:19:58  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.10  2001/01/07 18:39:21  aiv
-Added 'ObjectGameCode:=mjHeretic2;'
-
-Revision 1.9  2000/11/25 20:51:32  decker_dk
-- Misc. small code cleanups
-- Replaced the names:
- = ofTvInvisible       -> ofTreeViewInvisible
- = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
- = ofTvExpanded        -> ofTreeViewExpanded
- = ofSurDisque         -> ofNotLoadedToMemory
- = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
- = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
-
-Revision 1.8  2000/11/16 19:42:17  decker_dk
-- Modified Convex's texture-fileextension alias code, so it won't conflict
-with the rest of the existing code.
-- Introduced a 'TextureFileExtensions' specific, which will contain the
-texture-fileextension aliases, for COnvex's code.
-- Implemented solution for extracting texture-links from .PK3 files
-('.pakfolder' vs '.zipfolder' problem)
-- Replaced the function-names:
-  = Q2TexPath    -> GameTexturesPath
-  = Q3ShaderPath -> GameShadersPath
-- Cleaned up some code here and there.
-- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
-PGameBuffer totally. Hmm? May have introduced problem with color-palette
-in other windows than the texture-browser-detail.
-- Found the place in QkWAD.PAS where the common size of the textures, in the
-texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
-
-Revision 1.7  2000/09/14 18:00:22  decker_dk
-Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
-
-Revision 1.6  2000/08/20 10:50:45  aiv
-Fixed 'Uses' clause for new model files
-
-Revision 1.5  2000/07/09 13:20:43  decker_dk
-Englishification and a little layout
-
-Revision 1.4  2000/06/03 10:46:49  alexander
-added cvs headers
-}
 
 
 unit QkHr2;

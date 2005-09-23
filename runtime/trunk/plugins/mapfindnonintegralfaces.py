@@ -23,7 +23,6 @@ Puts Integralize Faces command on commands menu; this forces very close threepoi
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

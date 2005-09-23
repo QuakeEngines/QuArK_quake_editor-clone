@@ -8,7 +8,6 @@ Tag commands toolbar
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Tag Commands Toolbar",

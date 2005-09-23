@@ -7,7 +7,6 @@ The Movement Toolbar Palette.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-#$Header$
 
 
 import qtoolbar

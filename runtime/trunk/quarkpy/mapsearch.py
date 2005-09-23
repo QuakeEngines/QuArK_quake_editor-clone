@@ -8,7 +8,6 @@ Base of the Map editor "Search" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

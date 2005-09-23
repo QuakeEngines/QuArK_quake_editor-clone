@@ -8,7 +8,6 @@ Keyboard constants and utilities
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 # Virtual Keys, Standard Set

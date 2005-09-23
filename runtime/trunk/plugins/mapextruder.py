@@ -8,7 +8,6 @@
 #  This plugin adapted from mapextruder.py, with permission
 #    of CryTek Studios.
 #
-#$Header$
 
 
 Info = {

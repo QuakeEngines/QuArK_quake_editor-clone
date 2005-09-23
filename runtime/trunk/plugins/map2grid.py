@@ -8,7 +8,6 @@ A tricky "force-the-whole-map-polyhedrons-to-grid"
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

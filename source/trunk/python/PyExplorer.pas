@@ -19,26 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.4  2000/11/25 20:50:41  decker_dk
-- Misc. small code cleanups
-- Replaced the names:
- = ofTvInvisible       -> ofTreeViewInvisible
- = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
- = ofTvExpanded        -> ofTreeViewExpanded
- = ofSurDisque         -> ofNotLoadedToMemory
- = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
- = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
-
-Revision 1.3  2000/07/09 13:19:27  decker_dk
-Englishification and a little layout
-
-Revision 1.2  2000/05/14 20:27:53  alexander
-ToutChargerAuto -> LoadAllAuto
-}
 
 unit PyExplorer;
 

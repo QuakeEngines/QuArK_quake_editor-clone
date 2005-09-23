@@ -1,7 +1,6 @@
 QQRKSRC1
 // Configuration file for Quake 3
 
-//$Header$
 
 {
   QuArKProtected = "1"

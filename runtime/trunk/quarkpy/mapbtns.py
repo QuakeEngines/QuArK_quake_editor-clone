@@ -9,7 +9,6 @@ Map Editor Buttons and implementation of editing commands
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

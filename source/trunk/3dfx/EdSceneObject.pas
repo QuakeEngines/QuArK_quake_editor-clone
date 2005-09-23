@@ -19,50 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.11  2005/09/18 09:42:43  cdunde
-To reverse 1.10 changes. Causes slow down
-of regeneration of all views and locks up editor.
-
-Revision 1.10  2005/04/01 19:32:45  alexander
-more progress indicators (textures and polys)
-
-Revision 1.9  2005/03/14 22:43:32  alexander
-textures with alpha channel are rendered transparent in open gl
-
-Revision 1.8  2005/01/11 01:52:59  alexander
-added a rendermode byte to the modelinfo structure
-initialize the texturemode from the render mode
-(rendermode is setup from the form data)
-
-Revision 1.7  2003/09/06 02:21:09  tiglari
-added comments to BuildScene
-
-Revision 1.6  2003/03/21 00:12:43  nerdiii
-tweaked OpenGL mode to render additive and texture modes as in Half-Life
-
-Revision 1.5  2003/01/29 09:59:27  tiglari
-Englishification:
-  TFace.prvNbs -> prvVertexCount
-  TFace.PrvDescS -> prvVertexTable
-
-Revision 1.4  2001/10/16 23:25:43  tiglari
-live pointer hunt
-
-Revision 1.3  2001/03/20 21:38:21  decker_dk
-Updated copyright-header
-
-Revision 1.2  2001/01/22 00:11:02  aiv
-Beginning of support for sprites in 3d view
-
-Revision 1.1  2000/12/30 15:22:19  decker_dk
-- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
-- Created Ed3DEditors.pas which contains close/free calls
-- Created EdDirect3D.pas with minimal contents
-}
 
 unit EdSceneObject;
 

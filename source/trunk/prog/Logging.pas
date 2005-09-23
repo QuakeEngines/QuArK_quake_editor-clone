@@ -19,46 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.12  2005/01/26 23:25:15  alexander
-added a flush - needed for proper pre crash logging
-
-Revision 1.11  2002/04/03 00:28:07  tiglari
-Now logs whether Spec Mem Sharing is on or off (via NoShare Conditonal Define)
-
-Revision 1.10  2001/04/19 19:38:50  aiv
-added support for "patch.txt"
-
-Revision 1.9  2001/03/20 21:47:44  decker_dk
-Updated copyright-header
-
-Revision 1.8  2001/03/02 19:35:36  decker_dk
-Spell QuArK with the proper capital-letters.
-
-Revision 1.7  2001/02/14 20:45:10  aiv
-Added Logging of Python version.
-
-Revision 1.6  2001/02/11 22:22:32  aiv
-Added SystemDetails unit - now logs system deails (OS, Memory, Video, DirectX etc)
-
-Revision 1.5  2001/02/09 09:26:43  tiglari
-changed setapplicationpath call to fix startup problem on my system (W98)
-
-Revision 1.4  2001/02/07 19:28:19  decker_dk
-Given correct argument to SetApplicationPath().
-
-Revision 1.3  2001/01/30 19:11:10  decker_dk
-Changed to GetApplicationPath().
-
-Revision 1.2  2000/10/16 22:39:33  aiv
-modifications for pylogging.pas
-
-Revision 1.1  2000/10/11 19:04:22  aiv
-Initial Release
-}
 
 unit Logging;
 

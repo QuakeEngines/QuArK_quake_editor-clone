@@ -8,7 +8,6 @@ Vertex moveing plugin
 # FOUND IN FILE "COPYING.TXT"
 #
 
-# $Header$
 
 Info = {
    "plug-in":       "Vertex Movement Dialog",

@@ -8,7 +8,6 @@ Implementation of QuArK Map editor's "Options" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

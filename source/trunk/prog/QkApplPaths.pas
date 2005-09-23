@@ -19,23 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.4  2003/07/21 04:50:02  nerdiii
-Linux compatibility ( '/' '\' )
-
-Revision 1.3  2001/03/20 21:47:10  decker_dk
-Updated copyright-header
-
-Revision 1.2  2001/02/02 00:09:32  aiv
-Added IsPathDelimiter & IncludeTrailingBackslash to new File : ExtraFunctionality.pas
-for us non-D5 users.
-
-Revision 1.1  2001/01/30 19:10:30  decker_dk
-Created to control the application-paths and sub-directories in a feasible manner. I'm here thinking about directory-names with spaces in them, and the possible conflict that has on CVS-repository.
-}
 
 unit QkApplPaths;
 

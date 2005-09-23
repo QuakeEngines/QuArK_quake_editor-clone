@@ -8,7 +8,6 @@ Implementation of the Brush Subtraction commands
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

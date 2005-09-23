@@ -8,7 +8,6 @@ Additionnal mouse dragging modes (entity selecter, brush cutter, cube maker)
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

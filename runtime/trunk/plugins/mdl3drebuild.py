@@ -8,7 +8,6 @@ Plug-in which rebuild all views.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Rebuild 3D views in Model Editor",

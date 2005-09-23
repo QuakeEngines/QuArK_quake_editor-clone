@@ -8,7 +8,6 @@ Map editor pop-up menus.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

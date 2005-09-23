@@ -19,32 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.6  2005/07/05 19:12:48  alexander
-logging to file using loglevels
-
-Revision 1.5  2005/07/04 18:53:20  alexander
-changed steam acces to be a protocol steamaccess://
-
-Revision 1.4  2005/01/05 15:57:53  alexander
-late dll initialization on LoadFile method
-dependent dlls are checked before
-made dll loading errors or api mismatch errors fatal because there is no means of recovery
-
-Revision 1.3  2005/01/04 17:26:09  alexander
-steam environment configuration added
-
-Revision 1.2  2005/01/02 16:44:52  alexander
-use setup value for file system module
-
-Revision 1.1  2005/01/02 15:19:27  alexander
-access files via steam service - first
-
-
-}
 
 unit QkSteamFS;
 

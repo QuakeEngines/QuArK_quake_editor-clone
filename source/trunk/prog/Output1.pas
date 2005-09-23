@@ -19,48 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.10  2001/03/20 21:47:10  decker_dk
-Updated copyright-header
-
-Revision 1.9  2000/11/16 19:42:17  decker_dk
-- Modified Convex's texture-fileextension alias code, so it won't conflict
-with the rest of the existing code.
-- Introduced a 'TextureFileExtensions' specific, which will contain the
-texture-fileextension aliases, for COnvex's code.
-- Implemented solution for extracting texture-links from .PK3 files
-('.pakfolder' vs '.zipfolder' problem)
-- Replaced the function-names:
-  = Q2TexPath    -> GameTexturesPath
-  = Q3ShaderPath -> GameShadersPath
-- Cleaned up some code here and there.
-- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
-PGameBuffer totally. Hmm? May have introduced problem with color-palette
-in other windows than the texture-browser-detail.
-- Found the place in QkWAD.PAS where the common size of the textures, in the
-texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
-
-Revision 1.8  2000/07/18 19:37:58  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.7  2000/07/16 16:34:50  decker_dk
-Englishification
-
-Revision 1.6  2000/07/09 13:20:42  decker_dk
-Englishification and a little layout
-
-Revision 1.5  2000/05/20 14:10:25  decker_dk
-Some more englishification
-
-Revision 1.4  2000/05/07 09:33:02  decker_dk
-Fixed a problem with TGetPakNames
-
-Revision 1.3  2000/05/04 19:29:27  decker_dk
-Refined TGetPakNames and functions that used GetPakZero/GetNextPakName
-}
 
 unit Output1;
 

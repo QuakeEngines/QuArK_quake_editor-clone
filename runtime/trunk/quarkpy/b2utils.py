@@ -10,7 +10,6 @@ Various quadratic bezier utilities.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 import math

@@ -8,7 +8,6 @@ Map editor "Line through hole" displayer
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

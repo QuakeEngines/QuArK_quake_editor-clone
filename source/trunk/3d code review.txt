@@ -1,5 +1,4 @@
 
-#$Header$
 
 
 AddTo3DScene:
@@ -110,10 +109,3 @@ BuildScene:
 More understanding of what goes on it steps 7-8 is needed here.
 
   
-#$Log$
-#Revision 1.2  2003/09/02 23:35:13  tiglari
-#More on EdSceneObject.pas, also some questions added
-#
-#Revision 1.1  2003/09/02 00:01:43  tiglari
-#started by tiglari, some points for more work bracketted as [tig: ...]
-#

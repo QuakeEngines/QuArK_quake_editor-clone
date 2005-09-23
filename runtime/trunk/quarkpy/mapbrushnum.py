@@ -8,7 +8,6 @@ Map editor brush-from-number finder
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 import quarkx
 import qmacro

@@ -19,46 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.12  2001/03/20 21:43:41  decker_dk
-Updated copyright-header
-
-Revision 1.11  2001/01/21 15:50:28  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.10  2001/01/15 19:22:01  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.9  2000/09/01 00:13:44  alexander
-merged in my kingpin texture flip fix from rel6_1 branch
-
-
-Revision 1.8  2000/07/09 13:20:44  decker_dk
-Englishification and a little layout
-
-Revision 1.7  2000/05/20 14:10:25  decker_dk
-Some more englishification
-
-Revision 1.6  2000/05/14 20:35:07  alexander
-Tim Smith's fix for compressed TGA's
-
-Revision 1.5  2000/05/14 15:06:56  decker_dk
-Charger(F,Taille) -> LoadFile(F,FSize)
-ToutCharger -> LoadAll
-ChargerInterne(F,Taille) -> LoadInternal(F,FSize)
-ChargerObjTexte(Q,P,Taille) -> ConstructObjsFromText(Q,P,PSize)
-
-Revision 1.4  2000/04/14 09:50:17  arigo
-more TGA flips fix
-
-Revision 1.3  2000/04/12 22:10:47  alexander
-fixed: crash when exporting TGA Textures with alpha channel
-fixed: flipped exported TGA textures
-misc: improved readability of tga header initialization, added comments
-}
 
 
 unit QkTga;

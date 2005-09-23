@@ -6,7 +6,6 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Quake-3 Arrow Extensions",

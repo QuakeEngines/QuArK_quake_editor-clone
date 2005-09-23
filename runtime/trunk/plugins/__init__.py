@@ -8,7 +8,6 @@ Plug-ins Launcher
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

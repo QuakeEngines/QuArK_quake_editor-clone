@@ -19,32 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.9  2003/03/15 01:56:31  tiglari
-make url path for infobaselink relative to application path
-
-Revision 1.8  2003/03/12 21:35:12  tiglari
-press F1 in snippet window calls up infobase page
-
-Revision 1.7  2003/03/12 20:30:07  tiglari
-[oops forgot to save, vacuous commit] Pressing F1 in help snippet window calls up infobase help
-
-Revision 1.5  2001/03/20 21:48:05  decker_dk
-Updated copyright-header
-
-Revision 1.4  2001/01/28 17:22:38  decker_dk
-Removed some 'Decker-Todo', which would never be done anyway.
-
-Revision 1.3  2001/01/02 19:26:40  decker_dk
-Modified HelpPopup1.PAS a little; removed the blue-background, put caret at
-top of contents in Memo1.
-
-Revision 1.2  2000/06/03 10:46:49  alexander
-added cvs headers
-}
 
 
 unit HelpPopup1;

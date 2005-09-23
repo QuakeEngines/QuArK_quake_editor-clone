@@ -8,7 +8,6 @@ Python code to implement the various Duplicator styles.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 #

@@ -2,7 +2,6 @@
 QuArK  -  Quake Army Knife
 """
 
-#$Header$
 
 Info = {
    "plug-in":       "Arg Replacer",

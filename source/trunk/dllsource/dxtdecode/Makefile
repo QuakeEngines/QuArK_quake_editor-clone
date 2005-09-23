@@ -21,10 +21,6 @@
 #
 
 
-#$Header$
-# ----------- REVISION HISTORY ------------
-#$Log$
-
 
 TARGET = dxtdecode.dll
 OFILES = txc_fetch_dxtn.o dxtdec.o

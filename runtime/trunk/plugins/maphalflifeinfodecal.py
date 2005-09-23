@@ -1,7 +1,6 @@
 """   QuArK  -  Quake Army Knife
 """
 
-#$Header$
 
 Info = {
    "plug-in":       "Half-Life infodecal helper",

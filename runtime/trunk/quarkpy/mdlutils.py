@@ -8,7 +8,6 @@ Various Model editor utilities.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

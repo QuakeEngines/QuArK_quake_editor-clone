@@ -8,7 +8,6 @@ Model editor Layout managers.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 

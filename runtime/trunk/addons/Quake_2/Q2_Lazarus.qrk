@@ -2,8 +2,6 @@ QQRKSRC1
 // This is a convertion of the original Q2 Lazarus to
 // work with the features of QuArk
 
-// $Header$
-//
 
 {
   Game Directories.qctx =

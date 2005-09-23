@@ -19,23 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.4  2002/12/30 18:07:36  decker_dk
-Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
-
-Revision 1.3  2001/10/10 11:54:57  tiglari
-Move QObjectStringlist into interface section so that it can be freed in
- Qk1:TForm1.FormDestroy
-
-Revision 1.2  2001/03/20 21:45:22  decker_dk
-Updated copyright-header
-
-Revision 1.1  2001/01/21 15:49:30  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-}
 
 unit QkObjectClassList;
 

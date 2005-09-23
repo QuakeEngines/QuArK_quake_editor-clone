@@ -19,26 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.7  2001/07/18 03:50:31  tiglari
-Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
- PSommet, TTableauFSommets, PTableauFSommets
-
-Revision 1.6  2001/03/20 21:42:24  decker_dk
-Updated copyright-header
-
-Revision 1.5  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.4  2000/07/16 16:34:51  decker_dk
-Englishification
-
-Revision 1.3  2000/06/03 10:46:49  alexander
-added cvs headers
-}
 
 
 unit SearchHoles;

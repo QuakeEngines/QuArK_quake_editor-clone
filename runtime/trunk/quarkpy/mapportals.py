@@ -8,7 +8,6 @@ Map editor portal viewer
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 import quarkx
 import qmacro

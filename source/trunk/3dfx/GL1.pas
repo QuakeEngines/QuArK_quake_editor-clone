@@ -19,35 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.9  2004/12/14 00:32:08  alexander
-removed unnecessary resampling and gamma conversion for open gl true color textures
-
-Revision 1.8  2003/03/13 20:19:22  decker_dk
-Added glBlendFunc.
-
-Revision 1.7  2002/04/04 18:01:27  decker_dk
-Added wglSwapBuffers - dated 2002.02.26.
-
-Revision 1.6  2001/03/20 21:38:02  decker_dk
-Updated copyright-header
-
-Revision 1.5  2000/12/07 19:47:59  decker_dk
-- Changed the code in Glide.PAS and GL1.PAS, to more understandable
-and readable code (as seen in Python.PAS), which isn't as subtle to
-function-pointer changes, as the old code was. This modification also
-had impact on Ed3DFX.PAS and EdOpenGL.PAS, which now does not have any
-prefixed 'qrkGlide_API' or 'qrkOpenGL_API' pointer-variables for DLL calls.
-
-Revision 1.4  2000/11/11 17:56:52  decker_dk
-Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
-
-Revision 1.3  2000/09/10 14:04:24  alexander
-added cvs headers
-}
 
 unit GL1;
 

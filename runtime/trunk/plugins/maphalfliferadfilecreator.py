@@ -7,7 +7,6 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
     # Based upon Alexander's Quake-3:Arena .ARENA files generator

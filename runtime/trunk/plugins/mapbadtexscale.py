@@ -8,7 +8,6 @@ Python code to find faces with bad texture scales
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 Info = {
    "plug-in":       "Bad Texture Scale Finder",

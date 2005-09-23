@@ -19,27 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.16.2.1  2002/06/07 09:34:43  tiglari
-use g_Cx/yScreen instead of sm_Cx/yScreen to allow dual monitors in W98
-and above.
-
-Revision 1.16  2002/04/11 12:17:14  tiglari
-fix invalid DeletObject errors
-
-Revision 1.15  2002/03/30 00:51:56  tiglari
-Map outside of restriction (if there is one) now not drawn or drawn grey
-depending on setting of hide-/grey- out of view flag.
-
-Revision 1.14  2001/06/05 18:43:13  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.13  2001/03/20 21:34:49  decker_dk
-Updated copyright-header
-}
 
 unit PyMapView;
 

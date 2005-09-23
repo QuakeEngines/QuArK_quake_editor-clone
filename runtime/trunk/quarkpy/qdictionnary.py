@@ -8,7 +8,6 @@ Dictionnary of all strings used within the program
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 Strings = {

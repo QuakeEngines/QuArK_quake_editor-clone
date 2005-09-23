@@ -11,7 +11,6 @@ History:
 """
 
 
-#$Header$
 
 
 Info = {

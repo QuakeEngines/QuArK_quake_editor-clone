@@ -16,7 +16,6 @@ QQRKSRC1
 //
 //    See comments in file Defaults.qrk.
 
-//$Header$
 
 {
   QuArKProtected = "1"       // Additionnal user warnings to prevents accidental change of this file

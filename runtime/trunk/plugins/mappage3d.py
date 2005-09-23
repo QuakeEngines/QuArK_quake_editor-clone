@@ -8,7 +8,6 @@ Map editor "3D" page on the Multi-Pages-Panel.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 Info = {

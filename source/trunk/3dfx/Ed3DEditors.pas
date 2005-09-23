@@ -19,18 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.2  2001/02/01 20:45:45  decker_dk
-Only include Direct3D support-code, if QUARK_DIRECT3D is defined.
 
-Revision 1.1  2000/12/30 15:22:19  decker_dk
-- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
-- Created Ed3DEditors.pas which contains close/free calls
-- Created EdDirect3D.pas with minimal contents
-}
 
 unit Ed3DEditors;
 

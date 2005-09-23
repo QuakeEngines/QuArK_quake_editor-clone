@@ -19,33 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.8  2001/06/05 18:42:24  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.7  2001/03/20 21:41:11  decker_dk
-Updated copyright-header
-
-Revision 1.6  2001/02/23 19:26:21  decker_dk
-Small changes (which hopefully does not break anything)
-SuivantDansGroupe => NextInGroup
-TrimStringList => StringListConcatWithSeparator
-
-Revision 1.5  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.4  2000/07/16 16:34:51  decker_dk
-Englishification
-
-Revision 1.3  2000/07/09 13:20:44  decker_dk
-Englishification and a little layout
-
-Revision 1.2  2000/06/03 10:46:49  alexander
-added cvs headers
-}
 
 unit Undo;
 

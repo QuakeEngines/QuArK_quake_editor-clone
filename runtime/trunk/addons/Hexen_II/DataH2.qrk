@@ -21,7 +21,6 @@ QQRKSRC1
 //
 //    See comments in file Defaults.qrk.
 
-//$Header$
 
 {
   QuArKProtected = "1"

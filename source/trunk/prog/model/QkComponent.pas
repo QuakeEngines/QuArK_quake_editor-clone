@@ -19,69 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.19  2002/03/07 19:17:48  decker_dk
-Removed QImages, as it was just another name for QImage
-
-Revision 1.18  2001/11/11 01:28:49  tiglari
-icon leak fixes
-
-Revision 1.17  2001/06/05 18:42:41  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.16  2001/03/20 21:37:46  decker_dk
-Updated copyright-header
-
-Revision 1.15  2001/03/16 21:46:09  aiv
-small updates - changes to addframe
-
-Revision 1.14  2001/03/06 00:31:04  aiv
-more accurate on md3 linking parts...
-
-Revision 1.13  2001/02/28 19:03:25  aiv
-Fixed ref count prob.
-
-Revision 1.12  2001/02/23 02:14:27  aiv
-more on md3 linking
-
-Revision 1.11  2001/02/18 20:03:46  aiv
-attaching models to tags almost finished
-
-Revision 1.10  2001/02/14 20:46:28  aiv
-Fixed Loading of Shaders used by md3 files.
-
-Revision 1.9  2001/02/01 22:00:56  aiv
-Remove Vertex code now in python.
-
-Revision 1.8  2001/01/23 23:38:27  aiv
-Minor Update
-
-Revision 1.7  2001/01/21 15:51:01  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.6  2000/12/30 15:25:28  decker_dk
-- Due to changes in 3D-render source-files
-
-Revision 1.5  2000/12/11 21:36:59  decker_dk
-- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
-- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
-added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
-AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
-QkComponent.PAS and QkMapPoly.PAS.
-- Misc. other changes.
-
-Revision 1.4  2000/11/26 19:09:00  decker_dk
-- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
-- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
-function to use.
-- Replaced constant 'Origine' with 'OriginVectorZero'.
-
-Revision 1.3  2000/10/11 19:01:08  aiv
-Small updates
-}
 
 unit QkComponent;
 

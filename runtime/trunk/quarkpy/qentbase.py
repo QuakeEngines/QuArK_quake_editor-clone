@@ -9,7 +9,6 @@ Various Map editor utilities.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-# $Header$
 
 def RegisterEntityConverter(Text, Ext, Desc, Proc):
     import qmacro

@@ -19,16 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.1  2000/11/26 19:07:56  decker_dk
-- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
-- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
-function to use.
-- Replaced constant 'Origine' with 'OriginVectorZero'.
-}
 
 
 unit EdTListP2;

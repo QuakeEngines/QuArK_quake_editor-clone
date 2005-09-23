@@ -8,7 +8,6 @@ Modified Plug-in which define the Classical screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 ### Nurail - Mar 22, 2003 - Modification of map3viewslayout for 2D only views.
 

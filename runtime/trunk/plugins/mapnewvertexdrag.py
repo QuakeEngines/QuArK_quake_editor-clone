@@ -8,7 +8,6 @@ Start of plugin for advance vertex-dragging
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
 
 
 
