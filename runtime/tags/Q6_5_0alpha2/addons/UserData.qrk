@@ -1,0 +1,17 @@
+QQRKSRC1
+// User-modifiable configuration file for QuArK 5.3.
+
+// Please see file TECHINFO.TXT for more information
+// about this file format.
+
+//$Header$
+
+{
+  Description = "Custom configuration file."
+
+  MdlObjPanel.qrk =
+  {
+  }
+
+}
+

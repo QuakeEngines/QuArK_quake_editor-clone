@@ -1,0 +1,419 @@
+QQRKSRC1
+//$Header$
+
+{
+	QuArKProtected = "1"
+	Rogue directory infos.qctx =
+	{
+		Game = "Quake 2"
+		SourceDir = "rogue"
+		GameDir = "rogue"
+	}
+
+	NewMapItems.qtx =
+	{
+		ToolBox = "New Map Items..."
+		Root = "Rogue Entities.qtxfolder"
+		Rogue Entities.qtxfolder =
+		{
+			Player Starts.qtxfolder =
+			{
+				info_player_coop_lava:e = { angle="360" origin = "0 0 0" ;desc = "" }
+			}
+			Weapons and Ammo.qtxfolder =
+			{
+				weapon_chainfist:e	= { angle="360" origin = "0 0 0" ;desc = "Chainfist" }
+				weapon_disintegrator:e	= { angle="360" origin = "0 0 0" ;desc = "Disruptor" }
+				weapon_etf_rifle:e	= { angle="360" origin = "0 0 0" ;desc = "ETF Rifle" }
+				weapon_plasmabeam:e	= { angle="360" origin = "0 0 0" ;desc = "Plasma Beam" }
+				weapon_proxlauncher:e	= { angle="360" origin = "0 0 0" ;desc = "Prox Launcher" }
+
+				ammo_disruptor:e	= { angle="360" origin = "0 0 0" ;desc = "Disruptor" }
+				ammo_flechettes:e	=	{ angle="360" origin = "0 0 0" ;desc = "Ammo for ETF Rifle" }
+				ammo_nuke:e	=	{ angle="360" origin = "0 0 0" ;desc = "Nuke" }
+				ammo_prox:e	=	{ angle="360" origin = "0 0 0" ;desc = "Ammo for Prox Launcher" }
+				ammo_tesla:e	=	{ angle="360" origin = "0 0 0" ;desc = "Tesla" }
+			}
+			DeathMatch Stuff..qtxfolder =
+			{
+				dm_dball_ball:e = { angle="360" origin = "0 0 0" ;desc = "Deathmatch Ball" }
+				dm_dball_ball_start:e = { angle="360" origin = "0 0 0" ;desc = "Deathball ball start point" }
+				dm_dball_goal:b = { ;desc = "Deathball goal" }
+				dm_dball_speed_change:b = { angle="360" ;desc = "Deathmatch ball speed changing field" }
+				dm_dball_team1_start:e = { angle="360" origin = "0 0 0" ;desc = "Deathball team 1 start point" }
+				dm_dball_team2_start:e = { angle="360" origin = "0 0 0" ;desc = "Deathball team 2 start point" }
+//				dm_tag_token:e = { angle="360" origin = "0 0 0" ;desc = "Tag Token" }
+			}
+			Monsters.qtxfolder =
+			{
+				monster_carrier:e	=	{ angle="360" origin = "0 0 0" ;desc = "Carrier" }
+				monster_daedalus:e	=	{ angle="360" origin = "0 0 0" ;desc = "Daedalus" }
+				monster_medic:e	=	{ angle="360" origin = "0 0 0" ;desc = "Medic" }
+				monster_medic_commander:e	=	{ angle="360" origin = "0 0 0" ;desc = "Medic Commander" }
+				monster_stalker:e	=	{ angle="360" origin = "0 0 0" ;desc = "Stalker" }
+				monster_turret:e	=	{ angle="360" origin = "0 0 0" ;desc = "Turret" }
+				monster_widow:e	=	{ angle="360" origin = "0 0 0" ;desc = "Widow" }
+				monster_widow2:e	=	{ angle="360" origin = "0 0 0" ;desc = "Widow2" }
+			}
+			Items.qtxfolder =
+			{
+				item_compass:e	=	{ angle="360" origin = "0 0 0" ;desc = "Compass" }
+				item_doppleganger:e	=	{ angle="360" origin = "0 0 0" ;desc = "Doppleganger" }
+				item_double:e	=	{ angle="360" origin = "0 0 0" ;desc = "Double" }
+				item_ir_goggles:e	=	{ angle="360" origin = "0 0 0" ;desc = "IR Goggles" }
+				item_sphere_defender:e	=	{ angle="360" origin = "0 0 0" ;desc = "Defender sphere" }
+				item_sphere_hunter:e	=	{ angle="360" origin = "0 0 0" ;desc = "Hunter sphere" }
+				item_sphere_vengeance:e	=	{ angle="360" origin = "0 0 0" ;desc = "Venegance sphere" }
+			}
+			Keys.qtxfolder =
+			{
+				key_nuke:e	=	{ angle="360" origin = "0 0 0" ;desc = "Antimatter Bomb" }
+				key_nuke_container:e	=	{ angle="360" origin = "0 0 0" ;desc = "Antimatter Pod" }
+			}
+			Func_.qtxfolder =
+			{
+				func_door_secret2:b = { angle="360" ;desc="Basic secret door." ;incl="defpoly" }
+				func_force_wall:b = { ;desc="A vertical particle force wall" ;incl="defpoly" }
+				func_plat2:b = { angle="360" ;desc="func_plat2" ;incl="defpoly" }
+			}
+			Target_.qtxfolder =
+			{
+				target_anger:e	=	{ angle="360" origin = "0 0 0" ;desc = "" }
+				target_blacklight:e	=	{ angle="360" origin = "0 0 0" ;desc = "" }
+				target_killplayers:e	=	{ angle="360" origin = "0 0 0" ;desc = "" }
+				target_orb:e	=	{ angle="360" origin = "0 0 0" ;desc = "" }
+				target_steam:e	=	{ angle="360" origin = "0 0 0" ;desc = "" }
+			}
+			Trigger_.qtxfolder =
+			{
+				trigger_disguise:b = { ;desc="trigger_disguise" ;incl="defpoly" }
+				trigger_teleport:b = { ;desc="trigger_teleport" ;incl="defpoly" }
+			}
+			Misc stuff.qtxfolder =
+			{
+				hint_path:e	=	{ angle="360" origin = "0 0 0" ;desc = "" }
+				misc_actor:e	=	{ angle="360" origin = "0 0 0" ;desc = "" }
+				misc_nuke_core:e	=	{ angle="360" origin = "0 0 0" ;desc = "" }
+				trap_flameshooter:e	=	{ angle="360" origin = "0 0 0" ;desc = "" }
+				turret_invisible_brain:e	=	{ origin = "0 0 0" ;desc = "Invisible brain to drive the turret." }
+			}
+		}
+	}
+
+	Entity forms.qctx =
+	{
+		t_player:incl = { bbox='-16 -16 -24 16 16 32' }
+		t_weapon:incl = { bbox='-16 -16 -16 16 16 16'
+			targetname: = { Txt="&" Hint="Use this to make it disappear by making it the killtarget of a monster." }
+			target: = { Txt="&" Hint = "Trigger something when the player picks this up." }
+		}
+		t_ammo:incl = { bbox='-16 -16 -16 16 16 16'
+			targetname: = { Txt="&" Hint="Use this to make it disappear by making it the killtarget of a monster." }
+			target: = { Txt="&" Hint = "Trigger something when the player picks this up." }
+		}
+		t_item:incl = { bbox='-16 -16 -16 16 16 16'
+			targetname: = { Txt="&" Hint="Use this to make it disappear by making it the killtarget of a monster." }
+			target: = { Txt="&" Hint = "Trigger something when the player picks this up." }
+		}
+
+		weapon_chainfist:form = { t_weapon=! mdl="models/weapons/g_chainf/tris.md2" }
+		weapon_disintegrator:form = { t_weapon=! mdl="models/weapons/g_dist/tris.md2" }
+		weapon_etf_rifle:form = { t_weapon=! mdl="models/weapons/g_etf_rifle/tris.md2" }
+		weapon_plasmabeam:form = { t_weapon=! mdl="models/weapons/g_beamer/tris.md2" }
+		weapon_proxlauncher:form = { t_weapon=! mdl="models/weapons/g_plaunch/tris.md2" }
+
+		ammo_disruptor:form = { t_ammo=! mdl="models/ammo/am_disr/tris.md2" }
+		ammo_flechettes:form = { t_ammo=! mdl="models/ammo/am_flechette/tris.md2" }
+		ammo_nuke:form = { t_ammo=! mdl="models/weapons/g_nuke/tris.md2" }
+		ammo_prox:form = { t_ammo=! mdl="models/ammo/am_prox/tris.md2" }
+		ammo_tesla:form = { t_ammo=! mdl="models/ammo/am_tesl/tris.md2" }
+
+		info_player_coop_lava:form = {}
+
+		item_compass:form = { t_item=! mdl="models/objects/fire/tris.md2" }
+		item_doppleganger:form = { t_item=! mdl="models/items/dopple/tris.md2" }
+		item_double:form = { t_item=! mdl="models/items/ddamage/tris.md2" }
+		item_ir_goggles:form = { t_item=! mdl="models/items/goggles/tris.md2" }
+		item_sphere_defender:form = { t_item=! mdl="models/items/defender/tris.md2" }
+		item_sphere_hunter:form = { t_item=! mdl="models/items/hunter/tris.md2" }
+		item_sphere_vengeance:form = { t_item=! mdl="models/items/vengnce/tris.md2" }
+		dm_tag_token:form = { t_item=! mdl="models/items/tagtoken/tris.md2" }
+
+		key_nuke:form = { t_item=! mdl="models/weapons/g_nuke/tris.md2" }
+		key_nuke_container:form = { t_item=! mdl="models/weapons/g_nuke/tris.md2" }
+
+		dm_dball_ball:form = { bbox='-48 -48 -48 48 48 48' }
+		dm_dball_ball_start:form = { bbox='-48 -48 -48 48 48 48' }
+		dm_dball_goal:form = {
+			HELP="Team1/Team2 - beneficiary of this goal. when the ball enters this goal, the beneficiary team will score."
+			spawnflags: = { txt="&" typ="X1" cap="Team 1" }
+			spawnflags: = { txt="&" typ="X2" cap="Team 2" }
+			wait: = { txt="Score" hint="score to be given for this goal (default 10) player gets score+5." }
+		}
+		dm_dball_speed_change:form = {
+			spawnflags: = { txt="&" typ="X1" cap="One Way" }
+			speed: = { txt="&" hint="multiplier for speed (.5 = half, 2 = double, etc) (default = double)" }
+			angle: = { txt="&" hint="used with ONEWAY so speed change is only one way." }
+			delay: = { txt="&" hint="time between speed changes (default: 0.2 sec)" }
+		}
+		dm_dball_team1_start:form = { t_player=! }
+		dm_dball_team2_start:form = { t_player=! }
+
+		func_plat2:form = {
+			spawnflags: = { txt="&" typ="X1" cap="PLAT_LOW_TRIGGER" hint="creates a short trigger field at the bottom" }
+			spawnflags: = { txt="&" typ="X2" cap="PLAT2_TOGGLE" hint="plat will not return to default position." }
+			spawnflags: = { txt="&" typ="X4" cap="PLAT2_TOP" hint="plat's default position will the the top." }
+			spawnflags: = { txt="&" typ="X8" cap="PLAT2_TRIGGER_TOP" hint="plat will trigger it's targets each time it hits top" }
+			spawnflags: = { txt="&" typ="X16" cap="PLAT2_TRIGGER_BOTTOM" hint="plat will trigger it's targets each time it hits bottom" }
+			spawnflags: = { txt="&" typ="X32" cap="BOX_LIFT" hint="this indicates that the lift is a box, rather than just a platform" }
+
+			Help = "Lift that moves up and down"
+			targetname: =
+			{
+        			Txt = "&"
+        			Hint = "YOU DON'T HAVE TO SET THIS - If set, no touch field will be sp"
+        			"awned and a remote button or trigger field activates the platform."
+			}
+			speed: =
+			{
+        			Txt = "&"
+        			Hint = "Speed of the lift (default 200)."
+			}
+			accel: =
+			{
+        			Txt = "&"
+        			Hint = "acceleration (default 500)."
+			}
+			lip: =
+			{
+        			Txt = "&"
+        			Hint = "Lip remaining at end of move (default 8)."
+			}
+			height: =
+			{
+        			Txt = "&"
+        			Hint = "the amount the plat moves. If not set it is implicitly determined "
+        			"by the model's height"
+			}
+			sounds: =
+			{
+        			Txt = "&"
+        			Typ = "C"
+        			Items = "1) base fast"$0D"2) chain slow"
+        			Values = "1"$0D"2"
+        			Hint = "Sound it makes while moving."
+			}
+		}
+
+		func_door_secret2:form = {
+			Help = "Basic secret door. Slides back, then to the left. Angle determines direction."
+//		spawnflags: = { txt="&" typ="X1" cap="open_once" hint="not implemented yet" }
+			spawnflags: = { txt="&" typ="X2" cap="1st_left" hint="1st move is left/right of arrow" }
+			spawnflags: = { txt="&" typ="X4" cap="1st_down" hint="1st move is forwards/backwards" }
+//		spawnflags: = { txt="&" typ="X8" cap="no_shoot" hint="not implemented yet" }
+			spawnflags: = { txt="&" typ="X16" cap="always_shoot" hint="even if targeted, keep shootable" }
+			spawnflags: = { txt="&" typ="X32" cap="reverse_left" hint="the sideways move will be to right of arrow" }
+			spawnflags: = { txt="&" typ="X64" cap="reverse_back" hint="the to/fro move will be forward" }
+
+			targetname: =
+			{
+        			Txt = "&"
+        			Hint = "Set this if it must be opened with a switch of some kind."
+			}
+			speed: =
+			{
+        			Txt = "&"
+        			Hint = "Default is 100"
+			}
+			dmg: =
+			{
+        			Txt = "&"
+        			Hint = "Damage to inflict when blocked (default 2)."
+			}
+			wait: =
+			{
+        			Txt = "&"
+        			Hint = "How long to hold in the open position (default 5, -1 means hold)."
+			}
+		}
+
+		func_force_wall:form = {
+			targetname: = { txt="&" }
+			spawnflags: = { txt="&" typ="X1" cap="start_on" hint="forcewall begins activated. triggering will turn it off." }
+			style: = { Typ="C" Hint="color of particles to use."
+				items="Green"$0D
+							"Red"$0D
+							"Blue"$0D
+							"Orange"
+				values="208"$0D"240"$0D"241"$0D"224"
+			}
+		}
+
+		target_anger:form = {
+			HELP="This trigger will cause an entity to be angry at another entity when a player touches it. Target the"$0D
+					"entity you want to anger, and killtarget the entity you want it to be angry at."
+
+			targetname: = { txt="&" }
+			target: = { txt="&" hint="entity to piss off" }
+			killtarget: = { txt="&" hint="entity to be pissed off at" }
+		}
+		target_blacklight:form = {
+			bbox='-16 -16 -24 16 16 24'
+			help="Pulsing black light with sphere in the center"
+		}
+		target_killplayers:form = {
+			help="When triggered, this will kill all the players on the map."
+			targetname: = { txt="&" }
+		}
+		target_orb:form = {
+			bbox='-16 -16 -24 16 16 24'
+			HELP="Translucent pulsing orb with speckles"
+		}
+		target_steam:form = {
+			bbox='-8 -8 -8 8 8 8'
+			HELP="Creates a steam effect (particles w/ velocity in a line)."$0D
+  				"best way to use this is to tie it to a func_timer that 'pokes'"$0D
+  				"it every second (or however long you set the wait time)"
+
+			targetname: = { txt="&" }
+			speed: = { txt="&" hint="velocity of particles (default 50)" }
+  			count: = { txt="&" hint="number of particles (default 32)" }
+  			wait: = { txt="&" hint="seconds to run before stopping (overrides default value derived from func_timer)" }
+	  		sounds: = { typ="C" txt="Colors" hint="color of particles (default 8 for steam) the color range is from this color to this color + 6"
+				items="white-A"$0D
+					"white-B"$0D
+					"white-C"$0D
+					"white-D"$0D
+					"sparks"$0D
+					"blue water"$0D
+					"brown water"$0D
+					"slime"$0D
+					"blood"
+				values="6"$0D
+					"7"$0D
+					"8"$0D
+					"9"$0D
+					"224"$0D
+					"176"$0D
+					"80"$0D
+					"208"$0D
+					"232"
+			}
+		}
+
+		trigger_teleport:form = {
+			help="Any object touching this will be transported to the corresponding"$0D
+					"info_teleport_destination entity. You must set the 'target' field,"$0D
+					"and create an object with a 'targetname' field that matches."
+
+			targetname: = { txt="&" }
+			spawnflags: = { txt="&" typ="X1" cap="player_only" hint="only players are teleported" }
+//		spawnflags: = { txt="&" typ="X2" cap="silent" hint="<not used right now>" }
+//		spawnflags: = { txt="&" typ="X4" cap="ctf_only" hint="<not used right now>" }
+			spawnflags: = { txt="&" typ="X8" cap="start_on" hint="when trigger has targetname, start active, deactivate when used." }
+		}
+
+		trigger_disguise:form = {
+			help="Anything passing through this trigger when it is active will be marked as disguised."
+
+			targetname: = { txt="&" }
+			spawnflags: = { txt="&" typ="X1" cap="TOGGLE" hint="field is turned off and on when used." }
+			spawnflags: = { txt="&" typ="X2" cap="START_ON" hint="field is active when spawned." }
+			spawnflags: = { txt="&" typ="X4" cap="REMOVE" hint="field removes the disguise" }
+		}
+
+		trap_flameshooter:form = {}
+
+		turret_invisible_brain:form = {
+			bbox='-16 -16 -16 16 16 16'
+			help="Does not search for targets. If targeted, can only be turned on once"$0D
+					"and then off once. After that they are completely disabled."
+
+			delay: = { txt="&" hint="the delay between firing (default ramps for skill level)" }
+			target: = { txt="&" hint="the turret breach" }
+			killtarget: = { txt="&" hint="the item you want it to attack." }
+			targetname: = { txt="&" hint="Target the brain if you want it activated later, instead of immediately. It will wait 3 seconds before firing to acquire the target." }
+		}
+
+		t_monster:incl = {
+			bbox = '-16 -16 -24 16 16 32'
+			mdlskin = '0'
+			item: = { Txt="&" Hint="This will be spawned when the monster is killed" }
+			killtarget: = { Txt="&" Hint="This will be removed from the level when the monster is killed" }
+			deathtarget: = { Txt="&" Hint="This will be triggered when the monster is killed" }
+			targetname: = { Txt="&" Hint="Use if the monster is to be spawned in" }
+			target: = { Txt="&" Hint="Target a point_combat or path_corner" }
+			combattarget: = { Txt="&" Hint="This must be the name of a point_combat in order to work" }
+			spawnflags: = { Txt="&" Typ="X1" Cap="Ambush" Hint="This will make the monster attack when it hears you fire a gun or when it sees you." }
+			spawnflags: = { Txt="&" Typ="X2" Cap="Trigger_spawn" Hint="This will Spawn the monster when triggered." }
+			spawnflags: = { Txt="&" Typ="X4" Cap="Sight" Hint="This will make the monster attack when it sees you." }
+		}
+
+		monster_daedalus:form = {
+			t_monster=!
+			help="This is the improved icarus monster."
+			mdl = "models/monsters/hover/tris.md2"
+			mdlskin = '2'
+		}
+		monster_carrier:form = {
+			t_monster=!
+			bbox='-56 -56 -44 56 56 44'
+			mdl = "models/monsters/carrier/tris.md2"
+		}
+		monster_medic:form = {
+			t_monster=!
+			mdl = "models/monsters/medic/tris.md2"
+		}
+		monster_medic_commander:form = {
+			t_monster=!
+			mdl = "models/monsters/medic/tris.md2"
+			mdlskin = '2'
+		}
+		monster_stalker:form = {
+			t_monster=!
+			bbox='-28 -28 -18 28 28 18'
+			mdl = "models/monsters/stalker/tris.md2"
+			spawnflags: = { Txt="&" Typ="X8" Cap="ONROOF" hint="Monster starts sticking to the roof." }
+		}
+		monster_turret:form = {
+			t_monster=!
+			bbox='-16 -16 -16 16 16 16'
+			help="The automated defense turret that mounts on walls. "
+			mdl = "models/monsters/turret/tris.md2"
+			spawnflags: = { Txt="&" Typ="X8" Cap="Blaster" }
+			spawnflags: = { Txt="&" Typ="X16" Cap="MachineGun" }
+			spawnflags: = { Txt="&" Typ="X32" Cap="Rocket" }
+			spawnflags: = { Txt="&" Typ="X64" Cap="Heatbeam" }
+			spawnflags: = { Txt="&" Typ="X128" Cap="WallUnit" }
+		}
+		monster_widow:form = {
+			t_monster=!
+			bbox='-40 -40 0 40 40 144'
+			mdl = "models/monsters/blackwidow/tris.md2"
+		}
+		monster_widow2:form = {
+			t_monster=!
+			bbox='-70 -70 0 70 70 144'
+			mdl = "models/monsters/blackwidow2/tris.md2"
+		}
+
+		info_player_coop_lava:form = {
+			t_player=!
+			help="potential spawning position for coop games on rmine2"$0D
+					"where lava level needs to be checked"
+		}
+
+		hint_path:form = {
+			target: = { txt="&" hint="next hint path" }
+			spawnflags: = { Txt="&" Typ="X1" Cap="END" hint="set this flag on the endpoints of each hintpath." }
+			wait: = { txt="&" hint="set this if you want the monster to freeze when they touch this hintpath" }
+		}
+
+		misc_nuke_core:form = {
+			bbox='-16 -16 -16 16 16 16'
+			help="toggles visible/not visible. starts visible."
+			mdl="models/objects/core/tris.md2"
+			targetname: = { Txt="&" }
+		}
+	}
+}
