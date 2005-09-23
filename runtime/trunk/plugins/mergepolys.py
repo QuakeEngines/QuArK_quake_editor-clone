@@ -170,4 +170,3 @@ def groupmergepoly(editor,o):
     item.o=o
     return item
 
-# $Log$

@@ -141,17 +141,3 @@ nt.tagdrawfunc(_VTXEDGE_dcb, VTXEDGE)
 nt.tagdrawfunc(_PLANE_dcb, PLANE)
 nt.tagdrawfunc(_B2CP_dcb, B2CP)
 
-# ------------------------------------------------------------------ #
-# CVS log - make no changes below this line
-#
-# $Log$
-# Revision 1.1.2.3  2005/09/22 10:41:27  peter-b
-# Change order of arguments to tagdrawfunc() to match tagchangefunc()
-#
-# Revision 1.1.2.2  2005/09/22 10:32:11  peter-b
-# Check type of tagged points (using tag change callback)
-#
-# Revision 1.1.2.1  2005/09/21 18:30:14  peter-b
-# New mapgeomtags plugin provides infrastructure for tagging map geometry.
-# Deprecated tagging plugin now uses mapgeomtags to do its thing.
-#

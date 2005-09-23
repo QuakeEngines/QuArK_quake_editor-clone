@@ -286,19 +286,3 @@ def thinClick(m):
 quarkpy.mapsearch.items.append(qmenu.item('Find &Thin Faces', thinClick,
   "|Find Thin Faces:\n\nThis function will search for and identifies brushes with faces that are suspiciously thin.", "intro.mapeditor.menu.html#searchmenu"))
 
-#$Log$
-#Revision 1.5  2003/03/21 05:47:45  cdunde
-#Update infobase and add links
-#
-#Revision 1.4  2002/05/21 07:06:10  tiglari
-#fix problems with selection dialog (loadiing first selection when appropriate)
-#
-#Revision 1.3  2001/06/17 21:10:56  tiglari
-#fix button captions
-#
-#Revision 1.2  2001/06/16 03:19:47  tiglari
-#add Txt="" to separators that need it
-#
-#Revision 1.1  2001/05/21 11:58:26  tiglari
-#kickoff
-#

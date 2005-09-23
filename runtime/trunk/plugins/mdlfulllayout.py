@@ -41,10 +41,3 @@ class Full3DLayout(ModelLayout):
 
 LayoutsList.append(Full3DLayout)
 
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-#
-#
-#

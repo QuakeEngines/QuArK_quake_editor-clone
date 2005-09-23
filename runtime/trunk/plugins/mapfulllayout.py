@@ -44,10 +44,3 @@ class Full3DLayout(MapLayout):
 LayoutsList.append(Full3DLayout)
 
 
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-#
-#
-#

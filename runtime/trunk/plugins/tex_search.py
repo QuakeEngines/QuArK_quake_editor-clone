@@ -99,10 +99,3 @@ def openbox():
     f = quarkx.newform("temp")
     TextureSearchDlg(f)
 
-# $Log$
-# Revision 1.4  2002/04/07 12:46:06  decker_dk
-# Pretty separator.
-#
-# Revision 1.3  2001/06/19 20:59:03  aiv
-# added cvs headers + small bug fix
-#

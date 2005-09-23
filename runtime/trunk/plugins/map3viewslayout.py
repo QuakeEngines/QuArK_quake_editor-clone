@@ -241,10 +241,3 @@ class ThreeViewsLayout(MapLayout):
 LayoutsList.append(ThreeViewsLayout)
 
 
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-#
-#
-#

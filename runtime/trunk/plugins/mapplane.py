@@ -203,11 +203,3 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
 #quarkpy.mapcommands.items.append(planeItem)
 
 
-#$Log$
-#Revision 1.2  2001/07/24 02:37:11  tiglari
-#glue plane to tagged plane
-#
-#Revision 1.1  2001/05/25 12:27:15  tiglari
-#tagged plane support
-#
-#

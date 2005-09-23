@@ -182,15 +182,3 @@ quarkpy.mapcommands.items.append(qmenu.item('Integralize Selected Faces', integr
 
 
 
-# ----------- REVISION HISTORY ------------
-# $Log$
-# Revision 1.4  2003/03/21 06:28:52  cdunde
-# To correct typo error
-#
-# Revision 1.2  2003/01/02 22:36:26  tiglari
-# transferred from rel-c63a branch
-#
-# Revision 1.1.2.1  2003/01/01 06:54:10  tiglari
-# added to 6.3 in spite of feature-freeze, due to importance
-#
-#

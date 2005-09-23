@@ -265,12 +265,3 @@ class ThreeViews2DLayout(MapLayout):
 LayoutsList.append(ThreeViews2DLayout)
 
 
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.1  2003/03/24 05:02:48  cdunde
-# To add new 3 view - 2D layout
-#
-# 
-# 

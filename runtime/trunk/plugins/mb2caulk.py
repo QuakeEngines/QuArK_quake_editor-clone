@@ -146,6 +146,3 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
 quarkpy.mapentities.FaceType.menu = tagmenu
 
 
-# ----------- REVISION HISTORY ------------
-#$Log$
-#

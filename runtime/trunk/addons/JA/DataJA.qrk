@@ -2,11 +2,6 @@ QQRKSRC1
 // Configuration file for JA
 
 //$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2004/01/12 14:30:09  Nazar
-//Full singleplayer game support of Jedi Academy (multiplayer partly)
-//
 
 {
   QuArKProtected = "1"

@@ -349,10 +349,3 @@ LayoutsList.append(FourViewsLayout1)
 LayoutsList.append(FourViewsLayout2)
 
 
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-#
-#
-#

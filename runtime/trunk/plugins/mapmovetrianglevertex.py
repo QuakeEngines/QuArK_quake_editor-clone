@@ -293,8 +293,3 @@ def moveTriangleFaces(oldface, oldverpos, facemoved, polyofface, TGlockvertex, p
         result.append(newface)
     return old, result
 
-# $Log$
-# Revision 1.1  2005/08/15 05:49:23  cdunde
-# To commit all files for Terrain Generator
-#
-#

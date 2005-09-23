@@ -125,9 +125,3 @@ def LoadMapClick(m):
 
 
 
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.1  2003/07/04 20:01:16  cdunde
-#To add new Addons main menu item and sub-menus
-#

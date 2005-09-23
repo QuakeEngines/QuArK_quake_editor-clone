@@ -82,6 +82,3 @@ class FourViewsLayoutUEd(FourViewsLayout):
         
 LayoutsList.append(FourViewsLayoutUEd)
 
-# ----------- REVISION HISTORY ------------
-# $Log$
-#

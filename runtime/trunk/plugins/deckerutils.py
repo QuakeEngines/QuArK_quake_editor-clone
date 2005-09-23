@@ -128,15 +128,3 @@ def RegisterInToolbox(toolboxname, qtxfolder, obj):
         print "--folderadded"
         return
 
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.5  2000/07/09 13:21:54  decker_dk
-#New function
-#
-#Revision 1.4  2000/06/03 10:25:30  alexander
-#added cvs headers
-#
-#Revision 1.3  2000/05/23 19:09:47  decker_dk
-#Removed evil hidden TAB-characters
-#
-#

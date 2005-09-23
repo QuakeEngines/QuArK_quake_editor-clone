@@ -293,13 +293,3 @@ class SelectModesBar(ToolBar):
 quarkpy.maptools.toolbars["tb_selectmodes"] = SelectModesBar
 
 
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.4  2003/11/27 08:17:22  cdunde
-# To update 3D Zoom to selection feature for faces
-#
-# Revision 1.3  2003/11/16 08:34:02  cdunde
-# To add log
-#
-#

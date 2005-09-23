@@ -70,7 +70,3 @@ quarkpy.mapentities.EntityLinesMapping.update({
   "Quake 2": Quake2DrawEntityLines()
 })
 
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-#

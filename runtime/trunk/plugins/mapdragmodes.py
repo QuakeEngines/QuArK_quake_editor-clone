@@ -411,29 +411,3 @@ class DragModesBar(ToolBar):
 quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 
 
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.9  2005/03/16 10:17:15  cdunde
-# To fix non-selection of Shape Builder items for Select Everyting function.
-#
-# Revision 1.8  2004/01/24 16:28:34  cdunde
-# To reset defaults for toolbars
-#
-# Revision 1.7  2003/03/15 20:40:19  cdunde
-# To update hints and add infobase links
-#
-# Revision 1.6  2001/10/22 10:15:48  tiglari
-# live pointer hunt, revise icon loading
-#
-# Revision 1.5  2001/04/15 22:48:17  tiglari
-# groups & brush entity selection in select everything mode (will be selected
-#  if all of their subitems are)
-#
-# Revision 1.4  2001/02/19 19:15:40  decker_dk
-# Added 'Select-everything'; entities, brushes, duplicators and beziers.
-#
-# Revision 1.3  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-

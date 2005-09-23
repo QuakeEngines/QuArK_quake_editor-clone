@@ -324,5 +324,3 @@ def parentSnapPopup(o, editor):
 
 #quarkpy.mapentities.FaceType.menu = snapfacemenu
 
-# $Log: #
-#

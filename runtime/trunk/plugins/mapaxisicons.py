@@ -170,8 +170,3 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 #   red line is rock solid.
 #
 
-
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#

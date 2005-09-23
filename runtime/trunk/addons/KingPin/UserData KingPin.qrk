@@ -3,8 +3,6 @@ QQRKSRC1
 // It's the text version of file: UserData KingPin.qrk
 
 //$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
 
 {
   Description = "Custom configuration file for Kingpin"

@@ -136,5 +136,3 @@ quarkpy.mapduplicator.DupCodes.update({
   "dup radial":     RadialDuplicator,
 })
 
-# ----------- REVISION HISTORY ------------
-#$Log$

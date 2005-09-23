@@ -132,12 +132,3 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
   quarkpy.mapcommands.items.append(menheapstatus)
 
 
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.1  2002/01/08 10:11:41  tiglari
-# uses heapstatus function to display heap info (currently just TotalAllocated,
-# all of the fields mentioned in the comments can be accessed as specifics
-# of the QObject returned by heapstatus)
-#

@@ -181,18 +181,3 @@ def macro_linedit(self):
     
 quarkpy.qmacro.MACRO_linedit = macro_linedit
 
-#$Log$
-#Revision 1.4  2001/06/16 03:29:36  tiglari
-#add Txt="" to separators that need it
-#
-#Revision 1.3  2001/05/12 18:57:36  tiglari
-#add Mirror checkbox
-#
-#Revision 1.2  2001/05/12 12:24:23  tiglari
-#add rotate & shear
-#
-#Revision 1.1  2001/05/11 09:39:41  tiglari
-#kickoff with scale
-#
-
-    

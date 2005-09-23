@@ -222,13 +222,3 @@ quarkpy.mapentities.EntityLinesMapping.update({
   "Quake 3": Quake3DrawEntityLines()
 })
 
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.2  2002/12/28 14:03:54  decker_dk
-# Added some jump-arch kindof entity-lines for 'trigger_push' and 'target_push'. Some of the math ain't correct.
-#
-# Revision 1.1  2001/01/30 19:20:30  decker_dk
-# Basically a copy of mapquake2entitylines.py
-#
-#

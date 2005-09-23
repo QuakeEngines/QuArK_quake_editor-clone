@@ -227,10 +227,3 @@ class ClassicLayout(MapLayout):
 LayoutsList.insert(0, ClassicLayout)
 
 
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-#
-#
-#

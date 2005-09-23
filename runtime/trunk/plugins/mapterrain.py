@@ -1005,6 +1005,3 @@ def newpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
 quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 
-# ----------- REVISION HISTORY ------------
-#$Log$
-#

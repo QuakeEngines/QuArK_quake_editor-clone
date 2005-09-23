@@ -74,6 +74,3 @@ class AxisLockBar(ToolBar):
 
 quarkpy.mdltools.toolbars["tb_AxisLock"] = AxisLockBar
 
-# ----------- REVISION HISTORY ------------
-# $Log$
-#

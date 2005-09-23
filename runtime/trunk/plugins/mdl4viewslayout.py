@@ -284,11 +284,3 @@ class FourViewsLayout2(FourViewsLayout):
 #
 
 LayoutsList.insert(0, FourViewsLayout2)
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-#
-#
-#

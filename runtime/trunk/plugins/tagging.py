@@ -216,24 +216,3 @@ def drawredface(view, cv, face):
         cv.line(p1,p2)
       drawsquare(cv, sum/len(vtx), 8)
 
-# ------------------------------------------------------------------ #
-# CVS log - make no changes below this line
-#
-#$Log$
-#Revision 1.5.8.4  2005/09/21 18:30:14  peter-b
-#New mapgeomtags plugin provides infrastructure for tagging map geometry.
-#Deprecated tagging plugin now uses mapgeomtags to do its thing.
-#
-#Revision 1.5.8.3  2005/09/21 14:09:19  peter-b
-#Update docstring and create plugin Info dictionary
-#
-#Revision 1.5.8.2  2005/09/21 10:43:09  peter-b
-# - Arg order of some tagging API functions changed
-# - Fix tagging of multiple faces
-# - Eliminate unnecessary calls to invalidateviews()
-# - Don't draw tags on faces that don't exist in document tree
-#
-#Revision 1.5.8.1  2005/09/19 10:37:51  peter-b
-#Emulate old behaviour using new tagging API
-#
-#

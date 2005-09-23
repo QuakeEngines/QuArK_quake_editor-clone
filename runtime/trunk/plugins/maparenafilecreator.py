@@ -99,12 +99,3 @@ quarkpy.mapduplicator.DupCodes.update({
   "dup arenafilemaker":	     ArenaFileMaker,
 })
 
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.1  2000/07/04 17:27:26  alexander
-#arenafilemaker macro
-#
-#
-#

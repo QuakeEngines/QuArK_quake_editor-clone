@@ -403,26 +403,3 @@ class TagModesBar(ToolBar):
 quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 
-# ----------- REVISION HISTORY ------------
-# $Log$
-# Revision 1.7  2005/08/16 04:03:12  cdunde
-# Fix toolbar arraignment
-#
-# Revision 1.6  2004/11/13 11:03:25  peter-b
-# Better error handling for "wrap around pillar" function.
-#
-# Revision 1.5  2004/01/24 16:28:39  cdunde
-# To reset defaults for toolbars
-#
-# Revision 1.4  2003/07/15 07:51:38  cdunde
-# Remove unneeded seperators to shorten toolbar for screen size.
-#
-# Revision 1.3  2003/07/14 20:25:14  cdunde
-# To add selection toolbar and update tag toolbar
-#
-# Revision 1.2  2003/05/09 01:01:08  cdunde
-# Added function buttons for tagtoolbar
-#
-# Revision 1.1  2003/03/15 07:19:30  cdunde
-# To add hint updates and infobase links
-#

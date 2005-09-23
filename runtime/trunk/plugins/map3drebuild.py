@@ -42,10 +42,3 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
 
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.1  2004/02/12 18:17:39  cdunde
-#To add 'Tab' HotKey function to rebuild all views and clear lockups
-#
-#

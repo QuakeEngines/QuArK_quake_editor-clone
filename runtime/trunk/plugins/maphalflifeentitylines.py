@@ -295,13 +295,3 @@ quarkpy.mapentities.EntityLinesMapping.update({
 })
 
 
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.3  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

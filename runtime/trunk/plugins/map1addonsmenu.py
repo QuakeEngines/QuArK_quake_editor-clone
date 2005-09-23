@@ -62,6 +62,3 @@ OtherMenu.items.append(qmenu.sep)
 OtherMenu.items.append(quarkpy.qmenu.item("Import any map file", Func1Click, "|Import any map file:\n\nThis item function allows you to load any map file into the existing editor to be added to the map you are working on.\n\nBecause it also may import entities, you may half to delete some of them like its info_player_start.\n\nThis function is created by the plugins/map1loadanymap.py file.|intro.mapeditor.menu.html#addonsmenu"))
 
 
-# ----------- REVISION HISTORY ------------
-#
-#$Log$

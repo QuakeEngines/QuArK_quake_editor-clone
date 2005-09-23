@@ -108,8 +108,3 @@ def facemenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func)
 
 quarkpy.mapentities.FaceType.menu = facemenu
 
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.1  2001/05/29 10:13:21  tiglari
-#kickoff
-#

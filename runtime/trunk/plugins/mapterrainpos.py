@@ -536,11 +536,3 @@ def PaintBrushClick(m):
     PaintBrushDlg(quarkx.clickform, 'paintbrushdlg', editor, setup, action)
 
 
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.1  2005/08/15 05:49:23  cdunde
-# To commit all files for Terrain Generator
-#
-#

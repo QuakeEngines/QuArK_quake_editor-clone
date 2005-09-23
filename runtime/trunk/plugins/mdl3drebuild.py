@@ -42,7 +42,3 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
 
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#
