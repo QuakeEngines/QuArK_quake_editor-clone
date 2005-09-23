@@ -29,8 +29,6 @@ $Id$
  
  * [cdunde] : Fixed slowdown/lockup problem on startup and in editor.
 
- * [cdunde] : Started new TODO.txt file for things to fix or change.
-
  * [peter-b] : New tagging API in `quarkpy.tagging' module.
      - New `mapgeomtags' plugin
      - Make `tagging' plugin emulate old behaviour using `mapgeomtags' 
