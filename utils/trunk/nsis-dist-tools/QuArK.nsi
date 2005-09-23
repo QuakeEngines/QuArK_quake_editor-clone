@@ -1,6 +1,6 @@
 #
 # NSIS installer script for QuArK 6.4+
-# Copyright (C) 2003  Peter Brett <peter@peter-b.co.uk>
+# Copyright (C) 2003-2005  Peter Brett <peter@peter-b.co.uk>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,10 +31,10 @@
 #   e.g. quark-win32-6.4.0alpha1.exe
 #   e.g. Quake Army Knife 6.4.1 rel 5 Setup
 
-!define QRK_MAJOR_VER 6.4
-!define QRK_MINOR_VER 1
+!define QRK_MAJOR_VER 6.5
+!define QRK_MINOR_VER 0
 !define QRK_STATE "alpha"
-!define QRK_RELEASE 1
+!define QRK_RELEASE 2
 
 #-----------------------------#
 # Setup the installer GUI etc #
@@ -64,7 +64,7 @@ InstallDirRegKey HKLM "SOFTWARE\${MUI_PRODUCT}" "INSTDIR"
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_FINISHPAGE_RUN "$INSTDIR\QuArK.exe"
 !define MUI_FINISHPAGE_RUN_TEXT "Run QuArK"
-!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\readme.txt"
+!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
 !define MUI_FINISHPAGE_LINK "Visit the QuArK website"
 !define MUI_FINISHPAGE_LINK_LOCATION http://www.planetquake.com/quark
 
@@ -100,7 +100,7 @@ Section "QuArK" SectionQuArK
     StrCpy $R0 "$SMPROGRAMS\$STARTMENU_FOLDER"
     CreateDirectory $R0
     CreateShortCut "$R0\QuArK.lnk" "$INSTDIR\QuArK.exe" "" "" "" "" "" "Quake Army Knife"
-    CreateShortCut "$R0\QuArK Readme.lnk" "$INSTDIR\readme.txt"
+    CreateShortCut "$R0\QuArK Readme.lnk" "$INSTDIR\README.txt"
     CreateShortCut "$R0\Uninstall QuArK.lnk" "$INSTDIR\uninstall.exe"
     Pop $R0
 
@@ -128,6 +128,7 @@ Section "QuArK" SectionQuArK
   File /r "quark\images"
   File /r "quark\lgicons"
   File /r "quark\addons"
+  File "quark\ChangeLog"
   File "quark\README.txt"
   File "quark\COPYING.txt"
   File "quark\AUTHORS.txt"
@@ -152,12 +153,14 @@ Section "Uninstall"
   RMDir $R0
   Pop $R0
 
+  Delete "$INSTDIR\ChangeLog"
   Delete "$INSTDIR\QuArK.exe"
-  Delete "$INSTDIR\readme.txt"
+  Delete "$INSTDIR\README.txt"
   Delete "$INSTDIR\COPYING.txt"
   Delete "$INSTDIR\uninstall.exe"
   Delete "$INSTDIR\QUARK.LOG"
-  Delete "$INSTDIR\Setup.qrk"
+#  Actually, we don't want to blitz 
+#  Delete "$INSTDIR\Setup.qrk"
   RMDIR /r "$INSTDIR\help"
   RMDIR /r "$INSTDIR\plugins"
   RMDIR /r "$INSTDIR\quarkpy"
