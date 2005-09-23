@@ -14,8 +14,13 @@ $Id$
 
 6.5.0 alpha 2
 =============
- * [cdunde] : Fixed light entity dependency for OpenGL transparency
-     to work feature.
+
+ * [peter-b] : Small bugfixes (spelling and grammar, version numbers)
+
+ * [peter-b] : Expunge Python 1.x string library
+
+ * [cdunde] : Fixed light entity dependency for OpenGL transparency to
+     work feature.
 
  * [peter-b] : Remove all CVS Log keywords
 
