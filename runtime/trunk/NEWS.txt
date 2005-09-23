@@ -12,6 +12,12 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
+6.5.0 alpha 3
+=============
+
+ * [peter-b] : Make installer header/splash images match main QuArK
+     splash screen
+
 6.5.0 alpha 2
 =============
 
