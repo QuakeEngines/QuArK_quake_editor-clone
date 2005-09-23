@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2005/09/22 05:08:34  cdunde
+To comment out and reverse changes in version 1.24 2004/12/14
+that broke OpenGL for odd sized textures
+
 Revision 1.27  2005/04/01 19:30:16  alexander
 remove unneded copy operation for proxy views
 
@@ -1562,11 +1566,11 @@ begin
         else // not displaylights
 
         begin
-
+    (*  // Needed to comment these lines out, broke transparency dependence on having light entity in map.
 // testing blending always
     glEnable(GL_BLEND);
           glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
-          glEnable(GL_TEXTURE_2D);
+          glEnable(GL_TEXTURE_2D);  *)
 
           if NeedColor then
           begin
