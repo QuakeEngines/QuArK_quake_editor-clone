@@ -19,7 +19,51 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.13  2002/03/07 19:16:44  decker_dk
+Removed QImages, as it was just another name for QImage
 
+Revision 1.12  2001/03/20 21:44:00  decker_dk
+Updated copyright-header
+
+Revision 1.11  2001/01/21 15:50:08  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.10  2001/01/15 19:21:42  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.9  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
+Revision 1.8  2000/07/03 14:10:04  alexander
+fixed: hang when extract textures
+
+Revision 1.7  2000/06/24 16:40:14  alexander
+cosmetic fixes
+
+Revision 1.6  2000/06/23 20:35:54  alexander
+fixed potential pak file corruption on write .m32
+optimized memory usage and speed for load of .m32
+
+Revision 1.5  2000/06/10 15:20:14  alexander
+added: texture flag loading and saving for SoF
+
+Revision 1.4  2000/05/21 20:43:19  alexander
+fixed: that R and B colors were xchanged
+fixed: distorted loading of some textures (H and W xchanged)
+
+Revision 1.3  2000/05/14 15:06:56  decker_dk
+Charger(F,Taille) -> LoadFile(F,FSize)
+ToutCharger -> LoadAll
+ChargerInterne(F,Taille) -> LoadInternal(F,FSize)
+ChargerObjTexte(Q,P,Taille) -> ConstructObjsFromText(Q,P,PSize)
+
+Revision 1.2  2000/05/11 22:08:04  alexander
+added copyright header
+}
 
 
 unit QkSoF;

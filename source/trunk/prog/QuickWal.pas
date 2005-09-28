@@ -19,6 +19,116 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.35  2004/12/22 11:42:15  rowdy
+Rowdy - first pass of support for Doom 3
+
+Revision 1.34  2002/06/18 00:55:51  tiglari
+add .png to .jpg texture support.  If any more image formats start being used
+  for textures, the strategy for doing this will need to be rethought
+
+Revision 1.33  2001/03/28 20:28:00  tiglari
+remove \ from in front of disk folders
+
+Revision 1.32  2001/03/20 21:42:44  decker_dk
+Updated copyright-header
+
+Revision 1.31  2001/03/09 00:01:31  aiv
+added texture linking to entity tool.
+
+Revision 1.30  2001/03/08 23:22:53  aiv
+entity tool finished completly i think.
+
+Revision 1.29  2001/02/19 19:15:22  decker_dk
+Reordered the dialog, and wrote better(?) hints for the dynamic/merged/shaderlist checkboxes.
+
+Revision 1.28  2001/02/08 21:53:49  tiglari
+exception catching around shaderlist.txt reading
+
+Revision 1.27  2001/02/06 09:22:19  tiglari
+filters working
+
+Revision 1.25  2001/02/04 18:30:56  tiglari
+filter shaders by shaderlist.txt
+
+Revision 1.24  2001/02/04 02:46:13  tiglari
+fixed problem with shaderfile loading (blocking was wrong)
+
+Revision 1.23  2001/02/04 01:43:14  tiglari
+dynamic/static; merge/non merge flags for texture-list building
+
+Revision 1.22  2001/02/03 06:54:37  tiglari
+animationTest problem fixed
+
+Revision 1.21  2001/02/03 06:19:46  tiglari
+shaders now block textures in .pak.  There's still a problem with
+ animationTest
+
+Revision 1.20  2001/02/03 02:54:44  tiglari
+fixed problems in loading of .pak shader files
+
+Revision 1.19  2001/02/03 00:51:02  tiglari
+oops, incomplete namechange fixed
+
+Revision 1.18  2001/02/02 23:48:37  tiglari
+shaders now going into folder by their name rather than that
+of the shaderfile
+
+Revision 1.17  2001/02/02 08:13:08  tiglari
+fixed pak reading order
+
+Revision 1.13  2001/01/29 19:23:11  tiglari
+fixed texture folder building but (texture directories not processed right)
+
+Revision 1.12  2001/01/28 03:33:40  tiglari
+`Merge' mode added (textures & shaders merged into a single list, shader
+get marked for QkWal display)
+
+Revision 1.11  2001/01/23 08:02:55  tiglari
+Redo BuildFolders - OkBtnClick split
+
+Revision 1.10  2001/01/21 06:33:27  tiglari
+Split Ok button into interface & action (BuildFolders)
+
+Revision 1.9  2000/11/16 19:42:16  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
+Revision 1.8  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.7  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
+Revision 1.6  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+
+Revision 1.5  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
+Revision 1.4  2000/05/12 17:43:34  decker_dk
+Auto-create Texture-links to .tga/.jpg files - .shaders still missing
+
+Revision 1.3  2000/05/11 22:09:28  alexander
+added link creation for .m32 files with link type "l"
+added cvs header
+}
 
 {This unit build qtexfolders from directory structure, as
  when the `make texture links ...' button is pressed in the

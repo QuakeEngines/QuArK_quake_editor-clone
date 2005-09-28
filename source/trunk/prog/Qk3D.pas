@@ -19,6 +19,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.9  2001/06/05 18:38:46  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.8  2001/03/20 21:47:10  decker_dk
+Updated copyright-header
+
+Revision 1.7  2001/02/05 20:05:07  aiv
+Fixed stupid bug when displaying texture vertices
+
+Revision 1.6  2000/11/26 19:08:33  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
+Revision 1.5  2000/07/16 16:34:50  decker_dk
+Englishification
+
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit Qk3D;

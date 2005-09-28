@@ -19,6 +19,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.11  2005/01/11 02:10:17  alexander
+added functions for generation of a rotation matrix
+
+Revision 1.10  2002/12/18 00:50:11  tiglari
+More matrix ops
+
+Revision 1.9  2001/06/05 18:41:51  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.8  2001/03/20 21:43:03  decker_dk
+Updated copyright-header
+
+Revision 1.7  2001/02/18 20:06:45  aiv
+attaching models to tags almost finished
+
+Revision 1.6  2001/02/17 06:04:26  tiglari
+some additional functions
+
+Revision 1.5  2001/02/17 01:29:01  tiglari
+transpose function added
+
+Revision 1.4  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.3  2000/07/16 16:34:51  decker_dk
+Englishification
+
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit qmatrices;

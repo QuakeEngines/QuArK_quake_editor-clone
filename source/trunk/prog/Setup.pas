@@ -19,6 +19,158 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.42  2004/12/22 11:42:16  rowdy
+Rowdy - first pass of support for Doom 3
+
+Revision 1.41  2004/11/08 22:47:43  alexander
+hl2 support started
+
+Revision 1.40  2004/05/21 01:11:11  cdunde
+To add support for Sylphis game engine. Code by Harry Kalogirou.
+
+Revision 1.39  2003/07/21 04:42:40  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.38  2002/12/30 18:07:35  decker_dk
+Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
+
+Revision 1.37  2002/12/18 00:49:17  tiglari
+Add Genesis3D code
+
+Revision 1.36  2002/06/09 02:17:31  tiglari
+add SoF2 gamecode
+
+Revision 1.35  2002/04/28 21:23:49  tiglari
+comment out line as suggested by Andy Vincent to stop abnormal termination
+  after Python is Finalized
+
+Revision 1.34  2002/04/08 10:58:35  tiglari
+Add gamecode for Torque (from Desmond Fletcher)
+
+Revision 1.33  2002/04/04 17:49:06  decker_dk
+Added gamecode 'f' for Jedi Knight II support.
+
+Revision 1.32  2002/02/24 13:47:10  decker_dk
+Added MOHAA (Medal Of Honor:Allied Assault) with gamecode 'e'.
+
+Revision 1.31  2001/12/05 20:39:17  decker_dk
+Added RTCW (Return To Castle Wolfenstein) with gamecode 'd'.
+
+Revision 1.30  2001/10/12 11:03:16  tiglari
+Live Pointer Hunt (non-Debug build)
+
+Revision 1.29  2001/10/12 09:11:19  tiglari
+Live Pointer Hunt
+
+Revision 1.28  2001/10/10 21:28:42  tiglari
+Live Pointer Cleanup: free g_TexExtensions in finalization
+
+Revision 1.27  2001/08/05 05:39:38  tiglari
+move the bsptype stuff into qkbsp
+
+Revision 1.26  2001/07/21 01:48:07  tiglari
+add/use functions & values defining classes of games
+
+Revision 1.25  2001/06/21 17:34:33  decker_dk
+Added preliminary support for 6DX.
+
+Revision 1.24  2001/06/05 18:41:51  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.23  2001/03/20 21:42:24  decker_dk
+Updated copyright-header
+
+Revision 1.22  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
+Revision 1.21  2001/01/30 19:11:11  decker_dk
+Changed to GetApplicationPath().
+
+Revision 1.20  2001/01/21 15:50:28  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.19  2001/01/15 19:22:20  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.18  2000/12/30 15:24:55  decker_dk
+- The .MAP exporting entity-numbering, didn't take into account Treeview-
+groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
+TTreeMapBrush.SaveAsText().
+- Created a "Textures max-dimension" for the 3D views. A lower value requires
+less memory for the textures, but will also decrease the texture quality in the
+3D views.
+- Removed the "Registering..." menuitem
+
+Revision 1.17  2000/11/19 15:31:48  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
+Revision 1.16  2000/11/16 19:42:16  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
+Revision 1.15  2000/09/25 19:36:28  decker_dk
+Secured gamecode 'c' for mjCrystalSpace.
+
+Revision 1.14  2000/09/18 01:31:48  alexander
+added enum for startrek voyager elite force
+
+Revision 1.12  2000/08/25 17:57:52  decker_dk
+Comment about possible bug. Look for FIXME
+
+Revision 1.11  2000/08/21 20:45:13  aiv
+Added ModelColor
+
+Revision 1.10  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.9  2000/07/16 16:34:51  decker_dk
+Englishification
+
+Revision 1.8  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
+Revision 1.7  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+
+Revision 1.6  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
+Revision 1.5  2000/05/11 22:10:17  alexander
+added comment
+
+Revision 1.4  2000/05/04 23:56:01  alexander
+added: game enumeration for Soldier of Fortune "E"
+}
 
 unit Setup;
 

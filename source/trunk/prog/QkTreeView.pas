@@ -19,6 +19,53 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.12  2002/12/30 18:02:47  decker_dk
+(Hopefully) A fix for the Plugins-Window missing a vertical scrollbar.
+
+Revision 1.11  2002/06/05 15:52:14  decker_dk
+Fix for the increasing GDI-object count, found by Raymond (raybotlst@raybot.net)
+Note: it seems there's other places as well, we need to check.
+
+Revision 1.10  2002/01/06 10:36:23  decker_dk
+Moved deletion of MyTVPlusSign and MyTVMinusSign down to the unit's finalization section, as
+tiglari's experiment on solving the memory-leak problem, caused another problem: The plus and minus bitmaps were
+not displayed in the treeviews.
+
+Revision 1.9  2001/12/30 08:57:23  tiglari
+delete bitmap handles
+
+Revision 1.8  2001/03/20 21:43:41  decker_dk
+Updated copyright-header
+
+Revision 1.7  2000/11/26 19:08:32  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
+Revision 1.6  2000/11/25 20:51:32  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
+Revision 1.5  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.4  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit QkTreeView;

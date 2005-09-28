@@ -19,6 +19,57 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.9  2002/03/07 19:14:32  decker_dk
+Removed QLvFileObject, as it was just another name for QFileObject.
+Removed QImages, as it was just another name for QImage
+
+Revision 1.8  2001/06/05 18:39:33  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.7  2001/03/20 21:45:50  decker_dk
+Updated copyright-header
+
+Revision 1.6  2000/11/19 15:31:50  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
+Revision 1.5  2000/11/16 19:42:16  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
+Revision 1.4  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
+Revision 1.3  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+}
 
 unit QkListView;
 

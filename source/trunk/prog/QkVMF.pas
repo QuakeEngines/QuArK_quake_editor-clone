@@ -18,6 +18,44 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.10  2005/07/30 23:04:44  alexander
+introduced dispface class for faces with displacement mapping
+vmf loader sets some displacement info
+
+Revision 1.9  2005/07/05 19:12:48  alexander
+logging to file using loglevels
+
+Revision 1.8  2005/07/03 18:05:32  alexander
+fixed bug that quark cant load its own exported vmf
+
+Revision 1.7  2005/03/14 19:02:43  alexander
+fixed duplicate classname
+
+Revision 1.6  2005/02/06 21:39:26  alexander
+dont break on hidden solids
+
+Revision 1.5  2005/02/06 21:29:15  alexander
+dont ignore hammers special groups but import them into quark under misc
+import worldspawn attributes
+
+Revision 1.4  2005/01/28 23:14:27  alexander
+connections completed
+
+Revision 1.3  2005/01/28 18:48:53  alexander
+entities are processed, not yet the connections
+
+Revision 1.2  2005/01/27 21:05:22  alexander
+we can load a vmf map now, ignoring the entities
+
+Revision 1.1  2005/01/27 00:16:13  alexander
+added vmf file loading (brushes only)
+
+
+}
 
 
 unit QkVMF;

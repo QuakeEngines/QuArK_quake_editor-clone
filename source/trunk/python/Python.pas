@@ -25,6 +25,71 @@ with Python 2.X.    We've tried to rig it so that it will work with
 Normal QuArK if the $DEFINEs below are changed in the obvious manner
 *)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.17  2004/12/22 11:42:16  rowdy
+Rowdy - first pass of support for Doom 3
+
+Revision 1.16  2003/12/17 14:00:11  peter-b
+- Rewrote defines for setting Python version
+- Removed back-compatibility with Python 1.5
+- Removed reliance on external string library from Python scripts
+
+Revision 1.15  2003/08/21 14:28:59  peter-b
+Fix for type incompatibility bug when compiling for separate Python.
+
+Revision 1.14  2003/08/21 14:03:29  peter-b
+Fix for module search path bug.
+
+Revision 1.13  2003/08/19 21:43:28  peter-b
+Defines PYTHON23_OR_HIGHER for Python 2.3 support.
+Fixed logging to accurately log installed Python version and DLL path.
+
+Revision 1.12  2003/08/12 16:14:42  silverpaladin
+Fixed some hint for variables that were left in after the code was commented out.
+
+Revision 1.11  2003/06/17 22:46:31  tiglari
+Python bundling by Peter Brett:
+ - If PYTHON_BUNDLED is set, look for python.dll in the dlls directory,
+   otherwise old behaviour.
+ - Register function Py_GetVersion from Python DLL.
+ - Log Python version on loading Python.
+
+ To try this out, make sure python.dll and string.py are present in
+ your dlls and lib directories respectively (you'll probably need to
+ create the lib directory).  Make sure the versions match (see above).
+
+ Compile QuArK with PYTHON_BUNDLED (if you're using Python 2.2+).
+ Otherwise add PYTHON15 or PYTHON2n_OR_HIGHER to taste.
+
+Revision 1.10  2003/03/16 01:18:48  tiglari
+higher python version defs now in Python/PyVersions.inc
+
+Revision 1.9  2003/03/06 22:23:46  tiglari
+Py 2.x compatibility: to compile for Py2.2 set flag PYTHON22_OR_HIGHER
+in projects options;  this flag is also utilized in Python/Pymath.pas so shouldn't
+be set just in this file.
+
+Revision 1.8  2002/04/12 11:43:18  tiglari
+add Py_Finalize
+
+Revision 1.7  2001/05/20 06:50:43  tiglari
+try to load python151.dll, if this fails, python15.dll.  The idea is to install
+minipy, rename the dll to 151, then you can install 1.5.2 without altering
+QuArK's behavior (1.5.2 makes it more robust, bad for testing stuff
+for people using the Minipy)
+
+Revision 1.6  2001/04/19 19:27:45  aiv
+better error messages
+
+Revision 1.5  2001/03/20 21:34:29  decker_dk
+Updated copyright-header
+
+Revision 1.4  2000/12/07 19:47:30  decker_dk
+Some layout changes. I like columns, specially when there is lots of data.
+}
 
 unit Python;
 

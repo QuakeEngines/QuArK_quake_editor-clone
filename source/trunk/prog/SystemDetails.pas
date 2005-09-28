@@ -19,6 +19,56 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+Revision 1.16  2003/08/19 21:39:58  peter-b
+Fixed logging to accurately log installed Python version and DLL path.
+
+Revision 1.15  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.14  2002/12/31 04:10:54  rowdy
+added support for Delphi 7
+
+Revision 1.13  2002/06/06 22:44:23  tiglari
+add & set g_CxScreen, g_CyScreen for dual monitor problems (info from
+ quantum_red and Decker)
+
+Revision 1.12  2002/04/01 10:01:52  tiglari
+changes to make QuArK compile under Delphi 6 Personal
+
+Revision 1.11  2001/10/21 10:23:38  decker_dk
+Replaced multiple calls to GetDC() with only one, and remembered to call ReleaseDC() afterwards.
+
+Revision 1.10  2001/06/05 18:41:51  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.9  2001/03/20 21:41:57  decker_dk
+Updated copyright-header
+
+Revision 1.8  2001/03/17 15:08:26  decker_dk
+We're not interested in Machine-/username.
+
+Revision 1.7  2001/03/06 00:25:27  aiv
+freed some memory after logging
+
+Revision 1.6  2001/03/05 18:40:29  decker_dk
+Misc. corrections.
+
+Revision 1.5  2001/03/02 19:35:55  decker_dk
+Physical Memory Total logged too.
+
+Revision 1.4  2001/02/23 19:25:04  decker_dk
+Fixed problem with 'idata' in TDisplay.GetInfo being used wrongly.
+
+Revision 1.3  2001/02/14 20:45:10  aiv
+Added Logging of Python version.
+
+Revision 1.2  2001/02/11 22:26:44  aiv
+Added CVS Headers
+}
 
 unit SystemDetails;
 

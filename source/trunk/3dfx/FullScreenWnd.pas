@@ -19,6 +19,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.4  2002/06/06 22:45:40  tiglari
+use set g_CxScreen, g_CyScreen insrad of sm_C... for dual monitor problems
+ (info from quantum_red and Decker)
+
+Revision 1.3  2001/03/20 21:38:02  decker_dk
+Updated copyright-header
+
+Revision 1.2  2000/09/10 14:04:24  alexander
+added cvs headers
+}
 
 unit FullScreenWnd;
 

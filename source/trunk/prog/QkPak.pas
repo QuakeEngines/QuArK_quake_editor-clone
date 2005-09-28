@@ -19,6 +19,68 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.19  2003/08/12 15:53:44  silverpaladin
+Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
+
+Revision 1.18  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.17  2002/03/07 19:14:32  decker_dk
+Removed QLvFileObject, as it was just another name for QFileObject.
+Removed QImages, as it was just another name for QImage
+
+Revision 1.16  2001/07/25 19:13:29  decker_dk
+QPakFolder.LoadFile - Ignoring zero-length PAK-directory entries (E.g. BlueShift PAK0.PAK)
+
+Revision 1.15  2001/04/16 00:37:33  tiglari
+extract entity lumps from .bsp's in pakfolder
+
+Revision 1.14  2001/03/20 21:44:37  decker_dk
+Updated copyright-header
+
+Revision 1.13  2001/01/21 15:49:30  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.12  2001/01/15 19:20:37  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.11  2000/11/16 19:42:16  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
+Revision 1.10  2000/09/03 11:20:31  aiv
+archive conversion
+minor bug fixes to zip stuff
+
+Revision 1.9  2000/07/18 19:38:00  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.8  2000/07/16 16:34:51  decker_dk
+Englishification
+
+Revision 1.7  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
+Revision 1.6  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit QkPak;

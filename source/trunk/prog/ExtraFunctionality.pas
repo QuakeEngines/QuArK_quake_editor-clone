@@ -19,6 +19,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+Revision 1.7  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.6  2003/08/12 15:14:46  silverpaladin
+Added Pre-Delphi6  multi platform support routines.
+
+}
 
 unit ExtraFunctionality;
 

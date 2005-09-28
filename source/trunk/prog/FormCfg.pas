@@ -19,6 +19,83 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.28  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.27  2003/08/12 15:37:45  silverpaladin
+Wrapped Message box in version check for d5 compatability
+
+Revision 1.26  2003/07/21 05:03:18  nerdiii
+Typ "EP" update. I also removed the * joker
+
+Revision 1.25  2003/05/01 06:30:36  nerdiii
+added AugPath to the EP edit box
+
+Revision 1.24  2003/04/29 13:06:47  nerdiii
+no message
+
+Revision 1.23  2003/04/29 05:59:35  nerdiii
+Added some game specific stuff to the 'EP' file browser control
+
+Revision 1.22  2002/12/29 12:40:42  decker_dk
+Added support for readonly Memo-fields (multiline-text). Typ="M"
+
+Revision 1.21  2002/04/07 12:47:04  decker_dk
+fixup for "Decker 2001-06-14", which caused ugly separator in spec/args-view.
+
+Revision 1.20  2002/03/07 19:15:38  decker_dk
+Removed QImages, as it was just another name for QImage
+
+Revision 1.19  2001/06/18 18:33:26  decker_dk
+Don't use my new TXT-check, if its a QPyMacro or QToolButton.
+
+Revision 1.18  2001/06/17 00:01:59  aiv
+'Code' specific in toolbarbuttons and python buttons will be executed when clicked.
+
+Revision 1.17  2001/06/14 18:53:57  decker_dk
+- Inverted the use of TXT="&" in .QRK files. Now if it does not exist it defaults to TXT="&",
+but if you don't want a caption-text to appear, you must explicitly write TXT="".
+See [FormCfg.PAS] TFormCfg.wmInternalMessage() comments for reason.
+- Moved the FullMatch check '('+name+')' to DoIncludeData so it can be used in .QRK files too.
+Added functionality to include one's name-equal. To be used in the Half-Life .QRK files soon.
+
+Revision 1.16  2001/06/05 18:38:28  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.15  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
+Revision 1.14  2001/03/28 19:24:17  decker_dk
+Checks for Txt="&", Txt="&E" (editable) and Txt="&R" (readonly) types.
+
+Revision 1.13  2001/03/20 21:48:05  decker_dk
+Updated copyright-header
+
+Revision 1.12  2001/01/28 17:27:41  decker_dk
+Concatenated two source-lines into one.
+
+Revision 1.11  2001/01/21 15:48:01  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.10  2000/08/25 18:00:02  decker_dk
+Added Typ='EDL' functionality specialy for QuakeCtx:form
+
+Revision 1.9  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.8  2000/07/16 16:34:50  decker_dk
+Englishification
+
+Revision 1.7  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
+Revision 1.6  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit FormCfg;

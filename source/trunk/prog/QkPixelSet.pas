@@ -19,6 +19,41 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.12  2002/02/25 19:16:55  decker_dk
+A possible memory leak solved? I'll wait for tiglari to hear what he finds out.
+See also QuArK-Python forum date 2002.02.19 and 2002.02.25 subject "Leak hunt report".
+
+Revision 1.11  2001/12/30 08:59:45  tiglari
+add signature to decl of PSDConvert
+
+Revision 1.10  2001/06/05 18:41:26  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.9  2001/03/20 21:44:37  decker_dk
+Updated copyright-header
+
+Revision 1.8  2000/07/18 19:38:00  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.7  2000/04/24 09:54:54  arigo
+Q3 shaders, once more
+
+Revision 1.6  2000/04/22 08:56:48  arigo
+Problems with texture sizes fixed
+
+Revision 1.5  2000/04/18 18:47:57  arigo
+Quake 3 : auto export shaders
+
+Revision 1.4  2000/04/14 09:50:17  arigo
+more TGA flips fix
+
+Revision 1.3  2000/04/12 22:11:22  alexander
+fixed: flipped exported TGA textures
+}
 
 unit QkPixelSet;
 

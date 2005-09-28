@@ -19,6 +19,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.10  2001/03/20 21:44:00  decker_dk
+Updated copyright-header
+
+Revision 1.9  2000/12/06 18:43:35  decker_dk
+- Implemented Rowdy's fix to play WAV-files correctly
+
+Revision 1.8  2000/11/25 20:51:32  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
+Revision 1.7  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.6  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
+Revision 1.5  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit QkRawFile;

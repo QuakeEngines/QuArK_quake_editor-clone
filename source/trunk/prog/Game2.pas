@@ -19,6 +19,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.11  2004/10/09 21:26:29  alexander
+fixed missing use
+
+Revision 1.10  2004/01/05 22:01:43  silverpaladin
+TrySavingNow was changed to display a warning if it fails rather than raising an error message.  Then if something like an MD3 is referenced in a qrk file, the rest of the qrk file can still be saved without erroring out.
+
+Revision 1.9  2003/07/21 04:52:21  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.8  2001/03/20 21:48:05  decker_dk
+Updated copyright-header
+
+Revision 1.7  2001/02/02 00:09:32  aiv
+Added IsPathDelimiter & IncludeTrailingBackslash to new File : ExtraFunctionality.pas
+for us non-D5 users.
+
+Revision 1.6  2001/01/30 19:10:12  decker_dk
+Added a function FindAndAddFilesOfMask(), which hopefully should make the future ./Addons with sub-directories per supported game, easier to make/search through.
+Modified FormActivate() so it will search for *.QRK files in four places.
+Changed to GetApplicationPath().
+
+Revision 1.5  2001/01/07 13:21:05  decker_dk
+Resized the dialog.
+
+Revision 1.4  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 unit Game2;
 

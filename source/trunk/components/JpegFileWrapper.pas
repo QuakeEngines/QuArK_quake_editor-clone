@@ -1,4 +1,13 @@
-unit JpegFileWrapper;
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.3  2000/09/10 14:05:21  alexander
+added cvs headers
+
+
+
+}unit JpegFileWrapper;
 
 interface
 

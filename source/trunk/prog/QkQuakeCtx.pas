@@ -19,6 +19,76 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.24  2003/08/12 15:57:33  silverpaladin
+Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
+
+Revision 1.23  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.22  2003/03/12 11:35:42  decker_dk
+Changed 'LoadTInfo()' to 'LoadTexFlagsTransparentInfo()' and modified variables to a bit more intuitive names.
+
+Revision 1.21  2001/04/24 23:59:44  aiv
+re-implementated again (hopefully less memory req'd)
+
+Revision 1.20  2001/04/23 23:14:03  aiv
+pretty much changed all entity maker code
+
+Revision 1.19  2001/04/22 16:05:01  aiv
+free bsps when finished with them, and other fixes.
+
+Revision 1.18  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
+Revision 1.17  2001/03/20 21:44:19  decker_dk
+Updated copyright-header
+
+Revision 1.16  2001/03/15 20:50:55  aiv
+split up get entities and get textures
+
+Revision 1.15  2001/03/12 20:34:28  aiv
+now get textures from .bsp files (Q1, H2, and any others that support textures in bsp files)
+
+Revision 1.14  2001/03/12 03:41:04  aiv
+bug fixes for entity tool.
+
+Revision 1.13  2001/03/09 21:11:56  aiv
+Misc. Bug fixes
+
+Revision 1.12  2001/03/09 01:50:56  aiv
+fixed treeview updating bug
+
+Revision 1.11  2001/03/09 00:01:31  aiv
+added texture linking to entity tool.
+
+Revision 1.10  2001/03/08 23:22:53  aiv
+entity tool finished completly i think.
+
+Revision 1.9  2001/01/21 15:49:48  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.8  2001/01/15 19:21:27  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.7  2000/08/25 17:57:24  decker_dk
+Layout indenting
+
+Revision 1.6  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.5  2000/07/16 16:34:51  decker_dk
+Englishification
+
+Revision 1.4  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit QkQuakeCtx;

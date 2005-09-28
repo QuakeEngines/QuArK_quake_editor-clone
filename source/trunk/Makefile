@@ -19,6 +19,12 @@
 #
 
 
+#$Header$
+# ----------- REVISION HISTORY ------------
+#$Log$
+#Revision 1.1  2004/11/08 22:56:46  alexander
+#added makefile to build quark with the help of gmake
+#
 
 TARGETS=../runtime/dxtdecode.dll ../runtime/Quark.exe
 
@@ -30,7 +36,7 @@ all: $(TARGETS)
 
 ../runtime/dxtdecode.dll: 
 	gmake -C dllsource/dxtdecode copy
-
+	
 clean:
 	-rm Rubbish/*.dcu
 	-rm  $(TARGETS)

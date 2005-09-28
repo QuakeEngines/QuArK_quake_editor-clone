@@ -19,6 +19,34 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.13  2002/03/07 19:15:38  decker_dk
+Removed QImages, as it was just another name for QImage
+
+Revision 1.12  2001/06/05 18:38:47  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.11  2001/03/20 21:46:48  decker_dk
+Updated copyright-header
+
+Revision 1.10  2001/01/21 15:48:01  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.9  2001/01/15 19:19:21  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.8  2000/07/16 16:34:50  decker_dk
+Englishification
+
+Revision 1.7  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
+Revision 1.6  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit QkBmp;

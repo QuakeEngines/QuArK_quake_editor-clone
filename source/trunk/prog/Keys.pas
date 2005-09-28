@@ -19,6 +19,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.4  2003/04/23 03:46:35  nerdiii
+no message
+
+Revision 1.3  2001/03/20 21:47:44  decker_dk
+Updated copyright-header
+
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit Keys;

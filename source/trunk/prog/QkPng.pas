@@ -19,6 +19,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.4  2004/12/22 11:42:16  rowdy
+Rowdy - first pass of support for Doom 3
+
+Revision 1.3  2004/05/21 01:11:10  cdunde
+To add support for Sylphis game engine. Code by Harry Kalogirou.
+
+Revision 1.2  2002/03/07 19:16:43  decker_dk
+Removed QImages, as it was just another name for QImage
+
+Revision 1.1  2002/02/24 13:46:32  decker_dk
+Moved here from Andy's QkTribes2.PAS code, and altered slightly.
+Currently any non-8-bits PNG images will be converted to 8-bits/paletted-image somewhere else in QuArK's code. This is considered a bug which must be solved somehow.
+
+}
 
 unit QkPNG;
 

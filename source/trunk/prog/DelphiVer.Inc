@@ -19,6 +19,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.1  2003/08/13 04:23:36  silverpaladin
+Additional Delphi compiler version defines.
+
+}
 
 // Versions of this unit are floating freely in several Delphi User Group
 // forums out there I don't know the origin.

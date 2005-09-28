@@ -19,6 +19,76 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------ 
+$Log$
+Revision 1.19  2005/08/15 06:08:15  cdunde
+to reinstate new logo
+
+Revision 1.18  2005/08/13 05:00:31  cdunde
+To reverse Logo test by cybox.
+
+Revision 1.17  2005/08/03 21:08:34  cbxpm
+no changes
+
+$Log$
+Revision 1.19  2005/08/15 06:08:15  cdunde
+to reinstate new logo
+
+Revision 1.16  2005/08/03 20:54:27  cbxpm
+added two new labels (done by delphi form designer)
+
+Revision 1.15  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.14  2003/08/12 03:06:48  silverpaladin
+Test commit.  Added a blank line.
+
+Revision 1.13  2002/05/13 11:30:43  tiglari
+remove contributors (no longer representative), add sourceforge URL
+
+Revision 1.12  2002/04/12 22:09:13  tiglari
+Reminder -> Disclaimer, Rip out registration check code
+
+Revision 1.11  2001/06/05 18:38:06  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.10  2001/03/20 21:48:43  decker_dk
+Updated copyright-header
+
+Revision 1.9  2001/03/09 21:11:56  aiv
+Misc. Bug fixes
+
+Revision 1.8  2001/03/09 09:29:47  tiglari
+change credits
+
+Revision 1.7  2001/01/07 13:20:46  decker_dk
+Made the dialog somewhat match the one in the REL6_1-branch.
+
+Revision 1.6  2000/12/30 15:24:55  decker_dk
+- The .MAP exporting entity-numbering, didn't take into account Treeview-
+groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
+TTreeMapBrush.SaveAsText().
+- Created a "Textures max-dimension" for the 3D views. A lower value requires
+less memory for the textures, but will also decrease the texture quality in the
+3D views.
+- Removed the "Registering..." menuitem
+
+Revision 1.5  2000/12/11 21:36:36  decker_dk
+- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
+- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
+added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
+AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
+QkComponent.PAS and QkMapPoly.PAS.
+- Misc. other changes.
+
+Revision 1.4  2000/11/27 22:11:26  aiv
+Code Formatted
+
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 unit About;
 

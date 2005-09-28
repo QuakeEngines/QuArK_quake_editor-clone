@@ -19,6 +19,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.10  2003/08/12 16:06:03  silverpaladin
+Added ExtraFunctionality to uses for access to Pre-Delphi6  multi platform support routines.
+
+Revision 1.9  2003/07/21 04:52:21  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.8  2001/03/20 21:38:02  decker_dk
+Updated copyright-header
+
+Revision 1.7  2000/12/30 15:22:19  decker_dk
+- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
+- Created Ed3DEditors.pas which contains close/free calls
+- Created EdDirect3D.pas with minimal contents
+
+Revision 1.6  2000/12/07 19:47:59  decker_dk
+- Changed the code in Glide.PAS and GL1.PAS, to more understandable
+and readable code (as seen in Python.PAS), which isn't as subtle to
+function-pointer changes, as the old code was. This modification also
+had impact on Ed3DFX.PAS and EdOpenGL.PAS, which now does not have any
+prefixed 'qrkGlide_API' or 'qrkOpenGL_API' pointer-variables for DLL calls.
+
+Revision 1.5  2000/11/11 17:56:52  decker_dk
+Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
+
+Revision 1.4  2000/09/10 14:04:24  alexander
+added cvs headers
+}
 
 
 unit Glide;

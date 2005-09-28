@@ -19,6 +19,41 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.11  2004/11/08 22:47:43  alexander
+hl2 support started
+
+Revision 1.10  2002/03/07 19:15:16  decker_dk
+Added QPng and QM32 to TestConversionImages()
+Removed some 'with <var> do' statements which is a pain-in-the-a**, when trying to figure out what the
+rest of the the statements do.
+Removed QImages, as it was just another name for QImage
+
+Revision 1.9  2002/02/24 13:43:02  decker_dk
+I hate when the function-definition isn't containing the argument-list, just like the function-declaration. So I added it to QImage.PasteBitmap.
+
+Revision 1.8  2001/07/25 19:13:47  decker_dk
+TImageDisplayer.Paint - removed black-border painting to reduce flicker.
+
+Revision 1.7  2001/03/20 21:45:50  decker_dk
+Updated copyright-header
+
+Revision 1.6  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.5  2000/07/16 16:34:50  decker_dk
+Englishification
+
+Revision 1.4  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
+Revision 1.3  2000/04/20 10:43:33  arigo
+JPeg writing fixes
+}
+
 unit QkImages;
 
 interface

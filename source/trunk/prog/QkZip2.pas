@@ -19,6 +19,52 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.22  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.21  2001/08/13 17:37:36  aiv
+added for 'temp=1' specific used by temporary pak files
+
+Revision 1.20  2001/03/20 21:43:04  decker_dk
+Updated copyright-header
+
+Revision 1.19  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
+Revision 1.18  2001/01/28 17:23:12  decker_dk
+Removed 'Constant expression violates subrange bounds' compiler warnings for 'crc:=$FFFFFFFF', by forcing it to 'crc:=LongInt($FFFFFFFF)'.
+
+Revision 1.17  2001/01/21 15:50:28  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.16  2001/01/15 19:22:20  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.15  2000/10/16 22:14:39  aiv
+zip files now handled entirely in pascal (no dlls!)
+
+Revision 1.14  2000/09/03 11:20:31  aiv
+archive conversion
+minor bug fixes to zip stuff
+
+Revision 1.12  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.11  2000/07/16 16:34:51  decker_dk
+Englishification
+
+Revision 1.10  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
+Revision 1.9  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 unit QkZip2;
 

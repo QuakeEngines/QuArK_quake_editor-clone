@@ -19,6 +19,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.8  2005/07/20 23:53:06  cbxpm
+added $modelmaterial to use as texure
+
+Revision 1.7  2005/07/05 19:12:47  alexander
+logging to file using loglevels
+
+Revision 1.6  2005/07/04 18:53:20  alexander
+changed steam acces to be a protocol steamaccess://
+
+Revision 1.5  2005/07/03 20:20:41  alexander
+better exception forwarding from load material to display of image
+fixed problem with different material path lengths (decals folder)
+accept $envmap  as image source
+
+Revision 1.4  2005/06/24 00:06:32  alexander
+tricky derive vtf base path from file path
+
+Revision 1.3  2005/06/23 23:41:09  alexander
+no image bug fixed
+
+Revision 1.2  2005/06/22 17:26:29  alexander
+parsing handles more cases, but not all - still alpha status
+
+Revision 1.1  2005/06/22 01:19:40  alexander
+added hl2 material source
+
+}
 
 unit QkHL2mat;
 

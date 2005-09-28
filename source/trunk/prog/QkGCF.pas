@@ -19,6 +19,44 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.9  2005/07/31 12:14:45  alexander
+add logging, set the protocol to gcffile
+
+Revision 1.8  2005/01/05 15:57:52  alexander
+late dll initialization on LoadFile method
+dependent dlls are checked before
+made dll loading errors or api mismatch errors fatal because there is no means of recovery
+
+Revision 1.7  2005/01/02 15:19:27  alexander
+access files via steam service - first
+
+Revision 1.6  2004/12/28 02:36:02  alexander
+gcf dll static linkage against hllib
+
+Revision 1.5  2004/12/27 11:00:39  alexander
+gcf access working
+added versioning in dll interface (QuArKSteamFS.dll)
+major cleanup
+
+Revision 1.4  2004/12/21 09:03:47  alexander
+changed gcfwrap dll location to be in dlls directory
+
+Revision 1.3  2004/12/17 14:29:02  alexander
+fixed crash
+
+Revision 1.2  2004/12/02 20:53:06  alexander
+added format names for hl2
+use vtf textures in original size again
+
+Revision 1.1  2004/11/25 00:31:42  alexander
+first gcf access attempt
+
+
+}
 
 unit QkGCF;
 

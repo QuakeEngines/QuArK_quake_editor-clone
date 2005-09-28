@@ -19,6 +19,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.11  2003/03/15 06:58:39  tiglari
+wmHelp parses an additional |-field as a url (relative to exepath+help/)
+
+Revision 1.10  2002/04/12 10:03:47  tiglari
+leakhunt: destroy menubarhandle on form close
+
+Revision 1.9  2001/06/05 18:43:13  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.8  2001/03/20 21:35:06  decker_dk
+Updated copyright-header
+}
 
 unit PyForms;
 

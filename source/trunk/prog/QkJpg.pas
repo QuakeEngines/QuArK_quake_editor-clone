@@ -19,6 +19,46 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.15  2002/03/07 19:16:02  decker_dk
+Removed QImages, as it was just another name for QImage
+
+Revision 1.14  2001/03/20 21:45:50  decker_dk
+Updated copyright-header
+
+Revision 1.13  2001/01/21 15:49:03  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.12  2001/01/15 19:20:19  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.11  2000/08/23 20:59:24  aiv
+Added exception messages for debugging purposes
+
+Revision 1.10  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.9  2000/07/16 16:34:50  decker_dk
+Englishification
+
+Revision 1.8  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
+Revision 1.7  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
+Revision 1.6  2000/05/14 15:06:56  decker_dk
+Charger(F,Taille) -> LoadFile(F,FSize)
+ToutCharger -> LoadAll
+ChargerInterne(F,Taille) -> LoadInternal(F,FSize)
+ChargerObjTexte(Q,P,Taille) -> ConstructObjsFromText(Q,P,PSize)
+
+Revision 1.5  2000/04/20 10:43:33  arigo
+JPeg writing fixes
+}
 
 unit QkJpg;
 

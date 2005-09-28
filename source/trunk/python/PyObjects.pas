@@ -19,6 +19,36 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.10  2001/03/20 21:34:29  decker_dk
+Updated copyright-header
+
+Revision 1.9  2001/03/15 20:49:34  aiv
+updated for entitiy tool uses.
+
+Revision 1.8  2001/03/13 01:43:35  aiv
+new fgd->qrk converter inbuilt
+
+Revision 1.7  2001/02/23 19:27:37  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
+Revision 1.6  2001/01/21 15:51:46  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.5  2000/07/16 16:33:39  decker_dk
+Englishification
+
+Revision 1.4  2000/07/09 13:19:28  decker_dk
+Englishification and a little layout
+
+Revision 1.3  2000/05/14 20:33:45  alexander
+header
+}
 
 
 unit PyObjects;

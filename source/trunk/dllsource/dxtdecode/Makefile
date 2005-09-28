@@ -21,6 +21,13 @@
 #
 
 
+#$Header$
+# ----------- REVISION HISTORY ------------
+#$Log$
+#Revision 1.1  2004/11/08 22:55:17  alexander
+#hl2 support started
+#
+
 
 TARGET = dxtdecode.dll
 OFILES = txc_fetch_dxtn.o dxtdec.o

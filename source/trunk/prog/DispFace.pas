@@ -19,6 +19,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.1  2005/07/30 23:04:44  alexander
+introduced dispface class for faces with displacement mapping
+vmf loader sets some displacement info
+
+}
 unit DispFace;
 
 interface

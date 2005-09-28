@@ -19,6 +19,122 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.36  2005/07/07 07:14:57  alexander
+fixed problem not displaying boxes for models
+
+Revision 1.35  2005/07/04 18:53:20  alexander
+changed steam acces to be a protocol steamaccess://
+
+Revision 1.34  2005/01/11 01:47:12  alexander
+for .steamfs links allow subdirectories after basedir
+
+Revision 1.33  2005/01/02 15:19:27  alexander
+access files via steam service - first
+
+Revision 1.32  2004/12/27 10:56:23  alexander
+dont load gcf every time again
+
+Revision 1.31  2004/12/22 11:42:16  rowdy
+Rowdy - first pass of support for Doom 3
+
+Revision 1.30  2004/11/25 00:35:50  alexander
+first gcf access attempt
+
+Revision 1.29  2003/08/12 15:39:45  silverpaladin
+Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
+
+Revision 1.28  2003/07/21 04:52:21  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.27  2002/03/07 19:15:38  decker_dk
+Removed QImages, as it was just another name for QImage
+
+Revision 1.26  2001/06/21 17:34:50  decker_dk
+If no value in CheckDirectory, then accept any directory.
+
+Revision 1.25  2001/06/05 18:38:28  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.24  2001/05/09 18:53:29  aiv
+fix for retail cs.
+
+Revision 1.23  2001/03/20 21:48:05  decker_dk
+Updated copyright-header
+
+Revision 1.22  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
+Revision 1.21  2001/02/03 06:09:57  tiglari
+reverse order of disk and pak search in GetGameFileBase,
+since disk should be consulted first (`missing shader' problem).
+What about order of paks?
+
+Revision 1.20  2001/01/30 19:11:10  decker_dk
+Changed to GetApplicationPath().
+
+Revision 1.19  2000/11/25 20:51:33  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
+Revision 1.18  2000/11/16 19:42:17  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
+Revision 1.17  2000/09/18 01:29:43  alexander
+proper indenting
+
+Revision 1.16  2000/09/17 15:00:17  alexander
+committed convex' generalization of texture format aliasing
+
+Revision 1.15  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.14  2000/07/16 16:34:50  decker_dk
+Englishification
+
+Revision 1.13  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
+Revision 1.12  2000/06/17 11:21:59  arigo
+minor fix for Decker's hack
+
+Revision 1.11  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
+Revision 1.10  2000/05/07 09:33:02  decker_dk
+Fixed a problem with TGetPakNames
+
+Revision 1.9  2000/04/29 15:13:30  decker_dk
+Allow other than PAK#.PAK files
+
+Revision 1.8  2000/04/14 17:29:00  alexander
+fixed: crash, when loading alias files
+}
 
 unit Game;
 

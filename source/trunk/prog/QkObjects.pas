@@ -19,6 +19,221 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.75  2005/08/15 21:15:48  cdunde
+update version to QuArK 6.5.0 alpha 1
+
+Revision 1.74  2004/12/27 10:57:44  alexander
+added a userdata pointer. This is needed to access context data from on_access callbacks
+
+Revision 1.73  2004/01/05 22:16:18  silverpaladin
+Clearing is done from end down now with a assigned check added an assigned check to find name
+
+Revision 1.72  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.71  2003/08/12 15:53:11  silverpaladin
+Fixed an index out of bounds error in find sub elements by insuring index is < count
+
+Revision 1.70  2002/05/16 09:07:40  tiglari
+Update version to 6.4 alpha (no diff from 6,3 yet)
+
+Revision 1.69  2002/05/13 11:31:17  tiglari
+update version
+
+Revision 1.68  2002/04/28 21:26:53  tiglari
+update version
+
+Revision 1.67  2002/04/03 00:27:16  tiglari
+ShareSpecMem now defined iff NoShare Conditional Define is not set
+
+Revision 1.66  2002/02/26 23:20:56  tiglari
+oops restore sharespecmem
+
+Revision 1.65  2002/02/26 23:19:46  tiglari
+update version
+
+Revision 1.64  2002/02/24 13:46:53  decker_dk
+Update version to "QuArK 6.3snap 2002feb24"
+
+Revision 1.63  2002/01/06 10:36:48  decker_dk
+update version to "QuArK 6.3snap 2002jan06"
+
+Revision 1.62  2001/12/30 09:59:57  tiglari
+alter TQStream release code to prevent an error, depends on 0 not being
+a valid FHandle value.  I don't really know what's going on with the
+TemporaryClose stuff.
+
+Revision 1.61  2001/10/14 10:07:21  tiglari
+Live Pointer Hunt: rollback of finalizings, & free QFileList
+
+Revision 1.57  2001/08/06 00:18:24  tiglari
+update version
+
+Revision 1.56  2001/07/09 09:53:56  tiglari
+update version #
+
+Revision 1.55  2001/06/18 02:37:08  tiglari
+update version
+
+Revision 1.54  2001/06/05 18:41:26  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.53  2001/05/21 12:04:46  tiglari
+update version
+
+Revision 1.52  2001/05/07 08:57:22  tiglari
+update version
+
+Revision 1.51  2001/04/28 02:42:21  tiglari
+update version
+
+Revision 1.50  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
+Revision 1.49  2001/03/20 21:45:22  decker_dk
+Updated copyright-header
+
+Revision 1.48  2001/03/10 01:14:24  tiglari
+version fix
+
+Revision 1.47  2001/03/09 09:30:57  tiglari
+update version
+
+Revision 1.46  2001/02/25 11:19:12  tiglari
+reset snapshot #
+
+Revision 1.45  2001/02/23 19:25:35  decker_dk
+Proper indenting, and other small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
+Revision 1.44  2001/02/14 23:35:57  alexander
+set name
+
+Revision 1.43  2001/02/12 03:48:25  tiglari
+reset snapshot #
+
+Revision 1.42  2001/02/05 11:32:16  tiglari
+dynamic folder writing fix
+
+Revision 1.41  2001/02/02 08:17:57  tiglari
+updated version #
+
+Revision 1.40  2001/01/29 19:24:58  tiglari
+removed priorityadd, fixed bug in locatesubelement
+
+Revision 1.39  2001/01/28 03:30:41  tiglari
+LocateSubElement method added
+
+Revision 1.38  2001/01/23 08:05:39  tiglari
+Infrastructure for OsFolders (read their contents from folders on disk,
+ don't write them when writing the .qrk).
+
+Revision 1.37  2001/01/21 15:49:30  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.36  2001/01/21 07:09:07  tiglari
+Fixed OsFolders goofs (wrong version...)
+
+Revision 1.35  2001/01/21 06:18:36  tiglari
+support for doing stuff to QObjects before expanding them in treeviews
+
+Revision 1.34  2001/01/07 13:21:25  decker_dk
+Remember to put argument-list on procedure/function-definitions, and not only on declarations.
+Set Versionname.
+
+Revision 1.33  2000/11/26 19:08:32  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
+Revision 1.32  2000/11/25 20:51:32  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
+Revision 1.31  2000/11/19 15:31:49  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
+Revision 1.30  2000/11/04 04:18:22  tiglari
+Put in proper declaration (protected) for QObject.Pedigree
+
+Revision 1.29  2000/10/27 10:13:41  tiglari
+reformatted Ancestry value in accord with suggestions by decker
+
+Revision 1.28  2000/10/17 20:29:41  tiglari
+Added Ancestry function to QObject
+
+Revision 1.27  2000/10/15 16:01:27  alexander
+set name
+
+Revision 1.26  2000/09/24 23:57:50  alexander
+set name
+
+Revision 1.25  2000/09/14 18:00:22  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
+Revision 1.24  2000/09/10 13:00:01  alexander
+set name
+
+Revision 1.23  2000/09/09 14:30:32  alexander
+fixed GetSousElements bug when acessing a subobject of an object whose file is not yet loaded
+
+Revision 1.22  2000/09/01 00:50:22  alexander
+set name
+
+Revision 1.21  2000/08/20 10:48:11  aiv
+iiMD3Bone -> iiModelBone
+iiMD3Tag -> iiModelTag
+
+Revision 1.20  2000/07/28 15:11:34  alexander
+set snapshot name
+
+Revision 1.19  2000/07/25 16:04:32  alexander
+set snapshot name
+
+Revision 1.18  2000/07/18 19:38:00  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.17  2000/07/18 13:46:10  alexander
+set snapshot name
+
+Revision 1.16  2000/07/16 16:34:51  decker_dk
+Englishification
+
+Revision 1.15  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
+Revision 1.14  2000/07/03 23:17:15  alexander
+set snapshot version
+
+Revision 1.13  2000/06/09 23:30:36  aiv
+Added Image Constants (iiMD3Tag & iiMD3Bone)
+
+Revision 1.12  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+}
 
 unit QkObjects;
 

@@ -19,6 +19,13 @@
 ;
 ;
 ;
+;$Header$
+; ----------- REVISION HISTORY ------------
+;$Log$
+;Revision 1.1  2004/11/08 22:55:17  alexander
+;hl2 support started
+;
+;
 
 LIBRARY         dxtdecode
 

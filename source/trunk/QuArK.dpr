@@ -19,6 +19,52 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.29  2005/07/30 23:04:45  alexander
+introduced dispface class for faces with displacement mapping
+vmf loader sets some displacement info
+
+Revision 1.28  2005/06/22 01:19:40  alexander
+added hl2 material source
+
+Revision 1.27  2005/06/22 01:12:42  alexander
+added hl2 material source
+
+Revision 1.26  2005/01/27 00:16:13  alexander
+added vmf file loading (brushes only)
+
+Revision 1.25  2005/01/02 15:19:54  alexander
+access files via steam service - first
+
+Revision 1.24  2004/12/22 11:42:16  rowdy
+Rowdy - first pass of support for Doom 3
+
+Revision 1.23  2004/12/19 10:04:14  alexander
+added a form for gcf browsing
+
+Revision 1.22  2004/11/25 00:42:19  alexander
+first gcf access attempt
+
+Revision 1.21  2003/11/10 19:32:59  silverpaladin
+Fixed a problem with menus not showing up on the Toolbox menu.
+
+Revision 1.20  2003/08/13 04:26:21  silverpaladin
+final changes to gk1's TG_Form vs TForm1.  Added a couple jpg modules and a reference to default.qrk for easy access
+
+Revision 1.19  2002/05/15 21:19:09  tiglari
+add prog/maperror to project
+
+Revision 1.18  2002/02/24 13:48:46  decker_dk
+Added QkPNG.PAS and QkTribes2.PAS
+
+Revision 1.17  2001/06/12 18:31:34  decker_dk
+Forgot a global-prefix to 'g_Form1'
+Added revision-log.
+
+}
 
 program QuArK;
 {%File '..\Runtime\addons\Defaults.qrk'}

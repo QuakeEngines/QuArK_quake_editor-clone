@@ -19,6 +19,76 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.29  2005/09/23 00:06:04  cdunde
+To fix light entity dependence for transparency to work feature
+
+Revision 1.28  2005/09/22 05:08:34  cdunde
+To comment out and reverse changes in version 1.24 2004/12/14
+that broke OpenGL for odd sized textures
+
+Revision 1.27  2005/04/01 19:30:16  alexander
+remove unneded copy operation for proxy views
+
+Revision 1.26  2005/03/14 22:43:33  alexander
+textures with alpha channel are rendered transparent in open gl
+
+Revision 1.25  2005/01/11 01:58:56  alexander
+some indentation to assist when debugging, no semantic change
+
+Revision 1.24  2004/12/14 00:32:07  alexander
+removed unnecessary resampling and gamma conversion for open gl true color textures
+
+Revision 1.23  2003/03/21 00:12:43  nerdiii
+tweaked OpenGL mode to render additive and texture modes as in Half-Life
+
+Revision 1.22  2003/03/14 10:09:30  decker_dk
+Some indent-changes and a bit cleanup.
+
+Revision 1.21  2003/03/13 20:20:32  decker_dk
+Modified so much to support transparency.
+
+Revision 1.20  2002/05/25 18:29:21  decker_dk
+Missed a semicolon.
+
+Revision 1.19  2002/05/13 10:18:45  tiglari
+Add Bilinear filtering option for textures in OGL view
+
+Revision 1.18  2001/03/20 21:38:21  decker_dk
+Updated copyright-header
+
+Revision 1.17  2001/01/22 00:11:02  aiv
+Beginning of support for sprites in 3d view
+
+Revision 1.16  2000/12/30 15:22:19  decker_dk
+- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
+- Created Ed3DEditors.pas which contains close/free calls
+- Created EdDirect3D.pas with minimal contents
+
+Revision 1.15  2000/12/11 21:36:05  decker_dk
+- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
+- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
+added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
+AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
+QkComponent.PAS and QkMapPoly.PAS.
+- Misc. other changes.
+
+Revision 1.14  2000/12/07 19:47:59  decker_dk
+- Changed the code in Glide.PAS and GL1.PAS, to more understandable
+and readable code (as seen in Python.PAS), which isn't as subtle to
+function-pointer changes, as the old code was. This modification also
+had impact on Ed3DFX.PAS and EdOpenGL.PAS, which now does not have any
+prefixed 'qrkGlide_API' or 'qrkOpenGL_API' pointer-variables for DLL calls.
+
+Revision 1.13  2000/11/11 17:56:52  decker_dk
+Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
+
+Revision 1.12  2000/09/10 14:04:24  alexander
+added cvs headers
+}
 
 unit EdOpenGL;
 

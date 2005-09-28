@@ -19,6 +19,196 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.57  2005/01/11 02:15:26  alexander
+detect hl2 bsp format
+
+Revision 1.56  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.55  2003/08/12 15:49:31  silverpaladin
+Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
+
+Revision 1.54  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.53  2003/01/01 14:34:10  decker_dk
+Fixed some compiler-warnings, a source-line placement error, and done some indenting.
+
+Revision 1.52  2002/04/30 12:28:45  tiglari
+Detect RTCW and Mohaa .bsp's and proclaim inability to read them (the
+ obvious idea didn't work ...)
+
+Revision 1.51  2002/04/04 17:50:54  decker_dk
+Try to load JK2 .BSPs by using the Q3 loader. It may work, but don't bet on it.
+
+Revision 1.50  2001/08/05 05:41:35  tiglari
+support bsp cruising for q1,2,3, by using intermediary BspNode, BspLeaf
+ classes to shift data from the bsp itself into QBspNode.
+
+Revision 1.49  2001/08/04 09:57:19  tiglari
+move hulltype stuff into QkBspHulls, bstype stuff into QkBsp
+
+Revision 1.48  2001/07/31 10:59:25  tiglari
+speed up close plane finding, a lot (needobjectgamecode is very slow,
+ since it accesses object specifics)
+
+Revision 1.47  2001/07/30 12:10:22  tiglari
+close plane finder methods
+
+Revision 1.46  2001/07/30 00:58:28  tiglari
+more cleanup, close plane finding support
+
+Revision 1.45  2001/07/29 08:03:09  tiglari
+bugfixes, cleanup
+
+Revision 1.44  2001/07/29 05:22:00  tiglari
+more bsp study stuff
+
+Revision 1.43  2001/07/28 05:30:05  tiglari
+load nodes
+
+Revision 1.42  2001/07/27 11:30:26  tiglari
+bsp study: plane viewing, some prep for node-viewing
+
+Revision 1.41  2001/07/22 11:40:59  tiglari
+Heretic 2, KingPin bsp viewing
+
+Revision 1.40  2001/07/22 09:57:29  tiglari
+SOF bsp viewing (non-optimized, most of face record unknown)
+
+Revision 1.39  2001/07/21 03:49:23  tiglari
+Q3A bsp's now writing (but some attempted SOF reading code not yet functional)
+
+Revision 1.38  2001/07/21 01:48:07  tiglari
+add/use functions & values defining classes of games
+
+Revision 1.37  2001/07/19 22:54:46  tiglari
+STVEF bsp's now showing
+
+Revision 1.36  2001/07/19 11:12:47  tiglari
+fixed bugs i previous updates
+
+Revision 1.34  2001/07/16 10:57:43  tiglari
+support for displaying Q3A .bsp's
+
+
+Revision 1.33  2001/04/24 23:59:44  aiv
+re-implementated again (hopefully less memory req'd)
+
+Revision 1.32  2001/04/23 23:14:02  aiv
+pretty much changed all entity maker code
+
+Revision 1.31  2001/04/16 00:37:33  tiglari
+extract entity lumps from .bsp's in pakfolder
+
+Revision 1.30  2001/04/07 20:17:57  aiv
+fix save as HL .bsp bug
+
+Revision 1.29  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
+Revision 1.28  2001/03/20 21:46:48  decker_dk
+Updated copyright-header
+
+Revision 1.27  2001/03/18 00:38:14  aiv
+Misc Cleanups and Fixes
+
+Revision 1.26  2001/03/15 20:50:55  aiv
+split up get entities and get textures
+
+Revision 1.25  2001/03/12 20:34:28  aiv
+now get textures from .bsp files (Q1, H2, and any others that support textures in bsp files)
+
+Revision 1.24  2001/03/12 03:41:04  aiv
+bug fixes for entity tool.
+
+Revision 1.23  2001/03/09 21:11:56  aiv
+Misc. Bug fixes
+
+Revision 1.22  2001/03/08 23:22:53  aiv
+entity tool finished completly i think.
+
+Revision 1.21  2001/03/08 21:57:42  tiglari
+switch to Q2 from Q3A mode when loading Q2 .bsp
+
+Revision 1.20  2001/03/06 22:16:53  tiglari
+head off attempt to view Q3A bsp
+
+Revision 1.19  2001/03/05 21:45:47  tiglari
+different getbspentry
+
+Revision 1.18  2001/03/05 11:02:32  tiglari
+q3 bsp editing support, entities OK, map structure not there yet
+
+Revision 1.17  2001/03/05 09:21:21  tiglari
+Q3 lump names filled in
+
+Revision 1.16  2001/03/04 17:02:45  aiv
+fixed 'origin' adding bug in entity wizard.
+
+Revision 1.15  2001/03/03 00:11:09  aiv
+addon creation from bsp files!
+
+Revision 1.14  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
+Revision 1.13  2001/02/01 20:46:42  decker_dk
+Can read a Quake-3/STVEF .BSP file, but only the entity-list can be displayed for now.
+
+Revision 1.12  2001/01/21 15:47:04  decker_dk
+updated with misc. comments and cleaned up code
+
+Revision 1.11  2001/01/15 19:19:42  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.10  2000/11/25 20:51:33  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
+Revision 1.9  2000/11/19 15:31:51  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
+Revision 1.8  2000/10/15 15:58:44  alexander
+correct error message for v46 bsp files
+
+Revision 1.7  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.6  2000/07/16 16:34:50  decker_dk
+Englishification
+
+Revision 1.5  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
+Revision 1.4  2000/05/21 18:58:55  decker_dk
+A little more englishification
+
+Revision 1.3  2000/05/21 13:11:51  decker_dk
+Find new shaders and misc.
+}
 
 unit QkBsp;
 

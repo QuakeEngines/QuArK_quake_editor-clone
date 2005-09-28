@@ -19,6 +19,117 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.39  2005/07/04 18:53:20  alexander
+changed steam acces to be a protocol steamaccess://
+
+Revision 1.38  2004/01/05 21:57:39  silverpaladin
+TrySavingNow was changed to display a warning if it fails rather than raising an error message.  Then if something like an MD3 is referenced in a qrk file, the rest of the qrk file can still be saved without erroring out.
+
+Revision 1.37  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.36  2003/08/12 15:49:53  silverpaladin
+Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
+
+Revision 1.35  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.34  2002/04/04 11:46:10  tiglari
+comment out the handle close because it might cause an error
+ (decker on quark-python, april 4)
+
+Revision 1.33  2002/04/02 21:05:20  tiglari
+close event handle
+
+Revision 1.32  2001/10/14 10:13:32  tiglari
+Live Pointer Hunt: rollback to version of 2001-10-02
+
+Revision 1.29  2001/06/14 18:54:46  decker_dk
+Added a 'ChoiceList' parsing to ConstructObjsFromText() - See function comments for reason.
+
+Revision 1.28  2001/06/05 18:39:10  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.27  2001/03/20 21:49:18  decker_dk
+Updated copyright-header
+
+Revision 1.26  2001/03/18 14:03:02  aiv
+remove ! fix
+
+Revision 1.25  2001/03/16 00:04:16  aiv
+fixed saving of include commands (t_model = !)
+
+Revision 1.24  2001/03/13 01:42:47  aiv
+new fgd->qrk converter inbuilt
+
+Revision 1.23  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
+Revision 1.22  2001/01/30 19:11:34  decker_dk
+Changed to GetApplicationPath().
+Changed LienFichierQObject() so it now uses an QApplPaths-object, to ask for sub-directories to search in.
+
+Revision 1.21  2001/01/23 08:06:54  tiglari
+Infrastructure for OsFolders (read their contents from folders on disk,
+ don't write them when writing the .qrk).
+
+Revision 1.20  2001/01/21 15:48:25  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.19  2001/01/15 19:19:42  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.18  2000/11/25 20:51:33  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
+Revision 1.17  2000/11/23 19:06:44  decker_dk
+Removed one FindFirst in the ListFiles procedure.
+
+Revision 1.16  2000/11/19 15:31:50  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
+Revision 1.15  2000/09/01 00:11:18  alexander
+merged in tiglaris .map extension fix from rel6_1 branch
+
+Revision 1.14  2000/08/25 17:59:18  decker_dk
+Ready for C/C++ escape-chars, though uncommented for the moment. This does cause slower loading of text-QRK files.
+
+Revision 1.13  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.12  2000/07/16 16:34:50  decker_dk
+Englishification
+
+Revision 1.11  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
+Revision 1.10  2000/05/21 13:11:51  decker_dk
+Find new shaders and misc.
+}
 
 unit QkFileObjects;
 

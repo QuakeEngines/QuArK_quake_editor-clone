@@ -18,6 +18,54 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.12  2005/07/05 19:12:48  alexander
+logging to file using loglevels
+
+Revision 1.11  2005/04/17 14:45:19  alexander
+added saving of alpha vtf
+added configuration of output format
+
+Revision 1.10  2005/04/16 11:13:36  alexander
+can save non alpha textures as vtf
+can export used textures to materials folder
+
+Revision 1.9  2005/03/14 22:43:32  alexander
+textures with alpha channel are rendered transparent in open gl
+
+Revision 1.8  2005/03/14 21:53:53  alexander
+fix: save memory by checking if texture has alpha at all and only then generate alpha data into quarks local texture
+
+Revision 1.7  2005/01/05 15:57:53  alexander
+late dll initialization on LoadFile method
+dependent dlls are checked before
+made dll loading errors or api mismatch errors fatal because there is no means of recovery
+
+Revision 1.6  2004/12/28 02:25:22  alexander
+dll api changed : allow selection of mip level
+
+Revision 1.5  2004/12/27 11:01:58  alexander
+added versioning in dll interface (QuArKVTF.dll)
+cleanup
+
+Revision 1.4  2004/12/21 09:03:03  alexander
+changed vtf loading to use QuArKVTF.dll
+
+Revision 1.3  2004/12/02 20:53:06  alexander
+added format names for hl2
+use vtf textures in original size again
+
+Revision 1.2  2004/11/25 00:25:51  alexander
+use maximum texture size of 128 pixels for quark to reduce mem use
+
+Revision 1.1  2004/11/07 16:24:23  alexander
+new: support for vtf file loading
+
+
+}
 
 unit QkVTF;
 

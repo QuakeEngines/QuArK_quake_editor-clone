@@ -19,6 +19,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.14  2003/08/13 04:17:32  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.13  2002/04/12 11:44:54  tiglari
+oops, that last commit was wrong, reverting
+
+Revision 1.11  2001/10/26 12:36:49  tiglari
+live pointer hunt (cleaning up some of my own mess)
+
+Revision 1.10  2001/10/20 02:09:30  tiglari
+live pointer hunt: remove various failed & unnecessary stuff
+
+Revision 1.9  2001/10/11 11:33:40  tiglari
+Live Pointer Cleanup.
+
+Revision 1.8  2001/10/10 23:04:15  tiglari
+Live Pointer Cleanup: clear->free
+
+Revision 1.7  2001/10/10 22:21:47  tiglari
+Live Pointer Cleanup: free ImageLists
+
+Revision 1.6  2001/06/05 18:43:13  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.5  2001/03/20 21:35:06  decker_dk
+Updated copyright-header
+}
 
 unit PyImages;
 

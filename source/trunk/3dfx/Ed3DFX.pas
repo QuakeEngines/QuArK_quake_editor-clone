@@ -19,7 +19,72 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.29  2004/01/05 22:41:49  silverpaladin
+Fixed the divide by zero errors in the texture scaling
 
+Also changed the bezier texture scaling which had been making the texture scale 256:1 for beiziers by default.
+
+Revision 1.28  2003/08/28 05:35:06  silverpaladin
+Removed some code that was causing access violations.  Removed a bandaid I'd put in till I could find the real problem
+
+Revision 1.27  2003/08/13 04:22:01  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.26  2003/08/12 16:04:50  silverpaladin
+Added bullet proofing around qrkGlideState which was causing access violations when NIL.
+
+Revision 1.25  2001/10/19 11:30:36  tiglari
+live pointer hunt.
+
+Revision 1.24  2001/07/18 03:50:55  tiglari
+Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
+ PSommet, TTableauFSommets, PTableauFSommets
+ 
+Revision 1.23  2001/03/20 21:38:37  decker_dk
+Updated copyright-header
+
+Revision 1.22  2001/01/30 19:11:56  decker_dk
+Changed to GetApplicationDllPath().
+
+Revision 1.21  2001/01/22 00:11:02  aiv
+Beginning of support for sprites in 3d view
+
+Revision 1.20  2000/12/30 15:22:19  decker_dk
+- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
+- Created Ed3DEditors.pas which contains close/free calls
+- Created EdDirect3D.pas with minimal contents
+
+Revision 1.19  2000/12/11 21:36:05  decker_dk
+- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
+- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
+added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
+AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
+QkComponent.PAS and QkMapPoly.PAS.
+- Misc. other changes.
+
+Revision 1.18  2000/12/07 19:48:00  decker_dk
+- Changed the code in Glide.PAS and GL1.PAS, to more understandable
+and readable code (as seen in Python.PAS), which isn't as subtle to
+function-pointer changes, as the old code was. This modification also
+had impact on Ed3DFX.PAS and EdOpenGL.PAS, which now does not have any
+prefixed 'qrkGlide_API' or 'qrkOpenGL_API' pointer-variables for DLL calls.
+
+Revision 1.17  2000/11/26 19:07:56  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
+Revision 1.16  2000/11/11 17:56:52  decker_dk
+Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
+
+Revision 1.15  2000/09/10 13:56:38  alexander
+added cvs headers
+}
 
 unit Ed3DFX;
 { this unit controls both the 3Dfx-voodoo interface (glidex2.dll), as well

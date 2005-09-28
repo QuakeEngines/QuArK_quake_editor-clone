@@ -1,8 +1,8 @@
 object Form1: TForm1
-  Left = 0
-  Top = 0
-  Width = 500
-  Height = 350
+  Left = 808
+  Top = 627
+  Width = 472
+  Height = 337
   Caption = 'QuArK Explorer'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,24 +19,24 @@ object Form1: TForm1
     Left = 0
     Top = 25
     Width = 9
-    Height = 289
+    Height = 269
     BoundLines = [blRight]
     Color = 12632264
     Position = dpLeft
   end
   object rightdock: TDock97
-    Left = 483
+    Left = 455
     Top = 25
     Width = 9
-    Height = 289
+    Height = 269
     BoundLines = [blLeft]
     Color = 12632264
     Position = dpRight
   end
   object bottomdock: TDock97
     Left = 0
-    Top = 314
-    Width = 492
+    Top = 294
+    Width = 464
     Height = 9
     BoundLines = [blTop]
     Color = 12632264
@@ -45,16 +45,16 @@ object Form1: TForm1
   object Panel3: TPanel
     Left = 9
     Top = 25
-    Width = 474
-    Height = 289
+    Width = 446
+    Height = 269
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
     object Panel2: TPanel
       Left = 0
       Top = 0
-      Width = 474
-      Height = 289
+      Width = 446
+      Height = 269
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
@@ -63,7 +63,7 @@ object Form1: TForm1
   object topdock: TDock97
     Left = 0
     Top = 0
-    Width = 492
+    Width = 464
     Height = 25
     BoundLines = [blBottom]
     Color = 12632264
@@ -115,14 +115,14 @@ object Form1: TForm1
       end
     end
     object ToolbarMenu2: TToolbar97
-      Left = 331
+      Left = 403
       Top = 0
       Width = 61
       Height = 24
       Caption = 'menu 2'
       DefaultDock = topdock
       DockedTo = topdock
-      DockPos = 331
+      DockPos = 403
       object Games1: TToolbarButton97
         Left = 11
         Top = 2

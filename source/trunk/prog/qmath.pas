@@ -19,6 +19,67 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.19  2005/01/11 02:05:04  alexander
+added function to read a vec3_t from a string
+
+Revision 1.18  2004/05/21 01:11:11  cdunde
+To add support for Sylphis game engine. Code by Harry Kalogirou.
+
+Revision 1.17  2003/08/31 13:26:55  nerdiii
+Floating point to String precision inc. from 1 to 2
+
+Revision 1.16  2003/08/12 16:00:56  silverpaladin
+Modified Normalise so that zero length vectors are returned unmodified rather than just blowing up.
+
+Revision 1.15  2001/07/31 11:00:35  tiglari
+add Deg2Rad as const
+
+Revision 1.14  2001/07/30 12:09:26  tiglari
+vector length function
+
+Revision 1.13  2001/07/16 10:46:40  tiglari
+add SolveForThreePoints procedure
+
+Revision 1.12  2001/07/15 11:18:06  tiglari
+imported 5-vec stuff from TBezier, added some TVect(5)-makers
+
+Revision 1.11  2001/07/14 06:17:46  tiglari
+vec2_t added for Q3A bsp reading suppport
+
+Revision 1.10  2001/06/05 18:41:26  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.9  2001/03/30 22:11:37  tiglari
+makevect & 2-place normalize (puts scaling factor into var par)
+
+Revision 1.8  2001/03/20 21:43:04  decker_dk
+Updated copyright-header
+
+Revision 1.7  2001/03/18 01:34:34  tiglari
+ProjectPointToPlane added (adapted from quarkpy.maputils)
+
+Revision 1.6  2000/11/26 19:08:32  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
+Revision 1.5  2000/10/26 17:00:05  tiglari
+added some vector functions
+
+Revision 1.4  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.3  2000/07/16 16:34:51  decker_dk
+Englishification
+
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit qmath;

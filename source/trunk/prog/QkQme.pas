@@ -19,6 +19,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.10  2001/03/20 21:44:19  decker_dk
+Updated copyright-header
+
+Revision 1.9  2001/01/21 15:49:48  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.8  2001/01/15 19:21:27  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.7  2000/11/26 19:08:32  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
+Revision 1.6  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.5  2000/07/16 16:34:51  decker_dk
+Englishification
+
+Revision 1.4  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit QkQme;

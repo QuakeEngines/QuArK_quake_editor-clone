@@ -19,6 +19,77 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+Revision 1.21  2004/05/21 01:12:07  cdunde
+To add support for Sylphis game engine. Code by Harry Kalogirou.
+
+Revision 1.19  2003/08/28 05:31:33  silverpaladin
+Some Models have headers large than the TMD3Mesh.  So I added a seek.  This was suggested by Harkel.
+
+Revision 1.18  2003/08/12 16:11:53  silverpaladin
+Added ExtraFunctionality to uses for access to Pre-Delphi6  multi platform support routines.
+
+Revision 1.17  2003/07/21 04:52:21  nerdiii
+Linux compatibility ( '/' '\' )
+
+Revision 1.16  2002/06/19 19:43:52  decker_dk
+Don't re-raise exception in Loaded_ShaderFile, but only return NIL.
+(Also made some layout re-arrangements in the code)
+
+Revision 1.15  2002/06/18 11:57:04  tiglari
+Support SOF2's use of #0 as a filename-extension delimiter for md3 skins
+ (ugly, this will probably need to be fixed as more pathology comes to light)
+
+Revision 1.14  2002/04/09 22:29:58  aiv
+check for jk2 game mode if loading a md3 file
+
+Revision 1.13  2002/03/07 19:17:48  decker_dk
+Removed QImages, as it was just another name for QImage
+
+Revision 1.12  2002/02/26 23:16:11  tiglari
+support for forward slash in path to skin of md2, by Andy Vincent,
+committed by tiglari
+
+Revision 1.11  2001/03/20 21:37:18  decker_dk
+Updated copyright-header
+
+Revision 1.10  2001/03/06 00:31:04  aiv
+more accurate on md3 linking parts...
+
+Revision 1.9  2001/02/28 19:03:25  aiv
+Fixed ref count prob.
+
+Revision 1.8  2001/02/23 02:14:27  aiv
+more on md3 linking
+
+Revision 1.7  2001/02/18 20:03:46  aiv
+attaching models to tags almost finished
+
+Revision 1.6  2001/02/14 20:46:28  aiv
+Fixed Loading of Shaders used by md3 files.
+
+Revision 1.5  2001/01/21 15:51:16  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.4  2001/01/15 19:23:05  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.3  2000/11/25 20:50:53  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
+Revision 1.2  2000/10/11 19:01:08  aiv
+Small updates
+}
 
 unit QkMd3;
 

@@ -19,6 +19,48 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.11  2001/06/05 18:38:06  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.10  2001/03/29 22:49:38  tiglari
+tex replacement for duplicators
+
+Revision 1.9  2001/03/20 21:48:25  decker_dk
+Updated copyright-header
+
+Revision 1.8  2001/01/21 15:48:01  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.7  2001/01/07 21:35:06  tiglari
+ListeBeziers for support of ignoretobuild flag
+
+Revision 1.6  2000/11/19 15:31:51  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
+Revision 1.5  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
+Revision 1.4  2000/07/16 16:34:50  decker_dk
+Englishification
+
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit Duplicator;

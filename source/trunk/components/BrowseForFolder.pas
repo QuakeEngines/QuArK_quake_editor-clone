@@ -1,3 +1,21 @@
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.5  2003/09/06 00:54:19  silverpaladin
+Fixed an improper pointer cast
+
+Revision 1.4  2003/08/13 04:21:28  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
+Revision 1.3  2001/05/09 18:54:01  aiv
+fix for retail cs.
+
+Revision 1.2  2000/09/10 14:05:21  alexander
+added cvs headers
+
+
+}
 unit BrowseForFolder;
 
 interface

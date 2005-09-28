@@ -19,6 +19,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.7  2002/05/15 22:04:50  tiglari
+fixes to map reading error recording (so that new maps can be created ..)
+
+Revision 1.6  2001/06/05 18:38:06  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
+Revision 1.5  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
+Revision 1.4  2001/03/20 21:48:43  decker_dk
+Updated copyright-header
+
+Revision 1.3  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+}
 
 
 unit Config;

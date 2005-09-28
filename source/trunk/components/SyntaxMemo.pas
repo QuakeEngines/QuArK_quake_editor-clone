@@ -1,4 +1,13 @@
-unit SyntaxMemo;
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.2  2000/09/10 14:05:21  alexander
+added cvs headers
+
+
+
+}unit SyntaxMemo;
 
 interface
 

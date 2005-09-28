@@ -19,6 +19,49 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+Revision 1.15  2005/07/07 07:15:00  alexander
+fixed problem not displaying boxes for models
+
+Revision 1.14  2005/01/28 23:24:17  alexander
+preparations for vtx file loading
+
+Revision 1.13  2005/01/11 02:33:09  alexander
+removed obsoloet line
+
+Revision 1.12  2005/01/11 02:06:20  alexander
+detect hl2 model format, load header and generate a box with the model dimensions
+
+Revision 1.11  2002/03/07 19:17:48  decker_dk
+Removed QImages, as it was just another name for QImage
+
+Revision 1.10  2001/03/20 21:37:18  decker_dk
+Updated copyright-header
+
+Revision 1.9  2001/03/08 23:14:25  aiv
+hopefully fixed h2 / bsp loading bug
+
+Revision 1.8  2001/01/23 23:38:27  aiv
+Minor Update
+
+Revision 1.7  2001/01/21 15:51:16  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
+Revision 1.6  2001/01/15 19:23:18  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
+Revision 1.5  2001/01/08 23:04:59  aiv
+Possible fix again...?
+
+Revision 1.4  2001/01/07 18:44:59  aiv
+Fixed game code prob.
+
+Revision 1.3  2000/10/11 19:01:08  aiv
+Small updates
+}
 
 unit QkMdl;
 
