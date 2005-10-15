@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.82  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.80  2005/03/14 19:00:48  alexander
 have for lightmapscale a default of 16 if not set
 
@@ -5411,10 +5414,15 @@ begin
  mjHalfLife,
  mjHL2:
  begin
-   // OMG! This is so slow, but hopefully a little faster than the below
-   // while-loop, if the end-user don't want to see transparency in the OpenGL window.
-   if SetupGameSet.GetArg('EnableTransparency') <> '1' then
-     exit;
+    // OMG! This is so slow, but hopefully a little faster than the below
+    // while-loop, if the end-user don't want to see transparency in the OpenGL window.
+
+    // Decker's original Revision 1.70 2003/03/12 two lines of code
+    // Commenting out allows all games to have transparency if the game supports it.
+    // Also see source\3dfx\EdOpenGL.pas and runtime\addons\Defaults.qrk for rest of setup changes.
+
+//   if SetupGameSet.GetArg('EnableTransparency') <> '1' then
+//     exit;
 
    // Traverse backwards the tree-view, in search of an Q3DObject that has
    // the 'rendermode' specific. (This is a very very slow method, considering

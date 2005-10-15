@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.29  2005/09/23 00:06:04  cdunde
 To fix light entity dependence for transparency to work feature
 
@@ -1239,8 +1242,8 @@ begin
     TexData:=RenderingTextureBuffer.Memory;
 
     PSD2.Init;
-    {PSD2.AlphaBits:=psaNoAlpha;}
    // Removing line below broke OpenGL for odd sized textures in version 1.24 2004/12/14
+    {PSD2.AlphaBits:=psaNoAlpha;}
     PSD:=GetTex3Description(Texture^);
 
     try
@@ -1406,12 +1409,16 @@ begin
 end;
 
 procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
+
 var
  Surf: PSurface3D;
  SurfEnd: PChar;
  PV, PVBase, PV2, PV3: PVertex3D;
  NeedTex, NeedColor: Boolean;
  I, K, Sz: Integer;
+ Setup: QObject;
+ Transparency: Boolean;
+
 begin
   FullBright.ZeroLight:=1;
   FullBright.BrightnessSaturation:=0;
@@ -1419,6 +1426,8 @@ begin
   NeedTex:=True;
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
+  Setup:=SetupSubSet(ssGeneral, 'OpenGL');
+  Transparency:=Setup.Specifics.Values['Transparency']<>'';
 
   while Surf<SurfEnd do
   begin
@@ -1445,7 +1454,9 @@ begin
         PV:=PVertex3D(Surf);
 
         // tbd: transparent rendering should not depend on light enabled !
-        if DisplayLights then
+      //  if DisplayLights then
+        // It's not any more. Fixed with its own option in QuArK's Config OpenGL section.
+        if Transparency then
         begin
           if AnyInfo.DisplayList=0 then
           begin

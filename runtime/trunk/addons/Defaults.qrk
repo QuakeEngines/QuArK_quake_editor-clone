@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.266  2005/10/15 01:00:03  cdunde
+//To reinstate headers and history
+//
 //Revision 1.263  2005/09/20 19:15:18  cdunde
 //To fix file browser for H-L2 Config section.
 //
@@ -911,16 +914,17 @@ QQRKSRC1
       {
         Warning2 = "1"
         WndRect = '0 0 640 480'
+        Fog = "1"
+        Transparency = ""
+        Lights = "1"
+        Bilinear = "1"
         DoubleBuffer = "1"
         SupportsGDI = ""
-        Bilinear = "1"
         AllowsGDI = "1"
-        GLLists = "1"
         ColorBits = '0'
         DepthBits = '16'
-        Fog = "1"
         VCorrection = '0.92'
-        Lights = "1"
+        GLLists = "1"
         Ambient = '0.4'
         Form = "GeneralOpenGL"
       }
@@ -1302,7 +1306,7 @@ QQRKSRC1
         DefaultTextureTrigger = "AAATRIGGER"
         DefaultTextureOrigin = "ORIGIN"
         DefaultTextureClip = "CLIP"
-        EnableTransparency = ""
+    //    EnableTransparency = ""
         TextureWad = "?"     // variable (the map name is used)
         GameNeedWad = "1"
         WateryTex = "!"
@@ -1374,7 +1378,7 @@ QQRKSRC1
         DefaultTextureOrigin = "Tools/toolsorigin"
         DefaultTextureClip = "Tools/toolsclip"
         DefaultTextureScale = "0.25"
-        EnableTransparency = ""
+    //    EnableTransparency = ""
         WateryTex = "!"
         TextureFormat = ".vmt"
         TextureWriteFormat = ".vtf"
@@ -1931,7 +1935,7 @@ QQRKSRC1
         Program = "WOLFMP.EXE +set sv_pure 0"
 
         Directory = "c:\Progra~1\Return~1"
-        CheckDirectory = "WOLFSP.EXE"
+        CheckDirectory = "WOLFMP.EXE"
 
         CD = ""
         CDDir = ""
@@ -1940,12 +1944,10 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat="Brush Primitives"
-        AlwaysWriteThreeFields = "1"
-
         StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
+        AlwaysWriteThreeFields = "1"
         BuildPgm1  = "Q3MAP2.EXE"
         BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
-
         BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP2.EXE"
         BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
@@ -3223,19 +3225,19 @@ QQRKSRC1
         Min = '1'
         Max = '40'
       }
-      EnableTransparency: =
-      {
-        Txt = "In OpenGL window, enable transparency (slow!)"
-        Typ = "X"
-        Hint = "When checked, brush-entities that has their"
-            $0D"'rendermode' and 'renderamt' set to transparency,"
-            $0D"will be drawn transparent in the OpenGL window - "
-            $0D"though NOT exactly drawn as in-game."
-            $0D
-            $0D"Notice! When enabled the OpenGL window may"
-            $0D"be very slow to update itself, when changing"
-            $0D"the scenery."
-      }
+   //   EnableTransparency: =
+   //   {
+   //     Txt = "In OpenGL window, enable transparency (slow!)"
+   //     Typ = "X"
+   //     Hint = "When checked, brush-entities that has their"
+   //         $0D"'rendermode' and 'renderamt' set to transparency,"
+   //         $0D"will be drawn transparent in the OpenGL window - "
+   //         $0D"though NOT exactly drawn as in-game."
+   //         $0D
+   //         $0D"Notice! When enabled the OpenGL window may"
+   //         $0D"be very slow to update itself, when changing"
+   //         $0D"the scenery."
+   //   }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -3408,19 +3410,19 @@ QQRKSRC1
         Min = '1'
         Max = '40'
       }
-      EnableTransparency: =
-      {
-        Txt = "In OpenGL window, enable transparency (slow!)"
-        Typ = "X"
-        Hint = "When checked, brush-entities that has their"
-            $0D"'rendermode' and 'renderamt' set to transparency,"
-            $0D"will be drawn transparent in the OpenGL window - "
-            $0D"though NOT exactly drawn as in-game."
-            $0D
-            $0D"Notice! When enabled the OpenGL window may"
-            $0D"be very slow to update itself, when changing"
-            $0D"the scenery."
-      }
+  //    EnableTransparency: =
+  //    {
+  //      Txt = "In OpenGL window, enable transparency (slow!)"
+  //      Typ = "X"
+  //      Hint = "When checked, brush-entities that has their"
+  //          $0D"'rendermode' and 'renderamt' set to transparency,"
+  //          $0D"will be drawn transparent in the OpenGL window - "
+  //          $0D"though NOT exactly drawn as in-game."
+  //          $0D
+  //          $0D"Notice! When enabled the OpenGL window may"
+  //          $0D"be very slow to update itself, when changing"
+  //          $0D"the scenery."
+  //    }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -5515,7 +5517,19 @@ QQRKSRC1
       }
       Warning2: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
       WndRect: = {Typ="EF4" Txt="Position/size of window" Hint="Position and size in pixels of the OpenGL window"}
-      Fog: = {Typ="X" Txt="Fog" Cap="Fog enabled"}
+      Fog: = {Typ="X" Txt="Fog" Cap="Enabled"}
+      Transparency: = {
+        Txt="Transparency"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "For Half-Life and Half-Life 2:"
+            $0D" when checked brush-entities that have their"
+            $0D"'rendermode'and 'renderamt' set to transparency"
+            $0D"will be drawn transparent in the OpenGL window all"
+            $0D"though NOT exactly drawn as they will be in the game."
+            $0D
+            $0D"After resetting here close and reopen the OpenGL window."
+      }
       Lights: = {
         Txt="Lights"
         Typ="CL"
