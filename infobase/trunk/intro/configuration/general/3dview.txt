@@ -51,6 +51,7 @@ while standing still and while walking/moving around.
 
 All these values controls the mouse sensitivity, when you use your mouse to
 move around in the 3D-windows.
+To reverse the direction of any of these settings just change the value to a negative.
 
 
 <u>Keyboard settings</u>
