@@ -1,7 +1,30 @@
 QQRKSRC1
 // Kingpin definition file for Quark
 
-
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.3  2002/04/07 12:45:31  decker_dk
+//Purified texture-flags
+//
+//Revision 1.2  2001/03/20 21:57:21  decker_dk
+//Added log-header / misc.
+//
+//Revision 1.1  2001/02/11 11:33:02  decker_dk
+//Moved from addons directory
+//
+//Revision 1.3  2000/06/04 16:03:45  alexander
+//added: origin and trigger poly includes
+//changed: generate trigger poly for brush entities and origin/default bush pair for rot ents
+//changed: improved enum property form for models (useful for the many prop entitities)
+//changed: pack texture list
+//
+//Revision 1.2  2000/04/26 01:58:17  alexander
+//cleanup of texture flag form and added some hint texts
+//added color picker for _color specifics
+//removed _light specific from lights
+//assigned origin texture to default brushes of rotating entities
+//
 //
 //template 2000-06-04
 //

@@ -2,6 +2,12 @@ QQRKSRC1
 // This file has been written by QuArK Version 5.2
 // It's the text version of file: UserData Heretic II.qrk
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.2  2001/03/20 21:57:59  decker_dk
+//Added log-header / misc.
+//
 
 {
   Description = "Custom configuration file for Heretic II."

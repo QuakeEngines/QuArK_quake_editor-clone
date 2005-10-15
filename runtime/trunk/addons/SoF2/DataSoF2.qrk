@@ -1,6 +1,12 @@
 QQRKSRC1
 // Configuration file for SoF2
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.5  2002/10/11 22:13:27  tiglari
+//updates by Doug Abele (chkshoot)
+//
 
 {
   QuArKProtected = "1"

@@ -4,6 +4,12 @@ QQRKSRC1
 // Please see file TECHINFO.TXT for more information
 // about this file format.
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.2  2001/03/20 21:50:24  decker_dk
+//Added log-header
+//
 
 {
   Description = "Custom configuration file."

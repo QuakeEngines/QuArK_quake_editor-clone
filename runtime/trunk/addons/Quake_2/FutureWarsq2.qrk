@@ -4,6 +4,12 @@ QQRKSRC1
   //
   // http://www.planetquake.com/futurewar
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.1  2001/02/11 11:08:40  decker_dk
+//Moved from addons directory
+//
 
   Description = "Future Wars - Quake 2"
 

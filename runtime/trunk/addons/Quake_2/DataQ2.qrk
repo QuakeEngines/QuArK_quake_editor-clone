@@ -16,6 +16,27 @@ QQRKSRC1
 //
 //    See comments in file Defaults.qrk.
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.6  2002/04/07 12:43:48  decker_dk
+//Purified texture-flags
+//
+//Revision 1.5  2001/10/05 18:00:04  decker_dk
+//Removed 'bbox' for non-visible point-entities
+//
+//Revision 1.4  2001/06/08 20:16:34  decker_dk
+//Small HTTP-URL change.
+//
+//Revision 1.3  2001/04/23 18:39:23  decker_dk
+//Modified translucent/transparent (Thanks to Gary A. Chojnowski <noxia@cityisp.net>)
+//
+//Revision 1.2  2001/03/20 21:56:49  decker_dk
+//Added log-header / misc.
+//
+//Revision 1.1  2001/02/11 11:08:40  decker_dk
+//Moved from addons directory
+//
 
 {
   QuArKProtected = "1"       // Additionnal user warnings to prevents accidental change of this file

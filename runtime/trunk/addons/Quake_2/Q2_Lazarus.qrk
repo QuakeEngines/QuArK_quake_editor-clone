@@ -2,6 +2,40 @@ QQRKSRC1
 // This is a convertion of the original Q2 Lazarus to
 // work with the features of QuArk
 
+// $Header$
+//
+// $Log$
+// Revision 1.13  2004/06/20 09:39:21  cdunde
+// To add missing blaster model for view
+//
+// Revision 1.12  2004/03/22 06:49:30  cdunde
+// Add more model 3D view items
+//
+// Revision 1.11  2004/03/16 07:39:52  cdunde
+// To add more sound, model and color selectors.
+//
+// Revision 1.10  2003/10/27 07:52:45  cdunde
+// To add sound selection feature to func_train entity
+//
+// Revision 1.9  2003/10/08 08:50:52  cdunde
+// To add file selection feature to target_speaker fuction
+//
+// Revision 1.8  2003/09/25 11:59:01  cdunde
+// Adds framenumbers specific to the model_train entity.
+//
+// Revision 1.7  2003/09/24 08:20:57  cdunde
+// To add custom model viewing in editor feature
+//
+// Revision 1.6  2003/05/01 16:24:39  cdunde
+// To up date for new file search feature for custom models
+//
+// Revision 1.5  2003/04/23 07:25:23  cdunde
+// To add the feature of using Cuatom models for misc_actor and spawn_model and link Contextual help to infobase
+//
+// Revision 1.4  2003/03/03 23:05:22  cdunde
+// This is a convertion of the original Q2 Lazarus to
+//  work with the features of QuArk
+//
 
 {
   Game Directories.qctx =

@@ -2,7 +2,15 @@ QQRKSRC1
 // This file has been written by QuArK quarksnapshot_20001015
 // It's the text version of file: UserData StarTrekEF.qrk
 
-
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.3  2002/04/29 00:17:56  tiglari
+//altered texture loading to use EFRadiant shaderlist.txt
+//
+//Revision 1.2  2001/03/20 21:55:03  decker_dk
+//Added log-header / misc.
+//
 
 {
   Description = "Custom configuration file for StarTrekEF."

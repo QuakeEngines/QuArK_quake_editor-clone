@@ -1,5 +1,10 @@
 QQRKSRC1
-
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.1  2001/02/11 11:08:40  decker_dk
+//Moved from addons directory
+//
 {
 	QuArKProtected = "1"
 

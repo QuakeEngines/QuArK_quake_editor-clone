@@ -25,7 +25,814 @@ QQRKSRC1
 // Please see file TECHINFO.TXT for more information
 // about this file format.
 
+//$Header$
 
+//$Log$
+//Revision 1.263  2005/09/20 19:15:18  cdunde
+//To fix file browser for H-L2 Config section.
+//
+//Revision 1.262  2005/09/16 18:06:27  cdunde
+//Commit and update files for Terrain Paintbrush addition
+//
+//Revision 1.261  2005/08/16 04:01:52  cdunde
+//Fix toolbar arraignment
+//
+//Revision 1.260  2005/08/15 21:19:26  cdunde
+//update version to QuArK 6.5.0 alpha 1
+//
+//Revision 1.259  2005/08/15 05:46:22  cdunde
+//To commit all files for Terrain Generator
+//
+//Revision 1.258  2005/08/02 23:02:10  cbxpm
+//Added "gamesounds-hl2.qrk" as new default addon
+//
+//Revision 1.257  2005/07/31 14:29:22  alexander
+//include soundscape file
+//
+//Revision 1.256  2005/07/24 22:13:26  cbxpm
+//added "soundscapes-hl2.qrk"  (hl2 default configuration)
+//
+//Revision 1.255  2005/07/11 18:11:49  alexander
+//calling hl2 : console setting does work only when applaunch is first param
+//
+//Revision 1.254  2005/07/11 13:47:52  cbxpm
+//minor HL2 path corrections (replaced static drive letter with <drive>)
+//
+//Revision 1.253  2005/07/09 20:20:00  cbxpm
+//re-edited file association .VMF
+//
+//Revision 1.252  2005/07/08 21:40:50  cbxpm
+//Added file association .vmf (Valve map format)
+//Changed HL2 default texture
+//
+//Revision 1.251  2005/06/22 01:22:59  alexander
+//user shaders for hl2
+//
+//Revision 1.250  2005/06/11 01:37:27  alexander
+//seperated entity files for simpler maintenance
+//
+//Revision 1.249  2005/04/17 14:45:18  alexander
+//added saving of alpha vtf
+//added configuration of output format
+//
+//Revision 1.248  2005/04/16 11:13:36  alexander
+//can save non alpha textures as vtf
+//can export used textures to materials folder
+//
+//Revision 1.247  2005/03/05 10:47:50  peter-b
+//Replaced build pgms kludge for Sylphis with t_GameBuildPgms macro
+//
+//Revision 1.246  2005/02/17 09:50:32  rowdy
+//added a per-game configuration option to specify the number of decimal places to use when writing floats to .map files, defaulted to 5 for all games except Torque, where it is defaulted to 16 (this is a hack for Torque's map2dif utility)
+//
+//Revision 1.245  2005/02/06 21:11:33  alexander
+//able to set lightmapscale value on a face for hl2
+//
+//Revision 1.244  2005/02/03 00:11:08  cdunde
+//Light coverage feature not working for Torque, so needed to add item" LightFactor" and default setting to Torque:config form for that part of quarkpy/mapentities.py def drawentitylines funtion to work.
+//
+//Revision 1.243  2005/01/21 17:44:33  alexander
+//allow file selection for hl2 filesystem dll
+//
+//Revision 1.242  2005/01/05 12:18:34  alexander
+//introduced %gamedir% variable expansion for running tools and utilized for hl2 support
+//
+//Revision 1.241  2005/01/04 17:22:10  alexander
+//steam environment configuration added
+//
+//Revision 1.240  2005/01/02 16:51:49  alexander
+//use setup value for file system module
+//
+//Revision 1.239  2004/12/30 06:42:17  cdunde
+//To add updated support for JA by nazar
+//
+//Revision 1.238  2004/12/28 02:17:52  alexander
+//allow individual texture paths for hl2
+//
+//Revision 1.237  2004/12/27 12:28:18  alexander
+//set textures path for hl2 to "hl2/materials"
+//set name of game directory form entry
+//
+//Revision 1.236  2004/12/27 06:27:00  rowdy
+//minor enhancements to Doom 3 support - fixed the ceiling texture in the default room, re-added textures/common/* (to make some activities slightly easier), improved Doom3 menu to allow exporting .map files
+//
+//Revision 1.235  2004/12/27 00:38:38  cdunde
+//To remove dupe entry for GameHalfLife2:form and put in alphabetical 
+//order.
+//
+//Revision 1.234  2004/12/26 23:54:25  cdunde
+//To put Doom 3 in proper game order on Games menu and config section.
+//
+//Revision 1.233  2004/12/22 11:37:40  rowdy
+//Rowdy - first pass of support for Doom 3
+//
+//Revision 1.232  2004/12/03 10:44:49  alexander
+//solved conflict
+//added mp, singleplayer, and cs options to form
+//
+//Revision 1.231  2004/11/30 06:23:13  cdunde
+//To add game support for Jedi Academy and alphabetize game  menu listing for HL2
+//
+//Revision 1.230  2004/11/25 00:42:18  alexander
+//first gcf access attempt
+//
+//Revision 1.229  2004/11/08 22:47:42  alexander
+//hl2 support started
+//
+//Revision 1.228  2004/06/02 21:29:59  cdunde
+//To up date for Sylphis_autogen.qrk addon
+//
+//Revision 1.227  2004/05/21 06:14:49  cdunde
+//To alphabetize game menu and config forms.
+//
+//Revision 1.226  2004/05/21 01:09:24  cdunde
+//To add support for Sylphis game engine. Code by Harry Kalogirou.
+//
+//Revision 1.225  2004/02/12 18:17:59  cdunde
+//To add 'Tab' HotKey function to rebuild all views and clear lockups
+//
+//Revision 1.224  2004/02/12 06:52:27  cdunde
+//To add hotkey to axisicons function for speedy use to try and clear 3D software mode view lockup problem
+//
+//Revision 1.223  2004/01/16 21:41:46  cdunde
+//To standardize all Basic Polyhedrons and add a new one
+//
+//Revision 1.222  2004/01/16 14:52:01  cdunde
+//To add new polyhedron shapes
+//
+//Revision 1.221  2004/01/14 09:28:35  cdunde
+//To correct coding error for wedge brush
+//
+//Revision 1.220  2004/01/05 22:29:55  silverpaladin
+//Updated the WildWest configuration. Changed it so that the ShaderList was not overwritten by default and made the menu options more readable.
+//
+//Revision 1.219  2003/09/19 20:45:44  cdunde
+//Update duplicator spacific help
+//
+//Revision 1.218  2003/09/18 03:00:37  cdunde
+//To add texture selection feature
+//
+//Revision 1.217  2003/08/31 21:15:52  silverpaladin
+//Minor change to the WildWest game launch line
+//
+//Revision 1.215  2003/08/29 18:59:57  nerdiii
+//texture position/size with two decimals
+//
+//Revision 1.214  2003/07/04 19:58:21  cdunde
+//To add new wedge shape builder
+//
+//Revision 1.213  2003/04/24 23:42:22  tiglari
+//|| to make mapstair hint appear in window
+//
+//Revision 1.212  2003/04/23 06:52:33  cdunde
+//To add  stair maker hint changes by tiglari
+//
+//Revision 1.211  2003/04/22 11:51:38  tiglari
+//update oldstyle stair specific hint
+//
+//Revision 1.210  2003/04/08 06:02:37  cdunde
+//To update dup stair:form for plugins/mapstair.py changes
+//
+//Revision 1.209  2003/03/19 22:22:36  tiglari
+//specify holes file for HL
+//
+//Revision 1.208  2003/03/12 11:32:27  decker_dk
+//Added 'EnableTransparency' checkbox for Half-Life. See also QkMapPoly.PAS (same date)
+//
+//Revision 1.207  2003/02/09 06:11:40  cdunde
+//Discription update and HotKey name change
+//
+//Revision 1.206  2003/02/03 08:43:27  cdunde
+//To build Model Options configuration form.
+//
+//Revision 1.205  2003/01/08 23:06:34  tiglari
+//AlwaysWriteThreeFields support
+//
+//Revision 1.204  2003/01/06 23:18:57  tiglari
+//defaults for wall maker altered again, hints enhanced
+//
+//Revision 1.203  2003/01/03 23:44:01  rowdy
+//removed duplicate Faces entry in AuxKey form definition
+//
+//Revision 1.201  2002/12/29 12:43:18  decker_dk
+//Altered the PluginInfo:form to use the new Memo-field type.
+//
+//Revision 1.200  2002/12/25 21:27:26  tiglari
+//shift Genesis3D to the  bottom of the games list
+//
+//Revision 1.199  2002/12/25 21:25:07  tiglari
+//add pts loading to Q1, Hx2, HL
+//
+//Revision 1.198  2002/12/18 00:52:37  tiglari
+//Preliminary crap Genesis3D support, copy of Q1
+//
+//Revision 1.197  2002/06/18 11:51:49  tiglari
+//fix SOF2 gamecode
+//
+//Revision 1.196  2002/06/16 10:01:46  tiglari
+//restore StupidBuildToolKludge for STVEF
+//
+//Revision 1.195  2002/06/09 02:33:01  tiglari
+//add SoF2 :form and :config
+//
+//Revision 1.194  2002/05/19 04:39:54  tiglari
+//add some hotkeys (Select Tagged Faces and Zoom to Selection)
+//
+//Revision 1.193  2002/05/16 09:08:28  tiglari
+//Update version to 6.4 alpha (no diff from 6,3 yet)
+//
+//Revision 1.192  2002/05/13 12:02:37  tiglari
+//update version
+//
+//Revision 1.191  2002/05/13 10:34:52  tiglari
+//support frozen selections (don't change until another frozen selection is made,
+//or they are cancelled with ESC or unfreeze selection)
+//
+//Revision 1.190  2002/05/13 10:24:06  tiglari
+//support bilinear filtering in OGL views
+//
+//Revision 1.189  2002/05/07 09:30:46  tiglari
+//JKII Updates from nurail
+//
+//Revision 1.188  2002/05/04 10:13:57  tiglari
+//EditableSurfaceParms flag for Mohaa
+//
+//Revision 1.187  2002/05/03 17:27:00  decker_dk
+//Fixes to the JK2 compile-tool, as discovered by 'nurail'.
+//
+//Revision 1.186  2002/04/30 17:56:22  decker_dk
+//JK2 compile-tools. Haven't testet yet though.
+//
+//Revision 1.185  2002/04/30 05:30:15  tiglari
+//STVEF info now runs Brush Primitives using the standard tools
+// (STVEF GDK 1.2)
+//
+//Revision 1.184  2002/04/28 21:27:40  tiglari
+//update version
+//
+//Revision 1.183  2002/04/28 11:39:05  tiglari
+//Modifications to get RTCW support working better
+//
+//Revision 1.182  2002/04/17 12:42:12  decker_dk
+//Updated MOHAA:config to use MOHAATool's compile-programs.
+//
+//Revision 1.181  2002/04/09 17:49:53  decker_dk
+//Fixed gamecode in GameTorque:form from "GAMd" to "GAMg".
+//Fixed typo in Quake 3:config; "Brush Primitivez" to "Brush Primitives".
+//
+//Revision 1.180  2002/04/08 21:07:14  tiglari
+//fixed torque gamecode
+//
+//Revision 1.179  2002/04/08 12:26:37  tiglari
+//support for Torque (from Desmond Fletcher)
+//
+//Revision 1.178  2002/04/04 17:53:37  decker_dk
+//Preliminary Jedi Knight II support
+//
+//Revision 1.177  2002/03/26 22:18:27  tiglari
+//add experimental commented out UseIntegralVertexes flag
+//
+//Revision 1.176  2002/03/26 10:21:02  tiglari
+//remove DisableEnhTex, BrushPrim from Map Options,
+//add OutputMapFormat to game config
+//
+//Revision 1.175  2002/03/23 09:43:30  tiglari
+//add SupportsBrushPrim flag to game config form and Quake3 defaults
+//
+//Revision 1.174  2002/02/26 23:24:01  tiglari
+//update version
+//
+//Revision 1.173  2002/02/24 13:44:24  decker_dk
+//Update version to "QuArK 6.3snap 2002feb24"
+//Added MOHAA (Medal Of Honor:Allied Assault)
+//
+//Revision 1.172  2002/02/05 18:33:48  decker_dk
+//Updated the RTCW config, so it works with GTKRadiant's Q3MAP.EXE program.
+//
+//Revision 1.171  2002/01/06 10:37:31  decker_dk
+//update version to "QuArK 6.3snap 2002jan06"
+//
+//Revision 1.170  2001/12/05 20:38:57  decker_dk
+//Added RTCW (Return To Castle Wolfenstein)
+//
+//Revision 1.169  2001/10/08 10:41:25  tiglari
+//solid mode added to wallmaker
+//
+//Revision 1.168  2001/10/07 22:36:03  tiglari
+//extrude mode for wallmaker
+//
+//Revision 1.167  2001/09/23 08:56:17  tiglari
+//oops, replace 'bevel' with 'miter' in wallmaker stuff
+//
+//Revision 1.166  2001/09/23 07:01:44  tiglari
+//mitered edges for wall maker duplicator
+//
+//Revision 1.165  2001/08/28 22:39:06  tiglari
+//fix Q3A CD-ROM config
+//'auto adjust normals' renamed to 'Quantize angles'
+//add Hotkey for Invert Face Selection
+//
+//Revision 1.164  2001/08/16 20:08:50  decker_dk
+//Added support for 'dup hlradfilemaker' plugin.
+//
+//Revision 1.163  2001/08/15 17:50:40  decker_dk
+//Added a 'dup symxyz' with toggleable axes.
+//
+//Revision 1.162  2001/08/06 00:19:49  tiglari
+//update version
+//
+//Revision 1.161  2001/08/06 00:15:51  tiglari
+//texture-cycling for duplicators
+//
+//Revision 1.160  2001/08/02 02:47:06  tiglari
+//browse group hotkey support
+//
+//Revision 1.159  2001/07/26 09:19:15  tiglari
+//Crystal Space bezier support, 2nd build prgm
+//
+//Revision 1.158  2001/07/19 11:58:58  tiglari
+//disable mapchecks for 6dx
+//
+//Revision 1.157  2001/07/19 02:23:24  tiglari
+//.hmf extension support for 6dx
+//
+//Revision 1.156  2001/07/14 01:56:27  tiglari
+//change Crystal Space pak extension to .zip
+//
+//Revision 1.155  2001/07/09 09:52:32  tiglari
+//update version #
+//
+//Revision 1.154  2001/07/08 08:33:06  tiglari
+//reinstated elbow button for path dup; added 'level' spec for path dup and
+//  instance (elbow) dup.
+//
+//Revision 1.153  2001/07/08 00:26:25  tiglari
+//'short' specific for extruder
+//
+//Revision 1.152  2001/07/04 11:56:13  uid21314
+//TextureFormat -> TextureWriteFormat for Crystal Space
+//
+//Revision 1.151  2001/07/03 02:35:13  tiglari
+//Crystal Space revisions
+//
+//Revision 1.150  2001/06/24 14:48:20  decker_dk
+//Added arg replacer
+//
+//Revision 1.149  2001/06/21 17:33:36  decker_dk
+//Added preliminary support for 6DX.
+//
+//Revision 1.148  2001/06/18 02:35:36  tiglari
+//update version
+//
+//Revision 1.147  2001/06/17 21:23:42  tiglari
+//commented out elbow (old instances) button on path dup till it works
+//
+//Revision 1.146  2001/06/17 03:05:04  aiv
+//set all seperators to "" that require it
+//
+//Revision 1.145  2001/06/17 02:55:14  aiv
+//fixed error
+//
+//Revision 1.144  2001/06/17 02:37:39  aiv
+//imported texture search plugin
+//
+//Revision 1.143  2001/06/17 02:05:48  tiglari
+//incremetable specifics for symx/y/z (but not symxy, different 'dp'
+// method makes this complex)
+//
+//Revision 1.142  2001/06/14 18:53:12  decker_dk
+//Inverted the use of TXT="&" in .QRK files. Now if it does not exist it defaults to TXT="&",
+//but if you don't want a caption-text to appear, you must explicitly write TXT="".
+//See [FormCfg.PAS] TFormCfg.wmInternalMessage() comments for reason.
+//
+//Revision 1.141  2001/06/05 12:38:44  tiglari
+//final value elaborations
+//
+//Revision 1.140  2001/06/05 09:38:42  tiglari
+//more development of incrementing in duplicators
+//
+//Revision 1.139  2001/05/27 01:08:14  tiglari
+//change 'serialize' to 'increment' for the duplicators as suggested by Decker
+//
+//Revision 1.138  2001/05/27 00:12:41  tiglari
+//support for 'serializable' (suffix incrementing) duplicators
+//
+//Revision 1.137  2001/05/25 12:37:18  tiglari
+//tagged plane support
+//
+//Revision 1.136  2001/05/21 12:06:32  tiglari
+//update version
+//
+//Revision 1.135  2001/05/12 23:06:05  tiglari
+//add  'item center' flag to linear duplicator for new linear fixpoint behavior
+//
+//Revision 1.134  2001/05/12 19:01:23  tiglari
+//remove scale & rotate buttons from linearform
+//
+//Revision 1.133  2001/05/11 09:37:41  tiglari
+//linear specific edit button added to linearform (scale & rotate must die,
+//  but not quite yet)
+//
+//Revision 1.132  2001/05/07 08:55:04  tiglari
+//update version
+//
+//Revision 1.131  2001/05/06 08:04:16  tiglari
+//remove instance dup from toolbox, simply path dup path point forms
+//
+//Revision 1.130  2001/05/06 06:00:28  tiglari
+//change angles Typ in linearform to E
+//
+//Revision 1.129  2001/05/06 03:04:36  tiglari
+//New Copy One added,  with 'offset dup' support: if ="1", then
+// dup origin-sourcelist center is added to offset
+//
+//Revision 1.128  2001/05/05 10:01:25  tiglari
+//patch mode supported for extruder
+//
+//Revision 1.127  2001/05/04 09:06:49  tiglari
+//fix default texture for stvef
+//
+//Revision 1.126  2001/05/04 00:25:15  aiv
+//form and form element creation done.
+//
+//Revision 1.125  2001/04/30 10:58:55  tiglari
+//added child, key mods for next/prev of same type (look like hotkeys,
+//different implementation in quarkpy.mapselection)
+//
+//Revision 1.124  2001/04/28 02:41:06  tiglari
+//update version
+//
+//Revision 1.123  2001/04/28 02:19:03  tiglari
+//add selection menu hotkeys
+//
+//Revision 1.122  2001/04/27 04:49:18  tiglari
+//fix bad hint about subdivides, using form inclusion
+//
+//Revision 1.121  2001/04/16 00:41:36  tiglari
+//extract entity lumps from .bsp's in pakfolder toolbar button
+//
+//Revision 1.120  2001/04/10 08:58:36  tiglari
+//grid specific for brush bevel/cap/arch (force vertexes to grid)
+//
+
+//Revision 1.105.4.1  2001/04/06 10:41:28  tiglari
+//stupidbuildtoolkludges as checkable option; on by default for Q3A
+//   (merge in from REL_62)
+//
+//Revision 1.119  2001/04/05 22:37:09  tiglari
+//linearform now uses matrix instead of linear (applies differently for standard
+//  duplicators)
+//
+//Revision 1.118  2001/03/31 13:04:09  tiglari
+//usercenter for groups (for rotation)
+//
+//Revision 1.117  2001/03/31 10:14:57  tiglari
+//remove origin dup from toolboxes, add support for usercenter specific
+// & button to add it (linked commits to maphandles,py, mapdupspath.py)
+//
+//Revision 1.116  2001/03/30 22:20:35  tiglari
+//explanatory line for buildmenu hotkeys
+//
+//Revision 1.115  2001/03/29 21:03:27  tiglari
+//extruder support
+//
+//Revision 1.114  2001/03/29 05:51:31  tiglari
+//add forms for duplicators, change duplicator toolbox to name Basic
+// and Linear Duplicators.
+//
+//Revision 1.113  2001/03/29 01:27:19  aiv
+//modifable :form objects!
+//
+//Revision 1.112  2001/03/28 19:23:45  decker_dk
+//In HotKeyForm:incl, changed from Txt="&" (editable) to Txt="&R" (readonly).
+//
+//Revision 1.111  2001/03/22 20:24:31  tiglari
+//path-following rotation for instances
+//
+//Revision 1.110  2001/03/20 22:48:26  tiglari
+//Meatball402's instance duplicator
+//
+//Revision 1.109  2001/03/20 21:51:54  decker_dk
+//Updated copyright-header
+//
+//Revision 1.108  2001/03/20 15:49:34  maleficus
+//quark will now tell q3map to support whatever mod folder the map file was called from.
+//This requires the latest version of q3map to work properly.
+//
+//Revision 1.107  2001/03/20 10:58:56  tiglari
+//hotkey fix (now in General)
+//
+//Revision 1.106  2001/03/20 08:04:09  tiglari
+//customizable hot key support
+//
+//Revision 1.97.2.1  2001/03/11 22:06:08  tiglari
+//hot key defaults
+//
+//Revision 1.105  2001/03/17 21:55:25  decker_dk
+//Added 'Q3ArchLib.qrk' and 'Q3models.qrk' as AddOns for Quake-3
+//
+//Revision 1.104  2001/03/16 17:09:22  maleficus
+//saveprt added for q3 vlight
+//
+//Revision 1.103  2001/03/16 16:01:18  maleficus
+//q3(T)a map limits now set to the limits of q3map
+//
+//Revision 1.102  2001/03/16 00:28:50  aiv
+//made customizable maplimits for games
+//
+//Revision 1.101  2001/03/15 21:11:39  aiv
+//moved .fgd reading to menu, sepearted texture & entity reading
+//
+//Revision 1.100  2001/03/15 11:30:28  tiglari
+//remove stupidbuildtoolkludge from Q3A
+//
+//Revision 1.99  2001/03/14 19:21:13  decker_dk
+//Functionality for '-ext{action}'... which is not documented yet!
+//
+//Revision 1.98  2001/03/13 01:40:23  aiv
+//new fgd->qrk converter inbuilt
+//
+//Revision 1.97  2001/03/10 01:29:21  tiglari
+//Crystal Space and STVEF added to Quake Context list
+//
+//Revision 1.96  2001/03/09 09:32:24  tiglari
+//update version
+//
+//Revision 1.95  2001/03/08 23:31:23  aiv
+//entity tool finished completly i think.
+//
+//Revision 1.94  2001/03/08 21:55:18  tiglari
+//first segment of path dup is now 'level' (won't twist)
+//
+//Revision 1.93  2001/03/07 20:01:36  tiglari
+//path_point specifics
+//
+//Revision 1.92  2001/03/04 11:21:08  decker_dk
+//Minor fix for dup stair
+//
+//Revision 1.91  2001/03/04 06:42:46  tiglari
+//radial duplicator support
+//
+//Revision 1.90  2001/03/02 19:34:18  decker_dk
+//Made a 'Shape Builders' folder.
+//
+//Revision 1.89  2001/03/01 19:13:14  decker_dk
+//added 'BezierPatchSupport' and 'BezierPatchPluginPrefixes' to Quake-3 and STVEF.
+//
+//Revision 1.88  2001/02/25 11:21:28  tiglari
+//reset snapshot #
+//
+//Revision 1.87  2001/02/25 04:44:57  tiglari
+//new specifics for brush&patch arch&bevel
+//
+//Revision 1.86  2001/02/25 02:01:57  tiglari
+//brush curve forms added
+//
+//Revision 1.85  2001/02/23 03:42:24  tiglari
+//form for dup path, supporting square end and setback
+//
+//Revision 1.84  2001/02/22 19:19:29  decker_dk
+//Added three pathdup.points
+//
+//Revision 1.83  2001/02/20 08:07:41  tiglari
+//DefaultTextureScale added for Q3A
+//
+//Revision 1.82  2001/02/18 20:21:37  decker_dk
+//Added 'Half-Life info_decal Helper:d' to a new group 'Game specific'.
+//
+//Revision 1.81  2001/02/14 23:36:45  alexander
+//set name
+//
+//Revision 1.80  2001/02/12 03:47:17  tiglari
+//reset snapshot #
+//
+//Revision 1.79  2001/02/08 11:08:22  tiglari
+//removed path points from path duplicator toolbox item
+//
+//Revision 1.78  2001/02/07 18:44:02  aiv
+//bezier texture vertice page started.
+//
+//Revision 1.77  2001/02/07 00:06:57  aiv
+//added fixes from 6.1c release
+//
+//Revision 1.76  2001/02/02 08:21:00  tiglari
+//updated version #
+//
+//Revision 1.75  2001/01/30 19:09:48  decker_dk
+//Renamed to 'Crystal Space:config'.
+//
+//Revision 1.74  2001/01/28 17:26:10  decker_dk
+//Set 'Hide scrollbars in map-editor' to enabled as default. (Due to the Q3A huge-maps problem, which is easily solved by hiding the scrollbars!)
+//Added 'DisableMapComments' option to 'Map:config'.
+//Added a 'MapCommentsPrefix' to all games ':config' settings.
+//
+//Revision 1.73  2001/01/27 18:24:17  decker_dk
+//Removed the key 'Q3ShaderPath', as it is replaced with 'ShadersPath'.
+//Renamed the key 'Q2TexPath' to 'TexturesPath'.
+//Suffixed all 'program' keyvalues with '.EXE'.
+//Moved some :config key/values around to more logical groupings.
+//Renamed:
+//= TextureDef        -> DefaultTexture
+//= TriggerTextureDef -> DefaultTextureTrigger
+//= ClipTextureDef    -> DefaultTextureClip
+//= OriginTextureDef  -> DefaultTextureOrigin
+//Inserted in 'CustomQuakeMenu:form' extra information as '[::BuildArgs1]'
+//Added some hints to the games configuration-forms.
+//Key 'DefPoly' changed values to '<X>x<Y>x<Z>'
+//Added DefaultTextureCaulk
+//
+//Revision 1.72  2001/01/07 13:21:48  decker_dk
+//Set Versionname.
+//
+//Revision 1.71  2000/12/30 15:28:53  decker_dk
+//Path Duplicator
+//
+//Revision 1.70  2000/11/19 15:32:29  decker_dk
+//- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+//Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+//- Modified TFQWad.PopulateListView, so it reads the above settings.
+//- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+//- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+//- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+//it will be more readable in the .MAP file.
+//- Replaced the function-names:
+//  = SauverTexte         -> SaveAsText
+//  = SauverTextePolyedre -> SaveAsTextPolygon
+//  = SauverTexteBezier   -> SaveAsTextBezier
+//  = SauverSpec          -> SaveAsTextSpecArgs
+//
+//Revision 1.69  2000/11/16 19:42:44  decker_dk
+//- Modified Convex's texture-fileextension alias code, so it won't conflict
+//with the rest of the existing code.
+//- Introduced a 'TextureFileExtensions' specific, which will contain the
+//texture-fileextension aliases, for COnvex's code.
+//- Implemented solution for extracting texture-links from .PK3 files
+//('.pakfolder' vs '.zipfolder' problem)
+//- Replaced the function-names:
+//  = Q2TexPath    -> GameTexturesPath
+//  = Q3ShaderPath -> GameShadersPath
+//- Cleaned up some code here and there.
+//- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+//PGameBuffer totally. Hmm? May have introduced problem with color-palette
+//in other windows than the texture-browser-detail.
+//- Found the place in QkWAD.PAS where the common size of the textures, in the
+//texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+//
+//Revision 1.68  2000/11/11 17:58:20  decker_dk
+//Compressed some text into an existing :incl, for BuildToolControllers
+//
+//Revision 1.67  2000/11/04 20:14:55  decker_dk
+//+devmap for Quake-3
+//
+//Revision 1.66  2000/10/29 16:12:43  decker_dk
+//Q3A and STVEF 'CheckFile' modifications
+//
+//Revision 1.65  2000/10/28 19:28:34  decker_dk
+//Some more comments reg. user-variables for build-tool controllers
+//
+//Revision 1.64  2000/10/27 20:42:28  decker_dk
+//Crystal Space .QRK files
+//
+//Revision 1.63  2000/10/26 16:53:03  tiglari
+//enable brush primitives item added
+//
+//Revision 1.62  2000/10/16 22:32:58  aiv
+//added compression options to memory options (CompressionBufferSize and CompressionLevel)
+//
+//Revision 1.61  2000/10/15 16:49:12  alexander
+//rename StarTrek EF to STVEF
+//
+//Revision 1.60  2000/10/15 16:08:03  alexander
+//set name
+//
+//Revision 1.59  2000/10/10 07:46:17  tiglari
+//"C" code for circle-strafe selection added to map and model mouse modes
+//
+//Revision 1.58  2000/10/09 18:16:11  decker_dk
+//Build-Tool Controllers (and commented Crystal Space)
+//
+//Revision 1.57  2000/09/25 00:09:28  alexander
+//set name
+//
+//Revision 1.56  2000/09/18 01:28:03  alexander
+//added Texture Write Format setup entries (needed because texture aliasing)
+//added StarTrek EF support
+//
+//Revision 1.55  2000/09/17 14:59:29  alexander
+//committed convex' generalization of texture format aliasing
+//
+//Revision 1.54  2000/09/10 13:01:23  alexander
+//set name
+//
+//Revision 1.53  2000/09/04 21:20:28  tiglari
+//additions to dup column specifics, for more options
+//
+//Revision 1.52  2000/09/02 11:19:11  tiglari
+//added subdivide specific for arch/cap
+//
+//Revision 1.51  2000/09/02 06:13:04  tiglari
+//detail specifics for cap duplicator (python not yet implemented)
+//
+//Revision 1.50  2000/09/01 11:12:55  tiglari
+//Put some bevel specifics onto a details button in the form.
+//
+//Revision 1.49  2000/09/01 00:49:02  alexander
+//merged in tiglaris default sof sky fix from rel6_1 branch
+//
+//Revision 1.46.2.1  2000/08/26 09:44:48  tiglari
+//fixed default texture for SoF
+//
+//Revision 1.48  2000/08/25 18:01:06  decker_dk
+//Added Typ='EDL' functionality specialy for QuakeCtx:form
+//
+//Revision 1.47  2000/08/21 20:58:21  aiv
+//Added Skin form for model editor
+//
+//Revision 1.46  2000/07/28 15:09:48  alexander
+//set snapshot name
+//
+//Revision 1.45  2000/07/25 16:03:04  alexander
+//set snapshot name
+//
+//Revision 1.44  2000/07/18 13:48:29  alexander
+//set snapshot name
+//
+//Revision 1.43  2000/07/04 20:22:32  alexander
+//added SOF specific default form reference for quakemenu (without extract textures)
+//removed Q3 specific dup arenafilemaker form
+//
+//Revision 1.42  2000/07/04 17:24:59  alexander
+//added default form for dup arenafilemaker
+//
+//Revision 1.41  2000/07/03 23:15:10  alexander
+//set snapshot version
+//
+//Revision 1.40  2000/07/03 22:41:38  alexander
+//fixed: models beeing not compiled in the bsp (activated stupidbuildtoolkludge flag)
+//
+//Revision 1.39  2000/06/27 11:03:49  tiglari
+//detail content flag reinstated
+//
+//Revision 1.38  2000/06/25 10:56:23  tiglari
+//column cone & bulge support
+//
+//Revision 1.37  2000/06/24 16:49:06  alexander
+//removed from SoF config : UnifiedPalette = "1" (fix for no textures in sofware mode)
+//
+//Revision 1.36  2000/06/22 22:41:21  tiglari
+//added support for columns (and pipes)
+//
+//Revision 1.35  2000/06/17 07:28:10  tiglari
+//stretchtex flag for arch/cap and bevel
+//
+//Revision 1.34  2000/06/14 04:38:54  tiglari
+//Added `faceonly' specific for arches & bevels.
+//
+//Revision 1.33  2000/06/13 12:48:34  tiglari
+//revised bevel & cap/arch forms
+//
+//Revision 1.32  2000/06/12 11:14:39  tiglari
+//Bevel duplicator form added
+//
+//Revision 1.31  2000/06/10 10:00:35  alexander
+//fixed: switching to kingpin game when selecting addons or output dirs in the SoF config dialog
+//
+//Revision 1.30  2000/06/07 22:34:27  alexander
+//changed: NeedQCSG config entry and replaced it
+//by a SpecialCustomQuakeMenu entry (which specifies the form name)
+//Added: Custom Quake menu form for quake 3 with bspc
+//
+//Revision 1.29  2000/06/05 00:15:15  alexander
+//added "StupidBuildToolKludge" flag for games (likes SoF) where the tools want to run in basedir
+//fixed wrong base dir of SoF
+//seperated NeedQCSG flag from FirstBuildCmd (is now extra flag)
+//
+//Revision 1.27  2000/06/04 15:52:52  alexander
+//added: origin default texture entry for both SoF and KingPin
+//fixed: wrong default texture for SoF
+//
+//Revision 1.26  2000/05/21 01:20:15  tiglari
+//Added cap duplicator specifics
+//
+//Revision 1.25  2000/05/12 17:44:19  decker_dk
+//Auto-create Texture-links to .tga/.jpg files - .shaders still missing
+//
+//Revision 1.24  2000/05/11 22:00:43  alexander
+//removed palette.pcx
+//changed default texture
+//
+//Revision 1.23  2000/05/06 15:21:01  decker_dk
+//Dont overwrite files that already exist. This fix may cause a problem elsewhere however...
+//
+//Revision 1.22  2000/05/05 00:01:07  alexander
+//added: game forms and defaults for Soldier of Fortune
+//
+//Revision 1.21  2000/04/29 15:13:52  decker_dk
+//Allow other than PAK#.PAK files
+//
+//Revision 1.20  2000/04/26 02:01:30  alexander
+//fixed default trigger texture for kingpin
+//
 
 {
   QuArKProtected = "1"
