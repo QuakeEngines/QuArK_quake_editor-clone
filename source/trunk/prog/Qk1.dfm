@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 0
-  Top = 0
+  Left = 187
+  Top = 120
   Width = 500
   Height = 350
   Caption = 'QuArK Explorer'
@@ -115,14 +115,14 @@ object Form1: TForm1
       end
     end
     object ToolbarMenu2: TToolbar97
-      Left = 331
+      Left = 371
       Top = 0
       Width = 61
       Height = 24
       Caption = 'menu 2'
       DefaultDock = topdock
       DockedTo = topdock
-      DockPos = 331
+      DockPos = 371
       object Games1: TToolbarButton97
         Left = 11
         Top = 2
