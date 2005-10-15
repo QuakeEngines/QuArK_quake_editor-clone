@@ -14,6 +14,28 @@ $Id$
 
 6.5.0 alpha 3
 =============
+ 
+ * [cdunde] : DataQ3.qrk file - Removed hard coded textures and pointed
+     path to pick up textures in actual textures folders and pak files.
+ 
+ * [cdunde] : Removed light entity dependency for all games transparency
+     to work.
+ 
+ * [cdunde] : Made one setting in QuArK's Config OpenGL section for all
+       games that use transparency that can be viewed in QuArK:
+       right now they are - Quake2, Half-Life and Half-Life2.
+       Also removed H-l and H-l2 individual setting for this.
+       See Defaults,qrk file for setup.
+
+ * [cdunde] : Fixed minor config problem for RTCW.
+ 
+ * [cdunde] : Added Infobase comments about changing mouse movement
+     direction in Config.
+ 
+ * [cdunde] : To fix QuArK's first startup form buttons location and
+     screen placement.
+ 
+ * [cdunde] : Resized About page and startup Logo
 
  * [peter-b] : Make installer header/splash images match main QuArK
      splash screen
