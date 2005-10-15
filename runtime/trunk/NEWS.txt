@@ -28,8 +28,6 @@ $Id$
  * [cdunde] : Fixed light entity dependency for OpenGL transparency to
      work feature.
 
- * [peter-b] : Remove all CVS Log keywords
-
  * [cdunde] : Fixed OpenGL gray out and errors for odd size textures
      and loss of transparency for older game modes.
  
