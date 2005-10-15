@@ -8,6 +8,7 @@ Core of the Map editor.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -345,3 +346,18 @@ def autosave(editor):
     if time1 > 0.0:
         return time1
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.4  2002/05/18 09:53:14  tiglari
+#support Radiant-style dragging for frozen selections
+#
+#Revision 1.3  2002/05/15 00:10:06  tiglari
+#Write map-reading errors to console
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

@@ -8,6 +8,7 @@ Dictionnary of all strings used within the program
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 Strings = {
@@ -973,3 +974,195 @@ Strings = {
 
 }
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.72  2005/09/21 15:42:59  peter-b
+#More useful error message for core exceptions
+#
+#Revision 1.71  2005/08/15 21:18:53  cdunde
+#update version to QuArK 6.5.0 alpha 1
+#
+#Revision 1.70  2005/07/03 20:24:32  alexander
+#text for parse error in material
+#
+#Revision 1.69  2005/06/23 23:30:39  alexander
+#vmt file string
+#
+#Revision 1.68  2005/04/01 19:33:33  alexander
+#more progress indicators (textures and polys)
+#
+#Revision 1.67  2005/01/27 00:16:03  alexander
+#added vmf file loading (brushes only)
+#
+#Revision 1.66  2005/01/26 23:40:22  alexander
+#hl2 map format warning
+#
+#Revision 1.65  2005/01/11 01:45:21  alexander
+#nicer messages
+#
+#Revision 1.64  2005/01/02 15:21:31  alexander
+#access files via steam service - first
+#
+#Revision 1.63  2004/12/27 10:58:39  alexander
+#changed some hl2 messages
+#
+#Revision 1.62  2004/12/22 11:37:40  rowdy
+#Rowdy - first pass of support for Doom 3
+#
+#Revision 1.61  2004/12/21 09:03:02  alexander
+#changed vtf loading to use QuArKVTF.dll
+#
+#Revision 1.60  2004/12/02 19:36:58  alexander
+#added format names for hl2
+#
+#Revision 1.59  2004/12/02 18:55:15  alexander
+#added vtf format name
+#
+#Revision 1.58  2004/11/23 10:52:45  rowdy
+#added a few messages for Doom 3 (more to come), replaced non-ASCIi character in item 5387
+#
+#Revision 1.57  2004/11/18 18:15:49  alexander
+#new messages for gcf files
+#
+#Revision 1.56  2004/11/07 16:24:22  alexander
+#new: support for vtf file loading
+#
+#Revision 1.55  2003/07/21 04:50:02  nerdiii
+#Linux compatibility ( '/' '\' )
+#
+#Revision 1.54  2003/04/29 14:31:12  nerdiii
+#no message
+#
+#Revision 1.53  2003/03/17 01:51:13  cdunde
+#Update hints and add infobase links where needed
+#
+#Revision 1.52  2002/05/16 09:09:15  tiglari
+#Update version to 6.4 alpha (no diff from 6,3 yet)
+#
+#Revision 1.51  2002/05/13 11:32:30  tiglari
+#update version
+#
+#Revision 1.50  2002/05/07 23:21:44  tiglari
+#new syntax error
+#
+#Revision 1.49  2002/04/28 21:28:33  tiglari
+#update version
+#
+#Revision 1.48  2002/02/26 23:22:59  tiglari
+#update version
+#
+#Revision 1.47  2002/02/24 13:45:29  decker_dk
+#Update version to "QuArK 6.3snap 2002feb24"
+#Added #5181 and #810 for .PNG-images support.
+#Added #5182 and #811 for Tribes 2 .VL2-files support.
+#Added #5183 and #812 for Tribes 2 .CS-files support.
+#
+#Revision 1.46  2002/01/06 10:37:04  decker_dk
+#update version to "QuArK 6.3snap 2002jan06"
+#
+#Revision 1.45  2001/08/06 00:19:01  tiglari
+#update version
+#
+#Revision 1.44  2001/07/19 12:01:39  tiglari
+#add 5180 string for 6dx map format
+#
+#Revision 1.43  2001/07/19 02:23:47  tiglari
+#.hmf extension support for 6dx
+#
+#Revision 1.42  2001/07/09 09:53:11  tiglari
+#update version #
+#
+#Revision 1.41  2001/06/18 02:36:19  tiglari
+#update version
+#
+#Revision 1.40  2001/05/21 12:07:12  tiglari
+#update version
+#
+#Revision 1.39  2001/05/07 08:54:18  tiglari
+#update version
+#
+#Revision 1.38  2001/04/28 02:40:19  tiglari
+#update version
+#
+#Revision 1.37  2001/03/09 09:33:43  tiglari
+#update version
+#
+#Revision 1.36  2001/03/08 23:25:06  aiv
+#entity tool finished completly i think.
+#
+#Revision 1.35  2001/02/27 20:29:03  decker_dk
+#Item 5590 rewritten due to shaders.
+#
+#Revision 1.34  2001/02/25 11:22:51  tiglari
+#bezier page support, transplanted with permission from CryEd (CryTek)
+#
+#Revision 1.33  2001/02/23 19:28:30  decker_dk
+#KB to bytes, due to change in QkUnknown.PAS
+#
+#Revision 1.32  2001/02/14 23:34:59  alexander
+#set name
+#
+#Revision 1.31  2001/02/12 03:46:54  tiglari
+#reset snapshot #
+#
+#Revision 1.30  2001/02/02 08:24:24  tiglari
+#updated version #
+#
+#Revision 1.29  2001/01/28 17:25:24  decker_dk
+#Added entries 177 and 178. Modified 176, which split its text up into the two others.
+#Added entry 5701.
+#
+#Revision 1.28  2001/01/21 15:52:31  decker_dk
+#changed the error text #5572.
+#
+#Revision 1.27  2001/01/07 13:22:05  decker_dk
+#Set Versionname.
+#
+#Revision 1.26  2001/01/02 19:29:20  decker_dk
+#Help Snippet, press ESC to close
+#
+#Revision 1.25  2000/12/30 15:27:02  decker_dk
+#- Direct3D
+#
+#Revision 1.24  2000/10/15 16:09:48  alexander
+#added missing file type names for 3ds files
+#added error message for bsp file type V46
+#set name
+#
+#Revision 1.23  2000/09/25 00:11:19  alexander
+#set name
+#
+#Revision 1.22  2000/09/14 17:59:17  decker_dk
+#Altered msg #5505
+#
+#Revision 1.21  2000/09/10 13:02:12  alexander
+#set name
+#
+#Revision 1.20  2000/09/01 00:49:52  alexander
+#set name
+#
+#Revision 1.19  2000/08/20 11:08:22  aiv
+#Added Error Code 5503
+#
+#Revision 1.18  2000/07/28 15:10:58  alexander
+#set snapshot name
+#
+#Revision 1.17  2000/07/25 16:01:41  alexander
+#set snapshot name
+#
+#Revision 1.16  2000/07/18 13:50:53  alexander
+#set snapshot name
+#
+#Revision 1.15  2000/07/03 23:16:16  alexander
+#set snapshot version
+#
+#Revision 1.14  2000/06/09 23:39:02  aiv
+#More MD3 Support Stuff
+#
+#Revision 1.13  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

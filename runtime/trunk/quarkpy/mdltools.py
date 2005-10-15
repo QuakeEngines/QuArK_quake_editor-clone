@@ -8,6 +8,7 @@ The map editor's "Toolbars" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -59,3 +60,19 @@ class DisplayBar(ToolBar):
 import qmovepal
 toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.4  2003/02/15 02:03:45  cdunde
+#To update and add F1 popup help info.
+#Also add Lockviews button to model editor.
+#
+#Revision 1.3  2001/10/22 10:26:17  tiglari
+#live pointer hunt, revise icon loading
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

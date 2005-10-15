@@ -1,6 +1,7 @@
 """   QuArK  -  Quake Army Knife
 """
 
+#$Header$
 
 Info = {
    "plug-in":       "Half-Life infodecal helper",
@@ -177,3 +178,15 @@ quarkpy.mapduplicator.DupCodes.update({
 })
 
 
+# ----------- REVISION HISTORY ------------
+# $Log$
+# Revision 1.3  2003/12/18 21:51:46  peter-b
+# Removed reliance on external string library from Python scripts (second try ;-)
+#
+# Revision 1.2  2001/02/18 20:21:56  decker_dk
+# Do not register itself in 'New map items...'
+#
+#History:
+#1999-11-14  Added self-registering
+#1999-01-29  Made so only one group gets created, when "Dissociate items"
+#1999-01-23  Removed redimage when moving center/duphandles of the HalfLifeInfodecalHelper duplicator.

@@ -5,6 +5,7 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 Info = {
    "plug-in":       "Terrainmaker plugin",
@@ -1004,3 +1005,9 @@ def newpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
 quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 
+# ----------- REVISION HISTORY ------------
+#$Log$
+#Revision 1.1  2005/08/15 05:49:23  cdunde
+#To commit all files for Terrain Generator
+#
+#

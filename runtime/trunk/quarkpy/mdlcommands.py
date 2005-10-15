@@ -3,7 +3,8 @@
 Model editor commands menu.
 """
 
-
+#
+# $Header$
 
 
 import quarkx
@@ -65,3 +66,15 @@ def CommandsMenu():
     return qmenu.popup("&Commands", items, onclick), shortcuts
 
 
+# ----------- REVISION HISTORY ------------
+# $Log$
+# Revision 1.4  2001/03/15 21:07:49  aiv
+# fixed bugs found by fpbrowser
+#
+# Revision 1.3  2001/02/01 22:03:15  aiv
+# RemoveVertex Code now in Python
+#
+# Revision 1.2  2000/10/11 19:09:00  aiv
+# added cvs header and triangle adding dialog (not finished)
+#
+#

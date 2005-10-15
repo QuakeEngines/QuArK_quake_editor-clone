@@ -8,6 +8,7 @@ Implementation of the menu commands related to faces
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 Info = {
@@ -295,3 +296,25 @@ def newmenu(o, editor, oldmenu = quarkpy.mapentities.FaceType.menu.im_func):
 quarkpy.mapentities.FaceType.menu = newmenu
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+# Revision 1.6  2003/03/24 08:57:15  cdunde
+# To update info and link to infobase
+#
+# Revision 1.5  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
+# Revision 1.4  2001/06/16 03:29:36  tiglari
+# add Txt="" to separators that need it
+#
+# Revision 1.3  2001/02/20 21:30:20  tiglari
+# LookAt added
+#
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
+#
+#
+#

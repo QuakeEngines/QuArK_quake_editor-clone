@@ -11,6 +11,7 @@ History:
 """
 
 
+#$Header$
 
 
 Info = {
@@ -294,3 +295,16 @@ quarkpy.mapentities.EntityLinesMapping.update({
 })
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+# Revision 1.4  2001/02/13 21:02:55  decker_dk
+# Tabbing problem, which is a really serious problem with Python!!
+#
+# Revision 1.3  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
+#
+#
+#

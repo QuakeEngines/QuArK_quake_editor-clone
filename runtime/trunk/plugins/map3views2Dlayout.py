@@ -8,6 +8,7 @@ Modified Plug-in which define the Classical screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 ### Nurail - Mar 22, 2003 - Modification of map3viewslayout for 2D only views.
 
@@ -264,3 +265,18 @@ class ThreeViews2DLayout(MapLayout):
 LayoutsList.append(ThreeViews2DLayout)
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+# Revision 1.2  2003/03/24 05:09:51  cdunde
+# To upload the "new and improved" version of the layout. The layout
+# itself seems to work fine, but somewhere in the python code, the
+# auto-centering code might need some work. The views should center on
+# the center of the view being moved, but that's not the case.
+#
+# Revision 1.1  2003/03/24 05:02:48  cdunde
+# To add new 3 view - 2D layout
+#
+# 
+# 

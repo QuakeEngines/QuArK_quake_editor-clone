@@ -1,3 +1,4 @@
+$Id$
 
 As covered in the  QuArK\help\adv.newgame.html page this is a detailed
 listing of New Games supported by QuArK and their categories.

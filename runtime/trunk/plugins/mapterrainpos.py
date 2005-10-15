@@ -17,6 +17,7 @@
 #
 ##########################################################
 
+#$Header$
 
 
 Info = {
@@ -535,3 +536,14 @@ def PaintBrushClick(m):
     PaintBrushDlg(quarkx.clickform, 'paintbrushdlg', editor, setup, action)
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+# Revision 1.2  2005/09/16 18:08:40  cdunde
+# Commit and update files for Terrain Paintbrush addition
+#
+# Revision 1.1  2005/08/15 05:49:23  cdunde
+# To commit all files for Terrain Generator
+#
+#

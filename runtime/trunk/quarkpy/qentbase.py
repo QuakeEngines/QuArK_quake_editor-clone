@@ -9,6 +9,7 @@ Various Map editor utilities.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+# $Header$
 
 def RegisterEntityConverter(Text, Ext, Desc, Proc):
     import qmacro
@@ -16,3 +17,10 @@ def RegisterEntityConverter(Text, Ext, Desc, Proc):
     import quarkx
     quarkx.entitymenuitem(Text)
     
+# ----------- REVISION HISTORY ------------
+# $Log$
+# Revision 1.2  2001/06/16 01:17:29  aiv
+# * added cvs headers
+# * removed console spam
+#
+#

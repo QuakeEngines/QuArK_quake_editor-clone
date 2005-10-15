@@ -8,6 +8,7 @@ Example Plug-in which define a new screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 Info = {
@@ -43,3 +44,13 @@ class Full3DLayout(MapLayout):
 LayoutsList.append(Full3DLayout)
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
+#
+#
+#

@@ -8,6 +8,7 @@ Model Editor Entities manager
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -228,3 +229,21 @@ def LoadEntityForm(sl):
                 formobj = flist[-1]
     return formobj
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.7  2001/02/01 22:03:15  aiv
+#RemoveVertex Code now in Python
+#
+#Revision 1.6  2000/10/11 19:07:47  aiv
+#Bones, and some kinda skin vertice viewer
+#
+#Revision 1.5  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

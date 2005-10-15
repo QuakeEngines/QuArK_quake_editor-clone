@@ -8,6 +8,7 @@ Map and Model editor Layout managers.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -602,3 +603,41 @@ class MPPage:
     def button(self):
         raise "You must override the method 'button' of the class 'MPPage'" # abstract
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.14  2004/02/03 06:33:18  cdunde
+#To turn off annoying hint
+#
+#Revision 1.13  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
+#Revision 1.12  2003/07/07 07:18:31  cdunde
+#To correct caption exclusion error and hint display
+#
+#Revision 1.11  2003/03/24 08:58:07  cdunde
+#To update info and link to infobase
+#
+#Revision 1.10  2003/03/21 05:57:05  cdunde
+#Update infobase and add links
+#
+#Revision 1.8  2003/02/01 02:13:22  cdunde
+#Add items to grid selection
+#
+#Revision 1.7  2001/10/22 10:26:17  tiglari
+#live pointer hunt, revise icon loading
+#
+#Revision 1.6  2001/01/26 19:07:26  decker_dk
+#bs_multipagespanel. Better indication of keys '1'-'5', which are actually shortcut-keys to the tree-view and  alike panels.
+#
+#Revision 1.5  2000/12/17 09:43:41  decker_dk
+#Some comments about menu settings, as the indexes are hardcoded!
+#
+#Revision 1.4  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

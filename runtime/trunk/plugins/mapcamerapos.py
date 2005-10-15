@@ -4,6 +4,7 @@
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
  
 Info = {
    "plug-in":       "Camera Position Duplicator",
@@ -450,3 +451,36 @@ mapselection.prevItem.onclick=camnextClick
 
 
 
+# $Log$
+# Revision 1.10  2003/12/18 21:51:46  peter-b
+# Removed reliance on external string library from Python scripts (second try ;-)
+#
+# Revision 1.9  2003/03/21 05:47:45  cdunde
+# Update infobase and add links
+#
+# Revision 1.8  2002/05/21 21:30:21  tiglari
+# no-selection tree-view RMB bug fixed (ut_fourdays)
+#
+# Revision 1.7  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
+# Revision 1.6  2001/06/17 04:46:11  tiglari
+# local camera positioning, and auto 3d view opening where appropriate
+#
+# Revision 1.5  2001/06/16 21:55:46  tiglari
+# dialog npw stays open when something else is selected,add position
+# on map background menu
+#
+# Revision 1.4  2001/06/16 03:19:05  tiglari
+# add Txt="" to separators that need it
+#
+# Revision 1.3  2001/06/16 02:44:09  tiglari
+# Camera Position finder dialog, cycle-in group with PgUp/Down+'C'
+#
+# Revision 1.2  2001/06/14 12:16:47  tiglari
+# nameing dialog, multiple view support (pick last clicked on)
+#
+# Revision 1.1  2001/06/13 22:28:09  tiglari
+# kickoff
+#
+#

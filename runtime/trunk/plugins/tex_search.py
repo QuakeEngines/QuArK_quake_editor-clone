@@ -4,6 +4,7 @@
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
 
 Info = {
    "plug-in":       "Texture Search",
@@ -98,3 +99,15 @@ def openbox():
     f = quarkx.newform("temp")
     TextureSearchDlg(f)
 
+# $Log$
+# Revision 1.5  2003/12/17 13:58:59  peter-b
+# - Rewrote defines for setting Python version
+# - Removed back-compatibility with Python 1.5
+# - Removed reliance on external string library from Python scripts
+#
+# Revision 1.4  2002/04/07 12:46:06  decker_dk
+# Pretty separator.
+#
+# Revision 1.3  2001/06/19 20:59:03  aiv
+# added cvs headers + small bug fix
+#

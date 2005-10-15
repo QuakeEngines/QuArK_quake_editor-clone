@@ -8,6 +8,7 @@ Core of the Model editor.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -140,3 +141,18 @@ def commonhandles(self, redraw=1):
             for h in hlist:
                 h.draw(v, cv, None)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.5  2001/03/15 21:07:49  aiv
+#fixed bugs found by fpbrowser
+#
+#Revision 1.4  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

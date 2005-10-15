@@ -8,6 +8,7 @@ Core of the Map and Model editors.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -856,3 +857,52 @@ class BaseEditor:
 NeedViewError = "this key only applies to a 2D map view"
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.16  2005/09/16 18:10:48  cdunde
+#Commit and update files for Terrain Paintbrush addition
+#
+#Revision 1.15  2001/10/22 10:26:17  tiglari
+#live pointer hunt, revise icon loading
+#
+#Revision 1.14  2001/05/08 11:07:57  tiglari
+#remove debug
+#
+#Revision 1.13  2001/05/07 06:58:51  tiglari
+#redo disable of object dragging with left mousebutton
+#
+#Revision 1.12  2001/05/07 05:41:13  tiglari
+#oops roll back dragging change, since it disabled map view nav
+#
+#Revision 1.11  2001/05/07 00:05:33  tiglari
+#prevent RMB dragging (if anyone screams about this, it can be made
+# conditional on an option)
+#
+#Revision 1.10  2001/04/24 07:31:36  tiglari
+#infrastructure for keypress processing
+#
+#Revision 1.9  2001/03/16 00:29:59  aiv
+#made customizable maplimits for games
+#
+#Revision 1.8  2001/02/19 21:46:55  tiglari
+#removed some debugs
+#
+#Revision 1.7  2001/02/18 20:22:12  decker_dk
+#Changed 'show brush width/height/depth', so mouse have to be inside the selection, and not on a handle. Also fixed the problem of not showing w/h/d when a single face were selected.
+#
+#Revision 1.6  2001/02/12 09:35:34  tiglari
+#fix for drag imprecision bug
+#
+#Revision 1.5  2001/01/26 19:07:45  decker_dk
+#initquickkeys. Comment about where to find relevant code-information, to understand whats going on.
+#
+#Revision 1.4  2000/09/03 01:37:35  tiglari
+#Possible fix/amelioration of drag problem (drag-end problem moved to top ov mousemap)
+#
+#Revision 1.3  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

@@ -8,6 +8,7 @@ Plug-in which define the Classical screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -240,3 +241,13 @@ class ThreeViewsLayout(MapLayout):
 LayoutsList.append(ThreeViewsLayout)
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
+#
+#
+#

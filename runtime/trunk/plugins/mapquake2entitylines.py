@@ -6,6 +6,7 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 Info = {
    "plug-in":       "Quake-2 Arrow Extensions",
@@ -69,3 +70,10 @@ quarkpy.mapentities.EntityLinesMapping.update({
   "Quake 2": Quake2DrawEntityLines()
 })
 
+# ----------- REVISION HISTORY ------------
+#
+# $Log$
+# Revision 1.1  2001/01/06 18:34:22  decker_dk
+# Was in quark 5.10
+#
+#

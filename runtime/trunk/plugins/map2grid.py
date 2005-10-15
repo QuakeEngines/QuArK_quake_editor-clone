@@ -8,6 +8,7 @@ A tricky "force-the-whole-map-polyhedrons-to-grid"
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -180,3 +181,22 @@ quarkpy.mapcommands.items.append(
   quarkpy.qmenu.item("Tricky force to grid...", TFTGclick, "|Tricky force to grid:\n\nRepairs maps that are off-the-grid.|intro.mapeditor.menu.html#commandsmenu"))
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+# Revision 1.5  2003/09/14 05:57:08  cdunde
+# Typ separator correction
+#
+# Revision 1.4  2003/03/24 08:57:15  cdunde
+# To update info and link to infobase
+#
+# Revision 1.3  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
+#
+#
+#

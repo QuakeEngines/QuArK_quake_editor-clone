@@ -7,6 +7,7 @@ Tool Bars and Buttons
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
 #
 import quarkx
 from qutils import *
@@ -146,3 +147,18 @@ import qutils
 qutils.SetupRoutines.append(BtnPrefChanged)
 BtnText = quarkx.setupsubset(qutils.SS_GENERAL, "Display")["BtnText"]
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.4  2003/03/16 02:42:34  tiglari
+#Added infobaselink arg to a few more buttons
+#
+#Revision 1.3  2003/03/15 20:40:50  cdunde
+#To update hints and add infobase links
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

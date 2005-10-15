@@ -8,6 +8,7 @@ Plug-in which rebuild all views.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 Info = {
@@ -169,3 +170,11 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 #   red line is rock solid.
 #
 
+
+# ----------- REVISION HISTORY ------------
+#
+#$Log$
+#Revision 1.6  2004/02/12 18:04:51  cdunde
+#To add log
+#
+#

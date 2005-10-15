@@ -1,3 +1,4 @@
+$Id$
 
    ########                    ####                  ####    ####
   ####  ####                 ########                ####   ####
@@ -13,8 +14,6 @@
 
 6.5.0 alpha 3
 =============
-
- * [peter-b] : Remove lots more CVS keywords
 
  * [peter-b] : Make installer header/splash images match main QuArK
      splash screen

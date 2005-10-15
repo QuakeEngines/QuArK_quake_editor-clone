@@ -1,3 +1,4 @@
+$Id$
 
    ########                    ####                  ####    ####
   ####  ####                 ########                ####   ####
@@ -16,27 +17,12 @@ The original author of QuArK
 ----------------------------
 
 - Armin Rigo
-        e-mail:         arigo@tunes.org
-
-Armin is unfortunately no longer actively participating in QuArK
-development, having moved on to greater things, such as Psyco and
-PyPy.
-
-
-The QuArK project administrators
---------------------------------
-
-- Bob "cdunde" Jarrett
-        e-mail:         cdunde1@comcast.net
-
-- Peter Brett
-        e-mail:         peter@peter-b.co.uk
-
-- "Rowdy"
-        e-mail:         rowdy@netspace.net.au
-
-- Fredrick "rivier" Vamstad
-	e-mail:		fredrick.vamstad@gmail.com
+        e-mail:         arigo@planetquake.com
+        snail mail:     Armin Rigo
+                        c/o Bernard Rigo
+                        Chemin du Chatelard 3
+                        CH-1860 Aigle
+                        Switzerland
 
 
 The contributing developers of QuArK
@@ -57,8 +43,17 @@ The contributing developers of QuArK
 - Marco Leise
         e-mail:         Marco.Leise@gmx.de
 
+- Bob "cdunde" Jarrett
+        e-mail:         cdunde1@comcast.net
+
 - "DG"
         e-mail:         david@fielden.com.au
+
+- "Rowdy"
+        e-mail:         rowdy@netspace.net.au
+
+- Peter Brett
+        e-mail:         peter@peter-b.co.uk
 
 - "milifaar"
         e-mail:         martin@abhoth.demon.nl
@@ -71,3 +66,7 @@ The contributing developers of QuArK
 
 - Brian "silverpaladin" Layman
         e-mail:         SilverPaladin@neo.rr.com
+
+- "Fredrick Vamstad"
+        e-mail:         fredrick.vamstad@gmail.com
+

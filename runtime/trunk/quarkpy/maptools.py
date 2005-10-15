@@ -8,6 +8,7 @@ The map editor's "Toolbars" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 import qmenu
@@ -60,3 +61,21 @@ class DisplayBar(ToolBar):
 import qmovepal
 toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.5  2003/03/15 20:42:09  cdunde
+#To update hints and add infobase links
+#
+#Revision 1.4  2003/02/14 03:12:55  cdunde
+#To add F1 help popup info
+#
+#Revision 1.3  2001/10/22 10:24:32  tiglari
+#live pointer hunt, revise icon loading
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

@@ -8,6 +8,7 @@ Plug-ins Launcher
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -36,3 +37,18 @@ LoadPlugins("Q_")   # immediately loads plug-ins whose name
                     # begins with Q_
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+# Revision 1.3  2003/12/17 13:58:59  peter-b
+# - Rewrote defines for setting Python version
+# - Removed back-compatibility with Python 1.5
+# - Removed reliance on external string library from Python scripts
+#
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
+#
+#
+#

@@ -8,6 +8,7 @@ Terrain mouse dragging  and other modes
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -1510,4 +1511,30 @@ class TerrModesBar(ToolBar):
 
 quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 
+
+# ----------- REVISION HISTORY ------------
+#
+# $Log$
+# Revision 1.6  2005/09/16 18:08:40  cdunde
+# Commit and update files for Terrain Paintbrush addition
+#
+# Revision 1.5  2005/08/31 22:46:21  cdunde
+# To properly fix interference with Model Editor
+#
+# Revision 1.4  2005/08/26 07:11:13  cdunde
+# To temporarily fix interference with Model Editor
+#
+# Revision 1.3  2005/08/16 22:46:32  cdunde
+# To fix 2 first time start bugs:
+# terrain button was selected and
+# dialog box would open with std selector
+#
+# Revision 1.2  2005/08/16 04:03:12  cdunde
+# Fix toolbar arraignment
+#
+# Revision 1.1  2005/08/15 05:49:23  cdunde
+# To commit all files for Terrain Generator
+#
+
+#
 

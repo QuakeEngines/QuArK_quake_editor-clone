@@ -8,6 +8,7 @@ The map editor's "Commands" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 
 
+#$Header$
 
 #
 # Operations for creating boxes whose face-names reflect
@@ -239,3 +240,10 @@ def facedict_vflip(fd):
     fd2['d']=fd['u']
     return fd2
 
+#$Log$
+#Revision 1.2  2002/08/09 10:00:11  decker_dk
+#A minor consistency correction for facedict_*flip()
+#
+#Revision 1.1  2001/02/14 10:06:47  tiglari
+#extracted from mb2curves, etc
+#

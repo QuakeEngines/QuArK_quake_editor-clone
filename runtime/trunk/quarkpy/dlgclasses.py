@@ -8,6 +8,7 @@
 #
 ######################################
 
+#$Header$
 
 
 import qmacro
@@ -212,3 +213,32 @@ class locatable_dialog_box(qmacro.dialogbox):
     size = self.size
     return (ox+cx-size[0]/2, oy+cy-size[1]/2, ox+cx+size[0]/2, oy+cy+size[1]/2)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.8  2003/12/18 21:51:46  peter-b
+#Removed reliance on external string library from Python scripts (second try ;-)
+#
+#Revision 1.7  2002/05/21 10:23:28  tiglari
+#Make LiveBrowserDlg handle correctly multiple entries with the same name;
+#  Load first one.
+#
+#Revision 1.6  2001/08/05 08:01:37  tiglari
+#spiff up new descendents of LiveEditDlg
+#
+#Revision 1.5  2001/08/02 02:55:49  tiglari
+#List-browser dialog (ListerDlg)
+#
+#Revision 1.4  2000/10/10 07:57:53  tiglari
+#added onclosing support to LiveEditDlg (used in vertex movement dialog,
+# seems like a good idea).
+#
+#Revision 1.3  2000/06/03 18:01:28  alexander
+#added cvs header
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

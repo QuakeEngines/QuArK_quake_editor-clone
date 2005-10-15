@@ -8,6 +8,7 @@ Implementation of "Addons" menu Load Any Map function
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 Info = {
    "plug-in":       "Map1 Load Any Map",
@@ -124,3 +125,12 @@ def LoadMapClick(m):
 
 
 
+# ----------- REVISION HISTORY ------------
+#
+#$Log$
+#Revision 1.2  2003/12/18 21:51:46  peter-b
+#Removed reliance on external string library from Python scripts (second try ;-)
+#
+#Revision 1.1  2003/07/04 20:01:16  cdunde
+#To add new Addons main menu item and sub-menus
+#

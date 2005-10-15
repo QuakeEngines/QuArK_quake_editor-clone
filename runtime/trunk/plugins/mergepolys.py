@@ -170,3 +170,7 @@ def groupmergepoly(editor,o):
     item.o=o
     return item
 
+# $Log$
+# Revision 1.1  2001/04/15 08:53:44  tiglari
+# move merge poly code to mergepolys.py; add merge polys in group functionality
+#

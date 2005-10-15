@@ -4,6 +4,8 @@
 # Copyright (C) 2003 Harry Kalogirou
 #
 
+#$Header$
+
 Info = {
    "plug-in":       "Sylphis entities line support",
    "desc":          "Displays varius lines assosiated with Sylphis.",
@@ -96,3 +98,10 @@ quarkpy.mapentities.EntityLinesMapping.update({
   "Sylphis": SylphisDrawEntityLines()
 })
 
+
+# ----------- REVISION HISTORY ------------
+#$Log$
+#Revision 1.1  2004/05/21 01:04:14  cdunde
+#To add support for Sylphis game engine. Code by Harry Kalogirou.
+#
+#

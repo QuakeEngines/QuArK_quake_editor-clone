@@ -4,6 +4,7 @@
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
 
 Info = {
    "plug-in":       "Radial Duplicator",
@@ -135,3 +136,8 @@ quarkpy.mapduplicator.DupCodes.update({
   "dup radial":     RadialDuplicator,
 })
 
+# ----------- REVISION HISTORY ------------
+#$Log$
+#Revision 1.5  2001/08/15 17:52:01  decker_dk
+#Exception-catch for math-computation errors
+#

@@ -8,6 +8,7 @@ Model editor Layout managers.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -179,3 +180,26 @@ LayoutsList = []
 #
 mppages = []
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.7  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
+#Revision 1.6  2001/03/15 21:07:49  aiv
+#fixed bugs found by fpbrowser
+#
+#Revision 1.5  2000/10/11 19:07:47  aiv
+#Bones, and some kinda skin vertice viewer
+#
+#Revision 1.4  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

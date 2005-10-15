@@ -2,6 +2,7 @@
 QuArK  -  Quake Army Knife
 """
 
+#$Header$
 
 Info = {
    "plug-in":       "Arg Replacer",
@@ -60,3 +61,18 @@ quarkpy.mapduplicator.DupCodes.update({
   "arg replacer":            ArgReplacer,
 })
 
+# ----------- REVISION HISTORY ------------
+#
+# $Log$
+# Revision 1.5  2003/12/18 21:51:46  peter-b
+# Removed reliance on external string library from Python scripts (second try ;-)
+#
+# Revision 1.4  2001/10/22 10:21:59  tiglari
+# live pointer hunt, revise icon loading
+#
+# Revision 1.3  2001/06/24 14:47:58  decker_dk
+# Can now also replace specific-names.
+#
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#

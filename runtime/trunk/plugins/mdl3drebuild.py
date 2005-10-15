@@ -8,6 +8,7 @@ Plug-in which rebuild all views.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 Info = {
    "plug-in":       "Rebuild 3D views in Model Editor",
@@ -41,3 +42,10 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
 
+# ----------- REVISION HISTORY ------------
+#
+#$Log$
+#Revision 1.1  2005/08/31 05:37:32  cdunde
+#To add Tab key 3D view rebuild function for Model Editor.
+#
+#

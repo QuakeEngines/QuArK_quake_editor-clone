@@ -8,6 +8,8 @@ Plug-in which define the 4-views screen layouts.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#
+# $Header$
 
 
 Info = {
@@ -80,3 +82,9 @@ class FourViewsLayoutUEd(FourViewsLayout):
         
 LayoutsList.append(FourViewsLayoutUEd)
 
+# ----------- REVISION HISTORY ------------
+# $Log$
+# Revision 1.1  2001/02/05 20:09:11  aiv
+# Initial Release
+#
+#

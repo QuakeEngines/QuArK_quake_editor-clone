@@ -8,6 +8,7 @@ Console code
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 #
@@ -74,3 +75,12 @@ def runprogram(cmdline, currentdir, stdout=0, stderr=None):
         quarkx.msgbox("Cannot execute this program :\n\n    %s\n\nCheck the path and required DLLs." % cmdline, 1, 4)
         raise quarkx.aborted
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

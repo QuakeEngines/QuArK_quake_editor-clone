@@ -8,6 +8,7 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -89,3 +90,18 @@ class BackBmpDlg(qmacro.dialogbox):
         self.view.invalidate()
         self.close()
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.4  2001/06/17 21:05:27  tiglari
+#fix button captions
+#
+#Revision 1.3  2001/06/16 03:20:48  tiglari
+#add Txt="" to separators that need it
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

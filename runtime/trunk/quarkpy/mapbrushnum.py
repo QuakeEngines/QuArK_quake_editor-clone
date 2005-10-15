@@ -8,6 +8,7 @@ Map editor brush-from-number finder
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 import quarkx
 import qmacro
@@ -138,3 +139,11 @@ def LoadBrushNums(editor, filename):
     except corrupt, info:
         quarkx.helppopup("Brush number discrepancy at brush labelled %s; this probably means that the file is corrupt"%info)
        
+#$Log$
+#Revision 1.2  2003/12/18 21:51:46  peter-b
+#Removed reliance on external string library from Python scripts (second try ;-)
+#
+#Revision 1.1  2003/03/24 10:34:24  tiglari
+#support for brush-number finder
+#
+

@@ -7,6 +7,7 @@ Python macros available for direct call by QuArK
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
 
 #
 # Macros are called by QuArK based on name. These are the
@@ -309,3 +310,38 @@ def MACRO_ent_convertfrom(text):
             entf[1](a[0].parent, file, gn)
 
 
+# ----------- REVISION HISTORY ------------
+#
+#$Log$
+#Revision 1.17  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
+#Revision 1.16  2003/07/24 18:22:36  peter-b
+#Marco's fix for the lambda bug
+#
+#Revision 1.15  2001/10/22 10:28:20  tiglari
+#live pointer hunt, revise icon loading
+#
+#Revision 1.14  2001/10/20 02:13:18  tiglari
+#live pointer hunt: redo shutdown macro
+#
+#Revision 1.13  2001/07/27 11:31:47  tiglari
+#bsp study: plane viewing, faces in treeview
+#
+#Revision 1.12  2001/06/18 20:30:12  decker_dk
+#Replace all '&'-characters with nothing, for menuitem-captions used as indexes into python-style dictionaries.
+#
+#Revision 1.11  2001/06/13 23:01:13  aiv
+#Moved 'Convert From' stuff to python code (plugin type)
+#
+#Revision 1.10  2001/03/28 19:23:15  decker_dk
+#Added '(*.fgd)' to the filedialogbox-call.
+#
+#Revision 1.9  2001/03/15 21:09:01  aiv
+#moved .fgd reading to menu, sepearted texture & entity reading
+#
+#Revision 1.5  2000/06/02 16:00:22  alexander
+#added cvs headers
+#

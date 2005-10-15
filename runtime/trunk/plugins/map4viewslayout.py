@@ -8,6 +8,7 @@ Plug-in which define the 4-views screen layouts.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -348,3 +349,13 @@ LayoutsList.append(FourViewsLayout1)
 LayoutsList.append(FourViewsLayout2)
 
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
+#
+#
+#

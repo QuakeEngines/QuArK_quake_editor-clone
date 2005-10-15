@@ -8,6 +8,7 @@
 #  This plugin adapted from mapextruder.py, with permission
 #    of CryTek Studios.
 #
+#$Header$
 
 
 Info = {
@@ -31,7 +32,6 @@ from quarkpy.qeditor import deg2rad
 from quarkpy.maphandles import MapRotateHandle
 #from mapmadsel import getstashed
 from quarkpy.maputils import *
-import quarkpy.tagging as nt
 from tagging import *
 #from faceutils import *
 from quarkpy.dlgclasses import placepersistent_dialogbox
@@ -1865,31 +1865,19 @@ class TweenHandle(quarkpy.maphandles.EdgeHandle):
 # -- The Duplicator at Last
 #
 
-CORDUP_KEY = 'mapextruder_cordup'
-
 def tagcordup(dup, editor):
-  nt.uniquetag(editor, CORDUP_KEY, dup)
+  editor.tagging = Tagging()
+  editor.tagging.taggedcor = dup
   editor.invalidateviews()
   
 def gettaggedcordup(editor):
-  cor = nt.getuniquetag(editor, CORDUP_KEY)
-  if cor is not None and checktree(editor.Root, cor):
-    return cor
-  return None
+  try:
+    cor = editor.tagging.taggedcor
+    if checktree(editor.Root, cor):
+      return cor
+  except (AttributeError):
+    return None
     
-def CORDUP_KEY_dcb(e, view, cv, dup):
-    data = ExtruderDupData(dup)
-    cv.pencolor = MapColor("Tag")
-    cv.penstyle = PS_DOT
-    prev_pos = view.proj(dup.origin)
-    for j in range(1, len(data.PathPoints())):
-      pos = view.proj(data.PathPos(j))
-      cv.line(prev_pos, pos)
-      prev_pos = pos
-
-nt.tagdrawfunc(CORDUP_KEY_dcb, CORDUP_KEY)
-
-
   
 def extrudermenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_func):
   "duplicator entity menu"
@@ -2097,6 +2085,27 @@ class ExtruderDuplicator(StandardDuplicator):
     return [group, info]
 
 #
+# This stuff could have been stuck into n2dfinishdrawing, but I
+#  decided to keep it separate
+#
+def cortagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+    oldmore(editor, view)
+    dup = gettaggedcordup(editor)
+    if dup is None: return
+    data = ExtruderDupData(dup)
+    cv = view.canvas()
+    cv.pencolor = MapColor("Tag")
+    cv.penstyle = PS_DOT
+    prev_pos = view.proj(dup.origin)
+    for j in range(1, len(data.PathPoints())):
+      pos = view.proj(data.PathPos(j))
+      cv.line(prev_pos, pos)
+      prev_pos = pos
+
+quarkpy.qbaseeditor.BaseEditor.finishdrawing = cortagfinishdrawing
+
+
+#
 #  Register the duplicator
 #
 quarkpy.mapduplicator.DupCodes.update({
@@ -2257,7 +2266,6 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
     fromtagged = qmenu.item("From &tagged",WrapClick,"|Wrap texture from first segment to others")
     type = data.dup["type"]
     if type == "p":
-      # FIXME: WTF? This module/function doesn't exist!
       import maptagzbezier
       tagged = gettaggedbzcplist(editor)
     else:
@@ -2413,7 +2421,6 @@ def cordupmenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_fun
     fromtagged = qmenu.item("From &tagged",WrapClick,"|Wrap texture from first segment to others")
     type = data.dup["type"]
     if type == "p":
-      # FIXME: WTF? This module/function doesn't exist!
       import maptagzbezier
       tagged = gettaggedbzcplist(editor)
     else:
@@ -2888,3 +2895,41 @@ def ExtrudeClick(btn):
   btn.editor.layout.new2dwin.close()
 
 
+#$Log$
+#Revision 1.16  2003/12/18 21:51:46  peter-b
+#Removed reliance on external string library from Python scripts (second try ;-)
+#
+#Revision 1.15  2003/09/18 02:55:16  cdunde
+#to fix dialog sep
+#
+#Revision 1.14  2002/05/18 22:38:31  tiglari
+#remove debug statement
+#
+#Revision 1.13  2001/07/09 09:49:41  tiglari
+#eliminate sidehandle in favor of using qedtor.orthogonalvect()
+#
+#Revision 1.12  2001/07/08 00:27:35  tiglari
+#'short' specific; fix angle-to-next and path-point dialog bugs
+#
+#Revision 1.11  2001/06/17 21:10:57  tiglari
+#fix button captions
+#
+#Revision 1.10  2001/06/17 02:25:39  tiglari
+#revert to dup change
+#
+#Revision 1.9  2001/05/22 22:14:38  tiglari
+#texture info built on reversion to dup from dissociated group.  Alignment still wonky
+#
+#Revision 1.8  2001/05/13 02:59:48  tiglari
+#caulk hidden joins
+#
+#Revision 1.7  2001/05/06 10:16:32  tiglari
+#changes to get revert to dup working, hole punching on dup RMB
+# as well as former-dup-group RMB
+#
+#Revision 1.6  2001/05/05 10:02:11  tiglari
+#patch mode supported for extruder
+#
+#Revision 1.5  2001/05/04 23:07:31  tiglari
+#fix log
+#

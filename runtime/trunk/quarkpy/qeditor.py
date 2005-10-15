@@ -8,6 +8,7 @@ Various constants and Screen Controls for editors.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 import quarkx
@@ -1487,3 +1488,65 @@ def FindSelectable(root, singletype=None, types=None):
         lst = lst1
     return result
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.20  2005/08/10 04:59:18  cdunde
+#To add QuArK's Forums site link to Help menu
+#
+#Revision 1.19  2004/12/26 20:03:01  cdunde
+#Added light Color-Picker function for Torque game engine.
+#
+#Revision 1.18  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
+#Revision 1.17  2003/03/21 05:57:05  cdunde
+#Update infobase and add links
+#
+#Revision 1.15  2003/03/10 20:20:44  decker_dk
+#It is QuArK - (Qu)ake (Ar)my (K)nife, and not "QuArk".
+#
+#Revision 1.14  2003/02/15 02:01:26  cdunde
+#To add QuArk web site link to Help menu
+#
+#Revision 1.13  2002/06/11 08:59:45  tiglari
+#oops restore beginning part of initial comment
+#
+#Revision 1.12  2002/06/10 21:23:02  tiglari
+#Remove html from overhasty cut-and-paste
+#
+#Revision 1.11  2002/06/09 22:47:14  tiglari
+#model editor bugfix by cdunde
+#
+#Revision 1.10  2001/10/22 10:28:20  tiglari
+#live pointer hunt, revise icon loading
+#
+#Revision 1.9  2001/08/07 23:37:09  tiglari
+#X_, Y_, Z_, axis constants added
+#
+#Revision 1.8  2001/06/17 21:05:27  tiglari
+#fix button captions
+#
+#Revision 1.7  2001/06/16 03:20:48  tiglari
+#add Txt="" to separators that need it
+#
+#Revision 1.6  2001/03/02 19:35:02  decker_dk
+#Changed Help2()/Help3() to direct to the infobase files.
+#
+#Revision 1.5  2001/01/26 19:06:35  decker_dk
+#Better layout of zoom-list texts.
+#
+#Revision 1.4  2000/12/17 12:35:02  decker_dk
+#- Changed [Quarkpy\qeditor] help3() to "help\\faq\\index.html", and some stuff to quarkx.htmldoc()
+#
+#Revision 1.3  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

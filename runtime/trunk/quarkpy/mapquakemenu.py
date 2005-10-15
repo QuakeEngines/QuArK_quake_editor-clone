@@ -8,6 +8,7 @@ Implementation of QuArK Map editor's "Quake" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -659,3 +660,130 @@ def QuakeMenu(editor):
 
 import mapportals
 
+# ----------- REVISION HISTORY ------------
+#
+#$Log$
+#Revision 1.40  2005/04/16 11:13:36  alexander
+#can save non alpha textures as vtf
+#can export used textures to materials folder
+#
+#Revision 1.39  2005/01/05 12:18:35  alexander
+#introduced %gamedir% variable expansion for running tools and utilized for hl2 support
+#
+#Revision 1.38  2004/01/08 08:54:33  cdunde
+#To commit changes for peter-b
+#
+#Revision 1.37  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
+#Revision 1.36  2003/03/28 16:09:23  cdunde
+#More infobase updates
+#
+#Revision 1.35  2003/03/27 20:35:48  cdunde
+#Update info and links to infobase.
+#
+#Revision 1.34  2003/03/24 10:34:24  tiglari
+#support for brush-number finder
+#
+#Revision 1.33  2003/03/21 05:56:26  cdunde
+#Update infobase and add links
+#
+#Revision 1.32  2003/03/19 22:27:58  tiglari
+#change default holes file to .lin
+#
+#Revision 1.31  2003/03/19 11:24:32  tiglari
+#expand help for portal view command
+#
+#Revision 1.30  2003/03/19 11:06:54  tiglari
+#add commands for loading leak (pts/lin) and portal (prt) files
+#
+#Revision 1.29  2003/03/17 00:11:05  tiglari
+#Add manual leak file loading command
+#
+#Revision 1.28  2003/01/06 22:24:02  tiglari
+#check leak files for having actual content before registering build error
+#
+#Revision 1.27  2002/08/09 10:01:45  decker_dk
+#Fixed problem, when "warning about missing textures and do you want to continue"
+#never continued regarding pressing OK or Cancel. The if-statement checked for MR_YES
+#and not MR_OK.
+#
+#Revision 1.26  2002/05/07 09:13:02  tiglari
+#prevent error when no default dir for buildpgms is specified (diagnosis and fix by nurail)
+#
+#Revision 1.25  2002/04/28 11:41:32  tiglari
+#New command line argument substitutions (for RTCW)
+#
+#Revision 1.24  2002/03/26 22:19:20  tiglari
+#support UseIntegralVertexes flag
+#
+#Revision 1.23  2002/02/05 18:33:15  decker_dk
+#Added a %basepath% command-line replacement variable.
+#
+#Revision 1.22  2001/09/24 22:24:27  tiglari
+#checks moved into RebuildandRun, made conditional on ExportMapFile
+#
+#Revision 1.21  2001/07/24 02:42:40  tiglari
+#.hmf extension when 6dx maps committed
+#
+#Revision 1.20  2001/07/19 12:00:17  tiglari
+#support disabling mapchecks in game config files
+#
+#Revision 1.19  2001/03/18 12:17:26  decker_dk
+#Fixed FindSingleExtension() so it also reads the last extension at end-of-line.
+#
+#Revision 1.18  2001/03/15 20:53:53  tiglari
+#fix for no action build control parameters (Q1/H2)
+#
+#Revision 1.17  2001/03/14 19:20:49  decker_dk
+#Functionality for '-ext{action}'... which is not documented yet!
+#
+#Revision 1.16  2001/03/12 15:31:39  tiglari
+#Hacked in linfile loading. Assumes that .lin/.pts is the only must-not-exist file,
+#  which is true for now, but prolly not reliable.  better fix wanted
+#
+#Revision 1.15  2001/02/07 00:08:33  aiv
+#added fixes from 6.1c release
+#
+#Revision 1.14  2001/01/27 18:24:39  decker_dk
+#Renamed the key 'Q2TexPath' to 'TexturesPath'.
+#
+#Revision 1.13  2000/10/28 19:29:38  decker_dk
+#Correctly export .MAP file, even if no build-tool is marked for execution
+#
+#Revision 1.12  2000/10/26 18:15:45  tiglari
+#Enable Brush Primitives support
+#
+#Revision 1.11  2000/10/19 19:00:42  decker_dk
+#Fix if 'BuildPgmsDir' was not filled out
+#
+#Revision 1.10  2000/10/09 18:18:02  decker_dk
+#Build-Tool Controllers
+#
+#Revision 1.9  2000/07/24 23:58:11  alexander
+#added: .lin file processing for bspc leaks
+#
+#Revision 1.8  2000/07/03 14:10:50  alexander
+#fixed: removed unnecessary dialogs when extract textures
+#
+#Revision 1.7  2000/06/07 22:29:19  alexander
+#changed: use the setup entry "SpecialCustomQuakeMenu" instead of
+#         the NEEDQCSG flag to select a form for custom quake menus
+#fixed: check now if aas file was built at all
+#
+#Revision 1.6  2000/06/05 00:11:27  alexander
+#fixed history
+#
+#Revision 1.5  2000/06/05 00:09:49  alexander
+#added: kludge for stupid tools (like those of SoF) that require to run in the games base dir)
+#
+#Revision 1.4  2000/06/04 21:41:29  alexander
+#added: bspc console class, support for running the bsp to aas converter for bots in q3
+#
+#Revision 1.3  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

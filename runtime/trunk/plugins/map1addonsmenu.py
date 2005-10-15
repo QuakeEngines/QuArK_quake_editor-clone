@@ -8,6 +8,7 @@ Implementation of QuArK Map editor's "Addons" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 Info = {
    "plug-in":       "Addons Main Menu",
@@ -61,3 +62,9 @@ OtherMenu.items.append(qmenu.sep)
 OtherMenu.items.append(quarkpy.qmenu.item("Import any map file", Func1Click, "|Import any map file:\n\nThis item function allows you to load any map file into the existing editor to be added to the map you are working on.\n\nBecause it also may import entities, you may half to delete some of them like its info_player_start.\n\nThis function is created by the plugins/map1loadanymap.py file.|intro.mapeditor.menu.html#addonsmenu"))
 
 
+# ----------- REVISION HISTORY ------------
+#
+#$Log$
+#Revision 1.1  2003/07/04 20:01:16  cdunde
+#To add new Addons main menu item and sub-menus
+#

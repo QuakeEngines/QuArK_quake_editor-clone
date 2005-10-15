@@ -8,6 +8,7 @@ Model editor mouse handles.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -420,3 +421,27 @@ def MouseClicked(self, view, x, y, s, handle):
         return flags+"S"
     return flags
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.8  2001/03/15 21:07:49  aiv
+#fixed bugs found by fpbrowser
+#
+#Revision 1.7  2001/02/07 18:40:47  aiv
+#bezier texture vertice page started.
+#
+#Revision 1.6  2001/02/05 20:03:12  aiv
+#Fixed stupid bug when displaying texture vertices
+#
+#Revision 1.5  2000/10/11 19:07:47  aiv
+#Bones, and some kinda skin vertice viewer
+#
+#Revision 1.4  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#

@@ -8,6 +8,7 @@ Implementation of the Brush Subtraction commands
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 
@@ -119,6 +120,22 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
 
 quarkpy.mapcommands.onclick = commandsclick
 
+# ----------- REVISION HISTORY ------------
+#
 quarkpy.mapcommands.items.append(menswap)
 quarkpy.mapcommands.items.append(menalign)
 
+# $Log$
+# Revision 1.4  2003/03/24 08:57:15  cdunde
+# To update info and link to infobase
+#
+# Revision 1.3  2001/07/24 01:10:39  tiglari
+# menu item text now says whether to marked or not
+#
+# Revision 1.2  2001/07/23 23:41:13  tiglari
+# Now aligns to marked, if anything is marked
+#
+# Revision 1.1  2001/06/07 21:30:15  tiglari
+# swap & align (suggestions by Alan Donald (swap) & quantum_red (align)
+#
+#

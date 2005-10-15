@@ -8,6 +8,7 @@ Keyboard constants and utilities
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 # Virtual Keys, Standard Set
@@ -121,3 +122,12 @@ def keynames():
                 _keynames[value] = item
         return _keynames
         
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
+#
+#
