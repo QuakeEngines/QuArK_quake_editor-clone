@@ -15,6 +15,9 @@ $Id$
 6.5.0 alpha 3
 =============
  
+ * [cdunde] : Fixed Terrain Generator Paint Brush function to allow
+     texture application in all 3D views and update of those views.
+ 
  * [cdunde] : DataQ3.qrk file - Removed hard coded textures and pointed
      path to pick up textures in actual textures folders and pak files.
  

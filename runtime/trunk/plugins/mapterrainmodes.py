@@ -80,6 +80,7 @@ vfSkinView = 0x80 # 2d only - used for skin page for mdl editor and bezier page 
 grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
+saveeditor = None
 
 #
 # For dialog menu button.
@@ -1220,6 +1221,8 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
     oldfinish(editor, view)
 
 def TerrainManager(editor, view, x, y, flags, handle):
+    global saveeditor
+    saveeditor = editor
     redcolor = RED
     todo = "RS"
     tb2 = editor.layout.toolbars["tb_terrmodes"]
@@ -1294,6 +1297,8 @@ class TerrainPaintClick(TerrainRectSelDragObject):
         quarkx.clickform = view.owner  # Rowdys -important, gets the
                                        # mapeditor and view clicked in
         self.editor = mapeditor()
+        if self.editor is None:
+            self.editor = saveeditor
 
 
     def dragto(self, x, y, flags):
@@ -1384,7 +1389,10 @@ class TerrainPaintClick(TerrainRectSelDragObject):
                             face.replacetex(tx1, tx2)
 
             # Rebuilds 3D views only
-            view.invalidate(1)
+            for view in editor.layout.views:
+                type = view.info["type"]
+                if type == "3D":
+                    view.invalidate(1)
             editor.invalidateviews()
             qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
@@ -1515,6 +1523,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2005/10/15 00:51:56  cdunde
+# To reinstate headers and history
+#
 # Revision 1.6  2005/09/16 18:08:40  cdunde
 # Commit and update files for Terrain Paintbrush addition
 #
