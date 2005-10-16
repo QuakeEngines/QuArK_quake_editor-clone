@@ -9,7 +9,7 @@ Please review the above page before proceeding.
  a-z: Quake 3 & other advanced 
 
 Please add to the appropriate section for Game Codes you use
-and recommit this file to the CVS archives. Also see "Additional Notes" below.
+and recommit this file to the archives. Also see "Additional Notes" below.
 
 								Mo/Dy/Yr
 Game	Game name or	     Full Game	       Authors Name	Date
@@ -61,7 +61,7 @@ Game(game name):form sections, in the Default.qrk file, in alphabetical order
 so they will show up on the Games menu and config sections that way. This 
 allows for easer and more consistency in location of these sections.
 
-Also, be sure to update your CVS copy before making any changes to ensure that 
+Also, be sure to update your copy before making any changes to ensure that 
 a file(s) you have been working on have not been changed during your work. I 
 speak from my own bumbling experiences!  <|8-\
 

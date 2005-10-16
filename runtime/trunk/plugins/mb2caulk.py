@@ -148,7 +148,10 @@ quarkpy.mapentities.FaceType.menu = tagmenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.6  2005/10/15 00:51:56  cdunde
+#To reinstate headers and history
+#
 #Revision 1.3  2001/03/01 19:13:54  decker_dk
-#Corrected CVS log and header tags.
+#Corrected log and header tags.
 #
 #

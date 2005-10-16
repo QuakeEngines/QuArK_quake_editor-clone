@@ -142,9 +142,12 @@ nt.tagdrawfunc(_PLANE_dcb, PLANE)
 nt.tagdrawfunc(_B2CP_dcb, B2CP)
 
 # ------------------------------------------------------------------ #
-# CVS log - make no changes below this line
+# log - make no changes below this line
 #
 # $Log$
+# Revision 1.5  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2005/09/22 11:10:40  peter-b
 # Resolve merge conflicts
 #

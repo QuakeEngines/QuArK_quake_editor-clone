@@ -419,7 +419,7 @@ $Id$
 =============
 
  * [SilverPaladin]: Eliminated Delphi 1-3 support by converting all
-      forms to text forms for better CVS management and by adding 32
+      forms to text forms for better management and by adding 32
       bit properties to the projects.
 
  * [SilverPaladin]: Fixed the error that caused all 3d Windows to fail

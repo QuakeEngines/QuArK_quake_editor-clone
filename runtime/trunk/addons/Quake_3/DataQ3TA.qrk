@@ -3,11 +3,14 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.9  2005/10/15 01:00:02  cdunde
+//To reinstate headers and history
+//
 //Revision 1.6  2001/03/21 08:00:45  maleficus
 //fixed broken model paths
 //
 //Revision 1.5  2001/03/17 15:08:49  decker_dk
-//Added CVS-headers.
+//Added headers.
 //
 // This is the first release of the Team Arena Data file. v1.0
 // By Maleficus.
