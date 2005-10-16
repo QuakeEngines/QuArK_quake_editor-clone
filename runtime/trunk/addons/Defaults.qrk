@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.268  2005/10/16 06:45:48  cdunde
+//To try and reduce 3D view freeze and
+//gray out at start when loading textures
+//
 //Revision 1.267  2005/10/15 23:44:14  cdunde
 //Made one setting in QuArK's Config OpenGL section for all
 //games that use transparency that can be viewed in QuArK.
@@ -1937,10 +1941,10 @@ QQRKSRC1
       {
         Game = "RTCW"
         Code = "d" // Hardcoded value in Setup.PAS
-        Program = "WOLFMP.EXE +set sv_pure 0"
+        Program = "WOLFSP.EXE +set sv_pure 0"
 
         Directory = "c:\Progra~1\Return~1"
-        CheckDirectory = "WOLFMP.EXE"
+        CheckDirectory = "*.EXE"
 
         CD = ""
         CDDir = ""
@@ -4267,6 +4271,14 @@ QQRKSRC1
         Typ = "C"     // combo box
         Txt = "RTCW command-line"
         Items = "WOLFSP.EXE +set sv_pure 0"
+                $0D"WOLFMP.EXE +set sv_pure 0"
+                $0D"ET.EXE +set sv_pure 0"
+                $0D"(another exe) +set sv_pure 0"
+        Values = "1"
+                 $0D"2"
+                 $0D"3"
+                 $0D"4"
+        
         t_ProgramHint=!
       }
       Directory: =
@@ -4274,7 +4286,7 @@ QQRKSRC1
         Txt = "Directory of RTCW"
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
-        CheckFile = "WOLFSP.EXE"
+        CheckFile = "*.EXE" // with so many mods should not be tided to only one exe file.
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
