@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.17  2003/02/08 04:31:52  cdunde
 Revision never passed to MAIN to correct dual monitor spinning problem:
 use g_Cx/yScreen instead of sm_Cx/yScreen to allow dual monitors in W98
@@ -1289,6 +1292,7 @@ end;
 procedure TPyMapView.DragOver(Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
 begin
  Accept:=MapViewObject.DragOver;
+ Invalidate;
 end;
 
 procedure TPyMapView.DragDrop(Source: TObject; X, Y: Integer);

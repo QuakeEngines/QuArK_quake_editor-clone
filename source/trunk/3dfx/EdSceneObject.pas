@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.12  2005/09/21 22:52:01  cdunde
 To comment out 1.9 changes, caused editor to lockup on any selection or
 input of large maps due to constant  texture transparency processing.
@@ -72,7 +75,7 @@ unit EdSceneObject;
 
 interface
 
-uses Windows, Classes,
+  uses Windows, Classes,
      Game, PyMath, qmath, Bezier,
      QkObjects, QkPixelSet, QkComponent, QkMapPoly,
      Glide, Sprite;
@@ -89,6 +92,7 @@ const
  MAX_PITCH = pi/2.1;
 *)
 
+ {vfFlagsInvalidate = vfAxis;}
  FOG_DENSITY_1 = 0.000015;
 
 type
@@ -279,7 +283,7 @@ end;
 destructor TSceneObject.Destroy;
 begin
  ClearScene;
- TTextureManager.RemoveScene(Self); 
+ TTextureManager.RemoveScene(Self);
  PolyFaces.Free;
  ModelInfo.Free;
  BezierInfo.Free;
@@ -774,6 +778,7 @@ begin
          ProgressIndicatorStop;
        if Brush<>0 then
          DeleteObject(Brush);
+       EndBuildScene;
      end;
    end;  {end build and load new textures}
 
@@ -1286,6 +1291,7 @@ begin
        Inc(I);
      end;
    end;
+   EndBuildScene;
  finally
    TexNames.Free;
  end;

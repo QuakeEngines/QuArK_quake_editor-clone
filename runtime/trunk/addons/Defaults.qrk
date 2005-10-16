@@ -28,6 +28,11 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.267  2005/10/15 23:44:14  cdunde
+//Made one setting in QuArK's Config OpenGL section for all
+//games that use transparency that can be viewed in QuArK.
+//Also removed light entity dependency for  transparency to work.
+//
 //Revision 1.266  2005/10/15 01:00:03  cdunde
 //To reinstate headers and history
 //
@@ -932,9 +937,9 @@ QQRKSRC1
       {
         MaxUndo = '50'
         MinUndo = '10'
-        UndoBufferSize = '3.0'     // MB
+        UndoBufferSize = '30.0'     // MB
         GameFiles = '30'
-        GameBufferSize = '10.0'     // MB
+        GameBufferSize = '30.0'     // MB
         CompressionBufferSize = '16' // KBytes
         CompressionLevel = '9' // Where else to put this?
         Form = "GeneralMemory"
