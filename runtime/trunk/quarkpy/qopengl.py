@@ -53,7 +53,7 @@ def open(editor, minx=0, miny=0, bkgnd=0, force=0):
                 raise quarkx.abort
         floating = editor.form.newfloating(FWF_NOESCCLOSE, "OpenGL 3D")
         view = floating.mainpanel.newmapview()
-        view.info = {"type": "3D"}
+        view.info = {"type": "3D", "viewname": "opengl3Dview"}
         view.viewmode = "opengl"
         setprojmode(view)
         floating.onclose = onclose1   # so that onclose1 is called when the window is closed
@@ -154,6 +154,9 @@ SetupRoutines.append(setupchanged)
 #
 #
 #$Log$
+#Revision 1.8  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.5  2000/06/02 16:00:22  alexander
 #added cvs headers
 #

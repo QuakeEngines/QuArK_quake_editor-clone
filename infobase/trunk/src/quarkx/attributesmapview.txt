@@ -68,6 +68,43 @@ View mode: "wire", "solid", or "tex". All values are valid in both flat and pers
 </td></tr>
 
 <tr><td class="doccode">
+viewname
+</td><td>
+Key values: "editors3Dview", "new3Dwindow", "full3Dview" or "opengl3Dview". All though not part of the actual quarkx source code, new keys have been added to all the required view layout python files for easier detection and control of these 3D views. Not required for 2D views, their key word "type" gives those view names already. Use of the new key can be coded by first qualifying for the 3D "type" views, then for their key "value" for example:
+
+<code>
+  for view in editor.layout.views:
+      type = view.info["type"]
+      if type != "3D": continue
+      viewname = view.info["viewname"]
+      if viewname == "editors3Dview":
+          print "got the Editors 3D view"
+      if viewname == "new3Dwindow":
+          print "got the Floating 3D view"
+      if viewname == "full3Dview":
+          print "GOT THE FULL 3D VIEW"
+      if viewname == "opengl3Dview":
+          print "got the OpenGL view"
+</code>
+
+Any new 3D views added can also use this method by assigning a new value to its view info for example:
+
+<code>
+  from quarkpy.mapmgr import *
+
+  class New3DLayout(MapLayout):
+      def buildscreen(self, form):
+          self.bs_leftpanel(form)
+          self.View3D = form.mainpanel.newmapview()
+          self.views[:] = [self.View3D]
+          self.baseviews = self.views[:]
+          self.View3D.info = {"type": "3D", "viewname": "new3Dlayout"}
+</code>
+
+See the various map layout files in the python folder for more examples.
+</td></tr>
+
+<tr><td class="doccode">
 boundingboxes
 </td><td>
 List of Internal objects from which QuArK can load bounding box sizes and model file paths. See mapeditor.py for an example.

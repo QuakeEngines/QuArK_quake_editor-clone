@@ -98,7 +98,8 @@ class ThreeViewsLayout(MapLayout):
           "vangle": 0.0}
 
         self.View3D.info = {
-          "type": "3D"}     # 3D view
+          "type": "3D",     # 3D view
+          "viewname": "editors3Dview"}
 
         #
         # Link the horizontal position of the XZ view to that of the
@@ -245,6 +246,9 @@ LayoutsList.append(ThreeViewsLayout)
 #
 #
 # $Log$
+# Revision 1.5  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

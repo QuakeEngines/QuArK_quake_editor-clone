@@ -37,7 +37,7 @@ class Full3DLayout(MapLayout):
         self.View3D = form.mainpanel.newmapview()
         self.views[:] = [self.View3D]
         self.baseviews = self.views[:]
-        self.View3D.info = {"type": "3D"}
+        self.View3D.info = {"type": "3D", "viewname": "editors3Dview"}
 
 
 
@@ -48,6 +48,9 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.5  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

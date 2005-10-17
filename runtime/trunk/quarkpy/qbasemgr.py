@@ -228,7 +228,7 @@ class BaseLayout:
         "Spawns a new 3D window."
         floating = quarkx.clickform.newfloating(FWF_NOESCCLOSE, "3D")
         view = floating.mainpanel.newmapview()
-        view.info = {"type": "3D"}
+        view.info = {"type": "3D", "viewname": "new3Dwindow"}
         view.viewmode = "tex"
         setprojmode(view)
         self.editor.setupview(view)
@@ -308,7 +308,7 @@ class BaseLayout:
                 self.closefull3DFX(floating)
                 return
         floating.rect = view.setup["FullScreenSize"]
-        view.info = {"type": "3D", "noclick": None}
+        view.info = {"type": "3D", "noclick": None, "viewname": "full3Dview"}
         view.viewmode = "tex"
         setprojmode(view)
         self.editor.setupview(view)
@@ -607,6 +607,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.17  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.14  2004/02/03 06:33:18  cdunde
 #To turn off annoying hint
 #

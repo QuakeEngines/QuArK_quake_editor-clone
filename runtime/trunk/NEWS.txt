@@ -15,6 +15,11 @@ $Id$
 6.5.0 alpha 3
 =============
  
+ * [cdunde] : Added key word "viewname" to all 3D views for easier
+     detection and control of those views. Not required for 2D views,
+     their key word "type" gives those view names already. New key values
+     are "editors3Dview", "new3Dwindow", "full3Dview" and "opengl3Dview".
+ 
  * [cdunde] : Fixed Terrain Generator Paint Brush function to allow
      texture application in all 3D views and update of those views.
  
