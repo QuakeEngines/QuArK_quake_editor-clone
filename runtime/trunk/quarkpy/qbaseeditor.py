@@ -231,6 +231,15 @@ class BaseEditor:
 
         ex = self.layout.explorer
         fs = ex.focussel
+        # If Terrain Generator button is active this stops the white outline
+        # drawing of the selected face/poly parent in a selection of more than
+        # one face to give a cleaner look when working in Terrain Generator.
+        if self.layout.toolbars["tb_terrmodes"] is not None and len(self.layout.explorer.sellist) > 1:
+            tb2 = self.layout.toolbars["tb_terrmodes"]
+            for b in tb2.tb.buttons:
+                if b.state == 2:
+                    fs = None
+        # End of Terrain Generator added code
         if (fs is not None) and (view.viewmode == "wire"):
             mode = self.drawmode | DM_BACKGROUND
             if MapOption("BBoxSelected", self.MODE): mode=mode|DM_BBOX
@@ -530,8 +539,7 @@ class BaseEditor:
                 if mapeditor() is not None:
                     editor = mapeditor()
                 else:
-                    quarkx.clickform = view.owner  # Rowdys -important, gets the editor
-                    editor = mapeditor()
+                    editor = self
                 if editor == None: return
                 else:
                     import mdleditor
@@ -861,6 +869,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.19  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.16  2005/09/16 18:10:48  cdunde
 #Commit and update files for Terrain Paintbrush addition
 #
