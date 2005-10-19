@@ -550,8 +550,6 @@ class BaseEditor:
                         i = quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode")
                         if i < 20 and i != 0:
                             plugins.mapterrainmodes.TerrainManager(editor, view, x, y, flags, handle)
-                        else:
-                            view.cursor = CR_DEFAULT
 
             if handle is None:
                 min, max = view.depth
@@ -869,6 +867,11 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.20  2005/10/18 23:45:39  cdunde
+#To ensure the editor is obtained and to stop the drawing
+#of the last selected face/poly parent of a group selection
+#when in the Terrain Generator mode for a cleaner look.
+#
 #Revision 1.19  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
