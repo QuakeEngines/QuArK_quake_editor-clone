@@ -15,6 +15,9 @@ $Id$
 6.5.0 alpha 3
 =============
  
+ * [cdunde] : Fixed Map Options for selection of default mouse cursor
+     that was broken in version 6.5.0 alpha 2.
+ 
  * [cdunde] : Stopped the drawing of the last selected face/poly parent for
      a group selection when in Terrain Generator mode for a cleaner look.
  
