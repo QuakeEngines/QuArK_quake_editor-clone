@@ -51,7 +51,7 @@ def open(editor, minx=0, miny=0, bkgnd=0, force=0):
         if setup["Warning2"]:
             if quarkx.msgbox(Strings[-104], MT_WARNING, MB_YES|MB_NO) != MR_YES:
                 raise quarkx.abort
-        floating = editor.form.newfloating(FWF_NOESCCLOSE, "OpenGL 3D")
+        floating = editor.form.newfloating(FWF_NOESCCLOSE, "OpenGL 3D view")
         view = floating.mainpanel.newmapview()
         view.info = {"type": "3D", "viewname": "opengl3Dview"}
         view.viewmode = "opengl"
@@ -154,6 +154,10 @@ SetupRoutines.append(setupchanged)
 #
 #
 #$Log$
+#Revision 1.9  2005/10/17 21:27:35  cdunde
+#To add new key word "viewname" to all 3D views for easier
+#detection and control of those views and Infobase documentation.
+#
 #Revision 1.8  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

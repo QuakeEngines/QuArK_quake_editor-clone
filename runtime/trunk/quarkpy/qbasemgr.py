@@ -226,7 +226,7 @@ class BaseLayout:
 
     def new3Dwindow(self, menu):
         "Spawns a new 3D window."
-        floating = quarkx.clickform.newfloating(FWF_NOESCCLOSE, "3D")
+        floating = quarkx.clickform.newfloating(FWF_NOESCCLOSE, "New 3D window")
         view = floating.mainpanel.newmapview()
         view.info = {"type": "3D", "viewname": "new3Dwindow"}
         view.viewmode = "tex"
@@ -299,7 +299,7 @@ class BaseLayout:
         "Opens the Full 3D display."
         floating = self.full3DFX
         if floating is None:
-            floating = quarkx.clickform.newfloating(0, "3D")
+            floating = quarkx.clickform.newfloating(0, "Full 3D view")
             self.full3DFX = floating
             view = floating.mainpanel.newmapview()
         else:
@@ -607,6 +607,10 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.18  2005/10/17 21:27:35  cdunde
+#To add new key word "viewname" to all 3D views for easier
+#detection and control of those views and Infobase documentation.
+#
 #Revision 1.17  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
