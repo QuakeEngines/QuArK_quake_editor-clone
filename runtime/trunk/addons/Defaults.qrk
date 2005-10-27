@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.269  2005/10/16 06:59:26  cdunde
+//To upgrade RTCW exe selection in Game Options
+//
 //Revision 1.268  2005/10/16 06:45:48  cdunde
 //To try and reduce 3D view freeze and
 //gray out at start when loading textures
@@ -1877,7 +1880,8 @@ QQRKSRC1
         Program = "Quake3.EXE +set sv_pure 0"
 
         Directory = "\Quake3"
-        CheckDirectory = "QUAKE3.EXE"
+        //CheckDirectory = "QUAKE3.EXE"
+        CheckDirectory = "*.EXE"
 
         CD = ""
         CDDir = "\Quake3\baseq3"
@@ -4180,14 +4184,16 @@ QQRKSRC1
         Txt = "Directory of Quake 3"
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
-        CheckFile = "QUAKE3.EXE"
+        //CheckFile = "QUAKE3.EXE"
+        CheckFile = "*.EXE" // with so many mods should not be tided to only one exe file.
       }
       CD: =
       {
         Txt = "Quake 3 CD-ROM drive"
         Typ = "ED"      // Edit Directory
         Hint = "If you installed Quake 3 minimally, this is the drive of the CD-ROM."
-        CheckFile = "Quake3\BASEQ3\PAK0.PK3"
+        //CheckFile = "Quake3\BASEQ3\PAK0.PK3"
+        CheckFile = "PAK0.PK3"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
