@@ -9,6 +9,10 @@
 #$Header$
 
 from quarkpy.qutils import *
+import quarkpy.qhandles
+
+# globals
+set_error = None
 
 def cyclenext(i, len):
   j = i+1
@@ -183,12 +187,25 @@ def perimeter_edges(editor):
        on the perimeter only that make up the perimeter face edges
        and the non-perimeter points that are inside of that."""
 
+    global set_error
+    from plugins.mapterrainmodes import set_error_reset
+    if set_error_reset is None:
+        set_error = None
+
     selectedfacelist = editor.layout.explorer.sellist
 
     perimfaces = []
     non_perimfaces = []
     strperimedges = []
     for baseface in selectedfacelist:
+        if baseface.type == ':p' and set_error is None:
+            selectedfacelist = []
+            quarkx.msgbox("You can not use this handle\nto drag these objects.\n\nIt is only a marker for items involved\nin the 'undo' level you just clicked.\n\nYou must reselect the items to move them.", MT_ERROR, MB_OK)
+            set_error = 1
+            break
+        if set_error == 1:
+            break
+
         baseedges = []
         baseedge0 = 0
         baseedge1 = 0
@@ -234,6 +251,10 @@ def perimeter_edges(editor):
         else:
             perimfaces.append(baseface)
 
+    if set_error == 1:
+        selectedfacelist = []
+        return None, None, None, None
+
     perimvertexs = []
     strperimvertexs = []
     movablevertexes = []
@@ -251,9 +272,47 @@ def perimeter_edges(editor):
                     perimvertexs.append(vertex)
                     strperimvertexs.append(str(vertex))
 
+
     return perimfaces, non_perimfaces, perimvertexs, movablevertexes
 
+
+def close_to(vector1, vector2):
+    """Returns 1 if the two passed vectors are within 6 view pixels of each other.
+       This avoids two locations from having to be absolutely the same to work."""
+
+    if abs(vector1.tuple[0] - vector2.tuple[0]) < 6 and abs(vector1.tuple[1] - vector2.tuple[1]) < 6:
+        return 1
+    else:
+        return 0
+
+
+def cursor2vertex(view, face, poly, curpos):
+    """Returns the vertex that the cursor is near
+       for other processes like canvas painting of it."""
+
+    vertices = face.verticesof(poly)
+    for v in vertices:
+        vpos = view.proj(v)
+        if close_to(vpos, curpos) == 1:
+            return vpos, v
+    else:
+        return None, None
+
+def common_vertexes(fixedvtx, compface, comppoly, variance):
+    """Returns compared vertex if two are within the given variance grid units of each other.
+       This avoids two locations from having to be absolutely the same to work."""
+
+    compvertices = compface.verticesof(comppoly)
+    for compvtx in compvertices:
+        if abs(fixedvtx.tuple[0] - compvtx.tuple[0]) < variance and abs(fixedvtx.tuple[1] - compvtx.tuple[1]) < variance and abs(fixedvtx.tuple[2] - compvtx.tuple[2]) < variance:
+            return compvtx
+    else:
+        return None
+
 #$Log$
+#Revision 1.13  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.10  2005/07/01 19:51:31  cdunde
 #Added error message to avoid breaking
 #
@@ -275,8 +334,8 @@ def perimeter_edges(editor):
 #To fix typo error for continue
 #
 #Revision 1.4  2005/04/20 12:31:47  rowdy
-#added a couple of functions to check for vertices shared by adjacent faces to help with the terrain plugin
-#
+#added a couple of functions nearly_equals, vertex_in_vertices and shared_vertices
+#to check for vertices shared  by adjacent faces to help with the terrain plugin
 #Revision 1.3  2001/08/11 04:14:51  tiglari
 #remove debug
 #
