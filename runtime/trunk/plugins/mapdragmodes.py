@@ -372,15 +372,18 @@ def selectmode(btn):
     select1(btn, tb1, editor)
     for b in tb2.tb.buttons:
         b.state = quarkpy.qtoolbar.normal
- #   select1(btn, tb2, editor)
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MAP, "Building").setint("DragMode", btn.i)
     quarkx.setupsubset(SS_MAP, "Building").setint("TerrMode", 20)
 
 def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = DragModes[btn.i]
- #   editor.MouseDragMode, dummyicon = plugins.mapterrainmodes.TerrModes[btn.i]
     btn.state = quarkpy.qtoolbar.selected
+    editor.layout.explorer.sellist = []
+    editor.layout.explorer.uniquesel = []
+    editor.layout.explorer.selchanged()
+    for view in editor.layout.views:
+        view.cursor = CR_DEFAULT
 
 
 class DragModesBar(ToolBar):
@@ -414,6 +417,9 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.10  2005/08/15 05:48:45  cdunde
 # To commit all files for Terrain Generator
 #
