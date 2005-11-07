@@ -15,6 +15,42 @@ $Id$
 6.5.0 alpha 3
 =============
  
+ * [cdunde] : Added new Touch-up Selector to the Terrain Generator.
+     - Allows selection and movement of faces with common vertex position.
+       as well as individual faces.
+     - New toolbar button linked to full InfoBase documentation of its use.
+     - HotKeys: Alt=single face movement, Ctrl=Snap To Grid, Shift=pans 3D view.
+     - Automatically selects and applies color guide to common faces.
+     - Added new color guide structure, corresponds to existing, and place markers.
+     - Allows face selection for Redline Grid Guide to find vertex locations.
+     - Uses UNDO which darkens selection undone for reworking-LMB click clears.
+     - Does not effect Hidden Groups for multi level work.
+     - Combined with Texture Applicator Dialog with Updated and added new features.
+       - Interaction with new 3D Options dialog box for added color guide variations.
+       - Added new "Variance" setting for multi vertex group selection and movement.
+       - Added new "Paints sides too" to allow texturing of side faces with others.
+       - Added new "Paints sides only" to allow texturing of side faces only.
+       - Full default reset capabilities.
+ 
+ * [cdunde] : Added new 3D Options function to the Terrain Generator.
+     - Allows custom, individual settings, for all 3D views in QuArK.
+     - New toolbar button linked to full InfoBase documentation of its use.
+     - Displays its own New Dialog box that interacts with QuArK's
+       Terrain Generator - Texture Applicator dialog box.
+     - Grouped all options by 3D view type in same order as Display toolbar.
+     - Renamed to give full titles for all QuArK 3D views for easy distinction.
+     - Dialog box set to stay open and save all settings.
+     - Dialog box set to allow moving and resizing.
+     - Full default reset capabilities.
+ 
+ * [cdunde] : Reset all toolbar buttons to clear selections to avoid
+     confusion switching from button to button and toolbar selectors
+     to toolbar selectors.
+ 
+ * [cdunde] : Defaults.qrk, added Map Options setting for the Dialog boxes
+     to avoid error messages and allow the Terrain Generator tools to work
+     properly the first time QuArK is installed.
+ 
  * [cdunde] : Fixed Map Options for selection of default mouse cursor
      that was broken in version 6.5.0 alpha 2.
  
