@@ -18,13 +18,14 @@ Info = {
    "date":          "March 3 2005",
    "author":        "cdunde and Rowdy",
    "author e-mail": "cdunde1@comcast.net",
-   "quark":         "Version 6.4" }
+   "quark":         "Version 6.5" }
 
 
 import quarkpy.qhandles
 from quarkpy.maputils import *
-import plugins.mapmovevertex
-import mapterrainpos # this is for the dialog boxes
+import mapmovevertex
+import mapterrainpos # this is for the dialog boxes.
+import faceutils     # this is for getting a vertex the cursor is near.
 
 ico_dict['ico_terrmodes'] = LoadIconSet1("maptrm", 1.0)
 
@@ -81,6 +82,20 @@ grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
 saveeditor = None
+newpoly = newface = newpoint = None
+selectlist = []
+allupFaces = []
+alldownmovesFaces = []
+commonfaces = []
+commonitems = []
+selfpolylist = []
+newlist = []
+set_error_reset = None
+
+def getfaces(editor):
+    global allupFaces, alldownmovesFaces
+    allupFaces = editor.Root.findallsubitems("up", ':f')
+    alldownmovesFaces = editor.Root.findallsubitems("downmoves", ':f')
 
 #
 # For dialog menu button.
@@ -101,7 +116,7 @@ def DialogClick(m):
                 m.o = o
                 mapterrainpos.Selector1Click(m)
 
-        elif quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode") == 1:
+        elif quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode") > 0:
 
             m = qmenu.item("Dummy", None, "")
             mapterrainpos.PaintBrushClick(m)
@@ -109,6 +124,18 @@ def DialogClick(m):
         else:
             quarkx.msgbox("Your current Terrain Selector does not use this function.\n\nIt only applyies to one that shows it (uses 'Dialog Box')\n                      in its discription popup.", MT_INFORMATION, MB_OK)
             return
+    else:
+        quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Terrain Generator' selectors.\n\nSelect one that shows it (uses 'Dialog Box')\n               in its discription popup.", MT_ERROR, MB_OK)
+        return
+
+
+def Dialog3DviewsClick(m):
+    editor = mapeditor()
+    if quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode") < 20 and quarkx.setupsubset(SS_MAP, "Building").getint("DragMode") > 4:
+
+        m = qmenu.item("Dummy", None, "")
+        mapterrainpos.Options3DviewsClick(m)
+
     else:
         quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Terrain Generator' selectors.\n\nSelect one that shows it (uses 'Dialog Box')\n               in its discription popup.", MT_ERROR, MB_OK)
         return
@@ -317,6 +344,201 @@ def setupgrid(editor):
 def cleargrid():
     global grid
     grid = (0,0)
+
+
+def clickedbutton(editor):
+    "Rebuilds all the handles depending on active toolbar button"
+
+    tb2 = editor.layout.toolbars["tb_terrmodes"]
+    if tb2.tb.buttons[10].state == 2:
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "3D":
+                view.handles = []
+                uniquesel = editor.layout.explorer.uniquesel
+                if editor.layout.explorer.sellist != [] and uniquesel == [] or uniquesel == "None":
+                    view.repaint()
+                    selectlist = editor.layout.explorer.sellist
+                    drawredfaces(view, selectlist)
+                else:
+                    editor.layout.explorer.selchanged()
+            else:
+                pass
+    else:
+        editor.layout.explorer.selchanged()
+
+
+def drawredfaces(view, selectlist):
+    "draws the selected faces red"
+
+    def draw(view, selectlist):
+        cv = view.canvas()
+        cv.pencolor = MapColor("Tag") # red
+        cv.penwidth = 1
+        cv.penstyle = PS_SOLID
+        for face in selectlist:
+            if face.type!=(":f"): return
+            polylist = face.faceof
+            for poly in polylist:
+                if poly.type !=(":p"): return
+            for vtx in face.vertices: # is a list of a list item
+                sum = quarkx.vect(0, 0, 0)
+                p2 = view.proj(vtx[-1])  # the last one
+                for v in vtx:
+                    p1 = p2
+                    p2 = view.proj(v)
+                    sum = sum + p2
+                    cv.line(p1,p2)
+
+    type = view.info["type"]
+    if type == "3D":
+        viewname = view.info["viewname"]
+        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] == "1":
+            draw(view, selectlist)
+        if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] == "1":
+            draw(view, selectlist)
+        if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] == "1":
+            draw(view, selectlist)
+        if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] == "1":
+            draw(view, selectlist)
+    else:
+        draw(view, selectlist)
+
+
+def paintcursor(view, x, y, flags):
+    "Changes cursor in views based on view type"
+
+    type = view.info["type"]
+    if type == "3D" and flags & MB_CLICKED is not None and view.viewmode == "tex" or view.viewmode == "opengl":
+
+        view.cursor = CR_HAND
+    else:
+        view.cursor = CR_DEFAULT
+
+
+def terrainpaint(editor, view, x, y, flags, facelist):
+    "Temporarily paints the outline shape of a face"
+
+    def paint(editor, view, x, y, facelist):
+        if facelist is None:
+            choice = quarkpy.maphandles.ClickOnView(editor, view, x, y) #checks if pointing at poly or something
+            if choice == []: return
+            facelist = []
+            for lists in choice:
+                face = lists[2]
+                facelist.append(face)
+
+        for face in facelist:
+            if face is None: continue
+            temp = face.faceof
+            for item in temp:
+                poly = item
+            if poly is None: continue
+            if poly.shortname.startswith("terrain wedge"):
+
+    # this section just deals with outlining the side faces before painting
+    # but seemed too cluttered in the 3D views with all these face lines drawn
+             #   tb2 = editor.layout.toolbars["tb_terrmodes"]
+             #   if tb2.tb.buttons[11].state == 2: # The Paint Brush Tool button
+             #       sidestoo = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"]
+             #       sidesonly = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"]
+
+             #       for face in poly.subitems:
+             #           if face.name == ("upstop:f") or face.name == ("up:f") or face.name == ("down:f") or face.name == ("downmoves:f"):
+             #               continue
+
+             #           if (sidestoo == "0" and sidesonly == "0" and face.name == ("left:f")) or (sidestoo == "0" and sidesonly == "0" and face.name == ("right:f")) or (sidestoo == "0" and sidesonly == "0" and face.name == ("back:f")):
+             #               continue
+
+             #           if (sidesonly == "1" and face.name == ("up:f")) or (sidesonly == "1" and face.name == ("downmoves:f")):
+             #               continue
+
+             #           elif (sidesonly == "0" and sidestoo == "0" and face.name == ("left:f")) or (sidesonly == "0" and sidestoo == "0" and face.name == ("right:f")) or (sidesonly == "0" and sidestoo == "0" and face.name == ("back:f")):
+             #               continue
+             #           else:
+
+          # sets up to draw LIME outline of just side faces to get texture
+                  #          cv = view.canvas()
+                  #          cv.pencolor = LIME
+                  #          cv.penwidth = 1
+                  #          cv.penstyle = PS_SOLID
+                  #          cv.fontcolor = LIME
+
+                            # Draws LIME outline of just side faces to get texture
+                 #           for vtx in face.vertices: # is a list of lists
+                 #               p2 = view.proj(vtx[-1])  # the last one
+                 #               print "p2",p2
+                 #               sum = quarkx.vect(0, 0, 0)
+                 #               for v in vtx:
+                 #                   if len(vtx) == 3: continue
+                 #                   p1 = p2
+                 #                   p2 = view.proj(v)
+                 #                   print "p1",p1
+                 #                   print "p2",p2
+                 #                   sum = sum + p2
+                 #                   cv.line(p1,p2)
+                 #                   print "----------------------"
+
+    ### draws the individual FUCHSIA (terrain "up") faces
+    ### and Dk. blue (terrain "downmove") faces
+    ### outlines but nothing is selected
+                cv = view.canvas()
+                cv.penwidth = 1
+                cv.penstyle = PS_SOLID
+                if poly.findname("up:f") is not None:
+                    face = poly.findname("up:f")
+                    cv.pencolor = FUCHSIA
+                    cv.fontcolor = FUCHSIA
+                    h = []  # define list for face vextor handles
+                    for vtx in face.vertices: # is a list of lists
+                        sum = quarkx.vect(0, 0, 0)
+                        p2 = view.proj(vtx[-1])  # the last vector in the list vtx of vectors
+                        for v in vtx:
+                            p1 = p2
+                            p2 = view.proj(v)
+                            sum = sum + p2
+                            cv.line(p1,p2)
+
+                        quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+
+                if poly.findname("downmoves:f") is not None:
+                    face = poly.findname("downmoves:f")
+                    cv.pencolor = MapColor("Duplicator")   # Dk. blue
+                    cv.fontcolor = MapColor("Duplicator")  # Dk. blue
+                    for vtx in face.vertices: # is a list of lists
+                        sum = quarkx.vect(0, 0, 0)
+                        p2 = view.proj(vtx[-1])  # the last one
+                        for v in vtx:
+                            p1 = p2
+                            p2 = view.proj(v)
+                            sum = sum + p2
+                            cv.line(p1,p2)
+                    quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+
+
+    type = view.info["type"]
+    if type == "3D":
+        viewname = view.info["viewname"]
+        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color1"] == "1":
+            paint(editor, view, x, y, facelist)
+        if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"] == "1":
+            paint(editor, view, x, y, facelist)
+        if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"] == "1":
+            paint(editor, view, x, y, facelist)
+        if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"] == "1":
+            paint(editor, view, x, y, facelist)
+
+
+def viewsingleface(editor, view, vertex, poly):
+    "Creates the handle to move the primary face."
+
+    view.handles = []
+    h = []
+     # add just the selected verttex of the primary face to the handle
+    h.append(TerrainVertexHandle(vertex, poly))
+
+    view.handles = quarkpy.qhandles.FilterHandles(h, SS_MAP)
+
 
 ################### I know I need the above def's and stuff ############
 
@@ -580,7 +802,7 @@ def ConvOnlyUpmoveClick(m):
     selectlist = editor.layout.explorer.sellist
     ok = 1
     if (len(selectlist) < 1):
-        quarkx.msgbox("Nothing has been selected\n\nUse the 'Basic Selector' to select the Terrain sections\nyou wish to allow ONLY the 'up' faces to be moved,\nthen click this button.", MT_ERROR, MB_OK)
+        quarkx.msgbox("Nothing has been selected\n\nSelect the Terrain sections you wish to\nallow ONLY the 'up' faces to be moved,\nthen click the conversion button again.", MT_ERROR, MB_OK)
         ok = 0
 
     templist = []
@@ -613,7 +835,7 @@ def ConvOnlyDownmoveClick(m):
     selectlist = editor.layout.explorer.sellist
     ok = 1
     if (len(selectlist) < 1):
-        quarkx.msgbox("Nothing has been selected\n\nUse the 'Basic Selector' to select the Terrain sections\nyou wish to allow ONLY the 'down' faces to be moved,\nthen click this button.", MT_ERROR, MB_OK)
+        quarkx.msgbox("Nothing has been selected\n\nSelect the Terrain sections you wish to\nallow ONLY the 'down' faces to be moved,\nthen click the conversion button again.", MT_ERROR, MB_OK)
         ok = 0
 
     templist = []
@@ -643,7 +865,7 @@ def ConvBothmoveClick(m):
     selectlist = editor.layout.explorer.sellist
     ok = 1
     if (len(selectlist) < 1):
-        quarkx.msgbox("Nothing has been selected\n\nUse the 'Basic Selector' to select the Terrain sections\nyou wish to allow BOTH the 'up' and 'down' faces to be moved,\nthen click this button.", MT_ERROR, MB_OK)
+        quarkx.msgbox("Nothing has been selected\n\nSelect the Terrain sections you wish to allow\nBOTH the 'up' and 'down' faces to be moved,\nthen click the conversion button again.", MT_ERROR, MB_OK)
         ok = 0
 
     templist = []
@@ -692,7 +914,7 @@ def GetAdjFacesClick(m):
                  quarkx.msgbox("This face has not\nbeen set as movable.\nSelect the proper button\nabove to set it then the\n'Adjacent Faces' again.", MT_ERROR, MB_OK)
                  return
              else:
-                 quarkx.msgbox("You have made an\nimproper selection", MT_ERROR, MB_OK)
+                 quarkx.msgbox("Improper Selection\n\nYou must select a\nsingle movable face", MT_ERROR, MB_OK)
                  selected = []
                  return
      if ok:
@@ -711,8 +933,6 @@ def GetAdjFacesClick(m):
              return
 
          editor.layout.explorer.sellist = adjacentFaces
-    #     perimfaces, non_perimfaces, perimvertexs, movablevertexes = perimeter_edges(editor)
-    #     editor.lockedVertices = perimvertexs
          editor.invalidateviews()
 
 
@@ -740,6 +960,12 @@ class TerrainRectSelDragObject(quarkpy.qhandles.RectangleDragObject):
         editor = mapeditor()
 
     def rectanglesel(self, editor, x,y, rectangle):
+
+        global set_error_reset
+        from plugins.faceutils import set_error
+        if set_error == 1:
+            set_error_reset = None
+
         if rectangle is None: return
         if not ("T" in self.todo):
             editor.layout.explorer.uniquesel = None
@@ -817,7 +1043,7 @@ class TerrainRectSelDragObject(quarkpy.qhandles.RectangleDragObject):
 #
 
 class TerrainLinearHandle(quarkpy.qhandles.GenericHandle):
-    "Linear Box handles."
+    "Creates all the Linear Circle handle items."
 
     def __init__(self, pos, mgr):
         quarkpy.qhandles.GenericHandle.__init__(self, pos)
@@ -842,7 +1068,7 @@ class TerrainLinearHandle(quarkpy.qhandles.GenericHandle):
 
 
 class TerrainLinHandlesManager:
-    "Controls the Liner Handles and draws the selected faces in red"
+    "Controls the blue Liner Handle and draws the selected faces in red"
 
     def __init__(self, color, bbox, list, view):
         self.color = color
@@ -881,9 +1107,10 @@ class TerrainLinHandlesManager:
 
     def BuildHandles(self, center=None, minimal=None):
         "Builds ONLY the handle CONTOLE & LOCATION - but not the handle DRAWING"
-        "That is done in the 'def draw' function."
+        "That is done in the 'def draw' function further down."
 
         editor = self.editor
+            
         list = editor.layout.explorer.sellist
         view = self.view
 
@@ -907,6 +1134,7 @@ class TerrainLinHandlesManager:
             f = -grid * view.scale(pmin)
 
         h = []
+
         mX, mY, mZ = self.bmin.tuple
         X, Y, Z = self.bmax.tuple
         self.center = self.center #+ quarkx.vect(0,0,48)
@@ -920,7 +1148,7 @@ class TerrainLinHandlesManager:
 
 
     def DrawLinHandleCircle(self, view):
-        "Draws the circle around all objects."
+        "Draws the blue circle around all objects."
 
         cx, cy = [], []
         mX, mY, mZ = self.bmin.tuple
@@ -950,28 +1178,9 @@ class TerrainLinHandlesManager:
         cv.line(cx+radius, cy, X, cy)
         cv.line(cx, cy+radius, cx, Y)
 
-    def DrawRedFaces(self, editor, selectlist):
-
-        view = self.view
-        cv = view.canvas()
-        cv.pencolor = MapColor("Tag") # red
-        cv.penwidth = 1
-        cv.penstyle = PS_SOLID
-        cv.fontcolor = MapColor("Tag")    # Dk. blue
-        for face in selectlist:
-            if face.type!=(":f"): return
-            for vtx in face.vertices: # is a list of lists
-                sum = quarkx.vect(0, 0, 0)
-                p2 = view.proj(vtx[-1])  # the last one
-                for v in vtx:
-                    p1 = p2
-                    p2 = view.proj(v)
-                    sum = sum + p2
-                    cv.line(p1,p2)
-
 
 class TerrainLinCenterHandle(TerrainLinearHandle):
-    "Linear circle: Blue drag handle at the center."
+    "Draws the blue drag handle at the center of the blue Linear circle."
 
     hint = "          move selection in grid steps (Ctrl key: gives free movement)|move selection"
 
@@ -986,12 +1195,56 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
         self.editor = editor
 
 
-    def draw(self, view, cv, draghandle=None): # Just draws the center handle
+    def draw(self, view, cv, draghandle=None): # Just draws the handle and circle
                                                # but does not actualy drag anything
+                                               # that is done in "def BuildHandles" above
         quarkx.clickform = view.owner  # Rowdys -important, gets the
                                        # mapeditor and view clicked in
         editor = self.editor
         selectlist = editor.layout.explorer.sellist
+
+# Regulates which 3D view selected faces redlines are to be drawn
+
+        type = view.info["type"]
+        if type == "3D":
+            viewname = view.info["viewname"]
+            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] != "0":
+                drawredfaces(view, selectlist)  # calls to draw the red faces
+            if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] != "0":
+                drawredfaces(view, selectlist)  # calls to draw the red faces
+            if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] != "0":
+                drawredfaces(view, selectlist)  # calls to draw the red faces
+            if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] != "0":
+                drawredfaces(view, selectlist)  # calls to draw the red faces
+
+        else:
+            drawredfaces(view, selectlist)  # calls to draw the red faces
+
+# Regulates which 3D view handles are to be drawn
+
+        type = view.info["type"]
+        if type == "3D":
+            tb2 = editor.layout.toolbars["tb_terrmodes"]
+            if tb2.tb.buttons[10].state == 2: return
+            viewname = view.info["viewname"]
+            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] == "0":
+                self.cursor = CR_HAND
+                self.hint = "?"
+                return
+            if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] == "0":
+                self.cursor = CR_HAND
+                self.hint = "?"
+                return
+            if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] == "0":
+                self.cursor = CR_HAND
+                self.hint = "?"
+                return
+            if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] == "0":
+                self.cursor = CR_HAND
+                self.hint = "?"
+                return
+
+        # Draws the 2D and 3D view center handle and circle as they come through one at a time
         p = view.proj(self.pos)
         if p.visible:
             cv.reset()
@@ -999,7 +1252,6 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
             cv.rectangle(p.x-4, p.y-4, p.x+4, p.y+4)  # Gives the handle size from center point
 
         self.mgr.DrawLinHandleCircle(view)  # calls to draw the circle
-        self.mgr.DrawRedFaces(editor, selectlist)  # calls to draw the red faces
 
     def linoperation(self, list, delta, g1, view):  # This conroles face movment
 
@@ -1019,17 +1271,35 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
         "Takes the selected terrain faces and"
         "recreates their polys for each drag move"
 
+        global set_error_reset
         editor = self.editor
         if editor.layout.explorer.sellist is None: return
         selectlist = editor.layout.explorer.sellist
 
         perimfaces, non_perimfaces, perimvertexs, movablevertexes = plugins.faceutils.perimeter_edges(editor)
-    #    editor.lockedVertices = perimvertexs
+  
+        from plugins.faceutils import set_error
+        if set_error == 1:
+            set_error_reset = 1
+
+  #    editor.lockedVertices = perimvertexs
     #    perimvertexs = editor.lockedVertices
+
+        # This section, to return, needed for Touch-up dragging error after undo
+        if perimvertexs is None:
+
+           # stops from errasing stuff in the view after undo of Touch-up drag
+            holdlist = editor.layout.explorer.sellist
+            editor.layout.explorer.sellist = []
+            editor.layout.explorer.sellist = holdlist
+            holdlist = []
+
+            return None
 
         strperimvertexs=[]
         for edge in perimvertexs:
             strperimvertexs.append(str(edge))
+           
         grid = (editor.grid, editor.gridstep)
         pos = self.pos
         delta = self.delta
@@ -1120,98 +1390,12 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
             for new in newface:
                 newfaces.append(new)
 
-        # swap the old and new faces into the map
+    # swap the old and new faces into the map
         undo=quarkx.action()
         for i in range(len(oldfaces)):
             undo.exchange(oldfaces[i], newfaces[i])
         editor.ok(undo, "Move Terrain")
         editor.invalidateviews() # test for just 3D view only
-
-
-class TerrainRedImageDragObject(quarkpy.qhandles.RedImageDragObject):
-    "Dragging that draws a red wireframe image of something."
-
-    def __init__(self, view, x, y, z, redcolor):
-        self.view = view
-        self.x = x
-        self.y = y
-        self.z = z 
-        self.redcolor = redcolor
-        self.redhandledata = None
-        if mapeditor() is not None:
-            editor = mapeditor()
-        else:
-            quarkx.clickform = view.owner  # Rowdys -important, gets the editor
-            editor = mapeditor()
-        self.editor = editor
-
-        quarkpy.qhandles.RedImageDragObject.__init__(self, view, x, y, view.depth[0], redcolor)
-
-    def buildredimages(self, x, y, flags):
-        return None, None   # abstract
-
-    def ricmd(self):
-        return None, refreshtimer     # default behaviour
-
-    def dragto(self, x, y, flags):
-        if flags&MB_DRAGGING:
-            self.autoscroll(x,y)
-        old, ri = self.buildredimages(x, y, flags)
-        self.drawredimages(self.view, 1)
-        self.redimages = ri
-        self.old = old     # trying to move actual faces 051505
-        if flags&MB_DRAGGING:
-            self.drawredimages(self.view, 2)
-        return old
-
-    def drawredimages(self, view, internal=0):
-
-        if self.redimages is not None:
-            mode = DM_OTHERCOLOR|DM_BBOX
-            special, refresh = self.ricmd()
-            if special is None:    # can draw a red image only
-                if internal==1:    # erase the previous image
-                    for r in self.redimages:
-                        view.drawmap(r, mode)
-
-## cdunde added these 3 lines 05-14-05 to stop the
-## 3d Textured view from erasing other items
-## in the view when dragging redline objects in it.
-
-                    type = view.info["type"]
-                    if type == "3D":
-                        view.repaint()
-                        editor.invalidateviews()
-                    if self.redhandledata is not None:
-                        self.handle.drawred(self.redimages, view, view.color, self.redhandledata)
-                else:
-                    for r in self.redimages:
-                        view.drawmap(r, mode, self.redcolor)
-                    if self.handle is not None:
-                        self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
-
-            if internal==2:    # set up a timer to update the other views as well
-                quarkx.settimer(refresh, self, 150)
-
-
-    def backup(self):
-        special, refresh = self.ricmd()
-        if (special is None) or (self.redimages is None):
-            return None, None
-        backup = special.copy()
-        special.copyalldata(self.redimages[0])
-        return special, backup
-
-
-    def ok(self, editor, x, y, flags):   # default behaviour is to create an object out of the red image
-        self.autoscroll_stop()
-        old = self.dragto(x, y, flags)
-        if (self.redimages is None) or (len(old)!=len(self.redimages)):
-            return
-        undo = quarkx.action()
-        for i in range(0,len(old)):
-            undo.exchange(old[i], self.redimages[i])
-        self.handle.ok(editor, undo, old, self.redimages)
 
 
 #====================================================
@@ -1221,69 +1405,653 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
     oldfinish(editor, view)
 
 def TerrainManager(editor, view, x, y, flags, handle):
-    global saveeditor
+    global saveeditor, commonfaces, commonitems
     saveeditor = editor
-    redcolor = RED
-    todo = "RS"
+    facelist = None
     tb2 = editor.layout.toolbars["tb_terrmodes"]
-    color = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]
-    if tb2.tb.buttons[10].state == 2 and color == "1":
+    color = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]  # Get Dialog box setting if to draw the color guides is on or off.
+    if tb2.tb.buttons[10].state == 2 or tb2.tb.buttons[11].state == 2: # The Touch-up and Paint Brush Tool buttons
         type = view.info["type"]
+
+        pointervect = quarkx.vect(x,y,0) # This gives the cursor's location in the view.
+
         if type == "3D":
             editor.layout.setupdepth(view)
-            choice = quarkpy.maphandles.ClickOnView(editor, view, x, y) #checks if pointing at poly or something
-            for lists in choice:
-                poly = lists[1]
-                if poly.shortname.startswith("terrain wedge"):
+            paintcursor(view, x, y, flags)
+            if tb2.tb.buttons[10].state == 2:
+                getfaces(editor)
+                face = None
+                choice = quarkpy.maphandles.ClickOnView(editor, view, x, y) #checks if pointing at poly or something
+                for lists in choice:
+                    poly = lists[1]
+                    if poly.shortname.startswith("terrain wedge"):
+                        testfaces = []
+                        commonfaces = []
+                        commonitem = []
+                        commonitems = []
+                        cv = view.canvas()
+                        cv.penwidth = 1
+                        cv.penstyle = PS_SOLID
+                        if poly.findname("up:f") is not None:
+                            face = poly.findname("up:f")
+                            results = faceutils.cursor2vertex(view, face, poly, pointervect) #returns the face vertex if the cursor is close enough to it.
+                            vpos, vertex = results
+                            if vpos is not None and vertex is not None and poly is not None:
 
-### draws the individual FUCHSIA (terrain "up") faces
-### and Dk. blue (terrain "downmove") faces
-### outlines but nothing is selected
-                    cv = view.canvas()
-                    cv.penwidth = 1
-                    cv.penstyle = PS_SOLID
-                    if poly.findname("up:f") is not None:
-                        face = poly.findname("up:f")
-                        cv.pencolor = FUCHSIA
-                        cv.fontcolor = FUCHSIA
-                        for vtx in face.vertices: # is a list of lists
-                            sum = quarkx.vect(0, 0, 0)
-                            p2 = view.proj(vtx[-1])  # the last one
-                            for v in vtx:
-                                p1 = p2
-                                p2 = view.proj(v)
-                                sum = sum + p2
-                                cv.line(p1,p2)
-                        quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                                commonfaces.append(face) # to add the selected face, with the handle, last
+                                commonitem = (vertex,poly) # to add the selected vertex, with the handle, last
+                                commonitems.append(commonitem) # to add the selected vertex, with the handle, last
 
-                    if poly.findname("downmoves:f") is not None:
-                        face = poly.findname("downmoves:f")
-                        cv.pencolor = MapColor("Duplicator")   # Dk. blue
-                        cv.fontcolor = MapColor("Duplicator")  # Dk. blue
-                        for vtx in face.vertices: # is a list of lists
-                            sum = quarkx.vect(0, 0, 0)
-                            p2 = view.proj(vtx[-1])  # the last one
-                            for v in vtx:
-                                p1 = p2
-                                p2 = view.proj(v)
-                                sum = sum + p2
-                                cv.line(p1,p2)
-                        quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                                # This section gets the faces that shair the common vertex location
+                                for a_face in allupFaces:
+                                    if a_face == face:
+                                            continue
+                                    testfaces.append(a_face)
+                                for a_face in testfaces:
+                                    temp = []
+                                    temp = a_face.faceof
+                                    for item in temp:
+                                        a_facepoly = item
 
-        plugins.mapterrainmodes.TerrainPaintClick(view, x, y, redcolor, todo).terrainpaint(view, flags)
+                                    # Rowdys fixed method
+                                #1    a_face_vertexes = a_face.verticesof(a_facepoly)
+                                #1    results = faceutils.vertex_in_vertices(vertex, a_face_vertexes)
+                                #1    if results == 1:
+                                #1        commonfaces.append(a_face)
+                                #1        commonitem = (vertex,a_facepoly)
+                                #1        commonitems.append(commonitem)
 
-    else:
-        plugins.mapterrainmodes.TerrainPaintClick(view, x, y, redcolor, todo).terrainpaint(view, flags)
+                                    # Cdundes fixed method
+                                #2    results = faceutils.cursor2vertex(view, a_face, a_facepoly, pointervect) #returns the face vertex if the cursor is close enough to it.
+                                #2    a_face_vpos, a_face_vertex = results
+                                #2    if a_face_vpos is not None and a_face_vertex is not None and a_facepoly is not None:
+                                #2        commonfaces.append(a_face)
+                                #2        commonitem = (a_face_vertex,a_facepoly)
+                                #2        commonitems.append(commonitem)
+                                #2    else:
+                                #2        continue
+
+                                    # Cdundes variable method
+                                    variance = float(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"])
+                                    compvtx = faceutils.common_vertexes(vertex, a_face, a_facepoly, variance)
+                                    if compvtx is not None:
+                                        commonfaces.append(a_face)
+                                        commonitem = (compvtx,a_facepoly)
+                                        commonitems.append(commonitem)
 
 
-### 10th button -- or 2nd selector -- paints Terrain Mesh area ###
+                                if face is not None and vertex is not None and poly is not None:
+                                    viewsingleface(editor, view, vertex, poly) # sends to have handle made for primary face only
+                                    view.repaint()
+                                    if editor.layout.explorer.sellist != []:
+                                        selectlist = editor.layout.explorer.sellist
+                                        drawredfaces(view, selectlist)
+                                    terrainpaint(editor, view, x, y, flags, commonfaces)
+                                    if len(editor.layout.explorer.sellist) == 1:
+                                        editor.layout.explorer.sellist = []
+                                        return
+                                    for p in face.faceof:
+                                        if p.type == ':p':
+                                            color = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]  # Get Dialog box setting if to draw the color guides is on or off.
+                                            if color == "1":
+                                                for vtx in face.vertices: # is a list of a list item
+                                                    sum = quarkx.vect(0, 0, 0)
+                                                    p2 = view.proj(vtx[-1])  # the last one
+                                                    cv.reset()
+                                                    cv.pencolor = YELLOW
+                                                    for v in vtx:
+                                                        p1 = p2
+                                                        p2 = view.proj(v)
+                                                        sum = sum + p2
+                                                        cv.line(p1,p2)
+                                                for v in face.verticesof(p):
+                                                    p = view.proj(v)
+                                                    if p.visible:
+                                                        cv.reset()
+                                                        cv.brushcolor = RED
+                                                        cv.rectangle(p.x-1, p.y-1, p.x+5, p.y+5)
+
+                                    cv.reset()
+                                    cv.brushcolor = NAVY
+                                    cv.rectangle(vpos.x-3, vpos.y-3, vpos.x+5, vpos.y+5)
+
+
+                        if poly.findname("downmoves:f") is not None:
+                            face = poly.findname("downmoves:f")
+                            results = faceutils.cursor2vertex(view, face, poly, pointervect) #returns the face vertex if the cursor is close enough to it.
+                            vpos, vertex = results
+                            if vpos is not None and vertex is not None and poly is not None:
+
+                                commonfaces.append(face) # to add the selected face, with the handle, last
+                                commonitem = (vertex,poly) # to add the selected vertex, with the handle, last
+                                commonitems.append(commonitem) # to add the selected vertex, with the handle, last
+
+                                # This section gets the faces that shair the common vertex location
+                                for a_face in alldownmovesFaces:
+                                    if a_face == face:
+                                            continue
+                                    testfaces.append(a_face)
+                                for a_face in testfaces:
+                                    temp = []
+                                    temp = a_face.faceof
+                                    for item in temp:
+                                        a_facepoly = item
+
+                                    # Rowdys fixed method
+                                #1    a_face_vertexes = a_face.verticesof(a_facepoly)
+                                #1    results = faceutils.vertex_in_vertices(vertex, a_face_vertexes)
+                                #1    if results == 1:
+                                #1        commonfaces.append(a_face)
+                                #1        commonitem = (vertex,a_facepoly)
+                                #1        commonitems.append(commonitem)
+
+                                    # Cdundes fixed method
+                                #2    results = faceutils.cursor2vertex(view, a_face, a_facepoly, pointervect) #returns the face vertex if the cursor is close enough to it.
+                                #2    a_face_vpos, a_face_vertex = results
+                                #2    if a_face_vpos is not None and a_face_vertex is not None and a_facepoly is not None:
+                                #2        commonfaces.append(a_face)
+                                #2        commonitem = (a_face_vertex,a_facepoly)
+                                #2        commonitems.append(commonitem)
+                                #2    else:
+                                #2        continue
+
+                                    # Cdundes variable method
+                                    variance = float(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"])
+                                    compvtx = faceutils.common_vertexes(vertex, a_face, a_facepoly, variance)
+                                    if compvtx is not None:
+                                        commonfaces.append(a_face)
+                                        commonitem = (compvtx,a_facepoly)
+                                        commonitems.append(commonitem)
+
+                                if face is not None and vertex is not None and poly is not None:
+                                    viewsingleface(editor, view, vertex, poly) # sends to have handle made for primary face only
+                                    view.repaint()
+                                    if editor.layout.explorer.sellist != []:
+                                        selectlist = editor.layout.explorer.sellist
+                                        drawredfaces(view, selectlist)
+                                    terrainpaint(editor, view, x, y, flags, commonfaces)
+                                    if len(editor.layout.explorer.sellist) == 1:
+                                        editor.layout.explorer.sellist = []
+                                        return
+                                    for p in face.faceof:
+                                        if p.type == ':p':
+                                            color = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]  # Get Dialog box setting if to draw the color guides is on or off.
+                                            if color == "1":
+                                                for vtx in face.vertices: # is a list of a list item
+                                                    sum = quarkx.vect(0, 0, 0)
+                                                    p2 = view.proj(vtx[-1])  # the last one
+                                                    cv.reset()
+                                                    cv.pencolor = YELLOW
+                                                    for v in vtx:
+                                                        p1 = p2
+                                                        p2 = view.proj(v)
+                                                        sum = sum + p2
+                                                        cv.line(p1,p2)
+                                                for v in face.verticesof(p):
+                                                    p = view.proj(v)
+                                                    if p.visible:
+                                                        cv.reset()
+                                                        cv.brushcolor = RED
+                                                        cv.rectangle(p.x-1, p.y-1, p.x+5, p.y+5)
+
+                                    cv.reset()
+                                    cv.brushcolor = AQUA
+                                    cv.rectangle(vpos.x-3, vpos.y-3, vpos.x+5, vpos.y+5)
+
+                    break # This only allows us to get the first item of the list
+
+            else:
+                terrainpaint(editor, view, x, y, flags, facelist)
+
+
+### 10th button -- or 2nd selector -- selects a Terrain Mesh Vertex ###
+
+class TerrainTouchupClick(TerrainRectSelDragObject):
+
+    "Select Terrain in 2D views and"
+    "Adjoining terrain face vertexes in 3D views."
+
+    Hint = hintPlusInfobaselink("Touch-up Selector of\nTerrain Wedge Vertexes\n(uses 'Dialog Box')\npress 'Alt' for single face\nselection and movement||Touch-up Selector of Terrain Wedge Vertexes:\n\nThis Selector will highlight the movable Terrain Wedge ('up') Faces on top, or the ('down') bottom faces if any are set for movement and their common vertexes as the cursor pass over them.\n\nWhen the LMB (left mouse button) is held down, these common vertexes can then be moved up or down to shape that one area of terrain surface for detailed touchup work.\n\nIf the 'Alt' key is held down when the selection is made then just the 'primary (yellow) face' will be moved ONLY.", "intro.terraingenerator.selection.html#touchup")
+
+    def __init__(self, view, x, y, redcolor, todo):
+        self.todo = todo
+        self.view = view
+        self.x = x
+        self.y = y
+
+        plugins.mapterrainmodes.TerrainRectSelDragObject.__init__(self, view, x, y, redcolor, todo)
+
+        z = 0
+
+        quarkx.clickform = view.owner  # Rowdys -important, gets the
+                                       # mapeditor and view clicked in
+        self.editor = mapeditor()
+        if self.editor is None:
+            self.editor = saveeditor
+
+    def dragto(self, x, y, flags):
+
+        global set_error_reset
+        from plugins.faceutils import set_error
+        if set_error == 1:
+            set_error_reset = None
+
+        self.flags = flags
+        editor = self.editor
+        view = self.view
+        type = view.info["type"]
+        if type == "3D" and view.viewmode == "tex" or view.viewmode == "opengl":
+
+### This section just keeps the rectangle from working in the 3D views
+
+            if editor is None:
+                editor = saveeditor
+                editor.layout.setupdepth(view)
+
+### below to get the "red rectangle" to work in 2D views only
+
+        else:
+            if flags&MB_DRAGGING:
+                self.autoscroll(x,y)
+            old, ri = self.buildredimages(x, y, flags)
+            self.drawredimages(self.view, 1)
+            self.redimages = ri
+            self.old = old
+            if flags&MB_DRAGGING:
+                self.drawredimages(self.view, 2)
+            return old
+
+
+class TerrainVertexHandle(quarkpy.qhandles.GenericHandle):
+    "A terrain polyhedron face vertex."
+
+    undomsg = Strings[525]
+    hint = "||By dragging this point, you can move all of the adjoining face vertexes for fine detail work.\n\nHolding down the Ctrl key while dragging will snap them to the grid.\n\nHolding down the Alt key will cause only the 'primary' face (outlined in red) to be moved.\n\nIf you wish to only have the 'primary' face snap to the grid then first use the Alt key to move it away from the others, then reselect it using the Ctrl key.|intro.terraingenerator.selection.html#paintbrush"
+
+    def __init__(self, pos, poly):
+        quarkpy.qhandles.GenericHandle.__init__(self, pos)
+
+        # This makes sure we have the editor if we are in the OpenGl, NewWindow 3D view or FullScreen 3D view
+        editor = mapeditor()
+        if editor is None:
+            self.editor = saveeditor
+        else:
+            self.editor = mapeditor()
+
+        self.pos = pos
+        self.poly = poly
+        self.cursor = CR_CROSSH
+        global selectlist
+        self.selectlist = selectlist
+
+
+    def menu(self, editor, view):
+
+        def forcegrid1click(m, self=self, editor=editor, view=view):
+            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+
+        def cutcorner1click(m, self=self, editor=editor, view=view):
+            #
+            # Find all edges and faces issuing from the given vertex.
+            #
+            edgeends = []
+            faces = []
+            for f in self.poly.faces:
+                vertices = f.verticesof(self.poly)
+                for i in range(len(vertices)):
+                    if not (vertices[i]-self.pos):
+                        edgeends.append(vertices[i-1])
+                        edgeends.append(vertices[i+1-len(vertices)])
+                        if not (f in faces):
+                            faces.append(f)
+            #
+            # Remove duplicates.
+            #
+            edgeends1 = []
+            for i in range(len(edgeends)):
+                e1 = edgeends[i]
+                for e2 in edgeends[:i]:
+                    if not (e1-e2):
+                        break
+                else:
+                    edgeends1.append(e1)
+            #
+            # Compute the mean point of edgeends1.
+            # The new face will go through the point in the middle between this and the vertex.
+            #
+            pt = reduce(lambda x,y: x+y, edgeends1)/len(edgeends1)
+            #
+            # Compute the mean normal vector from the adjacent faces' normal vector.
+            #
+            n = reduce(lambda x,y: x+y, map(lambda f: f.normal, faces))
+            #
+            # Force "n" to be perpendicular to the screen direction.
+            #
+            vertical = view.vector(self.pos).normalized   # vertical vector at this point
+            n = (n - vertical * (n*vertical)).normalized
+            #
+            # Find a "model" face for the new one.
+            #
+            bestface = faces[0]
+            for f in faces[1:]:
+                if abs(f.normal*vertical) < abs(bestface.normal*vertical):
+                    bestface = f
+            #
+            # Build the new face.
+            #
+            newface = bestface.copy()
+            newface.shortname = "corner"
+            newface.distortion(n, self.pos)
+            #
+            # Move the face to its correct position.
+            #
+            delta = 0.5*(pt-self.pos)
+            delta = n * (delta*n)
+            newface.translate(delta)
+            #
+            # Insert the new face into the polyhedron.
+            #
+            undo = quarkx.action()
+            undo.put(self.poly, newface)
+            editor.ok(undo, Strings[563])
+
+        return [qmenu.item("&Cut out corner", cutcorner1click, "|This command cuts out the corner of the polyhedron. It does so by adding a new face near the vertex you right-clicked on. The new face is always perpendicular to the view."),
+                qmenu.sep,
+                qmenu.item("&Force to grid", forcegrid1click,
+                  "force vertex to grid")] + self.OriginItems(editor, view)
+
+
+    def drawred(self, redimages, view, redcolor):
+        "Draw a handle while it is being dragged."
+
+        global newface
+
+        cv = view.canvas()
+        cv.penwidth = 1
+        cv.penstyle = PS_SOLID
+        cv.pencolor = WHITE
+        cv.brushstyle = BS_SOLID
+        p = view.proj(self.pos)
+        if p.visible:
+            cv.brushcolor = GREEN
+            cv.rectangle(p.x-3, p.y-3, p.x+5, p.y+5)
+
+        if newface == []:
+      #      v1 = v2 = self.pos
+            v1 = view.vector("X").normalized
+            v2 = view.vector("Y").normalized
+            flags = MB_DRAGGING
+            newitem = self.drag(v1, v2, flags, view)
+            if newface == []:
+                return
+
+        if newface.name == ("up:f"):
+            cv.reset()
+            cv.brushcolor = NAVY
+            p = view.proj(newpoint)
+            cv.rectangle(p.x-3, p.y-3, p.x+5, p.y+5)
+
+        if newface.name == ("downmoves:f"):
+            cv.reset()
+            cv.brushcolor = AQUA
+            p = view.proj(newpoint)
+            cv.rectangle(p.x-3, p.y-3, p.x+5, p.y+5)
+
+
+    def ok(self, editor,undo,old,new):
+
+        editor.layout.explorer.sellist = []
+
+        if old != [] and new != []:
+            quarkpy.qhandles.GenericHandle.ok(self,editor,undo,old,new)
+
+        if self.selectlist != []:
+            for poly in new:
+                if poly.findname("up:f") is not None:
+                    face = poly.findname("up:f")
+                    self.selectlist.append(face)
+
+                if poly.findname("downmoves:f") is not None:
+                    face = poly.findname("downmoves:f")
+                    self.selectlist.append(face)
+
+            editor.layout.explorer.sellist = self.selectlist
+            for view in editor.layout.views:
+                type = view.info["type"]
+                if type == "3D":
+                    drawredfaces(view, self.selectlist)
+            self.selectlist = []
+        else:
+            editor.layout.explorer.sellist = []
+            self.selectlist = []
+
+
+    def drag(self, v1, v2, flags, view):
+
+        global newpoly, newface, newpoint, selfpolylist, newlist, commonitems
+        newpoly = newface = newpoint = []
+        editor = self.editor
+        if editor.layout.explorer.sellist != []:
+            self.selectlist = editor.layout.explorer.sellist
+            editor.layout.explorer.sellist = []
+
+      # Giving the option to use the Alt key to drag just the "primary yellow face's vertex"
+        if flags&MB_ALT:
+            temp = []
+            if len(commonitems) > 0:
+                temp = (commonitems[0])
+                commonitems = []
+                commonitems.append(temp)
+            else:
+                return None, None
+
+        # If a single face is being dragged qhandles.RedImageDragObject.dragto will send back to here
+        # causing selfpolylist and newlist to reset to nothing and face will not be drawn in undo function.
+        # The line below will return the old poly and last new poly created allowing it to complete the cycle.
+
+        if flags&MB_DRAGEND: return selfpolylist, newlist
+
+        selfpolylist = []
+        newlist = []
+
+        for commonitem in commonitems:
+
+            vertex, poly = commonitem
+            if poly.type != ":p": continue
+            self.pos = vertex
+            self.poly = poly
+
+            # restricts to only Z, up and down movement
+            v1 = quarkx.vect(0, 0, v1.tuple[2])
+            v2 = quarkx.vect(0, 0, v2.tuple[2])
+
+        #### Vertex Dragging Code by Tim Smith ####
+
+        # compute the projection of the starting point? onto the screen.
+            p0 = view.proj(self.pos)
+            if not p0.visible: return
+
+        # save a copy of the original faces
+            orgfaces = self.poly.subitems
+
+        # first, loop through the faces to see if we are draging
+        # more than one point at a time.  This loop uses the distance
+        # between the projected screen position of the starting point
+        # and the project screen position of the vertex.
+            dragtwo = 0
+            for f in self.poly.faces:
+                if f in orgfaces:
+                    if abs(self.pos*f.normal-f.dist) < epsilon:
+                        foundcount = 0
+                        for v in f.verticesof(self.poly):
+                            p1 = view.proj(v)
+                            if p1.visible:
+                                dx, dy = p1.x-p0.x, p1.y-p0.y
+                                d = dx*dx + dy*dy
+                                if d < epsilon:
+                                    foundcount = foundcount + 1
+                        if foundcount == 2:
+                            dragtwo = 1
+
+            # if the control key is pressed, align the destination point to grid
+            if flags&MB_CTRL:
+                v2 = quarkpy.qhandles.aligntogrid(v2, 1)
+
+            # compute the change in position
+            delta = v2-v1
+
+            # if the control is not pressed, align delta to the grid
+            if not (flags&MB_CTRL):
+                delta = quarkpy.qhandles.aligntogrid(delta, 0)
+
+        # if we are dragging
+            self.draghint = vtohint(delta)
+            if delta or (flags&MB_REDIMAGE):
+
+            # make a copy of the polygon being drug
+                new = self.poly.copy()
+                newpoly = new
+
+            # loop through the faces
+                for f in self.poly.faces:
+
+                # if this face is part of the original group
+                    if f in orgfaces:
+
+                    # if the point is on the face
+                        if abs(self.pos*f.normal-f.dist) < epsilon:
+                            newface = f
+
+                        # collect a list of verticies on the face along
+                        # with the distances from the destination point.
+                        # also, count the number of vertices.  NOTE:
+                        # this loop uses the actual distance between the
+                        # two points and not the screen distance.
+                            foundcount = 0
+                            vlist = []
+                            mvlist = []
+                            for v in f.verticesof(self.poly):
+                                p1 = view.proj(v)
+                                if p1.visible:
+                                    dx, dy = p1.x-p0.x, p1.y-p0.y
+                                    d = dx*dx + dy*dy
+                                else:
+                                    d = 1
+                                if d < epsilon:
+                                    foundcount = foundcount + 1
+                                    mvlist .append (v)
+                                else:
+                                    d = v - self .pos
+                                    vlist.append((abs (d), v))
+
+                        # sort the list of vertecies, this places the
+                        # most distant point at the end
+                            vlist.sort ()
+                            vmax = vlist [-1][1]
+
+                        # if we are draging two vertecies
+                            if dragtwo:
+
+                            # if this face does not have more than one vertex
+                            # selected, then skip
+                                if foundcount != 2:
+                                    continue
+
+                            # the rotational axis is between the two
+                            # points being drug.  the reference point is
+                            # the most distant point
+                                rotationaxis = mvlist [0] - mvlist [1]
+                                otherfixed =getotherfixed(vmax, mvlist, rotationaxis)
+                                fixedpoints = vmax, otherfixed
+
+                        # otherwise, we are draging one
+                            else:
+
+                            # if this face does not have any of the selected
+                            # vertecies, then skip
+                                if foundcount == 0:
+                                    continue
+
+                            # Using the two most distant points
+                            # as the axis of rotation
+                                rotationaxis = (vmax - vlist [-2] [1])
+                                fixedpoints = vmax, vlist[-2][1]
+
+                        # apply the rotation axis to the face (requires that
+                        # rotationaxis and vmax to be set).
+                        # "newpoint" is the face vertex being dragged of the red poly.
+                        # below that, "new" is the poly parent of that newly created red face.
+                        # These are used as "globals" and passed to the "drawred" function above.
+                            newpoint = self.pos+delta
+                            nf = new.subitem(orgfaces.index(f))
+
+                            def pointsok(new,fixed):
+
+                            # coincident not OK
+                                if not new-fixed[0]: return 0
+                                if not new-fixed[1]: return 0
+
+                            # colinear also not OK
+                                if abs((new-fixed[0]).normalized*(new-fixed[1]).normalized)>.999999:
+                                   return 0
+                                return 1
+
+                            if pointsok(newpoint,fixedpoints):
+                                tp = nf.threepoints(2)
+                                x,y = nf.axisbase()
+                                def proj1(p, x=x,y=y,v=vmax):
+                                    return (p-v)*x, (p-v)*y
+                                tp = tuple(map(proj1, tp))
+                                nf.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
+
+                                newnormal = rotationaxis ^ (self.pos+delta-vmax)
+                                testnormal = rotationaxis ^ (self.pos-vmax)
+                                if newnormal:
+                                    if testnormal * f.normal < 0.0:
+                                        newnormal = -newnormal
+
+
+                                if nf.normal*newnormal<0.0:
+                                    nf.swapsides()
+                                x,y=nf.axisbase()
+                                def proj2(p,x=x,y=y,v=vmax):
+                                    return v+p[0]*x+p[1]*y
+                                tp = tuple(map(proj2,tp))
+
+                            # Code 4 for NuTex
+                                nf.setthreepoints(tp ,2)
+
+
+                # if the face is not part of the original group
+                    else:
+                        if not (flags&MB_DRAGGING):
+                            continue   # face is outside the polyhedron
+                        nf = f.copy()   # put a copy of the face for the red image only
+                        new.appenditem(nf)
+
+        # final code
+                new = [new]
+                for newpoly in new:
+                    newlist.append(newpoly)
+            else:
+                continue
+
+            for oldpoly in [self.poly]:
+                selfpolylist.append(oldpoly)
+
+        return selfpolylist, newlist
+
+
+
+### 11th button -- or 2nd selector -- paints Terrain Mesh area ###
+
 
 class TerrainPaintClick(TerrainRectSelDragObject):
 
     "A pass over selector when the LMB is held down to"
     "apply the current texture to a 'moveable' face."
 
-    Hint = hintPlusInfobaselink("Texture Applicator of\nTerrain Wedge Faces\n(uses 'Dialog Box')||Texture Applicator of Terrain Wedge Faces:\n\nThis works like a 'Paint Brush Selector' that will apply the current texture to movable Terrain Wedge ('up') Faces on top, or the ('down') bottom faces if any are set for movement. In which case, the texture will be applied to those faces as well.\n\nThis function only works in the '3D' views. To apply the texture hold down the LMB as you pass the cursor over the desired faces.", "intro.terraingenerator.selection.html#paintbrush")
+    Hint = hintPlusInfobaselink("Texture Applicator of\nTerrain Wedge Faces\n(uses 'Dialog Box')||Texture Applicator of Terrain Wedge Faces:\n\nThis works like a 'Paint Brush Selector' that will apply the current texture to movable Terrain Wedge ('up') Faces on top, or the ('down') bottom faces if any are set for movement. In which case, the texture will be applied to those faces as well.\n\nIf the 'Sides Too' and 'Sides Only' settings on the 'Touch-up & Paint Brush' dialog box are used, then the sides can also have texture applied to them as well.\n\nThis function only works in the '3D' views. To apply the texture hold down the LMB as you pass the cursor over the desired faces.", "intro.terraingenerator.selection.html#paintbrush")
 
     def __init__(self, view, x, y, redcolor, todo):
         self.todo = todo
@@ -1297,9 +2065,6 @@ class TerrainPaintClick(TerrainRectSelDragObject):
         quarkx.clickform = view.owner  # Rowdys -important, gets the
                                        # mapeditor and view clicked in
         self.editor = mapeditor()
-        if self.editor is None:
-            self.editor = saveeditor
-
 
     def dragto(self, x, y, flags):
         editor = self.editor
@@ -1309,26 +2074,41 @@ class TerrainPaintClick(TerrainRectSelDragObject):
 
 ### Start of new section to get face and apply texture in 3D view only
 
+            if editor is None:
+                editor = saveeditor
             editor.layout.setupdepth(view)
+            sidestoo = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"]
+            sidesonly = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"]
             choicelist = quarkpy.maphandles.ClickOnView(editor, view, x, y) #checks if pointing at poly or something
-
 ### Draws the YELLOW face that will be "painted" (re-textured).
-
             for items in choicelist:
 
                 poly = items[1]
                 if poly.shortname.startswith("terrain wedge"):
                     for face in poly.subitems:
-                        if face.name == ("up:f") or face.name == ("downmoves:f"):
+                        if face.name == ("upstop:f") or face.name == ("down:f"):
+                            continue
 
-             # sets up to draw YELLOW outline of faces to get texture
+                        if (sidestoo == "0" and sidesonly == "0" and face.name == ("left:f")) or (sidestoo == "0" and sidesonly == "0" and face.name == ("right:f")) or (sidestoo == "0" and sidesonly == "0" and face.name == ("back:f")):
+                            continue
+
+                        if (sidesonly == "1" and face.name == ("up:f")) or (sidesonly == "1" and face.name == ("downmoves:f")):
+                            continue
+
+                        elif (sidesonly == "0" and sidestoo == "0" and face.name == ("left:f")) or (sidesonly == "0" and sidestoo == "0" and face.name == ("right:f")) or (sidesonly == "0" and sidestoo == "0" and face.name == ("back:f")):
+                            continue
+                        else:
+
+          # sets up to draw YELLOW outline of faces to get texture
                             cv = view.canvas()
                             cv.pencolor = YELLOW
                             cv.penwidth = 1
                             cv.penstyle = PS_SOLID
                             cv.fontcolor = YELLOW
 
-             # Draws YELLOW outline of faces to get texture
+          # Regulates which 3D view the YELLOW outline of faces are to be drawn
+
+                            # Draws YELLOW outline of faces to get texture
                             for vtx in face.vertices: # is a list of lists
                                 sum = quarkx.vect(0, 0, 0)
                                 p2 = view.proj(vtx[-1])  # the last one
@@ -1338,8 +2118,8 @@ class TerrainPaintClick(TerrainRectSelDragObject):
                                     sum = sum + p2
                                     cv.line(p1,p2)
 
-### This part changes the face texture.
-# This part gets the "Actual" texture image size.
+          ### This part changes the face texture.
+          # This part gets the "Actual" texture image size.
                             tex = face.texturename
                             texobj = quarkx.loadtexture (tex, editor.TexSource)
                             if texobj is not None:
@@ -1349,7 +2129,7 @@ class TerrainPaintClick(TerrainRectSelDragObject):
                                     texobj = None
                             texX, texY = texobj['Size']
 
-### Gets the stored dialog box values to be used below.
+          ### Gets the stored dialog box values to be used below.
 
                             texname = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"]
                             originX, originY, originZ = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"]
@@ -1357,14 +2137,14 @@ class TerrainPaintClick(TerrainRectSelDragObject):
                             scaleX, scaleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"]
                             angleX, angleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]
 
-## The texX and texY are the size of the actual texture image
-## and are used here to be applied to the scale x and y factors.
-## .01 sets the percentage factor that 1 in the dialog gives the texture.
+          ## The texX and texY are the size of the actual texture image
+          ## and are used here to be applied to the scale x and y factors.
+          ## .01 sets the percentage factor that 1 in the dialog gives the texture.
 
                             scaleX = scaleX * texX * .01
                             scaleY = scaleY * texY * .01
 
-## Start of "modified" formula from maptexpos.py "def action" section
+          ## Start of "modified" formula from maptexpos.py "def action" section
 
                             angleY = angleX - angleY*-1
                             angleY = angleX - angleY
@@ -1388,17 +2168,14 @@ class TerrainPaintClick(TerrainRectSelDragObject):
 
                             face.replacetex(tx1, tx2)
 
-            # Rebuilds 3D views only
+            # Rebuilds all 3D views only
             for view in editor.layout.views:
                 type = view.info["type"]
                 if type == "3D":
                     view.invalidate(1)
-            editor.invalidateviews()
-            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
-
-### End of new section to get face and apply texture in 3D view only
-### below to get the "red rectangle" to work in 2D views only
+          ### End of new section to get face and apply texture in 3D view only
+          ### below to get the "red rectangle" to work in 2D views only
 
         else:
             if flags&MB_DRAGGING:
@@ -1412,14 +2189,6 @@ class TerrainPaintClick(TerrainRectSelDragObject):
             return old
 
 
-    def terrainpaint(self, view, flags):
-        "Changes cursor in views based on view type"
-        type = view.info["type"]
-        if type == "3D" and flags & MB_CLICKED is not None and view.viewmode == "tex" or view.viewmode == "opengl":
-            view.cursor = CR_HAND
-        else:
-            view.cursor = CR_DEFAULT
-
 
 ### START OF THE TOOLBAR AND BUTTON SETUP ###########
 #
@@ -1428,7 +2197,8 @@ class TerrainPaintClick(TerrainRectSelDragObject):
 #
 
 TerrModes = [(TerrainRectSelDragObject                 ,9)
-            ,(TerrainPaintClick                       ,10)
+            ,(TerrainTouchupClick                       ,10)
+            ,(TerrainPaintClick                       ,11)
             ]
 
 ### this part effects each buttons selection mode
@@ -1453,6 +2223,11 @@ def selectmode(btn):
 def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = TerrModes[btn.i]
     btn.state = quarkpy.qtoolbar.selected
+    editor.layout.explorer.sellist = []
+    editor.layout.explorer.uniquesel = []
+    editor.layout.explorer.selchanged()
+    for view in editor.layout.views:
+        view.cursor = CR_DEFAULT
 
 ##### Below makes the toolbar and arainges its buttons #####
 
@@ -1475,17 +2250,20 @@ class TerrModesBar(ToolBar):
 
         Convert2Terrain = qtoolbar.button(Convert2TerrainClick, "Convert Imported Terrains||Convert Imported Terrains:\n\nThis will convert other Imported terrains into the proper format to use with the QuArK Terrain Generator.\n\nUse a 'STANDARD' selection method to select the Imported Terrain poly or group of polys you wish to convert.\n\nThey must be of a triangular shape to convert and edit properly.", ico_terrmodes, 3, infobaselink="intro.terraingenerator.selection.html#importconverter")
 
-        ConvOnlyUpmove = qtoolbar.button(ConvOnlyUpmoveClick, "Allow ONLY 'up' faces to be moved||Allow ONLY 'up' faces to be moved:\n\nThis will convert all the faces of the current selection group so ONLY the 'up' faces will be allowed to move.", ico_terrmodes, 4, infobaselink="intro.terraingenerator.selection.html#faceconverters")
+        ConvOnlyUpmove = qtoolbar.button(ConvOnlyUpmoveClick, "Allows ONLY 'up' faces to be moved||Allows ONLY 'up' faces to be moved:\n\nThis will convert all the faces of the current selection group so ONLY the 'up' faces will be allowed to move.", ico_terrmodes, 4, infobaselink="intro.terraingenerator.selection.html#faceconverters")
 
-        ConvOnlyDownmove = qtoolbar.button(ConvOnlyDownmoveClick, "Allow ONLY 'down' faces to be moved||Allow ONLY 'down' faces to be moved:\n\nThis will convert all the faces of the current selection group so ONLY the 'downmove' faces will be allowed to move.", ico_terrmodes, 5, infobaselink="intro.terraingenerator.selection.html#faceconverters")
+        ConvOnlyDownmove = qtoolbar.button(ConvOnlyDownmoveClick, "Allows ONLY 'down' faces to be moved||Allows ONLY 'down' faces to be moved:\n\nThis will convert all the faces of the current selection group so ONLY the 'downmove' faces will be allowed to move.", ico_terrmodes, 5, infobaselink="intro.terraingenerator.selection.html#faceconverters")
 
-        ConvBothmove = qtoolbar.button(ConvBothmoveClick, "Allow BOTH 'up' and 'down' faces\nto be moved together||Allow BOTH 'up' and 'down' faces to be moved together:\n\nThis will convert all the faces of the current selection group so BOTH the 'up' and 'down' faces will be allowed to move together.", ico_terrmodes, 6, infobaselink="intro.terraingenerator.selection.html#faceconverters")
+        ConvBothmove = qtoolbar.button(ConvBothmoveClick, "Allows BOTH 'up' and 'down' faces\nto be moved together||Allows BOTH 'up' and 'down' faces to be moved together:\n\nThis will convert all the faces of the current selection group so BOTH the 'up' and 'down' faces will be allowed to move together.", ico_terrmodes, 6, infobaselink="intro.terraingenerator.selection.html#faceconverters")
 
         GetAdjFacesbtn = qtoolbar.button(GetAdjFacesClick, "Get Adjacent Faces||Get Adjacent Faces:\n\nSelect one movable face of a poly, 'up' or 'downmove'.\nThen clinking this button will cause any other faces,\ntouching the selected one, to be added to the selection.\n\nYou must select a single movable face for this function to work.", ico_terrmodes, 7, infobaselink="intro.terraingenerator.selection.html#adjacentfaces")
 
-        BuildDialogbtn = qtoolbar.button(DialogClick, "Selector Dialog Input\nopens a selector's\nshape input box||Selector Dialog Input:\n\nThis will open a dialog input box for the 'Terrain Selector' currently in use if it takes input to change the way the terrain is created as it is being dragged.\n\nNot all selectors will have this feature. In which case a message will be displayed as such.\n\nThe selectors that do have this function will display that it uses the 'Dialog Box' in its description popup.", ico_terrmodes, 8, infobaselink="intro.terraingenerator.selection.html#basicselector")
+        BuildDialogbtn = qtoolbar.button(DialogClick, "Selector Dialog Input\nopens all dialog boxes||Selector Dialog Input:\n\nThis will open a dialog input box for the 'Terrain Toolbar' item currently in use if it takes input to change the way the terrain is created.\n\nNot all item buttons will have this feature. In which case a message will be displayed as such.\n\nThe items that do have this function will display that it uses the 'Dialog Box' in its description popup.", ico_terrmodes, 8, infobaselink="intro.terraingenerator.selection.html#basicselector")
 
-                          # to build the Mode buttons
+        Build3DviewsDialogbtn = qtoolbar.button(Dialog3DviewsClick, "3D views Options\nDialog Input\n(opens the input box)||3D views Options Dialog Input:\n\nThis will open its own 'Dialog Box' and is laid out in the same order as the 'Display tool-palette'. \n\nThis dialog gives you the ability to customize every 3D view that QuArK provides and does so independently from one 3D view to the next.", ico_terrmodes, 12, infobaselink="intro.terraingenerator.selection.html#options3d")
+
+
+                  # to build the Mode buttons
         btns = []
         for i in range(len(TerrModes)):
             obj, icon = TerrModes[i]
@@ -1512,6 +2290,8 @@ class TerrModesBar(ToolBar):
         revbtns.append(GetAdjFacesbtn)
         revbtns.append(BuildDialogbtn)
         revbtns = revbtns + btns
+        revbtns.append(Build3DviewsDialogbtn)
+
         return revbtns
 
 
@@ -1523,6 +2303,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2005/10/16 00:24:05  cdunde
+# Fixed Terrain Generator Paint Brush function to allow
+# texture application in all 3D views and update of those views.
+#
 # Revision 1.9  2005/10/15 00:51:56  cdunde
 # To reinstate headers and history
 #
@@ -1545,7 +2329,5 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 #
 # Revision 1.1  2005/08/15 05:49:23  cdunde
 # To commit all files for Terrain Generator
-#
-
 #
 

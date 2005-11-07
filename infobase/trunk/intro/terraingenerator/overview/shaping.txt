@@ -1,10 +1,12 @@
 title: Shaping
 author: cdunde
 
-To start the actual shaping process you need to click on the <b>Basic Selector</b> button of the <b>Terrain modes</b> tool bar, which is the last button on your right. Then in the <b>Top View</b> of the editor hold down your <g>LMB</g> and drag across the desired faces, area, you wish to start creating the terrain shape from. As you are dragging you will see a <b>red rectangular box</b> that will indicate the area you are selecting. Once the area is surrounded, let go of your mouse button and all of those <b>up faces</b> will turn <b>red</b>, indicating what has been selected for movement or <g>pulling</g>.
+To start the actual shaping process you need to click on the <b>Basic Selector</b> button of the <b>Terrain modes</b> tool bar, which is the first button to the right of the <b>Selector Dialog Input</b> button shown below. Then in the <b>Top View</b> of the editor hold down your <g>LMB</g> and drag across the desired faces, area, you wish to start creating the terrain shape from. As you are dragging you will see a <b>red rectangular box</b> that will indicate the area you are selecting. Once the area is surrounded, let go of your mouse button and all of those <b>up faces</b> will turn <b>red</b>, indicating what has been selected for movement or <g>pulling</g>.
 
 Once a selection has been made like this, you can then activate the <b>Selector Dialog Input</b> button just to the left of the <b>Basic Selector</b> button. This will bring up this particular selector's dialog input box. This <b>Basic Selector Dialog</b> box is <b>only</b> used by the 
 <b>Basic Selector</b> button. As future selectors are added, they too can have their own dialog box that will relate to their particular features. This and other detail about the <b>Selector Dialog Input</b> function and  the <b>Basic Selector</b> are covered on the <ref> ../selection </ref> page.
+
+The <b>Basic Selector</b> is used for the movement of large areas of terrain surface. For more <b>detailed</b> selection and movement of smaller common face groups and individual faces, see the <a href="intro.terraingenerator.selection.html#touchup">Touch-up Selector</a> section.
 
 <table width=100% cellspacing=0>
 <tr><td valign=top align=middle>

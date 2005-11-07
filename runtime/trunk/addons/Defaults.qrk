@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.270  2005/10/27 06:32:27  cdunde
+//To allow other mod exe files to be used.
+//
 //Revision 1.269  2005/10/16 06:59:26  cdunde
 //To upgrade RTCW exe selection in Game Options
 //
@@ -2457,6 +2460,29 @@ QQRKSRC1
       }
       Options:config =
       {
+        PaintBrush_tex = "e1u1/damage1_1"
+        PaintBrush_origin = '0 0 -32'
+        PaintBrush_retain = "1"
+        PaintBrush_scale = '100 100'
+        PaintBrush_angles = '0 90'
+        PaintBrush_color = "1"
+        PaintBrush_variance = "0.0001"
+        Options3Dviews_noicons1 = "0"
+        Options3Dviews_drag1 = "1"
+        Options3Dviews_redfaces1 = "1"
+        Options3Dviews_color1 = "1"
+        Options3Dviews_noicons2 = "0"
+        Options3Dviews_drag2 = "1"
+        Options3Dviews_redfaces2 = "1"
+        Options3Dviews_color2 = "1"
+        Options3Dviews_noicons3 = "0"
+        Options3Dviews_drag3 = "1"
+        Options3Dviews_redfaces3 = "1"
+        Options3Dviews_color3 = "1"
+        Options3Dviews_noicons4 = "0"
+        Options3Dviews_drag4 = "1"
+        Options3Dviews_redfaces4 = "1"
+        Options3Dviews_color4 = "1"
         DrawAxis                = "1"
         SolidGrid               = ""
         GridVisible             = "1"

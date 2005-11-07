@@ -3,7 +3,7 @@ author: cdunde
 
 <table border=0 cellspacing=0>
 <tr><td valign=top>
-This button is the <a href="intro.terraingenerator.texture.html#paintbrush">Texture Applicator</a> or "paint brush". It does everything that the <b>Basic Selector</b> described above does when you are in the 2D views of the editor. However, in the <b>textured 3D views</b> it works entirely different.
+This button is the <a href="intro.terraingenerator.texture.html#paintbrush">Texture Applicator</a> or "paint brush". It also does everything that the <b>Basic Selector</b> does when you are working in the 2D views of the editor. But, when in the <b>textured 3D views</b> its job is to apply your textures.
 </td>
 <td valign=top align=middle>
 <img border=0>paintbrush1.png</img>
@@ -12,9 +12,9 @@ This button is the <a href="intro.terraingenerator.texture.html#paintbrush">Text
 
 <table border=0 cellspacing=0>
 <tr><td valign=top>
-The <b>Texture Applicator</b> can also use the Basic Selector's Dialog Input, but that can only be brought up by selecting the Basic Selector, clicking the Selector Dialog Input button and then switching back to the Texture Applicator.
+The <b>Texture Applicator</b> can also use the Basic Selector's Dialog Input for dragging in the <b>2D views</b>, but that can only be brought up by selecting the Basic Selector, clicking the Selector Dialog Input button and then switching back to the Texture Applicator.
 
-Like the Basic Selector, the <b>Texture Applicator</b> also has its own  <b>Selector Dialog Input</b> function which will appear when you click on the <b>Selector Dialog Input</b> button while in this selector mode.
+Unlike the Basic Selector, the <b>Texture Applicator</b> also has its own functions, but uses a combo <b>Selector Dialog Input</b> with the <a href="intro.terraingenerator.selection.html#touchup">Touch-up Selector</a> and which will appear when you click on the <b>Selector Dialog Input</b> button while in this selector mode.
 
 Because of the <b>Texture Applicator's</b> wide range of ability and the numerous functions of its <b>Dialog Input</b> we will only give a very brief description of its basic function here, that being able to retexture terrain surface faces on a more detail and controlled basis.
 </td>

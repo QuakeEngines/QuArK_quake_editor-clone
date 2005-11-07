@@ -1,0 +1,123 @@
+title: Basic Selector & Dialog Box
+author: cdunde
+
+<table width=100% border=0 cellspacing=0>
+<tr><td valign=top>
+To start the actual shaping process you need to click on the <a href="intro.terraingenerator.selection.html#basicselector">Basic Selector</a> button of the <a href="intro.terraingenerator.selection.html">Terrain modes tool bar</a>, which is shown here on your right. You can also use its <b>Dialog Input</b> box by clicking on that button, just to the left of the selector button, to add variation to its shaping.
+</td>
+<td valign=top align=right>
+<img align=right>basicselector1.png</img>
+</td></tr>
+</table>
+
+<table width=100% border=0 cellspacing=0>
+<tr><td valign=top>
+Then in the <a href="intro.mapeditor.maplayout.html#classic">Top View</a> of the editor hold down your <g>LMB</g> and drag across the desired faces, area, you wish to start creating the terrain shape from. As you are dragging you will see a <b>red rectangular box</b> that will indicate the area you are selecting. Once the area is surrounded, let go of your mouse button and all of those <b>up faces</b> will turn <b>red</b>, indicating what has been selected for movement or <g>pulling</g>.
+
+Once a selection has been made like this, you can then activate the <b>Selector Dialog Input</b> button just to the left of the <b>Basic Selector</b> button. This will bring up this particular selector's dialog input box. This <b>Basic Selector Dialog</b> box is <b>only</b> used by the 
+<b>Basic Selector</b> button. As future selectors are added, they too can have their own dialog box that will relate to their particular features. This and other details about the <b>Selector Dialog Input</b> function and  the <b>Basic Selector</b> are covered on the <ref> ../selection </ref> page.
+</td>
+<td valign=top align=right>
+<img border=1 align=right>redbox.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>shape1.png</img>
+</td></tr></table>
+
+The <b>Basic Selector Dialog</b> box is used to change the way the terrain will be created as a <g>pull</g> is taking place by entering two sets of values per input window. The first value being a percentage factor, which is applied to the second factor, and the second amount in units that will be added or subtracted from the actual movement. The dialog box can be dragged to any location by placing your mouse cursor over its blue title bar, holding down the <g>LMB</g> and moving it. It can also be resized like any other window and it will remain open and on top of the editor for your use until you click on the <b>X</b> button to close it. The first time you use the dialog box it will have <b>default values</b> already set in it that are also the <b>default settings</b> for that particular <b>Terrain Selector</b>. Once these settings are changed they are stored and saved to keep them the same until you change them again in another session of <b>QuArK</b>.
+
+With that covered, you are now ready to drag and shape your terrain. The <b>dialog box</b> can remain open or closed during this process. It is best to use the editors <b>Side</b> or <b>Front View</b> to do the actual dragging of the terrain. Although both, the dragging and selection process, can be done in any of the 2D or <b>3D views</b>. However, you will notice, if you do your dragging in the 3D views, that it will be much slower and jerky in appearance.
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>shape2.png</img>
+</td></tr></table>
+
+Place your mouse cursor over the <b>center blue movement handle</b> and holding down the <g>LMB</g> slowly move your cursor towards the top of the editor view. You should now see your terrain taking shape as you move your mouse further. If the size and amount of terrain you are moving is not too large, you will also see the changes in all of the other views, including the 3D views, as well. If not, briefly pausing, without releasing the <g>LMB</g>, will allow the editor to <b>catch up</b> for the redrawing of all of the views. This is the process that <b>QuArK</b> has to go through and why, sometimes, you may not see movement in the other views while you are dragging.
+
+One other item about dragging. If the <b>3D view</b> should become distorted during a drag, you can usually clear this up by pressing your <b>Tab</b> key a couple of times. This is the <b>Default Hot Key</b> to cause <b>all</b> of the views to be redrawn. This can also be done while you are dragging if need be.
+
+<b>Control</b> of your mouse movement is the key here! Because of the way that <b>QuArK</b> processes terrain movement, the mouse curser will not remain on the center handle, but will tend to <b>drift</b> above or below it, depending on which direction you are dragging. This is normal. There is also a <b>delay</b> in movement <b>reaction</b> by the editor, for the same reasons, which can sometimes cause a <b>run away</b> effect to the terrain you are dragging. If this should happen, simply stop moving your mouse and <b>release</b> the <g>LMB</g> <b>without</b> canceling your terrain selection. Then click on the center handle again and slowly start your movement in the opposite direction. This will stop the <b>run away</b> movement all together and reset the handle co-ordinances to react properly once again.
+
+If you are unable to use the <b>stop and restart</b> method because things have just gone too far already, then use the <b>Edit</b> menu <a href="intro.mapeditor.menu.html#editmenu">Undo / Redo...</a> function which will usually take you back to a safe point from which you can start from again. For these reasons I highly recommend that you save your work and/or make a backup copy as you reach critical stages in your map editing process.
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+These three buttons of the toolbar are the <b>Face Conversion</b> buttons. This is a <b>very unique</b> feature of the <a href="intro.terraingenerator.html">QuArK Terrain Generator</a> that allows you to shape your terrain from the <b>top</b> (up faces), <b>bottom</b> (down faces) or <b>both</b> at the same time by <b>simultaneous movement</b> moving in the same direction at the same time.
+</td>
+<td valign=top align=middle>
+<img border=0>faceconverters1.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+Once again the buttons are designed for easy recognition as to exactly what each one of them does. This is demonstrated in the side view screen shots below where the selected faces are highlighted in <b>red</b> with the movement handle centered on the group selected.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>faceconverters2.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+And their corresponding <b>3D Textured</b> views dramatize this even further. The first denotes standard surface treatment for a hill or mountain, the second could be textured to represent stalactites hanging inside of a cave and the third puts both of those elements together to create that mountain and cave. By isolating your down face selections in various locations and <g>pulling</g> them downward, you would then create those stalactites throughout your cave.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>faceconverters3.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+By using <b>both sides</b> of your terrain <b>sections</b> in this manner, you can create some dazzling effects while keeping your <g>poly</g> count to an absolute minimum, which is a very important element of any game mapping. And, by using different <b>sections</b> of terrain of different grid sizes, smaller ones for nice detail work and larger ones for general coverage, this will assist you even further to maximize your surrounding effects while still remain efficient in your map creations.
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+Another very nice <b>tool</b> is the <b>Adjacent Faces Selector</b> button. The function that it provides is that of selecting one particular face, either up , down or both, and then ,by clicking this button, having all of the adjoining faces that it touches added to your selection automatically.
+</td>
+<td valign=top align=middle>
+<img border=0>adjacentfaces1.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+This can create some very nice random and staggered effects to your terrain as illustrated below. Here, using just a slight amount of drag, we have created a rugged effect. Then by merely adding some grass and twig texturing to the flat area and fair size boulder texture to the random area, we have just given our surroundings a nice look with very little effort. Thank you Rowdy!
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>adjacentfaces2.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The selection process it self is also different for a very specific reason. Where the <a href="intro.mapeditor.toolpalettes.mousemodes.html">QuArK Standard Selectors</a> will select any <g>poly</g> that it touches, the <a href="intro.terraingenerator.selection.html#basicselector">Basic Selector</a> will <b>not</b>. Instead, it only selects a face if the <b>center</b> point of that face is within the selector's <b>red rectangular selection box</b>. It was designed this way so that <b>odd</b> and <b>ill regular</b> selections could be made.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>basicselector3.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+Another nice feature of the <a href="intro.terraingenerator.selection.html#basicselector">Basic Selector</a> is its ability to select only surface faces to aid in the process of texturing the terrain. More on the subject of using the <a href="intro.terraingenerator.selection.html#basicselector">Basic Selector</a> for texturing techniques is covered on the <ref>../texture</ref> page.
+</td></tr>
+</table>

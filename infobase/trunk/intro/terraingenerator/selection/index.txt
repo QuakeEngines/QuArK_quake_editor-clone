@@ -5,7 +5,10 @@ desc: importconverter
 desc: faceconverters
 desc: adjacentfaces
 desc: basicselector
+desc: touchup
 desc: paintbrush
+desc: options3d
+
 
 <noscript>
   <div class="warning">Please enable JavaScript to get the most out of this page</div>
@@ -18,7 +21,9 @@ imgsA = new Array("builders",
                   "faceconvert",
                   "adjacentfaces",
                   "basicselector",
-                  "paintbrush");
+                  "touchup",
+                  "paintbrush",
+                  "options3d");
 imgsB = new Array();
 for (i=0; i<20; i+=2) {
   imgsB[i] = new Image();
@@ -36,7 +41,7 @@ document[imgname].src = imgsB[num*2+typ].src;
 <center>
 Move your mouse over the toolbar to highlight an area<br>for its function(s) description that will appear shortly<br>then click that area to go to its information section.
 
-<table cellpadding=0 cellspacing=0 border=0 width=262 height=29>
+<table cellpadding=0 cellspacing=0 border=0 width=302 height=29>
   <tr>
   <!-- menu -->
                                      <!-- HACK/FIX -->
@@ -56,11 +61,19 @@ Move your mouse over the toolbar to highlight an area<br>for its function(s) des
     </td>
 
 
-    <td width=47><a href="intro.terraingenerator.selection.html#basicselector" onMouseover='imgchange("4basicselector",4,0)' onMouseout='imgchange("4basicselector",4,1)'><img name="4basicselector" width=47 height=29 border=0 alt="Basic Selector & Dialog Box">basicselector_s.png</img></a>
+    <td width=43><a href="intro.terraingenerator.selection.html#basicselector" onMouseover='imgchange("4basicselector",4,0)' onMouseout='imgchange("4basicselector",4,1)'><img name="4basicselector" width=43 height=29 border=0 alt="Basic Selector & Dialog Box">basicselector_s.png</img></a>
     </td>
 
 
-    <td width=26><a href="intro.terraingenerator.selection.html#paintbrush" onMouseover='imgchange("5paintbrush",5,0)' onMouseout='imgchange("5paintbrush",5,1)'><img name="5paintbrush" width=26 height=29 border=0 alt="Texture Applicator & Dialog Box">paintbrush_s.png</img></a>
+    <td width=23><a href="intro.terraingenerator.selection.html#touchup" onMouseover='imgchange("5touchup",5,0)' onMouseout='imgchange("5touchup",5,1)'><img name="5touchup" width=23 height=29 border=0 alt="Touch-up Selector & Dialog Box">touchup_s.png</img></a>
+    </td>
+
+
+    <td width=22><a href="intro.terraingenerator.selection.html#paintbrush" onMouseover='imgchange("6paintbrush",6,0)' onMouseout='imgchange("6paintbrush",6,1)'><img name="6paintbrush" width=22 height=29 border=0 alt="Texture Applicator & Dialog Box">paintbrush_s.png</img></a>
+    </td>
+
+
+    <td width=25><a href="intro.terraingenerator.selection.html#options3d" onMouseover='imgchange("7options3d",7,0)' onMouseout='imgchange("7options3d",7,1)'><img name="7options3d" width=25 height=29 border=0 alt="3D views Options Dialog Box">options3d_s.png</img></a>
     </td>
 
 
@@ -72,5 +85,7 @@ Move your mouse over the toolbar to highlight an area<br>for its function(s) des
 <img border=0 width=0 height=0>faceconvert.png  </img>
 <img border=0 width=0 height=0>adjacentfaces.png  </img>
 <img border=0 width=0 height=0>basicselector.png  </img>
+<img border=0 width=0 height=0>touchup.png  </img>
 <img border=0 width=0 height=0>paintbrush.png  </img>
+<img border=0 width=0 height=0>options3d.png  </img>
 </center>

@@ -39,6 +39,7 @@ vfSkinView = 0x80 # 2d only - used for skin page for mdl editor and bezier page 
 grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
+saveeditor = None
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -59,8 +60,9 @@ def setupgrid(editor):
     #
     # Set the grid variable from the editor's current grid step.
     #
-    global grid
+    global grid, saveeditor
     grid = (editor.grid, editor.gridstep)
+    saveeditor = editor
 
 def cleargrid():
     global grid
@@ -259,7 +261,75 @@ class Rotate3DHandle(GenericHandle):
         self.icon = icon
 
     def draw(self, view, cv, draghandle=None):
+        "Draws the camera position eye line and ball handle"
         p1, p2 = view.proj(self.center), view.proj(self.pos)
+    ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
+        if mapeditor() is not None:
+            editor = mapeditor()
+        else:
+            editor = saveeditor
+        if editor is not None:
+            tb2 = editor.layout.toolbars["tb_terrmodes"]
+            if view.info["type"] == "3D":
+                if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1":
+                    if tb2.tb.buttons[10].state == 2 or tb2.tb.buttons[11].state == 2:
+                        view.cursor = CR_HAND
+                        view.handlecursor = CR_HAND
+                    else:
+                        if MapOption("CrossCursor", self.MODE):
+                            view.cursor = CR_CROSS
+                            view.handlecursor = CR_CROSS
+                        else:
+                            view.cursor = CR_ARROW
+                            view.handlecursor = CR_ARROW
+                    return
+                if view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1":
+                    if tb2.tb.buttons[10].state == 2 or tb2.tb.buttons[11].state == 2:
+                        view.cursor = CR_HAND
+                        view.handlecursor = CR_HAND
+                    else:
+                        if MapOption("CrossCursor", self.MODE):
+                            view.cursor = CR_CROSS
+                            view.handlecursor = CR_CROSS
+                        else:
+                            view.cursor = CR_ARROW
+                            view.handlecursor = CR_ARROW
+                    return
+
+                if view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1":
+                    if tb2.tb.buttons[10].state == 2 or tb2.tb.buttons[11].state == 2:
+                        view.cursor = CR_HAND
+                        view.handlecursor = CR_HAND
+                    else:
+                        if MapOption("CrossCursor", self.MODE):
+                            view.cursor = CR_CROSS
+                            view.handlecursor = CR_CROSS
+                        else:
+                            view.cursor = CR_ARROW
+                            view.handlecursor = CR_ARROW
+                    return
+
+                if view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1":
+                    if tb2.tb.buttons[10].state == 2 or tb2.tb.buttons[11].state == 2:
+                        view.cursor = CR_HAND
+                        view.handlecursor = CR_HAND
+                    else:
+                        if MapOption("CrossCursor", self.MODE):
+                            view.cursor = CR_CROSS
+                            view.handlecursor = CR_CROSS
+                        else:
+                            view.cursor = CR_ARROW
+                            view.handlecursor = CR_ARROW
+                    return
+
+                else:
+                    if MapOption("CrossCursor", self.MODE):
+                        view.cursor = CR_CROSS
+                        view.handlecursor = CR_ARROW
+                    else:
+                        view.cursor = CR_ARROW
+                        view.handlecursor = CR_CROSS
+
         self.draw1(view, cv.reset(), p1, p2, p1<p2)
 
     def draw1(self, view, cv, p1, p2, fromback):
@@ -274,6 +344,13 @@ class Rotate3DHandle(GenericHandle):
             cv.line(p1, p2)
 
     def drawred(self, redimages, view, redcolor, oldnormal=None):
+            "Draws the camera position eye line above in red when dragging"
+        ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
+            if view.info["type"] == "3D":
+                if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1": return
+                if view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
+                if view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1": return
+                if view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1": return
         ##if len(redimages):
             if oldnormal is None:
                 try:
@@ -398,6 +475,12 @@ class EyePosition(GenericHandle):
         GenericHandle.__init__(self, pos)
         self.view3D = view3D
         self.normal = angles2vec1(pitch * rad2deg, roll * rad2deg, 0)
+        self.view = view
+        if self.view.info["type"] == "3D" and self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1":
+            self.hint = "?"
+        else:
+            self.hint = "camera for the 3D view||This 'eye' represents the position of the camera of the 3D perspective view. You can use it to quickly move the camera elsewhere.\n\nIf several 3D views are opened, you will see several 'eyes', one for each camera.\n\nCamera position views can also be set and stored for quick viewing. See the Infobase for details on how to use this feature.|intro.mapeditor.floating3dview.html#camera"
+
 
     def drag(self, v1, v2, flags, view):
         pack = self.view3D.cameraposition
@@ -418,6 +501,13 @@ class EyePosition(GenericHandle):
         return None, None
 
     def drawred(self, redimages, view, redcolor, oldpos=None):
+        "Draws red x in place of camera position eye icon when dragging"
+    ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
+        if view.info["type"] == "3D":
+            if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1": return
+            if view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
+            if view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1": return
+            if view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1": return
         if oldpos is None:
             try:
                 oldpos = self.newpos
@@ -434,6 +524,13 @@ class EyePosition(GenericHandle):
         return oldpos
 
     def draw(self, view, cv, draghandle=None):
+        "Draws the camera position eye icon"
+    ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
+        if view.info["type"] == "3D":
+            if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1": return
+            if view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
+            if view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1": return
+            if view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1": return
         p = view.proj(self.pos)
         if p.visible:
             n = self.normal
@@ -459,6 +556,11 @@ class EyeDirection(Rotate3DHandle):
         forward = angles2vec1(self.camera[2] * rad2deg, self.camera[1] * rad2deg, 0) 
         Rotate3DHandle.__init__(self, self.camera[0], forward, view.scale(), mapicons[12])
         self.view3D = view3D
+        self.view = view
+        if self.view.info["type"] == "3D" and self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1":
+            self.hint = "?"
+        else:
+            self.hint = "camera direction||This is the direction the 'eye' is looking to. You can use it to quickly rotate the camera with the mouse.\n\nThe 'eye' itself represents the position of the camera of the 3D perspective view. You can use it to quickly move the camera elsewhere.\n\nIf several 3D views are opened, you will see several 'eyes', one for each camera.\n\nCamera position views can also be set and stored for quick viewing. See the Infobase for details on how to use this feature.|intro.mapeditor.floating3dview.html#camera"
 
     def dragop(self, flags, av):
         if av is not None:
@@ -469,6 +571,7 @@ class EyeDirection(Rotate3DHandle):
             if flags&MB_DRAGGING:
                 return [], [], av
         return None, None, av
+
 
 #
 # Linear Mapping Circle handles.
@@ -1672,6 +1775,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.19  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.16  2005/08/31 22:46:38  cdunde
 #To properly fix interference with Model Editor
 #

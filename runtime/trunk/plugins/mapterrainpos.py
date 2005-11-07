@@ -150,6 +150,12 @@ class Selector1Dlg(quarkpy.dlgclasses.LiveEditDlg):
 def Selector1Click(m):
     editor = mapeditor()
     if editor is None: return
+    for view in editor.layout.views:
+        type = view.info["type"]
+        if type == "3D":
+            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+            view.invalidate(1)
+    editor.layout.explorer.selchanged()
   
     def setup(self):
         editor.selector1dlg=self
@@ -189,7 +195,16 @@ def Selector1Click(m):
         self.src["force"] = flat
 
 
-    Selector1Dlg(quarkx.clickform, 'selector1dlg', editor, setup, action)
+    def onclosing(self, editor=editor):
+
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "3D":
+                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                view.invalidate(1)
+
+
+    Selector1Dlg(quarkx.clickform, 'selector1dlg', editor, setup, action, onclosing)
 
 
 
@@ -205,13 +220,13 @@ class PaintBrushDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (215,280)
+    size = (215,355)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
     dfsep = 0.42    # sets 42% for labels and the rest for edit boxes
     dlgdef = """
         {
         Style = "13"
-        Caption = "Paint Brush Dialog"
+        Caption = "Touch-up & Paint Brush"
         tex: = 
         {
         Txt = "Texture"
@@ -282,20 +297,59 @@ class PaintBrushDlg(quarkpy.dlgclasses.LiveEditDlg):
         Cap="on/off" 
         Hint = "Un-checking this box will turn off the color highlighting"$0D
                "that takes place when moving the cursor over the"$0D
-               "'paintable' faces prior to applying texture."
+               "'paintable' faces prior to applying texture."$0D
+               "Also works in conjunction with"$0D"'3D views Options' color guides."
+        }
+
+        sep: = { Typ="S" Txt=""}
+
+        sidestoo: =
+        {
+        Txt = "Sides Too"
+        Typ = "X1"
+        Cap="on/off" 
+        Hint = "Checking this box will cause the sides"$0D
+               "of the poly(s) to be painted ALSO."
+        }
+
+        sidesonly: =
+        {
+        Txt = "Sides Only"
+        Typ = "X1"
+        Cap="on/off" 
+        Hint = "Checking this box will cause the sides"$0D
+               "of the poly(s) to be painted ONLY."
+        }
+
+        sep: = {Typ="S" Txt=""}
+
+        variance: =
+        {
+        Txt = "Variance"
+        Typ = "EU"
+        Hint = "This box only applies to the 'Touch-up Tool'."$0D
+               "It allows you to set an acceptable distance"$0D
+               "between the 'primary (yellow) face vertex and any"$0D
+               "other common face vertex that will be moved with it."$0D
+               "The default setting is 0.0001, but you can use any amount."
         }
 
         sep: = {Typ="S" Txt=""}
 
         Reset: =       // Reset button
         {
-          Cap = "Reset to default"      // button caption
+          Cap = "Reset to defaults"      // button caption
           Typ = "B"                     // "B"utton
-          Hint = "Reset to the texture's default"$0D"Scale size & Angles settings"
+          Hint = "Reset all the default settings"$0D"for 'Retain' and all below"
           Delete: =
           {
-            scale = "100 100"   // the button reset to these amounts
+            retain = "1"         // the button resets these items to these amounts
+            scale = "100 100"
             angles = "0 90"
+            color = "1"
+            sidestoo = "0"
+            sidesonly = "0"
+            variance = "0.0001"
           }
         }
 
@@ -309,6 +363,7 @@ class PaintBrushDlg(quarkpy.dlgclasses.LiveEditDlg):
 def PaintBrushClick(m):
     editor = mapeditor()
     if editor is None: return
+
     global face, facetex, org, sc, sa
     src = quarkx.newobj(":")
 
@@ -354,23 +409,31 @@ def PaintBrushClick(m):
   
     def setup(self):
         self.editor = editor
+        for view in editor.layout.views:
+            view = view
         global face, facetex, org, sc, sa
         src = self.src
 
       ### To populate settings...
-        if (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"] is None):
+        if (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"] is None) and(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"] is None) and(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"] is None) and(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"] is None):
             src["tex"]  = quarkx.setupsubset()["DefaultTexture"]
             src["origin"] = 0, 0, -32
             src["retain"] = "1"
             src["scale"] = 100, 100
             src["angles"] = 0, 90
             src["color"] = "1"
+            src["sidestoo"] = "0"
+            src["sidesonly"] = "0"
+            src["variance"] = "0.0001"
             quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"] = src["tex"]
             quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] = src["origin"]
             quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"] = src["retain"]
             quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] = src["scale"]
             quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] = src["angles"]
             quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"] = src["color"]
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"] = src["sidestoo"]
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"] = src["sidesonly"]
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"] = src["variance"]
 
         else:
             src["tex"] = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"]
@@ -379,6 +442,9 @@ def PaintBrushClick(m):
             src["scale"] = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"]
             src["angles"] = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]
             src["color"] = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]
+            src["sidestoo"] = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"]
+            src["sidesonly"] = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"]
+            src["variance"] = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"]
 
         if facetex is not None:
             (self.src["tex"]) = facetex
@@ -414,12 +480,36 @@ def PaintBrushClick(m):
         else:
             angleX, angleY = (src["angles"])
 
+
         if src["color"]:
             guide = src["color"]
-            editor.invalidateviews()
+            plugins.mapterrainmodes.clickedbutton(editor)
         else:
             guide = "0"
-            editor.invalidateviews()
+            plugins.mapterrainmodes.clickedbutton(editor)
+
+
+        if src["sidestoo"]:
+            sidetoo = src["sidestoo"]
+            plugins.mapterrainmodes.clickedbutton(editor)
+        else:
+            sidetoo = "0"
+            plugins.mapterrainmodes.clickedbutton(editor)
+
+
+        if src["sidesonly"]:
+            sideonly = src["sidesonly"]
+            plugins.mapterrainmodes.clickedbutton(editor)
+        else:
+            sideonly = "0"
+            plugins.mapterrainmodes.clickedbutton(editor)
+
+
+        if src["variance"]:
+            variable = src["variance"]
+        else:
+            variable = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"]
+
 
         self.temp = "%.0f %.0f %.0f"%(originX, originY, originZ)
         self.src["origin"] = "%.0f %.0f"%(originX, originY)
@@ -453,6 +543,30 @@ def PaintBrushClick(m):
         curguide = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]
         guide = (self.src["color"])
 
+        if (self.src["sidestoo"]) == "1" and quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"] == "1":
+            sidetoo = (self.src["sidestoo"])
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"] = sidetoo
+            (self.src["sidesonly"]) = "0"
+            sideonly = (self.src["sidesonly"])
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"] = sideonly
+
+        if (self.src["sidesonly"]) == "1" and quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"] == "1":
+            sideonly = (self.src["sidesonly"])
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"] = sideonly
+            (self.src["sidestoo"]) = "0"
+            sidetoo = (self.src["sidestoo"])
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"] = sidetoo
+
+        else:
+            sidetoo = (self.src["sidestoo"])
+            sideonly = (self.src["sidesonly"])
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"] = sidetoo
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"] = sideonly
+
+        variable = (self.src["variance"])
+        if variable is None:
+            variable = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"]
+
       ### Save the settings...
         quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"] = texname
         quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] = originX, originY, originZ
@@ -460,6 +574,7 @@ def PaintBrushClick(m):
         quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] = scaleX, scaleY
         quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] = angleX, angleY
         quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"] = guide
+        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"] = variable
 
 
         self.src["tex"] = None
@@ -468,9 +583,9 @@ def PaintBrushClick(m):
         self.src["scale"] = None
         self.src["angles"] = None
         self.src["color"] = guide
+        self.src["variance"] = variable
 
         facetex = org = sc = sa = None
-
 
         if texname is None:
             quarkx.msgbox("Improper Data Entry!\n\nYou must select a texture.", MT_ERROR, MB_OK)
@@ -533,17 +648,456 @@ def PaintBrushClick(m):
                         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
 
-    PaintBrushDlg(quarkx.clickform, 'paintbrushdlg', editor, setup, action)
+    def onclosing(self, editor=editor):
+
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "3D":
+                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                view.invalidate(1)
+
+        plugins.mapterrainmodes.clickedbutton(editor)
+
+
+    PaintBrushDlg(quarkx.clickform, 'paintbrushdlg', editor, setup, action, onclosing)
+
+
+
+### Start of 3D views Options Dialog ###
+
+class Options3DviewsDlg(quarkpy.dlgclasses.LiveEditDlg):
+    "The Terrain Generator 3D views Options dialog box."
+    #
+    # dialog layout
+    #
+
+    endcolor = AQUA
+    size = (130,455)
+    dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
+    dfsep = 0.55    # sets 55% for labels and the rest for edit boxes
+    dlgdef = """
+        {
+        Style = "13"
+        Caption = "3D views Options"
+        sep: = {
+        Typ="S"
+        Txt="Editors 3D view"
+               }
+
+        noicons1: =
+        {
+        Txt = "No icons"
+        Typ = "X1"
+        Hint = "No camera position icons"$0D"Effects ALL QuArK selectors"
+        }
+
+        drag1: =
+        {
+        Txt = "Drag"
+        Typ = "X1"
+        Hint = "Dragging can be done"$0D"and handles will be shown"
+        }
+
+        redfaces1: =
+        {
+        Txt = "Red faces"
+        Typ = "X1"
+        Hint = "Red faces can be displayed"
+        }
+
+        color1: =
+        {
+        Txt = "Color Guide"
+        Typ = "X1"
+        Hint = "Outlines faces prior to applying texture"
+        }
+
+      sep: = { Typ="S" Txt="" }
+
+      sep: = {
+        Typ="S"
+        Txt="New 3D window"
+             }
+
+        noicons2: =
+        {
+        Txt = "No icons"
+        Typ = "X1"
+        Hint = "No camera position icons"$0D"Effects ALL QuArK selectors"
+        }
+
+        drag2: =
+        {
+        Txt = "Drag"
+        Typ = "X1"
+        Hint = "Dragging can be done"$0D"and handles will be shown"
+        }
+
+        redfaces2: =
+        {
+        Txt = "Red faces"
+        Typ = "X1"
+        Hint = "Red faces can be displayed"
+        }
+
+        color2: =
+        {
+        Txt = "Color Guide"
+        Typ = "X1"
+        Hint = "Outlines faces prior to applying texture"
+        }
+
+      sep: = { Typ="S" Txt="" }
+
+      sep: = {
+        Typ="S"
+        Txt="Full 3D view"
+             }
+
+        noicons3: =
+        {
+        Txt = "No icons"
+        Typ = "X1"
+        Hint = "No camera position icons"$0D"Effects ALL QuArK selectors"
+        }
+
+        drag3: =
+        {
+        Txt = "Drag"
+        Typ = "X1"
+        Hint = "Dragging can be done"$0D"and handles will be shown"
+        }
+
+        redfaces3: =
+        {
+        Txt = "Red faces"
+        Typ = "X1"
+        Hint = "Red faces can be displayed"
+        }
+
+        color3: =
+        {
+        Txt = "Color Guide"
+        Typ = "X1"
+        Hint = "Outlines faces prior to applying texture"
+        }
+
+      sep: = { Typ="S" Txt="" }
+
+      sep: = {
+        Typ="S"
+        Txt="OpenGL 3D view"
+             }
+
+        noicons4: =
+        {
+        Txt = "No icons"
+        Typ = "X1"
+        Hint = "No camera position icons"$0D"Effects ALL QuArK selectors"
+        }
+
+        drag4: =
+        {
+        Txt = "Drag"
+        Typ = "X1"
+        Hint = "Dragging can be done"$0D"and handles will be shown"
+        }
+
+        redfaces4: =
+        {
+        Txt = "Red faces"
+        Typ = "X1"
+        Hint = "Red faces can be displayed"
+        }
+
+        color4: =
+        {
+        Txt = "Color Guide"
+        Typ = "X1"
+        Hint = "Outlines faces prior to applying texture"
+        }
+
+      sep: = { Typ="S" Txt="" }
+
+        Reset: =       // Reset button
+        {
+          Cap = "defaults"      // button caption
+          Typ = "B"                     // "B"utton
+          Hint = "Resets all views to"$0D"their default settings"
+          Delete: =
+          {            // the button resets to these amounts
+        noicons1 = "0"
+        drag1 = "1"
+        redfaces1 = "1"
+        color1 = "1"
+        noicons2 = "0"
+        drag2 = "1"
+        redfaces2 = "1"
+        color2 = "1"
+        noicons3 = "0"
+        drag3 = "1"
+        redfaces3 = "1"
+        color3 = "1"
+        noicons4 = "0"
+        drag4 = "1"
+        redfaces4 = "1"
+        color4 = "1"
+          }
+        }
+
+        sep: = { Typ="S" Txt=""}
+
+        exit:py = {Txt="Close" }
+    }
+    """
+
+
+def Options3DviewsClick(m):
+    editor = mapeditor()
+    if editor is None: return
+
+    plugins.mapterrainmodes.clickedbutton(editor)
+  
+    def setup(self):
+        self.editor = editor
+        for view in editor.layout.views:
+            view = view
+        src = self.src
+
+      ### To populate settings...
+        if (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] is None):
+
+            src["noicons1"] = "0"
+            src["drag1"] = "1"
+            src["redfaces1"] = "1"
+            src["color1"] = "1"
+            src["noicons2"] = "0"
+            src["drag2"] = "1"
+            src["redfaces2"] = "1"
+            src["color2"] = "1"
+            src["noicons3"] = "0"
+            src["drag3"] = "1"
+            src["redfaces3"] = "1"
+            src["color3"] = "1"
+            src["noicons4"] = "0"
+            src["drag4"] = "1"
+            src["redfaces4"] = "1"
+            src["color4"] = "1"
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] = src["noicons1"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] = src["drag1"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] = src["redfaces1"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color1"] = src["color1"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] = src["noicons2"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] = src["drag2"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] = src["redfaces2"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"] = src["color2"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] = src["noicons3"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] = src["drag3"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] = src["redfaces3"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"] = src["color3"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] = src["noicons4"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] = src["drag4"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] = src["redfaces4"]
+            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"] = src["color4"]
+
+        else:
+            src["noicons1"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"]
+            src["drag1"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"]
+            src["redfaces1"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"]
+            src["color1"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color1"]
+            src["noicons2"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"]
+            src["drag2"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"]
+            src["redfaces2"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"]
+            src["color2"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"]
+            src["noicons3"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"]
+            src["drag3"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"]
+            src["redfaces3"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"]
+            src["color3"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"]
+            src["noicons4"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"]
+            src["drag4"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"]
+            src["redfaces4"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"]
+            src["color4"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"]
+
+
+        if src["noicons1"]:
+            onenoicons = src["noicons1"]
+        else:
+            onenoicons = "0"
+
+
+        if src["drag1"]:
+            onedrag = src["drag1"]
+        else:
+            onedrag = "0"
+
+
+        if src["redfaces1"]:
+            oneredfaces = src["redfaces1"]
+        else:
+            oneredfaces = "0"
+
+
+        if src["color1"]:
+            onecolor = src["color1"]
+        else:
+            onecolor = "0"
+
+
+        if src["noicons2"]:
+            twonoicons = src["noicons2"]
+        else:
+            twonoicons = "0"
+
+
+        if src["drag2"]:
+            twodrag = src["drag2"]
+        else:
+            twodrag = "0"
+
+
+        if src["redfaces2"]:
+            tworedfaces = src["redfaces2"]
+        else:
+            tworedfaces = "0"
+
+
+        if src["color2"]:
+            twocolor = src["color2"]
+        else:
+            twocolor = "0"
+
+
+        if src["noicons3"]:
+            threenoicons = src["noicons3"]
+        else:
+            threenoicons = "0"
+
+
+        if src["drag3"]:
+            threedrag = src["drag3"]
+        else:
+            threedrag = "0"
+
+
+        if src["redfaces3"]:
+            threeredfaces = src["redfaces3"]
+        else:
+            threeredfaces = "0"
+
+
+        if src["color3"]:
+            threecolor = src["color3"]
+        else:
+            threecolor = "0"
+
+
+        if src["noicons4"]:
+            fournoicons = src["noicons4"]
+        else:
+            fournoicons = "0"
+
+
+        if src["drag4"]:
+            fourdrag = src["drag4"]
+        else:
+            fourdrag = "0"
+
+
+        if src["redfaces4"]:
+            fourredfaces = src["redfaces4"]
+        else:
+            fourredfaces = "0"
+
+
+        if src["color4"]:
+            fourcolor = src["color4"]
+        else:
+            fourcolor = "0"
+
+
+    def action(self, editor=editor):
+
+        onenoicons = (self.src["noicons1"])
+        onedrag = (self.src["drag1"])
+        oneredfaces = (self.src["redfaces1"])
+        onecolor = (self.src["color1"])
+        twonoicons = (self.src["noicons2"])
+        twodrag = (self.src["drag2"])
+        tworedfaces = (self.src["redfaces2"])
+        twocolor = (self.src["color2"])
+        threenoicons = (self.src["noicons3"])
+        threedrag = (self.src["drag3"])
+        threeredfaces = (self.src["redfaces3"])
+        threecolor = (self.src["color3"])
+        fournoicons = (self.src["noicons4"])
+        fourdrag = (self.src["drag4"])
+        fourredfaces = (self.src["redfaces4"])
+        fourcolor = (self.src["color4"])
+
+      ### Save the settings...
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] = onenoicons
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] = onedrag
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] = oneredfaces
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color1"] = onecolor
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] = twonoicons
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] = twodrag
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] = tworedfaces
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"] = twocolor
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] = threenoicons
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] = threedrag
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] = threeredfaces
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"] = threecolor
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] = fournoicons
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] = fourdrag
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] = fourredfaces
+        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"] = fourcolor
+
+        self.src["noicons1"] = onenoicons
+        self.src["drag1"] = onedrag
+        self.src["redfaces1"] = oneredfaces
+        self.src["color1"] = onecolor
+        self.src["noicons2"] = twonoicons
+        self.src["drag2"] = twodrag
+        self.src["redfaces2"] = tworedfaces
+        self.src["color2"] = twocolor
+        self.src["noicons3"] = threenoicons
+        self.src["drag3"] = threedrag
+        self.src["redfaces3"] = threeredfaces
+        self.src["color3"] = threecolor
+        self.src["noicons4"] = fournoicons
+        self.src["drag4"] = fourdrag
+        self.src["redfaces4"] = fourredfaces
+        self.src["color4"] = fourcolor
+
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "3D":
+                view.invalidate(1)
+                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+
+        plugins.mapterrainmodes.clickedbutton(editor)
+
+
+    def onclosing(self, editor=editor):
+
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "3D":
+                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                view.invalidate(1)
+
+        plugins.mapterrainmodes.clickedbutton(editor)
+
+
+    Options3DviewsDlg(quarkx.clickform, 'options3Dviewsdlg', editor, setup, action, onclosing)
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 # $Log$
+# Revision 1.5  2005/10/15 00:51:56  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2005/09/16 18:08:40  cdunde
-# Commit and update files for Terrain Paintbrush addition
-#
-# Revision 1.1  2005/08/15 05:49:23  cdunde
-# To commit all files for Terrain Generator
-#
-#
+# Commit and update files for Terr
