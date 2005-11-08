@@ -1,0 +1,40 @@
+title: Containing Groups
+author: tiglari
+
+<img border=1 align=right> contextmenucontain.png </img>
+This is for manipulating group structure, and other stuff.  When
+you click it, for a face, poly, group or entity (brush or point),
+you get a submenu consisting of the groups etc. that contain
+what you've clicked, on starting with the item itself at the
+top and going down to worldspawn.  Then when the mouse is over
+one of these, the chosen object, we'll say, you get a further
+submenu with four options:
+
+<UL>
+<LI>Zoom - zooms the map view to the chosen object.
+
+<LI>Select - selects that object, and also opens the tree view to the chosen object.
+
+<LI>Restrict - this has the effect of `restricting' the map view
+to the chosen object.  Things not inside that object are greyed out,
+and can't be selected.  I find this convenient if for example
+you want to work on the faces of a complex brush & don't want to
+waste time clicking past the floor and other stuff of the room it's
+in.  To reverse restriction of selection, use the Unrestrict
+Selection item on the command and background menus (the one that
+appears when the mouse isn't over anything selectable in the map),
+or choose `worldspawn' from the Containing Objects submenu.
+
+<LI>Mark - the chosen object is `marked' for further options in
+the `Containing Groups' submenu.  Marking is similar in conception
+to tagging, but the marked object is not drawn in any special way,
+and the difference between the ideas is supposed to be that marking
+is basically for reorganizing the tree structure rather than
+positioning things in the map.
+</UL>
+
+One wart is that things aren't drawn right in the 3d window when
+selection is restricted; I've got some delphi code that draws
+only the stuff in the restriction correctly, but something else
+is wrong with the source I have so that certain models and textures
+aren't rendered correctly. Hopefully this will all be sorted out in Q5.11.

@@ -1,0 +1,40 @@
+title: Instance Duplicator
+
+The instance duplicator is intended for use when making
+large numbers of copies of an object, in irregular patterns.
+It is organized in the same way as the path duplicator,
+making copies of the things within it, and this original
+template does not appear in the map.  It also uses the same
+system of path points as the path duplicator,
+and in an instance duplicator is put into a group with
+a path-duplicator, the contents of the instance duplicator
+will be dropped at the path-points (turning points of the
+path).
+
+The instance duplicator itself has a 'centering' button,
+if you push it, a 'usercenter' is added, which will be
+what is actually positioned at the path points (and so can
+be used to offset the template by some set amount from
+all the path points).  It also has a 'track' specific,
+which will cause the instances to be rotated to follow
+the path.
+
+And finally, there are some path-point specifics for use
+with the instance duplicator: noinstance prevents an
+instance from being generated, while the scale/rotate/matrix
+specifics work as they do for the Linear Duplicator, but on
+the instance at that point, relative to the template.
+So the instances can be scaled and oriented differently,
+at the different path-points.
+
+The way the orientation works is a bit tricky: each subitem
+of the instance duplicator is transformed around its own
+center, and can be a group with its own usercenter.  So
+subitem of the duplicator can have one usercenter, used for
+rotating it around with the scale etc. attributes of a
+path point, while the duplicator itself has another usercenter,
+used for locating all of the subitems w.r.t. every path point.
+
+Well maybe this is too complicated, but I guess it's flexible!
+
+

@@ -1,0 +1,19 @@
+title: Registering
+author: tiglari
+
+Finally, a properly dressed plugin should announce itself
+to QuArK, so it will be listed under Options|List of Plugins.
+This is done by including an Info statement, normally at
+the beginning of the file:
+<code>
+Info = {
+   "plug-in":       "Side Tag & Glue",
+   "desc":          "Basic Side tagging and gluing to tagged side",
+   "date":          "1999",
+   "author":        "tiglari",
+   "author e-mail": "tiglari@hexenworld.net",
+   "quark":         "Version 6" }
+</code>
+
+So now we've got a proper plugin; next is to get it to
+do something useful.

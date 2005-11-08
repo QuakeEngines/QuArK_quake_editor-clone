@@ -1,0 +1,71 @@
+title: Texture Links, how to create
+author: Decker
+
+First you make sure, that the custom textures you want to make links to,
+already exists in a game-directory.
+
+Then in QuArK, you go into the texture-browser, and choose 'New main folder'.
+
+<img>texturelinks_1.png</img>
+
+This will bring up a dialog-box where QuArK asks you, in what .QRK file you
+want to store the new texture-links.
+
+If you have the textures in a special game-directory, like a TC/PC/MOD, I
+suggest you choose the option 'In a new Add-on'.
+
+If you already have some custom textures from before, you can choose 'In an
+already registered Add-on', so you don't end up with multiple .QRK add-ons, but
+for this tutorial we will select the 'In a new Add-on'.
+
+<img>texturelinks_2.png</img>
+
+Now that you have selected 'In a new Add-on', QuArK ask you for a filename.
+Keep the file in your QuArK-directory, along with the other .QRK files, so you
+can always find it again.
+
+<img>texturelinks_3.png</img>
+
+In the texture-browser tree-view, there will now be a new main folder, called
+'New Folder'.
+
+<img>texturelinks_4.png</img>
+
+You can rename this folder (and others as well), by highlighting it and press
+the F2 key (just like in Windows' File-explorer.)
+
+<img>texturelinks_5.png</img>
+
+While still having selected the new main folder (now called 'My Custom
+Textures'), you click on the right-most icon in the menu-bar. The one where the
+fly-over help is <i>'make links for a folder of Quake 2/Heretic II textures
+(.wal and .m8)'</i>. This also works for creating Half-Life texture-links, but
+unfortunatly not for Quake-1 (I don't know about Hexen-2 and Sin.)
+
+<img>texturelinks_6.png</img>
+
+A click on the icon, brings the 'Texture File Finder...' dialog-box up. In this
+you select the game-directory where your custom textures are located. In this
+example, I'll choose to create texture links to whatever I have in my Action
+Quake-2 game-directory.
+
+<img>texturelinks_7.png</img>
+
+After a little while, QuArK will show you what textures it have found. If you
+don't like the structure it has stored the texture links in, you can change it
+as you like, by moving the links into a different <u>texture-list</u>, or
+create new <u>sub-folders</u> which will contain texture-lists, etc. (almost
+just like Windows' File-explorer.)
+
+You create a new texture-list by using the 2nd right-most icon in the menu (if
+in doubt, always read the fly-over help). The 'new sub-folder' can be found in
+the 'Folders' menu.
+
+<img>texturelinks_8.png</img>
+
+Remember to save your changes, before leaving QuArK! If you forget, all your
+work will vanish, because your newly created .QRK Add-on have not been saved
+properly.
+
+<img>texturelinks_9.png</img>
+

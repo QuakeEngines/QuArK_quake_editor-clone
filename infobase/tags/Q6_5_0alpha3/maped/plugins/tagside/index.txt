@@ -1,0 +1,18 @@
+title: Tag Side
+author: tiglari
+desc: basic
+desc: texture
+desc: linking
+rem_desc: changes
+
+The Tag Side plugin performs a variety of functions revolving
+around the 'tagging' of a face, to use as a basis for other
+operations, such as snapping another face into alignment with
+it, or wrapping a texture from it onto other faces.
+
+<!--
+The version described here is beta, intended for release with
+QuArK 5.11; for use with QuArK 5.10 it requires the included
+revisions of qmaphandles.py and qbaseeditor.py, which go into
+the <tt>quarkpy</tt> folder.
+-->

@@ -1,0 +1,19 @@
+title: Navigating through brushes
+author: Decker
+
+<img width=68 height=199 align=right>image10.png</img>
+Say you have a lot of brushes on top of each other, which from one of the
+2D-views makes it look like only one brush is visible, as shown in the image.
+
+How would you select the second brush, if you only were allowed to click in the
+2D-view, which showed only <i>one</i> brush?
+
+Simple, keep on mouse-clicking.
+
+QuArK has this functionality, that if you click a second time on a selected
+brush, it searches for another brush which lies deeper 'into the screen' so to
+say. If one can be found, it will be selected.
+
+Try it out. Make some cubes, and place them as shown in the image. Then try to
+select them one by one, by clicking in the 2D-view which displays only
+<i>one</i> of the cubes.

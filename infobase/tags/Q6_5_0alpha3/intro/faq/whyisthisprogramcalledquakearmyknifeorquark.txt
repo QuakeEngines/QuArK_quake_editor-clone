@@ -1,0 +1,5 @@
+title: Why is this program called Quake Army Knife or QuArK?
+author: Gryphon
+
+QuArK is an acronym of sorts for QUake ARmy Knife. For more information see
+<ref> intro/faq/whatisthehistoryofquark </ref> below.

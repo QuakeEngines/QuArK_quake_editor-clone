@@ -1,0 +1,8 @@
+title: 4 views layout - type B
+author: Decker
+
+<img border=0 align=right>4views_b.png</img>
+Upper left area is full 3D-view (X,Y,Z)<br>
+Upper right area is top/down-view (X,Y)<br>
+Lower left area is left/right-view (Y,Z)<br>
+Lower right area is front/back-view (X,Z)

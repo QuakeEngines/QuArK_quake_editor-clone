@@ -1,0 +1,39 @@
+title: Additionnal attributes of Image Displayer controls
+author: Armin Rigo
+
+Image Displayers are created by a panel’s newimagectrl() method. They are screen controls that display an image. Additionnal
+drawings can be painted over the image by Python code.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+image
+</td><td>
+The image to display. It is an “ icon ” (although it might be of any size) as found in Image Lists.
+</td></tr>
+
+<tr><td class="doccode">
+color
+</td><td>
+The color to fill the control with. Used if there is no image or if the image is smaller than the control.
+</td></tr>
+
+<tr><td class="doccode">
+canvas()
+</td><td>
+Returns a Canvas object to draw a picture over the image or over the uniform background. See Canvas objects below.
+</td></tr>
+
+<tr><td class="doccode">
+ondraw
+</td><td>
+Callback function. Called with the Image displayer itself as single argument whenever the image need to be repainted. If needed, this function should call canvas() and draw in it.
+</td></tr>
+
+<tr><td class="doccode">
+onclick
+</td><td>
+Callback function. Called as onclick(imagedisplayer, x, y, flags) when a mouse button is clicked. x,y are the coordinates of the click. flags is a combination of qeditor.MB_XXX constants. If the callback returns 1, QuArK will continue to call onclick if the mouse is dragged over the image.
+</td></tr>
+
+</table>
