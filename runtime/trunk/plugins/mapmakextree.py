@@ -1,3 +1,6 @@
+
+#$Header$
+
 Info = {
   "plug-in":       "Make a simple tree",
   "desc":          "Make an tree from several intersecting brushes",
@@ -363,3 +366,8 @@ for m in quarkpy.mapcommands.items:
       quarkpy.mapcommands.items.remove(m)      
 # Register the plug-in
 quarkpy.mapcommands.items.append(quarkpy.qmenu.item("Make &X-Tree", MakeXTreeClick))
+
+# ----------- REVISION HISTORY ------------
+#
+# $Log$
+#
