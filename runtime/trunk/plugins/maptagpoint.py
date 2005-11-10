@@ -1,12 +1,12 @@
-import quarkx
-import quarkpy.mapmenus
-import quarkpy.mapentities
-import quarkpy.qmenu
-import quarkpy.mapeditor
-import quarkpy.mapcommands
-import quarkpy.maphandles
-from quarkpy.maputils import *
-from tagging import *
+"""   QuArK  -  Quake Army Knife Bezier shape makers
+
+
+"""
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+
+#$Header$
 
 
 ########################################################
@@ -30,6 +30,17 @@ Info = {
    "author":        "tiglari",
    "author e-mail": "tiglari@hexenworld.net",
    "quark":         "Quark 6.x" }
+
+
+import quarkx
+import quarkpy.mapmenus
+import quarkpy.mapentities
+import quarkpy.qmenu
+import quarkpy.mapeditor
+import quarkpy.mapcommands
+import quarkpy.maphandles
+from quarkpy.maputils import *
+from tagging import *
 
 
 def disttotagged(editor,pos):
@@ -130,3 +141,9 @@ def originmenu(self, editor, view, oldoriginmenu = quarkpy.qhandles.GenericHandl
   return menu
 
 quarkpy.qhandles.GenericHandle.OriginItems = originmenu
+
+
+# ----------- REVISION HISTORY ------------
+#
+# $Log$
+#

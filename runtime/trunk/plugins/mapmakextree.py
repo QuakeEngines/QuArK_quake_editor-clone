@@ -1,3 +1,11 @@
+"""   QuArK  -  Quake Army Knife Bezier shape makers
+
+
+"""
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+
 
 #$Header$
 
@@ -370,4 +378,7 @@ quarkpy.mapcommands.items.append(quarkpy.qmenu.item("Make &X-Tree", MakeXTreeCli
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2005/11/10 17:25:38  cdunde
+# To add header and start history log
+#
 #
