@@ -9,7 +9,7 @@
 #
 #######################################
 
-# Header: $
+#$Header$
 
 import quarkx
 import quarkpy.mapentities
@@ -171,6 +171,13 @@ def groupmergepoly(editor,o):
     return item
 
 # $Log$
+# Revision 1.3  2005/10/15 00:51:56  cdunde
+# To reinstate headers and history
+#
 # Revision 1.1  2001/04/15 08:53:44  tiglari
 # move merge poly code to mergepolys.py; add merge polys in group functionality
+#
+
+# ----------- REVISION HISTORY ------------
+#$Log$
 #

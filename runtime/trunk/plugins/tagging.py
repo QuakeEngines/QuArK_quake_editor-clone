@@ -216,3 +216,7 @@ def drawredface(view, cv, face):
         cv.line(p1,p2)
       drawsquare(cv, sum/len(vtx), 8)
 
+
+# ----------- REVISION HISTORY ------------
+#$Log$
+#
