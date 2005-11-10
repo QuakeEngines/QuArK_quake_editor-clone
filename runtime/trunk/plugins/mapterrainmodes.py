@@ -413,7 +413,12 @@ def paintcursor(view, x, y, flags):
 
         view.cursor = CR_HAND
     else:
-        view.cursor = CR_DEFAULT
+        if MapOption("CrossCursor", self.MODE):
+            view.cursor = CR_CROSS
+            view.handlecursor = CR_ARROW
+        else:
+            view.cursor = CR_ARROW
+            view.handlecursor = CR_CROSS
 
 
 def terrainpaint(editor, view, x, y, flags, facelist):
@@ -2226,8 +2231,6 @@ def select1(btn, toolbar, editor):
     editor.layout.explorer.sellist = []
     editor.layout.explorer.uniquesel = []
     editor.layout.explorer.selchanged()
-    for view in editor.layout.views:
-        view.cursor = CR_DEFAULT
 
 ##### Below makes the toolbar and arainges its buttons #####
 
@@ -2303,6 +2306,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2005/11/07 00:06:40  cdunde
+# To commit all files for addition of new Terrain Generator items
+# Touch-up Selector and 3D Options Dialog
+#
 # Revision 1.10  2005/10/16 00:24:05  cdunde
 # Fixed Terrain Generator Paint Brush function to allow
 # texture application in all 3D views and update of those views.
