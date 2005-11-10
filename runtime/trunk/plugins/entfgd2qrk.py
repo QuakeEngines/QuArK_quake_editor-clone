@@ -1,7 +1,24 @@
+
 """   QuArK  -  Quake Army Knife
 
 Python macros available for direct call by QuArK
 """
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+
+#$Header$
+
+Info = {
+   "plug-in":       "entfgd2qrk plugin",
+   "desc":          "Python macros available for direct call by QuArK",
+   "date":          "2001/04/14",
+   "author":        "decker",
+   "author e-mail": "decker@planetquake.com",
+   "quark":         "Version 6.3"
+}
+
+
 #
 #tbd:
 #     readonly
@@ -825,8 +842,12 @@ def makeqrk(root, filename, gamename):
 import quarkpy.qentbase
 quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fgd file", "*.fgd", makeqrk)
 
-#
+
+# ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.11  2004/12/23 10:11:10  alexander
 #removed bloody duplicated rcs headers again
 #

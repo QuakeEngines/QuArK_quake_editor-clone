@@ -327,4 +327,6 @@ def pinfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
 
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = pinfinishdrawing
 
-#$Log: #
+# ----------- REVISION HISTORY ------------
+#$Log$
+#
