@@ -2231,15 +2231,18 @@ def select1(btn, toolbar, editor):
     editor.layout.explorer.sellist = []
     editor.layout.explorer.uniquesel = []
     editor.layout.explorer.selchanged()
-    tb2 = editor.layout.toolbars["tb_terrmodes"]
-    if tb2.tb.buttons[9].state == 2:
-        for view in editor.layout.views:
-            if MapOption("CrossCursor", editor.MODE):
-                view.cursor = CR_CROSS
-                view.handlecursor = CR_ARROW
-            else:
-                view.cursor = CR_ARROW
-                view.handlecursor = CR_CROSS
+    try:
+        tb2 = editor.layout.toolbars["tb_terrmodes"]
+        if tb2.tb.buttons[9].state == 2:
+            for view in editor.layout.views:
+                if MapOption("CrossCursor", editor.MODE):
+                    view.cursor = CR_CROSS
+                    view.handlecursor = CR_ARROW
+                else:
+                    view.cursor = CR_ARROW
+                    view.handlecursor = CR_CROSS
+    except:
+        pass
 
 ##### Below makes the toolbar and arainges its buttons #####
 
@@ -2315,6 +2318,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2005/11/13 10:17:55  cdunde
+# Previous fix caused another problem.
+# This fix’s that cursor setting problem
+#
 # Revision 1.12  2005/11/10 03:30:50  cdunde
 # To finally fix cursor setting problem
 #
