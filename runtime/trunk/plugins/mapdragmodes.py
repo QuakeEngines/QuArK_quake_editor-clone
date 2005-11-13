@@ -382,8 +382,6 @@ def select1(btn, toolbar, editor):
     editor.layout.explorer.sellist = []
     editor.layout.explorer.uniquesel = []
     editor.layout.explorer.selchanged()
-    for view in editor.layout.views:
-        view.cursor = CR_DEFAULT
 
 
 class DragModesBar(ToolBar):
@@ -417,6 +415,10 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2005/11/06 23:53:43  cdunde
+# Reset toolbar buttons to clear selections to avoid confusion switching
+# from button to button and toolbar selectors to toolbar selectors.
+#
 # Revision 1.13  2005/10/15 00:49:51  cdunde
 # To reinstate headers and history
 #
