@@ -2231,6 +2231,15 @@ def select1(btn, toolbar, editor):
     editor.layout.explorer.sellist = []
     editor.layout.explorer.uniquesel = []
     editor.layout.explorer.selchanged()
+    tb2 = editor.layout.toolbars["tb_terrmodes"]
+    if tb2.tb.buttons[9].state == 2:
+        for view in editor.layout.views:
+            if MapOption("CrossCursor", editor.MODE):
+                view.cursor = CR_CROSS
+                view.handlecursor = CR_ARROW
+            else:
+                view.cursor = CR_ARROW
+                view.handlecursor = CR_CROSS
 
 ##### Below makes the toolbar and arainges its buttons #####
 
@@ -2306,6 +2315,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2005/11/10 03:30:50  cdunde
+# To finally fix cursor setting problem
+#
 # Revision 1.11  2005/11/07 00:06:40  cdunde
 # To commit all files for addition of new Terrain Generator items
 # Touch-up Selector and 3D Options Dialog
