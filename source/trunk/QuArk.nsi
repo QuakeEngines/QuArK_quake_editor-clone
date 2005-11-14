@@ -1764,8 +1764,14 @@ Section Uninstall
   Delete "$INSTDIR\QuArK.exe"
   Delete "$INSTDIR\README.txt"
   Delete "$INSTDIR\uninst.exe"
-  
-  
+
+
+; and special delete instructions for the "special" windows creating those damn Thumbs.db files.
+  Delete "$INSTDIR\help\Thumbs.db"
+  Delete "$INSTDIR\images\Thumbs.db"
+  Delete "$INSTDIR\lgicons\Thumbs.db"
+
+
   Delete "$SMPROGRAMS\QuArK\Uninstall.lnk"
   Delete "$SMPROGRAMS\QuArK\Website.lnk"
   Delete "$SMPROGRAMS\QuArK\Forum.lnk"
