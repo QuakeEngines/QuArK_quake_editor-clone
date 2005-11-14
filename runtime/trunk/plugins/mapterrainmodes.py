@@ -1230,24 +1230,67 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
         type = view.info["type"]
         if type == "3D":
             tb2 = editor.layout.toolbars["tb_terrmodes"]
-            if tb2.tb.buttons[10].state == 2: return
+            if tb2.tb.buttons[10].state == 2:
+                self.cursor = CR_HAND
+                self.hint = "?"
+                return
             viewname = view.info["viewname"]
             if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] == "0":
-                self.cursor = CR_HAND
-                self.hint = "?"
-                return
+                if tb2.tb.buttons[11].state == 2:
+                    self.cursor = CR_HAND
+                    self.hint = "?"
+                    return
+                else:
+                    if MapOption("CrossCursor", editor.MODE):
+                        self.cursor = CR_CROSS
+                        self.handlecursor = CR_CROSS
+                    else:
+                        self.cursor = CR_ARROW
+                        self.handlecursor = CR_ARROW
+                    self.hint = "?"
+                    return
             if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] == "0":
-                self.cursor = CR_HAND
-                self.hint = "?"
-                return
+                if tb2.tb.buttons[11].state == 2:
+                    self.cursor = CR_HAND
+                    self.hint = "?"
+                    return
+                else:
+                    if MapOption("CrossCursor", editor.MODE):
+                        self.cursor = CR_CROSS
+                        self.handlecursor = CR_CROSS
+                    else:
+                        self.cursor = CR_ARROW
+                        self.handlecursor = CR_ARROW
+                    self.hint = "?"
+                    return
             if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] == "0":
-                self.cursor = CR_HAND
-                self.hint = "?"
-                return
+                if tb2.tb.buttons[11].state == 2:
+                    self.cursor = CR_HAND
+                    self.hint = "?"
+                    return
+                else:
+                    if MapOption("CrossCursor", editor.MODE):
+                        self.cursor = CR_CROSS
+                        self.handlecursor = CR_CROSS
+                    else:
+                        self.cursor = CR_ARROW
+                        self.handlecursor = CR_ARROW
+                    self.hint = "?"
+                    return
             if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] == "0":
-                self.cursor = CR_HAND
-                self.hint = "?"
-                return
+                if tb2.tb.buttons[11].state == 2:
+                    self.cursor = CR_HAND
+                    self.hint = "?"
+                    return
+                else:
+                    if MapOption("CrossCursor", editor.MODE):
+                        self.cursor = CR_CROSS
+                        self.handlecursor = CR_CROSS
+                    else:
+                        self.cursor = CR_ARROW
+                        self.handlecursor = CR_ARROW
+                    self.hint = "?"
+                    return
 
         # Draws the 2D and 3D view center handle and circle as they come through one at a time
         p = view.proj(self.pos)
@@ -2318,6 +2361,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2005/11/13 10:53:54  cdunde
+# To correct for key error
+#
 # Revision 1.13  2005/11/13 10:17:55  cdunde
 # Previous fix caused another problem.
 # This fix’s that cursor setting problem
