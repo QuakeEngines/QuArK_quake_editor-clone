@@ -1,4 +1,4 @@
-#$Header: $
+#$Header: /cvsroot/quark/source/QuArk.nsi,v 1.3 2005/11/15 07:44:38 cdunde Exp $
 
 
 ; QuArK installer x.x.x
@@ -274,4 +274,8 @@ SectionEnd
 # ----------- REVISION HISTORY ------------
 #
 # $Log: QuArK.nsi,v $
+#
+# Revision 1.3  2005/11/15 07:44:38  cdunde
+# To setup Header and history Log for
+# QuArK  NSIS installer script
 #
