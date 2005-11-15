@@ -412,13 +412,6 @@ def paintcursor(view, x, y, flags):
     if type == "3D" and flags & MB_CLICKED is not None and view.viewmode == "tex" or view.viewmode == "opengl":
 
         view.cursor = CR_HAND
-    else:
-        if MapOption("CrossCursor", self.MODE):
-            view.cursor = CR_CROSS
-            view.handlecursor = CR_ARROW
-        else:
-            view.cursor = CR_ARROW
-            view.handlecursor = CR_CROSS
 
 
 def terrainpaint(editor, view, x, y, flags, facelist):
@@ -2361,6 +2354,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2005/11/14 08:07:41  cdunde
+# Again with the cursor fix, hopefully right this time
+#
 # Revision 1.14  2005/11/13 10:53:54  cdunde
 # To correct for key error
 #
