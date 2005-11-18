@@ -163,8 +163,10 @@ def BuildMenuBar(editor):
     sc1.update(sc2)   # merge shortcuts
     l1 = plugins.mapgridscale.GridMenuCmds
     l2 = [qmenu.sep]
+    l3 = plugins.maptools.RulerMenuCmds
+    l4 = [qmenu.sep]
     if len(l1):
-        Options1.items = l1 + l2 + Options1.items
+        Options1.items = l1 + l2 + l3 + l4 + Options1.items
         sc1.update(sc2)   # merge shortcuts
 
     return [File1, Layout1, Edit1, quarkx.toolboxmenu,
@@ -434,6 +436,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.15  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.12  2003/12/13 22:13:39  cdunde
 #To add new Grid in 2D views feature plugin menu to Options menu
 #
