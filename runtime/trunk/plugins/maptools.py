@@ -567,4 +567,8 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.1  2005/11/18 02:21:53  cdunde
+#To add new '2D Rulers' function, menu and
+#updated Infobase docs covering it.
+
 #
