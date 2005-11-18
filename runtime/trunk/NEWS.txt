@@ -12,6 +12,13 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
+6.5.0 alpha 4
+=============
+ 
+ * [cdunde] : Added new 2D Rulers function and Options menu and sub-menu
+     - items that show a marker line and the total distance for any selected
+     - face, poly or group of faces and/or polys.
+
 6.5.0 alpha 3
 =============
  
