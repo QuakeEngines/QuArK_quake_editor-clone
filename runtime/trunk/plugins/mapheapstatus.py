@@ -125,8 +125,11 @@ def HeapStatusClick(m):
     status = quarkx.heapstatus()
     HeapStatus(quarkx.clickform,mapeditor(),status)
 
+quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("Developer Mode","Developer", hint = "|Developer Mode:\n\nIn this mode, two extra items appear on the 'Commands' menu, to help with debugging, etc.|intro.mapeditor.menu.html#reload"))
 
-menheapstatus = qmenu.item("HeapStatus",HeapStatusClick,"Heap Status")
+hint = "|Reload:\n\nThis is a 'Developer Mode' funciton to help with debugging, etc.|intro.mapeditor.menu.html#heapstatus"
+
+menheapstatus = qmenu.item("HeapStatus",HeapStatusClick,hint)
 
 if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
   quarkpy.mapcommands.items.append(menheapstatus)
@@ -136,6 +139,9 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.5  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2002/02/26 06:33:59  tiglari
 # now tracks changes in memory used
 #

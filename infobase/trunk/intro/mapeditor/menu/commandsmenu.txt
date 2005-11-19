@@ -31,7 +31,28 @@ done with the 'Extend Selection from Face' from the
 a list of tagged faces, with the 'Select Tagged' item from the same
 menu.  What the Link selection command then does is 'link' all of the
 selected faces so that if one is moved, you will be invited to move all the
-others with it.  
+others with it.
+
+<a name="orientation"></a>
+<i>Orientation.</i> Only active when you have selected a <g>face</g>. It will
+bring up a window where you can edit some attributes about that face. However,
+its not recommended that you do it this way, unless you know what you're doing!
+
+<i>Adjust angle.</i> Only active when you have selected a face. This will bring
+the angle of the face on the polyhedron, to the nearest angle by which you
+specified in the <ref> intro/configuration/map/building </ref>.
+
+<i>Delete face.</i> As it says. However, deleting a face will very likely make
+a polyhedron invalid.
+
+<i>Cone over face.</i> This will create a new set of faces in style as a cone,
+over the selected face. The number of new faces will be the number of
+<g>edges</g> the selected face has.
+
+<i>Swap face sides.</i> Will swap the face inside-out. Do not use this, unless
+you really want to!
+
+<i>Look At.</i> An open 3D view shifts to look at this face head on. (SHIFT to look at the face from the back)
 
 <a name="brushsubtraction"></a>
 <i>Brush subtraction.</i> This function will subtract one <g>brush</g> from another;<br>
@@ -60,7 +81,7 @@ It will try to create a new polyhedron which occupy the common area of the
 selected polyhedrons.
 
 <a name="disdupimages"></a>
-<i>Dissociate duplicator images.</i> Only active when you have marked a
+<i>Dissociate Duplicator images.</i> Only active when you have marked a
 duplicator. This will create actual copies of the duplicator-object(s), and
 remove the duplicator itself.
 
@@ -68,32 +89,20 @@ remove the duplicator itself.
 
 <i>Export texture-names.</i> Exports a list of used textures in this map, to a text-file.
 
-<a name="orientation"></a>
-<i>Orientation.</i> Only active when you have selected a <g>face</g>. It will
-bring up a window where you can edit some attributes about that face. However,
-its not recommended that you do it this way, unless you know what you're doing!
-
-<i>Adjust angle.</i> Only active when you have selected a face. This will bring
-the angle of the face on the polyhedron, to the nearest angle by which you
-specified in the <ref> intro/configuration/map/building </ref>.
-
-<i>Delete face.</i> As it says. However, deleting a face will very likely make
-a polyhedron invalid.
-
-<i>Cone over face.</i> This will create a new set of faces in style as a cone,
-over the selected face. The number of new faces will be the number of
-<g>edges</g> the selected face has.
-
-<i>Swap face sides.</i> Will swap the face inside-out. Do not use this, unless
-you really want to!
-
-<i>Look At.</i> An open 3D view shifts to look at this face head on. (SHIFT to look at the face from the back)
-
 <i>Integralize Selected Faces.</i> If faces without integral threepoints have enough integral vertices to be used as threepoints, changes the face to use them (also forces nearly integral ones). Selects the ones it changes, for checking. Use Find Non-integral Faces on the search menu to find suitable victims. Research and fix the remaining ones by hand.
+
+<a name="heapstatus"></a>
+<i>HeapStatus.</i> This item only shows on the menu if <a href="intro.mapeditor.menu.html#developermode">Developer Mode</a> is activated on the 'Options' menu, shown below in that section. This function is used to display heap information which tracks changes in memory used by this program.
 
 <a name="makeprism"></a>
 <i>Make Prism.</i> This opens a dialog window for your input to create a prism of various types as well as texture selection.
 
+
+<i>Make X-Tree.</i> This is a simple 'tree' maker that allows you to select you texture, number of 'wings' and the scale size.
+
 <i>Swap Selection.</i> Swap first and second elements of 2 selected items.
 
 <i>Align selected.</i> Align items in selection along their bounding box edges, or along the edges of a marked object (RMB I Navigate Tree I <item> \ Mark).
+
+<a name="reload"></a>
+<i>Reload.</i> This item only shows on the menu if <a href="intro.mapeditor.menu.html#developermode">Developer Mode</a> is activated on the 'Options' menu, shown below in that section. When working on developing a plugin you can use this function to reload that plugin, or any other, without having to shut down and restart QuArK. However, in some cases this function is not always effective.

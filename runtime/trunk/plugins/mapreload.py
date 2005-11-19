@@ -120,9 +120,9 @@ def ReloadClick(m):
   if editor is None: return
   ReloadDlg(quarkx.clickform,editor,action)
 
-quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("Developer Mode","Developer", hint = "|Developer Mode:\n\nIn this mode, some extra items appear on the menu, to help with debugging, etc.|intro.mapeditor.menu.html#optionsmenu"))
+hint = "|Reload:\n\nThis is a 'Developer Mode' funciton to help with debugging, etc.|intro.mapeditor.menu.html#reload"
 
-menreload = qmenu.item("Reload",ReloadClick,"Reload module")
+menreload = qmenu.item("Reload",ReloadClick,hint)
 
 if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
   quarkpy.mapcommands.items.append(menreload)
@@ -132,6 +132,9 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.12  2005/10/15 00:51:24  cdunde
+# To reinstate headers and history
+#
 # Revision 1.9  2003/12/18 21:51:46  peter-b
 # Removed reliance on external string library from Python scripts (second try ;-)
 #

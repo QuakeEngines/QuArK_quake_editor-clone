@@ -55,7 +55,8 @@ the FPS-game. Uncheck this if you want your entire map build.
 
 <i>No Selection in Map Views</i>. When this menu item is checked, selection in the map views is prevented. This is useful when touring with the 3d viewer, to prevent selecting things accidentally.
 
-<i>Developer Mode</i>. In this mode, some extra items appear on the menu, to help with debugging, etc.
+<a name="developermode"></a>
+<i>Developer Mode</i>. In this mode, two extra items appear on the 'Commands' menu, to help with debugging, etc. They are <a href="intro.mapeditor.menu.html#heapstatus">HeapStatus</a> and <a href="intro.mapeditor.menu.html#reload">Reload</a>. For more detail on them see the 'Commands' menu listing above.
 
 <i>List of Plug-ins</i>. Opens a window which shows what plug-ins QuArK has
 loaded.
