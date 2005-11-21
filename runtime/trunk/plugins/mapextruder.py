@@ -2266,8 +2266,9 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
     fromtagged = qmenu.item("From &tagged",WrapClick,"|Wrap texture from first segment to others")
     type = data.dup["type"]
     if type == "p":
-      import maptagzbezier
-      tagged = gettaggedbzcplist(editor)
+  #    import maptagzbezier
+  #    tagged = gettaggedbzcplist(editor)
+      tagged = gettaggedb2cp(editor)
     else:
       tagged = gettaggedfaces(editor)
     if tagged is not None:
@@ -2421,8 +2422,9 @@ def cordupmenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_fun
     fromtagged = qmenu.item("From &tagged",WrapClick,"|Wrap texture from first segment to others")
     type = data.dup["type"]
     if type == "p":
-      import maptagzbezier
-      tagged = gettaggedbzcplist(editor)
+  #    import maptagzbezier
+  #    tagged = gettaggedbzcplist(editor)
+      tagged = gettaggedb2cp(editor)
     else:
       tagged = gettaggedfaces(editor)
     if tagged is not None:
@@ -2896,6 +2898,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.23  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.16  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #
