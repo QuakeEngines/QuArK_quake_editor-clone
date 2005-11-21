@@ -179,7 +179,7 @@ class TextureDlg (placepersistent_dialogbox):
         dup = self.dup
         data = ExtruderDupData(dup)
         texobj = dup.findname("texobj:g")
-        patches = texobj.findallsubitems("",":b3")
+        patches = texobj.findallsubitems("",":b")
         dict = {}
         if patches:
           for patch in patches:
@@ -2221,7 +2221,7 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
             tex = source.texturename
             type = data.dup["type"]
             if type == "p":
-              face = quarkx.newobj(source.shortname+":b3")
+              face = quarkx.newobj(source.shortname+":b")
               face["tex"] = source["tex"]
               
             else:
@@ -2285,7 +2285,7 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
       fromtagged.sources = tagged
     fromfirst = qmenu.item("From &first",WrapClick,"|Wraps texture from each face of first segment.")
     if  type == "p":
-      fromfirst.sources = seg1.findallsubitems("",":b3")
+      fromfirst.sources = seg1.findallsubitems("",":b")
     else:  
       fromfirst.sources = seg1.findallsubitems("",":f")
     list = [fromtagged, fromfirst]
@@ -2377,7 +2377,7 @@ def cordupmenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_fun
             tex = source.texturename
             type = data.dup["type"]
             if type == "p":
-              face = quarkx.newobj(source.shortname+":b3")
+              face = quarkx.newobj(source.shortname+":b")
               face["tex"] = source["tex"]
               
             else:
@@ -2441,7 +2441,7 @@ def cordupmenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_fun
       fromtagged.sources = tagged
     fromfirst = qmenu.item("From &first",WrapClick,"|Wraps texture from each face of first segment.")
     if  type == "p":
-      fromfirst.sources = seg1.findallsubitems("",":b3")
+      fromfirst.sources = seg1.findallsubitems("",":b")
     else:  
       fromfirst.sources = seg1.findallsubitems("",":f")
     list = [fromtagged, fromfirst]
@@ -2898,6 +2898,11 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.24  2005/11/21 06:07:14  cdunde
+#Never could find any module or function that have
+#now been commented out. Used best guess as to
+#closest related function.
+#
 #Revision 1.23  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #
