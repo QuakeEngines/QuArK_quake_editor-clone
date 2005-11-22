@@ -77,6 +77,18 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
     rulerlist = editor.layout.explorer.sellist
     if len(rulerlist) == 1 and rulerlist[0].type==":f":
         rulerlist = rulerlist[0].faceof
+    elif len(rulerlist) > 1:
+        newlist = []
+        for item in rulerlist:
+            if item.type==":e":
+                continue
+            else:
+                newlist.append(item)
+        rulerlist = newlist
+    else:
+        if len(rulerlist) == 1:
+            rulerlist = editor.layout.explorer.sellist
+            if len(rulerlist) == 1 and rulerlist[0].type==":e": return
 
     if quarkx.boundingboxof(rulerlist) is not None:
         bbox = quarkx.boundingboxof(rulerlist)
@@ -100,7 +112,6 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
     cv.pencolor = FUCHSIA
 
     grid = editor.gridstep    # Gives grid setting
-    gridunits = quarkx.ftos(grid) # Converts float nbr to string
     type = view.info["type"]  # These type values are set
                               #  in the layout-defining plugins.
 
@@ -565,10 +576,12 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
     
 
 # ----------- REVISION HISTORY ------------
-#
 #$Log$
+#Revision 1.2  2005/11/18 02:37:30  cdunde
+#To try and add header and history log
+#
 #Revision 1.1  2005/11/18 02:21:53  cdunde
 #To add new '2D Rulers' function, menu and
 #updated Infobase docs covering it.
-
+#
 #
