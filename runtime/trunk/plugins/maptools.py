@@ -577,6 +577,10 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3  2005/11/22 18:25:10  cdunde
+#To eliminate entities from being included in measurements.
+#
+#$Log$
 #Revision 1.2  2005/11/18 02:37:30  cdunde
 #To try and add header and history log
 #
