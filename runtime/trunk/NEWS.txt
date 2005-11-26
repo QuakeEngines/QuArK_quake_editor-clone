@@ -15,6 +15,9 @@ $Id$
 6.5.0 alpha 4
 =============
  
+ * [cdunde] : Fixed drag and drop items to console function due to python
+     - reliant conversion to python.dll, for string module.
+ 
  * [cdunde] : Added new 2D Rulers function and Options menu and sub-menu
      - items that show a marker line and the total distance for any selected
      - face, poly or group of faces and/or polys.
