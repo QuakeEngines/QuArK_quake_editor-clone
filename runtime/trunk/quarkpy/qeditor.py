@@ -1184,7 +1184,7 @@ class UserDataPanel:
                     break
         else:  # drop a new button with the given objects
             if len(list):
-                s = map(lambda obj: obj.shortname, list).join(", ")
+                s = map(lambda obj: obj.shortname, list)[0]
                 p = quarkx.newobj(s + ":")
                 for obj in list:
                     p.appenditem(obj.copy())
@@ -1492,6 +1492,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.23  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.20  2005/08/10 04:59:18  cdunde
 #To add QuArK's Forums site link to Help menu
 #
