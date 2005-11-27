@@ -1184,7 +1184,7 @@ class UserDataPanel:
                     break
         else:  # drop a new button with the given objects
             if len(list):
-                s = map(lambda obj: obj.shortname, list)[0]
+                s = ", ".join(map(lambda obj: obj.shortname, list))
                 p = quarkx.newobj(s + ":")
                 for obj in list:
                     p.appenditem(obj.copy())
@@ -1492,6 +1492,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.24  2005/11/26 23:42:51  cdunde
+#Fixed drag and drop items to console function due to
+#python reliant conversion to python.dll, for string module.
+#
 #Revision 1.23  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
