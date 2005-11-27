@@ -1,3 +1,11 @@
+""" QuArK  -  Quake Army Knife
+"""
+# Copyright (C) 1996-99 Armin Rigo
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+#$Header$
+#
 
 import quarkx
 import quarkpy.qbaseeditor
@@ -593,3 +601,7 @@ def bspfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
         cv.line(p1, p2)    
 
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = bspfinishdrawing
+
+# ----------- REVISION HISTORY ------------
+#$Log$
+#
