@@ -2,6 +2,7 @@ title: Shaping
 author: cdunde
 desc: basicselector
 desc: touchuptool
+desc: othervertexmovement
 
 Shaping is the process of creating a terrain by moving the <b>up</b> and/or the <b>down</b> <g>face</g> of adjoining <g>polys</g> that make up the terrain surface.
 

@@ -468,7 +468,7 @@ class VertexHandle(qhandles.GenericHandle):
     "A polyhedron vertex."
 
     undomsg = Strings[525]
-    hint = "move vertex and distort polyhedron (Alt key: restricted to one face only)||By dragging this point, you can distort the polyhedron in a way that looks like you are moving the vertex of the polyhedron.\n\nBe aware that you might not always get the expected results, because you are not really dragging the vertex, but just rotating the adjacent faces in a way that simulates the vertex movement. If you move the vertex too far away, it might just disappear. Polyhedrons are always convex, so that you cannot do just anything you like with them.\n\nHolding down the Alt key to let only one face move. Holding down Ctrl will force the vertex to the grid."
+    hint = "Move vertex and distort polyhedron\n'n' key: move only one vertex\nAlt key: restricted to one face only\nCtrl key: force the vertex to the grid||Move vertex and distort polyhedron:\nBy dragging this point, you can distort the polyhedron.\n\nHolding down the 'n' key: This allows the movement of only ONE vertex and may add additional faces to obtain the shape.\n\nHolding down the Alt key: This allows only one face to move. It appears like you are moving the vertex of the polyhedron. In this case be aware that you might not always get the expected results, because you are not really dragging the vertex, but just rotating the adjacent faces in a way that simulates the vertex movement. If you move the vertex too far away, it might just disappear.|intro.terraingenerator.shaping.html#othervertexmovement"
 
     def __init__(self, pos, poly):
         qhandles.GenericHandle.__init__(self, pos)
@@ -1918,6 +1918,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.48  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.45  2005/09/21 22:42:25  cdunde
 #To comment out else statement causing error after
 #commenting out print statement previously.
