@@ -234,11 +234,15 @@ class BaseEditor:
         # If Terrain Generator button is active this stops the white outline
         # drawing of the selected face/poly parent in a selection of more than
         # one face to give a cleaner look when working in Terrain Generator.
-        if self.layout.toolbars["tb_terrmodes"] is not None and len(self.layout.explorer.sellist) > 1:
-            tb2 = self.layout.toolbars["tb_terrmodes"]
-            for b in tb2.tb.buttons:
-                if b.state == 2:
-                    fs = None
+        import mdleditor
+        if isinstance(self, mdleditor.ModelEditor):
+            pass
+        else:
+            if self.layout.toolbars["tb_terrmodes"] is not None and len(self.layout.explorer.sellist) > 1:
+                tb2 = self.layout.toolbars["tb_terrmodes"]
+                for b in tb2.tb.buttons:
+                    if b.state == 2:
+                        fs = None
         # End of Terrain Generator added code
         if (fs is not None) and (view.viewmode == "wire"):
             mode = self.drawmode | DM_BACKGROUND
@@ -867,6 +871,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.21  2005/10/19 21:20:06  cdunde
+#To remove 2 lines of code that broke Map cursor style options
+#and were unnecessary for Paint Brush functions to work
+#
 #Revision 1.20  2005/10/18 23:45:39  cdunde
 #To ensure the editor is obtained and to stop the drawing
 #of the last selected face/poly parent of a group selection
