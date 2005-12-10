@@ -408,10 +408,14 @@ def drawredfaces(view, selectlist):
 def paintcursor(view, x, y, flags):
     "Changes cursor in views based on view type"
 
+    editor = saveeditor
+    tb2 = editor.layout.toolbars["tb_terrmodes"]
     type = view.info["type"]
     if type == "3D" and flags & MB_CLICKED is not None and view.viewmode == "tex" or view.viewmode == "opengl":
-
-        view.cursor = CR_HAND
+        if tb2.tb.buttons[10].state == 2:
+            view.cursor = CR_HAND
+        if tb2.tb.buttons[11].state == 2:
+            view.cursor = CR_BRUSH
 
 
 def terrainpaint(editor, view, x, y, flags, facelist):
@@ -2354,6 +2358,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2005/11/15 17:15:49  cdunde
+# Removed unneeded code that was
+# braking changing modes in 3D views
+#
 # Revision 1.15  2005/11/14 08:07:41  cdunde
 # Again with the cursor fix, hopefully right this time
 #

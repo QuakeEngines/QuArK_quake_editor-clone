@@ -14,6 +14,7 @@ Q11 ICON "cfg.ico"
 9 CURSOR "linearv.cur"
 10 CURSOR "curleft.cur"
 11 CURSOR "curright.cur"
+12 CURSOR "brush.cur"
 
 102 BITMAP "Specifics.bmp"
 107 BITMAP "Cb1.bmp"

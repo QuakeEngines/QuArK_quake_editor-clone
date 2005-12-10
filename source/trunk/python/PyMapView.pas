@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2005/10/16 06:45:53  cdunde
+To try and reduce 3D view freeze and
+gray out at start when loading textures
+
 Revision 1.19  2005/09/28 10:49:03  peter-b
 Revert removal of Log and Header keywords
 
@@ -103,7 +107,8 @@ const
   crLinearV      = 9;
   crLeftArrow    = 10;
   crRightArrow   = 11;
-  crCursorLast   = 11;
+  crBrush        = 12;
+  crCursorLast   = 12;
 
 type
   TKey3D = (keyForward, keyBack, keyLeft, keyRight,

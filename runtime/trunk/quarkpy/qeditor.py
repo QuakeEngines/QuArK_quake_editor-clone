@@ -87,6 +87,7 @@ CR_CROSSH      = 8
 CR_LINEARV     = 9
 CR_LEFTARROW   = 10
 CR_RIGHTARROW  = 11
+CR_BRUSH       = 12
 CR_DEFAULT     = 0
 CR_NONE        = -1
 CR_ARROW       = -2
@@ -1492,6 +1493,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.25  2005/11/27 05:57:38  cdunde
+#To fix previous version error the correct way.
+#
 #Revision 1.24  2005/11/26 23:42:51  cdunde
 #Fixed drag and drop items to console function due to
 #python reliant conversion to python.dll, for string module.
