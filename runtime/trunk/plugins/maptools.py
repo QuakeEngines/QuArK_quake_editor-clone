@@ -524,7 +524,7 @@ def View2DrulerMenu(editor):
 
     X2 = quarkpy.qmenu.item("   all side rulers", All2DviewsSideRulers, "|all side rulers:\n\nIf this menu item is checked, it will display the distance across the 'side' of the current selected poly(s) in all 2D views and deactivate this menu's individual items.|intro.mapeditor.menu.html#optionsmenu")
 
-    X3 = quarkpy.qmenu.item("X-Face 2D view", XviewRulerClick, "|X-Face 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in the ' X - Face ' 2D view and deactivate this menu's conflicting item(s) such as  'All 2D views'  if they are currently checked.|intro.mapeditor.menu.html#optionsmenu")
+    X3 = quarkpy.qmenu.item("X-Back 2D view", XviewRulerClick, "|X-Back 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in the ' X - Back ' 2D view and deactivate this menu's conflicting item(s) such as  'All 2D views'  if they are currently checked.|intro.mapeditor.menu.html#optionsmenu")
 
     X4 = quarkpy.qmenu.item("   y (top) ruler", XviewYtopRuler, "|X view, y (top) ruler:\n\nIf this menu item is checked, it will display the distance across the 'top' of the current selected poly(s) in the ' X - Face ' 2D view and deactivate this menu's conflicting item(s) such as  'All 2D views'  if they are currently checked.|intro.mapeditor.menu.html#optionsmenu")
 
@@ -577,6 +577,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.8  2005/11/25 04:17:24  cdunde
+#again 8-(
+#
 #Revision 1.6  2005/11/25 03:35:29  cdunde
 #Still trying to get this file to pickup its version changes
 #

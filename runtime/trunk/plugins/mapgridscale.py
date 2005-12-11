@@ -87,10 +87,10 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
 
     cv = view.canvas()
 
-    grid = editor.gridstep    # Gives grid setting
-    gridunits = quarkx.ftos(grid) # Converts float nbr to string
-    type = view.info["type"]  # These type values are set
-                              #  in the layout-defining plugins.
+    grid = editor.gridstep         # Gives grid setting
+    gridunits = quarkx.ftos(grid)  # Converts float nbr to string
+    type = view.info["type"]       # These type values are set
+                                   #  in the layout-defining plugins.
 
 # ===============
 # X view settings
@@ -104,14 +104,14 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
        cv.fontcolor = BLACK
        cv.fontsize = 8
 
-       YZarea = `view.clientarea`      # Gets the view area as a string
-       pixels = YZarea.replace("(","")   # trims ( from YZarea
+       YZarea = `view.clientarea`       # Gets the view area as a string
+       pixels = YZarea.replace("(","")  # trims ( from YZarea
        pixels = pixels.replace(")","")  # trims ) from YZarea
        pixels = pixels.split(",")       # trims , from YZarea
-       Ystring = pixels[0]                 # pulls out y factor string
-       Zstring = pixels[1].strip()   # pulls out z factor string
-       Ypixels = int(Ystring)     # converts y string to intiger nbr
-       Zpixels = int(Zstring)     # converts z string to intiger nbr
+       Ystring = pixels[0]              # pulls out y factor string
+       Zstring = pixels[1].strip()      # pulls out z factor string
+       Ypixels = int(Ystring)           # converts y string to intiger nbr
+       Zpixels = int(Zstring)           # converts z string to intiger nbr
        highlight = int(quarkx.setupsubset(SS_MAP, "Display")["GridHighlight"])
        Ygroups = ((Ypixels/(grid * 1.0)) / view.scale()) / highlight
        Zgroups = ((Zpixels/(grid * 1.0)) / view.scale()) / highlight
@@ -127,10 +127,10 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
 
 
        if not MapOption("XyScaleCentered") and not MapOption("AllScalesCentered"):
-           if not MapOption("AxisXYZ"):	# today
-               Yviewcenter = 6		# today
-           else:			# today
-               Yviewcenter = 48		# today
+           if not MapOption("AxisXYZ"):
+               Yviewcenter = 6
+           else:
+               Yviewcenter = 48
        else:
            if not MapOption("All2DviewsScale") and not MapOption("XviewScale"):
                Yviewcenter = (Ypixels/2)+4
@@ -138,18 +138,17 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Yviewcenter = 0
 
 
-       if not MapOption("XzScaleCentered") and not MapOption("AllScalesCentered"):              # new
-           Zviewcenter = (Zpixels)-12        # new
+       if not MapOption("XzScaleCentered") and not MapOption("AllScalesCentered"):
+           Zviewcenter = (Zpixels)-12
        else:
            Zviewcenter = (Zpixels/2)-4
        Ygroup1 = Yviewcenter+2
-#       Zgroup1 = Zviewcenter+2     # ERROR throws off measure by 2 units.
-       Zgroup1 = Zviewcenter        # new
+       Zgroup1 = Zviewcenter
        cv.brushstyle = BS_CLEAR
        cv.fontname = "Terminal"
        cv.textout(Yviewcenter, 2, "Y " + Ystring)
-       cv.textout(Yviewcenter, 16, "  l")      # new for mark line
-       cv.textout(0, Zviewcenter, " Z " + Zstring + " --") # new for line
+       cv.textout(Yviewcenter, 16, "  l")      # for mark line
+       cv.textout(0, Zviewcenter, " Z " + Zstring + " --") # for mark line
        Ytotal =  (units * 2)
        Ztotal =  units
        if pixspergroup > 40:
@@ -171,9 +170,9 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Zstring =  quarkx.ftos(Ztotal)
                Znextgroupup = Zgroup1 - (Zgroup * Zcounter)
                if Znextgroupup > 19:
-                   cv.textout(0, Znextgroupup, " " + Zstring + " --")  # new
+                   cv.textout(0, Znextgroupup, " " + Zstring + " --")
                Znextgroupdown = Zgroup1 + (Zgroup * Zcounter)
-               cv.textout(0, Znextgroupdown, "-" + Zstring + " --")  # new
+               cv.textout(0, Znextgroupdown, "-" + Zstring + " --")
                Zcounter = Zcounter + 1
                Ztotal = Ztotal + units
 
@@ -197,16 +196,16 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Ystring =  quarkx.ftos(Ytotal)
                Ynextgroupleft = Ygroup1 - ((Ygroup*2) * Ycounter)
                if not MapOption("AxisXYZ"):
-                   cv.textout(Ynextgroupleft-2, 2, "-" + Ystring)
-                   cv.textout(Ynextgroupleft-2, 16, "  l")      # new line
+                   cv.textout(Ynextgroupleft-2, 2, Ystring)
+                   cv.textout(Ynextgroupleft-2, 16, "  l")
                else:
                    if Ynextgroupleft > 40:
-                       cv.textout(Ynextgroupleft-2, 2, "-" + Ystring)
-                       cv.textout(Ynextgroupleft-2, 16, "  l")  # new line
+                       cv.textout(Ynextgroupleft-2, 2, Ystring)
+                       cv.textout(Ynextgroupleft-2, 16, "  l")
                Ynextgroupright = Ygroup1 + ((Ygroup*2) * Ycounter)
-               cv.textout(Ynextgroupright+4, 2, Ystring)
-               cv.textout(Ynextgroupright-2, 16, "  l")      # new line
-               cv.textout(Ynextgroupleft-2, 16, "  l")      # new line
+               cv.textout(Ynextgroupright+4, 2, "-" + Ystring)
+               cv.textout(Ynextgroupright-2, 16, "  l")
+               cv.textout(Ynextgroupleft-2, 16, "  l")
                Ycounter = Ycounter + 1
                Ytotal = Ytotal + (units*2)
 
@@ -247,10 +246,10 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
 
 
        if not MapOption("YxScaleCentered") and not MapOption("AllScalesCentered"):
-           if not MapOption("AxisXYZ"):	# today
-               Xviewcenter = 16		# today
-           else:			# today
-               Xviewcenter = 48		# today
+           if not MapOption("AxisXYZ"):
+               Xviewcenter = 16
+           else:
+               Xviewcenter = 48
        else:
            if not MapOption("All2DviewsScale") and not MapOption("YviewScale"):
                Xviewcenter = (Xpixels/2)+4
@@ -258,23 +257,21 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Xviewcenter = 0
 
 
-
-#       Zviewcenter = (Zpixels/2)-4      
-       if not MapOption("YzScaleCentered") and not MapOption("AllScalesCentered"):       # new
-           Zviewcenter = (Zpixels)-12        # new
+   
+       if not MapOption("YzScaleCentered") and not MapOption("AllScalesCentered"):
+           Zviewcenter = (Zpixels)-12
        else:
            Zviewcenter = (Zpixels/2)-4
        Xgroup1 = Xviewcenter+2
-#       Zgroup1 = Zviewcenter+2     # ERROR throws off measure by 2 units.
-       Zgroup1 = Zviewcenter        # new
+       Zgroup1 = Zviewcenter
        cv.brushstyle = BS_CLEAR
        cv.fontname = "Terminal"
        cv.textout(Xviewcenter, 2, "X " + Xstring)
-       cv.textout(Xviewcenter, 16, "  l")      # new for mark line      
+       cv.textout(Xviewcenter, 16, "  l")      # for mark line      
        if MapOption("RedLines2") and not MapOption("AllScalesCentered") and not MapOption("YzScaleCentered"):
-           cv.textout(10, Zviewcenter, " Z " + Zstring + " --") # new line
+           cv.textout(10, Zviewcenter, " Z " + Zstring + " --")
        else:
-           cv.textout(0, Zviewcenter, " Z " + Zstring + " --") # new line
+           cv.textout(0, Zviewcenter, " Z " + Zstring + " --")
        Xtotal =  (units * 2)
        Ztotal =  units
        if pixspergroup > 40:
@@ -296,9 +293,9 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Zstring =  quarkx.ftos(Ztotal)
                Znextgroupup = Zgroup1 - (Zgroup * Zcounter)
                if Znextgroupup > 19:
-                   cv.textout(0, Znextgroupup, " " + Zstring + " --")  # new
+                   cv.textout(0, Znextgroupup, " " + Zstring + " --")
                Znextgroupdown = Zgroup1 + (Zgroup * Zcounter)
-               cv.textout(0, Znextgroupdown, "-" + Zstring + " --")  # new
+               cv.textout(0, Znextgroupdown, "-" + Zstring + " --")
                Zcounter = Zcounter + 1
                Ztotal = Ztotal + units
 
@@ -330,8 +327,8 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                        cv.textout(Xnextgroupleft-2, 16, "  l") # new for line
                Xnextgroupright = Xgroup1 + ((Xgroup*2) * Xcounter)
                cv.textout(Xnextgroupright+4, 2, Xstring)
-               cv.textout(Xnextgroupright-2, 16, "  l")  # new for mark line
-               cv.textout(Xnextgroupleft-2, 16, "  l")  # new for mark line
+               cv.textout(Xnextgroupright-2, 16, "  l")  # for mark line
+               cv.textout(Xnextgroupleft-2, 16, "  l")   # for mark line
                Xcounter = Xcounter + 1
                Xtotal = Xtotal + (units*2)
 
@@ -371,10 +368,10 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
 
 
        if not MapOption("ZxScaleCentered") and not MapOption("AllScalesCentered"):
-           if not MapOption("AxisXYZ"):	# today
-               Xviewcenter = 16		# today
-           else:			# today
-               Xviewcenter = 48		# today
+           if not MapOption("AxisXYZ"):
+               Xviewcenter = 16
+           else:
+               Xviewcenter = 48
        else:
            if not MapOption("All2DviewsScale") and not MapOption("ZviewScale"):
                Xviewcenter = (Xpixels/2)+4
@@ -382,20 +379,20 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Xviewcenter = 0
 
 
-       if not MapOption("ZyScaleCentered") and not MapOption("AllScalesCentered"):       # new
-           Yviewcenter = (Ypixels)-12        # new
+       if not MapOption("ZyScaleCentered") and not MapOption("AllScalesCentered"):
+           Yviewcenter = (Ypixels)-12
        else:
            Yviewcenter = (Ypixels/2)-4
        Xgroup1 = Xviewcenter+2
-       Ygroup1 = Yviewcenter        # new fixed throw off measure by 2 units
+       Ygroup1 = Yviewcenter
        cv.brushstyle = BS_CLEAR
        cv.fontname = "Terminal"
        cv.textout(Xviewcenter, 2, "X " + Xstring)
        cv.textout(Xviewcenter, 16, "  l")      # new for mark line
        if not MapOption("AllScalesCentered") and not MapOption("ZyScaleCentered"):
-           cv.textout(10, Yviewcenter, " Y " + Ystring + " --") # new for mark line
+           cv.textout(10, Yviewcenter, " Y " + Ystring + " --") # for mark line
        else:
-           cv.textout(0, Yviewcenter, " Y " + Ystring + " --") # new for mark line
+           cv.textout(0, Yviewcenter, " Y " + Ystring + " --")  # for mark line
        Xtotal =  (units * 2)
        Ytotal =  units
        if pixspergroup > 40:
@@ -417,9 +414,9 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Ystring =  quarkx.ftos(Ytotal)
                Ynextgroupup = Ygroup1 - (Ygroup * Ycounter)
                if Ynextgroupup > 19:
-                   cv.textout(0, Ynextgroupup, " " + Ystring + " --")  # new
+                   cv.textout(0, Ynextgroupup, " " + Ystring + " --")
                Ynextgroupdown = Ygroup1 + (Ygroup * Ycounter)
-               cv.textout(0, Ynextgroupdown, "-" + Ystring + " --")  # new
+               cv.textout(0, Ynextgroupdown, "-" + Ystring + " --")
                Ycounter = Ycounter + 1
                Ytotal = Ytotal + units
 
@@ -444,15 +441,15 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Xnextgroupleft = Xgroup1 - ((Xgroup*2) * Xcounter)
                if not MapOption("AxisXYZ"):
                    cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
-                   cv.textout(Xnextgroupleft-2, 16, "  l")      # new for mark line
+                   cv.textout(Xnextgroupleft-2, 16, "  l")      # for mark line
                else:
                    if Xnextgroupleft > 40:
                        cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
-                       cv.textout(Xnextgroupleft-2, 16, "  l")      # new for mark line
+                       cv.textout(Xnextgroupleft-2, 16, "  l")  # for mark line
                Xnextgroupright = Xgroup1 + ((Xgroup*2) * Xcounter)
-               cv.textout(Xnextgroupright+4, 2, Xstring)     # new nbr adj
-               cv.textout(Xnextgroupright-2, 16, "  l")      # new for mark line
-               cv.textout(Xnextgroupleft-2, 16, "  l")      # new for mark line
+               cv.textout(Xnextgroupright+4, 2, Xstring)
+               cv.textout(Xnextgroupright-2, 16, "  l")     # for mark line
+               cv.textout(Xnextgroupleft-2, 16, "  l")      # for mark line
                Xcounter = Xcounter + 1
                Xtotal = Xtotal + (units*2)
 
@@ -616,7 +613,7 @@ def View2DgridMenu(editor):
 
     X1 = quarkpy.qmenu.item("   all scales centered", All2DviewsScalesCentered, "|all scales centered:\n\nIf this menu item is checked, it will display a scale of the current grid setting centered in all 2D views and deactivate this menu's individual items.|intro.mapeditor.menu.html#optionsmenu")
 
-    X2 = quarkpy.qmenu.item("X-Face 2D view", XviewScaleClick, "|X-Face 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in the ' X - Face ' 2D view and deactivate this menu's conflicting item(s) such as  'All 2D views'  if they are currently checked.|intro.mapeditor.menu.html#optionsmenu")
+    X2 = quarkpy.qmenu.item("X-Back 2D view", XviewScaleClick, "|X-Back 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in the ' X - Back ' 2D view and deactivate this menu's conflicting item(s) such as  'All 2D views'  if they are currently checked.|intro.mapeditor.menu.html#optionsmenu")
 
     X3 = quarkpy.qmenu.item("   y scale centered", XviewYScaleCentered, "|y scale centered:\n\nIf this menu item is checked, it will display a scale of the current grid setting centered in the ' X - Face ' 2D view and deactivate this menu's conflicting item(s) such as  'All 2D views'  if they are currently checked.|intro.mapeditor.menu.html#optionsmenu")
 
@@ -655,7 +652,6 @@ def View2DgridMenu(editor):
 shortcuts = {}
 
 
-# ************************************************************
 # ******************Creates the Popup menu********************
 
 def ViewAmendMenu1click(m):
@@ -671,6 +667,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.11  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.8  2005/03/26 05:32:14  cdunde
 #To set pin color and size to guard against future plugin changes
 #
