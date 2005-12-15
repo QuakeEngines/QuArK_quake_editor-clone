@@ -1457,7 +1457,7 @@ def Help3():
     htmldoc("help/intro.html") # Assumes the infobase have been installed in the ./HELP folder
 
 def Help4():
-    htmldoc("http://dynamic.gamespy.com/~quark/") # Takes the user to QuArK's official web page
+    htmldoc("http://quark.planetquake.gamespy.com/") # Takes the user to QuArK's official web page
 
 def Help5():
     htmldoc("help/intro.mapeditor.overview.html") # Takes the user to the Overview page
@@ -1493,6 +1493,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.26  2005/12/10 07:19:18  cdunde
+#To add new paint brush cursor for Terrain Generator
+#
 #Revision 1.25  2005/11/27 05:57:38  cdunde
 #To fix previous version error the correct way.
 #
