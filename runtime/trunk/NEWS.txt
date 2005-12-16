@@ -15,8 +15,8 @@ $Id$
 6.5.0 alpha 4
 =============
  
- * [cdunde] : Updated the editors help link to the QuArK's Official
-    - web site new address link.
+ * [cdunde] : Updated the editors help link and About page
+    - to the new QuArK Official website page address.
  
  * [cdunde] : Fixed error in editor and Infobase for X 2D view of
      - Y axis sign and label which was backwards.
