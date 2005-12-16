@@ -157,7 +157,7 @@ object AboutBox: TAboutBox
       Top = 256
       Width = 149
       Height = 11
-      Caption = 'http://dynamic.gamespy.com/~quark'
+      Caption = 'http://quark.planetquake.gamespy.com/'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
