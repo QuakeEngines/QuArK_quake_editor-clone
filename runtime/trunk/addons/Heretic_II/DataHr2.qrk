@@ -4,6 +4,12 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.16  2005/10/15 01:00:30  cdunde
+//To reinstate headers and history
+//
+//Revision 1.14  2005/09/23 06:13:09 peter-b
+//Remove CVS $ tags from runtime
+//
 //Revision 1.13  2005/06/30 01:47:53  cdunde
 //Improvements by dannsdinosaurs DannJ
 //- Fixed bounding boxes for all obj_moss
@@ -18,24 +24,24 @@ QQRKSRC1
 //- Added STYLE pull-down menu for obj_statue_tcheckrik_bust (no amulet/amulet)
 //
 //Revision 1.51  2005/06/27 DannJ
-//- Fixed bounding boxes for all obj_moss
-//- Added bbox for obj_banneronpole
-//- Fixed bbox for obj_banner
-//- Fixed bbox for obj_rocks2
-//- Fixed bbox for obj_shrine
-//- Fixed bbox for obj_woodpile
-//- Deleted obj_stalagmite1, 2 & 3 (they don't exist)
-//- Deleted monster_gorgon_leader (doesn't exist)
-//- Added targetname to obj_cactus4 (opens/closes when triggered)
-//- Added STYLE pull-down menu for obj_statue_tcheckrik_bust (no amulet/amulet)
+//Fixed bounding boxes for all obj_moss
+//Added bbox for obj_banneronpole
+//Fixed bbox for obj_banner
+//Fixed bbox for obj_rocks2
+//Fixed bbox for obj_shrine
+//Fixed bbox for obj_woodpile
+//Deleted obj_stalagmite1, 2 & 3 (they don't exist)
+//Deleted monster_gorgon_leader (doesn't exist)
+//Added targetname to obj_cactus4 (opens/closes when triggered)
+//Added STYLE pull-down menu for obj_statue_tcheckrik_bust (no amulet/amulet)
 //
 //Revision 1.5  2005/04/26 04:28:44  cdunde
 //Improvements by DannJ
-//- Added pulldown menu for door messages
-//- Moved fishtrap into Commercial & Industrial folder
-//- Moved fountain fish into Statues folder
-//- Added mdl paths for info_player entities
-//- Added 'Not Deathmatch' spawnflags to trigger_once and trigger_multiple
+//Added pulldown menu for door messages
+//Moved fishtrap into Commercial & Industrial folder
+//Moved fountain fish into Statues folder
+//Added mdl paths for info_player entities
+//Added 'Not Deathmatch' spawnflags to trigger_once and trigger_multiple
 //
 //Revision 1.48 2004/06/22 DannJ
 //Changed model path for Tcheckrikbust
@@ -7228,6 +7234,7 @@ QQRKSRC1
         light_gem2:e =
         {
           origin = "0 0 0"
+          light = "300"
           ;desc = "A yellow gem in an octogonal frame"
           angle = "0"
         }
@@ -8973,7 +8980,7 @@ QQRKSRC1
         materialtype: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "Type of debris when broken"
           Typ = "C"
           Items = "0) STONE"$0D"1) GREYSTONE (default)map"$0D"2) CLOTH"$0D"3) "
            "METAL"$0D"4) FLESH"$0D"5) POTTERY"$0D"6) GLASS"$0D"7) LEAF"$0D"8) "
@@ -9049,14 +9056,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X32"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Doesn't work. Set face flags to PLAYER CLIP instead"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "NOTPLAYERDAMAGE"
-          Hint = "players cannot damage this brus"
+          Hint = "players cannot damage this brush"
         }
       }
       character_corvus1:form =
@@ -9082,7 +9089,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_corvus2:form =
@@ -9108,7 +9115,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_corvus3:form =
@@ -9134,7 +9141,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_corvus4:form =
@@ -9160,7 +9167,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_corvus5:form =
@@ -9186,7 +9193,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_corvus6:form =
@@ -9212,7 +9219,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_corvus7:form =
@@ -9238,7 +9245,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_corvus8:form =
@@ -9264,7 +9271,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_corvus9:form =
@@ -9290,7 +9297,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_dranor:form =
@@ -9457,7 +9464,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       character_ssithra_scout:form =
@@ -9521,7 +9528,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "No hint yet"
+          Hint = "Starts invisible, appears when triggered"
         }
       }
       choose_CDTrack:form =
@@ -9669,7 +9676,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "size of puff  (default 1) range 0 - 8."
+          Hint = "(default 1) Puff size is inverse"$0D"(4 is 1/4, 0.25 is x4) range 0.1 to 8"
         }
         speed: =
         {
@@ -9692,7 +9699,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "START_OFF"
-          Hint = "smoke will start of"
+          Hint = "doesnt work - use trigger_always to turn off first"$0D"then trigger to turn it on again"
         }
       }
       env_sun1:form =
@@ -9724,7 +9731,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "YELLOW"
-          Hint = "No hint yet"
+          Hint = "Doesnt work - drip becomes invisible until it hits"
         }
       }
       env_water_fountain:form =
@@ -9847,7 +9854,7 @@ QQRKSRC1
         targetname: =
         {
           Txt = "&"
-          Hint = "targettee by the door associated with the portal"
+          Hint = "targeted by the door associated with the portal"
         }
       }
       func_button:form =
@@ -10219,7 +10226,7 @@ QQRKSRC1
           Typ = "X1"
           Cap = "START_OPEN"
           Hint = "the door to moves to its destination when spawned, and opera"
-           "te in reverse.  It is used to temporarily or permanently close off"
+           "tes in reverse.  It is used to temporarily or permanently close off"
            " an area when triggered (not useful for touch or takedamage doors)"
         }
         spawnflags: =
@@ -10234,21 +10241,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X4"
           Cap = "CRUSHER"
-          Hint = "No hint yet"
+          Hint = "Kills instantly if blocked"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOMONSTER"
-          Hint = "monsters will not trigger this doo"
+          Hint = "monsters will not trigger this door"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16"
           Cap = "ANIMATED"
-          Hint = "No hint yet"
+          Hint = "Can use animated texture?"
         }
         spawnflags: =
         {
@@ -10263,14 +10270,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X64"
           Cap = "X_AXIS"
-          Hint = "No hint yet"
+          Hint = "Rotates about X axis"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "Y_AXIS"
-          Hint = "No hint yet"
+          Hint = "Rotates about Y axis"
         }
         spawnflags: =
         {
@@ -10317,21 +10324,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "ALWAYS_SHOOT"
-          Hint = "No hint yet"
+          Hint = "Only opens when damaged"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "1ST_LEFT"
-          Hint = "No hint yet"
+          Hint = "Moves left first, then towards ANGLE"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "1ST_DOWN"
-          Hint = "No hint yet"
+          Hint = "Moves down first, then towards ANGLE"
         }
         spawnflags: =
         {
@@ -10504,6 +10511,18 @@ QQRKSRC1
       {
         Help = "A solid bmodel that will fall if its support is removed."
         HTML = "help/hr2/g_misc.htm#func_object"
+        targetname: =
+        {
+          Txt = "&"
+          Hint = "target to spawn"
+        }
+        spawnflags: =
+        {
+          Txt = "&"
+          Typ = "X1"
+          Cap = "TRIGGER SPAWN"
+          Hint = "Starts invisible. Trigger to spawn"
+        }
       }
       func_plat:form =
       {
@@ -10558,6 +10577,13 @@ QQRKSRC1
           Txt = "&"
           Hint = "overrides default 8 pixel lip"
         }
+        spawnflags: =
+        {
+          Txt = "&"
+          Typ = "X1"
+          Cap = "LOW TRIGGER"
+          Hint = "Trigger only at lowest point. Wont stay up if player still on it"
+        }
       }
       func_rotating:form =
       {
@@ -10591,63 +10617,63 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "START_ON"
-          Hint = "No hint yet"
+          Hint = "Starts rotating when map loads"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "REVERSE"
-          Hint = "will cause the it to rotate in the opposite direction"
+          Hint = "will cause it to rotate in the opposite direction"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "X_AXIS"
-          Hint = "No hint yet"
+          Hint = "Rotate about X axis"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "Y_AXIS"
-          Hint = "No hint yet"
+          Hint = "Rotate about Y axis"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16"
           Cap = "TOUCH_PAIN"
-          Hint = "No hint yet"
+          Hint = "Causes damage with any sort of contact"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X32"
-          Cap = "STOP"
-          Hint = "mean it will stop moving instead of pushing entitie"
+          Cap = "BLOCK STOPS"
+          Hint = "Stops rotating when blocked"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X64"
           Cap = "ANIMATED"
-          Hint = "No hint yet"
+          Hint = "Can use animated texture?"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "ANIMATED_FAST"
-          Hint = "No hint yet"
+          Hint = "Can use animated texture?"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8192"
           Cap = "CRUSHER"
-          Hint = "No hint yet"
+          Hint = "Instantly fatal"
         }
         speed: =
         {
@@ -10671,7 +10697,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "START_ON"
-          Hint = "No hint yet"
+          Hint = "Timer starts when map loads"
         }
         target: =
         {
@@ -10743,7 +10769,7 @@ QQRKSRC1
         materialtype: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "Debris if train explodes (PATH_CORNER with -3 wait value)"
           Typ = "C"
           Items = "0) STONE"$0D"1) GREYSTONE (default)map"$0D"2) CLOTH"$0D"3) "
            "METAL"$0D"4) FLESH"$0D"5) POTTERY"$0D"6) GLASS"$0D"7) LEAF"$0D"8) "
@@ -10782,21 +10808,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "START_ON"
-          Hint = "No hint yet"
+          Hint = "Train starts when map loads"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "TOGGLE"
-          Hint = "No hint yet"
+          Hint = "Can start and stop (PATH_CORNER with -1 wait)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "BLOCK_STOPS"
-          Hint = "No hint yet"
+          Hint = "Stops when blocked"
         }
         spawnflags: =
         {
@@ -10818,7 +10844,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X32"
           Cap = "PUSHPULL"
-          Hint = "No hint yet"
+          Hint = "Not used"
         }
         speed: =
         {
@@ -10839,7 +10865,7 @@ QQRKSRC1
         file: =
         {
           Txt = "&"
-          Hint = "?? specifies the train is a model.  This is the exact direct"
+          Hint = "specifies the train is a model.  This is the exact direct"
            "ory of the model."
         }
         count: =
@@ -10865,7 +10891,7 @@ QQRKSRC1
         materialtype: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "Cant be killtargeted - does nothing?"
         }
         message: =
         {
@@ -10904,14 +10930,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "ANIMATED"
-          Hint = "No hint yet"
+          Hint = "Not needed"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16"
           Cap = "ANIMATED_FAST"
-          Hint = "No hint yet"
+          Hint = "Set face flags instead"
         }
         spawnflags: =
         {
@@ -11034,7 +11060,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X4"
           Cap = "TURN"
-          Hint = "No hint yet"
+          Hint = "Monster turns to face right direction for jump"
         }
         spawnflags: =
         {
@@ -11053,12 +11079,12 @@ QQRKSRC1
         target: =
         {
           Txt = "&"
-          Hint = "object with matching targetname is triggered."
+          Hint = "Next buoy it is linked to"
         }
         target2: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "Second buoy it is linked to"
         }
         targetname: =
         {
@@ -11960,9 +11986,9 @@ QQRKSRC1
       item_weapon_hellstaff:form =
       {
         Help = "Pickup for the hellstaff weapon."
-        bbox = '-16 -16 -16 16 16 16 1'
+        bbox = '-16 -16 -32 16 16 32 1'
         HTML = "help/hr2/g_items.htm#item_weapon_hellstaff"
-        mdl = "models/items/Weapons/Hellstaff/tris.fm"
+        mdl = "models/items/weapons/hellstaff/tris.fm"
         spawnflags: =
         {
           Txt = "&"
@@ -12010,7 +12036,7 @@ QQRKSRC1
         Help = "Pickup for the Magic Missile weapon."
         bbox = '-16 -16 -16 16 16 16 1'
         HTML = "help/hr2/g_items.htm#item_weapon_magicmissile"
-        mdl = "models/items/Weapons/MagicMissile/tris.fm"
+        mdl = "models/items/Weapons/Array/tris.fm"
         spawnflags: =
         {
           Txt = "&"
@@ -12029,9 +12055,9 @@ QQRKSRC1
       item_weapon_phoenixbow:form =
       {
         Help = "Pickup for the Phoenix Bow weapon."
-        bbox = '-16 -16 -16 16 16 16 1'
+        bbox = '-16 -16 -32 16 16 32 1'
         HTML = "help/hr2/g_items.htm#item_weapon_phoenixbow"
-        mdl = "models/items/Weapons/Bow/tris.fm"
+        mdl = "models/items/weapons/bow/tris.fm"
         spawnflags: =
         {
           Txt = "&"
@@ -12055,9 +12081,9 @@ QQRKSRC1
       item_weapon_redrain_bow:form =
       {
         Help = "Pickup for the Red Rain Bow weapon."
-        bbox = '-16 -16 -16 16 16 16 1'
+        bbox = '-16 -16 -32 16 16 32 1'
         HTML = "help/hr2/g_items.htm#item_weapon_redrain_bow"
-        mdl = "models/items/Weapons/Bow/tris.fm"
+        mdl = "models/items/weapons/bow/tris.fm"
         spawnflags: =
         {
           Txt = "&"
@@ -12117,7 +12143,7 @@ QQRKSRC1
         _cone: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "Spread of spotlight cone in degrees"$0D"(Target an INFO_NULL)"
         }
         angle: =
         {
@@ -12128,27 +12154,31 @@ QQRKSRC1
         light: =
         {
           Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+          Hint = "intensity, default = 300 (200 is dim, max = 800)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X1"
           Cap = "START_OFF"
-          Hint = "No hint yet"
+          Hint = "Light starts off (trigger to start)"
         }
         style: =
         {
           Txt = "&"
           Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
            "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
-           " share style-value."
+           " share style-value"
         }
         targetname: =
         {
           Txt = "&"
-          Hint = "is triggered if entity with matching target fires, or delete"
-           "d if entity with matching killtarget fires."
+          Hint = "If START_OFF, triggers light on"
+        }
+        target: =
+        {
+          Txt = "&"
+          Hint = "Target an INFO_NULL for spotlight"
         }
       }
       light_buglight:form =
@@ -12347,7 +12377,7 @@ QQRKSRC1
       light_floortorch:form =
       {
         Help = "A stand for a torch that sits on the floor."
-        bbox = '-14 -14 -17 14 14 17 1'
+        bbox = '-22 -22 -19 22 22 17 1'
         HTML = "help/hr2/g_light.htm#light_floortorch"
         mdl = "models/objects/lights/floortorch/tris.fm"
         _color: =
@@ -12451,6 +12481,14 @@ QQRKSRC1
           Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
            "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
            " share style-value."
+        }
+        skinnum: =
+        {
+          Txt = "&"
+          Hint = "default 0 = Yellow"
+          Typ = "C"
+          Items = "0) Yellow Gem"$0D"1) Green Gem"
+          values = "0"$0D"1"
         }
         targetname: =
         {
@@ -12831,7 +12869,7 @@ QQRKSRC1
       misc_magic_portal:form =
       {
         Help = "A magical glowing portal. Triggerable."
-        bbox = '-16 -16 -32 16 16 32 1'
+        bbox = '-16 -56 -56 16 56 56 1'
         HTML = "help/hr2/g_misc.htm#misc_magic_portal"
         spawnflags: =
         {
@@ -12859,7 +12897,7 @@ QQRKSRC1
         target: =
         {
           Txt = "&"
-          Hint = "object with matching targetname is triggered."
+          Hint = "Can only target a TARGET_CHANGELEVEL"
         }
         targetname: =
         {
@@ -12914,21 +12952,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "ACTIVATING"
-          Hint = "No hint yet"
+          Hint = "Only affects activating player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "SCRIPTED"
-          Hint = "No hint yet"
+          Hint = "Camera is used in a script"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "NO_DELETE"
-          Hint = "No hint yet"
+          Hint = "can be reused?"
         }
         wait: =
         {
@@ -13107,21 +13145,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "FWDJUMPAMBUSH"
-          Hint = "No hint yet"
+          Hint = "Use with ASLEEP. Jumps forward when triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16"
           Cap = "NOCLOAK"
-          Hint = "No hint yet"
+          Hint = "Cant fade into shadows (meteor barrier cant locate if cloaked)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X32"
           Cap = "NOTELEPORT"
-          Hint = "No hint yet"
+          Hint = "Cant teleport"
         }
         spawnflags: =
         {
@@ -13176,28 +13214,28 @@ QQRKSRC1
           Txt = "&"
           Typ = "X131072"
           Cap = "TELEPORTAMBUSH"
-          Hint = "No hint yet"
+          Hint = "Use with ASLEEP. Teleports in when triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X262144"
           Cap = "CLOAKAMBUSH"
-          Hint = "No hint yet"
+          Hint = "Like AMBUSH, but cloaked"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X524288"
           Cap = "SIDEJUMPAMBUSH"
-          Hint = "No hint yet"
+          Hint = "Use with ASLEEP. Jumps sideways when triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X1048576"
           Cap = "TELEPORTDODGE"
-          Hint = "No hint yet"
+          Hint = "Teleports to dodge missiles"
         }
       }
       monster_bee:form =
@@ -13235,7 +13273,7 @@ QQRKSRC1
       monster_elflord:form =
       {
         Help = "Celestial Watcher"
-        bbox = '-16 -16 0 16 16 32 1'
+        bbox = '-24 -24 -78 24 24 16 1'
         HTML = "help/hr2/m_elflord.htm#monster_elflord"
         mdl = "models/monsters/elflord/tris.fm"
         angle: =
@@ -13361,7 +13399,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Doesnt work"
         }
         spawnflags: =
         {
@@ -13402,13 +13440,13 @@ QQRKSRC1
           Txt = "&"
           Typ = "X131072"
           Cap = "RESTING"
-          Hint = "No hint yet"
+          Hint = "Starts lying down"
         }
       }
       monster_gorgon:form =
       {
         Help = "The gorgon"
-        bbox = '-16 -16 0 16 16 32 1'
+        bbox = '-16 -16 -16 16 16 16 1'
         HTML = "help/hr2/m_gorgon.htm#monster_gorgon"
         mdl = "models/monsters/gorgon/tris.fm"
         angle: =
@@ -13598,7 +13636,7 @@ QQRKSRC1
       monster_high_priestess:form =
       {
         Help = "The High Priestess (what more do you need to know?!?!)"
-        bbox = '-24 -24 0 24 24 72 1'
+        bbox = '-24 -24 -40 24 24 32 1'
         HTML = "help/hr2/m_priestess.htm#monster_high_priestess"
         mdl = "models/monsters/highpriestess/tris.fm"
         more: =
@@ -13632,35 +13670,35 @@ QQRKSRC1
         angle: =
         {
           Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
+          Hint = "the direction it faces.  For 3D orientation use angles"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "PERCHING"
-          Hint = "Will watch player until get too close or get behind the im"
+          Hint = "Will watch player until get too close or get behind him"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Wont move - except to dodge missiles"
         }
       }
       monster_iq:form =
@@ -13790,28 +13828,28 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Always fixed anyway"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Doesnt work"
         }
         spawnflags: =
         {
@@ -13864,49 +13902,49 @@ QQRKSRC1
           Txt = "&"
           Typ = "X2"
           Cap = "PICK_UP"
-          Hint = "No hint yet"
+          Hint = "Pick used high"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "PICK_DOWN"
-          Hint = "No hint yet"
+          Hint = "Pick used low"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "CHISEL_UP"
-          Hint = "No hint yet"
+          Hint = "Chisel used high"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16"
           Cap = "CHISEL_DOWN"
-          Hint = "No hint yet"
+          Hint = "Chisel used low"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X32"
           Cap = "HAMMER_UP"
-          Hint = "No hint yet"
+          Hint = "Hammer used high"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X64"
           Cap = "HAMMER_DOWN"
-          Hint = "No hint yet"
+          Hint = "Hammer used low"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "SINGING"
-          Hint = "No hint yet"
+          Hint = "Doesnt work"
         }
         spawnflags: =
         {
@@ -13987,28 +14025,28 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16"
           Cap = "MISSILE"
-          Hint = "No hint yet"
+          Hint = "Always missile anyway"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X32"
           Cap = "32"
-          Hint = "No hint yet"
+          Hint = "Does nothing?"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X64"
           Cap = "64"
-          Hint = "No hint yet"
+          Hint = "Does nothing?"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Will stand his ground"
         }
         spawnflags: =
         {
@@ -14077,21 +14115,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from players"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "WALKING"
-          Hint = "use WANDER instea"
+          Hint = "use WANDER instead"
         }
         spawnflags: =
         {
@@ -14105,14 +14143,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16"
           Cap = "MISSILE"
-          Hint = "No hint yet"
+          Hint = "Always missile anyway"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Will stand his ground"
         }
         spawnflags: =
         {
@@ -14207,7 +14245,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16"
           Cap = "MISSILE"
-          Hint = "No hint yet"
+          Hint = "Ranged attack instead of melee"
         }
         spawnflags: =
         {
@@ -14228,7 +14266,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Will stand his ground"
         }
         spawnflags: =
         {
@@ -14318,42 +14356,44 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "EATING"
-          Hint = "Chomp chomp... chewie chom"
+          Hint = "Chomp chomp... chewie chomp"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "No hint yet"
+          Hint = "Monster will try to cut you off when you're running and fight"
+           "ing him, works well if there are a few monsters in a group, half d"
+           "oing this, half not"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X32768"
           Cap = "STALK"
-          Hint = "No hint yet"
+          Hint = "Approaches from behind (until injured)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X65536"
           Cap = "COWARD"
-          Hint = "Runs awa"
+          Hint = "Runs away"
         }
       }
       monster_rat_giant:form =
@@ -14391,14 +14431,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -14413,21 +14453,23 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "No hint yet"
+          Hint = "Monster will tryto cut you off when you're running and fight"
+           "ing him, works well if there are a few monsters in a group, half d"
+           "oing this, half not"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X32768"
           Cap = "STALK"
-          Hint = "No hint yet"
+          Hint = "Approaches from behind (until injured)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X65536"
           Cap = "COWARD"
-          Hint = "Runs awa"
+          Hint = "Runs away"
         }
       }
       monster_seraph_guard:form =
@@ -14474,14 +14516,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X4"
           Cap = "GOLEM"
-          Hint = "No hint yet"
+          Hint = "Doesnt work"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Will stand his ground"
         }
         spawnflags: =
         {
@@ -14587,7 +14629,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Will stand his ground (no ranged attack, so whats the point?)"
         }
         spawnflags: =
         {
@@ -14603,7 +14645,7 @@ QQRKSRC1
           Cap = "MELEE_LEAD"
           Hint = "Monster will tryto cut you off when you're running and fight"
            "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half no"
+           "oing this, half not"
         }
         spawnflags: =
         {
@@ -14613,7 +14655,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -14621,13 +14663,13 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
       }
       monster_spreader:form =
       {
         Help = "The spreader"
-        bbox = '-16 -16 0 16 16 32 1'
+        bbox = '-16 -16 -40 16 16 24 1'
         HTML = "help/hr2/m_spreader.htm#monster_spreader"
         mdl = "models/monsters/spreader/tris.fm"
         more: =
@@ -14675,7 +14717,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Will stand his ground"
         }
         spawnflags: =
         {
@@ -14756,35 +14798,35 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "NAMOR"
-          Hint = "No hint yet"
+          Hint = "Prefers water (will dive in if close)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16"
           Cap = "SPIN"
-          Hint = "No hint yet"
+          Hint = "Does nothing?"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X32"
           Cap = "TOUGHGUY"
-          Hint = "No hint yet"
+          Hint = "Larger, tougher ssithra"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X64"
           Cap = "CLOTHED"
-          Hint = "No hint yet"
+          Hint = "Only clothed skin (otherwise random)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Will stand his ground"
         }
         spawnflags: =
         {
@@ -14800,7 +14842,7 @@ QQRKSRC1
           Cap = "MELEE_LEAD"
           Hint = "Monster will tryto cut you off when you're running and fight"
            "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half no"
+           "oing this, half not"
         }
         spawnflags: =
         {
@@ -14810,7 +14852,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -14818,7 +14860,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
       }
       monster_tcheckrik_female:form =
@@ -14865,7 +14907,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X4"
           Cap = "WALKING"
-          Hint = "use WANDER instea"
+          Hint = "use WANDER instead"
         }
         spawnflags: =
         {
@@ -14879,21 +14921,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X32"
           Cap = "ALTERNATE"
-          Hint = "fires alternate projectile, more damage, not multiple thoug"
+          Hint = "fires alternate projectile, more damage, not multiple though"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Will stand her ground"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
@@ -14902,7 +14944,7 @@ QQRKSRC1
           Cap = "MELEE_LEAD"
           Hint = "Monster will tryto cut you off when you're running and fight"
            "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half no"
+           "oing this, half not"
         }
         spawnflags: =
         {
@@ -14967,7 +15009,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X4"
           Cap = "WALKING"
-          Hint = "use WANDER instea"
+          Hint = "use WANDER instead"
         }
         spawnflags: =
         {
@@ -14981,7 +15023,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16"
           Cap = "BEAST_FODDER"
-          Hint = "Will run away if a Trial Beast is presen"
+          Hint = "Will run away if a Trial Beast is present"
         }
         spawnflags: =
         {
@@ -15003,7 +15045,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X128"
           Cap = "FIXED"
-          Hint = "No hint yet"
+          Hint = "Stands his ground"
         }
         spawnflags: =
         {
@@ -15019,7 +15061,7 @@ QQRKSRC1
           Cap = "LEAD"
           Hint = "Monster will try to cut you off when you're running and figh"
            "ting him"$0D" works well if there are a few monsters in a group, h"
-           "alf doing this, half no"
+           "alf doing this, half not"
         }
         spawnflags: =
         {
@@ -15029,7 +15071,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  if y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviou"$0D"  and a"
-           "ttack normall"
+           "ttack normally"
         }
         spawnflags: =
         {
@@ -15037,7 +15079,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode"$0D"  runs away from you whe"
-           "n woken u"
+           "n woken up"
         }
       }
       monster_tcheckrik_mothers:form =
@@ -15127,7 +15169,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "it can't be hurt"
         }
       }
       obj_banner:form =
@@ -15139,7 +15181,7 @@ QQRKSRC1
         angle: =
         {
           Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
+          Hint = "the direction it faces.  For 3D orientation use angles"
         }
         abslight: =
         {
@@ -15271,14 +15313,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "it can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "EXPLODING"
-          Hint = "the barrel will explode and cause radius damag"
+          Hint = "the barrel will explode and cause radius damage"
         }
         spawnflags: =
         {
@@ -15350,7 +15392,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays & selects visually"
         }
         abslight: =
         {
@@ -15361,7 +15403,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -15395,18 +15437,18 @@ QQRKSRC1
         angle: =
         {
           Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
+          Hint = "the direction it faces.  For 3D orientation use angles"
         }
         health: =
         {
           Txt = "&"
-          Hint = "how much damage needed to kill."
+          Hint = "how much damage needed to kill"
         }
         abslight: =
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays & selects visually"
         }
         abslight: =
         {
@@ -15451,18 +15493,18 @@ QQRKSRC1
         angle: =
         {
           Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
+          Hint = "the direction it faces.  For 3D orientation use angles"
         }
         health: =
         {
           Txt = "&"
-          Hint = "how much damage needed to kill."
+          Hint = "how much damage needed to kill"
         }
         abslight: =
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays & selects visually"
         }
         abslight: =
         {
@@ -15488,7 +15530,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "it can't be hurt"
         }
       }
       obj_bigcrystal:form =
@@ -15500,7 +15542,7 @@ QQRKSRC1
         angle: =
         {
           Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
+          Hint = "the direction it faces.  For 3D orientation use ANGLES"
         }
         speed: =
         {
@@ -15511,7 +15553,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays & selects visually"
         }
         abslight: =
         {
@@ -15632,14 +15674,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_bookopen:form =
@@ -19547,7 +19589,7 @@ QQRKSRC1
         Help = "A chair to go by the queen throne"
         bbox = '-30 -28 -31 30 28 31 1'
         HTML = "help/hr2/g_obj.htm#obj_queenchair"
-        mdl = "models/objects/chairs/queen/tris.fm"
+        mdl = "models/objects/chairs/smallchair/tris.fm"
         angle: =
         {
           Txt = "&"
@@ -19596,7 +19638,7 @@ QQRKSRC1
         Help = "A throne for the queen"
         bbox = '-40 -56 -49 40 56 49 1'
         HTML = "help/hr2/g_obj.htm#obj_queenthrone"
-        mdl = "models/objects/chairs/throne/tris.fm"
+        mdl = "models/objects/chairs/queen/tris.fm"
         angle: =
         {
           Txt = "&"
@@ -20263,7 +20305,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X2"
           Cap = "DARKSKIN"
-          Hint = "if checked it uses the dark ski"
+          Hint = "if checked it uses the dark skin"
         }
       }
       obj_stalactite2:form =
@@ -20314,7 +20356,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X2"
           Cap = "DARKSKIN"
-          Hint = "if checked it uses the dark ski"
+          Hint = "if checked it uses the dark skin"
         }
       }
       obj_stalactite3:form =
@@ -20377,12 +20419,12 @@ QQRKSRC1
         angle: =
         {
           Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
+          Hint = "the direction it faces.  For 3D orientation use angles"
         }
         health: =
         {
           Txt = "&"
-          Hint = "how much damage needed to kill."
+          Hint = "how much damage needed to kill"
         }
         abslight: =
         {
@@ -20414,13 +20456,13 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "it can't be hurt"
         }
       }
       obj_statue_corvus:form =
       {
         Help = "A statue of Corvus."
-        bbox = '-16 -16 0 16 16 32 1'
+        bbox = '-14 -21 0 14 22 128 1'
         HTML = "help/hr2/g_obj.htm#obj_statue_corvus"
         mdl = "models/objects/statue/corvus/tris.fm"
         angle: =
@@ -20458,6 +20500,7 @@ QQRKSRC1
       {
         Help = "The dolphin on all fours"
         bbox = '-68 -22 -30 68 22 30 1'
+        mdl = "models/objects/statue/dolphin/tris.fm"
         HTML = "help/hr2/g_obj.htm#obj_statue_dolphin1"
         angle: =
         {
@@ -20499,7 +20542,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "VULNERABLE"
-          Hint = "it can be hurt - default it can't b"
+          Hint = "it can be hurt - default it can't be"
         }
       }
       obj_statue_dolphin2:form =
@@ -22238,7 +22281,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "it can't be hurt"
         }
       }
       path_corner:form =
@@ -22257,28 +22300,27 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "TELEPORT"
-          Hint = "No hint yet"
+          Hint = "train teleports to this path_corner"
         }
         angles: =
         {
           Txt = "&"
-          Hint = "used to make the brush rotate. The brush MUST have an origin"
-           " brush in it. It is an"
+          Hint = "Train rotates by these angles while travelling"$0D"to this point"
         }
         delay: =
         {
           Txt = "&"
-          Hint = "delay between triggering and action."
+          Hint = "delay between triggering and action"
         }
         rotate: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "Use ANGLES to rotate train instead"
         }
         speed: =
         {
           Txt = "&"
-          Hint = "speed imparted to train when it arrives at this path_corner."
+          Hint = "speed imparted to train when it arrives at this path_corner"
         }
         target: =
         {
@@ -22288,7 +22330,7 @@ QQRKSRC1
         wait: =
         {
           Txt = "&"
-          Hint = "-1 makes trains stop until retriggered"
+          Hint = "-1 stops train until retriggered"$0D"-3 explodes train"$0D"-4 animates model frames"
         }
         pathtarget: =
         {
@@ -22318,13 +22360,13 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "HOLD"
-          Hint = "No hint yet"
+          Hint = "Monster waits here instead of attacking?"
         }
       }
       script_runner:form =
       {
         Help = "Script Runner.  For details on use, see the Raven editing docu"
-         "ment in the Toolkit."
+         "ment in the Toolkit"
         script: =
         {
           Txt = "&"
@@ -22373,7 +22415,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_armor_gold:form =
@@ -22391,7 +22433,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_ghost:form =
@@ -22409,7 +22451,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_heal:form =
@@ -22433,7 +22475,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_light:form =
@@ -22451,7 +22493,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_lung:form =
@@ -22469,7 +22511,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_mana:form =
@@ -22493,18 +22535,25 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_powerup:form =
       {
-        Help = "powerup shrine(tome effect).  Should target an obj_shrin"$0D" "
+        Help = "powerup shrine(tome effect).  Should target an obj_shrine"$0D" "
          "which provides the model and sparkle effect."
         HTML = "help/hr2/g_shrine.htm#shrine_powerup"
         target: =
         {
           Txt = "&"
           Hint = "target the obj_shrine to turn off the sparkle"
+        }
+        spawnflags: =
+        {
+          Txt = "&"
+          Typ = "X1"
+          Cap = "PERMANENT"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_random:form =
@@ -22522,7 +22571,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_reflect:form =
@@ -22540,7 +22589,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_speed:form =
@@ -22558,7 +22607,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       shrine_staff:form =
@@ -22576,7 +22625,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "PERMANENT"
-          Hint = "No hint yet"
+          Hint = "Shrine becomes active again eventually"
         }
       }
       sound_ambient_andoria:form =
@@ -23310,35 +23359,35 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "START_OFF"
-          Hint = "No hint yet"
+          Hint = "Wont damage until triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "TOGGLE"
-          Hint = "No hint yet"
+          Hint = "Can be toggled on and off"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "SILENT"
-          Hint = "supresses playing the soun"
+          Hint = "supresses playing the sound"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NO_PROTECTION"
-          Hint = "*nothing* stops the Damag"
+          Hint = "*nothing* stops the Damage"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16"
           Cap = "SLOW"
-          Hint = "changes the Damage rate to once per secon"
+          Hint = "changes the Damage rate to once per second"
         }
       }
       trigger_Deactivate:form =
@@ -23384,14 +23433,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "MONSTER"
-          Hint = "only a monster will trigger i"
+          Hint = "only a monster will trigger it"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "NOT_PLAYER"
-          Hint = "can't be triggered by playe"
+          Hint = "can't be triggered by played"
         }
         spawnflags: =
         {
@@ -23405,7 +23454,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "ANY"
-          Hint = "anything can activate i"
+          Hint = "anything can activate it"
         }
       }
       trigger_Gravity:form =
@@ -23479,7 +23528,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "NOMESSAGE"
-          Hint = "No hint yet"
+          Hint = "Wont display 'Find x more' messages"
         }
       }
       trigger_elevator:form =
@@ -23546,21 +23595,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X2"
           Cap = "IGNOREENEMY"
-          Hint = "No hint yet"
+          Hint = "Ignores player to get to its buoy"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "TELEPORTSAFE"
-          Hint = "No hint yet"
+          Hint = "Teleports if player cant see it and buoy is clear"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "TELEPORTUNSAFE"
-          Hint = "No hint yet"
+          Hint = "Will teleport even if player sees it (for assassin)"
         }
         spawnflags: =
         {
@@ -23578,7 +23627,7 @@ QQRKSRC1
           Cap = "STAND"
           Hint = "Upon arriving at the target buoy, the monster will forget an"
            "y aenemy it has and simply stand around there until it sees anothe"
-           "r enem"
+           "r enemy"
         }
         spawnflags: =
         {
@@ -23586,7 +23635,7 @@ QQRKSRC1
           Typ = "X64"
           Cap = "WANDER"
           Hint = "Upon arriving at the target buoy, the monster will forget an"
-           "y aenemy it has and begin to wander around that buoy's vicinit"
+           "y aenemy it has and begin to wander around that buoy's vicinity"
         }
         target: =
         {
@@ -23927,6 +23976,13 @@ QQRKSRC1
           Cap = "NOT DEATHMATCH"
           Hint = "Wont appear in a deathmatch game"
         }
+        spawnflags: =
+        {
+          Txt = "&"
+          Typ = "X5888"
+          Cap = "DEATHMATCH ONLY"
+          Hint = "Only appears in a deathmatch map"
+        }
       }
       trigger_once:form =
       {
@@ -23993,28 +24049,28 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "MONSTER"
-          Hint = "only a monster will trigger i"
+          Hint = "only a monster will trigger it"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "NOT_PLAYER"
-          Hint = "can't be triggered by playe"
+          Hint = "can't be triggered by player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "TRIGGERED"
-          Hint = "starts trigger deactivate"
+          Hint = "starts trigger deactivated"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "ANY"
-          Hint = "anything can activate i"
+          Hint = "anything can activate it"
         }
         spawnflags: =
         {
@@ -24022,6 +24078,13 @@ QQRKSRC1
           Typ = "X2048"
           Cap = "NOT DEATHMATCH"
           Hint = "Wont appear in a deathmatch game"
+        }
+        spawnflags: =
+        {
+          Txt = "&"
+          Typ = "X5888"
+          Cap = "DEATHMATCH ONLY"
+          Hint = "Only appears in a deathmatch map"
         }
       }
       trigger_playerpushbutton:form =
@@ -24057,7 +24120,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X4"
           Cap = "TRIGGERED"
-          Hint = "No hint yet"
+          Hint = "Starts deactivated"
         }
       }
       trigger_playerusepuzzle:form =
@@ -24080,35 +24143,35 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "MONSTER"
-          Hint = "only a monster will trigger i"
+          Hint = "only a monster will trigger it"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "NOT_PLAYER"
-          Hint = "can't be triggered by playe"
+          Hint = "can't be triggered by player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "TRIGGERED"
-          Hint = "starts trigger deactivate"
+          Hint = "starts trigger deactivated"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "ANY"
-          Hint = "anything can activate i"
+          Hint = "anything can activate it"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16"
           Cap = "NO_INVENTORY"
-          Hint = "don't show inventory bar, don't take puzzle piec"
+          Hint = "don't show inventory bar, don't take puzzle piece"
         }
         spawnflags: =
         {
@@ -24137,7 +24200,7 @@ QQRKSRC1
         angle: =
         {
           Txt = "&"
-          Hint = "the angle to push the player along the X,Y axes"
+          Hint = "Has no effect - always 0"
         }
         spawnflags: =
         {
@@ -24161,7 +24224,7 @@ QQRKSRC1
         target: =
         {
           Txt = "&"
-          Hint = "targets whatever the trigger is to trigger."
+          Hint = "targets whatever the trigger is to trigger"
         }
         targetname: =
         {
@@ -24181,7 +24244,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "NO_TEXT"
-          Hint = "won't generate the You need... text when triggere"
+          Hint = "won't generate the You need... text when triggered"
         }
         spawnflags: =
         {
@@ -24200,28 +24263,28 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "MONSTER"
-          Hint = "only a monster will trigger i"
+          Hint = "only a monster will trigger it"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "NOT_PLAYER"
-          Hint = "can't be triggered by playe"
+          Hint = "can't be triggered by player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "TRIGGERED"
-          Hint = "starts trigger deactivate"
+          Hint = "starts trigger deactivated"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "ANY"
-          Hint = "anything can activate i"
+          Hint = "anything can activate it"
         }
         count: =
         {
@@ -24258,7 +24321,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "amount of time until it will become active again (default 10"
-           "). -1 makes it go away for ever."
+           "). -1 makes it go away forever"
         }
       }
       trigger_quit_to_menu:form =
@@ -24293,6 +24356,20 @@ QQRKSRC1
           Txt = "&"
           Hint = "time before re-triggerable"
         }
+        spawnflags: =
+        {
+          Txt = "&"
+          Typ = "X2048"
+          Cap = "NOT DEATHMATCH"
+          Hint = "Wont appear in a deathmatch game"
+        }
+        spawnflags: =
+        {
+          Txt = "&"
+          Typ = "X5888"
+          Cap = "DEATHMATCH ONLY"
+          Hint = "Only appears in a deathmatch map"
+        }
       }
       worldspawn:form =
       {
@@ -24308,13 +24385,12 @@ QQRKSRC1
         message: =
         {
           Txt = "&"
-          Hint = "index # of display name of map.  use text_msg for custom nam"
-           "e."
+          Hint = "index # of display name of map.  use text_msg for custom name"
         }
         text_msg: =
         {
           Txt = "&"
-          Hint = "display name of map (string value)."
+          Hint = "display name of map (string value)"
         }
         script: =
         {
@@ -24334,7 +24410,7 @@ QQRKSRC1
         sky: =
         {
           Txt = "&"
-          Hint = "environment map (sky) name."
+          Hint = "environment map (sky) name"
           Typ = "C"
           Items = "andoria"$0D"desert"$0D"hive"$0D"night sky"$0D"storm"$0D"swa"
            "mp"$0D"town"
@@ -24356,7 +24432,7 @@ QQRKSRC1
           Txt = "&"
           Hint = "speed of rotation of sky in degrees/second (.5 for visible e"
            "ffect)"$0D"  Since the sky maps tend to include buildings, etc. th"
-           "is is maybe not so useful."
+           "is is maybe not so useful"
         }
         skyaxis: =
         {
@@ -24367,7 +24443,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "time to wait (in seconds) for all clients to have joined a m"
-           "ap in coop (default is 0)."
+           "ap in coop (default is 0)"
         }
         offensive: =
         {
