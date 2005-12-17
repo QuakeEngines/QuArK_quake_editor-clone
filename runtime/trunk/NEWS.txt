@@ -15,6 +15,21 @@ $Id$
 6.5.0 alpha 4
 =============
  
+ * [DannJ] : Various improvements made to the DataHr2.qrk file.
+    - Filled in various 'no hint' fields with info
+    - Misc spelling corrections to hints
+    - Changed model path for ITEM_WEAPON_MAGICMISSILE
+    - Fixed bbox for monster_elflord, high_priestess & spreader
+    - Altered bbox for light_floortorch
+    - Altered bbox for MISC_MAGIC_PORTAL
+    - Added SKINNUM field to LIGHT_GEM2 (yellow or green gem)
+    - Added SPAWNFLAGS to FUNC_PLAT
+    - Added TARGETNAME and SPAWNFLAGS to FUNC_OBJECT
+    - Added more spawnflags to various triggers
+    - Changed model paths for OBJ_QUEENCHAIR & OBJ_QUEENTHRONE
+    - Added SPAWNFLAGs to SHRINE_POWERUP trigger
+    - Fixed bounding box for STATUE_CORVUS
+ 
  * [cdunde] : Updated Infobase tutorial on how to create texture links.
  
  * [cdunde] : Updated the editors help link and About page
