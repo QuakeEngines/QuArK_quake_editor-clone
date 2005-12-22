@@ -268,6 +268,9 @@ class Rotate3DHandle(GenericHandle):
             editor = mapeditor()
         else:
             editor = saveeditor
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            return
         if editor is not None:
             tb2 = editor.layout.toolbars["tb_terrmodes"]
             if view.info["type"] == "3D":
@@ -1775,6 +1778,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.20  2005/11/07 00:07:01  cdunde
+#To commit all files for addition of new Terrain Generator items
+#Touch-up Selector and 3D Options Dialog
+#
 #Revision 1.19  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
