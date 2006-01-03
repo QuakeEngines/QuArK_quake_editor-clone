@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.8  2005/07/20 23:53:06  cbxpm
 added $modelmaterial to use as texure
 
@@ -490,6 +493,15 @@ expected one.
 
 
   p:=self;
+
+ //Modifié par Jean-François pour le support des textures chargées par accès direct
+
+
+  if (p.FParent=nil) then
+    begin
+       path:='materials';
+    end;
+
   while p.FParent<>nil do
   begin
     if (p<>nil) and (p.fparent<>nil) and (p.fparent.fparent<>nil) and (p.fparent.fparent.fparent=nil)then
@@ -501,7 +513,12 @@ expected one.
   if (s<>'') then
     try
       Log(LOG_VERBOSE,'attempt %tooltexture '+S);
-      VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+      if (self.Protocol<>'') then
+      begin
+        VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+      end
+      else
+        VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
     except
       VTFImage:=nil;
     end;
@@ -510,7 +527,12 @@ expected one.
   if (VTFImage=nil) and (s<>'') then
     try
       Log(LOG_VERBOSE,'attempt $basetexture '+S);
-      VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+      if (self.Protocol<>'') then
+      begin
+        VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+      end
+      else
+        VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
     except
       VTFImage:=nil;
     end;
@@ -519,7 +541,12 @@ expected one.
   if (VTFImage=nil) and (s<>'') then
     try
       Log(LOG_VERBOSE,'attempt $envmap '+S);
-      VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+      if (self.Protocol<>'') then
+      begin
+        VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+      end
+      else
+        VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
     except
       VTFImage:=nil;
     end;
@@ -528,7 +555,12 @@ expected one.
   if (VTFImage=nil) and (s<>'') then
     try
       Log(LOG_VERBOSE,'attempt $modelmaterial '+S);
-      VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+      if (self.Protocol<>'') then
+      begin
+        VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+      end
+      else
+        VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
     except
       VTFImage:=nil;
     end;
