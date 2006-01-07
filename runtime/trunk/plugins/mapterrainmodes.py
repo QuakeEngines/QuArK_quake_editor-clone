@@ -1234,7 +1234,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
             viewname = view.info["viewname"]
             if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] == "0":
                 if tb2.tb.buttons[11].state == 2:
-                    self.cursor = CR_HAND
+                    self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
                 else:
@@ -1248,7 +1248,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                     return
             if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] == "0":
                 if tb2.tb.buttons[11].state == 2:
-                    self.cursor = CR_HAND
+                    self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
                 else:
@@ -1262,7 +1262,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                     return
             if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] == "0":
                 if tb2.tb.buttons[11].state == 2:
-                    self.cursor = CR_HAND
+                    self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
                 else:
@@ -1276,7 +1276,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                     return
             if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] == "0":
                 if tb2.tb.buttons[11].state == 2:
-                    self.cursor = CR_HAND
+                    self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
                 else:
@@ -2358,6 +2358,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2005/12/10 07:19:18  cdunde
+# To add new paint brush cursor for Terrain Generator
+#
 # Revision 1.16  2005/11/15 17:15:49  cdunde
 # Removed unneeded code that was
 # braking changing modes in 3D views
