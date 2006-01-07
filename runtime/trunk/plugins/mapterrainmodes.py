@@ -2122,6 +2122,22 @@ class TerrainPaintClick(TerrainRectSelDragObject):
             if editor is None:
                 editor = saveeditor
             editor.layout.setupdepth(view)
+
+            tb2 = editor.layout.toolbars["tb_terrmodes"]
+            if tb2.tb.buttons[11].state == 2:
+             ## Checks to see that a valid texture has been chosen
+                texture = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"]
+                if texture is not None and texture != "" and texture != "Select a texture":
+                    pass
+                else:
+                    if flags == 1032 or flags == 1024:
+                        return
+                    else:
+                        quarkx.msgbox("You must select a texture to use.\nClick the dialog button to chose one.", MT_ERROR, MB_OK)
+                        view.invalidate()
+                        return
+
+
             sidestoo = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"]
             sidesonly = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"]
             choicelist = quarkpy.maphandles.ClickOnView(editor, view, x, y) #checks if pointing at poly or something
@@ -2172,7 +2188,9 @@ class TerrainPaintClick(TerrainRectSelDragObject):
                                     texobj = texobj.disktexture # this gets "linked"
                                 except quarkx.error:    # and non-linked textures size
                                     texobj = None
-                            texX, texY = texobj['Size']
+                                texX, texY = texobj['Size']
+                            else:
+                                return
 
           ### Gets the stored dialog box values to be used below.
 
@@ -2210,8 +2228,9 @@ class TerrainPaintClick(TerrainRectSelDragObject):
                             if texname is None:
                                 texname = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"]
                             tx2 = texname
-
-                            face.replacetex(tx1, tx2)
+                            tb2 = editor.layout.toolbars["tb_terrmodes"]
+                            if tb2.tb.buttons[11].state == 2:
+                                face.replacetex(tx1, tx2)
 
             # Rebuilds all 3D views only
             for view in editor.layout.views:
@@ -2358,6 +2377,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2006/01/07 05:47:48  cdunde
+# Update so new paint brush cursor does not
+# change if no drag option is chosen for a 3D view
+#
 # Revision 1.17  2005/12/10 07:19:18  cdunde
 # To add new paint brush cursor for Terrain Generator
 #
