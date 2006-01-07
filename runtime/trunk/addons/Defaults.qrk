@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.271  2005/11/07 00:05:47  cdunde
+//To commit all files for addition of new Terrain Generator items
+//Touch-up Selector and 3D Options Dialog
+//
 //Revision 1.270  2005/10/27 06:32:27  cdunde
 //To allow other mod exe files to be used.
 //
@@ -2460,12 +2464,14 @@ QQRKSRC1
       }
       Options:config =
       {
-        PaintBrush_tex = "e1u1/damage1_1"
+        PaintBrush_tex = "Select a texture"
         PaintBrush_origin = '0 0 -32'
         PaintBrush_retain = "1"
         PaintBrush_scale = '100 100'
         PaintBrush_angles = '0 90'
         PaintBrush_color = "1"
+        PaintBrush_sidestoo = "0"
+        PaintBrush_sidesonly = "0"
         PaintBrush_variance = "0.0001"
         Options3Dviews_noicons1 = "0"
         Options3Dviews_drag1 = "1"
