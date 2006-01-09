@@ -2190,7 +2190,14 @@ class TerrainPaintClick(TerrainRectSelDragObject):
                                     texobj = None
                                 texX, texY = texobj['Size']
                             else:
-                                return
+                                if flags == 1032 or flags == 1024:
+                                    return
+                                else:
+                                    quarkx.msgbox("A brush has been found with a texture\nthat is not in the Texture Browser.\n\nIt will be selected now so you can choose another texture for it,\nUse the 'Search' > 'Search/replace textures...' function to find others\nor so you know which texture you need to add.", MT_INFORMATION, MB_OK)
+                                    editor.layout.explorer.uniquesel = face
+                                    editor.layout.explorer.selchanged()
+                                    print "flags",flags
+                                    return
 
           ### Gets the stored dialog box values to be used below.
 
@@ -2377,6 +2384,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2006/01/07 08:56:14  cdunde
+# To fix a few minor bugs with TG paint brush
+# function and make more universal game mode
+#
 # Revision 1.18  2006/01/07 05:47:48  cdunde
 # Update so new paint brush cursor does not
 # change if no drag option is chosen for a 3D view
