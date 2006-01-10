@@ -411,11 +411,20 @@ def paintcursor(view, x, y, flags):
     editor = saveeditor
     tb2 = editor.layout.toolbars["tb_terrmodes"]
     type = view.info["type"]
-    if type == "3D" and flags & MB_CLICKED is not None and view.viewmode == "tex" or view.viewmode == "opengl":
-        if tb2.tb.buttons[10].state == 2:
+    if type == "3D" and flags & MB_CLICKED is not None or view.viewmode == "opengl":
+        if tb2.tb.buttons[10].state == 2 and view.cursor != -21:
             view.cursor = CR_HAND
+
         if tb2.tb.buttons[11].state == 2:
-            view.cursor = CR_BRUSH
+            if view.viewmode == "tex" and view.cursor != 12 or view.viewmode == "opengl" and view.cursor != 12:
+                view.cursor = CR_BRUSH
+            if view.viewmode != "tex" and view.viewmode != "opengl" and view.cursor == 12 or view.cursor == -21:
+                if MapOption("CrossCursor", editor.MODE):
+                    view.cursor = CR_CROSS
+                    view.handlecursor = CR_ARROW
+                else:
+                    view.cursor = CR_ARROW
+                    view.handlecursor = CR_CROSS
 
 
 def terrainpaint(editor, view, x, y, flags, facelist):
@@ -1233,7 +1242,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                 return
             viewname = view.info["viewname"]
             if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] == "0":
-                if tb2.tb.buttons[11].state == 2:
+                if tb2.tb.buttons[11].state == 2 and view.viewmode == "tex":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
@@ -1247,7 +1256,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                     self.hint = "?"
                     return
             if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] == "0":
-                if tb2.tb.buttons[11].state == 2:
+                if tb2.tb.buttons[11].state == 2 and view.viewmode == "tex":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
@@ -1261,7 +1270,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                     self.hint = "?"
                     return
             if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] == "0":
-                if tb2.tb.buttons[11].state == 2:
+                if tb2.tb.buttons[11].state == 2 and view.viewmode == "tex":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
@@ -1275,7 +1284,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                     self.hint = "?"
                     return
             if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] == "0":
-                if tb2.tb.buttons[11].state == 2:
+                if tb2.tb.buttons[11].state == 2 and view.viewmode == "opengl":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
@@ -2196,7 +2205,6 @@ class TerrainPaintClick(TerrainRectSelDragObject):
                                     quarkx.msgbox("A brush has been found with a texture\nthat is not in the Texture Browser.\n\nIt will be selected now so you can choose another texture for it,\nUse the 'Search' > 'Search/replace textures...' function to find others\nor so you know which texture you need to add.", MT_INFORMATION, MB_OK)
                                     editor.layout.explorer.uniquesel = face
                                     editor.layout.explorer.selchanged()
-                                    print "flags",flags
                                     return
 
           ### Gets the stored dialog box values to be used below.
@@ -2384,6 +2392,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2006/01/09 19:32:37  cdunde
+# To fix error and add selection function to TG Paint Brush
+# when an unknown texture is found.
+#
 # Revision 1.19  2006/01/07 08:56:14  cdunde
 # To fix a few minor bugs with TG paint brush
 # function and make more universal game mode
