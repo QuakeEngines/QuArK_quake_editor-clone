@@ -365,6 +365,7 @@ def selectmode(btn):
     try:
         tb1 = editor.layout.toolbars["tb_dragmodes"]
         tb2 = editor.layout.toolbars["tb_terrmodes"]
+        tb3 = editor.layout.toolbars["tb_objmodes"]
     except:
         return
     for b in tb1.tb.buttons:
@@ -372,9 +373,12 @@ def selectmode(btn):
     select1(btn, tb1, editor)
     for b in tb2.tb.buttons:
         b.state = quarkpy.qtoolbar.normal
+    for b in tb3.tb.buttons:
+        b.state = quarkpy.qtoolbar.normal
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MAP, "Building").setint("DragMode", btn.i)
     quarkx.setupsubset(SS_MAP, "Building").setint("TerrMode", 20)
+    quarkx.setupsubset(SS_MAP, "Building").setint("ObjectMode", 20)
 
 def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = DragModes[btn.i]
@@ -422,6 +426,10 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2005/11/13 10:17:29  cdunde
+# Previous fix caused another problem.
+# This fix’s that cursor setting problem
+#
 # Revision 1.15  2005/11/13 08:25:07  cdunde
 # To finally fix cursor setting problem
 #

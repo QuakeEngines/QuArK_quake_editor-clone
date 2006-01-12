@@ -2288,6 +2288,7 @@ def selectmode(btn):
     try:
         tb1 = editor.layout.toolbars["tb_terrmodes"]
         tb2 = editor.layout.toolbars["tb_dragmodes"]
+        tb3 = editor.layout.toolbars["tb_objmodes"]
     except:
         return
     for b in tb1.tb.buttons:
@@ -2295,9 +2296,12 @@ def selectmode(btn):
     select1(btn, tb1, editor)
     for b in tb2.tb.buttons:
         b.state = quarkpy.qtoolbar.normal
+    for b in tb3.tb.buttons:
+        b.state = quarkpy.qtoolbar.normal
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MAP, "Building").setint("TerrMode", btn.i)
     quarkx.setupsubset(SS_MAP, "Building").setint("DragMode", 5)
+    quarkx.setupsubset(SS_MAP, "Building").setint("ObjectMode", 20)
 
 def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = TerrModes[btn.i]
@@ -2362,7 +2366,8 @@ class TerrModesBar(ToolBar):
         i = quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode")
 
         dm = quarkx.setupsubset(SS_MAP, "Building").getint("DragMode")
-        if i == 20 or dm == 0:
+        om = quarkx.setupsubset(SS_MAP, "Building").getint("ObjectMode")
+        if i == 20 or dm == 0 or om == 0:
 
             leave = 0
         else:
@@ -2392,6 +2397,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2006/01/10 01:05:16  cdunde
+# To fix TG cursors to change according to textured
+# and non-textured modes and button changes properly
+#
 # Revision 1.20  2006/01/09 19:32:37  cdunde
 # To fix error and add selection function to TG Paint Brush
 # when an unknown texture is found.

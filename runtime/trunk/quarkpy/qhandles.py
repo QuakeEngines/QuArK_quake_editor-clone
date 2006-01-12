@@ -275,7 +275,10 @@ class Rotate3DHandle(GenericHandle):
             tb2 = editor.layout.toolbars["tb_terrmodes"]
             if view.info["type"] == "3D":
                 if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1":
-                    if tb2.tb.buttons[10].state == 2 or tb2.tb.buttons[11].state == 2:
+                    if tb2.tb.buttons[11].state == 2:
+                        view.cursor = CR_BRUSH
+                        view.handlecursor = CR_BRUSH
+                    elif tb2.tb.buttons[10].state == 2:
                         view.cursor = CR_HAND
                         view.handlecursor = CR_HAND
                     else:
@@ -287,7 +290,10 @@ class Rotate3DHandle(GenericHandle):
                             view.handlecursor = CR_ARROW
                     return
                 if view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1":
-                    if tb2.tb.buttons[10].state == 2 or tb2.tb.buttons[11].state == 2:
+                    if tb2.tb.buttons[11].state == 2:
+                        view.cursor = CR_BRUSH
+                        view.handlecursor = CR_BRUSH
+                    elif tb2.tb.buttons[10].state == 2:
                         view.cursor = CR_HAND
                         view.handlecursor = CR_HAND
                     else:
@@ -300,7 +306,10 @@ class Rotate3DHandle(GenericHandle):
                     return
 
                 if view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1":
-                    if tb2.tb.buttons[10].state == 2 or tb2.tb.buttons[11].state == 2:
+                    if tb2.tb.buttons[11].state == 2:
+                        view.cursor = CR_BRUSH
+                        view.handlecursor = CR_BRUSH
+                    elif tb2.tb.buttons[10].state == 2:
                         view.cursor = CR_HAND
                         view.handlecursor = CR_HAND
                     else:
@@ -313,7 +322,10 @@ class Rotate3DHandle(GenericHandle):
                     return
 
                 if view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1":
-                    if tb2.tb.buttons[10].state == 2 or tb2.tb.buttons[11].state == 2:
+                    if tb2.tb.buttons[11].state == 2:
+                        view.cursor = CR_BRUSH
+                        view.handlecursor = CR_BRUSH
+                    elif tb2.tb.buttons[10].state == 2:
                         view.cursor = CR_HAND
                         view.handlecursor = CR_HAND
                     else:
@@ -1778,6 +1790,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.21  2005/12/22 07:31:59  cdunde
+#To fix another key error when using
+#Tab key function in Model Editor.
+#
 #Revision 1.20  2005/11/07 00:07:01  cdunde
 #To commit all files for addition of new Terrain Generator items
 #Touch-up Selector and 3D Options Dialog
