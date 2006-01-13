@@ -1,0 +1,8 @@
+title: Sphere
+author: cdunde
+
+<img border=1 align=middle>objects3.png</img>
+<I><u>Quick sphere maker</u></I>:  After you click this button, you can draw spheres on the map with the left mouse button and each sphere will be turned into an actual poly.
+
+Move the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.<br>NOTE: Less than 3 faces will not draw anything.<br>
+Over 20 faces will 'freeze' QuArK but it will return.

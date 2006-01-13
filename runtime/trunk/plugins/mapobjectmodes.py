@@ -680,7 +680,7 @@ def objectruler(editor, view, poly):
 class SphereMakerDragObject(parent):
     "A sphere maker."
 
-    Hint = hintPlusInfobaselink("Quick sphere maker||Quick sphere maker:\n\nAfter you click this button, you can draw spheres on the map with the left mouse button and each sphere will be turned into an actual poly.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.\nOver 20 faces will 'freeze' QuArK but it will return.", "intro.mapeditor.toolpalettes.mousemodes.html#createcube")
+    Hint = hintPlusInfobaselink("Quick sphere maker||Quick sphere maker:\n\nAfter you click this button, you can draw spheres on the map with the left mouse button and each sphere will be turned into an actual poly.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.\nOver 20 faces will 'freeze' QuArK but it will return.", "intro.mapeditor.toolpalettes.objectmodes.html#sphere")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -1320,7 +1320,7 @@ class SphereMakerDragObject(parent):
 class PyramidMakerDragObject(parent):
     "A pyramid-cone maker."
 
-    Hint = hintPlusInfobaselink("Quick pyramid-cone maker||Quick pyramid-cone maker:\n\nAfter you click this button, you can draw pyramids-cones on the map with the left mouse button and each pyramid-cone will be turned into an actual poly.\n\nThe more sides that are added the more it becomes a cone shape.\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.\nClick ' InfoBase ' for special vertex movement details.", "intro.mapeditor.toolpalettes.mousemodes.html#createcube")
+    Hint = hintPlusInfobaselink("Quick pyramid-cone maker||Quick pyramid-cone maker:\n\nAfter you click this button, you can draw pyramids-cones on the map with the left mouse button and each pyramid-cone will be turned into an actual poly.\n\nThe more sides that are added the more it becomes a cone shape.\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.\nClick ' InfoBase ' for special vertex movement details.", "intro.mapeditor.toolpalettes.objectmodes.html#pyramid_cone")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -1811,7 +1811,7 @@ class PyramidMakerDragObject(parent):
 class CylinderMakerDragObject(parent):
     "A cylinder maker."
 
-    Hint = hintPlusInfobaselink("Quick cylinder maker||Quick cylinder maker:\n\nAfter you click this button, you can draw cylinders on the map with the left mouse button and each cylinder will be turned into an actual poly. This can make angled sides or a more curved style cylinder by adding more faces.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.mousemodes.html#createcube")
+    Hint = hintPlusInfobaselink("Quick cylinder maker||Quick cylinder maker:\n\nAfter you click this button, you can draw cylinders on the map with the left mouse button and each cylinder will be turned into an actual poly. This can make angled sides or a more curved style cylinder by adding more faces.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#cylinder")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -2336,7 +2336,7 @@ class CylinderMakerDragObject(parent):
 class TorusMakerDragObject(parent):
     "A torus maker."
 
-    Hint = hintPlusInfobaselink("Quick torus maker||Quick torus maker:\n\nAfter you click this button, you can draw a torus group on the map with the left mouse button and each torus will be turned into an actual poly.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.mousemodes.html#createcube")
+    Hint = hintPlusInfobaselink("Quick torus maker||Quick torus maker:\n\nAfter you click this button, you can draw a torus group on the map with the left mouse button and each torus will be turned into an actual poly.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#torus")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -2972,7 +2972,7 @@ class ObjectModesBar(ToolBar):
         ico_dict['ico_objectmodes'] = LoadIconSet1("mapobjm", 1.0)
         ico_objectmodes = ico_dict['ico_objectmodes']
 
-        BuildDialogbtn = qtoolbar.button(DialogClick, "Object Dialog Input||Object Dialog Input:\n\nThis will open a dialog input box for the 'Object modes Toolbar' item currently in use. Not all objects will use the same dialog input box. Which ever object button is active at the time this button is clicked, will produce that objects dialog input box.\n\nThese dialogs will remain open until they are closed manually.\n\nIf a particular object has its own dialog then that objects name will appear in the title. Other wise the standard ' Object Distortion Dialog ' will be used for all other objects.\n\nYou can have one or more dialogs open and active at a time. But they will only effect the objects that use them.", ico_objectmodes, 0, infobaselink="intro.terraingenerator.selection.html#basicselector")
+        BuildDialogbtn = qtoolbar.button(DialogClick, "Object Dialog Input||Object Dialog Input:\n\nThis will open a dialog input box for the 'Object modes Toolbar' item currently in use. Not all objects will use the same dialog input box. Which ever object button is active at the time this button is clicked, will produce that objects dialog input box.\n\nThese dialogs will remain open until they are closed manually.\n\nIf a particular object has its own dialog then that objects name will appear in the title. Other wise the standard ' Object Distortion Dialog ' will be used for all other objects.\n\nYou can have one or more dialogs open and active at a time. But they will only effect the objects that use them.", ico_objectmodes, 0, infobaselink="intro.mapeditor.toolpalettes.objectmodes.html#dialog")
 
                   # to build the Mode buttons
         btns = []
@@ -3006,5 +3006,9 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2006/01/12 07:21:01  cdunde
+# To commit all new and related files for
+# new Quick Object makers and toolbar.
+#
 #
 
