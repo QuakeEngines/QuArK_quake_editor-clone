@@ -1,0 +1,31 @@
+title: Touch-up Selector & Dialog Box
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+For more detailed work there is the <a href="intro.terraingenerator.shaping.html#touchuptool">Touch-up Selector</a>. It does everything that the <b>Basic Selector</b> described above does when you are in the 2D views of the editor. However, in the <b>textured 3D views</b> it works entirely different.
+</td>
+<td valign=top align=middle>
+<img border=0>touchup1.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The <b>Touch-up Selector</b> uses a combination dialog input box called the <b>Touch-up & Paint Brush</b> dialog. This can be brought up by clicking the Selector Dialog Input button when you are using this selector. The item on this combo dialog that pertains to this selector is the <b>Variance</b> input function.
+
+Because sometimes imported terrains, or even ones originated in QuArK, can go off from other faces that make up that area of terrain surface, the Variance function gives you the ability to still move close grouped faces by increasing the amount of distance between their vertexes that is acceptable to be included in that common group. The default value is preset to a very close amount but any amount can be used as you see fit.
+</td>
+<td valign=top align=right>
+<img border=1>touchup2.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+
+Another nice feature is the <b>Color Guide</b> that helps you to identify the <b>common faces</b> that make up a surface group that you are working with. This color guide uses the same color scheme as the <a href="intro.terraingenerator.selection.html#basicselector">Basic Selector</a> but adds additional colors for specific reasons. Such as the <b>yellow</b> outline of the <b>primary face</b> with a <b>dark blue</b> drag handle of its vertex that will be moved along with its common (adjoining) faces. The <b>Color Guide</b> on this dialog box also works in conjunction with the <b>Color Guides</b> on the <a href="intro.terraingenerator.selection.html#options3d">3D views Options Dialog Box</a> to give a wider variation as to how they will be displayed in any of QuArK's 3D views.
+
+Because this section is just a summery to get you acquainted with the different toolbar buttons, not all of its features will be covered here. So it is highly recommended that you read further about it in the <a href="intro.terraingenerator.shaping.html#touchuptool">Touch-up Selector</a> section.
+</td></tr>
+</table>

@@ -1,0 +1,6 @@
+title: Bot Waypoint Editor
+author: Fredrick
+desc: about
+desc: using
+desc: last
+

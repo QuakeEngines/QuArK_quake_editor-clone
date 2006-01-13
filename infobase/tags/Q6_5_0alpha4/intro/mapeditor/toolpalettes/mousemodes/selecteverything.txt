@@ -1,0 +1,6 @@
+title: Selecting everything
+author: Decker
+
+<img border=0 align=right>selecteverything.png</img>
+This mouse-mode combines the polyhedron and entity selections, also it will
+select any duplicators and bezier-patches.
