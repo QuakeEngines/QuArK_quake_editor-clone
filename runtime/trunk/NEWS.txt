@@ -20,6 +20,7 @@ $Id$
      - Pyramids\Cones, Cylinders and Torus by simply dragging them.
      - Instant live updating of all object shapes as created by dragging.
      - Object modes tool-palette with shape icons and Infobase links.
+     - (see Infobase section 1.4.3.4 Object modes tool-palette)
      - Custom distortion and modifying dialog input systems.
      - Informative color scale face and sections live action counter.
      - Visual Aids including linking with new Customizable Ruler System.
