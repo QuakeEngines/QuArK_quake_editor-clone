@@ -15,6 +15,19 @@ $Id$
 6.5.0 alpha 4
 =============
 
+ * [cdunde] : Added new Quick Objects Maker functions and toolbar.
+     - Allows the creation of basic object shapes for Spheres,
+     - Pyramids\Cones, Cylinders and Torus by simply dragging them.
+     - Instant live updating of all object shapes as created by dragging.
+     - Object modes tool-palette with shape icons and Infobase links.
+     - Custom distortion and modifying dialog input systems.
+     - Informative color scale face and sections live action counter.
+     - Visual Aids including linking with new Customizable Ruler System.
+     - Add new section to Infobase with full operation documentation.
+     - Built in safe guards and broken poly checking and elimination.
+     - Pre-structured face and section labeling system with group folders.
+     - Single object item undo action creation.
+
  * [cdunde] : Fixed TG cursors to change according to textured
     - and non-textured modes and button changes properly.
 
