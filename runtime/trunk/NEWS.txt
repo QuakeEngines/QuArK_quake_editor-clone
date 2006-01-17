@@ -12,6 +12,14 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
+6.5.0 alpha 5
+=============
+
+ * [cdunde] : Added new 'Hollowing' functions to the Quick Objects Maker dialog boxes.
+     - Allows the automatic hollowing and interior wall removal of all objects.
+     - Updated Infobase on these new functions and full documentation of their use.
+     - Added new safe guards and alert messages for excessive faces and processing times.
+
 6.5.0 alpha 4
 =============
 
