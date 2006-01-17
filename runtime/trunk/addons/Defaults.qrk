@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.273  2006/01/12 07:21:01  cdunde
+//To commit all new and related files for
+//new Quick Object makers and toolbar.
+//
 //Revision 1.272  2006/01/07 08:55:06  cdunde
 //To add options left out to file for TG paint brush
 //
@@ -2468,11 +2472,14 @@ QQRKSRC1
       Options:config =
       {
         QuickObjects_distortion = "0"
+        QuickObjects_makehollow = "0"
         QuickObjects_torus_segs_faces = '0 0'
         QuickObjects_torus_radiuses = '2 1'
         QuickObjects_torus_xydistort = '2 2'
         QuickObjects_torus_zupdistort = '2 0'
         QuickObjects_torus_ring_seg_edges = '2 2'
+        QuickObjects_torus_hollowtorus = "0"
+        QuickObjects_torus_nobulkheads = "0"
         PaintBrush_tex = "Select a texture"
         PaintBrush_origin = '0 0 -32'
         PaintBrush_retain = "1"

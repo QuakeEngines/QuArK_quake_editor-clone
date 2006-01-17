@@ -14,7 +14,13 @@ Both dialog boxes can remain open at the same time and are active on the particu
 <img border=1 align=right valign=top>objects8.png</img>
 <I><u>Object Distortion Dialog</u></I>: This is a basic dialog input box that is used by every object maker on the toolbar unless a specific one has been created for that particular object maker.
 
-Clicking on the 'up' arrow will cause the object to be stretched, or elongated, from its normal shape. Clicking on the 'down' arrow will do the opposite and cause it to shrink or be squished. If set to '0', then it will have no effect and the object will be crated to its normal default shape. It has no effect on how many 'rings', sections, or faces that an object will have. That is done by the actual dragging process or a 'custom' dialog box possibly. Clicking the 'X' will close any dialog box.
+&nbsp;&nbsp;&nbsp;<b>Distortion</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clicking on the 'up' arrow will cause the object to be stretched, or elongated, from its normal shape. Clicking on the 'down' arrow will do the opposite and cause it to shrink or be squished. If set to '0', then it will have no effect and the object will be crated to its normal default shape. It has no effect on how many 'rings', sections, or faces that an object will have. That is done by the actual dragging process or a 'custom' dialog box possibly.
+
+&nbsp;&nbsp;&nbsp;<b>Make hollow</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This check box can be used on any object and is pretty much self explanatory. Leaving this box unchecked will create the object as a normal solid item. For alternative ways of making a solid object hollow, see 'Misc. Info' below in the <ref> ./aids </ref> section. In addition, this function is effect by the <a href="intro.mapeditor.toolpalettes.movement.html">Movement tool-palette</a> and it is recommended that a low 'negative' setting be given for its <a href="intro.mapeditor.toolpalettes.movement.html#configuration">Inflate/Deflate</a> amount.
+
+Clicking the 'X' will close any dialog box.
 </td></tr>
 </table>
 
@@ -45,6 +51,12 @@ Clicking on the 'up' arrow will cause the object to be stretched, or elongated, 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Seg edges - using the up and down arrows will cause the edges of the 'segments' of a torus to become angled or squared off, giving it more of a 'hallway' shape.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Both of these powerful functions can render some very unusual results and shapes that add just 'gobs' of real creativity, experimentation and fun to this object.
+
+&nbsp;&nbsp;&nbsp;<b>Extrude hollow</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This check box can be used at any time and is pretty much self explanatory. Leaving this box unchecked will create the object as a normal torus item. For alternative ways of making a solid object hollow, see 'Misc. Info' below in the <ref> ./aids </ref> section. In addition, this function is effect by the <a href="intro.mapeditor.toolpalettes.movement.html">Movement tool-palette</a> and it is recommended that a low 'negative' setting be given for its <a href="intro.mapeditor.toolpalettes.movement.html#configuration">Inflate/Deflate</a> amount.
+
+&nbsp;&nbsp;&nbsp;<b>No bulkheads</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This check box is a special feature item for the torus object only and its use is controlled automatically by the 'Extrude hollow' check box above, which has to be active for this one to be checked. This function will cause all interior 'bulkhead' walls to be removed when the torus is made hollow.
 
 &nbsp;&nbsp;&nbsp;<b>Reset & the X buttons</b>:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset button - this one 'defaults' button, as it is marked, will reset all of the default values for this dialog box.<br>

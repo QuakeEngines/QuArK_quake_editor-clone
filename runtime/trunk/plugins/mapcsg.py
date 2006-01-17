@@ -179,8 +179,20 @@ def extrudewalls(editor, plist, wallwidth=None):
         undo = quarkx.action()
         for p in plist:
           newg = quarkx.newobj(p.shortname+" group:g")
+
+    # Added for torus auto remove bulkheads option
+          facecount = 0
+          tb3 = editor.layout.toolbars["tb_objmodes"]
+
           for f in p.faces:
             walls = f.extrudeprism(p)
+
+    # Added for torus auto remove bulkheads option
+            if tb3.tb.buttons[4].state == 2 and quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"] == "1":
+              if facecount < 2:
+                facecount = facecount + 1
+                continue
+
             for wall in walls:
               wall.texturename=f.texturename
             inner = f.copy()
@@ -363,6 +375,9 @@ quarkpy.mapentities.PolyhedronType.menubegin = newmenubegin
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.6  2003/03/24 08:57:15  cdunde
 # To update info and link to infobase
 #

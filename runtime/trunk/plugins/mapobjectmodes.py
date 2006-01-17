@@ -32,6 +32,10 @@ from math import pi, sin, cos, fmod
 import mapdragmodes
 import quarkpy.qbaseeditor
 import quarkpy.dlgclasses
+# For hollowing Torus
+import quarkpy.mapcommands
+import quarkpy.mapentities
+import plugins.mapcsg
 
 
 #
@@ -69,9 +73,9 @@ class DistortionDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (180,85)
+    size = (190,115)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
-    dfsep = 0.60    # sets 50% for labels and the rest for edit boxes
+    dfsep = 0.57    # sets 57% for labels and the rest for edit boxes
     dlgdef = """
         {
         Style = "13"
@@ -92,6 +96,20 @@ class DistortionDlg(quarkpy.dlgclasses.LiveEditDlg):
 
         sep: = {Typ="S" Txt=""}
 
+        makehollow: =
+        {
+        Txt = "Make hollow"
+        Typ = "X1"
+        Cap="on/off" 
+        Hint = "Checking this box will make the object hollow when the LMB is released."$0D
+               "This will take added time to compute and may ' freeze ' the program temporarily."$0D$0D
+               "WARNING: when using with the 'Sphere' object,"$0D
+               "over 10 faces will take about 30 seconds."$0D
+               "over 15 faces will take about 10 minutes."
+        }
+
+        sep: = {Typ="S" Txt=""}
+
         exit:py = {Txt="" }
         }
     """
@@ -105,26 +123,41 @@ def DistortionClick(m):
         editor.distortiondlg=self
         src = self.src
       ### To populate settings...
-        if (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"] is None):
+        if (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"] is None):
             src["distortion"] = "0"
+            src["makehollow"] = "0"
             quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"] = src["distortion"]
+            quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"] = src["makehollow"]
         else:
             src["distortion"] = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"]
+            src["makehollow"] = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
 
         if src["distortion"]:
             distort = src["distortion"]
         else:
             distort = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"]
 
+        if src["makehollow"]:
+            hollow = src["makehollow"]
+        else:
+            hollow = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
+
+
     def action(self, editor=editor):
         distort = (self.src["distortion"])
         if distort is None:
             distort = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"]
 
+        hollow = (self.src["makehollow"])
+        if hollow is None:
+            hollow = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
+
       ### Save the settings...
         quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"] = distort
+        quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"] = hollow
 
         self.src["distortion"] = distort
+        self.src["distortion"] = hollow
 
 
     def onclosing(self, editor=editor):
@@ -150,9 +183,9 @@ class TorusDistortionDlg(quarkpy.dlgclasses.LiveEditDlg):
 
     endcolor = AQUA
         # width,length add 40 for new button
-    size = (180,280)
+    size = (190,310)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
-    dfsep = 0.55    # sets 55% for labels and the rest for edit boxes
+    dfsep = 0.52    # sets 52% for labels and the rest for edit boxes
     dlgdef = """
         {
         Style = "13"
@@ -219,6 +252,29 @@ class TorusDistortionDlg(quarkpy.dlgclasses.LiveEditDlg):
 
         sep: = {Typ="S" Txt=""}
 
+        hollowtorus: =
+        {
+        Txt = "Extrude hollow"
+        Typ = "X1"
+        Cap="on/off" 
+        Hint = "Checking this box will make the object hollow when the LMB is released."$0D
+               "This will take added time to compute and may ' freeze ' the program temporarily."$0D
+               "Un-checking this feature will automatically deactivate the 'No bulkheads' box below."$0D
+        }
+
+        nobulkheads: =
+        {
+        Txt = "No bulkheads"
+        Typ = "X1"
+        Cap="on/off" 
+        Hint = "You can not use this feature unless 'Extrude hollow' above is already checked."$0D
+               "Checking this box will automatically remove all interior 'bulkhead' walls."$0D
+               "This may cause 'leaks' in the map requiring the use of a 'hollow'"$0D
+               "box surrounding the entire map to allow it to build without any errors."
+        }
+
+        sep: = {Typ="S" Txt=""}
+
         Reset: =       // Reset button
         {
           Cap = "defaults"      // button caption
@@ -231,6 +287,8 @@ class TorusDistortionDlg(quarkpy.dlgclasses.LiveEditDlg):
             xydistort = "2 2"
             zupdistort = "2 0"
             ring_seg_edges = "2 2"
+            hollowtorus = "0"
+            nobulkheads = "0"
           }
         }
 
@@ -249,23 +307,29 @@ def TorusDistortionClick(m):
         editor.torusdistortiondlg=self
         src = self.src
       ### To populate settings...
-        if (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_segs_faces"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_radiuses"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_xydistort"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_zupdistort"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_ring_seg_edges"] is None):
+        if (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_segs_faces"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_radiuses"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_xydistort"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_zupdistort"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_ring_seg_edges"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_hollowtorus"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"] is None):
             src["segs_faces"] = 0, 0
             src["radiuses"] = 2, 1
             src["xydistort"] = 2, 2
             src["zupdistort"] = 2, 0
             src["ring_seg_edges"] = 2, 2
+            src["hollowtorus"] = "0"
+            src["nobulkheads"] = "0"
             quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_segs_faces"] = src["segs_faces"]
             quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_radiuses"] = src["radiuses"]
             quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_xydistort"] = src["xydistort"]
             quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_xydistort"] = src["zupdistort"]
             quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_ring_seg_edges"] = src["ring_seg_edges"]
+            quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_hollowtorus"] = src["hollowtorus"]
+            quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"] = src["nobulkheads"]
         else:
             src["segs_faces"] = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_segs_faces"]
             src["radiuses"] = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_radiuses"]
             src["xydistort"] = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_xydistort"]
             src["zupdistort"] = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_zupdistort"]
             src["ring_seg_edges"] = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_ring_seg_edges"]
+            src["hollowtorus"] = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_hollowtorus"]
+            src["nobulkheads"] = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"]
 
 
         if src["segs_faces"]:
@@ -292,6 +356,22 @@ def TorusDistortionClick(m):
             ring_edges, seg_edges = src["ring_seg_edges"]
         else:
             ring_edges, seg_edges = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_ring_seg_edges"]
+
+
+        if src["hollowtorus"]:
+            hollow = src["hollowtorus"]
+            plugins.mapterrainmodes.clickedbutton(editor)
+        else:
+            hollow = "0"
+            plugins.mapterrainmodes.clickedbutton(editor)
+
+
+        if src["nobulkheads"]:
+            noheads = src["nobulkheads"]
+            plugins.mapterrainmodes.clickedbutton(editor)
+        else:
+            noheads = "0"
+            plugins.mapterrainmodes.clickedbutton(editor)
 
 
         self.src["segs_faces"] = "%.0f %.0f"%(segments, rings)
@@ -322,6 +402,25 @@ def TorusDistortionClick(m):
         if ring_edges is None:
             ring_edges, seg_edges = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_ring_seg_edges"]
 
+        if (self.src["hollowtorus"]) == "0" and quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"] == "1":
+            hollow = (self.src["hollowtorus"])
+            quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_hollowtorus"] = hollow
+            (self.src["nobulkheads"]) = "0"
+            noheads = (self.src["nobulkheads"])
+            quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"] = noheads
+        else:
+            hollow = (self.src["hollowtorus"])
+            quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_hollowtorus"] = hollow
+
+
+        if (self.src["nobulkheads"]) == "1" and quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_hollowtorus"] == "0":
+            (self.src["nobulkheads"]) = "0"
+            noheads = (self.src["nobulkheads"])
+            quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"] = noheads
+
+        else:
+            noheads = (self.src["nobulkheads"])
+            quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"] = noheads
 
 
       ### Save the settings...
@@ -834,6 +933,8 @@ class SphereMakerDragObject(parent):
             else:
                 self.trigger = 1
 
+        self.facecount = facecount # To pass value to def rectanglesel below for error message testing
+
   #### This section sets up the curent view to draw the BLUE circle, lines, GREEN crosshairs and face lable
         cv = self.view.canvas()
         cv.pencolor = BLUE
@@ -1252,6 +1353,10 @@ class SphereMakerDragObject(parent):
             return
 
       ## Creates actual sphere object
+        facecount = self.facecount # Gets value from above for message testing
+        if facecount >= 65:
+            quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces\nexceeding the maximum limit\nof 64 and can not be created.", MT_ERROR, MB_CANCEL)
+            return None, None
 
         for f in rectangle.faces:
 
@@ -1269,8 +1374,36 @@ class SphereMakerDragObject(parent):
                   (n^v) * 128 + tp[0])
             f.setthreepoints(tp, 0)
 
-        quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new sphere object", "0")
+      ## This section is for the option to hollow the object
+        makehollow = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
+        if makehollow == "0":
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new sphere object", "0")
+        else:
+            todo = MR_OK
+            if facecount > 15:
+                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will FREEZE QuArK MORE THEN 1/2 HOUR OR MUCH LONGER\nto hollow and place them into a 'Sphere group' folder.\nThis SHOULD NOT be continued here. Open another session of QuArK,\ncreate it there, continue working here, then copy it into this one.\n\nDo you STILL want to OK to continue and create this object in THIS session?", MT_WARNING, MB_OK_CANCEL)
 
+            elif facecount >= 14:
+                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will FREEZE QuArK 6 to 13 MINUTES\nto hollow and place them into a 'Sphere group' folder.\nIt is HIGHLY recommended that you open another session of QuArK,\ncreate it there, continue working here, then copy it into this one.\n\nIs it OK to continue and create this object?", MT_WARNING, MB_OK_CANCEL)
+
+            elif facecount >= 12:
+                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will FREEZE QuArK about 2 to 4 MINUTES\nto hollow and place them into a 'Sphere group' folder.\nIt is recommended that you open another session of QuArK,\ncreate it there, continue working here, then copy it into this one.\n\nIs it OK to continue and create this object?", MT_WARNING, MB_OK_CANCEL)
+
+            elif facecount >= 10:
+                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will freeze QuArK about 30 to 60 seconds\nto hollow and place them into a 'Sphere group' folder.\nIf desired you can cancel, open another session of QuArK,\ncreate it there, continue working here, then copy it into this one.\n\nIs it OK to continue and create this object?", MT_INFORMATION, MB_OK_CANCEL)
+
+            elif facecount >= 8:
+                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will freeze QuArK about 5 to 15 seconds\nto hollow and place them into a 'Sphere group' folder.\n\nIs it OK to continue and create this object?", MT_CONFIRMATION, MB_OK_CANCEL)
+
+            if todo == MR_CANCEL: return None, None
+            if todo == MR_OK:
+                group = quarkx.newobj("Sphere group:g")
+                for poly in [rectangle]:
+                    newpoly = poly.copy()
+                    group.appenditem(newpoly)
+                quarkpy.mapbtns.dropitemsnow(editor, [group], "new sphere group", "0")
+                m = None
+                plugins.mapcsg.Hollow1click(m)
 
 ### This section needs to be here to retain the BLUE circle and lines when you pause in a drag
 
@@ -1472,6 +1605,9 @@ class PyramidMakerDragObject(parent):
                 self.trigger = 2
             else:
                 self.trigger = 1
+
+        self.facecount = facecount # To pass value to def rectanglesel below for error message testing
+
 
   #### This section sets up the curent view to draw the BLUE circle, lines, GREEN crosshairs and face lable
         cv = self.view.canvas()
@@ -1744,6 +1880,10 @@ class PyramidMakerDragObject(parent):
             return 
 
       ## Creates actual pyramid object
+        facecount = self.facecount # Gets value from above for message testing
+        if facecount >= 65:
+            quarkx.msgbox("This pyramid object contains\n" + str(facecount) + " faces\nexceeding the maximum limit\nof 64 and can not be created.", MT_ERROR, MB_CANCEL)
+            return None, None
 
         for f in rectangle.faces:
             # Prepare to set the default texture on the faces
@@ -1760,7 +1900,19 @@ class PyramidMakerDragObject(parent):
                   (n^v) * 128 + tp[0])
             f.setthreepoints(tp, 0)
 
-        quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new pyramid object", "0")
+      ## This section is for the option to hollow the object
+        makehollow = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
+        if makehollow == "0":
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new pyramid object", "0")
+        else:
+            group = quarkx.newobj("Pyramid group:g")
+            for poly in [rectangle]:
+                newpoly = poly.copy()
+                group.appenditem(newpoly)
+            quarkpy.mapbtns.dropitemsnow(editor, [group], "new pyramid group", "0")
+            m = None
+            plugins.mapcsg.Hollow1click(m)
+
 
 
 ### This section needs to be here to retain the BLUE circle and lines when you pause in a drag
@@ -1964,6 +2116,9 @@ class CylinderMakerDragObject(parent):
                 self.trigger = 2
             else:
                 self.trigger = 1
+
+        self.facecount = facecount # To pass value to def rectanglesel below for error message testing
+
 
   #### This section sets up the curent view to draw the BLUE circle, lines, GREEN crosshairs and face lable
         cv = self.view.canvas()
@@ -2249,6 +2404,7 @@ class CylinderMakerDragObject(parent):
                 f.swapsides()
         if self.x0-x == 0:
             return None, None
+
         return None, [poly]
 
 
@@ -2268,6 +2424,10 @@ class CylinderMakerDragObject(parent):
             return 
 
       ## Creates actual cylinder object
+        facecount = self.facecount # Gets value from above for message testing
+        if facecount >= 65:
+            quarkx.msgbox("This cylinder object contains\n" + str(facecount) + " faces\nexceeding the maximum limit\nof 64 and can not be created.", MT_ERROR, MB_CANCEL)
+            return None, None
 
         for f in rectangle.faces:
 
@@ -2285,8 +2445,18 @@ class CylinderMakerDragObject(parent):
                   (n^v) * 128 + tp[0])
             f.setthreepoints(tp, 0)
 
-        quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new cylinder object", "0")
-
+      ## This section is for the option to hollow the object
+        makehollow = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
+        if makehollow == "0":
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new cylinder object", "0")
+        else:
+            group = quarkx.newobj("Cylinder group:g")
+            for poly in [rectangle]:
+                newpoly = poly.copy()
+                group.appenditem(newpoly)
+            quarkpy.mapbtns.dropitemsnow(editor, [group], "new cylinder group", "0")
+            m = None
+            plugins.mapcsg.Hollow1click(m)
 
 ### This section needs to be here to retain the BLUE circle and lines when you pause in a drag
 
@@ -2584,6 +2754,8 @@ class TorusMakerDragObject(parent):
             if float(ring_edges) >= 19 and adjfacecount >= 7 and adjfacecount != 8:
                 adjfacecount = facecount = 8
 
+        self.adjfacecount = adjfacecount # To pass value to def rectanglesel below for error message testing
+
     ## This section creates the color warning scale
         if adjfacecount > 10:
             cv.fontcolor = FUCHSIA
@@ -2843,6 +3015,13 @@ class TorusMakerDragObject(parent):
             return 
 
       ## Creates actual torus object
+        adjfacecount = self.adjfacecount # Gets value from above for message testing
+    #    hollowtorus = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_hollowtorus"]
+    #    if hollowtorus == "0":
+        if adjfacecount >= 65:
+            quarkx.msgbox("This torus object contains\n" + str(adjfacecount) + " faces\nexceeding the maximum limit\nof 64 and can not be created.", MT_ERROR, MB_CANCEL)
+            return None, None
+
         group = quarkx.newobj("Torus group:g")
         for poly in rectangle.subitems:
 
@@ -2866,6 +3045,9 @@ class TorusMakerDragObject(parent):
 
             group.appenditem(newpoly)
         quarkpy.mapbtns.dropitemsnow(editor, [group], "new torus group", "0")
+        if quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_hollowtorus"] == "1":
+            m = None
+            plugins.mapcsg.ExtWall1click(m)
 
 
     def drawredimages(self, view, internal=0):
@@ -3006,6 +3188,10 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2006/01/13 07:12:48  cdunde
+# To commit all new and updated Infobase docs and
+# toolbar links for new Quick Object makers and toolbar.
+#
 # Revision 1.1  2006/01/12 07:21:01  cdunde
 # To commit all new and related files for
 # new Quick Object makers and toolbar.

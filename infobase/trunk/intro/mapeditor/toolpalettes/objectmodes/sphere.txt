@@ -6,3 +6,5 @@ author: cdunde
 
 Move the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.<br>NOTE: Less than 3 faces will not draw anything.<br>
 Over 20 faces will 'freeze' QuArK but it will return.
+
+Because the Sphere object is a far more complicated item to compute, creating it will take longer then the other objects as the number of faces it is given increases. Although it can 'freeze' the program for a period of time for processing, it will return the object and become active again. When making the Sphere hollow, built in alert messages will be displayed when specific plat toes are reached to make the user aware of the processing time that will be involved to create it and give them the option to continue or cancel this object all together.
