@@ -1,11 +1,11 @@
 object AboutBox: TAboutBox
-  Left = 54
-  Top = 70
+  Left = 55
+  Top = 140
   HelpContext = -1
   ActiveControl = Edit1
   BorderStyle = bsDialog
-  ClientHeight = 353
-  ClientWidth = 673
+  ClientHeight = 352
+  ClientWidth = 705
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,7 +22,7 @@ object AboutBox: TAboutBox
   object Panel1: TPanel
     Left = 8
     Top = 8
-    Width = 657
+    Width = 689
     Height = 337
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -155,7 +155,7 @@ object AboutBox: TAboutBox
     object WebsiteAddress: TLabel
       Left = 472
       Top = 256
-      Width = 149
+      Width = 162
       Height = 11
       Caption = 'http://quark.planetquake.gamespy.com/'
       Font.Charset = DEFAULT_CHARSET
@@ -170,14 +170,14 @@ object AboutBox: TAboutBox
       Top = 65
       Width = 227
       Height = 13
-      Caption = '  Copyright (C) 1996-2005 Armin Rigo and others'
+      Caption = '  Copyright (C) 1996-2006 Armin Rigo and others'
     end
     object UsedCompilerLabel: TLabel
       Left = 406
       Top = 7
-      Width = 226
+      Width = 211
       Height = 11
-      Caption = 'Alpha 3 - Compiled with Delphi 6.0 - November-01-2005'
+      Caption = 'Alpha 4 - Compiled with Delphi 6.0 - January-13-2006'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
@@ -222,9 +222,9 @@ object AboutBox: TAboutBox
     object Label12: TLabel
       Left = 536
       Top = 288
-      Width = 108
+      Width = 144
       Height = 11
-      Caption = 'http://quark.ironfoot.co.uk'
+      Caption = 'http://quark.ironfoot.co.uk/forums/'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
@@ -235,7 +235,7 @@ object AboutBox: TAboutBox
     object Memo1: TMemo
       Left = 408
       Top = 83
-      Width = 233
+      Width = 265
       Height = 166
       ParentColor = True
       ReadOnly = True
@@ -244,7 +244,7 @@ object AboutBox: TAboutBox
     end
   end
   object OKButton: TButton
-    Left = 495
+    Left = 511
     Top = 312
     Width = 75
     Height = 24
