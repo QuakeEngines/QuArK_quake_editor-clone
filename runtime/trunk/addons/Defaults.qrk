@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.274  2006/01/17 19:25:46  cdunde
+//To add all file updates for new Object modes
+//dialog boxes hollowing functions.
+//
 //Revision 1.273  2006/01/12 07:21:01  cdunde
 //To commit all new and related files for
 //new Quick Object makers and toolbar.
@@ -1406,7 +1410,7 @@ QQRKSRC1
         DefaultTextureScale = "0.25"
     //    EnableTransparency = ""
         WateryTex = "!"
-        TextureFormat = ".vmt"
+        TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
         TextureWriteSubFormat = "3"
         TextureWriteSubFormatA = "15"
