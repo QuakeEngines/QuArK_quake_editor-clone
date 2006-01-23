@@ -28,6 +28,14 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.275  2006/01/21 01:02:50  cdunde
+//To fix H-L2 texture addons for H-L2 and CS as well as
+//Defaults.qrk file with change over from texture files from
+//vmf to vtf format allowing their viewing in Texture Browser.
+//Also trimmed unwanted files from them and changed file location
+//setup to eliminate conflict of H-L2 gcf file sharing causing both
+//Steam and QuArK to have errors and\or crash.
+//
 //Revision 1.274  2006/01/17 19:25:46  cdunde
 //To add all file updates for new Object modes
 //dialog boxes hollowing functions.
@@ -1410,7 +1418,7 @@ QQRKSRC1
         DefaultTextureScale = "0.25"
     //    EnableTransparency = ""
         WateryTex = "!"
-        TextureFormat = ".vtf"
+        TextureFormat = ".vmt"
         TextureWriteFormat = ".vtf"
         TextureWriteSubFormat = "3"
         TextureWriteSubFormatA = "15"
@@ -3324,7 +3332,7 @@ QQRKSRC1
       {
         DefExt="dll"
         Txt = "Steam Filesystem Dll"
-        Typ = "ED"     
+        Typ = "EP"     
         Hint = "chose FileSystem_Steam.dll from sourcesdk/bin directory"
         CheckFile = "FileSystem_Steam.dll"
       }
