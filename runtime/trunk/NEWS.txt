@@ -15,8 +15,11 @@ $Id$
 6.5.0 alpha 5
 =============
 
+ * [cdunde] : Expanded on textures that can be viewed in Texture Browser for
+     - for Half-Life2 and Counter Strike and added textures to textures-hl2.qrk file.
+
  * [cdunde] : Fixed setup and textured viewing in Texture Browser for Half-Life2.
-      - Reinstated prefabs-hl2.qrk previous version so they would work again.
+     - Reinstated prefabs-hl2.qrk previous version so they would work again.
 
  * [cdunde] : Added new 'Hollowing' functions to the Quick Objects Maker dialog boxes.
      - Allows the automatic hollowing and interior wall removal of all objects.
