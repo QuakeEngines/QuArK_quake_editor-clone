@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2006/01/03 22:38:23  cdunde
+Fix by jfvg so custom textures can be viewed and used
+
 Revision 1.10  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -424,7 +427,7 @@ expected one.
        if SymbolType=sCurlyBracketLeft then
          ReadHL2Sub
        else
-         raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
+         raise EErrorFmt(254, [LineNoBeingParsed, '1st item unknown thing']);
      end;
      ReadSymbol(sCurlyBracketRight);
    end;
@@ -457,37 +460,37 @@ expected one.
    ReadSymbol(sCurlyBracketLeft);
    // read attributes of entity
    while SymbolType<>sCurlyBracketRight do
-   begin
-
-     if (SymbolType = sStringQuotedToken) or (SymbolType = sStringToken) then
      begin
-       S1:=S;
-       if SymbolType = sStringToken then
-         ReadSymbol(sStringToken);
-       if SymbolType = sStringQuotedToken then
-         ReadSymbol(sStringQuotedToken);
 
-       if (SymbolType = sNumValueToken)  then
-       begin
-         self.Specifics.Add(S1+'='+FloatToStr(NumericValue));
-         Log(LOG_VERBOSE,'  attribute'+S1+' '+S);
-         ReadSymbol(sNumValueToken);
-       end
-       else
-         if SymbolType = sStringQuotedToken then
+       if (SymbolType = sStringQuotedToken) or (SymbolType = sStringToken) then
          begin
-           self.Specifics.Add(S1+'='+S);
-           Log(LOG_VERBOSE,'  attribute'+S1+' '+S);
-           ReadSymbol(sStringQuotedToken);
-         end
-         else
-           if SymbolType=sCurlyBracketLeft then
-             ReadHL2Sub; //descend
-     end
-     else
-       raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
+           S1:=S;
+           if SymbolType = sStringToken then
+             ReadSymbol(sStringToken);
+           if SymbolType = sStringQuotedToken then
+             ReadSymbol(sStringQuotedToken);
 
-   end; //while SymbolType<>sCurlyBracketRight
+           if (SymbolType = sNumValueToken)  then
+             begin
+               self.Specifics.Add(S1+'='+FloatToStr(NumericValue));
+               Log(LOG_VERBOSE,'  attribute'+S1+' '+S);
+               ReadSymbol(sNumValueToken);
+             end
+           else
+             if SymbolType = sStringQuotedToken then
+               begin
+                 self.Specifics.Add(S1+'='+S);
+                 Log(LOG_VERBOSE,'  attribute'+S1+' '+S);
+                 ReadSymbol(sStringQuotedToken);
+               end
+             else
+               if SymbolType=sCurlyBracketLeft then
+                   ReadHL2Sub; //descend
+         end
+       else
+         raise EErrorFmt(254, [LineNoBeingParsed, '2nd item unknown thing']);
+
+     end; //while SymbolType<>sCurlyBracketRight
 
    ReadSymbol(sCurlyBracketRight);
 
@@ -528,9 +531,37 @@ expected one.
     try
       Log(LOG_VERBOSE,'attempt $basetexture '+S);
       if (self.Protocol<>'') then
-      begin
-        VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
-      end
+        begin
+          VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+        end
+      else
+          VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
+    except
+      VTFImage:=nil;
+    end;
+
+  S:=Specifics.Values['$Material'];
+  if (VTFImage=nil) and (s<>'') then
+    try
+      Log(LOG_VERBOSE,'attempt $Material '+S);
+      if (self.Protocol<>'') then
+        begin
+          VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+        end
+      else
+        VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
+    except
+      VTFImage:=nil;
+    end;
+
+  S:=Specifics.Values['$dudvmap'];
+  if (s<>'') then
+    try
+      Log(LOG_VERBOSE,'attempt $dudvmap '+S);
+      if (self.Protocol<>'') then
+        begin
+          VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+        end
       else
         VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
     except
@@ -542,25 +573,27 @@ expected one.
     try
       Log(LOG_VERBOSE,'attempt $envmap '+S);
       if (self.Protocol<>'') then
-      begin
-        VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
-      end
+         try
+           VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+         except
+           if  (VTFImage=nil) then
+             try
+               VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + 'Editor/env_cubemap' + '.vtf') as QVTF;
+             except
+               VTFImage:=nil;
+             end
+         end
       else
-        VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
-    except
-      VTFImage:=nil;
-    end;
-
-  S:=Specifics.Values['$modelmaterial'];
-  if (VTFImage=nil) and (s<>'') then
-    try
-      Log(LOG_VERBOSE,'attempt $modelmaterial '+S);
-      if (self.Protocol<>'') then
-      begin
-        VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
-      end
-      else
-        VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
+        try
+          VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
+        except
+          if  (VTFImage=nil) then
+            try
+              VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + 'Editor/env_cubemap' + '.vtf') as QVTF;
+            except
+              VTFImage:=nil;
+            end
+        end
     except
       VTFImage:=nil;
     end;
