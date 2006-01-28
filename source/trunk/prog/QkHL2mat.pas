@@ -23,6 +23,13 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2006/01/26 20:38:24  cdunde
+QkHL2mat.pas and all HL2 texture files are dependent on this pas file.
+To expand on displayed textures in the Texture Browser:
+added keyword $dudvmap, changed $modelmaterial to $Material and
+expanded on $envmap to find env_cubemap vmt file being missed before.
+Added textures that can now be displayed due to above changes.
+
 Revision 1.11  2006/01/03 22:38:23  cdunde
 Fix by jfvg so custom textures can be viewed and used
 
@@ -63,7 +70,7 @@ interface
 
 uses
   SysUtils, Windows, Classes, QkFileObjects, Quarkx, QkObjects, QkText,
-   QkTextures, Setup, QkWad, QkPixelSet,QkVTF,Logging;
+   QkTextures, Setup, QkWad, QkPixelSet,QkVTF,Logging,Console;
 
 type
   QHL2Mat = class(QPixelSet)
@@ -472,9 +479,13 @@ expected one.
 
            if (SymbolType = sNumValueToken)  then
              begin
-               self.Specifics.Add(S1+'='+FloatToStr(NumericValue));
-               Log(LOG_VERBOSE,'  attribute'+S1+' '+S);
-               ReadSymbol(sNumValueToken);
+               // cdunde - 1-28-05 to read in multiple numeric values
+               while (SymbolType = sNumValueToken) do
+                 begin
+                   self.Specifics.Add(S1+'='+FloatToStr(NumericValue));
+                   Log(LOG_VERBOSE,'  attribute'+S1+' '+S);
+                   ReadSymbol(sNumValueToken);
+                 end
              end
            else
              if SymbolType = sStringQuotedToken then
@@ -488,12 +499,13 @@ expected one.
                    ReadHL2Sub; //descend
          end
        else
+         begin
+         WriteConsole(@g_Ty_InternalConsole, '>>> '+S1+' '+S+#10+path+' end of test'+#10);
          raise EErrorFmt(254, [LineNoBeingParsed, '2nd item unknown thing']);
-
+         end
      end; //while SymbolType<>sCurlyBracketRight
 
    ReadSymbol(sCurlyBracketRight);
-
 
   p:=self;
 

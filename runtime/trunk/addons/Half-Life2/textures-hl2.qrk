@@ -1958,10 +1958,10 @@ QQRKSRC1
 		  		Models/Combine_Turrets/Ground_turret/ground_turret01.wl  = { t_hl2=! }
 		  		Models/Combine_Turrets/Ground_turret/ground_turret02.wl  = { t_hl2=! }
 		  		Models/Combine_Wall/Combine_InnerWall001.wl  = { t_hl2=! }
-		  	//	Models/Crane_Docks/crane_base.wl  = { t_hl2=! }
+		  		Models/Crane_Docks/crane_base.wl  = { t_hl2=! }
 		  		Models/Crane_Docks/crane_base_spec.wl  = { t_hl2=! }
-		  	//	Models/Crane_Docks/crane_body.wl  = { t_hl2=! }
-		  	//	Models/Crane_Docks/crane_chair.wl  = { t_hl2=! }
+		  		Models/Crane_Docks/crane_body.wl  = { t_hl2=! }
+		  		Models/Crane_Docks/crane_chair.wl  = { t_hl2=! }
 		  		Models/Crow/crow01.wl  = { t_hl2=! }
 		  		Models/Debug/debugwhite.wl  = { t_hl2=! }
 		  		Models/Dog/dog_sheet.wl  = { t_hl2=! }
@@ -2303,37 +2303,37 @@ QQRKSRC1
 		  		Models/props_c17/floodlightbulboff.wl  = { t_hl2=! }
 		  		Models/props_c17/floodlighthousing.wl  = { t_hl2=! }
 		  		Models/props_c17/fountain.wl  = { t_hl2=! }
-		  	//	Models/props_c17/Frame002a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/Frame002a_skin2.wl  = { t_hl2=! }
-		  	//	Models/props_c17/Frame002a_skin3.wl  = { t_hl2=! }
-		  	//	Models/props_c17/Frame002a_skin4.wl  = { t_hl2=! }
-		  	//	Models/props_c17/Frame002a_skin5.wl  = { t_hl2=! }
-		  	//	Models/props_c17/Frame002a_skin6.wl  = { t_hl2=! }
+		  		Models/props_c17/Frame002a.wl  = { t_hl2=! }
+		  		Models/props_c17/Frame002a_skin2.wl  = { t_hl2=! }
+		  		Models/props_c17/Frame002a_skin3.wl  = { t_hl2=! }
+		  		Models/props_c17/Frame002a_skin4.wl  = { t_hl2=! }
+		  		Models/props_c17/Frame002a_skin5.wl  = { t_hl2=! }
+		  		Models/props_c17/Frame002a_skin6.wl  = { t_hl2=! }
 		  		Models/props_c17/frostedglass_01a.wl  = { t_hl2=! }
 		  		Models/props_c17/frostedglass.wl  = { t_hl2=! }
 		  		Models/props_c17/furniture_detailprops001a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/Furniturebed001a.wl  = { t_hl2=! }
+		  		Models/props_c17/Furniturebed001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureBoiler001a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/FurnitureChair001a.wl  = { t_hl2=! }
+		  		Models/props_c17/FurnitureChair001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureCouch001a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/FurnitureCouch002a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/FurnitureCupboard001a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/FurnitureDrawer002a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/FurnitureDresser001a.wl  = { t_hl2=! }
+		  		Models/props_c17/FurnitureCouch002a.wl  = { t_hl2=! }
+		  		Models/props_c17/FurnitureCupboard001a.wl  = { t_hl2=! }
+		  		Models/props_c17/FurnitureDrawer002a.wl  = { t_hl2=! }
+		  		Models/props_c17/FurnitureDresser001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureFabric001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureFabric002a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureFabric003a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/FurnitureFridge001a.wl  = { t_hl2=! }
+		  		Models/props_c17/FurnitureFridge001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureMattress001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureMattress002a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureMetal001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureMetal002a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/FurnitureTable001a.wl  = { t_hl2=! }
+		  		Models/props_c17/FurnitureTable001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureTable003a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureToletSink001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureWashingMachine001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureWoodDrawers001a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/FurnitureWoodDresser001a.wl  = { t_hl2=! }
+		  		Models/props_c17/FurnitureWoodDresser001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureWoodShelf001a.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureWoodShelf001a_skin2.wl  = { t_hl2=! }
 		  		Models/props_c17/FurnitureWoodShelf001a_skin3.wl  = { t_hl2=! }
@@ -2401,8 +2401,8 @@ QQRKSRC1
 		  		Models/props_c17/tools_vise01a.wl  = { t_hl2=! }
 		  		Models/props_c17/traffic_light001.wl  = { t_hl2=! }
 		  		Models/props_c17/Trap_Crush01a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/Trap_Propeller001a.wl  = { t_hl2=! }
-		  	//	Models/props_c17/Trap_Propeller001b.wl  = { t_hl2=! }
+		  		Models/props_c17/Trap_Propeller001a.wl  = { t_hl2=! }
+		  		Models/props_c17/Trap_Propeller001b.wl  = { t_hl2=! }
 		  		Models/props_c17/tv_monitor01.wl  = { t_hl2=! }
 		  		Models/props_c17/tv_monitor01_screen.wl  = { t_hl2=! }
 		  		Models/props_c17/utility_poles001.wl  = { t_hl2=! }
@@ -2626,8 +2626,8 @@ QQRKSRC1
 		  		Models/props_interiors/Elevator_Shaft01a.wl  = { t_hl2=! }
 		  		Models/props_interiors/FlorescentLight01a.wl  = { t_hl2=! }
 		  		Models/props_interiors/FlorescentLight01a_on.wl  = { t_hl2=! }
-		  	//	Models/props_interiors/furniture_cabinetdrawer01a.wl  = { t_hl2=! }
-		  	//	Models/props_interiors/furniture_cabinetdrawer02a.wl  = { t_hl2=! }
+		  		Models/props_interiors/furniture_cabinetdrawer01a.wl  = { t_hl2=! }
+		  		Models/props_interiors/furniture_cabinetdrawer02a.wl  = { t_hl2=! }
 		  		Models/props_interiors/furniture_chair01a.wl  = { t_hl2=! }
 		  		Models/props_interiors/furniture_chair03a.wl  = { t_hl2=! }
 		  		Models/props_interiors/furniture_couch01a.wl  = { t_hl2=! }
@@ -2645,9 +2645,9 @@ QQRKSRC1
 		  		Models/props_interiors/Radiator01a.wl  = { t_hl2=! }
 		  		Models/props_interiors/Radiator01b.wl  = { t_hl2=! }
 		  		Models/props_interiors/Radiator01c.wl  = { t_hl2=! }
-		  	//	Models/props_interiors/refrigerator01a.wl  = { t_hl2=! }
-		  	//	Models/props_interiors/refrigeratordoor01a.wl  = { t_hl2=! }
-		  	//	Models/props_interiors/refrigeratordoor02a.wl  = { t_hl2=! }
+		  		Models/props_interiors/refrigerator01a.wl  = { t_hl2=! }
+		  		Models/props_interiors/refrigeratordoor01a.wl  = { t_hl2=! }
+		  		Models/props_interiors/refrigeratordoor02a.wl  = { t_hl2=! }
 		  		Models/props_interiors/Sconce01a.wl  = { t_hl2=! }
 		  		Models/props_interiors/Sconce01a_on.wl  = { t_hl2=! }
 		  		Models/props_interiors/SinkKitchen01a.wl  = { t_hl2=! }
@@ -2690,7 +2690,7 @@ QQRKSRC1
 		  		Models/props_junk/rock_junk001a.wl  = { t_hl2=! }
 		  		Models/props_junk/Shoe001a.wl  = { t_hl2=! }
 		  		Models/props_junk/Shovel01a.wl  = { t_hl2=! }
-		  	//	Models/props_junk/TrafficCone001a.wl  = { t_hl2=! }
+		  		Models/props_junk/TrafficCone001a.wl  = { t_hl2=! }
 		  		Models/props_junk/trash01a.wl  = { t_hl2=! }
 		  		Models/props_junk/TrashDumpster01a.wl  = { t_hl2=! }
 		  		Models/props_junk/TrashDumpster02.wl  = { t_hl2=! }
@@ -2902,7 +2902,7 @@ QQRKSRC1
 		  		Models/props_vehicles/car004b_01.wl  = { t_hl2=! }
 		  		Models/props_vehicles/car005a_01.wl  = { t_hl2=! }
 		  		Models/props_vehicles/car005b_01.wl  = { t_hl2=! }
-		  	//	Models/props_vehicles/generatortrailer01.wl  = { t_hl2=! }
+		  		Models/props_vehicles/generatortrailer01.wl  = { t_hl2=! }
 		  		Models/props_vehicles/tanker001a_01.wl  = { t_hl2=! }
 		  		Models/props_vehicles/tire_composite001a.wl  = { t_hl2=! }
 		  		Models/props_vehicles/trailer001a_01.wl  = { t_hl2=! }
@@ -2921,7 +2921,7 @@ QQRKSRC1
 		  		Models/props_wasteland/antlionhill_sheet.wl  = { t_hl2=! }
 		  		Models/props_wasteland/barricade_composite01.wl  = { t_hl2=! }
 		  		Models/props_wasteland/boat_01.wl  = { t_hl2=! }
-		  	//	Models/props_wasteland/boat_fishing01a.wl  = { t_hl2=! }
+		  		Models/props_wasteland/boat_fishing01a.wl  = { t_hl2=! }
 		  		Models/props_wasteland/boat_fishing02a.wl  = { t_hl2=! }
 		  		Models/props_wasteland/bridge-noa.wl  = { t_hl2=! }
 		  		Models/props_wasteland/bridge.wl  = { t_hl2=! }
@@ -2938,7 +2938,7 @@ QQRKSRC1
 		  		Models/props_wasteland/concretewall066a.wl  = { t_hl2=! }
 		  		Models/props_wasteland/controlroom_001.wl  = { t_hl2=! }
 		  		Models/props_wasteland/controlroom_cabinets001.wl  = { t_hl2=! }
-		  	//	Models/props_wasteland/controlroom_chair001a.wl  = { t_hl2=! }
+		  		Models/props_wasteland/controlroom_chair001a.wl  = { t_hl2=! }
 		  		Models/props_wasteland/controlroom_filecabinets001.wl  = { t_hl2=! }
 		  		Models/props_wasteland/controlroom_tables001.wl  = { t_hl2=! }
 		  		Models/props_wasteland/coolingtank01.wl  = { t_hl2=! }
@@ -2981,7 +2981,7 @@ QQRKSRC1
 		  		Models/props_wasteland/prison_objects004.wl  = { t_hl2=! }
 		  		Models/props_wasteland/prison_objects004_on.wl  = { t_hl2=! }
 		  		Models/props_wasteland/prison_objects005.wl  = { t_hl2=! }
-		  	//	Models/props_wasteland/prison_toilet01.wl  = { t_hl2=! }
+		  		Models/props_wasteland/prison_toilet01.wl  = { t_hl2=! }
 		  		Models/props_wasteland/prison_yard001.wl  = { t_hl2=! }
 		  		Models/props_wasteland/prisonkitchen01.wl  = { t_hl2=! }
 		  		Models/props_wasteland/prisonkitchen02.wl  = { t_hl2=! }
