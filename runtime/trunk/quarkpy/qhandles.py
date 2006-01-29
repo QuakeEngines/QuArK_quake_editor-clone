@@ -271,7 +271,7 @@ class Rotate3DHandle(GenericHandle):
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
             return
-        if editor is not None:
+        if editor is not None and editor.layout is not None:
             tb2 = editor.layout.toolbars["tb_terrmodes"]
             if view.info["type"] == "3D":
                 if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1":
@@ -1790,6 +1790,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.22  2006/01/12 07:21:01  cdunde
+#To commit all new and related files for
+#new Quick Object makers and toolbar.
+#
 #Revision 1.21  2005/12/22 07:31:59  cdunde
 #To fix another key error when using
 #Tab key function in Model Editor.
