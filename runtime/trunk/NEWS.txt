@@ -22,12 +22,12 @@ $Id$
      - files for corrections of entities, their settings and proper path defaults.
 
  * [cdunde] : Various fixes with Philippe C. to have QuArK more compatible to run
-     - on Linux using Wine and eliminating error while keeping functions operational.
+     - on Linux using Wine and eliminating errors while keeping functions operational.
 
  * [cdunde] : Fixed error message occurring sometimes when switching game modes.
 
  * [cdunde] : Expanded on textures that can be viewed in Texture Browser for
-     - for Half-Life2 and Counter Strike and added textures to textures-hl2.qrk file.
+     - Half-Life2 and Counter Strike and added textures to textures-hl2.qrk file.
 
  * [cdunde] : Fixed setup and textured viewing in Texture Browser for Half-Life2.
      - Reinstated prefabs-hl2.qrk previous version so they would work again.
