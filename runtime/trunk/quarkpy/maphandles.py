@@ -1815,7 +1815,7 @@ def viewsinglebezier(view, layout, patch):
             scale = (destx-35) / ((xmax-xmin+0.05)*w)
             scaley = (desty-35) / ((ymax-ymin+0.05)*h)
             if scaley<scale: scale=scaley
-            if scale<0.01: scale=0.01
+            if scale<0.001: scale=0.001
             if scale>1.0: scale=1.0
 
             view.setprojmode("2D", matrix*scale)
@@ -1928,6 +1928,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.50  2006/01/12 07:21:01  cdunde
+#To commit all new and related files for
+#new Quick Object makers and toolbar.
+#
 #Revision 1.49  2005/11/29 08:17:31  cdunde
 #To add F1 help and Infobase documentation
 #on new vertex movement function and HotKeys.

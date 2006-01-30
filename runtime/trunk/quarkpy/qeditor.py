@@ -401,10 +401,10 @@ def AutoZoom(views, bbox, margin=(20,18), scale1=1.0):
             x1,y1,x2,y2 = v.redlinesrect
             if bx2-bx1>0.1:
                 bx = scale * (x2-x1-margin[0])/(bx2-bx1)
-                if bx>0.01 and bx<scale1: scale1=bx
+                if bx>0.001 and bx<scale1: scale1=bx
             if by2-by1>0.1:
                 by = scale * (y2-y1-margin[1])/(by2-by1)
-                if by>0.01 and by<scale1: scale1=by
+                if by>0.001 and by<scale1: scale1=by
     return scale1, (bmin+bmax)*0.5
 
 
@@ -609,8 +609,12 @@ def getzoommenu(zoombtn):
                     (16.0, "16:1\tnearest"))
     else:
         # For map-editor
-        zoomlist = (( 0.1,  "1:10\tvery far away"),
-                    ( 0.25, "1:4\tfar away"),
+        zoomlist = (( 0.001,"1:1000\treally far-far away"),
+                    ( 0.005,"1:500\treally far away"),
+                    ( 0.01, "1:100\tvery far-far away"),
+                    ( 0.05, "1:50\tvery far away"),
+                    ( 0.1,  "1:10\tfar away"),
+                    ( 0.25, "1:4\taway"),
                     ( 0.5,  "1:2\tmiddle"),
                     ( 1.0,  "1:1\tnear"),
                     ( 2.0,  "2:1\tnearer"),
@@ -1500,6 +1504,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.28  2006/01/30 08:20:00  cdunde
+#To commit all files involved in project with Philippe C
+#to allow QuArK to work better with Linux using Wine.
+#
 #Revision 1.27  2005/12/15 07:57:20  cdunde
 #To update help menu for QuArK's Official site new address
 #

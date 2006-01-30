@@ -470,7 +470,7 @@ class BaseLayout:
     def getgridmenu(self, gridbtn):
         grid = self.editor.gridstep
         gridmenu = []
-        for g in (0,64,32,16,8,4,2,1,.5,.25,.1):
+        for g in (0,512,256,128,64,32,16,8,4,2,1,.5,.25,.1):
             if g:
                 cap = "grid \t%s" % g
             else:
@@ -607,6 +607,10 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.19  2005/10/20 03:16:12  cdunde
+#Added to open 3D window title for clarity
+#as to which type was being viewed
+#
 #Revision 1.18  2005/10/17 21:27:35  cdunde
 #To add new key word "viewname" to all 3D views for easier
 #detection and control of those views and Infobase documentation.

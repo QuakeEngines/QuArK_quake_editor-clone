@@ -71,8 +71,8 @@ def ZoomOut(editor, view=None):
     if not scale:
         scale = 1.0
     scale = scale/qhandles.MOUSEZOOMFACTOR
-    if scale<0.01:
-        scale=0.01 #DECKER clamp zoom-out
+    if scale<0.001:
+        scale=0.001 #DECKER clamp zoom-out
     setviews(editor.layout.views, "scale", scale)
 
 def MoveLeft(editor, view=None):
@@ -436,6 +436,10 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.16  2005/11/18 02:21:53  cdunde
+#To add new '2D Rulers' function, menu and
+#updated Infobase docs covering it.
+#
 #Revision 1.15  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

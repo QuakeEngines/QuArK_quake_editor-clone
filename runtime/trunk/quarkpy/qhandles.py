@@ -1151,7 +1151,7 @@ def refreshtimertex(self):
 class FreeZoomDragObject(DragObject):
 
     BaseSensitivity = 0.007
-    AbsoluteMinimum = 0.01
+    AbsoluteMinimum = 0.001
     AbsoluteMaximum = 100.0
     InfiniteMouse   = 1
     # MODE required !
@@ -1808,6 +1808,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.24  2006/01/30 08:20:00  cdunde
+#To commit all files involved in project with Philippe C
+#to allow QuArK to work better with Linux using Wine.
+#
 #Revision 1.23  2006/01/29 19:08:53  cdunde
 #To fix error message when sometimes switching game modes
 #
