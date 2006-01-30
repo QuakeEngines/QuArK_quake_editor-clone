@@ -96,7 +96,7 @@ QQRKSRC1
           west:f =
           {
             v = '256 192 -96 256 96 -96 256 192 0'
-            tex = "bespin/basic"
+            tex = "imperial/wall_3"
             tv = '0 0 48 0 0 -48'
           }
           east:f =
@@ -135,7 +135,7 @@ QQRKSRC1
           east:f =
           {
             v = '-256 -192 -96 -256 -96 -96 -256 -192 0'
-            tex = "bespin/basic"
+            tex = "imperial/wall_3"
             tv = '0 0 48 0 0 -48'
           }
           south:f =
@@ -174,7 +174,7 @@ QQRKSRC1
           south:f =
           {
             v = '-256 192 -96 -128 192 -96 -256 192 0'
-            tex = "bespin/basic"
+            tex = "imperial/wall_3"
             tv = '0 0 64 0 0 -48'
           }
           north:f =
@@ -213,7 +213,7 @@ QQRKSRC1
           north:f =
           {
             v = '256 -192 -96 128 -192 -96 256 -192 0'
-            tex = "bespin/basic"
+            tex = "imperial/wall_3"
             tv = '0 0 64 0 0 -48'
           }
           down:f =
@@ -5496,39 +5496,45 @@ QQRKSRC1
       }
       Misc.qtxfolder =
       {
-        misc_crystal_crate:e =
-        {
-          ;desc = "Open crate of crystals that explode when shot"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_ion_cannon:e =
-        {
-          ;desc = "Huge ion cannon, like the ones at the rebel base on Hoth"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_model_welder:e =
-        {
-          ;desc = "When 'on' emits sparks from it's welding points"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_model_ghoul:e =
+        emplaced_eweb:e =
         {
           ;desc = ""
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_portal_camera:e =
+        emplaced_gun:e =
         {
-          ;desc = "The target for a misc_portal_surface. You can set either angles or target another entity (NOT an info_null) to determine the direction of view"
+          ;desc = ""
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_security_panel:e =
+        misc_ammo_floor_unit:e =
         {
-          ;desc = "A model that just sits there and opens when a player uses it and has right key"
+          ;desc = "Gives ammo energy when used"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_atst_drivable:e =
+        {
+          ;desc = "ATST - Drivable"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_bsp:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_camera:e =
+        {
+          ;desc = "Model of a Security Camera in the world that can be used by the player to look through it's viewpoint"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_crystal_crate:e =
+        {
+          ;desc = "Open crate of crystals that explode when shot"
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -5538,27 +5544,21 @@ QQRKSRC1
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_model_gun_rack:e =
+        misc_gas_tank:e =
         {
-          ;desc = "Gun Rack"
+          ;desc = "Basic exploding oxygen tank"
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_trip_mine:e =
+        misc_ion_cannon:e =
         {
-          ;desc = "Place in a map and point the angles at whatever surface you want it to attach to"
+          ;desc = "Huge ion cannon, like the ones at the rebel base on Hoth"
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_model_bomb_planted:e =
+        misc_laser_arm:e =
         {
-          ;desc = "Planted by evil men for evil purposes"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_model_beacon:e =
-        {
-          ;desc = "An animating beacon model"
+          ;desc = "What it does when used depends on it's count (can be set by a script)"
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -5568,15 +5568,15 @@ QQRKSRC1
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_model_shield_power_converter:e =
+        misc_model:e =
         {
-          ;desc = "Gives shield energy when used"
+          ;desc = "turns into BSP triangles - not solid by default (click SOLID or use _clipmodel shader)"
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_model_cargo_small:e =
+        misc_model_ammo_power_converter:e =
         {
-          ;desc = ""
+          ;desc = "Gives ammo energy when used"
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -5586,15 +5586,63 @@ QQRKSRC1
           Origin = "0 0 0"
           Angle = "360"
         }
+        misc_model_beacon:e =
+        {
+          ;desc = "An animating beacon model"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_model_bomb_planted:e =
+        {
+          ;desc = "Planted by evil men for evil purposes"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_model_breakable:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_model_cargo_small:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_model_ghoul:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_model_gun_rack:e =
+        {
+          ;desc = "Gun Rack"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
         misc_model_jabba_cam:e =
         {
           ;desc = "The eye camera that popped out of Jabba's front door"
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_camera:e =
+        misc_model_shield_power_converter:e =
         {
-          ;desc = "Model of a Security Camera in the world that can be used by the player to look through it's viewpoint"
+          ;desc = "Gives shield energy when used"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_model_static:e =
+        {
+          ;desc = "loaded as a model in the renderer - does not take up precious bsp space!"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_model_welder:e =
+        {
+          ;desc = "When 'on' emits sparks from it's welding points"
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -5610,33 +5658,9 @@ QQRKSRC1
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_turret:e =
+        misc_portal_camera:e =
         {
-          ;desc = "Turret that hangs from the ceiling, will aim and shoot at enemies"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_sentry_turret:e =
-        {
-          ;desc = "personal assault sentry, like the ones you can carry in your inventory"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_laser_arm:e =
-        {
-          ;desc = "What it does when used depends on it's count (can be set by a script)"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_weapon_shooter:e =
-        {
-          ;desc = "Weapon shooter"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_gas_tank:e =
-        {
-          ;desc = "Basic exploding oxygen tank"
+          ;desc = "The target for a misc_portal_surface. You can set either angles or target another entity (NOT an info_null) to determine the direction of view"
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -5646,15 +5670,15 @@ QQRKSRC1
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_ammo_floor_unit:e =
+        misc_security_panel:e =
         {
-          ;desc = "Gives ammo energy when used"
+          ;desc = "A model that just sits there and opens when a player uses it and has right key"
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_model_ammo_power_converter:e =
+        misc_sentry_turret:e =
         {
-          ;desc = "Gives ammo energy when used"
+          ;desc = "personal assault sentry, like the ones you can carry in your inventory"
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -5664,9 +5688,26 @@ QQRKSRC1
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_atst_drivable:e =
+        misc_skyportal:e =
         {
-          ;desc = "ATST - Drivable"
+          ;desc = "Put it in the sky room"
+          Origin = "0 0 0"          
+        }
+        misc_trip_mine:e =
+        {
+          ;desc = "Place in a map and point the angles at whatever surface you want it to attach to"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_turret:e =
+        {
+          ;desc = "Turret that hangs from the ceiling, will aim and shoot at enemies"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        misc_weapon_shooter:e =
+        {
+          ;desc = "Weapon shooter"
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -5676,45 +5717,9 @@ QQRKSRC1
           Origin = "0 0 0"
           Angle = "360"
         }
-        misc_bsp:e =
-        {
-          ;desc = ""
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_model:e =
-        {
-          ;desc = "turns into BSP triangles - not solid by default (click SOLID or use _clipmodel shader)"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_model_static:e =
-        {
-          ;desc = "loaded as a model in the renderer - does not take up precious bsp space!"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        misc_model_breakable:e =
-        {
-          ;desc = ""
-          Origin = "0 0 0"
-          Angle = "360"
-        }
         object_cargo_barrel1:e =
         {
           ;desc = "Cargo Barrel, if given a targetname, using it makes it explode"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        emplaced_gun:e =
-        {
-          ;desc = ""
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        emplaced_eweb:e =
-        {
-          ;desc = ""
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -5723,37 +5728,17 @@ QQRKSRC1
       {
         waypoint:e =
         {
-          ;desc = "a place to go"
+          ;desc = "An entity for AI navigation, place to go"
           Origin = "0 0 0"
         }
         waypoint_small:e =
         {
-          ;desc = ""
-          Origin = "0 0 0"
-        }
-        waypoint_navgoal_1:e =
-        {
-          ;desc = "A waypoint for script navgoals. Not included in navigation data"
-          Origin = "0 0 0"
-        }
-        waypoint_navgoal_8:e =
-        {
-          ;desc = ""
-          Origin = "0 0 0"
-        }
-        waypoint_navgoal_4:e =
-        {
-          ;desc = ""
+          ;desc = "An entity for AI navigation, with a radius 2 units for best accuracy of AI movements (not used in original game)"
           Origin = "0 0 0"
         }
         waypoint_navgoal:e =
         {
-          ;desc = ""
-          Origin = "0 0 0"
-        }
-        waypoint_navgoal_2:e =
-        {
-          ;desc = ""
+          ;desc = "A waypoint for script navgoals. Not included in navigation data if NO_AUTO_CONNECT checked"
           Origin = "0 0 0"
         }
         rail_track:b =
@@ -5814,11 +5799,13 @@ QQRKSRC1
         {
           ;desc = "Generates global wind forces"
           Origin = "0 0 0"
+          Angle = "360"
         }
         fx_wind_zone:e =
         {
           ;desc = "Generates local wind forces"
           Origin = "0 0 0"
+          Angle = "360"
         }
       }
       Team.qtxfolder =
@@ -13343,6 +13330,158 @@ QQRKSRC1
         typ = "X256"
       }
     }
+    NPC_HazardTrooper:form =
+    {
+      bbox = '-16 -16 -24 16 16 40'
+      target: =
+      {
+        txt = "&"
+        hint = "NPC will fire this when it spawns it's last NPC"
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "name this NPC goes by for targetting"
+        typ = "E"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "starting health (default = 250)"
+        typ = "E"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "how many NPCs to spawn (only if targetted) default = 1"
+        typ = "E"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "after spawned or triggered, how many seconds to wait to spawn "
+         "the NPC"
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = "NPC's targetname AND script_targetname"
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = "NPC's target to fire when killed"
+        typ = "E"
+      }
+      playerTeam: =
+      {
+        txt = "&"
+        hint = "Who not to shoot! (default is TEAM_STARFLEET)"
+        typ = "E"
+      }
+      enemyTeam: =
+      {
+        txt = "&"
+        hint = "Who to shoot (all but own if not set)"
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = "default script to run once spawned (none by default)"
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = "default script to run when used (none by default)"
+        typ = "E"
+      }
+      awakescript: =
+      {
+        txt = "&"
+        hint = "default script to run once awoken (none by default)"
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = "default script to run once angered (none by default)"
+        typ = "E"
+      }
+      painscript: =
+      {
+        txt = "&"
+        hint = "default script to run when hit (none by default)"
+        typ = "E"
+      }
+      fleescript: =
+      {
+        txt = "&"
+        hint = "default script to run when hit and below 50% health (none by d"
+         "efault)"
+        typ = "E"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = "default script to run when killed (none by default)"
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        cap = "OFFICER"
+        hint = "400 health, flechette"
+        typ = "X1"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        cap = "CONCUSSION"
+        hint = "400 health, concussion rifle"
+        typ = "X2"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        cap = "DROPTOFLOOR"
+        hint = "NPC can be in air, but will spawn on the closest floor surface"
+         " below it"
+        typ = "X16"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        cap = "CINEMATIC"
+        hint = "Will spawn with no default AI (BS_CINEMATIC)"
+        typ = "X32"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        cap = "NOTSOLID"
+        hint = "Starts not solid"
+        typ = "X64"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        cap = "STARTINSOLID"
+        hint = "Don't try to fix if spawn in solid"
+        typ = "X128"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        cap = "SHY"
+        hint = "Spawner is shy"
+        typ = "X256"
+      }
+    }
     NPC_Human_Merc:form =
     {
       bbox = '-16 -16 -24 16 16 40'
@@ -18594,12 +18733,6 @@ QQRKSRC1
         hint = "NPC's target to fire when killed by friendly fire"
         typ = "E"
       }
-      NPC_type: =
-      {
-        txt = "&"
-        hint = "type of NPC"
-        typ = "E"
-      }
       health: =
       {
         txt = "&"
@@ -21001,91 +21134,6 @@ QQRKSRC1
         typ = "X2"
       }
     }
-    waypoint_navgoal_1:form =
-    {
-      bbox = '-1 -1 -24 1 1 32'
-      targetname: =
-      {
-        txt = "&"
-        hint = "name you would use in script when setting a navgoal"
-        typ = "E"
-      }
-      spawnflags: =
-      {
-        txt = "&"
-        cap = "SOLID_OK"
-        hint = "only use if placing inside solid is unavoidable in map, but ma"
-         "y be clear in-game (ie: at the bottom of a tall, solid lift that sta"
-         "rts at the top position)"
-        typ = "X1"
-      }
-      spawnflags: =
-      {
-        txt = "&"
-        cap = "DROP_TO_FLOOR"
-        hint = "will cause the point to auto drop to the floor"
-        typ = "X2"
-      }
-      spawnflags: =
-      {
-        txt = "&"
-        cap = "NO_AUTO_CONNECT"
-        hint = "will cause the point to auto drop to the floor"
-        typ = "X4"
-      }
-    }
-    waypoint_navgoal_8:form =
-    {
-      bbox = '-8 -8 -24 8 8 32'
-      targetname: =
-      {
-        txt = "&"
-        hint = "name you would use in script when setting a navgoal"
-        typ = "E"
-      }
-      spawnflags: =
-      {
-        txt = "&"
-        cap = "SOLID_OK"
-        hint = "only use if placing inside solid is unavoidable in map, but ma"
-         "y be clear in-game (ie: at the bottom of a tall, solid lift that sta"
-         "rts at the top position)"
-        typ = "X1"
-      }
-      spawnflags: =
-      {
-        txt = "&"
-        cap = "DROP_TO_FLOOR"
-        hint = "will cause the point to auto drop to the floor"
-        typ = "X2"
-      }
-    }
-    waypoint_navgoal_4:form =
-    {
-      bbox = '-4 -4 -24 4 4 32'
-      targetname: =
-      {
-        txt = "&"
-        hint = "name you would use in script when setting a navgoal"
-        typ = "E"
-      }
-      spawnflags: =
-      {
-        txt = "&"
-        cap = "SOLID_OK"
-        hint = "only use if placing inside solid is unavoidable in map, but ma"
-         "y be clear in-game (ie: at the bottom of a tall, solid lift that sta"
-         "rts at the top position)"
-        typ = "X1"
-      }
-      spawnflags: =
-      {
-        txt = "&"
-        cap = "DROP_TO_FLOOR"
-        hint = "will cause the point to auto drop to the floor"
-        typ = "X2"
-      }
-    }
     waypoint_navgoal:form =
     {
       bbox = '-16 -16 -24 16 16 32'
@@ -21112,22 +21160,20 @@ QQRKSRC1
          "rts at the top position)"
         typ = "X1"
       }
-    }
-    waypoint_navgoal_2:form =
-    {
-      bbox = '-2 -2 -24 2 2 32'
-      script_targetname: =
+      spawnflags: =
       {
         txt = "&"
-        hint = ""
-        typ = "E"
-      }
-      targetname: =
+        cap = "DROP_TO_FLOOR"
+        hint = "will cause the point to auto drop to the floor"
+        typ = "X2"
+      }      
+      spawnflags: =
       {
         txt = "&"
-        hint = ""
-        typ = "E"
-      }
+        cap = "NO_AUTO_CONNECT"
+        hint = "will not automatically connect to any other waypoints, you must then connect it by hand"
+        typ = "X4"
+      }      
     }
     rail_track:form =
     {       
@@ -26146,7 +26192,7 @@ QQRKSRC1
       targetJump: =
       {
         txt = "&"
-        hint = "is a special edge that only guys who can jump will cross"
+        hint = "is a special edge that only guys who can jump will cross (so basically Jedi)"
         typ = "E"
       }
       spawnflags: =
@@ -26164,6 +26210,36 @@ QQRKSRC1
         cap = "DROP_TO_FLOOR"
         hint = "will cause the point to auto drop to the floor"
         typ = "X2"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "a first linked waypoint"
+        typ = "E"
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = "a second linked waypoint"
+        typ = "E"
+      }
+      target3: =
+      {
+        txt = "&"
+        hint = "a third linked waypoint"
+        typ = "E"
+      }
+      target4: =
+      {
+        txt = "&"
+        hint = "a fourth linked waypoint"
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "selfname of this waypoint"
+        typ = "E"
       }
     }
     holocron_force_push:form =

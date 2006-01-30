@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.277  2006/01/30 08:20:00  cdunde
+//To commit all files involved in project with Philippe C
+//to allow QuArK to work better with Linux using Wine.
+//
 //Revision 1.276  2006/01/23 07:32:00  cdunde
 //To revert back to vmf file listing for Texture Browser and
 //proper name application for map export file of H-L2 and CS
@@ -1566,11 +1570,11 @@ QQRKSRC1
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "Q3MAP2.EXE"
-        BuildArgs1 = "-game ja -fs_basepath "$22"E:/Games/JediAcademy/"$22" -meta"
+        BuildArgs1 = "-game ja -fs_basepath "$22"C:/Games/JediAcademy/"$22" -meta"
         BuildPgm2  = "Q3MAP2.EXE"
-        BuildArgs2 = "-game ja -fs_basepath "$22"E:/Games/JediAcademy/"$22" -vis -saveprt"
+        BuildArgs2 = "-game ja -fs_basepath "$22"C:/Games/JediAcademy/"$22" -vis -saveprt"
         BuildPgm3  = "Q3MAP2.EXE"
-        BuildArgs3 = "-game ja -fs_basepath "$22"E:/Games/Wild_Force/"$22" -light -fast"
+        BuildArgs3 = "-game ja -fs_basepath "$22"C:/Games/JediAcademy/"$22" -light -fast"
 
         TexturesPath = "textures/"
         ShadersPath = "shaders/"

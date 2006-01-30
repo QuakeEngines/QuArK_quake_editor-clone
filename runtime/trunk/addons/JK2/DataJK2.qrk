@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2005/10/15 01:00:29  cdunde
+//To reinstate headers and history
+//
 //Revision 1.7  2004/01/01 19:36:09  cdunde
 //To add additional file selection features by nazar
 //
@@ -4117,40 +4120,40 @@ QQRKSRC1
         txt = "&"
         hint = "How fast it shoots (default 1500 ms between shots, can't be le"
          "ss than 500 ms)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "milliseconds wait variation (default 400 ms...up to plus or mi"
          "nus .4 seconds)"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "Number of milliseconds between bursts (default 6000 ms, can't "
          "be less than 1000 ms, only works when BURSTS checked)"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "default 2000"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "how much damage to do when it dies, must be greater than 0 to "
          "actually work"
-        typ = "EF"
+        typ = "E"
       }
       splashRadius: =
       {
         txt = "&"
         hint = "damage radius, must be greater than 0 to actually work"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -4228,7 +4231,7 @@ QQRKSRC1
         txt = "&"
         hint = "how much health the model has - default 60 (zero makes non-bre"
          "akable)"
-        typ = "EF"
+        typ = "E"
       }
       model: =
       {
@@ -4251,7 +4254,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "angle modifier to orient the camera around the target vector"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -4331,7 +4334,7 @@ QQRKSRC1
         txt = "&"
         hint = "how much health the model has - default 40 (zero makes non-bre"
          "akable)"
-        typ = "EF"
+        typ = "E"
       }
     }
     misc_model_gun_rack:form =
@@ -4401,7 +4404,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "default is 10"
-        typ = "EF"
+        typ = "E"
       }
     }
     misc_model_shield_power_converter:form =
@@ -4413,13 +4416,13 @@ QQRKSRC1
         txt = "&"
         hint = "how much health the model has - default 60 (zero makes non-bre"
          "akable)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "the amount of ammo given when used (default 100)"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -4456,19 +4459,19 @@ QQRKSRC1
       {
         txt = "&how much damage to take before blowing up ( default 25 )"
         hint = ""
-        typ = "EF"
+        typ = "E"
       }
       splashRadius: =
       {
         txt = "&"
         hint = "damage range when it explodes ( default 96 )"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "damage to do within explode range ( default 1 )"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -4582,7 +4585,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "how long to wait between being used (default 0.5)"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -4631,40 +4634,40 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Time between shots (default 150 ms)"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "How much damage each shot does (default 5)"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "How much damage it can take before exploding (default 100)"
-        typ = "EF"
+        typ = "E"
       }
       radius: =
       {
         txt = "&"
         hint = "How far away an enemy can be for it to pick it up (default 512"
          ")"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "How much damage the explosion does. If either splashDamage or "
          "splashRadius are 0, it will not make an explosion"
-        typ = "EF"
+        typ = "E"
       }
       splashRadius: =
       {
         txt = "&"
         hint = "The radius of the explosion. If either splashRadius or splashD"
          "amage are 0, it will not make an explosion"
-        typ = "EF"
+        typ = "E"
       }
       team: =
       {
@@ -4700,40 +4703,40 @@ QQRKSRC1
       {
         txt = "&"
         hint = "missile speed, (default 3000)"
-        typ = "EF"
+        typ = "E"
       }
       damage: =
       {
         txt = "&"
         hint = "amount of damage shots do, (default 50)"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "time between shots, in milliseconds (default 200)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "the max pitch range in degrees, (default 60) which means you c"
          "an move 60 degrees above or below the start angles"
-        typ = "EF"
+        typ = "E"
       }
       radius: =
       {
         txt = "&"
         hint = "the max yaw range in degrees, (default 90) which means you can"
          " move 90 degrees on either side of the start angles"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "how much heatlh the thing has, (default 200) only works if HEA"
          "LTH is checked, otherwise it can't be destroyed"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -4769,40 +4772,40 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Time between shots (default 150 ms)"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "How much damage each shot does (default 5)"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "How much damage it can take before exploding (default 100)"
-        typ = "EF"
+        typ = "E"
       }
       radius: =
       {
         txt = "&"
         hint = "How far away an enemy can be for it to pick it up (default 512"
          ")"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "How much damage the explosion does. If either splashDamage or "
          "splashRadius are 0, it will not make an explosion"
-        typ = "EF"
+        typ = "E"
       }
       splashRadius: =
       {
         txt = "&"
         hint = "The radius of the explosion. If either splashRadius or splashD"
          "amage are 0, it will not make an explosion"
-        typ = "EF"
+        typ = "E"
       }
       team: =
       {
@@ -4853,34 +4856,34 @@ QQRKSRC1
         txt = "&"
         hint = "number of shots before thing deactivates. -1 = infinite, defau"
          "lt 150"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "How much damage it can take before exploding (default 50)"
-        typ = "EF"
+        typ = "E"
       }
       radius: =
       {
         txt = "&"
         hint = "How far away an enemy can be for it to pick it up (default 512"
          ")"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "How much damage the explosion does. If either splashDamage or "
          "splashRadius are 0, it will not make an explosion"
-        typ = "EF"
+        typ = "E"
       }
       splashRadius: =
       {
         txt = "&"
         hint = "The radius of the explosion. If either splashRadius or splashD"
          "amage are 0, it will not make an explosion"
-        typ = "EF"
+        typ = "E"
       }
       team: =
       {
@@ -4917,19 +4920,19 @@ QQRKSRC1
         txt = "&"
         hint = "0 (default) - Fire in direction facing: 1 turn left: 2 turn ri"
          "ght: 3 aim up: 4 aim down"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
         txt = "&"
         hint = "How long the beam lasts, in seconds (default is 3)"
-        typ = "EF"
+        typ = "E"
       }
       speed: =
       {
         txt = "&"
         hint = "How fast it turns (degrees per second, default 30)"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -4965,19 +4968,19 @@ QQRKSRC1
         txt = "&"
         hint = "how much health the model has - default 20 (zero makes non-bre"
          "akable)"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "amount of damage to do when it explodes - default 32"
-        typ = "EF"
+        typ = "E"
       }
       splashRadius: =
       {
         txt = "&"
         hint = "radius to do damage in - default 48"
-        typ = "EF"
+        typ = "E"
       }
     }
     misc_portal_surface:form =
@@ -4994,7 +4997,7 @@ QQRKSRC1
         txt = "&"
         hint = "makes it auto-cycle between all cameras it's pointed at at int"
          "evervals of specified number of seconds"
-        typ = "EF"
+        typ = "E"
       }
     }
     misc_ammo_floor_unit:form =
@@ -5005,14 +5008,14 @@ QQRKSRC1
       {
         txt = "&"
         hint = "the amount of ammo given when used (default 100)"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "how much health the model has - default 60 (zero makes non-bre"
          "akable)"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -5049,14 +5052,14 @@ QQRKSRC1
       {
         txt = "&"
         hint = "the amount of ammo given when used (default 100)"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "how much health the model has - default 60 (zero makes non-bre"
          "akable)"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -5112,13 +5115,13 @@ QQRKSRC1
         txt = "&"
         hint = "how much health the model has - default 60 (zero makes non-bre"
          "akable)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "max charge value (default MP:50 SP:100)"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
@@ -5151,7 +5154,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "target to fire when hit (but not destroyed)"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -5177,7 +5180,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "how much health the atst has - default 800"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -5194,19 +5197,19 @@ QQRKSRC1
       {
         txt = "&"
         hint = "default = 20"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "default = 100"
-        typ = "EF"
+        typ = "E"
       }
       splashRadius: =
       {
         txt = "&"
         hint = "default = 200"
-        typ = "EF"
+        typ = "E"
       }
       targetname: =
       {
@@ -5270,19 +5273,19 @@ QQRKSRC1
       {
         txt = "&"
         hint = "radius of damage"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "damage to do (will make it explode on death)"
-        typ = "EF"
+        typ = "E"
       }
       gravity: =
       {
         txt = "&"
         hint = "if set to 1, this will be affected by gravity"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
@@ -5290,7 +5293,7 @@ QQRKSRC1
         hint = "how much health to have - default is zero (not breakable)  If "
          "you don't set the SOLID flag, but give it health, it can be shot but"
          " will not block NPCs or players from moving"
-        typ = "EF"
+        typ = "E"
       }
       material: =
       {
@@ -5310,7 +5313,7 @@ QQRKSRC1
         hint = "Chunk code tries to pick a good volume of chunks, but you can "
          "alter this to scale the number of spawned chunks. (default 1)  (.5) "
          "is half as many chunks, (2) is twice as many chunks"
-        typ = "EF"
+        typ = "E"
       }
       team: =
       {
@@ -5440,20 +5443,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -5578,20 +5581,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -5716,20 +5719,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -5854,20 +5857,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -5992,20 +5995,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -6130,20 +6133,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -6268,20 +6271,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -6406,20 +6409,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -6544,20 +6547,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -6689,20 +6692,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -6827,20 +6830,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -6965,20 +6968,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -7103,20 +7106,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -7241,20 +7244,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       message: =
       {
@@ -7409,20 +7412,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -7547,20 +7550,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -7685,20 +7688,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -7823,20 +7826,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -7961,20 +7964,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -8113,20 +8116,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -8266,20 +8269,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -8404,20 +8407,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -8541,20 +8544,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -8679,20 +8682,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -8817,20 +8820,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -8986,20 +8989,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -9123,20 +9126,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -9261,20 +9264,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -9399,20 +9402,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -9536,20 +9539,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -9674,20 +9677,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -9812,20 +9815,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -9978,20 +9981,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -10123,20 +10126,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -10268,20 +10271,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -10406,20 +10409,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -10543,7 +10546,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = ""
-        typ = "EF"
+        typ = "E"
       }
       spawnscript: =
       {
@@ -10583,20 +10586,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -10728,20 +10731,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -10880,20 +10883,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -11025,20 +11028,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -11162,20 +11165,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "starting health (default = 100)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many NPCs to spawn (only if targetted) default = 1"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "after spawned or triggered, how many seconds to wait to spawn "
          "the NPC"
-        typ = "EF"
+        typ = "E"
       }
       NPC_targetname: =
       {
@@ -11310,20 +11313,20 @@ QQRKSRC1
         hint = "adds curvature as it moves out to the edge of the layer.  ( de"
          "fault 0 ), 1 = small up, 3 = up more, -1 = small down, -3 = down mor"
          "e, etc."
-        typ = "EF"
+        typ = "E"
       }
       radius: =
       {
         txt = "&"
         hint = "outer radius of cloud layer, (default 2048)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "inner radius of cloud layer, (default 128) only works for TUBE"
          " type"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -11362,7 +11365,7 @@ QQRKSRC1
         txt = "&"
         hint = "random amount of seconds added to/subtracted from 'wait' each "
          "firing"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
@@ -11370,21 +11373,21 @@ QQRKSRC1
         hint = "If always on, how long to wait between blasts, in MILLISECONDS"
          " - default/min is 100 (1 frame at 10 fps), -1 means it will never fi"
          "re again"
-        typ = "EF"
+        typ = "E"
       }
       damage: =
       {
         txt = "&"
         hint = "How much damage to inflict PER FRAME (so probably want it kind"
          " of low), default is none"
-        typ = "EF"
+        typ = "E"
       }
       duration: =
       {
         txt = "&"
         hint = "How many seconds each burst lasts, -1 will make it stay on for"
          "ever"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -11443,31 +11446,31 @@ QQRKSRC1
         txt = "&"
         hint = "damage radius around trail as it travels through the world ( d"
          "efault 128 )"
-        typ = "EF"
+        typ = "E"
       }
       damage: =
       {
         txt = "&"
         hint = "radius damage ( default 128 )"
-        typ = "EF"
+        typ = "E"
       }
       splashRadius: =
       {
         txt = "&"
         hint = "damage radius on impact ( default 0 )"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "damage when thing impacts ( default 0 )"
-        typ = "EF"
+        typ = "E"
       }
       speed: =
       {
         txt = "&"
         hint = "velocity through the world, ( default 350 )"
-        typ = "EF"
+        typ = "E"
       }
       fxFile: =
       {
@@ -11521,7 +11524,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "the number of rain particles (default of 1000)"
-        typ = "EF"
+        typ = "E"
       }
     }
     fx_snow:form =
@@ -11530,7 +11533,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "the number of snow particles (default of 1000)"
-        typ = "EF"
+        typ = "E"
       }
     }
     fx_runner:form =
@@ -11539,13 +11542,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "only works when damage is checked ( default 5 )"
-        typ = "EF"
+        typ = "E"
       }
       splashRadius: =
       {
         txt = "&"
         hint = "only works when damage is checked ( default 16 )"
-        typ = "EF"
+        typ = "E"
       }
       soundSet: =
       {
@@ -11560,14 +11563,14 @@ QQRKSRC1
         txt = "&"
         hint = "how often to call the effect, don't over-do this ( default 200"
          " )"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random amount of time to add to delay, ( default 0, 200 = 0ms "
          "to 200ms )"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -11616,7 +11619,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "defaults to 1000"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -11676,7 +11679,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Normal = 800, Valid range: any"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -11693,7 +11696,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Normal = 6, Valid range 0 - 10"
-        typ = "EF"
+        typ = "E"
       }
     }
     target_laser:form =
@@ -11752,7 +11755,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "number of points to add, default 1"
-        typ = "EF"
+        typ = "E"
       }
     }
     target_teleporter:form =
@@ -11797,13 +11800,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "delay variance, total delay = delay +/- random seconds"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
         txt = "&"
         hint = "seconds to pause before firing targets."
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -11863,7 +11866,7 @@ QQRKSRC1
         txt = "&"
         hint = "how many secrets on this level, if more than one on a level, b"
          "e sure they all have the same count!"
-        typ = "EF"
+        typ = "E"
       }
     }
     target_level_change:form =
@@ -12021,13 +12024,13 @@ QQRKSRC1
         txt = "&"
         hint = "number of times the counter should reset to it's full count wh"
          "en it's done"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = ""
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -12053,7 +12056,7 @@ QQRKSRC1
         txt = "&"
         hint = "After the counter has been triggered 'count' times (default 2)"
          ", it will fire all of it's targets and remove itself."
-        typ = "EF"
+        typ = "E"
       }
       targetname: =
       {
@@ -12097,13 +12100,13 @@ QQRKSRC1
         txt = "&"
         hint = "Cannot be fired again until this many seconds after the last t"
          "ime it was used"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "Will actually fire this many seconds after being used"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -12153,20 +12156,20 @@ QQRKSRC1
       {
         txt = "&"
         hint = "how long to wait after use to run script"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
         txt = "&"
         hint = "can't be used again in this amount of seconds (Default is 1 se"
          "cond if it's multiple-use)"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "how many times to run, -1 = infinite.  Default is 1"
-        typ = "EF"
+        typ = "E"
       }
       usescript: =
       {
@@ -12220,13 +12223,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Seconds between triggerings, 0 = don't auto trigger"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "wait variance, default is 0"
-        typ = "EF"
+        typ = "E"
       }
       noise: =
       {
@@ -12344,7 +12347,7 @@ QQRKSRC1
         hint = "how far from the navgoal an ent can be before it thinks it rea"
          "ched it - default is '0' which means no radius check, just have to t"
          "ouch it"
-        typ = "EF"
+        typ = "E"
       }
       targetname: =
       {
@@ -12805,14 +12808,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13116,14 +13119,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13195,14 +13198,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13302,14 +13305,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13381,14 +13384,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13460,14 +13463,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13539,14 +13542,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13618,14 +13621,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13697,14 +13700,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13776,14 +13779,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13820,14 +13823,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13899,14 +13902,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -13978,14 +13981,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -14067,14 +14070,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -14146,14 +14149,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -14225,14 +14228,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -14341,13 +14344,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "prevent bots from using this spot"
-        typ = "EF"
+        typ = "E"
       }
       nohumans: =
       {
         txt = "&"
         hint = "will prevent non-bots from using this spot"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -14414,13 +14417,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "damage to inflict when blocked (2 default)"
-        typ = "EF"
+        typ = "E"
       }
       speed: =
       {
         txt = "&"
         hint = "determines how fast it moves; default value is 100."
-        typ = "EF"
+        typ = "E"
       }
       model2: =
       {
@@ -14494,25 +14497,25 @@ QQRKSRC1
       {
         txt = "&"
         hint = "overrides default 200"
-        typ = "EF"
+        typ = "E"
       }
       lip: =
       {
         txt = "&"
         hint = "default 8, protrusion above rest position"
-        typ = "EF"
+        typ = "E"
       }
       height: =
       {
         txt = "&"
         hint = "total height of movement, defaults to model height"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "overrides default 2"
-        typ = "EF"
+        typ = "E"
       }
       model2: =
       {
@@ -14558,25 +14561,25 @@ QQRKSRC1
       {
         txt = "&"
         hint = "seconds to complete a bob cycle (4 default)"
-        typ = "EF"
+        typ = "E"
       }
       height: =
       {
         txt = "&"
         hint = "amplitude of bob (32 default)"
-        typ = "EF"
+        typ = "E"
       }
       phase: =
       {
         txt = "&"
         hint = "the 0.0 to 1.0 offset in the cycle to start at"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "damage to inflict when blocked (2 default)"
-        typ = "EF"
+        typ = "E"
       }
       targetname: =
       {
@@ -14629,19 +14632,19 @@ QQRKSRC1
         txt = "&"
         hint = "the number of degrees each way the pendulum swings, (30 defaul"
          "t)"
-        typ = "EF"
+        typ = "E"
       }
       phase: =
       {
         txt = "&"
         hint = "the 0.0 to 1.0 offset in the cycle to start at"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "damage to inflict when blocked (2 default)"
-        typ = "EF"
+        typ = "E"
       }
       model2: =
       {
@@ -14742,13 +14745,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "wait variance, default is 0"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
         txt = "&"
         hint = "base time between triggering all targets, default is 1"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -14765,7 +14768,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "radius entity can be away to fire trigger"
-        typ = "EF"
+        typ = "E"
       }
       NPC_target: =
       {
@@ -14824,26 +14827,26 @@ QQRKSRC1
       {
         txt = "&"
         hint = "default 0"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "default"$09"2"
-        typ = "EF"
+        typ = "E"
       }
       linear: =
       {
         txt = "&"
         hint = "set to 1 and it will move linearly rather than with accelerati"
          "on (default is 0)"
-        typ = "EF"
+        typ = "E"
       }
       speed: =
       {
         txt = "&"
         hint = "default 100"
-        typ = "EF"
+        typ = "E"
       }
       noise: =
       {
@@ -14861,13 +14864,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "default 0...ghoul2 animation start frame"
-        typ = "EF"
+        typ = "E"
       }
       endframe: =
       {
         txt = "&"
         hint = "default 0...ghoul2 animation end frame"
-        typ = "EF"
+        typ = "E"
       }
       _color: =
       {
@@ -14976,7 +14979,7 @@ QQRKSRC1
         txt = "&"
         hint = "amount of time before the object is usable again (only valid w"
          "ith ALWAYS_ON flag)"
-        typ = "EF"
+        typ = "E"
       }
       Usescript: =
       {
@@ -14995,14 +14998,14 @@ QQRKSRC1
         txt = "&"
         hint = "Will make it animate to next shader frame when used, not turn "
          "on/off... set this to number of frames in the shader, minus 1"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "if it has health, it will be used whenever shot at/killed - if"
          " you want it to only be used once this way, set health to 1"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -15108,13 +15111,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "sound of button"
-        typ = "EF"
+        typ = "E"
       }
       lip: =
       {
         txt = "&"
         hint = "override the default 4 pixel lip remaining at end of move"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -15126,19 +15129,19 @@ QQRKSRC1
       {
         txt = "&"
         hint = "override the default 1 second wait (-1 = never return)"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "if set, the button must be killed instead of touched"
-        typ = "EF"
+        typ = "E"
       }
       model2: =
       {
         txt = "&"
         hint = ".md3 model to also draw"
-        typ = "EF"
+        typ = "E"
       }
       _color: =
       {
@@ -15178,7 +15181,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "number of chunks when broken"
-        typ = "EF"
+        typ = "E"
       }
       model2: =
       {
@@ -15190,13 +15193,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "radius of damage"
-        typ = "EF"
+        typ = "E"
       }
       splashDamage: =
       {
         txt = "&"
         hint = "damage to do"
-        typ = "EF"
+        typ = "E"
       }
       _color: =
       {
@@ -15220,26 +15223,26 @@ QQRKSRC1
         txt = "&"
         hint = "When killed or used, how long (in seconds) to wait before blow"
          "ing up (none by default)"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
         txt = "&"
         hint = "how long minimum to wait between firing paintarget each time h"
          "it"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "Specifying this will make the object explode when destroyed"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "object's health"
-        typ = "EF"
+        typ = "E"
       }
       noise: =
       {
@@ -15265,13 +15268,13 @@ QQRKSRC1
         hint = "Chunk code tries to pick a good volume of chunks, but you can "
          "alter this to scale the number of spawned chunks. (default 1)  (.5) "
          "is half as many chunks, (2) is twice as many chunks"
-        typ = "EF"
+        typ = "E"
       }
       dmgrad: =
       {
         txt = "&"
         hint = "Radius for explosion of dmg is set"
-        typ = "EF"
+        typ = "E"
       }
       debrismodel: =
       {
@@ -15432,21 +15435,21 @@ QQRKSRC1
       {
         txt = "&"
         hint = "sound door makes when opening/closing"
-        typ = "EF"
+        typ = "E"
       }
       linear: =
       {
         txt = "&"
         hint = "set to 1 and it will move linearly rather than with accelerati"
          "on (default is 0)"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "damage to inflict when blocked (2 default, set to negative for"
          " no damage)"
-        typ = "EF"
+        typ = "E"
       }
       team: =
       {
@@ -15459,7 +15462,7 @@ QQRKSRC1
         txt = "&"
         hint = "when used, how many seconds to wait before moving - default is"
          " none"
-        typ = "EF"
+        typ = "E"
       }
       _color: =
       {
@@ -15488,19 +15491,19 @@ QQRKSRC1
       {
         txt = "&"
         hint = "wait before returning (3 default, -1 = never return)"
-        typ = "EF"
+        typ = "E"
       }
       speed: =
       {
         txt = "&"
         hint = "movement speed (100 default)"
-        typ = "EF"
+        typ = "E"
       }
       lip: =
       {
         txt = "&"
         hint = "lip remaining at end of move (8 default)"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -15571,14 +15574,14 @@ QQRKSRC1
         txt = "&"
         hint = "set to 1 and it will move linearly rather than with accelerati"
          "on (default is 0)"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "how much damage to do when it crushes (use with CRUSHER spawnf"
          "lag)"
-        typ = "EF"
+        typ = "E"
       }
       model2: =
       {
@@ -15668,21 +15671,21 @@ QQRKSRC1
         txt = "&"
         hint = "ONLY AFFECTS NPCs - time between bursts ( default 800 on harde"
          "st setting )"
-        typ = "EF"
+        typ = "E"
       }
       delay: =
       {
         txt = "&"
         hint = "ONLY AFFECTS NPCs - time between shots ( default 200 on hardes"
          "t setting )"
-        typ = "EF"
+        typ = "E"
       }
       health: =
       {
         txt = "&"
         hint = "how much damage the gun can take before it blows ( default 250"
          " )"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
@@ -15690,19 +15693,19 @@ QQRKSRC1
         hint = "if CANRESPAWN spawnflag, decides how long it is before gun res"
          "pawns (in ms)"$0D"[SP: how much ammo to give this gun ( default 999 "
          ")]"
-        typ = "EF"
+        typ = "E"
       }
       splashdamage: =
       {
         txt = "&"
         hint = "how much damage a blowing up gun deals ( default 80 )"
-        typ = "EF"
+        typ = "E"
       }
       splashradius: =
       {
         txt = "&"
         hint = "radius for exploding damage ( default 128 )"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -15735,13 +15738,13 @@ QQRKSRC1
         txt = "&"
         hint = "when used with the LINEAR spawnflag, pushes the client toward "
          "the position at a constant speed (default is 1000)"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
         txt = "&"
         hint = "how long to wait between pushes: -1 = push only once"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -15832,14 +15835,14 @@ QQRKSRC1
         hint = "how far off to the side of the player's field of view this can"
          " be, max, and still be considered 'seen'.  Player FOV is 80, so the "
          "default for this value is 30."
-        typ = "EF"
+        typ = "E"
       }
       radius: =
       {
         txt = "&"
         hint = "how far this ent can be from player's eyes, max, and still be "
          "considered 'seen'"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -15878,7 +15881,7 @@ QQRKSRC1
         txt = "&"
         hint = "How many seconds it takes to get from 0 to 'dmg' (default is 0"
          ")"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
@@ -15886,20 +15889,20 @@ QQRKSRC1
         hint = "Use in instead of 'SLOW' - determines how often the player get"
          "s hurt, 0.1 is every frame, 1.0 is once per second.  -1 will stop af"
          "ter one use"
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "If set, FALLING death causes a fade to black in this many mill"
          "iseconds (default is 10000 = 10 seconds)"
-        typ = "EF"
+        typ = "E"
       }
       dmg: =
       {
         txt = "&"
         hint = "default 5 (whole numbers only)"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -16053,7 +16056,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "how many seconds to wait to fire targets after tripped"
-        typ = "EF"
+        typ = "E"
       }
       soundSet: =
       {
@@ -16071,7 +16074,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "wait variance, default is 0"
-        typ = "EF"
+        typ = "E"
       }
       team: =
       {
@@ -16160,14 +16163,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -16233,13 +16236,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "how many seconds to wait to fire targets after tripped"
-        typ = "EF"
+        typ = "E"
       }
       speed: =
       {
         txt = "&"
         hint = "How many seconds to wait to fire the target2, default is 1"
-        typ = "EF"
+        typ = "E"
       }
       soundSet: =
       {
@@ -16252,7 +16255,7 @@ QQRKSRC1
         txt = "&"
         hint = "Seconds between triggerings, 0 default, number < 0 means one t"
          "ime only."
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -16271,7 +16274,7 @@ QQRKSRC1
       {
         txt = "&"
         hint = "wait variance, default is 0"
-        typ = "EF"
+        typ = "E"
       }
       hiderange: =
       {
@@ -16279,7 +16282,7 @@ QQRKSRC1
         hint = "As long as NPC's head is in this trigger, NPCs out of this hid"
          "erange cannot see him.  If you set an angle on the trigger, they're "
          "only hidden from enemies looking in that direction."
-        typ = "EF"
+        typ = "E"
       }
       team: =
       {
@@ -16384,14 +16387,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -16463,14 +16466,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -16542,14 +16545,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -16621,14 +16624,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -16700,14 +16703,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -16779,14 +16782,14 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -16888,7 +16891,7 @@ QQRKSRC1
         hint = "only use if placing inside solid is unavoidable in map, but ma"
          "y be clear in-game (ie: at the bottom of a tall, solid lift that sta"
          "rts at the top position)"
-        typ = "EF"
+        typ = "E"
       }
     }
     holocron_force_push:form =
@@ -16899,21 +16902,21 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "level of force power this holocron gives activator ( range: 0-"
          "3, default 1)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -16953,21 +16956,21 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "level of force power this holocron gives activator ( range: 0-"
          "3, default 1)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -17007,21 +17010,21 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "level of force power this holocron gives activator ( range: 0-"
          "3, default 1)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -17061,21 +17064,21 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "level of force power this holocron gives activator ( range: 0-"
          "3, default 1)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -17115,21 +17118,21 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "level of force power this holocron gives activator ( range: 0-"
          "3, default 1)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -17169,21 +17172,21 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "level of force power this holocron gives activator ( range: 0-"
          "3, default 1)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -17223,21 +17226,21 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "level of force power this holocron gives activator ( range: 0-"
          "3, default 1)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -17277,21 +17280,21 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "level of force power this holocron gives activator ( range: 0-"
          "3, default 1)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -17331,21 +17334,21 @@ QQRKSRC1
         txt = "&"
         hint = "override the default wait before respawning.  -1 = never respa"
          "wn automatically, which can be used with targeted spawning."
-        typ = "EF"
+        typ = "E"
       }
       count: =
       {
         txt = "&"
         hint = "level of force power this holocron gives activator ( range: 0-"
          "3, default 1)"
-        typ = "EF"
+        typ = "E"
       }
       random: =
       {
         txt = "&"
         hint = "random number of plus or minus seconds varied from the respawn"
          " time"
-        typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -17384,13 +17387,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "speed to move to the next corner"
-        typ = "EF"
+        typ = "E"
       }
       wait: =
       {
         txt = "&"
         hint = "seconds to wait before behining move to next corner"
-        typ = "EF"
+        typ = "E"
       }
       target: =
       {
@@ -17487,19 +17490,19 @@ QQRKSRC1
         Hint = "how long to take to fade from start to final and final to star"
          "t.  Also how long to fade on and off if appropriate flags are checke"
          "d (seconds) (with PULSE flag on)"
-        Typ = "EF"
+        typ = "E"
       }
       starttime: =
       {
         Txt = "&"
         Hint = "how long to hold at start (seconds) (with PULSE flag on)"
-        Typ = "EF"
+        typ = "E"
       }
       finaltime: =
       {
         Txt = "&"
         Hint = "how long to hold at final (seconds) (with PULSE flag on)"
-        Typ = "EF"
+        typ = "E"
       }
       spawnflags: =
       {
@@ -17553,7 +17556,7 @@ QQRKSRC1
       radius: =
       {
         Txt = "&"
-        Typ = "EF"
+        typ = "E"
         Hint = "overrides the default 64 unit radius of a spotlight at the tar"
          "get point"
       }
@@ -17562,7 +17565,7 @@ QQRKSRC1
         Txt = "&"
         Hint = "multiplier for the light intensity - does not affect size (def"
          "ault 1)"
-        Typ = "EF"
+        typ = "E"
       }
       style: =
       {
@@ -17691,13 +17694,13 @@ QQRKSRC1
       {
         txt = "&"
         hint = "value for vis for the maximum viewing distance"
-        typ = "EF"
+        typ = "E"
       }
       chopsize: =
       {
         txt = "&"
         hint = "value for bsp on the maximum polygon / portal size"
-        typ = "EF"
+        typ = "E"
       }
       ls_Xr: =
       {
