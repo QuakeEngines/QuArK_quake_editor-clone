@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.276  2006/01/23 07:32:00  cdunde
+//To revert back to vmf file listing for Texture Browser and
+//proper name application for map export file of H-L2 and CS
+//
 //Revision 1.275  2006/01/21 01:02:50  cdunde
 //To fix H-L2 texture addons for H-L2 and CS as well as
 //Defaults.qrk file with change over from texture files from
@@ -2485,18 +2489,18 @@ QQRKSRC1
       {
         QuickObjects_distortion = "0"
         QuickObjects_makehollow = "0"
-        QuickObjects_torus_segs_faces = '0 0'
-        QuickObjects_torus_radiuses = '2 1'
-        QuickObjects_torus_xydistort = '2 2'
-        QuickObjects_torus_zupdistort = '2 0'
-        QuickObjects_torus_ring_seg_edges = '2 2'
+        QuickObjects_torus_segs_faces = "0 0"
+        QuickObjects_torus_radiuses = "2 1"
+        QuickObjects_torus_xydistort = "2 2"
+        QuickObjects_torus_zupdistort = "2 0"
+        QuickObjects_torus_ring_seg_edges = "2 2"
         QuickObjects_torus_hollowtorus = "0"
         QuickObjects_torus_nobulkheads = "0"
         PaintBrush_tex = "Select a texture"
-        PaintBrush_origin = '0 0 -32'
+        PaintBrush_origin = "0 0 -32"
         PaintBrush_retain = "1"
-        PaintBrush_scale = '100 100'
-        PaintBrush_angles = '0 90'
+        PaintBrush_scale = "100 100"
+        PaintBrush_angles = "0 90"
         PaintBrush_color = "1"
         PaintBrush_sidestoo = "0"
         PaintBrush_sidesonly = "0"

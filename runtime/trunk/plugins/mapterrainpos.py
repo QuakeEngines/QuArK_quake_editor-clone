@@ -399,11 +399,14 @@ def PaintBrushClick(m):
         if (org is not None) and quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"] == "1":
             pass
         else:
-            src["origin"] = org.tuple
+    #        src["origin"] = org.tuple
+            src["origin"] = str(org.tuple[0]+" "+org.tuple[1]+" "+org.tuple[2]) # fix for linux
         if (sc is not None):
-            src["scale"] = sc
+    #        src["scale"] = sc
+            src["scale"] = str(sc[0]+" "+sc[1]) # fix for linux
         if (sa is not None):
-            src["angles"] = (sa[0] * rad2deg, sa[1] * rad2deg * -1 + 180)
+    #        src["angles"] = (sa[0] * rad2deg, sa[1] * rad2deg * -1 + 180)
+            src["angles"] = str((sa[0] * rad2deg, sa[1] * rad2deg * -1 + 180)) # fix for linux
 
 
   
@@ -417,10 +420,13 @@ def PaintBrushClick(m):
       ### To populate settings...
         if (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"] is None) and(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidestoo"] is None) and(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_sidesonly"] is None) and(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"] is None):
             src["tex"]  = quarkx.setupsubset()["DefaultTexture"]
-            src["origin"] = 0, 0, -32
+         #   src["origin"] = 0, 0, -32
+            src["origin"] = "0 0 -32" # fix for linux
             src["retain"] = "1"
-            src["scale"] = 100, 100
-            src["angles"] = 0, 90
+         #   src["scale"] = 100, 100
+            src["scale"] = "100 100" # fix for linux
+         #   src["angles"] = 0, 90
+            src["angles"] = "0 90" # fix for linux
             src["color"] = "1"
             src["sidestoo"] = "0"
             src["sidesonly"] = "0"
@@ -456,10 +462,12 @@ def PaintBrushClick(m):
 
         if org is not None and quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"] == "0":
             originX, originY, originZ = org.tuple
-            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] = org.tuple
+    #        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] = org.tuple
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] = (str(originX) +" "+ str(originY) +" "+ str(originZ)) # fix for linux
             org = None
         else:
-            originX, originY, originZ = (src["origin"])
+    #        originX, originY, originZ = (src["origin"])
+            originX, originY, originZ = read3values((src["origin"])) # fix for linux
 
         if src["retain"]:
             keep = src["retain"]
@@ -468,17 +476,21 @@ def PaintBrushClick(m):
 
         if sc is not None:
             scaleX, scaleY = sc
-            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] = sc
+    #        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] = sc
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] = (str(scaleX) +" "+ str(scaleY)) # fix for linux
             sc = None
         else:
-            scaleX, scaleY = (src["scale"])
+    #        scaleX, scaleY = (src["scale"])
+            scaleX, scaleY = read2values((src["scale"])) # fix for linux
 
         if sa is not None:
             angleX, angleY = sa
-            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] = sa
+    #        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] = sa
+            quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] = (str(angleX) +" "+ str(angleY)) # fix for linux
             sa = None
         else:
-            angleX, angleY = (src["angles"])
+    #        angleX, angleY = (src["angles"])
+            angleX, angleY = read2values((src["angles"])) # fix for linux
 
 
         if src["color"]:
@@ -527,18 +539,21 @@ def PaintBrushClick(m):
         tempX, tempY, originZ = read3values(self.temp)
         originX, originY = read2values(self.src["origin"])
         if originX is None:
-            originX, originY, originZ = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"]
+    #        originX, originY, originZ = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"]
+            originX, originY, originZ = read3values(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"]) # fix for linux
 
         curkeep = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"]
         keep = (self.src["retain"])
 
         scaleX, scaleY = read2values(self.src["scale"])
         if scaleX is None:
-            scaleX, scaleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"]
+    #        scaleX, scaleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"]
+            scaleX, scaleY = read2values(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"]) # fix for linux
 
         angleX, angleY = read2values(self.src["angles"])
         if angleX is None:
-            angleX, angleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]
+    #        angleX, angleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]
+            angleX, angleY = read2values(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]) # fix for linux
 
         curguide = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]
         guide = (self.src["color"])
@@ -569,10 +584,13 @@ def PaintBrushClick(m):
 
       ### Save the settings...
         quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"] = texname
-        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] = originX, originY, originZ
+    #    quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] = originX, originY, originZ
+        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"] = (str(originX) +" "+ str(originY) +" "+ str(originZ)) # fix for linux
         quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"] = keep
-        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] = scaleX, scaleY
-        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] = angleX, angleY
+    #    quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] = scaleX, scaleY
+        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"] = (str(scaleX) +" "+ str(scaleY)) # fix for linux
+    #    quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] = angleX, angleY
+        quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"] = (str(angleX) +" "+ str(angleY)) # fix for linux
         quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"] = guide
         quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_variance"] = variable
 
@@ -1096,6 +1114,10 @@ def Options3DviewsClick(m):
 #
 #
 # $Log$
+# Revision 1.6  2005/11/07 00:06:40  cdunde
+# To commit all files for addition of new Terrain Generator items
+# Touch-up Selector and 3D Options Dialog
+#
 # Revision 1.5  2005/10/15 00:51:56  cdunde
 # To reinstate headers and history
 #

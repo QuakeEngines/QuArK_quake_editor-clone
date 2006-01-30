@@ -342,7 +342,14 @@ def Arrow(canvas, view, p1, p2, text=None):
     if p3:
         p3 = p3.normalized
         eye = view.vector(p2).normalized   # vector from p2 pointing to the eye
-        arrowx, arrowy = quarkx.setupsubset(SS_MAP, "Display")["ArrowSize"]
+
+     #   arrowx, arrowy = quarkx.setupsubset(SS_MAP, "Display")["ArrowSize"]
+     # fix for Linux
+        try:
+            arrowx, arrowy = quarkx.setupsubset(SS_MAP, "Display")["ArrowSize"]
+        except:
+            arrowx, arrowy = 40,27 # linux issue with single quote
+
         p4 = arrowy*(eye ^ p3)    # cross product
         p5 = p2 - arrowx*p3
         canvas.line(pp2, view.proj(p5+p4))
@@ -1493,6 +1500,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.27  2005/12/15 07:57:20  cdunde
+#To update help menu for QuArK's Official site new address
+#
 #Revision 1.26  2005/12/10 07:19:18  cdunde
 #To add new paint brush cursor for Terrain Generator
 #

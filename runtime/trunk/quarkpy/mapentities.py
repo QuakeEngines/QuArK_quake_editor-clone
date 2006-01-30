@@ -600,7 +600,13 @@ class DefaultDrawEntityLines:
                         #radius = L3[3]
                         #color = makeRGBcolor(L3[0], L3[1], L3[2])
 
-                    lightfactor, = quarkx.setupsubset()["LightFactor"]
+                #    lightfactor, = quarkx.setupsubset()["LightFactor"]
+                # fix for Linux
+                    try:
+                        lightfactor, = quarkx.setupsubset()["LightFactor"]
+                    except:
+                        lightfactor = 0.9 # linux issue with single quote
+	
                     radius = radius * view.scale(org) * lightfactor
                     cv = view.canvas()
                     cv.pencolor = color
@@ -688,6 +694,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.47  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.44  2005/08/16 19:37:07  cdunde
 #Needed to step back to v1.36 content to remove
 #console unknowen entity error message.

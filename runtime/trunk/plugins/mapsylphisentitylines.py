@@ -59,7 +59,13 @@ class SylphisDrawEntityLines(DefaultDrawEntityLines):
             maxY = max(cy)
             minY = min(cy)
 
-            lightfactor, = quarkx.setupsubset()['LightFactor']
+        #    lightfactor, = quarkx.setupsubset()['LightFactor']
+        # fix for Linux
+            try:
+                lightfactor, = quarkx.setupsubset()['LightFactor']
+            except:
+                lightfactor = 0.9 # linux issue with single quote
+
             radius = 100
             try:
                 color = quakecolor(quarkx.vect(entity["color"]))
@@ -101,6 +107,9 @@ quarkpy.mapentities.EntityLinesMapping.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3  2005/10/15 00:51:24  cdunde
+#To reinstate headers and history
+#
 #Revision 1.1  2004/05/21 01:04:14  cdunde
 #To add support for Sylphis game engine. Code by Harry Kalogirou.
 #

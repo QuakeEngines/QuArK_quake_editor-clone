@@ -63,7 +63,13 @@ class ModelEditor(BaseEditor):
         "Build the handles for all model views."
         for v in self.layout.views:
             v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
-        delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
+     #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
+     # linux issue with single quote
+        try:
+            delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
+        except:
+            delay = 0.5 # linux issue with single quote
+
         if delay <= 0.0:
             commonhandles(self, 0)
         else:
@@ -145,6 +151,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.8  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.5  2001/03/15 21:07:49  aiv
 #fixed bugs found by fpbrowser
 #

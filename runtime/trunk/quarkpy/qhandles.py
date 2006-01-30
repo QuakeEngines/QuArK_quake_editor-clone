@@ -75,7 +75,13 @@ def cleargrid():
 #
 
 def alignanglevect(v, mode):
-    anglestep = quarkx.setupsubset(mode, "Building")["ForceAngleStep"][0]
+  #  anglestep = quarkx.setupsubset(mode, "Building")["ForceAngleStep"][0]
+  # fix for Linux
+    try:
+        anglestep = quarkx.setupsubset(mode, "Building")["ForceAngleStep"][0]
+    except:
+        anglestep = 15 # linux issue with single quote
+
     pitch,roll,yaw = vec2angles1(v)
     pitch = quarkx.rnd(pitch/anglestep)*anglestep
     roll = quarkx.rnd(roll/anglestep)*anglestep
@@ -402,7 +408,13 @@ class Rotate3DHandle(GenericHandle):
         def forceangle1click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[559])
 
-        anglestep = quarkx.setupsubset(self.MODE, "Building")["ForceAngleStep"][0]
+     #   anglestep = quarkx.setupsubset(self.MODE, "Building")["ForceAngleStep"][0]
+     # fix for Linux
+        try:
+            anglestep = quarkx.setupsubset(self.MODE, "Building")["ForceAngleStep"][0]
+        except:
+            anglestep = 15 # linux issue with single quote
+
         return [qmenu.item("&Force to nearest %s deg.\tCtrl" % quarkx.ftos(anglestep), forceangle1click,
           "|This command forces the angle to a 'round' value. It works like a kind of grid for angles.\n\nSet the 'angle grid' in the Configuration box, Map, Building, 'Force to angle'. See also the Options menu, 'Adjust angles automatically'.")]
 
@@ -1160,7 +1172,13 @@ class FreeZoomDragObject(DragObject):
           # if you are unhappy with this, change it here...
 
           # or set a negative value in the Configuration dialog for this
-        sensitivity, = quarkx.setupsubset(self.MODE, "Display")["FreeZoom"]
+
+     #   sensitivity, = quarkx.setupsubset(self.MODE, "Display")["FreeZoom"]
+     # fix for Linux
+        try:
+            sensitivity, = quarkx.setupsubset(self.MODE, "Display")["FreeZoom"]
+        except:
+            sensitivity = 1 # linux issue with single quote
 
         scale = self.scale0 * math.exp((x-self.x0+y-self.y0) * sensitivity * self.BaseSensitivity)
         if scale<self.AbsoluteMinimum: scale=self.AbsoluteMinimum
@@ -1790,6 +1808,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.23  2006/01/29 19:08:53  cdunde
+#To fix error message when sometimes switching game modes
+#
 #Revision 1.22  2006/01/12 07:21:01  cdunde
 #To commit all new and related files for
 #new Quick Object makers and toolbar.

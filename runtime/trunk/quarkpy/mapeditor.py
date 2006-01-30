@@ -322,10 +322,16 @@ def loadbbox(sender):
     sender.boundingboxes = bbox
     return bbox
 
-
+# fix for Linux
 def autosavetime():
-    minutes, = quarkx.setupsubset(SS_MAP, "Building")["AutoSave"]
-    return minutes * 60000.0
+  #  minutes, = quarkx.setupsubset(SS_MAP, "Building")["AutoSave"]
+  #  return minutes * 60000.0
+    try: 
+        minutes = int(quarkx.setupsubset(SS_MAP, "Building")["AutoSave"])
+    except:
+        return 600000 # linux issue with single quote
+    else:
+        return minutes * 60000.0
 
 def autosave(editor):
     if (editor.Root is not None) and (editor.fileobject.flags & OF_MODIFIED):
@@ -350,6 +356,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.7  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.4  2002/05/18 09:53:14  tiglari
 #support Radiant-style dragging for frozen selections
 #

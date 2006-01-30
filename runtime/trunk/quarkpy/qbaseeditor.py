@@ -125,7 +125,15 @@ class BaseEditor:
             def DrawAxis(setup=setup, view=view, MODE=self.MODE):
                 X, Y, Z = setup["MapLimit"]
                 if (quarkx.setupsubset()["MapLimit"]<>None):    # games can overide default setting
-                    X, Y, Z = quarkx.setupsubset()["MapLimit"]
+
+               #     X, Y, Z = quarkx.setupsubset()["MapLimit"]
+               # fix for Linux
+                    try:
+                        X, Y, Z = quarkx.setupsubset()["MapLimit"]
+                    except:
+                        X, Y, Z = 4096,4096,4096  # linux issue with single quote
+
+
                 ax = []
                 if MapOption("DrawAxis", MODE):
                     ax.append((-X, 0, 0,  X, 0, 0))
@@ -871,6 +879,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.22  2005/12/07 08:33:35  cdunde
+#To stop bug braking Model Editor because of code added to stop last
+#selected item for Terrain Generator being drawn in white outline.
+#
 #Revision 1.21  2005/10/19 21:20:06  cdunde
 #To remove 2 lines of code that broke Map cursor style options
 #and were unnecessary for Paint Brush functions to work

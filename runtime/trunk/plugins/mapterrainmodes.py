@@ -2210,10 +2210,13 @@ class TerrainPaintClick(TerrainRectSelDragObject):
           ### Gets the stored dialog box values to be used below.
 
                             texname = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_tex"]
-                            originX, originY, originZ = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"]
+                     #       originX, originY, originZ = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"]
+                            originX, originY, originZ = plugins.mapterrainpos.read3values(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_origin"]) # fix for linux
                             retain = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_retain"]
-                            scaleX, scaleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"]
-                            angleX, angleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]
+                     #       scaleX, scaleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"]
+                            scaleX, scaleY = plugins.mapterrainpos.read2values(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_scale"]) # fix for linux
+                     #       angleX, angleY = (quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"])
+                            angleX, angleY = plugins.mapterrainpos.read2values(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]) # fix for linux
 
           ## The texX and texY are the size of the actual texture image
           ## and are used here to be applied to the scale x and y factors.
@@ -2397,6 +2400,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.22  2006/01/12 07:21:01  cdunde
+# To commit all new and related files for
+# new Quick Object makers and toolbar.
+#
 # Revision 1.21  2006/01/10 01:05:16  cdunde
 # To fix TG cursors to change according to textured
 # and non-textured modes and button changes properly
