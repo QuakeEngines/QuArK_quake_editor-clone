@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2006/01/28 23:00:04  cdunde
+Fixed source code to handle multiple numeric input properly
+and added vmt files that could not display vtf because of this.
+
 Revision 1.12  2006/01/26 20:38:24  cdunde
 QkHL2mat.pas and all HL2 texture files are dependent on this pas file.
 To expand on displayed textures in the Texture Browser:
@@ -499,10 +503,7 @@ expected one.
                    ReadHL2Sub; //descend
          end
        else
-         begin
-         WriteConsole(@g_Ty_InternalConsole, '>>> '+S1+' '+S+#10+path+' end of test'+#10);
          raise EErrorFmt(254, [LineNoBeingParsed, '2nd item unknown thing']);
-         end
      end; //while SymbolType<>sCurlyBracketRight
 
    ReadSymbol(sCurlyBracketRight);
