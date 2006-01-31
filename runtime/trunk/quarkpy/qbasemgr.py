@@ -470,7 +470,7 @@ class BaseLayout:
     def getgridmenu(self, gridbtn):
         grid = self.editor.gridstep
         gridmenu = []
-        for g in (0,512,256,128,64,32,16,8,4,2,1,.5,.25,.1):
+        for g in (0, 4096, 2048, 1024,512,256,128,64,32,16,8,4,2,1,.5,.25,.1):
             if g:
                 cap = "grid \t%s" % g
             else:
@@ -607,6 +607,10 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.20  2006/01/30 10:07:13  cdunde
+#Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
+#to allow the creation of much larger maps for the more recent games.
+#
 #Revision 1.19  2005/10/20 03:16:12  cdunde
 #Added to open 3D window title for clarity
 #as to which type was being viewed
