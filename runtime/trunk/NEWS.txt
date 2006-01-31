@@ -15,6 +15,8 @@ $Id$
 6.5.0 alpha 5
 =============
 
+ * [cdunde] : Fixed smearing of 2D views when rulers are turned off.
+
  * [cdunde] : Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
      - to allow the creation of much larger maps for the more recent games.
 
