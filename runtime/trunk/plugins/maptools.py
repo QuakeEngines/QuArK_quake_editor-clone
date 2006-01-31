@@ -66,7 +66,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                     vlink[1].scrollto(None, y)
                 else:
                     vlink[1].scrollto(y, None)
-            if not MapOption("All2DviewsRulers") and not MapOption("AllTopRulers") and not MapOption("AllSideRulers") and not MapOption("XviewRulers") and not MapOption("XyTopRuler") and not MapOption("XzSideRuler") and not MapOption("YviewRulers") and not MapOption("YxTopRuler") and not MapOption("YzSideRuler") and not MapOption("ZviewRulers") and not MapOption("ZxTopRuler") and not MapOption("ZySideRuler"):
+            if not MapOption("AxisXYZ") and not MapOption("All2DviewsScale") and not MapOption("AllScalesCentered") and not MapOption("XviewScale") and not MapOption("XyScaleCentered") and not MapOption("XzScaleCentered") and not MapOption("YviewScale") and not MapOption("YxScaleCentered") and not MapOption("YzScaleCentered") and not MapOption("ZviewScale") and not MapOption("ZxScaleCentered") and not MapOption("ZyScaleCentered") and not MapOption("All2DviewsRulers") and not MapOption("AllTopRulers") and not MapOption("AllSideRulers") and not MapOption("XviewRulers") and not MapOption("XyTopRuler") and not MapOption("XzSideRuler") and not MapOption("YviewRulers") and not MapOption("YxTopRuler") and not MapOption("YzSideRuler") and not MapOption("ZviewRulers") and not MapOption("ZxTopRuler") and not MapOption("ZySideRuler"):
                 view.update()
             else:
                 view.repaint()
@@ -577,6 +577,10 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.9  2005/12/11 22:03:09  cdunde
+#To fix error in editor and Infobase for X 2D view of
+#Y axis sign and label which was backwards
+#
 #Revision 1.8  2005/11/25 04:17:24  cdunde
 #again 8-(
 #
