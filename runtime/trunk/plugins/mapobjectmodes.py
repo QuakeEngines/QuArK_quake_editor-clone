@@ -615,7 +615,7 @@ def objectruler(editor, view, poly):
            y = view.proj(yrendt).tuple[1]-12
            cv.textout(x,y,"0")
         # Prints above the right marker line the distance, on the Y axis
-           x = view.proj(ylendt).tuple[0]-(grid*.125)
+           x = view.proj(ylendt).tuple[0]
            y = view.proj(ylendt).tuple[1]-12
            dist = abs(y2-y1)
            cv.textout(x,y,quarkx.ftos(dist))
@@ -687,7 +687,7 @@ def objectruler(editor, view, poly):
            y = view.proj(xlendt).tuple[1]-12
            cv.textout(x,y,"0")
         # Prints above the right marker line the distance, on the X axis
-           x = view.proj(xrendt).tuple[0]-(grid*.125)
+           x = view.proj(xrendt).tuple[0]
            y = view.proj(xrendt).tuple[1]-12
            dist = abs(x1-x2)
            cv.textout(x,y,quarkx.ftos(dist))
@@ -758,7 +758,7 @@ def objectruler(editor, view, poly):
            y = view.proj(xlendt).tuple[1]-12
            cv.textout(x,y,"0")
         # Prints above the right marker line the distance, on the X axis
-           x = view.proj(xrendt).tuple[0]-(grid*.125)
+           x = view.proj(xrendt).tuple[0]
            y = view.proj(xrendt).tuple[1]-12
            dist = abs(x1-x2)
            cv.textout(x,y,quarkx.ftos(dist))
@@ -3219,6 +3219,10 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2006/01/30 08:20:00  cdunde
+# To commit all files involved in project with Philippe C
+# to allow QuArK to work better with Linux using Wine.
+#
 # Revision 1.3  2006/01/17 19:25:45  cdunde
 # To add all file updates for new Object modes
 # dialog boxes hollowing functions.

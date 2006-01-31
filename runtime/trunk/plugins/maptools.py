@@ -149,7 +149,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            y = view.proj(yrendt).tuple[1]-12
            cv.textout(x,y,"0")
         # Prints above the right marker line the distance, on the Y axis
-           x = view.proj(ylendt).tuple[0]-(grid*.125)
+           x = view.proj(ylendt).tuple[0]
            y = view.proj(ylendt).tuple[1]-12
            dist = abs(y2-y1)
            cv.textout(x,y,quarkx.ftos(dist))
@@ -221,7 +221,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            y = view.proj(xlendt).tuple[1]-12
            cv.textout(x,y,"0")
         # Prints above the right marker line the distance, on the X axis
-           x = view.proj(xrendt).tuple[0]-(grid*.125)
+           x = view.proj(xrendt).tuple[0]
            y = view.proj(xrendt).tuple[1]-12
            dist = abs(x1-x2)
            cv.textout(x,y,quarkx.ftos(dist))
@@ -292,7 +292,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            y = view.proj(xlendt).tuple[1]-12
            cv.textout(x,y,"0")
         # Prints above the right marker line the distance, on the X axis
-           x = view.proj(xrendt).tuple[0]-(grid*.125)
+           x = view.proj(xrendt).tuple[0]
            y = view.proj(xrendt).tuple[1]-12
            dist = abs(x1-x2)
            cv.textout(x,y,quarkx.ftos(dist))
@@ -577,6 +577,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.10  2006/01/31 07:35:08  cdunde
+#To stop smearing of 2D view when rulers are turned off.
+#
 #Revision 1.9  2005/12/11 22:03:09  cdunde
 #To fix error in editor and Infobase for X 2D view of
 #Y axis sign and label which was backwards
