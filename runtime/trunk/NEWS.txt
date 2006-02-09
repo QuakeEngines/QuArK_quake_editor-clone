@@ -15,7 +15,7 @@ $Id$
 6.5.0 alpha 5
 =============
 
- * [cdunde] : Fixed distance displayed amount from drifting away from
+ * [cdunde] : Fixed rulers distance displayed amount from drifting away from
       - marker on screen view x-axis when the scale size is changed.
 
  * [cdunde] : Fixed smearing of 2D views when rulers are turned off.
