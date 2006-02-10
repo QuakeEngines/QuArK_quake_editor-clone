@@ -924,11 +924,6 @@ class SphereMakerDragObject(parent):
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
-        radius = centerX-cx
-        if radius == 0:
-            radius = screengridstep
-
-    ## Turns off the growing BLUE circle and lines only, just draws the BLUE starting point
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -970,9 +965,6 @@ class SphereMakerDragObject(parent):
     ## The next line draws the BLUE circle only
         cv.ellipse(centerX-radius, centerY-radius, centerX+radius+1, centerY+radius+1)
 
-        facesize = 1 # THis can be used as veriable input by user for nbr of GRID units for face
-                     # size but might be better just to use grid size and take this out below
-
     ## This seciton draws all the BLUE grid lines, including the center ones
         if screengridstep != 0:
             segments = abs(radius/screengridstep)
@@ -982,43 +974,15 @@ class SphereMakerDragObject(parent):
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
-        drawline = drawline/facesize
         while drawline >= 1:
             drawline = drawline - 1
-            cv.line(centerX-radius, centerY+(screengridstep*drawline*facesize), centerX+radius, centerY+(screengridstep*drawline*facesize)) # draws X axis lines on and ABOVE 0 in Z view
-            cv.line(centerX+(screengridstep*drawline*facesize), centerY-radius, centerX+(screengridstep*drawline*facesize), centerY+radius) # draws Y axis lines on and to the left of 0 in Z view
+            cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
+            cv.line(centerX+(screengridstep*drawline), centerY-radius, centerX+(screengridstep*drawline), centerY+radius) # draws Y axis line on and to the left of 0 in Z view
             if drawline <= 0:
                 pass
             else:
-                cv.line(centerX-radius, centerY-(screengridstep*drawline*facesize), centerX+radius, centerY-(screengridstep*drawline*facesize)) # draws X axis lines BELOW 0 only in Z view
-                cv.line(centerX-(screengridstep*drawline*facesize), centerY-radius, centerX-(screengridstep*drawline*facesize), centerY+radius) # draws Y axis lines to the right of 0 only in Z view
-
-     ## Start of test section for line segments to get point locations
-        cv.pencolor = FUCHSIA
-        ## gives the radius based on grid
-        gridradius = abs(self.view.space(centerX-radius, centerY+(screengridstep*drawline*facesize), centerZ).tuple[0])
-    #    print "gridradius",gridradius#,type(gridradius)
-        maxfloat = "%.4f"%(gridradius)
-    #    print "maxfloat",maxfloat,type(maxfloat)
-        gridradius = float(maxfloat)
-    #    print "adj gridradius",gridradius#,type(gridradius)
-    #    print "actualgrid",actualgrid,type(actualgrid)
-        linesegments = int(abs(gridradius/actualgrid))
-    #    print "linesegments",linesegments
-    #    print "X left & up test point",self.view.space(centerX-radius, centerY+(screengridstep*drawline*facesize), centerZ)
-    #    print "X right & up test point",self.view.space(centerX+radius, centerY+(screengridstep*drawline*facesize), centerZ)
-
-
-    ## Computes less than full line segment and draws in FUCHSIA color
-        fullsectionsline = linesegments * actualgrid
-        remainderline = gridradius - fullsectionsline
-       # if remainderline != 0:
-       #     cv.line(centerX - (linesegments * screengridstep), centerY-(screengridstep*drawline*facesize), centerX + radius, centerY-(screengridstep*drawline*facesize))
-
-    #        print "My 1st point",(self.pt0.tuple[0] + (linesegments * actualgrid))
-    #        print "self.pt0",self.pt0.tuple[0]
-    #        print "My 2nd point",self.pt0.tuple[0] + gridradius
-     ## End of test section
+                cv.line(centerX-radius, centerY-(screengridstep*drawline), centerX+radius, centerY-(screengridstep*drawline)) # draws X axis line BELOW 0 only in Z view
+                cv.line(centerX-(screengridstep*drawline), centerY-radius, centerX-(screengridstep*drawline), centerY+radius) # draws Y axis line to the right of 0 only in Z view
 
     ## This section draws the cross hairs
         cv.penwidth = 1
@@ -1065,9 +1029,6 @@ class SphereMakerDragObject(parent):
      #   (all code uses grid amounts for x, y and z positions)
 
     ## This section regulates the object (sphere) size by the mouse drag
-
-       # The next line is only used if BLUE lines are to be clipped to the actual ciricle size
-       # objectsize = actualgrid * (linesegments + dif)
 
         if type == "YZ":
             objectsize = abs(dragpointamount.tuple[1])
@@ -1597,11 +1558,6 @@ class PyramidMakerDragObject(parent):
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
-        radius = centerX-cx
-        if radius == 0:
-            radius = screengridstep
-
-    ## Turns off the growing BLUE circle and lines only, just draws the BLUE starting point
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -1644,9 +1600,6 @@ class PyramidMakerDragObject(parent):
     ## The next line draws the BLUE circle only
         cv.ellipse(centerX-radius, centerY-radius, centerX+radius+1, centerY+radius+1)
 
-        facesize = 1 # THis can be used as veriable input by user for nbr of GRID units for face
-                     # size but might be better just to use grid size and take this out below
-
     ## This seciton draws all the BLUE grid lines, including the center ones
         if screengridstep != 0:
             segments = abs(radius/screengridstep)
@@ -1656,30 +1609,15 @@ class PyramidMakerDragObject(parent):
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
-        drawline = drawline/facesize
         while drawline >= 1:
             drawline = drawline - 1
-            cv.line(centerX-radius, centerY+(screengridstep*drawline*facesize), centerX+radius, centerY+(screengridstep*drawline*facesize)) # draws X axis lines on and ABOVE 0 in Z view
-            cv.line(centerX+(screengridstep*drawline*facesize), centerY-radius, centerX+(screengridstep*drawline*facesize), centerY+radius) # draws Y axis lines on and to the left of 0 in Z view
+            cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
+            cv.line(centerX+(screengridstep*drawline), centerY-radius, centerX+(screengridstep*drawline), centerY+radius) # draws Y axis line on and to the left of 0 in Z view
             if drawline <= 0:
                 pass
             else:
-                cv.line(centerX-radius, centerY-(screengridstep*drawline*facesize), centerX+radius, centerY-(screengridstep*drawline*facesize)) # draws X axis lines BELOW 0 only in Z view
-                cv.line(centerX-(screengridstep*drawline*facesize), centerY-radius, centerX-(screengridstep*drawline*facesize), centerY+radius) # draws Y axis lines to the right of 0 only in Z view
-
-     ## test section for line segments to get point locations
-        cv.pencolor = FUCHSIA
-        ## gives the radius based on grid
-        gridradius = abs(self.view.space(centerX-radius, centerY+(screengridstep*drawline*facesize), centerZ).tuple[0])
-        maxfloat = "%.4f"%(gridradius)
-        gridradius = float(maxfloat)
-        linesegments = int(abs(gridradius/actualgrid))
-
-    ## Computes less than full line segment and draws in FUCHSIA color
-        fullsectionsline = linesegments * actualgrid
-        remainderline = gridradius - fullsectionsline
-       # if remainderline != 0:
-       #     cv.line(centerX - (linesegments * screengridstep), centerY-(screengridstep*drawline*facesize), centerX + radius, centerY-(screengridstep*drawline*facesize))
+                cv.line(centerX-radius, centerY-(screengridstep*drawline), centerX+radius, centerY-(screengridstep*drawline)) # draws X axis line BELOW 0 only in Z view
+                cv.line(centerX-(screengridstep*drawline), centerY-radius, centerX-(screengridstep*drawline), centerY+radius) # draws Y axis line to the right of 0 only in Z view
 
     ## This section draws the cross hairs
         cv.penwidth = 1
@@ -1726,9 +1664,6 @@ class PyramidMakerDragObject(parent):
      #   (all code uses grid amounts for x, y and z positions)
 
     ## This section regulates the object (pyramid) size by the mouse drag
-
-       # The next line is only used if BLUE lines are to be clipped to the actual ciricle size
-       # objectsize = actualgrid * (linesegments + dif)
 
         if type == "YZ":
             objectsize = abs(dragpointamount.tuple[1])
@@ -2108,11 +2043,6 @@ class CylinderMakerDragObject(parent):
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
-        radius = centerX-cx
-        if radius == 0:
-            radius = screengridstep
-
-    ## Turns off the growing BLUE circle and lines only, just draws the BLUE starting point
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -2155,9 +2085,6 @@ class CylinderMakerDragObject(parent):
     ## The next line draws the BLUE circle only
         cv.ellipse(centerX-radius, centerY-radius, centerX+radius+1, centerY+radius+1)
 
-        facesize = 1 # THis can be used as veriable input by user for nbr of GRID units for face
-                     # size but might be better just to use grid size and take this out below
-
     ## This seciton draws all the BLUE grid lines, including the center ones
         if screengridstep != 0:
             segments = abs(radius/screengridstep)
@@ -2167,44 +2094,15 @@ class CylinderMakerDragObject(parent):
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
-        drawline = drawline/facesize
         while drawline >= 1:
             drawline = drawline - 1
-            cv.line(centerX-radius, centerY+(screengridstep*drawline*facesize), centerX+radius, centerY+(screengridstep*drawline*facesize)) # draws X axis lines on and ABOVE 0 in Z view
-            cv.line(centerX+(screengridstep*drawline*facesize), centerY-radius, centerX+(screengridstep*drawline*facesize), centerY+radius) # draws Y axis lines on and to the left of 0 in Z view
+            cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
+            cv.line(centerX+(screengridstep*drawline), centerY-radius, centerX+(screengridstep*drawline), centerY+radius) # draws Y axis line on and to the left of 0 in Z view
             if drawline <= 0:
                 pass
             else:
-                cv.line(centerX-radius, centerY-(screengridstep*drawline*facesize), centerX+radius, centerY-(screengridstep*drawline*facesize)) # draws X axis lines BELOW 0 only in Z view
-                cv.line(centerX-(screengridstep*drawline*facesize), centerY-radius, centerX-(screengridstep*drawline*facesize), centerY+radius) # draws Y axis lines to the right of 0 only in Z view
-
-     ## test section for line segments to get point locations
-        cv.pencolor = FUCHSIA
-        ## gives the radius based on grid
-        gridradius = abs(self.view.space(centerX-radius, centerY+(screengridstep*drawline*facesize), centerZ).tuple[0])
-    #    print "gridradius",gridradius#,type(gridradius)
-        maxfloat = "%.4f"%(gridradius)
-    #    print "maxfloat",maxfloat,type(maxfloat)
-        gridradius = float(maxfloat)
-    #    print "adj gridradius",gridradius#,type(gridradius)
-    #    print "actualgrid",actualgrid,type(actualgrid)
-        linesegments = int(abs(gridradius/actualgrid))
-    #    print "linesegments",linesegments
-    #    print "X left & up test point",self.view.space(centerX-radius, centerY+(screengridstep*drawline*facesize), centerZ)
-    #    print "X right & up test point",self.view.space(centerX+radius, centerY+(screengridstep*drawline*facesize), centerZ)
-
-
-    ## Computes less than full line segment and draws in FUCHSIA color
-        fullsectionsline = linesegments * actualgrid
-        remainderline = gridradius - fullsectionsline
-       # if remainderline != 0:
-       #     cv.line(centerX - (linesegments * screengridstep), centerY-(screengridstep*drawline*facesize), centerX + radius, centerY-(screengridstep*drawline*facesize))
-
-    #        print "My 1st point",(self.pt0.tuple[0] + (linesegments * actualgrid))
-    #        print "self.pt0",self.pt0.tuple[0]
-    #        print "My 2nd point",self.pt0.tuple[0] + gridradius
-     ## End of test section
-
+                cv.line(centerX-radius, centerY-(screengridstep*drawline), centerX+radius, centerY-(screengridstep*drawline)) # draws X axis line BELOW 0 only in Z view
+                cv.line(centerX-(screengridstep*drawline), centerY-radius, centerX-(screengridstep*drawline), centerY+radius) # draws Y axis line to the right of 0 only in Z view
 
     ## This section draws the cross hairs
         cv.penwidth = 1
@@ -2251,9 +2149,6 @@ class CylinderMakerDragObject(parent):
      #   (all code uses grid amounts for x, y and z positions)
 
     ## This section regulates the object (cylinder) size by the mouse drag
-
-       # The next line is only used if BLUE lines are to be clipped to the actual ciricle size
-       # objectsize = actualgrid * (linesegments + dif)
 
         if type == "YZ":
             objectsize = abs(dragpointamount.tuple[1])
@@ -2417,7 +2312,7 @@ class CylinderMakerDragObject(parent):
         face.texturename = "[auto]"
         poly.appenditem(face)
 
-   #### end of object creation test area
+   #### end of object creation area
 
       ## This line calls for the ruler
         for view in editor.layout.views:
@@ -2651,11 +2546,6 @@ class TorusMakerDragObject(parent):
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
-        radius = centerX-cx
-        if radius == 0:
-            radius = screengridstep
-
-    ## Turns off the growing BLUE circle and lines only, just draws the BLUE starting point
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -2695,9 +2585,6 @@ class TorusMakerDragObject(parent):
     ## The next line draws the BLUE circle only
         cv.ellipse(centerX-radius, centerY-radius, centerX+radius+1, centerY+radius+1)
 
-        facesize = 1 # THis can be used as veriable input by user for nbr of GRID units for face
-                     # size but might be better just to use grid size and take this out below
-
     ## This seciton draws all the BLUE grid lines, including the center ones
         if screengridstep != 0:
             segments = abs(radius/screengridstep)
@@ -2707,44 +2594,15 @@ class TorusMakerDragObject(parent):
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
-        drawline = drawline/facesize
         while drawline >= 1:
             drawline = drawline - 1
-            cv.line(centerX-radius, centerY+(screengridstep*drawline*facesize), centerX+radius, centerY+(screengridstep*drawline*facesize)) # draws X axis lines on and ABOVE 0 in Z view
-            cv.line(centerX+(screengridstep*drawline*facesize), centerY-radius, centerX+(screengridstep*drawline*facesize), centerY+radius) # draws Y axis lines on and to the left of 0 in Z view
+            cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
+            cv.line(centerX+(screengridstep*drawline), centerY-radius, centerX+(screengridstep*drawline), centerY+radius) # draws Y axis line on and to the left of 0 in Z view
             if drawline <= 0:
                 pass
             else:
-                cv.line(centerX-radius, centerY-(screengridstep*drawline*facesize), centerX+radius, centerY-(screengridstep*drawline*facesize)) # draws X axis lines BELOW 0 only in Z view
-                cv.line(centerX-(screengridstep*drawline*facesize), centerY-radius, centerX-(screengridstep*drawline*facesize), centerY+radius) # draws Y axis lines to the right of 0 only in Z view
-
-     ## test section for line segments to get point locations
-        cv.pencolor = FUCHSIA
-        ## gives the radius based on grid
-        gridradius = abs(self.view.space(centerX-radius, centerY+(screengridstep*drawline*facesize), centerZ).tuple[0])
-    #    print "gridradius",gridradius#,type(gridradius)
-        maxfloat = "%.4f"%(gridradius)
-    #    print "maxfloat",maxfloat,type(maxfloat)
-        gridradius = float(maxfloat)
-    #    print "adj gridradius",gridradius#,type(gridradius)
-    #    print "actualgrid",actualgrid,type(actualgrid)
-        linesegments = int(abs(gridradius/actualgrid))
-    #    print "linesegments",linesegments
-    #    print "X left & up test point",self.view.space(centerX-radius, centerY+(screengridstep*drawline*facesize), centerZ)
-    #    print "X right & up test point",self.view.space(centerX+radius, centerY+(screengridstep*drawline*facesize), centerZ)
-
-
-    ## Computes less than full line segment and draws in FUCHSIA color
-        fullsectionsline = linesegments * actualgrid
-        remainderline = gridradius - fullsectionsline
-       # if remainderline != 0:
-       #     cv.line(centerX - (linesegments * screengridstep), centerY-(screengridstep*drawline*facesize), centerX + radius, centerY-(screengridstep*drawline*facesize))
-
-    #        print "My 1st point",(self.pt0.tuple[0] + (linesegments * actualgrid))
-    #        print "self.pt0",self.pt0.tuple[0]
-    #        print "My 2nd point",self.pt0.tuple[0] + gridradius
-     ## End of test section
-
+                cv.line(centerX-radius, centerY-(screengridstep*drawline), centerX+radius, centerY-(screengridstep*drawline)) # draws X axis line BELOW 0 only in Z view
+                cv.line(centerX-(screengridstep*drawline), centerY-radius, centerX-(screengridstep*drawline), centerY+radius) # draws Y axis line to the right of 0 only in Z view
 
     ## This section draws the cross hairs
         cv.penwidth = 1
@@ -2815,9 +2673,6 @@ class TorusMakerDragObject(parent):
      #   (all code uses grid amounts for x, y and z positions)
 
     ## This section regulates the object (torus) size by the mouse drag
-
-       # The next line is only used if BLUE lines are to be clipped to the actual ciricle size
-       # objectsize = actualgrid * (linesegments + dif)
 
         if type == "YZ":
             objectsize = abs(dragpointamount.tuple[1])
@@ -3005,7 +2860,7 @@ class TorusMakerDragObject(parent):
             face.texturename = "[auto]"
             poly.appenditem(face)
 
-            torusgroup.appenditem(poly)  # temp to group polys
+            torusgroup.appenditem(poly)
 
             ###################### End of torus object creation area #######################
 
@@ -3047,8 +2902,6 @@ class TorusMakerDragObject(parent):
 
       ## Creates actual torus object
         adjfacecount = self.adjfacecount # Gets value from above for message testing
-    #    hollowtorus = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_hollowtorus"]
-    #    if hollowtorus == "0":
         if adjfacecount >= 65:
             quarkx.msgbox("This torus object contains\n" + str(adjfacecount) + " faces\nexceeding the maximum limit\nof 64 and can not be created.", MT_ERROR, MB_CANCEL)
             return None, None
@@ -3219,6 +3072,10 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2006/01/31 11:04:30  cdunde
+# Fixed  distance displayed amount from drifting away from
+# marker on screen view x-axis when the scale size is changed.
+#
 # Revision 1.4  2006/01/30 08:20:00  cdunde
 # To commit all files involved in project with Philippe C
 # to allow QuArK to work better with Linux using Wine.
