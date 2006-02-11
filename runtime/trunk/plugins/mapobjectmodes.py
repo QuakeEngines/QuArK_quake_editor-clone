@@ -1052,24 +1052,24 @@ class SphereMakerDragObject(parent):
             factor = -15
         oblong = 1+(factor*.0625)
 
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "XZ":
+                XZ_xcenter = view.screencenter.tuple[0] # gives x center point used below for 2D view
+                XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
+            if type == "XY":
+                XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
+
+
      ## This section creates the actual Sphere object
 
+        type = self.view.info["type"]
         poly = quarkx.newobj("sphere:p")
-        for Group in range(sphere_res-1):
-            editor = mapeditor()
-            for view in editor.layout.views:
-                type = view.info["type"]
-                if type == "XZ":
-                    XZ_xcenter = view.screencenter.tuple[0] # gives x center point used below for 2D view
-                    XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
-                if type == "XY":
-                    XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
-
-            type = self.view.info["type"]
+        for Group in range(sphere_res-2):
+            for angle0 in range(sphere_res):
 
          ## Only allows the first pass to create the Top and Bottom groups which are triangle faces
-            if Group < 1:
-                for angle0 in range(sphere_res):
+                if Group == 0:
 
                  ###################### Top group #######################
 
@@ -1149,8 +1149,6 @@ class SphereMakerDragObject(parent):
 
                  ###################### Bottom group #######################
 
-                for angle0 in range(sphere_res):
-
                 # Point A
                     ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
                     x0 = math.cos (ang0) * objectsize
@@ -1225,15 +1223,10 @@ class SphereMakerDragObject(parent):
                     face.texturename = "[auto]" # gives texture to the face
                     poly.appenditem(face)
 
-            else:
-              # Eliminates unwanted extra group of broken faces
-                if Group == sphere_res-2:
-                    continue
-
           ## Creates the Middle face groups which are rectangle faces
-                for angle0 in range(sphere_res):
-
                  ###################### Middle groups #######################
+
+                else:
 
                 # Point A
                     ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
@@ -1315,11 +1308,6 @@ class SphereMakerDragObject(parent):
         for view in editor.layout.views:
             objectruler(editor, view, [poly])
 
-        if self.view.info["type"] == "3D":
-            for f in poly.subitems:
-                f.swapsides()
-        if self.x0-x == 0:
-            return None, None
         return None, [poly]
 
 
@@ -1360,36 +1348,20 @@ class SphereMakerDragObject(parent):
                   (n^v) * 128 + tp[0])
             f.setthreepoints(tp, 0)
 
-      ## This section is for the option to hollow the object
+      ## This section is for the option to hollow the Sphere, actually Extrude, Make Hollow takes too long
         makehollow = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
         if makehollow == "0":
             quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new sphere object", "0")
         else:
-            todo = MR_OK
-            if facecount > 15:
-                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will FREEZE QuArK MORE THEN 1/2 HOUR OR MUCH LONGER\nto hollow and place them into a 'Sphere group' folder.\nThis SHOULD NOT be continued here. Open another session of QuArK,\ncreate it there, continue working here, then copy it into this one.\n\nDo you STILL want to OK to continue and create this object in THIS session?", MT_WARNING, MB_OK_CANCEL)
+            group = quarkx.newobj("Sphere group:g")
+            for poly in [rectangle]:
+                newpoly = poly.copy()
+                group.appenditem(newpoly)
+            quarkpy.mapbtns.dropitemsnow(editor, [group], "new sphere group", "0")
+            m = None
+            plugins.mapcsg.ExtWall1click(m)
 
-            elif facecount >= 14:
-                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will FREEZE QuArK 6 to 13 MINUTES\nto hollow and place them into a 'Sphere group' folder.\nIt is HIGHLY recommended that you open another session of QuArK,\ncreate it there, continue working here, then copy it into this one.\n\nIs it OK to continue and create this object?", MT_WARNING, MB_OK_CANCEL)
 
-            elif facecount >= 12:
-                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will FREEZE QuArK about 2 to 4 MINUTES\nto hollow and place them into a 'Sphere group' folder.\nIt is recommended that you open another session of QuArK,\ncreate it there, continue working here, then copy it into this one.\n\nIs it OK to continue and create this object?", MT_WARNING, MB_OK_CANCEL)
-
-            elif facecount >= 10:
-                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will freeze QuArK about 30 to 60 seconds\nto hollow and place them into a 'Sphere group' folder.\nIf desired you can cancel, open another session of QuArK,\ncreate it there, continue working here, then copy it into this one.\n\nIs it OK to continue and create this object?", MT_INFORMATION, MB_OK_CANCEL)
-
-            elif facecount >= 8:
-                todo = quarkx.msgbox("This sphere object contains\n" + str(facecount) + " faces per segment and\n" + str(facecount-1) + " segments, totaling\n----\n" + str(facecount*(facecount-1)) + " new polys\n\nThis will freeze QuArK about 5 to 15 seconds\nto hollow and place them into a 'Sphere group' folder.\n\nIs it OK to continue and create this object?", MT_CONFIRMATION, MB_OK_CANCEL)
-
-            if todo == MR_CANCEL: return None, None
-            if todo == MR_OK:
-                group = quarkx.newobj("Sphere group:g")
-                for poly in [rectangle]:
-                    newpoly = poly.copy()
-                    group.appenditem(newpoly)
-                quarkpy.mapbtns.dropitemsnow(editor, [group], "new sphere group", "0")
-                m = None
-                plugins.mapcsg.Hollow1click(m)
 
 ### This section needs to be here to retain the BLUE circle and lines when you pause in a drag
 
@@ -3072,6 +3044,9 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2006/02/10 04:03:26  cdunde
+# To remove unneeded test code.
+#
 # Revision 1.5  2006/01/31 11:04:30  cdunde
 # Fixed  distance displayed amount from drifting away from
 # marker on screen view x-axis when the scale size is changed.
