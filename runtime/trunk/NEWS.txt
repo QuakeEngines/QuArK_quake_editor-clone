@@ -15,6 +15,9 @@ $Id$
 6.5.0 alpha 5
 =============
 
+ * [cdunde] : Changed Sphere hollow to extrude to substancialy increase speed
+      - and cleaned up code to also try and help with redline drawing speed.
+
  * [cdunde] : Fixed rulers distance displayed amount from drifting away from
       - marker on screen view x-axis when the scale size is changed.
 
