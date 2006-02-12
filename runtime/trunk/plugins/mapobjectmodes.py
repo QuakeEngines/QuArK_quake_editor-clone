@@ -530,12 +530,12 @@ def DialogClick(m):
                 m.o = o
                 DistortionClick(m)
 
-        elif quarkx.setupsubset(SS_MAP, "Building").getint("ObjectMode") < 3:
+        elif quarkx.setupsubset(SS_MAP, "Building").getint("ObjectMode") < 6:
 
             m = qmenu.item("Dummy", None, "")
             DistortionClick(m)
 
-        elif quarkx.setupsubset(SS_MAP, "Building").getint("ObjectMode") == 3:
+        elif quarkx.setupsubset(SS_MAP, "Building").getint("ObjectMode") == 6:
 
             m = qmenu.item("Dummy", None, "")
             TorusDistortionClick(m)
@@ -1353,14 +1353,9 @@ class SphereMakerDragObject(parent):
         if makehollow == "0":
             quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new sphere object", "0")
         else:
-            group = quarkx.newobj("Sphere group:g")
-            for poly in [rectangle]:
-                newpoly = poly.copy()
-                group.appenditem(newpoly)
-            quarkpy.mapbtns.dropitemsnow(editor, [group], "new sphere group", "0")
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new sphere group", "0")
             m = None
             plugins.mapcsg.ExtWall1click(m)
-
 
 
 ### This section needs to be here to retain the BLUE circle and lines when you pause in a drag
@@ -1889,6 +1884,551 @@ class PyramidMakerDragObject(parent):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
 
+
+###################################
+
+class DoubleConeMakerDragObject(parent):
+    "A double-cone maker."
+
+    Hint = hintPlusInfobaselink("Quick double-cone maker||Quick double-cone maker:\n\nAfter you click this button, you can draw double-cones on the map with the left mouse button and each double-cone will be turned into an actual poly.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#double_cone")
+
+    def __init__(self, view, x, y, redcolor, todo):
+        parent.__init__(self, view, x, y, redcolor, todo)
+        self.pt0 = quarkpy.qhandles.aligntogrid(self.pt0, 1) # give point on the grid
+        p = view.proj(self.pt0) # converts to point on the screen view
+        if p.visible:
+            self.x0 = p.x
+            self.y0 = p.y
+            self.z0 = p.z
+    #
+    # For setting stuff up at the beginning of a drag
+    #
+        self.startpoint = p # holds the starting point value (does not change)
+        self.trigger = 0    # Sets trigger for editor.invalidateviews() for their 1 time cleanup, below.
+
+### This draws the circle and red image and sets size as you drag across the view with LMB pressed.
+
+    def buildredimages(self, x, y, flags, depth=None):
+        editor = mapeditor()
+        if editor is None:
+            return None, None
+        type = self.view.info["type"]
+
+       ## This section creates the rectangle selector in the 3D view only
+        if type == "3D":
+            if x==self.x0 or y==self.y0:
+                return None, None
+            if depth is None:
+                min, max = self.view.depth
+                max = max - 0.0001
+            else:
+                min, max = depth
+            pts = [self.view.space(self.x0, self.y0, min),
+                   self.view.space(x, self.y0, min),
+                   self.view.space(x, y, min),
+                   self.view.space(self.x0, y, min)]
+            pts.append(pts[0])
+            pts2 = [self.view.space(self.x0, self.y0, max),
+                    self.view.space(x, self.y0, max),
+                    self.view.space(x, y, max),
+                    self.view.space(self.x0, y, max)]
+            if (x<self.x0)^(y<self.y0):
+                pts.reverse()
+                pts2.reverse()
+            poly = quarkx.newobj("redbox:p")
+            for i in (0,1,2,3):
+                face = quarkx.newobj("side:f")
+                face.setthreepoints((pts[i], pts[i+1], pts2[i]), 0)
+                poly.appenditem(face)
+            face = quarkx.newobj("front:f")
+            face.setthreepoints((pts[0], pts[3], pts[1]), 0)
+            poly.appenditem(face)
+            face = quarkx.newobj("back:f")
+            face.setthreepoints((pts2[0], pts2[1], pts2[3]), 0)
+            poly.appenditem(face)
+            if self.view.info["type"] == "3D":
+                for f in poly.subitems:
+                    f.swapsides()
+            if poly.rebuildall() != (0,0):
+                return None, None
+            return None, [poly]
+
+
+        ## point always means x, y and z values are given
+
+        z = 0
+        drag2gridpt = quarkpy.qhandles.aligntogrid(self.view.space(x, y, z), 1) # converts to point dragged to on grid
+        startgridpoint = self.pt0 # gives starting point of drag on grid
+        dragpointamount = drag2gridpt - startgridpoint # gives drag distance on grid for x, y and z
+        depth = self.view.depth
+        p = self.view.proj(quarkpy.qhandles.aligntogrid(self.view.space(x, y, depth[0]), 1))
+
+        minrad = p  # mine
+        if p.visible:
+            x = p.x
+            y = p.y
+        dx = abs(self.x0-x)
+        dy = abs(self.y0-y)
+        if dx>dy: dx=dy
+        min = (depth[0]+depth[1]-dx)*0.5
+        p = self.view.proj(quarkpy.qhandles.aligntogrid(self.view.space(x, y, min), 1))
+        maxrad = p  # mine
+        if p.visible:
+            min = p.z
+        max = min + dx
+
+  ## Draws the Blue circle
+        cx, cy, cz = [], [], []
+        mX, mY, mZ = minrad.tuple
+        X, Y, Z = maxrad.tuple
+        for x in (X,mX):
+            for y in (Y,mY):
+                for z in (Z,mZ):
+                    p = self.view.proj(x,y,z)
+                    if not p.visible: return
+                    cx.append(p.x)
+                    cy.append(p.y)
+                    cz.append(p.z)
+        mX = minrad.tuple[0]
+        mY = minrad.tuple[1]
+        mZ = minrad.tuple[2]
+        X = maxrad.tuple[0]
+        Y = maxrad.tuple[1]
+        Z = maxrad.tuple[2]
+        cx = (X+mX)*0.5
+        cy = (Y+mY)*0.5
+        cz = (Z+mZ)*0.5
+        dx = X-cx
+        dy = Y-cy
+        dz = Z-cz
+
+        centerX = self.startpoint.tuple[0] # given in screen value
+        centerY = self.startpoint.tuple[1] # given in screen value
+        centerZ = self.startpoint.tuple[2] # given in screen value
+        actualgrid = mapeditor().gridstep
+        if not actualgrid:
+            actualgrid = 1.0
+        screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
+        screengridstep = screengrid.tuple[2] # have to use Z because others change value
+        radius = screengridstep
+
+    ## This section sets up not to draw any faces if there are less than 3
+        type = self.view.info["type"]
+        if type == "XY":
+            facecount = abs(int(dragpointamount.tuple[1]/actualgrid))
+            if dragpointamount.tuple[0] == 0:
+                facecount = 0
+        else:
+            facecount = abs(int(dragpointamount.tuple[2]/actualgrid))
+            if type == "XZ" and dragpointamount.tuple[0] == 0 or type == "YZ" and dragpointamount.tuple[1] == 0:
+                facecount = 0
+        if facecount < 3:
+            facecount = 0
+
+    ## This section just cleans the single view we are in or all of the views if there are red faces to draw
+    ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
+    ## The original trigger is set in the def of this class, above.
+        if facecount == 0 and self.trigger == 0:
+            self.view.repaint() # this just cleans the current view if no object is being drawn
+        else:
+            for view in editor.layout.views:
+                view.repaint()  # this cleans all the views and allows the redlines to be drawn
+            if facecount < 3:
+                facecount = 0
+                self.trigger = 2
+            else:
+                self.trigger = 1
+
+        self.facecount = facecount # To pass value to def rectanglesel below for error message testing
+
+  #### This section sets up the curent view to draw the BLUE circle, lines, GREEN crosshairs and face lable
+        cv = self.view.canvas()
+        cv.pencolor = BLUE
+        cv.brushstyle = BS_CLEAR
+
+        # All code below given in screen values, not grid
+
+    ## The next line draws the BLUE circle only
+        cv.ellipse(centerX-radius, centerY-radius, centerX+radius+1, centerY+radius+1)
+
+    ## This seciton draws all the BLUE grid lines, including the center ones
+        if screengridstep != 0:
+            segments = abs(radius/screengridstep)
+        else:
+            segments = 0
+        drawline = float(int(segments))
+        dif = segments - drawline
+        if dif > .01 and dif < 1:
+            drawline = drawline + 1
+        while drawline >= 1:
+            drawline = drawline - 1
+            cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
+            cv.line(centerX+(screengridstep*drawline), centerY-radius, centerX+(screengridstep*drawline), centerY+radius) # draws Y axis line on and to the left of 0 in Z view
+            if drawline <= 0:
+                pass
+            else:
+                cv.line(centerX-radius, centerY-(screengridstep*drawline), centerX+radius, centerY-(screengridstep*drawline)) # draws X axis line BELOW 0 only in Z view
+                cv.line(centerX-(screengridstep*drawline), centerY-radius, centerX-(screengridstep*drawline), centerY+radius) # draws Y axis line to the right of 0 only in Z view
+
+    ## This section draws the cross hairs
+        cv.penwidth = 1
+        cv.pencolor = GREEN
+        radius = 10
+        cv.line(mX, cy, cx-radius, cy) # draws left screen X axis line
+        cv.line(cx+radius, cy, X, cy)  # draws right screen X axis line
+        cv.line(cx, mY, cx, cy-radius) # draws top screen Y axis line
+        cv.line(cx, cy+radius, cx, Y)  # draws bottom screen Y axis line
+
+    ## This section draws the face lable and gives the color warning scale
+        cv.fontsize = 10
+        cv.fontname = "MS Serif"
+        cv.fontbold = 1
+
+        if facecount > 10:
+            cv.fontcolor = FUCHSIA
+        if facecount > 15:
+            cv.fontcolor = PURPLE
+        if facecount > 19:
+            cv.fontcolor = RED
+        if facecount < 11:
+            cv.fontcolor = GREEN
+        if type == "YZ":
+            if dragpointamount.tuple[1] < 0:
+                cv.textout(cx+radius+5, cy-(radius*2), str(facecount) + " faces")
+            else:
+                cv.textout(cx-(radius*6), cy-(radius*2), str(facecount) + " faces")
+        else:
+            if dragpointamount.tuple[0] > 0:
+                cv.textout(cx+radius+5, cy-(radius*2), str(facecount) + " faces")
+            else:
+                cv.textout(cx-(radius*6), cy-(radius*2), str(facecount) + " faces")
+
+    ## This section cleans all the views 1 time and is the last part of the trigger device further above
+        if facecount == 0 and self.trigger == 2:
+            for view in editor.layout.views:
+                view.repaint()
+                self.trigger = 0
+                editor.invalidateviews()
+
+
+  #### This section creates the actual object, using its formula
+     #   (all code uses grid amounts for x, y and z positions)
+
+    ## This section regulates the object (double-cone) size by the mouse drag
+
+        if type == "YZ":
+            objectsize = abs(dragpointamount.tuple[1])
+        else:
+            objectsize = abs(dragpointamount.tuple[0])
+
+    ## This section gives the number of faces per layer and number of layers
+
+        if type == "XY":
+            sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
+        else:
+            sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+
+       ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
+        if facecount < 3:
+            return None, None
+
+     ## This is the Dialog box input factor that effects the length shape
+        factor = float(quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"])
+        if factor < -1 and facecount < 25:
+            factor = -1
+        if factor < -1 and facecount > 24:
+            factor = 0
+        if factor < 1 and facecount > 35:
+            factor = 1
+        if factor < 2 and facecount > 44:
+            factor = 2
+        if factor < 3 and facecount > 50:
+            factor = 3
+        if factor < 4 and facecount > 55:
+            factor = 4
+        if factor < 5 and facecount > 59:
+            factor = 5
+        if factor < 6 and facecount > 63:
+            factor = 6
+        else:
+            factor = factor
+        factor = factor * 10
+        oblong = 1+(factor*.0625)
+
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "XZ":
+                XZ_xcenter = view.screencenter.tuple[0] # gives x center point used below for 2D view
+                XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
+            if type == "XY":
+                XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
+
+
+     ## This section creates the actual Double-cone object
+
+        type = self.view.info["type"]
+        poly = quarkx.newobj("double-cone:p")
+        for Group in range(sphere_res-1):
+
+         ## Only allows the first pass to create the Top and Bottom groups which are triangle faces
+            if Group == 0:
+                for angle0 in range(sphere_res):
+
+                 ###################### Top group #######################
+
+                # Point A
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    A = quarkx.vect(x1, y1, y0)
+
+                # Point B
+                    ang0 = math.pi*Group/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*Group/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    B = quarkx.vect(x1, y1, y0)
+
+                # Point C
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*angle0/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    C = quarkx.vect(x1, y1, y0)
+
+                    face = quarkx.newobj("object face:f")
+                    face.setthreepoints((A, B, C), 0)
+                    face.texturename = "[auto]" # gives texture to the face
+                    poly.appenditem(face)
+
+                 ###################### Bottom group #######################
+
+                # Point A
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - XY_ycenter
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - XZ_zcenter
+
+                    A = quarkx.vect(x1, -y1, -y0)
+
+                # Point B
+                    ang0 = math.pi*Group/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*Group/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - XY_ycenter
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - XZ_zcenter
+
+                    B = quarkx.vect(x1, -y1, -y0)
+
+                # Point C
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*angle0/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - XY_ycenter
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - XZ_zcenter
+
+                    C = quarkx.vect(x1, -y1, -y0)
+
+                    face = quarkx.newobj("object face:f")
+                    face.setthreepoints((A, B, C), 0)
+                    face.texturename = "[auto]" # gives texture to the face
+                    poly.appenditem(face)
+
+            else:
+                break
+
+   #### End of double-cone object creation area
+
+      ## This line calls for the ruler
+        for view in editor.layout.views:
+            objectruler(editor, view, [poly])
+
+        return None, [poly]
+
+
+### This section actually creates the finished object and drops it into the map.
+### It also calls for the 3D view selection mode instead of creating object, causes lockup.
+
+    def rectanglesel(self, editor, x,y, rectangle):
+
+      ## Allows only selection rectangle in 3D views, not creation of double-cone - causes lockup
+
+        type = self.view.info["type"]
+        if type == "3D":
+            view = self.view
+            redcolor = RED
+            todo = "R"
+            plugins.mapdragmodes.EverythingRectSelDragObject(view, x, y, redcolor, todo).rectanglesel(editor, x, y, rectangle)
+            return
+
+      ## Creates actual double-cone object
+        facecount = self.facecount # Gets value from above for message testing
+        if facecount >= 65:
+            quarkx.msgbox("This double-cone object contains\n" + str(facecount) + " faces\nexceeding the maximum limit\nof 64 and can not be created.", MT_ERROR, MB_CANCEL)
+            return None, None
+
+        for f in rectangle.faces:
+
+            # Prepare to set the default texture on the faces
+
+            f.texturename = "[auto]"
+
+           ## This section resizes the texture so that their scales are 1,1 and their angles are 0,90.
+
+            tp = f.threepoints(0)
+            n = f.normal
+            v = orthogonalvect(n, editor.layout.views[0])
+            tp = (tp[0],
+                  v * 128 + tp[0],
+                  (n^v) * 128 + tp[0])
+            f.setthreepoints(tp, 0)
+
+      ## This section is for the option to hollow the object, actually Extrude, Make Hollow not as clean
+        makehollow = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
+        if makehollow == "0":
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "double-cone object", "0")
+        else:
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "double-cone object", "0")
+            m = None
+            plugins.mapcsg.ExtWall1click(m)
+
+
+
+### This section needs to be here to retain the BLUE circle and lines when you pause in a drag
+
+    def drawredimages(self, view, internal=0):
+        editor = self.editor
+        import quarkpy.mdleditor
+        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
+            pass
+
+        if self.redimages is not None:
+            mode = DM_OTHERCOLOR|DM_BBOX
+            special, refresh = self.ricmd()
+            if special is None:    # can draw a red image only
+                if internal==1:    # erase the previous image
+                    for r in self.redimages:
+                        view.drawmap(r, mode)
+                    type = view.info["type"]
+                    if type == "3D":
+                        view.repaint()
+                        return
+                    if self.redhandledata is not None:
+                        self.handle.drawred(self.redimages, view, view.color, self.redhandledata)
+                else:
+                    if editor is None:
+                        for r in self.redimages:
+                            if r.name != ("redbox:p"):
+                                return
+                            else:
+                                view.drawmap(r, mode, self.redcolor)
+                        if self.handle is not None:
+                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+                    else:
+                        import quarkpy.mdleditor
+                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
+                            return
+## This causes the red dragging shapes to be drawn
+                        for r in self.redimages:
+                            view.drawmap(r, mode, self.redcolor)
+                        if self.handle is not None:
+                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+
+
 ###################################
 
 
@@ -2393,6 +2933,1238 @@ class CylinderMakerDragObject(parent):
 
 
 ###################################
+
+class DomeMakerDragObject(parent):
+    "A dome maker."
+
+    Hint = hintPlusInfobaselink("Quick dome maker||Quick dome maker:\n\nAfter you click this button, you can draw domes on the map with the left mouse button and each dome will be turned into an actual poly.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#dome")
+
+    def __init__(self, view, x, y, redcolor, todo):
+        parent.__init__(self, view, x, y, redcolor, todo)
+        self.pt0 = quarkpy.qhandles.aligntogrid(self.pt0, 1) # give point on the grid
+        p = view.proj(self.pt0) # converts to point on the screen view
+        if p.visible:
+            self.x0 = p.x
+            self.y0 = p.y
+            self.z0 = p.z
+    #
+    # For setting stuff up at the beginning of a drag
+    #
+        self.startpoint = p # holds the starting point value (does not change)
+        self.trigger = 0    # Sets trigger for editor.invalidateviews() for their 1 time cleanup, below.
+
+### This draws the circle and red image and sets size as you drag across the view with LMB pressed.
+
+    def buildredimages(self, x, y, flags, depth=None):
+        editor = mapeditor()
+        if editor is None:
+            return None, None
+        type = self.view.info["type"]
+
+       ## This section creates the rectangle selector in the 3D view only
+        if type == "3D":
+            if x==self.x0 or y==self.y0:
+                return None, None
+            if depth is None:
+                min, max = self.view.depth
+                max = max - 0.0001
+            else:
+                min, max = depth
+            pts = [self.view.space(self.x0, self.y0, min),
+                   self.view.space(x, self.y0, min),
+                   self.view.space(x, y, min),
+                   self.view.space(self.x0, y, min)]
+            pts.append(pts[0])
+            pts2 = [self.view.space(self.x0, self.y0, max),
+                    self.view.space(x, self.y0, max),
+                    self.view.space(x, y, max),
+                    self.view.space(self.x0, y, max)]
+            if (x<self.x0)^(y<self.y0):
+                pts.reverse()
+                pts2.reverse()
+            poly = quarkx.newobj("redbox:p")
+            for i in (0,1,2,3):
+                face = quarkx.newobj("side:f")
+                face.setthreepoints((pts[i], pts[i+1], pts2[i]), 0)
+                poly.appenditem(face)
+            face = quarkx.newobj("front:f")
+            face.setthreepoints((pts[0], pts[3], pts[1]), 0)
+            poly.appenditem(face)
+            face = quarkx.newobj("back:f")
+            face.setthreepoints((pts2[0], pts2[1], pts2[3]), 0)
+            poly.appenditem(face)
+            if self.view.info["type"] == "3D":
+                for f in poly.subitems:
+                    f.swapsides()
+            if poly.rebuildall() != (0,0):
+                return None, None
+            return None, [poly]
+
+
+        ## point always means x, y and z values are given
+
+        z = 0
+        drag2gridpt = quarkpy.qhandles.aligntogrid(self.view.space(x, y, z), 1) # converts to point dragged to on grid
+        startgridpoint = self.pt0 # gives starting point of drag on grid
+        dragpointamount = drag2gridpt - startgridpoint # gives drag distance on grid for x, y and z
+        depth = self.view.depth
+        p = self.view.proj(quarkpy.qhandles.aligntogrid(self.view.space(x, y, depth[0]), 1))
+
+        minrad = p  # mine
+        if p.visible:
+            x = p.x
+            y = p.y
+        dx = abs(self.x0-x)
+        dy = abs(self.y0-y)
+        if dx>dy: dx=dy
+        min = (depth[0]+depth[1]-dx)*0.5
+        p = self.view.proj(quarkpy.qhandles.aligntogrid(self.view.space(x, y, min), 1))
+        maxrad = p  # mine
+        if p.visible:
+            min = p.z
+        max = min + dx
+
+  ## Draws the Blue circle
+        cx, cy, cz = [], [], []
+        mX, mY, mZ = minrad.tuple
+        X, Y, Z = maxrad.tuple
+        for x in (X,mX):
+            for y in (Y,mY):
+                for z in (Z,mZ):
+                    p = self.view.proj(x,y,z)
+                    if not p.visible: return
+                    cx.append(p.x)
+                    cy.append(p.y)
+                    cz.append(p.z)
+        mX = minrad.tuple[0]
+        mY = minrad.tuple[1]
+        mZ = minrad.tuple[2]
+        X = maxrad.tuple[0]
+        Y = maxrad.tuple[1]
+        Z = maxrad.tuple[2]
+        cx = (X+mX)*0.5
+        cy = (Y+mY)*0.5
+        cz = (Z+mZ)*0.5
+        dx = X-cx
+        dy = Y-cy
+        dz = Z-cz
+
+        centerX = self.startpoint.tuple[0] # given in screen value
+        centerY = self.startpoint.tuple[1] # given in screen value
+        centerZ = self.startpoint.tuple[2] # given in screen value
+        actualgrid = mapeditor().gridstep
+        if not actualgrid:
+            actualgrid = 1.0
+        screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
+        screengridstep = screengrid.tuple[2] # have to use Z because others change value
+        radius = screengridstep
+
+    ## This section sets up not to draw any faces if there are less than 3
+        type = self.view.info["type"]
+        if type == "XY":
+            facecount = abs(int(dragpointamount.tuple[1]/actualgrid))
+            if dragpointamount.tuple[0] == 0:
+                facecount = 0
+        else:
+            facecount = abs(int(dragpointamount.tuple[2]/actualgrid))
+            if type == "XZ" and dragpointamount.tuple[0] == 0 or type == "YZ" and dragpointamount.tuple[1] == 0:
+                facecount = 0
+        if facecount < 3:
+            facecount = 0
+
+    ## This section just cleans the single view we are in or all of the views if there are red faces to draw
+    ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
+    ## The original trigger is set in the def of this class, above.
+        if facecount == 0 and self.trigger == 0:
+            self.view.repaint() # this just cleans the current view if no object is being drawn
+        else:
+            for view in editor.layout.views:
+                view.repaint()  # this cleans all the views and allows the redlines to be drawn
+            if facecount < 3:
+                facecount = 0
+                self.trigger = 2
+            else:
+                self.trigger = 1
+
+        self.facecount = facecount # To pass value to def rectanglesel below for error message testing
+
+  #### This section sets up the curent view to draw the BLUE circle, lines, GREEN crosshairs and face lable
+        cv = self.view.canvas()
+        cv.pencolor = BLUE
+        cv.brushstyle = BS_CLEAR
+
+        # All code below given in screen values, not grid
+
+    ## The next line draws the BLUE circle only
+        cv.ellipse(centerX-radius, centerY-radius, centerX+radius+1, centerY+radius+1)
+
+    ## This seciton draws all the BLUE grid lines, including the center ones
+        if screengridstep != 0:
+            segments = abs(radius/screengridstep)
+        else:
+            segments = 0
+        drawline = float(int(segments))
+        dif = segments - drawline
+        if dif > .01 and dif < 1:
+            drawline = drawline + 1
+        while drawline >= 1:
+            drawline = drawline - 1
+            cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
+            cv.line(centerX+(screengridstep*drawline), centerY-radius, centerX+(screengridstep*drawline), centerY+radius) # draws Y axis line on and to the left of 0 in Z view
+            if drawline <= 0:
+                pass
+            else:
+                cv.line(centerX-radius, centerY-(screengridstep*drawline), centerX+radius, centerY-(screengridstep*drawline)) # draws X axis line BELOW 0 only in Z view
+                cv.line(centerX-(screengridstep*drawline), centerY-radius, centerX-(screengridstep*drawline), centerY+radius) # draws Y axis line to the right of 0 only in Z view
+
+    ## This section draws the cross hairs
+        cv.penwidth = 1
+        cv.pencolor = GREEN
+        radius = 10
+        cv.line(mX, cy, cx-radius, cy) # draws left screen X axis line
+        cv.line(cx+radius, cy, X, cy)  # draws right screen X axis line
+        cv.line(cx, mY, cx, cy-radius) # draws top screen Y axis line
+        cv.line(cx, cy+radius, cx, Y)  # draws bottom screen Y axis line
+
+    ## This section draws the face lable and gives the color warning scale
+        cv.fontsize = 10
+        cv.fontname = "MS Serif"
+        cv.fontbold = 1
+
+        if facecount > 10:
+            cv.fontcolor = FUCHSIA
+        if facecount > 15:
+            cv.fontcolor = PURPLE
+        if facecount > 19:
+            cv.fontcolor = RED
+        if facecount < 11:
+            cv.fontcolor = GREEN
+        if type == "YZ":
+            if dragpointamount.tuple[1] < 0:
+                cv.textout(cx+radius+5, cy-(radius*2), str(facecount) + " faces")
+            else:
+                cv.textout(cx-(radius*6), cy-(radius*2), str(facecount) + " faces")
+        else:
+            if dragpointamount.tuple[0] > 0:
+                cv.textout(cx+radius+5, cy-(radius*2), str(facecount) + " faces")
+            else:
+                cv.textout(cx-(radius*6), cy-(radius*2), str(facecount) + " faces")
+
+    ## This section cleans all the views 1 time and is the last part of the trigger device further above
+        if facecount == 0 and self.trigger == 2:
+            for view in editor.layout.views:
+                view.repaint()
+                self.trigger = 0
+                editor.invalidateviews()
+
+
+  #### This section creates the actual object, using its formula
+     #   (all code uses grid amounts for x, y and z positions)
+
+    ## This section regulates the object (dome) size by the mouse drag
+
+        if type == "YZ":
+            objectsize = abs(dragpointamount.tuple[1])
+        else:
+            objectsize = abs(dragpointamount.tuple[0])
+
+    ## This section gives the number of faces per layer and number of layers
+
+        if type == "XY":
+            sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
+        else:
+            sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+
+       ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
+        if facecount < 3:
+            return None, None
+
+     ## This is the Dialog box input factor that effects the length shape
+        factor = float(quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"])
+        if factor < 1:
+            factor = 1
+        oblong = 1+(factor*.0625)
+
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "XZ":
+                XZ_xcenter = view.screencenter.tuple[0] # gives x center point used below for 2D view
+                XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
+            if type == "XY":
+                XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
+
+
+     ## This section creates the actual dome object
+
+        type = self.view.info["type"]
+        poly = quarkx.newobj("dome:p")
+        for Group in range(sphere_res-2):
+            for angle0 in range(sphere_res):
+
+         ## Only allows the first pass to create the Top and Bottom groups which are triangle faces
+                if Group == 0:
+
+                 ###################### Top group #######################
+
+                # Point A
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    A = quarkx.vect(x1, y1, y0)
+
+                # Point B
+                    ang0 = math.pi*Group/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*Group/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    B = quarkx.vect(x1, y1, y0)
+
+                # Point C
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*angle0/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    C = quarkx.vect(x1, y1, y0)
+
+                    face = quarkx.newobj("object face:f")
+                    face.setthreepoints((A, B, C), 0)
+                    face.texturename = "[auto]" # gives texture to the face
+                    poly.appenditem(face)
+
+                 ###################### Bottom group #######################
+
+                # Point A
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - XY_ycenter
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - XZ_zcenter
+
+                    A = quarkx.vect(x1, -y1, -y0)
+
+                # Point B
+                    ang0 = math.pi*Group/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*Group/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - XY_ycenter
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - XZ_zcenter
+
+                    B = quarkx.vect(x1, -y1, -y0)
+
+                # Point C
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*angle0/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - XY_ycenter
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - XZ_zcenter
+
+                    C = quarkx.vect(x1, -y1, -y0)
+
+                    face = quarkx.newobj("object face:f")
+                    face.setthreepoints((A, B, C), 0)
+                    face.texturename = "[auto]" # gives texture to the face
+                    poly.appenditem(face)
+
+          ## Creates the Middle face groups which are rectangle faces
+                 ###################### Middle groups #######################
+
+                else:
+
+                    if Group > factor: continue # This causes a dome of 5 segments and tapered walls
+
+                # Point A
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    A = quarkx.vect(x1, y1, y0)
+
+                # Point B
+                    ang0 = math.pi*Group/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    B = quarkx.vect(x1, y1, y0)
+
+                # Point C
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*angle0/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    C = quarkx.vect(x1, y1, y0)
+
+                    face = quarkx.newobj("object face:f")
+                    face.setthreepoints((A, B, C), 0)
+                    face.texturename = "[auto]" # gives texture to the face
+                    poly.appenditem(face)
+
+   #### End of dome object creation area
+
+      ## This line calls for the ruler
+        for view in editor.layout.views:
+            objectruler(editor, view, [poly])
+
+        return None, [poly]
+
+
+### This section actually creates the finished object and drops it into the map.
+### It also calls for the 3D view selection mode instead of creating object, causes lockup.
+
+    def rectanglesel(self, editor, x,y, rectangle):
+
+      ## Allows only selection rectangle in 3D views, not creation of dome - causes lockup
+
+        type = self.view.info["type"]
+        if type == "3D":
+            view = self.view
+            redcolor = RED
+            todo = "R"
+            plugins.mapdragmodes.EverythingRectSelDragObject(view, x, y, redcolor, todo).rectanglesel(editor, x, y, rectangle)
+            return
+
+      ## Creates actual dome object
+        facecount = self.facecount # Gets value from above for message testing
+        if facecount >= 65:
+            quarkx.msgbox("This dome object contains\n" + str(facecount) + " faces\nexceeding the maximum limit\nof 64 and can not be created.", MT_ERROR, MB_CANCEL)
+            return None, None
+
+        for f in rectangle.faces:
+
+            # Prepare to set the default texture on the faces
+
+            f.texturename = "[auto]"
+
+           ## This section resizes the texture so that their scales are 1,1 and their angles are 0,90.
+
+            tp = f.threepoints(0)
+            n = f.normal
+            v = orthogonalvect(n, editor.layout.views[0])
+            tp = (tp[0],
+                  v * 128 + tp[0],
+                  (n^v) * 128 + tp[0])
+            f.setthreepoints(tp, 0)
+
+      ## This section is for the option to hollow the object, actually Extrude, Make Hollow not as clean
+        makehollow = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
+        if makehollow == "0":
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new dome object", "0")
+        else:
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new dome group", "0")
+            m = None
+            plugins.mapcsg.ExtWall1click(m)
+
+
+
+### This section needs to be here to retain the BLUE circle and lines when you pause in a drag
+
+    def drawredimages(self, view, internal=0):
+        editor = self.editor
+        import quarkpy.mdleditor
+        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
+            pass
+
+        if self.redimages is not None:
+            mode = DM_OTHERCOLOR|DM_BBOX
+            special, refresh = self.ricmd()
+            if special is None:    # can draw a red image only
+                if internal==1:    # erase the previous image
+                    for r in self.redimages:
+                        view.drawmap(r, mode)
+                    type = view.info["type"]
+                    if type == "3D":
+                        view.repaint()
+                        return
+                    if self.redhandledata is not None:
+                        self.handle.drawred(self.redimages, view, view.color, self.redhandledata)
+                else:
+                    if editor is None:
+                        for r in self.redimages:
+                            if r.name != ("redbox:p"):
+                                return
+                            else:
+                                view.drawmap(r, mode, self.redcolor)
+                        if self.handle is not None:
+                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+                    else:
+                        import quarkpy.mdleditor
+                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
+                            return
+## This causes the red dragging shapes to be drawn
+                        for r in self.redimages:
+                            view.drawmap(r, mode, self.redcolor)
+                        if self.handle is not None:
+                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+
+
+#####################################
+
+
+class FanMakerDragObject(parent):
+    "A fan maker."
+
+    Hint = hintPlusInfobaselink("Quick fan maker||Quick fan maker:\n\nAfter you click this button, you can draw fans on the map with the left mouse button and each fan will be turned into an actual poly.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#fan")
+
+    def __init__(self, view, x, y, redcolor, todo):
+        parent.__init__(self, view, x, y, redcolor, todo)
+        self.pt0 = quarkpy.qhandles.aligntogrid(self.pt0, 1) # give point on the grid
+        p = view.proj(self.pt0) # converts to point on the screen view
+        if p.visible:
+            self.x0 = p.x
+            self.y0 = p.y
+            self.z0 = p.z
+    #
+    # For setting stuff up at the beginning of a drag
+    #
+        self.startpoint = p # holds the starting point value (does not change)
+        self.trigger = 0    # Sets trigger for editor.invalidateviews() for their 1 time cleanup, below.
+
+### This draws the circle and red image and sets size as you drag across the view with LMB pressed.
+
+    def buildredimages(self, x, y, flags, depth=None):
+        editor = mapeditor()
+        if editor is None:
+            return None, None
+        type = self.view.info["type"]
+
+       ## This section creates the rectangle selector in the 3D view only
+        if type == "3D":
+            if x==self.x0 or y==self.y0:
+                return None, None
+            if depth is None:
+                min, max = self.view.depth
+                max = max - 0.0001
+            else:
+                min, max = depth
+            pts = [self.view.space(self.x0, self.y0, min),
+                   self.view.space(x, self.y0, min),
+                   self.view.space(x, y, min),
+                   self.view.space(self.x0, y, min)]
+            pts.append(pts[0])
+            pts2 = [self.view.space(self.x0, self.y0, max),
+                    self.view.space(x, self.y0, max),
+                    self.view.space(x, y, max),
+                    self.view.space(self.x0, y, max)]
+            if (x<self.x0)^(y<self.y0):
+                pts.reverse()
+                pts2.reverse()
+            poly = quarkx.newobj("redbox:p")
+            for i in (0,1,2,3):
+                face = quarkx.newobj("side:f")
+                face.setthreepoints((pts[i], pts[i+1], pts2[i]), 0)
+                poly.appenditem(face)
+            face = quarkx.newobj("front:f")
+            face.setthreepoints((pts[0], pts[3], pts[1]), 0)
+            poly.appenditem(face)
+            face = quarkx.newobj("back:f")
+            face.setthreepoints((pts2[0], pts2[1], pts2[3]), 0)
+            poly.appenditem(face)
+            if self.view.info["type"] == "3D":
+                for f in poly.subitems:
+                    f.swapsides()
+            if poly.rebuildall() != (0,0):
+                return None, None
+            return None, [poly]
+
+
+        ## point always means x, y and z values are given
+
+        z = 0
+        drag2gridpt = quarkpy.qhandles.aligntogrid(self.view.space(x, y, z), 1) # converts to point dragged to on grid
+        startgridpoint = self.pt0 # gives starting point of drag on grid
+        dragpointamount = drag2gridpt - startgridpoint # gives drag distance on grid for x, y and z
+        depth = self.view.depth
+        p = self.view.proj(quarkpy.qhandles.aligntogrid(self.view.space(x, y, depth[0]), 1))
+
+        minrad = p  # mine
+        if p.visible:
+            x = p.x
+            y = p.y
+        dx = abs(self.x0-x)
+        dy = abs(self.y0-y)
+        if dx>dy: dx=dy
+        min = (depth[0]+depth[1]-dx)*0.5
+        p = self.view.proj(quarkpy.qhandles.aligntogrid(self.view.space(x, y, min), 1))
+        maxrad = p  # mine
+        if p.visible:
+            min = p.z
+        max = min + dx
+
+  ## Draws the Blue circle
+        cx, cy, cz = [], [], []
+        mX, mY, mZ = minrad.tuple
+        X, Y, Z = maxrad.tuple
+        for x in (X,mX):
+            for y in (Y,mY):
+                for z in (Z,mZ):
+                    p = self.view.proj(x,y,z)
+                    if not p.visible: return
+                    cx.append(p.x)
+                    cy.append(p.y)
+                    cz.append(p.z)
+        mX = minrad.tuple[0]
+        mY = minrad.tuple[1]
+        mZ = minrad.tuple[2]
+        X = maxrad.tuple[0]
+        Y = maxrad.tuple[1]
+        Z = maxrad.tuple[2]
+        cx = (X+mX)*0.5
+        cy = (Y+mY)*0.5
+        cz = (Z+mZ)*0.5
+        dx = X-cx
+        dy = Y-cy
+        dz = Z-cz
+
+        centerX = self.startpoint.tuple[0] # given in screen value
+        centerY = self.startpoint.tuple[1] # given in screen value
+        centerZ = self.startpoint.tuple[2] # given in screen value
+        actualgrid = mapeditor().gridstep
+        if not actualgrid:
+            actualgrid = 1.0
+        screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
+        screengridstep = screengrid.tuple[2] # have to use Z because others change value
+        radius = screengridstep
+
+    ## This section sets up not to draw any faces if there are less than 3
+        type = self.view.info["type"]
+        if type == "XY":
+            facecount = abs(int(dragpointamount.tuple[1]/actualgrid))
+            if dragpointamount.tuple[0] == 0:
+                facecount = 0
+        else:
+            facecount = abs(int(dragpointamount.tuple[2]/actualgrid))
+            if type == "XZ" and dragpointamount.tuple[0] == 0 or type == "YZ" and dragpointamount.tuple[1] == 0:
+                facecount = 0
+        if facecount < 3:
+            facecount = 0
+
+    ## This section just cleans the single view we are in or all of the views if there are red faces to draw
+    ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
+    ## The original trigger is set in the def of this class, above.
+        if facecount == 0 and self.trigger == 0:
+            self.view.repaint() # this just cleans the current view if no object is being drawn
+        else:
+            for view in editor.layout.views:
+                view.repaint()  # this cleans all the views and allows the redlines to be drawn
+            if facecount < 3:
+                facecount = 0
+                self.trigger = 2
+            else:
+                self.trigger = 1
+
+        self.facecount = facecount # To pass value to def rectanglesel below for error message testing
+
+  #### This section sets up the curent view to draw the BLUE circle, lines, GREEN crosshairs and face lable
+        cv = self.view.canvas()
+        cv.pencolor = BLUE
+        cv.brushstyle = BS_CLEAR
+
+        # All code below given in screen values, not grid
+
+    ## The next line draws the BLUE circle only
+        cv.ellipse(centerX-radius, centerY-radius, centerX+radius+1, centerY+radius+1)
+
+    ## This seciton draws all the BLUE grid lines, including the center ones
+        if screengridstep != 0:
+            segments = abs(radius/screengridstep)
+        else:
+            segments = 0
+        drawline = float(int(segments))
+        dif = segments - drawline
+        if dif > .01 and dif < 1:
+            drawline = drawline + 1
+        while drawline >= 1:
+            drawline = drawline - 1
+            cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
+            cv.line(centerX+(screengridstep*drawline), centerY-radius, centerX+(screengridstep*drawline), centerY+radius) # draws Y axis line on and to the left of 0 in Z view
+            if drawline <= 0:
+                pass
+            else:
+                cv.line(centerX-radius, centerY-(screengridstep*drawline), centerX+radius, centerY-(screengridstep*drawline)) # draws X axis line BELOW 0 only in Z view
+                cv.line(centerX-(screengridstep*drawline), centerY-radius, centerX-(screengridstep*drawline), centerY+radius) # draws Y axis line to the right of 0 only in Z view
+
+    ## This section draws the cross hairs
+        cv.penwidth = 1
+        cv.pencolor = GREEN
+        radius = 10
+        cv.line(mX, cy, cx-radius, cy) # draws left screen X axis line
+        cv.line(cx+radius, cy, X, cy)  # draws right screen X axis line
+        cv.line(cx, mY, cx, cy-radius) # draws top screen Y axis line
+        cv.line(cx, cy+radius, cx, Y)  # draws bottom screen Y axis line
+
+    ## This section draws the face lable and gives the color warning scale
+        cv.fontsize = 10
+        cv.fontname = "MS Serif"
+        cv.fontbold = 1
+
+        if facecount > 10:
+            cv.fontcolor = FUCHSIA
+        if facecount > 15:
+            cv.fontcolor = PURPLE
+        if facecount > 19:
+            cv.fontcolor = RED
+        if facecount < 11:
+            cv.fontcolor = GREEN
+        if type == "YZ":
+            if dragpointamount.tuple[1] < 0:
+                cv.textout(cx+radius+5, cy-(radius*2), str(facecount) + " faces")
+            else:
+                cv.textout(cx-(radius*6), cy-(radius*2), str(facecount) + " faces")
+        else:
+            if dragpointamount.tuple[0] > 0:
+                cv.textout(cx+radius+5, cy-(radius*2), str(facecount) + " faces")
+            else:
+                cv.textout(cx-(radius*6), cy-(radius*2), str(facecount) + " faces")
+
+    ## This section cleans all the views 1 time and is the last part of the trigger device further above
+        if facecount == 0 and self.trigger == 2:
+            for view in editor.layout.views:
+                view.repaint()
+                self.trigger = 0
+                editor.invalidateviews()
+
+
+  #### This section creates the actual object, using its formula
+     #   (all code uses grid amounts for x, y and z positions)
+
+    ## This section regulates the object (fan) size by the mouse drag
+
+        if type == "YZ":
+            objectsize = abs(dragpointamount.tuple[1])
+        else:
+            objectsize = abs(dragpointamount.tuple[0])
+
+    ## This section gives the number of faces per layer and number of layers
+
+        if type == "XY":
+            sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
+        else:
+            sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+
+       ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
+        if facecount < 3:
+            return None, None
+
+     ## This is the Dialog box input factor that effects the length shape
+        factor = float(quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_distortion"])
+        if factor < -1 and facecount < 25:
+            factor = -1
+        if factor < -1 and facecount > 24:
+            factor = 0
+        if factor < 10 and facecount > 35:
+            factor = 10
+        if factor < 20 and facecount > 44:
+            factor = 20
+        if factor < 30 and facecount > 50:
+            factor = 30
+        if factor < 50 and facecount > 55:
+            factor = 50
+        if factor < 60 and facecount > 62:
+            factor = 60
+        else:
+            factor = factor
+        oblong = 1+(factor*.0625)
+
+        editor = mapeditor()
+        for view in editor.layout.views:
+            type = view.info["type"]
+            if type == "XZ":
+                XZ_xcenter = view.screencenter.tuple[0] # gives x center point used below for 2D view
+                XZ_zcenter = view.screencenter.tuple[2] # gives z center point used below for 2D view
+            if type == "XY":
+                XY_ycenter = view.screencenter.tuple[1] # gives y center point used below for 2D view
+
+
+     ## This section creates the actual fan object
+
+        type = self.view.info["type"]
+        poly = quarkx.newobj("fan:p")
+        for Group in range(sphere_res-1):
+
+         ## Only allows the first pass to create the Top and Bottom groups which are triangle faces
+            if Group == 0:
+                for angle0 in range(sphere_res):
+
+                 ###################### Top group #######################
+
+                # Point A
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    A = quarkx.vect(x1, y1, y0)
+
+                # Point B
+                    ang0 = math.pi*Group/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*Group/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    B = quarkx.vect(x1, y1, y0)
+
+                # Point C
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*angle0/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + XY_ycenter
+                        y0 = y0 + startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 + startgridpoint.tuple[1]
+                        y0 = y0 + XZ_zcenter
+
+                    C = quarkx.vect(x1, y1, y0)
+
+                    face = quarkx.newobj("object face:f")
+                    face.setthreepoints((A, B, C), 0)
+                    face.texturename = "[auto]" # gives texture to the face
+                    poly.appenditem(face)
+
+                 ###################### Bottom group #######################
+
+                # Point A
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - XY_ycenter
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - XZ_zcenter
+
+                    A = quarkx.vect(x1, -y1, -y0)
+
+                # Point B
+                    ang0 = math.pi*Group/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*Group/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - XY_ycenter
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - XZ_zcenter
+
+                    B = quarkx.vect(x1, -y1, -y0)
+
+                # Point C
+                    ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                    x0 = math.cos (ang0) * objectsize
+                    y0 = math.sin (ang0) * objectsize*oblong
+                    ang1 = math.pi*2*angle0/(sphere_res)
+                    x1 = x0*math.cos (ang1)
+                    y1 = x0*math.sin (ang1)
+                  #### To set start point of drag by view
+                    if type == "YZ":
+                        x1 = x1 + XZ_xcenter
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XZ":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - XY_ycenter
+                        y0 = y0 - startgridpoint.tuple[2]
+                    if type == "XY":
+                        x1 = x1 + startgridpoint.tuple[0]
+                        y1 = y1 - startgridpoint.tuple[1]
+                        y0 = y0 - XZ_zcenter
+
+                    C = quarkx.vect(x1, -y1, -y0)
+
+                    face = quarkx.newobj("object face:f")
+                    face.setthreepoints((A, B, C), 0)
+                    face.texturename = "[auto]" # gives texture to the face
+                    poly.appenditem(face)
+
+              # Eliminates unwanted extra group of broken faces
+            elif Group == sphere_res-2:
+                pass
+
+          ## Creates the Middle face groups which are rectangle faces
+                 ###################### Middle groups #######################
+
+            else:
+
+            # Point A
+                ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                x0 = math.cos (ang0) * objectsize
+                y0 = math.sin (ang0) * objectsize*oblong
+                ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                x1 = x0*math.cos (ang1)
+                y1 = x0*math.sin (ang1)
+              #### To set start point of drag by view
+                if type == "YZ":
+                    x1 = x1 + XZ_xcenter
+                    y1 = y1 + startgridpoint.tuple[1]
+                    y0 = y0 + startgridpoint.tuple[2]
+                if type == "XZ":
+                    x1 = x1 + startgridpoint.tuple[0]
+                    y1 = y1 + XY_ycenter
+                    y0 = y0 + startgridpoint.tuple[2]
+                if type == "XY":
+                    x1 = x1 + startgridpoint.tuple[0]
+                    y1 = y1 + startgridpoint.tuple[1]
+                    y0 = y0 + XZ_zcenter
+
+                A = quarkx.vect(x1, y1, y0)
+
+            # Point B
+                ang0 = math.pi*Group/(sphere_res-1) + math.pi*.5
+                x0 = math.cos (ang0) * objectsize
+                y0 = math.sin (ang0) * objectsize*oblong
+                ang1 = math.pi*2*(angle0+1)/(sphere_res)
+                x1 = x0*math.cos (ang1)
+                y1 = x0*math.sin (ang1)
+              #### To set start point of drag by view
+                if type == "YZ":
+                    x1 = x1 + XZ_xcenter
+                    y1 = y1 + startgridpoint.tuple[1]
+                    y0 = y0 + startgridpoint.tuple[2]
+                if type == "XZ":
+                    x1 = x1 + startgridpoint.tuple[0]
+                    y1 = y1 + XY_ycenter
+                    y0 = y0 + startgridpoint.tuple[2]
+                if type == "XY":
+                    x1 = x1 + startgridpoint.tuple[0]
+                    y1 = y1 + startgridpoint.tuple[1]
+                    y0 = y0 + XZ_zcenter
+
+                B = quarkx.vect(x1, y1, y0)
+
+            # Point C
+                ang0 = math.pi*(Group+1)/(sphere_res-1) + math.pi*.5
+                x0 = math.cos (ang0) * objectsize
+                y0 = math.sin (ang0) * objectsize*oblong
+                ang1 = math.pi*2*angle0/(sphere_res)
+                x1 = x0*math.cos (ang1)
+                y1 = x0*math.sin (ang1)
+              #### To set start point of drag by view
+                if type == "YZ":
+                    x1 = x1 + XZ_xcenter
+                    y1 = y1 + startgridpoint.tuple[1]
+                    y0 = y0 + startgridpoint.tuple[2]
+                if type == "XZ":
+                    x1 = x1 + startgridpoint.tuple[0]
+                    y1 = y1 + XY_ycenter
+                    y0 = y0 + startgridpoint.tuple[2]
+                if type == "XY":
+                    x1 = x1 + startgridpoint.tuple[0]
+                    y1 = y1 + startgridpoint.tuple[1]
+                    y0 = y0 + XZ_zcenter
+
+                C = quarkx.vect(x1, y1, y0)
+
+                face = quarkx.newobj("object face:f")
+                face.setthreepoints((A, B, C), 0)
+                face.texturename = "[auto]" # gives texture to the face
+                poly.appenditem(face)
+
+   #### End of fan object creation area
+
+      ## This line calls for the ruler
+        for view in editor.layout.views:
+            objectruler(editor, view, [poly])
+
+        if self.view.info["type"] == "3D":
+            for f in poly.subitems:
+                f.swapsides()
+        if self.x0-x == 0:
+            return None, None
+        return None, [poly]
+
+
+### This section actually creates the finished object and drops it into the map.
+### It also calls for the 3D view selection mode instead of creating object, causes lockup.
+
+    def rectanglesel(self, editor, x,y, rectangle):
+
+      ## Allows only selection rectangle in 3D views, not creation of fan - causes lockup
+
+        type = self.view.info["type"]
+        if type == "3D":
+            view = self.view
+            redcolor = RED
+            todo = "R"
+            plugins.mapdragmodes.EverythingRectSelDragObject(view, x, y, redcolor, todo).rectanglesel(editor, x, y, rectangle)
+            return
+
+      ## Creates actual fan object
+        facecount = self.facecount # Gets value from above for message testing
+        if facecount >= 65:
+            quarkx.msgbox("This fan object contains\n" + str(facecount) + " faces\nexceeding the maximum limit\nof 64 and can not be created.", MT_ERROR, MB_CANCEL)
+            return None, None
+
+        for f in rectangle.faces:
+
+            # Prepare to set the default texture on the faces
+
+            f.texturename = "[auto]"
+
+           ## This section resizes the texture so that their scales are 1,1 and their angles are 0,90.
+
+            tp = f.threepoints(0)
+            n = f.normal
+            v = orthogonalvect(n, editor.layout.views[0])
+            tp = (tp[0],
+                  v * 128 + tp[0],
+                  (n^v) * 128 + tp[0])
+            f.setthreepoints(tp, 0)
+
+      ## This section is for the option to hollow the object, actually Extrude, Make Hollow not as clean
+        makehollow = quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_makehollow"]
+        if makehollow == "0":
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new fan object", "0")
+        else:
+            quarkpy.mapbtns.dropitemsnow(editor, [rectangle], "new fan object", "0")
+            m = None
+            plugins.mapcsg.ExtWall1click(m)
+
+
+### This section needs to be here to retain the BLUE circle and lines when you pause in a drag
+
+    def drawredimages(self, view, internal=0):
+        editor = self.editor
+        import quarkpy.mdleditor
+        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
+            pass
+
+        if self.redimages is not None:
+            mode = DM_OTHERCOLOR|DM_BBOX
+            special, refresh = self.ricmd()
+            if special is None:    # can draw a red image only
+                if internal==1:    # erase the previous image
+                    for r in self.redimages:
+                        view.drawmap(r, mode)
+                    type = view.info["type"]
+                    if type == "3D":
+                        view.repaint()
+                        return
+                    if self.redhandledata is not None:
+                        self.handle.drawred(self.redimages, view, view.color, self.redhandledata)
+                else:
+                    if editor is None:
+                        for r in self.redimages:
+                            if r.name != ("redbox:p"):
+                                return
+                            else:
+                                view.drawmap(r, mode, self.redcolor)
+                        if self.handle is not None:
+                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+                    else:
+                        import quarkpy.mdleditor
+                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
+                            return
+## This causes the red dragging shapes to be drawn
+                        for r in self.redimages:
+                            view.drawmap(r, mode, self.redcolor)
+                        if self.handle is not None:
+                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+
+#####################################
+
 
 
 class TorusMakerDragObject(parent):
@@ -2955,8 +4727,11 @@ class TorusMakerDragObject(parent):
             ## (the_object                          ,icon_index)
 ObjectModes = [(SphereMakerDragObject               ,1)
               ,(PyramidMakerDragObject              ,2)
-              ,(CylinderMakerDragObject             ,3)
-              ,(TorusMakerDragObject                ,4)
+              ,(DoubleConeMakerDragObject           ,3)
+              ,(CylinderMakerDragObject             ,4)
+              ,(DomeMakerDragObject                 ,5)
+              ,(FanMakerDragObject                  ,6)
+              ,(TorusMakerDragObject                ,7)
               ]
 
 ### This part effects each buttons selection mode and
@@ -3044,6 +4819,10 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2006/02/11 20:21:41  cdunde
+# Changed Sphere hollow to extrude to substancialy increase speed
+# and cleaned up code to also try and help with redline drawing speed.
+#
 # Revision 1.6  2006/02/10 04:03:26  cdunde
 # To remove unneeded test code.
 #

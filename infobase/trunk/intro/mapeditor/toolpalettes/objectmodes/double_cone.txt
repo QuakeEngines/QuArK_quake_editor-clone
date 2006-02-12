@@ -1,10 +1,10 @@
-title: Cylinder
+title: Double-Cone
 author: cdunde
 
-<img border=1 align=middle>objects5.png</img>
-<I><u>Quick cylinder maker</u></I>:  Clicking this button allows you to draw cylinders on the map with the left mouse button and each cylinder will be turned into an actual poly.
+<img border=1 align=middle>objects4a.png</img>
+<I><u>Quick double-cone maker</u></I>:  After you click this button, you can draw double-cones on the map with the <g>LMB</g>. Each double-cone will be turned into an actual poly.
 
-This can make angled sides or a more curved style cylinder by adding more faces.<br>
+The more sides that are added the more it becomes a double-cone shape.<br>
 Move the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.<br>NOTE: Less than 3 faces will not draw anything.
 
 Increasing the amount of its <a href="intro.mapeditor.toolpalettes.objectmodes.html#dialogboxes"><i>Object Distortion Dialog</i></a> will increase its height.<br>

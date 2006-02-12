@@ -32,6 +32,12 @@ Even though the automatic hollow function is available for use, as covered in th
 Another good idea is to check for <a href="intro.mapeditor.menu.html#searchmenu">Broken polys and faces</a> afterwards depending on how they will be used in the map.
 
 One other, and perhaps more consistently successful way, would be to use a <a href="intro.mapeditor.dataforms.html#polyhedronview">negative poly</a> to create a large opening or doorway and leaving the interior walls intact for the most part. But as all good things, this will take a little bit of experimentation and imagination to become proficient at.
+
+<u><i>A word of caution</i></u>: Curved shaped objects use the <a href="intro.mapeditor.menu.html#commandsmenu">Extrude walls</a> method automatically to make them hollow. This can leave visible separations between their outer faces. Using the <a href="intro.mapeditor.menu.html#commandsmenu">Make hollow</a> function manually can take an extremely long period of time, well over an hour for the sphere with twenty or more faces, because of the large number of faces that they can consist of for a single poly. During this processing time QuArK will freeze up and appear to be non-responsive. However, it will return active once the hollow object is completed.
+
+<u><i>A Recommended Solution</i></u>: to the above situation would be to create the solid object first, to ensure its proper size and location for its map use. Open another session of QuArK, copy the solid object to the new session and allow the hollowing function to take place there while you continue your work in the original session. Then copy the completed hollow object back into the map for final placement and deletion of the original solid object.
+
+You can determine which method an object has been made hollow with by either looking closely at its outer faces where they join or by looking on the Edit menus <a href="intro.mapeditor.menu.html#editmenu">Undo / Redo...</a> window where the method used will be shown just above the object listing. Clicking on the method listed will return the object to its solid state, in its current position, without having to remake it.
 </td></tr>
 </table>
 
