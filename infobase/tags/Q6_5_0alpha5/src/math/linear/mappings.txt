@@ -1,0 +1,75 @@
+title: Mappings & Matrices
+author: tiglari
+
+Technically, a linear mapping is a function making vectors
+from vectors that obeys this law, where L is the mapping,
+a and b are numbers (scalars), and v and w are vectors:
+<code>
+L(a*v + b*w) = a*L(v) + b*L(w)
+</code>
+
+It is an immedidate consequence of the definition that if [x,
+y, z] are the coordinates of a vector v w.r,t, a basis xb,
+yb, zb, then the result of L on v can be predicted from v's
+coordinates, plus what v does to the vectors of the basis:
+<code>
+L(v) = x*L(xb), y*L(yb), z*L(zb)
+</code>
+We can say that [L(xb), L(yb), L(zb)] are a 'replacement
+basis' for the original basis (this isn't a standard term,
+but I think it fits).  There's one respect in which a
+replacement basis isn't like real basis: its vectors can
+all lie in the same plane or line, or even be 0
+
+Not only does every linear mapping produce a replacement
+basis, but the reverse is true: if we pick three vectors
+at random, [xr, yr, zr], we can make a linear mapping out
+of them by choosing a (real) basis, and then transforming
+a vector v with coordinates &lt;x, y, z> as follows:
+<code>
+M(v) = x*xr + y*yr + z*zr
+</code>
+If you crank thru the algebra you'll see that M is a linear
+mapping.  So for a given basis we've decided to use,
+every linear mapping produces a (unique) replacement basis, and
+every replacement basis produces a (unique) linear mapping.
+
+This is very nice, because a linear mapping is a sort of
+abstract transformation of space, but a replacement basis
+is just a sequence of vectors.  And if we're doing 3D
+math, it will just be nine numbers.  And there is
+a convenient package for delivering these numbers in, a
+matrix.  A matrix is in general just a grid of numbers,
+m rows and n columns, for basic 3D math we're interested
+in 3x3 matrices.
+
+In the standard presentation, the first, second and third
+columns of the matrix represent the first, second and
+third members of the replacement basis (important: columns,
+not rows).  QuArK python conforms to this in that
+if the arguments of quarkx.matrix(...) are three vectors,
+they will be taken to be the columns of the matrix (whereas
+if the input is tuples or a string, it's row-by-rlow).
+
+Then the rules of matrix multiplication have been set up
+so that if M is a matrix and v is a vector (thought of
+as a single column, constituting a 1-column matrix),
+M*v is the result of applying the mapping represented
+by M to v. Technically, these columns (both the columns
+of the matrix representing the linear mapping and the
+single columns representing the vectors), are taken to
+be the coordinates of vectors (the input and output vectors,
+and the replacement basis vectors) with respect to some
+basis.  But in QuArK Python (and other computational vector
+and matrix sytems) we don't have to worry about this kind
+of thing, since we're taking the standard basis as the
+fundamental one.
+
+Most of the time the basis we're most interested in is
+the standard one, which I'll repeat here:
+<code>
+xa = &lt;1, 0, 0&gt;
+ya = &lt;0, 1, 0&gt;
+za = &lt;0, 0, 1&gt;
+</code>
+

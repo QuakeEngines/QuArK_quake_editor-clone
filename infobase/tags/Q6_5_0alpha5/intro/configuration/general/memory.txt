@@ -1,0 +1,6 @@
+title: Memory
+author: Decker
+
+<img align=right>memory.png</img>
+Values in this settings-folder, controls how much memory QuArK are allowed to
+consume, and the number of undo-levels that it should store.

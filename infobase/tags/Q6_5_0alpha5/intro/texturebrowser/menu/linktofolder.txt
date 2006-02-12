@@ -1,0 +1,11 @@
+title: Link to folder
+author: Rowdy
+
+<img border=0 align=right>linktofolder.png</img>
+If you have a large collection of textures you can use this to create all the
+groups for you.  Create a new main folder (see above), then click the <i>Link
+to folder</i> button, you will be asked to select the directory containing the
+textures.  After a short search QuArK will add one
+<ref> ./newtexturelist </ref> to the new main folder for each
+<g>.PAK</g> or <g>.WAD</g> file that contains textures and
+each folder under the one you select which also contains textures.

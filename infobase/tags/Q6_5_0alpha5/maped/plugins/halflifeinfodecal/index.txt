@@ -1,0 +1,11 @@
+title: Half-Life info_decal Helper
+author: Decker
+desc: usage
+desc: bugs
+
+<img align=right>halflifeinfodecal.jpg</img>
+Don't you just hate to place multiple little infodecals, to create a word or even long statements?
+I did, so thats why I created this little plug-in to QuArK.
+
+Its main purpose is to make it easier creating those words/statements,
+but as an added feature it will also space the letters for you. It can even slant the text.

@@ -1,0 +1,46 @@
+title: Camera Position
+author: Decker
+
+<img border=0 align=right>camera.png</img>
+Once you have created a new 3D-window, a 'eye'-icon will appear in your
+map-views, showing where the camera are positioned in the level, and in what
+direction its pointing.
+
+You can move this camera around, and adjust its direction-handle, just like any
+other entity. However the camera won't be a visible object in the
+<ref>../dataforms/treeview </ref>, since it only exist when a 3D-window are
+open.
+
+If you have more than one 3D-window opened, there will also be more 'eye'-icons
+in your map-views. One per 3D-window.
+
+QuArK also has a function to set and store 3D camera views. This feature will
+only work for the <b>Editor's</b> 3D view and not the separate 3D view windows or
+the OpenGL window. To activate and use this function follow the steps below:
+
+1) First, set your view or camera eye to where you want it in the 3D view.
+
+2) In one of the 2D views RMB click on it and a bar will appear that says
+<b>Add position</b>, LMB click the bar and a dialog input window will open that has,
+next to Enter the name:,  <b>Camera Position</b>, put a number behind that so you
+have like <b>Camera Position 1</b> now. There is also a check box below that, <b>local:</b>,
+you can use to put that camera position into a group folder. If you do not have one
+selected then it will make its own folder and you can put all of your camera
+positions in that one folder. Once you have done this just hit your enter key
+to close the dialog window and a <b>Camera position</b> entity will be created in the
+<b>Tree View</b>. You can setup as many positions as you like. Then save your file
+so you do not loose them, but you do not need to close the file.
+
+3) To use those positions, hold down your <b>c key</b> and press your <b>Page Up</b> and
+<b>Page Down</b> keys to move through each one.
+
+4) Now here's the trick, or bug, when you do close that file and reopen it,
+if you try to use the <b>c key</b>, <b>Page Up</b> and <b>Page Down</b> feature,
+you will get an Information message that says <b>You need to set or store a view
+first for this to work</b>. Instead of doing that, which you can also do to reset
+any camera position by using your RMB over it, just close that message, go to
+the <b>Search</b> menu and select <b>Find Camera Positions</b>. This will cause a dialog
+window to open. Next to the <b>Positions</b> title click the down arrow and pick any
+position, then click on the <b>V</b> button below it. This will take you to that 3D view
+position AND reactivate the <b>c</b>,  <b>Page Up</b> and <b>Page Down</b> feature once again
+for as long as you keep that session of QuArK open.

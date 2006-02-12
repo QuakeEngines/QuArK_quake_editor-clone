@@ -1,0 +1,19 @@
+title: Reorganize Tree
+author: tiglari
+
+These are the items that actually reorganize the tree-structure.
+This appears as a submenu for entities, groups and polys, but
+as a single item, `Lift to Marked Group', for faces.  This
+item will cause the selected face to become a member whatever
+group has been marked, so giving two-click face-sharing.
+For the others, the Move in Tree menu contains three items:
+
+<UL>
+<LI>Insert marked into this
+<LI>Insert marked over this
+<LI>Insert this into marked
+</UL>
+
+Into and over refer to positions in the tree-view, and when the
+commands are enabled, `marked' is selected be the name of whatever
+is actually marked.
