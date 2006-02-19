@@ -12,6 +12,11 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
+6.5.0 alpha 6
+=============
+
+ * [cdunde] : Added Quake2 .md2 model file saving functions back to Model Editor.
+
 6.5.0 alpha 5
 =============
 
