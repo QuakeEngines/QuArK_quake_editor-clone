@@ -403,7 +403,7 @@ def PaintBrushClick(m):
             src["origin"] = str(org.tuple[0]+" "+org.tuple[1]+" "+org.tuple[2]) # fix for linux
         if (sc is not None):
     #        src["scale"] = sc
-            src["scale"] = str(sc[0]+" "+sc[1]) # fix for linux
+            src["scale"] = str(str(sc[0])+" "+str(sc[1])) # fix for linux
         if (sa is not None):
     #        src["angles"] = (sa[0] * rad2deg, sa[1] * rad2deg * -1 + 180)
             src["angles"] = str((sa[0] * rad2deg, sa[1] * rad2deg * -1 + 180)) # fix for linux
@@ -554,6 +554,15 @@ def PaintBrushClick(m):
         if angleX is None:
     #        angleX, angleY = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]
             angleX, angleY = read2values(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]) # fix for linux
+            for view in editor.layout.views:
+                type = view.info["type"]
+                if type == "3D" and view.viewmode == "tex" or view.viewmode == "opengl":
+                    quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+        else:
+            for view in editor.layout.views:
+                type = view.info["type"]
+                if type == "3D" and view.viewmode == "tex" or view.viewmode == "opengl":
+                    quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
         curguide = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]
         guide = (self.src["color"])
@@ -1114,6 +1123,10 @@ def Options3DviewsClick(m):
 #
 #
 # $Log$
+# Revision 1.7  2006/01/30 08:20:00  cdunde
+# To commit all files involved in project with Philippe C
+# to allow QuArK to work better with Linux using Wine.
+#
 # Revision 1.6  2005/11/07 00:06:40  cdunde
 # To commit all files for addition of new Terrain Generator items
 # Touch-up Selector and 3D Options Dialog
