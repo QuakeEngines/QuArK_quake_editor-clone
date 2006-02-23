@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.278  2006/01/30 09:46:54  cdunde
+//Various updates by Nazar for corrections of entities,
+//their settings and proper path defaults.
+//
 //Revision 1.277  2006/01/30 08:20:00  cdunde
 //To commit all files involved in project with Philippe C
 //to allow QuArK to work better with Linux using Wine.
@@ -8095,7 +8099,9 @@ QQRKSRC1
       import1:tbbtn = {
         Typ  = "M"
         Msg  = "TXLI"
-        Hint = "make links for a folder of Quake 2 / Heretic II textures (.wal and .m8)"
+        Hint = "Make links to textures in a folder."$0D
+               "See 'File Associations' in Configuration > "$0D
+               "General section for valid texture file types."
         Icon  = $66666660066666666666600B3006666666600BB733300666600B700733333006
                 $0B700907333333300B0999073333333060099907333333306609990733333330
                 $6609990773333330660FF99007B33330666009999007B330BF66009999007B00
