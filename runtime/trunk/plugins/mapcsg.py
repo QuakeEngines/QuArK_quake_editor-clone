@@ -188,7 +188,7 @@ def extrudewalls(editor, plist, wallwidth=None):
             walls = f.extrudeprism(p)
 
     # Added for torus auto remove bulkheads option
-            if tb3.tb.buttons[4].state == 2 and quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"] == "1":
+            if tb3.tb.buttons[7].state == 2 and quarkx.setupsubset(SS_MAP, "Options")["QuickObjects_torus_nobulkheads"] == "1":
               if facecount < 2:
                 facecount = facecount + 1
                 continue
@@ -375,6 +375,10 @@ quarkpy.mapentities.PolyhedronType.menubegin = newmenubegin
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2006/01/17 19:25:45  cdunde
+# To add all file updates for new Object modes
+# dialog boxes hollowing functions.
+#
 # Revision 1.9  2005/10/15 00:49:51  cdunde
 # To reinstate headers and history
 #

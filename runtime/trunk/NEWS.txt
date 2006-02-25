@@ -15,6 +15,8 @@ $Id$
 6.5.0 alpha 6
 =============
 
+ * [cdunde] : Fixed Torus Hollow-No bulkheads function missed with new additions.
+
  * [cdunde] : Added Quake2 .md2 model file saving functions back to Model Editor.
 
 6.5.0 alpha 5

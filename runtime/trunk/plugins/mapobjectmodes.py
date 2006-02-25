@@ -4731,9 +4731,9 @@ ObjectModes = [(SphereMakerDragObject               ,1)
               ,(CylinderMakerDragObject             ,4)
               ,(DomeMakerDragObject                 ,5)
               ,(FanMakerDragObject                  ,6)
-              ,(TorusMakerDragObject                ,7)
-              ]
-
+              ,(TorusMakerDragObject                ,7) # If this Torus button number is changed
+              ]                                         # be sure to also change it in the plugins\mapcsg.py file
+                                                        # or the Hollow-No bulkheads dialog option will not work.
 ### This part effects each buttons selection mode and
 ### interacts with the Dragmodes and Terrainmodes toolbar buttons
 
@@ -4819,6 +4819,10 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2006/02/12 19:03:54  cdunde
+# To add all new, updated and Infobase documentation files
+# for new Object makers, Double-cone, Dome and Fan.
+#
 # Revision 1.7  2006/02/11 20:21:41  cdunde
 # Changed Sphere hollow to extrude to substancialy increase speed
 # and cleaned up code to also try and help with redline drawing speed.
