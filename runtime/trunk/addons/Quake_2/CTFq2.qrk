@@ -2,11 +2,15 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2005/10/15 01:00:02  cdunde
+//To reinstate headers and history
+//
 //Revision 1.1  2001/02/11 11:08:40  decker_dk
 //Moved from addons directory
 //
 {
 	QuArKProtected = "1"
+	Description = "Requires q2ctf150.zip at http://www.fileaholic.com/idgames.d/idstuff/quake2/ctf/"
 
 	CTF directory infos.qctx =	// Quake ConTeXt
 	{
@@ -182,21 +186,25 @@ e1u4.txlist=
 				{
 					origin = "0 0 0"
 					;desc = "Red team Flag"
+					angle = "0"
 				}
 				item_flag_team2:e =
 				{
 					origin = "0 0 0"
 					;desc = "Blue team Flag"
+					angle = "0"
 				}
 				item_flag_team3:e =
 				{
 					origin = "0 0 0"
 					;desc = "Green team Flag"
+					angle = "0"
 				}
 				item_flag_team4:e =
 				{
 					origin = "0 0 0"
 					;desc = "White team Flag"
+					angle = "0"
 				}
 				misc_ctf_banner:e =
 				{
@@ -216,22 +224,26 @@ e1u4.txlist=
 				item_tech1:e =
 				{
 					origin = "0 0 0"
-					;desc = "Resistance tech"				
+					;desc = "Resistance tech"
+					angle = "0"				
 				}
 				item_tech2:e =
 				{
 					origin = "0 0 0"
 					;desc = "Stength tech"
+					angle = "0"
 				}
 				item_tech3:e =
 				{
 					origin = "0 0 0"
 					;desc = "Haste tech"
+					angle = "0"
 				}
 				item_tech4:e =
 				{
 					origin = "0 0 0"
-					;desc = "Regeneration tech"				
+					;desc = "Regeneration tech"
+					angle = "0"				
 				}
 			}
 		}
@@ -244,24 +256,28 @@ e1u4.txlist=
 			Help = "This is a Red start for a CTF map"
 			bbox = '-16 -16 -24 16 16 32'
 			mdl = "players/male/tris.md2"
+			mdlskin = "/players/male/cipher.pcx"
 		}
 		info_player_team2:form =
 		{
 			Help = "This is a Blue start for a CTF map"
 			bbox = '-16 -16 -24 16 16 32'
 			mdl = "players/male/tris.md2"
+			mdlskin = "players/male/cipher.pcx"
 		}
 		info_player_team3:form =
 		{
 			Help = "This is a Green start for a CTF map"
 			bbox = '-16 -16 -24 16 16 32'
 			mdl = "players/male/tris.md2"
+			mdlskin = "players/male/cipher.pcx"
 		}
 		info_player_team4:form =
 		{
 			Help = "This is a White start for a CTF map"
 			bbox = '-16 -16 -24 16 16 32'
 			mdl = "players/male/tris.md2"
+			mdlskin = "players/male/cipher.pcx"
 		}
 		item_flag_team1:form =
 		{

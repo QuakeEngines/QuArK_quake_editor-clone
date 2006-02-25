@@ -15,6 +15,8 @@ $Id$
 6.5.0 alpha 6
 =============
 
+ * [cdunde] : Fixed viewing of player models and other updates for Quake2 CTF addon.
+
  * [cdunde] : Fixed Torus Hollow-No bulkheads function missed with new additions.
 
  * [cdunde] : Added Quake2 .md2 model file saving functions back to Model Editor.
