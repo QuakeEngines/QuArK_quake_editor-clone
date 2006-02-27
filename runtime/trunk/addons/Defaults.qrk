@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.279  2006/02/23 07:06:41  cdunde
+//To update fly over hint for link button.
+//
 //Revision 1.278  2006/01/30 09:46:54  cdunde
 //Various updates by Nazar for corrections of entities,
 //their settings and proper path defaults.
@@ -1393,9 +1396,9 @@ QQRKSRC1
         Code = "k" // Hardcoded value in Setup.PAS
 
 
-        Directory = "<drive>:/steam"
-        SteamFSModule = "<drive>:/steam/steamapps/<steam user name>/sourcesdk/bin/FileSystem_Steam.dll"
-        SteamAppUser = "<your steam username>"
+        SteamFSModule = ""
+        Directory = "C:/Program Files/Valve/Steam"
+        SteamAppUser = "<Your Steam Account>"
         SteamAppId = "211"
 
         BaseDir = "hl2"
@@ -1405,20 +1408,20 @@ QQRKSRC1
         "gamesounds-hl2.qrk"$0D"textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
         "halflife2.qrk"$0D"hl2mp.qrk"
 
-        BuildPgmsDir="<drive>:/steam/SteamApps/<steam user name>/sourcesdk/bin"
-        BuildPgm1  = "vbsp.exe"
+        BuildPgmsDir="C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin"
+        BuildPgm1  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/vbsp.exe"
         BuildArgs1 = ""
         BuildCheck1= ""
-        BuildPgm2  = "vvis.exe"
+        BuildPgm2  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/vvis.exe"
         BuildArgs2 = ""
         BuildCheck2= ""
-        BuildPgm3  = "vrad.exe"
+        BuildPgm3  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/vrad.exe"
         BuildArgs3 = ""
         BuildCheck3= ""
-        BuildPgm4  = "glview.exe"
+        BuildPgm4  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/glview.exe"
         BuildArgs4 = ""
         BuildCheck4= ""
-        BuildPgm5  = "bspzip.exe"
+        BuildPgm5  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/bspzip.exe"
         BuildArgs5 = ""
         BuildCheck5= ""
 
@@ -3332,26 +3335,27 @@ QQRKSRC1
     {
       Style = "3"
       sep: = {Typ="S" Txt="---- Game Settings ----"}
-      Program: = {
-        Typ = "C"     // combo box
+      Program: =
+      {
         Txt = "Half-Life2 command-line"
+        Typ = "C"     // combo box
         t_ProgramHint=!
-        Items =    "e:\spiele\steam\steam.exe -applaunch 220 -dev -console -window -width 800 -height 600"
-                $0D"e:\spiele\steam\steam.exe -applaunch 240 -dev -console -window -width 800 -height 600"
-                $0D"e:\spiele\steam\steam.exe -applaunch 320 -dev -console -window -width 800 -height 600"
+        Items = "C:/Program Files/Valve/Steam/steam.exe -applaunch 220 -dev -console -window -width 800 -height 600"
+                $0D"C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console -window -width 800 -height 600"
+                $0D"C:/Program Files/Valve/Steam/steam.exe -applaunch 320 -dev -console -window -width 800 -height 600"
       }
       SteamFSModule =
       {
-        DefExt="dll"
         Txt = "Steam Filesystem Dll"
-        Typ = "EP"     
-        Hint = "chose FileSystem_Steam.dll from sourcesdk/bin directory"
+        Typ = "EP"
+        DefExt="dll"
+        Hint = "select the FileSystem_Steam.dll in your sourcesdk/bin folder"
         CheckFile = "FileSystem_Steam.dll"
       }
       SteamAppUser =
       {
         Txt = "Steam Account Name"
-        Hint = "The Name you logon into steam"
+        Hint = "The Name you logon into steam with"
       }
       SteamAppId =
       {
@@ -3362,7 +3366,7 @@ QQRKSRC1
       {
         Txt = "Steam Directory"
         Typ = "ED"      // Edit Directory
-        Hint = "Steam Install Directory"
+        Hint = "Steam Install Directory folder"
         CheckFile = "steam.exe"
       }
       tmpQuArK: =
@@ -3370,9 +3374,9 @@ QQRKSRC1
         Txt = "Game Directory"
         Typ = "C"   // combo box    
         Hint = "relative to steam install directory, e.g. SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
-        Items =    "SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
-                $0D"SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
+        Items = "SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
                 $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
+                $0D"SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
       }
       TextureWriteSubFormatA: = {
         Typ = "CL"
