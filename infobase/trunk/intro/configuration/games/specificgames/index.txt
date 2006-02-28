@@ -1,5 +1,6 @@
 title: Specific games
 subdir: hl2
+subdir: torgue
 author: Decker
 
 <img align=right>specificgames.png</img>
