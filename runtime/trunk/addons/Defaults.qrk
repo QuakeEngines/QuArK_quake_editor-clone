@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.280  2006/02/27 06:59:46  cdunde
+//To update and simplify installation of H-L2
+//
 //Revision 1.279  2006/02/23 07:06:41  cdunde
 //To update fly over hint for link button.
 //
@@ -2328,39 +2331,40 @@ QQRKSRC1
         Game = "Torque"
         Code = "g" // Hardcoded value in Setup.PAS
         Program = "map2dif_DEBUG.exe"
-        Directory = "c:\Torque"
+        Directory = "C:\Torque"
+        OutputMapFormat = "Valve 220"
         //CheckDirectory = "map2dif_DEBUG.exe"
         MapCommentsPrefix = "//"
         //   StupidBuildToolKludge = "1"
         //******************************************************************************
         // 220 MAPVERSION
         // -v verbose -h Process for final build (exhaustive BSP search)(220 mapversion)
-        BuildPgm1 = "c:\torque\tmpquark\map2dif_DEBUG.exe"
+        BuildPgm1 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
         BuildArgs1 = "-v -h -o ./maps -t ./textures %mapfile%"
         //
         // -l Process as low detail shape
-        BuildPgm2 = "c:\torque\tmpquark\map2dif_DEBUG.exe"
+        BuildPgm2 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
         BuildArgs2 = "-v -l -o ./maps -t ./textures %mapfile%"
         //
         // -g Generate navigation graph info
-        BuildPgm3 = "c:\torque\tmpquark\map2dif_DEBUG.exe"
+        BuildPgm3 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
         BuildArgs3 = "-v -g -o ./maps -t ./textures %mapfile%"
         //
         // -e Do extrusion test
-        BuildPgm4 = "c:\torque\tmpquark\map2dif_DEBUG.exe"
+        BuildPgm4 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
         BuildArgs4 = "-v -e -o ./maps -t ./textures %mapfile%"
         //
         // -n Noisy error/statistic reporting
-        BuildPgm5 = "c:\torque\tmpquark\map2dif_DEBUG.exe"
+        BuildPgm5 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
         BuildArgs5 = "-v -n -o ./maps -t ./textures %mapfile%"
         //
         // -p Include a preview bitmap in the interior file
-        BuildPgm6 = "c:\torque\tmpquark\map2dif_DEBUG.exe"
+        BuildPgm6 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
         BuildArgs6 = "-v -p -o ./maps -t ./textures %mapfile%"
         //*****************************************************************************
         // USING LEWIS BRUCK'S -q 3 VERSION
         // -v verbose -h Process for final build (exhaustive BSP search)(q3 mapversion)
-        BuildPgm9 = "c:\torque\tmpquark\map2dif_DEBUG.exe"
+        BuildPgm9 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
         BuildArgs9 = "-v -h -q 3 -o ./maps -t ./textures %mapfile%"
         //*****************************************************************************
         TexturesPath = "textures/"
