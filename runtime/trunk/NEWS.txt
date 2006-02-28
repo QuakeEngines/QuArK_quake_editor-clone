@@ -15,6 +15,9 @@ $Id$
 6.5.0 alpha 6
 =============
 
+ * [cdunde] : Up dated the Defaults.qrk file and added a new section to the Infobase
+       -  for the configuration of the Torque game engine.
+
  * [cdunde] : Fixed viewing of player models and other updates for Quake2 CTF addon.
 
  * [cdunde] : Fixed Torus Hollow-No bulkheads function missed with new additions.
