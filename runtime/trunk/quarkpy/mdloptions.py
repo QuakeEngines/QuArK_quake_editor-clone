@@ -65,7 +65,7 @@ def Options1Click(menu):
             pass
 
 def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MODEL,"Options"), hint=None):
-    item = qmenu.item(txt, ToggleOption)
+    item = qmenu.item(txt, ToggleOption, hint)
     item.tog = toggle
     item.sset = sset
     item.sendupdate = sendupdate
@@ -94,6 +94,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.7  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.4  2005/08/31 05:36:32  cdunde
 #To add hint argument for toggleitem function.
 #
