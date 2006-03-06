@@ -1358,6 +1358,9 @@ def MapColor(tag, mode=SS_MAP):
 def MapOption(tag, mode=SS_MAP):
     return quarkx.setupsubset(mode, "Options")[tag]
 
+def MldOption(tag, mode=SS_MODEL):
+    return quarkx.setupsubset(mode, "Options")[tag]
+
 def SetMapOption(tag, value=None, mode=SS_MAP):   # default is to toggle value
     setup = quarkx.setupsubset(mode, "Options")
     if value is None:
@@ -1504,6 +1507,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.29  2006/01/30 10:07:13  cdunde
+#Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
+#to allow the creation of much larger maps for the more recent games.
+#
 #Revision 1.28  2006/01/30 08:20:00  cdunde
 #To commit all files involved in project with Philippe C
 #to allow QuArK to work better with Linux using Wine.
