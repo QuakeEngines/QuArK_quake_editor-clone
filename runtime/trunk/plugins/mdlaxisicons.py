@@ -128,7 +128,10 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
                 view.update()
             else:
                 editor = saveeditor
-                editor.invalidateviews()
+                if editor is None:
+                    pass
+                else:
+                    editor.invalidateviews()
             #    view.repaint()
                 view.update()
         return scroller
@@ -178,5 +181,8 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.1  2006/03/07 06:11:21  cdunde
+#To add view axis icons to Model editor Options menu.
+#
 #
 #
