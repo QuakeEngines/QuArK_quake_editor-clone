@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.281  2006/02/28 21:00:48  cdunde
+//To update Defaults.qrk file and add new section for
+//the configuration for the Torque game engine.
+//
 //Revision 1.280  2006/02/27 06:59:46  cdunde
 //To update and simplify installation of H-L2
 //
@@ -2658,6 +2662,7 @@ QQRKSRC1
       }
       Options:config =
       {
+        SolidFrame         = ""
         DrawAxis           = "1"
         DrawMapLimit       = "1"
         SolidGrid          = ""
@@ -2703,6 +2708,7 @@ QQRKSRC1
       Colors:config =
       {
         InvertedColors = ""
+        FillColor  = $FFFFFF
         ViewXZ     = $E8E8B8
         ViewXY     = $E8DCB8
         SelXZ      = $0080C0
@@ -5251,6 +5257,7 @@ QQRKSRC1
         Data: =       // the data that this button puts in the object when you click it
         {
           InvertedColors = ""
+          FillColor  = $FFFFFF
           ViewXZ     = $E8E8B8
           ViewXY     = $E8DCB8
           SelXZ      = $0080C0
@@ -5269,6 +5276,7 @@ QQRKSRC1
       Sep1: =
       {
         Typ = "S"    // Separator
+        Txt = ""
       }
       InvertedColors: =
       {
@@ -5276,7 +5284,8 @@ QQRKSRC1
         Typ = "X"     // checkboX
         Cap = "white on black"
       }
-      ViewXZ:     = { Txt = "Side map view (XZ)" Typ = "LI" } // coLor selection, Integer
+      FillColor:  = { Txt = "Model fill color (requires file reload)" Typ = "LI" } // coLor selection, Integer
+      ViewXZ:     = { Txt = "Side map view (XZ)" Typ = "LI" }
       ViewXY:     = { Txt = "Top map view (XY)" Typ = "LI" }
       SelXZ:      = { Txt = "Selected brushes, side view" Typ = "LI" }
       SelXY:      = { Txt = "Selected brushes, top view" Typ = "LI" }
@@ -5723,7 +5732,7 @@ QQRKSRC1
       NoScrollBars:             = {Typ="X" Txt="Map view scroll"                Cap="Hide scroll bars"                     }
       CrossCursor:              = {Typ="X" Txt="Mouse cursor"                   Cap="Cross-like cursor"                    }
       HideMouseDrag:            = {Typ="X" Txt="   ``"                          Cap="Hidden while dragging"                }
-      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                       }
+      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                      }
       PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
       TexPanelActive:           = {Typ="X" Txt="   ``"                          Cap="Show texture"                         }
       TexPanelLight:            = {Typ="X" Txt="   ``"                          Cap="Light gradient"                       }
@@ -5746,8 +5755,9 @@ QQRKSRC1
     MdlOptions:form =
     {
       Style = "1"
-      DrawAxis:                 = {Typ="X" Txt="Model background"                 Cap="Draw axis"                            }
-      DrawMapLimit:             = {Typ="X" Txt="   ``"                          Cap="Draw model limits"                      }
+      SolidFrame:               = {Typ="X" Txt="Model frame fill"               Cap="Frame filled in (requires file reload)" }
+      DrawAxis:                 = {Typ="X" Txt="Model background"               Cap="Draw axis"                            }
+      DrawMapLimit:             = {Typ="X" Txt="   ``"                          Cap="Draw model limits"                    }
       SolidGrid:                = {Typ="X" Txt="Grid"                           Cap="Grid as lines"                        }
       GridVisible:              = {Typ="X" Txt="   ``"                          Cap="Grid visible"                         }
       GridActive:               = {Typ="X" Txt="   ``"                          Cap="Grid active"                          }

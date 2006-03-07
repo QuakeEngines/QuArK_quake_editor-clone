@@ -43,9 +43,14 @@ class ModelEditor(BaseEditor):
         self.lock_x = 0
         self.lock_y = 0
         self.lock_z = 0
-        for c in self.ListComponents():
-            c.info = { }
-            c.filltris = [(WHITE,(WHITE,GRAY))]*len(c.triangles)
+
+        if MldOption("SolidFrame") == "1":
+            for c in self.ListComponents():
+                c.info = { }
+                fillcolor = MapColor("FillColor", SS_MODEL)
+                c.filltris = [(fillcolor,(WHITE,GRAY))]*len(c.triangles)
+        else:
+            pass
 
     def CloseRoot(self):
         picked = [ ]
@@ -151,6 +156,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.9  2006/01/30 08:20:00  cdunde
+#To commit all files involved in project with Philippe C
+#to allow QuArK to work better with Linux using Wine.
+#
 #Revision 1.8  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
