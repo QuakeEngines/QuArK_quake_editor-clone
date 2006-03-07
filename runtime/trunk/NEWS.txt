@@ -15,6 +15,9 @@ $Id$
 6.5.0 alpha 6
 =============
 
+ * [cdunde] : Setup model frame outlining and options for solid and color selection
+       -  in Model Editors Configuration section.
+
  * [cdunde] : Up dated the Defaults.qrk file and added a new section to the Infobase
        -  for the configuration of the Torque game engine.
 
