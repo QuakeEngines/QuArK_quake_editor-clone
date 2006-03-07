@@ -1,0 +1,207 @@
+QQRKSRC1
+// This file has been written by QuArK QuArK 6.3snap061801
+// It's the text version of file: UserData 6DX.qrk
+
+{
+  Description = "Custom configuration file for 6DX."
+  MapObjPanel.qrk =
+  {
+    cube: =
+    {
+      new cube:p =
+      {
+        east:f =
+        {
+          v = '64 0 0 64 128 0 64 0 128'
+          tex = "[auto]"
+        }
+        west:f =
+        {
+          v = '-64 0 0 -64 -128 0 -64 0 128'
+          tex = "[auto]"
+        }
+        north:f =
+        {
+          v = '0 64 0 -128 64 0 0 64 128'
+          tex = "[auto]"
+        }
+        south:f =
+        {
+          v = '0 -64 0 128 -64 0 0 -64 128'
+          tex = "[auto]"
+        }
+        up:f =
+        {
+          v = '0 0 64 128 0 64 0 128 64'
+          tex = "[auto]"
+        }
+        down:f =
+        {
+          v = '0 0 -64 128 0 -64 0 -128 -64'
+          tex = "[auto]"
+        }
+      }
+    }
+    light: =
+    {
+      light:e =
+      {
+        origin = "0 0 0"
+        light = "300"
+      }
+    }
+    bezier: =
+    {
+      bezier:b2 =
+      {
+        v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
+          1'
+        tex = "base_wall/basewall03"
+      }
+    }
+    Stair Maker: =
+    {
+      Stair Maker:d =
+      {
+        macro = "dup stair"
+        steps = "8"
+        sameheight = "0"
+        new cube:p =
+        {
+          front:f =
+          {
+            v = '-44 128 -80 -172 128 -80 -44 0 -80'
+            tex = "/ground/cement15"
+          }
+          back:f =
+          {
+            v = '-44 128 -96 -172 128 -96 -44 256 -96'
+            tex = "/ground/cement15"
+          }
+          up:f =
+          {
+            v = '-44 64 -100 84.00002 64 -100 -44 64 28'
+            tex = "/ground/cement15"
+          }
+          down:f =
+          {
+            v = '-43.99998 192 -100 -172 192 -100 -43.99998 192 28'
+            tex = "/ground/cement15"
+          }
+          right:f =
+          {
+            v = '-108 128 -100 -108 0.00005 -100 -108 128 28'
+            tex = "/ground/cement15"
+          }
+          left:f =
+          {
+            v = '20 128 -100 20 256 -100 20 128 28'
+            tex = "/ground/cement15"
+          }
+        }
+      }
+    }
+    6DX Entities: =
+    {
+      6DX Entities.qtxfolder =
+      {
+        6dx_cross_entity:e =
+        {
+          width = "128"
+          ;desc = "A sprite constructed from a number of crossing sprites. Typ"
+           "ically used for trees & bushes"
+        }
+        6dx_mdl:e =
+        {
+          MDL = "model.md2"
+          ;desc = "A MD2 Actor/Model. MD3 actor/models cannot be added as an e"
+           "ntity."
+        }
+        6dx_particles:e =
+        {
+          ;desc = "A simple particle generator"
+        }
+        entity_custom:e =
+        {
+          ;desc = "A sample custom entity."
+        }
+        func_button:b =
+        {
+          ;desc = "A button you can push to trigger something."
+        }
+        func_door:b =
+        {
+          ;desc = "A door that slides to open"
+        }
+        func_door_rotating:b =
+        {
+          ;desc = "A door that swings to open"
+        }
+        func_group:b =
+        {
+          minlight = "0 0 0"
+          ;desc = "Defines map hierarchy."
+        }
+        func_portal:b =
+        {
+          ;desc = "Represent a portal brush."
+        }
+        func_plat:b =
+        {
+          ;desc = "Moves brush up and then down"
+        }
+        func_rotating:b =
+        {
+          ;desc = "Permanently rotating brushes"
+        }
+        func_train:b =
+        {
+          ;desc = "A brush that moves by using waypoints (path_corners)"
+        }
+        func_wall:b =
+        {
+          ;desc = "A brush that can be turned on/off"
+        }
+        info_player_start:e =
+        {
+          ;desc = "The normal starting point for a level."
+        }
+        light:e =
+        {
+          ;desc = "Light-source with no model"
+        }
+        lstart:e =
+        {
+          ;desc = "A starting point for a 3D line"
+        }
+        lend:e =
+        {
+          ;desc = "A end point for a 3D line. Link 'start' to 'number' of lsta"
+           "rt (or another lend)"
+        }
+        path_corner:e =
+        {
+          ;desc = "Path point for func_train or for actor auto moving"
+        }
+        trigger_multiple:b =
+        {
+          ;desc = "A repeatable trigger. The same as trigger_once"
+        }
+        trigger_once:b =
+        {
+          ;desc = "A repeatable trigger. The same as trigger_multiple"
+        }
+      }
+    }
+  }
+  Menu.qrk =
+  {
+    item: =
+    {
+      ExportMapFile = "1"
+      Shortcut = "Ctrl+E"
+      Txt = "Export 6DX Map"
+    }
+  }
+}
