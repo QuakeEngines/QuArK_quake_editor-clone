@@ -82,11 +82,17 @@ class VertexHandle(qhandles.GenericHandle):
     def draw(self, view, cv, draghandle=None):
         p = view.proj(self.pos)
         if p.visible:
+            cv.pencolor = vertexdotcolor
+            if MldOption("Ticks") == "1":
+                cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+            else:
+                cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
             cv.setpixel(p.x, p.y, vertexdotcolor)
             editor = mapeditor()
             if editor is not None:
               if self.index in editor.picked:
-                cv.pencolor = WHITE
+           #     cv.pencolor = WHITE
+                cv.pencolor = vertexdotcolor
                 cv.rectangle(p.x-3, p.y-3, p.x+3, p.y+3)
 
     def drag(self, v1, v2, flags, view):
@@ -158,6 +164,10 @@ class SkinHandle(qhandles.GenericHandle):
   def draw(self, view, cv, draghandle=None):
       p = view.proj(self.pos)
       if p.visible:
+          if MldOption("Ticks") == "1":
+              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+          else:
+              cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
           cv.setpixel(p.x, p.y, vertexdotcolor)
 
 class BoneHandle(qhandles.GenericHandle):
@@ -425,6 +435,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.11  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.8  2001/03/15 21:07:49  aiv
 #fixed bugs found by fpbrowser
 #

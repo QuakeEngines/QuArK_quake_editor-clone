@@ -77,6 +77,7 @@ def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MODEL,"Options"), hint=No
 #
 
 items = [
+    toggleitem("Enlarge Vertices &Ticks", "Ticks", (0,0)),
     toggleitem("&Paste objects at screen center", "Recenter", (0,0)),
     ]
 shortcuts = { }
@@ -94,6 +95,10 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.8  2006/03/06 19:21:23  cdunde
+#To add hint in Infobase linking to toggle
+#Model Editor Optional menu items.
+#
 #Revision 1.7  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
