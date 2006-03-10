@@ -1,0 +1,33 @@
+title: Image List objects
+author: Armin Rigo
+
+Image Lists are built with the function quarkx.loadimages. They are similar to immutable sequences of icons, but only the
+following operations are defined on them:
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+len(imagelist)
+</td><td>
+The length (how many images the list contains)
+</td></tr>
+
+<tr><td class="doccode">
+imagelist[i]
+</td><td>
+The ith image, starting at 0
+</td></tr>
+
+</table>
+
+Do not use Image List objects in places where a sequence could normally be used, e.g. in for. Instead of
+<code>
+for icon in imagelist:
+  ...
+</code>
+write
+<code>
+for i in range(0, len(imagelist)):
+  icon = imagelist[i]
+  ...
+</code>

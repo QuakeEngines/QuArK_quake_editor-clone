@@ -1,0 +1,22 @@
+title: New map item
+author: Decker
+
+<img border=0 align=right>newmapitemsview.png</img>
+<img border=0 align=right>newmapitem.png</img>
+Opens the new map items window, in where you will find many different objects,
+usefull when creating a map.
+
+This window contains all objects thats possible to use in the map-views and
+dataform-display.
+
+The top-folders, also known as main-folders, are here marked in bold. Some of
+these folders might come from <g>add-ons</g>, others are somewhat static.
+
+You can drag objects from here, and drop them on the <ref>../userdata</ref>, so
+you will have quicker access to them.
+
+It is <b>highly recommended</b> that you familiarize yourself with these items,
+for the <g>FPS-game</g> you are building a level for. There might be prefabs
+here, which you installed with an <g>add-on</g>.
+
+See how you install add-ons in the QuArK Explorer.

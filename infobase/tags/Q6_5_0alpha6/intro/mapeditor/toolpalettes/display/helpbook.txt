@@ -1,0 +1,5 @@
+title: Help book
+author: Decker
+
+<img border=0 align=right>helpbook.png</img>
+Will open up your web-browser, and display the QuArK main page.

@@ -1,0 +1,52 @@
+title: Group techniques
+author: Decker
+
+<table border=0 cellpadding=0 cellspacing=0>
+<tr><td>
+
+<img width=144 height=234 align=right>image33.png</img>
+If you plan on using anyone of the below mentioned macro-objects; Digger,
+Negative brush, Duplicator, Copy-One or Mirror, you must use groups!
+
+Since a macro-object apply its effects/actions to the group it is
+positioned in, and all of its sub-groups, it will be impossible to use
+the objects, if you don't use groups.
+
+Another good point for using groups is, that this will allow you to move many
+brushes and entities, in just one movement. Just select the group of objects
+you want to move, and move them in the 2D-views.
+
+At the moment, it is not possible in QuArK to lock brushes/entities in a
+group, so when you select a brush/entity in the 2D-view which belongs to the
+group, the entire group is selected instead. To do this, you have to first
+select the group in the tree-view, and then move it in the 2D-views, or use
+the <ref> maped/plugins/madsel/extend </ref> functionality.
+
+</td></tr>
+<tr><td>
+
+<img width=180 height=130 align=right>image34.png</img>
+With groups, you can also hide their contents from the 2D-views, or just gray
+it out. To do this, select the group in the tree-view, right-click to get its
+context-menu up, and select between:
+
+<ul>
+<li>Group is visible
+<li>Group is grayed out
+<li>Group is hidden
+</ul>
+
+Notice that the last option, will also automatically select "Hide on textured
+views" and "Cannot select with the mouse". This way you won't accidently select
+parts of your map, that you can't currently see in the 2D-views.
+
+</td></tr>
+<tr><td>
+
+<img width=183 height=134 align=right>image34b.png</img>
+You can also give a group a color to illustrate different things. Again in the
+context-menu you can choose the Group color, which will bring up
+a color-choice dialog.
+
+</td></tr>
+</table>

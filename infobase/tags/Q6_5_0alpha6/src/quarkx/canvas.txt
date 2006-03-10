@@ -1,0 +1,112 @@
+title: Canvas objects
+author: Armin Rigo
+
+Canvas Objects let you draw dots and lines from Python code. You obtain a Canvas object by calling a screen control’s canvas()
+method. Currently, only Image Displayers and Map Views have a canvas() method. You cannot create off-screen bitmaps
+currently.
+
+Note that the Canvas returned by such an object should be considered as temporary: only use it right after you called canvas().
+Don’t store it into something else than a local variable.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+brushcolor<br>
+brushstyle
+</td><td>
+Color and style of the brush (to fill the background of drawings). See qeditor.BS_XXX for styles.
+</td></tr>
+
+<tr><td class="doccode">
+pencolor<br>
+penwidth<br>
+penstyle
+</td><td>
+Color, width, and style of the pen. See qeditor.PS_XXX for styles. The width is normally set to zero to mean “ as thin as possible ” (although this is generally the same as setting it to 1).
+</td></tr>
+
+<tr><td class="doccode">
+fontcolor<br>
+fontname<br>
+fontsize<br>
+fontbold<br>
+fontitalic<br>
+fontunderline<br>
+transparent
+</td><td>
+Properties of the font used by textout and textsize.
+</td></tr>
+
+<tr><td class="doccode">
+line(p1,p2)<br>
+line(x1,y1,x2,y2)
+</td><td>
+Draws a line between two points. The first form is preffered for map views if the two points are projections of 3D points. This lets QuArK clip the line if one point is before and the other point is behind the camera. In this situation, line(p1.x,p1.y,p2.x,p2.y) would be incorrect.
+</td></tr>
+
+<tr><td class="doccode">
+rectangle(x1,y1, x2,y2)
+</td><td>
+Draws a filled rectangle and its border. To draw an empty rectangle, set brushstyle to BS_CLEAR. To draw the interior only, set penstyle to PS_CLEAR.
+</td></tr>
+
+<tr><td class="doccode">
+ellipse(x1,y1, x2,y2)
+</td><td>
+Draws a filled ellipse and its border inside the rectangle (x1,y1,x2,y2). To draw an empty ellipse, set brushstyle to BS_CLEAR. To draw the interior only, set penstyle to PS_CLEAR. To draw a circle, set (x1,y1,x2,y2) to a square. (Note: this function will produce incorrect results if called with values of (x1,y1,x2,y2) too large (above 8192) on Windows 95).
+</td></tr>
+
+<tr><td class="doccode">
+polygon(listxy)<br>
+polygon(listpt,ccw)
+</td><td>
+Draws a filled polygon using the points in the list. The list can contain either tuples (x,y) or projected vector objects. The same remark as for line applies. If the list contains projected vectors, ccw (counterclockwise) must be True or False to give the orientation of the points in the list.
+</td></tr>
+
+<tr><td class="doccode">
+setpixel(x,y, color)
+</td><td>
+Gives the color color to the pixel x,y, and returns the previous color of the pixel. (Note: don’t draw complex images with this, it would be horribly slow!)
+</td></tr>
+
+<tr><td class="doccode">
+getpixel(x,y)
+</td><td>
+Reads the color of the pixel x,y. (Note: because of a bug in QuArK 5.0.c2, getpixel expects a third integer parameter, which is ignored. Set it to 0.)
+</td></tr>
+
+<tr><td class="doccode">
+draw(icon,x,y)
+</td><td>
+Draws the icon at the location x,y.
+</td></tr>
+
+<tr><td class="doccode">
+painttexture(tex, rect)<br>
+painttexture(tex, rect, gradient)
+</td><td>
+Fills the specified area with the texture object tex, which must have been loaded by a function like loadtexture. rect is the area to fill (left,top,right,bottom). gradient (default 1) specifies the light gradient direction: the image is brighter at left or right if gradient is positive or negative. There is no gradient if gradient is set to 0.
+</td></tr>
+
+<tr><td class="doccode">
+textout(x,y,text)
+</td><td>
+Writes a string of text.
+</td></tr>
+
+<tr><td class="doccode">
+textsize(text)
+</td><td>
+Returns the (width,height) of the text, in pixels.
+</td></tr>
+
+<tr><td class="doccode">
+reset()
+</td><td>
+Resets the default pen and brush color and styles. Returns the canvas itself.
+</td></tr>
+
+</table>
+
+There are of course other drawing methods that could be implemented, e.g. polylines, arcs, and so on. Ask me if you need
+them.

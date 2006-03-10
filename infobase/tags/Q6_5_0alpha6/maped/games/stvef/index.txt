@@ -1,0 +1,9 @@
+title: Star Trek:Voyager - Elite Force
+
+Building should work as specified in the defaults if you use gdk2, and
+install it into the STVEF directory, so that Tools is a sister-folder
+to EF-Main.
+
+If you have any questions, problems or find solutions regarding this topic, please post them in the
+<a href="http://www.planetquake.com/quark/forums.shtml">QuArK forum/mailing-list</a>.
+

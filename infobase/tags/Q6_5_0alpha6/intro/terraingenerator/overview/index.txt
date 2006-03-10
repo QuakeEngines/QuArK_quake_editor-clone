@@ -1,0 +1,26 @@
+title: Overview
+author: cdunde
+desc: introduction
+desc: selection
+desc: setup
+desc: shaping
+desc: texture
+
+The purpose of <a href="intro.terraingenerator.html">QuArK's Terrain Generator</a> is to allow the user to
+actually create and edit their terrain at any time during the map
+creation process. But with far more control over variation of
+terrain size, scale, placement and usage to create unique surfaces
+as well as the ability to <g>pull</g> the terrain to existing map items.
+
+It is based on the solid <g>brush</g> (<g>polyhedron</g>) format that is now used
+in QuArK for any other structure type. However, unlike most terrain
+editor surfaces, which are based on units of squares that are converted
+to triangles during the map file export process for importing to QuArK,
+our terrain surface will start at that triangular unit stage.
+
+Also, because the <g>Terrain Generator</g> was created around QuArK, it can
+use many of the other existing features and functions that already existed.
+The most vital one being <a href="intro.texturebrowser.overview.html">QuArK's Texture Browser</a> which will support
+applying, changing and scaling of the terrain texture as it is being created or edited.
+
+Another <b>very unique feature</b> of <a href="intro.terraingenerator.html">QuArK's Terrain Generator</a> is its ability to work with not <b>only</b> the <b>'up faces'</b> of the terrain surface, but the <b>'down faces'</b> and <b>both simultaneously</b> as well !!! You can read more about these functions on the <ref> ../selection </ref> page.
