@@ -6,7 +6,15 @@ for Valve's Half-Life2. Please remember to be able to create maps for Half-Life2
 of its modifications you must have the latest version of the <a href="http://collective.valve-erc.com/index.php?doc=1047496381-02062100">Steam SDK pack</a> downloaded
 and installed for the necessary <g>build tools</g> & materials.
 
-You must also copy two .dll files, from one of your Half-Life2 SteamApps sub-directories, to your main QuArK installation folder. You can find these files by using their names for a file search. the names of these files are tier0.dll and vstdlib.dll.
+You must also give QuArK access to two .dll files from one of your Half-Life2 SteamApps sub-directories. The names of these files are tier0.dll and vstdlib.dll.
+
+There are two way to handle this.
+
+1) <b><u>Copy method</u></b>:<br>
+Copy the two .dll files, from one of your Half-Life2 SteamApps sub-directories to your main QuArK installation folder. You can find these files by using their names for a file search.
+
+2) <b><u>Set system path</u></b>:<br>
+This method is a little more involved but the advantage is, when either of these files are updated you will be working with the latest version. And if you reinstall or upgrade QuArK, you do not need to go through this part again setting it up. See the <a href="intro.configuration.games.specificgames.hl2.html#misc">Misc. Info.</a> selection below on how to set the system path.
 
 Also, when ever working in QuArK's Half-Life2 game mode you must first start Steam before you start QuArK to avoid unnecessary error messages and possibly QuArK shutting down completely. So please do both of these steps now before continuing on with this setup tutorial.
 

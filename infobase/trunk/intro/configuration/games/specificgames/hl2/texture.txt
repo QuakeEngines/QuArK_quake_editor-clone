@@ -76,9 +76,7 @@ The compiler made a text file now in the same folder where your .tga is. Please,
 
 There are a few default values which can be used, and to get ready for our .vmt file creation a good program called "VMTMak0r" needs to be mentioned. It helps to set all needed stuff in your .vmt.
 
-Download it at <a href="http://www.marcel-soehnchen.de/">http://www.marcel-soehnchen.de/</a> – it's in German but I think the handling explains itself.
-
-If you don't know which material you have to set because of its German name, use google or some other translation.
+Download the English version from <a href="http://quark.planetquake.gamespy.com/downloads/VMTMak0r-Eng.exe">here</a>.
 
 Ok, so  "VMTMak0r" handles the .vtf file by drag and drop, so go in  <i>...GameTypeFolder\materials\YourFolderName</i> and drag and drop the .vtf file on to "VMTMak0r".
 
@@ -91,11 +89,6 @@ Ok, so  "VMTMak0r" handles the .vtf file by drag and drop, so go in  <i>...GameT
 
 <tr><td valign=top align=left>
 
-Vorschau = preview<br>
-Speichern = save
-
-As you can see in the preview window "VMTMak0r" creates all material values in English so it shouldn't be a problem to get the right material for your texture.
-
 <b>Note ! You have to preview the .vmt file in the program, otherwise you'll get an error message if you're trying to save it !</b>
 
 Brilliant ! Our texture is done if you set every kind of behavior you would like it to have.
@@ -104,7 +97,7 @@ If you are more into the other settings you see documented in the sdk, I'll expl
 
 <b>Quark is waiting,...</b>
 
-- Start the sharpest ArmyKnife on Earth and open the Texture Browser<br>
+- Start the sharpest Army Knife on Earth and open the Texture Browser<br>
 - Create a new main folder and select "in a new Addon"
 
 </td></tr>
@@ -150,6 +143,6 @@ Then a message prompts that quark don't support that right now. Just add the tex
 Changed during update alpha3, custom textures now will be saved ! NICE, THX !
 
 have a lot of fun<br>
-matrikular 
+matrikular - Sven
 </td></tr>
 </table>
