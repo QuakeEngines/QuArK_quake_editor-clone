@@ -175,9 +175,9 @@ object AboutBox: TAboutBox
     object UsedCompilerLabel: TLabel
       Left = 406
       Top = 7
-      Width = 215
+      Width = 206
       Height = 11
-      Caption = 'Alpha 5 - Compiled with Delphi 6.0 - February-13-2006'
+      Caption = 'Alpha 6 - Compiled with Delphi 6.0 - March-10-2006'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
