@@ -16,7 +16,7 @@ import quarkx
 from qdictionnary import Strings
 from mdlutils import *
 import qmenu
-
+import qbaseeditor
 
 
 def ToggleOption(item):
@@ -70,17 +70,26 @@ def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MODEL,"Options"), hint=No
     item.sset = sset
     item.sendupdate = sendupdate
     return item
-
-
 #
 # Global variables to update from plug-ins.
 #
 
 items = [
-    toggleitem("Enlarge Vertices &Ticks", "Ticks", (0,0)),
     toggleitem("&Paste objects at screen center", "Recenter", (0,0)),
     ]
 shortcuts = { }
+
+
+ticks = toggleitem("Enlarge Vertices &Ticks", "Ticks", (1,1),
+      hint="|Enlarge Vertices Ticks:\n\nThis makes the model's ticks 1 size larger for easer viewing.|intro.mapeditor.menu.html#optionsmenu")
+
+items.append(ticks)
+def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
+
+    oldfinish(editor, view)
+    if not MapOption("Ticks"):return
+
+qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
 
 def OptionsMenu():
@@ -95,6 +104,10 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.9  2006/03/07 08:08:28  cdunde
+#To enlarge model Tick Marks hard to see 1 pixel size
+#and added item to Options menu to make 1 size bigger.
+#
 #Revision 1.8  2006/03/06 19:21:23  cdunde
 #To add hint in Infobase linking to toggle
 #Model Editor Optional menu items.
