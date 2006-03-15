@@ -3366,6 +3366,7 @@ QQRKSRC1
     }
     t_PlayerClass:incl =
     {
+      t_player_size = !
     }
     t_Light:incl =
     {

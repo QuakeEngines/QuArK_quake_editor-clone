@@ -12,6 +12,12 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
+6.5.0 alpha 7
+=============
+
+ * [cdunde] : Reinstated bounding box for H-L2 info_player_start and added
+       - prefabs-hl2.qrk to Defaults.qrk Addons list.
+
 6.5.0 alpha 6
 =============
 

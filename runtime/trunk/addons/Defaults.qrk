@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.282  2006/03/07 04:51:41  cdunde
+//Setup model frame outlining and options for solid and color selection.
+//
 //Revision 1.281  2006/02/28 21:00:48  cdunde
 //To update Defaults.qrk file and add new section for
 //the configuration for the Torque game engine.
@@ -1413,7 +1416,7 @@ QQRKSRC1
         OutputMapFormat = "HL2"
         AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"$0D"models-hl2.qrk"$0D"soundscapes-hl2.qrk"$0D
         "gamesounds-hl2.qrk"$0D"textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
-        "halflife2.qrk"$0D"hl2mp.qrk"
+        "halflife2.qrk"$0D"hl2mp.qrk"$0D"prefabs-hl2.qrk"
 
         BuildPgmsDir="C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin"
         BuildPgm1  = "C:/Program Files/Valve/Steam/SteamApps/<Your Steam Account>/sourcesdk/bin/vbsp.exe"

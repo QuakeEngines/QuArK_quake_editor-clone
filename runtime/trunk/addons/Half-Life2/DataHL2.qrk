@@ -380,11 +380,23 @@ QQRKSRC1
       }
       info_player_start:e =
       {
-        origin = "0 -192 -120"
+        origin = "0 -192 -104"
         angles = "0 90 0"
       }
     }
-
+  }
+  Entity Forms.fctx =
+  {
+    info_player_start:form =
+     {
+        bbox = '-16 -16 -24 16 16 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "Master (Has priority if multiple info_player_starts exist)"
+      }
+    }
   }
   Half-Life2 setup.qctx =
   {
