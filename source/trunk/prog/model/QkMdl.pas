@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.15  2005/07/07 07:15:00  alexander
 fixed problem not displaying boxes for models
 
@@ -476,8 +479,8 @@ type
   PVertxArray = ^TVertxArray;
   TVertxArray = array[0..0] of TMD3TexVec;
 
-var
-  F:TStream;
+//var
+//  F:TStream;
 begin
   //F := TFileStream.Create(FName , fmOpenRead);
 end;
@@ -692,7 +695,7 @@ var
   setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
   setuptripoints(tribox[i],7,6,2); inc(i);
   setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
-  setuptripoints(tribox[i],2,3,7); inc(i);
+  setuptripoints(tribox[i],2,3,7);
   setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
 
 

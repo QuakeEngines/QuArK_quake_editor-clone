@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.17  2004/12/22 11:42:16  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -558,12 +561,12 @@ var
   s: string;
 begin
   Result:=3;
-  Lib:=0;
 {$IFDEF PYTHON_BUNDLED}
 // Python's bundled with QuArK, so look for python.dll in the Dlls directory
   dll:=GetApplicationDllPath()+'python.dll';
   Lib:=LoadLibrary(PChar(dll));
 {$ELSE}
+  Lib:=0;
 // Python isn't bundled with QuArK, so look on system
 // dll:=try_alternative_python_version;
 {$IFDEF PYTHON23}

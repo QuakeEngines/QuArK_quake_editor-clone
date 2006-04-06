@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2005/10/15 23:44:21  cdunde
+Made one setting in QuArK's Config OpenGL section for all
+games that use transparency that can be viewed in QuArK.
+Also removed light entity dependency for  transparency to work.
+
 Revision 1.31  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -1156,7 +1161,7 @@ procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
 var
  TexData: PChar;
  MemSize, W, H, J: Integer;
- Alphasource,Source, Dest: PChar;
+{Alphasource,}Source, Dest: PChar;
  PaletteEx: array[0..255] of LongInt;
 {BasePalette: Pointer;}
  PSD, PSD2: TPixelSetDescription;
