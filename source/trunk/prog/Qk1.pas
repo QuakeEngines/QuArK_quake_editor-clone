@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.35  2003/11/10 19:31:48  silverpaladin
 Fixed a problem with menus not showing up on the Toolbox menu.
 NOTE: This form MUST be named TForm1
@@ -1560,7 +1563,7 @@ procedure TForm1.FreeNonUsedObjects;
 begin
  TTextureManager.FreeNonVisibleTextures;
  FreeNonVisibleForms(Nil);
- DestroyGameBuffers;
+ GameFiles.ClearUnreferenced;
 end;
 
 var

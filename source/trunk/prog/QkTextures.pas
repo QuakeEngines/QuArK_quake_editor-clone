@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.42  2005/07/03 20:27:31  alexander
 quark trys to load a .vmf with the same name as fall back if loading a material fails
 
@@ -230,6 +233,7 @@ type
                protected
                  Link: QPixelSet;
                  FNext: QTextureLnk;
+                 procedure SetNextPixelSet(PS: QPixelSet); override;
                public
                  function Description : TPixelSetDescription; override;
                  function SetDescription(const PSD: TPixelSetDescription;
@@ -1054,25 +1058,6 @@ begin
   LoadPixelSet.SetSize(nSize);
 end;
 
-procedure QTextureLnk.BreakLink;
-var
- P: ^QTextureLnk;
-begin
-  if Link<>Nil then
-  begin
-    P:=@QTextureLnk(Link.ReverseLink);
-    while P^<>Self do
-    begin
-      if P^=Nil then
-        Raise InternalE('QPixelSetLnk.BreakLink');
-      P:=@P^.Next;
-    end;
-    P^:=Next;  { breaks the linked list }
-    Link.AddRef(-1);
-    Link:=Nil;
-  end;
-end;
-
 destructor QTextureLnk.Destroy;
 begin
   BreakLink;
@@ -1260,6 +1245,25 @@ begin
     Link.ReverseLink:=Self;
   end;
   Result:=Link;
+end;
+
+procedure QTextureLnk.BreakLink;
+var
+ P: ^QTextureLnk;
+begin
+  if Link<>Nil then
+  begin
+    P:=@QTextureLnk(Link.ReverseLink);
+    while P^<>Self do
+    begin
+      if P^=Nil then
+        Raise InternalE('QPixelSetLnk.BreakLink');
+      P:=@P^.Next;
+    end;
+    P^:=Next;  { breaks the linked list }
+    Link.AddRef(-1);
+    Link:=Nil;
+  end;
 end;
 
 function QTextureLnk.BaseGame;
@@ -2365,6 +2369,21 @@ begin
   Q.BreakLink;
   Undo.Action(Q, TSpecificUndo.Create(LoadStr1(613), 'b', SrcBsp.Text, sp_Auto, Q));
 end;
+
+
+{*******************************************************************************
+Description  see QPixelSet in QkPixelSet.pas
+*******************************************************************************}
+procedure QTextureLnk.SetNextPixelSet(PS: QPixelSet);
+begin
+   FNextPixelSet.AddRef(-1);
+   Link.NextPixelSet := PS;
+   FNextPixelSet := PS;
+   FAnimDelay := Link.AnimDelay;
+   Link.NextPixelSet := nil;
+   FNextPixelSet.AddRef(+1);
+end;
+
 
 initialization
   RegisterQObject(QTextureLnk, 'a');

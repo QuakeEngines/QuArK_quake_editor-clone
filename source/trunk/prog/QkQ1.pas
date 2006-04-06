@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2001/06/13 22:52:44  aiv
 oops wrong file.
 
@@ -68,6 +71,7 @@ uses
   QkObjects,
   QkFileObjects,
   QkTextures,
+  QkPixelSet,
   Sysutils,
   Dialogs,
   QkImages;
@@ -85,6 +89,7 @@ type
               {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
                procedure SaveFile(Info: TInfoEnreg1); override;
                procedure LoadFile(F: TStream; FSize: Integer); override;
+               procedure SetNextPixelSet(PS: QPixelSet); override;
              public
                class function TypeInfo: String; override;
                class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -271,6 +276,24 @@ function QTexture1.BaseGame;
 begin
   Result:=mjNotQuake2;
 end;
+
+
+{*******************************************************************************
+Description  see QPixelSet in QkPixelSet.pas
+*******************************************************************************}
+procedure QTexture1.SetNextPixelSet(PS: QPixelSet);
+begin
+  inherited;
+  if Assigned(PS) then begin
+   	if (Length(Name) >= 2) and (Length(PS.Name) >= 2) then begin
+      if (Name[1] = '+') and (PS.Name[1] = '+') and (
+        (PS.Name[2] in ['0'..'9']) and (Name[2] in ['A'..'J', 'a'..'j'])
+        or (Name[2] in ['0'..'9']) and (PS.Name[2] in ['A'..'J', 'a'..'j'])
+      ) then FAnimDelay := 600;
+    end;
+  end;
+end;
+
 
 initialization
   RegisterQObject(QTexture1, 'a');

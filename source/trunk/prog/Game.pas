@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.36  2005/07/07 07:14:57  alexander
 fixed problem not displaying boxes for models
 
@@ -162,10 +165,22 @@ type
     procedure CancelBtnClick(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+  end;
+
+  { manages a list of loaded game files, like textures }
+  TGameFileList = class
   private
-    { Déclarations privées }
+    FFileObjects: array of QFileObject;
+    FCount: Integer;
+    FSize: Integer;
+    function CalcInsIndex(const nFileName: String): Integer;
+    function GetFile(const nFileName: String) : QFileObject;
+    procedure ClearToLevel(Memory: Int64; Count: Integer);
   public
-    { Déclarations publiques }
+    property Count: Integer read FCount;
+    destructor Destroy; override;
+    procedure Add(aFileObject: QFileObject);
+    procedure ClearUnreferenced;
   end;
 
  {------------------------}
@@ -200,13 +215,15 @@ type
  TGeneralGammaBuffer = array[0..255] of Byte;
 {TMQIDF = (dfWinFormat, dfTextureFormat, dfBottomUpTexture);}
 
+var
+  GameFiles: TGameFileList = Nil;
+
 procedure ClearGameBuffers(CanCancel: Boolean);
 procedure ClearGameBuffer1;
-procedure SizeDownGameFiles;
-procedure DestroyGameBuffers;
 procedure ListSourceDirs(Dirs: TStrings);
 function NeedGameFile(const FileName: String) : QFileObject;
 function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
+procedure SizeDownGameFiles;
 function PathAndFile(Path, FileName: String) : String;
 (*function GetDLLDirectory: String;*)
 procedure BuildCorrectFileName(var S: String);
@@ -242,10 +259,10 @@ implementation
 {$R *.DFM}
 
 uses QkPak, Setup, QkUnknown, QkTextures, Travail, ToolBox1, QkImages, Qk1,
-  Game2, QkQuakeCtx, Config, Output1, Quarkx, PyImages, QkApplPaths,QkSteamFS;
+  Game2, QkQuakeCtx, Config, Output1, Quarkx, PyImages, QkApplPaths, QkSteamFS,
+  QkWad, QkPixelSet;
 
 var
- GameFiles: TQList = Nil;
 // SourceBases: TStringList;
  GameBuffer1: PGameBuffer;
  FreeGBList: TList = Nil;
@@ -257,91 +274,6 @@ var
 
 { Non public-interface functions. }
 function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject; forward;
-
- {------------------------}
-
-procedure DestroyGameBuffers;
-begin
- g_Form1.SavePendingFiles(True);
- GameFiles.Free;
- GameFiles:=Nil;
-end;
-
-function InternalSizeDown : Integer;  { result : free size }
-var
- I, Reste: Integer;
-{FreeSize: Integer;
- Remove: Boolean;
- Q: QObject;}
-begin
- Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 2)* (1024*1024));
-
- if GameFiles=Nil then
-  Exit;
-
- Reste:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameFiles', 15));
-(*if Reste<0 then Reste:=0;
- for I:=GameFiles.Count-Reste-1 downto 0 do
-  GameFiles.Delete(I);*)
- if GameFiles.Count>Reste then
-  begin
-   DestroyGameBuffers;
-   Exit;
-  end;
-
- for I:=GameFiles.Count-1 downto 0 do
-  begin
-   Dec(Result, GameFiles[I].GetObjectSize(Nil, False));
-   if Result<=0 then
-    begin
-     DestroyGameBuffers;
-     Exit;
-    end;
-  end;
-(*Remove:=False;
- for I:=GameFiles.Count-1 downto 0 do
-  begin
-   Q:=GameFiles[I];
-   if not Remove then
-    begin
-     Dec(FreeSize, Q.GetObjectSize(Nil, False));
-     if FreeSize<=0 then
-      Remove:=True;   { game buffer overflow }
-    end;
-   if Remove then
-    begin  { object has to be removed }
-     Q.Free;
-     GameFiles.Delete(I);
-    end
-  end;*)
-end;
-
-procedure SizeDownGameFiles;
-var
- I: Integer;
- B: PGameBuffer;
-begin
- {SizeDownTextureList(}InternalSizeDown{)};
-
- if FreeGBList<>Nil then
-  try
-   for I:=FreeGBList.Count-1 downto 0 do
-    begin
-     B:=PGameBuffer(FreeGBList[I]);
-{$IFDEF Debug}
-     if B^.RefCount<>0 then
-      Raise InternalE('SizeDownGameFiles');
-{$ENDIF}
-     DeleteObject(B^.Palette);
-     DeleteObject(B^.PaletteReelle);
-    {B^.AddOns.AddRef(-1);}
-     Dispose(B);
-    end;
-  finally
-   FreeGBList.Free;
-   FreeGBList:=Nil;
-  end;
-end;
 
 function DuplicateGameBuffer(Source: PGameBuffer) : PGameBuffer;
 begin
@@ -693,7 +625,7 @@ var
 begin
   Result := NIL;
   if (GameFiles=Nil) then
-    GameFiles:=TQList.Create;
+    GameFiles:=TGameFileList.Create;
   CDSearch := false;
   while (true) do
   begin
@@ -713,7 +645,7 @@ begin
     begin
       { Buffer search }
       AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
-      Result := SortedFindFileName(GameFiles, AbsolutePathAndFilename);
+      Result := GameFiles.GetFile(AbsolutePathAndFilename);
       if (Result <> NIL) then
         Exit; { found it }
       FilenameAlias := FileAlias(FileName);
@@ -730,7 +662,6 @@ begin
         Result:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
         Result.Flags:=Result.Flags or ofWarnBeforeChange;
         GameFiles.Add(Result);
-        GameFiles.Sort(ByFileName);
         Exit; { found it }
       end;
       FilenameAlias := FileAlias(FileName);
@@ -746,7 +677,7 @@ begin
       if namerest<>'' then
         namerest :=namerest + '/';
 
-      PakFile:=SortedFindFileName(GameFiles, BaseDir);
+      PakFile := GameFiles.GetFile(BaseDir);
       if (PakFile=Nil) then
       begin  { open steam  if not already opened }
 
@@ -762,7 +693,6 @@ begin
 
         PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
         GameFiles.Add(PakFile);
-        GameFiles.Sort(ByFileName);
       end;
       Result:=PakFile.FindFile( namerest+FileName );
       if (Result<>Nil) then
@@ -776,13 +706,12 @@ begin
     if FileExists(AbsolutePath) and AnsiEndsStr('.gcf', AbsolutePath) then
     begin
       RestartAliasing;
-      PakFile:=SortedFindFileName(GameFiles, AbsolutePath);
+      PakFile:=GameFiles.GetFile(AbsolutePath);
       if (PakFile=Nil) then
       begin  { open the .gcf file if not already opened }
         PakFile:=ExactFileLink(AbsolutePath, Nil, True);
         PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
         GameFiles.Add(PakFile);
-        GameFiles.Sort(ByFileName);
       end;
       Result:=PakFile.FindFile( FileName );
       if (Result<>Nil) then
@@ -802,13 +731,12 @@ begin
         begin
           if (not IsPakTemp(AbsolutePathAndFilename)) then  { ignores QuArK's own temporary .pak's }
           begin
-            PakFile:=SortedFindFileName(GameFiles, AbsolutePathAndFilename);
+            PakFile:=GameFiles.GetFile(AbsolutePathAndFilename);
             if (PakFile=Nil) then
             begin  { open the .pak file if not already opened }
               PakFile:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
               PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
               GameFiles.Add(PakFile);
-              GameFiles.Sort(ByFileName);
             end;
             Result:=PakFile.FindFile(FilenameAlias);
             if (Result<>Nil) then
@@ -1472,6 +1400,189 @@ end;
 procedure TGameCfgDlg.FormDestroy(Sender: TObject);
 begin
   CloseGlobalImageList(ListView1);
+end;
+
+procedure SizeDownGameFiles;
+var
+ I: Integer;
+ B: PGameBuffer;
+begin
+ if FreeGBList<>Nil then
+  try
+	for I:=FreeGBList.Count-1 downto 0 do
+	 begin
+	  B:=PGameBuffer(FreeGBList[I]);
+{$IFDEF Debug}
+	  if B^.RefCount<>0 then
+		Raise InternalE('SizeDownGameFiles');
+{$ENDIF}
+	  DeleteObject(B^.Palette);
+	  DeleteObject(B^.PaletteReelle);
+	 {B^.AddOns.AddRef(-1);}
+	  Dispose(B);
+	 end;
+  finally
+	FreeGBList.Free;
+	FreeGBList:=Nil;
+  end;
+end;
+
+
+
+
+{ TGameFileList }
+
+{*******************************************************************************
+Description: Tries to bring the amount of game files loaded and their memory
+             consumption down to the limits given by the parameters. This is
+             done exlusively by decrementing the game files' reference counters.
+Parameters : Memory : Int64 = the max amount of memory that should be used
+             Count : Integer = the max number of game files that may be loaded
+*******************************************************************************}
+procedure TGameFileList.ClearToLevel(Memory: Int64; Count: Integer);
+var
+	R, W, OverflowCount: Integer;
+	OverflowMem: Int64;
+begin
+	if not Assigned(Self) then Exit;
+
+	{ calc mem usage }
+	OverflowMem := 0;
+	try
+	for R := 0 to FCount-1 do begin
+		Inc(OverflowMem, FFileObjects[R].GetObjectSize(nil, False));
+	end;
+	except
+		Beep;
+	end;
+	OverflowMem := OverflowMem - Memory;
+	OverflowCount := FCount - Count;
+	if (OverflowMem <= 0) and (OverflowCount <= 0) then Exit;
+
+	R := 0;	// read index
+	W := 0;	// write index
+	while (R < FCount) and ((OverflowMem > 0) or (OverflowCount > 0)) do begin
+		if FFileObjects[R].IsDeepReferenced then begin
+			if R <> W then FFileObjects[W] := FFileObjects[R];
+			Inc(R);
+			Inc(W);
+		end else begin
+			Dec(OverflowMem, FFileObjects[R].GetObjectSize(nil, False));
+			Dec(OverflowCount);
+			FFileObjects[R].AddRef(-1);
+			Inc(R);
+		end;
+	end;
+	if R <> W then while R < FCount do begin
+		FFileObjects[W] := FFileObjects[R];
+		Inc(R);
+		Inc(W);
+	end;
+	Dec(FCount, R - W);
+
+	if FCount + 8 < FSize then begin
+		FSize := FCount + 8;
+		SetLength(FFileObjects, FSize);
+	end;
+end;
+
+
+{*******************************************************************************
+Description: Remove only items that are referenced once to make sure the game
+             file list doesn't forget about files that are still referenced
+             elsewhere. [Part of the 'texture memory not freed' fix]
+*******************************************************************************}
+procedure TGameFileList.ClearUnreferenced;
+begin
+	{ try to free all memory by advising the method to use 0 Bytes and 0 slots }
+	ClearToLevel(0, 0);
+end;
+
+
+{*******************************************************************************
+Description: Looks for a file in the game file list
+Parameters : const nFileName : String = the file name to look for
+Returns    : the file object with the same name if found, nil otherwise
+*******************************************************************************}
+function TGameFileList.GetFile(const nFileName: String) : QFileObject;
+var
+   Index: Integer;
+begin
+   Result := nil;
+   Index := CalcInsIndex(nFileName);
+   if Index = FCount then Exit;
+   if FFileObjects[Index].Filename = nFileName then
+      Result := FFileObjects[Index];
+end;
+
+
+{*******************************************************************************
+Description: Calculates where in the list this object <would> be inserted
+             Used to calculate insert positions or find objects
+Parameters : const nFileName : String = the file name to look for
+Returns    : the index in the list; this is equal to 'Count' if the item would
+             be added to the end of the list
+*******************************************************************************}
+function TGameFileList.CalcInsIndex(const nFileName: String): Integer;
+var
+	Min, Max, Diff: Integer;
+begin
+   Result := 0;
+	Min:=0; Max:=FCount;
+	while Max>Min do
+	begin
+		Result:=(Min+Max) div 2;
+		Diff:=CompareText(nFileName, FFileObjects[Result].Filename);
+		if Diff=0 then begin
+			Exit;  { found it }
+		end else if Diff<0 then
+			Max:=Result
+		else
+			Min:=Result+1;
+	end;
+   if Min = FCount then Result := FCount; { item would be at the end of the list }
+end;
+
+
+{*******************************************************************************
+Description: Adds a file object into the game file list and keeps it sorted
+Parameters : aFileObject : QFileObject = the game file that will be added
+*******************************************************************************}
+procedure TGameFileList.Add(aFileObject: QFileObject);
+var
+	InsIndex, I, MaxBuffers: Integer;
+	ObjSize, MaxMemory: Int64;
+begin
+	if not Assigned(aFileObject) then Exit;
+	for I := 0 to FCount-1 do if FFileObjects[I] = aFileObject then Exit;
+
+	ObjSize := aFileObject.GetObjectSize(nil, false);
+	MaxMemory := Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 2) * (1024*1024));
+	MaxBuffers := Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameFiles', 15));
+	// make sure the game buffers aren't to large after insertion
+	ClearToLevel(MaxMemory - ObjSize, MaxBuffers - 1);
+
+	if FCount = FSize then begin
+		Inc(FSize, 16);
+		SetLength(FFileObjects, FSize);
+	end;
+	InsIndex := CalcInsIndex(aFileObject.Filename);
+	for I := FCount-1 downto InsIndex do FFileObjects[I+1] := FFileObjects[I];
+	FFileObjects[InsIndex] := aFileObject;
+	aFileObject.AddRef(+1);
+	Inc(FCount);
+end;
+
+{*******************************************************************************
+Description: Deletes the game file list and decrements the reference counters
+*******************************************************************************}
+destructor TGameFileList.Destroy;
+var
+	I: Integer;
+begin
+	for I := 0 to FCount-1 do FFileObjects[I].AddRef(-1);
+	SetLength(FFileObjects, 0);
+	inherited;
 end;
 
 end.

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.14  2001/06/05 18:39:10  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -308,41 +311,41 @@ end;
 
 procedure AnnuleUndos;
 begin
- FUndoExplorers.Free;
- FUndoExplorers:=Nil;
+  FUndoExplorers.Free;
+  FUndoExplorers:=Nil;
 end;
 
 procedure OperationDansScene(Q: QObject; Aj: TAjScene; CurrentExplorer: TQkExplorer);
 var
- I: Integer;
+  I: Integer;
 begin
- if g_NiveauAction and na_Local <> 0 then Exit;
- if CurrentExplorer=Nil then
-  CurrentExplorer:=ExplorerFromObject(Q);
- g_WorkingExplorer:=CurrentExplorer;
- if g_WorkingExplorer<>Nil then
-  if g_NiveauAction and na_Action = 0 then
-   begin
-    if FUndoExplorers=Nil then
-     FUndoExplorers:=TList.Create;
-    if FUndoExplorers.IndexOf(CurrentExplorer) < 0 then
-     begin
-      FUndoExplorers.Add(CurrentExplorer);
-      CurrentExplorer.MsgUndo(muOneBegin, Nil);
-     end;
-   end
+  if g_NiveauAction and na_Local <> 0 then Exit;
+  if CurrentExplorer=Nil then
+    CurrentExplorer:=ExplorerFromObject(Q);
+  g_WorkingExplorer:=CurrentExplorer;
+  if g_WorkingExplorer<>Nil then
+    if g_NiveauAction and na_Action = 0 then
+    begin
+      if FUndoExplorers=Nil then
+        FUndoExplorers:=TList.Create;
+      if FUndoExplorers.IndexOf(CurrentExplorer) < 0 then
+      begin
+        FUndoExplorers.Add(CurrentExplorer);
+        CurrentExplorer.MsgUndo(muOneBegin, Nil);
+      end;
+    end
   else
-   AnnuleUndos;
- Q.OperationInScene(Aj, 0);
- I:=0;
- repeat
-  if not Odd(Q.Flags) then
-   g_WorkingExplorer:=Nil;  { moved up past the root of g_WorkingExplorer }
-  Q:=Q.FParent;
-  if Q=Nil then Break;
-  Dec(I);
-  Q.OperationInScene(asModifieParent, I);
- until False;
+    AnnuleUndos;
+  Q.OperationInScene(Aj, 0);
+  I:=0;
+  repeat
+    if not Odd(Q.Flags) then
+      g_WorkingExplorer:=Nil;  { moved up past the root of g_WorkingExplorer }
+    Q:=Q.FParent;
+    if Q=Nil then Break;
+    Dec(I);
+    Q.OperationInScene(asModifieParent, I);
+  until False;
 end;
 (*var
  I: Integer;
