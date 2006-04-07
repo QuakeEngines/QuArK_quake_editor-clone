@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2006/04/06 19:28:01  nerdiii
+Texture memory wasn't freed because texture links had additional references to them.
+
 Revision 1.44  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -2377,11 +2380,14 @@ Description  see QPixelSet in QkPixelSet.pas
 procedure QTextureLnk.SetNextPixelSet(PS: QPixelSet);
 begin
    FNextPixelSet.AddRef(-1);
-   Link.NextPixelSet := PS;
    FNextPixelSet := PS;
-   FAnimDelay := Link.AnimDelay;
-   Link.NextPixelSet := nil;
    FNextPixelSet.AddRef(+1);
+   { temporary assignment to the linked texture to get the anim delay }
+   if Assigned(Link) then begin
+      Link.NextPixelSet := PS;
+      FAnimDelay := Link.AnimDelay;
+      Link.NextPixelSet := nil;
+   end;
 end;
 
 

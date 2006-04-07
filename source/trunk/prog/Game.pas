@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2006/04/06 19:28:06  nerdiii
+Texture memory wasn't freed because texture links had additional references to them.
+
 Revision 1.38  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -175,12 +178,12 @@ type
     FSize: Integer;
     function CalcInsIndex(const nFileName: String): Integer;
     function GetFile(const nFileName: String) : QFileObject;
-    procedure ClearToLevel(Memory: Int64; Count: Integer);
-  public
-    property Count: Integer read FCount;
-    destructor Destroy; override;
     procedure Add(aFileObject: QFileObject);
-    procedure ClearUnreferenced;
+  public
+    property Item[const nFileName: String]: QFileObject read GetFile; default;
+    destructor Destroy; override;
+    procedure UnloadUnused(OnlyIfTooLarge: Boolean);
+    procedure Clear;
   end;
 
  {------------------------}
@@ -216,7 +219,7 @@ type
 {TMQIDF = (dfWinFormat, dfTextureFormat, dfBottomUpTexture);}
 
 var
-  GameFiles: TGameFileList = Nil;
+  GameFiles: TGameFileList;
 
 procedure ClearGameBuffers(CanCancel: Boolean);
 procedure ClearGameBuffer1;
@@ -330,8 +333,7 @@ begin
  try
   DelayDeleteGameBuffer(GameBuffer1);
   GameBuffer1:=Nil;
-  GameFiles.Free;
-  GameFiles:=Nil;
+  GameFiles.Clear;
   CloseAddonsList;
   // SourceBases.Free;
   // SourceBases:=Nil;
@@ -624,8 +626,6 @@ var
  mem: TMemoryStream;
 begin
   Result := NIL;
-  if (GameFiles=Nil) then
-    GameFiles:=TGameFileList.Create;
   CDSearch := false;
   while (true) do
   begin
@@ -645,7 +645,7 @@ begin
     begin
       { Buffer search }
       AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
-      Result := GameFiles.GetFile(AbsolutePathAndFilename);
+      Result := GameFiles[AbsolutePathAndFilename];
       if (Result <> NIL) then
         Exit; { found it }
       FilenameAlias := FileAlias(FileName);
@@ -677,7 +677,7 @@ begin
       if namerest<>'' then
         namerest :=namerest + '/';
 
-      PakFile := GameFiles.GetFile(BaseDir);
+      PakFile := GameFiles[BaseDir];
       if (PakFile=Nil) then
       begin  { open steam  if not already opened }
 
@@ -706,7 +706,7 @@ begin
     if FileExists(AbsolutePath) and AnsiEndsStr('.gcf', AbsolutePath) then
     begin
       RestartAliasing;
-      PakFile:=GameFiles.GetFile(AbsolutePath);
+      PakFile:=GameFiles[AbsolutePath];
       if (PakFile=Nil) then
       begin  { open the .gcf file if not already opened }
         PakFile:=ExactFileLink(AbsolutePath, Nil, True);
@@ -731,7 +731,7 @@ begin
         begin
           if (not IsPakTemp(AbsolutePathAndFilename)) then  { ignores QuArK's own temporary .pak's }
           begin
-            PakFile:=GameFiles.GetFile(AbsolutePathAndFilename);
+            PakFile:=GameFiles[AbsolutePathAndFilename];
             if (PakFile=Nil) then
             begin  { open the .pak file if not already opened }
               PakFile:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
@@ -1432,70 +1432,69 @@ end;
 
 { TGameFileList }
 
+
 {*******************************************************************************
-Description: Tries to bring the amount of game files loaded and their memory
-             consumption down to the limits given by the parameters. This is
-             done exlusively by decrementing the game files' reference counters.
-Parameters : Memory : Int64 = the max amount of memory that should be used
-             Count : Integer = the max number of game files that may be loaded
+Description: Unloads from memory all game files that aren't currently in use.
+Parameters : OnlyIfTooLarge : Boolean = if true, only so many files are unloaded
+               as to keep the memory usage below the limits set up in QuArK's
+               memory configuration.
 *******************************************************************************}
-procedure TGameFileList.ClearToLevel(Memory: Int64; Count: Integer);
+procedure TGameFileList.UnloadUnused(OnlyIfTooLarge: Boolean);
 var
-	R, W, OverflowCount: Integer;
-	OverflowMem: Int64;
+  R, W: Integer;
+  OverflowCount, MaxBuffers: Integer;
+  OverflowMem, MaxMemory: Int64;
 begin
-	if not Assigned(Self) then Exit;
+  if not Assigned(Self) then Exit;
 
-	{ calc mem usage }
-	OverflowMem := 0;
-	try
-	for R := 0 to FCount-1 do begin
-		Inc(OverflowMem, FFileObjects[R].GetObjectSize(nil, False));
-	end;
-	except
-		Beep;
-	end;
-	OverflowMem := OverflowMem - Memory;
-	OverflowCount := FCount - Count;
-	if (OverflowMem <= 0) and (OverflowCount <= 0) then Exit;
+  if OnlyIfTooLarge then begin
+    MaxMemory := Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 2) * (1024*1024));
+    MaxBuffers := Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameFiles', 15));
+    { calc mem usage }
+    OverflowMem := 0;
+    try
+      for R := 0 to FCount-1 do begin
+        Inc(OverflowMem, FFileObjects[R].GetObjectSize(nil, False));
+      end;
+    except
+      Beep;
+    end;
+    OverflowMem := OverflowMem - MaxMemory;
+    OverflowCount := FCount - MaxBuffers;
+    { check if the buffer is too large at all }
+    if (OverflowMem <= 0) and (OverflowCount <= 0) then Exit;
+  end else begin
+    { all files are too much - try to clear the whole list }
+    OverflowCount := High(OverflowCount);
+    OverflowMem := High(OverflowMem);
+  end;
 
-	R := 0;	// read index
-	W := 0;	// write index
-	while (R < FCount) and ((OverflowMem > 0) or (OverflowCount > 0)) do begin
-		if FFileObjects[R].IsDeepReferenced then begin
-			if R <> W then FFileObjects[W] := FFileObjects[R];
-			Inc(R);
-			Inc(W);
-		end else begin
-			Dec(OverflowMem, FFileObjects[R].GetObjectSize(nil, False));
-			Dec(OverflowCount);
-			FFileObjects[R].AddRef(-1);
-			Inc(R);
-		end;
-	end;
-	if R <> W then while R < FCount do begin
-		FFileObjects[W] := FFileObjects[R];
-		Inc(R);
-		Inc(W);
-	end;
-	Dec(FCount, R - W);
+  R := 0;	// read index
+  W := 0;	// write index
+  while (R < FCount) and ((OverflowMem > 0) or (OverflowCount > 0)) do begin
+    if FFileObjects[R].IsDeepReferenced then begin
+      if R <> W then FFileObjects[W] := FFileObjects[R];
+      Inc(R);
+      Inc(W);
+    end else begin
+      Dec(OverflowMem, FFileObjects[R].GetObjectSize(nil, False));
+      Dec(OverflowCount);
+      FFileObjects[R].AddRef(-1);
+      Inc(R);
+    end;
+  end;
+  if R <> W then while R < FCount do begin
+    FFileObjects[W] := FFileObjects[R];
+    Inc(R);
+    Inc(W);
+  end;
+  Dec(FCount, R - W);
 
-	if FCount + 8 < FSize then begin
-		FSize := FCount + 8;
-		SetLength(FFileObjects, FSize);
-	end;
-end;
-
-
-{*******************************************************************************
-Description: Remove only items that are referenced once to make sure the game
-             file list doesn't forget about files that are still referenced
-             elsewhere. [Part of the 'texture memory not freed' fix]
-*******************************************************************************}
-procedure TGameFileList.ClearUnreferenced;
-begin
-	{ try to free all memory by advising the method to use 0 Bytes and 0 slots }
-	ClearToLevel(0, 0);
+  { resize list, but leave a buffer }
+  if FCount + 8 < FSize then begin
+    FSize := FCount + 8;
+    SetLength(FFileObjects, FSize);
+  end;
 end;
 
 
@@ -1506,13 +1505,21 @@ Returns    : the file object with the same name if found, nil otherwise
 *******************************************************************************}
 function TGameFileList.GetFile(const nFileName: String) : QFileObject;
 var
-   Index: Integer;
+  Index: Integer;
 begin
-   Result := nil;
-   Index := CalcInsIndex(nFileName);
-   if Index = FCount then Exit;
-   if FFileObjects[Index].Filename = nFileName then
-      Result := FFileObjects[Index];
+  Result := nil;
+  Index := CalcInsIndex(nFileName);
+  if Index = FCount then Exit;
+  if FFileObjects[Index].Filename = nFileName then
+    Result := FFileObjects[Index];
+  if Assigned(Result) then begin
+    if Result.Filename <> nFileName then begin
+      Beep;
+    end;
+    if (Copy(Result.Filename, Length(Result.Filename)-3, 4) = '.wad') and not (Result is QWad) then begin
+      beep;
+    end;
+  end;
 end;
 
 
@@ -1525,22 +1532,21 @@ Returns    : the index in the list; this is equal to 'Count' if the item would
 *******************************************************************************}
 function TGameFileList.CalcInsIndex(const nFileName: String): Integer;
 var
-	Min, Max, Diff: Integer;
+  Min, Max, Diff: Integer;
 begin
-   Result := 0;
-	Min:=0; Max:=FCount;
-	while Max>Min do
-	begin
-		Result:=(Min+Max) div 2;
-		Diff:=CompareText(nFileName, FFileObjects[Result].Filename);
-		if Diff=0 then begin
-			Exit;  { found it }
-		end else if Diff<0 then
-			Max:=Result
-		else
-			Min:=Result+1;
-	end;
-   if Min = FCount then Result := FCount; { item would be at the end of the list }
+  Result := 0;
+  Min:=0; Max:=FCount;
+  while Max>Min do begin
+    Result:=(Min+Max) div 2;
+    Diff:=CompareText(nFileName, FFileObjects[Result].Filename);
+    if Diff=0 then begin
+      Exit;  { found it }
+    end else if Diff<0 then
+      Max:=Result
+    else
+      Min:=Result+1;
+  end;
+  if Min = FCount then Result := FCount; { item would be at the end of the list }
 end;
 
 
@@ -1550,39 +1556,49 @@ Parameters : aFileObject : QFileObject = the game file that will be added
 *******************************************************************************}
 procedure TGameFileList.Add(aFileObject: QFileObject);
 var
-	InsIndex, I, MaxBuffers: Integer;
-	ObjSize, MaxMemory: Int64;
+  InsIndex, I: Integer;
 begin
-	if not Assigned(aFileObject) then Exit;
-	for I := 0 to FCount-1 do if FFileObjects[I] = aFileObject then Exit;
+  if not Assigned(aFileObject) then Exit;
+  for I := 0 to FCount-1 do if FFileObjects[I] = aFileObject then Exit;
 
-	ObjSize := aFileObject.GetObjectSize(nil, false);
-	MaxMemory := Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 2) * (1024*1024));
-	MaxBuffers := Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameFiles', 15));
-	// make sure the game buffers aren't to large after insertion
-	ClearToLevel(MaxMemory - ObjSize, MaxBuffers - 1);
+  if FCount = FSize then begin
+    Inc(FSize, 16);
+    SetLength(FFileObjects, FSize);
+  end;
+  InsIndex := CalcInsIndex(aFileObject.Filename);
+  for I := FCount-1 downto InsIndex do FFileObjects[I+1] := FFileObjects[I];
+  FFileObjects[InsIndex] := aFileObject;
+  Inc(FCount);
 
-	if FCount = FSize then begin
-		Inc(FSize, 16);
-		SetLength(FFileObjects, FSize);
-	end;
-	InsIndex := CalcInsIndex(aFileObject.Filename);
-	for I := FCount-1 downto InsIndex do FFileObjects[I+1] := FFileObjects[I];
-	FFileObjects[InsIndex] := aFileObject;
-	aFileObject.AddRef(+1);
-	Inc(FCount);
+  aFileObject.AddRef(+2);  { keep the new object in the list }
+  UnloadUnused(True);
+  aFileObject.AddRef(-1);
 end;
+
+
+{*******************************************************************************
+Description: Removes all items from the list.
+*******************************************************************************}
+procedure TGameFileList.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to FCount-1 do FFileObjects[i].AddRef(-1);
+  SetLength(FFileObjects, 0);
+  FCount := 0;
+  FSize := 0;
+end;
+
 
 {*******************************************************************************
 Description: Deletes the game file list and decrements the reference counters
 *******************************************************************************}
 destructor TGameFileList.Destroy;
-var
-	I: Integer;
 begin
-	for I := 0 to FCount-1 do FFileObjects[I].AddRef(-1);
-	SetLength(FFileObjects, 0);
-	inherited;
+  Clear;
+  inherited;
 end;
 
+initialization
+  GameFiles:=TGameFileList.Create;
 end.

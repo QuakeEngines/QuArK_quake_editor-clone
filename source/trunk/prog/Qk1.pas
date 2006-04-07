@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2006/04/06 19:28:06  nerdiii
+Texture memory wasn't freed because texture links had additional references to them.
+
 Revision 1.37  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -1563,7 +1566,7 @@ procedure TForm1.FreeNonUsedObjects;
 begin
  TTextureManager.FreeNonVisibleTextures;
  FreeNonVisibleForms(Nil);
- GameFiles.ClearUnreferenced;
+ GameFiles.UnloadUnused(False);
 end;
 
 var
