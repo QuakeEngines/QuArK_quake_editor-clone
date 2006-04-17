@@ -29,7 +29,7 @@ from maputils import *
 import mapentities
 import qmacro
 
-
+from plugins.tagging import *
 
 #
 # The handle classes.
@@ -1928,6 +1928,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.51  2006/01/30 10:07:13  cdunde
+#Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
+#to allow the creation of much larger maps for the more recent games.
+#
 #Revision 1.50  2006/01/12 07:21:01  cdunde
 #To commit all new and related files for
 #new Quick Object makers and toolbar.
