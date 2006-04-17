@@ -11,9 +11,11 @@ $Id$
    ########     ########## ####    #### ####         ####    ####
        #####
         #####       Quake Army Knife 6.5 Changelog
-
+        
 6.5.0 alpha 7
 =============
+
+ * [cdunde] : Fixed RMB handle error from occurring in texture movement view.
 
  * [cdunde] : Reinstated bounding box for H-L2 info_player_start and added
        - prefabs-hl2.qrk to Defaults.qrk Addons list.
