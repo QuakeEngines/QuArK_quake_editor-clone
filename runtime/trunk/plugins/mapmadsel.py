@@ -76,7 +76,7 @@ STASH_KEY = 'mapmadsel_stash'
 def StashMe(m):
     editor = mapeditor()
     if editor is None: return
-    nt.uniquetag(editor, STASH_KEY, m)
+    nt.uniquetag(editor, STASH_KEY, m.object)
   
 def getstashed(e):
     return nt.getuniquetag(e, STASH_KEY)
@@ -117,7 +117,7 @@ def clearrestrictor(e):
 def navTreePopupItems(current, editor, restricted):
     name = current.shortname
     select = qmenu.item("&Select",SelectMe,"Select")
-    stash = qmenu.item("&Mark", StashMe, "Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
+    stash = qmenu.item("&Mark", StashMe, "|Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
     restrict = qmenu.item("&Restrict", RestrictByMe, "|Restricts selections to being within this.\n\nGood if for example you want to work on the details of a desk or staircase for a while.")
     zoom = qmenu.item("&Zoom", ZoomToMe, "Fill the views with selected.")
     if restricted:
@@ -1085,6 +1085,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.35  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.29  2004/01/06 01:22:55  cdunde
 # To add Make Detail function and HotKeys by Decker-cdunde
 #
