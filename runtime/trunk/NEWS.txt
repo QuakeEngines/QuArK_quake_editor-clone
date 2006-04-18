@@ -15,6 +15,9 @@ $Id$
 6.5.0 alpha 7
 =============
 
+ * [cdunde] : Fixed the RMB Mark function for tree view restructuring with
+        -  the marking of objects. Bug found by jal - Thanks for your input.
+
  * [cdunde] : Fixed RMB handle error from occurring in texture movement view.
  
  * [nerdiii] : Fixed Texture memory that wasn't freed because texture links
