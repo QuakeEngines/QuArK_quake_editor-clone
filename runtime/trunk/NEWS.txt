@@ -16,6 +16,9 @@ $Id$
 =============
 
  * [cdunde] : Fixed RMB handle error from occurring in texture movement view.
+ 
+ * [nerdiii] : Fixed Texture memory that wasn't freed because texture links
+       -  had additional references to them.
 
  * [cdunde] : Reinstated bounding box for H-L2 info_player_start and added
        - prefabs-hl2.qrk to Defaults.qrk Addons list.
