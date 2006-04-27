@@ -574,7 +574,6 @@ begin
          counter:=counter-1;
         if (Source^='}') and (counter<3) then
           begin
-            counter:=0;
             Break;   // end of shader
           end;
         if Source^='{' then
