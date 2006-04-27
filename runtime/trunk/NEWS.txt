@@ -15,6 +15,25 @@ $Id$
 6.5.0 alpha 7
 =============
 
+ * [cdunde]: Initial support for the editing of Quake 4 maps. Users for
+       - Quake 4 and Doom 3 should provide the developers of QuArK any
+       - input they can about how the use of entities are executed and
+       - additional items that should be added to the Texture Browser.
+       - This feedback will greatly help to enhance the support of both games.
+       
+ * [cdunde-Rowdy]: Changed the source code of the material handling method
+        - for Doom 3 and Quake 4 by adding the use of "Keywords" to display
+        - their related texture links, thus increasing those viewable textures.
+        
+ * [cdunde] : Changed the Defaults.qrk Doom 3 configuration to simplify
+        - its setup, directly compile and run maps from within QuArK.
+        
+ * [cdunde] : Added light color pickers to entities for Doom 3 and Quake 4.
+        
+ * [cdunde] : Removed "id Software Textures" common.txlist, no longer needed,
+ 		- from the Texture Browser with the materials handling fix.
+ 		- These items are now located in the mtr_invisible items folder.
+
  * [cdunde] : Fixed the RMB Mark function for tree view restructuring with
         -  the marking of objects. Bug found by jal - Thanks for your input.
 
