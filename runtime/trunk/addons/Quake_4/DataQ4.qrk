@@ -400,7 +400,6 @@ QQRKSRC1
     t_q4material_gfx:incl               = { a="q4base" b="gfx.mtr" }
     t_q4material_glass:incl             = { a="q4base" b="glass.mtr" }
     t_q4material_gui:incl               = { a="q4base" b="gui.mtr" }
-    t_q4material_hardwareshaders:incl   = { a="q4base" b="hardwareshaders.mtr" }
     t_q4material_holo_guis:incl         = { a="q4base" b="holo_guis.mtr" }
     t_q4material_hub:incl               = { a="q4base" b="hub.mtr" }
     t_q4material_hud:incl               = { a="q4base" b="hud.mtr" }
@@ -979,48 +978,6 @@ QQRKSRC1
       mtr_gui.txlist =
       {
         cameraView1.wl    = { t_q4material_gui=! }
-      }
-      mtr_hardwareshaders.txlist =
-      {
-        effects/Combine.wl    = { t_q4material_hardwareshaders=! }
-        effects/Screen.wl    = { t_q4material_hardwareshaders=! }
-        effects/BlurPrep.wl    = { t_q4material_hardwareshaders=! }
-        effects/Blur.wl    = { t_q4material_hardwareshaders=! }
-        effects/Glare.wl    = { t_q4material_hardwareshaders=! }
-        effects/IntensityToAlpha.wl    = { t_q4material_hardwareshaders=! }
-        effects/BlurIntensity.wl    = { t_q4material_hardwareshaders=! }
-        effects/ColorCorrection.wl    = { t_q4material_hardwareshaders=! }
-        effects/GaussianBlur5x5.wl    = { t_q4material_hardwareshaders=! }
-        effects/GaussianBlurBloom_horizontal.wl    = { t_q4material_hardwareshaders=! }
-        effects/GaussianBlurBloom_vertical.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/newstagetest2.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/parallax.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/parallax_bones.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noparallax.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave0Cur.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave0Nxt.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave1Cur.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave1Nxt.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave2Cur.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave2Nxt.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave3Cur.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave3Nxt.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave4Cur.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noiseOctave4Nxt.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noise64.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noise128.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noise256.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noise512_2.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noise512.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noisenormaltest.wl    = { t_q4material_hardwareshaders=! }
-        effects/monochrome.wl    = { t_q4material_hardwareshaders=! }
-        effects/inverse.wl    = { t_q4material_hardwareshaders=! }
-        effects/ColorShift.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/noise_strip.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/compressed.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/uncompressed.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/alphaBumpTest.wl    = { t_q4material_hardwareshaders=! }
-        effects/test/alphaUnlitTest.wl    = { t_q4material_hardwareshaders=! }
       }
       mtr_holo_guis.txlist =
       {
@@ -15569,438 +15526,6 @@ QQRKSRC1
             mtr_light = "None"
             light_color = "0 0 0"
             ;desc = "Walker monster strogg hover."
-            origin = "0 0 0"
-            angle = "360"
-          }
-        }
-        monster_strogg_marine Entities.qtxfolder =
-        {
-          damage_strogg_marine_blaster:e =
-          {
-            inherit = "damage_bullet_base"
-            damage = "6"
-            ;desc = "Damage strogg marine blaster."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          projectile_strogg_marine_blaster:e =
-          {
-            inherit = "projectile_blaster_base"
-            def_damage = "damage_strogg_marine_blaster"
-            velocity = "650 0 0"
-            fx_fly = "effects/monsters/strogg_marine/blaster_fly.fx"
-            fx_impact = "effects/monsters/strogg_marine/blaster_burst.fx"
-            snd_fly = "weapon_energy_projectile_loop"
-            ;desc = "Projectile strogg marine blaster."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          melee_strogg_marine_left:e =
-          {
-            inherit = "melee_monster_base"
-            damage = "10"
-            kickDir = "0 -1 0.5"
-            kick_time = "350"
-            kick_amplitude = "4"
-            knockback = "20"
-            snd_hit = "smarine_punch"
-            snd_miss = "smarine_swing"
-            ;desc = "Melee strogg marine left."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          melee_strogg_marine_right:e =
-          {
-            inherit = "melee_strogg_marine_left"
-            kickDir = "0 1 0.5"
-            ;desc = "Melee strogg marine right."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine_base:e =
-          {
-            inherit = "actor_default"
-            spawnclass = "rvMonsterStroggMarine"
-            fov = "90"
-            painThreshold = "15"
-            pain_threshold = "15"
-            model = "model_monster_strogg_marine"
-            ragdoll = "monster_strogg_marine"
-            use_aas = "aas32"
-            directionalMovement = "1"
-            walkRange = "50"
-            joint_eyeOffset = "Rt_EyeBall"
-            joint_chestOffset = "chest"
-            chatter_idle_rate = "8"
-            chatter_combat_rate = "8"
-            health = "80"
-            attackRange = "300 600"
-            melee_range = "72"
-            maxLostVisTime = "5"
-            tactical_ranged = "1"
-            tactical_rush = "1"
-            tactical_cover = "0"
-            tactical_hide = "0"
-            def_attack_base = "projectile_strogg_marine_blaster"
-            attack_base_accuracy = "1"
-            def_attack_jointDir = "projectile_strogg_marine_blaster"
-            attack_jointDir_locktojoint = "1"
-            attack_jointDir_accuracy = "0"
-            def_attack_melee_left = "melee_strogg_marine_left"
-            def_attack_melee_right = "melee_strogg_marine_right"
-            damage_zone head = "*head_1"
-            damage_zone guts = "*waist -*shoulders"
-            damage_scale head = "2"
-            look_joint waist = "0.2 0.2 0"
-            look_joint chest = "0.2 0.2 0"
-            look_joint shoulders = "0.2 0.2 0"
-            look_joint rElbo = "0.4 0.4 0"
-            look_joint neck_1 = "0.2 0.2 0"
-            look_joint head_1 = "0.2 0.2 0"
-            /* = "ik_numLegs"
-            2 = "ik_footSize"
-            4 = "ik_waist"
-            hips = "ik_hip1"
-            R_femur = "ik_hip2"
-            L_femur = "ik_knee1"
-            R_knee = "ik_knee2"
-            L_knee = "ik_ankle1"
-            R_ankle = "ik_ankle2"
-            L_ankle = "ik_foot1"
-            R_ball = "ik_foot2"
-            L_ball = "*/"
-            snd_slash = "smarine_slash"
-            snd_punch = "smarine_punch"
-            snd_swing = "smarine_swing"
-            snd_gun = "smarine_gun"
-            snd_ready_weapon = "smarine_ready_weapon"
-            snd_weapon_fire = "smarine_gun"
-            lipsync_chatter_idle = "smarine_chatter"
-            lipsync_chatter_combat = "smarine_chatter_combat"
-            snd_footstep = "smarine_steps"
-            snd_footstep_sand = "smarine_steps_dirt"
-            snd_footstep_dirt = "smarine_steps_dirt"
-            snd_footstep_hollowmetal = "smarine_steps_hollow_metal"
-            snd_footstep_rock = "smarine_steps_dirt"
-            snd_pain = "smarine_pain"
-            snd_death = "smarine_die"
-            lipsync_sight = "smarine_alert"
-            snd_charge = "smarine_charge"
-            snd_breathe = "smarine_breathe"
-            snd_growl = "smarine_growl"
-            snd_grunt = "smarine_grunt"
-            snd_gear = "smarine_gear"
-            snd_weapon_slap = "smarine_weapon_slap"
-            snd_flesh = "bullet_impact_flesh"
-            sound_bone = "chest"
-            fx_blaster_muzzleflash = "effects/monsters/strogg_marine/blaster_m"
-             "flash.fx"
-            fx_swipe = "effects/monsters/grunt/swipe_attack.fx"
-            snd_burn_lightning = "effects_sparks02"
-            fx_burn_lightning = "effects/monsters/lightning_death.fx"
-            fx_burn_particles = "effects/monsters/teleport3.fx"
-            fx_burn_particles_chest = "effects/monsters/teleport4.fx"
-            fx_lcrawl = "effects/weapons/lightninggun/crawl.fx"
-            fx_fleshhit = "effects/weapons/machinegun/impact_flesh.fx"
-            fx_tpspark = "effects/levels/convoy/weld_sparks.fx"
-            fx_tpsteam = "effects/steam/steam_32_slow10.fx"
-            gib = "1"
-            fx_gib = "effects/monsters/gib.fx"
-            def_dropGibItem1 = "moveable_gib_head_pork"
-            dropGibItem1Joint = "head_1"
-            def_dropGibItem2 = "moveable_gib_torso_pork"
-            dropGibItem2Joint = "chest"
-            def_dropGibItem3 = "moveable_gib_rup_arm_pork"
-            dropGibItem3Joint = "rUpArm"
-            def_dropGibItem4 = "moveable_gib_left_waist_pork"
-            dropGibItem4Joint = "waist"
-            def_dropGibItem5 = "moveable_gib_lup_leg_pork"
-            dropGibItem5Joint = "l_femur"
-            def_dropGibItem6 = "moveable_gib_rup_leg_pork"
-            dropGibItem6Joint = "r_femur"
-            def_dropGibItem7 = "moveable_gib_rup2_leg_pork"
-            dropGibItem7Joint = "r_knee"
-            def_dropGibItem8 = "moveable_gib_pelvis_pork"
-            dropGibItem8Joint = "Hips"
-            sg_name = "Strogg Marine (Blaster)"
-            ;desc = "DO NOT USE - FOR INHERITANCE ONLY."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine:e =
-          {
-            inherit = "monster_strogg_marine_base"
-            model = "monster_strogg_marine_blaster"
-            minShots = "3"
-            maxShots = "8"
-            aggressiveRange = "300"
-            actionTimer_evade_rate = "0.75"
-            actionTimer_rangedAttack_rate = ".5"
-            action_rangedAttack = "1"
-            action_rangedAttack_anim = "range_attack1_loop"
-            action_rangedAttack_minRange = "64"
-            action_rangedAttack_maxRange = "800"
-            action_rangedAttack_blendFrames = "1"
-            action_rangedAttack_state = "Torso_RangedAttack"
-            action_rangedAttack_overrideLegs = "0"
-            action_evadeLeft = "1"
-            action_evadeLeft_anim2 = "evade_left_long"
-            action_evadeLeft_minRange = "120"
-            action_evadeLeft_noturn = "0"
-            action_evadeRight = "1"
-            action_evadeRight_anim2 = "evade_right_long"
-            action_evadeRight_minRange = "120"
-            action_evadeRight_noturn = "0"
-            action_meleeAttack = "1"
-            action_meleeAttack_maxRange = "72"
-            action_jumpBack = "1"
-            action_jumpBack_maxRange = "300"
-            action_jumpBack_noturn = "0"
-            action_strafe = "1"
-            action_strafe_anim = "evade_left"
-            action_strafe_anim2 = "evade_right"
-            action_strafe_minRange = "200"
-            action_strafe_maxRange = "800"
-            action_strafe_rate = "0.75"
-            action_strafe_chance = "0.5"
-            action_strafe_noturn = "0"
-            action_angry = "1"
-            action_angry_anim = "angry"
-            action_angry_minRange = "200"
-            action_angry_maxRange = "800"
-            action_angry_rate = "1"
-            snd_ready_weapon = "smarine_ready_blaster"
-            ;desc = "Blaster Strogg Marine."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          damage_strogg_marine_bullet:e =
-          {
-            inherit = "damage_bullet_base"
-            damage = "3"
-            ;desc = "Damage strogg marine bullet."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          hitscan_strogg_marine_bullet:e =
-          {
-            inherit = "hitscan_bullet_base"
-            def_damage = "damage_strogg_marine_bullet"
-            tracerchance = "1"
-            ;desc = "Hitscan strogg marine bullet."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine_mgun:e =
-          {
-            inherit = "monster_strogg_marine_base"
-            model = "monster_strogg_marine_mgun"
-            skin = "skins/monsters/strogg_marine/smv_machinegun"
-            minShots = "5"
-            maxShots = "25"
-            attackRange = "400 1000"
-            aggressiveRange = "400"
-            rangeAttackChance = "1"
-            actionTimer_evade_rate = "1"
-            actionTimer_rangedAttack_rate = "0.25"
-            action_rangedAttack = "1"
-            action_rangedAttack_anim = "range_attack1_loop"
-            action_rangedAttack_minRange = "64"
-            action_rangedAttack_maxRange = "1000"
-            action_rangedAttack_blendFrames = "1"
-            action_rangedAttack_state = "Torso_RangedAttack"
-            action_evadeLeft = "1"
-            action_evadeLeft_anim = "walk_left"
-            action_evadeLeft_minRange = "120"
-            action_evadeLeft_noturn = "0"
-            action_evadeRight = "1"
-            action_evadeRight_anim = "walk_right"
-            action_evadeRight_minRange = "120"
-            action_evadeRight_noturn = "0"
-            action_meleeAttack = "1"
-            action_meleeAttack_maxRange = "72"
-            action_meleeAttack_chance = ".5"
-            action_jumpBack = "1"
-            action_jumpBack_minRange = "0"
-            action_jumpBack_maxRange = "400"
-            action_jumpBack_anim = "jump_back"
-            action_jumpBack_noturn = "0"
-            action_strafe = "1"
-            action_strafe_anim = "run_left"
-            action_strafe_anim2 = "run_right"
-            action_strafe_minRange = "200"
-            action_strafe_maxRange = "800"
-            action_strafe_rate = "1"
-            action_strafe_chance = "0.25"
-            action_strafe_noturn = "0"
-            action_sprayAttack = "1"
-            action_sprayAttack_state = "Torso_SprayAttack"
-            action_sprayAttack_minRange = "200"
-            action_sprayAttack_maxRange = "800"
-            action_sprayAttack_rate = "2"
-            action_reload = "0"
-            action_reload_anim = "reload"
-            action_reload_minRange = "200"
-            action_reload_maxRange = "800"
-            action_reload_rate = "4"
-            action_reload_chance = "0.2"
-            def_attack_base = "hitscan_strogg_marine_bullet"
-            attack_base_hitscan = "1"
-            attack_base_accuracy = "2"
-            def_attack_jointDir = "hitscan_strogg_marine_bullet"
-            attack_jointDir_locktojoint = "1"
-            attack_jointDir_hitscan = "1"
-            attack_jointDir_accuracy = "0"
-            fx_blaster_muzzleflash = "effects/monsters/gunner/bullet_mflash.fx"
-            snd_weapon_fire = "smarine_machinegun"
-            snd_ready_weapon = "smarine_ready_mgun"
-            ;desc = "Machine Gunner Strogg Marine."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          damage_strogg_marine_shotgun:e =
-          {
-            inherit = "damage_bullet_base"
-            damage = "3"
-            ;desc = "Damage strogg marine shotgun."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          hitscan_strogg_marine_shotgun:e =
-          {
-            inherit = "hitscan_shotgun_base"
-            def_damage = "damage_strogg_marine_shotgun"
-            ;desc = "Hitscan strogg marine shotgun."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine_sgun:e =
-          {
-            inherit = "monster_strogg_marine_base"
-            model = "monster_strogg_marine_sgun"
-            skin = "skins/monsters/strogg_marine/smv_shotgun"
-            minShots = "1"
-            maxShots = "1"
-            actionTimer_rangedAttack_rate = "0.25"
-            attackRange = "0 400"
-            rangeAttackChanceInverse = "1"
-            action_rangedAttack = "1"
-            action_rangedAttack_anim = "shotgun_range_attack"
-            action_rangedAttack_minRange = "0"
-            action_rangedAttack_maxRange = "400"
-            action_rangedAttack_failrate = "0.5"
-            action_crouchRangedAttack = "1"
-            action_crouchRangedAttack_minRange = "200"
-            action_crouchRangedAttack_maxRange = "400"
-            action_crouchRangedAttack_anim = "shotgun_crouch_range_attack"
-            action_crouchRangedAttack_blendFrames = "1"
-            action_crouchRangedAttack_failRate = ".25"
-            action_strafe = "1"
-            action_strafe_anim = "shuffle_left"
-            action_strafe_anim2 = "shuffle_right"
-            action_strafe_minRange = "0"
-            action_strafe_maxRange = "600"
-            action_strafe_rate = "0.35"
-            action_strafe_failrate = "2"
-            action_strafe_noturn = "0"
-            action_evadeLeft = "1"
-            action_evadeLeft_minRange = "120"
-            action_evadeLeft_anim = "shuffle_left"
-            action_evadeLeft_noturn = "0"
-            action_evadeRight = "1"
-            action_evadeRight_minRange = "120"
-            action_evadeRight_anim = "shuffle_right"
-            action_evadeRight_noturn = "0"
-            action_leapAttack = "1"
-            action_leapAttack_rate = "0.5"
-            action_leapAttack_minRange = "100"
-            action_leapAttack_maxRange = "300"
-            action_leapAttack_anim = "ai_leap"
-            action_leapAttack_chance = "0.5"
-            action_rollAttack = "1"
-            action_rollAttack_rate = "0.25"
-            action_rollAttack_minRange = "150"
-            action_rollAttack_maxRange = "400"
-            action_rollAttack_anim = "dive_turn"
-            action_rollAttack_state = "Torso_RollAttack"
-            action_rollAttack_failRate = ".25"
-            action_rollAttack_noturn = "0"
-            action_rollAttack_nopain = "1"
-            action_jumpBack = "0"
-            action_meleeAttack = "1"
-            action_meleeAttack_maxRange = "72"
-            action_meleeAttack_chance = "0.25"
-            def_attack_base = "hitscan_strogg_marine_shotgun"
-            attack_base_count = "12"
-            attack_base_spread = "10"
-            attack_base_hitscan = "1"
-            attack_base_accuracy = "0"
-            attack_base_pullback = "8"
-            def_attack_jointDir = "hitscan_strogg_marine_shotgun"
-            attack_jointDir_locktojoint = "1"
-            attack_jointDir_count = "12"
-            attack_jointDir_spread = "10"
-            attack_jointDir_hitscan = "1"
-            attack_jointDir_accuracy = "0"
-            attack_jointDir_pullback = "8"
-            fx_blaster_muzzleflash = "effects/monsters/strogg_marine/shotgun_m"
-             "flash.fx"
-            snd_weapon_fire = "smarine_shotgun_fire"
-            ;desc = "Shotgun Strogg Marine."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine_convoy:e =
-          {
-            inherit = "monster_strogg_marine"
-            gib = "0"
-            bleed = "0"
-            burnaway = "2"
-            ;desc = "Monster strogg marine convoy."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine_mgun_convoy:e =
-          {
-            inherit = "monster_strogg_marine_mgun"
-            gib = "0"
-            bleed = "0"
-            burnaway = "2"
-            ;desc = "Monster strogg marine mgun convoy."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine_sgun_convoy:e =
-          {
-            inherit = "monster_strogg_marine_sgun"
-            gib = "0"
-            bleed = "0"
-            burnaway = "2"
-            ;desc = "Monster strogg marine sgun convoy."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine_long_distance:e =
-          {
-            inherit = "monster_strogg_marine"
-            action_rangedAttack_maxRange = "1800"
-            ;desc = "Monster strogg marine long distance."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine_mgun_long_distance:e =
-          {
-            inherit = "monster_strogg_marine_mgun"
-            action_rangedAttack_maxRange = "2400"
-            ;desc = "Monster strogg marine mgun long distance."
-            origin = "0 0 0"
-            angle = "360"
-          }
-          monster_strogg_marine_sgun_long_distance:e =
-          {
-            inherit = "monster_strogg_marine_sgun"
-            action_rangedAttack_maxRange = "800"
-            ;desc = "Monster strogg marine sgun long distance."
             origin = "0 0 0"
             angle = "360"
           }
@@ -31226,7 +30751,7 @@ QQRKSRC1
     }
     ammo_default:form =
     {
-      bbox = '-8 -8 0 8 8 16'
+      bbox = '-4 -4 -8 4 4 8'
       fx_respawn: =
       {
         Txt = "&"
@@ -31260,7 +30785,7 @@ QQRKSRC1
     }
     ammo_machinegun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -8 4 4 8'
       inherit: =
       {
         Txt = "&"
@@ -31304,7 +30829,7 @@ QQRKSRC1
     }
     ammo_machinegun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -6 8 8 6'
       inherit: =
       {
         Txt = "&"
@@ -31353,7 +30878,7 @@ QQRKSRC1
     }
     ammo_nailgun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -12 8 8 12'
       inherit: =
       {
         Txt = "&"
@@ -31402,7 +30927,7 @@ QQRKSRC1
     }
     ammo_nailgun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -31451,7 +30976,7 @@ QQRKSRC1
     }
     ammo_railgun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -8 -4 4 8 4'
       inherit: =
       {
         Txt = "&"
@@ -31495,7 +31020,7 @@ QQRKSRC1
     }
     ammo_railgun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -31544,7 +31069,7 @@ QQRKSRC1
     }
     ammo_shotgun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -8 -4 4 8 4'
       inherit: =
       {
         Txt = "&"
@@ -31588,7 +31113,7 @@ QQRKSRC1
     }
     ammo_shotgun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -31637,7 +31162,7 @@ QQRKSRC1
     }
     ammo_hyperblaster:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -31681,7 +31206,7 @@ QQRKSRC1
     }
     ammo_hyperblaster_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -31730,7 +31255,7 @@ QQRKSRC1
     }
     ammo_rocketlauncher:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -8 -8 12 8 8'
       inherit: =
       {
         Txt = "&"
@@ -31774,7 +31299,7 @@ QQRKSRC1
     }
     ammo_rocketlauncher_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -31823,7 +31348,7 @@ QQRKSRC1
     }
     ammo_grenadelauncher:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -31867,7 +31392,7 @@ QQRKSRC1
     }
     ammo_grenadelauncher_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -31916,7 +31441,7 @@ QQRKSRC1
     }
     ammo_lightninggun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-2 -2 -8 2 2 8'
       inherit: =
       {
         Txt = "&"
@@ -31965,7 +31490,7 @@ QQRKSRC1
     }
     ammo_lightninggun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -32019,7 +31544,7 @@ QQRKSRC1
     }
     ammo_dmg:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -12 8 8 12'
       inherit: =
       {
         Txt = "&"
@@ -32068,7 +31593,7 @@ QQRKSRC1
     }
     ammo_dmg_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -32122,7 +31647,7 @@ QQRKSRC1
     }
     ammo_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -8 4 4 8'
       spawnclass: =
       {
         Txt = "&"
@@ -32176,7 +31701,7 @@ QQRKSRC1
     }
     ammo_machinegun_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -8 4 4 8'
       inherit: =
       {
         Txt = "&"
@@ -32240,7 +31765,7 @@ QQRKSRC1
     }
     ammo_hyperblaster_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -32304,7 +31829,7 @@ QQRKSRC1
     }
     ammo_nailgun_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -32368,7 +31893,7 @@ QQRKSRC1
     }
     ammo_rocketlauncher_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -8 -8 12 8 8'
       inherit: =
       {
         Txt = "&"
@@ -32432,7 +31957,7 @@ QQRKSRC1
     }
     ammo_grenadelauncher_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -12 8 8 12'
       inherit: =
       {
         Txt = "&"
@@ -32496,7 +32021,7 @@ QQRKSRC1
     }
     ammo_railgun_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -8 -4 4 8 4'
       inherit: =
       {
         Txt = "&"
@@ -32560,7 +32085,7 @@ QQRKSRC1
     }
     ammo_shotgun_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -8 -4 4 8 4'
       inherit: =
       {
         Txt = "&"
@@ -32624,7 +32149,7 @@ QQRKSRC1
     }
     ammo_lightninggun_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-2 -2 -8 2 2 8'
       inherit: =
       {
         Txt = "&"
@@ -32688,7 +32213,7 @@ QQRKSRC1
     }
     ammo_dmg_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -12 8 8 12'
       inherit: =
       {
         Txt = "&"
@@ -32752,7 +32277,7 @@ QQRKSRC1
     }
     env_dead_chestwoundbody:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-32 -16 -16 32 16 16'
       spawnclass: =
       {
         Txt = "&"
@@ -32806,7 +32331,7 @@ QQRKSRC1
     }
     env_dead_d_arm:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-16 -4 -4 16 4 4'
       spawnclass: =
       {
         Txt = "&"
@@ -32845,7 +32370,7 @@ QQRKSRC1
     }
     env_dead_d_leg:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-16 -4 -4 16 4 4'
       spawnclass: =
       {
         Txt = "&"
@@ -32884,7 +32409,7 @@ QQRKSRC1
     }
     env_dead_d_leg_clean:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-6 -24 6 6 24 6'
       spawnclass: =
       {
         Txt = "&"
@@ -32953,7 +32478,7 @@ QQRKSRC1
     }
     env_dead_half:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-16 -16 16 16 16 16'
       spawnclass: =
       {
         Txt = "&"
@@ -33005,7 +32530,7 @@ QQRKSRC1
         Hint = ""
       }
     }
-    env_dead_head_half:form =
+    env_dead_head_half:form = // no class
     {
       bbox = '-16 -16 0 16 16 64'
       inherit: =
@@ -33034,7 +32559,7 @@ QQRKSRC1
         Hint = ""
       }
     }
-    env_dead_head_shot:form =
+    env_dead_head_shot:form = // no class
     {
       bbox = '-16 -16 0 16 16 64'
       inherit: =
@@ -33065,7 +32590,7 @@ QQRKSRC1
     }
     env_dead_no_arm:form =
     {
-      bbox = '-16 -16 0 16 16 16'
+      bbox = '-32 -16 -16 32 16 16'
       spawnclass: =
       {
         Txt = "&"
@@ -33119,7 +32644,7 @@ QQRKSRC1
     }
     env_dead_no_leg:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-32 -16 -16 32 16 16'
       spawnclass: =
       {
         Txt = "&"
@@ -33173,7 +32698,7 @@ QQRKSRC1
     }
     env_ragdoll_corpse_base:form =
     {
-      bbox = '-8 -8 -8 8 8 8'
+      bbox = '-32 -16 -16 32 16 16'
       spawnclass: =
       {
         Txt = "&"
@@ -33255,9 +32780,9 @@ QQRKSRC1
         Hint = ""
       }
     }
-    env_ragdoll_corpse_standard:form =
+    env_ragdoll_corpse_standard:form =  // blank model remove
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -32 -16 16 32 16'
       inherit: =
       {
         Txt = "&"
@@ -33281,7 +32806,7 @@ QQRKSRC1
     }
     env_ragdoll_corpse_squishy:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -32 -16 16 32 16'
       inherit: =
       {
         Txt = "&"
@@ -33305,7 +32830,7 @@ QQRKSRC1
     }
     env_ragdoll_corpse_rotten:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -32 -16 16 32 16'
       inherit: =
       {
         Txt = "&"
@@ -38722,7 +38247,7 @@ QQRKSRC1
     }
     env_heartpump:form =
     {
-      bbox = '-2 -2 -30 2 2 0'
+      bbox = '-204 -104 -0 204 104 128'
       spawnclass: =
       {
         Txt = "&"
@@ -39716,7 +39241,7 @@ QQRKSRC1
     }
     moveable_barrel_exploding1:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -39864,7 +39389,7 @@ QQRKSRC1
     }
     moveable_barrel_test:form =
     {
-      bbox = '-16 -16 0 16 16 48'
+      bbox = '-12 -12 -20 12 12 20'
       spawnclass: =
       {
         Txt = "&"
@@ -39933,7 +39458,7 @@ QQRKSRC1
     }
     moveable_barrel_test2:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -39992,7 +39517,7 @@ QQRKSRC1
     }
     foomable_barrel_tram:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -40041,7 +39566,7 @@ QQRKSRC1
     }
     foomable_barrel_red_stroyent:form =
     {
-      bbox = '-16 -16 0 16 16 48'
+      bbox = '-16 -16 -24 16 16 24'
       inherit: =
       {
         Txt = "&"
@@ -40125,7 +39650,7 @@ QQRKSRC1
     }
     foomable_barrel_red_stroyent_launch:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       inherit: =
       {
         Txt = "&"
@@ -40632,7 +40157,7 @@ QQRKSRC1
     }
     damage_exploding_barrel_small:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       damage: =
       {
         Txt = "&"
@@ -40661,7 +40186,7 @@ QQRKSRC1
     }
     debris_exploding_barrel_small_top:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -2 12 12 2'
       model: =
       {
         Txt = "&"
@@ -40715,7 +40240,7 @@ QQRKSRC1
     }
     exploding_barrel_small_burn:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       fx_impact: =
       {
         Txt = "&"
@@ -40739,7 +40264,7 @@ QQRKSRC1
     }
     exploding_barrel_small_ignite:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       fx_loop: =
       {
         Txt = "&"
@@ -40773,7 +40298,7 @@ QQRKSRC1
     }
     exploding_barrel_small_explode:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       def_splash_damage: =
       {
         Txt = "&"
@@ -40827,7 +40352,7 @@ QQRKSRC1
     }
     exploding_barrel_small:form =
     {
-      bbox = '-16 -16 0 16 16 48'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -40931,7 +40456,7 @@ QQRKSRC1
     }
     damage_sizzling_barrel_small:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       damage: =
       {
         Txt = "&"
@@ -40960,7 +40485,7 @@ QQRKSRC1
     }
     debris_sizzling_barrel_small_top:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -4 12 12 4'
       model: =
       {
         Txt = "&"
@@ -41014,7 +40539,7 @@ QQRKSRC1
     }
     sizzling_barrel_small_burn:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       fx_impact: =
       {
         Txt = "&"
@@ -41038,7 +40563,7 @@ QQRKSRC1
     }
     sizzling_barrel_small_ignite:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       fx_loop: =
       {
         Txt = "&"
@@ -41072,7 +40597,7 @@ QQRKSRC1
     }
     sizzling_barrel_small_explode:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       def_splash_damage: =
       {
         Txt = "&"
@@ -41126,7 +40651,7 @@ QQRKSRC1
     }
     sizzling_barrel_small:form =
     {
-      bbox = '-16 -16 0 16 16 48'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -41230,7 +40755,7 @@ QQRKSRC1
     }
     exploding_barrel_small_launch:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       fx_explode: =
       {
         Txt = "&"
@@ -41309,7 +40834,7 @@ QQRKSRC1
     }
     launching_barrel_small:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -41338,7 +40863,7 @@ QQRKSRC1
     }
     damage_exploding_barrel_large:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       damage: =
       {
         Txt = "&"
@@ -41367,7 +40892,7 @@ QQRKSRC1
     }
     debris_exploding_barrel_large_top:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -2 16 16 2'
       model: =
       {
         Txt = "&"
@@ -41421,7 +40946,7 @@ QQRKSRC1
     }
     exploding_barrel_large_burn:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       fx_impact: =
       {
         Txt = "&"
@@ -41445,7 +40970,7 @@ QQRKSRC1
     }
     exploding_barrel_large_ignite:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       fx_loop: =
       {
         Txt = "&"
@@ -41479,7 +41004,7 @@ QQRKSRC1
     }
     exploding_barrel_large_explode:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       def_splash_damage: =
       {
         Txt = "&"
@@ -41533,7 +41058,7 @@ QQRKSRC1
     }
     exploding_barrel_large:form =
     {
-      bbox = '-16 -16 0 16 16 48'
+      bbox = '-16 -16 -24 16 16 24'
       inherit: =
       {
         Txt = "&"
@@ -41617,7 +41142,7 @@ QQRKSRC1
     }
     damage_sizzling_barrel_large:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       damage: =
       {
         Txt = "&"
@@ -41646,7 +41171,7 @@ QQRKSRC1
     }
     debris_sizzling_barrel_large_top:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -2 16 16 2'
       model: =
       {
         Txt = "&"
@@ -41700,7 +41225,7 @@ QQRKSRC1
     }
     sizzling_barrel_large_burn:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       fx_impact: =
       {
         Txt = "&"
@@ -41724,7 +41249,7 @@ QQRKSRC1
     }
     sizzling_barrel_large_ignite:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       fx_loop: =
       {
         Txt = "&"
@@ -41758,7 +41283,7 @@ QQRKSRC1
     }
     sizzling_barrel_large_explode:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       def_splash_damage: =
       {
         Txt = "&"
@@ -41812,7 +41337,7 @@ QQRKSRC1
     }
     sizzling_barrel_large:form =
     {
-      bbox = '-16 -16 0 16 16 48'
+      bbox = '-16 -16 -24 16 16 24'
       inherit: =
       {
         Txt = "&"
@@ -41896,7 +41421,7 @@ QQRKSRC1
     }
     exploding_barrel_large_launch:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       fx_explode: =
       {
         Txt = "&"
@@ -41975,7 +41500,7 @@ QQRKSRC1
     }
     launching_barrel_large:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       inherit: =
       {
         Txt = "&"
@@ -43545,7 +43070,7 @@ QQRKSRC1
     }
     info_player_deathmatch:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-16 -16 -32 16 16 32'
       spawnclass: =
       {
         Txt = "&"
@@ -43564,7 +43089,7 @@ QQRKSRC1
     }
     info_player_start:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-16 -16 -32 16 16 32'
       spawnclass: =
       {
         Txt = "&"
@@ -43583,7 +43108,7 @@ QQRKSRC1
     }
     info_player_teleport:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-16 -16 -32 16 16 32'
       spawnclass: =
       {
         Txt = "&"
@@ -43641,7 +43166,7 @@ QQRKSRC1
     }
     info_player_team:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-16 -16 -32 16 16 32'
       spawnclass: =
       {
         Txt = "&"
@@ -43660,7 +43185,7 @@ QQRKSRC1
     }
     info_player_assault:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-16 -16 -32 16 16 32'
       spawnclass: =
       {
         Txt = "&"
@@ -43882,7 +43407,7 @@ QQRKSRC1
     }
     item_health:form =
     {
-      bbox = '-10 -10 0 10 10 16'
+      bbox = '-16 -16 16 16 16 16'
       inherit: =
       {
         Txt = "&"
@@ -44067,7 +43592,7 @@ QQRKSRC1
     }
     item_health_small:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-2 -4 -8 2 4 8'
       inherit: =
       {
         Txt = "&"
@@ -44223,7 +43748,7 @@ QQRKSRC1
     }
     item_health_mega:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-24 -24 -24 24 24 24'
       inherit: =
       {
         Txt = "&"
@@ -44282,7 +43807,7 @@ QQRKSRC1
     }
     item_armor:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-16 -12 -16 16 12 16'
       inherit: =
       {
         Txt = "&"
@@ -44331,7 +43856,7 @@ QQRKSRC1
     }
     item_armor_shard:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-2 -4 -8 2 4 8'
       inherit: =
       {
         Txt = "&"
@@ -44370,7 +43895,7 @@ QQRKSRC1
     }
     item_armor_small:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -12 -16 16 12 16'
       inherit: =
       {
         Txt = "&"
@@ -44399,7 +43924,7 @@ QQRKSRC1
     }
     item_armor_large:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -12 -16 16 12 16'
       inherit: =
       {
         Txt = "&"
@@ -44433,7 +43958,7 @@ QQRKSRC1
     }
     item_health_small_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -2 4 4 2'
       inherit: =
       {
         Txt = "&"
@@ -44497,7 +44022,7 @@ QQRKSRC1
     }
     item_armor_shard_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-2 -4 -8 2 4 8'
       inherit: =
       {
         Txt = "&"
@@ -44531,7 +44056,7 @@ QQRKSRC1
     }
     item_armor_small_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -12 -16 16 12 16'
       inherit: =
       {
         Txt = "&"
@@ -44565,7 +44090,7 @@ QQRKSRC1
     }
     item_armor_large_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -12 -16 16 12 16'
       inherit: =
       {
         Txt = "&"
@@ -44599,7 +44124,7 @@ QQRKSRC1
     }
     item_health_large_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -4 16 16 4'
       inherit: =
       {
         Txt = "&"
@@ -44663,7 +44188,7 @@ QQRKSRC1
     }
     item_armor_shard_moveable:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -8 -2 4 8 2'
       inherit: =
       {
         Txt = "&"
@@ -44727,7 +44252,7 @@ QQRKSRC1
     }
     item_armor_small_sp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -12 -16 16 12 16'
       inherit: =
       {
         Txt = "&"
@@ -44801,7 +44326,7 @@ QQRKSRC1
     }
     item_armor_small_sp_strogg:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -12 -16 16 12 16'
       inherit: =
       {
         Txt = "&"
@@ -44875,7 +44400,7 @@ QQRKSRC1
     }
     item_armor_large_sp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -12 -16 16 12 16'
       inherit: =
       {
         Txt = "&"
@@ -45262,7 +44787,7 @@ QQRKSRC1
     }
     info_tactical_feature:form =
     {
-      bbox = '-16 -16 0 16 16 72'
+      bbox = '-16 -16 -32 16 16 32'
       height: =
       {
         Txt = "&"
@@ -45536,7 +45061,7 @@ QQRKSRC1
     }
     moveable_explodingbarrel:form =
     {
-      bbox = '-16 -16 0 16 16 48'
+      bbox = '-12 -12 -20 12 12 20'
       spawnclass: =
       {
         Txt = "&"
@@ -45600,7 +45125,7 @@ QQRKSRC1
     }
     moveable_burningbarrel:form =
     {
-      bbox = '-16 -16 0 16 16 48'
+      bbox = '-8 -8 4 8 8 4'
       spawnclass: =
       {
         Txt = "&"
@@ -45689,7 +45214,7 @@ QQRKSRC1
     }
     moveable_explodingtank:form =
     {
-      bbox = '-8 -8 0 8 8 48'
+      bbox = '-8 -8 4 8 8 4'
       spawnclass: =
       {
         Txt = "&"
@@ -45763,7 +45288,7 @@ QQRKSRC1
     }
     moveable_burningtank:form =
     {
-      bbox = '-8 -8 0 8 8 48'
+      bbox = '-8 -8 4 8 8 4'
       spawnclass: =
       {
         Txt = "&"
@@ -45852,7 +45377,7 @@ QQRKSRC1
     }
     moveable_barrel_medium1a:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -45891,7 +45416,7 @@ QQRKSRC1
     }
     moveable_barrel_medium1b:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -45915,7 +45440,7 @@ QQRKSRC1
     }
     moveable_barrel_medium1c:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -45939,7 +45464,7 @@ QQRKSRC1
     }
     moveable_barrel_medium1d:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -45963,7 +45488,7 @@ QQRKSRC1
     }
     moveable_barrel_medium2a:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -16 12 12 16'
       inherit: =
       {
         Txt = "&"
@@ -46002,7 +45527,7 @@ QQRKSRC1
     }
     moveable_barrel_medium2b:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -46026,7 +45551,7 @@ QQRKSRC1
     }
     moveable_barrel_medium2c:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -46050,7 +45575,7 @@ QQRKSRC1
     }
     moveable_barrel_medium2d:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -46074,7 +45599,7 @@ QQRKSRC1
     }
     moveable_barrel_stroyenta:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       inherit: =
       {
         Txt = "&"
@@ -46113,7 +45638,7 @@ QQRKSRC1
     }
     moveable_barrel_stroyentb:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       inherit: =
       {
         Txt = "&"
@@ -46137,7 +45662,7 @@ QQRKSRC1
     }
     moveable_barrel_stroyentc:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       inherit: =
       {
         Txt = "&"
@@ -46205,7 +45730,7 @@ QQRKSRC1
     }
     moveable_crate1_medium:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-20 -20 -20 20 20 20'
       inherit: =
       {
         Txt = "&"
@@ -46249,7 +45774,7 @@ QQRKSRC1
     }
     moveable_crate1_tall:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -24 16 16 24'
       inherit: =
       {
         Txt = "&"
@@ -46293,7 +45818,7 @@ QQRKSRC1
     }
     moveable_crate_ammobox:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -12 -8 8 12 8'
       inherit: =
       {
         Txt = "&"
@@ -46337,7 +45862,7 @@ QQRKSRC1
     }
     moveable_crate_crate1:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -18 16 16 18'
       inherit: =
       {
         Txt = "&"
@@ -46381,7 +45906,7 @@ QQRKSRC1
     }
     moveable_crate_crate3:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-18 -16 -16 18 16 16'
       inherit: =
       {
         Txt = "&"
@@ -46601,7 +46126,7 @@ QQRKSRC1
     }
     moveable_pallet:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -46645,7 +46170,7 @@ QQRKSRC1
     }
     moveable_pallet_96:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -46806,7 +46331,7 @@ QQRKSRC1
     }
     moveable_machine_4:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -12 -12 8 12 12'
       inherit: =
       {
         Txt = "&"
@@ -46962,7 +46487,7 @@ QQRKSRC1
     }
     moveable_machine_11:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47001,7 +46526,7 @@ QQRKSRC1
     }
     moveable_bonesaw:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47045,7 +46570,7 @@ QQRKSRC1
     }
     moveable_pod:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-96 -88 -32 96 88 32'
       inherit: =
       {
         Txt = "&"
@@ -47104,7 +46629,7 @@ QQRKSRC1
     }
     moveable_podDoor_1:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-40 -24 -4 40 24 4'
       inherit: =
       {
         Txt = "&"
@@ -47163,7 +46688,7 @@ QQRKSRC1
     }
     moveable_podDoor_1a:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47222,7 +46747,7 @@ QQRKSRC1
     }
     moveable_podDoor_2:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47281,7 +46806,7 @@ QQRKSRC1
     }
     moveable_machine_chunk1:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -28 -32 12 28 32'
       inherit: =
       {
         Txt = "&"
@@ -47340,7 +46865,7 @@ QQRKSRC1
     }
     moveable_machine_chunk2:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47685,7 +47210,7 @@ QQRKSRC1
     }
     moveable_gib_head_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -4 4 4 4'
       inherit: =
       {
         Txt = "&"
@@ -47709,7 +47234,7 @@ QQRKSRC1
     }
     moveable_gib_torso_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47733,7 +47258,7 @@ QQRKSRC1
     }
     moveable_gib_rup_arm_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -4 4 4 4'
       inherit: =
       {
         Txt = "&"
@@ -47757,7 +47282,7 @@ QQRKSRC1
     }
     moveable_gib_left_waist_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -4 4 4 4'
       inherit: =
       {
         Txt = "&"
@@ -47781,7 +47306,7 @@ QQRKSRC1
     }
     moveable_gib_lup_leg_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -8 4 4 8'
       inherit: =
       {
         Txt = "&"
@@ -47805,7 +47330,7 @@ QQRKSRC1
     }
     moveable_gib_rup_leg_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -4 4 4 4'
       inherit: =
       {
         Txt = "&"
@@ -47829,7 +47354,7 @@ QQRKSRC1
     }
     moveable_gib_rup2_leg_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -4 4 4 4'
       inherit: =
       {
         Txt = "&"
@@ -47853,7 +47378,7 @@ QQRKSRC1
     }
     moveable_gib_pelvis_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47877,7 +47402,7 @@ QQRKSRC1
     }
     moveable_gib_skull:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47906,7 +47431,7 @@ QQRKSRC1
     }
     moveable_gib_big_head_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47930,7 +47455,7 @@ QQRKSRC1
     }
     moveable_gib_big_torso_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47954,7 +47479,7 @@ QQRKSRC1
     }
     moveable_gib_big_rup_arm_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -47978,7 +47503,7 @@ QQRKSRC1
     }
     moveable_gib_big_left_waist_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -48002,7 +47527,7 @@ QQRKSRC1
     }
     moveable_gib_big_lup_leg_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -48026,7 +47551,7 @@ QQRKSRC1
     }
     moveable_gib_big_rup_leg_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -48050,7 +47575,7 @@ QQRKSRC1
     }
     moveable_gib_big_rup2_leg_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -48074,7 +47599,7 @@ QQRKSRC1
     }
     moveable_gib_big_pelvis_pork:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -48098,7 +47623,7 @@ QQRKSRC1
     }
     moveable_marine_helmet:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-6 -6 -6 6 6 6'
       inherit: =
       {
         Txt = "&"
@@ -48142,7 +47667,7 @@ QQRKSRC1
     }
     moveable_marine_helmet_shot:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -48166,7 +47691,7 @@ QQRKSRC1
     }
     moveable_marine_aircannister:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-6 -6 -16 6 6 16'
       inherit: =
       {
         Txt = "&"
@@ -48210,7 +47735,7 @@ QQRKSRC1
     }
     moveable_marine_binder4:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -48254,7 +47779,7 @@ QQRKSRC1
     }
     moveable_marine_fireext:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-2 -2 -8 2 2 8'
       inherit: =
       {
         Txt = "&"
@@ -48298,7 +47823,7 @@ QQRKSRC1
     }
     moveable_convoy_bigjunk1:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-192 -128 -88 192 128 88'
       inherit: =
       {
         Txt = "&"
@@ -48342,7 +47867,7 @@ QQRKSRC1
     }
     moveable_door_l_medlabs:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -20 -48 4 20 48'
       inherit: =
       {
         Txt = "&"
@@ -48381,7 +47906,7 @@ QQRKSRC1
     }
     moveable_convoy_roadpanel:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -48430,7 +47955,7 @@ QQRKSRC1
     }
     moveable_crate_strogg3_64:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-24 -24 -28 24 24 28'
       inherit: =
       {
         Txt = "&"
@@ -48474,7 +47999,7 @@ QQRKSRC1
     }
     moveable_crate_strogg3_48:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-12 -12 -20 12 12 20'
       inherit: =
       {
         Txt = "&"
@@ -48518,7 +48043,7 @@ QQRKSRC1
     }
     moveable_strogg_pallet_64:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-28 -24 -4 28 24 4'
       inherit: =
       {
         Txt = "&"
@@ -48562,7 +48087,7 @@ QQRKSRC1
     }
     mp_ctf_flag:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       spawnclass: =
       {
         Txt = "&"
@@ -48601,7 +48126,7 @@ QQRKSRC1
     }
     mp_ctf_marine_flag:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -48655,7 +48180,7 @@ QQRKSRC1
     }
     mp_ctf_strogg_flag:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -48709,7 +48234,7 @@ QQRKSRC1
     }
     mp_ctf_one_flag:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -48753,7 +48278,7 @@ QQRKSRC1
     }
     mp_ctf_flag_pole:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -4 -32 4 4 32'
       model: =
       {
         Txt = "&"
@@ -48787,7 +48312,7 @@ QQRKSRC1
     }
     mp_ctf_flag_world:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       model: =
       {
         Txt = "&"
@@ -48821,7 +48346,7 @@ QQRKSRC1
     }
     mp_ctf_marine_flag_world:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -48845,7 +48370,7 @@ QQRKSRC1
     }
     mp_ctf_strogg_flag_world:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -48869,7 +48394,7 @@ QQRKSRC1
     }
     mp_ctf_assaultpoint:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -48898,7 +48423,7 @@ QQRKSRC1
     }
     env_heartpump_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-204 -104 -0 204 104 128'
       inherit: =
       {
         Txt = "&"
@@ -53330,7 +52855,7 @@ QQRKSRC1
     }
     env_ragdoll_marine:form =
     {
-      bbox = '-8 -8 -8 8 8 8'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -53477,7 +53002,7 @@ QQRKSRC1
     }
     env_ragdoll_marine_fullgear:form =
     {
-      bbox = '-8 -8 -8 8 8 8'
+      bbox = '-16 -16 -32 16 16 32'
       spawnclass: =
       {
         Txt = "&"
@@ -53576,7 +53101,7 @@ QQRKSRC1
     }
     env_ragdoll_marine_meathook:form =
     {
-      bbox = '-8 -8 -8 8 8 8'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -53635,7 +53160,7 @@ QQRKSRC1
     }
     env_ragdoll_marine_conveyor:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -53659,7 +53184,7 @@ QQRKSRC1
     }
     env_ragdoll_marine_renner:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -53732,7 +53257,7 @@ QQRKSRC1
     }
     env_ragdoll_strogg_marine:form =
     {
-      bbox = '-16 -16 0 16 16 80'
+      bbox = '-16 -16 -32 16 16 32'
       spawnclass: =
       {
         Txt = "&"
@@ -53766,7 +53291,7 @@ QQRKSRC1
     }
     env_ragdoll_marine_medic:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -53795,7 +53320,7 @@ QQRKSRC1
     }
     env_ragdoll_marine_tech:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -53888,7 +53413,7 @@ QQRKSRC1
     }
     react_Terminal_BCover_Sm01:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -53972,7 +53497,7 @@ QQRKSRC1
     }
     react_Terminal_BCover_Lrg01:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -57103,7 +56628,7 @@ QQRKSRC1
     }
     char_doctor:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -57186,7 +56711,7 @@ QQRKSRC1
     }
     char_kane_strogg:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       def_head: =
       {
         Txt = "&"
@@ -57729,7 +57254,7 @@ QQRKSRC1
     }
     char_marine_base:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit1: =
       {
         Txt = "&"
@@ -58158,7 +57683,7 @@ QQRKSRC1
     }
     char_marine_combat:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit2: =
       {
         Txt = "&"
@@ -58217,7 +57742,7 @@ QQRKSRC1
     }
     char_marine_unarmed:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -58281,7 +57806,7 @@ QQRKSRC1
     }
     char_marine:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -58448,7 +57973,7 @@ QQRKSRC1
     }
     char_marine_shotgun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -58705,7 +58230,7 @@ QQRKSRC1
     }
     char_marine_hyperblaster:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -58804,7 +58329,7 @@ QQRKSRC1
     }
     char_marine_choppable:form =
     {
-      bbox = '-32 -32 0 32 32 32'
+      bbox = '-16 -16 -32 16 16 32'
       model: =
       {
         Txt = "&"
@@ -58948,7 +58473,7 @@ QQRKSRC1
     }
     char_marine_arm_left:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -58982,7 +58507,7 @@ QQRKSRC1
     }
     char_marine_arm_right:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -59016,7 +58541,7 @@ QQRKSRC1
     }
     char_marine_leg_left:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-6 -24 6 6 24 6'
       spawnclass: =
       {
         Txt = "&"
@@ -59040,7 +58565,7 @@ QQRKSRC1
     }
     char_marine_leg_left:form =
     {
-      bbox = '-16 -16 0 16 16 64'
+      bbox = '-6 -24 6 6 24 6'
       spawnclass: =
       {
         Txt = "&"
@@ -59074,7 +58599,7 @@ QQRKSRC1
     }
     char_marine_leg_right:form =
     {
-      bbox = '-32 -32 0 32 32 16'
+      bbox = '-6 -24 6 6 24 6'
       spawnclass: =
       {
         Txt = "&"
@@ -59147,7 +58672,7 @@ QQRKSRC1
     }
     char_marine_fatigues:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit1: =
       {
         Txt = "&"
@@ -59601,7 +59126,7 @@ QQRKSRC1
     }
     medic_vaccinegun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-4 -8 -4 4 8 4'
       spawnclass: =
       {
         Txt = "&"
@@ -59819,7 +59344,7 @@ QQRKSRC1
     }
     char_marine_medic:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit1: =
       {
         Txt = "&"
@@ -59853,7 +59378,7 @@ QQRKSRC1
     }
     char_marine_medic_armed:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit1: =
       {
         Txt = "&"
@@ -62551,7 +62076,7 @@ QQRKSRC1
     }
     monster_berserker:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -63744,7 +63269,7 @@ QQRKSRC1
     }
     monster_bossbuddy:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-32 -32 -64 32 32 64'
       inherit: =
       {
         Txt = "&"
@@ -64396,7 +63921,7 @@ QQRKSRC1
     }
     monster_convoy_ground:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-64 -64 -64 64 64 64'
       inherit: =
       {
         Txt = "&"
@@ -65299,7 +64824,7 @@ QQRKSRC1
     }
     monster_failed_transfer:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -66698,7 +66223,7 @@ QQRKSRC1
     }
     monster_gladiator:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-24 -24 -48 24 24 48'
       inherit: =
       {
         Txt = "&"
@@ -67282,7 +66807,7 @@ QQRKSRC1
     }
     monster_gladiator_shield:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -24 -2 16 24 2'
       spawnclass: =
       {
         Txt = "&"
@@ -67556,7 +67081,7 @@ QQRKSRC1
     }
     monster_grunt:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-20 -20 -40 20 20 40'
       inherit: =
       {
         Txt = "&"
@@ -68686,7 +68211,7 @@ QQRKSRC1
     }
     monster_gunner:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-20 -20 -40 20 20 40'
       inherit: =
       {
         Txt = "&"
@@ -69250,7 +68775,7 @@ QQRKSRC1
     }
     monster_gunner_grenade_only:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-20 -20 -40 20 20 40'
       inherit: =
       {
         Txt = "&"
@@ -69279,7 +68804,7 @@ QQRKSRC1
     }
     monster_gunner_long_distance:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-20 -20 -40 20 20 40'
       inherit: =
       {
         Txt = "&"
@@ -69313,7 +68838,7 @@ QQRKSRC1
     }
     monster_harvester:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-192 -128 -96 192 128 96'
       inherit: =
       {
         Txt = "&"
@@ -69685,7 +69210,7 @@ QQRKSRC1
     }
     monster_harvester_combat:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-192 -128 -96 192 128 96'
       inherit: =
       {
         Txt = "&"
@@ -72287,7 +71812,7 @@ QQRKSRC1
     }
     monster_hh_tank:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-20 -20 -20 20 20 20'
       inherit: =
       {
         Txt = "&"
@@ -72791,7 +72316,7 @@ QQRKSRC1
     }
     monster_big_hh_tank:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-20 -20 -20 20 20 20'
       inherit: =
       {
         Txt = "&"
@@ -72865,7 +72390,7 @@ QQRKSRC1
     }
     monster_big_hh_tank_convoy:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-20 -20 -20 20 20 20'
       inherit: =
       {
         Txt = "&"
@@ -72904,7 +72429,7 @@ QQRKSRC1
     }
     monster_big_hh_tank_convoy2:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-20 -20 -20 20 20 20'
       inherit: =
       {
         Txt = "&"
@@ -73178,7 +72703,7 @@ QQRKSRC1
     }
     monster_iron_maiden:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -74008,7 +73533,7 @@ QQRKSRC1
     }
     monster_lt_tank:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-28 -28 -56 28 28 56'
       inherit: =
       {
         Txt = "&"
@@ -75134,7 +74659,7 @@ QQRKSRC1
     }
     monster_makron:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-104 -104 -104 104 104 104'
       inherit: =
       {
         Txt = "&"
@@ -75918,7 +75443,7 @@ QQRKSRC1
     }
     monster_makron_legs:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-104 -104 -62 104 104 62'
       inherit: =
       {
         Txt = "&"
@@ -75977,7 +75502,7 @@ QQRKSRC1
     }
     monster_makron_jr:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-104 -104 -104 104 104 104'
       inherit: =
       {
         Txt = "&"
@@ -76296,7 +75821,7 @@ QQRKSRC1
     }
     monster_bb_makron:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-104 -104 -104 104 104 104'
       inherit: =
       {
         Txt = "&"
@@ -76937,7 +76462,7 @@ QQRKSRC1
     }
     monster_network_guardian:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-104 -104 -208 104 104 208'
       inherit: =
       {
         Txt = "&"
@@ -77511,7 +77036,7 @@ QQRKSRC1
     }
     monster_network_guardian_process:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-104 -104 -208 104 104 208'
       inherit: =
       {
         Txt = "&"
@@ -78693,7 +78218,7 @@ QQRKSRC1
     }
     monster_sentry:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -79412,7 +78937,7 @@ QQRKSRC1
     }
     monster_slimy_transfer:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -79987,7 +79512,7 @@ QQRKSRC1
     }
     monster_stream_protector:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-124 -124 -93 124 124 93'
       inherit: =
       {
         Txt = "&"
@@ -81941,7 +81466,7 @@ QQRKSRC1
     }
     monster_strogg_hover:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-64 -64 -112 64 64 112'
       inherit: =
       {
         Txt = "&"
@@ -82661,7 +82186,7 @@ QQRKSRC1
     }
     monster_strogg_hover_weak:form =
     {
-      bbox = '-64 -64 -64 64 64 64'
+      bbox = '-64 -64 -112 64 64 112'
       inherit: =
       {
         Txt = "&"
@@ -83031,7 +82556,7 @@ QQRKSRC1
     }
     monster_strogg_marine_base:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -83560,7 +83085,7 @@ QQRKSRC1
     }
     monster_strogg_marine:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -83832,7 +83357,7 @@ QQRKSRC1
     }
     monster_strogg_marine_mgun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -84199,7 +83724,7 @@ QQRKSRC1
     }
     monster_strogg_marine_sgun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -84558,7 +84083,7 @@ QQRKSRC1
     }
     monster_strogg_marine_convoy:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -84592,7 +84117,7 @@ QQRKSRC1
     }
     monster_strogg_marine_mgun_convoy:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -84626,7 +84151,7 @@ QQRKSRC1
     }
     monster_strogg_marine_sgun_convoy:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -84660,7 +84185,7 @@ QQRKSRC1
     }
     monster_strogg_marine_long_distance:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -84684,7 +84209,7 @@ QQRKSRC1
     }
     monster_strogg_marine_mgun_long_distance:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -84708,1854 +84233,7 @@ QQRKSRC1
     }
     monster_strogg_marine_sgun_long_distance:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    damage_strogg_marine_blaster:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      damage: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    projectile_strogg_marine_blaster:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_damage: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      velocity: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_fly: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_impact: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_fly: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    melee_strogg_marine_left:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      damage: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      kickDir: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      kick_time: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      kick_amplitude: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      knockback: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_hit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_miss: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    melee_strogg_marine_right:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      kickDir: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine_base:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      spawnclass: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fov: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      painThreshold: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      pain_threshold: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      model: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      ragdoll: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      use_aas: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      directionalMovement: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      walkRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      joint_eyeOffset: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      joint_chestOffset: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      chatter_idle_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      chatter_combat_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      health: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attackRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      melee_range: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      maxLostVisTime: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      tactical_ranged: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      tactical_rush: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      tactical_cover: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      tactical_hide: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_attack_base: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_base_accuracy: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_attack_jointDir: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_locktojoint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_accuracy: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_attack_melee_left: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_attack_melee_right: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      damage_zone head: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      damage_zone guts: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      damage_scale head: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      look_joint waist: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      look_joint chest: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      look_joint shoulders: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      look_joint rElbo: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      look_joint neck_1: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      look_joint head_1: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      /*: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      2: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      4: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      hips: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      R_femur: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      L_femur: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      R_knee: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      L_knee: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      R_ankle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      L_ankle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      R_ball: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      L_ball: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_slash: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_punch: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_swing: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_gun: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_ready_weapon: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_weapon_fire: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      lipsync_chatter_idle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      lipsync_chatter_combat: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_footstep: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_footstep_sand: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_footstep_dirt: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_footstep_hollowmetal: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_footstep_rock: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_pain: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_death: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      lipsync_sight: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_charge: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_breathe: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_growl: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_grunt: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_gear: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_weapon_slap: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_flesh: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      sound_bone: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_blaster_muzzleflash: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_swipe: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_burn_lightning: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_burn_lightning: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_burn_particles: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_burn_particles_chest: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_lcrawl: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_fleshhit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_tpspark: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_tpsteam: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      gib: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_gib: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_dropGibItem1: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      dropGibItem1Joint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_dropGibItem2: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      dropGibItem2Joint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_dropGibItem3: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      dropGibItem3Joint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_dropGibItem4: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      dropGibItem4Joint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_dropGibItem5: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      dropGibItem5Joint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_dropGibItem6: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      dropGibItem6Joint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_dropGibItem7: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      dropGibItem7Joint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_dropGibItem8: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      dropGibItem8Joint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      sg_name: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      model: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      minShots: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      maxShots: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      aggressiveRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      actionTimer_evade_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      actionTimer_rangedAttack_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_blendFrames: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_state: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_overrideLegs: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft_anim2: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight_anim2: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_meleeAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_meleeAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_jumpBack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_jumpBack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_jumpBack_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_anim2: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_chance: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_angry: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_angry_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_angry_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_angry_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_angry_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_ready_weapon: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    damage_strogg_marine_bullet:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      damage: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    hitscan_strogg_marine_bullet:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_damage: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      tracerchance: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine_mgun:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      model: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      skin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      minShots: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      maxShots: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attackRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      aggressiveRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      rangeAttackChance: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      actionTimer_evade_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      actionTimer_rangedAttack_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_blendFrames: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_state: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_meleeAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_meleeAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_meleeAttack_chance: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_jumpBack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_jumpBack_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_jumpBack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_jumpBack_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_jumpBack_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_anim2: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_chance: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_sprayAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_sprayAttack_state: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_sprayAttack_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_sprayAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_sprayAttack_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_reload: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_reload_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_reload_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_reload_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_reload_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_reload_chance: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_attack_base: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_base_hitscan: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_base_accuracy: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_attack_jointDir: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_locktojoint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_hitscan: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_accuracy: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_blaster_muzzleflash: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_weapon_fire: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_ready_weapon: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    damage_strogg_marine_shotgun:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      damage: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    hitscan_strogg_marine_shotgun:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_damage: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine_sgun:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      model: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      skin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      minShots: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      maxShots: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      actionTimer_rangedAttack_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attackRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      rangeAttackChanceInverse: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_failrate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_crouchRangedAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_crouchRangedAttack_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_crouchRangedAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_crouchRangedAttack_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_crouchRangedAttack_blendFrames: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_crouchRangedAttack_failRate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_anim2: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_failrate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_strafe_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeLeft_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_evadeRight_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_leapAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_leapAttack_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_leapAttack_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_leapAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_leapAttack_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_leapAttack_chance: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rollAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rollAttack_rate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rollAttack_minRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rollAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rollAttack_anim: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rollAttack_state: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rollAttack_failRate: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rollAttack_noturn: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rollAttack_nopain: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_jumpBack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_meleeAttack: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_meleeAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_meleeAttack_chance: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_attack_base: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_base_count: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_base_spread: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_base_hitscan: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_base_accuracy: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_base_pullback: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      def_attack_jointDir: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_locktojoint: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_count: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_spread: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_hitscan: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_accuracy: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      attack_jointDir_pullback: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      fx_blaster_muzzleflash: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      snd_weapon_fire: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine_convoy:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      gib: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      bleed: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      burnaway: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine_mgun_convoy:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      gib: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      bleed: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      burnaway: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine_sgun_convoy:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      gib: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      bleed: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      burnaway: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine_long_distance:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine_mgun_long_distance:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
-      inherit: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      action_rangedAttack_maxRange: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      origin: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      angle: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-    }
-    monster_strogg_marine_sgun_long_distance:form =
-    {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -86603,7 +84281,7 @@ QQRKSRC1
     }
     monster_tactical_base:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit1: =
       {
         Txt = "&"
@@ -87100,7 +84778,7 @@ QQRKSRC1
     }
     monster_tactical:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -87327,7 +85005,7 @@ QQRKSRC1
     }
     monster_tactical_mgun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -87534,7 +85212,7 @@ QQRKSRC1
     }
     monster_tactical_blaster:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -87731,7 +85409,7 @@ QQRKSRC1
     }
     monster_tactical_railgun:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -87855,7 +85533,7 @@ QQRKSRC1
     }
     monster_tactical_unarmed:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -32 16 16 32'
       inherit: =
       {
         Txt = "&"
@@ -88280,7 +85958,7 @@ QQRKSRC1
     }
     monster_teleport_dropper:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-28 -28 -56 28 28 56'
       inherit: =
       {
         Txt = "&"
@@ -88726,7 +86404,7 @@ QQRKSRC1
     }
     monster_turret:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-32 -32 -32 32 32 32'
       inherit: =
       {
         Txt = "&"
@@ -89095,7 +86773,7 @@ QQRKSRC1
     }
     monster_turret_bunker:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-32 -32 -64 32 32 64'
       inherit: =
       {
         Txt = "&"
@@ -89340,7 +87018,7 @@ QQRKSRC1
     }
     monster_turret_flying:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-64 -64 -64 64 64 64'
       inherit: =
       {
         Txt = "&"
@@ -89636,7 +87314,7 @@ QQRKSRC1
     }
     monster_turret_rocket:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-64 -64 -64 64 64 64'
       inherit: =
       {
         Txt = "&"
@@ -115360,7 +113038,7 @@ QQRKSRC1
     }
     weapon_blaster:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -116165,7 +113843,7 @@ QQRKSRC1
     }
     weapon_dmg:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -16 -8 8 16 8'
       spawnclass: =
       {
         Txt = "&"
@@ -116479,7 +114157,7 @@ QQRKSRC1
     }
     weapon_dmg_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -16 -8 8 16 8'
       inherit: =
       {
         Txt = "&"
@@ -117729,7 +115407,7 @@ QQRKSRC1
     }
     weapon_grenadelauncher:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -16 -8 8 16 8'
       spawnclass: =
       {
         Txt = "&"
@@ -118023,7 +115701,7 @@ QQRKSRC1
     }
     weapon_grenadelauncher_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -16 -8 8 16 8'
       inherit: =
       {
         Txt = "&"
@@ -118579,7 +116257,7 @@ QQRKSRC1
     }
     weapon_hyperblaster:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -16 -8 8 16 8'
       spawnclass: =
       {
         Txt = "&"
@@ -118928,7 +116606,7 @@ QQRKSRC1
     }
     weapon_hyperblaster_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -16 -8 8 16 8'
       inherit: =
       {
         Txt = "&"
@@ -119085,7 +116763,7 @@ QQRKSRC1
     }
     weaponmod_hyperblaster_bounce1:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -119139,7 +116817,7 @@ QQRKSRC1
     }
     weaponmod_hyperblaster_bounce2:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -119515,7 +117193,7 @@ QQRKSRC1
     }
     weapon_lightninggun:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -16 -8 8 16 8'
       spawnclass: =
       {
         Txt = "&"
@@ -119933,7 +117611,7 @@ QQRKSRC1
     }
     weapon_lightninggun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -16 -8 8 16 8'
       inherit: =
       {
         Txt = "&"
@@ -120036,7 +117714,7 @@ QQRKSRC1
     }
     weaponmod_lightninggun_chain:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -120299,7 +117977,7 @@ QQRKSRC1
     }
     weapon_machinegun:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -16 -8 8 16 8'
       spawnclass: =
       {
         Txt = "&"
@@ -120728,7 +118406,7 @@ QQRKSRC1
     }
     weapon_machinegun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -16 -8 8 16 8'
       inherit: =
       {
         Txt = "&"
@@ -120949,7 +118627,7 @@ QQRKSRC1
     }
     weaponmod_machinegun_ammo:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -121536,7 +119214,7 @@ QQRKSRC1
     }
     weapon_nailgun:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -16 -8 8 16 8'
       spawnclass: =
       {
         Txt = "&"
@@ -121940,7 +119618,7 @@ QQRKSRC1
     }
     weapon_nailgun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -16 -8 8 16 8'
       inherit: =
       {
         Txt = "&"
@@ -122206,7 +119884,7 @@ QQRKSRC1
     }
     weaponmod_nailgun_power:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -122260,7 +119938,7 @@ QQRKSRC1
     }
     weaponmod_nailgun_seek:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -122314,7 +119992,7 @@ QQRKSRC1
     }
     weaponmod_nailgun_rof:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -122333,7 +120011,7 @@ QQRKSRC1
     }
     weaponmod_nailgun_ammo:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -8 -8 8 8 8'
       inherit: =
       {
         Txt = "&"
@@ -122804,7 +120482,7 @@ QQRKSRC1
     }
     weapon_railgun:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -16 -8 8 16 8'
       spawnclass: =
       {
         Txt = "&"
@@ -123183,7 +120861,7 @@ QQRKSRC1
     }
     weapon_railgun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -16 -8 8 16 8'
       inherit: =
       {
         Txt = "&"
@@ -123350,7 +121028,7 @@ QQRKSRC1
     }
     weaponmod_railgun_penetrate:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -123856,7 +121534,7 @@ QQRKSRC1
     }
     weapon_rocketlauncher:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -16 -8 8 16 8'
       spawnclass: =
       {
         Txt = "&"
@@ -124209,7 +121887,7 @@ QQRKSRC1
     }
     weapon_rocketlauncher_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -16 -8 8 16 8'
       inherit: =
       {
         Txt = "&"
@@ -124401,7 +122079,7 @@ QQRKSRC1
     }
     weaponmod_rocketlauncher_burst:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -124445,7 +122123,7 @@ QQRKSRC1
     }
     weaponmod_rocketlauncher_homing:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
@@ -124955,7 +122633,7 @@ QQRKSRC1
     }
     weapon_shotgun:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -16 -8 8 16 8'
       spawnclass: =
       {
         Txt = "&"
@@ -125294,7 +122972,7 @@ QQRKSRC1
     }
     weapon_shotgun_mp:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-8 -16 -8 8 16 8'
       inherit: =
       {
         Txt = "&"
@@ -125476,7 +123154,7 @@ QQRKSRC1
     }
     weaponmod_shotgun_ammo:form =
     {
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-8 -8 -8 8 8 8'
       spawnclass: =
       {
         Txt = "&"
