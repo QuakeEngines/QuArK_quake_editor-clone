@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2005/10/15 01:00:24  cdunde
+//To reinstate headers and history
+//
 //Revision 1.2  2004/12/27 06:26:54  rowdy
 //minor enhancements to Doom 3 support - fixed the ceiling texture in the default room, re-added textures/common/* (to make some activities slightly easier), improved Doom3 menu to allow exporting .map files
 //
@@ -168,10 +171,11 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&DMAP (.bsp file creation)"
-      Pause = "1"
-      BuildPgm1 = "1"
+      Txt = "&DMAP (.proc file creation)"
+ //     Pause = "1"
       ExportMapFile = "1"
+ //     BuildPgm1 = "1"
+      RunGame = "1"
     }
     //item: =
     //{
