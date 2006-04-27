@@ -101,8 +101,8 @@ end;
 {------------------------}
 
 function D3Material.DefaultImage: QPixelSet;
-const
- EditorImageSpec = 'qer_editorimage';
+//const
+// EditorImageSpec = 'qer_editorimage';
 var
  Q: QObject;
  I: Integer;
@@ -122,12 +122,27 @@ begin
   4. Shader Missing Texture texture
   }
 
-  if Specifics.Values['q']<>'' then
-   { look at the q specific (QTextureLnk.LoadPixelSet) }
-    S:=Specifics.Values['q']
-  else
-   { looks for 'qer_editorimage' }
-    S:=Specifics.Values[EditorImageSpec];
+ if Specifics.Values['q']<>'' then
+        // look at the q specific (QTextureLnk.LoadPixelSet)
+         S:=Specifics.Values['q']
+ else
+ if Specifics.Values['map']<>'' then
+   S:=Specifics.Values['map']
+ else
+ // { looks for 'qer_editorimage' }  // ORG code
+ // S:=Specifics.Values[EditorImageSpec];  // ORG code
+ if Specifics.Values['diffusemap']<>'' then
+   S:=Specifics.Values['diffusemap']
+ else
+ if Specifics.Values['qer_editorimage']<>'' then
+   S:=Specifics.Values['qer_editorimage']
+ else
+ if Specifics.Values['specularmap']<>'' then
+   S:=Specifics.Values['specularmap']
+ else
+ if Specifics.Values['bumpmap']<>'' then
+   S:=Specifics.Values['bumpmap'];
+
  if S<>'' then
  begin
    try
@@ -373,7 +388,7 @@ var
  Source, NextStep: PChar;
  Material: D3Material;
  Stage: D3MaterialStage;
- I, LineNumber: Integer;
+ I, LineNumber, counter: Integer;
  SectionComment, Comment: Boolean;
  V: array[1..2] of Single;
  masked: boolean; { Mohaa (tiglari): I'm guessing that this means that some
@@ -431,7 +446,7 @@ var
    P1:=Source;
    while not (Source^ in [' ', Chr(vk_Tab), #13, #10, #0]) do
     Inc(Source);
-   SetString(Spec, P1, Source-P1);
+   SetString(Spec, P1, Source-P1);  // Spec is the Keywords,like qer_editorimage map ..., one at a time.
    while Source^ in [' ', Chr(vk_Tab)] do
     Inc(Source);
 
@@ -473,7 +488,7 @@ begin
       SetLength(Data, FSize);
       Source:=PChar(Data);
       F.ReadBuffer(Source^, FSize);  { read the whole file at once }
-
+      // cdunde: This is where the material file is read in, line by line as 'Data'.
       // Rowdy: Doom 3 adds some extra things to material files (*.mtr), such as "table"
       // We will ignore these for now, unless and until it become apparent that they are
       // actually used/needed, and/or someone works out how to use them ;-)
@@ -486,6 +501,13 @@ begin
       // is removed by the comment filtering code below
       for I:=0 to FSize-5 do
        if (Source[I]='t') and (Source[I+1]='a') and (Source[I+2]='b') and (Source[I+3]='l') and (Source[I+4]='e') then
+        begin
+         Source[I]:='/';
+         Source[I+1]:='/';
+        end;
+      // cdunde: Do the same thing for "guide" that was causing "textures/" to get knocked out
+      for I:=0 to FSize-5 do
+       if (Source[I]='g') and (Source[I+1]='u') and (Source[I+2]='i') and (Source[I+3]='d') and (Source[I+4]='e') then
         begin
          Source[I]:='/';
          Source[I+1]:='/';
@@ -528,53 +550,84 @@ begin
       ComplexStage:=LoadStr1(5699);
       repeat
         { read one shader definition per loop }
+        // cdunde: At this point 'Source' is all chopped up wrong and includes material link names
+        // bunched in a group of data together. Handling of Source needs to be fixed, 'Data' still good.
        masked:= false;   // mohaa
        SkipSpaces;
        if Source^=#0 then Break;    { end of file }
+       counter:=0;
        Material:=D3Material.Create(ReadLine, Self);    { new shader object }
        SubElements.Add(Material);
+       counter:=counter+1;
        SkipSpaces;
        if Source^=#0 then Break;    { end of file }
-       if Source^<>'{' then SyntaxError;
+    // cdunde: below line was causing some shaders to error because of no line break
+    //   if Source^<>'{' then SyntaxError;
        Inc(Source);
        repeat
          { read one shader attribute or stage per loop }
+         // Source^ is only the first letter of each specific read in but it does NOT
+         // go inside sub-items that have their own open and close curly brackets.
+         // But Source (without the ^) is one whole line of data imput.
         SkipSpaces;
-        if Source^='}' then Break;   { end of shader }
+        if (Source^='}') and (counter<>2) then
+         counter:=counter-1;
+        if (Source^='}') and (counter<3) then
+          begin
+            counter:=0;
+            Break;   // end of shader
+          end;
         if Source^='{' then
          begin   { shader stage }
+          counter:=counter+1;
           Inc(Source);
           Stage:=D3MaterialStage.Create(ComplexStage, Material);
           Material.SubElements.Add(Stage);
           repeat
             { read one stage attribute per loop }
            SkipSpaces;
-           if Source^='}' then Break;   { end of stage }
+           if Source^='{' then
+             counter:=counter+1;
+           if (Source^='}') and (counter>2) then
+             counter:=counter-1;
+           if (Source^='}') and (counter<3) then
+             begin
+               counter:=0;
+               Break;   // end of stage
+             end;
            ReadAttribute(Stage);
           until False;
           Inc(Source);   { skip the closing brace }
 
           { remove the 'map' attribute and use it to set the name of the stage }
           if Stage.Specifics.Values['map']<>'' then
-          begin
-           Stage.Name:=Stage.Specifics.Values['map'];
-{ DECKER
-           Stage.Specifics.Values['map']:='';
-}
-          end
+            Stage.Name:=Stage.Specifics.Values['map']
+            // cdunde Stage.Specifics.Values['map']:='';
           else
-          {DECKER - try 'clampmap' instead }
-          if Stage.Specifics.Values['clampmap']<>'' then
-           Stage.Name:=Stage.Specifics.Values['clampmap']
+            // cdunde - try 'diffusemap' instead
+            if Stage.Specifics.Values['diffusemap']<>'' then
+              Stage.Name:=Stage.Specifics.Values['diffusemap']
           else
-          {DECKER - try 'animmap' instead }
-          if Stage.Specifics.Values['animmap']<>'' then
-          begin
-           Stage.Name:=Stage.Specifics.Values['animmap'];
-           { jump over the number and take the first filename in the 'animmap' list }
-           Stage.Name:=Copy(Stage.Name, Pos(' ', Stage.Name)+1, 999);
-           SetLength(Stage.Name, Pos(' ', Stage.Name)-1);
-          end;
+            // cdunde - try 'specularmap' instead
+            if Stage.Specifics.Values['qer_editorimage']<>'' then
+              Stage.Name:=Stage.Specifics.Values['qer_editorimage']
+          else
+            // cdunde - try 'qer_editorimage' instead
+            if Stage.Specifics.Values['specularmap']<>'' then
+              Stage.Name:=Stage.Specifics.Values['specularmap']
+          else
+            // cdunde - try 'map' instead
+            if Stage.Specifics.Values['bumpmap']<>'' then
+              Stage.Name:=Stage.Specifics.Values['bumpmap']
+          else
+            // cdunde - try 'animmap' instead
+            if Stage.Specifics.Values['animmap']<>'' then
+              begin
+                Stage.Name:=Stage.Specifics.Values['animmap'];
+                // jump over the number and take the first filename in the 'animmap' list
+                Stage.Name:=Copy(Stage.Name, Pos(' ', Stage.Name)+1, 999);
+                SetLength(Stage.Name, Pos(' ', Stage.Name)-1);
+              end;
          end
         else   { shader attribute }
          ReadAttribute(Material);

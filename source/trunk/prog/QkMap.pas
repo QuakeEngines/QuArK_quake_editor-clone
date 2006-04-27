@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.55  2004/12/22 11:42:16  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -1430,9 +1433,18 @@ begin
          if SymbolType<>sNumValueToken then
            raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]); // invalid number
          MapVersion := NumericValue;
-         if MapVersion <> 1 then
+         {had to change code below to allow for Quake 4,
+         right now all Quake 4 maps are Version 3}
+      {   if MapVersion <> 1 then
            raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(266)]); // can't read Doom 3 version 2 maps
          Result:=mjDoom3;
+         ReadSymbol(sNumValueToken);   }
+         if MapVersion < 2 then
+           Result:=mjDoom3;   // this is a Doom 3 Version 1 map
+         if MapVersion > 2 then
+           Result:=mjQuake4;  // this is a Quake 4 Version 3 map
+         if MapVersion = 2 then  // this test for Doom 3 Version 2 map
+           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(266)]); // can't read Doom 3 version 2 maps
          ReadSymbol(sNumValueToken);
         end;
 

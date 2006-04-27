@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.42  2004/12/22 11:42:16  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -219,8 +222,10 @@ const
  mjTorque       = 'g';
  mjSOF2         = 'h';  { Soldier of Fortune II }
  mjSylphis      = 'i';  { Sylphis }
- mjDoom3        = 'j';  { Doom 3}
- mjHL2          = 'k';  { Half Life 2}
+ mjDoom3        = 'j';  { Doom 3 }
+ mjHL2          = 'k';  { Half Life 2 }
+ mjJA           = 'l';  { Jedi Academy }
+ mjQuake4       = 'm';  { Quake 4 }
 
  mjAny          = #1;
  mjNotQuake2    = #2;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2006/04/07 21:36:31  nerdiii
+bugfix: latest version caused access violation if .WAD not found
+
 Revision 1.45  2006/04/06 19:28:01  nerdiii
 Texture memory wasn't freed because texture links had additional references to them.
 
@@ -1147,12 +1150,27 @@ begin
       begin   { Quake 3 }
         Arg:=Specifics.Values['b'];
         if Arg<>'' then
-        begin { shader (Q3) or material (D3) }
-          if CharModeJeu=mjDoom3 then
+        begin { shader (Q3) or material (D3) or material (D3 for Quake4) }
+          if (CharModeJeu=mjDoom3) or (CharModeJeu=mjQuake4) then
            begin
             // the revised code (Doom 3 material)
+            // S is the game's files folder (baseq3 for Quake 3, base for Doom 3, q4base for Quake 4)
+            // SetupGameSet.Specifics.Values[.... is the folder, or pak file folder, that the shader/material file is in.
+            // Arg is the game's shader (Q3) or material (D3/Q4) full file name.
+            // So the line below MaterialFile:= gives the game folder, file folder, full file name of the shader/material for the link
+            // witch is (as a Doom 3 example): base + materials/alphalabs.mtr
             MaterialFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['MaterialsPath']+Arg) as D3MaterialFile;
-            MaterialFile.Acces;  { load the .mtr file (if not already loaded) }
+            MaterialFile.Acces;  { load the .mtr file (if not already loaded), meaning this loads the entire .mtr file.}
+            
+            // GameTexturesPath is the IMAGE MAIN folder, for the link, with a forward slash, textures/ .
+            // TexName is the IMAGE SUB folder, forward slach and texture name (without the file .tga suffex like alphalabs/a_1fwall21b)
+            // So the "Link" line below is really TWO items linked togeather:
+            // game folder/material folder/material file full name + IMAGE MAIN folder/IMAGE SUB folder/texture file (short) name.
+            // for example, we want to link to the IMAGE file for the Doom3 alphalabs/a_1fwall21b material we would have:
+            // base + materials/alphalabs.mtr + textures/alphalabs/a_lfwall21b
+            // Special Note: Each item in a shader\material file can have more than one texture IMAGE file for its bumpmap, diffusemap ...
+            //    Any one of these "Keywords" can be used, for linking, depending on how the Keywords are listed in its QkD3.pas file (for Doom3).
+            //    If the "primary" IMAGE file, with the Keyword qer_editorimage (for Doom3), does not exist then the next Keyword IMAGE file is used.
             Link:=MaterialFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
 
             if DefaultImageName<>'' then
