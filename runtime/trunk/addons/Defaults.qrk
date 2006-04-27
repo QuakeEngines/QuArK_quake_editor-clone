@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.283  2006/03/15 08:47:41  cdunde
+//Reinstated bounding box for H-L2 info_player_start
+//and added prefabs-hl2.qrk to Defaults.qrk Addons list.
+//
 //Revision 1.282  2006/03/07 04:51:41  cdunde
 //Setup model frame outlining and options for solid and color selection.
 //
@@ -1226,24 +1230,31 @@ QQRKSRC1
       {
         Game = "Doom 3"
         Code = "j" // Hardcoded value in Setup.PAS
-        Program = "Doom3.exe +set sv_pure 0"
-
-        Directory = "\Doom3"
-        CheckDirectory = "DOOM3.EXE"
-
+        Program = "Doom3.EXE +dmap newmap"
+        Directory = "C:\Program Files\Doom 3"
+        CheckDirectory = "DOOM3.EXE"   // hidden setting
         CD = ""
-        CDDir = "\Doom3\base"
+        CDDir = "\Doom3\base"          // hidden setting
 
-        MapLimit = '65536 65536 65536'
+        DefaultTexture = "base_wall/a_sopanel1_d01b"
+        DefaultTextureTerrain = "rock/rock02"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureOrigin = "Does not use an origin texture"
+        DefaultTextureCaulk = "common/caulk"
+        3DLight = '512'
+        BrushDecimalPlaces = '5'
 
-        MapCommentsPrefix = "//"
+        Console = "1"                  // "Run these build-programs..." setting
+        BuildPgmsDir = "nothing needed, preset in Defaults.qrk file"
+        StupidBuildToolKludge = ""     // "Run tools from base directory" setting
         OutputMapFormat = "Brush Primitives"
-        StupidBuildToolKludge = "1" //those guys should get shot for that
-        AlwaysWriteThreeFields = "1"
-        SupportsBrushPrim = "1"
-        BuildPgm1  = "Doom3.exe"
+        SupportsBrushPrim = "1"        // hidden setting
+        AlwaysWriteThreeFields = "1"   // hidden setting
+
+        BuildPgm1  = "nothing needed, preset in Defaults.qrk file"
         //BuildArgs1 = "-moddir .."
-        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildCheck1= ""
         //BuildPgm2  = "Q3MAP.EXE"
         //BuildArgs2 = "-vis -saveprt"
         //BuildPgm3  = "Q3MAP.EXE"
@@ -1251,44 +1262,39 @@ QQRKSRC1
         //BuildPgm4  = "BSPC.EXE"
         //BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
         //BuildCheck4= "+AAS"
+        MapCommentsPrefix = "//"
 
-        TexturesPath = "textures/"
-        ShadersPath = "materials/"
-        MaterialsPath = "materials/"
-        Q2TexFlags = "1"
-
-        BezierPatchSupport = "1" // this game supports bezier-patches
-        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
-
-        DefaultTexture = "base_wall/a_sopanel1_d01b"
-        DefaultTextureTrigger = "common/trigger"
-        //DefaultTextureOrigin = "common/origin"
-        DefaultTextureClip = "common/clip"
-        DefaultTextureCaulk = "common/caulk"
-        DefaultTextureScale = "0.5"
-
-        TextureFormat = ".tga"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
-        TextureShaders = "materials/quark.mtr"  // TextureMaterials?
-
+   // Other hidden settings
         BaseDir = "base"
         tmpQuArK = "base" // base instead of tmpQuArK (for now, at least)
 
         Palette = ":pics/colormap.pcx"
-        ExtraCmdLine = "+set fs_game %s"
+     //   ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
+        MapLimit = '65536 65536 65536'
+
         //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
         AddOns = "DataD3.qrk"
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"
-        Console = "1"
-        Form = "GameDoom3"
         LightFactor = '0.9'
-        3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        TexturesPath = "textures/"
+        ShadersPath = "materials/"
+        MaterialsPath = "materials/"
+        Q2TexFlags = "1"
+        TextureFormat = ".tga"                  // primary texture file extension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture file extensions
+        TextureWriteFormat = ".tga"
+        TextureShaders = "materials/quark.mtr"  // TextureMaterials?
+        DefaultTextureScale = "0.5"
+
+        Form = "GameDoom3"
       }
 
       Genesis3D:config =
@@ -1992,6 +1998,77 @@ QQRKSRC1
         BrushDecimalPlaces = '5'
       }
 
+      Quake 4:config =
+      {
+        Game = "Quake 4"
+        Code = "m" // Hardcoded value in Setup.PAS
+        Program = "quake4.exe +dmap newmap"
+        Directory = "C:\Program Files\Quake 4"
+        CheckDirectory = "quake4.exe"   // hidden setting
+        CD = ""
+        CDDir = "\Quake 4\q4base"       // hidden setting
+
+        DefaultTexture = "common_walls/outdoor_wall1_1a"
+        DefaultTextureTerrain = "rock/rock05a_to_rock05i"
+        DefaultTextureTrigger = "common/trigmulti"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureOrigin = "Does not use an origin texture"
+        DefaultTextureCaulk = "common/caulk"
+        3DLight = '512'
+        BrushDecimalPlaces = '5'
+
+        Console = "1"                  // "Run these build-programs..." setting
+        BuildPgmsDir = "nothing needed, preset in Defaults.qrk file"
+        StupidBuildToolKludge = ""     // "Run tools from base directory" setting
+        OutputMapFormat = "Brush Primitives"
+        SupportsBrushPrim = "1"        // hidden setting
+        AlwaysWriteThreeFields = "1"   // hidden setting
+
+        BuildPgm1  = "nothing needed, preset in Defaults.qrk file"
+        //BuildArgs1 = "-moddir .."
+        BuildCheck1= ""
+        //BuildPgm2  = "Q3MAP.EXE"
+        //BuildArgs2 = "-vis -saveprt"
+        //BuildPgm3  = "Q3MAP.EXE"
+        //BuildArgs3 = "-light"
+        //BuildPgm4  = "BSPC.EXE"
+        //BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
+        //BuildCheck4= "+AAS"
+        MapCommentsPrefix = "//"
+
+   // Other hidden settings
+        BaseDir = "q4base"
+        tmpQuArK = "q4base" // base instead of tmpQuArK (for now, at least)
+
+        Palette = ":pics/colormap.pcx"
+     //   ExtraCmdLine = "+set fs_game %s"
+        RunMapCmdLine = " +devmap %s"
+        MapLimit = '65536 65536 65536'
+
+        //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
+        AddOns = "DataQ4.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk4"
+        PakFormat = "*.PK4"
+        LightFactor = '0.9'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        TexturesPath = "textures/"
+        ShadersPath = "materials/"
+        MaterialsPath = "materials/"
+        Q2TexFlags = "1"
+        TextureFormat = ".tga"                  // primary texture file extension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture file extensions
+        TextureWriteFormat = ".tga"
+        TextureShaders = "materials/quark.mtr"  // TextureMaterials?
+        DefaultTextureScale = "0.5"
+
+        Form = "GameQuake4"
+      }
+
       RTCW:config =
       {
         Game = "RTCW"
@@ -2576,7 +2653,7 @@ QQRKSRC1
         DisableFPCoord          = ""
 // Experimental; disable in distributions:
 //        UseIntetralVertices     = ""
-        AutoCheckMap            = "1"
+        AutoCheckMap            = ""
         EntityLinesDispersion   = "1"
         CompassNumbers          = "1"
         ComputePolys            = "1"
@@ -3153,7 +3230,8 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Doom 3 command-line"
-        Items = "Doom3.EXE +set sv_pure 0"
+        Items = "Doom3.EXE +dmap newmap"$0D
+                "Doom3.EXE +dmap <YourMapName-all lower case>"
         t_ProgramHint=!
       }
       Directory: =
@@ -3168,7 +3246,7 @@ QQRKSRC1
         Txt = "Doom 3 CD-ROM drive"
         Typ = "ED"      // Edit Directory
         Hint = "If you installed Quake 3 minimally, this is the drive of the CD-ROM."
-        CheckFile = "Doom3\base\pak000.pk4"
+        CheckFile = "base\pak00.pk4"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -4339,6 +4417,105 @@ QQRKSRC1
       {
         t_DefaultTextureCaulk = !
         GameCfg = "Quake 3"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
+    GameQuake4:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Quake 4 command-line"
+        Items = "quake4.exe +dmap newmap"$0D
+                "quake4.exe +dmap <YourMapName-all lower case>"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Quake 4"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "quake4.exe"
+      }
+      CD: =
+      {
+        Txt = "Quake 4 CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed Quake 4 minimally, this is the drive of the CD-ROM."
+        CheckFile = "q4base\pak001.pk4"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMm"}    // switches to Quake 4 (cmd=GAM, game=m)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMm"}    // switches to Quake 4 (cmd=GAM, game=m)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "Quake 4"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "Quake 4"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "Quake 4"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "Quake 4"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "Quake 4"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "Quake 4"
       }
       3DLight: =
       {
@@ -6406,7 +6583,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"
+        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"$0D"Quake 4"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {
