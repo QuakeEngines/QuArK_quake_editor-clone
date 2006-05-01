@@ -26,7 +26,8 @@ $Id$
         - their related texture links, thus increasing those viewable textures.
         
  * [cdunde] : Changed the Defaults.qrk Doom 3 configuration to simplify
-        - its setup, directly compile and run maps from within QuArK.
+        - its setup, directly compile and run maps from within QuArK
+        - and set the Doom 3 console to open by just using the ~ tildy key.
         
  * [cdunde] : Added light color pickers to entities for Doom 3 and Quake 4.
         
