@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.284  2006/04/27 06:38:45  cdunde
+//To start support for Quake4 and change Doom3
+//config to build and run maps from within QuArK.
+//
 //Revision 1.283  2006/03/15 08:47:41  cdunde
 //Reinstated bounding box for H-L2 info_player_start
 //and added prefabs-hl2.qrk to Defaults.qrk Addons list.
@@ -1230,7 +1234,7 @@ QQRKSRC1
       {
         Game = "Doom 3"
         Code = "j" // Hardcoded value in Setup.PAS
-        Program = "Doom3.EXE +dmap newmap"
+        Program = "Doom3.EXE +seta com_allowconsole 1 +dmap newmap"
         Directory = "C:\Program Files\Doom 3"
         CheckDirectory = "DOOM3.EXE"   // hidden setting
         CD = ""
