@@ -96,7 +96,7 @@ def OptionsMenu():
     "The Options menu, with its shortcuts."
 
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click)
-    Config1 = qmenu.item("Confi&guration...", Config1Click)
+    Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
     Options1 = qmenu.popup("&Options", items+[qmenu.sep, PlugIns, Config1], Options1Click)
     return Options1, shortcuts
 
@@ -104,6 +104,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.10  2006/03/11 17:25:59  cdunde
+#Changed to invalidate views and add Infobase link.
+#
 #Revision 1.9  2006/03/07 08:08:28  cdunde
 #To enlarge model Tick Marks hard to see 1 pixel size
 #and added item to Options menu to make 1 size bigger.
