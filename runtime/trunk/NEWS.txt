@@ -15,6 +15,8 @@ $Id$
 6.5.0 alpha 7
 =============
 
+ * [cdunde]: Added Infobase Configuration documentation for Doom 3 and Quake 4.
+
  * [cdunde]: Linked Configuration menu item directly to its Infobase section
        - to make it easer to find instructions to setup games and the editors.
 
@@ -31,6 +33,7 @@ $Id$
  * [cdunde] : Changed the Defaults.qrk Doom 3 configuration to simplify
         - its setup, directly compile and run maps from within QuArK
         - and set the Doom 3 console to open by just using the ~ tildy key.
+        - Did the same for the Quake 4 setup configuration and operation.
         
  * [cdunde] : Added light color pickers to entities for Doom 3 and Quake 4.
         
