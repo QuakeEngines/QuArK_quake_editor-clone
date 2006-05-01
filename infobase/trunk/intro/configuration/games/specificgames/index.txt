@@ -1,5 +1,7 @@
 title: Specific games
+subdir: doom3
 subdir: hl2
+subdir: quake4
 subdir: torgue
 author: Decker
 
