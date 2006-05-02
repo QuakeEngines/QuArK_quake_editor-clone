@@ -381,7 +381,6 @@ QQRKSRC1
     // Notice! The b="<filename>" specifies which materials file the material exists in
     t_q4material_common:incl        = { a="q4base" b="common/common.mtr" }
     t_q4material_common_floors:incl = { a="q4base" b="common/common_floors.mtr" }
-    t_q4material_common_guis:incl   = { a="q4base" b="common/common_guis.mtr" }
     t_q4material_common_lights:incl = { a="q4base" b="common/common_lights.mtr" }
     t_q4material_common_misc:incl   = { a="q4base" b="common/common_misc.mtr" }
     t_q4material_common_trims:incl  = { a="q4base" b="common/common_trims.mtr" }
@@ -389,7 +388,6 @@ QQRKSRC1
 
     t_q4material_banners:incl           = { a="q4base" b="banners.mtr" }
     t_q4material_canyon:incl            = { a="q4base" b="canyon.mtr" }
-    t_q4material_characters:incl        = { a="q4base" b="characters.mtr" }
     t_q4material_command_ship:incl      = { a="q4base" b="command_ship.mtr" }
     t_q4material_consoles:incl          = { a="q4base" b="consoles.mtr" }
     t_q4material_core:incl              = { a="q4base" b="core.mtr" }
@@ -402,35 +400,19 @@ QQRKSRC1
     t_q4material_gui:incl               = { a="q4base" b="gui.mtr" }
     t_q4material_holo_guis:incl         = { a="q4base" b="holo_guis.mtr" }
     t_q4material_hub:incl               = { a="q4base" b="hub.mtr" }
-    t_q4material_hud:incl               = { a="q4base" b="hud.mtr" }
     t_q4material_idtemp:incl            = { a="q4base" b="idtemp.mtr" }
     t_q4material_invisible:incl         = { a="q4base" b="invisible.mtr" }
-    t_q4material_items:incl             = { a="q4base" b="items.mtr" }
-    t_q4material_lights:incl            = { a="q4base" b="lights.mtr" }
-    t_q4material_mapobjects_debris:incl = { a="q4base" b="mapobjects_debris.mtr" }
-    t_q4material_mapobjects_marine:incl = { a="q4base" b="mapobjects_marine.mtr" }
-    t_q4material_mapobjects_mp:incl     = { a="q4base" b="mapobjects_mp.mtr" }
-    t_q4material_marine_flag_long:incl  = { a="q4base" b="marine_flag_long.mtr" }
     t_q4material_marine_guis:incl       = { a="q4base" b="marine_guis.mtr" }
     t_q4material_medlab:incl            = { a="q4base" b="medlab.mtr" }
-    t_q4material_modelshader_guis:incl  = { a="q4base" b="modelshader_guis.mtr" }
-    t_q4material_monsters:incl          = { a="q4base" b="monsters.mtr" }
     t_q4material_mptextures:incl        = { a="q4base" b="mptextures.mtr" }
     t_q4material_multiplayer:incl       = { a="q4base" b="multiplayer.mtr" }
-    t_q4material_precache:incl          = { a="q4base" b="precache.mtr" }
     t_q4material_rock:incl              = { a="q4base" b="rock.mtr" }
-    t_q4material_shaderdemo:incl        = { a="q4base" b="shaderdemo.mtr" }
     t_q4material_skies:incl             = { a="q4base" b="skies.mtr" }
-    t_q4material_strogg_flag_long:incl  = { a="q4base" b="strogg_flag_long.mtr" }
-    t_q4material_strogg_guis:incl       = { a="q4base" b="strogg_guis.mtr" }
     t_q4material_stroyent:incl          = { a="q4base" b="stroyent.mtr" }
-    t_q4material_tables:incl            = { a="q4base" b="tables.mtr" }
     t_q4material_temp_guis:incl         = { a="q4base" b="temp_guis.mtr" }
     t_q4material_terminal:incl          = { a="q4base" b="terminal.mtr" }
     t_q4material_test:incl              = { a="q4base" b="test.mtr" }
     t_q4material_tram:incl              = { a="q4base" b="tram.mtr" }
-    t_q4material_vehicles:incl          = { a="q4base" b="vehicles.mtr" }
-    t_q4material_weapons:incl           = { a="q4base" b="weapons.mtr" }
 
     Q4 Materials.qtxfolder =
     {
@@ -472,9 +454,6 @@ QQRKSRC1
         common_floors/floor_06a_ut.wl    = { t_q4material_common_floors=! }
         common_floors/floor4_2_ut.wl    = { t_q4material_common_floors=! }
         common_floors/floortrench1_1_ut.wl    = { t_q4material_common_floors=! }
-      }
-      mtr_common/common_guis.txlist =
-      {
       }
       mtr_common/common_lights.txlist =
       {
@@ -655,9 +634,6 @@ QQRKSRC1
         canyon/antenna_sprite.wl    = { t_q4material_canyon=! }
         canyon/antenna_sprite_twosided.wl    = { t_q4material_canyon=! }
         canyon/door_2_smolder.wl    = { t_q4material_canyon=! }
-      }
-      mtr_characters.txlist =
-      {
       }
       mtr_command_ship.txlist =
       {
@@ -1014,9 +990,6 @@ QQRKSRC1
         hub/flare_mini_blue.wl    = { t_q4material_hub=! }
         hub/fluid_blue_bubble.wl    = { t_q4material_hub=! }
       }
-      mtr_hud.txlist =
-      {
-      }
       mtr_idtemp.txlist =
       {
         decals/hangingwires_shadow.wl    = { t_q4material_idtemp=! }
@@ -1106,24 +1079,6 @@ QQRKSRC1
         common/particle.wl    = { t_q4material_invisible=! }
         common/conveyor.wl    = { t_q4material_invisible=! }
       }
-      mtr_items.txlist =
-      {
-      }
-      mtr_lights.txlist =
-      {
-      }
-      mtr_mapobjects_debris.txlist =
-      {
-      }
-      mtr_mapobjects_marine.txlist =
-      {
-      }
-      mtr_mapobjects_mp.txlist =
-      {
-      }
-      mtr_marine_flag_long.txlist =
-      {
-      }
       mtr_marine_guis.txlist =
       {
         holo_guis/marine/mcc_holomap.wl    = { t_q4material_marine_guis=! }
@@ -1196,12 +1151,6 @@ QQRKSRC1
         medlabs/tubearmsplatform_platformtopbottom.wl    = { t_q4material_medlab=! }
         medlabs/tubearmsplatform_platformtrim.wl    = { t_q4material_medlab=! }
         medlabs/gore_floor_medlabs.wl    = { t_q4material_medlab=! }
-      }
-      mtr_modelshader_guis.txlist =
-      {
-      }
-      mtr_monsters.txlist =
-      {
       }
       mtr_mptextures.txlist =
       {
@@ -1354,9 +1303,6 @@ QQRKSRC1
         mp/invisibility_player3.wl    = { t_q4material_multiplayer=! }
         mptextures/lagometer.wl    = { t_q4material_multiplayer=! }
       }
-      mtr_precache.txlist =
-      {
-      }
       mtr_rock.txlist =
       {
         rock/rock05a_to_rock05i.wl    = { t_q4material_rock=! }
@@ -1391,9 +1337,6 @@ QQRKSRC1
         rock/sharprock_to_sand.wl    = { t_q4material_rock=! }
         rock/vistarock_gray.wl    = { t_q4material_rock=! }
       }
-      mtr_shaderdemo.txlist =
-      {
-      }
       mtr_skies.txlist =
       {
         skies/stars.wl    = { t_q4material_skies=! }
@@ -1407,12 +1350,6 @@ QQRKSRC1
         skies/spaaaaace.wl    = { t_q4material_skies=! }
         skies/portal_sky_terrain_1.wl    = { t_q4material_skies=! }
         skies/portal_sky_ring_1.wl    = { t_q4material_skies=! }
-      }
-      mtr_strogg_flag_long.txlist =
-      {
-      }
-      mtr_strogg_guis.txlist =
-      {
       }
       mtr_stroyent.txlist =
       {
@@ -1455,9 +1392,6 @@ QQRKSRC1
         stroyent/stroy_tun3_ut.wl    = { t_q4material_stroyent=! }
         stroyent/tungrate_ut.wl    = { t_q4material_stroyent=! }
         stroyent/can_dispersal_door.wl    = { t_q4material_stroyent=! }
-      }
-      mtr_tables.txlist =
-      {
       }
       mtr_temp_guis.txlist =
       {
@@ -1630,12 +1564,6 @@ QQRKSRC1
         tram/tr_45_wall_dusty_label_ut.wl    = { t_q4material_tram=! }
         tram/tr_alpha_railing_01_dusty_ns.wl    = { t_q4material_tram=! }
         tram/rect_light4_red.wl    = { t_q4material_tram=! }
-      }
-      mtr_vehicles.txlist =
-      {
-      }
-      mtr_weapons.txlist =
-      {
       }
     }
   }
