@@ -36,6 +36,7 @@ $Id$
         - Did the same for the Quake 4 setup configuration and operation.
         
  * [cdunde] : Added light color pickers to entities for Doom 3 and Quake 4.
+        -  Also cleanup of DataD3.qrk and DataQ4.qrk files.
         
  * [cdunde] : Removed "id Software Textures" common.txlist, no longer needed,
  		- from the Texture Browser with the materials handling fix.
