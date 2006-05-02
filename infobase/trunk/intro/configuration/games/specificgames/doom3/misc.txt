@@ -36,7 +36,7 @@ way as well if you like. Just click the QuArK menu item and off you go. To close
 press the Esc key and select "Exit" from its menu.
 
 If, for some reason, the map does not build and run automatically, then you will need to bring down
-the game console and enter the above commands by hand.
+the game console twice and enter the above commands by hand.
 </td></tr>
 </table>
 
