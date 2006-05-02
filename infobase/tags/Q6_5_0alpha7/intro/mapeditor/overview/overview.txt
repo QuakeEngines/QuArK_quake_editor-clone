@@ -1,0 +1,99 @@
+title: Overview
+author: Decker
+
+<noscript>
+  <div class="warning">Please enable JavaScript to get the most out of this page</div>
+</noscript>
+<script language="javascript">
+<!--
+imgsPrefix = "intro.mapeditor.overview."; /* This is a hack due to BUILD.PY */
+imgsA = new Array("menu",
+                  "display",
+                  "mousemodes",
+                  "movement",
+                  "userdata",
+                  "misctool",
+                  "compass",
+                  "dataform",
+                  "layout",
+                  "hintbox");
+imgsB = new Array();
+for (i=0; i<20; i+=2) {
+  imgsB[i] = new Image();
+  imgsB[i].src = imgsPrefix+imgsA[i/2]+".png";
+  imgsB[i+1] = new Image();
+  imgsB[i+1].src = imgsPrefix+imgsA[i/2]+"_s.png";
+}
+function imgchange(imgname,num,typ)
+{
+document[imgname].src = imgsB[num*2+typ].src;
+}
+//-->
+</script>
+
+Move your mouse to highlight an area in the map-editor, then mouse-click to go
+to an description of that area.
+<span class="sm">(Graphic-example from QuArK v5.7)</span>
+
+<center>
+<table cellpadding=0 cellspacing=0 border=0 width=682 height=464>
+  <!-- menu -->
+  <tr>
+                                     <!-- HACK/FIX -->
+    <td width=682 colspan=2><a href="intro.mapeditor.menu.html" onMouseover='imgchange("0menu",0,0)' onMouseout='imgchange("0menu",0,1)'><img name="0menu" width=682 height=42 border=0 alt="Map-Editor Menu">menu_s.png</img></a></td>
+  </tr>
+  <tr>
+    <td width=682 colspan=2>
+      <table cellpadding=0 cellspacing=0 border=0 width=682 height=27>
+        <tr>
+  <!-- tools -->
+                                 <!-- HACK/FIX -->
+          <td width=244><a href="intro.mapeditor.toolpalettes.display.html" onMouseover='imgchange("1display",1,0)' onMouseout='imgchange("1display",1,1)'><img name="1display" width=244 height=27 border=0 alt="Display (Grid, Zoom, 3Dfx/OpenGL views, Linear-handle and Help-book)">display_s.png</img></a></td>
+          <td width=101><a href="intro.mapeditor.toolpalettes.mousemodes.html" onMouseover='imgchange("2mousemodes",2,0)' onMouseout='imgchange("2mousemodes",2,1)'><img name="2mousemodes" width=100 height=27 border=0 alt="Mouse modes (Brush-select, Entity-select, Cube-maker and Cutter)">mousemodes_s.png</img></a></td>
+          <td width=338><a href="intro.mapeditor.toolpalettes.movement.html" onMouseover='imgchange("3movement",3,0)' onMouseout='imgchange("3movement",3,1)'><img name="3movement" width=338 height=27 border=0 alt="Movement tool-palette (Movement, Enlarge, Shrink, Inflate/Deflate, Symmetry, Rotation and Movement-options)">movement_s.png</img></a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width=187>
+      <table cellpadding=0 cellspacing=0 border=0 width=187 height=395>
+  <!--- userdata --->
+        <tr>
+                                           <!-- HACK/FIX -->
+          <td width=187 colspan=2><a href="intro.mapeditor.userdata.html" onMouseover='imgchange("4userdata",4,0)' onMouseout='imgchange("4userdata",4,1)'><img name="4userdata" width=187 height=46 border=0 alt="Userdata">userdata_s.png</img></a></td>
+        </tr>
+  <!--- tool --->
+        <tr>
+                                 <!-- HACK/FIX -->
+          <td width=34><a  href="intro.mapeditor.misctools.html" onMouseover='imgchange("5misctool",5,0)' onMouseout='imgchange("5misctool",5,1)'><img name="5misctool" width=35 height=99 border=0 alt="New item, Trashcan, Undo/Redo and New group">misctool_s.png</img></a></td>
+          <td width=152><a href="intro.mapeditor.compass.html" onMouseover='imgchange("6compass",6,0)' onMouseout='imgchange("6compass",6,1)'><img name="6compass" width=152 height=99 border=0 alt="Compass and Zoom">compass_s.png</img></a></td>
+        </tr>
+  <!--- dataform --->
+        <tr>
+                                           <!-- HACK/FIX -->
+          <td width=187 colspan=2><a href="intro.mapeditor.dataforms.html" onMouseover='imgchange("7dataform",7,0)' onMouseout='imgchange("7dataform",7,1)'><img name="7dataform" width=187 height=230 border=0 alt="Dataform display (Treeview, Specific/Arg, Polyhedrons, Faces, 3D-view)">dataform_s.png</img></a></td>
+        </tr>
+        <tr>
+                                           <!-- HACK/FIX -->
+          <td width=187 colspan=2><a href="#hintbox" onMouseover='imgchange("9hintbox",9,0)' onMouseout='imgchange("9hintbox",9,1)'><img name="9hintbox" width=187 height=20 border=0 alt="Hintbox">hintbox_s.png</img></a></td>
+        </tr>
+      </table>
+    </td>
+  <!--- maplayout --->
+                           <!-- HACK/FIX -->
+    <td width=495><a href="intro.mapeditor.maplayout.html" onMouseover='imgchange("8layout",8,0)' onMouseout='imgchange("8layout",8,1)'><img name="8layout" width=495 height=395 border=0 alt="Classic map-layout">layout_s.png</img></a></td>
+  </tr>
+</table>
+<!-- hack/fix to load the non-shaded images -->
+<img border=0 width=0 height=0>menu.png      </img>
+<img border=0 width=0 height=0>display.png   </img>
+<img border=0 width=0 height=0>mousemodes.png</img>
+<img border=0 width=0 height=0>movement.png  </img>
+<img border=0 width=0 height=0>userdata.png  </img>
+<img border=0 width=0 height=0>misctool.png  </img>
+<img border=0 width=0 height=0>compass.png   </img>
+<img border=0 width=0 height=0>dataform.png  </img>
+<img border=0 width=0 height=0>layout.png    </img>
+<img border=0 width=0 height=0>hintbox.png   </img>
+</center>

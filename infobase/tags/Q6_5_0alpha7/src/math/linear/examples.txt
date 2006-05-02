@@ -1,0 +1,158 @@
+title: Examples
+author: tiglari
+
+For one example, consider rotations.  Suppose we want to rotate by a degrees
+around the z axis. from elementry trig and some visualization
+you can see that the result of this will be to transform
+the x, y and z axes as follows:
+<code>
+xa = &lt;1, 0, 0&gt;  -> &lt;&lt;a&gt;cos(a), sin(a), &gt;>
+ya = &lt;0, 1, 0&gt;  -> &lt;-sin(a), cos(a), 0&gt;
+za = &lt;0, 0, 1&gt;  -> &lt;0, 0, 1&gt; (no change)
+</code>
+So in quarkpy.qeditor.py, we find this function to
+define the matrix for rotation by an angle rad (specified
+in radians):
+<code>
+def matrix_rot_z(rad):
+    sin, cos = math.sin(rad), math.cos(rad)
+    return quarkx.matrix(
+       (cos, -sin, 0),
+       (sin,  cos, 0),
+       ( 0 ,   0,  1))
+</code>
+(Remember that when the input to quark.matrix is specified
+as three tuples, they are rows.)  There are similar formulas
+for rotations around other axes.
+
+'Scaling' is linear transformations that make things bigger
+or smaller by proportional amounts.  To scale something
+by the factors x, y and z along the respective axes, this
+matrix would be used:
+<code>
+x   0   0
+0   y   0
+0   0   z
+</code>
+As usual, each column represents what the mapping does to
+the corresponding coordinate vector.
+
+For most uses of linear mappings, we don't want to use them
+on their own, but need to combine them with another kind
+of mapping, 'translations'.  Linear mappings always leave
+the origin &lt;0, 0, 0&gt; untouched; a translation adds the same
+amount to everything, thereby shifting the whole space by
+a certain amount in a certain direction.  Now suppose we
+have an object sitting in our map, centered say at the
+point &lt;100, 250, 920&gt;.  If we just applied a rotation to it,
+it would rotate around the map origin, which is probably not
+what we want.  What we probably want to do is first apply
+a translation so that the point we want it to rotate around
+is now the map origin, then apply the rotation, and then
+apply the reverse of the translation.  QuArK Python
+provides a quick way of doing this with the 'linear' method:
+if say we have a group grp, grp.linear(v, m) will apply the
+linear mapping represented by the matrix m to the group, using
+the point represented by v as the origin).  This will also work
+for duplicators if their 'applylinear' method is properly
+defined (which, for certain of the more recent and complex
+ones, it isn't).
+
+In many applications what we want is not exactly a
+linear mapping, but an 'affine mapping'; which is a linear
+mapping followed by a translation (the offset).  For example
+texturing a face.  Conceptually, this is a mapping from the
+two-dimenensional texture plane, tiled with the texture
+image, onto some face.  We can make it three-dimensional
+(and thereby get to use QuArK's matrix facility, by adding
+a z-dimension, which does nothing, to the substantively useful
+s and t dimensions (conventionally used instead of x and y for
+textures).  The texture threepoints for
+a face (face.threepoints(2)), (p0, p1, p2) are the images of the
+texture origin, s axis and t axis under an affine map.
+The translation component of the map is represented by
+the vector p0, while the linear component has the matrix:
+<code>
+quarkx.matrix(p1-p0,p1-p0,quarkx.vect(0, 0, 1))
+</code>
+(It's best to make no change for the formally necessary
+but substantively useless z component).
+
+The matrix for the texture scale can be used for complicated
+things such as aligning textures on faces and bezier patches,
+or converting texture positioning information between
+different formats.
+
+Here is a somewhat complex example, finding a series of point
+that will constitute the outline of a 'warped circle' inscribed
+in a quadrilateral (for possible use in a prism builder, for example).
+The actual routine is warpedCircleFrom4Points(n, points), from
+quarkpy.maputils.  points is supposed to be a list of four
+points, the corners of the quadrilateral, while n is the number
+of points we want to generate.
+
+The basic intuition is that we think of our quadrilateral as
+warped square, so that our warped circle will be a warped version
+of real circle, touching the square at the midpoints of the edges.
+But since all four corners of the actual quadrilateral might
+be different, we really have to think of it as four perhaps
+differently warped quarter circles.
+
+So the strategy will be to generate n-1 angles in succession,
+performing the following operations on each:
+<ul>
+<li> select the corner of the quadrilateral & adjust the angle
+appropriately
+<li> find the point in the ideal quarter circle produced by
+the adjusted angle
+<li> map this point into the corresponding actual point on the
+warped circle.
+</ul>
+The first step isn't very interesting, and is acheived by the
+code down to the comment 'get point in quarter-circle resting in
+the axes' (just note that each corner is constituted by the corner
+point and the midpoints of the two edges that meet there).  The
+next step is basic trig, and performed by
+<code>
+        point = quarkx.vect(1.0-math.sin(angle*deg2rad), 1.0-math.cos(angle*deg2rad), 0)
+</code>
+(the idea here is that we're generating points on a circle of unit
+radius centered on the point (0,0)).  So the next line is:
+<code>
+        mat = matrix_u_v(corner[1], corner[2])
+</code>
+where matrix_u_v(u,v) creates a matrix whose first column is u,
+second column is v, and last column is <0,0,1> (it's assumed that
+the third coordinate of the vectors to be mapped by this matrix
+will always be 0, so the last column of the matrix doesn't
+really matter; however a safer choice might be to use something
+based on the cross-product of the input vectors).  Then comes
+the payoff line:
+<code>
+        circle.append(corner[0]+mat*point)
+</code>
+corner[0] is the map-location of the actual corner point,
+point is the ideal location on the quarter-circle, and multiplying
+by mat converts this into the actual position on the warped
+quarter-circle.  This procedure generates n-1 of the n-points
+we want, the first is just a mid-edge (warped circle
+tangent) point.
+
+And last comes the interesting bit.  Because we can make a matrix
+for a linear mapping out of the images that it produces for the
+coordinate axes, we get therefore get a linear mapping to warp
+our quarter-circle by thinking of the two arms of the warped
+corner as images of the clean, 90 dgree unit length corner.
+So there it is, and, slightly amazingly, it seems to work :)
+
+The same technique is employed in quarkpy.b2utils for generating
+bezier control points for bevels in the function
+arcSubdivideLine(n, p0, p1, p2), but the details are a bit
+different because on the one hand we're dealing with quarter
+circles rather than full circles to begin with, but on
+the other we need to generate control points that lie off
+the circle in order to get the patch to bend, which involves
+a bit of implicit (one variable) calculus plus calculating line
+intersections.
+
+

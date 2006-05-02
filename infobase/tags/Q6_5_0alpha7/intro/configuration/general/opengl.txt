@@ -1,0 +1,10 @@
+title: OpenGL
+author: Decker
+
+<img align=right>opengL.png</img>
+Settings in this folder are only usable if you have a true OpenGL
+graphics-card.
+
+3D-accelerators like 3Dfx, Voodoo, Voodoo-II and other low-price cards, are
+<u>not</u> true OpenGL compatible, they only emulates it through a
+Glide-driver.

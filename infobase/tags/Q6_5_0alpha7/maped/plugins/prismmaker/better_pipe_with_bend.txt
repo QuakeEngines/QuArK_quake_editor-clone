@@ -1,0 +1,91 @@
+title: How to create a more realistic looking pipe-curve.
+author: Decker
+
+It becomes a bit more difficult now, since I have to use a template object, from where I lay my 'glue'.
+
+First you must deside how many segments the curve should consists of. The more segments, the more round it will become.
+
+I want to create a 180 degree bend, with 5 segments. Something like this image:
+
+<center>
+<img>make_prism_complex_bend_1.png</img>
+</center>
+
+Once I've placed the end-pipes at the positions I want, I create a new tree-view group and put a <b>Linear Duplicator</b> in
+it. Remember to put a value in the <i>count</i> specific, to the number of segments. The position of the Duplicator entity is
+also important. It should of cause be in the center of rotation, and all handles (those small blue cubes that appear when you
+select the Duplicator) must also be at the rotation center.
+
+<center>
+<img>make_prism_complex_bend_2.png</img>
+</center>
+
+I take a copy of one of the pipes, and place it in the same tree-view group as the Duplicator. I then mark the Duplicator
+entity again, go to the movement palette configuration window, where I specify an angle, by which I want to rotate the soon
+duplicated pipes. In this case where I want 5 segments in an 180 degree angle, the calculation becomes <b>180 / 5 = 36</b>. So
+I input 36 in the movement-tool configuration 'rotation angle'.
+
+I then press the X-rotation button in the movement-toolbar, so the following appears:
+
+<center>
+<img>make_prism_complex_bend_3.png</img>
+</center>
+
+Now its time to 'Dissociate Duplicator images', so right-click on the Duplicator entity, and choose that menu-option.
+
+The Duplicator will disappear, but all duplicated images will now be true objects you can work on (and not just a duplicated
+image).
+
+Since two of the duplicated pipes, are along the same lines as the first ones created, I remove them:
+
+<center>
+<img>make_prism_complex_bend_4.png</img>
+</center>
+
+I now need a template object, from which I can lay my glue-lines. This template object is just another 'Make Prism' cylinder,
+but here I have to specify that the number of sides is <b>10</b>, the radius is <b>168</b> (in my case, properly not yours!),
+and I want <b>pie-slices</b>.
+<div class="sm">(See other note below, regarding unmarking 'Vertex on grid'.)</div>
+
+I place the template cylinder in the center of rotation, like this:
+
+<center>
+<img>make_prism_complex_bend_5.png</img>
+</center>
+
+Some of the pie-slices I have no use for, so I remove them, as they clutter the view.
+
+I then select a side of a pie-slice and 'Tag face' it, by right-click on a face-handle of the selected brush:
+
+<center>
+<img>make_prism_complex_bend_6.png</img>
+</center>
+
+Then I select the nearest duplicated pipe-segment, right-click on its face, and choose 'Glue to tagged':
+
+<center>
+<img>make_prism_complex_bend_7.png</img>
+</center>
+
+Repeat the tag and glue, remember to remove the template pie-slices, and you will end up with this:
+
+<table border=0 align=center>
+  <tr>
+    <td valign=top>
+      <img>make_prism_complex_bend_8.png</img>
+    </td>
+    <td>&nbsp;=>&nbsp;</td>
+    <td valign=top>
+      <img>make_prism_complex_bend_9.png</img>
+    </td>
+  </tr>
+</table>
+
+You may need to do some finishing touches, in <b>grid 1</b> to align the segments perfectly:
+<div class="sm">(Note from sgalbrai: If you unmark the 'Vertex on grid' when making the template object, the segments will end
+up perfectly aligned.)</div>
+
+<center>
+<img>make_prism_complex_bend_10.png</img>
+</center>
+

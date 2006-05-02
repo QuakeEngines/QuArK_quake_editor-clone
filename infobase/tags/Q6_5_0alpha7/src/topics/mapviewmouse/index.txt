@@ -1,0 +1,37 @@
+title:  Mouse in the Map View
+author: tiglari
+
+Processing mouse events (moves, drags and clicks) is distributed between
+the Python and Delphi components of QuArK.  The mapview control
+(see <ref>src/quarkx/mapviewmethods</ref>) is basically in charge of it
+all.  When a map or model editor is launched, mapview controls get associated
+with certain areas of the screen.  These have an <strong>onmouse</strong>
+callback function, which is assigned to a Python-defined function by a
+line like this (from quarkpy.qbaseeditor):
+<code>
+        v.onmouse = self.mousemap
+</code>
+Every time the mouse is moved, the mousemap function of 'self' (an editor)
+is called.  For editors as defined in qbaseeditor, the mousemap function
+starts out like this:
+<code>
+    def mousemap(self, view, x, y, flags, handle):
+</code>
+where 'flags' is a string containing information about what buttons were
+depressed, and handle is any handle that the mouse is over.  The flags
+string doesn't indicate directly what key was pressed, but rather codes
+functions, mediated by the Map|Mouse setup options.
+
+For clicks, the real processing is done by the MouseClicked function,
+which is defined by the editor's HandlesModule (maphandles for the
+map editor), which itself calls the mapview method Clicktarget.  This latter
+is defined in Delphi, and calls the AnalyseClic methods of the various
+kinds of map objects to find out if the click was 'over' each object in
+the map.  These methods take as parameter a List, to which they add
+the click-ed on stuff they find.
+
+A bit oddly, the map editor's MouseClicked method calls on the qhandle
+MouseClicked method for some processing, I'm not sure why it's set up
+this way, but anyway Python is responsible for the 'drill thru' selection
+model whereby the top thing is selected first, then the one under that,
+etc, and quite a lot of selection behavior can be manipulated in Python.

@@ -1,0 +1,25 @@
+title: Extend Selection
+author: tiglari
+
+<img border=1 align=right> contextmenuface.png </img>
+This appears as a submenu for faces, and an item for polys and groups.
+The face submenu has subitems `To Adjacent Faces' and `To Linked
+Faces'.  The first extends the current selection to faces that
+are exactly coplanar to the selected face, and share an edge with
+it, and likewise to further faces adjecent to these in the same
+way.  So that if the floor of a room is selected, and there is
+a say a pillar whose bottom is flush with the top of the floor,
+the bottom face of the pillar will join the multi-selection with
+the floor.  -- if it works, which it doesn't always, for reasons
+I haven't figured out.
+
+Extend Selection to Linked Faces on the other hand just extends the
+selection to other faces that are linked with the currently selected
+one, as described in the description of the <!-- <ref> maped/plugins/tagside </ref> --> plugin.
+
+For groups and polys, there is currently only extend selection from
+the currently selected poly to faces that are adjacent to faces
+in that group or poly, so that if you drag the poly, these faces
+will be dragged along with it (I think it's better to drag faces
+instead of whole polys, but when I took this off the menu someone
+wanted it back, so here it is again).

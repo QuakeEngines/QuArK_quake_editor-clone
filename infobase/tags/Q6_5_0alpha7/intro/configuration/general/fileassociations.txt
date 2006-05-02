@@ -1,0 +1,10 @@
+title: File associations
+author: Decker
+
+<img align=right>fileassociations.png</img>
+In this folder, you are able to setup which <g>file-extensions</g> should start
+QuArK, when you double-click on a file in Windows File-Explorer.
+
+Some of the file-extensions in this folder, QuArK might not be able to edit
+yet, but you can always import them into your QuArK-project, and send it to an
+<ref> ./externaleditors \ external editor </ref>.

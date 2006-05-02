@@ -1,0 +1,7 @@
+title: Normal folders
+author: Decker
+
+<img border=0 align=right>qtxfolder.png</img>
+These folders are the same as the top folders from the new map items window. If
+you know what you need, it is faster to go this way, through the panel, instead
+of opening up the new map items again.

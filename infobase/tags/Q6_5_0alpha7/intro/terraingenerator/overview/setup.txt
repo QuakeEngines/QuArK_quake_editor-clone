@@ -1,0 +1,34 @@
+title: Setup
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The next step is to size or <g>pull</g> the <ref> ../setup </ref> to cover the area that is desired. This is done by clicking on one of its side handles and moving it to where you want while holding down the <g>LMB</g>. This can be done to any or all of its sides. The same goes for its thickness or height by <g>pulling</g> its top and bottom, or down face, handles.
+
+<b>A word a caution here!</b> Because additional triangular <g>polys</g> are going to be created and their default unit setting is small (32 units per square section) at this time, too large of an area will <b>dramatically</b> slow down your computer. In fact, it can seem to even lock it up! But this is really not the case. If you elect to continue with a large area of small unit size <g>polys</g>, your computer will free up once it has completed calculating and drawing the <g>polys</g> in all of the editors views.
+</td>
+<td valign=top align=right>
+<img border=1>size.png</img>
+</td></tr>
+<tr><td valign=top>
+However, there is a built in warning that will appear when you cross this <g>poly</g> count threshold which will allow you to cancel the process and either reduce the area size or increase the unit setting for the grid and thus continue to cover the desired area. This is done by changing the <b>wedgeunits</b> to a larger setting using <b>any</b> amount you wish, so long as the game you are mapping for will support that size setting.
+The other two settings, <b>sameheight</b> and <b>detailmesh</b> are covered in detail on the <ref> ../setup </ref> page.
+
+Once this process of resizing and making the setting changes has been completed, you are then ready to <b>Dissociate</b>, or brake apart, the <ref> ../setup </ref>.
+
+To do this, simply <g>LMB</g> click on the <ref> ../setup </ref> icon in the <g>Tree-view</g> of the editor, then <g>RMB</g> click, to cause its popup menu to appear, and select <b>Dissociate Duplicator images</b>.
+
+This function will create the individual triangular <g>polys</g> of the terrain grid and place them into a single folder for that particular <b>Terrain Maker 2X</b> session.
+
+As you create other terrain sections, going through the same process, they too will be placed into their individual folders to keep them separate and well organized to work with later as your creation becomes more involved and detailed.
+
+The reasoning for this process will become more clear as it is covered further on the <ref> ../setup </ref> page.
+
+You are now ready to start creating the terrain through the use of the  <b>Shaping</b> process.
+</td>
+<td valign=top align=right cellspacing=0>
+<img border=1>specifics.jpg</img>
+<img border=1>dissoc1.jpg</img>
+<img border=1>dissoc2.png</img>
+</td></tr>
+</table>

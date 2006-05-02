@@ -1,0 +1,11 @@
+title: Cylinder
+author: cdunde
+
+<img border=1 align=middle>objects5.png</img>
+<I><u>Quick cylinder maker</u></I>:  Clicking this button allows you to draw cylinders on the map with the left mouse button and each cylinder will be turned into an actual poly.
+
+This can make angled sides or a more curved style cylinder by adding more faces.<br>
+Move the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.<br>NOTE: Less than 3 faces will not draw anything.
+
+Increasing the amount of its <a href="intro.mapeditor.toolpalettes.objectmodes.html#dialogboxes"><i>Object Distortion Dialog</i></a> will increase its height.<br>
+Giving a negative amount will make it shorter.

@@ -1,0 +1,69 @@
+title: Read-only variables of the module quarkx
+author: Armin Rigo
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+error
+</td><td>
+The exception type raised by all routines of QuArK when something goes wrong. The full name of the exception is quarkx.error.
+</td></tr>
+
+<tr><td class="doccode">
+aborted
+</td><td>
+Another exception, raised when there is not really an error but rather the operation must be aborted for some reason. This exception is not displayed in the console with a traceback; it is a “ silent ” exception.
+</td></tr>
+
+<tr><td class="doccode">
+version
+</td><td>
+Version of the executable (QUARK.EXE).
+</td></tr>
+
+<tr><td class="doccode">
+exepath
+</td><td>
+Complete directory to QUARK.EXE, with a trailing backslash.
+</td></tr>
+
+<tr><td class="doccode">
+toolboxmenu
+</td><td>
+The Toolboxes menu item, to put in menu bars.
+</td></tr>
+
+<tr><td class="doccode">
+helpmenu
+</td><td>
+The ‘?’ menu item. It is automatically added to menu bars.
+</td></tr>
+
+<tr><td class="doccode">
+clickform
+</td><td>
+The Window object in which the last menu or button click occured.
+</td></tr>
+
+<tr><td class="doccode">
+window_type<br>
+toolbar_type<br>
+imagelist_type<br>
+image1_type<br>
+panel_type<br>
+object_type<br>
+explorer_type<br>
+dataform_type<br>
+floating_type<br>
+mapview_type<br>
+imagectrl_type<br>
+btnpanel_type<br>
+vector_type<br>
+matrix_type<br>
+canvas_type<br>
+process_type
+</td><td>
+Types of all the built-in Python object types.
+</td></tr>
+
+</table>
