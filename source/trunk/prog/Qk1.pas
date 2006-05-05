@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2006/04/07 21:36:31  nerdiii
+bugfix: latest version caused access violation if .WAD not found
+
 Revision 1.38  2006/04/06 19:28:06  nerdiii
 Texture memory wasn't freed because texture links had additional references to them.
 
@@ -1566,7 +1569,7 @@ procedure TForm1.FreeNonUsedObjects;
 begin
  TTextureManager.FreeNonVisibleTextures;
  FreeNonVisibleForms(Nil);
- GameFiles.UnloadUnused(False);
+ DestroyGameBuffers;
 end;
 
 var

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2006/04/06 19:28:02  nerdiii
+Texture memory wasn't freed because texture links had additional references to them.
+
 Revision 1.14  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -116,16 +119,8 @@ type
  TSDConfirm = ccAuto..ccNoConversion;
  QPixelSetClass = class of QPixelSet;
  QPixelSet = class(QFileObject)  { base class for QImage and QTexture }
-             protected
-               FNextPixelSet: QPixelSet;
-               FAnimDelay: Cardinal;
-               procedure SetNextPixelSet(PS: QPixelSet); virtual;
              public
                ReverseLink: QObject;  { actually a QTextureLnk object -- INTERNAL }
-               DisplayedMS: Cardinal;
-               property AnimDelay: Cardinal read FAnimDelay;
-               property NextPixelSet: QPixelSet read FNextPixelSet write SetNextPixelSet;
-               destructor Destroy; override;
                function ConversionFrom(Source: QFileObject) : Boolean; override;
                function ConvertFrom(Source: QPixelSet; Flags: Integer) : Boolean; virtual;
                function GetSize : TPoint; virtual;
@@ -619,21 +614,6 @@ procedure QPixelSet.ListDependencies(L: TStringList);
 begin  { no dependency by default -- see QkTextures.pas }
 end;
 
-
-{*******************************************************************************
-Description  Sets the next image in the texture animation and the time in ms
-             that this texture is displayed before we move on to the next one.
-Parameters   PS = the next texture
-*******************************************************************************}
-procedure QPixelSet.SetNextPixelSet(PS: QPixelSet);
-begin
-   FNextPixelSet.AddRef(-1);
-   if Assigned(PS) then FAnimDelay := 100 else FAnimDelay := 0;
-   FNextPixelSet := PS;
-   FNextPixelSet.AddRef(+1);
-end;
-
-
 function QPixelSet.PyGetAttr(attr: PChar) : PyObject;
 begin
  Result:=inherited PyGetAttr(attr);
@@ -645,16 +625,6 @@ begin
          Exit;
         end;
  end;
-end;
-
-
-{*******************************************************************************
-Description  Removes the reference to the next PixelSet in the animation seq.
-*******************************************************************************}
-destructor QPixelSet.Destroy;
-begin
-  FNextPixelSet.AddRef(-1);
-  inherited;
 end;
 
  {------------------------}

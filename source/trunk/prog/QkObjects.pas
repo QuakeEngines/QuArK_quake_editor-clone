@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.78  2006/04/06 19:28:03  nerdiii
+Texture memory wasn't freed because texture links had additional references to them.
+
 Revision 1.77  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -465,7 +468,6 @@ type
     procedure SaveFile1(Info: TInfoEnreg1);
     destructor Destroy; override;
     procedure FixupAllReferences;
-    function IsDeepReferenced: Boolean;
     property Specifics: TStringList read {$IFDEF Debug} GetSpecifics; {$ELSE} FSpecifics; {$ENDIF}
     property SetSpecificsList: TStringList read FSpecifics write FSpecifics;
     property SubElements: TQList read {$IFDEF Debug} GetSubElements; {$ELSE} FSubElements; {$ENDIF}
@@ -638,7 +640,7 @@ type
 implementation
 
 uses
-  {$IFDEF Debug} MemTester, {$ENDIF} QkTextures, QkPixelSet,
+  {$IFDEF Debug} MemTester, {$ENDIF}
   QkObjectClassList, QkFileObjects, QkExplorer, Travail, PyObjects, PyImages, Quarkx, Qk1, Logging;
 
  {------------------------}
@@ -1337,52 +1339,6 @@ begin
     Q.FFlags:=Q.FFlags or ofModified;
     Q:=Q.FParent;
   end;
-end;
-
-
-{*******************************************************************************
-Description: Finds out, if there are more than one references to this object or
-             it's sub elements. If a texture link is found and it is broken if
-             this helps to bring the reference count down to 1.
-Returns    : True, if this object or parts of it are referenced more than once
-             False if there is only one reference keeping the whole thing in
-             memory
-*******************************************************************************}
-function QObject.IsDeepReferenced: Boolean;
-var
-	I: Integer;
-	QO: QObject;
-   QTL: QTextureLnk;
-begin
-	Result := True;
-	{ if this is a linked texture, try do bring the reference count down to 1 by
-	  breaking the link }
-	if Self is QPixelSet and (QPixelSet(Self).ReverseLink is QTextureLnk) then
-   begin
-      { find out how many references there are }
-      I := 1;
-      QTL := QPixelSet(Self).ReverseLink as QTextureLnk;
-      while Assigned(QTL.Next) do begin
-         Inc(I);
-         QTL := QTL.Next;
-      end;
-		if PythonObj.ob_refcnt > I+1 then begin
-			{ there are more references than just the WAD and the links }
-			Exit;
-		end else while Assigned(QPixelSet(Self).ReverseLink) do begin
-			QTextureLnk(QPixelSet(Self).ReverseLink).BreakLink;
-		end;
-	end else begin
-		{ not linked -> should have a ref. count of 1 to be freed }
-		if PythonObj.ob_refcnt > 1 then Exit;
-	end;
-
-	for I := 0 to SubElements.Count - 1 do begin
-		QO := SubElements[I];
-		{ Check if this sub-element is deep referenced itself }
-		if Assigned(QO) then if QO.IsDeepReferenced then Exit;
-	end;
-	Result := False;
 end;
 
 procedure QObject.CopyExtraData(var HasText: Boolean);

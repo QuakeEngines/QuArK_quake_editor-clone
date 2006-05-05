@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2006/04/06 19:28:06  nerdiii
+Texture memory wasn't freed because texture links had additional references to them.
+
 Revision 1.25  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -746,7 +749,6 @@ var
  DC: HDC;
 {Bits: array[0..63, 0..63] of Char;}
  Q: QObject;
- QAnim: QPixelSet;
  R: TRect;
  TexLoop: TList;
  BaseImage: Integer;
@@ -792,13 +794,14 @@ begin
   if Counter<0 then
   begin
     TimerAnimation.Enabled:=False;
+    TimerAnimation.Tag:=-1;
 
     LoadNoOfTexAtEachCall := StrToInt(SetupSubSet(ssToolbars, 'Texture Browser').Specifics.Values['ImageListLoadNoOfTexAtEachCall']);
     if (LoadNoOfTexAtEachCall < 1) then
       LoadNoOfTexAtEachCall := 1; { Load atleast one texture for each call to this function }
 
     TexDimension := StrToInt(SetupSubSet(ssToolbars, 'Texture Browser').Specifics.Values['ImageListTextureDimension']);
-    TexDimension := TexDimension and $7FFFFFF0; { Allow only steps of 16 }
+    TexDimension := 16 * (TexDimension div 16); { Allow only steps of 16 }
     if (TexDimension < 32) then
       TexDimension := 32; { Minimum dimension is 32x32 }
     if (TexDimension > 128) then
@@ -843,14 +846,7 @@ begin
     try
       repeat
         TexLoop.Add(Q);
-        QAnim := AnimationNextStep(QPixelSet(Q), 0);
-        if QAnim <> Q then begin
-          QPixelSet(Q).NextPixelSet := QAnim;
-          QAnim.AddRef(+1);
-        end else begin
-          QPixelSet(Q).NextPixelSet := nil;
-        end;
-        Q := QAnim;
+        Q:=AnimationNextStep(QPixelSet(Q), 0);
         I:=TexLoop.IndexOf(Q);
         if I>=0 then
           Break;   { closed the animation loop }
@@ -985,7 +981,7 @@ begin
         Caption:=TextureTitle;
       end;
       if TexLoop.Count>1 then
-        TimerAnimation.Enabled:=True;  { there are textures to animate }
+        TimerAnimation.Tag:=0;  { there are textures to animate }
     finally
       TexLoop.Free;
     end;
@@ -1017,6 +1013,7 @@ begin
  {ListView1.SetFocus;}
   if Item<>Nil then
     SelectListItem(Item);
+  TimerAnimation.Enabled:=TimerAnimation.Tag=0;
   Result:=-1;  { end of the job }
 end;
 
@@ -1094,12 +1091,9 @@ var
    with ListView1.Items[P] do
     begin
      Q1:=QPixelSet(ImageTextures[ImageIndex]);
-     Q2:=Q1.NextPixelSet;
-     if Assigned(Q2) and (Q1<>Q2) then
+     Q2:=AnimationNextStep(Q1, Ord(TimerAnimation.Tag>=k_ImagesAvantChangement)+1);
+     if Q1<>Q2 then
       begin
-       Inc(Q1.DisplayedMS, TimerAnimation.Interval);
-       if Q1.DisplayedMS < Q1.AnimDelay then Exit;
-       Q1.DisplayedMS := 0;
        ImageIndex:=ImageTextures.IndexOf(Q2);
        {$IFDEF Debug}
        if ImageIndex=-1 then
@@ -1155,6 +1149,9 @@ begin
    ValidateRect(ListView1.Handle, Nil);
    InvalidateRect(ListView1.Handle, Nil, False);
   end;
+ TimerAnimation.Tag:=TimerAnimation.Tag+1;
+ if TimerAnimation.Tag>=2*k_ImagesAvantChangement then
+  TimerAnimation.Tag:=0;
 end;
 
 function TFQWad.EnumObjs(Item: TListItem; var Q: QObject) : Boolean;

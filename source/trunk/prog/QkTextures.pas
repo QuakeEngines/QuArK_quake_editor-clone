@@ -23,6 +23,23 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2006/04/27 06:19:59  cdunde
+To setup Quake4 support and code changes for Doom3 and material handling of both.
+Related file changes
+QkD3.pas
+Added counter for phrasing of material list that kept their textures from
+displaying and sometimes caused an overload and system lockup.
+Added list of "Keywords" for the "Default texture" to display more of them.
+QkMap.pas
+To allow Quake4 Version 3 .mqp files to be read, previously set to only
+allow Doom3 Version 1 .map files to be read and error on Version 2.
+This still is the case for Doom3 with the above change for Quake4.
+Setup.pas
+Add game code "m" to start game support for Quake4.
+QkTextures.pas
+Added Quake4 game code mjQuake4 in Doom3 material file section
+to point to Quake4 material files and display their related textures.
+
 Revision 1.46  2006/04/07 21:36:31  nerdiii
 bugfix: latest version caused access violation if .WAD not found
 
@@ -239,7 +256,6 @@ type
                protected
                  Link: QPixelSet;
                  FNext: QTextureLnk;
-                 procedure SetNextPixelSet(PS: QPixelSet); override;
                public
                  function Description : TPixelSetDescription; override;
                  function SetDescription(const PSD: TPixelSetDescription;
@@ -1064,6 +1080,25 @@ begin
   LoadPixelSet.SetSize(nSize);
 end;
 
+procedure QTextureLnk.BreakLink;
+var
+ P: ^QTextureLnk;
+begin
+  if Link<>Nil then
+  begin
+    P:=@QTextureLnk(Link.ReverseLink);
+    while P^<>Self do
+    begin
+      if P^=Nil then
+        Raise InternalE('QPixelSetLnk.BreakLink');
+      P:=@P^.Next;
+    end;
+    P^:=Next;  { breaks the linked list }
+    Link.AddRef(-1);
+    Link:=Nil;
+  end;
+end;
+
 destructor QTextureLnk.Destroy;
 begin
   BreakLink;
@@ -1266,25 +1301,6 @@ begin
     Link.ReverseLink:=Self;
   end;
   Result:=Link;
-end;
-
-procedure QTextureLnk.BreakLink;
-var
- P: ^QTextureLnk;
-begin
-  if Link<>Nil then
-  begin
-    P:=@QTextureLnk(Link.ReverseLink);
-    while P^<>Self do
-    begin
-      if P^=Nil then
-        Raise InternalE('QPixelSetLnk.BreakLink');
-      P:=@P^.Next;
-    end;
-    P^:=Next;  { breaks the linked list }
-    Link.AddRef(-1);
-    Link:=Nil;
-  end;
 end;
 
 function QTextureLnk.BaseGame;
@@ -2390,24 +2406,6 @@ begin
   Q.BreakLink;
   Undo.Action(Q, TSpecificUndo.Create(LoadStr1(613), 'b', SrcBsp.Text, sp_Auto, Q));
 end;
-
-
-{*******************************************************************************
-Description  see QPixelSet in QkPixelSet.pas
-*******************************************************************************}
-procedure QTextureLnk.SetNextPixelSet(PS: QPixelSet);
-begin
-   FNextPixelSet.AddRef(-1);
-   FNextPixelSet := PS;
-   FNextPixelSet.AddRef(+1);
-   { temporary assignment to the linked texture to get the anim delay }
-   if Assigned(Link) then begin
-      Link.NextPixelSet := PS;
-      FAnimDelay := Link.AnimDelay;
-      Link.NextPixelSet := nil;
-   end;
-end;
-
 
 initialization
   RegisterQObject(QTextureLnk, 'a');
