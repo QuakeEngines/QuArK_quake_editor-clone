@@ -430,9 +430,14 @@ var
    P1, P2: PChar;
   begin
    P1:=Source;
-   while not (Source^ in [#13, #10, #0]) do
+   // stop reading at cr, lf, eof, sp or tab (sp and tab added to the original code, see QkQ3.pas)
+   // we need this for Quake 4 support as some materials are defined as:
+   //   materialName {
+   // and the trailing '{' gets appended to the material name
+   while not (Source^ in [#13, #10, #0, ' ', Chr(vk_Tab)]) do
     Inc(Source);
    P2:=Source;
+   // if the string ends with sp or tab, remove them
    while (P2>P1) and (P2[-1] in [' ', Chr(vk_Tab)]) do
     Dec(P2);
    SetString(Result, P1, P2-P1);
@@ -556,7 +561,7 @@ begin
        SkipSpaces;
        if Source^=#0 then Break;    { end of file }
        counter:=0;
-       Material:=D3Material.Create(ReadLine, Self);    { new shader object }
+       Material:=D3Material.Create(ReadLine, Self);    { new material object }
        SubElements.Add(Material);
        counter:=counter+1;
        SkipSpaces;
