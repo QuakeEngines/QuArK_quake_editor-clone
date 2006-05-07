@@ -12,6 +12,13 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
         
+6.5.0 alpha 8
+=============
+
+ * [Rowdy]: Fixed the code so that Doom3 and Quake4 can now use the map name
+        - that is being edited to compile and run in the game without having
+        - to manually change it anymore.
+        
 6.5.0 alpha 7
 =============
 
