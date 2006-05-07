@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2006/05/05 06:04:44  cdunde
+To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
+handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
+increases causing prog crash, can not use scrole bar in TB.
+
 Revision 1.47  2006/04/27 06:19:59  cdunde
 To setup Quake4 support and code changes for Doom3 and material handling of both.
 Related file changes
@@ -1196,7 +1201,7 @@ begin
             // witch is (as a Doom 3 example): base + materials/alphalabs.mtr
             MaterialFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['MaterialsPath']+Arg) as D3MaterialFile;
             MaterialFile.Acces;  { load the .mtr file (if not already loaded), meaning this loads the entire .mtr file.}
-            
+
             // GameTexturesPath is the IMAGE MAIN folder, for the link, with a forward slash, textures/ .
             // TexName is the IMAGE SUB folder, forward slach and texture name (without the file .tga suffex like alphalabs/a_1fwall21b)
             // So the "Link" line below is really TWO items linked togeather:
@@ -1208,11 +1213,13 @@ begin
             //    If the "primary" IMAGE file, with the Keyword qer_editorimage (for Doom3), does not exist then the next Keyword IMAGE file is used.
             Link:=MaterialFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
 
-            if DefaultImageName<>'' then
-              Link.Specifics.Values['q']:=DefaultImageName;
-
+            // this code was under the check for DefaultImageName below, but might cause an
+            // access violation if Link is nil
             if Link=Nil then
               Raise EErrorFmt(5755, [TexName, Arg]);
+
+            if DefaultImageName<>'' then
+              Link.Specifics.Values['q']:=DefaultImageName;
            end
           else
            begin
@@ -1221,11 +1228,13 @@ begin
             ShaderFile.Acces;  { load the .shader file (if not already loaded) }
             Link:=ShaderFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
 
-            if DefaultImageName<>'' then
-              Link.Specifics.Values['q']:=DefaultImageName;
-
+            // this code was under the check for DefaultImageName below, but might cause an
+            // access violation if Link is nil
             if Link=Nil then
               Raise EErrorFmt(5698, [TexName, Arg]);
+
+            if DefaultImageName<>'' then
+              Link.Specifics.Values['q']:=DefaultImageName;
            end;
         end
         else  { direct (non-shader) }
