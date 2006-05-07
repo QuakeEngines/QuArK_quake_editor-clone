@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.285  2006/05/01 01:21:05  cdunde
+//To set Doom3 for single tildy key ~ uses to open game console.
+//
 //Revision 1.284  2006/04/27 06:38:45  cdunde
 //To start support for Quake4 and change Doom3
 //config to build and run maps from within QuArK.
@@ -1989,7 +1992,8 @@ QQRKSRC1
 
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
-        RunMapCmdLine = " +devmap %s"
+        //RunMapCmdLine = " +devmap %s" <--- this is the original one, put it back before release <--- <--- <---
+        //RunMapCmdLine = " +devmap %filename%"
         AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"

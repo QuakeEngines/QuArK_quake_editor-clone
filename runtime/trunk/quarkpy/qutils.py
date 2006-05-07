@@ -478,6 +478,10 @@ def LoadPoolObj(tag, loadfn, *loadargs):
 def debug(text):
     import sys
     sys.stderr.write(text+"\n")
+    # rowdy: debug logging
+    #o = open('c:/rowdy/QuArK_debug.log', 'a')
+    #o.write('%s\n' % text)
+    #o.close()
 
 def MapHotKey(keytag, keyfunc, menu):
     key = quarkx.setupsubset(SS_GENERAL,"HotKeys")[keytag]
@@ -535,6 +539,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.27  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.24  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #

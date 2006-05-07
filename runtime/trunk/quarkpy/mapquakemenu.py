@@ -412,6 +412,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
             argument_mappath = "maps"
             argument_mapfile = "maps/%s.map" % map
             argument_file    = "maps/%s" % map
+        argument_filename = "%s" % map
 
         for pgrmnbr in range(9,0,-1):
             pgrmx = "BuildPgm%d" % pgrmnbr
@@ -456,10 +457,12 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     if p1: cmdline = cmdline + " " + p1
 
                     # Search and replace any user-variable
+                    #debug('rowdy: about to search and replace on command: "%s"' % cmdline)
                     newcmdline = cmdline
                     newcmdline = newcmdline.replace("%mappath%",  argument_mappath)
                     newcmdline = newcmdline.replace("%mapfile%",  argument_mapfile)
                     newcmdline = newcmdline.replace("%file%",     argument_file)
+                    newcmdline = newcmdline.replace("%filename%", argument_filename)
                     newcmdline = newcmdline.replace("%basepath%", setup["Directory"])
                     newcmdline = newcmdline.replace("%gamedir%", setup["tmpQuArK"])
                     newcmdline = newcmdline.replace("%quarkpath%", quarkx.exepath)
@@ -663,6 +666,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.43  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.40  2005/04/16 11:13:36  alexander
 #can save non alpha textures as vtf
 #can export used textures to materials folder
