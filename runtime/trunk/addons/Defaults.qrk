@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.286  2006/05/07 07:02:08  rowdy
+//Added a rough hack to allow %file% type substitution in the '<game> command-line' option.  Also added %filename% parameter that is replaced with the map filename (without path, without extension).
+//
 //Revision 1.285  2006/05/01 01:21:05  cdunde
 //To set Doom3 for single tildy key ~ uses to open game console.
 //
@@ -1237,7 +1240,7 @@ QQRKSRC1
       {
         Game = "Doom 3"
         Code = "j" // Hardcoded value in Setup.PAS
-        Program = "Doom3.EXE +seta com_allowconsole 1 +dmap newmap"
+        Program = "Doom3.EXE +seta com_allowconsole 1 +dmap %filename%"
         Directory = "C:\Program Files\Doom 3"
         CheckDirectory = "DOOM3.EXE"   // hidden setting
         CD = ""
@@ -1992,8 +1995,7 @@ QQRKSRC1
 
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
-        //RunMapCmdLine = " +devmap %s" <--- this is the original one, put it back before release <--- <--- <---
-        //RunMapCmdLine = " +devmap %filename%"
+        RunMapCmdLine = " +devmap %s"
         AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
@@ -2010,7 +2012,7 @@ QQRKSRC1
       {
         Game = "Quake 4"
         Code = "m" // Hardcoded value in Setup.PAS
-        Program = "quake4.exe +dmap newmap"
+        Program = "quake4.exe +seta com_allowconsole 1 +dmap %filename%"
         Directory = "C:\Program Files\Quake 4"
         CheckDirectory = "quake4.exe"   // hidden setting
         CD = ""
@@ -3238,8 +3240,7 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Doom 3 command-line"
-        Items = "Doom3.EXE +dmap newmap"$0D
-                "Doom3.EXE +dmap <YourMapName-all lower case>"
+        Items = "Doom3.EXE +seta com_allowconsole 1 +dmap %filename%"
         t_ProgramHint=!
       }
       Directory: =
@@ -4451,8 +4452,7 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Quake 4 command-line"
-        Items = "quake4.exe +dmap newmap"$0D
-                "quake4.exe +dmap <YourMapName-all lower case>"
+        Items = "quake4.exe +seta com_allowconsole 1 +dmap %filename%"
         t_ProgramHint=!
       }
       Directory: =
