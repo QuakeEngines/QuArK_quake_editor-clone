@@ -3,16 +3,6 @@ author: cdunde
 
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>
-<b>Changing the map name</b>
-
-This part is the only draw back that QuArK has in dealing with the way it has to work
-with Quake 4. If you want to use your own map name instead of the default name "newmap",
-besides saving it with the name you chose, you also need to change it in the configuration
-section for Quake 4 where the "newmap" name is now. The hidden code will pick up the new name
-automatically. Just remember to do the same thing if you start another map, change it back to
-"newmap" or what every you want to before you compile and run it. Other wise you will get an
-unexpected surprise!
-
 <b>Changing and re-running a map</b>
 
 Normally, I run Quake 4 in a separate window, instead of its "Full Screen" mode when working on

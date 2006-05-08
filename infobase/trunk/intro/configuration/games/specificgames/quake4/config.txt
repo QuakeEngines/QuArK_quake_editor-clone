@@ -47,14 +47,12 @@ exactly what the added items are that follow the quake4.exe entry.
 
 The "+seta com_allowconsole 1" lets you bring down the Game Console by pressing the ~ Tilley
 key, instead of Ctrl+Alt+~ keys as you would normally have to do.
-The "+dmap newmap" is the command that is fed into the Quake 4 Game Console automatically to
-build your map.
+The "+dmap %filename%" is the command that is fed into the Quake 4 Game Console automatically to
+build your map, %filename% is a variable that fills in the current map name you are editing.
 
 And even though you can not see it, because it has been pre-coded in QuArK's Defaults.qrk
 file, there is another command line entry of "+devmap (the map name)" that loads the compiled
-map in to the Quake 4 engine and runs it. See the
-<a href="intro.configuration.games.specificgames.quake4.html#misc">Misc. Info.</a>
-section below for more about changing the default map name "newmap".
+map in to the Quake 4 engine and runs it.
 
 <i><u>Directory of Quake 4</u></i>: This is the ONLY item that you really need to set.
 If this does not match your location, use the <b>...</b> button to select your Quake 4 folder.
