@@ -1,0 +1,47 @@
+title: Misc. Info.
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Installing the q3map_2.5.16_win32_x86 build tool</b>
+
+When you install this program you will need to direct it to the
+<a href="intro.configuration.games.specificgames.rtcw.html#config">QuArK files</a> folder as shown
+earlier in the <a href="intro.configuration.games.specificgames.rtcw.html#config">Configuration section</a>.
+That is really all you need to verify.
+
+<b>GtkRadiantSetup-1.4.0-Q3RTCWET.exe</b>
+
+This is another, self extracting, program that you should
+<a href="http://www.q3radiant.com/index.php?data=dlselect&query_dlsel=1&OS_dlsel%5B%5D=1&Release_dlsel%5B%5D=3&Games_dlsel%5B%5D=2">download from here</a> and install.
+This will add additional pak files, maps, models and scripts folders and their files to RTCW. These files will not replace any
+of the original files already there. But it does GREATLY enhance the textures that will be displayed
+in <a href="intro.texturebrowser.overview.html">QuArK's Texture Browser</a> that are available for
+use in map editing.
+
+Also during this installation it will ask if you want a Full installation or a Custom installation.<br>
+Because it supports a number of different games (RTCW, Wolfenstein - Enemy Territory and Quake III Arena).<br>
+The Custom option allows you to choose which game you want to install its files for, all of these are already
+checked for a Full installation.<br>
+Just be sure that you install for RTCW if you choose the Custom option.
+
+<b>Changing and re-running a map</b>
+
+Normally, I run RTCW in a separate window, instead of its "Full Screen" mode when working on
+a map, for a couple of reasons.<br>
+First it's a lot easer to see around to view something in the
+editor that you might be concentrating on with your work.<br>
+The other is being able to jump back
+and forth between the editor and the game running by simply holding down the Alt key and
+pressing the Tab key to switch.<br>
+It seems less confusing that way.
+
+Unfortunately it does not have the ability to make changes in your map while the game is still running
+and then rebuild and reload the map.<br>
+To do this you will need to close the game and go through the normal process once again.<br>
+But basically all you need to do is just click the QuArK menu item and off you go.
+
+To close the game, press the Esc key and select "Exit" from its menu.
+</td></tr>
+</table>
+
