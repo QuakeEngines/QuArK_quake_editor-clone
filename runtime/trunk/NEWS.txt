@@ -15,6 +15,27 @@ $Id$
 6.5.0 alpha 8
 =============
 
+ * [cdunde]: Added poly "No fill" and "Outline color selection" functions to the
+        - RMB menu item "Background image..." with direct link full Infobase
+        - documentation on these functions, their settings and use.
+
+ * [cdunde]: Started, and direct linked from the editor, a new section to the
+        - Infobase docs for RMB menus, their items and full documentation on use.
+
+ * [cdunde-Mek]: Completely revamped the Configuration for RTCW and included one
+        - of two building tools in the RTCW addons folder. The second building
+        - tool has been repackaged spacificaly for QuArK and placed on the new
+        - QuArK Official site "game_support" location for easy downloading and
+        - installation, which is directly linked to and covered in detail
+        - in the new Infobase docs section for the Configuration of RTCW.
+
+ * [cdunde]: Setup a new file section on the QuArK Official site, "game_support",
+        - for files specifically repackaged for QuArK, by game, and directly linked
+        - to the Infobase configuration docs of those specific games supported by
+        - QuArK for easy and fast direct downloading and installation.
+
+ * [cdunde]: Added full Infobase Configuration documentation for RTCW.
+
  * [Rowdy]: Fixed the code so that Doom3 and Quake4 can now use the map name
         - that is being edited to compile and run in the game without having
         - to manually change it anymore.
