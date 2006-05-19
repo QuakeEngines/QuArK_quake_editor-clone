@@ -17,8 +17,6 @@ import qmacro
 import qtoolbar
 from qeditor import *
 
-
-
 class BackBmpDlg(qmacro.dialogbox):
 
     #
@@ -27,7 +25,7 @@ class BackBmpDlg(qmacro.dialogbox):
 
     dfsep = 0.5
     dlgflags = FWF_KEEPFOCUS
-    size = (300,201)
+    size = (300,260)
 
     dlgdef = """
       {
@@ -39,9 +37,23 @@ class BackBmpDlg(qmacro.dialogbox):
         filename: = {Typ="EP" DefExt="bmp" Txt="Background image file"}
         center: = {Typ="EF3" Txt="Coordinates of the center"}
         scale: = {Typ="EF1" Txt="Scale"}
+        PolySelectNoFill: =
+        {
+        Txt = "Poly No Fill (map editor only)"
+        Typ = "X"
+        Hint = "Stops the filling of the selected Poly with color."$0D
+               "Makes it see through."
+        }
+        NoFillSel: =
+        {
+        Txt = "Color Guide (map editor only)"
+        Typ = "LI"
+        Hint = "The selected Poly(s) outline color."
+        }
         sep: = {Typ="S" Txt=""}
-        ok:py = {Txt="" }
-        no:py = { Txt=""}
+        ok:py = {Txt="Apply and view changes"}
+        remove:py = {Txt="Remove background image"}
+        no:py = {Txt="Close this dialog"}
       }
     """
 
@@ -50,50 +62,100 @@ class BackBmpDlg(qmacro.dialogbox):
     #
 
     def __init__(self, form, view):
+        ico_maped=ico_dict['ico_maped']
         self.view = view
         src = quarkx.newobj(":")
         if view.background is None:
             src["center"] = (0,0,0)
             src["scale"] = (1,)
+            src["PolySelectNoFill"] = quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"]
+            src["NoFillSel"] = quarkx.setupsubset(SS_MAP, "Colors").getint("NoFillSel")
         else:
             filename, center, scale = view.background
             src["filename"] = filename
             src["center"] = center.tuple
             src["scale"] = scale,
+            src["PolySelectNoFill"] = quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"]
+            src["NoFillSel"] = quarkx.setupsubset(SS_MAP, "Colors").getint("NoFillSel")
         qmacro.dialogbox.__init__(self, form, src,
            ok = qtoolbar.button(
               self.ok,
-              "display the image file",
-              ico_editor, 3,
+              "apply and view changes",
+              ico_editor, 1,
               "Ok"),
+           remove = qtoolbar.button(
+              self.remove,
+              "remove background image",
+              ico_maped, 2,
+              "No image"),
            no = qtoolbar.button(
               self.no,
-              "cancel background image",
+              "close this dialog",
               ico_editor, 0,
-              "No image"))
+              "Close"))
 
     def ok(self, m):
+        if mapeditor() is not None:
+            editor = mapeditor()
+        else:
+            quarkx.clickform = self.view.owner
+            editor = mapeditor()
         quarkx.globalaccept()
         src = self.src
         filename = src["filename"]
         if filename:
             center = quarkx.vect(src["center"])
             scale, = src["scale"]
+            PolySelectNoFill = src["PolySelectNoFill"]
+            NoFillSel = src["NoFillSel"]
             self.view.background = filename, center, scale
-            self.view.invalidate()
-            self.close()
+          ### Save the settings...
+            quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"] = PolySelectNoFill
+            quarkx.setupsubset(SS_MAP, "Colors")["NoFillSel"] = NoFillSel
+            editor.invalidateviews()
         else:
-            self.no(m)
+          ### Save the settings...
+            quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"] = src["PolySelectNoFill"]
+            quarkx.setupsubset(SS_MAP, "Colors")["NoFillSel"] = src["NoFillSel"]
+            editor.invalidateviews()
+
+    def remove(self, m):
+        if mapeditor() is not None:
+            editor = mapeditor()
+        else:
+            quarkx.clickform = self.view.owner
+            editor = mapeditor()
+        src = self.src
+        self.view.background = None
+        PolySelectNoFill = src["PolySelectNoFill"]
+        NoFillSel = src["NoFillSel"]
+          ### Save the settings...
+        quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"] = PolySelectNoFill
+        quarkx.setupsubset(SS_MAP, "Colors")["NoFillSel"] = NoFillSel
+        editor.invalidateviews()
 
     def no(self, m):
-        self.view.background = None
-        self.view.invalidate()
+        if mapeditor() is not None:
+            editor = mapeditor()
+        else:
+            quarkx.clickform = self.view.owner
+            editor = mapeditor()
+        src = self.src
+        PolySelectNoFill = src["PolySelectNoFill"]
+        NoFillSel = src["NoFillSel"]
+          ### Save the settings...
+        quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"] = PolySelectNoFill
+        quarkx.setupsubset(SS_MAP, "Colors")["NoFillSel"] = NoFillSel
+        editor.invalidateviews()
         self.close()
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.7  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.4  2001/06/17 21:05:27  tiglari
 #fix button captions
 #

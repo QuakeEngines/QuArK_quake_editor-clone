@@ -253,8 +253,15 @@ class BaseEditor:
                         fs = None
         # End of Terrain Generator added code
         if (fs is not None) and (view.viewmode == "wire"):
-            mode = self.drawmode | DM_BACKGROUND
-            if MapOption("BBoxSelected", self.MODE): mode=mode|DM_BBOX
+            # This gives the option of NOT filling the selected poly with color in 2D views.
+            # Very helpful when a background image is being used to work with.
+            if MapOption("PolySelectNoFill", self.MODE) and fs.type != ":e":
+                mode=self.drawmode | DM_DONTDRAWSEL
+            else:
+                mode = self.drawmode | DM_BACKGROUND
+
+            if MapOption("BBoxSelected", self.MODE):
+                mode=mode|DM_BBOX
             self.ObjectMgr.im_func("drawback", fs, self, view, mode)
 
         #
@@ -287,6 +294,7 @@ class BaseEditor:
                 for sel in list:    # draw the selected objects in "highlight" white-and-black lines
                     view.drawmap(sel, mode | DM_SELECTED, view.setup.getint("SelMultColor"))
 
+
         #
         # Send the above drawed map items to the 3D renderer
         #
@@ -305,6 +313,11 @@ class BaseEditor:
             mode = self.drawmode
             if MapOption("BBoxSelected", self.MODE): mode=mode|DM_BBOX
             self.ObjectMgr.im_func("drawback", fs, self, view, mode)
+
+        # This allows plp to pick the color the selected poly will be drawn when the No Fill option is active.
+        if len(list)==1 and MapOption("PolySelectNoFill", self.MODE) and fs.type != ":e":
+            view.drawmap(list[0], mode | DM_OTHERCOLOR, quarkx.setupsubset(SS_MAP, "Colors").getint("NoFillSel"))
+
         self.finishdrawing(view)
 
 
@@ -879,6 +892,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.23  2006/01/30 08:20:00  cdunde
+#To commit all files involved in project with Philippe C
+#to allow QuArK to work better with Linux using Wine.
+#
 #Revision 1.22  2005/12/07 08:33:35  cdunde
 #To stop bug braking Model Editor because of code added to stop last
 #selected item for Terrain Generator being drawn in white outline.

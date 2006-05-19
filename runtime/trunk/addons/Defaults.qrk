@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.287  2006/05/07 23:12:27  cdunde
+//To reset settings for Rowdys new command line fix
+//to allow the variable %filename% to be used.
+//
 //Revision 1.286  2006/05/07 07:02:08  rowdy
 //Added a rough hack to allow %file% type substitution in the '<game> command-line' option.  Also added %filename% parameter that is replaced with the map filename (without path, without extension).
 //
@@ -2083,38 +2087,12 @@ QQRKSRC1
       {
         Game = "RTCW"
         Code = "d" // Hardcoded value in Setup.PAS
-        Program = "WOLFSP.EXE +set sv_pure 0"
 
-        Directory = "c:\Progra~1\Return~1"
-        CheckDirectory = "*.EXE"
-
+        Program = "WOLFSP.EXE  +set sv_cheats 1 +set fs_homepath main +set fs_game tmpQuArK +set nextmap "$22"spdevmap %filename%"$22" +exec"
+        Directory = "C:\Program Files\Return to Castle Wolfenstein"
+        CheckDirectory = "*.EXE"   // hidden setting
         CD = ""
-        CDDir = ""
-
-        MapLimit = '65536 65536 65536'
-
-        MapCommentsPrefix = "//"
-        OutputMapFormat="Brush Primitives"
-        StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
-        AlwaysWriteThreeFields = "1"
-        BuildPgm1  = "Q3MAP2.EXE"
-        BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
-        BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
-        BuildPgm2  = "Q3MAP2.EXE"
-        BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
-        BuildPgm3  = "Q3MAP2.EXE"
-        BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vlight "$22"%file%"$22
-        BuildPgm4 = "BSPC.EXE"
-        BuildArgs4 = "-threads 1 -ext _b0 -cfg %buildpgmsdir%\aascfg_sm.c -bsp2aas ..\%output%\%file%.bsp -output ..\%output%\maps"
-//        BuildCheck4= "+AAS"  // it's actually _b0.aas
-        BuildPgm5 = "BSPC.EXE"
-        BuildArgs5 = "-threads 1 -ext _b1 -cfg %buildpgmsdir%\aascfg_lg.c -bsp2aas %basepath%\%output%\%file%.bsp -output ..\%output%\maps"
-        TexturesPath = "textures/"
-        ShadersPath = "scripts/"
-        Q2TexFlags = "1"
-
-        BezierPatchSupport = "1" // this game supports bezier-patches
-        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+        CDDir = "\Return to Castle Wolfenstein\main"       // hidden setting
 
         DefaultTexture = "xlab_wall/xconcrete_c53b"
         DefaultTextureTrigger = "common/trigger"
@@ -2123,6 +2101,34 @@ QQRKSRC1
         DefaultTextureCaulk = "common/caulk"
         DefaultTextureScale = "0.5"
 
+        Console = "1"
+        BuildPgmsDir = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\bspcToolFolder"
+        StupidBuildToolKludge = "" // Run tools from base directory setting
+        OutputMapFormat="Brush Primitives"
+        AlwaysWriteThreeFields = "1"
+        BuildPgm1  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22""
+        BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22""
+        BuildPgm3  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22""
+        BuildPgm4 = "BSPC.EXE"
+        BuildArgs4 = "-threads 2 -ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
+        BuildPgm5 = "BSPC.EXE"
+        BuildArgs5 = "-threads 2 -ext _b1 -cfg "$22"%buildpgmsdir%\aascfg_sm.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
+        BuildPgm6 = "Rename.bat"
+        BuildArgs6 = "%filename% "$22"%mappath%"$22""
+
+        MapCommentsPrefix = "//"
+
+        TexturesPath = "textures/"
+        ShadersPath = "scripts/"
+        Q2TexFlags = "1"
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
         TextureWriteFormat = ".tga"
@@ -2130,21 +2136,18 @@ QQRKSRC1
 
         BaseDir = "main"
         tmpQuArK = "tmpQuArK"
-
+        MapLimit = '65536 65536 65536'
         Palette = ":pics/colormap.pcx"
-        ExtraCmdLine = "+set fs_game %s"
-        RunMapCmdLine = " +devmap %s" // won't work, but open console and
-                                      //   run the map by /spmap <mapname> in the console
         AddOns = "DataRTCW.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
-        Console = "1"
-        Form = "GameRTCW"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         BrushDecimalPlaces = '5'
+
+        Form = "GameRTCW"
       }
 
       Sin:config =
@@ -2641,7 +2644,6 @@ QQRKSRC1
       //HideOutOfView           = ""
       //Textured                = ""
         CrossCursor             = "1"
-        AutoAdjustNormal        = ""
         DrawMapLimit            = "1"
         PagesLocked             = ""
         TexPanelActive          = "1"
@@ -2649,6 +2651,8 @@ QQRKSRC1
         BBoxAlways              = "1"
         BBoxSelected            = "1"
         DeleteFaces             = "1"
+        AutoAdjustNormal        = ""
+        PolySelectNoFill        = ""
       //ViewModels              = "1"
         NoScrollBars            = "1"
         PolySubtractMax         = ""
@@ -2721,8 +2725,9 @@ QQRKSRC1
         GrayImage  = $FF0000
         BSP        = $008080
         Digger     = $FF00FF
-        Linear     = $FF0080
         Bezier     = $008080
+        Linear     = $FF0080
+        NoFillSel  = $FF00FF
         Form = "MapColors"
       }
     }
@@ -4550,8 +4555,8 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "RTCW command-line"
-        Items = "WOLFSP.EXE +set sv_pure 0"
-                $0D"WOLFMP.EXE +set sv_pure 0"
+        Items = "WOLFSP.EXE  +set sv_cheats 1 +set fs_homepath main +set fs_game tmpQuArK +set nextmap "$22"spdevmap %filename%"$22" +exec"
+                $0D"WOLFMP.EXE  +set sv_cheats 1 +set fs_homepath main +set fs_game tmpQuArK +set nextmap "$22"spdevmap %filename%"$22" +exec"
                 $0D"ET.EXE +set sv_pure 0"
                 $0D"(another exe) +set sv_pure 0"
         Values = "1"
@@ -4567,6 +4572,13 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "*.EXE" // with so many mods should not be tided to only one exe file.
+      }
+      CD: =
+      {
+        Txt = "RTCW CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed RTCW minimally, this is the drive of the CD-ROM."
+        CheckFile = "main\pak0.pk3"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -5319,8 +5331,9 @@ QQRKSRC1
           GrayImage  = $FF0000
           BSP        = $008080
           Digger     = $FF00FF
-          Linear     = $FF0080
           Bezier     = $008080
+          Linear     = $FF0080
+          NoFillSel  = $FF00FF
         }
       }
       Scheme1: =
@@ -5346,8 +5359,9 @@ QQRKSRC1
           GrayImage  = $FF0000
           BSP        = $008080
           Digger     = $FF00FF
-          Linear     = $FF0080
           Bezier     = $008080
+          Linear     = $FF0080
+          NoFillSel  = $FF00FF
         }
       }
       Scheme2: =
@@ -5373,8 +5387,9 @@ QQRKSRC1
           GrayImage  = $0000FF
           BSP        = $8080FF
           Digger     = $FF00FF
-          Linear     = $FF0080
           Bezier     = $008080
+          Linear     = $FF0080
+          NoFillSel  = $FF00FF
         }
       }
       Scheme3: =
@@ -5400,8 +5415,9 @@ QQRKSRC1
           GrayImage  = $C1DEFF
           BSP        = $419AFF
           Digger     = $FF00FF
-          Linear     = $FF0080
           Bezier     = $008080
+          Linear     = $FF0080
+          NoFillSel  = $FF00FF
         }
       }
       Sep1: =
@@ -5432,6 +5448,7 @@ QQRKSRC1
       Digger:     = { Txt="Digging polyhedrons"         Typ="LI" }
       Bezier:     = { Txt="Bezier patches"              Typ="LI" }
       Linear:     = { Txt="Linear Mapping box"          Typ="LI" }
+      NoFillSel:  = { Txt="Poly No Fill Select Color"   Typ="LI" hint = "Poly select color when No Fill is on."}
     }
     MdlColors:form =
     {
@@ -5920,13 +5937,14 @@ QQRKSRC1
       NoScrollBars:             = {Typ="X" Txt="Map view scroll"                Cap="Hide scroll bars"                     }
       CrossCursor:              = {Typ="X" Txt="Mouse cursor"                   Cap="Cross-like cursor"                    }
       HideMouseDrag:            = {Typ="X" Txt="   ``"                          Cap="Hidden while dragging"                }
-      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                      }
       PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
       TexPanelActive:           = {Typ="X" Txt="   ``"                          Cap="Show texture"                         }
       TexPanelLight:            = {Typ="X" Txt="   ``"                          Cap="Light gradient"                       }
       BBoxAlways:               = {Typ="X" Txt="Entities Bounding boxes"        Cap="Bounding frame corner"                }
       BBoxSelected:             = {Typ="X" Txt="   ``"                          Cap="Dark box on selected"                 }
       DeleteFaces:              = {Typ="X" Txt="Unused faces && polys"          Cap="Delete unused faces"                  }
+      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                      }
+      PolySelectNoFill:         = {Typ="X" Txt="Polyhedron selection"           Cap="Not filled-see through"                      }
       PolySubtractMax:          = {Typ="X" Txt="Polyhedron subtraction"         Cap="Allow overlapping"                    }
       ComputePolys:             = {Typ="X" Txt="   ``"                          Cap="Dig in 3D views"                      }
       HideFaces:                = {Typ="X" Txt="Polyhedron faces"               Cap="Hide faces in tree"                   }
