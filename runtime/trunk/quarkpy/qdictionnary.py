@@ -795,7 +795,7 @@ Strings = {
     5587: "Impossible to create the directory '%s'. Be sure you entered the path to %s correctly in the configuration dialog box//Error code %d",
     5588: "Texture '%s' not found.",
     5589: "%d textures written to '%s'.",
-    5590: "%d textures written to '%s'. Of this %d were animated textures and/or shaders.",
+    5590: "%d textures and shader or script files written to '%s'. Of this %d were animated textures and/or shaders or scripts.",
     5591: "Choose the file(s) to link to",
     5592: "Choose the file(s) to import",
     5593: "'%s' is not a Quake1 MDL file//%d-%d should be %d-%d",
@@ -978,6 +978,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.75  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.72  2005/09/21 15:42:59  peter-b
 #More useful error message for core exceptions
 #

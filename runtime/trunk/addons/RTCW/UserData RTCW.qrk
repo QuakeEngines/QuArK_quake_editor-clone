@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2005/10/15 01:00:23  cdunde
+//To reinstate headers and history
+//
 //Revision 1.2  2002/04/28 11:40:18  tiglari
 //Modifications to get RTCW support working better
 //
@@ -87,14 +90,16 @@ QQRKSRC1
   {
     item: =
     {
-      Txt = "&GO ! (textures+build+Rctw MP)"
+      Txt = "&GO ! (textures+build+Rctw)"
       Shortcut = "Ctrl+R"
       RunGame = "1"
       Textures = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"
-//      BuildPgm4 = "1"
+      BuildPgm4 = "1"
+      BuildPgm5 = "1"
+      BuildPgm6 = "1"
       ExportMapFile = "1"
     }
     item: =
@@ -116,6 +121,8 @@ QQRKSRC1
       RunGame = "1"
       BuildPgm1 = "1"
       BuildPgm4="1"
+      BuildPgm5 = "1"
+      BuildPgm6 = "1"
       ExportMapFile = "1"
     }
     item: =
@@ -126,6 +133,9 @@ QQRKSRC1
       Textures = "1"
       RunGame = "1"
       BuildPgm1 = "1"
+      BuildPgm4="1"
+      BuildPgm5 = "1"
+      BuildPgm6 = "1"
       ExportMapFile = "1"
     }
     item: =
@@ -134,20 +144,21 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&Prepare used textures"
+      Txt = "&Prepare used textures and scripts"
       Textures = "1"
     }
     item: =
     {
-      Txt = "&Complete MP Rebuild"
+      Txt = "&Complete Rebuild"
       Pause = "1"
       Textures = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"
-//      BuildPgm4 = "1"
-//      BuildPgm5 = "1"
+      BuildPgm4 = "1"
+      BuildPgm5 = "1"
+      BuildPgm6 = "1"
     }
     item: =
     {
@@ -160,34 +171,30 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&Q3MAP (.bsp file creation)"
+      Txt = "&RTCW MAP (.bsp file creation)"
       Pause = "1"
       BuildPgm1 = "1"
       ExportMapFile = "1"
     }
     item: =
     {
-      Txt = "&Q3MAP -vis (visibility list)"
+      Txt = "&RTCW MAP -vis (visibility list)"
       Pause = "1"
       BuildPgm2 = "1"
     }
     item: =
     {
-      Txt = "&Q3MAP -light (light projection)"
+      Txt = "&RTCW MAP -light (light projection)"
       Pause = "1"
       BuildPgm3 = "1"
     }
     item: =
     {
-      Txt = "First bspc (bot nodelist b0)"
+      Txt = "Both bspc (bot nodelist b0 and b1)"
       Pause = "1"
       BuildPgm4 = "1"
-    }
-    item: =
-    {
-      Txt = "Second bspc (bot nodelist b1)"
-      Pause = "1"
       BuildPgm5 = "1"
+      BuildPgm6 = "1"
     }
     item: =
     {
@@ -195,15 +202,7 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "Q3MAP -onlyents (only &entities)"
-      Pause = "1"
-      BuildPgm1 = "1"
-      BuildArgs1 = "-onlyents"
-      ExportMapFile = "1"
-    }
-    item: =
-    {
-      Txt = "&makeaas -reach (update entity reachability)"
+      Txt = "&Make aas -reach (update entity reachability)"
       Pause = "1"
       ExportMapFile = "1"
       BuildPgm4 = "1"
