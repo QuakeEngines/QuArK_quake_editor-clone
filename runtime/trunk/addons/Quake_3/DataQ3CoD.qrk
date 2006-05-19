@@ -408,19 +408,397 @@ QQRKSRC1
           ;desc = "When activated will use its target."
         }
       }
+      SPweapons_* entities.qtxfolder =
+      {
+        weapon_30cal:e =
+        {
+          model = "xmodel/weapon_browning30cal"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Browning 30cal"
+        }
+        weapon_BAR:e =
+        {
+          model = "xmodel/weapon_bar"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Bar"
+        }
+        weapon_bren:e =
+        {
+          model = "xmodel/weapon_bren"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Bren"
+        }
+        weapon_colt:e =
+        {
+          model = "xmodel/weapon_colt45"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Colt 45"
+        }
+        weapon_enfield:e =
+        {
+          model = "xmodel/weapon_enfield"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Enfield"
+        }
+        weapon_fg42:e =
+        {
+          model = "xmodel/weapon_FG42"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP FG 42"
+        }
+        weapon_fraggrenade:e =
+        {
+          model = "xmodel/weapon_MK2FragGrenade"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP MK2 Frag Grenade"
+        }
+        weapon_kar98k:e =
+        {
+          model = "xmodel/weapon_kAr98"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP kAr 98"
+        }
+        weapon_kar98k_pavlov:e =
+        {
+          model = "xmodel/weapon_kAr98"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP kAr 98 Pavlov"
+        }
+        weapon_kar98k_scoped:e =
+        {
+          model = "xmodel/weapon_kar98scoped"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP kAr 98 Scoped"
+        }
+        weapon_luger:e =
+        {
+          model = "xmodel/weapon_luger"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Luger"
+        }
+        weapon_m1carbine:e =
+        {
+          model = "xmodel/weapon_M1Carbine"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP M1 Carbine"
+        }
+        weapon_m1garand:e =
+        {
+          model = "xmodel/weapon_M1Garand"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP M1 Garand"
+        }
+        weapon_mk1britishfrag:e =
+        {
+          model = "xmodel/weapon_british_handgrenade"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP mk1 British hand grenade"
+        }
+        weapon_mosinnagant:e =
+        {
+          model = "xmodel/weapon_mosinnagant"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Mosinnagant"
+        }
+        weapon_mosinnagantsniper:e =
+        {
+          model = "xmodel/weapon_mosinnagantscoped"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Mosinnagant sniper"
+        }
+        weapon_mp40:e =
+        {
+          model = "xmodel/weapon_MP40"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP MP40"
+        }
+        weapon_mp44:e =
+        {
+          model = "xmodel/weapon_mp44"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP MP44"
+        }
+        weapon_panzerfaust:e =
+        {
+          model = "xmodel/weapon_panzerfaust"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Panzerfaust"
+        }
+        weapon_ppsh:e =
+        {
+          model = "xmodel/weapon_ppsh"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP ppsh"
+        }
+        weapon_russiangrenade:e =
+        {
+          model = "xmodel/weapon_russian_handgrenade"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Russian hand grenade"
+        }
+        weapon_springfield:e =
+        {
+          model = "xmodel/weapon_springfield"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Springfield"
+        }
+        stalingrad_ammo:e =
+        {
+          model = "xmodel/viewmodel_ammo"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Springfield ammo"
+        }
+        weapon_sten:e =
+        {
+          model = "xmodel/weapon_sten"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Sten"
+        }
+        weapon_stielhandgranate:e =
+        {
+          model = "xmodel/weapon_nebelhandgrenate"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Nebel hand grenate"
+        }
+        weapon_thompson:e =
+        {
+          model = "xmodel/weapon_thompson"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SP Thompson"
+        }
+      }
+      MPweapons_* entities.qtxfolder =
+      {
+        mpweapon_30cal:e =
+        {
+          model = "xmodel/weapon_browning30cal"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Browning 30cal"
+        }
+        mpweapon_bar:e =
+        {
+          model = "xmodel/weapon_bar"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Bar"
+        }
+        mpweapon_bren:e =
+        {
+          model = "xmodel/weapon_bren"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Bren"
+        }
+        mpweapon_colt:e =
+        {
+          model = "xmodel/weapon_colt45"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Colt 45"
+        }
+        mpweapon_enfield:e =
+        {
+          model = "xmodel/weapon_enfield"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Enfield"
+        }
+        mpweapon_fg42:e =
+        {
+          model = "xmodel/weapon_FG42"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP FG 42"
+        }
+        mpweapon_fraggrenade:e =
+        {
+          model = "xmodel/weapon_MK2FragGrenade"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP MK2 Frag Grenade"
+        }
+        mpweapon_kar98k:e =
+        {
+          model = "xmodel/weapon_kAr98"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "kAr 98"
+        }
+        mpweapon_kar98k_pavlov:e =
+        {
+          model = "xmodel/weapon_kAr98"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP kAr 98 Pavlov"
+        }
+        mpweapon_kar98k_scoped:e =
+        {
+          model = "xmodel/weapon_kar98scoped"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP kAr 98 Scoped"
+        }
+        mpweapon_luger:e =
+        {
+          model = "xmodel/weapon_luger"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Luger"
+        }
+        mpweapon_m1carbine:e =
+        {
+          model = "xmodel/weapon_M1Carbine"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP M1 Carbine"
+        }
+        mpweapon_m1garand:e =
+        {
+          model = "xmodel/weapon_M1Garand"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP M1 Garand"
+        }
+        mpweapon_mk1britishfrag:e =
+        {
+          model = "xmodel/weapon_british_handgrenade"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP mk1 British hand grenade"
+        }
+        mpweapon_mosinnagant:e =
+        {
+          model = "xmodel/weapon_mosinnagant"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Mosinnagant"
+        }
+        mpweapon_mosinnagantsniper:e =
+        {
+          model = "xmodel/weapon_mosinnagantscoped"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Mosinnagant sniper"
+        }
+        mpweapon_mp40:e =
+        {
+          model = "xmodel/weapon_MP40"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP MP40"
+        }
+        mpweapon_mp44:e =
+        {
+          model = "xmodel/weapon_mp44"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP MP44"
+        }
+        mpweapon_panzerfaust:e =
+        {
+          model = "xmodel/weapon_panzerfaust"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Panzerfaust"
+        }
+        mpweapon_panzerfaust_ammo:e =
+        {
+          model = "xmodel/weapon_panzerfaust_ammo"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Panzerfaust ammo"
+        }
+        mpweapon_ppsh:e =
+        {
+          model = "xmodel/weapon_ppsh"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP ppsh"
+        }
+        mpweapon_russiangrenade:e =
+        {
+          model = "xmodel/weapon_russian_handgrenade"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Russian hand grenade"
+        }
+        mpweapon_springfield:e =
+        {
+          model = "xmodel/weapon_springfield"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Springfield"
+        }
+        mpstalingrad_ammo:e =
+        {
+          model = "xmodel/viewmodel_ammo"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Springfield ammo"
+        }
+        mpweapon_sten:e =
+        {
+          model = "xmodel/weapon_sten"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Sten"
+        }
+        mpweapon_stielhandgranate:e =
+        {
+          model = "xmodel/weapon_nebelhandgrenate"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Nebel hand grenate"
+        }
+        mpweapon_thompson:e =
+        {
+          model = "xmodel/weapon_thompson"
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP Thompson"
+        }
+      }
     }
   }
   Entity Forms.qctx =
   {
-    t_model:incl = {
-      model: = { Txt = " "
+    t_model:incl =
+    {
+      model: =
+      { Txt = " "
         Typ = "B"
         Cap = "models..."
         form ="t_models_form:form"
         hint ="Available .MD3 files"
       }
     }
-
     info_grenade_hint:form =
     {
       help = "AI will try to get a grenade to go through this point in space w"
@@ -500,7 +878,8 @@ QQRKSRC1
       {
         txt = "&"
         hint = "overrides the default 300 intensity."
-      }      _color: =
+      }
+      _color: =
       {
         txt = "&"
         Typ = "LN"
@@ -2579,6 +2958,218 @@ QQRKSRC1
         values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"1"
          "0"
       }
+    }
+    weapon_30cal:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_BAR:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_bren:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_colt:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_enfield:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_fg42:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_fraggrenade:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_kar98k:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_kar98k_pavlov:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_kar98k_scoped:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_luger:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_m1carbine:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_m1garand:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_mk1britishfrag:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_mosinnagant:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_mosinnagantsniper:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_mp40:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_mp44:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_panzerfaust:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_ppsh:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_russiangrenade:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_springfield:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    stalingrad_ammo:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_sten:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_stielhandgranate:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    weapon_thompson:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_30cal:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_bar:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_bren:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_colt:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_enfield:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_fg42:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_fraggrenade:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_kar98k:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_kar98k_pavlov:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_kar98k_scoped:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_luger:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_m1carbine:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_m1garand:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_mk1britishfrag:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_mosinnagant:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_mosinnagantsniper:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_mp40:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_mp44:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_panzerfaust:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_panzerfaust_ammo:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_ppsh:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_russiangrenade:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_springfield:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpstalingrad_ammo:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_sten:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_stielhandgranate:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    mpweapon_thompson:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
     }
   }
 }
