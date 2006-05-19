@@ -11,8 +11,8 @@
 ;
 ; Setup and Use to create QuArK NSIS installer:
 ; ============================================
-; 1) Change " PRODUCT_VERSION " (line 24) below.
-; 2) Change " OutFile " name (line 77) below.
+; 1) Change " PRODUCT_VERSION " (line 25) below.
+; 2) Change " OutFile " name (line 78) below.
 ; 3) Create folder named " QuArK_installer_files " in C:\ directory.
 ; 4) Place QuArK .exe and all runtime files in the above folder.
 ; 5) Create folder named " QuArK_installer_splash_image " in C:\ directory.
@@ -22,9 +22,9 @@
 ; 9) The finished QuArK installer will be place in the same location as this file.
 
 !define PRODUCT_NAME "QuArK"
-!define PRODUCT_VERSION "6.5.0 Alpha 3"
+!define PRODUCT_VERSION "6.5.0 Alpha 7"
 !define PRODUCT_WEB_SITE "http://dynamic.gamespy.com/~quark/"
-!define PRODUCT_WEB_Forum "http://quark.ironfoot.co.uk/"
+!define PRODUCT_WEB_Forum "http://quark.ironfoot.co.uk/forums/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\QuArK.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -75,7 +75,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "quark-win32-6.5.0alpha3.exe"
+OutFile "quark-win32-6.5.0alpha7.exe"
 InstallDir "$PROGRAMFILES\QuArK"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -119,8 +119,13 @@ Section "MainSection" SEC01
   File "C:\QuArK_installer_files\addons\Quake_2\*.*"
   SetOutPath "$INSTDIR\addons\Quake_3"
   File "C:\QuArK_installer_files\addons\Quake_3\*.*"
+  SetOutPath "$INSTDIR\addons\Quake_4"
+  File "C:\QuArK_installer_files\addons\Quake_4\*.*"
   SetOutPath "$INSTDIR\addons\RTCW"
   File "C:\QuArK_installer_files\addons\RTCW\*.*"
+  SetOutPath "$INSTDIR\addons\RTCW\QuArK files"
+  SetOutPath "$INSTDIR\addons\RTCW\QuArK files\bspc"
+  File "C:\QuArK_installer_files\addons\RTCW\QuArK files\bspc\*.*"
   SetOutPath "$INSTDIR\addons\Sin"
   File "C:\QuArK_installer_files\addons\Sin\*.*"
   SetOutPath "$INSTDIR\addons\SOF"
@@ -199,7 +204,9 @@ Section Uninstall
   Delete "$INSTDIR\addons\SoF2\*.*"
   Delete "$INSTDIR\addons\SOF\*.*"
   Delete "$INSTDIR\addons\Sin\*.*"
+  Delete "$INSTDIR\addons\RTCW\QuArK files\bspc\*.*"
   Delete "$INSTDIR\addons\RTCW\*.*"
+  Delete "$INSTDIR\addons\Quake_4\*.*"
   Delete "$INSTDIR\addons\Quake_3\*.*"
   Delete "$INSTDIR\addons\Quake_2\*.*"
   Delete "$INSTDIR\addons\Quake_1\*.*"
@@ -236,7 +243,10 @@ Section Uninstall
   RMDir "$INSTDIR\addons\SoF2"
   RMDir "$INSTDIR\addons\SOF"
   RMDir "$INSTDIR\addons\Sin"
+  RMDir "$INSTDIR\addons\RTCW\QuArK files\bspc"
+  RMDir "$INSTDIR\addons\RTCW\QuArK files"
   RMDir "$INSTDIR\addons\RTCW"
+  RMDir "$INSTDIR\addons\Quake_4"
   RMDir "$INSTDIR\addons\Quake_3"
   RMDir "$INSTDIR\addons\Quake_2"
   RMDir "$INSTDIR\addons\Quake_1"

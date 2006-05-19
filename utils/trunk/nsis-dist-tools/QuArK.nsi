@@ -1,177 +1,279 @@
-#
-# NSIS installer script for QuArK 6.4+
-# Copyright (C) 2003-2005  Peter Brett <peter@peter-b.co.uk>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-# USA
-#
-# Builds an NSIS installer for QuArK
-#
-# $Id$
-#
 
-#---------------#
-# QuArK Version #
-#---------------#
+; QuArK installer x.x.x
+; HomePage: http://dynamic.gamespy.com/~quark/
+; Version:  NSIS 2.08
+; Arthour:  Fredrick Vamstad
+; Date:     18 Aug. 2005
+; nullsoft NSIS installer program available at:
+;   http://nsis.sourceforge.net
+;
+; Last update 1 Nov. 2005 - cdunde
+;
+; Setup and Use to create QuArK NSIS installer:
+; ============================================
+; 1) Change " PRODUCT_VERSION " (line 25) below.
+; 2) Change " OutFile " name (line 78) below.
+; 3) Create folder named " QuArK_installer_files " in C:\ directory.
+; 4) Place QuArK .exe and all runtime files in the above folder.
+; 5) Create folder named " QuArK_installer_splash_image " in C:\ directory.
+; 6) Copy splash.bmp file from source\icones folder to the above folder.
+; 7) Click on NSIS.exe to start program, select "MakeNSISW (compiler interface)".
+; 8) Drag this file, QuArK.nsi, into the compiler window.
+; 9) The finished QuArK installer will be place in the same location as this file.
 
-# These defines are used to produce the output filename and installer
-# name, and a couple of registry entries (i.e. they're important):
-#   e.g. quark-win32-6.4.0alpha1.exe
-#   e.g. Quake Army Knife 6.4.1 rel 5 Setup
+!define PRODUCT_NAME "QuArK"
+!define PRODUCT_VERSION "6.5.0 Alpha 7"
+!define PRODUCT_WEB_SITE "http://dynamic.gamespy.com/~quark/"
+!define PRODUCT_WEB_Forum "http://quark.ironfoot.co.uk/forums/"
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\QuArK.exe"
+!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+!define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
-!define QRK_MAJOR_VER 6.5
-!define QRK_MINOR_VER 0
-!define QRK_STATE "alpha"
-!define QRK_RELEASE 2
+; MUI 1.67 compatible ------
+!include "MUI.nsh"
 
-#-----------------------------#
-# Setup the installer GUI etc #
-#-----------------------------#
+; MUI Settings
+!define MUI_ABORTWARNING
+!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install-blue.ico"
+!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-blue.ico"
+; Loads the splash window
+!define MUI_WELCOMEFINISHPAGE_BITMAP "C:\QuArK_installer_splash_image\splash.bmp"
 
-!include "MUI.nsh" # Uses NSIS Modern UI
+; Language Selection Dialog Settings
+!define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
+!define MUI_LANGDLL_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
+!define MUI_LANGDLL_REGISTRY_VALUENAME "NSIS:Language"
 
-!define QRK_VERSION "${QRK_MAJOR_VER}.${QRK_MINOR_VER} ${QRK_STATE} ${QRK_RELEASE}"
-!define QRK_NAME "QuArK ${QRK_VERSION}"
-!define QRK_OUTFILE "quark-win32-${QRK_MAJOR_VER}.${QRK_MINOR_VER}${QRK_STATE}${QRK_RELEASE}.exe"
-
-Var STARTMENU_FOLDER
-
-Name "${QRK_NAME}"
-OutFile ${QRK_OUTFILE}
-InstallDir "$PROGRAMFILES\QuArK"
-InstallDirRegKey HKLM "SOFTWARE\${MUI_PRODUCT}" "INSTDIR"
-
-!define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "install_header.bmp"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "install_splash.bmp"
-!define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation of the Quake Army Knife (QuArK), an editor for games with a Quake-like engine.\r\n\r\n"
-!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
-!define MUI_STARTMENUPAGE_REGISTRY_KEY "SOFTWARE\QuArK"
-!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "STARTMENUDIR"
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "QuArK"
-!define MUI_FINISHPAGE_NOAUTOCLOSE
-!define MUI_FINISHPAGE_RUN "$INSTDIR\QuArK.exe"
-!define MUI_FINISHPAGE_RUN_TEXT "Run QuArK"
-!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
-!define MUI_FINISHPAGE_LINK "Visit the QuArK website"
-!define MUI_FINISHPAGE_LINK_LOCATION http://www.planetquake.com/quark
-
+; Welcome page
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "license.rtf"
+; License page
+!define MUI_LICENSEPAGE_CHECKBOX
+!insertmacro MUI_PAGE_LICENSE "C:\QuArK_installer_files\COPYING.txt"
+; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
-!insertmacro MUI_PAGE_STARTMENU "QuArK" $STARTMENU_FOLDER
+; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
+; Finish page
+!define MUI_FINISHPAGE_RUN "$INSTDIR\QuArK.exe"
+!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
 !insertmacro MUI_PAGE_FINISH
 
-!insertmacro MUI_UNPAGE_CONFIRM
+; Uninstaller pages
 !insertmacro MUI_UNPAGE_INSTFILES
-!insertmacro MUI_UNPAGE_FINISH
 
+; Language files
+!insertmacro MUI_LANGUAGE "Arabic"
+!insertmacro MUI_LANGUAGE "Dutch"
 !insertmacro MUI_LANGUAGE "English"
+!insertmacro MUI_LANGUAGE "Finnish"
+!insertmacro MUI_LANGUAGE "French"
+!insertmacro MUI_LANGUAGE "German"
+!insertmacro MUI_LANGUAGE "Greek"
+!insertmacro MUI_LANGUAGE "Norwegian"
+!insertmacro MUI_LANGUAGE "Russian"
+!insertmacro MUI_LANGUAGE "TradChinese"
+; MUI end ------
+
+Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+OutFile "quark-win32-6.5.0alpha7.exe"
+InstallDir "$PROGRAMFILES\QuArK"
+InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
+ShowInstDetails show
+ShowUnInstDetails show
 
 Function .onInit
-  SetShellVarContext all
+  !insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
 
-#---------------#
-# Install QuArK #
-#---------------#
-
-Section "QuArK" SectionQuArK
-  SectionIn RO
+Section "MainSection" SEC01
+  CreateDirectory "$SMPROGRAMS\QuArK"
+  CreateShortCut "$SMPROGRAMS\QuArK\QuArK.lnk" "$INSTDIR\QuArK.exe"
+  CreateShortCut "$DESKTOP\QuArK.lnk" "$INSTDIR\QuArK.exe"
+  SetOutPath "$INSTDIR\addons\6DX"
+  File "C:\QuArK_installer_files\addons\6DX\*.*"
+  SetOutPath "$INSTDIR\addons\Crystal_Space"
+  File "C:\QuArK_installer_files\addons\Crystal_Space\*.*"
+  SetOutPath "$INSTDIR\addons\Doom_3"
+  File "C:\QuArK_installer_files\addons\Doom_3\*.*"
+  SetOutPath "$INSTDIR\addons\Genesis3D"
+  File "C:\QuArK_installer_files\addons\Genesis3D\*.*"
+  SetOutPath "$INSTDIR\addons\Half-Life"
+  File "C:\QuArK_installer_files\addons\Half-Life\*.*"
+  SetOutPath "$INSTDIR\addons\Half-Life2"
+  File "C:\QuArK_installer_files\addons\Half-Life2\*.*"
+  SetOutPath "$INSTDIR\addons\Heretic_II"
+  File "C:\QuArK_installer_files\addons\Heretic_II\*.*"
+  SetOutPath "$INSTDIR\addons\Hexen_II"
+  File "C:\QuArK_installer_files\addons\Hexen_II\*.*"
+  SetOutPath "$INSTDIR\addons\JA"
+  File "C:\QuArK_installer_files\addons\JA\*.*"
+  SetOutPath "$INSTDIR\addons\JK2"
+  File "C:\QuArK_installer_files\addons\JK2\*.*"
+  SetOutPath "$INSTDIR\addons\KingPin"
+  File "C:\QuArK_installer_files\addons\KingPin\*.*"
+  SetOutPath "$INSTDIR\addons\MOHAA"
+  File "C:\QuArK_installer_files\addons\MOHAA\*.*"
+  SetOutPath "$INSTDIR\addons\Quake_1"
+  File "C:\QuArK_installer_files\addons\Quake_1\*.*"
+  SetOutPath "$INSTDIR\addons\Quake_2"
+  File "C:\QuArK_installer_files\addons\Quake_2\*.*"
+  SetOutPath "$INSTDIR\addons\Quake_3"
+  File "C:\QuArK_installer_files\addons\Quake_3\*.*"
+  SetOutPath "$INSTDIR\addons\Quake_4"
+  File "C:\QuArK_installer_files\addons\Quake_4\*.*"
+  SetOutPath "$INSTDIR\addons\RTCW"
+  File "C:\QuArK_installer_files\addons\RTCW\*.*"
+  SetOutPath "$INSTDIR\addons\RTCW\QuArK files"
+  SetOutPath "$INSTDIR\addons\RTCW\QuArK files\bspc"
+  File "C:\QuArK_installer_files\addons\RTCW\QuArK files\bspc\*.*"
+  SetOutPath "$INSTDIR\addons\Sin"
+  File "C:\QuArK_installer_files\addons\Sin\*.*"
+  SetOutPath "$INSTDIR\addons\SOF"
+  File "C:\QuArK_installer_files\addons\SOF\*.*"
+  SetOutPath "$INSTDIR\addons\SoF2"
+  File "C:\QuArK_installer_files\addons\SoF2\*.*"
+  SetOutPath "$INSTDIR\addons\STVEF"
+  File "C:\QuArK_installer_files\addons\STVEF\*.*"
+  SetOutPath "$INSTDIR\addons\Sylphis"
+  File "C:\QuArK_installer_files\addons\Sylphis\*.*"
+  SetOutPath "$INSTDIR\addons\Torque"
+  File "C:\QuArK_installer_files\addons\Torque\*.*"
+  SetOutPath "$INSTDIR\addons\WildWest"
+  File "C:\QuArK_installer_files\addons\WildWest\*.*"
+  SetOutPath "$INSTDIR\addons"
+  File "C:\QuArK_installer_files\addons\*.*"
+  SetOutPath "$INSTDIR\dlls"
+  File "C:\QuArK_installer_files\dlls\*.*"
+  SetOutPath "$INSTDIR\help"
+  File "C:\QuArK_installer_files\help\*.*"
+  SetOutPath "$INSTDIR\images"
+  File "C:\QuArK_installer_files\images\*.*"
+  SetOutPath "$INSTDIR\lgicons"
+  File "C:\QuArK_installer_files\lgicons\*.*"
+  SetOutPath "$INSTDIR\plugins"
+  File "C:\QuArK_installer_files\plugins\*.*"
+  SetOutPath "$INSTDIR\quarkpy"
+  File "C:\QuArK_installer_files\quarkpy\*.*"
   SetOutPath "$INSTDIR"
-
-  # Create Shortcuts  
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN "QuArK"
-
-    Push $R0
-    StrCpy $R0 "$SMPROGRAMS\$STARTMENU_FOLDER"
-    CreateDirectory $R0
-    CreateShortCut "$R0\QuArK.lnk" "$INSTDIR\QuArK.exe" "" "" "" "" "" "Quake Army Knife"
-    CreateShortCut "$R0\QuArK Readme.lnk" "$INSTDIR\README.txt"
-    CreateShortCut "$R0\Uninstall QuArK.lnk" "$INSTDIR\uninstall.exe"
-    Pop $R0
-
-  !insertmacro MUI_STARTMENU_WRITE_END
-
-  WriteUninstaller "uninstall.exe"
-
-  # Write info for Add/Remove Programs
-  WriteRegStr "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "DisplayName" \
-	"Quake Army Knife ${QRK_VERSION} (remove only)"
-  WriteRegStr "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "UninstallString" "$INSTDIR\uninstall.exe"
-  WriteRegStr "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "InstallLocation" "$INSTDIR"
-  WriteRegDWORD "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "NoModify" 1
-  WriteRegDWORD "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "NoRepair" 1
-  
-  # Write other registry info
-  WriteRegStr HKLM "SOFTWARE\QuArK" "INSTDIR" $INSTDIR
-
-  # Install files
-  SetOutPath $INSTDIR
-  File /r "quark\help"
-  File /r "quark\plugins"
-  File /r "quark\quarkpy"
-  File /r "quark\dlls"
-  File /r "quark\images"
-  File /r "quark\lgicons"
-  File /r "quark\addons"
-  File "quark\ChangeLog"
-  File "quark\README.txt"
-  File "quark\COPYING.txt"
-  File "quark\AUTHORS.txt"
-  File "quark\NEWS.txt"
-  File "quark\QuArK.exe"
+  File "C:\QuArK_installer_files\*.*"
 SectionEnd
 
-#-------------#
-# Uninstaller #
-#-------------#
+Section -AdditionalIcons
+  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
+  CreateShortCut "$SMPROGRAMS\QuArK\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+  CreateShortCut "$SMPROGRAMS\QuArK\Uninstall.lnk" "$INSTDIR\uninst.exe"
+SectionEnd
 
-Section "Uninstall"
-  SetShellVarContext all
+; PuG's forum
+Section -AdditionalIcons
+  CreateShortCut "$SMPROGRAMS\QuArK\Forum.lnk" "${PRODUCT_WEB_Forum}"
+SectionEnd
 
-  # Delete Shortcuts
-  Push $R0
-  !insertmacro MUI_STARTMENU_GETFOLDER "QuArK" $R0
-  StrCpy $R0 "$SMPROGRAMS\$R0"
-  Delete "$R0\QuArK.lnk"
-  Delete "$R0\QuArK Readme.lnk"
-  Delete "$R0\Uninstall QuArK.lnk"
-  RMDir $R0
-  Pop $R0
+Section -Post
+  WriteUninstaller "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\QuArK.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\QuArK.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_Forum}"
+SectionEnd
 
-  Delete "$INSTDIR\ChangeLog"
-  Delete "$INSTDIR\QuArK.exe"
-  Delete "$INSTDIR\README.txt"
-  Delete "$INSTDIR\COPYING.txt"
-  Delete "$INSTDIR\uninstall.exe"
-  Delete "$INSTDIR\QUARK.LOG"
-#  Actually, we don't want to blitz 
-#  Delete "$INSTDIR\Setup.qrk"
-  RMDIR /r "$INSTDIR\help"
-  RMDIR /r "$INSTDIR\plugins"
-  RMDIR /r "$INSTDIR\quarkpy"
-  RMDIR /r "$INSTDIR\dlls"
-  RMDIR /r "$INSTDIR\lib"
-  RMDIR /r "$INSTDIR\images"
-  RMDIR /r "$INSTDIR\lgicons"
-  RMDIR /r "$INSTDIR\addons"
 
-  DeleteRegKey "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK"
-  DeleteRegKey "HKLM" "SOFTWARE\QuArK"
+Function un.onInit
+!insertmacro MUI_UNGETLANGUAGE
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "This will remove ALL files in the QuArK folder and sub-folders including any custom files.$\n$\nRemove any files you wish to save before clicking 'Yes' to continue this uninstall." IDYES +2
+  Abort
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components now?" IDYES +2
+  Abort
+FunctionEnd
 
-  RMDIR $INSTDIR
+Function un.onUninstSuccess
+  HideWindow
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
+FunctionEnd
+
+
+Section Uninstall
+  Delete "$INSTDIR\${PRODUCT_NAME}.url"
+  Delete "$INSTDIR\addons\WildWest\*.*"
+  Delete "$INSTDIR\addons\Torque\*.*"
+  Delete "$INSTDIR\addons\Sylphis\*.*"
+  Delete "$INSTDIR\addons\STVEF\*.*"
+  Delete "$INSTDIR\addons\SoF2\*.*"
+  Delete "$INSTDIR\addons\SOF\*.*"
+  Delete "$INSTDIR\addons\Sin\*.*"
+  Delete "$INSTDIR\addons\RTCW\QuArK files\bspc\*.*"
+  Delete "$INSTDIR\addons\RTCW\*.*"
+  Delete "$INSTDIR\addons\Quake_4\*.*"
+  Delete "$INSTDIR\addons\Quake_3\*.*"
+  Delete "$INSTDIR\addons\Quake_2\*.*"
+  Delete "$INSTDIR\addons\Quake_1\*.*"
+  Delete "$INSTDIR\addons\MOHAA\*.*"
+  Delete "$INSTDIR\addons\KingPin\*.*"
+  Delete "$INSTDIR\addons\JK2\*.*"
+  Delete "$INSTDIR\addons\JA\*.*"
+  Delete "$INSTDIR\addons\Hexen_II\*.*"
+  Delete "$INSTDIR\addons\Heretic_II\*.*"
+  Delete "$INSTDIR\addons\Half-Life2\*.*"
+  Delete "$INSTDIR\addons\Half-Life\*.*"
+  Delete "$INSTDIR\addons\Genesis3D\*.*"
+  Delete "$INSTDIR\addons\Doom_3\*.*"
+  Delete "$INSTDIR\addons\Crystal_Space\*.*"
+  Delete "$INSTDIR\addons\6DX\*.*"
+  Delete "$INSTDIR\addons\*.*"
+  Delete "$INSTDIR\dlls\*.*"
+  Delete "$INSTDIR\help\*.*"
+  Delete "$INSTDIR\images\*.*"
+  Delete "$INSTDIR\lgicons\*.*"
+  Delete "$INSTDIR\plugins\*.*"
+  Delete "$INSTDIR\quarkpy\*.*"
+  Delete "$INSTDIR\*.*"
+
+
+  Delete "$SMPROGRAMS\QuArK\*.*"
+  Delete "$DESKTOP\QuArK.lnk"
+
+
+  RMDir "$INSTDIR\addons\WildWest"
+  RMDir "$INSTDIR\addons\Torque"
+  RMDir "$INSTDIR\addons\Sylphis"
+  RMDir "$INSTDIR\addons\STVEF"
+  RMDir "$INSTDIR\addons\SoF2"
+  RMDir "$INSTDIR\addons\SOF"
+  RMDir "$INSTDIR\addons\Sin"
+  RMDir "$INSTDIR\addons\RTCW\QuArK files\bspc"
+  RMDir "$INSTDIR\addons\RTCW\QuArK files"
+  RMDir "$INSTDIR\addons\RTCW"
+  RMDir "$INSTDIR\addons\Quake_4"
+  RMDir "$INSTDIR\addons\Quake_3"
+  RMDir "$INSTDIR\addons\Quake_2"
+  RMDir "$INSTDIR\addons\Quake_1"
+  RMDir "$INSTDIR\addons\MOHAA"
+  RMDir "$INSTDIR\addons\KingPin"
+  RMDir "$INSTDIR\addons\JK2"
+  RMDir "$INSTDIR\addons\JA"
+  RMDir "$INSTDIR\addons\Hexen_II"
+  RMDir "$INSTDIR\addons\Heretic_II"
+  RMDir "$INSTDIR\addons\Half-Life2"
+  RMDir "$INSTDIR\addons\Half-Life"
+  RMDir "$INSTDIR\addons\Genesis3D"
+  RMDir "$INSTDIR\addons\Doom_3"
+  RMDir "$INSTDIR\addons\Crystal_Space"
+  RMDir "$INSTDIR\addons\6DX"
+  RMDir "$INSTDIR\addons"
+  RMDir "$INSTDIR\dlls"
+  RMDir "$INSTDIR\help"
+  RMDir "$INSTDIR\images"
+  RMDir "$INSTDIR\lgicons"
+  RMDir "$INSTDIR\plugins"
+  RMDir "$INSTDIR\quarkpy"
+  RMDir "$INSTDIR"
+  RMDir "$SMPROGRAMS\QuArK"
+
+
+  DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+  DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+  SetAutoClose true
 SectionEnd
