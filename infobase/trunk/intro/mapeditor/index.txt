@@ -1,6 +1,7 @@
 title: Map-editor in QuArK
 subdir: overview
 subdir: menu
+subdir: rmb_menus
 subdir: toolpalettes
 subdir: userdata
 subdir: misctools
