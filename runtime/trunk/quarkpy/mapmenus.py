@@ -245,7 +245,7 @@ def BackgroundMenu(editor, view=None, origin=None):
         def backbmp1click(m, view=view, form=editor.form):
             import qbackbmp
             qbackbmp.BackBmpDlg(form, view)
-        backbmp1 = qmenu.item("Background image...", backbmp1click, "choose background image")
+        backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
         extra = extra + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
     return [mapcommands.NewItem1, Undo1] + extra
 
@@ -436,6 +436,10 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.17  2006/01/30 10:07:13  cdunde
+#Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
+#to allow the creation of much larger maps for the more recent games.
+#
 #Revision 1.16  2005/11/18 02:21:53  cdunde
 #To add new '2D Rulers' function, menu and
 #updated Infobase docs covering it.

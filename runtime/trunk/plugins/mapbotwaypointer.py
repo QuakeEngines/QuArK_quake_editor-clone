@@ -870,7 +870,7 @@ def backmenu(editor, view=None, origin=None, oldbackmenu=quarkpy.mapmenus.Backgr
     # Build the normal context-menu
     menu = oldbackmenu(editor, view, origin)
     # Create a new menu-item, and store the cursor's origin in it.
-    menupastebotwaypoint = quarkpy.qmenu.item("&Paste waypoint", PasteBotWaypointClick, "|To paste a bot waypoint, you must first have copied (CTRL+C) a single 'dup botwaypointerpoint' entity into the clipboard.\n\nThis action also creates a new targetname for the waypoint, and keeps it aligned with the previous waypoint selected.")
+    menupastebotwaypoint = quarkpy.qmenu.item("&Paste waypoint", PasteBotWaypointClick, "|To paste a bot waypoint, you must first have copied (CTRL+C) a single 'dup botwaypointerpoint' entity into the clipboard.\n\nThis action also creates a new targetname for the waypoint, and keeps it aligned with the previous waypoint selected.|intro.mapeditor.rmb_menus.noselectionmenu.html#botwaypointer")
     menupastebotwaypoint.pos = origin
     menupastebotwaypoint.view = view
     # If there is nothing to paste, disable the menu (note: it could be anything in the clipboard,
@@ -895,6 +895,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.12  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.9  2005/07/03 17:41:58  alexander
 #fixed logging line in footer
 #
