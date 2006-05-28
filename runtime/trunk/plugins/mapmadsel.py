@@ -95,6 +95,7 @@ def getrestrictor(e):
     return nt.getuniquetag(e, RESTRICT_KEY)
 
 def setrestrictor(e, o):
+    editor = mapeditor()
     nt.uniquetag(e, RESTRICT_KEY, o)
     menrestsel.state = qmenu.checked
     editor.invalidateviews()
@@ -1085,6 +1086,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.36  2006/04/18 04:23:09  cdunde
+# Fixed the RMB Mark function for tree view restructuring.
+#
 # Revision 1.35  2005/10/15 00:49:51  cdunde
 # To reinstate headers and history
 #
