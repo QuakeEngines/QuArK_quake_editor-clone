@@ -15,6 +15,8 @@ $Id$
 6.5.0 alpha 8
 =============
 
+ * [cdunde]: Fixed Extruder Shape Builder 2D view editor that was broke.
+
  * [cdunde]: Added poly "No fill" and "Outline color selection" functions to the
         - RMB menu item "Background image..." with direct link full Infobase
         - documentation on these functions, their settings and use.
