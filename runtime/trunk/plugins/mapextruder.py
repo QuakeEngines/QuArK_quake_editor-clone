@@ -2635,22 +2635,22 @@ def new2dclose(self, m):
       self.new2dwin = None
       del self.new2dview
 
-      def restore(self):
+  #1    def restore(self):
         #
         # Maybe Unrestrict should be moved to a non-plugin
         #
-        from plugins.mapmadsel import Unrestrict
+  #1      from plugins.mapmadsel import Unrestrict
         #
         # This is needed to prevent errors when editor
         #   is shut down with 2d window open1   
         #
-        try:
-          Unrestrict(self.editor)
-          self.editor.invalidateviews()
-        except (AttributeError):
-          pass
+  #1      try:
+  #1        Unrestrict(self.editor)
+  #1        self.editor.invalidateviews()
+  #1      except (AttributeError):
+  #1        pass
 
-      quarkx.settimer(restore,self,100)
+  #1    quarkx.settimer(restore,self,100)
       
 def newclearrefs(self, oldclearrefs = quarkpy.mapmgr.MapLayout.clearrefs.im_func):
   oldclearrefs(self)
@@ -2898,6 +2898,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.25  2005/11/21 06:26:40  cdunde
+#Changed invalid file extension also causing errors
+#
 #Revision 1.24  2005/11/21 06:07:14  cdunde
 #Never could find any module or function that have
 #now been commented out. Used best guess as to
