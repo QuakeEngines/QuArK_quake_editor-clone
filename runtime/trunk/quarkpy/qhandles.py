@@ -1307,6 +1307,7 @@ class SideStepDragObject(AnimatedDragObject):
         self.x0 = x
         self.y0 = y
         self.camerapos0 = self.view.cameraposition
+        if self.camerapos0 is None: return
         forward = angles2vec1(self.camerapos0[2]*rad2deg, self.camerapos0[1]*rad2deg, 0)
         left = orthogonalvect(forward, editor.layout.views[0])
         #
@@ -1317,6 +1318,7 @@ class SideStepDragObject(AnimatedDragObject):
         self.vtop = forward^left * setup["MouseUpDown"][0] * 0.12
 
     def dragto(self, x, y, flags):
+        if self.camerapos0 is None: return
         pos, roll, pitch = self.camerapos0
         x = self.x0-x
         y = self.y0-y
@@ -1808,6 +1810,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.25  2006/01/30 10:07:13  cdunde
+#Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
+#to allow the creation of much larger maps for the more recent games.
+#
 #Revision 1.24  2006/01/30 08:20:00  cdunde
 #To commit all files involved in project with Philippe C
 #to allow QuArK to work better with Linux using Wine.

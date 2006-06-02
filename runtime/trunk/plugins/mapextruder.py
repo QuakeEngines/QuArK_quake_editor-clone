@@ -1769,6 +1769,8 @@ class TweenHandle(quarkpy.maphandles.EdgeHandle):
         self.dup, self.k = dup, k
 
     def drag(self, v1, v2, flags, view):
+        editor = mapeditor()
+        grid = (editor.grid, editor.gridstep)
         delta = v2-v1
         dup = self.dup
         data = ExtruderDupData(dup)
@@ -1943,7 +1945,10 @@ def extrudermenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_f
   for item in (pathextrude, radextrude):
     item.data = ExtruderDupData(o)
     item.editor = editor
-    item.window = quarkx.clickform
+    try:
+        item.window = quarkx.clickform
+    except:
+        pass
 
   def tagclick1(m, editor=editor, o=o):
     tagcordup(o, editor)
@@ -2898,6 +2903,12 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.26  2006/05/28 08:45:02  cdunde
+#Fixed editor not defined error in mapmadsel.py file and
+#needed to comment out def restore(self) in mapextruder.py
+#to stop error message. No errors occurred when editor was
+#closed with the extruder 2D window open.
+#
 #Revision 1.25  2005/11/21 06:26:40  cdunde
 #Changed invalid file extension also causing errors
 #
