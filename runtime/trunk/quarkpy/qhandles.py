@@ -1261,7 +1261,10 @@ class FreeViewDragObject(AnimatedDragObject):
         elif pitch>1.5: pitch = 1.5
 
         self.view.animation = 1
-        self.view.cameraposition = self.pos0, roll, pitch
+        try:
+            self.view.cameraposition = self.pos0, roll, pitch
+        except:
+            self.view.invalidate(1)
 
 #
 # Mouse Walk like in Quake.
@@ -1291,7 +1294,10 @@ class WalkDragObject(AnimatedDragObject):
         pos = self.pos0 + forward*y * fy
 
         self.view.animation = 1
-        self.view.cameraposition = pos, roll, self.pitch0
+        try:
+            self.view.cameraposition = pos, roll, self.pitch0
+        except:
+            self.view.invalidate(1)
         self.pos0 = pos
 
 #
@@ -1324,7 +1330,10 @@ class SideStepDragObject(AnimatedDragObject):
         y = self.y0-y
 
         self.view.animation = 1
-        self.view.cameraposition = pos + self.vleft*x + self.vtop*y, roll, pitch
+        try:
+            self.view.cameraposition = pos + self.vleft*x + self.vtop*y, roll, pitch
+        except:
+            self.view.invalidate(1)
 
 #
 # circlestafe utilities
@@ -1357,7 +1366,10 @@ class CircleStrafeDragObject(SideStepDragObject):
             newpos = center+dist*newdir
             pitch, yaw = vec2rads(-newdir)
             self.view.animation = 1
-            self.view.cameraposition = newpos, yaw, pitch
+            try:
+                self.view.cameraposition = newpos, yaw, pitch
+            except:
+                self.view.invalidate(1)
         else:
             SideStepDragObject.dragto(self, x, y, flags)
 
@@ -1810,6 +1822,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.26  2006/06/02 18:48:02  cdunde
+#To fix a couple of erroneous console errors.
+#
 #Revision 1.25  2006/01/30 10:07:13  cdunde
 #Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
 #to allow the creation of much larger maps for the more recent games.
