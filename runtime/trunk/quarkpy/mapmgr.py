@@ -249,7 +249,10 @@ class MapLayout(BaseLayout):
         import mapentities
         sl = self.explorer.sellist
         formobj = mapentities.LoadEntityForm(sl)
-        self.dataform.setdata(sl, formobj)
+        if formobj is None:
+            pass
+        else:
+            self.dataform.setdata(sl, formobj)
         help = ((formobj is not None) and formobj["Help"]) or ""
         if help:
             help = "?" + help   # this trick displays a blue hint
@@ -867,6 +870,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.15  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.12  2003/12/17 13:58:59  peter-b
 #- Rewrote defines for setting Python version
 #- Removed back-compatibility with Python 1.5
