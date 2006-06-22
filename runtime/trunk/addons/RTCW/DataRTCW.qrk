@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.12  2006/06/16 07:19:02  cdunde
+//Revamped and complete game support for RTCW.
+//
 //Revision 1.11  2006/05/19 18:46:55  cdunde
 //For the configuration revamping of RTCW.
 //
@@ -402,6 +405,7 @@ QQRKSRC1
         }
         ai_blackguard:e =
         {
+          3Dmodel = "models/players/blackguard/bg_default.md3"
           head = "default"
           skin = "blackguard/default"
           angle = "360"
@@ -441,6 +445,7 @@ QQRKSRC1
         }
         ai_partisan:e =
         {
+          3Dmodel = "models/players/partisan/part_default.md3"
           head = "default"
           skin = "partisan/default"
           angle = "360"
@@ -453,6 +458,7 @@ QQRKSRC1
         }
         ai_soldier:e =
         {
+          3Dmodel = "models/players/infantryss/infantryss_default.md3"
           head = "default"
           skin = "infantryss/default"
           angle = "360"
@@ -470,6 +476,7 @@ QQRKSRC1
         }
         ai_venom:e =
         {
+          3Dmodel = "models/players/venom/venom_default.md3"
           head = "default"
           skin = "venom/default"
           angle = "360"
@@ -996,58 +1003,70 @@ QQRKSRC1
       }
       props_* entities.qtxfolder =
       {
+        ;desc = "Pre-defined model and variable poly brush props."
         props_58x112tablew:b =
         {
+          ;desc = "A variable poly brush prop."
           angle = "360"
           ;incl = "defpoly"
         }
         props_bench:b =
         {
+          ;desc = "A variable poly brush prop."
           angle = "360"
           ;incl = "defpoly"
         }
         props_box_32:e =
         {
+          ;desc = "A pre-defined box, 'pushable' only, non-destructible."
           angle = "360"
           origin = "0 0 0"
         }
         props_box_48:e =
         {
+          ;desc = "A pre-defined box, 'pushable' only, non-destructible."
           angle = "360"
           origin = "0 0 0"
         }
         props_box_64:e =
         {
+          ;desc = "A pre-defined box, 'pushable' only, non-destructible."
           angle = "360"
           origin = "0 0 0"
         }
         props_castlebed:b =
         {
+          ;desc = "A variable poly brush prop."
           angle = "360"
           ;incl = "defpoly"
         }
         props_chair:e =
         {
+          ;desc = "A chair that can be pushed, picked up, thrown & destroyed."
           angle = "360"
           origin = "0 0 0"
         }
         props_chair_chat:e =
         {
+          ;desc = "A chair that can be pushed, picked up, thrown & destroyed."
           angle = "360"
           origin = "0 0 0"
         }
         props_chair_chatarm:e =
         {
+          ;desc = "A chair that can be pushed, picked up, thrown & destroyed."
           angle = "360"
           origin = "0 0 0"
         }
         props_chair_hiback:e =
         {
+          ;desc = "A chair that can be pushed, picked up, thrown & destroyed."
           angle = "360"
           origin = "0 0 0"
         }
         props_chair_side:e =
         {
+          ;desc = "A chair that can be pushed, picked up, thrown & destroyed."
           angle = "360"
           origin = "0 0 0"
         }
@@ -1058,6 +1077,7 @@ QQRKSRC1
         }
         props_crate_32x64:b =
         {
+          ;desc = "A variable poly brush prop."
           angle = "360"
           ;incl = "defpoly"
         }
@@ -1083,6 +1103,7 @@ QQRKSRC1
         }
         props_decorBRUSH:b =
         {
+          ;desc = "A variable poly brush prop."
           angle = "360"
           ;incl = "defpoly"
         }
@@ -1108,6 +1129,7 @@ QQRKSRC1
         }
         props_flamebarrel:e =
         {
+          ;desc = "A barrel that can leak oil, explode & give off smoke."
           angle = "360"
           origin = "0 0 0"
         }
@@ -1118,6 +1140,7 @@ QQRKSRC1
         }
         props_footlocker:e =
         {
+          ;desc = "A footlocker that can be opened."
           angle = "360"
           origin = "0 0 0"
         }
@@ -1128,11 +1151,13 @@ QQRKSRC1
         }
         props_locker_tall:b =
         {
+          ;desc = "A variable poly brush prop."
           angle = "360"
           ;incl = "defpoly"
         }
         props_radio:b =
         {
+          ;desc = "A variable poly brush prop."
           angle = "360"
           ;incl = "defpoly"
         }
@@ -1158,6 +1183,7 @@ QQRKSRC1
         }
         props_snowGenerator:b =
         {
+          ;desc = "A variable poly brush prop."
           angle = "360"
           ;incl = "defpoly"
         }
@@ -1173,6 +1199,7 @@ QQRKSRC1
         }
         props_statueBRUSH:b =
         {
+          ;desc = "A variable poly brush prop."
           angle = "360"
           ;incl = "defpoly"
         }
@@ -1533,6 +1560,32 @@ QQRKSRC1
       }
     }
   }
+
+    ai_modelskin_form:form =
+    {
+      skin: = { typ="C" txt="mechanic"
+      items=
+        "mechanic/assault1"$0D
+        "mechanic"$0D
+        "mechanic/dig1"$0D
+        "mechanic/radio1"$0D
+        "mechanic/rocket1"$0D
+        "mechanic/swf1"$0D
+        "mechanic/train1"$0D
+        "mechanic/tram1"
+      values=
+        "mechanic/assault1"$0D
+        "mechanic"$0D
+        "mechanic/dig1"$0D
+        "mechanic/radio1"$0D
+        "mechanic/rocket1"$0D
+        "mechanic/swf1"$0D
+        "mechanic/train1"$0D
+        "mechanic/tram1"
+      }
+
+    }
+
 
     t_models_form:form =
     {
@@ -2111,6 +2164,90 @@ QQRKSRC1
         "/models/mapobjects/generator/gen_lrg.md3"$0D
         "/models/mapobjects/generator/gen_med.md3"$0D
         "/models/mapobjects/generator/gen_sm.md3"
+      }
+      model: = { typ="C" txt="gibs"
+      items=
+        "gibs/abdomen.md3"$0D
+        "gibs/b_abdomen.md3"$0D
+        "gibs/b_foot.md3"$0D
+        "gibs/b_forearm.md3"$0D
+        "gibs/b_intestine.md3"$0D
+        "gibs/b_leg.md3"$0D
+        "gibs/b_skull.md3"$0D
+        "gibs/foot.md3"$0D
+        "gibs/forearm.md3"$0D
+        "gibs/h_abdomen.md3"$0D
+        "gibs/h_foot.md3"$0D
+        "gibs/h_forearm.md3"$0D
+        "gibs/h_intestine.md3"$0D
+        "gibs/h_leg.md3"$0D
+        "gibs/h_skull.md3"$0D
+        "gibs/intestine.md3"$0D
+        "gibs/l_abdomen.md3"$0D
+        "gibs/l_foot.md3"$0D
+        "gibs/l_forearm.md3"$0D
+        "gibs/l_intestine.md3"$0D
+        "gibs/l_leg.md3"$0D
+        "gibs/l_skull.md3"$0D
+        "gibs/leg.md3"$0D
+        "gibs/skull.md3"$0D
+        "gibs/z_abdomen.md3"$0D
+        "gibs/z_arm.md3"$0D
+        "gibs/z_brain.md3"$0D
+        "gibs/z_chest.md3"$0D
+        "gibs/z_fist.md3"$0D
+        "gibs/z_foot.md3"$0D
+        "gibs/z_forearm.md3"$0D
+        "gibs/z_intestine.md3"$0D
+        "gibs/z_leg.md3"$0D
+        "gibs/z_skull.md3"$0D
+        "gibs/wood/wood1.md3"$0D
+        "gibs/wood/wood2.md3"$0D
+        "gibs/wood/wood3.md3"$0D
+        "gibs/wood/wood4.md3"$0D
+        "gibs/wood/wood5.md3"$0D
+        "gibs/wood/wood6.md3"
+      values=
+        "/models/gibs/abdomen.md3"$0D
+        "/models/gibs/b_abdomen.md3"$0D
+        "/models/gibs/b_foot.md3"$0D
+        "/models/gibs/b_forearm.md3"$0D
+        "/models/gibs/b_intestine.md3"$0D
+        "/models/gibs/b_leg.md3"$0D
+        "/models/gibs/b_skull.md3"$0D
+        "/models/gibs/foot.md3"$0D
+        "/models/gibs/forearm.md3"$0D
+        "/models/gibs/h_abdomen.md3"$0D
+        "/models/gibs/h_foot.md3"$0D
+        "/models/gibs/h_forearm.md3"$0D
+        "/models/gibs/h_intestine.md3"$0D
+        "/models/gibs/h_leg.md3"$0D
+        "/models/gibs/h_skull.md3"$0D
+        "/models/gibs/intestine.md3"$0D
+        "/models/gibs/l_abdomen.md3"$0D
+        "/models/gibs/l_foot.md3"$0D
+        "/models/gibs/l_forearm.md3"$0D
+        "/models/gibs/l_intestine.md3"$0D
+        "/models/gibs/l_leg.md3"$0D
+        "/models/gibs/l_skull.md3"$0D
+        "/models/gibs/leg.md3"$0D
+        "/models/gibs/skull.md3"$0D
+        "/models/gibs/z_abdomen.md3"$0D
+        "/models/gibs/z_arm.md3"$0D
+        "/models/gibs/z_brain.md3"$0D
+        "/models/gibs/z_chest.md3"$0D
+        "/models/gibs/z_fist.md3"$0D
+        "/models/gibs/z_foot.md3"$0D
+        "/models/gibs/z_forearm.md3"$0D
+        "/models/gibs/z_intestine.md3"$0D
+        "/models/gibs/z_leg.md3"$0D
+        "/models/gibs/z_skull.md3"$0D
+        "/models/gibs/wood/wood1.md3"$0D
+        "/models/gibs/wood/wood2.md3"$0D
+        "/models/gibs/wood/wood3.md3"$0D
+        "/models/gibs/wood/wood4.md3"$0D
+        "/models/gibs/wood/wood5.md3"$0D
+        "/models/gibs/wood/wood6.md3"
       }
       model: = { typ="C" txt="goblet"
       items=
@@ -3060,6 +3197,444 @@ QQRKSRC1
       }
     }
 
+    t_modelhead_form:form =
+    {
+      head: =
+      { typ="C" txt="bj2"
+      items=
+        "bj2/head/airplane"$0D
+        "bj2/head/default"
+      values=
+        "airplane"$0D
+        "default"
+      }
+      head: =
+      { typ="C" txt="eva"
+      items=
+        "eva/head/castle1"$0D
+        "eva/head/castle2"$0D
+        "eva/head/castle3"$0D
+        "eva/head/chateau1"$0D
+        "eva/head/chateau2"$0D
+        "eva/head/chateau3"$0D
+        "eva/head/church2"$0D
+        "eva/head/default"$0D
+        "eva/head/eg"
+      values=
+        "castle1"$0D
+        "castle2"$0D
+        "castle3"$0D
+        "chateau1"$0D
+        "chateau2"$0D
+        "chateau3"$0D
+        "church2"$0D
+        "default"$0D
+        "eg"
+      }
+      head: =
+      { typ="C" txt="femzombie"
+      items=
+        "femzombie/head/default"
+      values=
+        "default"
+      }
+      head: =
+      { typ="C" txt="hans"
+      items=
+        "hans/head/default"
+      values=
+        "default"
+      }
+      head: =
+      { typ="C" txt="helga"
+      items=
+        "helga/head/default"
+      values=
+        "default"
+      }
+      head: =
+      { typ="C" txt="higgs"
+      items=
+        "higgs/head/default"
+      values=
+        "default"
+      }
+      head: =
+      { typ="C" txt="himmler"
+      items=
+        "himmler/head/default"
+      values=
+        "default"
+      }
+      head: =
+      { typ="C" txt="inge"
+      items=
+        "inge/head/default"$0D
+        "inge/head/village2"
+      values=
+        "default"$0D
+        "village2"
+      }
+      head: =
+      { typ="C" txt="jack"
+      items=
+        "jack/head/default"
+      values=
+        "default"
+      }
+      head: =
+      { typ="C" txt="mechanic"
+      items=
+        "mechanic/head/assault1"$0D
+        "mechanic/head/assault2"$0D
+        "mechanic/head/assault3"$0D
+        "mechanic/head/assault4"$0D
+        "mechanic/head/default"$0D
+        "mechanic/head/dig1"$0D
+        "mechanic/head/dig2"$0D
+        "mechanic/head/radio1"$0D
+        "mechanic/head/radio2"$0D
+        "mechanic/head/rocket1"$0D
+        "mechanic/head/rocket2"$0D
+        "mechanic/head/rocket3"$0D
+        "mechanic/head/rocket4"$0D
+        "mechanic/head/rocket5"$0D
+        "mechanic/head/swf1"$0D
+        "mechanic/head/swf2"$0D
+        "mechanic/head/swf3"$0D
+        "mechanic/head/train1"$0D
+        "mechanic/head/tram1"$0D
+        "mechanic/head/tram2"
+      values=
+        "assault1"$0D
+        "assault2"$0D
+        "mechanic/assault3"$0D
+        "assault4"$0D
+        "default"$0D
+        "dig1"$0D
+        "dig2"$0D
+        "radio1"$0D
+        "radio2"$0D
+        "rocket1"$0D
+        "rocket2"$0D
+        "rocket3"$0D
+        "rocket4"$0D
+        "rocket5"$0D
+        "swf1"$0D
+        "swf2"$0D
+        "swf3"$0D
+        "train1"$0D
+        "tram1"$0D
+        "tram2"
+      }
+      head: =
+      { typ="C" txt="multi"
+      items=
+        "multi/head/blueengineer1"$0D
+        "multi/head/bluelieutenant1"$0D
+        "multi/head/bluemedic1"$0D
+        "multi/head/bluesoldier1"
+      values=
+        "blueengineer1"$0D
+        "bluelieutenant1"$0D
+        "bluemedic1"$0D
+        "bluesoldier1"$0D
+      }
+      head: =
+      { typ="C" txt="multi_axis"
+      items=
+        "multi_axis/head/redengineer1"$0D
+        "multi_axis/head/redlieutenant1"$0D
+        "multi_axis/head/redmedic1"$0D
+        "multi_axis/head/redsoldier1"
+      values=
+        "redengineer1"$0D
+        "redlieutenant1"$0D
+        "redmedic1"$0D
+        "redsoldier1"
+      }
+      head: =
+      { typ="C" txt="murphy"
+      items=
+        "murphy/head/default"
+      values=
+        "default"
+      }
+      head: =
+      { typ="C" txt="officerss"
+      items=
+        "officerss/head/assault1"$0D
+        "officerss/head/chateau1"$0D
+        "officerss/head/chateau2"$0D
+        "officerss/head/chateau3"$0D
+        "officerss/head/chateau4"$0D
+        "officerss/head/default"$0D
+        "officerss/head/dig1"$0D
+        "officerss/head/escape1"$0D
+        "officerss/head/escape2"$0D
+        "officerss/head/escape3"$0D
+        "officerss/head/forest1"$0D
+        "officerss/head/forest2"$0D
+        "officerss/head/ssvill1"$0D
+        "officerss/head/ssvill2"$0D
+        "officerss/head/ssvill3"$0D
+        "officerss/head/ssvill4"$0D
+        "officerss/head/ssvill5"$0D
+        "officerss/head/village1"$0D
+        "officerss/head/village2"$0D
+        "officerss/head/village3"
+      values=
+        "assault1"$0D
+        "chateau1"$0D
+        "chateau2"$0D
+        "chateau3"$0D
+        "chateau4"$0D
+        "default"$0D
+        "dig1"$0D
+        "escape1"$0D
+        "escape2"$0D
+        "escape3"$0D
+        "forest1"$0D
+        "forest2"$0D
+        "ssvill1"$0D
+        "ssvill2"$0D
+        "ssvill3"$0D
+        "ssvill4"$0D
+        "ssvill5"$0D
+        "village1"$0D
+        "village2"$0D
+        "village3"
+      }
+      head: =
+      { typ="C" txt="priestess"
+      items=
+        "priestess/head/default"
+      values=
+        "default"
+      }
+      head: =
+      { typ="C" txt="skel"
+      items=
+        "skel/head/default"
+      values=
+        "default"
+      }
+      head: =
+      { typ="C" txt="trench"
+      items=
+        "trench/head/base1"$0D
+        "trench/head/base2"$0D
+        "trench/head/base3"$0D
+        "trench/head/dam1"$0D
+        "trench/head/dam2"$0D
+        "trench/head/dam3"$0D
+        "trench/head/dam4"$0D
+        "trench/head/dam5"$0D
+        "trench/head/default"
+      values=
+        "base1"$0D
+        "base2"$0D
+        "base3"$0D
+        "dam1"$0D
+        "dam2"$0D
+        "dam3"$0D
+        "dam4"$0D
+        "dam5"$0D
+        "default"
+      }
+      head: =
+      { typ="C" txt="zemph"
+      items=
+        "zemph/head/default"
+      values=
+        "default"
+      }
+    }
+
+    t_modelskin_form:form =
+    {
+      skin: =
+      { typ="C" txt="bj2"
+      items=
+        "bj2/skin/airplane"$0D
+        "bj2/skin/default"
+      values=
+        "bj2/airplane"$0D
+        "bj2/default"
+      }
+      skin: =
+      { typ="C" txt="eva"
+      items=
+        "eva/skin/default"
+      values=
+        "eva/default"
+      }
+      skin: =
+      { typ="C" txt="femzombie"
+      items=
+        "femzombie/skin/default"
+      values=
+        "femzombie/default"
+      }
+      skin: =
+      { typ="C" txt="hans"
+      items=
+        "hans/skin/default"
+      values=
+        "hans/default"
+      }
+      skin: =
+      { typ="C" txt="helga"
+      items=
+        "helga/skin/default"
+      values=
+        "helga/default"
+      }
+      skin: =
+      { typ="C" txt="higgs"
+      items=
+        "higgs/skin/default"
+      values=
+        "higgs/default"
+      }
+      skin: =
+      { typ="C" txt="himmler"
+      items=
+        "himmler/skin/default"
+      values=
+        "himmler/default"
+      }
+      skin: =
+      { typ="C" txt="inge"
+      items=
+        "inge/skin/default"$0D
+        "inge/skin/village2"
+      values=
+        "inge/default"$0D
+        "inge/village2"
+      }
+      skin: =
+      { typ="C" txt="jack"
+      items=
+        "jack/skin/default"
+      values=
+        "jack/default"
+      }
+      skin: =
+      { typ="C" txt="mechanic"
+      items=
+        "mechanic/skin/assault1"$0D
+        "mechanic/skin/default"$0D
+        "mechanic/skin/dig1"$0D
+        "mechanic/skin/radio1"$0D
+        "mechanic/skin/rocket1"$0D
+        "mechanic/skin/swf1"$0D
+        "mechanic/skin/train1"$0D
+        "mechanic/skin/tram1"
+      values=
+        "mechanic/assault1"$0D
+        "mechanic/default"$0D
+        "mechanic/dig1"$0D
+        "mechanic/radio1"$0D
+        "mechanic/rocket1"$0D
+        "mechanic/swf1"$0D
+        "mechanic/train1"$0D
+        "mechanic/tram1"
+      }
+      skin: =
+      { typ="C" txt="multi"
+      items=
+        "multi/skin/blueengineer1"$0D
+        "multi/skin/bluelieutenant1"$0D
+        "multi/skin/bluemedic1"$0D
+        "multi/skin/bluesoldier1"
+      values=
+        "multi/blueengineer1"$0D
+        "multi/bluelieutenant1"$0D
+        "multi/bluemedic1"$0D
+        "multi/bluesoldier1"
+      }
+      skin: =
+      { typ="C" txt="multi_axis"
+      items=
+        "multi_axis/skin/redengineer1"$0D
+        "multi_axis/skin/redlieutenant1"$0D
+        "multi_axis/skin/redmedic1"$0D
+        "multi_axis/skin/redsoldier1"
+      values=
+        "multi_axis/redengineer1"$0D
+        "multi_axis/redlieutenant1"$0D
+        "multi_axis/redmedic1"$0D
+        "multi_axis/redsoldier1"
+      }
+      skin: =
+      { typ="C" txt="murphy"
+      items=
+        "murphy/skin/default"
+      values=
+        "murphy/default"
+      }
+      skin: =
+      { typ="C" txt="officerss"
+      items=
+        "officerss/skin/assault1"$0D
+        "officerss/skin/chateau1"$0D
+        "officerss/skin/chateau2"$0D
+        "officerss/skin/default"$0D
+        "officerss/skin/dig1"$0D
+        "officerss/skin/escape1"$0D
+        "officerss/skin/escape2"$0D
+        "officerss/skin/forest1"$0D
+        "officerss/skin/ssvill1"$0D
+        "officerss/skin/village1"
+      values=
+        "officerss/assault1"$0D
+        "officerss/chateau1"$0D
+        "officerss/chateau2"$0D
+        "officerss/default"$0D
+        "officerss/dig1"$0D
+        "officerss/escape1"$0D
+        "officerss/escape2"$0D
+        "officerss/forest1"$0D
+        "officerss/ssvill1"$0D
+        "officerss/village1"
+      }
+      skin: =
+      { typ="C" txt="priestess"
+      items=
+        "priestess/skin/default"
+      values=
+        "priestess/default"
+      }
+      skin: =
+      { typ="C" txt="skel"
+      items=
+        "skel/skin/default"
+      values=
+        "skel/default"
+      }
+      skin: =
+      { typ="C" txt="trench"
+      items=
+        "trench/skin/base1"$0D
+        "trench/skin/base2"$0D
+        "trench/skin/dam1"$0D
+        "trench/skin/dam2"$0D
+        "trench/skin/dam3"$0D
+        "trench/skin/dam4"$0D
+        "trench/skin/default"
+      values=
+        "trench/default"
+      }
+      skin: =
+      { typ="C" txt="zemph"
+      items=
+        "zemph/skin/default"
+      values=
+        "zemph/default"
+      }
+    }
+
 
   Entity Forms.fctx =
   {
@@ -3075,7 +3650,8 @@ QQRKSRC1
         DirSep = "/"
       }
 
-    t_modelbrowser:incl = {
+    t_modelbrowser:incl =
+      {
         Typ = "EP"
         DefExt = "md3"
         BasePath = "$Game\Main\models"
@@ -3085,14 +3661,47 @@ QQRKSRC1
         hint ="Custom .MD3 files"
       }
 
-    t_model:incl = {
-      model: = { Txt = " "
-        Typ = "B"
-        Cap = "models..."
-        form ="t_models_form:form"
-        hint ="Available .MD3 files"
+    t_model:incl =
+      {
+      model: =
+        { Txt = " "
+          Typ = "B"
+          Cap = "models..."
+          form ="t_models_form:form"
+          hint ="Available .MD3 files"
+        }
       }
-    }
+
+    t_modelhead:incl =
+      {
+      head: =
+        { Txt = " "
+          Typ = "B"
+          Cap = "Other ai model heads..."
+          form ="t_modelhead_form:form"
+          hint ="These are other available ai model player 'bot' file heads"$0D
+                "you can use with this entity. The voice does not change."$0D
+                "Select the SAME 'bots' skin below or only the default might be used."$0D
+                "ONLY heads and skins of the SAME 'bot models' can be intermixed."$0D
+                "Set the '3Dmodel' above to display the DEFAULT model version in QuArK."
+        }
+      }
+
+    t_modelskin:incl =
+      {
+      skin: =
+        { Txt = " "
+          Typ = "B"
+          Cap = "Other ai model skins..."
+          form ="t_modelskin_form:form"
+          hint ="These are other available ai model player 'bot' file skins"$0D
+                "you can use with this entity. The voice does not change."$0D
+                "Select the SAME 'bots' head above or only the default might be used."$0D
+                "ONLY heads and skins of the SAME 'bot models' can be intermixed."$0D
+                "Set the '3Dmodel' above to display the DEFAULT model version in QuArK."
+        }
+      }
+
     ai_american:form =
     {
       help = "american entity"$0D$0D22
@@ -3120,6 +3729,72 @@ QQRKSRC1
         typ = "X2"
         cap = "NoRevive"
       }
+      3Dmodel: =
+      {
+        typ="C"
+        Txt = "&"
+	hint = "This is a model for QuArK 3D views only."$0D
+               "For "$22"Other ai's"$22" only the 'Default' version is displayed."$0D
+               "This entity’s voice sound does NOT change."$0D
+               "For the GAME use the same MODEL for the"$0D
+               "different 'head' and 'skin' settings below."
+      items=
+        "ai_american-castle1"$0D
+        "ai_american-castle2"$0D
+        "ai_american-castle3"$0D
+        "ai_american-chateau1"$0D
+        "ai_american-chateau2"$0D
+        "ai_american-chateau3"$0D
+        "ai_american-church2"$0D
+        "ai_american-default"$0D
+        "ai_american-eg"$0D  // always list the "classname" item(s) here first.
+        "bj2/default"$0D
+        "eva/default"$0D
+        "femzombie/default"$0D
+        "hans/default"$0D
+        "helga/default"$0D
+        "higgs/default"$0D
+        "himmler/default"$0D
+        "inge/default"$0D
+        "jack/default"$0D
+        "mechanic/default"$0D
+        "multi/default"$0D
+        "multi_axis/default"$0D
+        "murphy/default"$0D
+        "officerss/default"$0D
+        "priestess/default"$0D
+        "skel/default"$0D
+        "trench/default"$0D
+        "zemph/default"
+      values=
+        "models/players/american/castle1_model.md3"$0D
+        "models/players/american/castle2_model.md3"$0D
+        "models/players/american/castle3_model.md3"$0D
+        "models/players/american/chateau1_model.md3"$0D
+        "models/players/american/chateau2_model.md3"$0D
+        "models/players/american/chateau3_model.md3"$0D
+        "models/players/american/church2_model.md3"$0D
+        "models/players/american/american_default.md3"$0D
+        "models/players/american/eg_model.md3"$0D // always list the "classname" default model(s) here first.
+        "models/players/bj2/bj2_default.md3"$0D
+        "models/players/eva/eva_default.md3"$0D
+        "models/players/femzombie/femzombie_default.md3"$0D
+        "models/players/hans/hans_default.md3"$0D
+        "models/players/helga/helga_default.md3"$0D
+        "models/players/higgs/higgs_default.md3"$0D
+        "models/players/himmler/himmler_default.md3"$0D
+        "models/players/inge/inge_default.md3"$0D
+        "models/players/jack/jack_default.md3"$0D
+        "models/players/mechanic/mechanic_default.md3"$0D
+        "models/players/multi/multi_default.md3"$0D
+        "models/players/multi_axis/multi_axis_default.md3"$0D
+        "models/players/murphy/murphy_default.md3"$0D
+        "models/players/officerss/officerss_default.md3"$0D
+        "models/players/priestess/priestess_default.md3"$0D
+        "models/players/skel/skel_default.md3"$0D
+        "models/players/trench/trench_default.md3"$0D
+        "models/players/zemph/zemph_default.md3"
+      }
       targetname: =
       {
         Txt = "&"
@@ -3135,38 +3810,12 @@ QQRKSRC1
         Txt = "&"
 	hint ="Name of AI file to use or blank for default."
       }
-      3Dmodel: =
-      {
-        typ="C"
-        Txt = "&"
-	hint = "This is a model for QuArK 3D views only."$0D
-               "For the game use the same setting for 'head' below."
-      items=
-        "castle1"$0D
-        "castle2"$0D
-        "castle3"$0D
-        "chateau1"$0D
-        "chateau2"$0D
-        "chateau3"$0D
-        "church2"$0D
-        "default"$0D
-        "eg"
-      values=
-        "models/players/american/castle1_model.md3"$0D
-        "models/players/american/castle2_model.md3"$0D
-        "models/players/american/castle3_model.md3"$0D
-        "models/players/american/chateau1_model.md3"$0D
-        "models/players/american/chateau2_model.md3"$0D
-        "models/players/american/chateau3_model.md3"$0D
-        "models/players/american/church2_model.md3"$0D
-        "models/players/american/american_default.md3"$0D
-        "models/players/american/eg_model.md3"
-      }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for her head."$0D
+	hint = "The original head_xxxx.skin file to use for this entity."$0D
+               "The .skin file (without head_) to use for her head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -3193,13 +3842,16 @@ QQRKSRC1
         "default"$0D
         "eg"
       }
+      t_modelhead = !
       skin: =
       {
         Txt = "&"
-	hint = "The .skin file (without body_) to use for her body."$0D
+	hint = "The original body_xxxx.skin file to use for this entity."$0D
+               "The .skin file (without body_) to use for her body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       }
+      t_modelskin = !
     }
     ai_blackguard:form =
     {
@@ -3215,7 +3867,7 @@ QQRKSRC1
        "       Must give player's folder name & the 'body_XX.skin'"$0D
        "       file be in that folder, otherwise 'default' will be used."
       bbox = '-16 -16 -40 16 16 40'
-      mdl = "models/players/blackguard/bg_default.md3"
+      mdl = "[3Dmodel]"
       spawnflags: =
       {
         typ = "X1"
@@ -3225,6 +3877,56 @@ QQRKSRC1
       {
         typ = "X2"
         cap = "NoRevive"
+      }
+      3Dmodel: =
+      {
+        typ="C"
+        Txt = "&"
+	hint = "This is a model for QuArK 3D views only."$0D
+               "Only the 'Default' version is displayed."$0D
+               "This entity’s voice sound does NOT change."$0D
+               "For the GAME use the same MODEL for the"$0D
+               "different 'head' and 'skin' settings below."
+      items=
+        "ai_blackguard"$0D  // always list the "classname" item(s) here first.
+        "bj2/default"$0D
+        "eva/default"$0D
+        "femzombie/default"$0D
+        "hans/default"$0D
+        "helga/default"$0D
+        "higgs/default"$0D
+        "himmler/default"$0D
+        "inge/default"$0D
+        "jack/default"$0D
+        "mechanic/default"$0D
+        "multi/default"$0D
+        "multi_axis/default"$0D
+        "murphy/default"$0D
+        "officerss/default"$0D
+        "priestess/default"$0D
+        "skel/default"$0D
+        "trench/default"$0D
+        "zemph/default"
+      values=
+        "models/players/blackguard/bg_default.md3"$0D // always list the "classname" default model(s) here first.
+        "models/players/bj2/bj2_default.md3"$0D
+        "models/players/eva/eva_default.md3"$0D
+        "models/players/femzombie/femzombie_default.md3"$0D
+        "models/players/hans/hans_default.md3"$0D
+        "models/players/helga/helga_default.md3"$0D
+        "models/players/higgs/higgs_default.md3"$0D
+        "models/players/himmler/himmler_default.md3"$0D
+        "models/players/inge/inge_default.md3"$0D
+        "models/players/jack/jack_default.md3"$0D
+        "models/players/mechanic/mechanic_default.md3"$0D
+        "models/players/multi/multi_default.md3"$0D
+        "models/players/multi_axis/multi_axis_default.md3"$0D
+        "models/players/murphy/murphy_default.md3"$0D
+        "models/players/officerss/officerss_default.md3"$0D
+        "models/players/priestess/priestess_default.md3"$0D
+        "models/players/skel/skel_default.md3"$0D
+        "models/players/trench/trench_default.md3"$0D
+        "models/players/zemph/zemph_default.md3"
       }
       targetname: =
       {
@@ -3245,7 +3947,8 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+	hint = "The original head_xxxx.skin file to use for this entity."$0D
+               "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -3305,11 +4008,13 @@ QQRKSRC1
         "train6"$0D
         "train7"
       }
+      t_modelhead = !
       skin: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+	hint = "The original body_xxxx.skin file to use for this entity."$0D
+               "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       items=
@@ -3329,6 +4034,7 @@ QQRKSRC1
         "blackguard/swf1"$0D
         "blackguard/train1"
       }
+      t_modelskin = !
     }
     ai_boss_heinrich:form =
     {
@@ -3481,6 +4187,56 @@ QQRKSRC1
         typ = "X2"
         cap = "NoRevive"
       }
+      3Dmodel: =
+      {
+        typ="C"
+        Txt = "&"
+	hint = "This is a model for QuArK 3D views only."$0D
+               "Only the 'Default' version is displayed."$0D
+               "This entity’s voice sound does NOT change."$0D
+               "For the GAME use the same MODEL for the"$0D
+               "different 'head' and 'skin' settings below."
+      items=
+        "ai_civilian"$0D  // always list the "classname" item(s) here first.
+        "bj2/default"$0D
+        "eva/default"$0D
+        "femzombie/default"$0D
+        "hans/default"$0D
+        "helga/default"$0D
+        "higgs/default"$0D
+        "himmler/default"$0D
+        "inge/default"$0D
+        "jack/default"$0D
+        "mechanic/default"$0D
+        "multi/default"$0D
+        "multi_axis/default"$0D
+        "murphy/default"$0D
+        "officerss/default"$0D
+        "priestess/default"$0D
+        "skel/default"$0D
+        "trench/default"$0D
+        "zemph/default"
+      values=
+        "models/players/civilian/civilian_default.md3"$0D // always list the "classname" default model(s) here first.
+        "models/players/bj2/bj2_default.md3"$0D
+        "models/players/eva/eva_default.md3"$0D
+        "models/players/femzombie/femzombie_default.md3"$0D
+        "models/players/hans/hans_default.md3"$0D
+        "models/players/helga/helga_default.md3"$0D
+        "models/players/higgs/higgs_default.md3"$0D
+        "models/players/himmler/himmler_default.md3"$0D
+        "models/players/inge/inge_default.md3"$0D
+        "models/players/jack/jack_default.md3"$0D
+        "models/players/mechanic/mechanic_default.md3"$0D
+        "models/players/multi/multi_default.md3"$0D
+        "models/players/multi_axis/multi_axis_default.md3"$0D
+        "models/players/murphy/murphy_default.md3"$0D
+        "models/players/officerss/officerss_default.md3"$0D
+        "models/players/priestess/priestess_default.md3"$0D
+        "models/players/skel/skel_default.md3"$0D
+        "models/players/trench/trench_default.md3"$0D
+        "models/players/zemph/zemph_default.md3"
+      }
       targetname: =
       {
         Txt = "&"
@@ -3495,41 +4251,6 @@ QQRKSRC1
       {
         Txt = "&"
 	hint ="Name of AI file to use or blank for default."
-      }
-      3Dmodel: =
-      {
-        typ="C"
-        Txt = "&"
-	hint = "This is a model for QuArK 3D views only."$0D
-               "For the game use the same setting for 'head' below."
-      items=
-        "default"$0D
-        "gene"$0D
-        "rocket1"$0D
-        "rocket2"$0D
-        "rocket3"$0D
-        "rocket4"$0D
-        "train1"$0D
-        "train2"$0D
-        "vincent"$0D
-        "xlab1"$0D
-        "xlab2"$0D
-        "xlab3"$0D
-        "xlab4"
-      values=
-        "models/players/civilian/civilian_default.md3"$0D
-        "models/players/civilian/gene_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"$0D
-        "models/players/civilian/rocket1_model.md3"
       }
       head: =
       {
@@ -3570,6 +4291,7 @@ QQRKSRC1
         "xlab3"$0D
         "xlab4"
       }
+      t_modelhead = !
       skin: =
       {
         typ="C"
@@ -3594,6 +4316,7 @@ QQRKSRC1
         "civilian/xlab1"$0D
         "civilian/xlab2"
       }
+      t_modelskin = !
     }
     ai_eliteguard:form =
     {
@@ -3786,7 +4509,7 @@ QQRKSRC1
        "       Must give player's folder name & the 'body_XX.skin'"$0D
        "       file be in that folder, otherwise 'default' will be used."
       bbox = '-16 -16 -40 16 16 40'
-      mdl = "models/players/partisan/part_default.md3"
+      mdl = "[3Dmodel]"
       spawnflags: =
       {
         typ = "X1"
@@ -3796,6 +4519,56 @@ QQRKSRC1
       {
         typ = "X2"
         cap = "NoRevive"
+      }
+      3Dmodel: =
+      {
+        typ="C"
+        Txt = "&"
+	hint = "This is a model for QuArK 3D views only."$0D
+               "Only the 'Default' version is displayed."$0D
+               "This entity’s voice sound does NOT change."$0D
+               "For the GAME use the same MODEL for the"$0D
+               "different 'head' and 'skin' settings below."
+      items=
+        "ai_partisan"$0D  // always list the "classname" item(s) here first.
+        "bj2/default"$0D
+        "eva/default"$0D
+        "femzombie/default"$0D
+        "hans/default"$0D
+        "helga/default"$0D
+        "higgs/default"$0D
+        "himmler/default"$0D
+        "inge/default"$0D
+        "jack/default"$0D
+        "mechanic/default"$0D
+        "multi/default"$0D
+        "multi_axis/default"$0D
+        "murphy/default"$0D
+        "officerss/default"$0D
+        "priestess/default"$0D
+        "skel/default"$0D
+        "trench/default"$0D
+        "zemph/default"
+      values=
+        "models/players/partisan/part_default.md"$0D // always list the "classname" default model(s) here first.
+        "models/players/bj2/bj2_default.md3"$0D
+        "models/players/eva/eva_default.md3"$0D
+        "models/players/femzombie/femzombie_default.md3"$0D
+        "models/players/hans/hans_default.md3"$0D
+        "models/players/helga/helga_default.md3"$0D
+        "models/players/higgs/higgs_default.md3"$0D
+        "models/players/himmler/himmler_default.md3"$0D
+        "models/players/inge/inge_default.md3"$0D
+        "models/players/jack/jack_default.md3"$0D
+        "models/players/mechanic/mechanic_default.md3"$0D
+        "models/players/multi/multi_default.md3"$0D
+        "models/players/multi_axis/multi_axis_default.md3"$0D
+        "models/players/murphy/murphy_default.md3"$0D
+        "models/players/officerss/officerss_default.md3"$0D
+        "models/players/priestess/priestess_default.md3"$0D
+        "models/players/skel/skel_default.md3"$0D
+        "models/players/trench/trench_default.md3"$0D
+        "models/players/zemph/zemph_default.md3"
       }
       targetname: =
       {
@@ -3816,7 +4589,8 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+	hint = "The original head_xxxx.skin file to use for this entity."$0D
+               "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -3836,11 +4610,13 @@ QQRKSRC1
         "sfm1"$0D
         "sfm2"
       }
+      t_modelhead = !
       skin: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+	hint = "The original body_xxxx.skin file to use for this entity."$0D
+               "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       items=
@@ -3854,6 +4630,7 @@ QQRKSRC1
         "civilian/kesler"$0D
         "partisan/sfm1"
       }
+      t_modelskin = !
     }
     ai_protosoldier:form =
     {
@@ -3925,7 +4702,7 @@ QQRKSRC1
        "       Must give player's folder name & the 'body_XX.skin'"$0D
        "       file be in that folder, otherwise 'default' will be used."
       bbox = '-16 -16 -40 16 16 40'
-      mdl = "models/players/infantryss/infantryss_default.md3"
+      mdl = "[3Dmodel]"
       spawnflags: =
       {
         typ = "X1"
@@ -3935,6 +4712,56 @@ QQRKSRC1
       {
         typ = "X2"
         cap = "NoRevive"
+      }
+      3Dmodel: =
+      {
+        typ="C"
+        Txt = "&"
+	hint = "This is a model for QuArK 3D views only."$0D
+               "Only the 'Default' version is displayed."$0D
+               "This entity’s voice sound does NOT change."$0D
+               "For the GAME use the same MODEL for the"$0D
+               "different 'head' and 'skin' settings below."
+      items=
+        "ai_soldier"$0D  // always list the "classname" item(s) here first.
+        "bj2/default"$0D
+        "eva/default"$0D
+        "femzombie/default"$0D
+        "hans/default"$0D
+        "helga/default"$0D
+        "higgs/default"$0D
+        "himmler/default"$0D
+        "inge/default"$0D
+        "jack/default"$0D
+        "mechanic/default"$0D
+        "multi/default"$0D
+        "multi_axis/default"$0D
+        "murphy/default"$0D
+        "officerss/default"$0D
+        "priestess/default"$0D
+        "skel/default"$0D
+        "trench/default"$0D
+        "zemph/default"
+      values=
+        "models/players/infantryss/infantryss_default.md3"$0D // always list the "classname" default model(s) here first.
+        "models/players/bj2/bj2_default.md3"$0D
+        "models/players/eva/eva_default.md3"$0D
+        "models/players/femzombie/femzombie_default.md3"$0D
+        "models/players/hans/hans_default.md3"$0D
+        "models/players/helga/helga_default.md3"$0D
+        "models/players/higgs/higgs_default.md3"$0D
+        "models/players/himmler/himmler_default.md3"$0D
+        "models/players/inge/inge_default.md3"$0D
+        "models/players/jack/jack_default.md3"$0D
+        "models/players/mechanic/mechanic_default.md3"$0D
+        "models/players/multi/multi_default.md3"$0D
+        "models/players/multi_axis/multi_axis_default.md3"$0D
+        "models/players/murphy/murphy_default.md3"$0D
+        "models/players/officerss/officerss_default.md3"$0D
+        "models/players/priestess/priestess_default.md3"$0D
+        "models/players/skel/skel_default.md3"$0D
+        "models/players/trench/trench_default.md3"$0D
+        "models/players/zemph/zemph_default.md3"
       }
       targetname: =
       {
@@ -4104,11 +4931,13 @@ QQRKSRC1
         "xlab3"$0D
         "xlab4"
       }
+      t_modelhead = !
       skin: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+	hint = "These are the normal model skins that go with this entity."$0D
+               "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       items=
@@ -4178,6 +5007,7 @@ QQRKSRC1
         "infantryss/village4"$0D
         "infantryss/xlab1"
       }
+      t_modelskin = !
     }
     ai_supersoldier:form =
     {
@@ -4279,7 +5109,7 @@ QQRKSRC1
        "       Must give player's folder name & the 'body_XX.skin'"$0D
        "       file be in that folder, otherwise 'default' will be used."
       bbox = '-16 -16 -40 16 16 40'
-      mdl = "models/players/venom/venom_default.md3"
+      mdl = "[3Dmodel]"
       spawnflags: =
       {
         typ = "X1"
@@ -4289,6 +5119,56 @@ QQRKSRC1
       {
         typ = "X2"
         cap = "NoRevive"
+      }
+      3Dmodel: =
+      {
+        typ="C"
+        Txt = "&"
+	hint = "This is a model for QuArK 3D views only."$0D
+               "Only the 'Default' version is displayed."$0D
+               "This entity’s voice sound does NOT change."$0D
+               "For the GAME use the same MODEL for the"$0D
+               "different 'head' and 'skin' settings below."
+      items=
+        "ai_venom"$0D  // always list the "classname" item(s) here first.
+        "bj2/default"$0D
+        "eva/default"$0D
+        "femzombie/default"$0D
+        "hans/default"$0D
+        "helga/default"$0D
+        "higgs/default"$0D
+        "himmler/default"$0D
+        "inge/default"$0D
+        "jack/default"$0D
+        "mechanic/default"$0D
+        "multi/default"$0D
+        "multi_axis/default"$0D
+        "murphy/default"$0D
+        "officerss/default"$0D
+        "priestess/default"$0D
+        "skel/default"$0D
+        "trench/default"$0D
+        "zemph/default"
+      values=
+        "models/players/venom/venom_default.md3"$0D // always list the "classname" default model(s) here first.
+        "models/players/bj2/bj2_default.md3"$0D
+        "models/players/eva/eva_default.md3"$0D
+        "models/players/femzombie/femzombie_default.md3"$0D
+        "models/players/hans/hans_default.md3"$0D
+        "models/players/helga/helga_default.md3"$0D
+        "models/players/higgs/higgs_default.md3"$0D
+        "models/players/himmler/himmler_default.md3"$0D
+        "models/players/inge/inge_default.md3"$0D
+        "models/players/jack/jack_default.md3"$0D
+        "models/players/mechanic/mechanic_default.md3"$0D
+        "models/players/multi/multi_default.md3"$0D
+        "models/players/multi_axis/multi_axis_default.md3"$0D
+        "models/players/murphy/murphy_default.md3"$0D
+        "models/players/officerss/officerss_default.md3"$0D
+        "models/players/priestess/priestess_default.md3"$0D
+        "models/players/skel/skel_default.md3"$0D
+        "models/players/trench/trench_default.md3"$0D
+        "models/players/zemph/zemph_default.md3"
       }
       targetname: =
       {
@@ -4309,7 +5189,8 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+	hint = "The original head_xxxx.skin file to use for this entity."$0D
+               "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -4323,11 +5204,13 @@ QQRKSRC1
         "dig1"$0D
         "factory1"
       }
+      t_modelhead = !
       skin: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+	hint = "The original body_xxxx.skin file to use for this entity."$0D
+               "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       items=
@@ -4341,6 +5224,7 @@ QQRKSRC1
         "venom/dig1"$0D
         "venom/default"
       }
+      t_modelskin = !
     }
     ai_warzombie:form =
     {
@@ -8312,7 +9196,10 @@ QQRKSRC1
     }
     props_box_32:form =
     {
+      help = "A pre-defined box, dimensions are 32 x 32 x 32 (x,y,z),"$0D
+             "that is 'pushable' only and non-destructible."$0D
       bbox = '-16 -16 -16 16 16 16'
+      mdl = "/models/mapobjects/boxes/box32.md3"
       target: =
       {
         txt = "&"
@@ -8326,7 +9213,10 @@ QQRKSRC1
     }
     props_box_48:form =
     {
+      help = "A pre-defined box, dimensions are 48 x 48 x 48 (x,y,z),"$0D
+             "that is 'pushable' only and non-destructible."$0D
       bbox = '-24 -24 -24 24 24 24'
+      mdl = "/models/mapobjects/boxes/box48.md3"
       target: =
       {
         txt = "&"
@@ -8340,7 +9230,10 @@ QQRKSRC1
     }
     props_box_64:form =
     {
+      help = "A pre-defined box, dimensions are 64 x 64 x 64 (x,y,z),"$0D
+             "that is 'pushable' only and non-destructible."$0D
       bbox = '-32 -32 -32 32 32 32'
+      mdl = "/models/mapobjects/boxes/box64.md3"
       target: =
       {
         txt = "&"
@@ -8420,7 +9313,8 @@ QQRKSRC1
        "shard_wood = 1,"$0D
        "shard_metal = 2,"$0D
        "shard_ceramic = 3"
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-16 -16 0 16 16 48'
+      mdl = "models/furniture/chair/chair_office3.md3"
       target: =
       {
         txt = "&"
@@ -8475,7 +9369,8 @@ QQRKSRC1
        "shard_wood = 1,"$0D
        "shard_metal = 2,"$0D
        "shard_ceramic = 3"
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-16 -16 0 16 16 56'
+      mdl = "models/furniture/chair/chair_chat.md3"
       target: =
       {
         txt = "&"
@@ -8530,7 +9425,8 @@ QQRKSRC1
        "shard_wood = 1,"$0D
        "shard_metal = 2,"$0D
        "shard_ceramic = 3"
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-16 -16 0 16 16 56'
+      mdl = "models/furniture/chair/chair_chatarm.md3"
       target: =
       {
         txt = "&"
@@ -8585,7 +9481,8 @@ QQRKSRC1
        "shard_wood = 1,"$0D
        "shard_metal = 2,"$0D
        "shard_ceramic = 3"
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-16 -16 0 16 16 48'
+      mdl = "models/furniture/chair/hiback5.md3"
       target: =
       {
         txt = "&"
@@ -8640,7 +9537,8 @@ QQRKSRC1
        "shard_wood = 1,"$0D
        "shard_metal = 2,"$0D
        "shard_ceramic = 3"
-      bbox = '-16 -16 0 16 16 32'
+      bbox = '-16 -16 0 16 16 40'
+      mdl = "models/furniture/chair/sidechair3.md3"
       target: =
       {
         txt = "&"
@@ -9465,6 +10363,7 @@ QQRKSRC1
        "   ( be sure to put it on the floor )"$0D
        "The default is in the middle of the barrel on the floor."
       bbox = '-13 -13 0 13 13 40'
+      mdl = "models/furniture/barrel/barrel_d.md3"
       spawnflags: =
       {
         typ = "X1"
