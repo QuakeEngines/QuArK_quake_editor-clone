@@ -44,7 +44,8 @@ As you can see in the image to the right, most of the settings have already been
 
 <i><u>Paths and files to create</u></i>: This is where QuArK will create a tmpQuArK folder, in your main Torque folder, to place your textures, map and dif files.
 
-<i><u>Default texture (terrain texture)</u></i>: These have no settings because Torque is an engine only so you need to create your own and select them here. See <a href="intro.configuration.games.specificgames.torgue.html#texture">Custom Textures</a> below.
+<i><u>Default texture (terrain texture)</u></i>: These have no settings because Torque is an engine only so you need to create your own and select them here.
+Or you can download a package we have created. See <a href="intro.configuration.games.specificgames.torgue.html#texture">Custom Textures</a> below.
 
 <i><u>Game Light saturation</u></i>: Currently only for the OpenGL viewer. Larger values make darker scenes.
 
