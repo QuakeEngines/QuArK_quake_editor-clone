@@ -48,12 +48,42 @@ section below for more detailed instructions on its installation.
 
 </td>
 <td>
-<img border=1 valign=top align=right>rtcw_config1.png</img>
+<img border=1 valign=top align=right>rtcw_config1.png</img><br>
 </td></tr>
 </table>
-
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>
+<b>Part 2 – QuArK game pack download</b>
+
+This is the QuArK RTCW game support package. Download the QuArK_RTCW.zip file and extract it, using the 
+folders path option, to the game folder location where you have RTCW installed on your computer.
+
+All the paths to the "Main" sub-folder have already been set in the zip file.
+
+You can download this package from two locations, the
+ <a href="http://prdownloads.sourceforge.net/quark/QuArK_RTCW.zip">Sourceforge release system</a> 
+or the 
+<a href="http://quark.planetquake.gamespy.com/game_support/RTCW/QuArK_RTCW.zip">Official QuArK</a>
+site. The zip file is about 64.7 MB and will take around 2 minutes with cable or DSL.
+
+This package has been created to work with QuArK 6.5.0 alpha 8 or later and will give the most complete
+support available.
+
+Every effort has been made working through the RTCW game files and other sources to allow the viewing
+of all available textures in <a href="intro.texturebrowser.overview.html">QuArK's Texture Browser</a>,
+all game models viewable in the 3D editor Texture views and detail entity settings with the use of
+pre-defined dropdown list, model selection and variations list, file selection capabilities for models
+and sounds, as well as 'color pickers' for all lighting functions. Even a few 'script\shader' corrections.
+
+</td>
+<td>
+<img border=1 valign=top align=right>rtcw_config4.png</img>
+</td></tr>
+</table>
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Part 3 – QuArK RTCW Configuration settings</b>
+
 As you can see in the image below, most of the settings have already been set with a default
 entry. While others have been pre-coded in
 QuArK's Defaults.qrk file that you can not see. This will prove to make life a lot easyer
@@ -112,7 +142,7 @@ button, and then press the 'OK' button to close the Configuration panel. This wi
 back in the Quark Explorer. Now is also a good time to close QuArK completely, this will
 save your settings in the Setup.qrk file. You're done!
 
-<b>Part 2 – Compiling</b>
+<b>Part 4 – Compiling</b>
 
 When you are ready to compile your map, simply select the "Go ![textures+build+Rctw]"
 main menu item, which is a "Full" build, meaning for, textures, their script files, AAS files (for bots)
