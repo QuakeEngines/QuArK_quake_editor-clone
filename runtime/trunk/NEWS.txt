@@ -15,6 +15,21 @@ $Id$
 6.5.0 alpha 8
 =============
 
+ * [cdunde]: Completely revamped the DataRTCW.qrk file to coordinate with the new
+         - QuArK_RTCW.zip game support package to allow the viewing of all available
+         - textures in QuArK's Texture Browser, all game models viewable in the
+         - 3D editor Texture views and detail entity settings with the use of
+         - pre-defined dropdown list, model selection and variations list,
+         - file selection capabilities for models and sounds,
+         - as well as 'color pickers' for all lighting functions.
+          -Even a few 'script\shader' corrections.
+
+ * [cdunde]: Made up a complete QuArK_RTCW.zip game support package and added its
+         - link to the RTCW Infobase Configuration doc section.
+
+ * [cdunde]: Updated Infobase docs for Torque and added Torque_textures.zip link
+         - to QuArK's game_support section.
+
  * [cdunde]: Fixed Access Violation errors when rebuilding and moving in 3D views.
 
  * [cdunde]: Fixed Extruder Shape Builder 2D view editor that was broke.
