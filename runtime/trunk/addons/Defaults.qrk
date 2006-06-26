@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.288  2006/05/19 17:10:03  cdunde
+//To add new transparent poly options for viewing background image.
+//
 //Revision 1.287  2006/05/07 23:12:27  cdunde
 //To reset settings for Rowdys new command line fix
 //to allow the variable %filename% to be used.
@@ -2102,16 +2105,16 @@ QQRKSRC1
         DefaultTextureScale = "0.5"
 
         Console = "1"
-        BuildPgmsDir = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\bspcToolFolder"
+        BuildPgmsDir = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\bspc"
         StupidBuildToolKludge = "" // Run tools from base directory setting
         OutputMapFormat="Brush Primitives"
         AlwaysWriteThreeFields = "1"
-        BuildPgm1  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildPgm1  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22""
         BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
-        BuildPgm2  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildPgm2  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22""
-        BuildPgm3  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildPgm3  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22""
         BuildPgm4 = "BSPC.EXE"
         BuildArgs4 = "-threads 2 -ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
