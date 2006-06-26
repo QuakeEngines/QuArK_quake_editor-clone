@@ -60,9 +60,7 @@ folders path option, to the game folder location where you have RTCW installed o
 
 All the paths to the "Main" sub-folder have already been set in the zip file.
 
-You can download this package from two locations, the
- <a href="http://prdownloads.sourceforge.net/quark/QuArK_RTCW.zip">Sourceforge release system</a> 
-or the 
+You can download this package from the 
 <a href="http://quark.planetquake.gamespy.com/game_support/RTCW/QuArK_RTCW.zip">Official QuArK</a>
 site. The zip file is about 64.7 MB and will take around 2 minutes with cable or DSL.
 
