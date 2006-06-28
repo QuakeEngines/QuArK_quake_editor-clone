@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.21  2004/05/21 01:12:07  cdunde
 To add support for Sylphis game engine. Code by Harry Kalogirou.
 
@@ -444,7 +447,10 @@ begin
         exit;
       end;
     end;
-  finally
+ // finally
+  except
+     // SilverPaladin - 12/01/2003 - As stated above, NIL can be returned but not an exception
+    Result := NIL;
   end;
 end;
 
@@ -474,7 +480,8 @@ var
   TexCoord: PVertxArray;
   Vertexes, Vertexes2: PMD3Vertex;
   CTris: PComponentTris;
-  CVert: vec3_p;
+  CVert: vec3_p; 
+  ImageFile: QFileObject;
 begin
   org:=fs.position;
   fs.readbuffer(mhead, sizeof(mhead));
@@ -511,6 +518,28 @@ begin
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.jpg'), false);
     if skin=nil then
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.png'), false);
+         // SilverPaladin - 12/01/2003 - If we have not been able to find a skin file   
+      // in the current directories (unpure has priority), look for it in the PK3
+      // files (pure mode) that have been loaded for the game.   
+      if (Skin = NIL)   
+      then begin   
+        ImageFile := NeedGameFile(base_tex_name);
+        if (ImageFile <> NIL)   
+        then begin   
+         ImageFile.AddRef(+1);   
+         try   
+           ImageFile.Acces;   
+           if (ImageFile is QImage)   
+           then Skin := QImage(ImageFile);   
+         finally   
+           ImageFile.AddRef(-1);   
+         end;   
+        end;   
+      end;   
+     
+      // If the files does not exist in the directories or in the packs then raise   
+      // an error. 
+
     if skin=nil then
     begin
       t:=FmtLoadStr1(5575, [base_tex_name+' or '+ChangeFileExt(base_tex_name,'.jpg'), LoadName]);
