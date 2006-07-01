@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.14  2006/07/01 00:34:00  cdunde
+//Update
+//
 //Revision 1.13  2006/06/22 01:58:02  cdunde
 //Added updates for entity model displaying.
 //
@@ -12865,7 +12868,8 @@ QQRKSRC1
     {
       bbox = '-5 -4 -2 5 4 2'
       help = "model="$22"models/weapons2/colt/colt.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of ammo it starts with. Default is 4."
       mdl = "models/weapons2/colt/colt.md3"
       spawnflags: =
       {
@@ -12882,12 +12886,18 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of ammo it starts with. Default is 4."
+      }
     }
     weapon_fg42:form =
     {
       bbox = '-20 -4 -2 20 4 2'
       help = "models/weapons2/fg42/fg42.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of ammo it starts with. Default is 17."
       mdl = "models/weapons2/fg42/fg42.md3"
       spawnflags: =
       {
@@ -12904,13 +12914,19 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of ammo it starts with. Default is 17."
+      }
     }
     weapon_flamethrower:form =
     {
       bbox = '-4 -6 -8 4 6 8'
       help = "models/weapons2/flamethrower/pu_flamethrower.md3"$22$0D
              "Actual size, skin and position in game."
-      mdl = "models/weapons2/flamethrower/pu_flamethrower.md3"
+      mdl = "models/weapons2/flamethrower/pu_flamethrower.md3"$0D22
+             "count"$22"  The amount of fuel it starts with. Default is 52."
       spawnflags: =
       {
         typ = "X1"
@@ -12925,6 +12941,11 @@ QQRKSRC1
       {
         typ = "X8"
         cap = "RESPAWN"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 52."
       }
     }
     weapon_knife:form =
@@ -12953,7 +12974,8 @@ QQRKSRC1
     {
       bbox = '-6 -4 -1 6 4 1'
       help = "models/weapons2/luger/luger.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of fuel it starts with. Default is 4."
       mdl = "models/weapons2/luger/luger.md3"
       spawnflags: =
       {
@@ -12970,12 +12992,18 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 4."
+      }
     }
     weapon_mauserRifle:form =
     {
       bbox = '-24 -4 -1 24 4 1'
       help = "models/weapons2/mauser/mauser.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of fuel it starts with. Default is 9."
       mdl = "models/weapons2/mauser/mauser.md3"
       spawnflags: =
       {
@@ -12992,6 +13020,11 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 9."
+      }
     }
     weapon_mp40:form =
     {
@@ -12999,7 +13032,8 @@ QQRKSRC1
       help = "models/weapons2/mauser/mauser.md3"$22$0D
              "Actual size, skin and position in game."$0D
              "no value:   laying in a default position on it's side (default)."$0D
-             "2:  upright, barrel pointing up, slightly angled (rack mount)."
+             "2:  upright, barrel pointing up, slightly angled (rack mount)."$0D22
+             "count"$22"  The amount of fuel it starts with. Default is 17."
       mdl = "models/weapons2/mp40/mp40.md3"
       spawnflags: =
       {
@@ -13022,12 +13056,18 @@ QQRKSRC1
         hint = "no value:    laying in a default position on it's side (default)."$0D
                "2:   upright, barrel pointing up, slightly angled (rack mount)."
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 17."
+      }
     }
     weapon_panzerfaust:form =
     {
       bbox = '-14 -4 -2 14 4 2'
       help = "models/weapons2/panzerfaust/pf.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of fuel it starts with. Default is 1."
       mdl = "models/weapons2/panzerfaust/pf.md3"
       spawnflags: =
       {
@@ -13044,12 +13084,18 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 1."
+      }
     }
     weapon_silencer:form =
     {
       bbox = '-10 -4 -1 10 4 1'
       help = "models/weapons2/silencer/silencer.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of fuel it starts with. Default is 4."
       mdl = "models/weapons2/silencer/silencer.md3"
       spawnflags: =
       {
@@ -13066,12 +13112,18 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 4."
+      }
     }
     weapon_sniperScope:form =
     {
       bbox = '-24 -4 -1 24 4 1'
       help = "models/weapons2/mauser/pu_mauser_scope.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of fuel it starts with. Default is 9."
       mdl = "models/weapons2/mauser/pu_mauser_scope.md3"
       spawnflags: =
       {
@@ -13088,12 +13140,18 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 9."
+      }
     }
     weapon_snooperrifle:form =
     {
       bbox = '-24 -4 -1 24 4 1'
       help = "models/weapons2/garand/garand.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of fuel it starts with. Default is 4."
       mdl = "models/weapons2/garand/garand.md3"
       spawnflags: =
       {
@@ -13110,12 +13168,18 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 4."
+      }
     }
     weapon_sten:form =
     {
       bbox = '-14 -4 -4 14 4 4'
       help = "models/weapons2/sten/sten.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of fuel it starts with. Default is 12."
       mdl = "models/weapons2/sten/sten.md3"
       spawnflags: =
       {
@@ -13132,12 +13196,18 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 12."
+      }
     }
     weapon_tesla:form =
     {
       bbox = '-20 -10 -4 20 10 4'
       help = "models/weapons2/tesla/pu_tesla.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of energy it starts with. Default is 11."
       mdl = "models/weapons2/tesla/pu_tesla.md3"
       spawnflags: =
       {
@@ -13154,12 +13224,18 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of fuel it starts with. Default is 11."
+      }
     }
     weapon_thompson:form =
     {
       bbox = '-18 -5 -1 18 5 1'
       help = "models/weapons2/thompson/thompson.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of ammo it starts with. Default is 28."
       mdl = "models/weapons2/thompson/thompson.md3"
       spawnflags: =
       {
@@ -13176,12 +13252,18 @@ QQRKSRC1
         typ = "X8"
         cap = "RESPAWN"
       }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of ammo it starts with. Default is 28."
+      }
     }
     weapon_venom:form =
     {
       bbox = '-18 -6 -2 18 6 2'
       help = "models/weapons2/venom/pu_venom.md3"$22$0D
-             "Actual size, skin and position in game."
+             "Actual size, skin and position in game."$0D22
+             "count"$22"  The amount of ammo it starts with. Default is 33."
       mdl = "models/weapons2/venom/pu_venom.md3"
       spawnflags: =
       {
@@ -13197,6 +13279,11 @@ QQRKSRC1
       {
         typ = "X8"
         cap = "RESPAWN"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "The amount of ammo it starts with. Default is 33."
       }
     }
   }
