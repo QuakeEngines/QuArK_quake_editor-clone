@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.13  2006/06/22 01:58:02  cdunde
+//Added updates for entity model displaying.
+//
 //Revision 1.12  2006/06/16 07:19:02  cdunde
 //Revamped and complete game support for RTCW.
 //
@@ -886,13 +889,14 @@ QQRKSRC1
         }
         misc_gamemodel:e =
         {
-          angle = "360"
+          angles = "0 0 0"
           origin = "0 0 0"
         }
         misc_grabber_trap:e =
         {
           angle = "360"
           origin = "0 0 0"
+          ;desc = "md3 placed in the game at runtime."
         }
         misc_light_surface:e =
         {
