@@ -55,6 +55,7 @@ class BaseEditor:
         self.ReopenRoot(form)
         self.setupchanged1 = (self.setupchanged,)
         apply(SetupRoutines.append, self.setupchanged1)
+        self.list = ()
 
    # def __del__(self):
    #     debug("MapEditor closes")
@@ -80,6 +81,7 @@ class BaseEditor:
 
     def drawmap(self, view):
         "Draws the map/model on the given view."
+        list = self.list
 
         #
         # Stop any pending timer that would cause this view to be redrawn later.
@@ -892,6 +894,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.24  2006/05/19 17:10:03  cdunde
+#To add new transparent poly options for viewing background image.
+#
 #Revision 1.23  2006/01/30 08:20:00  cdunde
 #To commit all files involved in project with Philippe C
 #to allow QuArK to work better with Linux using Wine.
