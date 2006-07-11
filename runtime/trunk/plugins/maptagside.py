@@ -193,7 +193,13 @@ def projectpointtoplane(p,n1,o2,n2):
   v1 = o2-p
   v2 = v1*n2
   v3 = n1*n2
-  v4 = v2/v3
+
+#  inserted this test to avoid error when trying to divide by 0.
+  if v3 == 0:
+      v4 = v2/1
+  else:
+      v4 = v2/v3
+
   v5 = v4*n1
   return p + v5
 
@@ -837,7 +843,13 @@ def wraptex(orig, side):
     else:
 #      quarkx.msgbox("t2 is hopefully OK",MT_INFORMATION, MB_OK)
       t = t2
-    l = -(n*(o-r))/(n*(t-o))
+
+#  inserted this test to avoid error when trying to divide by 0.
+    if (n*(t-o)) == 0:
+        l = -(n*(o-r))/1
+    else:
+        l = -(n*(o-r))/(n*(t-o))
+
     p = l*(t-o)+o
     if n*(p-r) > .000001:
       squawk("Sorry, something's not right here, I can't do this")
@@ -1919,6 +1931,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.36  2005/10/15 00:51:56  cdunde
+#To reinstate headers and history
+#
 #Revision 1.32  2003/10/07 21:37:31  cdunde
 #Update for Tagside Infobase detail link
 #
