@@ -15,6 +15,8 @@ $Id$
 6.5.0 alpha 8
 =============
 
+ * [cdunde]: Added 0 division testing to stop console errors when "wrapping" textures.
+
  * [cdunde]: Completely revamped the DataRTCW.qrk file to coordinate with the new
          - QuArK_RTCW.zip game support package to allow the viewing of all available
          - textures in QuArK's Texture Browser, all game models viewable in the
