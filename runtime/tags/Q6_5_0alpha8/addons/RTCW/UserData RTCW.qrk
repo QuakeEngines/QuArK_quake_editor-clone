@@ -1,0 +1,216 @@
+QQRKSRC1
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.6  2006/05/19 18:46:56  cdunde
+//For the configuration revamping of RTCW.
+//
+//Revision 1.5  2005/10/15 01:00:23  cdunde
+//To reinstate headers and history
+//
+//Revision 1.2  2002/04/28 11:40:18  tiglari
+//Modifications to get RTCW support working better
+//
+//Revision 1.1  2001/12/05 20:38:04  decker_dk
+//Added RTCW (Return To Castle Wolfenstein)
+//
+
+{
+  Description = "Custom configuration file for RTCW"
+  MapObjPanel.qrk =
+  {
+    cube: =
+    {
+      new cube:p =
+      {
+        east:f =
+        {
+          v = '64 0 0 64 128 0 64 0 128'
+          tex = "[auto]"
+        }
+        west:f =
+        {
+          v = '-64 0 0 -64 -128 0 -64 0 128'
+          tex = "[auto]"
+        }
+        north:f =
+        {
+          v = '0 64 0 -128 64 0 0 64 128'
+          tex = "[auto]"
+        }
+        south:f =
+        {
+          v = '0 -64 0 128 -64 0 0 -64 128'
+          tex = "[auto]"
+        }
+        up:f =
+        {
+          v = '0 0 64 128 0 64 0 128 64'
+          tex = "[auto]"
+        }
+        down:f =
+        {
+          v = '0 0 -64 128 0 -64 0 -128 -64'
+          tex = "[auto]"
+        }
+      }
+    }
+    light: =
+    {
+      light:e =
+      {
+        origin = "0 0 0"
+        light = "300"
+        _color = "1 1 1"
+      }
+    }
+    bezier: =
+    {
+      bezier:b2 =
+      {
+        v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
+          1'
+        tex = "base_wall/basewall03"
+      }
+    }
+    ArenaFileMaker: =
+    {
+      ArenaFileMaker:d =
+      {
+        ;desc = "Put one in your map and an arena script will be created automagically"
+        origin = "0 0 0"
+        bots = "ranger bones"
+        longname = "my very cool map"
+        fraglimit = "50"
+        type = "ffa"
+        macro = "dup arenafilemaker"
+      }
+    }
+  }
+  Menu.qrk =
+  {
+    item: =
+    {
+      Txt = "&GO ! (textures+build+Rctw)"
+      Shortcut = "Ctrl+R"
+      RunGame = "1"
+      Textures = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
+      BuildPgm4 = "1"
+      BuildPgm5 = "1"
+      BuildPgm6 = "1"
+      ExportMapFile = "1"
+    }
+    item: =
+    {
+      Txt = "Quic&kGO ! (fast -vis)"
+      Shortcut = "Ctrl+K"
+      RunGame = "1"
+      Textures = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
+//      BuildPgm4 = "1"
+    }
+    item: =
+    {
+      Txt = "&Fastest (full bright)"
+      Shortcut = "Ctrl+F"
+      Textures = "1"
+      RunGame = "1"
+      BuildPgm1 = "1"
+      BuildPgm4="1"
+      BuildPgm5 = "1"
+      BuildPgm6 = "1"
+      ExportMapFile = "1"
+    }
+    item: =
+    {
+      Txt = "Fastest on &selection only"
+      Shortcut = "Ctrl+P"
+      SelOnly = "1"
+      Textures = "1"
+      RunGame = "1"
+      BuildPgm1 = "1"
+      BuildPgm4="1"
+      BuildPgm5 = "1"
+      BuildPgm6 = "1"
+      ExportMapFile = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "&Prepare used textures and scripts"
+      Textures = "1"
+    }
+    item: =
+    {
+      Txt = "&Complete Rebuild"
+      Pause = "1"
+      Textures = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
+      BuildPgm4 = "1"
+      BuildPgm5 = "1"
+      BuildPgm6 = "1"
+    }
+    item: =
+    {
+      Txt = "&Run RTCW"
+      RunGame = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "&RTCW MAP (.bsp file creation)"
+      Pause = "1"
+      BuildPgm1 = "1"
+      ExportMapFile = "1"
+    }
+    item: =
+    {
+      Txt = "&RTCW MAP -vis (visibility list)"
+      Pause = "1"
+      BuildPgm2 = "1"
+    }
+    item: =
+    {
+      Txt = "&RTCW MAP -light (light projection)"
+      Pause = "1"
+      BuildPgm3 = "1"
+    }
+    item: =
+    {
+      Txt = "Both bspc (bot nodelist b0 and b1)"
+      Pause = "1"
+      BuildPgm4 = "1"
+      BuildPgm5 = "1"
+      BuildPgm6 = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "&Make aas -reach (update entity reachability)"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm4 = "1"
+      BuildArgs4 = "-reach"
+    }
+  }
+}

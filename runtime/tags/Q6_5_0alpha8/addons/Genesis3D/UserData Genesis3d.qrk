@@ -1,0 +1,707 @@
+QQRKSRC1
+// This file has been written by QuArK QuArK 6.3snap080601
+// It's the text version of file: UserData Quake 1.qrk
+
+{
+  Description = "Custom configuration file for Genesis3d."
+  MapObjPanel.qrk =
+  {
+    cube: =
+    {
+      new cube:p =
+      {
+        east:f =
+        {
+          v = '64 0 0 64 128 0 64 0 128'
+          tex = "[auto]"
+        }
+        west:f =
+        {
+          v = '-64 0 0 -64 -128 0 -64 0 128'
+          tex = "[auto]"
+        }
+        north:f =
+        {
+          v = '0 64 0 -128 64 0 0 64 128'
+          tex = "[auto]"
+        }
+        south:f =
+        {
+          v = '0 -64 0 128 -64 0 0 -64 128'
+          tex = "[auto]"
+        }
+        up:f =
+        {
+          v = '0 0 64 128 0 64 0 128 64'
+          tex = "[auto]"
+        }
+        down:f =
+        {
+          v = '0 0 -64 128 0 -64 0 -128 -64'
+          tex = "[auto]"
+        }
+      }
+    }
+    light: =
+    {
+      light:e =
+      {
+        origin = "0 0 0"
+        light = "300"
+      }
+    }
+    Quake1 Entities: =
+    {
+      Quake1 Entities.qtxfolder =
+      {
+        Doors & lifts.qtxfolder =
+        {
+          fixedscale = "1"
+          func_door:b =
+          {
+            angle = "360"
+            ;desc = "Door"
+            ;incl = "defpoly"
+          }
+          func_door_secret:b =
+          {
+            angle = "360"
+            ;desc = "A door that is triggered to open"
+            ;incl = "defpoly"
+          }
+          func_wall:b =
+          {
+            ;desc = "Just a solid wall if not inhibitted"
+            ;incl = "defpoly"
+          }
+          func_button:b =
+          {
+            angle = "360"
+            ;desc = "A button"
+            ;incl = "defpoly"
+          }
+          func_train:b =
+          {
+            angle = "360"
+            ;desc = "A platform (moves along a train)"
+            ;incl = "defpoly"
+          }
+          func_plat:b =
+          {
+            ;desc = "A lift/elevator"
+            ;incl = "defpoly"
+          }
+          func_bossgate:b =
+          {
+            ;desc = "This bmodel disappears when player has all the episode si"
+             "gils"
+            ;incl = "defpoly"
+          }
+          func_episodegate:b =
+          {
+            ;desc = "Appears if episode has been completed so we cant reenter "
+             "it"
+            ;incl = "defpoly"
+          }
+          func_illusionary:b =
+          {
+            ;desc = "Entity that looks solid but lets you walk right through i"
+             "t"
+            ;incl = "defpoly"
+          }
+        }
+        Triggers.qtxfolder =
+        {
+          fixedscale = "1"
+          trigger_teleport:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "Teleporter (all trigger_tags are trigger by walkover"
+            ;incl = "defpoly"
+          }
+          trigger_changelevel:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "Changes to another level"
+            ;incl = "defpoly"
+          }
+          trigger_counter:e =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "Counter"
+          }
+          trigger_setskill:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "Changes Skill level"
+            ;incl = "defpoly"
+          }
+          trigger_once:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "Triggers action only once"
+            ;incl = "defpoly"
+          }
+          trigger_multiple:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "trigger action (can be triggered more than once)"
+            ;incl = "defpoly"
+          }
+          trigger_onlyregistered:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "Only triggers if game is registered (registered == 1)"
+            ;incl = "defpoly"
+          }
+          trigger_secret:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "trigger action and award secret credit"
+            ;incl = "defpoly"
+          }
+          trigger_monsterjump:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "walking monsters that touch this will jump"
+            ;incl = "defpoly"
+          }
+          trigger_hurt:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "any object touching this will be hurt"
+            ;incl = "defpoly"
+          }
+          trigger_push:b =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "pushes player in any direction (like a windtunnel)"
+            ;incl = "defpoly"
+          }
+          trigger_relay:e =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "allow delayed/multiple actions from one trigger"
+          }
+        }
+        Lights.qtxfolder =
+        {
+          fixedscale = "1"
+          light:e =
+          {
+            origin = "0 0 0"
+            light = "200"
+            ;desc = "A projected light (no visible light source)"
+          }
+          light_torch_small_walltorch:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Short wallTorch"
+          }
+          light_flame_large_yellow:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Large yellow flame ball"
+          }
+          light_flame_small_yellow:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Small yellow flame ball"
+          }
+          light_flame_small_white:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Small white flame ball"
+          }
+          light_fluoro:e =
+          {
+            origin = "0 0 0"
+            ;desc = "light: makes steady fluoroscent humming"
+          }
+          light_fluorospark:e =
+          {
+            origin = "0 0 0"
+            ;desc = "light: makes sparking, broken fluoroscent sound"
+          }
+          light_globe:e =
+          {
+            origin = "0 0 0"
+            ;desc = "sphere globe light"
+          }
+        }
+        Ambient sounds.qtxfolder =
+        {
+          fixedscale = "1"
+          ambient_drip:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Dripping sound"
+          }
+          ambient_drone:e =
+          {
+            origin = "0 0 0"
+            ;desc = "engine/machinery sound"
+          }
+          ambient_comp_hum:e =
+          {
+            origin = "0 0 0"
+            ;desc = "computer background sounds"
+          }
+          ambient_swamp1:e =
+          {
+            origin = "0 0 0"
+            ;desc = "frogs croaking"
+          }
+          ambient_swamp2:e =
+          {
+            origin = "0 0 0"
+            ;desc = "slightly different sounding frogs croaking"
+          }
+          ambient_flouro_buzz:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Buzzing sound"
+          }
+          ambient_light_buzz:e =
+          {
+            origin = "0 0 0"
+            ;desc = "as above just with a lower volume"
+          }
+          ambient_suck_wind:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Wind sound"
+          }
+          ambient_thunder:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Thunder"
+          }
+        }
+        Misc.qtxfolder =
+        {
+          fixedscale = "1"
+          air_bubbles:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Rising bubbles"
+          }
+          event_lightning:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Used to kill Chton: Shareware Boss"
+          }
+          info_intermission:e =
+          {
+            origin = "0 0 0"
+            mangle = "0 0 0"
+            ;desc = "Cameras position during intermissions"
+          }
+          info_null:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Used as a positional target for spotlights"
+          }
+          info_notnull:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Used as a positional target for Lightning"
+          }
+          info_teleport_destination:e =
+          {
+            origin = "0 0 0"
+            ;desc = "gives coords for a teleport destination"
+            targetname = "[auto]"
+            angle = "360"
+          }
+          misc_fireball:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Small fireball (used with lava)"
+          }
+          misc_explobox:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Nuclear Container (Explodes upon being shoot, harms playe"
+             "r)"
+          }
+          misc_explobox2:e =
+          {
+            origin = "0 0 0"
+            ;desc = "small nuclear comtainer"
+          }
+          trap_spikeshooter:e =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "Shoots spikes (Nails)"
+          }
+          path_corner:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Used to define path for func_train platforms"
+          }
+          misc_teleporttrain:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Used for the final boss"
+          }
+          trap_shooter:e =
+          {
+            origin = "0 0 0"
+            angle = "360"
+            ;desc = "Continuously fires spikes"
+          }
+        }
+        Items.qtxfolder =
+        {
+          fixedscale = "1"
+          item_health:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Medkit"
+          }
+          item_health:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Megahealth (100%)"
+          }
+          item_artifact_envirosuit:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Enviromental protection suit"
+          }
+          item_artifact_super_damage:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Quad Damage"
+          }
+          item_artifact_invulnerability:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Pentagram of protection"
+          }
+          item_artifact_invisibility:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Ring of shadows"
+          }
+          item_armor1:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Green Armor"
+          }
+          item_armor2:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Yellow Armor"
+          }
+          item_armorInv:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Red Armor"
+          }
+          item_key1:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Silver Key"
+          }
+          item_key2:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Gold Key"
+          }
+          item_sigil:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Any Rune"
+          }
+        }
+        Weapons & Ammo.qtxfolder =
+        {
+          fixedscale = "1"
+          weapon_supershotgun:e =
+          {
+            origin = "0 0 0"
+          }
+          weapon_nailgun:e =
+          {
+            origin = "0 0 0"
+          }
+          weapon_supernailgun:e =
+          {
+            origin = "0 0 0"
+          }
+          weapon_grenadelauncher:e =
+          {
+            origin = "0 0 0"
+          }
+          weapon_rocketlauncher:e =
+          {
+            origin = "0 0 0"
+          }
+          weapon_lightning:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Thunderbolt Cannon"
+          }
+          item_shells:e =
+          {
+            origin = "0 0 0"
+            ;desc = "ammo for both Shotgun & SuperShotgun"
+          }
+          item_spikes:e =
+          {
+            origin = "0 0 0"
+            ;desc = "ammo for both Perforator & Super Perforator"
+          }
+          item_rockets:e =
+          {
+            origin = "0 0 0"
+            ;desc = "ammo for both Grenade/Rocket Launcher"
+          }
+          item_cells:e =
+          {
+            origin = "0 0 0"
+            ;desc = "ammo for Thunder Bolt"
+          }
+        }
+        Monsters.qtxfolder =
+        {
+          fixedscale = "1"
+          monster_army:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Grunt"
+          }
+          monster_dog:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Attack Dog"
+          }
+          monster_ogre:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Ogre"
+          }
+          monster_knight:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Knight"
+          }
+          monster_zombie:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Zombie"
+          }
+          monster_wizard:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Scragg (Wizard)"
+          }
+          monster_demon1:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Fiend (Demon)"
+          }
+          monster_shambler:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Shambler"
+          }
+          monster_boss:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Chton (Shareware Boss)"
+          }
+          monster_enforcer:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Medium Guard"
+          }
+          monster_fish:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Killer Fish"
+          }
+          monster_hell_knight:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Medium Knight"
+          }
+          monster_oldone:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = ""
+          }
+          monster_shalrath:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = ""
+          }
+          monster_tarbaby:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = ""
+          }
+        }
+        Player Starts.qtxfolder =
+        {
+          fixedscale = "1"
+          info_player_start:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "This is where the Player Starts"
+          }
+          info_player_deathmatch:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "A deathmatch start (more than one allowed)"
+          }
+          info_player_coop:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "A coop player start (more than one allowed)"
+          }
+          info_player_start2:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Only used on the start map for return point"
+          }
+          testplayerstart:e =
+          {
+            origin = "0 0 0"
+            angle = "0"
+            ;desc = "Used to temporarly change the info_player_start"
+          }
+        }
+      }
+    }
+  }
+  Menu.qrk =
+  {
+    item: =
+    {
+      Txt = "&GO ! (textures+build+Quake)"
+      Shortcut = "Ctrl+R"
+      Textures = "1"
+      RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
+    }
+    item: =
+    {
+      Txt = "Quic&kGO ! (no VIS, fast LIGHT)"
+      Shortcut = "Ctrl+K"
+      Textures = "1"
+      RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm3 = "1"
+      BuildArgs3 = "-fast"
+    }
+    item: =
+    {
+      Txt = "QuickGO on &selection only"
+      Shortcut = "Ctrl+P"
+      SelOnly = "1"
+      Textures = "1"
+      RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm3 = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "&Prepare used textures"
+      Textures = "1"
+    }
+    item: =
+    {
+      Txt = "&Complete rebuild"
+      Pause = "1"
+      ExportMapFile = "1"
+      Textures = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
+    }
+    item: =
+    {
+      Txt = "&Run Quake"
+      RunGame = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "&QBSP (.bsp file creation)"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+    }
+    item: =
+    {
+      Txt = "&VIS (visibility list)"
+      Pause = "1"
+      BuildPgm2 = "1"
+    }
+    item: =
+    {
+      Txt = "&LIGHT (light projection)"
+      Pause = "1"
+      BuildPgm3 = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "QBSP - only &entities"
+      Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildArgs1 = "-onlyents"
+    }
+  }
+}
