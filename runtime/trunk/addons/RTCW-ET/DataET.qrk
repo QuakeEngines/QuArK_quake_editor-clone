@@ -2,8 +2,13 @@ QQRKSRC1
 // Configuration file for RTCW-ET
 
 //$Header$
+
 // ----------- REVISION HISTORY ------------
+
 //$Log$
+//Revision 1.1  2006/07/15 07:32:06  cdunde
+//To setup RTCW-ET as its own game
+//with md3 model display support.
 //
 
 
