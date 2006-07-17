@@ -23,6 +23,23 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2006/04/27 06:19:59  cdunde
+To setup Quake4 support and code changes for Doom3 and material handling of both.
+Related file changes
+QkD3.pas
+Added counter for phrasing of material list that kept their textures from
+displaying and sometimes caused an overload and system lockup.
+Added list of "Keywords" for the "Default texture" to display more of them.
+QkMap.pas
+To allow Quake4 Version 3 .mqp files to be read, previously set to only
+allow Doom3 Version 1 .map files to be read and error on Version 2.
+This still is the case for Doom3 with the above change for Quake4.
+Setup.pas
+Add game code "m" to start game support for Quake4.
+QkTextures.pas
+Added Quake4 game code mjQuake4 in Doom3 material file section
+to point to Quake4 material files and display their related textures.
+
 Revision 1.44  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -226,6 +243,8 @@ const
  mjHL2          = 'k';  { Half Life 2 }
  mjJA           = 'l';  { Jedi Academy }
  mjQuake4       = 'm';  { Quake 4 }
+ mjRTCWET       = 'n';  { Return To Castle Wolfenstein - Enemy Territory}
+ mjWildWest     = 'w';  { WildWest }
 
  mjAny          = #1;
  mjNotQuake2    = #2;
@@ -299,7 +318,8 @@ procedure StoreTexExtensions; {--CONVEX--}
  {------------------------}
 
 function CharModeJeu: Char;
-function ModeJeuQuake2: Boolean;
+function ModeJeuQuake2: Boolean; 
+function ModeJeuRTCWET: Boolean;
 function CurrentQuake1Mode: Char;
 function CurrentQuake2Mode: Char;
 function GetGameName(nMode: Char) : String;
@@ -972,6 +992,11 @@ end;
 function ModeJeuQuake2: Boolean;
 begin
  Result := CharModeJeu >= mjQuake2;
+end;  
+
+function ModeJeuRTCWET: Boolean;
+begin
+ Result := CharModeJeu >= mjRTCWET;
 end;
 
 function CurrentQuake1Mode: Char;

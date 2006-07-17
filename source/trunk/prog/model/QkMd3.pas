@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2006/06/28 08:52:16  cdunde
+To reinstate model skin search in pak files addition in version 1.20
+inadvertently removed by changes submitted in version 1.21.
+
 Revision 1.23  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -785,6 +789,8 @@ begin
       org:=f.position;
       f.readbuffer(head, sizeof(head));
       org2:=f.position;
+      if (head.id='IDP3') and ModeJeuRTCWET then
+          ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (head.version=15) then
       begin
         if CharModeJeu<mjQ3A then
