@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.290  2006/07/17 06:57:57  cdunde
+//To setup RTCW-ET as its own game
+//with md3 model display support.
+//
 //Revision 1.289  2006/06/26 08:06:57  cdunde
 //To make it easer to config RTCW.
 //
@@ -1971,7 +1975,7 @@ QQRKSRC1
         AlwaysWriteThreeFields = "1"
         SupportsBrushPrim = "1"
         BuildPgm1  = "Q3MAP.EXE"
-        BuildArgs1 = "-moddir .."
+        BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
         BuildArgs2 = "-vis -saveprt"
@@ -2162,10 +2166,10 @@ QQRKSRC1
         Code = "n" // Hardcoded value in Setup.PAS
 
         Program = "ET.EXE +set sv_cheats 1 +set sv_pure 0 +set g_gametype 2 +set fs_homepath etmain +set fs_game tmpQuArK +devmap "$22"%filename%"$22" +exec"
-        Directory = "C:\Program Files\Wolfenstein Enemy Territory"
+        Directory = "C:\Program Files\Wolfenstein - Enemy Territory"
         CheckDirectory = "ET.exe"   // hidden setting
         CD = ""
-        CDDir = "\Wolfenstein Enemy Territory\etmain"       // hidden setting
+        CDDir = "\Wolfenstein - Enemy Territory\etmain"       // hidden setting
 
         DefaultTexture = "castle_wall/castle_c17"
         DefaultTextureTerrain = ""
@@ -2177,19 +2181,19 @@ QQRKSRC1
         BrushDecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
-        BuildPgmsDir = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\bspcToolFolder"
+        BuildPgmsDir = ""
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
         OutputMapFormat="Brush Primitives"
         AlwaysWriteThreeFields = "1"   // hidden setting
 
-        BuildPgm1  = "C:\Program Files\Wolfenstein Enemy Territory\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildPgm1  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs1 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22""
         BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
-        BuildPgm2  = "C:\Program Files\Wolfenstein Enemy Territory\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildPgm2  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs2 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22""
-        BuildPgm3  = "C:\Program Files\Wolfenstein Enemy Territory\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildPgm3  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs3 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22""
-        BuildPgm4  = "C:\Program Files\Wolfenstein Enemy Territory\QuArk files\q3map2ToolFolder\q3map2.exe"
+        BuildPgm4  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs4 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" -light -fast "$22"%file%"$22""
         MapCommentsPrefix = "//"
 
