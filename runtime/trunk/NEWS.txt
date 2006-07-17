@@ -15,6 +15,17 @@ $Id$
 6.5.0 alpha 8
 =============
 
+ * [cdunde]: Completely revamped RTCW-ET as its own game to coordinate with the new
+         - QuArK_RTCW-ET.zip game support package to allow the viewing of all available
+         - textures in QuArK's Texture Browser, all game models viewable in the
+         - 3D editor Texture views and detail entity settings with the use of
+         - pre-defined dropdown list, model selection and variations list,
+         - file selection capabilities for models and sounds,
+         - as well as 'color pickers' for all lighting functions.
+         -Even a few 'script\shader' corrections and all missing textures creations.
+         -Made up a complete QuArK_RTCW-ET.zip game support package and added its
+         - link to the, also new, RTCW-ET Infobase Configuration doc section.
+
  * [cdunde]: Added 0 division testing to stop console errors when "wrapping" textures.
 
  * [cdunde]: Completely revamped the DataRTCW.qrk file to coordinate with the new
@@ -24,7 +35,7 @@ $Id$
          - pre-defined dropdown list, model selection and variations list,
          - file selection capabilities for models and sounds,
          - as well as 'color pickers' for all lighting functions.
-          -Even a few 'script\shader' corrections.
+         -Even a few 'script\shader' corrections.
 
  * [cdunde]: Made up a complete QuArK_RTCW.zip game support package and added its
          - link to the RTCW Infobase Configuration doc section.
