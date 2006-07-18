@@ -22,7 +22,7 @@
 ; 9) The finished QuArK installer will be place in the same location as this file.
 
 !define PRODUCT_NAME "QuArK"
-!define PRODUCT_VERSION "6.5.0 Alpha 7"
+!define PRODUCT_VERSION "6.5.0 Alpha 8"
 !define PRODUCT_WEB_SITE "http://dynamic.gamespy.com/~quark/"
 !define PRODUCT_WEB_Forum "http://quark.ironfoot.co.uk/forums/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\QuArK.exe"
@@ -75,7 +75,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "quark-win32-6.5.0alpha7.exe"
+OutFile "quark-win32-6.5.0alpha8.exe"
 InstallDir "$PROGRAMFILES\QuArK"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -126,6 +126,8 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR\addons\RTCW\QuArK files"
   SetOutPath "$INSTDIR\addons\RTCW\QuArK files\bspc"
   File "C:\QuArK_installer_files\addons\RTCW\QuArK files\bspc\*.*"
+  SetOutPath "$INSTDIR\addons\RTCW-ET"
+  File "C:\QuArK_installer_files\addons\RTCW-ET\*.*"
   SetOutPath "$INSTDIR\addons\Sin"
   File "C:\QuArK_installer_files\addons\Sin\*.*"
   SetOutPath "$INSTDIR\addons\SOF"
@@ -204,6 +206,7 @@ Section Uninstall
   Delete "$INSTDIR\addons\SoF2\*.*"
   Delete "$INSTDIR\addons\SOF\*.*"
   Delete "$INSTDIR\addons\Sin\*.*"
+  Delete "$INSTDIR\addons\RTCW-ET\*.*"
   Delete "$INSTDIR\addons\RTCW\QuArK files\bspc\*.*"
   Delete "$INSTDIR\addons\RTCW\*.*"
   Delete "$INSTDIR\addons\Quake_4\*.*"
@@ -243,6 +246,7 @@ Section Uninstall
   RMDir "$INSTDIR\addons\SoF2"
   RMDir "$INSTDIR\addons\SOF"
   RMDir "$INSTDIR\addons\Sin"
+  RMDir "$INSTDIR\addons\RTCW-ET"
   RMDir "$INSTDIR\addons\RTCW\QuArK files\bspc"
   RMDir "$INSTDIR\addons\RTCW\QuArK files"
   RMDir "$INSTDIR\addons\RTCW"
