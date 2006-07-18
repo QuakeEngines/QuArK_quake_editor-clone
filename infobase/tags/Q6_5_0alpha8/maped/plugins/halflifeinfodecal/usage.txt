@@ -1,0 +1,46 @@
+title: Usage
+author: Decker
+
+<img border=1 align=right> argspecs.png </img>
+There are five specifics, in the infodecal helper, which you must know about:
+<ul>
+<li>text
+<li>wildchar
+<li>tex_upper
+<li>tex_lower
+<li>tex_numeric
+</ul>
+
+<b>text</b>
+will contain the text-string that you want to appear as infodecals, close to the wall.
+
+<b>wildchar</b>
+is the character, in the three tex_* specifics, which will be replaced by a letter from your
+<i>text</i>, to create one infodecal.
+
+<b>tex_upper</b>
+is the uppercase-letters texture/decal-template. It must contain just one
+<i>wildchar</i>-character, at the position where one letter at a time, from the
+<i>text</i>, will be placed.
+
+<b>tex_lower</b>
+is the lowercase-letters texture/decal-template. The same apply for
+<i>wildchar</i> as above.
+
+<b>tex_numeric</b>
+is the numeric-digits texture/decal-template. The same apply for
+<i>wildchar</i> as above.
+
+The texture/decal-templates must be something like this:
+
+<center><table border=1 cellpadding=2 cellspacing=0>
+  <tr><th>Specific    </th><th>Arg        </th><th>which will expand to                 </th></tr>
+  <tr><td>tex_upper   </td><td>{CAPS@     </td><td>{CAPSA {CAPSB {CAPSC etc.            </td></tr>
+  <tr><td>tex_lower   </td><td>{LOWCHAR@  </td><td>{LOWCHARA {LOWCHARB {LOWCHARC etc.   </td></tr>
+  <tr><td>tex_numeric </td><td>{NUM@SMALL </td><td>{NUM0SMALL {NUM1SMALL {NUM2SMALL etc.</td></tr>
+</table></center>
+
+In QuArK's specific/arg-view, you will be able to push a button, to select a texture/decal name,
+but you must remember to put in the
+<i>wildchar</i>, otherwise the Half-Life Infodecal Helper won't be able to assign the
+correct texture/decal to the infodecal entity.

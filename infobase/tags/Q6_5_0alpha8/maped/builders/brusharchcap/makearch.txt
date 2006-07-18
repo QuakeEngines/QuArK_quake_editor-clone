@@ -1,0 +1,70 @@
+title:  Making an arch
+author: tiglari
+
+<table border=0 cellpadding=0>
+<tr><td valign=top>
+
+<pic border=0 align=right> arch1.png </pic>
+The brush-arch is a collection of brushes designed to fill
+in a boxy hole to make it look like an archway.  So a
+good way to start would be to make a wall with a hole in it,
+perhaps by first making a wall-brush, then a subtractor
+brush, then subtracting.  The result might look like this,
+where the bottom of the subtractor has then been raised
+up a bit in preparation for the next step:
+
+</td></tr>
+<tr><td valign=top>
+
+<pic border=0 align=right>arch2.png</pic>
+Now to make the arch-shaped filler, facing the brush that's been
+left in the archway, <act>RMB|Brush Curves|Arch</act>:
+
+</td></tr>
+<tr><td valign=top>
+
+<pic border=0 align=right> arch3.png </pic>
+Some additional brushes forming arch-shape (tinted blue
+in some views, such as the one to the right) will appear
+inside the brush, and if the brush itself
+isn't selected, it will be invisible.
+
+What's happened is that the original brush has been put
+inside a duplicator (you should check this  by fossicking
+around in the <ref> intro/mapeditor/dataforms/treeview \ tree-view </ref>),
+which makes it invisible unless selected.
+By default, four brushes are produced, and there is a gap
+in the middle, but this and various other aspects of what
+is produced can be changed by changing the
+<ref> intro/mapeditor/dataforms/specsargsview \ specifics </ref> of the
+duplicator.
+
+</td></tr>
+<tr><td valign=top>
+
+<pic border=0 align=right> arch4.png </pic>
+Now the most important aspect of this way of making an
+arch is that it can be changed dynamically, after it's
+made.  To see this, click inside its area until the arch
+itself disappears, and its `guide brush' appears instead
+because it's selected:
+
+</td></tr>
+<tr><td valign=top>
+
+<pic border=0 align=right> arch5.png </pic>
+We can now drag this brush around, and the arch will move,
+and more importantly,  we can reproportion the arch by
+dragging the individual faces.  Especially, we can change
+it's shape inside the hole by dragging the bottom up
+and down:
+
+Since these are ordinary faces, which provide data to the duplicator
+code the makes the arch patches, we can do all the ordinary face
+stuff to them, such as tag/glue.
+
+</td></tr>
+</table>
+
+So there's the shape; the next problem is to control
+the textures.

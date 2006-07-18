@@ -1,0 +1,58 @@
+title: Texture Wrapping
+author: tiglari
+
+<img border=1 align=right> contextmenutexture.png </img>
+The next submenu we'll look at is concerned with 'texture wrapping',
+fitting textures across more than one face without seams;
+perhaps with a bit of fitting as well.  The commands of the
+Texture Wrapping submenu are:
+
+<UL>
+<LI><b>Wrap texture from tagged</b> - copies the texture from the tagged
+face onto this one, so that there are no seams where the faces
+meet.  No scaling or distortions are performed.  This is fine
+for wrapping a texture around a vertical edge, but would work
+out for say an obelisk.
+
+<LI>Wrap texture <b>Around pillar</b> - Tag a face that's the side of
+a pillar, then select the one next to it. Bring up the Texture Wrap
+Multiplier. Set the number of times the texture is to be repeated
+as it is wrapped and <u><b>do not</b></u> close the multiplier
+window. Reselect the face next to the tagged one and activate the
+Around pillar function.  The texture on the tagged face will be
+wrapped all the way around the pillar, in the direction of the
+pillar, and scaled to fit seamlessly. This only works if the edges
+where the faces to be wrapped around are all parallel
+(the whole pillar can however be at a slant).
+When the operation can't be performed, the item is disabled.
+
+<LI>Fit texture <b>Across tagged</b> - this is a bit like the pillar wrap,
+but here you tag a set of faces (using 'Add to tagged' from the
+More tagging submenu or 'Tag Toolbar'), then select the one you want to (copy) wrap from (which should be at one end).  The texture
+of that face will be copied to the others, and scaled
+so that it fits a full number of times across all the faces. If you want the selected texture to be 'spread across' the other faces, use the 'Texture Wrap Multiplier' as discribed above.
+Like the pillar wrap, this only works if the edges joining the
+faces are all parallel, and is disabled if it can't work.
+
+<LI><b>Project texture from tagged</b> - this is a new one.  Suppose
+you want to wrap a mesh like texture over a bunch of random faces making
+various angles with each other (like a mesh stretched over a
+jumble of stuff).  None of the above methods will work, but this
+will.  The texture of the tagged face is projected onto the
+selected face, so that a texture is projected from one face
+to several faces hooked up in complicated ways, it will seem to
+be wrapped smoothly over all of them.  So that for example you can do
+a four-sided obelisk by projecting textures from parallel
+brushes that project onto the obelisk faces but are ignored
+for building the map.  I think I have fixed the problem of things not working if the projected-from brush was not
+big enough.
+</UL>
+
+There are also two options on the menu, the useful one is
+'preserve aspect ratio'; if this is checked, the fitting operations
+resize the textures evenly in all dimensions to make them fit
+in the pillar wrap and fit across tagged operations; otherwise
+they are just stretched  in the direction required.  The other
+one is 'shift tag to selected', which might causes the selected
+tagged to become the tagged face in the Wrap texture from tagged
+operation.

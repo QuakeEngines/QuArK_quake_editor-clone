@@ -1,0 +1,54 @@
+title: Downloading Files
+author: Rowdy / cdunde
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Downloading a Module:</i>
+
+Each folder is know as a <b>Module</b> of the program. To download a module, right-click it and select <b>Check-out</b>.
+
+The modules required to build the QuArK program and support files are:
+
+<i><b>infobase</b></i> - used to build the help files.
+
+<i><b>runtime</b></i> - the program support files.
+
+<i><b>source</b></i> - the files used to build the QuArK.exe file.
+</td>
+<td align=right>
+<img>checkout_utils.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+This dialog is displayed while the module is being checked out and can be set to <b>Run in Background</b>.
+</td>
+<td align=right>
+<img>checking_out.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+Now switch to the <b>Resource</b> view to see the module files you have downloaded to your computer by clicking the icon circled in red.
+</td>
+<td align=right>
+<img>switch_to_resource.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>The Resource View:</i>
+
+Note that the "<b>></b>" indicates that a file has been changed or added. You can press F5 to refresh the resource view to see what files you have changed.
+</td>
+<td align=right>
+<img>resource_view.png</img>
+</td></tr>
+</table>

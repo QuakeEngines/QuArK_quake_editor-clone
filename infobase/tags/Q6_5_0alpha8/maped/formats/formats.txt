@@ -1,0 +1,46 @@
+title: Formats
+author: tiglari
+
+Aside from the floating point issue, map formats have two aspects: features which
+are supported by particular games, such as texture-flags, etc, and features that
+are supported by particular buld-tools.  The first are controlled by a combination
+hard-coding in the QuArK exe and some not-easily-editable flags in the setup
+files, while the latter are selected in the `Output Map Format' dropdown box in
+the configuration section for each game.
+
+The currently supported main types, choosable in the Output Map Format box,
+are:
+<UL>
+<LI>Classic Quake: the original, with hardcoded variants for Quake1/2/3,
+Hexen II, Sin.  Limited in the range of texture positioning and scaling
+it can code.
+
+<LI>Quark etp: a variant of Classic Quake in which the texture position and
+scaling is given by the face threepoints, with a `TX' code 1 or 2 to indicate
+whether the texture should be mirror-imaged or not.  This gives full
+flexibility in positioning textures, but makes essential use of floating-point
+face-coordinates, and therefore <I>may</I> be associated with
+some small errors in vertex positioning (it's not certain that this is
+really a problem in output maps).  The 'tx' versions of qbsp for Q1 and Q2,
+and Zoner's tools, have full support for etp; other tools may or may not
+handle it with various degrees of success.
+
+<LI>Valve 220: Valve's enhancement of Classic Quake.
+
+<LI>Brush Primitives: Id's enhancement of Classic Quake, for Q3 and RCTW
+(will probably be supported for any games that GtkRadiant comes to support).
+</UL>
+The configuration defaults are set for the build-tools reccommended on the
+QuArK homepage; don't change them unless you have some idea what you are doing,
+or are experimenting in order to more closely attain this exalted state.
+
+Two other format options you can teak in the Map|Options section of the
+config screen are whether or not to write comments, and whether or not
+to write floating-point coordinates in the map files.  QuArK normally writes
+a fair amount of information about brush-numbering etc. into maps; this may
+cause problems for some build-tools, so the first option suppresses it.
+The second option simply truncates the floating point coordinates, which can
+cause problems, although it again might be necessary to use in conjunction
+with certain build-tools.  So this option should probably only be used in
+conjunction with the floating-point control techniques discussed above, to
+suppress floating point coordinates in structurally important brushes.

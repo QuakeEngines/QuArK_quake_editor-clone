@@ -1,0 +1,6 @@
+title: G...
+author: Decker
+
+<dl>
+<dt><a name="group">    </a>Group       <dd>In QuArK, a group in the tree-view is a collection of brushes, entities and other groups.
+</dl>

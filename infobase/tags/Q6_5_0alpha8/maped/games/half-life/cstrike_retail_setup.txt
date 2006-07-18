@@ -1,0 +1,33 @@
+title: Counter-Strike Retail Setup
+author: Decker
+
+<b>Question:</b><br>
+How do I setup QuArK for the Counter-Strike retail version?
+
+<b>Answer:</b><br>
+<table border=0 cellpadding=0 cellspacing=0>
+<tr><td>
+First go into your Counter-Strike disk-folder, and create a file named
+<tt>HL.EXE</tt>. This is a file which QuArK looks for, to make sure that it
+found the correct Half-Life folder, but we'll need to fool it into thinking
+that it found Half-Life.
+<br><br></td></tr>
+<tr><td>
+<img align=right>cstrike_1.png</img>
+Next, go into QuArK's configuration, and change the <act>Games|Half-Life</act>
+settings to what is shown in the image here:
+<ul>
+<li>Change from <tt>HL.EXE</tt> to <tt>CSTRIKE.EXE</tt>
+<li>Change the Half-Life directory, to point to your Counter-Strike retail
+directory
+</ul>
+</td></tr>
+<tr><td>
+<img align=right>cstrike_2.png</img>
+Finally you'll need to create a <tt>Game Context</tt> object in QuArK Explorer,
+to tell QuArK that it should not create a <tt>tmpQuArK</tt> disk-folder, but
+run all .MAP/.BSP from the <tt>CSTRIKE</tt> disk-folder (which is also the
+Counter-Strike retail main-base disk-folder, as <tt>VALVE</tt> is for
+Half-Life.)
+</td></tr>
+</table>

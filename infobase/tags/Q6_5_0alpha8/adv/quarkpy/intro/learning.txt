@@ -1,0 +1,23 @@
+title: Learning Python
+author: tiglari
+format: html
+
+There are introductions to Python available at various
+levels:
+<UL>
+<LI>The tutorial etc. that comes with Python: Quite
+ usable if you're a reasonably experienced (intermediate?)
+ programmer.
+<LI> <strong>Programming Python</strong> (OReilly): All the info is
+there, but the presentation is not for beginners.
+<LI> <strong>Learning Python</strong> (OReilly): Looks like a good
+ introduction for newbie programmers.
+<LI> <strong> Learn Python in 24 Hours </strong> (SAMS): This one looks like
+ it could be used by absolute newbie programmers, since it
+ seems to introduce basic programming concepts from scratch.
+ HINT HINT: if some reader of this is an absolute newbie
+ programmer, their reactions to this book would be useful
+ information.
+</UL>
+<P>
+

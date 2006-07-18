@@ -1,0 +1,55 @@
+title: The Linear Duplicator
+author: tiglari
+
+So finally we come to the Linear Duplicator.  This is
+an enhanced version of the basic duplicator, with two
+useful additional specifics:  scale and angles.  The values
+of both are three numbers.
+
+Scale is numbers for multipling the size of the object in
+the X, Y and Z dimensions.  Each object is multiplied in
+size relative to the last, so you can get for example a
+series of pillars of increasing height by setting scale
+to something like '1 1 1.3' (no quotes in the actual value
+entered in).  And the angles numbers specify rotation around
+the Y, X and Z angles in succession (Pitch, Roll and Yaw).
+So if you want each object to be spun 15 degrees around the
+Z axis, but left the same on the others, '0 0 15' will do it.
+
+There are two more specifics, matrix and linear.  Neither
+of these are likely to be useful to the average mapper, but
+here's a quick explanation anyway.  Scaling and rotation are
+particular kinds of 'linear transformatioms', which are
+distortions of space (and or the objects in them) that can
+be specified in terms of 9 numbers.  With the 'matrix' specific
+you can enter the matrix of any linear transformation to
+be applied to the object using its center as a 'fixed point',
+while 'linear' does the same thing using the duplicator
+location as the fixed point.
+
+Finally, for what it's worth, the 'angle' specific of the
+Basic Duplicator specifies a rotation around the Z axis,
+with the duplicator as fixed point.  Well so much for
+that, now on to something a bit more useful.
+
+Which is suppose that you want to use scale, but you want
+the copies to all be lined up the same on the bottom, but
+each sticking up higher than the next?   First, the stuff to
+be scaled in this way must be put in a group of its own,
+then select the group in the tree-view, hit the Specifics tab,
+and push the button captioned 'centering'.  A little light blue
+handle should appear at the center of the group you have made.
+This handle can then be dragged around, and will define the point
+used as the center for linear operations on the group, including
+the duplicator's scaling. So move the handle
+down to the bottom of the brush, and if the scale
+is 1 1 1.3, they will align on the bottom but get
+successively taller.
+
+The 'User Center' of the group is also used as the center for rotations;
+Note that if the linear duplicator's group contains two
+brushes, each will rotate around its own center.  If we
+want both brushes to rotate as one unit, we need to put them
+under their own group, which can then have its own customizable
+center.
+

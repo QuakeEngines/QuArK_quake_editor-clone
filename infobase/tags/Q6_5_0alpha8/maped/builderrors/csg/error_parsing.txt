@@ -1,0 +1,21 @@
+title: Parsing error
+author: Decker
+
+<code>
+Error: parsing entity 3, brush 0, side 2 : expecting '(' got '32'
+</code>
+
+Getting an error similar to the above, usually means that the .MAP file isn't in the correct format,
+for the build-tool to understand.
+
+Please check:
+<ul>
+<li>Are you using the correct build-tool for the correct game?<br>
+    For instance, it is of no use, to have a Quake-1 build-tool compile a Quake-3:Arena .MAP file, as the
+    internal structure in the Quake-3:Arena .MAP file can't be understood by the Quake-1 build-tool.
+<li>Have you set up QuArK to the proper game-mode?<br>
+    Make sure that you have selected the correct game-mode, for the game you want to make maps for.
+<li>Did you try to convert a game-A .MAP file to a game-B .MAP file, using QuArK?<br>
+    QuArK can't always do a useful conversion of .MAP files, from some game to a different game.
+    When doing this, you should experiment alot to see what can and what can not work.
+</ul>

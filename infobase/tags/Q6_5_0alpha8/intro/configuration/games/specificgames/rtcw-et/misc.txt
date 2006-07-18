@@ -1,0 +1,60 @@
+title: Misc. Info.
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Installing the q3map_2.5.16_win32_x86 build tool</b>
+
+When you install this program you will need to direct it to the
+<a href="intro.configuration.games.specificgames.rtcw-et.html#config">QuArK files</a> folder as shown
+earlier in the <a href="intro.configuration.games.specificgames.rtcw-et.html#config">Configuration section</a>.
+That is really all you need to verify.
+
+<b>Changing and re-running a map</b>
+
+Normally, I run RTCW-ET in a separate window, instead of its "Full Screen" mode when working on
+a map, for a couple of reasons.<br>
+First it's a lot easer to see around to view something in the
+editor that you might be concentrating on with your work.<br>
+The other is being able to jump back
+and forth between the editor and the game running by simply holding down the Alt key and
+pressing the Tab key to switch.<br>
+It seems less confusing that way.
+
+Unfortunately it does not have the ability to make changes in your map while the game is still running
+and then rebuild and reload the map.<br>
+To do this you will need to close the game and go through the normal process once again.<br>
+But basically all you need to do is just click the QuArK menu item and off you go.
+
+To close the game, press the Esc key and select "Exit game" from its menu.
+
+<b>Custom textures or models not showing Textures</b>
+
+Extensive work has been done creating the QuArK_RTCW-ET.zip file to eliminate this problem.
+However, if you should encounter this kind of issue, read this same section on the 
+<a href="intro.configuration.games.specificgames.rtcw.html#misc">RTCW Configuration</a>
+page as to what you should do.
+
+<b>Texture Loading Game Error</b>
+
+Although this has not been found to be an issue with Enemy Territory, so far, it has come to our 
+attention while working with <b>Return to Castle Wolfenstein</b> that there is at least
+one texture in the original RTCW pak0.pk3 file (textures\common\blackish.jpg) that causes RTCW
+to give an error in the game console that says:
+
+Error: LoadTGA: Only type 2 (RGB), 3 (gray), and 10 (RGB) TGA images supported
+
+and stops the game map from loading. If you should receive this game error message, read this same
+section on the <a href="intro.configuration.games.specificgames.rtcw.html#misc">RTCW Configuration</a>
+page as to what you should do.
+
+
+<b>Other Comments</b>
+
+Some entities and\or models do not work properly or at all. These are erroneous items that were not
+done correctly by other parties and is not a bug with QuArK. However, other entities may not have
+been fully understood as to their proper needs and settings which could be an item to bring to our
+attention for correction.
+</td></tr>
+</table>
+
