@@ -3,6 +3,7 @@ subdir: doom3
 subdir: hl2
 subdir: quake4
 subdir: rtcw
+subdir: rtcw-et
 subdir: torgue
 author: Decker
 
