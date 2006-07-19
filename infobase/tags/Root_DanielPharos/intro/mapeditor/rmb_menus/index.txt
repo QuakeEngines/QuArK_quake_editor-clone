@@ -1,0 +1,7 @@
+title: Right Mouse Button menus
+subdir: noselectionmenu
+
+There are a number of special menus available when you click your <g>RMB</g>.
+These vary depending on the location of your cursor and other factors when you click it.<br>
+Below is a list of those menus, a break down of their functions and what they do.
+You can access its page from the editor by highlighting an item and pressing <b>F1</b> twice. 

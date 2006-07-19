@@ -1,0 +1,69 @@
+title: 3D View
+author: Decker
+
+<img align=right>3dview.png</img>
+<i>Select 3D viewer</i>. If you have a 3Dfx-compatible 3D-acceleration
+graphicscard installed, QuArK will use it to speed up drawing in 3D-windows. If
+you don't have one, you must select Software-only.
+
+<i>Entities in 3D</i>. Whether or not QuArK should draw entities (3D-models) in
+the 3D-windows.
+
+<i>"Far" distance</i>. How deep QuArK should draw in the 3D-windows. Lower
+values will speed up drawing.
+
+<i>Vertical view angle</i>. The field of view of the perspective views, in
+degrees. Just as with cameras expected it is not the width but the height of
+the view that you enter.
+
+<i>Frame color</i>. The color to use on the bounding area of the 3D-windows,
+where QuArK won't draw due to the choosen size of the view.
+
+
+<u>3Dfx card owners only</u>
+
+<i>Second monitor on 3Dfx</i>. If you have two monitors, one connected to your
+regular 2D-graphicscard and one connected to the 3Dfx-acceleratorcard.
+
+<i>Full-screen gamma correction</i>. As it says.
+
+<i>Full-screen size</i>. As it says. Do not go above what your
+3Dfx-acceleratorcard can handle. A typical max value would be 640 480.
+
+<i>Fog density</i>. The lower the fog, the more you can see, but keep in mind
+that the <b>"Far" distance</b> and the <b>fog density</b> are somewhat
+connected.
+
+<i>Fog color</i>. Want green fog? Change it here!
+
+<i>Isometric transparent fraction</i>. Ehhh, read the flyover-help yourself,
+and experiment with the value if you want.
+
+
+<u>Software drivers only</u>
+
+If you have selected 'Software-only' in the 3D-viewer, then you can here change
+how fast the software-render should be able to draw things in the 3D-window,
+while standing still and while walking/moving around.
+
+
+<u>Mouse sensitivity</u>
+
+All these values controls the mouse sensitivity, when you use your mouse to
+move around in the 3D-windows.
+To reverse the direction of any of these settings just change the value to a negative.
+
+
+<u>Keyboard settings</u>
+
+Instead of using the mouse to move around with (which can be quite difficult at
+times), you can either use these standard movement-keys when the 3D-window is
+active, or redefine them to suit your needs. It is <u>highly recommended</u>
+that you know how to move around in 3D-window using the keys.
+
+
+<u>Keyboard movement dynamics</u>
+
+Change these values if you feel, that moving around using the keys, isn't quite
+fast or slow enough. You must experiment a bit to find a setting that you like
+using.

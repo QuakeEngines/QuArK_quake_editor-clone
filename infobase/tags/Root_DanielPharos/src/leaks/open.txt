@@ -1,0 +1,22 @@
+title: Opening and Closing QuArK
+author: tiglari
+
+<UL>
+<LI>Windows errors
+<UL>
+<LI> 1 unfreed cursor handle (all the lines reported from Delphi units)
+<LI> 3 unclosed registry keys from SystemDetails.pas
+<LI> 1 attempt to free an unexisting resource, triggered from QkForm.pas:422(QkForm.Destroy)
+</UL>
+<LI> 1 unclosed event handle, which shouldn't be dealt with.  Some
+discussion of it by Decker appears in <ref>src/leaks/event</ref>.
+
+<LI>Live Pointers (memory leaks)
+<UL>
+<LI> 1 from Maperror.pas:39 (initialization)
+<LI> 2 from PngImage.pas, prolly not much we can do about them.
+<LI> 1 from SystemDetails.pas:1090 (GetMachine)
+<LI> 1 from SystemDetails.pas:1105 (GetUser)
+</UL>
+</UL>
+

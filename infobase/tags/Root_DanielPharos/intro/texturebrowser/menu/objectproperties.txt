@@ -1,0 +1,13 @@
+title: Object properties
+author: Rowdy
+
+<img border=0 align=right>objectproperties.png</img>
+Displays some properties about the selected object, from the <i>Object
+properties...</i> or <i>Paste special...</i> menu options.
+
+The window shows the object pathname, the file type and size, and then a list
+of types the object can be converted to, and a button to copy the object to the
+clipboard or paste depending on where the window was displayed from.
+
+The <i>Save as...</i> button allows you to save the object as an external disk
+file. Useful if you want to play with the file outside the QuArK environment.

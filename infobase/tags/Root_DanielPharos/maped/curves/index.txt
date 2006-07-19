@@ -1,0 +1,8 @@
+title: Curves (Patches)
+desc: basics quilts texmanag
+
+Curves are one of the major new features of the Quake3 engine.
+Q3 curves are implemented mathematically as things called 'quadratic
+bezier patches' (one of many different kinds of 'parametric
+curve'), but happily you don't have
+to know anything about the math to use them in map-editing.

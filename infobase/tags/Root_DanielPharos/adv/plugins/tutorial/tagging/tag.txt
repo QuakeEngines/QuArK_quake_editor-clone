@@ -1,0 +1,89 @@
+title: Tagging
+author: tiglari
+
+For tagging, What we need to do is:
+<OL Type=1>
+<LI> See what's has been selected
+<LI> check that it is a single side
+<LI> store it somewhere for future use by the gluing command
+<LI> draw some indication of the selection on the screen.
+</OL>
+
+The last step involves some subleties, so we'll leave it out for now.
+
+When you start editing a map with QuArK, it creates an instance
+of the class mapeditor (defined in quarkpy.mapeditor), which then
+looks after the editing of that map.  Since we want to keep track
+of what's been tagged in this particular editing session, but
+not outside of it, a good way to store the info of what's been
+tagged is in some sort of object attached to the mapeditor.
+
+For this we'll use a Python `class' (you might want to look at the
+Python tutorial on classes), and we'll start by defining it like
+this:
+<code>
+class Tagging:
+    tagged = None
+</code>
+Note that this is a very simple class, without explicit constructors or
+methods; it's equivalent to a simple record.  Python doesn't have
+a record construct, only classes.
+
+Now the new TagSideClick command will look like this;
+I've dumped in excessive comments that you'd presumably want to leave
+out of your version.  And absolutely do not worry about how much of it
+doesn't make sense at first.
+<code>
+def tagSideClick (m):
+    editor = mapeditor()
+    #
+    #  do we have an editor? the function mapeditor() returns the editor
+    #   from which the command was invoked.  If we don't, bail.
+    #
+    if editor is None: return
+    #
+    #  attach a new tagging object to it (to keep track of what side
+    #  is tagged).  `Tagging()' is the `default constructor', automatically
+    #  provided to make a new instance of the class, if no explicit
+    #  constructor has been defined
+    #
+    editor.tagging = Tagging()
+    #
+    # get the editor's selection-list and stick it in a local variable
+    #
+    tagged = editor.layout.explorer.sellist
+    #
+    # now check that what's selected is exactly one side
+    #
+    if (len(tagged) &lt; 1):
+        quarkx.msgbox("No selection", MT_ERROR, MB_OK)
+    elif (len(tagged) > 1):
+        quarkx.msgbox("Only one selection allowed", MT_ERROR, MB_OK)
+    elif (tagged[0].type!= ":f"):
+        quarkx.msgbox("The selected object is not a face", MT_ERROR, MB_OK)
+    #
+    # and at last we're ready to rock and roll!
+    #
+    else:
+        #
+        #  This actually stashes our tagged side (the first & only
+        #  element of a one-element list) in the tagging object
+        #  that we've attached to the editor.
+        #
+        editor.tagging.tagged = tagged[0]
+</code>
+Make sure that this definition replaces your old one, if you put
+it in ahead of the old one, the old one will be loaded up
+second and overwrite the new one.
+You also want to change the command setting up the menu item so that
+it will be labelled `&Tag side'.
+
+When you test this, what ought to happen is that when you give the
+Tag side command after selecting a single face, there is no visible
+effect, but if you've violated any of the conditions, you ought
+to get an error-notifying message-box.  So make a point of testing all
+the various erroneous conditions!  In general, it is very important
+to test that an operation will make sense before performing it (in jargon,
+that `it's preconditions are met'), but in fact this is a rather primitive
+approach, and we will soom move on to menu item enabling and
+disabling instead.

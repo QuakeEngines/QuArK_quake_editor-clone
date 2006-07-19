@@ -1,0 +1,33 @@
+title: The Bezier patch objects
+author: Armin Rigo
+
+Try copying the text below and pasting it into QuArK. It will
+automatically be translated into an object -- in this case, a
+test Bezier patch.
+
+<code>
+QQRKSRC1
+{
+  test:b2 = {
+    v = '0 0 0 0 0      64 0 0 64 0      128 0 0 128 0
+         0 64 0 0 64    64 64 0 64 64    128 64 0 128 64
+         0 128 0 0 128  64 128 0 64 128  128 128 0 128 128'
+  }
+}
+</code>
+
+The 'v' specific contains 5 values (x,y,z,s,t coordinates) for each
+control point, that is, 45 values in total.
+
+This specific can be directly manipulated by Python code,
+but it's generally simpler to read and write the Python attribute
+"cp" (Control Points), which returns (resp. must be set to) a 3-tuple
+of 3-tuples of vectors (note: QuArK now supports "quilts", which mean
+that the dimension of the "cp" rectangular matrix can actually be any
+odd number.)
+
+Vectors have been enhanced in this version of QuArK to allow them to
+hold all 5 coordinates of the control points. You create such a vector
+by passing 5 arguments to the function "quarkx.vect". The extra coordinates
+can be readen through the vector's "tex_s" and "tex_t" attributes, as well
+as through "tex" which directly returns a 2-tuple (tex_s, tex_t).
