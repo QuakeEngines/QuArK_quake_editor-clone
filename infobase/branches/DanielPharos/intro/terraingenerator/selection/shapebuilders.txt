@@ -1,0 +1,46 @@
+title: Terrain Shape Builders
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The first three buttons of the toolbar are the <ref> ../setup </ref> buttons that are used to select witch pattern of terrain grid is to be used. Each button shows a simulation of what that particular pattern looks like for easy selection.
+</td>
+<td valign=top align=middle>
+<img border=0>shapebuilders1.png</img>
+</td></tr>
+</table>
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>shapebuilders2.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+These shape builders can also be obtained from various other menus in <b>QuArK</b>. One way is through the <b>Shape Builders</b> menu using the <b>New Polyhedrons icon</b> as shown below on the left and also by selecting the <b>Toolboxes</b> item on the main editor menu then <b>New map items...</b> as shown on the right.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>shapebuilders3.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+They can also be created from a single square or rectangle <g>poly</g> by first selecting the <g>poly</g> and then clicking your <g>RMB</g> to get the appropriate pop-up menu where these functions can be selected. This feature constructs a starting size of your own.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>shapebuilders4.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+For further detailed information on their features, usage and settings see the section entitled <ref> ../setup </ref>.
+</td></tr>
+</table>

@@ -1,0 +1,4 @@
+title: The 3D-Render classes
+subdir: edsceneobject
+
+What are the files in \SOURCE\3DFX all about?

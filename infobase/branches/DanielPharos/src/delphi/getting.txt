@@ -1,0 +1,10 @@
+title: Getting Delphi
+author: Rowdy
+
+The central core of QuArK is written in Delphi, with add-ons and lots of the map manipulation code written in Python.
+
+Upto and including Delphi 5, you could only obtain commercial versions for which you had to pay a licence fee to Borland.  Starting from Delphi 6, Borland have provided a Personal Edition of Delphi which is accompanied by a licence which says that you cannot use a Personal Edition of Delphi to produce commercial applications, and that you must make the source code of your applications available.  For the purposes of developing QuArK this is ideal!
+
+Delphi 6 or 7 Personal Edition can be downloaded from the <a href="http://www.borland.com/delphi/">Borland Delphi</a> web site, or can sometimes be found on computer magazine cover CDs which seem to feature Delphi every six months or so (maybe ask a few friends if they have older magazines with cover CDs).
+
+To download Delphi you need to have or to create a Borland account, this is a fairly painless procedure on the web.  You also need to register your copy of Delphi after installing it - once again this is fairly painless and can be done automatically (if you have an active Internet connection) or on the web or via email (which takes a bit longer, but is still usually fairly quick).

@@ -1,0 +1,8 @@
+title: Installing QuArK on GNU Linux systems
+desc: 1wine
+desc: 2get
+desc: 3install
+desc: 4run
+
+QuArK runs pretty well on Linux systems, given a bit of patience.
+Here's how to get started.

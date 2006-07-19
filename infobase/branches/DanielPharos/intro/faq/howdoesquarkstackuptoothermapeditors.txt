@@ -1,0 +1,7 @@
+title: How does QuArK stack up to other map editors?
+author: Gryphon, tiglari
+
+QuArK handles more different kinds of resources with less fuss than any
+other editing tool, but the question of which editor is 'best' is not
+one we care to get into.  The best editor for you is the one you can get
+your projects completed with.

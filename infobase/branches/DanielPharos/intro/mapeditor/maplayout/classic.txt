@@ -1,0 +1,6 @@
+title: Classic layout
+author: Decker
+
+<img border=0 align=right>classic.png</img>
+Upper area is side-view (X,Z)<br>
+Lower area is top/down-view (X,Y)

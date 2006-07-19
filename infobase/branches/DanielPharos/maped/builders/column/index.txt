@@ -1,0 +1,7 @@
+title: Columns (and Pipes)
+desc: makecolumns
+
+Columns are basically more of the same, after arches and bevels,
+tho there are differences due to the shape and likely uses.
+For the moment there are only patch-based columns ('prisms'
+from the prism builder have similar functionality for brushes).
