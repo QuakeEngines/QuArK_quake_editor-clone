@@ -114,7 +114,7 @@ def CenterEntityHandle(o, view, handleclass=IconHandle, pos=None):
         #
         # Set the hint as the entity classname in blue ("?").
         #
-        new.hint = "?" + o.shortname + "||This point represents an entity, i.e. an object that appears and interacts in the game when you play the map. The exact kind of entity depends on its 'classname' (its name).\n\nThis handle lets you move the entity with the mouse. Normally, the mouvement is done by steps of the size of the grid : if the entity was not aligned on the grid before the movement, it will not be after it. Hold down Ctrl to force the entity to the grid."
+        new.hint = "?" + o.shortname + "||This point represents an entity, i.e. an object that appears and interacts in the game when you play the map. The exact kind of entity depends on its 'classname' (its name).\n\nThis handle lets you move the entity with the mouse. Normally, the mouvement is done by steps of the size of the grid : if the entity was not aligned on the grid before the movement, it will not be after it. Hold down Ctrl to force the entity to the grid.|maped.duplicators.extruder.html"
 
         #
         # Compute a handle for aditional control points.
@@ -1928,6 +1928,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.52  2006/04/17 23:49:58  cdunde
+#Needed to import plugins\tagging to fix RMB error
+#from occurring in texture movement view window.
+#
 #Revision 1.51  2006/01/30 10:07:13  cdunde
 #Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
 #to allow the creation of much larger maps for the more recent games.

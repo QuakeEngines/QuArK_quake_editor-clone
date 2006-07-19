@@ -12,6 +12,12 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
         
+6.5.0 alpha 9
+=============
+
+ * [cdunde]: Created F1 help link for the Extruder Shape Builder and updated the
+         - Infobase with screen shots and step by step description of its use.
+        
 6.5.0 alpha 8
 =============
 
