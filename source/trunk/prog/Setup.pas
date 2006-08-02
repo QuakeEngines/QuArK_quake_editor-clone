@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2006/07/17 06:58:00  cdunde
+To setup RTCW-ET as its own game
+with md3 model display support.
+
 Revision 1.45  2006/04/27 06:19:59  cdunde
 To setup Quake4 support and code changes for Doom3 and material handling of both.
 Related file changes
@@ -318,7 +322,8 @@ procedure StoreTexExtensions; {--CONVEX--}
  {------------------------}
 
 function CharModeJeu: Char;
-function ModeJeuQuake2: Boolean; 
+function ModeJeuQuake2: Boolean;
+function ModeJeuQuake4: Boolean; 
 function ModeJeuRTCWET: Boolean;
 function CurrentQuake1Mode: Char;
 function CurrentQuake2Mode: Char;
@@ -992,7 +997,12 @@ end;
 function ModeJeuQuake2: Boolean;
 begin
  Result := CharModeJeu >= mjQuake2;
-end;  
+end;     
+
+function ModeJeuQuake4: Boolean;
+begin
+ Result := CharModeJeu >= mjQuake4;
+end;
 
 function ModeJeuRTCWET: Boolean;
 begin

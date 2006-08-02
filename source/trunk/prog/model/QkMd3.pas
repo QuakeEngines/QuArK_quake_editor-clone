@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2006/07/17 06:58:00  cdunde
+To setup RTCW-ET as its own game
+with md3 model display support.
+
 Revision 1.24  2006/06/28 08:52:16  cdunde
 To reinstate model skin search in pak files addition in version 1.20
 inadvertently removed by changes submitted in version 1.21.
@@ -789,6 +793,8 @@ begin
       org:=f.position;
       f.readbuffer(head, sizeof(head));
       org2:=f.position;
+      if (head.id='IDP3') and ModeJeuQuake4 then
+          ObjectGameCode := mjQuake4;
       if (head.id='IDP3') and ModeJeuRTCWET then
           ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (head.version=15) then
