@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.291  2006/07/17 22:23:27  cdunde
+//Needed RTCW-ET default settings corrections.
+//
 //Revision 1.290  2006/07/17 06:57:57  cdunde
 //To setup RTCW-ET as its own game
 //with md3 model display support.
@@ -6789,7 +6792,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"$0D"Quake 4"
+        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Half-Life2"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"RTCW_ET"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"$0D"Quake 4"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {
