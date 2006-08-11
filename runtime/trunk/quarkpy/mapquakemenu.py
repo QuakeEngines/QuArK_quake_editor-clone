@@ -170,7 +170,7 @@ def checkfilename(filename):
     return filename or Strings[180]
 
 
-def writemapfile(root, mapname, selonly, wadfile, hxstr=None):
+def writemapfile(root, mapname, selonly, wadfile, hxstr=None, group=None):
     saveflags = 0
     if MapOption("IgnoreToBuild"):
         saveflags = saveflags | SO_IGNORETOBUILD
@@ -192,7 +192,12 @@ def writemapfile(root, mapname, selonly, wadfile, hxstr=None):
         mapext='.map'
     mapfullname=mapname+mapext
     m = quarkx.newfileobj(mapfullname)
-    m.filename = quarkx.outputfile("maps/%s" % mapfullname)
+
+    if group == "":
+        m.filename = quarkx.outputfile("maps/%s" % mapfullname)
+    else:
+        m.filename = quarkx.outputfile("maps/"+group+"/%s" % mapfullname)
+        m.filename = quarkx.outputfile("maps/%s" % mapfullname)
     worldspawn = root.copy(1)   # preserve selection while copying
     m["Root"] = worldspawn.name
     m.setint("saveflags", saveflags)
@@ -225,6 +230,17 @@ def filesformap(map):
 #    else:
 #        return "QBSP1"
 
+def getGroupFilePath(obj):
+ path = ""
+ p = obj.parent
+ setup = quarkx.setupsubset()
+ while not p is None and not p.parent is None and setup["UseQrkGroupFolder"]:
+  makefolders = quarkx.outputfile("maps/"+p.shortname)
+  if len(path) > 0: path = "/" + path
+  path = p.shortname + path
+  p = p.parent
+ #print "final path is:",path
+ return path
 
 def qmenuitem1click(m):
     editor = mapeditor(SS_MAP)
@@ -240,6 +256,7 @@ def qmenuitem1click(m):
 #                return
     if m.info["RunGame"]:
         editor.layout.closeOpenGL()
+		
     RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor,
       m.info["RunGame"], m.text, 0, [], "", None)
 
@@ -413,7 +430,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
             argument_mapfile = "maps/%s.map" % map
             argument_file    = "maps/%s" % map
         argument_filename = "%s" % map
-
+        argument_grouppath = getGroupFilePath(mapfileobject)
         for pgrmnbr in range(9,0,-1):
             pgrmx = "BuildPgm%d" % pgrmnbr
 
@@ -466,6 +483,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     newcmdline = newcmdline.replace("%basepath%", setup["Directory"])
                     newcmdline = newcmdline.replace("%gamedir%", setup["tmpQuArK"])
                     newcmdline = newcmdline.replace("%quarkpath%", quarkx.exepath)
+                    newcmdline = newcmdline.replace("%grouppath%", argument_grouppath)
                     if setup["BuildPgmsDir"] is not None:
                        newcmdline = newcmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
                     newcmdline = newcmdline.replace("%output%", quarkx.outputfile())
@@ -492,7 +510,11 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
             return
 
         if buildmode["ExportMapFile"]:
-            hxstr = writemapfile(root, map, buildmode["SelOnly"], mapinfo["wad"], hxstr)
+            if setup["UseQrkGroupFolder"]:
+                group = argument_grouppath
+            else:
+                group = ""
+            hxstr = writemapfile(root, map, buildmode["SelOnly"], mapinfo["wad"], hxstr, group)
 
     if hxstr:
         hxf = quarkx.newfileobj("hxstr.txt")
@@ -512,7 +534,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     #
 
     if next is not consolecloser:
-        print
+        print ""
         str = " " + filter(lambda c: c!="&", text) + " "
         l = (79-len(str))/2
         if l>0:
@@ -666,6 +688,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.44  2006/05/07 07:02:07  rowdy
+#Added a rough hack to allow %file% type substitution in the '<game> command-line' option.  Also added %filename% parameter that is replaced with the map filename (without path, without extension).
+#
 #Revision 1.43  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.292  2006/08/02 02:28:05  cdunde
+//To update QuakeCtx:form items of games.
+//
 //Revision 1.291  2006/07/17 22:23:27  cdunde
 //Needed RTCW-ET default settings corrections.
 //
@@ -2508,11 +2511,22 @@ QQRKSRC1
         Code = "g" // Hardcoded value in Setup.PAS
         Program = "map2dif_DEBUG.exe"
         Directory = "C:\Torque"
+        //CheckDirectory = "map2dif_DEBUG.exe"   // hidden setting
+
+        DefaultTexture = ""
+        //   DefaultTextureTerrain = ""
+        //   DefaultTextureTrigger = "trigger"
+        //   DefaultTextureClip = "clip"
+        //   DefaultTextureOrigin = "origin"
+        //   DefaultTextureCaulk = "caulk"
+        3DLight = '512'
+        BrushDecimalPlaces = '16'
+
+        Console = "1"                  // "Run these build-programs..." setting
+
+        //   StupidBuildToolKludge = "1"     // "Run tools from base directory" setting
         OutputMapFormat = "Valve 220"
-        //CheckDirectory = "map2dif_DEBUG.exe"
-        MapCommentsPrefix = "//"
-        //   StupidBuildToolKludge = "1"
-        //******************************************************************************
+
         // 220 MAPVERSION
         // -v verbose -h Process for final build (exhaustive BSP search)(220 mapversion)
         BuildPgm1 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
@@ -2537,36 +2551,33 @@ QQRKSRC1
         // -p Include a preview bitmap in the interior file
         BuildPgm6 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
         BuildArgs6 = "-v -p -o ./maps -t ./textures %mapfile%"
-        //*****************************************************************************
         // USING LEWIS BRUCK'S -q 3 VERSION
         // -v verbose -h Process for final build (exhaustive BSP search)(q3 mapversion)
         BuildPgm9 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
         BuildArgs9 = "-v -h -q 3 -o ./maps -t ./textures %mapfile%"
-        //*****************************************************************************
-        TexturesPath = "textures/"
-        //   DefaultTexture = ""
-        //   DefaultTextureTrigger = "trigger"
-        //   DefaultTextureOrigin = "origin"
-        //   DefaultTextureClip = "clip"
-        //   DefaultTextureCaulk = "caulk"
-        //   DefaultTextureScale = "0.5"
-        DefaultTexture = ""
-        TextureFormat = ".jpg"
-        TextureWriteFormat = ".jpg"
+        MapCommentsPrefix = "//"
+
+   // Other hidden settings
         BaseDir = "base"
         tmpQuArK = "tmpQuArK"
+
+        ExtraCmdLine = ""
+        RunMapCmdLine = " %s"
+
+        AddOns = "DataTorque.qrk"
         //   AlwaysPak = ""
         //   PakExt = ".pk3"
         //   PakFormat = "*.PK3"
-        ExtraCmdLine = ""
-        RunMapCmdLine = " %s"
-        AddOns = "DataTorque.qrk"
-        Console = "1"
-        Form = "GameTorque"
         LightFactor = '0.9'
-        3DLight = '512'
         //   PlayerClass = "X"
-        BrushDecimalPlaces = '16'
+
+        TexturesPath = "textures/"
+        TextureFormat = ".jpg"             // primary texture file extension
+        TextureWriteFormat = ".jpg"        // possible texture file extensions
+
+        //   DefaultTextureScale = "0.5"
+
+        Form = "GameTorque"
       }
 
       WildWest:config =
@@ -3029,6 +3040,7 @@ QQRKSRC1
         $0D"%mapfile%  - Gives the map's path and filename with .MAP extension"
         $0D"%basepath% - Gives the base directory of the game (see Game Settings above)"
         $0D"%gamedir%  - Gives the game directory of the game (see Game Settings above)"
+        $0D"%grouppath%  - Puts build file(s) in Group folders (see ''Put build file(s) in Group folders'' above)"
         $0D
         $0D"Examples:"
         $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
@@ -3067,6 +3079,11 @@ QQRKSRC1
         Hint="These are set for the game's reccommended build tools.  If you don't have these," $0D " Classic Quake1/2/3 will function at a minimal level"
       }
 //      Typ="X" Txt="Tools support brush primitives" Hint="When this is checked, if use brush primitives map option is also checked,"$0D" maps will be written in brush primitives format"}
+      UseQrkGroupFolder: = {
+        Txt = "Put build file(s) in Group folders"
+        Typ="X"
+        Hint="When checked, this will create and put the compiled files in the"$0D "same folder name and tree structure that is used in a qrk file."$0D "%grouppath% must also be added to all output command-line arguments."$0D "For example: was"$0D"-v -h -o ./maps -t ./textures %mapfile%"$0D"now is"$0D"-v -h -o ''./maps/%grouppath%'' -t ./textures %mapfile%"$0D"Note the double quotes that MUST be used also."
+      }
       sep:        = {Typ="S" Txt="1st program"}
       BuildPgm1:  = {t_GameBuildPgm=!}
       BuildArgs1: = {t_GameBuildArgs=!}
