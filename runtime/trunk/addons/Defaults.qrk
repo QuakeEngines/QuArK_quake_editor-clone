@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.293  2006/08/11 23:13:47  cdunde
+//New feature by Jari, create folder(s) like qrk tree to store compiled files in.
+//Tools must have output option setting like Torque to work.
+//
 //Revision 1.292  2006/08/02 02:28:05  cdunde
 //To update QuakeCtx:form items of games.
 //
@@ -2526,11 +2530,12 @@ QQRKSRC1
 
         //   StupidBuildToolKludge = "1"     // "Run tools from base directory" setting
         OutputMapFormat = "Valve 220"
+        UseQrkGroupFolder = ""
 
         // 220 MAPVERSION
         // -v verbose -h Process for final build (exhaustive BSP search)(220 mapversion)
         BuildPgm1 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
-        BuildArgs1 = "-v -h -o ./maps -t ./textures %mapfile%"
+        BuildArgs1 = "-v -h -o "$22"./maps/%grouppath%"$22" -t ./textures %mapfile%"
         //
         // -l Process as low detail shape
         BuildPgm2 = "C:\Torque\QuArK files\map2dif_DEBUG.exe"
@@ -3040,7 +3045,6 @@ QQRKSRC1
         $0D"%mapfile%  - Gives the map's path and filename with .MAP extension"
         $0D"%basepath% - Gives the base directory of the game (see Game Settings above)"
         $0D"%gamedir%  - Gives the game directory of the game (see Game Settings above)"
-        $0D"%grouppath%  - Puts build file(s) in Group folders (see ''Put build file(s) in Group folders'' above)"
         $0D
         $0D"Examples:"
         $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
@@ -3079,11 +3083,6 @@ QQRKSRC1
         Hint="These are set for the game's reccommended build tools.  If you don't have these," $0D " Classic Quake1/2/3 will function at a minimal level"
       }
 //      Typ="X" Txt="Tools support brush primitives" Hint="When this is checked, if use brush primitives map option is also checked,"$0D" maps will be written in brush primitives format"}
-      UseQrkGroupFolder: = {
-        Txt = "Put build file(s) in Group folders"
-        Typ="X"
-        Hint="When checked, this will create and put the compiled files in the"$0D "same folder name and tree structure that is used in a qrk file."$0D "%grouppath% must also be added to all output command-line arguments."$0D "For example: was"$0D"-v -h -o ./maps -t ./textures %mapfile%"$0D"now is"$0D"-v -h -o ''./maps/%grouppath%'' -t ./textures %mapfile%"$0D"Note the double quotes that MUST be used also."
-      }
       sep:        = {Typ="S" Txt="1st program"}
       BuildPgm1:  = {t_GameBuildPgm=!}
       BuildArgs1: = {t_GameBuildArgs=!}
@@ -5410,6 +5409,18 @@ QQRKSRC1
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      UseQrkGroupFolder: = {
+        Txt = "Put build file(s) in Group folders"
+        Typ="X"
+        Hint="When checked, this will create and put the compiled files in the"$0D
+             "same folder name and tree structure that is used in a qrk file."$0D
+             "%grouppath% must also be added to the output command-line arguments"$0D
+             "for the "$22"program"$22" you want to use this feature for."$0D
+             "For example: was"$0D"-v -h -o ./maps -t ./textures %mapfile%"$0D"now is"$0D
+             "-v -h -o ''./maps/%grouppath%'' -t ./textures %mapfile%"$0D
+             "Note the double quotes that MUST be used also."$0D
+             "Once set, you do not need to remove the above. Just check this box to use it."
+      }
       t_GameBuildPgms=!
     }
 
