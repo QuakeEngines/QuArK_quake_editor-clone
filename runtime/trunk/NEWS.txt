@@ -15,8 +15,8 @@ $Id$
 6.5.0 alpha 9
 =============
 
- * [cdunde]: New feature by Jari, create folder(s) like qrk tree to store compiled
-         - files in. Build tool(s) must have output option setting like Torque to work.
+ * [cdunde]: New Torque feature by Jari that will create folder(s)
+         - that match the qrk tree to store compiled dif files in.
 
  * [cdunde]: Completely revamped the DataQ4.qrk file to coordinate with the new
          - QuArK_Quake4.zip game support package to allow the viewing of all available
