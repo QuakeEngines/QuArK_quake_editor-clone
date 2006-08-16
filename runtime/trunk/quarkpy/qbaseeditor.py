@@ -586,7 +586,7 @@ class BaseEditor:
                 if list[1]==list[4]: tag = tag + 2
                 if list[2]==list[5]: tag = tag + 4
                 try:
-                    # Show width/height/depth of selected polyhedron(s),
+                    # Show width(x)/depth(y)/height(z) of selected polyhedron(s),
                     # but only when the mousepointer is inside the selection
                     mousepoint = quarkx.vect(float(list[0]), float(list[1]), float(list[2]))
                     objlist = self.layout.explorer.sellist
@@ -610,8 +610,8 @@ class BaseEditor:
                             s = "Poly size"
                         selsize = box[1] - box[0]
                         s = s + " w:" + quarkx.ftos(selsize.x) \
-                            +   " h:" + quarkx.ftos(selsize.z) \
-                            +   " d:" + quarkx.ftos(selsize.y)
+                            +   " d:" + quarkx.ftos(selsize.y) \
+                            +   " h:" + quarkx.ftos(selsize.z)
 
                         # Just for kicks, we append the mouse-position
                         if   tag==6: s = s + " (" + list[1] + "," + list[2] + ")"
@@ -894,6 +894,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.25  2006/07/01 00:26:48  cdunde
+#To fix error of 'list' not being defined.
+#
 #Revision 1.24  2006/05/19 17:10:03  cdunde
 #To add new transparent poly options for viewing background image.
 #
