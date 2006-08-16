@@ -16,7 +16,7 @@ $Id$
 =============
 
  * [cdunde]: Changed "Poly size" display in "hint box" to w, d, h to reduce confusion
-         _ with bounding box settings and to coordinate this x, y, z format.
+         - with bounding box settings and to coordinate with x, y, z format.
 
  * [cdunde]: New Torque feature by Jari that will create folder(s)
          - that match the qrk tree to store compiled dif files in.
