@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.294  2006/08/12 20:16:59  cdunde
+//New grouppath setting seems to only work for Torque.
+//So moved it to just apply to that game only right now.
+//
 //Revision 1.293  2006/08/11 23:13:47  cdunde
 //New feature by Jari, create folder(s) like qrk tree to store compiled files in.
 //Tools must have output option setting like Torque to work.
@@ -2412,18 +2416,24 @@ QQRKSRC1
         Code = "b" // Hardcoded value in Setup.PAS
 
         Program = "STVoy.EXE +set sv_pure 0"
-
-        Directory = ""
-        CheckDirectory = "STVOY.EXE"
+        Directory = "\StarTrek Voyager Elite Force"
+        CheckDirectory = "STVOY.EXE"   // hidden setting
 
         CD = ""
-        CDDir = "Setup\BaseEF"
+        CDDir = "Setup\BaseEF"   // hidden setting
 
-        MapCommentsPrefix = "//"
+        DefaultTexture = "cargo/walllow"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+
+        Console = "1"
+        BuildPgmsDir = "C:\Program Files\STVEF\QuArk files\bspc"
+        StupidBuildToolKludge = "" // Run tools from base directory setting
         OutputMapFormat="Brush Primitives"
         AlwaysWriteThreeFields = "1"
-
-        StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = "-qdir stvef"
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
@@ -2435,6 +2445,8 @@ QQRKSRC1
         BuildArgs4 = "-bsp2aas"
         BuildCheck4= "+AAS"
 
+        MapCommentsPrefix = "//"
+
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
@@ -2442,20 +2454,14 @@ QQRKSRC1
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
-        DefaultTexture = "cargo/walllow"
-        DefaultTextureTrigger = "common/trigger"
-        DefaultTextureClip = "common/clip"
-        DefaultTextureOrigin = "common/origin"
-        DefaultTextureCaulk = "common/caulk"
-
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
         TextureWriteFormat = ".tga"
         TextureShaders = "scripts/quark.shader"
 
-        BaseDir = "baseEF"
+        BaseDir = "BaseEF"
         tmpQuArK = "tmpquark"
-//        tmpQuArK = "BaseEF"
+    //    MapLimit = '65536 65536 65536'
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
@@ -2463,11 +2469,12 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
-        Console = "1"
-        Form = "GameSTVEF"
         LightFactor = '0.9'
         3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         BrushDecimalPlaces = '5'
+
+        Form = "GameSTVEF"
       }
 
       Sylphis:config =
