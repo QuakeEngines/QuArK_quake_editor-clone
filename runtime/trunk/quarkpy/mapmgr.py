@@ -248,11 +248,19 @@ class MapLayout(BaseLayout):
     def filldataform(self, reserved):
         import mapentities
         sl = self.explorer.sellist
-        formobj = mapentities.LoadEntityForm(sl)
-        if formobj is None:
-            pass
-        else:
-            self.dataform.setdata(sl, formobj)
+        formobj, f1 = mapentities.LoadEntityForm(sl) # Go get the :form date to make the form
+                                                     # and the entity :e and :form name.
+        try:
+            self.dataform.setdata(sl, formobj) # try to use the data returned to make the form.
+        except: # if an Access Violation error will occur, try to following
+            if f1 is not None: # If we have a form name, then try to find its form this way.
+                formobj = quarkx.getqctxlist(':form', f1)
+            else:
+                formobj = None # If no form data is found.
+        try:
+            self.dataform.setdata(sl, formobj) # try to use the data returned to make the form again.
+        except: # if an Access Violation error will occur, try to following
+            formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
         help = ((formobj is not None) and formobj["Help"]) or ""
         if help:
             help = "?" + help   # this trick displays a blue hint
@@ -870,6 +878,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.16  2006/06/18 03:30:38  cdunde
+#To fix read error if from returns None.
+#
 #Revision 1.15  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

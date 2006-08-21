@@ -670,30 +670,36 @@ def registerPyForm(name, formstring):
     f.loadtext(formstring)
     formdict[name] = f
 
-def LoadEntityForm(sl):
-    formobj = None
-    if len(sl):
-        f1 = CallManager("dataformname", sl[0])
-        for obj in sl[1:]:
-            f2 = CallManager("dataformname", obj)
-            if f2!=f1:
-                f1 = None
-                break
-        if f1 is not None:
+def LoadEntityForm(sl):  # Let's find all the objects in sel
+
+    formobj = f1 = None  # This will be our outputs
+    if len(sl):  # Are there any objects in sl?
+        f1 = CallManager("dataformname", sl[0])  # Get the form-name of the first object
+        for obj in sl[1:]:  # For all OTHER objects in sl...
+            f2 = CallManager("dataformname", obj) # Get their names
+            if f2!=f1: # If another one is found use it instead of the first one found
+                f1 = None  # Don't do f1. We're already doing f2!
+                break # Stop checking the OTHER other items, we've already found a double
+        if f1 is not None: # If a name has been found but no form yet, then go do the following
             #bbox = LoadPoolObj("BoundingBoxes", quarkx.getqctxlist, ":form")
             #for f in bbox:
             #    if f.shortname == f1:
             #        formobj = f        # find the LAST form
-            flist = quarkx.getqctxlist(':form', f1)
-            if len(flist):
-                formobj = flist[-1]
-        if formobj is None:
-            formobj = lookupPyForm(f1)
-    return formobj
+            flist = quarkx.getqctxlist(':form', f1) # Find the form for the f1 name is there is one
+            if len(flist): # If a form is found then do the following
+                formobj = flist[-1] # Set that :form data to be returned
+        if formobj is None: # If the form data still has not been found then try the method below
+            formobj = lookupPyForm(f1) # If found this time then set THAT :form data to be returned
+    return formobj, f1 # Return both the formobj (can still be None) and the name for further testing
+                       # (see "def filldataform" in mapmgr.py where call originated)
 
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.48  2006/01/30 08:20:00  cdunde
+#To commit all files involved in project with Philippe C
+#to allow QuArK to work better with Linux using Wine.
+#
 #Revision 1.47  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
