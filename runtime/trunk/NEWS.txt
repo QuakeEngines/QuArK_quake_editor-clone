@@ -15,7 +15,7 @@ $Id$
 6.5.0 alpha 9
 =============
 
- * [Daniel (d.a.a.) and cdunde]: As far back as mid 2000 Access Violation errors would
+ * [DanielPharos and cdunde]: As far back as mid 2000 Access Violation errors would
          - occurred with various entity forms, causing QuArK to crash. That is now fixed!
 
  * [cdunde]: Changed "Poly size" display in "hint box" to w, d, h to reduce confusion
