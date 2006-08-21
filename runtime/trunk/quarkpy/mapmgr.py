@@ -714,7 +714,7 @@ class MapLayout(BaseLayout):
     def helpbtnclick(self, m):
         import mapentities
         sl = self.explorer.sellist
-        formobj = mapentities.LoadEntityForm(sl)
+        formobj, f1 = mapentities.LoadEntityForm(sl)
         if formobj is not None:
             if formobj["HTML"]:
                 formobj = formobj["HTML"]
@@ -878,6 +878,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.17  2006/08/21 03:14:06  cdunde
+#Daniel (d.a.a.) and cdunde finally found fix for Access Violation errors
+#with various selections of entities to display their form data.
+#
 #Revision 1.16  2006/06/18 03:30:38  cdunde
 #To fix read error if from returns None.
 #
