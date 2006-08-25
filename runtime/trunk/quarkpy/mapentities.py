@@ -670,16 +670,17 @@ def registerPyForm(name, formstring):
     f.loadtext(formstring)
     formdict[name] = f
 
-def LoadEntityForm(sl):  # Let's find all the objects in sel
+def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
     formobj = f1 = None  # This will be our outputs
     if len(sl):  # Are there any objects in sl?
-        f1 = CallManager("dataformname", sl[0])  # Get the form-name of the first object
+        f1 = CallManager("dataformname", sl[0])  # Gets the entity form-name (if one exist) of the first object
         for obj in sl[1:]:  # For all OTHER objects in sl...
             f2 = CallManager("dataformname", obj) # Get their names
-            if f2!=f1: # If another one is found use it instead of the first one found
-                f1 = None  # Don't do f1. We're already doing f2!
-                break # Stop checking the OTHER other items, we've already found a double
+     #       if f2!=f1: # If another one is found use it instead of the first one found
+            if f2==f1: # If another one is found use the first one found anyway
+                f1 = None  # Don't use f1's item, use f2's instead
+                break # Stop checking we've already found a match
         if f1 is not None: # If a name has been found but no form yet, then go do the following
             #bbox = LoadPoolObj("BoundingBoxes", quarkx.getqctxlist, ":form")
             #for f in bbox:
@@ -696,6 +697,10 @@ def LoadEntityForm(sl):  # Let's find all the objects in sel
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.49  2006/08/21 03:14:06  cdunde
+#Daniel (d.a.a.) and cdunde finally found fix for Access Violation errors
+#with various selections of entities to display their form data.
+#
 #Revision 1.48  2006/01/30 08:20:00  cdunde
 #To commit all files involved in project with Philippe C
 #to allow QuArK to work better with Linux using Wine.
