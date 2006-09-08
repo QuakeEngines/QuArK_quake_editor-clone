@@ -4,6 +4,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.16  2005/10/15 23:30:38  cdunde
+//Removed hard coded textures and pointed path to pick
+//up textures in actual textures folders and pak files
+//
 //Revision 1.15  2005/10/15 01:00:02  cdunde
 //To reinstate headers and history
 //
@@ -939,13 +943,13 @@ Textures.qtx =
           {
             origin = "0 0 0"
             angle = "360"
-            ;desc = "Blue player spawn position."
+            ;desc = "Blue player spawn position at start of game."
           }
           team_CTF_bluespawn:e =
           {
             origin = "0 0 0"
             angle = "360"
-            ;desc = "I guess the same as team_CTF_blueplayer."
+            ;desc = "Blue player re-spawn position during game."
           }
         }
         Red Team.qtxfolder =
@@ -960,13 +964,13 @@ Textures.qtx =
           {
             origin = "0 0 0"
             angle = "360"
-            ;desc = "Red player spawn position."
+            ;desc = "Red player spawn position at start of game."
           }
           team_CTF_redspawn:e =
           {
             origin = "0 0 0"
             angle = "360"
-            ;desc = "I guess the same as team_CTF_redplayer."
+            ;desc = "Red player re-spawn position during game."
           }
         }
       }
