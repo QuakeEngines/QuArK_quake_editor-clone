@@ -15,6 +15,10 @@ $Id$
 6.5.0 alpha 9
 =============
 
+ * [cdunde]: Made up a complete QuArK_STVEF.zip game support package with .md3 models
+         - to allow their viewing in the editor, all available textures for QuArK's Texture
+         - Browser and added its link to a new STVEF Infobase Configuration doc section.
+
  * [DanielPharos and cdunde]: Complete revamping of STVEF files and addition of HM addon
          - for multiplayer editing by DanielPharos.
 
