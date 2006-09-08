@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.12  2006/09/08 18:01:15  cdunde
+//To fix Info_player start position for New Map.
+//
 //Revision 1.11  2006/09/08 07:56:27  cdunde
 //Complete revamping of STVEF files and addition of HM addon
 //for multiplayer editing by DanielPharos.
@@ -1685,6 +1688,35 @@ QQRKSRC1
                "or select from a pre-existing 'real_scripts' game scripts in these lists."
       }
     }
+
+    t_NPC_Types_editor_models:incl =
+      { 
+        NPC_type_editor_models: =
+        { typ="C"
+          hint = "Match the selection here with the NPC_Type below"$0D
+            "to display its model in the editor."
+          items=
+            ""$0D
+            "borgthin"$0D
+            "borgthin2"$0D
+            "borgthin3"$0D
+            "borgthin4"$0D
+            "borgbig"$0D
+            "borgbig2"$0D
+            "borgbig3"$0D
+            "borgbig4"
+          values=
+            ""$0D
+            "models/players2/Enemies/Borgs/BorgThin.md3"$0D
+            "models/players2/Enemies/Borgs/BorgThin2.md3"$0D
+            "models/players2/Enemies/Borgs/BorgThin3.md3"$0D
+            "models/players2/Enemies/Borgs/BorgThin4.md3"$0D
+            "models/players2/Enemies/Borgs/BorgBig.md3"$0D
+            "models/players2/Enemies/Borgs/BorgBig2.md3"$0D
+            "models/players2/Enemies/Borgs/BorgBig3.md3"$0D
+            "models/players2/Enemies/Borgs/BorgBig4.md3"
+        }
+      }
 
     t_NPC_Types:incl =
       { 
@@ -7945,7 +7977,6 @@ QQRKSRC1
         cap = "SHY"
       }
       t_commonspecifics = !
-      t_NPC_Types = !  // Different types of Borgs dropdown list
       t_NPC_Events = !  // Applies to all NCC's
     }
 
@@ -16599,7 +16630,7 @@ QQRKSRC1
        "rd their goals"$0D"delay - after spawned or triggered, how many second"
        "s to wait to spawn the NPC"
       bbox = '-16 -16 -32 16 16 32'
-      mdl = "models/players2/Enemies/Borgs/BorgThin2.md3"
+      mdl = "[NPC_type_editor_models]"
       spawnflags: =
       {
         typ = "X2"
@@ -16640,6 +16671,7 @@ QQRKSRC1
         typ = "X256"
         cap = "SHY"
       }
+      t_NPC_Types_editor_models = !  // Different types of Borgs models to display dropdown list
       t_NPC_Types = !  // Different types of Borgs dropdown list
       t_commonspecifics = !
       t_NPC_Events = !
