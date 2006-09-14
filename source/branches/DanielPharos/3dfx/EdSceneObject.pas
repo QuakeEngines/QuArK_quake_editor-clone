@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2005/10/16 06:45:53  cdunde
+To try and reduce 3D view freeze and
+gray out at start when loading textures
+
 Revision 1.14  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -187,6 +191,7 @@ type
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
+                  DisplayMode: Byte;
                   const LibName: String;
                   var FullScreen, AllowsGDI: Boolean;
                   FogDensity: Single;

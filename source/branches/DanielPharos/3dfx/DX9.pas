@@ -19,56 +19,65 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.5  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
 
-Revision 1.3  2001/03/20 21:38:37  decker_dk
-Updated copyright-header
 
-Revision 1.2  2001/02/01 20:45:45  decker_dk
-Only include Direct3D support-code, if QUARK_DIRECT3D is defined.
-
-Revision 1.1  2000/12/30 15:22:19  decker_dk
-- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
-- Created Ed3DEditors.pas which contains close/free calls
-- Created EdDirect3D.pas with minimal contents
-}
-
-unit Ed3DEditors;
+unit DX9;
 
 interface
 
-uses EdSceneObject
-    ,Ed3DFX
-    ,EdOpenGL
-    ,EdDirect3D;
+uses Windows, Direct3D, Direct3D9;
 
- {------------------------}
-
-procedure Close3DEditors;
-procedure Free3DEditors;
-
- {------------------------}
+function Direct3DLoaded : Boolean;
+function ReloadDirect3D : Boolean;
+procedure UnloadDirect3D;
 
 implementation
 
-procedure Close3DEditors;
+var
+  Is_Direct3D_Library_Loaded : boolean;
+
+  g_D3D: IDirect3D9;
+
+ { ----------------- }
+
+function Direct3DLoaded : Boolean;
 begin
-  CloseDirect3DEditor;
-  CloseOpenGLEditor;
-  Close3DFXEditor;
+  Result := Is_Direct3D_Library_Loaded;
 end;
 
-procedure Free3DEditors;
+function ReloadDirect3D : Boolean;
 begin
-  FreeDirect3DEditor;
-  FreeOpenGLEditor;
-  Free3DFXEditor;
-  TTextureManager.FreeNonVisibleTextures;
+  Result := False;
+  UnloadDirect3D;
+  try
+
+   g_D3D := Direct3DCreate9(D3D_SDK_VERSION);
+   {if (!g_D3D) then
+     begin
+       
+     end;}
+
+
+    Is_Direct3D_Library_Loaded := True;
+    Result := True;
+  finally
+    if (not Result) then
+      UnloadDirect3D;
+  end;
 end;
 
+procedure UnloadDirect3D;
+begin
+   if not (g_D3D=Nil) then
+     begin
+      {g_D3D->Release();}  {Daniel: Shouldn't we release it with the release-procedure?}
+      g_D3D:=Nil;
+     end;
+
+  Is_Direct3D_Library_Loaded := False;
+end;
+
+initialization
+
+  Is_Direct3D_Library_Loaded := False;
 end.

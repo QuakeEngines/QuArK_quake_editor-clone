@@ -943,13 +943,13 @@ Textures.qtx =
           {
             origin = "0 0 0"
             angle = "360"
-            ;desc = "Blue player spawn position at start of game."
+            ;desc = "Blue player spawn position."
           }
           team_CTF_bluespawn:e =
           {
             origin = "0 0 0"
             angle = "360"
-            ;desc = "Blue player re-spawn position during game."
+            ;desc = "I guess the same as team_CTF_blueplayer."
           }
         }
         Red Team.qtxfolder =
@@ -964,13 +964,13 @@ Textures.qtx =
           {
             origin = "0 0 0"
             angle = "360"
-            ;desc = "Red player spawn position at start of game."
+            ;desc = "Red player spawn position."
           }
           team_CTF_redspawn:e =
           {
             origin = "0 0 0"
             angle = "360"
-            ;desc = "Red player re-spawn position during game."
+            ;desc = "I guess the same as team_CTF_redplayer."
           }
         }
       }

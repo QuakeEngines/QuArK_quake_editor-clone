@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.29  2005/07/30 23:04:45  alexander
 introduced dispface class for faces with displacement mapping
 vmf loader sets some displacement info
@@ -164,6 +167,7 @@ uses
   ToolBoxGroup in 'Prog\ToolBoxGroup.pas' {FQToolBoxGroup},
   HelpPopup1 in 'Prog\HelpPopup1.pas' {HelpPopup},
   GL1 in '3DFX\GL1.pas',
+  DX9 in '3DFX\DX9.pas',
   QkTga in 'Prog\QkTga.pas',
   QkPixelSet in 'prog\QkPixelSet.pas',
   Bezier in 'prog\Bezier.pas',

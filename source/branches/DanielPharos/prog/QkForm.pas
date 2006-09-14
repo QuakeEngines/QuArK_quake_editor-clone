@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.14  2003/08/13 04:18:56  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -116,6 +119,7 @@ const
  wp_UpdateButtons        = 135;
  wp_ClickItem            = 136;
  wp_OpenGL               = 137;
+ wp_Direct3D             = 138;
 
  tm_DoubleClick          = 91;
  tm_BeginDrag            = 92;
@@ -130,7 +134,7 @@ const
  wp_GetPyControl         = 200;
  wp_FreeMenuHandle       = 201;
  wp_PyInvalidate         = 202;
- wp_PaintFull3DFX        = 203;
+ wp_PaintFull3Dview      = 203;
  wp_MoveRedLine          = 204;
 
  wp_ProcessNotifyFirst   = 290;

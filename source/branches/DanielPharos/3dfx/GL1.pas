@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2005/09/22 05:15:00  cdunde
 To comment out and reverse changes in version 1.09 2004/12/14
 that broke OpenGL for odd sized textures
@@ -678,7 +681,7 @@ var
   glFlush: procedure; stdcall;
  {v1.9 broke OpenGL with PChar at end, changed back to v1.8 items - cdunde 09-21-2005}
 //  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; pixels:PChar ); stdcall;
-  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
+  glTexImage2D: procedure (target: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
   glDeleteTextures: procedure (n: GLsizei; const textures); stdcall;
   glAreTexturesResident: function (n: GLsizei; const textures; var residences) : GLboolean; stdcall;
   glBindTexture: procedure (target: GLenum; texture: GLuint); stdcall;

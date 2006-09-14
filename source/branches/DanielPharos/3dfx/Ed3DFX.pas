@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.29  2004/01/05 22:41:49  silverpaladin
 Fixed the divide by zero errors in the texture scaling
 
@@ -151,6 +154,7 @@ type
    constructor Create(nSolidColors: Boolean);
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
+                  DisplayMode: Byte;
                   const LibName: String;
                   var FullScreen, AllowsGDI: Boolean;
                   FogDensity: Single;
@@ -395,7 +399,7 @@ begin
  SolidColors:=nSolidColors;
 end;
 
-procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
+procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: Byte; const LibName: String;
           var FullScreen, AllowsGDI: Boolean; FogDensity: Single; FogColor, FrameColor: TColorRef);
 var
  I: Integer;

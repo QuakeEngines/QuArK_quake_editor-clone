@@ -793,8 +793,6 @@ begin
       org:=f.position;
       f.readbuffer(head, sizeof(head));
       org2:=f.position;
-      if (head.id='IDP3') and ModeJeuQuake4 then
-          ObjectGameCode := mjQuake4;
       if (head.id='IDP3') and ModeJeuRTCWET then
           ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (head.version=15) then

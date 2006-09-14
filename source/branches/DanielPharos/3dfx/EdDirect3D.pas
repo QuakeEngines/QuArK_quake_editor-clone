@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2003/08/31 02:53:47  silverpaladin
 Removing hints and warnings that appear when Direct3d Compiler directive is used.
 
@@ -44,16 +47,11 @@ Revision 1.1  2000/12/30 15:22:19  decker_dk
 
 unit EdDirect3D;
 
-{$IFNDEF QUARK_DIRECT3D}
-interface
-implementation
-{$ELSE}
 interface
 
-uses Windows,
-     DirectDraw, Direct3D, Direct3DRM, D3DX,
-     qmath, PyMath,
-     QkObjects,
+uses Windows, Classes,
+     qmath, PyMath, PyMath3D,
+     DX9,
      EdSceneObject;
 
 type
@@ -62,10 +60,10 @@ type
     m_ScreenX, m_ScreenY: Integer;
     m_Resized: Boolean;
 
-    m_pD3DX: ID3DXContext;
+{    m_pD3DX: ID3DXContext;
     m_pD3D: IDirect3D7;
     m_pD3DDevice: IDIRECT3DDEVICE7;
-    m_pDD: IDirectDraw7;
+    m_pDD: IDirectDraw7;}
 
     m_CurrentAlpha, m_CurrentColor: Integer;
 
@@ -85,6 +83,7 @@ type
     destructor Destroy; override;
     procedure Init(Wnd: HWnd;
                    nCoord: TCoordinates;
+                   DisplayMode: Byte;
                    const LibName: String;
                    var FullScreen, AllowsGDI: Boolean;
                    FogDensity: Single;
@@ -109,49 +108,25 @@ procedure FreeDirect3DEditor;
 
 implementation
 
-uses  QkMapPoly, Quarkx, PyMath3D;
+uses QkMapPoly, QkObjects, Quarkx, DXTypes, Direct3D;
 
 type
  PVertex3D = ^TVertex3D;
- TVertex3D = TD3DLVERTEX;
+ TVertex3D = PD3DLVertex;
 
 var
   g_Direct3DInitialized: Boolean;
 
  {------------------------}
 
-procedure InitDirect3DEditor;
-var
-  l_Res: HResult;
-begin
-  if (g_Direct3DInitialized = True) then
-    Exit;
-
-  l_Res := D3DXInitialize;
-  if (l_Res <> 0) then
-    raise EErrorFmt(4880, [D3DXGetErrorMsg(l_Res)]);
-
-  g_Direct3DInitialized := True;
-end;
-
 procedure CloseDirect3DEditor;
 begin
 end;
 
 procedure FreeDirect3DEditor;
-var
-  l_Res: HResult;
 begin
+  UnloadDirect3D;
   TTextureManager.FreeNonVisibleTextures;
-
-  if (g_Direct3DInitialized = False) then
-    Exit;
-
-  l_Res := D3DXUninitialize;
-  if (l_Res <> 0) then
-    raise EErrorFmt(4881, [D3DXGetErrorMsg(l_Res)]);
-
-  g_Direct3DInitialized := False;
 end;
 
  {------------------------}
@@ -227,9 +202,9 @@ begin
   PVertex3D(PV)^.tu := ns;
   PVertex3D(PV)^.tv := nt;
 
-{}
-  PVertex3D(PV)^.color := D3DXColorToDWord(D3DXColor(random, random, random, 0));
-{}
+
+  {PVertex3D(PV)^.color := D3DXColorToDWord(D3DXColor(random, random, random, 0));}
+
 end;
 
 procedure TDirect3DSceneObject.ReleaseResources;
@@ -248,41 +223,45 @@ end;
 
 procedure TDirect3DSceneObject.Init(Wnd: HWnd;
                                     nCoord: TCoordinates;
+                                    DisplayMode: Byte;
                                     const LibName: String;
                                     var FullScreen, AllowsGDI: Boolean;
                                     FogDensity: Single;
                                     FogColor, FrameColor: TColorRef);
 var
   l_Res: HResult;
-  l_NumBackBuffers: DWord;
-  l_Material: TD3DMaterial7;
 begin
-  InitDirect3DEditor;
   ReleaseResources;
+  { is the Direct3D object already loaded? }
+  if not Direct3DLoaded() then
+  begin
+    { try to load the Direct3D object }
+    if not ReloadDirect3D() then
+      Raise EErrorFmt(4868, [GetLastError]);  {Daniel: Is this error message correct? No 'OpenGL' in it?}
+  end;
+  if (DisplayMode=3) then
+   Raise InternalE('Direct3D renderer does not support fullscreen views (yet)');
+
+  {Check for software/hardware vertex processing and PureDevice}
+
+  l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, Wnd, 0, D3DX_DEFAULT, 0,
+                                 D3DX_DEFAULT, 0, l_NumBackBuffers,
+                                 64, 64, D3DX_DEFAULT, m_pD3DX);
+  if (l_Res <> D3D_OK) then   {Can't get a Hardware Accelerated Device, try Software Device}
+   begin
+    l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, Wnd, 0, 0, g_D3DDevice);
+    if (l_Res <> D3D_OK) then   {Can't get any decent device, exiting}
+      raise EErrorFmt(4882, ['CreateDevice', D3DXGetErrorMsg(l_Res)]);   {Daniel: Check all the error messages.}
+   end;
+
+   {Should we use the pPresentationParameters instead of creating a new device each time?}
 
   //FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
   Coord:=nCoord;
   FullScreen:=False;
   TTextureManager.AddScene(Self, False);
   //TTextureManager.GetInstance.FFreeTexture:=FreeDirect3DTexture;
-
-  if (m_pD3DX = nil) then
-  begin
-    l_NumBackBuffers := 1;
-    l_Res := D3DXCreateContextEx(D3DX_DEFAULT, 0, Wnd, 0, D3DX_DEFAULT, 0,
-                                 D3DX_DEFAULT, 0, l_NumBackBuffers,
-                                 64, 64, D3DX_DEFAULT, m_pD3DX);
-    if (l_Res <> 0) then
-      raise EErrorFmt(4882, ['D3DXCreateContextEx', D3DXGetErrorMsg(l_Res)]);
-
-    if (not D3DXDDFromContext(m_pD3DX, m_pDD)) then
-      raise EErrorFmt(4882, ['D3DXDDFromContext', 'False']);
-    if (not D3DXD3DDeviceFromContext(m_pD3DX, m_pD3DDevice)) then
-      raise EErrorFmt(4882, ['D3DXD3DDeviceFromContext', 'False']);
-    if (not D3DXD3DFromContext(m_pD3DX, m_pD3D)) then
-      raise EErrorFmt(4882, ['D3DXD3DFromContext', 'False']);
-
-    //
+   
     m_pD3DX.SetClearColor(D3DXColorToDWord(D3DXColor(0,0,0,0)));
     m_pD3DDevice.SetRenderState(D3DRENDERSTATE_AMBIENT, $ffffffff);
 
@@ -294,6 +273,7 @@ begin
     l_Material.dvPower     := 100.0;
     m_pD3DDevice.SetMaterial(l_Material);
   end;
+
 end;
 
 procedure TDirect3DSceneObject.Render3DView;

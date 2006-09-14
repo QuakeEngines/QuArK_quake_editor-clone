@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2005/12/10 07:19:14  cdunde
+To add new paint brush cursor for Terrain Generator
+
 Revision 1.20  2005/10/16 06:45:53  cdunde
 To try and reduce 3D view freeze and
 gray out at start when loading textures
@@ -65,11 +68,14 @@ uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
 
 
 type
-  TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured, vmOpenGL);
+  TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
+  TMapViewType = (vtPanel, vtWindow, vtFullScreen);
 
 const
   MapViewStr : array[TMapViewMode] of PChar =
-   ('wire', 'solid', 'tex', 'opengl');
+   ('wire', 'solid', 'tex');
+  MapTypeStr : array[TMapViewType] of PChar =
+   ('panel', 'window', 'fullscreen');
 
   vfHScrollBar   = $01;
   vfVScrollBar   = $02;
@@ -87,7 +93,7 @@ const
   dfRebuildScene = 2;
   dfBuilding     = 4;
   dfFocusRect    = 8;
-  dfFull3DFX     = 16;
+  dfFull3Dview   = 16;
   dfNoGDI        = 32;
 
   dmGrayOov      = 1;
@@ -123,6 +129,7 @@ const
  Modifier3DKeys : set of TKey3D =
   [keyRun, keyStep];
  mbNotPressing = TMouseButton(-1);
+
 
 type
   PAnimationSeq = ^TAnimationSeq;
@@ -194,12 +201,14 @@ type
                  procedure KeyDown(var Key: Word; Shift: TShiftState); override;
                  procedure KeyUp(var Key: Word; Shift: TShiftState); override;
                  procedure SetViewMode(Vm: TMapViewMode);
+                 procedure SetViewType(Vt: TMapViewType);
                  procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean); override;
                  procedure SetRedLines;
                public
                  MapViewObject: PyControlF;
                  BoxColor, CouleurFoncee: TColor;
                  ViewMode: TMapViewMode;
+                 ViewType: TMapViewType;
                  {Root: TTreeMap;}
                  MapViewProj: TCoordinates;
                  constructor Create(AOwner: TComponent); override;
@@ -245,7 +254,7 @@ procedure CloseAll3DView;
 implementation
 
 uses PyCanvas, QkTextures, QkPixelSet, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
-     EdOpenGL, SystemDetails;
+     EdOpenGL, EdDirect3D, SystemDetails;
 
 procedure CloseAll3DView;
 var
@@ -256,7 +265,7 @@ begin
   with Screen.Forms[I] do
    for J:=0 to ComponentCount-1 do
     if Components[J] is TPyMapView then
-     TPyMapView(Components[J]).SetViewMode(vmWireframe);
+     TPyMapView(Components[J]).SetViewMode(vmWireframe);    {Daniel: Shouldn't be needed anymore}
  Free3DEditors;
 end;
 
@@ -419,14 +428,14 @@ begin
   wp_GetPyControl: Msg.Result:=LongInt(MapViewObject);
   wp_PyInvalidate: begin
                     Drawing:=Drawing or dfRebuildScene;
-                    if FullScreen and (Drawing and dfFull3DFX = 0) then
+                    if FullScreen and (Drawing and dfFull3Dview = 0) then
                      begin
-                      Inc(Drawing, dfFull3DFX);
-                      PostMessage(Handle, wm_InternalMessage, wp_PaintFull3DFX, 0);
+                      Inc(Drawing, dfFull3Dview);
+                      PostMessage(Handle, wm_InternalMessage, wp_PaintFull3Dview, 0);
                      end;
                    end;
-  wp_PaintFull3DFX: begin
-                     Drawing:=Drawing and not dfFull3DFX;
+  wp_PaintFull3Dview: begin
+                     Drawing:=Drawing and not dfFull3Dview;
                      if FullScreen then
                       begin
                        Canvas.Handle:=HDC(-1); try
@@ -453,6 +462,8 @@ begin
                   end;
   wp_OpenGL: if Scene is TGLSceneObject then
               TGLSceneObject(Scene).Ready:=True;
+  wp_Direct3D: if Scene is TDirect3DSceneObject then
+              TDirect3DSceneObject(Scene).Ready:=True;  {Daniel: Can we combine these two?}
  {wp_ResetFullScreen: ResetFullScreen(lParam<>0);}
  else
   if not DefControlMessage(Msg) then
@@ -474,22 +485,23 @@ var
  VAngle: TDouble;
  K: TKey3D;
  ve1: TViewEntities;
+ DisplayMode: Byte;
  AllowsGDI: Boolean;
 begin
  if Inv then
   Invalidate;
  with ConfigSrc do
   begin
-   if Scene is T3DFXSceneObject then
-    begin
-     if Specifics.Values['3DFXLogo']='' then
-      SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')
-     else
-      SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', Nil);
-     SoftQuality:=StrToIntDef(Specifics.Values['SoftQuality'], 0);
-     DynamicQuality:=StrToIntDef(Specifics.Values['DynamicQuality'], 0);
-     T3DFXSceneObject(Scene).SoftBufferFormat:=SoftQuality;
-    end;
+   {if Scene is T3DFXSceneObject then}   {Daniel: Not needed anymore, renderer should take care of this now}
+    {begin}
+     {if Specifics.Values['3DFXLogo']='' then}
+      {SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')}
+     {else}
+      {SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', Nil);}
+     {SoftQuality:=StrToIntDef(Specifics.Values['SoftQuality'], 0);}
+     {DynamicQuality:=StrToIntDef(Specifics.Values['DynamicQuality'], 0);}
+     {T3DFXSceneObject(Scene).SoftBufferFormat:=SoftQuality;}
+    {end;}
 
    if MapViewProj is TCameraCoordinates then
     begin
@@ -534,7 +546,17 @@ begin
       Scene.ErrorMsg:='';
       AllowsGDI:=True;
 
-      Scene.Init(Self.Handle, MapViewProj, Specifics.Values['Lib'],
+      if ViewType=vtPanel then
+       DisplayMode:=1
+      else if ViewType=vtWindow then
+       DisplayMode:=2
+      else if ViewType=vtFullScreen then
+       DisplayMode:=3  {Daniel: Should replace the 3DFX FullScreen variable. Make FullScreen available for every renderer}
+      else
+       DisplayMode:=1;  {Daniel: Defaults to Panel-mode}
+       {raise 'Unknown ViewType. Unable to create SceneObject';}
+
+      Scene.Init(Self.Handle, MapViewProj, DisplayMode, Specifics.Values['Lib'],
        FullScreen, AllowsGDI, GetFloatSpec('FogDensity', 1) * FOG_DENSITY_1,
        IntSpec['FogColor'], IntSpec['FrameColor']);
 
@@ -656,26 +678,50 @@ begin
 end;
 
 procedure TPyMapView.NeedScene(NeedSetup: Boolean);
+var
+ S: String;
 begin
+ if NeedSetup then
+  begin
+   if Scene<>Nil then
+    Scene.ClearScene;
+   ReadSetupInformation(True);
+  end;
  if Scene=Nil then
   begin
-   if ViewMode = vmOpenGL then
-    FScene:=TGLSceneObject.Create
-   else
-    if (MapViewProj is TCameraCoordinates)
-    and (SetupSubSet(ssGeneral, 'OpenGL').Specifics.Values['Mode']<>'') then
-     begin
+   S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
+   if S='qrksoftg.dll' then
+    begin
+     if (MapViewProj is TCameraCoordinates) then
       ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
-      FScene:=TGLSceneProxy.Create;
-     end
-    else
      FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
+    end
+   else if S='Glide2x.dll' then
+    begin
+     if (MapViewProj is TCameraCoordinates) then
+       ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
+     FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
+    end
+   else if S='OpenGL32.dll' then
+    begin
+     if (MapViewProj is TCameraCoordinates) then
+      ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
+     FScene:=TGLSceneObject.Create;
+    end
+   else if S='Direct3DXXX.dll' then    {Daniel: Change to the correct name}
+    begin
+     if (MapViewProj is TCameraCoordinates) then
+      ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
+     FScene:=TDirect3DSceneObject.Create;
+     {Daniel:...}
+    end
+   else
+    begin
+     {Daniel: Unknown renderer. Produce an error message.}
+    end;
    ReadSetupInformation(NeedSetup);
    Drawing:=Drawing or dfRebuildScene;
-  end
- else
-  if NeedSetup then
-   ReadSetupInformation(True);
+  end;
 end;
 
 procedure TPyMapView.PaintBackground;
@@ -803,7 +849,7 @@ begin
    end
   else
    begin  { solid or textured mode }
-    NeedScene(False);
+    NeedScene(False);  {Daniel: Shouldn't this one be True if the Setup has just changed?}
     if Scene.ErrorMsg='' then
      begin
       if Drawing and dfRebuildScene <> 0 then
@@ -1656,6 +1702,18 @@ begin
   end;
 end;
 
+procedure TPyMapView.SetViewType;
+begin
+ if ViewType<>Vt then
+  begin
+   SetAnimation(False);
+   ViewType:=Vt;
+   Invalidate;
+   FScene.Free;
+   FScene:=Nil;
+  end;
+end;
+
 procedure TPyMapView.DrawGrid(const V1, V2: TVect; Color, Color2: TColorRef; Flags: Integer; const Zero: TVect);
 const
  dg_Lines = $10000;
@@ -2200,7 +2258,7 @@ begin
        {Resize;}
        CentreEcran:=Centre;
       end;
-     if ViewMode = vmOpenGL then
+     if SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib']='OpenGlXXX.dll' then
       NeedScene(False);
     end;
   Result:=PyNoResult;
@@ -2727,7 +2785,7 @@ begin
  end;
 end;
 
-function mFull3DFX(self, args: PyObject) : PyObject; cdecl;
+function mFull3Dview(self, args: PyObject) : PyObject; cdecl;
 var
  mode, returnvalue: Integer;
 begin
@@ -2786,7 +2844,7 @@ const
    (ml_name: 'drawgrid';        ml_meth: mDrawGrid;        ml_flags: METH_VARARGS),
    (ml_name: 'setrange';        ml_meth: mSetRange;        ml_flags: METH_VARARGS),
    (ml_name: 'setprojmode';     ml_meth: mSetProjMode;     ml_flags: METH_VARARGS),
-   (ml_name: 'full3DFX';        ml_meth: mFull3DFX;        ml_flags: METH_VARARGS),
+   (ml_name: 'full3Dview';      ml_meth: mFull3Dview;      ml_flags: METH_VARARGS),
    (ml_name: 'waitforopengl';   ml_meth: mWaitForOpenGL;   ml_flags: METH_VARARGS));
 
 function GetMapViewObject(self: PyObject; attr: PChar) : PyObjectPtr;
@@ -2905,7 +2963,7 @@ begin
            Exit;
           end;
         {else
-         if StrComp(attr, 'full3DFX')=0 then
+         if StrComp(attr, 'full3Dview')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
@@ -2968,6 +3026,13 @@ begin
            if QkControl<>Nil then
             Result:=PyString_FromString(MapViewStr[(QkControl as TPyMapView).ViewMode]);
            Exit;
+          end
+         else
+         if StrComp(attr, 'viewtype')=0 then
+          begin
+           if QkControl<>Nil then
+            Result:=PyString_FromString(MapTypeStr[(QkControl as TPyMapView).ViewType]);
+           Exit;
           end;
    end;
 
@@ -2990,6 +3055,7 @@ function SetMapViewAttr(self: PyObject; attr: PChar; value: PyObject) : Integer;
 var
  Attr1: PyObjectPtr;
  Vm: TMapViewMode;
+ Vt: TMapViewType;
 {Q: QObject;}
  nFlags: Integer;
  P: PChar;
@@ -3115,7 +3181,7 @@ begin
            Exit;
           end;
         {else
-         if StrComp(attr, 'full3DFX')=0 then
+         if StrComp(attr, 'full3Dview')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
@@ -3221,6 +3287,19 @@ begin
              for Vm:=Low(Vm) to High(Vm) do
               if StrComp(MapViewStr[Vm], P) = 0 then
                SetViewMode(Vm);
+           Result:=0;
+           Exit;
+           end
+         else
+         if StrComp(attr, 'viewtype')=0 then
+          begin
+           P:=PyString_AsString(value);
+           if P=Nil then Exit;
+           if QkControl<>Nil then
+            with QkControl as TPyMapView do
+             for Vt:=Low(Vt) to High(Vt) do
+              if StrComp(MapTypeStr[Vt], P) = 0 then
+               SetViewType(Vt);
            Result:=0;
            Exit;
           end;

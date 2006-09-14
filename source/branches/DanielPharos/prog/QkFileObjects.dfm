@@ -42,7 +42,7 @@ object QForm1: TQForm1
     Left = 0
     Top = 13
     Width = 9
-    Height = 239
+    Height = 246
     BoundLines = [blRight]
     Color = 12632264
     Position = dpLeft
@@ -51,14 +51,14 @@ object QForm1: TQForm1
     Left = 418
     Top = 13
     Width = 9
-    Height = 239
+    Height = 246
     BoundLines = [blLeft]
     Color = 12632264
     Position = dpRight
   end
   object bottomdock: TDock97
     Left = 0
-    Top = 252
+    Top = 259
     Width = 427
     Height = 9
     BoundLines = [blTop]

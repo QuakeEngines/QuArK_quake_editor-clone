@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2006/04/06 19:44:56  nerdiii
+Cleaned some compiler hints
+
 Revision 1.32  2005/10/15 23:44:21  cdunde
 Made one setting in QuArK's Config OpenGL section for all
 games that use transparency that can be viewed in QuArK.
@@ -39,7 +42,7 @@ To comment out and reverse changes in version 1.24 2004/12/14
 that broke OpenGL for odd sized textures
 
 Revision 1.27  2005/04/01 19:30:16  alexander
-remove unneded copy operation for proxy views
+remove unneeded copy operation for proxy views
 
 Revision 1.26  2005/03/14 22:43:33  alexander
 textures with alpha channel are rendered transparent in open gl
@@ -171,6 +174,7 @@ type
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
+                  DisplayMode: Byte;
                   const LibName: String;
                   var FullScreen, AllowsGDI: Boolean;
                   FogDensity: Single;
@@ -195,6 +199,7 @@ type
  public
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
+                  DisplayMode: Byte;
                   const LibName: String;
                   var FullScreen, AllowsGDI: Boolean;
                   FogDensity: Single;
@@ -836,6 +841,7 @@ end;
 
 procedure TGLSceneObject.Init(Wnd: HWnd;
                               nCoord: TCoordinates;
+                              DisplayMode: Byte;
                               const LibName: String;
                               var FullScreen, AllowsGDI: Boolean;
                               FogDensity: Single;
@@ -847,6 +853,7 @@ var
  FarDistance: TDouble;
  Setup: QObject;
  Fog: Boolean;
+ Transparency: Boolean;
 begin
   FillChar(FullBright,SizeOf(FullBright),0);
   FullBright.ZeroLight:=1;
@@ -859,29 +866,55 @@ begin
     if not ReloadOpenGl() then
       Raise EErrorFmt(4868, [GetLastError]);
   end;
+  if (DisplayMode=3) then
+   Raise InternalE('OpenGL renderer does not support fullscreen views (yet)');
 
  {$IFDEF Debug}
   if not (nCoord is TCameraCoordinates) then
     Raise InternalE('TCameraCoordinates expected');
  {$ENDIF}
-  FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
   Coord:=nCoord;
   FullScreen:=False;
   TTextureManager.AddScene(Self, False);
   TTextureManager.GetInstance.FFreeTexture:=FreeOpenGLTexture;
 
+  Setup:=SetupSubSet(ssGeneral, '3D View');
+  if (DisplayMode=2) or (DisplayMode=3) then
+  begin
+    FarDistance:=Setup.GetFloatSpec('FarDistance',1);
+  end
+  else
+  begin
+    FarDistance:=0
+  end;
   Setup:=SetupSubSet(ssGeneral, 'OpenGL');
+  if (DisplayMode=2) or (DisplayMode=3) then
+  begin
+    Fog:=Setup.Specifics.Values['Fog']<>'';
+    Transparency:=Setup.Specifics.Values['Transparency']<>'';
+  end
+  else
+  begin
+    Fog:=False;
+    Transparency:=False;   {Daniel: Use this to disable transparency}
+  end;
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
-  Fog:=Setup.Specifics.Values['Fog']<>'';
   AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
   if Setup.Specifics.Values['GLLists']<>'' then
     DisplayLists:=0
   else
     DisplayLists:=-1;
-  FDisplayLights:=Setup.Specifics.Values['Lights']<>'';
-  LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.2);
-  LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256/0.5);
-  LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
+  if (DisplayMode=2) or (DisplayMode=3) then
+  begin
+    FDisplayLights:=Setup.Specifics.Values['Lights']<>'';
+    LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.2);
+    LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256/0.5);
+    LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
+  end
+  else
+  begin
+    FDisplayLights:=False
+  end;
   GLDC:=GetDC(Wnd);
   if Wnd<>DestWnd then
   begin
@@ -921,14 +954,14 @@ begin
   glEdgeFlag(0);
   {$IFDEF DebugGLErr} DebugOpenGL(1, '', []); {$ENDIF}
 
-  { set up texture parameters }
- (* glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
- {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
- {glShadeModel(GL_FLAT);} *)
+  { set up texture parameters }  //Daniel: These are set per texture, in the BuildTexture procedure
+  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);}
+  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);}
+  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);}
+  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
+  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);}
+  {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);}
+  {glShadeModel(GL_FLAT);}
   if SetupSubSet(ssGeneral,'OpenGL').Specifics.Values['Bilinear']<>'' then
     Bilinear:=true
   else
@@ -951,7 +984,24 @@ begin
     glFogfv(GL_FOG_COLOR, nFogColor);
     glEnable(GL_FOG);
     {$IFDEF DebugGLErr} DebugOpenGL(3, '', []); {$ENDIF}
+  end
+  else
+  begin
+    glDisable(GL_FOG);   {Daniel: Make sure Fog is disabled}
   end;
+  
+  if FDisplayLights then
+  begin
+    {glEnable(GL_LIGHTING);}
+    {Daniel: This currently actually breaks lighting...}
+  end
+  else
+  begin
+    glDisable(GL_LIGHTING);   {Daniel: Make sure Lighting is disabled}
+  end;
+
+  {Daniel: Things like transparency, bump-maps etc. should be added in a similar way}
+
 end;
 
 procedure TGLSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
@@ -1391,7 +1441,7 @@ begin
     if Bilinear then
     begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  {Daniel: Changed to GL_LINEAR}
     end
     else
     begin
@@ -1638,6 +1688,7 @@ end;
 
 procedure TGLSceneProxy.Init(Wnd: HWnd;
                              nCoord: TCoordinates;
+                             DisplayMode: Byte;
                              const LibName: String;
                              var FullScreen, AllowsGDI: Boolean;
                              FogDensity: Single;
