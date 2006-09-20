@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.16  2005/10/15 01:00:02  cdunde
+// To reinstate headers and history
+//
 // Revision 1.13  2004/06/20 09:39:21  cdunde
 // To add missing blaster model for view
 //
@@ -38,9 +41,90 @@ QQRKSRC1
 //
 
 {
+  Description = "Revision 1.17"
   Game Directories.qctx =
   {
   }
+
+  Quake 2 setup.qctx =
+  {
+    TextureFlags:form =     // a form for setting Quake 2 texture flags on polyhedron faces
+    {
+      Style = "5"
+
+      Reset: =       // Reset button
+      {
+        Cap = "Reset to default"      // button caption
+        Typ = "B"                     // "B"utton
+        Hint = "Reset all flags to the texture's default"
+        Delete: =
+        {
+          Flags = ""          // the button deletes these Specifics
+          Contents = ""
+          Value = ""
+        }
+      }
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Contents:={Txt="Brush" Cap="water"          Typ="X32"        Hint="water"}
+      Contents:={Txt=""      Cap="slime"          Typ="X16"        Hint="mildly damaging"}
+      Contents:={Txt=""      Cap="lava"           Typ="X8"         Hint="very damaging"}
+      Contents:={Txt=""      Cap="window"         Typ="X2"         Hint="transparent (the opposite face of windows are not drawn)"}
+      Contents:={Txt=""      Cap="translucent"    Typ="X268435456" Hint="translucent (allows light to pass, not vision - e.g. use for water)"}
+      Contents:={Txt=""      Cap="mist"           Typ="X64"        Hint="non-solid window (Player can walk through it)"}
+      Contents:={Txt=""      Cap="origin"         Typ="X16777216"  Hint="use as centrepoint, for rotating objects only"}
+      Contents:={Txt=""      Cap="playerclip"     Typ="X65536"     Hint="Stops Players from passing through"}
+      Contents:={Txt=""      Cap="monsterclip"    Typ="X131072"    Hint="Stops monsters passing through"}
+      Contents:={Txt=""      Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that QVIS3 can ignore"}
+      Contents:={Txt=""      Cap="ladder"         Typ="X536870912" Hint="Player can climb up this"}
+      Contents:={Txt=""      Cap="auxi"           Typ="X4"         Hint="??"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Contents:={Txt="Flowing" Cap="current_0"      Typ="X262144"    Hint="Flowing water pushes to 0 west"}
+      Contents:={Txt=""        Cap="current_90"     Typ="X524288"    Hint="Flowing water pushes to 90 north"}
+      Contents:={Txt=""        Cap="current_180"    Typ="X1048576"   Hint="Flowing water pushes to 180 east"}
+      Contents:={Txt=""        Cap="current_270"    Typ="X2097152"   Hint="Flowing water pushes to 270 south"}
+      Contents:={Txt=""        Cap="current_up"     Typ="X4194304"   Hint="Flowing water pushes Upwards"}
+      Contents:={Txt=""        Cap="current_dn"     Typ="X8388608"   Hint="Flowing water pushes Down"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Flags:   ={Txt="Face" Cap="hint"           Typ="X256"       Hint="tell QBSP3 to cut along this plane first"}
+      Flags:   ={Txt=""     Cap="skip"           Typ="X512"       Hint="completely ignore, allowing non-closed brushes"}
+      Flags:   ={Txt=""     Cap="light"          Typ="X1"         Hint="'value' is the light quantity"}
+      Flags:   ={Txt=""     Cap="slick"          Typ="X2"         Hint="slidy surface"}
+      Flags:   ={Txt=""     Cap="sky"            Typ="X4"         Hint="sky -can be used with 'light'"}
+      Flags:   ={Txt=""     Cap="warping"        Typ="X8"         Hint="turbulent water warp (for 64x64 textures only)"}
+      Flags:   ={Txt=""     Cap="trans33"        Typ="X16"        Hint="transparent, 33% (more see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="trans66"        Typ="X32"        Hint="transparent, 66% (less see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="flowing"        Typ="X64"        Hint="flow direction towards angle 0"}
+      Flags:   ={Txt=""     Cap="nodraw"         Typ="X128"       Hint="for clip textures and trigger textures"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Title:   ={Txt="Lazarus" Typ="S"}  // Title
+      Lable:   ={Txt="footstep sounds" Typ="S"}  // Lable
+      Flags:   ={Txt=""     Cap="metal"          Typ = "X1024"    Hint = "Metal footstep sounds"}
+      Flags:   ={Txt=""     Cap="dirt"           Typ = "X2048"    Hint = "Dirt footstep sounds"}
+      Flags:   ={Txt=""     Cap="vent"           Typ = "X4096"    Hint = "Vent footstep sounds"}
+      Flags:   ={Txt=""     Cap="grate"          Typ = "X8192"    Hint = "Grate footstep sounds"}
+      Flags:   ={Txt=""     Cap="tile"           Typ = "X16384"   Hint = "Tile footstep sounds"}
+      Flags:   ={Txt=""     Cap="grass"          Typ = "X32768"   Hint = "Grass footstep sounds"}
+      Flags:   ={Txt=""     Cap="snow"           Typ = "X65536"   Hint = "Snow footstep sounds"}
+      Flags:   ={Txt=""     Cap="carpet"         Typ = "X131072"  Hint = "Carpet footstep sounds"}
+      Flags:   ={Txt=""     Cap="force"          Typ = "X262144"  Hint = "Forcefield footstep sounds"}
+      Flags:   ={Txt=""     Cap="gravel"         Typ = "X524288"  Hint = "Gravel footstep sounds"}
+      Flags:   ={Txt=""     Cap="ice"            Typ = "X1048576" Hint = "Ice footstep sounds"}
+      Flags:   ={Txt=""     Cap="normal"         Typ = "X2097152" Hint = "Normal footstep sounds"}
+
+      Sep:     ={Txt="" Typ="S"}  // separator
+
+      Value:   ={Txt="Value" Typ="E" Hint="The meaning of this depends on the other flags"}
+    }
+  }
+
   Toolbox Folders.qtx =
   {
     ToolBox = "New map items..."
