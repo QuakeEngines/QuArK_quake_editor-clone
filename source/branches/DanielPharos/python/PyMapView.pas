@@ -69,13 +69,13 @@ uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
 
 type
   TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
-  TMapViewType = (vtPanel, vtWindow, vtFullScreen);
+  TMapViewType = (vtEditor, vtPanel, vtWindow, vtFullScreen);
 
 const
   MapViewStr : array[TMapViewMode] of PChar =
    ('wire', 'solid', 'tex');
   MapTypeStr : array[TMapViewType] of PChar =
-   ('panel', 'window', 'fullscreen');
+   ('editor', 'panel', 'window', 'fullscreen');
 
   vfHScrollBar   = $01;
   vfVScrollBar   = $02;
@@ -462,8 +462,8 @@ begin
                   end;
   wp_OpenGL: if Scene is TGLSceneObject then
               TGLSceneObject(Scene).Ready:=True;
-  wp_Direct3D: if Scene is TDirect3DSceneObject then
-              TDirect3DSceneObject(Scene).Ready:=True;  {Daniel: Can we combine these two?}
+{  wp_Direct3D: if Scene is TDirect3DSceneObject then
+              TDirect3DSceneObject(Scene).Ready:=True;}  {Daniel: Can we combine these two?}
  {wp_ResetFullScreen: ResetFullScreen(lParam<>0);}
  else
   if not DefControlMessage(Msg) then
@@ -485,7 +485,7 @@ var
  VAngle: TDouble;
  K: TKey3D;
  ve1: TViewEntities;
- DisplayMode: Byte;
+ DisplayMode: TDisplayMode;
  AllowsGDI: Boolean;
 begin
  if Inv then
@@ -546,14 +546,16 @@ begin
       Scene.ErrorMsg:='';
       AllowsGDI:=True;
 
-      if ViewType=vtPanel then
-       DisplayMode:=1
+      if ViewType=vtEditor then
+       DisplayMode:=dmEditor
+      else if ViewType=vtPanel then
+       DisplayMode:=dmPanel
       else if ViewType=vtWindow then
-       DisplayMode:=2
+       DisplayMode:=dmWindow
       else if ViewType=vtFullScreen then
-       DisplayMode:=3  {Daniel: Should replace the 3DFX FullScreen variable. Make FullScreen available for every renderer}
+       DisplayMode:=dmFullScreen
       else
-       DisplayMode:=1;  {Daniel: Defaults to Panel-mode}
+       DisplayMode:=dmEditor;  {Daniel: Defaults to Editor-mode}
        {raise 'Unknown ViewType. Unable to create SceneObject';}
 
       Scene.Init(Self.Handle, MapViewProj, DisplayMode, Specifics.Values['Lib'],
@@ -696,7 +698,7 @@ begin
       ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
      FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
     end
-   else if S='Glide2x.dll' then
+   else if S='glide2x.dll' then
     begin
      if (MapViewProj is TCameraCoordinates) then
        ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
@@ -2258,7 +2260,7 @@ begin
        {Resize;}
        CentreEcran:=Centre;
       end;
-     if SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib']='OpenGlXXX.dll' then
+     if SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib']='OpenGl32.dll' then
       NeedScene(False);
     end;
   Result:=PyNoResult;

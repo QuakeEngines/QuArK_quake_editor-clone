@@ -101,6 +101,7 @@ const
 
 type
  TViewEntities = (veNever, veBoxes, veModels);
+ TDisplayMode = (dmEditor, dmPanel, dmWindow, dmFullScreen);
 
  PModel3DInfo = ^TModel3DInfo;
  TModel3DInfo = record
@@ -120,16 +121,12 @@ type
                   Width, Height: Integer;
                 end;
 
- TSurfaceAnyInfo = record
-                    case Integer of
-                     1: (Radius: scalar_t);
-                     2: (DisplayList: Integer);
-                   end;
  PSurface3D = ^TSurface3D;
  TSurface3D = record
                Normale: vec3_t;          { not defined if GL_TRI_STRIP }
                Dist: scalar_t;           { not defined if GL_TRI_STRIP }
-               AnyInfo: TSurfaceAnyInfo;
+               GlideRadius: scalar_t;    {Daniel: should not be here, but in the Ed3DFX.pas file}
+               OpenGLDisplayList: Integer; {Daniel: should not be here, but in the EdOpenGL.pas file}
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: FxU32;
                TextureMode: Integer;
@@ -144,7 +141,8 @@ type
               MeanColor: FxU32;
               startAddress, endAddress: FxU32;
               OpenGLName: Integer;
-              Scaled, ok: Boolean;
+              {Scaled: Boolean;}
+              Used: Boolean;
               DefaultAlpha: Byte;
               GuPalette: PGuPalette;
              end;
@@ -191,7 +189,7 @@ type
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
-                  DisplayMode: Byte;
+                  DisplayMode: TDisplayMode;
                   const LibName: String;
                   var FullScreen, AllowsGDI: Boolean;
                   FogDensity: Single;
@@ -248,7 +246,7 @@ type
    class procedure RemoveScene(Scene: TSceneObject);
    class procedure FreeNonVisibleTextures;
    procedure GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject{; PalWarning: TPaletteWarning});
-   procedure FreeTextures(ReallyAll: Boolean);
+   procedure FreeTextures(ForceAll: Boolean);
    function CanFree: Boolean;
    function UnifiedPalette: Boolean;
    function ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
@@ -450,7 +448,7 @@ var
   { a PSurfaces object is a list wherein each texturename indexes the list
      of surfaces with that texture.  This routine adds a new texturename
      to the list, or increases the SurfSize associated with
-     a previously encountered texturename.  I don't undertand what SurfSize
+     a previously encountered texturename.  I don't understand what SurfSize
      is for since there seems to be no pointer to the vertices }
   procedure AddSurfaceRef(const a_TexName: String; a_SurfSize: Integer; a_Tmp: Pointer);
   var
@@ -468,7 +466,7 @@ var
       FillChar(SurfacesElement^, SizeOf(TSurfaces), 0);
       { set the pointer-chain of ListSurfaces }
       SurfacesElement^.Next:=FListSurfaces;
-      FListSurfaces:=SurfacesElement;  // whoah, wtf does this do???
+      FListSurfaces:=SurfacesElement;  // Set the new starting point of the chain
       { assign the texturename, and some tmp value }
       SurfacesElement^.TexName:=a_TexName;
       Pointer(SurfacesElement^.tmp):=a_Tmp;
@@ -538,9 +536,9 @@ var
         Dist:=vp0^[0]*Normale[0] + vp0^[1]*Normale[1] + vp0^[2]*Normale[2];
 
         if nRadius2>Radius2 then
-          AnyInfo.Radius:=Sqrt(nRadius2)
+          GlideRadius:=Sqrt(nRadius2)
         else
-          AnyInfo.Radius:=Sqrt(Radius2);
+          GlideRadius:=Sqrt(Radius2);
 
         VertexCount:=3;
         AlphaColor:=ObjectColor;
@@ -648,7 +646,7 @@ begin
        Inc(I); { Increment to get the next element }
      end;
 
-     I:=0; // process the biezers, haven't looked into this one yet
+     I:=0; // process the beziers, haven't looked into this one yet
      while I<BezierInfo.Count do
      begin
        OneBezier:=TBezier(BezierInfo[I]);
@@ -962,9 +960,9 @@ begin
          end;
 
          if Mode=bm3DFX then
-           Surf3D^.AnyInfo.Radius:=Sqrt(Radius2)
+           Surf3D^.GlideRadius:=Sqrt(Radius2)
          else
-           Surf3D^.AnyInfo.DisplayList:=0;
+           Surf3D^.OpenGLDisplayList:=0;
 
          PList^.tmp:=PSurface3D(PV);
        end;
@@ -1054,12 +1052,12 @@ begin
                if Mode=bm3DFX then
                begin
                  if nRadius2>Radius2 then
-                   AnyInfo.Radius:=Sqrt(nRadius2)
+                   GlideRadius:=Sqrt(nRadius2)
                  else
-                   AnyInfo.Radius:=Sqrt(Radius2);
+                   GlideRadius:=Sqrt(Radius2);
                end
                else
-                 AnyInfo.DisplayList:=0;
+                 OpenGLDisplayList:=0;
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (ModelAlpha shl 24);
@@ -1159,12 +1157,12 @@ begin
                if Mode=bm3DFX then
                begin
                  if nRadius2>Radius2 then
-                   AnyInfo.Radius:=Sqrt(nRadius2)
+                   GlideRadius:=Sqrt(nRadius2)
                  else
-                   AnyInfo.Radius:=Sqrt(Radius2);
+                   GlideRadius:=Sqrt(Radius2);
                end
                else
-                 AnyInfo.DisplayList:=0;
+                 OpenGLDisplayList:=0;
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (Alpha shl 24);
@@ -1255,7 +1253,7 @@ begin
              begin
                with Surf3D^ do
                begin
-                 AnyInfo.DisplayList:=0;
+                 OpenGLDisplayList:=0;
                  VertexCount:=-(2*BezierBuf.W);
                  AlphaColor:=ObjectColor;
                  TextureMode:=NewRenderMode;
@@ -1409,7 +1407,7 @@ begin
  PaletteCache.Add(Result);
 end;
 
-procedure TTextureManager.FreeTextures(ReallyAll: Boolean);
+procedure TTextureManager.FreeTextures(ForceAll: Boolean);
 var
  I: Integer;
  Tex: PTexture3;
@@ -1420,8 +1418,12 @@ begin
 {CurrentPalettePtr:=Nil;}
 {PaletteLmp:=Nil;}
  for I:=0 to Textures.Count-1 do
-  with PTexture3(Textures.Objects[I])^ do
-   ok:=ReallyAll or not Scaled;
+  begin
+   with PTexture3(Textures.Objects[I])^ do
+    begin
+     Used:=false;
+    end;
+  end;
  for I:=0 to Scenes.Count-1 do
   begin
    P:=TSceneObject(Scenes[I]).ListSurfaces;
@@ -1429,9 +1431,10 @@ begin
     begin
      if P^.Texture<>Nil then
       begin
-       if ReallyAll then
-        ReallocMem(P^.Texture^.info.data, 0);
-       P^.Texture^.ok:=False;
+       if ForceAll then
+        ReallocMem(P^.Texture^.info.data, 0)
+       else
+        P^.Texture^.Used:=true;
       end;
      P:=P^.Next;
     end;
@@ -1440,7 +1443,7 @@ begin
  for I:=Textures.Count-1 downto 0 do
   begin
    Tex:=PTexture3(Textures.Objects[I]);
-   if Tex^.ok then
+   if (Tex^.Used=false) then
     begin
      FreeTexture(Tex);
      Textures.Delete(I);

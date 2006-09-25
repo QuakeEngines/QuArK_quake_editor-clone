@@ -288,7 +288,7 @@ def backmenu(editor, view=None, origin=None, oldbackmenu = mapmenus.BackgroundMe
       addPosition(view,editor)
       
   if view is not None and view.info["type"]=="3D":
-      menu.append(qmenu.item("Add Camera Position",addClick, "|Add Camera Position:\n\nWhen selected, this function is used to set and store 3D camera views. This feature will only work for the Editor's 3D view and not the separate 3D view windows or the OpenGL window.\n\nPress F1 again or click the 'InfoBase' for more detailed information on its use.|intro.mapeditor.floating3dview.html#camera"))
+      menu.append(qmenu.item("Add Camera Position",addClick, "|Add Camera Position:\n\nWhen selected, this function is used to set and store 3D camera views. This feature will only work for the Editor's 3D view and not the 3D view window.\n\nPress F1 again or click the 'InfoBase' for more detailed information on its use.|intro.mapeditor.floating3dview.html#camera"))
   return menu
 
 mapmenus.BackgroundMenu = backmenu
@@ -452,6 +452,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.14  2006/05/19 17:07:53  cdunde
+# To add links to docs on RMB menus and background image function.
+#
 # Revision 1.13  2005/10/15 00:49:51  cdunde
 # To reinstate headers and history
 #

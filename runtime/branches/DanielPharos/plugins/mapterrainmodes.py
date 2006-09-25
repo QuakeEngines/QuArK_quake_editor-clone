@@ -1219,13 +1219,15 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
         type = view.info["type"]
         if type == "3D":
             viewname = view.info["viewname"]
-            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] != "0":
+            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces0"] != "0":
                 drawredfaces(view, selectlist)  # calls to draw the red faces
-            if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] != "0":
+            if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] != "0":
                 drawredfaces(view, selectlist)  # calls to draw the red faces
-            if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] != "0":
+            if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] != "0":
                 drawredfaces(view, selectlist)  # calls to draw the red faces
-            if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] != "0":
+            if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] != "0":
+                drawredfaces(view, selectlist)  # calls to draw the red faces
+            if viewname == "direct3D3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] != "0":
                 drawredfaces(view, selectlist)  # calls to draw the red faces
 
         else:
@@ -1241,7 +1243,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                 self.hint = "?"
                 return
             viewname = view.info["viewname"]
-            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] == "0":
+            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag0"] == "0":
                 if tb2.tb.buttons[11].state == 2 and view.viewmode == "tex":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
@@ -1255,7 +1257,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                         self.handlecursor = CR_ARROW
                     self.hint = "?"
                     return
-            if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] == "0":
+            if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] == "0":
                 if tb2.tb.buttons[11].state == 2 and view.viewmode == "tex":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
@@ -1269,8 +1271,8 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                         self.handlecursor = CR_ARROW
                     self.hint = "?"
                     return
-            if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] == "0":
-                if tb2.tb.buttons[11].state == 2 and view.viewmode == "tex":
+            if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] == "0":
+                if tb2.tb.buttons[11].state == 2 and view.viewmode == "glide":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
@@ -1283,8 +1285,22 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                         self.handlecursor = CR_ARROW
                     self.hint = "?"
                     return
-            if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] == "0":
+            if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] == "0":
                 if tb2.tb.buttons[11].state == 2 and view.viewmode == "opengl":
+                    self.cursor = CR_BRUSH
+                    self.hint = "?"
+                    return
+                else:
+                    if MapOption("CrossCursor", editor.MODE):
+                        self.cursor = CR_CROSS
+                        self.handlecursor = CR_CROSS
+                    else:
+                        self.cursor = CR_ARROW
+                        self.handlecursor = CR_ARROW
+                    self.hint = "?"
+                    return
+            if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] == "0":
+                if tb2.tb.buttons[11].state == 2 and view.viewmode == "direct3d":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
@@ -2400,6 +2416,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23  2006/01/30 08:20:00  cdunde
+# To commit all files involved in project with Philippe C
+# to allow QuArK to work better with Linux using Wine.
+#
 # Revision 1.22  2006/01/12 07:21:01  cdunde
 # To commit all new and related files for
 # new Quick Object makers and toolbar.

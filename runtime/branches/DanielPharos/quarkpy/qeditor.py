@@ -48,7 +48,7 @@ MV_NOSCROLLBAR  = 16   # overrides the settings of flags 1 and 2
 MV_TOPREDLINE   = 32   # display the top red line
 MV_BOTTOMREDLINE= 64   # display the bottom red line
 
-texturedmodes = ("tex", "opengl")    # textured modes for map views
+texturedmodes = ("tex", "glide", "opengl", "direct3d")    # textured modes for map views   Daniel: This should be changed to reflect the changes to the renderer selection
 
 # explorer flags
 EF_AUTOFOCUS    = 8    # see MV_AUTOFOCUS
@@ -1414,13 +1414,13 @@ def TexModeMenu(editor, view):
         view.viewmode = menu.mode
         editor.lastscale = 0    # force a call to buildhandles()
 
-    if view.viewmode == "opengl":
-        modhint = "the mode is fixed to OpenGL"
-        infobaselink = "intro.mapeditor.menu.html#layoutmenu"
-    else:
-        import qbasemgr
-        modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
-        infobaselink = "intro.mapeditor.menu.html#layoutmenu"
+    #if view.viewmode == "opengl":
+        #modhint = "the mode is fixed to OpenGL"
+        #infobaselink = "intro.mapeditor.menu.html#layoutmenu"
+    #else:
+    import qbasemgr
+    modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
+    infobaselink = "intro.mapeditor.menu.html#layoutmenu"
     Mod1 = qmenu.item("&Wireframe", setviewmode, modhint, infobaselink)
     Mod1.mode = "wire"
     Mod2 = qmenu.item("&Solid", setviewmode, modhint, infobaselink)
@@ -1429,10 +1429,10 @@ def TexModeMenu(editor, view):
     Mod3.mode = "tex"
     List = [Mod1, Mod2, Mod3]
     for menu in List:
-        if view.viewmode == "opengl":
-            menu.state = qmenu.disabled
-        else:
-            menu.state = menu.mode==view.viewmode and qmenu.radiocheck
+        #if view.viewmode == "opengl":
+            #menu.state = qmenu.disabled
+        #else:
+        menu.state = menu.mode==view.viewmode and qmenu.radiocheck
     return List
 
 
@@ -1507,6 +1507,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.30  2006/03/06 07:56:29  cdunde
+#Added def MapOption for options settings in Model Editor.
+#
 #Revision 1.29  2006/01/30 10:07:13  cdunde
 #Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
 #to allow the creation of much larger maps for the more recent games.

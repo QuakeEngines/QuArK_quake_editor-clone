@@ -138,7 +138,7 @@ class BackBmpDlg(qmacro.dialogbox):
         if mapeditor() is not None:
             editor = mapeditor()
         else:
-            quarkx.clickform = self.view.owner
+            quarkx.clickform = self.view.owner  #Daniel: This isn't working. It's still causing an "AttributeError: 'NoneType' object has no attribute 'invalidateviews'" Probably isn't working in the OK-section either
             editor = mapeditor()
         src = self.src
         PolySelectNoFill = src["PolySelectNoFill"]
@@ -153,6 +153,9 @@ class BackBmpDlg(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.8  2006/05/19 17:10:03  cdunde
+#To add new transparent poly options for viewing background image.
+#
 #Revision 1.7  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

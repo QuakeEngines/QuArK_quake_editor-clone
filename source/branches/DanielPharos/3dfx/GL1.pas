@@ -686,6 +686,7 @@ var
   glAreTexturesResident: function (n: GLsizei; const textures; var residences) : GLboolean; stdcall;
   glBindTexture: procedure (target: GLenum; texture: GLuint); stdcall;
   glGenTextures: procedure (n: GLsizei; var textures); stdcall;
+  glGenLists: function (range: GLsizei): GLuint; stdcall;
   glNewList: procedure (list: GLuint; mode: GLenum); stdcall;
   glEndList: procedure; stdcall;
   glCallList: procedure (list: GLuint); stdcall;
@@ -706,7 +707,7 @@ procedure UnloadOpenGl;
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..40] of //Decker 2003.03.13 - modified
+  OpenGL32DLL_FuncList : array[0..41] of //Decker 2006.09.19 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -750,6 +751,7 @@ const
    ,(FuncPtr: @@glAreTexturesResident; FuncName: 'glAreTexturesResident' )
    ,(FuncPtr: @@glBindTexture;         FuncName: 'glBindTexture'         )
    ,(FuncPtr: @@glGenTextures;         FuncName: 'glGenTextures'         )
+   ,(FuncPtr: @@glGenLists;            FuncName: 'glGenLists'            ) //Daniel 2006.09.19 - Added
    ,(FuncPtr: @@glNewList;             FuncName: 'glNewList'             )
    ,(FuncPtr: @@glEndList;             FuncName: 'glEndList'             )
    ,(FuncPtr: @@glCallList;            FuncName: 'glCallList'            )

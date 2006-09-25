@@ -154,7 +154,7 @@ type
    constructor Create(nSolidColors: Boolean);
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
-                  DisplayMode: Byte;
+                  DisplayMode: TDisplayMode;
                   const LibName: String;
                   var FullScreen, AllowsGDI: Boolean;
                   FogDensity: Single;
@@ -399,7 +399,7 @@ begin
  SolidColors:=nSolidColors;
 end;
 
-procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: Byte; const LibName: String;
+procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; const LibName: String;
           var FullScreen, AllowsGDI: Boolean; FogDensity: Single; FogColor, FrameColor: TColorRef);
 var
  I: Integer;
@@ -409,8 +409,8 @@ begin
  Open3DFXEditor(LibName, FullScreen);
  TTextureManager.AddScene(Self, FullScreen);
  // Assigned check added by SilverPaladin
- if (not Assigned(qrkGlideState))
- then raise Exception.Create('You must first call Open3dFX');
+ if (not Assigned(qrkGlideState)) then
+   raise Exception.Create('You must first call Open3dFX');
  TGlideState(qrkGlideState).Init;
  Hardware3DFX:=qrkGlideVersion>=HardwareGlideVersion;
  if qrkGlideVersion>=HardwareGlideVersion then
@@ -1511,13 +1511,13 @@ begin
 
       if CCoord.FlatDisplay then
       begin
-        MinRadius:=CCoord.MinDistance-AnyInfo.Radius;
-        MaxRadius:=CCoord.MaxDistance+AnyInfo.Radius;
+        MinRadius:=CCoord.MinDistance-GlideRadius;
+        MaxRadius:=CCoord.MaxDistance+GlideRadius;
       end
       else
       begin
-        MinRadius:=-AnyInfo.Radius;
-        MaxRadius:=AnyInfo.Radius+T3DCoordinates(CCoord).FarDistance;
+        MinRadius:=-GlideRadius;
+        MaxRadius:=GlideRadius+T3DCoordinates(CCoord).FarDistance;
       end;
 
       PV:=PVertex3D(Surf);

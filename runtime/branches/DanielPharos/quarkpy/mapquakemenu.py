@@ -255,8 +255,14 @@ def qmenuitem1click(m):
 #            if mapsearch.CheckMap() == 0:
 #                return
     if m.info["RunGame"]:
-        editor.layout.closeOpenGL()
-		
+        editor.layout.mpp.viewpage(0)
+        if editor.layout.CurrentRendererOwner is not None:
+            editor.layout.full3Dview.close()
+        #fp = editor.layout.mpp.pagebtns[1]
+        #editor.layout.faceview.full3Dview(0)
+        #editor.layout.views.remove(editor.layout.faceview)
+        #editor.layout.update3Dviews()
+        #editor.layout.faceview = fp.newmapview()    #From: mapmgr.py
     RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor,
       m.info["RunGame"], m.text, 0, [], "", None)
 
@@ -688,6 +694,10 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.45  2006/08/11 23:13:47  cdunde
+#New feature by Jari, create folder(s) like qrk tree to store compiled files in.
+#Tools must have output option setting like Torque to work.
+#
 #Revision 1.44  2006/05/07 07:02:07  rowdy
 #Added a rough hack to allow %file% type substitution in the '<game> command-line' option.  Also added %filename% parameter that is replaced with the map filename (without path, without extension).
 #

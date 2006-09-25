@@ -76,14 +76,14 @@ type
     procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
  //   procedure BuildTexture(Texture: PTexture3); override;
     procedure ReleaseResources;
-    procedure RenderDirect3D();
-    procedure RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
-    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+    procedure RenderDirect3D(DisplayLights: Boolean);
+    procedure RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
+    procedure RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
   public
     destructor Destroy; override;
     procedure Init(Wnd: HWnd;
                    nCoord: TCoordinates;
-                   DisplayMode: TDisplayMode;
+                   DisplayMode: Byte;
                    const LibName: String;
                    var FullScreen, AllowsGDI: Boolean;
                    FogDensity: Single;
@@ -223,7 +223,7 @@ end;
 
 procedure TDirect3DSceneObject.Init(Wnd: HWnd;
                                     nCoord: TCoordinates;
-                                    DisplayMode: TDisplayMode;
+                                    DisplayMode: Byte;
                                     const LibName: String;
                                     var FullScreen, AllowsGDI: Boolean;
                                     FogDensity: Single;
@@ -239,7 +239,7 @@ begin
     if not ReloadDirect3D() then
       Raise EErrorFmt(4868, [GetLastError]);  {Daniel: Is this error message correct? No 'OpenGL' in it?}
   end;
-  if (DisplayMode=dmFullScreen) then
+  if (DisplayMode=3) then
    Raise InternalE('Direct3D renderer does not support fullscreen views (yet)');
 
   {Check for software/hardware vertex processing and PureDevice}
@@ -275,22 +275,131 @@ end;
 
 procedure TDirect3DSceneObject.Render3DView;
 begin
-  RenderDirect3D();
+  RenderDirect3D(False {FDisplayLights and Assigned(Lights)}  );
 end;
 
-procedure TDirect3DSceneObject.RenderDirect3D();
+procedure TDirect3DSceneObject.RenderDirect3D(DisplayLights: Boolean);
+var
+  l_Res: HResult;
+  l_VCenter: D3DVector;
+{  l_Projection: TD3DXMatrix;
+  l_CameraEye: TD3DXMatrix;
+  l_matRotation: TD3DXMatrix;
+  l_quaRotation: TD3DXQuaternion;}
 begin
+  { make sure that Direct3D have been set up }
+  if (g_D3DDevice = nil) then
+    raise EErrorFmt(4882, ['Render3DView', 'g_D3DDevice = nil']);
 
+  { if viewport have been resized, then tell Direct3D what happend }
+  if (m_Resized = True) then
+  begin
+    g_D3DDevice.Resize(m_ScreenX, m_ScreenY);
+    D3DXMatrixPerspectiveFov(l_Projection, D3DXToRadian(60.0), m_ScreenY/m_ScreenX, 1.0, 1000.0);
+    m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_PROJECTION, TD3DMatrix(l_Projection));
+    m_Resized := False;
+  end;
+
+  { set camera }
+  with TCameraCoordinates(Coord) do
+  begin
+    D3DXMatrixTranslation(l_CameraEye, Camera.X, Camera.Y, Camera.Z);
+
+    D3DXQuaternionRotationYawPitchRoll(l_quaRotation, HorzAngle * (180/pi), PitchAngle * (180/pi), 0);
+    l_VCenter := D3DXVector3(Camera.X, Camera.Y, Camera.Z);
+    D3DXMatrixAffineTransformation(l_matRotation,
+                                   1,
+                                   @l_VCenter,
+                                   @l_quaRotation,
+                                   nil);
+
+    D3DXMatrixMultiply(l_CameraEye, l_CameraEye, l_matRotation);
+
+    m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_VIEW, TD3DMatrix(l_CameraEye));
+  end;
+
+  l_Res := m_pD3DDevice.BeginScene;
+  if (l_Res <> 0) then
+    raise EErrorFmt(4882, ['BeginScene', D3DXGetErrorMsg(l_Res)]);
+
+  m_pD3DX.Clear(D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER);
+
+//  m_CurrentAlpha  :=0;
+//  m_CurrentColor:=0;
+
+  RenderTransparentD3D(FListSurfaces, False, DisplayLights, Coord);
+//  RenderTransparentD3D(FListSurfaces, True,  DisplayLights, Coord);
+
+  m_pD3DDevice.EndScene;
+
+  l_Res := m_pD3DX.UpdateFrame(0);
+  if (l_Res <> 0) then
+    raise EErrorFmt(4882, ['UpdateFrane', D3DXGetErrorMsg(l_Res)]);
 end;
 
-procedure TDirect3DSceneObject.RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
+procedure TDirect3DSceneObject.RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
+var
+ PList: PSurfaces;
 begin
-
+  PList:=ListSurfaces;
+  while Assigned(PList) do
+  begin
+    if Transparent in PList^.Transparent then
+    begin
+      if SolidColors or not PList^.ok then
+        RenderPList(PList, Transparent, DisplayLights, SourceCoord);
+    end;
+    PList:=PList^.Next;
+  end;
 end;
 
-procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
+var
+  Surf: PSurface3D;
+  SurfEnd: PChar;
 begin
+  Surf:=PList^.Surf;
+  SurfEnd:=PChar(Surf)+PList^.SurfSize;
 
+  while Surf<SurfEnd do
+  begin
+    with Surf^ do
+    begin
+      Inc(Surf);
+      if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
+      and (SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist)) then
+      begin
+        if AlphaColor<>m_CurrentAlpha then
+        begin
+          m_CurrentAlpha := AlphaColor;
+          m_CurrentColor := m_CurrentAlpha;
+        end;
+(*
+        if l_NeedTex then
+        begin
+          LoadCurrentTexture(PList^.Texture);
+          l_NeedTex:=False;
+        end;
+*)
+        begin
+(*
+          for I:=1 to Abs(VertexCount) do
+          begin
+            l_TriangleStrip[i].color := m_CurrentColor;
+          end;
+*)
+          m_pD3DDevice.DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, PD3DLVERTEX(Surf)^, Abs(VertexCount), D3DDP_WAIT);
+        end;
+      end;
+
+      if VertexCount>=0 then
+        Inc(PVertex3D(Surf), VertexCount)
+      else
+        Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+    end;
+  end;
+
+  PList^.ok:=True;
 end;
 
  {------------------------}
@@ -300,5 +409,6 @@ begin
   g_Direct3DInitialized := False;  {Is not used?}
 end;
 
+{$ENDIF}
 end.
 

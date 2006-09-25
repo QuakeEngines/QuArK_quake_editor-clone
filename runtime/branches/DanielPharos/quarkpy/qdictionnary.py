@@ -34,7 +34,7 @@ Strings = {
     128: " (no bezier patch) ",
     129: " (no face selected) ",
     130: "parent only",
-        131: "%d polyhedron(s)",
+    131: "%d polyhedron(s)",
     132: "Not a valid face",
     133: "(not used)",
     134: " Selected face ",
@@ -514,7 +514,7 @@ Strings = {
     4620: "Impossible to create the surface for a polygon//Three aligned points don't define a plane.",
 
     4864: "",
-    4865: "Could not find the 3D drivers (%s). You need either a 3DFX card with installed drivers or the software 3D library, depending on the choice you made in the Configuration dialog box//Error code %d",
+    4865: "Could not find the 3D drivers (%s). You need either a graphics card with installed drivers or the software 3D library, depending on the choice you made in the Configuration dialog box//Error code %d",
     4866: "Error with the 3DFX Glide drivers//%s failed",
     4867: "No 3D driver configured. Please select a 3D driver in the Configuration dialog box",
     4868: "Could not load the OpenGL drivers//Error code %d",
@@ -790,7 +790,7 @@ Strings = {
     5582: "'%s' is not an add-on for the game %s but for %s. You must switch to the correct game mode before you can use it.",
     5583: "Cannot open the palette to choose a color from",
     5584: "(missing caption)",
-    5585: "Could not execute this program//Command line: ``%s´´\nDefault directory: ``%s´´",
+    5585: "Could not execute this program//Command line: '%s'\nDefault directory: '%s'",
     5586: "QuArK could not execute this or these programs. You must be sure they are installed on your system, and then enter the path to them in the configuration dialog box. Do you want to enter the path now ?",
     5587: "Impossible to create the directory '%s'. Be sure you entered the path to %s correctly in the configuration dialog box//Error code %d",
     5588: "Texture '%s' not found.",
@@ -965,11 +965,12 @@ Strings = {
     -101: "Cannot drop this item into a map.",
     #-102: "\nNote: to use a bitmap as a texture, you must first convert the bitmap into a texture : in the Texture Browser, choose 'Paste Special' instead of 'Paste'.",
     -103: "%d texture(s) could not be found. Are you sure you want to continue ?",
-    -104: "This command uses OpenGL. Note that if you get a black screen it probably means you are looking at a part of your map where there is no light. In case of trouble (or to disable light computation) see the OpenGL section of the configuration dialog box and try again.\n\nIt is recommended to save your work first. Ok to load OpenGL now ?",
+    -104: "This command uses the 3D viewer selected in options. Note that if you get a black screen it probably means you are looking at a part of your map where there is no light. In case of trouble (or to disable light computation) see the viewer section of the configuration dialog box and try again.\n\nIt is recommended to save your work first. Ok to load 3D viewer now ?",
+	#Daniel: This should be changed to reflect the changes to renderer selection
 
-    -409: "Bézier",
+    -409: "Bezier",
 
-    -459: "Parameters about the selected Bézier patch(es)|bézier patches",
+    -459: "Parameters about the selected Bezier patch(es)|bezier patches",
 
 
 }
@@ -978,6 +979,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.76  2006/05/19 18:46:55  cdunde
+#For the configuration revamping of RTCW.
+#
 #Revision 1.75  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

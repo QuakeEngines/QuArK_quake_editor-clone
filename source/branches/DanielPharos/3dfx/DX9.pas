@@ -27,6 +27,10 @@ interface
 
 uses Windows, Direct3D, Direct3D9;
 
+var
+ g_D3D : IDirect3D9;
+ g_D3DDevice : IDirect3DDevice9;
+
 function Direct3DLoaded : Boolean;
 function ReloadDirect3D : Boolean;
 procedure UnloadDirect3D;
@@ -35,8 +39,6 @@ implementation
 
 var
   Is_Direct3D_Library_Loaded : boolean;
-
-  g_D3D: IDirect3D9;
 
  { ----------------- }
 

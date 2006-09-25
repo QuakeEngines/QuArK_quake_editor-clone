@@ -154,7 +154,10 @@ type
    CurrentAlpha: LongInt;
    Currentf: GLfloat4;
    RenderingTextureBuffer: TMemoryStream;
-   DoubleBuffered, FDisplayLights, FReady: Boolean;
+   DoubleBuffered, FReady: Boolean;
+   Fog: Boolean;
+   Transparency: Boolean;
+   Lighting: Boolean;
    VCorrection2: Single;
    Lights: PLightList;
    DisplayLists: Integer;
@@ -165,16 +168,16 @@ type
    Bilinear: boolean;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure EndBuildScene; override;
-   procedure RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
-   procedure RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
-   procedure RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boolean);
+   procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+   procedure RenderTransparentGL(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
+   procedure RenderOpenGL(Source: TGLSceneBase);
    procedure ReleaseResources;
    procedure BuildTexture(Texture: PTexture3); override;
  public
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
-                  DisplayMode: Byte;
+                  DisplayMode: TDisplayMode;
                   const LibName: String;
                   var FullScreen, AllowsGDI: Boolean;
                   FogDensity: Single;
@@ -199,7 +202,7 @@ type
  public
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
-                  DisplayMode: Byte;
+                  DisplayMode: TDisplayMode;
                   const LibName: String;
                   var FullScreen, AllowsGDI: Boolean;
                   FogDensity: Single;
@@ -754,7 +757,7 @@ end;
 procedure TGLSceneObject.ReleaseResources;
 var
  I, J: Integer;
- NameArray, NameAreaWalker: ^GLuint;
+{ NameArray, NameAreaWalker: ^GLuint;}
 begin
   CurrentGLSceneObject:=Nil;
   RenderingTextureBuffer.Free;
@@ -779,7 +782,7 @@ begin
     end;
   end;
 
-  with TTextureManager.GetInstance do
+  {with TTextureManager.GetInstance do
   begin
     GetMem(NameArray, Textures.Count*SizeOf(GLuint));
     try
@@ -799,21 +802,21 @@ begin
       end;
 
       if OpenGlLoaded and (NameAreaWalker<>NameArray) then
-      begin
+      begin}
         {$IFDEF DebugGLErr} DebugOpenGL(-102, 'glDeleteTextures(<%d>, <%d>)', [(PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^]); {$ENDIF}
-        glDeleteTextures((PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);
+        {glDeleteTextures((PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);}
         {$IFDEF DebugGLErr} DebugOpenGL(102, 'glDeleteTextures(<%d>, <%d>)', [(PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^]); {$ENDIF}
-      end;
+      {end;
     finally
       FreeMem(NameArray);
     end;
-  end;
+  end;}
 
   if RC<>0 then
   begin
     if OpenGlLoaded then
     begin
-      wglMakeCurrent(0,0);
+      wglMakeCurrent(GLDC,0);
       wglDeleteContext(RC);
     end;
     RC:=0;
@@ -841,7 +844,7 @@ end;
 
 procedure TGLSceneObject.Init(Wnd: HWnd;
                               nCoord: TCoordinates;
-                              DisplayMode: Byte;
+                              DisplayMode: TDisplayMode;
                               const LibName: String;
                               var FullScreen, AllowsGDI: Boolean;
                               FogDensity: Single;
@@ -852,13 +855,11 @@ var
  nFogColor: GLfloat4;
  FarDistance: TDouble;
  Setup: QObject;
- Fog: Boolean;
- Transparency: Boolean;
 begin
   FillChar(FullBright,SizeOf(FullBright),0);
   FullBright.ZeroLight:=1;
 
-  ReleaseResources;
+  {ReleaseResources;}  {Daniel: Should not be necessary}
   { have the OpenGL DLL already been loaded? }
   if not OpenGlLoaded() then
   begin
@@ -866,7 +867,7 @@ begin
     if not ReloadOpenGl() then
       Raise EErrorFmt(4868, [GetLastError]);
   end;
-  if (DisplayMode=3) then
+  if (DisplayMode=dmFullScreen) then
    Raise InternalE('OpenGL renderer does not support fullscreen views (yet)');
 
  {$IFDEF Debug}
@@ -879,24 +880,29 @@ begin
   TTextureManager.GetInstance.FFreeTexture:=FreeOpenGLTexture;
 
   Setup:=SetupSubSet(ssGeneral, '3D View');
-  if (DisplayMode=2) or (DisplayMode=3) then
+  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
-    FarDistance:=Setup.GetFloatSpec('FarDistance',1);
+    FarDistance:=Setup.GetFloatSpec('FarDistance', 1);
   end
   else
   begin
-    FarDistance:=0
+    FarDistance:=0;
   end;
   Setup:=SetupSubSet(ssGeneral, 'OpenGL');
-  if (DisplayMode=2) or (DisplayMode=3) then
+  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
     Fog:=Setup.Specifics.Values['Fog']<>'';
     Transparency:=Setup.Specifics.Values['Transparency']<>'';
+    Lighting:=Setup.Specifics.Values['Lights']<>'';
+    LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.2);
+    LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256/0.5);
+    LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
   end
   else
   begin
     Fog:=False;
     Transparency:=False;   {Daniel: Use this to disable transparency}
+    Lighting:=False;
   end;
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
   AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
@@ -904,17 +910,6 @@ begin
     DisplayLists:=0
   else
     DisplayLists:=-1;
-  if (DisplayMode=2) or (DisplayMode=3) then
-  begin
-    FDisplayLights:=Setup.Specifics.Values['Lights']<>'';
-    LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.2);
-    LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256/0.5);
-    LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
-  end
-  else
-  begin
-    FDisplayLights:=False
-  end;
   GLDC:=GetDC(Wnd);
   if Wnd<>DestWnd then
   begin
@@ -962,7 +957,7 @@ begin
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);}
   {glShadeModel(GL_FLAT);}
-  if SetupSubSet(ssGeneral,'OpenGL').Specifics.Values['Bilinear']<>'' then
+  if Setup.Specifics.Values['Bilinear']<>'' then
     Bilinear:=true
   else
     Bilinear:=false;
@@ -990,7 +985,7 @@ begin
     glDisable(GL_FOG);   {Daniel: Make sure Fog is disabled}
   end;
   
-  if FDisplayLights then
+  if Lighting then
   begin
     {glEnable(GL_LIGHTING);}
     {Daniel: This currently actually breaks lighting...}
@@ -1000,6 +995,15 @@ begin
     glDisable(GL_LIGHTING);   {Daniel: Make sure Lighting is disabled}
   end;
 
+  if Transparency then
+  begin
+    {glEnable(GL_BLEND);}
+    {Daniel: This currently actually breaks transparency...}
+  end
+  else
+  begin
+    glDisable(GL_BLEND);   {Daniel: Make sure Lighting is disabled}
+  end;
   {Daniel: Things like transparency, bump-maps etc. should be added in a similar way}
 
 end;
@@ -1007,7 +1011,7 @@ end;
 procedure TGLSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
 begin
   if DoubleBuffered then
-    Windows.SwapBuffers(GLDC);
+    Windows.SwapBuffers(DC);
 end;
 
 procedure TGLSceneObject.ClearScene;
@@ -1077,12 +1081,14 @@ begin
   RenderingTextureBuffer:=Nil;
 end;
 
-procedure TGLSceneObject.RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
+procedure TGLSceneObject.RenderTransparentGL(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
 var
  PList: PSurfaces;
  Count: Integer;
- Buffer, BufEnd: ^GLuint;
- BufResident: ^GLboolean;
+{ Buffer, BufEnd: ^GLuint;
+ ResidentResult: GLboolean;
+ BufResident: ^GLboolean;}
+ GlError: GLenum;
 begin
   // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
   if Transparent=true then
@@ -1093,6 +1099,17 @@ begin
   begin
     glDisable(GL_BLEND);
   end;
+  GlError:=glGetError;
+  if GlError = GL_INVALID_VALUE then
+    raise EError(5693)
+  else if GlError = GL_INVALID_ENUM then
+    raise EError(5693)
+  else if GlError = GL_INVALID_OPERATION then
+    raise EError(5693)
+  else if GlError = GL_INVALID_OPERATION then
+    raise EError(5693)
+  else if GlError = GL_OUT_OF_MEMORY then
+    raise EError(5693);
 
   {DECKER 2003-03-12 if not SolidColors then}
   begin
@@ -1108,9 +1125,10 @@ begin
 
     if Count>0 then
     begin
-      GetMem(Buffer, Count*(SizeOf(GLuint)+SizeOf(GLboolean)));
+{      GetMem(Buffer, Count*(SizeOf(GLuint)+SizeOf(GLboolean)));}
+{      GetMem(Buffer, Count*(SizeOf(GLuint)));}
       try
-        BufEnd:=Buffer;
+{        BufEnd:=Buffer;
         PList:=ListSurfaces;
         while Assigned(PList) do
         begin
@@ -1120,12 +1138,30 @@ begin
             Inc(BufEnd);
           end;
           PList:=PList^.Next;
-        end;
-        PChar(BufResident):=PChar(BufEnd);
+        end;}
+{        PChar(BufResident):=PChar(BufEnd);}
+{      GetMem(BufResident, Count*(SizeOf(GLboolean)));}
 
         {$IFDEF DebugGLErr} DebugOpenGL(-103, 'glAreTexturesResident(<%d>, <%d>, <%d>)', [Count, Buffer^, BufResident^]); {$ENDIF}
-        glAreTexturesResident(Count, Buffer^, BufResident^);
+{        ResidentResult:=glAreTexturesResident(Count, Buffer^, BufResident^);}
         {$IFDEF DebugGLErr} DebugOpenGL(103, 'glAreTexturesResident(<%d>, <%d>, <%d>)', [Count, Buffer^, BufResident^]); {$ENDIF}
+
+
+{              GlError:=glGetError;
+              if GlError = GL_INVALID_VALUE then
+               begin
+                if ResidentResult = GL_FALSE then
+                  raise EError(5693);}  {Something went wrong!!!}
+{                raise EError(5693)
+               end
+              else if GlError = GL_INVALID_ENUM then
+                raise EError(5693)
+              else if GlError = GL_INVALID_OPERATION then
+                raise EError(5693)
+              else if GlError = GL_INVALID_OPERATION then
+                raise EError(5693)
+              else if GlError = GL_OUT_OF_MEMORY then
+                raise EError(5693); }
 
         PList:=ListSurfaces;
         while Assigned(PList) do
@@ -1133,14 +1169,14 @@ begin
           if PList^.ok then
           begin
             PList^.ok:=False;
-            if BufResident^<>0 then
-              RenderPList(PList, Transparent, DisplayLights, SourceCoord);
-            Inc(BufResident);
+{            if BufResident^<>0 then}   {Daniel: So what if the textures aren't resident?}
+              RenderPList(PList, Transparent, SourceCoord);
+{            Inc(BufResident);}
           end;
           PList:=PList^.Next;
         end;
       finally
-        FreeMem(Buffer);
+{        FreeMem(Buffer);}
       end;
     end;
   end;
@@ -1151,7 +1187,7 @@ begin
     if Transparent in PList^.Transparent then
     begin
       if {DECKER 2003-03-12 SolidColors or} not PList^.ok then
-        RenderPList(PList, Transparent, DisplayLights, SourceCoord);
+        RenderPList(PList, Transparent, SourceCoord);
     end;
     PList:=PList^.Next;
   end;
@@ -1159,20 +1195,20 @@ end;
 
 procedure TGLSceneObject.Render3DView;
 begin
-  RenderOpenGL(Self, FDisplayLights and Assigned(Lights));
+  if wglMakeCurrent(GLDC,RC) = false then
+   raise EError(5693);  {Daniel: Something is terribly wrong...}
+  RenderOpenGL(Self);
 end;
 
-procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boolean);
+procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase);
 var
  SX, SY: Integer;
 begin
   if not OpenGlLoaded then
     Exit;
   {$IFDEF DebugGLErr} DebugOpenGL(-50, '', []); {$ENDIF}
-(*
-  wglMakeCurrent(DC,RC);
+  wglMakeCurrent(GLDC,RC);
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
-*)
   SX:=Source.ScreenX;
   SY:=Source.ScreenY;
   if SX>ScreenX then SX:=ScreenX;
@@ -1198,13 +1234,13 @@ begin
   {$IFDEF DebugGLErr} DebugOpenGL(52, 'RenderTransparentGL(...False...)', []); {$ENDIF}
   CurrentAlpha:=0;
   FillChar(Currentf, SizeOf(Currentf), 0);
-  RenderTransparentGL(Source.FListSurfaces, False, DisplayLights, Source.Coord);
+  RenderTransparentGL(Source.FListSurfaces, False, Source.Coord);
   {$IFDEF DebugGLErr} DebugOpenGL(53, 'RenderTransparentGL(...True...)', []); {$ENDIF}
-  RenderTransparentGL(Source.FListSurfaces, True,  DisplayLights, Source.Coord);
+  RenderTransparentGL(Source.FListSurfaces, True, Source.Coord);
   {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFlush', []); {$ENDIF}
   glFlush;
   {$IFDEF DebugGLErr} DebugOpenGL(55, '', []); {$ENDIF}
- {wglMakeCurrent(0,0);}
+  wglMakeCurrent(GLDC,0);
 end;
 
 procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
@@ -1463,7 +1499,7 @@ begin
   {$IFDEF DebugGLErr} DebugOpenGL(108, '', []); {$ENDIF}
 end;
 
-procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
+procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
 
 var
  Surf: PSurface3D;
@@ -1473,6 +1509,7 @@ var
  I, K, Sz: Integer;
  Setup: QObject;
  Transparency: Boolean;
+ GlError: GLenum;
 
 begin
   FullBright.ZeroLight:=1;
@@ -1482,8 +1519,11 @@ begin
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
   Setup:=SetupSubSet(ssGeneral, 'OpenGL');
-  Transparency:=Setup.Specifics.Values['Transparency']<>'';
+  Transparency:=Setup.Specifics.Values['Transparency']<>'';  {Daniel: Should use the value used when initializing the view}
 
+  GlError:=glGetError;
+  if GlError <> 0 then
+   raise EError(5693);  {Daniel: We've got an unhandled exception somewhere!!!}
   while Surf<SurfEnd do
   begin
     with Surf^ do
@@ -1513,18 +1553,33 @@ begin
         // It's not any more. Fixed with its own option in QuArK's Config OpenGL section.
         if Transparency then
         begin
-          if AnyInfo.DisplayList=0 then
+          if OpenGLDisplayList=0 then
           begin
             UnpackColor(AlphaColor, Currentf);
 
             if DisplayLists<>-1 then
             begin
-              Inc(DisplayLists);
-              AnyInfo.DisplayList:=DisplayLists;
-              {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
-              glNewList(AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE);
-              {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
-              if glGetError <> GL_NO_ERROR then  { out of display list resources }
+              DisplayLists:=glGenLists(1);
+              GlError:=glGetError;
+              if GlError = GL_INVALID_VALUE then
+                raise EError(5693)
+              else if GlError = GL_INVALID_ENUM then
+                raise EError(5693)
+              else if GlError = GL_INVALID_OPERATION then
+                raise EError(5693)
+              else if GlError = GL_INVALID_OPERATION then
+                raise EError(5693)
+              else if GlError = GL_OUT_OF_MEMORY then
+                raise EError(5693);
+
+              if DisplayLists = 0 then
+                raise EError(5693);  {Daniel: Move to error-message-file as 'Unable to create display list.'}
+
+              OpenGLDisplayList:=DisplayLists;
+              {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
+              glNewList(DisplayLists, GL_COMPILE_AND_EXECUTE);
+              {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
+              if glGetError <> GL_NO_ERROR then  { probably out of display list resources }
                 raise EError(5693);
               glColor4fv(Currentf);
               {$IFDEF DebugGLErr} DebugOpenGL(111, '', []); {$ENDIF}
@@ -1597,7 +1652,7 @@ begin
           else
           begin
             {$IFDEF DebugGLErr} DebugOpenGL(-114, 'glCallList(<%d>)', [AnyInfo.DisplayList]); {$ENDIF}
-            glCallList(AnyInfo.DisplayList);
+            glCallList(OpenGLDisplayList);
             {$IFDEF DebugGLErr} DebugOpenGL(114, 'glCallList(<%d>)', [AnyInfo.DisplayList]); {$ENDIF}
           end
         (*for I:=1 to VertexCount do
@@ -1688,7 +1743,7 @@ end;
 
 procedure TGLSceneProxy.Init(Wnd: HWnd;
                              nCoord: TCoordinates;
-                             DisplayMode: Byte;
+                             DisplayMode: TDisplayMode;
                              const LibName: String;
                              var FullScreen, AllowsGDI: Boolean;
                              FogDensity: Single;
@@ -1848,7 +1903,7 @@ procedure TGLSceneProxy.Render3DView;
 begin
   NeedGLSceneObject((ScreenX+7) and not 7, (ScreenY+3) and not 3);
   if CurrentGLSceneObject.Ready then
-    CurrentGLSceneObject.RenderOpenGL(Self, False)
+    CurrentGLSceneObject.RenderOpenGL(Self)
   else
     InvalidateRect(ProxyWnd, Nil, True);
 end;

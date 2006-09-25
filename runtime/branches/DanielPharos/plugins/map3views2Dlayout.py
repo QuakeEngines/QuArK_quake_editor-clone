@@ -72,7 +72,7 @@ class ThreeViews2DLayout(MapLayout):
         self.ViewXZ = self.threeviews_toppanel.newmapview()
         self.ViewYZ = self.threeviews_toppanel.newmapview()
         self.ViewYZ.section = (1,0)
-	
+
         #
         # Put these three views in the view lists.
         #
@@ -269,6 +269,9 @@ LayoutsList.append(ThreeViews2DLayout)
 #
 #
 # $Log$
+# Revision 1.5  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2003/03/24 05:09:51  cdunde
 # To upload the "new and improved" version of the layout. The layout
 # itself seems to work fine, but somewhere in the python code, the
