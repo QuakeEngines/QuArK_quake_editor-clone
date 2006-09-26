@@ -56,6 +56,7 @@ class ThreeViewsLayout(MapLayout):
 
         self.ViewXY = form.mainpanel.newmapview()
         self.ViewXY.section = (0,1)
+        self.ViewXY.viewtype="editor"
 
         #
         # Create a panel in the top section.
@@ -69,8 +70,10 @@ class ThreeViewsLayout(MapLayout):
         #
 
         self.ViewXZ = self.threeviews_toppanel.newmapview()
+        self.ViewXZ.viewtype="editor"
         self.View3D = self.threeviews_toppanel.newmapview()
         self.View3D.section = (1,0)
+        self.View3D.viewtype="editor"
 
         #
         # Put these three views in the view lists.
@@ -246,6 +249,10 @@ LayoutsList.append(ThreeViewsLayout)
 #
 #
 # $Log$
+# Revision 1.6  2005/10/17 21:27:35  cdunde
+# To add new key word "viewname" to all 3D views for easier
+# detection and control of those views and Infobase documentation.
+#
 # Revision 1.5  2005/10/15 00:49:51  cdunde
 # To reinstate headers and history
 #

@@ -47,6 +47,10 @@ class FourViewsLayout(MapLayout):
         self.ViewXZ = form.mainpanel.newmapview()
         self.ViewYZ = form.mainpanel.newmapview()
         self.View3D = form.mainpanel.newmapview()
+        self.ViewXY.viewtype="editor"
+        self.ViewXZ.viewtype="editor"
+        self.ViewYZ.viewtype="editor"
+        self.View3D.viewtype="editor"
 
         #
         # Put these 4 views in the view lists.
@@ -354,6 +358,10 @@ LayoutsList.append(FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.6  2005/10/17 21:27:35  cdunde
+# To add new key word "viewname" to all 3D views for easier
+# detection and control of those views and Infobase documentation.
+#
 # Revision 1.5  2005/10/15 00:49:51  cdunde
 # To reinstate headers and history
 #

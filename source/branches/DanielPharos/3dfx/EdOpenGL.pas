@@ -216,6 +216,9 @@ type
 procedure CloseOpenGLEditor;
 procedure FreeOpenGLEditor;
 
+
+procedure CheckOpenGLError(GlError: GLenum);
+
  {------------------------}
 
 implementation
@@ -240,7 +243,7 @@ begin
   if HackIgnoreErrors then
     Exit;
   S:='';
-  for I:=1 to 25 do
+  for I:=1 to 25 do   {Daniel: Why is it trying exactly 25 times?}
   begin
     J:=glGetError;
     if J = GL_NO_ERROR then
@@ -288,7 +291,7 @@ begin
   if (Tex^.OpenGLName<>0) and OpenGlLoaded then
   begin
     {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
-    glDeleteTextures(1, Tex^.OpenGLName);
+    glDeleteTextures(1, Tex^.OpenGLName);  {Daniel: Delete it from the right context!}
     {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
   end;
 end;
@@ -882,11 +885,11 @@ begin
   Setup:=SetupSubSet(ssGeneral, '3D View');
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
-    FarDistance:=Setup.GetFloatSpec('FarDistance', 1);
+    FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
   end
   else
   begin
-    FarDistance:=0;
+    FarDistance:=1500;
   end;
   Setup:=SetupSubSet(ssGeneral, 'OpenGL');
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
@@ -982,7 +985,7 @@ begin
   end
   else
   begin
-    glDisable(GL_FOG);   {Daniel: Make sure Fog is disabled}
+    {glDisable(GL_FOG);}   {Daniel: Make sure Fog is disabled}
   end;
   
   if Lighting then
@@ -992,7 +995,7 @@ begin
   end
   else
   begin
-    glDisable(GL_LIGHTING);   {Daniel: Make sure Lighting is disabled}
+    {glDisable(GL_LIGHTING);}   {Daniel: Make sure Lighting is disabled}
   end;
 
   if Transparency then
@@ -1002,10 +1005,11 @@ begin
   end
   else
   begin
-    glDisable(GL_BLEND);   {Daniel: Make sure Lighting is disabled}
+    {glDisable(GL_BLEND);}   {Daniel: Make sure Transparency is disabled}
   end;
   {Daniel: Things like transparency, bump-maps etc. should be added in a similar way}
-
+  
+  wglMakeCurrent(GLDC,0);
 end;
 
 procedure TGLSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
@@ -1031,9 +1035,11 @@ begin
   begin
     if OpenGlLoaded then
     begin
+      wglMakeCurrent(GLDC,RC);
       {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
       glDeleteLists(1, DisplayLists);
       {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
+      wglMakeCurrent(GLDC,0);
     end;
     DisplayLists:=0;
   end;
@@ -1088,7 +1094,6 @@ var
 { Buffer, BufEnd: ^GLuint;
  ResidentResult: GLboolean;
  BufResident: ^GLboolean;}
- GlError: GLenum;
 begin
   // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
   if Transparent=true then
@@ -1099,17 +1104,8 @@ begin
   begin
     glDisable(GL_BLEND);
   end;
-  GlError:=glGetError;
-  if GlError = GL_INVALID_VALUE then
-    raise EError(5693)
-  else if GlError = GL_INVALID_ENUM then
-    raise EError(5693)
-  else if GlError = GL_INVALID_OPERATION then
-    raise EError(5693)
-  else if GlError = GL_INVALID_OPERATION then
-    raise EError(5693)
-  else if GlError = GL_OUT_OF_MEMORY then
-    raise EError(5693);
+
+  CheckOpenGLError(glGetError);
 
   {DECKER 2003-03-12 if not SolidColors then}
   begin
@@ -1181,6 +1177,8 @@ begin
     end;
   end;
 
+  CheckOpenGLError(glGetError);
+
   PList:=ListSurfaces;
   while Assigned(PList) do
   begin
@@ -1191,23 +1189,24 @@ begin
     end;
     PList:=PList^.Next;
   end;
+  CheckOpenGLError(glGetError);
 end;
 
 procedure TGLSceneObject.Render3DView;
 begin
+  if not OpenGlLoaded then
+    Exit;
   if wglMakeCurrent(GLDC,RC) = false then
    raise EError(5693);  {Daniel: Something is terribly wrong...}
+  CheckOpenGLError(glGetError);
   RenderOpenGL(Self);
+  wglMakeCurrent(GLDC,0);
 end;
 
 procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase);
 var
  SX, SY: Integer;
 begin
-  if not OpenGlLoaded then
-    Exit;
-  {$IFDEF DebugGLErr} DebugOpenGL(-50, '', []); {$ENDIF}
-  wglMakeCurrent(GLDC,RC);
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
   SX:=Source.ScreenX;
   SY:=Source.ScreenY;
@@ -1229,6 +1228,9 @@ begin
     with Camera do
       glTranslatef(-X, -Y, -Z);
   end;
+
+  CheckOpenGLError(glGetError);
+
   {$IFDEF DebugGLErr} DebugOpenGL(51, 'glClear', []); {$ENDIF}
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
   {$IFDEF DebugGLErr} DebugOpenGL(52, 'RenderTransparentGL(...False...)', []); {$ENDIF}
@@ -1240,7 +1242,6 @@ begin
   {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFlush', []); {$ENDIF}
   glFlush;
   {$IFDEF DebugGLErr} DebugOpenGL(55, '', []); {$ENDIF}
-  wglMakeCurrent(GLDC,0);
 end;
 
 procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
@@ -1457,7 +1458,7 @@ begin
     end;
 
 
-
+    wglMakeCurrent(GLDC,RC);
    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, Texture^.OpenGLName);
     {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
@@ -1484,6 +1485,7 @@ begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     end;
+    wglMakeCurrent(GLDC,0);
     {$IFDEF DebugGLErr} DebugOpenGL(107, '', []); {$ENDIF}
   end;
 end;
@@ -1507,9 +1509,6 @@ var
  PV, PVBase, PV2, PV3: PVertex3D;
  NeedTex, NeedColor: Boolean;
  I, K, Sz: Integer;
- Setup: QObject;
- Transparency: Boolean;
- GlError: GLenum;
 
 begin
   FullBright.ZeroLight:=1;
@@ -1518,12 +1517,8 @@ begin
   NeedTex:=True;
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
-  Setup:=SetupSubSet(ssGeneral, 'OpenGL');
-  Transparency:=Setup.Specifics.Values['Transparency']<>'';  {Daniel: Should use the value used when initializing the view}
 
-  GlError:=glGetError;
-  if GlError <> 0 then
-   raise EError(5693);  {Daniel: We've got an unhandled exception somewhere!!!}
+  CheckOpenGLError(glGetError);
   while Surf<SurfEnd do
   begin
     with Surf^ do
@@ -1540,11 +1535,15 @@ begin
         else
           NeedColor:=False;
 
+        CheckOpenGLError(glGetError); {#}
+
         if NeedTex then
         begin
           LoadCurrentTexture(PList^.Texture);
           NeedTex:=False;
         end;
+
+        CheckOpenGLError(glGetError); {#}
 
         PV:=PVertex3D(Surf);
 
@@ -1560,18 +1559,6 @@ begin
             if DisplayLists<>-1 then
             begin
               DisplayLists:=glGenLists(1);
-              GlError:=glGetError;
-              if GlError = GL_INVALID_VALUE then
-                raise EError(5693)
-              else if GlError = GL_INVALID_ENUM then
-                raise EError(5693)
-              else if GlError = GL_INVALID_OPERATION then
-                raise EError(5693)
-              else if GlError = GL_INVALID_OPERATION then
-                raise EError(5693)
-              else if GlError = GL_OUT_OF_MEMORY then
-                raise EError(5693);
-
               if DisplayLists = 0 then
                 raise EError(5693);  {Daniel: Move to error-message-file as 'Unable to create display list.'}
 
@@ -1915,6 +1902,23 @@ begin
     raise InternalE('proxy: BuildTexture');
   {$ENDIF}
   CurrentGLSceneObject.BuildTexture(Texture);
+end;
+
+
+procedure CheckOpenGLError(GlError: GLenum);
+begin
+  if GlError = GL_INVALID_VALUE then
+    raise EError(5693)
+  else if GlError = GL_INVALID_ENUM then
+    raise EError(5693)
+  else if GlError = GL_INVALID_OPERATION then
+    raise EError(5693)
+  else if GlError = GL_STACK_OVERFLOW then
+    raise EError(5693)
+  else if GlError = GL_STACK_UNDERFLOW then
+    raise EError(5693)
+  else if GlError = GL_OUT_OF_MEMORY then
+    raise EError(5693);
 end;
 
 end.

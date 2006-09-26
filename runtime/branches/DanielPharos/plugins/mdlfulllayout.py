@@ -36,6 +36,7 @@ class Full3DLayout(ModelLayout):
         self.baseviews = self.views[:]
         self.View3D.info = {"type": "3D"}
         self.View3D.viewmode = "tex"
+        self.View3D.viewtype="editor"
 
 
 
@@ -45,6 +46,9 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.5  2005/10/15 00:51:56  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

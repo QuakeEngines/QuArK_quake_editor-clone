@@ -57,6 +57,7 @@ class ThreeViews2DLayout(MapLayout):
 
         self.ViewXY = form.mainpanel.newmapview()
         self.ViewXY.section = (0,1)
+        self.ViewXY.viewtype="editor"
 
         #
         # Create a panel in the top section.
@@ -70,8 +71,10 @@ class ThreeViews2DLayout(MapLayout):
         #
 
         self.ViewXZ = self.threeviews_toppanel.newmapview()
+        self.ViewXZ.viewtype="editor"
         self.ViewYZ = self.threeviews_toppanel.newmapview()
         self.ViewYZ.section = (1,0)
+        self.ViewYZ.viewtype="editor"
 
         #
         # Put these three views in the view lists.
