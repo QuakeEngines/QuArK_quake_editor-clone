@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.28  2003/08/13 04:18:56  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -116,8 +119,11 @@ const
  wp_InitControls = 99;
  cmd_AddSpec     = 0;
  cmd_DeleteSpec  = 1;
-{cmd_etc         = 3;}
- MenuCmdCount    = {4}2;
+ cmd_CopySpec    = 2;
+ cmd_PasteSpec   = 3;
+ cmd_CutSpec     = 4;
+{ cmd_etc         = 3; }
+ MenuCmdCount    = 5{2};
 
 type
  TFormCfg = class;
@@ -2748,7 +2754,10 @@ begin
    Items[cmd_AddSpec].Enabled:=AllowEdit and AddRemaining;
    Items[cmd_DeleteSpec].Enabled:=AllowEdit and RowOk;
    Items[cmd_DeleteSpec].Tag:=I;
-  {Items[cmd_etc].Caption:=IntToStr(I);}
+   Items[cmd_CopySpec].Enabled:=AllowEdit and RowOk;
+   Items[cmd_PasteSpec].Enabled:=AllowEdit and RowOk; 
+   Items[cmd_CutSpec].Enabled:=AllowEdit and RowOk;
+ { Items[cmd_etc].Caption:=IntToStr(I);  }
   end;
 end;
 
@@ -2999,6 +3008,36 @@ begin
         end
      else
       MessageBeep(0);
+    end;
+  cmd_CopySpec:
+    begin
+     GlobalDoCancel{(Self)};
+     Row:=(Sender as TMenuItem).Tag;
+     if (Form<>Nil) and (Row>=0) and (Row<Form.SubElements.Count) then
+      with Form.SubElements[Row] do
+       if Specifics.IndexOf('+~=!')<0 then
+        begin
+         S:=Name;
+         if Copy(Specifics.Values['Typ'], 1, 2) = 'EF' then
+          S:=FloatSpecNameOf(S);
+      Copy(S, 1, 2);
+        end;
+      begin
+       with ValidParentForm(Self) as TQkForm do
+        ProcessEditMsg(edCopy);
+      end;
+    end;
+  cmd_PasteSpec:
+    begin
+     with ValidParentForm(Self) as TQkForm do
+      ProcessEditMsg(edPasteObj);
+     InitControls;  // to cancel selction to keep from causing an error
+    end;
+  cmd_CutSpec:
+    begin
+     with ValidParentForm(Self) as TQkForm do
+      ProcessEditMsg(edCut);
+     InitControls;  // to cancel selction to keep from causing an error
     end;
  end;
 end;

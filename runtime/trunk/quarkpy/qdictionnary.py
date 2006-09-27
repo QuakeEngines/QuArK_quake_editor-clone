@@ -652,7 +652,8 @@ Strings = {
     5380: "Angle Side view",
     5381: "Specific",
     5382: "Arg",
-    5383: "&Add a Specific\n&Delete Specific",
+    # 5383: "&Add a Specific\n&Delete Specific",
+    5383: "&Add a Specific\n&Delete Specific\nCop&y an Arg\n&Paste an Arg\n&Cut an Arg",
     5384: "Palette",
     5385: "%s palette",
     # 5386: "You cannot change this palette directly here. Do you want to open the file that contains the %s ?",
@@ -978,6 +979,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.76  2006/05/19 18:46:55  cdunde
+#For the configuration revamping of RTCW.
+#
 #Revision 1.75  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
