@@ -15,6 +15,9 @@ $Id$
 6.5.0 alpha 9
 =============
 
+ * [cdunde]: Added Copy, Paste and Cut functions to the Specifices\Arg
+         - page RMB pop-up menu for easer handling of these items.
+
  * [cdunde]: A complete new set of Textures sound Flags added to the
          - Q2_Lazarus.qrk file, implemented by Jon Kalashnikov (aka Paril).
 
