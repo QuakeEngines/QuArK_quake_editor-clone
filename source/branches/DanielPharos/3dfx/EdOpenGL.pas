@@ -121,6 +121,9 @@ const
  kScaleCos = 0.5;
 {kBrightnessSaturation = 256/0.5;}
 
+var
+ RCs: array of HGLRC;
+
 type
  PLightList = ^TLightList;
  TLightList = record
@@ -187,6 +190,7 @@ type
    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
    property Ready: Boolean read FReady write FReady;
+   function GetRC: HGLRC;
  end;
 
  TGLSceneProxy = class(TGLSceneBase)
@@ -819,6 +823,17 @@ begin
   begin
     if OpenGlLoaded then
     begin
+      I:=0;
+      while I<Length(RCs) do
+      begin
+        if RCs[I]=RC then
+        begin
+          RCs[I]:=RCs[Length(RCs)-1];
+          SetLength(RCs,Length(RCs)-1);
+        end
+        else
+          Inc(I);
+      end;
       wglMakeCurrent(GLDC,0);
       wglDeleteContext(RC);
     end;
@@ -858,6 +873,7 @@ var
  nFogColor: GLfloat4;
  FarDistance: TDouble;
  Setup: QObject;
+ Scenes: TList;
 begin
   FillChar(FullBright,SizeOf(FullBright),0);
   FullBright.ZeroLight:=1;
@@ -913,6 +929,7 @@ begin
     DisplayLists:=0
   else
     DisplayLists:=-1;
+
   GLDC:=GetDC(Wnd);
   if Wnd<>DestWnd then
   begin
@@ -936,9 +953,22 @@ begin
       Raise EErrorFmt(4869, ['SetPixelFormat']);
     DestWnd:=Wnd;
   end;
+
   RC:=wglCreateContext(GLDC);
   if RC=0 then
     Raise EErrorFmt(4869, ['wglCreateContext']);
+  
+  for pfi:=0 to Length(RCs)-1 do
+  begin
+    if RCs[pfi]<>0 then
+    begin
+      if wglShareLists(RCs[pfi],RC)=false then
+	    Raise EErrorFmt(4869, ['wglShareLists']);    {Is this the correct error message?}
+      break;
+    end;
+  end;
+  SetLength(RCs,Length(RCs)+1);   {Increase the RCs-array by one element}
+  RCs[Length(RCs)-1]:=RC;
 
   { set up OpenGL }
   wglMakeCurrent(GLDC,RC);
@@ -1209,7 +1239,7 @@ var
 begin
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
   SX:=Source.ScreenX;
-  SY:=Source.ScreenY;
+  SY:=Source.ScreenY;   {Daniel: These are not defined in a Panel-view, and therefore CRASH!}
   if SX>ScreenX then SX:=ScreenX;
   if SY>ScreenY then SY:=ScreenY;
   glViewport(0, 0, SX, SY);
@@ -1461,16 +1491,14 @@ begin
     wglMakeCurrent(GLDC,RC);
    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, Texture^.OpenGLName);
+
+    CheckOpenGLError(glGetError);
+
     {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     if Texture^.OpenGLName=0 then
       Raise InternalE('out of texture numbers');
     glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
     {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
-
-  // To reverse changes that broke OpenGL for odd sized textures in version 1.24 2004/12/14
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
-  (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
-    end;//paletted textures   *)
 
     {$IFDEF DebugGLErr} DebugOpenGL(106, '', []); {$ENDIF}
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -1485,6 +1513,12 @@ begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     end;
+
+      // To reverse changes that broke OpenGL for odd sized textures in version 1.24 2004/12/14
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
+  (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
+    end;//paletted textures   *)
+
     wglMakeCurrent(GLDC,0);
     {$IFDEF DebugGLErr} DebugOpenGL(107, '', []); {$ENDIF}
   end;
@@ -1904,11 +1938,15 @@ begin
   CurrentGLSceneObject.BuildTexture(Texture);
 end;
 
+function TGLSceneObject.GetRC(): HGLRC;
+begin
+  Result:=RC;
+end;
 
 procedure CheckOpenGLError(GlError: GLenum);
 begin
   if GlError = GL_INVALID_VALUE then
-    raise EError(5693)
+    raise EError(5693)    {Daniel: Create decent error messages for these!!!}
   else if GlError = GL_INVALID_ENUM then
     raise EError(5693)
   else if GlError = GL_INVALID_OPERATION then

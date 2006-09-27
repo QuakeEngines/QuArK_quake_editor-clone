@@ -647,6 +647,7 @@ var
   wglMakeCurrent: function (DC: HDC; p2: HGLRC): Bool; stdcall;
   wglDeleteContext: function (p1: HGLRC): Bool; stdcall;
   wglCreateContext: function (DC: HDC): HGLRC; stdcall;
+  wglShareLists: function (hglrc1: HGLRC; hglrc2: HGLRC): Bool; stdcall;
   wglSwapBuffers: function (DC: HDC): Bool; stdcall; {Decker 2002.02.26 - Added}
 
   glClearColor: procedure (red, green, blue, alpha: GLclampf); stdcall;
@@ -704,10 +705,11 @@ function OpenGlLoaded : Boolean;
 function ReloadOpenGl : Boolean;
 procedure UnloadOpenGl;
 
+
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..41] of //Decker 2006.09.19 - modified
+  OpenGL32DLL_FuncList : array[0..42] of //Decker 2006.09.19 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -715,6 +717,7 @@ const
   ( (FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
+   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //Daniel 2006.09.26 - Added
    ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        ) {Decker 2002.02.26 - Added}
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
