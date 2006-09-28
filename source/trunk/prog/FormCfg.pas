@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2006/09/27 02:59:10  cdunde
+To add Copy, Paste and Cut functions to Specifices\Arg
+page RMB pop-up menu.
+
 Revision 1.30  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -1955,7 +1959,7 @@ begin
                  ComboBox.Tag:=I+1;
                  ComboBox.Items.Text:=TextValues;
                  ComboBox.ItemIndex:=MatchSpecItem(ComboBox, ArgValue, True); { "ComboBox.Tag" must be set to a value!!! }
-                 ComboBox.Text:=ArgValue;
+          //       ComboBox.Text:=ArgValue;   // Commented out to stop filling multiple dropdown list with erroneous data, like for misc_model entity
                  ComboBox.OnKeyDown:=ComboKeyDown;
                  ComboBox.OnChange:=EnterEditChange;
                  ComboBox.Hint:=HintMsg;
