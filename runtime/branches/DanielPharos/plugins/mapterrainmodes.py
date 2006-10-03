@@ -393,13 +393,15 @@ def drawredfaces(view, selectlist):
     type = view.info["type"]
     if type == "3D":
         viewname = view.info["viewname"]
-        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] == "1":
+        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces0"] == "1":
             draw(view, selectlist)
-        if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] == "1":
+        if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] == "1":
             draw(view, selectlist)
-        if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] == "1":
+        if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] == "1":
             draw(view, selectlist)
-        if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] == "1":
+        if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] == "1":
+            draw(view, selectlist)
+        if viewname == "direct3D3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] == "1":
             draw(view, selectlist)
     else:
         draw(view, selectlist)
@@ -530,13 +532,15 @@ def terrainpaint(editor, view, x, y, flags, facelist):
     type = view.info["type"]
     if type == "3D":
         viewname = view.info["viewname"]
-        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color1"] == "1":
+        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color0"] == "1":
             paint(editor, view, x, y, facelist)
-        if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"] == "1":
+        if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color1"] == "1":
             paint(editor, view, x, y, facelist)
-        if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"] == "1":
+        if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"] == "1":
             paint(editor, view, x, y, facelist)
-        if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"] == "1":
+        if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"] == "1":
+            paint(editor, view, x, y, facelist)
+        if viewname == "direct3D3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"] == "1":
             paint(editor, view, x, y, facelist)
 
 

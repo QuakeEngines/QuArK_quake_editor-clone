@@ -137,7 +137,7 @@ type
                  ZeroLight, BrightnessSaturation, LightFactor: scalar_t;
                 end;
 
- TGLSceneBase = class(TSceneObject)
+ TGLSceneBase = class(TSceneObject)        {Daniel: Why two different objects?}
  protected
    ScreenX, ScreenY: Integer;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -166,7 +166,6 @@ type
    DisplayLists: Integer;
    LightParams: TLightParams;
    FullBright: TLightParams;
-   procedure LoadCurrentTexture(Tex: PTexture3);
  protected
    Bilinear: boolean;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
@@ -181,38 +180,20 @@ type
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
                   DisplayMode: TDisplayMode;
+                  DisplayType: TDisplayType;
                   const LibName: String;
-                  var FullScreen, AllowsGDI: Boolean;
-                  FogDensity: Single;
+                  var AllowsGDI: Boolean;
                   FogColor, FrameColor: TColorRef); override;
    procedure ClearScene; override;
    procedure Render3DView; override;
    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
    property Ready: Boolean read FReady write FReady;
-   function GetRC: HGLRC;
  end;
 
- TGLSceneProxy = class(TGLSceneBase)
- private
-  {MasterVersion: Integer;}
-   nFrameColor: TColorRef;
-   ProxyWnd: HWnd;
- protected
-   function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
-   procedure EndBuildScene; override;
-   procedure BuildTexture(Texture: PTexture3); override;
-  {procedure MasterUpdate;}
+ TGLTextureManager = class(TTextureManager)
  public
-   procedure Init(Wnd: HWnd;
-                  nCoord: TCoordinates;
-                  DisplayMode: TDisplayMode;
-                  const LibName: String;
-                  var FullScreen, AllowsGDI: Boolean;
-                  FogDensity: Single;
-                  FogColor, FrameColor: TColorRef); override;
-   procedure Render3DView; override;
-   procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
+   procedure ClearTexture(Tex: PTexture3); override;
  end;
 
  {------------------------}
@@ -288,16 +269,6 @@ procedure FreeOpenGLEditor;
 begin
   UnloadOpenGl;
   TTextureManager.FreeNonVisibleTextures;
-end;
-
-procedure FreeOpenGLTexture(Tex: PTexture3);
-begin
-  if (Tex^.OpenGLName<>0) and OpenGlLoaded then
-  begin
-    {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
-    glDeleteTextures(1, Tex^.OpenGLName);  {Daniel: Delete it from the right context!}
-    {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
-  end;
 end;
 
 procedure UnpackColor(Color: TColorRef; var v: GLfloat4);
@@ -759,35 +730,14 @@ begin
   end;
 end;
 
- {------------------------}
-
 procedure TGLSceneObject.ReleaseResources;
 var
- I, J: Integer;
+ I: Integer;
 { NameArray, NameAreaWalker: ^GLuint;}
 begin
   CurrentGLSceneObject:=Nil;
   RenderingTextureBuffer.Free;
   RenderingTextureBuffer:=Nil;
-
-  { mark proxy GL views as needing a complete rebuild }
-  for I:=0 to Screen.FormCount-1 do
-  begin
-    with Screen.Forms[I] do
-    begin
-      for J:=0 to ComponentCount-1 do
-      begin
-        if Components[J] is TPyMapView then
-        begin
-          with TPyMapView(Components[J]) do
-          begin
-            if Scene is TGLSceneProxy then
-              Perform(wm_InternalMessage, wp_PyInvalidate, 0);
-          end;
-        end;
-      end;
-    end;
-  end;
 
   {with TTextureManager.GetInstance do
   begin
@@ -834,7 +784,7 @@ begin
         else
           Inc(I);
       end;
-      wglMakeCurrent(GLDC,0);
+      wglMakeCurrent(0,0);
       wglDeleteContext(RC);
     end;
     RC:=0;
@@ -863,18 +813,18 @@ end;
 procedure TGLSceneObject.Init(Wnd: HWnd;
                               nCoord: TCoordinates;
                               DisplayMode: TDisplayMode;
+                              DisplayType: TDisplayType;
                               const LibName: String;
-                              var FullScreen, AllowsGDI: Boolean;
-                              FogDensity: Single;
+                              var AllowsGDI: Boolean;
                               FogColor, FrameColor: TColorRef);
 var
  pfd: TPixelFormatDescriptor;
  pfi: Integer;
  nFogColor: GLfloat4;
- FarDistance: TDouble;
  Setup: QObject;
- Scenes: TList;
 begin
+  Perspective:=DisplayType;   {Store for later use}
+
   FillChar(FullBright,SizeOf(FullBright),0);
   FullBright.ZeroLight:=1;
 
@@ -894,9 +844,7 @@ begin
     Raise InternalE('TCameraCoordinates expected');
  {$ENDIF}
   Coord:=nCoord;
-  FullScreen:=False;
-  TTextureManager.AddScene(Self, False);
-  TTextureManager.GetInstance.FFreeTexture:=FreeOpenGLTexture;
+  TTextureManager.AddScene(Self);
 
   Setup:=SetupSubSet(ssGeneral, '3D View');
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
@@ -905,8 +853,9 @@ begin
   end
   else
   begin
-    FarDistance:=1500;
+    FarDistance:=1500;   {Daniel: This should be zero... = Disabled FarDistance}
   end;
+  FogDensity:=Setup.GetFloatSpec('FogDensity', 1) * FOG_DENSITY_1;
   Setup:=SetupSubSet(ssGeneral, 'OpenGL');
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
@@ -955,6 +904,8 @@ begin
   end;
 
   RC:=wglCreateContext(GLDC);
+  wglMakeCurrent(GLDC,RC);
+  CheckOpenGLError(glGetError);  {#}
   if RC=0 then
     Raise EErrorFmt(4869, ['wglCreateContext']);
   
@@ -963,7 +914,7 @@ begin
     if RCs[pfi]<>0 then
     begin
       if wglShareLists(RCs[pfi],RC)=false then
-	    Raise EErrorFmt(4869, ['wglShareLists']);    {Is this the correct error message?}
+        Raise EErrorFmt(4869, ['wglShareLists']);    {Is this the correct error message?}
       break;
     end;
   end;
@@ -971,7 +922,6 @@ begin
   RCs[Length(RCs)-1]:=RC;
 
   { set up OpenGL }
-  wglMakeCurrent(GLDC,RC);
   {$IFDEF DebugGLErr} DebugOpenGL(0, '', []); {$ENDIF}
   UnpackColor(FogColor, nFogColor);
   glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
@@ -1039,7 +989,7 @@ begin
   end;
   {Daniel: Things like transparency, bump-maps etc. should be added in a similar way}
   
-  wglMakeCurrent(GLDC,0);
+  wglMakeCurrent(0,0);
 end;
 
 procedure TGLSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
@@ -1069,7 +1019,7 @@ begin
       {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
       glDeleteLists(1, DisplayLists);
       {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
-      wglMakeCurrent(GLDC,0);
+      wglMakeCurrent(0,0);
     end;
     DisplayLists:=0;
   end;
@@ -1135,7 +1085,7 @@ begin
     glDisable(GL_BLEND);
   end;
 
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError(glGetError);  {#}
 
   {DECKER 2003-03-12 if not SolidColors then}
   begin
@@ -1207,7 +1157,7 @@ begin
     end;
   end;
 
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError(glGetError);   {#}
 
   PList:=ListSurfaces;
   while Assigned(PList) do
@@ -1219,7 +1169,7 @@ begin
     end;
     PList:=PList^.Next;
   end;
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError(glGetError);   {#}
 end;
 
 procedure TGLSceneObject.Render3DView;
@@ -1228,9 +1178,9 @@ begin
     Exit;
   if wglMakeCurrent(GLDC,RC) = false then
    raise EError(5693);  {Daniel: Something is terribly wrong...}
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError(glGetError);   {#}
   RenderOpenGL(Self);
-  wglMakeCurrent(GLDC,0);
+  wglMakeCurrent(0,0);
 end;
 
 procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase);
@@ -1239,27 +1189,68 @@ var
 begin
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
   SX:=Source.ScreenX;
-  SY:=Source.ScreenY;   {Daniel: These are not defined in a Panel-view, and therefore CRASH!}
-  if SX>ScreenX then SX:=ScreenX;
-  if SY>ScreenY then SY:=ScreenY;
-  glViewport(0, 0, SX, SY);
+  SY:=Source.ScreenY;
+  glViewport(0, 0, SX, SY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
   {$IFDEF DebugGLErr} DebugOpenGL(50, '', []); {$ENDIF}
-  with TCameraCoordinates(Source.Coord) do
-  begin
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity;
-    gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
-    if PitchAngle<>0 then
-      glRotatef(PitchAngle * (180/pi), -1,0,0);
-    glRotatef(HorzAngle * (180/pi), 0,-1,0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity;
-    glRotatef(120, -1,1,1);
-    with Camera do
-      glTranslatef(-X, -Y, -Z);
-  end;
 
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError(glGetError);  {#}
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity;
+
+  CheckOpenGLError(glGetError);  {#}
+  if Perspective=dtXY then
+   begin
+    glOrtho(-SX/2, SX/2, -SY/2, SY/2, -8192, 8192);   {Far: Twice the maplimit}
+   end
+  else if Perspective=dtXZ then
+   begin
+    glOrtho(-SX/2, SX/2, -SY/2, SY/2, -8192, 8192);   {Far: Twice the maplimit}
+    glRotated(90, -1,0,0);
+   end
+  else if (Perspective=dtYZ) or (Perspective=dt2D) then
+   begin
+    glOrtho(-SX/2, SX/2, -SY/2, SY/2, -8192, 8192);   {Far: Twice the maplimit}
+    glRotated(270, 0,-1,0);
+    glRotated(90, -1,0,0);
+   end
+  else if Perspective=dt3D then
+   begin
+    with TCameraCoordinates(Source.Coord) do
+     begin
+      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
+      glRotated(PitchAngle * (180/pi), -1,0,0);
+      glRotated(HorzAngle * (180/pi), 0,-1,0);
+     end;
+   end
+  else
+    Raise EError(6548);   {Unknown perspective!}
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity;
+  if Perspective=dtXY then
+   begin
+    with TXYCoordinates(Source.Coord) do
+      glTranslated(pDeltaX - ScrCenter.X, -(pDeltaY - ScrCenter.Y), -4096);
+   end
+  else if Perspective=dtXZ then
+   begin
+    with TXZCoordinates(Source.Coord) do
+      glTranslated(pDeltaX - ScrCenter.X, -4096, -(pDeltaY - ScrCenter.Y));
+   end
+  else if (Perspective=dtYZ) or (Perspective=dt2D) then
+   begin
+    with T2DCoordinates(Source.Coord) do
+      glTranslated(-4096, -(pDeltaX - ScrCenter.X), -(pDeltaY - ScrCenter.Y));
+   end
+  else if Perspective=dt3D then
+   begin
+    glRotated(120, -1,1,1);
+    with TCameraCoordinates(Source.Coord).Camera do
+      glTranslated(-X, -Y, -Z);
+   end;
+
+  CheckOpenGLError(glGetError);   {#}
 
   {$IFDEF DebugGLErr} DebugOpenGL(51, 'glClear', []); {$ENDIF}
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
@@ -1492,7 +1483,7 @@ begin
    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, Texture^.OpenGLName);
 
-    CheckOpenGLError(glGetError);
+    CheckOpenGLError(glGetError);   {#}
 
     {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     if Texture^.OpenGLName=0 then
@@ -1519,20 +1510,9 @@ begin
   (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
     end;//paletted textures   *)
 
-    wglMakeCurrent(GLDC,0);
+    wglMakeCurrent(0,0);
     {$IFDEF DebugGLErr} DebugOpenGL(107, '', []); {$ENDIF}
   end;
-end;
-
-procedure TGLSceneObject.LoadCurrentTexture(Tex: PTexture3);
-begin
-  {$IFDEF Debug}
-  if Tex^.OpenGLName=0 then
-    Raise InternalE('LoadCurrentTexture: texture not loaded');
-  {$ENDIF}
-  {$IFDEF DebugGLErr} DebugOpenGL(-108, '', []); {$ENDIF}
-  glBindTexture(GL_TEXTURE_2D, Tex^.OpenGLName);
-  {$IFDEF DebugGLErr} DebugOpenGL(108, '', []); {$ENDIF}
 end;
 
 procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
@@ -1552,7 +1532,7 @@ begin
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
 
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError(glGetError);   {#}
   while Surf<SurfEnd do
   begin
     with Surf^ do
@@ -1573,7 +1553,13 @@ begin
 
         if NeedTex then
         begin
-          LoadCurrentTexture(PList^.Texture);
+          {$IFDEF Debug}
+          if PList^.Texture^.OpenGLName=0 then
+            Raise InternalE('Texture not loaded');
+          {$ENDIF}
+          {$IFDEF DebugGLErr} DebugOpenGL(-108, '', []); {$ENDIF}
+          glBindTexture(GL_TEXTURE_2D, PList^.Texture^.OpenGLName);
+          {$IFDEF DebugGLErr} DebugOpenGL(108, '', []); {$ENDIF}
           NeedTex:=False;
         end;
 
@@ -1762,186 +1748,21 @@ end;
 
  {------------------------}
 
-procedure TGLSceneProxy.Init(Wnd: HWnd;
-                             nCoord: TCoordinates;
-                             DisplayMode: TDisplayMode;
-                             const LibName: String;
-                             var FullScreen, AllowsGDI: Boolean;
-                             FogDensity: Single;
-                             FogColor, FrameColor: TColorRef);
+procedure TGLTextureManager.ClearTexture(Tex: PTexture3);
 begin
- {MasterVersion:=VersionGLSceneObject-1;
-  MasterUpdate;}
-  NeedGLSceneObject(0,0);
-  if not (nCoord is TCameraCoordinates) then
-    Raise InternalE('OpenGL does not support non-perspective views (yet)');
-  ProxyWnd:=Wnd;
-  Coord:=nCoord;
-  nFrameColor:=FrameColor;
-  FullScreen:=False;
-  TTextureManager.AddScene(Self, False);
-end;
-
-procedure TGLSceneProxy.Copy3DView(SX,SY: Integer; DC: HDC);
-var
- L, R, T, B: Integer;
- bmiHeader: TBitmapInfoHeader;
- BmpInfo: TBitmapInfo absolute bmiHeader;
- Bits: Pointer;
- FrameBrush: HBrush;
- Rc: TRect;
-
-  procedure Frame(X,Y,W,H: Integer);
-  var
-    Rect: TRect;
+  if OpenGlLoaded then
   begin
-    if FrameBrush=0 then
-      FrameBrush:=CreateSolidBrush(nFrameColor);
-    Rect:=Bounds(X,Y,W,H);
-    FillRect(DC, Rect, FrameBrush);
-  end;
-
-begin
-  if (CurrentGLSceneObject=Nil) or not CurrentGLSceneObject.FReady then
-  begin
-    Rc:=Rect(0,0,SX,SY);
-    FrameBrush:=CreateHatchBrush(HS_DIAGCROSS, $808080);
-    SetBkColor(DC, $000000);
-    FillRect(DC, Rc, FrameBrush);
-    DeleteObject(FrameBrush);
-    Exit;
-  end;
-
-  L:=0;
-  R:=(ScreenX+3) and not 3;
-  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
-  with bmiHeader do
-  begin
-    biSize:=SizeOf(TBitmapInfoHeader);
-    biPlanes:=1;
-    biBitCount:=24;
-    biWidth:=R-L;
-    biHeight:=ScreenY;
-  end;
-
-  B:=bmiHeader.biWidth*bmiHeader.biHeight;
-  GetMem(Bits, B*3);
-  try
-    if B>0 then
+    if (Tex^.OpenGLName<>0) then
     begin
-
-      glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_BGR, GL_UNSIGNED_BYTE, Bits^);
-
-// not needed ! we live in BGR capable open gl driver times       
-(*      glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
-      {$IFDEF DebugGLErr} DebugOpenGL(999, '', []); {$ENDIF}
-
-      { we have to swap the bytes (RGB --> BGR)...}
-      asm
-       push esi
-       push edi
-       mov eax, [B]
-       mov esi, [Bits]
-       lea edi, [esi+2*eax]
-       add edi, eax
-
-       @loop:
-        mov eax, [esi]   {R2B1G1R1}
-        mov edx, [esi+4] {G3R3B2G2}
-        bswap eax
-        xchg al, dh
-        ror eax, 8
-        mov [esi], eax
-
-        mov eax, [esi+8] {B4G4R4B3}
-        bswap edx
-        xchg al, dh
-        bswap eax
-        bswap edx
-        rol eax, 8
-        mov [esi+4], edx
-        mov [esi+8], eax
-
-        add esi, 12
-        cmp esi, edi
-       jne @loop
-
-       pop edi
-       pop esi
-      end;
-*)
+      {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+      glDeleteTextures(1, Tex^.OpenGLName);
+      {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+      Tex^.OpenGLName:=0;
     end;
-    L:=(SX-bmiHeader.biWidth) div 2;
-    T:=(SY-bmiHeader.biHeight) div 2;
-    R:=L+bmiHeader.biWidth;
-    B:=T+bmiHeader.biHeight;
-    FrameBrush:=0;
-    try
-      if L>0 then  Frame(0, T, L, B-T);
-      if T>0 then  Frame(0, 0, SX, T);
-      if R<SX then Frame(R, T, SX-R, B-T);
-      if B<SY then Frame(0, B, SX, SY-B);
-    finally
-      if FrameBrush<>0 then
-        DeleteObject(FrameBrush);
-    end;
-    SetDIBitsToDevice(DC, L, T, bmiHeader.biWidth, bmiHeader.biHeight, 0,0,0, bmiHeader.biHeight, Bits, BmpInfo, 0);
-  finally
-    FreeMem(Bits);
   end;
 end;
 
-{procedure TGLSceneProxy.MasterUpdate;
-var
- I: Integer;
-begin
- NeedGLSceneObject;
- if VersionGLSceneObject<>MasterVersion then
-  begin
-   for I:=0 to Textures.Count-1 do
-    with PTexture3(Textures.Objects[I])^ do
-     OpenGLName:=0;
-   MasterVersion:=VersionGLSceneObject;
-  end;
-end;}
-
-function TGLSceneProxy.StartBuildScene;
-begin
-  {MasterUpdate;} NeedGLSceneObject(0,0);
-  Result:=CurrentGLSceneObject.StartBuildScene(VertexSize);
-end;
-
-procedure TGLSceneProxy.EndBuildScene;
-begin
-  {$IFDEF Debug}
-  if CurrentGLSceneObject=Nil then
-    raise InternalE('proxy: EndBuildScene');
-  {$ENDIF}
-  CurrentGLSceneObject.EndBuildScene;
-end;
-
-procedure TGLSceneProxy.Render3DView;
-begin
-  NeedGLSceneObject((ScreenX+7) and not 7, (ScreenY+3) and not 3);
-  if CurrentGLSceneObject.Ready then
-    CurrentGLSceneObject.RenderOpenGL(Self)
-  else
-    InvalidateRect(ProxyWnd, Nil, True);
-end;
-
-procedure TGLSceneProxy.BuildTexture(Texture: PTexture3);
-begin
-  {$IFDEF Debug}
-  if CurrentGLSceneObject=Nil then
-    raise InternalE('proxy: BuildTexture');
-  {$ENDIF}
-  CurrentGLSceneObject.BuildTexture(Texture);
-end;
-
-function TGLSceneObject.GetRC(): HGLRC;
-begin
-  Result:=RC;
-end;
+ {------------------------}
 
 procedure CheckOpenGLError(GlError: GLenum);
 begin

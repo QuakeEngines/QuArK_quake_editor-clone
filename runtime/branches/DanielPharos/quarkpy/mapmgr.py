@@ -149,6 +149,7 @@ class MapLayout(BaseLayout):
         self.polyview.ondraw = self.polyviewdraw
         self.polyview.onmouse = self.polyviewmouse
         self.polyview.hint = "|click to select texture"
+        self.polyview.viewtype = "panel"
         return fp
 
     def bs_faceform(self, panel):
@@ -179,6 +180,7 @@ class MapLayout(BaseLayout):
         self.faceform.setdata([], quarkx.getqctxlist(':form', "Face")[-1])
         self.faceform.onchange = self.faceformchange
         self.faceview = fp.newmapview()
+        self.faceview.viewtype = "panel"
         facezoombtn.views = [self.faceview]
         return fp
 
@@ -201,6 +203,7 @@ class MapLayout(BaseLayout):
         self.bezierview = fp.newmapview()
         # bezierzoombtn.views = [self.bezierview]
         self.bezierview.color = NOCOLOR
+        self.bezierview.viewtype = "panel"
         bezierzoombtn.views = [self.bezierview]
         return fp
 
@@ -878,6 +881,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.18  2006/08/21 21:16:04  cdunde
+#One item left out of last correction.
+#
 #Revision 1.17  2006/08/21 03:14:06  cdunde
 #Daniel (d.a.a.) and cdunde finally found fix for Access Violation errors
 #with various selections of entities to display their form data.

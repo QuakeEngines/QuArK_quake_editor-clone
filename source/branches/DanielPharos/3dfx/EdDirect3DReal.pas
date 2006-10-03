@@ -230,6 +230,7 @@ procedure TDirect3DSceneObject.Init(Wnd: HWnd;
                                     FogColor, FrameColor: TColorRef);
 var
   l_Res: HResult;
+  Setup: QObject;
 begin
   ReleaseResources;
   { is the Direct3D object already loaded? }
@@ -259,6 +260,17 @@ begin
   FullScreen:=False;
   TTextureManager.AddScene(Self, False);
   //TTextureManager.GetInstance.FFreeTexture:=FreeDirect3DTexture;
+   
+  Setup:=SetupSubSet(ssGeneral, '3D View');
+  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
+  begin
+    FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
+  end
+  else
+  begin
+    FarDistance:=1500;
+  end;
+
    
 {  g_D3DDevice.SetClearColor(D3DXColorToDWord(D3DXColor(0,0,0,0)));
   g_D3DDevice.SetRenderState(D3DRENDERSTATE_AMBIENT, $ffffffff);

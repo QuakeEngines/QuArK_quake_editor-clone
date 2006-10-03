@@ -102,6 +102,7 @@ const
 type
  TViewEntities = (veNever, veBoxes, veModels);
  TDisplayMode = (dmEditor, dmPanel, dmWindow, dmFullScreen);
+ TDisplayType = (dtXY, dtXZ, dtYZ, dt2D, dt3D);
 
  PModel3DInfo = ^TModel3DInfo;
  TModel3DInfo = record
@@ -168,6 +169,7 @@ type
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
    PolyFaces, ModelInfo, BezierInfo, SpriteInfo: TList;
+   Perspective: TDisplayType;
    procedure ClearPList;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
@@ -185,14 +187,16 @@ type
    ErrorMsg: String;
    SolidColors: Boolean;
    TemporaryStuff: TQList;   { anything that should not be freed while the scene is alive }
+   FarDistance: TDouble;
+   FogDensity: Single;
    constructor Create;
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
                   DisplayMode: TDisplayMode;
+                  DisplayType: TDisplayType;
                   const LibName: String;
-                  var FullScreen, AllowsGDI: Boolean;
-                  FogDensity: Single;
+                  var AllowsGDI: Boolean;
                   FogColor, FrameColor: TColorRef); virtual; abstract;
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
@@ -231,22 +235,22 @@ type
   {TexOpacityInfo: TTexOpacityInfo;}
   {procedure ChangePaletteLmp(Lmp: PPaletteLmp{; PalWarning: TPaletteWarning);}
   {procedure ScaleTexture(w1,h1: Integer; var info: GrTexInfo; Q: QPixelSet);}
-   procedure Init(FullScreen: Boolean);
+   procedure Init();
    procedure FreeTexture(Tex: PTexture3);
  protected
    constructor Create;
  public
-   FFreeTexture: procedure (Tex: PTexture3);
    DummyGameInfo: PGameBuffer;
    DownloadedPalette: PGuPalette;
    GammaBuffer: TGeneralGammaBuffer;
    destructor Destroy; override;
    class function GetInstance : TTextureManager;
-   class procedure AddScene(Scene: TSceneObject; FullScreen: Boolean);
+   class procedure AddScene(Scene: TSceneObject);
    class procedure RemoveScene(Scene: TSceneObject);
    class procedure FreeNonVisibleTextures;
    procedure GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject{; PalWarning: TPaletteWarning});
    procedure FreeTextures(ForceAll: Boolean);
+   procedure ClearTexture(Tex: PTexture3); virtual;
    function CanFree: Boolean;
    function UnifiedPalette: Boolean;
    function ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
@@ -1315,11 +1319,11 @@ begin
  GetInstance:=TextureManager;
 end;
 
-class procedure TTextureManager.AddScene(Scene: TSceneObject; FullScreen: Boolean);
+class procedure TTextureManager.AddScene(Scene: TSceneObject);
 begin
  with GetInstance do
   begin
-   Init(FullScreen);
+   Init();
    if Scenes.IndexOf(Scene)<0 then
     Scenes.Add(Scene);
   end;
@@ -1344,8 +1348,7 @@ end;
 
 procedure TTextureManager.FreeTexture(Tex: PTexture3);
 begin
- if Assigned(FFreeTexture) then
-  FFreeTexture(Tex);
+ ClearTexture(Tex);
  FreeMem(Tex^.info.data);
  Tex^.SourceTexture.AddRef(-1);
  Dispose(Tex);
@@ -1814,7 +1817,7 @@ begin
  P^.Texture:=PTex;
 end;
 
-procedure TTextureManager.Init(FullScreen: Boolean);
+procedure TTextureManager.Init({FullScreen: Boolean});
 (*var
  I: Integer;*)
 begin
@@ -1853,6 +1856,10 @@ begin
      TextureManager:=Nil;
     end;
   end;
+end;
+
+procedure TTextureManager.ClearTexture(Tex: PTexture3);
+begin
 end;
 
  {------------------------}

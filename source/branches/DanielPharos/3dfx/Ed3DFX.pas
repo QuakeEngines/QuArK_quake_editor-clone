@@ -95,7 +95,7 @@ unit Ed3DFX;
 
 interface
 
-uses Windows, Classes, SysUtils,
+uses Windows, Classes, Setup, SysUtils,
      PyMath, qmath, Bezier,
      QkObjects,
      Glide,
@@ -155,9 +155,9 @@ type
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
                   DisplayMode: TDisplayMode;
+                  DisplayType: TDisplayType;
                   const LibName: String;
-                  var FullScreen, AllowsGDI: Boolean;
-                  FogDensity: Single;
+                  var AllowsGDI: Boolean;
                   FogColor, FrameColor: TColorRef); override;
    destructor Destroy; override;
    procedure Render3DView; override;
@@ -399,15 +399,18 @@ begin
  SolidColors:=nSolidColors;
 end;
 
-procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; const LibName: String;
-          var FullScreen, AllowsGDI: Boolean; FogDensity: Single; FogColor, FrameColor: TColorRef);
+procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
+          const LibName: String; var AllowsGDI: Boolean; FogColor, FrameColor: TColorRef);
 var
  I: Integer;
  HiColor: Boolean;
+ FullScreen: Boolean;
+ Setup: QObject;
 begin
  Coord:=nCoord;
+ FullScreen:=False;
  Open3DFXEditor(LibName, FullScreen);
- TTextureManager.AddScene(Self, FullScreen);
+ TTextureManager.AddScene(Self);
  // Assigned check added by SilverPaladin
  if (not Assigned(qrkGlideState)) then
    raise Exception.Create('You must first call Open3dFX');
@@ -425,6 +428,17 @@ begin
     HiColor:=HiColor and (qrkGlideVersion>=SoftTexFmt565);
    end;
  TGlideState(qrkGlideState).Accepts16bpp:=HiColor;
+
+ Setup:=SetupSubSet(ssGeneral, '3D View');
+ if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
+ begin
+   FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
+ end
+ else
+ begin
+   FarDistance:=1500;   {Daniel: This should be zero... = Disabled FarDistance}
+ end;
+ FogDensity:=Setup.GetFloatSpec('FogDensity', 1) * FOG_DENSITY_1;
 
  I:=Ord({not nCoord.FlatDisplay and} Assigned(guFogGenerateExp2));
  ReallocMem(FogTableCache, SizeOf(GrFogTable_t)*I);
@@ -1517,7 +1531,7 @@ begin
       else
       begin
         MinRadius:=-GlideRadius;
-        MaxRadius:=GlideRadius+T3DCoordinates(CCoord).FarDistance;
+        MaxRadius:=GlideRadius+FarDistance;
       end;
 
       PV:=PVertex3D(Surf);

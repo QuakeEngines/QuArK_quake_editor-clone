@@ -666,8 +666,8 @@ var
   glViewport: procedure (x, y : GLint; width, height : GLsizei); stdcall;
   glMatrixMode: procedure (mode: GLenum); stdcall;
   glLoadIdentity: procedure; stdcall;
-  glRotatef: procedure (angle, x, y, z : GLfloat); stdcall;
-  glTranslatef: procedure (x, y, z : GLfloat); stdcall;
+  glRotated: procedure (angle, x, y, z : GLdouble); stdcall;
+  glTranslated: procedure (x, y, z : GLdouble); stdcall;
   glClear: procedure (mask: GLbitfield); stdcall;
   glBegin: procedure (mode: GLenum); stdcall;
   glEnd: procedure; stdcall;
@@ -694,6 +694,7 @@ var
   glDeleteLists: procedure (list: GLuint; range: GLsizei); stdcall;
   glReadPixels: procedure (x, y: GLint; width, height: GLsizei; format, typ: GLenum; var pixels); stdcall;
   glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall; {Decker 2003.03.12 - Added}
+  glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall; {Daniel 2006.09.19 - Added}
 
   (*
   ** Utility routines from GLU32.DLL
@@ -709,7 +710,7 @@ procedure UnloadOpenGl;
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..42] of //Decker 2006.09.19 - modified
+  OpenGL32DLL_FuncList : array[0..43] of //Decker 2006.09.19 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -735,8 +736,8 @@ const
    ,(FuncPtr: @@glViewport;            FuncName: 'glViewport'            )
    ,(FuncPtr: @@glMatrixMode;          FuncName: 'glMatrixMode'          )
    ,(FuncPtr: @@glLoadIdentity;        FuncName: 'glLoadIdentity'        )
-   ,(FuncPtr: @@glRotatef;             FuncName: 'glRotatef'             )
-   ,(FuncPtr: @@glTranslatef;          FuncName: 'glTranslatef'          )
+   ,(FuncPtr: @@glRotated;             FuncName: 'glRotated'             )
+   ,(FuncPtr: @@glTranslated;          FuncName: 'glTranslated'          )
    ,(FuncPtr: @@glClear;               FuncName: 'glClear'               )
    ,(FuncPtr: @@glBegin;               FuncName: 'glBegin'               )
    ,(FuncPtr: @@glEnd;                 FuncName: 'glEnd'                 )
@@ -761,6 +762,7 @@ const
    ,(FuncPtr: @@glDeleteLists;         FuncName: 'glDeleteLists'         )
    ,(FuncPtr: @@glReadPixels;          FuncName: 'glReadPixels'          )
    ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           ) //Decker 2003.03.12 - Added
+   ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //Daniel 2006.09.28 - Added
  );
 
   Glu32DLL_FuncList : array[0..0] of

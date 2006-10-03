@@ -240,6 +240,7 @@ class BaseLayout:
         floating = BaseLayout.CurrentRendererOwner
         if floating is not None:
             self.closefull3Dview(floating)
+        #Daniel: Check for FullScreen. If set, go fullscreen!
         floating = quarkx.clickform.newfloating(0, "Full 3D view")
         view = floating.mainpanel.newmapview()
         #floating.rect = view.setup["FullScreenSize"]
@@ -253,7 +254,7 @@ class BaseLayout:
         floating.info = view
         floating.onclose = self.closefull3Dview
         self.full3Dview = floating
-        mode = view.full3Dview(1)
+        mode = view.full3Dview()
         if mode!=2: #Check for fullscreen
             #if mode==1: #Check for hidden?
                 #floating.close()
@@ -274,7 +275,7 @@ class BaseLayout:
     def closefull3Dview(self, floating):
         "Closes the 3D view."
         view = floating.mainpanel.controls()[0]
-        view.full3Dview(0)
+        view.full3Dview()
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         setup["Warning3D"] = ""
         #if not offscreen:  #This should be used!

@@ -259,7 +259,7 @@ def qmenuitem1click(m):
         if editor.layout.CurrentRendererOwner is not None:
             editor.layout.full3Dview.close()
         #fp = editor.layout.mpp.pagebtns[1]
-        #editor.layout.faceview.full3Dview(0)
+        #editor.layout.faceview.full3Dview()
         #editor.layout.views.remove(editor.layout.faceview)
         #editor.layout.update3Dviews()
         #editor.layout.faceview = fp.newmapview()    #From: mapmgr.py

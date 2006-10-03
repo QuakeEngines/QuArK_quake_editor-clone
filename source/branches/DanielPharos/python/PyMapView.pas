@@ -145,6 +145,7 @@ type
                      end;
   TPyMapView = class(TCursorScrollBox)
                private
+                 DisplayType: TDisplayType;
                  kDelta: TPoint;
                  FOnDraw, FBoundingBoxes, FOnMouse, FOnKey, FHandles,
                  FOnCameraMove, FBackground: PyObject;
@@ -505,6 +506,7 @@ begin
 
    if MapViewProj is TCameraCoordinates then
     begin
+     DisplayType:=dt3D;
      VAngle:=GetFloatSpec('VAngle', 45);
      if VAngle<5 then
       VAngle:=5
@@ -514,16 +516,32 @@ begin
 
      with TCameraCoordinates(MapViewProj) do
       begin
-       FarDistance:=GetFloatSpec('FarDistance', 1500);
        VAngleDegrees:=VAngle;
        VAngle:=VAngle * (pi/180);
        RFactorBase:=Cos(VAngle)/Sin(VAngle);
        Resize(Self.ClientWidth, Self.ClientHeight);
        MinDistance:=Minoow / GetFloatSpec('DarkFactor', 1);
       end;
+    end
+   else if MapViewProj is TXYCoordinates then
+    begin
+     DisplayType:=dtXY;
+    end
+   else if MapViewProj is TXZCoordinates then
+    begin
+     DisplayType:=dtXZ;
+    end
+   else if MapViewProj is T2DCoordinates then   {There is no separate YZ view at the moment}
+    begin
+     DisplayType:=dtYZ;
+    end
+   else if MapViewProj is T2DCoordinates then
+    begin
+     DisplayType:=dt2D;
     end;
 
   {FullScreen:=Specifics.Values['FullScreen']<>'';}
+   FullScreen:=False;      {Disable FullScreen for the moment...}
    SecondMonitor:=Chr(IntSpec['TwoMonitors']);
 
    if Scene<>Nil then
@@ -547,20 +565,20 @@ begin
       AllowsGDI:=True;
 
       if ViewType=vtEditor then
-       DisplayMode:=dmEditor
+        DisplayMode:=dmEditor
       else if ViewType=vtPanel then
-       DisplayMode:=dmPanel
+        DisplayMode:=dmPanel
       else if ViewType=vtWindow then
-       DisplayMode:=dmWindow
+        DisplayMode:=dmWindow
       else if ViewType=vtFullScreen then
-       DisplayMode:=dmFullScreen
+        DisplayMode:=dmFullScreen
       else
-       DisplayMode:=dmEditor;  {Daniel: Defaults to Editor-mode}
-       {raise 'Unknown ViewType. Unable to create SceneObject';}
+        raise EError(6559);   {'Unknown ViewType. Unable to create SceneObject';}
 
-      Scene.Init(Self.Handle, MapViewProj, DisplayMode, Specifics.Values['Lib'],
-       FullScreen, AllowsGDI, GetFloatSpec('FogDensity', 1) * FOG_DENSITY_1,
-       IntSpec['FogColor'], IntSpec['FrameColor']);
+      {Set DisplayType!!!}
+
+      Scene.Init(Self.Handle, MapViewProj, DisplayMode, DisplayType,
+       Specifics.Values['Lib'], AllowsGDI, IntSpec['FogColor'], IntSpec['FrameColor']);
 
       if AllowsGDI then
        Drawing:=Drawing and not dfNoGDI
@@ -2260,8 +2278,8 @@ begin
        {Resize;}
        CentreEcran:=Centre;
       end;
-     if SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib']='OpenGl32.dll' then
-      NeedScene(False);
+     {if SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib']='OpenGl32.dll' then
+      NeedScene(False);}
     end;
   Result:=PyNoResult;
  except
@@ -2792,13 +2810,11 @@ var
  mode, returnvalue: Integer;
 begin
  try
-  Result:=Nil;
-  if not PyArg_ParseTupleX(args, 'i', [@mode]) then
-   Exit;
   returnvalue:=0;
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
     begin
+     mode:=0;            {Daniel: Change all of this!!! Separate fullscreen option!}
      if mode>=0 then
       if ResetFullScreen(mode>0) then
        returnvalue:=1;

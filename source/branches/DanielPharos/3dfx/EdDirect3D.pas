@@ -49,7 +49,7 @@ unit EdDirect3D;
 
 interface
 
-uses Windows, Classes,
+uses Windows, Classes, Setup,
      qmath, PyMath, PyMath3D,
      DX9,
      EdSceneObject;
@@ -84,9 +84,9 @@ type
     procedure Init(Wnd: HWnd;
                    nCoord: TCoordinates;
                    DisplayMode: TDisplayMode;
+                   DisplayType: TDisplayType;
                    const LibName: String;
-                   var FullScreen, AllowsGDI: Boolean;
-                   FogDensity: Single;
+                   var AllowsGDI: Boolean;
                    FogColor, FrameColor: TColorRef); override;
  (*
     procedure ClearScene; override;
@@ -224,12 +224,13 @@ end;
 procedure TDirect3DSceneObject.Init(Wnd: HWnd;
                                     nCoord: TCoordinates;
                                     DisplayMode: TDisplayMode;
+                                    DisplayType: TDisplayType;
                                     const LibName: String;
-                                    var FullScreen, AllowsGDI: Boolean;
-                                    FogDensity: Single;
+                                    var AllowsGDI: Boolean;
                                     FogColor, FrameColor: TColorRef);
 var
   l_Res: HResult;
+  Setup: QObject;
 begin
   ReleaseResources;
   { is the Direct3D object already loaded? }
@@ -256,9 +257,19 @@ begin
 
   //FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
   Coord:=nCoord;
-  FullScreen:=False;
-  TTextureManager.AddScene(Self, False);
+  TTextureManager.AddScene(Self);
   //TTextureManager.GetInstance.FFreeTexture:=FreeDirect3DTexture;
+   
+  Setup:=SetupSubSet(ssGeneral, '3D View');
+  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
+  begin
+    FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
+  end
+  else
+  begin
+    FarDistance:=1500;
+  end;
+  FogDensity:=Setup.GetFloatSpec('FogDensity', 1) * FOG_DENSITY_1;
    
 {  g_D3DDevice.SetClearColor(D3DXColorToDWord(D3DXColor(0,0,0,0)));
   g_D3DDevice.SetRenderState(D3DRENDERSTATE_AMBIENT, $ffffffff);
