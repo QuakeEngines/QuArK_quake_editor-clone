@@ -1186,6 +1186,7 @@ end;
 procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase);
 var
  SX, SY: Integer;
+ DX, DY, DZ: Double;
 begin
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
   SX:=Source.ScreenX;
@@ -1201,16 +1202,34 @@ begin
   CheckOpenGLError(glGetError);  {#}
   if Perspective=dtXY then
    begin
-    glOrtho(-SX/2, SX/2, -SY/2, SY/2, -8192, 8192);   {Far: Twice the maplimit}
+    with TXYCoordinates(Source.Coord) do
+     begin
+      DX:=(SX/2)/ScalingFactor(Nil);
+      DY:=(SY/2)/ScalingFactor(Nil);
+      DZ:=8192/ScalingFactor(Nil);   {8192: Twice the maplimit}
+     end;
+    glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
    end
   else if Perspective=dtXZ then
    begin
-    glOrtho(-SX/2, SX/2, -SY/2, SY/2, -8192, 8192);   {Far: Twice the maplimit}
+    with TXZCoordinates(Source.Coord) do
+     begin
+      DX:=round((SX/2)/ScalingFactor(Nil));
+      DY:=round((SY/2)/ScalingFactor(Nil));
+      DZ:=round(8192/ScalingFactor(Nil));   {8192: Twice the maplimit}
+     end;
+    glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
     glRotated(90, -1,0,0);
    end
   else if (Perspective=dtYZ) or (Perspective=dt2D) then
    begin
-    glOrtho(-SX/2, SX/2, -SY/2, SY/2, -8192, 8192);   {Far: Twice the maplimit}
+    with T2DCoordinates(Source.Coord) do
+     begin
+      DX:=round((SX/2)/ScalingFactor(Nil));
+      DY:=round((SY/2)/ScalingFactor(Nil));
+      DZ:=round(8192/ScalingFactor(Nil));   {8192: Twice the maplimit}
+     end;
+    glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
     glRotated(270, 0,-1,0);
     glRotated(90, -1,0,0);
    end
@@ -1231,17 +1250,17 @@ begin
   if Perspective=dtXY then
    begin
     with TXYCoordinates(Source.Coord) do
-      glTranslated(pDeltaX - ScrCenter.X, -(pDeltaY - ScrCenter.Y), -4096);
+      glTranslated((pDeltaX - ScrCenter.X)/ScalingFactor(Nil), -(pDeltaY - ScrCenter.Y)/ScalingFactor(Nil), -4096/ScalingFactor(Nil));
    end
   else if Perspective=dtXZ then
    begin
     with TXZCoordinates(Source.Coord) do
-      glTranslated(pDeltaX - ScrCenter.X, -4096, -(pDeltaY - ScrCenter.Y));
+      glTranslated((pDeltaX - ScrCenter.X)/ScalingFactor(Nil), -4096/ScalingFactor(Nil), -(pDeltaY - ScrCenter.Y)/ScalingFactor(Nil));
    end
   else if (Perspective=dtYZ) or (Perspective=dt2D) then
    begin
     with T2DCoordinates(Source.Coord) do
-      glTranslated(-4096, -(pDeltaX - ScrCenter.X), -(pDeltaY - ScrCenter.Y));
+      glTranslated(-4096/ScalingFactor(Nil), -(pDeltaX - ScrCenter.X)/ScalingFactor(Nil), -(pDeltaY - ScrCenter.Y)/ScalingFactor(Nil));
    end
   else if Perspective=dt3D then
    begin
