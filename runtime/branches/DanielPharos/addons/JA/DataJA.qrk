@@ -4,7 +4,35 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
-//Revision 1.1  2004/01/12 14:30:09  Nazar
+//Revision 1.9  2006/09/27 02:54:54  cdunde
+//Minor update
+//
+//Revision 1.8  2006/09/23 12:02:53  cdunde
+//Various updates and corrections by nazar.
+//
+//Revision 1.7  2006/09/21 16:39:52  cdunde
+//To change from Binary to ASCII for consistency with other addons.
+//
+//Revision 1.6  2006/09/21 02:09:38  nazar
+//Added '_sun' parameter for light entity
+//Added missed 'targetname' parameters for some target_* entities which need it
+//
+//Revision 1.5  2006/08/18 14:18:20  nazar
+//Entity point_combat has been moved to Waypoints entities folder
+//Added '_lightmapscale' params for the func_group entity
+//Numerous other minor changes of parameters and hints of entities
+//
+//Revision 1.4  2006/01/18 16:44:16  nazar
+//Added 'target*' params for waypoint* entities 
+//Deleted unnecessary waypoint_navgoal_* entities except waypoint_navgoal
+//
+//Revision 1.3  2005/10/03 19:14:21  nazar
+//Added the earlier missed NPC_HazardTrooper entity form
+//
+//Revision 1.2  2004/01/28 17:06:42  nazar
+//Added misc_skyportal, Angle to some entities, all misc_* entities sort by alphabet
+//
+//Revision 1.1  2004/01/12 14:30:09  nazar
 //Full singleplayer game support of Jedi Academy (multiplayer partly)
 //
 
@@ -68,7 +96,7 @@ QQRKSRC1
       {
         Cap = "detail"
         Typ = "X134217728"
-        Hint = "for small, detail brushes that QVIS3 can ignore"
+        Hint = "for small, detail brushes that Q3vis can ignore"
       }
     }
   }
@@ -5227,6 +5255,12 @@ QQRKSRC1
           ;desc = "Used as a positional target for in-game calculation, like jumppad targets. target_position does the same thing"
           Origin = "0 0 0"
         }
+        ref_tag:e =
+        {
+          ;desc = "These tags can later be refered to by the scripting system so that their origins and angles can be referred to"
+          Origin = "0 0 0"
+          Angles = "360 0 0"
+        }
         target_activate:e =
         {
           ;desc = "Will set the target(s) to be usable/triggerable"
@@ -5356,13 +5390,7 @@ QQRKSRC1
         {
           ;desc = ""
           Origin = "0 0 0"
-        }
-        ref_tag:e =
-        {
-          ;desc = "These tags can later be refered to by the scripting system so that their origins and angles can be referred to"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
+        }        
       }
       Light.qtxfolder =
       {
@@ -5741,6 +5769,16 @@ QQRKSRC1
           ;desc = "A waypoint for script navgoals. Not included in navigation data if NO_AUTO_CONNECT checked"
           Origin = "0 0 0"
         }
+        point_combat:e =
+        {
+          ;desc = "NPCs in bState BS_COMBAT_POINT will find their closest empty combat_point"
+          Origin = "0 0 0"
+        }
+        path_corner:e =
+        {
+          ;desc = "Train path corners"
+          Origin = "0 0 0"
+        }
         rail_track:b =
         {
           ;desc = "A rail track determines what location and direction rail_mover entities go. Don't bother with any origin brushes"
@@ -5754,11 +5792,6 @@ QQRKSRC1
         rail_mover:b =
         {
           ;desc = "Rail Mover will go along the track and lane of your choice. Just target it to either a track or a lane. Don't bother with any origin brushes"
-          Origin = "0 0 0"
-        }
-        path_corner:e =
-        {
-          ;desc = "Train path corners"
           Origin = "0 0 0"
         }
       }
@@ -5878,6 +5911,12 @@ QQRKSRC1
         NPC_Desann:e =
         {
           ;desc = "Desann"
+          Origin = "0 0 0"
+          Angle = "360"
+        }
+        NPC_Galak:e =
+        {
+          ;desc = "Officer Galak, may use Mech"
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -6140,11 +6179,6 @@ QQRKSRC1
           Angle = "360"
         }
         }
-        point_combat:e =
-        {
-          ;desc = "NPCs in bState BS_COMBAT_POINT will find their closest empty combat_point"
-          Origin = "0 0 0"
-        }
         NPC_spawner:e =
         {
           ;desc = "Spawn dedicated NPC. If targeted, will only spawn a NPC when triggered"
@@ -6214,12 +6248,6 @@ QQRKSRC1
         NPC_ImpWorker:e =
         {
           ;desc = "Imperial Worker"
-          Origin = "0 0 0"
-          Angle = "360"
-        }
-        NPC_Galak:e =
-        {
-          ;desc = "Galek"
           Origin = "0 0 0"
           Angle = "360"
         }
@@ -6395,7 +6423,7 @@ QQRKSRC1
       t_soundbrowser:incl = 
       {
             Typ = "EP"
-            DefExt = "wav; mp3"
+            DefExt = "wav; *.mp3"
             BasePath = "$Game\base\sound"
             CutPath = "$Game\base\?"
             DirSep = "/"
@@ -7213,6 +7241,12 @@ QQRKSRC1
          "amage are 0, it will not make an explosion"
         typ = "E"
       }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = "default script to run once spawned (none by default)"
+        typ = "E"
+      }
       team: =
       {
         txt = "&"
@@ -7904,6 +7938,24 @@ QQRKSRC1
          "ves itself)"
         typ = "E"
       }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = "Only the NPC with this name can damage this"
+        typ = "E"
+      }
+      forcevisible: =
+      {
+        txt = "&"
+        hint = "When you turn on force sight (any level), you can see these draw through the entire level..."
+        typ = "E"
+      }
+      redCrosshair: =
+      {
+        txt = "&"
+        hint = "If set to 1, crosshair turns red when you look at this"
+        typ = "E"
+      }
       paintarget: =
       {
         txt = "&"
@@ -7978,6 +8030,14 @@ QQRKSRC1
         hint = "Does not play an explosion effect, though will still create ch"
          "unks if specified"
         typ = "X256"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        cap = "START_OFF"
+        hint = "Does not play an explosion effect, though will still create ch"
+         "unks if specified"
+        typ = "X4096"
       }
     }
     NPC_Trandoshan:form =
@@ -12745,7 +12805,7 @@ QQRKSRC1
     }
     NPC_Monster_Rancor:form =
     {
-      bbox = '-12 -12 -24 12 12 40'
+      bbox = '-30 -30 -24 30 30 136'
       target: =
       {
         txt = "&"
@@ -12897,7 +12957,7 @@ QQRKSRC1
     }
     NPC_Monster_Mutant_Rancor:form =
     {
-      bbox = '-12 -12 -24 12 12 40'
+      bbox = '-60 -60 -24 60 60 360'
       target: =
       {
         txt = "&"
@@ -18554,6 +18614,18 @@ QQRKSRC1
         hint = "Vehicles targetname AND script_targetname"
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Vehicles targetname"
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = "Spawn script for this Vehicle"
+        typ = "E"
+      }
       noVisTime: =
       {
         txt = "&"
@@ -18564,6 +18636,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "which skin to set red for example - If no skin it is random"
+        typ = "E"
+      }
+      showhealth: =
+      {
+        txt = "&"
+        hint = "set to 1 to show health bar on this entity when crosshair is over it"
         typ = "E"
       }
       spawnflags: =
@@ -20407,6 +20485,12 @@ QQRKSRC1
         hint = "uses its target2 when the fx gets triggered"
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Target name for control purposes by another objects or scripts"
+        typ = "E"
+      }
       fxFile: =
       {
         t_efxbrowser = !
@@ -20442,6 +20526,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "defaults to 1000"
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
         typ = "E"
       }
       spawnflags: =
@@ -20499,6 +20589,12 @@ QQRKSRC1
         hint = "thing to fire when someone looks at this thing"
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
+        typ = "E"
+      }
     }
     target_gravity_change:form =
     {
@@ -20507,6 +20603,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Normal = 800, Valid range: any"
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
         typ = "E"
       }
       spawnflags: =
@@ -20524,6 +20626,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Normal = 6, Valid range 0 - 10"
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
         typ = "E"
       }
     }
@@ -20553,10 +20661,28 @@ QQRKSRC1
     target_autosave:form =
     {
       bbox = '-4 -4 -4 4 4 4'
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity. Make sure it won't trigger during dialogue or cinematic or it will stutter!"
+        typ = "E"
+      }
     }
     target_kill:form =
     {
       bbox = '-8 -8 -8 8 8 8'
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
       spawnflags: =
       {
         txt = "&"
@@ -20575,6 +20701,12 @@ QQRKSRC1
     target_give:form =
     {
       bbox = '-8 -8 -8 8 8 8'
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
+        typ = "E"
+      }
     }
     target_score:form =
     {
@@ -20585,10 +20717,22 @@ QQRKSRC1
         hint = "number of points to add, default 1"
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
+        typ = "E"
+      }
     }
     target_teleporter:form =
     {
       bbox = '-8 -8 -8 8 8 8'
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
+        typ = "E"
+      }
     }
     target_print:form =
     {
@@ -20597,6 +20741,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "text to print"
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
         typ = "E"
       }
       spawnflags: =
@@ -20624,6 +20774,18 @@ QQRKSRC1
     target_delay:form =
     {
       bbox = '-8 -8 -8 8 8 8'
+      target: =
+      {
+        txt = "&"
+        hint = "What to use when delay is out"
+        type = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targeting name"
+        type = "E"
+      }
       random: =
       {
         txt = "&"
@@ -20658,13 +20820,19 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = ""
+        hint = "Targetname of this entity"
         typ = "E"
       }
     }
     target_position:form =
     {
       bbox = '-4 -4 -4 4 4 4'
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this point"
+        typ = "E"
+      }
     }
     target_location:form =
     {
@@ -20673,6 +20841,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "name of this location"
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
         typ = "E"
       }
       count: =
@@ -20696,10 +20870,22 @@ QQRKSRC1
          "e sure they all have the same count!"
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this Secret entity"
+        typ = "E"
+      }
     }
     target_level_change:form =
     {
       bbox = '-4 -4 -4 4 4 4'
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname for activate this one by another"
+        typ = "E"
+      }
       target: =
       {
         txt = "&"
@@ -20755,6 +20941,12 @@ QQRKSRC1
     target_change_parm:form =
     {
       bbox = '-4 -4 -4 4 4 4'
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname for activate this one by another"
+        typ = "E"
+      }
       parm1: =
       {
         txt = "&"
@@ -20921,22 +21113,28 @@ QQRKSRC1
     target_activate:form =
     {
       bbox = '-4 -4 -4 4 4 4'
-      targetname: =
-      {
-        txt = "&"
-        hint = ""
-        typ = "E"
-      }
       target: =
       {
         txt = "&"
         hint = ""
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname of this entity"
+        typ = "E"
+      }
     }
     target_remove_powerups:form =
     {
       bbox = '-8 -8 -8 8 8 8'
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
     }
     target_relay:form =
     {
@@ -21049,16 +21247,16 @@ QQRKSRC1
     target_deactivate:form =
     {
       bbox = '-4 -4 -4 4 4 4'
-      targetname: =
+      target: =
       {
         txt = "&"
         hint = ""
         typ = "E"
       }
-      target: =
+      targetname: =
       {
         txt = "&"
-        hint = ""
+        hint = "Targetname of this entity"
         typ = "E"
       }
     }
@@ -21082,6 +21280,18 @@ QQRKSRC1
         t_soundbrowser = !
         txt = "&"
         hint = "wav file to play"
+        typ = "E"
+      }
+      SoundSet: =
+      {        
+        txt = "&"
+        hint = "Sound set from list of sound.txt"
+        typ = "E"
+      }
+      targetname: =
+      {        
+        txt = "&"
+        hint = "Target name for use"
         typ = "E"
       }
       spawnflags: =
@@ -21143,6 +21353,12 @@ QQRKSRC1
         hint = "how far from the navgoal an ent can be before it thinks it rea"
          "ched it - default is '0' which means no radius check, just have to t"
          "ouch it"
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "If NO_AUTO_CONNECT cheked, this is for connection with another waypoint_navgoal"
         typ = "E"
       }
       targetname: =
@@ -22477,7 +22693,8 @@ QQRKSRC1
     }
     weapon_thermal:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -2 16 16 16'
+      mdl = "models/weapons2/thermal/thermal_pu.md3"
       notfree: =
       {
         txt = "&"
@@ -22522,14 +22739,14 @@ QQRKSRC1
       {
         Txt = "&"
         Typ = "X2"
-        Cap = "STARFLEET"
+        Cap = "NOPLAYER"
         Hint = "allows only starfleets to pick it up"
       }
       spawnflags: =
       {
         Txt = "&"
         Typ = "X4"
-        Cap = "MONSTER"
+        Cap = "ALLOWNPC"
         Hint = "allows only NON-starfleets to pick it up"
       }
       spawnflags: =
@@ -22551,6 +22768,27 @@ QQRKSRC1
         Txt = "&"
         Typ = "X32"
         Cap = "INVISIBLE"
+        Hint = ""
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X64"
+        Cap = "NOGLOW"
+        Hint = ""
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X128"
+        Cap = "USEPICKUP"
+        Hint = ""
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X256"
+        Cap = "STATIONARY"
         Hint = ""
       }
     }
@@ -22635,7 +22873,8 @@ QQRKSRC1
     }
     weapon_trip_mine:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -2 16 16 16'
+      mdl="models/weapons2/laser_trap/laser_trap_pu.md3"
       notfree: =
       {
         txt = "&"
@@ -22709,12 +22948,34 @@ QQRKSRC1
         Txt = "&"
         Typ = "X32"
         Cap = "INVISIBLE"
+        Hint = ""
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X64"
+        Cap = "NOGLOW"
+        Hint = ""
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X128"
+        Cap = "USEPICKUP"
+        Hint = ""
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X256"
+        Cap = "STATIONARY"
         Hint = ""
       }
     }
     weapon_det_pack:form =
     {
-      bbox = '-16 -16 -16 16 16 16'
+      bbox = '-16 -16 -2 16 16 16'
+      mdl="models/weapons2/detpack/det_pack_pu.md3"
       notfree: =
       {
         txt = "&"
@@ -22788,6 +23049,27 @@ QQRKSRC1
         Txt = "&"
         Typ = "X32"
         Cap = "INVISIBLE"
+        Hint = ""
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X64"
+        Cap = "NOGLOW"
+        Hint = ""
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X128"
+        Cap = "USEPICKUP"
+        Hint = ""
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X256"
+        Cap = "STATIONARY"
         Hint = ""
       }
     }
@@ -23550,9 +23832,21 @@ QQRKSRC1
         hint = "brush only  gets vertex lighting"
         typ = "E"
       }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "For large constructions, 2 or 3 is a fine value. For a high-detail shadows, use a value of 0.25 or so."
+        typ = "E"
+      }
     }
     func_rotating:form =
     {
+      targetname: =
+      {
+        txt = "&"
+        hint = "turns on/off when used"
+        typ = "E"
+      }
       dmg: =
       {
         txt = "&"
@@ -23633,6 +23927,12 @@ QQRKSRC1
     }
     func_plat:form =
     {
+      targetname: =
+      {
+        txt = "&"
+        hint = "turns on/off when used"
+        typ = "E"
+      }
       speed: =
       {
         txt = "&"
@@ -23786,6 +24086,12 @@ QQRKSRC1
         hint = "damage to inflict when blocked (2 default)"
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "turns on/off when used"
+        typ = "E"
+      }
       model2: =
       {
         txt = "&"
@@ -23849,6 +24155,12 @@ QQRKSRC1
         hint = "constantLight radius"
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "turns on/off when used"
+        typ = "E"
+      }
       spawnflags: =
       {
         txt = "&"
@@ -23893,6 +24205,12 @@ QQRKSRC1
         hint = "base time between triggering all targets, default is 1"
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "turns on/off when used"
+        typ = "E"
+      }
       spawnflags: =
       {
         txt = "&"
@@ -23913,7 +24231,10 @@ QQRKSRC1
       NPC_target: =
       {
         txt = "&"
-        hint = "NPC_types to look for"
+        hint = "NPC_types to look for ownername. If any, who to calc the"
+        "distance from- default is the trigger_entdist himself. Example:"
+        "target 'biessman telsia' will look for the biessman and telsia NPC" 
+        "if it finds either of these within distance it will fire."
         typ = "E"
       }
       target: =
@@ -24211,49 +24532,49 @@ QQRKSRC1
       {
         txt = "&"
         cap = "AUTOANIMATE"
-        hint = "the wall will not be there"
+        hint = "if a model is used it will animate"
         typ = "X2"
       }
       spawnflags: =
       {
         txt = "&"
         cap = "ANIM_ONCE"
-        hint = "the wall will not be there"
+        hint = "When turned on, goes through anim once"
         typ = "X4"
       }
       spawnflags: =
       {
         txt = "&"
         cap = "ALWAYS_ON"
-        hint = "the wall will not be there"
+        hint = "Doesn't toggle on and off when used, just runs usescript and fires target"
         typ = "X8"
       }
       spawnflags: =
       {
         txt = "&"
         cap = "BLOCKCHECK"
-        hint = "the wall will not be there"
+        hint = "Will not turn on while something is inside it"
         typ = "X16"
       }
       spawnflags: =
       {
         txt = "&"
         cap = "NPC_USE"
-        hint = "the wall will not be there"
+        hint = "Only NPCs can directly use this"
         typ = "X32"
       }
       spawnflags: =
       {
         txt = "&"
         cap = "PLAYER_USE"
-        hint = "the wall will not be there"
+        hint = "Player can use it with the use button"
         typ = "X64"
       }
       spawnflags: =
       {
         txt = "&"
         cap = "INACTIVE"
-        hint = "the wall will not be there"
+        hint = "Start inactive"
         typ = "X128"
       }
     }
@@ -24455,7 +24776,7 @@ QQRKSRC1
         typ = "C"
         items = "player"$0D"neutral"$0D"enemy"
         values = "player"$0D"neutral"$0D"enemy"
-      }
+      }      
       target: =
       {
         txt = "&"
@@ -24473,6 +24794,24 @@ QQRKSRC1
       {
         txt = "&"
         hint = "target to fire when hit (but not destroyed)"
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = "Only the NPC with this name can damage this"
+        typ = "E"
+      }
+      forcevisible: =
+      {
+        txt = "&"
+        hint = "When you turn on force sight (any level), you can see these draw through the entire level..."
+        typ = "E"
+      }
+      redCrosshair: =
+      {
+        txt = "&"
+        hint = "If set to 1, crosshair turns red when you look at this"
         typ = "E"
       }
       spawnflags: =
@@ -24587,6 +24926,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "sound door makes when opening/closing"
+        typ = "E"
+      }
+      soundset: =
+      {
+        txt = "&"
+        hint = "soundset (sound preset) for this door"
         typ = "E"
       }
       linear: =
@@ -24817,7 +25162,7 @@ QQRKSRC1
     }
     emplaced_eweb:form =
     {
-      bbox = '-24 -24 0 24 24 64'
+      bbox = '-12 -12 -24 12 12 24'
       wait: =
       {
         txt = "&"
@@ -24842,9 +25187,7 @@ QQRKSRC1
       count: =
       {
         txt = "&"
-        hint = "if CANRESPAWN spawnflag, decides how long it is before gun res"
-         "pawns (in ms)"$0D"[SP: how much ammo to give this gun ( default 999 "
-         ")]"
+        hint = "How much ammo to give this gun ( default 999 )"
         typ = "E"
       }
       splashdamage: =
@@ -24862,9 +25205,8 @@ QQRKSRC1
       spawnflags: =
       {
         txt = "&"
-        cap = "CANRESPAWN [INACTIVE]"
-        hint = "able to respawn"$0D"[SP: cannot be used until used by a target"
-         "_activate]"
+        cap = "INACTIVE"
+        hint = "Cannot be used until used by a target_activate"
         typ = "X1"
       }
       spawnflags: =
@@ -24881,6 +25223,13 @@ QQRKSRC1
         cap = "VULNERABLE"
         hint = "allow the gun to take damage"
         typ = "X4"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        cap = "PLAYERUSE"
+        hint = "only the player makes it run its usescript"
+        typ = "X8"
       }
     }
     emplaced_gun:form =
@@ -25094,6 +25443,12 @@ QQRKSRC1
         txt = "&"
         hint = "If set, only an NPC with a matching NPC_targetname will trip t"
          "his trigger"
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Target name for use and switch"
         typ = "E"
       }
       noise: =
@@ -25315,6 +25670,12 @@ QQRKSRC1
         hint = ""
         typ = "E"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Target name for use and switch"
+        typ = "E"
+      }
       random: =
       {
         txt = "&"
@@ -25513,6 +25874,12 @@ QQRKSRC1
         txt = "&"
         hint = "The trigger will fire this only when the trigger has been acti"
          "vated and subsequently 'cleared'"
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Target name for use and switch"
         typ = "E"
       }
       random: =
@@ -26939,6 +27306,12 @@ QQRKSRC1
         values = "1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D
          "11"$0D"12"$0D"13"
       }
+      _sun: =
+      {
+        Txt = "&"
+        Typ = "E"
+        Hint = "Set it 1 if it will a Sun light. But remember - sun light is a directed light, so you must set the Target parameter!"
+      }
       target: =
       {
         Txt = "&"
@@ -27100,6 +27473,42 @@ QQRKSRC1
         hint = "size of lighting grid to 'X Y Z'. default='64 64 128'"
         typ = "E3"
       }
+      _gridsize: =
+      {
+        txt = "&"
+        hint = "size of lighting grid to 'X Y Z'. default='64 64 128'"
+        typ = "E3"
+      }
+      _minlight: =
+      {
+        txt = "&"
+        hint = "minimum lighting on a surf.  overrides _mingridlight and _minvertexlight"
+        typ = "E3"
+      }
+      _mingridlight: =
+      {
+        txt = "&"
+        hint = "minimum lighting of lighting grid"
+        typ = "E3"
+      }
+      _minvertexlight: =
+      {
+        txt = "&"
+        hint = "minimum lighting on a vertex lighting surf"
+        typ = "E3"
+      }
+      _noshadersun: =
+      {
+        txt = "&"
+        hint = "no shader sun"
+        typ = "E3"
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "scale size of lightmap"
+        typ = "E3"
+      }
       ambient: =
       {
         txt = "&"
@@ -27129,6 +27538,12 @@ QQRKSRC1
         txt = "&"
         hint = "value for vis for the maximum viewing distance"
         typ = "E"
+      }
+      _blocksize: =
+      {
+        txt = "&"
+        hint = "value for bsp on the maximum polygon / portal size"
+        typ = "E3"
       }
       chopsize: =
       {

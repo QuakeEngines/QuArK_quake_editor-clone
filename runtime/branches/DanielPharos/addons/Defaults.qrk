@@ -973,6 +973,7 @@ QQRKSRC1
       3D view:config =
       {
         Warning3D = "1"
+        CloseOnGame = "1"
         Lib = "qrksoftg.dll"   //Default library. Currently set to Software for compatibility.
         WndRect = '0 0 640 480'
         Entities = "1"
@@ -5987,6 +5988,7 @@ QQRKSRC1
     {
       style = "3"
       Warning3D: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
+      CloseOnGame: = {Typ="X" Txt="Close views when the game is run" Cap="Enabled" Hint="If checked, this can save system resources so the game runs smoother"}
       Lib: = {
         Txt="Select 3D viewer"
         Typ="CL"
@@ -5996,7 +5998,7 @@ QQRKSRC1
       }
       WndRect: = {Typ="EF4" Txt="Position/size of window" Hint="Position and size in pixels of the 3D view window"}
       Entities: = {Txt="Entities in 3D" Cap="Display entities" Typ="X" Hint="Show entities in the 3D view"}
-      //EntityBoxes: = {Txt="   ``"       Cap="as bounding boxes only" Typ="X" Hint="If not checked, entities are displayed as 3D Models when available"}
+      //EntityBoxes: = {Txt="`Entity Boxes`" Cap="as bounding boxes only" Typ="X" Hint="If not checked, entities are displayed as 3D Models when available"}
       FarDistance: = {Txt="``Far´´ distance" Typ="EF1" Min="50" Hint="How far you can view before objects are lost in the fog (lower numbers accelerate rendering because there is less to display)"}
       FogDensity: = {Txt="Fog density" Typ="EF1" Min='1' Hint="Fog density. Try yourself to see what it does."}
       VAngle: = {Txt="Vertical view angle" Typ="EF1" Min="5" Max="80" Hint="Angle between the horizon and the higher and lower points you can see - larger numbers mean smaller image"}

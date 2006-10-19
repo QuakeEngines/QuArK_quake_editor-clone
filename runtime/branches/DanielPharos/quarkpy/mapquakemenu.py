@@ -255,14 +255,11 @@ def qmenuitem1click(m):
 #            if mapsearch.CheckMap() == 0:
 #                return
     if m.info["RunGame"]:
-        editor.layout.mpp.viewpage(0)
-        if editor.layout.CurrentRendererOwner is not None:
-            editor.layout.full3Dview.close()
-        #fp = editor.layout.mpp.pagebtns[1]
-        #editor.layout.faceview.full3Dview()
-        #editor.layout.views.remove(editor.layout.faceview)
-        #editor.layout.update3Dviews()
-        #editor.layout.faceview = fp.newmapview()    #From: mapmgr.py
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+        if setup["CloseOnGame"]:
+            editor.layout.mpp.viewpage(0)
+            if editor.layout.CurrentRendererOwner is not None:
+                editor.layout.full3Dview.close()
     RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor,
       m.info["RunGame"], m.text, 0, [], "", None)
 
