@@ -49,26 +49,17 @@ uses EdSceneObject
 
  {------------------------}
 
-procedure Close3DEditors;
 procedure Free3DEditors;
 
  {------------------------}
 
 implementation
 
-procedure Close3DEditors;
-begin
-  CloseDirect3DEditor;
-  CloseOpenGLEditor;
-  Close3DFXEditor;
-end;
-
 procedure Free3DEditors;
 begin
   FreeDirect3DEditor;
   FreeOpenGLEditor;
   Free3DFXEditor;
-  TTextureManager.FreeNonVisibleTextures;
 end;
 
 end.

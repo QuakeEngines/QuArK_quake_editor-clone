@@ -37,7 +37,7 @@ unit PyMath3D;
 
 interface
 
-uses Windows, qmath, PyMath, Setup;
+uses Windows, qmath, PyMath;
 
 const
  MinW = 64.0;

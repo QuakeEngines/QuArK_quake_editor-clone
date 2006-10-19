@@ -198,9 +198,7 @@ type
 
  {------------------------}
 
-procedure CloseOpenGLEditor;
 procedure FreeOpenGLEditor;
-
 
 procedure CheckOpenGLError(GlError: GLenum);
 
@@ -260,10 +258,6 @@ begin
 end;
 
  {------------------------}
-
-procedure CloseOpenGLEditor;
-begin
-end;
 
 procedure FreeOpenGLEditor;
 begin
@@ -769,6 +763,20 @@ begin
     end;
   end;}
 
+  if DisplayLists>0 then
+  begin
+    if OpenGlLoaded then
+    begin
+      {if wglMakeCurrent(GLDC,RC) = false then}    {Daniel: If you close the window, the GLDC is already dead...}
+       {raise EError(5770);}
+      {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
+      glDeleteLists(1, DisplayLists);
+      {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
+      wglMakeCurrent(0,0);
+    end;
+    DisplayLists:=0;
+  end;
+
   if RC<>0 then
   begin
     if OpenGlLoaded then
@@ -800,12 +808,9 @@ end;
 destructor TGLSceneObject.Destroy;
 begin
   HackIgnoreErrors:=True;
-  try
-    ReleaseResources;
-    inherited;
-  finally
-    HackIgnoreErrors:=False;
-  end;
+  ReleaseResources;
+  inherited;
+  HackIgnoreErrors:=False;
 end;
 
 
@@ -823,7 +828,8 @@ var
  nFogColor: GLfloat4;
  Setup: QObject;
 begin
-  Perspective:=DisplayType;   {Store for later use}
+  CurrentDisplayMode:=DisplayMode;
+  CurrentDisplayType:=DisplayType;
 
   FillChar(FullBright,SizeOf(FullBright),0);
   FullBright.ZeroLight:=1;
@@ -904,7 +910,10 @@ begin
   end;
 
   RC:=wglCreateContext(GLDC);
-  wglMakeCurrent(GLDC,RC);
+  if RC = 0 then
+   raise EError(5771);
+  if wglMakeCurrent(GLDC,RC) = false then
+   raise EError(5770);
   CheckOpenGLError(glGetError);  {#}
   if RC=0 then
     Raise EErrorFmt(4869, ['wglCreateContext']);
@@ -1011,11 +1020,12 @@ begin
     Dispose(PL);
   end;
 
-  if DisplayLists>0 then
+  if (RC<>0) and (DisplayLists>0) then
   begin
     if OpenGlLoaded then
     begin
-      wglMakeCurrent(GLDC,RC);
+      if wglMakeCurrent(GLDC,RC) = false then
+       raise EError(5770);
       {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
       glDeleteLists(1, DisplayLists);
       {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
@@ -1023,6 +1033,8 @@ begin
     end;
     DisplayLists:=0;
   end;
+  {Daniel: We need to clear the DisplayList...}
+
 end;
 
 procedure TGLSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
@@ -1177,7 +1189,7 @@ begin
   if not OpenGlLoaded then
     Exit;
   if wglMakeCurrent(GLDC,RC) = false then
-   raise EError(5693);  {Daniel: Something is terribly wrong...}
+   raise EError(5770);
   CheckOpenGLError(glGetError);   {#}
   RenderOpenGL(Self);
   wglMakeCurrent(0,0);
@@ -1200,7 +1212,7 @@ begin
   glLoadIdentity;
 
   CheckOpenGLError(glGetError);  {#}
-  if Perspective=dtXY then
+  if CurrentDisplayType=dtXY then
    begin
     with TXYCoordinates(Source.Coord) do
      begin
@@ -1210,7 +1222,7 @@ begin
      end;
     glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
    end
-  else if Perspective=dtXZ then
+  else if CurrentDisplayType=dtXZ then
    begin
     with TXZCoordinates(Source.Coord) do
      begin
@@ -1221,7 +1233,7 @@ begin
     glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
     glRotated(90, -1,0,0);
    end
-  else if (Perspective=dtYZ) or (Perspective=dt2D) then
+  else if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then
    begin
     with T2DCoordinates(Source.Coord) do
      begin
@@ -1233,7 +1245,7 @@ begin
     glRotated(270, 0,-1,0);
     glRotated(90, -1,0,0);
    end
-  else if Perspective=dt3D then
+  else if CurrentDisplayType=dt3D then
    begin
     with TCameraCoordinates(Source.Coord) do
      begin
@@ -1243,26 +1255,26 @@ begin
      end;
    end
   else
-    Raise EError(6548);   {Unknown perspective!}
+    Raise EError(6548);   {Unknown CurrentDisplayType!}
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity;
-  if Perspective=dtXY then
+  if CurrentDisplayType=dtXY then
    begin
     with TXYCoordinates(Source.Coord) do
       glTranslated((pDeltaX - ScrCenter.X)/ScalingFactor(Nil), -(pDeltaY - ScrCenter.Y)/ScalingFactor(Nil), -4096/ScalingFactor(Nil));
    end
-  else if Perspective=dtXZ then
+  else if CurrentDisplayType=dtXZ then
    begin
     with TXZCoordinates(Source.Coord) do
       glTranslated((pDeltaX - ScrCenter.X)/ScalingFactor(Nil), -4096/ScalingFactor(Nil), -(pDeltaY - ScrCenter.Y)/ScalingFactor(Nil));
    end
-  else if (Perspective=dtYZ) or (Perspective=dt2D) then
+  else if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then
    begin
     with T2DCoordinates(Source.Coord) do
       glTranslated(-4096/ScalingFactor(Nil), -(pDeltaX - ScrCenter.X)/ScalingFactor(Nil), -(pDeltaY - ScrCenter.Y)/ScalingFactor(Nil));
    end
-  else if Perspective=dt3D then
+  else if CurrentDisplayType=dt3D then
    begin
     glRotated(120, -1,1,1);
     with TCameraCoordinates(Source.Coord).Camera do
@@ -1498,7 +1510,8 @@ begin
     end;
 
 
-    wglMakeCurrent(GLDC,RC);
+    if wglMakeCurrent(GLDC,RC) = false then
+     raise EError(5770);
    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, Texture^.OpenGLName);
 

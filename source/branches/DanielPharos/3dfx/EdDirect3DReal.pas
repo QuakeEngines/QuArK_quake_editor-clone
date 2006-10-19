@@ -94,9 +94,9 @@ type
  *)
     procedure SetViewRect(SX, SY: Integer); override;
     procedure Render3DView; override;
+    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
  (*
     procedure SwapBuffers(Synch: Boolean; DC: HDC); override;
-    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
  *)
   end;
@@ -282,6 +282,11 @@ begin
   l_Material.dcvSpecular := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
   l_Material.dvPower     := 100.0;
   m_pD3DDevice.SetMaterial(l_Material);   }
+
+end;
+
+procedure TDirect3DSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
+begin
 
 end;
 

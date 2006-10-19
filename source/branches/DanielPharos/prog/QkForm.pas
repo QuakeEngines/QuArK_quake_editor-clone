@@ -1209,10 +1209,10 @@ begin
      PostMessage(Handle, wm_InternalMessage, wp_CloseWindow, 0);
 
   { FREE } Ord('F')+256*Ord('R')+65536*Ord('E')+16777216*Ord('E'):
-     g_Form1.FreeNonUsedObjects;
-
-  { 3DFR } Ord('3')+256*Ord('D')+65536*Ord('F')+16777216*Ord('R'):
+    begin
      CloseAll3DView;
+     g_Form1.FreeNonUsedObjects;
+    end;
 
   { ASSO } Ord('A')+256*Ord('S')+65536*Ord('S')+16777216*Ord('O'):
      begin

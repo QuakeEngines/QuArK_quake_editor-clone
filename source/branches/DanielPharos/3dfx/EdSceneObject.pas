@@ -169,7 +169,8 @@ type
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
    PolyFaces, ModelInfo, BezierInfo, SpriteInfo: TList;
-   Perspective: TDisplayType;
+   CurrentDisplayMode: TDisplayMode;
+   CurrentDisplayType: TDisplayType;
    procedure ClearPList;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
@@ -1849,7 +1850,7 @@ class procedure TTextureManager.FreeNonVisibleTextures;
 begin
  if TextureManager<>Nil then
   begin
-   TextureManager.FreeTextures(True);
+   TextureManager.FreeTextures(False);  {Daniel: Was true...}
    if TextureManager.CanFree then
     begin
      TextureManager.Free;

@@ -217,6 +217,7 @@ type
                  procedure DragDrop(Source: TObject; X, Y: Integer); override;
                  property CentreEcran: TVect read GetCentreEcran write SetCentreEcran;
                  property Scene: TSceneObject read FScene;
+                 procedure DeleteScene;
                  function EntityForms : TQList;
                  procedure DrawGrid(const V1, V2: TVect; Color, Color2: TColorRef; Flags: Integer; const Zero: TVect);
                  function DoKey3D(Key: Word) : Boolean;
@@ -258,16 +259,16 @@ uses PyCanvas, QkTextures, QkPixelSet, Game, PyForms, FullScreenWnd, FullScr1, R
      EdOpenGL, EdDirect3D, SystemDetails;
 
 procedure CloseAll3DView;
-var
- I, J: Integer;
+{var
+ I, J: Integer;}
 begin
- TwoMonitorsDlg.Free;
- for I:=0 to Screen.FormCount-1 do
+{ TwoMonitorsDlg.Free;}
+{ for I:=0 to Screen.FormCount-1 do
   with Screen.Forms[I] do
    for J:=0 to ComponentCount-1 do
     if Components[J] is TPyMapView then
-     TPyMapView(Components[J]).SetViewMode(vmWireframe);    {Daniel: Shouldn't be needed anymore}
- Free3DEditors;
+     TPyMapView(Components[J]).SetViewMode(vmWireframe);}    {Daniel: Shouldn't be needed anymore}
+ {Free3DEditors;}
 end;
 
  {------------------------}
@@ -1451,7 +1452,7 @@ begin
 
  if Key=vk_Escape then
   begin
-   Close3DEditors;
+   Free3DEditors;    {Daniel: Why? Is this necessary? Won't this destroy other views too?}
    Result:=True;
    Exit;
   end;
@@ -1706,15 +1707,20 @@ begin
  Key:=0;
 end;
 
+procedure TPyMapView.DeleteScene;
+begin
+ Invalidate;
+ FScene.Free;
+ FScene:=Nil;
+end;
+
 procedure TPyMapView.SetViewMode;
 begin
  if ViewMode<>Vm then
   begin
    SetAnimation(False);
+   DeleteScene;
    ViewMode:=Vm;
-   Invalidate;
-   FScene.Free;
-   FScene:=Nil;
    if Vm=vmWireframe then
     Color:=BoxColor
    else
@@ -2814,7 +2820,7 @@ begin
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
     begin
-     mode:=0;            {Daniel: Change all of this!!! Separate fullscreen option!}
+     mode:=0;            {Daniel: Gotta change all of this!!! Separate fullscreen option!}
      if mode>=0 then
       if ResetFullScreen(mode>0) then
        returnvalue:=1;
@@ -2830,7 +2836,7 @@ end;
 
 function mWaitForOpenGL(self, args: PyObject) : PyObject; cdecl;
 begin
- try
+ try       {Daniel: What does this do exactly?}
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
     if Scene is TGLSceneObject then
@@ -3195,6 +3201,13 @@ begin
               Flags:=nFlags;
               SetRedLines;
              end;
+           Result:=0;
+           Exit;
+          end
+         else
+         if StrComp(attr, 'free3deditors')=0 then
+          begin
+           Free3DEditors;   {Daniel: Probably one of the most ugliest solutions in the world, but hey, it works!}
            Result:=0;
            Exit;
           end;

@@ -169,9 +169,10 @@ type
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
+procedure SetIntelPrecision;
+procedure RestoreIntelPrecision;
 procedure Do3DFXTwoMonitorsActivation;
 procedure Do3DFXTwoMonitorsDeactivation;
-procedure Close3DFXEditor;
 procedure Free3DFXEditor;
 procedure Set3DFXGammaCorrection(Value: TDouble);
 
@@ -182,8 +183,6 @@ implementation
 uses Game, Quarkx, FullScr1, Travail,
      PyMath3D, Ed3DEditors,
      QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
-
-function Open3DFXEditor(const LibName: String; var FullScreen: Boolean) : Boolean; forward;
 
 const
  VertexSnapper = 1.0*(3 shl 18);
@@ -404,12 +403,56 @@ procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TD
 var
  I: Integer;
  HiColor: Boolean;
- FullScreen: Boolean;
+ hwconfig: GrHwConfiguration;
  Setup: QObject;
 begin
+ CurrentDisplayMode:=DisplayMode;
+ CurrentDisplayType:=DisplayType;
+
  Coord:=nCoord;
- FullScreen:=False;
- Open3DFXEditor(LibName, FullScreen);
+ if (not GlideLoaded) or (qrkGlideState=Nil) or ((LibName<>'') and (qrkGlideLibName<>LibName)) then
+  begin
+   ProgressIndicatorStart(0,0);
+   try
+    Free3DFXEditor;
+    if LibName='' then
+     Raise EError(4867);
+    if not ReloadGlide(LibName, GetApplicationDllPath()) then
+     Raise EErrorFmt(4865, [LibName, GetLastError]);
+    SetIntelPrecision;
+    try
+     grGlideInit;
+     if Assigned(grSstQueryHardware) then
+      if not grSstQueryHardware(hwconfig) then
+       Raise EErrorFmt(4866, ['grSstQueryHardware']);
+     if Assigned(grSstSelect) then
+      grSstSelect(0);
+     if not grSstWinOpen(0,
+                         GR_RESOLUTION_640x480,
+                         GR_REFRESH_60HZ,
+                         GR_COLORFORMAT_ARGB,
+                         GR_ORIGIN_LOWER_LEFT,
+                         2, 1) then
+      Raise EErrorFmt(4866, ['grSstWinOpen']);
+    finally
+     RestoreIntelPrecision;
+    end;
+   // grSstControl(GR_CONTROL_DEACTIVATE);
+    if Assigned(grDepthBufferMode) then
+     grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
+    if Assigned(grDepthMask) then
+     grDepthMask(FXTRUE);
+    ClearBuffers(0);
+   finally
+    ProgressIndicatorStop;
+   end;
+   qrkGlideState:=TGlideState.Create;
+  end;
+ if (CurrentDisplayMode=dmFullScreen) or (LibName='glide2x.dll') then   {Second check: So Glide kinda works...}
+  Do3DFXTwoMonitorsActivation
+ else
+  if TwoMonitorsDlg=Nil then
+   Do3DFXTwoMonitorsDeactivation;
  TTextureManager.AddScene(Self);
  // Assigned check added by SilverPaladin
  if (not Assigned(qrkGlideState)) then
@@ -469,16 +512,6 @@ begin
  FreeMem(FogTableCache);
  inherited;
  Old.Free;
- (* SilverPaladin - 08/27/2003 -
-    I've removed the following Free3DEditors call.  It was freeing the Slide
-    info when just one of perhaps several 3d views is closed.  This was the
-    major source of access violations up through 6.4 alpha
-
- // I'm not at all sure that this is the right thing
- // to do.  This freeing doesn't get called when
- // exitor exited with x,without the below.
- Free3DEditors;
- *)
 end;
 
 procedure T3DFXSceneObject.ClearScene;
@@ -758,59 +791,6 @@ begin
  end;
 end;
 
-function Open3DFXEditor(const LibName: String; var FullScreen: Boolean) : Boolean;
-var
- hwconfig: GrHwConfiguration;
-begin
- Result:=False;
- if (not GlideLoaded) or (qrkGlideState=Nil) or ((LibName<>'') and (qrkGlideLibName<>LibName)) then
-  begin
-   ProgressIndicatorStart(0,0);
-   try
-    Free3DFXEditor;
-    if LibName='' then
-     Raise EError(4867);
-    if not ReloadGlide(LibName, GetApplicationDllPath()) then
-     Raise EErrorFmt(4865, [LibName, GetLastError]);
-    Result:=True;
-    SetIntelPrecision;
-    try
-     grGlideInit;
-     if Assigned(grSstQueryHardware) then
-      if not grSstQueryHardware(hwconfig) then
-       Raise EErrorFmt(4866, ['grSstQueryHardware']);
-     if Assigned(grSstSelect) then
-      grSstSelect(0);
-     if not grSstWinOpen(0,
-                         GR_RESOLUTION_640x480,
-                         GR_REFRESH_60HZ,
-                         GR_COLORFORMAT_ARGB,
-                         GR_ORIGIN_LOWER_LEFT,
-                         2, 1) then
-      Raise EErrorFmt(4866, ['grSstWinOpen']);
-    finally
-     RestoreIntelPrecision;
-    end;
-   // grSstControl(GR_CONTROL_DEACTIVATE);
-    if Assigned(grDepthBufferMode) then
-     grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
-    if Assigned(grDepthMask) then
-     grDepthMask(FXTRUE);
-    ClearBuffers(0);
-   finally
-    ProgressIndicatorStop;
-   end;
-   qrkGlideState:=TGlideState.Create;
-  end;
- if qrkGlideVersion<HardwareGlideVersion then
-  FullScreen:=False;
- if FullScreen then
-  Do3DFXTwoMonitorsActivation
- else
-  if TwoMonitorsDlg=Nil then
-   Do3DFXTwoMonitorsDeactivation;
-end;
-
 procedure Do3DFXTwoMonitorsActivation;
 begin
  if GlideLoaded and Assigned(grSstControl) then
@@ -823,18 +803,14 @@ begin
   grSstControl(GR_CONTROL_DEACTIVATE);
 end;
 
-procedure Close3DFXEditor;
-begin
- Do3DFXTwoMonitorsDeactivation;
-end;
-
 procedure Free3DFXEditor;
 begin
+ Do3DFXTwoMonitorsDeactivation;
  if GlideLoaded then
   begin
     // Assigned check added by SilverPaladin
-   if (Assigned(qrkGlideState))
-   then qrkGlideState.Free;
+   if (Assigned(qrkGlideState)) then
+    qrkGlideState.Free;
    qrkGlideState:=Nil;
    if Assigned(grSstWinClose) then
     grSstWinClose;
@@ -928,15 +904,12 @@ begin
  R:=ViewRect.R.Right;
  B:=ViewRect.R.Bottom;
  Special:=False;
- try
-  if L>0 then  ClearFrame1(0, T, L, B-T);
-  if T>0 then  ClearFrame1(0, 0, SX, T);
-  if R<SX then ClearFrame1(R, T, SX-R, B-T);
-  if B<SY then ClearFrame1(0, B, SX, SY-B);
- finally
-  if Special then
-   grDepthMask(FXTRUE);
- end;
+ if L>0 then  ClearFrame1(0, T, L, B-T);
+ if T>0 then  ClearFrame1(0, 0, SX, T);
+ if R<SX then ClearFrame1(R, T, SX-R, B-T);
+ if B<SY then ClearFrame1(0, B, SX, SY-B);
+ if Special then
+  grDepthMask(FXTRUE);
 end;
 
 procedure T3DFXSceneObject.RenderTransparent(Transparent: Boolean);
@@ -1870,7 +1843,7 @@ procedure T3DFXSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
 var
  I, L, R, T, B, Count1: Integer;
  bmiHeader: TBitmapInfoHeader;
- BmpInfo: TBitmapInfo absolute bmiHeader;
+ BmpInfo: TBitmapInfo;
  info: GrLfbInfo_t;
  Bits, SrcPtr: Pointer;
  FrameBrush: HBrush;
@@ -1896,9 +1869,9 @@ begin
  ScreenExtent(L, R, bmiHeader);
 
  GetMem(Bits, bmiHeader.biWidth*bmiHeader.biHeight*3);
- try
-  if qrkGlideVersion>=HardwareGlideVersion then
-   begin
+ if qrkGlideVersion>=HardwareGlideVersion then
+  begin
+   try
     if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
           GR_ORIGIN_ANY, FXFALSE, info) then
      Raise EErrorFmt(4866, ['grLfbLock']);
@@ -1969,8 +1942,10 @@ begin
      pop edi
      pop esi
     end;
+   finally
     grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
-   end
+   end;
+  end
   else
    softgLoadFrameBuffer(Bits, SoftBufferFormat);
   L:=(SX-bmiHeader.biWidth) div 2;
@@ -1978,21 +1953,17 @@ begin
   R:=L+bmiHeader.biWidth;
   B:=T+bmiHeader.biHeight;
   FrameBrush:=0;
-  try
-   if L>0 then  Frame(0, T, L, B-T);
-   if T>0 then  Frame(0, 0, SX, T);
-   if R<SX then Frame(R, T, SX-R, B-T);
-   if B<SY then Frame(0, B, SX, SY-B);
-  finally
-   if FrameBrush<>0 then
-    DeleteObject(FrameBrush);
-  end;
-  SetDIBitsToDevice(DC, L, T,
+  if L>0 then  Frame(0, T, L, B-T);
+  if T>0 then  Frame(0, 0, SX, T);
+  if R<SX then Frame(R, T, SX-R, B-T);
+  if B<SY then Frame(0, B, SX, SY-B);
+  if FrameBrush<>0 then
+   DeleteObject(FrameBrush);
+  BmpInfo.bmiHeader:=bmiHeader;
+  L:=SetDIBitsToDevice(DC, L, T,
    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
    0,bmiHeader.biHeight, Bits, BmpInfo, 0);
- finally
   FreeMem(Bits);
- end;
 end;
 
 procedure T3DFXSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
@@ -2013,10 +1984,18 @@ begin
    SY:=(SY+1) div 2;
   end;
 
- XMargin:=(ScreenSizeX-SX) div 2;
- if (XMargin<0) and Hardware3DFX then XMargin:=0;
- YMargin:=(ScreenSizeY-SY) div 2;
- if (YMargin<0) and Hardware3DFX then YMargin:=0;
+ if CurrentDisplayMode=dmFullScreen then
+  begin
+   XMargin:=(ScreenSizeX-SX) div 2;
+   if (XMargin<0) and Hardware3DFX then XMargin:=0;
+   YMargin:=(ScreenSizeY-SY) div 2;
+   if (YMargin<0) and Hardware3DFX then YMargin:=0;
+  end
+ else
+  begin
+   XMargin:=0;
+   YMargin:=0;
+  end;
 
  ViewRect.R.Left:=XMargin;
  ViewRect.R.Top:=YMargin;

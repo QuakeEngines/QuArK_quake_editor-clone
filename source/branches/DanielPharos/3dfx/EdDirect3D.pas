@@ -94,14 +94,13 @@ type
  *)
     procedure SetViewRect(SX, SY: Integer); override;
     procedure Render3DView; override;
+    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
  (*
     procedure SwapBuffers(Synch: Boolean; DC: HDC); override;
-    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
  *)
   end;
 
-procedure CloseDirect3DEditor;
 procedure FreeDirect3DEditor;
 
  {------------------------}
@@ -114,14 +113,7 @@ type
  PVertex3D = ^TVertex3D;
  TVertex3D = PD3DLVertex;
 
-var
-  g_Direct3DInitialized: Boolean;
-
  {------------------------}
-
-procedure CloseDirect3DEditor;
-begin
-end;
 
 procedure FreeDirect3DEditor;
 begin
@@ -284,9 +276,14 @@ begin
 
 end;
 
+procedure TDirect3DSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
+begin
+
+end;
+
 procedure TDirect3DSceneObject.Render3DView;
 begin
-  RenderDirect3D();
+  RenderDirect3D();      {Daniel: Kinda empty procedure, isn't it?}
 end;
 
 procedure TDirect3DSceneObject.RenderDirect3D();
@@ -302,13 +299,6 @@ end;
 procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
 begin
 
-end;
-
- {------------------------}
-
-initialization
-begin
-  g_Direct3DInitialized := False;  {Is not used?}
 end;
 
 end.

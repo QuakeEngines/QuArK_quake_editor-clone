@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 187
-  Top = 120
+  Left = 748
+  Top = 546
   Width = 500
   Height = 350
   Caption = 'QuArK Explorer'
