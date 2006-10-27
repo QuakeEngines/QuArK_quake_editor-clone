@@ -73,6 +73,8 @@ from quarkpy import b2utils
 #  places, and ought to be cleaned up.
 #
 
+# Global
+view2D = None
 
 class AxisHandle(MapRotateHandle):
   "a rotating handle that controls a normalized vector spec"
@@ -269,7 +271,19 @@ class ExtruderDupData:
     return self.dup.findname("spine:g")  
 
   def PathPoints(self):
-    return self.dup.findname("spine:g").subitems
+
+ # cdunde 10/25/06: un-commenting this section will cause the 2D Extruder Window to close,
+ #       if something is selected in another view, but it will also cause an Access Violation error,
+ #   global view2D
+ #   if self.dup.findname("spine:g") is None:
+ #     m = None
+ #     plugins.mapextruder.new2dclick(view2D, m)
+ #     return []
+ #   else:
+
+      return self.dup.findname("spine:g").subitems
+
+
     
   def PathLen(self):
     return len(self.PathPoints())
@@ -429,7 +443,6 @@ class ExtruderDupData:
         
         return newpoints2
         
-
       newpoints[i]=self.CircPos(k,j)
     return newpoints
 
@@ -2604,6 +2617,8 @@ def n2dfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = n2dfinishdrawing
 
 def new2dclick(self, m):
+      global view2D
+      view2D = self
       n2d = self.new2dwin
       if n2d is not None:
         self.new2dwin.close()
@@ -2614,7 +2629,7 @@ def new2dclick(self, m):
         if mapeditor() is not self.editor: return
         n2d = quarkx.clickform.newfloating(FWF_KEEPFOCUS, "2D Extruder Window")
         x1,y1,x2,y2 = quarkx.screenrect()
-        n2d.windowrect = (x2-500, y2-500, x2-20, y2-100)
+        n2d.windowrect = (x2-700, y2-600, x2-220, y2-200)
         n2d.begincolor = GREEN
         n2d.endcolor = OLIVE
         n2d.onclose = self.new2dclose
@@ -2632,6 +2647,7 @@ def new2dclick(self, m):
         plugins.mapextruder.view2ddup(self.editor, mv, dup)
         self.new2dwin = n2d
       n2d.show()
+      self.editor.invalidateviews(1)
  
  
 def new2dclose(self, m):
@@ -2639,7 +2655,9 @@ def new2dclose(self, m):
         self.views.remove(self.new2dview)
       self.new2dwin = None
       del self.new2dview
-
+      plugins.mapmadsel.UnrestrictClick(m)
+      self.editor.invalidateviews(1)
+          
   #1    def restore(self):
         #
         # Maybe Unrestrict should be moved to a non-plugin
@@ -2903,6 +2921,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.27  2006/06/02 18:48:02  cdunde
+#To fix a couple of erroneous console errors.
+#
 #Revision 1.26  2006/05/28 08:45:02  cdunde
 #Fixed editor not defined error in mapmadsel.py file and
 #needed to comment out def restore(self) in mapextruder.py
