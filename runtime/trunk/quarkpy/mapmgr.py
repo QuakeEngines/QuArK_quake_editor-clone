@@ -151,7 +151,7 @@ class MapLayout(BaseLayout):
         self.polyview.hint = "|click to select texture"
         return fp
 
-    def bs_faceform(self, panel):
+    def bs_faceform(self, panel):  ### This is the Face-view setup items (form, buttons & view).
         ico_maped=ico_dict['ico_maped']
         fp = panel.newpanel()
         TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 1)
@@ -474,7 +474,7 @@ class MapLayout(BaseLayout):
         flist = self.getfacelists()
         q = quarkx.newobj(':')   # internal object
         self.faceview.handles = []
-        self.faceview.ondraw = None
+        self.faceview.ondraw = None  ### Later this is used to draw the face or poly.
         self.faceview.onmouse = self.polyviewmouse
         self.faceview.color = NOCOLOR
         self.faceview.invalidate(1)
@@ -694,7 +694,8 @@ class MapLayout(BaseLayout):
         if ntex!=q["oldtex"]:
             for b in blist:
                 # this implicitely uses the 'undo' variable
-                applycount = applycount + b.replacetex(None, ntex, 1)
+       #         applycount = applycount + b.replacetex(None, ntex, 1) # To fix error on texture change.
+                applycount = applycount + b.replacetex(q["oldtex"], ntex, 1)
         if applycount:
             if applycount>1:
                 txt = Strings[547] % applycount
@@ -878,6 +879,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.18  2006/08/21 21:16:04  cdunde
+#One item left out of last correction.
+#
 #Revision 1.17  2006/08/21 03:14:06  cdunde
 #Daniel (d.a.a.) and cdunde finally found fix for Access Violation errors
 #with various selections of entities to display their form data.
