@@ -11,9 +11,11 @@ $Id$
    ########     ########## ####    #### ####         ####    ####
        #####
         #####       Quake Army Knife 6.5 Changelog
-        
+
 6.5.0 alpha 9
 =============
+
+ * [cdunde]: Fixed extruder 2D view to Unrestricted other items when view is closed.
 
  * [cdunde]: Fixed Link Face function broken since tagging keyword system introduced.
 
