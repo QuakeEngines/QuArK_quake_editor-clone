@@ -1452,7 +1452,11 @@ def LinkFaceClick(m, glue=1):
     newtagged.setint("_tag",tag)
 #    squawk("new: "+`newtagged.getint("_tag")`)
     undo.exchange(tagged, newtagged)
-    editor.tagging.tagged = newtagged    
+
+   # To fix this function. Old way never replaced with new keyword.
+#    editor.tagging.tagged = newtagged  
+    tagface(newtagged, editor)
+  
   newside = m.side.copy()
   newside.setint("_tag",tag)
   oldtag = m.side.getint("_tag")
@@ -1931,6 +1935,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.37  2006/07/11 14:18:31  cdunde
+#Added 0 division testing to stop console errors
+#
 #Revision 1.36  2005/10/15 00:51:56  cdunde
 #To reinstate headers and history
 #
