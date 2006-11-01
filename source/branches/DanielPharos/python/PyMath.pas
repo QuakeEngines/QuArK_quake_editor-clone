@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.14  2003/12/17 14:00:11  peter-b
 - Rewrote defines for setting Python version
 - Removed back-compatibility with Python 1.5
@@ -110,6 +113,8 @@ type
     function VectorX : TVect; virtual; abstract;
      { 3D vector in the direction "Espace(0,1,1)-Espace(0,0,1)" }
     function VectorY : TVect; virtual; abstract;
+     { 3D vector in the direction "Espace(1,1,0)-Espace(0,0,1)" }
+    function VectorZ : TVect; virtual; abstract;
      { 3D vector from Pt in the direction of the eye }
     function VectorEye(const Pt: TVect) : TVect; virtual; abstract;
      { is the "eye" in the given half space ? }
@@ -212,6 +217,7 @@ type
     function Proj(const V: TVect) : TPointProj; override;
     function VectorX : TVect; override;
     function VectorY : TVect; override;
+  	function VectorZ : TVect; override;
     function VectorEye(const Pt: TVect) : TVect; override;
     function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
   end;
@@ -1273,11 +1279,19 @@ begin
  Result.Z:=mxinv[3,2];
 end;
 
-function T2DCoordinates.VectorEye;
+function T2DCoordinates.VectorZ;
 begin
  Result.X:=-mxinv[1,3];
  Result.Y:=-mxinv[2,3];
  Result.Z:=-mxinv[3,3];
+end;
+
+function T2DCoordinates.VectorEye(const Pt: TVect) : TVect;
+begin
+ Result.X:=-mxinv[1,3]+Pt.X;
+ Result.Y:=-mxinv[2,3]+Pt.Y;
+ Result.Z:=-mxinv[3,3]+Pt.Z;
+ {Daniel: Should Pt be added or substracted?}
 end;
 
 function T2DCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean;

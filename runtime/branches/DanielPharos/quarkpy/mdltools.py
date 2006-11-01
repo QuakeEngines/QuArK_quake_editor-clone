@@ -34,20 +34,17 @@ class DisplayBar(ToolBar):
         zoombtn.views = layout.views
         zoombtn.caption = "zoom"
 
-        Btn3D = qtoolbar.button(layout.new3Dwindow, "new 3D window||New 3D-window  will create a new floating 3D-window, which you can place anywhere on your desktop.\nIt only exist as long as you are in the model editor.", ico_maped, 20)
-
-        BtnFull3D = qtoolbar.button(layout.full3Dclick, "full 3D view||Full 3D-view  will take you to a full-screen 3D-display.\nYou must press Escape to return to the model editor.", ico_maped, 21)
+        Btn3D = qtoolbar.button(layout.full3Dclick, "new 3D window||New 3D-window  will create a new floating 3D-window, which you can place anywhere on your desktop.\nIt only exist as long as you are in the model editor.", ico_maped, 21)
 
         LinearVBtn = qtoolbar.button(layout.editor.linear1click, "linear mapping circle on selection", ico_maped, 19)
 
         LockViewsBtn = qtoolbar.button(layout.editor.lockviewsclick, "lock views||Lock views will cause all of the 2D views to move and zoom together.\n\nWhen this is in the unlocked mode, the 2d views can then be moved and zoomed on individually.\n\nIf the lock is reset then the 2D views will realign themselves.", ico_maped, 28)
 
         helpbtn = qtoolbar.button(layout.helpbtnclick, "Contextual help||Will open up your web-browser, and display the QuArK main help page.", ico_maped, 13)
-        layout.buttons.update({"grid": gridbtn, "linear": LinearVBtn})
 
-        layout.buttons.update({"grid": gridbtn, "linear": LinearVBtn, "lockv": LockViewsBtn})
+        layout.buttons.update({"grid": gridbtn, "3D": Btn3D, "linear": LinearVBtn, "lockv": LockViewsBtn})
 
-        return [gridbtn, zoombtn, Btn3D, BtnFull3D, LinearVBtn, LockViewsBtn, helpbtn]
+        return [gridbtn, zoombtn, Btn3D, LinearVBtn, LockViewsBtn, helpbtn]
 
 
 
@@ -64,6 +61,9 @@ toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 #
 #
 #$Log$
+#Revision 1.7  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.4  2003/02/15 02:03:45  cdunde
 #To update and add F1 popup help info.
 #Also add Lockviews button to model editor.

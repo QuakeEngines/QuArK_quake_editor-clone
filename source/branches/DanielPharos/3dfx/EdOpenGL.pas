@@ -733,6 +733,8 @@ begin
   RenderingTextureBuffer.Free;
   RenderingTextureBuffer:=Nil;
 
+  ClearScene;
+
   {with TTextureManager.GetInstance do
   begin
     GetMem(NameArray, Textures.Count*SizeOf(GLuint));
@@ -828,13 +830,14 @@ var
  nFogColor: GLfloat4;
  Setup: QObject;
 begin
+  ClearScene;
+  {ReleaseResources;}   {Daniel: Shouldn't be necessary}
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
 
   FillChar(FullBright,SizeOf(FullBright),0);
   FullBright.ZeroLight:=1;
 
-  {ReleaseResources;}  {Daniel: Should not be necessary}
   { have the OpenGL DLL already been loaded? }
   if not OpenGlLoaded() then
   begin
@@ -909,26 +912,34 @@ begin
     DestWnd:=Wnd;
   end;
 
-  RC:=wglCreateContext(GLDC);
   if RC = 0 then
-   raise EError(5771);
-  if wglMakeCurrent(GLDC,RC) = false then
-   raise EError(5770);
-  CheckOpenGLError(glGetError);  {#}
-  if RC=0 then
-    Raise EErrorFmt(4869, ['wglCreateContext']);
-  
-  for pfi:=0 to Length(RCs)-1 do
-  begin
-    if RCs[pfi]<>0 then
+   begin
+    RC:=wglCreateContext(GLDC);
+    if RC = 0 then
+     raise EError(5771);
+    if wglMakeCurrent(GLDC,RC) = false then
+     raise EError(5770);
+    CheckOpenGLError(glGetError);  {#}
+    if RC=0 then
+      Raise EErrorFmt(4869, ['wglCreateContext']);
+
+    for pfi:=0 to Length(RCs)-1 do
     begin
-      if wglShareLists(RCs[pfi],RC)=false then
-        Raise EErrorFmt(4869, ['wglShareLists']);    {Is this the correct error message?}
-      break;
+      if RCs[pfi]<>0 then
+      begin
+        if wglShareLists(RCs[pfi],RC)=false then
+          Raise EErrorFmt(4869, ['wglShareLists']);    {Is this the correct error message?}
+        break;
+      end;
     end;
-  end;
-  SetLength(RCs,Length(RCs)+1);   {Increase the RCs-array by one element}
-  RCs[Length(RCs)-1]:=RC;
+    SetLength(RCs,Length(RCs)+1);   {Increase the RCs-array by one element}
+    RCs[Length(RCs)-1]:=RC;
+   end
+  else
+   begin
+    if wglMakeCurrent(GLDC,RC) = false then
+     raise EError(5770);
+   end;
 
   { set up OpenGL }
   {$IFDEF DebugGLErr} DebugOpenGL(0, '', []); {$ENDIF}
@@ -1199,6 +1210,9 @@ procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase);
 var
  SX, SY: Integer;
  DX, DY, DZ: Double;
+ VX, VY, VZ: TVect;
+ TransX, TransY, TransZ: GLdouble;
+ MatrixTransform: TMatrix4f;
 begin
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
   SX:=Source.ScreenX;
@@ -1212,74 +1226,103 @@ begin
   glLoadIdentity;
 
   CheckOpenGLError(glGetError);  {#}
+
   if CurrentDisplayType=dtXY then
    begin
     with TXYCoordinates(Source.Coord) do
      begin
-      DX:=(SX/2)/ScalingFactor(Nil);
-      DY:=(SY/2)/ScalingFactor(Nil);
-      DZ:=8192/ScalingFactor(Nil);   {8192: Twice the maplimit}
+      DX:=round((SX/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
+      DY:=round((SY/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
+      DZ:=round(8192/(ScalingFactor(Nil)*ScalingFactor(Nil)));   {8192: Twice the maplimit}
+      VX:=VectorX;
+      VY:=VectorY;
+      VZ:=VectorZ;
+      TransX:=(pDeltaX-ScrCenter.X)/ScalingFactor(Nil);
+      TransY:=-(pDeltaY-ScrCenter.Y)/ScalingFactor(Nil);
+      TransZ:=-4096;
      end;
-    glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
    end
   else if CurrentDisplayType=dtXZ then
    begin
     with TXZCoordinates(Source.Coord) do
      begin
-      DX:=round((SX/2)/ScalingFactor(Nil));
-      DY:=round((SY/2)/ScalingFactor(Nil));
-      DZ:=round(8192/ScalingFactor(Nil));   {8192: Twice the maplimit}
+      DX:=round((SX/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
+      DY:=round((SY/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
+      DZ:=round(8192/(ScalingFactor(Nil)*ScalingFactor(Nil)));   {8192: Twice the maplimit}
+      VX:=VectorX;
+      VY:=VectorY;
+      VZ:=VectorZ;
+      TransX:=(pDeltaX-ScrCenter.X)/ScalingFactor(Nil);
+      TransY:=-(pDeltaY-ScrCenter.Y)/ScalingFactor(Nil);
+      TransZ:=-4096;
      end;
-    glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
-    glRotated(90, -1,0,0);
    end
   else if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then
    begin
     with T2DCoordinates(Source.Coord) do
      begin
-      DX:=round((SX/2)/ScalingFactor(Nil));
-      DY:=round((SY/2)/ScalingFactor(Nil));
-      DZ:=round(8192/ScalingFactor(Nil));   {8192: Twice the maplimit}
+      DX:=round((SX/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
+      DY:=round((SY/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
+      DZ:=round(8192/(ScalingFactor(Nil)*ScalingFactor(Nil)));   {8192: Twice the maplimit}
+      VX:=VectorX;
+      VY:=VectorY;
+      VZ:=VectorZ;
+      TransX:=(pDeltaX-ScrCenter.X)/ScalingFactor(Nil);
+      TransY:=-(pDeltaY-ScrCenter.Y)/ScalingFactor(Nil);
+      TransZ:=-4096;
      end;
+   end;
+
+  if CurrentDisplayType<>dt3D then
+   begin
+    MatrixTransform[0,0]:=-VX.Z;
+    MatrixTransform[0,1]:=-VX.X;
+    MatrixTransform[0,2]:=-VX.Y;
+    MatrixTransform[0,3]:=0;
+    MatrixTransform[1,0]:=-VY.Z;
+    MatrixTransform[1,1]:=-VY.X;
+    MatrixTransform[1,2]:=-VY.Y;
+    MatrixTransform[1,3]:=0;
+    MatrixTransform[2,0]:=-VZ.Z;
+    MatrixTransform[2,1]:=-VZ.X;
+    MatrixTransform[2,2]:=-VZ.Y;
+    MatrixTransform[2,3]:=0;
+    MatrixTransform[3,0]:=0;
+    MatrixTransform[3,1]:=0;
+    MatrixTransform[3,2]:=0;
+    MatrixTransform[3,3]:=1;
+   end;
+
+           CheckOpenGLError(glGetError);   {#}
+  if (CurrentDisplayType=dtXY) or (CurrentDisplayType=dtXZ) or (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then
+   begin
     glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
-    glRotated(270, 0,-1,0);
-    glRotated(90, -1,0,0);
+            CheckOpenGLError(glGetError);   {#}
+    glTranslated(TransX, TransY, TransZ);
+            CheckOpenGLError(glGetError);   {#}
+    glMultMatrixd(MatrixTransform);
+            CheckOpenGLError(glGetError);   {#}
    end
   else if CurrentDisplayType=dt3D then
    begin
     with TCameraCoordinates(Source.Coord) do
      begin
+       CheckOpenGLError(glGetError);   {#}
       gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
+        CheckOpenGLError(glGetError);   {#}
       glRotated(PitchAngle * (180/pi), -1,0,0);
+        CheckOpenGLError(glGetError);   {#}
       glRotated(HorzAngle * (180/pi), 0,-1,0);
+        CheckOpenGLError(glGetError);   {#}
+      glRotated(120, -1,1,1);
+        CheckOpenGLError(glGetError);   {#}
+      glTranslated(-Camera.X, -Camera.Y, -Camera.Z);
+        CheckOpenGLError(glGetError);   {#}
      end;
-   end
-  else
-    Raise EError(6548);   {Unknown CurrentDisplayType!}
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity;
-  if CurrentDisplayType=dtXY then
-   begin
-    with TXYCoordinates(Source.Coord) do
-      glTranslated((pDeltaX - ScrCenter.X)/ScalingFactor(Nil), -(pDeltaY - ScrCenter.Y)/ScalingFactor(Nil), -4096/ScalingFactor(Nil));
-   end
-  else if CurrentDisplayType=dtXZ then
-   begin
-    with TXZCoordinates(Source.Coord) do
-      glTranslated((pDeltaX - ScrCenter.X)/ScalingFactor(Nil), -4096/ScalingFactor(Nil), -(pDeltaY - ScrCenter.Y)/ScalingFactor(Nil));
-   end
-  else if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then
-   begin
-    with T2DCoordinates(Source.Coord) do
-      glTranslated(-4096/ScalingFactor(Nil), -(pDeltaX - ScrCenter.X)/ScalingFactor(Nil), -(pDeltaY - ScrCenter.Y)/ScalingFactor(Nil));
-   end
-  else if CurrentDisplayType=dt3D then
-   begin
-    glRotated(120, -1,1,1);
-    with TCameraCoordinates(Source.Coord).Camera do
-      glTranslated(-X, -Y, -Z);
    end;
+
+{  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity;}
 
   CheckOpenGLError(glGetError);   {#}
 

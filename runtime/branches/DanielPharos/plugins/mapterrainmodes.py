@@ -20,6 +20,7 @@ Info = {
    "author e-mail": "cdunde1@comcast.net",
    "quark":         "Version 6.5" }
 
+#py2.4 indicates upgrade change for python 2.4
 
 import quarkpy.qhandles
 from quarkpy.maputils import *
@@ -1181,9 +1182,16 @@ class TerrainLinHandlesManager:
         Y = max(cy)
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
+        mX = int(mX)   #py2.4
+        mY = int(mY)   #py2.4
+        X = int(X)     #py2.4
+        Y = int(Y)     #py2.4
+        cx = int(cx)   #py2.4
+        cy = int(cy)   #py2.4
         dx = X-cx
         dy = Y-cy
         radius = math.sqrt(dx*dx+dy*dy)
+        radius = int(radius)   #py2.4
         cv = view.canvas()
         cv.pencolor = self.color
         cv.brushstyle = BS_CLEAR
@@ -1323,7 +1331,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.mgr.color
-            cv.rectangle(p.x-4, p.y-4, p.x+4, p.y+4)  # Gives the handle size from center point
+            cv.rectangle(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)  # Gives the handle size from center point
 
         self.mgr.DrawLinHandleCircle(view)  # calls to draw the circle
 
@@ -1583,11 +1591,11 @@ def TerrainManager(editor, view, x, y, flags, handle):
                                                     if p.visible:
                                                         cv.reset()
                                                         cv.brushcolor = RED
-                                                        cv.rectangle(p.x-1, p.y-1, p.x+5, p.y+5)
+                                                        cv.rectangle(int(p.x)-1, int(p.y)-1, int(p.x)+5, int(p.y)+5)
 
                                     cv.reset()
                                     cv.brushcolor = NAVY
-                                    cv.rectangle(vpos.x-3, vpos.y-3, vpos.x+5, vpos.y+5)
+                                    cv.rectangle(int(vpos.x)-3, int(vpos.y)-3, int(vpos.x)+5, int(vpos.y)+5)
 
 
                         if poly.findname("downmoves:f") is not None:
@@ -1666,11 +1674,11 @@ def TerrainManager(editor, view, x, y, flags, handle):
                                                     if p.visible:
                                                         cv.reset()
                                                         cv.brushcolor = RED
-                                                        cv.rectangle(p.x-1, p.y-1, p.x+5, p.y+5)
+                                                        cv.rectangle(int(p.x)-1, int(p.y)-1, int(p.x)+5, int(p.y)+5)
 
                                     cv.reset()
                                     cv.brushcolor = AQUA
-                                    cv.rectangle(vpos.x-3, vpos.y-3, vpos.x+5, vpos.y+5)
+                                    cv.rectangle(int(vpos.x)-3, int(vpos.y)-3, int(vpos.x)+5, int(vpos.y)+5)
 
                     break # This only allows us to get the first item of the list
 
@@ -1848,7 +1856,7 @@ class TerrainVertexHandle(quarkpy.qhandles.GenericHandle):
         p = view.proj(self.pos)
         if p.visible:
             cv.brushcolor = GREEN
-            cv.rectangle(p.x-3, p.y-3, p.x+5, p.y+5)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+5, int(p.y)+5)
 
         if newface == []:
       #      v1 = v2 = self.pos
@@ -1863,13 +1871,13 @@ class TerrainVertexHandle(quarkpy.qhandles.GenericHandle):
             cv.reset()
             cv.brushcolor = NAVY
             p = view.proj(newpoint)
-            cv.rectangle(p.x-3, p.y-3, p.x+5, p.y+5)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+5, int(p.y)+5)
 
         if newface.name == ("downmoves:f"):
             cv.reset()
             cv.brushcolor = AQUA
             p = view.proj(newpoint)
-            cv.rectangle(p.x-3, p.y-3, p.x+5, p.y+5)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+5, int(p.y)+5)
 
 
     def ok(self, editor,undo,old,new):
@@ -2420,6 +2428,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23.2.4  2006/10/04 21:33:32  danielpharos
+# BackUp 4 October 2006 (2)
+#
 # Revision 1.23  2006/01/30 08:20:00  cdunde
 # To commit all files involved in project with Philippe C
 # to allow QuArK to work better with Linux using Wine.

@@ -37,7 +37,7 @@ unit PyMath3D;
 
 interface
 
-uses Windows, qmath, PyMath;
+uses Windows, qmath, PyMath, Setup;
 
 const
  MinW = 64.0;
@@ -58,6 +58,7 @@ type
     function Proj(const V: TVect) : TPointProj; override;
     function VectorX : TVect; override;
     function VectorY : TVect; override;
+    function VectorZ : TVect; override;
     function VectorEye(const Pt: TVect) : TVect; override;
     function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
     function NearerThan(const oow1, oow2: Single) : Boolean; override;
@@ -154,6 +155,11 @@ end;
 function T3DCoordinates.VectorY;
 begin
  VectorY:=Down;
+end;
+
+function T3DCoordinates.VectorZ;
+begin
+ Result:=Eye;
 end;
 
 function T3DCoordinates.VectorEye;

@@ -8,6 +8,8 @@ Map editor views, grid scale numbering feature.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#py2.4 indicates upgrade change for python 2.4
+
 #$Header$
 
 Info = {
@@ -169,9 +171,11 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            else:
                Zstring =  quarkx.ftos(Ztotal)
                Znextgroupup = Zgroup1 - (Zgroup * Zcounter)
+               Znextgroupup = int(Znextgroupup)    #py2.4
                if Znextgroupup > 19:
                    cv.textout(0, Znextgroupup, " " + Zstring + " --")
                Znextgroupdown = Zgroup1 + (Zgroup * Zcounter)
+               Znextgroupdown = int(Znextgroupdown)    #py2.4
                cv.textout(0, Znextgroupdown, "-" + Zstring + " --")
                Zcounter = Zcounter + 1
                Ztotal = Ztotal + units
@@ -195,6 +199,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            else:
                Ystring =  quarkx.ftos(Ytotal)
                Ynextgroupleft = Ygroup1 - ((Ygroup*2) * Ycounter)
+               Ynextgroupleft = int(Ynextgroupleft)    #py2.4
                if not MapOption("AxisXYZ"):
                    cv.textout(Ynextgroupleft-2, 2, Ystring)
                    cv.textout(Ynextgroupleft-2, 16, "  l")
@@ -203,6 +208,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                        cv.textout(Ynextgroupleft-2, 2, Ystring)
                        cv.textout(Ynextgroupleft-2, 16, "  l")
                Ynextgroupright = Ygroup1 + ((Ygroup*2) * Ycounter)
+               Ynextgroupright = int(Ynextgroupright)    #py2.4
                cv.textout(Ynextgroupright+4, 2, "-" + Ystring)
                cv.textout(Ynextgroupright-2, 16, "  l")
                cv.textout(Ynextgroupleft-2, 16, "  l")
@@ -292,9 +298,11 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            else:
                Zstring =  quarkx.ftos(Ztotal)
                Znextgroupup = Zgroup1 - (Zgroup * Zcounter)
+               Znextgroupup = int(Znextgroupup)    #py2.4
                if Znextgroupup > 19:
                    cv.textout(0, Znextgroupup, " " + Zstring + " --")
                Znextgroupdown = Zgroup1 + (Zgroup * Zcounter)
+               Znextgroupdown = int(Znextgroupdown)    #py2.4
                cv.textout(0, Znextgroupdown, "-" + Zstring + " --")
                Zcounter = Zcounter + 1
                Ztotal = Ztotal + units
@@ -318,6 +326,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            else:
                Xstring =  quarkx.ftos(Xtotal)
                Xnextgroupleft = Xgroup1 - ((Xgroup*2) * Xcounter)
+               Xnextgroupleft = int(Xnextgroupleft)    #py2.4
                if not MapOption("AxisXYZ"):
                    cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
                    cv.textout(Xnextgroupleft-2, 16, "  l") # new for line
@@ -326,6 +335,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                        cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
                        cv.textout(Xnextgroupleft-2, 16, "  l") # new for line
                Xnextgroupright = Xgroup1 + ((Xgroup*2) * Xcounter)
+               Xnextgroupright = int(Xnextgroupright)    #py2.4
                cv.textout(Xnextgroupright+4, 2, Xstring)
                cv.textout(Xnextgroupright-2, 16, "  l")  # for mark line
                cv.textout(Xnextgroupleft-2, 16, "  l")   # for mark line
@@ -413,9 +423,11 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            else:
                Ystring =  quarkx.ftos(Ytotal)
                Ynextgroupup = Ygroup1 - (Ygroup * Ycounter)
+               Ynextgroupup = int(Ynextgroupup)    #py2.4
                if Ynextgroupup > 19:
                    cv.textout(0, Ynextgroupup, " " + Ystring + " --")
                Ynextgroupdown = Ygroup1 + (Ygroup * Ycounter)
+               Ynextgroupdown = int(Ynextgroupdown)    #py2.4
                cv.textout(0, Ynextgroupdown, "-" + Ystring + " --")
                Ycounter = Ycounter + 1
                Ytotal = Ytotal + units
@@ -439,6 +451,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            else:
                Xstring =  quarkx.ftos(Xtotal)
                Xnextgroupleft = Xgroup1 - ((Xgroup*2) * Xcounter)
+               Xnextgroupleft = int(Xnextgroupleft)    #py2.4
                if not MapOption("AxisXYZ"):
                    cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
                    cv.textout(Xnextgroupleft-2, 16, "  l")      # for mark line
@@ -447,6 +460,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                        cv.textout(Xnextgroupleft-2, 2, "-" + Xstring)
                        cv.textout(Xnextgroupleft-2, 16, "  l")  # for mark line
                Xnextgroupright = Xgroup1 + ((Xgroup*2) * Xcounter)
+               Xnextgroupright = int(Xnextgroupright)   #py2.4
                cv.textout(Xnextgroupright+4, 2, Xstring)
                cv.textout(Xnextgroupright-2, 16, "  l")     # for mark line
                cv.textout(Xnextgroupleft-2, 16, "  l")      # for mark line
@@ -667,6 +681,10 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.12  2005/12/11 22:03:09  cdunde
+#To fix error in editor and Infobase for X 2D view of
+#Y axis sign and label which was backwards
+#
 #Revision 1.11  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #

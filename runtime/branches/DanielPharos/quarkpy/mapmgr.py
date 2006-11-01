@@ -1,3 +1,7 @@
+# Two lines below to stop encoding errors in the console.
+#!/usr/bin/python
+# -*- coding: ascii -*-
+
 """   QuArK  -  Quake Army Knife
 
 Map editor Layout managers.
@@ -49,7 +53,6 @@ Map editor Layout managers.
 #                           text2 in a pop-up "help snippet" window,
 #                           suitable for long explanations.
 #
-
 
 import math
 import quarkx
@@ -697,7 +700,8 @@ class MapLayout(BaseLayout):
         if ntex!=q["oldtex"]:
             for b in blist:
                 # this implicitely uses the 'undo' variable
-                applycount = applycount + b.replacetex(None, ntex, 1)
+       #         applycount = applycount + b.replacetex(None, ntex, 1) # To fix error on texture change.
+                applycount = applycount + b.replacetex(q["oldtex"], ntex, 1)
         if applycount:
             if applycount>1:
                 txt = Strings[547] % applycount

@@ -55,7 +55,7 @@ def get3DView(editor,makeone=0):
     views = filter(lambda v:v.info["type"]=="3D",editor.layout.views)
     if len(views)==0:
         if makeone:
-            editor.layout.new3Dwindow(None)
+            editor.layout.full3Dclick(None)
             views = filter(lambda v:v.info["type"]=="3D",editor.layout.views)
             return views[0]
         else:

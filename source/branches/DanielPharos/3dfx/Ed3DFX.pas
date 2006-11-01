@@ -1960,7 +1960,7 @@ begin
   if FrameBrush<>0 then
    DeleteObject(FrameBrush);
   BmpInfo.bmiHeader:=bmiHeader;
-  L:=SetDIBitsToDevice(DC, L, T,
+  SetDIBitsToDevice(DC, L, T,
    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
    0,bmiHeader.biHeight, Bits, BmpInfo, 0);
   FreeMem(Bits);
@@ -1986,15 +1986,15 @@ begin
 
  if CurrentDisplayMode=dmFullScreen then
   begin
+   XMargin:=0;
+   YMargin:=0;
+  end
+ else
+  begin
    XMargin:=(ScreenSizeX-SX) div 2;
    if (XMargin<0) and Hardware3DFX then XMargin:=0;
    YMargin:=(ScreenSizeY-SY) div 2;
    if (YMargin<0) and Hardware3DFX then YMargin:=0;
-  end
- else
-  begin
-   XMargin:=0;
-   YMargin:=0;
   end;
 
  ViewRect.R.Left:=XMargin;

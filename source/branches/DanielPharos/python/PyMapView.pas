@@ -576,7 +576,7 @@ begin
       else
         raise EError(6559);   {'Unknown ViewType. Unable to create SceneObject';}
 
-      {Set DisplayType!!!}
+      {Daniel: Set DisplayType!!!}
 
       Scene.Init(Self.Handle, MapViewProj, DisplayMode, DisplayType,
        Specifics.Values['Lib'], AllowsGDI, IntSpec['FogColor'], IntSpec['FrameColor']);
@@ -703,11 +703,7 @@ var
  S: String;
 begin
  if NeedSetup then
-  begin
-   if Scene<>Nil then
-    Scene.ClearScene;
    ReadSetupInformation(True);
-  end;
  if Scene=Nil then
   begin
    S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];

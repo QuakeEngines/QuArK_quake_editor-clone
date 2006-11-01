@@ -640,6 +640,9 @@ const
   GL_CLAMP  = $2900;
   GL_REPEAT = $2901;
 
+type
+  TMatrix4f = array[0..3, 0..3] of GLdouble;
+
 var
   (*
   ** OpenGL routines from OPENGL32.DLL
@@ -668,6 +671,8 @@ var
   glLoadIdentity: procedure; stdcall;
   glRotated: procedure (angle, x, y, z : GLdouble); stdcall;
   glTranslated: procedure (x, y, z : GLdouble); stdcall;
+{  glMultMatrixd: procedure (m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15 : GLdouble); stdcall;}
+  glMultMatrixd: procedure (const m : TMatrix4f); stdcall;
   glClear: procedure (mask: GLbitfield); stdcall;
   glBegin: procedure (mode: GLenum); stdcall;
   glEnd: procedure; stdcall;
@@ -710,7 +715,7 @@ procedure UnloadOpenGl;
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..43] of //Decker 2006.09.19 - modified
+  OpenGL32DLL_FuncList : array[0..44] of //Decker 2006.09.19 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -738,6 +743,7 @@ const
    ,(FuncPtr: @@glLoadIdentity;        FuncName: 'glLoadIdentity'        )
    ,(FuncPtr: @@glRotated;             FuncName: 'glRotated'             )
    ,(FuncPtr: @@glTranslated;          FuncName: 'glTranslated'          )
+   ,(FuncPtr: @@glMultMatrixd;         FuncName: 'glMultMatrixd'         )
    ,(FuncPtr: @@glClear;               FuncName: 'glClear'               )
    ,(FuncPtr: @@glBegin;               FuncName: 'glBegin'               )
    ,(FuncPtr: @@glEnd;                 FuncName: 'glEnd'                 )

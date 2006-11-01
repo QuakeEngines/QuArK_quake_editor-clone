@@ -85,6 +85,10 @@ class FourViewsLayout(ModelLayout):
           "scale": scale,
           "vangle": 0.0}
 
+        self.View3D.info = {
+          "type": "3D",     # 3D view
+          "viewname": "editors3Dview"}
+
         quarkpy.qhandles.flat3Dview(self.View3D, self)
         del self.View3D.info["noclick"] 
 
