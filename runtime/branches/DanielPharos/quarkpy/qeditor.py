@@ -10,6 +10,7 @@ Various constants and Screen Controls for editors.
 
 #$Header$
 
+#   #py2.4 indicates upgrade change for python 2.4
 
 import quarkx
 import qtoolbar
@@ -769,6 +770,8 @@ class Compass:
         angle1 = self.i*pi2/len(self.Images)
         dx, dy = 40*math.cos(angle1), 45*math.sin(angle1)
         def angle(x,y,s, cv=cv):
+            x = int(x)  #py2.4
+            y = int(y)  #py2.4
             size = cv.textsize(s)
             x = x - size[0]/2
             y = y - size[0]/2
@@ -927,7 +930,8 @@ class VBar:
 
     def VBarDraw(self, ctrl):
         cv = ctrl.canvas()
-        cv.draw(self.Images[1], 0, self.i)
+#py2.4        cv.draw(self.Images[1], 0, self.i)
+        cv.draw(self.Images[1], 0, int(self.i))
 
     def Update(self, angle1):
         self.angle = angle1
@@ -1507,6 +1511,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.30.2.6  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
 #Revision 1.30  2006/03/06 07:56:29  cdunde
 #Added def MapOption for options settings in Model Editor.
 #

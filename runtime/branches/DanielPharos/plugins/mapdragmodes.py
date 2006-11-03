@@ -1,3 +1,7 @@
+# Two lines below to stop encoding errors in the console.
+#!/usr/bin/python
+# -*- coding: ascii -*-
+
 """   QuArK  -  Quake Army Knife
 
 Additionnal mouse dragging modes (entity selecter, brush cutter, cube maker)
@@ -426,6 +430,10 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2006/01/12 07:21:01  cdunde
+# To commit all new and related files for
+# new Quick Object makers and toolbar.
+#
 # Revision 1.16  2005/11/13 10:17:29  cdunde
 # Previous fix caused another problem.
 # This fix’s that cursor setting problem

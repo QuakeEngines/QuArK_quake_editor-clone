@@ -10,6 +10,7 @@
 
 #$Header$
 
+#py2.4 indicates upgrade change for python 2.4
 
 import quarkx
 from maputils import *
@@ -252,10 +253,10 @@ class CPHandle(qhandles.GenericHandle):
         if p.visible:
             cv.reset()
             #cv.brushcolor = MapColor("Bezier")
-            #cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            #cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)   #py2.4
             #cv.rectangle(p.x-0.501, p.y-0.501, p.x+2.499, p.y+2.499)
             cv.brushcolor = self.color #DECKER
-            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     #
     # This is important because in general the derivative
@@ -910,6 +911,9 @@ qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.39  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.36  2001/06/17 21:05:27  tiglari
 #fix button captions
 #

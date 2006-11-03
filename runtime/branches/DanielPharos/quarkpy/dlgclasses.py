@@ -10,6 +10,7 @@
 
 #$Header$
 
+#py2.4 indicates upgrade change for python 2.4
 
 import qmacro
 from maputils import *
@@ -27,7 +28,10 @@ class placepersistent_dialogbox(qmacro.dialogbox):
         self.buttons = buttons
         dlg = form.newfloating(self.dlgflags, f["Caption"])
         qmacro.dialogboxes[name] = dlg
-        dlg.windowrect = self.windowrect()
+#py2.4        dlg.windowrect = self.windowrect()
+        temp = self.windowrect()   #py2.4
+        dlgwindow = (int(temp[0]), int(temp[1]), int(temp[2]), int(temp[3]))   #py2.4
+        dlg.windowrect = dlgwindow   #py2.4
         if self.begincolor is not None: dlg.begincolor = self.begincolor
         if self.endcolor is not None: dlg.endcolor = self.endcolor
         dlg.onclose = self.onclose
@@ -217,6 +221,9 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.11  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.8  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #

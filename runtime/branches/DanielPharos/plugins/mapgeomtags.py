@@ -50,6 +50,8 @@ from quarkpy.maputils import checktree, BS_CLEAR
 from quarkpy.qeditor import mapeditor
 import quarkpy.tagging as nt
 
+#py2.4 indicates upgrade change for python 2.4
+
 # -- Geometry tag keys --------------------------------------------- #
 #   ===================
 
@@ -80,7 +82,8 @@ def _drawsquare(cv, o, side):
   if o.visible:
     dl = side/2
     cv.brushstyle = BS_CLEAR
-    cv.rectangle(o.x+dl, o.y+dl, o.x-dl, o.y-dl)
+#py2.4    cv.rectangle(o.x+dl, o.y+dl, o.x-dl, o.y-dl)
+    cv.rectangle(int(o.x)+dl, int(o.y)+dl, int(o.x)-dl, int(o.y)-dl)
 
 def _drawhighlightface(view, cv, face):
     for vtx in face.vertices: # is a list of lists
@@ -145,6 +148,10 @@ nt.tagdrawfunc(_B2CP_dcb, B2CP)
 # log - make no changes below this line
 #
 # $Log$
+# Revision 1.6  2005/10/16 18:48:04  cdunde
+# To remove letters referring to depository folders that
+#  made filtering them out for distribution harder to do
+#
 # Revision 1.5  2005/10/15 00:49:51  cdunde
 # To reinstate headers and history
 #

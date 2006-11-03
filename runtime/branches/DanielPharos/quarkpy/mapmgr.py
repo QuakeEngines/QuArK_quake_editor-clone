@@ -155,7 +155,7 @@ class MapLayout(BaseLayout):
         self.polyview.viewtype = "panel"
         return fp
 
-    def bs_faceform(self, panel):
+    def bs_faceform(self, panel):  ### This is the Face-view setup items (form, buttons & view).
         ico_maped=ico_dict['ico_maped']
         fp = panel.newpanel()
         TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 1)
@@ -446,7 +446,7 @@ class MapLayout(BaseLayout):
         return flist
 
     def getbezierlists(self):
-        "Find all selected Bézier patches."
+        "Find all selected Bezier patches."
         blist = []
         b2list = []
         for s in self.explorer.sellist:
@@ -480,7 +480,7 @@ class MapLayout(BaseLayout):
         flist = self.getfacelists()
         q = quarkx.newobj(':')   # internal object
         self.faceview.handles = []
-        self.faceview.ondraw = None
+        self.faceview.ondraw = None  ### Later this is used to draw the face or poly.
         self.faceview.onmouse = self.polyviewmouse
         self.faceview.color = NOCOLOR
         self.faceview.invalidate(1)
@@ -885,6 +885,13 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.18.2.4  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
+#Revision 1.19  2006/10/27 06:26:33  cdunde
+#Fixed error and to display texture of bezier texture selection list change.
+#
 #Revision 1.18  2006/08/21 21:16:04  cdunde
 #One item left out of last correction.
 #

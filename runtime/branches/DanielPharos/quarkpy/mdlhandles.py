@@ -25,7 +25,7 @@ from mdlutils import *
 import mdlentities
 import qmenu
 
-
+#py2.4 indicates upgrade change for python 2.4
 
 vertexdotcolor = 0
 
@@ -84,16 +84,20 @@ class VertexHandle(qhandles.GenericHandle):
         if p.visible:
             cv.pencolor = vertexdotcolor
             if MldOption("Ticks") == "1":
-                cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+#py2.4                 cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+                cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
             else:
-                cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
-            cv.setpixel(p.x, p.y, vertexdotcolor)
+#py2.4                cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
+                cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
+#py2.4            cv.setpixel(p.x, p.y, vertexdotcolor)
+            cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
             editor = mapeditor()
             if editor is not None:
               if self.index in editor.picked:
            #     cv.pencolor = WHITE
                 cv.pencolor = vertexdotcolor
-                cv.rectangle(p.x-3, p.y-3, p.x+3, p.y+3)
+#py2.4                cv.rectangle(p.x-3, p.y-3, p.x+3, p.y+3)
+                cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
     def drag(self, v1, v2, flags, view):
         p0 = view.proj(self.pos)
@@ -165,10 +169,13 @@ class SkinHandle(qhandles.GenericHandle):
       p = view.proj(self.pos)
       if p.visible:
           if MldOption("Ticks") == "1":
-              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+#py2.4              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+              cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
           else:
-              cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
-          cv.setpixel(p.x, p.y, vertexdotcolor)
+#py2.4              cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
+              cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
+#py2.4          cv.setpixel(p.x, p.y, vertexdotcolor)
+          cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
 
 class BoneHandle(qhandles.GenericHandle):
   "Bone Handle"
@@ -219,7 +226,8 @@ class BoneHandle(qhandles.GenericHandle):
         return
       if p.visible:
           cv.brushcolor = WHITE
-          cv.ellipse(p.x - 3, p.y - 3, p.x + 3, p.y + 3)
+#py2.4          cv.ellipse(p.x-3, p.y-3, p.x+3, p.y+3)
+          cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
 def skinzoom(view, center=None):
     if center is None:
@@ -235,7 +243,8 @@ def skinzoom(view, center=None):
                 if (y1 is None) or (p.y<y1): y1=p.y
                 if (x2 is None) or (p.x>x2): x2=p.x
                 if (y2 is None) or (p.y>y2): y2=p.y
-    view.setrange(x2-x1+36, y2-y1+34, 0.5*(bmin+bmax))
+#py2.4    view.setrange(x2-x1+36, y2-y1+34, 0.5*(bmin+bmax))
+    view.setrange(int(x2)-int(x1)+36, int(y2)-int(y1)+34, 0.5*(bmin+bmax))
 
      # trick : if we are far enough and scroll bars are hidden,
      # the code below clamb the position of "center" so that
@@ -435,6 +444,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12  2006/03/07 08:08:28  cdunde
+#To enlarge model Tick Marks hard to see 1 pixel size
+#and added item to Options menu to make 1 size bigger.
+#
 #Revision 1.11  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

@@ -1,3 +1,7 @@
+# Two lines below to stop encoding errors in the console.
+#!/usr/bin/python
+# -*- coding: ascii -*-
+
 """   QuArK  -  Quake Army Knife
 
 Plug-ins Launcher
@@ -41,6 +45,9 @@ LoadPlugins("Q_")   # immediately loads plug-ins whose name
 #
 #
 # $Log$
+# Revision 1.6  2005/10/15 00:49:05  cdunde
+# To reinstate headers and history
+#
 # Revision 1.3  2003/12/17 13:58:59  peter-b
 # - Rewrote defines for setting Python version
 # - Removed back-compatibility with Python 1.5

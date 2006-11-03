@@ -16,6 +16,7 @@ from maputils import *
 import maphandles
 import mapoptions
 
+#py2.4 indicates upgrade change for python 2.4
 
 #
 # Classes that implement operations on all types of Map Objects,
@@ -608,12 +609,14 @@ class DefaultDrawEntityLines:
                         lightfactor = 0.9 # linux issue with single quote
 	
                     radius = radius * view.scale(org) * lightfactor
+                    radius = int(radius)   #py2.4
                     cv = view.canvas()
                     cv.pencolor = color
 #                    cv.penwidth = 2 # DECKER - Make this a configurable size
                     cv.penwidth = mapoptions.getThinLineThickness()
                     cv.brushstyle = BS_CLEAR
-                    cv.ellipse(org1.x-radius, org1.y-radius, org1.x+radius, org1.y+radius)
+#py2.4                    cv.ellipse(org1.x-radius, org1.y-radius, org1.x+radius, org1.y+radius)
+                    cv.ellipse(int(org1.x)-radius, int(org1.y)-radius, int(org1.x)+radius, int(org1.y)+radius)
                 except:
                     pass
         if entity["target"] is not None:
@@ -697,6 +700,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.50  2006/08/25 20:20:22  cdunde
+#To allow mutual selected items Specific setting changes.
+#
 #Revision 1.49  2006/08/21 03:14:06  cdunde
 #Daniel (d.a.a.) and cdunde finally found fix for Access Violation errors
 #with various selections of entities to display their form data.

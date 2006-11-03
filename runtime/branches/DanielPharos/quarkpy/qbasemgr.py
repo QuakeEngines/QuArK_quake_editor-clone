@@ -24,6 +24,7 @@ import qmenu
 from qdictionnary import Strings
 from qeditor import *
 
+#py2.4 indicates upgrade change for python 2.4
 
 ModesHint = "|Each view can be set to one of three rendering modes :\n\nWireframe : all polygons are drawn as lines, entities as points, etc.\n\nSolid : each polygon is drawn in a single, solid color.\n\nTextured : polygon and models are displayed with their texture."
 
@@ -263,6 +264,8 @@ class BaseLayout:
                 #floating.windowrect = quarkx.screenrect()
                 setup = quarkx.setupsubset(SS_GENERAL, "3D View")
                 r = setup["WndRect"]
+                temp = (int(r[0]), int(r[1]), int(r[2]), int(r[3]))   #py2.4
+                r = temp   #py2.4
                 floating.windowrect = r
                 r = r[2:]
                 floating.rect = r
@@ -573,6 +576,10 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.21.2.6  2006/11/01 22:22:41  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
 #Revision 1.21  2006/01/31 08:43:46  cdunde
 #Increased scale range to allow displaying for increased zoom range.
 #
