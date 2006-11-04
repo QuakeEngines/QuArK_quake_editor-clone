@@ -182,7 +182,7 @@ class MapLayout(BaseLayout):
         self.faceform.sep = -79
         self.faceform.setdata([], quarkx.getqctxlist(':form', "Face")[-1])
         self.faceform.onchange = self.faceformchange
-        self.faceview = fp.newmapview()
+        self.faceview = fp.newmapview()  ### This is the face view where it should show.
         self.faceview.viewtype = "panel"
         facezoombtn.views = [self.faceview]
         return fp
@@ -885,6 +885,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.18.2.5  2006/11/03 23:38:10  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
 #Revision 1.18.2.4  2006/11/01 22:22:42  danielpharos
 #BackUp 1 November 2006
 #Mainly reduce OpenGL memory leak
