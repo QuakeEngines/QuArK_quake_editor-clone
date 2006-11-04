@@ -25,6 +25,7 @@ import qmenu
 from mdlutils import *
 import mdltools
 import mdlhandles
+import mdlentities  # new cdunde
 from qbasemgr import BaseLayout
 from qbasemgr import MPPage
 
@@ -45,19 +46,62 @@ class ModelLayout(BaseLayout):
     #    self.faceview = None
     #    self.faceflags = None
 
-
     def readtoolbars(self, config):
         readtoolbars(mdltools.toolbars, self, self.editor.form, config)
+
+    def getskin(self):
+        "Use currentskin or find new selected skin."
+        slist = []
+        if self.explorer.sellist == []:
+            s = self.editor.Root.currentcomponent.currentskin
+            if s is not None:
+                pass
+            else:
+                slist.append(None)
+                return slist
+            if s.name.endswith(".pcx") or s.name.endswith(".jpg") or s.name.endswith(".tga"):
+                slist.append(s)
+        else:
+            for s in self.explorer.sellist:
+                if s.name.endswith(".pcx") or s.name.endswith(".jpg") or s.name.endswith(".tga"):
+                    slist.append(s)
+                else:
+                    if s.type != ':mc':
+                        s = s.parent
+                        if s.type != ':mc':
+                            if s is not None and s.parent is not None:
+                                s = s.parent
+                            else:
+                                break
+                if s.type == ':mc':
+                    for item in s.subitems:
+                        if item.type == ':sg':
+                            count = 0
+                            for dictitem in item.dictitems:
+                                if dictitem.endswith(".pcx") or dictitem.endswith(".jpg") or dictitem.endswith(".tga"):
+                                    if count == 0:
+                                        holddictitem = item.dictitems[dictitem]
+                                    count = count + 1
+                                    s = self.editor.Root.currentcomponent.currentskin
+                                    if item.dictitems[dictitem] == s:
+                                        slist.append(s)
+                                        return slist
+                                    if count == len(item.dictitems):
+                                        slist.append(holddictitem)
+                else:
+                    s = self.editor.Root.currentcomponent.currentskin
+                    if s is not None:
+                        slist.append(s)
+            s = self.editor.Root.currentcomponent.currentskin
+            if slist == [] and s is not None:
+                slist.append(s)
+        if slist == []:
+            slist.append(None)
+        return slist
 
   ### new cdunde, used to setup the skinview.
   ### copied from mapmgr.py def polyviewdraw
     def skinviewdraw(self, view):
-        slist = self.getskin()
-        if len(slist)==1:
-            tex = quarkx.loadtexture(slist[0], self.editor.view)
-            if not (tex is None):
-                view.canvas().painttexture(tex, (0,0)+view.clientarea, -1)
-                return
         w,h = view.clientarea
         cv = view.canvas()
         cv.penstyle = PS_CLEAR
@@ -71,32 +115,30 @@ class ModelLayout(BaseLayout):
         self.skinform.header = 0
         self.skinform.sep = -79
         self.skinform.setdata([], quarkx.getqctxlist(':form', "Skin")[-1])
-#        self.skinform.onchange = self.skinformchange
-        self.skinview = fp.newmapview()  ### This is the skin view where is should show.
-
+        self.skinform.onchange = self.skinformchange
+        self.skinview = fp.newmapview()  ### This is the skin view where it should show.
         self.skinview.viewtype = "panel"  ###new cdunde
-
-#        self.skinview.color = NOCOLOR
+        self.skinview.color = BLACK
         self.skinview.ondraw = self.skinviewdraw
-#        self.skinview.onmouse = self.skinviewmouse
+#        self.skinview.onmouse = self.skinviewmouse   ### This may be needed later.
         return fp
 
     def bs_additionalpages(self, panel):
         "Builds additional pages for the multi-pages panel."
-        skin = qtoolbar.button(self.fillskinform, "Parameters about the selected skin", ico_objects, iiPcx)
+        thesepages = []
+        skin = qtoolbar.button(self.fillskinform, "Skin-view||Skin-view:\n\nParameters about the selected skin", ico_objects, iiPcx, "Skin-view", infobaselink='intro.mapeditor.dataforms.html#faceview')
         skin.pc = [self.bs_skinform(panel)]
-        return [skin], mppages
-#        return [], mppages
+        thesepages.append(skin)
+        return thesepages, mppages
 
     def bs_userobjects(self, panel):
         "A panel with user-defined model objects."
         #
         # Note : for the map editor, the userdatapanel is game-specific because there are too
-        # much dependencies (textures, etc). For the Model editor, however, I don't see any
+        # many dependencies (textures, etc). For the Model editor, however, I don't see any
         # reason to make it game-specific.
         #
-        MdlUserDataPanel(panel, "Drop your most commonly used Model parts to this panel", "MdlObjPanel.qrk",
-          "UserData.qrk")
+        MdlUserDataPanel(panel, "Drop your most commonly used Model parts to this panel", "MdlObjPanel.qrk", "UserData.qrk")
 
     def actionmpp(self):
         "Switch the multi-pages-panel for the current selection."
@@ -115,41 +157,47 @@ class ModelLayout(BaseLayout):
 
     def componentof(self, obj):
         "Searches for the parent component."
-
         while not ((obj is None) or (obj is self.editor.Root)):
             obj = obj.parent
             if obj.type == ':mc':
                 return obj
 
-    def getskin(self):
-        "Find selected skin."
-        slist = []
-        for s in self.explorer.sellist:
-            if s.name.endswith(".pcx") or s.name.endswith(".jpg") or s.name.endswith(".tga"):
-                slist.append(s)
-        return slist
 
     def fillskinform(self, reserved):
         slist = self.getskin()  ### something missing here
-        if len(slist)!=0:
-            self.skinview.canvas().painttexture(slist[0], (0,0)+self.skinview.clientarea, -1)
         q = quarkx.newobj(':')   # internal object
         self.skinview.handles = []
         self.skinview.ondraw = None
   ###      self.faceview.onmouse = self.polyviewmouse  ### something missing here
-        self.skinview.color = NOCOLOR
-        self.skinview.invalidate(1)
-        self.editor.invalidatetexviews()
+        self.skinview.color = BLACK
   ### new cdunde
         if len(slist)==0:
             cap = Strings[129]
+        if len(slist)!=0:  # uncomment when selection is correct
+            mdlhandles.buildskinvertices(self.editor, self.skinview, self.editor.Root.currentcomponent, slist[0])
+        else:
+            mdlhandles.buildskinvertices(self.editor, self.skinview, self.editor.Root.currentcomponent, None)
 
-        mdlhandles.buildskinvertices(self.editor, self.skinview, self.editor.Root.currentcomponent)
         if self.editor.Root.currentcomponent is not None:
             q["header"] = "Selected Skin"
             q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
             q["ownedby"] = self.editor.Root.currentcomponent.shortname
+            if len(slist)!=0 and slist[0] is not None:
+                q["texture"] = slist[0].name
         self.skinform.setdata(q, self.skinform.form)
+        self.editor.finishdrawing(self.skinview)
+        if slist[0] is None:
+       #    self.skinview.invalidate(1)
+            self.editor.invalidatetexviews()
+
+
+    def skinformchange(self, src):
+        slist = self.getskin()
+        undo = quarkx.action()
+        q = src.linkedobjects[0]
+        tex = q["texture"]
+        self.editor.ok(undo, txt)
+
 
     def selectcomponent(self, comp):
         self.editor.Root.setcomponent(comp)
@@ -158,7 +206,7 @@ class ModelLayout(BaseLayout):
     def selectcgroup(self, group):
         comp = self.componentof(group)
         if comp is not None:
-            self.selectcomponent(comp)
+          self.selectcomponent(comp)
 
     def selectframe(self, frame):
         c = self.componentof(frame)
@@ -222,6 +270,11 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.10.2.1  2006/11/04 00:49:34  cdunde
+#To add .tga model skin texture file format so they can be used in the
+#model editor for new games and to start the displaying of those skins
+#on the Skin-view page (all that code is in the mdlmgr.py file).
+#
 #Revision 1.10  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

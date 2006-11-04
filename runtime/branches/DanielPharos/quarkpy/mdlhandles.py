@@ -273,14 +273,21 @@ def skinzoom(view, center=None):
     p = view.proj(view.info["origin"])
     view.depth = (p.z-0.1, p.z+100.0)
 
-def buildskinvertices(editor, view, component):
+def buildskinvertices(editor, view, component, skindrawobject):
     "builds a list of handles to display on the skinview"
 
-    def drawsingleskin(view, component=component, editor=editor):
+
+    def drawsingleskin(view, skindrawobject=skindrawobject, component=component, editor=editor):
         view.color = BLACK
-        view.drawmap(component.skindrawobject)
-#        view.solidimage(component.currentskin)
+#org        view.drawmap(component.skindrawobject)
+#org   #     view.solidimage(component.currentskin)
         view.drawmap(component.skindrawobject, DM_REDRAWFACES|DM_OTHERCOLOR, 0x2584C9)   # draw the face contour
+   #     view.drawmap(skindrawobject)   # draw the face contour
+   #     view.solidimage()
+        if skindrawobject is not None:
+            texX, texY = skindrawobject['Size'] # Gives the texture size to work with.
+            view.canvas().painttexture(skindrawobject, ((view.clientarea[0]/2)-(int(texX)/2), (view.clientarea[0]/2)-(int(texY)/2))+(int(texX), int(texY)), 0) # adding ', -1 or 1' as last arg gives lighting effect.
+  #      view.invalidate(1)
         editor.finishdrawing(view)
         # end of drawsingleskin
 
@@ -296,7 +303,7 @@ def buildskinvertices(editor, view, component):
     org = component.originst
     view.handles = qhandles.FilterHandles(h, SS_MODEL)
     view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
-    view.viewmode = "tex"
+    view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
     view.info = {"type": "2D",                  
                  "matrix": matrix_rot_z(pi2),
                  "origin": org,
@@ -309,7 +316,8 @@ def buildskinvertices(editor, view, component):
     skinzoom(view, org)
     view.flags = view.flags | qhandles.vfSkinView;
     editor.setupview(view, drawsingleskin, 0)
-    
+
+    view.invalidate()
       
 #
 # Functions to build common lists of handles.
@@ -444,6 +452,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.1  2006/11/03 23:38:09  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
 #Revision 1.12  2006/03/07 08:08:28  cdunde
 #To enlarge model Tick Marks hard to see 1 pixel size
 #and added item to Options menu to make 1 size bigger.
