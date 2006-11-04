@@ -34,13 +34,13 @@ class DisplayBar(ToolBar):
         zoombtn.views = layout.views
         zoombtn.caption = "zoom"
 
-        Btn3D = qtoolbar.button(layout.full3Dclick, "new 3D window||New 3D-window  will create a new floating 3D-window, which you can place anywhere on your desktop.\nIt only exist as long as you are in the model editor.", ico_maped, 21)
+        Btn3D = qtoolbar.button(layout.full3Dclick, "Full 3D view||Full 3D view will create a new floating 3D-window, which you can place anywhere on your desktop.\nIt only exist as long as you are in the model editor.", ico_maped, 21, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
 
-        LinearVBtn = qtoolbar.button(layout.editor.linear1click, "linear mapping circle on selection", ico_maped, 19)
+        LinearVBtn = qtoolbar.button(layout.editor.linear1click, "Linear mapping circle on selection||Linear mapping circle on selection:\n\nWhen this button is selected, QuArK always displays a pink circle around the selected objects; otherwise, it only appears if multiple objects are selected.\n\nThis circle and its attached handles let you apply 'linear mappings' on the objects. 'Linear mapping' means any transformation like rotation, enlarging/shrinking, symmetry, or a combination of them all. When you use the rotate, enlarge, shrink, and symmetry buttons of the movement tool palette, you actually apply a linear mapping on the selected objects. This is only interesting to know for a special kind of Duplicators, the one that can apply linear mappings. It means that this kind of Duplicator can create images with any of the previous movement commands applied, for example to create spiral stairs.", ico_maped, 19,  infobaselink="intro.mapeditor.toolpalettes.display.html#linear")
 
-        LockViewsBtn = qtoolbar.button(layout.editor.lockviewsclick, "lock views||Lock views will cause all of the 2D views to move and zoom together.\n\nWhen this is in the unlocked mode, the 2d views can then be moved and zoomed on individually.\n\nIf the lock is reset then the 2D views will realign themselves.", ico_maped, 28)
+        LockViewsBtn = qtoolbar.button(layout.editor.lockviewsclick, "Lock views||Lock views:\n\nThis will cause all of the 2D views to move and zoom together.\n\nWhen this is in the unlocked mode, the 2d views can then be moved and zoomed on individually.\n\nIf the lock is reset then the 2D views will realign themselves.", ico_maped, 28)
 
-        helpbtn = qtoolbar.button(layout.helpbtnclick, "Contextual help||Will open up your web-browser, and display the QuArK main help page.", ico_maped, 13)
+        helpbtn = qtoolbar.button(layout.helpbtnclick, "Contextual help||Contextual help:\n\nWill open up your web-browser, and display the QuArK main help page.", ico_maped, 13, infobaselink="intro.mapeditor.toolpalettes.display.html#helpbook")
 
         layout.buttons.update({"grid": gridbtn, "3D": Btn3D, "linear": LinearVBtn, "lockv": LockViewsBtn})
 
@@ -61,6 +61,10 @@ toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 #
 #
 #$Log$
+#Revision 1.7.2.1  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
 #Revision 1.7  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
