@@ -1822,6 +1822,7 @@ def flat3Dview(view3d, layout, selonly=0):
     view3d.viewmode = "tex"
     view3d.flags = view3d.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
     view3d.info = {"type": "2D",
+                   "viewname": "mdleditor3Dview",
                    "scale": 2.0,
                    "angle": -0.7,
                    "vangle": 0.3,
@@ -1841,6 +1842,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.27.2.1  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
 #Revision 1.27  2006/06/03 02:31:46  cdunde
 #To fix Access violation errors when rebuilding 3D textured views and panning or moving in them.
 #
