@@ -35,7 +35,7 @@ class Full3DLayout(ModelLayout):
         self.View3D.viewtype="editor"
         self.views[:] = [self.View3D]
         self.baseviews = self.views[:]
-        self.View3D.info = {"type": "3D"}
+        self.View3D.info = {"type": "3D", "viewname": "editors3Dview"}
         self.View3D.viewmode = "tex"
 
     ### Calling this function causes the 3D view mouse maneuvering to change,
@@ -50,6 +50,12 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.5.2.6  2006/11/04 00:41:15  cdunde
+# To add a comment to the code about what effects
+# the model editors 3D view pivot method.
+# Previous comment is incorrect.
+# This file has nothing to do with memory leak.
+#
 # Revision 1.5.2.5  2006/11/01 22:22:42  danielpharos
 # BackUp 1 November 2006
 # Mainly reduce OpenGL memory leak
