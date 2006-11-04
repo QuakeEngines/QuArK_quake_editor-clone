@@ -41,10 +41,24 @@ class ModelEditor(BaseEditor):
         if Root is not None:
             Root = self.fileobject.findname(Root)
         self.Root = Root
-        self.lock_x = 0
-        self.lock_y = 0
-        self.lock_z = 0
-
+        src = self.Root
+   #org     self.lock_x = 0
+   #org     self.lock_y = 0
+   #org     self.lock_z = 0
+        if (quarkx.setupsubset(SS_MODEL, "Options")["Lock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Lock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["Lock_Z"] is None):
+            src["Lock_X"] = "0"
+            src["Lock_Y"] = "0"
+            Lock_Z = "0"
+            quarkx.setupsubset(SS_MODEL, "Options")["Lock_X"] = src["Lock_X"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Lock_Y"] = src["Lock_Y"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Lock_Z"] = Lock_Z
+        else:
+            src["Lock_X"] = quarkx.setupsubset(SS_MODEL, "Options")["Lock_X"]
+            src["Lock_Y"] = quarkx.setupsubset(SS_MODEL, "Options")["Lock_Y"]
+            Lock_Z = quarkx.setupsubset(SS_MODEL, "Options")["Lock_Z"]
+        self.lock_x = src["Lock_X"]
+        self.lock_y = src["Lock_Y"]
+        self.lock_z = int(Lock_Z)
         if MldOption("SolidFrame") == "1":
             for c in self.ListComponents():
                 c.info = { }
@@ -80,7 +94,7 @@ class ModelEditor(BaseEditor):
             commonhandles(self, 0)
         else:
 #py2.4            quarkx.settimer(commonhandles, self, delay*1000.0)
-            delayfactor = delay*1000.0
+            delayfactor = delay*1000
             quarkx.settimer(commonhandles, self, int(delayfactor))
 
     def setupchanged(self, level):
@@ -159,6 +173,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.10.2.1  2006/11/03 23:38:10  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
 #Revision 1.10  2006/03/07 04:51:41  cdunde
 #Setup model frame outlining and options for solid and color selection.
 #
