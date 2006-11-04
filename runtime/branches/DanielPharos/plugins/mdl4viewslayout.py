@@ -299,6 +299,16 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+#
+# Revision 1.5.2.6  2006/11/04 14:41:15  cdunde
+# New "viewname" info added and "type" for 3D view but never commented on.
+
+# Revision 1.5.2.6  2006/11/04 00:41:15  cdunde
+# To add a comment to the code about what effects
+# the model editors 3D view pivot method.
+# Previous comment is incorrect.
+# This file has nothing to do with memory leak.
+#
 # Revision 1.5.2.5  2006/11/01 22:22:42  danielpharos
 # BackUp 1 November 2006
 # Mainly reduce OpenGL memory leak
