@@ -28,6 +28,7 @@ import mdlhandles
 from qbasemgr import BaseLayout
 from qbasemgr import MPPage
 
+from qdictionnary import Strings  ### new cdunde
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
@@ -48,6 +49,21 @@ class ModelLayout(BaseLayout):
     def readtoolbars(self, config):
         readtoolbars(mdltools.toolbars, self, self.editor.form, config)
 
+  ### new cdunde, used to setup the skinview.
+  ### copied from mapmgr.py def polyviewdraw
+    def skinviewdraw(self, view):
+        slist = self.getskin()
+        if len(slist)==1:
+            tex = quarkx.loadtexture(slist[0], self.editor.view)
+            if not (tex is None):
+                view.canvas().painttexture(tex, (0,0)+view.clientarea, -1)
+                return
+        w,h = view.clientarea
+        cv = view.canvas()
+        cv.penstyle = PS_CLEAR
+        cv.brushcolor = GRAY
+        cv.rectangle(0,0,w,h)
+
     def bs_skinform(self, panel):
         fp = panel.newpanel()
         tp = fp.newtoppanel(124)
@@ -56,9 +72,12 @@ class ModelLayout(BaseLayout):
         self.skinform.sep = -79
         self.skinform.setdata([], quarkx.getqctxlist(':form', "Skin")[-1])
 #        self.skinform.onchange = self.skinformchange
-        self.skinview = fp.newmapview()
+        self.skinview = fp.newmapview()  ### This is the skin view where is should show.
+
+        self.skinview.viewtype = "panel"  ###new cdunde
+
 #        self.skinview.color = NOCOLOR
-#        self.skinview.ondraw = self.skinviewdraw
+        self.skinview.ondraw = self.skinviewdraw
 #        self.skinview.onmouse = self.skinviewmouse
         return fp
 
@@ -102,17 +121,34 @@ class ModelLayout(BaseLayout):
             if obj.type == ':mc':
                 return obj
 
+    def getskin(self):
+        "Find selected skin."
+        slist = []
+        for s in self.explorer.sellist:
+            if s.name.endswith(".pcx") or s.name.endswith(".jpg") or s.name.endswith(".tga"):
+                slist.append(s)
+        return slist
+
     def fillskinform(self, reserved):
+        slist = self.getskin()  ### something missing here
+        if len(slist)!=0:
+            self.skinview.canvas().painttexture(slist[0], (0,0)+self.skinview.clientarea, -1)
+        q = quarkx.newobj(':')   # internal object
         self.skinview.handles = []
         self.skinview.ondraw = None
+  ###      self.faceview.onmouse = self.polyviewmouse  ### something missing here
         self.skinview.color = NOCOLOR
         self.skinview.invalidate(1)
+        self.editor.invalidatetexviews()
+  ### new cdunde
+        if len(slist)==0:
+            cap = Strings[129]
+
         mdlhandles.buildskinvertices(self.editor, self.skinview, self.editor.Root.currentcomponent)
-        q = quarkx.newobj(':')   # internal object
         if self.editor.Root.currentcomponent is not None:
-          q["header"] = "Selected Skin"
-          q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
-          q["ownedby"] = self.editor.Root.currentcomponent.shortname
+            q["header"] = "Selected Skin"
+            q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
+            q["ownedby"] = self.editor.Root.currentcomponent.shortname
         self.skinform.setdata(q, self.skinform.form)
 
     def selectcomponent(self, comp):
@@ -122,7 +158,7 @@ class ModelLayout(BaseLayout):
     def selectcgroup(self, group):
         comp = self.componentof(group)
         if comp is not None:
-          self.selectcomponent(comp)
+            self.selectcomponent(comp)
 
     def selectframe(self, frame):
         c = self.componentof(frame)
@@ -160,6 +196,8 @@ class ModelLayout(BaseLayout):
                 self.selectskin(fs)
             elif fs.type == '.jpg':    # skin
                 self.selectskin(fs)
+            elif fs.type == '.tga':    # skin
+                self.selectskin(fs)
 
 
     def NewItem1Click(self, m):
@@ -184,6 +222,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.10  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.7  2003/12/17 13:58:59  peter-b
 #- Rewrote defines for setting Python version
 #- Removed back-compatibility with Python 1.5

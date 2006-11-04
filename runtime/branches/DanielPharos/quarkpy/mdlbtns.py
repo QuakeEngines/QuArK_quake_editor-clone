@@ -46,7 +46,7 @@ def droptarget(editor, newitem):
           if c is None:
             c=editor.Root.currentcomponent
           return c.group_frame, None
-      elif newitem.type in ('.jpg', '.pcx'):
+      elif newitem.type in ('.jpg', '.pcx', '.tga'):
         if not fs is None:
           c=componentof(fs)
           if c is None:
@@ -311,6 +311,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.7  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.4  2000/08/21 21:33:04  aiv
 #Misc. Changes / bugfixes
 #

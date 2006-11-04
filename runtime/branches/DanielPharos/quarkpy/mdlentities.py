@@ -186,6 +186,7 @@ Mapping = {
     ":mf": FrameType(),
     ".pcx": SkinType(),
     ".jpg": SkinType(),
+    ".tga": SkinType(),
     ":tag": TagType(),
     ":bone": BoneType() }
 
@@ -233,6 +234,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.10  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.7  2001/02/01 22:03:15  aiv
 #RemoveVertex Code now in Python
 #
