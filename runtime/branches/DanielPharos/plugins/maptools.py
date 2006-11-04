@@ -23,6 +23,8 @@ Info = {
 import quarkpy.mapoptions
 from quarkpy.maputils import *
 
+#py2.4 indicates upgrade change for python 2.4
+
 #
 # This part is a magical incantation.
 # First the normal arguments for
@@ -145,12 +147,12 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            p2 = view.proj(yrendb)
            cv.line(p1, p2)
         # Prints above the left marker line "0"
-           x = view.proj(yrendt).tuple[0]-4
-           y = view.proj(yrendt).tuple[1]-12
+           x = int(view.proj(yrendt).tuple[0])-4    #py2.4
+           y = int(view.proj(yrendt).tuple[1])-12   #py2.4
            cv.textout(x,y,"0")
         # Prints above the right marker line the distance, on the Y axis
-           x = view.proj(ylendt).tuple[0]
-           y = view.proj(ylendt).tuple[1]-12
+           x = int(view.proj(ylendt).tuple[0])      #py2.4
+           y = int(view.proj(ylendt).tuple[1])-12   #py2.4
            dist = abs(y2-y1)
            cv.textout(x,y,quarkx.ftos(dist))
 
@@ -176,12 +178,12 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            p2 = view.proj(ylendb)
            cv.line(p1, p2)
         # Prints right of bottom marker line "0"
-           x = view.proj(yrendb).tuple[0]+8
-           y = view.proj(yrendb).tuple[1]-2
+           x = int(view.proj(yrendb).tuple[0])+8   #py2.4
+           y = int(view.proj(yrendb).tuple[1])-2   #py2.4
            cv.textout(x,y,"0")
         # Prints right of top marker line the distance, on the Z axis
-           x = view.proj(yrendt).tuple[0]+8
-           y = view.proj(yrendt).tuple[1]-2
+           x = int(view.proj(yrendt).tuple[0])+8   #py2.4
+           y = int(view.proj(yrendt).tuple[1])-2   #py2.4
            higth = abs(z2-z1)
            cv.textout(x,y,quarkx.ftos(higth))
 
@@ -217,12 +219,12 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            p2 = view.proj(xrendb)
            cv.line(p1, p2)
         # Prints above the left marker line "0"
-           x = view.proj(xlendt).tuple[0]-4
-           y = view.proj(xlendt).tuple[1]-12
+           x = int(view.proj(xlendt).tuple[0])-4    #py2.4
+           y = int(view.proj(xlendt).tuple[1])-12   #py2.4
            cv.textout(x,y,"0")
         # Prints above the right marker line the distance, on the X axis
-           x = view.proj(xrendt).tuple[0]
-           y = view.proj(xrendt).tuple[1]-12
+           x = int(view.proj(xrendt).tuple[0])      #py2.4
+           y = int(view.proj(xrendt).tuple[1])-12   #py2.4
            dist = abs(x1-x2)
            cv.textout(x,y,quarkx.ftos(dist))
 
@@ -248,12 +250,12 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            p2 = view.proj(yrendb)
            cv.line(p1, p2)
         # Prints right of bottom marker line "0"
-           x = view.proj(yrendb).tuple[0]+8
-           y = view.proj(yrendb).tuple[1]-2
+           x = int(view.proj(yrendb).tuple[0])+8   #py2.4
+           y = int(view.proj(yrendb).tuple[1])-2   #py2.4
            cv.textout(x,y,"0")
         # Prints right of top marker line the distance, on the Y axis
-           x = view.proj(yrendt).tuple[0]+8
-           y = view.proj(yrendt).tuple[1]-2
+           x = int(view.proj(yrendt).tuple[0])+8   #py2.4
+           y = int(view.proj(yrendt).tuple[1])-2   #py2.4
            higth = abs(z2-z1)
            cv.textout(x,y,quarkx.ftos(higth))
 
@@ -288,12 +290,12 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            p2 = view.proj(xrendb)
            cv.line(p1, p2)
         # Prints above the left marker line "0"
-           x = view.proj(xlendt).tuple[0]-4
-           y = view.proj(xlendt).tuple[1]-12
+           x = int(view.proj(xlendt).tuple[0])-4    #py2.4
+           y = int(view.proj(xlendt).tuple[1])-12   #py2.4
            cv.textout(x,y,"0")
         # Prints above the right marker line the distance, on the X axis
-           x = view.proj(xrendt).tuple[0]
-           y = view.proj(xrendt).tuple[1]-12
+           x = int(view.proj(xrendt).tuple[0])      #py2.4
+           y = int(view.proj(xrendt).tuple[1])-12   #py2.4
            dist = abs(x1-x2)
            cv.textout(x,y,quarkx.ftos(dist))
 
@@ -319,12 +321,12 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            p2 = view.proj(yrendb)
            cv.line(p1, p2)
         # Prints right of bottom marker line "0"
-           x = view.proj(yrendb).tuple[0]+8
-           y = view.proj(yrendb).tuple[1]-2
+           x = int(view.proj(yrendb).tuple[0])+8   #py2.4
+           y = int(view.proj(yrendb).tuple[1])-2   #py2.4
            cv.textout(x,y,"0")
         # Prints right of top marker line the distance, on the Y axis
-           x = view.proj(yrendt).tuple[0]+8
-           y = view.proj(yrendt).tuple[1]-2
+           x = int(view.proj(yrendt).tuple[0])+8   #py2.4
+           y = int(view.proj(yrendt).tuple[1])-2   #py2.4
            higth = abs(y2-y1)
            cv.textout(x,y,quarkx.ftos(higth))
 
@@ -577,6 +579,10 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.11  2006/01/31 11:04:30  cdunde
+#Fixed  distance displayed amount from drifting away from
+#marker on screen view x-axis when the scale size is changed.
+#
 #Revision 1.10  2006/01/31 07:35:08  cdunde
 #To stop smearing of 2D view when rulers are turned off.
 #
