@@ -23,6 +23,7 @@ import qtoolbar
 import qmenu
 from qdictionnary import Strings
 from qeditor import *
+import quarkpy.qhandles # To add change of "Floating 3D view" mouse control between Map and Model editors.
 
 #py2.4 indicates upgrade change for python 2.4
 
@@ -52,6 +53,7 @@ class BaseLayout:
         self.hintcontrol = None
         self.hinttext = ""
         self.compass = None
+        self.editor = None
 
    # def __del__(self):
    #     debug("Destruction of layout '%s'" % self.__class__.__name__)
@@ -250,6 +252,14 @@ class BaseLayout:
         #view.info = {"type": "3D", "noclick": None, "viewname": "full3Dview"}
         view.viewmode = "tex"
         view.viewtype = "window"
+
+    ### Calling this function causes the 3D view mouse maneuvering to change,
+    ### rotation is based on the center of the editor view or the model (0,0,0).
+    ### But only for the Model Editor, so we first test for that.
+        if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
+            quarkpy.qhandles.flat3Dview(view, self)
+            del view.info["noclick"] 
+
         setprojmode(view)
         self.editor.setupview(view)
         floating.info = view
@@ -576,6 +586,10 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.21.2.7  2006/11/03 23:38:09  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
 #Revision 1.21.2.6  2006/11/01 22:22:41  danielpharos
 #BackUp 1 November 2006
 #Mainly reduce OpenGL memory leak
