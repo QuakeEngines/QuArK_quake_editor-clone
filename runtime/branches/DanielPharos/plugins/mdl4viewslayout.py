@@ -89,6 +89,8 @@ class FourViewsLayout(ModelLayout):
           "type": "3D",     # 3D view
           "viewname": "editors3Dview"}
 
+    ### Calling this function causes the 3D view mouse maneuvering to change,
+    ### rotation is based on the center of the editor view or the model (0,0,0).
         quarkpy.qhandles.flat3Dview(self.View3D, self)
         del self.View3D.info["noclick"] 
 
@@ -251,26 +253,26 @@ class FourViewsLayout2(FourViewsLayout):
         form.mainpanel.sections = ((0.50, ), (0.50,))
 
         #
-        # Put the XY view in the section (1,0)
+        # The 3D view is in the section (0,0) (it is there by default, left up).
         #
 
-        self.ViewXY.section = (1,0)
-
         #
-        # Put the XZ view in the section (1,1).
-        #
-
-        self.ViewXZ.section = (1,1)
-
-        #
-        # Put the YZ view in the section (0,1).
+        # Put the YZ view in the section (0,1), i.e. left down.
         #
 
         self.ViewYZ.section = (0,1)
 
         #
-        # The 3D view is in the section (0,0) (it is there by default).
+        # Put the XY view in the section (1,0), i.e. right up.
         #
+
+        self.ViewXY.section = (1,0)
+
+        #
+        # Put the XZ view in the section (1,1), i.e. right down.
+        #
+
+        self.ViewXZ.section = (1,1)
 
         #
         # Link the horizontal position of the XZ view to that of the
@@ -297,6 +299,10 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.5.2.5  2006/11/01 22:22:42  danielpharos
+# BackUp 1 November 2006
+# Mainly reduce OpenGL memory leak
+#
 # Revision 1.5  2005/10/15 00:51:56  cdunde
 # To reinstate headers and history
 #
