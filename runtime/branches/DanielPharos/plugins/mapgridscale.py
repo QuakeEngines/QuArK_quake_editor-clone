@@ -103,7 +103,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
        if not MapOption("All2DviewsScale") and not MapOption("AllScalesCentered") and not MapOption("XviewScale") and not MapOption("XyScaleCentered") and not MapOption("XzScaleCentered"):
            return
 
-       cv.fontcolor = BLACK
+       cv.fontcolor = RED
        cv.fontsize = 8
 
        YZarea = `view.clientarea`       # Gets the view area as a string
@@ -224,7 +224,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
        if not MapOption("All2DviewsScale") and not MapOption("AllScalesCentered") and not MapOption("YviewScale") and not MapOption("YxScaleCentered") and not MapOption("YzScaleCentered"):
            return
 
-       cv.fontcolor = BLACK
+       cv.fontcolor = RED
        cv.fontsize = 8
 
        XZarea = `view.clientarea`
@@ -351,7 +351,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
        if not MapOption("All2DviewsScale") and not MapOption("AllScalesCentered") and not MapOption("ZviewScale") and not MapOption("ZxScaleCentered") and not MapOption("ZyScaleCentered"):
            return
 
-       cv.fontcolor = BLACK
+       cv.fontcolor = RED
        cv.fontsize = 8
 
        XZarea = `view.clientarea`
@@ -681,6 +681,10 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.12.2.1  2006/11/01 22:22:43  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
 #Revision 1.12  2005/12/11 22:03:09  cdunde
 #To fix error in editor and Infobase for X 2D view of
 #Y axis sign and label which was backwards
