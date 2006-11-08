@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.295.2.6  2006/11/01 22:22:43  danielpharos
+//BackUp 1 November 2006
+//Mainly reduce OpenGL memory leak
+//
 //Revision 1.295  2006/08/18 18:50:44  cdunde
 //Did some minor update and rearrangement for STVEF.
 //
@@ -2880,6 +2884,9 @@ QQRKSRC1
       }
       Options:config =
       {
+        setLock_X          = "0"
+        setLock_Y          = "0"
+        setLock_Z          = "0"
         SolidFrame         = ""
         DrawAxis           = "1"
         DrawMapLimit       = "1"
@@ -2894,7 +2901,6 @@ QQRKSRC1
         AutoAdjustNormal   = ""
         PagesLocked        = ""
         HandleHints        = "1"
-
         LinearBox          = ""
         TreeKeybDelay      = ""
         Form = "MdlOptions"

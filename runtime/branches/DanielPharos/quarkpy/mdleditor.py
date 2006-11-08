@@ -41,24 +41,21 @@ class ModelEditor(BaseEditor):
         if Root is not None:
             Root = self.fileobject.findname(Root)
         self.Root = Root
-        src = self.Root
-   #org     self.lock_x = 0
-   #org     self.lock_y = 0
-   #org     self.lock_z = 0
-        if (quarkx.setupsubset(SS_MODEL, "Options")["Lock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Lock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["Lock_Z"] is None):
-            src["Lock_X"] = "0"
-            src["Lock_Y"] = "0"
+        if (quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] is None):
+            Lock_X = "0"
+            Lock_Y = "0"
             Lock_Z = "0"
-            quarkx.setupsubset(SS_MODEL, "Options")["Lock_X"] = src["Lock_X"]
-            quarkx.setupsubset(SS_MODEL, "Options")["Lock_Y"] = src["Lock_Y"]
-            quarkx.setupsubset(SS_MODEL, "Options")["Lock_Z"] = Lock_Z
+            quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] = Lock_X
+            quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] = Lock_Y
+            quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] = Lock_Z
         else:
-            src["Lock_X"] = quarkx.setupsubset(SS_MODEL, "Options")["Lock_X"]
-            src["Lock_Y"] = quarkx.setupsubset(SS_MODEL, "Options")["Lock_Y"]
-            Lock_Z = quarkx.setupsubset(SS_MODEL, "Options")["Lock_Z"]
-        self.lock_x = src["Lock_X"]
-        self.lock_y = src["Lock_Y"]
-        self.lock_z = int(Lock_Z)
+            Lock_X = quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"]
+            Lock_Y = quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"]
+            Lock_Z = quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"]
+        self.lock_x = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"])
+        self.lock_y = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"])
+        self.lock_z = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
+
         if MldOption("SolidFrame") == "1":
             for c in self.ListComponents():
                 c.info = { }
@@ -173,6 +170,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.10.2.2  2006/11/04 21:40:30  cdunde
+#To stop Python 2.4 Depreciation message in console.
+#
 #Revision 1.10.2.1  2006/11/03 23:38:10  cdunde
 #Updates to accept Python 2.4.4 by eliminating the
 #Depreciation warning messages in the console.
