@@ -11,9 +11,33 @@ $Id$
    ########     ########## ####    #### ####         ####    ####
        #####
         #####       Quake Army Knife 6.5 Changelog
-        
+
 6.5.0 alpha 9
 =============
+
+ * [cdunde]: Setup and activated the Model Editor XYZ Lock Commands menu items
+         - and made them interactive with the Lock Toolbar.
+
+ * [cdunde]: To stop console error when Alt+S is pressed with cursor outside of any view.
+
+ * [cdunde]: Changed Grid Scale displayed numbers to RED for better viewing in Textured 2D mode.
+
+ * [cdunde]: To setup the Model Editor's Skin-view and display the skin for .mdl, .md2 and .md3
+         - models using .pcx, .jpg and .tga files and other work in progress.
+
+ * [cdunde]: New "viewname" info added and "type" for 3D view "full3Dview" for controlling functions.
+
+ * [cdunde]: To add help and Infobase links to Model Editor buttons for future use.
+
+ * [cdunde]: Updates to accept Python 2.4.4 to eliminate console Depreciation warning messages.
+
+ * [cdunde]: Fixed error if Addons Delete item is opened and closed with no items to delete.
+
+ * [cdunde]: Fixed error and to display texture of bezier texture selection list change.
+
+ * [cdunde]: Fixed extruder 2D view to Unrestricted other items when view is closed.
+
+ * [cdunde]: Fixed Link Face function broken since tagging keyword system introduced.
 
  * [cdunde]: Made a fix to stop filling multiple dropdown list with erroneous data,
          - for example like a misc_model entity.
