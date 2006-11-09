@@ -1,5 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
+
 Generic Mouse handles code.
 """
 #
@@ -1842,6 +1843,11 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.27.2.2  2006/11/04 21:39:40  cdunde
+#New "viewname" info added key:value "viewname": "mdleditor3Dview" to model edittors
+#3D view because quarkpy\qhandles.py file redefines that view as a "2D" type.
+#(who knows why but it brakes if it is not)
+#
 #Revision 1.27.2.1  2006/11/01 22:22:42  danielpharos
 #BackUp 1 November 2006
 #Mainly reduce OpenGL memory leak

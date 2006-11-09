@@ -11,7 +11,6 @@ Mouse drag Object modes
 #$Header$
 
 
-
 Info = {
    "plug-in":       "Object Drag Modes",
    "desc":          "Creates objects by mouse dragging",
@@ -4928,6 +4927,10 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9.2.1  2006/11/01 22:22:42  danielpharos
+# BackUp 1 November 2006
+# Mainly reduce OpenGL memory leak
+#
 # Revision 1.9  2006/02/25 03:19:04  cdunde
 # To fix Torus Hollow-No bulkheads function
 # missed with addition of new items.

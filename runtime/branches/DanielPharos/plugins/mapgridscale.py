@@ -10,6 +10,7 @@ Map editor views, grid scale numbering feature.
 
 #py2.4 indicates upgrade change for python 2.4
 
+
 #$Header$
 
 Info = {
@@ -681,6 +682,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.12.2.2  2006/11/07 17:24:53  cdunde
+#Changed displayed numbers to RED for better viewing in Textured 2D mode.
+#
 #Revision 1.12.2.1  2006/11/01 22:22:43  danielpharos
 #BackUp 1 November 2006
 #Mainly reduce OpenGL memory leak

@@ -10,7 +10,6 @@ Plug-in to show distance of selected polys in 2D views.
 
 #$Header$
 
-
 Info = {
    "plug-in":       "Map tools",
    "desc":          "Shows distance of selected polys in 2D views",
@@ -579,6 +578,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.11.2.1  2006/11/04 21:36:52  cdunde
+#To stop Depreciation message in console when dialog boxes where opened.
+#
 #Revision 1.11  2006/01/31 11:04:30  cdunde
 #Fixed  distance displayed amount from drifting away from
 #marker on screen view x-axis when the scale size is changed.
