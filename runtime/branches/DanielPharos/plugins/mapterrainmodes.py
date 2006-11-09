@@ -398,15 +398,9 @@ def drawredfaces(view, selectlist):
     type = view.info["type"]
     if type == "3D":
         viewname = view.info["viewname"]
-        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces0"] == "1":
+        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] == "1":
             draw(view, selectlist)
-        if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] == "1":
-            draw(view, selectlist)
-        if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] == "1":
-            draw(view, selectlist)
-        if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] == "1":
-            draw(view, selectlist)
-        if viewname == "direct3D3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] == "1":
+        if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] == "1":
             draw(view, selectlist)
     else:
         draw(view, selectlist)
@@ -537,15 +531,9 @@ def terrainpaint(editor, view, x, y, flags, facelist):
     type = view.info["type"]
     if type == "3D":
         viewname = view.info["viewname"]
-        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color0"] == "1":
+        if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color1"] == "1":
             paint(editor, view, x, y, facelist)
-        if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color1"] == "1":
-            paint(editor, view, x, y, facelist)
-        if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"] == "1":
-            paint(editor, view, x, y, facelist)
-        if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"] == "1":
-            paint(editor, view, x, y, facelist)
-        if viewname == "direct3D3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"] == "1":
+        if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"] == "1":
             paint(editor, view, x, y, facelist)
 
 
@@ -1235,16 +1223,10 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
         type = view.info["type"]
         if type == "3D":
             viewname = view.info["viewname"]
-            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces0"] != "0":
+            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] != "0":
                 drawredfaces(view, selectlist)  # calls to draw the red faces
-            if viewname == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] != "0":
-                drawredfaces(view, selectlist)  # calls to draw the red faces
-            if viewname == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] != "0":
-                drawredfaces(view, selectlist)  # calls to draw the red faces
-            if viewname == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] != "0":
-                drawredfaces(view, selectlist)  # calls to draw the red faces
-            if viewname == "direct3D3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] != "0":
-                drawredfaces(view, selectlist)  # calls to draw the red faces
+            if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] != "0":
+                drawredfaces(view, selectlist)  # calls to draw the red 
 
         else:
             drawredfaces(view, selectlist)  # calls to draw the red faces
@@ -1259,21 +1241,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                 self.hint = "?"
                 return
             viewname = view.info["viewname"]
-            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag0"] == "0":
-                if tb2.tb.buttons[11].state == 2 and view.viewmode == "tex":
-                    self.cursor = CR_BRUSH
-                    self.hint = "?"
-                    return
-                else:
-                    if MapOption("CrossCursor", editor.MODE):
-                        self.cursor = CR_CROSS
-                        self.handlecursor = CR_CROSS
-                    else:
-                        self.cursor = CR_ARROW
-                        self.handlecursor = CR_ARROW
-                    self.hint = "?"
-                    return
-            if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] == "0":
+            if viewname == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] == "0":
                 if tb2.tb.buttons[11].state == 2 and view.viewmode == "tex":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
@@ -1288,35 +1256,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
                     self.hint = "?"
                     return
             if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] == "0":
-                if tb2.tb.buttons[11].state == 2 and view.viewmode == "glide":
-                    self.cursor = CR_BRUSH
-                    self.hint = "?"
-                    return
-                else:
-                    if MapOption("CrossCursor", editor.MODE):
-                        self.cursor = CR_CROSS
-                        self.handlecursor = CR_CROSS
-                    else:
-                        self.cursor = CR_ARROW
-                        self.handlecursor = CR_ARROW
-                    self.hint = "?"
-                    return
-            if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] == "0":
-                if tb2.tb.buttons[11].state == 2 and view.viewmode == "opengl":
-                    self.cursor = CR_BRUSH
-                    self.hint = "?"
-                    return
-                else:
-                    if MapOption("CrossCursor", editor.MODE):
-                        self.cursor = CR_CROSS
-                        self.handlecursor = CR_CROSS
-                    else:
-                        self.cursor = CR_ARROW
-                        self.handlecursor = CR_ARROW
-                    self.hint = "?"
-                    return
-            if viewname == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] == "0":
-                if tb2.tb.buttons[11].state == 2 and view.viewmode == "direct3d":
+                if tb2.tb.buttons[11].state == 2 and view.viewmode == "tex":
                     self.cursor = CR_BRUSH
                     self.hint = "?"
                     return
@@ -1335,7 +1275,7 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.mgr.color
-            cv.rectangle(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)  # Gives the handle size from center point
+            cv.rectangle(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)  #py2.4  # Gives the handle size from center point
 
         self.mgr.DrawLinHandleCircle(view)  # calls to draw the circle
 
@@ -1595,11 +1535,11 @@ def TerrainManager(editor, view, x, y, flags, handle):
                                                     if p.visible:
                                                         cv.reset()
                                                         cv.brushcolor = RED
-                                                        cv.rectangle(int(p.x)-1, int(p.y)-1, int(p.x)+5, int(p.y)+5)
+                                                        cv.rectangle(int(p.x)-1, int(p.y)-1, int(p.x)+5, int(p.y)+5)  #py2.4
 
                                     cv.reset()
                                     cv.brushcolor = NAVY
-                                    cv.rectangle(int(vpos.x)-3, int(vpos.y)-3, int(vpos.x)+5, int(vpos.y)+5)
+                                    cv.rectangle(int(vpos.x)-3, int(vpos.y)-3, int(vpos.x)+5, int(vpos.y)+5)  #py2.4
 
 
                         if poly.findname("downmoves:f") is not None:
@@ -1678,11 +1618,11 @@ def TerrainManager(editor, view, x, y, flags, handle):
                                                     if p.visible:
                                                         cv.reset()
                                                         cv.brushcolor = RED
-                                                        cv.rectangle(int(p.x)-1, int(p.y)-1, int(p.x)+5, int(p.y)+5)
+                                                        cv.rectangle(int(p.x)-1, int(p.y)-1, int(p.x)+5, int(p.y)+5)  #py2.4
 
                                     cv.reset()
                                     cv.brushcolor = AQUA
-                                    cv.rectangle(int(vpos.x)-3, int(vpos.y)-3, int(vpos.x)+5, int(vpos.y)+5)
+                                    cv.rectangle(int(vpos.x)-3, int(vpos.y)-3, int(vpos.x)+5, int(vpos.y)+5)  #py2.4
 
                     break # This only allows us to get the first item of the list
 
@@ -1860,7 +1800,7 @@ class TerrainVertexHandle(quarkpy.qhandles.GenericHandle):
         p = view.proj(self.pos)
         if p.visible:
             cv.brushcolor = GREEN
-            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+5, int(p.y)+5)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+5, int(p.y)+5)  #py2.4
 
         if newface == []:
       #      v1 = v2 = self.pos
@@ -1875,13 +1815,13 @@ class TerrainVertexHandle(quarkpy.qhandles.GenericHandle):
             cv.reset()
             cv.brushcolor = NAVY
             p = view.proj(newpoint)
-            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+5, int(p.y)+5)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+5, int(p.y)+5)  #py2.4
 
         if newface.name == ("downmoves:f"):
             cv.reset()
             cv.brushcolor = AQUA
             p = view.proj(newpoint)
-            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+5, int(p.y)+5)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+5, int(p.y)+5)  #py2.4
 
 
     def ok(self, editor,undo,old,new):
@@ -2432,6 +2372,10 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23.2.7  2006/11/03 23:38:10  cdunde
+# Updates to accept Python 2.4.4 by eliminating the
+# Depreciation warning messages in the console.
+#
 # Revision 1.23.2.6  2006/11/01 22:22:42  danielpharos
 # BackUp 1 November 2006
 # Mainly reduce OpenGL memory leak
