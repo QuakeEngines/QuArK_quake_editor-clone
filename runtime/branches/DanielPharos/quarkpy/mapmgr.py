@@ -618,9 +618,22 @@ class MapLayout(BaseLayout):
                                ntp[0] + (v1*math.cos(ang1) + v2*math.sin(ang1)) * sc[0] * 128,
                                ntp[0] + (v1*math.cos(ang2) + v2*math.sin(ang2)) * sc[0] * 128)
                     elif abs(sc[0]-nsc[0])+abs(sc[1]-nsc[1]) > epsilon:
-                        ntp = (ntp[0],
-                               ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/sc[0]),
-                               ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/sc[1]))
+                        if sc[0] == 0 and sc[1] == 0:
+                            ntp = (ntp[0],
+                                   ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/1),
+                                   ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/1))
+                        elif sc[0] == 0:
+                            ntp = (ntp[0],
+                                   ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/1),
+                                   ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/sc[1]))
+                        elif sc[1] == 0:
+                            ntp = (ntp[0],
+                                   ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/sc[0]),
+                                   ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/1))
+                        else:
+                            ntp = (ntp[0],
+                                   ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/sc[0]),
+                                   ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/sc[1]))
                 if ntp is not tp:
                     new = f.copy()
                     new.setthreepoints(ntp, 3)
@@ -885,6 +898,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.18.2.6  2006/11/04 21:40:08  cdunde
+#To add comment about newmapview.
+#
 #Revision 1.18.2.5  2006/11/03 23:38:10  cdunde
 #Updates to accept Python 2.4.4 by eliminating the
 #Depreciation warning messages in the console.
