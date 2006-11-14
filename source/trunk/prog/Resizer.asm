@@ -61,7 +61,7 @@ mov dword [116+esp],ebx
 mov dword [24+esp],ecx
 @L6:
 mov esi,edi
-sal esi,dword +24
+sal esi,24
 mov dword [16+esp],esi
 mov ebx,dword [24+esp]
 mov esi,dword [4252+esp]
@@ -75,15 +75,15 @@ and edx,dword +255
 add eax,edx
 mov ecx,edi
 mov esi,dword [16+esp]
-sal eax,dword +4
-sal ecx,dword +4
+sal eax,4
+sal ecx,4
 mov ebx,dword [116+esp]
 or eax,esi
 mov dword [4108+ebx+ecx],eax
 lea ecx,dword [1+edi]
 mov ebx,ecx
 lea esi,dword [3+ebp]
-sal ebx,dword +4
+sal ebx,4
 mov dword [16+esp],esi
 mov dword [20+esp],ebx
 mov esi,dword [24+esp]
@@ -97,8 +97,8 @@ add eax,edx
 mov dl,byte [2+esi]
 and edx,dword +255
 add eax,edx
-sal ecx,dword +24
-sal eax,dword +4
+sal ecx,24
+sal eax,4
 mov ebx,dword [20+esp]
 mov esi,dword [116+esp]
 or ecx,eax
@@ -106,7 +106,7 @@ mov dword [4108+esi+ebx],ecx
 lea ecx,dword [2+edi]
 mov esi,ecx
 lea ebx,dword [6+ebp]
-sal esi,dword +4
+sal esi,4
 mov dword [16+esp],ebx
 mov dword [20+esp],esi
 mov ebx,dword [24+esp]
@@ -120,8 +120,8 @@ add eax,edx
 mov dl,byte [2+ebx]
 and edx,dword +255
 add eax,edx
-sal ecx,dword +24
-sal eax,dword +4
+sal ecx,24
+sal eax,4
 mov esi,dword [20+esp]
 mov ebx,dword [116+esp]
 or ecx,eax
@@ -129,7 +129,7 @@ mov dword [4108+ebx+esi],ecx
 lea ecx,dword [3+edi]
 mov ebx,ecx
 lea esi,dword [9+ebp]
-sal ebx,dword +4
+sal ebx,4
 mov dword [16+esp],esi
 mov dword [20+esp],ebx
 mov esi,dword [24+esp]
@@ -143,8 +143,8 @@ add eax,edx
 mov dl,byte [2+esi]
 and edx,dword +255
 add eax,edx
-sal ecx,dword +24
-sal eax,dword +4
+sal ecx,24
+sal eax,4
 mov ebx,dword [20+esp]
 mov esi,dword [116+esp]
 or ecx,eax
@@ -165,7 +165,7 @@ mov edi,dword +-256
 lea ebp,dword [144+esp]
 @L11:
 mov ecx,edi
-sal ecx,dword +4
+sal ecx,4
 mov al,byte [4111+ecx+ebp]
 add ecx,dword +4096
 and eax,dword +255
@@ -173,76 +173,76 @@ mov ebx,dword [4252+esp]
 lea eax,dword [eax+eax*2]
 mov dl,byte [ebx+eax]
 and edx,dword +255
-sal edx,dword +4
+sal edx,4
 add eax,ebx
 mov dword [ecx+ebp],edx
 mov dl,byte [1+eax]
 and edx,dword +255
-sal edx,dword +4
+sal edx,4
 mov dword [4+ecx+ebp],edx
 mov dl,byte [2+eax]
 xor eax,eax
 mov al,dl
-sal eax,dword +4
+sal eax,4
 mov dword [8+ecx+ebp],eax
 mov ecx,edi
-sal ecx,dword +4
+sal ecx,4
 mov al,byte [4127+ecx+ebp]
 add ecx,dword +4112
 and eax,dword +255
 lea eax,dword [eax+eax*2]
 mov dl,byte [ebx+eax]
 and edx,dword +255
-sal edx,dword +4
+sal edx,4
 add eax,ebx
 mov dword [ecx+ebp],edx
 mov dl,byte [1+eax]
 and edx,dword +255
-sal edx,dword +4
+sal edx,4
 mov dword [4+ecx+ebp],edx
 mov al,byte [2+eax]
 and eax,dword +255
-sal eax,dword +4
+sal eax,4
 mov dword [8+ecx+ebp],eax
 mov ecx,edi
-sal ecx,dword +4
+sal ecx,4
 mov al,byte [4143+ecx+ebp]
 add ecx,dword +4128
 and eax,dword +255
 lea eax,dword [eax+eax*2]
 mov dl,byte [ebx+eax]
 and edx,dword +255
-sal edx,dword +4
+sal edx,4
 add eax,ebx
 mov dword [ecx+ebp],edx
 mov dl,byte [1+eax]
 and edx,dword +255
-sal edx,dword +4
+sal edx,4
 mov dword [4+ecx+ebp],edx
 mov dl,byte [2+eax]
 xor eax,eax
 mov al,dl
-sal eax,dword +4
+sal eax,4
 mov dword [8+ecx+ebp],eax
 mov ecx,edi
-sal ecx,dword +4
+sal ecx,4
 mov al,byte [4159+ecx+ebp]
 add ecx,dword +4144
 and eax,dword +255
 lea eax,dword [eax+eax*2]
 mov dl,byte [ebx+eax]
 and edx,dword +255
-sal edx,dword +4
+sal edx,4
 add eax,ebx
 mov dword [ecx+ebp],edx
 mov dl,byte [1+eax]
 and edx,dword +255
-sal edx,dword +4
+sal edx,4
 mov dword [4+ecx+ebp],edx
 mov bl,byte [2+eax]
 xor eax,eax
 mov al,bl
-sal eax,dword +4
+sal eax,4
 mov dword [8+ecx+ebp],eax
 add edi,dword +4
 jne @L11
@@ -302,7 +302,7 @@ mov dword [96+esp],ebx
 test bl,byte +127
 je @L19
 mov eax,ebx
-sar eax,dword +8
+sar eax,8
 and eax,dword +255
 mov dword [76+esp],eax
 jmp @L20
@@ -332,7 +332,7 @@ mov ebp,dword [ebx+esi*4]
 test ebp,dword +127
 je @L25
 mov eax,ebp
-sar eax,dword +8
+sar eax,8
 and eax,dword +255
 mov dword [72+esp],eax
 jmp @L26
@@ -353,7 +353,7 @@ mov eax,dword [36+esp]
 cmp edi,eax
 jg @L29
 mov ebx,ebp
-shr ebx,dword +24
+shr ebx,24
 mov dword [60+esp],ebx
 @L31:
 xor edx,edx
@@ -401,7 +401,7 @@ mov ecx,dword [60+esp]
 jmp @L113
 @L36:
 mov ecx,ebp
-sar ecx,dword +16
+sar ecx,16
 @L113:
 and ecx,dword +255
 mov esi,ebp
@@ -438,12 +438,12 @@ mov dword [140+esp],edx
 cmp edi,ecx
 jne @L39
 mov esi,dword [96+esp]
-shr esi,dword +24
+shr esi,24
 mov dword [80+esp],esi
 jmp @L28
 @L39:
 mov eax,dword [96+esp]
-sar eax,dword +16
+sar eax,16
 and eax,dword +255
 mov dword [80+esp],eax
 @L28:
@@ -518,11 +518,11 @@ mov dword [128+esp],esi
 cmp ebx,edx
 jne @L52
 mov ecx,ebp
-shr ecx,dword +24
+shr ecx,24
 jmp @L48
 @L52:
 mov ecx,ebp
-sar ecx,dword +16
+sar ecx,16
 and ecx,dword +255
 @L48:
 mov edx,ebp
@@ -558,12 +558,12 @@ mov dword [140+esp],edx
 cmp edi,ecx
 jne @L55
 mov esi,dword [96+esp]
-shr esi,dword +24
+shr esi,24
 mov dword [80+esp],esi
 jmp @L44
 @L55:
 mov eax,dword [96+esp]
-sar eax,dword +16
+sar eax,16
 and eax,dword +255
 mov dword [80+esp],eax
 @L44:
@@ -599,11 +599,11 @@ jmp @L23
 @L59:
 mov ecx,dword [132+esp]
 mov edx,dword [136+esp]
-sar ecx,dword +12
+sar ecx,12
 mov eax,dword [140+esp]
-sar edx,dword +12
+sar edx,12
 mov dword [132+esp],ecx
-sar eax,dword +12
+sar eax,12
 add ecx,edx
 mov dword [140+esp],eax
 mov edi,dword +128
@@ -617,7 +617,7 @@ mov edx,dword [16+esp]
 add edx,edi
 mov eax,edx
 mov ebx,dword [56+esp]
-sal eax,dword +4
+sal eax,4
 mov eax,dword [12+eax+ebx]
 mov ecx,dword [64+esp]
 and eax,dword +16777215
@@ -629,7 +629,7 @@ sar edi,dword +1
 jne @L64
 mov ecx,dword [16+esp]
 mov esi,dword [56+esp]
-sal ecx,dword +4
+sal ecx,4
 mov ebx,dword [12+ecx+esi]
 and ebx,dword +16777215
 mov dword [64+esp],ebx
@@ -674,7 +674,7 @@ test edi,edi
 jl @L74
 mov ebx,edi
 mov esi,dword [56+esp]
-sal ebx,dword +4
+sal ebx,4
 mov ebp,dword [12+ebx+esi]
 and ebp,dword +16777215
 mov edx,dword [64+esp]
@@ -727,7 +727,7 @@ cmp ecx,dword +255
 jg @L70
 mov ebx,ecx
 mov esi,dword [56+esp]
-sal ebx,dword +4
+sal ebx,4
 mov ebp,dword [12+ebx+esi]
 and ebp,dword +16777215
 mov edx,dword [64+esp]
@@ -781,7 +781,7 @@ jns @L90
 @L71:
 mov eax,dword [16+esp]
 mov ebx,dword [56+esp]
-sal eax,dword +4
+sal eax,4
 mov esi,dword [84+esp]
 mov cl,byte [15+eax+ebx]
 xor eax,eax
@@ -873,7 +873,7 @@ mov eax,dword [32+esp]
 mov dword [16+esp],esi
 sub edi,ecx
 mov edx,eax
-sar edx,dword +31
+sar edx,31
 idiv dword [68+esp]
 mov esi,eax
 mov dword [48+esp],edx
@@ -952,11 +952,11 @@ mov edi,dword +255
 @L125:
 mov eax,dword [36+esp]
 mov edx,edi
-sal eax,dword +8
-sal edx,dword +16
+sal eax,8
+sal edx,16
 or eax,edx
 mov edx,ebx
-sal edx,dword +24
+sal edx,24
 or eax,edx
 or ecx,eax
 @L122:
@@ -994,16 +994,16 @@ push ebx
 mov ebx,dword [36+esp]
 lea eax,dword [ebx+edi]
 mov ecx,eax
-shr ecx,dword +31
+shr ecx,31
 add eax,ecx
-sar eax,dword +1
+sar eax,1
 mov esi,dword [28+esp]
-sal eax,dword +4
+sal eax,4
 mov dword [16+esp],ebx
 mov ecx,edi
 mov ebp,dword [esi+eax]
-sal ebx,dword +4
-sal ecx,dword +4
+sal ebx,4
+sal ecx,4
 and ebp,dword +16777215
 @L146:
 mov edx,dword [28+esp]
