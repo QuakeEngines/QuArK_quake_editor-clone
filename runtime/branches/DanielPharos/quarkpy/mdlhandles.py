@@ -186,6 +186,8 @@ class BoneHandle(qhandles.GenericHandle):
       self.cursor = CR_CROSSH
 
   def drag(self, v1, v2, flags, view):
+      self.handle = self
+      self.bone_length = v2-v1
       p0 = view.proj(self.pos)
       if not p0.visible: return
       if flags&MB_CTRL:
@@ -216,14 +218,53 @@ class BoneHandle(qhandles.GenericHandle):
                         self.bone.bone_length
                      )
           else:
+            for item in self.bone.dictitems["end_point"].dictitems:
+                vX,vY,vZ = item.split(" ") # To change the "string" item into real vectors
+                vX = float(vX)
+                vY = float(vY)
+                vZ = float(vZ)
+                apoint = quarkx.vect(vX,vY,vZ)
             apoint = apoint + delta
-          new.end_offset = apoint - self.bone.start_point
+
+            for item in self.bone.dictitems["start_point"].dictitems:
+                vX,vY,vZ = item.split(" ") # To change the "string" item into real vectors
+                vX = float(vX)
+                vY = float(vY)
+                vZ = float(vZ)
+                start_point = quarkx.vect(vX,vY,vZ)
+
+          if self.bone.start_point is not None:
+              new.end_offset = apoint - self.bone.start_point
+          else:
+              new = apoint - start_point
+              cv = view.canvas()
+              cv.penwidth = 8
+              cv.line(view.proj(self.start_point), view.proj(self.end_point))
+              cv.penwidth = 6
+              cv.pencolor = BLUE
+              cv.penstyle = PS_INSIDEFRAME
+              cv.brushcolor = WHITE
+              cv.brushstyle = BS_SOLID
+              cv.line(view.proj(self.start_point), view.proj(self.end_point))
+              cv.reset()
+              cv.brushcolor = WHITE
+              p = view.proj(self.start_point)
+              cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+              p = view.proj(self.end_point)
+              cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+              view.invalidate
+
       return [self.bone], [new]
 
   def draw(self, view, cv, draghandle=None):
-      p = view.proj(self.pos)
+      p = None
+      if self.pos is None:
+        pass
+      else:
+        p = view.proj(self.pos)
       if p is None:
-        return
+   #     return
+        p = view.proj(0,0,0)
       if p.visible:
           cv.brushcolor = WHITE
 #py2.4          cv.ellipse(p.x-3, p.y-3, p.x+3, p.y+3)
@@ -452,6 +493,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.2  2006/11/04 21:41:23  cdunde
+#To setup the Model Editor's Skin-view and display the skin
+#for .mdl, .md2 and .md3 models using .pcx, .jpg and .tga files.
+#
 #Revision 1.12.2.1  2006/11/03 23:38:09  cdunde
 #Updates to accept Python 2.4.4 by eliminating the
 #Depreciation warning messages in the console.

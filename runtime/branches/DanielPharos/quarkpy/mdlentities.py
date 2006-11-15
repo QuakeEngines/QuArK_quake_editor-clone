@@ -159,15 +159,30 @@ class BoneType(EntityManager):
     "Bone"
 
     def handlesopt(o, editor):
-        start_p = o.start_point
-        end_p = o.end_point
         h = []
-        if not o["start_point"] is None:
-          s = mdlhandles.BoneHandle(start_p)
-          s.hint = "Start of %s"%o.shortname
-	  s.bone = o
-	  s.s_or_e = 0
-	  h = h + [ s ]
+        if o["start_point"] is None:
+          o = quarkx.newobj("FalseBone:bone")   # false internal object
+
+          start = quarkx.newobj('start_point')
+          end = quarkx.newobj('end_point')
+          startpoint = quarkx.newobj(str(quarkx.vect(0,0,0)))
+          endpoint = quarkx.newobj(str(quarkx.vect(8,2,2)))
+          start.appenditem(startpoint)
+          end.appenditem(endpoint)
+          o.appenditem(start)
+          o.appenditem(end)
+          start_p = quarkx.vect(0,0,0)
+          end_p = quarkx.vect(8,2,2)
+        else:
+          start_p = o.start_point
+          end_p = o.end_point
+
+        s = mdlhandles.BoneHandle(start_p)
+        s.hint = "Start of %s"%o.shortname
+	s.bone = o
+	s.s_or_e = 0
+	h = h + [ s ]
+
         e = mdlhandles.BoneHandle(end_p) 
         e.hint = "End of %s"%o.shortname
 	e.bone = o
@@ -234,6 +249,11 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.10.2.1  2006/11/04 00:49:34  cdunde
+#To add .tga model skin texture file format so they can be used in the
+#model editor for new games and to start the displaying of those skins
+#on the Skin-view page (all that code is in the mdlmgr.py file).
+#
 #Revision 1.10  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
