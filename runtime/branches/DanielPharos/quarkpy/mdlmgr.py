@@ -11,7 +11,6 @@ Model editor Layout managers.
 #$Header$
 
 
-
 #
 # This file defines the base class for Model Layout Managers.
 # See the description in mapmgr.py for more information.
@@ -28,8 +27,10 @@ import mdlhandles
 import mdlentities  # new cdunde
 from qbasemgr import BaseLayout
 from qbasemgr import MPPage
+from qdictionnary import Strings
 
-from qdictionnary import Strings  ### new cdunde
+### globals
+startup = 0
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
@@ -39,6 +40,7 @@ class ModelLayout(BaseLayout):
 
     def clearrefs(self):
         BaseLayout.clearrefs(self)
+        self.reset()
         self.skinform = None
         self.skinview = None
     #    self.dataform = None
@@ -99,7 +101,7 @@ class ModelLayout(BaseLayout):
             slist.append(None)
         return slist
 
-  ### new cdunde, used to setup the skinview.
+  ### Used to setup the skinview.
   ### copied from mapmgr.py def polyviewdraw
     def skinviewdraw(self, view):
         w,h = view.clientarea
@@ -110,14 +112,14 @@ class ModelLayout(BaseLayout):
 
     def bs_skinform(self, panel):
         fp = panel.newpanel()
-        tp = fp.newtoppanel(124)
+        tp = fp.newtoppanel(80) # Sets the height of the top panel.
         self.skinform = tp.newdataform()
         self.skinform.header = 0
         self.skinform.sep = -79
-        self.skinform.setdata([], quarkx.getqctxlist(':form', "Skin")[-1])
         self.skinform.onchange = self.skinformchange
+        self.skinform.setdata([], quarkx.getqctxlist(':form', "Skin")[-1])
         self.skinview = fp.newmapview()  ### This is the skin view where it should show.
-        self.skinview.viewtype = "panel"  ###new cdunde
+        self.skinview.viewtype = "panel"
         self.skinview.color = BLACK
         self.skinview.ondraw = self.skinviewdraw
 #        self.skinview.onmouse = self.skinviewmouse   ### This may be needed later.
@@ -163,8 +165,31 @@ class ModelLayout(BaseLayout):
                 return obj
 
 
+    def reset(self):
+        global startup
+        startup = 0
+        return
+
+
     def fillskinform(self, reserved):
+        global startup # Allows the skinform to fill the 1st time a model is loaded, to set it up.
         slist = self.getskin()  ### something missing here
+        if self.editor.Root.currentcomponent.currentskin is None:
+            if startup == 1:
+                return
+            else:
+                self.editor.invalidateviews(1)
+        
+        if len(slist)!=0 and slist[0] is not None:
+               ### Code below updates the "currentcomponent", for filling the skin form,
+               ### based on any element of THAT component of the model, that is currently selected.
+               ### But only if another component was previously selected to avoid slow down for unnecessary updating.
+            component = self.componentof(slist[0])
+            if startup == 1 and self.editor.Root.currentcomponent.currentskin == slist[0]:
+               return
+            else:
+                self.editor.Root.currentcomponent = component
+
         q = quarkx.newobj(':')   # internal object
         self.skinview.handles = []
         self.skinview.ondraw = None
@@ -173,26 +198,27 @@ class ModelLayout(BaseLayout):
   ### new cdunde
         if len(slist)==0:
             cap = Strings[129]
+
         if len(slist)!=0:  # uncomment when selection is correct
             mdlhandles.buildskinvertices(self.editor, self.skinview, self.editor.Root.currentcomponent, slist[0])
         else:
             mdlhandles.buildskinvertices(self.editor, self.skinview, self.editor.Root.currentcomponent, None)
 
         if self.editor.Root.currentcomponent is not None:
+          ### These items are setup in the Skin:form section of the defaults.qrk file.
             q["header"] = "Selected Skin"
             q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
             q["ownedby"] = self.editor.Root.currentcomponent.shortname
             if len(slist)!=0 and slist[0] is not None:
                 q["texture"] = slist[0].name
+            else:
+                q["texture"] = "no skins exist for this component"
         self.skinform.setdata(q, self.skinform.form)
         self.editor.finishdrawing(self.skinview)
-        if slist[0] is None:
-       #    self.skinview.invalidate(1)
-            self.editor.invalidatetexviews()
+        startup = 1
 
 
     def skinformchange(self, src):
-        slist = self.getskin()
         undo = quarkx.action()
         q = src.linkedobjects[0]
         tex = q["texture"]
@@ -200,8 +226,9 @@ class ModelLayout(BaseLayout):
 
 
     def selectcomponent(self, comp):
+        if comp != self.editor.Root.currentcomponent:
+            self.reset()
         self.editor.Root.setcomponent(comp)
-        self.editor.invalidateviews(1)
 
     def selectcgroup(self, group):
         comp = self.componentof(group)
@@ -213,15 +240,14 @@ class ModelLayout(BaseLayout):
         if c is not None and frame is not c.currentframe:
             self.selectcomponent(c)
             c.setframe(frame)
-            self.editor.invalidateviews(1)
             c.setparentframes(frame)
 
     def selectskin(self, skin):
+        self.reset()
         c = self.componentof(skin)
         if c is not None and skin is not c.currentskin:
             self.selectcomponent(c)
             c.currentskin = skin
-            self.editor.invalidatetexviews()
 
     def selchange(self):
         #if self.faceflags is not None:
@@ -270,6 +296,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.10.2.2  2006/11/04 21:41:23  cdunde
+#To setup the Model Editor's Skin-view and display the skin
+#for .mdl, .md2 and .md3 models using .pcx, .jpg and .tga files.
+#
 #Revision 1.10.2.1  2006/11/04 00:49:34  cdunde
 #To add .tga model skin texture file format so they can be used in the
 #model editor for new games and to start the displaying of those skins
