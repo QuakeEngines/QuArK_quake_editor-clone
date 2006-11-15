@@ -181,11 +181,14 @@ class BoneType(EntityManager):
         s.hint = "Start of %s"%o.shortname
 	s.bone = o
 	s.s_or_e = 0
-	h = h + [ s ]
+	h = h + [s]
 
         e = mdlhandles.BoneHandle(end_p) 
         e.hint = "End of %s"%o.shortname
 	e.bone = o
+        e.start_point = quarkx.vect(0,0,0)
+        e.end_point = quarkx.vect(8,2,2)
+        e.bone_length = None
 	e.s_or_e = 1
 	h = h + [e]
 	return h
@@ -249,6 +252,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.10.2.2  2006/11/15 22:34:20  cdunde
+#Added the drawing of misc model items and bones to stop errors and display them.
+#
 #Revision 1.10.2.1  2006/11/04 00:49:34  cdunde
 #To add .tga model skin texture file format so they can be used in the
 #model editor for new games and to start the displaying of those skins

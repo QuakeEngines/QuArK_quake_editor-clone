@@ -268,7 +268,8 @@ class BoneHandle(qhandles.GenericHandle):
       if p.visible:
           cv.brushcolor = WHITE
 #py2.4          cv.ellipse(p.x-3, p.y-3, p.x+3, p.y+3)
-          cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+          cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+
 
 def skinzoom(view, center=None):
     if center is None:
@@ -493,6 +494,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.3  2006/11/15 22:34:20  cdunde
+#Added the drawing of misc model items and bones to stop errors and display them.
+#
 #Revision 1.12.2.2  2006/11/04 21:41:23  cdunde
 #To setup the Model Editor's Skin-view and display the skin
 #for .mdl, .md2 and .md3 models using .pcx, .jpg and .tga files.
