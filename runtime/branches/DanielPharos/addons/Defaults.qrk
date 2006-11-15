@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.295.2.7  2006/11/08 09:24:20  cdunde
+//To setup and activate Model Editor XYZ Commands menu items
+//and make them interactive with the Lock Toolbar.
+//
 //Revision 1.295.2.6  2006/11/01 22:22:43  danielpharos
 //BackUp 1 November 2006
 //Mainly reduce OpenGL memory leak
@@ -1474,7 +1478,7 @@ QQRKSRC1
         SteamFSModule = ""
         Directory = "C:/Program Files/Valve/Steam"
         SteamAppUser = "<Your Steam Account>"
-        SteamAppId = "211"
+        SteamAppId = ""
 
         BaseDir = "hl2"
         MapCommentsPrefix = "//"
@@ -3596,7 +3600,15 @@ QQRKSRC1
       SteamAppId =
       {
         Txt = "Steam App Id"
-        Hint = "set to 211"
+        Typ = "C"     // combo box
+        Hint = "set to 211 for Source SDK"$0D
+               "220 for Half-Life2"$0D
+               "240 for Counter-Strike: Source"$0D
+               "320 for Half-Life2 Death Match"
+        Items = "211"$0D
+               "220"$0D
+               "240"$0D
+               "320"
       }
       Directory: =
       {
