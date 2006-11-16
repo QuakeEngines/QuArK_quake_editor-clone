@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.295.2.8  2006/11/15 23:20:02  cdunde
+//H-L2 configuration update.
+//
 //Revision 1.295.2.7  2006/11/08 09:24:20  cdunde
 //To setup and activate Model Editor XYZ Commands menu items
 //and make them interactive with the Lock Toolbar.
@@ -7240,6 +7243,12 @@ QQRKSRC1
         Typ = "E-R"
         Txt = "Owned by :"
         Hint = "The 'parent' component in the tree view"
+      }
+      texture: = {
+        Typ = "E-R"
+        Txt = "Skin :"
+        Hint = "The 'current skin selected for this component"$0D
+               "if more than one exist or the 1st skin if none selected."
       }
     }
   }
