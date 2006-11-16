@@ -138,36 +138,35 @@ class SkinHandle(qhandles.GenericHandle):
       self.ver_index = ver_index
       self.component = comp
 
-#  def drag(self, v1, v2, flags, view):
-#      p0 = view.proj(self.pos)
-#      if not p0.visible: return
-#      if flags&MB_CTRL:
-#        v2 = qhandles.aligntogrid(v2, 0)
-#      delta = v2-v1
-#      editor = mapeditor()
-#      if editor is not None:
-#        if editor.lock_x==1:
-#          delta = quarkx.vect(0, delta.y, 0)
-#        if editor.lock_y==1:
-#          delta = quarkx.vect(delta.x, 0, 0)
-#      self.draghint = "moving s/t vertex: " + ftoss(delta.x) + ", " + ftoss(delta.y)
-#      new = self.component.copy()
-#      if delta or (flags&MB_REDIMAGE):
-#        tris = new.triangles
-#
-#        oldtri = tris[self.tri_index]
-#        oldvert = oldtri[self.ver_index]
-#        newvert = [oldvert[0], oldvert[1]+delta.x, oldvert[2]+delta.y]        
-#        if (self.ver_index == 0):
-#          newtri = [newvert, oldtri[1], oldtri[2]]
-#        elif (self.ver_index == 1):
-#          newtri = [oldtri[0], newvert, oldtri[2]]
-#        elif (self.ver_index == 2):
-#          newtri = [oldtri[0], oldtri[1], newvert]
-#        tris[self.tri_index] = newtri
-#
-#        new.triangles = tris
-#      return [self.component], [new]
+  def drag(self, v1, v2, flags, view):
+      p0 = view.proj(self.pos)
+      if not p0.visible: return
+      if flags&MB_CTRL:
+        v2 = qhandles.aligntogrid(v2, 0)
+      delta = v2-v1
+      editor = mapeditor()
+      if editor is not None:
+        if editor.lock_x==1:
+          delta = quarkx.vect(0, delta.y, 0)
+        if editor.lock_y==1:
+          delta = quarkx.vect(delta.x, 0, 0)
+      self.draghint = "moving s/t vertex: " + ftoss(delta.x) + ", " + ftoss(delta.y)
+      new = self.component.copy()
+      if delta or (flags&MB_REDIMAGE):
+        tris = new.triangles
+
+        oldtri = tris[self.tri_index]
+        oldvert = oldtri[self.ver_index]
+        newvert = (oldvert[0], oldvert[1]+delta.x, oldvert[2]+delta.y)
+        if (self.ver_index == 0):
+          newtri = (newvert, oldtri[1], oldtri[2])
+        elif (self.ver_index == 1):
+          newtri = (oldtri[0], newvert, oldtri[2])
+        elif (self.ver_index == 2):
+          newtri = (oldtri[0], oldtri[1], newvert)
+        tris[self.tri_index] = newtri
+        new.triangles = tris
+      return [self.component], [new]
   
   def draw(self, view, cv, draghandle=None):
       global tri_indexnbr, ver_index0x, ver_index0y, ver_index0z, ver_index1x, ver_index1y, ver_index1z, ver_index2x, ver_index2y, ver_index2z
@@ -187,8 +186,8 @@ class SkinHandle(qhandles.GenericHandle):
                   ver_index2x, ver_index2y, ver_index2z = p.tuple
           if ver_index0x is not None and ver_index1x is not None and ver_index2x is not None:
               cv.line(ver_index0x, ver_index0y, ver_index1x, ver_index1y)
-              cv.line(ver_index1x, ver_index1y, ver_index2x, ver_index2y)
-              cv.line(ver_index2x, ver_index2y, ver_index0x, ver_index0y)
+        #      cv.line(ver_index1x, ver_index1y, ver_index2x, ver_index2y)
+        #      cv.line(ver_index2x, ver_index2y, ver_index0x, ver_index0y)
           tri_indexnbr = tri_index
           cv.reset()
           if MldOption("Ticks") == "1":
@@ -384,7 +383,6 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
         if skindrawobject is not None:
             texX, texY = skindrawobject['Size'] # Gives the texture size to work with.
 
-
         editor.finishdrawing(view)
 
 
@@ -402,6 +400,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
         for j in range(len(tri)):
             vtx = tri[j]
             h.append(SkinHandle(quarkx.vect(vtx[1], vtx[2], 0), i, j, component))
+    h = h + h
     view.handles = qhandles.FilterHandles(h, SS_MODEL)
 
 #DECKER - begin
@@ -582,6 +581,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.6  2006/11/16 00:49:13  cdunde
+#Added code to draw skin mesh lines in Face-view.
+#
 #Revision 1.12.2.5  2006/11/16 00:08:21  cdunde
 #To properly align model skin with its mesh movement handles and zooming function.
 #
