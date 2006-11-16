@@ -27,8 +27,12 @@ import qmenu
 
 #py2.4 indicates upgrade change for python 2.4
 
+# Globals
 vertexdotcolor = 0
-
+tri_indexnbr = 0
+ver_index0x = ver_index0y = ver_index0z = None
+ver_index1x = ver_index1y = ver_index1z = None
+ver_index2x = ver_index2y = ver_index2z = None
 
 #
 # The handle classes.
@@ -166,8 +170,27 @@ class SkinHandle(qhandles.GenericHandle):
 #      return [self.component], [new]
   
   def draw(self, view, cv, draghandle=None):
+      global tri_indexnbr, ver_index0x, ver_index0y, ver_index0z, ver_index1x, ver_index1y, ver_index1z, ver_index2x, ver_index2y, ver_index2z
       p = view.proj(self.pos)
       if p.visible:
+          cv.pencolor = RED
+          tri_index = self.tri_index
+          ver_index = self.ver_index
+          if tri_index != tri_indexnbr:
+              tri_indexnbr = tri_index
+          if tri_index == tri_indexnbr:
+              if ver_index == 0:
+                  ver_index0x, ver_index0y, ver_index0z = p.tuple
+              if ver_index == 1:
+                  ver_index1x, ver_index1y, ver_index1z = p.tuple
+              if ver_index == 2:
+                  ver_index2x, ver_index2y, ver_index2z = p.tuple
+          if ver_index0x is not None and ver_index1x is not None and ver_index2x is not None:
+              cv.line(ver_index0x, ver_index0y, ver_index1x, ver_index1y)
+              cv.line(ver_index1x, ver_index1y, ver_index2x, ver_index2y)
+              cv.line(ver_index2x, ver_index2y, ver_index0x, ver_index0y)
+          tri_indexnbr = tri_index
+          cv.reset()
           if MldOption("Ticks") == "1":
 #py2.4              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
               cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
@@ -271,105 +294,7 @@ class BoneHandle(qhandles.GenericHandle):
           cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
 
 
-def buildskinvertices(editor, view, layout, component, skindrawobject):
-    "builds a list of handles to display on the skinview"
-
-  ### begin code from maphandles def viewsinglebezier
-    if skindrawobject is not None:
-        try:
-            tex = skindrawobject.parent.dictitems[skindrawobject.name]
-            w,h = tex["Size"]
-        except:
-            pass
-        else:
-
-
-            def draw1(view, finish=layout.editor.finishdrawing, w=w, h=h):
-                pt = view.space(quarkx.vect(0,0,0))
-                pt = view.proj(quarkx.vect(math.floor(pt.x), math.floor(pt.y), 0))
-             #   view.canvas().painttexture(tex, (pt.x,pt.y)+view.clientarea, 0)
-                view.drawgrid(quarkx.vect(w*view.info["scale"],0,0), quarkx.vect(0,h*view.info["scale"],0), MAROON, DG_LINES, 0, quarkx.vect(0,0,0))
-                finish(view)
-            view.ondraw = draw1
-            view.onmouse = layout.editor.mousemap
-            view.background = tex, quarkx.vect(0,0,0), 1.0 ### Sets the texture scale size and location.
-  ### end code from maphandles def viewsinglebezier
-
-
-    def drawsingleskin(view, layout=layout, skindrawobject=skindrawobject, component=component, editor=editor):
-        view.color = BLACK
-        view.drawmap(component.skindrawobject, DM_REDRAWFACES|DM_OTHERCOLOR, 0x2584C9)   # draw the face contour
-        org = component.originst
-        orgX, orgY, orgZ = org.tuple
-        if skindrawobject is not None:
-            texX, texY = skindrawobject['Size'] # Gives the texture size to work with.
-
-
-        editor.finishdrawing(view)
-
-
-    center =  quarkx.vect(view.clientarea[0]/2, view.clientarea[1]/2, 0)
-    origin = center
-
-    h = [ ]
-    tris = component.triangles
-    for i in range(len(tris)):
-        tri = tris[i]
-        for j in range(len(tri)):
-            vtx = tri[j]
-            h.append(SkinHandle(quarkx.vect(vtx[1], vtx[2], 0), i, j, component))
-    view.handles = qhandles.FilterHandles(h, SS_MODEL)
-
-#DECKER - begin
-    #FIXME - Put a check for an option-switch here, so people can choose which they want (fixed-zoom/scroll, or reseting-zoom/scroll)
-    oldx, oldy, doautozoom = center.tuple
-    try:
-        oldorigin = view.info["origin"]
-        if not abs(origin - oldorigin):
-            oldscale = view.info["scale"]
-            if oldscale is None:
-                doautozoom = 1
-            oldx, oldy = view.scrollbars[0][0], view.scrollbars[1][0]
-        else:
-            doautozoom = 1
-    except:
-        doautozoom = 1
-
-    if doautozoom:
-        oldscale = 1
-#DECKER - end
-
-    org = component.originst
-    n = quarkx.vect(1,1,1) 
-    v = orthogonalvect(n, view)
-    view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
-    view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
-    view.info = {"type": "2D",
-                 "matrix": matrix_rot_z(pi2),
-                 "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
-                 "scale": oldscale, #DECKER
-                 "custom": skinzoom,
-                 "origin": origin,
-                 "noclick": None,
-                 "mousemode": None
-                 }
-
-    skinzoom(view, origin)
-    if doautozoom: #DECKER
-        if skindrawobject is not None:
-            skin = skindrawobject.name
-        else:
-            skin = None
-        singleskinautozoom(view, skin) #DECKER
-    view.flags = view.flags | qhandles.vfSkinView;
-    editor.setupview(view, drawsingleskin, 0)
-    if (oldx or oldy) and not doautozoom: #DECKER
-        view.scrollto(oldx, oldy) #DECKER
-    view.invalidate()
-    return 1
-
-
-def singleskinautozoom(view, skin):
+def singlefaceautozoom(view, skin):
     scale1, center1 = AutoZoom([view], view.info["bbox"], margin=(36,34))
     if scale1 is None:
         return 0
@@ -378,22 +303,15 @@ def singleskinautozoom(view, skin):
     if abs(scale1-view.info["scale"])<=epsilon:
         return 0
     view.info["scale"] = scale1
-    skinzoom(view, center1)
+    singlefacezoom(view, center1)
     return 1
 
 
-def skinzoom(view, center=None):
+def singlefacezoom(view, center=None):
     if center is None:
         center = view.screencenter
     view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
-
-   # These 3 lines may not be helping with zoom center drifting.
-    editor = mapeditor()
-    layout = editor.layout
-    qhandles.z_recenter(view, [layout.editor.Root])
-
     bmin, bmax = view.info["bbox"]
-
     x1=y1=x2=y2=None
     for x in (bmin.x,bmax.x):   # all 8 corners of the bounding box
         for y in (bmin.y,bmax.y):
@@ -432,6 +350,104 @@ def skinzoom(view, center=None):
     view.screencenter = view.space(x,y,z)
     p = view.proj(view.info["origin"])
     view.depth = (p.z-0.1, p.z+100.0)
+
+
+def buildskinvertices(editor, view, layout, component, skindrawobject):
+    "builds a list of handles to display on the skinview"
+    global tri_indexnbr, ver_index0x, ver_index1x, ver_index2x
+
+  ### begin code from maphandles def viewsinglebezier
+    if skindrawobject is not None:
+        try:
+            tex = skindrawobject
+            w,h = tex["Size"]
+        except:
+            pass
+        else:
+            def draw1(view, finish=layout.editor.finishdrawing, w=w, h=h):
+                pt = view.space(quarkx.vect(0,0,0))
+                pt = view.proj(quarkx.vect(math.floor(pt.x), math.floor(pt.y), 0))
+             #   view.canvas().painttexture(tex, (pt.x,pt.y)+view.clientarea, 0)
+                view.drawgrid(quarkx.vect(w*view.info["scale"],0,0), quarkx.vect(0,h*view.info["scale"],0), MAROON, DG_LINES, 0, quarkx.vect(0,0,0))
+                finish(view)
+            view.ondraw = draw1
+            view.onmouse = layout.editor.mousemap
+            view.background = tex, quarkx.vect(0,0,0), 1.0 ### Sets the texture scale size and location.
+  ### end code from maphandles def viewsinglebezier
+
+
+    def drawsingleskin(view, layout=layout, skindrawobject=skindrawobject, component=component, editor=editor):
+        view.color = BLACK
+        view.drawmap(component.skindrawobject, DM_REDRAWFACES|DM_OTHERCOLOR, 0x2584C9)   # draw the face contour
+        org = component.originst
+        orgX, orgY, orgZ = org.tuple
+        if skindrawobject is not None:
+            texX, texY = skindrawobject['Size'] # Gives the texture size to work with.
+
+
+        editor.finishdrawing(view)
+
+
+    center =  quarkx.vect(view.clientarea[0]/2, view.clientarea[1]/2, 0)
+    origin = center
+
+    h = [ ]
+    tri_indexnbr = -1   # global
+    tris = component.triangles
+    for i in range(len(tris)):
+        ver_index0x = None   # global
+        ver_index1x = None   # global
+        ver_index2x = None   # global
+        tri = tris[i]
+        for j in range(len(tri)):
+            vtx = tri[j]
+            h.append(SkinHandle(quarkx.vect(vtx[1], vtx[2], 0), i, j, component))
+    view.handles = qhandles.FilterHandles(h, SS_MODEL)
+
+#DECKER - begin
+    #FIXME - Put a check for an option-switch here, so people can choose which they want (fixed-zoom/scroll, or reseting-zoom/scroll)
+    oldx, oldy, doautozoom = center.tuple
+    try:
+        oldorigin = view.info["origin"]
+        if not abs(origin - oldorigin):
+            oldscale = view.info["scale"]
+            if oldscale is None:
+                doautozoom = 1
+            oldx, oldy = view.scrollbars[0][0], view.scrollbars[1][0]
+        else:
+            doautozoom = 1
+    except:
+        doautozoom = 1
+
+    if doautozoom:
+        oldscale = 1
+#DECKER - end
+
+    org = component.originst
+    n = quarkx.vect(1,1,1) 
+    v = orthogonalvect(n, view)
+    view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
+    view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
+    view.info = {"type": "2D",
+                 "matrix": matrix_rot_z(pi2),
+                 "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
+                 "scale": oldscale, #DECKER
+                 "custom": singleskinzoom,
+                 "origin": origin,
+                 "noclick": None,
+                 "mousemode": None
+                 }
+
+    if skindrawobject is None:
+        editor.setupview(view, drawsingleskin, 0)
+    singleskinzoom(view)
+
+    return 1
+
+def singleskinzoom(view):
+    sc = view.screencenter
+    view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
+    view.screencenter = sc
       
 #
 # Functions to build common lists of handles.
@@ -566,6 +582,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.5  2006/11/16 00:08:21  cdunde
+#To properly align model skin with its mesh movement handles and zooming function.
+#
 #Revision 1.12.2.4  2006/11/15 23:06:14  cdunde
 #Updated bone handle size and to allow for future variable of them.
 #
