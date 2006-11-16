@@ -111,17 +111,24 @@ class ModelLayout(BaseLayout):
         cv.rectangle(0,0,w,h)
 
     def bs_skinform(self, panel):
+        ico_maped=ico_dict['ico_maped']
         fp = panel.newpanel()
-        tp = fp.newtoppanel(80) # Sets the height of the top panel.
+        skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
+        skinzoombtn.near = 1
+        self.buttons["skinzoom"] = skinzoombtn
+        tp = fp.newtoppanel(103) # Sets the height of the top panel.
+        btnp = tp.newbottompanel(23,0).newbtnpanel([skinzoombtn])
+        btnp.margins = (0,0)
         self.skinform = tp.newdataform()
         self.skinform.header = 0
         self.skinform.sep = -79
-        self.skinform.onchange = self.skinformchange
         self.skinform.setdata([], quarkx.getqctxlist(':form', "Skin")[-1])
+        self.skinform.onchange = self.skinformchange
         self.skinview = fp.newmapview()  ### This is the skin view where it should show.
-        self.skinview.viewtype = "panel"
         self.skinview.color = BLACK
-        self.skinview.ondraw = self.skinviewdraw
+        self.skinview.viewtype = "panel"
+        skinzoombtn.views = [self.skinview]
+   #     self.skinview.ondraw = self.skinviewdraw
 #        self.skinview.onmouse = self.skinviewmouse   ### This may be needed later.
         return fp
 
@@ -193,16 +200,18 @@ class ModelLayout(BaseLayout):
         q = quarkx.newobj(':')   # internal object
         self.skinview.handles = []
         self.skinview.ondraw = None
-  ###      self.faceview.onmouse = self.polyviewmouse  ### something missing here
+        self.skinview.onmouse = self.polyviewmouse  ### was commented out, causes zoom to change.
+        skinzoombtn = self.buttons["skinzoom"]
+     #   skinzoombtn.state = qtoolbar.disabled  ### why would you want to disable the zoom button?
         self.skinview.color = BLACK
   ### new cdunde
         if len(slist)==0:
             cap = Strings[129]
 
         if len(slist)!=0:  # uncomment when selection is correct
-            mdlhandles.buildskinvertices(self.editor, self.skinview, self.editor.Root.currentcomponent, slist[0])
+            mdlhandles.buildskinvertices(self.editor, self.skinview, self, self.editor.Root.currentcomponent, slist[0])
         else:
-            mdlhandles.buildskinvertices(self.editor, self.skinview, self.editor.Root.currentcomponent, None)
+            mdlhandles.buildskinvertices(self.editor, self.skinview, self, self.editor.Root.currentcomponent, None)
 
         if self.editor.Root.currentcomponent is not None:
           ### These items are setup in the Skin:form section of the defaults.qrk file.
@@ -216,6 +225,11 @@ class ModelLayout(BaseLayout):
         self.skinform.setdata(q, self.skinform.form)
         self.editor.finishdrawing(self.skinview)
         startup = 1
+
+    def polyviewmouse(self, view, x, y, flags, handle):
+        if flags&MB_CLICKED:
+            quarkx.clickform = view.owner
+            mapbtns.texturebrowser()
 
 
     def skinformchange(self, src):
@@ -296,6 +310,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.10.2.3  2006/11/15 23:50:16  cdunde
+#To show currentskin of a model component in Skin-view when any item
+#of that component that is chosen.
+#
 #Revision 1.10.2.2  2006/11/04 21:41:23  cdunde
 #To setup the Model Editor's Skin-view and display the skin
 #for .mdl, .md2 and .md3 models using .pcx, .jpg and .tga files.
