@@ -15,6 +15,8 @@ $Id$
 6.5.0 alpha 9
 =============
 
+ * [cdunde]: Added display of currentskin path and name to Face-view data form section.
+
  * [cdunde]: Added code to activate the movement of the Face-view skin handles for skinning.
 
  * [cdunde]: Added code to draw skin mesh lines in Face-view.
