@@ -157,7 +157,7 @@ class SkinHandle(qhandles.GenericHandle):
 
         oldtri = tris[self.tri_index]
         oldvert = oldtri[self.ver_index]
-        newvert = (oldvert[0], oldvert[1]+delta.x, oldvert[2]+delta.y)
+        newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
         if (self.ver_index == 0):
           newtri = (newvert, oldtri[1], oldtri[2])
         elif (self.ver_index == 1):
@@ -180,10 +180,20 @@ class SkinHandle(qhandles.GenericHandle):
           if tri_index == tri_indexnbr:
               if ver_index == 0:
                   ver_index0x, ver_index0y, ver_index0z = p.tuple
+                  ver_index0x = int(ver_index0x)
+                  ver_index0y = int(ver_index0y)
+                  ver_index0z = int(ver_index0z)
               if ver_index == 1:
                   ver_index1x, ver_index1y, ver_index1z = p.tuple
+                  ver_index1x = int(ver_index1x)
+                  ver_index1y = int(ver_index1y)
+                  ver_index1z = int(ver_index1z)
               if ver_index == 2:
                   ver_index2x, ver_index2y, ver_index2z = p.tuple
+                  ver_index2x = int(ver_index2x)
+                  ver_index2y = int(ver_index2y)
+                  ver_index2z = int(ver_index2z)
+          
           if ver_index0x is not None and ver_index1x is not None and ver_index2x is not None:
               cv.line(ver_index0x, ver_index0y, ver_index1x, ver_index1y)
         #      cv.line(ver_index1x, ver_index1y, ver_index2x, ver_index2y)
@@ -293,70 +303,13 @@ class BoneHandle(qhandles.GenericHandle):
           cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
 
 
-def singlefaceautozoom(view, skin):
-    scale1, center1 = AutoZoom([view], view.info["bbox"], margin=(36,34))
-    if scale1 is None:
-        return 0
-    if scale1>1.0:
-        scale1=1.0
-    if abs(scale1-view.info["scale"])<=epsilon:
-        return 0
-    view.info["scale"] = scale1
-    singlefacezoom(view, center1)
-    return 1
-
-
-def singlefacezoom(view, center=None):
-    if center is None:
-        center = view.screencenter
-    view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
-    bmin, bmax = view.info["bbox"]
-    x1=y1=x2=y2=None
-    for x in (bmin.x,bmax.x):   # all 8 corners of the bounding box
-        for y in (bmin.y,bmax.y):
-            for z in (bmin.z,bmax.z):
-                p = view.proj(x,y,z)
-                if (x1 is None) or (p.x<x1): x1=p.x
-                if (y1 is None) or (p.y<y1): y1=p.y
-                if (x2 is None) or (p.x>x2): x2=p.x
-                if (y2 is None) or (p.y>y2): y2=p.y
-#py2.4    view.setrange(x2-x1+36, y2-y1+34, 0.5*(bmin+bmax))
-    view.setrange(int(x2)-int(x1)+36, int(y2)-int(y1)+34, 0.5*(bmin+bmax))
-
-     # trick : if we are far enough and scroll bars are hidden,
-     # the code below clamb the position of "center" so that
-     # the picture is completely inside the view.
-    x1=y1=x2=y2=None
-    for x in (bmin.x,bmax.x):   # all 8 corners of the bounding box
-        for y in (bmin.y,bmax.y):
-            for z in (bmin.z,bmax.z):
-                p = view.proj(x,y,z)    # re-proj... because of setrange
-                if (x1 is None) or (p.x<x1): x1=p.x
-                if (y1 is None) or (p.y<y1): y1=p.y
-                if (x2 is None) or (p.x>x2): x2=p.x
-                if (y2 is None) or (p.y>y2): y2=p.y
-    w,h = view.clientarea
-    w,h = (w-36)/2, (h-34)/2
-    x,y,z = view.proj(center).tuple
-    t1,t2 = x2-w,x1+w
-    if t2>=t1:
-        if x<t1: x=t1
-        elif x>t2: x=t2
-    t1,t2 = y2-h,y1+h
-    if t2>=t1:
-        if y<t1: y=t1
-        elif y>t2: y=t2
-    view.screencenter = view.space(x,y,z)
-    p = view.proj(view.info["origin"])
-    view.depth = (p.z-0.1, p.z+100.0)
-
-
 def buildskinvertices(editor, view, layout, component, skindrawobject):
     "builds a list of handles to display on the skinview"
     global tri_indexnbr, ver_index0x, ver_index1x, ver_index2x
 
   ### begin code from maphandles def viewsinglebezier
     if skindrawobject is not None:
+        view.viewmode = "tex" # Don't know why, but if model HAS skin, making this "wire" causes black lines on zooms.
         try:
             tex = skindrawobject
             w,h = tex["Size"]
@@ -372,17 +325,14 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
             view.ondraw = draw1
             view.onmouse = layout.editor.mousemap
             view.background = tex, quarkx.vect(0,0,0), 1.0 ### Sets the texture scale size and location.
+    else:
+        
+        view.viewmode = "wire" # Don't know why, but if model has NO skin, making this "tex" causes it to mess up...bad!
   ### end code from maphandles def viewsinglebezier
 
 
     def drawsingleskin(view, layout=layout, skindrawobject=skindrawobject, component=component, editor=editor):
         view.color = BLACK
-        view.drawmap(component.skindrawobject, DM_REDRAWFACES|DM_OTHERCOLOR, 0x2584C9)   # draw the face contour
-        org = component.originst
-        orgX, orgY, orgZ = org.tuple
-        if skindrawobject is not None:
-            texX, texY = skindrawobject['Size'] # Gives the texture size to work with.
-
         editor.finishdrawing(view)
 
 
@@ -426,7 +376,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     n = quarkx.vect(1,1,1) 
     v = orthogonalvect(n, view)
     view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
-    view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
+ #   view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
     view.info = {"type": "2D",
                  "matrix": matrix_rot_z(pi2),
                  "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
@@ -581,6 +531,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.7  2006/11/16 01:01:54  cdunde
+#Added code to activate the movement of the Face-view skin handles for skinning.
+#
 #Revision 1.12.2.6  2006/11/16 00:49:13  cdunde
 #Added code to draw skin mesh lines in Face-view.
 #
