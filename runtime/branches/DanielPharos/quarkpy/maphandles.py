@@ -1325,6 +1325,7 @@ class CyanBezier2Handle(qhandles.GenericHandle):
     def drag(self, v1, v2, flags, view):
         view.invalidate(1)
         self.dynst = None
+        new = None
         delta = v2-v1
         if not (flags&MB_CTRL):
             delta = qhandles.aligntogrid(delta, 0)
@@ -1345,10 +1346,11 @@ class CyanBezier2Handle(qhandles.GenericHandle):
                 cp[m][n] = cp[m][n]+td
                 new.cp =cp
 
-
         if new is not None:
             self.dynst = new.cp
-        return [self.b2], [new]
+            return [self.b2], [new]
+        else:
+            return [self.b2], new
 
     def getdrawmap(self):
         return self.b2, qhandles.refreshtimertex
@@ -1938,6 +1940,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.53.2.1  2006/11/03 23:38:09  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
 #Revision 1.53  2006/07/19 06:10:26  cdunde
 #Updated Extruder Infobase doc and created direct link.
 #
