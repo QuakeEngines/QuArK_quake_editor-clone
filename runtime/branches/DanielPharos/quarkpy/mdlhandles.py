@@ -33,6 +33,9 @@ tri_indexnbr = 0
 ver_index0x = ver_index0y = ver_index0z = None
 ver_index1x = ver_index1y = ver_index1z = None
 ver_index2x = ver_index2y = ver_index2z = None
+mdleditor = None
+mdleditorview = None
+cursorposatstart = None
 
 #
 # The handle classes.
@@ -475,6 +478,10 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
 def MouseDragging(self, view, x, y, s, handle):
     "Mouse Drag on a Model View."
+    global mdleditor, mdleditorview, cursorposatstart
+    mdleditor = self
+    mdleditorview = view
+    cursorposatstart = quarkx.vect(x,y,0)
 
     #
     # qhandles.MouseDragging builds the DragObject.
@@ -531,6 +538,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.8  2006/11/17 05:06:55  cdunde
+#To stop blipping of background skin texture,
+#fix Python 2.4 Depreciation Warning messages,
+#and remove unneeded code at this time.
+#
 #Revision 1.12.2.7  2006/11/16 01:01:54  cdunde
 #Added code to activate the movement of the Face-view skin handles for skinning.
 #
