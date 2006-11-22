@@ -22,12 +22,14 @@ import quarkx
 import qtoolbar
 import qmenu
 from mdlutils import *
-import mdltools
+import mdlbtns
 import mdlhandles
-import mdlentities  # new cdunde
+import mdltools
+from qdictionnary import Strings
 from qbasemgr import BaseLayout
 from qbasemgr import MPPage
-from qdictionnary import Strings
+import mdlentities
+
 
 ### globals
 startup = 0
@@ -180,6 +182,14 @@ class ModelLayout(BaseLayout):
 
     def fillskinform(self, reserved):
         global startup # Allows the skinform to fill the 1st time a model is loaded, to set it up.
+        self.skinview.handles = []
+        self.skinview.ondraw = None
+     #   self.skinview.onmouse = self.polyviewmouse  ### Was commented out, causes zoom to change when aother "component" folder is selected
+                                                     ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
+                                                     ### Commenting out due to conflict but possible future use.
+        self.skinview.info = None
+        skinzoombtn = self.buttons["skinzoom"]
+        self.skinview.color = BLACK
         slist = self.getskin()  ### something missing here
         if self.editor.Root.currentcomponent.currentskin is None:
             if startup == 1:
@@ -197,24 +207,18 @@ class ModelLayout(BaseLayout):
             else:
                 self.editor.Root.currentcomponent = component
 
-        q = quarkx.newobj(':')   # internal object
-        self.skinview.handles = []
-        self.skinview.ondraw = None
-        self.skinview.onmouse = self.polyviewmouse  ### was commented out, causes zoom to change.
-        skinzoombtn = self.buttons["skinzoom"]
-     #   skinzoombtn.state = qtoolbar.disabled  ### why would you want to disable the zoom button?
-        self.skinview.color = BLACK
+        q = quarkx.newobj(':')   ### internal object to create the Skin-view form.
   ### new cdunde
         if len(slist)==0:
             cap = Strings[129]
 
-        if len(slist)!=0:  # uncomment when selection is correct
+        if len(slist)!=0:
             mdlhandles.buildskinvertices(self.editor, self.skinview, self, self.editor.Root.currentcomponent, slist[0])
         else:
             mdlhandles.buildskinvertices(self.editor, self.skinview, self, self.editor.Root.currentcomponent, None)
 
         if self.editor.Root.currentcomponent is not None:
-          ### These items are setup in the Skin:form section of the defaults.qrk file.
+          ### These items are setup in the Skin:form section of the Defaults.qrk file.
             q["header"] = "Selected Skin"
             q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
             q["ownedby"] = self.editor.Root.currentcomponent.shortname
@@ -222,14 +226,15 @@ class ModelLayout(BaseLayout):
                 q["texture"] = slist[0].name
             else:
                 q["texture"] = "no skins exist for this component"
+
         self.skinform.setdata(q, self.skinform.form)
-        self.editor.finishdrawing(self.skinview)
+        quarkx.update(self.editor.form)
         startup = 1
 
     def polyviewmouse(self, view, x, y, flags, handle):
         if flags&MB_CLICKED:
             quarkx.clickform = view.owner
-            mapbtns.texturebrowser()
+            mdlbtns.texturebrowser()
 
 
     def skinformchange(self, src):
@@ -310,6 +315,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.10.2.4  2006/11/16 00:20:07  cdunde
+#Added Model Editors Face-view own zoom button independent of all other views.
+#
 #Revision 1.10.2.3  2006/11/15 23:50:16  cdunde
 #To show currentskin of a model component in Skin-view when any item
 #of that component that is chosen.
