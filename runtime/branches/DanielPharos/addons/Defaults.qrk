@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.295.2.9  2006/11/16 03:16:53  cdunde
+//Added display of currentskin path and name to Face-view data form section.
+//
 //Revision 1.295.2.8  2006/11/15 23:20:02  cdunde
 //H-L2 configuration update.
 //
@@ -983,8 +986,6 @@ QQRKSRC1
       }
       3D view:config =
       {
-        Warning3D = "1"
-        CloseOnGame = "1"
         Lib = "qrksoftg.dll"   //Default library. Currently set to Software for compatibility.
         WndRect = '0 0 640 480'
         Entities = "1"
@@ -992,6 +993,7 @@ QQRKSRC1
         FarDistance = '1500'  // objects are totally black at this distance
         FogDensity = '1.05'
         VAngle = '30'
+        FogColor = $000000
         FrameColor = $000000
         TextureMaxDimension="7"
         MouseHLook = '10'
@@ -1017,6 +1019,8 @@ QQRKSRC1
         RotateSpeed = '160'
         AccelDelay = '0.35'
         RunAccelDelay = '0.2'
+        Warning3D = "1"
+        CloseOnGame = "1"
         // The following options are currently hidden:
         DarkFactor = '0.67'   // only 67% of the FarDistance is considered really visible
         SelGroupColor = $FF80FF
@@ -1037,7 +1041,6 @@ QQRKSRC1
         TwoMonitors = ""
         FullScreenGamma = '1.3'
         FullScreenSize = '560 420'
-        FogColor = $000000
         TranspFactor = '0.3'  // in isometric views, an additionnal 30% of the normal depth is visible but transparent
         Form = "General3DFX"
       }
@@ -1057,9 +1060,9 @@ QQRKSRC1
         Ambient = '0.4'  //Why is this hidden?
         Form = "GeneralOpenGL"
       }
-      Direct3D:config =
+      DirectX:config =
       {
-        Form = "GeneralDirect3D"
+        Form = "GeneralDirectX"
       }
       Memory:config =
       {
@@ -6008,13 +6011,11 @@ QQRKSRC1
     General3DView:form =
     {
       style = "3"
-      Warning3D: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
-      CloseOnGame: = {Typ="X" Txt="Close views when the game is run" Cap="Enabled" Hint="If checked, this can save system resources so the game runs smoother"}
       Lib: = {
         Txt="Select 3D viewer"
         Typ="CL"
-        Items  = "Software only" $0D "3DFX (Glide)" $0D "OpenGL" $0D "Direct3D"
-        Values = "qrksoftg.dll" $0D "glide2x.dll" $0D "OpenGL32.dll" $0D "Direct3DXXX.dll"  //Daniel: The Direct3D renderer should be changed into the right ones
+        Items  = "Software only" $0D "3DFX (Glide)" $0D "OpenGL" $0D "DirectX"
+        Values = "qrksoftg.dll" $0D "glide2x.dll" $0D "OpenGL32.dll" $0D "d3d9.dll"
         Hint="see also the viewers configuration pages"
       }
       WndRect: = {Typ="EF4" Txt="Position/size of window" Hint="Position and size in pixels of the 3D view window"}
@@ -6023,10 +6024,11 @@ QQRKSRC1
       FarDistance: = {Txt="``Far´´ distance" Typ="EF1" Min="50" Hint="How far you can view before objects are lost in the fog (lower numbers accelerate rendering because there is less to display)"}
       FogDensity: = {Txt="Fog density" Typ="EF1" Min='1' Hint="Fog density. Try yourself to see what it does."}
       VAngle: = {Txt="Vertical view angle" Typ="EF1" Min="5" Max="80" Hint="Angle between the horizon and the higher and lower points you can see - larger numbers mean smaller image"}
+      FogColor: = {Txt="Fog color" Typ="LI" Hint="Fog color (recommended : either black or white)"}
       FrameColor: = {Txt="Frame color" Typ="LI" Hint="Color displayed besides the image if the window is too large"}
       TextureMaxDimension: = {Txt="Textures max-dimension" Typ="C"
-        Items ="256"$0D"128"$0D"64"$0D"32"$0D"16"$0D"8"
-        Values=  "8"$0D  "7"$0D "6"$0D "5"$0D "4"$0D"3"
+        Items ="4096"$0D"2048"$0D"1024"$0D"512"$0D"256"$0D"128"$0D"64"$0D"32"$0D"16"$0D"8"
+        Values=  "12"$0D  "11"$0D  "10"$0D  "9"$0D  "8"$0D  "7"$0D "6"$0D "5"$0D "4"$0D"3"
         Hint="A lower value uses less memory for texture-images,"$0D"but will also decrease the texture quality in the 3D-views"
       }
       Sep2c: = {Typ="S" Txt = ""}
@@ -6058,6 +6060,10 @@ QQRKSRC1
       RotateSpeed: = {Txt="Rotation speed" Typ="EF1" Hint="How fast you turn left/right or look up/down, in degrees/second"}
       AccelDelay: = {Txt="Acceleration delay" Typ="EF1" Hint="How much time it takes until you reach full speed (``0´´ allowed)"}
       RunAccelDelay: = {Txt="Running acceleration delay" Typ="EF1" Hint="As above but while the run key is down"}
+      Sep4: = {Typ="S" Txt = ""}
+      L2: = {Typ="S" Txt="Additional settings"}
+      Warning3D: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
+      CloseOnGame: = {Typ="X" Txt="Close views when the game is run" Cap="Enabled" Hint="If checked, this can save system resources so the game runs smoother"}
     }
     GeneralSoftware:form =
     {
@@ -6092,7 +6098,6 @@ QQRKSRC1
       }
       FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen 3DFX mode only"}
       FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="resolution is always 640x480, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
-      FogColor: = {Txt="Fog color" Typ="LI" Hint="Fog color (recommended : either black or white)"}
       TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
     }
     GeneralOpenGL:form =
@@ -6131,10 +6136,11 @@ QQRKSRC1
       VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it. For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1; otherwise, the textured images are smaller than the wireframes." }
       GLLists: = { Typ="X" Txt="GL Lists" Cap="Enabled" Hint="Speeds up rendering when lights are enabled"}
     }
-    GeneralDirect3D:form =
+    GeneralDirectX:form =
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- DirectX 9.0c hardware owners only ----"}
+      L1: = {Typ="S" Bold="0" Txt="This renderer is not available at the moment."}
     }
     GeneralAssociations:form =
     {
