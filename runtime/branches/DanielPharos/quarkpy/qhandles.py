@@ -42,6 +42,7 @@ grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
 saveeditor = None
+modelcenter = None
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -1460,7 +1461,7 @@ class Rotator2D(DragObject):
         info["vangle"] = vangle
 
      #   center = self.view.screencenter
-        center = quarkx.vect(0,0,0) ### Keeps the center of the grid at the center of the view.
+        center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the grid at the center of the view.
         fixpt = center + self.view.vector(center).normalized * scroll
 
         setprojmode(self.view)
@@ -1749,6 +1750,8 @@ def findlastsel(choice,keep=0):
 #
 
 def z_recenter(view3d, list):
+    global modelcenter
+    modelcenter = view3d.info["center"]
     bbox = quarkx.boundingboxof(list)
     if bbox is None: return
     bmin, bmax = bbox
@@ -1770,6 +1773,7 @@ def z_recenter(view3d, list):
 
 def flat3Dview(view3d, layout, selonly=0):
 
+    modelcenter = quarkx.vect(0,0,0)
     #
     # "localsetprojmode": Set the projection attributes and then automatically Z-recenter.
     #
@@ -1779,8 +1783,10 @@ def flat3Dview(view3d, layout, selonly=0):
             z_recenter(view, layout.explorer.sellist)
     else:
         def localsetprojmode(view, layout=layout):
+            global modelcenter
             defsetprojmode(view)
             z_recenter(view, [layout.editor.Root])
+            modelcenter = view3d.info["center"]
 
     view3d.viewmode = "tex"
     view3d.flags = view3d.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
@@ -1792,7 +1798,8 @@ def flat3Dview(view3d, layout, selonly=0):
                    "custom": localsetprojmode,
                    "noclick": None,
                    "mousemode": Rotator2D,
-                   "center": quarkx.vect(0,0,0),
+                #   "center": quarkx.vect(0,0,0),
+                   "center": quarkx.vect(0,0,0) + modelcenter,
                    "sfx": 0 }
     if selonly:
         layout.editor.setupview(view3d, layout.editor.drawmapsel)
@@ -1805,6 +1812,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.27.2.5  2006/11/22 06:50:46  cdunde
+#Fixed the Model Editors 3D pivot point at the center of the view.
+#
 #Revision 1.27.2.4  2006/11/09 23:17:45  cdunde
 #Changed Paint Brush dialog to work with new version view setup and names.
 #
