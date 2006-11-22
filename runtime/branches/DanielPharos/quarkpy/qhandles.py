@@ -1459,7 +1459,8 @@ class Rotator2D(DragObject):
             vangle = 1.25
         info["vangle"] = vangle
 
-        center = self.view.screencenter
+     #   center = self.view.screencenter
+        center = quarkx.vect(0,0,0) ### Keeps the center of the grid at the center of the view.
         fixpt = center + self.view.vector(center).normalized * scroll
 
         setprojmode(self.view)
@@ -1804,6 +1805,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.27.2.4  2006/11/09 23:17:45  cdunde
+#Changed Paint Brush dialog to work with new version view setup and names.
+#
 #Revision 1.27.2.3  2006/11/09 23:00:02  cdunde
 #Updates to accept Python 2.4.4 by eliminating the
 #Depreciation warning messages in the console.
