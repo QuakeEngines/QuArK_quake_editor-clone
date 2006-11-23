@@ -182,14 +182,11 @@ class ModelLayout(BaseLayout):
 
     def fillskinform(self, reserved):
         global startup # Allows the skinform to fill the 1st time a model is loaded, to set it up.
-        self.skinview.handles = []
-        self.skinview.ondraw = None
-     #   self.skinview.onmouse = self.polyviewmouse  ### Was commented out, causes zoom to change when aother "component" folder is selected
-                                                     ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
-                                                     ### Commenting out due to conflict but possible future use.
-        self.skinview.info = None
-        skinzoombtn = self.buttons["skinzoom"]
-        self.skinview.color = BLACK
+     #   self.skinview.onmouse = self.polyviewmouse  ### was commented out, causes zoom to change when aother "component" folder is selected
+                                                    ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
+                                                    ### Commenting out due to conflict but possible future use.
+     #   self.skinview.info = None
+
         slist = self.getskin()  ### something missing here
         if self.editor.Root.currentcomponent.currentskin is None:
             if startup == 1:
@@ -208,6 +205,10 @@ class ModelLayout(BaseLayout):
                 self.editor.Root.currentcomponent = component
 
         q = quarkx.newobj(':')   ### internal object to create the Skin-view form.
+        self.skinview.handles = []
+        self.skinview.ondraw = None
+        skinzoombtn = self.buttons["skinzoom"]
+        self.skinview.color = BLACK
   ### new cdunde
         if len(slist)==0:
             cap = Strings[129]
@@ -315,6 +316,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.10.2.5  2006/11/22 23:31:52  cdunde
+#To setup Face-view click function to open Texture Browser for possible future use.
+#
 #Revision 1.10.2.4  2006/11/16 00:20:07  cdunde
 #Added Model Editors Face-view own zoom button independent of all other views.
 #
