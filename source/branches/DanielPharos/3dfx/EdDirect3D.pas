@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7.2.9  2006/11/23 20:29:25  danielpharos
+Removed now obsolete FreeDirect3DEditor procedure
+
 Revision 1.7.2.8  2006/11/01 22:22:28  danielpharos
 BackUp 1 November 2006
 Mainly reduce OpenGL memory leak
@@ -60,6 +63,8 @@ uses Windows, Classes, Setup,
 
 type
   TDirect3DSceneObject = class(TSceneObject)
+  private
+    DirectXLoaded: Boolean;
   protected
     m_ScreenX, m_ScreenY: Integer;
     m_Resized: Boolean;
@@ -120,7 +125,8 @@ type
 destructor TDirect3DSceneObject.Destroy;
 begin
   ReleaseResources;
-  UnloadDirect3D;
+  if DirectXLoaded = True then
+    UnloadDirect3D;
   inherited;
 end;
 
@@ -221,10 +227,10 @@ var
 begin
   ReleaseResources;
   { is the Direct3D object already loaded? }
-  if not Direct3DLoaded() then
+  if DirectXLoaded = False then
   begin
     { try to load the Direct3D object }
-    if not ReloadDirect3D() then
+    if not LoadDirect3D() then
       Raise EErrorFmt(4868, [GetLastError]);  {Daniel: Is this error message correct? No 'OpenGL' in it?}
   end;
   if (DisplayMode=dmFullScreen) then
