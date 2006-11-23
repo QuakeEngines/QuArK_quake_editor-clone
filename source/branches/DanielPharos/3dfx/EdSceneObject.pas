@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15.2.11  2006/11/23 20:20:35  danielpharos
+Changed the texture unloading method. Removed a redundant call.
+
 Revision 1.15.2.10  2006/11/23 20:19:21  danielpharos
 Fixed the access violation when loading a model without a skin
 
@@ -1677,8 +1680,8 @@ begin
    end;
    if (TextureMaxDimension < 8) then
      TextureMaxDimension:=8; { minimum value is 8 }
-   if (TextureMaxDimension > 256) then
-     TextureMaxDimension:=256; { maximum value is 256 }
+   if (TextureMaxDimension > 4096) then
+     TextureMaxDimension:=4096; { maximum value is 4096 }
 
    PTex^.SourceTexture:=Q;
    PTex^.TexW:=Size.X;
@@ -1986,15 +1989,19 @@ end;
 function GetLodFor(w: Integer) : GrLOD_t;
 begin
  case w of
-  256: Result:=GR_LOD_256;
-  128: Result:=GR_LOD_128;
-  64:  Result:=GR_LOD_64;
-  32:  Result:=GR_LOD_32;
-  16:  Result:=GR_LOD_16;
-  8:   Result:=GR_LOD_8;
-  4:   Result:=GR_LOD_4;
-  2:   Result:=GR_LOD_2;
-  1:   Result:=GR_LOD_1;
+  4096: Result:=GR_LOD_256;  {Daniel: The software and 3DFX don't support higher LODs}
+  2048: Result:=GR_LOD_256;
+  1024: Result:=GR_LOD_256;
+  512:  Result:=GR_LOD_256;
+  256:  Result:=GR_LOD_256;
+  128:  Result:=GR_LOD_128;
+  64:   Result:=GR_LOD_64;
+  32:   Result:=GR_LOD_32;
+  16:   Result:=GR_LOD_16;
+  8:    Result:=GR_LOD_8;
+  4:    Result:=GR_LOD_4;
+  2:    Result:=GR_LOD_2;
+  1:    Result:=GR_LOD_1;
  else
   Raise InternalE('Bad LOD');
  end;
