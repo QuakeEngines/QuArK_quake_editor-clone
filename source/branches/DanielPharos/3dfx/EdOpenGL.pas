@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.2.9  2006/11/23 20:45:23  danielpharos
+Removed now obsolete FreeOpenGLEditor procedure
+
 Revision 1.33.2.8  2006/11/01 22:22:28  danielpharos
 BackUp 1 November 2006
 Mainly reduce OpenGL memory leak
@@ -170,6 +173,7 @@ type
    DisplayLists: Integer;
    LightParams: TLightParams;
    FullBright: TLightParams;
+   OpenGLLoaded: Boolean;
  protected
    Bilinear: boolean;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
@@ -777,7 +781,7 @@ begin
 
   if RC<>0 then
   begin
-    if OpenGlLoaded then
+    if OpenGLLoaded then
     begin
       I:=0;
       while I<Length(RCs) do
@@ -807,7 +811,8 @@ destructor TGLSceneObject.Destroy;
 begin
   HackIgnoreErrors:=True;
   ReleaseResources;
-  UnloadOpenGl;
+  if OpenGLLoaded = true then
+    UnloadOpenGl;
   inherited;
   HackIgnoreErrors:=False;
 end;
@@ -826,7 +831,7 @@ var
  Setup: QObject;
 begin
   ClearScene;
-  {ReleaseResources;}   {Daniel: Shouldn't be necessary}
+
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
 
@@ -834,11 +839,12 @@ begin
   FullBright.ZeroLight:=1;
 
   { have the OpenGL DLL already been loaded? }
-  if not OpenGlLoaded() then
+  if not OpenGLLoaded then
   begin
     { try to load the OpenGL DLL, and set pointers to its functions }
-    if not ReloadOpenGl() then
+    if not LoadOpenGl() then
       Raise EErrorFmt(4868, [GetLastError]);
+    OpenGLLoaded := true;
   end;
   if (DisplayMode=dmFullScreen) then
    Raise InternalE('OpenGL renderer does not support fullscreen views (yet)');
@@ -1002,7 +1008,7 @@ begin
   begin
     {glDisable(GL_BLEND);}   {Daniel: Make sure Transparency is disabled}
   end;
-  {Daniel: Things like transparency, bump-maps etc. should be added in a similar way}
+  {Daniel: Things like normal maps, bump-maps etc. should be added in a similar way}
   
   wglMakeCurrent(0,0);
 end;
@@ -1820,15 +1826,14 @@ end;
 
 procedure TGLTextureManager.ClearTexture(Tex: PTexture3);
 begin
-  if OpenGlLoaded then
+  {Daniel: How can you be sure OpenGL has been loaded?}
+  if (Tex^.OpenGLName<>0) then
   begin
-    if (Tex^.OpenGLName<>0) then
-    begin
-      {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
-      glDeleteTextures(1, Tex^.OpenGLName);
-      {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
-      Tex^.OpenGLName:=0;
-    end;
+    {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+    glDeleteTextures(1, Tex^.OpenGLName);
+    {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+    Tex^.OpenGLName:=0;
+    CheckOpenGLError(glGetError);  {#}
   end;
 end;
 
