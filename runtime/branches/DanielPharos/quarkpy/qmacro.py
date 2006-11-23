@@ -158,14 +158,6 @@ def MACRO_helpmenu(text):
     getattr(qeditor, helpfn[text])()
 
 
-#
-# Macro called to open the OpenGL window in background
-#
-
-def MACRO_OpenGL(minx, miny):
-    import qopengl, qeditor
-    qopengl.open(qeditor.mapeditor(), minx, miny, bkgnd=1)  #, force=1)
-
 def MACRO_shutdown(text):
 #    quitfile=open(quarkx.exepath+'quit.txt','w')
 #    quitfile.write('quitting\n')
@@ -313,6 +305,9 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.20  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.17  2003/12/17 13:58:59  peter-b
 #- Rewrote defines for setting Python version
 #- Removed back-compatibility with Python 1.5
