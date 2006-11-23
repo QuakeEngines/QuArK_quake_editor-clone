@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
 Revision 1.12  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -707,8 +711,7 @@ var
   gluPerspective: procedure (fovy, aspect, zNear, zFar: GLdouble); stdcall;
  {gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint; format: GLenum; typ: GLenum; const data): GLint; stdcall;}
 
-function OpenGlLoaded : Boolean;
-function ReloadOpenGl : Boolean;
+function LoadOpenGl : Boolean;
 procedure UnloadOpenGl;
 
 
@@ -780,75 +783,87 @@ const
   {,(FuncPtr: @@gluBuild2DMipmaps;     FuncName: 'gluBuild2DMipmaps'     )});
 
 var
-  Is_OpenGL_Library_Loaded : boolean;
+  TimesLoaded : Integer;
 
   OpenGL32Lib: THandle;
   Glu32Lib: THandle;
 
  { ----------------- }
 
-function OpenGlLoaded : Boolean;
-begin
-  Result := Is_OpenGL_Library_Loaded;
-end;
-
-function ReloadOpenGl : Boolean;
+function LoadOpenGl : Boolean;
 type
  PPointer = ^Pointer;
 var
  I: Integer;
  P: Pointer;
 begin
-  Result := False;
-  UnloadOpenGl;
-  try
-    OpenGL32Lib := LoadLibrary('OPENGL32.DLL');
-    if OpenGL32Lib=0 then
-      Exit;
+  if TimesLoaded = 0 then
+  begin
+    Result := False;
+    try
+      if OpenGL32Lib = 0 then  {Daniel: We don't want to load it twice, now do we?}
+       begin
+        OpenGL32Lib := LoadLibrary('OPENGL32.DLL');
+        if OpenGL32Lib=0 then
+          Exit;
+       end;
 
-    Glu32Lib := LoadLibrary('GLU32.DLL');
-    if Glu32Lib=0 then
-      Exit;
-
-    for I:=Low(OpenGL32DLL_FuncList) to High(OpenGL32DLL_FuncList) do
-    begin
-      P:=GetProcAddress(OpenGL32Lib, OpenGL32DLL_FuncList[I].FuncName);
-      if P=Nil then
+      Glu32Lib := LoadLibrary('GLU32.DLL');
+      if Glu32Lib=0 then
         Exit;
-      PPointer(OpenGL32DLL_FuncList[I].FuncPtr)^:=P;
-    end;
 
-    for I:=Low(Glu32DLL_FuncList) to High(Glu32DLL_FuncList) do
-    begin
-      P:=GetProcAddress(Glu32Lib, Glu32DLL_FuncList[I].FuncName);
-      if P=Nil then
-        Exit;
-      PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=P;
-    end;
+      for I:=Low(OpenGL32DLL_FuncList) to High(OpenGL32DLL_FuncList) do
+      begin
+        P:=GetProcAddress(OpenGL32Lib, OpenGL32DLL_FuncList[I].FuncName);
+        if P=Nil then
+          Exit;
+        PPointer(OpenGL32DLL_FuncList[I].FuncPtr)^:=P;
+      end;
 
-    Is_OpenGL_Library_Loaded := True;
+      for I:=Low(Glu32DLL_FuncList) to High(Glu32DLL_FuncList) do
+      begin
+        P:=GetProcAddress(Glu32Lib, Glu32DLL_FuncList[I].FuncName);
+        if P=Nil then
+          Exit;
+        PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=P;
+      end;
+
+      TimesLoaded := 1;
+      Result := True;
+    finally
+      if (not Result) then
+      begin
+        TimesLoaded := 1;
+        UnloadOpenGL;
+      end;
+    end;
+  end
+  else
+  begin
+    TimesLoaded := TimesLoaded + 1;
     Result := True;
-  finally
-    if (not Result) then
-      UnloadOpenGL;
   end;
 end;
 
 procedure UnloadOpenGl;
 begin
-  if OpenGL32Lib<>0 then
-    FreeLibrary(OpenGL32Lib);
-  OpenGL32Lib := 0;
+  if TimesLoaded = 1 then
+  begin
+    {if OpenGL32Lib<>0 then
+      FreeLibrary(OpenGL32Lib);
+    OpenGL32Lib := 0;}   {Daniel: This cannot be freed, because the pixel format will then fail!}
 
-  if Glu32Lib<>0 then
-    FreeLibrary(Glu32Lib);
-  Glu32Lib := 0;
-
-  Is_OpenGL_Library_Loaded := False;
+    if Glu32Lib<>0 then
+      FreeLibrary(Glu32Lib);
+    Glu32Lib := 0;
+    TimesLoaded := 0;
+  end
+  else
+    TimesLoaded := TimesLoaded - 1;
 end;
 
 initialization
-  Is_OpenGL_Library_Loaded := False;
+  TimesLoaded := 0;
   OpenGL32Lib := 0;
   Glu32Lib := 0;
 end.

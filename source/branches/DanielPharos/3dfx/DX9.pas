@@ -31,55 +31,62 @@ var
  g_D3D : IDirect3D9;
  g_D3DDevice : IDirect3DDevice9;
 
-function Direct3DLoaded : Boolean;
-function ReloadDirect3D : Boolean;
+function LoadDirect3D : Boolean;
 procedure UnloadDirect3D;
 
 implementation
 
 var
-  Is_Direct3D_Library_Loaded : boolean;
+  TimesLoaded : Integer;
 
  { ----------------- }
 
-function Direct3DLoaded : Boolean;
+function LoadDirect3D : Boolean;
 begin
-  Result := Is_Direct3D_Library_Loaded;
-end;
+  if TimesLoaded = 0 then
+  begin
+    Result := False;
+    try
 
-function ReloadDirect3D : Boolean;
-begin
-  Result := False;
-  UnloadDirect3D;
-  try
+     g_D3D := Direct3DCreate9(D3D_SDK_VERSION);
+     {if (!g_D3D) then
+       begin
 
-   g_D3D := Direct3DCreate9(D3D_SDK_VERSION);
-   {if (!g_D3D) then
-     begin
-       
-     end;}
+       end;}
 
-
-    Is_Direct3D_Library_Loaded := True;
+      TimesLoaded := 1;
+      Result := True;
+    finally
+      if (not Result) then
+      begin
+        TimesLoaded := 1;
+        UnloadDirect3D;
+      end;
+    end;
+  end
+  else
+  begin
+    TimesLoaded := TimesLoaded + 1;
     Result := True;
-  finally
-    if (not Result) then
-      UnloadDirect3D;
   end;
 end;
 
 procedure UnloadDirect3D;
 begin
-   if not (g_D3D=Nil) then
-     begin
+  if TimesLoaded = 1 then
+    begin
+    if not (g_D3D=Nil) then
+      begin
       {g_D3D->Release();}  {Daniel: Shouldn't we release it with the release-procedure?}
       g_D3D:=Nil;
-     end;
-
-  Is_Direct3D_Library_Loaded := False;
+      end;
+    TimesLoaded := 0;
+    end
+  else
+    TimesLoaded := TimesLoaded + 1;
 end;
 
 initialization
 
-  Is_Direct3D_Library_Loaded := False;
+  TimesLoaded := 0;
 end.
