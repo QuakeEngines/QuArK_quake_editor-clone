@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.11  2006/11/23 20:38:14  danielpharos
+Pushed FogColor and FrameColor into the renderer
+
 Revision 1.31.2.10  2006/11/23 20:35:59  danielpharos
 Cleaned up the Init procedure to match OpenGL better
 Added counter to make sure the renderers only unload when they're not used anymore
@@ -147,6 +150,7 @@ type
    VOID_COLOR, FRAME_COLOR: GrColor_t;
    CurrentAlpha: FxU32;
    ViewRect: TViewRect;
+   GlideLoaded: Boolean;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
@@ -191,8 +195,7 @@ procedure Set3DFXGammaCorrection(Value: TDouble);
 implementation
 
 uses Game, Quarkx, FullScr1, Travail,
-     PyMath3D, Ed3DEditors,
-     QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
+     PyMath3D, QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
 
 const
  VertexSnapper = 1.0*(3 shl 18);
@@ -499,7 +502,7 @@ begin
  if I<>0 then
   begin
    if nCoord.FlatDisplay then
-    FogDensity:=FogDensity*256;
+     FogDensity:=0;
    guFogGenerateExp2(FogTableCache^, FogDensity);
   end;
 {if Assigned(guFogGenerateExp2)
