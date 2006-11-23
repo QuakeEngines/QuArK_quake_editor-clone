@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
 Revision 1.31  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -173,7 +177,6 @@ procedure SetIntelPrecision;
 procedure RestoreIntelPrecision;
 procedure Do3DFXTwoMonitorsActivation;
 procedure Do3DFXTwoMonitorsDeactivation;
-procedure Free3DFXEditor;
 procedure Set3DFXGammaCorrection(Value: TDouble);
 
  {------------------------}
@@ -510,6 +513,15 @@ var
 begin
  Old:=FVertexList;
  FreeMem(FogTableCache);
+ Do3DFXTwoMonitorsDeactivation;
+ // Assigned check added by SilverPaladin
+ if (Assigned(qrkGlideState)) then
+  qrkGlideState.Free;
+ qrkGlideState:=Nil;
+ if Assigned(grSstWinClose) then
+  grSstWinClose;
+ if Assigned(grGlideShutdown) then
+  grGlideShutdown;
  inherited;
  Old.Free;
 end;
@@ -801,24 +813,6 @@ procedure Do3DFXTwoMonitorsDeactivation;
 begin
  if GlideLoaded and Assigned(grSstControl) then
   grSstControl(GR_CONTROL_DEACTIVATE);
-end;
-
-procedure Free3DFXEditor;
-begin
- Do3DFXTwoMonitorsDeactivation;
- if GlideLoaded then
-  begin
-    // Assigned check added by SilverPaladin
-   if (Assigned(qrkGlideState)) then
-    qrkGlideState.Free;
-   qrkGlideState:=Nil;
-   if Assigned(grSstWinClose) then
-    grSstWinClose;
-   if Assigned(grGlideShutdown) then
-    grGlideShutdown;
-   UnloadGlide;
-  end;
- TTextureManager.FreeNonVisibleTextures;
 end;
 
 procedure Set3DFXGammaCorrection(Value: TDouble);
