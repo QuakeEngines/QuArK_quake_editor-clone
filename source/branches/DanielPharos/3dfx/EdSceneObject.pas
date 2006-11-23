@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15.2.9  2006/11/23 20:18:11  danielpharos
+Removed FOG constant
+Texture now stay in memory until they're not used anymore
+
 Revision 1.15.2.8  2006/11/01 22:22:28  danielpharos
 BackUp 1 November 2006
 Mainly reduce OpenGL memory leak
@@ -1629,7 +1633,14 @@ begin
     if S[1]=':' then
      begin  { loading model skin }
       Pointer(Q):=P^.tmp;
-      Q.Acces;
+      if Q<>Nil then
+       try
+        Q.Acces;
+       except
+        Q:=Nil;
+       end;
+      if Q=Nil then
+       GlobalWarning(FmtLoadStr1(5588, [S]));
      end
     else
      begin  { loading texture }
