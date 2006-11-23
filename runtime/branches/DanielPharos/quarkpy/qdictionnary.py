@@ -960,9 +960,16 @@ Strings = {
     # 5767: reserved
     # 5768: reserved
     # 5769: reserved
-    
+
     5770: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer.",
     5771: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer.",
+    5772: "Unable to create SceneObject",
+    5773: "An error occured in the OpenGL routines: GL_INVALID_VALUE",
+    5774: "An error occured in the OpenGL routines: GL_INVALID_ENUM",
+    5775: "An error occured in the OpenGL routines: GL_INVALID_OPERATION",
+    5776: "An error occured in the OpenGL routines: GL_STACK_OVERFLOW",
+    5777: "An error occured in the OpenGL routines: GL_STACK_UNDERFLOW",
+    5778: "An error occured in the OpenGL routines: GL_OUT_OF_MEMORY",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 
@@ -970,7 +977,6 @@ Strings = {
     #-102: "\nNote: to use a bitmap as a texture, you must first convert the bitmap into a texture : in the Texture Browser, choose 'Paste Special' instead of 'Paste'.",
     -103: "%d texture(s) could not be found. Are you sure you want to continue ?",
     -104: "This command uses the 3D viewer selected in options. Note that if you get a black screen it probably means you are looking at a part of your map where there is no light. In case of trouble (or to disable light computation) see the viewer section of the configuration dialog box and try again.\n\nIt is recommended to save your work first. Ok to load 3D viewer now ?",
-    #Daniel: This should be changed to reflect the changes to renderer selection
 
     -409: "Bezier",
 
@@ -983,6 +989,10 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.76.2.6  2006/11/01 22:22:41  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
 #Revision 1.77  2006/09/27 02:59:06  cdunde
 #To add Copy, Paste and Cut functions to Specifices\Arg
 #page RMB pop-up menu.
