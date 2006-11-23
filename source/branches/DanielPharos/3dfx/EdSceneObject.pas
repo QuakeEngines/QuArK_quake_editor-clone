@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15.2.10  2006/11/23 20:19:21  danielpharos
+Fixed the access violation when loading a model without a skin
+
 Revision 1.15.2.9  2006/11/23 20:18:11  danielpharos
 Removed FOG constant
 Texture now stay in memory until they're not used anymore
@@ -1435,19 +1438,17 @@ begin
      Used:=false;
     end;
   end;
- for I:=0 to Scenes.Count-1 do
+ if not ForceAll then
   begin
-   P:=TSceneObject(Scenes[I]).ListSurfaces;
-   while Assigned(P) do
+   for I:=0 to Scenes.Count-1 do
     begin
-     if P^.Texture<>Nil then
+     P:=TSceneObject(Scenes[I]).ListSurfaces;
+     while Assigned(P) do
       begin
-       if ForceAll then
-        ReallocMem(P^.Texture^.info.data, 0)
-       else
+       if P^.Texture<>Nil then
         P^.Texture^.Used:=true;
+       P:=P^.Next;
       end;
-     P:=P^.Next;
     end;
   end;
  nPaletteCache:=Nil;
