@@ -15,18 +15,20 @@ $Id$
 6.5.0 alpha 9
 =============
 
+ * [cdunde]: Started dragging lines support for Skin-view vertex movement.
+
  * [cdunde]: Fixed the Model Editors 3D pivot point at the center of the view.
 
  * [cdunde]: Fixed error when handle is moved on the Bezier Selected patch page
          - but returned to starting position without completing the handle move.
 
- * [cdunde]: Added display of currentskin path and name to Face-view data form section.
+ * [cdunde]: Added display of currentskin path and name to Skin-view data form section.
 
- * [cdunde]: Added code to activate the movement of the Face-view skin handles for skinning.
+ * [cdunde]: Added code to activate the movement of the Skin-view skin handles for skinning.
 
- * [cdunde]: Added code to draw skin mesh lines in Face-view.
+ * [cdunde]: Added code to draw skin mesh lines in Skin-view.
 
- * [cdunde]: Added Model Editors Face-view own zoom button independent of all other views.
+ * [cdunde]: Added Model Editors Skin-view own zoom button independent of all other views.
 
  * [cdunde]: To properly align model skin with its mesh movement handles and zooming function.
 
@@ -74,10 +76,10 @@ $Id$
          - to allow their viewing in the editor, all available textures for QuArK's Texture
          - Browser and added its link to a new STVEF Infobase Configuration doc section.
 
- * [DanielPharos and cdunde]: Complete revamping of STVEF files and addition of HM addon
+ * [Daniel Pharos and cdunde]: Complete revamping of STVEF files and addition of HM addon
          - for multiplayer editing by DanielPharos.
 
- * [DanielPharos and cdunde]: As far back as mid 2000 Access Violation errors would
+ * [Daniel Pharos and cdunde]: As far back as mid 2000 Access Violation errors would
          - occurred with various entity forms, causing QuArK to crash. That is now fixed!
 
  * [cdunde]: Changed "Poly size" display in "hint box" to w, d, h to reduce confusion
