@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15.2.12  2006/11/23 20:24:03  danielpharos
+Added support for texture-size up to 4096x4096 (Software and Glide excluded)
+
 Revision 1.15.2.11  2006/11/23 20:20:35  danielpharos
 Changed the texture unloading method. Removed a redundant call.
 
@@ -210,8 +213,7 @@ type
                   DisplayMode: TDisplayMode;
                   DisplayType: TDisplayType;
                   const LibName: String;
-                  var AllowsGDI: Boolean;
-                  FogColor, FrameColor: TColorRef); virtual; abstract;
+                  var AllowsGDI: Boolean); virtual; abstract;
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
    procedure SetViewRect(SX, SY: Integer); virtual; abstract;

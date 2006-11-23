@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7.2.11  2006/11/23 20:33:09  danielpharos
+Cleaned up the Init procedure to match OpenGL better
+
 Revision 1.7.2.10  2006/11/23 20:30:34  danielpharos
 Added counter to make sure the renderers only unload when they're not used anymore
 
@@ -98,8 +101,7 @@ type
                    DisplayMode: TDisplayMode;
                    DisplayType: TDisplayType;
                    const LibName: String;
-                   var AllowsGDI: Boolean;
-                   FogColor, FrameColor: TColorRef); override;
+                   var AllowsGDI: Boolean); override;
  (*
     procedure ClearScene; override;
     procedure ClearFrame; override;
@@ -222,10 +224,10 @@ procedure TDirect3DSceneObject.Init(Wnd: HWnd;
                                     DisplayMode: TDisplayMode;
                                     DisplayType: TDisplayType;
                                     const LibName: String;
-                                    var AllowsGDI: Boolean;
-                                    FogColor, FrameColor: TColorRef);
+                                    var AllowsGDI: Boolean);
 var
   l_Res: HResult;
+  {FogColor, FrameColor: TColorRef;}
   Setup: QObject;
 begin
   ClearScene;
@@ -271,8 +273,9 @@ begin
   begin
     FarDistance:=1500;
   end;
-  FogDensity:=Setup.GetFloatSpec('FogDensity', 1) * FOG_DENSITY_1;
-   
+  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
+  {FogColor:=Setup.IntSpec['FogColor'];}
+  {FrameColor:=Setup.IntSpec['FrameColor'];}
 {  g_D3DDevice.SetClearColor(D3DXColorToDWord(D3DXColor(0,0,0,0)));
   g_D3DDevice.SetRenderState(D3DRENDERSTATE_AMBIENT, $ffffffff);
 

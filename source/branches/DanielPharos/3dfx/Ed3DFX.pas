@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.10  2006/11/23 20:35:59  danielpharos
+Cleaned up the Init procedure to match OpenGL better
+Added counter to make sure the renderers only unload when they're not used anymore
+Some additional error checks to make sure now unassigned calls are being made
+
 Revision 1.31.2.9  2006/11/23 20:27:45  danielpharos
 Removed now obsolete Free3DFXEditor procedure
 
@@ -164,8 +169,7 @@ type
                   DisplayMode: TDisplayMode;
                   DisplayType: TDisplayType;
                   const LibName: String;
-                  var AllowsGDI: Boolean;
-                  FogColor, FrameColor: TColorRef); override;
+                  var AllowsGDI: Boolean); override;
    destructor Destroy; override;
    procedure Render3DView; override;
    procedure ClearFrame; override;
@@ -405,11 +409,12 @@ begin
 end;
 
 procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
-          const LibName: String; var AllowsGDI: Boolean; FogColor, FrameColor: TColorRef);
+          const LibName: String; var AllowsGDI: Boolean);
 var
  I: Integer;
  HiColor: Boolean;
  hwconfig: GrHwConfiguration;
+ FogColor, FrameColor: TColorRef;
  Setup: QObject;
 begin
  ClearScene;
@@ -485,7 +490,9 @@ begin
  begin
    FarDistance:=1500;   {Daniel: This should be zero... = Disabled FarDistance}
  end;
- FogDensity:=Setup.GetFloatSpec('FogDensity', 1) * FOG_DENSITY_1;
+ FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
+ FogColor:=Setup.IntSpec['FogColor'];
+ FrameColor:=Setup.IntSpec['FrameColor'];
 
  I:=Ord({not nCoord.FlatDisplay and} Assigned(guFogGenerateExp2));
  ReallocMem(FogTableCache, SizeOf(GrFogTable_t)*I);
