@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16.2.1  2006/11/01 22:22:27  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
 Revision 1.16  2005/09/28 10:49:03  peter-b
 Revert removal of Log and Header keywords
 
@@ -1281,9 +1285,9 @@ end;
 
 function T2DCoordinates.VectorZ;
 begin
- Result.X:=-mxinv[1,3];
- Result.Y:=-mxinv[2,3];
- Result.Z:=-mxinv[3,3];
+ Result.X:=mxinv[1,3];
+ Result.Y:=mxinv[2,3];
+ Result.Z:=mxinv[3,3];
 end;
 
 function T2DCoordinates.VectorEye(const Pt: TVect) : TVect;
@@ -1291,7 +1295,6 @@ begin
  Result.X:=-mxinv[1,3]+Pt.X;
  Result.Y:=-mxinv[2,3]+Pt.Y;
  Result.Z:=-mxinv[3,3]+Pt.Z;
- {Daniel: Should Pt be added or substracted?}
 end;
 
 function T2DCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean;
