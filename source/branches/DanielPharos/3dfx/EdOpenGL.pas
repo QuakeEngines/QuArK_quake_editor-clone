@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.2.12  2006/11/23 20:50:59  danielpharos
+Now checks for the current PixelFormat, and changes that if needed
+Code cleanup, moved some OpenGL calls around
+
 Revision 1.33.2.11  2006/11/23 20:49:00  danielpharos
 Pushed FogColor and FrameColor into the renderer
 
@@ -1213,6 +1217,8 @@ var
  SX, SY: Integer;
  DX, DY, DZ: Double;
  VX, VY, VZ: TVect;
+ Scaling: TDouble;
+ LocX, LocY: GLdouble;
  TransX, TransY, TransZ: GLdouble;
  MatrixTransform: TMatrix4f;
 begin
@@ -1227,104 +1233,92 @@ begin
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity;
 
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity;
+
   CheckOpenGLError(glGetError);  {#}
 
-  if CurrentDisplayType=dtXY then
+  if Source.Coord.FlatDisplay then
    begin
-    with TXYCoordinates(Source.Coord) do
+    if CurrentDisplayType=dtXY then
      begin
-      DX:=round((SX/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
-      DY:=round((SY/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
-      DZ:=round(8192/(ScalingFactor(Nil)*ScalingFactor(Nil)));   {8192: Twice the maplimit}
-      VX:=VectorX;
-      VY:=VectorY;
-      VZ:=VectorZ;
-      TransX:=(pDeltaX-ScrCenter.X)/ScalingFactor(Nil);
-      TransY:=-(pDeltaY-ScrCenter.Y)/ScalingFactor(Nil);
-      TransZ:=-4096;
-     end;
-   end
-  else if CurrentDisplayType=dtXZ then
-   begin
-    with TXZCoordinates(Source.Coord) do
+      with TXYCoordinates(Source.Coord) do
+       begin
+        Scaling:=ScalingFactor(Nil);
+        LocX:=pDeltaX-ScrCenter.X;
+        LocY:=-(pDeltaY-ScrCenter.Y);
+        VX:=VectorX;
+        VY:=VectorY;
+        VZ:=VectorZ;
+       end;
+     end
+    else if CurrentDisplayType=dtXZ then
      begin
-      DX:=round((SX/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
-      DY:=round((SY/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
-      DZ:=round(8192/(ScalingFactor(Nil)*ScalingFactor(Nil)));   {8192: Twice the maplimit}
-      VX:=VectorX;
-      VY:=VectorY;
-      VZ:=VectorZ;
-      TransX:=(pDeltaX-ScrCenter.X)/ScalingFactor(Nil);
-      TransY:=-(pDeltaY-ScrCenter.Y)/ScalingFactor(Nil);
-      TransZ:=-4096;
-     end;
-   end
-  else if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then
-   begin
-    with T2DCoordinates(Source.Coord) do
+      with TXZCoordinates(Source.Coord) do
+       begin
+        Scaling:=ScalingFactor(Nil);
+        LocX:=pDeltaX-ScrCenter.X;
+        LocY:=-(pDeltaY-ScrCenter.Y);
+        VX:=VectorX;
+        VY:=VectorY;
+        VZ:=VectorZ;
+       end;
+     end
+    else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
      begin
-      DX:=round((SX/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
-      DY:=round((SY/2)/(ScalingFactor(Nil)*ScalingFactor(Nil)));
-      DZ:=round(8192/(ScalingFactor(Nil)*ScalingFactor(Nil)));   {8192: Twice the maplimit}
-      VX:=VectorX;
-      VY:=VectorY;
-      VZ:=VectorZ;
-      TransX:=(pDeltaX-ScrCenter.X)/ScalingFactor(Nil);
-      TransY:=-(pDeltaY-ScrCenter.Y)/ScalingFactor(Nil);
-      TransZ:=-4096;
+      with T2DCoordinates(Source.Coord) do
+       begin
+        Scaling:=ScalingFactor(Nil);
+        LocX:=pDeltaX-ScrCenter.X;
+        LocY:=-(pDeltaY-ScrCenter.Y);
+        VX:=VectorX;
+        VY:=VectorY;
+        VZ:=VectorZ;
+       end;
      end;
-   end;
-
-  if CurrentDisplayType<>dt3D then
-   begin
-    MatrixTransform[0,0]:=-VX.Z;
-    MatrixTransform[0,1]:=-VX.X;
-    MatrixTransform[0,2]:=-VX.Y;
+    DX:=(SX/2)/(Scaling*Scaling);
+    DY:=(SY/2)/(Scaling*Scaling);
+    {DZ:=8192/(Scaling*Scaling);}   {8192: Twice the maplimit}
+    DZ:=100000;   {Daniel: Workaround for the zoom-in-disappear problem}
+    TransX:=LocX/(Scaling*Scaling);
+    TransY:=LocY/(Scaling*Scaling);
+    TransZ:=-4096;
+    MatrixTransform[0,0]:=VX.X;
+    MatrixTransform[0,1]:=-VY.X;
+    MatrixTransform[0,2]:=-VZ.X;
     MatrixTransform[0,3]:=0;
-    MatrixTransform[1,0]:=-VY.Z;
-    MatrixTransform[1,1]:=-VY.X;
-    MatrixTransform[1,2]:=-VY.Y;
+    MatrixTransform[1,0]:=VX.Y;
+    MatrixTransform[1,1]:=-VY.Y;
+    MatrixTransform[1,2]:=-VZ.Y;
     MatrixTransform[1,3]:=0;
-    MatrixTransform[2,0]:=-VZ.Z;
-    MatrixTransform[2,1]:=-VZ.X;
-    MatrixTransform[2,2]:=-VZ.Y;
+    MatrixTransform[2,0]:=VX.Z;
+    MatrixTransform[2,1]:=-VY.Z;
+    MatrixTransform[2,2]:=-VZ.Z;
     MatrixTransform[2,3]:=0;
     MatrixTransform[3,0]:=0;
     MatrixTransform[3,1]:=0;
     MatrixTransform[3,2]:=0;
     MatrixTransform[3,3]:=1;
-   end;
 
-           CheckOpenGLError(glGetError);   {#}
-  if (CurrentDisplayType=dtXY) or (CurrentDisplayType=dtXZ) or (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then
-   begin
+
     glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
-            CheckOpenGLError(glGetError);   {#}
     glTranslated(TransX, TransY, TransZ);
-            CheckOpenGLError(glGetError);   {#}
     glMultMatrixd(MatrixTransform);
             CheckOpenGLError(glGetError);   {#}
    end
-  else if CurrentDisplayType=dt3D then
+  else
    begin
     with TCameraCoordinates(Source.Coord) do
      begin
        CheckOpenGLError(glGetError);   {#}
       gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
-        CheckOpenGLError(glGetError);   {#}
       glRotated(PitchAngle * (180/pi), -1,0,0);
-        CheckOpenGLError(glGetError);   {#}
       glRotated(HorzAngle * (180/pi), 0,-1,0);
-        CheckOpenGLError(glGetError);   {#}
       glRotated(120, -1,1,1);
-        CheckOpenGLError(glGetError);   {#}
       glTranslated(-Camera.X, -Camera.Y, -Camera.Z);
         CheckOpenGLError(glGetError);   {#}
      end;
    end;
-
-{  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity;}
 
   CheckOpenGLError(glGetError);   {#}
 
