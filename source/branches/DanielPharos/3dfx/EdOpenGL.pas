@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.2.11  2006/11/23 20:49:00  danielpharos
+Pushed FogColor and FrameColor into the renderer
+
 Revision 1.33.2.10  2006/11/23 20:47:26  danielpharos
 Added counter to make sure the renderers only unload when they're not used anymore
 (This affected the texture unloading procedure)
@@ -768,20 +771,6 @@ begin
     end;
   end;}
 
-  if DisplayLists>0 then
-  begin
-    if OpenGlLoaded then
-    begin
-      {if wglMakeCurrent(GLDC,RC) = false then}    {Daniel: If you close the window, the GLDC is already dead...}
-       {raise EError(5770);}
-      {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
-      glDeleteLists(1, DisplayLists);
-      {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
-      wglMakeCurrent(0,0);
-    end;
-    DisplayLists:=0;
-  end;
-
   if RC<>0 then
   begin
     if OpenGLLoaded then
@@ -832,6 +821,7 @@ var
  nFogColor: GLfloat4;
  FogColor{, FrameColor}: TColorRef;
  Setup: QObject;
+ CurrentPixelFormat: Integer;
 begin
   ClearScene;
 
@@ -913,8 +903,12 @@ begin
     pfd.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
     pfd.iLayerType:=pfd_Main_Plane;
     pfi:=ChoosePixelFormat(GLDC, @pfd);
-    if not SetPixelFormat(GLDC, pfi, @pfd) then
-      Raise EErrorFmt(4869, ['SetPixelFormat']);
+    CurrentPixelFormat:=GetPixelFormat(GLDC);
+    if CurrentPixelFormat<>pfi then
+     begin
+      if not SetPixelFormat(GLDC, pfi, @pfd) then
+        Raise EErrorFmt(4869, ['SetPixelFormat']);
+     end;
     DestWnd:=Wnd;
   end;
 
@@ -1042,12 +1036,13 @@ begin
   begin
     if OpenGlLoaded then
     begin
-      if wglMakeCurrent(GLDC,RC) = false then
-       raise EError(5770);
-      {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
-      glDeleteLists(1, DisplayLists);
-      {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
-      wglMakeCurrent(0,0);
+      if wglMakeCurrent(GLDC,RC) = true then
+       begin
+        {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
+        glDeleteLists(1, DisplayLists);
+        {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
+        wglMakeCurrent(0,0);
+       end;
     end;
     DisplayLists:=0;
   end;
