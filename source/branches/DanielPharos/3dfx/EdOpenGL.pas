@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.2.13  2006/11/23 20:52:59  danielpharos
+Fixed the camera. Movement should now be the same as in software mode
+
 Revision 1.33.2.12  2006/11/23 20:50:59  danielpharos
 Now checks for the current PixelFormat, and changes that if needed
 Code cleanup, moved some OpenGL calls around
@@ -969,6 +972,7 @@ begin
   else
     Bilinear:=false;
   glEnable(GL_TEXTURE_2D);
+  CheckOpenGLError(glGetError);  {#}
   {$IFDEF DebugGLErr} DebugOpenGL(2, '', []); {$ENDIF}
 
  {Inc(VersionGLSceneObject);}
@@ -1012,7 +1016,8 @@ begin
     {glDisable(GL_BLEND);}   {Daniel: Make sure Transparency is disabled}
   end;
   {Daniel: Things like normal maps, bump-maps etc. should be added in a similar way}
-  
+  CheckOpenGLError(glGetError);  {#}
+
   {$IFDEF DebugGLErr} DebugOpenGL(3, '', []); {$ENDIF}  
   wglMakeCurrent(0,0);
 end;
@@ -1151,23 +1156,6 @@ begin
 {        ResidentResult:=glAreTexturesResident(Count, Buffer^, BufResident^);}
         {$IFDEF DebugGLErr} DebugOpenGL(103, 'glAreTexturesResident(<%d>, <%d>, <%d>)', [Count, Buffer^, BufResident^]); {$ENDIF}
 
-
-{              GlError:=glGetError;
-              if GlError = GL_INVALID_VALUE then
-               begin
-                if ResidentResult = GL_FALSE then
-                  raise EError(5693);}  {Something went wrong!!!}
-{                raise EError(5693)
-               end
-              else if GlError = GL_INVALID_ENUM then
-                raise EError(5693)
-              else if GlError = GL_INVALID_OPERATION then
-                raise EError(5693)
-              else if GlError = GL_INVALID_OPERATION then
-                raise EError(5693)
-              else if GlError = GL_OUT_OF_MEMORY then
-                raise EError(5693); }
-
         PList:=ListSurfaces;
         while Assigned(PList) do
         begin
@@ -1300,23 +1288,27 @@ begin
     MatrixTransform[3,2]:=0;
     MatrixTransform[3,3]:=1;
 
+    CheckOpenGLError(glGetError);   {#}
 
     glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
     glTranslated(TransX, TransY, TransZ);
     glMultMatrixd(MatrixTransform);
-            CheckOpenGLError(glGetError);   {#}
+
+    CheckOpenGLError(glGetError);   {#}
    end
   else
    begin
     with TCameraCoordinates(Source.Coord) do
      begin
-       CheckOpenGLError(glGetError);   {#}
+      CheckOpenGLError(glGetError);   {#}
+
       gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
       glRotated(PitchAngle * (180/pi), -1,0,0);
       glRotated(HorzAngle * (180/pi), 0,-1,0);
       glRotated(120, -1,1,1);
       glTranslated(-Camera.X, -Camera.Y, -Camera.Z);
-        CheckOpenGLError(glGetError);   {#}
+      
+      CheckOpenGLError(glGetError);   {#}
      end;
    end;
 
@@ -1651,14 +1643,15 @@ begin
             begin
               DisplayLists:=glGenLists(1);
               if DisplayLists = 0 then
-                raise EError(5693);  {Daniel: Move to error-message-file as 'Unable to create display list.'}
+                raise EError(5693);
 
               OpenGLDisplayList:=DisplayLists;
               {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
               glNewList(DisplayLists, GL_COMPILE_AND_EXECUTE);
               {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
-              if glGetError <> GL_NO_ERROR then  { probably out of display list resources }
-                raise EError(5693);
+
+              CheckOpenGLError(glGetError); {#}
+
               glColor4fv(Currentf);
               {$IFDEF DebugGLErr} DebugOpenGL(111, '', []); {$ENDIF}
             end
@@ -1837,17 +1830,17 @@ end;
 procedure CheckOpenGLError(GlError: GLenum);
 begin
   if GlError = GL_INVALID_VALUE then
-    raise EError(5693)    {Daniel: Create decent error messages for these!!!}
+    raise EError(5773)
   else if GlError = GL_INVALID_ENUM then
-    raise EError(5693)
+    raise EError(5774)
   else if GlError = GL_INVALID_OPERATION then
-    raise EError(5693)
+    raise EError(5775)
   else if GlError = GL_STACK_OVERFLOW then
-    raise EError(5693)
+    raise EError(5776)
   else if GlError = GL_STACK_UNDERFLOW then
-    raise EError(5693)
+    raise EError(5777)
   else if GlError = GL_OUT_OF_MEMORY then
-    raise EError(5693);
+    raise EError(5778);
 end;
 
 end.
