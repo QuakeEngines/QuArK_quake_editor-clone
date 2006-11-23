@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16.2.8  2006/11/01 22:22:29  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
 Revision 1.16  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -1210,7 +1214,6 @@ begin
 
   { FREE } Ord('F')+256*Ord('R')+65536*Ord('E')+16777216*Ord('E'):
     begin
-     CloseAll3DView;
      g_Form1.FreeNonUsedObjects;
     end;
 
