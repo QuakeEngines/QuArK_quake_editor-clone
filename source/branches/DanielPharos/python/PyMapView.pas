@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21.2.8  2006/11/01 22:22:27  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
 Revision 1.21  2005/12/10 07:19:14  cdunde
 To add new paint brush cursor for Terrain Generator
 
@@ -64,7 +68,7 @@ uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
      Dialogs, Quarkx, QkExplorer, Python, QkObjects, PyObjects,
      PyControls, QkForm, CursorScrollBox, Qk3D, QkMapObjects,
      qmath, PyMath, PyMath3D, Setup, Travail, ExtCtrls,
-     EdSceneObject, Ed3DEditors, Ed3DFX;
+     EdSceneObject, Ed3DFX;
 
 
 type
@@ -249,29 +253,11 @@ var
 
  {------------------------}
 
-procedure CloseAll3DView;
-
- {------------------------}
-
 implementation
 
 uses PyCanvas, QkTextures, QkPixelSet, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
      EdOpenGL, EdDirect3D, SystemDetails;
 
-procedure CloseAll3DView;
-{var
- I, J: Integer;}
-begin
-{ TwoMonitorsDlg.Free;}
-{ for I:=0 to Screen.FormCount-1 do
-  with Screen.Forms[I] do
-   for J:=0 to ComponentCount-1 do
-    if Components[J] is TPyMapView then
-     TPyMapView(Components[J]).SetViewMode(vmWireframe);}    {Daniel: Shouldn't be needed anymore}
- {Free3DEditors;}
-end;
-
- {------------------------}
 
 constructor TPyMapView.Create(AOwner: TComponent);
 var
@@ -464,7 +450,7 @@ begin
                   end;
   wp_OpenGL: if Scene is TGLSceneObject then
               TGLSceneObject(Scene).Ready:=True;
-{  wp_Direct3D: if Scene is TDirect3DSceneObject then
+ {wp_Direct3D: if Scene is TDirect3DSceneObject then
               TDirect3DSceneObject(Scene).Ready:=True;}  {Daniel: Can we combine these two?}
  {wp_ResetFullScreen: ResetFullScreen(lParam<>0);}
  else
@@ -494,16 +480,16 @@ begin
   Invalidate;
  with ConfigSrc do
   begin
-   {if Scene is T3DFXSceneObject then}   {Daniel: Not needed anymore, renderer should take care of this now}
-    {begin}
-     {if Specifics.Values['3DFXLogo']='' then}
-      {SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')}
-     {else}
-      {SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', Nil);}
-     {SoftQuality:=StrToIntDef(Specifics.Values['SoftQuality'], 0);}
-     {DynamicQuality:=StrToIntDef(Specifics.Values['DynamicQuality'], 0);}
-     {T3DFXSceneObject(Scene).SoftBufferFormat:=SoftQuality;}
-    {end;}
+   if Scene is T3DFXSceneObject then   {Daniel: Renderer should take care of}
+    begin
+     if Specifics.Values['3DFXLogo']='' then
+      SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')
+     else
+      SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', Nil);
+      SoftQuality:=StrToIntDef(Specifics.Values['SoftQuality'], 0);
+      DynamicQuality:=StrToIntDef(Specifics.Values['DynamicQuality'], 0);
+     T3DFXSceneObject(Scene).SoftBufferFormat:=SoftQuality;
+    end;
 
    if MapViewProj is TCameraCoordinates then
     begin
@@ -574,12 +560,10 @@ begin
       else if ViewType=vtFullScreen then
         DisplayMode:=dmFullScreen
       else
-        raise EError(6559);   {'Unknown ViewType. Unable to create SceneObject';}
-
-      {Daniel: Set DisplayType!!!}
+        raise EError(5772);
 
       Scene.Init(Self.Handle, MapViewProj, DisplayMode, DisplayType,
-       Specifics.Values['Lib'], AllowsGDI, IntSpec['FogColor'], IntSpec['FrameColor']);
+       Specifics.Values['Lib'], AllowsGDI);
 
       if AllowsGDI then
        Drawing:=Drawing and not dfNoGDI
@@ -708,34 +692,15 @@ begin
   begin
    S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
    if S='qrksoftg.dll' then
-    begin
-     if (MapViewProj is TCameraCoordinates) then
-      ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
-     FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
-    end
+     FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor)
    else if S='glide2x.dll' then
-    begin
-     if (MapViewProj is TCameraCoordinates) then
-       ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
-     FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
-    end
+     FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor)
    else if S='OpenGL32.dll' then
-    begin
-     if (MapViewProj is TCameraCoordinates) then
-      ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
-     FScene:=TGLSceneObject.Create;
-    end
-   else if S='Direct3DXXX.dll' then    {Daniel: Change to the correct name}
-    begin
-     if (MapViewProj is TCameraCoordinates) then
-      ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
-     FScene:=TDirect3DSceneObject.Create;
-     {Daniel:...}
-    end
+     FScene:=TGLSceneObject.Create
+   else if S='d3d9.dll' then
+     FScene:=TDirect3DSceneObject.Create
    else
-    begin
-     {Daniel: Unknown renderer. Produce an error message.}
-    end;
+     raise InternalE('NeedScene');
    ReadSetupInformation(NeedSetup);
    Drawing:=Drawing or dfRebuildScene;
   end;
@@ -1448,7 +1413,6 @@ begin
 
  if Key=vk_Escape then
   begin
-   Free3DEditors;    {Daniel: Why? Is this necessary? Won't this destroy other views too?}
    Result:=True;
    Exit;
   end;
@@ -2687,7 +2651,7 @@ begin
         case Upcase(P^) of
          'X': V:=MapViewProj.VectorX;
          'Y': V:=MapViewProj.VectorY;
-         'Z': V:=MapViewProj.VectorEye({Origine}OriginVectorZero);
+         'Z': V:=MapViewProj.VectorZ;
         end;
        end;
      end;
@@ -2812,6 +2776,9 @@ var
  mode, returnvalue: Integer;
 begin
  try
+  {Result:=Nil;
+  if not PyArg_ParseTupleX(args, 'i', [@mode]) then
+   Exit;}
   returnvalue:=0;
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
@@ -2832,13 +2799,14 @@ end;
 
 function mWaitForOpenGL(self, args: PyObject) : PyObject; cdecl;
 begin
- try       {Daniel: What does this do exactly?}
+ try
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
     if Scene is TGLSceneObject then
      begin
       TGLSceneObject(Scene).Ready:=False;
       PostMessage(Handle, wm_InternalMessage, wp_OpenGL, 0);
+      {Daniel: What does this do exactly?}
      end;
   Result:=PyNoResult;
  except
@@ -3197,13 +3165,6 @@ begin
               Flags:=nFlags;
               SetRedLines;
              end;
-           Result:=0;
-           Exit;
-          end
-         else
-         if StrComp(attr, 'free3deditors')=0 then
-          begin
-           Free3DEditors;   {Daniel: Probably one of the most ugliest solutions in the world, but hey, it works!}
            Result:=0;
            Exit;
           end;
