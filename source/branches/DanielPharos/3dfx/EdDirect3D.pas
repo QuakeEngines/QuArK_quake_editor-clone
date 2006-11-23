@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
 Revision 1.7  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -101,8 +105,6 @@ type
  *)
   end;
 
-procedure FreeDirect3DEditor;
-
  {------------------------}
 
 implementation
@@ -115,17 +117,10 @@ type
 
  {------------------------}
 
-procedure FreeDirect3DEditor;
-begin
-  UnloadDirect3D;
-  TTextureManager.FreeNonVisibleTextures;
-end;
-
- {------------------------}
-
 destructor TDirect3DSceneObject.Destroy;
 begin
   ReleaseResources;
+  UnloadDirect3D;
   inherited;
 end;
 
@@ -287,19 +282,127 @@ begin
 end;
 
 procedure TDirect3DSceneObject.RenderDirect3D();
+{var
+  l_Res: HResult;
+  l_VCenter: D3DVector;
+  l_Projection: TD3DXMatrix;
+  l_CameraEye: TD3DXMatrix;
+  l_matRotation: TD3DXMatrix;
+  l_quaRotation: TD3DXQuaternion;}
 begin
+  { make sure that Direct3D have been set up }
+  if (g_D3DDevice = nil) then
+    raise EErrorFmt(4882, ['Render3DView', 'g_D3DDevice = nil']);
 
+  { if viewport have been resized, then tell Direct3D what happend }
+  {if (m_Resized = True) then
+  begin
+    g_D3DDevice.Resize(m_ScreenX, m_ScreenY);
+    D3DXMatrixPerspectiveFov(l_Projection, D3DXToRadian(60.0), m_ScreenY/m_ScreenX, 1.0, 1000.0);
+    m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_PROJECTION, TD3DMatrix(l_Projection));
+    m_Resized := False;
+  end;}
+
+  { set camera }
+  {with TCameraCoordinates(Coord) do
+  begin
+    D3DXMatrixTranslation(l_CameraEye, Camera.X, Camera.Y, Camera.Z);
+
+    D3DXQuaternionRotationYawPitchRoll(l_quaRotation, HorzAngle * (180/pi), PitchAngle * (180/pi), 0);
+    l_VCenter := D3DXVector3(Camera.X, Camera.Y, Camera.Z);
+    D3DXMatrixAffineTransformation(l_matRotation,
+                                   1,
+                                   @l_VCenter,
+                                   @l_quaRotation,
+                                   nil);
+
+    D3DXMatrixMultiply(l_CameraEye, l_CameraEye, l_matRotation);
+
+    m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_VIEW, TD3DMatrix(l_CameraEye));
+  end;
+
+  l_Res := m_pD3DDevice.BeginScene;
+  if (l_Res <> 0) then
+    raise EErrorFmt(4882, ['BeginScene', D3DXGetErrorMsg(l_Res)]);
+
+  m_pD3DX.Clear(D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER);
+
+//  m_CurrentAlpha  :=0;
+//  m_CurrentColor:=0;
+
+  RenderTransparentD3D(FListSurfaces, False, DisplayLights, Coord);
+//  RenderTransparentD3D(FListSurfaces, True,  DisplayLights, Coord);
+
+  m_pD3DDevice.EndScene;
+
+  l_Res := m_pD3DX.UpdateFrame(0);
+  if (l_Res <> 0) then
+    raise EErrorFmt(4882, ['UpdateFrane', D3DXGetErrorMsg(l_Res)]);}
 end;
 
 procedure TDirect3DSceneObject.RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
+var
+ PList: PSurfaces;
 begin
-
+  PList:=ListSurfaces;
+  while Assigned(PList) do
+  begin
+    if Transparent in PList^.Transparent then
+    begin
+      if SolidColors or not PList^.ok then
+        RenderPList(PList, Transparent, SourceCoord);
+    end;
+    PList:=PList^.Next;
+  end;
 end;
 
 procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+var
+  Surf: PSurface3D;
+  SurfEnd: PChar;
 begin
+  Surf:=PList^.Surf;
+  SurfEnd:=PChar(Surf)+PList^.SurfSize;
 
+  while Surf<SurfEnd do
+  begin
+    with Surf^ do
+    begin
+      Inc(Surf);
+      if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
+      and (SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist)) then
+      begin
+        if AlphaColor<>m_CurrentAlpha then
+        begin
+          m_CurrentAlpha := AlphaColor;
+          m_CurrentColor := m_CurrentAlpha;
+        end;
+(*
+        if l_NeedTex then
+        begin
+          LoadCurrentTexture(PList^.Texture);
+          l_NeedTex:=False;
+        end;
+*)
+        begin
+(*
+          for I:=1 to Abs(VertexCount) do
+          begin
+            l_TriangleStrip[i].color := m_CurrentColor;
+          end;
+*)
+          {m_pD3DDevice.DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, PD3DLVERTEX(Surf)^, Abs(VertexCount), D3DDP_WAIT);}
+        end;
+      end;
+
+      if VertexCount>=0 then
+        Inc(PVertex3D(Surf), VertexCount)
+      else
+        Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+    end;
+  end;
+
+  PList^.ok:=True;
 end;
 
 end.
-
