@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.2.10  2006/11/23 20:47:26  danielpharos
+Added counter to make sure the renderers only unload when they're not used anymore
+(This affected the texture unloading procedure)
+
 Revision 1.33.2.9  2006/11/23 20:45:23  danielpharos
 Removed now obsolete FreeOpenGLEditor procedure
 
@@ -190,8 +194,7 @@ type
                   DisplayMode: TDisplayMode;
                   DisplayType: TDisplayType;
                   const LibName: String;
-                  var AllowsGDI: Boolean;
-                  FogColor, FrameColor: TColorRef); override;
+                  var AllowsGDI: Boolean); override;
    procedure ClearScene; override;
    procedure Render3DView; override;
    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
@@ -822,12 +825,12 @@ procedure TGLSceneObject.Init(Wnd: HWnd;
                               DisplayMode: TDisplayMode;
                               DisplayType: TDisplayType;
                               const LibName: String;
-                              var AllowsGDI: Boolean;
-                              FogColor, FrameColor: TColorRef);
+                              var AllowsGDI: Boolean);
 var
  pfd: TPixelFormatDescriptor;
  pfi: Integer;
  nFogColor: GLfloat4;
+ FogColor{, FrameColor}: TColorRef;
  Setup: QObject;
 begin
   ClearScene;
@@ -865,7 +868,9 @@ begin
   begin
     FarDistance:=1500;   {Daniel: This should be zero... = Disabled FarDistance}
   end;
-  FogDensity:=Setup.GetFloatSpec('FogDensity', 1) * FOG_DENSITY_1;
+  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
+  FogColor:=Setup.IntSpec['FogColor'];
+  {FrameColor:=Setup.IntSpec['FrameColor'];}
   Setup:=SetupSubSet(ssGeneral, 'OpenGL');
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
@@ -976,17 +981,17 @@ begin
   { set up fog }
   if Fog then
   begin
+    glEnable(GL_FOG);
     glFogi(GL_FOG_MODE, GL_EXP2);
    {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
     glFogf(GL_FOG_END, FarDistance);}
-    glFogf(GL_FOG_DENSITY, FogDensity/FarDistance * 100000);
+    glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
     glFogfv(GL_FOG_COLOR, nFogColor);
-    glEnable(GL_FOG);
-    {$IFDEF DebugGLErr} DebugOpenGL(3, '', []); {$ENDIF}
+    glHint(GL_FOG_HINT, GL_NICEST);
   end
   else
   begin
-    {glDisable(GL_FOG);}   {Daniel: Make sure Fog is disabled}
+    glDisable(GL_FOG);
   end;
   
   if Lighting then
@@ -1010,6 +1015,7 @@ begin
   end;
   {Daniel: Things like normal maps, bump-maps etc. should be added in a similar way}
   
+  {$IFDEF DebugGLErr} DebugOpenGL(3, '', []); {$ENDIF}  
   wglMakeCurrent(0,0);
 end;
 
