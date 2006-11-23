@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.9  2006/11/23 20:27:45  danielpharos
+Removed now obsolete Free3DFXEditor procedure
+
 Revision 1.31.2.8  2006/11/01 22:22:28  danielpharos
 BackUp 1 November 2006
 Mainly reduce OpenGL memory leak
@@ -409,53 +412,51 @@ var
  hwconfig: GrHwConfiguration;
  Setup: QObject;
 begin
+ ClearScene;
+
  CurrentDisplayMode:=DisplayMode;
  CurrentDisplayType:=DisplayType;
 
- Coord:=nCoord;
- if (not GlideLoaded) or (qrkGlideState=Nil) or ((LibName<>'') and (qrkGlideLibName<>LibName)) then
+ if (not GlideLoaded) or (qrkGlideLibName<>LibName) then
   begin
-   ProgressIndicatorStart(0,0);
+   if LibName='' then
+    Raise EError(4867);
+   if not LoadGlide(LibName, GetApplicationDllPath()) then
+    Raise EErrorFmt(4865, [LibName, GetLastError]);
    try
-    Free3DFXEditor;
-    if LibName='' then
-     Raise EError(4867);
-    if not ReloadGlide(LibName, GetApplicationDllPath()) then
-     Raise EErrorFmt(4865, [LibName, GetLastError]);
     SetIntelPrecision;
-    try
-     grGlideInit;
-     if Assigned(grSstQueryHardware) then
-      if not grSstQueryHardware(hwconfig) then
-       Raise EErrorFmt(4866, ['grSstQueryHardware']);
-     if Assigned(grSstSelect) then
-      grSstSelect(0);
-     if not grSstWinOpen(0,
-                         GR_RESOLUTION_640x480,
-                         GR_REFRESH_60HZ,
-                         GR_COLORFORMAT_ARGB,
-                         GR_ORIGIN_LOWER_LEFT,
-                         2, 1) then
-      Raise EErrorFmt(4866, ['grSstWinOpen']);
-    finally
-     RestoreIntelPrecision;
-    end;
-   // grSstControl(GR_CONTROL_DEACTIVATE);
-    if Assigned(grDepthBufferMode) then
-     grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
-    if Assigned(grDepthMask) then
-     grDepthMask(FXTRUE);
-    ClearBuffers(0);
+    grGlideInit;
+    if Assigned(grSstQueryHardware) then
+     if not grSstQueryHardware(hwconfig) then
+      Raise EErrorFmt(4866, ['grSstQueryHardware']);
+    if Assigned(grSstSelect) then
+     grSstSelect(0);
+    if Assigned(grSstWinOpen) and (GlideTimesLoaded=1) then
+      if not grSstWinOpen(0,
+                        GR_RESOLUTION_640x480,
+                        GR_REFRESH_60HZ,
+                        GR_COLORFORMAT_ARGB,
+                        GR_ORIGIN_UPPER_LEFT,
+                        2, 1) then
+       Raise EErrorFmt(4866, ['grSstWinOpen']);
    finally
-    ProgressIndicatorStop;
+    RestoreIntelPrecision;
    end;
+    // grSstControl(GR_CONTROL_DEACTIVATE);
+   if Assigned(grDepthBufferMode) then
+    grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
+   if Assigned(grDepthMask) then
+    grDepthMask(FXTRUE);
+   ClearBuffers(0);
    qrkGlideState:=TGlideState.Create;
+   GlideLoaded:=true;
   end;
  if (CurrentDisplayMode=dmFullScreen) or (LibName='glide2x.dll') then   {Second check: So Glide kinda works...}
   Do3DFXTwoMonitorsActivation
  else
   if TwoMonitorsDlg=Nil then
    Do3DFXTwoMonitorsDeactivation;
+ Coord:=nCoord;
  TTextureManager.AddScene(Self);
  // Assigned check added by SilverPaladin
  if (not Assigned(qrkGlideState)) then
@@ -513,15 +514,22 @@ var
 begin
  Old:=FVertexList;
  FreeMem(FogTableCache);
- Do3DFXTwoMonitorsDeactivation;
- // Assigned check added by SilverPaladin
- if (Assigned(qrkGlideState)) then
-  qrkGlideState.Free;
- qrkGlideState:=Nil;
- if Assigned(grSstWinClose) then
-  grSstWinClose;
- if Assigned(grGlideShutdown) then
-  grGlideShutdown;
+ if GlideLoaded = True then
+  begin
+   if GlideTimesLoaded=1 then
+    begin
+     Do3DFXTwoMonitorsDeactivation;
+     // Assigned check added by SilverPaladin
+     if (Assigned(qrkGlideState)) then
+      qrkGlideState.Free;
+     qrkGlideState:=Nil;
+     if Assigned(grSstWinClose) then
+      grSstWinClose;
+     if Assigned(grGlideShutdown) then
+      grGlideShutdown;
+    end;
+   UnloadGlide;
+  end;
  inherited;
  Old.Free;
 end;
@@ -805,13 +813,13 @@ end;
 
 procedure Do3DFXTwoMonitorsActivation;
 begin
- if GlideLoaded and Assigned(grSstControl) then
+ if Assigned(grSstControl) then
   grSstControl(GR_CONTROL_ACTIVATE);
 end;
 
 procedure Do3DFXTwoMonitorsDeactivation;
 begin
- if GlideLoaded and Assigned(grSstControl) then
+ if Assigned(grSstControl) then
   grSstControl(GR_CONTROL_DEACTIVATE);
 end;
 
@@ -995,7 +1003,8 @@ begin
  begin
    Inc(FBuildNo);
    //grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA, GR_COMBINE_LOCAL_DEPTH, GR_COMBINE_OTHER_CONSTANT, FXTRUE);
-   grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA, GR_COMBINE_LOCAL_ITERATED, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
+   if Assigned(grAlphaCombine) then
+     grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA, GR_COMBINE_LOCAL_ITERATED, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
    IteratedAlpha:=True;
    //grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL_ALPHA, GR_COMBINE_LOCAL_CONSTANT, GR_COMBINE_OTHER_ITERATED, FXFALSE);
    //grConstantColorValue($30FFFFFF);
