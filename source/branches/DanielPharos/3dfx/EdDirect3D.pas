@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7.2.10  2006/11/23 20:30:34  danielpharos
+Added counter to make sure the renderers only unload when they're not used anymore
+
 Revision 1.7.2.9  2006/11/23 20:29:25  danielpharos
 Removed now obsolete FreeDirect3DEditor procedure
 
@@ -225,7 +228,13 @@ var
   l_Res: HResult;
   Setup: QObject;
 begin
-  ReleaseResources;
+  ClearScene;
+
+  CurrentDisplayMode:=DisplayMode;
+  CurrentDisplayType:=DisplayType;
+
+  raise InternalE('The DirectX renderer has not been implemented yet.');
+
   { is the Direct3D object already loaded? }
   if DirectXLoaded = False then
   begin
@@ -235,6 +244,11 @@ begin
   end;
   if (DisplayMode=dmFullScreen) then
    Raise InternalE('Direct3D renderer does not support fullscreen views (yet)');
+
+  //FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
+  Coord:=nCoord;
+  TTextureManager.AddScene(Self);
+  //TTextureManager.GetInstance.FFreeTexture:=FreeDirect3DTexture;
 
   {Check for software/hardware vertex processing and PureDevice}
 
@@ -248,11 +262,6 @@ begin
 
    {Should we use the pPresentationParameters instead of creating a new device each time?}
 
-  //FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
-  Coord:=nCoord;
-  TTextureManager.AddScene(Self);
-  //TTextureManager.GetInstance.FFreeTexture:=FreeDirect3DTexture;
-   
   Setup:=SetupSubSet(ssGeneral, '3D View');
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
