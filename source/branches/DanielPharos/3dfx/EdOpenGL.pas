@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
 Revision 1.33  2006/04/06 19:44:56  nerdiii
 Cleaned some compiler hints
 
@@ -198,8 +202,6 @@ type
 
  {------------------------}
 
-procedure FreeOpenGLEditor;
-
 procedure CheckOpenGLError(GlError: GLenum);
 
  {------------------------}
@@ -258,12 +260,6 @@ begin
 end;
 
  {------------------------}
-
-procedure FreeOpenGLEditor;
-begin
-  UnloadOpenGl;
-  TTextureManager.FreeNonVisibleTextures;
-end;
 
 procedure UnpackColor(Color: TColorRef; var v: GLfloat4);
 begin
@@ -811,11 +807,10 @@ destructor TGLSceneObject.Destroy;
 begin
   HackIgnoreErrors:=True;
   ReleaseResources;
+  UnloadOpenGl;
   inherited;
   HackIgnoreErrors:=False;
 end;
-
-
 
 procedure TGLSceneObject.Init(Wnd: HWnd;
                               nCoord: TCoordinates;
