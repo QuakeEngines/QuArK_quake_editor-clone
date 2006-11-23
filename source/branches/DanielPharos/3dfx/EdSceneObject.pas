@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
 Revision 1.15  2005/10/16 06:45:53  cdunde
 To try and reduce 3D view freeze and
 gray out at start when loading textures
@@ -86,8 +90,8 @@ interface
 
  {------------------------}
 
-const
 (*
+const
  MinW = 64.0;
  MaxW = 65535.0-128.0;    { Note: constants copied from PyMath3D }
  Minoow = 1.0001/MaxW;
@@ -97,7 +101,6 @@ const
 *)
 
  {vfFlagsInvalidate = vfAxis;}
- FOG_DENSITY_1 = 0.000015;
 
 type
  TViewEntities = (veNever, veBoxes, veModels);
@@ -1850,7 +1853,7 @@ class procedure TTextureManager.FreeNonVisibleTextures;
 begin
  if TextureManager<>Nil then
   begin
-   TextureManager.FreeTextures(False);  {Daniel: Was true...}
+   TextureManager.FreeTextures(False);
    if TextureManager.CanFree then
     begin
      TextureManager.Free;
