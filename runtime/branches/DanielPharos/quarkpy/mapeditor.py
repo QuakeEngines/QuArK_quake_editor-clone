@@ -66,7 +66,7 @@ class MapEditor(BaseEditor):
                 self.Root = self.fileobject.findname(Root)
         errors = quarkx.getmaperror();
         if errors:
-            errors = string.splitfields(errors, '\\n')
+            errors = errors.split('\\n')
             debug('Map Reading Errors: face and brush numbering starting from 0, hulls from 1:')
             for error in errors:
                 debug(' '+error)
@@ -363,6 +363,10 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.8.2.1  2006/11/03 23:38:10  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
 #Revision 1.8  2006/01/30 08:20:00  cdunde
 #To commit all files involved in project with Philippe C
 #to allow QuArK to work better with Linux using Wine.
