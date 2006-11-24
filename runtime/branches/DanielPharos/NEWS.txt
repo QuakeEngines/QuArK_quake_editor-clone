@@ -14,6 +14,14 @@ $Id$
 
 6.5.0 alpha 9
 =============
+ * [Daniel Pharos]: Fixed the access violation and subsequent grey OpenGL windows when
+         - loading a model without a skin.
+
+ * [Daniel Pharos]: OpenGL is now able to render 2D views.
+
+ * [Daniel Pharos]: Turned Glide right side up.
+
+ * [Daniel Pharos]: Added higher texture-size support (only works in OpenGL).
 
  * [cdunde]: Started dragging lines support for Skin-view vertex movement.
 
