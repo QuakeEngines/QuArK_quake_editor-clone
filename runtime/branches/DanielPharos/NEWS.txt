@@ -12,8 +12,12 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
-6.5.0 alpha 9
+6.5.0 Beta 1
 =============
+
+ * [cdunde]: Added a new sub-menu to the Model Editors "Options" menu,
+          - with various methods of rotation in 3D views to choose from.
+ 
  * [Daniel Pharos]: Fixed the access violation and subsequent grey OpenGL windows when
          - loading a model without a skin.
 
