@@ -1459,11 +1459,20 @@ class Rotator2D(DragObject):
         elif vangle>1.25:
             vangle = 1.25
         info["vangle"] = vangle
+        #
+        # First part of methods for rotation in the Model Editors 3D views.
+        #
+        rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+        if rotationmode == 1:
+            center = quarkx.vect(0,0,0) ### Keeps the center of the GRID at the center of the view.
+        elif rotationmode == 2:
+            center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the  MODEL at the center of the view.
+   #     elif rotationmode == 3:
+   #         center = quarkx.vect(0,0,0) + modelcenter ### For future use of "Rotate at start position" method.
+        else:
+            center = self.view.screencenter ### Defaults back to the Original QuArK rotation method.
 
-     #   center = self.view.screencenter
-        center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the grid at the center of the view.
         fixpt = center + self.view.vector(center).normalized * scroll
-
         setprojmode(self.view)
         self.view.screencenter = fixpt - self.view.vector(fixpt).normalized * scroll
         self.view.repaint()
@@ -1768,7 +1777,8 @@ def z_recenter(view3d, list):
     bmin = min(box1).z
     bmax = max(box1).z
     view3d.info["sfx"] = (bmax-bmin)*0.5 / view3d.info["scale"]
-    view3d.depth = (bmin, bmax+bmax-bmin)
+  #  view3d.depth = (bmin, bmax+bmax-bmin)  # Caused view drifting during model rotation.
+    view3d.depth = (-500.0, 500.0)  # Needed to change to a constant depth value to correct.
     
 
 def flat3Dview(view3d, layout, selonly=0):
@@ -1798,9 +1808,23 @@ def flat3Dview(view3d, layout, selonly=0):
                    "custom": localsetprojmode,
                    "noclick": None,
                    "mousemode": Rotator2D,
-                #   "center": quarkx.vect(0,0,0),
-                   "center": quarkx.vect(0,0,0) + modelcenter,
+                #   "center": quarkx.vect(0,0,0), # To setup new multiple rotation methods below.
+                   "center": None,
                    "sfx": 0 }
+
+        #
+        # Final part of methods for rotation in the Model Editors 3D views.
+        #
+    rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+    if rotationmode == 2:
+        center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the  MODEL at the center of the view.
+  #  elif rotationmode == 3:
+  #      center = quarkx.vect(0,0,0) + modelcenter ### For future use of "Rotate at start position" method.
+    else:
+        center = quarkx.vect(0,0,0) ### For the Original QuArK rotation and "Lock to center of 3Dview" methods.
+    view3d.info["center"] = center
+
+
     if selonly:
         layout.editor.setupview(view3d, layout.editor.drawmapsel)
     else:
@@ -1812,6 +1836,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.27.2.6  2006/11/22 18:26:45  cdunde
+#To reset rotation to center of model rather then the view
+#to account for models of grid center.
+#
 #Revision 1.27.2.5  2006/11/22 06:50:46  cdunde
 #Fixed the Model Editors 3D pivot point at the center of the view.
 #
