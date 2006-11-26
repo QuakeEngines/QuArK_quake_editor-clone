@@ -2303,7 +2303,7 @@ class TerrModesBar(ToolBar):
     "The new toolbar with TerrModes buttons. Created from plugins\mapdragmodes.py"
 
     Caption = "Terrain modes"
-    DefaultPos = ((0, 0, 0, 0), 'topdock', 350, 2, 1)
+    DefaultPos = ((0, 0, 0, 0), 'topdock', 300, 2, 1)
 
     def buildbuttons(self, layout):
                           # to build the single click button
@@ -2372,6 +2372,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23.2.8  2006/11/09 23:17:44  cdunde
+# Changed Paint Brush dialog to work with new version view setup and names.
+#
 # Revision 1.23.2.7  2006/11/03 23:38:10  cdunde
 # Updates to accept Python 2.4.4 by eliminating the
 # Depreciation warning messages in the console.

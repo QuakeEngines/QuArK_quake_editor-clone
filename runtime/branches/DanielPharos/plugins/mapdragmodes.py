@@ -403,7 +403,7 @@ class DragModesBar(ToolBar):
     "The new toolbar with DragModes buttons."
 
     Caption = "Mouse modes"
-    DefaultPos = ((0, 0, 0, 0), 'topdock', 262, 0, 1)
+    DefaultPos = ((0, 0, 0, 0), 'topdock', 200, 0, 1)
 
     def buildbuttons(self, layout):
         btns = []
@@ -430,6 +430,10 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17.2.1  2006/11/03 23:38:10  cdunde
+# Updates to accept Python 2.4.4 by eliminating the
+# Depreciation warning messages in the console.
+#
 # Revision 1.17  2006/01/12 07:21:01  cdunde
 # To commit all new and related files for
 # new Quick Object makers and toolbar.
