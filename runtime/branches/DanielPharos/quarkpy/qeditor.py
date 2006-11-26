@@ -1481,7 +1481,7 @@ def Help5():
     htmldoc("help/intro.mapeditor.overview.html") # Takes the user to the Overview page
 
 def Help6():
-    htmldoc("http://quark.ironfoot.co.uk/") # Takes the user to QuArK's Forums web page
+    htmldoc("http://www.dark-forge.com/forums/") # Takes the user to QuArK's Forums web page
 
 #
 # Retrieves all objects with a given type, excluding VF_CANTSELECT groups.
@@ -1511,6 +1511,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.30.2.7  2006/11/03 23:38:10  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
 #Revision 1.30.2.6  2006/11/01 22:22:42  danielpharos
 #BackUp 1 November 2006
 #Mainly reduce OpenGL memory leak
