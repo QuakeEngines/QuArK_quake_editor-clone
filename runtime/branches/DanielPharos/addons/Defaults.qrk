@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.295.2.10  2006/11/22 07:04:30  cdunde
+//A little reorganization of a few items by Daniel Pharos.
+//
 //Revision 1.295.2.9  2006/11/16 03:16:53  cdunde
 //Added display of currentskin path and name to Face-view data form section.
 //
@@ -1042,6 +1045,7 @@ QQRKSRC1
         FullScreenGamma = '1.3'
         FullScreenSize = '560 420'
         TranspFactor = '0.3'  // in isometric views, an additionnal 30% of the normal depth is visible but transparent
+        Fog = "1"
         Form = "General3DFX"
       }
       OpenGL:config =
@@ -6021,10 +6025,10 @@ QQRKSRC1
       WndRect: = {Typ="EF4" Txt="Position/size of window" Hint="Position and size in pixels of the 3D view window"}
       Entities: = {Txt="Entities in 3D" Cap="Display entities" Typ="X" Hint="Show entities in the 3D view"}
       //EntityBoxes: = {Txt="`Entity Boxes`" Cap="as bounding boxes only" Typ="X" Hint="If not checked, entities are displayed as 3D Models when available"}
-      FarDistance: = {Txt="``Far´´ distance" Typ="EF1" Min="50" Hint="How far you can view before objects are lost in the fog (lower numbers accelerate rendering because there is less to display)"}
-      FogDensity: = {Txt="Fog density" Typ="EF1" Min='1' Hint="Fog density. Try yourself to see what it does."}
+      FarDistance: = {Txt="``Far´´ distance" Typ="EF1" Min="50" Hint="How far you can view before objects disappear (lower numbers accelerate rendering because there is less to display)"}
+      FogDensity: = {Txt="Fade density" Typ="EF1" Min='1' Hint="Sets the density of the fade."}
       VAngle: = {Txt="Vertical view angle" Typ="EF1" Min="5" Max="80" Hint="Angle between the horizon and the higher and lower points you can see - larger numbers mean smaller image"}
-      FogColor: = {Txt="Fog color" Typ="LI" Hint="Fog color (recommended : either black or white)"}
+      FogColor: = {Txt="Fade color" Typ="LI" Hint="Fade color (recommended : either black or white)"}
       FrameColor: = {Txt="Frame color" Typ="LI" Hint="Color displayed besides the image if the window is too large"}
       TextureMaxDimension: = {Txt="Textures max-dimension" Typ="C"
         Items ="4096"$0D"2048"$0D"1024"$0D"512"$0D"256"$0D"128"$0D"64"$0D"32"$0D"16"$0D"8"
@@ -6099,12 +6103,13 @@ QQRKSRC1
       FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen 3DFX mode only"}
       FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="resolution is always 640x480, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
       TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
+      Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
     }
     GeneralOpenGL:form =
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- OpenGL 1.1 hardware owners only ----"}
-      Fog: = {Typ="X" Txt="Fog" Cap="Enabled"}
+      Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
       Transparency: = {
         Txt="Transparency"
         Typ="X"

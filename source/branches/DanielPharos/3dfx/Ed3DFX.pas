@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.12  2006/11/23 20:41:51  danielpharos
+DOH! Forgot to commit the GlideLoaded variable declaration...
+Removed link to obsolete 3DEditors
+Set Fog to 0 in 2D windows
+
 Revision 1.31.2.11  2006/11/23 20:38:14  danielpharos
 Pushed FogColor and FrameColor into the renderer
 
@@ -149,6 +154,7 @@ type
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
    CurrentAlpha: FxU32;
+   Fog: Boolean;
    ViewRect: TViewRect;
    GlideLoaded: Boolean;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
@@ -414,7 +420,6 @@ end;
 procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
           const LibName: String; var AllowsGDI: Boolean);
 var
- I: Integer;
  HiColor: Boolean;
  hwconfig: GrHwConfiguration;
  FogColor, FrameColor: TColorRef;
@@ -466,6 +471,7 @@ begin
    Do3DFXTwoMonitorsDeactivation;
  Coord:=nCoord;
  TTextureManager.AddScene(Self);
+ 
  // Assigned check added by SilverPaladin
  if (not Assigned(qrkGlideState)) then
    raise Exception.Create('You must first call Open3dFX');
@@ -494,28 +500,38 @@ begin
    FarDistance:=1500;   {Daniel: This should be zero... = Disabled FarDistance}
  end;
  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
- FogColor:=Setup.IntSpec['FogColor'];
- FrameColor:=Setup.IntSpec['FrameColor'];
-
- I:=Ord({not nCoord.FlatDisplay and} Assigned(guFogGenerateExp2));
- ReallocMem(FogTableCache, SizeOf(GrFogTable_t)*I);
- if I<>0 then
-  begin
-   if nCoord.FlatDisplay then
-     FogDensity:=0;
-   guFogGenerateExp2(FogTableCache^, FogDensity);
-  end;
-{if Assigned(guFogGenerateExp2)
- and Assigned(grFogTable) then
-  begin
-   guFogGenerateExp2(FogTable, FogDensity);
-   grFogTable(FogTable);
-  end;}
- FogColor:=SwapColor(FogColor);
- if Assigned(grFogColorValue) then
-  grFogColorValue(FogColor);
+ FogColor:=SwapColor(Setup.IntSpec['FogColor']);
+ FrameColor:=SwapColor(Setup.IntSpec['FrameColor']);
  VOID_COLOR:=FogColor;
- FRAME_COLOR:=SwapColor(FrameColor);
+ FRAME_COLOR:=FrameColor;
+
+ Setup:=SetupSubSet(ssGeneral, '3DFX');
+ if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
+ begin
+   FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
+ end
+ else
+ begin
+   Fog:=False;
+ end;
+
+ if Fog=True then
+ begin
+   ReallocMem(FogTableCache, SizeOf(GrFogTable_t));
+   if Assigned(guFogGenerateExp2) then
+   begin
+     guFogGenerateExp2(FogTableCache^, FogDensity/(25*FarDistance));
+   end;
+  {if Assigned(guFogGenerateExp2)
+   and Assigned(grFogTable) then
+    begin
+     guFogGenerateExp2(FogTable, FogDensity);
+     grFogTable(FogTable);
+    end;}
+
+   if Assigned(grFogColorValue) then
+    grFogColorValue(FogColor);
+ end;
 end;
 
 destructor T3DFXSceneObject.Destroy;
@@ -523,7 +539,8 @@ var
  Old: TMemoryStream;
 begin
  Old:=FVertexList;
- FreeMem(FogTableCache);
+ if not (FogTableCache = nil) then
+   FreeMem(FogTableCache);
  if GlideLoaded = True then
   begin
    if GlideTimesLoaded=1 then
@@ -978,7 +995,8 @@ begin
 
  // Assigned check added by SilverPaladin
  if (Assigned(qrkGlideState) and TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1)) then
-   grFogTable(FogTableCache^);
+   if Fog=True then
+     grFogTable(FogTableCache^);
 
  if qrkGlideVersion>=HardwareGlideVersion then
    grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
@@ -1002,6 +1020,10 @@ begin
 {GetProjInfo(ProjInfo, RFactor);
  FProjInfo:=@ProjInfo;}
 
+ if Fog=True then
+   grFogMode(GR_FOG_WITH_TABLE)
+ else
+   grFogMode(GR_FOG_DISABLE);
  RenderTransparent(False);
 {if Assigned(grDepthMask) then
   grDepthMask(FXFALSE);}
@@ -1032,7 +1054,8 @@ begin
    finally
      grDepthBufferFunction(GR_CMP_LESS);
      grDepthMask(FXTRUE);
-     grFogMode(GR_FOG_WITH_TABLE);
+     if Fog=True then
+       grFogMode(GR_FOG_WITH_TABLE);
      CCoord.MinDistance:=OldMinDist;
      CCoord.MaxDistance:=OldMaxDist;
    end;
