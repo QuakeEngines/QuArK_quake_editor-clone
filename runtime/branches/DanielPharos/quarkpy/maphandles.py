@@ -1534,7 +1534,8 @@ def ClickOnView(editor, view, x, y):
     #
     # defined in QkPyMapview.pas
     #
-    return view.clicktarget(editor.Root, x, y)
+#py2.4    return view.clicktarget(editor.Root, x, y)
+    return view.clicktarget(editor.Root, int(x), int(y))
 
 
 def MapAuxKey(keytag):
@@ -1940,6 +1941,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.53.2.2  2006/11/18 03:23:17  cdunde
+#Fixed error when handle is moved on the Bezier Selected patch page
+#but returned to starting position without completing the handle move.
+#
 #Revision 1.53.2.1  2006/11/03 23:38:09  cdunde
 #Updates to accept Python 2.4.4 by eliminating the
 #Depreciation warning messages in the console.
