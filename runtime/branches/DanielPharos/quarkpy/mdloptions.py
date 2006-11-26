@@ -58,7 +58,7 @@ def Rotate(item):
             modelcenter = view.info["center"]
             if rotationmode == 2:
                 center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the MODEL at the center of the view.
-          #  elif rotationmode == 3:
+          #  elif rotationmode == 3:  ### What ever is done here also needs to be done in the qeditor.py file "def reset3Dview" funciton.
           #      center = quarkx.vect(0,0,0) + modelcenter ### For future use of "Rotate at start position" method.
             else:
                 center = quarkx.vect(0,0,0) ### For the Original QuArK rotation and "Lock to center of 3Dview" methods.
@@ -167,6 +167,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.11.2.2  2006/11/25 23:37:52  cdunde
+#To improve 3D view reset, if model lost from view, by clicking on rotation setting option.
+#
 #Revision 1.11.2.1  2006/11/25 04:23:57  cdunde
 #Added a new sub-menu to the Model Editors "Options" menu,
 #with various methods of rotation in 3D views to choose from.

@@ -1418,6 +1418,31 @@ def TexModeMenu(editor, view):
         view.viewmode = menu.mode
         editor.lastscale = 0    # force a call to buildhandles()
 
+    def reset3Dview(menu, editor=editor, view=view):
+        for view in editor.layout.views:
+            if view.info["type"] == "2D":
+                view.info["scale"] = 2.0
+                view.info["angle"] = -0.7
+                view.info["vangle"] = 0.3
+                view.screencenter = quarkx.vect(0,0,0)
+                rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+                holdrotationmode = rotationmode
+                rotationmode == 0
+                setprojmode(view)
+                rotationmode = holdrotationmode
+                modelcenter = view.info["center"]
+                if rotationmode == 2:
+                    center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the MODEL at the center of the view.
+              #  elif rotationmode == 3:  ### What ever is done here also needs to be done in the mdloptions.py file "def Rotate" funciton.
+              #      center = quarkx.vect(0,0,0) + modelcenter ### For future use of "Rotate at start position" method.
+                else:
+                    center = quarkx.vect(0,0,0) ### For the Original QuArK rotation and "Lock to center of 3Dview" methods.
+                view.info["scale"] = 2.0
+                view.info["angle"] = -0.7
+                view.info["vangle"] = 0.3
+                view.screencenter = center
+                setprojmode(view)
+
     if view.viewmode == "opengl":
         modhint = "the mode is fixed to OpenGL"
         infobaselink = "intro.mapeditor.menu.html#layoutmenu"
@@ -1437,6 +1462,13 @@ def TexModeMenu(editor, view):
             menu.state = qmenu.disabled
         else:
             menu.state = menu.mode==view.viewmode and qmenu.radiocheck
+    import mdleditor
+    if isinstance(editor, mdleditor.ModelEditor):
+        if view.info["type"] == "2D":
+            modhint = qbasemgr.ModesHint + "\n\nReset 3D view:\nIf the model becomes 'lost', goes out of the 3D view, you can use this function to reset the 3D view and bring the model back to its starting position when it was first opened and based on the 'Rotation Method' you last chose to rotate the model by."
+            infobaselink = "intro.modeleditor.menu.html#RMBmenus"
+            Reset3D = qmenu.item("&Reset 3D view", reset3Dview, modhint, infobaselink)
+            List = [Reset3D] + List
     return List
 
 
@@ -1511,6 +1543,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.30.2.8  2006/11/26 02:45:13  cdunde
+#To fix broken link to QuArK Forums.
+#
 #Revision 1.30.2.7  2006/11/03 23:38:10  cdunde
 #Updates to accept Python 2.4.4 by eliminating the
 #Depreciation warning messages in the console.
