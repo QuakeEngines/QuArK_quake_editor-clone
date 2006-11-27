@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.13  2006/11/26 21:49:08  danielpharos
+Fixed the Glide fog and renamed it to Fade
+
 Revision 1.31.2.12  2006/11/23 20:41:51  danielpharos
 DOH! Forgot to commit the GlideLoaded variable declaration...
 Removed link to obsolete 3DEditors
@@ -282,7 +285,7 @@ type  { this is the data shared by all existing T3DFXSceneObjects }
    {PalWarning: Boolean;}
     constructor Create;
     procedure NeedTex(PTex: PTexture3);
-    function SetPerspectiveMode(nPerspectiveMode: Byte) : Boolean;
+    procedure SetPerspectiveMode(nPerspectiveMode: Byte);
    {procedure PaletteWarning;}
     procedure Init;
   end;
@@ -373,12 +376,11 @@ begin
  grTexSource(GR_TMU0, PTex^.startAddress, GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
 end;
 
-function TGlideState.SetPerspectiveMode(nPerspectiveMode: Byte) : Boolean;
+procedure TGlideState.SetPerspectiveMode(nPerspectiveMode: Byte);
 {var
  I: Integer;
  FogTable2D: GrFogTable_t;}
 begin
- Result:=False;
  if PerspectiveMode<>nPerspectiveMode then
   begin
    PerspectiveMode:=nPerspectiveMode;
@@ -389,17 +391,17 @@ begin
      grHints(GR_HINT_STWHINT, GR_STWHINT_W_DIFF_TMU0)
     else
      grHints(GR_HINT_STWHINT, 0);
-   if Assigned(guFogGenerateExp2)
+   (*if Assigned(guFogGenerateExp2)
    and Assigned(grFogTable) then
-  (*if nPerspectiveMode=2 then  { flat display }
+  if nPerspectiveMode=2 then  { flat display }
      begin
      {for I:=0 to GR_FOG_TABLE_SIZE-1 do
        FogTable2D[I]:=I*(256 div GR_FOG_TABLE_SIZE);}
       guFogGenerateExp2(FogTable2D, 0.003);
       grFogTable(FogTable2D);
      end
-    else*)
-     Result:=True;
+    else
+     Result:=True;*)
   end;
 end;
 
@@ -508,7 +510,7 @@ begin
  Setup:=SetupSubSet(ssGeneral, '3DFX');
  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
  begin
-   FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
+   Fog:=Setup.Specifics.Values['Fog']<>'';
  end
  else
  begin
@@ -540,7 +542,10 @@ var
 begin
  Old:=FVertexList;
  if not (FogTableCache = nil) then
+ begin
    FreeMem(FogTableCache);
+   FogTableCache := nil;
+ end;
  if GlideLoaded = True then
   begin
    if GlideTimesLoaded=1 then
@@ -994,9 +999,12 @@ begin
  end;
 
  // Assigned check added by SilverPaladin
- if (Assigned(qrkGlideState) and TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1)) then
+ if Assigned(qrkGlideState) then
+ begin
+   TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
    if Fog=True then
      grFogTable(FogTableCache^);
+ end;
 
  if qrkGlideVersion>=HardwareGlideVersion then
    grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
