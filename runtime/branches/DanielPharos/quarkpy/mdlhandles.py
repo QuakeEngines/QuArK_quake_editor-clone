@@ -542,7 +542,10 @@ def MouseDragging(self, view, x, y, s, handle):
     global mdleditor, mdleditorview, cursorposatstart
     mdleditor = self
     mdleditorview = view
-    cursorposatstart = quarkx.vect(x,y,0)
+ #   cursorposatstart = quarkx.vect(x,y,0)
+    info = view.info
+    center = info["center"]
+    cursorposatstart = view.space(x,y,view.proj(center).z) # Used for start where clicked for Model Editor rotation.
 
     #
     # qhandles.MouseDragging builds the DragObject.
@@ -599,6 +602,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.10  2006/11/23 06:25:21  cdunde
+#Started dragging lines support for Skin-view vertex movement
+#and rearranged need code for 4 place indention format.
+#
 #Revision 1.12.2.9  2006/11/22 19:26:52  cdunde
 #To add new globals mdleditor, mdleditorview and cursorposatstart for the
 #Model Editor, view the LMB is pressed in and the cursors starting point location,

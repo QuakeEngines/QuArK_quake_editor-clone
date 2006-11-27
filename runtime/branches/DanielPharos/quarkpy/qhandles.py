@@ -1467,14 +1467,20 @@ class Rotator2D(DragObject):
             center = quarkx.vect(0,0,0) ### Keeps the center of the GRID at the center of the view.
         elif rotationmode == 2:
             center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the  MODEL at the center of the view.
-   #     elif rotationmode == 3:
-   #         center = quarkx.vect(0,0,0) + modelcenter ### For future use of "Rotate at start position" method.
+        elif rotationmode == 3:
+            from mdlhandles import cursorposatstart
+
+            if cursorposatstart is None:
+                center = quarkx.vect(0,0,0) + modelcenter
+            else:
+                center = cursorposatstart ### Centers the model where clicked for "Rotate at start position" method.
         else:
             center = self.view.screencenter ### Defaults back to the Original QuArK rotation method.
 
         fixpt = center + self.view.vector(center).normalized * scroll
         setprojmode(self.view)
         self.view.screencenter = fixpt - self.view.vector(fixpt).normalized * scroll
+
         self.view.repaint()
 
     def ok(self, editor, x, y, flags):
@@ -1817,13 +1823,16 @@ def flat3Dview(view3d, layout, selonly=0):
         #
     rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
     if rotationmode == 2:
-        center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the  MODEL at the center of the view.
-  #  elif rotationmode == 3:
-  #      center = quarkx.vect(0,0,0) + modelcenter ### For future use of "Rotate at start position" method.
+        center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the MODEL at the center of the view.
+    elif rotationmode == 3:
+        from mdlhandles import cursorposatstart
+        if cursorposatstart is None:
+            center = quarkx.vect(0,0,0) + modelcenter
+        else:
+            center = cursorposatstart
     else:
         center = quarkx.vect(0,0,0) ### For the Original QuArK rotation and "Lock to center of 3Dview" methods.
     view3d.info["center"] = center
-
 
     if selonly:
         layout.editor.setupview(view3d, layout.editor.drawmapsel)
@@ -1836,6 +1845,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.27.2.7  2006/11/25 04:23:57  cdunde
+#Added a new sub-menu to the Model Editors "Options" menu,
+#with various methods of rotation in 3D views to choose from.
+#
 #Revision 1.27.2.6  2006/11/22 18:26:45  cdunde
 #To reset rotation to center of model rather then the view
 #to account for models of grid center.

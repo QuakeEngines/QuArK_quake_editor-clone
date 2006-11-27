@@ -1432,11 +1432,11 @@ def TexModeMenu(editor, view):
                 rotationmode = holdrotationmode
                 modelcenter = view.info["center"]
                 if rotationmode == 2:
-                    center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the MODEL at the center of the view.
-              #  elif rotationmode == 3:  ### What ever is done here also needs to be done in the mdloptions.py file "def Rotate" funciton.
-              #      center = quarkx.vect(0,0,0) + modelcenter ### For future use of "Rotate at start position" method.
+                    center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
+                elif rotationmode == 3:
+                    center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
                 else:
-                    center = quarkx.vect(0,0,0) ### For the Original QuArK rotation and "Lock to center of 3Dview" methods.
+                    center = quarkx.vect(0,0,0) ### For resetting the Original QuArK rotation and "Lock to center of 3Dview" methods.
                 view.info["scale"] = 2.0
                 view.info["angle"] = -0.7
                 view.info["vangle"] = 0.3
@@ -1543,6 +1543,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.30.2.9  2006/11/26 06:42:54  cdunde
+#Added RMB menu item for all Model Editor 3D views to reset the model location,
+#based on its current rotation method, in case it goes out of the view and lost.
+#
 #Revision 1.30.2.8  2006/11/26 02:45:13  cdunde
 #To fix broken link to QuArK Forums.
 #
