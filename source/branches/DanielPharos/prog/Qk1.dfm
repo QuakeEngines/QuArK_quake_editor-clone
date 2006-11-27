@@ -115,14 +115,14 @@ object Form1: TForm1
       end
     end
     object ToolbarMenu2: TToolbar97
-      Left = 423
+      Left = 431
       Top = 0
       Width = 61
       Height = 24
       Caption = 'menu 2'
       DefaultDock = topdock
       DockedTo = topdock
-      DockPos = 423
+      DockPos = 431
       object Games1: TToolbarButton97
         Left = 11
         Top = 2
