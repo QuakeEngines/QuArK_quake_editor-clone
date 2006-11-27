@@ -433,6 +433,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
                  "custom": singleskinzoom,
                  "origin": origin,
                  "noclick": None,
+                 "center": quarkx.vect(0,0,0),
                  "mousemode": None
                  }
 
@@ -542,9 +543,7 @@ def MouseDragging(self, view, x, y, s, handle):
     global mdleditor, mdleditorview, cursorposatstart
     mdleditor = self
     mdleditorview = view
- #   cursorposatstart = quarkx.vect(x,y,0)
-    info = view.info
-    center = info["center"]
+    center = view.info["center"]
     cursorposatstart = view.space(x,y,view.proj(center).z) # Used for start where clicked for Model Editor rotation.
 
     #
@@ -602,6 +601,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.11  2006/11/27 08:31:56  cdunde
+#To add the "Rotate at start position" method to the Model Editors rotation options menu.
+#
 #Revision 1.12.2.10  2006/11/23 06:25:21  cdunde
 #Started dragging lines support for Skin-view vertex movement
 #and rearranged need code for 4 place indention format.
