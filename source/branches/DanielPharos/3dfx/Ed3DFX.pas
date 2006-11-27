@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.14  2006/11/27 16:18:49  danielpharos
+Another fix for Glide fog and attempt to fix an access violation with it
+
 Revision 1.31.2.13  2006/11/26 21:49:08  danielpharos
 Fixed the Glide fog and renamed it to Fade
 
@@ -1029,9 +1032,11 @@ begin
  FProjInfo:=@ProjInfo;}
 
  if Fog=True then
-   grFogMode(GR_FOG_WITH_TABLE)
+   if Assigned(grFogMode) then
+     grFogMode(GR_FOG_WITH_TABLE)
  else
-   grFogMode(GR_FOG_DISABLE);
+   if Assigned(grFogMode) then
+     grFogMode(GR_FOG_DISABLE);
  RenderTransparent(False);
 {if Assigned(grDepthMask) then
   grDepthMask(FXFALSE);}
