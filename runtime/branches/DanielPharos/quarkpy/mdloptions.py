@@ -57,13 +57,9 @@ def Rotate(item):
             rotationmode = holdrotationmode
             modelcenter = view.info["center"]
             if rotationmode == 2:
-                center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the MODEL at the center of the view.
+                center = quarkx.vect(0,0,0) + modelcenter ### Sets the center of the MODEL to the center of the view.
             elif rotationmode == 3:
-                from mdlhandles import cursorposatstart
-                if cursorposatstart is None:
-                    cursorposatstart = quarkx.vect(0,0,0) + modelcenter
-
-                center = cursorposatstart ### Centers the model where clicked for "Rotate at start position" method.
+                center = quarkx.vect(0,0,0) + modelcenter ### Sets the center of the MODEL to the center of the view.
             else:
                 center = quarkx.vect(0,0,0) ### For the Original QuArK rotation and "Lock to center of 3Dview" methods.
             view.info["scale"] = 2.0
@@ -171,6 +167,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.11.2.4  2006/11/27 08:31:56  cdunde
+#To add the "Rotate at start position" method to the Model Editors rotation options menu.
+#
 #Revision 1.11.2.3  2006/11/26 06:42:54  cdunde
 #Added RMB menu item for all Model Editor 3D views to reset the model location,
 #based on its current rotation method, in case it goes out of the view and lost.
