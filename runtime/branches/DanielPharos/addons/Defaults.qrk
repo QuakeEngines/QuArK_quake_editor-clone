@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.295.2.11  2006/11/26 21:49:03  danielpharos
+//Fixed the Glide fog and renamed it to Fade
+//
 //Revision 1.295.2.10  2006/11/22 07:04:30  cdunde
 //A little reorganization of a few items by Daniel Pharos.
 //
@@ -1031,11 +1034,11 @@ QQRKSRC1
         SelMultColor = $FF8080
         Form = "General3DView"
       }
-      Software:config =
+      Software 3D:config =
       {
         SoftQuality = "0"
         DynamicQuality = "2"
-        Form = "GeneralSoftware"
+        Form = "GeneralSoftware3D"
       }
       3DFX:config =
       {
@@ -6018,7 +6021,7 @@ QQRKSRC1
       Lib: = {
         Txt="Select 3D viewer"
         Typ="CL"
-        Items  = "Software only" $0D "3DFX (Glide)" $0D "OpenGL" $0D "DirectX"
+        Items  = "Software 3D only" $0D "3DFX (Glide)" $0D "OpenGL" $0D "DirectX"
         Values = "qrksoftg.dll" $0D "glide2x.dll" $0D "OpenGL32.dll" $0D "d3d9.dll"
         Hint="see also the viewers configuration pages"
       }
@@ -6069,12 +6072,12 @@ QQRKSRC1
       Warning3D: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
       CloseOnGame: = {Typ="X" Txt="Close views when the game is run" Cap="Enabled" Hint="If checked, this can save system resources so the game runs smoother"}
     }
-    GeneralSoftware:form =
+    GeneralSoftware3D:form =
     {
       Style = "3"
-      L1: = {Typ="S" Txt="---- Software driver only ----"}
+      L1: = {Typ="S" Txt="---- Software 3D driver only ----"}
       SoftQuality: = {
-        Txt="Software image quality"
+        Txt="Image quality"
         Typ="CL"
         Items  = "High details" $0D "Low details" $0D "Low details, smoothed"
         Values =     "0"        $0D     "1"       $0D     "2"
