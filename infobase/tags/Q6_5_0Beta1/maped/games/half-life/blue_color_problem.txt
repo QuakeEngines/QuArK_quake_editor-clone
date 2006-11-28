@@ -1,0 +1,26 @@
+title: Blue color problem (Ladder texture)
+author: Decker
+
+<b>Question:</b><br>
+How do I use texture alphas?  I made a ladder, and the ladder
+texture had a blue background which I would imagine is supposed to be
+the see through area, but when I compile the maps the
+blue shows as part of the ladder texture.
+
+<b>Answer:</b><br>
+A Half-Life ladder consist of two brush-entities:
+
+1) <tt>func_ladder</tt>, which is invisible but is the area where the player should
+be able to climb on "a ladder". This brush-entity usually have the <tt>AAATRIGGER</tt>
+texture applied to it, since its invisible in the game.
+
+2) <tt>func_illusionary</tt> (or any other non-solid brush-entity), which is the visible
+indication of "here is a ladder".
+
+If you use any of the "{"-character prefixed texturenames (from the "Rails(2D)" texture-folder),
+then you can get rid of the blue-color by altering the <i>renderfields</i> of <b>any</b> brush-entity to:
+
+<code>
+rendermode      SOLID
+renderamt       255
+</code>

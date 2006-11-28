@@ -1,0 +1,6 @@
+title: Python Coding
+
+
+Python coding is covered in <ref>adv</ref> (maybe not the best organization, but
+the original idea was that Armin would maintain the Delphi and others
+would only mess with the Python).

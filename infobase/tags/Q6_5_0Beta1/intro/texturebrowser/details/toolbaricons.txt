@@ -1,0 +1,18 @@
+title: Toolbar-icons
+author: Rowdy
+
+<img border=0 align=right>toolbaricons.png</img>
+This toolbar appears when viewing texture details.
+
+The first button <img border=0 align=absmiddle>toolbaricon1.png</img> calls the
+external editor
+(configured in <ref> intro/configuration/general/externaleditors</ref>) to edit
+the image.
+
+The second button <img border=0 align=absmiddle>toolbaricon2.png</img> opens a
+window showing you the colour palette for Quake II (or whichever game you are
+editing levels for).
+
+The third button <img border=0 align=absmiddle>toolbaricon3.png</img> allows you
+to resize a texture, but only if the texture has been saved inside an add-on.
+You cannot resize a texture you are linking to.

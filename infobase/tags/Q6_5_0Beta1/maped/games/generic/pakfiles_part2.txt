@@ -1,0 +1,45 @@
+title: .PAK files - Part II
+author: Decker / Armin Rigo
+
+<b>Question:</b><br>
+I also saw a few examples of guys distributing home-made PAK#.PAK-files.
+
+<b>Answer:</b><br>
+Yes, you can do that with QuArK, too. In the main window's Games menu,
+select 'Output directories', and check 'Always create .pak files'. Then
+QuArK will build a .PAK file in the 'TmpQuArK' directory, and the created
+.PAK file will contain the .WAV files too if you store them in the .QRK
+file, in a 'Files for the game' entry (see the New Files toolbox).
+
+Note however that your custom textures will not be stored in the .PAK
+file. QuArK doesn't try to determine which textures are custom and which
+ones are not. You will have to add them to the .PAK yourself, by editing
+the .PAK with QuArK, for example.
+
+The advantage of using a .PAK file is that you don't have to explain
+the map users all they must do with the files in your .ZIP. Once the .QRK
+file containing your map stores all necessary files, every time you press
+GO (menu Games), QuArK builds a brand new .PAK file, ready to be distributed.
+The file is called PAK0.PAK in the "TmpQuArK" directory under your Quake
+directory.
+
+To store files in a .QRK, follow these steps: Open the .QRK file, open
+the "New Files" toolbox from the Toolboxes menu, double-click on "Files
+for the game". Then come back to the .QRK and select your new "Files for
+the game". There is a "new folder" button that appears in the toolbar above.
+Click on it to make a new folder, and rename it (e.g. "sounds" for .WAV
+files). The files you put inside this folder will be found by Quake as
+if you had put them in a "sounds" directory on the disk.
+
+Usually, custom .WAV files should be put in a sub-directory of "sounds",
+e.g. "sounds/yourname/", and your map should refer to them as "yourname/filename.wav".
+In this case, you need a sub-folder in the "sounds" folder, called "yourname".
+
+To actually put files inside these folders, one possible way is to drop
+them from Windows' Explorer to QuArK. QuArK will ask you if you'd like
+the files to be actually copied inside the .QRK file (it will make the
+.QRK file bigger, but you don't need the original files any more), or just
+make links; in the latter case, the files should be put in the same directory
+as the .QRK file itself, or QuArK will not find them again later. Either
+way, it does not change the way QuArK writes the .PAK file. The files
+are always really included inside the .PAK.

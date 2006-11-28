@@ -1,0 +1,5 @@
+title: Toolboxes menu
+author: Decker
+
+<img border=0 align=right>toolboxes.png</img>
+This menu works just like the one in QuArK Explorer.

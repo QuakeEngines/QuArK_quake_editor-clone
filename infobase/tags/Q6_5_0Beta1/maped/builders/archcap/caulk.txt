@@ -1,0 +1,25 @@
+title:  Caulking
+author: tiglari
+format: html
+
+The arch now looks OK, but we've left out an important step,
+caulking.  The problem with it now is that the engine will
+actually draw the brush-faces that are concealed by the curves,
+which is a waste, because they can't be seen.  The solution
+is to attach a the 'special/caulk' shader to the hidden faces.
+For the top slab that sits over the arch, we can easily just
+do this, but for the sides it's a bit more of a chore, because
+part of the inside faces of the walls are exposed, and others
+aren't (this is also a 't-junct', which is Evil.<BR><BR>
+
+So there's a little trick to speed up caulking.  Tag say the
+left face of the guide-brush of the arch, then select the
+right-face of the left wall-block.  Now RMB|More Tagging|Caulk
+from tagged.  The wall will be split into two, and the caulk
+pasted onto the part of the wall that's hidden.<BR><BR>
+
+In QuArK, you can see a bit of the caulk-texture where the curve
+and the wall join, but in Quake3a you can't (I'm not sure if
+QuArK's behavior is a bug or a feature).  Of course, if you
+reproportion the arch, you'll need to adjust the walls as well;
+a good application for Tag Face/Glue to Tagged.<BR><BR>

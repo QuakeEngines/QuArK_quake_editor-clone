@@ -1,0 +1,84 @@
+title: Touch-up Selector & Dialog Box 
+author: cdunde
+
+<table width=100% border=0 cellspacing=0>
+<tr><td valign=top>
+The <a href="intro.terraingenerator.selection.html#touchup">Touch-up Selector</a> button of the <a href="intro.terraingenerator.selection.html">Terrain modes tool bar</a> is used for detail terrain shaping. Its combo <b>Dialog Input</b> box can be brought up by clicking on the  <a href="intro.terraingenerator.selection.html#touchup">Selector Dialog Input</a> button, to the left, that will give a wider range to its selection ability when needed by using the <b>Variance</b> setting.
+</td>
+<td valign=top align=right>
+<img align=right>touchup1.png</img>
+</td></tr>
+</table>
+
+<table width=100% border=0 cellspacing=0>
+<tr><td valign=top>
+On closer inspection of the screen shot to the right you will notice that the face closest to the front and right hand side does not exactly align up with the other faces at their common vertex point at the top where the dragging handle is located. Yet, we were able to move that face by setting the <b>Variance</b> to <b>6</b> units of closeness and therefore its vertex was included with the rest of the group. You will also notice that this particular face was not fully outlined like the others. That also tells us that its common vertex is off from the others and needs special attention, as we have done, to be included in the dragging process.
+
+The <b>yellow</b> outlined face is the <b>primary face</b> that the drag handle, <b>dark blue</b>, is attached to and the <b>red boxes</b> are its stationary vertexes. The reason this particular face is outlined in a different color is to distinguish it from the other faces of the common group for movement of the <b>primary face</b> only (see below).
+</td>
+<td valign=top align=right>
+<img border=1 align=right>touchup2a.png</img>
+</td></tr>
+</table>
+
+<b><i><u>Special Key Options:</u></i></b>
+
+<b>Alt</b> can be used to select the <b>primary face</b> for its individual movement. However, this application may not always work.<br>
+To apply this function, hold down the <b>Alt</b> key and select its <b>movable</b> vertex, shown in <b>dark blue</b>, by pressing the <g>LMB</g>.</br>
+Then you <b>must</b> release the <b>Alt</b> key before starting the drag or it will become unselected and will not be moved. If the first attempt is not successful, try panning in the 3D view to a new location that will allow you to obtain the selection correctly.
+
+<b>Ctrl</b> to force the face vertexes to snap to a point on the grid for re-aligning them. Hold the <b>Ctrl</b> key once the drag has started.
+
+<b>Shift</b> while holding the <g>LMB</g> will allow panning in the 3D view to see your work from a different direction and inspect changes.
+
+<b><i><u>Using the Color Guides:</u></i></b>
+
+Sometimes the <b>Color Guides</b> can be very helpful and other times be a bit obstructive when you are trying to see the results of your work. Because of this, a number of different options are available for better control of their use and display in the 3D views.
+
+As covered in the <a href="intro.terraingenerator.selection.html#options3d">3D views Options Dialog Box</a> section there are <b>Color Guide</b> settings for each type of 3D view that QuArK has to offer and that work in conjunction with the <b>Color Guide</b> in the <a href="intro.terraingenerator.shaping.html#touchuptool">Touch-up & Paint Brush</a> dialog box shown above.
+
+In addition, selecting the faces in an area you are working on will add further dimension and assistance in determining exactly where the common vertex points are on the terrain surface by outlining those faces in <b>red</b> creating a <b>grid</b> effect. (view 1 below)
+
+Once a selection has been made, the redline grid will disappear and only the selected faces will be outlined. (view 2 below)
+
+As the drag is made by the <b>dark blue</b> drag handle, another in <b>green</b> will show where the drag started incase you decide to return to that position to cancel the drag. (view 3 below) This comes in handy in very complicated or detailed terrain.
+
+After a drag has been completed, the redline grid will reappear including the faces that have been moved. (view 4 below)
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>touchup3.png</img>
+</td></tr></table>
+
+With all of the <b>Color Guides</b> activated (checked) the entire color scheme will be displayed. (view 1 below)
+
+If the guide is un-checked on the <a href="intro.terraingenerator.selection.html#options3d">3D views Options Dialog Box</a>, for that particular 3D view, then only the <b>primary face</b> will be outlined in <b>yellow</b> with its <b>dark blue</b> drag handle and <b>red</b> stationary vertex boxes showing. (view 2 below)
+
+When it is <b>also</b> un-checked on the <a href="intro.terraingenerator.shaping.html#touchuptool">Touch-up & Paint Brush Dialog Box</a> then only the <b>dark blue</b> drag handle will be shown.
+
+And finally, if the <b>Red faces</b> options is un-checked for that view on the <a href="intro.terraingenerator.selection.html#options3d">3D views Options Dialog Box</a> as well, then even though the surface area is selected in the <b>2D views</b>, the redline grid will <b>not</b> be displayed in that particular 3D view. (view 4 below)
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>touchup4.png</img>
+</td></tr></table>
+The examples and screen shots given above only involved the <b>up faces</b> for the terrain surface, but the same application applies to the <b>down faces</b> as well. The only difference is the color of the drag handle, which is <b>Aqua</b> and the outlining of the common faces which will be done in <b>blue</b>. This, like the <a href="intro.terraingenerator.selection.html#paintbrush">Texture Applicator</a>, is done to help you identify which one you are working with and especially so if you are dealing with both at the same time. I also wanted to show a little different combination of the <b>Color Guide</b> settings in the two center views below as an example of some of the other variations that are possible.
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1 align=middle>touchup5.png</img>
+</td></tr></table>
+
+<table width=100% border=0 cellspacing=0>
+<tr><td valign=top>
+The <a href="intro.terraingenerator.selection.html#touchup">Touch-up Selector</a> has one more <b>marking feature</b> that is unique to this tool and that involves the <a href="intro.mapeditor.menu.html#editmenu">Undo/Redo</a> function. Not all drags go as expected or the appearance is not one that is desired.
+
+What ever the case may be, each drag will create an <b>undo instance</b> once it has been completed, making it simple to just click the undo to reverse that action.
+
+However, because it is easy to loose the face(s) that were involved to start with and further work on that area might be desired, those items will now have a <b>darker</b> appearance to them in the 3D views and will remain that way until you make another selection of faces or click any where in any 3D or 2D view, restoring their original appearance.
+
+As long as the undo marked area is allowed to remain, you can continue to work on other areas using the drag function and those new areas will be identified by their red line outlining. Additional new drag areas will also have their faces outlined in red as well.
+</td>
+<td valign=top align=right>
+<img border=1 align=right>touchup6.png</img>
+</td></tr>
+</table>

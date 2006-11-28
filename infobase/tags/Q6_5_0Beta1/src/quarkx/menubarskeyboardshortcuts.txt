@@ -1,0 +1,20 @@
+title: Menu bars, pop-up menus and keyboard shortcuts
+author: Armin Rigo
+
+Menus are not yet another type of built-in objects. Instead, they are completely defined with classic Python objects, and QuArK
+reads these objects’ attributes when it needs them to build the menu.
+
+A menu bar or a pop-up menu is a list of one Python class instance for each item. The items need not really be class instances,
+but QuArK expects them to have a few attributes, and instances of classes are, with modules, the only kind of object you can
+give the attributes you want. qmenu.py defines two classes, one for normal menu items and one for menu items that open pop-up
+menus. I recommend to always use instances of these classes to populate your menus. Please refer to qmenu.py for more
+information about the expected attributes.
+
+You set a Window’s menu bar by storing a list of instances of qmenu.popup into its menubar attribute. You can also assign
+keyboard shortcuts to menu items; however, this is not done by setting an attribute (e.g. shortcut) to the instances of the
+class qmenu.item. All shortcuts for a Window must be grouped in a dictionnary that must be assigned to the Window’s shortcuts
+attribute. The dictionnary should contain pairs "shortcutkey":menuitem, where "shortcutkey" is a string describing the key
+(e.g. "Ctrl+X") and menuitem is the item whose onclick attribute should be called. Although not required, I recommend that this
+menuitem appear somewhere in the menu bar, too. If it is the case, QuArK adds the shortcut key string to the right of the item
+in the menu. New in QuArK 5.5: a shortcut can be a number (a "virtual key code") as obtained in the configuration dialog box
+(page Map, Keys). These shortcuts must be put in the attribute numshortcuts.

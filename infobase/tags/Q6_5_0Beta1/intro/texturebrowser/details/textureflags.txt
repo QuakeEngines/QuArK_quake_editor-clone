@@ -1,0 +1,16 @@
+title: Texture flags
+author: Rowdy
+
+<img border=0 align=right>textureflags.png</img>
+This is the Texture-flags window for a Quake II texture.  Other games may
+support different texture flags (or none at all), so the window appearance may
+be different.  These values are collected together and stored in the
+"Contents", "Flags" and "Value" fields against each texture.
+
+Very briefly, Brush says what the object looks liks, such as water, slime,
+playerclip (player cannot see it), monsterclip (monster cannot see it), ladder
+(player can climb up it).  Flowing indicates whether the texture moves, like
+the surface of a river, and the direction in which it moves.  Face hold
+properties of the face, such as whether it emits light of it's own, whether it
+warps (the swirling effect on liquid surface), if it is slick (like an ice
+rink) and so on.
