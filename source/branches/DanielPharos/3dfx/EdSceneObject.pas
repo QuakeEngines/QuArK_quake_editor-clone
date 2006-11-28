@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15.2.13  2006/11/23 20:42:44  danielpharos
+Pushed FogColor and FrameColor into the renderer
+
 Revision 1.15.2.12  2006/11/23 20:24:03  danielpharos
 Added support for texture-size up to 4096x4096 (Software and Glide excluded)
 
@@ -179,6 +182,7 @@ type
 
 type
  TBuildMode = (bm3DFX, bmOpenGL, bmDirect3D);
+ TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
 
  TSceneObject = class
  protected
@@ -206,7 +210,8 @@ type
    TemporaryStuff: TQList;   { anything that should not be freed while the scene is alive }
    FarDistance: TDouble;
    FogDensity: Single;
-   constructor Create;
+   ViewMode: TMapViewMode;
+   constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
@@ -293,14 +298,15 @@ const
 
  {------------------------}
 
-constructor TSceneObject.Create;
+constructor TSceneObject.Create(nViewMode: TMapViewMode);
 begin
- inherited;
+ inherited Create;
  PolyFaces:=TList.Create;
  ModelInfo:=TList.Create;
  BezierInfo:=TList.Create;
  SpriteInfo:=TList.Create;
  TemporaryStuff:=TQList.Create;
+ ViewMode:=nViewMode;
 end;
 
 destructor TSceneObject.Destroy;

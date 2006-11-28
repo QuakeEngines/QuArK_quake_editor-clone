@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.16  2006/11/28 16:15:34  danielpharos
+Fix for the black screen sometimes seen in Glide
+
 Revision 1.31.2.15  2006/11/27 16:44:16  danielpharos
 Fix an access violation with Software 3D
 
@@ -182,7 +185,7 @@ type
    SoftBufferFormat: Integer;
    FogTableCache: ^GrFogTable_t;
    Hardware3DFX: Boolean;
-   constructor Create(nSolidColors: Boolean);
+   constructor Create(ViewMode: TMapViewMode);
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
                   DisplayMode: TDisplayMode;
@@ -418,11 +421,11 @@ end;
 
  {------------------------}
 
-constructor T3DFXSceneObject.Create(nSolidColors: Boolean);
+constructor T3DFXSceneObject.Create(ViewMode: TMapViewMode);
 begin
- inherited Create;
+ inherited;
  FVertexList:=TMemoryStream.Create;
- SolidColors:=nSolidColors;
+ SolidColors:=(ViewMode=vmSolidcolor);
 end;
 
 procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;

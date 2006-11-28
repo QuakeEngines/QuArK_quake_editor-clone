@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.2.14  2006/11/23 20:54:42  danielpharos
+Cleaned up the OpenGL error messages
+Added new OpenGL error messages texts to the dictionary
+
 Revision 1.33.2.13  2006/11/23 20:52:59  danielpharos
 Fixed the camera. Movement should now be the same as in software mode
 
@@ -1591,7 +1595,28 @@ begin
   FullBright.ZeroLight:=1;
   FullBright.BrightnessSaturation:=0;
   FullBright.LightFactor:=0;
-  NeedTex:=True;
+  case ViewMode of
+    vmWireframe:
+    begin
+      NeedTex:=False;
+      glDisable(GL_TEXTURE_2D);
+    end;
+  vmSolidcolor:
+    begin
+      NeedTex:=False;
+      glDisable(GL_TEXTURE_2D);
+    end;
+  vmTextured:
+    begin
+      NeedTex:=True;
+      glEnable(GL_TEXTURE_2D);
+    end;
+  else
+    begin
+      NeedTex:=True;
+      glEnable(GL_TEXTURE_2D);
+    end;
+  end;
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
 
@@ -1680,15 +1705,7 @@ begin
                   1,2,3:
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
                   5:
-                  begin
                     glBlendFunc(GL_ONE, GL_ONE);
-                  end;
-                End;
-                Case TextureMode of
-                  1:
-                    glDisable(GL_TEXTURE_2D);
-                  else
-                    glEnable(GL_TEXTURE_2D);
                 End;
                 If Byte(Ptr(LongWord(@AlphaColor)+3)^)<>0 then Case TextureMode of
                   0:

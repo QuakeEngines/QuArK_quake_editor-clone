@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21.2.9  2006/11/23 20:11:27  danielpharos
+Removed now obsolete Ed3DEditors file
+Removed related Close3DEditors call
+Cleaned up some code
+
 Revision 1.21.2.8  2006/11/01 22:22:27  danielpharos
 BackUp 1 November 2006
 Mainly reduce OpenGL memory leak
@@ -72,7 +77,6 @@ uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
 
 
 type
-  TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
   TMapViewType = (vtEditor, vtPanel, vtWindow, vtFullScreen);
 
 const
@@ -692,13 +696,13 @@ begin
   begin
    S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
    if S='qrksoftg.dll' then
-     FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor)
+     FScene:=T3DFXSceneObject.Create(ViewMode)
    else if S='glide2x.dll' then
-     FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor)
+     FScene:=T3DFXSceneObject.Create(ViewMode)
    else if S='OpenGL32.dll' then
-     FScene:=TGLSceneObject.Create
+     FScene:=TGLSceneObject.Create(ViewMode)
    else if S='d3d9.dll' then
-     FScene:=TDirect3DSceneObject.Create
+     FScene:=TDirect3DSceneObject.Create(ViewMode)
    else
      raise InternalE('NeedScene');
    ReadSetupInformation(NeedSetup);
