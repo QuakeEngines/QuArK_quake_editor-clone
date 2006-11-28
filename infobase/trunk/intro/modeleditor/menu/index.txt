@@ -1,17 +1,7 @@
 title: Menubar
-author: Decker
-desc: filemenu
-desc: layoutmenu
-desc: editmenu
-desc: toolboxesmenu
-desc: searchmenu
-desc: commandsmenu
-desc: addonsmenu
-desc: selectionmenu
-desc: gamemenu
-desc: toolbarsmenu
+author: cdunde
 desc: optionsmenu
-desc: helpmenu
+desc: rmbmenus
 
 <img>menu.png</img>
 
@@ -22,4 +12,4 @@ messageboard</a> for help (and a heads-up to the docco writers).
 
 Most of the commands on the menus also have hot keys (accelerators), which
 you can customize from Configuration at the bottom of the
-<ref>intro/mapeditor/menu/optionsmenu</ref>.
+<ref>intro/modeleditor/menu/optionsmenu</ref>.

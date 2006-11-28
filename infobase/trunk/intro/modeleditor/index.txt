@@ -1,0 +1,15 @@
+title: Model-editor in QuArK
+subdir: menu
+
+The model editor is the secondary part of QuArK. A model can represent a number of things
+depending on the game it is being crated for. It can be an object like a prop, a table or chair.
+It can be a structure such as a door or an entire building. It can even be the terrain in a map.
+But typically a model is a character used to play in the game itself. The model editor lets you view,
+change and manipulate these kind of game models for the formats that QuArK's Model Editor supports.
+
+Basically, a model is made out of a mathematical mesh consisting of individual triangular <g>faces</g> in 3D space.
+Each face of a model has three <g>vertexes</g> which can be moved, in 3D space, to form the shape of the models mesh.
+The entire mesh is then "Skinned" using a <g>texture</g> image file such as a .pcx, .jpg, .tga or some other
+format that the editor will support. The "Skin-view" page of the editor is used for this skinning process,
+where there is another set of <g>vertexes</g> used to move the mesh of the model over the texture image to
+allow the movement of the "unwrapped" mesh with and give the model its final appearance.

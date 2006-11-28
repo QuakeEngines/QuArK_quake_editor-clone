@@ -1,0 +1,23 @@
+title: RMB menus
+author: cdunde
+
+<img border=0 align=right>rmbmenus1.png</img>
+
+<i>Reset 3D view </i>&nbsp;: If the model becomes 'lost', goes out of the 3D view, you can use this
+function to reset the 3D view and bring the model back to its starting position when it was first opened
+and based on the 'Rotation Method' you last chose to rotate the model by.
+
+<u>Each view can be set to one of three rendering modes :</u>
+
+<i>Wireframe </i>&nbsp;: The model mesh will be drawn as lines.
+This is the fastest drawing-method of the model-views. 
+
+<i>Solid </i>&nbsp;: Each model is drawn in a single, solid color or shades of that color.
+This means that you won't be able to 'see-through' the model once it is in view.
+
+<i>Textured </i>&nbsp;: The model is displayed with its full texture applied for the finished "skinned" look.
+
+<i>Background image... </i>&nbsp;: When selected, this will open a dialog box where you can choose a .bmp image
+file to place and display in the 2D view that the cursor was in when the RMB was clicked.
+Click <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#background">here</a> for full detailed information
+about its functions and settings.
