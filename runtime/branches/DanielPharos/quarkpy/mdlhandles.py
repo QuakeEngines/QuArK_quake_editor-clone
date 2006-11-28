@@ -543,8 +543,10 @@ def MouseDragging(self, view, x, y, s, handle):
     global mdleditor, mdleditorview, cursorposatstart
     mdleditor = self
     mdleditorview = view
-    center = view.info["center"]
-    cursorposatstart = view.space(x,y,view.proj(center).z) # Used for start where clicked for Model Editor rotation.
+    for item in view.info:
+        if item == 'center':
+            center = view.info["center"]
+            cursorposatstart = view.space(x,y,view.proj(center).z) # Used for start where clicked for Model Editor rotation.
 
     #
     # qhandles.MouseDragging builds the DragObject.
@@ -601,6 +603,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.12  2006/11/27 19:23:45  cdunde
+#To fix error message on Skin-view page when drag is started.
+#
 #Revision 1.12.2.11  2006/11/27 08:31:56  cdunde
 #To add the "Rotate at start position" method to the Model Editors rotation options menu.
 #
