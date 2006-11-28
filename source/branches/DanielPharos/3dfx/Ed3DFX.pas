@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.15  2006/11/27 16:44:16  danielpharos
+Fix an access violation with Software 3D
+
 Revision 1.31.2.14  2006/11/27 16:18:49  danielpharos
 Another fix for Glide fog and attempt to fix an access violation with it
 
@@ -1005,9 +1008,9 @@ begin
  if Assigned(qrkGlideState) then
  begin
    TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
-   if Fog=True then
-     grFogTable(FogTableCache^);
  end;
+ if Fog=True then
+   grFogTable(FogTableCache^);
 
  if qrkGlideVersion>=HardwareGlideVersion then
    grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
@@ -1032,11 +1035,15 @@ begin
  FProjInfo:=@ProjInfo;}
 
  if Fog=True then
+ begin
    if Assigned(grFogMode) then
-     grFogMode(GR_FOG_WITH_TABLE)
+     grFogMode(GR_FOG_WITH_TABLE);
+ end
  else
+ begin
    if Assigned(grFogMode) then
      grFogMode(GR_FOG_DISABLE);
+ end;
  RenderTransparent(False);
 {if Assigned(grDepthMask) then
   grDepthMask(FXFALSE);}
