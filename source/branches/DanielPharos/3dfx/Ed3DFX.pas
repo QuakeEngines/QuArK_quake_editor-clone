@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.17  2006/11/28 16:18:55  danielpharos
+Pushed MapView into the renderers and made OpenGL do (bad) Solid Colors
+
 Revision 1.31.2.16  2006/11/28 16:15:34  danielpharos
 Fix for the black screen sometimes seen in Glide
 
@@ -1013,7 +1016,10 @@ begin
    TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
  end;
  if Fog=True then
-   grFogTable(FogTableCache^);
+ begin
+   if Assigned(grFogTable) then
+     grFogTable(FogTableCache^);
+ end;
 
  if qrkGlideVersion>=HardwareGlideVersion then
    grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
