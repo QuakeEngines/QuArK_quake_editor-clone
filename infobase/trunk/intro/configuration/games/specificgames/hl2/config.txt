@@ -43,14 +43,10 @@ To start with we must select which of the Half-Life2 games we wish to work with.
 so simply use the drop down menu to the right of the 'Half-Life2 command-line' setting
 (under the Game Settings tab). This should give you a selection of three, for this
 tutorials we are going to be working with Counter-Strike: Source, so select:
-</td>
-<td>
-<img valign=top align=right>hl2_config1.png</img>
-</td></tr>
-</table>
-<table border=0 cellspacing=0>
-<tr><td valign=top align=left>
-"C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console ...." 
+
+"C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console ...."
+
+You must also set the <b>Steam App Id</b> to 240 as well or QuArK will not be able to start the game after a build is done.
 
 So how do I know which one to select?<br>
 Each Half-Life2 program/mod has an specific ID number<br>
@@ -60,20 +56,31 @@ Each Half-Life2 program/mod has an specific ID number<br>
 <li>240 – Counter-Strike: Source   
 <li>320 – Half-Life2 Death Match
 </ul>
-(Tip: You may also want to increase the width & height of the Half-Life2 window for when we use the 'Run Half-Life2' option later<br>
-on in the tutorial e.g. '-window -width 1280 -height 1024.)
+</td>
+<td>
+<img valign=top align=right>hl2_config1.png</img>
+</td></tr>
+</table>
 
-The rest of the compiler settings are relatively straight forward to setup, though you will need to know the location of where you<br>
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+(Tip: You may also want to increase the width & height of the Half-Life2 window for when we use the 'Run Half-Life2' option later on in the tutorial<br>
+e.g. '-window -width 1280 -height 1024.)
+
+The rest of the compiler settings are relatively straight forward to setup, though you will need to know the location of where you
 have installed Steam. If you use its default setting it should be as shown on the "Steam Directory" line below, or:
 <ul>
 <li>C:/Program Files/Valve/Steam
 </ul>
-For the rest of the settings for the compiler just use the screen shot below to go by. If you are unsure on any of the settings hold<br>
-your mouse cursor over the white box and it will come up with a quick example.
+For the rest of the settings for the compiler just use the screen shot below to go by. If you are unsure on any of the settings hold your mouse cursor over the white box and it will come up with a quick example.
 </td></tr>
-<tr><td valign=top>
-<img align=left>hl2_config2.png</img>
+<tr><td valign=top align=middle>
+<img border=1 valign=top align=middle>hl2_config2.png</img>
 </td></tr>
+</table>
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=middle>
 <tr><td>
 Once you have finished setting Quark to work with the HL2 compiler, simply hit the 'Apply' button, and then press the 'OK' button to<br>
 close the Configuration panel; this will leave you back in the Quark Explorer.
