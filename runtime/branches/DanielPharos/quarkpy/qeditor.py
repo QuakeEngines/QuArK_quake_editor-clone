@@ -1466,7 +1466,7 @@ def TexModeMenu(editor, view):
     if isinstance(editor, mdleditor.ModelEditor):
         if view.info["type"] == "2D":
             modhint = qbasemgr.ModesHint + "\n\nReset 3D view:\nIf the model becomes 'lost', goes out of the 3D view, you can use this function to reset the 3D view and bring the model back to its starting position when it was first opened and based on the 'Rotation Method' you last chose to rotate the model by."
-            infobaselink = "intro.modeleditor.menu.html#RMBmenus"
+            infobaselink = "intro.modeleditor.menu.html#rmbmenus"
             Reset3D = qmenu.item("&Reset 3D view", reset3Dview, modhint, infobaselink)
             List = [Reset3D] + List
     return List
@@ -1543,6 +1543,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.30.2.10  2006/11/27 08:31:56  cdunde
+#To add the "Rotate at start position" method to the Model Editors rotation options menu.
+#
 #Revision 1.30.2.9  2006/11/26 06:42:54  cdunde
 #Added RMB menu item for all Model Editor 3D views to reset the model location,
 #based on its current rotation method, in case it goes out of the view and lost.

@@ -69,7 +69,7 @@ def Rotate(item):
             setprojmode(view)
 
 
-def RotationOption(txt, mode, hint="|Original 3Dview rotation:\n   This is the way QuArK's model rotation has worked in the past. As long as the model drag is started flat (z at 0) it rotates and tilts during rotation fine. But if it does a hiccup during the drag with the model tilted that is when it starts to drift off center and possibly out of the view eventually. The model can be placed anywhere in the view and rotated from that location.\n\nLock to center of 3Dview:\n   This method 'locks' the center of the grid to the center of the 3D view and rotates from the 0,0,0, point of the grid, its center. If the grid is off to another location of the view it will 'snap' back to the views center. The cursor location does not matter for dragging, the grid will remain in the views center. This makes the rotation very consistent. You can rotate and zoom in for close detail work on the model. But if you start another rotation it will jump back to the grids center and probably throw your up close position off.\n\nLock to center of model:\n   This functions just like the 'Lock to center of 3Dview' method above. However, because not all models are created at the center of their grid the one above could cause it to be near the edge of the view or completely out of view. This option compensates for that and will put the model in the proper center location of the view. The same situation will exist for up close detail work if a new rotation is started.\n\nRotate at start position:\n   This function is designed to give far more rotation consistency based on where the cursor is at the time it is clicked to start a rotation at some place on the model. It will then re-center that position to the center of the view to start rotating from. Unlike the 'Original 3Dview rotation' method, this would allow close up detail rotation without the model jumping back to some other location as in all of the above cases.|intro.mapeditor.menu.html#optionsmenu"):
+def RotationOption(txt, mode, hint="|Original 3Dview rotation:\n   This is the way QuArK's model rotation has worked in the past.\nClick the InfoBase button below for more detail.\n\nLock to center of 3Dview:\n   This method 'locks' the center of the grid to the center of the 3D view.\nClick the InfoBase button below for more detail.\n\nLock to center of model:\n   This function 'locks' the center of the model to the center of the view.\nClick the InfoBase button below for more detail.\n\nRotate at start position:\n   This function is designed to give far more rotation consistency based on where the cursor is at the time it is clicked to start a rotation at some place on the model.\nClick the InfoBase button below for more detail.|intro.modeleditor.menu.html#optionsmenu"):
     item = qmenu.item(txt, Rotate, hint)
     item.tas = mode
     return item
@@ -146,7 +146,7 @@ shortcuts = { }
 
 
 ticks = toggleitem("Enlarge Vertices &Ticks", "Ticks", (1,1),
-      hint="|Enlarge Vertices Ticks:\n\nThis makes the model's ticks 1 size larger for easer viewing.|intro.mapeditor.menu.html#optionsmenu")
+      hint="|Enlarge Vertices Ticks:\n\nThis makes the model's ticks 1 size larger for easer viewing.|intro.modeleditor.menu.html#optionsmenu")
 
 items.append(ticks)
 
@@ -167,6 +167,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.11.2.5  2006/11/27 19:24:04  cdunde
+#To change the model centering in the view when rotation option is selected.
+#
 #Revision 1.11.2.4  2006/11/27 08:31:56  cdunde
 #To add the "Rotate at start position" method to the Model Editors rotation options menu.
 #
