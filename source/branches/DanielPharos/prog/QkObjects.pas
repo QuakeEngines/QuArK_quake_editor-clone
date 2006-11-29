@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.79  2006/05/05 06:04:44  cdunde
+To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
+handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
+increases causing prog crash, can not use scrole bar in TB.
+
 Revision 1.78  2006/04/06 19:28:03  nerdiii
 Texture memory wasn't freed because texture links had additional references to them.
 
@@ -257,7 +262,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$ENDIF}
 
 const
-  QuArKVersion            = 'QuArK 6.5 alpha';
+  QuArKVersion            = 'QuArK 6.5 Beta';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;

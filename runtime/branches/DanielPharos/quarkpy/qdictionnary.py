@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.5 alpha",
+    0: "QuArK 6.5 Beta",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -989,6 +989,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.76.2.7  2006/11/23 20:05:03  danielpharos
+#Added new OpenGL error messages
+#
 #Revision 1.76.2.6  2006/11/01 22:22:41  danielpharos
 #BackUp 1 November 2006
 #Mainly reduce OpenGL memory leak

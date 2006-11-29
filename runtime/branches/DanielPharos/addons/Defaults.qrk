@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.295.2.12  2006/11/27 16:43:37  danielpharos
+//Renamed Software to Software 3D
+//
 //Revision 1.295.2.11  2006/11/26 21:49:03  danielpharos
 //Fixed the Glide fog and renamed it to Fade
 //
@@ -972,7 +975,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.5 alpha"
+      Version = "QuArK 6.5 Beta"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
