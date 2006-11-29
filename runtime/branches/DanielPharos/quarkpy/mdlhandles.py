@@ -36,6 +36,7 @@ ver_index2x = ver_index2y = ver_index2z = None
 mdleditor = None
 mdleditorview = None
 cursorposatstart = None
+texWidth = texHeight = 0
 
 #
 # The handle classes.
@@ -185,7 +186,7 @@ class SkinHandle(qhandles.GenericHandle):
 
 
   def drag(self, v1, v2, flags, view):
-      global tri_indexnbr, ver_index0x, ver_index0y, ver_index0z, ver_index1x, ver_index1y, ver_index1z, ver_index2x, ver_index2y, ver_index2z
+      global tri_indexnbr, ver_index0x, ver_index0y, ver_index0z, ver_index1x, ver_index1y, ver_index1z, ver_index2x, ver_index2y, ver_index2z, texWidth, texHeight
       editor = mapeditor()
       p0 = view.proj(self.pos)
       if not p0.visible: return
@@ -206,24 +207,24 @@ class SkinHandle(qhandles.GenericHandle):
           face = faces[self.tri_index]
           count = 0
           gotone = 0
-          facev2 = None
           facev3 = None
+          facev4 = None
           for vert in face:
               if count == self.ver_index:
                   pass
               elif gotone == 0:
-                  facev2 = quarkx.vect(vert[1], vert[2], 0)
+                  facev3 = quarkx.vect(vert[1]-int(texWidth*.5), vert[2]-int(texHeight*.5), 0)
                   gotone = gotone + 1
               else:
-                  facev3 = quarkx.vect(vert[1], vert[2], 0)
+                  facev4 = quarkx.vect(vert[1]-int(texWidth*.5), vert[2]-int(texHeight*.5), 0)
               count = count + 1
 
           cv = view.canvas()
           cv.pencolor = BLUE
           pv1 = view.proj(v1)
           pv2 = view.proj(v2)
-          pv3 = view.proj(facev2)
-          pv4 = view.proj(facev3)
+          pv3 = view.proj(facev3)
+          pv4 = view.proj(facev4)
 
           ver_v1x, ver_v1y, ver_v1z = pv1.tuple
           ver_v1x = int(ver_v1x)
@@ -242,7 +243,7 @@ class SkinHandle(qhandles.GenericHandle):
           ver_v4y = int(ver_v4y)
           ver_v4z = int(ver_v4z)
 
-        #  cv.line(ver_v1x, ver_v1y, ver_v2x, ver_v2y) * Not correct point, needs fixing by getting one more point.
+       #   cv.line(ver_v1x, ver_v1y, ver_v2x, ver_v2y) * Not correct point, needs fixing by getting one more point.
           cv.line(ver_v2x, ver_v2y, ver_v3x, ver_v3y)
           cv.line(ver_v2x, ver_v2y, ver_v4x, ver_v4y)
           editor.finishdrawing(view)
@@ -369,27 +370,44 @@ class BoneHandle(qhandles.GenericHandle):
 
 def buildskinvertices(editor, view, layout, component, skindrawobject):
     "builds a list of handles to display on the skinview"
-    global tri_indexnbr, ver_index0x, ver_index1x, ver_index2x
+    global tri_indexnbr, ver_index0x, ver_index1x, ver_index2x, texWidth, texHeight
 
   ### begin code from maphandles def viewsinglebezier
     if skindrawobject is not None:
         view.viewmode = "tex" # Don't know why, but if model HAS skin, making this "wire" causes black lines on zooms.
         try:
             tex = skindrawobject
-            w,h = tex["Size"]
+            texWidth,texHeight = tex["Size"]
+            viewWidth,viewHeight = view.clientarea
+               ### Calculates the "scale" factor of the Skin-view
+               ### and sets the scale based on the largest size (Height or Width) of the texture
+               ### to fill the Skin-view. The lower the scale factor, the further away the image is.
+            Width = viewWidth/texWidth
+            Height = viewHeight/texHeight
+            if Width < Height:
+                viewscale = Width
+            else:
+                viewscale = Height
+            
         except:
             pass
         else:
-            def draw1(view, finish=layout.editor.finishdrawing, w=w, h=h):
-                pt = view.space(quarkx.vect(0,0,0))
+            def draw1(view, finish=layout.editor.finishdrawing, texWidth=texWidth, texHeight=texHeight):
+                   ### This sets the center location point where the Skin-view grid lines are drawn from.
+                pt = view.space(quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0))
                 pt = view.proj(quarkx.vect(math.floor(pt.x), math.floor(pt.y), 0))
-                view.drawgrid(quarkx.vect(w*view.info["scale"],0,0), quarkx.vect(0,h*view.info["scale"],0), MAROON, DG_LINES, 0, quarkx.vect(0,0,0))
+                   ### This draws the lines from the above center location point.
+                view.drawgrid(quarkx.vect(texWidth*view.info["scale"],0,0), quarkx.vect(0,texHeight*view.info["scale"],0), MAROON, DG_LINES, 0, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0))
                 finish(view)
+
             view.ondraw = draw1
             view.onmouse = layout.editor.mousemap
-            view.background = tex, quarkx.vect(0,0,0), 1.0 ### Sets the texture scale size and location.
+               ### This sets the texture, its location and scale size in the Skin-view.
+            view.background = tex, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0), 1.0
     else:
-        
+           ### This handles models without any skin(s).
+        texWidth,texHeight = view.clientarea
+        viewscale = .5
         view.viewmode = "wire" # Don't know why, but if model has NO skin, making this "tex" causes it to mess up...bad!
   ### end code from maphandles def viewsinglebezier
 
@@ -398,7 +416,8 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
         view.color = BLACK
         editor.finishdrawing(view)
 
-
+       ### This sets the location of the skin texture in the Skin-view when it is first opened
+       ### and I believe keeps it centered if the view is stretched to a different size.
     center =  quarkx.vect(view.clientarea[0]/2, view.clientarea[1]/2, 0)
     origin = center
 
@@ -417,8 +436,8 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     except:
         doautozoom = 1
 
-    if doautozoom:
-        oldscale = 1
+    if doautozoom:  ### This sets the view.info scale for the Skin-view when first opened, see ###Decker below.
+        oldscale = viewscale
 #DECKER - end
 
     org = component.originst
@@ -429,7 +448,9 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     view.info = {"type": "2D",
                  "matrix": matrix_rot_z(pi2),
                  "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
-                 "scale": oldscale, #DECKER
+                 "scale": oldscale, ###DECKER This method leaves the scale unchanged from the last zoom (which is what sets the "scale" factor).
+              #   "scale": viewscale, ###DECKER This method resets the texture size of a component to the size of the Skin-view
+                                            ### each time that component is re-selected, but not while any item within it is selected.
                  "custom": singleskinzoom,
                  "origin": origin,
                  "noclick": None,
@@ -450,10 +471,10 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
         tri = tris[i]
         for j in range(len(tri)):
             vtx = tri[j]
-            h.append(SkinHandle(quarkx.vect(vtx[1], vtx[2], 0), i, j, component))
+               ### This sets the Skin-view model mesh vertexes and line drawing location(s).
+            h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component))
 
     view.handles = qhandles.FilterHandles(h, SS_MODEL)
-
     singleskinzoom(view)
     return 1
 
@@ -603,6 +624,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.13  2006/11/28 00:52:48  cdunde
+#One more attempt to fix view drag error.
+#
 #Revision 1.12.2.12  2006/11/27 19:23:45  cdunde
 #To fix error message on Skin-view page when drag is started.
 #
