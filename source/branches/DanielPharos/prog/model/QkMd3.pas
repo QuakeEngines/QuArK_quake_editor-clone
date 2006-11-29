@@ -23,6 +23,13 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2006/08/02 07:17:57  cdunde
+To add .md3 model editor 3D view support for Quake 4.
+
+Revision 1.26.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
 Revision 1.25  2006/07/17 06:58:00  cdunde
 To setup RTCW-ET as its own game
 with md3 model display support.
@@ -793,6 +800,8 @@ begin
       org:=f.position;
       f.readbuffer(head, sizeof(head));
       org2:=f.position;
+      if (head.id='IDP3') and ModeJeuQuake4 then
+          ObjectGameCode := mjQuake4;
       if (head.id='IDP3') and ModeJeuRTCWET then
           ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (head.version=15) then
