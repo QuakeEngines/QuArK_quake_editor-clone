@@ -57,6 +57,7 @@ class ThreeViews2DLayout(MapLayout):
 
         self.ViewXY = form.mainpanel.newmapview()
         self.ViewXY.section = (0,1)
+        self.ViewXY.viewtype="editor"
 
         #
         # Create a panel in the top section.
@@ -70,9 +71,11 @@ class ThreeViews2DLayout(MapLayout):
         #
 
         self.ViewXZ = self.threeviews_toppanel.newmapview()
+        self.ViewXZ.viewtype="editor"
         self.ViewYZ = self.threeviews_toppanel.newmapview()
         self.ViewYZ.section = (1,0)
-	
+        self.ViewYZ.viewtype="editor"
+
         #
         # Put these three views in the view lists.
         #
@@ -269,6 +272,13 @@ LayoutsList.append(ThreeViews2DLayout)
 #
 #
 # $Log$
+# Revision 1.5.2.6  2006/11/01 22:22:43  danielpharos
+# BackUp 1 November 2006
+# Mainly reduce OpenGL memory leak
+#
+# Revision 1.5  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2003/03/24 05:09:51  cdunde
 # To upload the "new and improved" version of the layout. The layout
 # itself seems to work fine, but somewhere in the python code, the

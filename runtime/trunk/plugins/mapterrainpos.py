@@ -412,8 +412,6 @@ def PaintBrushClick(m):
   
     def setup(self):
         self.editor = editor
-        for view in editor.layout.views:
-            view = view
         global face, facetex, org, sc, sa
         src = self.src
 
@@ -699,7 +697,7 @@ class Options3DviewsDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (130,455)
+    size = (130,270)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
     dfsep = 0.55    # sets 55% for labels and the rest for edit boxes
     dlgdef = """
@@ -743,7 +741,7 @@ class Options3DviewsDlg(quarkpy.dlgclasses.LiveEditDlg):
 
       sep: = {
         Typ="S"
-        Txt="New 3D window"
+        Txt="Full 3D view"
              }
 
         noicons2: =
@@ -776,76 +774,6 @@ class Options3DviewsDlg(quarkpy.dlgclasses.LiveEditDlg):
 
       sep: = { Typ="S" Txt="" }
 
-      sep: = {
-        Typ="S"
-        Txt="Full 3D view"
-             }
-
-        noicons3: =
-        {
-        Txt = "No icons"
-        Typ = "X1"
-        Hint = "No camera position icons"$0D"Effects ALL QuArK selectors"
-        }
-
-        drag3: =
-        {
-        Txt = "Drag"
-        Typ = "X1"
-        Hint = "Dragging can be done"$0D"and handles will be shown"
-        }
-
-        redfaces3: =
-        {
-        Txt = "Red faces"
-        Typ = "X1"
-        Hint = "Red faces can be displayed"
-        }
-
-        color3: =
-        {
-        Txt = "Color Guide"
-        Typ = "X1"
-        Hint = "Outlines faces prior to applying texture"
-        }
-
-      sep: = { Typ="S" Txt="" }
-
-      sep: = {
-        Typ="S"
-        Txt="OpenGL 3D view"
-             }
-
-        noicons4: =
-        {
-        Txt = "No icons"
-        Typ = "X1"
-        Hint = "No camera position icons"$0D"Effects ALL QuArK selectors"
-        }
-
-        drag4: =
-        {
-        Txt = "Drag"
-        Typ = "X1"
-        Hint = "Dragging can be done"$0D"and handles will be shown"
-        }
-
-        redfaces4: =
-        {
-        Txt = "Red faces"
-        Typ = "X1"
-        Hint = "Red faces can be displayed"
-        }
-
-        color4: =
-        {
-        Txt = "Color Guide"
-        Typ = "X1"
-        Hint = "Outlines faces prior to applying texture"
-        }
-
-      sep: = { Typ="S" Txt="" }
-
         Reset: =       // Reset button
         {
           Cap = "defaults"      // button caption
@@ -861,14 +789,6 @@ class Options3DviewsDlg(quarkpy.dlgclasses.LiveEditDlg):
         drag2 = "1"
         redfaces2 = "1"
         color2 = "1"
-        noicons3 = "0"
-        drag3 = "1"
-        redfaces3 = "1"
-        color3 = "1"
-        noicons4 = "0"
-        drag4 = "1"
-        redfaces4 = "1"
-        color4 = "1"
           }
         }
 
@@ -887,12 +807,10 @@ def Options3DviewsClick(m):
   
     def setup(self):
         self.editor = editor
-        for view in editor.layout.views:
-            view = view
         src = self.src
 
       ### To populate settings...
-        if (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] is None):
+        if (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] is None) and (quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] is None):
 
             src["noicons1"] = "0"
             src["drag1"] = "1"
@@ -902,14 +820,6 @@ def Options3DviewsClick(m):
             src["drag2"] = "1"
             src["redfaces2"] = "1"
             src["color2"] = "1"
-            src["noicons3"] = "0"
-            src["drag3"] = "1"
-            src["redfaces3"] = "1"
-            src["color3"] = "1"
-            src["noicons4"] = "0"
-            src["drag4"] = "1"
-            src["redfaces4"] = "1"
-            src["color4"] = "1"
             quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] = src["noicons1"]
             quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag1"] = src["drag1"]
             quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces1"] = src["redfaces1"]
@@ -918,14 +828,6 @@ def Options3DviewsClick(m):
             quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] = src["drag2"]
             quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] = src["redfaces2"]
             quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"] = src["color2"]
-            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] = src["noicons3"]
-            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] = src["drag3"]
-            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] = src["redfaces3"]
-            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"] = src["color3"]
-            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] = src["noicons4"]
-            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] = src["drag4"]
-            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] = src["redfaces4"]
-            quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"] = src["color4"]
 
         else:
             src["noicons1"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"]
@@ -936,14 +838,6 @@ def Options3DviewsClick(m):
             src["drag2"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"]
             src["redfaces2"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"]
             src["color2"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"]
-            src["noicons3"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"]
-            src["drag3"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"]
-            src["redfaces3"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"]
-            src["color3"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"]
-            src["noicons4"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"]
-            src["drag4"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"]
-            src["redfaces4"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"]
-            src["color4"] = quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"]
 
 
         if src["noicons1"]:
@@ -994,54 +888,6 @@ def Options3DviewsClick(m):
             twocolor = "0"
 
 
-        if src["noicons3"]:
-            threenoicons = src["noicons3"]
-        else:
-            threenoicons = "0"
-
-
-        if src["drag3"]:
-            threedrag = src["drag3"]
-        else:
-            threedrag = "0"
-
-
-        if src["redfaces3"]:
-            threeredfaces = src["redfaces3"]
-        else:
-            threeredfaces = "0"
-
-
-        if src["color3"]:
-            threecolor = src["color3"]
-        else:
-            threecolor = "0"
-
-
-        if src["noicons4"]:
-            fournoicons = src["noicons4"]
-        else:
-            fournoicons = "0"
-
-
-        if src["drag4"]:
-            fourdrag = src["drag4"]
-        else:
-            fourdrag = "0"
-
-
-        if src["redfaces4"]:
-            fourredfaces = src["redfaces4"]
-        else:
-            fourredfaces = "0"
-
-
-        if src["color4"]:
-            fourcolor = src["color4"]
-        else:
-            fourcolor = "0"
-
-
     def action(self, editor=editor):
 
         onenoicons = (self.src["noicons1"])
@@ -1052,14 +898,6 @@ def Options3DviewsClick(m):
         twodrag = (self.src["drag2"])
         tworedfaces = (self.src["redfaces2"])
         twocolor = (self.src["color2"])
-        threenoicons = (self.src["noicons3"])
-        threedrag = (self.src["drag3"])
-        threeredfaces = (self.src["redfaces3"])
-        threecolor = (self.src["color3"])
-        fournoicons = (self.src["noicons4"])
-        fourdrag = (self.src["drag4"])
-        fourredfaces = (self.src["redfaces4"])
-        fourcolor = (self.src["color4"])
 
       ### Save the settings...
         quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] = onenoicons
@@ -1070,14 +908,6 @@ def Options3DviewsClick(m):
         quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag2"] = twodrag
         quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces2"] = tworedfaces
         quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color2"] = twocolor
-        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] = threenoicons
-        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag3"] = threedrag
-        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces3"] = threeredfaces
-        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color3"] = threecolor
-        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] = fournoicons
-        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_drag4"] = fourdrag
-        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_redfaces4"] = fourredfaces
-        quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_color4"] = fourcolor
 
         self.src["noicons1"] = onenoicons
         self.src["drag1"] = onedrag
@@ -1087,14 +917,6 @@ def Options3DviewsClick(m):
         self.src["drag2"] = twodrag
         self.src["redfaces2"] = tworedfaces
         self.src["color2"] = twocolor
-        self.src["noicons3"] = threenoicons
-        self.src["drag3"] = threedrag
-        self.src["redfaces3"] = threeredfaces
-        self.src["color3"] = threecolor
-        self.src["noicons4"] = fournoicons
-        self.src["drag4"] = fourdrag
-        self.src["redfaces4"] = fourredfaces
-        self.src["color4"] = fourcolor
 
         for view in editor.layout.views:
             type = view.info["type"]
@@ -1123,6 +945,17 @@ def Options3DviewsClick(m):
 #
 #
 # $Log$
+# Revision 1.8.2.7  2006/11/09 23:17:44  cdunde
+# Changed Paint Brush dialog to work with new version view setup and names.
+#
+# Revision 1.8.2.6  2006/11/01 22:22:42  danielpharos
+# BackUp 1 November 2006
+# Mainly reduce OpenGL memory leak
+#
+# Revision 1.8  2006/02/21 20:39:17  cdunde
+# To fix one error bug and try to help 3D view
+# from smearing\locking up when using paint dialog.
+#
 # Revision 1.7  2006/01/30 08:20:00  cdunde
 # To commit all files involved in project with Philippe C
 # to allow QuArK to work better with Linux using Wine.

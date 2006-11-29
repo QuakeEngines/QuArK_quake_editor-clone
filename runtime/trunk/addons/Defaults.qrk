@@ -28,6 +28,35 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.295.2.13  2006/11/29 05:00:37  cdunde
+//For version change to 6.5 Beta.
+//
+//Revision 1.295.2.12  2006/11/27 16:43:37  danielpharos
+//Renamed Software to Software 3D
+//
+//Revision 1.295.2.11  2006/11/26 21:49:03  danielpharos
+//Fixed the Glide fog and renamed it to Fade
+//
+//Revision 1.295.2.10  2006/11/22 07:04:30  cdunde
+//A little reorganization of a few items by Daniel Pharos.
+//
+//Revision 1.295.2.9  2006/11/16 03:16:53  cdunde
+//Added display of currentskin path and name to Face-view data form section.
+//
+//Revision 1.295.2.8  2006/11/15 23:20:02  cdunde
+//H-L2 configuration update.
+//
+//Revision 1.295.2.7  2006/11/08 09:24:20  cdunde
+//To setup and activate Model Editor XYZ Commands menu items
+//and make them interactive with the Lock Toolbar.
+//
+//Revision 1.295.2.6  2006/11/01 22:22:43  danielpharos
+//BackUp 1 November 2006
+//Mainly reduce OpenGL memory leak
+//
+//Revision 1.295  2006/08/18 18:50:44  cdunde
+//Did some minor update and rearrangement for STVEF.
+//
 //Revision 1.294  2006/08/12 20:16:59  cdunde
 //New grouppath setting seems to only work for Torque.
 //So moved it to just apply to that game only right now.
@@ -949,7 +978,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.5 alpha"
+      Version = "QuArK 6.5 Beta"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
@@ -969,27 +998,21 @@ QQRKSRC1
       }
       3D view:config =
       {
-        Lib = "qrksoftg.dll"
-        3DFXLogo = ""
-        SoftQuality = "0"
-        DynamicQuality = "2"
-        //FullScreen = ""
-        FullScreenGamma = '1.3'
-        FullScreenSize = '560 420'
-        TwoMonitors = ""
-        FarDistance = '1500'  // objects are totally black at this distance
-        DarkFactor = '0.67'   // only 67% of the FarDistance is considered really visible
-        TranspFactor = '0.3'  // in isometric views, an additionnal 30% of the normal depth is visible but transparent
-        TextureMaxDimension="7"
-        VAngle = '30'
-        FogDensity = '1.05'
-        FogColor = $000000
-        FrameColor = $000000
-        SelGroupColor = $FF80FF
-        SelFaceColor = $80FF80
-        SelMultColor = $FF8080
+        Lib = "qrksoftg.dll"   //Default library. Currently set to Software for compatibility.
+        WndRect = '0 0 640 480'
         Entities = "1"
         EntityBoxes = ""
+        FarDistance = '1500'  // objects are totally black at this distance
+        FogDensity = '1.05'
+        VAngle = '30'
+        FogColor = $000000
+        FrameColor = $000000
+        TextureMaxDimension="7"
+        MouseHLook = '10'
+        MouseVLook = '10'
+        MouseWalk = '10'
+        MouseSideStep = '10'
+        MouseUpDown = '10'
         KeyForward = $26
         KeyBack = $28
         KeyLeft = $25
@@ -1008,17 +1031,34 @@ QQRKSRC1
         RotateSpeed = '160'
         AccelDelay = '0.35'
         RunAccelDelay = '0.2'
-        MouseHLook = '10'
-        MouseVLook = '10'
-        MouseWalk = '10'
-        MouseSideStep = '10'
-        MouseUpDown = '10'
+        Warning3D = "1"
+        CloseOnGame = "1"
+        // The following options are currently hidden:
+        DarkFactor = '0.67'   // only 67% of the FarDistance is considered really visible
+        SelGroupColor = $FF80FF
+        SelFaceColor = $80FF80
+        SelMultColor = $FF8080
         Form = "General3DView"
+      }
+      Software 3D:config =
+      {
+        SoftQuality = "0"
+        DynamicQuality = "2"
+        Form = "GeneralSoftware3D"
+      }
+      3DFX:config =
+      {
+        //3DFXLogo = ""
+        //FullScreen = ""
+        TwoMonitors = ""
+        FullScreenGamma = '1.3'
+        FullScreenSize = '560 420'
+        TranspFactor = '0.3'  // in isometric views, an additionnal 30% of the normal depth is visible but transparent
+        Fog = "1"
+        Form = "General3DFX"
       }
       OpenGL:config =
       {
-        Warning2 = "1"
-        WndRect = '0 0 640 480'
         Fog = "1"
         Transparency = ""
         Lights = "1"
@@ -1030,8 +1070,12 @@ QQRKSRC1
         DepthBits = '16'
         VCorrection = '0.92'
         GLLists = "1"
-        Ambient = '0.4'
+        Ambient = '0.4'  //Why is this hidden?
         Form = "GeneralOpenGL"
+      }
+      DirectX:config =
+      {
+        Form = "GeneralDirectX"
       }
       Memory:config =
       {
@@ -1453,7 +1497,7 @@ QQRKSRC1
         SteamFSModule = ""
         Directory = "C:/Program Files/Valve/Steam"
         SteamAppUser = "<Your Steam Account>"
-        SteamAppId = "211"
+        SteamAppId = ""
 
         BaseDir = "hl2"
         MapCommentsPrefix = "//"
@@ -2719,6 +2763,10 @@ QQRKSRC1
         PaintBrush_sidestoo = "0"
         PaintBrush_sidesonly = "0"
         PaintBrush_variance = "0.0001"
+        Options3Dviews_noicons0 = "0"
+        Options3Dviews_drag0 = "1"
+        Options3Dviews_redfaces0 = "1"
+        Options3Dviews_color0 = "1"
         Options3Dviews_noicons1 = "0"
         Options3Dviews_drag1 = "1"
         Options3Dviews_redfaces1 = "1"
@@ -2859,6 +2907,9 @@ QQRKSRC1
       }
       Options:config =
       {
+        setLock_X          = "0"
+        setLock_Y          = "0"
+        setLock_Z          = "0"
         SolidFrame         = ""
         DrawAxis           = "1"
         DrawMapLimit       = "1"
@@ -2873,7 +2924,6 @@ QQRKSRC1
         AutoAdjustNormal   = ""
         PagesLocked        = ""
         HandleHints        = "1"
-
         LinearBox          = ""
         TreeKeybDelay      = ""
         Form = "MdlOptions"
@@ -2940,6 +2990,7 @@ QQRKSRC1
   {
     MapDisplay:form =          // ":form" objects are forms for editing object Specific/Args
     {                          // these ones are used in the Configuration dialog box
+      style = "7"
       NormalVector: =
       {
         Txt = "Length of the normal vector"
@@ -2981,6 +3032,7 @@ QQRKSRC1
     }
     MdlDisplay:form =
     {
+      style = "7"
       GridStep: =
       {
         Txt = "Grid step"
@@ -3567,7 +3619,15 @@ QQRKSRC1
       SteamAppId =
       {
         Txt = "Steam App Id"
-        Hint = "set to 211"
+        Typ = "C"     // combo box
+        Hint = "set to 211 for Source SDK"$0D
+               "220 for Half-Life2"$0D
+               "240 for Counter-Strike: Source"$0D
+               "320 for Half-Life2 Death Match"
+        Items = "211"$0D
+               "220"$0D
+               "240"$0D
+               "320"
       }
       Directory: =
       {
@@ -5729,7 +5789,7 @@ QQRKSRC1
       Hint = "If map-editor has started, new assignment will apply on"
           $0D"next QuArK restart. Otherwise when map-editor is started."
     }
-   AlphaKeyForm:incl =
+    AlphaKeyForm:incl =
     {
       Txt = "&R" // Read-only but use the 'Specific-name' for label
       Typ = "R"
@@ -5882,6 +5942,7 @@ QQRKSRC1
       MiddleDragCtrl:  = { Txt = "Middle dragging with Ctrl" MDragForm = ! }
     }
     MapKeys:form = {
+      Style = "7"
       GridPlus    = {Typ="K" Txt="Increase grid step (*2)"}
       GridMinus   = {Typ="K" Txt="Decrease grid step (/2)"}
       ZoomIn      = {Typ="K" Txt="Zoom in"}
@@ -5910,6 +5971,7 @@ QQRKSRC1
     }
     GeneralMemory:form =
     {
+      Style = "3"
       MaxUndo: = {Txt="Max. undo levels" Typ="EF1" Hint="Maximum number of consecutive undos allowed"}
       MinUndo: = {Txt="Min. undo levels" Typ="EF1" Hint="Minimum number of consecutive undos allowed (warn if not enough memory for this number)"}
       UndoBufferSize: = {Txt="Size of undo buffer (MB)" Typ="EF1" Hint="Deletes older undo levels if it would take more memory than this"}
@@ -5948,7 +6010,7 @@ QQRKSRC1
     }
     GeneralQuakeC:form =
     {
-      Style = "6"
+      Style = "3"
       Font0: = {Typ="F" Txt="Plain text" Cap="Plain text sample"}
       Font5: = {Typ="F" Txt="Reserved words" Cap="if else float"}
       Font1: = {Typ="F" Txt="Vectors" Cap="'100 -50 20'"}
@@ -5961,53 +6023,26 @@ QQRKSRC1
     }
     General3DView:form =
     {
+      style = "3"
       Lib: = {
         Txt="Select 3D viewer"
         Typ="CL"
-        Items  = "3DFX card (Glide drivers)" $0D "Software only"
-        Values = "glide2x.dll" $0D "qrksoftg.dll"
-        Hint="see also the OpenGL configuration page"
+        Items  = "Software 3D only" $0D "3DFX (Glide)" $0D "OpenGL" $0D "DirectX"
+        Values = "qrksoftg.dll" $0D "glide2x.dll" $0D "OpenGL32.dll" $0D "d3d9.dll"
+        Hint="see also the viewers configuration pages"
       }
+      WndRect: = {Typ="EF4" Txt="Position/size of window" Hint="Position and size in pixels of the 3D view window"}
       Entities: = {Txt="Entities in 3D" Cap="Display entities" Typ="X" Hint="Show entities in the 3D view"}
-      //EntityBoxes: = {Txt="   ``"       Cap="as bounding boxes only" Typ="X" Hint="If not checked, entities are displayed as 3D Models when available"}
-      FarDistance: = {Txt="``Far´´ distance" Typ="EF1" Min="50" Hint="How far you can view before objects are lost in the fog (lower numbers accelerate rendering because there is less to display)"}
+      //EntityBoxes: = {Txt="`Entity Boxes`" Cap="as bounding boxes only" Typ="X" Hint="If not checked, entities are displayed as 3D Models when available"}
+      FarDistance: = {Txt="``Far´´ distance" Typ="EF1" Min="50" Hint="How far you can view before objects disappear (lower numbers accelerate rendering because there is less to display)"}
+      FogDensity: = {Txt="Fade density" Typ="EF1" Min='1' Hint="Sets the density of the fade."}
       VAngle: = {Txt="Vertical view angle" Typ="EF1" Min="5" Max="80" Hint="Angle between the horizon and the higher and lower points you can see - larger numbers mean smaller image"}
+      FogColor: = {Txt="Fade color" Typ="LI" Hint="Fade color (recommended : either black or white)"}
       FrameColor: = {Txt="Frame color" Typ="LI" Hint="Color displayed besides the image if the window is too large"}
       TextureMaxDimension: = {Txt="Textures max-dimension" Typ="C"
-        Items ="256"$0D"128"$0D"64"$0D"32"$0D"16"$0D"8"
-        Values=  "8"$0D  "7"$0D "6"$0D "5"$0D "4"$0D"3"
+        Items ="4096"$0D"2048"$0D"1024"$0D"512"$0D"256"$0D"128"$0D"64"$0D"32"$0D"16"$0D"8"
+        Values=  "12"$0D  "11"$0D  "10"$0D  "9"$0D  "8"$0D  "7"$0D "6"$0D "5"$0D "4"$0D"3"
         Hint="A lower value uses less memory for texture-images,"$0D"but will also decrease the texture quality in the 3D-views"
-      }
-      Sep0: = {Typ="S" Txt = ""}
-      L0: = {Typ="S" Txt="---- 3DFX card owners only ----"}
-      //FullScreen: = {Txt="3DFX Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the 3DFX card display is copied in a window"}
-      TwoMonitors: = {
-        Txt="Second monitor on 3DFX"
-        Typ="CL"
-        Items  = "I've only one monitor" $0D "3DFX monitor at left" $0D "3DFX monitor at right"
-        Values = "" $0D "1" $0D "2"
-        Hint="If you have two monitors (two screens), you can connect one on the 3DFX card and one on the 2D card"
-      }
-      FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen 3DFX mode only"}
-      FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="resolution is always 640x480, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
-      FogDensity: = {Txt="Fog density" Typ="EF1" Min='1' Hint="Fog density. Try yourself to see what it does."}
-      FogColor: = {Txt="Fog color" Typ="LI" Hint="Fog color (recommended : either black or white)"}
-      TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
-      Sep2: = {Typ="S" Txt = ""}
-      L1: = {Typ="S" Txt="---- Software driver only ----"}
-      SoftQuality: = {
-        Txt="Software image quality"
-        Typ="CL"
-        Items  = "High details" $0D "Low details" $0D "Low details, smoothed"
-        Values =     "0"        $0D     "1"       $0D     "2"
-        Hint = "Slowest: High details   Fastest: Low details"
-      }
-      DynamicQuality: = {
-        Txt="Quality while walking"
-        Typ="CL"
-        Items  = "High details" $0D "Low details" $0D "Low details, smoothed"
-        Values =     "0"        $0D     "1"       $0D     "2"
-        Hint = "Slowest: High details   Fastest: Low details"
       }
       Sep2c: = {Typ="S" Txt = ""}
       L5: = {Typ="S" Txt="Mouse sensitivity (neg. numbers invert direction)"}
@@ -6038,27 +6073,58 @@ QQRKSRC1
       RotateSpeed: = {Txt="Rotation speed" Typ="EF1" Hint="How fast you turn left/right or look up/down, in degrees/second"}
       AccelDelay: = {Txt="Acceleration delay" Typ="EF1" Hint="How much time it takes until you reach full speed (``0´´ allowed)"}
       RunAccelDelay: = {Txt="Running acceleration delay" Typ="EF1" Hint="As above but while the run key is down"}
+      Sep4: = {Typ="S" Txt = ""}
+      L2: = {Typ="S" Txt="Additional settings"}
+      Warning3D: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
+      CloseOnGame: = {Typ="X" Txt="Close views when the game is run" Cap="Enabled" Hint="If checked, this can save system resources so the game runs smoother"}
+    }
+    GeneralSoftware3D:form =
+    {
+      Style = "3"
+      L1: = {Typ="S" Txt="---- Software 3D driver only ----"}
+      SoftQuality: = {
+        Txt="Image quality"
+        Typ="CL"
+        Items  = "High details" $0D "Low details" $0D "Low details, smoothed"
+        Values =     "0"        $0D     "1"       $0D     "2"
+        Hint = "Slowest: High details   Fastest: Low details"
+      }
+      DynamicQuality: = {
+        Txt="Quality while walking"
+        Typ="CL"
+        Items  = "High details" $0D "Low details" $0D "Low details, smoothed"
+        Values =     "0"        $0D     "1"       $0D     "2"
+        Hint = "Slowest: High details   Fastest: Low details"
+      }
+    }
+    General3DFX:form =
+    {
+      Style = "3"
+      L0: = {Typ="S" Txt="---- 3DFX card owners only ----"}
+      //FullScreen: = {Txt="3DFX Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the 3DFX card display is copied in a window"}
+      TwoMonitors: = {
+        Txt="Second monitor on 3DFX"
+        Typ="CL"
+        Items  = "I've only one monitor" $0D "3DFX monitor at left" $0D "3DFX monitor at right"
+        Values = "" $0D "1" $0D "2"
+        Hint="If you have two monitors (two screens), you can connect one on the 3DFX card and one on the 2D card"
+      }
+      FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen 3DFX mode only"}
+      FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="resolution is always 640x480, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
+      TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
+      Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
     }
     GeneralOpenGL:form =
     {
       Style = "3"
-      Sep0: = {Typ="S" Txt = ""}
       L0: = {Typ="S" Txt="---- OpenGL 1.1 hardware owners only ----"}
-      Mode: = {
-        Txt="Use OpenGL for..."
-        Typ="CL"
-        Items  = "'3DGL' button only" $0D "all perspective views(experimental SceneProxy)" $0D "(all views: not supported)"
-        Values = "" $0D "1" $0D "2"
-      }
-      Warning2: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
-      WndRect: = {Typ="EF4" Txt="Position/size of window" Hint="Position and size in pixels of the OpenGL window"}
-      Fog: = {Typ="X" Txt="Fog" Cap="Enabled"}
+      Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
       Transparency: = {
         Txt="Transparency"
         Typ="X"
         Cap="Enabled"
         Hint = "For Half-Life and Half-Life 2:"
-            $0D" when checked brush-entities that have their"
+            $0D"When checked brush-entities that have their"
             $0D"'rendermode'and 'renderamt' set to transparency"
             $0D"will be drawn transparent in the OpenGL window all"
             $0D"though NOT exactly drawn as they will be in the game."
@@ -6067,9 +6133,8 @@ QQRKSRC1
       }
       Lights: = {
         Txt="Lights"
-        Typ="CL"
-        Items  = "Disabled (map full bright)" $0D "Enabled in '3DGL' window" $0D "(all windows: not supported)"
-        Values = "" $0D "1" $0D "2"
+        Typ="X"
+        Cap="Enabled"
         Hint="Levels with few lights will look black -- turn off lighting in this case"
       }
       L0: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
@@ -6084,6 +6149,12 @@ QQRKSRC1
       DepthBits: = { Typ="EF1" Txt="Depth buffer bits" }
       VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it. For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1; otherwise, the textured images are smaller than the wireframes." }
       GLLists: = { Typ="X" Txt="GL Lists" Cap="Enabled" Hint="Speeds up rendering when lights are enabled"}
+    }
+    GeneralDirectX:form =
+    {
+      Style = "3"
+      L0: = {Typ="S" Txt="---- DirectX 9.0c hardware owners only ----"}
+      L1: = {Typ="S" Bold="0" Txt="This renderer is not available at the moment."}
     }
     GeneralAssociations:form =
     {
@@ -7192,6 +7263,12 @@ QQRKSRC1
         Typ = "E-R"
         Txt = "Owned by :"
         Hint = "The 'parent' component in the tree view"
+      }
+      texture: = {
+        Typ = "E-R"
+        Txt = "Skin :"
+        Hint = "The 'current skin selected for this component"$0D
+               "if more than one exist or the 1st skin if none selected."
       }
     }
   }

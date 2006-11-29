@@ -804,7 +804,10 @@ def SelectTaggedClick(m):
   if editor is None:
     return
   ClearTagClick(None)
-  editor.layout.explorer.sellist = m.taglist
+  try:
+    editor.layout.explorer.sellist = m.taglist
+  except (AttributeError):
+    pass
 
 
 #
@@ -1935,6 +1938,12 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.37.2.2  2006/11/07 17:34:45  cdunde
+#To stop console error when Alt+S is pressed with cursor outside of any view.
+#
+#Revision 1.37.2.1  2006/11/03 23:48:46  cdunde
+#To fix this function. Old way never replaced with new keyword.
+#
 #Revision 1.37  2006/07/11 14:18:31  cdunde
 #Added 0 division testing to stop console errors
 #

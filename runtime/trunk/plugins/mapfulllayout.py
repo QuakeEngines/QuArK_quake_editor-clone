@@ -35,9 +35,11 @@ class Full3DLayout(MapLayout):
     def buildscreen(self, form):
         self.bs_leftpanel(form)
         self.View3D = form.mainpanel.newmapview()
+        self.View3D.viewtype="editor"
         self.views[:] = [self.View3D]
         self.baseviews = self.views[:]
         self.View3D.info = {"type": "3D", "viewname": "editors3Dview"}
+        self.View3D.viewmode = "tex"
 
 
 
@@ -48,6 +50,17 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.6.2.6  2006/11/04 21:36:22  cdunde
+# To add 3DView viewmode of "tex"
+#
+# Revision 1.6.2.5  2006/11/01 22:22:43  danielpharos
+# BackUp 1 November 2006
+# Mainly reduce OpenGL memory leak
+#
+# Revision 1.6  2005/10/17 21:27:35  cdunde
+# To add new key word "viewname" to all 3D views for easier
+# detection and control of those views and Infobase documentation.
+#
 # Revision 1.5  2005/10/15 00:49:51  cdunde
 # To reinstate headers and history
 #

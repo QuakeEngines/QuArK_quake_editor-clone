@@ -789,6 +789,7 @@ def RestSelClick(m):
   editor=mapeditor()
   if editor==None: return
   setrestrictor(editor, editor.layout.explorer.uniquesel)
+  editor.invalidateviews(1)
     
 def NoSelClick(m):
   editor=mapeditor()
@@ -804,6 +805,7 @@ def UnrestrictClick(m):
     if editor is None: return
     #    maptagside.squawk("no editor")
     clearrestrictor(editor)
+    editor.invalidateviews(1)
 
 def ClearMarkClick(m):
     editor = mapeditor()
@@ -1086,6 +1088,12 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.37.2.1  2006/11/03 23:46:16  cdunde
+# To fixe extruder 2D view to Unrestricted other items when view is closed.
+#
+# Revision 1.37  2006/05/28 08:09:23  cdunde
+# Fixed editor not defined error.
+#
 # Revision 1.36  2006/04/18 04:23:09  cdunde
 # Fixed the RMB Mark function for tree view restructuring.
 #

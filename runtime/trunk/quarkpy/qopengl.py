@@ -2,6 +2,9 @@
 
 OpenGL manager.
 """
+
+#Daniel: The name OpenGL should be removed in some cases to reflect the changes to the rendering.
+
 #
 # Copyright (C) 1996-2000 Armin Rigo
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
@@ -13,14 +16,14 @@ OpenGL manager.
 # NOTE: this module is NEVER actually loaded before an OpenGL
 # view must be opened. To check if an OpenGL view is currently
 # opened DO NOT import qopengl; instead, check the value of
-# qbaselayout.BaseLayout.CurrentOpenGLOwner.
+# qbaselayout.BaseLayout.CurrentRendererOwner.
 #
 
 import quarkx
 from qeditor import *
 from qdictionnary import Strings
 from qbasemgr import BaseLayout
-BaseLayout.CurrentOpenGLOwner = None
+BaseLayout.CurrentRendererOwner = None
 
 
 #
@@ -39,18 +42,14 @@ def open(editor, minx=0, miny=0, bkgnd=0, force=0):
 
     global wnd, glview, offscreen
     #quarkx.settimer(deadtest, None, 0)  # cancel this timer if pending
-    setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
+    setup = quarkx.setupsubset(SS_GENERAL, "3D View")
 
     if wnd is not None:
         if force or wnd.owner is not editor.form:
             wnd.onclose = None
-            close()
             onclose1(wnd)
 
     if wnd is None:
-        if setup["Warning2"]:
-            if quarkx.msgbox(Strings[-104], MT_WARNING, MB_YES|MB_NO) != MR_YES:
-                raise quarkx.abort
         floating = editor.form.newfloating(FWF_NOESCCLOSE, "OpenGL 3D view")
         view = floating.mainpanel.newmapview()
         view.info = {"type": "3D", "viewname": "opengl3Dview"}
@@ -114,34 +113,29 @@ def clearviewdeps():
     v.ondraw = grayimage
     v.cursor = CR_ARROW
 
-def safecheckrect(r):
+def safecheckrect(r):  #Daniel: Should not be used anymore. Window is allowed to be larger than the screensize!
     sw = quarkx.screenrect()[2]   # screen rightmost coordinate
     return type(r) is type(()) and r[0]<sw
-
-def close():
-    # close the OpenGL window.
-    if wnd is not None:
-        wnd.close()
 
 
 #def deadtest(*reserved):
 #    # check if the OpenGL window is still in use
-#    if BaseLayout.CurrentOpenGLOwner is None:
+#    if BaseLayout.CurrentRendererOwner is None:
 #        close()
 
 
 def onclose1(floating):
     # called by the Delphi code when the window is closed
     global wnd, glview
-    if BaseLayout.CurrentOpenGLOwner is not None:
-        BaseLayout.CurrentOpenGLOwner.releaseOpenGL()
+    if BaseLayout.CurrentRendererOwner is not None:
+        BaseLayout.CurrentRendererOwner.releaseOpenGL()
     wnd = glview = None
-    setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
+    setup = quarkx.setupsubset(SS_GENERAL, "3D View")
     if not offscreen:
         r = floating.windowrect
         r = r[:2] + floating.rect
         setup["WndRect"] = r
-    setup["Warning2"] = ""
+    setup["Warning3D"] = ""
 
 
 def setupchanged(level):
@@ -154,6 +148,14 @@ SetupRoutines.append(setupchanged)
 #
 #
 #$Log$
+#Revision 1.10.2.6  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
+#Revision 1.10  2005/10/20 03:16:12  cdunde
+#Added to open 3D window title for clarity
+#as to which type was being viewed
+#
 #Revision 1.9  2005/10/17 21:27:35  cdunde
 #To add new key word "viewname" to all 3D views for easier
 #detection and control of those views and Infobase documentation.

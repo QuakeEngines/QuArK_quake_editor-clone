@@ -86,7 +86,7 @@ def BackgroundMenu(editor, view=None, origin=None):
     if origin is None:
         paste1 = qmenu.item("Paste", editor.editcmdclick)
     else:
-        paste1 = qmenu.item("Paste here", editor.editcmdclick)
+        paste1 = qmenu.item("Paste here", editor.editcmdclick, "paste objects at '%s'" % str(editor.aligntogrid(origin)))
         paste1.origin = origin
     paste1.cmd = "paste"
     paste1.state = not quarkx.pasteobj() and qmenu.disabled
@@ -95,7 +95,7 @@ def BackgroundMenu(editor, view=None, origin=None):
         def backbmp1click(m, view=view, form=editor.form):
             import qbackbmp
             qbackbmp.BackBmpDlg(form, view)
-        backbmp1 = qmenu.item("Background image...", backbmp1click)
+        backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
         extra = extra + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
     return [Undo1] + extra
 
@@ -139,6 +139,12 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.7.2.1  2006/11/28 00:55:35  cdunde
+#Started a new Model Editor Infobase section and their direct function links from the Model Editor.
+#
+#Revision 1.7  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.4  2000/08/21 21:33:04  aiv
 #Misc. Changes / bugfixes
 #

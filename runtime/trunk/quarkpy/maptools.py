@@ -36,11 +36,7 @@ class DisplayBar(ToolBar):
         zoombtn.views = layout.views
         zoombtn.caption = "zoom"
 
-        Btn3D = qtoolbar.button(layout.new3Dwindow, "New 3D window||New 3D window:\n\nThis will create a new floating 3D-window, which you can place anywhere on your desktop.\nIt only exist as long as you are in the map editor.", ico_maped, 20, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
-
-        BtnFull3D = qtoolbar.button(layout.full3Dclick, "Full 3D view||Full 3D view:\n\nThis will take you to a full-screen 3D-display.\nYou must press Escape to return to the map editor.", ico_maped, 21, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
-
-        BtnOpenGL = qtoolbar.button(layout.toggleOpenGLwindow, "OpenGL 3D view||OpenGL 3D view:\n\nThis will create a new floating OpenGL 3D-window, where you will be able to preview your light effects.", ico_maped, 27, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
+        Btn3D = qtoolbar.button(layout.full3Dclick, "3D view||3D view:\n\nThis will take you to a floating 3D-display.", ico_maped, 21, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
 
         LinearVBtn = qtoolbar.button(layout.editor.linear1click, "Linear mapping circle on selection||Linear mapping circle on selection:\n\nWhen this button is selected, QuArK always displays a pink circle around the selected objects; otherwise, it only appears if multiple objects are selected.\n\nThis circle and its attached handles let you apply 'linear mappings' on the objects. 'Linear mapping' means any transformation like rotation, enlarging/shrinking, symmetry, or a combination of them all. When you use the rotate, enlarge, shrink, and symmetry buttons of the movement tool palette, you actually apply a linear mapping on the selected objects. This is only interesting to know for a special kind of Duplicators, the one that can apply linear mappings. It means that this kind of Duplicator can create images with any of the previous movement commands applied, for example to create spiral stairs.", ico_maped, 19,  infobaselink="intro.mapeditor.toolpalettes.display.html#linear")
 
@@ -48,9 +44,9 @@ class DisplayBar(ToolBar):
 
         helpbtn = qtoolbar.button(layout.helpbtnclick, "Contextual help||Contextual help:\n\nWill open up your web-browser, and display the QuArK main help page.", ico_maped, 13, infobaselink="intro.mapeditor.toolpalettes.display.html#helpbook")
 
-        layout.buttons.update({"grid": gridbtn, "linear": LinearVBtn, "opengl": BtnOpenGL, "lockv": LockViewsBtn})
+        layout.buttons.update({"grid": gridbtn, "3D": Btn3D, "linear": LinearVBtn, "lockv": LockViewsBtn})
 
-        return [gridbtn, zoombtn, Btn3D, BtnFull3D, BtnOpenGL, LinearVBtn, LockViewsBtn, helpbtn]
+        return [gridbtn, zoombtn, Btn3D, LinearVBtn, LockViewsBtn, helpbtn]
 
 
 #
@@ -65,6 +61,13 @@ toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 #
 #
 #$Log$
+#Revision 1.8.2.6  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
+#Revision 1.8  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.5  2003/03/15 20:42:09  cdunde
 #To update hints and add infobase links
 #

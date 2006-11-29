@@ -1,3 +1,7 @@
+# Two lines below to stop encoding errors in the console.
+#!/usr/bin/python
+# -*- coding: ascii -*-
+
 """   QuArK  -  Quake Army Knife
 
 Map editor Layout managers.
@@ -49,7 +53,6 @@ Map editor Layout managers.
 #                           text2 in a pop-up "help snippet" window,
 #                           suitable for long explanations.
 #
-
 
 import math
 import quarkx
@@ -149,6 +152,7 @@ class MapLayout(BaseLayout):
         self.polyview.ondraw = self.polyviewdraw
         self.polyview.onmouse = self.polyviewmouse
         self.polyview.hint = "|click to select texture"
+        self.polyview.viewtype = "panel"
         return fp
 
     def bs_faceform(self, panel):  ### This is the Face-view setup items (form, buttons & view).
@@ -178,7 +182,8 @@ class MapLayout(BaseLayout):
         self.faceform.sep = -79
         self.faceform.setdata([], quarkx.getqctxlist(':form', "Face")[-1])
         self.faceform.onchange = self.faceformchange
-        self.faceview = fp.newmapview()
+        self.faceview = fp.newmapview()  ### This is the face view where it should show.
+        self.faceview.viewtype = "panel"
         facezoombtn.views = [self.faceview]
         return fp
 
@@ -201,6 +206,7 @@ class MapLayout(BaseLayout):
         self.bezierview = fp.newmapview()
         # bezierzoombtn.views = [self.bezierview]
         self.bezierview.color = NOCOLOR
+        self.bezierview.viewtype = "panel"
         bezierzoombtn.views = [self.bezierview]
         return fp
 
@@ -440,7 +446,7 @@ class MapLayout(BaseLayout):
         return flist
 
     def getbezierlists(self):
-        "Find all selected Bézier patches."
+        "Find all selected Bezier patches."
         blist = []
         b2list = []
         for s in self.explorer.sellist:
@@ -612,9 +618,22 @@ class MapLayout(BaseLayout):
                                ntp[0] + (v1*math.cos(ang1) + v2*math.sin(ang1)) * sc[0] * 128,
                                ntp[0] + (v1*math.cos(ang2) + v2*math.sin(ang2)) * sc[0] * 128)
                     elif abs(sc[0]-nsc[0])+abs(sc[1]-nsc[1]) > epsilon:
-                        ntp = (ntp[0],
-                               ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/sc[0]),
-                               ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/sc[1]))
+                        if sc[0] == 0 and sc[1] == 0:
+                            ntp = (ntp[0],
+                                   ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/1),
+                                   ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/1))
+                        elif sc[0] == 0:
+                            ntp = (ntp[0],
+                                   ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/1),
+                                   ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/sc[1]))
+                        elif sc[1] == 0:
+                            ntp = (ntp[0],
+                                   ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/sc[0]),
+                                   ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/1))
+                        else:
+                            ntp = (ntp[0],
+                                   ntp[0] + (ntp[1]-ntp[0])*(nsc[0]/sc[0]),
+                                   ntp[0] + (ntp[2]-ntp[0])*(nsc[1]/sc[1]))
                 if ntp is not tp:
                     new = f.copy()
                     new.setthreepoints(ntp, 3)
@@ -879,6 +898,23 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.18.2.7  2006/11/14 22:47:27  cdunde
+#To fix 0 division error of large terrain polys and texture scaling and angle changes.
+#
+#Revision 1.18.2.6  2006/11/04 21:40:08  cdunde
+#To add comment about newmapview.
+#
+#Revision 1.18.2.5  2006/11/03 23:38:10  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
+#Revision 1.18.2.4  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
+#Revision 1.19  2006/10/27 06:26:33  cdunde
+#Fixed error and to display texture of bezier texture selection list change.
+#
 #Revision 1.18  2006/08/21 21:16:04  cdunde
 #One item left out of last correction.
 #

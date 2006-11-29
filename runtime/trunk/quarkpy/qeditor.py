@@ -10,6 +10,7 @@ Various constants and Screen Controls for editors.
 
 #$Header$
 
+#   #py2.4 indicates upgrade change for python 2.4
 
 import quarkx
 import qtoolbar
@@ -769,6 +770,8 @@ class Compass:
         angle1 = self.i*pi2/len(self.Images)
         dx, dy = 40*math.cos(angle1), 45*math.sin(angle1)
         def angle(x,y,s, cv=cv):
+            x = int(x)  #py2.4
+            y = int(y)  #py2.4
             size = cv.textsize(s)
             x = x - size[0]/2
             y = y - size[0]/2
@@ -927,7 +930,8 @@ class VBar:
 
     def VBarDraw(self, ctrl):
         cv = ctrl.canvas()
-        cv.draw(self.Images[1], 0, self.i)
+#py2.4        cv.draw(self.Images[1], 0, self.i)
+        cv.draw(self.Images[1], 0, int(self.i))
 
     def Update(self, angle1):
         self.angle = angle1
@@ -1414,6 +1418,31 @@ def TexModeMenu(editor, view):
         view.viewmode = menu.mode
         editor.lastscale = 0    # force a call to buildhandles()
 
+    def reset3Dview(menu, editor=editor, view=view):
+        for view in editor.layout.views:
+            if view.info["type"] == "2D":
+                view.info["scale"] = 2.0
+                view.info["angle"] = -0.7
+                view.info["vangle"] = 0.3
+                view.screencenter = quarkx.vect(0,0,0)
+                rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+                holdrotationmode = rotationmode
+                rotationmode == 0
+                setprojmode(view)
+                rotationmode = holdrotationmode
+                modelcenter = view.info["center"]
+                if rotationmode == 2:
+                    center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
+                elif rotationmode == 3:
+                    center = quarkx.vect(0,0,0) + modelcenter ### Moves the center of the MODEL to the center of the view.
+                else:
+                    center = quarkx.vect(0,0,0) ### For resetting the Original QuArK rotation and "Lock to center of 3Dview" methods.
+                view.info["scale"] = 2.0
+                view.info["angle"] = -0.7
+                view.info["vangle"] = 0.3
+                view.screencenter = center
+                setprojmode(view)
+
     if view.viewmode == "opengl":
         modhint = "the mode is fixed to OpenGL"
         infobaselink = "intro.mapeditor.menu.html#layoutmenu"
@@ -1433,6 +1462,13 @@ def TexModeMenu(editor, view):
             menu.state = qmenu.disabled
         else:
             menu.state = menu.mode==view.viewmode and qmenu.radiocheck
+    import mdleditor
+    if isinstance(editor, mdleditor.ModelEditor):
+        if view.info["type"] == "2D":
+            modhint = qbasemgr.ModesHint + "\n\nReset 3D view:\nIf the model becomes 'lost', goes out of the 3D view, you can use this function to reset the 3D view and bring the model back to its starting position when it was first opened and based on the 'Rotation Method' you last chose to rotate the model by."
+            infobaselink = "intro.modeleditor.menu.html#rmbmenus"
+            Reset3D = qmenu.item("&Reset 3D view", reset3Dview, modhint, infobaselink)
+            List = [Reset3D] + List
     return List
 
 
@@ -1477,7 +1513,7 @@ def Help5():
     htmldoc("help/intro.mapeditor.overview.html") # Takes the user to the Overview page
 
 def Help6():
-    htmldoc("http://quark.ironfoot.co.uk/") # Takes the user to QuArK's Forums web page
+    htmldoc("http://www.dark-forge.com/forums/") # Takes the user to QuArK's Forums web page
 
 #
 # Retrieves all objects with a given type, excluding VF_CANTSELECT groups.
@@ -1507,6 +1543,30 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.30.2.11  2006/11/28 00:55:35  cdunde
+#Started a new Model Editor Infobase section and their direct function links from the Model Editor.
+#
+#Revision 1.30.2.10  2006/11/27 08:31:56  cdunde
+#To add the "Rotate at start position" method to the Model Editors rotation options menu.
+#
+#Revision 1.30.2.9  2006/11/26 06:42:54  cdunde
+#Added RMB menu item for all Model Editor 3D views to reset the model location,
+#based on its current rotation method, in case it goes out of the view and lost.
+#
+#Revision 1.30.2.8  2006/11/26 02:45:13  cdunde
+#To fix broken link to QuArK Forums.
+#
+#Revision 1.30.2.7  2006/11/03 23:38:10  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
+#Revision 1.30.2.6  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
+#Revision 1.30  2006/03/06 07:56:29  cdunde
+#Added def MapOption for options settings in Model Editor.
+#
 #Revision 1.29  2006/01/30 10:07:13  cdunde
 #Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
 #to allow the creation of much larger maps for the more recent games.

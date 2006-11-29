@@ -56,12 +56,14 @@ class ClassicLayout(MapLayout):
 
         self.ViewXY = form.mainpanel.newmapview()
         self.ViewXY.section = (0,1)
+        self.ViewXY.viewtype="editor"
 
         #
         # Create the XZ view in the section (0,0) (it is there by default).
         #
 
         self.ViewXZ = form.mainpanel.newmapview()
+        self.ViewXZ.viewtype="editor"
 
         #
         # Put these two views in the view lists.
@@ -231,6 +233,13 @@ LayoutsList.insert(0, ClassicLayout)
 #
 #
 # $Log$
+# Revision 1.5.2.5  2006/11/01 22:22:42  danielpharos
+# BackUp 1 November 2006
+# Mainly reduce OpenGL memory leak
+#
+# Revision 1.5  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

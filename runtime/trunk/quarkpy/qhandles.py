@@ -16,6 +16,8 @@ Generic Mouse handles code.
 # not related to map editing.
 #
 
+#py2.4 indicates upgrade change for python 2.4
+
 
 from qeditor import *
 from qdictionnary import Strings
@@ -40,6 +42,7 @@ grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
 saveeditor = None
+modelcenter = None
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -295,39 +298,7 @@ class Rotate3DHandle(GenericHandle):
                             view.cursor = CR_ARROW
                             view.handlecursor = CR_ARROW
                     return
-                if view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1":
-                    if tb2.tb.buttons[11].state == 2:
-                        view.cursor = CR_BRUSH
-                        view.handlecursor = CR_BRUSH
-                    elif tb2.tb.buttons[10].state == 2:
-                        view.cursor = CR_HAND
-                        view.handlecursor = CR_HAND
-                    else:
-                        if MapOption("CrossCursor", self.MODE):
-                            view.cursor = CR_CROSS
-                            view.handlecursor = CR_CROSS
-                        else:
-                            view.cursor = CR_ARROW
-                            view.handlecursor = CR_ARROW
-                    return
-
-                if view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1":
-                    if tb2.tb.buttons[11].state == 2:
-                        view.cursor = CR_BRUSH
-                        view.handlecursor = CR_BRUSH
-                    elif tb2.tb.buttons[10].state == 2:
-                        view.cursor = CR_HAND
-                        view.handlecursor = CR_HAND
-                    else:
-                        if MapOption("CrossCursor", self.MODE):
-                            view.cursor = CR_CROSS
-                            view.handlecursor = CR_CROSS
-                        else:
-                            view.cursor = CR_ARROW
-                            view.handlecursor = CR_ARROW
-                    return
-
-                if view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1":
+                if view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1":
                     if tb2.tb.buttons[11].state == 2:
                         view.cursor = CR_BRUSH
                         view.handlecursor = CR_BRUSH
@@ -356,11 +327,13 @@ class Rotate3DHandle(GenericHandle):
     def draw1(self, view, cv, p1, p2, fromback):
         if p2.visible:
             if fromback:  # viewing from backwards
-                cv.draw(self.icon, p2.x-8, p2.y-8)
+#py2.4                cv.draw(self.icon, p2.x-8, p2.y-8)
+                cv.draw(self.icon, int(p2.x)-8, int(p2.y)-8)
                 cv.line(p1, p2)
             else:            # viewing from forwards or from the side
                 cv.line(p1, p2)
-                cv.draw(self.icon, p2.x-8, p2.y-8)
+#py2.4                cv.draw(self.icon, p2.x-8, p2.y-8)
+                cv.draw(self.icon, int(p2.x)-8, int(p2.y)-8)
         else:
             cv.line(p1, p2)
 
@@ -369,9 +342,7 @@ class Rotate3DHandle(GenericHandle):
         ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
             if view.info["type"] == "3D":
                 if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1": return
-                if view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
-                if view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1": return
-                if view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1": return
+                if view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
         ##if len(redimages):
             if oldnormal is None:
                 try:
@@ -447,7 +418,8 @@ class CenterHandle(GenericHandle):
             cv.reset()
             # cv.pencolor is either black or white depending on the color layout
             cv.brushcolor = (cv.pencolor & self.colormask) ^ self.color
-            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+#py2.4            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def drag(self, v1, v2, flags, view):
         delta = v2-v1
@@ -486,7 +458,8 @@ class IconHandle(CenterHandle):
     def draw(self, view, cv, draghandle=None):
         p = view.proj(self.pos)
         if p.visible:
-            cv.draw(self.icon, p.x-8, p.y-8)
+#py2.4            cv.draw(self.icon, p.x-8, p.y-8)
+            cv.draw(self.icon, int(p.x)-8, int(p.y)-8)
 
 
 #
@@ -503,7 +476,7 @@ class EyePosition(GenericHandle):
         self.view3D = view3D
         self.normal = angles2vec1(pitch * rad2deg, roll * rad2deg, 0)
         self.view = view
-        if self.view.info["type"] == "3D" and self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1":
+        if self.view.info["type"] == "3D" and self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1":
             self.hint = "?"
         else:
             self.hint = "camera for the 3D view||This 'eye' represents the position of the camera of the 3D perspective view. You can use it to quickly move the camera elsewhere.\n\nIf several 3D views are opened, you will see several 'eyes', one for each camera.\n\nCamera position views can also be set and stored for quick viewing. See the Infobase for details on how to use this feature.|intro.mapeditor.floating3dview.html#camera"
@@ -532,9 +505,7 @@ class EyePosition(GenericHandle):
     ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
         if view.info["type"] == "3D":
             if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1": return
-            if view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
-            if view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1": return
-            if view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1": return
+            if view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
         if oldpos is None:
             try:
                 oldpos = self.newpos
@@ -546,8 +517,10 @@ class EyePosition(GenericHandle):
         if p.visible:
             cv = view.canvas()
             cv.pencolor = redcolor
-            cv.line(p.x-3, p.y-3, p.x+4, p.y+4)
-            cv.line(p.x-3, p.y+3, p.x+4, p.y-4)
+#py2.4            cv.line(p.x-3, p.y-3, p.x+4, p.y+4)
+#py2.4            cv.line(p.x-3, p.y+3, p.x+4, p.y-4)
+            cv.line(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
+            cv.line(int(p.x)-3, int(p.y)+3, int(p.x)+4, int(p.y)-4)
         return oldpos
 
     def draw(self, view, cv, draghandle=None):
@@ -555,9 +528,7 @@ class EyePosition(GenericHandle):
     ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
         if view.info["type"] == "3D":
             if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1": return
-            if view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
-            if view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1": return
-            if view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1": return
+            if view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
         p = view.proj(self.pos)
         if p.visible:
             n = self.normal
@@ -570,7 +541,8 @@ class EyePosition(GenericHandle):
                     icon = 1
             else:
                 icon = 2 + (quarkx.rnd(math.atan2(v2, v1) * rad2deg / 45) & 7)
-            cv.draw(mapicons[icon], p.x-8, p.y-8)
+#py2.4            cv.draw(mapicons[icon], p.x-8, p.y-8)
+            cv.draw(mapicons[icon], int(p.x)-8, int(p.y)-8)
 
 
 class EyeDirection(Rotate3DHandle):
@@ -584,7 +556,7 @@ class EyeDirection(Rotate3DHandle):
         Rotate3DHandle.__init__(self, self.camera[0], forward, view.scale(), mapicons[12])
         self.view3D = view3D
         self.view = view
-        if self.view.info["type"] == "3D" and self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "new3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "full3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons3"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "opengl3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons4"] == "1":
+        if self.view.info["type"] == "3D" and self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1":
             self.hint = "?"
         else:
             self.hint = "camera direction||This is the direction the 'eye' is looking to. You can use it to quickly rotate the camera with the mouse.\n\nThe 'eye' itself represents the position of the camera of the 3D perspective view. You can use it to quickly move the camera elsewhere.\n\nIf several 3D views are opened, you will see several 'eyes', one for each camera.\n\nCamera position views can also be set and stored for quick viewing. See the Infobase for details on how to use this feature.|intro.mapeditor.floating3dview.html#camera"
@@ -652,7 +624,8 @@ class LinRedHandle(LinearHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.mgr.color
-            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+#py2.4            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def linoperation(self, list, delta, g1, view):
         for obj in list:
@@ -684,7 +657,8 @@ class LinSideHandle(LinearHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.mgr.color
-            cv.rectangle(p.x-2.5, p.y-2.5, p.x+3.5, p.y+3.5)
+#py2.4            cv.rectangle(p.x-2.5, p.y-2.5, p.x+3.5, p.y+3.5)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def buildmatrix(self, delta, g1, view):
         npos = self.pos+delta
@@ -741,7 +715,8 @@ class LinCornerHandle(LinearHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.mgr.color
-            cv.polygon([(p.x-3,p.y), (p.x,p.y-3), (p.x+3,p.y), (p.x,p.y+3)])
+#py2.4            cv.polygon([(p.x-3,p.y), (p.x,p.y-3), (p.x+3,p.y), (p.x,p.y+3)])
+            cv.polygon([(int(p.x)-3,int(p.y)), (int(p.x),int(p.y)-3), (int(p.x)+3,int(p.y)), (int(p.x),int(p.y)+3)])
 
     def buildmatrix(self, delta, g1, view):
         normal = view.vector(self.pos).normalized
@@ -1484,12 +1459,28 @@ class Rotator2D(DragObject):
         elif vangle>1.25:
             vangle = 1.25
         info["vangle"] = vangle
+        #
+        # First part of methods for rotation in the Model Editors 3D views.
+        #
+        rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+        if rotationmode == 1:
+            center = quarkx.vect(0,0,0) ### Keeps the center of the GRID at the center of the view.
+        elif rotationmode == 2:
+            center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the  MODEL at the center of the view.
+        elif rotationmode == 3:
+            from mdlhandles import cursorposatstart
 
-        center = self.view.screencenter
+            if cursorposatstart is None:
+                center = quarkx.vect(0,0,0) + modelcenter
+            else:
+                center = cursorposatstart ### Centers the model where clicked for "Rotate at start position" method.
+        else:
+            center = self.view.screencenter ### Defaults back to the Original QuArK rotation method.
+
         fixpt = center + self.view.vector(center).normalized * scroll
-
         setprojmode(self.view)
         self.view.screencenter = fixpt - self.view.vector(fixpt).normalized * scroll
+
         self.view.repaint()
 
     def ok(self, editor, x, y, flags):
@@ -1680,9 +1671,16 @@ class LinHandlesManager:
         Y = max(cy)
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
+        mX = int(mX)   #py2.4
+        mY = int(mY)   #py2.4
+        X = int(X)     #py2.4
+        Y = int(Y)     #py2.4
+        cx = int(cx)   #py2.4
+        cy = int(cy)   #py2.4
         dx = X-cx
         dy = Y-cy
         radius = math.sqrt(dx*dx+dy*dy)
+        radius = int(radius)   #py2.4
         cv = view.canvas()
         cv.pencolor = self.color
         cv.brushstyle = BS_CLEAR
@@ -1767,6 +1765,8 @@ def findlastsel(choice,keep=0):
 #
 
 def z_recenter(view3d, list):
+    global modelcenter
+    modelcenter = view3d.info["center"]
     bbox = quarkx.boundingboxof(list)
     if bbox is None: return
     bmin, bmax = bbox
@@ -1783,11 +1783,13 @@ def z_recenter(view3d, list):
     bmin = min(box1).z
     bmax = max(box1).z
     view3d.info["sfx"] = (bmax-bmin)*0.5 / view3d.info["scale"]
-    view3d.depth = (bmin, bmax+bmax-bmin)
+  #  view3d.depth = (bmin, bmax+bmax-bmin)  # Caused view drifting during model rotation.
+    view3d.depth = (-500.0, 500.0)  # Needed to change to a constant depth value to correct.
     
 
 def flat3Dview(view3d, layout, selonly=0):
 
+    modelcenter = quarkx.vect(0,0,0)
     #
     # "localsetprojmode": Set the projection attributes and then automatically Z-recenter.
     #
@@ -1797,20 +1799,41 @@ def flat3Dview(view3d, layout, selonly=0):
             z_recenter(view, layout.explorer.sellist)
     else:
         def localsetprojmode(view, layout=layout):
+            global modelcenter
             defsetprojmode(view)
             z_recenter(view, [layout.editor.Root])
+            modelcenter = view3d.info["center"]
 
     view3d.viewmode = "tex"
     view3d.flags = view3d.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
     view3d.info = {"type": "2D",
+                   "viewname": "mdleditor3Dview",
                    "scale": 2.0,
                    "angle": -0.7,
                    "vangle": 0.3,
                    "custom": localsetprojmode,
                    "noclick": None,
                    "mousemode": Rotator2D,
-                   "center": quarkx.vect(0,0,0),
+                #   "center": quarkx.vect(0,0,0), # To setup new multiple rotation methods below.
+                   "center": None,
                    "sfx": 0 }
+
+        #
+        # Final part of methods for rotation in the Model Editors 3D views.
+        #
+    rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+    if rotationmode == 2:
+        center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the MODEL at the center of the view.
+    elif rotationmode == 3:
+        from mdlhandles import cursorposatstart
+        if cursorposatstart is None:
+            center = quarkx.vect(0,0,0) + modelcenter
+        else:
+            center = cursorposatstart
+    else:
+        center = quarkx.vect(0,0,0) ### For the Original QuArK rotation and "Lock to center of 3Dview" methods.
+    view3d.info["center"] = center
+
     if selonly:
         layout.editor.setupview(view3d, layout.editor.drawmapsel)
     else:
@@ -1822,6 +1845,39 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.27.2.8  2006/11/27 08:31:56  cdunde
+#To add the "Rotate at start position" method to the Model Editors rotation options menu.
+#
+#Revision 1.27.2.7  2006/11/25 04:23:57  cdunde
+#Added a new sub-menu to the Model Editors "Options" menu,
+#with various methods of rotation in 3D views to choose from.
+#
+#Revision 1.27.2.6  2006/11/22 18:26:45  cdunde
+#To reset rotation to center of model rather then the view
+#to account for models of grid center.
+#
+#Revision 1.27.2.5  2006/11/22 06:50:46  cdunde
+#Fixed the Model Editors 3D pivot point at the center of the view.
+#
+#Revision 1.27.2.4  2006/11/09 23:17:45  cdunde
+#Changed Paint Brush dialog to work with new version view setup and names.
+#
+#Revision 1.27.2.3  2006/11/09 23:00:02  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
+#Revision 1.27.2.2  2006/11/04 21:39:40  cdunde
+#New "viewname" info added key:value "viewname": "mdleditor3Dview" to model edittors
+#3D view because quarkpy\qhandles.py file redefines that view as a "2D" type.
+#(who knows why but it brakes if it is not)
+#
+#Revision 1.27.2.1  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
+#Revision 1.27  2006/06/03 02:31:46  cdunde
+#To fix Access violation errors when rebuilding 3D textured views and panning or moving in them.
+#
 #Revision 1.26  2006/06/02 18:48:02  cdunde
 #To fix a couple of erroneous console errors.
 #

@@ -21,15 +21,19 @@ import math
 import quarkx
 import qtoolbar
 import qmenu
+from qdictionnary import Strings
 from qeditor import *
+import quarkpy.qhandles # To add change of "Floating 3D view" mouse control between Map and Model editors.
 
+#py2.4 indicates upgrade change for python 2.4
 
 ModesHint = "|Each view can be set to one of three rendering modes :\n\nWireframe : all polygons are drawn as lines, entities as points, etc.\n\nSolid : each polygon is drawn in a single, solid color.\n\nTextured : polygon and models are displayed with their texture."
 
 class BaseLayout:
     "An abstract base class for Map and Model Editor screen layouts."
 
-    CurrentOpenGLOwner = "NEVER"
+    #CurrentRendererOwner = "NEVER"
+    CurrentRendererOwner = None
 
     def __init__(self):
         # debug("Creation of layout '%s'" % self.__class__.__name__)
@@ -45,10 +49,11 @@ class BaseLayout:
         self.buttons = {}
         self.toolbars = {}
         self.leftpanel = None
-        self.full3DFX = None
+        self.full3Dview = None
         self.hintcontrol = None
         self.hinttext = ""
         self.compass = None
+        self.editor = None
 
    # def __del__(self):
    #     debug("Destruction of layout '%s'" % self.__class__.__name__)
@@ -65,7 +70,6 @@ class BaseLayout:
             self.writeconfig(config)
             writetoolbars(self, config)
 
-            self.releaseOpenGL(1)
         finally:
             for c in form.floatings():           c.close()
             for c in form.mainpanel.controls():  c.close()
@@ -80,6 +84,10 @@ class BaseLayout:
     def setupchanged(self, level):
         "Reads setup-dependant information for the layout."
         if len(self.views):
+            if BaseLayout.CurrentRendererOwner is not None:
+                self.full3Dview.close()  #Daniel: Can't find any other easy way of doing this...
+            self.editor.layout.mpp.viewpage(0)   #Change the MultiPagesPanel to Tree-view, to avoid problems if the renderer has changed
+            #Daniel: Free up the view allocated with viewpage, so it is set to the correct renderer the next time around
             if MapOption("CrossCursor", self.MODE):
                 ncursor = CR_CROSS
                 nhandlecursor = CR_ARROW
@@ -90,6 +98,7 @@ class BaseLayout:
                 v.cursor = ncursor
                 v.handlecursor = nhandlecursor
                 v.setup = None   # reload setup from default source
+            self.editor.invalidateviews(1)
             setup = quarkx.setupsubset(self.MODE, "Colors")
             self.views[0].color = setup.getint("ViewXY")
             self.views[0].darkcolor = setup.getint("SelXY")
@@ -166,9 +175,7 @@ class BaseLayout:
         Mod2.mode = "solid"
         Mod3 = qmenu.item("&Textured", self.setviewmode, modhint)
         Mod3.mode = "tex"
-        New3D = qmenu.item("New &3D window", self.new3Dwindow, "|New 3D window:\n\nThis will create a new free-floating 3D edit window. ", infobaselink)
-        NewOGL = qmenu.item("OpenGL view", self.toggleOpenGLwindow, "|OpenGL 3D view:\n\nThis does the same as the previous command\n'New 3D-window' but the 3D viewer uses the OpenGL standard 3D graphic library. ", infobaselink)
-        NewF3D = qmenu.item("Full 3D view", self.full3Dclick, "|Full 3D view:\n\nThis does the same as the 'New 3D-window' command but in full screen mode.", infobaselink)
+        New3D = qmenu.item("3D view", self.full3Dclick, "|3D view:\n\nThis will create a new free-floating 3D edit window.", infobaselink)
         cliphint = "|While you edit your "+text+", some parts of it may be visible on one view but not on the others. Such parts are considered to be 'out of view', and these commands control how they are displayed :\n\n'Show whole "+text+"': no out-of-view masking\n'Gray out of view': grayed out (default)\n'Hide out of view': simply hidden"
         DrM1 = qmenu.item("Show &whole "+text, self.setdrawmode, cliphint, infobaselink)
         DrM1.mode = DM_NORMAL
@@ -180,9 +187,12 @@ class BaseLayout:
          #
          # NOTE: this menu is accessed by position in the function "layoutmenuclick"
          #
-        return [Mod1, Mod2, Mod3, New3D, NewOGL, NewF3D, qmenu.sep, DrM1, DrM2,
+        return [Mod1, Mod2, Mod3, New3D, qmenu.sep, DrM1, DrM2,
          DrM3, qmenu.sep, PanelRight], {"Ctrl+1":Mod1, "Ctrl+2":Mod2,
-         "Ctrl+3":Mod3, "Ctrl+4": New3D, "Ctrl+5": NewOGL, "Ctrl+6": NewF3D}
+         "Ctrl+3":Mod3, "Ctrl+4": New3D}
+        #return [Mod1, Mod2, Mod3, New3D, NewOGL, NewF3D, qmenu.sep, DrM1, DrM2,
+        # DrM3, qmenu.sep, PanelRight], {"Ctrl+1":Mod1, "Ctrl+2":Mod2,
+        # "Ctrl+3":Mod3, "Ctrl+4": New3D, "Ctrl+5": NewOGL, "Ctrl+6": NewF3D} Daniel
 
     def layoutmenuclick(self, menu):
         common = None
@@ -195,11 +205,10 @@ class BaseLayout:
                 common = test
         for m in menu.items[0:3]: # position of (self.getlayoutmenu) Mod1, Mod2 and Mod3
             m.state = (m.mode == common) and qmenu.radiocheck
-        #menu.items[4].state = (self is BaseLayout.CurrentOpenGLOwner) and qmenu.checked
-        for m in menu.items[7:10]: # position of (self.getlayoutmenu) DrM1, DrM2 and DrM3
+        #menu.items[4].state = (self is BaseLayout.CurrentRendererOwner) and qmenu.checked
+        for m in menu.items[5:8]: # position of (self.getlayoutmenu) DrM1, DrM2 and DrM3
             m.state = (m.mode == (self.editor.drawmode&DM_MASKOOV)) and qmenu.radiocheck
-        menu.items[11].state = (self.leftpanel.align=="right") and qmenu.checked # position of (self.getlayoutmenu) PanelRight
-
+        menu.items[9].state = (self.leftpanel.align=="right") and qmenu.checked # position of (self.getlayoutmenu) PanelRight
 
     def setviewmode(self, menu):
         for v in self.baseviews:
@@ -216,115 +225,85 @@ class BaseLayout:
     def panelatright(self, menu):
         self.leftpanel.align = ("right", "left")[self.leftpanel.align=="right"]
 
-
-    def close3Dwindow(self, floating, view=None):
-        if view is None:
-            view = floating.info
-        if view in self.views:
-            self.views.remove(view)
-            self.update3Dviews()
-
-    def new3Dwindow(self, menu):
-        "Spawns a new 3D window."
-        floating = quarkx.clickform.newfloating(FWF_NOESCCLOSE, "New 3D window")
-        view = floating.mainpanel.newmapview()
-        view.info = {"type": "3D", "viewname": "new3Dwindow"}
-        view.viewmode = "tex"
-        setprojmode(view)
-        self.editor.setupview(view)
-        floating.info = view
-        floating.onclose = self.close3Dwindow
-        floating.show()
-        if not (view in self.views):
-            self.views.append(view)
-        self.update3Dviews(view)
-
-    def closeOpenGL(self):
-        if BaseLayout.CurrentOpenGLOwner != "NEVER":
-            import qopengl
-            qopengl.close()
-
-    def releaseOpenGL(self, timerclose=0):
-        # tells the current layout manager to stop using the OpenGL view
-        if BaseLayout.CurrentOpenGLOwner is not self:
-            if not timerclose: return
-            if BaseLayout.CurrentOpenGLOwner is not None: return
-        else:
-            self.buttons["opengl"].state = 0
-            quarkx.update(self.editor.form)
-        import qopengl
-        floating = qopengl.wnd
-        if floating is not None:
-            if BaseLayout.CurrentOpenGLOwner is self:
-                self.close3Dwindow(floating, qopengl.glview)
-                qopengl.clearviewdeps()
-            #if timerclose:
-            #    floating.toback()
-            #    quarkx.settimer(qopengl.deadtest, None, 10000)
-        BaseLayout.CurrentOpenGLOwner = None
-
-    def toggleOpenGLwindow(self, menu):
-        "Opens/closes the OpenGL window."
-        import qopengl
-        if self is BaseLayout.CurrentOpenGLOwner:
-            if qopengl.offscreen:
-                qopengl.open(self.editor)
-                nstate = qtoolbar.selected
-            else:
-                qopengl.open(self.editor, bkgnd = 2)
-                nstate = 0
-        else:
-            if BaseLayout.CurrentOpenGLOwner is not None:
-                BaseLayout.CurrentOpenGLOwner.releaseOpenGL()
-            qopengl.open(self.editor)
-            view = qopengl.glview
-            self.editor.setupview(view)
-            if not (view in self.views):
-                self.views.append(view)
-            self.update3Dviews(view)
-            nstate = qtoolbar.selected
-            BaseLayout.CurrentOpenGLOwner = self
-        self.buttons["opengl"].state = nstate
-        quarkx.update(self.editor.form)
-
-    def closefull3DFX(self, floating):
-        view = floating.mainpanel.controls()[0]
-        view.full3DFX(0)
-        if view in self.views:
-            self.views.remove(view)
-            self.update3Dviews()
-        self.full3DFX = None
-
     def full3Dclick(self, menu):
-        "Opens the Full 3D display."
-        floating = self.full3DFX
-        if floating is None:
-            floating = quarkx.clickform.newfloating(0, "Full 3D view")
-            self.full3DFX = floating
-            view = floating.mainpanel.newmapview()
+        if self.buttons["3D"].state == 0:
+            setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+            if setup["Warning3D"]:
+                if quarkx.msgbox(Strings[-104], MT_WARNING, MB_YES|MB_NO) != MR_YES:
+                    raise quarkx.abort
+            self.openfull3Dview()
+            if BaseLayout.CurrentRendererOwner is not None:
+                self.buttons["3D"].state = qtoolbar.selected
+                quarkx.update(self.editor.form)
         else:
-            view = floating.mainpanel.controls()[0]
-            if view.full3DFX(-1):    # if already opened
-                self.closefull3DFX(floating)
-                return
-        floating.rect = view.setup["FullScreenSize"]
-        view.info = {"type": "3D", "noclick": None, "viewname": "full3Dview"}
+            self.full3Dview.close()
+
+    def openfull3Dview(self):
+        "Opens the 3D view."
+        floating = BaseLayout.CurrentRendererOwner
+        if floating is not None:
+            self.closefull3Dview(floating)
+        #Daniel: Check for FullScreen. If set, go fullscreen!
+        floating = quarkx.clickform.newfloating(0, "Full 3D view")
+        view = floating.mainpanel.newmapview()
+        #floating.rect = view.setup["FullScreenSize"]
+        #floating.rect = view.setup["WndRect"]
+        view.info = {"type": "3D", "viewname": "3Dwindow"}
+        #view.info = {"type": "3D", "noclick": None, "viewname": "full3Dview"}
         view.viewmode = "tex"
+        view.viewtype = "window"
+
+    ### Calling this function causes the 3D view mouse maneuvering to change,
+    ### rotation is based on the center of the editor view or the model (0,0,0).
+    ### But only for the Model Editor, so we first test for that.
+        if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
+            quarkpy.qhandles.flat3Dview(view, self)
+            del view.info["noclick"] 
+
         setprojmode(view)
         self.editor.setupview(view)
         floating.info = view
-        floating.onclose = self.closefull3DFX
-        mode = view.full3DFX(1)
-        if mode!=2:
-            if mode==1:
-                floating.close()
-                return
-            else:
-                floating.windowrect = quarkx.screenrect()
+        floating.onclose = self.closefull3Dview
+        self.full3Dview = floating
+        mode = view.full3Dview()
+        if mode!=2: #Check for fullscreen
+            #if mode==1: #Check for hidden?
+                #floating.close()
+                #return
+            #else:
+                #floating.windowrect = quarkx.screenrect()
+                setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+                r = setup["WndRect"]
+                temp = (int(r[0]), int(r[1]), int(r[2]), int(r[3]))   #py2.4
+                r = temp   #py2.4
+                floating.windowrect = r
+                r = r[2:]
+                floating.rect = r
                 floating.show()
         if not (view in self.views):
             self.views.append(view)
         self.update3Dviews(view)
+        BaseLayout.CurrentRendererOwner = floating  #Check if this works OK!
+
+    def closefull3Dview(self, floating):
+        "Closes the 3D view."
+        view = floating.mainpanel.controls()[0]
+        view.full3Dview()
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+        setup["Warning3D"] = ""
+        #if not offscreen:  #This should be used!
+        r = floating.windowrect
+        r = r[:2] + floating.rect
+        setup["WndRect"] = r
+        if view in self.views:
+            self.views.remove(view)
+            self.update3Dviews()
+        #self.full3Dview.close()
+        self.full3Dview = None
+        BaseLayout.CurrentRendererOwner = None  #Check if this works OK!
+        if BaseLayout.CurrentRendererOwner is None:    #Optimize this!
+            self.buttons["3D"].state = 0
+            quarkx.update(self.editor.form)
 
     def setupdepth(self, view):
         pass    # abstract
@@ -607,6 +586,21 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.21.2.8  2006/11/04 00:52:59  cdunde
+#To navigate with the mouse just like it does
+#in the Map Editor and the Model Editor 3D views.
+#
+#Revision 1.21.2.7  2006/11/03 23:38:09  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
+#Revision 1.21.2.6  2006/11/01 22:22:41  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
+#Revision 1.21  2006/01/31 08:43:46  cdunde
+#Increased scale range to allow displaying for increased zoom range.
+#
 #Revision 1.20  2006/01/30 10:07:13  cdunde
 #Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
 #to allow the creation of much larger maps for the more recent games.

@@ -158,14 +158,6 @@ def MACRO_helpmenu(text):
     getattr(qeditor, helpfn[text])()
 
 
-#
-# Macro called to open the OpenGL window in background
-#
-
-def MACRO_OpenGL(minx, miny):
-    import qopengl, qeditor
-    qopengl.open(qeditor.mapeditor(), minx, miny, bkgnd=1)  #, force=1)
-
 def MACRO_shutdown(text):
 #    quitfile=open(quarkx.exepath+'quit.txt','w')
 #    quitfile.write('quitting\n')
@@ -215,29 +207,28 @@ class dialogbox:
         name = self.name or self.__class__.__name__
         closedialogbox(name)
         f = quarkx.newobj("Dlg:form")
-        if self.dlgdef is not None:
-            f.loadtext(self.dlgdef)
-            self.f = f
-            for pybtn in f.findallsubitems("", ':py'):
-                pybtn["sendto"] = name
-            self.buttons = buttons
-            dlg = form.newfloating(self.dlgflags, f["Caption"])
-            dialogboxes[name] = dlg
-            dlg.windowrect = self.windowrect()
-            if self.begincolor is not None: dlg.begincolor = self.begincolor
-            if self.endcolor is not None: dlg.endcolor = self.endcolor
-            dlg.onclose = self.onclose
-            dlg.info = self
-            self.dlg = dlg
-            self.src = src
-            df = dlg.mainpanel.newdataform()
-            self.df = df
-            df.header = 0
-            df.sep = self.dfsep
-            df.setdata(src, f)
-            df.onchange = self.datachange
-            df.flags = 8   # DF_AUTOFOCUS
-            dlg.show()
+        f.loadtext(self.dlgdef)
+        self.f = f
+        for pybtn in f.findallsubitems("", ':py'):
+            pybtn["sendto"] = name
+        self.buttons = buttons
+        dlg = form.newfloating(self.dlgflags, f["Caption"])
+        dialogboxes[name] = dlg
+        dlg.windowrect = self.windowrect()
+        if self.begincolor is not None: dlg.begincolor = self.begincolor
+        if self.endcolor is not None: dlg.endcolor = self.endcolor
+        dlg.onclose = self.onclose
+        dlg.info = self
+        self.dlg = dlg
+        self.src = src
+        df = dlg.mainpanel.newdataform()
+        self.df = df
+        df.header = 0
+        df.sep = self.dfsep
+        df.setdata(src, f)
+        df.onchange = self.datachange
+        df.flags = 8   # DF_AUTOFOCUS
+        dlg.show()
 
     def windowrect(self):
         x1,y1,x2,y2 = quarkx.screenrect()
@@ -314,6 +305,9 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.20.2.1  2006/11/23 20:04:49  danielpharos
+#Removed a macro that isn't used anymore
+#
 #Revision 1.20  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

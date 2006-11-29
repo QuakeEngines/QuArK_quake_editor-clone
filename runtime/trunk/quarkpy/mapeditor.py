@@ -1,3 +1,7 @@
+# Two lines below to stop encoding errors in the console.
+#!/usr/bin/python
+# -*- coding: ascii -*-
+
 """   QuArK  -  Quake Army Knife
 
 Core of the Map editor.
@@ -25,16 +29,18 @@ Core of the Map editor.
 #  * dragobject  while the user is dragging the mouse,
 #                is an instance of DragObject (see qhandles.py).
 #
+#py2.4 indicates upgrade change for python 2.4
 
 
-from maputils import *
-import mapmgr
-import qhandles
 import maphandles
+import qhandles
+import mapmgr
+from qbaseeditor import BaseEditor
 import mapbtns
 import mapentities
+
+from maputils import *
 from qdictionnary import Strings
-from qbaseeditor import BaseEditor
 
 
 
@@ -60,7 +66,7 @@ class MapEditor(BaseEditor):
                 self.Root = self.fileobject.findname(Root)
         errors = quarkx.getmaperror();
         if errors:
-            errors = string.splitfields(errors, '\\n')
+            errors = errors.split('\\n')
             debug('Map Reading Errors: face and brush numbering starting from 0, hulls from 1:')
             for error in errors:
                 debug(' '+error)
@@ -129,7 +135,8 @@ class MapEditor(BaseEditor):
         except:
             pending = None
         if pending:
-            quarkx.settimer(autosave, self, 0.0)
+#py2.4            quarkx.settimer(autosave, self, 0.0)
+            quarkx.settimer(autosave, self, int(0.0))
             del self.pending
         if self.tmpsaved:
             try:
@@ -356,6 +363,17 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.8.2.2  2006/11/24 20:43:49  cdunde
+#To fix Python string function coding missed when Python bundling was done.
+#
+#Revision 1.8.2.1  2006/11/03 23:38:10  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
+#Revision 1.8  2006/01/30 08:20:00  cdunde
+#To commit all files involved in project with Philippe C
+#to allow QuArK to work better with Linux using Wine.
+#
 #Revision 1.7  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

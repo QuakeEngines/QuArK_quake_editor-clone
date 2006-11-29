@@ -25,10 +25,18 @@ from mdlutils import *
 import mdlentities
 import qmenu
 
+#py2.4 indicates upgrade change for python 2.4
 
-
+# Globals
 vertexdotcolor = 0
-
+tri_indexnbr = 0
+ver_index0x = ver_index0y = ver_index0z = None
+ver_index1x = ver_index1y = ver_index1z = None
+ver_index2x = ver_index2y = ver_index2z = None
+mdleditor = None
+mdleditorview = None
+cursorposatstart = None
+texWidth = texHeight = 0
 
 #
 # The handle classes.
@@ -84,42 +92,46 @@ class VertexHandle(qhandles.GenericHandle):
         if p.visible:
             cv.pencolor = vertexdotcolor
             if MldOption("Ticks") == "1":
-                cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+#py2.4                 cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+                cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
             else:
-                cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
-            cv.setpixel(p.x, p.y, vertexdotcolor)
+#py2.4                cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
+                cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
+#py2.4            cv.setpixel(p.x, p.y, vertexdotcolor)
+            cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
             editor = mapeditor()
             if editor is not None:
-              if self.index in editor.picked:
-           #     cv.pencolor = WHITE
-                cv.pencolor = vertexdotcolor
-                cv.rectangle(p.x-3, p.y-3, p.x+3, p.y+3)
+                if self.index in editor.picked:
+           #         cv.pencolor = WHITE
+                    cv.pencolor = vertexdotcolor
+#py2.4                    cv.rectangle(p.x-3, p.y-3, p.x+3, p.y+3)
+                    cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
     def drag(self, v1, v2, flags, view):
         p0 = view.proj(self.pos)
         if not p0.visible: return
         if flags&MB_CTRL:
-          v2 = qhandles.aligntogrid(v2, 0)
+            v2 = qhandles.aligntogrid(v2, 0)
         delta = v2-v1
         editor = mapeditor()
         if editor is not None:
-          if editor.lock_x==1:
-            delta = quarkx.vect(0, delta.y, delta.z)
-          if editor.lock_y==1:
-            delta = quarkx.vect(delta.x, 0, delta.z)
-          if editor.lock_z==1:
-            delta = quarkx.vect(delta.x, delta.y, 0)
+            if editor.lock_x==1:
+                delta = quarkx.vect(0, delta.y, delta.z)
+            if editor.lock_y==1:
+                delta = quarkx.vect(delta.x, 0, delta.z)
+            if editor.lock_z==1:
+                delta = quarkx.vect(delta.x, delta.y, 0)
         self.draghint = vtohint(delta)
         new = self.frame.copy()
         if delta or (flags&MB_REDIMAGE):
-          vtxs = new.vertices
-          vtxs[self.index] = vtxs[self.index] + delta
-          new.vertices = vtxs
+            vtxs = new.vertices
+            vtxs[self.index] = vtxs[self.index] + delta
+            new.vertices = vtxs
         return [self.frame], [new]
 
 
 class SkinHandle(qhandles.GenericHandle):
-  "Skin Handle for s / t positioning"
+  "Skin Handle for skin\texture positioning"
 
   size = (3,3)
 
@@ -130,45 +142,128 @@ class SkinHandle(qhandles.GenericHandle):
       self.ver_index = ver_index
       self.component = comp
 
-#  def drag(self, v1, v2, flags, view):
-#      p0 = view.proj(self.pos)
-#      if not p0.visible: return
-#      if flags&MB_CTRL:
-#        v2 = qhandles.aligntogrid(v2, 0)
-#      delta = v2-v1
-#      editor = mapeditor()
-#      if editor is not None:
-#        if editor.lock_x==1:
-#          delta = quarkx.vect(0, delta.y, 0)
-#        if editor.lock_y==1:
-#          delta = quarkx.vect(delta.x, 0, 0)
-#      self.draghint = "moving s/t vertex: " + ftoss(delta.x) + ", " + ftoss(delta.y)
-#      new = self.component.copy()
-#      if delta or (flags&MB_REDIMAGE):
-#        tris = new.triangles
-#
-#        oldtri = tris[self.tri_index]
-#        oldvert = oldtri[self.ver_index]
-#        newvert = [oldvert[0], oldvert[1]+delta.x, oldvert[2]+delta.y]        
-#        if (self.ver_index == 0):
-#          newtri = [newvert, oldtri[1], oldtri[2]]
-#        elif (self.ver_index == 1):
-#          newtri = [oldtri[0], newvert, oldtri[2]]
-#        elif (self.ver_index == 2):
-#          newtri = [oldtri[0], oldtri[1], newvert]
-#        tris[self.tri_index] = newtri
-#
-#        new.triangles = tris
-#      return [self.component], [new]
   
   def draw(self, view, cv, draghandle=None):
+      global tri_indexnbr, ver_index0x, ver_index0y, ver_index0z, ver_index1x, ver_index1y, ver_index1z, ver_index2x, ver_index2y, ver_index2z
       p = view.proj(self.pos)
       if p.visible:
+          cv.pencolor = RED
+          tri_index = self.tri_index
+          ver_index = self.ver_index
+          if tri_index != tri_indexnbr:
+              tri_indexnbr = tri_index
+          if tri_index == tri_indexnbr:
+              if ver_index == 0:
+                  ver_index0x, ver_index0y, ver_index0z = p.tuple
+                  ver_index0x = int(ver_index0x)
+                  ver_index0y = int(ver_index0y)
+                  ver_index0z = int(ver_index0z)
+              if ver_index == 1:
+                  ver_index1x, ver_index1y, ver_index1z = p.tuple
+                  ver_index1x = int(ver_index1x)
+                  ver_index1y = int(ver_index1y)
+                  ver_index1z = int(ver_index1z)
+              if ver_index == 2:
+                  ver_index2x, ver_index2y, ver_index2z = p.tuple
+                  ver_index2x = int(ver_index2x)
+                  ver_index2y = int(ver_index2y)
+                  ver_index2z = int(ver_index2z)
+          
+          if ver_index0x is not None and ver_index1x is not None and ver_index2x is not None:
+         #     cv.line(ver_index0x, ver_index0y, ver_index1x, ver_index1y) ## More of the total lines, but too many cause BIG slowdown.
+              cv.line(ver_index1x, ver_index1y, ver_index2x, ver_index2y)  ## This one's best for over all mesh completion.
+         #     cv.line(ver_index2x, ver_index2y, ver_index0x, ver_index0y) ## More of the total lines, but too many cause BIG slowdown.
+          tri_indexnbr = tri_index
+          cv.reset()
           if MldOption("Ticks") == "1":
-              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+#py2.4              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+              cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
           else:
-              cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
-          cv.setpixel(p.x, p.y, vertexdotcolor)
+#py2.4              cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
+              cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
+#py2.4          cv.setpixel(p.x, p.y, vertexdotcolor)
+          cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
+
+
+  def drag(self, v1, v2, flags, view):
+      global tri_indexnbr, ver_index0x, ver_index0y, ver_index0z, ver_index1x, ver_index1y, ver_index1z, ver_index2x, ver_index2y, ver_index2z, texWidth, texHeight
+      editor = mapeditor()
+      p0 = view.proj(self.pos)
+      if not p0.visible: return
+      if flags&MB_CTRL:
+          v2 = qhandles.aligntogrid(v2, 0)
+      delta = v2-v1
+      if editor is not None:
+          if editor.lock_x==1:
+              delta = quarkx.vect(0, delta.y, 0)
+          if editor.lock_y==1:
+              delta = quarkx.vect(delta.x, 0, 0)
+      self.draghint = "moving s/t vertex: " + ftoss(delta.x) + ", " + ftoss(delta.y)
+      new = self.component.copy()
+      if delta or (flags&MB_REDIMAGE):
+
+          ### Code below draws line while dragging.
+          faces = self.component.triangles
+          face = faces[self.tri_index]
+          count = 0
+          gotone = 0
+          facev3 = None
+          facev4 = None
+          for vert in face:
+              if count == self.ver_index:
+                  pass
+              elif gotone == 0:
+                  facev3 = quarkx.vect(vert[1]-int(texWidth*.5), vert[2]-int(texHeight*.5), 0)
+                  gotone = gotone + 1
+              else:
+                  facev4 = quarkx.vect(vert[1]-int(texWidth*.5), vert[2]-int(texHeight*.5), 0)
+              count = count + 1
+
+          cv = view.canvas()
+          cv.pencolor = BLUE
+          pv1 = view.proj(v1)
+          pv2 = view.proj(v2)
+          pv3 = view.proj(facev3)
+          pv4 = view.proj(facev4)
+
+          ver_v1x, ver_v1y, ver_v1z = pv1.tuple
+          ver_v1x = int(ver_v1x)
+          ver_v1y = int(ver_v1y)
+          ver_v1z = int(ver_v1z)
+          ver_v2x, ver_v2y, ver_v2z = pv2.tuple
+          ver_v2x = int(ver_v2x)
+          ver_v2y = int(ver_v2y)
+          ver_v2z = int(ver_v2z)
+          ver_v3x, ver_v3y, ver_v3z = pv3.tuple
+          ver_v3x = int(ver_v3x)
+          ver_v3y = int(ver_v3y)
+          ver_v3z = int(ver_v3z)
+          ver_v4x, ver_v4y, ver_v4z = pv4.tuple
+          ver_v4x = int(ver_v4x)
+          ver_v4y = int(ver_v4y)
+          ver_v4z = int(ver_v4z)
+
+       #   cv.line(ver_v1x, ver_v1y, ver_v2x, ver_v2y) * Not correct point, needs fixing by getting one more point.
+          cv.line(ver_v2x, ver_v2y, ver_v3x, ver_v3y)
+          cv.line(ver_v2x, ver_v2y, ver_v4x, ver_v4y)
+          editor.finishdrawing(view)
+          view.repaint()
+
+          tris = new.triangles
+          oldtri = tris[self.tri_index]
+          oldvert = oldtri[self.ver_index]
+          newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
+          if (self.ver_index == 0):
+              newtri = (newvert, oldtri[1], oldtri[2])
+          elif (self.ver_index == 1):
+              newtri = (oldtri[0], newvert, oldtri[2])
+          elif (self.ver_index == 2):
+              newtri = (oldtri[0], oldtri[1], newvert)
+          tris[self.tri_index] = newtri
+          new.triangles = tris
+
+      return [self.component], [new]
+
 
 class BoneHandle(qhandles.GenericHandle):
   "Bone Handle"
@@ -179,128 +274,215 @@ class BoneHandle(qhandles.GenericHandle):
       self.cursor = CR_CROSSH
 
   def drag(self, v1, v2, flags, view):
+      self.handle = self
+      self.bone_length = v2-v1
       p0 = view.proj(self.pos)
       if not p0.visible: return
       if flags&MB_CTRL:
-        v2 = qhandles.aligntogrid(v2, 0)
+          v2 = qhandles.aligntogrid(v2, 0)
       delta = v2-v1
       editor = mapeditor()
       if editor is not None:
-        if editor.lock_x==1:
-          delta = quarkx.vect(0, delta.y, delta.z)
-        if editor.lock_y==1:
-          delta = quarkx.vect(delta.x, 0, delta.z)
-        if editor.lock_z==1:
-          delta = quarkx.vect(delta.x, delta.y, 0)
+          if editor.lock_x==1:
+              delta = quarkx.vect(0, delta.y, delta.z)
+          if editor.lock_y==1:
+              delta = quarkx.vect(delta.x, 0, delta.z)
+          if editor.lock_z==1:
+              delta = quarkx.vect(delta.x, delta.y, 0)
       self.draghint = vtohint(delta)
+
       new = self.bone.copy()
       if delta or (flags&MB_REDIMAGE):
-        if (self.s_or_e == 0):
-          apoint = self.bone.start_point
-          apoint = apoint + delta
-          new.start_point = apoint
-        else:
-          apoint = self.bone.end_point
-          debug(str(self.bone.bone_length))
-          if self.bone["length_locked"]=="1":
-            apoint = ProjectKeepingLength(
-                        self.bone.start_point,
-                        self.bone.end_point + delta,
-                        self.bone.bone_length
-                     )
+          if (self.s_or_e == 0):
+              apoint = self.bone.start_point
+              apoint = apoint + delta
+              new.start_point = apoint
           else:
-            apoint = apoint + delta
-          new.end_offset = apoint - self.bone.start_point
+              apoint = self.bone.end_point
+              debug(str(self.bone.bone_length))
+              if self.bone["length_locked"]=="1":
+                  apoint = ProjectKeepingLength(
+                              self.bone.start_point,
+                              self.bone.end_point + delta,
+                              self.bone.bone_length
+                           )
+              else:
+                  for item in self.bone.dictitems["end_point"].dictitems:
+                      vX,vY,vZ = item.split(" ") # To change the "string" item into real vectors
+                      vX = float(vX)
+                      vY = float(vY)
+                      vZ = float(vZ)
+                      apoint = quarkx.vect(vX,vY,vZ)
+                  apoint = apoint + delta
+
+                  for item in self.bone.dictitems["start_point"].dictitems:
+                      vX,vY,vZ = item.split(" ") # To change the "string" item into real vectors
+                      vX = float(vX)
+                      vY = float(vY)
+                      vZ = float(vZ)
+                      start_point = quarkx.vect(vX,vY,vZ)
+
+              if self.bone.start_point is not None:
+                  new.end_offset = apoint - self.bone.start_point
+              else:
+                  new = apoint - start_point
+                  cv = view.canvas()
+                  cv.penwidth = 8
+                  cv.line(view.proj(self.start_point), view.proj(self.end_point))
+                  cv.penwidth = 6
+                  cv.pencolor = BLUE
+                  cv.penstyle = PS_INSIDEFRAME
+                  cv.brushcolor = WHITE
+                  cv.brushstyle = BS_SOLID
+                  cv.line(view.proj(self.start_point), view.proj(self.end_point))
+                  cv.reset()
+                  cv.penwidth = 1
+                  cv.pencolor = BLUE
+                  cv.penstyle = PS_INSIDEFRAME
+                  cv.brushcolor = WHITE
+                  cv.brushstyle = BS_SOLID
+
+                  p = view.proj(self.start_point)
+                  cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+                  p = view.proj(self.end_point)
+                  cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+                  view.invalidate
+
       return [self.bone], [new]
 
   def draw(self, view, cv, draghandle=None):
-      p = view.proj(self.pos)
+      p = None
+      if self.pos is None:
+          pass
+      else:
+          p = view.proj(self.pos)
       if p is None:
-        return
+          p = view.proj(0,0,0)
       if p.visible:
+          cv.penwidth = 1
+          cv.pencolor = BLUE
+          cv.penstyle = PS_INSIDEFRAME
           cv.brushcolor = WHITE
-          cv.ellipse(p.x - 3, p.y - 3, p.x + 3, p.y + 3)
+          cv.brushstyle = BS_SOLID
+#py2.4          cv.ellipse(p.x-3, p.y-3, p.x+3, p.y+3)
+          cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
 
-def skinzoom(view, center=None):
-    if center is None:
-        center = view.screencenter
-    view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
-    bmin, bmax = view.info["bbox"]
-    x1=y1=x2=y2=None
-    for x in (bmin.x,bmax.x):   # all 8 corners of the bounding box
-        for y in (bmin.y,bmax.y):
-            for z in (bmin.z,bmax.z):
-                p = view.proj(x,y,z)
-                if (x1 is None) or (p.x<x1): x1=p.x
-                if (y1 is None) or (p.y<y1): y1=p.y
-                if (x2 is None) or (p.x>x2): x2=p.x
-                if (y2 is None) or (p.y>y2): y2=p.y
-    view.setrange(x2-x1+36, y2-y1+34, 0.5*(bmin+bmax))
 
-     # trick : if we are far enough and scroll bars are hidden,
-     # the code below clamb the position of "center" so that
-     # the picture is completely inside the view.
-    x1=y1=x2=y2=None
-    for x in (bmin.x,bmax.x):   # all 8 corners of the bounding box
-        for y in (bmin.y,bmax.y):
-            for z in (bmin.z,bmax.z):
-                p = view.proj(x,y,z)    # re-proj... because of setrange
-                if (x1 is None) or (p.x<x1): x1=p.x
-                if (y1 is None) or (p.y<y1): y1=p.y
-                if (x2 is None) or (p.x>x2): x2=p.x
-                if (y2 is None) or (p.y>y2): y2=p.y
-    w,h = view.clientarea
-    w,h = (w-36)/2, (h-34)/2
-    x,y,z = view.proj(center).tuple
-    t1,t2 = x2-w,x1+w
-    if t2>=t1:
-        if x<t1: x=t1
-        elif x>t2: x=t2
-    t1,t2 = y2-h,y1+h
-    if t2>=t1:
-        if y<t1: y=t1
-        elif y>t2: y=t2
-    view.screencenter = view.space(x,y,z)
-    p = view.proj(view.info["origin"])
-    view.depth = (p.z-0.1, p.z+100.0)
-
-def buildskinvertices(editor, view, component):
+def buildskinvertices(editor, view, layout, component, skindrawobject):
     "builds a list of handles to display on the skinview"
+    global tri_indexnbr, ver_index0x, ver_index1x, ver_index2x, texWidth, texHeight
 
-    def drawsingleskin(view, component=component, editor=editor):
+  ### begin code from maphandles def viewsinglebezier
+    if skindrawobject is not None:
+        view.viewmode = "tex" # Don't know why, but if model HAS skin, making this "wire" causes black lines on zooms.
+        try:
+            tex = skindrawobject
+            texWidth,texHeight = tex["Size"]
+            viewWidth,viewHeight = view.clientarea
+               ### Calculates the "scale" factor of the Skin-view
+               ### and sets the scale based on the largest size (Height or Width) of the texture
+               ### to fill the Skin-view. The lower the scale factor, the further away the image is.
+            Width = viewWidth/texWidth
+            Height = viewHeight/texHeight
+            if Width < Height:
+                viewscale = Width
+            else:
+                viewscale = Height
+            
+        except:
+            pass
+        else:
+            def draw1(view, finish=layout.editor.finishdrawing, texWidth=texWidth, texHeight=texHeight):
+                   ### This sets the center location point where the Skin-view grid lines are drawn from.
+                pt = view.space(quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0))
+                pt = view.proj(quarkx.vect(math.floor(pt.x), math.floor(pt.y), 0))
+                   ### This draws the lines from the above center location point.
+                view.drawgrid(quarkx.vect(texWidth*view.info["scale"],0,0), quarkx.vect(0,texHeight*view.info["scale"],0), MAROON, DG_LINES, 0, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0))
+                finish(view)
+
+            view.ondraw = draw1
+            view.onmouse = layout.editor.mousemap
+               ### This sets the texture, its location and scale size in the Skin-view.
+            view.background = tex, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0), 1.0
+    else:
+           ### This handles models without any skin(s).
+        texWidth,texHeight = view.clientarea
+        viewscale = .5
+        view.viewmode = "wire" # Don't know why, but if model has NO skin, making this "tex" causes it to mess up...bad!
+  ### end code from maphandles def viewsinglebezier
+
+
+    def drawsingleskin(view, layout=layout, skindrawobject=skindrawobject, component=component, editor=editor):
         view.color = BLACK
-        view.drawmap(component.skindrawobject)
-#        view.solidimage(component.currentskin)
-        view.drawmap(component.skindrawobject, DM_REDRAWFACES|DM_OTHERCOLOR, 0x2584C9)   # draw the face contour
         editor.finishdrawing(view)
-        # end of drawsingleskin
 
-    h = [ ]  
+       ### This sets the location of the skin texture in the Skin-view when it is first opened
+       ### and I believe keeps it centered if the view is stretched to a different size.
+    center =  quarkx.vect(view.clientarea[0]/2, view.clientarea[1]/2, 0)
+    origin = center
+
+#DECKER - begin
+    #FIXME - Put a check for an option-switch here, so people can choose which they want (fixed-zoom/scroll, or reseting-zoom/scroll)
+    oldx, oldy, doautozoom = center.tuple
+    try:
+        oldorigin = view.info["origin"]
+        if not abs(origin - oldorigin):
+            oldscale = view.info["scale"]
+            if oldscale is None:
+                doautozoom = 1
+            oldx, oldy = view.scrollbars[0][0], view.scrollbars[1][0]
+        else:
+            doautozoom = 1
+    except:
+        doautozoom = 1
+
+    if doautozoom:  ### This sets the view.info scale for the Skin-view when first opened, see ###Decker below.
+        oldscale = viewscale
+#DECKER - end
+
+    org = component.originst
+    n = quarkx.vect(1,1,1) 
+    v = orthogonalvect(n, view)
+    view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
+ #   view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
+    view.info = {"type": "2D",
+                 "matrix": matrix_rot_z(pi2),
+                 "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
+                 "scale": oldscale, ###DECKER This method leaves the scale unchanged from the last zoom (which is what sets the "scale" factor).
+              #   "scale": viewscale, ###DECKER This method resets the texture size of a component to the size of the Skin-view
+                                            ### each time that component is re-selected, but not while any item within it is selected.
+                 "custom": singleskinzoom,
+                 "origin": origin,
+                 "noclick": None,
+                 "center": quarkx.vect(0,0,0),
+                 "mousemode": None
+                 }
+
+    if skindrawobject is None:
+        editor.setupview(view, drawsingleskin, 0)
+
+    h = [ ]
+    tri_indexnbr = -1   # global
     tris = component.triangles
     for i in range(len(tris)):
+        ver_index0x = None   # global
+        ver_index1x = None   # global
+        ver_index2x = None   # global
         tri = tris[i]
         for j in range(len(tri)):
             vtx = tri[j]
-            h.append(SkinHandle(quarkx.vect(vtx[1], vtx[2], 0), i, j, component))
-#    n = quarkx.vect(1,1,1) 
-#    v = orthogonalvect(n, view)
-    org = component.originst
+               ### This sets the Skin-view model mesh vertexes and line drawing location(s).
+            h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component))
+
     view.handles = qhandles.FilterHandles(h, SS_MODEL)
-    view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
-    view.viewmode = "tex"
-    view.info = {"type": "2D",                  
-                 "matrix": matrix_rot_z(pi2),
-                 "origin": org,
-                 "scale": 1,
-                 "custom": skinzoom,
-                 "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
-                 "noclick": None,
-                 "mousemode": None
-                 }
-    skinzoom(view, org)
-    view.flags = view.flags | qhandles.vfSkinView;
-    editor.setupview(view, drawsingleskin, 0)
-    
+    singleskinzoom(view)
+    return 1
+
+
+def singleskinzoom(view):
+    sc = view.screencenter
+    view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
+    view.screencenter = sc
       
 #
 # Functions to build common lists of handles.
@@ -379,6 +561,13 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
 def MouseDragging(self, view, x, y, s, handle):
     "Mouse Drag on a Model View."
+    global mdleditor, mdleditorview, cursorposatstart
+    mdleditor = self
+    mdleditorview = view
+    for item in view.info:
+        if item == 'center':
+            center = view.info["center"]
+            cursorposatstart = view.space(x,y,view.proj(center).z) # Used for start where clicked for Model Editor rotation.
 
     #
     # qhandles.MouseDragging builds the DragObject.
@@ -435,6 +624,59 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.14  2006/11/29 03:12:33  cdunde
+#To center texture and model mesh in Model Editors Skin-view.
+#
+#Revision 1.12.2.13  2006/11/28 00:52:48  cdunde
+#One more attempt to fix view drag error.
+#
+#Revision 1.12.2.12  2006/11/27 19:23:45  cdunde
+#To fix error message on Skin-view page when drag is started.
+#
+#Revision 1.12.2.11  2006/11/27 08:31:56  cdunde
+#To add the "Rotate at start position" method to the Model Editors rotation options menu.
+#
+#Revision 1.12.2.10  2006/11/23 06:25:21  cdunde
+#Started dragging lines support for Skin-view vertex movement
+#and rearranged need code for 4 place indention format.
+#
+#Revision 1.12.2.9  2006/11/22 19:26:52  cdunde
+#To add new globals mdleditor, mdleditorview and cursorposatstart for the
+#Model Editor, view the LMB is pressed in and the cursors starting point location,
+#as a vector, on that view. These globals can be imported to any other file for use.
+#
+#Revision 1.12.2.8  2006/11/17 05:06:55  cdunde
+#To stop blipping of background skin texture,
+#fix Python 2.4 Depreciation Warning messages,
+#and remove unneeded code at this time.
+#
+#Revision 1.12.2.7  2006/11/16 01:01:54  cdunde
+#Added code to activate the movement of the Face-view skin handles for skinning.
+#
+#Revision 1.12.2.6  2006/11/16 00:49:13  cdunde
+#Added code to draw skin mesh lines in Face-view.
+#
+#Revision 1.12.2.5  2006/11/16 00:08:21  cdunde
+#To properly align model skin with its mesh movement handles and zooming function.
+#
+#Revision 1.12.2.4  2006/11/15 23:06:14  cdunde
+#Updated bone handle size and to allow for future variable of them.
+#
+#Revision 1.12.2.3  2006/11/15 22:34:20  cdunde
+#Added the drawing of misc model items and bones to stop errors and display them.
+#
+#Revision 1.12.2.2  2006/11/04 21:41:23  cdunde
+#To setup the Model Editor's Skin-view and display the skin
+#for .mdl, .md2 and .md3 models using .pcx, .jpg and .tga files.
+#
+#Revision 1.12.2.1  2006/11/03 23:38:09  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
+#Revision 1.12  2006/03/07 08:08:28  cdunde
+#To enlarge model Tick Marks hard to see 1 pixel size
+#and added item to Options menu to make 1 size bigger.
+#
 #Revision 1.11  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

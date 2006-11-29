@@ -30,6 +30,7 @@ class Page3D(MPPage):
         fp = panel.newpanel()
         # fp.newtoppanel(ico_maped_y,0).newbtnpanel([    ])   # fill me
         self.mppview3d = fp.newmapview()
+        self.mppview3d.viewtype="panel"
         quarkpy.qhandles.flat3Dview(self.mppview3d, self.layout, 1)
         setprojmode(self.mppview3d)
         return fp
@@ -58,6 +59,13 @@ mppages.append(Page3D)
 #
 #
 # $Log$
+# Revision 1.9.2.5  2006/11/01 22:22:42  danielpharos
+# BackUp 1 November 2006
+# Mainly reduce OpenGL memory leak
+#
+# Revision 1.9  2005/10/15 00:51:24  cdunde
+# To reinstate headers and history
+#
 # Revision 1.6  2003/07/07 07:17:46  cdunde
 # To correct caption exclusion error and hint display
 #

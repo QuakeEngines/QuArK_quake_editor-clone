@@ -46,7 +46,7 @@ def droptarget(editor, newitem):
           if c is None:
             c=editor.Root.currentcomponent
           return c.group_frame, None
-      elif newitem.type in ('.jpg', '.pcx'):
+      elif newitem.type in ('.jpg', '.pcx', '.tga'):
         if not fs is None:
           c=componentof(fs)
           if c is None:
@@ -235,6 +235,33 @@ def edit_newgroup(editor, m=None):
 
 
 
+def texturebrowser(reserved=None):
+    "Opens the texture browser."
+
+    #
+    # Get the texture to select from the current selection.
+    #
+    editor = mapeditor()
+    if editor is None:
+        seltex = None
+    else:
+        if not ("TreeMap" in editor.layout.explorer.sellist[0].classes):
+            seltex = None
+        else:
+            texlist = quarkx.texturesof(editor.layout.explorer.sellist)
+            if len(texlist)==1:
+                seltex = quarkx.loadtexture(texlist[0], editor.TexSource)
+            else:
+                seltex = None
+
+    #
+    # Open the Texture Browser tool box.
+    #
+
+    quarkx.opentoolbox("", seltex)
+
+
+
 
 def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=None):
     "Move the selection and/or apply a linear mapping on it."
@@ -311,6 +338,17 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.7.2.2  2006/11/22 23:31:53  cdunde
+#To setup Face-view click function to open Texture Browser for possible future use.
+#
+#Revision 1.7.2.1  2006/11/04 00:49:34  cdunde
+#To add .tga model skin texture file format so they can be used in the
+#model editor for new games and to start the displaying of those skins
+#on the Skin-view page (all that code is in the mdlmgr.py file).
+#
+#Revision 1.7  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.4  2000/08/21 21:33:04  aiv
 #Misc. Changes / bugfixes
 #

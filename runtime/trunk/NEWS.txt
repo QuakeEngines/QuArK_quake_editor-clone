@@ -12,8 +12,68 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
-6.5.0 alpha 9
+6.5.0 Beta 1
 =============
+
+ * [cdunde]: Started a new Model Editor Infobase section
+           -  and their direct function links from the Model Editor.
+
+ * [cdunde]: Added RMB menu item for all Model Editor 3D views to reset the model location,
+           - based on its current rotation method, in case it goes out of the view and lost.
+
+ * [cdunde]: Fixed the broken direct link in the Help menu to the QuArK Forums.
+
+ * [cdunde]: Added a new sub-menu to the Model Editors "Options" menu,
+          - with various methods of rotation in 3D views to choose from.
+ 
+ * [Daniel Pharos]: Fixed the access violation and subsequent grey OpenGL windows when
+         - loading a model without a skin.
+
+ * [Daniel Pharos]: OpenGL is now able to render 2D views.
+
+ * [Daniel Pharos]: Turned Glide right side up.
+
+ * [Daniel Pharos]: Added higher texture-size support (only works in OpenGL).
+
+ * [cdunde]: Started dragging lines support for Skin-view vertex movement.
+
+ * [cdunde]: Fixed the Model Editors 3D pivot point at the center of the view.
+
+ * [cdunde]: Fixed error when handle is moved on the Bezier Selected patch page
+         - but returned to starting position without completing the handle move.
+
+ * [cdunde]: Added display of currentskin path and name to Skin-view data form section.
+
+ * [cdunde]: Added code to activate the movement of the Skin-view skin handles for skinning.
+
+ * [cdunde]: Added code to draw skin mesh lines in Skin-view.
+
+ * [cdunde]: Added Model Editors Skin-view own zoom button independent of all other views.
+
+ * [cdunde]: To properly align model skin with its mesh movement handles and zooming function.
+
+ * [cdunde]: To show currentskin of a model component in Skin-view when any item
+         - of that component that is chosen.
+
+ * [cdunde]: Added the drawing of misc model items and bones to stop errors and display them.
+
+ * [cdunde]: Changed Paint Brush dialog to work with new version view setup and names.
+
+ * [cdunde]: Setup and activated the Model Editor XYZ Lock Commands menu items
+         - and made them interactive with the Lock Toolbar.
+
+ * [cdunde]: To stop console error when Alt+S is pressed with cursor outside of any view.
+
+ * [cdunde]: Changed Grid Scale displayed numbers to RED for better viewing in Textured 2D mode.
+
+ * [cdunde]: To setup the Model Editor's Skin-view and display the skin for .mdl, .md2 and .md3
+         - models using .pcx, .jpg and .tga files and other work in progress.
+
+ * [cdunde]: New "viewname" info added and "type" for 3D view "full3Dview" for controlling functions.
+
+ * [cdunde]: To add help and Infobase links to Model Editor buttons for future use.
+
+ * [cdunde]: Updates to accept Python 2.4.4 to eliminate console Depreciation warning messages.
 
  * [cdunde]: Fixed error if Addons Delete item is opened and closed with no items to delete.
 
@@ -36,10 +96,10 @@ $Id$
          - to allow their viewing in the editor, all available textures for QuArK's Texture
          - Browser and added its link to a new STVEF Infobase Configuration doc section.
 
- * [DanielPharos and cdunde]: Complete revamping of STVEF files and addition of HM addon
+ * [Daniel Pharos and cdunde]: Complete revamping of STVEF files and addition of HM addon
          - for multiplayer editing by DanielPharos.
 
- * [DanielPharos and cdunde]: As far back as mid 2000 Access Violation errors would
+ * [Daniel Pharos and cdunde]: As far back as mid 2000 Access Violation errors would
          - occurred with various entity forms, causing QuArK to crash. That is now fixed!
 
  * [cdunde]: Changed "Poly size" display in "hint box" to w, d, h to reduce confusion

@@ -11,18 +11,19 @@ Core of the Model editor.
 #$Header$
 
 
+import mdlhandles
+import qhandles
+import mdlmgr
+from qbaseeditor import BaseEditor
+import mdlbtns
+import mdlentities
 
 import qmenu
 import qtoolbar
-import qhandles
 import qmacro
 from qeditor import *
-import mdlmgr
-import mdlhandles
-import mdlentities
-import mdlbtns
-from qbaseeditor import BaseEditor
 
+#py2.4 indicates upgrade change for python 2.4
 
 class ModelEditor(BaseEditor):
     "The Model Editor."
@@ -40,9 +41,20 @@ class ModelEditor(BaseEditor):
         if Root is not None:
             Root = self.fileobject.findname(Root)
         self.Root = Root
-        self.lock_x = 0
-        self.lock_y = 0
-        self.lock_z = 0
+        if (quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] is None):
+            Lock_X = "0"
+            Lock_Y = "0"
+            Lock_Z = "0"
+            quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] = Lock_X
+            quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] = Lock_Y
+            quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] = Lock_Z
+        else:
+            Lock_X = quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"]
+            Lock_Y = quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"]
+            Lock_Z = quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"]
+        self.lock_x = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"])
+        self.lock_y = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"])
+        self.lock_z = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
         if MldOption("SolidFrame") == "1":
             for c in self.ListComponents():
@@ -78,7 +90,9 @@ class ModelEditor(BaseEditor):
         if delay <= 0.0:
             commonhandles(self, 0)
         else:
-            quarkx.settimer(commonhandles, self, delay*1000.0)
+#py2.4            quarkx.settimer(commonhandles, self, delay*1000.0)
+            delayfactor = delay*1000
+            quarkx.settimer(commonhandles, self, int(delayfactor))
 
     def setupchanged(self, level):
         BaseEditor.setupchanged(self, level)
@@ -156,6 +170,20 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.10.2.3  2006/11/08 09:24:20  cdunde
+#To setup and activate Model Editor XYZ Commands menu items
+#and make them interactive with the Lock Toolbar.
+#
+#Revision 1.10.2.2  2006/11/04 21:40:30  cdunde
+#To stop Python 2.4 Depreciation message in console.
+#
+#Revision 1.10.2.1  2006/11/03 23:38:10  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
+#Revision 1.10  2006/03/07 04:51:41  cdunde
+#Setup model frame outlining and options for solid and color selection.
+#
 #Revision 1.9  2006/01/30 08:20:00  cdunde
 #To commit all files involved in project with Philippe C
 #to allow QuArK to work better with Linux using Wine.

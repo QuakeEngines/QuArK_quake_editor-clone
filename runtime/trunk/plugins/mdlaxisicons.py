@@ -55,7 +55,7 @@ saveeditor = None
 
 
 XYZitem = quarkpy.mdloptions.toggleitem("&Axis XYZ letter indicator in view windows", "AxisXYZ", (1,1),
-      hint="|Axis XYZ letter indicator in view windows:\n\nThis display s the X Y or Z indicator letter per view to associate the rotation menu buttons. These are for reference only and are not selectable with the mouse.|intro.mapeditor.menu.html#optionsmenu")
+      hint="|Axis XYZ letter indicator in view windows:\n\nThis display s the X Y or Z indicator letter per view to associate the rotation menu buttons. These are for reference only and are not selectable with the mouse.|intro.modeleditor.menu.html#optionsmenu")
 
 
 quarkpy.mdloptions.items.append(XYZitem)
@@ -181,6 +181,12 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.2.2.1  2006/11/28 00:55:35  cdunde
+#Started a new Model Editor Infobase section and their direct function links from the Model Editor.
+#
+#Revision 1.2  2006/03/07 07:51:19  cdunde
+#To put in safeguard fix for occasional error of not getting editor.
+#
 #Revision 1.1  2006/03/07 06:11:21  cdunde
 #To add view axis icons to Model editor Options menu.
 #

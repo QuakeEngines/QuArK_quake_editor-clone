@@ -38,6 +38,8 @@ import quarkpy.mapentities
 import plugins.mapcsg
 
 
+#py2.4 indicates upgrade change for python 2.4
+
 #
 # Additionnal Quick Object Maker modes (other plug-ins may add other Quick Object Maker modes).
 #
@@ -912,6 +914,15 @@ class SphereMakerDragObject(parent):
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
         cz = (Z+mZ)*0.5
+        X = int(X)      #py2.4
+        Y = int(Y)      #py2.4
+        Z = int(Z)      #py2.4
+        cx = int(cx)    #py2.4
+        cy = int(cy)    #py2.4
+        cz = int(cz)    #py2.4
+        mX = int(mX)    #py2.4
+        mY = int(mY)    #py2.4
+        mZ = int(mZ)    #py2.4
         dx = X-cx
         dy = Y-cy
         dz = Z-cz
@@ -919,12 +930,16 @@ class SphereMakerDragObject(parent):
         centerX = self.startpoint.tuple[0] # given in screen value
         centerY = self.startpoint.tuple[1] # given in screen value
         centerZ = self.startpoint.tuple[2] # given in screen value
+        centerX = int(centerX)   #py2.4
+        centerY = int(centerY)   #py2.4
+        centerZ = int(centerZ)   #py2.4
         actualgrid = mapeditor().gridstep
         if not actualgrid:
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
-        radius = screengridstep
+        screengridstep = int(screengridstep)  #py2.4
+        radius = int(screengridstep)
 
     ## This section sets up not to draw any faces if there are less than 3
         type = self.view.info["type"]
@@ -975,6 +990,8 @@ class SphereMakerDragObject(parent):
         if dif > .01 and dif < 1:
             drawline = drawline + 1
         while drawline >= 1:
+            drawline = int(drawline)  #py2.4
+            screengridstep = int(screengridstep)  #py2.4
             drawline = drawline - 1
             cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
             cv.line(centerX+(screengridstep*drawline), centerY-radius, centerX+(screengridstep*drawline), centerY+radius) # draws Y axis line on and to the left of 0 in Z view
@@ -1041,6 +1058,7 @@ class SphereMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+        sphere_res = int(sphere_res)   #py2.4
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -1513,6 +1531,15 @@ class PyramidMakerDragObject(parent):
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
         cz = (Z+mZ)*0.5
+        X = int(X)      #py2.4
+        Y = int(Y)      #py2.4
+        Z = int(Z)      #py2.4
+        cx = int(cx)    #py2.4
+        cy = int(cy)    #py2.4
+        cz = int(cz)    #py2.4
+        mX = int(mX)    #py2.4
+        mY = int(mY)    #py2.4
+        mZ = int(mZ)    #py2.4
         dx = X-cx
         dy = Y-cy
         dz = Z-cz
@@ -1520,11 +1547,15 @@ class PyramidMakerDragObject(parent):
         centerX = self.startpoint.tuple[0] # given in screen value
         centerY = self.startpoint.tuple[1] # given in screen value
         centerZ = self.startpoint.tuple[2] # given in screen value
+        centerX = int(centerX)   #py2.4
+        centerY = int(centerY)   #py2.4
+        centerZ = int(centerZ)   #py2.4
         actualgrid = mapeditor().gridstep
         if not actualgrid:
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
+        screengridstep = int(screengridstep)   #py2.4
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -1573,6 +1604,7 @@ class PyramidMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
+        drawline = int(drawline)   #py2.4
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
@@ -1643,6 +1675,7 @@ class PyramidMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+        sphere_res = int(sphere_res)   #py2.4
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -1998,6 +2031,15 @@ class DoubleConeMakerDragObject(parent):
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
         cz = (Z+mZ)*0.5
+        X = int(X)      #py2.4
+        Y = int(Y)      #py2.4
+        Z = int(Z)      #py2.4
+        cx = int(cx)    #py2.4
+        cy = int(cy)    #py2.4
+        cz = int(cz)    #py2.4
+        mX = int(mX)    #py2.4
+        mY = int(mY)    #py2.4
+        mZ = int(mZ)    #py2.4
         dx = X-cx
         dy = Y-cy
         dz = Z-cz
@@ -2005,11 +2047,15 @@ class DoubleConeMakerDragObject(parent):
         centerX = self.startpoint.tuple[0] # given in screen value
         centerY = self.startpoint.tuple[1] # given in screen value
         centerZ = self.startpoint.tuple[2] # given in screen value
+        centerX = int(centerX)   #py2.4
+        centerY = int(centerY)   #py2.4
+        centerZ = int(centerZ)   #py2.4
         actualgrid = mapeditor().gridstep
         if not actualgrid:
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
+        screengridstep = int(screengridstep)  #py2.4
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -2057,6 +2103,7 @@ class DoubleConeMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
+        drawline = int(drawline)  #py2.4
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
@@ -2127,6 +2174,7 @@ class DoubleConeMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+        sphere_res = int(sphere_res)   #py2.4
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -2543,6 +2591,15 @@ class CylinderMakerDragObject(parent):
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
         cz = (Z+mZ)*0.5
+        X = int(X)      #py2.4
+        Y = int(Y)      #py2.4
+        Z = int(Z)      #py2.4
+        cx = int(cx)    #py2.4
+        cy = int(cy)    #py2.4
+        cz = int(cz)    #py2.4
+        mX = int(mX)    #py2.4
+        mY = int(mY)    #py2.4
+        mZ = int(mZ)    #py2.4
         dx = X-cx
         dy = Y-cy
         dz = Z-cz
@@ -2550,11 +2607,16 @@ class CylinderMakerDragObject(parent):
         centerX = self.startpoint.tuple[0] # given in screen value
         centerY = self.startpoint.tuple[1] # given in screen value
         centerZ = self.startpoint.tuple[2] # given in screen value
+        centerX = int(centerX)   #py2.4
+        centerY = int(centerY)   #py2.4
+        centerZ = int(centerZ)   #py2.4
+
         actualgrid = mapeditor().gridstep
         if not actualgrid:
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
+        screengridstep = int(screengridstep)  #py2.4
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -2603,6 +2665,7 @@ class CylinderMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
+        drawline = int(drawline)  #py2.4
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
@@ -2673,6 +2736,7 @@ class CylinderMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+        sphere_res = int(sphere_res)   #py2.4
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -3045,6 +3109,15 @@ class DomeMakerDragObject(parent):
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
         cz = (Z+mZ)*0.5
+        X = int(X)      #py2.4
+        Y = int(Y)      #py2.4
+        Z = int(Z)      #py2.4
+        cx = int(cx)    #py2.4
+        cy = int(cy)    #py2.4
+        cz = int(cz)    #py2.4
+        mX = int(mX)    #py2.4
+        mY = int(mY)    #py2.4
+        mZ = int(mZ)    #py2.4
         dx = X-cx
         dy = Y-cy
         dz = Z-cz
@@ -3052,11 +3125,15 @@ class DomeMakerDragObject(parent):
         centerX = self.startpoint.tuple[0] # given in screen value
         centerY = self.startpoint.tuple[1] # given in screen value
         centerZ = self.startpoint.tuple[2] # given in screen value
+        centerX = int(centerX)   #py2.4
+        centerY = int(centerY)   #py2.4
+        centerZ = int(centerZ)   #py2.4
         actualgrid = mapeditor().gridstep
         if not actualgrid:
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
+        screengridstep = int(screengridstep)  #py2.4
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -3104,6 +3181,7 @@ class DomeMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
+        drawline = int(drawline)  #py2.4
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
@@ -3174,6 +3252,7 @@ class DomeMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+        sphere_res = int(sphere_res)   #py2.4
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -3651,6 +3730,15 @@ class FanMakerDragObject(parent):
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
         cz = (Z+mZ)*0.5
+        X = int(X)      #py2.4
+        Y = int(Y)      #py2.4
+        Z = int(Z)      #py2.4
+        cx = int(cx)    #py2.4
+        cy = int(cy)    #py2.4
+        cz = int(cz)    #py2.4
+        mX = int(mX)    #py2.4
+        mY = int(mY)    #py2.4
+        mZ = int(mZ)    #py2.4
         dx = X-cx
         dy = Y-cy
         dz = Z-cz
@@ -3658,11 +3746,15 @@ class FanMakerDragObject(parent):
         centerX = self.startpoint.tuple[0] # given in screen value
         centerY = self.startpoint.tuple[1] # given in screen value
         centerZ = self.startpoint.tuple[2] # given in screen value
+        centerX = int(centerX)   #py2.4
+        centerY = int(centerY)   #py2.4
+        centerZ = int(centerZ)   #py2.4
         actualgrid = mapeditor().gridstep
         if not actualgrid:
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
+        screengridstep = int(screengridstep)  #py2.4
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -3710,6 +3802,7 @@ class FanMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
+        drawline = int(drawline)  #py2.4
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
@@ -3780,6 +3873,7 @@ class FanMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+        sphere_res = int(sphere_res)   #py2.4
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -4278,6 +4372,15 @@ class TorusMakerDragObject(parent):
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
         cz = (Z+mZ)*0.5
+        X = int(X)      #py2.4
+        Y = int(Y)      #py2.4
+        Z = int(Z)      #py2.4
+        cx = int(cx)    #py2.4
+        cy = int(cy)    #py2.4
+        cz = int(cz)    #py2.4
+        mX = int(mX)    #py2.4
+        mY = int(mY)    #py2.4
+        mZ = int(mZ)    #py2.4
         dx = X-cx
         dy = Y-cy
         dz = Z-cz
@@ -4285,11 +4388,15 @@ class TorusMakerDragObject(parent):
         centerX = self.startpoint.tuple[0] # given in screen value
         centerY = self.startpoint.tuple[1] # given in screen value
         centerZ = self.startpoint.tuple[2] # given in screen value
+        centerX = int(centerX)   #py2.4
+        centerY = int(centerY)   #py2.4
+        centerZ = int(centerZ)   #py2.4
         actualgrid = mapeditor().gridstep
         if not actualgrid:
             actualgrid = 1.0
         screengrid = self.view.proj(actualgrid,actualgrid,actualgrid)
         screengridstep = screengrid.tuple[2] # have to use Z because others change value
+        screengridstep = int(screengridstep)  #py2.4
         radius = screengridstep
 
     ## This section sets up not to draw any faces if there are less than 3
@@ -4335,6 +4442,7 @@ class TorusMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
+        drawline = int(drawline)  #py2.4
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
@@ -4429,6 +4537,7 @@ class TorusMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
+        sphere_res = int(sphere_res)   #py2.4
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -4819,6 +4928,18 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9.2.2  2006/11/09 23:00:02  cdunde
+# Updates to accept Python 2.4.4 by eliminating the
+# Depreciation warning messages in the console.
+#
+# Revision 1.9.2.1  2006/11/01 22:22:42  danielpharos
+# BackUp 1 November 2006
+# Mainly reduce OpenGL memory leak
+#
+# Revision 1.9  2006/02/25 03:19:04  cdunde
+# To fix Torus Hollow-No bulkheads function
+# missed with addition of new items.
+#
 # Revision 1.8  2006/02/12 19:03:54  cdunde
 # To add all new, updated and Infobase documentation files
 # for new Object makers, Double-cone, Dome and Fan.

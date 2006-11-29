@@ -1,4 +1,3 @@
-
 """   QuArK  -  Quake Army Knife
 
 Map Editor Buttons and implementation of editing commands
@@ -706,6 +705,12 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.20.2.1  2006/11/23 20:04:05  danielpharos
+#Very small clean-up of the header
+#
+#Revision 1.20  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.17  2005/09/16 18:10:49  cdunde
 #Commit and update files for Terrain Paintbrush addition
 #

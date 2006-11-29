@@ -198,7 +198,6 @@ class GameConsole(BatchConsole):
             formlist = quarkx.forms()
             if len(formlist):
                 try:    # free some memory and closes 3D views
-                    formlist[0].macro("3DFR")
                     formlist[0].macro("FREE")
                 except:
                     pass
@@ -228,6 +227,13 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.11.2.2  2006/11/01 22:22:42  danielpharos
+#BackUp 1 November 2006
+#Mainly reduce OpenGL memory leak
+#
+#Revision 1.11  2006/05/07 07:02:07  rowdy
+#Added a rough hack to allow %file% type substitution in the '<game> command-line' option.  Also added %filename% parameter that is replaced with the map filename (without path, without extension).
+#
 #Revision 1.10  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

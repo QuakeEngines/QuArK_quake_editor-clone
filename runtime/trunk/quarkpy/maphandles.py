@@ -1,3 +1,7 @@
+# Two lines below to stop encoding errors in the console.
+#!/usr/bin/python
+# -*- coding: ascii -*-
+
 """   QuArK  -  Quake Army Knife
 
 Map editor mouse handles.
@@ -6,7 +10,6 @@ Map editor mouse handles.
 # Copyright (C) 1996-99 Armin Rigo
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
-#
 
 #$Header$
 
@@ -20,6 +23,7 @@ Map editor mouse handles.
 # only the map-editor-specific handles.
 #
 
+#py2.4 indicates upgrade change for python 2.4
 
 import quarkx
 import math
@@ -242,7 +246,8 @@ class PFaceHandle(FaceHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = view.darkcolor
-            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+#py2.4            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def click(self, editor):
         editor.layout.explorer.uniquesel = self.face
@@ -282,7 +287,8 @@ class FaceNormalHandle(MapRotateHandle):
         if fromback:
             self.draw1(view, cv, p1, p2, 1)
             if p1.visible:
-                cv.rectangle(p1.x-3, p1.y-3, p1.x+4, p1.y+4)
+#py2.4                cv.rectangle(p1.x-3, p1.y-3, p1.x+4, p1.y+4)
+                cv.rectangle(int(p1.x)-3, int(p1.y)-3, int(p1.x)+4, int(p1.y)+4)
         else:
             oldpc = cv.pencolor
         cv.pencolor = YELLOW
@@ -292,7 +298,8 @@ class FaceNormalHandle(MapRotateHandle):
         if not fromback:
             cv.pencolor = oldpc
             if p1.visible:
-                cv.rectangle(p1.x-3, p1.y-3, p1.x+4, p1.y+4)
+#py2.4                cv.rectangle(p1.x-3, p1.y-3, p1.x+4, p1.y+4)
+                cv.rectangle(int(p1.x)-3, int(p1.y)-3, int(p1.x)+4, int(p1.y)+4)
             self.draw1(view, cv, p1, p2, 0)
         view.drawmap(self.face, 0)
 
@@ -408,7 +415,8 @@ class EdgeHandle(qhandles.GenericHandle):
             cv.reset()
             cv.brushcolor = view.darkcolor
             radius = 3
-            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
+#py2.4            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
+            cv.ellipse(int(p.x)-radius, int(p.y)-radius, int(p.x)+radius+1, int(p.y)+radius+1)
 #            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
 
 class SpecialHandle(FaceHandle):
@@ -434,8 +442,8 @@ class SpecialHandle(FaceHandle):
             cv.reset()
             cv.brushcolor = 0xF000F0
             radius = 9
-#            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
-            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+#py2.4            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def drag(self, v1, v2, flags, view):
         delta = v2-v1
@@ -556,7 +564,8 @@ class VertexHandle(qhandles.GenericHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = view.color
-            cv.rectangle(p.x-0.501, p.y-0.501, p.x+2.499, p.y+2.499)
+#py2.4            cv.rectangle(p.x-0.501, p.y-0.501, p.x+2.499, p.y+2.499)
+            cv.rectangle(int(p.x)-int(0.501), int(p.y)-int(0.501), int(p.x)+int(2.499), int(p.y)+int(2.499))
 
 
     def ok2(self, editor,undo,old,new):
@@ -1290,7 +1299,7 @@ class BTLinHandlesManager(qhandles.LinHandlesManager):
 
 
 class CyanBezier2Handle(qhandles.GenericHandle):
-    "Texture moving of Bézier patches : cyan L vertices."
+    "Texture moving of Bezier patches : cyan L vertices."
 
     undomsg = Strings[628]
     hint = "the shape is the fraction of the texture to map to the Bezier patch"
@@ -1316,6 +1325,7 @@ class CyanBezier2Handle(qhandles.GenericHandle):
     def drag(self, v1, v2, flags, view):
         view.invalidate(1)
         self.dynst = None
+        new = None
         delta = v2-v1
         if not (flags&MB_CTRL):
             delta = qhandles.aligntogrid(delta, 0)
@@ -1336,10 +1346,11 @@ class CyanBezier2Handle(qhandles.GenericHandle):
                 cp[m][n] = cp[m][n]+td
                 new.cp =cp
 
-
         if new is not None:
             self.dynst = new.cp
-        return [self.b2], [new]
+            return [self.b2], [new]
+        else:
+            return [self.b2], new
 
     def getdrawmap(self):
         return self.b2, qhandles.refreshtimertex
@@ -1352,7 +1363,7 @@ class CyanBezier2Handle(qhandles.GenericHandle):
 
 
 class CyanBezier2Handle0(CyanBezier2Handle):
-    "Texture moving of Bézier patches : cyan L base."
+    "Texture moving of Bezier patches : cyan L base."
 
     def __init__(self, cp, b2, handles, scale):
         CyanBezier2Handle.__init__(self, (0,0), cp, b2, scale)
@@ -1523,7 +1534,8 @@ def ClickOnView(editor, view, x, y):
     #
     # defined in QkPyMapview.pas
     #
-    return view.clicktarget(editor.Root, x, y)
+#py2.4    return view.clicktarget(editor.Root, x, y)
+    return view.clicktarget(editor.Root, int(x), int(y))
 
 
 def MapAuxKey(keytag):
@@ -1748,7 +1760,8 @@ def singlefacezoom(view, center=None):
                 if (y1 is None) or (p.y<y1): y1=p.y
                 if (x2 is None) or (p.x>x2): x2=p.x
                 if (y2 is None) or (p.y>y2): y2=p.y
-    view.setrange(x2-x1+36, y2-y1+34, 0.5*(bmin+bmax))
+#py2.4    view.setrange(x2-x1+36, y2-y1+34, 0.5*(bmin+bmax))
+    view.setrange(int(x2)-int(x1)+36, int(y2)-int(y1)+34, 0.5*(bmin+bmax))
 
      # trick : if we are far enough and scroll bars are hidden,
      # the code below clamb the position of "center" so that
@@ -1928,6 +1941,21 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.53.2.3  2006/11/26 19:26:26  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
+#Revision 1.53.2.2  2006/11/18 03:23:17  cdunde
+#Fixed error when handle is moved on the Bezier Selected patch page
+#but returned to starting position without completing the handle move.
+#
+#Revision 1.53.2.1  2006/11/03 23:38:09  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
+#Revision 1.53  2006/07/19 06:10:26  cdunde
+#Updated Extruder Infobase doc and created direct link.
+#
 #Revision 1.52  2006/04/17 23:49:58  cdunde
 #Needed to import plugins\tagging to fix RMB error
 #from occurring in texture movement view window.
