@@ -1784,7 +1784,7 @@ def z_recenter(view3d, list):
     bmax = max(box1).z
     view3d.info["sfx"] = (bmax-bmin)*0.5 / view3d.info["scale"]
   #  view3d.depth = (bmin, bmax+bmax-bmin)  # Caused view drifting during model rotation.
-    view3d.depth = (-500.0, 500.0)  # Needed to change to a constant depth value to correct.
+    view3d.depth = (bmin, bmax)  # This fixes the drifting problem.
     
 
 def flat3Dview(view3d, layout, selonly=0):
@@ -1845,6 +1845,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.28  2006/11/29 07:00:26  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD CVS for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.27.2.8  2006/11/27 08:31:56  cdunde
 #To add the "Rotate at start position" method to the Model Editors rotation options menu.
 #
