@@ -252,6 +252,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.11  2006/11/29 07:00:25  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.10.2.3  2006/11/15 23:06:14  cdunde
 #Updated bone handle size and to allow for future variable of them.
 #

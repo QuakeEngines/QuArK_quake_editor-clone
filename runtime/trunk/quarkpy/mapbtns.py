@@ -705,6 +705,10 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.21  2006/11/29 07:00:27  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.20.2.1  2006/11/23 20:04:05  danielpharos
 #Very small clean-up of the header
 #

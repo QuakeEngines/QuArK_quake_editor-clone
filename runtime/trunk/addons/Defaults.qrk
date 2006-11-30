@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.296  2006/11/29 06:56:20  cdunde
+//To merge all runtime files that had changes from DanielPharos branch
+//to HEAD cvs for QuArK 6.5.0 Beta 1.
+//
 //Revision 1.295.2.13  2006/11/29 05:00:37  cdunde
 //For version change to 6.5 Beta.
 //

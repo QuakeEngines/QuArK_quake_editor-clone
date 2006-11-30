@@ -272,6 +272,10 @@ LayoutsList.append(ThreeViews2DLayout)
 #
 #
 # $Log$
+# Revision 1.6  2006/11/29 06:58:35  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
 # Revision 1.5.2.6  2006/11/01 22:22:43  danielpharos
 # BackUp 1 November 2006
 # Mainly reduce OpenGL memory leak

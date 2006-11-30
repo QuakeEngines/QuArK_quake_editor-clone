@@ -338,6 +338,10 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.8  2006/11/29 07:00:27  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.7.2.2  2006/11/22 23:31:53  cdunde
 #To setup Face-view click function to open Texture Browser for possible future use.
 #

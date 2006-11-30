@@ -911,6 +911,10 @@ qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.40  2006/11/29 07:00:29  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.39.2.2  2006/11/23 20:04:06  danielpharos
 #Very small clean-up of the header
 #

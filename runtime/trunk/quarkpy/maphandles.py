@@ -1941,6 +1941,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.54  2006/11/29 07:00:25  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.53.2.3  2006/11/26 19:26:26  cdunde
 #Updates to accept Python 2.4.4 by eliminating the
 #Depreciation warning messages in the console.

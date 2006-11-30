@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2003/08/12 15:42:49  silverpaladin
 Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
 
@@ -37,7 +40,7 @@ Added IsPathDelimiter & IncludeTrailingBackslash to new File : ExtraFunctionalit
 for us non-D5 users.
 
 Revision 1.1  2001/01/30 19:10:30  decker_dk
-Created to control the application-paths and sub-directories in a feasible manner. I'm here thinking about directory-names with spaces in them, and the possible conflict that has on CVS-repository.
+Created to control the application-paths and sub-directories in a feasible manner. I'm here thinking about directory-names with spaces in them, and the possible conflict that has on cvs-repository.
 }
 
 unit QkApplPaths;

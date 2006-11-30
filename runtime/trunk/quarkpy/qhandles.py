@@ -1845,9 +1845,12 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.29  2006/11/29 22:23:30  cdunde
+#To fix zoom in fade problem in Model Editor for Software and Glide modes.
+#
 #Revision 1.28  2006/11/29 07:00:26  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
-#to HEAD CVS for QuArK 6.5.0 Beta 1.
+#to HEAD for QuArK 6.5.0 Beta 1.
 #
 #Revision 1.27.2.8  2006/11/27 08:31:56  cdunde
 #To add the "Rotate at start position" method to the Model Editors rotation options menu.

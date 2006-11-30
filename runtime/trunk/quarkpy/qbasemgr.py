@@ -586,6 +586,10 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.22  2006/11/29 07:00:28  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.21.2.8  2006/11/04 00:52:59  cdunde
 #To navigate with the mouse just like it does
 #in the Map Editor and the Model Editor 3D views.

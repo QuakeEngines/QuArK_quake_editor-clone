@@ -426,6 +426,10 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2006/11/29 06:58:36  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
 # Revision 1.17.2.2  2006/11/26 12:54:04  cdunde
 # To reset toolbars default location for removal of unneeded 3D buttons.
 #

@@ -170,6 +170,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.11  2006/11/29 07:00:27  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.10.2.3  2006/11/08 09:24:20  cdunde
 #To setup and activate Model Editor XYZ Commands menu items
 #and make them interactive with the Lock Toolbar.

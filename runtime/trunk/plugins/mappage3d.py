@@ -59,6 +59,10 @@ mppages.append(Page3D)
 #
 #
 # $Log$
+# Revision 1.10  2006/11/29 06:58:35  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
 # Revision 1.9.2.5  2006/11/01 22:22:42  danielpharos
 # BackUp 1 November 2006
 # Mainly reduce OpenGL memory leak

@@ -299,6 +299,10 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.6  2006/11/29 06:58:35  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
 # Revision 1.5.2.7  2006/11/04 22:07:58  cdunde
 # *** empty log message ***
 #

@@ -50,6 +50,10 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.7  2006/11/29 06:58:35  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
 # Revision 1.6.2.6  2006/11/04 21:36:22  cdunde
 # To add 3DView viewmode of "tex"
 #

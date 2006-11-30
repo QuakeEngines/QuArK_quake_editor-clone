@@ -167,6 +167,10 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.12  2006/11/29 07:00:26  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.11.2.6  2006/11/28 00:55:35  cdunde
 #Started a new Model Editor Infobase section and their direct function links from the Model Editor.
 #

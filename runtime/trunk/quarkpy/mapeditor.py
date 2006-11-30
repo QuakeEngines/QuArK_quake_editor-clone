@@ -363,6 +363,10 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.9  2006/11/29 07:00:26  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.8.2.2  2006/11/24 20:43:49  cdunde
 #To fix Python string function coding missed when Python bundling was done.
 #

@@ -691,6 +691,10 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.46  2006/11/29 07:00:26  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.45.2.6  2006/11/01 22:22:41  danielpharos
 #BackUp 1 November 2006
 #Mainly reduce OpenGL memory leak

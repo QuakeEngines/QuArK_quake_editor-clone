@@ -898,6 +898,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.20  2006/11/29 07:00:27  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.18.2.7  2006/11/14 22:47:27  cdunde
 #To fix 0 division error of large terrain polys and texture scaling and angle changes.
 #

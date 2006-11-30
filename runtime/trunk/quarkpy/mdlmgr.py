@@ -317,6 +317,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.11  2006/11/29 07:00:26  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.10.2.6  2006/11/23 02:04:26  cdunde
 #Had to comment out one more line and move things around to avoid weird stuff.
 #

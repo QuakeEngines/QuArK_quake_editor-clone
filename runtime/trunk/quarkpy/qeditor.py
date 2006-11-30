@@ -1543,6 +1543,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.31  2006/11/29 07:00:25  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.30.2.11  2006/11/28 00:55:35  cdunde
 #Started a new Model Editor Infobase section and their direct function links from the Model Editor.
 #

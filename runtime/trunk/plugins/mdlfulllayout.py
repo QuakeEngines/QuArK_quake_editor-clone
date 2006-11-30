@@ -50,6 +50,10 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.6  2006/11/29 06:58:35  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
 # Revision 1.5.2.7  2006/11/04 21:38:06  cdunde
 # New "viewname" info added for Full 3D view to coincide with mdl4viewslayout info.
 #

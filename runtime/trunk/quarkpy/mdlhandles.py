@@ -624,6 +624,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.13  2006/11/29 07:00:27  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.12.2.14  2006/11/29 03:12:33  cdunde
 #To center texture and model mesh in Model Editors Skin-view.
 #
