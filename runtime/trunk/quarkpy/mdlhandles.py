@@ -491,6 +491,10 @@ def singleskinzoom(view):
 def BuildCommonHandles(editor, ex):
     "Build a list of handles to display on all map views."
 
+    import plugins.mdlaxisicons
+    for view in editor.layout.views:
+        plugins.mdlaxisicons.newfinishdrawing(editor, view)
+
     fs = ex.uniquesel
     if (fs is None) or editor.linearbox:
         return []
@@ -624,6 +628,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.14  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.13  2006/11/29 07:00:27  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

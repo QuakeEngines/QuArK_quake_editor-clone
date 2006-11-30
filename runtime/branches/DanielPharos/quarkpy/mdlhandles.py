@@ -491,6 +491,10 @@ def singleskinzoom(view):
 def BuildCommonHandles(editor, ex):
     "Build a list of handles to display on all map views."
 
+    import plugins.mdlaxisicons
+    for view in editor.layout.views:
+        plugins.mdlaxisicons.newfinishdrawing(editor, view)
+
     fs = ex.uniquesel
     if (fs is None) or editor.linearbox:
         return []
@@ -624,6 +628,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.12.2.14  2006/11/29 03:12:33  cdunde
+#To center texture and model mesh in Model Editors Skin-view.
+#
 #Revision 1.12.2.13  2006/11/28 00:52:48  cdunde
 #One more attempt to fix view drag error.
 #
