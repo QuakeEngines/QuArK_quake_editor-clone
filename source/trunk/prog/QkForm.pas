@@ -23,6 +23,16 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16.2.9  2006/11/23 20:12:22  danielpharos
+Removed now obsolete Ed3DEditors file
+
+Revision 1.16.2.8  2006/11/01 22:22:29  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
+Revision 1.16  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.14  2003/08/13 04:18:56  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -116,6 +126,7 @@ const
  wp_UpdateButtons        = 135;
  wp_ClickItem            = 136;
  wp_OpenGL               = 137;
+ wp_Direct3D             = 138;
 
  tm_DoubleClick          = 91;
  tm_BeginDrag            = 92;
@@ -130,7 +141,7 @@ const
  wp_GetPyControl         = 200;
  wp_FreeMenuHandle       = 201;
  wp_PyInvalidate         = 202;
- wp_PaintFull3DFX        = 203;
+ wp_PaintFull3Dview      = 203;
  wp_MoveRedLine          = 204;
 
  wp_ProcessNotifyFirst   = 290;
@@ -1205,10 +1216,9 @@ begin
      PostMessage(Handle, wm_InternalMessage, wp_CloseWindow, 0);
 
   { FREE } Ord('F')+256*Ord('R')+65536*Ord('E')+16777216*Ord('E'):
+    begin
      g_Form1.FreeNonUsedObjects;
-
-  { 3DFR } Ord('3')+256*Ord('D')+65536*Ord('F')+16777216*Ord('R'):
-     CloseAll3DView;
+    end;
 
   { ASSO } Ord('A')+256*Ord('S')+65536*Ord('S')+16777216*Ord('O'):
      begin

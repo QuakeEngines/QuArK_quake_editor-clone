@@ -23,6 +23,16 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12.2.9  2006/11/23 20:14:59  danielpharos
+Added counter to make sure the renderers only unload when they're not used anymore
+
+Revision 1.12.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
+Revision 1.12  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2005/09/22 05:15:00  cdunde
 To comment out and reverse changes in version 1.09 2004/12/14
 that broke OpenGL for odd sized textures
@@ -637,6 +647,9 @@ const
   GL_CLAMP  = $2900;
   GL_REPEAT = $2901;
 
+type
+  TMatrix4f = array[0..3, 0..3] of GLdouble;
+
 var
   (*
   ** OpenGL routines from OPENGL32.DLL
@@ -644,6 +657,7 @@ var
   wglMakeCurrent: function (DC: HDC; p2: HGLRC): Bool; stdcall;
   wglDeleteContext: function (p1: HGLRC): Bool; stdcall;
   wglCreateContext: function (DC: HDC): HGLRC; stdcall;
+  wglShareLists: function (hglrc1: HGLRC; hglrc2: HGLRC): Bool; stdcall;
   wglSwapBuffers: function (DC: HDC): Bool; stdcall; {Decker 2002.02.26 - Added}
 
   glClearColor: procedure (red, green, blue, alpha: GLclampf); stdcall;
@@ -662,8 +676,10 @@ var
   glViewport: procedure (x, y : GLint; width, height : GLsizei); stdcall;
   glMatrixMode: procedure (mode: GLenum); stdcall;
   glLoadIdentity: procedure; stdcall;
-  glRotatef: procedure (angle, x, y, z : GLfloat); stdcall;
-  glTranslatef: procedure (x, y, z : GLfloat); stdcall;
+  glRotated: procedure (angle, x, y, z : GLdouble); stdcall;
+  glTranslated: procedure (x, y, z : GLdouble); stdcall;
+{  glMultMatrixd: procedure (m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15 : GLdouble); stdcall;}
+  glMultMatrixd: procedure (const m : TMatrix4f); stdcall;
   glClear: procedure (mask: GLbitfield); stdcall;
   glBegin: procedure (mode: GLenum); stdcall;
   glEnd: procedure; stdcall;
@@ -678,17 +694,19 @@ var
   glFlush: procedure; stdcall;
  {v1.9 broke OpenGL with PChar at end, changed back to v1.8 items - cdunde 09-21-2005}
 //  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; pixels:PChar ); stdcall;
-  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
+  glTexImage2D: procedure (target: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
   glDeleteTextures: procedure (n: GLsizei; const textures); stdcall;
   glAreTexturesResident: function (n: GLsizei; const textures; var residences) : GLboolean; stdcall;
   glBindTexture: procedure (target: GLenum; texture: GLuint); stdcall;
   glGenTextures: procedure (n: GLsizei; var textures); stdcall;
+  glGenLists: function (range: GLsizei): GLuint; stdcall;
   glNewList: procedure (list: GLuint; mode: GLenum); stdcall;
   glEndList: procedure; stdcall;
   glCallList: procedure (list: GLuint); stdcall;
   glDeleteLists: procedure (list: GLuint; range: GLsizei); stdcall;
   glReadPixels: procedure (x, y: GLint; width, height: GLsizei; format, typ: GLenum; var pixels); stdcall;
   glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall; {Decker 2003.03.12 - Added}
+  glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall; {Daniel 2006.09.19 - Added}
 
   (*
   ** Utility routines from GLU32.DLL
@@ -696,14 +714,14 @@ var
   gluPerspective: procedure (fovy, aspect, zNear, zFar: GLdouble); stdcall;
  {gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint; format: GLenum; typ: GLenum; const data): GLint; stdcall;}
 
-function OpenGlLoaded : Boolean;
-function ReloadOpenGl : Boolean;
+function LoadOpenGl : Boolean;
 procedure UnloadOpenGl;
+
 
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..40] of //Decker 2003.03.13 - modified
+  OpenGL32DLL_FuncList : array[0..44] of //Decker 2006.09.19 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -711,6 +729,7 @@ const
   ( (FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
+   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //Daniel 2006.09.26 - Added
    ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        ) {Decker 2002.02.26 - Added}
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
@@ -728,8 +747,9 @@ const
    ,(FuncPtr: @@glViewport;            FuncName: 'glViewport'            )
    ,(FuncPtr: @@glMatrixMode;          FuncName: 'glMatrixMode'          )
    ,(FuncPtr: @@glLoadIdentity;        FuncName: 'glLoadIdentity'        )
-   ,(FuncPtr: @@glRotatef;             FuncName: 'glRotatef'             )
-   ,(FuncPtr: @@glTranslatef;          FuncName: 'glTranslatef'          )
+   ,(FuncPtr: @@glRotated;             FuncName: 'glRotated'             )
+   ,(FuncPtr: @@glTranslated;          FuncName: 'glTranslated'          )
+   ,(FuncPtr: @@glMultMatrixd;         FuncName: 'glMultMatrixd'         )
    ,(FuncPtr: @@glClear;               FuncName: 'glClear'               )
    ,(FuncPtr: @@glBegin;               FuncName: 'glBegin'               )
    ,(FuncPtr: @@glEnd;                 FuncName: 'glEnd'                 )
@@ -747,12 +767,14 @@ const
    ,(FuncPtr: @@glAreTexturesResident; FuncName: 'glAreTexturesResident' )
    ,(FuncPtr: @@glBindTexture;         FuncName: 'glBindTexture'         )
    ,(FuncPtr: @@glGenTextures;         FuncName: 'glGenTextures'         )
+   ,(FuncPtr: @@glGenLists;            FuncName: 'glGenLists'            ) //Daniel 2006.09.19 - Added
    ,(FuncPtr: @@glNewList;             FuncName: 'glNewList'             )
    ,(FuncPtr: @@glEndList;             FuncName: 'glEndList'             )
    ,(FuncPtr: @@glCallList;            FuncName: 'glCallList'            )
    ,(FuncPtr: @@glDeleteLists;         FuncName: 'glDeleteLists'         )
    ,(FuncPtr: @@glReadPixels;          FuncName: 'glReadPixels'          )
    ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           ) //Decker 2003.03.12 - Added
+   ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //Daniel 2006.09.28 - Added
  );
 
   Glu32DLL_FuncList : array[0..0] of
@@ -764,75 +786,87 @@ const
   {,(FuncPtr: @@gluBuild2DMipmaps;     FuncName: 'gluBuild2DMipmaps'     )});
 
 var
-  Is_OpenGL_Library_Loaded : boolean;
+  TimesLoaded : Integer;
 
   OpenGL32Lib: THandle;
   Glu32Lib: THandle;
 
  { ----------------- }
 
-function OpenGlLoaded : Boolean;
-begin
-  Result := Is_OpenGL_Library_Loaded;
-end;
-
-function ReloadOpenGl : Boolean;
+function LoadOpenGl : Boolean;
 type
  PPointer = ^Pointer;
 var
  I: Integer;
  P: Pointer;
 begin
-  Result := False;
-  UnloadOpenGl;
-  try
-    OpenGL32Lib := LoadLibrary('OPENGL32.DLL');
-    if OpenGL32Lib=0 then
-      Exit;
+  if TimesLoaded = 0 then
+  begin
+    Result := False;
+    try
+      if OpenGL32Lib = 0 then  {Daniel: We don't want to load it twice, now do we?}
+       begin
+        OpenGL32Lib := LoadLibrary('OPENGL32.DLL');
+        if OpenGL32Lib=0 then
+          Exit;
+       end;
 
-    Glu32Lib := LoadLibrary('GLU32.DLL');
-    if Glu32Lib=0 then
-      Exit;
-
-    for I:=Low(OpenGL32DLL_FuncList) to High(OpenGL32DLL_FuncList) do
-    begin
-      P:=GetProcAddress(OpenGL32Lib, OpenGL32DLL_FuncList[I].FuncName);
-      if P=Nil then
+      Glu32Lib := LoadLibrary('GLU32.DLL');
+      if Glu32Lib=0 then
         Exit;
-      PPointer(OpenGL32DLL_FuncList[I].FuncPtr)^:=P;
-    end;
 
-    for I:=Low(Glu32DLL_FuncList) to High(Glu32DLL_FuncList) do
-    begin
-      P:=GetProcAddress(Glu32Lib, Glu32DLL_FuncList[I].FuncName);
-      if P=Nil then
-        Exit;
-      PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=P;
-    end;
+      for I:=Low(OpenGL32DLL_FuncList) to High(OpenGL32DLL_FuncList) do
+      begin
+        P:=GetProcAddress(OpenGL32Lib, OpenGL32DLL_FuncList[I].FuncName);
+        if P=Nil then
+          Exit;
+        PPointer(OpenGL32DLL_FuncList[I].FuncPtr)^:=P;
+      end;
 
-    Is_OpenGL_Library_Loaded := True;
+      for I:=Low(Glu32DLL_FuncList) to High(Glu32DLL_FuncList) do
+      begin
+        P:=GetProcAddress(Glu32Lib, Glu32DLL_FuncList[I].FuncName);
+        if P=Nil then
+          Exit;
+        PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=P;
+      end;
+
+      TimesLoaded := 1;
+      Result := True;
+    finally
+      if (not Result) then
+      begin
+        TimesLoaded := 1;
+        UnloadOpenGL;
+      end;
+    end;
+  end
+  else
+  begin
+    TimesLoaded := TimesLoaded + 1;
     Result := True;
-  finally
-    if (not Result) then
-      UnloadOpenGL;
   end;
 end;
 
 procedure UnloadOpenGl;
 begin
-  if OpenGL32Lib<>0 then
-    FreeLibrary(OpenGL32Lib);
-  OpenGL32Lib := 0;
+  if TimesLoaded = 1 then
+  begin
+    {if OpenGL32Lib<>0 then
+      FreeLibrary(OpenGL32Lib);
+    OpenGL32Lib := 0;}   {Daniel: This cannot be freed, because the pixel format will then fail!}
 
-  if Glu32Lib<>0 then
-    FreeLibrary(Glu32Lib);
-  Glu32Lib := 0;
-
-  Is_OpenGL_Library_Loaded := False;
+    if Glu32Lib<>0 then
+      FreeLibrary(Glu32Lib);
+    Glu32Lib := 0;
+    TimesLoaded := 0;
+  end
+  else
+    TimesLoaded := TimesLoaded - 1;
 end;
 
 initialization
-  Is_OpenGL_Library_Loaded := False;
+  TimesLoaded := 0;
   OpenGL32Lib := 0;
   Glu32Lib := 0;
 end.

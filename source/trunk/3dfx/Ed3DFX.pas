@@ -23,6 +23,47 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.18  2006/11/28 16:44:30  danielpharos
+Fix for the software access violation (again)
+
+Revision 1.31.2.17  2006/11/28 16:18:55  danielpharos
+Pushed MapView into the renderers and made OpenGL do (bad) Solid Colors
+
+Revision 1.31.2.16  2006/11/28 16:15:34  danielpharos
+Fix for the black screen sometimes seen in Glide
+
+Revision 1.31.2.15  2006/11/27 16:44:16  danielpharos
+Fix an access violation with Software 3D
+
+Revision 1.31.2.14  2006/11/27 16:18:49  danielpharos
+Another fix for Glide fog and attempt to fix an access violation with it
+
+Revision 1.31.2.13  2006/11/26 21:49:08  danielpharos
+Fixed the Glide fog and renamed it to Fade
+
+Revision 1.31.2.12  2006/11/23 20:41:51  danielpharos
+DOH! Forgot to commit the GlideLoaded variable declaration...
+Removed link to obsolete 3DEditors
+Set Fog to 0 in 2D windows
+
+Revision 1.31.2.11  2006/11/23 20:38:14  danielpharos
+Pushed FogColor and FrameColor into the renderer
+
+Revision 1.31.2.10  2006/11/23 20:35:59  danielpharos
+Cleaned up the Init procedure to match OpenGL better
+Added counter to make sure the renderers only unload when they're not used anymore
+Some additional error checks to make sure now unassigned calls are being made
+
+Revision 1.31.2.9  2006/11/23 20:27:45  danielpharos
+Removed now obsolete Free3DFXEditor procedure
+
+Revision 1.31.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
+Revision 1.31  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.29  2004/01/05 22:41:49  silverpaladin
 Fixed the divide by zero errors in the texture scaling
 
@@ -92,7 +133,7 @@ unit Ed3DFX;
 
 interface
 
-uses Windows, Classes, SysUtils,
+uses Windows, Classes, Setup, SysUtils,
      PyMath, qmath, Bezier,
      QkObjects,
      Glide,
@@ -131,7 +172,9 @@ type
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
    CurrentAlpha: FxU32;
+   Fog: Boolean;
    ViewRect: TViewRect;
+   GlideLoaded: Boolean;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
@@ -148,13 +191,13 @@ type
    SoftBufferFormat: Integer;
    FogTableCache: ^GrFogTable_t;
    Hardware3DFX: Boolean;
-   constructor Create(nSolidColors: Boolean);
+   constructor Create(ViewMode: TMapViewMode);
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
+                  DisplayMode: TDisplayMode;
+                  DisplayType: TDisplayType;
                   const LibName: String;
-                  var FullScreen, AllowsGDI: Boolean;
-                  FogDensity: Single;
-                  FogColor, FrameColor: TColorRef); override;
+                  var AllowsGDI: Boolean); override;
    destructor Destroy; override;
    procedure Render3DView; override;
    procedure ClearFrame; override;
@@ -165,10 +208,10 @@ type
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
+procedure SetIntelPrecision;
+procedure RestoreIntelPrecision;
 procedure Do3DFXTwoMonitorsActivation;
 procedure Do3DFXTwoMonitorsDeactivation;
-procedure Close3DFXEditor;
-procedure Free3DFXEditor;
 procedure Set3DFXGammaCorrection(Value: TDouble);
 
  {------------------------}
@@ -176,10 +219,7 @@ procedure Set3DFXGammaCorrection(Value: TDouble);
 implementation
 
 uses Game, Quarkx, FullScr1, Travail,
-     PyMath3D, Ed3DEditors,
-     QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
-
-function Open3DFXEditor(const LibName: String; var FullScreen: Boolean) : Boolean; forward;
+     PyMath3D, QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
 
 const
  VertexSnapper = 1.0*(3 shl 18);
@@ -260,7 +300,7 @@ type  { this is the data shared by all existing T3DFXSceneObjects }
    {PalWarning: Boolean;}
     constructor Create;
     procedure NeedTex(PTex: PTexture3);
-    function SetPerspectiveMode(nPerspectiveMode: Byte) : Boolean;
+    procedure SetPerspectiveMode(nPerspectiveMode: Byte);
    {procedure PaletteWarning;}
     procedure Init;
   end;
@@ -351,12 +391,11 @@ begin
  grTexSource(GR_TMU0, PTex^.startAddress, GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
 end;
 
-function TGlideState.SetPerspectiveMode(nPerspectiveMode: Byte) : Boolean;
+procedure TGlideState.SetPerspectiveMode(nPerspectiveMode: Byte);
 {var
  I: Integer;
  FogTable2D: GrFogTable_t;}
 begin
- Result:=False;
  if PerspectiveMode<>nPerspectiveMode then
   begin
    PerspectiveMode:=nPerspectiveMode;
@@ -367,17 +406,17 @@ begin
      grHints(GR_HINT_STWHINT, GR_STWHINT_W_DIFF_TMU0)
     else
      grHints(GR_HINT_STWHINT, 0);
-   if Assigned(guFogGenerateExp2)
+   (*if Assigned(guFogGenerateExp2)
    and Assigned(grFogTable) then
-  (*if nPerspectiveMode=2 then  { flat display }
+  if nPerspectiveMode=2 then  { flat display }
      begin
      {for I:=0 to GR_FOG_TABLE_SIZE-1 do
        FogTable2D[I]:=I*(256 div GR_FOG_TABLE_SIZE);}
       guFogGenerateExp2(FogTable2D, 0.003);
       grFogTable(FogTable2D);
      end
-    else*)
-     Result:=True;
+    else
+     Result:=True;*)
   end;
 end;
 
@@ -388,25 +427,71 @@ end;
 
  {------------------------}
 
-constructor T3DFXSceneObject.Create(nSolidColors: Boolean);
+constructor T3DFXSceneObject.Create(ViewMode: TMapViewMode);
 begin
- inherited Create;
+ inherited;
  FVertexList:=TMemoryStream.Create;
- SolidColors:=nSolidColors;
+ SolidColors:=(ViewMode=vmSolidcolor);
 end;
 
-procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
-          var FullScreen, AllowsGDI: Boolean; FogDensity: Single; FogColor, FrameColor: TColorRef);
+procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
+          const LibName: String; var AllowsGDI: Boolean);
 var
- I: Integer;
  HiColor: Boolean;
+ hwconfig: GrHwConfiguration;
+ FogColor, FrameColor: TColorRef;
+ Setup: QObject;
 begin
+ ClearScene;
+
+ CurrentDisplayMode:=DisplayMode;
+ CurrentDisplayType:=DisplayType;
+
+ if (not GlideLoaded) or (qrkGlideLibName<>LibName) then
+  begin
+   if LibName='' then
+    Raise EError(4867);
+   if not LoadGlide(LibName, GetApplicationDllPath()) then
+    Raise EErrorFmt(4865, [LibName, GetLastError]);
+   try
+    SetIntelPrecision;
+    grGlideInit;
+    if Assigned(grSstQueryHardware) then
+     if not grSstQueryHardware(hwconfig) then
+      Raise EErrorFmt(4866, ['grSstQueryHardware']);
+    if Assigned(grSstSelect) then
+     grSstSelect(0);
+    if Assigned(grSstWinOpen) and (GlideTimesLoaded=1) then
+      if not grSstWinOpen(0,
+                        GR_RESOLUTION_640x480,
+                        GR_REFRESH_60HZ,
+                        GR_COLORFORMAT_ARGB,
+                        GR_ORIGIN_UPPER_LEFT,
+                        2, 1) then
+       Raise EErrorFmt(4866, ['grSstWinOpen']);
+   finally
+    RestoreIntelPrecision;
+   end;
+    // grSstControl(GR_CONTROL_DEACTIVATE);
+   if Assigned(grDepthBufferMode) then
+    grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
+   if Assigned(grDepthMask) then
+    grDepthMask(FXTRUE);
+   ClearBuffers(0);
+   qrkGlideState:=TGlideState.Create;
+   GlideLoaded:=true;
+  end;
+ if (CurrentDisplayMode=dmFullScreen) or (LibName='glide2x.dll') then   {Second check: So Glide kinda works...}
+  Do3DFXTwoMonitorsActivation
+ else
+  if TwoMonitorsDlg=Nil then
+   Do3DFXTwoMonitorsDeactivation;
  Coord:=nCoord;
- Open3DFXEditor(LibName, FullScreen);
- TTextureManager.AddScene(Self, FullScreen);
+ TTextureManager.AddScene(Self);
+ 
  // Assigned check added by SilverPaladin
- if (not Assigned(qrkGlideState))
- then raise Exception.Create('You must first call Open3dFX');
+ if (not Assigned(qrkGlideState)) then
+   raise Exception.Create('You must first call Open3dFX');
  TGlideState(qrkGlideState).Init;
  Hardware3DFX:=qrkGlideVersion>=HardwareGlideVersion;
  if qrkGlideVersion>=HardwareGlideVersion then
@@ -422,25 +507,48 @@ begin
    end;
  TGlideState(qrkGlideState).Accepts16bpp:=HiColor;
 
- I:=Ord({not nCoord.FlatDisplay and} Assigned(guFogGenerateExp2));
- ReallocMem(FogTableCache, SizeOf(GrFogTable_t)*I);
- if I<>0 then
-  begin
-   if nCoord.FlatDisplay then
-    FogDensity:=FogDensity*256;
-   guFogGenerateExp2(FogTableCache^, FogDensity);
-  end;
-{if Assigned(guFogGenerateExp2)
- and Assigned(grFogTable) then
-  begin
-   guFogGenerateExp2(FogTable, FogDensity);
-   grFogTable(FogTable);
-  end;}
- FogColor:=SwapColor(FogColor);
- if Assigned(grFogColorValue) then
-  grFogColorValue(FogColor);
+ Setup:=SetupSubSet(ssGeneral, '3D View');
+ if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
+ begin
+   FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
+ end
+ else
+ begin
+   FarDistance:=1500;   {Daniel: This should be zero... = Disabled FarDistance}
+ end;
+ FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
+ FogColor:=SwapColor(Setup.IntSpec['FogColor']);
+ FrameColor:=SwapColor(Setup.IntSpec['FrameColor']);
  VOID_COLOR:=FogColor;
- FRAME_COLOR:=SwapColor(FrameColor);
+ FRAME_COLOR:=FrameColor;
+
+ Setup:=SetupSubSet(ssGeneral, '3DFX');
+ if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
+ begin
+   Fog:=Setup.Specifics.Values['Fog']<>'';
+ end
+ else
+ begin
+   Fog:=False;
+ end;
+
+ if Fog=True then
+ begin
+   ReallocMem(FogTableCache, SizeOf(GrFogTable_t));
+   if Assigned(guFogGenerateExp2) then
+   begin
+     guFogGenerateExp2(FogTableCache^, FogDensity/(25*FarDistance));
+   end;
+  {if Assigned(guFogGenerateExp2)
+   and Assigned(grFogTable) then
+    begin
+     guFogGenerateExp2(FogTable, FogDensity);
+     grFogTable(FogTable);
+    end;}
+
+   if Assigned(grFogColorValue) then
+    grFogColorValue(FogColor);
+ end;
 end;
 
 destructor T3DFXSceneObject.Destroy;
@@ -448,19 +556,29 @@ var
  Old: TMemoryStream;
 begin
  Old:=FVertexList;
- FreeMem(FogTableCache);
+ if not (FogTableCache = nil) then
+ begin
+   FreeMem(FogTableCache);
+   FogTableCache := nil;
+ end;
+ if GlideLoaded = True then
+  begin
+   if GlideTimesLoaded=1 then
+    begin
+     Do3DFXTwoMonitorsDeactivation;
+     // Assigned check added by SilverPaladin
+     if (Assigned(qrkGlideState)) then
+      qrkGlideState.Free;
+     qrkGlideState:=Nil;
+     if Assigned(grSstWinClose) then
+      grSstWinClose;
+     if Assigned(grGlideShutdown) then
+      grGlideShutdown;
+    end;
+   UnloadGlide;
+  end;
  inherited;
  Old.Free;
- (* SilverPaladin - 08/27/2003 -
-    I've removed the following Free3DEditors call.  It was freeing the Slide
-    info when just one of perhaps several 3d views is closed.  This was the
-    major source of access violations up through 6.4 alpha
-
- // I'm not at all sure that this is the right thing
- // to do.  This freeing doesn't get called when
- // exitor exited with x,without the below.
- Free3DEditors;
- *)
 end;
 
 procedure T3DFXSceneObject.ClearScene;
@@ -740,91 +858,16 @@ begin
  end;
 end;
 
-function Open3DFXEditor(const LibName: String; var FullScreen: Boolean) : Boolean;
-var
- hwconfig: GrHwConfiguration;
-begin
- Result:=False;
- if (not GlideLoaded) or (qrkGlideState=Nil) or ((LibName<>'') and (qrkGlideLibName<>LibName)) then
-  begin
-   ProgressIndicatorStart(0,0);
-   try
-    Free3DFXEditor;
-    if LibName='' then
-     Raise EError(4867);
-    if not ReloadGlide(LibName, GetApplicationDllPath()) then
-     Raise EErrorFmt(4865, [LibName, GetLastError]);
-    Result:=True;
-    SetIntelPrecision;
-    try
-     grGlideInit;
-     if Assigned(grSstQueryHardware) then
-      if not grSstQueryHardware(hwconfig) then
-       Raise EErrorFmt(4866, ['grSstQueryHardware']);
-     if Assigned(grSstSelect) then
-      grSstSelect(0);
-     if not grSstWinOpen(0,
-                         GR_RESOLUTION_640x480,
-                         GR_REFRESH_60HZ,
-                         GR_COLORFORMAT_ARGB,
-                         GR_ORIGIN_LOWER_LEFT,
-                         2, 1) then
-      Raise EErrorFmt(4866, ['grSstWinOpen']);
-    finally
-     RestoreIntelPrecision;
-    end;
-   // grSstControl(GR_CONTROL_DEACTIVATE);
-    if Assigned(grDepthBufferMode) then
-     grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
-    if Assigned(grDepthMask) then
-     grDepthMask(FXTRUE);
-    ClearBuffers(0);
-   finally
-    ProgressIndicatorStop;
-   end;
-   qrkGlideState:=TGlideState.Create;
-  end;
- if qrkGlideVersion<HardwareGlideVersion then
-  FullScreen:=False;
- if FullScreen then
-  Do3DFXTwoMonitorsActivation
- else
-  if TwoMonitorsDlg=Nil then
-   Do3DFXTwoMonitorsDeactivation;
-end;
-
 procedure Do3DFXTwoMonitorsActivation;
 begin
- if GlideLoaded and Assigned(grSstControl) then
+ if Assigned(grSstControl) then
   grSstControl(GR_CONTROL_ACTIVATE);
 end;
 
 procedure Do3DFXTwoMonitorsDeactivation;
 begin
- if GlideLoaded and Assigned(grSstControl) then
+ if Assigned(grSstControl) then
   grSstControl(GR_CONTROL_DEACTIVATE);
-end;
-
-procedure Close3DFXEditor;
-begin
- Do3DFXTwoMonitorsDeactivation;
-end;
-
-procedure Free3DFXEditor;
-begin
- if GlideLoaded then
-  begin
-    // Assigned check added by SilverPaladin
-   if (Assigned(qrkGlideState))
-   then qrkGlideState.Free;
-   qrkGlideState:=Nil;
-   if Assigned(grSstWinClose) then
-    grSstWinClose;
-   if Assigned(grGlideShutdown) then
-    grGlideShutdown;
-   UnloadGlide;
-  end;
- TTextureManager.FreeNonVisibleTextures;
 end;
 
 procedure Set3DFXGammaCorrection(Value: TDouble);
@@ -910,15 +953,12 @@ begin
  R:=ViewRect.R.Right;
  B:=ViewRect.R.Bottom;
  Special:=False;
- try
-  if L>0 then  ClearFrame1(0, T, L, B-T);
-  if T>0 then  ClearFrame1(0, 0, SX, T);
-  if R<SX then ClearFrame1(R, T, SX-R, B-T);
-  if B<SY then ClearFrame1(0, B, SX, SY-B);
- finally
-  if Special then
-   grDepthMask(FXTRUE);
- end;
+ if L>0 then  ClearFrame1(0, T, L, B-T);
+ if T>0 then  ClearFrame1(0, 0, SX, T);
+ if R<SX then ClearFrame1(R, T, SX-R, B-T);
+ if B<SY then ClearFrame1(0, B, SX, SY-B);
+ if Special then
+  grDepthMask(FXTRUE);
 end;
 
 procedure T3DFXSceneObject.RenderTransparent(Transparent: Boolean);
@@ -974,8 +1014,15 @@ begin
  end;
 
  // Assigned check added by SilverPaladin
- if (Assigned(qrkGlideState) and TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1)) then
-   grFogTable(FogTableCache^);
+ if Assigned(qrkGlideState) then
+ begin
+   TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
+ end;
+ if Fog=True then
+ begin
+   if Assigned(grFogTable) then
+     grFogTable(FogTableCache^);
+ end;
 
  if qrkGlideVersion>=HardwareGlideVersion then
    grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
@@ -999,6 +1046,16 @@ begin
 {GetProjInfo(ProjInfo, RFactor);
  FProjInfo:=@ProjInfo;}
 
+ if Fog=True then
+ begin
+   if Assigned(grFogMode) then
+     grFogMode(GR_FOG_WITH_TABLE);
+ end
+ else
+ begin
+   if Assigned(grFogMode) then
+     grFogMode(GR_FOG_DISABLE);
+ end;
  RenderTransparent(False);
 {if Assigned(grDepthMask) then
   grDepthMask(FXFALSE);}
@@ -1010,7 +1067,8 @@ begin
  begin
    Inc(FBuildNo);
    //grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA, GR_COMBINE_LOCAL_DEPTH, GR_COMBINE_OTHER_CONSTANT, FXTRUE);
-   grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA, GR_COMBINE_LOCAL_ITERATED, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
+   if Assigned(grAlphaCombine) then
+     grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA, GR_COMBINE_LOCAL_ITERATED, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
    IteratedAlpha:=True;
    //grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL_ALPHA, GR_COMBINE_LOCAL_CONSTANT, GR_COMBINE_OTHER_ITERATED, FXFALSE);
    //grConstantColorValue($30FFFFFF);
@@ -1028,7 +1086,8 @@ begin
    finally
      grDepthBufferFunction(GR_CMP_LESS);
      grDepthMask(FXTRUE);
-     grFogMode(GR_FOG_WITH_TABLE);
+     if Fog=True then
+       grFogMode(GR_FOG_WITH_TABLE);
      CCoord.MinDistance:=OldMinDist;
      CCoord.MaxDistance:=OldMaxDist;
    end;
@@ -1507,13 +1566,13 @@ begin
 
       if CCoord.FlatDisplay then
       begin
-        MinRadius:=CCoord.MinDistance-AnyInfo.Radius;
-        MaxRadius:=CCoord.MaxDistance+AnyInfo.Radius;
+        MinRadius:=CCoord.MinDistance-GlideRadius;
+        MaxRadius:=CCoord.MaxDistance+GlideRadius;
       end
       else
       begin
-        MinRadius:=-AnyInfo.Radius;
-        MaxRadius:=AnyInfo.Radius+T3DCoordinates(CCoord).FarDistance;
+        MinRadius:=-GlideRadius;
+        MaxRadius:=GlideRadius+FarDistance;
       end;
 
       PV:=PVertex3D(Surf);
@@ -1852,7 +1911,7 @@ procedure T3DFXSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
 var
  I, L, R, T, B, Count1: Integer;
  bmiHeader: TBitmapInfoHeader;
- BmpInfo: TBitmapInfo absolute bmiHeader;
+ BmpInfo: TBitmapInfo;
  info: GrLfbInfo_t;
  Bits, SrcPtr: Pointer;
  FrameBrush: HBrush;
@@ -1878,9 +1937,9 @@ begin
  ScreenExtent(L, R, bmiHeader);
 
  GetMem(Bits, bmiHeader.biWidth*bmiHeader.biHeight*3);
- try
-  if qrkGlideVersion>=HardwareGlideVersion then
-   begin
+ if qrkGlideVersion>=HardwareGlideVersion then
+  begin
+   try
     if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
           GR_ORIGIN_ANY, FXFALSE, info) then
      Raise EErrorFmt(4866, ['grLfbLock']);
@@ -1951,8 +2010,10 @@ begin
      pop edi
      pop esi
     end;
+   finally
     grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
-   end
+   end;
+  end
   else
    softgLoadFrameBuffer(Bits, SoftBufferFormat);
   L:=(SX-bmiHeader.biWidth) div 2;
@@ -1960,21 +2021,17 @@ begin
   R:=L+bmiHeader.biWidth;
   B:=T+bmiHeader.biHeight;
   FrameBrush:=0;
-  try
-   if L>0 then  Frame(0, T, L, B-T);
-   if T>0 then  Frame(0, 0, SX, T);
-   if R<SX then Frame(R, T, SX-R, B-T);
-   if B<SY then Frame(0, B, SX, SY-B);
-  finally
-   if FrameBrush<>0 then
-    DeleteObject(FrameBrush);
-  end;
+  if L>0 then  Frame(0, T, L, B-T);
+  if T>0 then  Frame(0, 0, SX, T);
+  if R<SX then Frame(R, T, SX-R, B-T);
+  if B<SY then Frame(0, B, SX, SY-B);
+  if FrameBrush<>0 then
+   DeleteObject(FrameBrush);
+  BmpInfo.bmiHeader:=bmiHeader;
   SetDIBitsToDevice(DC, L, T,
    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
    0,bmiHeader.biHeight, Bits, BmpInfo, 0);
- finally
   FreeMem(Bits);
- end;
 end;
 
 procedure T3DFXSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
@@ -1995,10 +2052,18 @@ begin
    SY:=(SY+1) div 2;
   end;
 
- XMargin:=(ScreenSizeX-SX) div 2;
- if (XMargin<0) and Hardware3DFX then XMargin:=0;
- YMargin:=(ScreenSizeY-SY) div 2;
- if (YMargin<0) and Hardware3DFX then YMargin:=0;
+ if CurrentDisplayMode=dmFullScreen then
+  begin
+   XMargin:=0;
+   YMargin:=0;
+  end
+ else
+  begin
+   XMargin:=(ScreenSizeX-SX) div 2;
+   if (XMargin<0) and Hardware3DFX then XMargin:=0;
+   YMargin:=(ScreenSizeY-SY) div 2;
+   if (YMargin<0) and Hardware3DFX then YMargin:=0;
+  end;
 
  ViewRect.R.Left:=XMargin;
  ViewRect.R.Top:=YMargin;

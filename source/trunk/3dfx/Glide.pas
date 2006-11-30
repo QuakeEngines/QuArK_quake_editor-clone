@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12.2.1  2006/11/23 20:14:59  danielpharos
+Added counter to make sure the renderers only unload when they're not used anymore
+
+Revision 1.12  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2003/08/12 16:06:03  silverpaladin
 Added ExtraFunctionality to uses for access to Pre-Delphi6  multi platform support routines.
 
@@ -1173,8 +1179,8 @@ const
  SoftwareGlideLib     = 'qrksoftg.dll';}
  SoftBufferCoarse     = 1;
 
-function GlideLoaded : Boolean;
-function ReloadGlide(const LibName, SearchDir: String) : Boolean;
+function GlideTimesLoaded : Integer;
+function LoadGlide(const LibName, SearchDir: String) : Boolean;
 procedure UnloadGlide;
 
 implementation
@@ -1236,16 +1242,16 @@ const
    ,(FuncPtr: @@softgLoadFrameBuffer;           FuncReq: inSoftG;  FuncName: '_softgLoadFrameBuffer@8'          ) );
 
 var
-  Is_Glide_Library_Loaded : boolean;
+  TimesLoaded : Integer;
 
   GlideLib: THandle;
 
-function GlideLoaded : Boolean;
+function GlideTimesLoaded : Integer;
 begin
-  Result := Is_Glide_Library_Loaded;
+  Result := TimesLoaded;
 end;
 
-function ReloadGlide(const LibName, SearchDir: String) : Boolean;
+function LoadGlide(const LibName, SearchDir: String) : Boolean;
 const
   softgQuArK_Identifier_FuncName = '_softgQuArK@0'; { Function-name which identifices that it is the QRKSOFTG.DLL thats loaded }
 type
@@ -1256,53 +1262,68 @@ var
   softgQuArK: function : Integer; stdcall;
   S: String;
 begin
-  Result := False;
-  UnloadGlide;
-  try
-    GlideLib:=LoadLibrary(PChar(LibName));
-    if GlideLib=0 then
-    begin
-      S:=SearchDir+PathDelim+LibName;
-      GlideLib:=LoadLibrary(PChar(S));
+  if TimesLoaded = 0 then
+  begin
+    Result := False;
+    try
+      GlideLib:=LoadLibrary(PChar(LibName));
       if GlideLib=0 then
-        Exit;
+      begin
+        S:=SearchDir+PathDelim+LibName;
+        GlideLib:=LoadLibrary(PChar(S));
+        if GlideLib=0 then
+          Exit;
+      end;
+
+      qrkGlideLibName:=LibName;
+      qrkGlideState:=Nil;
+
+      @softgQuArK:=GetProcAddress(GlideLib, softgQuArK_Identifier_FuncName);
+      if Assigned(softgQuArK) then
+        qrkGlideVersion:=softgQuArK()
+      else
+        qrkGlideVersion:=HardwareGlideVersion;
+
+      for I:=Low(GlideDLL_FuncList) to High(GlideDLL_FuncList) do
+      begin
+        P:=GetProcAddress(GlideLib, GlideDLL_FuncList[I].FuncName);
+        if (P=Nil) and (GlideDLL_FuncList[I].FuncReq<>inSoftG) and not Assigned(softgQuArK) then
+          Exit;
+        PPointer(GlideDLL_FuncList[I].FuncPtr)^:=P;
+      end;
+
+      TimesLoaded := 1;
+      Result := True;
+    finally
+      if (not Result) then
+      begin
+        TimesLoaded := 1;
+        UnloadGlide;
+      end;
     end;
-
-    qrkGlideLibName:=LibName;
-    qrkGlideState:=Nil;
-
-    @softgQuArK:=GetProcAddress(GlideLib, softgQuArK_Identifier_FuncName);
-    if Assigned(softgQuArK) then
-      qrkGlideVersion:=softgQuArK()
-    else
-      qrkGlideVersion:=HardwareGlideVersion;
-
-    for I:=Low(GlideDLL_FuncList) to High(GlideDLL_FuncList) do
-    begin
-      P:=GetProcAddress(GlideLib, GlideDLL_FuncList[I].FuncName);
-      if (P=Nil) and (GlideDLL_FuncList[I].FuncReq<>inSoftG) and not Assigned(softgQuArK) then
-        Exit;
-      PPointer(GlideDLL_FuncList[I].FuncPtr)^:=P;
-    end;
-
-    Is_Glide_Library_Loaded := True;
+  end
+  else
+  begin
+    TimesLoaded := TimesLoaded + 1;
     Result := True;
-  finally
-    if (not Result) then
-      UnloadGlide;
   end;
 end;
 
 procedure UnloadGlide;
 begin
-  if GlideLib<>0 then
-    FreeLibrary(GlideLib);
-  GlideLib := 0;
+  if TimesLoaded = 1 then
+  begin
+    if GlideLib<>0 then
+      FreeLibrary(GlideLib);
+    GlideLib := 0;
 
-  Is_Glide_Library_Loaded := False;
+    TimesLoaded := 0;
+  end
+  else
+    TimesLoaded := TimesLoaded - 1;
 end;
 
 initialization
-  Is_Glide_Library_Loaded := False;
+  TimesLoaded := 0;
   GlideLib := 0;
 end.

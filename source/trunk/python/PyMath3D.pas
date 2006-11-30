@@ -23,6 +23,16 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6.2.5  2006/11/23 20:11:50  danielpharos
+Fix for camera angles not working the right way
+
+Revision 1.6.2.4  2006/11/01 22:22:27  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
+Revision 1.6  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2001/06/05 18:43:29  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -34,7 +44,7 @@ unit PyMath3D;
 
 interface
 
-uses Windows, qmath, PyMath;
+uses Windows, qmath, PyMath, Setup;
 
 const
  MinW = 64.0;
@@ -51,11 +61,11 @@ type
     ooWFactor, SpaceFactor: TDouble;
     procedure InitProjVar;
   public
-    FarDistance: TDouble;
     function Espace(const P: TPointProj) : TVect; override;
     function Proj(const V: TVect) : TPointProj; override;
     function VectorX : TVect; override;
     function VectorY : TVect; override;
+    function VectorZ : TVect; override;
     function VectorEye(const Pt: TVect) : TVect; override;
     function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
     function NearerThan(const oow1, oow2: Single) : Boolean; override;
@@ -154,11 +164,16 @@ begin
  VectorY:=Down;
 end;
 
+function T3DCoordinates.VectorZ;
+begin
+ Result:=Eye;
+end;
+
 function T3DCoordinates.VectorEye;
 begin
- Result.X:=Eye.X-Pt.X;
- Result.Y:=Eye.Y-Pt.Y;
- Result.Z:=Eye.Z-Pt.Z;
+ Result.X:=-Eye.X+Pt.X;
+ Result.Y:=-Eye.Y+Pt.Y;
+ Result.Z:=-Eye.Z+Pt.Z;
 end;
 
 function T3DCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean;
@@ -218,8 +233,10 @@ end;
 
 procedure TCameraCoordinates.ResetCamera;
 var
+ FarDistance: TDouble;
  nRFactor: TDouble;
 begin
+ FarDistance:=SetupSubSet(ssGeneral, '3D view').GetFloatSpec('FarDistance', 1500);
  nRFactor:=RFactorDistance/FarDistance;
  CameraVectors(HorzAngle, PitchAngle, nRFactor, Look, Right, Down);
  ooWFactor:=FarDistance*(1/MaxW);

@@ -23,19 +23,7 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.7.2.12  2006/11/23 20:36:55  danielpharos
-Pushed FogColor and FrameColor into the renderer
-
-Revision 1.7.2.11  2006/11/23 20:33:09  danielpharos
-Cleaned up the Init procedure to match OpenGL better
-
-Revision 1.7.2.10  2006/11/23 20:30:34  danielpharos
-Added counter to make sure the renderers only unload when they're not used anymore
-
-Revision 1.7.2.9  2006/11/23 20:29:25  danielpharos
-Removed now obsolete FreeDirect3DEditor procedure
-
-Revision 1.7.2.8  2006/11/01 22:22:28  danielpharos
+Revision 1.1.2.7  2006/11/01 22:22:29  danielpharos
 BackUp 1 November 2006
 Mainly reduce OpenGL memory leak
 
@@ -65,15 +53,13 @@ unit EdDirect3D;
 
 interface
 
-uses Windows, Classes, Setup,
+uses Windows, Classes,
      qmath, PyMath, PyMath3D,
      DX9,
      EdSceneObject;
 
 type
   TDirect3DSceneObject = class(TSceneObject)
-  private
-    DirectXLoaded: Boolean;
   protected
     m_ScreenX, m_ScreenY: Integer;
     m_Resized: Boolean;
@@ -94,17 +80,18 @@ type
     procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
  //   procedure BuildTexture(Texture: PTexture3); override;
     procedure ReleaseResources;
-    procedure RenderDirect3D();
-    procedure RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
-    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+    procedure RenderDirect3D(DisplayLights: Boolean);
+    procedure RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
+    procedure RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
   public
     destructor Destroy; override;
     procedure Init(Wnd: HWnd;
                    nCoord: TCoordinates;
-                   DisplayMode: TDisplayMode;
-                   DisplayType: TDisplayType;
+                   DisplayMode: Byte;
                    const LibName: String;
-                   var AllowsGDI: Boolean); override;
+                   var FullScreen, AllowsGDI: Boolean;
+                   FogDensity: Single;
+                   FogColor, FrameColor: TColorRef); override;
  (*
     procedure ClearScene; override;
     procedure ClearFrame; override;
@@ -118,6 +105,9 @@ type
  *)
   end;
 
+procedure CloseDirect3DEditor;
+procedure FreeDirect3DEditor;
+
  {------------------------}
 
 implementation
@@ -128,13 +118,26 @@ type
  PVertex3D = ^TVertex3D;
  TVertex3D = PD3DLVertex;
 
+var
+  g_Direct3DInitialized: Boolean;
+
+ {------------------------}
+
+procedure CloseDirect3DEditor;
+begin
+end;
+
+procedure FreeDirect3DEditor;
+begin
+  UnloadDirect3D;
+  TTextureManager.FreeNonVisibleTextures;
+end;
+
  {------------------------}
 
 destructor TDirect3DSceneObject.Destroy;
 begin
   ReleaseResources;
-  if DirectXLoaded = True then
-    UnloadDirect3D;
   inherited;
 end;
 
@@ -224,36 +227,25 @@ end;
 
 procedure TDirect3DSceneObject.Init(Wnd: HWnd;
                                     nCoord: TCoordinates;
-                                    DisplayMode: TDisplayMode;
-                                    DisplayType: TDisplayType;
+                                    DisplayMode: Byte;
                                     const LibName: String;
-                                    var AllowsGDI: Boolean);
+                                    var FullScreen, AllowsGDI: Boolean;
+                                    FogDensity: Single;
+                                    FogColor, FrameColor: TColorRef);
 var
   l_Res: HResult;
-  {FogColor, FrameColor: TColorRef;}
   Setup: QObject;
 begin
-  ClearScene;
-
-  CurrentDisplayMode:=DisplayMode;
-  CurrentDisplayType:=DisplayType;
-
-  raise InternalE('The DirectX renderer has not been implemented yet.');
-
+  ReleaseResources;
   { is the Direct3D object already loaded? }
-  if DirectXLoaded = False then
+  if not Direct3DLoaded() then
   begin
     { try to load the Direct3D object }
-    if not LoadDirect3D() then
+    if not ReloadDirect3D() then
       Raise EErrorFmt(4868, [GetLastError]);  {Daniel: Is this error message correct? No 'OpenGL' in it?}
   end;
-  if (DisplayMode=dmFullScreen) then
+  if (DisplayMode=3) then
    Raise InternalE('Direct3D renderer does not support fullscreen views (yet)');
-
-  //FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
-  Coord:=nCoord;
-  TTextureManager.AddScene(Self);
-  //TTextureManager.GetInstance.FFreeTexture:=FreeDirect3DTexture;
 
   {Check for software/hardware vertex processing and PureDevice}
 
@@ -267,6 +259,12 @@ begin
 
    {Should we use the pPresentationParameters instead of creating a new device each time?}
 
+  //FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
+  Coord:=nCoord;
+  FullScreen:=False;
+  TTextureManager.AddScene(Self, False);
+  //TTextureManager.GetInstance.FFreeTexture:=FreeDirect3DTexture;
+   
   Setup:=SetupSubSet(ssGeneral, '3D View');
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
@@ -276,9 +274,8 @@ begin
   begin
     FarDistance:=1500;
   end;
-  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
-  {FogColor:=Setup.IntSpec['FogColor'];}
-  {FrameColor:=Setup.IntSpec['FrameColor'];}
+
+   
 {  g_D3DDevice.SetClearColor(D3DXColorToDWord(D3DXColor(0,0,0,0)));
   g_D3DDevice.SetRenderState(D3DRENDERSTATE_AMBIENT, $ffffffff);
 
@@ -299,14 +296,14 @@ end;
 
 procedure TDirect3DSceneObject.Render3DView;
 begin
-  RenderDirect3D();      {Daniel: Kinda empty procedure, isn't it?}
+  RenderDirect3D(False {FDisplayLights and Assigned(Lights)}  );
 end;
 
-procedure TDirect3DSceneObject.RenderDirect3D();
-{var
+procedure TDirect3DSceneObject.RenderDirect3D(DisplayLights: Boolean);
+var
   l_Res: HResult;
   l_VCenter: D3DVector;
-  l_Projection: TD3DXMatrix;
+{  l_Projection: TD3DXMatrix;
   l_CameraEye: TD3DXMatrix;
   l_matRotation: TD3DXMatrix;
   l_quaRotation: TD3DXQuaternion;}
@@ -316,16 +313,16 @@ begin
     raise EErrorFmt(4882, ['Render3DView', 'g_D3DDevice = nil']);
 
   { if viewport have been resized, then tell Direct3D what happend }
-  {if (m_Resized = True) then
+  if (m_Resized = True) then
   begin
     g_D3DDevice.Resize(m_ScreenX, m_ScreenY);
     D3DXMatrixPerspectiveFov(l_Projection, D3DXToRadian(60.0), m_ScreenY/m_ScreenX, 1.0, 1000.0);
     m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_PROJECTION, TD3DMatrix(l_Projection));
     m_Resized := False;
-  end;}
+  end;
 
   { set camera }
-  {with TCameraCoordinates(Coord) do
+  with TCameraCoordinates(Coord) do
   begin
     D3DXMatrixTranslation(l_CameraEye, Camera.X, Camera.Y, Camera.Z);
 
@@ -358,10 +355,10 @@ begin
 
   l_Res := m_pD3DX.UpdateFrame(0);
   if (l_Res <> 0) then
-    raise EErrorFmt(4882, ['UpdateFrane', D3DXGetErrorMsg(l_Res)]);}
+    raise EErrorFmt(4882, ['UpdateFrane', D3DXGetErrorMsg(l_Res)]);
 end;
 
-procedure TDirect3DSceneObject.RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
+procedure TDirect3DSceneObject.RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
 var
  PList: PSurfaces;
 begin
@@ -371,13 +368,13 @@ begin
     if Transparent in PList^.Transparent then
     begin
       if SolidColors or not PList^.ok then
-        RenderPList(PList, Transparent, SourceCoord);
+        RenderPList(PList, Transparent, DisplayLights, SourceCoord);
     end;
     PList:=PList^.Next;
   end;
 end;
 
-procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
 var
   Surf: PSurface3D;
   SurfEnd: PChar;
@@ -412,7 +409,7 @@ begin
             l_TriangleStrip[i].color := m_CurrentColor;
           end;
 *)
-          {m_pD3DDevice.DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, PD3DLVERTEX(Surf)^, Abs(VertexCount), D3DDP_WAIT);}
+          m_pD3DDevice.DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, PD3DLVERTEX(Surf)^, Abs(VertexCount), D3DDP_WAIT);
         end;
       end;
 
@@ -426,4 +423,13 @@ begin
   PList^.ok:=True;
 end;
 
+ {------------------------}
+
+initialization
+begin
+  g_Direct3DInitialized := False;  {Is not used?}
+end;
+
+{$ENDIF}
 end.
+

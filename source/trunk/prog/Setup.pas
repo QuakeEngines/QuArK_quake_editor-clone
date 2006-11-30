@@ -23,6 +23,13 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47.2.2  2006/11/01 22:22:29  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
+Revision 1.47  2006/08/02 07:17:57  cdunde
+To add .md3 model editor 3D view support for Quake 4.
+
 Revision 1.46  2006/07/17 06:58:00  cdunde
 To setup RTCW-ET as its own game
 with md3 model display support.
@@ -342,7 +349,7 @@ function InternalVersion : Single;
 implementation
 
 uses QkMapObjects, Travail, Game, QkGroup, QkForm, Qk1,
-     ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, Python,
+     ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, Python, PyMapView,
      PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths;
 
 const
@@ -634,12 +641,20 @@ procedure SetupChanged;
 var
  fnt: PyObject;
  S: String;
+ I, J: Integer;
 {SetupInfo: PyObject;}
 begin
  if Level>=scAddOns then
   ClearGameBuffers(False)
  else
   ClearGameBuffer1;
+  
+ for I:=0 to Screen.FormCount-1 do
+  with Screen.Forms[I] do
+   for J:=0 to ComponentCount-1 do
+    if Components[J] is TPyMapView then
+     TPyMapView(Components[J]).DeleteScene;
+  
  if (Level>=scAddOns) or (Level=scGame) then
   TTextureManager.FreeNonVisibleTextures;
 

@@ -23,6 +23,13 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
+Revision 1.5  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.3  2001/03/20 21:38:37  decker_dk
 Updated copyright-header
 
@@ -42,37 +49,21 @@ interface
 uses EdSceneObject
     ,Ed3DFX
     ,EdOpenGL
-  {$IFDEF QUARK_DIRECT3D}
-    ,EdDirect3D
-  {$ENDIF}
-    ;
+    ,EdDirect3D;
 
  {------------------------}
 
-procedure Close3DEditors;
 procedure Free3DEditors;
 
  {------------------------}
 
 implementation
 
-procedure Close3DEditors;
-begin
-{$IFDEF QUARK_DIRECT3D}
-  CloseDirect3DEditor;
-{$ENDIF}
-  CloseOpenGLEditor;
-  Close3DFXEditor;
-end;
-
 procedure Free3DEditors;
 begin
-{$IFDEF QUARK_DIRECT3D}
   FreeDirect3DEditor;
-{$ENDIF}
   FreeOpenGLEditor;
   Free3DFXEditor;
-  TTextureManager.FreeNonVisibleTextures;
 end;
 
 end.

@@ -23,6 +23,33 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15.2.14  2006/11/28 16:18:55  danielpharos
+Pushed MapView into the renderers and made OpenGL do (bad) Solid Colors
+
+Revision 1.15.2.13  2006/11/23 20:42:44  danielpharos
+Pushed FogColor and FrameColor into the renderer
+
+Revision 1.15.2.12  2006/11/23 20:24:03  danielpharos
+Added support for texture-size up to 4096x4096 (Software and Glide excluded)
+
+Revision 1.15.2.11  2006/11/23 20:20:35  danielpharos
+Changed the texture unloading method. Removed a redundant call.
+
+Revision 1.15.2.10  2006/11/23 20:19:21  danielpharos
+Fixed the access violation when loading a model without a skin
+
+Revision 1.15.2.9  2006/11/23 20:18:11  danielpharos
+Removed FOG constant
+Texture now stay in memory until they're not used anymore
+
+Revision 1.15.2.8  2006/11/01 22:22:28  danielpharos
+BackUp 1 November 2006
+Mainly reduce OpenGL memory leak
+
+Revision 1.15  2005/10/16 06:45:53  cdunde
+To try and reduce 3D view freeze and
+gray out at start when loading textures
+
 Revision 1.14  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -82,8 +109,8 @@ interface
 
  {------------------------}
 
-const
 (*
+const
  MinW = 64.0;
  MaxW = 65535.0-128.0;    { Note: constants copied from PyMath3D }
  Minoow = 1.0001/MaxW;
@@ -93,10 +120,11 @@ const
 *)
 
  {vfFlagsInvalidate = vfAxis;}
- FOG_DENSITY_1 = 0.000015;
 
 type
  TViewEntities = (veNever, veBoxes, veModels);
+ TDisplayMode = (dmEditor, dmPanel, dmWindow, dmFullScreen);
+ TDisplayType = (dtXY, dtXZ, dtYZ, dt2D, dt3D);
 
  PModel3DInfo = ^TModel3DInfo;
  TModel3DInfo = record
@@ -116,16 +144,12 @@ type
                   Width, Height: Integer;
                 end;
 
- TSurfaceAnyInfo = record
-                    case Integer of
-                     1: (Radius: scalar_t);
-                     2: (DisplayList: Integer);
-                   end;
  PSurface3D = ^TSurface3D;
  TSurface3D = record
                Normale: vec3_t;          { not defined if GL_TRI_STRIP }
                Dist: scalar_t;           { not defined if GL_TRI_STRIP }
-               AnyInfo: TSurfaceAnyInfo;
+               GlideRadius: scalar_t;    {Daniel: should not be here, but in the Ed3DFX.pas file}
+               OpenGLDisplayList: Integer; {Daniel: should not be here, but in the EdOpenGL.pas file}
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: FxU32;
                TextureMode: Integer;
@@ -140,7 +164,8 @@ type
               MeanColor: FxU32;
               startAddress, endAddress: FxU32;
               OpenGLName: Integer;
-              Scaled, ok: Boolean;
+              {Scaled: Boolean;}
+              Used: Boolean;
               DefaultAlpha: Byte;
               GuPalette: PGuPalette;
              end;
@@ -160,12 +185,15 @@ type
 
 type
  TBuildMode = (bm3DFX, bmOpenGL, bmDirect3D);
+ TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
 
  TSceneObject = class
  protected
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
    PolyFaces, ModelInfo, BezierInfo, SpriteInfo: TList;
+   CurrentDisplayMode: TDisplayMode;
+   CurrentDisplayType: TDisplayType;
    procedure ClearPList;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
@@ -183,14 +211,17 @@ type
    ErrorMsg: String;
    SolidColors: Boolean;
    TemporaryStuff: TQList;   { anything that should not be freed while the scene is alive }
-   constructor Create;
+   FarDistance: TDouble;
+   FogDensity: Single;
+   ViewMode: TMapViewMode;
+   constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
+                  DisplayMode: TDisplayMode;
+                  DisplayType: TDisplayType;
                   const LibName: String;
-                  var FullScreen, AllowsGDI: Boolean;
-                  FogDensity: Single;
-                  FogColor, FrameColor: TColorRef); virtual; abstract;
+                  var AllowsGDI: Boolean); virtual; abstract;
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
    procedure SetViewRect(SX, SY: Integer); virtual; abstract;
@@ -228,22 +259,22 @@ type
   {TexOpacityInfo: TTexOpacityInfo;}
   {procedure ChangePaletteLmp(Lmp: PPaletteLmp{; PalWarning: TPaletteWarning);}
   {procedure ScaleTexture(w1,h1: Integer; var info: GrTexInfo; Q: QPixelSet);}
-   procedure Init(FullScreen: Boolean);
+   procedure Init();
    procedure FreeTexture(Tex: PTexture3);
  protected
    constructor Create;
  public
-   FFreeTexture: procedure (Tex: PTexture3);
    DummyGameInfo: PGameBuffer;
    DownloadedPalette: PGuPalette;
    GammaBuffer: TGeneralGammaBuffer;
    destructor Destroy; override;
    class function GetInstance : TTextureManager;
-   class procedure AddScene(Scene: TSceneObject; FullScreen: Boolean);
+   class procedure AddScene(Scene: TSceneObject);
    class procedure RemoveScene(Scene: TSceneObject);
    class procedure FreeNonVisibleTextures;
    procedure GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject{; PalWarning: TPaletteWarning});
-   procedure FreeTextures(ReallyAll: Boolean);
+   procedure FreeTextures(ForceAll: Boolean);
+   procedure ClearTexture(Tex: PTexture3); virtual;
    function CanFree: Boolean;
    function UnifiedPalette: Boolean;
    function ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
@@ -270,14 +301,15 @@ const
 
  {------------------------}
 
-constructor TSceneObject.Create;
+constructor TSceneObject.Create(nViewMode: TMapViewMode);
 begin
- inherited;
+ inherited Create;
  PolyFaces:=TList.Create;
  ModelInfo:=TList.Create;
  BezierInfo:=TList.Create;
  SpriteInfo:=TList.Create;
  TemporaryStuff:=TQList.Create;
+ ViewMode:=nViewMode;
 end;
 
 destructor TSceneObject.Destroy;
@@ -445,7 +477,7 @@ var
   { a PSurfaces object is a list wherein each texturename indexes the list
      of surfaces with that texture.  This routine adds a new texturename
      to the list, or increases the SurfSize associated with
-     a previously encountered texturename.  I don't undertand what SurfSize
+     a previously encountered texturename.  I don't understand what SurfSize
      is for since there seems to be no pointer to the vertices }
   procedure AddSurfaceRef(const a_TexName: String; a_SurfSize: Integer; a_Tmp: Pointer);
   var
@@ -463,7 +495,7 @@ var
       FillChar(SurfacesElement^, SizeOf(TSurfaces), 0);
       { set the pointer-chain of ListSurfaces }
       SurfacesElement^.Next:=FListSurfaces;
-      FListSurfaces:=SurfacesElement;  // whoah, wtf does this do???
+      FListSurfaces:=SurfacesElement;  // Set the new starting point of the chain
       { assign the texturename, and some tmp value }
       SurfacesElement^.TexName:=a_TexName;
       Pointer(SurfacesElement^.tmp):=a_Tmp;
@@ -533,9 +565,9 @@ var
         Dist:=vp0^[0]*Normale[0] + vp0^[1]*Normale[1] + vp0^[2]*Normale[2];
 
         if nRadius2>Radius2 then
-          AnyInfo.Radius:=Sqrt(nRadius2)
+          GlideRadius:=Sqrt(nRadius2)
         else
-          AnyInfo.Radius:=Sqrt(Radius2);
+          GlideRadius:=Sqrt(Radius2);
 
         VertexCount:=3;
         AlphaColor:=ObjectColor;
@@ -643,7 +675,7 @@ begin
        Inc(I); { Increment to get the next element }
      end;
 
-     I:=0; // process the biezers, haven't looked into this one yet
+     I:=0; // process the beziers, haven't looked into this one yet
      while I<BezierInfo.Count do
      begin
        OneBezier:=TBezier(BezierInfo[I]);
@@ -957,9 +989,9 @@ begin
          end;
 
          if Mode=bm3DFX then
-           Surf3D^.AnyInfo.Radius:=Sqrt(Radius2)
+           Surf3D^.GlideRadius:=Sqrt(Radius2)
          else
-           Surf3D^.AnyInfo.DisplayList:=0;
+           Surf3D^.OpenGLDisplayList:=0;
 
          PList^.tmp:=PSurface3D(PV);
        end;
@@ -1049,12 +1081,12 @@ begin
                if Mode=bm3DFX then
                begin
                  if nRadius2>Radius2 then
-                   AnyInfo.Radius:=Sqrt(nRadius2)
+                   GlideRadius:=Sqrt(nRadius2)
                  else
-                   AnyInfo.Radius:=Sqrt(Radius2);
+                   GlideRadius:=Sqrt(Radius2);
                end
                else
-                 AnyInfo.DisplayList:=0;
+                 OpenGLDisplayList:=0;
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (ModelAlpha shl 24);
@@ -1154,12 +1186,12 @@ begin
                if Mode=bm3DFX then
                begin
                  if nRadius2>Radius2 then
-                   AnyInfo.Radius:=Sqrt(nRadius2)
+                   GlideRadius:=Sqrt(nRadius2)
                  else
-                   AnyInfo.Radius:=Sqrt(Radius2);
+                   GlideRadius:=Sqrt(Radius2);
                end
                else
-                 AnyInfo.DisplayList:=0;
+                 OpenGLDisplayList:=0;
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (Alpha shl 24);
@@ -1250,7 +1282,7 @@ begin
              begin
                with Surf3D^ do
                begin
-                 AnyInfo.DisplayList:=0;
+                 OpenGLDisplayList:=0;
                  VertexCount:=-(2*BezierBuf.W);
                  AlphaColor:=ObjectColor;
                  TextureMode:=NewRenderMode;
@@ -1312,11 +1344,11 @@ begin
  GetInstance:=TextureManager;
 end;
 
-class procedure TTextureManager.AddScene(Scene: TSceneObject; FullScreen: Boolean);
+class procedure TTextureManager.AddScene(Scene: TSceneObject);
 begin
  with GetInstance do
   begin
-   Init(FullScreen);
+   Init();
    if Scenes.IndexOf(Scene)<0 then
     Scenes.Add(Scene);
   end;
@@ -1341,8 +1373,7 @@ end;
 
 procedure TTextureManager.FreeTexture(Tex: PTexture3);
 begin
- if Assigned(FFreeTexture) then
-  FFreeTexture(Tex);
+ ClearTexture(Tex);
  FreeMem(Tex^.info.data);
  Tex^.SourceTexture.AddRef(-1);
  Dispose(Tex);
@@ -1404,7 +1435,7 @@ begin
  PaletteCache.Add(Result);
 end;
 
-procedure TTextureManager.FreeTextures(ReallyAll: Boolean);
+procedure TTextureManager.FreeTextures(ForceAll: Boolean);
 var
  I: Integer;
  Tex: PTexture3;
@@ -1415,27 +1446,30 @@ begin
 {CurrentPalettePtr:=Nil;}
 {PaletteLmp:=Nil;}
  for I:=0 to Textures.Count-1 do
-  with PTexture3(Textures.Objects[I])^ do
-   ok:=ReallyAll or not Scaled;
- for I:=0 to Scenes.Count-1 do
   begin
-   P:=TSceneObject(Scenes[I]).ListSurfaces;
-   while Assigned(P) do
+   with PTexture3(Textures.Objects[I])^ do
     begin
-     if P^.Texture<>Nil then
+     Used:=false;
+    end;
+  end;
+ if not ForceAll then
+  begin
+   for I:=0 to Scenes.Count-1 do
+    begin
+     P:=TSceneObject(Scenes[I]).ListSurfaces;
+     while Assigned(P) do
       begin
-       if ReallyAll then
-        ReallocMem(P^.Texture^.info.data, 0);
-       P^.Texture^.ok:=False;
+       if P^.Texture<>Nil then
+        P^.Texture^.Used:=true;
+       P:=P^.Next;
       end;
-     P:=P^.Next;
     end;
   end;
  nPaletteCache:=Nil;
  for I:=Textures.Count-1 downto 0 do
   begin
    Tex:=PTexture3(Textures.Objects[I]);
-   if Tex^.ok then
+   if (Tex^.Used=false) then
     begin
      FreeTexture(Tex);
      Textures.Delete(I);
@@ -1614,7 +1648,14 @@ begin
     if S[1]=':' then
      begin  { loading model skin }
       Pointer(Q):=P^.tmp;
-      Q.Acces;
+      if Q<>Nil then
+       try
+        Q.Acces;
+       except
+        Q:=Nil;
+       end;
+      if Q=Nil then
+       GlobalWarning(FmtLoadStr1(5588, [S]));
      end
     else
      begin  { loading texture }
@@ -1650,8 +1691,8 @@ begin
    end;
    if (TextureMaxDimension < 8) then
      TextureMaxDimension:=8; { minimum value is 8 }
-   if (TextureMaxDimension > 256) then
-     TextureMaxDimension:=256; { maximum value is 256 }
+   if (TextureMaxDimension > 4096) then
+     TextureMaxDimension:=4096; { maximum value is 4096 }
 
    PTex^.SourceTexture:=Q;
    PTex^.TexW:=Size.X;
@@ -1806,7 +1847,7 @@ begin
  P^.Texture:=PTex;
 end;
 
-procedure TTextureManager.Init(FullScreen: Boolean);
+procedure TTextureManager.Init({FullScreen: Boolean});
 (*var
  I: Integer;*)
 begin
@@ -1838,13 +1879,17 @@ class procedure TTextureManager.FreeNonVisibleTextures;
 begin
  if TextureManager<>Nil then
   begin
-   TextureManager.FreeTextures(True);
+   TextureManager.FreeTextures(False);
    if TextureManager.CanFree then
     begin
      TextureManager.Free;
      TextureManager:=Nil;
     end;
   end;
+end;
+
+procedure TTextureManager.ClearTexture(Tex: PTexture3);
+begin
 end;
 
  {------------------------}
@@ -1955,15 +2000,19 @@ end;
 function GetLodFor(w: Integer) : GrLOD_t;
 begin
  case w of
-  256: Result:=GR_LOD_256;
-  128: Result:=GR_LOD_128;
-  64:  Result:=GR_LOD_64;
-  32:  Result:=GR_LOD_32;
-  16:  Result:=GR_LOD_16;
-  8:   Result:=GR_LOD_8;
-  4:   Result:=GR_LOD_4;
-  2:   Result:=GR_LOD_2;
-  1:   Result:=GR_LOD_1;
+  4096: Result:=GR_LOD_256;  {Daniel: The software and 3DFX don't support higher LODs}
+  2048: Result:=GR_LOD_256;
+  1024: Result:=GR_LOD_256;
+  512:  Result:=GR_LOD_256;
+  256:  Result:=GR_LOD_256;
+  128:  Result:=GR_LOD_128;
+  64:   Result:=GR_LOD_64;
+  32:   Result:=GR_LOD_32;
+  16:   Result:=GR_LOD_16;
+  8:    Result:=GR_LOD_8;
+  4:    Result:=GR_LOD_4;
+  2:    Result:=GR_LOD_2;
+  1:    Result:=GR_LOD_1;
  else
   Raise InternalE('Bad LOD');
  end;
