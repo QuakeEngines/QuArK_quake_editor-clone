@@ -4,7 +4,7 @@ This is the source code of QuArK. It should work with Delphi 2, 3, 4, 5.
 
 Important ! Follow the steps below !
 
-1) Checkout all the "source" module with your CVS program (I guess you
+1) Checkout all the "source" module with your cvs program (I guess you
    already did if you are reading this).
 
 2) Run Delphi but DON'T OPEN THE QUARK.DPR PROJECT IMMEDIATELY
@@ -21,7 +21,7 @@ Important ! Follow the steps below !
 
     Important : with Delphi 2 and 3, if the source code of any component is
     modified, you must do Component, Rebuild library. Be careful about it as
-    WinCVS will probably not explicitely warn you that the component source code
+    Wincvs will probably not explicitely warn you that the component source code
     was modified. With later versions of Delphi I guess (but I'm not sure) that
     recompiling occurs automatically.
 
@@ -30,7 +30,7 @@ Important ! Follow the steps below !
     components are by myself (Armin Rigo) and covered by the GNU GPL.
 
 4) Only then you can open the "QuArK.dpr" project. Be careful that the source on
-   CVS does not include (on purpose) a file "QuArK.cfg" which would give the
+   cvs does not include (on purpose) a file "QuArK.cfg" which would give the
    compiling options of the project, because this file contains absolute paths.
    You have to open the Project, Options dialog box and configure a few things:
 
@@ -55,7 +55,7 @@ Don't forget the link to the InfoBase:
 
   http://www.planetquake.com/quark/infobase/index.html
 
-You are welcome to make changes to the CVS-stored InfoBase. After you did so,
+You are welcome to make changes to the cvs-stored InfoBase. After you did so,
 visit this URL (warning, this URL might change later):
 
   http://imaux.unil.ch:8000/infobase/

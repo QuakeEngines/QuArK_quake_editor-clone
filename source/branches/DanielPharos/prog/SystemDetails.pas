@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.16  2003/08/19 21:39:58  peter-b
 Fixed logging to accurately log installed Python version and DLL path.
 
@@ -67,7 +70,7 @@ Revision 1.3  2001/02/14 20:45:10  aiv
 Added Logging of Python version.
 
 Revision 1.2  2001/02/11 22:26:44  aiv
-Added CVS Headers
+Added cvs Headers
 }
 
 unit SystemDetails;

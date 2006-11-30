@@ -4,11 +4,14 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.17  2005/12/17 21:29:26  cdunde
+//To add improvements made by dannsdinosaurs - DannJ
+//
 //Revision 1.16  2005/10/15 01:00:30  cdunde
 //To reinstate headers and history
 //
 //Revision 1.14  2005/09/23 06:13:09 peter-b
-//Remove CVS $ tags from runtime
+//Remove cvs $ tags from runtime
 //
 //Revision 1.13  2005/06/30 01:47:53  cdunde
 //Improvements by dannsdinosaurs DannJ
