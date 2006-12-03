@@ -955,6 +955,9 @@ class RedImageDragObject(DragObject):
             special, refresh = self.ricmd()
             if special is None:    # can draw a red image only
                 if internal==1:    # erase the previous image
+                       ### Stopped the Model Editor from drawing incorrect image in Skin-view.
+                    if isinstance(editor, mdleditor.ModelEditor):
+                        return
                     for r in self.redimages:
                         view.drawmap(r, mode)
 
@@ -1845,6 +1848,17 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.27.2.9  2006/11/29 22:22:41  cdunde
+#Revision 1.30  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.29  2006/11/29 22:23:30  cdunde
+#To fix zoom in fade problem in Model Editor for Software and Glide modes.
+#
+#Revision 1.28  2006/11/29 07:00:26  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.27.2.8  2006/11/27 08:31:56  cdunde
 #To add the "Rotate at start position" method to the Model Editors rotation options menu.
 #
