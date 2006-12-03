@@ -15,6 +15,10 @@ $Id$
 6.5.0 Beta 1
 =============
 
+ * [cdunde]: Stopped the Model Editor from drawing incorrect image in Skin-view.
+
+ * [cdunde]: To draw the Skin-view drag lines when paused with drag.
+
  * [cdunde]: Started a new Model Editor Infobase section
            -  and their direct function links from the Model Editor.
 
