@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.18  2006/11/28 16:44:30  danielpharos
+Fix for the software access violation (again)
+
 Revision 1.31.2.17  2006/11/28 16:18:55  danielpharos
 Pushed MapView into the renderers and made OpenGL do (bad) Solid Colors
 
@@ -534,7 +537,7 @@ begin
    ReallocMem(FogTableCache, SizeOf(GrFogTable_t));
    if Assigned(guFogGenerateExp2) then
    begin
-     guFogGenerateExp2(FogTableCache^, FogDensity/(25*FarDistance));
+     guFogGenerateExp2(FogTableCache^, FogDensity/(50*FarDistance));
    end;
   {if Assigned(guFogGenerateExp2)
    and Assigned(grFogTable) then
