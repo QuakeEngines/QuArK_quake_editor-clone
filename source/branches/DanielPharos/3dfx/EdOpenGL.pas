@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.2.15  2006/11/28 16:18:55  danielpharos
+Pushed MapView into the renderers and made OpenGL do (bad) Solid Colors
+
 Revision 1.33.2.14  2006/11/23 20:54:42  danielpharos
 Cleaned up the OpenGL error messages
 Added new OpenGL error messages texts to the dictionary
@@ -1222,14 +1225,6 @@ begin
 
   CheckOpenGLError(glGetError);  {#}
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity;
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity;
-
-  CheckOpenGLError(glGetError);  {#}
-
   if Source.Coord.FlatDisplay then
    begin
     if CurrentDisplayType=dtXY then
@@ -1292,27 +1287,29 @@ begin
     MatrixTransform[3,2]:=0;
     MatrixTransform[3,3]:=1;
 
-    CheckOpenGLError(glGetError);   {#}
-
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity;
     glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity;
     glTranslated(TransX, TransY, TransZ);
     glMultMatrixd(MatrixTransform);
-
-    CheckOpenGLError(glGetError);   {#}
    end
   else
    begin
     with TCameraCoordinates(Source.Coord) do
      begin
-      CheckOpenGLError(glGetError);   {#}
-
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity;
       gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
+
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity;
       glRotated(PitchAngle * (180/pi), -1,0,0);
       glRotated(HorzAngle * (180/pi), 0,-1,0);
       glRotated(120, -1,1,1);
       glTranslated(-Camera.X, -Camera.Y, -Camera.Z);
-      
-      CheckOpenGLError(glGetError);   {#}
      end;
    end;
 
