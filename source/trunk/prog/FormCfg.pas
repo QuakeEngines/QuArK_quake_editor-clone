@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2006/09/28 06:55:59  cdunde
+To stop filling multiple dropdown list with erroneous data, like for misc_model entity
+
 Revision 1.31  2006/09/27 02:59:10  cdunde
 To add Copy, Paste and Cut functions to Specifices\Arg
 page RMB pop-up menu.
@@ -1959,7 +1962,9 @@ begin
                  ComboBox.Tag:=I+1;
                  ComboBox.Items.Text:=TextValues;
                  ComboBox.ItemIndex:=MatchSpecItem(ComboBox, ArgValue, True); { "ComboBox.Tag" must be set to a value!!! }
-          //       ComboBox.Text:=ArgValue;   // Commented out to stop filling multiple dropdown list with erroneous data, like for misc_model entity
+            // Created step around to stop filling multiple dropdown list with erroneous data, like for misc_model entity
+                 if Spec <>'model' then
+                  ComboBox.Text:=ArgValue;
                  ComboBox.OnKeyDown:=ComboKeyDown;
                  ComboBox.OnChange:=EnterEditChange;
                  ComboBox.Hint:=HintMsg;
