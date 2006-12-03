@@ -24,6 +24,7 @@ import qhandles
 from mdlutils import *
 import mdlentities
 import qmenu
+import qbaseeditor
 
 #py2.4 indicates upgrade change for python 2.4
 
@@ -219,8 +220,6 @@ class SkinHandle(qhandles.GenericHandle):
                   facev4 = quarkx.vect(vert[1]-int(texWidth*.5), vert[2]-int(texHeight*.5), 0)
               count = count + 1
 
-          cv = view.canvas()
-          cv.pencolor = BLUE
           pv1 = view.proj(v1)
           pv2 = view.proj(v2)
           pv3 = view.proj(facev3)
@@ -243,11 +242,14 @@ class SkinHandle(qhandles.GenericHandle):
           ver_v4y = int(ver_v4y)
           ver_v4z = int(ver_v4z)
 
-       #   cv.line(ver_v1x, ver_v1y, ver_v2x, ver_v2y) * Not correct point, needs fixing by getting one more point.
-          cv.line(ver_v2x, ver_v2y, ver_v3x, ver_v3y)
-          cv.line(ver_v2x, ver_v2y, ver_v4x, ver_v4y)
           editor.finishdrawing(view)
           view.repaint()
+
+          cv = view.canvas()
+          cv.pencolor = BLUE
+       #   cv.line(ver_v1x, ver_v1y, ver_v2x, ver_v2y) * Not correct point, needs fixing by getting one more point.
+          view.drawmap(cv.line(ver_v2x, ver_v2y, ver_v3x, ver_v3y))
+          view.drawmap(cv.line(ver_v2x, ver_v2y, ver_v4x, ver_v4y))
 
           tris = new.triangles
           oldtri = tris[self.tri_index]
@@ -628,6 +630,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.15  2006/11/30 07:36:19  cdunde
+#Temporary fix for view axis icons being lost when vertex on Skin-view is moved.
+#
 #Revision 1.14  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
