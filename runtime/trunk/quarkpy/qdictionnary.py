@@ -970,6 +970,7 @@ Strings = {
     5776: "An error occured in the OpenGL routines: GL_STACK_OVERFLOW",
     5777: "An error occured in the OpenGL routines: GL_STACK_UNDERFLOW",
     5778: "An error occured in the OpenGL routines: GL_OUT_OF_MEMORY",
+    5779: "Unable to delete OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer.",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 
@@ -989,6 +990,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.79  2006/11/30 01:19:33  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.78  2006/11/29 07:00:25  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

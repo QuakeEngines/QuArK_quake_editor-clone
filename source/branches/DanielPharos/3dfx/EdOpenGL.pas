@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.2.16  2006/12/03 20:28:21  danielpharos
+Put the perspective in the correct place for OpenGL. Should fix any fog issues.
+
 Revision 1.33.2.15  2006/11/28 16:18:55  danielpharos
 Pushed MapView into the renderers and made OpenGL do (bad) Solid Colors
 
@@ -801,7 +804,8 @@ begin
           Inc(I);
       end;
       wglMakeCurrent(0,0);
-      wglDeleteContext(RC);
+      if wglDeleteContext(RC) = false then
+        raise EError(5779);
     end;
     RC:=0;
   end;
@@ -1057,6 +1061,7 @@ begin
         {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
         glDeleteLists(1, DisplayLists);
         {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
+        CheckOpenGLError(glGetError);  {#}
         wglMakeCurrent(0,0);
        end;
     end;
@@ -1337,6 +1342,7 @@ var
 {BasePalette: Pointer;}
  PSD, PSD2: TPixelSetDescription;
  GammaBuf: Pointer;
+ MaxTexDim: GLint;
 begin
   if Texture^.OpenGLName=0 then
   begin
@@ -1408,7 +1414,21 @@ begin
     else
     begin //handle paletted textures   *)
 
-    GetwhForTexture(Texture^.info, W, H);
+    {GetwhForTexture(Texture^.info, W, H);}
+    
+    wglMakeCurrent(GLDC,RC);
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, @MaxTexDim);
+    CheckOpenGLError(glGetError);  {#}
+    wglMakeCurrent(0,0);
+    if MaxTexDim<=0 then
+      MaxTexDim:=256;
+    W:=Texture^.LoadedTexW;
+    H:=Texture^.LoadedTexH;
+    while (W>MaxTexDim) or (H>MaxTexDim) do
+     begin
+      W:=W div 2;
+      H:=H div 2;
+     end;
 
     MemSize:=W*H*4;
 
@@ -1568,13 +1588,17 @@ begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     end;
+    CheckOpenGLError(glGetError);  {#}
 
       // To reverse changes that broke OpenGL for odd sized textures in version 1.24 2004/12/14
     glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
   (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
     end;//paletted textures   *)
 
+    CheckOpenGLError(glGetError);  {#}
+
     wglMakeCurrent(0,0);
+
     {$IFDEF DebugGLErr} DebugOpenGL(107, '', []); {$ENDIF}
   end;
 end;

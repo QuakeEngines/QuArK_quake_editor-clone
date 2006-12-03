@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12.2.9  2006/11/23 20:14:59  danielpharos
+Added counter to make sure the renderers only unload when they're not used anymore
+
 Revision 1.12.2.8  2006/11/01 22:22:28  danielpharos
 BackUp 1 November 2006
 Mainly reduce OpenGL memory leak
@@ -83,6 +86,7 @@ type
   GLclampf   = Single;
   GLdouble   = Double;
   GLclampd   = Double;
+  PGLint     = ^GLint;
 
 const
   (* AccumOp *)
@@ -704,6 +708,7 @@ var
   glReadPixels: procedure (x, y: GLint; width, height: GLsizei; format, typ: GLenum; var pixels); stdcall;
   glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall; {Decker 2003.03.12 - Added}
   glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall; {Daniel 2006.09.19 - Added}
+  glGetIntegerv: procedure (pname: GLenum; params: PGLint) stdcall; {Daniel 2006.12.03 - Added}
 
   (*
   ** Utility routines from GLU32.DLL
@@ -718,7 +723,7 @@ procedure UnloadOpenGl;
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..44] of //Decker 2006.09.19 - modified
+  OpenGL32DLL_FuncList : array[0..45] of //Daniel 2006.12.03 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -772,6 +777,7 @@ const
    ,(FuncPtr: @@glReadPixels;          FuncName: 'glReadPixels'          )
    ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           ) //Decker 2003.03.12 - Added
    ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //Daniel 2006.09.28 - Added
+   ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         ) //Daniel 2006.12.03 - Added
  );
 
   Glu32DLL_FuncList : array[0..0] of

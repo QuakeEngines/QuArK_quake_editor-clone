@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2006/11/30 00:42:32  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
+
 Revision 1.15.2.14  2006/11/28 16:18:55  danielpharos
 Pushed MapView into the renderers and made OpenGL do (bad) Solid Colors
 
@@ -160,6 +164,7 @@ type
  TTexture3 = record
               SourceTexture: QPixelSet;
               TexW, TexH: Integer;
+              LoadedTexW, LoadedTexH: Integer;
               info: GrTexInfo;
               MeanColor: FxU32;
               startAddress, endAddress: FxU32;
@@ -1741,6 +1746,8 @@ begin
     max:=w
    else
     max:=h;
+   PTex^.LoadedTexW:=w;
+   PTex^.LoadedTexH:=h;
  (*MemSize:=w*h;
 
    if PSD.Format=psf24bpp then
