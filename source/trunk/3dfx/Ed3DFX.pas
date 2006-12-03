@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2006/11/30 00:42:32  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
+
 Revision 1.31.2.18  2006/11/28 16:44:30  danielpharos
 Fix for the software access violation (again)
 
@@ -537,7 +541,7 @@ begin
    ReallocMem(FogTableCache, SizeOf(GrFogTable_t));
    if Assigned(guFogGenerateExp2) then
    begin
-     guFogGenerateExp2(FogTableCache^, FogDensity/(25*FarDistance));
+     guFogGenerateExp2(FogTableCache^, FogDensity/(50*FarDistance));
    end;
   {if Assigned(guFogGenerateExp2)
    and Assigned(grFogTable) then
