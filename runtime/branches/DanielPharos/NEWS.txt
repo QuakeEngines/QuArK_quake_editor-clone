@@ -12,6 +12,13 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
+6.5.0 Beta 2
+=============
+
+ * [Daniel Pharos]: Fixed the software & glide lock-up!
+
+ * [cdunde]: Fixed Model Editor's Skin-view to draw model mesh correctly and fairly fast.
+
 6.5.0 Beta 1
 =============
 
@@ -121,8 +128,9 @@ $Id$
          - as well as 'color pickers' for all lighting functions.
          - Even a few 'script\shader' corrections.
 
- * [cdunde]: Made up a complete QuArK_Quake4.zip game support package with .md3 models
-         - and added its link to the Quake 4 Infobase Configuration doc section.
+ * [cdunde]: Made up a complete QuArK_Quake4.zip game support package as well as
+         - a QuArK_Quake4md3.zip .md3 models package to allow viewing of the models
+         - and added their links to the Quake 4 Infobase Configuration doc section.
 
  * [cdunde]: Created F1 help link for the Extruder Shape Builder and updated the
          - Infobase with screen shots and step by step description of its use.
