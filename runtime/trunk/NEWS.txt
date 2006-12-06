@@ -12,6 +12,13 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
+6.5.0 Beta 2
+=============
+
+ * [Daniel Pharos]: Fixed the software & glide lock-up!
+
+ * [cdunde]: Fixed Model Editor's Skin-view to draw model mesh correctly and fairly fast.
+
 6.5.0 Beta 1
 =============
 
