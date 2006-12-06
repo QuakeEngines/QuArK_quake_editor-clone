@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.19  2006/12/03 20:27:59  danielpharos
+Made the Glide Fade a little bit less dense
+
 Revision 1.31.2.18  2006/11/28 16:44:30  danielpharos
 Fix for the software access violation (again)
 
@@ -1915,6 +1918,7 @@ var
  info: GrLfbInfo_t;
  Bits, SrcPtr: Pointer;
  FrameBrush: HBrush;
+ DIBSection: HGDIOBJ;
 
   procedure Frame(X,Y,W,H: Integer);
   var
@@ -1928,15 +1932,20 @@ var
 
 begin
  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
+ FillChar(BmpInfo, SizeOf(BmpInfo), 0);
  with bmiHeader do
   begin
    biSize:=SizeOf(TBitmapInfoHeader);
    biPlanes:=1;
    biBitCount:=24;
+   biCompression:=BI_RGB;
   end;
  ScreenExtent(L, R, bmiHeader);
+ BmpInfo.bmiHeader:=bmiHeader;
 
- GetMem(Bits, bmiHeader.biWidth*bmiHeader.biHeight*3);
+ DIBSection:=CreateDIBSection(DC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
+ if DIBSection = 0 then
+   Raise EErrorFmt(4866, ['CreateDIBSection']);
  if qrkGlideVersion>=HardwareGlideVersion then
   begin
    try
@@ -2027,11 +2036,10 @@ begin
   if B<SY then Frame(0, B, SX, SY-B);
   if FrameBrush<>0 then
    DeleteObject(FrameBrush);
-  BmpInfo.bmiHeader:=bmiHeader;
-  SetDIBitsToDevice(DC, L, T,
+  if SetDIBitsToDevice(DC, L, T,
    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
-   0,bmiHeader.biHeight, Bits, BmpInfo, 0);
-  FreeMem(Bits);
+   0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
+    Raise EErrorFmt(4866, ['SetDIBitsToDevice']);
 end;
 
 procedure T3DFXSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
