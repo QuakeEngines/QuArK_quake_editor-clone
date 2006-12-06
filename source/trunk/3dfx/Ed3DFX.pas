@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2006/12/06 16:57:44  cdunde
+Fixed the software & glide lock-up! By Daniel Pharcos.
+
 Revision 1.33  2006/12/03 20:35:57  danielpharos
 Made the Glide Fade a little bit less dense
 
@@ -1947,7 +1950,6 @@ begin
  ScreenExtent(L, R, bmiHeader);
  BmpInfo.bmiHeader:=bmiHeader;
 
- {GetMem(Bits, bmiHeader.biWidth*bmiHeader.biHeight*3);}
  DIBSection:=CreateDIBSection(DC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
  if DIBSection = 0 then
    Raise EErrorFmt(4866, ['CreateDIBSection']);
@@ -2041,11 +2043,11 @@ begin
   if B<SY then Frame(0, B, SX, SY-B);
   if FrameBrush<>0 then
    DeleteObject(FrameBrush);
-  SetDIBitsToDevice(DC, L, T,
+  if SetDIBitsToDevice(DC, L, T,
    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
-   0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS);
+   0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
+    Raise EErrorFmt(4866, ['SetDIBitsToDevice']);
   DeleteObject(DIBSection);
-  {FreeMem(Bits);}
 end;
 
 procedure T3DFXSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
