@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31.2.20  2006/12/06 16:02:30  danielpharos
+Fixed the software & glide lock-up!
+
 Revision 1.31.2.19  2006/12/03 20:27:59  danielpharos
 Made the Glide Fade a little bit less dense
 
@@ -2040,6 +2043,7 @@ begin
    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
     Raise EErrorFmt(4866, ['SetDIBitsToDevice']);
+  DeleteObject(DIBSection);
 end;
 
 procedure T3DFXSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
