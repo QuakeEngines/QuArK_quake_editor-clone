@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2
 =============
 
+ * [cdunde]: Made additional fix to stop filling multiple dropdown list with erroneous data,
+         - for example like a misc_model for func_bobbing entity.
+
  * [Daniel Pharos]: Fixed the software & glide lock-up!
 
  * [cdunde]: Fixed Model Editor's Skin-view to draw model mesh correctly and fairly fast.
