@@ -256,17 +256,15 @@ class MapLayout(BaseLayout):
         sl = self.explorer.sellist
         formobj, f1 = mapentities.LoadEntityForm(sl) # Go get the :form date to make the form
                                                      # and the entity :e and :form name.
-        try:
+        if formobj is not None:
             self.dataform.setdata(sl, formobj) # try to use the data returned to make the form.
-        except: # if an Access Violation error will occur, try to following
+        else:
             if f1 is not None: # If we have a form name, then try to find its form this way.
                 formobj = quarkx.getqctxlist(':form', f1)
+                self.dataform.setdata(sl, formobj) # try to use the data returned to make the form again.
             else:
-                formobj = None # If no form data is found.
-        try:
-            self.dataform.setdata(sl, formobj) # try to use the data returned to make the form again.
-        except: # if an Access Violation error will occur, try to following
-            formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
+                formobj = None # If no form data is found, then set to None and just go on, there is no form for this item.
+                self.dataform.setdata(sl, formobj) # try to use the data returned to make the form again.
         help = ((formobj is not None) and formobj["Help"]) or ""
         if help:
             help = "?" + help   # this trick displays a blue hint
@@ -898,6 +896,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.18.2.7  2006/11/14 22:47:27  cdunde
+#To fix 0 division error of large terrain polys and texture scaling and angle changes.
+#
 #Revision 1.18.2.6  2006/11/04 21:40:08  cdunde
 #To add comment about newmapview.
 #

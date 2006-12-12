@@ -674,14 +674,12 @@ def registerPyForm(name, formstring):
     formdict[name] = f
 
 def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
-
     formobj = f1 = None  # This will be our outputs
     if len(sl):  # Are there any objects in sl?
         f1 = CallManager("dataformname", sl[0])  # Gets the entity form-name (if one exist) of the first object
         for obj in sl[1:]:  # For all OTHER objects in sl...
             f2 = CallManager("dataformname", obj) # Get their names
-     #       if f2!=f1: # If another one is found use it instead of the first one found
-            if f2==f1: # If another one is found use the first one found anyway
+            if f2!=f1: # If another one is found use the first one found anyway
                 f1 = None  # Don't use f1's item, use f2's instead
                 break # Stop checking we've already found a match
         if f1 is not None: # If a name has been found but no form yet, then go do the following
@@ -689,17 +687,21 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
             #for f in bbox:
             #    if f.shortname == f1:
             #        formobj = f        # find the LAST form
-            flist = quarkx.getqctxlist(':form', f1) # Find the form for the f1 name is there is one
+            flist = quarkx.getqctxlist(':form', f1) # Find the form for the f1 name if there is one
             if len(flist): # If a form is found then do the following
                 formobj = flist[-1] # Set that :form data to be returned
-        if formobj is None: # If the form data still has not been found then try the method below
-            formobj = lookupPyForm(f1) # If found this time then set THAT :form data to be returned
+            if formobj is None: # If the form data still has not been found then try the method below
+                formobj = lookupPyForm(f1) # If found this time then set THAT :form data to be returned
     return formobj, f1 # Return both the formobj (can still be None) and the name for further testing
                        # (see "def filldataform" in mapmgr.py where call originated)
 
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.50.2.1  2006/11/03 23:38:09  cdunde
+#Updates to accept Python 2.4.4 by eliminating the
+#Depreciation warning messages in the console.
+#
 #Revision 1.50  2006/08/25 20:20:22  cdunde
 #To allow mutual selected items Specific setting changes.
 #
