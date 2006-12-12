@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2006/12/03 12:02:09  cdunde
+To fix model selection form properly so other multiple forms would not be broken.
+
 Revision 1.32  2006/09/28 06:55:59  cdunde
 To stop filling multiple dropdown list with erroneous data, like for misc_model entity
 
@@ -1963,8 +1966,9 @@ begin
                  ComboBox.Items.Text:=TextValues;
                  ComboBox.ItemIndex:=MatchSpecItem(ComboBox, ArgValue, True); { "ComboBox.Tag" must be set to a value!!! }
             // Created step around to stop filling multiple dropdown list with erroneous data, like for misc_model entity
-                 if Spec <>'model' then
-                  ComboBox.Text:=ArgValue;
+                 if Spec <> 'model' then
+                  if Spec <> 'model2' then
+                   ComboBox.Text:=ArgValue;
                  ComboBox.OnKeyDown:=ComboKeyDown;
                  ComboBox.OnChange:=EnterEditChange;
                  ComboBox.Hint:=HintMsg;
