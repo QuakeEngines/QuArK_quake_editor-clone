@@ -158,10 +158,11 @@ class ModelEditor(BaseEditor):
 
 def commonhandles(self, redraw=1):
     if self.layout is None: return
+    from mdlhandles import mouseflags
     hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # handles common to all views
     for v in self.layout.views:
         v.handles = hlist + v.handles
-        if redraw:
+        if redraw and mouseflags != 1544 and mouseflags != 1032:
             cv = v.canvas()
             for h in hlist:
                 h.draw(v, cv, None)
@@ -170,6 +171,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.12  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.11  2006/11/29 07:00:27  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.
