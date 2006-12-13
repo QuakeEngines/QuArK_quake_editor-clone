@@ -680,8 +680,8 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
         f1 = CallManager("dataformname", sl[0])  # Gets the entity form-name (if one exist) of the first object
         for obj in sl[1:]:  # For all OTHER objects in sl...
             f2 = CallManager("dataformname", obj) # Get their names
-     #       if f2!=f1: # If another one is found use it instead of the first one found
-            if f2==f1: # If another one is found use the first one found anyway
+            if f2!=f1: # If another one is found use it instead of the first one found
+     #       if f2==f1: # If another one is found use the first one found anyway
                 f1 = None  # Don't use f1's item, use f2's instead
                 break # Stop checking we've already found a match
         if f1 is not None: # If a name has been found but no form yet, then go do the following
@@ -700,6 +700,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.52  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.51  2006/11/29 07:00:27  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.
