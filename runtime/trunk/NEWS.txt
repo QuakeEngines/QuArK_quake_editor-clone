@@ -15,6 +15,16 @@ $Id$
 6.5.0 Beta 2
 =============
 
+ * [cdunde]: Added a new developers "tool" function "WhatIsThisObject" with various options
+         - to print everything about a QuArK Internal Object to the console and a hard copy
+         - in the QuArK main directory folder called DEVELOPERS.txt to avoid constant
+         - calling of each individual item to get information about what the object consist of.
+
+ * [cdunde]: To remove un-needed redundancy of code that slows down drawing speed.
+
+ * [cdunde]: To draw the 2D and 3D view model vertex handle lines while dragging
+         - but not the handles that substantially reduces redraw speed.
+
  * [cdunde]: Changed Specifics so multiple selections of the same entity can be set together.
 
  * [cdunde]: Made additional fix to stop filling multiple dropdown list with erroneous data,
