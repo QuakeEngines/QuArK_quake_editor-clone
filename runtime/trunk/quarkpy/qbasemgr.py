@@ -488,7 +488,7 @@ class BaseLayout:
                 v.info["timer"] = 1
                 quarkx.settimer(RefreshView, v, 200)
 
-    cameramoved = update3Dviews
+  #  cameramoved = update3Dviews
 
     def postinitviews(self):
         for v in self.views:
@@ -587,6 +587,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.24  2006/12/03 21:21:51  danielpharos
+#Disable fade in the model editors floating 3D window
+#
 #Revision 1.23  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
