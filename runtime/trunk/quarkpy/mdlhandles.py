@@ -10,12 +10,9 @@ Model editor mouse handles.
 
 #$Header$
 
-
-
 #
 # See comments in maphandles.py.
 #
-
 
 import quarkx
 import math
@@ -30,9 +27,10 @@ import qbaseeditor
 
 # Globals
 vertexdotcolor = 0
-mdleditor = None
+mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
+mouseflags = None
 
 #
 # The handle classes.
@@ -82,6 +80,7 @@ class VertexHandle(qhandles.GenericHandle):
                 qmenu.item("&Force to grid", forcegrid1click,"force vertex to grid")] + self.OriginItems(editor, view)
 
     def draw(self, view, cv, draghandle=None):
+        if mouseflags == 1544 or mouseflags == 1032: return
         p = view.proj(self.pos)
         if p.visible:
             cv.pencolor = vertexdotcolor
@@ -101,13 +100,20 @@ class VertexHandle(qhandles.GenericHandle):
 #py2.4                    cv.rectangle(p.x-3, p.y-3, p.x+3, p.y+3)
                     cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
+
     def drag(self, v1, v2, flags, view):
+        global mouseflags
+        mouseflags = flags
+        editor = mapeditor()
+        pv2 = view.proj(v2)        ### v2 is the SINGLE handle's (being dragged) 3D position (x,y and z in space).
+                                   ### And this converts its 3D position to the monitor's FLAT screen 2D and 3D views
+                                   ### 2D (x,y) position to draw it, (NOTICE >) using the 3D "y" and "z" position values.
         p0 = view.proj(self.pos)
+
         if not p0.visible: return
         if flags&MB_CTRL:
             v2 = qhandles.aligntogrid(v2, 0)
         delta = v2-v1
-        editor = mapeditor()
         if editor is not None:
             if editor.lock_x==1:
                 delta = quarkx.vect(0, delta.y, delta.z)
@@ -121,7 +127,40 @@ class VertexHandle(qhandles.GenericHandle):
             vtxs = new.vertices
             vtxs[self.index] = vtxs[self.index] + delta
             new.vertices = vtxs
+        editor.finishdrawing(view)  ## Clears the last set of drag lines from the view.
+        if flags == 1032:           ## To stop drag starting lines from being erased.
+            view.repaint()          ## Same as above, not sure why we need both.
+        cv = view.canvas()          ## Sets the canvas up.
+        cv.pencolor = LIME          ## Gives the pen color of the lines that will be drawn.
+
+        component = editor.Root.currentcomponent
+        if component is not None:
+            if component.name.endswith(":mc"):
+                handlevertex = self.index
+                tris = findTriangles(component, handlevertex)
+                for tri in tris:
+                    if len(view.handles) == 0: continue
+                    for vtx in tri:
+                        if self.index == vtx[0]:
+                            pass
+                        else:
+                            projvtx = view.proj(view.handles[vtx[0]].pos)
+                            view.drawmap(cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1])))
+
         return [self.frame], [new]
+
+
+  #  For setting stuff up at the beginning of a drag
+  #
+  #  def start_drag(self, view, x, y):
+  #      mouseflags = self.mouseflags
+  #      editor = mapeditor()
+
+
+  #  def ok(self, editor, undo, old, new):
+  #      mouseflags = self.mouseflags
+  #      editor.ok(undo, self.undomsg)
+
 
 
 class SkinHandle(qhandles.GenericHandle):
@@ -164,9 +203,11 @@ class SkinHandle(qhandles.GenericHandle):
                   count = count + 1
                   fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
                   fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
+              #    view.drawmap(cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY)))
                   cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
 
           cv.reset()
+          if mouseflags == 1544 or mouseflags == 1032: return
           if MldOption("Ticks") == "1":
 #py2.4              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
               cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
@@ -178,6 +219,8 @@ class SkinHandle(qhandles.GenericHandle):
 
 
   def drag(self, v1, v2, flags, view):
+      global mouseflags
+      mouseflags = flags
       texWidth = self.texWidth
       texHeight = self.texHeight
       editor = mapeditor()
@@ -197,15 +240,14 @@ class SkinHandle(qhandles.GenericHandle):
           tris = new.triangles ### These are all the triangle faces of the model mesh.
 
           ### Code below draws the triangle face being dragged while dragging.
-
           editor.finishdrawing(view)
           view.repaint()
-
           pv2 = view.proj(v2)
           cv = view.canvas()
           cv.pencolor = LIME
           oldtri = tris[self.tri_index]
           oldvert = oldtri[self.ver_index]
+
           newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
           if (self.ver_index == 0):
               newtri = (newvert, oldtri[1], oldtri[2])
@@ -423,7 +465,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
                  "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
                  "scale": oldscale, ###DECKER This method leaves the scale unchanged from the last zoom (which is what sets the "scale" factor).
               #   "scale": viewscale, ###DECKER This method resets the texture size of a component to the size of the Skin-view
-                                            ### each time that component is re-selected, but not while any item within it is selected.
+                                      ### each time that component is re-selected, but not while any item within it is selected.
                  "custom": singleskinzoom,
                  "origin": origin,
                  "noclick": None,
@@ -443,8 +485,6 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
             vtx = tri[j]
                ### This sets the Skin-view model mesh vertexes and line drawing location(s).
             h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
-
-
 
     view.handles = qhandles.FilterHandles(h, SS_MODEL)
     singleskinzoom(view)
@@ -504,11 +544,19 @@ def BuildHandles(editor, ex, view):
     #
     # The 3D view "eyes".
     #
-    for v in editor.layout.views:
-        if (v is not view) and (v.info["type"] == "3D"):
-            h.append(qhandles.EyePosition(view, v))
-            h.append(MdlEyeDirection(view, v))
-    return qhandles.FilterHandles(h, SS_MODEL)
+ # No need to loop through these views since they are all being passed to here anyway.
+ #   for v in editor.layout.views:
+ #       if (v is not view) and (v.info["type"] == "3D"):
+ #           h.append(qhandles.EyePosition(view, v))
+ #           h.append(MdlEyeDirection(view, v))
+
+    if view.info["type"] == "3D":
+        h.append(qhandles.EyePosition(view, view))
+        h.append(MdlEyeDirection(view, view))
+
+  # Why are we wasting time sending the whole handle list here just to go through it again?
+  #  return qhandles.FilterHandles(h, SS_MODEL)
+    return h
 
 
 
@@ -538,8 +586,8 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
 def MouseDragging(self, view, x, y, s, handle):
     "Mouse Drag on a Model View."
-    global mdleditor, mdleditorview, cursorposatstart
-    mdleditor = self
+    global mdleditorsave, mdleditorview, cursorposatstart
+    mdleditorsave = self
     mdleditorview = view
     for item in view.info:
         if item == 'center':
@@ -602,6 +650,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.17  2006/12/06 04:06:31  cdunde
+#Fixed Model Editor's Skin-view to draw model mesh correctly and fairly fast.
+#
 #Revision 1.16  2006/12/03 18:27:38  cdunde
 #To draw the Skin-view drag lines when paused with drag.
 #
@@ -632,7 +683,7 @@ def MouseClicked(self, view, x, y, s, handle):
 #and rearranged need code for 4 place indention format.
 #
 #Revision 1.12.2.9  2006/11/22 19:26:52  cdunde
-#To add new globals mdleditor, mdleditorview and cursorposatstart for the
+#To add new globals mdleditorsave, mdleditorview and cursorposatstart for the
 #Model Editor, view the LMB is pressed in and the cursors starting point location,
 #as a vector, on that view. These globals can be imported to any other file for use.
 #
