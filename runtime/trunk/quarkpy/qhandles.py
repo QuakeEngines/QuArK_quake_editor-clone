@@ -920,10 +920,24 @@ class RedImageDragObject(DragObject):
         if flags&MB_DRAGGING:
             self.autoscroll(x,y)
         old, ri = self.buildredimages(x, y, flags)
-        self.drawredimages(self.view, 1)
-        self.redimages = ri
-        if flags&MB_DRAGGING:
-            self.drawredimages(self.view, 2)
+        if self.view.info["type"] != "3D":
+            self.drawredimages(self.view, 1)
+            self.redimages = ri
+            if flags&MB_DRAGGING:
+                self.drawredimages(self.view, 2)
+        else:
+            if flags&MB_DRAGGING:
+                if self.view.viewmode == "tex":
+                    self.redimages = ri
+                    self.drawredimages(self.view, 2)
+                    self.view.repaint()
+                else:
+                    self.redimages = ri
+                    self.drawredimages(self.view, 1)
+                    self.drawredimages(self.view, 2)
+            else:
+                self.redimages = ri
+                self.drawredimages(self.view, 1)
         return old
 
     def drawredimages(self, view, internal=0):
@@ -1848,6 +1862,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.31  2006/12/03 18:28:06  cdunde
+#Stopped the Model Editor from drawing incorrect image in Skin-view.
+#
 #Revision 1.30  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
