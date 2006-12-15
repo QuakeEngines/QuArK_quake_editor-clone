@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2
 =============
 
+ * [cdunde]: Improved quality of 3D Texture mode while dragging at increased drawing speed.
+
  * [cdunde]: Added a new developers "tool" function "WhatIsThisObject" with various options
          - to print everything about a QuArK Internal Object to the console and a hard copy
          - in the QuArK main directory folder called DEVELOPERS.txt to avoid constant
