@@ -1051,9 +1051,6 @@ class RedImageDragObject(DragObject):
         self.autoscroll_stop()
         old = self.dragto(x, y, flags)
         if (self.redimages is None) or (len(old)!=len(self.redimages)):
-# Took these out, seemed to make things worse, used finishdrawing instead
-       #     self.view.invalidate()   # not nessisary
-            editor.invalidateviews()  # does all views
             qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
             return
 
@@ -1069,8 +1066,7 @@ class RedImageDragObject(DragObject):
                         type = self.view.info["type"]
                         if type == "3D":
                             self.view.invalidate()
-               #     self.view.invalidate()   # not nessisary
-                        editor.invalidateviews()  # does all views
+                        editor.invalidateviews()
                         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                         break
 
@@ -1080,11 +1076,6 @@ class RedImageDragObject(DragObject):
                 for i in range(0,len(old)):
                     undo.exchange(old[i], self.redimages[i])
                 self.handle.ok(editor, undo, old, self.redimages)
-                type = self.view.info["type"]
-                if type == "3D":
-                    self.view.invalidate()
-            #    self.view.invalidate()   # not nessisary
-                editor.invalidateviews()  # does all views
                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 return
 
@@ -1094,11 +1085,6 @@ class RedImageDragObject(DragObject):
             for i in range(0,len(old)):
                 undo.exchange(old[i], self.redimages[i])
             self.handle.ok(editor, undo, old, self.redimages)
-            type = self.view.info["type"]
-            if type == "3D":
-                self.view.invalidate()
-        #    self.view.invalidate()   # not nessisary
-            editor.invalidateviews()  # does all views
             qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
             return
 
@@ -1862,6 +1848,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.32  2006/12/15 07:39:51  cdunde
+#Improved quality of 3D Texture mode while dragging at increased drawing speed.
+#
 #Revision 1.31  2006/12/03 18:28:06  cdunde
 #Stopped the Model Editor from drawing incorrect image in Skin-view.
 #
