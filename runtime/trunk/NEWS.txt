@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2
 =============
 
+ * [cdunde]: Setup Skin-view proper handle dragging for various model skin(s)
+         - and no skins combinations.
+
  * [cdunde]: Improved quality of 3D Texture mode while dragging at increased drawing speed.
 
  * [cdunde]: Added a new developers "tool" function "WhatIsThisObject" with various options
