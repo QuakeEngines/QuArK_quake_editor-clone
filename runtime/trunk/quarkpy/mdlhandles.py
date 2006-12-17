@@ -59,6 +59,7 @@ class VertexHandle(qhandles.GenericHandle):
     def __init__(self, pos):
         qhandles.GenericHandle.__init__(self, pos)
         self.cursor = CR_CROSSH
+        self.undomsg = "mesh vertex move"
 
     def menu(self, editor, view):
         def forcegrid1click(m, self=self, editor=editor, view=view):
@@ -178,6 +179,7 @@ class SkinHandle(qhandles.GenericHandle):
       self.texHeight = texHeight
       self.triangle = triangle
       self.count = 0
+      self.undomsg = "Skin-view move"
 
  # Stops the red mesh from drawing at end of drag if un-commented.
  # def ok(self, editor, x, y, flags):
@@ -650,6 +652,12 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.18  2006/12/13 04:48:18  cdunde
+#To draw the 2D and 3D view model vertex handle lines while dragging and
+#To remove un-needed redundancy of looping through all of the editors views,
+#since they are being passed to the function one at a time anyway and
+#sending handles list to another function to go through them again to do nothing.
+#
 #Revision 1.17  2006/12/06 04:06:31  cdunde
 #Fixed Model Editor's Skin-view to draw model mesh correctly and fairly fast.
 #
