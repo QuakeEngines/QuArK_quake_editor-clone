@@ -488,7 +488,7 @@ class BaseLayout:
                 v.info["timer"] = 1
                 quarkx.settimer(RefreshView, v, 200)
 
-  #  cameramoved = update3Dviews
+    cameramoved = update3Dviews
 
     def postinitviews(self):
         for v in self.views:
@@ -587,6 +587,20 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.25  2006/12/13 04:51:44  cdunde
+#The def update3Dviews has to be there or an error occurs when you try to open
+#the Floating 3D view window, but other than that, it does not seem to do anything
+#but maybe add one EXTRA build cycle of all the views (2D and 3D) handles
+#which seems to get done ANYWAY by some other function someplace. So another slow down.
+#The update3Dviews is also called in the mapmgr.py file and again has no effect.
+#The same goes for the cameramoved just below that calls it.
+#update3Dviews is called a number of places from within qbasemgr.py when the
+#Floating 3D window is opened and closed but still is not effective and should
+#be removed completely and from all other files that call it, mapmgr.py.
+#I believe its function was to cause a redraw of everything in all views primarily
+#when the Floating 3D view was closed to eliminate things being erased from those view.
+#But apparently other functions are doing that anyway so this is not needed any more.
+#
 #Revision 1.24  2006/12/03 21:21:51  danielpharos
 #Disable fade in the model editors floating 3D window
 #
