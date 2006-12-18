@@ -27,6 +27,9 @@ import qbaseeditor
 
 # Globals
 vertexdotcolor = 0
+drag3Dlines = 0
+skinviewmesh = 0
+skinviewdraglines = 0
 mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
@@ -128,11 +131,11 @@ class VertexHandle(qhandles.GenericHandle):
             vtxs = new.vertices
             vtxs[self.index] = vtxs[self.index] + delta
             new.vertices = vtxs
-        editor.finishdrawing(view)  ## Clears the last set of drag lines from the view.
-        if flags == 1032:           ## To stop drag starting lines from being erased.
-            view.repaint()          ## Same as above, not sure why we need both.
-        cv = view.canvas()          ## Sets the canvas up.
-        cv.pencolor = LIME          ## Gives the pen color of the lines that will be drawn.
+        editor.finishdrawing(view)    ## Clears the last set of drag lines from the view.
+        if flags == 1032:             ## To stop drag starting lines from being erased.
+            view.repaint()            ## Same as above, not sure why we need both.
+        cv = view.canvas()            ## Sets the canvas up.
+        cv.pencolor = drag3Dlines     ## Gives the pen color of the lines that will be drawn.
 
         component = editor.Root.currentcomponent
         if component is not None:
@@ -193,7 +196,7 @@ class SkinHandle(qhandles.GenericHandle):
       count = self.count
       p = view.proj(self.pos)
       if p.visible:
-          cv.pencolor = RED
+          cv.pencolor = skinviewmesh
           pv2 = p.tuple
           for vertex in triangle:
               if self.ver_index == 0:
@@ -246,7 +249,7 @@ class SkinHandle(qhandles.GenericHandle):
           view.repaint()
           pv2 = view.proj(v2)
           cv = view.canvas()
-          cv.pencolor = LIME
+          cv.pencolor = skinviewdraglines
           oldtri = tris[self.tri_index]
           oldvert = oldtri[self.ver_index]
 
@@ -652,6 +655,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.19  2006/12/17 08:58:13  cdunde
+#Setup Skin-view proper handle dragging for various model skin(s)
+#and no skins combinations.
+#
 #Revision 1.18  2006/12/13 04:48:18  cdunde
 #To draw the 2D and 3D view model vertex handle lines while dragging and
 #To remove un-needed redundancy of looping through all of the editors views,

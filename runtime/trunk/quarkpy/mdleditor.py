@@ -97,6 +97,9 @@ class ModelEditor(BaseEditor):
     def setupchanged(self, level):
         BaseEditor.setupchanged(self, level)
         mdlhandles.vertexdotcolor = MapColor("Vertices", SS_MODEL)
+        mdlhandles.drag3Dlines = MapColor("Drag3DLines", SS_MODEL)
+        mdlhandles.skinviewmesh = MapColor("SkinLines", SS_MODEL)
+        mdlhandles.skinviewdraglines = MapColor("SkinDragLines", SS_MODEL)
 
     def setupview(self, v, drawmap=None, flags=MV_AUTOFOCUS, copycol=1):
         BaseEditor.setupview(self, v, drawmap, flags, copycol)
@@ -171,6 +174,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.13  2006/12/13 04:46:15  cdunde
+#To draw the 2D and 3D view model vertex handle lines while dragging
+#but not the handles that substantially reduces redraw speed.
+#
 #Revision 1.12  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

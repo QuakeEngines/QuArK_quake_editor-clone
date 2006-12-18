@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.297  2006/11/30 01:15:25  cdunde
+//To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+//
 //Revision 1.296  2006/11/29 06:56:20  cdunde
 //To merge all runtime files that had changes from DanielPharos branch
 //to HEAD cvs for QuArK 6.5.0 Beta 1.
@@ -2959,20 +2962,23 @@ QQRKSRC1
       Colors:config =
       {
         InvertedColors = ""
-        FillColor  = $FFFFFF
-        ViewXZ     = $E8E8B8
-        ViewXY     = $E8DCB8
-        SelXZ      = $0080C0
-        SelXY      = $0090C0
-        Gray       = $BABABA
-        Axis       = $A6CAF0
-        GridXZ     = $008000
-        GridXY     = $808000
-        GridLines  = $D0D0FF
-        Tag        = $FF0000
-        GrayImage  = $FF0000
-        Linear     = $FF0080
-        Vertices   = $FF0000
+        FillColor     = $FFFFFF
+        ViewXZ        = $E8E8B8
+        ViewXY        = $E8DCB8
+        SelXZ         = $0080C0
+        SelXY         = $0090C0
+        Gray          = $BABABA
+        Axis          = $A6CAF0
+        GridXZ        = $008000
+        GridXY        = $808000
+        GridLines     = $D0D0FF
+        Tag           = $FF0000
+        GrayImage     = $FF0000
+        Linear        = $FF0080
+        Vertices      = $FF0000
+        Drag3DLines   = $00F000
+        SkinLines     = $FF0000
+        SkinDragLines = $00FF00
         Form = "MdlColors"
       }
       Layouts:config =
@@ -5758,6 +5764,9 @@ QQRKSRC1
           GrayImage  = $FF0000
           Linear     = $FF0080
           Vertices   = $FF0000
+          Drag3DLines= $00F000
+          SkinLines  = $FF0000
+          SkinDragLines=$00F000
         }
       }
       Sep1: =
@@ -5771,20 +5780,23 @@ QQRKSRC1
         Typ = "X"     // checkboX
         Cap = "white on black"
       }
-      FillColor:  = { Txt = "Model fill color (requires file reload)" Typ = "LI" } // coLor selection, Integer
-      ViewXZ:     = { Txt = "Side map view (XZ)" Typ = "LI" }
-      ViewXY:     = { Txt = "Top map view (XY)" Typ = "LI" }
-      SelXZ:      = { Txt = "Selected brushes, side view" Typ = "LI" }
-      SelXY:      = { Txt = "Selected brushes, top view" Typ = "LI" }
-      Gray:       = { Txt = "Out-of-view grayed parts" Typ = "LI" }
-      Axis:       = { Txt = "Axis" Typ = "LI" }
-      GridXZ:     = { Txt = "Grid dots, side view" Typ = "LI" }
-      GridXY:     = { Txt = "Grid dots, top view" Typ = "LI" }
-      GridLines:  = { Txt = "Grid lines" Typ = "LI" }
-      Tag:        = { Txt = "Tagged point / group handle" Typ = "LI" }
-      GrayImage:  = { Txt = "While dragging" Typ = "LI" }
-      Linear:     = { Txt = "Linear Mapping box" Typ = "LI" }
-      Vertices:   = { Txt = "Vertex dots" Typ = "LI" }
+      FillColor:     = { Txt = "Model fill color (requires file reload)" Typ = "LI" } // coLor selection, Integer
+      ViewXZ:        = { Txt = "Side map view (XZ)" Typ = "LI" }
+      ViewXY:        = { Txt = "Top map view (XY)" Typ = "LI" }
+      SelXZ:         = { Txt = "Selected brushes, side view" Typ = "LI" }
+      SelXY:         = { Txt = "Selected brushes, top view" Typ = "LI" }
+      Gray:          = { Txt = "Out-of-view grayed parts" Typ = "LI" }
+      Axis:          = { Txt = "Axis" Typ = "LI" }
+      GridXZ:        = { Txt = "Grid dots, side view" Typ = "LI" }
+      GridXY:        = { Txt = "Grid dots, top view" Typ = "LI" }
+      GridLines:     = { Txt = "Grid lines" Typ = "LI" }
+      Tag:           = { Txt = "Tagged point / group handle" Typ = "LI" }
+      GrayImage:     = { Txt = "While dragging" Typ = "LI" }
+      Linear:        = { Txt = "Linear Mapping box" Typ = "LI" }
+      Vertices:      = { Txt = "Vertex dots" Typ = "LI" }
+      Drag3DLines:   = { Txt = "3D views drag lines" Typ = "LI" }
+      SkinLines:     = { Txt = "Skin-view mesh lines" Typ = "LI" }
+      SkinDragLines: = { Txt = "Skin-view drag lines" Typ = "LI" }
     }
     HotKeyForm:incl =
     {

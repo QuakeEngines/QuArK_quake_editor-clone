@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2006/11/30 00:44:32  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
+
 Revision 1.47.2.2  2006/11/01 22:22:29  danielpharos
 BackUp 1 November 2006
 Mainly reduce OpenGL memory leak
@@ -268,7 +272,7 @@ type
    lcBrushEntity, lcDuplicator, lcTag, lcGrayImage, lcBSP, lcDigger, lcBezier);
  TModelColors =
   (mcVueXZ, mcVueXY, mcSelXZ, mcSelXY, mcOutOfView, mcAxes, mcGridXZ, mcGridXY, mcGridLines,
-   mcTag, mcGrayImage, mcLinear, mcVertices);
+   mcTag, mcGrayImage, mcLinear, mcVertices, mcDrag3DLines, mcSkinLines, mcSkinDragLines);
  TSetupSet =
   (ssGeneral, ssGames, ssMap, ssModel, ssToolbars{, ssTempData});
  TSetupSetArray = array[TSetupSet] of QObject;
@@ -972,7 +976,10 @@ const
    'Tag',
    'GrayImage',
    'Linear',
-   'Vertices');
+   'Vertices',
+   'Drag3DLines',
+   'SkinLines',
+   'SkinDragLines');
 
 function ModelColors(L: TModelColors) : TColor;
 begin
