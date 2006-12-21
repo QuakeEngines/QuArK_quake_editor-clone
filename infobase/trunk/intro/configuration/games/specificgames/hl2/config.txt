@@ -89,6 +89,46 @@ close the Configuration panel; this will leave you back in the Quark Explorer.
 
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>
+<b>QuArK 6.5.0 Beta1 Changes</b>
+
+Because of massive changes needed for all of the 3D renders to work properly, Half-Life 2 was also effected which caused it not to work
+with the newer Beta releases. However, with a few changes to some of the Half-Life 2 setup files this problem has been corrected.
+These are the additional steps you need to do if you are using QuArK 6.5.0 Beta1 or a newer version.
+
+1) Go to your <b>C:\Program Files\Valve\Steam</b> folder and make a new folder there and give it this exact name:
+<code><b>QuArKApps</b></code>
+2) In the <b>QuArKApps</b> folder make another folder called:
+<code><b>cstrike</b></code>
+3) In your <b>C:\Program Files\Valve\Steam\SteamApps</b> folder open these two files:
+<code><b>source materials.gcf<br>
+counter-strike source shared.gcf</b></code>
+using Nem's Tools <b>GCFScape</b> that you can download from here:
+<a href="http://nemesis.thewavelength.net/index.php?p=1">Nem's Tools</a><br>
+
+4) Extract the <b>hl2</b> folder from the <b>source materials.gcf</b> file shown above and place the <b>hl2</b> folder into your new <b>QuArKApps</b> folder.
+
+OPEN the <b>cstrike</b> folder inside the <b>counter-strike source shared.gcf</b> file, also shown above, and ONLY extract the <b>materials</b>
+folder and place that into your new <b>QuArKApps\cstrike</b> folder.
+
+NOTE: These extractions will take some time and you may think nothing is happening, but it is, so be patient and do ONE AT A TIME.
+
+You should now be able to make your maps in QuArK and view the textures for both Half-Life 2 and Counter Strike. Some textures will not display
+in the QuArK Texture Browser because this method, which is the only one that works, is side stepping the .vmf (Valve Material File) system and its links
+to those textures. But most of the textures are available and usable in the game displaying their .vmf effects.
+
+A VERY nice feature of this method is that you <b>DO NOT</b> need to have Steam running while using QuArK! Only if you wish to build your map and see it
+in Half-Life 2 or Counter Strike. AND by simply building your map with the <b>GO!</b> or <b>QuickGo!</b> command...it will start Steam for you.
+However, using this method of starting Steam, the first time you will need to bring down the game console by pressing the <b>Esc</b> or <b>`</b> Tilley key
+and load your map from the menu there.
+
+Also, you DO NOT need to start Steam before starting QuArK, you can do either at any time and in any order that you wish!
+
+All the textures will be available for your use just the same.
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
 <b>Part 2 – Compiling</b>
 </td></tr>
 
