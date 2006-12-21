@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2
 =============
 
+ * [cdunde]: Changed Half-Life2 files to work with QuArK Beta using vtf files instead of vmt files
+          - and updated the Infobase Config. Specific Games section on their installation and use.
+
  * [cdunde]: Fixed the Paste Here function that was not working properly or at all in the views.
 
  * [cdunde]: Added color setting options for various Model Editor mesh and drag lines.
