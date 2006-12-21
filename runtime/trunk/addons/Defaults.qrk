@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.298  2006/12/18 05:38:14  cdunde
+//Added color setting options for various Model Editor mesh and drag lines.
+//
 //Revision 1.297  2006/11/30 01:15:25  cdunde
 //To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 //
@@ -1538,7 +1541,8 @@ QQRKSRC1
         DefaultTextureScale = "0.25"
     //    EnableTransparency = ""
         WateryTex = "!"
-        TextureFormat = ".vmt"
+     //   TextureFormat = ".vmt"
+        TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
         TextureWriteSubFormat = "3"
         TextureWriteSubFormatA = "15"
