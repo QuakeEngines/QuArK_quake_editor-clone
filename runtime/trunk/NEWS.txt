@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2
 =============
 
+ * [cdunde]: Fixed the Paste Here function that was not working properly or at all in the views.
+
  * [cdunde]: Added color setting options for various Model Editor mesh and drag lines.
 
  * [cdunde]: Setup Skin-view proper handle dragging for various model skin(s)
