@@ -69,7 +69,6 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
             bbox = quarkx.boundingboxof(newlist)
             if bbox is None: #DECKER
                 bbox = (quarkx.vect(-1,-1,-1),quarkx.vect(1,1,1)) #DECKER create a minimum bbox, in case a ;incl="defpoly" is added to an object in prepareobjecttodrop()
-            if not (bbox is None):
             if type(center)==type(""):
                 pass
             else:
@@ -707,6 +706,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.23  2006/12/21 20:58:13  cdunde
+#Fixed the Paste Here function that was not working properly or at all in the view..
+#
 #Revision 1.22  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
