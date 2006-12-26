@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2006/11/30 00:41:31  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
+
 Revision 1.31.2.9  2006/11/23 20:09:52  danielpharos
 Removed now obsolete Ed3DEditors file
 
@@ -125,7 +129,13 @@ uses
   Running in 'Prog\Running.pas' {RunForm},
   NewFolder in 'Prog\NewFolder.pas' {NewFolderDlg},
   Glide in '3DFX\Glide.pas',
-  Ed3DFX in '3DFX\Ed3DFX.pas',
+  GL1 in '3DFX\GL1.pas',
+  DX9 in '3DFX\DX9.pas',
+  EdSoftware in '3DFX\EdSoftware.pas',
+  EdGlide in '3DFX\EdGlide.pas',
+  EdOpenGL in '3dfx\EdOpenGL.pas',
+  EdDirect3D in '3dfx\EdDirect3D.pas',
+  EdSceneObject in '3dfx\EdSceneObject.pas',
   QkRawFile in 'Prog\QkRawFile.pas' {FQRawFile},
   QkWav in 'Prog\QkWav.pas',
   QkCin in 'Prog\QkCin.pas',
@@ -173,8 +183,6 @@ uses
   QkSin in 'Prog\QkSin.pas',
   ToolBoxGroup in 'Prog\ToolBoxGroup.pas' {FQToolBoxGroup},
   HelpPopup1 in 'Prog\HelpPopup1.pas' {HelpPopup},
-  GL1 in '3DFX\GL1.pas',
-  DX9 in '3DFX\DX9.pas',
   QkTga in 'Prog\QkTga.pas',
   QkPixelSet in 'prog\QkPixelSet.pas',
   Bezier in 'prog\Bezier.pas',
@@ -208,9 +216,6 @@ uses
   Qk3ds in 'prog\model\Qk3ds.pas',
   Logging in 'prog\Logging.pas',
   EdTListP2 in '3dfx\EdTListP2.pas',
-  EdOpenGL in '3dfx\EdOpenGL.pas',
-  EdDirect3D in '3dfx\EdDirect3D.pas',
-  EdSceneObject in '3dfx\EdSceneObject.pas',
   OsFolder in 'prog\OsFolder.pas',
   QkObjectClassList in 'prog\QkObjectClassList.pas',
   Sprite in 'prog\Sprite.pas',

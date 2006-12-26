@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2006/12/03 23:13:33  danielpharos
+Fixed the maximum texture dimension for OpenGL
+
 Revision 1.16  2006/11/30 00:42:32  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
@@ -106,7 +109,7 @@ unit EdSceneObject;
 
 interface
 
-  uses Windows, Classes,
+uses Windows, Classes,
      Game, PyMath, qmath, Bezier,
      QkObjects, QkPixelSet, QkComponent, QkMapPoly,
      Glide, Sprite;
@@ -152,8 +155,8 @@ type
  TSurface3D = record
                Normale: vec3_t;          { not defined if GL_TRI_STRIP }
                Dist: scalar_t;           { not defined if GL_TRI_STRIP }
-               GlideRadius: scalar_t;    {Daniel: should not be here, but in the Ed3DFX.pas file}
-               OpenGLDisplayList: Integer; {Daniel: should not be here, but in the EdOpenGL.pas file}
+               GlideRadius: scalar_t;
+               OpenGLDisplayList: Integer;
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: FxU32;
                TextureMode: Integer;
@@ -189,7 +192,7 @@ type
  {------------------------}
 
 type
- TBuildMode = (bm3DFX, bmOpenGL, bmDirect3D);
+ TBuildMode = (bmSoftware, bmGlide, bmOpenGL, bmDirect3D);
  TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
 
  TSceneObject = class
@@ -591,7 +594,7 @@ begin
  try  {begin outer try block - almost whole method}
    TexNames.Sorted:=True;
 
-   if Mode=bm3DFX then           //buildmode, 3dfx, ogl, d3d
+   if (Mode=bmSoftware) or (Mode=bmGlide) then
    begin
      nVertexList:=TList.Create;
      nVertexList2:=TList.Create;
@@ -602,7 +605,7 @@ begin
      nVertexList2:=Nil;
    end;
 
-   try  {begin build FListSurfaces, also nVertexList(2), used only in 3dfx mode}
+   try  {begin build FListSurfaces, also nVertexList(2), used only in software and Glide mode}
      I:=0;   // process the faces of the polys
      while I<PolyFaces.Count do
      begin
@@ -616,7 +619,7 @@ begin
        else
        begin // wtf, we're keeping track of texture name and total size of needed vertexes, but not the vertexes themselves
          AddSurfaceRef(PolySurface^.F.NomTex, SizeOf(TSurface3D) + PolySurface^.prvVertexCount * VertexSize, Nil);
-         if nVertexList<>Nil then    // only in software/3dfx mode
+         if nVertexList<>Nil then    // only in software and Glide mode
            for J:=0 to PolySurface^.prvVertexCount-1 do
              nVertexList.Add(PolySurface^.prvVertexTable[J]);
        end;
@@ -715,7 +718,7 @@ begin
        Inc(I); { Increment to get the next element }
      end;
 
-     PostBuild(nVertexList, nVertexList2);  // only does anything in 3dfx mode
+     PostBuild(nVertexList, nVertexList2);  // only does anything in software and Glide mode
    finally
      if (nVertexList <> nil) then
        nVertexList.Free;
@@ -993,7 +996,7 @@ begin
            Inc(PV, VertexSize);
          end;
 
-         if Mode=bm3DFX then
+         if (Mode=bmSoftware) or (Mode=bmGlide) then
            Surf3D^.GlideRadius:=Sqrt(Radius2)
          else
            Surf3D^.OpenGLDisplayList:=0;
@@ -1083,7 +1086,7 @@ begin
 
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
 
-               if Mode=bm3DFX then
+               if (Mode=bmSoftware) or (Mode=bmGlide) then
                begin
                  if nRadius2>Radius2 then
                    GlideRadius:=Sqrt(nRadius2)
@@ -1188,7 +1191,7 @@ begin
 
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
 
-               if Mode=bm3DFX then
+               if (Mode=bmSoftware) or (Mode=bmGlide) then
                begin
                  if nRadius2>Radius2 then
                    GlideRadius:=Sqrt(nRadius2)
@@ -1264,7 +1267,7 @@ begin
            end;
 
            st:=stBuffer;
-           if Mode=bm3DFX then
+           if (Mode=bmSoftware) or (Mode=bmGlide) then
            begin
              for L:=0 to BezierBuf.H-2 do
              begin
