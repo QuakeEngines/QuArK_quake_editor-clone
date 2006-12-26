@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2006/12/03 23:13:33  danielpharos
+Fixed the maximum texture dimension for OpenGL
+
 Revision 1.35  2006/12/03 20:36:09  danielpharos
 Put the perspective in the correct place for OpenGL. Should fix any fog issues.
 
@@ -1333,7 +1336,7 @@ begin
   {$IFDEF DebugGLErr} DebugOpenGL(53, 'RenderTransparentGL(...True...)', []); {$ENDIF}
   RenderTransparentGL(Source.FListSurfaces, True, Source.Coord);
   {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFlush', []); {$ENDIF}
-  glFlush;
+  glFinish;
   {$IFDEF DebugGLErr} DebugOpenGL(55, '', []); {$ENDIF}
 end;
 
