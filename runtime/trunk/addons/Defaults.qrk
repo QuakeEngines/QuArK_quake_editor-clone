@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.299  2006/12/21 21:56:45  cdunde
+//Changed Half-Life2 files to work with QuArK Beta using vtf files instead of vmt files.
+//
 //Revision 1.298  2006/12/18 05:38:14  cdunde
 //Added color setting options for various Model Editor mesh and drag lines.
 //
@@ -1056,7 +1059,7 @@ QQRKSRC1
         DynamicQuality = "2"
         Form = "GeneralSoftware3D"
       }
-      3DFX:config =
+      Glide (3DFX):config =
       {
         //3DFXLogo = ""
         //FullScreen = ""
@@ -1065,7 +1068,8 @@ QQRKSRC1
         FullScreenSize = '560 420'
         TranspFactor = '0.3'  // in isometric views, an additionnal 30% of the normal depth is visible but transparent
         Fog = "1"
-        Form = "General3DFX"
+        Resolution = "7"
+        Form = "GeneralGlide"
       }
       OpenGL:config =
       {
@@ -6047,7 +6051,7 @@ QQRKSRC1
       Lib: = {
         Txt="Select 3D viewer"
         Typ="CL"
-        Items  = "Software 3D only" $0D "3DFX (Glide)" $0D "OpenGL" $0D "DirectX"
+        Items  = "Software 3D" $0D "Glide (3DFX)" $0D "OpenGL" $0D "DirectX"
         Values = "qrksoftg.dll" $0D "glide2x.dll" $0D "OpenGL32.dll" $0D "d3d9.dll"
         Hint="see also the viewers configuration pages"
       }
@@ -6117,22 +6121,31 @@ QQRKSRC1
         Hint = "Slowest: High details   Fastest: Low details"
       }
     }
-    General3DFX:form =
+    GeneralGlide:form =
     {
       Style = "3"
-      L0: = {Typ="S" Txt="---- 3DFX card owners only ----"}
-      //FullScreen: = {Txt="3DFX Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the 3DFX card display is copied in a window"}
+      L0: = {Typ="S" Txt="---- Glide 2.4 card owners only ----"}
+      //FullScreen: = {Txt="Glide Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the Glide card display is copied in a window"}
       TwoMonitors: = {
-        Txt="Second monitor on 3DFX"
+        Txt="Second monitor on Glide"
         Typ="CL"
-        Items  = "I've only one monitor" $0D "3DFX monitor at left" $0D "3DFX monitor at right"
+        Items  = "I've only one monitor" $0D "Glide monitor at left" $0D "Glide monitor at right"
         Values = "" $0D "1" $0D "2"
-        Hint="If you have two monitors (two screens), you can connect one on the 3DFX card and one on the 2D card"
+        Hint="If you have two monitors (two screens), you can connect one on the Glide card and one on the 2D card"
       }
-      FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen 3DFX mode only"}
-      FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="resolution is always 640x480, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
+      FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen Glide mode only"}
+      FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="Rendering resolution is set below, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
       TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
+      Sep0: = {Typ="S" Txt = ""}
+      L1: = {Typ="S" Txt="---- additional options ----"}
       Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
+      Resolution: = {
+        Txt="Resolution at which Glide renders the image"
+        Typ="CL"
+        Items  = "320x200" $0D "400x300" $0D "640x480" $0D "800x600" $0D "1024x768" $0D "1280x1024" $0D "1600x1200"
+        Values =       "0" $0D      "15" $0D       "7" $0D       "8" $0D       "12" $0D        "13" $0D        "14"
+        Hint = "The lower the faster, but the quality may suffer"
+      }
     }
     GeneralOpenGL:form =
     {
@@ -6157,10 +6170,10 @@ QQRKSRC1
         Cap="Enabled"
         Hint="Levels with few lights will look black -- turn off lighting in this case"
       }
-      L0: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
-      L0: = {Typ="S" Bold="0" Txt="configuration page for each game."}
+      L1: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
+      L2: = {Typ="S" Bold="0" Txt="configuration page for each game."}
       Sep0: = {Typ="S" Txt = ""}
-      L0: = {Typ="S" Txt="---- troubleshooting options ----"}
+      L3: = {Typ="S" Txt="---- additional options ----"}
       Bilinear: = { Typ="X" Txt="Bilinear Filtering" Cap="Enabled" }
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" }
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
@@ -8601,7 +8614,7 @@ QQRKSRC1
       3D:tbbtn = {
         Typ  = "M"
         Msg  = "3DED"
-        Hint = "open 3DFX viewer"
+        Hint = "open 3D viewer"
         Cap  = "3D"
       }
       group:tbbtn = {
