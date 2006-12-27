@@ -1317,7 +1317,6 @@ QQRKSRC1
 					Effects/CombineShield/comshieldwall2.wl  = { t_hl2=! }
 					Effects/CombineShield/comshieldwall2faded.wl  = { t_hl2=! }
 					Effects/CombineShield/comshieldwall3.wl  = { t_hl2=! }
-					Effects/FilmGrain128.wl  = { t_hl2=! }
 					Effects/energyball.wl  = { t_hl2=! }
 					Effects/energysplash.wl  = { t_hl2=! }
 					Effects/exit1.wl  = { t_hl2=! }
@@ -3616,9 +3615,7 @@ QQRKSRC1
 					shadertest/cubemapdemo.wl  = { t_hl2=! }
 					shadertest/cubemapdemoCameraSpace.wl  = { t_hl2=! }
 					shadertest/DebugModifyVertex.wl  = { t_hl2=! }
-					shadertest/diffusebump.wl  = { t_hl2=! }
 					shadertest/Eyeball.wl  = { t_hl2=! }
-					shadertest/glassbrick.wl  = { t_hl2=! }
 					shadertest/GooInGlass.wl  = { t_hl2=! }
 					shadertest/jet.wl  = { t_hl2=! }
 					shadertest/Lightmap.wl  = { t_hl2=! }

@@ -116,7 +116,6 @@ QQRKSRC1
 			concrete.txlist =
       {
 			concrete/base01.wl  = { t_hl2cs=! }
-			concrete/blendconcretegravel001a.wl  = { t_hl2cs=! }
 			concrete/concretefloor011a.wl  = { t_hl2cs=! }
 			concrete/concretefloor038b.wl  = { t_hl2cs=! }
 			concrete/concretewall002a.wl  = { t_hl2cs=! }
@@ -138,7 +137,6 @@ QQRKSRC1
 			concrete/curbreda.wl  = { t_hl2cs=! }
 			concrete/curbredafire.wl  = { t_hl2cs=! }
 			concrete/curbredaparking.wl  = { t_hl2cs=! }
-			concrete/metalwall001b_cheap.wl  = { t_hl2cs=! }
 			concrete/offceilinga.wl  = { t_hl2cs=! }
 			concrete/offceilingb.wl  = { t_hl2cs=! }
 			concrete/offflra.wl  = { t_hl2cs=! }
@@ -230,7 +228,6 @@ QQRKSRC1
 			cs_assault/assault_train_sched01.wl  = { t_hl2cs=! }
 			cs_assault/assault_tres_decal01.wl  = { t_hl2cs=! }
 			cs_assault/assault_tunnel_sign01.wl  = { t_hl2cs=! }
-			cs_assault/assault_vent_decal01.wl  = { t_hl2cs=! }
 			cs_assault/assault_warehouse_02.wl  = { t_hl2cs=! }
 			cs_assault/assault_window_decal01.wl  = { t_hl2cs=! }
 			cs_assault/concretefloor024adecal.wl  = { t_hl2cs=! }
@@ -269,8 +266,6 @@ QQRKSRC1
 			cs_havana/bldc.wl  = { t_hl2cs=! }
 			cs_havana/blde.wl  = { t_hl2cs=! }
 			cs_havana/bldf.wl  = { t_hl2cs=! }
-			cs_havana/blenddirtgrass009a.wl  = { t_hl2cs=! }
-			cs_havana/blendrockmoss002a.wl  = { t_hl2cs=! }
 			cs_havana/body.wl  = { t_hl2cs=! }
 			cs_havana/box01sides.wl  = { t_hl2cs=! }
 			cs_havana/box01top.wl  = { t_hl2cs=! }
@@ -325,7 +320,6 @@ QQRKSRC1
 			cs_havana/dirtfloor01.wl  = { t_hl2cs=! }
 			cs_havana/dirtfloor012a.wl  = { t_hl2cs=! }
 			cs_havana/dirtfloor02.wl  = { t_hl2cs=! }
-			cs_havana/dirtfloor_blend.wl  = { t_hl2cs=! }
 			cs_havana/dome_medium.wl  = { t_hl2cs=! }
 			cs_havana/door01.wl  = { t_hl2cs=! }
 			cs_havana/door02.wl  = { t_hl2cs=! }
@@ -486,8 +480,6 @@ QQRKSRC1
 			cs_havana/pictc.wl  = { t_hl2cs=! }
 			cs_havana/picture5.wl  = { t_hl2cs=! }
 			cs_havana/PipeMetal003a.wl  = { t_hl2cs=! }
-			cs_havana/pi_apc_normal.wl  = { t_hl2cs=! }
-			cs_havana/pi_boat_normal.wl  = { t_hl2cs=! }
 			cs_havana/pi_htrim32.wl  = { t_hl2cs=! }
 			cs_havana/planta.wl  = { t_hl2cs=! }
 			cs_havana/plantb.wl  = { t_hl2cs=! }
@@ -504,7 +496,6 @@ QQRKSRC1
 			cs_havana/poster01ping.wl  = { t_hl2cs=! }
 			cs_havana/poster01snip.wl  = { t_hl2cs=! }
 			cs_havana/poster01spam.wl  = { t_hl2cs=! }
-			cs_havana/predator.wl  = { t_hl2cs=! }
 			cs_havana/profile.wl  = { t_hl2cs=! }
 			cs_havana/pupil_l.wl  = { t_hl2cs=! }
 			cs_havana/pupil_r.wl  = { t_hl2cs=! }
@@ -521,8 +512,6 @@ QQRKSRC1
 			cs_havana/restroommen.wl  = { t_hl2cs=! }
 			cs_havana/restroomsign01.wl  = { t_hl2cs=! }
 			cs_havana/road01b.wl  = { t_hl2cs=! }
-			cs_havana/rockcliff01a.wl  = { t_hl2cs=! }
-			cs_havana/rockcliff03a.wl  = { t_hl2cs=! }
 			cs_havana/rocketennoz.wl  = { t_hl2cs=! }
 			cs_havana/rockgranite01a.wl  = { t_hl2cs=! }
 			cs_havana/rockgranite02a.wl  = { t_hl2cs=! }
@@ -1099,7 +1088,6 @@ QQRKSRC1
 			
 			Dev.txlist =
       {
-			Dev/dev_combinemonitor_b.wl  = { t_hl2cs=! }
 			Dev/value10.wl  = { t_hl2cs=! }
 			Dev/value20.wl  = { t_hl2cs=! }
 			Dev/value30.wl  = { t_hl2cs=! }
@@ -1540,6 +1528,85 @@ QQRKSRC1
 			de_dust/{siteB.wl  = { t_hl2cs=! }
 			}
 			
+			de_nuke.txlist =
+      {
+			de_nuke/nuk130t.wl  = { t_hl2cs=! }
+			de_nuke/nukblenddirtgrass.wl  = { t_hl2cs=! }
+			de_nuke/nukblenddirtgrassb.wl  = { t_hl2cs=! }
+			de_nuke/nukceilingvent.wl  = { t_hl2cs=! }
+			de_nuke/nukcemwalla.wl  = { t_hl2cs=! }
+			de_nuke/nukconcretewalla.wl  = { t_hl2cs=! }
+			de_nuke/nukconcretewallb.wl  = { t_hl2cs=! }
+			de_nuke/nukconcretewallc.wl  = { t_hl2cs=! }
+			de_nuke/nukdoorsa.wl  = { t_hl2cs=! }
+			de_nuke/nukdoorsb.wl  = { t_hl2cs=! }
+			de_nuke/nuke_beam_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_ceiling_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_ceiling_02.wl  = { t_hl2cs=! }
+			de_nuke/nuke_ceiling_facility_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_floor_trim_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_metaldoor_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_metalfloor_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_metalgrate_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_metaltrims_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_metalvent.wl  = { t_hl2cs=! }
+			de_nuke/nuke_officedoor_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_wall_cntrlroom_01.wl  = { t_hl2cs=! }
+			de_nuke/nuke_walloffice_01.wl  = { t_hl2cs=! }
+			de_nuke/nukequipdecal.wl  = { t_hl2cs=! }
+			de_nuke/nukfloora.wl  = { t_hl2cs=! }
+			de_nuke/nukfloorb.wl  = { t_hl2cs=! }
+			de_nuke/nukfloorc.wl  = { t_hl2cs=! }
+			de_nuke/nukfloorc_detaila.wl  = { t_hl2cs=! }
+			de_nuke/nukfloorc_detailb.wl  = { t_hl2cs=! }
+			de_nuke/nukfloorc_detailc.wl  = { t_hl2cs=! }
+			de_nuke/nukfloorc_detaild.wl  = { t_hl2cs=! }
+			de_nuke/nukfloorc_detaile.wl  = { t_hl2cs=! }
+			de_nuke/nukfloorc_detailf.wl  = { t_hl2cs=! }
+			de_nuke/nukibeama.wl  = { t_hl2cs=! }
+			de_nuke/nukibeamb.wl  = { t_hl2cs=! }
+			de_nuke/nuklogo01.wl  = { t_hl2cs=! }
+			de_nuke/nuklogo02.wl  = { t_hl2cs=! }
+			de_nuke/nukmapa.wl  = { t_hl2cs=! }
+			de_nuke/nukmapb.wl  = { t_hl2cs=! }
+			de_nuke/nukmapc.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwalla.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallab.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallc.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwalld.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwalle.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallf.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallg.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallh.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwalli.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallj.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallk.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwalll.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallm.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwalln.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallo.wl  = { t_hl2cs=! }
+			de_nuke/nukmetwallp.wl  = { t_hl2cs=! }
+			de_nuke/nuknotice.wl  = { t_hl2cs=! }
+			de_nuke/nukroof01.wl  = { t_hl2cs=! }
+			de_nuke/nukroofa.wl  = { t_hl2cs=! }
+			de_nuke/nukshelfdecal.wl  = { t_hl2cs=! }
+			de_nuke/nuksign01.wl  = { t_hl2cs=! }
+			de_nuke/nuksky01.wl  = { t_hl2cs=! }
+			de_nuke/nuksky02.wl  = { t_hl2cs=! }
+			de_nuke/nuksky03.wl  = { t_hl2cs=! }
+			de_nuke/nuksky04.wl  = { t_hl2cs=! }
+			de_nuke/nukskylighta.wl  = { t_hl2cs=! }
+			de_nuke/nukslidea.wl  = { t_hl2cs=! }
+			de_nuke/nukventa.wl  = { t_hl2cs=! }
+			de_nuke/nukwindowa.wl  = { t_hl2cs=! }
+			de_nuke/nukwindowb.wl  = { t_hl2cs=! }
+			de_nuke/nukwindowb_light.wl  = { t_hl2cs=! }
+			de_nuke/nukwindowc.wl  = { t_hl2cs=! }
+			de_nuke/nukwindowd.wl  = { t_hl2cs=! }
+			de_nuke/nukwindowe.wl  = { t_hl2cs=! }
+			de_nuke/radwarning.wl  = { t_hl2cs=! }
+			}
+			
 			de_piranesi.txlist =
       {
 			de_piranesi/castle01.wl  = { t_hl2cs=! }
@@ -1850,6 +1917,351 @@ QQRKSRC1
 			de_train/train_zone_02.wl  = { t_hl2cs=! }
 			}
 			
+			decals.txlist =
+      {
+			decals/CONCRETE/SHOT1.wl  = { t_hl2cs=! }
+			decals/CONCRETE/SHOT1_subrect.wl  = { t_hl2cs=! }
+			decals/CONCRETE/SHOT2.wl  = { t_hl2cs=! }
+			decals/CONCRETE/SHOT2_subrect.wl  = { t_hl2cs=! }
+			decals/CONCRETE/SHOT3.wl  = { t_hl2cs=! }
+			decals/CONCRETE/SHOT3_subrect.wl  = { t_hl2cs=! }
+			decals/CONCRETE/SHOT4.wl  = { t_hl2cs=! }
+			decals/CONCRETE/SHOT4_subrect.wl  = { t_hl2cs=! }
+			decals/CONCRETE/SHOT5.wl  = { t_hl2cs=! }
+			decals/CONCRETE/SHOT5_subrect.wl  = { t_hl2cs=! }
+			decals/metal/shot6.wl  = { t_hl2cs=! }
+			decals/metal/SHOT6_subrect.wl  = { t_hl2cs=! }
+			decals/metal/shot7.wl  = { t_hl2cs=! }
+			decals/metal/SHOT7_subrect.wl  = { t_hl2cs=! }
+			decals/wood/shot1.wl  = { t_hl2cs=! }
+			decals/wood/SHOT1_subrect.wl  = { t_hl2cs=! }
+			decals/wood/shot2.wl  = { t_hl2cs=! }
+			decals/wood/SHOT2_subrect.wl  = { t_hl2cs=! }
+			decals/wood/shot3.wl  = { t_hl2cs=! }
+			decals/wood/SHOT3_subrect.wl  = { t_hl2cs=! }
+			decals/wood/shot4.wl  = { t_hl2cs=! }
+			decals/wood/SHOT4_subrect.wl  = { t_hl2cs=! }
+			decals/wood/shot5.wl  = { t_hl2cs=! }
+			decals/wood/SHOT5_subrect.wl  = { t_hl2cs=! }
+			decals/{arrow_l.wl  = { t_hl2cs=! }
+			decals/{arrow_r.wl  = { t_hl2cs=! }
+			decals/{pstripe1.wl  = { t_hl2cs=! }
+			decals/{pstripe2.wl  = { t_hl2cs=! }
+			decals/{target2.wl  = { t_hl2cs=! }
+			decals/{target.wl  = { t_hl2cs=! }
+			decals/arrow_left.wl  = { t_hl2cs=! }
+			decals/arrow_right.wl  = { t_hl2cs=! }
+			decals/arrowLF.wl  = { t_hl2cs=! }
+			decals/arrowRT.wl  = { t_hl2cs=! }
+			decals/arrowupLF.wl  = { t_hl2cs=! }
+			decals/arrowupRT.wl  = { t_hl2cs=! }
+			decals/de_trainwindowlighting.wl  = { t_hl2cs=! }
+			decals/decal_paintsplatter002.wl  = { t_hl2cs=! }
+			decals/decalgraffiti001a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti001b_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti001c_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti001d_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti002a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti007a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti013a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti014a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti017a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti019a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti022a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti023a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti024a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti027a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti029a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti030a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti032a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti033a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti034a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti035a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti039a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti041a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti043a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti044a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti045a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti045a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti046a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti049a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti050a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti051a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti052a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti053a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti054a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti055a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti056a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti057a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti057a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti058a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti062a_cs.wl  = { t_hl2cs=! }
+			decals/decalgraffiti064a.wl  = { t_hl2cs=! }
+			decals/decalgraffiti065a.wl  = { t_hl2cs=! }
+			decals/decalmetalgrate007a.wl  = { t_hl2cs=! }
+			decals/decalmetalgrate011a.wl  = { t_hl2cs=! }
+			decals/decalmetalgrate012a.wl  = { t_hl2cs=! }
+			decals/decalmetalgrate025a.wl  = { t_hl2cs=! }
+			decals/decalmetalmanhole003a.wl  = { t_hl2cs=! }
+			decals/decalmetalmanhole004a.wl  = { t_hl2cs=! }
+			decals/decalpapers01.wl  = { t_hl2cs=! }
+			decals/decalpapers02.wl  = { t_hl2cs=! }
+			decals/decalpapers03.wl  = { t_hl2cs=! }
+			decals/decalpapers04.wl  = { t_hl2cs=! }
+			decals/decalstreet005a.wl  = { t_hl2cs=! }
+			decals/diagram.wl  = { t_hl2cs=! }
+			decals/dict1.wl  = { t_hl2cs=! }
+			decals/dust_poster1.wl  = { t_hl2cs=! }
+			decals/dust_poster2.wl  = { t_hl2cs=! }
+			decals/dust_poster3.wl  = { t_hl2cs=! }
+			decals/dust_poster4.wl  = { t_hl2cs=! }
+			decals/dust_poster5.wl  = { t_hl2cs=! }
+			decals/dust_poster6.wl  = { t_hl2cs=! }
+			decals/dustflag.wl  = { t_hl2cs=! }
+			decals/face01.wl  = { t_hl2cs=! }
+			decals/flag01.wl  = { t_hl2cs=! }
+			decals/graffiti01.wl  = { t_hl2cs=! }
+			decals/graffiti02.wl  = { t_hl2cs=! }
+			decals/graffiti03.wl  = { t_hl2cs=! }
+			decals/handyparking_e.wl  = { t_hl2cs=! }
+			decals/handyparking_n.wl  = { t_hl2cs=! }
+			decals/handyparking_s.wl  = { t_hl2cs=! }
+			decals/handyparking_w.wl  = { t_hl2cs=! }
+			decals/holes16_01.wl  = { t_hl2cs=! }
+			decals/holes32_01.wl  = { t_hl2cs=! }
+			decals/holes32_02.wl  = { t_hl2cs=! }
+			decals/holes32_03.wl  = { t_hl2cs=! }
+			decals/holes32_04.wl  = { t_hl2cs=! }
+			decals/holes32_05.wl  = { t_hl2cs=! }
+			decals/holes32_06.wl  = { t_hl2cs=! }
+			decals/holes64_01.wl  = { t_hl2cs=! }
+			decals/holes64_02.wl  = { t_hl2cs=! }
+			decals/holes64_03.wl  = { t_hl2cs=! }
+			decals/holes64_04.wl  = { t_hl2cs=! }
+			decals/holes128_01.wl  = { t_hl2cs=! }
+			decals/holes128_02.wl  = { t_hl2cs=! }
+			decals/holes128_03.wl  = { t_hl2cs=! }
+			decals/holes128_04.wl  = { t_hl2cs=! }
+			decals/holes128_05.wl  = { t_hl2cs=! }
+			decals/holes128_06.wl  = { t_hl2cs=! }
+			decals/holes128_07.wl  = { t_hl2cs=! }
+			decals/holes128_08.wl  = { t_hl2cs=! }
+			decals/hrpoint.wl  = { t_hl2cs=! }
+			decals/infbrick01.wl  = { t_hl2cs=! }
+			decals/infdrdetail01.wl  = { t_hl2cs=! }
+			decals/infhay.wl  = { t_hl2cs=! }
+			decals/inflattice.wl  = { t_hl2cs=! }
+			decals/inflaundry.wl  = { t_hl2cs=! }
+			decals/infnum0.wl  = { t_hl2cs=! }
+			decals/infnum1.wl  = { t_hl2cs=! }
+			decals/infnum2.wl  = { t_hl2cs=! }
+			decals/infnum3.wl  = { t_hl2cs=! }
+			decals/infnum4.wl  = { t_hl2cs=! }
+			decals/infnum5.wl  = { t_hl2cs=! }
+			decals/infnum6.wl  = { t_hl2cs=! }
+			decals/infnum7.wl  = { t_hl2cs=! }
+			decals/infnum8.wl  = { t_hl2cs=! }
+			decals/infnum9.wl  = { t_hl2cs=! }
+			decals/infplaque.wl  = { t_hl2cs=! }
+			decals/infscrub.wl  = { t_hl2cs=! }
+			decals/infstains01.wl  = { t_hl2cs=! }
+			decals/infstains.wl  = { t_hl2cs=! }
+			decals/infstoneflrdetaila.wl  = { t_hl2cs=! }
+			decals/infstoneflrdetailb.wl  = { t_hl2cs=! }
+			decals/infvineshadowbig.wl  = { t_hl2cs=! }
+			decals/infvineshadowsmall.wl  = { t_hl2cs=! }
+			decals/infwalldetail01.wl  = { t_hl2cs=! }
+			decals/infwalldetail02.wl  = { t_hl2cs=! }
+			decals/infwalldetail03.wl  = { t_hl2cs=! }
+			decals/infwalldetail04.wl  = { t_hl2cs=! }
+			decals/infwalldetail05.wl  = { t_hl2cs=! }
+			decals/infwalldetail06.wl  = { t_hl2cs=! }
+			decals/infwalldetail07.wl  = { t_hl2cs=! }
+			decals/infwalldetail08.wl  = { t_hl2cs=! }
+			decals/infwalldetail09.wl  = { t_hl2cs=! }
+			decals/infwalldetail10.wl  = { t_hl2cs=! }
+			decals/infwalldetail11.wl  = { t_hl2cs=! }
+			decals/infwalldetail12.wl  = { t_hl2cs=! }
+			decals/infwalldetail13.wl  = { t_hl2cs=! }
+			decals/infwalldetail14.wl  = { t_hl2cs=! }
+			decals/infwalldetail15.wl  = { t_hl2cs=! }
+			decals/infwalldetail16.wl  = { t_hl2cs=! }
+			decals/infwalldetail17.wl  = { t_hl2cs=! }
+			decals/infwndwa.wl  = { t_hl2cs=! }
+			decals/infwndwb.wl  = { t_hl2cs=! }
+			decals/italy_flag.wl  = { t_hl2cs=! }
+			decals/italy_painting1.wl  = { t_hl2cs=! }
+			decals/italy_poster1.wl  = { t_hl2cs=! }
+			decals/italy_poster2.wl  = { t_hl2cs=! }
+			decals/italy_poster3.wl  = { t_hl2cs=! }
+			decals/italy_poster4.wl  = { t_hl2cs=! }
+			decals/italy_poster5.wl  = { t_hl2cs=! }
+			decals/manhackcut2.wl  = { t_hl2cs=! }
+			decals/manhackcut2_subrect.wl  = { t_hl2cs=! }
+			decals/manhackcut3.wl  = { t_hl2cs=! }
+			decals/manhackcut3_subrect.wl  = { t_hl2cs=! }
+			decals/manhackcut.wl  = { t_hl2cs=! }
+			decals/manhackcut_subrect.wl  = { t_hl2cs=! }
+			decals/milbridgelight.wl  = { t_hl2cs=! }
+			decals/mildirt001.wl  = { t_hl2cs=! }
+			decals/milflr001.wl  = { t_hl2cs=! }
+			decals/milflr002.wl  = { t_hl2cs=! }
+			decals/militiahostagerescue.wl  = { t_hl2cs=! }
+			decals/milladder001.wl  = { t_hl2cs=! }
+			decals/milleaves.wl  = { t_hl2cs=! }
+			decals/milleavesshadow02.wl  = { t_hl2cs=! }
+			decals/milleavesshadow.wl  = { t_hl2cs=! }
+			decals/miloutlet001.wl  = { t_hl2cs=! }
+			decals/miloutlet002.wl  = { t_hl2cs=! }
+			decals/milrug001.wl  = { t_hl2cs=! }
+			decals/milsewlight.wl  = { t_hl2cs=! }
+			decals/milshadow.wl  = { t_hl2cs=! }
+			decals/milshower.wl  = { t_hl2cs=! }
+			decals/milstains001.wl  = { t_hl2cs=! }
+			decals/milstains002.wl  = { t_hl2cs=! }
+			decals/milswatter001.wl  = { t_hl2cs=! }
+			decals/milswitch001.wl  = { t_hl2cs=! }
+			decals/milswitch002.wl  = { t_hl2cs=! }
+			decals/milswitch003.wl  = { t_hl2cs=! }
+			decals/milvent001.wl  = { t_hl2cs=! }
+			decals/milwndw001.wl  = { t_hl2cs=! }
+			decals/milwndw005.wl  = { t_hl2cs=! }
+			decals/milwndwlight.wl  = { t_hl2cs=! }
+			decals/milwndwmetal001.wl  = { t_hl2cs=! }
+			decals/offaddress.wl  = { t_hl2cs=! }
+			decals/offceilingvent.wl  = { t_hl2cs=! }
+			decals/offcertificatea.wl  = { t_hl2cs=! }
+			decals/offcorkboarda.wl  = { t_hl2cs=! }
+			decals/offentrancesign.wl  = { t_hl2cs=! }
+			decals/offexitlightns.wl  = { t_hl2cs=! }
+			decals/offexitlightwe.wl  = { t_hl2cs=! }
+			decals/offexitsign.wl  = { t_hl2cs=! }
+			decals/offinspa.wl  = { t_hl2cs=! }
+			decals/offinspb.wl  = { t_hl2cs=! }
+			decals/offinspc.wl  = { t_hl2cs=! }
+			decals/offinspd.wl  = { t_hl2cs=! }
+			decals/offinspf.wl  = { t_hl2cs=! }
+			decals/offpaintinga.wl  = { t_hl2cs=! }
+			decals/offpaintingb.wl  = { t_hl2cs=! }
+			decals/offpaintingc.wl  = { t_hl2cs=! }
+			decals/offpaintingd.wl  = { t_hl2cs=! }
+			decals/offpaintinge.wl  = { t_hl2cs=! }
+			decals/offpaintingf.wl  = { t_hl2cs=! }
+			decals/offpaintingg.wl  = { t_hl2cs=! }
+			decals/offpaintingh.wl  = { t_hl2cs=! }
+			decals/offpaintingi.wl  = { t_hl2cs=! }
+			decals/offpaintingj.wl  = { t_hl2cs=! }
+			decals/offpaintingk.wl  = { t_hl2cs=! }
+			decals/offpaintingl.wl  = { t_hl2cs=! }
+			decals/offpaintingm.wl  = { t_hl2cs=! }
+			decals/offpaintingn.wl  = { t_hl2cs=! }
+			decals/offpaintingo.wl  = { t_hl2cs=! }
+			decals/offpapers01.wl  = { t_hl2cs=! }
+			decals/offpapers02.wl  = { t_hl2cs=! }
+			decals/offpapers03.wl  = { t_hl2cs=! }
+			decals/offpapers04.wl  = { t_hl2cs=! }
+			decals/offrestmens.wl  = { t_hl2cs=! }
+			decals/offrestrooms.wl  = { t_hl2cs=! }
+			decals/offrestwomens.wl  = { t_hl2cs=! }
+			decals/offseclight.wl  = { t_hl2cs=! }
+			decals/offsigna.wl  = { t_hl2cs=! }
+			decals/offsignb.wl  = { t_hl2cs=! }
+			decals/offwhtbrda.wl  = { t_hl2cs=! }
+			decals/offwhtbrdb.wl  = { t_hl2cs=! }
+			decals/offwhtbrdc.wl  = { t_hl2cs=! }
+			decals/offwllvent.wl  = { t_hl2cs=! }
+			decals/parkinge.wl  = { t_hl2cs=! }
+			decals/parkingn.wl  = { t_hl2cs=! }
+			decals/parkings.wl  = { t_hl2cs=! }
+			decals/parkingw.wl  = { t_hl2cs=! }
+			decals/portgravel001.wl  = { t_hl2cs=! }
+			decals/portlogo.wl  = { t_hl2cs=! }
+			decals/posters01.wl  = { t_hl2cs=! }
+			decals/posters02.wl  = { t_hl2cs=! }
+			decals/posters03.wl  = { t_hl2cs=! }
+			decals/posters04.wl  = { t_hl2cs=! }
+			decals/posters05.wl  = { t_hl2cs=! }
+			decals/prodconcrete01.wl  = { t_hl2cs=! }
+			decals/prodconcrete02.wl  = { t_hl2cs=! }
+			decals/prodconcrete03.wl  = { t_hl2cs=! }
+			decals/prodconcrete04.wl  = { t_hl2cs=! }
+			decals/prodconcrete05.wl  = { t_hl2cs=! }
+			decals/proddirta.wl  = { t_hl2cs=! }
+			decals/prodflrlghta.wl  = { t_hl2cs=! }
+			decals/prodgrassa.wl  = { t_hl2cs=! }
+			decals/prodpipestain01.wl  = { t_hl2cs=! }
+			decals/prodplatea.wl  = { t_hl2cs=! }
+			decals/prodshadow.wl  = { t_hl2cs=! }
+			decals/prodstaina.wl  = { t_hl2cs=! }
+			decals/prodstainb.wl  = { t_hl2cs=! }
+			decals/prodventa.wl  = { t_hl2cs=! }
+			decals/ropeladderfootprints.wl  = { t_hl2cs=! }
+			decals/sanddecal01.wl  = { t_hl2cs=! }
+			decals/sanddecal02.wl  = { t_hl2cs=! }
+			decals/sanddecal03.wl  = { t_hl2cs=! }
+			decals/siteA.wl  = { t_hl2cs=! }
+			decals/sitea_90.wl  = { t_hl2cs=! }
+			decals/sitea_black.wl  = { t_hl2cs=! }
+			decals/siteB.wl  = { t_hl2cs=! }
+			decals/siteb_90.wl  = { t_hl2cs=! }
+			decals/siteb_black.wl  = { t_hl2cs=! }
+			decals/slide.wl  = { t_hl2cs=! }
+			decals/snow01.wl  = { t_hl2cs=! }
+			decals/target.wl  = { t_hl2cs=! }
+			decals/tides_redcarpet.wl  = { t_hl2cs=! }
+			decals/win_rectang02.wl  = { t_hl2cs=! }
+			decals/win_rectang.wl  = { t_hl2cs=! }
+			decals/win_square.wl  = { t_hl2cs=! }
+			decals/wires01.wl  = { t_hl2cs=! }
+			decals/wires02.wl  = { t_hl2cs=! }
+			decals/wires03.wl  = { t_hl2cs=! }
+			decals/wires04.wl  = { t_hl2cs=! }
+			}
+			
+			detail.txlist =
+      {
+			detail/detailconcrete001a.wl  = { t_hl2cs=! }
+			detail/detailsprites.wl  = { t_hl2cs=! }
+			detail/dt_carpet1.wl  = { t_hl2cs=! }
+			detail/dt_fabric1.wl  = { t_hl2cs=! }
+			detail/dt_fabric2.wl  = { t_hl2cs=! }
+			detail/dt_grass1.wl  = { t_hl2cs=! }
+			detail/dt_metal1.wl  = { t_hl2cs=! }
+			detail/dt_metal2.wl  = { t_hl2cs=! }
+			detail/dt_plaster1.wl  = { t_hl2cs=! }
+			detail/dt_plaster2.wl  = { t_hl2cs=! }
+			detail/dt_smooth1.wl  = { t_hl2cs=! }
+			detail/dt_snow2.wl  = { t_hl2cs=! }
+			detail/dt_stone1.wl  = { t_hl2cs=! }
+			detail/dt_stone2.wl  = { t_hl2cs=! }
+			detail/dt_stone3.wl  = { t_hl2cs=! }
+			detail/dt_wood1.wl  = { t_hl2cs=! }
+			detail/dt_wood2.wl  = { t_hl2cs=! }
+			detail/dt_wood.wl  = { t_hl2cs=! }
+			}
+			
+			Dev.txlist =
+      {
+			Dev/value10.wl  = { t_hl2cs=! }
+			Dev/value20.wl  = { t_hl2cs=! }
+			Dev/value30.wl  = { t_hl2cs=! }
+			Dev/value40.wl  = { t_hl2cs=! }
+			Dev/value50.wl  = { t_hl2cs=! }
+			Dev/value60.wl  = { t_hl2cs=! }
+			Dev/value70.wl  = { t_hl2cs=! }
+			Dev/value80.wl  = { t_hl2cs=! }
+			Dev/value90.wl  = { t_hl2cs=! }
+			Dev/valuesand10.wl  = { t_hl2cs=! }
+			Dev/valuesand20.wl  = { t_hl2cs=! }
+			Dev/valuesand30.wl  = { t_hl2cs=! }
+			Dev/valuesand40.wl  = { t_hl2cs=! }
+			Dev/valuesand50.wl  = { t_hl2cs=! }
+			Dev/valuesand60.wl  = { t_hl2cs=! }
+			Dev/valuesand70.wl  = { t_hl2cs=! }
+			Dev/valuesand80.wl  = { t_hl2cs=! }
+			Dev/valuesand90.wl  = { t_hl2cs=! }
+			}
+			
 			effects.txlist =
       {
 			effects/black.wl  = { t_hl2cs=! }
@@ -1857,8 +2269,6 @@ QQRKSRC1
 			effects/drtrimb.wl  = { t_hl2cs=! }
 			effects/drtrimc.wl  = { t_hl2cs=! }
 			effects/e3_logodoor.wl  = { t_hl2cs=! }
-			effects/flashbang.wl  = { t_hl2cs=! }
-			effects/flashbang_white.wl  = { t_hl2cs=! }
 			effects/ibeama.wl  = { t_hl2cs=! }
 			effects/metaldoor017a.wl  = { t_hl2cs=! }
 			effects/metalfence007a.wl  = { t_hl2cs=! }
@@ -1866,7 +2276,6 @@ QQRKSRC1
 			effects/metaltruss022b.wl  = { t_hl2cs=! }
 			effects/metaltruss022d.wl  = { t_hl2cs=! }
 			effects/muzzleflashX.wl  = { t_hl2cs=! }
-			effects/nightvision.wl  = { t_hl2cs=! }
 			effects/offelevdrsa.wl  = { t_hl2cs=! }
 			effects/offgaragedr.wl  = { t_hl2cs=! }
 			effects/stairsafrnt.wl  = { t_hl2cs=! }
@@ -1886,11 +2295,9 @@ QQRKSRC1
 			glass.txlist =
       {	
 			glass/blinds_illuminated.wl  = { t_hl2cs=! }
-			glass/glasswindow005a.wl  = { t_hl2cs=! }
 			glass/glasswindow028a.wl  = { t_hl2cs=! }
 			glass/glasswindow028b.wl  = { t_hl2cs=! }
 			glass/glasswindow028c.wl  = { t_hl2cs=! }
-			glass/glasswindow032a.wl  = { t_hl2cs=! }
 			glass/glasswindowbreak070a.wl  = { t_hl2cs=! }
 			glass/glasswindowbreak070b.wl  = { t_hl2cs=! }
 			glass/infblindsa.wl  = { t_hl2cs=! }
@@ -1932,18 +2339,9 @@ QQRKSRC1
 			
 			liquids.txlist =
       {
-			liquids/aztecwater.wl  = { t_hl2cs=! }
 			liquids/dockpole01.wl  = { t_hl2cs=! }
-			liquids/infernowater.wl  = { t_hl2cs=! }
 			liquids/rockcliff02a.wl  = { t_hl2cs=! }
 			liquids/rockcliff02b.wl  = { t_hl2cs=! }
-			liquids/rockcliff02c.wl  = { t_hl2cs=! }
-			liquids/rockcliff04a.wl  = { t_hl2cs=! }
-			liquids/water_chateau_dx70.wl  = { t_hl2cs=! }
-			liquids/water_dx70.wl  = { t_hl2cs=! }
-			liquids/water_dx70_beneath.wl  = { t_hl2cs=! }
-			liquids/water_dx70_opaq.wl  = { t_hl2cs=! }
-			liquids/water_pretty1.wl  = { t_hl2cs=! }
 			}
 			
 			metal.txlist =
@@ -1966,26 +2364,13 @@ QQRKSRC1
 			metal/metalfence007a.wl  = { t_hl2cs=! }
 			metal/metalgrate004a.wl  = { t_hl2cs=! }
 			metal/metalhull009b.wl  = { t_hl2cs=! }
-			metal/metalpipe003a_cheap.wl  = { t_hl2cs=! }
 			metal/metalrail011a.wl  = { t_hl2cs=! }
-			metal/metalroof008a_cheap.wl  = { t_hl2cs=! }
 			metal/metaltruss022b.wl  = { t_hl2cs=! }
 			metal/metaltruss022c.wl  = { t_hl2cs=! }
 			metal/metaltruss022d.wl  = { t_hl2cs=! }
-			metal/metalwall001b_cheap.wl  = { t_hl2cs=! }
-			metal/metalwall001c_cheap.wl  = { t_hl2cs=! }
-			metal/metalwall001d_cheap.wl  = { t_hl2cs=! }
-			metal/metalwall021b_plain.wl  = { t_hl2cs=! }
-			metal/metalwall021e_plain.wl  = { t_hl2cs=! }
-			metal/metalwall021f_plain.wl  = { t_hl2cs=! }
-			metal/metalwall045a_nobump.wl  = { t_hl2cs=! }
 			metal/metalwall058a.wl  = { t_hl2cs=! }
 			metal/metalwall058a_cheap.wl  = { t_hl2cs=! }
 			metal/metalwall065a.wl  = { t_hl2cs=! }
-			metal/metalwall066b_plain.wl  = { t_hl2cs=! }
-			metal/metalwall066c_plain.wl  = { t_hl2cs=! }
-			metal/metalwall066e_plain.wl  = { t_hl2cs=! }
-			metal/metalwall066f_plain.wl  = { t_hl2cs=! }
 			metal/metalwall085a.wl  = { t_hl2cs=! }
 			metal/offelevdrsa.wl  = { t_hl2cs=! }
 			metal/offgaragedr.wl  = { t_hl2cs=! }
@@ -2105,7 +2490,6 @@ QQRKSRC1
 			models/de_dust/doors/door01.wl  = { t_hl2cs=! }
 			models/de_dust/doors/door_slim.wl  = { t_hl2cs=! }
 			models/de_dust/doors/door_temple_entrance.wl  = { t_hl2cs=! }
-			models/de_dust/dustteeth.wl  = { t_hl2cs=! }
 			models/de_dust/grainbasket01.wl  = { t_hl2cs=! }
 			models/de_dust/objects/antenna_A.wl  = { t_hl2cs=! }
 			models/de_dust/objects/antenna_B.wl  = { t_hl2cs=! }
@@ -2164,10 +2548,7 @@ QQRKSRC1
 			models/pi_window/trim64.wl  = { t_hl2cs=! }
 			models/player/ct_urban/ct_urban.wl  = { t_hl2cs=! }
 			models/player/ct_urban/ct_urban_glass.wl  = { t_hl2cs=! }
-			models/player/terror/TerrorTemp.wl  = { t_hl2cs=! }
 			models/player/t_phoenix/t_phoenix.wl  = { t_hl2cs=! }
-			models/player/t_terror/t_terror.wl  = { t_hl2cs=! }
-			models/player/urban/UrbanTemp.wl  = { t_hl2cs=! }
 			models/props/cs_assault/acunits01.wl  = { t_hl2cs=! }
 			models/props/cs_assault/acunits01_ref.wl  = { t_hl2cs=! }
 			models/props/cs_assault/barrelwarning.wl  = { t_hl2cs=! }
@@ -2177,8 +2558,6 @@ QQRKSRC1
 			models/props/cs_assault/chain.wl  = { t_hl2cs=! }
 			models/props/cs_assault/consolepanelloadingbay.wl  = { t_hl2cs=! }
 			models/props/cs_assault/consolepanelloadingbay_ref.wl  = { t_hl2cs=! }
-			models/props/cs_assault/de_train_handrails_01.wl  = { t_hl2cs=! }
-			models/props/cs_assault/de_train_handrails_02.wl  = { t_hl2cs=! }
 			models/props/cs_assault/de_train_handrails_03.wl  = { t_hl2cs=! }
 			models/props/cs_assault/dollar.wl  = { t_hl2cs=! }
 			models/props/cs_assault/duct.wl  = { t_hl2cs=! }
@@ -2198,8 +2577,6 @@ QQRKSRC1
 			models/props/cs_assault/forklift.wl  = { t_hl2cs=! }
 			models/props/cs_assault/handtruck.wl  = { t_hl2cs=! }
 			models/props/cs_assault/handtruck_ref.wl  = { t_hl2cs=! }
-			models/props/cs_assault/ladderaluminium.wl  = { t_hl2cs=! }
-			models/props/cs_assault/ladderaluminium_ref.wl  = { t_hl2cs=! }
 			models/props/cs_assault/ladder_tall.wl  = { t_hl2cs=! }
 			models/props/cs_assault/light_shop2.wl  = { t_hl2cs=! }
 			models/props/cs_assault/light_shop2b.wl  = { t_hl2cs=! }
@@ -2367,8 +2744,6 @@ QQRKSRC1
 			models/props/de_inferno/claypot02.wl  = { t_hl2cs=! }
 			models/props/de_inferno/claypot03.wl  = { t_hl2cs=! }
 			models/props/de_inferno/claypot_plants01.wl  = { t_hl2cs=! }
-			models/props/de_inferno/clock01.wl  = { t_hl2cs=! }
-			models/props/de_inferno/clockwood01.wl  = { t_hl2cs=! }
 			models/props/de_inferno/confessional.wl  = { t_hl2cs=! }
 			models/props/de_inferno/de_inferno_boulder.wl  = { t_hl2cs=! }
 			models/props/de_inferno/de_inferno_boulder_02.wl  = { t_hl2cs=! }
@@ -2376,7 +2751,6 @@ QQRKSRC1
 			models/props/de_inferno/de_inferno_well_01.wl  = { t_hl2cs=! }
 			models/props/de_inferno/de_inferno_well_02.wl  = { t_hl2cs=! }
 			models/props/de_inferno/doorarchb.wl  = { t_hl2cs=! }
-			models/props/de_inferno/elevatordoor_sheet.wl  = { t_hl2cs=! }
 			models/props/de_inferno/fireplace.wl  = { t_hl2cs=! }
 			models/props/de_inferno/flowerbed1.wl  = { t_hl2cs=! }
 			models/props/de_inferno/flowerbed2.wl  = { t_hl2cs=! }
@@ -2384,11 +2758,6 @@ QQRKSRC1
 			models/props/de_inferno/fountain.wl  = { t_hl2cs=! }
 			models/props/de_inferno/fountain_bowl.wl  = { t_hl2cs=! }
 			models/props/de_inferno/frontplywood.wl  = { t_hl2cs=! }
-			models/props/de_inferno/FurnitureCouch001a.wl  = { t_hl2cs=! }
-			models/props/de_inferno/FurnitureCupboard001a.wl  = { t_hl2cs=! }
-			models/props/de_inferno/FurnitureWoodDrawers001a.wl  = { t_hl2cs=! }
-			models/props/de_inferno/furniture_couch01a.wl  = { t_hl2cs=! }
-			models/props/de_inferno/furniture_couch02a.wl  = { t_hl2cs=! }
 			models/props/de_inferno/goldfish.wl  = { t_hl2cs=! }
 			models/props/de_inferno/goldfish_ref.wl  = { t_hl2cs=! }
 			models/props/de_inferno/hay_bails.wl  = { t_hl2cs=! }
@@ -2398,7 +2767,6 @@ QQRKSRC1
 			models/props/de_inferno/infdrd.wl  = { t_hl2cs=! }
 			models/props/de_inferno/infflra.wl  = { t_hl2cs=! }
 			models/props/de_inferno/infflrd.wl  = { t_hl2cs=! }
-			models/props/de_inferno/infplasterwall044b.wl  = { t_hl2cs=! }
 			models/props/de_inferno/inftowertop.wl  = { t_hl2cs=! }
 			models/props/de_inferno/infwindwa.wl  = { t_hl2cs=! }
 			models/props/de_inferno/infwindwb.wl  = { t_hl2cs=! }
@@ -2447,9 +2815,6 @@ QQRKSRC1
 			models/props/de_inferno/plasterwall044b.wl  = { t_hl2cs=! }
 			models/props/de_inferno/pot_big.wl  = { t_hl2cs=! }
 			models/props/de_inferno/prodgrassa.wl  = { t_hl2cs=! }
-			models/props/de_inferno/Radiator01a.wl  = { t_hl2cs=! }
-			models/props/de_inferno/Radiator01b.wl  = { t_hl2cs=! }
-			models/props/de_inferno/Radiator01c.wl  = { t_hl2cs=! }
 			models/props/de_inferno/railing01.wl  = { t_hl2cs=! }
 			models/props/de_inferno/railing01a.wl  = { t_hl2cs=! }
 			models/props/de_inferno/railing01a_ref.wl  = { t_hl2cs=! }
@@ -2480,8 +2845,6 @@ QQRKSRC1
 			models/props/de_inferno/tree_group8.wl  = { t_hl2cs=! }
 			models/props/de_inferno/tree_group9.wl  = { t_hl2cs=! }
 			models/props/de_inferno/tree_large.wl  = { t_hl2cs=! }
-			models/props/de_inferno/tv_monitor01.wl  = { t_hl2cs=! }
-			models/props/de_inferno/tv_monitor01_screen.wl  = { t_hl2cs=! }
 			models/props/de_inferno/vine_wall1.wl  = { t_hl2cs=! }
 			models/props/de_inferno/wagon.wl  = { t_hl2cs=! }
 			models/props/de_inferno/walkingplywood.wl  = { t_hl2cs=! }
@@ -2493,13 +2856,104 @@ QQRKSRC1
 			models/props/de_inferno/Woodinfceilinga.wl  = { t_hl2cs=! }
 			models/props/de_inferno/wood_fence.wl  = { t_hl2cs=! }
 			models/props/de_inferno/wood_pallet_01.wl  = { t_hl2cs=! }
+			models/props/de_nuke/car_nuke.wl  = { t_hl2cs=! }
+			models/props/de_nuke/car_nuke_animation.wl  = { t_hl2cs=! }
+			models/props/de_nuke/car_nuke_animation_black.wl  = { t_hl2cs=! }
+			models/props/de_nuke/car_nuke_animation_red.wl  = { t_hl2cs=! }
+			models/props/de_nuke/car_nuke_black.wl  = { t_hl2cs=! }
+			models/props/de_nuke/car_nuke_red.wl  = { t_hl2cs=! }
+			models/props/de_nuke/catwalksupports.wl  = { t_hl2cs=! }
+			models/props/de_nuke/chimneycluster01.wl  = { t_hl2cs=! }
+			models/props/de_nuke/cinderblock.wl  = { t_hl2cs=! }
+			models/props/de_nuke/clock.wl  = { t_hl2cs=! }
+			models/props/de_nuke/containmentbuildingrailing01.wl  = { t_hl2cs=! }
+			models/props/de_nuke/coolingtank.wl  = { t_hl2cs=! }
+			models/props/de_nuke/coolingtower.wl  = { t_hl2cs=! }
+			models/props/de_nuke/crane_claw.wl  = { t_hl2cs=! }
+			models/props/de_nuke/crane_ends.wl  = { t_hl2cs=! }
+			models/props/de_nuke/crane_walkway.wl  = { t_hl2cs=! }
+			models/props/de_nuke/crane_winch.wl  = { t_hl2cs=! }
+			models/props/de_nuke/crane_wires.wl  = { t_hl2cs=! }
+			models/props/de_nuke/crate.wl  = { t_hl2cs=! }
+			models/props/de_nuke/crate_extralarge.wl  = { t_hl2cs=! }
+			models/props/de_nuke/crate_extrasmall.wl  = { t_hl2cs=! }
+			models/props/de_nuke/dome.wl  = { t_hl2cs=! }
+			models/props/de_nuke/electricalbox01.wl  = { t_hl2cs=! }
+			models/props/de_nuke/electricalbox02.wl  = { t_hl2cs=! }
+			models/props/de_nuke/emergency_lighta.wl  = { t_hl2cs=! }
+			models/props/de_nuke/emergency_lightb.wl  = { t_hl2cs=! }
+			models/props/de_nuke/emergency_lightb_glow.wl  = { t_hl2cs=! }
+			models/props/de_nuke/emergency_lightb_glow_off.wl  = { t_hl2cs=! }
+			models/props/de_nuke/emergency_lightb_off.wl  = { t_hl2cs=! }
+			models/props/de_nuke/equipment1.wl  = { t_hl2cs=! }
+			models/props/de_nuke/file_cabinet1.wl  = { t_hl2cs=! }
+			models/props/de_nuke/floodlight.wl  = { t_hl2cs=! }
+			models/props/de_nuke/floodlight_on.wl  = { t_hl2cs=! }
+			models/props/de_nuke/floodlightoff.wl  = { t_hl2cs=! }
+			models/props/de_nuke/floodlighton.wl  = { t_hl2cs=! }
+			models/props/de_nuke/floorbolts.wl  = { t_hl2cs=! }
+			models/props/de_nuke/fuel_cask.wl  = { t_hl2cs=! }
+			models/props/de_nuke/handtruck.wl  = { t_hl2cs=! }
+			models/props/de_nuke/i_beams.wl  = { t_hl2cs=! }
+			models/props/de_nuke/i_beams_red.wl  = { t_hl2cs=! }
+			models/props/de_nuke/ibeamswhite.wl  = { t_hl2cs=! }
+			models/props/de_nuke/industriallight01.wl  = { t_hl2cs=! }
+			models/props/de_nuke/industriallight01_off.wl  = { t_hl2cs=! }
+			models/props/de_nuke/industriallight01_ref.wl  = { t_hl2cs=! }
+			models/props/de_nuke/largepipes.wl  = { t_hl2cs=! }
+			models/props/de_nuke/lifepreserver.wl  = { t_hl2cs=! }
+			models/props/de_nuke/light_red1.wl  = { t_hl2cs=! }
+			models/props/de_nuke/light_red1_glass.wl  = { t_hl2cs=! }
+			models/props/de_nuke/light_red1_glass_on.wl  = { t_hl2cs=! }
+			models/props/de_nuke/light_red1_on.wl  = { t_hl2cs=! }
+			models/props/de_nuke/light_wall.wl  = { t_hl2cs=! }
+			models/props/de_nuke/light_yellow1_glass.wl  = { t_hl2cs=! }
+			models/props/de_nuke/light_yellow1_glass_on.wl  = { t_hl2cs=! }
+			models/props/de_nuke/lockersdark.wl  = { t_hl2cs=! }
+			models/props/de_nuke/maintank.wl  = { t_hl2cs=! }
+			models/props/de_nuke/noicon.wl  = { t_hl2cs=! }
+			models/props/de_nuke/nuclearcontrolbox.wl  = { t_hl2cs=! }
+			models/props/de_nuke/nuclearcontrolbox_ref.wl  = { t_hl2cs=! }
+			models/props/de_nuke/nuclearfuelcontainerb.wl  = { t_hl2cs=! }
+			models/props/de_nuke/nucleartestcabinet.wl  = { t_hl2cs=! }
+			models/props/de_nuke/nucleartestcabinet_ref.wl  = { t_hl2cs=! }
+			models/props/de_nuke/nucleartestcabinetdirty.wl  = { t_hl2cs=! }
+			models/props/de_nuke/nukecardboard.wl  = { t_hl2cs=! }
+			models/props/de_nuke/nukibeamadirty.wl  = { t_hl2cs=! }
+			models/props/de_nuke/nuklogo.wl  = { t_hl2cs=! }
+			models/props/de_nuke/pipesa_bombsite.wl  = { t_hl2cs=! }
+			models/props/de_nuke/pipeset_metal.wl  = { t_hl2cs=! }
+			models/props/de_nuke/powerplanttank.wl  = { t_hl2cs=! }
+			models/props/de_nuke/powerplanttank_ref.wl  = { t_hl2cs=! }
+			models/props/de_nuke/powerwires_insulator.wl  = { t_hl2cs=! }
+			models/props/de_nuke/powerwires_posts.wl  = { t_hl2cs=! }
+			models/props/de_nuke/powerwires_wires.wl  = { t_hl2cs=! }
+			models/props/de_nuke/railing_bombsitea2.wl  = { t_hl2cs=! }
+			models/props/de_nuke/railing_bombsitea.wl  = { t_hl2cs=! }
+			models/props/de_nuke/railing_ramp_a.wl  = { t_hl2cs=! }
+			models/props/de_nuke/railing_ramp_b.wl  = { t_hl2cs=! }
+			models/props/de_nuke/railing_tunnels.wl  = { t_hl2cs=! }
+			models/props/de_nuke/railing_warehouse.wl  = { t_hl2cs=! }
+			models/props/de_nuke/rope.wl  = { t_hl2cs=! }
+			models/props/de_nuke/secondtank.wl  = { t_hl2cs=! }
+			models/props/de_nuke/skylight01_bottom.wl  = { t_hl2cs=! }
+			models/props/de_nuke/skylight01_top.wl  = { t_hl2cs=! }
+			models/props/de_nuke/skylight_effects.wl  = { t_hl2cs=! }
+			models/props/de_nuke/smokestack.wl  = { t_hl2cs=! }
+			models/props/de_nuke/storagetank2.wl  = { t_hl2cs=! }
+			models/props/de_nuke/storagetank.wl  = { t_hl2cs=! }
+			models/props/de_nuke/support.wl  = { t_hl2cs=! }
+			models/props/de_nuke/trplaque.wl  = { t_hl2cs=! }
+			models/props/de_nuke/truck_nuke.wl  = { t_hl2cs=! }
+			models/props/de_nuke/warehouselightingeffects.wl  = { t_hl2cs=! }
+			models/props/de_nuke/winch.wl  = { t_hl2cs=! }
+			models/props/de_nuke/window01.wl  = { t_hl2cs=! }
 			models/props/de_port/cargo_container01.wl  = { t_hl2cs=! }
 			models/props/de_port/cargo_container02.wl  = { t_hl2cs=! }
 			models/props/de_port/cargo_container03.wl  = { t_hl2cs=! }
 			models/props/de_port/clouds.wl  = { t_hl2cs=! }
 			models/props/de_port/clouds2.wl  = { t_hl2cs=! }
 			models/props/de_port/diesel.wl  = { t_hl2cs=! }
-			models/props/de_port/metalwall083b.wl  = { t_hl2cs=! }
 			models/props/de_port/portwalkway_rails.wl  = { t_hl2cs=! }
 			models/props/de_port/portwalkway_rails_ref.wl  = { t_hl2cs=! }
 			models/props/de_port/portwalkway_walk.wl  = { t_hl2cs=! }
@@ -2671,11 +3125,8 @@ QQRKSRC1
 			models/props_c17/pottery01a_09a.wl  = { t_hl2cs=! }
 			models/props_c17/pottery_large01a.wl  = { t_hl2cs=! }
 			models/props_c17/woodbarrel001.wl  = { t_hl2cs=! }
-			models/props_debris/plasterceiling008a.wl  = { t_hl2cs=! }
-			models/props_debris/plasterwall034d.wl  = { t_hl2cs=! }
 			models/props_foliage/ivy01.wl  = { t_hl2cs=! }
 			models/props_foliage/ivy01a.wl  = { t_hl2cs=! }
-			models/props_foliage/oak_tree01.wl  = { t_hl2cs=! }
 			models/props_foliage/tree_deciduous_01a_branches.wl  = { t_hl2cs=! }
 			models/props_foliage/tree_deciduous_01a_leaves.wl  = { t_hl2cs=! }
 			models/props_foliage/tree_deciduous_01a_leaves2.wl  = { t_hl2cs=! }
@@ -2696,16 +3147,12 @@ QQRKSRC1
 			models/props_pipes/PipeMetal004a.wl  = { t_hl2cs=! }
 			models/props_pipes/PipeMetal004b.wl  = { t_hl2cs=! }
 			models/props_pipes/pipeset_metal.wl  = { t_hl2cs=! }
-			models/props_rooftop/railing01a.wl  = { t_hl2cs=! }
 			models/props_vehicles/truck001a_01.wl  = { t_hl2cs=! }
 			models/props_vehicles/truck001c_01.wl  = { t_hl2cs=! }
 			models/props_vehicles/truck001c_02.wl  = { t_hl2cs=! }
 			models/props_wasteland/dockpole01.wl  = { t_hl2cs=! }
 			models/props_wasteland/rockcliff02a.wl  = { t_hl2cs=! }
 			models/props_wasteland/rockcliff02b.wl  = { t_hl2cs=! }
-			models/props_wasteland/rockcliff02c.wl  = { t_hl2cs=! }
-			models/props_wasteland/rockcliff04a.wl  = { t_hl2cs=! }
-			models/Shadertest/predator.wl  = { t_hl2cs=! }
 			models/Shadertest/shader2.wl  = { t_hl2cs=! }
 			models/Shadertest/shader3.wl  = { t_hl2cs=! }
 			models/Shadertest/shader3_dudv.wl  = { t_hl2cs=! }
@@ -2786,6 +3233,35 @@ QQRKSRC1
 			nature.txlist =
       {
 			nature/blendgrassgravel003a.wl  = { t_hl2cs=! }
+			nature/blendmilground004_2.wl  = { t_hl2cs=! }
+			nature/blendmilground004_12.wl  = { t_hl2cs=! }
+			nature/blendmilground004_rock2.wl  = { t_hl2cs=! }
+			nature/blendmilground004_rock2b.wl  = { t_hl2cs=! }
+			nature/blendmilground005_2.wl  = { t_hl2cs=! }
+			nature/blendmilground005_16.wl  = { t_hl2cs=! }
+			nature/blendmilground005_19.wl  = { t_hl2cs=! }
+			nature/blendmilground006_2.wl  = { t_hl2cs=! }
+			nature/blendmilground006_8.wl  = { t_hl2cs=! }
+			nature/blendmilground007_4.wl  = { t_hl2cs=! }
+			nature/blendmilground008_2.wl  = { t_hl2cs=! }
+			nature/blendmilground008_2_plants.wl  = { t_hl2cs=! }
+			nature/blendmilground008_4.wl  = { t_hl2cs=! }
+			nature/blendmilground008_8b.wl  = { t_hl2cs=! }
+			nature/blendmilground008b_2.wl  = { t_hl2cs=! }
+			nature/blendmilground010_13.wl  = { t_hl2cs=! }
+			nature/blendmilground011_2.wl  = { t_hl2cs=! }
+			nature/blendmilground011_rock2b.wl  = { t_hl2cs=! }
+			nature/blendmilground012_conflr18a.wl  = { t_hl2cs=! }
+			nature/blendmilground012_conwall004a.wl  = { t_hl2cs=! }
+			nature/blendmilground016_8.wl  = { t_hl2cs=! }
+			nature/blendmilground016_18.wl  = { t_hl2cs=! }
+			nature/blendmilground019_rock002.wl  = { t_hl2cs=! }
+			nature/blendmilrock001_2.wl  = { t_hl2cs=! }
+			nature/blendmilrock001_ground002.wl  = { t_hl2cs=! }
+			nature/blendmilrock001_ground008.wl  = { t_hl2cs=! }
+			nature/blendmilrock002_2b.wl  = { t_hl2cs=! }
+			nature/blendmilrock002_ground002.wl  = { t_hl2cs=! }
+			nature/blendmilrock002_ground008.wl  = { t_hl2cs=! }
 			nature/blendprodconcgrass.wl  = { t_hl2cs=! }
 			nature/blendproddirtgrass.wl  = { t_hl2cs=! }
 			nature/blendrockmoss001a.wl  = { t_hl2cs=! }
@@ -2796,10 +3272,36 @@ QQRKSRC1
 			nature/inftreeb.wl  = { t_hl2cs=! }
 			nature/inftreec.wl  = { t_hl2cs=! }
 			nature/inftreelinea.wl  = { t_hl2cs=! }
+			nature/milbarn001.wl  = { t_hl2cs=! }
+			nature/milground001.wl  = { t_hl2cs=! }
+			nature/milground002.wl  = { t_hl2cs=! }
+			nature/milground003.wl  = { t_hl2cs=! }
+			nature/milground004.wl  = { t_hl2cs=! }
+			nature/milground005.wl  = { t_hl2cs=! }
+			nature/milground007.wl  = { t_hl2cs=! }
+			nature/milground008.wl  = { t_hl2cs=! }
+			nature/milground010.wl  = { t_hl2cs=! }
+			nature/milground011.wl  = { t_hl2cs=! }
+			nature/milground012.wl  = { t_hl2cs=! }
+			nature/milground013.wl  = { t_hl2cs=! }
+			nature/milground016.wl  = { t_hl2cs=! }
+			nature/milground018.wl  = { t_hl2cs=! }
+			nature/milground019.wl  = { t_hl2cs=! }
+			nature/milmountains001.wl  = { t_hl2cs=! }
+			nature/milmountains002.wl  = { t_hl2cs=! }
+			nature/milmountains003.wl  = { t_hl2cs=! }
+			nature/milmountains004.wl  = { t_hl2cs=! }
+			nature/milrock001.wl  = { t_hl2cs=! }
+			nature/miltree001.wl  = { t_hl2cs=! }
+			nature/miltree002.wl  = { t_hl2cs=! }
+			nature/miltree003.wl  = { t_hl2cs=! }
+			nature/miltree004.wl  = { t_hl2cs=! }
+			nature/miltree005.wl  = { t_hl2cs=! }
+			nature/miltree006.wl  = { t_hl2cs=! }
+			nature/miltree007.wl  = { t_hl2cs=! }
 			nature/portcliff001.wl  = { t_hl2cs=! }
 			nature/proddirta.wl  = { t_hl2cs=! }
 			nature/rockwall009b.wl  = { t_hl2cs=! }
-			nature/water_canals_water2.wl  = { t_hl2cs=! }
 			}
 			
 			overlays.txlist =
@@ -2812,21 +3314,40 @@ QQRKSRC1
 			overviews.txlist =
       {
 			overviews/cs_assault.wl  = { t_hl2cs=! }
+			overviews/cs_assault_radar.wl  = { t_hl2cs=! }
 			overviews/cs_compound.wl  = { t_hl2cs=! }
+			overviews/cs_compound_radar.wl  = { t_hl2cs=! }
 			overviews/cs_havana.wl  = { t_hl2cs=! }
+			overviews/cs_havana_radar.wl  = { t_hl2cs=! }
 			overviews/cs_italy.wl  = { t_hl2cs=! }
+			overviews/cs_italy_radar.wl  = { t_hl2cs=! }
+			overviews/cs_militia.wl  = { t_hl2cs=! }
+			overviews/cs_militia_radar.wl  = { t_hl2cs=! }
 			overviews/cs_office.wl  = { t_hl2cs=! }
+			overviews/cs_office_radar.wl  = { t_hl2cs=! }
 			overviews/de_aztec.wl  = { t_hl2cs=! }
+			overviews/de_aztec_radar.wl  = { t_hl2cs=! }
 			overviews/de_cbble.wl  = { t_hl2cs=! }
+			overviews/de_cbble_radar.wl  = { t_hl2cs=! }
 			overviews/de_chateau.wl  = { t_hl2cs=! }
+			overviews/de_chateau_radar.wl  = { t_hl2cs=! }
 			overviews/de_dust.wl  = { t_hl2cs=! }
+			overviews/de_dust_radar.wl  = { t_hl2cs=! }
 			overviews/de_dust2.wl  = { t_hl2cs=! }
+			overviews/de_dust2_radar.wl  = { t_hl2cs=! }
 			overviews/de_inferno.wl  = { t_hl2cs=! }
+			overviews/de_inferno_radar.wl  = { t_hl2cs=! }
+			overviews/de_nuke.wl  = { t_hl2cs=! }
 			overviews/de_piranesi.wl  = { t_hl2cs=! }
+			overviews/de_piranesi_radar.wl  = { t_hl2cs=! }
 			overviews/de_port.wl  = { t_hl2cs=! }
+			overviews/de_port_radar.wl  = { t_hl2cs=! }
 			overviews/de_prodigy.wl  = { t_hl2cs=! }
+			overviews/de_prodigy_radar.wl  = { t_hl2cs=! }
 			overviews/de_tides.wl  = { t_hl2cs=! }
+			overviews/de_tides_radar.wl  = { t_hl2cs=! }
 			overviews/de_train.wl  = { t_hl2cs=! }
+			overviews/de_train_radar.wl  = { t_hl2cs=! }
 			}
 			
 			particle.txlist =
@@ -2850,8 +3371,6 @@ QQRKSRC1
 			plaster/infintwllb.wl  = { t_hl2cs=! }
 			plaster/infintwllc.wl  = { t_hl2cs=! }
 			plaster/infintwndwa.wl  = { t_hl2cs=! }
-			plaster/infplasterwall044b.wl  = { t_hl2cs=! }
-			plaster/infplasterwall044d.wl  = { t_hl2cs=! }
 			plaster/infwlla.wl  = { t_hl2cs=! }
 			plaster/infwllc.wl  = { t_hl2cs=! }
 			plaster/infwllcedge.wl  = { t_hl2cs=! }
@@ -3005,6 +3524,13 @@ QQRKSRC1
 			sprites/640_pain_left.wl  = { t_hl2cs=! }
 			sprites/640_pain_right.wl  = { t_hl2cs=! }
 			sprites/640_pain_up.wl  = { t_hl2cs=! }
+			sprites/bomb_carried.wl  = { t_hl2cs=! }
+			sprites/bomb_carried_ring.wl  = { t_hl2cs=! }
+			sprites/bomb_carried_ring_offscreen.wl  = { t_hl2cs=! }
+			sprites/bomb_dropped.wl  = { t_hl2cs=! }
+			sprites/bomb_dropped_ring.wl  = { t_hl2cs=! }
+			sprites/bomb_planted.wl  = { t_hl2cs=! }
+			sprites/bomb_planted_ring.wl  = { t_hl2cs=! }
 			sprites/c4.wl  = { t_hl2cs=! }
 			sprites/cbbl_smoke.wl  = { t_hl2cs=! }
 			sprites/defuser.wl  = { t_hl2cs=! }
@@ -3012,18 +3538,40 @@ QQRKSRC1
 			sprites/glow01.wl  = { t_hl2cs=! }
 			sprites/glow03.wl  = { t_hl2cs=! }
 			sprites/halo.wl  = { t_hl2cs=! }
+			sprites/hostage_following.wl  = { t_hl2cs=! }
+			sprites/hostage_following_offscreen.wl  = { t_hl2cs=! }
 			sprites/hostage_rescue.wl  = { t_hl2cs=! }
 			sprites/ledglow.wl  = { t_hl2cs=! }
 			sprites/muzzleflash4.wl  = { t_hl2cs=! }
 			sprites/numbers.wl  = { t_hl2cs=! }
-			sprites/player_blue.wl  = { t_hl2cs=! }
-			sprites/player_red.wl  = { t_hl2cs=! }
+			sprites/objective_rescue.wl  = { t_hl2cs=! }
+			sprites/objective_site_a.wl  = { t_hl2cs=! }
+			sprites/objective_site_b.wl  = { t_hl2cs=! }
+			sprites/player_blue_dead.wl  = { t_hl2cs=! }
+			sprites/player_blue_dead_offscreen.wl  = { t_hl2cs=! }
+			sprites/player_blue_offscreen.wl  = { t_hl2cs=! }
+			sprites/player_blue_self.wl  = { t_hl2cs=! }
+			sprites/player_blue_small.wl  = { t_hl2cs=! }
+			sprites/player_hostage_dead.wl  = { t_hl2cs=! }
+			sprites/player_hostage_dead_offscreen.wl  = { t_hl2cs=! }
+			sprites/player_hostage_offscreen.wl  = { t_hl2cs=! }
+			sprites/player_hostage_small.wl  = { t_hl2cs=! }
+			sprites/player_radio_ring.wl  = { t_hl2cs=! }
+			sprites/player_radio_ring_offscreen.wl  = { t_hl2cs=! }
+			sprites/player_red_dead.wl  = { t_hl2cs=! }
+			sprites/player_red_dead_offscreen.wl  = { t_hl2cs=! }
+			sprites/player_red_offscreen.wl  = { t_hl2cs=! }
+			sprites/player_red_self.wl  = { t_hl2cs=! }
+			sprites/player_red_small.wl  = { t_hl2cs=! }
+			sprites/player_tick.wl  = { t_hl2cs=! }
 			sprites/radar.wl  = { t_hl2cs=! }
 			sprites/radar_trans.wl  = { t_hl2cs=! }
 			sprites/radio.wl  = { t_hl2cs=! }
 			sprites/scope_arc.wl  = { t_hl2cs=! }
 			sprites/shopping_cart.wl  = { t_hl2cs=! }
-			sprites/smoke.wl  = { t_hl2cs=! }
+			sprites/spectator_3rdcam.wl  = { t_hl2cs=! }
+			sprites/spectator_eye.wl  = { t_hl2cs=! }
+			sprites/spectator_freecam.wl  = { t_hl2cs=! }
 			sprites/water_drop.wl  = { t_hl2cs=! }
 			sprites/wpn_select1.wl  = { t_hl2cs=! }
 			sprites/wpn_select2.wl  = { t_hl2cs=! }
@@ -3105,6 +3653,8 @@ QQRKSRC1
 			tile/infroofatrim.wl  = { t_hl2cs=! }
 			tile/infroofb.wl  = { t_hl2cs=! }
 			tile/infroofbtrim.wl  = { t_hl2cs=! }
+			tile/milflr001.wl  = { t_hl2cs=! }
+			tile/milflr002.wl  = { t_hl2cs=! }
 			tile/prodceilingtilea.wl  = { t_hl2cs=! }
 			tile/prodflra.wl  = { t_hl2cs=! }
 			tile/prodflrb.wl  = { t_hl2cs=! }
@@ -3115,7 +3665,6 @@ QQRKSRC1
       {
 			tools/invismetal.wl  = { t_hl2cs=! }
 			tools/toolsblack.wl  = { t_hl2cs=! }
-			tools/toolsnodraw_ROOF.wl  = { t_hl2cs=! }
 			}
 			
 			VGUI.txlist =
@@ -3211,8 +3760,43 @@ QQRKSRC1
 			wood/infflra.wl  = { t_hl2cs=! }
 			wood/infgate01.wl  = { t_hl2cs=! }
 			wood/infgate02.wl  = { t_hl2cs=! }
-			wood/infwoodfloor007a.wl  = { t_hl2cs=! }
-			wood/infwoodfloor008a.wl  = { t_hl2cs=! }
+
+			wood/milbeams001.wl  = { t_hl2cs=! }
+			wood/milbeams002.wl  = { t_hl2cs=! }
+			wood/milcab001.wl  = { t_hl2cs=! }
+			wood/mildoor001.wl  = { t_hl2cs=! }
+			wood/mildoor001sd.wl  = { t_hl2cs=! }
+			wood/mildoor002.wl  = { t_hl2cs=! }
+			wood/mildoor002sd.wl  = { t_hl2cs=! }
+			wood/milflr002.wl  = { t_hl2cs=! }
+			wood/milflr002lit.wl  = { t_hl2cs=! }
+			wood/milflr003.wl  = { t_hl2cs=! }
+			wood/milflr004.wl  = { t_hl2cs=! }
+			wood/milhole001.wl  = { t_hl2cs=! }
+			wood/milhole002.wl  = { t_hl2cs=! }
+			wood/milroof001.wl  = { t_hl2cs=! }
+			wood/milroof002.wl  = { t_hl2cs=! }
+			wood/milroof003.wl  = { t_hl2cs=! }
+			wood/milroof004.wl  = { t_hl2cs=! }
+			wood/milroof005.wl  = { t_hl2cs=! }
+			wood/milroof006.wl  = { t_hl2cs=! }
+			wood/milsteps001.wl  = { t_hl2cs=! }
+			wood/milwall001.wl  = { t_hl2cs=! }
+			wood/milwall002.wl  = { t_hl2cs=! }
+			wood/milwall007.wl  = { t_hl2cs=! }
+			wood/milwall008.wl  = { t_hl2cs=! }
+			wood/milwall010.wl  = { t_hl2cs=! }
+			wood/milwall011.wl  = { t_hl2cs=! }
+			wood/milwall012.wl  = { t_hl2cs=! }
+			wood/milwall013.wl  = { t_hl2cs=! }
+			wood/milwall015.wl  = { t_hl2cs=! }
+			wood/milwall016.wl  = { t_hl2cs=! }
+			wood/milwall017.wl  = { t_hl2cs=! }
+			wood/milwall018.wl  = { t_hl2cs=! }
+			wood/milwall019.wl  = { t_hl2cs=! }
+			wood/milwall021.wl  = { t_hl2cs=! }
+			wood/milwndw003.wl  = { t_hl2cs=! }
+			wood/milwndw004.wl  = { t_hl2cs=! }
 			wood/offdesktop.wl  = { t_hl2cs=! }
 			wood/offdesktopsd.wl  = { t_hl2cs=! }
 			wood/offdra.wl  = { t_hl2cs=! }
@@ -3234,141 +3818,3 @@ QQRKSRC1
     }
   }
 }
-                   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
