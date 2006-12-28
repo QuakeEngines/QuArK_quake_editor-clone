@@ -112,9 +112,11 @@ folder and place that into your new <b>QuArKApps\cstrike</b> folder.
 
 NOTE: These extractions will take some time and you may think nothing is happening, but it is, so be patient and do ONE AT A TIME.
 
-You should now be able to make your maps in QuArK and view the textures for both Half-Life 2 and Counter Strike. Some textures will not display
-in the QuArK Texture Browser because this method, which is the only one that works, is side stepping the .vmf (Valve Material File) system and its links
-to those textures. But most of the textures are available and usable in the game displaying their .vmf effects.
+5) The final step is to download the <a href="http://quark.planetquake.gamespy.com/gamepaks.php3">QuArK_HL2_CS_textures.zip</a> game support package
+from the Official QuArK site and unzip that file, using the <b>folders</b> option, by pointing it to your <b>QuArKApps</b> folder. It will ask if you
+wish to over write the existing files, just click <b>Yes to all</b>.
+
+You should now be able to make your maps in QuArK and view the textures for both Half-Life 2 and Counter Strike.
 
 A VERY nice feature of this method is that you <b>DO NOT</b> need to have Steam running while using QuArK! Only if you wish to build your map and see it
 in Half-Life 2 or Counter Strike. AND by simply building your map with the <b>GO!</b> or <b>QuickGo!</b> command...it will start Steam for you.

@@ -32,9 +32,8 @@ is shown two images below.
 
 But before we do that, go to your <b>Wolfenstein - Enemy Territory</b> game folder and create a new
 sub-folder named <b>QuArK files</b>. This is where the compiling program folder and its files will be placed.
-You will need to download this program from the
-<a href="http://quark.planetquake.gamespy.com/game_support/q3map_2.5.16_win32_x86.zip">Official QuArK</a>
-site.
+You will need to download the <a href="http://quark.planetquake.gamespy.com/gamepaks.php3">q3map_2.5.16_win32_x86.zip</a>
+file from the Official QuArK site.
 
 Also, see the <a href="intro.configuration.games.specificgames.rtcw-et.html#misc">Misc. Info.</a>
 section below for more detailed instructions on its installation.
@@ -48,14 +47,11 @@ section below for more detailed instructions on its installation.
 <tr><td valign=top align=left>
 <b>Part 2 – QuArK game pack download</b>
 
-This is the QuArK RTCW-ET game support package. Download the QuArK_RTCW-ET.zip file and extract it, using the 
-folders path option, to the game folder location where you have RTCW-ET installed on your computer.
+This is the QuArK RTCW-ET game support package. Download the <a href="http://quark.planetquake.gamespy.com/gamepaks.php3">QuArK_RTCW-ET.zip</a>
+file and extract it, using the folders path option, to the game folder location where you have RTCW-ET installed on your computer.
 
 All the paths to the "etmain" sub-folder have already been set in the zip file.
-
-You can download this package from the 
-<a href="http://quark.planetquake.gamespy.com/game_support/RTCW-ET/QuArK_RTCW-ET.zip">Official QuArK</a>
-site. The zip file is about 45.6 MB and will take around 1 minute with cable or DSL.
+The zip file is about 45.6 MB and will take around 1 minute with cable or DSL.
 
 This package has been created to work with QuArK 6.5.0 alpha 8 or later and will give the most complete
 support available.
