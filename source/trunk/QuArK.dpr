@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2006/12/26 22:49:06  danielpharos
+Splitted the Ed3DFX file into two separate renderers: Software and Glide
+
 Revision 1.32  2006/11/30 00:41:31  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
@@ -84,7 +87,7 @@ program QuArK;
 {%File '..\Runtime\addons\Defaults.qrk'}
 
 uses
-  MemTester in 'Prog\MemTester.pas',
+  FastMM4 in 'Prog\FastMM4.pas',
   Forms,
   QkObjects in 'Prog\QkObjects.pas',
   Qk1 in 'Prog\Qk1.pas' {Form1},
