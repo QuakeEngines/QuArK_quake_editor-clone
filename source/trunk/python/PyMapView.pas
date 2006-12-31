@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2006/11/30 00:44:55  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
+
 Revision 1.21.2.10  2006/11/28 16:18:55  danielpharos
 Pushed MapView into the renderers and made OpenGL do (bad) Solid Colors
 
@@ -76,7 +80,7 @@ uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
      Dialogs, Quarkx, QkExplorer, Python, QkObjects, PyObjects,
      PyControls, QkForm, CursorScrollBox, Qk3D, QkMapObjects,
      qmath, PyMath, PyMath3D, Setup, Travail, ExtCtrls,
-     EdSceneObject, Ed3DFX;
+     EdSceneObject;
 
 
 type
@@ -263,7 +267,7 @@ var
 implementation
 
 uses PyCanvas, QkTextures, QkPixelSet, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
-     EdOpenGL, EdDirect3D, SystemDetails;
+     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails;
 
 
 constructor TPyMapView.Create(AOwner: TComponent);
@@ -487,7 +491,7 @@ begin
   Invalidate;
  with ConfigSrc do
   begin
-   if Scene is T3DFXSceneObject then   {Daniel: Renderer should take care of}
+   if Scene is TGlideSceneObject then   {Daniel: Renderer should take care of this}
     begin
      if Specifics.Values['3DFXLogo']='' then
       SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')
@@ -495,7 +499,7 @@ begin
       SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', Nil);
       SoftQuality:=StrToIntDef(Specifics.Values['SoftQuality'], 0);
       DynamicQuality:=StrToIntDef(Specifics.Values['DynamicQuality'], 0);
-     T3DFXSceneObject(Scene).SoftBufferFormat:=SoftQuality;
+     TGlideSceneObject(Scene).SoftBufferFormat:=SoftQuality;
     end;
 
    if MapViewProj is TCameraCoordinates then
@@ -699,9 +703,9 @@ begin
   begin
    S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
    if S='qrksoftg.dll' then
-     FScene:=T3DFXSceneObject.Create(ViewMode)
+     FScene:=TSoftwareSceneObject.Create(ViewMode)
    else if S='glide2x.dll' then
-     FScene:=T3DFXSceneObject.Create(ViewMode)
+     FScene:=TGlideSceneObject.Create(ViewMode)
    else if S='OpenGL32.dll' then
      FScene:=TGLSceneObject.Create(ViewMode)
    else if S='d3d9.dll' then
