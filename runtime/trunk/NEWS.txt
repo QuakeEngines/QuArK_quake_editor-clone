@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2
 =============
 
+ * [cdunde]: Added a detailed section to the Infobase Model Editor about the model structure.
+
  * [cdunde]: Updated Half-Life 2 textures-hl2.qrk and textures-hl2-cs.qrk files for new Beta
           - vtf method improving proper display and added material textures previously left out.
 
