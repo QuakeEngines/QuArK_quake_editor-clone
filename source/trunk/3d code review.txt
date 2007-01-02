@@ -25,20 +25,34 @@ TSceneObject:
 
 TSceneObject defined in 3dfx/EdSceneObject.pas, with subclasses:
 
-  3dfx\Ed3DFX.pas(123): T3DFXSceneObject = class(TSceneObject)
-  3dfx\EdOpenGL.pas(107): TGLSceneBase = class(TSceneObject)
-  3dfx\EdDirect3D.pas(60): TDirect3DSceneObject = class(TSceneObject)
+  3dfx\EdSoftware.pas(183): TSoftwareSceneObject = class(TSceneObject)
+  3dfx\EdGlide.pas(178): TGlideSceneObject = class(TSceneObject)
+  3dfx\EdOpenGL.pas(181): TGLSceneBase = class(TSceneObject)
+  3dfx\EdDirect3D.pas(78): TDirect3DSceneObject = class(TSceneObject)
+  
+  Note: Line numbers will change as history is added to the front of the file.
 
-The first is the class for the software and 3dfx 3d textured
-views, the second of the OGL one, and the last is the start of
-an unfinished projet to produce a 3dfx view; the appropriate
+The first is the class for the software, the second for Glide (3dfx) 3d
+textured views, the third for the OpenGL one, and the last is the start of
+an unfinished projet to produce a Direct3D view; the appropriate
 constructors are called by python/PyMapView:TPyMapView.NeedScene.
 
-EdSceneObject.pas:  Seems to be divided into two sections, one concerned
+There also are several files that are used by the renderers:
+
+  3dfx\Glide.pas     (Used by Software and Glide)
+  3dfx\GL1.pas     (Used by OpenGL)
+  3dfx\Direct3D9.pas     (Used by Direct3D)
+  3dfx\Direct3D.pas     (Used by Direct3D)
+  3dfx\DirectDraw.pas     (Used by Direct3D)
+  3dfx\DX9.pas     (Used by Direct3D)
+  3dfx\DXErr9.pas     (Used by Direct3D)
+  3dfx\DXTypes.pas     (Used by Direct3D)
+
+EdSceneObject.pas:  This is divided into two sections, one concerned
 with TSceneObject, the other with TTexture Manager.  The interesting
 non-virtual method is BuildScene, which is very big - Armin seems
 to often have gone for extremely long functions, which are supposed to
-be bad style, so perhaps we could think about breaking this  one
+be bad style, so perhaps we could think about breaking this one
 up into intelligible bits?
 
 An important type in 3d scene building is PSurface, defined in
@@ -59,13 +73,15 @@ this module.  The PSurfaces are rebuilt by code in QkMapPoly.pas.
 
 The AddSurfaceRef sub-procedure of BuildScene adds a surface to a master-list
 of surfaces, TSceneObject.FListSurfaces, accesible also as read-property
-ListSurfaces. Need to  understand BuildScene to see what this does.
+ListSurfaces. Need to understand BuildScene to see what this does.
 
 Questions about TSceneObject:
 
   how does BuildScene work?
   what is SetColor do for?
   what is the purpose of ChangeQuality?
+    It seems to be related to cutting the resolution in half in the software
+    renderer.
 
 BuildScene:
 
@@ -85,32 +101,35 @@ BuildScene:
         information about surfaces indexed by the TexNames, and
         also add this information to the FlistSurfaces list.
         
-       Problem: the info specifyies how much info is needed to store
-       the vertexes of the faces using the texture, but no info about
-       those vertexes seems to be recorded.
-       
+      Problem: the info specifyies how much info is needed to store
+      the vertexes of the faces using the texture, but no info about
+      those vertexes seems to be recorded.
+
 
   3.  rebuild the old textures, note how many new ones needed.
         Q: what does building do?
-  
+
   4.  free old textures no longer needed
-  
+
   5.  load and build new textures
-  
+
   6.  build a lot of stuff
-  
+
   7.  for each face, load a lot of stuff into the appropriate
         surf3d element [some of it looks like texture coordinates]
-  
+
   8.  ditto for models, sprites and beziers
         lots of rather repetitive-looking code.
-        
-  9.  and a bit of final cleanup.
-  
-More understanding of what goes on it steps 7-8 is needed here.
 
-  
+  9.  and a bit of final cleanup.
+
+More understanding of what goes on in steps 6-8 is needed here.
+
+
 #$Log$
+#Revision 1.5  2005/09/28 10:48:31  peter-b
+#Revert removal of Log and Header keywords
+#
 #Revision 1.3  2003/09/06 02:22:11  tiglari
 #BuildScene - first go at overview
 #
