@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2006/12/31 21:58:16  danielpharos
+Upgraded to FastMM 4.74.This replaces the old MemTester file. FastMM should be faster, cleaner and better for debugging.
+
 Revision 1.33  2006/12/26 22:49:06  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -87,7 +90,9 @@ program QuArK;
 {%File '..\Runtime\addons\Defaults.qrk'}
 
 uses
-  FastMM4 in 'Prog\FastMM4.pas',
+  MemTester in 'Prog\MemTester.pas',
+  {FastMM4 in 'Prog\FastMM4.pas',}     {Enable for FastMM}
+  {MemCheck in 'Prog\MemCheck.pas',}     {Enable for MemCheck}
   Forms,
   QkObjects in 'Prog\QkObjects.pas',
   Qk1 in 'Prog\Qk1.pas' {Form1},
@@ -244,6 +249,7 @@ uses
 {$R *.RES}
 
 begin
+  {MemChk}     {Enable for MemCheck}
   Application.Initialize;
   Application.Title:='Quake Army Knife';
   Application.CreateForm(TForm1, Form1);
