@@ -6,8 +6,9 @@ Obtaining and installing everything
 
 Obtain Delphi 6 Personal Edition from www.borland.com (you need to register to complete the download, and also so that you can register Delphi after you have installed it) (approx. 140M).  There are some patches to Delphi 6, but I haven't installed them and things seemed to work ok.  If you do download patches, make sure they are the Personal Edition patches.
 
-Get the latest QuArK source from SourceForge (something like 12M, but you get lots of little files instead of one big zip file), and (if you haven't already got it) the mini 
-Python installer (minipy) from the QuArK downloads page (1M).
+Get the latest QuArK source from SourceForge (something like 12M, but you get lots of little files instead of one big zip file).
+
+If you're going to use QuArK 6.3 or older, you should also get (if you haven't already got it) the mini Python installer (minipy) from the QuArK downloads page (1M).  Note that these versions of QuArK require Python 1.5.1 or 1.5.2 - you can install a more recent version of Python but QuArK will not work with any version other than 1.5.1 and 1.5.2.
 
 You will also need the build pack for whichever game you want to make maps for.  If you will be developing QuArK, it is a Good Idea (tm) to test any changes you make, so it is a good idea to grab a build pack or two before you start editing QuArK source code.
 
@@ -15,7 +16,7 @@ If you are an existing QuArK user, you should already have minipy (or the full P
 
 Install Delphi 6 PE (you should register it the first time you run it, you can do that across the Internet (if you have an Internet connection), via web/email, or via telephone).
 
-Install minipy, and any build packs.
+Install minipy (if needed), and any build packs.
 
 (I don't need to say that if you are testing levels then you need the respective game installed.)
 
