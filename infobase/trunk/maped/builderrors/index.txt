@@ -15,8 +15,8 @@ Usually the build sequence, which result in a final .BSP file from a .MAP file, 
 <li>RAD - calculate (colored-)lights in the .BSP file, using information from the BSP and VIS phases.
 </ol>
 
-However, not all QuArK supported games uses the same build phases. Some might contain more or fewer phases, and maybe also in a
-different sequence.
+However, not all QuArK supported games uses the same build phases. Some might contain more or fewer phases,
+and maybe also in a different sequence.
 
 If you have any questions, problems or find solutions regarding these topics, please post them in the
-<a href="http://www.planetquake.com/quark/forums.shtml">QuArK forum/mailing-list</a>.
+<a href="http://www.dark-forge.com/forums/">QuArK forum/mailing-list</a>.

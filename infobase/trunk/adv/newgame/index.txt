@@ -10,8 +10,7 @@ pretty much the same technology as one that QuArK already supports, this might
 be enough, otherwise you might actually have to learn something about how
 QuArK works.
 
-But first, before actually doing anything, post to one of the
-<a href="http://www.planetquake.com/quark/forums.shtml">QuArK Yahoo groups</a>,
-or if you for some reason can't do that, e-mail Decker or tiglari to say what
-you want to do, in case somebody is already doing it.
-
+But first, before actually doing anything, post to the
+<a href="http://www.dark-forge.com/forums/">QuArK forum</a>,
+or if you for some reason can't do that, e-mail Decker, tiglari or cdunde to
+say what you want to do, in case somebody is already doing it.

@@ -1,4 +1,4 @@
 title: Hexen-2
 
 If you have any questions, problems or find solutions regarding this topic, please post them in the
-<a href="http://www.planetquake.com/quark/forums.shtml">QuArK forum/mailing-list</a>.
+<a href="http://www.dark-forge.com/forums/">QuArK forum/mailing-list</a>.

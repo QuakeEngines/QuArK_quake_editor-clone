@@ -4,7 +4,7 @@ author: Armin Rigo / Decker, DanielPharos
 An unexpected behavior is a QuArK bug unless it enters the category of <ref> ./compilingmaps </ref>
 A typical bug comes as an error message with a button "More>>" that will let you copy and paste a detailled bug report.
 Then send the bug to
-<a href="http://www.planetquake.com/quark/forums.shtml">the QuArK-forum</a>, including the bug report and what you were doing
+<a href="http://www.dark-forge.com/forums/">the QuArK-forum</a>, including the bug report and what you were doing
 when the bug occurred. If the bug can be reproduced, please give a step-by-step procedure to follow to reproduce it.
 
 In the recent versions of QuArK 5 and 6, there are some known problems; please don't report them. These include troubles with
