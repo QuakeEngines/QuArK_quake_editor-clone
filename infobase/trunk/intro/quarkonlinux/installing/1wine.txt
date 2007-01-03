@@ -7,9 +7,9 @@ the use of a compatibility layer. This extra layer of programming lies
 between the binaries and the operating system, and it 'tricks' the
 executable into thinking it is running on a Windows machine. If you
 don't have Wine, you'll need to obtain it from 
-<a href="http://winehq.com/">http://winehq.com</a>. I used Wine
-release 20030911, but any of the newer versions will work. Wine
-release 20031118 is the most recent version at the time of this
+<a target=_blank href="http://winehq.com/">http://winehq.com</a>. I
+used Wine release 20030911, but any of the newer versions will work.
+Wine release 20031118 is the most recent version at the time of this
 writing. Of course, you will need Wine to be compiled with OpenGL
 support, both for QuArk to display the OpenGL 3D window.  This
 <a href="http://lhl.linuxgames.com/howto/half-life-HOWTO-0.5.html">article</a>
