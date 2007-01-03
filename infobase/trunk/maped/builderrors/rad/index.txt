@@ -56,15 +56,21 @@ SOFARGHRAD.EXE
 </td></tr>
 
 <tr><td>
-Quake-3:Arena
+Soldier of Fortune 2
 </td><td>
-"Q3MAP.EXE -light"
+"Q3MAP.EXE -light", "Q3MAP2.EXE -light"
 </td></tr>
 
 <tr><td>
-Star Trek:Voyager - Elite Force
+Quake-3: Arena
 </td><td>
-"Q3MAP.EXE -light"
+"Q3MAP.EXE -light", "Q3MAP2.EXE -light"
+</td></tr>
+
+<tr><td>
+Star Trek: Voyager - Elite Force
+</td><td>
+"Q3MAP.EXE -light", "Q3MAP2.EXE -light"
 </td></tr>
 
 </table></center>
