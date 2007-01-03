@@ -39,7 +39,7 @@ Now click the <b>Add CVS Repository</b> icon also circled in red.
 
 Fill out the form with the information settings shown.
 
-<b>Host:</B> cvs.sorceforge.net
+<b>Host:</B> quark.cvs.sorceforge.net
 
 <b>Repository path:</b> /cvsroot/quark
 
