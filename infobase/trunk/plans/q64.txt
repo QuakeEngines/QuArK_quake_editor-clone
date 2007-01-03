@@ -1,4 +1,4 @@
-title: QuArK 6.4 (no release yet)
+title: QuArK 6.4 (alpha released)
 author: tiglari, etc.
 
 The QuArK 6.x series is intended for incremental development.  The
