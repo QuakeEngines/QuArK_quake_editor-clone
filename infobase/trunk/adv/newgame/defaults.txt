@@ -9,4 +9,4 @@ You should pick a recognizable abbreviation and use it consistently,
 e.g. SoF2 for Soldier of Fortune 2.
 
 Also, the game needs to be added to the "<tt>QuakeCtx:form</tt>-group <tt>Game</tt>-sub-group <tt>Items</tt>-variable" list
-(in Default.qrk).
+(in Defaults.qrk).

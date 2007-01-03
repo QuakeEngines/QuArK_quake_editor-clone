@@ -96,4 +96,3 @@ which in the case of SoF2 might start look like this:
 Whatever you get should be substituted for the entity tollbox folder in
 the file you're copying from, and later edited by hand to add missing entities,
 improved help, etc.
-
