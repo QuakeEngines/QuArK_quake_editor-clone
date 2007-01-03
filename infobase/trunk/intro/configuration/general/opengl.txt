@@ -1,10 +1,17 @@
 title: OpenGL
 author: Decker
 
-<img align=right>opengL.png</img>
+<img align=right>opengl.png</img>
 Settings in this folder are only usable if you have a true OpenGL
 graphics-card.
 
 3D-accelerators like 3Dfx, Voodoo, Voodoo-II and other low-price cards, are
 <u>not</u> true OpenGL compatible, they only emulates it through a
 Glide-driver.
+
+<i>Fade</i>. With this you can enable and disable the fading fog.
+
+<i>Transparency</i>. With this you can enable and disable transparency. You
+might need to enable lighting in order for transparency to be applied.
+
+<i>Lighting</i>. With this you can enable and disable the lighting.
