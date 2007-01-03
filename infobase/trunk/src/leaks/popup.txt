@@ -2,7 +2,7 @@ title: Popup Menus (resolved)
 author: tiglari
 
 Well this one seems to be cleared by destroying the menubarhandle in
-the TPyForm.FormDestroy method in PyFroms.pas ...
+the TPyForm.FormDestroy method in PyForms.pas ...
 
 Easy money!
 

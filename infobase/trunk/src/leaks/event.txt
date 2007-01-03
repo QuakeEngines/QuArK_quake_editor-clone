@@ -67,4 +67,3 @@ Phew... that was a bit much, for such a little thing ;-)
 
 I know a bit about event/mutex-semaphores, as I use them at work these
 days, porting an OS/2-application to Windows 2000 Advanced Server.
-
