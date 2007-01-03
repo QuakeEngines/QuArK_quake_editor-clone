@@ -16,46 +16,46 @@ on the same machine at the same time, and the crashes of QuArK.
 Here's my thoughts of it:
 
 - The procedure is called "RestoreAutoSaved", so it might have something
-to do with when QuArK crashes and is started again.
+to do with when QuArK crashes and is started again.<br>
 - There is a call to "GetCurrentProcessId" at the bottom of the
-procedure. So some kind of 'uniqueness' is apparently needed.
+procedure. So some kind of 'uniqueness' is apparently needed.<br>
 - The call to "WaitForSingleObject" has a timeout-value of 0, e.g. don't
-wait (quite strange!?).
+wait (quite strange!?).<br>
 - The file named "auto-save-<something>", is also referenced in the
 procedure "QFileObject.PyGetAttr", where it too use
-"GetCurrentProcessId".
+"GetCurrentProcessId".<br>
 - "OldId" gets assigned the value from the file named
-"auto-save-<something>".
+"auto-save-<something>".<br>
 - So "OldId" may actually be the ProcessId of the QuArK-instance which
-created the auto-save file.
+created the auto-save file.<br>
 - Note that the const "TagAtom" with value "~QuArK-tag-auto-save-%x",
-gets its "%x" replaced by "OldId".
+gets its "%x" replaced by "OldId".<br>
 - The Delphi documentation for "CreateEvent()" does not directly states
 what will be returned, if the name-of-the-event-semaphore already exists
 (e.g. another instance of QuArK is already running.) I believe that we
-get an invalid handle back in that case.
+get an invalid handle back in that case.<br>
 - The "WaitForSingleObject()" call, destroys "OldId" and assigns it a
 completly different purpose; it now contains the return value of the
 call. (Bad code style! Better use a variable clearly defined for the
-purpose, instead of reusing variables).
+purpose, instead of reusing variables).<br>
 - "OldId", which is now the return-value from "WaitForSingleObject()",
 gets compared against zero. So can "WaitForSingleObject()" return zero,
 and what does zero mean in that case? The Delphi documentation does not
 say, so a dig into WINDOWS.PAS searching for the documented return
-symbols may tell us what zero means.
+symbols may tell us what zero means.<br>
 - I find that the symbol "WAIT_OBJECT_0" has the constant value of zero,
-so statement in "RestoreAutoSaved" would be better written as:
-        if (OldId = WAIT_OBJECT_0) then
-- Putting some of the stuff together:
-  CreateEvent(nil, false, TRUE, <a replaced TagAtom string>);
+so statement in "RestoreAutoSaved" would be better written as:<br>
+        if (OldId = WAIT_OBJECT_0) then<br>
+- Putting some of the stuff together:<br>
+  CreateEvent(nil, false, TRUE, <a replaced TagAtom string>);<br>
 Note the TRUE, according to the Delphi documentation, this sets the
 event-semaphore into a Signaled-State. I then believe, that if
 CreateEvent() did not succeed in creating the event-semaphore, the event
 is Not Signaled, and therefore WaitForSingleObject() will not return
-WAIT_OBJECT_0.
+WAIT_OBJECT_0.<br>
 - This could mean that there is another QuArK instance running at the
 same time, and therefore the auto-save file is not due to a crashed
-QuArK, as it is still running.
+QuArK, as it is still running.<br>
 
 - Note also, that any events owned by a process, the one who called
 CreateEvent(), gets automatically released/closed by the
