@@ -1,0 +1,6 @@
+title: DirectX
+author: DanielPharos
+
+
+Settings in this folder are only usable if you have a true DirectX
+graphics-card.

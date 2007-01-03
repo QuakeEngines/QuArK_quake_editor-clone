@@ -2,6 +2,7 @@ title: General
 desc: display
 desc: 3dview
 desc: opengl
+desc: directx
 desc: memory
 desc: quakec
 desc: fileassociations
