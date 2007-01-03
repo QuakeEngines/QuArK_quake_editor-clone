@@ -2,7 +2,7 @@ title: File-Extensions...
 author: Decker
 
 <dl>
-<dt><a name=".ACE">   </a>.ACE   <dd>(binary)               An compressed archive of files. See <a href="http://www.winace.com">http://www.winace.com</a>.
+<dt><a name=".ACE">   </a>.ACE   <dd>(binary)               An compressed archive of files. See <a target=_blank href="http://www.winace.com">http://www.winace.com</a>.
 <dt><a name=".BMP">   </a>.BMP   <dd>(binary)               A graphics image file format.
 <dt><a name=".BSP">   </a>.BSP   <dd>(binary)               A compiled level for the <a href="#fps">FPS-game</a>. See also <a href="#bsp">bsp</a> and <a href="#buildtools">build tools</a>.
 <dt><a name=".DLL">   </a>.DLL   <dd>(binary)               <b>D</b>ynamic <b>L</b>oad <b>L</b>ibrary. Contains executable code, which can be shared/used by many .EXE programs, or one .EXE program can change between different .DLLs to get new functionality.
@@ -25,11 +25,12 @@ author: Decker
 <dt><a name=".QKM">   </a>.QKM   <dd>(binary/text)          QuArK map file.
 <dt><a name=".QRK">   </a>.QRK   <dd>(binary/text)          QuArK data file. Can contain all kinds of data. Is saved in either binary- or text-format.
 <dt><a name=".QVM">   </a>.QVM   <dd>(binary)               Probably stands for <b>Q</b>uake <b>V</b>itrual <b>M</b>achine. Its a Quake-3:Arena "game-rules" program, as we know from Quake-1's PROGS.DAT file.
+<dt><a name=".RAR">   </a>.RAR   <dd>(binary)               An compressed archive of files. See <a target=_blank href="http://www.rarlabs.com">http://www.rarlabs.com</a>.
 <dt><a name=".RMF">   </a>.RMF   <dd>(binary)               WorldCraft map file. Can <u>not</u> be read by QuArK.
 <dt><a name=".SHADER"></a>.SHADER<dd>(text)                 A Quake-3:Arena "texture"-definition file.
 <dt><a name=".TGA">   </a>.TGA   <dd>(binary)               A graphics image file format. Supports up to 24/32bit-color (<a href="#rgba">RGBA</a>).
 <dt><a name=".WAD">   </a>.WAD   <dd>(binary)               A container file, which contains other files, sometimes only a specific kind of files. Wolfenstein 3D was the first <a href="#fps">FPS</a> which used these types of files. A .WAD file can not group files into an internal directory structure, use <a href="#.PAK">.PAK</a> files instead.
 <dt><a name=".WAL">   </a>.WAL   <dd>(binary)               A Quake-2 texture file.
 <dt><a name=".WAV">   </a>.WAV   <dd>(binary)               A sound file.
-<dt><a name=".ZIP">   </a>.ZIP   <dd>(binary)               An compressed archive of files. See <a href="http://www.winzip.com">http://www.winzip.com</a>.
+<dt><a name=".ZIP">   </a>.ZIP   <dd>(binary)               An compressed archive of files. See <a target=_blank href="http://www.winzip.com">http://www.winzip.com</a>.
 </dl>
