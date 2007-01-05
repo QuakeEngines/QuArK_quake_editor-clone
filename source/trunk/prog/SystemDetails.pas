@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2006/11/30 01:21:02  cdunde
+To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+
 Revision 1.18  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -148,16 +151,17 @@ type
 
   TMemory = class(TPersistent)
   private
-    FMaxAppAddress: integer;
-    FVirtualTotal: integer;
-    FPageFileFree: integer;
-    FVirtualFree: integer;
-    FPhysicalFree: integer;
+    FMemoryLoad: longword;    {Daniel: This is not 64-bit compatible. Some are Size_T, which will be 64 bit variables.}
+    FPhysicalTotal: longword;
+    FPhysicalFree: longword;
+    FVirtualTotal: longword;
+    FVirtualFree: longword;
+    FPageFileTotal: longword;
+    FPageFileFree: longword;
+
     FAllocGranularity: integer;
     FMinAppAddress: integer;
-    FMemoryLoad: integer;
-    FPhysicalTotal: integer;
-    FPageFileTotal: integer;
+    FMaxAppAddress: integer;
     FPageSize: integer;
     FGDIRes: Byte;
     FUserRes: Byte;
@@ -169,13 +173,13 @@ type
     procedure GetInfo;
     procedure Report(var sl :TStringList);
   published
-    property PhysicalTotal :integer read FPhysicalTotal write FPhysicalTotal stored false;
-    property PhysicalFree :integer read FPhysicalFree write FPhysicalFree stored false;
-    property VirtualTotal :integer read FVirtualTotal write FVirtualTotal stored false;
-    property VirtualFree :integer read FVirtualFree write FVirtualFree stored false;
-    property PageFileTotal :integer read FPageFileTotal write FPageFileTotal stored false;
-    property PageFileFree :integer read FPageFileFree write FPageFileFree stored false;
-    property MemoryLoad :integer read FMemoryLoad write FMemoryLoad stored false;
+    property MemoryLoad :longword read FMemoryLoad write FMemoryLoad stored false;
+    property PhysicalTotal :longword read FPhysicalTotal write FPhysicalTotal stored false;
+    property PhysicalFree :longword read FPhysicalFree write FPhysicalFree stored false;
+    property VirtualTotal :longword read FVirtualTotal write FVirtualTotal stored false;
+    property VirtualFree :longword read FVirtualFree write FVirtualFree stored false;
+    property PageFileTotal :longword read FPageFileTotal write FPageFileTotal stored false;
+    property PageFileFree :longword read FPageFileFree write FPageFileFree stored false;
     property AllocGranularity :integer read FAllocGranularity write FAllocGranularity stored false;
     property MaxAppAddress :integer read FMaxAppAddress write FMaxAppAddress stored false;
     property MinAppAddress :integer read FMinAppAddress write FMinAppAddress stored false;
