@@ -1,26 +1,25 @@
 
 ; QuArK installer x.x.x
 ; HomePage: http://dynamic.gamespy.com/~quark/
-; Version:  NSIS 2.08
-; Arthour:  Fredrick Vamstad
-; Date:     18 Aug. 2005
+; Version:  NSIS 2.22
+; Author:  Fredrick Vamstad & DanielPharos
+; Date:     18 Aug. 2005 & 5 January 2007
 ; nullsoft NSIS installer program available at:
 ;   http://nsis.sourceforge.net
 ;
-; Last update 1 Nov. 2005 - cdunde
+; Last update 5 January. 2007 - DanielPharos
 ;
 ; Setup and Use to create QuArK NSIS installer:
 ; ============================================
-; 1) Change " PRODUCT_VERSION " (line 25) below.
-; 2) Change " OutFile " name (line 78) below.
-; 3) Create folder named " QuArK_installer_files " in C:\ directory.
-; 4) Place QuArK .exe and all runtime files in the above folder.
-; 5) Create folder named " QuArK_installer_splash_image " in C:\ directory.
-; 6) Copy splash.bmp file from source\icones folder to the above folder.
-; 7) Click on NSIS.exe to start program, select "MakeNSISW (compiler interface)".
-; 8) Drag this file, QuArK.nsi, into the compiler window.
-; 9) The finished QuArK installer will be place in the same location as this file.
+; 1) Change " BUILDDIR " (line 25) below to the directory containing the runtime files to use (including the executable!).
+; 2) Change " INSTALLEREXENAME " name (line 26) below to the name of the installer executable file.
+; 3) Change " PRODUCT_VERSION " (line 28) below to match the new version number.
+; 4) Click on NSIS.exe to start program, select "MakeNSISW (compiler interface)".
+; 5) Drag this file, QuArK.nsi, into the compiler window, or use the "File > Load Script" method to open this file.
+; 6) The finished QuArK installer will be place in the same location as this file, ready for distrubution!
 
+!define BUILDDIR "C:\QuArK_installer_files"
+!define INSTALLEREXENAME "quark-win32-6.5.0Beta1.exe"
 !define PRODUCT_NAME "QuArK"
 !define PRODUCT_VERSION "6.5.0 Beta 1"
 !define PRODUCT_WEB_SITE "http://quark.planetquake.gamespy.com/"
@@ -29,15 +28,30 @@
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
-; MUI 1.67 compatible ------
+Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+OutFile "${INSTALLEREXENAME}"
+InstallDir "$PROGRAMFILES\QuArK"
+InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
+ShowInstDetails show
+ShowUnInstDetails show
+SetCompressor LZMA   ; We will use LZMA for best compression
+
+; MUI 1.76 compatible ------
 !include "MUI.nsh"
 
 ; MUI Settings
 !define MUI_ABORTWARNING
+!define MUI_ABORTWARNING_CANCEL_DEFAULT
+!define MUI_UNABORTWARNING
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install-blue.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-blue.ico"
 ; Loads the splash window
-!define MUI_WELCOMEFINISHPAGE_BITMAP "C:\QuArK_installer_splash_image\splash.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "install_splash.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "install_splash.bmp"
+; Loads the header picture
+!define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_BITMAP "install_header.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "install_header.bmp"
 
 ; Language Selection Dialog Settings
 !define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
@@ -48,7 +62,10 @@
 !insertmacro MUI_PAGE_WELCOME
 ; License page
 !define MUI_LICENSEPAGE_CHECKBOX
-!insertmacro MUI_PAGE_LICENSE "C:\QuArK_installer_files\COPYING.txt"
+!insertmacro MUI_PAGE_LICENSE "${BUILDDIR}\COPYING.txt"
+; Component page
+!define MUI_COMPONENTSPAGE_SMALLDESC
+!insertmacro MUI_PAGE_COMPONENTS
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
@@ -56,6 +73,8 @@
 ; Finish page
 !define MUI_FINISHPAGE_RUN "$INSTDIR\QuArK.exe"
 !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
+!define MUI_FINISHPAGE_LINK "Click here to go to the QuArK website"
+!define MUI_FINISHPAGE_LINK_LOCATION "${PRODUCT_WEB_SITE}"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -74,90 +93,83 @@
 !insertmacro MUI_LANGUAGE "TradChinese"
 ; MUI end ------
 
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "quark-win32-6.5.0Beta1.exe"
-InstallDir "$PROGRAMFILES\QuArK"
-InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
-ShowInstDetails show
-ShowUnInstDetails show
-
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
 
-Section "MainSection" SEC01
+Section "Main Program Files" SEC01
   CreateDirectory "$SMPROGRAMS\QuArK"
   CreateShortCut "$SMPROGRAMS\QuArK\QuArK.lnk" "$INSTDIR\QuArK.exe"
   CreateShortCut "$DESKTOP\QuArK.lnk" "$INSTDIR\QuArK.exe"
   SetOutPath "$INSTDIR\addons\6DX"
-  File "C:\QuArK_installer_files\addons\6DX\*.*"
+  File "${BUILDDIR}\addons\6DX\*.*"
   SetOutPath "$INSTDIR\addons\Crystal_Space"
-  File "C:\QuArK_installer_files\addons\Crystal_Space\*.*"
+  File "${BUILDDIR}\addons\Crystal_Space\*.*"
   SetOutPath "$INSTDIR\addons\Doom_3"
-  File "C:\QuArK_installer_files\addons\Doom_3\*.*"
+  File "${BUILDDIR}\addons\Doom_3\*.*"
   SetOutPath "$INSTDIR\addons\Genesis3D"
-  File "C:\QuArK_installer_files\addons\Genesis3D\*.*"
+  File "${BUILDDIR}\addons\Genesis3D\*.*"
   SetOutPath "$INSTDIR\addons\Half-Life"
-  File "C:\QuArK_installer_files\addons\Half-Life\*.*"
+  File "${BUILDDIR}\addons\Half-Life\*.*"
   SetOutPath "$INSTDIR\addons\Half-Life2"
-  File "C:\QuArK_installer_files\addons\Half-Life2\*.*"
+  File "${BUILDDIR}\addons\Half-Life2\*.*"
   SetOutPath "$INSTDIR\addons\Heretic_II"
-  File "C:\QuArK_installer_files\addons\Heretic_II\*.*"
+  File "${BUILDDIR}\addons\Heretic_II\*.*"
   SetOutPath "$INSTDIR\addons\Hexen_II"
-  File "C:\QuArK_installer_files\addons\Hexen_II\*.*"
+  File "${BUILDDIR}\addons\Hexen_II\*.*"
   SetOutPath "$INSTDIR\addons\JA"
-  File "C:\QuArK_installer_files\addons\JA\*.*"
+  File "${BUILDDIR}\addons\JA\*.*"
   SetOutPath "$INSTDIR\addons\JK2"
-  File "C:\QuArK_installer_files\addons\JK2\*.*"
+  File "${BUILDDIR}\addons\JK2\*.*"
   SetOutPath "$INSTDIR\addons\KingPin"
-  File "C:\QuArK_installer_files\addons\KingPin\*.*"
+  File "${BUILDDIR}\addons\KingPin\*.*"
   SetOutPath "$INSTDIR\addons\MOHAA"
-  File "C:\QuArK_installer_files\addons\MOHAA\*.*"
+  File "${BUILDDIR}\addons\MOHAA\*.*"
   SetOutPath "$INSTDIR\addons\Quake_1"
-  File "C:\QuArK_installer_files\addons\Quake_1\*.*"
+  File "${BUILDDIR}\addons\Quake_1\*.*"
   SetOutPath "$INSTDIR\addons\Quake_2"
-  File "C:\QuArK_installer_files\addons\Quake_2\*.*"
+  File "${BUILDDIR}\addons\Quake_2\*.*"
   SetOutPath "$INSTDIR\addons\Quake_3"
-  File "C:\QuArK_installer_files\addons\Quake_3\*.*"
+  File "${BUILDDIR}\addons\Quake_3\*.*"
   SetOutPath "$INSTDIR\addons\Quake_4"
-  File "C:\QuArK_installer_files\addons\Quake_4\*.*"
+  File "${BUILDDIR}\addons\Quake_4\*.*"
   SetOutPath "$INSTDIR\addons\RTCW"
-  File "C:\QuArK_installer_files\addons\RTCW\*.*"
+  File "${BUILDDIR}\addons\RTCW\*.*"
   SetOutPath "$INSTDIR\addons\RTCW\QuArK files"
   SetOutPath "$INSTDIR\addons\RTCW\QuArK files\bspc"
-  File "C:\QuArK_installer_files\addons\RTCW\QuArK files\bspc\*.*"
+  File "${BUILDDIR}\addons\RTCW\QuArK files\bspc\*.*"
   SetOutPath "$INSTDIR\addons\RTCW-ET"
-  File "C:\QuArK_installer_files\addons\RTCW-ET\*.*"
+  File "${BUILDDIR}\addons\RTCW-ET\*.*"
   SetOutPath "$INSTDIR\addons\Sin"
-  File "C:\QuArK_installer_files\addons\Sin\*.*"
+  File "${BUILDDIR}\addons\Sin\*.*"
   SetOutPath "$INSTDIR\addons\SOF"
-  File "C:\QuArK_installer_files\addons\SOF\*.*"
+  File "${BUILDDIR}\addons\SOF\*.*"
   SetOutPath "$INSTDIR\addons\SoF2"
-  File "C:\QuArK_installer_files\addons\SoF2\*.*"
+  File "${BUILDDIR}\addons\SoF2\*.*"
   SetOutPath "$INSTDIR\addons\STVEF"
-  File "C:\QuArK_installer_files\addons\STVEF\*.*"
+  File "${BUILDDIR}\addons\STVEF\*.*"
   SetOutPath "$INSTDIR\addons\Sylphis"
-  File "C:\QuArK_installer_files\addons\Sylphis\*.*"
+  File "${BUILDDIR}\addons\Sylphis\*.*"
   SetOutPath "$INSTDIR\addons\Torque"
-  File "C:\QuArK_installer_files\addons\Torque\*.*"
+  File "${BUILDDIR}\addons\Torque\*.*"
   SetOutPath "$INSTDIR\addons\WildWest"
-  File "C:\QuArK_installer_files\addons\WildWest\*.*"
+  File "${BUILDDIR}\addons\WildWest\*.*"
   SetOutPath "$INSTDIR\addons"
-  File "C:\QuArK_installer_files\addons\*.*"
+  File "${BUILDDIR}\addons\*.*"
   SetOutPath "$INSTDIR\dlls"
-  File "C:\QuArK_installer_files\dlls\*.*"
+  File "${BUILDDIR}\dlls\*.*"
   SetOutPath "$INSTDIR\help"
-  File "C:\QuArK_installer_files\help\*.*"
+  File "${BUILDDIR}\help\*.*"
   SetOutPath "$INSTDIR\images"
-  File "C:\QuArK_installer_files\images\*.*"
+  File "${BUILDDIR}\images\*.*"
   SetOutPath "$INSTDIR\lgicons"
-  File "C:\QuArK_installer_files\lgicons\*.*"
+  File "${BUILDDIR}\lgicons\*.*"
   SetOutPath "$INSTDIR\plugins"
-  File "C:\QuArK_installer_files\plugins\*.*"
+  File "${BUILDDIR}\plugins\*.*"
   SetOutPath "$INSTDIR\quarkpy"
-  File "C:\QuArK_installer_files\quarkpy\*.*"
+  File "${BUILDDIR}\quarkpy\*.*"
   SetOutPath "$INSTDIR"
-  File "C:\QuArK_installer_files\*.*"
+  File "${BUILDDIR}\*.*"
 SectionEnd
 
 Section -AdditionalIcons
