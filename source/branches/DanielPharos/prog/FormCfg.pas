@@ -23,15 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.30.2.3  2006/11/04 02:08:16  cdunde
-To stop filling multiple dropdown list with erroneous data,
-like for misc_model entity and
-To add Copy, Paste and Cut functions to Specifices\Arg
-page RMB pop-up menu.
+Revision 1.34  2006/12/12 23:06:01  cdunde
+Made additional fix to stop filling multiple dropdown list with erroneous data,
+for example like a misc_model for func_bobbing entity.
 
-Revision 1.30.2.2  2006/11/01 22:22:29  danielpharos
-BackUp 1 November 2006
-Mainly reduce OpenGL memory leak
+Revision 1.33  2006/12/03 12:02:09  cdunde
+To fix model selection form properly so other multiple forms would not be broken.
 
 Revision 1.32  2006/09/28 06:55:59  cdunde
 To stop filling multiple dropdown list with erroneous data, like for misc_model entity
@@ -1973,8 +1970,9 @@ begin
                  ComboBox.Items.Text:=TextValues;
                  ComboBox.ItemIndex:=MatchSpecItem(ComboBox, ArgValue, True); { "ComboBox.Tag" must be set to a value!!! }
             // Created step around to stop filling multiple dropdown list with erroneous data, like for misc_model entity
-                 if Spec <>'model' then
-                  ComboBox.Text:=ArgValue;
+                 if Spec <> 'model' then
+                  if Spec <> 'model2' then
+                   ComboBox.Text:=ArgValue;
                  ComboBox.OnKeyDown:=ComboKeyDown;
                  ComboBox.OnChange:=EnterEditChange;
                  ComboBox.Hint:=HintMsg;

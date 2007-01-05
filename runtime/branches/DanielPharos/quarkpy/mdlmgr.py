@@ -10,7 +10,6 @@ Model editor Layout managers.
 
 #$Header$
 
-
 #
 # This file defines the base class for Model Layout Managers.
 # See the description in mapmgr.py for more information.
@@ -33,6 +32,8 @@ import mdlentities
 
 ### globals
 startup = 0
+saveskin = None
+skincount = 0
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
@@ -41,8 +42,13 @@ class ModelLayout(BaseLayout):
     MAXAUTOZOOM = 10.0
 
     def clearrefs(self):
+        global startup, saveskin, skincount
+        startup = 0
+        saveskin = None
+        skincount = 0
         BaseLayout.clearrefs(self)
         self.reset()
+        slist = None
         self.skinform = None
         self.skinview = None
     #    self.dataform = None
@@ -55,6 +61,7 @@ class ModelLayout(BaseLayout):
 
     def getskin(self):
         "Use currentskin or find new selected skin."
+        global skincount, saveskin
         slist = []
         if self.explorer.sellist == []:
             s = self.editor.Root.currentcomponent.currentskin
@@ -69,6 +76,7 @@ class ModelLayout(BaseLayout):
             for s in self.explorer.sellist:
                 if s.name.endswith(".pcx") or s.name.endswith(".jpg") or s.name.endswith(".tga"):
                     slist.append(s)
+                    return slist
                 else:
                     if s.type != ':mc':
                         s = s.parent
@@ -80,22 +88,36 @@ class ModelLayout(BaseLayout):
                 if s.type == ':mc':
                     for item in s.subitems:
                         if item.type == ':sg':
-                            count = 0
+                            skincount = len(item.dictitems)
+                            if len(item.dictitems) < 1:
+                                saveskin = None
+                                slist.append(None)
+                                self.editor.Root.currentcomponent.currentskin = None
+                                return slist
+                            if len(item.dictitems) > 1:
+                                count = 0
+                            else:
+                                count = 1
                             for dictitem in item.dictitems:
                                 if dictitem.endswith(".pcx") or dictitem.endswith(".jpg") or dictitem.endswith(".tga"):
-                                    if count == 0:
-                                        holddictitem = item.dictitems[dictitem]
-                                    count = count + 1
+                                    if count == 1:
+                                        holddictitem = item.dictitems[dictitem] # shouldn't this just be dictitem?
+                                    if len(item.dictitems) > 1:
+                                        count = count + 1
                                     s = self.editor.Root.currentcomponent.currentskin
                                     if item.dictitems[dictitem] == s:
                                         slist.append(s)
                                         return slist
                                     if count == len(item.dictitems):
                                         slist.append(holddictitem)
+                                        if len(item.dictitems) > 1:
+                                            self.editor.Root.currentcomponent.currentskin = holddictitem
                 else:
+                    # not sure this section should be in here, except for models w/o any skins.
                     s = self.editor.Root.currentcomponent.currentskin
                     if s is not None:
                         slist.append(s)
+            # this section does the same thing right above here.
             s = self.editor.Root.currentcomponent.currentskin
             if slist == [] and s is not None:
                 slist.append(s)
@@ -175,6 +197,7 @@ class ModelLayout(BaseLayout):
 
 
     def reset(self):
+        "This resets the value of 'startup' so the skin in the Skin-view matches the editor."
         global startup
         startup = 0
         return
@@ -183,8 +206,8 @@ class ModelLayout(BaseLayout):
     def fillskinform(self, reserved):
         global startup # Allows the skinform to fill the 1st time a model is loaded, to set it up.
      #   self.skinview.onmouse = self.polyviewmouse  ### was commented out, causes zoom to change when aother "component" folder is selected
-                                                    ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
-                                                    ### Commenting out due to conflict but possible future use.
+                                                     ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
+                                                     ### Commenting out due to conflict but possible future use.
      #   self.skinview.info = None
 
         slist = self.getskin()  ### something missing here
@@ -194,7 +217,7 @@ class ModelLayout(BaseLayout):
             else:
                 self.editor.invalidateviews(1)
         
-        if len(slist)!=0 and slist[0] is not None:
+        if len(slist) != 0 and slist[0] is not None:
                ### Code below updates the "currentcomponent", for filling the skin form,
                ### based on any element of THAT component of the model, that is currently selected.
                ### But only if another component was previously selected to avoid slow down for unnecessary updating.
@@ -213,9 +236,18 @@ class ModelLayout(BaseLayout):
         if len(slist)==0:
             cap = Strings[129]
 
-        if len(slist)!=0:
+        if len(slist) != 0:
+            if saveskin is not None and startup == 2:
+                slist = []
+                slist.append(saveskin)
+                startup = 1
+
+        if len(slist) != 0 and slist[0] is not None:
+            print "went to handles 1"
             mdlhandles.buildskinvertices(self.editor, self.skinview, self, self.editor.Root.currentcomponent, slist[0])
         else:
+            if self.explorer.sellist is not None and self.explorer.sellist != []:
+                self.editor.Root.currentcomponent = self.explorer.sellist[0]
             mdlhandles.buildskinvertices(self.editor, self.skinview, self, self.editor.Root.currentcomponent, None)
 
         if self.editor.Root.currentcomponent is not None:
@@ -233,12 +265,14 @@ class ModelLayout(BaseLayout):
         startup = 1
 
     def polyviewmouse(self, view, x, y, flags, handle):
+        "Can't figure out what this one does."
         if flags&MB_CLICKED:
             quarkx.clickform = view.owner
             mdlbtns.texturebrowser()
 
 
     def skinformchange(self, src):
+        "Can't figure out what this one does."
         undo = quarkx.action()
         q = src.linkedobjects[0]
         tex = q["texture"]
@@ -246,35 +280,47 @@ class ModelLayout(BaseLayout):
 
 
     def selectcomponent(self, comp):
+        "This is when you select a particular 'Component' or any 'Group' within it in the Tree-view."
         if comp != self.editor.Root.currentcomponent:
             self.reset()
         self.editor.Root.setcomponent(comp)
+        if saveskin is not None and comp.currentskin != saveskin:
+            comp.currentskin = saveskin
 
     def selectcgroup(self, group):
+        "This is when you select a particular item of a component group 'Skins', 'Frames' or 'Skeleton' in the Tree-view."
         comp = self.componentof(group)
         if comp is not None:
           self.selectcomponent(comp)
 
     def selectframe(self, frame):
+        "This is when you select a particular frame in the 'Frames' group of the Tree-view."
         c = self.componentof(frame)
-        if c is not None and frame is not c.currentframe:
+        if c is not None:
             self.selectcomponent(c)
             c.setframe(frame)
             c.setparentframes(frame)
 
     def selectskin(self, skin):
+        "This is when you select a particular skin in the 'Skins' group of the Tree-view."
+        global saveskin
         self.reset()
         c = self.componentof(skin)
         if c is not None and skin is not c.currentskin:
             self.selectcomponent(c)
             c.currentskin = skin
+            saveskin = skin
 
     def selchange(self):
-        #if self.faceflags is not None:
-        #    self.loadfaceflags()
-        self.mpp.resetpage()
-        
+        "This completes what ever selection def you are using above."
+        global startup
         fs = self.explorer.uniquesel
+        if fs is not None:
+            if fs.type == ':mc':
+                if fs != self.editor.Root.currentcomponent:
+                    startup = 2
+
+        self.mpp.resetpage()
         if fs is not None:
             if fs.type == ':mf':       # frame
                 self.selectframe(fs)
@@ -316,6 +362,20 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.13  2006/12/17 08:58:13  cdunde
+#Setup Skin-view proper handle dragging for various model skin(s)
+#and no skins combinations.
+#
+#Revision 1.12  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.11  2006/11/29 07:00:26  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
+#Revision 1.10.2.6  2006/11/23 02:04:26  cdunde
+#Had to comment out one more line and move things around to avoid weird stuff.
+#
 #Revision 1.10.2.5  2006/11/22 23:31:52  cdunde
 #To setup Face-view click function to open Texture Browser for possible future use.
 #

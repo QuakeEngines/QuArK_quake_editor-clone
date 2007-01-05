@@ -139,6 +139,16 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.9  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.8  2006/11/29 07:00:28  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
+#Revision 1.7.2.1  2006/11/28 00:55:35  cdunde
+#Started a new Model Editor Infobase section and their direct function links from the Model Editor.
+#
 #Revision 1.7  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

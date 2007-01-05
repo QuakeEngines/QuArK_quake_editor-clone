@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2006/11/30 01:21:02  cdunde
+To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+
 Revision 1.7  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 

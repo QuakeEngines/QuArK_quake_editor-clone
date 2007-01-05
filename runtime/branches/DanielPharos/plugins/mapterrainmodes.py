@@ -2372,6 +2372,16 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.25  2006/11/30 01:17:48  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+# Revision 1.24  2006/11/29 06:58:35  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
+# Revision 1.23.2.9  2006/11/26 12:54:04  cdunde
+# To reset toolbars default location for removal of unneeded 3D buttons.
+#
 # Revision 1.23.2.8  2006/11/09 23:17:44  cdunde
 # Changed Paint Brush dialog to work with new version view setup and names.
 #

@@ -23,8 +23,22 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.33.2.16  2006/12/03 20:28:21  danielpharos
+Revision 1.38  2007/01/05 19:47:11  danielpharos
+Build in proper Maplimit handling
+Fixed a debug comment
+
+Revision 1.37  2006/12/26 22:48:16  danielpharos
+A little fix to reduce the amount of grid-draw-problems with OpenGL
+
+Revision 1.36  2006/12/03 23:13:33  danielpharos
+Fixed the maximum texture dimension for OpenGL
+
+Revision 1.35  2006/12/03 20:36:09  danielpharos
 Put the perspective in the correct place for OpenGL. Should fix any fog issues.
+
+Revision 1.34  2006/11/30 00:42:33  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
 
 Revision 1.33.2.15  2006/11/28 16:18:55  danielpharos
 Pushed MapView into the renderers and made OpenGL do (bad) Solid Colors
@@ -147,7 +161,6 @@ uses Windows, Classes,
 {x $ ENDIF}
 
 const
- kDistFarToShort = MinW/65536; { 0.0009765625 }
 {kZeroLight = 0.23;}
  kScaleCos = 0.5;
 {kBrightnessSaturation = 256/0.5;}
@@ -198,6 +211,9 @@ type
    LightParams: TLightParams;
    FullBright: TLightParams;
    OpenGLLoaded: Boolean;
+   MapLimit: TVect;
+   MapLimitSmallest: Double;
+   DepthBufferBits: Byte;
  protected
    Bilinear: boolean;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
@@ -238,7 +254,7 @@ implementation
 uses SysUtils, Forms,
      Quarkx, Setup,
      Python, PyMapView,
-     Logging,
+     Logging, {Math,}
      QkObjects, QkMapPoly, QkPixelSet, QkForm;
 
  {------------------------}
@@ -867,14 +883,44 @@ begin
   Coord:=nCoord;
   TTextureManager.AddScene(Self);
 
+  try
+   Setup:=SetupSubSet(ssGames, g_SetupSet[ssGames].Specifics.Values['GameCfg']);
+   MapLimit:=Setup.VectSpec['MapLimit'];
+  except
+   Setup:=SetupSubSet(ssMap, 'Display');
+   MapLimit:=Setup.VectSpec['MapLimit'];
+  end;
+  if (MapLimit.X=OriginVectorZero.X) and (MapLimit.Y=OriginVectorZero.Y) and (MapLimit.Z=OriginVectorZero.Z) then
+   begin
+    MapLimit.X:=4096;
+    MapLimit.Y:=4096;
+    MapLimit.Z:=4096;
+   end;
+  if (MapLimit.X < MapLimit.Y) then
+   begin
+    if (MapLimit.X < MapLimit.Z) then
+     MapLimitSmallest:=MapLimit.X
+    else
+     MapLimitSmallest:=MapLimit.Z;
+   end
+  else
+   begin
+    if (MapLimit.Y < MapLimit.Z) then
+     MapLimitSmallest:=MapLimit.Y
+    else
+     MapLimitSmallest:=MapLimit.Z;
+   end;
+
   Setup:=SetupSubSet(ssGeneral, '3D View');
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
     FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
+    if (FarDistance>MapLimitSmallest) then
+      FarDistance:=MapLimitSmallest;
   end
   else
   begin
-    FarDistance:=1500;   {Daniel: This should be zero... = Disabled FarDistance}
+    FarDistance:=MapLimitSmallest;
   end;
   FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
   FogColor:=Setup.IntSpec['FogColor'];
@@ -901,6 +947,7 @@ begin
     DisplayLists:=0
   else
     DisplayLists:=-1;
+  DepthBufferBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
 
   GLDC:=GetDC(Wnd);
   if Wnd<>DestWnd then
@@ -918,7 +965,7 @@ begin
     pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
     if pfd.cColorBits<=0 then
       pfd.cColorBits:=GetDeviceCaps(GLDC, BITSPIXEL);
-    pfd.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
+    pfd.cDepthBits:=DepthBufferBits;
     pfd.iLayerType:=pfd_Main_Plane;
     pfi:=ChoosePixelFormat(GLDC, @pfd);
     CurrentPixelFormat:=GetPixelFormat(GLDC);
@@ -1270,11 +1317,11 @@ begin
      end;
     DX:=(SX/2)/(Scaling*Scaling);
     DY:=(SY/2)/(Scaling*Scaling);
-    {DZ:=8192/(Scaling*Scaling);}   {8192: Twice the maplimit}
+    {DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);}
     DZ:=100000;   {Daniel: Workaround for the zoom-in-disappear problem}
     TransX:=LocX/(Scaling*Scaling);
     TransY:=LocY/(Scaling*Scaling);
-    TransZ:=-4096;
+    TransZ:=-MapLimitSmallest;
     MatrixTransform[0,0]:=VX.X;
     MatrixTransform[0,1]:=-VY.X;
     MatrixTransform[0,2]:=-VZ.X;
@@ -1307,7 +1354,8 @@ begin
      begin
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity;
-      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
+      {gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / Power(2, DepthBufferBits), FarDistance);}
+      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     {Daniel: Assuming 16 bit depth buffer}
 
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity;
@@ -1328,8 +1376,8 @@ begin
   RenderTransparentGL(Source.FListSurfaces, False, Source.Coord);
   {$IFDEF DebugGLErr} DebugOpenGL(53, 'RenderTransparentGL(...True...)', []); {$ENDIF}
   RenderTransparentGL(Source.FListSurfaces, True, Source.Coord);
-  {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFlush', []); {$ENDIF}
-  glFlush;
+  {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFinish', []); {$ENDIF}
+  glFinish;
   {$IFDEF DebugGLErr} DebugOpenGL(55, '', []); {$ENDIF}
 end;
 

@@ -50,6 +50,16 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.7  2006/11/30 01:17:47  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+# Revision 1.6  2006/11/29 06:58:35  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
+# Revision 1.5.2.7  2006/11/04 21:38:06  cdunde
+# New "viewname" info added for Full 3D view to coincide with mdl4viewslayout info.
+#
 # Revision 1.5.2.6  2006/11/04 00:41:15  cdunde
 # To add a comment to the code about what effects
 # the model editors 3D view pivot method.

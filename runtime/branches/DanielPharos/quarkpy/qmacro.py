@@ -305,6 +305,16 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.23  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.22  2006/11/29 07:00:28  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
+#Revision 1.20.2.1  2006/11/23 20:04:49  danielpharos
+#Removed a macro that isn't used anymore
+#
 #Revision 1.20  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

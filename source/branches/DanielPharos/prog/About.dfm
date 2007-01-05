@@ -222,9 +222,9 @@ object AboutBox: TAboutBox
     object Label12: TLabel
       Left = 536
       Top = 288
-      Width = 144
+      Width = 111
       Height = 11
-      Caption = 'http://www.dark-forge.com/forums/'
+      Caption = 'http://www.dark-forge.com/'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9

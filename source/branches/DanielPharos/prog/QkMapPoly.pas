@@ -23,6 +23,14 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.84  2006/12/31 21:40:51  danielpharos
+Splitted the Ed3DFX file into two separate renderers: Software and Glide
+
+Revision 1.83  2005/10/15 23:44:21  cdunde
+Made one setting in QuArK's Config OpenGL section for all
+games that use transparency that can be viewed in QuArK.
+Also removed light entity dependency for  transparency to work.
+
 Revision 1.82  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -526,7 +534,7 @@ function GetMapFormatType : MapFormatTypes;
 implementation
 
 uses QkFileObjects, Undo, PyMapView, QkPixelSet, Dialogs,
-     Ed3DFX, Quarkx, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
+     EdSoftware, Quarkx, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
 
 const
  TmpFaceSpec = '!~tmp~!this is a bug';

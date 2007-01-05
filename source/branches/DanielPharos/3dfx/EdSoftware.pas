@@ -23,11 +23,21 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.31.2.20  2006/12/06 16:02:30  danielpharos
+Revision 1.1  2006/12/26 22:49:06  danielpharos
+Splitted the Ed3DFX file into two separate renderers: Software and Glide
+
+Revision 1.35  2006/12/06 18:46:02  danielpharos
 Fixed the software & glide lock-up!
 
-Revision 1.31.2.19  2006/12/03 20:27:59  danielpharos
+Revision 1.34  2006/12/06 16:57:44  cdunde
+Fixed the software & glide lock-up! By Daniel Pharcos.
+
+Revision 1.33  2006/12/03 20:35:57  danielpharos
 Made the Glide Fade a little bit less dense
+
+Revision 1.32  2006/11/30 00:42:32  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
 
 Revision 1.31.2.18  2006/11/28 16:44:30  danielpharos
 Fix for the software access violation (again)
@@ -133,9 +143,7 @@ Revision 1.15  2000/09/10 13:56:38  alexander
 added cvs headers
 }
 
-unit Ed3DFX;
-{ this unit controls both the 3Dfx-voodoo interface (glidex2.dll), as well
-  as the software-render interface (qrksoftg.dll). }
+unit EdSoftware;
 
 interface
 
@@ -172,7 +180,7 @@ type
               DoubleSize: Boolean;
              end;
 
- T3DFXSceneObject = class(TSceneObject)
+ TSoftwareSceneObject = class(TSceneObject)
  private
    FBuildNo: Integer;
    FVertexList: TMemoryStream;
@@ -271,7 +279,6 @@ begin
  Writeln(F, v3.x:10:5, v3.y:10:5, v3.oow:12:8, v3.tmuvtx[0].sow:12:8, v3.tmuvtx[0].tow:12:8);
 
  System.Close(F);
- if Assigned(grSstIdle) then grSstIdle;
 {Append(F);
  Writeln(F, '*');
  System.Close(F);}
@@ -433,14 +440,14 @@ end;
 
  {------------------------}
 
-constructor T3DFXSceneObject.Create(ViewMode: TMapViewMode);
+constructor TSoftwareSceneObject.Create(ViewMode: TMapViewMode);
 begin
  inherited;
  FVertexList:=TMemoryStream.Create;
  SolidColors:=(ViewMode=vmSolidcolor);
 end;
 
-procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
+procedure TSoftwareSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; DisplayMode: TDisplayMode; DisplayType: TDisplayType;
           const LibName: String; var AllowsGDI: Boolean);
 var
  HiColor: Boolean;
@@ -528,7 +535,7 @@ begin
  VOID_COLOR:=FogColor;
  FRAME_COLOR:=FrameColor;
 
- Setup:=SetupSubSet(ssGeneral, '3DFX');
+ Setup:=SetupSubSet(ssGeneral, 'Software 3D');
  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
  begin
    Fog:=Setup.Specifics.Values['Fog']<>'';
@@ -557,7 +564,7 @@ begin
  end;
 end;
 
-destructor T3DFXSceneObject.Destroy;
+destructor TSoftwareSceneObject.Destroy;
 var
  Old: TMemoryStream;
 begin
@@ -587,13 +594,13 @@ begin
  Old.Free;
 end;
 
-procedure T3DFXSceneObject.ClearScene;
+procedure TSoftwareSceneObject.ClearScene;
 begin
  FVertexList.Clear;
  inherited;
 end;
 
-procedure T3DFXSceneObject.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
+procedure TSoftwareSceneObject.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
 var
  L, R, Test: Integer;
  Base, Found: PVect3D;
@@ -677,12 +684,12 @@ begin
   end;
 end;*)
 
-function T3DFXSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
+function TSoftwareSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
 begin
 {PW:=TGlideState(qrkGlideState).PaletteWarning;}
  VertexSize:=SizeOf(TVertex3D);
  FBuildNo:=1;
- Result:=bm3DFX;
+ Result:=bmSoftware;
 end;
 
 function PtrListSortR(Item1, Item2: Pointer): Integer;
@@ -696,7 +703,7 @@ begin
    Result:=-1;
 end;
 
-procedure T3DFXSceneObject.PostBuild(nVertexList, nVertexList2: TList);
+procedure TSoftwareSceneObject.PostBuild(nVertexList, nVertexList2: TList);
 var
   Vect: TVect3D;
   I, J, K: Integer;
@@ -757,7 +764,7 @@ begin
   end;
 end;
 
-procedure T3DFXSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
+procedure TSoftwareSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
 var
  CorrW, CorrH: TDouble;
 begin
@@ -808,17 +815,17 @@ begin
   else ScaleT := h / Tex.TexH;
 end;
 
-procedure T3DFXSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
+procedure TSoftwareSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
   StandardScaling(Skin, ScaleS, ScaleT);
 end;
 
-procedure T3DFXSceneObject.stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
+procedure TSoftwareSceneObject.stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
   StandardScaling(Skin, ScaleS, ScaleT);
 end;
 
-procedure T3DFXSceneObject.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
+procedure TSoftwareSceneObject.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
   // SilverPaladin - 1/5/2003 - This is a change.  This routine was not
   // returning a scale but the unaltered w and h variables. So, when handled
@@ -932,7 +939,7 @@ begin
  ProjInfo.ooWFactor:=FarDistance*(1/MaxW);
 end;*)
 
-procedure T3DFXSceneObject.ClearFrame;
+procedure TSoftwareSceneObject.ClearFrame;
 const
  SX = ScreenSizeX;
  SY = ScreenSizeY;
@@ -967,7 +974,7 @@ begin
   grDepthMask(FXTRUE);
 end;
 
-procedure T3DFXSceneObject.RenderTransparent(Transparent: Boolean);
+procedure TSoftwareSceneObject.RenderTransparent(Transparent: Boolean);
 var
  PList: PSurfaces;
 begin
@@ -998,7 +1005,7 @@ begin
   end;
 end;
 
-procedure T3DFXSceneObject.Render3DView;
+procedure TSoftwareSceneObject.Render3DView;
 var
  OldMinDist, OldMaxDist: TDouble;
 begin
@@ -1234,7 +1241,7 @@ begin
   end;
 end;
 
-procedure T3DFXSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
+procedure TSoftwareSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
 type
  TBBox = (bbX, bbY, bbW);
 const
@@ -1891,7 +1898,7 @@ begin
  PList^.ok:=True;
 end;
 
-function T3DFXSceneObject.ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
+function TSoftwareSceneObject.ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
 begin
  Result:=False;
  L:=ViewRect.R.Left and not 3;
@@ -1913,7 +1920,7 @@ begin
   end;
 end;
 
-procedure T3DFXSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
+procedure TSoftwareSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
 var
  I, L, R, T, B, Count1: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -2046,7 +2053,7 @@ begin
   DeleteObject(DIBSection);
 end;
 
-procedure T3DFXSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
+procedure TSoftwareSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
 begin
  if Assigned(grBufferSwap) then
   grBufferSwap(0);
@@ -2054,7 +2061,7 @@ begin
   grSstIdle;
 end;
 
-procedure T3DFXSceneObject.SetViewRect(SX, SY: Integer);
+procedure TSoftwareSceneObject.SetViewRect(SX, SY: Integer);
 var
  XMargin, YMargin: Integer;
 begin
@@ -2105,14 +2112,14 @@ begin
  ViewRect.Bottom:= ViewRect.R.Bottom+ (VertexSnapper+0.5);
 end;
 
-function T3DFXSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
+function TSoftwareSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
 begin
  Result:=(qrkGlideVersion<HardwareGlideVersion)
      and (SoftBufferFormat<>nQuality);
  SoftBufferFormat:=nQuality;
 end;
 
-procedure T3DFXSceneObject.BuildTexture(Texture: PTexture3);
+procedure TSoftwareSceneObject.BuildTexture(Texture: PTexture3);
 var
  PSD, PSD2, PSD3: TPixelSetDescription;
  MemSize, MemSizeTotal, J, w, h: Integer;

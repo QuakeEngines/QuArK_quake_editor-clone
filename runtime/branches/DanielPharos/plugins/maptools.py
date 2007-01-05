@@ -10,6 +10,7 @@ Plug-in to show distance of selected polys in 2D views.
 
 #$Header$
 
+
 Info = {
    "plug-in":       "Map tools",
    "desc":          "Shows distance of selected polys in 2D views",
@@ -578,6 +579,13 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2006/11/30 01:17:48  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.12  2006/11/29 06:58:35  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.11.2.2  2006/11/09 23:00:02  cdunde
 #Updates to accept Python 2.4.4 by eliminating the
 #Depreciation warning messages in the console.

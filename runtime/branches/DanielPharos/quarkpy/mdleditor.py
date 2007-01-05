@@ -97,6 +97,9 @@ class ModelEditor(BaseEditor):
     def setupchanged(self, level):
         BaseEditor.setupchanged(self, level)
         mdlhandles.vertexdotcolor = MapColor("Vertices", SS_MODEL)
+        mdlhandles.drag3Dlines = MapColor("Drag3DLines", SS_MODEL)
+        mdlhandles.skinviewmesh = MapColor("SkinLines", SS_MODEL)
+        mdlhandles.skinviewdraglines = MapColor("SkinDragLines", SS_MODEL)
 
     def setupview(self, v, drawmap=None, flags=MV_AUTOFOCUS, copycol=1):
         BaseEditor.setupview(self, v, drawmap, flags, copycol)
@@ -158,10 +161,11 @@ class ModelEditor(BaseEditor):
 
 def commonhandles(self, redraw=1):
     if self.layout is None: return
+    from mdlhandles import mouseflags
     hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # handles common to all views
     for v in self.layout.views:
         v.handles = hlist + v.handles
-        if redraw:
+        if redraw and mouseflags != 1544 and mouseflags != 1032:
             cv = v.canvas()
             for h in hlist:
                 h.draw(v, cv, None)
@@ -170,6 +174,24 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.14  2006/12/18 05:38:14  cdunde
+#Added color setting options for various Model Editor mesh and drag lines.
+#
+#Revision 1.13  2006/12/13 04:46:15  cdunde
+#To draw the 2D and 3D view model vertex handle lines while dragging
+#but not the handles that substantially reduces redraw speed.
+#
+#Revision 1.12  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.11  2006/11/29 07:00:27  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
+#Revision 1.10.2.3  2006/11/08 09:24:20  cdunde
+#To setup and activate Model Editor XYZ Commands menu items
+#and make them interactive with the Lock Toolbar.
+#
 #Revision 1.10.2.2  2006/11/04 21:40:30  cdunde
 #To stop Python 2.4 Depreciation message in console.
 #

@@ -23,6 +23,16 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2006/12/26 22:48:16  danielpharos
+A little fix to reduce the amount of grid-draw-problems with OpenGL
+
+Revision 1.14  2006/12/03 23:13:33  danielpharos
+Fixed the maximum texture dimension for OpenGL
+
+Revision 1.13  2006/11/30 00:42:32  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
+
 Revision 1.12.2.9  2006/11/23 20:14:59  danielpharos
 Added counter to make sure the renderers only unload when they're not used anymore
 
@@ -692,7 +702,7 @@ var
   glColor4fv: procedure (var v); stdcall;
   glTexCoord2fv: procedure (var v); stdcall;
   glVertex3fv: procedure (var v ); stdcall;
-  glFlush: procedure; stdcall;
+  glFinish: procedure; stdcall;
  {v1.9 broke OpenGL with PChar at end, changed back to v1.8 items - cdunde 09-21-2005}
 //  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; pixels:PChar ); stdcall;
   glTexImage2D: procedure (target: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
@@ -763,7 +773,7 @@ const
    ,(FuncPtr: @@glColor4fv;            FuncName: 'glColor4fv'            )
    ,(FuncPtr: @@glTexCoord2fv;         FuncName: 'glTexCoord2fv'         )
    ,(FuncPtr: @@glVertex3fv;           FuncName: 'glVertex3fv'           )
-   ,(FuncPtr: @@glFlush;               FuncName: 'glFlush'               )
+   ,(FuncPtr: @@glFinish;              FuncName: 'glFinish'              )
    ,(FuncPtr: @@glTexImage2D;          FuncName: 'glTexImage2D'          )
    ,(FuncPtr: @@glDeleteTextures;      FuncName: 'glDeleteTextures'      )
    ,(FuncPtr: @@glAreTexturesResident; FuncName: 'glAreTexturesResident' )

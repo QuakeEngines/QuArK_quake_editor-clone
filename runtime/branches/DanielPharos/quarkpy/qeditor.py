@@ -1513,7 +1513,7 @@ def Help5():
     htmldoc("help/intro.mapeditor.overview.html") # Takes the user to the Overview page
 
 def Help6():
-    htmldoc("http://www.dark-forge.com/forums/") # Takes the user to QuArK's Forums web page
+    htmldoc("http://www.dark-forge.com/") # Takes the user to QuArK's Forums web page
 
 #
 # Retrieves all objects with a given type, excluding VF_CANTSELECT groups.
@@ -1543,6 +1543,19 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.33  2006/12/22 01:12:17  cdunde
+#Updated Forums link.
+#
+#Revision 1.32  2006/11/30 01:19:33  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.31  2006/11/29 07:00:25  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
+#Revision 1.30.2.11  2006/11/28 00:55:35  cdunde
+#Started a new Model Editor Infobase section and their direct function links from the Model Editor.
+#
 #Revision 1.30.2.10  2006/11/27 08:31:56  cdunde
 #To add the "Rotate at start position" method to the Model Editors rotation options menu.
 #

@@ -63,14 +63,16 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
             applytexture(editor, newitem.shortname)
             return 1
     delta = None
-    if center != "0":
+    if str(center) != "0 0 0":
         recenter = MapOption("Recenter")
-        if center != "+" or recenter:
+        if str(center) != "+" or recenter:
             bbox = quarkx.boundingboxof(newlist)
             if bbox is None: #DECKER
                 bbox = (quarkx.vect(-1,-1,-1),quarkx.vect(1,1,1)) #DECKER create a minimum bbox, in case a ;incl="defpoly" is added to an object in prepareobjecttodrop()
-            if not (bbox is None):
-                if type(center)==type(""):
+            if type(center)==type(""):
+                pass
+            else:
+                if recenter:
                     if recenter:
                         bbox1 = None
                     else:
@@ -452,7 +454,6 @@ def resettexscale(editor, flist, adjust):
                         except quarkx.error:
                             texobj = None
                     size = (128.0,128.0)
-                    #print size
                     if texobj is not None:
                         size = texobj ["size"]
 
@@ -705,6 +706,22 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.24  2006/12/22 03:28:16  cdunde
+#Forgot to remove an old line in the last fix.
+#
+#Revision 1.23  2006/12/21 20:58:13  cdunde
+#Fixed the Paste Here function that was not working properly or at all in the view..
+#
+#Revision 1.22  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.21  2006/11/29 07:00:27  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
+#Revision 1.20.2.1  2006/11/23 20:04:05  danielpharos
+#Very small clean-up of the header
+#
 #Revision 1.20  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

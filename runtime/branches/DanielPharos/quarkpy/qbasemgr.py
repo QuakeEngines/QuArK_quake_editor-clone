@@ -587,6 +587,33 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.26  2006/12/17 08:59:54  cdunde
+#Needed to reverse this change, caused an error when the floating 3D window is opened.
+#
+#Revision 1.25  2006/12/13 04:51:44  cdunde
+#The def update3Dviews has to be there or an error occurs when you try to open
+#the Floating 3D view window, but other than that, it does not seem to do anything
+#but maybe add one EXTRA build cycle of all the views (2D and 3D) handles
+#which seems to get done ANYWAY by some other function someplace. So another slow down.
+#The update3Dviews is also called in the mapmgr.py file and again has no effect.
+#The same goes for the cameramoved just below that calls it.
+#update3Dviews is called a number of places from within qbasemgr.py when the
+#Floating 3D window is opened and closed but still is not effective and should
+#be removed completely and from all other files that call it, mapmgr.py.
+#I believe its function was to cause a redraw of everything in all views primarily
+#when the Floating 3D view was closed to eliminate things being erased from those view.
+#But apparently other functions are doing that anyway so this is not needed any more.
+#
+#Revision 1.24  2006/12/03 21:21:51  danielpharos
+#Disable fade in the model editors floating 3D window
+#
+#Revision 1.23  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.22  2006/11/29 07:00:28  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.21.2.8  2006/11/04 00:52:59  cdunde
 #To navigate with the mouse just like it does
 #in the Map Editor and the Model Editor 3D views.

@@ -990,6 +990,16 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.80  2006/12/03 23:13:28  danielpharos
+#Fixed the maximum texture dimension for OpenGL
+#
+#Revision 1.79  2006/11/30 01:19:33  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.78  2006/11/29 07:00:25  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
 #Revision 1.76.2.8  2006/11/29 05:00:37  cdunde
 #For version change to 6.5 Beta.
 #

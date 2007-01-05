@@ -15,6 +15,38 @@ $Id$
 6.5.0 Beta 2
 =============
 
+ * [cdunde]: Added a detailed section to the Infobase Model Editor about the model structure.
+
+ * [cdunde]: Updated Half-Life 2 textures-hl2.qrk and textures-hl2-cs.qrk files for new Beta
+          - vtf method improving proper display and added material textures previously left out.
+
+ * [cdunde]: Changed Half-Life2 files to work with QuArK Beta using vtf files instead of vmt files
+          - and updated the Infobase Config. Specific Games section on their installation and use.
+
+ * [cdunde]: Fixed the Paste Here function that was not working properly or at all in the views.
+
+ * [cdunde]: Added color setting options for various Model Editor mesh and drag lines.
+
+ * [cdunde]: Setup Skin-view proper handle dragging for various model skin(s)
+         - and no skins combinations.
+
+ * [cdunde]: Improved quality of 3D Texture mode while dragging at increased drawing speed.
+
+ * [cdunde]: Added a new developers "tool" function "WhatIsThisObject" with various options
+         - to print everything about a QuArK Internal Object to the console and a hard copy
+         - in the QuArK main directory folder called DEVELOPERS.txt to avoid constant
+         - calling of each individual item to get information about what the object consist of.
+
+ * [cdunde]: To remove un-needed redundancy of code that slows down drawing speed.
+
+ * [cdunde]: To draw the 2D and 3D view model vertex handle lines while dragging
+         - but not the handles that substantially reduces redraw speed.
+
+ * [cdunde]: Changed Specifics so multiple selections of the same entity can be set together.
+
+ * [cdunde]: Made additional fix to stop filling multiple dropdown list with erroneous data,
+         - for example like a misc_model for func_bobbing entity.
+
  * [Daniel Pharos]: Fixed the software & glide lock-up!
 
  * [cdunde]: Fixed Model Editor's Skin-view to draw model mesh correctly and fairly fast.

@@ -1088,6 +1088,16 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.39  2006/11/30 01:17:48  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+# Revision 1.38  2006/11/29 06:58:35  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
+# Revision 1.37.2.1  2006/11/03 23:46:16  cdunde
+# To fixe extruder 2D view to Unrestricted other items when view is closed.
+#
 # Revision 1.37  2006/05/28 08:09:23  cdunde
 # Fixed editor not defined error.
 #

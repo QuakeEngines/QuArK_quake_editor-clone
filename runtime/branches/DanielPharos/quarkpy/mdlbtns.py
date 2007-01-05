@@ -338,6 +338,16 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.9  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.8  2006/11/29 07:00:27  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
+#Revision 1.7.2.2  2006/11/22 23:31:53  cdunde
+#To setup Face-view click function to open Texture Browser for possible future use.
+#
 #Revision 1.7.2.1  2006/11/04 00:49:34  cdunde
 #To add .tga model skin texture file format so they can be used in the
 #model editor for new games and to start the displaying of those skins

@@ -358,6 +358,17 @@ LayoutsList.append(FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.8  2006/11/30 01:17:48  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+# Revision 1.7  2006/11/29 06:58:35  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
+# Revision 1.6.2.5  2006/11/01 22:22:42  danielpharos
+# BackUp 1 November 2006
+# Mainly reduce OpenGL memory leak
+#
 # Revision 1.6  2005/10/17 21:27:35  cdunde
 # To add new key word "viewname" to all 3D views for easier
 # detection and control of those views and Infobase documentation.

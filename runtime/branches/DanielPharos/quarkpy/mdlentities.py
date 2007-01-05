@@ -252,6 +252,16 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.12  2006/11/30 01:19:33  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.11  2006/11/29 07:00:25  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
+#Revision 1.10.2.3  2006/11/15 23:06:14  cdunde
+#Updated bone handle size and to allow for future variable of them.
+#
 #Revision 1.10.2.2  2006/11/15 22:34:20  cdunde
 #Added the drawing of misc model items and bones to stop errors and display them.
 #

@@ -1,6 +1,6 @@
 object GameCfgDlg: TGameCfgDlg
-  Left = 935
-  Top = 615
+  Left = 330
+  Top = 210
   BorderStyle = bsDialog
   Caption = 'Game Configuration'
   ClientHeight = 315

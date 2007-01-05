@@ -2921,6 +2921,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.28  2006/10/27 06:14:00  cdunde
+#Fixed extruder 2D view to Unrestricted other items when view is closed.
+#
 #Revision 1.27  2006/06/02 18:48:02  cdunde
 #To fix a couple of erroneous console errors.
 #

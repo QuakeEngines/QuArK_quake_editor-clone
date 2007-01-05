@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/01/02 21:00:03  danielpharos
+To put back the original memory manager. The leaks are killing QuArK!
+
+Revision 1.9  2006/12/31 21:58:16  danielpharos
+Upgraded to FastMM 4.74.This replaces the old MemTester file. FastMM should be faster, cleaner and better for debugging.
+
+Revision 1.8  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.6  2003/08/13 04:18:56  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 

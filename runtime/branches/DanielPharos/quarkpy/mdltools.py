@@ -61,6 +61,16 @@ toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 #
 #
 #$Log$
+#Revision 1.9  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+#Revision 1.8  2006/11/29 07:00:28  cdunde
+#To merge all runtime files that had changes from DanielPharos branch
+#to HEAD for QuArK 6.5.0 Beta 1.
+#
+#Revision 1.7.2.2  2006/11/04 21:41:44  cdunde
+#To add help and Infobase links to buttons.
+#
 #Revision 1.7.2.1  2006/11/01 22:22:42  danielpharos
 #BackUp 1 November 2006
 #Mainly reduce OpenGL memory leak

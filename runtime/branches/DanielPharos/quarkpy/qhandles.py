@@ -920,10 +920,24 @@ class RedImageDragObject(DragObject):
         if flags&MB_DRAGGING:
             self.autoscroll(x,y)
         old, ri = self.buildredimages(x, y, flags)
-        self.drawredimages(self.view, 1)
-        self.redimages = ri
-        if flags&MB_DRAGGING:
-            self.drawredimages(self.view, 2)
+        if self.view.info["type"] != "3D":
+            self.drawredimages(self.view, 1)
+            self.redimages = ri
+            if flags&MB_DRAGGING:
+                self.drawredimages(self.view, 2)
+        else:
+            if flags&MB_DRAGGING:
+                if self.view.viewmode == "tex":
+                    self.redimages = ri
+                    self.drawredimages(self.view, 2)
+                    self.view.repaint()
+                else:
+                    self.redimages = ri
+                    self.drawredimages(self.view, 1)
+                    self.drawredimages(self.view, 2)
+            else:
+                self.redimages = ri
+                self.drawredimages(self.view, 1)
         return old
 
     def drawredimages(self, view, internal=0):
@@ -1037,9 +1051,6 @@ class RedImageDragObject(DragObject):
         self.autoscroll_stop()
         old = self.dragto(x, y, flags)
         if (self.redimages is None) or (len(old)!=len(self.redimages)):
-# Took these out, seemed to make things worse, used finishdrawing instead
-       #     self.view.invalidate()   # not nessisary
-            editor.invalidateviews()  # does all views
             qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
             return
 
@@ -1055,8 +1066,7 @@ class RedImageDragObject(DragObject):
                         type = self.view.info["type"]
                         if type == "3D":
                             self.view.invalidate()
-               #     self.view.invalidate()   # not nessisary
-                        editor.invalidateviews()  # does all views
+                        editor.invalidateviews()
                         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                         break
 
@@ -1066,11 +1076,6 @@ class RedImageDragObject(DragObject):
                 for i in range(0,len(old)):
                     undo.exchange(old[i], self.redimages[i])
                 self.handle.ok(editor, undo, old, self.redimages)
-                type = self.view.info["type"]
-                if type == "3D":
-                    self.view.invalidate()
-            #    self.view.invalidate()   # not nessisary
-                editor.invalidateviews()  # does all views
                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 return
 
@@ -1080,11 +1085,6 @@ class RedImageDragObject(DragObject):
             for i in range(0,len(old)):
                 undo.exchange(old[i], self.redimages[i])
             self.handle.ok(editor, undo, old, self.redimages)
-            type = self.view.info["type"]
-            if type == "3D":
-                self.view.invalidate()
-        #    self.view.invalidate()   # not nessisary
-            editor.invalidateviews()  # does all views
             qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
             return
 
@@ -1848,7 +1848,15 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
-#Revision 1.27.2.9  2006/11/29 22:22:41  cdunde
+#Revision 1.33  2006/12/15 09:03:35  cdunde
+#Additional code removal for redundancy of view redraws adding to slowdown.
+#
+#Revision 1.32  2006/12/15 07:39:51  cdunde
+#Improved quality of 3D Texture mode while dragging at increased drawing speed.
+#
+#Revision 1.31  2006/12/03 18:28:06  cdunde
+#Stopped the Model Editor from drawing incorrect image in Skin-view.
+#
 #Revision 1.30  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

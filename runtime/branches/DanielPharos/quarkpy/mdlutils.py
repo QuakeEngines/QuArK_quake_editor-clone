@@ -157,7 +157,17 @@ def checkTriangle(tri, index):
 
 
 #
-# Find triangles containing a selected vertex  [index]
+# Find other triangles containing a vertex at the same location
+# as the one selected creating a VertexHandle instance.
+# For example call this function like this (for clarity):
+#    component = editor.layout.explorer.uniquesel
+#    handlevertex = self.index
+#    if component.name.endswith(":mc"):
+#        tris = findTriangles(component, handlevertex)
+# or like this (to be brief):
+#    comp = editor.layout.explorer.uniquesel
+#    if comp.name.endswith(":mc"):
+#        tris = findTriangles(comp, self.index)
 #
 def findTriangles(comp, index):
   tris = comp.triangles
@@ -268,6 +278,12 @@ class MdlUserDataPanel(UserDataPanel):
 #
 #
 #$Log$
+#Revision 1.11  2006/12/06 04:05:59  cdunde
+#For explanation comment on how to use def findTriangles function.
+#
+#Revision 1.10  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.7  2001/03/15 21:07:49  aiv
 #fixed bugs found by fpbrowser
 #

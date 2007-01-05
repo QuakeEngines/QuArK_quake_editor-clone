@@ -1,7 +1,3 @@
-# Two lines below to stop encoding errors in the console.
-#!/usr/bin/python
-# -*- coding: ascii -*-
-
 """   QuArK  -  Quake Army Knife
 
 Additionnal mouse dragging modes (entity selecter, brush cutter, cube maker)
@@ -430,6 +426,16 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2006/11/30 01:17:48  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
+# Revision 1.18  2006/11/29 06:58:36  cdunde
+# To merge all runtime files that had changes from DanielPharos branch
+# to HEAD for QuArK 6.5.0 Beta 1.
+#
+# Revision 1.17.2.2  2006/11/26 12:54:04  cdunde
+# To reset toolbars default location for removal of unneeded 3D buttons.
+#
 # Revision 1.17.2.1  2006/11/03 23:38:10  cdunde
 # Updates to accept Python 2.4.4 by eliminating the
 # Depreciation warning messages in the console.
