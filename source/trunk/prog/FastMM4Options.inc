@@ -62,7 +62,7 @@ Set the default options for FastMM here.
 
 {Enable this option to suppress the display of all message dialogs. This is
  useful in service applications that should not be interrupted.}
-{$define NoMessageBoxes}
+{.$define NoMessageBoxes}
 
 {Set this option to use the Windows API OutputDebugString procedure to output
  debug strings on startup/shutdown and when errors occur.}
@@ -97,7 +97,7 @@ Set the default options for FastMM here.
  Very important: If you enable this option your application will require the
  FastMM_FullDebugMode.dll library. If this library is not available you will
  get an error on startup.}
-{.$define FullDebugMode}
+{$define FullDebugMode}
 
   {Set this option to perform "raw" stack traces, i.e. check all entries on the
    stack for valid return addresses. Note that this is significantly slower
@@ -182,7 +182,7 @@ Set the default options for FastMM here.
    whether the CPU supports it. If this option is disabled then the CPU will be
    checked for compatibility first, and if MMX is not supported it will fall
    back to the FPU move code. Has no effect unless EnableMMX is also set.}
-  {$define ForceMMX}
+  {.$define ForceMMX}
 
 {-----------------------Memory Manager Sharing Options------------------------}
 
