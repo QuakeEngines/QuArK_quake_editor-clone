@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2006/12/26 22:49:05  danielpharos
+Splitted the Ed3DFX file into two separate renderers: Software and Glide
+
 Revision 1.17  2006/12/03 23:13:33  danielpharos
 Fixed the maximum texture dimension for OpenGL
 
@@ -1687,8 +1690,14 @@ begin
     end
    else
     begin
-     Size:=Q.GetSize;
-     Q.AddRef(+1);
+     try
+      Size:=Q.GetSize;
+      Q.AddRef(+1);
+     except
+      Size.X:=cDummyTextureWHSize;
+      Size.Y:=cDummyTextureWHSize;
+      Q:=nil;
+     end;
     end;
 
    { the maximum width/height dimension, to reduce memory-consumption if possible }
