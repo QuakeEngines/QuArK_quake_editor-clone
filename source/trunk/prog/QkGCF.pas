@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.9  2005/07/31 12:14:45  alexander
 add logging, set the protocol to gcffile
 
@@ -123,8 +126,9 @@ var
 
 procedure Fatal(x:string);
 begin
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);
+  Raise InternalE(x);
+  {Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
+  ExitProcess(0);}
 end;
 
 function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
@@ -139,7 +143,9 @@ begin
   if Hgcfwrap = 0 then
   begin
     Hgcfwrap := LoadLibrary('dlls/QuArKGCF.dll');
-    if Hgcfwrap >= 32 then { success }
+    if Hgcfwrap = 0 then
+      Fatal('Unable to load dlls/QuArKGCF.dll')
+    else
     begin
       APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
       if APIVersion<>RequiredGCFAPI then
@@ -154,9 +160,7 @@ begin
       GCFNumSubElements   := InitDllPointer(Hgcfwrap, 'GCFNumSubElements');
       GCFGetSubElement    := InitDllPointer(Hgcfwrap, 'GCFGetSubElement');
       GCFSubElementName   := InitDllPointer(Hgcfwrap, 'GCFSubElementName');
-    end
-    else
-      Fatal('dlls/QuArKGCF.dll not found');
+    end;
   end;
 end;
 

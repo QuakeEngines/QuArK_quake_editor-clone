@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.12  2005/07/05 19:12:48  alexander
 logging to file using loglevels
 
@@ -141,8 +144,9 @@ var
 procedure Fatal(x:string);
 begin
   LogEx(LOG_CRITICAL,'load vtf %s',[x]);
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);
+  Raise InternalE(x);
+  {Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
+  ExitProcess(0);}
 end;
 
 function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
@@ -160,16 +164,17 @@ begin
   if HQuArKVTF = 0 then
   begin
     Htier0 := LoadLibrary('tier0.dll');
-    if Htier0 < 32 then
-      Fatal('tier0.dll not found');
+    if Htier0 = 0 then
+      Fatal('Unable to load tier0.dll');
 
     Hvstdlib := LoadLibrary('vstdlib.dll');
-    if Hvstdlib < 32 then
-      Fatal('vstdlib.dll not found');
-
+    if Hvstdlib = 0 then
+      Fatal('Unable to load vstdlib.dll');
 
     HQuArKVTF := LoadLibrary('dlls/QuArKVTF.dll');
-    if HQuArKVTF >= 32 then { success }
+    if HQuArKVTF = 0 then
+      Fatal('Unable to load dlls/QuArKVTF.dll')
+    else
     begin
       APIVersion      := InitDllPointer(HQuArKVTF, 'APIVersion');
       if APIVersion<>RequiredVTFAPI then
@@ -178,9 +183,7 @@ begin
       vtf_info   := InitDllPointer(HQuArKVTF, 'vtf_info');
       filesize_of_vtf:=InitDllPointer(HQuArKVTF, 'filesize_of_vtf');
       mem_to_vtf:=InitDllPointer(HQuArKVTF, 'mem_to_vtf');
-    end
-    else
-      Fatal('dlls/QuArKVTF.dll not found');
+    end;
   end;
 end;
 

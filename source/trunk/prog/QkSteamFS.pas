@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2005/07/31 12:12:28  alexander
 add logging, remove some dead code
 
@@ -136,8 +139,9 @@ var
 procedure Fatal(x:string);
 begin
   LogEx(LOG_CRITICAL,'init steam %s',[x]);
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);
+  Raise InternalE(x);
+  {Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
+  ExitProcess(0);}
 end;
 
 
@@ -156,17 +160,17 @@ begin
   if Hsteamfswrap = 0 then
   begin
     Htier0 := LoadLibrary('tier0.dll');
-    if Htier0 < 32 then
-      Fatal('tier0.dll not found');
+    if Htier0 = 0 then
+      Fatal('Unable to load tier0.dll');
 
     Hvstdlib := LoadLibrary('vstdlib.dll');
-    if Hvstdlib < 32 then
-      Fatal('vstdlib.dll not found');
-
-
+    if Hvstdlib = 0 then
+      Fatal('Unable to load vstdlib.dll');
 
     Hsteamfswrap := LoadLibrary('dlls/QuArKSteamFS.dll');
-    if Hsteamfswrap >= 32 then { success }
+    if Hsteamfswrap = 0 then
+      Fatal('Unable to load dlls/QuArKSteamFS.dll')
+    else
     begin
       APIVersion      := InitDllPointer(Hsteamfswrap, 'APIVersion');
       if APIVersion <> RequiredSTEAMFSAPI then
@@ -183,8 +187,6 @@ begin
       SteamFSFindName        := InitDllPointer(Hsteamfswrap, 'SteamFSFindName');
       SteamFSFindIsDir       := InitDllPointer(Hsteamfswrap, 'SteamFSFindIsDir');
     end
-    else
-      Fatal('dlls/QuArKSteamFS.dll not found');
   end;
 end;
 
