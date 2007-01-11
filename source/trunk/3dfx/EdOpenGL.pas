@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2007/01/05 19:47:11  danielpharos
+Build in proper Maplimit handling
+Fixed a debug comment
+
 Revision 1.37  2006/12/26 22:48:16  danielpharos
 A little fix to reduce the amount of grid-draw-problems with OpenGL
 
@@ -1007,9 +1011,17 @@ begin
   UnpackColor(FogColor, nFogColor);
   glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
  {glClearDepth(1);}
-  glEnable(GL_DEPTH_TEST);
- {glDepthFunc(GL_LEQUAL);}
- {glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);}
+  if (DisplayMode=dmPanel) then
+  begin
+    glDisable(GL_DEPTH_TEST);
+  end
+  else
+  begin
+    glEnable(GL_DEPTH_TEST);
+   {glDepthFunc(GL_LEQUAL);}
+  end;
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
   glEdgeFlag(0);
   {$IFDEF DebugGLErr} DebugOpenGL(1, '', []); {$ENDIF}
 
