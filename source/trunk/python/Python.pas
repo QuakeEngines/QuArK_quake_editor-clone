@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2006/04/06 19:44:56  nerdiii
+Cleaned some compiler hints
+
 Revision 1.19  2005/09/28 10:49:03  peter-b
 Revert removal of Log and Header keywords
 
@@ -517,37 +520,6 @@ const
 
  {-------------------}
 
-(* hoping to retire this one, see IFDEFs in InitializePython
-  below  *)
-function try_alternative_python_version: string;
-(* var      // SilverPaladin - Commented this out too in order to remove hints
-  R: TRegistry;
-  v: string;
-  installed: boolean;
-*)
-begin
-  result:='';
-  (*
-  R:=TRegistry.Create;
-  try
-    R.RootKey:=HKEY_LOCAL_MACHINE;
-    installed:=R.KeyExists('\Software\Python\PythonCore\CurrentVersion');
-    if installed then begin
-      R.OpenKey('\Software\Python\PythonCore\CurrentVersion', false);
-      v:=R.ReadString('');
-      R.OpenKey('\Software\Python\PythonCore\'+v+'\Dll', false);
-      Result:=R.ReadString('');
-    end;
-  finally
-    R.free;
-  end;
-  *)
-  // ugh, there really doesn't seem to be a sensible way to
-  // clean this up
-  if FileExists('c:\WINNT\system32\python22.dll') then
-    Result := 'c:\WINNT\system32\python22.dll';
-end;
-
 function InitializePython : Integer;
 type
   PPointer = ^Pointer;
@@ -556,42 +528,10 @@ var
   I: Integer;
   Lib: THandle;
   P: Pointer;
-  dll: string;  // SilverPaladin - Commented out to clear hint
-                // Peter - Put back in for re-use
   s: string;
 begin
   Result:=3;
-{$IFDEF PYTHON_BUNDLED}
-// Python's bundled with QuArK, so look for python.dll in the Dlls directory
-  dll:=GetApplicationDllPath()+'python.dll';
-  Lib:=LoadLibrary(PChar(dll));
-{$ELSE}
-  Lib:=0;
-// Python isn't bundled with QuArK, so look on system
-// dll:=try_alternative_python_version;
-{$IFDEF PYTHON23}
-    dll:='python23.dll';
-    Lib:=LoadLibrary(PChar(dll));
-{$ELSE}
-{$IFDEF PYTHON22}
-    if Lib=0 then
-      dll:='python22.dll';
-      Lib:=LoadLibrary(PChar(dll));
-{$ELSE}
-{$IFDEF PYTHON21}
-    if Lib=0 then
-      dll:='python21.dll';
-      Lib:=LoadLibrary(PChar(dll));
-{$ELSE}
-{$IFDEF PYTHON20}
-    if Lib=0 then
-      dll:='python20.dll';
-      Lib:=LoadLibrary(PChar(dll));
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
+  Lib:=LoadLibrary('dlls/python.dll');
   if Lib=0 then
     Exit;
   Result:=2;
@@ -605,7 +545,7 @@ begin
   Py_Initialize;
   s:=Py_GetVersion;
   aLog(LOG_PYTHONSOURCE,'Version: '+s);
-  aLog(LOG_PYTHONSOURCE,'DLL: '+dll);
+  aLog(LOG_PYTHONSOURCE,'DLL: '+'dlls/python.dll');  {Daniel: We should (somehow) retrieve the actual filename of the DLL loaded...}
   aLog(LOG_PYTHONSOURCE,'');
   Result:=1;
 
