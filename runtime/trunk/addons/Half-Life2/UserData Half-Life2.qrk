@@ -90,7 +90,7 @@ QQRKSRC1
          _light = "255 201 128 210"
          _ambient = "103 143 184 50"
       }
-		}
+    }
     infodecal: =
     {
       infodecal:e =
@@ -133,7 +133,6 @@ QQRKSRC1
       ambient_generic:e =
       {
         origin = "0 0 0"
-         "e sound."
         health = "10"
         preset = "0"
         volstart = "0"
@@ -160,7 +159,7 @@ QQRKSRC1
         radius = "128"
         soundscape = "Nothing"
       }
-		}
+    }
   }
   Menu.qrk =
   {
