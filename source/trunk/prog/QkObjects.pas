@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80  2006/11/30 00:44:32  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
+
 Revision 1.79.2.1  2006/11/29 05:00:28  cdunde
 For version change to 6.5 Beta.
 
@@ -725,69 +729,69 @@ begin
     Ok:=False;
     J:=CommonSpecifics.Count;
     Source:=PStringArray(CommonSpecifics.List);
-    asm
-      push esi
-      push edi
-      mov edx, [J]
-      mov esi, [Source]
-      cld
-      mov [Source1], esi
+    asm                     { Comments added by DanielPharos, but I'm not sure they are correct!! }
+      push esi              { save the value of esi in the stack for later retrival }
+      push edi              { save the value of edi in the stack for later retrival }
+      mov edx, [J]          { move the value of J to edx }
+      mov esi, [Source]     { move the value of Source to esi }
+      cld                   { clear the direction flag to ensure that string operations go forward in memory }
+      mov [Source1], esi    { move the value of esi to Source1 }
 
-      @Loop:
-       shr edx, 1
-       mov edi, [S]
-       mov esi, [esi+4*edx]
-       rcl edx, 1
+      @Loop:                { create a label for jumping to, called Loop }
+       shr edx, 1           { shift the value of edx to the right by 1 place (divide by 2) }
+       mov edi, [S]         { move the value of S to edi }
+       mov esi, [esi+4*edx] { move the value of esi+4*edx to esi }
+       rcl edx, 1           { rotate edx left by 1 place }
 
-       mov ecx, [edi-4]
-       mov eax, [esi-4]
-       cmp ecx, eax
-       ja @Longer
-       je @SameLength
+       mov ecx, [edi-4]     { move the value of edi-4 to ecx }
+       mov eax, [esi-4]     { move the value of esi-4 to eax }
+       cmp ecx, eax         { compare the values of ecx and eax }
+       ja @Longer           { if Above, jump to the label called Longer }
+       je @SameLength       { if Equal, jump to the label called SameLength }
 
-      @Shorter:
-       repe cmpsb
-       jl @GoBefore
-      @GoAfter:
-       mov esi, [Source1]
-       mov eax, edx
-       shr eax, 1
-       inc eax
-       sub edx, eax
-       jz @EndOfLoop
-       shl eax, 2
-       add esi, eax
-       mov [Source1], esi
-       jmp @Loop
+      @Shorter:             { create a label for jumping to, called Shorter }
+       repe cmpsb           { repeatly compare string bits }
+       jl @GoBefore         { if Less, jump to Go Before }
+      @GoAfter:             { create a label for jumping to, called GoAfter }
+       mov esi, [Source1]   { move the value of Source1 to esi }
+       mov eax, edx         { move the value of edx to eax }
+       shr eax, 1           { shift the value of eax to the right by 1 place (divide by 2) }
+       inc eax              { increase eax (by 1) }
+       sub edx, eax         { substract the value of eax from edx }
+       jz @EndOfLoop        { if Zero, jump to the lavel called EndOfLoop }
+       shl eax, 2           { shift the value of eax to the left by 2 places {multiply by 4) }
+       add esi, eax         { add the value of eax to esi }
+       mov [Source1], esi   { move the value of esi to Source1 }
+       jmp @Loop            { jump to the label called Loop }
 
-      @SameLength:
-       repe cmpsb
-       jl @GoBefore
-       jg @GoAfter
-       shr edx, 1
-       mov [Ok], 1
-       dec edx
-       jmp @EndOfLoop
+      @SameLength:          { create a label for jumping to, called SameLength }
+       repe cmpsb           { repeatly compare string bits }
+       jl @GoBefore         { if Less, jump to the label called GoBefore }
+       jg @GoAfter          { if Greater, jump to the label called GoAfter }
+       shr edx, 1           { shift the value of edx to the right by 1 place (divide by 2) }
+       mov [Ok], 1          { move 1 to Ok }
+       dec edx              { decrease the value of edx (by 1) }
+       jmp @EndOfLoop       { jump to the label called EndOfLoop }
 
-      @Longer:
-       mov ecx, eax
-       repe cmpsb
-       jg @GoAfter
-      @GoBefore:
-       mov esi, [Source1]
-       shr edx, 1
-       jnz @Loop
-       dec edx
+      @Longer:              { create a label for jumping to, called Longer }
+       mov ecx, eax         { move the value of eax to ecx }
+       repe cmpsb           { repeatly compare string bits }
+       jg @GoAfter          { if Greater, jump to the label called GoAfter }
+      @GoBefore:            { create a label for jumping to, called GoBefore }
+       mov esi, [Source1]   { move the value of Source1 to esi }
+       shr edx, 1           { shift the value of edx to the right by 1 place (divide by 2) }
+       jnz @Loop            { if Not Zero, jump to the label called Loop }
+       dec edx              { decrease the value of edx (by 1) }
 
-     @EndOfLoop:
-      mov esi, [Source1]
-      inc edx
-      sub esi, [Source]
-      shr esi, 2
-      add edx, esi
-      mov [J], edx
-      pop edi
-      pop esi
+     @EndOfLoop:            { create a label for jumping to, called EndOfLoop }
+      mov esi, [Source1]    { move the value of Source1 to esi }
+      inc edx               { increase the value of edx (by 1) }
+      sub esi, [Source]     { substract the value of Source from esi }
+      shr esi, 2            { shift the value of esi to the right by 2 places (divide by 4) }
+      add edx, esi          { add the value of esi to edx }
+      mov [J], edx          { move the value of edx to J }
+      pop edi               { retrieve a value from the stack, and put it in edi }
+      pop esi               { retrieve a value from the stack, and put it in esi }
     end;
 
     if Ok then
