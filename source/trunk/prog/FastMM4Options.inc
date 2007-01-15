@@ -129,6 +129,12 @@ Set the default options for FastMM here.
    also set.}
   {$define ClearLogFileOnStartup}
 
+  {Loads the FASTMM_FullDebugMode.dll dynamically. If the DLL cannot be found
+   then stack traces will not be available. Note that this may cause problems
+   due to a changed DLL unload order when sharing the memory manager. Use with
+   care.}
+  {.$define LoadDebugDLLDynamically}
+
 {---------------------------Memory Leak Reporting-----------------------------}
 
 {Set this option to enable reporting of memory leaks. Combine it with the two
@@ -212,19 +218,19 @@ Set the default options for FastMM here.
    application. This option has no effect unless ShareMM is also set.}
   {.$define ShareMMIfLibrary}
 
+  {Define this option to allow sharing between the default memory manager and
+   FastMM. This option only works together with the memory manager of BDS2006.
+   With this option enabled FastMM can be shared with applications using the
+   Delphi 2006 MM and vice versa. (You may have to add SimpleShareMem.pas to the
+   project using the Delphi 2006 memory manager to enable sharing.)}
+  {$define EnableSharingWithDefaultMM}
+
 {Define this to attempt to share the MM of the main application or other loaded
  DLLs in the same process that were compiled with ShareMM set. When sharing a
  memory manager, memory leaks caused by the sharer will not be freed
  automatically. Take into account that statically linked DLLs are initialized
  before the main application, so set the sharing options accordingly.}
 {.$define AttemptToUseSharedMM}
-
-{Define this option to allow sharing between the default memory manager and
- FastMM. This option only works together with the memory manager of BDS2006.
- With this option enabled FastMM can be shared with applications using the
- Delphi 2006 MM and vice versa. (You may have to add SimpleShareMem.pas to the
- project using the Delphi 2006 memory manager to enable sharing.)}
-{$define EnableSharingWithDefaultMM}
 
 {--------------------------------Option Grouping------------------------------}
 

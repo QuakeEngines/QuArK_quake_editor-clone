@@ -35,6 +35,9 @@ Change log:
  Version 1.42 (23 June 2006):
   - Fixed a bug in the RawStackTraces code that may have caused an A/V in some
     rare circumstances. (Thanks to Primoz Gabrijelcic.)
+ Version 1.44 (16 November 2006):
+  - Changed the RawStackTraces code to prevent it from modifying the Windows
+    "GetLastError" error code. (Thanks to Primoz Gabrijelcic.)
 
 }
 
@@ -207,12 +210,14 @@ end;
 procedure GetRawStackTrace(AReturnAddresses: PCardinal; AMaxDepth, ASkipFrames: Cardinal);
 var
   LStackTop, LStackBottom, LCurrentFrame, LNextFrame, LReturnAddress,
-    LStackAddress: Cardinal;
+    LStackAddress, LLastOSError: Cardinal;
 begin
   {Are exceptions being handled? Can only do a raw stack trace if the possible
    access violations are going to be handled.}
   if Assigned(ExceptObjProc) then
   begin
+    {Save the last Windows error code}
+    LLastOSError := GetLastError;
     {Get the call stack top and current bottom}
     asm
       mov eax, FS:[4]
@@ -307,6 +312,9 @@ begin
       Inc(AReturnAddresses);
       Dec(AMaxDepth);
     end;
+    {Restore the last Windows error code, since a VirtualQuery call may have
+     modified it.}
+    SetLastError(LLastOSError);
   end
   else
   begin

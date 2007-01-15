@@ -5,12 +5,12 @@
 			<Option Name="Personality">Delphi.Personality</Option>
 			<Option Name="ProjectType">VCLApplication</Option>
 			<Option Name="Version">1.0</Option>
-			<Option Name="GUID">{B2046F52-E024-4415-9FC4-47822F5D8392}</Option>
+			<Option Name="GUID">{990612BA-64B5-4560-BC82-798C7CDF11D3}</Option>
 		</Option>
 	</PersonalityInfo>
 	<Delphi.Personality>
 		<Source>
-			<Source Name="MainSource">BorlndMM.dpr</Source>
+			<Source Name="MainSource">FastMM_FullDebugMode.dpr</Source>
 		</Source>
 		<FileVersion>
 			<FileVersion Name="Version">7.0</FileVersion>
@@ -50,7 +50,7 @@
 			<Compiler Name="DefaultNamespace"></Compiler>
 			<Compiler Name="SymbolDeprecated">True</Compiler>
 			<Compiler Name="SymbolLibrary">True</Compiler>
-			<Compiler Name="SymbolPlatform">False</Compiler>
+			<Compiler Name="SymbolPlatform">True</Compiler>
 			<Compiler Name="SymbolExperimental">True</Compiler>
 			<Compiler Name="UnitLibrary">True</Compiler>
 			<Compiler Name="UnitPlatform">True</Compiler>
@@ -104,6 +104,14 @@
 			<Compiler Name="LocalPInvoke">True</Compiler>
 			<Compiler Name="MessageDirective">True</Compiler>
 			<Compiler Name="CodePage"></Compiler>
+			<Compiler Name="XMLWhitespaceNotAllowed">True</Compiler>
+			<Compiler Name="XMLUnknownEntity">True</Compiler>
+			<Compiler Name="XMLInvalidNameStart">True</Compiler>
+			<Compiler Name="XMLInvalidName">True</Compiler>
+			<Compiler Name="XMLExpectedCharacter">True</Compiler>
+			<Compiler Name="XMLCRefNoResolve">True</Compiler>
+			<Compiler Name="XMLNoParm">True</Compiler>
+			<Compiler Name="XMLNoMatchingParm">True</Compiler>
 		</Compiler>
 		<Linker>
 			<Linker Name="MapFile">3</Linker>
@@ -115,7 +123,7 @@
 			<Linker Name="GenerateDRC">False</Linker>
 			<Linker Name="MinStackSize">16384</Linker>
 			<Linker Name="MaxStackSize">1048576</Linker>
-			<Linker Name="ImageBase">13762560</Linker>
+			<Linker Name="ImageBase">4194304</Linker>
 			<Linker Name="ExeDescription"></Linker>
 		</Linker>
 		<Directories>
@@ -125,7 +133,7 @@
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath"></Directories>
 			<Directories Name="Packages"></Directories>
-			<Directories Name="Conditionals">borlndmmdll;debugdll</Directories>
+			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
 			<Directories Name="UsePackages">False</Directories>
 		</Directories>
@@ -139,18 +147,13 @@
 			<Parameters Name="LoadAllSymbols">True</Parameters>
 			<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
 		</Parameters>
-		<Language>
-			<Language Name="ActiveLang"></Language>
-			<Language Name="ProjectLang">$00000000</Language>
-			<Language Name="RootDir"></Language>
-		</Language>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
-			<VersionInfo Name="AutoIncBuild">True</VersionInfo>
-			<VersionInfo Name="MajorVer">4</VersionInfo>
-			<VersionInfo Name="MinorVer">74</VersionInfo>
+			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+			<VersionInfo Name="MajorVer">1</VersionInfo>
+			<VersionInfo Name="MinorVer">44</VersionInfo>
 			<VersionInfo Name="Release">0</VersionInfo>
-			<VersionInfo Name="Build">168</VersionInfo>
+			<VersionInfo Name="Build">4</VersionInfo>
 			<VersionInfo Name="Debug">False</VersionInfo>
 			<VersionInfo Name="PreRelease">False</VersionInfo>
 			<VersionInfo Name="Special">False</VersionInfo>
@@ -160,15 +163,20 @@
 			<VersionInfo Name="CodePage">1252</VersionInfo>
 		</VersionInfo>
 		<VersionInfoKeys>
-			<VersionInfoKeys Name="CompanyName">Pierre le Riche / Professional Software Development</VersionInfoKeys>
-			<VersionInfoKeys Name="FileDescription">Replacement Memory Manager for Delphi IDE and Applications</VersionInfoKeys>
-			<VersionInfoKeys Name="FileVersion">4.74.0.168</VersionInfoKeys>
-			<VersionInfoKeys Name="InternalName">Fast Memory Manager</VersionInfoKeys>
-			<VersionInfoKeys Name="LegalCopyright">License: MPL 1.1</VersionInfoKeys>
-			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-			<VersionInfoKeys Name="OriginalFilename">BorlndMM.DLL</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductName">FastMM</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion">4</VersionInfoKeys>
-		</VersionInfoKeys>
-	</Delphi.Personality>
+			<VersionInfoKeys Name="CompanyName">PSD / Pierre le Riche</VersionInfoKeys>
+			<VersionInfoKeys Name="FileDescription">FastMM FullDebugMode Support DLL</VersionInfoKeys>
+			<VersionInfoKeys Name="FileVersion">1.44.0.4</VersionInfoKeys>
+			<VersionInfoKeys Name="InternalName"></VersionInfoKeys>
+			<VersionInfoKeys Name="LegalCopyright">(c) Professional Software Development</VersionInfoKeys>
+			<VersionInfoKeys Name="LegalTrademarks">Licence: MPL 1.1</VersionInfoKeys>
+			<VersionInfoKeys Name="OriginalFilename">FastMM_FullDebugMode.dll</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductName">FastMM FullDebugMode Support DLL</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion">1.42</VersionInfoKeys>
+			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
+		</VersionInfoKeys>  <Language>
+      <Language Name="ActiveLang"></Language>
+      <Language Name="ProjectLang">$00000000</Language>
+      <Language Name="RootDir"></Language>
+    </Language>
+  </Delphi.Personality>
 </BorlandProject>
