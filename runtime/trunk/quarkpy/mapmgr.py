@@ -140,7 +140,7 @@ class MapLayout(BaseLayout):
         TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 0)
         NegBtn = qtoolbar.button(self.neg1click, "negative poly||When a polyhedron is marked as negative, it behaves like a hole : every polyhedron in the same group as this one is 'digged' by the overlapping part.\n\nUsing 'Brush subtraction' in the 'Commands' menu is the same as marking the polyhedron negative, except that digging is not performed immediately. This helps keep the map clear.\n\nNegative polyhedrons appear in pink on the map.", ico_maped, 23)
         self.buttons["negpoly"] = NegBtn
-        tp = fp.newtoppanel(124)
+        tp = fp.newtoppanel(124,0)
         tp.newbottompanel(ico_maped_y,0).newbtnpanel([TexBtn, qtoolbar.widegap, NegBtn, qtoolbar.padright] + self.texflags("polyhedron"))
         self.polyform = tp.newdataform()
         self.polyform.header = 0
@@ -174,7 +174,7 @@ class MapLayout(BaseLayout):
         facezoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         facezoombtn.near = 1
         self.buttons.update({"facezoom": facezoombtn, "prevf": prevface, "nextf": nextface})
-        tp = fp.newtoppanel(142)
+        tp = fp.newtoppanel(142,0)
         btnp = tp.newbottompanel(ico_maped_y,0).newbtnpanel([prevface, nextface, facezoombtn, qtoolbar.smallgap, TexBtn, ts1Btn, ts2Btn, ts3Btn] + self.texflags("face"))
         btnp.margins = (0,0)
         self.faceform = tp.newdataform()
@@ -194,7 +194,7 @@ class MapLayout(BaseLayout):
         bezierzoombtn.near = 1
         TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 1)
         self.buttons["bezierzoom"] = bezierzoombtn
-        tp = fp.newtoppanel(70)
+        tp = fp.newtoppanel(70,0)
         btnp = tp.newbottompanel(23,0).newbtnpanel([bezierzoombtn, qtoolbar.smallgap, TexBtn, qtoolbar.smallgap] + self.texflags("bezier patch"))
 #        btnp = tp.newbottompanel(23,0).newbtnpanel([bezierzoombtn, TexBtn] + self.texflags("bezier patch"))
         btnp.margins = (0,0)
@@ -898,6 +898,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.21  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.20  2006/11/29 07:00:27  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

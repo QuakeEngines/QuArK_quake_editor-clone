@@ -140,7 +140,7 @@ class ModelLayout(BaseLayout):
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
         self.buttons["skinzoom"] = skinzoombtn
-        tp = fp.newtoppanel(103) # Sets the height of the top panel.
+        tp = fp.newtoppanel(103,0) # Sets the height of the top panel.
         btnp = tp.newbottompanel(23,0).newbtnpanel([skinzoombtn])
         btnp.margins = (0,0)
         self.skinform = tp.newdataform()
@@ -362,6 +362,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.13  2006/12/17 08:58:13  cdunde
+#Setup Skin-view proper handle dragging for various model skin(s)
+#and no skins combinations.
+#
 #Revision 1.12  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
