@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.300  2006/12/26 22:49:38  danielpharos
+//Splitted the Ed3DFX file into two separate renderers: Software and Glide
+//Also renamed all the 3DFX-stuff to Glide (3DFX is the name of the company behind Glide)
+//
 //Revision 1.299  2006/12/21 21:56:45  cdunde
 //Changed Half-Life2 files to work with QuArK Beta using vtf files instead of vmt files.
 //
@@ -2072,9 +2076,9 @@ QQRKSRC1
         DefaultTextureCaulk = "common/caulk"
         DefaultTextureScale = "0.5"
 
-        TextureFormat = ".tga"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
+        TextureFormat = ".jpg"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg,.png"     // possible texture fileextensions
+        TextureWriteFormat = ".jpg"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "baseq3"
@@ -2922,6 +2926,11 @@ QQRKSRC1
       }
       Options:config =
       {
+        Options3Dviews_nohandles1 = "0"
+        Options3Dviews_nohandles2 = "0"
+        Options3Dviews_nohandles3 = "0"
+        Options3Dviews_nohandles4 = "0"
+        Options3Dviews_nohandles5 = "0"
         setLock_X          = "0"
         setLock_Y          = "0"
         setLock_Z          = "0"
