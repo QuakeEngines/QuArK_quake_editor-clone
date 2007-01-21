@@ -15,6 +15,14 @@ $Id$
 6.5.0 Beta 2
 =============
 
+ * [cdunde]: Fixed errors that occur when switching layouts in the Model Editor.
+
+ * [cdunde]: Stopped handles and limited line drawing in the Model Editor
+          - Skin-view to increase reaction time when zooming.
+
+ * [cdunde]: Add new Model Editor Views Options button and functions to reduce
+          - handle drawing to increase reaction time.
+
  * [cdunde]: Stop the line, resizing bar, from drawing across the editors
           - when certain view pages were pulled out as floating windows.
 
