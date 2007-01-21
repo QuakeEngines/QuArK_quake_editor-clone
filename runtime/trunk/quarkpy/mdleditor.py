@@ -10,7 +10,6 @@ Core of the Model editor.
 
 #$Header$
 
-
 import mdlhandles
 import qhandles
 import mdlmgr
@@ -164,16 +163,75 @@ def commonhandles(self, redraw=1):
     from mdlhandles import mouseflags
     hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # handles common to all views
     for v in self.layout.views:
-        v.handles = hlist + v.handles
-        if redraw and mouseflags != 1544 and mouseflags != 1032:
-            cv = v.canvas()
-            for h in hlist:
-                h.draw(v, cv, None)
+
+        if v.info["viewname"] == "editors3Dview":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                pass
+            else:
+                if redraw and mouseflags == 1544 or mouseflags == 1032:
+                    pass
+                else:
+                    v.handles = hlist + v.handles
+                    cv = v.canvas()
+                    for h in hlist:
+                        h.draw(v, cv, None)
+
+        if v.info["viewname"] == "XY":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                pass
+            else:
+                if redraw and mouseflags == 1544 or mouseflags == 1032:
+                    pass
+                else:
+                    v.handles = hlist + v.handles
+                    cv = v.canvas()
+                    for h in hlist:
+                        h.draw(v, cv, None)
+
+        if v.info["viewname"] == "YZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                pass
+            else:
+                if redraw and mouseflags == 1544 or mouseflags == 1032:
+                    pass
+                else:
+                    v.handles = hlist + v.handles
+                    cv = v.canvas()
+                    for h in hlist:
+                        h.draw(v, cv, None)
+
+        if v.info["viewname"] == "XZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                pass
+            else:
+                if redraw and mouseflags == 1544 or mouseflags == 1032:
+                    pass
+                else:
+                    v.handles = hlist + v.handles
+                    cv = v.canvas()
+                    for h in hlist:
+                        h.draw(v, cv, None)
+
+        if v.info["viewname"] == "3Dwindow":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                pass
+            else:
+                if redraw and mouseflags == 1544 or mouseflags == 1032:
+                    pass
+                else:
+                    v.handles = hlist + v.handles
+                    cv = v.canvas()
+                    for h in hlist:
+                        h.draw(v, cv, None)
+
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.14  2006/12/18 05:38:14  cdunde
+#Added color setting options for various Model Editor mesh and drag lines.
+#
 #Revision 1.13  2006/12/13 04:46:15  cdunde
 #To draw the 2D and 3D view model vertex handle lines while dragging
 #but not the handles that substantially reduces redraw speed.
