@@ -260,6 +260,7 @@ class BaseLayout:
             view.viewtype = "editor"
             quarkpy.qhandles.flat3Dview(view, self)
             del view.info["noclick"]
+            view.info["viewname"]="3Dwindow"
 
         setprojmode(view)
         self.editor.setupview(view)
@@ -587,6 +588,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.26  2006/12/17 08:59:54  cdunde
+#Needed to reverse this change, caused an error when the floating 3D window is opened.
+#
 #Revision 1.25  2006/12/13 04:51:44  cdunde
 #The def update3Dviews has to be there or an error occurs when you try to open
 #the Floating 3D view window, but other than that, it does not seem to do anything
