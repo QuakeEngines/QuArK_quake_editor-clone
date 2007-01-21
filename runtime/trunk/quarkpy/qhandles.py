@@ -43,6 +43,7 @@ lengthnormalvect = 0
 mapicons_c = -1
 saveeditor = None
 modelcenter = None
+mouseflags = None
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -944,7 +945,8 @@ class RedImageDragObject(DragObject):
         editor = self.editor
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
-            pass
+            return
+          #  pass
         else:
 
 ## Deals with Terrain Selector 3D face drawing, movement is in ok section
@@ -1145,12 +1147,13 @@ class FreeZoomDragObject(DragObject):
         self.view = view
 
     def dragto(self, x, y, flags):
+        global mouseflags
+        mouseflags = flags # for passing flags to any file that wants to call this global.
           # moving the mouse RIGHT means zoom IN
           # moving the mouse DOWN also means zoom IN
           # if you are unhappy with this, change it here...
 
           # or set a negative value in the Configuration dialog for this
-
      #   sensitivity, = quarkx.setupsubset(self.MODE, "Display")["FreeZoom"]
      # fix for Linux
         try:
@@ -1809,8 +1812,13 @@ def flat3Dview(view3d, layout, selonly=0):
 
     view3d.viewmode = "tex"
     view3d.flags = view3d.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
+    try:
+        curviewname = view3d.info["viewname"]
+    except:
+        curviewname = "editors3Dview"
     view3d.info = {"type": "2D",
-                   "viewname": "mdleditor3Dview",
+                #   "viewname": "mdleditor3Dview",
+                   "viewname": curviewname,
                    "scale": 2.0,
                    "angle": -0.7,
                    "vangle": 0.3,
@@ -1848,6 +1856,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.33  2006/12/15 09:03:35  cdunde
+#Additional code removal for redundancy of view redraws adding to slowdown.
+#
 #Revision 1.32  2006/12/15 07:39:51  cdunde
 #Improved quality of 3D Texture mode while dragging at increased drawing speed.
 #
