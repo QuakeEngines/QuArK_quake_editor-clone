@@ -216,7 +216,8 @@ class SkinHandle(qhandles.GenericHandle):
                   fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
                   fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
               #    view.drawmap(cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY)))
-                  cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
+           #       if mouseflags == 1056 or mouseflags == 1048:
+           #           cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
 
                   try:
                       from qhandles import mouseflags # To stop all drawing, causing slowdown, during a zoom.
@@ -697,6 +698,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.21  2007/01/21 19:46:57  cdunde
+#Cut down on lines and all handles being drawn when zooming in Skin-view to increase drawing speed
+#and to fix errors in Model Editor, sometimes there is no currentcomponent.
+#
 #Revision 1.20  2006/12/18 05:38:14  cdunde
 #Added color setting options for various Model Editor mesh and drag lines.
 #
