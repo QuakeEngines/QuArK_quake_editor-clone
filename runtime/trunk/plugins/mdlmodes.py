@@ -375,6 +375,17 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.3  2007/01/21 01:17:47  cdunde
+# To try to fix version numbering.
+#
+# Revision 1.2  2007/01/21 01:16:47  cdunde
+# Changed file setting for cvs.
+#
+# Revision 1.1  2007/01/21 01:15:47  cdunde
+# Renamed from mdllocking.py file.
+# To add new Model Editor Views Options button and functions
+# and changed file name from mdllocking.py for future items.
+#
 # Revision 1.8  2006/11/30 01:17:47  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
