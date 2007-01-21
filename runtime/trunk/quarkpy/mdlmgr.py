@@ -33,6 +33,7 @@ import mdlentities
 ### globals
 startup = 0
 saveskin = None
+savedskins = {}
 skincount = 0
 
 class ModelLayout(BaseLayout):
@@ -42,9 +43,10 @@ class ModelLayout(BaseLayout):
     MAXAUTOZOOM = 10.0
 
     def clearrefs(self):
-        global startup, saveskin, skincount
+        global startup, saveskin, savedskins, skincount
         startup = 0
         saveskin = None
+        savedskins = {}
         skincount = 0
         BaseLayout.clearrefs(self)
         self.reset()
@@ -54,7 +56,7 @@ class ModelLayout(BaseLayout):
     #    self.dataform = None
     #    self.faceform = None
     #    self.faceview = None
-    #    self.faceflags = None
+        self.faceflags = None
 
     def readtoolbars(self, config):
         readtoolbars(mdltools.toolbars, self, self.editor.form, config)
@@ -64,7 +66,17 @@ class ModelLayout(BaseLayout):
         global skincount, saveskin
         slist = []
         if self.explorer.sellist == []:
-            s = self.editor.Root.currentcomponent.currentskin
+            if self.editor.Root.currentcomponent is None and self.editor.Root.name.endswith(":mr"):
+                for item in self.editor.Root.dictitems:
+                    if item.endswith(":mc"):
+                        self.editor.Root.currentcomponent = self.editor.Root.dictitems[item]
+                        if self.editor.Root.currentcomponent.currentskin is None:
+                            s = None
+                        else:
+                            s = self.editor.Root.currentcomponent.currentskin
+                        break
+            else:
+                s = self.editor.Root.currentcomponent.currentskin
             if s is not None:
                 pass
             else:
@@ -92,6 +104,20 @@ class ModelLayout(BaseLayout):
                             if len(item.dictitems) < 1:
                                 saveskin = None
                                 slist.append(None)
+
+                                if self.editor.Root.currentcomponent is None and self.editor.Root.name.endswith(":mr"):
+                                    for item in self.editor.Root.dictitems:
+                                        if item.endswith(":mc"):
+                                            self.editor.Root.currentcomponent = self.editor.Root.dictitems[item]
+                                            if self.editor.Root.currentcomponent.currentskin is None:
+                                                s = None
+                                            else:
+                                                s = self.editor.Root.currentcomponent.currentskin
+                                            break
+                                else:
+                                    s = self.editor.Root.currentcomponent.currentskin
+
+
                                 self.editor.Root.currentcomponent.currentskin = None
                                 return slist
                             if len(item.dictitems) > 1:
@@ -204,11 +230,18 @@ class ModelLayout(BaseLayout):
 
 
     def fillskinform(self, reserved):
-        global startup # Allows the skinform to fill the 1st time a model is loaded, to set it up.
+        global startup, saveskin, savedskins # Allows the skinform to fill the 1st time a model is loaded, to set it up.
      #   self.skinview.onmouse = self.polyviewmouse  ### was commented out, causes zoom to change when aother "component" folder is selected
                                                      ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
                                                      ### Commenting out due to conflict but possible future use.
      #   self.skinview.info = None
+        if self.editor.Root.currentcomponent is not None:
+            pass
+        else:
+            for item in self.editor.Root.dictitems:
+                if item.endswith(":mc"):
+                    self.editor.Root.currentcomponent = self.editor.Root.dictitems[item]
+                    break
 
         slist = self.getskin()  ### something missing here
         if self.editor.Root.currentcomponent.currentskin is None:
@@ -281,11 +314,45 @@ class ModelLayout(BaseLayout):
 
     def selectcomponent(self, comp):
         "This is when you select a particular 'Component' or any 'Group' within it in the Tree-view."
-        if comp != self.editor.Root.currentcomponent:
-            self.reset()
-        self.editor.Root.setcomponent(comp)
-        if saveskin is not None and comp.currentskin != saveskin:
-            comp.currentskin = saveskin
+        global saveskin, savedskins
+        getskin = None
+        if self.editor.Root.currentcomponent is not None:
+            currentcomponentshortname = self.editor.Root.currentcomponent.shortname
+            if not (currentcomponentshortname in savedskins):
+                savedskins[currentcomponentshortname] = self.editor.Root.currentcomponent.currentskin
+
+            if comp != self.editor.Root.currentcomponent:
+                self.reset()
+                if not (comp.shortname in savedskins):
+                    if saveskin != savedskins[currentcomponentshortname] and saveskin is not None:
+                        savedskins[comp.shortname] = saveskin
+                else:
+                    getskin = savedskins[comp.shortname]
+            else:
+                getskin = savedskins[currentcomponentshortname]
+
+            self.editor.Root.setcomponent(comp)
+
+        if getskin != None:
+            self.editor.Root.currentcomponent.currentskin = getskin
+        saveskin = None
+
+     #   if saveskin is not None and comp.currentskin != saveskin:
+     #   currentcomponentshortname = self.editor.Root.currentcomponent.shortname
+      #  print "selectcomponent currentcomponent.shortname",component
+      #  if saveskin is not None and comp.currentskin != saveskin:
+      #      if not (component in savedskins):
+          #      comp.currentskin = saveskin
+      #          savedskins[component] = saveskin
+      #          saveskin = None
+      #      else:
+      #          saveskin = savedskins[component]
+      #          comp.currentskin = saveskin
+      #          saveskin = None
+      #      saveskin = savedskins[component]
+      #      comp.currentskin = saveskin
+        print "selectcomponent savedskins 2",savedskins
+        print "selectcomponent self.reset() startup",startup
 
     def selectcgroup(self, group):
         "This is when you select a particular item of a component group 'Skins', 'Frames' or 'Skeleton' in the Tree-view."
@@ -303,17 +370,20 @@ class ModelLayout(BaseLayout):
 
     def selectskin(self, skin):
         "This is when you select a particular skin in the 'Skins' group of the Tree-view."
-        global saveskin
+        global saveskin, savedskins
         self.reset()
         c = self.componentof(skin)
-        if c is not None and skin is not c.currentskin:
+        if c is not None and skin is not c.currentskin and self.editor.Root.currentcomponent is not None:
             self.selectcomponent(c)
             c.currentskin = skin
             saveskin = skin
+            skincomponent = self.editor.Root.currentcomponent.shortname
+            savedskins[skincomponent] = saveskin
 
     def selchange(self):
         "This completes what ever selection def you are using above."
-        global startup
+        global startup, saveskin
+
         fs = self.explorer.uniquesel
         if fs is not None:
             if fs.type == ':mc':
@@ -362,6 +432,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.14  2007/01/18 02:09:19  cdunde
+#Stop the line, resizing bar, from drawing across the editors
+#when certain view pages were pulled out as floating windows.
+#
 #Revision 1.13  2006/12/17 08:58:13  cdunde
 #Setup Skin-view proper handle dragging for various model skin(s)
 #and no skins combinations.
