@@ -69,25 +69,28 @@ class FourViewsLayout(ModelLayout):
 
         self.ViewXY.info = {
           "type": "XY",     # XY view
+          "viewname": "XY", # name
           "angle": 0.0,     # compass angle
           "scale": scale,   # scale
           "vangle": 0.0}    # vertical angle
 
         self.ViewXZ.info = {
           "type": "XZ",     # XZ view
+          "viewname": "XZ", # name
           "angle": 0.0,
           "scale": scale,
           "vangle": 0.0}
 
         self.ViewYZ.info = {
           "type": "YZ",     # YZ view
+          "viewname": "YZ", # name
           "angle": 0.0,
           "scale": scale,
           "vangle": 0.0}
 
         self.View3D.info = {
           "type": "3D",     # 3D view
-          "viewname": "editors3Dview"}
+          "viewname": "editors3Dview"} # name
 
     ### Calling this function causes the 3D view mouse maneuvering to change,
     ### rotation is based on the center of the editor view or the model (0,0,0).
@@ -299,6 +302,9 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.7  2006/11/30 01:17:48  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 # Revision 1.6  2006/11/29 06:58:35  cdunde
 # To merge all runtime files that had changes from DanielPharos branch
 # to HEAD for QuArK 6.5.0 Beta 1.
