@@ -16,7 +16,6 @@ Core of the Map and Model editors.
 # See comments in file mapeditor.py.
 #
 
-
 import qmenu
 import qtoolbar
 import qhandles
@@ -340,6 +339,13 @@ class BaseEditor:
         #
 
         cv = view.canvas()
+        from qhandles import mouseflags
+        import mdleditor
+        import mdlhandles
+        if isinstance(self, mdleditor.ModelEditor):
+            linecount = 0
+            o = self.Root.currentcomponent
+            handles = mdlhandles.BuildHandles(self, self.layout.explorer, view)
         for h in view.handles:
             h.draw(view, cv, draghandle)
 
@@ -544,9 +550,12 @@ class BaseEditor:
         
     def mousemap(self, view, x, y, flags, handle):
         "Called by QuArK upon mouse operation."
-
+        import mdleditor
         if flags & MB_DRAGEND:
             if self.dragobject is not None:
+                if isinstance(self, mdleditor.ModelEditor):
+                    self.dragobject.dragto(x, y, flags)
+
                 try:
                     last,x,y=self.dragobject.lastdrag
 #                    debug('last yes')
@@ -894,6 +903,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.26  2006/08/16 22:44:39  cdunde
+#To change Poly size display to w,d,h to coordinate with x,y,z
+#arrangement, reduces confusion when setting bounding boxes.
+#
 #Revision 1.25  2006/07/01 00:26:48  cdunde
 #To fix error of 'list' not being defined.
 #

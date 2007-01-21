@@ -34,6 +34,10 @@ mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
 mouseflags = None
+linecount = 0
+
+def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
+    oldfinish(editor, view)
 
 #
 # The handle classes.
@@ -190,6 +194,9 @@ class SkinHandle(qhandles.GenericHandle):
 
   
   def draw(self, view, cv, draghandle=None):
+      global linecount
+      editor = mapeditor()
+      from qhandles import mouseflags # To stop all drawing, causing slowdown, during a zoom.
       texWidth = self.texWidth
       texHeight = self.texHeight
       triangle = self.triangle
@@ -211,7 +218,35 @@ class SkinHandle(qhandles.GenericHandle):
               #    view.drawmap(cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY)))
                   cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
 
+                  try:
+                      from qhandles import mouseflags # To stop all drawing, causing slowdown, during a zoom.
+                      if mouseflags & MB_DRAGSTART or mouseflags & MB_DRAGGING:
+                          if linecount < 6 and len(view.handles) > 3000:
+                              linecount = linecount + 1
+                              pass
+                          else:
+                              cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
+                              linecount = 0
+                  except:
+                      cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
+                  try:
+                      from qhandles import mouseflags # To stop all drawing, causing slowdown, during a zoom.
+                      if mouseflags & MB_DRAGEND:
+                          cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
+                  except:
+                      pass
+
           cv.reset()
+
+          try:
+              from qhandles import mouseflags # To stop all drawing, causing slowdown, during a zoom.
+              if mouseflags & MB_DRAGSTART or mouseflags & MB_DRAGGING: return
+          except:
+              pass
+
+          from qhandles import mouseflags
+          if mouseflags == 1056 or mouseflags == 1048: return
+
           if mouseflags == 1544 or mouseflags == 1032: return
           if MldOption("Ticks") == "1":
 #py2.4              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
@@ -460,7 +495,14 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
         oldscale = viewscale
 #DECKER - end
 
-    org = component.originst
+    if component is None and editor.Root.name.endswith(":mr"):
+        for item in editor.Root.dictitems:
+            if item.endswith(":mc"):
+                component = editor.Root.dictitems[item]
+                org = component.originst
+    else:
+        org = component.originst
+
     n = quarkx.vect(1,1,1) 
     v = orthogonalvect(n, view)
     view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
@@ -655,6 +697,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.20  2006/12/18 05:38:14  cdunde
+#Added color setting options for various Model Editor mesh and drag lines.
+#
 #Revision 1.19  2006/12/17 08:58:13  cdunde
 #Setup Skin-view proper handle dragging for various model skin(s)
 #and no skins combinations.
