@@ -168,13 +168,11 @@ def commonhandles(self, redraw=1):
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
                 pass
             else:
-                if redraw and mouseflags == 1544 or mouseflags == 1032:
-                    pass
-                else:
-                    v.handles = hlist + v.handles
-                    cv = v.canvas()
-                    for h in hlist:
-                        h.draw(v, cv, None)
+                v.handles = hlist + v.handles
+                cv = v.canvas()
+                for h in hlist:
+                    h.draw(v, cv, None)
+
 
         if v.info["viewname"] == "XY":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
@@ -216,19 +214,21 @@ def commonhandles(self, redraw=1):
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                 pass
             else:
-                if redraw and mouseflags == 1544 or mouseflags == 1032:
-                    pass
-                else:
-                    v.handles = hlist + v.handles
-                    cv = v.canvas()
-                    for h in hlist:
-                        h.draw(v, cv, None)
+                v.handles = hlist + v.handles
+                cv = v.canvas()
+                for h in hlist:
+                    h.draw(v, cv, None)
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.15  2007/01/21 19:49:17  cdunde
+#To cut down on lines and all handles being drawn when
+#mouse button is 1st pressed and zooming in Skin-view
+#and to add new Model Editor Views Options button and funcitons.
+#
 #Revision 1.14  2006/12/18 05:38:14  cdunde
 #Added color setting options for various Model Editor mesh and drag lines.
 #
