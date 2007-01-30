@@ -88,9 +88,10 @@ class VertexHandle(qhandles.GenericHandle):
     def draw(self, view, cv, draghandle=None):
 
         from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
+
+        if flagsmouse == 2056: return # Stops duplicated handle drawing at the end of a drag.
         if (flagsmouse == 520 or flagsmouse == 1032) and draghandle is not None: return # LMB pressed or dragging model mesh handle.
-      #  if flagsmouse == 1032 and draghandle is not None: return # LMB dragging model mesh handle.
-        if flagsmouse == 528 or flagsmouse == 1040: return
+        if flagsmouse == 528 or flagsmouse == 1040: return # RMB pressed or dragging to pan (scroll) in the view.
 
         if view.info["viewname"] == "editors3Dview":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
@@ -217,6 +218,7 @@ class SkinHandle(qhandles.GenericHandle):
 
       from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
 
+      if flagsmouse == 2056: return # Stops duplicated handle drawing at the end of a drag.
       texWidth = self.texWidth
       texHeight = self.texHeight
       triangle = self.triangle
@@ -719,6 +721,12 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.23  2007/01/30 06:31:40  cdunde
+#To get all handles and lines to draw in the Skin-view when not zooming
+#and only the minimum lines to draw when it is, to make zooming smoother.
+#Also to removed previously added global mouseflags that was giving delayed data
+#and replace with global flagsmouse that gives correct data before other functions.
+#
 #Revision 1.22  2007/01/21 20:37:47  cdunde
 #Missed item that should have been commented out in last version.
 #
