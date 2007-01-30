@@ -33,8 +33,6 @@ skinviewdraglines = 0
 mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
-mouseflags = None
-linecount = 0
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -88,7 +86,28 @@ class VertexHandle(qhandles.GenericHandle):
                 qmenu.item("&Force to grid", forcegrid1click,"force vertex to grid")] + self.OriginItems(editor, view)
 
     def draw(self, view, cv, draghandle=None):
-        if mouseflags == 1544 or mouseflags == 1032: return
+
+        from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
+        if (flagsmouse == 520 or flagsmouse == 1032) and draghandle is not None: return # LMB pressed or dragging model mesh handle.
+      #  if flagsmouse == 1032 and draghandle is not None: return # LMB dragging model mesh handle.
+        if flagsmouse == 528 or flagsmouse == 1040: return
+
+        if view.info["viewname"] == "editors3Dview":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                return
+        if view.info["viewname"] == "XY":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                return
+        if view.info["viewname"] == "YZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                return
+        if view.info["viewname"] == "XZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                return
+        if view.info["viewname"] == "3Dwindow":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                return
+
         p = view.proj(self.pos)
         if p.visible:
             cv.pencolor = vertexdotcolor
@@ -110,8 +129,6 @@ class VertexHandle(qhandles.GenericHandle):
 
 
     def drag(self, v1, v2, flags, view):
-        global mouseflags
-        mouseflags = flags
         editor = mapeditor()
         pv2 = view.proj(v2)        ### v2 is the SINGLE handle's (being dragged) 3D position (x,y and z in space).
                                    ### And this converts its 3D position to the monitor's FLAT screen 2D and 3D views
@@ -161,12 +178,10 @@ class VertexHandle(qhandles.GenericHandle):
   #  For setting stuff up at the beginning of a drag
   #
   #  def start_drag(self, view, x, y):
-  #      mouseflags = self.mouseflags
   #      editor = mapeditor()
 
 
   #  def ok(self, editor, undo, old, new):
-  #      mouseflags = self.mouseflags
   #      editor.ok(undo, self.undomsg)
 
 
@@ -188,15 +203,20 @@ class SkinHandle(qhandles.GenericHandle):
       self.count = 0
       self.undomsg = "Skin-view move"
 
+ #  For setting stuff up at the beginning of a handle drag.
+ #
+ # def start_drag(self, view, x, y):
+
  # Stops the red mesh from drawing at end of drag if un-commented.
  # def ok(self, editor, x, y, flags):
  #     return None
 
   
   def draw(self, view, cv, draghandle=None):
-      global linecount
       editor = mapeditor()
-      from qhandles import mouseflags # To stop all drawing, causing slowdown, during a zoom.
+
+      from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
+
       texWidth = self.texWidth
       texHeight = self.texHeight
       triangle = self.triangle
@@ -206,49 +226,27 @@ class SkinHandle(qhandles.GenericHandle):
           cv.pencolor = skinviewmesh
           pv2 = p.tuple
           for vertex in triangle:
-              if self.ver_index == 0:
-                  if  count != 0: break
-                  count = count + 1
-                  pass
-              else:
-                  if  count > 2: break
-                  count = count + 1
-                  fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
-                  fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
-              #    view.drawmap(cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY)))
-           #       if mouseflags == 1056 or mouseflags == 1048:
-           #           cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
-
-                  try:
-                      from qhandles import mouseflags # To stop all drawing, causing slowdown, during a zoom.
-                      if mouseflags & MB_DRAGSTART or mouseflags & MB_DRAGGING:
-                          if linecount < 6 and len(view.handles) > 3000:
-                              linecount = linecount + 1
-                              pass
-                          else:
-                              cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
-                              linecount = 0
-                  except:
-                      cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
-                  try:
-                      from qhandles import mouseflags # To stop all drawing, causing slowdown, during a zoom.
-                      if mouseflags & MB_DRAGEND:
-                          cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
-                  except:
-                      pass
+              fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
+              fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
+              cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
 
           cv.reset()
 
-          try:
-              from qhandles import mouseflags # To stop all drawing, causing slowdown, during a zoom.
-              if mouseflags & MB_DRAGSTART or mouseflags & MB_DRAGGING: return
-          except:
-              pass
+        #  try:
+        #      from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
+        #      if flagsmouse & MB_DRAGSTART or flagsmouse & MB_DRAGGING: return
+        #  except:
+        #      pass
 
-          from qhandles import mouseflags
-          if mouseflags == 1056 or mouseflags == 1048: return
+          if flagsmouse == 520  or flagsmouse == 1032:  # pressed LMB to start & while dragging.
+              return
+          if flagsmouse == 528 or flagsmouse == 1040:  # pressed RMB to start & while panning.
+              return
+          if flagsmouse == 536 or flagsmouse == 544:  # pressed L & RMB's or CMB to start zooming.
+              return
+          if flagsmouse == 1056 or flagsmouse == 1048:  # zooming with L & RMB's or CMB pressed.
+              return
 
-          if mouseflags == 1544 or mouseflags == 1032: return
           if MldOption("Ticks") == "1":
 #py2.4              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
               cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
@@ -260,8 +258,6 @@ class SkinHandle(qhandles.GenericHandle):
 
 
   def drag(self, v1, v2, flags, view):
-      global mouseflags
-      mouseflags = flags
       texWidth = self.texWidth
       texHeight = self.texHeight
       editor = mapeditor()
@@ -280,7 +276,8 @@ class SkinHandle(qhandles.GenericHandle):
       if delta or (flags&MB_REDIMAGE):
           tris = new.triangles ### These are all the triangle faces of the model mesh.
 
-          ### Code below draws the triangle face being dragged while dragging.
+          ### Code below draws the Skin-view green triangle face guide lines while being dragged.
+      try:
           editor.finishdrawing(view)
           view.repaint()
           pv2 = view.proj(v2)
@@ -317,6 +314,8 @@ class SkinHandle(qhandles.GenericHandle):
 
           tris[self.tri_index] = newtri
           new.triangles = tris
+      except:
+          new.triangles = self.comp
 
       return [self.comp], [new]
 
@@ -469,8 +468,14 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
 
 
     def drawsingleskin(view, layout=layout, skindrawobject=skindrawobject, component=component, editor=editor):
-        view.color = BLACK
-        editor.finishdrawing(view)
+
+      ### Special handling if model has no skins.
+      ### First to draw its lines.
+      ### Second to keep the background yellow to avoid color flickering.
+        if skindrawobject is None:
+            editor.finishdrawing(view)
+        else:
+            view.color = BLACK
 
        ### This sets the location of the skin texture in the Skin-view when it is first opened
        ### and I believe keeps it centered if the view is stretched to a different size.
@@ -518,23 +523,39 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
                  "origin": origin,
                  "noclick": None,
                  "center": quarkx.vect(0,0,0),
-                 "name": "skinview",
+                 "viewname": "skinview",
                  "mousemode": None
                  }
 
     if skindrawobject is None:
         editor.setupview(view, drawsingleskin, 0)
-
     h = [ ]
     tris = component.triangles
+
+    linecount = 0
+    from qbaseeditor import flagsmouse
     for i in range(len(tris)):
         tri = tris[i]
         for j in range(len(tri)):
             vtx = tri[j]
                ### This sets the Skin-view model mesh vertexes and line drawing location(s).
-            h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
+          #  h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
+
+            if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544) and len(view.handles) > 2600: # LMB or R & LMB's pressed or CMB pressed.
+                if linecount > 0:
+                    if linecount >= 2:
+                        linecount = 0
+                        continue
+                    linecount = linecount + 1
+                    pass
+                else:
+                    linecount = linecount + 1
+                    h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
+            else:
+                h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
 
     view.handles = qhandles.FilterHandles(h, SS_MODEL)
+
     singleskinzoom(view)
     return 1
 
@@ -548,14 +569,14 @@ def singleskinzoom(view):
 # Functions to build common lists of handles.
 #
 
-def BuildCommonHandles(editor, ex):
+def BuildCommonHandles(editor, explorer):
     "Build a list of handles to display on all map views."
 
     import plugins.mdlaxisicons
     for view in editor.layout.views:
         plugins.mdlaxisicons.newfinishdrawing(editor, view)
 
-    fs = ex.uniquesel
+    fs = explorer.uniquesel
     if (fs is None) or editor.linearbox:
         return []
     else:
@@ -566,17 +587,17 @@ def BuildCommonHandles(editor, ex):
 
 
 
-def BuildHandles(editor, ex, view):
+def BuildHandles(editor, explorer, view):
     "Builds a list of handles to display in ALL VIEWS, one map view at a time."
     "This function is called from quarkpy\mdleditor.py, class ModelEditor,"
     "def buildhandles function and returns the list of handles to that function."
 
-    fs = ex.uniquesel
+    fs = explorer.uniquesel
     if (fs is None) or editor.linearbox:
         #
         # Display a linear mapping box.
         #
-        list = ex.sellist
+        list = explorer.sellist
         box = quarkx.boundingboxof(list)
         if box is None:
             h = []
@@ -698,6 +719,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.22  2007/01/21 20:37:47  cdunde
+#Missed item that should have been commented out in last version.
+#
 #Revision 1.21  2007/01/21 19:46:57  cdunde
 #Cut down on lines and all handles being drawn when zooming in Skin-view to increase drawing speed
 #and to fix errors in Model Editor, sometimes there is no currentcomponent.

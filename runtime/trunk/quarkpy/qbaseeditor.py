@@ -26,6 +26,9 @@ import qbasemgr
 from qeditor import *
 from qdictionnary import Strings
 
+# Globals
+flagsmouse = None
+currentview = None
 
 def drawview(view,mapobj,mode=0):
         #
@@ -339,13 +342,6 @@ class BaseEditor:
         #
 
         cv = view.canvas()
-        from qhandles import mouseflags
-        import mdleditor
-        import mdlhandles
-        if isinstance(self, mdleditor.ModelEditor):
-            linecount = 0
-            o = self.Root.currentcomponent
-            handles = mdlhandles.BuildHandles(self, self.layout.explorer, view)
         for h in view.handles:
             h.draw(view, cv, draghandle)
 
@@ -550,11 +546,40 @@ class BaseEditor:
         
     def mousemap(self, view, x, y, flags, handle):
         "Called by QuArK upon mouse operation."
-        import mdleditor
-        if flags & MB_DRAGEND:
+
+        global flagsmouse, currentview  ### Used for the Model Editor only.
+        flagsmouse = flags              ### Used for the Model Editor only.
+        currentview = view              ### Used for the Model Editor only.
+        import mdleditor                ### Used for the Model Editor only.
+        if flags & MB_DRAGEND: ### This is when the mouse button(s) is ACTULLY released.
             if self.dragobject is not None:
                 if isinstance(self, mdleditor.ModelEditor):
-                    self.dragobject.dragto(x, y, flags)
+                    if view.info["viewname"] == "skinview":
+                        if flags == 2064 or flags == 2072 or flags == 2080:
+                            import mdlhandles
+                            if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+                                componentnames = []
+                                for item in self.Root.dictitems:
+                                    if item.endswith(":mc"):
+                                        componentnames.append(item)
+                                componentnames.sort ()
+                                self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+                            try:
+                                skindrawobject = self.Root.currentcomponent.currentskin
+                            except:
+                                skindrawobject = None
+                            mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
+                    else:
+                       # fs = self.layout.explorer.uniquesel
+          #              return # for testing only, stops all editor views handles.(take out when done testing)
+                       # if fs is not None:
+                       #     import mdlentities
+                       #     view.handles = mdlentities.CallManager("handlesopt", fs, self)
+                  #      self.dragobject.dragto(x, y, flags) # Causes handels to be recreated and
+                                                            # ALL views to be redrawn is nothing is selected.
+                        if flags == 2064:
+                            import mdleditor
+                            mdleditor.commonhandles(self)
 
                 try:
                     last,x,y=self.dragobject.lastdrag
@@ -578,7 +603,6 @@ class BaseEditor:
                     editor = self
                 if editor == None: return
                 else:
-                    import mdleditor
                     if isinstance(editor, mdleditor.ModelEditor):
                         return
                     if editor.layout.toolbars["tb_terrmodes"] is not None:
@@ -644,6 +668,9 @@ class BaseEditor:
         elif flags & MB_DRAGGING:
             if self.dragobject is not None:
                 self.dragobject.dragto(x, y, flags)
+            if isinstance(self, mdleditor.ModelEditor):
+                pass
+            else:
                 self.dragobject.lastdrag=time.clock(),x,y
                 if self.dragobject.hint is not None:
                     self.showhint(self.dragobject.hint)
@@ -697,14 +724,51 @@ class BaseEditor:
                 #
                 # Create a dragobject to hold information about the current dragging
                 #
+
                 if flags & MB_LEFTBUTTON or handle is None:
                     self.dragobject = self.HandlesModule.MouseDragging(self,view,x,y,s,handle)
+
+                    if isinstance(self, mdleditor.ModelEditor):
+                        if view.info["viewname"] == "skinview":
+                            import mdlhandles
+                            try:
+                                skindrawobject = self.Root.currentcomponent.currentskin
+                            except:
+                                skindrawobject = None
+                            mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
+
                 #
                 # If successful, immediately begin to drag
                 #
                 if self.dragobject is not None:
-                    self.dragobject.views = self.layout.views
-                    self.dragobject.dragto(x, y, flags | MB_DRAGGING)
+
+                    if isinstance(self, mdleditor.ModelEditor):
+
+                        if (flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040):
+                            if view.info["viewname"] == "skinview":
+                                pass
+                            else:
+                                if flagsmouse == 1040:
+                                    view.invalidate()
+                                    return
+                                else:
+                                    pass
+
+                        if flagsmouse == 2064:
+                            if view.info["viewname"] == "skinview":
+                                pass
+                            else:
+                                fs = self.layout.explorer.uniquesel
+                                view.handles = mdlentities.CallManager("handlesopt", fs, self)
+                                if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
+                                    self.dragobject.views = view
+                                else:
+                                    self.dragobject.views = self.layout.views
+                                self.dragobject.dragto(x, y, flags | MB_DRAGGING)
+
+                    else:
+                        self.dragobject.views = self.layout.views
+                        self.dragobject.dragto(x, y, flags | MB_DRAGGING)
 
 
     def gridmenuclick(self, sender):
@@ -903,6 +967,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.27  2007/01/21 19:46:57  cdunde
+#Cut down on lines and all handles being drawn when zooming in Skin-view to increase drawing speed
+#and to fix errors in Model Editor, sometimes there is no currentcomponent.
+#
 #Revision 1.26  2006/08/16 22:44:39  cdunde
 #To change Poly size display to w,d,h to coordinate with x,y,z
 #arrangement, reduces confusion when setting bounding boxes.
