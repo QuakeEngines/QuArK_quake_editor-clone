@@ -22,6 +22,8 @@ import qtoolbar
 import qmacro
 from qeditor import *
 
+import plugins.mdlaxisicons
+
 #py2.4 indicates upgrade change for python 2.4
 
 class ModelEditor(BaseEditor):
@@ -40,6 +42,7 @@ class ModelEditor(BaseEditor):
         if Root is not None:
             Root = self.fileobject.findname(Root)
         self.Root = Root
+
         if (quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] is None):
             Lock_X = "0"
             Lock_Y = "0"
@@ -77,6 +80,9 @@ class ModelEditor(BaseEditor):
 
     def buildhandles(self):
         "Build the handles for all model views."
+        "This builds all the model mesh handles when the Model Editor is first opened."
+        " It is also used to rebuild the handles by various functions later."
+
         for v in self.layout.views:
             v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
      #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
@@ -112,7 +118,11 @@ class ModelEditor(BaseEditor):
             for obj in self.Root.subitems:
                 if obj.type == ':mc':      # Expand the Component objects
                      nlayout.explorer.expand(obj)
-                     
+        try:
+            for view in self.layout.views:
+                plugins.mdlaxisicons.newfinishdrawing(self, view)
+        except:
+            pass
 
     def dropmap(self, view, newlist, x, y, src):
         center = view.space(x, y, view.proj(view.screencenter).z)
@@ -159,9 +169,32 @@ class ModelEditor(BaseEditor):
 
 
 def commonhandles(self, redraw=1):
-    if self.layout is None: return
-    from mdlhandles import mouseflags
-    hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # handles common to all views
+    from qbaseeditor import flagsmouse, currentview
+
+    if self.layout is None:
+        return
+
+    if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 2064 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056):
+        try:
+            if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow"):
+                for v in self.layout.views:
+                    if v.info["viewname"] != currentview.info["viewname"]:
+                        pass
+                    else:
+                        hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
+                        v.handles = hlist + v.handles
+                        cv = v.canvas()
+                        for h in hlist:
+                            h.draw(v, cv, None)
+                return
+            else:
+                hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
+
+        except:
+            pass
+    else:
+        hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
+
     for v in self.layout.views:
 
         if v.info["viewname"] == "editors3Dview":
@@ -173,42 +206,32 @@ def commonhandles(self, redraw=1):
                 for h in hlist:
                     h.draw(v, cv, None)
 
-
         if v.info["viewname"] == "XY":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
                 pass
             else:
-                if redraw and mouseflags == 1544 or mouseflags == 1032:
-                    pass
-                else:
-                    v.handles = hlist + v.handles
-                    cv = v.canvas()
-                    for h in hlist:
-                        h.draw(v, cv, None)
+                v.handles = hlist + v.handles
+                cv = v.canvas()
+                for h in hlist:
+                    h.draw(v, cv, None)
 
         if v.info["viewname"] == "YZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
                 pass
             else:
-                if redraw and mouseflags == 1544 or mouseflags == 1032:
-                    pass
-                else:
-                    v.handles = hlist + v.handles
-                    cv = v.canvas()
-                    for h in hlist:
-                        h.draw(v, cv, None)
+                v.handles = hlist + v.handles
+                cv = v.canvas()
+                for h in hlist:
+                    h.draw(v, cv, None)
 
         if v.info["viewname"] == "XZ":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
                 pass
             else:
-                if redraw and mouseflags == 1544 or mouseflags == 1032:
-                    pass
-                else:
-                    v.handles = hlist + v.handles
-                    cv = v.canvas()
-                    for h in hlist:
-                        h.draw(v, cv, None)
+                v.handles = hlist + v.handles
+                cv = v.canvas()
+                for h in hlist:
+                    h.draw(v, cv, None)
 
         if v.info["viewname"] == "3Dwindow":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
@@ -219,11 +242,13 @@ def commonhandles(self, redraw=1):
                 for h in hlist:
                     h.draw(v, cv, None)
 
-
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.16  2007/01/22 20:40:36  cdunde
+#To correct errors of previous version that stopped vertex drag lines from drawing.
+#
 #Revision 1.15  2007/01/21 19:49:17  cdunde
 #To cut down on lines and all handles being drawn when
 #mouse button is 1st pressed and zooming in Skin-view
