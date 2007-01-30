@@ -43,7 +43,6 @@ lengthnormalvect = 0
 mapicons_c = -1
 saveeditor = None
 modelcenter = None
-mouseflags = None
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -1147,8 +1146,6 @@ class FreeZoomDragObject(DragObject):
         self.view = view
 
     def dragto(self, x, y, flags):
-        global mouseflags
-        mouseflags = flags # for passing flags to any file that wants to call this global.
           # moving the mouse RIGHT means zoom IN
           # moving the mouse DOWN also means zoom IN
           # if you are unhappy with this, change it here...
@@ -1459,12 +1456,8 @@ class Rotator2D(DragObject):
         # Rotate the view. You can adjust the sensibility below.
         #
         info["angle"] = angle + (x-self.x0)*0.02
-        vangle = vangle + (y-self.y0)*0.01
-        if vangle<-1.25:
-            vangle = -1.25
-        elif vangle>1.25:
-            vangle = 1.25
-        info["vangle"] = vangle
+        info["vangle"] = vangle + (y-self.y0)*0.01
+
         #
         # First part of methods for rotation in the Model Editors 3D views.
         #
@@ -1856,6 +1849,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.34  2007/01/21 19:45:28  cdunde
+#Added the global mouseflags to get those where ever we need them and
+#get control over 3D viewname items to add new Model Editor Views Options.
+#
 #Revision 1.33  2006/12/15 09:03:35  cdunde
 #Additional code removal for redundancy of view redraws adding to slowdown.
 #
