@@ -1201,9 +1201,15 @@ class ScrollViewDragObject(DragObject):
         self.scroller = MakeScroller(editor.layout, view)
 
     def dragto(self, x, y, flags):
-        x = self.x0-x
-        y = self.y0-y
-        self.scroller(x, y)
+        try:
+            if view.info["viewname"] == "skinview":
+                x = self.x0-x
+                y = self.y0-y
+        except:
+            x = self.x0-x
+            y = self.y0-y
+            self.scroller(x, y)
+
 
 #
 # Mouse Free View like in Quake.
@@ -1849,6 +1855,11 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.35  2007/01/30 06:34:13  cdunde
+#Changed model rotation in the Model Editor for full rotations in all directions
+#Also to removed previously added global mouseflags that was giving delayed data
+#and replace with global flagsmouse that gives correct data before other functions.
+#
 #Revision 1.34  2007/01/21 19:45:28  cdunde
 #Added the global mouseflags to get those where ever we need them and
 #get control over 3D viewname items to add new Model Editor Views Options.

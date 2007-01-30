@@ -114,6 +114,11 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
         def scroller(x, y, view=view, hlink=sbviews[0], vlink=sbviews[1]):
             editor = saveeditor
             view.scrollto(x, y)
+            try:
+                if view.info["viewname"] == "skinview":
+                    return scroller
+            except:
+                pass
             if hlink is not None:
                 if hlink[0]:
                     hlink[1].scrollto(None, x)
@@ -181,6 +186,9 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.4  2006/11/30 01:17:48  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.3  2006/11/29 06:58:36  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.
