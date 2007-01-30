@@ -63,21 +63,22 @@ DF_AUTOFOCUS    = 8    # see MV_AUTOFOCUS
 DG_LINES            = 0x10000      # lines instead of dots
 DG_ONLYHIGHLIGHTED  = 0x20000      # omit the non-highlighted dots and draw the other ones using the 1st color instead
 
-# onmouse and onkey flags (for MapView objects)
+# onmouse and onkey flags (for MapView(s) and ModelView(s) objects)
+# These are added together to get the total Mouse Button "flags" value.
 MB_SHIFT        = 1
 MB_ALT          = 2
 MB_CTRL         = 4
-MB_LEFTBUTTON   = 8
-MB_RIGHTBUTTON  = 16
-MB_MIDDLEBUTTON = 32
+MB_LEFTBUTTON   = 8   ### This is WHEN this mouse button is being used by itself or with others.
+MB_RIGHTBUTTON  = 16  ### This is WHEN this mouse button is being used by itself or with others.
+MB_MIDDLEBUTTON = 32  ### This is WHEN this mouse button is being used by itself or with others.
 MB_DOUBLECLICK  = 64
 MB_CLICKED      = 256
-MB_DRAGSTART    = 512
-MB_DRAGGING     = 1024
-MB_DRAGEND      = 2048
+MB_DRAGSTART    = 512  ### This is WHEN the mouse button(s) are FIRST pressed.
+MB_DRAGGING     = 1024 ### This is WHILE the mouse button(s) are being pressed.
+MB_DRAGEND      = 2048 ### This is when the mouse button(s) is actually RELEASED.
 MB_KEYDOWN      = 4096
 MB_KEYUP        = 8192
-MB_MOUSEMOVE    = 16384
+MB_MOUSEMOVE    = 16384 ### This is when NO mouse button(s) are pressed and the mouse is being moved around.
 
 MB_NOGRID       = 65536
 MB_REDIMAGE     = MB_DRAGGING|MB_CTRL
@@ -398,7 +399,6 @@ def AutoZoom(views, bbox, margin=(20,18), scale1=1.0):
                 if (bx2 is None) or (p.x>bx2): bx2=p.x
                 if (by2 is None) or (p.y>by2): by2=p.y
             scale = v.info["scale"]
-            #print v.redlinesrect, scale, bx1, by1, bx2, by2
             x1,y1,x2,y2 = v.redlinesrect
             if bx2-bx1>0.1:
                 bx = scale * (x2-x1-margin[0])/(bx2-bx1)
@@ -1543,6 +1543,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.33  2006/12/22 01:12:17  cdunde
+#Updated Forums link.
+#
 #Revision 1.32  2006/11/30 01:19:33  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
