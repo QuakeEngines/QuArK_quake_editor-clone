@@ -33,6 +33,7 @@ import mdlentities
 ### globals
 startup = 0
 saveskin = None
+savedskins = {}
 skincount = 0
 
 class ModelLayout(BaseLayout):
@@ -42,9 +43,10 @@ class ModelLayout(BaseLayout):
     MAXAUTOZOOM = 10.0
 
     def clearrefs(self):
-        global startup, saveskin, skincount
+        global startup, saveskin, savedskins, skincount
         startup = 0
         saveskin = None
+        savedskins = {}
         skincount = 0
         BaseLayout.clearrefs(self)
         self.reset()
@@ -64,9 +66,13 @@ class ModelLayout(BaseLayout):
         global skincount, saveskin
         slist = []
         if self.editor.Root.currentcomponent is None and self.editor.Root.name.endswith(":mr"):
+            componentnames = []
             for item in self.editor.Root.dictitems:
                 if item.endswith(":mc"):
-                    self.editor.Root.currentcomponent = self.editor.Root.dictitems[item]
+                    componentnames.append(item)
+            componentnames.sort ()
+            self.editor.Root.currentcomponent = self.editor.Root.dictitems[componentnames[0]]
+                    
         if self.explorer.sellist == []:
             s = self.editor.Root.currentcomponent.currentskin
             if s is not None:
@@ -105,7 +111,7 @@ class ModelLayout(BaseLayout):
                             for dictitem in item.dictitems:
                                 if dictitem.endswith(".pcx") or dictitem.endswith(".jpg") or dictitem.endswith(".tga"):
                                     if count == 1:
-                                        holddictitem = item.dictitems[dictitem] # shouldn't this just be dictitem?
+                                        holddictitem = item.dictitems[dictitem]
                                     if len(item.dictitems) > 1:
                                         count = count + 1
                                     s = self.editor.Root.currentcomponent.currentskin
@@ -208,7 +214,7 @@ class ModelLayout(BaseLayout):
 
 
     def fillskinform(self, reserved):
-        global startup # Allows the skinform to fill the 1st time a model is loaded, to set it up.
+        global startup, saveskin, savedskins # Allows the skinform to fill the 1st time a model is loaded, to set it up.
      #   self.skinview.onmouse = self.polyviewmouse  ### was commented out, causes zoom to change when aother "component" folder is selected
                                                      ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
                                                      ### Commenting out due to conflict but possible future use.
@@ -247,7 +253,6 @@ class ModelLayout(BaseLayout):
                 startup = 1
 
         if len(slist) != 0 and slist[0] is not None:
-            print "went to handles 1"
             mdlhandles.buildskinvertices(self.editor, self.skinview, self, self.editor.Root.currentcomponent, slist[0])
         else:
             if self.explorer.sellist is not None and self.explorer.sellist != []:
@@ -256,17 +261,6 @@ class ModelLayout(BaseLayout):
 
         if self.editor.Root.currentcomponent is not None:
           ### These items are setup in the Skin:form section of the Defaults.qrk file.
-            q["header"] = "Selected Skin"
-            q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
-            q["ownedby"] = self.editor.Root.currentcomponent.shortname
-            if len(slist)!=0 and slist[0] is not None:
-                q["texture"] = slist[0].name
-            else:
-                q["texture"] = "no skins exist for this component"
-        else:
-            for item in self.editor.Root.dictitems:
-                if item.endswith(":mc"):
-                    self.editor.Root.currentcomponent = self.editor.Root.dictitems[item]
             q["header"] = "Selected Skin"
             q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
             q["ownedby"] = self.editor.Root.currentcomponent.shortname
@@ -318,17 +312,20 @@ class ModelLayout(BaseLayout):
 
     def selectskin(self, skin):
         "This is when you select a particular skin in the 'Skins' group of the Tree-view."
-        global saveskin
+        global saveskin, savedskins
         self.reset()
         c = self.componentof(skin)
-        if c is not None and skin is not c.currentskin:
+        if c is not None and skin is not c.currentskin and self.editor.Root.currentcomponent is not None:
             self.selectcomponent(c)
             c.currentskin = skin
             saveskin = skin
+            skincomponent = self.editor.Root.currentcomponent.shortname
+            savedskins[skincomponent] = saveskin
 
     def selchange(self):
         "This completes what ever selection def you are using above."
-        global startup
+        global startup, saveskin
+
         fs = self.explorer.uniquesel
         if fs is not None:
             if fs.type == ':mc':
@@ -377,6 +374,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.16  2007/01/22 20:40:36  cdunde
+#To correct errors of previous version that stopped vertex drag lines from drawing.
+#
 #Revision 1.15  2007/01/21 19:49:55  cdunde
 #To fix errors in Model Editor, sometimes there is no
 #currentcomponent in Full 3D Layout or switching layouts.
