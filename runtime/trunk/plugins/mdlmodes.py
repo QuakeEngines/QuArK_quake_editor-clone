@@ -115,9 +115,9 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (130,310)
+    size = (160,385)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
-    dfsep = 0.55    # sets 55% for labels and the rest for edit boxes
+    dfsep = 0.62    # sets 62% for labels and the rest for edit boxes
     dlgdef = """
         {
         Style = "13"
@@ -129,7 +129,14 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
 
         nohandles1: =
         {
-        Txt = "No handles"
+        Txt = "No drag handles"
+        Typ = "X1"
+        Hint = "No handles will exist"
+        }
+
+        drawnohandles1: =
+        {
+        Txt = "Draw no handles"
         Typ = "X1"
         Hint = "No handles will be drawn"
         }
@@ -143,7 +150,14 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
 
         nohandles2: =
         {
-        Txt = "No handles"
+        Txt = "No drag handles"
+        Typ = "X1"
+        Hint = "No handles will exist"
+        }
+
+        drawnohandles2: =
+        {
+        Txt = "Draw no handles"
         Typ = "X1"
         Hint = "No handles will be drawn"
         }
@@ -157,7 +171,14 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
 
         nohandles3: =
         {
-        Txt = "No handles"
+        Txt = "No drag handles"
+        Typ = "X1"
+        Hint = "No handles will exist"
+        }
+
+        drawnohandles3: =
+        {
+        Txt = "Draw no handles"
         Typ = "X1"
         Hint = "No handles will be drawn"
         }
@@ -171,7 +192,14 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
 
         nohandles4: =
         {
-        Txt = "No handles"
+        Txt = "No drag handles"
+        Typ = "X1"
+        Hint = "No handles will exist"
+        }
+
+        drawnohandles4: =
+        {
+        Txt = "Draw no handles"
         Typ = "X1"
         Hint = "No handles will be drawn"
         }
@@ -185,7 +213,14 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
 
         nohandles5: =
         {
-        Txt = "No handles"
+        Txt = "No drag handles"
+        Typ = "X1"
+        Hint = "No handles will exist"
+        }
+
+        drawnohandles5: =
+        {
+        Txt = "Draw no handles"
         Typ = "X1"
         Hint = "No handles will be drawn"
         }
@@ -200,10 +235,15 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
           Delete: =
           {            // the button resets to these amounts
         nohandles1 = "0"
+        drawnohandles1 = "0"
         nohandles2 = "0"
+        drawnohandles2 = "0"
         nohandles3 = "0"
+        drawnohandles3 = "0"
         nohandles4 = "0"
+        drawnohandles4 = "0"
         nohandles5 = "0"
+        drawnohandles5 = "0"
           }
         }
 
@@ -225,77 +265,228 @@ def OptionsViewsClick(m):
         src = self.src
 
       ### To populate settings...
-        if (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] is None):
+        if (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] is None):
 
             src["nohandles1"] = "0"
+            src["drawnohandles1"] = "0"
             src["nohandles2"] = "0"
+            src["drawnohandles2"] = "0"
             src["nohandles3"] = "0"
+            src["drawnohandles3"] = "0"
             src["nohandles4"] = "0"
+            src["drawnohandles4"] = "0"
             src["nohandles5"] = "0"
+            src["drawnohandles5"] = "0"
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] = src["nohandles1"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] = src["drawnohandles1"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] = src["nohandles2"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] = src["drawnohandles2"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] = src["nohandles3"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] = src["drawnohandles3"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] = src["nohandles4"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] = src["drawnohandles4"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] = src["nohandles5"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] = src["drawnohandles5"]
 
         else:
             src["nohandles1"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"]
+            src["drawnohandles1"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"]
             src["nohandles2"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"]
+            src["drawnohandles2"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"]
             src["nohandles3"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"]
+            src["drawnohandles3"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"]
             src["nohandles4"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"]
+            src["drawnohandles4"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"]
             src["nohandles5"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"]
+            src["drawnohandles5"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"]
 
 
         if src["nohandles1"]:
             onenohandles = src["nohandles1"]
+            clickedbutton(editor)
         else:
             onenohandles = "0"
+            clickedbutton(editor)
+
+
+        if src["drawnohandles1"]:
+            onedrawnohandles = src["drawnohandles1"]
+            clickedbutton(editor)
+        else:
+            onedrawnohandles = "0"
+            clickedbutton(editor)
 
 
         if src["nohandles2"]:
-            onenohandles = src["nohandles2"]
+            twonohandles = src["nohandles2"]
+            clickedbutton(editor)
         else:
-            onenohandles = "0"
+            twonohandles = "0"
+            clickedbutton(editor)
+
+
+        if src["drawnohandles2"]:
+            twodrawnohandles = src["drawnohandles2"]
+            clickedbutton(editor)
+        else:
+            twodrawnohandles = "0"
+            clickedbutton(editor)
 
 
         if src["nohandles3"]:
             threenohandles = src["nohandles3"]
+            clickedbutton(editor)
         else:
             threenohandles = "0"
+            clickedbutton(editor)
+
+
+        if src["drawnohandles3"]:
+            threedrawnohandles = src["drawnohandles3"]
+            clickedbutton(editor)
+        else:
+            threedrawnohandles = "0"
+            clickedbutton(editor)
 
 
         if src["nohandles4"]:
             fournohandles = src["nohandles4"]
+            clickedbutton(editor)
         else:
             fournohandles = "0"
+            clickedbutton(editor)
+
+
+        if src["drawnohandles4"]:
+            fourdrawnohandles = src["drawnohandles4"]
+            clickedbutton(editor)
+        else:
+            fourdrawnohandles = "0"
+            clickedbutton(editor)
 
 
         if src["nohandles5"]:
             fivenohandles = src["nohandles5"]
+            clickedbutton(editor)
         else:
             fivenohandles = "0"
+            clickedbutton(editor)
+
+
+        if src["drawnohandles5"]:
+            fivedrawnohandles = src["drawnohandles5"]
+            clickedbutton(editor)
+        else:
+            fivedrawnohandles = "0"
+            clickedbutton(editor)
 
 
     def action(self, editor=editor):
 
+        if (self.src["nohandles1"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] == "1":
+            onenohandles = (self.src["nohandles1"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] = onenohandles
+            (self.src["drawnohandles1"]) = "0"
+            onedrawnohandles = (self.src["drawnohandles1"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] = onedrawnohandles
+
+        if (self.src["drawnohandles1"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+            onedrawnohandles = (self.src["drawnohandles1"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] = onedrawnohandles
+            (self.src["nohandles1"]) = "0"
+            onenohandles = (self.src["nohandles1"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] = onenohandles
+
+        if (self.src["nohandles2"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] == "1":
+            twonohandles = (self.src["nohandles2"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] = twonohandles
+            (self.src["drawnohandles2"]) = "0"
+            twodrawnohandles = (self.src["drawnohandles2"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] = twodrawnohandles
+
+        if (self.src["drawnohandles2"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+            twodrawnohandles = (self.src["drawnohandles2"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] = twodrawnohandles
+            (self.src["nohandles2"]) = "0"
+            twonohandles = (self.src["nohandles2"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] = twonohandles
+
+        if (self.src["nohandles3"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] == "1":
+            threenohandles = (self.src["nohandles3"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] = threenohandles
+            (self.src["drawnohandles3"]) = "0"
+            threedrawnohandles = (self.src["drawnohandles3"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] = threedrawnohandles
+
+        if (self.src["drawnohandles3"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+            threedrawnohandles = (self.src["drawnohandles3"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] = threedrawnohandles
+            (self.src["nohandles3"]) = "0"
+            threenohandles = (self.src["nohandles3"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] = threenohandles
+
+        if (self.src["nohandles4"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] == "1":
+            fournohandles = (self.src["nohandles4"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] = fournohandles
+            (self.src["drawnohandles4"]) = "0"
+            fourdrawnohandles = (self.src["drawnohandles4"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] = fourdrawnohandles
+
+        if (self.src["drawnohandles4"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+            fourdrawnohandles = (self.src["drawnohandles4"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] = fourdrawnohandles
+            (self.src["nohandles4"]) = "0"
+            fournohandles = (self.src["nohandles4"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] = fournohandles
+
+        if (self.src["nohandles5"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] == "1":
+            fivenohandles = (self.src["nohandles5"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] = fivenohandles
+            (self.src["drawnohandles5"]) = "0"
+            fivedrawnohandles = (self.src["drawnohandles5"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] = fivedrawnohandles
+
+        if (self.src["drawnohandles5"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+            fivedrawnohandles = (self.src["drawnohandles5"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] = fivedrawnohandles
+            (self.src["nohandles5"]) = "0"
+            fivenohandles = (self.src["nohandles5"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] = fivenohandles
+
+
         onenohandles = (self.src["nohandles1"])
+        onedrawnohandles = (self.src["drawnohandles1"])
         twonohandles = (self.src["nohandles2"])
+        twodrawnohandles = (self.src["drawnohandles2"])
         threenohandles = (self.src["nohandles3"])
+        threedrawnohandles = (self.src["drawnohandles3"])
         fournohandles = (self.src["nohandles4"])
+        fourdrawnohandles = (self.src["drawnohandles4"])
         fivenohandles = (self.src["nohandles5"])
+        fivedrawnohandles = (self.src["drawnohandles5"])
 
       ### Save the settings...
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] = onenohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] = onedrawnohandles
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] = twonohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] = twodrawnohandles
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] = threenohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] = threedrawnohandles
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] = fournohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] = fourdrawnohandles
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] = fivenohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] = fivedrawnohandles
 
         self.src["nohandles1"] = onenohandles
+        self.src["drawnohandles1"] = onedrawnohandles
         self.src["nohandles2"] = twonohandles
+        self.src["drawnohandles2"] = twodrawnohandles
         self.src["nohandles3"] = threenohandles
+        self.src["drawnohandles3"] = threedrawnohandles
         self.src["nohandles4"] = fournohandles
+        self.src["drawnohandles4"] = fourdrawnohandles
         self.src["nohandles5"] = fivenohandles
+        self.src["drawnohandles5"] = fivedrawnohandles
 
         for view in editor.layout.views:
             type = view.info["type"]
@@ -375,6 +566,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.4  2007/01/21 20:28:26  cdunde
+# Update
+#
 # Revision 1.3  2007/01/21 01:17:47  cdunde
 # To try to fix version numbering.
 #

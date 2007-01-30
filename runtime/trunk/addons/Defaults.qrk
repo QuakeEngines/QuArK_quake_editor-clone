@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.301  2007/01/21 19:40:00  cdunde
+//To add new Model Editor Views Options button and functions
+//and changed file name from mdllocking.py for future items.
+//
 //Revision 1.300  2006/12/26 22:49:38  danielpharos
 //Splitted the Ed3DFX file into two separate renderers: Software and Glide
 //Also renamed all the 3DFX-stuff to Glide (3DFX is the name of the company behind Glide)
@@ -2927,10 +2931,15 @@ QQRKSRC1
       Options:config =
       {
         Options3Dviews_nohandles1 = "0"
+        Options3Dviews_drawnohandles1 = "0"
         Options3Dviews_nohandles2 = "0"
+        Options3Dviews_drawnohandles2 = "0"
         Options3Dviews_nohandles3 = "0"
+        Options3Dviews_drawnohandles3 = "0"
         Options3Dviews_nohandles4 = "0"
+        Options3Dviews_drawnohandles4 = "0"
         Options3Dviews_nohandles5 = "0"
+        Options3Dviews_drawnohandles5 = "0"
         setLock_X          = "0"
         setLock_Y          = "0"
         setLock_Z          = "0"
