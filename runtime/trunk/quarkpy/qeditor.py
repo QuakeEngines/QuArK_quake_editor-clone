@@ -49,8 +49,6 @@ MV_NOSCROLLBAR  = 16   # overrides the settings of flags 1 and 2
 MV_TOPREDLINE   = 32   # display the top red line
 MV_BOTTOMREDLINE= 64   # display the bottom red line
 
-texturedmodes = ("tex", "opengl")    # textured modes for map views
-
 # explorer flags
 EF_AUTOFOCUS    = 8    # see MV_AUTOFOCUS
 EF_NOKEYBDELAY  = 16   # no delay between movements in the tree from the keyboard and screen updates
@@ -1443,13 +1441,13 @@ def TexModeMenu(editor, view):
                 view.screencenter = center
                 setprojmode(view)
 
-    if view.viewmode == "opengl":
-        modhint = "the mode is fixed to OpenGL"
-        infobaselink = "intro.mapeditor.menu.html#layoutmenu"
-    else:
-        import qbasemgr
-        modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
-        infobaselink = "intro.mapeditor.menu.html#layoutmenu"
+    #if view.viewmode == "opengl":
+        #modhint = "the mode is fixed to OpenGL"
+        #infobaselink = "intro.mapeditor.menu.html#layoutmenu"
+    #else:
+    import qbasemgr
+    modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
+    infobaselink = "intro.mapeditor.menu.html#layoutmenu"
     Mod1 = qmenu.item("&Wireframe", setviewmode, modhint, infobaselink)
     Mod1.mode = "wire"
     Mod2 = qmenu.item("&Solid", setviewmode, modhint, infobaselink)
@@ -1458,10 +1456,10 @@ def TexModeMenu(editor, view):
     Mod3.mode = "tex"
     List = [Mod1, Mod2, Mod3]
     for menu in List:
-        if view.viewmode == "opengl":
-            menu.state = qmenu.disabled
-        else:
-            menu.state = menu.mode==view.viewmode and qmenu.radiocheck
+        #if view.viewmode == "opengl":
+            #menu.state = qmenu.disabled
+        #else:
+        menu.state = menu.mode==view.viewmode and qmenu.radiocheck
     import mdleditor
     if isinstance(editor, mdleditor.ModelEditor):
         if view.info["type"] == "2D":
@@ -1543,6 +1541,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.34  2007/01/30 06:45:53  cdunde
+#To add UNDERSTANDABLE and needed comments about mouse button "flags" keys available.
+#
 #Revision 1.33  2006/12/22 01:12:17  cdunde
 #Updated Forums link.
 #

@@ -333,7 +333,7 @@ class FaceType(EntityManager):
         #
         # Face handles
         #
-        if view.viewmode in texturedmodes:
+        if view.viewmode == "tex":
             #
             # Cyan L handles are useful on textured views only.
             #
@@ -700,6 +700,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.53  2006/12/13 03:17:46  cdunde
+#Changed Specifics so multiple selections of the same entity can be set together.
+#
 #Revision 1.52  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

@@ -1120,7 +1120,7 @@ def refreshtimer(self):
 
 def refreshtimertex(self):
     for v in self.views:
-        if (v.viewmode in texturedmodes) and (v is not self.view):
+        if (v.viewmode == "tex") and (v is not self.view):
             v.invalidate(1)
 
 #
@@ -1855,6 +1855,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.36  2007/01/30 06:37:37  cdunde
+#To get the Skin-view to scroll without having to redraw all the handles in every view.
+#Increases response time and drawing speed.
+#
 #Revision 1.35  2007/01/30 06:34:13  cdunde
 #Changed model rotation in the Model Editor for full rotations in all directions
 #Also to removed previously added global mouseflags that was giving delayed data
