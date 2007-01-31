@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/01/11 17:45:37  danielpharos
+Fixed wrong return checks for LoadLibrary, and commented out the fatal ExitProcess call. QuArK should no longer crash-to-desktop when it's missing a Steam dll file.
+
 Revision 1.11  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -164,6 +167,26 @@ begin
   end;
 end;
 
+procedure uninitdll;
+begin
+  if Hgcfwrap <> 0 then
+  begin
+    if FreeLibrary(Hgcfwrap)=false then
+      Fatal('Unable to unload dlls/QuArKGCF.dll');
+    Hgcfwrap := 0;
+    APIVersion      := nil;
+    GCFOpen         := nil;
+    GCFClose        := nil;
+    GCFOpenElement  := nil;
+    GCFCloseElement := nil;
+    GCFReadFile     := nil;
+    GCFFileSize     := nil;
+    GCFElementIsFolder  := nil;
+    GCFNumSubElements   := nil;
+    GCFGetSubElement    := nil;
+    GCFSubElementName   := nil;
+  end;
+end;
 
  {------------ QGCFFolder ------------}
 
@@ -375,7 +398,13 @@ end;
  {------------------------}
 
 initialization
+begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QGCF, 's');
   RegisterQObject(QGCFFolder, 'a');
+  Hgcfwrap :=0;
+end;
+
+finalization
+  uninitdll;
 end.

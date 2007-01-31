@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/01/11 17:44:36  danielpharos
+Changed the Python Dll loading stuff. QuArK now only asks for Python.dll, and let's Windows do the searching work.
+
 Revision 1.20  2006/04/06 19:44:56  nerdiii
 Cleaned some compiler hints
 
@@ -433,6 +436,7 @@ procedure Py_XDECREF(o: PyObject);
 function PySeq_Item(o: PyObject; index: Integer) : PyObject;}
 
 var
+ PythonLib: THandle;
  PyInt_Type:    PyTypeObject;
  PyType_Type:   PyTypeObject;
  PyList_Type:   PyTypeObject;
@@ -447,8 +451,7 @@ function InitializePython : Integer;
 implementation
 
 uses
-{$IFDEF Debug} QkObjects, {$ENDIF}
-     Windows, Registry, SysUtils;
+  Windows, Registry, SysUtils, QkObjects;
 
  {-------------------}
 
@@ -526,18 +529,23 @@ type
 var
   obj1: PyObject;
   I: Integer;
-  Lib: THandle;
   P: Pointer;
   s: string;
 begin
   Result:=3;
-  Lib:=LoadLibrary('dlls/python.dll');
-  if Lib=0 then
-    Exit;
+  if PythonLib=0 then
+  begin
+    PythonLib:=LoadLibrary('dlls/python.dll');
+    if PythonLib=0 then
+    begin
+      Exit;  {This is handled manually}
+      {Raise InternalE('Unable to load dlls/PythonLib.dll');}
+    end;
+  end;
   Result:=2;
   for I:=Low(PythonProcList) to High(PythonProcList) do
   begin
-    P:=GetProcAddress(Lib, PythonProcList[I].Name);
+    P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
     if P=Nil then
      Exit;
     PPointer(PythonProcList[I].Variable)^:=P;
@@ -587,6 +595,12 @@ begin
   Result:=0;
 end;
 
+procedure UnInitializePython;
+begin
+  if FreeLibrary(PythonLib)=false then
+    raise InternalE('Unable to unload dlls/PythonLib.dll');
+  PythonLib:=0;
+end;
 
 function PyObject_NEW(t: PyTypeObject) : PyObject;
 var
@@ -829,5 +843,11 @@ begin
    Result:=tp_as_sequence^.sq_item(o, index);
 end;}
 
+initialization
+  PythonLib:=0;
+
+finalization
+  {UnInitializePython;}
+  {This apparently creates problems...}
 end.
 

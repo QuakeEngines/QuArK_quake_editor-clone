@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/01/11 17:45:37  danielpharos
+Fixed wrong return checks for LoadLibrary, and commented out the fatal ExitProcess call. QuArK should no longer crash-to-desktop when it's missing a Steam dll file.
+
 Revision 1.9  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -93,7 +96,9 @@ end;
 
 var
 // binding to c dll
-  Hsteamfswrap  : HINST=0;
+  Htier0  : HINST;
+  Hvstdlib  : HINST;
+  Hsteamfswrap  : HINST;
 
 // c signatures
 
@@ -153,20 +158,23 @@ begin
 end;
 
 procedure initdll;
-var
- Htier0  : HINST;
- Hvstdlib  : HINST;
 begin
-  if Hsteamfswrap = 0 then
+  if Htier0 = 0 then
   begin
     Htier0 := LoadLibrary('tier0.dll');
     if Htier0 = 0 then
       Fatal('Unable to load tier0.dll');
+  end;
 
+  if Hvstdlib = 0 then
+  begin
     Hvstdlib := LoadLibrary('vstdlib.dll');
     if Hvstdlib = 0 then
       Fatal('Unable to load vstdlib.dll');
+  end;
 
+  if Hsteamfswrap = 0 then
+  begin
     Hsteamfswrap := LoadLibrary('dlls/QuArKSteamFS.dll');
     if Hsteamfswrap = 0 then
       Fatal('Unable to load dlls/QuArKSteamFS.dll')
@@ -190,6 +198,42 @@ begin
   end;
 end;
 
+procedure uninitdll;
+begin
+  if Htier0 <> 0 then
+  begin
+    if FreeLibrary(Htier0) = false then
+      Fatal('Unable to unload tier0.dll');
+    Htier0 := 0;
+  end;
+  
+  if Hvstdlib <> 0 then
+  begin
+    if FreeLibrary(Hvstdlib) = false then
+      Fatal('Unable to unload vstdlib.dll');
+    Hvstdlib := 0;
+  end;
+
+  if Hsteamfswrap <> 0 then
+  begin
+    if FreeLibrary(Hsteamfswrap) = false then
+      Fatal('Unable to unload dlls/QuArKSteamFS.dll');
+    Hsteamfswrap := 0;
+
+    APIVersion      := nil;
+    SteamFSInit            := nil;
+    SteamFSTerm            := nil;
+    SteamFSOpen            := nil;
+    SteamFSClose           := nil;
+    SteamFSSize            := nil;
+    SteamFSRead            := nil;
+    SteamFSFindFirst       := nil;
+    SteamFSFindNext        := nil;
+    SteamFSFindFinish      := nil;
+    SteamFSFindName        := nil;
+    SteamFSFindIsDir       := nil;
+  end;
+end;
 
  {------------ QSteamFSFolder ------------}
 
@@ -422,7 +466,13 @@ end;
  {------------------------}
 
 initialization
+begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QSteamFS, 's');
   RegisterQObject(QSteamFSFolder, 'a');
+  Hsteamfswrap:=0;
+end;
+
+finalization
+  uninitdll;
 end.

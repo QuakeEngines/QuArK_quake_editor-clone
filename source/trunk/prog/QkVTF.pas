@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/01/11 17:45:37  danielpharos
+Fixed wrong return checks for LoadLibrary, and commented out the fatal ExitProcess call. QuArK should no longer crash-to-desktop when it's missing a Steam dll file.
+
 Revision 1.14  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -73,7 +76,7 @@ new: support for vtf file loading
 unit QkVTF;
 
 interface
-uses Classes, QkImages,QkPixelSet, QkObjects, QkFileObjects;
+uses Windows, Classes, QkImages,QkPixelSet, QkObjects, QkFileObjects;
 
 
 
@@ -93,7 +96,7 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows,Logging;
+uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging;
 
 const RequiredVTFAPI=5;
 
@@ -127,7 +130,9 @@ const IF_UVLX8888= 25;
 const IF_LAST= 26;
 
 var
-  HQuArKVTF   : HINST;
+  Htier0  : THandle;
+  Hvstdlib  : THandle;
+  HQuArKVTF   : THandle;
 
 // c signatures
 // DWORD APIVersion(void)
@@ -157,20 +162,23 @@ begin
 end;
 
 procedure initdll;
-var
- Htier0  : HINST;
- Hvstdlib  : HINST;
 begin
-  if HQuArKVTF = 0 then
+  if Htier0 = 0 then
   begin
     Htier0 := LoadLibrary('tier0.dll');
     if Htier0 = 0 then
       Fatal('Unable to load tier0.dll');
+  end;
 
+  if Hvstdlib = 0 then
+  begin
     Hvstdlib := LoadLibrary('vstdlib.dll');
     if Hvstdlib = 0 then
       Fatal('Unable to load vstdlib.dll');
+  end;
 
+  if HQuArKVTF = 0 then
+  begin
     HQuArKVTF := LoadLibrary('dlls/QuArKVTF.dll');
     if HQuArKVTF = 0 then
       Fatal('Unable to load dlls/QuArKVTF.dll')
@@ -187,6 +195,35 @@ begin
   end;
 end;
 
+procedure uninitdll;
+begin
+  if Htier0 <> 0 then
+  begin
+    if FreeLibrary(Htier0) = false then
+      Fatal('Unable to load untier0.dll');
+    Htier0 := 0;
+  end;
+
+  if Hvstdlib <> 0 then
+  begin
+    if FreeLibrary(Hvstdlib) = false then
+      Fatal('Unable to unload vstdlib.dll');
+    Hvstdlib := 0;
+  end;
+
+  if HQuArKVTF <> 0 then
+  begin
+    if FreeLibrary(HQuArKVTF) = false then
+      Fatal('Unable to unload dlls/QuArKVTF.dll');
+    HQuArKVTF := 0;
+    
+    APIVersion      := nil;
+    vtf_to_mem := nil;
+    vtf_info   := nil;
+    filesize_of_vtf:=nil;
+    mem_to_vtf:=nil;
+  end;
+end;
 
 class function QVTF.TypeInfo: String;
 begin
@@ -211,8 +248,8 @@ type
   PRGB = ^TRGB;
   TRGB = array[0..2] of Byte;
 var
-  AlphaData,ImgData, RawBuffer, DecodedBuffer: String;
-  Source, DestAlpha, DestImg,pSource, pDestAlpha, pDestImg: PChar;
+  AlphaData, ImgData, RawBuffer, DecodedBuffer: String;
+  Source, DestAlpha, DestImg, pSource, pDestAlpha, pDestImg: PChar;
   I,J: Integer;
   NumberOfPixels,mip: Integer;
   Width,Height,MipLevels,HasAlpha:Integer;
@@ -224,35 +261,35 @@ begin
 
 // new code
       SetLength(RawBuffer, FSize);
-      F.Seek(0, 0	  );
+      F.Seek(0, 0);
       F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
 
-     if @vtf_info <> nil then
-     begin
-      if 0 = vtf_info (PChar(RawBuffer), FSize, @Width, @Height, @MipLevels, @HasAlpha) then
-        Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
-
-      mip:=0;
-
-      for i:=1 to mip do
+      if @vtf_info <> nil then
       begin
-        width:=width div 2;
-        height:=height div 2;
-      end;
+        if 0 = vtf_info (PChar(RawBuffer), FSize, @Width, @Height, @MipLevels, @HasAlpha) then
+          Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
 
-      NumberOfPixels:= Width*Height;
-      SetSize(Point(Width , Height ));
-      if HasAlpha=1 then
-        SetLength(DecodedBuffer, NumberOfPixels * 4 )
+        mip:=0;
+
+        for i:=1 to mip do
+        begin
+          width:=width div 2;
+          height:=height div 2;
+        end;
+
+        NumberOfPixels:= Width*Height;
+        SetSize(Point(Width , Height ));
+        if HasAlpha=1 then
+          SetLength(DecodedBuffer, NumberOfPixels * 4 )
+        else
+          SetLength(DecodedBuffer, NumberOfPixels * 3 );
+
+        if 0 = vtf_to_mem (PChar(RawBuffer), FSize, mip, PChar(DecodedBuffer), HasAlpha) then
+          Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
+
+      end
       else
-        SetLength(DecodedBuffer, NumberOfPixels * 3 );
-
-      if 0 = vtf_to_mem (PChar(RawBuffer), FSize,mip ,PChar(DecodedBuffer),HasAlpha) then
-        Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
-
-     end
-     else
-       Raise EError(5705);
+        Raise EError(5705);
 
 
       if HasAlpha=1 then
@@ -266,12 +303,12 @@ begin
 
         {copy and reverse the upside down RGBA image to quarks internal format}
         {also the alpha channel is split}
-        Source:=PChar(DecodedBuffer)+ NumberOfPixels*4;
+        Source:=PChar(DecodedBuffer)+ NumberOfPixels * 4;
         DestImg:=PChar(ImgData)+Length(ImageSpec);
         DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
         for J:=1 to Height do
         begin
-          Dec(Source,  4 * Width);
+          Dec(Source, 4 * Width);
           pSource:=Source;
           pDestImg:=DestImg;
           pDestAlpha:=DestAlpha;
@@ -298,7 +335,7 @@ begin
 
         {allocate quarks image buffers}
         ImgData:=ImageSpec;
-        SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
+        SetLength(ImgData, Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
         AlphaData:=AlphaSpec;
 
         {copy and reverse the upside down RGB image to quarks internal format}
@@ -306,7 +343,7 @@ begin
         DestImg:=PChar(ImgData)+Length(ImageSpec);
         for J:=1 to Height do
         begin
-          Dec(Source,  3 * Width);
+          Dec(Source, 3 * Width);
           pSource:=Source;
           pDestImg:=DestImg;
           for I:=1 to Width do
@@ -325,10 +362,10 @@ begin
 
       end;
 
-     end;
-     else
-       inherited;
-   end;
+    end;
+    else
+      inherited;
+  end;
 end;
 
 procedure QVTF.SaveFile(Info: TInfoEnreg1);
@@ -447,6 +484,14 @@ end;
 
 
 initialization
+begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QVTF, 'v');
+  Htier0:=0;
+  Hvstdlib:=0;
+  HQuArKVTF:=0;
+end;
+
+finalization
+  uninitdll;
 end.
