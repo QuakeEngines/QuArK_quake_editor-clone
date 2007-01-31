@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.22  2003/07/21 04:50:02  nerdiii
 Linux compatibility ( '/' '\' )
 
@@ -552,6 +555,7 @@ begin
       finally
         ProgressIndicatorStop;
       end;
+      files.free;
     end;
     else
       inherited;
