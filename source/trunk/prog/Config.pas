@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2002/05/15 22:04:50  tiglari
 fixes to map reading error recording (so that new maps can be created ..)
 
@@ -440,7 +443,11 @@ begin
     else Abort;
    end;
   end;
- MAJAffichage(Nil);
+ try
+  MAJAffichage(Nil);
+ except
+  Exit;
+ end;
 end;
 
 procedure TConfigDlg.OkBtnClick(Sender: TObject);
