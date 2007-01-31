@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
 Revision 1.39  2007/01/11 18:08:06  danielpharos
 Fix for the panels sometimes not displaying anything
 
@@ -1869,8 +1872,7 @@ var
  SurfEnd: PChar;
  PV, PVBase, PV2, PV3: PVertex3D;
  NeedTex, NeedColor: Boolean;
- I, Sz: Integer;
- NormalVector: array[0..2] of GLfloat;
+ I: Integer;
  MaxLightNumber: LongInt;
  LightIndex: LongInt;
  PL: PLightList;
@@ -1878,6 +1880,7 @@ var
  LightNR: LongInt;
  LightParam: array[0..3] of GLfloat;
  GLColor: GLfloat4;
+ PSD: TPixelSetDescription;
 begin
   FullBright.ZeroLight:=1;
   FullBright.BrightnessSaturation:=0;
@@ -1973,7 +1976,24 @@ begin
       end;
 
       CurrentAlpha:=AlphaColor;
-      UnpackColor(AlphaColor, Currentf);
+      if NeedColor then
+      begin
+        with PList^.Texture^ do
+        begin
+          if MeanColor = MeanColorNotComputed then
+          begin
+            PSD:=GetTex3Description(PList^.Texture^);
+            try
+              MeanColor:=ComputeMeanColor(PSD);
+            finally
+              PSD.Done;
+            end;
+          end;
+          UnpackColor(MeanColor, Currentf);
+        end;
+      end
+      else
+        UnpackColor(AlphaColor, Currentf);
 
       if NeedTex then
       begin
