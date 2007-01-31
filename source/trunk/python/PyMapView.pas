@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2006/12/31 21:40:50  danielpharos
+Splitted the Ed3DFX file into two separate renderers: Software and Glide
+
 Revision 1.22  2006/11/30 00:44:55  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
@@ -176,7 +179,8 @@ type
                  RedLines: array[0..1] of Single;
                  FScene: TSceneObject;
                  SceneConfigSrc: QObject;
-                 SoftQuality, DynamicQuality: Byte;
+                 SceneConfigSubSrc: QObject;
+                 StillQuality, MovingQuality: Byte;
                  FullScreen: Boolean;
                  SecondMonitor: Char;  { #0: none, '1': left, '2': right }
                  FKey3D: array[TKey3D] of Word;
@@ -194,6 +198,7 @@ type
                  procedure MouseTimerTimer(Sender: TObject);
                  function GetHandle(X,Y: Integer; Corrige: Boolean; MouseArea: PRect) : PyObject;
                  function ConfigSrc : QObject;
+                 function ConfigSubSrc : QObject;
                  procedure ReadSetupInformation(Inv: Boolean);
                  procedure SetScreenSize(SX, SY: Integer);
                  procedure ClearPanel(const S: String);
@@ -372,7 +377,7 @@ begin
      FEntityForms:=Nil;
      if ViewMode<>vmWireframe then
       begin
-       if Scene.ChangeQuality(SoftQuality) then
+       if Scene.ChangeQuality(StillQuality) then
         SetScreenSize(ClientWidth, ClientHeight);
        Invalidate;
       end;
@@ -405,7 +410,7 @@ begin
       Brush:=0;}
       if not FullScreen then
        begin
-        if Scene.ChangeQuality(DynamicQuality) then
+        if Scene.ChangeQuality(MovingQuality) then
          SetScreenSize(ClientWidth, ClientHeight);
         DC:=GetDC(Handle)
        end
@@ -478,6 +483,28 @@ begin
   Result:=SceneConfigSrc;
 end;
 
+function TPyMapView.ConfigSubSrc : QObject;
+var
+ S: String;
+begin
+ if SceneConfigSubSrc=Nil then
+ begin
+   S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
+   if S='qrksoftg.dll' then
+     Result:=SetupSubSet(ssGeneral, 'Software 3D')
+   else if S='glide2x.dll' then
+     Result:=SetupSubSet(ssGeneral, 'Glide (3DFX)')
+   else if S='OpenGL32.dll' then
+     Result:=SetupSubSet(ssGeneral, 'OpenGL')
+   else if S='d3d9.dll' then
+     Result:=SetupSubSet(ssGeneral, 'DirectX')
+   else
+     raise InternalE('NeedScene');
+ end
+ else
+  Result:=SceneConfigSubSrc;
+end;
+
 procedure TPyMapView.ReadSetupInformation(Inv: Boolean);
 var
 {Size: array[1..2] of Single;}
@@ -497,9 +524,6 @@ begin
       SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')
      else
       SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', Nil);
-      SoftQuality:=StrToIntDef(Specifics.Values['SoftQuality'], 0);
-      DynamicQuality:=StrToIntDef(Specifics.Values['DynamicQuality'], 0);
-     TGlideSceneObject(Scene).SoftBufferFormat:=SoftQuality;
     end;
 
    if MapViewProj is TCameraCoordinates then
@@ -544,6 +568,12 @@ begin
 
    if Scene<>Nil then
     begin
+     if (Scene is TSoftwareSceneObject) or (Scene is TGLSceneObject) then
+     begin
+       StillQuality:=StrToIntDef(ConfigSubSrc.Specifics.Values['StillQuality'], 0);
+       MovingQuality:=StrToIntDef(ConfigSubSrc.Specifics.Values['MovingQuality'], 2);
+       Scene.ChangeQuality(StillQuality);
+     end;
      if Specifics.Values['Entities']='' then
       ve1:=veNever
      else
@@ -1471,7 +1501,7 @@ begin
 
      if not FullScreen then
       begin
-       if Scene.ChangeQuality(DynamicQuality) then
+       if Scene.ChangeQuality(MovingQuality) then
         SetScreenSize(ClientWidth, ClientHeight);
        DC:=GetDC(Handle)
       end
@@ -1636,7 +1666,7 @@ begin
 
     if ViewMode<>vmWireframe then
      begin
-      if Scene.ChangeQuality(SoftQuality) then
+      if Scene.ChangeQuality(StillQuality) then
        SetScreenSize(ClientWidth, ClientHeight);
       Invalidate;
      end;

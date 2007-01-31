@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2006/12/26 22:48:16  danielpharos
+A little fix to reduce the amount of grid-draw-problems with OpenGL
+
 Revision 1.14  2006/12/03 23:13:33  danielpharos
 Fixed the maximum texture dimension for OpenGL
 
@@ -94,6 +97,7 @@ type
   GLdouble   = Double;
   GLclampd   = Double;
   PGLint     = ^GLint;
+  PGLfloat   = ^GLfloat;
 
 const
   (* AccumOp *)
@@ -657,6 +661,7 @@ const
 
 type
   TMatrix4f = array[0..3, 0..3] of GLdouble;
+  GLfloat4 = array[0..3] of GLfloat;
 
 var
   (*
@@ -716,6 +721,14 @@ var
   glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall; {Decker 2003.03.12 - Added}
   glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall; {Daniel 2006.09.19 - Added}
   glGetIntegerv: procedure (pname: GLenum; params: PGLint) stdcall; {Daniel 2006.12.03 - Added}
+  glLightModelf: procedure (pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.15 - Added}
+  glLightModelfv: procedure (pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.14 - Added}
+  glLightf: procedure (light: GLenum; pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.14 - Added}
+  glLightfv: procedure (light: GLenum; pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.14 - Added}
+  glMaterialf: procedure (face: GLenum; pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.15 - Added}
+  glMaterialfv: procedure (face: GLenum; pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.15 - Added}
+  glNormal3fv: procedure (v: PGLfloat) stdcall; {Daniel 2007.01.23 - Added}
+  glFrontFace: procedure (mode: GLenum) stdcall; {Daniel 2007.01.30 - Added}
 
   (*
   ** Utility routines from GLU32.DLL
@@ -730,7 +743,7 @@ procedure UnloadOpenGl;
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..45] of //Daniel 2006.12.03 - modified
+  OpenGL32DLL_FuncList : array[0..53] of //Daniel 2007.01.30 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -785,6 +798,14 @@ const
    ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           ) //Decker 2003.03.12 - Added
    ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //Daniel 2006.09.28 - Added
    ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         ) //Daniel 2006.12.03 - Added
+   ,(FuncPtr: @@glLightModelf;         FuncName: 'glLightModelf'         ) //Daniel 2007.01.15 - Added
+   ,(FuncPtr: @@glLightModelfv;        FuncName: 'glLightModelfv'        ) //Daniel 2007.01.14 - Added
+   ,(FuncPtr: @@glLightf;              FuncName: 'glLightf'              ) //Daniel 2007.01.14 - Added
+   ,(FuncPtr: @@glLightfv;             FuncName: 'glLightfv'             ) //Daniel 2007.01.14 - Added
+   ,(FuncPtr: @@glMaterialf;           FuncName: 'glMaterialf'           ) //Daniel 2007.01.15 - Added
+   ,(FuncPtr: @@glMaterialfv;          FuncName: 'glMaterialfv'          ) //Daniel 2007.01.15 - Added
+   ,(FuncPtr: @@glNormal3fv;           FuncName: 'glNormal3fv'           ) //Daniel 2007.01.23 - Added
+   ,(FuncPtr: @@glFrontFace;           FuncName: 'glFrontFace'           ) //Daniel 2007.01.30 - Added
  );
 
   Glu32DLL_FuncList : array[0..0] of

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2006/12/26 22:49:06  danielpharos
+Splitted the Ed3DFX file into two separate renderers: Software and Glide
+
 Revision 1.35  2006/12/06 18:46:02  danielpharos
 Fixed the software & glide lock-up!
 
@@ -180,6 +183,8 @@ type
    CurrentAlpha: FxU32;
    Fog: Boolean;
    ViewRect: TViewRect;
+   SoftBufferFormat: Integer;
+   FogTableCache: ^GrFogTable_t;
    GlideLoaded: Boolean;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
@@ -194,8 +199,6 @@ type
    procedure RenderTransparent(Transparent: Boolean);
    procedure BuildTexture(Texture: PTexture3); override;
  public
-   SoftBufferFormat: Integer;
-   FogTableCache: ^GrFogTable_t;
    constructor Create(ViewMode: TMapViewMode);
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
@@ -1053,7 +1056,7 @@ begin
     PList:=FListSurfaces;
     while Assigned(PList) do
     begin
-      if Transparent in PList^.Transparent then
+      if PList^.Transparent=Transparent then
       begin
         PList^.ok:=False;
         if PList^.Texture^.startAddress<>GR_NULL_MIPMAP_HANDLE then
@@ -1067,7 +1070,7 @@ begin
   PList:=FListSurfaces;
   while Assigned(PList) do
   begin
-    if Transparent in PList^.Transparent then
+    if PList^.Transparent=Transparent then
       if SolidColors or not PList^.ok then
         RenderPList(PList, Transparent);
 

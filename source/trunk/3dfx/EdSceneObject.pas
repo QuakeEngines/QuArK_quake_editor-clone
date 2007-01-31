@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/01/06 11:37:23  danielpharos
+Fixed the 'Image data missing' error when loading a shader without valid image. Also, QuArK will now automatically use the checkboard-pattern for those faces.
+
 Revision 1.18  2006/12/26 22:49:05  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -136,6 +139,8 @@ type
  TDisplayMode = (dmEditor, dmPanel, dmWindow, dmFullScreen);
  TDisplayType = (dtXY, dtXZ, dtYZ, dt2D, dt3D);
 
+ POpenGLLightingList = ^LongInt;
+
  PModel3DInfo = ^TModel3DInfo;
  TModel3DInfo = record
                   Base: QComponent;
@@ -159,7 +164,7 @@ type
                Normale: vec3_t;          { not defined if GL_TRI_STRIP }
                Dist: scalar_t;           { not defined if GL_TRI_STRIP }
                GlideRadius: scalar_t;
-               OpenGLDisplayList: Integer;
+               OpenGLLightList: POpenGLLightingList;
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: FxU32;
                TextureMode: Integer;
@@ -189,7 +194,7 @@ type
               SurfSize: Integer;
               Surf, tmp: PSurface3D;
               ok: Boolean;
-              Transparent: set of Boolean;
+              Transparent: Boolean;
              end;
 
  {------------------------}
@@ -382,7 +387,15 @@ begin
   begin
    P:=FListSurfaces;
    FListSurfaces:=P^.Next;
-   FreeMem(P^.Surf);
+   if Assigned(P^.Surf) then
+   begin
+     if not (P^.Surf^.OpenGLLightList = nil) then
+     begin
+       FreeMem(P^.Surf^.OpenGLLightList);
+       P^.Surf^.OpenGLLightList:=nil;
+     end;
+     FreeMem(P^.Surf);
+   end;
    Dispose(P);
   end;
 end;
@@ -575,6 +588,7 @@ var
 
         Dist:=vp0^[0]*Normale[0] + vp0^[1]*Normale[1] + vp0^[2]*Normale[2];
 
+        OpenGLLightList:=nil;
         if nRadius2>Radius2 then
           GlideRadius:=Sqrt(nRadius2)
         else
@@ -869,6 +883,7 @@ begin
 
            Dist:=F.Dist;
            VertexCount:=prvVertexCount;
+           OpenGLLightList:=nil;
 
            with F.GetFaceOpacity(PList^.Texture^.DefaultAlpha) do
            begin
@@ -878,17 +893,16 @@ begin
                AlphaColor:=CurrentColor or (Value shl 24);
              TextureMode:=Mode;
            end;
-           Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
+           PList^.Transparent:=AlphaColor and $FF000000 <> $FF000000;
 
-      (*   // version 1.9 caused 6.4.1 alpha 2 slowdown with code below.
            // if the texture has alpha channel its probably transparent
            if assigned (PList^.Texture^.SourceTexture) then
              if PList^.Texture^.SourceTexture.Description.AlphaBits = psa8bpp then
                begin
-                 Include(PList^.Transparent,True);
+                 PList^.Transparent:=True;
                  TextureMode:=2;
                  AlphaColor:=CurrentColor or (254 shl 24);
-               end   *)
+               end
          end;
 
          if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
@@ -1000,9 +1014,7 @@ begin
          end;
 
          if (Mode=bmSoftware) or (Mode=bmGlide) then
-           Surf3D^.GlideRadius:=Sqrt(Radius2)
-         else
-           Surf3D^.OpenGLDisplayList:=0;
+           Surf3D^.GlideRadius:=Sqrt(Radius2);
 
          PList^.tmp:=PSurface3D(PV);
        end;
@@ -1037,7 +1049,7 @@ begin
          else
            Surf3D:=PList^.tmp;
 
-         Include(PList^.Transparent, ModelAlpha<>255);
+         PList^.Transparent:=ModelAlpha<>255;
 
          stScaleModel(PList^.Texture, CorrW, CorrH);
 
@@ -1088,6 +1100,7 @@ begin
                Normale[2]:=DeltaV.Z*dd;
 
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+               OpenGLLightList:=nil;
 
                if (Mode=bmSoftware) or (Mode=bmGlide) then
                begin
@@ -1095,9 +1108,7 @@ begin
                    GlideRadius:=Sqrt(nRadius2)
                  else
                    GlideRadius:=Sqrt(Radius2);
-               end
-               else
-                 OpenGLDisplayList:=0;
+               end;
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (ModelAlpha shl 24);
@@ -1142,7 +1153,7 @@ begin
          else
            Surf3D:=PList^.tmp;
 
-         Include(PList^.Transparent, Alpha<>255);
+         PList^.Transparent:=Alpha<>255;
 
          stScaleSprite(PList^.Texture, CorrW, CorrH);
 
@@ -1193,6 +1204,7 @@ begin
                Normale[2]:=DeltaV.Z*dd;
 
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+               OpenGLLightList:=nil;
 
                if (Mode=bmSoftware) or (Mode=bmGlide) then
                begin
@@ -1200,9 +1212,7 @@ begin
                    GlideRadius:=Sqrt(nRadius2)
                  else
                    GlideRadius:=Sqrt(Radius2);
-               end
-               else
-                 OpenGLDisplayList:=0;
+               end;
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (Alpha shl 24);
@@ -1252,7 +1262,7 @@ begin
            NewRenderMode:=Mode;
          end;
 
-         Include(PList^.Transparent, ObjectColor and $FF000000 <> $FF000000);
+         PList^.Transparent:=ObjectColor and $FF000000 <> $FF000000;
 
          stScaleBezier(PList^.Texture, CorrW, CorrH);
          BezierBuf:=GetMeshCache;
@@ -1293,7 +1303,7 @@ begin
              begin
                with Surf3D^ do
                begin
-                 OpenGLDisplayList:=0;
+                 OpenGLLightList:=nil;
                  VertexCount:=-(2*BezierBuf.W);
                  AlphaColor:=ObjectColor;
                  TextureMode:=NewRenderMode;
