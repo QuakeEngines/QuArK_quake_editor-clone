@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.39  2003/12/17 14:00:11  peter-b
 - Rewrote defines for setting Python version
 - Removed back-compatibility with Python 1.5
@@ -292,6 +295,7 @@ var
  oObj: PyObject;
  DT: Boolean;
 begin
+ Result:=False;
  if Pool<>Nil then
   begin
    DT:=False;
@@ -315,10 +319,7 @@ begin
         Py_DECREF(oObj);
         Dec(Count);
         if Count=0 then
-         begin
-          Result:=False;
           Exit;
-         end;
        end
       else
        Inc(I);
