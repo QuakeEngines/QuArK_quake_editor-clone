@@ -1,5 +1,6 @@
 (**************************************************************************
-Vtf texture loader by (c) alexander
+QuArK -- Quake Army Knife -- 3D game editor - Vtf texture loader
+Copyright (C) Alexander Haarer
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/01/31 15:05:20  danielpharos
+Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
+
 Revision 1.15  2007/01/11 17:45:37  danielpharos
 Fixed wrong return checks for LoadLibrary, and commented out the fatal ExitProcess call. QuArK should no longer crash-to-desktop when it's missing a Steam dll file.
 
