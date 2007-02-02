@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/01/31 16:42:40  danielpharos
+Workaround for an access violation on shutdown
+
 Revision 1.9  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -443,11 +446,7 @@ begin
     else Abort;
    end;
   end;
- try
-  MAJAffichage(Nil);
- except
-  Exit;
- end;
+ MAJAffichage(Nil);
 end;
 
 procedure TConfigDlg.OkBtnClick(Sender: TObject);
