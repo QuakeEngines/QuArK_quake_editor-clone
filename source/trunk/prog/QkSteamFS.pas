@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/02/02 00:51:02  danielpharos
+The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
+
 Revision 1.12  2007/02/01 23:13:53  danielpharos
 Fixed a few copyright headers
 
@@ -172,10 +175,11 @@ var
 begin
   Tier0Module:=SetupGameSet.Specifics.Values['SteamTier0Module'];
   VstdlibModule:=SetupGameSet.Specifics.Values['SteamVstdlibModule'];
-
-  if (Tier0Module<>curTier0Module) and (curTier0Module<>'') then
+  if ((Tier0Module<>curTier0Module) and (curTier0Module<>'')) or ((VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'')) then
     uninitdll;
   curTier0Module:=Tier0Module;
+  curVstdlibModule:=VstdlibModule;
+
   if Htier0 = 0 then
   begin
     Htier0 := LoadLibrary(PChar(Tier0Module));
@@ -183,9 +187,6 @@ begin
       Fatal('Unable to load '+Tier0Module);
   end;
 
-  if (VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'') then
-    uninitdll;
-  curVstdlibModule:=VstdlibModule;
   if Hvstdlib = 0 then
   begin
     Hvstdlib := LoadLibrary(PChar(VstdlibModule));
