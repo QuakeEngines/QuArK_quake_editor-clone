@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2001/03/29 01:00:29  aiv
 modifable :form objects!
 
@@ -118,8 +121,7 @@ begin
      FormCfg1.ActionChanging:=596;
      FormCfg1.ActionNiveau:=LocalAction;
      SetupQrk:=MakeAddOnsList; try
-     ObjFormCfg:=SetupQrk.FindSubObject('TextureFlags', QFormCfg, QFileObject)
-      as QFormCfg;
+     ObjFormCfg:=SetupQrk.FindSubObject('TextureFlags', QFormCfg, QFileObject) as QFormCfg;
      ObjFormCfg.AddRef(+1);
      finally SetupQrk.AddRef(-1); end;
     end;
