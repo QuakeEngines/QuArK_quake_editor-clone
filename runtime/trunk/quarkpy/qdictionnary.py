@@ -521,9 +521,10 @@ Strings = {
     4869: "Error in OpenGL initialization//'%s' failed",
     4870: "Error in OpenGL commands [Error code(s) %s step %d]",
 
-    4880: "Error in Direct3D initialization//'%s'",
-    4881: "Error in Direct3D uninitialization//'%s'",
-    4882: "Error using Direct3D//Function '%s' failed with '%s'",
+    4880: "Error in DirectX initialization//'%s'",
+    4881: "Error in DirectX uninitialization//'%s'",
+    4882: "Error using DirectX//Function '%s' failed with '%s'",
+    4883: "Could not load the DirectX drivers//Error code %d",
 
     5119: "(new)",
     5120: "Explorer Group",
@@ -990,6 +991,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.80  2006/12/03 23:13:28  danielpharos
+#Fixed the maximum texture dimension for OpenGL
+#
 #Revision 1.79  2006/11/30 01:19:33  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
