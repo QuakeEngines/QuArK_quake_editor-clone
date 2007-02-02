@@ -466,7 +466,7 @@ def SetupChanged(level):
 #
 
 def LoadPoolObj(tag, loadfn, *loadargs):
-    "Retrive the content of a pool object, or call a function if not found."
+    "Retrieve the content of a pool object, or call a function if not found."
 
     obj = quarkx.poolobj(tag)
     if obj == None:
@@ -730,6 +730,12 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.29  2006/12/13 04:55:03  cdunde
+#Added a new developers "tool" function "WhatIsThisObject" with various options
+#to print everything about a QuArK Internal Object to the console and a hard copy
+#in the QuArK main directory folder called DEVELOPERS.txt to avoid constant
+#calling of each individual item to get information about what the object consist of.
+#
 #Revision 1.28  2006/05/07 07:02:08  rowdy
 #Added a rough hack to allow %file% type substitution in the '<game> command-line' option.  Also added %filename% parameter that is replaced with the map filename (without path, without extension).
 #
