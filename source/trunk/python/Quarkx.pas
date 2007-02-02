@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2007/01/31 15:03:41  danielpharos
+Fix a possible undefined return value
+
 Revision 1.41  2005/09/28 10:49:03  peter-b
 Revert removal of Log and Header keywords
 
@@ -2945,7 +2948,7 @@ begin
  StrCat(X, P);
  StrCat(X, ProbableCauseOfFatalError[err]);
  ShowConsole(True);
- Windows.MessageBox(0, X, FatalErrorCaption, MB_TASKMODAL);
+ Windows.MessageBox(0, X, FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
  Log(strPas(x)+ ' Error Code '+IntToStr(Err));
  ExitProcess(Err);
 end;
