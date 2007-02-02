@@ -15,6 +15,12 @@ $Id$
 6.5.0 Beta 2
 =============
 
+* [Daniel Pharos]: Added realtime OpenGL lighting and OpenGL transparency! Also added an option
+          - for OpenGL face culling.
+
+* [Daniel Pharos]: The tier0 and vstdlib dll files for HL2 can now be pointed to using the
+          - configuration, so you don't need to copy them to the local QuArK directory anymore!
+
  * [cdunde]: Fixed errors that occur when switching layouts in the Model Editor.
 
  * [cdunde]: Stopped handles and limited line drawing in the Model Editor
