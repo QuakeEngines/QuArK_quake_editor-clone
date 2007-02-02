@@ -1,6 +1,6 @@
 (**************************************************************************
-Face Displacement code
-(c) by  alexander
+QuArK -- Quake Army Knife -- 3D game editor - Face Displacement code
+Copyright (C) Alexander Haarer
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.1  2005/07/30 23:04:44  alexander
 introduced dispface class for faces with displacement mapping
 vmf loader sets some displacement info
