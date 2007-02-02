@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2007/01/31 17:06:53  danielpharos
+Fixed the colors in OpenGL solid view mode
+
 Revision 1.40  2007/01/31 15:11:21  danielpharos
 HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
 
@@ -167,9 +170,7 @@ uses Windows, Classes,
 {x $ ENDIF}
 
 const
-{kZeroLight = 0.23;}
  kScaleCos = 0.5;
-{kBrightnessSaturation = 256/0.5;}
 
 var
  RCs: array of HGLRC;
@@ -257,10 +258,7 @@ procedure CheckOpenGLError(GlError: GLenum);
 
 implementation
 
-uses SysUtils, Forms,
-     Quarkx, Setup,
-     Python, PyMapView,
-     Logging, {Math,}
+uses SysUtils, Quarkx, Setup, Python, Logging, {Math,}
      QkObjects, QkMapPoly, QkPixelSet, QkForm;
 
  {------------------------}
@@ -310,16 +308,6 @@ end;
 
  {------------------------}
 
-procedure UnpackColor(Color: TColorRef; var v: GLfloat4);
-begin
-  v[0]:=((Color       ) and $FF) * (1/255.0);
-  v[1]:=((Color shr  8) and $FF) * (1/255.0);
-  v[2]:=((Color shr 16) and $FF) * (1/255.0);
-  v[3]:=((Color shr 24) and $FF) * (1/255.0);
-end;
-
- {------------------------}
-
 type
  PVertex3D = ^TVertex3D;
  TVertex3D = record
@@ -333,6 +321,14 @@ type
          v: TVertex3D;
          light_rgb: array[0..3] of GLfloat;
         end;
+
+procedure UnpackColor(Color: TColorRef; var v: GLfloat4);
+begin
+  v[0]:=((Color       ) and $FF) * (1/255.0);
+  v[1]:=((Color shr  8) and $FF) * (1/255.0);
+  v[2]:=((Color shr 16) and $FF) * (1/255.0);
+  v[3]:=((Color shr 24) and $FF) * (1/255.0);
+end;
 
 procedure Interpole(var Dest: TP3D; const De, A: TP3D; f: Single);
 var
@@ -358,7 +354,6 @@ procedure LightAtPoint(var Point1: TP3D;
 var
  LP: PLightList;
  Light: array[0..2] of TDouble;
- ColoredLights: Boolean;
  Incoming: vec3_t;
  Dist1, DistToSource: TDouble;
  K: Integer;
@@ -367,7 +362,8 @@ begin
   begin
     LP:=SubList;
     Light[0]:=0;
-    ColoredLights:=False;
+    Light[1]:=0;
+    Light[2]:=0;
     while Assigned(LP) do
     begin
       //with LP^ do
@@ -392,57 +388,20 @@ begin
               Dist1:=(LP^.Brightness - DistToSource) * ((1.0-kScaleCos) + kScaleCos * (Incoming[0]*NormalePlan[0] + Incoming[1]*NormalePlan[1] + Incoming[2]*NormalePlan[2]) / DistToSource);
             end;
 
-            if LP^.Color = $FFFFFF then
-            begin
-              Light[0]:=Light[0] + Dist1;
-              if not ColoredLights then
-              begin
-                if Light[0]>=LightParams.BrightnessSaturation then
-                begin   { saturation }
-                  Move(Currentf, Point1.light_rgb, SizeOf(GLfloat)*3{SizeOf(Point1.light_rgb)});
-                  Exit;
-                end;
-                //else
-                //  Continue;
-              end
-              else
-              begin
-                Light[1]:=Light[1] + Dist1;
-                Light[2]:=Light[2] + Dist1;
-              end;
-            end
+            if LP^.Color and $FF = $FF then
+              Light[0]:=Light[0] + Dist1
             else
-            begin
-              if not ColoredLights then
-              begin
-                Light[1]:=Light[0];
-                Light[2]:=Light[0];
-                ColoredLights:=True;
-              end;
+              Light[0]:=Light[0] + Dist1 * (LP^.Color and $FF) * (1/$100);
 
-              if LP^.Color and $FF = $FF then
-                Light[0]:=Light[0] + Dist1
-              else
-                Light[0]:=Light[0] + Dist1 * (LP^.Color and $FF) * (1/$100);
+            if (LP^.Color shr 8) and $FF = $FF then
+              Light[1]:=Light[1] + Dist1
+            else
+              Light[1]:=Light[1] + Dist1 * ((LP^.Color shr 8) and $FF) * (1/$100);
 
-              if (LP^.Color shr 8) and $FF = $FF then
-                Light[1]:=Light[1] + Dist1
-              else
-                Light[1]:=Light[1] + Dist1 * ((LP^.Color shr 8) and $FF) * (1/$100);
-
-              if LP^.Color shr 16 = $FF then
-                Light[2]:=Light[2] + Dist1
-              else
-                Light[2]:=Light[2] + Dist1 * (LP^.Color shr 16) * (1/$100);
-            end;
-
-           {if  (Light[0]>=LightParams.BrightnessSaturation)
-            and (Light[1]>=LightParams.BrightnessSaturation)
-            and (Light[2]>=LightParams.BrightnessSaturation) then
-            begin
-              Saturation:=True;
-              Break;
-            end;}
+            if (LP^.Color shr 16) and $FF = $FF then
+              Light[2]:=Light[2] + Dist1
+            else
+              Light[2]:=Light[2] + Dist1 * ((LP^.Color shr 16) and $FF) * (1/$100);
           end;
         end;
 
@@ -450,23 +409,12 @@ begin
       end;
     end;
 
-    if ColoredLights then
-    begin
-      Point1.light_rgb[3]:=Currentf[3];
-      for K:=0 to 2 do
-        if Light[K] >= LightParams.BrightnessSaturation then
-          Point1.light_rgb[K]:=Currentf[K]
-        else
-          Point1.light_rgb[K]:=(LightParams.ZeroLight + Light[K]*LightParams.LightFactor) * Currentf[K];
-    end
-    else
-    begin
-      Light[0]:=LightParams.ZeroLight + Light[0]*LightParams.LightFactor;
-      Point1.light_rgb[0]:=Light[0] * Currentf[0];
-      Point1.light_rgb[1]:=Light[0] * Currentf[1];
-      Point1.light_rgb[2]:=Light[0] * Currentf[2];
-      Point1.light_rgb[3]:=Currentf[3];
-    end;
+    Point1.light_rgb[3]:=Currentf[3];
+    for K:=0 to 2 do
+      if Light[K] >= LightParams.BrightnessSaturation then
+        Point1.light_rgb[K]:=Currentf[K]
+      else
+        Point1.light_rgb[K]:=LightParams.ZeroLight + (Light[K]*LightParams.LightFactor * Currentf[K]);
   end;
 end;
 
@@ -975,7 +923,7 @@ begin
     Lighting:=Setup.Specifics.Values['Lights']<>'';
     Culling:=Setup.Specifics.Values['Culling']<>'';
     LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.4);
-    LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256/0.5);
+    LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256);
     LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
   end
   else
@@ -985,7 +933,7 @@ begin
     Lighting:=False;
     Culling:=False;
     LightParams.ZeroLight:=1;
-    LightParams.BrightnessSaturation:=256/0.5;
+    LightParams.BrightnessSaturation:=256;
     LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
   end;
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
@@ -1117,9 +1065,9 @@ begin
   if Lighting then
   begin
     glEnable(GL_LIGHTING);
-    LightParam[0]:=LightParams.ZeroLight;
-    LightParam[1]:=LightParams.ZeroLight;
-    LightParam[2]:=LightParams.ZeroLight;
+    LightParam[0]:=LightParams.ZeroLight*5;
+    LightParam[1]:=LightParams.ZeroLight*5;
+    LightParam[2]:=LightParams.ZeroLight*5;
     LightParam[3]:=1.0;
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, @LightParam);
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -1967,9 +1915,9 @@ begin
             glLightfv(GL_LIGHT0+LightNR, GL_DIFFUSE, @LightParam);
             CheckOpenGLError(glGetError);  {#}
 
-            glLightf(GL_LIGHT0+LightNR, GL_CONSTANT_ATTENUATION, 0.1);
+            glLightf(GL_LIGHT0+LightNR, GL_CONSTANT_ATTENUATION, 1.0);
             glLightf(GL_LIGHT0+LightNR, GL_LINEAR_ATTENUATION, 0.0);
-            glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 0.00001);   {!}
+            glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 5.0/PL.Brightness2);
             CheckOpenGLError(glGetError);  {#}
           end;
         end;
