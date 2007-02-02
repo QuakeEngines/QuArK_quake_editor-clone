@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.304  2007/02/02 00:51:18  danielpharos
+//The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
+//
 //Revision 1.303  2007/01/31 15:11:01  danielpharos
 //HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
 //
@@ -6232,14 +6235,14 @@ QQRKSRC1
       StillQuality: = {
         Txt="Lighting quality when not moving"
         Typ="CL"
-        Items  = "OpenGL lighting" $0D "Software lighting" $0D "No lighting"
+        Items  = "OpenGL lighting" $0D "Basic lighting" $0D "No lighting"
         Values =     "0"        $0D     "1"       $0D     "2"
         Hint = "Slowest: OpenGL lighting   Fastest: No lighting  (Lighting needs to be enabled for this options to be effective)"
       }
       MovingQuality: = {
         Txt="Quality while moving"
         Typ="CL"
-        Items  = "OpenGL lighting" $0D "Software lighting" $0D "No lighting"
+        Items  = "OpenGL lighting" $0D "Basic lighting" $0D "No lighting"
         Values =     "0"        $0D     "1"       $0D     "2"
         Hint = "Slowest: OpenGL lighting   Fastest: No lighting  (Lighting needs to be enabled for this options to be effective)"
       }
