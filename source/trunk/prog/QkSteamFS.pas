@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/02/01 23:13:53  danielpharos
+Fixed a few copyright headers
+
 Revision 1.11  2007/01/31 15:05:20  danielpharos
 Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
 
@@ -64,6 +67,9 @@ interface
 
 uses  Windows,  SysUtils, Classes, QkObjects, QkFileObjects, QkPak,Setup;
 
+procedure initdll;
+procedure uninitdll;
+
 type
  QSteamFSFolder = class(QPakFolder)
               protected
@@ -102,6 +108,7 @@ var
   Htier0  : HINST;
   Hvstdlib  : HINST;
   Hsteamfswrap  : HINST;
+  curTier0Module,curVstdlibModule:string;
 
 // c signatures
 
@@ -147,9 +154,8 @@ var
 procedure Fatal(x:string);
 begin
   LogEx(LOG_CRITICAL,'init steam %s',[x]);
+  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise InternalE(x);
-  {Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);}
 end;
 
 
@@ -161,19 +167,30 @@ begin
 end;
 
 procedure initdll;
+var
+  Tier0Module,VstdlibModule:string;
 begin
+  Tier0Module:=SetupGameSet.Specifics.Values['SteamTier0Module'];
+  VstdlibModule:=SetupGameSet.Specifics.Values['SteamVstdlibModule'];
+
+  if (Tier0Module<>curTier0Module) and (curTier0Module<>'') then
+    uninitdll;
+  curTier0Module:=Tier0Module;
   if Htier0 = 0 then
   begin
-    Htier0 := LoadLibrary('tier0.dll');
+    Htier0 := LoadLibrary(PChar(Tier0Module));
     if Htier0 = 0 then
-      Fatal('Unable to load tier0.dll');
+      Fatal('Unable to load '+Tier0Module);
   end;
 
+  if (VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'') then
+    uninitdll;
+  curVstdlibModule:=VstdlibModule;
   if Hvstdlib = 0 then
   begin
-    Hvstdlib := LoadLibrary('vstdlib.dll');
+    Hvstdlib := LoadLibrary(PChar(VstdlibModule));
     if Hvstdlib = 0 then
-      Fatal('Unable to load vstdlib.dll');
+      Fatal('Unable to load '+VstdlibModule);
   end;
 
   if Hsteamfswrap = 0 then
@@ -474,6 +491,8 @@ begin
   RegisterQObject(QSteamFS, 's');
   RegisterQObject(QSteamFSFolder, 'a');
   Hsteamfswrap:=0;
+  curTier0Module:='';
+  curVstdlibModule:='';
 end;
 
 finalization

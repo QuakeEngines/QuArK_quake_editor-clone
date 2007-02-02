@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.303  2007/01/31 15:11:01  danielpharos
+//HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+//
 //Revision 1.302  2007/01/30 06:43:20  cdunde
 //Added more options to the Model Editor View Modes dialog.
 //
@@ -1523,6 +1526,8 @@ QQRKSRC1
 
 
         SteamFSModule = ""
+        SteamTier0Module = ""
+        SteamVstdlibModule = ""
         Directory = "C:/Program Files/Valve/Steam"
         SteamAppUser = "<Your Steam Account>"
         SteamAppId = ""
@@ -3650,8 +3655,24 @@ QQRKSRC1
         Txt = "Steam Filesystem Dll"
         Typ = "EP"
         DefExt="dll"
-        Hint = "select the FileSystem_Steam.dll in your sourcesdk/bin folder"
+        Hint = "Select the FileSystem_Steam.dll in your sourcesdk/bin folder"
         CheckFile = "FileSystem_Steam.dll"
+      }
+      SteamTier0Module =
+      {
+        Txt = "Steam Tier 0 Dll"
+        Typ = "EP"
+        DefExt="dll"
+        Hint = "Select the tier0.dll in your Steam folder"
+        CheckFile = "tier0.dll"
+      }
+      SteamVstdlibModule =
+      {
+        Txt = "Steam Value Standard Library Dll"
+        Typ = "EP"
+        DefExt="dll"
+        Hint = "Select the vstdlib.dll in your Steam folder"
+        CheckFile = "vstdlib.dll"
       }
       SteamAppUser =
       {

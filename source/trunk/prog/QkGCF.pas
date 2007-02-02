@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/01/31 15:05:20  danielpharos
+Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
+
 Revision 1.12  2007/01/11 17:45:37  danielpharos
 Fixed wrong return checks for LoadLibrary, and commented out the fatal ExitProcess call. QuArK should no longer crash-to-desktop when it's missing a Steam dll file.
 
@@ -129,9 +132,8 @@ var
 
 procedure Fatal(x:string);
 begin
+  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise InternalE(x);
-  {Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);}
 end;
 
 function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
