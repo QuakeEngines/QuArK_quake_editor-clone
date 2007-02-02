@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
 Revision 1.19  2007/01/06 11:37:23  danielpharos
 Fixed the 'Image data missing' error when loading a shader without valid image. Also, QuArK will now automatically use the checkboard-pattern for those faces.
 
@@ -885,24 +888,30 @@ begin
            VertexCount:=prvVertexCount;
            OpenGLLightList:=nil;
 
-           with F.GetFaceOpacity(PList^.Texture^.DefaultAlpha) do
-           begin
-             If Mode=1 then
-               AlphaColor:=Integer(Addr(Color)^) or (Value shl 24)
-             else
-               AlphaColor:=CurrentColor or (Value shl 24);
-             TextureMode:=Mode;
-           end;
-           PList^.Transparent:=AlphaColor and $FF000000 <> $FF000000;
-
            // if the texture has alpha channel its probably transparent
            if assigned (PList^.Texture^.SourceTexture) then
+           begin
              if PList^.Texture^.SourceTexture.Description.AlphaBits = psa8bpp then
-               begin
-                 PList^.Transparent:=True;
-                 TextureMode:=2;
-                 AlphaColor:=CurrentColor or (254 shl 24);
-               end
+             begin
+               PList^.Transparent:=True;
+               TextureMode:=2;
+               AlphaColor:=CurrentColor or (254 shl 24);
+             end;
+           end;
+
+           if PList^.Transparent=False then
+           begin
+             with F.GetFaceOpacity(PList^.Texture^.DefaultAlpha) do
+             begin
+               if Mode=1 then
+                 AlphaColor:=Integer(Addr(Color)^) or (Value shl 24)
+               else
+                 AlphaColor:=CurrentColor or (Value shl 24);
+               TextureMode:=Mode;
+             end;
+             PList^.Transparent:=AlphaColor and $FF000000 <> $FF000000;
+           end;
+
          end;
 
          if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
@@ -1955,10 +1964,10 @@ end;
 
 function ComputeMeanColor(const PSD: TPixelSetDescription) : FxU32;
 var
- re, gr, bl: Integer;
- pl: array[0..255] of record pr, pg, pb: Integer; end;
+ re, gr, bl: LongInt;
+ re2, gr2, bl2: LongInt;
+ pl: array[0..255] of record pr, pg, pb: LongInt; end;
  I, J: Integer;
- Facteur: TDouble;
  P: PChar;
 begin
  re:=0;
@@ -1970,23 +1979,29 @@ begin
             for I:=0 to 255 do
              with pl[I] do
               begin
-               pr:=Integer(Ord(P^) div 2) * (Succ(Integer(Ord(P^))) div 2);
+               pr:=LongInt(Ord(P^));
                Inc(P);
-               pg:=Integer(Ord(P^) div 2) * (Succ(Integer(Ord(P^))) div 2);
+               pg:=LongInt(Ord(P^));
                Inc(P);
-               pb:=Integer(Ord(P^) div 2) * (Succ(Integer(Ord(P^))) div 2);
+               pb:=LongInt(Ord(P^));
                Inc(P);
               end;
             P:=PSD.StartPointer;
             for J:=1 to PSD.Size.Y do
              begin
+              re2:=0;
+              gr2:=0;
+              bl2:=0;
               for I:=0 to PSD.Size.X-1 do
                with pl[Ord(P[I])] do
                 begin
-                 Inc(re, pr);
-                 Inc(gr, pg);
-                 Inc(bl, pb);
+                 Inc(re2, pr);
+                 Inc(gr2, pg);
+                 Inc(bl2, pb);
                 end;
+              Inc(re,re2 div PSD.Size.X);
+              Inc(gr,gr2 div PSD.Size.X);
+              Inc(bl,bl2 div PSD.Size.X);
               Inc(P, PSD.ScanLine);
              end;
            end;
@@ -1994,16 +2009,22 @@ begin
              P:=PSD.StartPointer;
              for J:=1 to PSD.Size.Y do
               begin
+               re2:=0;
+               gr2:=0;
+               bl2:=0;
                I:=PSD.Size.X*3;
                while I>0 do
                 begin
                  Dec(I);
-                 Inc(bl, Integer(Ord(P[I]) div 2) * (Succ(Integer(Ord(P[I]))) div 2));
+                 Inc(bl2, LongInt(Ord(P[I])));
                  Dec(I);
-                 Inc(gr, Integer(Ord(P[I]) div 2) * (Succ(Integer(Ord(P[I]))) div 2));
+                 Inc(gr2, LongInt(Ord(P[I])));
                  Dec(I);
-                 Inc(re, Integer(Ord(P[I]) div 2) * (Succ(Integer(Ord(P[I]))) div 2));
+                 Inc(re2, LongInt(Ord(P[I])));
                 end;
+               Inc(re,re2 div PSD.Size.X);
+               Inc(gr,gr2 div PSD.Size.X);
+               Inc(bl,bl2 div PSD.Size.X);
                Inc(P, PSD.ScanLine);
               end;
             end;
@@ -2013,10 +2034,9 @@ begin
    Exit;
   end;
  end;
- Facteur:=4.0 / (PSD.Size.X * PSD.Size.Y);
- Result:=Round(Sqrt(bl * Facteur))
-     or (Round(Sqrt(gr * Facteur)) shl 8)
-     or (Round(Sqrt(re * Facteur)) shl 16);
+ Result:=(bl div PSD.Size.Y)
+     or ((gr div PSD.Size.Y) shl 8)
+     or ((re div PSD.Size.Y) shl 16);
 end;
 
 function SwapColor(Col: TColorRef) : TColorRef;
