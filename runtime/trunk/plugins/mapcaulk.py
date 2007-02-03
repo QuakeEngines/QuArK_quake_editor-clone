@@ -107,11 +107,11 @@ def facemenu(o, editor, oldmenu=quarkpy.mapentities.FaceType.menu.im_func):
             undo.setspec(o,'tex',CaulkTexture())
             editor.ok(undo, 'caulk face')
             
-        for item in menu:
-            try:
-                debug(`item.label`)
-            except (AttributeError):
-                pass
+     #   for item in menu:
+     #       try:
+     #           debug(`item.label`)
+     #       except (AttributeError):
+     #           pass
                 
         texpop = findlabelled(menu,'texpop')
         caulkItem = qmenu.item('Caulk face',applyCaulk,"|Put caulk texture on the face")
