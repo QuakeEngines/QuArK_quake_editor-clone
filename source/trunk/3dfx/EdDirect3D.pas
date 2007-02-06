@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/02/02 21:09:55  danielpharos
+Rearranged the layout of the Direct3D file
+
 Revision 1.9  2007/01/31 15:11:21  danielpharos
 HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
 
@@ -508,8 +511,6 @@ begin
         Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
     end;
   end;
-
-  PList^.ok:=True;
 end;
 
  {------------------------}

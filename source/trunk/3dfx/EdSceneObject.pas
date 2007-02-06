@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/02/02 12:06:35  danielpharos
+Forgot to upload some changes, and changed the MeanColor function so it doesn't overflow anymore, and produces better results faster
+
 Revision 1.20  2007/01/31 15:11:21  danielpharos
 HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
 
@@ -196,8 +199,9 @@ type
               TexName: String;
               SurfSize: Integer;
               Surf, tmp: PSurface3D;
-              ok: Boolean;
               Transparent: Boolean;
+              NumberFaces: Integer;
+              NumberTransparentFaces: Integer;
              end;
 
  {------------------------}
@@ -513,8 +517,11 @@ var
   begin
     { try finding if the texturename already have been added to the list }
     if TexNames.Find(a_TexName, Idx) then
+    begin
       { it had, now get the associated Surfaces-element }
-      SurfacesElement:=PSurfaces(TexNames.Objects[Idx])
+      SurfacesElement:=PSurfaces(TexNames.Objects[Idx]);
+      SurfacesElement^.NumberFaces:=SurfacesElement^.NumberFaces+1;
+    end
     else
     begin
       { allocate memory for a TSurfaces-structure, and clear it }
@@ -525,6 +532,8 @@ var
       FListSurfaces:=SurfacesElement;  // Set the new starting point of the chain
       { assign the texturename, and some tmp value }
       SurfacesElement^.TexName:=a_TexName;
+      SurfacesElement^.NumberFaces:=1;
+      SurfacesElement^.NumberTransparentFaces:=0;
       Pointer(SurfacesElement^.tmp):=a_Tmp;
       { add texturename to list, and associate it with the newly allocated Surfaces-element }
       TexNames.AddObject(a_TexName, TObject(SurfacesElement));
@@ -888,29 +897,23 @@ begin
            VertexCount:=prvVertexCount;
            OpenGLLightList:=nil;
 
+           AlphaColor:=CurrentColor or (254 shl 24);
+           TextureMode:=0;
            // if the texture has alpha channel its probably transparent
-           if assigned (PList^.Texture^.SourceTexture) then
+           if Assigned(PList^.Texture^.SourceTexture) then
            begin
-             if PList^.Texture^.SourceTexture.Description.AlphaBits = psa8bpp then
-             begin
-               PList^.Transparent:=True;
-               TextureMode:=2;
-               AlphaColor:=CurrentColor or (254 shl 24);
+             TextureMode:=2;
+             case PList^.Texture^.SourceTexture.Description.AlphaBits of
+             psaDefault: PList^.Transparent:=False;
+             psaNoAlpha: PList^.Transparent:=False;
+             psaGlobalAlpha: PList^.Transparent:=False;
+             psa8bpp: PList^.Transparent:=True;
              end;
            end;
 
-           if PList^.Transparent=False then
-           begin
-             with F.GetFaceOpacity(PList^.Texture^.DefaultAlpha) do
-             begin
-               if Mode=1 then
-                 AlphaColor:=Integer(Addr(Color)^) or (Value shl 24)
-               else
-                 AlphaColor:=CurrentColor or (Value shl 24);
-               TextureMode:=Mode;
-             end;
-             PList^.Transparent:=AlphaColor and $FF000000 <> $FF000000;
-           end;
+           AlphaColor:=CurrentColor or (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha).Value shl 24);
+           if (AlphaColor and $FF000000) <> $FF000000 then
+             PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
 
          end;
 
@@ -1058,7 +1061,8 @@ begin
          else
            Surf3D:=PList^.tmp;
 
-         PList^.Transparent:=ModelAlpha<>255;
+         if ModelAlpha<>255 then
+           PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
 
          stScaleModel(PList^.Texture, CorrW, CorrH);
 
@@ -1162,7 +1166,8 @@ begin
          else
            Surf3D:=PList^.tmp;
 
-         PList^.Transparent:=Alpha<>255;
+         if Alpha<>255 then
+           PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
 
          stScaleSprite(PList^.Texture, CorrW, CorrH);
 
@@ -1271,7 +1276,8 @@ begin
            NewRenderMode:=Mode;
          end;
 
-         PList^.Transparent:=ObjectColor and $FF000000 <> $FF000000;
+         if ObjectColor and $FF000000 <> $FF000000 then
+           PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
 
          stScaleBezier(PList^.Texture, CorrW, CorrH);
          BezierBuf:=GetMeshCache;

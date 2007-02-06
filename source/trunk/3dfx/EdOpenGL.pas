@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2007/02/02 21:01:28  danielpharos
+Made the OpenGL lights respond to the light-setting, and made the ambient lighting match software lighting better
+
 Revision 1.41  2007/01/31 17:06:53  danielpharos
 Fixed the colors in OpenGL solid view mode
 
@@ -213,8 +216,7 @@ type
    DepthBufferBits: Byte;
    MaxLights: GLint;
    LightingQuality: Integer;
-   OpenGLDisplayList: Integer;
-   RebuildDisplayList: Boolean;
+   OpenGLDisplayLists: array[0..1] of Integer;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
    Bilinear: boolean;
@@ -446,6 +448,7 @@ begin
     light[1]:=LightParams.ZeroLight * Currentf[1];
     light[2]:=LightParams.ZeroLight * Currentf[2];
     light[3]:=Currentf[3];
+    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@light);
     glColor4fv(light);
     {$IFDEF DebugGLErr} DebugOpenGL(-121, 'glBegin(GL_QUADS)', []); {$ENDIF}
     glBegin(GL_QUADS);
@@ -610,12 +613,14 @@ begin
       begin
         //with Points[J,I] do
         begin
+          glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J,I].light_rgb);
           glColor4fv(Points[J,I].light_rgb);
           glTexCoord2fv(Points[J,I].v.st);
           glVertex3fv(Points[J,I].v.xyz);
         end;
         //with Points[J+StepJ,I] do
         begin
+          glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J+StepJ,I].light_rgb);
           glColor4fv(Points[J+StepJ,I].light_rgb);
           glTexCoord2fv(Points[J+StepJ,I].v.st);
           glVertex3fv(Points[J+StepJ,I].v.xyz);
@@ -661,6 +666,7 @@ begin
     Inc(PV);
     LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
     Inc(vec3_p(PV));
+    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Point.light_rgb);
     glColor4fv(Point.light_rgb);
     glTexCoord2fv(Point.v.st);
     glVertex3fv(Point.v.xyz);
@@ -680,10 +686,31 @@ end;
 
 function TGLSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
 begin
+ if ((nQuality<>0) and (nQuality<>1)) then
+ begin
+  Result:=False;
+  Exit;
+ end;
  Result:=LightingQuality<>nQuality;
  LightingQuality:=nQuality;
- If Result then
-   RebuildDisplayList:=True;
+ if (OpenGLDisplayLists[0]<>0) then
+ begin
+   if wglMakeCurrent(GLDC,RC) = false then
+     raise EError(5770);
+   glDeleteLists(OpenGLDisplayLists[0],1);
+   CheckOpenGLError(glGetError);  {#}
+   OpenGLDisplayLists[0]:=0;
+   wglMakeCurrent(0,0);
+ end;
+ if (OpenGLDisplayLists[1]<>0) then
+ begin
+   if wglMakeCurrent(GLDC,RC) = false then
+     raise EError(5770);
+   glDeleteLists(OpenGLDisplayLists[1],1);
+   CheckOpenGLError(glGetError);  {#}
+   OpenGLDisplayLists[1]:=0;
+   wglMakeCurrent(0,0);
+ end;
 end;
 
 procedure TGLSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
@@ -787,13 +814,16 @@ begin
   begin
     if OpenGLLoaded then
     begin
-      if OpenGLDisplayList<>0 then
+      if OpenGLDisplayLists[0]<>0 then
       begin
         {if wglMakeCurrent(GLDC,RC) = false then
           raise EError(5770);
-        glDeleteLists(OpenGLDisplayList,1);
+        glDeleteLists(OpenGLDisplayLists[0],1);
         CheckOpenGLError(glGetError);}  {#}
-        OpenGLDisplayList:=0;
+        OpenGLDisplayLists[0]:=0;
+        {glDeleteLists(OpenGLDisplayLists[1],1);
+        CheckOpenGLError(glGetError);}  {#}
+        OpenGLDisplayLists[1]:=0;
       end;
 
       wglMakeCurrent(0,0);
@@ -1170,7 +1200,24 @@ begin
   Result:=bmOpenGL;
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
-  RebuildDisplayList:=True;
+  if (OpenGLDisplayLists[0]<>0) then
+  begin
+    if wglMakeCurrent(GLDC,RC) = false then
+     raise EError(5770);
+    glDeleteLists(OpenGLDisplayLists[0],1);
+    CheckOpenGLError(glGetError);  {#}
+    OpenGLDisplayLists[0]:=0;
+    wglMakeCurrent(0,0);
+  end;
+  if (OpenGLDisplayLists[1]<>0) then
+  begin
+    if wglMakeCurrent(GLDC,RC) = false then
+     raise EError(5770);
+    glDeleteLists(OpenGLDisplayLists[1],1);
+    CheckOpenGLError(glGetError);  {#}
+    OpenGLDisplayLists[1]:=0;
+    wglMakeCurrent(0,0);
+  end;
 end;
 
 procedure TGLSceneObject.EndBuildScene;
@@ -1205,6 +1252,7 @@ var
  LightList: LongInt;
  Sz: Integer;
  PList: PSurfaces;
+ RebuildDisplayList: Boolean;
 begin
   if not OpenGlLoaded then
     Exit;
@@ -1410,67 +1458,41 @@ begin
   CurrentAlpha:=0;
   FillChar(Currentf, SizeOf(Currentf), 0);
 
-  if RebuildDisplayList and (OpenGLDisplayList<>0) then
-  begin
-    {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(<%d>, 1', [OpenGLDisplayList]); {$ENDIF}
-    glDeleteLists(OpenGLDisplayList, 1);
-    {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(<%d>, 1', [OpenGLDisplayList]); {$ENDIF}
-    CheckOpenGLError(glGetError);  {#}
-    OpenGLDisplayList:=0;
-  end;
-
-  RebuildDisplayList:=True;
+  RebuildDisplayList:=False;
   if DisplayLists then
   begin
-    if OpenGLDisplayList=0 then
+    if (OpenGLDisplayLists[LightingQuality]=0) then
     begin
-      OpenGLDisplayList:=glGenLists(1);
-      if OpenGLDisplayList = 0 then
+      OpenGLDisplayLists[LightingQuality]:=glGenLists(1);
+      if OpenGLDisplayLists[LightingQuality] = 0 then
         raise EError(5693);
 
       {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
-      glNewList(OpenGLDisplayList, GL_COMPILE_AND_EXECUTE);
+      glNewList(OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE);
       {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
 
       CheckOpenGLError(glGetError); {#}
-    end
-    else
-      RebuildDisplayList:=False;
+      RebuildDisplayList:=True;
+    end;
   end;
 
-  if RebuildDisplayList then
+  if RebuildDisplayList or not (DisplayLists) then
   begin
     PList:=FListSurfaces;
     while Assigned(PList) do
     begin
       if Transparency then
       begin
-        if PList^.Transparent=False then
+        if (PList^.Transparent=False) then
           RenderPList(PList, False, Coord);
       end
       else
+      begin
         RenderPList(PList, False, Coord);
-      PList:=PList^.Next;
-    end;
-
-    if Transparency then
-    begin
-      glDisable(GL_CULL_FACE);
-      PList:=FListSurfaces;
-
-      {DanielPharos: In order for transparency to work correctly, the transparent faces should be ordered and drawn from far away, to close by.}
-
-      while Assigned(PList) do
-      begin
-        if PList^.Transparent=True then
+        if PList^.NumberTransparentFaces>0 then
           RenderPList(PList, True, Coord);
-        PList:=PList^.Next;
       end;
-      if Culling then
-      begin
-        glEnable(GL_CULL_FACE);
-        glFrontFace(GL_CW);
-      end;
+      PList:=PList^.Next;
     end;
 
     if DisplayLists then
@@ -1480,14 +1502,36 @@ begin
       {$IFDEF DebugGLErr} DebugOpenGL(113, 'glEndList', []); {$ENDIF}
       CheckOpenGLError(glGetError); {#}
     end;
-    RebuildDisplayList:=False;
   end
   else
   begin
     {$IFDEF DebugGLErr} DebugOpenGL(-114, 'glCallList(<%d>)', [OpenGLDisplayList]); {$ENDIF}
-    glCallList(OpenGLDisplayList);
+    glCallList(OpenGLDisplayLists[LightingQuality]);
     {$IFDEF DebugGLErr} DebugOpenGL(114, 'glCallList(<%d>)', [OpenGLDisplayList]); {$ENDIF}
     CheckOpenGLError(glGetError); {#}
+  end;
+
+  if Transparency then
+  begin
+    glDisable(GL_CULL_FACE);
+    CheckOpenGLError(glGetError); {#}
+    PList:=FListSurfaces;
+
+    {DanielPharos: In order for transparency to work correctly, the transparent faces should be ordered and drawn from far away, to close by.}
+    {For this reason, transparent faces MUST be outside the callist!}
+
+    while Assigned(PList) do
+    begin
+      if (PList^.Transparent=True) or (PList^.NumberTransparentFaces>0) then
+        RenderPList(PList, True, Coord);
+      PList:=PList^.Next;
+    end;
+    if Culling then
+    begin
+      glEnable(GL_CULL_FACE);
+      glFrontFace(GL_CW);
+      CheckOpenGLError(glGetError); {#}
+    end;
   end;
 
   {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFinish', []); {$ENDIF}
@@ -1829,6 +1873,7 @@ var
  LightParam: array[0..3] of GLfloat;
  GLColor: GLfloat4;
  PSD: TPixelSetDescription;
+ CurrentfTMP: GLfloat4;
 begin
   FullBright.ZeroLight:=1;
   FullBright.BrightnessSaturation:=0;
@@ -1886,6 +1931,10 @@ begin
     with Surf^ do
     begin
       Inc(Surf);
+
+      if ((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces then
+      begin
+
       if Lighting and (LightingQuality=0) then
       begin
         if not(OpenGLLightList = nil) then
@@ -1911,7 +1960,7 @@ begin
             LightParam[1]:=GLColor[1];
             LightParam[2]:=GLColor[2];
             {LightParam[3]:=GLColor[3];}
-            LightParam[3]:=0.0;
+            LightParam[3]:=1.0;
             glLightfv(GL_LIGHT0+LightNR, GL_DIFFUSE, @LightParam);
             CheckOpenGLError(glGetError);  {#}
 
@@ -1924,6 +1973,8 @@ begin
       end;
 
       CurrentAlpha:=AlphaColor;
+      UnpackColor(AlphaColor, Currentf);
+
       if NeedColor then
       begin
         with PList^.Texture^ do
@@ -1937,11 +1988,13 @@ begin
               PSD.Done;
             end;
           end;
-          UnpackColor(MeanColor, Currentf);
+          UnpackColor(MeanColor, CurrentfTMP);
+          Currentf[0]:=Currentf[0]*CurrentfTMP[0];
+          Currentf[1]:=Currentf[1]*CurrentfTMP[1];
+          Currentf[2]:=Currentf[2]*CurrentfTMP[2];
+          Currentf[3]:=Currentf[3];
         end;
-      end
-      else
-        UnpackColor(AlphaColor, Currentf);
+      end;
 
       if NeedTex then
       begin
@@ -1958,7 +2011,7 @@ begin
 
       PV:=PVertex3D(Surf);
 
-      if TransparentFaces then
+      if Transparency and TransparentFaces then
       begin
         {$IFDEF DebugGLErr} DebugOpenGL(-112, '', []); {$ENDIF}
         glColor4fv(Currentf);
@@ -2023,14 +2076,14 @@ begin
           RenderQuadStrip(PV, -VertexCount, Currentf, nil, Normale, LightParams);
       end;
 
+      end;
+
       if VertexCount>=0 then
         Inc(PVertex3D(Surf), VertexCount)
       else
         Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
     end;
   end;
-
-  PList^.ok:=True;
 end;
 
  {------------------------}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.84  2006/12/31 21:40:51  danielpharos
+Splitted the Ed3DFX file into two separate renderers: Software and Glide
+
 Revision 1.83  2005/10/15 23:44:21  cdunde
 Made one setting in QuArK's Config OpenGL section for all
 games that use transparency that can be viewed in QuArK.
@@ -5415,9 +5418,7 @@ begin
  Integer(Addr(Result.Color)^) := Integer(0);
  Result.Mode := 0;
 {DECKER 2003.03.12}
- case CharModeJeu of
- mjHalfLife,
- mjHL2:
+ if (CharModeJeu=mjHalfLife) or (CharModeJeu=mjHL2) then
  begin
     // OMG! This is so slow, but hopefully a little faster than the below
     // while-loop, if the end-user don't want to see transparency in the OpenGL window.
@@ -5443,41 +5444,37 @@ begin
      if S<>'' then
      begin
        Result.Mode:=StrToIntDef(S,0);
-       If Result.Mode=3 then Result.Mode:=2; // If someone selected 'GLOW' switch to 'TEXTURE'
-       Case Result.Mode of
-        1, // Rendermode = COLOR
-        2, // Rendermode = TEXTURE
-        4,
-        5: // Rendermode = ADDITIVE
+       if Result.Mode=3 then Result.Mode:=2; // If someone selected 'GLOW' switch to 'TEXTURE'
+       if (Result.Mode=1) or (Result.Mode=2) or (Result.Mode=4) or (Result.Mode=5) then
+       begin
+         if Result.Mode=1 then
          begin
-           if Result.Mode=1 then
-           begin
-             S:=Parent^.Specifics.Values['rendercolor'];
-             ReadValues(S, C);
-             for val:=0 to 2 do result.Color[val]:=trunc(C[val]) mod 256;
-           end;
-           S:=Parent^.Specifics.Values['renderamt'];
-           if S<>'' then
-            Result.Value:=StrToIntDef(S,255); // If conversion to integer fails, make sure "no transparency" is the default (100% opaque = 255)
-           if (result.mode=4) and (result.value<>0) then result.value:=255
-           else if (result.Mode=5) and (result.Value=255) then result.Value:=254; //<- dirty hack... a value of 255 is always drawn 'solid' :/
+           S:=Parent^.Specifics.Values['rendercolor'];
+           ReadValues(S, C);
+           for val:=0 to 2 do result.Color[val]:=trunc(C[val]) mod 256;
          end;
+         S:=Parent^.Specifics.Values['renderamt'];
+         if S<>'' then
+           Result.Value:=StrToIntDef(S,255); // If conversion to integer fails, make sure "no transparency" is the default (100% opaque = 255)
+         if (result.Mode=4) and (result.Value<>0) then
+           result.Value:=255
+         else
+         begin
+           if (result.Mode=5) and (result.Value=255) then
+             result.Value:=254; //<- dirty hack... a value of 255 is always drawn 'solid' :/
+         end;
+         exit;
        end;
-       exit;
      end;
    end;
- end; // hl1
- else
-{/DECKER}
+ end; // hl and hl2
+ {/DECKER}
+ S:=Specifics.Values['Contents'];
+ if S<>'' then
  begin
-   S:=Specifics.Values['Flags'];
-   if S<>'' then
-   begin
-     Result.Value:=OpacityFromFlags(StrToIntDef(S,0));
-     Result.Mode:=2;
-   end;
+   Result.Value:=OpacityFromFlags(StrToIntDef(S,0));
+   Result.Mode:=2;
  end;
- end; //case
 end;
 
 procedure TFace.AnalyseClic(Liste: PyObject);

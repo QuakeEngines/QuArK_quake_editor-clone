@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2001/03/20 21:44:37  decker_dk
 Updated copyright-header
 
@@ -307,7 +310,7 @@ function QTexture2.GetTexOpacity : Integer;
 var
   S: String;
 begin
-  S:=Specifics.Values['Flags'];
+  S:=Specifics.Values['Contents'];
   if S='' then
     Result:=255
   else

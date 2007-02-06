@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
 Revision 1.1  2006/12/26 22:49:06  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -1051,30 +1054,25 @@ procedure TGlideSceneObject.RenderTransparent(Transparent: Boolean);
 var
  PList: PSurfaces;
 begin
-  if not SolidColors then
+  if Transparent=false then
   begin
     PList:=FListSurfaces;
     while Assigned(PList) do
     begin
-      if PList^.Transparent=Transparent then
-      begin
-        PList^.ok:=False;
-        if PList^.Texture^.startAddress<>GR_NULL_MIPMAP_HANDLE then
-          RenderPList(PList, Transparent);
-      end;
-
+      if (PList^.Transparent=False) then
+        RenderPList(PList, False);
       PList:=PList^.Next;
     end;
-  end;
-
-  PList:=FListSurfaces;
-  while Assigned(PList) do
+  end
+  else
   begin
-    if PList^.Transparent=Transparent then
-      if SolidColors or not PList^.ok then
-        RenderPList(PList, Transparent);
-
-    PList:=PList^.Next;
+    PList:=FListSurfaces;
+    while Assigned(PList) do
+    begin
+      if (PList^.Transparent=True) or (PList^.NumberTransparentFaces>0) then
+        RenderPList(PList, True);
+      PList:=PList^.Next;
+    end;
   end;
 end;
 
@@ -1598,8 +1596,7 @@ begin
    begin
     Inc(Surf);
 
-    if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
-    and CCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
+    if (((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces) and CCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
     begin
       nColor:=AlphaColor;
 
@@ -1618,7 +1615,8 @@ begin
           end;
           nColor:=  (((nColor         and $FF)* (MeanColor         and $FF))              shr 8)
                or  ((((nColor shr 8)  and $FF)*((MeanColor shr 8)  and $FF)) and $00FF00)
-               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8);
+               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8)
+               or (nColor and $FF000000);
         end;
       end;
 
@@ -1945,8 +1943,6 @@ begin
     Inc(PVertex3D(Surf), VertexCount);
    end;
  end;
-
- PList^.ok:=True;
 end;
 
 function TGlideSceneObject.ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
