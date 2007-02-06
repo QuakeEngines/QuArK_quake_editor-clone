@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2006/12/18 05:38:06  cdunde
+Added color setting options for various Model Editor mesh and drag lines.
+
 Revision 1.48  2006/11/30 00:44:32  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
@@ -1281,6 +1284,7 @@ begin
            P:=Round(GetFloatSpec('i'+Ext, -1));
            if (P>=0) and Reg.OpenKey('DefaultIcon', True) then
             Reg.WriteString('', Format('%s,%d', [Application.ExeName, P]));
+           Reg.CloseKey;
           end;
         end;
 
