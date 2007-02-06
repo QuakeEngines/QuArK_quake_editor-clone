@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
 Revision 1.21  2007/02/02 12:06:35  danielpharos
 Forgot to upload some changes, and changed the MeanColor function so it doesn't overflow anymore, and produces better results faster
 
@@ -1124,9 +1127,20 @@ begin
                end;
 
                VertexCount:=3;
+               Texturemode:= ModelRenderMode;
                AlphaColor:=CurrentColor or (ModelAlpha shl 24);
 
-               Texturemode:= ModelRenderMode;
+               // if the texture has alpha channel its probably transparent
+               if Assigned(PList^.Texture^.SourceTexture) then
+               begin
+                 TextureMode:=2;
+                 case PList^.Texture^.SourceTexture.Description.AlphaBits of
+                 psaDefault: PList^.Transparent:=False;
+                 psaNoAlpha: PList^.Transparent:=False;
+                 psaGlobalAlpha: PList^.Transparent:=False;
+                 psa8bpp: PList^.Transparent:=True;
+                 end;
+               end;
              end;
 
              Inc(PChar(Surf3D), VertexSize3m);
@@ -1230,6 +1244,18 @@ begin
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (Alpha shl 24);
+               
+               // if the texture has alpha channel its probably transparent
+               if Assigned(PList^.Texture^.SourceTexture) then
+               begin
+                 TextureMode:=2;
+                 case PList^.Texture^.SourceTexture.Description.AlphaBits of
+                 psaDefault: PList^.Transparent:=False;
+                 psaNoAlpha: PList^.Transparent:=False;
+                 psaGlobalAlpha: PList^.Transparent:=False;
+                 psa8bpp: PList^.Transparent:=True;
+                 end;
+               end;
              end;
 
              Inc(PChar(Surf3D), VertexSize3m);
@@ -1322,6 +1348,18 @@ begin
                  VertexCount:=-(2*BezierBuf.W);
                  AlphaColor:=ObjectColor;
                  TextureMode:=NewRenderMode;
+
+                 // if the texture has alpha channel its probably transparent
+                 if Assigned(PList^.Texture^.SourceTexture) then
+                 begin
+                   TextureMode:=2;
+                   case PList^.Texture^.SourceTexture.Description.AlphaBits of
+                   psaDefault: PList^.Transparent:=False;
+                   psaNoAlpha: PList^.Transparent:=False;
+                   psaGlobalAlpha: PList^.Transparent:=False;
+                   psa8bpp: PList^.Transparent:=True;
+                   end;
+                 end;
                end;
 
                PV:=PChar(Surf3D)+SizeOf(TSurface3D);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
 Revision 1.42  2007/02/02 21:01:28  danielpharos
 Made the OpenGL lights respond to the light-setting, and made the ambient lighting match software lighting better
 
@@ -1932,7 +1935,7 @@ begin
     begin
       Inc(Surf);
 
-      if ((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces then
+      if ((PList^.Transparent=TransparentFaces) or (((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces)) then
       begin
 
       if Lighting and (LightingQuality=0) then
