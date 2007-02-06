@@ -19,6 +19,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.9  2005/10/15 01:00:02  cdunde
+//To reinstate headers and history
+//
 //Revision 1.6  2002/04/07 12:43:48  decker_dk
 //Purified texture-flags
 //
@@ -55,7 +58,7 @@ QQRKSRC1
     Game = "Quake 2"
     SFSkills = '256 512 1024 2048'   // must be 4 or 6 values : easy/medium/hard/deathm.[/coop/single]
     HTML = "help\index.html"
-    TexFlagsTransparent = '16 0.6667 32 0.3333'   // bit of value 16 (resp 32) means "66% transparent" (resp 33%)
+    TexFlagsTransparent = '16 0.6667 32 0.3333 268435456 0.5'   // bit of value 16 (resp 32) means "66% transparent" (resp 33%)
 //    DrawMap: =
 //    {
 //      Spec = "light"
