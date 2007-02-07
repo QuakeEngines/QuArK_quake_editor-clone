@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/02/02 10:07:07  danielpharos
+Fixed a problem with the dll loading not loading tier0 correctly
+
 Revision 1.18  2007/02/02 00:51:02  danielpharos
 The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
 
@@ -168,7 +171,7 @@ function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKGCF.dll');
+     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKVTF.dll');
 end;
 
 procedure initdll;
