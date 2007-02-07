@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.85  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
 Revision 1.84  2006/12/31 21:40:51  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -1000,8 +1003,8 @@ begin
              end;
            {Moitie2:=Nil;}
            except
-            on EPolyedreInvalide do
-             ;
+            {on EPolyedreInvalide do
+             ;}
            end;
           finally
            Moitie2.AddRef(-1);

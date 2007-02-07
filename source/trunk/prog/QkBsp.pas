@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.57  2005/01/11 02:15:26  alexander
 detect hl2 bsp format
 
@@ -1463,8 +1466,7 @@ begin
      Exit;
    with QkObjFromPyObj(self) as QBsp do
    begin
-         Result:=GetClosePlanes(r);
-         Exit;
+     Result:=GetClosePlanes(r);
    end;
  except
   EBackToPython;
@@ -2095,7 +2097,6 @@ begin
    with QkObjFromPyObj(self) as TTreeBspPlane do
    begin
      Result:=GetNearPlanes(r,QBsp(QkObjFromPyObj(bsp)));
-     Exit;
    end;
  except
   EBackToPython;
