@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2007/02/06 14:07:39  danielpharos
+Another transparency fix. Beziers, sprites and models should now also have transparency.
+
 Revision 1.22  2007/02/06 13:08:47  danielpharos
 Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
 
@@ -210,6 +213,13 @@ type
  {------------------------}
 
 type
+ PVertex3D = ^TVertex3D;
+ TVertex3D = record
+              st: array[0..1] of Single;
+              xyz: vec3_t;
+             end;
+
+type
  TBuildMode = (bmSoftware, bmGlide, bmOpenGL, bmDirect3D);
  TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
 
@@ -319,7 +329,8 @@ implementation
 
 uses SysUtils,
      Travail, Quarkx, Setup,
-     QkMdlObject, QkTextures, QkImages, QkFileObjects;
+     QkMdlObject, QkTextures, QkImages, QkFileObjects,
+     EdOpenGL;
      {EdTListP2;}
 
 const
@@ -398,12 +409,31 @@ begin
    P:=FListSurfaces;
    FListSurfaces:=P^.Next;
    if Assigned(P^.Surf) then
-   begin
-     if not (P^.Surf^.OpenGLLightList = nil) then
+    begin
+     if (self is TGLSceneObject) then
      begin
-       FreeMem(P^.Surf^.OpenGLLightList);
-       P^.Surf^.OpenGLLightList:=nil;
-     end;
+       Surf:=P^.Surf;
+       SurfEnd:=PChar(Surf)+P^.SurfSize;
+       while (Surf<SurfEnd) do
+        begin
+         with Surf^ do
+          begin
+           Inc(Surf);
+           if not (OpenGLLightList = nil) then
+            begin
+             FreeMem(OpenGLLightList);
+             OpenGLLightList := nil;
+             {DanielPharos: This should be done in the EdOpenGL,
+             then the Vertex3D-type above can also be removed,
+             and the link to EdOpenGL.}
+            end;
+           if VertexCount>=0 then
+             Inc(PVertex3D(Surf), VertexCount)
+           else
+             Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+          end;
+        end;
+      end;
      FreeMem(P^.Surf);
    end;
    Dispose(P);
