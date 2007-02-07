@@ -78,7 +78,7 @@ Set the default options for FastMM here.
  program overwriting the bounds of allocated memory). These checks are
  expensive, and this option should thus only be used for debugging purposes.
  If this option is set then the ASMVersion option is automatically disabled.}
-{.$define CheckHeapForCorruption}
+{$define CheckHeapForCorruption}
 
 {Enable this option to catch attempts to perform MM operations after FastMM has
  been uninstalled. With this option set when FastMM is uninstalled it will not
@@ -109,7 +109,7 @@ Set the default options for FastMM here.
    object. Note that this will disable the checking of blocks modified after
    being freed (the two are not compatible). This option has no effect if
    FullDebugMode is not also enabled.}
-  {.$define CatchUseOfFreedInterfaces}
+  {$define CatchUseOfFreedInterfaces}
 
   {Set this option to log all errors to a text file in the same folder as the
    application. Memory errors (with the FullDebugMode option set) will be

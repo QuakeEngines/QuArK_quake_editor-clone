@@ -988,7 +988,7 @@ const
   {-------------FullDebugMode constants---------------}
 {$ifdef FullDebugMode}
   {The stack trace depth}
-  StackTraceDepth = 9;
+  StackTraceDepth = 24;
   {The number of entries in the allocation group stack}
   AllocationGroupStackSize = 1000;
   {The number of fake VMT entries - used to track virtual method calls on
