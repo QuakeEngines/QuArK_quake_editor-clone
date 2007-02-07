@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2005/07/05 19:12:48  alexander
 logging to file using loglevels
 
@@ -108,9 +111,11 @@ begin
   I := QObjectClassList.Count;
 
   repeat
+    if (I=0) then
+      break;
     Dec(I);
     S := QObjectClassList[I];
-  until (Length(S)-1 <= Length(Name))
+  until (Length(S)-1 <= Length(Name)) and (Length(S)>1)
     and (StrIComp(@Name[Length(Name)-Length(S)+2], PChar(S)+1) = 0);
 
   Result := QObjectClass(QObjectClassList.Objects[I]).Create(Copy(Name, 1, Length(Name)-Length(S)+1), nParent);
