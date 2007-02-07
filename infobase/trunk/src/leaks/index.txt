@@ -14,6 +14,8 @@ These leaks only include those reported when the
 `Noshare'.  Sorting the apparent specifics-sharing scheme leaks out
 is a challenge we have not yet risen to (since specifics sharing is
 arcane, involves assembler code, etc., the reports may well be spurious).
+As of 6.5.0 Beta 2, a lot of these problems have been fixed, however
+some might remain.
 
 Developer Mode in QuArK also enables a command to track memory usage,
 and compare current used message to that from the last call to it.
