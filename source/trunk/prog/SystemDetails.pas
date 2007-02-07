@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/01/05 19:48:03  danielpharos
+Fixed a range check error with the reading of the amounts of memory available
+
 Revision 1.19  2006/11/30 01:21:02  cdunde
 To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 
@@ -1085,16 +1088,16 @@ end;
 function GetMachine :string;
 var
   n :dword;
-  buf :pchar;
+  buf :string;
 const
   rkMachine = {HKEY_LOCAL_MACHINE\}'SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName';
     rvMachine = 'ComputerName';
 begin
-  n:=255;
-  buf:=stralloc(n);
-  GetComputerName(buf,n);
-  result:=strpas(buf);
-  strdispose(buf);
+  n:=254;
+  SetLength(buf,n);
+  GetComputerName(PChar(buf),n);
+  SetLength(buf,n-1);
+  result:=buf;
   with TRegistry.Create do
   begin
     rootkey:=HKEY_LOCAL_MACHINE;
@@ -1111,13 +1114,13 @@ end;
 function GetUser :string;
 var
   n :dword;
-  buf :pchar;
+  buf :string;
 begin
-  n:=255;
-  buf:=stralloc(n);
-  GetUserName(buf,n);
-  result:=strpas(buf);
-  strdispose(buf);
+  n:=254;
+  SetLength(buf,n);
+  GetUserName(PChar(buf),n);
+  SetLength(buf,n-1);
+  result:=buf;
 end;
 
 procedure TWorkstation.GetInfo;

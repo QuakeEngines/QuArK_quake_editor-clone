@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2007/02/07 14:08:22  danielpharos
+Fix a memory leak.
+
 Revision 1.37  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -225,6 +228,7 @@ begin
   for I:=0 to List2.Count-1 do
     List.Add(List2[I]);
   Result:=List;
+  List2.Free;
 end;
 
 function GameShaderList : String;
@@ -591,7 +595,6 @@ begin
          Q.Specifics.Values['b']:=Name;
          Q.Specifics.Values['shader']:='1';
        end;
-       Path.Clear;
        Path.Free;
      end;
     end;
@@ -1071,8 +1074,8 @@ begin
   if ShaderFilter then
     ShaderList.Add(Copy(Filter,1,Length(Filter)-Length(ShaderExt)))
   else
-  if not allshaders then
-    GetShaderList(Base,ShaderList);
+    if not allshaders then
+      GetShaderList(Base,ShaderList);
 
   TexturesPath:=GameTexturesPath;
   if FolderFilter then
@@ -1091,31 +1094,31 @@ begin
   if not FolderFilter then
   for I:=PakList.Count-1 downto 0 do
   begin
-       Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
-       PakName:=Pak.Name;
-       Pak.AddRef(+1);
-       try
-        Pak.Acces;
-       { SearchResultList:=Nil;  }
-        try
-         { Find Quake-3:Arena .shader files in PK3's }
-         { if a .shader file is already in directory, don't
-           get the one from the pk3 }
-         if (Pak is QZipFolder) then
-           SearchFolder:=QZipFolder(Pak).GetFolder(GameShadersPath)
-         else
-           SearchFolder:=Pak.GetFolder(GameShadersPath);
-         if SearchFolder<>Nil then
-         begin
-           Q:=ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q, ShaderList, FoundShaders);
-         end;
-        except
-         (*do nothing*)
+    Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
+    PakName:=Pak.Name;
+    Pak.AddRef(+1);
+    try
+      Pak.Acces;
+      { SearchResultList:=Nil;  }
+      try
+        { Find Quake-3:Arena .shader files in PK3's }
+        { if a .shader file is already in directory, don't
+          get the one from the pk3 }
+        if (Pak is QZipFolder) then
+          SearchFolder:=QZipFolder(Pak).GetFolder(GameShadersPath)
+        else
+          SearchFolder:=Pak.GetFolder(GameShadersPath);
+        if SearchFolder<>Nil then
+        begin
+          Q:=ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q, ShaderList, FoundShaders);
         end;
-       finally
-        Pak.AddRef(-1);
-       end;
+      except
+        (*do nothing*)
       end;
+    finally
+      Pak.AddRef(-1);
+    end;
+  end;
 
   { Get Textures (don't list ones with same name as
      shader) }
@@ -1135,31 +1138,32 @@ begin
   if not (ShaderFilter or FolderFilter) then
   for I:=PakList.Count-1 downto 0 do
   begin
-       Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
-       PakName:=Pak.Name;
-       Pak.AddRef(+1);
-       try
-        Pak.Acces;
-       { SearchResultList:=Nil;  }
-        try
-         { Find 'game' textures in package-files }
-         { Merge in the textures from the .pk3's that
+    Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
+    PakName:=Pak.Name;
+    Pak.AddRef(+1);
+    try
+      Pak.Acces;
+      {SearchResultList:=Nil;}
+      try
+        { Find 'game' textures in package-files }
+        { Merge in the textures from the .pk3's that
            aren't already in the directory }
-         if (Pak is QZipFolder) then
-           SearchFolder:=QZipFolder(Pak).GetFolder(GameTexturesPath)
-         else
-           SearchFolder:=Pak.GetFolder(GameTexturesPath);
-         if SearchFolder<>Nil then
-           Q:=ParsePakTextureFolders(SearchFolder as QPakFolder, Base, '', Q);
-        except
-         (*do nothing*)
-        end;
-       finally
-        Pak.AddRef(-1);
-       end;
+        if (Pak is QZipFolder) then
+          SearchFolder:=QZipFolder(Pak).GetFolder(GameTexturesPath)
+        else
+          SearchFolder:=Pak.GetFolder(GameTexturesPath);
+        if SearchFolder<>Nil then
+          Q:=ParsePakTextureFolders(SearchFolder as QPakFolder, Base, '', Q);
+      except
+        (*do nothing*)
+      end;
+    finally
+      Pak.AddRef(-1);
     end;
-
-
+  end;
+  PakList.Free;
+  ShaderList.Free;
+  FoundShaders.Free;
 end;
 
 procedure TQuickWalParser.FormActivate(Sender: TObject);
