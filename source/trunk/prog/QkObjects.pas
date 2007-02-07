@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.82  2007/02/07 14:09:22  danielpharos
+Fix a few Range Check errors
+
 Revision 1.81  2007/01/11 17:46:05  danielpharos
 Added comments to a block of ASM code
 
@@ -753,11 +756,12 @@ begin
     J:=CommonSpecifics.Count;
   end;
 
-  Specifics.Add(S);
   CommonSpecifics.Insert(J, Nil);
   Source:=PStringArray(CommonSpecifics.List);
   SetLength(Source^,CommonSpecifics.Count);
-  Source^[J]:=S;
+{  Source^[J]:=S;}
+  Source^[J]:=Copy(S, 1, Length(S));
+  Specifics.Add(Source^[J]);
 end;
 {$ENDIF}
 
@@ -1247,8 +1251,8 @@ begin
 
   for I:=0 to FSubElements.Count-1 do
   begin
-    if FSubElements[I].FParent=Self
-    then FSubElements[I].FParent:=Nil;  // Put break point here with Break When Condition: FSubElements[I].PythonObj.ob_refcnt > 1
+    if FSubElements[I].FParent=Self then
+      FSubElements[I].FParent:=Nil;  // Put break point here with Break When Condition: FSubElements[I].PythonObj.ob_refcnt > 1
   end;
 
   FSubElements.Free;
@@ -3274,5 +3278,6 @@ initialization
 
 finalization
   QFileList.Free;
+  ClearObjectManager;
 
 end.

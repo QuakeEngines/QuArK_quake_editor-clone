@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2006/05/05 06:04:44  cdunde
+To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
+handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
+increases causing prog crash, can not use scrole bar in TB.
+
 Revision 1.40  2006/04/07 21:36:31  nerdiii
 bugfix: latest version caused access violation if .WAD not found
 
@@ -1482,5 +1487,10 @@ procedure TGameCfgDlg.FormDestroy(Sender: TObject);
 begin
   CloseGlobalImageList(ListView1);
 end;
+
+initialization
+
+finalization
+  FreeGBList.Free;
 
 end.

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2006/05/07 09:25:49  rowdy
+fix a couple of vaguely possible access violation situations while reading shaders/materials
+
 Revision 1.48  2006/05/05 06:04:44  cdunde
 To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
 handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
@@ -1099,7 +1102,7 @@ begin
       P:=@P^.Next;
     end;
     P^:=Next;  { breaks the linked list }
-    Link.AddRef(-1);
+    Link.AddRef(-1); {DanielPharos: Apparently, this not always destroys the link?}
     Link:=Nil;
   end;
 end;

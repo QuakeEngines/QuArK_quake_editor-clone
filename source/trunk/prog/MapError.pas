@@ -39,5 +39,9 @@ initialization
 g_MapError:=TMapError.Create;
 g_MapError.Clear();
 
+finalization
+
+g_MapError.free;
+
 end.
 
