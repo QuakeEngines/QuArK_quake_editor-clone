@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2004/12/22 11:42:16  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -38,7 +41,7 @@ Currently any non-8-bits PNG images will be converted to 8-bits/paletted-image s
 
 }
 
-unit QkPNG;
+unit QkPng;
 
 interface
 
