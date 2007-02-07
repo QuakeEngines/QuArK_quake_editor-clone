@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.35  2004/12/22 11:42:15  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -588,6 +591,8 @@ begin
          Q.Specifics.Values['b']:=Name;
          Q.Specifics.Values['shader']:='1';
        end;
+       Path.Clear;
+       Path.Free;
      end;
     end;
   end;
