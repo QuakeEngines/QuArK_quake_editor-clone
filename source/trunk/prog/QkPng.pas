@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/02/07 18:45:38  danielpharos
+Updated PNG units to version 1.56. There was a resource leak in the old version.
+
 Revision 1.7  2007/02/07 14:31:50  danielpharos
 Fixed a typo
 
@@ -80,45 +83,83 @@ begin
 end;
 
 procedure QPng.LoadFile(F: TStream; FSize: Integer);
+const
+
+  ImageSpec = 'Image1=';
+  AlphaSpec = 'Alpha=';
+
+type
+  PRGB = ^TRGB;
+  TRGB = array[0..2] of Byte;
 var
   png: TPNGObject;
-  BitmapStruct: Windows.TBitmap;
-  BmpInfo: TBitmapInfo256;
-  BitmapInfo: TBitmapInfo absolute BmpInfo;
-  Source: String;
-  sss : string;
-  {BaseMemSize: Integer;}
+  AlphaData, ImgData: String;
+  DestAlpha, DestImg: PChar;
+  RawData: string;
+  Width, Height: Integer;
+  I, J: Integer;
+  V: array[1..2] of Single;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
       png:=TPNGObject.Create;
       try 
-        SetLength(sss, F.Size);
-        F.ReadBuffer(sss[1], F.Size);
-
+        SetLength(RawData, F.Size);
+        F.ReadBuffer(Pointer(RawData)^, Length(RawData));
         F.Seek(0, 0);
+
         png.LoadFromStream(F);
-        {PasteBitmap(GameBuffer(mjAny), png);}
-        FillChar(BmpInfo, SizeOf(BmpInfo), 0);
-        with BmpInfo.bmiHeader do
-         begin
-          biSize:=SizeOf(TBitmapInfoHeader);
-          biWidth:=png.Width;
-          biHeight:=png.Height;
-          biBitCount:=24;
-          biPlanes:=1;
-         end;
-        //not used (and the only hint when building QuArK): BaseMemSize:=((png.Width+3) and not 3) * png.Height;
-        GetObject(png.Header.ImageHandleValue, SizeOf(BitmapStruct), @BitmapStruct);
-        SetLength(Source, ((png.Width*3+3) and not 3) * png.Height);
-        GetDIBits(png.Canvas.Handle, png.Header.ImageHandleValue, 0, png.Height,
-          PChar(Source), BitmapInfo, dib_RGB_Colors);
+        Width:=png.Width;
+        Height:=png.Height;
+        V[1]:=Width;
+        V[2]:=Height;
+        SetFloatsSpec('Size', V);
 
-        {DanielPharos: Loading of PNG files that are not 24 bits is giving problems...}
+        {allocate quarks image buffers}
+        ImgData:=ImageSpec;
+        AlphaData:=AlphaSpec;
+        SetLength(ImgData , Length(ImageSpec) + Width * Height * 3); {RGB buffer}
+        Setlength(AlphaData,Length(AlphaSpec) + Width * Height);     {alpha buffer}
 
-        SetSize(Point(png.Width, png.Height));
-        Specifics.Values['Image1']:=Source;
-        Specifics.Values['raw_png_data']:= sss;
+        if png.HasAlpha then
+        begin
+          DestImg:=PChar(ImgData) + Length(ImageSpec);
+          DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
+          for J:=Height-1 downto 0 do
+          begin
+            for I:=0 to Width-1 do
+            begin
+              PRGB(DestImg)^[2]:=png.Pixels[I,J] and $000000FF;
+              PRGB(DestImg)^[1]:=(png.Pixels[I,J] and $0000FF00) shr 8;
+              PRGB(DestImg)^[0]:=(png.Pixels[I,J] and $00FF0000) shr 16;
+              PRGB(DestAlpha)^[0]:=(png.Pixels[I,J] and $FF000000) shr 24;
+              Inc(DestImg, 3);
+              Inc(DestAlpha, 1);
+            end;
+          end;
+
+          Specifics.Add(AlphaData);
+          Specifics.Add(ImgData);
+
+        end
+        else
+        begin
+          DestImg:=PChar(ImgData) + Length(ImageSpec);
+          for J:=Height-1 downto 0 do
+          begin
+            for I:=0 to Width-1 do
+            begin
+              PRGB(DestImg)^[2]:=png.Pixels[I,J] and $000000FF;
+              PRGB(DestImg)^[1]:=(png.Pixels[I,J] and $0000FF00) shr 8;
+              PRGB(DestImg)^[0]:=(png.Pixels[I,J] and $00FF0000) shr 16;
+              Inc(DestImg, 3);
+            end;
+          end;
+
+          Specifics.Add(ImgData);
+
+        end;
+
         {SetString(PalStr, PChar(@Lmp), SizeOf(TPaletteLmp));
         Specifics.Values['Pal']:=PalStr;}
       finally
