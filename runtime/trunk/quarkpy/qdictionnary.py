@@ -916,7 +916,7 @@ Strings = {
     # alexander would like to reserve 5703 .. 5725 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
     5704: "no vtf file",
-    5705: "QuArKVTF.dll not found, QuArK need this to load VTF Textures",
+    5705: "reserved for hl2",
     5706: "%s not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
     5708: "reserved for hl2",
@@ -991,6 +991,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.81  2007/02/02 21:14:55  danielpharos
+#Added a DirectX error message
+#
 #Revision 1.80  2006/12/03 23:13:28  danielpharos
 #Fixed the maximum texture dimension for OpenGL
 #

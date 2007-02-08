@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/02/07 21:43:12  danielpharos
+Fixed a typo.
+
 Revision 1.19  2007/02/02 10:07:07  danielpharos
 Fixed a problem with the dll loading not loading tier0 correctly
 
@@ -89,7 +92,7 @@ new: support for vtf file loading
 unit QkVTF;
 
 interface
-uses Windows, Classes, QkImages,QkPixelSet, QkObjects, QkFileObjects;
+uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects;
 
 procedure initdll;
 procedure uninitdll;
@@ -111,54 +114,96 @@ implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging;
 
-const RequiredVTFAPI=5;
+const IMAGE_FORMAT_RGBA8888= 0;
+const IMAGE_FORMAT_ABGR8888= 1;
+const IMAGE_FORMAT_RGB888= 2;
+const IMAGE_FORMAT_BGR888= 3;
+const IMAGE_FORMAT_RGB565= 4;
+const IMAGE_FORMAT_I8= 5;
+const IMAGE_FORMAT_IA88= 6;
+const IMAGE_FORMAT_P8= 7;
+const IMAGE_FORMAT_A8= 8;
+const IMAGE_FORMAT_RGB888_BLUESCREEN= 9;
+const IMAGE_FORMAT_BGR888_BLUESCREEN= 10;
+const IMAGE_FORMAT_ARGB8888= 11;
+const IMAGE_FORMAT_BGRA8888= 12;
+const IMAGE_FORMAT_DXT1= 13;
+const IMAGE_FORMAT_DXT3= 14;
+const IMAGE_FORMAT_DXT5= 15;
+const IMAGE_FORMAT_BGRX8888= 16;
+const IMAGE_FORMAT_BGR565= 17;
+const IMAGE_FORMAT_BGRX5551= 18;
+const IMAGE_FORMAT_BGRA4444= 19;
+const IMAGE_FORMAT_DXT1_ONEBITALPHA= 20;
+const IMAGE_FORMAT_BGRA5551= 21;
+const IMAGE_FORMAT_UV88= 22;
+const IMAGE_FORMAT_UVWQ8888= 22;
+const IMAGE_FORMAT_RGBA16161616F= 23;
+const IMAGE_FORMAT_RGBA16161616= 24;
+const IMAGE_FORMAT_UVLX8888= 25;
+const IMAGE_FORMAT_I32F= 26;
+const IMAGE_FORMAT_RGB323232F= 27;
+const IMAGE_FORMAT_RGBA32323232F= 28;
+const IMAGE_FORMAT_COUNT= 29;
+const IMAGE_FORMAT_NONE= -1;
 
-const IF_RGBA8888 = 0;
-const IF_ABGR8888= 1;
-const IF_RGB888= 2;
-const IF_BGR888= 3;
-const IF_RGB565= 4;
-const IF_I8= 5;
-const IF_IA88= 6;
-const IF_P8= 7;
-const IF_A8= 8;
-const IF_RGB888_BLUESCREEN= 9;
-const IF_BGR888_BLUESCREEN= 10;
-const IF_ARGB8888= 11;
-const IF_BGRA8888= 12;
-const IF_DXT1= 13;
-const IF_DXT3= 14;
-const IF_DXT5= 15;
-const IF_BGRX8888= 16;
-const IF_BGR565= 17;
-const IF_BGRX5551= 18;
-const IF_BGRA4444= 19;
-const IF_DXT1_ONEBITALPHA= 20;
-const IF_BGRA5551= 21;
-const IF_UV88= 22;
-const IF_UVWQ8888= 22;
-const IF_RGBA16161616F= 23;
-const IF_RGBA16161616= 24;
-const IF_UVLX8888= 25;
-const IF_LAST= 26;
+const	TEXTUREFLAGS_POINTSAMPLE    = $00000001;
+const	TEXTUREFLAGS_TRILINEAR	 	  = $00000002;
+const	TEXTUREFLAGS_CLAMPS				 	= $00000004;
+const	TEXTUREFLAGS_CLAMPT				 	= $00000008;
+const	TEXTUREFLAGS_ANISOTROPIC	 	= $00000010;
+const	TEXTUREFLAGS_HINT_DXT5		 	= $00000020;
+const	TEXTUREFLAGS_NOCOMPRESS		 	= $00000040;
+const	TEXTUREFLAGS_NORMAL				  = $00000080;
+const	TEXTUREFLAGS_NOMIP				 	= $00000100;
+const	TEXTUREFLAGS_NOLOD				 	= $00000200;
+const	TEXTUREFLAGS_MINMIP				 	= $00000400;
+const	TEXTUREFLAGS_PROCEDURAL		 	= $00000800;
+const	TEXTUREFLAGS_ONEBITALPHA	 	= $00001000;
+const	TEXTUREFLAGS_EIGHTBITALPHA 	= $00002000;
+const	TEXTUREFLAGS_ENVMAP				 	= $00004000;
+const	TEXTUREFLAGS_RENDERTARGET	 	= $00008000;
+const	TEXTUREFLAGS_DEPTHRENDERTARGET				= $00010000;
+const	TEXTUREFLAGS_NODEBUGOVERRIDE	  			= $00020000;
+const	TEXTUREFLAGS_SINGLECOPY					    	= $00040000;
+const	TEXTUREFLAGS_ONEOVERMIPLEVELINALPHA	 	= $00080000;
+const	TEXTUREFLAGS_PREMULTCOLORBYONEOVERMIPLEVEL	= $00100000;
+const	TEXTUREFLAGS_NORMALTODUDV					    = $00200000;
+const	TEXTUREFLAGS_ALPHATESTMIPGENERATION		= $00400000;
+const	TEXTUREFLAGS_NODEPTHBUFFER	= $00800000;
+const	TEXTUREFLAGS_NICEFILTERED		= $01000000;
+const	TEXTUREFLAGS_CLAMPU					= $02000000;
+const	TEXTUREFLAGS_LAST						= $02000000;
+const	TEXTUREFLAGS_COUNT					= 26;
+
+type
+  PByte = ^Byte;
+  PCardinal = ^Cardinal;
+  VTFImageFormat = Integer;
 
 var
   Htier0  : THandle;
   Hvstdlib  : THandle;
-  HQuArKVTF   : THandle;
-  curTier0Module,curVstdlibModule:string;
+  HVTFLib  : THandle;
+  curTier0Module, curVstdlibModule:string;
+  Image: Cardinal;
 
-// c signatures
-// DWORD APIVersion(void)
-// int vtf_to_mem(void* bufmem, long readlength, long iMipLevel, unsigned char *pDstImage)
-// int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels);
-// long filesize_of_vtf(long usealpha, int iWidth, int iHeight)
-// int mem_to_vtf(void* bufmem, long length, unsigned char *pSrcImage, long usealpha, int iWidth, int iHeight)
-  APIVersion : function    : Longword; stdcall;
-  vtf_to_mem : function ( buf: PChar; length: Integer;miplevel :longword; outbuf: PChar;usealpha :longword): Integer; stdcall;
-  vtf_info   : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger; hasalpha: PInteger): Integer; stdcall;
-  filesize_of_vtf: function (usealpha :longword; iWidth : integer; iHeight : integer; iOutformat:integer):longword; stdcall;
-  mem_to_vtf : function (bufmem: Pchar; length:longword; pSrcImage :pchar; usealpha:longword; iWidth: integer; iHeight:integer; iOutformat:integer):integer; stdcall;
+  vlGetVersion: function : Cardinal; stdcall;
+  vlInitialize: function : Boolean; stdcall;
+  vlShutdown: procedure; stdcall;
+  vlCreateImage: function (uiImage : PCardinal) : Boolean; stdcall;
+  vlBindImage: function (uiImage : Cardinal) : Boolean; stdcall;
+  vlDeleteImage: procedure (uiImage : Cardinal); stdcall;
+  vlImageLoad: function (const cFileName : string; bHeaderOnly : Boolean) : Boolean; stdcall;
+  vlImageLoadLump: function (const lpData : PByte; uiBufferSize : Cardinal; bHeaderOnly : Boolean) : Boolean; stdcall;
+  vlImageGetFlags: function : Cardinal; stdcall;
+  vlImageGetFormat: function : VTFImageFormat; stdcall;
+  vlImageGetWidth: function : Cardinal; stdcall;
+  vlImageGetHeight: function : Cardinal; stdcall;
+  vlImageConvert: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; SourceFormat : VTFImageFormat; DestFormat : VTFImageFormat) : Boolean; stdcall;
+  vlImageComputeImageSize: function (uiWidth : Cardinal; uiHeight : Cardinal; uiDepth : Cardinal; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : Cardinal; stdcall;
+  vlImageGetData: function (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal) : PByte; stdcall;
+
 
 procedure Fatal(x:string);
 begin
@@ -171,7 +216,7 @@ function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKVTF.dll');
+     Fatal('API Func "'+APIFuncname+ '" not found in dlls/VTFLib.dll');
 end;
 
 procedure initdll;
@@ -199,31 +244,73 @@ begin
       Fatal('Unable to load '+VstdlibModule);
   end;
 
-  if HQuArKVTF = 0 then
+  if HVTFLib = 0 then
   begin
-    HQuArKVTF := LoadLibrary('dlls/QuArKVTF.dll');
-    if HQuArKVTF = 0 then
-      Fatal('Unable to load dlls/QuArKVTF.dll')
-    else
-    begin
-      APIVersion      := InitDllPointer(HQuArKVTF, 'APIVersion');
-      if APIVersion<>RequiredVTFAPI then
-        Fatal('dlls/QuArKVTF.dll API version mismatch');
-      vtf_to_mem := InitDllPointer(HQuArKVTF, 'vtf_to_mem');
-      vtf_info   := InitDllPointer(HQuArKVTF, 'vtf_info');
-      filesize_of_vtf:=InitDllPointer(HQuArKVTF, 'filesize_of_vtf');
-      mem_to_vtf:=InitDllPointer(HQuArKVTF, 'mem_to_vtf');
-    end;
-  end;
+    HVTFLib := LoadLibrary('dlls/VTFLib.dll');
+    if HVTFLib = 0 then
+      Fatal('Unable to load dlls/VTFLib.dll');
+    vlGetVersion      := InitDllPointer(HVTFLib, 'vlGetVersion');
+    vlInitialize      := InitDllPointer(HVTFLib, 'vlInitialize');
+    vlShutdown        := InitDllPointer(HVTFLib, 'vlShutdown');
+    vlCreateImage     := InitDllPointer(HVTFLib, 'vlCreateImage');
+    vlBindImage       := InitDllPointer(HVTFLib, 'vlBindImage');
+    vlDeleteImage     := InitDllPointer(HVTFLib, 'vlDeleteImage');
+    vlImageLoad       := InitDllPointer(HVTFLib, 'vlImageLoad');
+    vlImageLoadLump   := InitDllPointer(HVTFLib, 'vlImageLoadLump');
+    vlImageGetFlags   := InitDllPointer(HVTFLib, 'vlImageGetFlags');
+    vlImageGetFormat  := InitDllPointer(HVTFLib, 'vlImageGetFormat');
+    vlImageGetWidth   := InitDllPointer(HVTFLib, 'vlImageGetWidth');
+    vlImageGetHeight  := InitDllPointer(HVTFLib, 'vlImageGetHeight');
+    vlImageConvert    := InitDllPointer(HVTFLib, 'vlImageConvert');
+    vlImageComputeImageSize    := InitDllPointer(HVTFLib, 'vlImageComputeImageSize');
+    vlImageGetData    := InitDllPointer(HVTFLib, 'vlImageGetData');
+
+    //Check GetVersion!
+
+    if vlGetVersion<124 then
+      Fatal('VTFLib version mismatch!');
+
+    if vlInitialize=false then
+      Fatal('Unable to initialize VTFLib!');
+
+    if vlCreateImage(@Image)=false then
+      Fatal('vlCreateImage');
+
+    if vlBindImage(Image)=false then
+      Fatal('vlBindImage');
+  end;  
 end;
 
 procedure uninitdll;
 begin
-  if Htier0 <> 0 then
+  if HVTFLib <> 0 then
   begin
-    if FreeLibrary(Htier0) = false then
-      Fatal('Unable to load untier0.dll');
-    Htier0 := 0;
+    {vlDeleteImage(Image);
+    Image:=0;}
+    {DanielPharos: The VTFLib causes an access violation after deleting the image,
+    so we just don't do that, although we should...}
+
+    vlShutdown;
+
+    if FreeLibrary(HVTFLib) = false then
+      Fatal('Unable to unload dlls/VTFLib.dll');
+    HVTFLib := 0;
+
+    vlGetVersion      := nil;
+    vlInitialize      := nil;
+    vlShutdown        := nil;
+    vlCreateImage     := nil;
+    vlBindImage       := nil;
+    vlDeleteImage     := nil;
+    vlImageLoad       := nil;
+    vlImageLoadLump   := nil;
+    vlImageGetFlags   := nil;
+    vlImageGetFormat  := nil;
+    vlImageGetWidth   := nil;
+    vlImageGetHeight  := nil;
+    vlImageConvert    := nil;
+    vlImageComputeImageSize    := nil;
+    vlImageGetData    := nil;
   end;
 
   if Hvstdlib <> 0 then
@@ -233,17 +320,11 @@ begin
     Hvstdlib := 0;
   end;
 
-  if HQuArKVTF <> 0 then
+  if Htier0 <> 0 then
   begin
-    if FreeLibrary(HQuArKVTF) = false then
-      Fatal('Unable to unload dlls/QuArKVTF.dll');
-    HQuArKVTF := 0;
-    
-    APIVersion      := nil;
-    vtf_to_mem := nil;
-    vtf_info   := nil;
-    filesize_of_vtf:=nil;
-    mem_to_vtf:=nil;
+    if FreeLibrary(Htier0) = false then
+      Fatal('Unable to load untier0.dll');
+    Htier0 := 0;
   end;
 end;
 
@@ -270,11 +351,16 @@ type
   PRGB = ^TRGB;
   TRGB = array[0..2] of Byte;
 var
-  AlphaData, ImgData, RawBuffer, DecodedBuffer: String;
+  AlphaData, ImgData, RawBuffer: String;
   Source, DestAlpha, DestImg, pSource, pDestAlpha, pDestImg: PChar;
   I,J: Integer;
-  NumberOfPixels,mip: Integer;
-  Width,Height,MipLevels,HasAlpha:Integer;
+
+  ImageFormat: VTFImageFormat;
+  Width, Height: Cardinal;
+  NumberOfPixels: Cardinal;
+  RawData, RawData2: PByte;
+  HasAlpha: Boolean;
+  V: array[1..2] of Single;
 begin
   LogEx(LOG_VERBOSE,'load vtf %s',[self.name]);
   initdll;
@@ -286,47 +372,37 @@ begin
       F.Seek(0, 0);
       F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
 
-      if @vtf_info <> nil then
-      begin
-        if 0 = vtf_info (PChar(RawBuffer), FSize, @Width, @Height, @MipLevels, @HasAlpha) then
-          Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
+      if vlImageLoadLump(Pointer(RawBuffer), Length(RawBuffer), false)=false then
+        Fatal('vlImageLoadLump');
 
-        mip:=0;
-
-        for i:=1 to mip do
-        begin
-          width:=width div 2;
-          height:=height div 2;
-        end;
-
-        NumberOfPixels:= Width*Height;
-        SetSize(Point(Width , Height ));
-        if HasAlpha=1 then
-          SetLength(DecodedBuffer, NumberOfPixels * 4 )
-        else
-          SetLength(DecodedBuffer, NumberOfPixels * 3 );
-
-        if 0 = vtf_to_mem (PChar(RawBuffer), FSize, mip, PChar(DecodedBuffer), HasAlpha) then
-          Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
-
-      end
+      HasAlpha := (vlImageGetFlags() and (TEXTUREFLAGS_ONEBITALPHA or TEXTUREFLAGS_EIGHTBITALPHA))<>0;
+      if HasAlpha then
+        ImageFormat:=IMAGE_FORMAT_RGBA8888
       else
-        Raise EError(5705);
+        ImageFormat:=IMAGE_FORMAT_RGB888;
+      Width:=vlImageGetWidth();
+      Height:=vlImageGetHeight();
+      NumberOfPixels:=Width * Height;
+      V[1]:=Width;
+      V[2]:=Height;
+      SetFloatsSpec('Size', V);
+      GetMem(RawData,vlImageComputeImageSize(Width, Height, 1, 1, ImageFormat));
+      RawData2:=vlImageGetData(0, 0, 0, 0);
+      if vlImageConvert(RawData2, RawData, Width, Height, vlImageGetFormat(), ImageFormat)=false then
+        Fatal('vlImageConvert');
 
+      {allocate quarks image buffers}
+      ImgData:=ImageSpec;
+      AlphaData:=AlphaSpec;
+      SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
+      Setlength(AlphaData,Length(AlphaSpec) + NumberOfPixels);     {alpha buffer}
 
-      if HasAlpha=1 then
+      if HasAlpha then
       begin
-
-        {allocate quarks image buffers}
-        ImgData:=ImageSpec;
-        AlphaData:=AlphaSpec;
-        SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
-        Setlength(AlphaData,Length(AlphaSpec) + NumberOfPixels);     {alpha buffer}
-
         {copy and reverse the upside down RGBA image to quarks internal format}
         {also the alpha channel is split}
-        Source:=PChar(DecodedBuffer)+ NumberOfPixels * 4;
-        DestImg:=PChar(ImgData)+Length(ImageSpec);
+        Source:=PChar(RawData) + NumberOfPixels * 4;
+        DestImg:=PChar(ImgData) + Length(ImageSpec);
         DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
         for J:=1 to Height do
         begin
@@ -336,10 +412,10 @@ begin
           pDestAlpha:=DestAlpha;
           for I:=1 to Width do
           begin
-            PRGB(pDestImg)^[0]:=PRGB(pSource)^[0];  { rgb }
-            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];  { rgb }
-            PRGB(pDestImg)^[2]:=PRGB(pSource)^[2];  { rgb }
-            pDestAlpha^:=pSource[3];                { alpha }
+            PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];
+            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];
+            PRGB(pDestImg)^[2]:=PRGB(pSource)^[0];
+            pDestAlpha^:=pSource[3];
             Inc(pSource, 4);
             Inc(pDestImg, 3);
             Inc(pDestAlpha);
@@ -361,8 +437,8 @@ begin
         AlphaData:=AlphaSpec;
 
         {copy and reverse the upside down RGB image to quarks internal format}
-        Source:=PChar(DecodedBuffer)+ NumberOfPixels*3;
-        DestImg:=PChar(ImgData)+Length(ImageSpec);
+        Source:=PChar(RawData) + NumberOfPixels * 3;
+        DestImg:=PChar(ImgData) + Length(ImageSpec);
         for J:=1 to Height do
         begin
           Dec(Source, 3 * Width);
@@ -370,9 +446,9 @@ begin
           pDestImg:=DestImg;
           for I:=1 to Width do
           begin
-            PRGB(pDestImg)^[0]:=PRGB(pSource)^[0];  { rgb }
-            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];  { rgb }
-            PRGB(pDestImg)^[2]:=PRGB(pSource)^[2];  { rgb }
+            PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];
+            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];
+            PRGB(pDestImg)^[2]:=PRGB(pSource)^[0];
             Inc(pSource, 3);
             Inc(pDestImg, 3);
           end;
@@ -383,6 +459,7 @@ begin
         Specifics.Add(ImgData);
 
       end;
+      FreeMem(RawData);
 
     end;
     else
@@ -411,7 +488,7 @@ begin
   begin
     try
       texformatalpha:=strtoint(S);
-      if (texformatalpha < 0) or (texformatalpha > IF_LAST) then
+      if (texformatalpha < 0) or (texformatalpha >= IMAGE_FORMAT_COUNT) then
         texformatalpha := 15;
     except
       Raise exception.create('unsupported texture format, fall back to 15');
@@ -425,7 +502,7 @@ begin
   begin
     try
       texformatnonalpha:=strtoint(S);
-      if (texformatnonalpha < 0) or (texformatnonalpha > IF_LAST) then
+      if (texformatnonalpha < 0) or (texformatnonalpha >= IMAGE_FORMAT_COUNT) then
         texformatnonalpha := 15;
     except
       Raise exception.create('unsupported texture format, fall back to 15');
@@ -439,9 +516,9 @@ begin
     PSD:=Description;
     if PSD.AlphaBits=psa8bpp then
     begin
-      filesize:=filesize_of_vtf(1,PSD.size.X,PSD.size.Y,texformatalpha);
+{      filesize:=filesize_of_vtf(1,PSD.size.X,PSD.size.Y,texformatalpha);
       SetLength(RawBuffer, filesize);
-      SetLength(converted_image, PSD.size.X * PSD.size.Y * 4);
+      SetLength(converted_image, PSD.size.X * PSD.size.Y * 4);}
 
       SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
       SourceAlpha:=PChar(PSD.AlphaData) + PSD.size.X * PSD.size.Y;
@@ -465,14 +542,14 @@ begin
         Inc(Dest, 4 * PSD.size.X);
       end;
 
-      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),1,PSD.size.X,PSD.size.Y,texformatalpha) then
-        Raise exception.create('mem_to_vtf fails');
+{      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),1,PSD.size.X,PSD.size.Y,texformatalpha) then
+        Raise exception.create('mem_to_vtf fails');}
     end
     else
     begin
-      filesize:=filesize_of_vtf(0,PSD.size.X,PSD.size.Y,texformatnonalpha);
+{      filesize:=filesize_of_vtf(0,PSD.size.X,PSD.size.Y,texformatnonalpha);
       SetLength(RawBuffer, filesize);
-      SetLength(converted_image, PSD.size.X * PSD.size.Y * 3);
+      SetLength(converted_image, PSD.size.X * PSD.size.Y * 3);}
 
       SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
       Dest:=PChar(converted_image);
@@ -493,8 +570,8 @@ begin
       end;
 
 
-      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),0,PSD.size.X,PSD.size.Y,texformatnonalpha) then
-        Raise exception.create('mem_to_vtf fails');
+{      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),0,PSD.size.X,PSD.size.Y,texformatnonalpha) then
+        Raise exception.create('mem_to_vtf fails');}
     end;
     F.WriteBuffer(Pointer(RawBuffer)^,filesize)
   end
@@ -511,7 +588,7 @@ begin
   RegisterQObject(QVTF, 'v');
   Htier0:=0;
   Hvstdlib:=0;
-  HQuArKVTF:=0;
+  HVTFLib:=0;
   curTier0Module:='';
   curVstdlibModule:='';
 end;
