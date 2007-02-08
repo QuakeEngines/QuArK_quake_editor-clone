@@ -14,7 +14,7 @@ discussion of it by Decker appears in <ref>src/leaks/event</ref>.
 <LI>Live Pointers (memory leaks)
 <UL>
 <LI> 1 from Maperror.pas:39 (initialization) (Fixed as of 6.5.0 Beta 2)
-<LI> 2 from PngImage.pas, prolly not much we can do about them. (Fixed as of 6.5.0 Beta 2)
+<LI> 2 from PngImage.pas, probably not much we can do about them. (Fixed as of 6.5.0 Beta 2)
 <LI> 1 from SystemDetails.pas:1090 (GetMachine) (Fixed as of 6.5.0 Beta 2)
 <LI> 1 from SystemDetails.pas:1105 (GetUser) (Fixed as of 6.5.0 Beta 2)
 </UL>
