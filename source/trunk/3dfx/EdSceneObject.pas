@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2007/02/07 20:02:53  danielpharos
+Ugly but working fix for an OpenGL lighting memory leak
+
 Revision 1.23  2007/02/06 14:07:39  danielpharos
 Another transparency fix. Beziers, sprites and models should now also have transparency.
 
@@ -403,6 +406,8 @@ end;
 procedure TSceneObject.ClearPList;
 var
  P: PSurfaces;
+ Surf: PSurface3D;
+ SurfEnd: PChar;
 begin
  while Assigned(FListSurfaces) do
   begin
