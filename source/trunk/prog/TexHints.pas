@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.6  2003/03/12 12:50:18  decker_dk
 Fixed a minor problem in TTexHintWindow.ActivateHint(), in case GlobalFindTexture() returned NIL.
 
@@ -146,6 +149,6 @@ end;
 
 initialization
   HintWindowClass:=TTexHintWindow;
-  Application.ShowHint:=False;
+  {Application.ShowHint:=False;}
   Application.ShowHint:=True;
 end.

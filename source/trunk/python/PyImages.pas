@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.14  2003/08/13 04:17:32  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -498,6 +501,7 @@ begin
       MonoBmp.Canvas.Handle, 0, 0, ROP_PSDPxax);
   end;
   MonoBmp.Free;
+  TmpImage.Free;
 end;
 
 function TyImageList.NeedImage(nDisabled: Boolean; i: Integer) : PyImage1;

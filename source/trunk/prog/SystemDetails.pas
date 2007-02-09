@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/02/07 20:03:18  danielpharos
+Fixes for memory leaks
+
 Revision 1.20  2007/01/05 19:48:03  danielpharos
 Fixed a range check error with the reading of the amounts of memory available
 
@@ -1932,5 +1935,9 @@ initialization
   // Is98:=IsOS98;
   // IsOSR2:=IsOSOSR2;
   // Platform:=GetPlatform;
+
+finalization
+  SetLength(WindowsUser,0);
+  SetLength(MachineName,0);
 end.
 
