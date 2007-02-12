@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/02/08 16:36:49  danielpharos
+Updated VTF handling to use VTFLib. The HL2 memory leak is gone! Warning: SaveFile not working!
+
 Revision 1.20  2007/02/07 21:43:12  danielpharos
 Fixed a typo.
 
@@ -177,32 +180,30 @@ const	TEXTUREFLAGS_LAST						= $02000000;
 const	TEXTUREFLAGS_COUNT					= 26;
 
 type
-  PByte = ^Byte;
-  PCardinal = ^Cardinal;
   VTFImageFormat = Integer;
 
 var
-  Htier0  : THandle;
-  Hvstdlib  : THandle;
-  HVTFLib  : THandle;
+  Htier0  : HMODULE;
+  Hvstdlib  : HMODULE;
+  HVTFLib  : HMODULE;
   curTier0Module, curVstdlibModule:string;
-  Image: Cardinal;
+  VTFImage: Cardinal;
 
-  vlGetVersion: function : Cardinal; stdcall;
-  vlInitialize: function : Boolean; stdcall;
-  vlShutdown: procedure; stdcall;
-  vlCreateImage: function (uiImage : PCardinal) : Boolean; stdcall;
-  vlBindImage: function (uiImage : Cardinal) : Boolean; stdcall;
-  vlDeleteImage: procedure (uiImage : Cardinal); stdcall;
-  vlImageLoad: function (const cFileName : string; bHeaderOnly : Boolean) : Boolean; stdcall;
-  vlImageLoadLump: function (const lpData : PByte; uiBufferSize : Cardinal; bHeaderOnly : Boolean) : Boolean; stdcall;
-  vlImageGetFlags: function : Cardinal; stdcall;
-  vlImageGetFormat: function : VTFImageFormat; stdcall;
-  vlImageGetWidth: function : Cardinal; stdcall;
-  vlImageGetHeight: function : Cardinal; stdcall;
-  vlImageConvert: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; SourceFormat : VTFImageFormat; DestFormat : VTFImageFormat) : Boolean; stdcall;
-  vlImageComputeImageSize: function (uiWidth : Cardinal; uiHeight : Cardinal; uiDepth : Cardinal; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : Cardinal; stdcall;
-  vlImageGetData: function (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal) : PByte; stdcall;
+  vlGetVersion: function : Cardinal; cdecl;
+  vlInitialize: function : Boolean; cdecl;
+  vlShutdown: procedure; cdecl;
+  vlCreateImage: function (uiImage : PCardinal) : Boolean; cdecl;
+  vlBindImage: function (uiImage : Cardinal) : Boolean; cdecl;
+  vlDeleteImage: procedure (uiImage : Cardinal); cdecl;
+  vlImageLoad: function (const cFileName : string; bHeaderOnly : Boolean) : Boolean; cdecl;
+  vlImageLoadLump: function (const lpData : PByte; uiBufferSize : Cardinal; bHeaderOnly : Boolean) : Boolean; cdecl;
+  vlImageGetFlags: function : Cardinal; cdecl;
+  vlImageGetFormat: function : VTFImageFormat; cdecl;
+  vlImageGetWidth: function : Cardinal; cdecl;
+  vlImageGetHeight: function : Cardinal; cdecl;
+  vlImageConvert: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; SourceFormat : VTFImageFormat; DestFormat : VTFImageFormat) : Boolean; cdecl;
+  vlImageComputeImageSize: function (uiWidth : Cardinal; uiHeight : Cardinal; uiDepth : Cardinal; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : Cardinal; cdecl;
+  vlImageGetData: function (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal) : PByte; cdecl;
 
 
 procedure Fatal(x:string);
@@ -212,7 +213,7 @@ begin
   Raise InternalE(x);
 end;
 
-function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
+function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
@@ -273,22 +274,20 @@ begin
     if vlInitialize=false then
       Fatal('Unable to initialize VTFLib!');
 
-    if vlCreateImage(@Image)=false then
+    if vlCreateImage(@VTFImage)=false then
       Fatal('vlCreateImage');
 
-    if vlBindImage(Image)=false then
+    if vlBindImage(VTFImage)=false then
       Fatal('vlBindImage');
-  end;  
+  end;
 end;
 
 procedure uninitdll;
 begin
   if HVTFLib <> 0 then
   begin
-    {vlDeleteImage(Image);
-    Image:=0;}
-    {DanielPharos: The VTFLib causes an access violation after deleting the image,
-    so we just don't do that, although we should...}
+    vlDeleteImage(VTFImage);
+    VTFImage:=0;
 
     vlShutdown;
 
@@ -367,8 +366,7 @@ begin
   case ReadFormat of
     1: begin  { as stand-alone file }
 
-// new code
-      SetLength(RawBuffer, FSize);
+      SetLength(RawBuffer, F.Size);
       F.Seek(0, 0);
       F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
 
