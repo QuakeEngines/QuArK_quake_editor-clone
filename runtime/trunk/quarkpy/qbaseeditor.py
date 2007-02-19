@@ -671,12 +671,15 @@ class BaseEditor:
             if isinstance(self, mdleditor.ModelEditor):
                 pass
             else:
-                self.dragobject.lastdrag=time.clock(),x,y
-                if self.dragobject.hint is not None:
-                    self.showhint(self.dragobject.hint)
                 try:
-                    if self.dragobject.InfiniteMouse:
-                        return 2 - (not MapOption("HideMouseDrag", self.MODE))
+                    self.dragobject.lastdrag=time.clock(),x,y
+                    if self.dragobject.hint is not None:
+                        self.showhint(self.dragobject.hint)
+                    try:
+                        if self.dragobject.InfiniteMouse:
+                            return 2 - (not MapOption("HideMouseDrag", self.MODE))
+                    except:
+                        pass
                 except:
                     pass
 
@@ -967,6 +970,12 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.28  2007/01/30 06:31:40  cdunde
+#To get all handles and lines to draw in the Skin-view when not zooming
+#and only the minimum lines to draw when it is, to make zooming smoother.
+#Also to removed previously added global mouseflags that was giving delayed data
+#and replace with global flagsmouse that gives correct data before other functions.
+#
 #Revision 1.27  2007/01/21 19:46:57  cdunde
 #Cut down on lines and all handles being drawn when zooming in Skin-view to increase drawing speed
 #and to fix errors in Model Editor, sometimes there is no currentcomponent.
