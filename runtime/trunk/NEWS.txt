@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2
 =============
 
+* [Daniel Pharos]: Updated VTF handling to use VTFLib. The HL2 memory leak is gone!
+                   Also, VTF file loading AND saving is now working properly!
+
 * [Daniel Pharos]: Added realtime OpenGL lighting and OpenGL transparency! Also added an option
           - for OpenGL face culling.
 

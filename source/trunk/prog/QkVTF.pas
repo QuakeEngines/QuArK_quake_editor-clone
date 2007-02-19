@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2007/02/19 13:32:11  danielpharos
+Moved VTFLib dll interface to a separate file, and build the SaveFile for VTF's using it. SaveFile has not been fully tested yet!
+
 Revision 1.22  2007/02/12 01:06:18  danielpharos
 Fix for a major crash with the external calls to the VTFLib
 
@@ -289,16 +292,12 @@ type
   TRGB = array[0..2] of char;
 var
   PSD: TPixelSetDescription;
-  filesize : longword;
-  S,RawBuffer, converted_image: String;
+  TexSize : longword;
+  S, RawBuffer: String;
+  RawData, RawData2: PByte;
   SourceImg, SourceAlpha, Dest,pSourceImg, pSourceAlpha, pDest: PChar;
   I,J: Integer;
-
-
-
-
-  
-  TexFormat: Integer;
+  TexFormat, ImageFormat: VTFImageFormat;
   VTFImage, OutputSize: Cardinal;
 begin
   LogEx(LOG_VERBOSE,'save vtf %s',[self.name]);
@@ -334,14 +333,12 @@ begin
           TexFormat := IMAGE_FORMAT_DXT5;
         end;
       end;
-
-      filesize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
-      SetLength(RawBuffer, filesize);
-      SetLength(converted_image, PSD.size.X * PSD.size.Y * 4);
+      ImageFormat:=IMAGE_FORMAT_RGBA8888;
+      GetMem(RawData2, PSD.size.X * PSD.size.Y * 4);
 
       SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
       SourceAlpha:=PChar(PSD.AlphaData) + PSD.size.X * PSD.size.Y;
-      Dest:=PChar(converted_image);
+      Dest:=PChar(RawData2);
       for J:=1 to PSD.size.Y do
       begin
         Dec(SourceImg,  3 * PSD.size.X);
@@ -350,9 +347,9 @@ begin
         pDest:=Dest;
         for I:=1 to PSD.size.X do
         begin
-          PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[0];  { rgb }
+          PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
           PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
-          PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[2];  { rgb }
+          PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
           PRGBA(pDest)^[3]:=pSourceAlpha^;          { alpha }
           Inc(pDest, 4);
           Inc(pSourceImg, 3);
@@ -360,6 +357,11 @@ begin
         end;
         Inc(Dest, 4 * PSD.size.X);
       end;
+      TexSize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
+      GetMem(RawData, TexSize);
+
+      if vlImageConvert(RawData2, RawData, PSD.size.X, PSD.size.Y, ImageFormat, TexFormat)=false then
+        Fatal('vlImageConvert');
     end
     else
     begin
@@ -375,35 +377,45 @@ begin
           TexFormat := IMAGE_FORMAT_DXT5;
         end;
       end;
+      ImageFormat:=IMAGE_FORMAT_RGB888;
+      GetMem(RawData2, PSD.size.X * PSD.size.Y * 3);
 
-      filesize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
-      SetLength(RawBuffer, filesize);
-      SetLength(converted_image, PSD.size.X * PSD.size.Y * 3);
-
-      SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
-      Dest:=PChar(converted_image);
+      SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
+      Dest:=PChar(RawData2);
       for J:=1 to PSD.size.Y do
       begin
-        Dec(SourceImg,  3 * PSD.size.X);
+        Dec(SourceImg, 3 * PSD.size.X);
         pSourceImg:=SourceImg;
         pDest:=Dest;
         for I:=1 to PSD.size.X do
         begin
-          PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[0];  { rgb }
-          PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
-          PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[2];  { rgb }
+          PRGB(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
+          PRGB(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
+          PRGB(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
           Inc(pDest, 3);
           Inc(pSourceImg, 3);
         end;
         Inc(Dest, 3 * PSD.size.X);
       end;
+      TexSize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
+      GetMem(RawData, TexSize);
+
+      if vlImageConvert(RawData2, RawData, PSD.size.X, PSD.size.Y, ImageFormat, TexFormat)=false then
+        Fatal('vlImageConvert');
     end;
+    if vlImageCreate(PSD.size.X, PSD.size.Y,1,1,1,TexFormat,false,false,false)=false then
+      Fatal('vlImageCreate');
+    vlImageSetData(0, 0, 0, 0, RawData);
+    SetLength(RawBuffer, TexSize+80);   {!}
     if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
       Fatal('vlImageSaveLump');
-{        Raise exception.create('mem_to_vtf fails');}
+{      Raise exception.create('mem_to_vtf fails');}
+{DanielPharos: Start using these exceptions!}
 
-    F.WriteBuffer(Pointer(RawBuffer)^,filesize);
+    F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
 
+    FreeMem(RawData2);
+    FreeMem(RawData);
     vlDeleteImage(VTFImage);
   end
  else inherited;
