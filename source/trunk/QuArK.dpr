@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2007/02/07 16:51:48  danielpharos
+Fixed a typo.
+
 Revision 1.35  2007/01/02 21:01:05  danielpharos
 To put back the original memory manager. The leaks are killing QuArK!
 Added FastMM 4.74 for debugging purposes
@@ -96,7 +99,7 @@ program QuArK;
 
 uses
   MemTester in 'Prog\MemTester.pas',
-  {FastMM4 in 'Prog\FastMM4.pas',}     {Enable for FastMM}
+  {FastMM4 in 'Prog\FastMM4.pas',}     {Enable for FastMM, copy the debug DLL to the runtime directory}
   {MemCheck in 'Prog\MemCheck.pas',}     {Enable for MemCheck, also see below}
   Forms,
   QkObjects in 'Prog\QkObjects.pas',
@@ -237,16 +240,17 @@ uses
   ExtraFunctionality in 'prog\ExtraFunctionality.pas',
   SystemDetails in 'prog\SystemDetails.pas',
   QkFormCfg in 'prog\QkFormCfg.pas',
-  QkPNG in 'prog\QkPng.pas',
+  QkPng in 'prog\QkPng.pas',
   MapError in 'prog\MapError.pas',
   QkTribes2 in 'prog\QkTribes2.pas',
   JPEGLib in 'components\JPEG\jpeglib.pas',
   JmoreCfg in 'components\jpeg\JMORECFG.PAS',
   QkD3 in 'prog\QkD3.pas',
+  QkVMF in 'prog\QkVMF.pas',
   QkVTF in 'prog\QkVTF.pas',
+  QkVTFLib in 'prog\QkVTFLib.pas',
   QkGCF in 'prog\QkGCF.pas',
   QkSteamFS in 'prog\QkSteamFS.pas',
-  QkVMF in 'prog\QkVMF.pas',
   QkQ3 in 'prog\QkQ3.pas',
   QkHL2mat in 'prog\QkHL2mat.pas',
   DispFace in 'prog\DispFace.pas';

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/02/12 01:06:18  danielpharos
+Fix for a major crash with the external calls to the VTFLib
+
 Revision 1.21  2007/02/08 16:36:49  danielpharos
 Updated VTF handling to use VTFLib. The HL2 memory leak is gone! Warning: SaveFile not working!
 
@@ -95,10 +98,7 @@ new: support for vtf file loading
 unit QkVTF;
 
 interface
-uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects;
-
-procedure initdll;
-procedure uninitdll;
+uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects, QkVTFLib;
 
 type
   QVTF = class(QImage)
@@ -117,214 +117,17 @@ implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging;
 
-const IMAGE_FORMAT_RGBA8888= 0;
-const IMAGE_FORMAT_ABGR8888= 1;
-const IMAGE_FORMAT_RGB888= 2;
-const IMAGE_FORMAT_BGR888= 3;
-const IMAGE_FORMAT_RGB565= 4;
-const IMAGE_FORMAT_I8= 5;
-const IMAGE_FORMAT_IA88= 6;
-const IMAGE_FORMAT_P8= 7;
-const IMAGE_FORMAT_A8= 8;
-const IMAGE_FORMAT_RGB888_BLUESCREEN= 9;
-const IMAGE_FORMAT_BGR888_BLUESCREEN= 10;
-const IMAGE_FORMAT_ARGB8888= 11;
-const IMAGE_FORMAT_BGRA8888= 12;
-const IMAGE_FORMAT_DXT1= 13;
-const IMAGE_FORMAT_DXT3= 14;
-const IMAGE_FORMAT_DXT5= 15;
-const IMAGE_FORMAT_BGRX8888= 16;
-const IMAGE_FORMAT_BGR565= 17;
-const IMAGE_FORMAT_BGRX5551= 18;
-const IMAGE_FORMAT_BGRA4444= 19;
-const IMAGE_FORMAT_DXT1_ONEBITALPHA= 20;
-const IMAGE_FORMAT_BGRA5551= 21;
-const IMAGE_FORMAT_UV88= 22;
-const IMAGE_FORMAT_UVWQ8888= 22;
-const IMAGE_FORMAT_RGBA16161616F= 23;
-const IMAGE_FORMAT_RGBA16161616= 24;
-const IMAGE_FORMAT_UVLX8888= 25;
-const IMAGE_FORMAT_I32F= 26;
-const IMAGE_FORMAT_RGB323232F= 27;
-const IMAGE_FORMAT_RGBA32323232F= 28;
-const IMAGE_FORMAT_COUNT= 29;
-const IMAGE_FORMAT_NONE= -1;
-
-const	TEXTUREFLAGS_POINTSAMPLE    = $00000001;
-const	TEXTUREFLAGS_TRILINEAR	 	  = $00000002;
-const	TEXTUREFLAGS_CLAMPS				 	= $00000004;
-const	TEXTUREFLAGS_CLAMPT				 	= $00000008;
-const	TEXTUREFLAGS_ANISOTROPIC	 	= $00000010;
-const	TEXTUREFLAGS_HINT_DXT5		 	= $00000020;
-const	TEXTUREFLAGS_NOCOMPRESS		 	= $00000040;
-const	TEXTUREFLAGS_NORMAL				  = $00000080;
-const	TEXTUREFLAGS_NOMIP				 	= $00000100;
-const	TEXTUREFLAGS_NOLOD				 	= $00000200;
-const	TEXTUREFLAGS_MINMIP				 	= $00000400;
-const	TEXTUREFLAGS_PROCEDURAL		 	= $00000800;
-const	TEXTUREFLAGS_ONEBITALPHA	 	= $00001000;
-const	TEXTUREFLAGS_EIGHTBITALPHA 	= $00002000;
-const	TEXTUREFLAGS_ENVMAP				 	= $00004000;
-const	TEXTUREFLAGS_RENDERTARGET	 	= $00008000;
-const	TEXTUREFLAGS_DEPTHRENDERTARGET				= $00010000;
-const	TEXTUREFLAGS_NODEBUGOVERRIDE	  			= $00020000;
-const	TEXTUREFLAGS_SINGLECOPY					    	= $00040000;
-const	TEXTUREFLAGS_ONEOVERMIPLEVELINALPHA	 	= $00080000;
-const	TEXTUREFLAGS_PREMULTCOLORBYONEOVERMIPLEVEL	= $00100000;
-const	TEXTUREFLAGS_NORMALTODUDV					    = $00200000;
-const	TEXTUREFLAGS_ALPHATESTMIPGENERATION		= $00400000;
-const	TEXTUREFLAGS_NODEPTHBUFFER	= $00800000;
-const	TEXTUREFLAGS_NICEFILTERED		= $01000000;
-const	TEXTUREFLAGS_CLAMPU					= $02000000;
-const	TEXTUREFLAGS_LAST						= $02000000;
-const	TEXTUREFLAGS_COUNT					= 26;
-
 type
   VTFImageFormat = Integer;
 
 var
-  Htier0  : HMODULE;
-  Hvstdlib  : HMODULE;
-  HVTFLib  : HMODULE;
-  curTier0Module, curVstdlibModule:string;
-  VTFImage: Cardinal;
-
-  vlGetVersion: function : Cardinal; cdecl;
-  vlInitialize: function : Boolean; cdecl;
-  vlShutdown: procedure; cdecl;
-  vlCreateImage: function (uiImage : PCardinal) : Boolean; cdecl;
-  vlBindImage: function (uiImage : Cardinal) : Boolean; cdecl;
-  vlDeleteImage: procedure (uiImage : Cardinal); cdecl;
-  vlImageLoad: function (const cFileName : string; bHeaderOnly : Boolean) : Boolean; cdecl;
-  vlImageLoadLump: function (const lpData : PByte; uiBufferSize : Cardinal; bHeaderOnly : Boolean) : Boolean; cdecl;
-  vlImageGetFlags: function : Cardinal; cdecl;
-  vlImageGetFormat: function : VTFImageFormat; cdecl;
-  vlImageGetWidth: function : Cardinal; cdecl;
-  vlImageGetHeight: function : Cardinal; cdecl;
-  vlImageConvert: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; SourceFormat : VTFImageFormat; DestFormat : VTFImageFormat) : Boolean; cdecl;
-  vlImageComputeImageSize: function (uiWidth : Cardinal; uiHeight : Cardinal; uiDepth : Cardinal; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : Cardinal; cdecl;
-  vlImageGetData: function (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal) : PByte; cdecl;
-
+  VTFLoaded: Boolean;
 
 procedure Fatal(x:string);
 begin
   LogEx(LOG_CRITICAL,'load vtf %s',[x]);
   Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise InternalE(x);
-end;
-
-function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
-begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/VTFLib.dll');
-end;
-
-procedure initdll;
-var
-  Tier0Module,VstdlibModule:string;
-begin
-  Tier0Module:=SetupGameSet.Specifics.Values['SteamTier0Module'];
-  VstdlibModule:=SetupGameSet.Specifics.Values['SteamVstdlibModule'];
-  if ((Tier0Module<>curTier0Module) and (curTier0Module<>'')) or ((VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'')) then
-    uninitdll;
-  curTier0Module:=Tier0Module;
-  curVstdlibModule:=VstdlibModule;
-
-  if Htier0 = 0 then
-  begin
-    Htier0 := LoadLibrary(PChar(Tier0Module));
-    if Htier0 = 0 then
-      Fatal('Unable to load '+Tier0Module);
-  end;
-
-  if Hvstdlib = 0 then
-  begin
-    Hvstdlib := LoadLibrary(PChar(VstdlibModule));
-    if Hvstdlib = 0 then
-      Fatal('Unable to load '+VstdlibModule);
-  end;
-
-  if HVTFLib = 0 then
-  begin
-    HVTFLib := LoadLibrary('dlls/VTFLib.dll');
-    if HVTFLib = 0 then
-      Fatal('Unable to load dlls/VTFLib.dll');
-    vlGetVersion      := InitDllPointer(HVTFLib, 'vlGetVersion');
-    vlInitialize      := InitDllPointer(HVTFLib, 'vlInitialize');
-    vlShutdown        := InitDllPointer(HVTFLib, 'vlShutdown');
-    vlCreateImage     := InitDllPointer(HVTFLib, 'vlCreateImage');
-    vlBindImage       := InitDllPointer(HVTFLib, 'vlBindImage');
-    vlDeleteImage     := InitDllPointer(HVTFLib, 'vlDeleteImage');
-    vlImageLoad       := InitDllPointer(HVTFLib, 'vlImageLoad');
-    vlImageLoadLump   := InitDllPointer(HVTFLib, 'vlImageLoadLump');
-    vlImageGetFlags   := InitDllPointer(HVTFLib, 'vlImageGetFlags');
-    vlImageGetFormat  := InitDllPointer(HVTFLib, 'vlImageGetFormat');
-    vlImageGetWidth   := InitDllPointer(HVTFLib, 'vlImageGetWidth');
-    vlImageGetHeight  := InitDllPointer(HVTFLib, 'vlImageGetHeight');
-    vlImageConvert    := InitDllPointer(HVTFLib, 'vlImageConvert');
-    vlImageComputeImageSize    := InitDllPointer(HVTFLib, 'vlImageComputeImageSize');
-    vlImageGetData    := InitDllPointer(HVTFLib, 'vlImageGetData');
-
-    //Check GetVersion!
-
-    if vlGetVersion<124 then
-      Fatal('VTFLib version mismatch!');
-
-    if vlInitialize=false then
-      Fatal('Unable to initialize VTFLib!');
-
-    if vlCreateImage(@VTFImage)=false then
-      Fatal('vlCreateImage');
-
-    if vlBindImage(VTFImage)=false then
-      Fatal('vlBindImage');
-  end;
-end;
-
-procedure uninitdll;
-begin
-  if HVTFLib <> 0 then
-  begin
-    vlDeleteImage(VTFImage);
-    VTFImage:=0;
-
-    vlShutdown;
-
-    if FreeLibrary(HVTFLib) = false then
-      Fatal('Unable to unload dlls/VTFLib.dll');
-    HVTFLib := 0;
-
-    vlGetVersion      := nil;
-    vlInitialize      := nil;
-    vlShutdown        := nil;
-    vlCreateImage     := nil;
-    vlBindImage       := nil;
-    vlDeleteImage     := nil;
-    vlImageLoad       := nil;
-    vlImageLoadLump   := nil;
-    vlImageGetFlags   := nil;
-    vlImageGetFormat  := nil;
-    vlImageGetWidth   := nil;
-    vlImageGetHeight  := nil;
-    vlImageConvert    := nil;
-    vlImageComputeImageSize    := nil;
-    vlImageGetData    := nil;
-  end;
-
-  if Hvstdlib <> 0 then
-  begin
-    if FreeLibrary(Hvstdlib) = false then
-      Fatal('Unable to unload vstdlib.dll');
-    Hvstdlib := 0;
-  end;
-
-  if Htier0 <> 0 then
-  begin
-    if FreeLibrary(Htier0) = false then
-      Fatal('Unable to load untier0.dll');
-    Htier0 := 0;
-  end;
 end;
 
 class function QVTF.TypeInfo: String;
@@ -354,6 +157,7 @@ var
   Source, DestAlpha, DestImg, pSource, pDestAlpha, pDestImg: PChar;
   I,J: Integer;
 
+  VTFImage: Cardinal;
   ImageFormat: VTFImageFormat;
   Width, Height: Cardinal;
   NumberOfPixels: Cardinal;
@@ -361,14 +165,25 @@ var
   HasAlpha: Boolean;
   V: array[1..2] of Single;
 begin
-  LogEx(LOG_VERBOSE,'load vtf %s',[self.name]);
-  initdll;
+  LogEx(LOG_VERBOSE,'load vtf %s',[self.name]);;
+  if not VTFLoaded then
+  begin
+    if not LoadVTF then
+      Raise EErrorFmt(5718, [GetLastError]);
+    VTFLoaded:=true;
+  end;
   case ReadFormat of
     1: begin  { as stand-alone file }
 
       SetLength(RawBuffer, F.Size);
       F.Seek(0, 0);
       F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
+
+      if vlCreateImage(@VTFImage)=false then
+        Fatal('vlCreateImage');
+
+      if vlBindImage(VTFImage)=false then
+        Fatal('vlBindImage');
 
       if vlImageLoadLump(Pointer(RawBuffer), Length(RawBuffer), false)=false then
         Fatal('vlImageLoadLump');
@@ -459,6 +274,7 @@ begin
       end;
       FreeMem(RawData);
 
+      vlDeleteImage(VTFImage);
     end;
     else
       inherited;
@@ -476,47 +292,52 @@ var
   filesize : longword;
   S,RawBuffer, converted_image: String;
   SourceImg, SourceAlpha, Dest,pSourceImg, pSourceAlpha, pDest: PChar;
-  I,J,TexFormatalpha,texformatnonalpha: Integer;
+  I,J: Integer;
+
+
+
+
+  
+  TexFormat: Integer;
+  VTFImage, OutputSize: Cardinal;
 begin
   LogEx(LOG_VERBOSE,'save vtf %s',[self.name]);
-  initdll;
-  texformatalpha := 15;
-  S:=SetupGameSet.Specifics.Values['TextureWriteSubFormatA'];
-  if S<>'' then
+  if not VTFLoaded then
   begin
-    try
-      texformatalpha:=strtoint(S);
-      if (texformatalpha < 0) or (texformatalpha >= IMAGE_FORMAT_COUNT) then
-        texformatalpha := 15;
-    except
-      Raise exception.create('unsupported texture format, fall back to 15');
-      texformatalpha := 15;
-    end;
+    if not LoadVTF then
+      Raise EErrorFmt(5718, [GetLastError]);
+    VTFLoaded:=true;
   end;
-
-  texformatnonalpha := 15;
-  S:=SetupGameSet.Specifics.Values['TextureWriteSubFormat'];
-  if S<>'' then
-  begin
-    try
-      texformatnonalpha:=strtoint(S);
-      if (texformatnonalpha < 0) or (texformatnonalpha >= IMAGE_FORMAT_COUNT) then
-        texformatnonalpha := 15;
-    except
-      Raise exception.create('unsupported texture format, fall back to 15');
-      texformatnonalpha := 15;
-    end;
-  end;
-
  with Info do case Format of
   1:
   begin  { as stand-alone file }
+
+    if vlCreateImage(@VTFImage)=false then
+      Fatal('vlCreateImage');
+
+    if vlBindImage(VTFImage)=false then
+      Fatal('vlBindImage');
+
+    TexFormat := IMAGE_FORMAT_DXT5;
     PSD:=Description;
     if PSD.AlphaBits=psa8bpp then
     begin
-{      filesize:=filesize_of_vtf(1,PSD.size.X,PSD.size.Y,texformatalpha);
+      S:=SetupGameSet.Specifics.Values['TextureWriteSubFormatA'];
+      if S<>'' then
+      begin
+        try
+          TexFormat:=strtoint(S);
+          if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
+            TexFormat := IMAGE_FORMAT_DXT5;
+        except
+          Raise exception.create('unsupported texture format, fall back to DXT5');
+          TexFormat := IMAGE_FORMAT_DXT5;
+        end;
+      end;
+
+      filesize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
       SetLength(RawBuffer, filesize);
-      SetLength(converted_image, PSD.size.X * PSD.size.Y * 4);}
+      SetLength(converted_image, PSD.size.X * PSD.size.Y * 4);
 
       SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
       SourceAlpha:=PChar(PSD.AlphaData) + PSD.size.X * PSD.size.Y;
@@ -539,15 +360,25 @@ begin
         end;
         Inc(Dest, 4 * PSD.size.X);
       end;
-
-{      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),1,PSD.size.X,PSD.size.Y,texformatalpha) then
-        Raise exception.create('mem_to_vtf fails');}
     end
     else
     begin
-{      filesize:=filesize_of_vtf(0,PSD.size.X,PSD.size.Y,texformatnonalpha);
+      S:=SetupGameSet.Specifics.Values['TextureWriteSubFormat'];
+      if S<>'' then
+      begin
+        try
+          TexFormat:=strtoint(S);
+          if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
+            TexFormat := IMAGE_FORMAT_DXT5;
+        except
+          Raise exception.create('unsupported texture format, fall back to DXT5');
+          TexFormat := IMAGE_FORMAT_DXT5;
+        end;
+      end;
+
+      filesize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
       SetLength(RawBuffer, filesize);
-      SetLength(converted_image, PSD.size.X * PSD.size.Y * 3);}
+      SetLength(converted_image, PSD.size.X * PSD.size.Y * 3);
 
       SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
       Dest:=PChar(converted_image);
@@ -566,12 +397,14 @@ begin
         end;
         Inc(Dest, 3 * PSD.size.X);
       end;
-
-
-{      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),0,PSD.size.X,PSD.size.Y,texformatnonalpha) then
-        Raise exception.create('mem_to_vtf fails');}
     end;
-    F.WriteBuffer(Pointer(RawBuffer)^,filesize)
+    if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
+      Fatal('vlImageSaveLump');
+{        Raise exception.create('mem_to_vtf fails');}
+
+    F.WriteBuffer(Pointer(RawBuffer)^,filesize);
+
+    vlDeleteImage(VTFImage);
   end
  else inherited;
  end;
@@ -584,13 +417,9 @@ initialization
 begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QVTF, 'v');
-  Htier0:=0;
-  Hvstdlib:=0;
-  HVTFLib:=0;
-  curTier0Module:='';
-  curVstdlibModule:='';
 end;
 
 finalization
-  uninitdll;
+  if VTFLoaded then
+    UnLoadVTF;
 end.
