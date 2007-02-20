@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/02/08 16:35:57  danielpharos
+Updated PNG loading to support more PNG files. Warning: SaveFile not working!
+
 Revision 1.8  2007/02/07 18:45:38  danielpharos
 Updated PNG units to version 1.56. There was a resource leak in the old version.
 
@@ -51,7 +54,7 @@ unit QkPng;
 
 interface
 
-uses Classes, QkImages, QkObjects, QkFileObjects;
+uses Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects;
 
 type
   QPng = class(QImage)
@@ -84,10 +87,9 @@ end;
 
 procedure QPng.LoadFile(F: TStream; FSize: Integer);
 const
-
-  ImageSpec = 'Image1=';
-  AlphaSpec = 'Alpha=';
-
+ Spec1 = 'Image1=';
+ Spec2 = 'Pal=';
+ Spec3 = 'Alpha=';
 type
   PRGB = ^TRGB;
   TRGB = array[0..2] of Byte;
@@ -103,68 +105,65 @@ begin
   case ReadFormat of
     1: begin  { as stand-alone file }
       png:=TPNGObject.Create;
-      try 
-        SetLength(RawData, F.Size);
-        F.ReadBuffer(Pointer(RawData)^, Length(RawData));
-        F.Seek(0, 0);
+      SetLength(RawData, F.Size);
+      F.ReadBuffer(Pointer(RawData)^, Length(RawData));
+      F.Seek(0, 0);
 
-        png.LoadFromStream(F);
-        Width:=png.Width;
-        Height:=png.Height;
-        V[1]:=Width;
-        V[2]:=Height;
-        SetFloatsSpec('Size', V);
+      png.LoadFromStream(F);
+      Width:=png.Width;
+      Height:=png.Height;
+      V[1]:=Width;
+      V[2]:=Height;
+      SetFloatsSpec('Size', V);
 
-        {allocate quarks image buffers}
-        ImgData:=ImageSpec;
-        AlphaData:=AlphaSpec;
-        SetLength(ImgData , Length(ImageSpec) + Width * Height * 3); {RGB buffer}
-        Setlength(AlphaData,Length(AlphaSpec) + Width * Height);     {alpha buffer}
+      {allocate quarks image buffers}
+      ImgData:=Spec1;
+      AlphaData:=Spec3;
+      SetLength(ImgData , Length(Spec1) + Width * Height * 3); {RGB buffer}
+      Setlength(AlphaData,Length(Spec3) + Width * Height);     {alpha buffer}
 
-        if png.HasAlpha then
+      if png.HasAlpha then
+      begin
+        DestImg:=PChar(ImgData) + Length(Spec1);
+        DestAlpha:=PChar(AlphaData) + Length(Spec3);
+        for J:=Height-1 downto 0 do
         begin
-          DestImg:=PChar(ImgData) + Length(ImageSpec);
-          DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
-          for J:=Height-1 downto 0 do
+          for I:=0 to Width-1 do
           begin
-            for I:=0 to Width-1 do
-            begin
-              PRGB(DestImg)^[2]:=png.Pixels[I,J] and $000000FF;
-              PRGB(DestImg)^[1]:=(png.Pixels[I,J] and $0000FF00) shr 8;
-              PRGB(DestImg)^[0]:=(png.Pixels[I,J] and $00FF0000) shr 16;
-              PRGB(DestAlpha)^[0]:=(png.Pixels[I,J] and $FF000000) shr 24;
-              Inc(DestImg, 3);
-              Inc(DestAlpha, 1);
-            end;
+            PRGB(DestImg)^[2]:=(png.Pixels[I,J] and $000000FF);
+            PRGB(DestImg)^[1]:=(png.Pixels[I,J] and $0000FF00) shr 8;
+            PRGB(DestImg)^[0]:=(png.Pixels[I,J] and $00FF0000) shr 16;
+            PRGB(DestAlpha)^[0]:=(png.Pixels[I,J] and $FF000000) shr 24;
+            Inc(DestImg, 3);
+            Inc(DestAlpha, 1);
           end;
-
-          Specifics.Add(AlphaData);
-          Specifics.Add(ImgData);
-
-        end
-        else
-        begin
-          DestImg:=PChar(ImgData) + Length(ImageSpec);
-          for J:=Height-1 downto 0 do
-          begin
-            for I:=0 to Width-1 do
-            begin
-              PRGB(DestImg)^[2]:=png.Pixels[I,J] and $000000FF;
-              PRGB(DestImg)^[1]:=(png.Pixels[I,J] and $0000FF00) shr 8;
-              PRGB(DestImg)^[0]:=(png.Pixels[I,J] and $00FF0000) shr 16;
-              Inc(DestImg, 3);
-            end;
-          end;
-
-          Specifics.Add(ImgData);
-
         end;
 
-        {SetString(PalStr, PChar(@Lmp), SizeOf(TPaletteLmp));
-        Specifics.Values['Pal']:=PalStr;}
-      finally
-        png.Free;
+        Specifics.Add(AlphaData);
+        Specifics.Add(ImgData);
+
+      end
+      else
+      begin
+        DestImg:=PChar(ImgData) + Length(Spec1);
+        for J:=Height-1 downto 0 do
+        begin
+          for I:=0 to Width-1 do
+          begin
+            PRGB(DestImg)^[2]:=(png.Pixels[I,J] and $000000FF);
+            PRGB(DestImg)^[1]:=(png.Pixels[I,J] and $0000FF00) shr 8;
+            PRGB(DestImg)^[0]:=(png.Pixels[I,J] and $00FF0000) shr 16;
+            Inc(DestImg, 3);
+          end;
+        end;
+
+        Specifics.Add(ImgData);
+
       end;
+
+      {SetString(PalStr, PChar(@Lmp), SizeOf(TPaletteLmp));
+      Specifics.Values['Pal']:=PalStr;}
+      png.Free;
     end;
     else
       inherited;
@@ -172,22 +171,67 @@ begin
 end;
 
 procedure QPng.SaveFile(Info: TInfoEnreg1);
-(*
 var
   png: TPNGObject;
-*)  
-var
-   data: String;
-   size: integer;
+  PSD: TPixelSetDescription;
+  SourceImg, SourceAlpha, pSourceImg, pSourceAlpha: PChar;
+  Color: ColorRef;
+  I, J: Integer;
 begin
   with Info do
     case Format of
       1: begin  { as stand-alone file }
-        Data := GetSpecArg('raw_png_data');
-        size := length(Data) - length('raw_png_data=');
-        f.WriteBuffer(Data[Length('raw_png_data=')+1], size);
-        {raise exception.create('Sorry, saving .png files is unsupported at the moment!');}
+      png:=TPNGObject.Create;
+      PSD:=Description;
+      if PSD.AlphaBits=psa8bpp then
+      begin
+        png.CreateBlank(COLOR_RGBALPHA, 8, PSD.size.x, PSD.size.y);
+
+        SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
+        SourceAlpha:=PChar(PSD.AlphaData) + PSD.size.X * PSD.size.Y;
+        for J:=1 to PSD.size.Y do
+        begin
+          Dec(SourceImg, 3 * PSD.size.X);
+          pSourceAlpha:=SourceAlpha;
+          pSourceImg:=SourceImg;
+          for I:=1 to PSD.size.X do
+          begin
+            Color:=(PCardinal(pSourceImg)^ and $000000FF) shl 16;
+            Inc(pSourceImg);
+            Color:=Color + (PCardinal(pSourceImg)^ and $000000FF) shl 8;
+            Inc(pSourceImg);
+            Color:=Color + (PCardinal(pSourceImg)^ and $000000FF);
+            Inc(pSourceImg);
+            Color:=Color + (PCardinal(pSourceImg)^ and $000000FF) shl 24;
+            Inc(pSourceAlpha);
+            png.Pixels[I,J]:=Color;
+          end;
+        end;
+      end
+      else
+      begin
+        png.CreateBlank(COLOR_RGB, 8, PSD.size.x, PSD.size.y);
+
+        SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
+        for J:=1 to PSD.size.Y do
+        begin
+          Dec(SourceImg, 3 * PSD.size.X);
+          pSourceImg:=SourceImg;
+          for I:=1 to PSD.size.X do
+          begin
+            Color:=(PCardinal(pSourceImg)^ and $000000FF) shl 16;
+            Inc(pSourceImg);
+            Color:=Color + (PCardinal(pSourceImg)^ and $000000FF) shl 8;
+            Inc(pSourceImg);
+            Color:=Color + (PCardinal(pSourceImg)^ and $000000FF);
+            Inc(pSourceImg);
+            png.Pixels[I,J]:=Color;
+          end;
+        end;
       end;
+      png.SaveToStream(F);
+      png.Free;
+    end
     else
       inherited;
     end;
