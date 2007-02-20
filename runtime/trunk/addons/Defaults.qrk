@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.306  2007/02/07 14:09:06  danielpharos
+//Fix a lot of syntax typo's
+//
 //Revision 1.305  2007/02/02 21:04:23  danielpharos
 //Change the term 'Software lighting' to a less confusing term, namely 'Basic lighting'
 //
@@ -3714,63 +3717,6 @@ QQRKSRC1
                 $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
                 $0D"SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
       }
-      TextureWriteSubFormatA: = {
-        Typ = "CL"
-        Txt = "Format of exported alpha Textures"
-        Values = "0"$0D"1"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D
-                 "11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D"20"$0D
-                 "21"$0D"22"$0D"23"$0D"24"$0D"25"
-        Items = "RGBA8888"
-             $0D "ABGR8888"
-             $0D "IA88"
-             $0D "P8"
-             $0D "A8"
-             $0D "RGB888_BLUESCREEN"
-             $0D "BGR888_BLUESCREEN"
-             $0D "ARGB8888"
-             $0D "BGRA8888"
-             $0D "DXT1"
-             $0D "DXT3"
-             $0D "DXT5"
-             $0D "BGRX8888"
-             $0D "BGR565"
-             $0D "BGRX5551"
-             $0D "BGRA4444"
-             $0D "DXT1_ONEBITALPHA"
-             $0D "BGRA5551"
-             $0D "UV88"
-             $0D "UVWQ8888"
-             $0D "RGBA16161616F"
-             $0D "RGBA16161616"
-             $0D "UVLX8888"
-      }
-
-      TextureWriteSubFormat: = {
-        Typ = "CL"
-        Txt = "Format of exported non alpha Textures"
-        Values = "2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D
-                 "13"$0D"14"$0D"15"$0D"16"$0D"17"$0D
-                 "21"$0D"22"$0D"25"
-        Items = "RGB888"
-             $0D "BGR888"
-             $0D "RGB565"
-             $0D "I8"
-             $0D "IA88"
-             $0D "P8"
-             $0D "A8"
-             $0D "RGB888_BLUESCREEN"
-             $0D "BGR888_BLUESCREEN"
-             $0D "DXT1"
-             $0D "DXT3"
-             $0D "DXT5"
-             $0D "BGRX8888"
-             $0D "BGR565"
-             $0D "BGRX5551"
-             $0D "UV88"
-             $0D "UVWQ8888"
-             $0D "UVLX8888"
-      }
-      
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -3794,6 +3740,82 @@ QQRKSRC1
                $0022002A200666002AAAA20006666666002A200666666666660006666666
         cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Advanced Game Settings ----"}
+      TextureWriteSubFormatA: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported alpha textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+        Items = "RGBA8888"
+             $0D "ABGR8888"
+             $0D "RGB888"
+             $0D "BGR888"
+             $0D "RGB565"
+             $0D "I8"
+             $0D "IA88"
+             $0D "P8"
+             $0D "A8"
+             $0D "RGB888_BLUESCREEN"
+             $0D "BGR888_BLUESCREEN"
+             $0D "ARGB8888"
+             $0D "BGRA8888"
+             $0D "DXT1"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "BGRX8888"
+             $0D "BGR565"
+             $0D "BGRX5551"
+             $0D "BGRA4444"
+             $0D "DXT1_ONEBITALPHA"
+             $0D "BGRA5551"
+             $0D "UV88/UVWQ8888"
+             $0D "RGBA16161616F"
+             $0D "RGBA16161616"
+             $0D "UVLX8888"
+             $0D "I32F"
+             $0D "RGB323232F"
+             $0D "RGBA32323232F"
+      }
+      TextureWriteSubFormat: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported non-alpha textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+        Items = "RGBA8888"
+             $0D "ABGR8888"
+             $0D "RGB888"
+             $0D "BGR888"
+             $0D "RGB565"
+             $0D "I8"
+             $0D "IA88"
+             $0D "P8"
+             $0D "A8"
+             $0D "RGB888_BLUESCREEN"
+             $0D "BGR888_BLUESCREEN"
+             $0D "ARGB8888"
+             $0D "BGRA8888"
+             $0D "DXT1"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "BGRX8888"
+             $0D "BGR565"
+             $0D "BGRX5551"
+             $0D "BGRA4444"
+             $0D "DXT1_ONEBITALPHA"
+             $0D "BGRA5551"
+             $0D "UV88/UVWQ8888"
+             $0D "RGBA16161616F"
+             $0D "RGBA16161616"
+             $0D "UVLX8888"
+             $0D "I32F"
+             $0D "RGB323232F"
+             $0D "RGBA32323232F"
       }
       sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
@@ -3835,6 +3857,7 @@ QQRKSRC1
         Min = '1'
         Max = '40'
       }
+      
   //    EnableTransparency: =
   //    {
   //      Txt = "In OpenGL window, enable transparency (slow!)"
