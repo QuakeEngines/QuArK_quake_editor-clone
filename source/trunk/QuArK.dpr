@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2007/02/19 13:32:11  danielpharos
+Moved VTFLib dll interface to a separate file, and build the SaveFile for VTF's using it. SaveFile has not been fully tested yet!
+
 Revision 1.36  2007/02/07 16:51:48  danielpharos
 Fixed a typo.
 
@@ -255,6 +258,10 @@ uses
   QkHL2mat in 'prog\QkHL2mat.pas',
   DispFace in 'prog\DispFace.pas';
 
+{DanielPharos: Set the support-for-larger-than-2GB-flag, so we can use up to 4 GB!}
+{.$IFDEF Delphi7orNewerCompiler}
+  {.$SetPEFlags $20}
+{.$ENDIF}
 {$R *.RES}
 
 begin
