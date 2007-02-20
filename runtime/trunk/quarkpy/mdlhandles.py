@@ -316,10 +316,16 @@ class SkinHandle(qhandles.GenericHandle):
 
           tris[self.tri_index] = newtri
           new.triangles = tris
-      except:
-          new.triangles = self.comp
 
-      return [self.comp], [new]
+          return [self.comp], [new]
+      except:
+          try:
+              new.triangles = self.comp
+              return [self.comp], [new]
+          except:
+              return None, None
+
+    #  return [self.comp], [new]
 
 
 class BoneHandle(qhandles.GenericHandle):
@@ -509,7 +515,10 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
                 component = editor.Root.dictitems[item]
                 org = component.originst
     else:
-        org = component.originst
+        try:
+            org = component.originst
+        except:
+            quarkx.msgbox("Component Hidden!\n\nYou must RMB click it\nand select 'Show Component'\nthen zoom slightly\nto recreate its handles.", MT_ERROR, MB_OK)
 
     n = quarkx.vect(1,1,1) 
     v = orthogonalvect(n, view)
@@ -721,6 +730,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.24  2007/01/30 09:13:31  cdunde
+#To cut down on more duplicated handle drawing which increases editor response speed.
+#
 #Revision 1.23  2007/01/30 06:31:40  cdunde
 #To get all handles and lines to draw in the Skin-view when not zooming
 #and only the minimum lines to draw when it is, to make zooming smoother.
