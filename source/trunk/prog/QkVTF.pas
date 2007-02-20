@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2007/02/19 21:42:07  danielpharos
+Fixed the VTF SaveFile. VTF file can now be saved properly!
+
 Revision 1.23  2007/02/19 13:32:11  danielpharos
 Moved VTFLib dll interface to a separate file, and build the SaveFile for VTF's using it. SaveFile has not been fully tested yet!
 
@@ -329,19 +332,18 @@ begin
           if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
             TexFormat := IMAGE_FORMAT_DXT5;
         except
-          Raise exception.create('unsupported texture format, fall back to DXT5');
           TexFormat := IMAGE_FORMAT_DXT5;
         end;
       end;
       ImageFormat:=IMAGE_FORMAT_RGBA8888;
       GetMem(RawData2, PSD.size.X * PSD.size.Y * 4);
 
-      SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
+      SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
       SourceAlpha:=PChar(PSD.AlphaData) + PSD.size.X * PSD.size.Y;
       Dest:=PChar(RawData2);
       for J:=1 to PSD.size.Y do
       begin
-        Dec(SourceImg,  3 * PSD.size.X);
+        Dec(SourceImg, 3 * PSD.size.X);
         pSourceAlpha:=SourceAlpha;
         pSourceImg:=SourceImg;
         pDest:=Dest;
@@ -373,7 +375,6 @@ begin
           if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
             TexFormat := IMAGE_FORMAT_DXT5;
         except
-          Raise exception.create('unsupported texture format, fall back to DXT5');
           TexFormat := IMAGE_FORMAT_DXT5;
         end;
       end;
