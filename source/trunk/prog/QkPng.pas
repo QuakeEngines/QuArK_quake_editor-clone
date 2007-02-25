@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/02/20 17:03:11  danielpharos
+Added a PNG SaveFile, and it's working correctly. However, the displaying of transparent images is still broken.
+
 Revision 1.9  2007/02/08 16:35:57  danielpharos
 Updated PNG loading to support more PNG files. Warning: SaveFile not working!
 
@@ -189,12 +192,13 @@ begin
 
         SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
         SourceAlpha:=PChar(PSD.AlphaData) + PSD.size.X * PSD.size.Y;
-        for J:=1 to PSD.size.Y do
+        for J:=0 to PSD.size.Y-1 do
         begin
           Dec(SourceImg, 3 * PSD.size.X);
+          Dec(SourceAlpha, PSD.size.X);
           pSourceAlpha:=SourceAlpha;
           pSourceImg:=SourceImg;
-          for I:=1 to PSD.size.X do
+          for I:=0 to PSD.size.X-1 do
           begin
             Color:=(PCardinal(pSourceImg)^ and $000000FF) shl 16;
             Inc(pSourceImg);
@@ -202,7 +206,7 @@ begin
             Inc(pSourceImg);
             Color:=Color + (PCardinal(pSourceImg)^ and $000000FF);
             Inc(pSourceImg);
-            Color:=Color + (PCardinal(pSourceImg)^ and $000000FF) shl 24;
+            Color:=Color + (PCardinal(pSourceAlpha)^ and $000000FF) shl 24;
             Inc(pSourceAlpha);
             png.Pixels[I,J]:=Color;
           end;
@@ -213,11 +217,11 @@ begin
         png.CreateBlank(COLOR_RGB, 8, PSD.size.x, PSD.size.y);
 
         SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
-        for J:=1 to PSD.size.Y do
+        for J:=0 to PSD.size.Y-1 do
         begin
           Dec(SourceImg, 3 * PSD.size.X);
           pSourceImg:=SourceImg;
-          for I:=1 to PSD.size.X do
+          for I:=0 to PSD.size.X-1 do
           begin
             Color:=(PCardinal(pSourceImg)^ and $000000FF) shl 16;
             Inc(pSourceImg);

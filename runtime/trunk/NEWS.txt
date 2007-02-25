@@ -15,13 +15,15 @@ $Id$
 6.5.0 Beta 2
 =============
 
-* [Daniel Pharos]: Updated VTF handling to use VTFLib. The HL2 memory leak is gone!
+* [DanielPharos]: QuArK should now be able to handle most PNG files correctly!
+
+* [DanielPharos]: Updated VTF handling to use VTFLib. The HL2 memory leak is gone!
                    Also, VTF file loading AND saving is now working properly!
 
-* [Daniel Pharos]: Added realtime OpenGL lighting and OpenGL transparency! Also added an option
+* [DanielPharos]: Added realtime OpenGL lighting and OpenGL transparency! Also added an option
           - for OpenGL face culling.
 
-* [Daniel Pharos]: The tier0 and vstdlib dll files for HL2 can now be pointed to using the
+* [DanielPharos]: The tier0 and vstdlib dll files for HL2 can now be pointed to using the
           - configuration, so you don't need to copy them to the local QuArK directory anymore!
 
  * [cdunde]: Fixed errors that occur when switching layouts in the Model Editor.
@@ -67,7 +69,7 @@ $Id$
  * [cdunde]: Made additional fix to stop filling multiple dropdown list with erroneous data,
          - for example like a misc_model for func_bobbing entity.
 
- * [Daniel Pharos]: Fixed the software & glide lock-up!
+ * [DanielPharos]: Fixed the software & glide lock-up!
 
  * [cdunde]: Fixed Model Editor's Skin-view to draw model mesh correctly and fairly fast.
 
@@ -89,14 +91,14 @@ $Id$
  * [cdunde]: Added a new sub-menu to the Model Editors "Options" menu,
           - with various methods of rotation in 3D views to choose from.
  
- * [Daniel Pharos]: Fixed the access violation and subsequent grey OpenGL windows when
+ * [DanielPharos]: Fixed the access violation and subsequent grey OpenGL windows when
          - loading a model without a skin.
 
- * [Daniel Pharos]: OpenGL is now able to render 2D views.
+ * [DanielPharos]: OpenGL is now able to render 2D views.
 
- * [Daniel Pharos]: Turned Glide right side up.
+ * [DanielPharos]: Turned Glide right side up.
 
- * [Daniel Pharos]: Added higher texture-size support (only works in OpenGL).
+ * [DanielPharos]: Added higher texture-size support (only works in OpenGL).
 
  * [cdunde]: Started dragging lines support for Skin-view vertex movement.
 
@@ -159,10 +161,10 @@ $Id$
          - to allow their viewing in the editor, all available textures for QuArK's Texture
          - Browser and added its link to a new STVEF Infobase Configuration doc section.
 
- * [Daniel Pharos and cdunde]: Complete revamping of STVEF files and addition of HM addon
+ * [DanielPharos and cdunde]: Complete revamping of STVEF files and addition of HM addon
          - for multiplayer editing by DanielPharos.
 
- * [Daniel Pharos and cdunde]: As far back as mid 2000 Access Violation errors would
+ * [DanielPharos and cdunde]: As far back as mid 2000 Access Violation errors would
          - occurred with various entity forms, causing QuArK to crash. That is now fixed!
 
  * [cdunde]: Changed "Poly size" display in "hint box" to w, d, h to reduce confusion
