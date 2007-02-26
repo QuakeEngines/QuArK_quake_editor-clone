@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2006/08/02 07:17:57  cdunde
+To add .md3 model editor 3D view support for Quake 4.
+
 Revision 1.25  2006/07/17 06:58:00  cdunde
 To setup RTCW-ET as its own game
 with md3 model display support.
@@ -135,12 +138,16 @@ implementation
 
 uses QuarkX, Setup, QkObjectClassList, game, qkq3, qkpixelset, logging;
 
+const
+ MAX_QPATH = 64;
+
 type
 
   TMD3Header = packed record
     id: array[1..4] of char;       //id of file, always "IDP3"
     version: longint;              //version number, always 15
-    filename: array[1..68] of char;//sometimes left Blank...
+    filename: array[1..MAX_QPATH] of char;//sometimes left Blank...
+    flags: Longint;                //???
     BoneFrame_num: Longint;        //number of BoneFrames
     Tag_num: Longint;              //number of 'tags' per BoneFrame
     Mesh_num: Longint;             //number of meshes/skins
@@ -171,7 +178,7 @@ type
   }
 
   TMD3Tag = packed record
-    Name: array[1..64] of char;    //name of 'tag' as it's usually
+    Name: array[1..MAX_QPATH] of char;    //name of 'tag' as it's usually
                                    //called in the md3 files try to
                                    //see it as a sub-mesh/seperate
                                    //mesh-part.
@@ -194,28 +201,25 @@ type
   }
 
   TMD3BoneFrame = packed record
-    //unverified:
     Mins: vec3_t;
     Maxs: vec3_t;
     Position: vec3_t;
-    scale: single;
-    Creator: array[1..16]of char; //i think this is the
-                                  //"creator" name..
-                                  //but i'm only guessing.
+    Radius: single;
+    Name: array[1..16]of char;
   end;
   { TMD3BoneFrame
-     Mins, Maxs, and position are very likely to be correct, scale is just a guess.
      If you divide the maximum and minimum xyz values of all the vertices from each meshframe you get
      the exact values as mins and maxs..
      Position is the exact center of mins and maxs, most of the time anyway.
 
-     Creator is very probably just the name of the program or file of which it (the boneframe?) was created..
+     Name is very probably just the name of the program or file of which it (the boneframe?) was created,
      sometimes it's "(from ASE)" sometimes it's the name of a .3ds file.
   }
 
   TMD3Mesh = packed record
     ID: array[1..4] of char;          //id, must be IDP3
-    Name: array[1..68] of char;       //name of mesh
+    Name: array[1..MAX_QPATH] of char;       //name of mesh
+    flags: Longint;                   //???
     MeshFrame_num: Longint;           //number of meshframes
                                       //in mesh
     Skin_num: Longint;                //number of skins in mesh
@@ -243,7 +247,10 @@ type
      start of the triangle, texvec and vertex data (in that order).
   }
 
-  TMD3Skin = packed array[1..68] of char; //name of skin used by mesh
+  TMD3Skin = packed record
+    Name: array[1..MAX_QPATH] of char; //name of skin used by mesh
+    Shader_index: LongInt;              //?
+  end;
   { Comments to TMD3Skin
      Name holds the name of the texture, relative to the baseq3 path.
      Q3 has a peculiar way of handling textures..
@@ -289,6 +296,7 @@ type
      1. these texture coordinates need to be interpolated when the model changes shape,
      2. these texture coordinates are different from the normal texture coordinates but still both need to be used (with shaders you can
      have multi-layered surfaces, one could be an enviromental map, an other could be a transparent texture)
+     DanielPharos: envtex are probably not interpreted correctly... Or not at al!
   }
 
 {--------------------------}
@@ -511,9 +519,9 @@ begin
   begin  
     fs.Seek(mhead.HeaderSize - sizeof(mhead), 1);
     fs.readbuffer(tex, sizeof(tex));
-    if tex[1]=#0 then
-      tex[1]:='m';
-    base_tex_name:=trim(string(tex));
+    if tex.name[1]=#0 then
+      tex.name[1]:='m';
+    base_tex_name:=trim(string(tex.name));
     { The Raven guys seem to have used #0 as the filename-extension
       separator for textures in their .md3's !!! }
     if CharModeJeu=mjSoF2 then
@@ -817,7 +825,7 @@ begin
           f.readbuffer(boneframe,sizeof(boneframe));
           OBone:=QModelBone.Create('Bone Frame '+inttostr(i), Misc);
           OBone.IntSpec['Q3A_Style']:=1;
-          OBone.SetQ3AData(boneframe.position, boneframe.mins, boneframe.maxs, boneframe.scale);
+          OBone.SetQ3AData(boneframe.position, boneframe.mins, boneframe.maxs, boneframe.radius);
           Misc.SubElements.Add(OBone);
         end;
         if not((head.Tag_num=0) or (head.Tag_Start=head.Tag_End)) then
