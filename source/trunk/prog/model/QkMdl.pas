@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2006/04/06 19:44:56  nerdiii
+Cleaned some compiler hints
+
 Revision 1.17  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -349,7 +352,6 @@ begin
       Exit;
     end;
     Comp.SkinGroup.Subelements.Add(result);
-    exit;
   finally
   end;
 end;
