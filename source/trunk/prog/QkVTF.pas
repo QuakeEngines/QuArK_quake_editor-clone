@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2007/02/20 14:57:02  danielpharos
+Small clean-up of the code.
+
 Revision 1.24  2007/02/19 21:42:07  danielpharos
 Fixed the VTF SaveFile. VTF file can now be saved properly!
 
@@ -298,7 +301,7 @@ var
   TexSize : longword;
   S, RawBuffer: String;
   RawData, RawData2: PByte;
-  SourceImg, SourceAlpha, Dest,pSourceImg, pSourceAlpha, pDest: PChar;
+  SourceImg, SourceAlpha, Dest, pSourceImg, pSourceAlpha, pDest: PChar;
   I,J: Integer;
   TexFormat, ImageFormat: VTFImageFormat;
   VTFImage, OutputSize: Cardinal;
