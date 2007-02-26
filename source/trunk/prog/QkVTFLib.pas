@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2007/02/19 21:42:07  danielpharos
+Fixed the VTF SaveFile. VTF file can now be saved properly!
+
 Revision 1.1  2007/02/19 13:32:10  danielpharos
 Moved VTFLib dll interface to a separate file, and build the SaveFile for VTF's using it. SaveFile has not been fully tested yet!
 
@@ -101,7 +104,7 @@ new: support for vtf file loading
 unit QkVTFLib;
 
 interface
-uses Windows, QkObjects;
+uses Windows, SysUtils, QkObjects;
 
 function LoadVTF : Boolean;
 procedure UnloadVTF;
@@ -356,6 +359,10 @@ begin
     VstdlibModule:=SetupGameSet.Specifics.Values['SteamVstdlibModule'];
     if ((Tier0Module<>curTier0Module) and (curTier0Module<>'')) or ((VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'')) then
       UnloadVTF;
+    if (Tier0Module='') then
+      raise exception.create('Unable to retrieve the location of the tier0.dll. Please make sure you are in HL2 mode, and the location is set correctly in the configurations.');
+    if (VstdlibModule='') then
+      raise exception.create('Unable to retrieve the location of the vstdlib.dll. Please make sure you are in HL2 mode, and the location is set correctly in the configurations.');
     curTier0Module:=Tier0Module;
     curVstdlibModule:=VstdlibModule;
 
