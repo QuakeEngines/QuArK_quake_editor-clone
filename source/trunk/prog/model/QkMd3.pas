@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/02/26 22:25:44  danielpharos
+Made the MD3 file loading a little bit more standard-compatible.
+
 Revision 1.26  2006/08/02 07:17:57  cdunde
 To add .md3 model editor 3D view support for Quake 4.
 
@@ -880,7 +883,7 @@ begin
           Exit;
         Root:=Saving_Root;
         Info.TempObject:=Root;
-        Components:=Root.BuildCOmponentList;
+        Components:=Root.BuildComponentList;
         try
           for I:=0 to Components.Count-1 do
           begin
@@ -893,7 +896,7 @@ begin
                 Info.WriteSibling(SkinObj.Name+SkinObj.TypeInfo, SkinObj);
               end;
             finally
-              skins.free;
+              Skins.free;
             end;
           end;
         finally
@@ -902,7 +905,15 @@ begin
         end;
       end;
       1: begin  { write the .md3 file }
-        raise exception.create('Unsupported!');
+        if Info.TempObject=Nil then
+{         Root:=Saving_Root}      {DanielPharos: Not needed at the moment}
+        else
+         begin
+{          Root:=Info.TempObject as QModelRoot;}      {DanielPharos: Not needed at the moment}
+          Info.TempObject:=Nil;
+         end;
+         
+        raise exception.create('MD3 file saving is unsupported at the moment! Skinfiles are saved, but the actual MD3 file not.');
       end;
     else
       inherited;
