@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
 Revision 1.2  2007/01/31 15:11:21  danielpharos
 HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
 
@@ -336,7 +339,10 @@ begin
    if Assigned(grTexLodBiasValue) then
     grTexLodBiasValue(GR_TMU0, +0.5);
    grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
-   grFogMode(GR_FOG_WITH_TABLE);
+{   if Fog=true then
+     grFogMode(GR_FOG_WITH_TABLE)
+   else
+     grFogMode(GR_FOG_DISABLED);}
   end;
 end;
 
@@ -1077,7 +1083,8 @@ begin
      CCoord.MinDistance:=OldMinDist - (OldMaxDist-OldMinDist)*TranspFactor;
      CCoord.MaxDistance:=OldMinDist;
      InitFlatZ;
-     grFogMode(GR_FOG_DISABLE);
+     if Assigned(grFogMode) then
+       grFogMode(GR_FOG_DISABLE);
      grDepthMask(FXFALSE);
      grDepthBufferFunction(GR_CMP_ALWAYS);
      RenderTransparent(False);
@@ -1086,7 +1093,8 @@ begin
      grDepthBufferFunction(GR_CMP_LESS);
      grDepthMask(FXTRUE);
      if Fog=True then
-       grFogMode(GR_FOG_WITH_TABLE);
+       if Assigned(grFogMode) then
+         grFogMode(GR_FOG_WITH_TABLE);
      CCoord.MinDistance:=OldMinDist;
      CCoord.MaxDistance:=OldMaxDist;
    end;
@@ -1550,9 +1558,9 @@ begin
               PSD.Done;
             end;
           end;
-          nColor:=  (((nColor         and $FF)* (MeanColor         and $FF))              shr 8)
+          nColor:= ((((nColor         and $FF)* (MeanColor         and $FF)) and $00FF00) shl 8)
                or  ((((nColor shr 8)  and $FF)*((MeanColor shr 8)  and $FF)) and $00FF00)
-               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8)
+               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shr 8)
                or (nColor and $FF000000);
         end;
       end;
