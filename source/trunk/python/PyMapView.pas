@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
 Revision 1.23  2006/12/31 21:40:50  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -467,7 +470,7 @@ begin
   wp_OpenGL: if Scene is TGLSceneObject then
               TGLSceneObject(Scene).Ready:=True;
  {wp_Direct3D: if Scene is TDirect3DSceneObject then
-              TDirect3DSceneObject(Scene).Ready:=True;}  {Daniel: Can we combine these two?}
+              TDirect3DSceneObject(Scene).Ready:=True;}  {DanielPharos: Can we combine these two?}
  {wp_ResetFullScreen: ResetFullScreen(lParam<>0);}
  else
   if not DefControlMessage(Msg) then
@@ -518,7 +521,7 @@ begin
   Invalidate;
  with ConfigSrc do
   begin
-   if Scene is TGlideSceneObject then   {Daniel: Renderer should take care of this}
+   if Scene is TGlideSceneObject then   {DanielPharos: Renderer should take care of this}
     begin
      if Specifics.Values['3DFXLogo']='' then
       SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')
@@ -872,7 +875,7 @@ begin
    end
   else
    begin  { solid or textured mode }
-    NeedScene(False);  {Daniel: Shouldn't this one be True if the Setup has just changed?}
+    NeedScene(False);  {DanielPharos: Shouldn't this one be True if the Setup has just changed?}
     if Scene.ErrorMsg='' then
      begin
       if Drawing and dfRebuildScene <> 0 then
@@ -2175,7 +2178,7 @@ begin
        MapViewProj:=Nil;
       end;
     {Invalidate; done by ReadSetupInformation}
-     Drawing:=Drawing or dfRebuildScene;
+     {Drawing:=Drawing or dfRebuildScene;} {DanielPharos: Causes a HUGE slowdown, and shouldn't be needed anyway}
    (*case Upcase(P[0]) of
       'X': case Upcase(P[1]) of
             'Y': begin   { XY: angle, scale }
@@ -2239,7 +2242,6 @@ begin
           end
          else
           SetCameraPosition(OldCameraPos);
-         {FarDistance:=1500;}
         end;
       end
      else
@@ -2824,7 +2826,7 @@ begin
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
     begin
-     mode:=0;            {Daniel: Gotta change all of this!!! Separate fullscreen option!}
+     mode:=0;            {DanielPharos: Gotta change all of this!!! Separate fullscreen option!}
      if mode>=0 then
       if ResetFullScreen(mode>0) then
        returnvalue:=1;
@@ -2847,7 +2849,7 @@ begin
      begin
       TGLSceneObject(Scene).Ready:=False;
       PostMessage(Handle, wm_InternalMessage, wp_OpenGL, 0);
-      {Daniel: What does this do exactly?}
+      {DanielPharos: What does this do exactly?}
      end;
   Result:=PyNoResult;
  except

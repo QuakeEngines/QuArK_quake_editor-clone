@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2007/02/27 17:02:52  danielpharos
+Fix a few bugs in OpenGL lighting, and sort the transparent faces. Transparency is not working properly yet, but it's a decent start.
+
 Revision 1.44  2007/02/06 14:07:39  danielpharos
 Another transparency fix. Beziers, sprites and models should now also have transparency.
 
@@ -1182,30 +1185,26 @@ begin
 end;
 
 function TGLSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
+var
+  I: Integer;
 begin
  {PW:=Nil;}
   VertexSize:=SizeOf(TVertex3D);
   Result:=bmOpenGL;
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
-  if (OpenGLDisplayLists[0]<>0) then
-  begin
-    if wglMakeCurrent(GLDC,RC) = false then
+  if wglMakeCurrent(GLDC,RC) = false then
      raise EError(5770);
-    glDeleteLists(OpenGLDisplayLists[0],1);
-    CheckOpenGLError(glGetError);  {#}
-    OpenGLDisplayLists[0]:=0;
-    wglMakeCurrent(0,0);
-  end;
-  if (OpenGLDisplayLists[1]<>0) then
+  for I:=0 to 2 do
   begin
-    if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
-    glDeleteLists(OpenGLDisplayLists[1],1);
-    CheckOpenGLError(glGetError);  {#}
-    OpenGLDisplayLists[1]:=0;
-    wglMakeCurrent(0,0);
+    if (OpenGLDisplayLists[I]<>0) then
+    begin
+      glDeleteLists(OpenGLDisplayLists[I],1);
+      CheckOpenGLError(glGetError);  {#}
+      OpenGLDisplayLists[I]:=0;
+    end;
   end;
+  wglMakeCurrent(0,0);
 end;
 
 procedure TGLSceneObject.EndBuildScene;
