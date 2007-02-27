@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.308  2007/02/27 21:44:50  danielpharos
+//Updated a few hints in the OpenGL page, and changed the name of the GLLists item to its actual name, Display Lists.
+//
 //Revision 1.307  2007/02/20 14:59:26  danielpharos
 //Added missing HL2 texture formats. Also moved them to a separate location, to prevent people thinking they need to change them.
 //
@@ -2011,7 +2014,7 @@ QQRKSRC1
 
         Program = "Quake2.EXE"
 
-        Directory = "\Quake2"
+        Directory = "C:\Quake2"
         CheckDirectory = "QUAKE2.EXE"
 
         CD = ""
@@ -2064,7 +2067,7 @@ QQRKSRC1
         Code = "a" // Hardcoded value in Setup.PAS
         Program = "Quake3.EXE +set sv_pure 0"
 
-        Directory = "\Quake3"
+        Directory = "C:\Program Files\Quake III Arena"
         //CheckDirectory = "QUAKE3.EXE"
         CheckDirectory = "*.EXE"
 
@@ -2506,7 +2509,7 @@ QQRKSRC1
         Code = "b" // Hardcoded value in Setup.PAS
 
         Program = "STVoy.EXE +set sv_pure 0"
-        Directory = "\StarTrek Voyager Elite Force"
+        Directory = "C:\Program Files\Raven\Star Trek Voyager Elite Force"
         CheckDirectory = "STVOY.EXE"   // hidden setting
 
         CD = ""
@@ -2520,7 +2523,7 @@ QQRKSRC1
         DefaultTextureScale = "0.5"
 
         Console = "1"
-        BuildPgmsDir = "C:\Program Files\STVEF\QuArk files\bspc"
+        BuildPgmsDir = "C:\Program Files\Raven\Star Trek Voyager Elite Force\QuArk files\bspc"
         StupidBuildToolKludge = "" // Run tools from base directory setting
         OutputMapFormat="Brush Primitives"
         AlwaysWriteThreeFields = "1"
@@ -3357,7 +3360,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -3437,7 +3440,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -3535,7 +3538,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -3622,7 +3625,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -3851,7 +3854,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -3953,7 +3956,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4046,7 +4049,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4137,7 +4140,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4228,7 +4231,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4316,7 +4319,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4413,7 +4416,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4500,7 +4503,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4593,7 +4596,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4693,7 +4696,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4791,7 +4794,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -4897,7 +4900,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -5001,7 +5004,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -5089,7 +5092,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -5177,7 +5180,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -5274,7 +5277,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -5373,7 +5376,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -5487,8 +5490,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darke"
-         "r scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -5560,7 +5562,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -5663,7 +5665,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       BrushDecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
@@ -6094,6 +6096,7 @@ QQRKSRC1
       .tga: = { Txt="TGA images" externaledit = ! }
       .bmp: = { Txt="BMP images" externaledit = ! }
       .jpg: = { Txt="JPG images" externaledit = ! }
+      .png: = { Txt="PNG images" externaledit = ! }
       .wav: = { Txt="WAV sounds" externaledit = ! }
       .cin: = { Txt="CIN videos" externaledit = ! }
       .mdl: = { Txt="MDL models" externaledit = ! }
@@ -6228,7 +6231,7 @@ QQRKSRC1
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- OpenGL 1.1 hardware owners only ----"}
-      Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
+      Fog: = {Typ="X" Txt="Fade" Cap="Enabled" Hint = "Enables fading for distant objects."}
       Transparency: = {
         Txt="Transparency"
         Typ="X"
@@ -6258,7 +6261,7 @@ QQRKSRC1
       ColorBits: = { Typ="EF1" Txt="Color bits (0=current)" }
       DepthBits: = { Typ="EF1" Txt="Depth buffer bits" }
       VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it. For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1; otherwise, the textured images are smaller than the wireframes." }
-      GLLists: = { Typ="X" Txt="Display Lists" Cap="Enabled" Hint="Speeds up rendering. However, slight slowdowns might be noticed when changes to the map/model are made, because the list then needs to be reconstructed with the updated information." }
+      GLLists: = { Typ="X" Txt="Display Lists" Cap="Enabled" Hint="Speeds up rendering. However, slight slowdowns might be noticed when changes to the map/model are made, because the list then needs to be rebuild with the updated information." }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible. This doesn't apply to transparent faces." }
       Ambient: = {Txt="Ambient lighting brightness" Typ="EF1" Min="-10" Max="10" Hint="The brightness of the ambient lighting." }
       StillQuality: = {
