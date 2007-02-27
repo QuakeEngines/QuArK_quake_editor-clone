@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2007/02/06 14:07:39  danielpharos
+Another transparency fix. Beziers, sprites and models should now also have transparency.
+
 Revision 1.43  2007/02/06 13:08:47  danielpharos
 Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
 
@@ -219,7 +222,7 @@ type
    DepthBufferBits: Byte;
    MaxLights: GLint;
    LightingQuality: Integer;
-   OpenGLDisplayLists: array[0..1] of Integer;
+   OpenGLDisplayLists: array[0..2] of Integer;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
    Bilinear: boolean;
@@ -689,31 +692,13 @@ end;
 
 function TGLSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
 begin
- if ((nQuality<>0) and (nQuality<>1)) then
+ if not ((nQuality=0) or (nQuality=1) or (nQuality=2)) then
  begin
   Result:=False;
   Exit;
  end;
  Result:=LightingQuality<>nQuality;
  LightingQuality:=nQuality;
- if (OpenGLDisplayLists[0]<>0) then
- begin
-   if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
-   glDeleteLists(OpenGLDisplayLists[0],1);
-   CheckOpenGLError(glGetError);  {#}
-   OpenGLDisplayLists[0]:=0;
-   wglMakeCurrent(0,0);
- end;
- if (OpenGLDisplayLists[1]<>0) then
- begin
-   if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
-   glDeleteLists(OpenGLDisplayLists[1],1);
-   CheckOpenGLError(glGetError);  {#}
-   OpenGLDisplayLists[1]:=0;
-   wglMakeCurrent(0,0);
- end;
 end;
 
 procedure TGLSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
@@ -817,16 +802,16 @@ begin
   begin
     if OpenGLLoaded then
     begin
-      if OpenGLDisplayLists[0]<>0 then
+      {if wglMakeCurrent(GLDC,RC) = false then
+        raise EError(5770);}
+      for I:=0 to 2 do
       begin
-        {if wglMakeCurrent(GLDC,RC) = false then
-          raise EError(5770);
-        glDeleteLists(OpenGLDisplayLists[0],1);
-        CheckOpenGLError(glGetError);}  {#}
-        OpenGLDisplayLists[0]:=0;
-        {glDeleteLists(OpenGLDisplayLists[1],1);
-        CheckOpenGLError(glGetError);}  {#}
-        OpenGLDisplayLists[1]:=0;
+        if OpenGLDisplayLists[I]<>0 then
+        begin
+          {glDeleteLists(OpenGLDisplayLists[I],1);
+          CheckOpenGLError(glGetError);}  {#}
+          OpenGLDisplayLists[I]:=0;
+        end;
       end;
 
       wglMakeCurrent(0,0);
@@ -884,9 +869,6 @@ begin
 
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
-
-  FillChar(FullBright,SizeOf(FullBright),0);
-  FullBright.ZeroLight:=1;
 
   { have the OpenGL DLL already been loaded? }
   if not OpenGLLoaded then
@@ -969,6 +951,9 @@ begin
     LightParams.BrightnessSaturation:=256;
     LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
   end;
+  FullBright.ZeroLight:=1;
+  FullBright.BrightnessSaturation:=0;
+  FullBright.LightFactor:=0;
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
   AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
   DisplayLists:=Setup.Specifics.Values['GLLists']<>'';
@@ -1245,17 +1230,22 @@ var
  PL: PLightList;
  PV: PVertex3D;
  Distance: Double;
+ LargestDistance: Double;
+ FirstItem: Boolean;
  DistanceList: array of Double;
  TempDistance: Double;
  TempLight: LongInt;
  VertexNR: Integer;
  SurfAveragePosition: vec3_t;
+ PAveragePosition: vec3_t;
  LightNR: LongInt;
  LightCurrent: LongInt;
  LightList: LongInt;
  Sz: Integer;
  PList: PSurfaces;
+ CurrentPList: PSurfaces;
  RebuildDisplayList: Boolean;
+ CheckTransparency: Boolean;
 begin
   if not OpenGlLoaded then
     Exit;
@@ -1354,10 +1344,71 @@ begin
       glRotated(PitchAngle * (180/pi), -1,0,0);
       glRotated(HorzAngle * (180/pi), 0,-1,0);
       glRotated(120, -1,1,1);
-      glTranslated(-Camera.X, -Camera.Y, -Camera.Z);
+      TransX:=-Camera.X;
+      TransY:=-Camera.Y;
+      TransZ:=-Camera.Z;
+      glTranslated(TransX, TransY, TransZ);
      end;
    end;
   CheckOpenGLError(glGetError);   {#}
+
+  if Transparency and not (Lighting and (LightingQuality=0)) then
+    CheckTransparency:=true
+  else
+    CheckTransparency:=false;
+  if (Lighting and (LightingQuality=0)) or Transparency then
+  begin
+    PS:=FListSurfaces;
+    while Assigned(PS) do
+    begin
+      if (Lighting and (LightingQuality=0)) or (CheckTransparency and (Transparency and ((PS^.Transparent=True) or (PS^.NumberTransparentFaces>0)))) then
+      begin
+        Surf:=PS^.Surf;
+        SurfEnd:=PChar(Surf)+PS^.SurfSize;
+        PAveragePosition[0]:=0;
+        PAveragePosition[1]:=0;
+        PAveragePosition[2]:=0;
+        while (Surf<SurfEnd) do
+        begin
+          with Surf^ do
+          begin
+            Inc(Surf);
+            SurfAveragePosition[0]:=0;
+            SurfAveragePosition[1]:=0;
+            SurfAveragePosition[2]:=0;
+            if not (VertexCount = 0) then
+            begin
+              PV:=PVertex3D(Surf);
+              if VertexCount>=0 then
+                Sz:=SizeOf(TVertex3D)
+              else
+                Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
+              for VertexNR:=1 to Abs(VertexCount) do
+              begin
+                SurfAveragePosition[0]:=SurfAveragePosition[0]+PV^.xyz[0];
+                SurfAveragePosition[1]:=SurfAveragePosition[1]+PV^.xyz[1];
+                SurfAveragePosition[2]:=SurfAveragePosition[2]+PV^.xyz[2];
+                Inc(PChar(PV), Sz);
+              end;
+              SurfAveragePosition[0]:=SurfAveragePosition[0]/VertexCount;
+              SurfAveragePosition[1]:=SurfAveragePosition[1]/VertexCount;
+              SurfAveragePosition[2]:=SurfAveragePosition[2]/VertexCount;
+            end;
+            PAveragePosition[0]:=PAveragePosition[0]+SurfAveragePosition[0];
+            PAveragePosition[1]:=PAveragePosition[1]+SurfAveragePosition[1];
+            PAveragePosition[2]:=PAveragePosition[2]+SurfAveragePosition[2];
+            OpenGLAveragePosition:=SurfAveragePosition;
+            if VertexCount>=0 then
+              Inc(PVertex3D(Surf), VertexCount)
+            else
+              Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+          end;
+        end;
+      end;
+      PS.OpenGLAveragePosition:=PAveragePosition;
+      PS:=PS^.Next;
+    end;
+  end;
 
   if Lighting and (LightingQuality=0) then
   begin
@@ -1398,28 +1449,7 @@ begin
             LightCurrent:=0;
             while Assigned(PL) do
             begin
-              SurfAveragePosition[0]:=0;
-              SurfAveragePosition[1]:=0;
-              SurfAveragePosition[2]:=0;
-              if not (VertexCount = 0) then
-              begin
-                PV:=PVertex3D(Surf);
-                if VertexCount>=0 then
-                  Sz:=SizeOf(TVertex3D)
-                else
-                  Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
-                for VertexNR:=1 to Abs(VertexCount) do
-                begin
-                  SurfAveragePosition[0]:=SurfAveragePosition[0]+PV^.xyz[0];
-                  SurfAveragePosition[1]:=SurfAveragePosition[1]+PV^.xyz[1];
-                  SurfAveragePosition[2]:=SurfAveragePosition[2]+PV^.xyz[2];
-                  Inc(PChar(PV), Sz);
-                end;
-                SurfAveragePosition[0]:=SurfAveragePosition[0]/VertexCount;
-                SurfAveragePosition[1]:=SurfAveragePosition[1]/VertexCount;
-                SurfAveragePosition[2]:=SurfAveragePosition[2]/VertexCount;
-              end;
-              Distance:=(SurfAveragePosition[0]-PL.Position[0])*(SurfAveragePosition[0]-PL.Position[0])+(SurfAveragePosition[1]-PL.Position[1])*(SurfAveragePosition[1]-PL.Position[1])+(SurfAveragePosition[2]-PL.Position[2])*(SurfAveragePosition[2]-PL.Position[2]);
+              Distance:=(OpenGLAveragePosition[0]-PL.Position[0])*(OpenGLAveragePosition[0]-PL.Position[0])+(OpenGLAveragePosition[1]-PL.Position[1])*(OpenGLAveragePosition[1]-PL.Position[1])+(OpenGLAveragePosition[2]-PL.Position[2])*(OpenGLAveragePosition[2]-PL.Position[2]);
               //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
               LightList:=LightCurrent;
               PO:=OpenGLLightList;
@@ -1470,9 +1500,9 @@ begin
       if OpenGLDisplayLists[LightingQuality] = 0 then
         raise EError(5693);
 
-      {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
+      {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE]); {$ENDIF}
       glNewList(OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE);
-      {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
+      {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE]); {$ENDIF}
 
       CheckOpenGLError(glGetError); {#}
       RebuildDisplayList:=True;
@@ -1498,7 +1528,7 @@ begin
       PList:=PList^.Next;
     end;
 
-    if DisplayLists then
+    if RebuildDisplayList then
     begin
       {$IFDEF DebugGLErr} DebugOpenGL(-113, 'glEndList', []); {$ENDIF}
       glEndList;
@@ -1508,9 +1538,9 @@ begin
   end
   else
   begin
-    {$IFDEF DebugGLErr} DebugOpenGL(-114, 'glCallList(<%d>)', [OpenGLDisplayList]); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(-114, 'glCallList(<%d>)', [OpenGLDisplayLists[LightingQuality]]); {$ENDIF}
     glCallList(OpenGLDisplayLists[LightingQuality]);
-    {$IFDEF DebugGLErr} DebugOpenGL(114, 'glCallList(<%d>)', [OpenGLDisplayList]); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(114, 'glCallList(<%d>)', [OpenGLDisplayLists[LightingQuality]]); {$ENDIF}
     CheckOpenGLError(glGetError); {#}
   end;
 
@@ -1518,17 +1548,46 @@ begin
   begin
     glDisable(GL_CULL_FACE);
     CheckOpenGLError(glGetError); {#}
+
     PList:=FListSurfaces;
-
-    {DanielPharos: In order for transparency to work correctly, the transparent faces should be ordered and drawn from far away, to close by.}
-    {For this reason, transparent faces MUST be outside the callist!}
-
     while Assigned(PList) do
     begin
       if (PList^.Transparent=True) or (PList^.NumberTransparentFaces>0) then
-        RenderPList(PList, True, Coord);
+      begin
+        PList^.TransparentDrawn:=false;
+        PList.OpenGLDistance:=(Plist.OpenGLAveragePosition[0]-TransX)*(Plist.OpenGLAveragePosition[0]-TransX)+(Plist.OpenGLAveragePosition[1]-TransY)*(Plist.OpenGLAveragePosition[1]-TransY)+(Plist.OpenGLAveragePosition[2]-TransZ)*(Plist.OpenGLAveragePosition[2]-TransZ);
+      end
+      else
+        PList^.TransparentDrawn:=true;
       PList:=PList^.Next;
     end;
+    repeat
+      FirstItem:=true;
+      LargestDistance:=-1;
+      CurrentPList:=nil;
+      PList:=FListSurfaces;
+      while Assigned(PList) do
+      begin
+        if PList^.TransparentDrawn=false then
+        begin
+          Distance:=PList.OpenGLDistance;
+          //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
+          if (FirstItem or ((not FirstItem) and (Distance>LargestDistance))) then
+          begin
+            FirstItem:=false;
+            LargestDistance:=Distance;
+            CurrentPList:=Plist;
+          end;
+        end;
+        PList:=PList^.Next;
+      end;
+
+      if not (CurrentPList=nil) then
+      begin
+        RenderPList(CurrentPList, True, Coord);
+        CurrentPList^.TransparentDrawn:=true;
+      end;
+    until (CurrentPList=nil);
     if Culling then
     begin
       glEnable(GL_CULL_FACE);
@@ -1863,7 +1922,9 @@ end;
 
 procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
 var
+ CurrentSurf: PSurface3D;
  Surf: PSurface3D;
+ Surf2: PSurface3D;
  SurfEnd: PChar;
  PV, PVBase, PV2, PV3: PVertex3D;
  NeedTex, NeedColor: Boolean;
@@ -1877,10 +1938,13 @@ var
  GLColor: GLfloat4;
  PSD: TPixelSetDescription;
  CurrentfTMP: GLfloat4;
+ Distance: Double;
+ LargestDistance: Double;
+ FirstItem: Boolean;
+ Scaling: TDouble;
+ LocX, LocY: GLdouble;
+ TransX, TransY, TransZ: GLdouble;
 begin
-  FullBright.ZeroLight:=1;
-  FullBright.BrightnessSaturation:=0;
-  FullBright.LightFactor:=0;
   case ViewMode of
   vmWireframe:
     begin
@@ -1927,14 +1991,115 @@ begin
     glDisable(GL_LIGHTING);
   CheckOpenGLError(glGetError);  {#}
 
+  {if Transparency and TransparentFaces then
+  begin}
+    if Coord.FlatDisplay then
+    begin
+      if CurrentDisplayType=dtXY then
+      begin
+        with TXYCoordinates(Coord) do
+        begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+        end;
+      end
+      else if CurrentDisplayType=dtXZ then
+      begin
+        with TXZCoordinates(Coord) do
+        begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+        end;
+      end
+      else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
+      begin
+        with T2DCoordinates(Coord) do
+        begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+        end;
+      end;
+      TransX:=LocX/(Scaling*Scaling);
+      TransY:=LocY/(Scaling*Scaling);
+      TransZ:=-MapLimitSmallest;
+    end
+    else
+    begin
+      with TCameraCoordinates(Coord) do
+      begin
+        TransX:=-Camera.X;
+        TransY:=-Camera.Y;
+        TransZ:=-Camera.Z;
+      end;
+    end;
+  {end;}
+
+  if Transparency and TransparentFaces then
+  begin
+    Surf:=PList^.Surf;
+    SurfEnd:=PChar(Surf)+PList^.SurfSize;
+    while Surf<SurfEnd do
+    begin
+      with Surf^ do
+      begin
+        Inc(Surf);
+
+        TransparentDrawn:=false;
+
+        if VertexCount>=0 then
+          Inc(PVertex3D(Surf), VertexCount)
+        else
+          Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+      end;
+    end;
+  end;
+
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
   while Surf<SurfEnd do
   begin
-    with Surf^ do
+    if Transparency and TransparentFaces then
     begin
-      Inc(Surf);
+      FirstItem:=true;
+      LargestDistance:=-1;
+      Surf2:=PList^.Surf;
+      while Surf2<SurfEnd do
+      begin
+        with Surf2^ do
+        begin
+          if TransparentDrawn=false then
+          begin
+            Distance:=(OpenGLAveragePosition[0]-TransX)*(OpenGLAveragePosition[0]-TransX)+(OpenGLAveragePosition[1]-TransY)*(OpenGLAveragePosition[1]-TransY)+(OpenGLAveragePosition[2]-TransZ)*(OpenGLAveragePosition[2]-TransZ);
+            //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
 
+            if (FirstItem or ((not FirstItem) and (Distance>LargestDistance))) then
+            begin
+              FirstItem:=false;
+              LargestDistance:=Distance;
+              CurrentSurf:=Surf2;
+            end;
+          end;
+
+          Inc(Surf2);
+
+          if VertexCount>=0 then
+            Inc(PVertex3D(Surf2), VertexCount)
+          else
+            Inc(PChar(Surf2), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+        end;
+      end;
+      CurrentSurf^.TransparentDrawn:=true;
+    end
+    else
+      CurrentSurf:=Surf;
+
+    with CurrentSurf^ do
+    begin
+      Inc(CurrentSurf);
+      
       if ((PList^.Transparent=TransparentFaces) or (((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces)) then
       begin
 
@@ -2012,7 +2177,7 @@ begin
         NeedTex:=False;
       end;
 
-      PV:=PVertex3D(Surf);
+      PV:=PVertex3D(CurrentSurf);
 
       if Transparency and TransparentFaces then
       begin
@@ -2049,12 +2214,12 @@ begin
               if Lighting and (LightingQuality=1) then
                 RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, MakeSections)
               else
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, LightParams, MakeSections);
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, MakeSections);
             4:
               if Lighting and (LightingQuality=1) then
                 RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, MakeSections)
               else
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, LightParams, MakeSections);
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, MakeSections);
             else
             begin
               if TextureMode=5 then
@@ -2064,7 +2229,7 @@ begin
                 Currentf[2]:=Currentf[0];
               end;
               if Lighting and (LightingQuality=1) then
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, FullBright, MakeSections)
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, MakeSections)
               else
                 RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, MakeSections);
             end;
@@ -2076,15 +2241,15 @@ begin
         if Lighting and (LightingQuality=1) then
           RenderQuadStrip(PV, -VertexCount, Currentf, Lights, Normale, LightParams)
         else
-          RenderQuadStrip(PV, -VertexCount, Currentf, nil, Normale, LightParams);
+          RenderQuadStrip(PV, -VertexCount, Currentf, nil, Normale, FullBright);
       end;
 
       end;
-
-      if VertexCount>=0 then
-        Inc(PVertex3D(Surf), VertexCount)
-      else
-        Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+    Inc(Surf);
+    if VertexCount>=0 then
+      Inc(PVertex3D(Surf), VertexCount)
+    else
+      Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
     end;
   end;
 end;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2007/02/08 16:30:45  danielpharos
+Oops, fixed a goof.
+
 Revision 1.24  2007/02/07 20:02:53  danielpharos
 Ugly but working fix for an OpenGL lighting memory leak
 
@@ -180,9 +183,11 @@ type
                Dist: scalar_t;           { not defined if GL_TRI_STRIP }
                GlideRadius: scalar_t;
                OpenGLLightList: POpenGLLightingList;
+               OpenGLAveragePosition: vec3_t;
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: FxU32;
                TextureMode: Integer;
+               TransparentDrawn: Boolean;
               end;
 
  PGuPalette = ^GuTexPalette;
@@ -211,6 +216,9 @@ type
               Transparent: Boolean;
               NumberFaces: Integer;
               NumberTransparentFaces: Integer;
+              OpenGLAveragePosition: vec3_t;
+              OpenGLDistance: Double;
+              TransparentDrawn: Boolean;
              end;
 
  {------------------------}
