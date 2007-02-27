@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.307  2007/02/20 14:59:26  danielpharos
+//Added missing HL2 texture formats. Also moved them to a separate location, to prevent people thinking they need to change them.
+//
 //Revision 1.306  2007/02/07 14:09:06  danielpharos
 //Fix a lot of syntax typo's
 //
@@ -6239,25 +6242,25 @@ QQRKSRC1
             $0D"though NOT exactly drawn as they will be in the game."
       }
       Lights: = {
-        Txt="Lights"
+        Txt="Lighting"
         Typ="X"
         Cap="Enabled"
-        Hint="Levels with few lights will look black -- turn off lighting in this case"
+        Hint="Levels with few lights will look black -- turn off lighting in this case. For more options, see the lighting quality settings below."
       }
       L1: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
       L2: = {Typ="S" Bold="0" Txt="configuration page for each game."}
       Sep0: = {Typ="S" Txt = ""}
       L3: = {Typ="S" Txt="---- additional options ----"}
       Bilinear: = { Typ="X" Txt="Bilinear Filtering" Cap="Enabled" }
-      DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" }
+      DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" Hint="Reduces the flickering noticed when the view redraws."}
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
       AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
       ColorBits: = { Typ="EF1" Txt="Color bits (0=current)" }
       DepthBits: = { Typ="EF1" Txt="Depth buffer bits" }
       VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it. For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1; otherwise, the textured images are smaller than the wireframes." }
-      GLLists: = { Typ="X" Txt="GL Lists" Cap="Enabled" Hint="Speeds up rendering when lights are enabled"}
-      Culling: = {Typ="X" Txt="Face culling" Cap="Enabled"}
-      Ambient: = {Txt="Ambient lighting brightness" Typ="EF1" Min="-10" Max="10" Hint="The brightness of the ambient lighting."}
+      GLLists: = { Typ="X" Txt="Display Lists" Cap="Enabled" Hint="Speeds up rendering. However, slight slowdowns might be noticed when changes to the map/model are made, because the list then needs to be reconstructed with the updated information." }
+      Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible. This doesn't apply to transparent faces." }
+      Ambient: = {Txt="Ambient lighting brightness" Typ="EF1" Min="-10" Max="10" Hint="The brightness of the ambient lighting." }
       StillQuality: = {
         Txt="Lighting quality when not moving"
         Typ="CL"
