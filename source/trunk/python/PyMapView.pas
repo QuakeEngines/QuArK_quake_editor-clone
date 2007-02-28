@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2007/02/27 21:20:08  danielpharos
+Fixed a huge slowdown in the rendering process.
+
 Revision 1.24  2007/01/31 15:11:21  danielpharos
 HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
 
@@ -2177,8 +2180,9 @@ begin
        MapViewProj.Free;
        MapViewProj:=Nil;
       end;
-    {Invalidate; done by ReadSetupInformation}
-     {Drawing:=Drawing or dfRebuildScene;} {DanielPharos: Causes a HUGE slowdown, and shouldn't be needed anyway}
+     {Invalidate; done by ReadSetupInformation}
+     if (Scene is TSoftwareSceneObject) or (Scene is TGlideSceneObject) then
+       Drawing:=Drawing or dfRebuildScene; {DanielPharos: Causes a HUGE slowdown }
    (*case Upcase(P[0]) of
       'X': case Upcase(P[1]) of
             'Y': begin   { XY: angle, scale }
