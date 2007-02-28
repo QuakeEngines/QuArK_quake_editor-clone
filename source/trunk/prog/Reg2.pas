@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2003/09/06 00:55:50  silverpaladin
 Casting Cleanup
 
@@ -57,7 +60,7 @@ implementation
 
 function TRegistry2.ReadString;
 var
-  Len: Cardinal;
+  Len: Integer;
   DataType: Cardinal;
   Courant: String;
 begin
