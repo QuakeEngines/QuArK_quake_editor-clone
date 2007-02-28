@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.309  2007/02/27 22:42:05  danielpharos
+//Changed a few words here and there.
+//
 //Revision 1.308  2007/02/27 21:44:50  danielpharos
 //Updated a few hints in the OpenGL page, and changed the name of the GLLists item to its actual name, Display Lists.
 //
@@ -1177,6 +1180,7 @@ QQRKSRC1
         .bmp = ""      ibmp = '7'
         .tga = ""      itga = '7'
         .jpg = ""      ijpg = '7'
+        .png = ""
         .cin = "1"     icin = '6'
         .wav = ""
         .cfg = ""      icfg = '11'
@@ -1191,6 +1195,7 @@ QQRKSRC1
         .tga = ""
         .bmp = "<open>"
         .jpg = "" //DECKER
+        .png = ""
         .wav = "<edit>"
         .cin = "<open>"
         .mdl = "<open>"
