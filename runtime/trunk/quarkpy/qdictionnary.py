@@ -931,8 +931,8 @@ Strings = {
     5715: 'vmf file',
     5716: 'VMT file',
     5717: 'Syntax error in Material file %s, line %d',
-    5718: 'reserved for hl2',
-    5719: 'reserved for hl2',
+    5718: 'Could not load the VTF Lib//Error code %d',
+    5719: 'Could not load the HL Lib//Error code %d',
     5720: 'reserved for hl2',
     5721: 'reserved for hl2',
     5722: 'reserved for hl2',
@@ -991,6 +991,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.82  2007/02/08 16:36:43  danielpharos
+#Updated VTF handling to use VTFLib. The HL2 memory leak is gone! Warning: SaveFile not working!
+#
 #Revision 1.81  2007/02/02 21:14:55  danielpharos
 #Added a DirectX error message
 #
