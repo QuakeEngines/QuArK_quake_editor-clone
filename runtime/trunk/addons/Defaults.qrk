@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.310  2007/02/28 08:51:16  danielpharos
+//Forgot to add the default settings for png images.
+//
 //Revision 1.309  2007/02/27 22:42:05  danielpharos
 //Changed a few words here and there.
 //
@@ -1030,9 +1033,7 @@ QQRKSRC1
       RecentFiles = ""
       Display:config =
       {
-        //Gamma = '1.35'
-        //Gamma = '2.0'
-        Gamma = '1.6'
+        Gamma = '1.3'
         MarsCaption = "?"
         AutoFocus = "1"
         Unsel = ""
@@ -1106,7 +1107,7 @@ QQRKSRC1
       OpenGL:config =
       {
         Fog = "1"
-        Transparency = ""
+        Transparency = "1"
         Lights = "1"
         Bilinear = "1"
         DoubleBuffer = "1"
@@ -6253,7 +6254,8 @@ QQRKSRC1
         Txt="Lighting"
         Typ="X"
         Cap="Enabled"
-        Hint="Levels with few lights will look black -- turn off lighting in this case. For more options, see the lighting quality settings below."
+        Hint="Levels with few lights will look black -- turn off lighting in this case."
+          $0D"For more options, see the lighting quality settings below."
       }
       L1: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
       L2: = {Typ="S" Bold="0" Txt="configuration page for each game."}
@@ -6263,25 +6265,34 @@ QQRKSRC1
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" Hint="Reduces the flickering noticed when the view redraws."}
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
       AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
-      ColorBits: = { Typ="EF1" Txt="Color bits (0=current)" }
-      DepthBits: = { Typ="EF1" Txt="Depth buffer bits" }
-      VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it. For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1; otherwise, the textured images are smaller than the wireframes." }
-      GLLists: = { Typ="X" Txt="Display Lists" Cap="Enabled" Hint="Speeds up rendering. However, slight slowdowns might be noticed when changes to the map/model are made, because the list then needs to be rebuild with the updated information." }
-      Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible. This doesn't apply to transparent faces." }
+      ColorBits: = { Typ="EF1" Txt="Color bits (0=current)" Hint="The amount of bits per pixel. The higher, the better the quality."
+                                $0D"Not all numbers are supported. Most common are 16, 24 and 32." }
+      DepthBits: = { Typ="EF1" Txt="Depth buffer bits" Hint="The amount of bits per pixel in the depth buffer. The higher,"
+                                $0D"the smaller the chance of non-overlapping faces starting to flicker at a distance."
+                                $0D"Not all numbers are supported. Most common are 16 and 24." }
+      VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it."
+                                                         $0D"For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1;"
+                                                         $0D"otherwise, the textured images are smaller than the wireframes." }
+      GLLists: = { Typ="X" Txt="Display Lists" Cap="Enabled" Hint="Speeds up rendering. However, slight slowdowns might be noticed when changes to the map/model are made,"
+                                                               $0D"because the list then needs to be rebuild with the updated information." }
+      Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
+                                                             $0D"This doesn't apply to transparent faces." }
       Ambient: = {Txt="Ambient lighting brightness" Typ="EF1" Min="-10" Max="10" Hint="The brightness of the ambient lighting." }
       StillQuality: = {
         Txt="Lighting quality when not moving"
         Typ="CL"
         Items  = "OpenGL lighting" $0D "Basic lighting" $0D "No lighting"
         Values =     "0"        $0D     "1"       $0D     "2"
-        Hint = "Slowest: OpenGL lighting   Fastest: No lighting  (Lighting needs to be enabled for this options to be effective)"
+        Hint = "Slowest: OpenGL lighting   Fastest: No lighting"
+            $0D"(Lighting needs to be enabled for this options to be effective)"
       }
       MovingQuality: = {
         Txt="Quality while moving"
         Typ="CL"
         Items  = "OpenGL lighting" $0D "Basic lighting" $0D "No lighting"
         Values =     "0"        $0D     "1"       $0D     "2"
-        Hint = "Slowest: OpenGL lighting   Fastest: No lighting  (Lighting needs to be enabled for this options to be effective)"
+        Hint = "Slowest: OpenGL lighting   Fastest: No lighting"
+            $0D"(Lighting needs to be enabled for this options to be effective)"
       }
     }
     GeneralDirectX:form =
