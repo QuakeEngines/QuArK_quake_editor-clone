@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2007/02/27 17:02:52  danielpharos
+Fix a few bugs in OpenGL lighting, and sort the transparent faces. Transparency is not working properly yet, but it's a decent start.
+
 Revision 1.25  2007/02/08 16:30:45  danielpharos
 Oops, fixed a goof.
 
@@ -272,6 +275,7 @@ type
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
    procedure SetViewRect(SX, SY: Integer); virtual; abstract;
+   procedure SetCoords(nCoord: TCoordinates);
    procedure BuildScene(DC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
    procedure SwapBuffers(Synch: Boolean; DC: HDC); virtual;
@@ -498,6 +502,11 @@ begin
  BezierInfo.Add(TObject(nColor));
  SpriteInfo.Add(Nil);
  SpriteInfo.Add(TObject(nColor));
+end;
+
+procedure TSceneObject.SetCoords(nCoord: TCoordinates);
+begin
+  Coord:=nCoord;
 end;
 
 procedure TSceneObject.SwapBuffers;

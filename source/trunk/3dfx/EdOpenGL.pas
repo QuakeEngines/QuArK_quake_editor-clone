@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2007/02/27 21:20:08  danielpharos
+Fixed a huge slowdown in the rendering process.
+
 Revision 1.45  2007/02/27 17:02:52  danielpharos
 Fix a few bugs in OpenGL lighting, and sort the transparent faces. Transparency is not working properly yet, but it's a decent start.
 
@@ -1194,7 +1197,7 @@ begin
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
   if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
+    raise EError(5770);
   for I:=0 to 2 do
   begin
     if (OpenGLDisplayLists[I]<>0) then

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2007/02/28 08:27:18  danielpharos
+Fixed things disappearing in Software and Glide mode.
+
 Revision 1.25  2007/02/27 21:20:08  danielpharos
 Fixed a huge slowdown in the rendering process.
 
@@ -206,6 +209,7 @@ type
                  function ConfigSrc : QObject;
                  function ConfigSubSrc : QObject;
                  procedure ReadSetupInformation(Inv: Boolean);
+                 procedure UpdateCoords(Inv: Boolean);
                  procedure SetScreenSize(SX, SY: Integer);
                  procedure ClearPanel(const S: String);
                  function GetKey3D(Key: Word; var Key3D: TKey3D) : Boolean;
@@ -505,7 +509,7 @@ begin
    else if S='d3d9.dll' then
      Result:=SetupSubSet(ssGeneral, 'DirectX')
    else
-     raise InternalE('NeedScene');
+     raise InternalE('ConfigSubSrc');
  end
  else
   Result:=SceneConfigSubSrc;
@@ -642,6 +646,49 @@ begin
   end;
 end;
 
+procedure TPyMapView.UpdateCoords(Inv: Boolean);
+var
+ VAngle: TDouble;
+begin
+ if Inv then
+  Invalidate;
+ with ConfigSrc do
+  begin
+   if MapViewProj is TCameraCoordinates then
+    begin
+     VAngle:=GetFloatSpec('VAngle', 45);
+     if VAngle<5 then
+      VAngle:=5
+     else
+      if VAngle>80 then
+       VAngle:=80;
+
+     with TCameraCoordinates(MapViewProj) do
+      begin
+       VAngleDegrees:=VAngle;
+       VAngle:=VAngle * (pi/180);
+       RFactorBase:=Cos(VAngle)/Sin(VAngle);
+       Resize(Self.ClientWidth, Self.ClientHeight);
+       MinDistance:=Minoow / GetFloatSpec('DarkFactor', 1);
+      end;
+    end;
+
+   if Scene<>Nil then
+    begin
+     try
+      Scene.ErrorMsg:='';
+
+      Scene.SetCoords(MapViewProj);
+
+     except
+      on E: Exception do
+       Scene.ErrorMsg:=GetExceptionMessage(E);
+     end;
+
+    end;
+  end;
+end;
+
 procedure TPyMapView.SetScreenSize(SX, SY: Integer);
 begin
  if (Scene<>Nil) and (Scene.ErrorMsg='') then
@@ -733,8 +780,6 @@ procedure TPyMapView.NeedScene(NeedSetup: Boolean);
 var
  S: String;
 begin
- if NeedSetup then
-   ReadSetupInformation(True);
  if Scene=Nil then
   begin
    S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
@@ -750,7 +795,10 @@ begin
      raise InternalE('NeedScene');
    ReadSetupInformation(NeedSetup);
    Drawing:=Drawing or dfRebuildScene;
-  end;
+  end
+  else
+   if NeedSetup then
+    ReadSetupInformation(True);
 end;
 
 procedure TPyMapView.PaintBackground;
@@ -857,6 +905,7 @@ begin
    MapViewProj.pDeltaX:=kDelta.X - DisplayHPos;
    MapViewProj.pDeltaY:=kDelta.Y - DisplayVPos;
   end;
+ UpdateCoords(False);
 
  Drawing:=Drawing or dfDrawing;
  ExceptionMethod:=ClearPanel;
@@ -1631,6 +1680,7 @@ begin
       end;
 
      { draw the view with the updated camera }
+     UpdateCoords(False);
      if ViewMode = vmWireframe then
       begin
        FillRect(SrcDC, GetClientRect, Brush);
@@ -2180,9 +2230,6 @@ begin
        MapViewProj.Free;
        MapViewProj:=Nil;
       end;
-     {Invalidate; done by ReadSetupInformation}
-     if (Scene is TSoftwareSceneObject) or (Scene is TGlideSceneObject) then
-       Drawing:=Drawing or dfRebuildScene; {DanielPharos: Causes a HUGE slowdown }
    (*case Upcase(P[0]) of
       'X': case Upcase(P[1]) of
             'Y': begin   { XY: angle, scale }
@@ -2273,7 +2320,7 @@ begin
         Exit;
        MapViewProj:=GetMatrixCoordinates(mx^.M);
       end;
-     ReadSetupInformation(True);
+     UpdateCoords(True);           
      if (MapViewProj<>Nil) and ((rng=Nil) or PyObject_IsTrue(rng)) then
       begin
        if MapViewProj.FlatDisplay then
@@ -2291,8 +2338,6 @@ begin
        {Resize;}
        CentreEcran:=Centre;
       end;
-     {if SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib']='OpenGl32.dll' then
-      NeedScene(False);}
     end;
   Result:=PyNoResult;
  except
