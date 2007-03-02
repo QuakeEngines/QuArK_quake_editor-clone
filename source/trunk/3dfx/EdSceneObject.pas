@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/03/01 17:36:54  danielpharos
+Stopped many redundant calls from being made when moving the camera. Should take care of some weird problems, and be faster too.
+
 Revision 1.26  2007/02/27 17:02:52  danielpharos
 Fix a few bugs in OpenGL lighting, and sort the transparent faces. Transparency is not working properly yet, but it's a decent start.
 
@@ -199,6 +202,8 @@ type
               SourceTexture: QPixelSet;
               TexW, TexH: Integer;
               LoadedTexW, LoadedTexH: Integer;
+              ColorBits: TPixelSetFormat;
+              AlphaBits: TPixelSetAlpha;
               info: GrTexInfo;
               MeanColor: FxU32;
               startAddress, endAddress: FxU32;
@@ -958,7 +963,7 @@ begin
            if Assigned(PList^.Texture^.SourceTexture) then
            begin
              TextureMode:=2;
-             case PList^.Texture^.SourceTexture.Description.AlphaBits of
+             case PList^.Texture^.AlphaBits of
              psaDefault: PList^.Transparent:=False;
              psaNoAlpha: PList^.Transparent:=False;
              psaGlobalAlpha: PList^.Transparent:=False;
@@ -1186,7 +1191,7 @@ begin
                if Assigned(PList^.Texture^.SourceTexture) then
                begin
                  TextureMode:=2;
-                 case PList^.Texture^.SourceTexture.Description.AlphaBits of
+                 case PList^.Texture^.AlphaBits of
                  psaDefault: PList^.Transparent:=False;
                  psaNoAlpha: PList^.Transparent:=False;
                  psaGlobalAlpha: PList^.Transparent:=False;
@@ -1301,7 +1306,7 @@ begin
                if Assigned(PList^.Texture^.SourceTexture) then
                begin
                  TextureMode:=2;
-                 case PList^.Texture^.SourceTexture.Description.AlphaBits of
+                 case PList^.Texture^.AlphaBits of
                  psaDefault: PList^.Transparent:=False;
                  psaNoAlpha: PList^.Transparent:=False;
                  psaGlobalAlpha: PList^.Transparent:=False;
@@ -1405,7 +1410,7 @@ begin
                  if Assigned(PList^.Texture^.SourceTexture) then
                  begin
                    TextureMode:=2;
-                   case PList^.Texture^.SourceTexture.Description.AlphaBits of
+                   case PList^.Texture^.AlphaBits of
                    psaDefault: PList^.Transparent:=False;
                    psaNoAlpha: PList^.Transparent:=False;
                    psaGlobalAlpha: PList^.Transparent:=False;
@@ -1754,6 +1759,7 @@ var
 {Lmp: PPaletteLmp;}
  Size: TPoint;
  TextureMaxDimension: Integer;
+ PSD: TPixelSetDescription;
 begin
  if Textures.Find(P^.TexName, w) then
   PTex:=PTexture3(Textures.Objects[w])
@@ -1875,6 +1881,13 @@ begin
     max:=h;
    PTex^.LoadedTexW:=w;
    PTex^.LoadedTexH:=h;
+   if Q<>Nil then
+   begin
+     PSD:=Q.Description;
+     PTex^.ColorBits:=Q.Description.Format;
+     PTex^.AlphaBits:=Q.Description.AlphaBits;
+     PSD.Done;
+   end;
  (*MemSize:=w*h;
 
    if PSD.Format=psf24bpp then
