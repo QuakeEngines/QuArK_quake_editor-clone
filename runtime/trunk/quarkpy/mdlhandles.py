@@ -89,7 +89,6 @@ class VertexHandle(qhandles.GenericHandle):
 
         from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
 
-        if flagsmouse == 2056: return # Stops duplicated handle drawing at the end of a drag.
         if (flagsmouse == 520 or flagsmouse == 1032) and draghandle is not None: return # LMB pressed or dragging model mesh handle.
         if flagsmouse == 528 or flagsmouse == 1040: return # RMB pressed or dragging to pan (scroll) in the view.
 
@@ -113,20 +112,21 @@ class VertexHandle(qhandles.GenericHandle):
         if p.visible:
             cv.pencolor = vertexdotcolor
             if MldOption("Ticks") == "1":
-#py2.4                 cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+                cv.brushcolor = WHITE
+                cv.brushstyle = BS_SOLID
+#py2.4                cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
                 cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
             else:
+                cv.brushcolor = vertexdotcolor
+                cv.brushstyle = BS_SOLID
 #py2.4                cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
                 cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
-#py2.4            cv.setpixel(p.x, p.y, vertexdotcolor)
-            cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
-            editor = mapeditor()
-            if editor is not None:
-                if self.index in editor.picked:
-           #         cv.pencolor = WHITE
-                    cv.pencolor = vertexdotcolor
+
+      #      editor = mapeditor()
+      #      if editor is not None:
+      #          if self.index in editor.picked:
 #py2.4                    cv.rectangle(p.x-3, p.y-3, p.x+3, p.y+3)
-                    cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+      #              cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
 
     def drag(self, v1, v2, flags, view):
@@ -208,9 +208,8 @@ class SkinHandle(qhandles.GenericHandle):
  #
  # def start_drag(self, view, x, y):
 
- # Stops the red mesh from drawing at end of drag if un-commented.
- # def ok(self, editor, x, y, flags):
- #     return None
+  def ok(self, editor, undo, old, new):
+      undo.ok(editor.Root, self.undomsg) ### editor.Root changes uniquesel to the component, DON"T WNAT THAT
 
   
   def draw(self, view, cv, draghandle=None):
@@ -584,8 +583,17 @@ def BuildCommonHandles(editor, explorer):
     "Build a list of handles to display on all map views."
 
     import plugins.mdlaxisicons
-    for view in editor.layout.views:
-        plugins.mdlaxisicons.newfinishdrawing(editor, view)
+    from qbaseeditor import flagsmouse, currentview
+   # if flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080 or flagsmouse == 2088 or flagsmouse == 2096:
+    if flagsmouse == 2064:
+        for view in editor.layout.views:
+            if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
+                pass
+            else:
+                plugins.mdlaxisicons.newfinishdrawing(editor, view)
+    else:
+        for view in editor.layout.views:
+            plugins.mdlaxisicons.newfinishdrawing(editor, view)
 
     fs = explorer.uniquesel
     if (fs is None) or editor.linearbox:
@@ -595,7 +603,6 @@ def BuildCommonHandles(editor, explorer):
         # Get the list of handles from the entity manager.
         #
         return mdlentities.CallManager("handlesopt", fs, editor)
-
 
 
 def BuildHandles(editor, explorer, view):
@@ -730,6 +737,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.25  2007/02/20 01:33:59  cdunde
+#To stop errors if model component is hidden but shown in Skin-view.
+#
 #Revision 1.24  2007/01/30 09:13:31  cdunde
 #To cut down on more duplicated handle drawing which increases editor response speed.
 #

@@ -569,17 +569,25 @@ class BaseEditor:
                             except:
                                 skindrawobject = None
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
+                        else:
+                            import mdlhandles
+                            self.dragobject.ok(self, x, y, flags)
+                            self.dragobject = None
+                            return
+
                     else:
-                       # fs = self.layout.explorer.uniquesel
-          #              return # for testing only, stops all editor views handles.(take out when done testing)
-                       # if fs is not None:
-                       #     import mdlentities
-                       #     view.handles = mdlentities.CallManager("handlesopt", fs, self)
-                  #      self.dragobject.dragto(x, y, flags) # Causes handels to be recreated and
-                                                            # ALL views to be redrawn is nothing is selected.
-                        if flags == 2064:
-                            import mdleditor
-                            mdleditor.commonhandles(self)
+                        if flags == 2056 or flags == 2064:
+                            ### Allows handles to be redrawn after rotating model in 3D views
+                            ### but does not when done dragging a handle to stop dupe drawing of them.
+                            if flags == 2056:
+                                if isinstance(self.dragobject, qhandles.HandleDragObject):
+                                    pass
+                                else:
+                                    import mdleditor
+                                    mdleditor.commonhandles(self)
+                            else:
+                                import mdleditor
+                                mdleditor.commonhandles(self)
 
                 try:
                     last,x,y=self.dragobject.lastdrag
@@ -751,9 +759,17 @@ class BaseEditor:
                             if view.info["viewname"] == "skinview":
                                 pass
                             else:
-                                if flagsmouse == 1040:
-                                    view.invalidate()
-                                    return
+                                if (flagsmouse == 528 or flagsmouse == 1040):
+                                    print "qbaseeditor line 834 "
+                                    if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
+                                        pass
+                                    else:
+                                        for view in self.layout.views:
+                                            if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
+                                                pass
+                                            else:
+                                                view.repaint()
+                                        return
                                 else:
                                     pass
 
@@ -970,6 +986,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.29  2007/02/19 15:24:25  cdunde
+#Fixed error message when something in the Skin-view is not selected and drag is started.
+#
 #Revision 1.28  2007/01/30 06:31:40  cdunde
 #To get all handles and lines to draw in the Skin-view when not zooming
 #and only the minimum lines to draw when it is, to make zooming smoother.
