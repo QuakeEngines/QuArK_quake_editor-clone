@@ -43,6 +43,9 @@ lengthnormalvect = 0
 mapicons_c = -1
 saveeditor = None
 modelcenter = None
+skinviewold = None
+skinviewnew = None
+skinviewdraghandle = None
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -1049,7 +1052,17 @@ class RedImageDragObject(DragObject):
 
 
     def ok(self, editor, x, y, flags):   # default behaviour is to create an object out of the red image
+        global skinviewold, skinviewnew, skinviewdraghandle  # used for model editor
         self.autoscroll_stop()
+
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            from qbaseeditor import currentview
+            if currentview.info["viewname"] == "skinview":
+             #   skinviewold = old
+             #   skinviewnew = self.redimages
+                skinviewdraghandle = self
+
         old = self.dragto(x, y, flags)
         if (self.redimages is None) or (len(old)!=len(self.redimages)):
             qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
@@ -1080,7 +1093,6 @@ class RedImageDragObject(DragObject):
                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 return
 
-        import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
             undo = quarkx.action()
             for i in range(0,len(old)):
@@ -1202,9 +1214,11 @@ class ScrollViewDragObject(DragObject):
 
     def dragto(self, x, y, flags):
         try:
-            if view.info["viewname"] == "skinview":
-                x = self.x0-x
-                y = self.y0-y
+            import mdleditor
+            if isinstance(editor, mdleditor.ModelEditor):
+                if view.info["viewname"] == "skinview":
+                    x = self.x0-x
+                    y = self.y0-y
         except:
             x = self.x0-x
             y = self.y0-y
@@ -1485,6 +1499,9 @@ class Rotator2D(DragObject):
         fixpt = center + self.view.vector(center).normalized * scroll
         setprojmode(self.view)
         self.view.screencenter = fixpt - self.view.vector(fixpt).normalized * scroll
+
+        if quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] != "1":
+            self.view.handles = []
 
         self.view.repaint()
 
@@ -1855,6 +1872,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.37  2007/01/31 15:12:16  danielpharos
+#Removed bogus OpenGL texture mode
+#
 #Revision 1.36  2007/01/30 06:37:37  cdunde
 #To get the Skin-view to scroll without having to redraw all the handles in every view.
 #Increases response time and drawing speed.

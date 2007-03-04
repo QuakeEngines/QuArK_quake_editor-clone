@@ -139,6 +139,10 @@ def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MODEL,"Options"), hint=No
 # Global variables to update from plug-ins.
 #
 
+
+dhwr = toggleitem("&Draw handles while rotating", "DHWR", (0,0),
+      hint="|Draw handles while rotating:\n\nThis allows the models vertex handles (if active) to be drawn during rotation, but this will slow down the redrawing process and can make rotation seem jerky.|intro.modeleditor.menu.html#optionsmenu")
+
 items = [
     toggleitem("&Paste objects at screen center", "Recenter", (0,0)),
     ]
@@ -160,13 +164,16 @@ def OptionsMenu():
     RotationOptions = qmenu.popup("3D Rotation Options", rotateitems, RotationMenu2click)
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click)
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
-    Options1 = qmenu.popup("&Options", [RotationOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
+    Options1 = qmenu.popup("&Options", [RotationOptions, qmenu.sep, dhwr]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
     return Options1, shortcuts
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.13  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.12  2006/11/29 07:00:26  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.
