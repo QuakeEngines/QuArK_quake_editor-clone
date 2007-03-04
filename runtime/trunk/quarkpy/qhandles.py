@@ -1094,12 +1094,19 @@ class RedImageDragObject(DragObject):
                 return
 
         if isinstance(editor, mdleditor.ModelEditor):
+            from qbaseeditor import currentview, flagsmouse
             undo = quarkx.action()
             for i in range(0,len(old)):
                 undo.exchange(old[i], self.redimages[i])
             self.handle.ok(editor, undo, old, self.redimages)
-            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
-            return
+            if currentview.info["viewname"] == "skinview":
+                print "qhandles line 1114"
+                print "qhandles line 1116 I RETURNED"
+                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                pass
+            else:
+                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                return
 
 ## End of above section for Terrain Generator changes
 
@@ -1872,6 +1879,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.38  2007/03/04 19:40:03  cdunde
+#Added option to draw or not draw handles in the Model Editor 3D views
+#while rotating the model to increase drawing speed.
+#
 #Revision 1.37  2007/01/31 15:12:16  danielpharos
 #Removed bogus OpenGL texture mode
 #

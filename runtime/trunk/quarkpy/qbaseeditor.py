@@ -576,7 +576,7 @@ class BaseEditor:
                             return
 
                     else:
-                        if flags == 2056 or flags == 2064:
+                        if (flags == 2056 and currentview.info["viewname"] != "skinview") or flags == 2064:
                             ### Allows handles to be redrawn after rotating model in 3D views
                             ### but does not when done dragging a handle to stop dupe drawing of them.
                             if flags == 2056:
@@ -599,6 +599,8 @@ class BaseEditor:
                     self.dragobject.ok(self, x, y, flags)
                     self.dragobject = None
 
+                    if flags == 2056:
+                        return
         #
         # Are we simply moving the mouse over the view ?
         #
@@ -986,6 +988,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.30  2007/03/04 19:38:52  cdunde
+#To redraw handles when LMB is released after rotating model in Model Editor 3D views.
+#To stop unneeded redrawing of handles in other views
+#
 #Revision 1.29  2007/02/19 15:24:25  cdunde
 #Fixed error message when something in the Skin-view is not selected and drag is started.
 #
