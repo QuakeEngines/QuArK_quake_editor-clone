@@ -315,7 +315,8 @@ class ModelLayout(BaseLayout):
         global saveskin, savedskins
         self.reset()
         c = self.componentof(skin)
-        if c is not None and skin is not c.currentskin and self.editor.Root.currentcomponent is not None:
+    #    if c is not None and skin is not c.currentskin and self.editor.Root.currentcomponent is not None:
+        if skin is not c.currentskin:
             self.selectcomponent(c)
             c.currentskin = skin
             saveskin = skin
@@ -374,6 +375,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.17  2007/01/30 06:48:43  cdunde
+#To fix model vertex guide drag lines not being drawn when editor is first opened.
+#
 #Revision 1.16  2007/01/22 20:40:36  cdunde
 #To correct errors of previous version that stopped vertex drag lines from drawing.
 #
