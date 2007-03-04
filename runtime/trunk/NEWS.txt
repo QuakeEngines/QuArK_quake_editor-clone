@@ -15,6 +15,12 @@ $Id$
 6.5.0 Beta 2
 =============
 
+* [cdunde]: Made numerous changes to stop unneeded redrawing of handles in other views
+          -  in the Model Editor to increase drawing speed.
+
+* [cdunde]: Added option to draw or not draw handles in the Model Editor 3D views
+          - while rotating the model to increase drawing speed.
+
 * [DanielPharos]: Fixed an access violation when trying to save MD3 files. Althought this is
                   currently not supported, it doesn't wreck QuArK anymore.
 
