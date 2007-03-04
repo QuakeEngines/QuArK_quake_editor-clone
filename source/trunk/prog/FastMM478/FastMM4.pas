@@ -1,6 +1,6 @@
 (*
 
-Fast Memory Manager 4.76
+Fast Memory Manager 4.78
 
 Description:
  A fast replacement memory manager for Borland Delphi Win32 applications that
@@ -42,7 +42,7 @@ Usage:
   enable support for a user mode address space greater than 2GB you will have to
   use the EditBin* tool to set the LARGE_ADDRESS_AWARE flag in the EXE header.
   This informs Windows x64 or Windows 32-bit (with the /3GB option set) that the
-  application supports an address space larger than 2GB (up to 4GB). In Delphi 7
+  application supports an address space larger than 2GB (up to 4GB). In Delphi 6
   and later you can also specify this flag through the compiler directive
   {$SetPEFlags $20}
   *The EditBin tool ships with the MS Visual C compiler.
@@ -197,8 +197,8 @@ Acknowledgements (for version 4):
  - Thomas Schulz for reporting the bug affecting large address space support
    under FullDebugMode.
  - Luigi Sandon for the Italian translation.
- - Werner Bochtler and Markus Beth for suggesting the
-   "NeverSleepOnThreadContention" option.
+ - Werner Bochtler for various suggestions and bug reports.
+ - Markus Beth for suggesting the "NeverSleepOnThreadContention" option.
  - JiYuan Xie for the Simplified Chinese translation.
  - Andrey Shtukaturov for the updated Russian translation, as well as the
    Ukrainian translation.
@@ -210,6 +210,8 @@ Acknowledgements (for version 4):
    MM sharing mechanism is disabled.
  - Loris Luise for the version constant suggestion.
  - J.W. de Bokx for the MessageBox bugfix.
+ - Igor Lindunen for reporting the bug that caused the Align16Bytes option to
+   not work in FullDebugMode.
  - Everyone who have made donations. Thanks!
  - Any other Fastcoders or supporters that I have forgotten, and also everyone
    that helped with the older versions.
@@ -599,6 +601,22 @@ Change log:
     FullDebugMode. In this mode FastMM_FullDebugMode.dll is loaded dynamically.
     If the DLL cannot be found, stack traces will not be available. (Thanks to
     Rene Mihula.)
+  Version 4.78 (1 March 2007):
+  - The MB_DEFAULT_DESKTOP_ONLY constant that is used when display messages
+    boxes since 4.76 is not defined under Kylix, and the source would thus not
+    compile. That constant is now defined. (Thanks to Werner Bochtler.)
+  - Moved the medium block locking code that was duplicated in several places
+    to a subroutine to reduce code size. (Thanks to Hallvard Vassbotn.)
+  - Fixed a bug in the leak registration code that sometimes caused registered
+    leaks to be reported erroneously. (Thanks to Primoz Gabrijelcic.)
+  - Added the NoDebugInfo option (on by default) that suppresses the generation
+    of debug info for the FastMM4.pas unit. This will prevent the integrated
+    debugger from stepping into the memory manager. (Thanks to Primoz
+    Gabrijelcic.)
+  - Increased the default stack trace depth in FullDebugMode from 9 to 10 to
+    ensure that the Align16Bytes setting works in FullDebugMode. (Thanks to
+    Igor Lindunen.)
+  - Updated the Czech translation. (Thanks to Rene Mihula.)
 
 *)
 
@@ -737,10 +755,15 @@ interface
 {Instruct GExperts to back up the messages file as well.}
 {#BACKUP FastMM4Messages.pas}
 
+{Should debug info be disabled?}
+{$ifdef NoDebugInfo}
+  {$DEBUGINFO OFF}
+{$endif}
+
 {-------------------------Public constants-----------------------------}
 const
   {The current version of FastMM}
-  FastMMVersion = '4.76';
+  FastMMVersion = '4.78';
   {The number of small block types}
 {$ifdef Align16Bytes}
   NumSmallBlockTypes = 46;
@@ -987,8 +1010,9 @@ const
   ExpectedMemoryLeaksListSize = 64 * 1024;
   {-------------FullDebugMode constants---------------}
 {$ifdef FullDebugMode}
-  {The stack trace depth}
-  StackTraceDepth = 9;
+  {The stack trace depth. (Must be an even number to ensure that the
+   Align16Bytes option works in FullDebugMode.)}
+  StackTraceDepth = 10;
   {The number of entries in the allocation group stack}
   AllocationGroupStackSize = 1000;
   {The number of fake VMT entries - used to track virtual method calls on
@@ -1199,6 +1223,9 @@ type
 
   TBlockOperation = (boBlockCheck, boGetMem, boFreeMem, boReallocMem);
 
+  {The header placed in front blocks in FullDebugMode (just after the standard
+   header). Must be a multiple of 16 bytes in size otherwise the Align16Bytes
+   option will not work.}
   PFullDebugBlockHeader = ^TFullDebugBlockHeader;
   TFullDebugBlockHeader = packed record
     {Space used by the medium block manager for previous/next block management.
@@ -1901,6 +1928,7 @@ const
   MB_OK = 0;
   MB_ICONERROR = $10;
   MB_TASKMODAL = $2000;
+  MB_DEFAULT_DESKTOP_ONLY = $20000;
   {Virtual memory constants}
   MEM_COMMIT = $1000;
   MEM_RELEASE = $8000;
@@ -2401,7 +2429,9 @@ begin
   end;
 end;
 
-{Locks the medium blocks}
+{Locks the medium blocks. Note that if AsmVersion is defined that the routine
+ is assumed to preserve all registers except eax.}
+{$ifndef AsmVersion}
 procedure LockMediumBlocks;
 begin
   {Lock the medium blocks}
@@ -2420,6 +2450,46 @@ begin
     end;
   end;
 end;
+{$else}
+procedure LockMediumBlocks;
+asm
+  {Note: This routine is assumed to preserve all registers except eax}
+@MediumBlockLockLoop:
+  mov eax, $100
+  {Attempt to lock the medium blocks}
+  lock cmpxchg MediumBlocksLocked, ah
+  je @Done
+{$ifndef NeverSleepOnThreadContention}
+  {Couldn't lock the medium blocks - sleep and try again}
+  push ecx
+  push edx
+  push InitialSleepTime
+  call Sleep
+  pop edx
+  pop ecx
+  {Try again}
+  mov eax, $100
+  {Attempt to grab the block type}
+  lock cmpxchg MediumBlocksLocked, ah
+  je @Done
+  {Couldn't lock the medium blocks - sleep and try again}
+  push ecx
+  push edx
+  push AdditionalSleepTime
+  call Sleep
+  pop edx
+  pop ecx
+  {Try again}
+  jmp @MediumBlockLockLoop
+{$else}
+  {Pause instruction (improves performance on P4)}
+  rep nop
+  {Try again}
+  jmp @MediumBlockLockLoop
+{$endif}
+@Done:
+end;
+{$endif}
 
 {$ifndef AsmVersion}
 {Removes a medium block from the circular linked list of free blocks.
@@ -3584,47 +3654,7 @@ asm
   cmp IsMultiThread, False
   je @MediumBlocksLockedForPool
 {$endif}
-@LockMediumBlocksForPool:
-  mov eax, $100
-  {Attempt to lock the medium blocks}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @MediumBlocksLockedForPool
-{$ifndef NeverSleepOnThreadContention}
-  {Couldn't lock the medium blocks - sleep and try again}
-  push InitialSleepTime
-  call Sleep
-  {Try again}
-  mov eax, $100
-  {Attempt to grab the block type}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @MediumBlocksLockedForPool
-  {Couldn't lock the medium blocks - sleep and try again}
-  push AdditionalSleepTime
-  call Sleep
-  {Try again}
-  jmp @LockMediumBlocksForPool
-  {$ifndef AssumeMultiThreaded}
-  {Align branch target}
-  nop
-  nop
-  nop
-  {$endif}
-{$else}
-  {Pause instruction (improves performance on P4)}
-  rep nop
-  {Try again}
-  jmp @LockMediumBlocksForPool
-  {Align branch target}
-  {$ifndef AssumeMultiThreaded}
-  {Align branch target}
-  nop
-  nop
-  {$else}
-  nop
-  nop
-  nop
-  {$endif}
-{$endif}
+  call LockMediumBlocks
 @MediumBlocksLockedForPool:
   {Are there any available blocks of a suitable size?}
   movsx esi, TSmallBlockType[ebx].AllowedGroupsForBlockPoolBitmap
@@ -3678,6 +3708,9 @@ asm
   call InsertMediumBlockIntoBin
   jmp @GotMediumBlock
   {Align branch target}
+{$ifdef AssumeMultiThreaded}
+  nop
+{$endif}
 @NoSuitableMediumBlocks:
   {Check the sequential feed medium block pool for space}
   movzx ecx, TSmallBlockType[ebx].MinimumBlockPoolSize
@@ -3756,36 +3789,6 @@ asm
 {-------------------Medium block allocation-------------------}
   {Align branch target}
   nop
-@LockMediumBlocks:
-  mov eax, $100
-  {Attempt to lock the medium blocks}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @MediumBlocksLocked
-  {Couldn't lock the medium blocks - sleep and try again}
-{$ifndef NeverSleepOnThreadContention}
-  push InitialSleepTime
-  call Sleep
-  {Try again}
-  mov eax, $100
-  {Attempt to lock the medium blocks}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @MediumBlocksLocked
-  {Couldn't lock the medium blocks - sleep and try again}
-  push AdditionalSleepTime
-  call Sleep
-  {Try again}
-  jmp @LockMediumBlocks
-  {Align branch target}
-  nop
-  nop
-{$else}
-  {Pause instruction (improves performance on P4)}
-  rep nop
-  {Try again}
-  jmp @LockMediumBlocks
-  {Align branch target}
-  nop
-{$endif}
 @NotASmallBlock:
   cmp eax, (MaximumMediumBlockSize - BlockHeaderSize)
   ja @IsALargeBlockRequest
@@ -3797,11 +3800,9 @@ asm
   {Do we need to lock the medium blocks?}
 {$ifndef AssumeMultiThreaded}
   test cl, cl
-  jnz @LockMediumBlocks
-{$else}
-  jmp @LockMediumBlocks
-  {Align branch target}
+  jz @MediumBlocksLocked
 {$endif}
+  call LockMediumBlocks
 @MediumBlocksLocked:
   {Get the bin number in ecx and the group number in edx}
   lea edx, [ebx - MinimumMediumBlockSize]
@@ -3819,10 +3820,7 @@ asm
   or ecx, eax
   jmp @GotBinAndGroup
   {Align branch target}
-{$ifndef AssumeMultiThreaded}
   nop
-  nop
-{$endif}
 @GroupIsEmpty:
   {Try all groups greater than this group}
   mov eax, -2
@@ -4346,36 +4344,7 @@ asm
   nop
 {$endif}
   {---------------------Medium blocks------------------------------}
-@LockMediumBlocks:
-  mov eax, $100
-  {Attempt to lock the medium blocks}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @MediumBlocksLocked
-{$ifndef NeverSleepOnThreadContention}
-  {Couldn't lock the medium blocks - sleep and try again}
-  push InitialSleepTime
-  call Sleep
-  {Try again}
-  mov eax, $100
-  {Attempt to lock the medium blocks}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @MediumBlocksLocked
-  {Couldn't lock the medium blocks - sleep and try again}
-  push AdditionalSleepTime
-  call Sleep
-  {Try again}
-  jmp @LockMediumBlocks
   {Align branch target}
-  nop
-  nop
-{$else}
-  {Pause instruction (improves performance on P4)}
-  rep nop
-  {Try again}
-  jmp @LockMediumBlocks
-  {Align branch target}
-  nop
-{$endif}
 @NotSmallBlockInUse:
   {Not a small block in use: is it a medium or large block?}
   test dl, IsFreeBlockFlag + IsLargeBlockFlag
@@ -4396,12 +4365,9 @@ asm
   mov esi, eax
   {Do we need to lock the medium blocks?}
 {$ifndef AssumeMultiThreaded}
-  jnz @LockMediumBlocks
-{$else}
-  jmp @LockMediumBlocks
-  {Align branch target}
-  nop
+  jz @MediumBlocksLocked
 {$endif}
+  call LockMediumBlocks
 @MediumBlocksLocked:
   {Can we combine this block with the next free block?}
   test dword ptr [esi + ebx - 4], IsFreeBlockFlag
@@ -4445,10 +4411,6 @@ asm
   {Return}
   ret
   {Align branch target}
-{$ifdef AssumeMultiThreaded}
-  nop
-{$endif}
-  nop
 @NextBlockIsFree:
   {Get the next block address in eax}
   lea eax, [esi + ebx]
@@ -5102,48 +5064,11 @@ asm
   cmp IsMultiThread, False
   je @DoMediumInPlaceDownsize
 {$endif}
-  {We have to re-read the flags}
 @DoMediumLockForDownsize:
-  {Lock the medium blocks}
-  mov eax, $100
-  {Attempt to lock the medium blocks}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @MediumDownsizeRereadFlags
-{$ifndef NeverSleepOnThreadContention}
-  {Couldn't lock the medium blocks - sleep and try again}
-  push ecx
-  push InitialSleepTime
-  call Sleep
-  pop ecx
-  {Try again}
-  mov eax, $100
-  {Attempt to grab the block type}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @MediumDownsizeRereadFlags
-  {Couldn't lock the medium blocks - sleep and try again}
-  push ecx
-  push AdditionalSleepTime
-  call Sleep
-  pop ecx
-  {Try again}
-  jmp @DoMediumLockForDownsize
-  {Align branch target}
-  {$ifdef AssumeMultiThreaded}
-  nop
-  {$endif}
-{$else}
-  {Pause instruction (improves performance on P4)}
-  rep nop
-  {Try again}
-  jmp @DoMediumLockForDownsize
-  {Align branch target}
-  {$ifndef AssumeMultiThreaded}
-  nop
-  nop
-  nop
-  {$endif}
-{$endif}
-@MediumDownsizeRereadFlags:
+  {Lock the medium blocks (ecx *must* be preserved)}
+  call LockMediumBlocks
+  {Reread the flags - they may have changed before medium blocks could be
+   locked.}
   mov ebx, ExtractMediumAndLargeFlagsMask
   and ebx, [esi - 4]
 @DoMediumInPlaceDownsize:
@@ -5162,6 +5087,10 @@ asm
   jmp @MediumDownsizeDoSplit
   {Align branch target}
   nop
+  nop
+{$ifdef AssumeMultiThreaded}
+  nop
+{$endif}
 @MediumDownsizeNextBlockFree:
   {The next block is free: combine it}
   mov eax, edi
@@ -5251,51 +5180,10 @@ asm
   je @DoMediumInPlaceUpsize
 {$endif}
 @DoMediumLockForUpsize:
-  {Lock the medium blocks}
-  mov eax, $100
-  {Attempt to lock the medium blocks}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @RecheckMediumInPlaceUpsize
-{$ifndef NeverSleepOnThreadContention}
-  {Couldn't lock the medium blocks - sleep and try again}
-  push ecx
-  push edx
-  push InitialSleepTime
-  call Sleep
-  pop edx
-  pop ecx
-  {Try again}
-  mov eax, $100
-  {Attempt to grab the block type}
-  lock cmpxchg MediumBlocksLocked, ah
-  je @RecheckMediumInPlaceUpsize
-  {Couldn't lock the medium blocks - sleep and try again}
-  push ecx
-  push edx
-  push AdditionalSleepTime
-  call Sleep
-  pop edx
-  pop ecx
-  {Try again}
-  jmp @DoMediumLockForUpsize
-  {Align branch target}
-  {$ifdef AssumeMultiThreaded}
-  nop
-  {$endif}
-{$else}
-  {Pause instruction (improves performance on P4)}
-  rep nop
-  {Try again}
-  jmp @DoMediumLockForUpsize
-  {Align branch target}
-  {$ifndef AssumeMultiThreaded}
-  nop
-  nop
-  nop
-  {$endif}
-{$endif}
-@RecheckMediumInPlaceUpsize:
-  {Re-read the info for this block}
+  {Lock the medium blocks (ecx and edx *must* be preserved}
+  call LockMediumBlocks
+  {Re-read the info for this block (since it may have changed before the medium
+   blocks could be locked)}
   mov ebx, ExtractMediumAndLargeFlagsMask
   and ebx, [esi - 4]
   {Re-read the info for the next block}
@@ -5347,8 +5235,11 @@ asm
   {Upsize done}
   jmp @MediumUpsizeInPlaceDone
   {Align branch target}
+{$ifndef AssumeMultiThreaded}
   nop
   nop
+  nop
+{$endif}
 @MediumInPlaceUpsizeSplit:
   {Store the size of the second split as the second last dword}
   mov [esi + ebp - 4], edx
@@ -6628,11 +6519,15 @@ begin
     if LPInsertAfter <> nil then
     begin
       LPNewEntry.NextLeak := LPInsertAfter.NextLeak;
+      if LPNewEntry.NextLeak <> nil then
+        LPNewEntry.NextLeak.PreviousLeak := LPNewEntry;
       LPInsertAfter.NextLeak := LPNewEntry;
     end
     else
     begin
       LPNewEntry.NextLeak := APLeakList^;
+      if LPNewEntry.NextLeak <> nil then
+        LPNewEntry.NextLeak.PreviousLeak := LPNewEntry;
       APLeakList^ := LPNewEntry;
     end;
     Result := True;

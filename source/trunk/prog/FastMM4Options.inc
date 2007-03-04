@@ -60,6 +60,11 @@ Set the default options for FastMM here.
 
 {-----------------------------Debugging Options-------------------------------}
 
+{Enable this option to suppress the generation of debug info for the
+ FastMM4.pas unit. This will prevent the integrated debugger from stepping into
+ the memory manager code.}
+{$define NoDebugInfo}
+
 {Enable this option to suppress the display of all message dialogs. This is
  useful in service applications that should not be interrupted.}
 {.$define NoMessageBoxes}

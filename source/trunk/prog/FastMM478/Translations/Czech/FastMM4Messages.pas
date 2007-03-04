@@ -6,6 +6,7 @@ Czech translation by Rene Mihula.
 
 Modifications:
 25.04.2005  rm       Added resource strings for FastMM v4.64 compilability
+01.03.2007  rm       Corrections of keying mistakes
 }
 
 unit FastMM4Messages;
@@ -37,7 +38,7 @@ const
   OperationMsg = ' . ';
   BlockHeaderCorruptedMsg = 'Hlavièka bloku byla poškozena. ';
   BlockFooterCorruptedMsg = 'Patièka bloku byla poškozena. ';
-  FreeModifiedErrorMsg = 'FastMM dekoval modifikaci bloku po jeho uvolnìní. ';
+  FreeModifiedErrorMsg = 'FastMM detekoval modifikaci bloku po jeho uvolnìní. ';
   DoubleFreeErrorMsg = 'Probìhl pokus o uvolnìní / realokaci ji uvolnìného bloku.';
   PreviousBlockSizeMsg = #13#10#13#10'Pøedchozí velikost bloku: ';
   CurrentBlockSizeMsg = #13#10#13#10'Velikost bloku: ';
@@ -46,9 +47,9 @@ const
   PreviousObjectClassMsg = #13#10#13#10'Blok byl ji vyuit pro objekt typu: ';
   CurrentObjectClassMsg = #13#10#13#10'Blok je aktuálnì vyuíván pro objekt typu: ';
   PreviousAllocationGroupMsg = #13#10#13#10'Alokaèní skupina byla: '; //
-  PreviousAllocationNumberMsg = #13#10#13#10'Alokaèní èílso bylo: ';
+  PreviousAllocationNumberMsg = #13#10#13#10'Alokaèní èíslo bylo: ';
   CurrentAllocationGroupMsg = #13#10#13#10'Alokaèní skupina je: ';
-  CurrentAllocationNumberMsg = #13#10#13#10'Alokaèní èílso je: ';
+  CurrentAllocationNumberMsg = #13#10#13#10'Alokaèní èíslo je: ';
   StackTraceAtFreeMsg = #13#10#13#10'Zásobník volání pøi pøedchozím uvolnìní bloku (návratové adresy):'; 
   BlockErrorMsgTitle = 'Detekována chyba pamìti';
   {Virtual Method Called On Freed Object Errors}
@@ -77,15 +78,15 @@ const
     + 'manager (MM tøetí strany) ji byl nainstalován.'#13#10'Pro pouití FastMM4 '
     + 'zkontrolujte, zda je unita FastMM4.pas první unitou v sekci "uses" tohoto '
     + 'projektu (.dpr soubor).';
-  OtherMMInstalledTitle = 'Nelze nainstalovat FastMM4 - Jinı memory manager jen ji nainstalován';
+  OtherMMInstalledTitle = 'Nelze nainstalovat FastMM4 - Jinı memory manager je ji nainstalován';
   MemoryAllocatedMsg = 'FastMM4 nemohl bıt nainstalován, protoe jinı memory '
-    + 'manager (standardní MM). ji byl nainstalován.'#13#10'Pro pouití FastMM4 '
+    + 'manager (standardní MM) ji byl nainstalován.'#13#10'Pro pouití FastMM4 '
     + 'zkontrolujte, zda je unita FastMM4.pas první unitou v sekci "uses" tohoto '
     + 'projektu (.dpr soubor).'#13#10#13#10
     + 'Pokud pouíváte nìjakı exception trapper (napø. MadExcept) nebo libovolnı '
     + 'jinı nástroj, kterı modifikuje poøadí sekcí initialization, nakonfigurujte '
-    + 'jej tak, aby unita FastMM4.pas byla inicializována pøed všemi ostaními unitami.';
-  MemoryAllocatedTitle = 'Nelze nainstalovat FastMM4 - Pamìt ji byla alokována';
+    + 'jej tak, aby unita FastMM4.pas byla inicializována pøed všemi ostatními unitami.';
+  MemoryAllocatedTitle = 'Nelze nainstalovat FastMM4 - Pamì ji byla alokována';
   {Leak checking messages}
   LeakLogHeader = 'Blok pamìti zùstal neuvolnìn. Velikost(i): ';
   LeakMessageHeader = 'Aplikace neuvolnila pouívanou pamì. ';
@@ -111,7 +112,7 @@ const
     {$ifdef LogMemoryLeakDetailToFile}
     + 'Detailní informace o neuvolnìné pamìti jsou zapsány do textového souboru v adresáøi aplikace. '
     {$else}
-    + 'Povolením dikretivy "LogMemoryLeakDetailToFile" lze do souboru logu zapsat detailní informace o neuvolnìné pamìti. '
+    + 'Povolením direktivy "LogMemoryLeakDetailToFile" lze do souboru logu zapsat detailní informace o neuvolnìné pamìti. '
     {$endif}
   {$else}
     + 'Pro získání logu s detailními informacemi o neuvolnìné pamìti je potøeba povolit direktivy "FullDebugMode" a "LogMemoryLeakDetailToFile". '
