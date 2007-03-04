@@ -174,7 +174,7 @@ def commonhandles(self, redraw=1):
     if self.layout is None:
         return
 
-    if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 2064 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056):
+    if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056):
         try:
             if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow"):
                 for v in self.layout.views:
@@ -182,7 +182,7 @@ def commonhandles(self, redraw=1):
                         pass
                     else:
                         hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
-                        v.handles = hlist + v.handles
+                        v.handles = hlist
                         cv = v.canvas()
                         for h in hlist:
                             h.draw(v, cv, None)
@@ -192,52 +192,81 @@ def commonhandles(self, redraw=1):
 
         except:
             pass
+
+    elif (flagsmouse == 2056 or flagsmouse == 2064) and (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow"):
+            fs = self.layout.explorer.uniquesel
+            if currentview.info["viewname"] == "editors3Dview":
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                    pass
+                else:
+                    if fs is None:
+                        pass
+                    else:
+                        hlist = mdlentities.CallManager("handlesopt", fs, self)   # model handles
+                        currentview.handles = hlist
+                        cv = currentview.canvas()
+                        for h in hlist:
+                            h.draw(currentview, cv, None)
+
+            if currentview.info["viewname"] == "3Dwindow":
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                    pass
+                else:
+                    if fs is None:
+                        pass
+                    else:
+                        hlist = mdlentities.CallManager("handlesopt", fs, self)   # model handles
+                        currentview.handles = hlist
+                        cv = currentview.canvas()
+                        for h in hlist:
+                            h.draw(currentview, cv, None)
+            return
+
     else:
         hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
 
     for v in self.layout.views:
-
-        if v.info["viewname"] == "editors3Dview":
+        if v.info["viewname"] == "editors3Dview" and  flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
                 pass
             else:
-                v.handles = hlist + v.handles
+                v.handles = hlist
                 cv = v.canvas()
                 for h in hlist:
                     h.draw(v, cv, None)
 
-        if v.info["viewname"] == "XY":
+        if v.info["viewname"] == "XY" and  flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
                 pass
             else:
-                v.handles = hlist + v.handles
+                v.handles = hlist
                 cv = v.canvas()
                 for h in hlist:
                     h.draw(v, cv, None)
 
-        if v.info["viewname"] == "YZ":
+        if v.info["viewname"] == "YZ" and  flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
                 pass
             else:
-                v.handles = hlist + v.handles
+                v.handles = hlist
                 cv = v.canvas()
                 for h in hlist:
                     h.draw(v, cv, None)
 
-        if v.info["viewname"] == "XZ":
+        if v.info["viewname"] == "XZ" and  flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
                 pass
             else:
-                v.handles = hlist + v.handles
+                v.handles = hlist
                 cv = v.canvas()
                 for h in hlist:
                     h.draw(v, cv, None)
 
-        if v.info["viewname"] == "3Dwindow":
+        if v.info["viewname"] == "3Dwindow" and  flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                 pass
             else:
-                v.handles = hlist + v.handles
+                v.handles = hlist
                 cv = v.canvas()
                 for h in hlist:
                     h.draw(v, cv, None)
@@ -246,6 +275,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.17  2007/01/30 05:58:41  cdunde
+#To remove unnecessary code and to get mdlaxisicons to be displayed consistently.
+#
 #Revision 1.16  2007/01/22 20:40:36  cdunde
 #To correct errors of previous version that stopped vertex drag lines from drawing.
 #
