@@ -105,17 +105,18 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
 
     if not MldOption("AxisXYZ"):return
 
-
-    def MyMakeScroller(layout, view):
+    def MakeScroller(layout, view):
         sbviews = [None, None]
         for ifrom, linkfrom, ito, linkto in layout.sblinks:
             if linkto is view:
                 sbviews[ito] = (ifrom, linkfrom)
         def scroller(x, y, view=view, hlink=sbviews[0], vlink=sbviews[1]):
+            from quarkpy.qbaseeditor import flagsmouse, currentview
             editor = saveeditor
             view.scrollto(x, y)
             try:
-                if view.info["viewname"] == "skinview":
+                if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
+                    view.repaint()
                     return scroller
             except:
                 pass
@@ -135,18 +136,26 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
                 editor = saveeditor
                 if editor is None:
                     pass
-                else:
-                    editor.invalidateviews()
-            #    view.repaint()
+            if (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056) and view.viewmode == "tex":
+                view.repaint()
+            else:
                 view.update()
         return scroller
-    quarkpy.qhandles.MakeScroller = MyMakeScroller
+    quarkpy.qhandles.MakeScroller = MakeScroller
 
 
 
 
     # The following sets the canvas function to draw the images.
 
+    from quarkpy.qbaseeditor import flagsmouse
+    try:
+        if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
+            pass
+        else:
+            if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056): return
+    except:
+        pass
     cv = view.canvas()
     type = view.info["type"]  # These type values are set
                               #  in the layout-defining plugins.
@@ -164,7 +173,11 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
     #  to the window it appears in.
     #
 
-    cv.draw(axisicons[index],14,1)
+    from quarkpy.qbaseeditor import flagsmouse, currentview
+    if (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056):
+        pass
+    else:
+        cv.draw(axisicons[index],14,1)
 
 #
 # Now set our new function as the finishdrawing method.
@@ -186,6 +199,10 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.5  2007/01/30 06:37:37  cdunde
+#To get the Skin-view to scroll without having to redraw all the handles in every view.
+#Increases response time and drawing speed.
+#
 #Revision 1.4  2006/11/30 01:17:48  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
