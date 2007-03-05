@@ -1100,8 +1100,6 @@ class RedImageDragObject(DragObject):
                 undo.exchange(old[i], self.redimages[i])
             self.handle.ok(editor, undo, old, self.redimages)
             if currentview.info["viewname"] == "skinview":
-                print "qhandles line 1114"
-                print "qhandles line 1116 I RETURNED"
                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 pass
             else:
@@ -1879,6 +1877,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.39  2007/03/04 20:15:15  cdunde
+#Missed items in last update.
+#
 #Revision 1.38  2007/03/04 19:40:03  cdunde
 #Added option to draw or not draw handles in the Model Editor 3D views
 #while rotating the model to increase drawing speed.
