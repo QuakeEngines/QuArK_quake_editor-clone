@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.13  2005/07/05 19:12:46  alexander
 logging to file using loglevels
 
@@ -97,8 +100,8 @@ uses QkObjects, Setup, QkApplPaths, SystemDetails;
 var
   LogFile: TextFile;
   LogOpened: boolean;
-  LogLevel:integer;
-  LogLevelEnv:string;
+  LogLevel: Integer;
+  LogLevelEnv: string;
 
 function GetPatchVersion: String;
 var
@@ -136,11 +139,13 @@ begin
   LogEx('QuArK started at %s',[DateTimeToStr(now)]);
   LogEx('QuArK version is %s',[QuarkVersion+GetPatchVersion]);
   LogEx('Loglevel is %d',[LogLevel]);
+  (* DanielPharos: OLD CODE + NEW CODE
   {$IFDEF NoShare}
   Log('Spec Mem Sharing Off');
   {$ELSE}
   Log('Spec Mem Sharing On');
   {$ENDIF}
+  *)
   LogSystemDetails;
   {$I+}
 end;
@@ -202,7 +207,7 @@ initialization
   LogLevelEnv:=GetEnvironmentVariable('QUARK_LOG_LEVEL');
   if LogLevelEnv<>'' then
     try
-      LogLevel:=StrToInt(LogLevelEnv );
+      LogLevel:=StrToInt(LogLevelEnv);
     except
     end;
   OpenLogFile;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.84  2007/03/01 22:16:03  danielpharos
+Big fix for the enormous slowdown.
+
 Revision 1.83  2007/02/07 18:48:34  danielpharos
 Fixes for memory leaks
 
@@ -277,6 +280,7 @@ unit QkObjects;
    
    There is also one line of code in the Qk1.pas file, in the procedure TForm1.AppIdle
    Check the difference between 1.40 and 1.41 for it.
+   Also one line in the Logging.pas file, between 1.15 and 1.16.
    
    OLD CODE version: 1.81
    NEW CODE version: 1.83 (there are some other changes to that code, 1.82 is probably closer)
