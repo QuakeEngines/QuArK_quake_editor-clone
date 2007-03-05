@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/03/01 17:36:54  danielpharos
+Stopped many redundant calls from being made when moving the camera. Should take care of some weird problems, and be faster too.
+
 Revision 1.26  2007/02/28 08:27:18  danielpharos
 Fixed things disappearing in Software and Glide mode.
 
@@ -2834,7 +2837,7 @@ begin
          else
           DC1:=0;
          Scene.BuildScene(DC1, QkObjFromPyObj(AltTexSrc));
-         Drawing:=Drawing and not dfRebuildScene
+         Drawing:=Drawing and not dfRebuildScene;
         end;
        Drawing:=Drawing and not dfBuilding;
        if FullScreen then
