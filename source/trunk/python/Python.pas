@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/01/31 15:05:20  danielpharos
+Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
+
 Revision 1.21  2007/01/11 17:44:36  danielpharos
 Changed the Python Dll loading stuff. QuArK now only asks for Python.dll, and let's Windows do the searching work.
 
@@ -324,7 +327,7 @@ const
  //   1010 for Python 2.1a2 (and probably 2.1 as well)
  //   1011 for Python 2.2
  //   1012 for Python 2.3
- PYTHON_API_VERSION = 1011; // Rowdy (was: 1007;)
+ PYTHON_API_VERSION = 1012;
  METH_VARARGS  = $0001;
  METH_KEYWORDS = $0002;
 
@@ -437,6 +440,7 @@ function PySeq_Item(o: PyObject; index: Integer) : PyObject;}
 
 var
  PythonLib: THandle;
+ PythonDll: String;
  PyInt_Type:    PyTypeObject;
  PyType_Type:   PyTypeObject;
  PyList_Type:   PyTypeObject;
@@ -451,6 +455,7 @@ function InitializePython : Integer;
 implementation
 
 uses
+ {$IFDEF Debug} QkObjects, {$ENDIF}
   Windows, Registry, SysUtils, QkObjects;
 
  {-------------------}
@@ -535,7 +540,33 @@ begin
   Result:=3;
   if PythonLib=0 then
   begin
-    PythonLib:=LoadLibrary('dlls/python.dll');
+    {$IFDEF PYTHON_BUNDLED}
+      PythonDll:='python.dll';
+    {$ELSE}
+     {$IFDEF PYTHON23}
+      PythonDll:='python23.dll';
+     {$ELSE}
+      {$IFDEF PYTHON22}
+       PythonDll:='python22.dll';
+      {$ELSE}
+       {$IFDEF PYTHON21}
+        PythonDll:='python21.dll';
+       {$ELSE}
+        {$IFDEF PYTHON20}
+         PythonDll:='python20.dll';
+         {$ELSE}
+         PythonDll:='';
+        {$ENDIF}
+       {$ENDIF}
+      {$ENDIF}
+     {$ENDIF}
+    {$ENDIF}
+
+    if PythonDll='' then
+      {Raise InternalE('No valid Python DLL file set!');}
+      Exit;
+
+    PythonLib:=LoadLibrary(PChar('dlls/'+PythonDll));
     if PythonLib=0 then
     begin
       Exit;  {This is handled manually}
@@ -553,7 +584,7 @@ begin
   Py_Initialize;
   s:=Py_GetVersion;
   aLog(LOG_PYTHONSOURCE,'Version: '+s);
-  aLog(LOG_PYTHONSOURCE,'DLL: '+'dlls/python.dll');  {Daniel: We should (somehow) retrieve the actual filename of the DLL loaded...}
+  aLog(LOG_PYTHONSOURCE,'DLL: '+'dlls/'+PythonDll);  {DanielPharos: We should (somehow) retrieve the actual filename of the DLL loaded...}
   aLog(LOG_PYTHONSOURCE,'');
   Result:=1;
 
@@ -598,7 +629,7 @@ end;
 procedure UnInitializePython;
 begin
   if FreeLibrary(PythonLib)=false then
-    raise InternalE('Unable to unload dlls/PythonLib.dll');
+    raise InternalE('Unable to unload dlls/'+PythonDll); {DanielPharos: The path might be off this way!}
   PythonLib:=0;
 end;
 
