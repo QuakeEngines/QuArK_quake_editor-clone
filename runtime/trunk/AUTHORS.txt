@@ -70,3 +70,6 @@ The contributing developers of QuArK
 - "Fredrick Vamstad"
         e-mail:         fredrick.vamstad@gmail.com
 
+- "DanielPharos"
+        e-mail:         ***
+
