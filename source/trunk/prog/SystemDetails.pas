@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/02/09 10:44:17  danielpharos
+Fixes for memory leaks
+
 Revision 1.21  2007/02/07 20:03:18  danielpharos
 Fixes for memory leaks
 
@@ -893,12 +896,54 @@ begin
   end;
   BuildNumber:=word(OS.dwBuildNumber);
   case OS.dwPlatformId of
-    VER_PLATFORM_WIN32s:        Platform:='Windows 3.1x';
-    VER_PLATFORM_WIN32_WINDOWS: Platform:='Windows 95';
-    VER_PLATFORM_WIN32_NT:      Platform:='Windows NT';
+    VER_PLATFORM_WIN32s:
+      Platform:='Windows 32s';
+    VER_PLATFORM_WIN32_WINDOWS:
+      case MajorVersion of
+      4:
+        case MinorVersion of
+        0: Platform:='Windows 95';
+        10: Platform:='Windows 98';
+        90: Platform:='Windows ME';
+        else Platform:='Unknown (Probably OK)';
+        end;
+      5:
+        case MinorVersion of
+        0: Platform:='Windows Vista or Windows Server "Longhorn"';
+        else Platform:='Unknown (Probably OK)';
+        end;
+      else
+        if MajorVersion>5 then
+          Platform:='Unknown (Probably OK)'
+        else
+          Platform:='Unknown';
+      end;
+    VER_PLATFORM_WIN32_NT:
+      case MajorVersion of
+      4:
+        case MinorVersion of
+        0: Platform:='Windows NT4';
+        else Platform:='Unknown (Probably OK)';
+        end;
+      5:
+        case MinorVersion of
+        0: Platform:='Windows 2000';
+        1: Platform:='Windows XP';
+        2: Platform:='Windows 2003 or Windows XP 64-bit';
+        else Platform:='Unknown (Probably OK)';
+        end;
+      6:
+        case MinorVersion of
+        0: Platform:='Windows Vista or Windows Server "Longhorn"';
+        else Platform:='Unknown (Probably OK)';
+        end;
+      else
+        if MajorVersion>6 then
+          Platform:='Unknown (Probably OK)'
+        else
+          Platform:='Unknown';
+      end;
   end;
-  if MajorVersion>4 then
-    Platform:='Windows 2000';
   CSD:=strpas(OS.szCSDVersion);
   Version:='';
   RegisteredUser:='';
@@ -907,7 +952,7 @@ begin
   with TRegistry.create do
   begin
     rootkey:=HKEY_LOCAL_MACHINE;
-    if isnt then
+    if IsNT then
     begin
       if OpenKey(rkOSInfoNT,false) then
       begin
@@ -1923,7 +1968,6 @@ end;
 initialization
   IsNT:=IsOSNT;
   Is95:=IsOS95;
-  Is2000:=IsOS2000;
   WindowsUser:=GetUser;
   MachineName:=GetMachine;
   if IsNT then
@@ -1933,6 +1977,7 @@ initialization
     
   // These are not currently used.
   // Is98:=IsOS98;
+  // Is2000:=Is2000;
   // IsOSR2:=IsOSOSR2;
   // Platform:=GetPlatform;
 
