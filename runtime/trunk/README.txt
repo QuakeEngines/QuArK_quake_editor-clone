@@ -40,9 +40,9 @@ QuArK is completely different from the desktop publishing program
 Quark.
 
 You can find out more about QuArK from the official website at
-http://www.planetquake.com/quark/.  See also the QuArK wiki, located
-at http://quark.sf.net/, and the QuArK Resource Forums at
-http://quark.ironfoot.co.uk/.
+http://www.planetquake.com/quark/.  See also the QuArK Infobase,
+located at http://quark.planetquake.gamespy.com/infobase/, and the
+QuArK Resource Forums at http://www.dark-forge.com/forums/.
 
 2. Where can I get QuArK?
 -------------------------
@@ -51,10 +51,10 @@ QuArK for 32-bit Windows is available as a free download from the
 QuArK website as an executable installer or as a zip archive.
 
 The latest release is always available from
-http://quark.sf.net/wiki/LatestRelease.
+http://sourceforge.net/projects/quark.
 
 Source archives are also available, or you could use anonymous cvs to
-checkout the sources from our SourceForge cvs repository (our project
+checkout the sources from our SourceForge cvs repository (the project
 name is `quark`).
 
 3. How do I install QuArK?
