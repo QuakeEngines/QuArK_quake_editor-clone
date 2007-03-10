@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2
 =============
 
+* [cdunde/DanielPharos]: Added code to retain selection in Model Editor when making a Skin-view drag.
+
 * [cdunde]: Made numerous changes to stop unneeded redrawing of handles in other views
           -  in the Model Editor to increase drawing speed.
 
