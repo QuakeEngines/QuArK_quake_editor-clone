@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
 Revision 1.2  2007/01/31 15:11:21  danielpharos
 HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
 
@@ -156,21 +159,6 @@ uses Windows, Classes, Setup, SysUtils,
      Glide,
      EdSceneObject;
 
- {------------------------}
-
-{ $DEFINE DebugLOG}
-{ $DEFINE DebugSOFTLIMITS}
-
-(*
-const
- MinW = 64.0;
- MaxW = 65535.0-128.0;    { Note: constants copied from PyMath3D }
- Minoow = 1.0001/MaxW;
- Maxoow = 0.9999/MinW;
- RFACTOR_1 = 32768*1.1;
- MAX_PITCH = pi/2.1;
-*)
-
 type
  TViewRect = record
               R: TRect;
@@ -232,7 +220,6 @@ var
  ScreenCenterX: Integer;
  ScreenCenterY: Integer;
 
-
  {------------------------}
 
 implementation
@@ -261,47 +248,6 @@ type
  {TSkinType = (stNone, stTexture, stSkin);}
 
  {------------------------}
-
-{$IFDEF DebugLOG}
-procedure LogTriangle(const S: String; v1,v2,v3: GrVertex);
-var
- F: Text;
-{P: ^GrVertex;
- I: Integer;}
-begin
- System.Assign(F, 'quark.log');
- Append(F);
-{P:=@VList;
- Writeln(F, N);
- for I:=1 to N do
-  begin
-   Writeln(F, P^.x:10:5, P^.y:10:5, P^.oow:12:8, P^.tmuvtx[0].sow:12:8, P^.tmuvtx[0].tow:12:8);
-   Inc(P);
-  end;}
- Writeln(F, S);
- Writeln(F, v1.x:10:5, v1.y:10:5, v1.oow:12:8, v1.tmuvtx[0].sow:12:8, v1.tmuvtx[0].tow:12:8);
- Writeln(F, v2.x:10:5, v2.y:10:5, v2.oow:12:8, v2.tmuvtx[0].sow:12:8, v2.tmuvtx[0].tow:12:8);
- Writeln(F, v3.x:10:5, v3.y:10:5, v3.oow:12:8, v3.tmuvtx[0].sow:12:8, v3.tmuvtx[0].tow:12:8);
-
- System.Close(F);
- grSstIdle;
-{Append(F);
- Writeln(F, '*');
- System.Close(F);}
-end;
-(*var
- F: Text;
-begin
- System.Assign(F, 'c:\windows\bureau\test.dat');
- Append(F);
- Writeln(F, S);
- System.Close(F);
- grSstIdle;
- Append(F);
- Writeln(F, '*');
- System.Close(F);
-end;*)
-{$ENDIF}
 
 procedure ClearBuffers(Col: GrColor_t);
 begin
@@ -1318,7 +1264,6 @@ var
  LocalViewRectRight,
  LocalViewRectBottom: FxFloat;
  PSD: TPixelSetDescription;
- {$IFDEF DebugLOG} LogS: String; {$ENDIF}
 
   procedure ScaleInterval(var PrevV1: TV1; const PV1: TV1; F: FxFloat; BBox: TBBox; nValue: FxFloat);
   var
@@ -1882,12 +1827,10 @@ begin
 
           if (N>=3) {and (bb-aa>MinVertexDist1) and (dd-cc>MinVertexDist1)} then
           begin
-            {$IFDEF DebugLOG} LogS:=''; {$ENDIF}
               // Assigned check added by SilverPaladin
             if (NeedTex and Assigned(qrkGlideState))then
             begin
               TGlideState(qrkGlideState).NeedTex(PList^.Texture);
-              {$IFDEF DebugLOG} LogS:=LogS+'------------------Tex:'+IntToHex(PList^.Texture^.startAddress,8)+'='+Plist^.TexName; {$ENDIF}
               NeedTex:=False;
             end;
 
@@ -1895,14 +1838,6 @@ begin
             begin
               with VList[I] do
               begin
-                {$IFDEF DebugSOFTLIMITS}
-                if x<LocalViewRectLeft   then Raise InternalE('N:LocalViewRectLeft');
-                if y<LocalViewRectTop    then Raise InternalE('N:LocalViewRectTop');
-                if x>LocalViewRectRight  then Raise InternalE('N:LocalViewRectRight');
-                if y>LocalViewRectBottom then Raise InternalE('N:LocalViewRectBottom');
-                if oow<Minoow-1E-8 then Raise InternalE('N:Minoow');
-                if oow>Maxoow+1E-8 then Raise InternalE('N:Maxoow');
-                {$ENDIF}
                 x:=x-VertexSnapper1;
                 y:=y-VertexSnapper1;
                 tmuvtx[0].oow:=1.0;
@@ -1922,18 +1857,10 @@ begin
            {grDrawPolygonVertexList(N, VList[0]);}
             for I:=1 to N-2 do
             begin
-              {$IFDEF DebugLOG}
-              LogTriangle(LogS, VList[0], VList[I], VList[I+1]);
-              LogS:='..';
-              {$ENDIF}
               if {Abs((VList[I+1].x-VList[0].x)*(VList[I].y-VList[0].y)
                     -(VList[I+1].y-VList[0].y)*(VList[I].x-VList[0].x))
                > MinTriangleArea2} True then
-                grDrawTriangle(VList[0], VList[I], VList[I+1])
-              else
-              begin
-                {$IFDEF DebugLOG} LogS:=LogS+' dropped'; {$ENDIF}
-              end;
+                grDrawTriangle(VList[0], VList[I], VList[I+1]);
             end;
           end;
         end;
