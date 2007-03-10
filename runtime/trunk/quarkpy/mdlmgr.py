@@ -299,6 +299,9 @@ class ModelLayout(BaseLayout):
         except:
             pass
 
+        if saveskin is not None and comp.currentskin != saveskin:
+            comp.currentskin = saveskin
+
         try:
             from mdlhandles import HoldObject
             if (HoldObject is None or HoldObject == self.explorer.uniquesel) or currentview.info["viewname"] != "skinview":
@@ -311,11 +314,11 @@ class ModelLayout(BaseLayout):
         except:
             pass
 
-        if comp != self.editor.Root.currentcomponent:
-            self.reset()
-        self.editor.Root.setcomponent(comp)
-        if saveskin is not None and comp.currentskin != saveskin:
-            comp.currentskin = saveskin
+     #   if comp != self.editor.Root.currentcomponent:
+     #       self.reset()
+     #   self.editor.Root.setcomponent(comp)
+     #   if saveskin is not None and comp.currentskin != saveskin:
+     #       comp.currentskin = saveskin
 
     def selectcgroup(self, group):
         "This is when you select a particular item of a component group 'Skins', 'Frames' or 'Skeleton' in the Tree-view."
@@ -346,7 +349,7 @@ class ModelLayout(BaseLayout):
 
     def selchange(self):
         "This completes what ever selection def you are using above."
-        global startup, saveskin
+        global startup
 
         fs = self.explorer.uniquesel
         if fs is not None:
@@ -396,6 +399,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.19  2007/03/10 00:03:27  cdunde
+#Start of code to retain selection in Model Editor when making a Skin-view drag.
+#
 #Revision 1.18  2007/03/04 19:39:31  cdunde
 #To re-fix Model editor multiple model skin selection that got broken.
 #
