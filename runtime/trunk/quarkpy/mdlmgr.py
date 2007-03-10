@@ -219,7 +219,6 @@ class ModelLayout(BaseLayout):
                                                      ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
                                                      ### Commenting out due to conflict but possible future use.
      #   self.skinview.info = None
-
         slist = self.getskin()  ### something missing here
         if self.editor.Root.currentcomponent.currentskin is None:
             if startup == 1:
@@ -233,7 +232,7 @@ class ModelLayout(BaseLayout):
                ### But only if another component was previously selected to avoid slow down for unnecessary updating.
             component = self.componentof(slist[0])
             if startup == 1 and self.editor.Root.currentcomponent.currentskin == slist[0]:
-               return
+                return
             else:
                 self.editor.Root.currentcomponent = component
 
@@ -290,6 +289,28 @@ class ModelLayout(BaseLayout):
 
     def selectcomponent(self, comp):
         "This is when you select a particular 'Component' or any 'Group' within it in the Tree-view."
+
+        from qbaseeditor import currentview
+        try:
+            slist = self.getskin()
+            skin = slist[0]
+            if skin is not None and skin is not comp.currentskin:
+                comp.currentskin = skin
+        except:
+            pass
+
+        try:
+            from mdlhandles import HoldObject
+            if (HoldObject is None or HoldObject == self.explorer.uniquesel) or currentview.info["viewname"] != "skinview":
+                HoldObject = None
+            else:
+                self.editor.layout.explorer.sellist = [HoldObject]
+                self.editor.layout.explorer.selchanged()
+                HoldObject = None
+                return
+        except:
+            pass
+
         if comp != self.editor.Root.currentcomponent:
             self.reset()
         self.editor.Root.setcomponent(comp)
@@ -375,6 +396,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.18  2007/03/04 19:39:31  cdunde
+#To re-fix Model editor multiple model skin selection that got broken.
+#
 #Revision 1.17  2007/01/30 06:48:43  cdunde
 #To fix model vertex guide drag lines not being drawn when editor is first opened.
 #

@@ -33,6 +33,7 @@ skinviewdraglines = 0
 mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
+HoldObject = None
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -182,7 +183,11 @@ class VertexHandle(qhandles.GenericHandle):
   #      editor = mapeditor()
 
 
+  #  For setting stuff up at the end of a drag
+  #
   #  def ok(self, editor, undo, old, new):
+  #  def ok(self, editor, x, y, flags):
+  #      undo=quarkx.action()
   #      editor.ok(undo, self.undomsg)
 
 
@@ -209,9 +214,82 @@ class SkinHandle(qhandles.GenericHandle):
  # def start_drag(self, view, x, y):
 
   def ok(self, editor, undo, old, new):
-      undo.ok(editor.Root, self.undomsg) ### editor.Root changes uniquesel to the component, DON"T WNAT THAT
+      global HoldObject
 
-  
+      #HoldObject = editor.layout.explorer.uniquesel
+      #ParentNames = []
+      #for x in range(len(editor.layout.explorer.sellist)):
+          #HoldObject = editor.layout.explorer.sellist[x]
+          #ParentNames[x] = [HoldObject.name]
+          #while HoldObject.parent is not None:
+              #HoldObject = HoldObject.parent
+              #ParentNames[x].append(HoldObject.name)
+      #HoldObject = editor.layout.explorer.sellist
+
+      #DANIELPHAROS: BUSY ON THE LIST CODE HERE!
+
+      HoldObject = editor.layout.explorer.uniquesel
+      if HoldObject is None:
+          Expanded = False
+          ParentNames = []
+      else:
+          if HoldObject.flags & 8:
+              Expanded = True
+          else:
+              Expanded = False
+          ParentNames = [HoldObject.name]
+          while HoldObject.parent is not None:
+              HoldObject = HoldObject.parent
+              ParentNames.append(HoldObject.name)
+
+      undo.ok(editor.Root, self.undomsg) ### editor.Root changes uniquesel to the component, WE DO NOT WANT THAT
+
+   # WORKS   editor.layout.explorer.uniquesel = editor.Root.findname("teeth:mc").dictitems["Skeleton:bg"]
+      #editor.layout.explorer.uniquesel = editor.Root.findname(ParentName).dictitems[HoldName]
+
+      HoldObject = editor.Root
+      ParentNames.reverse()
+  #    print "mdlhandles line 253 ParentNames",ParentNames
+  #    print "mdlhandles line 254 HoldObject",HoldObject.name
+      if len(ParentNames) == 0:
+          EditorRoot = 0
+      else:
+          EditorRoot = ParentNames.index(HoldObject.name)
+  #    print "mdlhandles line 259 HoldObject",EditorRoot
+      
+  #    print len(ParentNames)-EditorRoot-1
+      for x in range(len(ParentNames)-EditorRoot-1):
+  #        print "BEFORE: ",
+  #        print HoldObject,
+  #        print HoldObject.name,
+  #        print x+EditorRoot,
+  #        print ParentNames[EditorRoot+x+1]
+          if x+EditorRoot == 1:
+              HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
+          elif x+EditorRoot == 2:
+              HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
+          elif x+EditorRoot == 3:
+              HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
+          if (x < len(ParentNames)-EditorRoot-2):
+              editor.layout.explorer.expand(HoldObject)
+  #        print ""
+  #        print "AFTER: ",
+  #        print HoldObject,
+  #        print HoldObject.name,
+  #        print x+EditorRoot,
+  #        print "mdlhandles line 281 ParentNames",ParentNames[EditorRoot+x+1]
+  #        print ""
+  #        print ""
+  #        print ""
+      
+      if (Expanded == True):
+          editor.layout.explorer.expand(HoldObject)
+     ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
+     ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
+     # editor.layout.explorer.sellist = [HoldObject]
+  #    print "mdlhandles line 289 [HoldObject]",HoldObject.name
+
+
   def draw(self, view, cv, draghandle=None):
       editor = mapeditor()
 
@@ -737,6 +815,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.26  2007/03/04 19:38:52  cdunde
+#To redraw handles when LMB is released after rotating model in Model Editor 3D views.
+#To stop unneeded redrawing of handles in other views
+#
 #Revision 1.25  2007/02/20 01:33:59  cdunde
 #To stop errors if model component is hidden but shown in Skin-view.
 #
