@@ -599,8 +599,9 @@ class BaseEditor:
                     self.dragobject.ok(self, x, y, flags)
                     self.dragobject = None
 
-                    if flags == 2056:
-                        return
+                    if isinstance(self, mdleditor.ModelEditor):
+                        if flags == 2056:
+                            return
         #
         # Are we simply moving the mouse over the view ?
         #
@@ -762,7 +763,6 @@ class BaseEditor:
                                 pass
                             else:
                                 if (flagsmouse == 528 or flagsmouse == 1040):
-                                    print "qbaseeditor line 834 "
                                     if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
                                         pass
                                     else:
@@ -988,6 +988,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.31  2007/03/04 20:15:15  cdunde
+#Missed items in last update.
+#
 #Revision 1.30  2007/03/04 19:38:52  cdunde
 #To redraw handles when LMB is released after rotating model in Model Editor 3D views.
 #To stop unneeded redrawing of handles in other views
