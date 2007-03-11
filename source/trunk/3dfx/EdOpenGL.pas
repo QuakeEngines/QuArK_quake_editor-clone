@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2007/03/01 17:36:54  danielpharos
+Stopped many redundant calls from being made when moving the camera. Should take care of some weird problems, and be faster too.
+
 Revision 1.46  2007/02/27 21:20:08  danielpharos
 Fixed a huge slowdown in the rendering process.
 
@@ -2068,6 +2071,7 @@ begin
       FirstItem:=true;
       LargestDistance:=-1;
       Surf2:=PList^.Surf;
+      CurrentSurf:=nil;
       while Surf2<SurfEnd do
       begin
         with Surf2^ do
@@ -2093,6 +2097,8 @@ begin
             Inc(PChar(Surf2), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
         end;
       end;
+      if CurrentSurf=nil then
+        raise InternalE('CurrentSurf is nil!');
       CurrentSurf^.TransparentDrawn:=true;
     end
     else
