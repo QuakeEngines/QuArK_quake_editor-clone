@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.311  2007/03/01 17:34:11  danielpharos
+//Changed the default gamma, and did a bit of formatting to a few hints in the OpenGL section.
+//
 //Revision 1.310  2007/02/28 08:51:16  danielpharos
 //Forgot to add the default settings for png images.
 //
@@ -1545,7 +1548,6 @@ QQRKSRC1
         Game = "Half-Life2"
         Code = "k" // Hardcoded value in Setup.PAS
 
-
         SteamFSModule = ""
         SteamTier0Module = ""
         SteamVstdlibModule = ""
@@ -1577,7 +1579,6 @@ QQRKSRC1
         BuildArgs5 = ""
         BuildCheck5= ""
 
-
         DefaultTexture = "Dev/dev_measuregeneric01b"
         DefaultTextureTrigger = "Tools/toolstrigger"
         DefaultTextureOrigin = "Tools/toolsorigin"
@@ -1592,11 +1593,9 @@ QQRKSRC1
         TextureWriteSubFormatA = "15"
         TexturesPath = "materials/"
 
-
         MapHoles = ".pts"
        // ExtraCmdLine = "-game %s"
         RunMapCmdLine = " +map %s"
-
 
         PakExt = ".gcf"
         PakFormat = "*.gcf"
@@ -6137,7 +6136,7 @@ QQRKSRC1
       Lib: = {
         Txt="Select 3D viewer"
         Typ="CL"
-        Items  = "Software 3D" $0D "Glide (3DFX)" $0D "OpenGL" $0D "DirectX"
+        Items  = "Software 3D" $0D "Glide (3DFX)" $0D "OpenGL" $0D "DirectX (Direct3D)"
         Values = "qrksoftg.dll" $0D "glide2x.dll" $0D "OpenGL32.dll" $0D "d3d9.dll"
         Hint="see also the viewers configuration pages"
       }
