@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2007/02/02 21:15:56  danielpharos
+The fatal crash error box now is has the critical appearance it deserves
+
 Revision 1.42  2007/01/31 15:03:41  danielpharos
 Fix a possible undefined return value
 
@@ -709,7 +712,7 @@ begin
        Exit;
       end;
     end;
-   aLog(LOG_PYTHONSOURCE,'Making image '+Filename);
+   Log(LOG_PYTHON,'Making image '+Filename);
    Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio);
   finally
    Bitmap.Free;
@@ -2471,7 +2474,7 @@ begin
     P:=PyString_AsString(Args);
     if P=Nil then
       Exit;
-    aLog(LOG_PYTHONSOURCE, P^);
+    Log(LOG_PYTHON, P^);
     Result:=PyNoResult;
   except
     EBackToPython;

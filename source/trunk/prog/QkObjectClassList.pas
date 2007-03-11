@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/02/07 18:48:34  danielpharos
+Fixes for memory leaks
+
 Revision 1.8  2007/02/07 14:09:22  danielpharos
 Fix a few Range Check errors
 
@@ -91,7 +94,7 @@ begin
     QObjectClassList:=TStringList.Create;
     QObjectClassList.Sorted:=True;
   end;
-  LogEx(LOG_VERBOSE,'RegisterQObject %s',[Q.TypeInfo]);
+  Log(LOG_VERBOSE,'RegisterQObject %s',[Q.TypeInfo]);
 
   QObjectClassList.AddObject(Prior+Q.TypeInfo, TObject(Q));
 end;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2007/03/11 10:59:52  danielpharos
+Fixed a warning during compiling.
+
 Revision 1.47  2007/03/01 17:36:54  danielpharos
 Stopped many redundant calls from being made when moving the camera. Should take care of some weird problems, and be faster too.
 
@@ -288,7 +291,7 @@ var
   I, J: Integer;
   S: String;
 begin
-  //LogEx('EdOpenGL #%d %s', [Pos, Format(Text, Args)]); //Decker 2003.03.14
+  //Log('EdOpenGL #%d %s', [Pos, Format(Text, Args)]); //Decker 2003.03.14
   if HackIgnoreErrors then
     Exit;
   S:='';

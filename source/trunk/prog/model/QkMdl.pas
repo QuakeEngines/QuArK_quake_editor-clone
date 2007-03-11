@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/02/26 22:25:11  danielpharos
+Deleted an obsolete Exit.
+
 Revision 1.18  2006/04/06 19:44:56  nerdiii
 Cleaned some compiler hints
 
@@ -293,12 +296,12 @@ begin
           SetLength(S, Length(Spec1) + (mesh.numtris * Sizeof(TComponentTris)));
           PChar(CTris) := PChar(S) + Length(Spec1);
           for ii := 1 to mesh.numtris do begin
-            //          LogEx('Triangle %d = {',[ii]);
+            //          Log('Triangle %d = {',[ii]);
             for jj := 0 to 2 do begin
               CTris^[jj].VertexNo := atri[ii][jj].vertindex;
               CTris^[jj].S := atri[ii][jj].S;
               CTris^[jj].T := atri[ii][jj].T;
-              //            LogEx('  (VertexNo: %d, S:%d, T:%d)',[CTris^[jj].VertexNo, CTris^[jj].S, CTris^[jj].T]);
+              //            Log('  (VertexNo: %d, S:%d, T:%d)',[CTris^[jj].VertexNo, CTris^[jj].S, CTris^[jj].T]);
             end;
             //          Log('}{');
             inc(CTris);

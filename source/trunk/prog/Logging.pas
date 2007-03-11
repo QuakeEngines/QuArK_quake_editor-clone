@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/03/05 01:00:43  danielpharos
+Found another place where NoShare was used. Commented out, and added a reference in QkObjects.
+
 Revision 1.15  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -70,24 +73,29 @@ unit Logging;
 
 interface
 
-uses Sysutils, Forms;
+uses Windows, Sysutils, Forms;
 
-Procedure aLog(logger: integer; s: string);
-Procedure aLogEx(logger: integer; s: string; args: array of const);
+type
+  TLogName = (LOG_DEFAULT, LOG_PASCAL, LOG_PYTHON, LOG_SYS, LOG_DEBUG);
+
+Procedure aLog(Logger: TLogName; s: string);  //Don't call this one from the outside
 Procedure CloseLogFile;
 Procedure OpenLogFile;
 
 Procedure Log(s: string); overload;
-Procedure Log(level: integer ;s: string); overload;
-Procedure LogEx(s: string; args: array of const);overload;
-Procedure LogEx(level: integer ;s: string; args: array of const); overload;
+Procedure Log(level: cardinal; s: string); overload;
+Procedure Log(s: string; args: array of const); overload;
+Procedure Log(level: cardinal; s: string; args: array of const); overload;
+Procedure Log(Logger: TLogName; s: string); overload;
+Procedure Log(Logger: TLogName; level: cardinal; s: string); overload;
+Procedure Log(Logger: TLogName; s: string; args: array of const); overload;
+Procedure Log(Logger: TLogName; level: cardinal; s: string; args: array of const); overload;
 
 const
-  LOG_PASCALSOURCE = 0;
-  LOG_PYTHONSOURCE = 1;
   LOG_FILENAME = 'QUARK.LOG';
   LOG_PATCHFILE = 'PATCH.TXT';
 
+  LOG_ALWAYS = 0;
   LOG_CRITICAL = 10;
   LOG_WARN = 20;
   LOG_INFO = 30;
@@ -100,7 +108,9 @@ uses QkObjects, Setup, QkApplPaths, SystemDetails;
 var
   LogFile: TextFile;
   LogOpened: boolean;
-  LogLevel: Integer;
+  LogFilename: string;
+  LogPatchname: string;
+  LogLevel: cardinal;
   LogLevelEnv: string;
 
 function GetPatchVersion: String;
@@ -109,7 +119,7 @@ var
   filename: string;
 begin
   SetApplicationPath(ExtractFilePath(Application.Exename));
-  filename:=GetApplicationPath()+LOG_PATCHFILE;
+  filename:=GetApplicationPath()+LogPatchname;
   if fileexists(filename) then
   begin
   {$I-}
@@ -133,12 +143,13 @@ begin
     exit;
   {$I-}
   SetApplicationPath(ExtractFilePath(Application.Exename));
-  AssignFile(LogFile, GetApplicationPath()+LOG_FILENAME);
+  AssignFile(LogFile, GetApplicationPath()+LogFilename);
   rewrite(LogFile);
+  {$I+}
   LogOpened:=true;
-  LogEx('QuArK started at %s',[DateTimeToStr(now)]);
-  LogEx('QuArK version is %s',[QuarkVersion+GetPatchVersion]);
-  LogEx('Loglevel is %d',[LogLevel]);
+  Log(LOG_PASCAL, 'QuArK started at %s',[DateTimeToStr(now)]);
+  Log(LOG_PASCAL, 'QuArK version is %s',[QuarkVersion+GetPatchVersion]);
+  Log(LOG_PASCAL, 'Loglevel is %d',[LogLevel]);
   (* DanielPharos: OLD CODE + NEW CODE
   {$IFDEF NoShare}
   Log('Spec Mem Sharing Off');
@@ -147,65 +158,97 @@ begin
   {$ENDIF}
   *)
   LogSystemDetails;
-  {$I+}
 end;
 
-Procedure aLog(logger: integer; s: string);
+Procedure aLog(logger: TLogName; s: string);
 begin
   if not LogOpened then
     OpenLogFile;
   case logger of
-    LOG_PASCALSOURCE: s:='QuArKLog> '+s;
-    LOG_PYTHONSOURCE: s:='PythonLog> '+s;
+    LOG_DEFAULT: s:='Log> '+s;
+    LOG_PASCAL: s:='QuArKLog> '+s;
+    LOG_PYTHON: s:='PythonLog> '+s;
+    LOG_SYS: s:='SysLog> '+s;
+    LOG_DEBUG: s:='DebugLog> '+s;
   end;
   {$I-}
-  WriteLn(LogFile, s); Flush(LogFile);
+  WriteLn(LogFile, s);
+  Flush(LogFile);
   {$I+}
-end;
-
-Procedure aLogEx(logger: integer; s: string; args: array of const);
-begin
-  aLog(logger, Format(s,args));
-end;
-
-Procedure LogEx(s: string; args: array of const);
-begin
-  aLogEx(LOG_PASCALSOURCE, s, args);
-end;
-
-Procedure LogEx(level: integer;s: string; args: array of const);
-begin
-  if Loglevel>=level then
-    aLogEx(LOG_PASCALSOURCE, s, args);
-end;
-
-Procedure Log(level: integer;s: string);
-begin
-  if Loglevel>=level then
-    aLog(LOG_PASCALSOURCE, s);
 end;
 
 Procedure Log(s: string);
 begin
-  aLog(LOG_PASCALSOURCE, s);
+  aLog(LOG_DEFAULT, s);
+end;
+
+Procedure Log(level: cardinal; s: string);
+begin
+  if level<=Loglevel then
+    aLog(LOG_DEFAULT, s);
+end;
+
+Procedure Log(s: string; args: array of const);
+begin
+  aLog(LOG_DEFAULT, format(s, args));
+end;
+
+Procedure Log(level: cardinal; s: string; args: array of const);
+begin
+  if level<=Loglevel then
+    aLog(LOG_DEFAULT, format(s, args));
+end;
+
+Procedure Log(Logger: TLogName; s: string);
+begin
+  aLog(Logger, s);
+end;
+
+Procedure Log(Logger: TLogName; level: cardinal; s: string);
+begin
+  if level<=Loglevel then
+    aLog(Logger, s);
+end;
+
+Procedure Log(Logger: TLogName; s: string; args: array of const);
+begin
+  aLog(Logger, format(s, args));
+end;
+
+Procedure Log(Logger: TLogName; level: cardinal; s: string; args: array of const);
+begin
+  if level<=Loglevel then
+    aLog(Logger, format(s, args));
 end;
 
 Procedure CloseLogFile;
 begin
   if not LogOpened then
     exit;
-  aLogEx(LOG_PASCALSOURCE, 'QuArK closed at %s',[DateTimeToStr(now)]);
+  Log(LOG_PASCAL, format('QuArK closed at %s',[DateTimeToStr(now)]));
   {$I-}
   CloseFile(LogFile);
-  LogOpened:=false;
   {$I+}
+  LogOpened:=false;
 end;
 
 initialization
   LogOpened:=False;
-  LogLevel:=20;
+  LogFilename:=GetEnvironmentVariable('QUARK_LOG_FILENAME');
+  if LogFilename='' then
+    LogFilename:=LOG_FILENAME
+  else
+    Windows.MessageBox(0, 'Environmental variable QUARK_LOG_FILENAME found. QuArK will use its value.', 'Environmental variable found', MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
+  LogPatchname:=GetEnvironmentVariable('QUARK_LOG_PATCHNAME');
+  if LogPatchname='' then
+    LogPatchname:=LOG_PATCHFILE
+  else
+    Windows.MessageBox(0, 'Environmental variable QUARK_LOG_PATCHNAME found. QuArK will use its value.', 'Environmental variable found', MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
   LogLevelEnv:=GetEnvironmentVariable('QUARK_LOG_LEVEL');
-  if LogLevelEnv<>'' then
+  if LogLevelEnv='' then
+    LogLevel:=20
+  else
+    Windows.MessageBox(0, 'Environmental variable QUARK_LOG_LEVEL found. QuArK will use its value.', 'Environmental variable found', MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
     try
       LogLevel:=StrToInt(LogLevelEnv);
     except

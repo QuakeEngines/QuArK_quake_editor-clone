@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2006/01/30 18:39:58  cdunde
+To remove console print statement.
+
 Revision 1.13  2006/01/28 23:00:04  cdunde
 Fixed source code to handle multiple numeric input properly
 and added vmt files that could not display vtf because of this.
@@ -629,7 +632,7 @@ begin
     1:
     begin  { as stand-alone file }
       try
-        LogEx(LOG_VERBOSE,'load material %s',[self.name]);
+        Log(LOG_VERBOSE,'load material %s',[self.name]);
         SetLength(Data, FSize);
         Source:=PChar(Data);
         F.ReadBuffer(Source^, FSize);  { read the whole file at once }
@@ -645,7 +648,7 @@ begin
         on E: Exception do
         begin
           ErrorText:= E.Message;
-          LogEx(LOG_WARN,'load material %s err %s',[self.Name,E.Message]);
+          Log(LOG_WARN,'load material %s err %s',[self.Name,E.Message]);
         end;
       end;
     end;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2007/02/26 22:30:26  danielpharos
+Fixed an access violation when trying to save MD3 files.
+
 Revision 1.27  2007/02/26 22:25:44  danielpharos
 Made the MD3 file loading a little bit more standard-compatible.
 
@@ -760,7 +763,7 @@ function QMd3File.AttachModelToTag(Tag_Name: string; model: QModelFile): boolean
 var
   other_root: QModelRoot;
 begin
-//  Logex('attaching %s to %s',[self.name, model.name]);
+//  Log('attaching %s to %s',[self.name, model.name]);
   model.acces;
   other_root:=model.getRoot;
   other_root.Specifics.Values['linked_to']:=tag_name;

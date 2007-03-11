@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/02/02 10:07:07  danielpharos
+Fixed a problem with the dll loading not loading tier0 correctly
+
 Revision 1.13  2007/02/02 00:51:02  danielpharos
 The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
 
@@ -156,7 +159,7 @@ var
 
 procedure Fatal(x:string);
 begin
-  LogEx(LOG_CRITICAL,'init steam %s',[x]);
+  Log(LOG_CRITICAL,'init steam %s',[x]);
   Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise InternalE(x);
 end;

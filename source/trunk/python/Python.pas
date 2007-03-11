@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2007/03/05 00:43:09  danielpharos
+Updated the Python-code to use the 2.3 api, and put dynamic Python DLL loading code back in.
+
 Revision 1.22  2007/01/31 15:05:20  danielpharos
 Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
 
@@ -583,9 +586,9 @@ begin
   end;
   Py_Initialize;
   s:=Py_GetVersion;
-  aLog(LOG_PYTHONSOURCE,'Version: '+s);
-  aLog(LOG_PYTHONSOURCE,'DLL: '+'dlls/'+PythonDll);  {DanielPharos: We should (somehow) retrieve the actual filename of the DLL loaded...}
-  aLog(LOG_PYTHONSOURCE,'');
+  Log(LOG_PYTHON,'Version: '+s);
+  Log(LOG_PYTHON,'DLL: '+'dlls/'+PythonDll);  {DanielPharos: We should (somehow) retrieve the actual filename of the DLL loaded...}
+  Log(LOG_PYTHON,'');
   Result:=1;
 
  { tiglari:

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2007/03/10 22:02:08  danielpharos
+Some changes to OS detection. Also added a few CPU vendors. Removed some useless calls.
+
 Revision 1.23  2007/03/05 00:41:57  danielpharos
 Updated OS checks. All OS's of today should be detected now.
 
@@ -1930,7 +1933,7 @@ begin
   GetDirectxDetails(s);
   for i:=0 to s.count-1 do
   begin
-    aLog(-1,'SysLog> '+s.strings[i]);
+    Log(LOG_SYS, s.strings[i]);
   end;
   s.free;
 end;

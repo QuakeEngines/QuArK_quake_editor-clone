@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/02/01 23:13:53  danielpharos
+Fixed a few copyright headers
+
 Revision 1.12  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -946,7 +949,7 @@ var
  ModeJeu: Char;
  Source: String;
 begin
- LogEx(LOG_VERBOSE,'load vmf file %s',[self.name]);
+ Log(LOG_VERBOSE,'load vmf file %s',[self.name]);
  case ReadFormat of
   1: begin  { as stand-alone file }
       SetLength(Source, FSize);
