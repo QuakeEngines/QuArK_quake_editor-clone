@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2007/02/26 22:24:33  danielpharos
+Fixed a typo.
+
 Revision 1.25  2007/02/20 14:57:02  danielpharos
 Small clean-up of the code.
 
@@ -134,9 +137,9 @@ var
 
 procedure Fatal(x:string);
 begin
-  LogEx(LOG_CRITICAL,'load vtf %s',[x]);
+  Log(LOG_CRITICAL,'load vtf %s',[x]);
   Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  Raise InternalE(x);
+  Raise Exception.Create(x);
 end;
 
 class function QVTF.TypeInfo: String;
@@ -169,12 +172,12 @@ var
   VTFImage: Cardinal;
   ImageFormat: VTFImageFormat;
   Width, Height: Cardinal;
-  NumberOfPixels: Cardinal;
+  NumberOfPixels: Integer;
   RawData, RawData2: PByte;
   HasAlpha: Boolean;
   V: array[1..2] of Single;
 begin
-  LogEx(LOG_VERBOSE,'load vtf %s',[self.name]);;
+  Log(LOG_VERBOSE,'load vtf %s',[self.name]);;
   if not VTFLoaded then
   begin
     if not LoadVTF then
@@ -189,13 +192,19 @@ begin
       F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
 
       if vlCreateImage(@VTFImage)=false then
-        Fatal('vlCreateImage');
+        Fatal('Unable to load VTF file. Call to vlCreateImage failed.');
 
       if vlBindImage(VTFImage)=false then
-        Fatal('vlBindImage');
+      begin
+        vlDeleteImage(VTFImage);
+        Fatal('Unable to load VTF file. Call to vlBindImage failed.');
+      end;
 
       if vlImageLoadLump(Pointer(RawBuffer), Length(RawBuffer), false)=false then
-        Fatal('vlImageLoadLump');
+      begin
+        vlDeleteImage(VTFImage);
+        Fatal('Unable to load VTF file. Call to vlImageLoadLump failed. Please make sure the file is a valid VTF file, and not damaged or corrupt.');
+      end;
 
       HasAlpha := (vlImageGetFlags() and (TEXTUREFLAGS_ONEBITALPHA or TEXTUREFLAGS_EIGHTBITALPHA))<>0;
       if HasAlpha then
@@ -204,6 +213,12 @@ begin
         ImageFormat:=IMAGE_FORMAT_RGB888;
       Width:=vlImageGetWidth();
       Height:=vlImageGetHeight();
+      //DanielPharos: 46340 squared is just below the integer max value.
+      if (Width>46340) or (Height>46340) then
+      begin
+        vlDeleteImage(VTFImage);
+        Fatal('Unable to load VTF file. Picture is too large.');
+      end;
       NumberOfPixels:=Width * Height;
       V[1]:=Width;
       V[2]:=Height;
@@ -211,7 +226,10 @@ begin
       GetMem(RawData,vlImageComputeImageSize(Width, Height, 1, 1, ImageFormat));
       RawData2:=vlImageGetData(0, 0, 0, 0);
       if vlImageConvert(RawData2, RawData, Width, Height, vlImageGetFormat(), ImageFormat)=false then
-        Fatal('vlImageConvert');
+      begin
+        vlDeleteImage(VTFImage);
+        Fatal('Unable to load VTF file. Call to vlImageConvert failed.');
+      end;
 
       {allocate quarks image buffers}
       ImgData:=ImageSpec;
@@ -306,7 +324,7 @@ var
   TexFormat, ImageFormat: VTFImageFormat;
   VTFImage, OutputSize: Cardinal;
 begin
-  LogEx(LOG_VERBOSE,'save vtf %s',[self.name]);
+  Log(LOG_VERBOSE,'save vtf %s',[self.name]);
   if not VTFLoaded then
   begin
     if not LoadVTF then

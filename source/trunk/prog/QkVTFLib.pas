@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2007/02/26 23:01:22  danielpharos
+Added an additional warning message for misconfigured HL2 settings, and the same message will warn you when you try to load vtf-files in non-HL2 mode.
+
 Revision 1.2  2007/02/19 21:42:07  danielpharos
 Fixed the VTF SaveFile. VTF file can now be saved properly!
 
@@ -337,9 +340,9 @@ var
 
 procedure Fatal(x:string);
 begin
-  LogEx(LOG_CRITICAL,'load vtf %s',[x]);
+  Log(LOG_CRITICAL,'load vtflib %s',[x]);
   Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  Raise InternalE(x);
+  Raise Exception.Create(x);
 end;
 
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
@@ -355,8 +358,8 @@ var
 begin
   if TimesLoaded=0 then
   begin
-    Tier0Module:=SetupGameSet.Specifics.Values['SteamTier0Module'];
-    VstdlibModule:=SetupGameSet.Specifics.Values['SteamVstdlibModule'];
+    Tier0Module:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamTier0Module'];
+    VstdlibModule:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamVstdlibModule'];
     if ((Tier0Module<>curTier0Module) and (curTier0Module<>'')) or ((VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'')) then
       UnloadVTF;
     if (Tier0Module='') then
@@ -412,6 +415,8 @@ begin
       if vlInitialize=false then
         Fatal('Unable to initialize VTFLib!');
     end;
+    
+    TimesLoaded := 1;
     Result:=true;
   end
   else
