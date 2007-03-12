@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2007/03/12 20:26:18  danielpharos
+Made the VTF file loading more crash-safe. Also, changing the settings during runtime should be better handled.
+
 Revision 1.5  2007/03/12 13:22:21  danielpharos
 Now able to load VTF file when not in HL2 mode (actually, since last change, but I forgot to mention that).
 
@@ -538,6 +541,7 @@ begin
         LogError('Unable to load untier0.dll');
       Htier0 := 0;
     end;
+    TimesLoaded := 0;
   end
   else
     TimesLoaded := TimesLoaded - 1;
