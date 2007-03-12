@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.9  2005/10/15 01:00:30  cdunde
+//To reinstate headers and history
+//
 //Revision 1.6  2004/12/21 04:49:32  cdunde
 //Weapon entities added by raginggoblin12.
 //
@@ -860,7 +863,31 @@ QQRKSRC1
         typ = "X1"
         cap = "INDESTRUCTABLE"
       }
-    }
+      targetname: =
+      {
+      Txt = "&"
+      }
+      target: =
+      {
+      Txt = "&"
+      }
+      barreltype: =
+        {
+        Txt = "&"
+        Hint = $0D
+        Typ="C"
+          items =
+          "water" $0D
+          "oil" $0D
+          "gas" $0D
+          "empty" $0D
+          values =
+          "water" $0D
+          "oil" $0D
+          "gas" $0D
+          "empty" $0D
+        }
+      }
     info_splinepath:form =
     {
       bbox = '-16 -16 -16 16 16 16'
@@ -879,6 +906,7 @@ QQRKSRC1
        "Valid values are from 0 - ?. Default is 0"$0D"0: wooden crate 32 units"
        " to a side"$0D"1: wooden crate 64 units to a side"$0D"2: cardboard cra"
        "te 16 units to a side"$0D"3: cardboard crate 32 units to a side"
+
       spawnflags: =
       {
         typ = "X1"
@@ -889,6 +917,24 @@ QQRKSRC1
         typ = "X2"
         cap = "NOTSTACKEDON"
       }
+      targetname: =
+      {
+      Txt = "&"
+      }
+      target: =
+      {
+      Txt = "&"
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "Sets the crates health. Default is 300."
+      }
+      debristype: =
+      {
+      Txt = "&"
+      Hint = "Sets the type of debris from the crate. Default is 0."
+      }	
     }
     func_rotatingdoor:form =
     {
@@ -960,6 +1006,82 @@ QQRKSRC1
         typ = "X128"
         cap = "TARGETED"
       }
+      targetname: = 
+      {
+      Txt = "&"
+      Hint = "If set, no touchfield will be spawned and a trigger or " $0D
+      "button activates the door."
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      message: =
+      {
+      Txt = "&"
+      Hint = "This text is printed when the door is touched, but"$0D 
+      "only if it is a trigger door and hasn't been fired yet."
+      }
+      openangle: =
+      {
+      Txt = "&"
+      Hint = "How wide to open the door."
+      }
+      angle: =
+      {
+      Txt = "&"
+      Hint = "Determines the opening direction."
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "If set, the door must be shot open."
+      }
+      time: =
+      {
+      Txt = "&"
+      Hint = "Move time (default is 0.3)."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Time to wait before returning." $0D
+      "3 is default, -1 = never return."
+      }
+      dmg: =
+      {
+      Txt = "&"
+      Hint = "Damage to inflict when blocked."
+      }
+      alwaysaway: =
+      {
+      Txt = "&"
+      Hint = "Makes the door always open away from the opener."
+      }
+      sound_open: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "starts opening (default is global door_wood open)."
+      }
+      sound_close: = 
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "starts closing (default is global door_wood open)."
+      }
+      sound_message: =
+      {
+      Txt = "&"
+      Hint = "Specify the sounds that is played when displaying a message."
+      }
+      sound_locked: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door is locked" $0D
+      "(default is global door_wood_locked)."
+      }
     }
     func_door:form =
     {
@@ -1025,6 +1147,77 @@ QQRKSRC1
       {
         typ = "X128"
         cap = "TARGETED"
+      }
+      targetname: = 
+      {
+      Txt = "&"
+      Hint = "If set, no touchfield will be spawned and a trigger or " $0D
+      "button activates the door."
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      message: =
+      {
+      Txt = "&"
+      Hint = "This text is printed when the door is touched, but"$0D 
+      "only if it is a trigger door and hasn't been fired yet."
+      }
+      angle: =
+      {
+      Txt = "&"
+      Hint = "Determines the opening direction."
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "If set, the door must be shot open."
+      }
+      time: =
+      {
+      Txt = "&"
+      Hint = "Move time (default is 0.3)."
+      }
+      lip: = 
+      {
+      Txt = "&"
+      Hint = "Lip remaining at end of move (default is 8)."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Time to wait before returning." $0D
+      "3 is default, -1 = never return."
+      }
+      dmg: =
+      {
+      Txt = "&"
+      Hint = "Damage to inflict when blocked."
+      }
+      sound_open: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "starts opening (default is global door_wood open)."
+      }
+      sound_close: = 
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "starts closing (default is global door_wood open)."
+      }
+      sound_message: =
+      {
+      Txt = "&"
+      Hint = "Specify the sounds that is played when displaying a message."
+      }
+      sound_locked: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door is locked" $0D
+      "(default is global door_wood_locked)."
       }
     }
     script_door:form =
