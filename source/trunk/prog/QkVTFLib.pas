@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2007/03/12 13:22:21  danielpharos
+Now able to load VTF file when not in HL2 mode (actually, since last change, but I forgot to mention that).
+
 Revision 1.4  2007/03/11 12:03:28  danielpharos
 Big changes to Logging. Simplified the entire thing.
 Better error-recovery, and more informative error messages.
@@ -113,8 +116,9 @@ unit QkVTFLib;
 interface
 uses Windows, SysUtils, QkObjects;
 
+function ReloadNeeded : Boolean;
 function LoadVTF : Boolean;
-procedure UnloadVTF;
+procedure UnloadVTF(ForceUnload: boolean);
 
 {-------------------}
 
@@ -340,58 +344,108 @@ var
   Htier0  : HMODULE;
   Hvstdlib  : HMODULE;
   HVTFLib  : HMODULE;
-  curTier0Module, curVstdlibModule:string;
+  curTier0Module, curVstdlibModule: string;
+  IgnoreErrorTier0Module, IgnoreErrorVstdlibModule: boolean;
+  ReloadVTF: boolean;
 
-procedure Fatal(x:string);
+procedure LogError(x:string);
 begin
   Log(LOG_CRITICAL,'load vtflib %s',[x]);
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  Raise Exception.Create(x);
+  Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
 end;
 
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/VTFLib.dll');
+     LogError('API Func "'+APIFuncname+ '" not found in dlls/VTFLib.dll');
+end;
+
+function ReloadNeeded : Boolean;
+var
+  Tier0Module, VstdlibModule: string;
+begin
+  Result:=false;
+  Tier0Module:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamTier0Module'];
+  VstdlibModule:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamVstdlibModule'];
+  if Tier0Module<>curTier0Module then
+  begin
+    IgnoreErrorTier0Module:=false;
+    ReloadVTF:=true;
+    Result:=true;
+  end;
+  if VstdlibModule<>curVstdlibModule then
+  begin
+    IgnoreErrorVstdlibModule:=false;
+    ReloadVTF:=true;
+    Result:=true;
+  end;
 end;
 
 function LoadVTF : Boolean;
-var
-  Tier0Module,VstdlibModule:string;
 begin
-  if TimesLoaded=0 then
+  if (TimesLoaded=0) or ReloadVTF then
   begin
-    Tier0Module:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamTier0Module'];
-    VstdlibModule:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamVstdlibModule'];
-    if ((Tier0Module<>curTier0Module) and (curTier0Module<>'')) or ((VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'')) then
-      UnloadVTF;
-    if (Tier0Module='') then
-      raise exception.create('Unable to retrieve the location of the tier0.dll. Please make sure the location is set correctly in the Half-Life 2 configurations.');
-    if (VstdlibModule='') then
-      raise exception.create('Unable to retrieve the location of the vstdlib.dll. Please make sure the location is set correctly in the Half-Life 2 configurations.');
-    curTier0Module:=Tier0Module;
-    curVstdlibModule:=VstdlibModule;
+    Result:=False;
+    if ReloadVTF then
+      UnloadVTF(true);
+    curTier0Module:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamTier0Module'];
+    curVstdlibModule:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamVstdlibModule'];
+    if (curTier0Module='') then
+    begin
+      if not IgnoreErrorTier0Module then
+      begin
+        LogError('Unable to retrieve the location of the tier0.dll. Please make sure the location is set correctly in the Half-Life 2 configurations.');
+        IgnoreErrorTier0Module:=true;
+      end;
+      Exit;
+    end;
+    if (curVstdlibModule='') then
+    begin
+      if not IgnoreErrorVstdlibModule then
+      begin
+        LogError('Unable to retrieve the location of the vstdlib.dll. Please make sure the location is set correctly in the Half-Life 2 configurations.');
+        IgnoreErrorVstdlibModule:=true;
+      end;
+      Exit;
+    end;
 
     if Htier0 = 0 then
     begin
-      Htier0 := LoadLibrary(PChar(Tier0Module));
+      Htier0 := LoadLibrary(PChar(curTier0Module));
       if Htier0 = 0 then
-        Fatal('Unable to load '+Tier0Module);
+      begin
+        if not IgnoreErrorTier0Module then
+        begin
+          LogError('Unable to load '+curTier0Module);
+          IgnoreErrorTier0Module:=true;
+        end;
+        Exit;
+      end;
     end;
 
     if Hvstdlib = 0 then
     begin
-      Hvstdlib := LoadLibrary(PChar(VstdlibModule));
+      Hvstdlib := LoadLibrary(PChar(curVstdlibModule));
       if Hvstdlib = 0 then
-        Fatal('Unable to load '+VstdlibModule);
+      begin
+        if not IgnoreErrorVstdlibModule then
+        begin
+          LogError('Unable to load '+curVstdlibModule);
+          IgnoreErrorVstdlibModule:=true;
+        end;
+        Exit;
+      end;
     end;
 
     if HVTFLib = 0 then
     begin
       HVTFLib := LoadLibrary('dlls/VTFLib.dll');
       if HVTFLib = 0 then
-        Fatal('Unable to load dlls/VTFLib.dll');
+      begin
+        LogError('Unable to load dlls/VTFLib.dll');
+        Exit;
+      end;
       vlGetVersion      := InitDllPointer(HVTFLib, 'vlGetVersion');
       vlInitialize      := InitDllPointer(HVTFLib, 'vlInitialize');
       vlShutdown        := InitDllPointer(HVTFLib, 'vlShutdown');
@@ -414,13 +468,20 @@ begin
       vlImageCreateDefaultCreateStructure      := InitDllPointer(HVTFLib, 'vlImageCreateDefaultCreateStructure');}
 
       if vlGetVersion<124 then
-        Fatal('VTFLib version mismatch!');
+      begin
+        LogError('VTFLib version mismatch!');
+        Exit;
+      end;
 
       if vlInitialize=false then
-        Fatal('Unable to initialize VTFLib!');
+      begin
+        LogError('Unable to initialize VTFLib!');
+        Exit;
+      end;
     end;
-    
+
     TimesLoaded := 1;
+    ReloadVTF:=false;
     Result:=true;
   end
   else
@@ -430,51 +491,56 @@ begin
   end;
 end;
 
-procedure UnloadVTF;
+procedure UnloadVTF(ForceUnload: boolean);
 begin
-  if HVTFLib <> 0 then
+  if (TimesLoaded = 1) or ForceUnload then
   begin
-    vlShutdown;
+    if HVTFLib <> 0 then
+    begin
+      vlShutdown;
 
-    if FreeLibrary(HVTFLib) = false then
-      Fatal('Unable to unload dlls/VTFLib.dll');
-    HVTFLib := 0;
+      if FreeLibrary(HVTFLib) = false then
+        LogError('Unable to unload dlls/VTFLib.dll');
+      HVTFLib := 0;
 
-    vlGetVersion      := nil;
-    vlInitialize      := nil;
-    vlShutdown        := nil;
-    vlCreateImage     := nil;
-    vlBindImage       := nil;
-    vlDeleteImage     := nil;
-    vlImageLoad       := nil;
-    vlImageLoadLump   := nil;
-    vlImageSaveLump   := nil;
-    vlImageGetFlags   := nil;
-    vlImageGetFormat  := nil;
-    vlImageGetWidth   := nil;
-    vlImageGetHeight  := nil;
-    vlImageConvert    := nil;
-    vlImageComputeImageSize    := nil;
-    vlImageGetData    := nil;
-    vlImageSetData    := nil;
-    vlImageCreate     := nil;
-{    vlImageCreateSingle        := nil;
-    vlImageCreateDefaultCreateStructure      := nil;}
-  end;
+      vlGetVersion      := nil;
+      vlInitialize      := nil;
+      vlShutdown        := nil;
+      vlCreateImage     := nil;
+      vlBindImage       := nil;
+      vlDeleteImage     := nil;
+      vlImageLoad       := nil;
+      vlImageLoadLump   := nil;
+      vlImageSaveLump   := nil;
+      vlImageGetFlags   := nil;
+      vlImageGetFormat  := nil;
+      vlImageGetWidth   := nil;
+      vlImageGetHeight  := nil;
+      vlImageConvert    := nil;
+      vlImageComputeImageSize    := nil;
+      vlImageGetData    := nil;
+      vlImageSetData    := nil;
+      vlImageCreate     := nil;
+{      vlImageCreateSingle        := nil;
+      vlImageCreateDefaultCreateStructure      := nil;}
+    end;
 
-  if Hvstdlib <> 0 then
-  begin
-    if FreeLibrary(Hvstdlib) = false then
-      Fatal('Unable to unload vstdlib.dll');
-    Hvstdlib := 0;
-  end;
+    if Hvstdlib <> 0 then
+    begin
+      if FreeLibrary(Hvstdlib) = false then
+        LogError('Unable to unload vstdlib.dll');
+      Hvstdlib := 0;
+    end;
 
-  if Htier0 <> 0 then
-  begin
-    if FreeLibrary(Htier0) = false then
-      Fatal('Unable to load untier0.dll');
-    Htier0 := 0;
-  end;
+    if Htier0 <> 0 then
+    begin
+      if FreeLibrary(Htier0) = false then
+        LogError('Unable to load untier0.dll');
+      Htier0 := 0;
+    end;
+  end
+  else
+    TimesLoaded := TimesLoaded - 1;
 end;
 
 {-------------------}

@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/03/11 12:03:28  danielpharos
+Big changes to Logging. Simplified the entire thing.
+Better error-recovery, and more informative error messages.
+
 Revision 1.26  2007/02/26 22:24:33  danielpharos
 Fixed a typo.
 
@@ -138,7 +142,7 @@ var
 procedure Fatal(x:string);
 begin
   Log(LOG_CRITICAL,'load vtf %s',[x]);
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise Exception.Create(x);
 end;
 
@@ -178,14 +182,16 @@ var
   V: array[1..2] of Single;
 begin
   Log(LOG_VERBOSE,'load vtf %s',[self.name]);;
-  if not VTFLoaded then
-  begin
-    if not LoadVTF then
-      Raise EErrorFmt(5718, [GetLastError]);
-    VTFLoaded:=true;
-  end;
   case ReadFormat of
     1: begin  { as stand-alone file }
+      if (not VTFLoaded) or ReloadNeeded then
+      begin
+        if ReloadNeeded then
+          VTFLoaded:=false;
+        if not LoadVTF then
+          Raise EErrorFmt(5718, [GetLastError]);
+        VTFLoaded:=true;
+      end;
 
       SetLength(RawBuffer, F.Size);
       F.Seek(0, 0);
@@ -324,13 +330,13 @@ var
   TexFormat, ImageFormat: VTFImageFormat;
   VTFImage, OutputSize: Cardinal;
 begin
-  Log(LOG_VERBOSE,'save vtf %s',[self.name]);
-  if not VTFLoaded then
-  begin
-    if not LoadVTF then
-      Raise EErrorFmt(5718, [GetLastError]);
-    VTFLoaded:=true;
-  end;
+ Log(LOG_VERBOSE,'save vtf %s',[self.name]);
+ if (not VTFLoaded) or ReloadNeeded then
+ begin
+   if not LoadVTF then
+     Raise EErrorFmt(5718, [GetLastError]);
+   VTFLoaded:=true;
+ end;
  with Info do case Format of
   1:
   begin  { as stand-alone file }
@@ -449,11 +455,10 @@ end;
 
 initialization
 begin
-  {tbd is the code ok to be used ?  }
+  {tbd is the code ok to be used ?}
   RegisterQObject(QVTF, 'v');
 end;
 
 finalization
-  if VTFLoaded then
-    UnLoadVTF;
+  UnloadVTF(true);
 end.
