@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2007/03/11 12:03:28  danielpharos
+Big changes to Logging. Simplified the entire thing.
+Better error-recovery, and more informative error messages.
+
 Revision 1.3  2007/02/26 23:01:22  danielpharos
 Added an additional warning message for misconfigured HL2 settings, and the same message will warn you when you try to load vtf-files in non-HL2 mode.
 
@@ -363,9 +367,9 @@ begin
     if ((Tier0Module<>curTier0Module) and (curTier0Module<>'')) or ((VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'')) then
       UnloadVTF;
     if (Tier0Module='') then
-      raise exception.create('Unable to retrieve the location of the tier0.dll. Please make sure you are in HL2 mode, and the location is set correctly in the configurations.');
+      raise exception.create('Unable to retrieve the location of the tier0.dll. Please make sure the location is set correctly in the Half-Life 2 configurations.');
     if (VstdlibModule='') then
-      raise exception.create('Unable to retrieve the location of the vstdlib.dll. Please make sure you are in HL2 mode, and the location is set correctly in the configurations.');
+      raise exception.create('Unable to retrieve the location of the vstdlib.dll. Please make sure the location is set correctly in the Half-Life 2 configurations.');
     curTier0Module:=Tier0Module;
     curVstdlibModule:=VstdlibModule;
 
