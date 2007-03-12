@@ -7831,6 +7831,11 @@ QQRKSRC1
         txt = "&"
         hint = "Maximum Distance"
       }
+      _lightHDR: =
+      {
+        txt = "&"
+        hint = "use -1 -1 -1 1 as the argument"
+      }
     }
     light_environment:form =
     {
@@ -7861,6 +7866,16 @@ QQRKSRC1
         Txt = "&"
         Typ = "LU4"
         Hint = "light color (not the intensity, only the color)"
+      }
+      _ambientHDR: =
+      {
+        txt = "&"
+        hint = "use -1 -1 -1 1 as the argument"
+      }
+      _lightHDR: =
+      {
+        txt = "&"
+        hint = "use -1 -1 -1 1 as the argument"
       }
     }
     light_spot:form =
@@ -7903,6 +7918,11 @@ QQRKSRC1
         txt = "&"
         typ = "X1"
         cap = "Initially dark"
+      }
+      _lightHDR: =
+      {
+        txt = "&"
+        hint = "use -1 -1 -1 1 as the argument"
       }
     }
     light_dynamic:form =
@@ -8335,6 +8355,41 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Fired when the water brush reaches the starting position."
+      }
+      renderfx: =
+      {
+        txt = "&"
+        hint = "Use 0 as your argument unless you know what your doing"
+      }
+      rendermode: =
+      {
+        txt = "&"
+        hint = "Use 0 as your argument unless you know what your doing"
+      }
+      renderamt: =
+      {
+        txt = "&"
+        hint = "Translucency"
+      }
+      rendercolor: =
+      {
+        txt = "&"
+        hint = "RGB Color"
+      }
+      disableshadows: =
+      {
+        txt = "&"
+        hint = "Use 0 as your argument unless you know what your doing"
+      }
+      disablereceiveshadows: =
+      {
+        txt = "&"
+        hint = "Use 0 as your argument unless you know what your doing"
+      }
+      _minlight: =
+      {
+        txt = "&"
+        hint = "Minimum light level"
       }
     }
     func_rotating:form =
@@ -14222,6 +14277,41 @@ QQRKSRC1
         txt = "&"
         hint = "Set the distance that water finishes transitioning to cheap wa"
          "ter."
+      }
+      renderfx: =
+      {
+        txt = "&"
+        hint = "Use 0 as your argument unless you know what your doing"
+      }
+      rendermode: =
+      {
+        txt = "&"
+        hint = "Use 0 as your argument unless you know what your doing"
+      }
+      renderamt: =
+      {
+        txt = "&"
+        hint = "Translucency"
+      }
+      rendercolor: =
+      {
+        txt = "&"
+        hint = "RGB Color"
+      }
+      disableshadows: =
+      {
+        txt = "&"
+        hint = "Use 0 as your argument unless you know what your doing"
+      }
+      disablereceiveshadows: =
+      {
+        txt = "&"
+        hint = "Use 0 as your argument unless you know what your doing"
+      }
+      _minlight: =
+      {
+        txt = "&"
+        hint = "Minimum light level"
       }
     }
     info_camera_link:form =
