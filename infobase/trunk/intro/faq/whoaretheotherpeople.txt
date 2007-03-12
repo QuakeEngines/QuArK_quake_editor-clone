@@ -10,7 +10,14 @@ format: html
   <dd>was the second web master of the official QuArK Homepage. He stopped due to lack of time servicing the homepage.
 
   <dt>"Decker"
-  <dd>is the current web master of the official QuArK Homepage.
+  <dd>was the third web master of the official QuArK Homepage.
+
+  <dt>Cdunde
+  <dd>is the current web master  of the official QuArK Homepage.
+
+  <dt>PuG
+  <dd>is the current administrator of the forum.
+  
 
   <dt>Tiglari, Seth Galbraith, Tim Smith, Patrick Steel,
   <dd>and others who have contributed valuable time and effort to QuArK and the editing community at large.
