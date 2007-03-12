@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2007/03/11 12:03:10  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
 Revision 1.24  2007/03/10 22:02:08  danielpharos
 Some changes to OS detection. Also added a few CPU vendors. Removed some useless calls.
 
@@ -1733,11 +1736,10 @@ var
   bdata :pchar;
   sl :tstringlist;
   i :integer;
-  rvDXVersion :string;
 const
   rkDirectX = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectX';
-  rvDXVersion95 = 'Version';
-  rvDXVersionNT = 'InstalledVersion';
+  rvDXVersion = 'Version';
+  rvDXInstalledVersion = 'InstalledVersion';
   rkDirect3D = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\Direct3D\Drivers';
   rkDirectPlay = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectPlay\Services';
   rkDirectMusic = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectMusic\SoftwareSynths';
@@ -1749,22 +1751,17 @@ begin
     if OpenKey(rkDirectX,false) then
     begin
       bdata:=stralloc(255);
-      if WindowsPlatformCompatibility=osWin95 then
+      FVersion:=ReadString(rvDXVersion);
+      if FVersion='' then
       begin
-        rvDXVersion:=rvDXVersion95;
-        FVersion:=ReadString(rvDXVersion);
-      end
-      else
-      begin
-        rvDXVersion:=rvDXVersionNT;
-        if ValueExists(rvDXVersion) then
+        if ValueExists(rvDXInstalledVersion) then
           try
-            readbinarydata(rvDXVersion,bdata^,4);
+            readbinarydata(rvDXInstalledVersion,bdata^,4);
             FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
           except
             {$IFDEF Delphi4orNewerCompiler}
             try
-              readbinarydata(rvDXVersion,bdata^,8);
+              readbinarydata(rvDXInstalledVersion,bdata^,8);
               FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
             except
             end;

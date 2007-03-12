@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2007/03/11 12:03:10  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
 Revision 1.16  2007/03/05 01:00:43  danielpharos
 Found another place where NoShare was used. Commented out, and added a reference in QkObjects.
 
@@ -248,11 +251,13 @@ initialization
   if LogLevelEnv='' then
     LogLevel:=20
   else
+  begin
     Windows.MessageBox(0, 'Environmental variable QUARK_LOG_LEVEL found. QuArK will use its value.', 'Environmental variable found', MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
     try
       LogLevel:=StrToInt(LogLevelEnv);
     except
     end;
+  end;
   OpenLogFile;
 finalization
   CloseLogFile;
