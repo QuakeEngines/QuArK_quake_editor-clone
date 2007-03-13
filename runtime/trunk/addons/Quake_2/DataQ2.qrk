@@ -19,6 +19,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2007/02/06 13:09:19  danielpharos
+//Changed the translucency setting to actually be visibly transparent in QuArK.
+//
 //Revision 1.9  2005/10/15 01:00:02  cdunde
 //To reinstate headers and history
 //
@@ -3366,7 +3369,7 @@ QQRKSRC1
           ;incl = "defpoly"
           ;desc = "Just as in Q1 use it to push the player in a given direction."
 //Armin f(desc)sc
-          angle = "360"
+          angles = "0 0 0"
         }
         trigger_relay:e =
         {
