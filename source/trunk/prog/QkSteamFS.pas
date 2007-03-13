@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/03/11 12:03:10  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
 Revision 1.14  2007/02/02 10:07:07  danielpharos
 Fixed a problem with the dll loading not loading tier0 correctly
 
@@ -136,24 +139,24 @@ var
 //DLL_EXPORT const char * SteamFSFindName(psteamfindfile pff)
 //DLL_EXPORT unsigned long  SteamFSFindIsDir(psteamfindfile pff)
 
-  APIVersion          : function    : Longword; stdcall;
+  APIVersion          : function    : Longword; cdecl;
 
   SteamFSInit       : function  (FileSystemDLLName : PChar;
                                  contentid : Longword ;
                                  pSteamAppUser : PChar;
                                  pSteamUserPassphrase : PChar;
                                  pSteamAppId : PChar;
-                                 pSteamPath : PChar) : Pointer; stdcall;// returns pfs
-  SteamFSTerm       : procedure (pfs : Pointer);   stdcall;
-  SteamFSOpen       : function  (pfs : Pointer; name: PChar ; mode: PChar ): Pointer; stdcall;// returns pf
-  SteamFSClose      : procedure (pf  : Pointer); stdcall;
-  SteamFSSize       : function  (pf  : Pointer): Longword; stdcall;// returns file size
-  SteamFSRead       : function  (pf  : Pointer;  buffer: Pointer ; size: longword ): Longword; stdcall;// returns read data size
-  SteamFSFindFirst  : Function  (pfs : Pointer;   pattern : Pchar) : Pointer; stdcall;//returns pff
-  SteamFSFindNext   : Function  (pff : Pointer) : Pointer; stdcall;//returns pff
-  SteamFSFindFinish : procedure (pff : Pointer);
-  SteamFSFindName   : function  (pff : Pointer): Pchar ; stdcall;//returns name
-  SteamFSFindIsDir  : function  (pff : Pointer): longword ; stdcall;//returns 0 if no dir
+                                 pSteamPath : PChar) : Pointer; cdecl;// returns pfs
+  SteamFSTerm       : procedure (pfs : Pointer);   cdecl;
+  SteamFSOpen       : function  (pfs : Pointer; name: PChar ; mode: PChar ): Pointer; cdecl;// returns pf
+  SteamFSClose      : procedure (pf  : Pointer); cdecl;
+  SteamFSSize       : function  (pf  : Pointer): Longword; cdecl;// returns file size
+  SteamFSRead       : function  (pf  : Pointer;  buffer: Pointer ; size: longword ): Longword; cdecl;// returns read data size
+  SteamFSFindFirst  : Function  (pfs : Pointer;   pattern : Pchar) : Pointer; cdecl;//returns pff
+  SteamFSFindNext   : Function  (pff : Pointer) : Pointer; cdecl;//returns pff
+  SteamFSFindFinish : procedure (pff : Pointer); cdecl;
+  SteamFSFindName   : function  (pff : Pointer): Pchar ; cdecl;//returns name
+  SteamFSFindIsDir  : function  (pff : Pointer): longword ; cdecl;//returns 0 if no dir
 
 
 

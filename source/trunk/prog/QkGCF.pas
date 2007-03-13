@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/02/02 00:51:02  danielpharos
+The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
+
 Revision 1.13  2007/01/31 15:05:20  danielpharos
 Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
 
@@ -118,17 +121,17 @@ var
 //DLL_EXPORT unsigned long GCFReadFile(p_packagefile p ,LPBYTE lpData)
 //DLL_EXPORT unsigned long GCFFileSize(p_packagefile p )
 
-  APIVersion          : function    : Longword; stdcall;
-  GCFOpen             : function   (name: PChar) : PChar; stdcall;
-  GCFClose            : procedure  (package: PChar); stdcall;
-  GCFOpenElement      : function   (package: PChar; name: PChar ) : PChar; stdcall;
-  GCFCloseElement     : procedure  (pkgfile: PChar); stdcall;
-  GCFReadFile         : function   (pkgfile: PChar; data: PChar) : Longword	; stdcall;
-  GCFFileSize         : function   (pkgfile: PChar) : Longword	; stdcall;
-  GCFElementIsFolder  : function   (pkgfile: PChar): Integer; stdcall;
-  GCFNumSubElements   : function   (pkgfile: PChar): Integer; stdcall;
-  GCFGetSubElement    : function   (pkgfile: PChar;index : Longword): PChar; stdcall;
-  GCFSubElementName   : function   (pkgfile: PChar): PChar; stdcall;
+  APIVersion          : function    : Longword; cdecl;
+  GCFOpen             : function   (name: PChar) : PChar; cdecl;
+  GCFClose            : procedure  (package: PChar); cdecl;
+  GCFOpenElement      : function   (package: PChar; name: PChar ) : PChar; cdecl;
+  GCFCloseElement     : procedure  (pkgfile: PChar); cdecl;
+  GCFReadFile         : function   (pkgfile: PChar; data: PChar) : Longword	; cdecl;
+  GCFFileSize         : function   (pkgfile: PChar) : Longword	; cdecl;
+  GCFElementIsFolder  : function   (pkgfile: PChar): Integer; cdecl;
+  GCFNumSubElements   : function   (pkgfile: PChar): Integer; cdecl;
+  GCFGetSubElement    : function   (pkgfile: PChar;index : Longword): PChar; cdecl;
+  GCFSubElementName   : function   (pkgfile: PChar): PChar; cdecl;
 
 procedure Fatal(x:string);
 begin
