@@ -13,9 +13,11 @@ QQRKSRC1
     Root = "HL2 CS Textures.qtxfolder"
 
     //Allows Texture Browser and game to run but not needed except to compile map
-    t_hl2cs:incl =      {  v="QuArKApps" path="cstrike/materials/"}
+   t_hl2cs:incl =      {  v="QuArKApps" path="cstrike/materials/"}  // current line used
+ //  t_hl2cs:incl =      {  v="steamapps/counter-strike source shared.gcf" path="cstrike/materials/"}
 
- //   t_hl2cs:incl =      {  v="steamaccess://240" path="cstrike/materials/"}
+
+   // t_hl2cs:incl =      {  v="steamaccess://240" path="cstrike/materials/"}
     //t_hl2cs:incl =      {  v="counter-strike source shared.gcf" path="cstrike/materials/"}
     //t_hl2cs:incl =    {  v="tmpQuArK/materials_from_cs_source_shared"}
 
