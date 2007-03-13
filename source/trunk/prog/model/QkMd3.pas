@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2007/03/11 12:03:11  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
 Revision 1.28  2007/02/26 22:30:26  danielpharos
 Fixed an access violation when trying to save MD3 files.
 
@@ -115,10 +118,10 @@ unit QkMd3;
 
 interface
 
-uses Windows, SysUtils, ExtraFunctionality, Classes, QkObjects, Qk3D, QkForm, Graphics,
-     QkImages, qmath, QkTextures, PyMath, Python, QkFileObjects, Dialogs, QkPcx,
+uses Windows, SysUtils, Classes, QkObjects, QkForm, Graphics,
+     QkImages, qmath, QkTextures, QkFileObjects, QkPcx,
      QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag, QkModelBone,
-     QkMiscGroup, QkFrameGRoup, qmatrices;
+     QkMiscGroup, {QkFrameGroup,} qmatrices;
 
 type
   QMd3File = class(QModelFile)
