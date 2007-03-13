@@ -5,6 +5,10 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.17  2006/09/20 00:19:48  cdunde
+// To add Lazarus sound flags to Texture Flags Dialog,
+// implemented by Jon Kalashnikov (aka Paril).
+//
 // Revision 1.16  2005/10/15 01:00:02  cdunde
 // To reinstate headers and history
 //
@@ -1602,7 +1606,7 @@ QQRKSRC1
         }
         trigger_push:b =
         {
-          angle = "360"
+          angles = "0 0 0"
           ;incl = "defpoly"
           ;desc = "Just as in Q1 use it to push the player in a given directio"
            "n."
