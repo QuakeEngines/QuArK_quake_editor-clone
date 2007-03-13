@@ -655,6 +655,8 @@ QQRKSRC1
 					Debug/debugempty.wl  = { t_hl2=! }
 					Debug/debugluxels.wl  = { t_hl2=! }
 					Debug/debugluxelsnoalpha.wl  = { t_hl2=! }
+					Debug/debugwireframe.wl  = { t_hl2=! }
+					Debug/debugworldwireframezbuffer.wl  = { t_hl2=! }
 
 				  }
 				  
@@ -1156,6 +1158,8 @@ QQRKSRC1
 				  
 				  Detail.txlist =
 				  {
+					Detail/detailash001a.wl  = { t_hl2=! }
+					Detail/detaildirt001a.wl  = { t_hl2=! }
 					Detail/detailsprites.wl  = { t_hl2=! }
 				  }
 				  
@@ -1399,7 +1403,29 @@ QQRKSRC1
 				  
 				  Engine.txlist =
 				  {
+					Engine/camerarendertarget.wl  = { t_hl2=! }
+					Engine/defaultcubemap.wl  = { t_hl2=! }
+					Engine/dummy.wl  = { t_hl2=! }
+					Engine/framesync1.wl  = { t_hl2=! }
+					Engine/framesync2.wl  = { t_hl2=! }
+					Engine/dummy.wl  = { t_hl2=! }
 					Engine/lightsprite.wl  = { t_hl2=! }
+					Engine/normalize.wl  = { t_hl2=! }
+					Engine/rendertarget256.wl  = { t_hl2=! }
+					Engine/rendertarget256-2.wl  = { t_hl2=! }
+				  }
+				  
+				  Environment Maps.txlist =
+				  {
+					Environment Maps/borealis_003.wl  = { t_hl2=! }
+					Environment Maps/d1_trainstation_05.wl  = { t_hl2=! }
+					Environment Maps/envmap001a.wl  = { t_hl2=! }
+					Environment Maps/envmap009a.wl  = { t_hl2=! }
+					Environment Maps/envmapcombine.wl  = { t_hl2=! }
+					Environment Maps/gallery002.wl  = { t_hl2=! }
+					Environment Maps/rg.wl  = { t_hl2=! }
+					Environment Maps/train_01.wl  = { t_hl2=! }
+					Environment Maps/water_wasteland05.wl  = { t_hl2=! }
 				  }
 				  
 				  Glass.txlist =
