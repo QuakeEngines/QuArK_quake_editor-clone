@@ -18,7 +18,8 @@ $Id$
 * [cdunde]: Half-Life2 - light, light_spot and light_environment specifics and arguments added
           - to support HDR and many additions to the UserData Half-Life2.qrk file by Riggsy.
 
-* [cdunde]: MOHAA - Added specifics for func_door, func_rotatingdoor and func_barrel by OmnificienT.
+* [cdunde]: MOHAA - by OmnificienT - Added specifics for func_door, func_rotatingdoor, func_barrel,
+          - func_exploder, func_rain, func_remove all worldspawn specifics and dropdownmenu for func_crate.
 
 * [cdunde/DanielPharos]: Added code to retain selection in Model Editor when making a Skin-view drag.
 
