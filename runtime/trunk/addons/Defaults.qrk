@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.312  2007/03/11 10:59:26  danielpharos
+//Added the word 'Direct3D' to DirectX, so more people might recognize what it is.
+//
 //Revision 1.311  2007/03/01 17:34:11  danielpharos
 //Changed the default gamma, and did a bit of formatting to a few hints in the OpenGL section.
 //
@@ -1586,8 +1589,8 @@ QQRKSRC1
         DefaultTextureScale = "0.25"
     //    EnableTransparency = ""
         WateryTex = "!"
-     //   TextureFormat = ".vmt"
-        TextureFormat = ".vtf"
+        TextureFormat = ".vmt"
+     //   TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
         TextureWriteSubFormat = "3"
         TextureWriteSubFormatA = "15"
@@ -6082,6 +6085,7 @@ QQRKSRC1
       Style = "3"
       MaxUndo: = {Txt="Max. undo levels" Typ="EF1" Hint="Maximum number of consecutive undos allowed"}
       MinUndo: = {Txt="Min. undo levels" Typ="EF1" Hint="Minimum number of consecutive undos allowed (warn if not enough memory for this number)"}
+      GameFiles: = {Txt="Number of game files" Typ="EF1" Hint="Number of game files to keep in memory"}
       UndoBufferSize: = {Txt="Size of undo buffer (MB)" Typ="EF1" Hint="Deletes older undo levels if it would take more memory than this"}
       GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files from Quake (e.g. textures)"}
       CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of Compression to use for zip files (0 .. 9)"}
