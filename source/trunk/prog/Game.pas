@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2007/02/07 18:48:34  danielpharos
+Fixes for memory leaks
+
 Revision 1.41  2006/05/05 06:04:44  cdunde
 To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
 handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
@@ -288,7 +291,7 @@ var
  Remove: Boolean;
  Q: QObject;}
 begin
- Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 2)* (1024*1024));
+ Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 8) * (1024*1024));
 
  if GameFiles=Nil then
   Exit;
@@ -1492,5 +1495,4 @@ initialization
 
 finalization
   FreeGBList.Free;
-
 end.
