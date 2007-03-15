@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2007/02/07 18:48:34  danielpharos
+Fixes for memory leaks
+
 Revision 1.49  2006/05/07 09:25:49  rowdy
 fix a couple of vaguely possible access violation situations while reading shaders/materials
 
@@ -386,7 +389,7 @@ implementation
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
   CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkFormCfg,
-  QkQ1 ,QkQ2, QkObjectClassList, QkD3, QkHL2mat;
+  QkQ1, QkQ2, QkObjectClassList, QkD3;
 
 {$R *.DFM}
 
