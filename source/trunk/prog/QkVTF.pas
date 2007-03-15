@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2007/03/12 20:26:18  danielpharos
+Made the VTF file loading more crash-safe. Also, changing the settings during runtime should be better handled.
+
 Revision 1.27  2007/03/11 12:03:28  danielpharos
 Big changes to Logging. Simplified the entire thing.
 Better error-recovery, and more informative error messages.
@@ -188,7 +191,7 @@ begin
       begin
         if ReloadNeeded then
           VTFLoaded:=false;
-        if not LoadVTF then
+        if not LoadVTFLib then
           Raise EErrorFmt(5718, [GetLastError]);
         VTFLoaded:=true;
       end;
@@ -331,21 +334,24 @@ var
   VTFImage, OutputSize: Cardinal;
 begin
  Log(LOG_VERBOSE,'save vtf %s',[self.name]);
- if (not VTFLoaded) or ReloadNeeded then
- begin
-   if not LoadVTF then
-     Raise EErrorFmt(5718, [GetLastError]);
-   VTFLoaded:=true;
- end;
  with Info do case Format of
   1:
   begin  { as stand-alone file }
 
+    if (not VTFLoaded) or ReloadNeeded then
+    begin
+      if ReloadNeeded then
+        VTFLoaded:=false;
+      if not LoadVTFLib then
+        Raise EErrorFmt(5718, [GetLastError]);
+      VTFLoaded:=true;
+    end;
+
     if vlCreateImage(@VTFImage)=false then
-      Fatal('vlCreateImage');
+      Fatal('Unable to save VTF file. Call to vlCreateImage failed.');
 
     if vlBindImage(VTFImage)=false then
-      Fatal('vlBindImage');
+      Fatal('Unable to save VTF file. Call to vlBindImage failed.');
 
     TexFormat := IMAGE_FORMAT_DXT5;
     PSD:=Description;
@@ -390,7 +396,7 @@ begin
       GetMem(RawData, TexSize);
 
       if vlImageConvert(RawData2, RawData, PSD.size.X, PSD.size.Y, ImageFormat, TexFormat)=false then
-        Fatal('vlImageConvert');
+        Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
     end
     else
     begin
@@ -429,16 +435,14 @@ begin
       GetMem(RawData, TexSize);
 
       if vlImageConvert(RawData2, RawData, PSD.size.X, PSD.size.Y, ImageFormat, TexFormat)=false then
-        Fatal('vlImageConvert');
+        Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
     end;
     if vlImageCreate(PSD.size.X, PSD.size.Y,1,1,1,TexFormat,false,false,false)=false then
-      Fatal('vlImageCreate');
+      Fatal('Unable to load VTF file. Call to vlImageCreate failed.');
     vlImageSetData(0, 0, 0, 0, RawData);
-    SetLength(RawBuffer, TexSize+80);   {!}
+    SetLength(RawBuffer, TexSize+80);   {80 is just a random number. When not added, the call fails. Probably header-bytes that need to be added.}
     if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
-      Fatal('vlImageSaveLump');
-{      Raise exception.create('mem_to_vtf fails');}
-{DanielPharos: Start using these exceptions!}
+      Fatal('Unable to save VTF file. Call to vlImageSaveLump failed.');
 
     F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
 
@@ -455,10 +459,9 @@ end;
 
 initialization
 begin
-  {tbd is the code ok to be used ?}
   RegisterQObject(QVTF, 'v');
 end;
 
 finalization
-  UnloadVTF(true);
+  UnloadVTFLib(true);
 end.

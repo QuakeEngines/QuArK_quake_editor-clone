@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/03/12 21:22:16  danielpharos
+Fixed a small stupid bug.
+
 Revision 1.6  2007/03/12 20:26:18  danielpharos
 Made the VTF file loading more crash-safe. Also, changing the settings during runtime should be better handled.
 
@@ -120,88 +123,91 @@ interface
 uses Windows, SysUtils, QkObjects;
 
 function ReloadNeeded : Boolean;
-function LoadVTF : Boolean;
-procedure UnloadVTF(ForceUnload: boolean);
+function LoadVTFLib : Boolean;
+procedure UnloadVTFLib(ForceUnload: boolean);
 
 {-------------------}
 
-const IMAGE_FORMAT_RGBA8888= 0;
-const IMAGE_FORMAT_ABGR8888= 1;
-const IMAGE_FORMAT_RGB888= 2;
-const IMAGE_FORMAT_BGR888= 3;
-const IMAGE_FORMAT_RGB565= 4;
-const IMAGE_FORMAT_I8= 5;
-const IMAGE_FORMAT_IA88= 6;
-const IMAGE_FORMAT_P8= 7;
-const IMAGE_FORMAT_A8= 8;
-const IMAGE_FORMAT_RGB888_BLUESCREEN= 9;
-const IMAGE_FORMAT_BGR888_BLUESCREEN= 10;
-const IMAGE_FORMAT_ARGB8888= 11;
-const IMAGE_FORMAT_BGRA8888= 12;
-const IMAGE_FORMAT_DXT1= 13;
-const IMAGE_FORMAT_DXT3= 14;
-const IMAGE_FORMAT_DXT5= 15;
-const IMAGE_FORMAT_BGRX8888= 16;
-const IMAGE_FORMAT_BGR565= 17;
-const IMAGE_FORMAT_BGRX5551= 18;
-const IMAGE_FORMAT_BGRA4444= 19;
-const IMAGE_FORMAT_DXT1_ONEBITALPHA= 20;
-const IMAGE_FORMAT_BGRA5551= 21;
-const IMAGE_FORMAT_UV88= 22;
-const IMAGE_FORMAT_UVWQ8888= 22;
-const IMAGE_FORMAT_RGBA16161616F= 23;
-const IMAGE_FORMAT_RGBA16161616= 24;
-const IMAGE_FORMAT_UVLX8888= 25;
-const IMAGE_FORMAT_I32F= 26;
-const IMAGE_FORMAT_RGB323232F= 27;
-const IMAGE_FORMAT_RGBA32323232F= 28;
-const IMAGE_FORMAT_COUNT= 29;
-const IMAGE_FORMAT_NONE= -1;
+const
+//VTFImageFormat:
+  IMAGE_FORMAT_RGBA8888= 0;
+  IMAGE_FORMAT_ABGR8888= 1;
+  IMAGE_FORMAT_RGB888= 2;
+  IMAGE_FORMAT_BGR888= 3;
+  IMAGE_FORMAT_RGB565= 4;
+  IMAGE_FORMAT_I8= 5;
+  IMAGE_FORMAT_IA88= 6;
+  IMAGE_FORMAT_P8= 7;
+  IMAGE_FORMAT_A8= 8;
+  IMAGE_FORMAT_RGB888_BLUESCREEN= 9;
+  IMAGE_FORMAT_BGR888_BLUESCREEN= 10;
+  IMAGE_FORMAT_ARGB8888= 11;
+  IMAGE_FORMAT_BGRA8888= 12;
+  IMAGE_FORMAT_DXT1= 13;
+  IMAGE_FORMAT_DXT3= 14;
+  IMAGE_FORMAT_DXT5= 15;
+  IMAGE_FORMAT_BGRX8888= 16;
+  IMAGE_FORMAT_BGR565= 17;
+  IMAGE_FORMAT_BGRX5551= 18;
+  IMAGE_FORMAT_BGRA4444= 19;
+  IMAGE_FORMAT_DXT1_ONEBITALPHA= 20;
+  IMAGE_FORMAT_BGRA5551= 21;
+  IMAGE_FORMAT_UV88= 22;
+  IMAGE_FORMAT_UVWQ8888= 22;
+  IMAGE_FORMAT_RGBA16161616F= 23;
+  IMAGE_FORMAT_RGBA16161616= 24;
+  IMAGE_FORMAT_UVLX8888= 25;
+  IMAGE_FORMAT_I32F= 26;
+  IMAGE_FORMAT_RGB323232F= 27;
+  IMAGE_FORMAT_RGBA32323232F= 28;
+  IMAGE_FORMAT_COUNT= 29;
+  IMAGE_FORMAT_NONE= -1;
 
-const	TEXTUREFLAGS_POINTSAMPLE    = $00000001;
-const	TEXTUREFLAGS_TRILINEAR	 	  = $00000002;
-const	TEXTUREFLAGS_CLAMPS				 	= $00000004;
-const	TEXTUREFLAGS_CLAMPT				 	= $00000008;
-const	TEXTUREFLAGS_ANISOTROPIC	 	= $00000010;
-const	TEXTUREFLAGS_HINT_DXT5		 	= $00000020;
-const	TEXTUREFLAGS_NOCOMPRESS		 	= $00000040;
-const	TEXTUREFLAGS_NORMAL				  = $00000080;
-const	TEXTUREFLAGS_NOMIP				 	= $00000100;
-const	TEXTUREFLAGS_NOLOD				 	= $00000200;
-const	TEXTUREFLAGS_MINMIP				 	= $00000400;
-const	TEXTUREFLAGS_PROCEDURAL		 	= $00000800;
-const	TEXTUREFLAGS_ONEBITALPHA	 	= $00001000;
-const	TEXTUREFLAGS_EIGHTBITALPHA 	= $00002000;
-const	TEXTUREFLAGS_ENVMAP				 	= $00004000;
-const	TEXTUREFLAGS_RENDERTARGET	 	= $00008000;
-const	TEXTUREFLAGS_DEPTHRENDERTARGET				= $00010000;
-const	TEXTUREFLAGS_NODEBUGOVERRIDE	  			= $00020000;
-const	TEXTUREFLAGS_SINGLECOPY					    	= $00040000;
-const	TEXTUREFLAGS_ONEOVERMIPLEVELINALPHA	 	= $00080000;
-const	TEXTUREFLAGS_PREMULTCOLORBYONEOVERMIPLEVEL	= $00100000;
-const	TEXTUREFLAGS_NORMALTODUDV					    = $00200000;
-const	TEXTUREFLAGS_ALPHATESTMIPGENERATION		= $00400000;
-const	TEXTUREFLAGS_NODEPTHBUFFER	= $00800000;
-const	TEXTUREFLAGS_NICEFILTERED		= $01000000;
-const	TEXTUREFLAGS_CLAMPU					= $02000000;
-const	TEXTUREFLAGS_LAST						= $02000000;
-const	TEXTUREFLAGS_COUNT					= 26;
+//VTFImageFlag:
+  TEXTUREFLAGS_POINTSAMPLE                   = $00000001;
+  TEXTUREFLAGS_TRILINEAR                     = $00000002;
+  TEXTUREFLAGS_CLAMPS                        = $00000004;
+  TEXTUREFLAGS_CLAMPT                        = $00000008;
+  TEXTUREFLAGS_ANISOTROPIC                   = $00000010;
+  TEXTUREFLAGS_HINT_DXT5                     = $00000020;
+  TEXTUREFLAGS_NOCOMPRESS                    = $00000040;
+  TEXTUREFLAGS_NORMAL                        = $00000080;
+  TEXTUREFLAGS_NOMIP                         = $00000100;
+  TEXTUREFLAGS_NOLOD                         = $00000200;
+  TEXTUREFLAGS_MINMIP                        = $00000400;
+  TEXTUREFLAGS_PROCEDURAL                    = $00000800;
+  TEXTUREFLAGS_ONEBITALPHA                   = $00001000;
+  TEXTUREFLAGS_EIGHTBITALPHA                 = $00002000;
+  TEXTUREFLAGS_ENVMAP                        = $00004000;
+  TEXTUREFLAGS_RENDERTARGET                  = $00008000;
+  TEXTUREFLAGS_DEPTHRENDERTARGET             = $00010000;
+  TEXTUREFLAGS_NODEBUGOVERRIDE               = $00020000;
+  TEXTUREFLAGS_SINGLECOPY                    = $00040000;
+  TEXTUREFLAGS_ONEOVERMIPLEVELINALPHA        = $00080000;
+  TEXTUREFLAGS_PREMULTCOLORBYONEOVERMIPLEVEL = $00100000;
+  TEXTUREFLAGS_NORMALTODUDV                  = $00200000;
+  TEXTUREFLAGS_ALPHATESTMIPGENERATION        = $00400000;
+  TEXTUREFLAGS_NODEPTHBUFFER                 = $00800000;
+  TEXTUREFLAGS_NICEFILTERED                  = $01000000;
+  TEXTUREFLAGS_CLAMPU                        = $02000000;
+  TEXTUREFLAGS_LAST                          = $02000000;
+  TEXTUREFLAGS_COUNT= 26;
 
-{const MIPMAP_FILTER_POINT = 0;
-const MIPMAP_FILTER_BOX = 1;
-const MIPMAP_FILTER_TRIANGLE = 2;
-const MIPMAP_FILTER_QUADRATIC = 3;
-const MIPMAP_FILTER_CUBIC = 4;
-const MIPMAP_FILTER_CATROM = 5;
-const MIPMAP_FILTER_MITCHELL = 6;
-const MIPMAP_FILTER_GAUSSIAN = 7;
-const MIPMAP_FILTER_SINC = 8;
-const MIPMAP_FILTER_BESSEL = 9;
-const MIPMAP_FILTER_HANNING = 10;
-const MIPMAP_FILTER_HAMMING = 11;
-const MIPMAP_FILTER_BLACKMAN = 12;
-const MIPMAP_FILTER_KAISER = 13;
-const MIPMAP_FILTER_COUNT = 14;
+{  MIPMAP_FILTER_POINT = 0;
+  MIPMAP_FILTER_BOX = 1;
+  MIPMAP_FILTER_TRIANGLE = 2;
+  MIPMAP_FILTER_QUADRATIC = 3;
+  MIPMAP_FILTER_CUBIC = 4;
+  MIPMAP_FILTER_CATROM = 5;
+  MIPMAP_FILTER_MITCHELL = 6;
+  MIPMAP_FILTER_GAUSSIAN = 7;
+  MIPMAP_FILTER_SINC = 8;
+  MIPMAP_FILTER_BESSEL = 9;
+  MIPMAP_FILTER_HANNING = 10;
+  MIPMAP_FILTER_HAMMING = 11;
+  MIPMAP_FILTER_BLACKMAN = 12;
+  MIPMAP_FILTER_KAISER = 13;
+  MIPMAP_FILTER_COUNT = 14;
 
 typedef enum tagVTFSharpenFilter    ALL THESE typedef'S STILL NEED TO BE CONVERTED!!!
 	SHARPEN_FILTER_NONE = 0,
@@ -260,8 +266,17 @@ typedef enum tagVTFSharpenFilter    ALL THESE typedef'S STILL NEED TO BE CONVERT
     NORMAL_ALPHA_RESULT_WHITE,
 	NORMAL_ALPHA_RESULT_COUNT}
 
+//VMTNodeType:
+  NODE_TYPE_GROUP = 0;
+  NODE_TYPE_GROUP_END = 1;
+  NODE_TYPE_STRING = 2;
+  NODE_TYPE_INTEGER = 3;
+  NODE_TYPE_SINGLE = 4;
+  NODE_TYPE_COUNT = 5;
+
 type
   VTFImageFormat = Integer;
+  VMTNodeType = Integer;
 {  VTFMipmapFilter = Integer;
   VTFSharpenFilter = Integer;
   VTFResizeMethod = Integer;
@@ -305,7 +320,7 @@ type
   	NormalAlphaResult : VTFNormalAlphaResult;				//!< How to handle output image alpha channel, post normal map creation.
   	bNormalMinimumZ : Byte;								//!< Minimum normal Z value.
   	sNormalScale : Single;								//!< Normal map scale.
-	  bNormalWrap : Boolean;									//!< Wrap the normal map.
+  	 bNormalWrap : Boolean;									//!< Wrap the normal map.
   	bNormalInvertX : Boolean;								//!< Invert the normal X component.
   	bNormalInvertY : Boolean;								//!< Invert the normal Y component.
   	bNormalInvertZ : Boolean;								//!< Invert the normal Z component.
@@ -317,12 +332,14 @@ type
 
 var
   vlGetVersion: function : Cardinal; cdecl;
+  //vlGetVersionString: function : PChar; cdecl;
+  //vlGetLastError: function : PChar; cdecl;
   vlInitialize: function : Boolean; cdecl;
   vlShutdown: procedure; cdecl;
   vlCreateImage: function (uiImage : PCardinal) : Boolean; cdecl;
   vlBindImage: function (uiImage : Cardinal) : Boolean; cdecl;
   vlDeleteImage: procedure (uiImage : Cardinal); cdecl;
-  vlImageLoad: function (const cFileName : string; bHeaderOnly : Boolean) : Boolean; cdecl;
+  //vlImageLoad: function (const cFileName : string; bHeaderOnly : Boolean) : Boolean; cdecl;
   vlImageLoadLump: function (lpData : PByte; uiBufferSize : Cardinal; bHeaderOnly : Boolean) : Boolean; cdecl;
   vlImageSaveLump: function (lpData : PByte; uiBufferSize : Cardinal; uiSize : PCardinal) : Boolean; cdecl;
   vlImageGetFlags: function : Cardinal; cdecl;
@@ -334,8 +351,20 @@ var
   vlImageGetData: function (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal) : PByte; cdecl;
   vlImageSetData: procedure (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal; lpData : PByte); cdecl;
   vlImageCreate: function (uiWidth : Cardinal; uiHeight : Cardinal; uiFrames : Cardinal; uiFaces : Cardinal; uiSlices : Cardinal; ImageFormat :VTFImageFormat; bThumbnail : Boolean; bMipmaps: Boolean; bNullImageData : Boolean) : Boolean; cdecl;
-{  vlImageCreateSingle: function (uiWidth : Cardinal; uiHeight : Cardinal; lpImageDataRGBA8888 : PByte; VTFCreateOptions : PSVTFCreateOptions) : Boolean; cdecl;
-  vlImageCreateDefaultCreateStructure: procedure (VTFCreateOptions : PSVTFCreateOptions); cdecl;}
+  //vlImageCreateSingle: function (uiWidth : Cardinal; uiHeight : Cardinal; lpImageDataRGBA8888 : PByte; VTFCreateOptions : PSVTFCreateOptions) : Boolean; cdecl;
+  //vlImageCreateDefaultCreateStructure: procedure (VTFCreateOptions : PSVTFCreateOptions); cdecl;
+  vlCreateMaterial: function (uiMaterial : PCardinal) : Boolean; cdecl;
+  vlBindMaterial: function (uiMaterial : Cardinal) : Boolean; cdecl;
+  vlDeleteMaterial: procedure (uiMaterial : Cardinal); cdecl;
+  vlMaterialLoadLump: function (lpData : PByte; uiBufferSize : Cardinal; bHeaderOnly : Boolean) : Boolean; cdecl;
+  vlMaterialSaveLump: function (lpData : PByte; uiBufferSize : Cardinal; uiSize : PCardinal) : Boolean; cdecl;
+  vlMaterialGetFirstNode: function : Boolean; cdecl;
+  vlMaterialGetNextNode: function : Boolean; cdecl;
+  vlMaterialGetNodeName: function : PChar; cdecl; //DP Does it really return a string...?
+  vlMaterialGetNodeType: function : VMTNodeType; cdecl;
+  vlMaterialGetNodeString: function : PChar; cdecl; //DP Does it really return a string...?
+  vlMaterialGetNodeInteger: function : Cardinal; cdecl;
+  vlMaterialGetNodeSingle: function : Single; cdecl;
 
 implementation
 
@@ -353,7 +382,7 @@ var
 
 procedure LogError(x:string);
 begin
-  Log(LOG_CRITICAL,'load vtflib %s',[x]);
+  Log(LOG_CRITICAL, x);
   Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
 end;
 
@@ -385,13 +414,13 @@ begin
   end;
 end;
 
-function LoadVTF : Boolean;
+function LoadVTFLib : Boolean;
 begin
   if (TimesLoaded=0) or ReloadVTF then
   begin
     Result:=False;
     if ReloadVTF then
-      UnloadVTF(true);
+      UnloadVTFLib(true);
     curTier0Module:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamTier0Module'];
     curVstdlibModule:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamVstdlibModule'];
     if (curTier0Module='') then
@@ -449,13 +478,19 @@ begin
         LogError('Unable to load dlls/VTFLib.dll');
         Exit;
       end;
-      vlGetVersion      := InitDllPointer(HVTFLib, 'vlGetVersion');
-      vlInitialize      := InitDllPointer(HVTFLib, 'vlInitialize');
-      vlShutdown        := InitDllPointer(HVTFLib, 'vlShutdown');
+
+      //General calls:
+      vlGetVersion        := InitDllPointer(HVTFLib, 'vlGetVersion');
+      //vlGetVersionString  := InitDllPointer(HVTFLib, 'vlGetVersionString');
+      //vlGetLastError      := InitDllPointer(HVTFLib, 'vlGetLastError');
+      vlInitialize        := InitDllPointer(HVTFLib, 'vlInitialize');
+      vlShutdown          := InitDllPointer(HVTFLib, 'vlShutdown');
+
+      //Calls for VTF file handling:
       vlCreateImage     := InitDllPointer(HVTFLib, 'vlCreateImage');
       vlBindImage       := InitDllPointer(HVTFLib, 'vlBindImage');
       vlDeleteImage     := InitDllPointer(HVTFLib, 'vlDeleteImage');
-      vlImageLoad       := InitDllPointer(HVTFLib, 'vlImageLoad');
+      //vlImageLoad       := InitDllPointer(HVTFLib, 'vlImageLoad');
       vlImageLoadLump   := InitDllPointer(HVTFLib, 'vlImageLoadLump');
       vlImageSaveLump   := InitDllPointer(HVTFLib, 'vlImageSaveLump');
       vlImageGetFlags   := InitDllPointer(HVTFLib, 'vlImageGetFlags');
@@ -467,8 +502,23 @@ begin
       vlImageGetData    := InitDllPointer(HVTFLib, 'vlImageGetData');
       vlImageSetData    := InitDllPointer(HVTFLib, 'vlImageSetData');
       vlImageCreate     := InitDllPointer(HVTFLib, 'vlImageCreate');
-{      vlImageCreateSingle        := InitDllPointer(HVTFLib, 'vlImageCreateSingle');
-      vlImageCreateDefaultCreateStructure      := InitDllPointer(HVTFLib, 'vlImageCreateDefaultCreateStructure');}
+      //vlImageCreateSingle        := InitDllPointer(HVTFLib, 'vlImageCreateSingle');
+      //vlImageCreateDefaultCreateStructure      := InitDllPointer(HVTFLib, 'vlImageCreateDefaultCreateStructure');
+
+      //Calls for VMT file handling:
+      vlCreateMaterial    := InitDllPointer(HVTFLib, 'vlCreateMaterial');
+      vlBindMaterial      := InitDllPointer(HVTFLib, 'vlBindMaterial');
+      vlDeleteMaterial    := InitDllPointer(HVTFLib, 'vlDeleteMaterial');
+      vlMaterialLoadLump  := InitDllPointer(HVTFLib, 'vlMaterialLoadLump');
+      vlMaterialSaveLump  := InitDllPointer(HVTFLib, 'vlMaterialSaveLump');
+      vlMaterialGetFirstNode    := InitDllPointer(HVTFLib, 'vlMaterialGetFirstNode');
+      vlMaterialGetNextNode     := InitDllPointer(HVTFLib, 'vlMaterialGetNextNode');
+      vlMaterialGetNodeName     := InitDllPointer(HVTFLib, 'vlMaterialGetNodeName');
+      vlMaterialGetNodeType     := InitDllPointer(HVTFLib, 'vlMaterialGetNodeType');
+      vlMaterialGetNodeString   := InitDllPointer(HVTFLib, 'vlMaterialGetNodeString');
+      vlMaterialGetNodeInteger  := InitDllPointer(HVTFLib, 'vlMaterialGetNodeInteger');
+      vlMaterialGetNodeSingle   := InitDllPointer(HVTFLib, 'vlMaterialGetNodeSingle');
+      {DanielPharos: If one of the API func's fails, we should stop loading, and return False!}
 
       if vlGetVersion<124 then
       begin
@@ -494,7 +544,7 @@ begin
   end;
 end;
 
-procedure UnloadVTF(ForceUnload: boolean);
+procedure UnloadVTFLib(ForceUnload: boolean);
 begin
   if (TimesLoaded = 1) or ForceUnload then
   begin
@@ -507,12 +557,14 @@ begin
       HVTFLib := 0;
 
       vlGetVersion      := nil;
+      //vlGetVersionString         := nil;
+      //vlGetLastError    := nil;
       vlInitialize      := nil;
       vlShutdown        := nil;
       vlCreateImage     := nil;
       vlBindImage       := nil;
       vlDeleteImage     := nil;
-      vlImageLoad       := nil;
+      //vlImageLoad       := nil;
       vlImageLoadLump   := nil;
       vlImageSaveLump   := nil;
       vlImageGetFlags   := nil;
@@ -524,8 +576,20 @@ begin
       vlImageGetData    := nil;
       vlImageSetData    := nil;
       vlImageCreate     := nil;
-{      vlImageCreateSingle        := nil;
-      vlImageCreateDefaultCreateStructure      := nil;}
+      //vlImageCreateSingle        := nil;
+      //vlImageCreateDefaultCreateStructure      := nil;
+      vlCreateMaterial    := nil;
+      vlBindMaterial      := nil;
+      vlDeleteMaterial    := nil;
+      vlMaterialLoadLump  := nil;
+      vlMaterialSaveLump  := nil;
+      vlMaterialGetFirstNode    := nil;
+      vlMaterialGetNextNode     := nil;
+      vlMaterialGetNodeName     := nil;
+      vlMaterialGetNodeType     := nil;
+      vlMaterialGetNodeString   := nil;
+      vlMaterialGetNodeInteger  := nil;
+      vlMaterialGetNodeSingle   := nil;
     end;
 
     if Hvstdlib <> 0 then
@@ -544,7 +608,8 @@ begin
     TimesLoaded := 0;
   end
   else
-    TimesLoaded := TimesLoaded - 1;
+    if TimesLoaded>1 then
+      TimesLoaded := TimesLoaded - 1;
 end;
 
 {-------------------}
