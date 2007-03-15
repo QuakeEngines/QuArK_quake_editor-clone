@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/03/15 22:19:13  danielpharos
+Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files not supported yet.
+
 Revision 1.7  2007/03/12 21:22:16  danielpharos
 Fixed a small stupid bug.
 
@@ -520,7 +523,7 @@ begin
       vlMaterialGetNodeSingle   := InitDllPointer(HVTFLib, 'vlMaterialGetNodeSingle');
       {DanielPharos: If one of the API func's fails, we should stop loading, and return False!}
 
-      if vlGetVersion<124 then
+      if vlGetVersion<125 then
       begin
         LogError('VTFLib version mismatch!');
         Exit;
