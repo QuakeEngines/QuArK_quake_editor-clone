@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.14  2002/03/07 19:16:25  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -339,7 +342,7 @@ begin
   f.WriteBuffer(z,4);
   Spr:= GetSprite;
   if (Spr = nil) then
-    raise Exception.Create('Sprite object not found!');
+    raise EError(5502);
   for i:=1 to cnt do begin
     SkinObj:=QImage(spr.SubElements[i-1]);
     SkinObj.NotTrueColor;
@@ -397,7 +400,7 @@ begin
   WTemp:=0;HTemp:=0;
   Spr:= GetSprite;
   if (Spr = nil) then
-    raise Exception.Create('Sprite object not found!');
+    raise EError(5502);
   for i:=0 to  spr.SubElements.Count-1 do begin
     SizeTemp:=QPcx(spr.SubElements.Items[i]).GetSize;
     WTemp:=Max(SizeTemp.X,WTemp);
@@ -445,7 +448,7 @@ begin
   f.WriteBuffer(typ,2);
   Spr := GetSprite;
   if (Spr = nil) then
-    raise Exception.Create('Sprite object not found!');
+    raise EError(5502);
   SkinObj:=QImage(Spr.SubElements[0]); // use palette of first image for sprite.
   SkinObj.NotTrueColor;
   skinobj.GetPalette1(pal);

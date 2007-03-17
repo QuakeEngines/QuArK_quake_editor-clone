@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
 Revision 1.28  2007/03/05 00:42:01  danielpharos
 Fixed a typo.
 
@@ -617,7 +620,7 @@ begin
       else if ViewType=vtFullScreen then
         DisplayMode:=dmFullScreen
       else
-        raise EError(6000);
+        raise EErrorFmt(6000, ['Invalid ViewType']);
 
       Scene.Init(Self.Handle, MapViewProj, DisplayMode, DisplayType,
        Specifics.Values['Lib'], AllowsGDI);
@@ -798,7 +801,7 @@ begin
    else if S='d3d9.dll' then
      FScene:=TDirect3DSceneObject.Create(ViewMode)
    else
-     raise InternalE('NeedScene');
+     raise EErrorFmt(6000, ['Invalid LibName']);
    ReadSetupInformation(NeedSetup);
    Drawing:=Drawing or dfRebuildScene;
   end

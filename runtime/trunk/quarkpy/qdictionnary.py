@@ -272,12 +272,11 @@ Strings = {
     810: "PNG image (*.png)|*.png",
     811: "Tribes 2 VL2 Files (*.vl2)|*.vl2",
     812: "Tribes 2 CS-script Files (*.cs)|*.cs",
-
     813: "Doom 3 Pak Files (*.pk4)|*.pk4",
-    814: "Valve Texture File  (*.vtf)|*.vtf",
-    815: "Valve Material File  (*.vmt)|*.vmt",
-    816: "Steam Cache File  (*.gcf)|*.gcf",
-    817: "Valve Map File  (*.vmf)|*.vmf",
+    814: "Valve Texture File (*.vtf)|*.vtf",
+    815: "Valve Material File (*.vmt)|*.vmt",
+    816: "Steam Cache File (*.gcf)|*.gcf",
+    817: "Valve Map File (*.vmf)|*.vmf",
     818: "Steam FS (*.SteamFS)|*.SteamFS",
 
     2368: "Skins",
@@ -571,17 +570,15 @@ Strings = {
     5181: "PNG image",
     5182: "Tribes 2 VL2 file",
     5183: "Tribes 2 CS-script file",
-
-    5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
     5184: "'%s' is not a QuArK-5 file",
     5185: "'%s' was created with a more recent version of QuArK",
     5186: "'%s' is invalid (the end of the file seems to be missing)",
     5187: "The file extension of '%s' does not match the file contents, which seems to be of type '%s'",
     5188: "The file '%s' does not exist",
     5189: "Cannot write into file '%s', because it is currently opened in another window. Save your work in another file",
-    # 5190: "Internal error L - this program is buggy !//QList",
-    # 5191: "Internal error R - this program is buggy !//Cannot read file objects of type '%s' with format %d",
-    # 5192: "Internal error W - this program is buggy !//Cannot write file objects of type '%s' with format %d",
+    5190: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
+    # 5191: "Cannot read file objects of type '%s' with format %d",
+
     5193: "Syntax error in source file, line %d : %s",
     5194: "'{' expected",
     5195: "unexpected data after the final '}' has been ignored.",
@@ -609,7 +606,7 @@ Strings = {
     5216: "QuArK has left %d temporary file(s) in path %s, probably because it crashed or because of a bug. Do you want to delete this(these) file(s) now ?",
     5217: "'%s' : Cannot (un)do this operation any more because the file has been closed",
     # 5218: "Warning: the tree view you see is incomplete, because the Explorer views of QuArK cannot display the same objects more than once.",
-    # 5219: "Internal error X - this program is buggy !//No Explorer from root",
+
     5220: "'%s' : Invalid file size. The file is %d bytes length instead of %d",
     5221: "Cannot display '%s' in the tree view, because it is already visible in another Explorer views in QuArK.",
     5222: "This file contains a link to the file '%s' which cannot be found. The link has been ignored (and deleted).",
@@ -691,17 +688,17 @@ Strings = {
     5459: "preparing Faces...",
     5460: "preparing Models...",
 
+    5502: "Sprite object not found!",
     5503: "'%s' is a Half-Life Model which cannot be read (yet)",
     5504: "No texture image//Missing or invalid %s",
     5505: "'%s' is not a WAD file//%d should be %d or %d",
     5506: "'%s' is not a PACK file//%d should be %d",
-    # 5507: "Internal error N - this program is buggy !//Acces without FNode",
+
     5508: "Files names in PACK files are limited to %d characters, including the path. '%s' is too long",
     5509: "Invalid data. The file is probably corrupted//Error %d",
-    # 5510: "Internal error S - this program is buggy !//Empty Specific with data '%s'",
+
     5511: "The WAD file contains data that cannot be written to this type of file.//'%s' invalid",
-    # 5512: "Internal error A - this program is buggy !//Acces",
-    # 5513: "Internal error C - this program is buggy !//CloseReadOnly",
+
     5514: "'%s' : structure invalid for a Quake %d-like texture",
     5515: "FILE ERROR !!\n\nThe file has been correctly saved to :\n\n%s\n\nbut QuArK cannot reopen it. You can't continue editing the file.\n\nQuit QuArK now, find this temporary file and rename it '%s'",
     5516: "Could not save the file '%s'. The file is maybe read-only or opened in another application.//The file has been correctly saved to :\n\n%s\n\nbut QuArK failed to move it to the correct location. You can look for this temporary file and rename it '%s' yourself",
@@ -713,7 +710,7 @@ Strings = {
     5522: "(Missing)",
     5523: "(Empty data)",
     5524: "Texture '%s' not found in %s",
-    # 5525: "Internal error R - this program is buggy !//DoRemoveReference",
+
     5526: "Could not add this file to the QuArK Explorer",
     5527: "This file is opened in several windows. You must close them before you can do this operation",
     # 5528: "You cannot make changes here because QuArK could not find in which file this data is stored",
@@ -761,8 +758,7 @@ Strings = {
     5566: "This map contains unsupported objects. It might have been created with a more recent version of QuArK.\n\n%d object(s) of unknown type deleted",
     5567: "Cannot undo this operation, sorry",
     5568: "Could not build the tool bar '%s'.",
-    # 5569: "The data in this file ('%s') does not match the file name ('%s').",
-    5569: "",
+    5569: "The data in this file ('%s') does not match the file name ('%s').",
     5570: "(switch back to %s game mode)",
     5571: "'%s' is not a Quake 2 MD2 file//%d-%d should be %d-%d",
     5572: "'%s' looks like a Quake-2 (or one of its game descendants) BSP file,\nbut its BSP-version is not recognized and therefore not supported.//%d should be %d",
@@ -888,7 +884,7 @@ Strings = {
     5690: "Setup file was cleared. QuArK is restarted with its default configuration.\n\nDo you want to activate Colorful Captions again ?",
     5691: "Invalid Sprite File!",
     5692: "The File %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
-
+    5693: "'%s' expected in %s",
     5694: "Syntax error in Shader file, line %d",
     5695: "Shader '%s' has no image to display",
     5696: "Shader images are read-only",
@@ -901,8 +897,8 @@ Strings = {
 
     # alexander would like to reserve 5703 .. 5729 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
-    #5704: "reserved for hl2",
-    #5705: "reserved for hl2",
+    5704: "Unable to retrieve the location of '",
+    5705: "'. Please make sure the location is set correctly in the Half-Life 2 configurations.",
     5706: "%s not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
     #5708: "reserved for hl2",
@@ -953,7 +949,7 @@ Strings = {
     # 5769: reserved
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers :-)
-    6000: "Unable to create SceneObject",
+    6000: "Unable to create SceneObject//%s",
     6001: "No 3D driver configured. Please select a 3D driver in the Configuration dialog box",
     6002: "Could not find the 3D drivers (%s). You need either a graphics card with installed drivers or the software 3D library, depending on the choice you made in the Configuration dialog box//Error code %d",
     6003: "BuildScene - empty face",
@@ -1013,13 +1009,13 @@ Strings = {
 
     -459: "Parameters about the selected Bezier patch(es)|bezier patches",
 
-
 }
 
 # ----------- REVISION HISTORY ------------
-#
-#
 #$Log$
+#Revision 1.84  2007/03/17 14:32:50  danielpharos
+#Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+#
 #Revision 1.83  2007/03/01 17:34:44  danielpharos
 #Added two new error messages for HL2.
 #

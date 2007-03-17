@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.85  2007/03/05 01:00:43  danielpharos
+Found another place where NoShare was used. Commented out, and added a reference in QkObjects.
+
 Revision 1.84  2007/03/01 22:16:03  danielpharos
 Big fix for the enormous slowdown.
 
@@ -1602,7 +1605,7 @@ begin
    Exit;
   end;
  if FFlags and ofTvNode <> 0 then
-  Raise EError(5512);
+  Raise InternalE('Acces');
  Source:=Nil;
  try
   if FFlags and ofLienFichier <> 0 then
@@ -1630,7 +1633,7 @@ procedure QObject.CloseCopying;
 begin
  ProgressIndicatorStop;
  if FFlags and ofNotLoadedToMemory <> 0 then
-  Raise EError(5513);
+  Raise InternalE('CloseReadOnly');
  if (FFlags and ofTvNode <> 0) or (FNode = Nil) then
   Exit;  { object is too much loaded to be unloadable }
  with PQStreamRef(FNode)^ do
@@ -1678,7 +1681,7 @@ begin  { if possible, copy directly from the original file into the new one }
   else
    begin
     if FFlags and ofFileLink = 0 then
-     Raise EError(5507);
+     Raise InternalE('Acces without FNode');
     S:=(Self as QFileObject).Filename;
     Source:=FileAccessQ(S, []);
     SourceTaille:=Source.Size;
@@ -1821,7 +1824,7 @@ procedure QObject.FileCrashRecoverHack;
 var
   S: String;
 begin
-  S:=FmtLoadStr1(5183, [Name]);
+  S:=FmtLoadStr1(5190, [Name]);
   if MessageBox(0, PChar(S), 'QuArK', MB_YESNO or MB_DEFBUTTON2 or MB_SYSTEMMODAL) <> IDYES then
     Abort;
 end;

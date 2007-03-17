@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2007/03/15 22:16:20  danielpharos
+Removed a redundant include.
+
 Revision 1.50  2007/02/07 18:48:34  danielpharos
 Fixes for memory leaks
 
@@ -873,7 +876,7 @@ var
           if ShaderFile<>Nil then
           begin  { write the shaders file }
             if S='' then
-              Raise InternalE('"TextureShaders" expected in Defaults.qrk');
+              Raise EErrorFmt(5693, ['TextureShaders', 'Defaults.qrk']);
             ShaderFile.SaveInFile(rf_Default, OutputFile(S));
           end;
 

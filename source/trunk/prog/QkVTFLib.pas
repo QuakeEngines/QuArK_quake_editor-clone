@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/03/15 22:33:27  danielpharos
+Updated VTFLib to 1.2.5
+
 Revision 1.8  2007/03/15 22:19:13  danielpharos
 Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files not supported yet.
 
@@ -419,18 +422,21 @@ end;
 
 function LoadVTFLib : Boolean;
 begin
-  if (TimesLoaded=0) or ReloadVTF then
+  if ReloadVTF then
+  begin
+    UnloadVTFLib(true);
+    ReloadVTF:=false;
+  end;
+  if (TimesLoaded=0) then
   begin
     Result:=False;
-    if ReloadVTF then
-      UnloadVTFLib(true);
     curTier0Module:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamTier0Module'];
     curVstdlibModule:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamVstdlibModule'];
     if (curTier0Module='') then
     begin
       if not IgnoreErrorTier0Module then
       begin
-        LogError('Unable to retrieve the location of the tier0.dll. Please make sure the location is set correctly in the Half-Life 2 configurations.');
+        LogError(LoadStr1(5704)+'tier0.dll'+LoadStr1(5705));
         IgnoreErrorTier0Module:=true;
       end;
       Exit;
@@ -439,7 +445,7 @@ begin
     begin
       if not IgnoreErrorVstdlibModule then
       begin
-        LogError('Unable to retrieve the location of the vstdlib.dll. Please make sure the location is set correctly in the Half-Life 2 configurations.');
+        LogError(LoadStr1(5704)+'vstdlib.dll'+LoadStr1(5705));
         IgnoreErrorVstdlibModule:=true;
       end;
       Exit;
@@ -537,7 +543,6 @@ begin
     end;
 
     TimesLoaded := 1;
-    ReloadVTF:=false;
     Result:=true;
   end
   else
@@ -605,7 +610,7 @@ begin
     if Htier0 <> 0 then
     begin
       if FreeLibrary(Htier0) = false then
-        LogError('Unable to load untier0.dll');
+        LogError('Unable to unload tier0.dll');
       Htier0 := 0;
     end;
     TimesLoaded := 0;
