@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
 Revision 1.10  2007/02/02 21:09:55  danielpharos
 Rearranged the layout of the Direct3D file
 
@@ -257,23 +260,21 @@ begin
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
 
-  raise InternalE('The DirectX renderer has not been implemented yet.');
+  raise InternalE(LoadStr1(6410));
 
   { is the Direct3D object already loaded? }
   if Direct3DLoaded = False then
   begin
+    if LibName='' then
+      Raise EError(6001);
     { try to load the Direct3D object }
     if not LoadDirect3D() then
-      Raise EErrorFmt(4883, [GetLastError]);
+      Raise EErrorFmt(6402, [GetLastError]);
     Direct3DLoaded := true;
   end;
   if (DisplayMode=dmFullScreen) then
-   Raise InternalE('DirectX renderer does not support fullscreen views (yet)');
+   Raise InternalE(LoadStr1(6420));
 
- {$IFDEF Debug}
-  if not (nCoord is TCameraCoordinates) then
-    Raise InternalE('TCameraCoordinates expected');
- {$ENDIF}
   Coord:=nCoord;
   TTextureManager.AddScene(Self);
 
@@ -342,7 +343,7 @@ begin
    begin
     l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, Wnd, 0, nil, g_D3DDevice);
     if (l_Res <> D3D_OK) then   {Can't get any decent device, exiting}
-      raise EErrorFmt(4882, ['CreateDevice', DXGetErrorString9(l_Res)]);   {Daniel: Check all the error messages.}
+      raise EErrorFmt(6403, ['CreateDevice', DXGetErrorString9(l_Res)]);   {Daniel: Check all the error messages.}
    end;
 
    {Should we use the pPresentationParameters instead of creating a new device each time?}
@@ -392,7 +393,7 @@ var
 begin
   { make sure that Direct3D have been set up }
   if (g_D3DDevice = nil) then
-    raise EErrorFmt(4882, ['Render3DView', 'g_D3DDevice = nil']);
+    raise EErrorFmt(6403, ['Render3DView', 'g_D3DDevice = nil']);
 
   { if viewport have been resized, then tell Direct3D what happend }
   {if (m_Resized = True) then
@@ -423,7 +424,7 @@ begin
 
   l_Res := m_pD3DDevice.BeginScene;
   if (l_Res <> 0) then
-    raise EErrorFmt(4882, ['BeginScene', D3DXGetErrorMsg(l_Res)]);
+    raise EErrorFmt(6403, ['BeginScene', D3DXGetErrorMsg(l_Res)]);
 
   m_pD3DX.Clear(D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER);}
 
@@ -463,7 +464,7 @@ begin
 
   l_Res := m_pD3DX.UpdateFrame(0);
   if (l_Res <> 0) then
-    raise EErrorFmt(4882, ['UpdateFrame', D3DXGetErrorMsg(l_Res)]);}
+    raise EErrorFmt(6403, ['UpdateFrame', D3DXGetErrorMsg(l_Res)]);}
 end;
 
 procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);

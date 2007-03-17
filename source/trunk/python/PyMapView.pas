@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2007/03/05 00:42:01  danielpharos
+Fixed a typo.
+
 Revision 1.27  2007/03/01 17:36:54  danielpharos
 Stopped many redundant calls from being made when moving the camera. Should take care of some weird problems, and be faster too.
 
@@ -614,7 +617,7 @@ begin
       else if ViewType=vtFullScreen then
         DisplayMode:=dmFullScreen
       else
-        raise EError(5772);
+        raise EError(6000);
 
       Scene.Init(Self.Handle, MapViewProj, DisplayMode, DisplayType,
        Specifics.Values['Lib'], AllowsGDI);

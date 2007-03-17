@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2007/03/02 13:09:22  danielpharos
+Fixed a HUGE slowdown with textures in BuildScene.
+
 Revision 1.27  2007/03/01 17:36:54  danielpharos
 Stopped many redundant calls from being made when moving the camera. Should take care of some weird problems, and be faster too.
 
@@ -978,7 +981,7 @@ begin
          end;
 
          if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
-           Raise InternalE('BuildScene - empty face');
+           Raise InternalE(LoadStr1(6003));
 
        (*TexPt[2].X:=TexPt[2].X-TexPt[1].X;
          TexPt[2].Y:=TexPt[2].Y-TexPt[1].Y;
@@ -2172,7 +2175,7 @@ begin
   2:    Result:=GR_LOD_2;
   1:    Result:=GR_LOD_1;
  else
-  Raise InternalE('Bad LOD');
+  Raise InternalE(LoadStr1(6004));
  end;
 end;
 
@@ -2189,7 +2192,7 @@ begin
   GR_LOD_2:   w:=2;
   GR_LOD_1:   w:=1;
  else
-  Raise InternalE('Bad reverse LOD');
+  Raise InternalE(LoadStr1(6005));
  end;
 
  h:=w;
@@ -2198,9 +2201,12 @@ begin
   GR_ASPECT_8x1: h:=h div 8;
   GR_ASPECT_4x1: h:=h div 4;
   GR_ASPECT_2x1: h:=h div 2;
+  GR_ASPECT_1x1: ;
   GR_ASPECT_1x2: w:=w div 2;
   GR_ASPECT_1x4: w:=w div 4;
   GR_ASPECT_1x8: w:=w div 8;
+ else
+  Raise InternalE(LoadStr1(6006));
  end;
 end;
 

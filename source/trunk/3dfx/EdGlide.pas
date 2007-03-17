@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2007/03/10 21:55:37  danielpharos
+Removed some redundant code.
+
 Revision 1.3  2007/02/06 13:08:47  danielpharos
 Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
 
@@ -308,7 +311,7 @@ var
 begin
  {$IFDEF Debug}
  if PTex^.info.data=Nil then
-  Raise InternalE('NeedTex: texture not loaded');
+  Raise InternalE(LoadStr1(6010));
  {$ENDIF}
  if (PTex^.startAddress = GR_NULL_MIPMAP_HANDLE)
  and Hardware3DFX then
@@ -506,14 +509,14 @@ begin
  if not GlideLoaded then
   begin
    if LibName='' then
-    Raise EError(4867);
+    Raise EError(6001);
    if not LoadGlide(LibName, GetApplicationDllPath()) then
-    Raise EErrorFmt(4865, [LibName, GetLastError]);
+    Raise EErrorFmt(6002, [LibName, GetLastError]);
    try
     SetIntelPrecision;
     grGlideInit;
     if not grSstQueryHardware(hwconfig) then
-     Raise EErrorFmt(4866, ['grSstQueryHardware']);
+     Raise EErrorFmt(6200, ['grSstQueryHardware']);
     grSstSelect(0);
     if GlideTimesLoaded=1 then
       if not grSstWinOpen(0,
@@ -522,7 +525,7 @@ begin
                         GR_COLORFORMAT_ARGB,
                         GR_ORIGIN_UPPER_LEFT,
                         2, 1) then
-       Raise EErrorFmt(4866, ['grSstWinOpen']);
+       Raise EErrorFmt(6200, ['grSstWinOpen']);
    finally
     RestoreIntelPrecision;
    end;
@@ -534,7 +537,7 @@ begin
    GlideLoaded:=true;
   end;
  if (DisplayMode=dmFullScreen) then
-   Raise InternalE('Glide renderer does not support fullscreen views (yet)');
+   Raise InternalE(LoadStr1(6220));
  if (DisplayMode=dmFullScreen) then   {Second check: So Glide kinda works...}
   Do3DFXTwoMonitorsActivation
  else
@@ -545,7 +548,7 @@ begin
  
  // Assigned check added by SilverPaladin
  if (not Assigned(qrkGlideState)) then
-   raise Exception.Create('You must first call Open3dFX');
+   raise InternalE(LoadStr1(6221));
  TGlideState(qrkGlideState).Init;
  Hardware3DFX:=qrkGlideVersion>=HardwareGlideVersion;
  if Hardware3DFX then
@@ -1929,13 +1932,13 @@ begin
 
  DIBSection:=CreateDIBSection(DC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
  if DIBSection = 0 then
-   Raise EErrorFmt(4866, ['CreateDIBSection']);
+   Raise EErrorFmt(6200, ['CreateDIBSection']);
  if Hardware3DFX then
   begin
    try
     if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
           GR_ORIGIN_ANY, FXFALSE, info) then
-     Raise EErrorFmt(4866, ['grLfbLock']);
+     Raise EErrorFmt(6200, ['grLfbLock']);
     I:=bmiHeader.biHeight;
     SrcPtr:=info.lfbptr;
     Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*info.strideInBytes);
@@ -2023,7 +2026,7 @@ begin
   if SetDIBitsToDevice(DC, L, T,
    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
-    Raise EErrorFmt(4866, ['SetDIBitsToDevice']);
+    Raise EErrorFmt(6200, ['SetDIBitsToDevice']);
   DeleteObject(DIBSection);
 end;
 

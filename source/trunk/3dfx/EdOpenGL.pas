@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2007/03/11 12:03:11  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
 Revision 1.48  2007/03/11 10:59:52  danielpharos
 Fixed a warning during compiling.
 
@@ -291,11 +294,11 @@ var
   I, J: Integer;
   S: String;
 begin
-  //Log('EdOpenGL #%d %s', [Pos, Format(Text, Args)]); //Decker 2003.03.14
   if HackIgnoreErrors then
     Exit;
+  Log(LOG_VERBOSE,'EdOpenGL #%d %s', [Pos, Format(Text, Args)]);
   S:='';
-  for I:=1 to 25 do   {Daniel: Why is it trying exactly 25 times?}
+  for I:=1 to 25 do   {DanielPharos: Why is it trying exactly 25 times?}
   begin
     J:=glGetError;
     if J = GL_NO_ERROR then
@@ -305,7 +308,7 @@ begin
   if S<>'' then
   begin
     //Log(S);
-    Raise EErrorFmt(4870, [S, Pos]);
+    Raise EErrorFmt(6302, [S, Pos]);
   end
 end;
 
@@ -322,7 +325,7 @@ begin
     Py_XDECREF(CallMacroEx(Py_BuildValueX('ii', [MinX, MinY]), 'OpenGL'));
     PythonCodeEnd;
     if CurrentGLSceneObject=Nil then
-      Raise EAbort.Create('Python failure in OpenGL view creation');
+      Raise EAbort.Create(LoadStr1(6321));
  {end;}
 end;
 
@@ -815,7 +818,7 @@ begin
     if OpenGLLoaded then
     begin
       {if wglMakeCurrent(GLDC,RC) = false then
-        raise EError(5770);}
+        raise EError(6310);}
       for I:=0 to 2 do
       begin
         if OpenGLDisplayLists[I]<>0 then
@@ -828,7 +831,7 @@ begin
 
       wglMakeCurrent(0,0);
       if wglDeleteContext(RC) = false then
-        raise EError(5779);
+        raise EError(6312);
     end;
 
     I:=0;
@@ -882,21 +885,19 @@ begin
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
 
-  { have the OpenGL DLL already been loaded? }
+  { has the OpenGL DLL already been loaded? }
   if not OpenGLLoaded then
   begin
+    if LibName='' then
+      Raise EError(6001);
     { try to load the OpenGL DLL, and set pointers to its functions }
     if not LoadOpenGl() then
-      Raise EErrorFmt(4868, [GetLastError]);
+      Raise EErrorFmt(6300, [GetLastError]);
     OpenGLLoaded := true;
   end;
   if (DisplayMode=dmFullScreen) then
-   Raise InternalE('OpenGL renderer does not support fullscreen views (yet)');
+   Raise InternalE(LoadStr1(6320));
 
- {$IFDEF Debug}
-  if not (nCoord is TCameraCoordinates) then
-    Raise InternalE('TCameraCoordinates expected');
- {$ENDIF}
   Coord:=nCoord;
   TTextureManager.AddScene(Self);
 
@@ -1000,7 +1001,7 @@ begin
     if CurrentPixelFormat<>pfi then
      begin
       if not SetPixelFormat(GLDC, pfi, @pfd) then
-        Raise EErrorFmt(4869, ['SetPixelFormat']);
+        Raise EErrorFmt(6301, ['SetPixelFormat']);
      end;
     DestWnd:=Wnd;
   end;
@@ -1009,19 +1010,16 @@ begin
    begin
     RC:=wglCreateContext(GLDC);
     if RC = 0 then
-     raise EError(5771);
+     raise EError(6311);
     if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
-    CheckOpenGLError(glGetError);  {#}
-    if RC=0 then
-      Raise EErrorFmt(4869, ['wglCreateContext']);
+     raise EError(6310);
 
     for pfi:=0 to Length(RCs)-1 do
     begin
       if RCs[pfi]<>0 then
       begin
         if wglShareLists(RCs[pfi],RC)=false then
-          Raise EErrorFmt(4869, ['wglShareLists']);    {Is this the correct error message?}
+          Raise EErrorFmt(6301, ['wglShareLists']);
         break;
       end;
     end;
@@ -1031,7 +1029,7 @@ begin
   else
    begin
     if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
+     raise EError(6310);
    end;
 
   { set up OpenGL }
@@ -1146,7 +1144,8 @@ end;
 procedure TGLSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
 begin
   if DoubleBuffered then
-    Windows.SwapBuffers(DC);
+    if Windows.SwapBuffers(DC)=false then
+      raise exception.create(LoadStr1(6315));
 end;
 
 procedure TGLSceneObject.ClearScene;
@@ -1203,7 +1202,7 @@ begin
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
   if wglMakeCurrent(GLDC,RC) = false then
-    raise EError(5770);
+    raise EError(6310);
   for I:=0 to 2 do
   begin
     if (OpenGLDisplayLists[I]<>0) then
@@ -1258,7 +1257,7 @@ begin
   if not OpenGlLoaded then
     Exit;
   if wglMakeCurrent(GLDC,RC) = false then
-   raise EError(5770);
+   raise EError(6310);
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
   SX:=ScreenX;
   SY:=ScreenY;
@@ -1506,7 +1505,7 @@ begin
     begin
       OpenGLDisplayLists[LightingQuality]:=glGenLists(1);
       if OpenGLDisplayLists[LightingQuality] = 0 then
-        raise EError(5693);
+        raise EError(6313);
 
       {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE]); {$ENDIF}
       glNewList(OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE);
@@ -1656,7 +1655,7 @@ begin
       glGenTextures(1, Texture^.OpenGLName);
       {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
       if Texture^.OpenGLName=0 then
-        Raise InternalE('out of texture numbers');
+        Raise InternalE(LoadStr(6314));
       glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
       {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
 
@@ -1886,9 +1885,8 @@ begin
       PSD2.Done;
     end;
 
-
     if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
+     raise EError(6310);
    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, Texture^.OpenGLName);
 
@@ -1896,7 +1894,7 @@ begin
 
     {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     if Texture^.OpenGLName=0 then
-      Raise InternalE('out of texture numbers');
+      Raise InternalE(LoadStr(6314));
     {$IFDEF DebugGLErr} DebugOpenGL(105, 'glBindTexture(GL_TEXTURE_2D, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
 
@@ -2101,7 +2099,7 @@ begin
         end;
       end;
       if CurrentSurf=nil then
-        raise InternalE('CurrentSurf is nil!');
+        raise InternalE(LoadStr1(6322));
       CurrentSurf^.TransparentDrawn:=true;
     end
     else
@@ -2179,7 +2177,7 @@ begin
       begin
         {$IFDEF Debug}
         if PList^.Texture^.OpenGLName=0 then
-          Raise InternalE('Texture not loaded');
+          Raise InternalE(LoadStr1(6010));
         {$ENDIF}
         {$IFDEF DebugGLErr} DebugOpenGL(-108, '', []); {$ENDIF}
         glBindTexture(GL_TEXTURE_2D, PList^.Texture^.OpenGLName);
@@ -2285,17 +2283,17 @@ end;
 procedure CheckOpenGLError(GlError: GLenum);
 begin
   if GlError = GL_INVALID_VALUE then
-    raise EError(5773)
+    Raise EErrorFmt(6303, ['GL_INVALID_VALUE'])
   else if GlError = GL_INVALID_ENUM then
-    raise EError(5774)
+    Raise EErrorFmt(6303, ['GL_INVALID_ENUM'])
   else if GlError = GL_INVALID_OPERATION then
-    raise EError(5775)
+    Raise EErrorFmt(6303, ['GL_INVALID_OPERATION'])
   else if GlError = GL_STACK_OVERFLOW then
-    raise EError(5776)
+    Raise EErrorFmt(6303, ['GL_STACK_OVERFLOW'])
   else if GlError = GL_STACK_UNDERFLOW then
-    raise EError(5777)
+    Raise EErrorFmt(6303, ['GL_STACK_UNDERFLOW'])
   else if GlError = GL_OUT_OF_MEMORY then
-    raise EError(5778);
+    Raise EErrorFmt(6303, ['GL_OUT_OF_MEMORY']);
 end;
 
 end.

@@ -125,6 +125,7 @@ Strings = {
 
     389: "Add a Specific/Arg",
     390: "Delete Specific/Arg",
+
     421: "This would display help about entity if an entity was selected",
 
     501: "Checking map...",
@@ -266,9 +267,7 @@ Strings = {
     805: "Quake 3 .md3 file (*.md3)|*.md3",
     806: "SoF Texture (*.m32)|*.m32",
     807: "3d studio file (*.3ds)|*.3ds",
-    808: "Hmf (6DX) map format (*.hmf)|*.hmf",
-
-    809: "Invalid version number in Quake's original Progs.dat",
+    808: "Hmf (6DX) map file (*.hmf)|*.hmf",
 
     810: "PNG image (*.png)|*.png",
     811: "Tribes 2 VL2 Files (*.vl2)|*.vl2",
@@ -395,6 +394,7 @@ Strings = {
     3500: "Warning...",
     3501: "Information",
 
+    4095: "Invalid version number in Quake's original Progs.dat",
     4096: "Real number expected",
     4097: "Unexpected symbol.    Expected : %s    Found : %s",
     4098: "\253 ' \273 expected",
@@ -410,7 +410,7 @@ Strings = {
     4109: "Cannot initialize these type of variable",
     4110: "Declaration expected",
     4111: "\042void()\042 function expected",
-    4112: "Too many code ! Overflow is due to the structure of Progs.dat",
+    4112: "Too much code! Overflow is due to the structure of Progs.dat",
     4113: "frame name expected",
     4114: "Unknown identifier ('%s')",
     4115: "Wrong argument count in function call",
@@ -512,19 +512,6 @@ Strings = {
     4617: "\n\nPlease report this error to the QuArK development team, so that they can fix the issue promptly.",
     4618: "//Description of the invalid polygon :",
     4620: "Impossible to create the surface for a polygon//Three aligned points don't define a plane.",
-
-    4864: "",
-    4865: "Could not find the 3D drivers (%s). You need either a graphics card with installed drivers or the software 3D library, depending on the choice you made in the Configuration dialog box//Error code %d",
-    4866: "Error with the 3DFX Glide drivers//%s failed",
-    4867: "No 3D driver configured. Please select a 3D driver in the Configuration dialog box",
-    4868: "Could not load the OpenGL drivers//Error code %d",
-    4869: "Error in OpenGL initialization//'%s' failed",
-    4870: "Error in OpenGL commands [Error code(s) %s step %d]",
-
-    4880: "Error in DirectX initialization//'%s'",
-    4881: "Error in DirectX uninitialization//'%s'",
-    4882: "Error using DirectX//Function '%s' failed with '%s'",
-    4883: "Could not load the DirectX drivers//Error code %d",
 
     5119: "(new)",
     5120: "Explorer Group",
@@ -901,7 +888,7 @@ Strings = {
     5690: "Setup file was cleared. QuArK is restarted with its default configuration.\n\nDo you want to activate Colorful Captions again ?",
     5691: "Invalid Sprite File!",
     5692: "The File %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
-    5693: "Out of OpenGL display lists. Disable lighting in configuration box",
+
     5694: "Syntax error in Shader file, line %d",
     5695: "Shader '%s' has no image to display",
     5696: "Shader images are read-only",
@@ -912,35 +899,38 @@ Strings = {
     5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
     5702: "Files in this directory wont work. Select a file in a subdirectory please.",
 
-    # hl2
-    # alexander would like to reserve 5703 .. 5725 for HL2 :-)
+    # alexander would like to reserve 5703 .. 5729 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
-    5704: "no vtf file",
-    5705: "reserved for hl2",
+    #5704: "reserved for hl2",
+    #5705: "reserved for hl2",
     5706: "%s not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
-    5708: "reserved for hl2",
+    #5708: "reserved for hl2",
     5709: "VTF file",
     5710: "GCF file",
     5711: "GCF folder",
-    5712: 'cannot initialize Steam Service filesystem Access, '+\
-          'please check the following QuArK configuration items \n'+\
-          ' steam filesystem dll\n steam account name (case sensitive!)\n steam app id\n steam directory \n',
-    5713: 'steam file system',
-    5714: 'bad content id: %s',
-    5715: 'vmf file',
-    5716: 'VMT file',
-    5717: 'Syntax error in Material file %s, line %d',
-    5718: 'Could not load the VTF Lib//Error code %d',
-    5719: 'Could not load the HL Lib//Error code %d',
-    5720: 'reserved for hl2',
-    5721: 'reserved for hl2',
-    5722: 'reserved for hl2',
-    5723: 'reserved for hl2',
-    5724: 'reserved for hl2',
+    5712: "cannot initialize Steam Service filesystem Access, "+\
+          "please check the following QuArK configuration items \n"+\
+          " steam filesystem dll\n steam account name (case sensitive!)\n steam app id\n steam directory \n",
+    5713: "steam file system",
+    5714: "bad content id: %s",
+    5715: "VMF file",
+    5716: "VMT file",
+    5717: "Syntax error in Material file %s, line %d",
+    5718: "Could not load the VTF Lib//Error code %d",
+    5719: "Could not load the HL Lib//Error code %d",
+    #5720: "reserved for hl2",
+    #5721: "reserved for hl2",
+    #5722: "reserved for hl2",
+    #5723: "reserved for hl2",
+    #5724: "reserved for hl2",
+    #5725: "reserved for hl2",
+    #5726: "reserved for hl2",
+    #5727: "reserved for hl2",
+    #5728: "reserved for hl2",
+    #5729: "reserved for hl2",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
-
     5750: "Material '%s' has no image to display",
     5751: "Material images are read-only",
     5752: "Material stage '%s' has no image to display",
@@ -962,16 +952,55 @@ Strings = {
     # 5768: reserved
     # 5769: reserved
 
-    5770: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer.",
-    5771: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer.",
-    5772: "Unable to create SceneObject",
-    5773: "An error occured in the OpenGL routines: GL_INVALID_VALUE",
-    5774: "An error occured in the OpenGL routines: GL_INVALID_ENUM",
-    5775: "An error occured in the OpenGL routines: GL_INVALID_OPERATION",
-    5776: "An error occured in the OpenGL routines: GL_STACK_OVERFLOW",
-    5777: "An error occured in the OpenGL routines: GL_STACK_UNDERFLOW",
-    5778: "An error occured in the OpenGL routines: GL_OUT_OF_MEMORY",
-    5779: "Unable to delete OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer.",
+    # DanielPharos would like to reserve 6000 .. 6099 for all renderers :-)
+    6000: "Unable to create SceneObject",
+    6001: "No 3D driver configured. Please select a 3D driver in the Configuration dialog box",
+    6002: "Could not find the 3D drivers (%s). You need either a graphics card with installed drivers or the software 3D library, depending on the choice you made in the Configuration dialog box//Error code %d",
+    6003: "BuildScene - empty face",
+    6004: "Bad LOD",
+    6005: "Bad reverse LOD",
+    6006: "Bad aspect ratio",
+
+    6010: "Texture not loaded",
+
+    # DanielPharos would like to reserve 6100 .. 6199 for the software renderer :-)
+    6100: "Error with the Software 3D drivers//%s failed",
+
+    6120: "Software 3D renderer does not support fullscreen views (yet)",
+    6121: "You must first call Open3dFX",
+
+    # DanielPharos would like to reserve 6200 .. 6299 for the Glide renderer :-)
+    6200: "Error with the 3DFX Glide drivers//%s failed",
+
+    6220: "Glide renderer does not support fullscreen views (yet)",
+    6221: "You must first call Open3dFX",
+
+    # DanielPharos would like to reserve 6300 .. 6399 for the OpenGL renderer :-)
+    6300: "Could not load the OpenGL drivers//Error code %d",
+    6301: "Error in OpenGL initialization//'%s' failed",
+    6302: "Error in OpenGL commands [Error code(s) %s step %d]",
+    6303: "An error occured in the OpenGL routines: %s",
+
+    6310: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer",
+    6311: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
+    6312: "Unable to delete OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
+    6313: "Out of OpenGL display lists. Try updating your video card drivers. If that doesn't work, disable the display lists option in the Configuration dialog box",
+    6314: "Out of OpenGL texture numbers. Try updating your video card drivers. If that doesn't work, use another renderer",
+    6315: "Failed to swap buffers. Try updating your video card drivers. If that doesn't work, disable the double buffering option in the Configuration dialog box",
+
+    6320: "OpenGL renderer does not support fullscreen views (yet)",
+    6321: "Python failure in OpenGL view creation",
+    6322: "An error occured in the OpenGL routines: CurrentSurf is nil!",
+
+    # DanielPharos would like to reserve 6400 .. 6499 for the DirectX renderer :-)
+    6400: "Error in DirectX initialization//'%s'",
+    6401: "Error in DirectX uninitialization//'%s'",
+    6402: "Could not load the DirectX drivers//Error code %d",
+    6403: "Error using DirectX//Function '%s' failed with '%s'",
+
+    6410: "The DirectX renderer has not been implemented yet",
+
+    6420: "DirectX renderer does not support fullscreen views (yet)",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 
@@ -991,6 +1020,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.83  2007/03/01 17:34:44  danielpharos
+#Added two new error messages for HL2.
+#
 #Revision 1.82  2007/02/08 16:36:43  danielpharos
 #Updated VTF handling to use VTFLib. The HL2 memory leak is gone! Warning: SaveFile not working!
 #
