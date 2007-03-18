@@ -7,7 +7,7 @@
 ; nullsoft NSIS installer program available at:
 ;   http://nsis.sourceforge.net
 ;
-; Last update 14 March. 2007 - DanielPharos
+; Last update 18 March. 2007 - DanielPharos
 ;
 ; Setup and Use to create QuArK NSIS installer:
 ; ============================================
@@ -22,7 +22,7 @@
 !include "MUI.nsh"
 SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
-!define BUILDDIR "C:\QuArK_installer_files"
+!define BUILDDIR "C:\QuArK_installer_files\"
 !define INSTALLEREXENAME "quark-win32-6.5.0Beta1.exe"
 !define PRODUCT_NAME "QuArK"
 !define PRODUCT_VERSION "6.5.0 Beta 1"
@@ -251,8 +251,9 @@ SectionEnd
 Section -AdditionalIcons
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   CreateShortCut "$SMPROGRAMS\QuArK\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-  CreateShortCut "$SMPROGRAMS\QuArK\Uninstall.lnk" "$INSTDIR\uninst.exe"
   CreateShortCut "$SMPROGRAMS\QuArK\Forum.lnk" "${PRODUCT_WEB_FORUM}"   ; PuG's forum
+  CreateShortCut "$SMPROGRAMS\QuArK\Readme.lnk" "$INSTDIR\README.txt"
+  CreateShortCut "$SMPROGRAMS\QuArK\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
 
 Section -Post
