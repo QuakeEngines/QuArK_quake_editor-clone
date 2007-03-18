@@ -18,12 +18,13 @@ Contents
 
 1. What is QuArK?
 2. Where can I get QuArK?
-3. How do I install QuArK?
-4. How do I get help?
-5. What's New
-6. License
-7. Who works on QuArK?
-8. What is the GameCodeList.txt file?
+3. What are the system requirements for QuArk?
+4. How do I install QuArK?
+5. How do I get help?
+6. What's New
+7. License
+8. Who works on QuArK?
+9. What is the GameCodeList.txt file?
 
 1. What is QuArK?
 -----------------
@@ -36,13 +37,14 @@ assets. It is also able to modify .pak and .pk3 files, as well as
 importing compiled BSP's in order to study the entities as well as
 add/change/delete entities from these files.
 
-QuArK is completely different from the desktop publishing program
-Quark.
+QuArK is completely different from and not related to the desktop
+publishing program Quark.
 
 You can find out more about QuArK from the official website at
 http://www.planetquake.com/quark/.  See also the QuArK Infobase,
 located at http://quark.planetquake.gamespy.com/infobase/, and the
 QuArK Resource Forums at http://www.dark-forge.com/forums/.
+
 
 2. Where can I get QuArK?
 -------------------------
@@ -57,31 +59,47 @@ Source archives are also available, or you could use anonymous cvs to
 checkout the sources from our SourceForge cvs repository (the project
 name is `quark`).
 
-3. How do I install QuArK?
+
+3. What are the system requirements for QuArk?
+----------------------------------------------
+
+Although the exact minimum system requirements are unknown and prone
+to changes, you will need at least Windows 95 or compatible to run
+QuArK.  You will need about 40 MB of free disk space to install QuArK,
+and the minimum amount of RAM needed differs per game, but at least
+64 MB is advised.  Almost any CPU will be able to handle QuArK, but
+the slower the CPU, the slower QuArK will be.
+
+
+4. How do I install QuArK?
 --------------------------
 
-3.1. Installation on Windows
+4.1. Installation on Windows
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you downloaded a release with an installation program, you need to
 run the installer and follow the on-screen instructions.
 
 If you downloaded a snapshot .zip archive, just extract the files to a
-directory somewhere on your hard disk. 
+directory somewhere on your hard disk.  You might need to extract the
+files into a directory containing the latest available version of
+QuArK.
 
 If you downloaded the source code, please see the relevant Infobase
 pages for instructions for building QuArK.
 
-3.2. Installation on GNU Linux
+4.2. Installation on GNU Linux
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For installation instructions for GNU Linux systems, please see:
 
-http://quark.sourceforge.net/infobase/intro.quarkonlinux.installing.html
+http://quark.planetquake.gamespy.com/infobase/
+intro.quarkonlinux.installing.html
 
 If you require further assistance, please see the next section.
 
-4. How do I get help?
+
+5. How do I get help?
 ---------------------
 
 Help on using and developing QuArK is available using the Help menu
@@ -103,7 +121,8 @@ and the 'QuArK Forums site' for a wealth of information on the use of QuArK,
 specific game it supports, tutorials and the opportunity to join the forums
 and post questions and get answers to suit your particular needs.
 
-5. What's New
+
+6. What's New
 -------------
 
 Read the `NEWS.txt` file in the same directory as this file, which is the
@@ -111,13 +130,15 @@ folder that QuArK was installed in. This file gives a listing of new and
 improved items for this installation and previous versions of QuArK in
 their distribution order.
 
-6. License
+
+7. License
 ----------
 
 QuArK is distributed under the Gnu Public License.  See `COPYING.txt` in the
 same directory as this file, which is the folder that QuArK was installed in.
 
-7. Who works on QuArK?
+
+8. Who works on QuArK?
 ----------------------
 
 A list of past and present developers of QuArK can be found in the 'AUTHORS.txt'
@@ -125,7 +146,8 @@ file in the same directory as this file, which is the folder that QuArK was
 installed in. This file also tries to give their last known e-mail address.
 However, because some have moved on they may not always still be active.
 
-8. What is the GameCodeList.txt file?
+
+9. What is the GameCodeList.txt file?
 -------------------------------------
 
 When ever a new game is introduced and supported by QuArK a 'Game Code' must be
