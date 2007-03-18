@@ -22,12 +22,14 @@ QQRKSRC1
 
 // Main configuration file for QuArK.
 
-// Please see file TECHINFO.TXT for more information
-// about this file format.
+// Please see infobase/help for more information about this file format.
 
 //$Header$
 
 //$Log$
+//Revision 1.314  2007/03/18 22:25:11  danielpharos
+//Added a 'new texture' button to the toolbar for VTF textures. Also fixed a few descriptions.
+//
 //Revision 1.313  2007/03/15 22:17:07  danielpharos
 //Added an option to set the number of game files loaded, and made VMT files the default for HL2.
 //
