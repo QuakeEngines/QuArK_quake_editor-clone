@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2005/10/15 01:00:28  cdunde
+//To reinstate headers and history
+//
 //Revision 1.4  2005/07/07 07:16:33  alexander
 //fixed problem not displaying boxes for models
 //
@@ -15,6 +18,7 @@ QQRKSRC1
 //
 
 {
+  Description = "HL2 Models"
 
     t_models_hl2_form:form =
     {
@@ -4206,7 +4210,7 @@ QQRKSRC1
       }
     }
 
-// the include 
+// the include
 
     t_modelselect:incl =
     {
@@ -4220,7 +4224,7 @@ QQRKSRC1
         hint ="Model File Name"
       }
       model: =
-      { 
+      {
         Txt = " "
         Typ = "B"
         Cap = "models..."
@@ -4228,5 +4232,5 @@ QQRKSRC1
         hint ="Browse Models"
       }
     }
-     
+    
 }

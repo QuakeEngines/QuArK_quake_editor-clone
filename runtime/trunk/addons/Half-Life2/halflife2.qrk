@@ -537,7 +537,7 @@ QQRKSRC1
         npc_alyx:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Alyx"
           model = "models/alyx.mdl"
           additionalequipment = "weapon_alyxgun"
@@ -545,7 +545,7 @@ QQRKSRC1
         npc_antlion:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Antlions will run away from ai_sound, type: Thumper."
           startburrowed = "No"
           radius = "256"
@@ -555,7 +555,7 @@ QQRKSRC1
         npc_antlion_template_maker:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Antlion Template Maker"
           spawnradius = "512"
           vehicledistance = "1"
@@ -568,7 +568,7 @@ QQRKSRC1
         npc_antlionguard:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Antlion Guard"
           startburrowed = "No"
           allowbark = "No"
@@ -576,7 +576,7 @@ QQRKSRC1
         npc_apcdriver:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "NPC used to drive an APC vehicle."
           drivermaxspeed = "1"
           driverminspeed = "0"
@@ -584,35 +584,35 @@ QQRKSRC1
         npc_barnacle:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Barnacle"
           RestDist = "16"
         }
         npc_barney:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Barney"
           additionalequipment = "weapon_pistol"
         }
         npc_breen:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Dr Breen"
           model = "models/breen.mdl"
         }
         npc_bullseye:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Bullseye"
           health = "35"
         }
         npc_citizen:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Citizen"
           spawnflags = "262144"
           additionalequipment = "0"
@@ -626,7 +626,7 @@ QQRKSRC1
         npc_combine_camera:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Combine security camera"
           spawnflags = "32"
           innerradius = "300"
@@ -636,14 +636,14 @@ QQRKSRC1
         npc_combine_s:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Combine Soldier"
           model = "models/combine_soldier.mdl"
         }
         npc_combinedropship:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Combine Dropship"
           GunRange = "2048"
           Invulnerable = "0"
@@ -652,19 +652,19 @@ QQRKSRC1
         npc_combinegunship:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Combine Gunship"
         }
         npc_crabsynth:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Crab Synth"
         }        
         npc_cranedriver:e =
         {
           origin = "0 0 0"
-					angles = "0 0 0"
+          angles = "0 0 0"
           ;desc = "NPC used to drive cranes."
           releasepause = "0"
         }        
@@ -4710,52 +4710,52 @@ QQRKSRC1
         txt = "&"
         hint = "Class name of spawned NPC"
         typ = "C"
-					items = "npc_alyx"
-					$0D"npc_antlion"
-					$0D"npc_antlionguard"
-					$0D"npc_apcdriver"     
-					$0D"npc_barnacle"     
-					$0D"npc_barney"     
-					$0D"npc_breen"     
-					$0D"npc_bullseye"     
-					$0D"npc_citizen"     
-					$0D"npc_combine_camera"   
-					$0D"npc_combine_s"     
-					$0D"npc_combinedropship"  
-					$0D"npc_combinegunship"   
-					$0D"npc_combinegunship"   
-					$0D"npc_cranedriver"     
-					$0D"npc_crow"     
-					$0D"npc_cscanner"     
-					$0D"npc_dog"     
-					$0D"npc_eli"     
-					$0D"npc_enemyfinder"     
-					$0D"npc_fastzombie"     
-					$0D"npc_gman"     
-					$0D"npc_headcrab"     
-					$0D"npc_headcrab_black"   
-					$0D"npc_headcrab_fast"    
-					$0D"npc_helicopter"     
-					$0D"npc_ichthyosaur"     
-					$0D"npc_kleiner"     
-					$0D"npc_manhack"     
-					$0D"npc_metropolice"     
-					$0D"npc_missiledefense"   
-					$0D"npc_monk"     
-					$0D"npc_mortarsynth"     
-					$0D"npc_mossman"     
-					$0D"npc_pigeon"     
-					$0D"npc_poisonzombie"     
-					$0D"npc_rollermine"     
-					$0D"npc_seagull"     
-					$0D"npc_sniper"     
-					$0D"npc_spotlight"     
-					$0D"npc_stalker"     
-					$0D"npc_strider"     
-					$0D"npc_vehicledriver"    
-					$0D"npc_vortigaunt"     
-					$0D"npc_zombie"     
-					$0D"npc_zombie_torso"
+          items = "npc_alyx"
+          $0D"npc_antlion"
+          $0D"npc_antlionguard"
+          $0D"npc_apcdriver"     
+          $0D"npc_barnacle"     
+          $0D"npc_barney"     
+          $0D"npc_breen"     
+          $0D"npc_bullseye"     
+          $0D"npc_citizen"     
+          $0D"npc_combine_camera"   
+          $0D"npc_combine_s"     
+          $0D"npc_combinedropship"  
+          $0D"npc_combinegunship"   
+          $0D"npc_combinegunship"   
+          $0D"npc_cranedriver"     
+          $0D"npc_crow"     
+          $0D"npc_cscanner"     
+          $0D"npc_dog"     
+          $0D"npc_eli"     
+          $0D"npc_enemyfinder"     
+          $0D"npc_fastzombie"     
+          $0D"npc_gman"     
+          $0D"npc_headcrab"     
+          $0D"npc_headcrab_black"   
+          $0D"npc_headcrab_fast"    
+          $0D"npc_helicopter"     
+          $0D"npc_ichthyosaur"     
+          $0D"npc_kleiner"     
+          $0D"npc_manhack"     
+          $0D"npc_metropolice"     
+          $0D"npc_missiledefense"   
+          $0D"npc_monk"     
+          $0D"npc_mortarsynth"     
+          $0D"npc_mossman"     
+          $0D"npc_pigeon"     
+          $0D"npc_poisonzombie"     
+          $0D"npc_rollermine"     
+          $0D"npc_seagull"     
+          $0D"npc_sniper"     
+          $0D"npc_spotlight"     
+          $0D"npc_stalker"     
+          $0D"npc_strider"     
+          $0D"npc_vehicledriver"    
+          $0D"npc_vortigaunt"     
+          $0D"npc_zombie"     
+          $0D"npc_zombie_torso"
       }
       NPCTargetname: =
       {
