@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2007/02/02 10:45:42  danielpharos
+Reverted: Workaround for an access violation on shutdown
+
 Revision 1.10  2007/01/31 16:42:40  danielpharos
 Workaround for an access violation on shutdown
 
@@ -90,6 +93,7 @@ type
     SetupQrk: QFileObject;
     AncienSel: String;
     IsModal, ClickedOk: Boolean;
+    DisableTimer: Boolean;
    {InternalOnly: Boolean;}
     procedure FormCfg1Change(Sender: TObject);
     procedure MAJAffichage(T: QObject);
@@ -279,7 +283,10 @@ end;
 
 procedure TConfigDlg.Timer1Timer(Sender: TObject);
 begin
- MAJAffichage(Explorer.TMSelUnique);
+  if not DisableTimer then
+    MAJAffichage(Explorer.TMSelUnique)
+  else
+    Timer1.Enabled:=False;
 end;
 
 procedure TConfigDlg.MAJAffichage(T: QObject);
@@ -328,6 +335,7 @@ end;
 
 procedure TConfigDlg.FormDestroy(Sender: TObject);
 begin
+ DisableTimer:=true;
  MAJAffichage(Nil);
  SetupQrk.AddRef(-1);
  SetupQrk:=Nil;
