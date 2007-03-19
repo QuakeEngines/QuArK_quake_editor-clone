@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2007/03/15 22:19:13  danielpharos
+Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files not supported yet.
+
 
 }
 
@@ -259,6 +262,58 @@ begin
 //          else
 //            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
             VTFImage:=NeedGameFileBase(GetGameDir, path + s + '.vtf') as QVTF;
+        except
+          VTFImage:=nil;
+      end;
+
+      S:=Specifics.Values['$Material'];
+      if (VTFImage=nil) and (s<>'') then
+        try
+          Log(LOG_VERBOSE,'attempting to load $Material '+S);
+//          if (self.Protocol<>'') then
+//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + s + '.vtf') as QVTF
+//          else
+//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
+            VTFImage:=NeedGameFileBase(GetGameDir, path + s + '.vtf') as QVTF;
+        except
+          VTFImage:=nil;
+      end;
+
+      S:=Specifics.Values['$dudvmap'];
+      if (VTFImage=nil) and (s<>'') then
+        try
+          Log(LOG_VERBOSE,'attempting to load $dudvmap '+S);
+//          if (self.Protocol<>'') then
+//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + s + '.vtf') as QVTF
+//          else
+//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
+            VTFImage:=NeedGameFileBase(GetGameDir, path + s + '.vtf') as QVTF;
+        except
+          VTFImage:=nil;
+      end;
+
+      S:=Specifics.Values['$envmap'];
+      if (VTFImage=nil) and (s<>'') then
+        try
+          Log(LOG_VERBOSE,'attempting to load $envmap '+S);
+//          if (self.Protocol<>'') then
+//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + s + '.vtf') as QVTF
+//          else
+//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
+            VTFImage:=NeedGameFileBase(GetGameDir, path + s + '.vtf') as QVTF;
+        except
+          VTFImage:=nil;
+      end;
+
+      if (VTFImage=nil) then
+        try
+          Log(LOG_VERBOSE,'attempting to load '+self.Name+'.vtf');
+//          if (self.Protocol<>'') then
+//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + self.name + '.vtf') as QVTF
+//          else
+//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + self.name + '.vtf') as QVTF;
+            VTFImage:=NeedGameFileBase(GetGameDir, path + self.name + '.vtf') as QVTF;
+            //DanielPharos: Not working, missing the path-name
         except
           VTFImage:=nil;
       end;
