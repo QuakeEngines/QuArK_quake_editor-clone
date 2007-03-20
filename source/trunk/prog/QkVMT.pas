@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2007/03/19 15:27:54  danielpharos
+Added a few more keywords to find a texture for a VMT file.
+
 Revision 1.1  2007/03/15 22:19:13  danielpharos
 Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files not supported yet.
 
@@ -143,6 +146,9 @@ var
   I: integer;
   GameDir: String;
   SteamAppsDir: String;
+  SteamDirectory: String;
+  TexturePath: String;
+  GCFFilename: String;
 
   //NodeLevel: Cardinal;
   NodeType: VMTNodeType;
@@ -224,6 +230,7 @@ begin
 
       vlDeleteMaterial(VMTMaterial);
 
+      GCFFilename:='source materials';
       path:='hl2/materials/';
       //DanielPharos: Not the way to go!
 
@@ -240,15 +247,35 @@ begin
           SteamAppsDir:=GameDir+'\';
       end;
 
+      SteamDirectory:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['Directory'];
+      if RightStr(SteamDirectory,1)='\' then
+        TexturePath:=RightStr(self.filename,Length(self.filename)-Length(SteamDirectory))
+      else
+      begin
+        if RightStr(SteamDirectory,1)='/' then
+          TexturePath:=RightStr(self.filename,Length(self.filename)-Length(SteamDirectory))
+        else
+          TexturePath:=RightStr(self.filename,Length(self.filename)-Length(SteamDirectory)-1);
+      end;
+
+      I:=pos('\',TexturePath);
+      if I>0 then
+        TexturePath:=LeftStr(TexturePath, I-1)
+      else
+      begin
+        I:=pos('/',GameDir);
+        if I>0 then
+          TexturePath:=LeftStr(TexturePath, I-1);
+      end;
+
       S:=Specifics.Values['%tooltexture'];
       if (VTFImage=nil) and (s<>'') then
         try
           Log(LOG_VERBOSE,'attempting to load $basetexture '+S);
-//          if (self.Protocol<>'') then
-//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + s + '.vtf') as QVTF
-//          else
-//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
-            VTFImage:=NeedGameFileBase(GetGameDir, path + s + '.vtf') as QVTF;
+          if (self.Protocol<>'') then
+            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', path + s + '.vtf') as QVTF
+          else
+            VTFImage:=NeedGameFileBase(TexturePath, path + s + '.vtf') as QVTF;
         except
           VTFImage:=nil;
       end;
@@ -257,11 +284,10 @@ begin
       if (VTFImage=nil) and (s<>'') then
         try
           Log(LOG_VERBOSE,'attempting to load $basetexture '+S);
-//          if (self.Protocol<>'') then
-//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + s + '.vtf') as QVTF
-//          else
-//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
-            VTFImage:=NeedGameFileBase(GetGameDir, path + s + '.vtf') as QVTF;
+          if (self.Protocol<>'') then
+            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', path + s + '.vtf') as QVTF
+          else
+            VTFImage:=NeedGameFileBase(TexturePath, path + s + '.vtf') as QVTF;
         except
           VTFImage:=nil;
       end;
@@ -270,11 +296,10 @@ begin
       if (VTFImage=nil) and (s<>'') then
         try
           Log(LOG_VERBOSE,'attempting to load $Material '+S);
-//          if (self.Protocol<>'') then
-//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + s + '.vtf') as QVTF
-//          else
-//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
-            VTFImage:=NeedGameFileBase(GetGameDir, path + s + '.vtf') as QVTF;
+          if (self.Protocol<>'') then
+            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', path + s + '.vtf') as QVTF
+          else
+            VTFImage:=NeedGameFileBase(TexturePath, path + s + '.vtf') as QVTF;
         except
           VTFImage:=nil;
       end;
@@ -283,11 +308,10 @@ begin
       if (VTFImage=nil) and (s<>'') then
         try
           Log(LOG_VERBOSE,'attempting to load $dudvmap '+S);
-//          if (self.Protocol<>'') then
-//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + s + '.vtf') as QVTF
-//          else
-//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
-            VTFImage:=NeedGameFileBase(GetGameDir, path + s + '.vtf') as QVTF;
+          if (self.Protocol<>'') then
+            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', path + s + '.vtf') as QVTF
+          else
+            VTFImage:=NeedGameFileBase(TexturePath, path + s + '.vtf') as QVTF;
         except
           VTFImage:=nil;
       end;
@@ -296,10 +320,9 @@ begin
       if (VTFImage=nil) and (s<>'') then
         try
           Log(LOG_VERBOSE,'attempting to load $envmap '+S);
-//          if (self.Protocol<>'') then
-//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + s + '.vtf') as QVTF
-//          else
-//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + s + '.vtf') as QVTF;
+          if (self.Protocol<>'') then
+            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', path + s + '.vtf') as QVTF
+          else
             VTFImage:=NeedGameFileBase(GetGameDir, path + s + '.vtf') as QVTF;
         except
           VTFImage:=nil;
@@ -308,10 +331,9 @@ begin
       if (VTFImage=nil) then
         try
           Log(LOG_VERBOSE,'attempting to load '+self.Name+'.vtf');
-//          if (self.Protocol<>'') then
-//            VTFImage:=NeedGameFileBase(SteamAppsDir+p.name+'.gcf', path + '/' + self.name + '.vtf') as QVTF
-//          else
-//            VTFImage:=NeedGameFileBase(GetGameDir, path + '/' + self.name + '.vtf') as QVTF;
+          if (self.Protocol<>'') then
+            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', path + self.name + '.vtf') as QVTF
+          else
             VTFImage:=NeedGameFileBase(GetGameDir, path + self.name + '.vtf') as QVTF;
             //DanielPharos: Not working, missing the path-name
         except
