@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2007/03/20 21:07:00  danielpharos
+Even textures for cstrike should now load correctly. GCF file access through VMT files is (still) broken.
+
 Revision 1.3  2007/03/20 20:38:07  danielpharos
 VTF textures should now load correctly from VMT files.
 
@@ -153,6 +156,7 @@ var
   SteamDirectoryLength: Integer;
   TexturePath: String;
   TexturePath2: String;
+  TexturePath3: String;
   GCFFilename: String;
 
   //NodeLevel: Cardinal;
@@ -269,17 +273,23 @@ begin
       end;
 
       TexturePath2:=RightStr(self.filename,length(self.filename)-SteamDirectoryLength-Length(TexturePath)-1);
-      TexturePath2:='hl2/materials/';
 
-      I:=pos('\',TexturePath);
+      I:=pos('\',TexturePath2);
       if I=0 then
-        I:=pos('/',GameDir);
-      TexturePath2:=RightStr(TexturePath2,Length(TexturePath2)-I);
+        I:=pos('/',TexturePath2);
+      TexturePath3:=RightStr(TexturePath2,Length(TexturePath2)-I);
 
-      I:=pos('\',TexturePath);
+      I:=pos('\',TexturePath3);
       if I=0 then
-        I:=pos('/',GameDir);
-      TexturePath2:=RightStr(TexturePath2,Length(TexturePath2)-I);
+        I:=pos('/',TexturePath3);
+      TexturePath3:=RightStr(TexturePath3,Length(TexturePath3)-I);
+
+      TexturePath2:=LeftStr(TexturePath2,Length(TexturePath2)-Length(TexturePath3));
+
+      I:=pos('\',TexturePath3);
+      if I=0 then
+        I:=pos('/',TexturePath3);
+      TexturePath3:=LeftStr(TexturePath3,I);
 
       S:=Specifics.Values['%tooltexture'];
       if (VTFImage=nil) and (s<>'') then
@@ -347,8 +357,7 @@ begin
           if (self.Protocol<>'') then
             VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + self.name + '.vtf') as QVTF
           else
-            VTFImage:=NeedGameFileBase(TexturePath, TexturePath2 + self.name + '.vtf') as QVTF;
-            //DanielPharos: Not working, missing the path-name
+            VTFImage:=NeedGameFileBase(TexturePath, TexturePath2 + TexturePath3 + self.name + '.vtf') as QVTF;
         except
           VTFImage:=nil;
       end;
