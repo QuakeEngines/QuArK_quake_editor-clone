@@ -4,21 +4,24 @@ QQRKSRC1
 //    This file contains :
 //
 //    * List of Quake 2 textures
-//	By: Akuma (AKUMA@BTinternet.com)
-//	http://www.btinternet.com/~akuma/
+//      By: Akuma (AKUMA@BTinternet.com)
+//      http://www.btinternet.com/~akuma/
 //
 //    * List of Quake 2 entities
 //      and formatting for Quake 2 entities' Specifics
 //      By: Kasper Kystol Andersen (SpaceDog) <spacedog@get2net.dk>
 //      Reviewed by: Richard Hatch <wernbowl@airmail.net>
 //
-//    Thanks to these three person.   - Armin -
+//    Thanks to these three persons.   - Armin -
 //
 //    See comments in file Defaults.qrk.
 
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11  2007/03/13 05:42:59  cdunde
+//Changed the trigger_push specific 'angle 360 into angles 0 0 0 - by OmnificienT
+//
 //Revision 1.10  2007/02/06 13:09:19  danielpharos
 //Changed the translucency setting to actually be visibly transparent in QuArK.
 //
@@ -45,7 +48,7 @@ QQRKSRC1
 //
 
 {
-  QuArKProtected = "1"       // Additionnal user warnings to prevents accidental change of this file
+  QuArKProtected = "1"       // Additional user warnings to prevents accidental change of this file
   Description = "Base Quake 2 data"
 
 //  RunGame:incl =
@@ -232,61 +235,56 @@ QQRKSRC1
     //   ***   TEXTURES   ***   Thanks Akuma !
     //
 
-  Textures.qtx =		// the textures !
+  Textures.qtx =        // the textures !
   {
     ToolBox = "Texture Browser..."
     Root = "id Software Textures.qtxfolder"
-    Left = '170'		// this is needed because Quake 2 texture names can be quite wide
+    Left = '170'        // this is needed because Quake 2 texture names can be quite wide
     id Software Textures.qtxfolder =
     {
-				// "baseq2" is simply the source path under the
-  				// Quake 2 directory ("textures/" is implicit)
-				// Right now, just put "baseq2" everywhere.
-      Basic.txlist =	// each texture page is a ".txlist" object
-      {			// If you want to complete this list, I recommend
-				// you to use QuArK 4.07's existing texture pages
-		// basic	// (see indications in file DataQ1.qrk).
+      // "baseq2" is simply the source path under the
+      // Quake 2 directory ("textures/" is implicit)
+      // Right now, just put "baseq2" everywhere.
+      Basic.txlist =    // each texture page is a ".txlist" object
+      {                 // If you want to complete this list, I recommend
+                        // you to use QuArK 4.07's existing texture pages
+                        // basic    // (see indications in file DataQ1.qrk).
 
-		// If you are going to re-organise these texures then please use TAB instead
-		// of SPACE. Using TAB will keep the file size down, as it's already very large
-		// because of all these textures! I've only used TAB for the first few bits.
-		// so you can finish what I started :) (Keep that text aligned soldier!)
-
-		e1u2/basic1_2.wl	={w="baseq2"}
-		e1u2/basic1_3.wl	={w="baseq2"}
-		e1u2/basic1_4.wl	={w="baseq2"}
-		e1u2/basic1_5.wl	={w="baseq2"}
-		e1u2/basic1_7.wl	={w="baseq2"}
-		e1u2/basic1_8.wl	={w="baseq2"}
-		e2u1/blbk2_1.wl	={w="baseq2"}
-		e3u2/block1_5.wl	={w="baseq2"}
-		e3u2/block1_6.wl	={w="baseq2"}
-		e3u2/block1_7.wl	={w="baseq2"}
-		e2u2/bmetal12_1.wl={w="baseq2"}
-		e3u3/color1_2.wl	={w="baseq2"}
-		e3u3/color1_4.wl	={w="baseq2"}
-		e3u3/color1_5.wl	={w="baseq2"}
-		e3u3/color1_7.wl	={w="baseq2"}
-		e3u3/color1_8.wl	={w="baseq2"}
-		e3u3/c_met10_1.wl	={w="baseq2"}
-		e1u1/c_met11_2.wl	={w="baseq2"}
-		e2u1/c_met14_1.wl	={w="baseq2"}
-		e2u2/metal18_2.wl	={w="baseq2"}
-		e2u2/metal22_2.wl	={w="baseq2"}
-		e3u3/metal23_3.wl	={w="baseq2"}
-		e3u3/metal23_4.wl	={w="baseq2"}
-		e2u2/metal27_1.wl	={w="baseq2"}
-        e2u2/metal28_1.wl	={w="baseq2"}
-        e2u2/metal29_2.wl	={w="baseq2"}
-        e2u1/metal32_2.wl	={w="baseq2"}
-        e3u1/palmet1_1.wl	={w="baseq2"}
-        e3u1/palmet3_1.wl	={w="baseq2"}
-        e3u1/palmet3_2.wl	={w="baseq2"}
-        e3u1/palmet5_2.wl	={w="baseq2"}
-        e3u1/palmet7_1.wl	={w="baseq2"}
-        e1u1/wbasic1_1.wl	={w="baseq2"}
-        e1u1/wbasic1_4.wl	={w="baseq2"}
-        e1u1/wbasic1_7.wl	={w="baseq2"}
+        e1u2/basic1_2.wl   ={w="baseq2"}
+        e1u2/basic1_3.wl   ={w="baseq2"}
+        e1u2/basic1_4.wl   ={w="baseq2"}
+        e1u2/basic1_5.wl   ={w="baseq2"}
+        e1u2/basic1_7.wl   ={w="baseq2"}
+        e1u2/basic1_8.wl   ={w="baseq2"}
+        e2u1/blbk2_1.wl    ={w="baseq2"}
+        e3u2/block1_5.wl   ={w="baseq2"}
+        e3u2/block1_6.wl   ={w="baseq2"}
+        e3u2/block1_7.wl   ={w="baseq2"}
+        e2u2/bmetal12_1.wl ={w="baseq2"}
+        e3u3/color1_2.wl   ={w="baseq2"}
+        e3u3/color1_4.wl   ={w="baseq2"}
+        e3u3/color1_5.wl   ={w="baseq2"}
+        e3u3/color1_7.wl   ={w="baseq2"}
+        e3u3/color1_8.wl   ={w="baseq2"}
+        e3u3/c_met10_1.wl  ={w="baseq2"}
+        e1u1/c_met11_2.wl  ={w="baseq2"}
+        e2u1/c_met14_1.wl  ={w="baseq2"}
+        e2u2/metal18_2.wl  ={w="baseq2"}
+        e2u2/metal22_2.wl  ={w="baseq2"}
+        e3u3/metal23_3.wl  ={w="baseq2"}
+        e3u3/metal23_4.wl  ={w="baseq2"}
+        e2u2/metal27_1.wl  ={w="baseq2"}
+        e2u2/metal28_1.wl  ={w="baseq2"}
+        e2u2/metal29_2.wl  ={w="baseq2"}
+        e2u1/metal32_2.wl  ={w="baseq2"}
+        e3u1/palmet1_1.wl  ={w="baseq2"}
+        e3u1/palmet3_1.wl  ={w="baseq2"}
+        e3u1/palmet3_2.wl  ={w="baseq2"}
+        e3u1/palmet5_2.wl  ={w="baseq2"}
+        e3u1/palmet7_1.wl  ={w="baseq2"}
+        e1u1/wbasic1_1.wl  ={w="baseq2"}
+        e1u1/wbasic1_4.wl  ={w="baseq2"}
+        e1u1/wbasic1_7.wl  ={w="baseq2"}
 
       }
       Brick.txlist =      // each texture page is a ".txlist" object

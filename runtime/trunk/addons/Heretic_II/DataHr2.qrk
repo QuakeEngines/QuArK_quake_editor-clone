@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.18  2006/11/30 01:16:36  cdunde
+//To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+//
 //Revision 1.17  2005/12/17 21:29:26  cdunde
 //To add improvements made by dannsdinosaurs - DannJ
 //
@@ -139,7 +142,7 @@ QQRKSRC1
 //  April 6, material type surface flags
 
 {
-  QuArKProtected = "1"       // Additionnal user warnings to prevents accidental change of this file
+  QuArKProtected = "1"       // Additional user warnings to prevents accidental change of this file
   Description = "Base Heretic II data"
 
 //  RunGame:incl =
@@ -6646,7 +6649,7 @@ QQRKSRC1
           angle = "0"
         }
       }
-      Items, Weapons & Ammo.qtxfolder =
+      Items, Weapons and Ammo.qtxfolder =
       {
         item_ammo_hellstaff:e =
         {
@@ -6708,12 +6711,12 @@ QQRKSRC1
         item_mana_combo_half:e =
         {
           origin = "0 0 0"
-          ;desc = "Pickup for both defensive & offensive mana (50 points)."
+          ;desc = "Pickup for both defensive and offensive mana (50 points)."
         }
         item_mana_combo_quarter:e =
         {
           origin = "0 0 0"
-          ;desc = "Pickup for both defensive & offensive mana (25 points)."
+          ;desc = "Pickup for both defensive and offensive mana (25 points)."
         }
         item_mana_defensive_full:e =
         {
@@ -7028,7 +7031,7 @@ QQRKSRC1
         }
         func_plat:b =
         {
-          ;desc = "moves up & down"
+          ;desc = "moves up and down"
           accel = ""
           angle = "0"
           height = ""
@@ -7085,7 +7088,7 @@ QQRKSRC1
         }
         func_train:b =
         {
-          ;desc = "A moving platform that players can ride, & that can also do"
+          ;desc = "A moving platform that players can ride, and that can also do"
            " tricks"
           ;incl = "defpoly"
         }
@@ -7283,7 +7286,7 @@ QQRKSRC1
           angle = "0"
         }
       }
-      Furniture & Indoor Stuff.qtxfolder =
+      Furniture and Indoor Stuff.qtxfolder =
       {
         obj_andwallhanging:e =
         {
@@ -7481,7 +7484,7 @@ QQRKSRC1
           angle = "0"
         }
       }
-      Commercial & Industrial.qtxfolder =
+      Commercial and Industrial.qtxfolder =
       {
         obj_barrel:e =
         {
@@ -8210,7 +8213,7 @@ QQRKSRC1
           angle = "0"
         }
       }
-      Sound & Environment.qtxfolder =
+      Sound and Environment.qtxfolder =
       {
         choose_CDTrack:b =
         {
@@ -8437,7 +8440,7 @@ QQRKSRC1
         obj_shrine:e =
         {
           origin = "0 0 0"
-          ;desc = "Makes the shrine model & sparkle"
+          ;desc = "Makes the shrine model and sparkle"
           angle = "0"
           style = "OBJ_SHRINE_STYLE"
           targetname = ""
@@ -8825,7 +8828,7 @@ QQRKSRC1
           targetname = ""
         }
       }
-      Cinematics & Scripting.qtxfolder =
+      Cinematics and Scripting.qtxfolder =
       {
         character_corvus1:e =
         {
@@ -9364,7 +9367,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "you won't see he"
+          Hint = "can't be seen"
         }
       }
       character_highpriestess2:form =
@@ -9434,7 +9437,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVISIBLE"
-          Hint = "can't be see"
+          Hint = "can't be seen"
         }
         spawnflags: =
         {
@@ -9555,7 +9558,7 @@ QQRKSRC1
           Typ = "X1"
           Cap = "NO_LOOP"
           Hint = "allows you to set the track to play not to loop (not used in"
-           " maps, untested by me)"
+           " maps, untested)"
         }
       }
       env_bubbler:form =
@@ -9594,7 +9597,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -9631,7 +9634,7 @@ QQRKSRC1
           Typ = "X16"
           Cap = "MOVEABLE"
           Hint = "fire will move if given a velocity (not used, doesn't seem t"
-           "o work"
+           "o work)"
         }
         spawnflags: =
         {
@@ -9639,7 +9642,7 @@ QQRKSRC1
           Typ = "X32"
           Cap = "LIGHT_ON"
           Hint = "fire will have light attached to it - if moveable, not requi"
-           "re"
+           "red"
         }
       }
       env_mist:form =
@@ -9702,7 +9705,8 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "START_OFF"
-          Hint = "doesnt work - use trigger_always to turn off first"$0D"then trigger to turn it on again"
+          Hint = "doesnt work - use trigger_always to turn off first"$0D"then "
+           "trigger to turn it on again"
         }
       }
       env_sun1:form =
@@ -9715,7 +9719,7 @@ QQRKSRC1
       env_water_drip:form =
       {
         Help = "Spawns a drip of water which falls straight down"$0D"  Drip st"
-         "arts at spawn location & splashes on floor"$0D"  Toggle-able by targ"
+         "arts at spawn location and splashes on floor"$0D"  Toggle-able by targ"
          "etname, but no start off option, afaik"
         bbox = '-4 -4 0 4 4 4 1'
         HTML = "help/hr2/g_waterfx.htm#env_water_drip"
@@ -9727,7 +9731,7 @@ QQRKSRC1
         targetname: =
         {
           Txt = "&"
-          Hint = "toggles it off & on (no start off option, afaik)"
+          Hint = "toggles it off and on (no start off option, afaik)"
         }
         spawnflags: =
         {
@@ -9740,7 +9744,7 @@ QQRKSRC1
       env_water_fountain:form =
       {
         Help = "A fountain jet of water with spray at base, with fixed directi"
-         "on & can be toggled"$0D"  (see the html help for more)."
+         "on and can be toggled"$0D"  (see the html help for more)."
         bbox = '-4 -4 0 4 4 4 1'
         HTML = "help/hr2/watfoun.htm"
         delay: =
@@ -10117,7 +10121,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -10154,7 +10158,7 @@ QQRKSRC1
         pathtarget: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "no hint yet!"
         }
         pathtargetname: =
         {
@@ -10477,7 +10481,7 @@ QQRKSRC1
           Txt = "monster_iq"
           Cap = "Push"
           Form = "monster_iq:form"
-          Hint = "specifics for intelligence & personality of spawned monster"
+          Hint = "specifics for intelligence and personality of spawned monster"
         }
         wait: =
         {
@@ -10529,7 +10533,7 @@ QQRKSRC1
       }
       func_plat:form =
       {
-        Help = "moves up & down.  Plats are always drawn in the extended posit"
+        Help = "moves up and down.  Plats are always drawn in the extended posit"
          "ion"$0D"  so they will light correctly."
         HTML = "help/hr2/g_func.htm#func_plat"
         accel: =
@@ -10733,7 +10737,7 @@ QQRKSRC1
       }
       func_train:form =
       {
-        Help = "A moving platform that players can ride, & that can also do tr"
+        Help = "A moving platform that players can ride, and that can also do tr"
          "icks"
         HTML = "help/hr2/g_func.htm#func_train"
         _color: =
@@ -10788,7 +10792,7 @@ QQRKSRC1
         pathtargetname: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "no hint yet!"
         }
         rotate: =
         {
@@ -11033,12 +11037,12 @@ QQRKSRC1
         pathtarget: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "no hint yet!"
         }
         pathtargetname: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "no hint yet!"
         }
         spawnflags: =
         {
@@ -11437,14 +11441,14 @@ QQRKSRC1
       }
       item_mana_combo_half:form =
       {
-        Help = "Pickup for both defensive & offensive mana (50 points)."
+        Help = "Pickup for both defensive and offensive mana (50 points)."
         bbox = '-16 -16 -16 16 16 16 1'
         HTML = "help/hr2/g_items.htm#item_mana_combo_half"
         mdl = "models/items/mana/half/tris.fm"
       }
       item_mana_combo_quarter:form =
       {
-        Help = "Pickup for both defensive & offensive mana (25 points)."
+        Help = "Pickup for both defensive and offensive mana (25 points)."
         bbox = '-16 -16 -16 16 16 16 1'
         HTML = "help/hr2/g_items.htm#item_mana_combo_quarter"
         mdl = "models/items/mana/half/tris.fm"
@@ -12212,7 +12216,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -12244,7 +12248,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "STARTOFF"
-          Hint = "Light will start off if targeted (default is on"
+          Hint = "Light will start off if targeted (default is on)"
         }
         _color: =
         {
@@ -12287,7 +12291,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -12307,7 +12311,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "STARTOFF"
-          Hint = "Light will start off if targeted (default is on"
+          Hint = "Light will start off if targeted (default is on)"
         }
         _color: =
         {
@@ -12426,7 +12430,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "STARTOFF"
-          Hint = "Light will start off if targeted (default is on"
+          Hint = "Light will start off if targeted (default is on)"
         }
       }
       light_gem2:form =
@@ -12469,7 +12473,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "STARTOFF"
-          Hint = "Light will start off if targeted (default is on"
+          Hint = "Light will start off if targeted (default is on)"
         }
         spawnflags: =
         {
@@ -12583,7 +12587,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "STARTOFF"
-          Hint = "Light will start off if targeted (default is on"
+          Hint = "Light will start off if targeted (default is on)"
         }
         spawnflags: =
         {
@@ -12695,7 +12699,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "STARTOFF"
-          Hint = "Light will start off if targeted (default is on"
+          Hint = "Light will start off if targeted (default is on)"
         }
         spawnflags: =
         {
@@ -12733,7 +12737,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -12757,14 +12761,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "N/"
+          Hint = "it can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "STARTOFF"
-          Hint = "Light will start off if targeted (default is on"
+          Hint = "Light will start off if targeted (default is on)"
         }
         spawnflags: =
         {
@@ -12835,7 +12839,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "STARTOFF"
-          Hint = "Light will start off if targeted (default is on"
+          Hint = "Light will start off if targeted (default is on)"
         }
       }
       misc_fire_sparker:form =
@@ -12938,7 +12942,7 @@ QQRKSRC1
         pathname: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "no hint yet!"
         }
         pathtarget: =
         {
@@ -12948,7 +12952,7 @@ QQRKSRC1
         pathtargetname: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "no hint yet!"
         }
         spawnflags: =
         {
@@ -13051,7 +13055,7 @@ QQRKSRC1
         angle: =
         {
           Txt = "&"
-          Hint = " direction teleportee emerges facing"
+          Hint = "direction teleportee emerges facing"
         }
       }
       misc_update_spawner:form =
@@ -13114,7 +13118,7 @@ QQRKSRC1
           Txt = "monster_iq"
           Cap = "Push"
           Form = "monster_iq:form"
-          Hint = "specifics for controlling intelligence & personality"$0D" DE"
+          Hint = "specifics for controlling intelligence and personality"$0D" DE"
            "FAULTS"$0D"  mintel                   = 6"$0D"  melee_range       "
            "       = 4"$0D"  missile_range            = 102"$0D"  min_missile_"
            "range        = 6"$0D"  bypass_missile_chance    = 1"$0D"  jump_cha"
@@ -13155,7 +13159,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16"
           Cap = "NOCLOAK"
-          Hint = "Cant fade into shadows (meteor barrier cant locate if cloaked)"
+          Hint = "Cant fade into shadows (meteor barrier can't locate if cloaked)"
         }
         spawnflags: =
         {
@@ -13183,16 +13187,16 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half not"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -13409,7 +13413,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
@@ -13529,16 +13533,16 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half not"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -13592,8 +13596,8 @@ QQRKSRC1
           Txt = "&"
           Hint = "How far (max) the player can be away from the monster before"
            " it wakes up"$0D"  This just means that if the monster can see the"
-           " player, at what distance shoul"$0D"  the monster actually notice "
-           "him and go for him."
+           " player, at what distance should"$0D"  the monster actually notice"
+           " him and go for him."
         }
         wakeup_target: =
         {
@@ -13612,14 +13616,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -13653,7 +13657,7 @@ QQRKSRC1
       }
       monster_imp:form =
       {
-        Help = "Our old pal, the fire imp (some sound & action, no model)."
+        Help = "Our old pal, the fire imp (some sound and action, no model)."
         bbox = '-16 -16 0 16 16 32 1'
         HTML = "help/hr2/m_imp.htm#monster_imp"
         more: =
@@ -13718,8 +13722,8 @@ QQRKSRC1
           Txt = "&"
           Hint = "How far (max) the player can be away from the monster before"
            " it wakes up"$0D"  This just means that if the monster can see the"
-           " player, at what distance shoul"$0D"  the monster actually notice "
-           "him and go for him."
+           " player, at what distance should"$0D"  the monster actually notice"
+           " him and go for him."
         }
         missile_range: =
         {
@@ -13859,9 +13863,9 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half no"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -13871,7 +13875,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -13879,7 +13883,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
       }
       monster_ogle:form =
@@ -13973,7 +13977,7 @@ QQRKSRC1
       monster_palace_plague_guard:form =
       {
         Help = "A plague Elf"$0D"  Can fire 2 ranged attacks, has a new skin, "
-         "toucgher, has armor?"
+         "tougher, has armor?"
         bbox = '-17 -25 -1 22 12 63 1'
         HTML = "help/hr2/m_plagueElf.htm#monster_palace_plague_guard"
         mdl = "models/monsters/plaguelf/tris.fm"
@@ -14000,14 +14004,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -14056,7 +14060,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
@@ -14065,7 +14069,7 @@ QQRKSRC1
           Cap = "MELEE_LEAD"
           Hint = "Monster will try to cut you off when you're running and figh"
            "ting him"$0D"  Works well if there are a few monsters in a group, "
-           "half doing this, half no"
+           "half doing this, half not"
         }
         spawnflags: =
         {
@@ -14075,7 +14079,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -14083,7 +14087,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
       }
       monster_palace_plague_guard_invisible:form =
@@ -14160,16 +14164,16 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half no"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -14179,7 +14183,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -14187,7 +14191,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
       }
       monster_plagueElf:form =
@@ -14220,14 +14224,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -14276,7 +14280,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
@@ -14285,7 +14289,7 @@ QQRKSRC1
           Cap = "MELEE_LEAD"
           Hint = "Monster will try to cut you off when you're running and figh"
            "ting him"$0D"  Works well if there are a few monsters in a group, "
-           "half doing this, half no"
+           "half doing this, half not"
         }
         spawnflags: =
         {
@@ -14295,7 +14299,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -14303,7 +14307,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
       }
       monster_rat:form =
@@ -14339,8 +14343,8 @@ QQRKSRC1
           Txt = "&"
           Hint = "How far (max) the player can be away from the monster before"
            " it wakes up"$0D"  This just means that if the monster can see the"
-           " player, at what distance shoul"$0D"  the monster actually notice "
-           "him and go for him."
+           " player, at what distance should"$0D"  the monster actually notice"
+           " him and go for him."
         }
         wakeup_target: =
         {
@@ -14380,9 +14384,9 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will try to cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half not"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -14456,9 +14460,9 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half not"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -14505,14 +14509,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -14533,16 +14537,16 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half no"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -14552,7 +14556,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -14560,7 +14564,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
       }
       monster_seraph_overlord:form =
@@ -14618,14 +14622,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -14639,16 +14643,16 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half not"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -14699,14 +14703,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -14727,16 +14731,16 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half no"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -14746,7 +14750,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -14754,7 +14758,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
       }
       monster_ssithra:form =
@@ -14787,14 +14791,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -14836,16 +14840,16 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half not"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -14896,14 +14900,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -14945,9 +14949,9 @@ QQRKSRC1
           Txt = "&"
           Typ = "X16384"
           Cap = "MELEE_LEAD"
-          Hint = "Monster will tryto cut you off when you're running and fight"
-           "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half not"
+          Hint = "Monster will try to cut you off when you're running and figh"
+           "ting him, works well if there are a few monsters in a group, half "
+           "doing this, half not"
         }
         spawnflags: =
         {
@@ -14957,7 +14961,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -14965,7 +14969,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
       }
       monster_tcheckrik_male:form =
@@ -14998,14 +15002,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -15055,7 +15059,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8192"
           Cap = "WANDER"
-          Hint = "Monster will wander around aimlessly (but follows buoys"
+          Hint = "Monster will wander around aimlessly (but follows buoys)"
         }
         spawnflags: =
         {
@@ -15190,7 +15194,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15241,7 +15245,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15290,7 +15294,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15301,7 +15305,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -15353,7 +15357,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15364,7 +15368,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -15395,7 +15399,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually"
+           " R B G"$0D"  color button below displays and selects visually"
         }
         abslight: =
         {
@@ -15451,7 +15455,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually"
+           " R B G"$0D"  color button below displays and selects visually"
         }
         abslight: =
         {
@@ -15462,7 +15466,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -15507,7 +15511,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually"
+           " R B G"$0D"  color button below displays and selects visually"
         }
         abslight: =
         {
@@ -15518,7 +15522,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -15556,7 +15560,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually"
+           " R B G"$0D"  color button below displays and selects visually"
         }
         abslight: =
         {
@@ -15593,7 +15597,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15651,7 +15655,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15662,7 +15666,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -15707,7 +15711,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15726,7 +15730,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -15741,14 +15745,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_bottle1:form =
@@ -15772,7 +15776,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15783,7 +15787,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -15798,14 +15802,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_broom:form =
@@ -15823,7 +15827,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15860,7 +15864,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15897,7 +15901,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15934,7 +15938,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15985,7 +15989,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -15996,7 +16000,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16011,7 +16015,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_cactus3:form =
@@ -16035,7 +16039,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16046,7 +16050,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16061,7 +16065,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_cactus4:form =
@@ -16084,7 +16088,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16095,7 +16099,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         targetname: =
         {
@@ -16115,7 +16119,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_cauldron:form =
@@ -16138,7 +16142,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16149,7 +16153,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16164,7 +16168,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
@@ -16194,7 +16198,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16205,7 +16209,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16220,14 +16224,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_chair2:form =
@@ -16250,7 +16254,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16261,7 +16265,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16276,14 +16280,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_chair3:form =
@@ -16306,7 +16310,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16317,7 +16321,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16332,14 +16336,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_chest1:form =
@@ -16373,7 +16377,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16384,7 +16388,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16399,14 +16403,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_chest2:form =
@@ -16429,7 +16433,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16440,7 +16444,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16455,14 +16459,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_chest3:form =
@@ -16486,7 +16490,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16497,7 +16501,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16512,14 +16516,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_choppeddude:form =
@@ -16542,7 +16546,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16553,7 +16557,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16568,7 +16572,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_claybowl:form =
@@ -16591,7 +16595,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16602,7 +16606,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16617,14 +16621,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_clayjar:form =
@@ -16647,7 +16651,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16658,7 +16662,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16673,14 +16677,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_cocoon:form =
@@ -16703,7 +16707,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16714,7 +16718,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16729,7 +16733,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_cocoonopen:form =
@@ -16752,7 +16756,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16763,7 +16767,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16778,7 +16782,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_cog1:form =
@@ -16820,7 +16824,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16831,7 +16835,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16855,7 +16859,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_corpse2:form =
@@ -16878,7 +16882,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -16889,7 +16893,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -16913,7 +16917,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_corpse_ogle:form =
@@ -16980,7 +16984,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17025,7 +17029,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17078,7 +17082,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -17089,7 +17093,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17100,7 +17104,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -17139,7 +17143,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17150,7 +17154,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -17165,14 +17169,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_eyeball_jar:form =
@@ -17195,7 +17199,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17206,7 +17210,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -17221,7 +17225,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_firepot:form =
@@ -17239,7 +17243,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17291,7 +17295,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17336,7 +17340,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17385,7 +17389,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17396,7 +17400,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -17411,14 +17415,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_flagonpole:form =
@@ -17436,7 +17440,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17504,7 +17508,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17541,7 +17545,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17567,7 +17571,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_frypan:form =
@@ -17590,7 +17594,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17601,7 +17605,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -17616,7 +17620,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_gascan:form =
@@ -17639,7 +17643,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17650,7 +17654,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -17665,7 +17669,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_gorgonbones:form =
@@ -17688,7 +17692,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17699,7 +17703,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -17714,7 +17718,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_grass:form =
@@ -17732,7 +17736,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17774,7 +17778,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17785,7 +17789,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -17800,7 +17804,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_hangingdude:form =
@@ -17818,7 +17822,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17863,7 +17867,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17889,14 +17893,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_jawbone:form =
@@ -17919,7 +17923,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17930,7 +17934,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -17945,14 +17949,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_jug1:form =
@@ -17975,7 +17979,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -17986,7 +17990,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18001,14 +18005,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_kettle:form =
@@ -18031,7 +18035,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18042,7 +18046,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18057,14 +18061,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_lab_parts_container:form =
@@ -18087,7 +18091,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18098,7 +18102,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18113,7 +18117,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_lab_tray:form =
@@ -18136,7 +18140,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18147,7 +18151,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18162,7 +18166,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_larva:form =
@@ -18185,7 +18189,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18196,7 +18200,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18211,14 +18215,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_larvabrokenegg:form =
@@ -18241,7 +18245,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18252,7 +18256,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18267,7 +18271,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_larvaegg:form =
@@ -18290,7 +18294,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18301,7 +18305,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18316,7 +18320,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_lever1:form =
@@ -18360,7 +18364,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18421,7 +18425,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18480,7 +18484,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18491,7 +18495,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18506,14 +18510,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_metalchunk2:form =
@@ -18536,7 +18540,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18547,7 +18551,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18562,14 +18566,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_metalchunk3:form =
@@ -18592,7 +18596,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18603,7 +18607,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18618,14 +18622,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_minecart:form =
@@ -18648,7 +18652,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18659,7 +18663,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18674,14 +18678,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_minecart2:form =
@@ -18704,7 +18708,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18715,7 +18719,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18730,14 +18734,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_minecart3:form =
@@ -18760,7 +18764,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18771,7 +18775,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -18786,14 +18790,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_morcalavin_barrier:form =
@@ -18823,7 +18827,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18860,7 +18864,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18897,7 +18901,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18934,7 +18938,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -18971,7 +18975,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19013,7 +19017,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19024,7 +19028,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19039,7 +19043,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_pick:form =
@@ -19062,7 +19066,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19073,7 +19077,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19088,14 +19092,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_pipe1:form =
@@ -19118,7 +19122,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19129,7 +19133,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19144,14 +19148,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_pipe2:form =
@@ -19174,7 +19178,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19185,7 +19189,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19200,14 +19204,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_pipewheel:form =
@@ -19226,7 +19230,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -19237,7 +19241,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19248,7 +19252,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19274,7 +19278,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19311,7 +19315,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19348,7 +19352,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19386,7 +19390,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -19397,7 +19401,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19408,7 +19412,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19435,14 +19439,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
         health: =
         {
@@ -19453,7 +19457,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19464,7 +19468,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19491,14 +19495,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
         health: =
         {
@@ -19509,7 +19513,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19520,7 +19524,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19547,14 +19551,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
         health: =
         {
@@ -19565,7 +19569,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19576,7 +19580,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19603,7 +19607,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -19614,7 +19618,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19625,7 +19629,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19652,7 +19656,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -19663,7 +19667,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19674,7 +19678,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19700,7 +19704,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19738,7 +19742,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -19749,7 +19753,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19760,7 +19764,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19787,7 +19791,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -19798,7 +19802,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19809,7 +19813,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19884,7 +19888,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19922,14 +19926,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
         health: =
         {
@@ -19940,7 +19944,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -19951,7 +19955,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -19996,7 +20000,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -20007,7 +20011,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20018,7 +20022,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -20067,7 +20071,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20101,7 +20105,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20112,7 +20116,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -20160,7 +20164,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20171,7 +20175,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -20208,7 +20212,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -20219,7 +20223,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20230,7 +20234,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -20275,7 +20279,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20326,7 +20330,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20377,7 +20381,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20433,7 +20437,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20444,7 +20448,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -20477,7 +20481,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20519,7 +20523,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20530,7 +20534,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -20563,7 +20567,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20600,7 +20604,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20637,7 +20641,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20679,7 +20683,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20690,7 +20694,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -20713,7 +20717,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_statue_dragonhead:form =
@@ -20731,7 +20735,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20768,7 +20772,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20805,7 +20809,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20843,7 +20847,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20886,7 +20890,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20897,7 +20901,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -20912,7 +20916,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_statue_sariph:form =
@@ -20935,7 +20939,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -20946,7 +20950,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -20961,13 +20965,13 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_statue_sithraguard:form =
       {
         Help = "A statue of a sithra guard with spear extended"$0D" When used "
-         "the guard pulls his arm back & shield appears."
+         "the guard pulls his arm back and shield appears."
         bbox = '-22 -20 -57 22 20 57 1'
         HTML = "help/hr2/g_obj.htm#obj_statue_sithraguard"
         mdl = "models/objects/statue/sithraguard/tris.fm"
@@ -20985,7 +20989,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21041,7 +21045,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21084,7 +21088,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21095,7 +21099,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -21110,7 +21114,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_statue_techeckrikright:form =
@@ -21134,7 +21138,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21145,7 +21149,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -21160,7 +21164,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_statue_techeckriktomb:form =
@@ -21183,7 +21187,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21225,7 +21229,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21236,7 +21240,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -21251,14 +21255,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_swampflat_bottom:form =
@@ -21295,7 +21299,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21306,7 +21310,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -21321,14 +21325,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_table2:form =
@@ -21351,7 +21355,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21362,7 +21366,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -21377,14 +21381,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_tapper:form =
@@ -21402,7 +21406,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21449,7 +21453,7 @@ QQRKSRC1
         delay: =
         {
           Txt = "&"
-          Hint = "between when this entity destroyed & its targets/killtargets"
+          Hint = "between when this entity destroyed and its targets/killtargets"
            " are triggered."
         }
       }
@@ -21469,7 +21473,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
         health: =
         {
@@ -21480,7 +21484,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21491,7 +21495,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -21517,7 +21521,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21560,7 +21564,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21597,7 +21601,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21635,7 +21639,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21680,7 +21684,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21717,7 +21721,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21754,7 +21758,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21791,7 +21795,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21829,7 +21833,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21866,7 +21870,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21903,7 +21907,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21940,7 +21944,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21982,7 +21986,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -21993,7 +21997,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -22008,14 +22012,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_venusflytrap:form =
@@ -22038,7 +22042,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -22049,7 +22053,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -22064,14 +22068,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_wallringplaque:form =
@@ -22090,7 +22094,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -22153,7 +22157,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -22164,7 +22168,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -22179,14 +22183,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "can't be hur"
+          Hint = "can't be hurt"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X8"
           Cap = "NOPUSH"
-          Hint = "can't be pushed              "
+          Hint = "can't be pushed"
         }
       }
       obj_wheelbarrowdamaged:form =
@@ -22209,7 +22213,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -22220,7 +22224,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -22235,7 +22239,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
+          Hint = "can't be hurt"
         }
       }
       obj_woodpile:form =
@@ -22258,7 +22262,7 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
+           " R B G"$0D"  color button below displays and selects visually."
         }
         abslight: =
         {
@@ -22269,7 +22273,7 @@ QQRKSRC1
         scale: =
         {
           Txt = "&"
-          Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
         }
         more: =
         {
@@ -23266,7 +23270,7 @@ QQRKSRC1
         delay: =
         {
           Txt = "&"
-          Hint = "between when this entity destroyed & its targets/killtargets"
+          Hint = "between when this entity destroyed and its targets/killtargets"
            " are triggered."
         }
       }
@@ -23918,7 +23922,7 @@ QQRKSRC1
         pathtargetname: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "no hint yet!"
         }
         sounds: =
         {
@@ -24026,7 +24030,7 @@ QQRKSRC1
         pathtargetname: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "no hint yet!"
         }
         target: =
         {
@@ -24398,7 +24402,7 @@ QQRKSRC1
         script: =
         {
           Txt = "&"
-          Hint = "no hint yet1"
+          Hint = "no hint yet!"
         }
         skinnum: =
         {

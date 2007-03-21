@@ -5,6 +5,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2006/09/08 07:56:27  cdunde
+//Complete revamping of STVEF files and addition of HM addon
+//for multiplayer editing by DanielPharos.
+//
 //Revision 1.6  2005/10/15 01:00:27  cdunde
 //To reinstate headers and history
 //
@@ -69,8 +73,7 @@ QQRKSRC1
       bezier:b2 =
       {
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
-          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
-          1'
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1 1'
         tex = "cargo/walllow"
       }
     }
@@ -81,7 +84,7 @@ QQRKSRC1
         ;desc = "Put one in your map and an arena script will be created autom"
          "agically"
         origin = "0 0 0"
-        bots = "ranger bones"
+        bots = "janeway paris"
         longname = "my very cool map"
         fraglimit = "50"
         type = "ffa"

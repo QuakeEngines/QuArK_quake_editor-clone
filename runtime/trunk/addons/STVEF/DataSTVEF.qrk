@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.14  2006/11/30 01:16:36  cdunde
+//To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+//
 //Revision 1.13  2006/09/08 23:35:59  cdunde
 //Added borg model list to one entity
 //and removed from another, not for it.
@@ -408,7 +411,7 @@ QQRKSRC1
       STVEF Textures and Shaders.osfolder =
       {
         path = "BaseEF"
-	    //build = "1"
+        //build = "1"
       }
     }
   }
@@ -12467,7 +12470,7 @@ QQRKSRC1
       dmg: =
       {
         txt = "&"
-        hint = "default	2"
+        hint = "default 2"
       }
       noise: =
       {
@@ -12915,33 +12918,44 @@ QQRKSRC1
     }
 
 
-	t_ta_worldspawn_settings:incl = {
-                ta: = {
-                        Typ = "B"
-                        Txt = "(Special Effects)"
-                        Cap = "Push..."
-                        form = "f_ta_worldspawn:form"
-                        Hint = "Team Arena settings"
-                }
-        }
-	f_ta_worldspawn:form = {
-            enableBreath: = { Txt="&" Typ="C" Hint="Players 'breath' will be visible in game."
-                              items = "No"
-                              $0D"Yes"
-                              values = "0"$0D"1"
-                }
-		enableDust: = { Txt="&" Typ="C" Hint="Player will raise dust on dusty surfaces"
-                            items = "No"
-                            $0D"Yes"
-                            values = "0"$0D"1"
-                }
-		vertexremapshader: = { Txt="&"  
-		                       Hint="Shader to be used on terrain when people run the map in vertex lite mode"
-               }
-		gridsize: = { Txt="&"  
-				Hint="A 'x' 'y' 'z' value, i.e. '64' '64' '128'. Light Grid Size is the map that the Q3A engine uses to light entities. Higher values are best for terrain."
-                                 }
-        }
+    t_ta_worldspawn_settings:incl =
+    {
+      ta: =
+      {
+        Typ = "B"
+        Txt = "(Special Effects)"
+        Cap = "Push..."
+        form = "f_ta_worldspawn:form"
+        Hint = "Team Arena settings"
+      }
+    }
+    f_ta_worldspawn:form =
+    {
+      enableBreath: =
+      {
+        Txt="&" Typ="C" Hint="Players 'breath' will be visible in game."
+        items = "No"$0D
+                "Yes"
+        values = "0"$0D"1"
+      }
+      enableDust: =
+      {
+        Txt="&" Typ="C" Hint="Player will raise dust on dusty surfaces"
+        items = "No"$0D
+                "Yes"
+        values = "0"$0D"1"
+      }
+      vertexremapshader: =
+      {
+        Txt="&"  
+        Hint="Shader to be used on terrain when people run the map in vertex lite mode"
+      }
+      gridsize: =
+      {
+        Txt="&"
+        Hint="A 'x' 'y' 'z' value, i.e. '64' '64' '128'. Light Grid Size is the map that the Q3A engine uses to light entities. Higher values are best for terrain."
+      }
+    }
 
     worldspawn:form =
     {
@@ -13022,7 +13036,7 @@ QQRKSRC1
         Typ = "LN"
         Hint = "Light color (not the intensity, only the color) used for the ambient light"
       }
-	t_ta_worldspawn_settings = !
+      t_ta_worldspawn_settings = !
     }
 
     waypoint_squadpath:form =
@@ -13049,12 +13063,12 @@ QQRKSRC1
       target3: =
       {
         txt = "&"
-        hint = "don't use target2 without having a first target, and so on..."
+        hint = "don't use target3 without having a second target, and so on..."
       }
       target4: =
       {
         txt = "&"
-        hint = "don't use target2 without having a first target, and so on..."
+        hint = "don't use target4 without having a third target, and so on..."
       }
       ownername: =
       {
