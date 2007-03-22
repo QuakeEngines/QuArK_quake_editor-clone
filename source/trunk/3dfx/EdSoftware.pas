@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
 Revision 1.4  2007/02/27 21:32:29  danielpharos
 The colors of Solid Mode view should now be correct.
 
@@ -201,8 +204,10 @@ type
    FogTableCache: ^GrFogTable_t;
    Hardware3DFX: Boolean;
    GlideLoaded: Boolean;
+   ViewDC: HDC;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
+   ScreenX, ScreenY: Integer;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -224,10 +229,11 @@ type
    destructor Destroy; override;
    procedure Render3DView; override;
    procedure ClearFrame; override;
-   procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
-   procedure SwapBuffers(Synch: Boolean; DC: HDC); override;
+   procedure Copy3DView; override;
+   procedure SwapBuffers(Synch: Boolean); override;
    procedure ClearScene; override;
    procedure SetViewRect(SX, SY: Integer); override;
+   procedure SetViewDC(DC: HDC); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -1569,7 +1575,7 @@ begin
           nColor:= ((((nColor         and $FF)* (MeanColor         and $FF)) and $00FF00) shl 8)
                or  ((((nColor shr 8)  and $FF)*((MeanColor shr 8)  and $FF)) and $00FF00)
                or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shr 8)
-               or (nColor and $FF000000);
+               or (((nColor shr 24) and $FF) shl 24);
         end;
       end;
 
@@ -1920,7 +1926,7 @@ begin
   end;
 end;
 
-procedure TSoftwareSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
+procedure TSoftwareSceneObject.Copy3DView;
 var
  I, L, R, T, B, Count1: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -1937,7 +1943,7 @@ var
    if FrameBrush=0 then
     FrameBrush:=CreateSolidBrush(SwapColor(FRAME_COLOR));
    Rect:=Bounds(X,Y,W,H);
-   FillRect(DC, Rect, FrameBrush);
+   FillRect(ViewDC, Rect, FrameBrush);
   end;
 
 begin
@@ -1953,7 +1959,7 @@ begin
  ScreenExtent(L, R, bmiHeader);
  BmpInfo.bmiHeader:=bmiHeader;
 
- DIBSection:=CreateDIBSection(DC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
+ DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
  if DIBSection = 0 then
    Raise EErrorFmt(6100, ['CreateDIBSection']);
  if qrkGlideVersion>=HardwareGlideVersion then
@@ -2035,25 +2041,25 @@ begin
   end
   else
    softgLoadFrameBuffer(Bits, SoftBufferFormat);
-  L:=(SX-bmiHeader.biWidth) div 2;
-  T:=(SY-bmiHeader.biHeight) div 2;
+  L:=(ScreenX-bmiHeader.biWidth) div 2;
+  T:=(ScreenY-bmiHeader.biHeight) div 2;
   R:=L+bmiHeader.biWidth;
   B:=T+bmiHeader.biHeight;
   FrameBrush:=0;
   if L>0 then  Frame(0, T, L, B-T);
-  if T>0 then  Frame(0, 0, SX, T);
-  if R<SX then Frame(R, T, SX-R, B-T);
-  if B<SY then Frame(0, B, SX, SY-B);
+  if T>0 then  Frame(0, 0, ScreenX, T);
+  if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
+  if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
   if FrameBrush<>0 then
    DeleteObject(FrameBrush);
-  if SetDIBitsToDevice(DC, L, T,
+  if SetDIBitsToDevice(ViewDC, L, T,
    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
     Raise EErrorFmt(6100, ['SetDIBitsToDevice']);
   DeleteObject(DIBSection);
 end;
 
-procedure TSoftwareSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
+procedure TSoftwareSceneObject.SwapBuffers(Synch: Boolean);
 begin
  if Assigned(grBufferSwap) then
   grBufferSwap(0);
@@ -2065,6 +2071,8 @@ procedure TSoftwareSceneObject.SetViewRect(SX, SY: Integer);
 var
  XMargin, YMargin: Integer;
 begin
+ ScreenX:=SX;
+ ScreenY:=SY;
  if SoftBufferFormat>0 then
   begin
    SX:=(SX+1) div 2;
@@ -2088,28 +2096,36 @@ begin
  ViewRect.R.Top:=YMargin;
  ViewRect.R.Right:=ScreenSizeX-XMargin;
  ViewRect.R.Bottom:=ScreenSizeY-YMargin;
- if qrkGlideVersion>=HardwareGlideVersion then
-  begin
-  end
- else
+ if qrkGlideVersion<HardwareGlideVersion then
   begin
    ViewRect.R.Left:=((ViewRect.R.Left-2) and not 3) + 2;
    ViewRect.R.Right:=((ViewRect.R.Right+3+2) and not 3) - 2;
   end;
- ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-Coord.ScrCenter.X;
- ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
 
- ViewRect.DoubleSize:=False;
  if SoftBufferFormat>0 then
   begin
    ViewRect.DoubleSize:=True;
    ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-0.5*Coord.ScrCenter.X;
    ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+0.5*Coord.ScrCenter.Y;
-  end;
+  end
+ else
+  begin
+   ViewRect.DoubleSize:=False;
+   ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-Coord.ScrCenter.X;
+   ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
+ end;
  ViewRect.Left  := ViewRect.R.Left  + (VertexSnapper-0.5);
  ViewRect.Top   := ViewRect.R.Top   + (VertexSnapper-0.5);
  ViewRect.Right := ViewRect.R.Right + (VertexSnapper+0.5);
  ViewRect.Bottom:= ViewRect.R.Bottom+ (VertexSnapper+0.5);
+end;
+
+procedure TSoftwareSceneObject.SetViewDC(DC: HDC);
+begin
+  if ViewDC<>DC then
+  begin
+    ViewDC:=DC;
+  end;
 end;
 
 function TSoftwareSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
