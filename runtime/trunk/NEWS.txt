@@ -15,6 +15,20 @@ $Id$
 6.5.0 Beta 2
 =============
 
+* [DanielPharos]: Changed the way renderers track the drawing DC handle. Should fix a lot of OpenGL context
+          - errors. A small timing issue with this fix was noticed however. Put it is working: simply try
+          - again, and it should pop right up.
+
+* [DanielPharos]: Fixed a whole load of memory leak. QuArK now starts up and closes without leaking memory!
+          - Every starting a new map and OpenGL doesn't cause any leaks!
+
+* [DanielPharos]: Fixed all the colors and lighting effects in Solid view mode. OpenGL lighting should be
+          - set up correctly now.
+
+* [DanielPharos]: Changed the way the renderers work with camera-positions. Should be a lot faster.
+
+* [DanielPharos]: Implemented proper OpenGL display lists.
+
 * [cdunde]: Removed Model Editors 3D Options dialog Icon X button close button to stop problems caused when used.
 
 * [cdunde]: Proper selection and display of skin textures for all model configurations,
@@ -303,8 +317,8 @@ $Id$
         -  Also cleanup of DataD3.qrk and DataQ4.qrk files.
         
  * [cdunde] : Removed "id Software Textures" common.txlist, no longer needed,
- 		- from the Texture Browser with the materials handling fix.
- 		- These items are now located in the mtr_invisible items folder.
+        - from the Texture Browser with the materials handling fix.
+        - These items are now located in the mtr_invisible items folder.
 
  * [cdunde] : Fixed the RMB Mark function for tree view restructuring with
         -  the marking of objects. Bug found by jal - Thanks for your input.
@@ -903,7 +917,7 @@ $Id$
       when one is closed.
 
  * [SilverPaladin]: Added support for Return to Castle Wolfenstein:
-      The WildWest (1.4).	
+      The WildWest (1.4).
 
  * [nerdiii]: Edited default.qrk so texture origin and size are
       displayed with two decimals
