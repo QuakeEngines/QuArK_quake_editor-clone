@@ -456,6 +456,8 @@ def resettexscale(editor, flist, adjust):
                     size = (128.0,128.0)
                     if texobj is not None:
                         size = texobj ["size"]
+                    if size is None:
+                        size = (128.0,128.0)
 
                     tpn0 = tp0 + min(s)*tp1 + min(t)*tp2
                     tpn1 = tp0 + max(s)*tp1 + min(t)*tp2
@@ -706,6 +708,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.24  2006/12/22 03:28:16  cdunde
+#Forgot to remove an old line in the last fix.
+#
 #Revision 1.23  2006/12/21 20:58:13  cdunde
 #Fixed the Paste Here function that was not working properly or at all in the view..
 #
