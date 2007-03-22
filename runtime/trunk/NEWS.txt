@@ -15,6 +15,16 @@ $Id$
 6.5.0 Beta 2
 =============
 
+* [cdunde]: Removed Model Editors 3D Options dialog Icon X button close button to stop problems caused when used.
+
+* [cdunde]: Proper selection and display of skin textures for all model configurations,
+          - single or multi component, skin or no skin, single or multi skins or any combination.
+
+* [cdunde]: To stop crossing of skins from model to model when a new model, even with the same name,
+          - is opened in the Model Editor without closing QuArK completely.
+
+* [cdunde]: To add skin texture size to the Skin-view page top section.
+
 * [cdunde]: Half-Life2 - light, light_spot and light_environment specifics and arguments added
           - to support HDR and many additions to the UserData Half-Life2.qrk file by Riggsy.
 
