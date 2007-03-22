@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
 Revision 1.28  2007/03/02 13:09:22  danielpharos
 Fixed a HUGE slowdown with textures in BuildScene.
 
@@ -283,11 +286,12 @@ type
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
    procedure SetViewRect(SX, SY: Integer); virtual; abstract;
+   procedure SetViewDC(DC: HDC); virtual; abstract;
    procedure SetCoords(nCoord: TCoordinates);
-   procedure BuildScene(DC: HDC; AltTexSrc: QObject);
+   procedure BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
-   procedure SwapBuffers(Synch: Boolean; DC: HDC); virtual;
-   procedure Copy3DView(SX,SY: Integer; DC: HDC); virtual; abstract;
+   procedure SwapBuffers(Synch: Boolean); virtual;
+   procedure Copy3DView; virtual; abstract;
    function ChangeQuality(nQuality: Integer) : Boolean; virtual;
    procedure SetColor(nColor: TColorRef);
    procedure AddPolyFace(const a_PolyFace: PSurface);
@@ -529,7 +533,7 @@ procedure TSceneObject.PostBuild(nVertexList, nVertexList2: TList);
 begin
 end;
 
-procedure TSceneObject.BuildScene(DC: HDC; AltTexSrc: QObject);
+procedure TSceneObject.BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
 const
  cProgressBarWidth = 256;
  cProgressBarHeight = 20;
@@ -847,24 +851,24 @@ begin
      // needed to backup to version 1.09, due to version 1.10 causing constant editor lockups.
      { Setup a progress-bar, depending on what type of device-context
        thats been rendering to }
-     if DC=HDC(-1) then
+     if ProgressDC=HDC(-1) then
        ProgressIndicatorStart(5454, NewTextures)
      else
      begin
-       if DC<>0 then
+       if ProgressDC<>0 then
        begin
-         GetClipBox(DC, R);
+         GetClipBox(ProgressDC, R);
          Gauche:=(R.Right+R.Left-cProgressBarWidth) div 2;
          R.Left:=Gauche;
          R.Right:=Gauche+cProgressBarWidth;
          R.Top:=(R.Top+R.Bottom-cProgressBarHeight) div 2;
          R.Bottom:=R.Top+cProgressBarHeight;
-         SetBkColor(DC, $FFFFFF);
-         SetTextColor(DC, $000000);
+         SetBkColor(ProgressDC, $FFFFFF);
+         SetTextColor(ProgressDC, $000000);
          TextePreparation:=LoadStr1(5454);
-         ExtTextOut(DC, Gauche+38, R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
+         ExtTextOut(ProgressDC, Gauche+38, R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
          InflateRect(R, +1, +1);
-         FrameRect(DC, R, GetStockObject(Black_brush));
+         FrameRect(ProgressDC, R, GetStockObject(Black_brush));
          InflateRect(R, -1, -1);
          GdiFlush;
          R.Right:=R.Left;
@@ -882,17 +886,17 @@ begin
          if PList^.Texture=Nil then
          begin
            { update progressbar }
-           if DC=HDC(-1) then
+           if ProgressDC=HDC(-1) then
            begin
              ProgressIndicatorIncrement;
            end
            else
            begin
-             if DC<>0 then
+             if ProgressDC<>0 then
              begin
                Inc(NewTexCount);
                R.Right:=Gauche + MulDiv(cProgressBarWidth, NewTexCount, NewTextures);
-               FillRect(DC, R, Brush);
+               FillRect(ProgressDC, R, Brush);
                R.Left:=R.Right;
              end;
            end;
@@ -906,7 +910,7 @@ begin
 
      finally
        { clean up the progress-bar }
-       if DC=HDC(-1) then
+       if ProgressDC=HDC(-1) then
          ProgressIndicatorStop;
        if Brush<>0 then
          DeleteObject(Brush);

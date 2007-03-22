@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2007/03/17 15:43:12  danielpharos
+Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
+
 Revision 1.29  2007/03/17 14:32:38  danielpharos
 Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
 
@@ -1698,11 +1701,12 @@ begin
       end
      else
       begin
+       Scene.SetViewDC(DC);
        Scene.Render3DView;
        if FullScreen then
-        Scene.SwapBuffers(True, DC)
+        Scene.SwapBuffers(True)
        else
-        Scene.Copy3DView(ClientWidth, ClientHeight, DC);
+        Scene.Copy3DView;
       end;
 
      while PeekMessage(Msg, Handle, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE) do ;
@@ -2836,6 +2840,7 @@ begin
      if ViewMode<>vmWireframe then
       begin
        DC:=Canvas.Handle;
+       Scene.SetViewDC(DC);
        if Drawing and dfRebuildScene <> 0 then
         begin
          if Drawing and dfNoGDI = 0 then
@@ -2851,11 +2856,11 @@ begin
        Scene.Render3DView;
        if FullScreen then
         begin
-         Scene.SwapBuffers(False, DC);
+         Scene.SwapBuffers(False);
          Do3DFXTwoMonitorsActivation;
         end
        else
-        Scene.Copy3DView(ClientWidth, ClientHeight, DC);
+        Scene.Copy3DView;
       end;
     except
      on E: Exception do
@@ -3185,11 +3190,12 @@ begin
                  end
                 else
                  begin
+                  Scene.SetViewDC(DC);
                   Scene.Render3DView;
                   if FullScreen then
-                   Scene.SwapBuffers(True, DC)
+                   Scene.SwapBuffers(True)
                   else
-                   Scene.Copy3DView(ClientWidth, ClientHeight, DC);
+                   Scene.Copy3DView;
                  end;
              end;
            Result:=0;

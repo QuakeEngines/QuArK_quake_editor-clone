@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
 Revision 1.11  2007/02/06 13:08:47  danielpharos
 Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
 
@@ -93,8 +96,8 @@ type
     Direct3DLoaded: Boolean;
     MapLimit: TVect;
     MapLimitSmallest: Double;
+    ViewDC: HDC;
   protected
-    m_ScreenX, m_ScreenY: Integer;
     m_Resized: Boolean;
 
 {    m_pD3DX: ID3DXContext;
@@ -103,7 +106,7 @@ type
     m_pDD: IDirectDraw7;}
 
     m_CurrentAlpha, m_CurrentColor: Integer;
-
+    ScreenX, ScreenY: Integer;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
     procedure EndBuildScene; override;
     procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -127,10 +130,11 @@ type
     procedure ClearFrame; override;
  *)
     procedure SetViewRect(SX, SY: Integer); override;
+    procedure SetViewDC(DC: HDC); override;
     procedure Render3DView; override;
-    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
+    procedure Copy3DView; override;
  (*
-    procedure SwapBuffers(Synch: Boolean; DC: HDC); override;
+    procedure SwapBuffers(Synch: Boolean); override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
  *)
   end;
@@ -163,15 +167,22 @@ end;
 
 procedure TDirect3DSceneObject.SetViewRect(SX, SY: Integer);
 begin
-  if ((m_ScreenX <> SX) or (m_ScreenY <> SY)) then
+  if SX<1 then SX:=1;
+  if SY<1 then SY:=1;
+  if ((ScreenX <> SX) or (ScreenY <> SY)) then
   begin
     m_Resized := True;
 
-    m_ScreenX:=SX;
-    m_ScreenY:=SY;
+    ScreenX:=SX;
+    ScreenY:=SY;
+  end;
+end;
 
-    if m_ScreenX<1 then m_ScreenX:=1;
-    if m_ScreenY<1 then m_ScreenY:=1;
+procedure TDirect3DSceneObject.SetViewDC(DC: HDC);
+begin
+  if ViewDC<>DC then
+  begin
+    ViewDC:=DC;
   end;
 end;
 
@@ -362,7 +373,7 @@ begin
 
 end;
 
-procedure TDirect3DSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
+procedure TDirect3DSceneObject.Copy3DView;
 begin
 
 end;
