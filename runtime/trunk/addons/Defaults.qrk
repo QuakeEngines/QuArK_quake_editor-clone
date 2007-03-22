@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.315  2007/03/18 22:47:32  danielpharos
+//Changed the file header comments a bit.
+//
 //Revision 1.314  2007/03/18 22:25:11  danielpharos
 //Added a 'new texture' button to the toolbar for VTF textures. Also fixed a few descriptions.
 //
@@ -7410,7 +7413,7 @@ QQRKSRC1
       triangles: = {
         Typ = "E-R"      // edit, read only
         Txt = "Triangles :"
-        Hint = "The number of triangle this component has|Number of triangles"
+        Hint = "The number of triangles this component has|Number of triangles"
       }
       ownedby: = {
         Typ = "E-R"
@@ -7420,7 +7423,13 @@ QQRKSRC1
       texture: = {
         Typ = "E-R"
         Txt = "Skin :"
-        Hint = "The 'current skin selected for this component"$0D
+        Hint = "The current skin selected for this component,"$0D
+               "if more than one exist or the 1st skin if none selected."
+      }
+      skinsize: = {
+        Typ = "E-R"
+        Txt = "Skin size:"
+        Hint = "The size of the current skin texture selected for this component,"$0D
                "if more than one exist or the 1st skin if none selected."
       }
     }

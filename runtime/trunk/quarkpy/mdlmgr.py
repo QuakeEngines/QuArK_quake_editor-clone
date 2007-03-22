@@ -149,7 +149,7 @@ class ModelLayout(BaseLayout):
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
         self.buttons["skinzoom"] = skinzoombtn
-        tp = fp.newtoppanel(103,0) # Sets the height of the top panel.
+        tp = fp.newtoppanel(123,0) # Sets the height of the top panel.
         btnp = tp.newbottompanel(23,0).newbtnpanel([skinzoombtn])
         btnp.margins = (0,0)
         self.skinform = tp.newdataform()
@@ -264,11 +264,14 @@ class ModelLayout(BaseLayout):
             q["ownedby"] = self.editor.Root.currentcomponent.shortname
             if len(slist)!=0 and slist[0] is not None:
                 q["texture"] = slist[0].name
+                texWidth,texHeight = slist[0]["Size"]
+                q["skinsize"] = (str(int(texWidth)) + " wide by " + str(int(texHeight)) + " high")
             else:
                 q["texture"] = "no skins exist for this component"
-
-        self.skinform.setdata(q, self.skinform.form)
-        quarkx.update(self.editor.form)
+                q["skinsize"] = "not available"
+        if self.skinform is not None:
+            self.skinform.setdata(q, self.skinform.form)
+            quarkx.update(self.editor.form)
         startup = 1
 
     def polyviewmouse(self, view, x, y, flags, handle):
@@ -398,6 +401,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.21  2007/03/22 19:13:56  cdunde
+#To stop crossing of skins from model to model when a new model, even with the same name,
+#is opened in the Model Editor without closing QuArK completely.
+#
 #Revision 1.20  2007/03/10 01:04:11  cdunde
 #To retain selection in Model Editor when making a Skin-view drag
 #for multiple skin models without the skin changing.
