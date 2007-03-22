@@ -115,7 +115,7 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (160,385)
+    size = (160,355)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
     dfsep = 0.62    # sets 62% for labels and the rest for edit boxes
     dlgdef = """
@@ -246,10 +246,6 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
         drawnohandles5 = "0"
           }
         }
-
-        sep: = { Typ="S" Txt=""}
-
-        exit:py = {Txt="Close" }
     }
     """
 
@@ -496,19 +492,7 @@ def OptionsViewsClick(m):
 
         clickedbutton(editor)
 
-
-    def onclosing(self, editor=editor):
-
-        for view in editor.layout.views:
-            type = view.info["type"]
-            if type == "3D":
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
-                view.invalidate(1)
-
-        clickedbutton(editor)
-
-
-    OptionsViewsDlg(quarkx.clickform, 'optionsviewsdlg', editor, setup, action, onclosing)
+    OptionsViewsDlg(quarkx.clickform, 'optionsviewsdlg', editor, setup, action)
 
 
 
@@ -566,6 +550,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.5  2007/01/30 06:43:20  cdunde
+# Added more options to the Model Editor View Modes dialog.
+#
 # Revision 1.4  2007/01/21 20:28:26  cdunde
 # Update
 #
