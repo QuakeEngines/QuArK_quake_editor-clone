@@ -39,8 +39,8 @@ class ModelEditor(BaseEditor):
  
     def OpenRoot(self):
         Root = self.fileobject['Root']
-        if Root is not None:
-            Root = self.fileobject.findname(Root)
+     #   if Root is not None: # If you have to open a model to open the Model Editor, how could it be None?
+        Root = self.fileobject.findname(Root)
         self.Root = Root
 
         if (quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] is None):
@@ -68,6 +68,13 @@ class ModelEditor(BaseEditor):
 
     def CloseRoot(self):
         picked = [ ]
+        ### To stop crossing of skins from model to model when a new model, even with the same name,
+        ### is opened in the Model Editor without closing QuArK completely.
+        try:
+            from mdlmgr import saveskin
+            mdlmgr.saveskin = None
+        except:
+            pass
                 
     def ListComponents(self):
         return self.Root.findallsubitems("", ':mc')   # find all components
@@ -171,8 +178,8 @@ class ModelEditor(BaseEditor):
 def commonhandles(self, redraw=1):
     from qbaseeditor import flagsmouse, currentview
 
-    if self.layout is None:
-        return
+  #  if self.layout is None:
+  #      return
 
     if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056):
         try:
@@ -275,6 +282,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.18  2007/03/04 19:38:04  cdunde
+#To stop unneeded redrawing of handles in other views
+#when LMB is released at end of rotation in a Model Editor's 3D view.
+#
 #Revision 1.17  2007/01/30 05:58:41  cdunde
 #To remove unnecessary code and to get mdlaxisicons to be displayed consistently.
 #

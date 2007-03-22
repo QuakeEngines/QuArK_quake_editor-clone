@@ -45,7 +45,6 @@ class ModelLayout(BaseLayout):
     def clearrefs(self):
         global startup, saveskin, savedskins, skincount
         startup = 0
-        saveskin = None
         savedskins = {}
         skincount = 0
         BaseLayout.clearrefs(self)
@@ -399,6 +398,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.20  2007/03/10 01:04:11  cdunde
+#To retain selection in Model Editor when making a Skin-view drag
+#for multiple skin models without the skin changing.
+#
 #Revision 1.19  2007/03/10 00:03:27  cdunde
 #Start of code to retain selection in Model Editor when making a Skin-view drag.
 #
