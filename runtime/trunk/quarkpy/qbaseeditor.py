@@ -572,6 +572,11 @@ class BaseEditor:
                         else:
                             import mdlhandles
                             self.dragobject.ok(self, x, y, flags)
+                            try:
+                                skindrawobject = self.Root.currentcomponent.currentskin
+                            except:
+                                skindrawobject = None
+                            self.layout.mpp.resetpage()
                             self.dragobject = None
                             return
 
@@ -988,6 +993,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.32  2007/03/10 00:01:43  cdunde
+#To make item Model Editor specific as it should be
+#and remove print statement left in after testing.
+#
 #Revision 1.31  2007/03/04 20:15:15  cdunde
 #Missed items in last update.
 #

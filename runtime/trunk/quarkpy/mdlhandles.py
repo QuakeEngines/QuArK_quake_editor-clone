@@ -34,6 +34,7 @@ mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
 HoldObject = None
+NewSellist = []
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -214,87 +215,71 @@ class SkinHandle(qhandles.GenericHandle):
  # def start_drag(self, view, x, y):
 
   def ok(self, editor, undo, old, new):
-      global HoldObject
+      global HoldObject, NewSellist
+      from mdlmgr import saveskin
+      NewSellist = []
+      HoldObjectList = []
 
-      #HoldObject = editor.layout.explorer.uniquesel
-      #ParentNames = []
-      #for x in range(len(editor.layout.explorer.sellist)):
-          #HoldObject = editor.layout.explorer.sellist[x]
-          #ParentNames[x] = [HoldObject.name]
-          #while HoldObject.parent is not None:
-              #HoldObject = HoldObject.parent
-              #ParentNames[x].append(HoldObject.name)
-      #HoldObject = editor.layout.explorer.sellist
-
-      #DANIELPHAROS: BUSY ON THE LIST CODE HERE!
-
-      HoldObject = editor.layout.explorer.uniquesel
-      if HoldObject is None:
-          Expanded = False
-          ParentNames = []
-      else:
-          if HoldObject.flags & 8:
-              Expanded = True
-          else:
+      for Object in editor.layout.explorer.sellist:
+          HoldObject = Object
+          if HoldObject is None:
               Expanded = False
-          ParentNames = [HoldObject.name]
-          while HoldObject.parent is not None:
-              HoldObject = HoldObject.parent
-              ParentNames.append(HoldObject.name)
+              ParentNames = []
+          else:
+              ParentNames = [HoldObject.name]
+              while HoldObject.parent is not None:
+                  HoldObject = HoldObject.parent
+                  ParentNames.append(HoldObject.name)
+
+          HoldObjectList.append(ParentNames)
 
       undo.ok(editor.Root, self.undomsg) ### editor.Root changes uniquesel to the component, WE DO NOT WANT THAT
 
-   # WORKS   editor.layout.explorer.uniquesel = editor.Root.findname("teeth:mc").dictitems["Skeleton:bg"]
-      #editor.layout.explorer.uniquesel = editor.Root.findname(ParentName).dictitems[HoldName]
+      for ParentNames in HoldObjectList:
+          HoldObject = editor.Root
+          ParentNames.reverse()
+          if len(ParentNames) == 0:
+              EditorRoot = 0
+          else:
+              EditorRoot = ParentNames.index(HoldObject.name)
+      
+          for x in range(len(ParentNames)-EditorRoot-1):
+              if x+EditorRoot == 1:
+                  HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
+              elif x+EditorRoot == 2:
+                  HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
+              elif x+EditorRoot == 3:
+                  HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
 
-      HoldObject = editor.Root
-      ParentNames.reverse()
-  #    print "mdlhandles line 253 ParentNames",ParentNames
-  #    print "mdlhandles line 254 HoldObject",HoldObject.name
-      if len(ParentNames) == 0:
-          EditorRoot = 0
+         ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
+         ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
+         # editor.layout.explorer.sellist = [HoldObject]
+
+          NewSellist.append(HoldObject)
+      try:
+          if (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
+              pass
+          else:
+              editor.layout.explorer.sellist = NewSellist  # go around if bone is in the list
+      except:
+          pass    
+
+      if len(NewSellist) <= 1:
+          if len(NewSellist) == 1 and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg")):
+              pass
+          else:
+              for item in editor.layout.explorer.sellist:
+                  editor.layout.explorer.expand(item.parent)
       else:
-          EditorRoot = ParentNames.index(HoldObject.name)
-  #    print "mdlhandles line 259 HoldObject",EditorRoot
-      
-  #    print len(ParentNames)-EditorRoot-1
-      for x in range(len(ParentNames)-EditorRoot-1):
-  #        print "BEFORE: ",
-  #        print HoldObject,
-  #        print HoldObject.name,
-  #        print x+EditorRoot,
-  #        print ParentNames[EditorRoot+x+1]
-          if x+EditorRoot == 1:
-              HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
-          elif x+EditorRoot == 2:
-              HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
-          elif x+EditorRoot == 3:
-              HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
-          if (x < len(ParentNames)-EditorRoot-2):
-              editor.layout.explorer.expand(HoldObject)
-  #        print ""
-  #        print "AFTER: ",
-  #        print HoldObject,
-  #        print HoldObject.name,
-  #        print x+EditorRoot,
-  #        print "mdlhandles line 281 ParentNames",ParentNames[EditorRoot+x+1]
-  #        print ""
-  #        print ""
-  #        print ""
-      
-      if (Expanded == True):
-          editor.layout.explorer.expand(HoldObject)
-     ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
-     ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
-     # editor.layout.explorer.sellist = [HoldObject]
-  #    print "mdlhandles line 289 [HoldObject]",HoldObject.name
+          HoldObject = None
+          for item in editor.layout.explorer.sellist:
+              editor.layout.explorer.expand(item.parent)
 
 
   def draw(self, view, cv, draghandle=None):
       editor = mapeditor()
 
       from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
-
       if flagsmouse == 2056: return # Stops duplicated handle drawing at the end of a drag.
       texWidth = self.texWidth
       texHeight = self.texHeight
@@ -815,6 +800,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.27  2007/03/10 00:03:27  cdunde
+#Start of code to retain selection in Model Editor when making a Skin-view drag.
+#
 #Revision 1.26  2007/03/04 19:38:52  cdunde
 #To redraw handles when LMB is released after rotating model in Model Editor 3D views.
 #To stop unneeded redrawing of handles in other views

@@ -62,16 +62,25 @@ class ModelLayout(BaseLayout):
 
     def getskin(self):
         "Use currentskin or find new selected skin."
-        global skincount, saveskin
+        global skincount, saveskin, savedskins, startup
         slist = []
         if self.editor.Root.currentcomponent is None and self.editor.Root.name.endswith(":mr"):
             componentnames = []
             for item in self.editor.Root.dictitems:
                 if item.endswith(":mc"):
                     componentnames.append(item)
-            componentnames.sort ()
+            componentnames.sort()
             self.editor.Root.currentcomponent = self.editor.Root.dictitems[componentnames[0]]
-                    
+            if not self.editor.Root.currentcomponent.shortname in savedskins:
+                pass
+            else:
+                slist.append(savedskins[self.editor.Root.currentcomponent.shortname])
+                saveskin = slist[0]
+                self.reset()
+                return slist
+        if self.explorer is None:
+            slist.append(self.editor.Root.currentcomponent.currentskin)
+            return slist
         if self.explorer.sellist == []:
             s = self.editor.Root.currentcomponent.currentskin
             if s is not None:
@@ -108,6 +117,9 @@ class ModelLayout(BaseLayout):
                             else:
                                 count = 1
                             for dictitem in item.dictitems:
+                                if dictitem == saveskin:    # new cdunde 3-11-07
+                                    slist.append(dictitem)  # new cdunde 3-11-07
+                                    return slist            # new cdunde 3-11-07
                                 if dictitem.endswith(".pcx") or dictitem.endswith(".jpg") or dictitem.endswith(".tga"):
                                     if count == 1:
                                         holddictitem = item.dictitems[dictitem]
@@ -121,6 +133,12 @@ class ModelLayout(BaseLayout):
                                         slist.append(holddictitem)
                                         if len(item.dictitems) > 1:
                                             self.editor.Root.currentcomponent.currentskin = holddictitem
+                        else:
+                            s = self.editor.Root.currentcomponent.currentskin
+                            if saveskin is not None and s != saveskin:
+                                self.editor.Root.currentcomponent.currentskin = s = saveskin
+                                slist.append(s)
+                                return slist
                 else:
                     # not sure this section should be in here, except for models w/o any skins.
                     s = self.editor.Root.currentcomponent.currentskin
@@ -128,6 +146,8 @@ class ModelLayout(BaseLayout):
                         slist.append(s)
             # this section does the same thing right above here.
             s = self.editor.Root.currentcomponent.currentskin
+            if saveskin is not None and s != saveskin:
+                s = saveskin
             if slist == [] and s is not None:
                 slist.append(s)
         if slist == []:
@@ -199,7 +219,7 @@ class ModelLayout(BaseLayout):
 
     def componentof(self, obj):
         "Searches for the parent component."
-        while not ((obj is None) or (obj is self.editor.Root)):
+        while not ((obj is None) or (obj is self.editor.Root) or (obj.parent is None)):
             obj = obj.parent
             if obj.type == ':mc':
                 return obj
@@ -214,50 +234,92 @@ class ModelLayout(BaseLayout):
 
     def fillskinform(self, reserved):
         global startup, saveskin, savedskins # Allows the skinform to fill the 1st time a model is loaded, to set it up.
+        from qbaseeditor import currentview
+
      #   self.skinview.onmouse = self.polyviewmouse  ### was commented out, causes zoom to change when aother "component" folder is selected
                                                      ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
                                                      ### Commenting out due to conflict but possible future use.
-     #   self.skinview.info = None
-        slist = self.getskin()  ### something missing here
+        self.editor = mapeditor()
+
+        if self.editor.Root.currentcomponent is not None:
+            pass
+        else:
+            componentnames = []
+            for item in self.editor.Root.dictitems:
+                if item.endswith(":mc"):
+                    componentnames.append(item)
+            componentnames.sort()
+            self.editor.Root.currentcomponent = self.editor.Root.dictitems[componentnames[0]]
+
+        if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
+            slist = self.getskin()
+            savedskins[self.editor.Root.currentcomponent.shortname] = slist[0]
+            self.editor.Root.currentcomponent.currentskin = slist[0]
+        else:
+            slist = []
+            slist.append(savedskins[self.editor.Root.currentcomponent.shortname])
+            self.editor.Root.currentcomponent.currentskin = slist[0]
+
         if self.editor.Root.currentcomponent.currentskin is None:
-            if startup == 1:
-                return
+            if startup == 1 and (currentview.info["viewname"] != "skinview"):
+                return # Stops redraw of Skin-view handles, for models with NO skins, when selecting in the Tree-view.
             else:
+                if self.editor.Root.currentcomponent.currentskin is None and slist[0] is not None:
+                    self.editor.Root.currentcomponent.currentskin = slist[0]
                 self.editor.invalidateviews(1)
-        
+
         if len(slist) != 0 and slist[0] is not None:
                ### Code below updates the "currentcomponent", for filling the skin form,
                ### based on any element of THAT component of the model, that is currently selected.
                ### But only if another component was previously selected to avoid slow down for unnecessary updating.
-            component = self.componentof(slist[0])
             if startup == 1 and self.editor.Root.currentcomponent.currentskin == slist[0]:
-                return
+                return # Stops redraw of Skin-view handles, for models with skins, when selecting in the Tree-view.
             else:
-                self.editor.Root.currentcomponent = component
+                try:
+                    if self.editor.layout.explorer.sellist[0].name.endswith(":mr"):
+                        pass # Stops "Model" from malfunctioning.
+                    else:
+                        self.editor.Root.currentcomponent = component # Needed for multi seleciton of items.
+                except:
+                    self.editor.Root.currentcomponent
 
         q = quarkx.newobj(':')   ### internal object to create the Skin-view form.
-        self.skinview.handles = []
-        self.skinview.ondraw = None
-        skinzoombtn = self.buttons["skinzoom"]
-        self.skinview.color = BLACK
+
+        try:
+            if currentview is not None and currentview.info["viewname"] == "skinview":
+                self.skinview = currentview
+                self.skinview.handles = []
+                self.skinview.ondraw = None
+                self.skinview.color = BLACK
+        except:
+            pass
+
+     #   skinzoombtn = self.buttons["skinzoom"]
   ### new cdunde
         if len(slist)==0:
             cap = Strings[129]
 
-        if len(slist) != 0:
-            if saveskin is not None and startup == 2:
-                slist = []
-                slist.append(saveskin)
-                startup = 1
-
         if len(slist) != 0 and slist[0] is not None:
             mdlhandles.buildskinvertices(self.editor, self.skinview, self, self.editor.Root.currentcomponent, slist[0])
         else:
+        #### next 2 lines below have to be there or everything breaks
             if self.explorer.sellist is not None and self.explorer.sellist != []:
                 self.editor.Root.currentcomponent = self.explorer.sellist[0]
             mdlhandles.buildskinvertices(self.editor, self.skinview, self, self.editor.Root.currentcomponent, None)
 
+        if self.editor.Root.currentcomponent is None:
+            for item in self.editor.Root.dictitems:
+                 if item.endswith(":mc"):
+                     self.editor.Root.currentcomponent = self.editor.Root.dictitems[item]
+                     break
+
         if self.editor.Root.currentcomponent is not None:
+
+            if not self.editor.Root.currentcomponent.shortname in savedskins:
+                pass
+            else:
+                self.editor.Root.currentcomponent.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
+
           ### These items are setup in the Skin:form section of the Defaults.qrk file.
             q["header"] = "Selected Skin"
             q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
@@ -291,45 +353,50 @@ class ModelLayout(BaseLayout):
 
     def selectcomponent(self, comp):
         "This is when you select a particular 'Component' or any 'Group' within it in the Tree-view."
+        global savedskins
 
-        from qbaseeditor import currentview
-        try:
+        if comp != self.editor.Root.currentcomponent:
+            self.reset()
+        self.editor.Root.setcomponent(comp)
+
+########## commenting out the lines below brakes Misc dragging
+        if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
             slist = self.getskin()
-            skin = slist[0]
-            if skin is not None and skin is not comp.currentskin:
-                comp.currentskin = skin
-        except:
-            pass
+            comp.currentskin = slist[0]
+        else:
+            comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
+##########
 
-        if saveskin is not None and comp.currentskin != saveskin:
-            comp.currentskin = saveskin
-
+        from mdlhandles import NewSellist
         try:
-            from mdlhandles import HoldObject
-            if (HoldObject is None or HoldObject == self.explorer.uniquesel) or currentview.info["viewname"] != "skinview":
-                HoldObject = None
-            else:
-                self.editor.layout.explorer.sellist = [HoldObject]
-                self.editor.layout.explorer.selchanged()
-                HoldObject = None
+            if NewSellist != [] and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
+                self.editor.layout.explorer.sellist = NewSellist
+                for item in editor.layout.explorer.sellist:
+                    editor.layout.explorer.expand(item.parent)
+                mdlhandles.NewSellist = []
                 return
         except:
+            mdlhandles.NewSellist = []
             pass
+        mdlhandles.NewSellist = []
+        self.mpp.resetpage() # This calls for the Skin-view to be updated and redrawn.
 
-     #   if comp != self.editor.Root.currentcomponent:
-     #       self.reset()
-     #   self.editor.Root.setcomponent(comp)
-     #   if saveskin is not None and comp.currentskin != saveskin:
-     #       comp.currentskin = saveskin
 
     def selectcgroup(self, group):
         "This is when you select a particular item of a component group 'Skins', 'Frames' or 'Skeleton' in the Tree-view."
+
         comp = self.componentof(group)
         if comp is not None:
           self.selectcomponent(comp)
 
+    def selectbone(self, bone):
+        "This is when you select a particular bone(s) in the 'Misc' group of the Tree-view."
+        global startup
+        startup = 0
+
     def selectframe(self, frame):
         "This is when you select a particular frame in the 'Frames' group of the Tree-view."
+
         c = self.componentof(frame)
         if c is not None:
             self.selectcomponent(c)
@@ -339,27 +406,31 @@ class ModelLayout(BaseLayout):
     def selectskin(self, skin):
         "This is when you select a particular skin in the 'Skins' group of the Tree-view."
         global saveskin, savedskins
+
         self.reset()
         c = self.componentof(skin)
-    #    if c is not None and skin is not c.currentskin and self.editor.Root.currentcomponent is not None:
+        ### may not need the 3 lines below
+        if c is None:
+            c = self.editor.Root
+
+        if c is not None and not c.shortname in savedskins:
+            savedskins[c.shortname] = skin
+        else:
+            savedskins[c.shortname] = skin
+
         if skin is not c.currentskin:
-            self.selectcomponent(c)
             c.currentskin = skin
             saveskin = skin
-            skincomponent = self.editor.Root.currentcomponent.shortname
-            savedskins[skincomponent] = saveskin
+            self.selectcomponent(c)
 
     def selchange(self):
-        "This completes what ever selection def you are using above."
-        global startup
+        "This calls for what ever selection def you are using above."
 
-        fs = self.explorer.uniquesel
-        if fs is not None:
-            if fs.type == ':mc':
-                if fs != self.editor.Root.currentcomponent:
-                    startup = 2
+        if self.explorer.sellist != []:
+            fs = self.explorer.sellist[0]
+        else:
+            fs = None
 
-        self.mpp.resetpage()
         if fs is not None:
             if fs.type == ':mf':       # frame
                 self.selectframe(fs)
@@ -367,6 +438,8 @@ class ModelLayout(BaseLayout):
                 self.selectcgroup(fs)
             elif fs.type == ':sg':     # skin group
                 self.selectcgroup(fs)
+            elif fs.type == ':bone':   # bone (Misc group)
+                self.selectbone(fs)
             elif fs.type == ':bg':     # bone group
                 self.selectcgroup(fs)
             elif fs.type == ':mc':     # component
@@ -401,6 +474,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.22  2007/03/22 19:21:40  cdunde
+#To add skin texture size to the Skin-view page top section.
+#
 #Revision 1.21  2007/03/22 19:13:56  cdunde
 #To stop crossing of skins from model to model when a new model, even with the same name,
 #is opened in the Model Editor without closing QuArK completely.
