@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2007/03/22 20:53:46  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+Also fixed the solid-color not showing up with lighting enabled.
+
 Revision 1.50  2007/03/17 14:32:38  danielpharos
 Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
 
@@ -441,7 +445,7 @@ begin
       if Light[K] >= LightParams.BrightnessSaturation then
         Point1.light_rgb[K]:=Currentf[K]
       else
-        Point1.light_rgb[K]:=LightParams.ZeroLight + (Light[K]*LightParams.LightFactor * Currentf[K]);
+        Point1.light_rgb[K]:=(LightParams.ZeroLight + (Light[K]*LightParams.LightFactor)) * Currentf[K];
   end;
 end;
 
@@ -1138,9 +1142,9 @@ begin
   if Lighting then
   begin
     glEnable(GL_LIGHTING);
-    LightParam[0]:=LightParams.ZeroLight*5;
-    LightParam[1]:=LightParams.ZeroLight*5;
-    LightParam[2]:=LightParams.ZeroLight*5;
+    LightParam[0]:=LightParams.ZeroLight;
+    LightParam[1]:=LightParams.ZeroLight;
+    LightParam[2]:=LightParams.ZeroLight;
     LightParam[3]:=1.0;
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, @LightParam);
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -2001,24 +2005,28 @@ begin
       NeedColor:=False;
       NeedTex:=False;
       glDisable(GL_TEXTURE_2D);
+      glDisable(GL_COLOR_MATERIAL);
     end;
   vmSolidcolor:
     begin
       NeedColor:=True;
       NeedTex:=False;
       glDisable(GL_TEXTURE_2D);
+      glDisable(GL_COLOR_MATERIAL);
     end;
   vmTextured:
     begin
       NeedColor:=False;
       NeedTex:=True;
       glEnable(GL_TEXTURE_2D);
+      glEnable(GL_COLOR_MATERIAL);
     end;
   else
     begin
       NeedColor:=False;
       NeedTex:=True;
       glEnable(GL_TEXTURE_2D);
+      glEnable(GL_COLOR_MATERIAL);
     end;
   end;
   CheckOpenGLError(glGetError);   {#}
