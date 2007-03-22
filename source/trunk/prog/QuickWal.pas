@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2007/02/07 20:03:05  danielpharos
+Fixes for memory leaks
+
 Revision 1.38  2007/02/07 14:08:22  danielpharos
 Fix a memory leak.
 
@@ -1070,12 +1073,18 @@ begin
     PakList:=ListPakFiles(Path);
 
   FoundShaders:=TStringList.Create;
-  ShaderList:=TStringList.Create;
   if ShaderFilter then
-    ShaderList.Add(Copy(Filter,1,Length(Filter)-Length(ShaderExt)))
+  begin
+    ShaderList:=TStringList.Create;
+    ShaderList.Add(Copy(Filter,1,Length(Filter)-Length(ShaderExt)));
+  end
   else
+  begin
     if not allshaders then
-      GetShaderList(Base,ShaderList);
+      GetShaderList(Base,ShaderList)
+    else
+      ShaderList:=TStringList.Create;
+  end;
 
   TexturesPath:=GameTexturesPath;
   if FolderFilter then
@@ -1161,6 +1170,7 @@ begin
       Pak.AddRef(-1);
     end;
   end;
+
   PakList.Free;
   ShaderList.Free;
   FoundShaders.Free;
