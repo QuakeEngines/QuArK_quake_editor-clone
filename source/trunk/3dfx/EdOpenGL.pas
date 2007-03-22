@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
 Revision 1.49  2007/03/11 12:03:11  danielpharos
 Big changes to Logging. Simplified the entire thing.
 
@@ -214,7 +217,7 @@ type
  TGLSceneObject = class(TSceneObject)
  private
    DestWnd: HWnd;
-   GLDC: HDC;
+   ViewDC: HDC;
    RC: HGLRC;
    CurrentAlpha: LongInt;
    Currentf: GLfloat4;
@@ -261,10 +264,11 @@ type
                   var AllowsGDI: Boolean); override;
    procedure ClearScene; override;
    procedure Render3DView; override;
-   procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
+   procedure Copy3DView; override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
    property Ready: Boolean read FReady write FReady;
    procedure SetViewRect(SX, SY: Integer); override;
+   procedure SetViewDC(DC: HDC); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -464,15 +468,15 @@ var
 begin
   if MakeSections=False then
   begin
-    {$IFDEF DebugGLErr} DebugOpenGL(-121, '', []); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(-121, 'glBegin(GL_QUADS)', []); {$ENDIF}
+    glBegin(GL_QUADS);
     light[0]:=LightParams.ZeroLight * Currentf[0];
     light[1]:=LightParams.ZeroLight * Currentf[1];
     light[2]:=LightParams.ZeroLight * Currentf[2];
     light[3]:=Currentf[3];
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@light);
     glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@light);
     glColor4fv(light);
-    {$IFDEF DebugGLErr} DebugOpenGL(-121, 'glBegin(GL_QUADS)', []); {$ENDIF}
-    glBegin(GL_QUADS);
     NormalVector[0]:=NormalePlan[0];
     NormalVector[1]:=NormalePlan[1];
     NormalVector[2]:=NormalePlan[2];
@@ -634,6 +638,7 @@ begin
       begin
         //with Points[J,I] do
         begin
+          glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Points[J,I].light_rgb);
           glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J,I].light_rgb);
           glColor4fv(Points[J,I].light_rgb);
           glTexCoord2fv(Points[J,I].v.st);
@@ -641,6 +646,7 @@ begin
         end;
         //with Points[J+StepJ,I] do
         begin
+          glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Points[J+StepJ,I].light_rgb);
           glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J+StepJ,I].light_rgb);
           glColor4fv(Points[J+StepJ,I].light_rgb);
           glTexCoord2fv(Points[J+StepJ,I].v.st);
@@ -687,6 +693,7 @@ begin
     Inc(PV);
     LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
     Inc(vec3_p(PV));
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Point.light_rgb);
     glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Point.light_rgb);
     glColor4fv(Point.light_rgb);
     glTexCoord2fv(Point.v.st);
@@ -703,6 +710,44 @@ begin
   if SY<1 then SY:=1;
   ScreenX:=SX;
   ScreenY:=SY;
+end;
+
+procedure TGLSceneObject.SetViewDC(DC: HDC);
+var
+  DoubleBuffered: Boolean;
+  pfd: TPixelFormatDescriptor;
+  pfi: Integer;
+  Setup: QObject;
+  CurrentPixelFormat: Integer;
+begin
+  if ViewDC<>DC then
+  begin
+    ReleaseDC(DestWnd, ViewDC);
+    ViewDC:=DC;
+    Setup:=SetupSubSet(ssGeneral, 'OpenGL');
+    DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
+    FillChar(pfd, SizeOf(pfd), 0);
+    pfd.nSize:=SizeOf(pfd);
+    pfd.nversion:=1;
+    pfd.dwflags:=pfd_Support_OpenGl or pfd_Draw_To_Window;
+    pfd.iPixelType:=pfd_Type_RGBA;
+    if DoubleBuffered then
+      pfd.dwflags:=pfd.dwflags or pfd_DoubleBuffer;
+    if Setup.Specifics.Values['SupportsGDI']<>'' then
+      pfd.dwflags:=pfd.dwflags or pfd_Support_GDI;
+    pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
+    if pfd.cColorBits<=0 then
+      pfd.cColorBits:=GetDeviceCaps(ViewDC, BITSPIXEL);
+    pfd.cDepthBits:=DepthBufferBits;
+    pfd.iLayerType:=pfd_Main_Plane;
+    pfi:=ChoosePixelFormat(ViewDC, @pfd);
+    CurrentPixelFormat:=GetPixelFormat(ViewDC);
+    if CurrentPixelFormat<>pfi then
+     begin
+      if not SetPixelFormat(ViewDC, pfi, @pfd) then
+        Raise EErrorFmt(4869, ['SetPixelFormat']);
+     end;
+  end;
 end;
 
 function TGLSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
@@ -848,10 +893,10 @@ begin
     RC:=0;
   end;
 
-  if GLDC<>0 then
+  if ViewDC<>0 then
   begin
-    ReleaseDC(DestWnd, GLDC);
-    GLDC:=0;
+    ReleaseDC(DestWnd, ViewDC);
+    ViewDC:=0;
   end;
 end;
 
@@ -978,7 +1023,7 @@ begin
   else
     MakeSections:=False;
 
-  GLDC:=GetDC(Wnd);
+  ViewDC:=GetDC(Wnd);
   if Wnd<>DestWnd then
   begin
     DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
@@ -993,14 +1038,14 @@ begin
       pfd.dwflags:=pfd.dwflags or pfd_Support_GDI;
     pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
     if pfd.cColorBits<=0 then
-      pfd.cColorBits:=GetDeviceCaps(GLDC, BITSPIXEL);
+      pfd.cColorBits:=GetDeviceCaps(ViewDC, BITSPIXEL);
     pfd.cDepthBits:=DepthBufferBits;
     pfd.iLayerType:=pfd_Main_Plane;
-    pfi:=ChoosePixelFormat(GLDC, @pfd);
-    CurrentPixelFormat:=GetPixelFormat(GLDC);
+    pfi:=ChoosePixelFormat(ViewDC, @pfd);
+    CurrentPixelFormat:=GetPixelFormat(ViewDC);
     if CurrentPixelFormat<>pfi then
      begin
-      if not SetPixelFormat(GLDC, pfi, @pfd) then
+      if not SetPixelFormat(ViewDC, pfi, @pfd) then
         Raise EErrorFmt(6301, ['SetPixelFormat']);
      end;
     DestWnd:=Wnd;
@@ -1008,10 +1053,10 @@ begin
 
   if RC = 0 then
    begin
-    RC:=wglCreateContext(GLDC);
+    RC:=wglCreateContext(ViewDC);
     if RC = 0 then
      raise EError(6311);
-    if wglMakeCurrent(GLDC,RC) = false then
+    if wglMakeCurrent(ViewDC,RC) = false then
      raise EError(6310);
 
     for pfi:=0 to Length(RCs)-1 do
@@ -1028,7 +1073,7 @@ begin
    end
   else
    begin
-    if wglMakeCurrent(GLDC,RC) = false then
+    if wglMakeCurrent(ViewDC,RC) = false then
      raise EError(6310);
    end;
 
@@ -1141,10 +1186,10 @@ begin
   wglMakeCurrent(0,0);
 end;
 
-procedure TGLSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
+procedure TGLSceneObject.Copy3DView;
 begin
   if DoubleBuffered then
-    if Windows.SwapBuffers(DC)=false then
+    if Windows.SwapBuffers(ViewDC)=false then
       raise exception.create(LoadStr1(6315));
 end;
 
@@ -1201,7 +1246,7 @@ begin
   Result:=bmOpenGL;
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
-  if wglMakeCurrent(GLDC,RC) = false then
+  if wglMakeCurrent(ViewDC,RC) = false then
     raise EError(6310);
   for I:=0 to 2 do
   begin
@@ -1256,7 +1301,7 @@ var
 begin
   if not OpenGlLoaded then
     Exit;
-  if wglMakeCurrent(GLDC,RC) = false then
+  if wglMakeCurrent(ViewDC,RC) = false then
    raise EError(6310);
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
   SX:=ScreenX;
@@ -1694,7 +1739,7 @@ begin
 
     {GetwhForTexture(Texture^.info, W, H);}
     
-    wglMakeCurrent(GLDC,RC);
+    wglMakeCurrent(ViewDC,RC);
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, @MaxTexDim);
     CheckOpenGLError(glGetError);  {#}
     wglMakeCurrent(0,0);
@@ -1885,11 +1930,10 @@ begin
       PSD2.Done;
     end;
 
-    if wglMakeCurrent(GLDC,RC) = false then
+    if wglMakeCurrent(ViewDC,RC) = false then
      raise EError(6310);
    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, Texture^.OpenGLName);
-
     CheckOpenGLError(glGetError);   {#}
 
     {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
