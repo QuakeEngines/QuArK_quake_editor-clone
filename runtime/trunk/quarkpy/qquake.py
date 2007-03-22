@@ -92,7 +92,7 @@ class GameConsole(BatchConsole):
             if format:
                 cmdline = program + " " + format % customdir
             else:
-			    cmdline = program
+                cmdline = program
             if map is not self.NO_MAP:
                 #debug('rowdy: before mangle run game command: "%s"' % cmdline)
                 #cmdline = cmdline + setup["RunMapCmdLine"] % map
@@ -227,6 +227,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.13  2006/11/30 01:19:33  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.12  2006/11/29 07:00:26  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.
