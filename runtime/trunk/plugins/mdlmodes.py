@@ -502,6 +502,12 @@ def DialogViewsClick(m):
     OptionsViewsClick(m)
 
 
+def ColorsClick(m):
+    editor = mapeditor()
+    m = qmenu.item("Dummy", None, "")
+    quarkx.openconfigdlg("Model:Colors")
+
+
 class AxisLockBar(ToolBar):
     "Creates the Axis Lock Toolbar at startup."
 
@@ -512,6 +518,7 @@ class AxisLockBar(ToolBar):
         LockYBtn = qtoolbar.button(lockyclick, "Lock Y Axis", ico_mdled, 1)  # tb_AxisLock[1] button
         LockZBtn = qtoolbar.button(lockzclick, "Lock Z Axis", ico_mdled, 2)  # tb_AxisLock[2] button
         viewsDialogbtn = qtoolbar.button(DialogViewsClick, "Views Options\nDialog Input\n(opens the input box)||Views Options Dialog Input:\n\nThis will open its own 'Dialog Box' and is laid out in the same order as the 'Display tool-palette'. \n\nThis dialog gives you the ability to customize every view that QuArK provides and does so independently from one view to the next.", ico_mdled, 3, infobaselink="intro.terraingenerator.selection.html#options3d")
+        Colorsbtn = qtoolbar.button(ColorsClick, "Color Options\nfor quick line and\nvertex color changes||Color Options:\n\nThis will open the 'Configuration Model Editor Colors' selection dialog.\n\nThis dialog allows you to quickly change a variety of line and vertex color settings for easer viewing as needed.", ico_mdled, 4, infobaselink="intro.terraingenerator.selection.html#options3d")
         layout.buttons.update({"lockx": LockXBtn, "locky": LockYBtn,"lockz": LockZBtn})
 
         if quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"]=="1":
@@ -529,7 +536,7 @@ class AxisLockBar(ToolBar):
         else:
             LockZBtn.state = quarkpy.qtoolbar.normal
 
-        return [LockXBtn, LockYBtn, LockZBtn, viewsDialogbtn]
+        return [LockXBtn, LockYBtn, LockZBtn, viewsDialogbtn, Colorsbtn]
 
 
 quarkpy.mdlcommands.items.append(quarkpy.qmenu.sep)
@@ -550,6 +557,10 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.6  2007/03/22 19:05:43  cdunde
+# Removed Model Editors 3D Options dialog Icon X close
+# button to stop problems caused when used.
+#
 # Revision 1.5  2007/01/30 06:43:20  cdunde
 # Added more options to the Model Editor View Modes dialog.
 #
