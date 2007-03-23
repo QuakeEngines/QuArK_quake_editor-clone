@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2
 =============
 
+* [cdunde]: Added a 'Quick Color Options' button to the Model Editors modes tool bar for color selection settings.
+
 * [DanielPharos]: Changed the way renderers track the drawing DC handle. Should fix a lot of OpenGL context
           - errors. A small timing issue with this fix was noticed however. Put it is working: simply try
           - again, and it should pop right up.
