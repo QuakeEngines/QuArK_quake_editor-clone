@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2007/03/22 22:08:08  danielpharos
+Moved a debug routine into a debug section.
+
 Revision 1.52  2007/03/22 21:51:27  danielpharos
 Fix for abnormal lighting effects in OpenGL introduced in last 'fix'.
 
@@ -1067,8 +1070,6 @@ begin
     RC:=wglCreateContext(ViewDC);
     if RC = 0 then
      raise EError(6311);
-    if wglMakeCurrent(ViewDC,RC) = false then
-     raise EError(6310);
 
     for pfi:=0 to Length(RCs)-1 do
     begin
@@ -1081,12 +1082,10 @@ begin
     end;
     SetLength(RCs,Length(RCs)+1);   {Increase the RCs-array by one element}
     RCs[Length(RCs)-1]:=RC;
-   end
-  else
-   begin
-    if wglMakeCurrent(ViewDC,RC) = false then
-     raise EError(6310);
    end;
+
+  if wglMakeCurrent(ViewDC,RC) = false then
+    raise EError(6310);
 
   { set up OpenGL }
   {$IFDEF DebugGLErr} DebugOpenGL(0, '', []); {$ENDIF}
