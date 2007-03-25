@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/03/11 12:03:10  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
 Revision 1.13  2007/02/01 23:13:53  danielpharos
 Fixed a few copyright headers
 
@@ -832,9 +835,9 @@ expected one.
 
 //tbd : what versions to allow ?
 //           if (S1='mapversion') and (S<>'1') then
-//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(270)]);
+//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(268)]);
 //           if (S1='formatversion') and (S<>'100') then
-//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(270)]);
+//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(268)]);
      ReadSymbol(sStringQuotedToken);
    end;
    ReadSymbol(sCurlyBracketRight);

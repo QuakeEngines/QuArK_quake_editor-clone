@@ -86,7 +86,7 @@ Strings = {
     223: "Select the polyhedrons, entities, and groups to include in the test build, and try again.\n\nNote that the game will crash if there is no player start in the selection. If the normal player start is not in the selection, you should use a 'testplayerstart' entity (see the New Items window).",
     226: "Thank you for having registered, %s !",
     229: "intersection",
-    230: "Duplicators should not be put directly under ""worldspawn"", because they duplicate ""worldspawn"" itself; the resulting .map file is not valid.",
+    230: "Duplicators should not be put directly under 'worldspawn', because they duplicate 'worldspawn' itself; the resulting .map file is not valid.",
     236: "Position of the selected vertex",
     237: "Position of the duplicator image",
     238: "Enter the new origin :   (X Y Z)",
@@ -105,28 +105,23 @@ Strings = {
     257: "QuArK has found %d invalid polyhedron face(s) in this file. Look for the \042broken face\042 icons in the list.",
     # 258: "Polyhedrons with the 'origin' content flag are not allowed in 'worldspawn'. Ignored.",
 
-    # Rowdy
     260: "\042patchDef2\042 expected",
     261: "bezier",
-    #262: "JPG image",
-    #263: "JPG image (*.jpg)|*.jpg",
-    264: "Map beziers",
-    # /Rowdy
+    262: "Map beziers",
     265: "unexpected surface attribute",
-    266: "Sorry, Doom 3 version 2 maps are not currently supported.",
-
-    270: "Sorry, unsupported HL2 map format.",
+    266: "Sorry, Doom 3 version 2 maps are not currently supported",
+    267: "Unknown map version",
+    268: "Sorry, unsupported HL2 map format",
 
     288: "Help snippet - (press ESC to close window)",
     289: "||Red line : these red lines delimit which portion of the map are to be considered visible on the other view. The objects that are not visible on both map views are considered invisible, and if you see them on one view, they will be grayed out and not selectable with the mouse.\n\nMove these red lines if you need, for example, a quick way to select objects in a room without selecting the ceiling first every time : in this case, scroll the XZ view and/or move its red line until it is below the ceiling, so that the ceiling doesn't come in the way any more.|intro.mapeditor.menu.html#optionsmenu",
+    # 290: "This would display help about entity if an entity was selected",
 
     384: "Impossible to create the file :\n\n%s",
     385: "QuArK failed to open the file :\n\n%s",
 
     389: "Add a Specific/Arg",
     390: "Delete Specific/Arg",
-
-    421: "This would display help about entity if an entity was selected",
 
     501: "Checking map...",
     502: "Saving compiled model...",
@@ -831,7 +826,7 @@ Strings = {
     5637: "This BSP or parts of it are still opened. Cannot open the map display again",
     5638: "The hull number %d contains %d invalid face(s).\n%s",
     5639: "No texture number %d",
-    5640: "Cannot edit BSP faces yet. Wait for a future version of QuArK !..",
+    5640: "Cannot edit BSP faces (yet).",
     5641: "The BSP structure seems a bit strange. Be sure the file didn't get truncated.",
     5642: "Save changes in the configuration ?",
     5643: "Load-time include command '%s' : not found",
@@ -883,7 +878,7 @@ Strings = {
     5689: "This image has got no palette : it is a true-color 24-bit image",
     5690: "Setup file was cleared. QuArK is restarted with its default configuration.\n\nDo you want to activate Colorful Captions again ?",
     5691: "Invalid Sprite File!",
-    5692: "The File %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
+    5692: "The file %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
     5693: "'%s' expected in %s",
     5694: "Syntax error in Shader file, line %d",
     5695: "Shader '%s' has no image to display",
@@ -1013,6 +1008,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.85  2007/03/17 15:43:02  danielpharos
+#Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
+#
 #Revision 1.84  2007/03/17 14:32:50  danielpharos
 #Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
 #

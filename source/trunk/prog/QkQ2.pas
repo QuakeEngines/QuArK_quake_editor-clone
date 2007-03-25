@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
 Revision 1.7  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -47,11 +50,7 @@ unit QkQ2;
 interface
 
 uses
-  Windows,
-  Classes,
-  QkObjects,
-  QkFileObjects,
-  QkTextures;
+  Windows, Classes, QkObjects, QkFileObjects, QkTextures;
 
 type
  TCompactTexName = array[0..31] of Byte;
@@ -88,11 +87,7 @@ function CheckQ2MiptexEx(const Header: TQ2Miptex; HSize, FileSize: Integer; Offs
 implementation
 
 uses
-  SysUtils,
-  Quarkx,
-  QkQuakeCtx,
-  Setup,
-  QkObjectClassList;
+  SysUtils, Quarkx, QkQuakeCtx, Setup, QkObjectClassList;
 
  { --------------- }
 

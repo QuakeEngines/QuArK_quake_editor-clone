@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2006/06/23 07:27:26  cdunde
+To reverse 1.30 change, Q3 did not like that one!
+Stopped shader texture from displaying in the game.
+
 Revision 1.30  2006/05/08 06:40:36  cdunde
 To make same kind of change for Q3 as Rowdy
 just did for D3 and Q4 in QkD3.pas.
@@ -343,17 +347,6 @@ begin
 
  end;
 
- // SilverPaladin - 10/25/03 - Added Missing Shader Texture texture
- // To try to prevent Access Violations in 3d views
- if (Result = NIL)
- then begin
-   try
-     Result := NeedGameFile('radiant/shadernotex') as QPixelSet;
-   except
-     Result:=NIL
-   end;
- end;
-
  {tiglari: giving shaders a size.  a presumably
   horrible place to do it, but doesn't work when
   shaders are being loaded }
@@ -364,6 +357,8 @@ begin
    V[2]:=Size.Y;
    SetFloatsSpec('Size',V);
  end
+ else
+   Raise EErrorFmt(5695, [self.name]);
  {/tiglari}
 end;
 

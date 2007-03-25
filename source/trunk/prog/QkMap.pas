@@ -23,6 +23,23 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2006/04/27 06:19:59  cdunde
+To setup Quake4 support and code changes for Doom3 and material handling of both.
+Related file changes
+QkD3.pas
+Added counter for phrasing of material list that kept their textures from
+displaying and sometimes caused an overload and system lockup.
+Added list of "Keywords" for the "Default texture" to display more of them.
+QkMap.pas
+To allow Quake4 Version 3 .mqp files to be read, previously set to only
+allow Doom3 Version 1 .map files to be read and error on Version 2.
+This still is the case for Doom3 with the above change for Quake4.
+Setup.pas
+Add game code "m" to start game support for Quake4.
+QkTextures.pas
+Added Quake4 game code mjQuake4 in Doom3 material file section
+to point to Quake4 material files and display their related textures.
+
 Revision 1.57  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -410,7 +427,7 @@ var
  Header : TQ2MipTex;
 
  { Rowdy, for Doom 3 stuff}
- MapVersion: double;
+ MapVersion: Integer;
 
  function ReadInt(str : string) : LongInt;
  begin
@@ -1412,7 +1429,7 @@ begin
      {Rowdy}
      MapStructureB:=Nil;
      (*** commented out by Armin : only create the group if actually needed
-      *  MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
+      *  MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
       *  Racine.SubElements.Add(MapStructureB);
       *)
      {/Rowdy}
@@ -1432,19 +1449,16 @@ begin
          ReadSymbol(sStringToken); // get the map version number // NumValueToken);
          if SymbolType<>sNumValueToken then
            raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]); // invalid number
-         MapVersion := NumericValue;
-         {had to change code below to allow for Quake 4,
-         right now all Quake 4 maps are Version 3}
-      {   if MapVersion <> 1 then
-           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(266)]); // can't read Doom 3 version 2 maps
-         Result:=mjDoom3;
-         ReadSymbol(sNumValueToken);   }
-         if MapVersion < 2 then
-           Result:=mjDoom3;   // this is a Doom 3 Version 1 map
-         if MapVersion > 2 then
-           Result:=mjQuake4;  // this is a Quake 4 Version 3 map
-         if MapVersion = 2 then  // this test for Doom 3 Version 2 map
-           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(266)]); // can't read Doom 3 version 2 maps
+         MapVersion := Round(NumericValue+0.5);
+         case MapVersion of
+         1: Result:=mjDoom3;   // this is a Doom 3 Version 1 map
+         2: // this is a Doom 3 Version 2 map
+            raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(266)]); // can't read Doom 3 version 2 maps
+         3: Result:=mjQuake4;  // this is a Quake 4 Version 3 map
+            //Right now all Quake 4 maps are Version 3
+         else
+           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(267)]); // can't read this map version
+         end;
          ReadSymbol(sNumValueToken);
         end;
 
@@ -1555,7 +1569,7 @@ begin
               { Armin: create the MapStructureB group if not already done }
                if EntiteBezier=Nil then
                begin
-                 MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
+                 MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
                  Racine.SubElements.Add(MapStructureB);
                  EntiteBezier:=MapStructureB;
                end;
@@ -1568,7 +1582,7 @@ begin
               { Armin: create the MapStructureB group if not already done }
                if EntiteBezier=Nil then
                begin
-                 MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
+                 MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
                  Racine.SubElements.Add(MapStructureB);
                  EntiteBezier:=MapStructureB;
                end;
