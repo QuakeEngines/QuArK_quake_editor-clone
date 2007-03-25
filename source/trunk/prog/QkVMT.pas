@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2007/03/20 21:18:04  danielpharos
+Fix for 1.4
+
 Revision 1.4  2007/03/20 21:07:00  danielpharos
 Even textures for cstrike should now load correctly. GCF file access through VMT files is (still) broken.
 
@@ -91,25 +94,180 @@ end;
 
 function QVMT.DefaultImage : QPixelSet;
 var
- Image: QPixelSet;
- i:integer;
- noimage:boolean;
+ I: integer;
+ S: String;
+ GameDir: String;
+ SteamAppsDir: String;
+ SteamDirectory: String;
+ SteamDirectoryLength: Integer;
+ TexturePath: String;
+ TexturePath2: String;
+ TexturePath3: String;
+ GCFFilename: String;
+ Size: TPoint;
+ V: array [1..2] of Single;
 begin
-  Result :=nil;
   Acces;
-  noimage:=true;
-  for I:=0 to SubElements.Count-1 do
+  Result:=nil;
+  {if DefaultImageCache<>Nil then
   begin
-    if SubElements[I] is qpixelset then
-    begin
-      image := SubElements[I] as qpixelset;
-      Result := image;
-      noimage:=false;
-      break;
+    result:=DefaultImageCache
+  end
+  else
+  begin}
+
+  GCFFilename:='source materials';
+  //DanielPharos: Not the way to go!
+
+  GameDir:=GetGameDir;
+  I:=pos('\',GameDir);
+  if I>0 then
+    SteamAppsDir:=LeftStr(GameDir, I)
+  else
+  begin
+    I:=pos('/',GameDir);
+    if I>0 then
+      SteamAppsDir:=LeftStr(GameDir, I)
+    else
+      SteamAppsDir:=GameDir+'\';
+  end;
+
+  SteamDirectory:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['Directory'];
+  if (RightStr(SteamDirectory,1)='\') or (RightStr(SteamDirectory,1)='/') then
+    SteamDirectoryLength:=Length(SteamDirectory)
+  else
+    SteamDirectoryLength:=Length(SteamDirectory)+1;
+  TexturePath:=RightStr(self.filename,Length(self.filename)-SteamDirectoryLength);
+
+  I:=pos('\',TexturePath);
+  if I>0 then
+    TexturePath:=LeftStr(TexturePath, I-1)
+  else
+  begin
+    I:=pos('/',GameDir);
+    if I>0 then
+      TexturePath:=LeftStr(TexturePath, I-1);
+  end;
+
+  TexturePath2:=RightStr(self.filename,length(self.filename)-SteamDirectoryLength-Length(TexturePath)-1);
+
+  I:=pos('\',TexturePath2);
+  if I=0 then
+    I:=pos('/',TexturePath2);
+  TexturePath3:=RightStr(TexturePath2,Length(TexturePath2)-I);
+
+  I:=pos('\',TexturePath3);
+  if I=0 then
+    I:=pos('/',TexturePath3);
+  TexturePath3:=RightStr(TexturePath3,Length(TexturePath3)-I);
+
+  TexturePath2:=LeftStr(TexturePath2,Length(TexturePath2)-Length(TexturePath3));
+
+  I:=pos('\',TexturePath3);
+  if I=0 then
+    I:=pos('/',TexturePath3);
+  TexturePath3:=LeftStr(TexturePath3,I);
+
+  S:=Specifics.Values['%tooltexture'];
+  if (s<>'') then
+  begin
+    Log(LOG_VERBOSE,'attempting to load $basetexture '+S);
+    try
+      if (self.Protocol<>'') then
+        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
+      else
+        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
+    except
+      Result:=nil;
     end;
   end;
-  if noimage then
-    Raise EErrorFmt(5695, [Name])
+
+  S:=Specifics.Values['$basetexture'];
+  if (Result=nil) and (s<>'') then
+  begin
+    Log(LOG_VERBOSE,'attempting to load $basetexture '+S);
+    try
+      if (self.Protocol<>'') then
+        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
+      else
+        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
+    except
+      Result:=nil;
+    end;
+  end;
+
+  S:=Specifics.Values['$Material'];
+  if (Result=nil) and (s<>'') then
+  begin
+    Log(LOG_VERBOSE,'attempting to load $Material '+S);
+    try
+      if (self.Protocol<>'') then
+        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
+      else
+        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
+    except
+      Result:=nil;
+    end;
+  end;
+
+  S:=Specifics.Values['$dudvmap'];
+  if (Result=nil) and (s<>'') then
+  begin
+    Log(LOG_VERBOSE,'attempting to load $dudvmap '+S);
+    try
+      if (self.Protocol<>'') then
+        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
+      else
+        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
+    except
+      Result:=nil;
+    end;
+  end;
+
+  S:=Specifics.Values['$envmap'];
+  if (Result=nil) and (s<>'') then
+  begin
+    Log(LOG_VERBOSE,'attempting to load $envmap '+S);
+    try
+      if (self.Protocol<>'') then
+        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
+      else
+        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
+    except
+      Result:=nil;
+    end;
+  end;
+
+  if (Result=nil) then
+  begin
+    Log(LOG_VERBOSE,'attempting to load '+TexturePath2+TexturePath3+self.Name+'.vtf');
+    try
+      if (self.Protocol<>'') then
+        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + self.name + '.vtf') as QPixelSet
+      else
+        Result:=NeedGameFileBase(TexturePath, TexturePath2 + TexturePath3 + self.name + '.vtf') as QPixelSet;
+    except
+      Result:=nil;
+    end;
+  end;
+  //DefaultImageCache:=Result;
+
+  {tiglari: giving shaders a size.  a presumably
+  horrible place to do it, but doesn't work when
+  shaders are being loaded }
+  if Result<>Nil then
+  begin
+    Log(LOG_VERBOSE,'image found '+S);
+    Size:=Result.GetSize;
+    V[1]:=Size.X;
+    V[2]:=Size.Y;
+    SetFloatsSpec('Size',V);
+  end
+  else
+  begin
+    Log(LOG_WARN,'no image found in material '+self.name);
+    Raise EErrorFmt(5695, [self.name]);
+  end;
 end;
 
 function QVMT.GetSize : TPoint;
@@ -126,11 +284,9 @@ function QVMT.Description : TPixelSetDescription;
 var
  Image: QPixelSet;
 begin
-  image:=defaultimage;
-  if assigned(image ) then
-    Result := image.description
-  else
-    Raise EErrorFmt(5695, [Name]);
+ Image:=DefaultImage;
+ if Image=Nil then Raise EErrorFmt(5695, [Name]);
+ Result:=Image.Description;
 end;
 
 procedure QVMT.SetSize;
@@ -147,17 +303,6 @@ procedure QVMT.LoadFile(F: TStream; FSize: Integer);
 var
   RawBuffer: String;
   VMTMaterial: Cardinal;
-  VTFImage: QVTF;
-  S: String;
-  I: integer;
-  GameDir: String;
-  SteamAppsDir: String;
-  SteamDirectory: String;
-  SteamDirectoryLength: Integer;
-  TexturePath: String;
-  TexturePath2: String;
-  TexturePath3: String;
-  GCFFilename: String;
 
   //NodeLevel: Cardinal;
   NodeType: VMTNodeType;
@@ -167,7 +312,6 @@ var
   NodeValueSingle: Single;
 begin
   Log(LOG_VERBOSE,'load vmt %s',[self.name]);;
-  VTFImage:=nil;
   case ReadFormat of
     1: begin  { as stand-alone file }
       if (not VMTLoaded) or ReloadNeeded then
@@ -238,140 +382,6 @@ begin
       until vlMaterialGetNextNode=false;
 
       vlDeleteMaterial(VMTMaterial);
-
-      GCFFilename:='source materials';
-      //DanielPharos: Not the way to go!
-
-      GameDir:=GetGameDir;
-      I:=pos('\',GameDir);
-      if I>0 then
-        SteamAppsDir:=LeftStr(GameDir, I)
-      else
-      begin
-        I:=pos('/',GameDir);
-        if I>0 then
-          SteamAppsDir:=LeftStr(GameDir, I)
-        else
-          SteamAppsDir:=GameDir+'\';
-      end;
-
-      SteamDirectory:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['Directory'];
-      if (RightStr(SteamDirectory,1)='\') or (RightStr(SteamDirectory,1)='/') then
-        SteamDirectoryLength:=Length(SteamDirectory)
-      else
-        SteamDirectoryLength:=Length(SteamDirectory)+1;
-      TexturePath:=RightStr(self.filename,Length(self.filename)-SteamDirectoryLength);
-
-      I:=pos('\',TexturePath);
-      if I>0 then
-        TexturePath:=LeftStr(TexturePath, I-1)
-      else
-      begin
-        I:=pos('/',GameDir);
-        if I>0 then
-          TexturePath:=LeftStr(TexturePath, I-1);
-      end;
-
-      TexturePath2:=RightStr(self.filename,length(self.filename)-SteamDirectoryLength-Length(TexturePath)-1);
-
-      I:=pos('\',TexturePath2);
-      if I=0 then
-        I:=pos('/',TexturePath2);
-      TexturePath3:=RightStr(TexturePath2,Length(TexturePath2)-I);
-
-      I:=pos('\',TexturePath3);
-      if I=0 then
-        I:=pos('/',TexturePath3);
-      TexturePath3:=RightStr(TexturePath3,Length(TexturePath3)-I);
-
-      TexturePath2:=LeftStr(TexturePath2,Length(TexturePath2)-Length(TexturePath3));
-
-      I:=pos('\',TexturePath3);
-      if I=0 then
-        I:=pos('/',TexturePath3);
-      TexturePath3:=LeftStr(TexturePath3,I);
-
-      S:=Specifics.Values['%tooltexture'];
-      if (VTFImage=nil) and (s<>'') then
-        try
-          Log(LOG_VERBOSE,'attempting to load $basetexture '+S);
-          if (self.Protocol<>'') then
-            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QVTF
-          else
-            VTFImage:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QVTF;
-        except
-          VTFImage:=nil;
-      end;
-
-      S:=Specifics.Values['$basetexture'];
-      if (VTFImage=nil) and (s<>'') then
-        try
-          Log(LOG_VERBOSE,'attempting to load $basetexture '+S);
-          if (self.Protocol<>'') then
-            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QVTF
-          else
-            VTFImage:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QVTF;
-        except
-          VTFImage:=nil;
-      end;
-
-      S:=Specifics.Values['$Material'];
-      if (VTFImage=nil) and (s<>'') then
-        try
-          Log(LOG_VERBOSE,'attempting to load $Material '+S);
-          if (self.Protocol<>'') then
-            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QVTF
-          else
-            VTFImage:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QVTF;
-        except
-          VTFImage:=nil;
-      end;
-
-      S:=Specifics.Values['$dudvmap'];
-      if (VTFImage=nil) and (s<>'') then
-        try
-          Log(LOG_VERBOSE,'attempting to load $dudvmap '+S);
-          if (self.Protocol<>'') then
-            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QVTF
-          else
-            VTFImage:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QVTF;
-        except
-          VTFImage:=nil;
-      end;
-
-      S:=Specifics.Values['$envmap'];
-      if (VTFImage=nil) and (s<>'') then
-        try
-          Log(LOG_VERBOSE,'attempting to load $envmap '+S);
-          if (self.Protocol<>'') then
-            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QVTF
-          else
-            VTFImage:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QVTF;
-        except
-          VTFImage:=nil;
-      end;
-
-      if (VTFImage=nil) then
-        try
-          Log(LOG_VERBOSE,'attempting to load '+self.Name+'.vtf');
-          if (self.Protocol<>'') then
-            VTFImage:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + self.name + '.vtf') as QVTF
-          else
-            VTFImage:=NeedGameFileBase(TexturePath, TexturePath2 + TexturePath3 + self.name + '.vtf') as QVTF;
-        except
-          VTFImage:=nil;
-      end;
-
-      if VTFImage<>nil then
-      begin
-        Log(LOG_VERBOSE,'image found '+S);
-        VTFImage.Acces;
-        SubElements.Add(VTFImage);
-        VTFImage.fparent:=self;
-      end
-      else
-        Log(LOG_WARN,'no image found in material '+self.name);
-
     end;
     else
       inherited;
@@ -403,8 +413,8 @@ begin
     if vlBindMaterial(VMTMaterial)=false then
       Fatal('Unable to save VMT file. Call to vlBindMaterial failed.');
 
-
-    {Do stuff}
+    //DanielPharos: Do saving stuff...!
+    RawBuffer:='';
 
     if vlMaterialSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
       Fatal('Unable to save VMT file. Call to vlMaterialSaveLump failed.');
@@ -418,7 +428,6 @@ begin
 end;
 
 {-------------------}
-
 
 initialization
 begin
