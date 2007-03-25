@@ -19,6 +19,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.12  2007/03/21 23:22:00  danielpharos
+//Fixed a few typo's and removed the tabs
+//
 //Revision 1.11  2007/03/13 05:42:59  cdunde
 //Changed the trigger_push specific 'angle 360 into angles 0 0 0 - by OmnificienT
 //
@@ -6059,8 +6062,7 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-        Hint = "How long to hold in the open position (default 5, -1 means hol"
-         "d)."
+        Hint = "How long to hold in the open position (default 5, -1 means hold)."
       }
     }
     func_explosive:form =
@@ -6071,6 +6073,11 @@ QQRKSRC1
       {
         Txt = "&"
         Hint = "If you set this, it won't be shootable unless you also set trigger_spawn."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Use this to trigger something when this goes off."
       }
       spawnflags: =
       {
