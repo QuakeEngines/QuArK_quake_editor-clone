@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/03/22 20:53:18  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+
 Revision 1.12  2007/03/17 14:32:38  danielpharos
 Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
 
@@ -139,10 +142,13 @@ type
  *)
   end;
 
- TDirect3DTextureManager = class(TTextureManager)
- public
-   procedure ClearTexture(Tex: PTexture3); override;
- end;
+type  { this is the data shared by all existing TDirect3DSceneObjects }
+  TDirect3DState = class
+  public
+    procedure ClearTexture(Tex: PTexture3);
+  end;
+var
+  qrkGLState: TDirect3DState;
 
  {------------------------}
 
@@ -527,9 +533,9 @@ end;
 
  {------------------------}
 
-procedure TDirect3DTextureManager.ClearTexture(Tex: PTexture3);
+procedure TDirect3DState.ClearTexture(Tex: PTexture3);
 begin
-  {Daniel: How can you be sure Direct3D has been loaded?}
+  //DanielPharos: How can you be sure Direct3D has been loaded?
   
 end;
 
