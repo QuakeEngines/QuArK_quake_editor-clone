@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
 Revision 1.15  2006/12/26 22:48:16  danielpharos
 A little fix to reduce the amount of grid-draw-problems with OpenGL
 
@@ -743,7 +746,7 @@ procedure UnloadOpenGl;
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..53] of //Daniel 2007.01.30 - modified
+  OpenGL32DLL_FuncList : array[0..53] of //DanielPharos 2007.01.30 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -751,8 +754,8 @@ const
   ( (FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
-   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //Daniel 2006.09.26 - Added
-   ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        ) {Decker 2002.02.26 - Added}
+   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //DanielPharos 2006.09.26 - Added
+   ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        ) //Decker 2002.02.26 - Added
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
    ,(FuncPtr: @@glEnable;              FuncName: 'glEnable'              )
@@ -789,23 +792,23 @@ const
    ,(FuncPtr: @@glAreTexturesResident; FuncName: 'glAreTexturesResident' )
    ,(FuncPtr: @@glBindTexture;         FuncName: 'glBindTexture'         )
    ,(FuncPtr: @@glGenTextures;         FuncName: 'glGenTextures'         )
-   ,(FuncPtr: @@glGenLists;            FuncName: 'glGenLists'            ) //Daniel 2006.09.19 - Added
+   ,(FuncPtr: @@glGenLists;            FuncName: 'glGenLists'            ) //DanielPharos 2006.09.19 - Added
    ,(FuncPtr: @@glNewList;             FuncName: 'glNewList'             )
    ,(FuncPtr: @@glEndList;             FuncName: 'glEndList'             )
    ,(FuncPtr: @@glCallList;            FuncName: 'glCallList'            )
    ,(FuncPtr: @@glDeleteLists;         FuncName: 'glDeleteLists'         )
    ,(FuncPtr: @@glReadPixels;          FuncName: 'glReadPixels'          )
    ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           ) //Decker 2003.03.12 - Added
-   ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //Daniel 2006.09.28 - Added
-   ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         ) //Daniel 2006.12.03 - Added
-   ,(FuncPtr: @@glLightModelf;         FuncName: 'glLightModelf'         ) //Daniel 2007.01.15 - Added
-   ,(FuncPtr: @@glLightModelfv;        FuncName: 'glLightModelfv'        ) //Daniel 2007.01.14 - Added
-   ,(FuncPtr: @@glLightf;              FuncName: 'glLightf'              ) //Daniel 2007.01.14 - Added
-   ,(FuncPtr: @@glLightfv;             FuncName: 'glLightfv'             ) //Daniel 2007.01.14 - Added
-   ,(FuncPtr: @@glMaterialf;           FuncName: 'glMaterialf'           ) //Daniel 2007.01.15 - Added
-   ,(FuncPtr: @@glMaterialfv;          FuncName: 'glMaterialfv'          ) //Daniel 2007.01.15 - Added
-   ,(FuncPtr: @@glNormal3fv;           FuncName: 'glNormal3fv'           ) //Daniel 2007.01.23 - Added
-   ,(FuncPtr: @@glFrontFace;           FuncName: 'glFrontFace'           ) //Daniel 2007.01.30 - Added
+   ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //DanielPharos 2006.09.28 - Added
+   ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         ) //DanielPharos 2006.12.03 - Added
+   ,(FuncPtr: @@glLightModelf;         FuncName: 'glLightModelf'         ) //DanielPharos 2007.01.15 - Added
+   ,(FuncPtr: @@glLightModelfv;        FuncName: 'glLightModelfv'        ) //DanielPharos 2007.01.14 - Added
+   ,(FuncPtr: @@glLightf;              FuncName: 'glLightf'              ) //DanielPharos 2007.01.14 - Added
+   ,(FuncPtr: @@glLightfv;             FuncName: 'glLightfv'             ) //DanielPharos 2007.01.14 - Added
+   ,(FuncPtr: @@glMaterialf;           FuncName: 'glMaterialf'           ) //DanielPharos 2007.01.15 - Added
+   ,(FuncPtr: @@glMaterialfv;          FuncName: 'glMaterialfv'          ) //DanielPharos 2007.01.15 - Added
+   ,(FuncPtr: @@glNormal3fv;           FuncName: 'glNormal3fv'           ) //DanielPharos 2007.01.23 - Added
+   ,(FuncPtr: @@glFrontFace;           FuncName: 'glFrontFace'           ) //DanielPharos 2007.01.30 - Added
  );
 
   Glu32DLL_FuncList : array[0..0] of
