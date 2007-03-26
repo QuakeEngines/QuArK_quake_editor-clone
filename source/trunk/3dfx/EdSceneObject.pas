@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2007/03/22 20:52:58  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+
 Revision 1.29  2007/03/17 14:32:38  danielpharos
 Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
 
@@ -337,7 +340,6 @@ type
    class procedure FreeNonVisibleTextures;
    procedure GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject{; PalWarning: TPaletteWarning});
    procedure FreeTextures(ForceAll: Boolean);
-   procedure ClearTexture(Tex: PTexture3); virtual;
    function CanFree: Boolean;
    function UnifiedPalette: Boolean;
    function ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
@@ -1511,7 +1513,9 @@ end;
 
 procedure TTextureManager.FreeTexture(Tex: PTexture3);
 begin
- ClearTexture(Tex);
+ //DanielPharos: How can you be sure OpenGL has been loaded?
+ if Tex^.OpenGLName<>0 then
+   qrkGLState.ClearTexture(Tex);
  FreeMem(Tex^.info.data);
  Tex^.SourceTexture.AddRef(-1);
  Dispose(Tex);
@@ -2040,10 +2044,6 @@ begin
      TextureManager:=Nil;
     end;
   end;
-end;
-
-procedure TTextureManager.ClearTexture(Tex: PTexture3);
-begin
 end;
 
  {------------------------}

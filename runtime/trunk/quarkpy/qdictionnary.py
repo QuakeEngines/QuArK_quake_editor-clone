@@ -980,8 +980,7 @@ Strings = {
     6315: "Failed to swap buffers. Try updating your video card drivers. If that doesn't work, disable the double buffering option in the Configuration dialog box",
 
     6320: "OpenGL renderer does not support fullscreen views (yet)",
-    6321: "Python failure in OpenGL view creation",
-    6322: "An error occured in the OpenGL routines: CurrentSurf is nil!",
+    6321: "An error occured in the OpenGL routines: CurrentSurf is nil!",
 
     # DanielPharos would like to reserve 6400 .. 6499 for the DirectX renderer :-)
     6400: "Error in DirectX initialization//'%s'",
@@ -1008,6 +1007,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.86  2007/03/25 13:51:50  danielpharos
+#Moved a few dictionnary words around.
+#
 #Revision 1.85  2007/03/17 15:43:02  danielpharos
 #Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
 #

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2007/03/24 19:21:07  danielpharos
+Removed some double and possibly wrong code.
+
 Revision 1.53  2007/03/22 22:08:08  danielpharos
 Moved a debug routine into a debug section.
 
@@ -210,6 +213,8 @@ const
  kScaleCos = 0.5;
 
 var
+ TexturesToDelete: array of Integer;
+ DisplayListsToDelete: array of Integer;
  RCs: array of HGLRC;
 
 type
@@ -265,6 +270,7 @@ type
    procedure ReleaseResources;
    procedure BuildTexture(Texture: PTexture3); override;
  public
+   constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
@@ -282,10 +288,13 @@ type
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
- TGLTextureManager = class(TTextureManager)
- public
-   procedure ClearTexture(Tex: PTexture3); override;
- end;
+type  { this is the data shared by all existing TGLSceneObjects }
+  TGLState = class
+  public
+    procedure ClearTexture(Tex: PTexture3);
+  end;
+var
+  qrkGLState: TGlState;
 
  {------------------------}
 
@@ -327,23 +336,6 @@ begin
   end
 end;
 {$ENDIF}
-
- {------------------------}
-
-var
-  CurrentGLSceneObject: TGLSceneObject = Nil;
- {VersionGLSceneObject: Integer;}
-
-procedure NeedGLSceneObject(MinX, MinY: Integer);
-begin
- {if CurrentGLSceneObject=Nil then
-  begin}
-    Py_XDECREF(CallMacroEx(Py_BuildValueX('ii', [MinX, MinY]), 'OpenGL'));
-    PythonCodeEnd;
-    if CurrentGLSceneObject=Nil then
-      Raise EAbort.Create(LoadStr1(6321));
- {end;}
-end;
 
  {------------------------}
 
@@ -836,11 +828,8 @@ var
  I: Integer;
 { NameArray, NameAreaWalker: ^GLuint;}
 begin
-  CurrentGLSceneObject:=Nil;
   RenderingTextureBuffer.Free;
   RenderingTextureBuffer:=Nil;
-
-  ClearScene;
 
   {with TTextureManager.GetInstance do
   begin
@@ -874,27 +863,24 @@ begin
 
   if RC<>0 then
   begin
-    if OpenGLLoaded then
+    for I:=0 to 2 do
     begin
-      {if wglMakeCurrent(GLDC,RC) = false then
-        raise EError(6310);}
-      for I:=0 to 2 do
+      if OpenGLDisplayLists[I]<>0 then
       begin
-        if OpenGLDisplayLists[I]<>0 then
-        begin
-          {glDeleteLists(OpenGLDisplayLists[I],1);
-          CheckOpenGLError(glGetError);}
-          OpenGLDisplayLists[I]:=0;
-        end;
+        SetLength(DisplayListsToDelete,Length(DisplayListsToDelete)+1);
+        DisplayListsToDelete[Length(DisplayListsToDelete)-1]:=OpenGLDisplayLists[I];
+        OpenGLDisplayLists[I]:=0;
       end;
-
-      wglMakeCurrent(0,0);
+    end;
+    if OpenGLLoaded then
       if wglDeleteContext(RC) = false then
         raise EError(6312);
-    end;
+
+    ReleaseDC(DestWnd, ViewDC);
+    ViewDC:=0;
 
     I:=0;
-    while I<Length(RCs) do
+    while I<=Length(RCs)-1 do
     begin
       if RCs[I]=RC then
       begin
@@ -906,21 +892,22 @@ begin
     end;
     RC:=0;
   end;
+end;
 
-  if ViewDC<>0 then
-  begin
-    ReleaseDC(DestWnd, ViewDC);
-    ViewDC:=0;
-  end;
+constructor TGLSceneObject.Create(nViewMode: TMapViewMode);
+begin
+  inherited Create(nViewMode);
+  RC:=0;
+  ViewDC:=0;
 end;
 
 destructor TGLSceneObject.Destroy;
 begin
   {$IFDEF DebugGLErr} HackIgnoreErrors:=True; {$ENDIF}
+  inherited;
   ReleaseResources;
   if OpenGLLoaded = true then
     UnloadOpenGl;
-  inherited;
   {$IFDEF DebugGLErr} HackIgnoreErrors:=False; {$ENDIF}
 end;
 
@@ -1080,7 +1067,7 @@ begin
         break;
       end;
     end;
-    SetLength(RCs,Length(RCs)+1);   {Increase the RCs-array by one element}
+    SetLength(RCs,Length(RCs)+1);
     RCs[Length(RCs)-1]:=RC;
    end;
 
@@ -1118,12 +1105,8 @@ begin
     Bilinear:=true
   else
     Bilinear:=false;
-  glEnable(GL_TEXTURE_2D);
-  CheckOpenGLError(glGetError);
-  {$IFDEF DebugGLErr} DebugOpenGL(2, '', []); {$ENDIF}
 
- {Inc(VersionGLSceneObject);}
-  CurrentGLSceneObject:=Self;  { at this point the scene object is more or less initialized }
+  { at this point the scene object is more or less initialized }
   if not Ready then
     PostMessage(Wnd, wm_InternalMessage, wp_OpenGL, 0);
 
@@ -1207,8 +1190,6 @@ procedure TGLSceneObject.ClearScene;
 var
  PL: PLightList;
 begin
-  inherited;
-
   while Assigned(Lights) do
   begin
     PL:=Lights;
@@ -1216,6 +1197,7 @@ begin
     Dispose(PL);
   end;
   NumberOfLights:=0;
+  inherited;
 end;
 
 procedure TGLSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
@@ -1256,17 +1238,29 @@ begin
   Result:=bmOpenGL;
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
-  if wglMakeCurrent(ViewDC,RC) = false then
-    raise EError(6310);
   for I:=0 to 2 do
   begin
-    if (OpenGLDisplayLists[I]<>0) then
+    if OpenGLDisplayLists[I]<>0 then
     begin
-      glDeleteLists(OpenGLDisplayLists[I],1);
-      CheckOpenGLError(glGetError);
+      SetLength(DisplayListsToDelete,Length(DisplayListsToDelete)+1);
+      DisplayListsToDelete[Length(DisplayListsToDelete)-1]:=OpenGLDisplayLists[I];
       OpenGLDisplayLists[I]:=0;
     end;
   end;
+  if wglMakeCurrent(ViewDC,RC) = false then
+    raise EError(6310);
+  for I:=0 to Length(DisplayListsToDelete)-1 do
+  begin
+    glDeleteLists(1,DisplayListsToDelete[I]);
+    CheckOpenGLError(glGetError);
+  end;
+  SetLength(DisplayListsToDelete,0);
+  for I:=0 to Length(TexturesToDelete)-1 do
+  begin
+    glDeleteTextures(1,TexturesToDelete[I]);
+    CheckOpenGLError(glGetError);
+  end;
+  SetLength(TexturesToDelete,0);
   wglMakeCurrent(0,0);
 end;
 
@@ -1553,6 +1547,30 @@ begin
   CurrentAlpha:=0;
   FillChar(Currentf, SizeOf(Currentf), 0);
 
+  case ViewMode of
+  vmWireframe:
+    begin
+      glDisable(GL_TEXTURE_2D);
+      glDisable(GL_COLOR_MATERIAL);
+    end;
+  vmSolidcolor:
+    begin
+      glDisable(GL_TEXTURE_2D);
+      glDisable(GL_COLOR_MATERIAL);
+    end;
+  vmTextured:
+    begin
+      glEnable(GL_TEXTURE_2D);
+      glEnable(GL_COLOR_MATERIAL);
+    end;
+  else
+    begin
+      glEnable(GL_TEXTURE_2D);
+      glEnable(GL_COLOR_MATERIAL);
+    end;
+  end;
+  CheckOpenGLError(glGetError);
+
   RebuildDisplayList:=False;
   if DisplayLists then
   begin
@@ -1749,7 +1767,8 @@ begin
 
     {GetwhForTexture(Texture^.info, W, H);}
     
-    wglMakeCurrent(ViewDC,RC);
+    if wglMakeCurrent(ViewDC,RC) = false then
+      raise EError(6310);
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, @MaxTexDim);
     CheckOpenGLError(glGetError);
     wglMakeCurrent(0,0);
@@ -1942,11 +1961,11 @@ begin
 
     if wglMakeCurrent(ViewDC,RC) = false then
      raise EError(6310);
-   {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
+    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
+    {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     glGenTextures(1, Texture^.OpenGLName);
     CheckOpenGLError(glGetError);
 
-    {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     if Texture^.OpenGLName=0 then
       Raise InternalE(LoadStr(6314));
     {$IFDEF DebugGLErr} DebugOpenGL(105, 'glBindTexture(GL_TEXTURE_2D, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
@@ -1971,7 +1990,6 @@ begin
     glTexImage2D(GL_TEXTURE_2D, 0, NumberOfComponents, W, H, 0, BufferType, GL_UNSIGNED_BYTE, TexData^);
   (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
     end;//paletted textures   *)
-
     CheckOpenGLError(glGetError);
 
     wglMakeCurrent(0,0);
@@ -2010,32 +2028,23 @@ begin
     begin
       NeedColor:=False;
       NeedTex:=False;
-      glDisable(GL_TEXTURE_2D);
-      glDisable(GL_COLOR_MATERIAL);
     end;
   vmSolidcolor:
     begin
       NeedColor:=True;
       NeedTex:=False;
-      glDisable(GL_TEXTURE_2D);
-      glDisable(GL_COLOR_MATERIAL);
     end;
   vmTextured:
     begin
       NeedColor:=False;
       NeedTex:=True;
-      glEnable(GL_TEXTURE_2D);
-      glEnable(GL_COLOR_MATERIAL);
     end;
   else
     begin
       NeedColor:=False;
       NeedTex:=True;
-      glEnable(GL_TEXTURE_2D);
-      glEnable(GL_COLOR_MATERIAL);
     end;
   end;
-  CheckOpenGLError(glGetError);
 
   if (NumberOfLights<MaxLights) then
     MaxLightNumber:=NumberOfLights
@@ -2157,7 +2166,7 @@ begin
         end;
       end;
       if CurrentSurf=nil then
-        raise InternalE(LoadStr1(6322));
+        raise InternalE(LoadStr1(6321));
       CurrentSurf^.TransparentDrawn:=true;
     end
     else
@@ -2241,7 +2250,6 @@ begin
         glBindTexture(GL_TEXTURE_2D, PList^.Texture^.OpenGLName);
         {$IFDEF DebugGLErr} DebugOpenGL(108, '', []); {$ENDIF}
         CheckOpenGLError(glGetError);
-        NeedTex:=False;
       end;
 
       PV:=PVertex3D(CurrentSurf);
@@ -2323,16 +2331,51 @@ end;
 
  {------------------------}
 
-procedure TGLTextureManager.ClearTexture(Tex: PTexture3);
+procedure TGLState.ClearTexture(Tex: PTexture3);
+{var
+  I: Integer;
+  UseRC: HGLRC;
+  UseViewDC: HDC;}
 begin
-  {Daniel: How can you be sure OpenGL has been loaded?}
+  //DanielPharos: How can you be sure OpenGL has been loaded?
   if (Tex^.OpenGLName<>0) then
   begin
-    {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
-    glDeleteTextures(1, Tex^.OpenGLName);
-    {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+    SetLength(TexturesToDelete,Length(TexturesToDelete)+1);
+    TexturesToDelete[Length(TexturesToDelete)-1]:=Tex^.OpenGLName;
     Tex^.OpenGLName:=0;
-    CheckOpenGLError(glGetError);
+
+    {DanielPharos: OK, let me explain this hack:
+    At the moment, the Device Context (DC) of the window in with OpenGL renders
+    gets destroyed before the TextureManager gets the call to clean up. This
+    means we can't make the context that's going to be destroyed current,
+    because of the invalid DC we're using. So instead of hacking into the code
+    to make a call to delete the texture before deleting the DC, we're keeping
+    track of the textures that need to be destroyed, and destroy them when
+    StartBuildScene is called.
+    We're doing the same for DisplayLists.}
+    
+(*    UseRC:=0;
+    UseViewDC:=0;
+    for I:=0 to Length(RCs)-1 do
+    begin
+      if RCs[I]<>0 then
+      begin
+        UseRC:=RCs[I];
+        UseViewDC:=ViewDCs[I];
+        break;
+      end;
+    end;
+    if (UseRC<>0) and (UseViewDC<>0) then
+    begin
+      if wglMakeCurrent(UseViewDC,UseRC) = false then
+        raise EError(6310);
+      {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+      glDeleteTextures(1, Tex^.OpenGLName);
+      {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+      CheckOpenGLError(glGetError);
+      wglMakeCurrent(0,0);
+    end;
+    Tex^.OpenGLName:=0; *)
   end;
 end;
 
