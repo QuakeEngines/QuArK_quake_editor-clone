@@ -83,6 +83,9 @@ class BaseLayout:
         "Reads setup-dependant information for the layout."
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         if setup["CloseOnSetup"]:
+            if self.buttons["3D"].state == qtoolbar.selected:
+                self.buttons["3D"].state = 0
+                quarkx.update(self.editor.form)
             for floating in BaseLayout.Floating3DWindows:
                 floating.close()
             self.editor.layout.mpp.viewpage(0)
@@ -232,18 +235,18 @@ class BaseLayout:
                     raise quarkx.abort
             self.openfull3Dview()
             setup["Warning3D"] = ""
-            if not (setup["AllowMultiple"] == "1"):
+            if not setup["AllowMultiple"]:
                 self.buttons["3D"].state = qtoolbar.selected
                 quarkx.update(self.editor.form)
         else:
-            if not (setup["AllowMultiple"] == "1"):
+            if not setup["AllowMultiple"]:
                 for floating in BaseLayout.Floating3DWindows:
                     floating.close()
 
     def openfull3Dview(self):
         "Opens the 3D view."
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
-        if not (setup["AllowMultiple"] == "1"):
+        if not setup["AllowMultiple"]:
             for floating in BaseLayout.Floating3DWindows:
                 floating.close()
         #DanielPharos: Check for FullScreen. If set, go fullscreen!
@@ -302,7 +305,7 @@ class BaseLayout:
             self.views.remove(view)
             self.update3Dviews()
         BaseLayout.Floating3DWindows.remove(floating)
-        if not (setup["AllowMultiple"] == "1"):
+        if not setup["AllowMultiple"]:
             self.buttons["3D"].state = 0
             quarkx.update(self.editor.form)
 
@@ -587,6 +590,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.28  2007/03/27 15:48:58  danielpharos
+#Re-added the ability to open multiple floating 3D windows! This time there's an option to toggle it on and off in the options.
+#
 #Revision 1.27  2007/01/21 19:44:44  cdunde
 #To change view name for floating Full 3D view for separate
 #control of options from Model Editor 3D view.

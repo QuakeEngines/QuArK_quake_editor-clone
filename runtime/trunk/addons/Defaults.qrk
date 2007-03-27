@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.317  2007/03/27 15:48:58  danielpharos
+//Re-added the ability to open multiple floating 3D windows! This time there's an option to toggle it on and off in the options.
+//
 //Revision 1.316  2007/03/22 19:21:40  cdunde
 //To add skin texture size to the Skin-view page top section.
 //
@@ -1096,8 +1099,8 @@ QQRKSRC1
         RunAccelDelay = '0.2'
         Warning3D = "1"
         CloseOnGame = "1"
-        CloseOnSetup = "0"
-        AllowMultiple = "0"
+        CloseOnSetup = "1"
+        AllowMultiple = ""
         // The following options are currently hidden:
         DarkFactor = '0.67'   // only 67% of the FarDistance is considered really visible
         SelGroupColor = $FF80FF
@@ -1118,7 +1121,7 @@ QQRKSRC1
         TwoMonitors = ""
         FullScreenGamma = '1.3'
         FullScreenSize = '560 420'
-        TranspFactor = '0.3'  // in isometric views, an additionnal 30% of the normal depth is visible but transparent
+        TranspFactor = '0.3'  // in isometric views, an additional 30% of the normal depth is visible but transparent
         Fog = "1"
         Resolution = "7"
         Form = "GeneralGlide"
