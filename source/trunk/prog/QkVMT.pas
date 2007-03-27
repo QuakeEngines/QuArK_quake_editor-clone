@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2007/03/25 13:51:30  danielpharos
+Moved the material texture loading to the correct function.
+
 Revision 1.5  2007/03/20 21:18:04  danielpharos
 Fix for 1.4
 
@@ -104,6 +107,10 @@ var
  TexturePath2: String;
  TexturePath3: String;
  GCFFilename: String;
+ GCFFile: QObject;
+ GCFFileChild0: QObject;
+ GCFFileChild1: QObject;
+ GCFFileChild2: QObject;
  Size: TPoint;
  V: array [1..2] of Single;
 begin
@@ -116,57 +123,74 @@ begin
   else
   begin}
 
-  GCFFilename:='source materials';
-  //DanielPharos: Not the way to go!
-
-  GameDir:=GetGameDir;
-  I:=pos('\',GameDir);
-  if I>0 then
-    SteamAppsDir:=LeftStr(GameDir, I)
-  else
+  if (self.Protocol<>'') then
   begin
-    I:=pos('/',GameDir);
+    s:=self.Name;
+    GCFFile:=self;
+    GCFFileChild0:=nil;
+    GCFFileChild1:=nil;
+    GCFFileChild2:=nil;
+    while GCFFile<>nil do
+    begin
+      GCFFilename:=GCFFile.name;
+      GCFFileChild2:=GCFFileChild1;
+      GCFFileChild1:=GCFFileChild0;
+      GCFFileChild0:=GCFFile;
+      GCFFile:=GCFFile.FParent;
+    end;
+    TexturePath2:=GCFFileChild1.name+'\'+GCFFileChild2.name+'\';
+
+    GameDir:=GetGameDir;
+    I:=pos('\',GameDir);
     if I>0 then
       SteamAppsDir:=LeftStr(GameDir, I)
     else
-      SteamAppsDir:=GameDir+'\';
-  end;
-
-  SteamDirectory:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['Directory'];
-  if (RightStr(SteamDirectory,1)='\') or (RightStr(SteamDirectory,1)='/') then
-    SteamDirectoryLength:=Length(SteamDirectory)
-  else
-    SteamDirectoryLength:=Length(SteamDirectory)+1;
-  TexturePath:=RightStr(self.filename,Length(self.filename)-SteamDirectoryLength);
-
-  I:=pos('\',TexturePath);
-  if I>0 then
-    TexturePath:=LeftStr(TexturePath, I-1)
+    begin
+      I:=pos('/',GameDir);
+      if I>0 then
+        SteamAppsDir:=LeftStr(GameDir, I)
+      else
+        SteamAppsDir:=GameDir+'\';
+    end;
+  end
   else
   begin
-    I:=pos('/',GameDir);
+    SteamDirectory:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['Directory'];
+    if (RightStr(SteamDirectory,1)='\') or (RightStr(SteamDirectory,1)='/') then
+      SteamDirectoryLength:=Length(SteamDirectory)
+    else
+      SteamDirectoryLength:=Length(SteamDirectory)+1;
+    TexturePath:=RightStr(self.filename,Length(self.filename)-SteamDirectoryLength);
+
+    I:=pos('\',TexturePath);
     if I>0 then
-      TexturePath:=LeftStr(TexturePath, I-1);
+      TexturePath:=LeftStr(TexturePath, I-1)
+    else
+    begin
+      I:=pos('/',GameDir);
+      if I>0 then
+        TexturePath:=LeftStr(TexturePath, I-1);
+    end;
+
+    TexturePath2:=RightStr(self.filename,length(self.filename)-SteamDirectoryLength-Length(TexturePath)-1);
+
+    I:=pos('\',TexturePath2);
+    if I=0 then
+      I:=pos('/',TexturePath2);
+    TexturePath3:=RightStr(TexturePath2,Length(TexturePath2)-I);
+
+    I:=pos('\',TexturePath3);
+    if I=0 then
+      I:=pos('/',TexturePath3);
+    TexturePath3:=RightStr(TexturePath3,Length(TexturePath3)-I);
+
+    TexturePath2:=LeftStr(TexturePath2,Length(TexturePath2)-Length(TexturePath3));
+
+    I:=pos('\',TexturePath3);
+    if I=0 then
+      I:=pos('/',TexturePath3);
+    TexturePath3:=LeftStr(TexturePath3,I);
   end;
-
-  TexturePath2:=RightStr(self.filename,length(self.filename)-SteamDirectoryLength-Length(TexturePath)-1);
-
-  I:=pos('\',TexturePath2);
-  if I=0 then
-    I:=pos('/',TexturePath2);
-  TexturePath3:=RightStr(TexturePath2,Length(TexturePath2)-I);
-
-  I:=pos('\',TexturePath3);
-  if I=0 then
-    I:=pos('/',TexturePath3);
-  TexturePath3:=RightStr(TexturePath3,Length(TexturePath3)-I);
-
-  TexturePath2:=LeftStr(TexturePath2,Length(TexturePath2)-Length(TexturePath3));
-
-  I:=pos('\',TexturePath3);
-  if I=0 then
-    I:=pos('/',TexturePath3);
-  TexturePath3:=LeftStr(TexturePath3,I);
 
   S:=Specifics.Values['%tooltexture'];
   if (s<>'') then
