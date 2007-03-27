@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.316  2007/03/22 19:21:40  cdunde
+//To add skin texture size to the Skin-view page top section.
+//
 //Revision 1.315  2007/03/18 22:47:32  danielpharos
 //Changed the file header comments a bit.
 //
@@ -1093,6 +1096,8 @@ QQRKSRC1
         RunAccelDelay = '0.2'
         Warning3D = "1"
         CloseOnGame = "1"
+        CloseOnSetup = "0"
+        AllowMultiple = "0"
         // The following options are currently hidden:
         DarkFactor = '0.67'   // only 67% of the FarDistance is considered really visible
         SelGroupColor = $FF80FF
@@ -6198,6 +6203,8 @@ QQRKSRC1
       L2: = {Typ="S" Txt="Additional settings"}
       Warning3D: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
       CloseOnGame: = {Typ="X" Txt="Close views when the game is run" Cap="Enabled" Hint="If checked, this can save system resources so the game runs smoother"}
+      CloseOnSetup: = {Typ="X" Txt="Close views when the configurations are changed" Cap="Enabled" Hint="If checked, this could prevent problems when changing renderers"}
+      AllowMultiple: = {Typ="X" Txt="Allow multiple 3D windows" Cap="Enabled" Hint="If checked, this allows multiple 3D windows to be opened"}
     }
     GeneralSoftware3D:form =
     {

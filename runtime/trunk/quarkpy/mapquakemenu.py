@@ -258,8 +258,8 @@ def qmenuitem1click(m):
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         if setup["CloseOnGame"]:
             editor.layout.mpp.viewpage(0)
-            if editor.layout.CurrentRendererOwner is not None:
-                editor.layout.full3Dview.close()
+            for floating in editor.layout.Floating3DWindows:
+              floating.close()
     RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor,
       m.info["RunGame"], m.text, 0, [], "", None)
 
@@ -691,6 +691,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.47  2006/11/30 01:19:33  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.46  2006/11/29 07:00:26  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.
