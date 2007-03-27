@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.20  2003/01/01 14:07:39  decker_dk
 Fixed compiler-warning, by commenting an unused function out-of-scope.
 
@@ -1000,9 +1003,9 @@ begin
               CurPenMode:=NewPenMode;
             end;
             if Hollow then
-              CCoord.Polyline95f(Pts, 3)
+              CCoord.Polyline95f(Pts, 3)           // This line draws the Model Mesh lines only
             else begin
-              CCoord.Polygon95f(Pts, 3, not Back);
+              CCoord.Polygon95f(Pts, 3, not Back); // This line draws the Model Mesh lines and color filled
               Hollow:=True;
             end;
           end;  { note: "Continue" used in the loop }
