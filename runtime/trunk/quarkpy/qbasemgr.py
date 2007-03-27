@@ -83,9 +83,12 @@ class BaseLayout:
         "Reads setup-dependant information for the layout."
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         if setup["CloseOnSetup"]:
-            if self.buttons["3D"].state == qtoolbar.selected:
-                self.buttons["3D"].state = 0
-                quarkx.update(self.editor.form)
+            try:
+                if self.buttons["3D"].state == qtoolbar.selected:
+                    self.buttons["3D"].state = 0
+                    quarkx.update(self.editor.form)
+            except KeyError:
+                pass
             for floating in BaseLayout.Floating3DWindows:
                 floating.close()
             self.editor.layout.mpp.viewpage(0)
@@ -590,6 +593,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.29  2007/03/27 22:28:43  danielpharos
+#Fixed a stupid bug with some new options. CloseOnSetup is now enabled by default too.
+#
 #Revision 1.28  2007/03/27 15:48:58  danielpharos
 #Re-added the ability to open multiple floating 3D windows! This time there's an option to toggle it on and off in the options.
 #
