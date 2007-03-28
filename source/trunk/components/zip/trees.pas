@@ -42,7 +42,10 @@ interface
 {$I zconf.inc}
 
 uses
-  zutil, zlib, sysutils;
+  {$ifdef DEBUG}
+  strutils,
+  {$ENDIF}
+  zutil, zlib;
 
 { ===========================================================================
   Internal compression state. }
@@ -1939,8 +1942,8 @@ end;
 
 {local}
 procedure compress_block(var s : deflate_state;
-                         {var} ltree : array of ct_data;   { literal tree }
-                         {var} dtree : array of ct_data);  { distance tree }
+                         var ltree : array of ct_data;   { literal tree }
+                         var dtree : array of ct_data);  { distance tree }
 var
   dist : unsigned;      { distance of matched string }
   lc : int;             { match length or unmatched char (if dist == 0) }
