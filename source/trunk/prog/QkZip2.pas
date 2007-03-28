@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2007/01/31 15:01:02  danielpharos
+Fix a memory leak
+
 Revision 1.24  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -276,7 +279,8 @@ var
   TempStream,T2:TMemoryStream;
   tInfo: TInfoEnreg1;
   LFS: TLocalFileHeader;
-  crc, OrgSize,Size,pos: Longint;
+  OrgSize,Size,pos: Longint;
+  crc: DWORD;
   cdir:TFileHeader;
   sig:Longint;
 begin
@@ -311,7 +315,7 @@ begin
         tInfo.F:=TempStream;
         Q.SaveFile1(tInfo);   { save in non-QuArK file format }
         tInfo.Free;
-        crc:=LongInt($FFFFFFFF);
+        crc:=DWORD($FFFFFFFF);
         CalcCRC32(TempStream.Memory, TempStream.Size, crc);
         crc:=not crc;
         TempStream.Seek(0, soFromBeginning);
