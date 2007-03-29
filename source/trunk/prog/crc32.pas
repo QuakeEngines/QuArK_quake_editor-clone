@@ -23,6 +23,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/03/28 22:13:01  danielpharos
+Updated the crc32-unit.
+
 Revision 1.7  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -73,7 +76,8 @@ IMPLEMENTATION
 {$IFDEF StreamIO}
     SysUtils,  // SysErrorMessage
 {$ENDIF}
-    QDialogs,  // ShowMessage
+    //QDialogs,  // ShowMessage
+    //DanielPharos: This file doesn't exist, so let's not use it!
     Classes;   // TMemoryStream
 
   CONST
@@ -265,7 +269,8 @@ BEGIN
   CalcCRC32 (Addr(table[0]), SizeOf(table), CRC32Table);
   CRC32Table := NOT CRC32Table;
 
-  IF   CRC32Table <> $6FCF9E13
-  THEN ShowMessage('CRC32 Table CRC32 is ' + IntToHex(Crc32Table, 8) +
-                   ', expecting $6FCF9E13');
+  IF   CRC32Table <> $6FCF9E13 THEN
+    Windows.MessageBox(0, PChar('CRC32 Table CRC32 is ' + IntToHex(Crc32Table, 8) +
+                   ', expecting $6FCF9E13'), 'QuArK Crc32', MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  //ShowMessage is defined in QDialog, which can't be found. So let's not use it!
 END {CRC32}.
