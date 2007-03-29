@@ -591,8 +591,9 @@ class BaseEditor:
                                     import mdleditor
                                     mdleditor.commonhandles(self)
                             else:
-                                import mdleditor
-                                mdleditor.commonhandles(self)
+                                if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow":
+                                    import mdleditor
+                                    mdleditor.commonhandles(self)
 
                 try:
                     last,x,y=self.dragobject.lastdrag
@@ -607,7 +608,7 @@ class BaseEditor:
                         if flags == 2056:
                             return
                         else:
-                            if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow":
+                            if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow" or currentview.info["viewname"] == "skinview":
                                 pass
                             else:
                                 import plugins.mdlaxisicons
@@ -1005,6 +1006,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.34  2007/03/29 07:46:30  cdunde
+#Fixed Model Editor view axis icons not always redrawing after zoom in 2D views.
+#
 #Revision 1.33  2007/03/22 20:14:15  cdunde
 #Proper selection and display of skin textures for all model configurations,
 #single or multi component, skin or no skin, single or multi skins or any combination.
