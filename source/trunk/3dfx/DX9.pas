@@ -29,12 +29,16 @@ uses Windows, Direct3D, Direct3D9;
 
 var
  g_D3D : IDirect3D9;
- g_D3DDevice : IDirect3DDevice9;
+ g_D3DCaps : D3DCAPS9;
+ RenderingType : D3DDEVTYPE;
+ BehaviorFlags : DWORD;
 
 function LoadDirect3D : Boolean;
 procedure UnloadDirect3D;
 
 implementation
+
+uses SysUtils, Logging, quarkx;
 
 var
   TimesLoaded : Integer;
@@ -48,11 +52,43 @@ begin
     Result := False;
     try
 
-     g_D3D := Direct3DCreate9(D3D_SDK_VERSION);
-     {if (!g_D3D) then
-       begin
+      g_D3D := Direct3DCreate9(D3D_SDK_VERSION);
+      if g_D3D=nil then
+      begin
+        raise EError(6411);
+      end;
 
-       end;}
+      RenderingType:=D3DDEVTYPE_HAL;
+      if g_D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, g_D3DCaps) <> D3D_OK then
+      begin
+        RenderingType:=D3DDEVTYPE_REF;
+        if g_D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, g_D3DCaps) <> D3D_OK then
+        begin
+          raise EError(6412);
+        end;
+      end;
+
+      //Check for software/hardware vertex processing
+      BehaviorFlags:=0;
+      if (g_D3DCaps.DevCaps and D3DDEVCAPS_HWTRANSFORMANDLIGHT)<>0 then
+      begin
+        Log(LOG_VERBOSE,LoadStr1(6421));
+        BehaviorFlags:=BehaviorFlags or D3DCREATE_HARDWARE_VERTEXPROCESSING;
+      end
+      else
+      begin
+        Log(LOG_VERBOSE,LoadStr1(6422));
+        BehaviorFlags:=BehaviorFlags or D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+      end;
+
+      //Check for Pure Device
+      if (g_D3DCaps.DevCaps and D3DDEVCAPS_PUREDEVICE)<>0 then
+      begin
+        Log(LOG_VERBOSE,LoadStr1(6423));
+        BehaviorFlags:=BehaviorFlags or D3DCREATE_PUREDEVICE;
+      end
+      else
+        Log(LOG_VERBOSE,LoadStr1(6424));
 
       TimesLoaded := 1;
       Result := True;
@@ -75,9 +111,12 @@ procedure UnloadDirect3D;
 begin
   if TimesLoaded = 1 then
     begin
+
+    //Delete g_D3DCaps...
+
     if not (g_D3D=Nil) then
       begin
-      {g_D3D->Release();}  {Daniel: Shouldn't we release it with the release-procedure?}
+      {g_D3D->Release();}  //DanielPharos: Shouldn't we release it with the release-procedure?
       g_D3D:=Nil;
       end;
     TimesLoaded := 0;

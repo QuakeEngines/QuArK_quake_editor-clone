@@ -988,9 +988,15 @@ Strings = {
     6402: "Could not load the DirectX drivers//Error code %d",
     6403: "Error using DirectX//Function '%s' failed with '%s'",
 
-    6410: "The DirectX renderer has not been implemented yet",
+    6410: "The DirectX renderer has not been fully implemented yet, but it did initialize correctly!",
+    6411: "Unable to load DirectX 9. Make sure DirectX 9.0c is installed",
+    6412: "Unable to find a DirectX 9 compatible device",
 
     6420: "DirectX renderer does not support fullscreen views (yet)",
+    6421: "Direct3D: Hardware vertex processing selected",
+    6422: "Direct3D: Software vertex processing selected",
+    6423: "Direct3D: Pure device enabled",
+    6424: "Direct3D: Pure device disabled",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 
@@ -1007,6 +1013,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.87  2007/03/26 21:06:40  danielpharos
+#Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
+#
 #Revision 1.86  2007/03/25 13:51:50  danielpharos
 #Moved a few dictionnary words around.
 #

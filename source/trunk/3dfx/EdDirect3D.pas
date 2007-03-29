@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/03/26 21:13:14  danielpharos
+Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
+
 Revision 1.13  2007/03/22 20:53:18  danielpharos
 Improved tracking of the target DC. Should fix a few grey screens.
 
@@ -86,7 +89,7 @@ interface
 
 uses Windows, Classes,
      qmath, PyMath, PyMath3D,
-     DX9,
+     DX9, Direct3D9,
      EdSceneObject;
 
 type
@@ -100,13 +103,13 @@ type
     MapLimit: TVect;
     MapLimitSmallest: Double;
     ViewDC: HDC;
+    PresParm: D3DPRESENT_PARAMETERS;
+    D3DDevice : IDirect3DDevice9;
+    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
   protected
     m_Resized: Boolean;
 
-{    m_pD3DX: ID3DXContext;
-    m_pD3D: IDirect3D7;
-    m_pD3DDevice: IDIRECT3DDEVICE7;
-    m_pDD: IDirectDraw7;}
+//    m_pD3DX: ID3DXContext;
 
     m_CurrentAlpha, m_CurrentColor: Integer;
     ScreenX, ScreenY: Integer;
@@ -117,9 +120,8 @@ type
     procedure stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
     procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
     procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
- //   procedure BuildTexture(Texture: PTexture3); override;
     procedure ReleaseResources;
-    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+    procedure BuildTexture(Texture: PTexture3); override;
   public
     destructor Destroy; override;
     procedure Init(Wnd: HWnd;
@@ -155,7 +157,7 @@ var
 implementation
 
 uses Quarkx, Setup,
-     QkObjects, QkMapPoly, DXTypes, Direct3D, Direct3D9, DXErr9;
+     QkObjects, QkMapPoly, DXTypes, Direct3D, DXErr9;
 
 type
  PVertex3D = ^TVertex3D;
@@ -227,7 +229,7 @@ end;
 
 procedure TDirect3DSceneObject.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
 begin
-  if HiRes then
+{  if HiRes then
   begin
     PVertex3D(PV)^.x := PVect(Source)^.X;
     PVertex3D(PV)^.y := PVect(Source)^.Y;
@@ -241,7 +243,7 @@ begin
   end;
 
   PVertex3D(PV)^.tu := ns;
-  PVertex3D(PV)^.tv := nt;
+  PVertex3D(PV)^.tv := nt;}
 
 
   {PVertex3D(PV)^.color := D3DXColorToDWord(D3DXColor(random, random, random, 0));}
@@ -250,6 +252,8 @@ end;
 
 procedure TDirect3DSceneObject.ReleaseResources;
 begin
+  if not (D3DDevice = nil) then
+    D3DDevice._Release;
 end;
 
 destructor TDirect3DSceneObject.Destroy;
@@ -276,8 +280,6 @@ begin
 
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
-
-  raise InternalE(LoadStr1(6410));
 
   { is the Direct3D object already loaded? }
   if Direct3DLoaded = False then
@@ -353,15 +355,25 @@ begin
     Culling:=False;
   end;
 
-  {Check for software/hardware vertex processing and PureDevice}
+  //DanielPharos: Some of these need to be set dynamically!
+  PresParm.BackBufferHeight := 600;
+  PresParm.BackBufferWidth := 800;
+  PresParm.BackBufferFormat := D3DFMT_A8R8G8B8;
+  PresParm.BackBufferCount := 1;
+  PresParm.MultiSampleType := D3DMULTISAMPLE_NONE;
+  PresParm.MultiSampleQuality := 0;
+  PresParm.SwapEffect := D3DSWAPEFFECT_FLIP;
+  PresParm.hDeviceWindow := Wnd;
+  PresParm.Windowed := True;
+  PresParm.EnableAutoDepthStencil := True;
+  PresParm.AutoDepthStencilFormat := D3DFMT_D16;
+  PresParm.Flags := 0;
+  PresParm.FullScreen_RefreshRateInHz := 0;
+  PresParm.PresentationInterval := D3DPRESENT_INTERVAL_DEFAULT;
 
-  l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, Wnd, 0, nil, g_D3DDevice);
-  if (l_Res <> D3D_OK) then   {Can't get a Hardware Accelerated Device, try Software Device}
-   begin
-    l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, Wnd, 0, nil, g_D3DDevice);
-    if (l_Res <> D3D_OK) then   {Can't get any decent device, exiting}
-      raise EErrorFmt(6403, ['CreateDevice', DXGetErrorString9(l_Res)]);   {Daniel: Check all the error messages.}
-   end;
+  l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, RenderingType, Wnd, BehaviorFlags, @PresParm, D3DDevice);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['CreateDevice', DXGetErrorString9(l_Res)]);
 
    {Should we use the pPresentationParameters instead of creating a new device each time?}
 
@@ -376,6 +388,8 @@ begin
   l_Material.dcvSpecular := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
   l_Material.dvPower     := 100.0;
   m_pD3DDevice.SetMaterial(l_Material);   }
+
+  raise EError(6410);
 
 end;
 
@@ -409,7 +423,7 @@ var
   PList: PSurfaces;
 begin
   { make sure that Direct3D have been set up }
-  if (g_D3DDevice = nil) then
+  if (D3DDevice = nil) then
     raise EErrorFmt(6403, ['Render3DView', 'g_D3DDevice = nil']);
 
   { if viewport have been resized, then tell Direct3D what happend }
@@ -529,6 +543,11 @@ begin
         Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
     end;
   end;
+end;
+
+procedure TDirect3DSceneObject.BuildTexture(Texture: PTexture3);
+begin
+
 end;
 
  {------------------------}
