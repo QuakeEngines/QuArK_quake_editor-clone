@@ -602,11 +602,23 @@ class BaseEditor:
                 except:
 #                    debug('last no')
                     self.dragobject.ok(self, x, y, flags)
-                    self.dragobject = None
 
                     if isinstance(self, mdleditor.ModelEditor):
                         if flags == 2056:
                             return
+                        else:
+                            if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow":
+                                pass
+                            else:
+                                import plugins.mdlaxisicons
+                                for view in self.layout.views:
+                                    if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
+                                        pass
+                                    else:
+                                        plugins.mdlaxisicons.newfinishdrawing(self, view)
+
+                    else:
+                        self.dragobject = None
         #
         # Are we simply moving the mouse over the view ?
         #
@@ -993,6 +1005,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.33  2007/03/22 20:14:15  cdunde
+#Proper selection and display of skin textures for all model configurations,
+#single or multi component, skin or no skin, single or multi skins or any combination.
+#
 #Revision 1.32  2007/03/10 00:01:43  cdunde
 #To make item Model Editor specific as it should be
 #and remove print statement left in after testing.
