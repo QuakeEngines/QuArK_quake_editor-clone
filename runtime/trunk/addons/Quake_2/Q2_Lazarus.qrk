@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.18  2007/03/13 05:50:05  cdunde
+// Changed the trigger_push specific 'angle 360 into angles 0 0 0 - by OmnificienT
+//
 // Revision 1.17  2006/09/20 00:19:48  cdunde
 // To add Lazarus sound flags to Texture Flags Dialog,
 // implemented by Jon Kalashnikov (aka Paril).
@@ -2172,162 +2175,188 @@ QQRKSRC1
       {
         txt = "&"
         Typ = "LN"
-        hint = "_ambient>global light-RGB or level TEST"
+        hint = "The amount of ambient light."
       }
       _sun_light: =
       {
         txt = "&"
-        hint = "_sun_light>s1 brightness"
+        hint = "The amount of light sun1 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun_color: =
       {
         txt = "&"
         Typ = "LN"
-        hint = "_sun_color>s1 RGB color"
+        hint = "Controls sun1's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun_target: =
       {
         txt = "&"
-        hint = "_sun_target>s1 spot info_null"
+        hint = "Sets sun1's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun_angle: =
       {
         txt = "&"
-        hint = "_sun_angle>s1 yaw/pitch"
+        hint = "Sets sun1's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun_vector: =
       {
         txt = "&"
-        hint = "_sun_vector>s1 spot XYZ vector"
+        hint = "Sets sun1's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun_diffuse: =
       {
         txt = "&"
-        hint = "_sun_diffuse>s1 shadow edges"
+        hint = "Sets sun1's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun_diffade: =
       {
         txt = "&"
-        hint = "_sun_diffade>s1 diffuse fade dist"
+        hint = "Sets sun1's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun_ambient: =
       {
         txt = "&"
         Typ = "LN"
-        hint = "_sun_ambient>all minlite-RGB or level"
-      }
-      _sun_surface: =
-      {
-        txt = "&"
-        hint = "_sun_surface>all minsurf-RGB or level"
+        Hint = "This controls the amount of diffuse light in shadows,"$0D
+               "if set to 0, shadows will be completely unlit (good values are 50-200)."$0D
+               "Alternatively, you can also set three seperate values: red, green and blue."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun2_light: =
       {
         txt = "&"
-        hint = "_sun2_light>s2 brightness"
+        hint = "The amount of light sun2 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun2_color: =
       {
         txt = "&"
         Typ = "LN"
-        hint = "_sun2_color>s2 RGB color"
+        hint = "Controls sun2's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun2_target: =
       {
         txt = "&"
-        hint = "_sun2_target>s2 spot info_null"
+        hint = "Sets sun2's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun2_angle: =
       {
         txt = "&"
-        hint = "_sun2_angle>s2 yaw/pitch"
+        hint = "Sets sun2's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun2_vector: =
       {
         txt = "&"
-        hint = "_sun2_vector>s2 spot XYZ target"
+        hint = "Sets sun2's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun2_diffuse: =
       {
         txt = "&"
-        hint = "_sun2_diffuse>s2 shadow edges"
+        hint = "Sets sun2's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun2_diffade: =
       {
         txt = "&"
-        hint = "_sun2_diffade>s2 diffuse fade dist"
+        hint = "Sets sun2's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun3_light: =
       {
         txt = "&"
-        hint = "_sun3_light>s3 brightness"
+        hint = "The amount of light sun3 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun3_color: =
       {
         txt = "&"
         Typ = "LN"
-        hint = "_sun3_color>s3 RGB color"
+        hint = "Controls sun3's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun3_target: =
       {
         txt = "&"
-        hint = "_sun3_target>s3 spot info_null"
+        hint = "Sets sun3's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun3_angle: =
       {
         txt = "&"
-        hint = "_sun3_angle>s3 yaw/pitch"
+        hint = "Sets sun3's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun3_vector: =
       {
         txt = "&"
-        hint = "_sun3_vector>s3 spot XYZ target"
+        hint = "Sets sun3's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun3_diffuse: =
       {
         txt = "&"
-        hint = "_sun3_diffuse>s3 shadow edges"
+        hint = "Sets sun3's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun3_diffade: =
       {
         txt = "&"
-        hint = "_sun3_diffade>s3 diffuse fade dist"
+        hint = "Sets sun3's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun4_light: =
       {
         txt = "&"
-        hint = "_sun4_light>s4 brightness"
+        hint = "The amount of light the sun4 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun4_color: =
       {
         txt = "&"
         Typ = "LN"
-        hint = "_sun4_color>s4 RGB color"
+        hint = "Controls sun4's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun4_target: =
       {
         txt = "&"
-        hint = "_sun4_target>s4 spot info_null"
+        hint = "Set sun4's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun4_angle: =
       {
         txt = "&"
-        hint = "_sun4_angle>s4 yaw/pitch"
+        hint = "Set sun4's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun4_vector: =
       {
         txt = "&"
-        hint = "_sun4_vector>s4 spot XYZ target"
+        hint = "Set sun4's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun4_diffuse: =
       {
         txt = "&"
-        hint = "_sun4_diffuse>s4 shadow edges"
+        hint = "Set sun4's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
       _sun4_diffade: =
       {
         txt = "&"
-        hint = "_sun4_diffade>s4 diffuse fade dist"
+        hint = "Set sun4's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
     }
     null_entity:form =
