@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/03/29 20:18:32  danielpharos
+DirectX interfaces should be unloading correctly now.
+Also added a bit of fog code.
+
 Revision 1.15  2007/03/29 17:27:25  danielpharos
 Updated the Direct3D renderer. It should now initialize correctly.
 
@@ -159,7 +163,7 @@ var
 
 implementation
 
-uses Quarkx, Setup,
+uses Logging, Quarkx, Setup, SysUtils,
      QkObjects, QkMapPoly, DXTypes, Direct3D, DXErr9;
 
 type
@@ -278,6 +282,8 @@ var
   nFogColor: array[0..3] of float;
   FogColor{, FrameColor}: TColorRef;
   Setup: QObject;
+  S: String;
+  StencilBufferBits: Integer;
 begin
   ClearScene;
 
@@ -358,6 +364,27 @@ begin
     Culling:=False;
   end;
 
+  S:=Setup.Specifics.Values['StencilBufferBits'];
+  if S<>'' then
+  begin
+    try
+      StencilBufferBits:=strtoint(S);
+      if (StencilBufferBits < 0) or (StencilBufferBits >= 1) then
+      begin
+        Log(LOG_WARNING, LoadStr1(6011), ['StencilBufferBits',S]);
+        StencilBufferBits := 0;
+      end;
+    except
+      Log(LOG_WARNING, LoadStr1(6011), ['StencilBufferBits',S]);
+      StencilBufferBits := 0;
+    end;
+  end
+  else
+  begin
+    Log(LOG_WARNING, LoadStr1(6012), ['StencilBufferBits','0']);
+    StencilBufferBits:=0;
+  end;
+
   if (D3DDevice = nil) then
   begin
     //DanielPharos: Some of these need to be set dynamically!
@@ -372,7 +399,14 @@ begin
     PresParm.hDeviceWindow := Wnd;
     PresParm.Windowed := True;
     PresParm.EnableAutoDepthStencil := True;
-    PresParm.AutoDepthStencilFormat := D3DFMT_D16;
+    case StencilBufferBits of
+    0:
+      PresParm.AutoDepthStencilFormat := D3DFMT_D16;
+    1:
+      PresParm.AutoDepthStencilFormat := D3DFMT_D32;
+    else
+      raise EErrorFmt(6400, ['DepthBits']);
+    end;
     PresParm.Flags := 0;
     PresParm.FullScreen_RefreshRateInHz := 0;
     PresParm.PresentationInterval := D3DPRESENT_INTERVAL_DEFAULT;
@@ -421,6 +455,8 @@ end;
 procedure TDirect3DSceneObject.Copy3DView;
 begin
 
+  raise EError(6410);
+  
 end;
 
 procedure TDirect3DSceneObject.ClearScene;

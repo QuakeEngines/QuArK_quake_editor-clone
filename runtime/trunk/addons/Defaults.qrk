@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.318  2007/03/27 22:28:43  danielpharos
+//Fixed a stupid bug with some new options. CloseOnSetup is now enabled by default too.
+//
 //Revision 1.317  2007/03/27 15:48:58  danielpharos
 //Re-added the ability to open multiple floating 3D windows! This time there's an option to toggle it on and off in the options.
 //
@@ -1147,6 +1150,7 @@ QQRKSRC1
       }
       DirectX:config =
       {
+        StencilBufferBits = "0"
         Form = "GeneralDirectX"
       }
       Memory:config =
@@ -6320,7 +6324,16 @@ QQRKSRC1
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- DirectX 9.0c hardware owners only ----"}
-      L1: = {Typ="S" Bold="0" Txt="This renderer is not available at the moment."}
+      L1: = {Typ="S" Bold="0" Txt="This renderer has not been fully implemented yet."}
+      StencilBufferBits: =
+      {
+        Typ = "CL"
+        Txt = "Depth buffer bits"
+        Values = "0"$0D"1"
+        Items = "16"$0D"32"
+        Hint="The amount of bits per pixel in the depth buffer. The higher,"
+          $0D"the smaller the chance of non-overlapping faces starting to flicker at a distance."
+      }
     }
     GeneralAssociations:form =
     {
