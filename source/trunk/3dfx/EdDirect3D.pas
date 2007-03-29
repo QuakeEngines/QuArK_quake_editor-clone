@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/03/29 17:27:25  danielpharos
+Updated the Direct3D renderer. It should now initialize correctly.
+
 Revision 1.14  2007/03/26 21:13:14  danielpharos
 Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
 
@@ -253,7 +256,7 @@ end;
 procedure TDirect3DSceneObject.ReleaseResources;
 begin
   if not (D3DDevice = nil) then
-    D3DDevice._Release;
+    D3DDevice:=nil;
 end;
 
 destructor TDirect3DSceneObject.Destroy;
@@ -355,39 +358,61 @@ begin
     Culling:=False;
   end;
 
-  //DanielPharos: Some of these need to be set dynamically!
-  PresParm.BackBufferHeight := 600;
-  PresParm.BackBufferWidth := 800;
-  PresParm.BackBufferFormat := D3DFMT_A8R8G8B8;
-  PresParm.BackBufferCount := 1;
-  PresParm.MultiSampleType := D3DMULTISAMPLE_NONE;
-  PresParm.MultiSampleQuality := 0;
-  PresParm.SwapEffect := D3DSWAPEFFECT_FLIP;
-  PresParm.hDeviceWindow := Wnd;
-  PresParm.Windowed := True;
-  PresParm.EnableAutoDepthStencil := True;
-  PresParm.AutoDepthStencilFormat := D3DFMT_D16;
-  PresParm.Flags := 0;
-  PresParm.FullScreen_RefreshRateInHz := 0;
-  PresParm.PresentationInterval := D3DPRESENT_INTERVAL_DEFAULT;
+  if (D3DDevice = nil) then
+  begin
+    //DanielPharos: Some of these need to be set dynamically!
+    //DanielPharos: We need to check for changes, and force a rebuild in needed!
+    PresParm.BackBufferHeight := 600;
+    PresParm.BackBufferWidth := 800;
+    PresParm.BackBufferFormat := D3DFMT_A8R8G8B8;
+    PresParm.BackBufferCount := 1;
+    PresParm.MultiSampleType := D3DMULTISAMPLE_NONE;
+    PresParm.MultiSampleQuality := 0;
+    PresParm.SwapEffect := D3DSWAPEFFECT_FLIP;
+    PresParm.hDeviceWindow := Wnd;
+    PresParm.Windowed := True;
+    PresParm.EnableAutoDepthStencil := True;
+    PresParm.AutoDepthStencilFormat := D3DFMT_D16;
+    PresParm.Flags := 0;
+    PresParm.FullScreen_RefreshRateInHz := 0;
+    PresParm.PresentationInterval := D3DPRESENT_INTERVAL_DEFAULT;
 
-  l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, RenderingType, Wnd, BehaviorFlags, @PresParm, D3DDevice);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['CreateDevice', DXGetErrorString9(l_Res)]);
+    //DanielPharos:
+    //Start using CreateAdditionalSwapChain to create new chains. This will automatically share
+    //textures and other resources.
 
-   {Should we use the pPresentationParameters instead of creating a new device each time?}
+    l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, RenderingType, Wnd, BehaviorFlags, @PresParm, D3DDevice);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['CreateDevice', DXGetErrorString9(l_Res)]);
+  end;
 
-   UnpackColor(FogColor, nFogColor);
-{  g_D3DDevice.SetClearColor(D3DXColorToDWord(D3DXColor(nFogColor[0],nFogColor[1],nFogColor[2],nFogColor[3])));
-  g_D3DDevice.SetRenderState(D3DRENDERSTATE_AMBIENT, $ffffffff);
+  //Should we use the pPresentationParameters instead of creating a new device each time?
 
-  // Create material
+  UnpackColor(FogColor, nFogColor);
+//  D3DDevice.SetClearColor(D3DXColorToDWord(D3DXColor(nFogColor[0],nFogColor[1],nFogColor[2],nFogColor[3])));
+  D3DDevice.SetRenderState(D3DRS_AMBIENT, $ffffffff);
+  D3DDevice.SetRenderState(D3DRS_ZENABLE, 1);  //D3DZB_TRUE := 1
+  if Fog then
+  begin
+    D3DDevice.SetRenderState(D3DRS_FOGENABLE, 1);  //True := 1
+    D3DDevice.SetRenderState(D3DRS_FOGTABLEMODE, 2);  //D3DFOG_EXP2 := 2
+   {D3DDevice.SetRenderState(D3DRS_FOGSTART, FarDistance * kDistFarToShort);
+    D3DDevice.SetRenderState(D3DRS_FOGEND, FarDistance);}
+//DanielPharos: Got to find a conversion...
+//    D3DDevice.SetRenderState(D3DRS_FOGDENSITY, FogDensity/FarDistance);
+//DanielPharos: Got to make sure the color is send in the same format
+//    D3DDevice.SetRenderState(D3DRS_FOGCOLOR, FogColor);
+  end
+  else
+    D3DDevice.SetRenderState(D3DRS_FOGENABLE, 0);  //False := 0
+
+{  // Create material
   FillChar(l_Material, SizeOf(l_Material), 0);
   l_Material.dcvDiffuse  := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
   l_Material.dcvAmbient  := TD3DColorValue(D3DXColor(1.00, 1.00, 1.00, 0.00));
   l_Material.dcvSpecular := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
   l_Material.dvPower     := 100.0;
-  m_pD3DDevice.SetMaterial(l_Material);   }
+  D3DDevice.SetMaterial(l_Material);   }
 
   raise EError(6410);
 
