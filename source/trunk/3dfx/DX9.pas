@@ -28,7 +28,7 @@ interface
 uses Windows, Direct3D, Direct3D9;
 
 var
- g_D3D : IDirect3D9;
+ g_D3D : IDirect3D9 = nil;
  g_D3DCaps : D3DCAPS9;
  RenderingType : D3DDEVTYPE;
  BehaviorFlags : DWORD;
@@ -115,10 +115,10 @@ begin
     //Delete g_D3DCaps...
 
     if not (g_D3D=Nil) then
-      begin
-      {g_D3D->Release();}  //DanielPharos: Shouldn't we release it with the release-procedure?
-      g_D3D:=Nil;
-      end;
+    begin
+      g_D3D:=nil;
+    end;
+
     TimesLoaded := 0;
     end
   else
@@ -126,6 +126,5 @@ begin
 end;
 
 initialization
-
   TimesLoaded := 0;
 end.
