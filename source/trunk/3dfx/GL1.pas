@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2007/03/26 21:00:24  danielpharos
+Fixed a few typo's
+
 Revision 1.16  2007/01/31 15:11:21  danielpharos
 HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
 
@@ -838,7 +841,7 @@ begin
   begin
     Result := False;
     try
-      if OpenGL32Lib = 0 then  {Daniel: We don't want to load it twice, now do we?}
+      if OpenGL32Lib = 0 then  //DanielPharos: We don't want to load it twice, now do we?
        begin
         OpenGL32Lib := LoadLibrary('OPENGL32.DLL');
         if OpenGL32Lib=0 then
@@ -888,7 +891,7 @@ begin
   begin
     {if OpenGL32Lib<>0 then
       FreeLibrary(OpenGL32Lib);
-    OpenGL32Lib := 0;}   {Daniel: This cannot be freed, because the pixel format will then fail!}
+    OpenGL32Lib := 0;}   //DanielPharos: This cannot be freed, because the pixel format will then fail!
 
     if Glu32Lib<>0 then
       FreeLibrary(Glu32Lib);
