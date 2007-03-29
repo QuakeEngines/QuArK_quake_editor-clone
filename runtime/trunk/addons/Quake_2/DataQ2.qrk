@@ -19,6 +19,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.13  2007/03/25 20:42:52  danielpharos
+//Added a missing target-specific to func_explosive.
+//
 //Revision 1.12  2007/03/21 23:22:00  danielpharos
 //Fixed a few typo's and removed the tabs
 //
@@ -2607,7 +2610,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "The is a Soldier gone insane (Player model)."
+          ;desc = "This is a soldier gone insane (Player model)."
         }
         misc_gib_arm:e =
         {
@@ -2800,20 +2803,20 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This is the Iron Maiden kind of sitting down (Just for Looks)."
+          ;desc = "This is the Iron Maiden kind of sitting down (just for looks)."
         }
         misc_easterchick2:e =
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This is the Iron Maiden a little different (also just for looks)."
+          ;desc = "This is the Iron Maiden a little different (just for looks)."
 //Armin a(all)sc
         }
         monster_commander_body:e =
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This is the tank commander's destroyed body just for looks)."
+          ;desc = "This is the tank commander's destroyed body (just for looks)."
         }
         monster_medic:e =
         {
@@ -2831,7 +2834,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This is the Tank sitting down (Just for looks)."
+          ;desc = "This is the Tank sitting down (just for looks)."
         }
         monster_tank_commander:e =
         {
@@ -3142,7 +3145,7 @@ QQRKSRC1
         func_conveyor:b =
         {
           ;incl = "defpoly"
-          ;desc = "This will push you, but the texture itself won't move."
+          ;desc = "This will push you, but the texture itself won't move. "
              "Never used in Quake2."
         }
         func_door:b =
@@ -3396,7 +3399,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "Predefined Light."
+          ;desc = "Predefined light."
         }
       }
     }
@@ -7642,6 +7645,193 @@ QQRKSRC1
       {
         Txt = "&"
         Hint = "Text to print at user logon."
+      }
+      _ambient: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "The amount of ambient light."
+      }
+      _sun_light: =
+      {
+        txt = "&"
+        hint = "The amount of light sun1 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Controls sun1's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_target: =
+      {
+        txt = "&"
+        hint = "Sets sun1's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_angle: =
+      {
+        txt = "&"
+        hint = "Sets sun1's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_vector: =
+      {
+        txt = "&"
+        hint = "Sets sun1's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_diffuse: =
+      {
+        txt = "&"
+        hint = "Sets sun1's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_diffade: =
+      {
+        txt = "&"
+        hint = "Sets sun1's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_ambient: =
+      {
+        txt = "&"
+        Typ = "LN"
+        Hint = "This controls the amount of diffuse light in shadows,"$0D
+               "if set to 0, shadows will be completely unlit (good values are 50-200)."$0D
+               "Alternatively, you can also set three seperate values: red, green and blue."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_light: =
+      {
+        txt = "&"
+        hint = "The amount of light sun2 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Controls sun2's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_target: =
+      {
+        txt = "&"
+        hint = "Sets sun2's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_angle: =
+      {
+        txt = "&"
+        hint = "Sets sun2's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_vector: =
+      {
+        txt = "&"
+        hint = "Sets sun2's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_diffuse: =
+      {
+        txt = "&"
+        hint = "Sets sun2's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_diffade: =
+      {
+        txt = "&"
+        hint = "Sets sun2's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_light: =
+      {
+        txt = "&"
+        hint = "The amount of light sun3 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Controls sun3's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_target: =
+      {
+        txt = "&"
+        hint = "Sets sun3's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_angle: =
+      {
+        txt = "&"
+        hint = "Sets sun3's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_vector: =
+      {
+        txt = "&"
+        hint = "Sets sun3's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_diffuse: =
+      {
+        txt = "&"
+        hint = "Sets sun3's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_diffade: =
+      {
+        txt = "&"
+        hint = "Sets sun3's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_light: =
+      {
+        txt = "&"
+        hint = "The amount of light the sun4 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Controls sun4's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_target: =
+      {
+        txt = "&"
+        hint = "Set sun4's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_angle: =
+      {
+        txt = "&"
+        hint = "Set sun4's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_vector: =
+      {
+        txt = "&"
+        hint = "Set sun4's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_diffuse: =
+      {
+        txt = "&"
+        hint = "Set sun4's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_diffade: =
+      {
+        txt = "&"
+        hint = "Set sun4's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
     }
   }
