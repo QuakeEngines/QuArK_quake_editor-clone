@@ -5,6 +5,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.8  2006/10/23 00:52:58  cdunde
+//Final update to add all Help and Hint data as well as
+//entity Specifics missed during its creation.
+//
 //Revision 1.7  2006/10/12 07:14:04  cdunde
 //To arrange entities in alphabetical order.
 //
@@ -2804,16 +2808,18 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        ai_trigger_multiple:e =
+        ai_trigger_multiple:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvAITrigger"
           wait = ".5"
           ;desc = "Ai trigger multiple."
           origin = "0 0 0"
           angle = "360"
         }
-        ai_trigger_once:e =
+        ai_trigger_once:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvAITrigger"
           wait = "-1"
           ;desc = "Ai trigger once."
@@ -14525,8 +14531,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        damage_painTrigger:e =
+        damage_painTrigger:b =
         {
+          ;incl = "defpoly"
           damage = "10"
           ;desc = "Damage paintrigger."
           origin = "0 0 0"
@@ -16512,24 +16519,27 @@ QQRKSRC1
       }
       func Entities.qtxfolder =
       {
-        func_aas_obstacle:e =
+        func_aas_obstacle:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idFuncAASObstacle"
           ;desc = "Used to dynamically block off areas from monsters Toggles o"
            "n/off when triggered."
           origin = "0 0 0"
           angle = "360"
         }
-        func_aas_portal:e =
+        func_aas_portal:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idFuncAASPortal"
           ;desc = "Used to dynamically block off areas from monsters Toggles o"
            "n/off when triggered."
           origin = "0 0 0"
           angle = "360"
         }
-        func_activator:e =
+        func_activator:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idActivator"
           start_off = "0"
           stay_on = "0"
@@ -16538,8 +16548,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_animate:e =
+        func_animate:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idAnimated"
           blend_in = "0"
           cycle = "1"
@@ -16550,8 +16561,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_beam:e =
+        func_beam:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idBeam"
           ;desc = "Creates a beam from origin to origin of targeted func_beam "
            "Turns on and off when triggered Can only target one func_beam at a"
@@ -16559,8 +16571,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_bobbing:e =
+        func_bobbing:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idBobber"
           x_axis = "0"
           y_axis = "0"
@@ -16573,30 +16586,34 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_camera_anim:e =
+        func_camera_anim:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idCameraAnim"
           fov = "90"
           ;desc = "Camera controlled by animation."
           origin = "0 0 0"
           angle = "360"
         }
-        func_camera_follow:e =
+        func_camera_follow:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idCameraFollow"
           ;desc = "camera that follows an entity."
           origin = "0 0 0"
           angle = "360"
         }
-        func_camera_portalsky:e =
+        func_camera_portalsky:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvCameraPortalSky"
           ;desc = "View from which the skybox is rendered."
           origin = "0 0 0"
           angle = "360"
         }
-        func_cameraTarget:e =
+        func_cameraTarget:b =
         {
+          ;incl = "defpoly"
           inherit = "func_mover"
           spawnclass = "idMover"
           ;desc = "used to control camera view motion and camera view position"
@@ -16604,16 +16621,18 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_cameraview:e =
+        func_cameraview:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idCameraView"
           ;desc = "Simple Camera view, apply a rotation matrix, angle or targe"
            "t it at a target_null."
           origin = "0 0 0"
           angle = "360"
         }
-        func_clampdoor:e =
+        func_clampdoor:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvClampDoor"
           start_open = "0"
           no_touch = "0"
@@ -16635,24 +16654,27 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_clampdoor_teamed:e =
+        func_clampdoor_teamed:b =
         {
+          ;incl = "defpoly"
           inherit = "func_door"
           speed = "175"
           ;desc = "Func clampdoor teamed."
           origin = "0 0 0"
           angle = "360"
         }
-        func_clipmodel:e =
+        func_clipmodel:b =
         {
+          ;incl = "defpoly"
           spawnfunc = "func_clipmodel"
           ;desc = "Holder for a clip model which can be used by another entity"
            "."
           origin = "0 0 0"
           angle = "360"
         }
-        func_conveyor:e =
+        func_conveyor:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvConveyor"
           ;desc = "Moves all entities standing on the entity in a given direct"
            "ion at a constant speed Either moveAngle or targetting a chain of "
@@ -16661,16 +16683,18 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_damage:e =
+        func_damage:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTarget_Damage"
           def_damage = "damage_generic"
           ;desc = "Damages targeted entities when triggered."
           origin = "0 0 0"
           angle = "360"
         }
-        func_damagable:e =
+        func_damagable:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idDamagable"
           health = "5"
           count = "1"
@@ -16683,15 +16707,17 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_deathpush:e =
+        func_deathpush:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvDeathPush"
           ;desc = "Func deathpush."
           origin = "0 0 0"
           angle = "360"
         }
-        func_door:e =
+        func_door:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idDoor"
           start_open = "0"
           no_touch = "0"
@@ -16713,8 +16739,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_doorframe_a:e =
+        func_doorframe_a:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvAnimatedDoorClamp"
           blend_in = "0"
           cycle = "1"
@@ -16726,8 +16753,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_earthquake:e =
+        func_earthquake:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idEarthQuake"
           ;desc = "Use to trigger earthquakes The sound shader MUST have shake"
            "s set, this allows the sound system to provide a more realistic sh"
@@ -16735,8 +16763,17 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_elevator:e =
+        func_effect:b =
         {
+          ;incl = "defpoly"
+          spawnclass = "rvEffect"
+          ;desc = "Spawns a special effect when triggered."
+          origin = "0 0 0"
+          angle = "360"
+        }
+        func_elevator:b =
+        {
+          ;incl = "defpoly"
           snd_accel = "elevator_medium_start"
           snd_decel = "elevator_medium_decel"
           snd_move = "elevator_medium_move"
@@ -16747,8 +16784,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_emitter:e =
+        func_emitter:b =
         {
+          ;incl = "defpoly"
           inherit = "func_static"
           solid = "0"
           noclipmodel = "1"
@@ -16758,8 +16796,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_explosion:e =
+        func_explosion:b =
         {
+          ;incl = "defpoly"
           def_damage = "damage_explosion"
           snd_explode = "player_rocketlauncher_explode2"
           spawnclass = "idExplodable"
@@ -16767,8 +16806,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_forcefield:e =
+        func_forcefield:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idForceField"
           randomTorque = "0"
           start_on = "0"
@@ -16776,8 +16816,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_fracture:e =
+        func_fracture:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idBrittleFracture"
           mtr_decal = "gfx/effects/decals/bulletglass"
           snd_bullethole = "bullet_impact_glass"
@@ -16786,29 +16827,25 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_fx:e =
+        func_fx:b =
         {
-          spawnclass = "rvEffect"
-          ;desc = "Spawns a special effect when triggered."
-          origin = "0 0 0"
-          angle = "360"
-        }
-        func_fx:e =
-        {
+          ;incl = "defpoly"
           spawnclass = "idEntityFx"
           ;desc = "Spawns a special effect when triggered."
           origin = "0 0 0"
           angle = "360"
         }
-        func_group:e =
+        func_group:b =
         {
+          ;incl = "defpoly"
           ;desc = "Used to group brushes together just for editor convenience "
            "They are turned into normal brushes by the utilities."
           origin = "0 0 0"
           angle = "360"
         }
-        func_ground_animate:e =
+        func_ground_animate:b =
         {
+          ;incl = "defpoly"
           model = "models/misc/floor/floor_mesh.md5mesh"
           anim idle = "models/misc/floor/floor_normal.md5anim"
           anim smashed = "models/misc/floor/floor_smashed.md5anim"
@@ -16825,15 +16862,17 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_itemremove:e =
+        func_itemremove:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idItemRemover"
           ;desc = "Removes an item from the players inventory."
           origin = "0 0 0"
           angle = "360"
         }
-        func_jumppad:e =
+        func_jumppad:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvJumpPad"
           start_on = "1"
           snd_jump = "mp_jumppad"
@@ -16842,37 +16881,42 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_liquid:e =
+        func_liquid:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idLiquid"
           ;desc = "Func liquid."
           origin = "0 0 0"
           angle = "360"
         }
-        func_mover:e =
+        func_mover:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idMover"
           ;desc = "Movers are objects meant to be controlled through scripts."
           origin = "0 0 0"
           angle = "360"
         }
-        func_mover_amodel:e =
+        func_mover_amodel:b =
         {
+          ;incl = "defpoly"
           inherit = "func_mover"
           ;desc = "Mover with a model Movers are objects meant to be controlle"
            "d through scripts."
           origin = "0 0 0"
           angle = "360"
         }
-        func_mover_spline:e =
+        func_mover_spline:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvSplineMover"
           ;desc = "Func mover spline."
           origin = "0 0 0"
           angle = "360"
         }
-        func_pendulum:e =
+        func_pendulum:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idPendulum"
           speed = "30"
           phase = "0"
@@ -16883,8 +16927,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_phantom_objects:e =
+        func_phantom_objects:b =
         {
+          ;incl = "defpoly"
           time = "5"
           speed = "1200"
           end_time = "0"
@@ -16898,8 +16943,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_plat:e =
+        func_plat:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idPlat"
           no_touch = "0"
           lip = "8"
@@ -16909,8 +16955,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_playback:e =
+        func_playback:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvPlaybackEnt"
           playback_name = "None"
           angles_from_vel = "0"
@@ -16918,15 +16965,17 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_portal:e =
+        func_portal:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idFuncPortal"
           ;desc = "Use to make triggerable portals."
           origin = "0 0 0"
           angle = "360"
         }
-        func_pusherMover:e =
+        func_pusherMover:b =
         {
+          ;incl = "defpoly"
           inherit = "func_mover"
           attachedBone = "?"
           attachedEntity = "?"
@@ -16935,22 +16984,25 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_radiochatter:e =
+        func_radiochatter:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idFuncRadioChatter"
           ;desc = "Use to make triggerable radio chatters."
           origin = "0 0 0"
           angle = "360"
         }
-        func_remove:e =
+        func_remove:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTarget_Remove"
           ;desc = "Removes targeted entities from the game when triggered."
           origin = "0 0 0"
           angle = "360"
         }
-        func_riser:e =
+        func_riser:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idRiser"
           time = "5"
           height = "32"
@@ -16958,8 +17010,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_rotating:e =
+        func_rotating:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idRotater"
           x_axis = "0"
           y_axis = "0"
@@ -16971,15 +17024,17 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_savegame:e =
+        func_savegame:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvFuncSaveGame"
           ;desc = "Use to make triggerable save games."
           origin = "0 0 0"
           angle = "360"
         }
-        func_securitycamera:e =
+        func_securitycamera:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idSecurityCamera"
           snd_sight = "security_camera_sight"
           snd_moving = "security_camera_moving"
@@ -16998,8 +17053,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_shaking:e =
+        func_shaking:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idShaking"
           shake = "0.5 0.5 0.5"
           period = "0.05"
@@ -17008,31 +17064,35 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_spawner:e =
+        func_spawner:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvSpawner"
           ;desc = "Spawns specified entities Target any number of target_nulls"
            " as possible spawn locations."
           origin = "0 0 0"
           angle = "360"
         }
-        func_spawner_enemy:e =
+        func_spawner_enemy:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvSpawner"
           ;desc = "Func spawner enemy."
           origin = "0 0 0"
           angle = "360"
         }
-        func_splat:e =
+        func_splat:b =
         {
+          ;incl = "defpoly"
           inherit = "func_emitter"
           spawnclass = "idFuncSplat"
           ;desc = "Splats a decal based on the rotation angle."
           origin = "0 0 0"
           angle = "360"
         }
-        func_splinemover:e =
+        func_splinemover:b =
         {
+          ;incl = "defpoly"
           shader = "textures/common/nodraw"
           spawnclass = "idSplinePath"
           time = "0"
@@ -17041,15 +17101,17 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_spring:e =
+        func_spring:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idSpring"
           ;desc = "Spring connecting two entities."
           origin = "0 0 0"
           angle = "360"
         }
-        func_static:e =
+        func_static:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idStaticEntity"
           solid = "1"
           hide = "0"
@@ -17059,8 +17121,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_train:e =
+        func_train:b =
         {
+          ;incl = "defpoly"
           inherit = "func_mover"
           loopDelay = "0"
           useSplineAngles = "0"
@@ -17070,16 +17133,18 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        func_vehicle_driver:e =
+        func_vehicle_driver:b =
         {
+          ;incl = "defpoly"
           spawnclass = "rvVehicleDriver"
           ;desc = "Move a vehicle based on a path specified by target_vehicle_"
            "paths."
           origin = "0 0 0"
           angle = "360"
         }
-        func_waitforbutton:e =
+        func_waitforbutton:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTarget_WaitForButton"
           ;desc = "When activated, waits for the player to press the fire butt"
            "on and then activates its targets Targeting entity toggles it on a"
@@ -21435,28 +21500,31 @@ QQRKSRC1
       }
       triggers Entities.qtxfolder =
       {
-        trigger_count:e =
+        trigger_count:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_Count"
           count = "1"
           ;desc = "Countable trigger."
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_entityname:e =
+        trigger_entityname:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_EntityName"
           wait = "0.5"
           random = "0"
           delay = "0"
           random_delay = "0"
           ;desc = "Variable sized repeatable trigger that only responds to a s"
-           "pecific entity Must be targeted at one or more entities ."
+           "pecific entity Must be targeted at one or more entities."
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_facing:e =
+        trigger_facing:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_Multi"
           wait = "-1"
           random = "0"
@@ -21470,8 +21538,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_fade:e =
+        trigger_fade:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_Fade"
           fadeColor = "0 0 0 1"
           fadeTime = "1.0"
@@ -21479,8 +21548,9 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_flashlight:e =
+        trigger_flashlight:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_Multi"
           flashlight_trigger = "1"
           wait = "0.5"
@@ -21491,29 +21561,32 @@ QQRKSRC1
           noTouch = "0"
           noClient = "0"
           ;desc = "Variable sized trigger that is activated by shining the fla"
-           "shlight on it Must be targeted at one or more entities ."
+           "shlight on it. Must be targeted at one or more entities."
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_guiOverlay:e =
+        trigger_guiOverlay:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_GuiOverlay"
           ;desc = "Toggles an overlay gui full screen over the view."
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_hurt:e =
+        trigger_hurt:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_Hurt"
           on = "1"
           def_damage = "damage_painTrigger"
-          ;desc = "Damages the activator Can be turned on or off by other trig"
-           "gers."
+          ;desc = "Damages the activator. Can be turned on or off by other tri"
+           "ggers."
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_multiple:e =
+        trigger_multiple:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_Multi"
           wait = "0.5"
           random = "0"
@@ -21524,12 +21597,13 @@ QQRKSRC1
           noClient = "0"
           onlyVehicle = "0"
           ;desc = "Variable sized repeatable trigger Must be targeted at one o"
-           "r more entities ."
+           "r more entities."
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_once:e =
+        trigger_once:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_Multi"
           wait = "-1"
           random = "0"
@@ -21543,20 +21617,22 @@ QQRKSRC1
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_once_entityname:e =
+        trigger_once_entityname:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_EntityName"
           wait = "-1"
           random = "0"
           delay = "0"
           random_delay = "0"
           ;desc = "Variable sized single-use trigger that only responds to a s"
-           "pecific entity Must be targeted at one or more entities ."
+           "pecific entity. Must be targeted at one or more entities."
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_presize:e =
+        trigger_presize:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_Multi"
           wait = "0.5"
           random = "0"
@@ -21565,7 +21641,7 @@ QQRKSRC1
           noTouch = "0"
           noClient = "0"
           ;desc = "Variable sized repeatable trigger Must be targeted at one o"
-           "r more entities ."
+           "r more entities."
           origin = "0 0 0"
           angle = "360"
         }
@@ -21576,8 +21652,8 @@ QQRKSRC1
           random = "0"
           delay = "0"
           notouch = "1"
-          ;desc = "Non-touchable repeatable trigger Used as a proxy for trigge"
-           "ring multiple targets in script, or ."
+          ;desc = "Non-touchable repeatable trigger. Used as a proxy for trigg"
+           "ering multiple targets in script, or ___."
           origin = "0 0 0"
           angle = "360"
         }
@@ -21587,13 +21663,14 @@ QQRKSRC1
           start_on = "0"
           wait = "0.5"
           random = "0"
-          ;desc = "Repeatedly fires its targets Can be turned on or off by usi"
-           "ng ."
+          ;desc = "Repeatedly fires its targets. Can be turned on or off by us"
+           "ing other triggers."
           origin = "0 0 0"
           angle = "360"
         }
-        trigger_touch:e =
+        trigger_touch:b =
         {
+          ;incl = "defpoly"
           spawnclass = "idTrigger_Touch"
           start_on = "0"
           ;desc = "Continuously tests whether other entities are touching and "
