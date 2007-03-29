@@ -22,7 +22,7 @@ from math import *
 def ProjectKeepingLength(A,C,L):
   def NormaliseVect(v1, v2):
     le = sqrt( pow(v2.x - v1.x, 2) + 
-               pow(v2.y - v1.y, 2) +  
+               pow(v2.y - v1.y, 2) + 
                pow(v2.z - v1.z, 2) )
     if (le <> 0): 
       v = quarkx.vect( \
@@ -66,7 +66,7 @@ def findTriangle(comp, v1, v2, v3):
     if b==3:
       return index
   return None
-      
+
 
 #
 # Remove a triangle from a given component
@@ -89,7 +89,7 @@ def removeTriangle(comp, index):
   undo.exchange(comp, new_comp)
   mapeditor().ok(undo, "remove triangle")
   invalidateviews()
-    
+
 
 #
 # Add a frame to a given component (ie duplicate last one)
@@ -135,7 +135,7 @@ def addvertex(comp, org):
     return
   new_comp = comp.copy()
   frames = new_comp.findallsubitems("", ':mf')   # find all frames
-  for frame in frames: 
+  for frame in frames:
     vtxs = frame.vertices
     vtxs = vtxs + [org]
     frame.vertices = vtxs
@@ -152,7 +152,7 @@ def addvertex(comp, org):
 def checkTriangle(tri, index):
   for c in tri:
     if ( c[0] == index): # c[0] is the 'vertexno'
-      return 1  
+      return 1
   return 0
 
 
@@ -245,13 +245,12 @@ def checktree(root, obj):
         if t is None or not (obj in t.subitems):
             return 0
         obj = t
-    return 1     
+    return 1
 
 
 #
 # The UserDataPanel class, overridden to be model-specific.
 #
-
 class MdlUserDataPanel(UserDataPanel):
 
     def btnclick(self, btn):
@@ -278,6 +277,9 @@ class MdlUserDataPanel(UserDataPanel):
 #
 #
 #$Log$
+#Revision 1.11  2006/12/06 04:05:59  cdunde
+#For explanation comment on how to use def findTriangles function.
+#
 #Revision 1.10  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
@@ -295,6 +297,5 @@ class MdlUserDataPanel(UserDataPanel):
 #
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
-#
 #
 #
