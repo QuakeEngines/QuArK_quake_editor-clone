@@ -117,9 +117,9 @@ class ModelLayout(BaseLayout):
                             else:
                                 count = 1
                             for dictitem in item.dictitems:
-                                if dictitem == saveskin:    # new cdunde 3-11-07
-                                    slist.append(dictitem)  # new cdunde 3-11-07
-                                    return slist            # new cdunde 3-11-07
+                                if dictitem == saveskin:
+                                    slist.append(dictitem)
+                                    return slist
                                 if dictitem.endswith(".pcx") or dictitem.endswith(".jpg") or dictitem.endswith(".tga"):
                                     if count == 1:
                                         holddictitem = item.dictitems[dictitem]
@@ -474,6 +474,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.23  2007/03/22 20:14:15  cdunde
+#Proper selection and display of skin textures for all model configurations,
+#single or multi component, skin or no skin, single or multi skins or any combination.
+#
 #Revision 1.22  2007/03/22 19:21:40  cdunde
 #To add skin texture size to the Skin-view page top section.
 #

@@ -1093,6 +1093,8 @@ class RedImageDragObject(DragObject):
                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 return
 
+## Deals with Model Editor Skin-view movement, face drawing is in python\mdlhandles.py class SkinHandle section
+
         if isinstance(editor, mdleditor.ModelEditor):
             from qbaseeditor import currentview, flagsmouse
             undo = quarkx.action()
@@ -1877,6 +1879,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.40  2007/03/05 19:44:05  cdunde
+#To remove print statements left in after testing.
+#
 #Revision 1.39  2007/03/04 20:15:15  cdunde
 #Missed items in last update.
 #
