@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2007/03/22 20:53:10  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+Also fixed a Delphi warning.
+
 Revision 1.5  2007/03/17 14:32:38  danielpharos
 Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
 
@@ -550,7 +554,7 @@ begin
  end
  else
  begin
-   FarDistance:=1500;   {Daniel: This should be zero... = Disabled FarDistance}
+   FarDistance:=1500;   //DanielPharos: This should be zero... = Disabled FarDistance
  end;
  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
  FogColor:=SwapColor(Setup.IntSpec['FogColor']);
@@ -561,7 +565,7 @@ begin
  Setup:=SetupSubSet(ssGeneral, 'Software 3D');
  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
  begin
-   Fog:=Setup.Specifics.Values['Fog']<>'';   {Daniel: This is not an option at the moment}
+   Fog:=Setup.Specifics.Values['Fog']<>'';   //DanielPharos: This is not an option at the moment
  end
  else
  begin

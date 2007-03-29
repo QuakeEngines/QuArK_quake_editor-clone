@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/03/12 13:21:58  danielpharos
+Fixed a few stupid bugs introduced in the last change.
+
 Revision 1.17  2007/03/11 12:03:10  danielpharos
 Big changes to Logging. Simplified the entire thing.
 
@@ -100,7 +103,7 @@ const
 
   LOG_ALWAYS = 0;
   LOG_CRITICAL = 10;
-  LOG_WARN = 20;
+  LOG_WARNING = 20;
   LOG_INFO = 30;
   LOG_VERBOSE = 40;
 

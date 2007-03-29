@@ -892,11 +892,11 @@ Strings = {
 
     # alexander would like to reserve 5703 .. 5729 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
-    5704: "Unable to retrieve the location of '",
-    5705: "'. Please make sure the location is set correctly in the Half-Life 2 configurations.",
+    5704: "Unable to retrieve the location of '%s'. Please make sure the location is set correctly in the Half-Life 2 configurations.",
+    #5705: "reserved for hl2",
     5706: "%s not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
-    #5708: "reserved for hl2",
+    5708: "Image found",
     5709: "VTF file",
     5710: "GCF file",
     5711: "GCF folder",
@@ -953,6 +953,8 @@ Strings = {
     6006: "Bad aspect ratio",
 
     6010: "Texture not loaded",
+    6011: "Invalid value for %s found: %s",
+    6012: "No value for %s found, defaulting to: %s",
 
     # DanielPharos would like to reserve 6100 .. 6199 for the software renderer :-)
     6100: "Error with the Software 3D drivers//%s failed",
@@ -1013,6 +1015,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.88  2007/03/29 17:27:27  danielpharos
+#Updated the Direct3D renderer. It should now initialize correctly.
+#
 #Revision 1.87  2007/03/26 21:06:40  danielpharos
 #Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
 #

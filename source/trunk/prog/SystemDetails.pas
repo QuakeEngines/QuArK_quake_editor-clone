@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2007/03/12 13:21:59  danielpharos
+Fixed a few stupid bugs introduced in the last change.
+
 Revision 1.25  2007/03/11 12:03:10  danielpharos
 Big changes to Logging. Simplified the entire thing.
 
@@ -167,7 +170,7 @@ type
 
   TMemory = class(TPersistent)
   private
-    FMemoryLoad: longword;    {Daniel: This is not 64-bit compatible. Some are Size_T, which will be 64 bit variables.}
+    FMemoryLoad: longword;    //DanielPharos: This is not 64-bit compatible. Some are Size_T, which will be 64 bit variables.
     FPhysicalTotal: longword;
     FPhysicalFree: longword;
     FVirtualTotal: longword;

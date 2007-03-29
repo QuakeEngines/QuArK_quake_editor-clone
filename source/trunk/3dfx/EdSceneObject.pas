@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2007/03/26 21:01:46  danielpharos
+Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
+
 Revision 1.30  2007/03/22 20:52:58  danielpharos
 Improved tracking of the target DC. Should fix a few grey screens.
 
@@ -2165,8 +2168,8 @@ end;
 function GetLodFor(w: Integer) : GrLOD_t;
 begin
  case w of
-  4096: Result:=GR_LOD_256;  {Daniel: The software and 3DFX don't support higher LODs}
-  2048: Result:=GR_LOD_256;
+  4096: Result:=GR_LOD_256;  //DanielPharos: The software and 3DFX don't support higher LODs
+  2048: Result:=GR_LOD_256;  //              Other renderers therefore shouldn't use these function
   1024: Result:=GR_LOD_256;
   512:  Result:=GR_LOD_256;
   256:  Result:=GR_LOD_256;

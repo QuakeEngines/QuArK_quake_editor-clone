@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/03/27 19:22:22  danielpharos
+Fixed loading VTF files from inside a gcf-file.
+
 Revision 1.6  2007/03/25 13:51:30  danielpharos
 Moved the material texture loading to the correct function.
 
@@ -281,7 +284,7 @@ begin
   shaders are being loaded }
   if Result<>Nil then
   begin
-    Log(LOG_VERBOSE,'image found '+S);
+    Log(LOG_VERBOSE, LoadStr1(5708), [S]);
     Size:=Result.GetSize;
     V[1]:=Size.X;
     V[2]:=Size.Y;
@@ -289,7 +292,7 @@ begin
   end
   else
   begin
-    Log(LOG_WARN,'no image found in material '+self.name);
+    Log(LOG_WARNING, LoadStr1(5695), [self.name]);
     Raise EErrorFmt(5695, [self.name]);
   end;
 end;

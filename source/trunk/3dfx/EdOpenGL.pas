@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2007/03/29 15:26:03  danielpharos
+Removed a little bit of redundant code.
+
 Revision 1.55  2007/03/26 21:01:46  danielpharos
 Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
 
@@ -1097,7 +1100,7 @@ begin
   glEdgeFlag(0);
   {$IFDEF DebugGLErr} DebugOpenGL(1, '', []); {$ENDIF}
 
-  { set up texture parameters }  //Daniel: These are set per texture, in the BuildTexture procedure
+  { set up texture parameters }  //DanielPharos: These are set per texture, in the BuildTexture procedure
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);}
@@ -1145,7 +1148,7 @@ begin
   end
   else
   begin
-    glDisable(GL_LIGHTING);   {Daniel: Make sure Lighting is disabled}
+    glDisable(GL_LIGHTING);
     CheckOpenGLError(glGetError);
   end;
 
@@ -1156,10 +1159,10 @@ begin
   end
   else
   begin
-    glDisable(GL_BLEND);   {Daniel: Make sure Transparency is disabled}
+    glDisable(GL_BLEND);
     CheckOpenGLError(glGetError);
   end;
-  {Daniel: Things like normal maps, bump-maps etc. should be added in a similar way}
+  //DanielPharos: Things like normal maps, bump-maps etc. should be added in a similar way
 
   glFrontFace(GL_CW);
   if Culling then
@@ -1358,7 +1361,7 @@ begin
     DX:=(SX/2)/(Scaling*Scaling);
     DY:=(SY/2)/(Scaling*Scaling);
     {DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);}
-    DZ:=100000;   {Daniel: Workaround for the zoom-in-disappear problem}
+    DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
     TransX:=LocX/(Scaling*Scaling);
     TransY:=LocY/(Scaling*Scaling);
     TransZ:=-MapLimitSmallest;
@@ -1395,7 +1398,7 @@ begin
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity;
       {gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / Power(2, DepthBufferBits), FarDistance);}
-      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     {Daniel: Assuming 16 bit depth buffer}
+      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
 
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity;
@@ -1975,7 +1978,7 @@ begin
     if Bilinear then
     begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  {Daniel: Changed to GL_LINEAR}
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     end
     else
     begin

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/03/17 15:43:12  danielpharos
+Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
+
 Revision 1.9  2007/03/15 22:33:27  danielpharos
 Updated VTFLib to 1.2.5
 
@@ -436,7 +439,7 @@ begin
     begin
       if not IgnoreErrorTier0Module then
       begin
-        LogError(LoadStr1(5704)+'tier0.dll'+LoadStr1(5705));
+        LogError(format(LoadStr1(5704),['tier0.dll']));
         IgnoreErrorTier0Module:=true;
       end;
       Exit;
@@ -445,7 +448,7 @@ begin
     begin
       if not IgnoreErrorVstdlibModule then
       begin
-        LogError(LoadStr1(5704)+'vstdlib.dll'+LoadStr1(5705));
+        LogError(format(LoadStr1(5704),['vstdlib.dll']));
         IgnoreErrorVstdlibModule:=true;
       end;
       Exit;
