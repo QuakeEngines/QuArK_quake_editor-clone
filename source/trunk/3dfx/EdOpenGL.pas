@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2007/03/26 21:01:46  danielpharos
+Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
+
 Revision 1.54  2007/03/24 19:21:07  danielpharos
 Removed some double and possibly wrong code.
 
@@ -1301,7 +1304,6 @@ var
  PList: PSurfaces;
  CurrentPList: PSurfaces;
  RebuildDisplayList: Boolean;
- CheckTransparency: Boolean;
 begin
   if not OpenGlLoaded then
     Exit;
@@ -1408,16 +1410,12 @@ begin
    end;
   CheckOpenGLError(glGetError);
 
-  if Transparency and not (Lighting and (LightingQuality=0)) then
-    CheckTransparency:=true
-  else
-    CheckTransparency:=false;
   if (Lighting and (LightingQuality=0)) or Transparency then
   begin
     PS:=FListSurfaces;
     while Assigned(PS) do
     begin
-      if (Lighting and (LightingQuality=0)) or (CheckTransparency and (Transparency and ((PS^.Transparent=True) or (PS^.NumberTransparentFaces>0)))) then
+      if (Lighting and (LightingQuality=0)) or (Transparency and ((PS^.Transparent=True) or (PS^.NumberTransparentFaces>0))) then
       begin
         Surf:=PS^.Surf;
         SurfEnd:=PChar(Surf)+PS^.SurfSize;
