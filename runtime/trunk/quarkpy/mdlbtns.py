@@ -84,9 +84,9 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
     undo = quarkx.action()
     ex = editor.layout.explorer
     delta = None
-    if center != "0":
+    if str(center) != "0":
         recenter = MapOption("Recenter", SS_MODEL)
-        if center != "+" or recenter:
+        if str(center) != "+" or recenter:
             bbox = quarkx.boundingboxof(newlist)
             if not (bbox is None):
                 if type(center)==type(""):
@@ -338,6 +338,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.9  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.8  2006/11/29 07:00:27  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.
