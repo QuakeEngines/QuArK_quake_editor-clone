@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.319  2007/03/29 21:02:00  danielpharos
+//Made a Stencil Buffer Bits selection option
+//
 //Revision 1.318  2007/03/27 22:28:43  danielpharos
 //Fixed a stupid bug with some new options. CloseOnSetup is now enabled by default too.
 //
@@ -2986,18 +2989,22 @@ QQRKSRC1
       {
         Options3Dviews_nohandles1 = "0"
         Options3Dviews_drawnohandles1 = "0"
+        Options3Dviews_fillmesh1 = "0"
         Options3Dviews_nohandles2 = "0"
         Options3Dviews_drawnohandles2 = "0"
+        Options3Dviews_fillmesh2 = "0"
         Options3Dviews_nohandles3 = "0"
         Options3Dviews_drawnohandles3 = "0"
+        Options3Dviews_fillmesh3 = "0"
         Options3Dviews_nohandles4 = "0"
         Options3Dviews_drawnohandles4 = "0"
+        Options3Dviews_fillmesh4 = "0"
         Options3Dviews_nohandles5 = "0"
         Options3Dviews_drawnohandles5 = "0"
+        Options3Dviews_fillmesh5 = "0"
         setLock_X          = "0"
         setLock_Y          = "0"
         setLock_Z          = "0"
-        SolidFrame         = ""
         DrawAxis           = "1"
         DrawMapLimit       = "1"
         SolidGrid          = ""
@@ -3042,7 +3049,11 @@ QQRKSRC1
       Colors:config =
       {
         InvertedColors = ""
-        FillColor     = $FFFFFF
+        Options3Dviews_fillColor1  = $FF8080
+        Options3Dviews_fillColor2  = $FF8080
+        Options3Dviews_fillColor3  = $FF8080
+        Options3Dviews_fillColor4  = $FF8080
+        Options3Dviews_fillColor5  = $FF8080
         ViewXZ        = $E8E8B8
         ViewXY        = $E8DCB8
         SelXZ         = $0080C0
@@ -5865,7 +5876,11 @@ QQRKSRC1
         Data: =       // the data that this button puts in the object when you click it
         {
           InvertedColors = ""
-          FillColor  = $FFFFFF
+          Options3Dviews_fillColor1  = $FF8080
+          Options3Dviews_fillColor2  = $FF8080
+          Options3Dviews_fillColor3  = $FF8080
+          Options3Dviews_fillColor4  = $FF8080
+          Options3Dviews_fillColor5  = $FF8080
           ViewXZ     = $E8E8B8
           ViewXY     = $E8DCB8
           SelXZ      = $0080C0
@@ -5895,7 +5910,6 @@ QQRKSRC1
         Typ = "X"     // checkboX
         Cap = "white on black"
       }
-      FillColor:     = { Txt = "Model fill color (requires file reload)" Typ = "LI" } // coLor selection, Integer
       ViewXZ:        = { Txt = "Side map view (XZ)" Typ = "LI" }
       ViewXY:        = { Txt = "Top map view (XY)" Typ = "LI" }
       SelXZ:         = { Txt = "Selected brushes, side view" Typ = "LI" }
@@ -6429,7 +6443,6 @@ QQRKSRC1
     MdlOptions:form =
     {
       Style = "1"
-      SolidFrame:               = {Typ="X" Txt="Model frame fill"               Cap="Frame filled in (requires file reload)" }
       DrawAxis:                 = {Typ="X" Txt="Model background"               Cap="Draw axis"                            }
       DrawMapLimit:             = {Typ="X" Txt="   ``"                          Cap="Draw model limits"                    }
       SolidGrid:                = {Typ="X" Txt="Grid"                           Cap="Grid as lines"                        }

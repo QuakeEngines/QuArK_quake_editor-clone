@@ -58,14 +58,6 @@ class ModelEditor(BaseEditor):
         self.lock_y = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"])
         self.lock_z = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
-        if MldOption("SolidFrame") == "1":
-            for c in self.ListComponents():
-                c.info = { }
-                fillcolor = MapColor("FillColor", SS_MODEL)
-                c.filltris = [(fillcolor,(WHITE,GRAY))]*len(c.triangles)
-        else:
-            pass
-
     def CloseRoot(self):
         picked = [ ]
         ### To stop crossing of skins from model to model when a new model, even with the same name,
@@ -178,8 +170,83 @@ class ModelEditor(BaseEditor):
 def commonhandles(self, redraw=1):
     from qbaseeditor import flagsmouse, currentview
 
-  #  if self.layout is None:
-  #      return
+    for v in self.layout.views:
+        if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+            componentnames = []
+            for item in self.Root.dictitems:
+                if item.endswith(":mc"):
+                    componentnames.append(item)
+            componentnames.sort()
+            self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+
+        if ((currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow") and self.dragobject != None):
+            pass
+        else:
+
+            try:
+                if v.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "editors3Dview":
+                    currentview = v
+                    comp = self.Root.currentcomponent
+                    fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
+                        comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                        currentview.repaint()
+                    else:
+                        comp.filltris = [(None,None)]*len(comp.triangles)
+                        currentview.repaint()
+            except:
+                pass
+
+            try:
+                if v.info["viewname"] == "XY" or currentview.info["viewname"] == "XY":
+                    currentview = v
+                    comp = self.Root.currentcomponent
+                    fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
+                        comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                        currentview.repaint()
+                    else:
+                        comp.filltris = [(None,None)]*len(comp.triangles)
+                        currentview.repaint()
+            except:
+                pass
+
+            if v.info["viewname"] == "YZ" or currentview.info["viewname"] == "YZ":
+                currentview = v
+                comp = self.Root.currentcomponent
+                fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
+                    comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                    v.repaint()
+                else:
+                    comp.filltris = [(None,None)]*len(comp.triangles)
+                    v.repaint()
+
+            if v.info["viewname"] == "XZ" or currentview.info["viewname"] == "XZ":
+                currentview = v
+                comp = self.Root.currentcomponent
+                fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
+                    comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                    v.repaint()
+                else:
+                    comp.filltris = [(None,None)]*len(comp.triangles)
+                    v.repaint()
+
+            try:
+                if v.info["viewname"] == "3Dwindow" or currentview.info["viewname"] == "3Dwindow":
+                    currentview = v
+                    comp = self.Root.currentcomponent
+                    fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
+                        comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                        currentview.repaint()
+                    else:
+                        comp.filltris = [(None,None)]*len(comp.triangles)
+                        currentview.repaint()
+            except:
+                pass
+
 
     if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056):
         try:
@@ -282,6 +349,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.19  2007/03/22 19:10:24  cdunde
+#To stop crossing of skins from model to model when a new model, even with the same name,
+#is opened in the Model Editor without closing QuArK completely.
+#
 #Revision 1.18  2007/03/04 19:38:04  cdunde
 #To stop unneeded redrawing of handles in other views
 #when LMB is released at end of rotation in a Model Editor's 3D view.
