@@ -170,82 +170,86 @@ class ModelEditor(BaseEditor):
 def commonhandles(self, redraw=1):
     from qbaseeditor import flagsmouse, currentview
 
-    for v in self.layout.views:
-        if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
-            componentnames = []
-            for item in self.Root.dictitems:
-                if item.endswith(":mc"):
-                    componentnames.append(item)
-            componentnames.sort()
-            self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
 
-        if ((currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow") and self.dragobject != None):
-            pass
-        else:
+    try:
+        for v in self.layout.views:
+            if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+                componentnames = []
+                for item in self.Root.dictitems:
+                    if item.endswith(":mc"):
+                        componentnames.append(item)
+                componentnames.sort()
+                self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
 
-            try:
-                if v.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "editors3Dview":
+            if ((currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow") and self.dragobject != None):
+                pass
+            else:
+
+                try:
+                    if v.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "editors3Dview":
+                        currentview = v
+                        comp = self.Root.currentcomponent
+                        fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
+                            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                            currentview.repaint()
+                        else:
+                            comp.filltris = [(None,None)]*len(comp.triangles)
+                            currentview.repaint()
+                except:
+                    pass
+
+                try:
+                    if v.info["viewname"] == "XY" or currentview.info["viewname"] == "XY":
+                        currentview = v
+                        comp = self.Root.currentcomponent
+                        fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
+                            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                            currentview.repaint()
+                        else:
+                            comp.filltris = [(None,None)]*len(comp.triangles)
+                            currentview.repaint()
+                except:
+                    pass
+
+                if v.info["viewname"] == "YZ" or currentview.info["viewname"] == "YZ":
                     currentview = v
                     comp = self.Root.currentcomponent
-                    fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
+                    fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
                         comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
-                        currentview.repaint()
+                        v.repaint()
                     else:
                         comp.filltris = [(None,None)]*len(comp.triangles)
-                        currentview.repaint()
-            except:
-                pass
+                        v.repaint()
 
-            try:
-                if v.info["viewname"] == "XY" or currentview.info["viewname"] == "XY":
+                if v.info["viewname"] == "XZ" or currentview.info["viewname"] == "XZ":
                     currentview = v
                     comp = self.Root.currentcomponent
-                    fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
+                    fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
                         comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
-                        currentview.repaint()
+                        v.repaint()
                     else:
                         comp.filltris = [(None,None)]*len(comp.triangles)
-                        currentview.repaint()
-            except:
-                pass
+                        v.repaint()
 
-            if v.info["viewname"] == "YZ" or currentview.info["viewname"] == "YZ":
-                currentview = v
-                comp = self.Root.currentcomponent
-                fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
-                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
-                    comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
-                    v.repaint()
-                else:
-                    comp.filltris = [(None,None)]*len(comp.triangles)
-                    v.repaint()
-
-            if v.info["viewname"] == "XZ" or currentview.info["viewname"] == "XZ":
-                currentview = v
-                comp = self.Root.currentcomponent
-                fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
-                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
-                    comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
-                    v.repaint()
-                else:
-                    comp.filltris = [(None,None)]*len(comp.triangles)
-                    v.repaint()
-
-            try:
-                if v.info["viewname"] == "3Dwindow" or currentview.info["viewname"] == "3Dwindow":
-                    currentview = v
-                    comp = self.Root.currentcomponent
-                    fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
-                        comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
-                        currentview.repaint()
-                    else:
-                        comp.filltris = [(None,None)]*len(comp.triangles)
-                        currentview.repaint()
-            except:
-                pass
+                try:
+                    if v.info["viewname"] == "3Dwindow" or currentview.info["viewname"] == "3Dwindow":
+                        currentview = v
+                        comp = self.Root.currentcomponent
+                        fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
+                            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                            currentview.repaint()
+                        else:
+                            comp.filltris = [(None,None)]*len(comp.triangles)
+                            currentview.repaint()
+                except:
+                    pass
+    except:
+        pass
 
 
     if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056):
@@ -349,6 +353,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.20  2007/03/30 03:57:25  cdunde
+#Changed Model Editor's FillMesh function to individual view settings on Views Options Dialog.
+#
 #Revision 1.19  2007/03/22 19:10:24  cdunde
 #To stop crossing of skins from model to model when a new model, even with the same name,
 #is opened in the Model Editor without closing QuArK completely.
