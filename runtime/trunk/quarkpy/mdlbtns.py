@@ -75,31 +75,36 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
     # Known values of "center" :
     #   <vector>: scroll at the given point
     #   "S":      scroll at screen center or at the selected object's center
-    #   "0":      don't scroll at all
+    #   "0":      don't scroll at all (ignores the Recenter setting, use when the target position shouldn't be changed)
     #   "+":      scroll at screen center or don't scroll at all
     #
     if len(newlist)==0:
         return
 
     undo = quarkx.action()
-    ex = editor.layout.explorer
     delta = None
     if str(center) != "0":
-        recenter = MapOption("Recenter", SS_MODEL)
-        if str(center) != "+" or recenter:
-            bbox = quarkx.boundingboxof(newlist)
-            if not (bbox is None):
-                if type(center)==type(""):
-                    if recenter:
-                        bbox1 = None
-                    else:
-                        bbox1 = quarkx.boundingboxof(editor.visualselection())
+        recenter = MapOption("Recenter")
+        if recenter:
+            if str(center) != "+":
+                delta = editor.layout.screencenter()
+            else:
+                delta = quarkx.vect(0,0,0)
+        else:
+            if str(center) != "+":
+                bbox = quarkx.boundingboxof(newlist)
+                if bbox is None: #DECKER
+                    bbox = (quarkx.vect(-1,-1,-1),quarkx.vect(1,1,1)) #DECKER create a minimum bbox, in case a ;incl="defpoly" is added to an object in prepareobjecttodrop()
+                if str(center)=="S":
+                    bbox1 = quarkx.boundingboxof(editor.visualselection())
                     if bbox1 is None:
                         center = editor.layout.screencenter()
                     else:
                         center = (bbox1[0]+bbox1[1])*0.5
                 delta = center - (bbox[0]+bbox[1])*0.5
-                delta = editor.aligntogrid(delta)
+            else:
+                delta = quarkx.vect(0,0,0)
+        delta = editor.aligntogrid(delta)
     for newitem in newlist:
         nparent, nib = droptarget(editor, newitem)
         if nparent is None:
@@ -119,8 +124,6 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
 def dropitemnow(editor, newitem):
     "Drop a new item into the given map editor."
     dropitemsnow(editor, [newitem], Strings[616])
-
-
 
 
 def replacespecifics(obj, mapping):
@@ -338,6 +341,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.10  2007/03/29 14:46:50  danielpharos
+#Fix a crash when trying to drop an item in a view.
+#
 #Revision 1.9  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

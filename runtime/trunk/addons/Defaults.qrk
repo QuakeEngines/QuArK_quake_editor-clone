@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.320  2007/03/30 03:57:25  cdunde
+//Changed Model Editor's FillMesh function to individual view settings on Views Options Dialog.
+//
 //Revision 1.319  2007/03/29 21:02:00  danielpharos
 //Made a Stencil Buffer Bits selection option
 //
@@ -2893,7 +2896,7 @@ QQRKSRC1
         TreeKeybDelay           = "1"
         IgnoreToBuild           = "1"
         DisableMapComments      = ""
-//        DisableEnhTex           = ""
+      //DisableEnhTex           = ""
         DisableFPCoord          = ""
 // Experimental; disable in distributions:
 //        UseIntetralVertices     = ""
@@ -3017,6 +3020,7 @@ QQRKSRC1
         HideMouseDrag      = ""
         AutoAdjustNormal   = ""
         PagesLocked        = ""
+        Recenter           = "1"
         HandleHints        = "1"
         LinearBox          = ""
         TreeKeybDelay      = ""
@@ -6426,7 +6430,7 @@ QQRKSRC1
       BBoxSelected:             = {Typ="X" Txt="   ``"                          Cap="Dark box on selected"                 }
       DeleteFaces:              = {Typ="X" Txt="Unused faces && polys"          Cap="Delete unused faces"                  }
       AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                      }
-      PolySelectNoFill:         = {Typ="X" Txt="Polyhedron selection"           Cap="Not filled-see through"                      }
+      PolySelectNoFill:         = {Typ="X" Txt="Polyhedron selection"           Cap="Not filled-see through"               }
       PolySubtractMax:          = {Typ="X" Txt="Polyhedron subtraction"         Cap="Allow overlapping"                    }
       ComputePolys:             = {Typ="X" Txt="   ``"                          Cap="Dig in 3D views"                      }
       HideFaces:                = {Typ="X" Txt="Polyhedron faces"               Cap="Hide faces in tree"                   }
@@ -6436,7 +6440,7 @@ QQRKSRC1
       AutoCheckMap:             = {Typ="X" Txt="When building the map"          Cap="Perform checks first"                 }
       IgnoreToBuild:            = {Typ="X" Txt="   ``"                          Cap="Ignore groups marked so"              }
       DisableMapComments:       = {Typ="X" Txt="   ``"                          Cap="Don't write comments in .map files"   }
-//      DisableEnhTex:          = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
+    //DisableEnhTex:            = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
       DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
       UseIntegralVertices:      = {Typ="X" Txt="   ``"                          Cap="Use Integral Vertices as Threepoints" }
     }
@@ -6450,16 +6454,17 @@ QQRKSRC1
       GridActive:               = {Typ="X" Txt="   ``"                          Cap="Grid active"                          }
       GridVisibleTex:           = {Typ="X" Txt="   ``"                          Cap="Show it on textured views too"        }
       CompassNumbers:           = {Typ="X" Txt="Compass"                        Cap="Display angle values"                 }
-    //GrayOutOfView:            = {Typ="X" Txt="Model view mode"                  Cap="Gray out of view"                     }
+    //GrayOutOfView:            = {Typ="X" Txt="Model view mode"                Cap="Gray out of view"                     }
     //HideOutOfView:            = {Typ="X" Txt="   ``"                          Cap="Hide out of view"                     }
     //Textured:                 = {Typ="X" Txt="   ``"                          Cap="Textured view"                        }
     //ViewModels:               = {Typ="X" Txt="Textured view"                  Cap="...include Models"                    }
-      NoScrollBars:             = {Typ="X" Txt="Model view scroll"                Cap="Hide scroll bars"                     }
+      NoScrollBars:             = {Typ="X" Txt="Model view scroll"              Cap="Hide scroll bars"                     }
       CrossCursor:              = {Typ="X" Txt="Mouse cursor"                   Cap="Cross-like cursor"                    }
       HideMouseDrag:            = {Typ="X" Txt="   ``"                          Cap="Hidden while dragging"                }
-      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                       }
+      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                      }
       PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
       HandleHints:              = {Typ="X" Txt="Hints (help rectangles)"        Cap="Hints for map handles"                }
+      Recenter:                 = {Typ="X" Txt="Position of new objects"        Cap="Screen center"                        }
     }
     MapBuilding:form =
     {
