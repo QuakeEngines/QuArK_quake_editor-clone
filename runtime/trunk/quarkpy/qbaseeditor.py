@@ -611,7 +611,6 @@ class BaseEditor:
                             if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow" or currentview.info["viewname"] == "skinview":
                                 pass
                             else:
-                                import plugins.mdlaxisicons
                                 for view in self.layout.views:
                                     if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
                                         pass
@@ -1006,6 +1005,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.36  2007/03/31 14:32:03  danielpharos
+#Fixed a typo
+#
 #Revision 1.35  2007/03/29 22:14:31  cdunde
 #To stop Model Editor redrawing of handles in 2D views at end of scrolling in 3D views
 #and stop Model Editor redrawing of handles in 2D views at end of drag in Skin-view.
