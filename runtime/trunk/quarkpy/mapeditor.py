@@ -322,7 +322,7 @@ class MapEditor(BaseEditor):
         mapbtns.moveselection(self, text, delta)
 
 
-            
+
 def loadbbox(sender):
     "Load Bounding Boxes information."
     bbox = LoadPoolObj("BoundingBoxes", quarkx.getqctxlist, ":form")
@@ -336,7 +336,7 @@ def autosavetime():
     try: 
         minutes = int(quarkx.setupsubset(SS_MAP, "Building")["AutoSave"])
     except:
-        return 600000 # linux issue with single quote
+        return 10 * 60000.0 # linux issue with single quote
     else:
         return minutes * 60000.0
 
@@ -363,6 +363,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.10  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.9  2006/11/29 07:00:26  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

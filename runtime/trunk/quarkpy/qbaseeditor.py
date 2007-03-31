@@ -551,7 +551,7 @@ class BaseEditor:
         flagsmouse = flags              ### Used for the Model Editor only.
         currentview = view              ### Used for the Model Editor only.
         import mdleditor                ### Used for the Model Editor only.
-        if flags & MB_DRAGEND: ### This is when the mouse button(s) is ACTULLY released.
+        if flags & MB_DRAGEND: ### This is when the mouse button(s) is ACTUALLY released.
             if self.dragobject is not None:
                 if isinstance(self, mdleditor.ModelEditor):
                     if view.info["viewname"] == "skinview":
@@ -1006,6 +1006,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.35  2007/03/29 22:14:31  cdunde
+#To stop Model Editor redrawing of handles in 2D views at end of scrolling in 3D views
+#and stop Model Editor redrawing of handles in 2D views at end of drag in Skin-view.
+#
 #Revision 1.34  2007/03/29 07:46:30  cdunde
 #Fixed Model Editor view axis icons not always redrawing after zoom in 2D views.
 #
