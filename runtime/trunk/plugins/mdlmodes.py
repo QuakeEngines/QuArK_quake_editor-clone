@@ -660,7 +660,6 @@ def OptionsViewsClick(m):
         if (self.src["fillColor3"]) != None and quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor3"] != None:
             threefillColor = (self.src["fillColor3"])
             quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor3"] = threefillColor
-   #         quarkx.setupsubset(SS_MODEL, "Colors")["FillColor"] = threefillColor
         else:
             (self.src["fillColor3"]) = "$FF8080"
             threefillColor = (self.src["fillColor3"])
@@ -863,6 +862,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.8  2007/03/30 03:57:25  cdunde
+# Changed Model Editor's FillMesh function to individual view settings on Views Options Dialog.
+#
 # Revision 1.7  2007/03/23 05:26:42  cdunde
 # Added a 'Quick Color Options' button to the Model Editors
 # modes tool bar for color selection settings.
