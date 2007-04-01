@@ -594,6 +594,9 @@ class BaseEditor:
                                 if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow":
                                     import mdleditor
                                     mdleditor.commonhandles(self)
+                                else:
+                                    if flagsmouse == 2064 and (currentview.info["viewname"] == "XY" or currentview.info["viewname"] == "XZ" or currentview.info["viewname"] == "YZ"):
+                                        mdleditor.paintframefill(self, view, currentview)
 
                 try:
                     last,x,y=self.dragobject.lastdrag
@@ -1005,6 +1008,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.37  2007/03/31 23:34:27  cdunde
+#To remove import of a plugins file for the Model Editor that was causing an error in the Map Editor.
+#
 #Revision 1.36  2007/03/31 14:32:03  danielpharos
 #Fixed a typo
 #

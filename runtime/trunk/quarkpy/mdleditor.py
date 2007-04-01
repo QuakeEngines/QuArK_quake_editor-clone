@@ -22,7 +22,6 @@ import qtoolbar
 import qmacro
 from qeditor import *
 
-import plugins.mdlaxisicons
 
 #py2.4 indicates upgrade change for python 2.4
 
@@ -117,11 +116,6 @@ class ModelEditor(BaseEditor):
             for obj in self.Root.subitems:
                 if obj.type == ':mc':      # Expand the Component objects
                      nlayout.explorer.expand(obj)
-        try:
-            for view in self.layout.views:
-                plugins.mdlaxisicons.newfinishdrawing(self, view)
-        except:
-            pass
 
     def dropmap(self, view, newlist, x, y, src):
         center = view.space(x, y, view.proj(view.screencenter).z)
@@ -166,25 +160,79 @@ class ModelEditor(BaseEditor):
         mdlbtns.moveselection(self, text, delta)
 
 
+def paintframefill(self, v, currentview):
+
+    from qbaseeditor import flagsmouse, currentview
+    if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+        componentnames = []
+        for item in self.Root.dictitems:
+            if item.endswith(":mc"):
+                componentnames.append(item)
+        componentnames.sort()
+        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+
+    comp = self.Root.currentcomponent
+    try:
+        for v in self.layout.views:
+            if ((v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow") and self.dragobject != None):
+                pass
+            else:
+                try:
+                    if v.info["viewname"] == "XY":
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
+                            fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
+                            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                            v.repaint()
+                        else:
+                            comp.filltris = [(None,None)]*len(comp.triangles)
+                            v.repaint()
+                except:
+                    pass
+
+                if v.info["viewname"] == "YZ":
+                    fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
+                        comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                        v.repaint()
+                    else:
+                        comp.filltris = [(None,None)]*len(comp.triangles)
+                        v.repaint()
+
+                if v.info["viewname"] == "XZ":
+                    fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
+                        comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                        v.repaint()
+                    else:
+                        comp.filltris = [(None,None)]*len(comp.triangles)
+                        v.repaint()
+
+                if v.info["viewname"] == "3Dwindow":
+                    pass
+    except:
+        pass
+
+    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
+        fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+        comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+
 
 def commonhandles(self, redraw=1):
     from qbaseeditor import flagsmouse, currentview
-
+    if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+        componentnames = []
+        for item in self.Root.dictitems:
+            if item.endswith(":mc"):
+                componentnames.append(item)
+        componentnames.sort()
+        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
 
     try:
         for v in self.layout.views:
-            if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
-                componentnames = []
-                for item in self.Root.dictitems:
-                    if item.endswith(":mc"):
-                        componentnames.append(item)
-                componentnames.sort()
-                self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
 
             if ((currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow") and self.dragobject != None):
                 pass
             else:
-
                 try:
                     if v.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "editors3Dview":
                         currentview = v
@@ -234,20 +282,18 @@ def commonhandles(self, redraw=1):
                     else:
                         comp.filltris = [(None,None)]*len(comp.triangles)
                         v.repaint()
-
-                try:
-                    if v.info["viewname"] == "3Dwindow" or currentview.info["viewname"] == "3Dwindow":
-                        currentview = v
-                        comp = self.Root.currentcomponent
-                        fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
-                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
-                            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
-                            currentview.repaint()
-                        else:
-                            comp.filltris = [(None,None)]*len(comp.triangles)
-                            currentview.repaint()
-                except:
-                    pass
+        try:
+            if currentview.info["viewname"] == "3Dwindow":
+                comp = self.Root.currentcomponent
+                fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
+                    comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                    currentview.repaint()
+                else:
+                    comp.filltris = [(None,None)]*len(comp.triangles)
+                    currentview.repaint()
+        except:
+            pass
     except:
         pass
 
@@ -313,7 +359,7 @@ def commonhandles(self, redraw=1):
                 for h in hlist:
                     h.draw(v, cv, None)
 
-        if v.info["viewname"] == "XY" and  flagsmouse != 2064:
+        if v.info["viewname"] == "XY" and flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
                 pass
             else:
@@ -322,7 +368,7 @@ def commonhandles(self, redraw=1):
                 for h in hlist:
                     h.draw(v, cv, None)
 
-        if v.info["viewname"] == "YZ" and  flagsmouse != 2064:
+        if v.info["viewname"] == "YZ" and flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
                 pass
             else:
@@ -331,7 +377,7 @@ def commonhandles(self, redraw=1):
                 for h in hlist:
                     h.draw(v, cv, None)
 
-        if v.info["viewname"] == "XZ" and  flagsmouse != 2064:
+        if v.info["viewname"] == "XZ" and flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
                 pass
             else:
@@ -340,7 +386,7 @@ def commonhandles(self, redraw=1):
                 for h in hlist:
                     h.draw(v, cv, None)
 
-        if v.info["viewname"] == "3Dwindow" and  flagsmouse != 2064:
+        if v.info["viewname"] == "3Dwindow" and flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                 pass
             else:
@@ -353,6 +399,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.21  2007/03/30 04:40:02  cdunde
+#To stop console error when changing layouts in the Model Editor.
+#
 #Revision 1.20  2007/03/30 03:57:25  cdunde
 #Changed Model Editor's FillMesh function to individual view settings on Views Options Dialog.
 #
