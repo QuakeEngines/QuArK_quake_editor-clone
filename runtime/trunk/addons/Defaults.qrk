@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.321  2007/03/31 14:32:42  danielpharos
+//Should fix the Screen Center behaviour
+//
 //Revision 1.320  2007/03/30 03:57:25  cdunde
 //Changed Model Editor's FillMesh function to individual view settings on Views Options Dialog.
 //
@@ -1284,7 +1287,7 @@ QQRKSRC1
         Unfreeze Selection = "Alt+U"
         Make Detail = "Alt+D"
         AxisXYZ = "Alt+A"
-        Rebuild3D = "Tab"
+        Rebuild3D = "F2"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
