@@ -595,7 +595,7 @@ class LinearHandle(GenericHandle):
             g1 = 0
         if delta or (flags&MB_REDIMAGE):
             new = map(lambda obj: obj.copy(), self.mgr.list)
-            if not self.linoperation(new, delta, g1, view):          
+            if not self.linoperation(new, delta, g1, view):
                 if not flags&MB_REDIMAGE:
                     new = None
         else:
@@ -667,7 +667,7 @@ class LinSideHandle(LinearHandle):
         npos = self.pos+delta
         if g1:
              npos = aligntogrid(npos, 1)
-        normal = view.vector(self.pos).normalized
+        normal = view.vector("Z").normalized
         dir = self.dir
         v = (npos - self.center) / abs(self.pos - self.center)
         if self.inverse:
@@ -722,7 +722,7 @@ class LinCornerHandle(LinearHandle):
             cv.polygon([(int(p.x)-3,int(p.y)), (int(p.x),int(p.y)-3), (int(p.x)+3,int(p.y)), (int(p.x),int(p.y)+3)])
 
     def buildmatrix(self, delta, g1, view):
-        normal = view.vector(self.pos).normalized
+        normal = view.vector("Z").normalized
         texp4 = self.pos-self.center
         texp4 = texp4 - normal*(normal*texp4)
         npos = self.pos + delta
@@ -1879,6 +1879,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.41  2007/03/29 18:02:19  cdunde
+#Just some comment stuff.
+#
 #Revision 1.40  2007/03/05 19:44:05  cdunde
 #To remove print statements left in after testing.
 #
