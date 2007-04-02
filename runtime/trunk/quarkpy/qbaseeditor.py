@@ -898,7 +898,7 @@ class BaseEditor:
         if not self.linearbox:
             setup = quarkx.setupsubset(self.MODE, "Building")
             if setup["LinearWarning"]:
-                if quarkx.msgbox("Note: when this button is pressed, the normal handles around the objects in your map are replaced by pink handles that let you do 'linear mapping' operations.\n\n'Linear mapping' operations include rotations, zooms, and various distortions.\n\nClick again on this button to get the normal handles.", MT_INFORMATION, MB_OK|MB_CANCEL) != MR_OK:
+                if quarkx.msgbox(Strings[-105], MT_INFORMATION, MB_OK|MB_CANCEL) != MR_OK:
                     return
             setup["LinearWarning"] = ""
         self.linearbox = not self.linearbox
@@ -1008,6 +1008,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.38  2007/04/01 23:12:09  cdunde
+#To remove Model Editor code no longer needed and
+#improve Model Editor fillmesh color control when panning.
+#
 #Revision 1.37  2007/03/31 23:34:27  cdunde
 #To remove import of a plugins file for the Model Editor that was causing an error in the Map Editor.
 #
