@@ -15,6 +15,10 @@ $Id$
 6.5.0 Beta 2
 =============
 
+* [DanielPharos]: Fixed the rotation in linear mode.
+
+* [DanielPharos]: Fixed the Screen Center behaviour when creating new objects.
+
 * [cdunde]: Changed Model Editor's FillMesh function to individual view settings on Views Options Dialog
           - allowing each view to have its own fill option and color selection.
 
