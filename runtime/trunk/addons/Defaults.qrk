@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.322  2007/04/02 22:21:53  danielpharos
+//Changed the hotkey of the rebuild 3D views option to F2.
+//
 //Revision 1.321  2007/03/31 14:32:42  danielpharos
 //Should fix the Screen Center behaviour
 //
@@ -1159,6 +1162,7 @@ QQRKSRC1
       }
       DirectX:config =
       {
+        BackBufferFormat = "1"
         StencilBufferBits = "0"
         Form = "GeneralDirectX"
       }
@@ -6346,6 +6350,15 @@ QQRKSRC1
       Style = "3"
       L0: = {Typ="S" Txt="---- DirectX 9.0c hardware owners only ----"}
       L1: = {Typ="S" Bold="0" Txt="This renderer has not been fully implemented yet."}
+      BackBufferFormat: =
+      {
+        Typ = "CL"
+        Txt = "Back buffer format"
+        Values ="0"          $0D"1"       $0D"2"       $0D"3"       $0D"4"       $0D"5"
+        Items = "A2R10G10B10"$0D"A8R8G8B8"$0D"X8R8G8B8"$0D"A1R5G5B5"$0D"X1R5G5B5"$0D"R5G6B5"
+        Hint="The amount of bits per pixel. The higher, the better the quality."
+          $0D"Some formats might not be supported."
+      }
       StencilBufferBits: =
       {
         Typ = "CL"

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2007/03/29 21:02:08  danielpharos
+Made a Stencil Buffer Bits selection option
+
 Revision 1.16  2007/03/29 20:18:32  danielpharos
 DirectX interfaces should be unloading correctly now.
 Also added a bit of fog code.
@@ -283,6 +286,7 @@ var
   FogColor{, FrameColor}: TColorRef;
   Setup: QObject;
   S: String;
+  BackBufferFormat: Integer;
   StencilBufferBits: Integer;
 begin
   ClearScene;
@@ -364,6 +368,26 @@ begin
     Culling:=False;
   end;
 
+  S:=Setup.Specifics.Values['BackBufferFormat'];
+  if S<>'' then
+  begin
+    try
+      BackBufferFormat:=strtoint(S);
+      if (BackBufferFormat < 0) or (BackBufferFormat >= 1) then
+      begin
+        Log(LOG_WARNING, LoadStr1(6011), ['BackBufferFormat',S]);
+        BackBufferFormat := 0;
+      end;
+    except
+      Log(LOG_WARNING, LoadStr1(6011), ['BackBufferFormat',S]);
+      BackBufferFormat := 0;
+    end;
+  end
+  else
+  begin
+    Log(LOG_WARNING, LoadStr1(6012), ['BackBufferFormat','0']);
+    BackBufferFormat:=0;
+  end;
   S:=Setup.Specifics.Values['StencilBufferBits'];
   if S<>'' then
   begin
@@ -391,7 +415,23 @@ begin
     //DanielPharos: We need to check for changes, and force a rebuild in needed!
     PresParm.BackBufferHeight := 600;
     PresParm.BackBufferWidth := 800;
-    PresParm.BackBufferFormat := D3DFMT_A8R8G8B8;
+    case BackBufferFormat of
+    0:
+      PresParm.BackBufferFormat := D3DFMT_A2R10G10B10;
+    1:
+      PresParm.BackBufferFormat := D3DFMT_A8R8G8B8;
+    2:
+      PresParm.BackBufferFormat := D3DFMT_X8R8G8B8;
+    3:
+      PresParm.BackBufferFormat := D3DFMT_A1R5G5B5;
+    4:
+      PresParm.BackBufferFormat := D3DFMT_X1R5G5B5;
+    5:
+      PresParm.BackBufferFormat := D3DFMT_R5G6B5;
+    else
+      raise EErrorFmt(6400, ['BackBufferFormat']);
+    end;
+
     PresParm.BackBufferCount := 1;
     PresParm.MultiSampleType := D3DMULTISAMPLE_NONE;
     PresParm.MultiSampleQuality := 0;
@@ -405,7 +445,7 @@ begin
     1:
       PresParm.AutoDepthStencilFormat := D3DFMT_D32;
     else
-      raise EErrorFmt(6400, ['DepthBits']);
+      raise EErrorFmt(6400, ['StencilBufferBits']);
     end;
     PresParm.Flags := 0;
     PresParm.FullScreen_RefreshRateInHz := 0;
