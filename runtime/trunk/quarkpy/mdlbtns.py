@@ -84,7 +84,7 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
     undo = quarkx.action()
     delta = None
     if str(center) != "0":
-        recenter = MapOption("Recenter")
+        recenter = MapOption("Recenter", editor.MODE)
         if recenter:
             if str(center) != "+":
                 delta = editor.layout.screencenter()
@@ -341,6 +341,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.11  2007/03/31 14:32:43  danielpharos
+#Should fix the Screen Center behaviour
+#
 #Revision 1.10  2007/03/29 14:46:50  danielpharos
 #Fix a crash when trying to drop an item in a view.
 #

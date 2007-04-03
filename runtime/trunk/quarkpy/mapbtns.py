@@ -64,7 +64,7 @@ def dropitemsnow(editor, newlist, text=Strings[544], center=quarkx.vect(0,0,0)):
             return 1
     delta = None
     if str(center) != "0":
-        recenter = MapOption("Recenter")
+        recenter = MapOption("Recenter", editor.MODE)
         if recenter:
             if str(center) != "+":
                 delta = editor.layout.screencenter()
@@ -709,6 +709,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.26  2007/03/31 14:32:43  danielpharos
+#Should fix the Screen Center behaviour
+#
 #Revision 1.25  2007/03/22 22:53:28  danielpharos
 #Put in a workaround to prevent a crash when the texture size cannot be retrieved.
 #
