@@ -160,6 +160,58 @@ class ModelEditor(BaseEditor):
         mdlbtns.moveselection(self, text, delta)
 
 
+def setframefillcolor(self, view):
+    from qbaseeditor import currentview
+    if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+        componentnames = []
+        for item in self.Root.dictitems:
+            if item.endswith(":mc"):
+                componentnames.append(item)
+        componentnames.sort()
+        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+
+    comp = self.Root.currentcomponent
+    
+    if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
+        for v in self.layout.views:
+            if v.info["viewname"] == "XY":
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
+                    fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
+                    comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                else:
+                    comp.filltris = [(None,None)]*len(comp.triangles)
+
+            if v.info["viewname"] == "YZ":
+                fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
+                    comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                else:
+                    comp.filltris = [(None,None)]*len(comp.triangles)
+
+            if v.info["viewname"] == "XZ":
+                fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
+                if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
+                    comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                else:
+                    comp.filltris = [(None,None)]*len(comp.triangles)
+
+    if view.info["viewname"] == "editors3Dview":
+        currentview = view
+        fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
+            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+        else:
+            comp.filltris = [(None,None)]*len(comp.triangles)
+  
+    if view.info["viewname"] == "3Dwindow":
+        currentview = view
+        fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
+            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+        else:
+            comp.filltris = [(None,None)]*len(comp.triangles)
+
+
 def paintframefill(self, v, currentview):
 
     from qbaseeditor import flagsmouse, currentview
@@ -212,9 +264,12 @@ def paintframefill(self, v, currentview):
     except:
         pass
 
-    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
-        fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+
+    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
+        fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
         comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+    else:
+        comp.filltris = [(None,None)]*len(comp.triangles)
 
 
 def commonhandles(self, redraw=1):
@@ -282,6 +337,7 @@ def commonhandles(self, redraw=1):
                     else:
                         comp.filltris = [(None,None)]*len(comp.triangles)
                         v.repaint()
+
         try:
             if currentview.info["viewname"] == "3Dwindow":
                 comp = self.Root.currentcomponent
@@ -399,6 +455,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.22  2007/04/01 23:12:09  cdunde
+#To remove Model Editor code no longer needed and
+#improve Model Editor fillmesh color control when panning.
+#
 #Revision 1.21  2007/03/30 04:40:02  cdunde
 #To stop console error when changing layouts in the Model Editor.
 #

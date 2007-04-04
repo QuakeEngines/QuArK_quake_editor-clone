@@ -21,8 +21,9 @@ Info = {
    "quark":         "Version 6" }
 
 
-import quarkpy.qhandles   
+import quarkpy.qhandles
 from quarkpy.mdlmgr import *
+from quarkpy.mdleditor import setframefillcolor
 
 
 def lockxclick(m):
@@ -86,24 +87,12 @@ Lock_Z = qmenu.item("Lock &Z", lockzclick, "lock z axis movement")  # Commands m
 
 def clickedbutton(editor):
     "Rebuilds all the handles depending on active toolbar button"
+    "and deals with filling the model mesh and its color selection"
 
-    tb2 = editor.layout.toolbars["tb_AxisLock"]
-    if tb2.tb.buttons[3].state == 2:
-        for view in editor.layout.views:
-            type = view.info["type"]
-            if type == "3D":
-                view.handles = []
-                uniquesel = editor.layout.explorer.uniquesel
-                if editor.layout.explorer.sellist != [] and uniquesel == [] or uniquesel == "None":
-                    view.repaint()
-                    selectlist = editor.layout.explorer.sellist
-                    drawredfaces(view, selectlist)
-                else:
-                    editor.layout.explorer.selchanged()
-            else:
-                pass
-    else:
-        editor.layout.explorer.selchanged()
+    for view in editor.layout.views:
+        if view.info["viewname"] == "XY" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
+            setframefillcolor(editor, view)
+    editor.layout.explorer.selchanged()
 
 
 ### Start of 3D views Options Dialog ###
@@ -789,13 +778,13 @@ def OptionsViewsClick(m):
         self.src["fillmesh5"] = fivefillmesh
         self.src["fillColor5"] = fivefillColor
 
-        for view in editor.layout.views:
-            type = view.info["type"]
-            if type == "3D":
-                view.invalidate(1)
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+    #    for view in editor.layout.views:
+    #        type = view.info["type"]
+    #        if type == "3D":
+    #            view.invalidate(1)
+    #            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
-        clickedbutton(editor)
+    #    clickedbutton(editor)
 
     OptionsViewsDlg(quarkx.clickform, 'optionsviewsdlg', editor, setup, action)
 
@@ -862,6 +851,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.9  2007/04/01 19:27:19  cdunde
+# To remove line commented out.
+#
 # Revision 1.8  2007/03/30 03:57:25  cdunde
 # Changed Model Editor's FillMesh function to individual view settings on Views Options Dialog.
 #

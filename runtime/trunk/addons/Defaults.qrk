@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.324  2007/04/04 21:06:19  danielpharos
+//Changed a few descriptions.
+//
 //Revision 1.323  2007/04/03 13:08:46  danielpharos
 //Added a back buffer format selection option.
 //
@@ -2939,7 +2942,7 @@ QQRKSRC1
       Display:config =
       {
         NormalVector = '40'
-        GridStep = '32'
+        GridStep = '16'
         GridMinStep = '5'
         MapLimit = '4096 4096 4096'
         GridHighlight = "8"
@@ -3049,7 +3052,7 @@ QQRKSRC1
       Display:config =
       {
         NormalVector = '40'
-        GridStep = '16'
+        GridStep = '1'
         GridMinStep = '5'
         MapLimit = '512 512 512'
         GridHighlight = "8"

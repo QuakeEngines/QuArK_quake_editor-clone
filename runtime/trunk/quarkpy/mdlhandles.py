@@ -89,12 +89,13 @@ class VertexHandle(qhandles.GenericHandle):
 
     def draw(self, view, cv, draghandle=None):
 
-        from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
+        from qbaseeditor import flagsmouse, currentview # To stop all drawing, causing slowdown, during a zoom.
 
         if (flagsmouse == 520 or flagsmouse == 1032) and draghandle is not None: return # LMB pressed or dragging model mesh handle.
         if flagsmouse == 528 or flagsmouse == 1040: return # RMB pressed or dragging to pan (scroll) in the view.
 
         if view.info["viewname"] == "editors3Dview":
+            if (flagsmouse == 1048 or flagsmouse == 1056) and currentview.info["viewname"] != "editors3Dview": return # Doing zoom in a 2D view, stop drawing the Editors 3D view handles.
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
                 return
         if view.info["viewname"] == "XY":
@@ -800,6 +801,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.28  2007/03/22 20:14:15  cdunde
+#Proper selection and display of skin textures for all model configurations,
+#single or multi component, skin or no skin, single or multi skins or any combination.
+#
 #Revision 1.27  2007/03/10 00:03:27  cdunde
 #Start of code to retain selection in Model Editor when making a Skin-view drag.
 #

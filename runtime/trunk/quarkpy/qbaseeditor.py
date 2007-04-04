@@ -778,7 +778,7 @@ class BaseEditor:
 
                     if isinstance(self, mdleditor.ModelEditor):
 
-                        if (flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040):
+                        if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040):
                             if view.info["viewname"] == "skinview":
                                 pass
                             else:
@@ -786,14 +786,12 @@ class BaseEditor:
                                     if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
                                         pass
                                     else:
-                                        for view in self.layout.views:
-                                            if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
-                                                pass
-                                            else:
-                                                view.repaint()
+                                        if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
+                                            mdleditor.paintframefill(self, view, currentview)
                                         return
                                 else:
-                                    pass
+                                    if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
+                                        mdleditor.setframefillcolor(self, view)
 
                         if flagsmouse == 2064:
                             if view.info["viewname"] == "skinview":
@@ -1008,6 +1006,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.39  2007/04/02 22:12:21  danielpharos
+#Moved one line to the dictionnary.
+#
 #Revision 1.38  2007/04/01 23:12:09  cdunde
 #To remove Model Editor code no longer needed and
 #improve Model Editor fillmesh color control when panning.

@@ -1181,7 +1181,19 @@ class FreeZoomDragObject(DragObject):
         if scale<self.AbsoluteMinimum: scale=self.AbsoluteMinimum
         elif scale>self.AbsoluteMaximum: scale=self.AbsoluteMaximum
         setviews(self.viewlist, "scale", scale)
-        self.view.repaint()
+
+        ### To enable Model Editor multiple meshfill color selection zooming.
+        try:
+            if (self.view.info["viewname"] == "XY" or self.view.info["viewname"] == "XZ" or self.view.info["viewname"] == "YZ"):
+                quarkx.clickform = self.view.owner
+                editor = mapeditor()
+                import mdleditor
+                if isinstance(editor, mdleditor.ModelEditor):
+                    mdleditor.commonhandles(editor)
+            else:
+                self.view.repaint()
+        except:
+            self.view.repaint()
 
 #
 # Scroll the view while the mouse moves.
@@ -1879,6 +1891,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.42  2007/04/02 22:18:22  danielpharos
+#Fixed the rotation in linear mode.
+#
 #Revision 1.41  2007/03/29 18:02:19  cdunde
 #Just some comment stuff.
 #

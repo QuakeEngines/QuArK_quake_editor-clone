@@ -116,6 +116,22 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
             view.scrollto(x, y)
             try:
                 if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
+                    if view.info["viewname"] == "editors3Dview":
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
+                            comp = editor.Root.currentcomponent
+                            fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+                            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                        else:
+                            comp.filltris = [(None,None)]*len(comp.triangles)
+
+                    if view.info["viewname"] == "3Dwindow":
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
+                            comp = editor.Root.currentcomponent
+                            fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+                            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                        else:
+                            comp.filltris = [(None,None)]*len(comp.triangles)
+
                     view.repaint()
                     return scroller
             except:
@@ -136,10 +152,16 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
                 editor = saveeditor
                 if editor is None:
                     pass
+            ### This is the 2D views Textured mode scroller section
             if (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056) and view.viewmode == "tex":
+                if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
+                    quarkpy.mdleditor.paintframefill(editor, view, currentview)
                 view.repaint()
+            ### This is the 2D views WireFrame mode scroller section
             else:
-                view.update()
+                if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
+                    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+             #   view.update()
         return scroller
     quarkpy.qhandles.MakeScroller = MakeScroller
 
@@ -199,6 +221,10 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.6  2007/03/04 19:37:03  cdunde
+#To stop unneeded redrawing of handles in other views
+#when scrolling in a Model Editor's 3D view.
+#
 #Revision 1.5  2007/01/30 06:37:37  cdunde
 #To get the Skin-view to scroll without having to redraw all the handles in every view.
 #Increases response time and drawing speed.
