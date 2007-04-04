@@ -7833,6 +7833,16 @@ QQRKSRC1
         txt = "&"
         hint = "use -1 -1 -1 1 as the argument"
       }
+      _zero_percent_distance: =
+      {
+        txt = "&"
+        hint = "use 0 as the argument"
+      }
+      _fifty_percent_distance: =
+      {
+        txt = "&"
+        hint = "use 0 as the argument"
+      }
     }
     light_environment:form =
     {
@@ -7920,6 +7930,16 @@ QQRKSRC1
       {
         txt = "&"
         hint = "use -1 -1 -1 1 as the argument"
+      }
+      _zero_percent_distance: =
+      {
+        txt = "&"
+        hint = "use 0 as the argument"
+      }
+      _fifty_percent_distance: =
+      {
+        txt = "&"
+        hint = "use 0 as the argument"
       }
     }
     light_dynamic:form =
