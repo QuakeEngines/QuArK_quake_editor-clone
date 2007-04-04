@@ -2,8 +2,8 @@ title: External editors
 author: Decker
 
 <img align=right>externaleditors.png</img>
-You can select there your preferred program for editing various file types that
-itself QuArK won't let you edit.
+Here you can select your preferred program for editing various file types that
+QuArK itself won't let you edit.
 
 Each box can be empty (no program), or <b>&lt;open&gt;</b> to call Windows'
 default programs for this file type, or a complete program path to call a
