@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2
 =============
 
+* [cdunde]: Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+
 * [DanielPharos]: Fixed the rotation in linear mode.
 
 * [DanielPharos]: Fixed the Screen Center behaviour when creating new objects.
