@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.323  2007/04/03 13:08:46  danielpharos
+//Added a back buffer format selection option.
+//
 //Revision 1.322  2007/04/02 22:21:53  danielpharos
 //Changed the hotkey of the rebuild 3D views option to F2.
 //
@@ -6276,7 +6279,7 @@ QQRKSRC1
       L1: = {Typ="S" Txt="---- additional options ----"}
       Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
       Resolution: = {
-        Txt="Resolution at which Glide renders the image"
+        Txt="Resolution"
         Typ="CL"
         Items  = "320x200" $0D "400x300" $0D "640x480" $0D "800x600" $0D "1024x768" $0D "1280x1024" $0D "1600x1200"
         Values =       "0" $0D      "15" $0D       "7" $0D       "8" $0D       "12" $0D        "13" $0D        "14"
@@ -6311,7 +6314,7 @@ QQRKSRC1
       L2: = {Typ="S" Bold="0" Txt="configuration page for each game."}
       Sep0: = {Typ="S" Txt = ""}
       L3: = {Typ="S" Txt="---- additional options ----"}
-      Bilinear: = { Typ="X" Txt="Bilinear Filtering" Cap="Enabled" }
+      Bilinear: = { Typ="X" Txt="Bilinear filtering" Cap="Enabled" }
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" Hint="Reduces the flickering noticed when the view redraws."}
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
       AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
@@ -6323,7 +6326,7 @@ QQRKSRC1
       VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it."
                                                          $0D"For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1;"
                                                          $0D"otherwise, the textured images are smaller than the wireframes." }
-      GLLists: = { Typ="X" Txt="Display Lists" Cap="Enabled" Hint="Speeds up rendering. However, slight slowdowns might be noticed when changes to the map/model are made,"
+      GLLists: = { Typ="X" Txt="Display lists" Cap="Enabled" Hint="Speeds up rendering. However, slight slowdowns might be noticed when changes to the map/model are made,"
                                                                $0D"because the list then needs to be rebuild with the updated information." }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
                                                              $0D"This doesn't apply to transparent faces." }
@@ -6337,7 +6340,7 @@ QQRKSRC1
             $0D"(Lighting needs to be enabled for this options to be effective)"
       }
       MovingQuality: = {
-        Txt="Quality while moving"
+        Txt="Lighting quality while moving"
         Typ="CL"
         Items  = "OpenGL lighting" $0D "Basic lighting" $0D "No lighting"
         Values =     "0"        $0D     "1"       $0D     "2"
@@ -6354,8 +6357,18 @@ QQRKSRC1
       {
         Typ = "CL"
         Txt = "Back buffer format"
-        Values ="0"          $0D"1"       $0D"2"       $0D"3"       $0D"4"       $0D"5"
-        Items = "A2R10G10B10"$0D"A8R8G8B8"$0D"X8R8G8B8"$0D"A1R5G5B5"$0D"X1R5G5B5"$0D"R5G6B5"
+        Values ="0"
+             $0D"1"
+             $0D"2"
+             $0D"3"
+             $0D"4"
+             $0D"5"
+        Items = "A2R10G10B10 (32 bits)"
+             $0D"A8R8G8B8 (32 bits)"
+             $0D"X8R8G8B8 (32 bits)"
+             $0D"A1R5G5B5 (16 bits)"
+             $0D"X1R5G5B5 (16 bits)"
+             $0D"R5G6B5 (16 bits)"
         Hint="The amount of bits per pixel. The higher, the better the quality."
           $0D"Some formats might not be supported."
       }
