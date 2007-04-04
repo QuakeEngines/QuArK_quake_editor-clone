@@ -12,11 +12,14 @@ to be delayed till 6.6, or never to happen at all.
 <LI>OpenGL in all 3D views (DanielPharos)
 <br>status: done!
 
+<LI>Get the model editor back on track (cdunde)
+<br>status: well underway
+
 <LI>Fully working Direct3D renderer (DanielPharos)
 <br>status: envisioned
 
-<LI>Get the model editor back on track (cdunde)
-<br>status: underway
+<LI>OpenGL shader-rendering (DanielPharos)
+<br>status: envisioned
 
 <LI>Left-overs from 6.4
 <br>status: ...
