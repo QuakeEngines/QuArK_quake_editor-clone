@@ -1,22 +1,26 @@
 
 ; QuArK installer x.x.x
-; HomePage: http://dynamic.gamespy.com/~quark/
-; Version:  NSIS 2.24
-; Author:  Fredrick Vamstad & DanielPharos
+; HomePage: http://quark.planetquake.gamespy.com/
+; Version:  NSIS 2.25
+; Author:  Fredrick Vamstad, DanielPharos & cdunde
 ; Date:     18 Aug. 2005 & 5 January 2007
 ; nullsoft NSIS installer program available at:
 ;   http://nsis.sourceforge.net
 ;
-; Last update 18 March. 2007 - DanielPharos
+; Last update April 5, 2007 - cdunde
 ;
 ; Setup and Use to create QuArK NSIS installer:
 ; ============================================
-; 1) Change " BUILDDIR " (line 25) below to the directory containing the runtime files to use (including the executable and help files!).
-; 2) Change " INSTALLEREXENAME " name (line 26) below to the name of the installer executable file.
-; 3) Change " PRODUCT_VERSION " (line 28) below to match the new version number.
-; 4) Click on NSIS.exe to start program, select "MakeNSISW (compiler interface)".
-; 5) Drag this file, QuArK.nsi, into the compiler window, or use the "File > Load Script" method to open this file.
-; 6) The finished QuArK installer will be place in the same location as this file, ready for distrubution!
+; 1) Change " PRODUCT_VERSION " (line 33) below to match the new version number.
+; 2) Change "PROGRAMFILES" (line 42) below.
+; 3) Change " INSTALLEREXENAME " name (line 31) below to the name of the installer executable file.
+; 4) Create a folder named " QuArK_installer_files " in your C:\ directory.
+; 5) Place the QuArK.exe, all runtime files and the help folder in the above folder.
+; 6) Create a folder named " QuArK_installer_splash_image " in your C:\ directory.
+; 7) Copy the sinstall_header.bmp and install_splash.bmp files from utils\nsis-dist-tools folder to the above folder.
+; 8) Click on NSIS.exe to start program, select "MakeNSISW (compiler interface)".
+; 9) Drag this file, QuArK.nsi, into the compiler window, or use the "File > Load Script" method to open this file.
+; 10) The finished QuArK installer will be place in the same location as this file, ready for distrubution!
 
 ; MUI 1.76 compatible ------
 !include "MUI.nsh"
@@ -24,9 +28,9 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 !define BUILDDIR "C:\QuArK_installer_files"
 !define SPLASHDIR "C:\QuArK_installer_splash_image"
-!define INSTALLEREXENAME "quark-win32-6.5.0Beta1.exe"
+!define INSTALLEREXENAME "quark-win32-6.5.0Beta2.0.exe"
 !define PRODUCT_NAME "QuArK"
-!define PRODUCT_VERSION "6.5.0 Beta 1"
+!define PRODUCT_VERSION "6.5.0 Beta 2.0"
 !define PRODUCT_WEB_SITE "http://quark.planetquake.gamespy.com/"
 !define PRODUCT_WEB_FORUM "http://www.dark-forge.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\QuArK.exe"
@@ -35,7 +39,7 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "${INSTALLEREXENAME}"
-InstallDir "$PROGRAMFILES\QuArK"
+InstallDir "$PROGRAMFILES\QuArK 6.5.0 Beta 2.0"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
