@@ -1,0 +1,27 @@
+[[advapi32.dll]]
+
+[RegCreateKey,RegCreateKeyA,RegCreateKeyW]
+RegCreateKey creates the specified registry key. If the key already exists in the registry,
+the function opens it.
+The returned key handle must be closed with RegCloseKey when no longer needed.
+
+[RegCreateKeyEx,RegCreateKeyExA,RegCreateKeyExW]
+RegCreateKeyEx creates the specified registry key. If the key already exists in the registry,
+the function opens it.
+The returned key handle must be closed with RegCloseKey when no longer needed.
+
+[RegOpenKey,RegOpenKeyA,RegOpenKeyW]
+RegOpenKey opens the specified registry key.
+The returned key handle must be closed with RegCloseKey when no longer needed.
+
+[RegOpenKeyEx,RegOpenKeyExA,RegOpenKeyExW]
+RegOpenKeyEx opens the specified registry key.
+The returned key handle must be closed with RegCloseKey when no longer needed.
+
+[RegConnectRegistry,RegConnectRegistryA,RegConnectRegistryW]
+RegConnectRegistry establishes a connection to a predefined registry handle on another computer.
+The returned key handle must be closed with RegCloseKey when no longer needed.
+
+
+
+
