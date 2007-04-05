@@ -28,6 +28,9 @@ It will then re-center that position to the center of the view to start rotating
 Unlike the 'Original 3Dview rotation' method, this would allow close up detail rotation without
 the model jumping back to some other location as in all of the above cases.
 
+<i>Draw handles while rotating </i>&nbsp;: This allows the models vertex handles (if active) to be drawn during
+rotation, but this will slow down the redrawing process and can make rotation seem jerky.
+
 <i>Paste objects at screen center </i>&nbsp;: Check this if you want objects that you
 paste into the map-view, appear in the center of the current map-view. Uncheck
 it, and it will paste it at the exact position as the original.
