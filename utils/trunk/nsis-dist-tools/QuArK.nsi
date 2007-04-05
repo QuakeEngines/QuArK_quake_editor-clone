@@ -22,7 +22,8 @@
 !include "MUI.nsh"
 SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
-!define BUILDDIR "C:\QuArK_installer_files\"
+!define BUILDDIR "C:\QuArK_installer_files"
+!define SPLASHDIR "C:\QuArK_installer_splash_image"
 !define INSTALLEREXENAME "quark-win32-6.5.0Beta1.exe"
 !define PRODUCT_NAME "QuArK"
 !define PRODUCT_VERSION "6.5.0 Beta 1"
@@ -46,12 +47,12 @@ ShowUnInstDetails show
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install-blue.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-blue.ico"
 ; Loads the splash window
-!define MUI_WELCOMEFINISHPAGE_BITMAP "install_splash.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "install_splash.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "${SPLASHDIR}\install_splash.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "${SPLASHDIR}\install_splash.bmp"
 ; Loads the header picture
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "install_header.bmp"
-!define MUI_HEADERIMAGE_UNBITMAP "install_header.bmp"
+!define MUI_HEADERIMAGE_BITMAP "${SPLASHDIR}\install_header.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "${SPLASHDIR}\install_header.bmp"
 
 ; Language Selection Dialog Settings
 !define MUI_LANGDLL_ALWAYSSHOW
