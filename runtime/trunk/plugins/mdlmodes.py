@@ -811,8 +811,8 @@ class AxisLockBar(ToolBar):
         LockXBtn = qtoolbar.button(lockxclick, "Lock X Axis", ico_mdled, 0)  # tb_AxisLock[0] button
         LockYBtn = qtoolbar.button(lockyclick, "Lock Y Axis", ico_mdled, 1)  # tb_AxisLock[1] button
         LockZBtn = qtoolbar.button(lockzclick, "Lock Z Axis", ico_mdled, 2)  # tb_AxisLock[2] button
-        viewsDialogbtn = qtoolbar.button(DialogViewsClick, "Views Options\nDialog Input\n(opens the input box)||Views Options Dialog Input:\n\nThis will open its own 'Dialog Box' and is laid out in the same order as the 'Display tool-palette'. \n\nThis dialog gives you the ability to customize every view that QuArK provides and does so independently from one view to the next.", ico_mdled, 3, infobaselink="intro.terraingenerator.selection.html#options3d")
-        Colorsbtn = qtoolbar.button(ColorsClick, "Color Options\nfor quick line and\nvertex color changes||Color Options:\n\nThis will open the 'Configuration Model Editor Colors' selection dialog.\n\nThis dialog allows you to quickly change a variety of line and vertex color settings for easer viewing as needed.", ico_mdled, 4, infobaselink="intro.terraingenerator.selection.html#options3d")
+        viewsDialogbtn = qtoolbar.button(DialogViewsClick, "Views Options\nDialog Input\n(opens the input box)||Views Options Dialog Input:\n\nThis will open its own 'Dialog Box' and is laid out in the same order as the 'Display tool-palette'. \n\nThis dialog gives you the ability to customize every view that QuArK provides and does so independently from one view to the next.", ico_mdled, 3, infobaselink="intro.modeleditor.toolpalettes.viewselection.html#viewoptions")
+        Colorsbtn = qtoolbar.button(ColorsClick, "Color Options\nfor quick line and\nvertex color changes||Color Options:\n\nThis will open the 'Configuration Model Editor Colors' selection dialog.\n\nThis dialog allows you to quickly change a variety of line and vertex color settings for easer viewing as needed.", ico_mdled, 4, infobaselink="intro.modeleditor.toolpalettes.viewselection.html#coloroptions")
         layout.buttons.update({"lockx": LockXBtn, "locky": LockYBtn,"lockz": LockZBtn})
 
         if quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"]=="1":
@@ -851,6 +851,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.10  2007/04/04 21:34:17  cdunde
+# Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+#
 # Revision 1.9  2007/04/01 19:27:19  cdunde
 # To remove line commented out.
 #
