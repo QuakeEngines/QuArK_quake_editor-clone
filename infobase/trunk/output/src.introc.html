@@ -1,0 +1,258 @@
+
+<html>
+<head>
+  <title>Introduction to the source</title>
+  <meta name="Description" content="QuArK Information Database - Page: 4.3.&nbsp;Introduction to the source">
+  <meta name="Keywords" content="QuArK InfoBase Quake Army Knife QRK QKM Python PY Map Editor Hexen Heretic Half-Life Sin Kingpin Soldier-of-Fortune Star-Trek-Voyager Elite-Force">
+</head>
+
+<link rel=stylesheet href="standard.css" type="text/css">
+
+<body>
+<a name="__top__"></a>
+<table width=100% border=0 cellspacing=0>
+  <tr>
+    <td width=213>
+      <a href="http://www.planetquake.com/quark"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
+    </td>
+    <td width=70% align=center>
+      <div class="topheadline">Introduction to the source</div>
+      <div class="sm">Updated&nbsp;02 Mar 2001</div>
+    </td>
+    <td width=30% valign=bottom nowrap>
+      Upper&nbsp;levels:<br>-&nbsp;<a href="index.html">QuArK&nbsp;Information&nbsp;Base</a><br>-&nbsp;<a href="src.html">4.&nbsp;The&nbsp;Source&nbsp;Code</a><br>
+    </td>
+  </tr>
+</table>
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=99%>
+      <p class="headline">&nbsp;4.3.&nbsp;Introduction to the source</p>
+    </td>
+    <td width=1% align=right nowrap>
+      &nbsp;[&nbsp;<span class="navenable"><a href="src.intro.html">Prev</a></span>&nbsp;-&nbsp;<span class="navenable"><a href="src.html">Up</a></span>&nbsp;-&nbsp;<span class="navenable"><a href="src.struct.html">Next</a></span>&nbsp;]&nbsp;
+    </td>
+  </tr>
+</table>
+<table border=0 width=100% cellspacing=10><tr><td>
+</td></tr></table>
+<br>
+
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=100%>
+      <p class="subheadline">&nbsp;Index</p>
+    </td>
+  </tr>
+</table>
+<ul class="index">
+  <li>- <a href="#delphiintro">Delphi for C(++) programmers</a>&nbsp;<span class="added">(02 Mar 2001)</span>
+  <li>- <a href="#delphiperse">Delphi Per Se</a>&nbsp;<span class="added">(02 Mar 2001)</span>
+  <li>- <a href="#lexicon">French-to-English lexicon</a>&nbsp;<span class="added">(02 Mar 2001)</span>
+</ul>
+<br>
+
+
+<a name="delphiintro"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Delphi for C(++) programmers</p>
+      </td>
+      <td align=right>
+        <font size=-2>Tiglari&nbsp;-&nbsp;02 Mar 2001</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p>Delphi is an system built on Object Pascal.  The difference
+between O.P. and C++ is mostly syntax, but there are some
+substantive matters:
+</p><p><ul>
+<li>case doesn't matter: string = String
+<li>@variable gives the address of variable.
+<li>The OP class system is based on RTTI, and has inherently
+    greater flexibility than C++ (tho a lot less that Python).
+    See e.g. Armin's remarks in source\prog\QObjects.txt
+<li>Casts are done with what looks like a C++ constructor.
+    so if you want to cast a QObject as QFileObject, you write:
+    &nbsp;<tt>QFileObject(Obj)</tt>&nbsp; where Obj is your QObject.
+<li>OP constructors are by convention called Create, but
+    can be called anything.  So MyClass.Create('bozo') would
+    probably be a constructor.
+<li>A significant innovation is `properties' (basically
+    the same thing as `ties' in PERL).  A property is a class
+    attribute that looks like an ordinary data member
+    externally, but has associated with it &nbsp;<tt>read</tt>&nbsp; and &nbsp;<tt>write</tt>&nbsp;
+    methods that are invoked at the appropriate times.
+    So something like: &nbsp;<tt>thing.size := 10;</tt>&nbsp;
+    can set off an arbitrarily large amount of processing,
+    if &nbsp;<tt>size</tt>&nbsp; is a property of &nbsp;<tt>thing</tt>&nbsp;'s class.  Convenient
+    for coding, but sometimes deceptive when reading the
+    results ...
+<li>HORRIBLE GOTCHA:  in an &nbsp;<tt>if begin ... end else ...</tt>&nbsp;
+    statmement, if you put a semicolon after end, it will
+    compile but the else block will never execute.
+    [Note by Armin: wrong, a ';' before an 'else' will never compile]
+    The semicolon rules are different than in C(++).
+    Semicolons suck.
+<li>OP doesn't use header files.  The essential work of
+    C(++) .h files is done in the &nbsp;<tt>interface</tt>&nbsp; section of
+    a module, whereas the work of the .c(pp) files is done
+    in the following &nbsp;<tt>implementation</tt>&nbsp; section.  It wouldn't
+    be a bad a idea to read the delphi help on &nbsp;<tt>interface</tt>&nbsp;,
+    &nbsp;<tt>implementation</tt>&nbsp; and &nbsp;<tt>initialization</tt>&nbsp;.
+<li>programs, modules, etc end with &nbsp;<tt>end.</tt>&nbsp;  This also sucks.
+<li>In spite of the semicolons, in general, as far as I can
+    make out, O.P. has everything you need to make real programs,
+    without the annoying limitiations of 'textbook Pascal'.
+</ul>
+</p>
+  </td></tr></table>
+  <br>
+
+<a name="delphiperse"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Delphi Per Se</p>
+      </td>
+      <td align=right>
+        <font size=-2>Tiglari&nbsp;-&nbsp;02 Mar 2001</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p>The basic idea of delphi is 'components'.  These are modules
+that are installed into the IDE (by a command like
+Component|Install), where they appear as icons on as
+'component palette'.  Installed components can be clicked on
+and dropped into forms, or they can be invoked 'texturally'
+just by naming them in the declarings of a module.
+</p><p>There are squillions of components available on the internet,
+free, share &amp; commercial.  It seems to work well (about
+as smooth as PERL modules, modulo the advantages of the
+visual IDE).
+</p><p>As delphi versions increment, the IDE gets more sophisticated,
+but if you start with delphi v2 (occasionally available for free
+from various sources), the shift to v5 (current) is not
+daunting.  I think I like it better than Borland C++ 4
+or DevStudio 5.
+</p>
+  </td></tr></table>
+  <br>
+
+<a name="lexicon"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;French-to-English lexicon</p>
+      </td>
+      <td align=right>
+        <font size=-2>Tiglari / Armin&nbsp;-&nbsp;02 Mar 2001</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<pre>
+
+
+
+Aucun       - none
+
+Ajouter     - to add
+
+
+
+Charger     - to load
+
+
+
+Dans        - in (SuivantDansGroupe = following in group)
+
+Deplacer    - to move
+
+
+
+Enfant      - child
+
+Enregistrer - to save
+
+Entete      - header
+
+Etat        - state (TEtatObjet = object state type)
+
+
+
+Fichier     - file
+
+Frere       - brother (ModifeFrere = brother modified)
+
+
+
+Lien        - link (LienFichierQObject = File Link QObject)
+
+Lire        - to read
+
+
+
+Modifier    - to modify
+
+
+
+Ouvrir      - to open
+
+
+
+Retirer     - to remove
+
+
+
+SousElement - sub-element (Sous = under)
+
+SousSelVide - empty sub-selection
+
+Suivant     - following (SuivantDansGroupe = following in group)
+
+SurDisque   - on-disk (Sur = on, over)
+
+
+
+Tout, Toute - all
+
+Taille      - size
+
+
+
+Vide        - empty
+
+<p></pre>
+</p>
+  </td></tr></table>
+  <br>
+
+<br>
+
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=99% align=middle>
+      <p class="sm">
+        GNU General Public License by The QuArK (Quake Army Knife) Community - <a href="http://www.planetquake.com/quark">http://www.planetquake.com/quark</a>
+      </p>
+    </td>
+    <td width=1% align=right nowrap>
+      &nbsp;[&nbsp;<span class="navenable"><a href="src.intro.html">Prev</a></span>&nbsp;-&nbsp;<a href="#__top__">Top</a>&nbsp;-&nbsp;<span class="navenable"><a href="src.struct.html">Next</a></span>&nbsp;]&nbsp;
+    </td>
+  </tr>
+</table>
+</body>
+</html>

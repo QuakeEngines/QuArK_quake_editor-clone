@@ -1,0 +1,442 @@
+
+<html>
+<head>
+  <title>Half-Life 2</title>
+  <meta name="Description" content="QuArK Information Database - Page: 1.3.2.1.2.&nbsp;Half-Life 2">
+  <meta name="Keywords" content="QuArK InfoBase Quake Army Knife QRK QKM Python PY Map Editor Hexen Heretic Half-Life Sin Kingpin Soldier-of-Fortune Star-Trek-Voyager Elite-Force">
+</head>
+
+<link rel=stylesheet href="standard.css" type="text/css">
+
+<body>
+<a name="__top__"></a>
+<table width=100% border=0 cellspacing=0>
+  <tr>
+    <td width=213>
+      <a href="http://www.planetquake.com/quark"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
+    </td>
+    <td width=70% align=center>
+      <div class="topheadline">Half-Life 2</div>
+      <div class="sm">Updated&nbsp;27 Dec 2006</div>
+    </td>
+    <td width=30% valign=bottom nowrap>
+      Upper&nbsp;levels:<br>-&nbsp;<a href="index.html">QuArK&nbsp;Information&nbsp;Base</a><br>-&nbsp;<a href="intro.html">1.&nbsp;Introduction&nbsp;to&nbsp;QuArK</a><br>-&nbsp;<a href="intro.configuration.html">1.3.&nbsp;Configuration&nbsp;of&nbsp;QuArK</a><br>-&nbsp;<a href="intro.configuration.games.html">1.3.2.&nbsp;Games</a><br>-&nbsp;<a href="intro.configuration.games.specificgames.html">1.3.2.1.&nbsp;Specific&nbsp;games</a><br>
+    </td>
+  </tr>
+</table>
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=99%>
+      <p class="headline">&nbsp;1.3.2.1.2.&nbsp;Half-Life 2</p>
+    </td>
+    <td width=1% align=right nowrap>
+      &nbsp;[&nbsp;<span class="navenable"><a href="intro.configuration.games.specificgames.doom3.html">Prev</a></span>&nbsp;-&nbsp;<span class="navenable"><a href="intro.configuration.games.specificgames.html">Up</a></span>&nbsp;-&nbsp;<span class="navenable"><a href="intro.configuration.games.specificgames.quake4.html">Next</a></span>&nbsp;]&nbsp;
+    </td>
+  </tr>
+</table>
+<table border=0 width=100% cellspacing=10><tr><td>
+
+
+</td></tr></table>
+<br>
+
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=100%>
+      <p class="subheadline">&nbsp;Index</p>
+    </td>
+  </tr>
+</table>
+<ul class="index">
+  <li>- <a href="#config">Configuration</a>&nbsp;<span class="added">(27 Dec 2006)</span>
+  <li>- <a href="#misc">Misc. Info.</a>&nbsp;<span class="added">(09 Mar 2006)</span>
+  <li>- <a href="#texture">Custom Textures</a>&nbsp;<span class="added">(09 Mar 2006)</span>
+</ul>
+<br>
+
+
+<a name="config"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Configuration</p>
+      </td>
+      <td align=right>
+        <font size=-2>cdunde/PuG&nbsp;-&nbsp;27 Dec 2006</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p>In this short tutorial we will be showing you how to quickly setup Quark to compile maps
+for Valve's Half-Life2. Please remember to be able to create maps for Half-Life2, or any
+of its modifications you must have the latest version of the <a href="http://collective.valve-erc.com/index.php?doc=1047496381-02062100">Steam SDK pack</a> downloaded
+and installed for the necessary <a href="glossary.html#b">build tools</a> &amp; materials.
+</p><p>You must also give QuArK access to two .dll files from one of your Half-Life2 SteamApps sub-directories. The names of these files are tier0.dll and vstdlib.dll.
+</p><p>There are two way to handle this.
+</p><p>1) <b><u>Copy method</u></b>:<br>
+Copy the two .dll files, from one of your Half-Life2 SteamApps sub-directories to your main QuArK installation folder. You can find these files by using their names for a file search.
+</p><p>2) <b><u>Set system path</u></b>:<br>
+This method is a little more involved but the advantage is, when either of these files are updated you will be working with the latest version. And if you reinstall or upgrade QuArK, you do not need to go through this part again setting it up. See the <a href="intro.configuration.games.specificgames.hl2.html#misc">Misc. Info.</a> selection below on how to set the system path.
+</p><p>Also, when ever working in QuArK's Half-Life2 game mode you must first start Steam before you start QuArK to avoid unnecessary error messages and possibly QuArK shutting down completely. So please do both of these steps now before continuing on with this setup tutorial.
+</p><p><table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Part 1 – Setting up QuArK to work with Half-Life2</b>
+</p><p>In this section we will quickly go over how to setup Quark to work with Half-Life2.
+To start with load up Quark, you should be greeted with the 'Quark Explorer' panel.
+The Quark Explorer allows you to define which game environment you wish to work in,
+as well as doing many other things.
+</p><p>First we need to select the game we want to map for. We do this by simply going
+to the 'Games' button located on the top right of the Explorer panel, once pressed it
+will present you with a drop list of all the currently available games, select
+Half-Life2 as shown in the screen shot to the right.
+</p><p>Next we need to setup Quark to work with the HL2 compiler, to do so go back to the
+'Games' button and press the 'Configuration' button at the bottom of the list. 
+</p><p>Once selected a new window will be opened called 'Configuration', making sure you have
+Half-Life2 selected on the left navigation panel, (under the Games Tab) as we now need
+to fill out some of the necessary game settings on the right of the Configuration panel. 
+</p><p>To start with we must select which of the Half-Life2 games we wish to work with. To do
+so simply use the drop down menu to the right of the 'Half-Life2 command-line' setting
+(under the Game Settings tab). This should give you a selection of three, for this
+tutorials we are going to be working with Counter-Strike: Source, so select:
+</p><p>&quot;C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console ....&quot;
+</p><p>You must also set the <b>Steam App Id</b> to 240 as well or QuArK will not be able to start the game after a build is done.
+</p><p>So how do I know which one to select?<br>
+Each Half-Life2 program/mod has an specific ID number<br>
+&amp; each ID number is located within the command line:<br>
+<ul>
+<li>220 – Half-Life2
+<li>240 – Counter-Strike: Source   
+<li>320 – Half-Life2 Death Match
+</ul>
+</td>
+<td>
+<img valign=top align=right src="intro.configuration.games.specificgames.hl2.hl2_config1.png">
+</td></tr>
+</table>
+</p><p><table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+(Tip: You may also want to increase the width &amp; height of the Half-Life2 window for when we use the 'Run Half-Life2' option later on in the tutorial<br>
+e.g. '-window -width 1280 -height 1024.)
+</p><p>The rest of the compiler settings are relatively straight forward to setup, though you will need to know the location of where you
+have installed Steam. If you use its default setting it should be as shown on the &quot;Steam Directory&quot; line below, or:
+<ul>
+<li>C:/Program Files/Valve/Steam
+</ul>
+For the rest of the settings for the compiler just use the screen shot below to go by. If you are unsure on any of the settings hold your mouse cursor over the white box and it will come up with a quick example.
+</td></tr>
+<tr><td valign=top align=middle>
+<img border=1 valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_config2.png">
+</td></tr>
+</table>
+</p><p><table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=middle>
+<tr><td>
+Once you have finished setting Quark to work with the HL2 compiler, simply hit the 'Apply' button, and then press the 'OK' button to<br>
+close the Configuration panel; this will leave you back in the Quark Explorer.
+</td></tr>
+</table>
+</p><p><table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>QuArK 6.5.0 Beta1 Changes</b>
+</p><p>Because of massive changes needed for all of the 3D renders to work properly, Half-Life 2 was also effected which caused it not to work
+with the newer Beta releases. However, with a few changes to some of the Half-Life 2 setup files this problem has been corrected.
+These are the additional steps you need to do if you are using QuArK 6.5.0 Beta1 or a newer version.
+</p><p>1) Go to your <b>C:\Program Files\Valve\Steam</b> folder and make a new folder there and give it this exact name:
+<div class="doccode"><pre><b>QuArKApps</b></pre></div>
+2) In the <b>QuArKApps</b> folder make another folder called:
+<div class="doccode"><pre><b>cstrike</b></pre></div>
+3) In your <b>C:\Program Files\Valve\Steam\SteamApps</b> folder open these two files:
+<div class="doccode"><pre><b>source materials.gcf<br>
+counter-strike source shared.gcf</b></pre></div>
+using Nem's Tools <b>GCFScape</b> that you can download from here:
+<a href="http://nemesis.thewavelength.net/index.php?p=1">Nem's Tools</a><br>
+</p><p>4) Extract the <b>hl2</b> folder from the <b>source materials.gcf</b> file shown above and place the <b>hl2</b> folder into your new <b>QuArKApps</b> folder.
+</p><p>OPEN the <b>cstrike</b> folder inside the <b>counter-strike source shared.gcf</b> file, also shown above, and ONLY extract the <b>materials</b>
+folder and place that into your new <b>QuArKApps\cstrike</b> folder.
+</p><p>NOTE: These extractions will take some time and you may think nothing is happening, but it is, so be patient and do ONE AT A TIME.
+</p><p>5) The final step is to download the <a href="http://quark.planetquake.gamespy.com/gamepaks.php3">QuArK_HL2_CS_textures.zip</a> game support package
+from the Official QuArK site and unzip that file, using the <b>folders</b> option, by pointing it to your <b>QuArKApps</b> folder. It will ask if you
+wish to over write the existing files, just click <b>Yes to all</b>.
+</p><p>You should now be able to make your maps in QuArK and view the textures for both Half-Life 2 and Counter Strike.
+</p><p>A VERY nice feature of this method is that you <b>DO NOT</b> need to have Steam running while using QuArK! Only if you wish to build your map and see it
+in Half-Life 2 or Counter Strike. AND by simply building your map with the <b>GO!</b> or <b>QuickGo!</b> command...it will start Steam for you.
+However, using this method of starting Steam, the first time you will need to bring down the game console by pressing the <b>Esc</b> or <b>`</b> Tilley key
+and load your map from the menu there.
+</p><p>Also, you DO NOT need to start Steam before starting QuArK, you can do either at any time and in any order that you wish!
+</p><p>All the textures will be available for your use just the same.
+</td></tr>
+</table>
+</p><p><table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Part 2 – Compiling</b>
+</td></tr>
+</p><p><tr><td valign=top align=left>
+In the section above we setup Quark to work with the HL2 compiler. Now its time to do something more exciting.
+First we need to create a new map. To do this click on the 'New Map' icon which is the 2nd button to the left of the
+'Games' button. You should now be confronted with the map editor itself with some pre-made structures and entities as shown below.
+</td><td valign=top>
+<img border=1 valign=top align=right src="intro.configuration.games.specificgames.hl2.hl2_config3.png">
+</td></tr>
+</table>
+</p><p><table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=middle>
+<img border=1 valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_config4.png">
+</td></tr>
+<tr><td>
+(Your Quark Map editor may look slightly different to mine, this is because I have Quad view ports set, and the colors have been
+slightly adjusted to my own personnel taste)
+</p><p>If we compile the map as it stands, it will work fine in game though you may not be able to spawn (only look around). 
+To compile the map simply go up to the 'Half-Life2' button at the top of the page, and on the drop down list select the
+'Complete Rebuild' Option.
+</td></tr>
+</p><p><tr><td valign=top align=middle>
+<img border=1 valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_config5.png">
+</td></tr>
+</p><p><tr><td valign=top align=left>
+The Quark 'Console' should now appear, and a text output will show the progress of the compile. Once completed you should see the
+following text at the bottom of the Console window:
+</p><p><ul>
+<li>/quark.cfg: exists
+<li>/maps/newmap.bsp: ready
+<li>/maps/newmap.pts: ignored
+<li>Files stored in C:Program FilesValveSteamSteamAppscounte
+<li>r-strike sourcecstrike
+<li>Operation finished.
+</ul>
+The Console outputs what the Valve compiler is doing, and you should always review the output regarding any error reports such<br>
+as Map Leaks.
+</p><p>With the map now compiled, you can either load up Counter-Strike: Source, and create a server making sure you have select your<br>
+map from the CS:S Map list (as default it should be called 'newmap'); or within the Quark Map Editor once again press the<br>
+Half-Life2 button at the top tool bar &amp; select 'Run Half-Life2', this should now start CS:S, and automatically create a server<br>
+with your newly compiled map.
+</p><p>With the default pre-made map you will not be able to spawn with CS:S, only join as a Spectator; and with any luck you should<br>
+now be viewing a box room with sky like the one shown below. 
+</td></tr>
+</p><p><tr><td valign=top align=middle>
+<img border=1 valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_config6.png">
+</td></tr>
+</table>
+</p>
+  </td></tr></table>
+  <br>
+
+<a name="misc"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Misc. Info.</p>
+      </td>
+      <td align=right>
+        <font size=-2>cdunde/PuG/Sven&nbsp;-&nbsp;09 Mar 2006</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p><table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b><u>Set system path</u></b>:
+</p><p>As stated in the <a href="intro.configuration.games.specificgames.hl2.html#config">Configuration</a> section above, you must give QuArK access to two .dll files, tier0.dll and vstdlib.dll, from one of your Half-Life2 SteamApps sub-directories. This is the second method in which that can be accomplished.
+</p><p>Right click on your &quot;My Computer&quot; Icon, go the System Properties page – click on the &quot;Advanced&quot; tab and there click the &quot;Environment Variables&quot; button.
+You found some information about the system’s used variables there.
+Double click on the &quot;Path&quot; entry there, now please double check what you're doing.
+</p><p>The path entries there are semicolon separated, we have to fill in the path to the sourcesdk\bin folder after the last present entry for QuArk to find the tier0.dll and vstdlib.dll files.
+</p><p>On my computer it looks like this,...
+</p><p><li>Example: ;G:\Valve\Steam\SteamApps\matrikular\sourcesdk\bin\ 
+</p><p>After the last entry, type in the path or better copy it from the address bar of your &quot;Explorer&quot; window into the field, remember to set a semicolon before, and a backslash at the end. After you have updated the system path close all of those windows.
+</td>
+<td>
+<img valign=top align=right src="intro.configuration.games.specificgames.hl2.hl2_misc1.png">
+</td></tr>
+</table>
+</p><p><table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+Now, start Steam and login to your Steam Account - Online / Offline
+the first few times it is better to have an internet connection running.
+</p><p>Half-Life 2 does strange things sometimes but if you know that the game runs offline there will be no internet connection required.
+</p><p>Select the Source SDK from your steam game menu and double click it.
+</p><p>Now you should see the window shown to the right. Choose your preferred game from the &quot;Current Game:&quot; list and click the Close button. But you will no longer need to copy the two dll files to QuArK's main folder.
+</p><p>You are now ready to do the rest of your <a href="intro.configuration.games.specificgames.hl2.html#config">Configurations</a> for QuArK as covered above. But you will no longer need to copy the two dll files to QuArK's main folder and you will always be using to most current version of those files as long as you go online and let them update periodically.
+</td>
+<td>
+<img valign=top align=right src="intro.configuration.games.specificgames.hl2.hl2_misc2.png">
+</td></tr>
+</table>
+</p>
+<p><ul>
+<li><u>A suggestion for people who are new to using Quark:</u>
+</p><p>Adding '+sv_password foo' to the Half-Life command line entry in 'configuration' will
+keep people that compile a map for the first time having other people popping in to play.
+</p><p>It's quite a shock when you compile your first map and while looking at it, someone
+else suddenly appears.
+</ul>
+</p><p><ul>
+<li><u>How to insert entities in HL2 maps:</u>
+</p><p>Make sure you are in HL2 mode, and create a new map, then do the following:
+</p><p>Go to [options:configuration], and then choose Half-Life2 under the Games section.
+Where you see a button called &quot;Add-ons&quot;, click it. You should see 3 items:
+DataHL2.qrk, textures-hl2.qrk, and entities-hl2.qrk. If you don't see these,
+click on &quot;Add&quot;, and then browse on your computer to where these are<br>
+(they should be in the QuArK folder, in another folder called &quot;addons&quot;). After you do this, you
+should see two blue cube buttons in the upper left of QuArK's window. The one on
+the right should be a list of entities when you click it.
+</ul>
+</p><p><ul>
+<li><u>I can't see the textures inside QuArK for Half-life 2, what is wrong?</u>
+</p><p>There can be many problems , here are somethings you can do.
+</p><p><li>1: The account name must be written in lower case only. User = user.  - Reported by Matrikular
+<li>2: Check if steam is running, close QuArK close steam. Load steam again then start QuArK
+<li>3: SDK content needs to be installed, from steam.
+</ul>
+</p><p><ul>
+<li><u>Everything was working perfectly, but then steam did an update<br>and I cant use QuArK anymore
+?</u>
+</p><p>Delete the SDK content folder, and let steam reload these ones.
+</ul>
+</p><p><ul>
+<li><u>QuArK says, it can load some basic models, but where are they?</u>
+</p><p>Go to addons folders, and plugins. Choose Half-life 2 models.
+</ul>
+</p><p><ul>
+<li><u>When I adjust the scale of a brush instead of following the grid snap<br>
+I'm finding its adding an extra unit proportionally to the size<br>
+of the brush (e.g. +64.02, rather than +64)?</u>
+</p><p>You most likely have forced the grid into a custom setting, simply change it manually back to 64.
+</ul>
+</p>
+  </td></tr></table>
+  <br>
+
+<a name="texture"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Custom Textures</p>
+      </td>
+      <td align=right>
+        <font size=-2>cdunde/Sven&nbsp;-&nbsp;09 Mar 2006</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p>This section covers how to get your own custom textures to work in Half-Life 2, Half-Life 2 Deathmatch and Counterstrike Source.
+</p><p>It's good to know how &quot;materials&quot;, what texture files are called, are used in the game and how they are handled by the Half-Life 2 game engine. A good place to look for information on this is the <a href="http://www.valve-erc.com/srcsdk/Materials/materials_creation.html">materials section</a> of the sdk itself.
+</p><p>Material or texture files are spitted into two parts, first your texture itself, a picture at any kind of file type, which later have to be converted into the .tga file type and then into .vtf with the vtex compiler from the sdk. We'll get to that later,...
+</p><p>The second part of our texture is the .vmt file, a script file which tells the engine how to render and handle the materials. Most settings in the .vmt file are based on variables for shaders and values which describe the material, like wood, glass, stone and so on,... it also flags the sound behavior of our texture,  mostly automatically.
+</p><p>The first line of our .vmt file is the name of the shader that is used. depending on your computer, it can set to a default shader level, or set itself after a shader test to fit to the best result for each computer your map is running on. Shaders add reflections and such to the texture.
+</p><p>It's all not that easy,... well, to be honest, I haven't figured out most parts of the shader thingy yet =)
+</p><p>But, let's get to the part where the useful information take place, the other stuff is mentioned in the sdk section better than I could explain it. Just play around with it a little.
+</p><p><b>Choosing and Compiling your own texture</b>
+</p><p>As you now know, you can use any kind of a picture to make a texture of it. There are some things to remember before you can use your texture:
+</p><p><ul>
+<li>The picture has to be a .tga file before compiling at 16, 24, or 32-bits in depth /VALVE SDK
+<li>All .TGA files must have a resolution equal to a power of 2, although the height and width can be different (i.e. 16x16, 32x32, 64x128, 128x128, 128x256, 512x512, etc.). /VALVE SDK
+</ul>
+</p><p>The compiler vtex is located in the sourcesdk/bin folder where the other map compiling tools can be found as well.
+Now, if your picture matches all dependencies open one or two explorer window/s and go to:
+<i>DriveDevice:\Valve\Steam\SteamApps\YourSteamAccountName\sourcesdk\sourcesdk_content\GameType\materialsrc</i>&nbsp;
+</p><p>Create a folder with a custom name there and save or copy your .tga file into the new folder.
+</p><p><table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+Your second explorer window should be the path to your sourcesdk/bin folder, it's easier to drag and drop the .tga file to vtex later.
+</td></tr>
+<tr><td valign=top align=middle>
+<img valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_texture1.png">
+</td></tr></table>
+</p><p><table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+Now drag and drop your .tga file on to the vtex.exe, the following screen should look like this,...
+</td></tr></table>
+</p><p><tr><td valign=top align=middle>
+<img valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_texture2.png">
+</td></tr></table>
+</p><p><table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+If you are not planning to build an &quot;normal map&quot; texture of your .tga ( I will hopefully find some time to make a tutorial on what that is soon ), drag it one more time.
+</p><p></td></tr>
+</p><p><tr><td valign=top align=middle>
+<img valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_texture3.png">
+</td></tr></table>
+</p><p><table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+The .tga should be converted now and saved into
+ <i>DriveDevice:\Valve\Steam\SteamApps\YourSteamAccountName\GameType\materials\YourFolderName</i>&nbsp;
+</p><p><ul>
+<li><b>Note ! You will get an error message if
+</p><p><li><i>...YourGameTxpe\materials\YourFolder</i>&nbsp;
+</p><p><li>is not present, so create it first !</b>
+</ul>
+</p><p>The compiler made a text file now in the same folder where your .tga is. Please, read the sdk documentation on how to use this text file and what it is for.
+</p><p><b>It's time to define what kind of texture we have now.</b>
+</p><p>There are a few default values which can be used, and to get ready for our .vmt file creation a good program called &quot;VMTMak0r&quot; needs to be mentioned. It helps to set all needed stuff in your .vmt.
+</p><p>Download the English version from <a href="http://quark.planetquake.gamespy.com/downloads/VMTMak0r-Eng.exe">here</a>.
+</p><p>Ok, so  &quot;VMTMak0r&quot; handles the .vtf file by drag and drop, so go in  <i>...GameTypeFolder\materials\YourFolderName</i>&nbsp; and drag and drop the .vtf file on to &quot;VMTMak0r&quot;.
+</p><p></td></tr>
+</p><p><tr><td valign=top align=middle>
+<img valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_texture4.png">
+</p><p></td></tr>
+</p><p><tr><td valign=top align=left>
+</p><p><b>Note ! You have to preview the .vmt file in the program, otherwise you'll get an error message if you're trying to save it !</b>
+</p><p>Brilliant ! Our texture is done if you set every kind of behavior you would like it to have.
+</p><p>If you are more into the other settings you see documented in the sdk, I'll explain them too, but for now let's just make a &quot;default shader – metalpenal&quot; and save it.
+</p><p><b>Quark is waiting,...</b>
+</p><p>- Start the sharpest Army Knife on Earth and open the Texture Browser<br>
+- Create a new main folder and select &quot;in a new Addon&quot;
+</p><p></td></tr>
+</p><p><tr><td valign=top align=middle>
+<img valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_texture5.png">
+</p><p></td></tr>
+</p><p><tr><td valign=top align=left>
+Give it a good name, may be your mapfilename and save it.<br>
+<b>Note ! Sometimes it could be that you have to save the file in <i>Quark\Addons\whatyouwant</i>&nbsp; !</b>
+</p><p>Okidoki,...</br>
+- Select your new main folder and make a new &quot;texture list&quot; in it then -&gt; edit -&gt; import files by &quot;copy&quot; or &quot;make file links&quot;</br>
+to this texture list.
+</p><p>&quot;I use copy and haven't figured out what's better, lazy me =)&quot;
+</p><p>Now a file browser opens, choose the directory of your texture file, it should be something like<br>
+<i>DriveDevice:\Valve\Steam\SteamApps\YourSteamAcccountName\GameType\materials\YourFolder</i>&nbsp;
+</p><p><b>Note ! Because of a path problem I haven't figured out yet, you have to copy the .vmt and the .vtf to the main materials folder to let the game find the texture, and to prevent a black/red texture to be displayed in the game !
+Done ! As you can see the texture works in the game,...</b>
+</p><p></td></tr>
+</p><p><tr><td valign=top align=middle>
+<img valign=top align=middle src="intro.configuration.games.specificgames.hl2.hl2_texture6.png">
+</p><p></td></tr>
+</p><p><tr><td valign=top align=left>
+I hope this helps a bit and some of you can add one or two hints for this tutorial or will correct me
+on a few points,...
+</p><p>I'll try to find some time to get an addon file ready where you can select all gametype textures
+( css textures for hldm and vice versa )
+</p><p>Last thing, if you quit Quark you'll be asked to save the changes to your addon file,...
+Then a message prompts that quark don't support that right now. Just add the textures you want in your map before start mapping with the texture browser / import them again,...
+</p><p>Changed during update alpha3, custom textures now will be saved ! NICE, THX !
+</p><p>have a lot of fun<br>
+matrikular - Sven
+</td></tr>
+</table></p>
+  </td></tr></table>
+  <br>
+
+<br>
+
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=99% align=middle>
+      <p class="sm">
+        GNU General Public License by The QuArK (Quake Army Knife) Community - <a href="http://www.planetquake.com/quark">http://www.planetquake.com/quark</a>
+      </p>
+    </td>
+    <td width=1% align=right nowrap>
+      &nbsp;[&nbsp;<span class="navenable"><a href="intro.configuration.games.specificgames.doom3.html">Prev</a></span>&nbsp;-&nbsp;<a href="#__top__">Top</a>&nbsp;-&nbsp;<span class="navenable"><a href="intro.configuration.games.specificgames.quake4.html">Next</a></span>&nbsp;]&nbsp;
+    </td>
+  </tr>
+</table>
+</body>
+</html>

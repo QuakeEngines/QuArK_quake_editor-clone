@@ -1,0 +1,163 @@
+
+<html>
+<head>
+  <title>Menubar</title>
+  <meta name="Description" content="QuArK Information Database - Page: 1.5.2.&nbsp;Menubar">
+  <meta name="Keywords" content="QuArK InfoBase Quake Army Knife QRK QKM Python PY Map Editor Hexen Heretic Half-Life Sin Kingpin Soldier-of-Fortune Star-Trek-Voyager Elite-Force">
+</head>
+
+<link rel=stylesheet href="standard.css" type="text/css">
+
+<body>
+<a name="__top__"></a>
+<table width=100% border=0 cellspacing=0>
+  <tr>
+    <td width=213>
+      <a href="http://www.planetquake.com/quark"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
+    </td>
+    <td width=70% align=center>
+      <div class="topheadline">Menubar</div>
+      <div class="sm">Updated&nbsp;27 Nov 2006</div>
+    </td>
+    <td width=30% valign=bottom nowrap>
+      Upper&nbsp;levels:<br>-&nbsp;<a href="index.html">QuArK&nbsp;Information&nbsp;Base</a><br>-&nbsp;<a href="intro.html">1.&nbsp;Introduction&nbsp;to&nbsp;QuArK</a><br>-&nbsp;<a href="intro.modeleditor.html">1.5.&nbsp;Model-editor&nbsp;in&nbsp;QuArK</a><br>
+    </td>
+  </tr>
+</table>
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=99%>
+      <p class="headline">&nbsp;1.5.2.&nbsp;Menubar</p>
+    </td>
+    <td width=1% align=right nowrap>
+      &nbsp;[&nbsp;<span class="navenable"><a href="intro.modeleditor.model.html">Prev</a></span>&nbsp;-&nbsp;<span class="navenable"><a href="intro.modeleditor.html">Up</a></span>&nbsp;-&nbsp;<span class="navenable"><a href="intro.modeleditor.toolpalettes.html">Next</a></span>&nbsp;]&nbsp;
+    </td>
+  </tr>
+</table>
+<table border=0 width=100% cellspacing=10><tr><td><p><img  src="intro.modeleditor.menu.menu.png">
+</p><p>New commands are constantly being added to the main menus; if there is
+no F1 help for some command not listed here, or you can't understand
+what it says, post to the <a href=http://games.groups.yahoo.com/group/quark/>QuArK
+messageboard</a> for help (and a heads-up to the docco writers).
+</p><p>Most of the commands on the menus also have hot keys (accelerators), which
+you can customize from Configuration at the bottom of the
+<a href="intro.modeleditor.menu.html#optionsmenu">'Options menu'</a>.</p>
+</td></tr></table>
+<br>
+
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=100%>
+      <p class="subheadline">&nbsp;Index</p>
+    </td>
+  </tr>
+</table>
+<ul class="index">
+  <li>- <a href="#optionsmenu">Options menu</a>&nbsp;<span class="added">(27 Nov 2006)</span>
+  <li>- <a href="#rmbmenus">RMB menus</a>&nbsp;<span class="added">(27 Nov 2006)</span>
+</ul>
+<br>
+
+
+<a name="optionsmenu"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Options menu</p>
+      </td>
+      <td align=right>
+        <font size=-2>cdunde&nbsp;-&nbsp;27 Nov 2006</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p><img border=0 align=right src="intro.modeleditor.menu.options.png">
+<i>Original 3Dview rotation </i>&nbsp;: This is the way QuArK's model rotation has worked in the past.
+As long as the model drag is started flat (z at 0) it rotates and tilts during rotation fine.
+But if it does a hiccup during the drag with the model tilted that is when it starts to drift
+off center and possibly out of the view eventually. The model can be placed anywhere in the view and
+rotated from that location.
+</p><p><i>Lock to center of 3Dview </i>&nbsp;: This method 'locks' the center of the grid to the center of the 3D view
+and rotates from the 0,0,0, point of the grid, its center. If the grid is off to another location of
+the view it will 'snap' back to the views center. The cursor location does not matter for dragging,
+the grid will remain in the views center. This makes the rotation very consistent.
+You can rotate and zoom in for close detail work on the model. But if you start another rotation
+it will jump back to the grids center and probably throw your up close position off.
+</p><p><i>Lock to center of model </i>&nbsp;: This function 'locks' the center of the model to the center of the view.
+It functions just like the 'Lock to center of 3Dview' method above
+based on the center of the model. However, because not all models are created at the center of their grid
+the method above could cause it to be near the edge of the view or completely out of view.
+This option compensates for that and will put the model in the proper center location of the view.
+The same situation will exist for up close detail work if a new rotation is started.
+</p><p><i>Rotate at start position </i>&nbsp;: This function is designed to give far more rotation consistency based on
+where the cursor is at the time it is clicked to start a rotation at some place on the model.
+It will then re-center that position to the center of the view to start rotating from.
+Unlike the 'Original 3Dview rotation' method, this would allow close up detail rotation without
+the model jumping back to some other location as in all of the above cases.
+</p><p><i>Paste objects at screen center </i>&nbsp;: Check this if you want objects that you
+paste into the map-view, appear in the center of the current map-view. Uncheck
+it, and it will paste it at the exact position as the original.
+</p><p><i>Enlarge Vertices Ticks </i>&nbsp;: This makes the model's ticks 1 size larger for easer viewing.
+</p><p><i>Rebuild 3D views </i>&nbsp;: This rebuilds the 3D views (actually all views) in the Model Editor
+in case of a lockup. You may have to do this a few times to clear the views up. The easiest way is to just push the HotKey 'Tab' until the views unlock and clear up.
+</p><p><i>Axis XYZ letter indicator in view windows </i>&nbsp;: This display s the X Y or Z indicator letter
+per view to associate the rotation menu buttons. These are for reference only and are not selectable
+with the mouse.
+</p><p><i>List of Plug-ins </i>&nbsp;: Opens a window which shows what plug-ins QuArK has loaded.
+</p><p><i>Configuration </i>&nbsp;: Takes you to the <a href="intro.configuration.html">'Configuration of QuArK'</a>.
+</p>
+  </td></tr></table>
+  <br>
+
+<a name="rmbmenus"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;RMB menus</p>
+      </td>
+      <td align=right>
+        <font size=-2>cdunde&nbsp;-&nbsp;27 Nov 2006</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p><img border=0 align=right src="intro.modeleditor.menu.rmbmenus1.png">
+</p><p><i>Reset 3D view </i>&nbsp;: If the model becomes 'lost', goes out of the 3D view, you can use this
+function to reset the 3D view and bring the model back to its starting position when it was first opened
+and based on the 'Rotation Method' you last chose to rotate the model by.
+</p><p><u>Each view can be set to one of three rendering modes :</u>
+</p><p><i>Wireframe </i>&nbsp;: The model mesh will be drawn as lines.
+This is the fastest drawing-method of the model-views. 
+</p><p><i>Solid </i>&nbsp;: Each model is drawn in a single, solid color or shades of that color.
+This means that you won't be able to 'see-through' the model once it is in view.
+</p><p><i>Textured </i>&nbsp;: The model is displayed with its full texture applied for the finished &quot;skinned&quot; look.
+</p><p><i>Background image... </i>&nbsp;: When selected, this will open a dialog box where you can choose a .bmp image
+file to place and display in the 2D view that the cursor was in when the RMB was clicked.
+Click <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#background">here</a> for full detailed information
+about its functions and settings.
+</p>
+  </td></tr></table>
+  <br>
+
+<br>
+
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=99% align=middle>
+      <p class="sm">
+        GNU General Public License by The QuArK (Quake Army Knife) Community - <a href="http://www.planetquake.com/quark">http://www.planetquake.com/quark</a>
+      </p>
+    </td>
+    <td width=1% align=right nowrap>
+      &nbsp;[&nbsp;<span class="navenable"><a href="intro.modeleditor.model.html">Prev</a></span>&nbsp;-&nbsp;<a href="#__top__">Top</a>&nbsp;-&nbsp;<span class="navenable"><a href="intro.modeleditor.toolpalettes.html">Next</a></span>&nbsp;]&nbsp;
+    </td>
+  </tr>
+</table>
+</body>
+</html>

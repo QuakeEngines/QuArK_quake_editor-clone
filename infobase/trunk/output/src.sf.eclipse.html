@@ -1,0 +1,279 @@
+
+<html>
+<head>
+  <title>Eclipse CVS client</title>
+  <meta name="Description" content="QuArK Information Database - Page: 4.1.1.&nbsp;Eclipse CVS client">
+  <meta name="Keywords" content="QuArK InfoBase Quake Army Knife QRK QKM Python PY Map Editor Hexen Heretic Half-Life Sin Kingpin Soldier-of-Fortune Star-Trek-Voyager Elite-Force">
+</head>
+
+<link rel=stylesheet href="standard.css" type="text/css">
+
+<body>
+<a name="__top__"></a>
+<table width=100% border=0 cellspacing=0>
+  <tr>
+    <td width=213>
+      <a href="http://www.planetquake.com/quark"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
+    </td>
+    <td width=70% align=center>
+      <div class="topheadline">Eclipse CVS client</div>
+      <div class="sm">Updated&nbsp;08 Jan 2007</div>
+    </td>
+    <td width=30% valign=bottom nowrap>
+      Upper&nbsp;levels:<br>-&nbsp;<a href="index.html">QuArK&nbsp;Information&nbsp;Base</a><br>-&nbsp;<a href="src.html">4.&nbsp;The&nbsp;Source&nbsp;Code</a><br>-&nbsp;<a href="src.sf.html">4.1.&nbsp;The&nbsp;CVS&nbsp;repository&nbsp;at&nbsp;Sou...</a><br>
+    </td>
+  </tr>
+</table>
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=99%>
+      <p class="headline">&nbsp;4.1.1.&nbsp;Eclipse CVS client</p>
+    </td>
+    <td width=1% align=right nowrap>
+      &nbsp;[&nbsp;<span class="navenable"><a href="src.sf.html">Prev</a></span>&nbsp;-&nbsp;<span class="navenable"><a href="src.sf.html">Up</a></span>&nbsp;-&nbsp;<span class="navenable"><a href="src.intro.html">Next</a></span>&nbsp;]&nbsp;
+    </td>
+  </tr>
+</table>
+<table border=0 width=100% cellspacing=10><tr><td><p>This is Rowdy's guide to configuring Eclipse to access the QuArK CVS repository.</p>
+</td></tr></table>
+<br>
+
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=100%>
+      <p class="subheadline">&nbsp;Index</p>
+    </td>
+  </tr>
+</table>
+<ul class="index">
+  <li>- <a href="#links">Program Links</a>&nbsp;<span class="added">(08 Jan 2007)</span>
+  <li>- <a href="#installation">Installation & Configuration</a>&nbsp;<span class="added">(08 Jan 2007)</span>
+  <li>- <a href="#download">Downloading Files</a>&nbsp;<span class="added">(06 Nov 2004)</span>
+  <li>- <a href="#upload">Uploading Files</a>&nbsp;<span class="added">(06 Nov 2004)</span>
+</ul>
+<br>
+
+
+<a name="links"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Program Links</p>
+      </td>
+      <td align=right>
+        <font size=-2>Rowdy / cdunde&nbsp;-&nbsp;08 Jan 2007</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p>First, you will need to download and install <b>Java 2 Platform</b> (<a href="http://java.sun.com/j2se/1.4.2/download.html">http://java.sun.com/j2se/1.4.2/download.html</a>). You will only need the <b>Runtime Environment</b> version rather than the full <b>SDK</b> version. This program basically installs itself, so no configuration instructions are really needed here.
+</p><p>Then download and install <b>Eclipse</b> (<a target=_blank href="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</a>).  You only need one file, for Eclipse 3.2.1 this would be eclipse-SDK-3.2.1-win32.zip (if you're running Windows 32 bit).  It is a zip file so you need a utility like WinZip.  The default and generally recommended directory to extract it to is c:\eclipse.</p>
+  </td></tr></table>
+  <br>
+
+<a name="installation"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Installation & Configuration</p>
+      </td>
+      <td align=right>
+        <font size=-2>Rowdy / cdunde&nbsp;-&nbsp;08 Jan 2007</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p><table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+When you run Eclipse for the first time, it will prompt you for a repository location. Where you want to keep your QuArK CVS files. The default c:\eclipse\workspace is fine if you prefer.
+</p><p><i>Step 1) Set the <b>Preferences</b>:</i>&nbsp;
+</p><p>In the main menu of the program select <b>Window &gt; Preferences</b>, expand the treeview to show <b>Team &gt; File Content</b>, click the <b>Add...</b> button and add dfm, pas and dpr as ASCII files, add res as Binary file (add it first as ASCII, the default, then
+select it and click the &quot;Change&quot; button). Finally, click the <b>OK</b> button to close the Preferences window.
+</td>
+<td align=right>
+<img border=0 align=right src="src.sf.eclipse.preferences.png">
+</td></tr>
+</table>
+</p><p><table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Step 2) <b>Add</b> a new <b>CVS Repository</b>:</i>&nbsp;
+</p><p>Switch to <b>CVS Repository Exploring</b> -  By clicking the icon circled in red. Be sure the box to the right of the icon says <b>Resource</b>. If not, go ahead and click the same icon (circled in red) and select <b>Resource</b>, then click the same icon (circled in red) again and select <b>CVS Repository Exploring</b>.
+</p><p>Now click the <b>Add CVS Repository</b> icon also circled in red.
+</td>
+<td align=right>
+<img  src="src.sf.eclipse.switch_to_cvs.png">
+</p><p><img  src="src.sf.eclipse.module_list1.png">
+</td></tr>
+</table>
+</p><p><table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Step 3) Set the <b>Add CVS Repository</b>:</i>&nbsp;
+</p><p>Fill out the form with the information settings shown.
+</p><p><b>Host:</B> quark.cvs.sorceforge.net
+</p><p><b>Repository path:</b> /cvsroot/quark
+</p><p><b>User:</b> your registered sourceforge user name
+</p><p><b>Password:</b> your registered password
+</p><p><b>Connection type:</b> extssh
+</p><p><b>Use Default Port</b> (selected)
+</p><p><b>Validate Connection on Finish</b> (checked)
+</p><p><b>Save Password</b> (checked)
+</p><p>Then click the <b>Finish</b> button to complete your connection to sourceforge.
+</td>
+<td align=right>
+<img  src="src.sf.eclipse.add_cvs_repository.png">
+</td></tr>
+</table>
+</p><p><table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Step 4) Viewing the sourceforge CVS files:</i>&nbsp;
+</p><p>After connecting, view the list of available modules by expanding the tree-view. The most current version files for QuArK are usually kept in the <b>HEAD</b> directory.
+</td>
+<td align=right>
+<img  src="src.sf.eclipse.module_list2.png">
+</td></tr>
+</table>
+</p>
+  </td></tr></table>
+  <br>
+
+<a name="download"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Downloading Files</p>
+      </td>
+      <td align=right>
+        <font size=-2>Rowdy / cdunde&nbsp;-&nbsp;06 Nov 2004</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p><table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Downloading a Module:</i>&nbsp;
+</p><p>Each folder is know as a <b>Module</b> of the program. To download a module, right-click it and select <b>Check-out</b>.
+</p><p>The modules required to build the QuArK program and support files are:
+</p><p><i><b>infobase</b></i>&nbsp; - used to build the help files.
+</p><p><i><b>runtime</b></i>&nbsp; - the program support files.
+</p><p><i><b>source</b></i>&nbsp; - the files used to build the QuArK.exe file.
+</td>
+<td align=right>
+<img  src="src.sf.eclipse.checkout_utils.png">
+</td></tr>
+</table>
+</p><p><table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+This dialog is displayed while the module is being checked out and can be set to <b>Run in Background</b>.
+</td>
+<td align=right>
+<img  src="src.sf.eclipse.checking_out.png">
+</td></tr>
+</table>
+</p><p><table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+Now switch to the <b>Resource</b> view to see the module files you have downloaded to your computer by clicking the icon circled in red.
+</td>
+<td align=right>
+<img  src="src.sf.eclipse.switch_to_resource.png">
+</td></tr>
+</table>
+</p><p><table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>The Resource View:</i>&nbsp;
+</p><p>Note that the &quot;<b>&gt;</b>&quot; indicates that a file has been changed or added. You can press F5 to refresh the resource view to see what files you have changed.
+</td>
+<td align=right>
+<img  src="src.sf.eclipse.resource_view.png">
+</td></tr>
+</table>
+</p>
+  </td></tr></table>
+  <br>
+
+<a name="upload"></a>
+  <table width=100% border=0 cellspacing=0>
+    <tr class="headline">
+      <td>
+        <p class="item">&nbsp;Uploading Files</p>
+      </td>
+      <td align=right>
+        <font size=-2>Rowdy / cdunde&nbsp;-&nbsp;06 Nov 2004</font>
+      </td>
+      <td width=1% align=right nowrap>
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
+      </td>
+    </tr>
+  </table>
+  <table border=0 width=100% cellspacing=10><tr><td>
+<p><table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Committing Files:</i>&nbsp;
+</p><p><b>Commit</b> a file means that you are uploading it.
+</p><p>To upload a file, right-click it, on the popup menu go to <b>Team</b> and then select <b>Commit...</b>.
+</p><p>Note also the <b>Synchronize with Repository</b> option - this compares your local files with the files on the CVS server and shows you graphically the differences.
+</p><p>Just to reiterate, before you commit anything using Eclipse, make sure you <b>ALWAYS</b> 
+go to the resource perspective, right-click on the modules you are 
+going to commit (you can hold down the Ctrl key on the keyboard and 
+left-click to select multiple files/directories), and <b>select Refresh</b>. 
+Eclipse doesn't know that you have changed anything outside of Eclipse 
+unless you tell it to refresh.
+</p><p>When you see what has changed (a &quot;&gt;&quot; will be added in front of the 
+directories and files that have changed), select everything that has 
+changed (you can select each module, e.g. &quot;source&quot;, &quot;infobase&quot; if you 
+like), right-click again, select &quot;Team&quot; from the popup menu, and from 
+the submenu select &quot;Synchronize with Repository...&quot;.
+</p><p>That will compare your files with those in the repository, and show you 
+any changes you have made that are outgoing, changes other people have 
+committed that are incoming, and any conflicts (where someone has 
+committed a file that you have also modified).
+</p><p>You can then select to commit all your outgoing changes, update all 
+incoming changes, and you can double-click each conflicting file to see 
+where the conflicts are, and to update your local file with changes made 
+in the repository before you commit your file.
+</td>
+<td align=right>
+<img  src="src.sf.eclipse.committing_a_new_file.png">
+</td></tr>
+</table>
+</p><p><i>General Comments:</i>&nbsp;
+</p><p>If this information is of use, and a positive response is received about using 
+Eclipse to access the QuArK source, Rowdy will probably expand on this with a 
+few more examples, and hints on using Eclipse.
+</p>
+  </td></tr></table>
+  <br>
+
+<br>
+
+<table width=100% border=0 cellspacing=0>
+  <tr class="headline">
+    <td width=99% align=middle>
+      <p class="sm">
+        GNU General Public License by The QuArK (Quake Army Knife) Community - <a href="http://www.planetquake.com/quark">http://www.planetquake.com/quark</a>
+      </p>
+    </td>
+    <td width=1% align=right nowrap>
+      &nbsp;[&nbsp;<span class="navenable"><a href="src.sf.html">Prev</a></span>&nbsp;-&nbsp;<a href="#__top__">Top</a>&nbsp;-&nbsp;<span class="navenable"><a href="src.intro.html">Next</a></span>&nbsp;]&nbsp;
+    </td>
+  </tr>
+</table>
+</body>
+</html>
