@@ -1,0 +1,6 @@
+title: View Selection tool-palette
+desc: xyzlocks
+desc: viewoptions
+desc: coloroptions
+
+<img border=1 align=middle>viewselect.png</img>

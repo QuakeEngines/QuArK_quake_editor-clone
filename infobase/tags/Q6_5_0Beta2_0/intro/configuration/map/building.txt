@@ -1,0 +1,14 @@
+title: Building
+author: Decker
+
+<img align=right>building.png</img>
+Controls some default values, that will affect your map-making.
+
+<i>Def. brush with entities</i>. Select the size of a default cube you want,
+when creating a new entity.
+
+<i>Wall width (for Make Hollow)</i>. The default thickness in units, the make
+hollow action should result in.
+
+<i>Force angle to (degrees)</i>. The closest minimum degree angle, a rotation
+should snap to.

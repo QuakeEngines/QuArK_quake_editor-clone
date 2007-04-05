@@ -1,0 +1,16 @@
+title: QuArK 7, etc.
+author: tiglari, DanielPharos
+
+My current thought is that QuArK 7 should involve some major under-the-hood
+revamping, in particular of the relation between QObjects and Python classes,
+so that QObject is a 'new style class', subclassable in Python.  This would
+be an important step towards actually getting somewhere with Quarkplusplus
+(the project of translating QuArK to C++), or to much more extensive
+Pythonification, using Psyco to achieve adequate performance.  Splitting the
+Python codebase and the Delphi into two separate neat piles would also be
+needed. Python should only handle the plug-ins, Delphi should do the hard
+work, like vertex handling.
+
+Further down the line, QuArK 8 should involve a rework of the GUI, which
+is presently Python-scripting piled on top of heavily hacked Delphi 2
+vintage VCL. Or even a complete port to C++.

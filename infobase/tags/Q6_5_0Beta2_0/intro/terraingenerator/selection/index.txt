@@ -1,0 +1,91 @@
+title: Menus and Toolbar-icons
+author: cdunde
+desc: shapebuilders
+desc: importconverter
+desc: faceconverters
+desc: adjacentfaces
+desc: basicselector
+desc: touchup
+desc: paintbrush
+desc: options3d
+
+
+<noscript>
+  <div class="warning">Please enable JavaScript to get the most out of this page</div>
+</noscript>
+<script language="javascript">
+<!--
+imgsPrefix = "intro.terraingenerator.selection."; /* This is a hack due to BUILD.PY */
+imgsA = new Array("builders",
+                  "importconvert",
+                  "faceconvert",
+                  "adjacentfaces",
+                  "basicselector",
+                  "touchup",
+                  "paintbrush",
+                  "options3d");
+imgsB = new Array();
+for (i=0; i<20; i+=2) {
+  imgsB[i] = new Image();
+  imgsB[i].src = imgsPrefix+imgsA[i/2]+".png";
+  imgsB[i+1] = new Image();
+  imgsB[i+1].src = imgsPrefix+imgsA[i/2]+"_s.png";
+}
+function imgchange(imgname,num,typ)
+{
+document[imgname].src = imgsB[num*2+typ].src;
+}
+//-->
+</script>
+
+<center>
+Move your mouse over the toolbar to highlight an area<br>for its function(s) description that will appear shortly<br>then click that area to go to its information section.
+
+<table cellpadding=0 cellspacing=0 border=0 width=302 height=29>
+  <tr>
+  <!-- menu -->
+                                     <!-- HACK/FIX -->
+    <td width=78><a href="intro.terraingenerator.selection.html#shapebuilders" onMouseover='imgchange("0builders",0,0)' onMouseout='imgchange("0builders",0,1)'><img name="0builders" width=78 height=29 border=0 alt="Terrain Shape Builders">builders_s.png</img></a>
+    </td>
+
+
+    <td width=23><a href="intro.terraingenerator.selection.html#importconverter" onMouseover='imgchange("1importconvert",1,0)' onMouseout='imgchange("1importconvert",1,1)'><img name="1importconvert" width=23 height=29 border=0 alt="Import Converter">importconvert_s.png</img></a>
+    </td>
+
+
+    <td width=66><a href="intro.terraingenerator.selection.html#faceconverters" onMouseover='imgchange("2faceconvert",2,0)' onMouseout='imgchange("2faceconvert",2,1)'><img name="2faceconvert" width=66 height=29 border=0 alt="Face Converters">faceconvert_s.png</img></a>
+    </td>
+
+
+    <td width=22><a href="intro.terraingenerator.selection.html#adjacentfaces" onMouseover='imgchange("3adjacentfaces",3,0)' onMouseout='imgchange("3adjacentfaces",3,1)'><img name="3adjacentfaces" width=22 height=29 border=0 alt="Adjacent Faces Selector">adjacentfaces_s.png</img></a>
+    </td>
+
+
+    <td width=43><a href="intro.terraingenerator.selection.html#basicselector" onMouseover='imgchange("4basicselector",4,0)' onMouseout='imgchange("4basicselector",4,1)'><img name="4basicselector" width=43 height=29 border=0 alt="Basic Selector & Dialog Box">basicselector_s.png</img></a>
+    </td>
+
+
+    <td width=23><a href="intro.terraingenerator.selection.html#touchup" onMouseover='imgchange("5touchup",5,0)' onMouseout='imgchange("5touchup",5,1)'><img name="5touchup" width=23 height=29 border=0 alt="Touch-up Selector & Dialog Box">touchup_s.png</img></a>
+    </td>
+
+
+    <td width=22><a href="intro.terraingenerator.selection.html#paintbrush" onMouseover='imgchange("6paintbrush",6,0)' onMouseout='imgchange("6paintbrush",6,1)'><img name="6paintbrush" width=22 height=29 border=0 alt="Texture Applicator & Dialog Box">paintbrush_s.png</img></a>
+    </td>
+
+
+    <td width=25><a href="intro.terraingenerator.selection.html#options3d" onMouseover='imgchange("7options3d",7,0)' onMouseout='imgchange("7options3d",7,1)'><img name="7options3d" width=25 height=29 border=0 alt="3D views Options Dialog Box">options3d_s.png</img></a>
+    </td>
+
+
+  </tr>
+</table>
+<!-- hack/fix to load the non-shaded images -->
+<img border=0 width=0 height=0>builders.png  </img>
+<img border=0 width=0 height=0>importconvert.png  </img>
+<img border=0 width=0 height=0>faceconvert.png  </img>
+<img border=0 width=0 height=0>adjacentfaces.png  </img>
+<img border=0 width=0 height=0>basicselector.png  </img>
+<img border=0 width=0 height=0>touchup.png  </img>
+<img border=0 width=0 height=0>paintbrush.png  </img>
+<img border=0 width=0 height=0>options3d.png  </img>
+</center>

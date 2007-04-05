@@ -1,0 +1,27 @@
+title: SpecificsAdd
+author: Armin Rigo
+
+Normally, Specifics are read and written through the Specifics property of
+objects, which is a Delphi string list, meaning you can do things such as
+<tt>Specifics['x']:='yz';</tt> to assign the value 'yz' to the specific called
+'x'. This actually adds the string 'x=yz' to the list, unless 'x' had already
+been set to some value previously, in which case it just replaces the existing
+'x=...' string with 'x=yz'.
+
+Note that <tt>Specifics['x']:='';</tt> will remove an existing 'x=...' string,
+and never add a string with just 'x='.
+
+Adding a specific/arg pair directly is also possible :
+<tt>Specifics.Add('x=yz')</tt> has the same effect as above, but it does not
+check for a previously set value, so it must not be used unless you are sure
+this value does not already exist.
+
+At some point, it might be more efficient (for small specific/args) to use
+<tt>SpecificsAdd(...)</tt> instead of <tt>Specifics.Add(...)</tt>.
+<tt>SpecificsAdd</tt> is a method of QObject. The whole purpose of this routine
+and its asm code is to spare memory when loading a file : some specifics are
+repeated numerous times, e.g. in a map a string like "tex=gothic_a1" will
+appear dozens of times. As Delphi knows about reference-counted strings, what
+this code does is look for another already existing string which would be
+identical, and if it finds it, it is reused (and its reference counter is
+incremented).

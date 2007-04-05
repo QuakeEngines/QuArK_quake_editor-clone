@@ -1,0 +1,41 @@
+title: Face Converters
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+These three buttons of the toolbar are the <b>Face Conversion</b> buttons. This is a <b>very unique</b> feature of the <a href="intro.terraingenerator.html">QuArK Terrain Generator</a> that allows you to shape your terrain from the <b>top</b> (up faces), <b>bottom</b> (down faces) or <b>both</b> at the same time by <b>simultaneous movement</b> moving in the same direction at the same time.
+</td>
+<td valign=top align=middle>
+<img border=0>faceconverters1.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+Once again the buttons are designed for easy recognition as to exactly what each one of them does. This is demonstrated in the side view screen shots below where the selected faces are highlighted in <b>red</b> with the movement handle centered on the group selected.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>faceconverters2.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+And their corresponding <b>3D Textured</b> views dramatize this even further. The first denotes standard surface treatment for a hill or mountain, the second could be textured to represent stalactites hanging inside of a cave and the third puts both of those elements together to create that mountain and cave. By isolating your down face selections in various locations and <g>pulling</g> them downward, you would then create those stalactites throughout your cave.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>faceconverters3.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+By using <b>both sides</b> of your terrain <b>sections</b> in this manner, you can create some dazzling effects while keeping your <g>poly</g> count to an absolute minimum, which is a very important element of any game mapping. And, by using different <b>sections</b> of terrain of different grid sizes, smaller ones for nice detail work and larger ones for general coverage, this will assist you even further to maximize your surrounding effects while still remain efficient in your map creations.
+</td></tr>
+</table>

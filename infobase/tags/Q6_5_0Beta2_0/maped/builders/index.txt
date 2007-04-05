@@ -1,0 +1,14 @@
+title: Shape Builders
+subdir: introduction archcap brusharchcap bevel column
+
+Shape-builders are a method for building complex objects,
+such as arches, stairways and more, on the basis
+of a boxy, 6-faced brush that gives the general dimensions
+of the object, plus additional specifics for details.
+
+The most useful shape-builders are probably the ones for
+patch based arches (for Q3-engine games) and brush-based
+arches (earlier games), so these are discussed first, and
+most extensively.
+
+

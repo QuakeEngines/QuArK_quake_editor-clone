@@ -1,0 +1,190 @@
+title: Configuration
+author: cdunde/PuG
+
+In this short tutorial we will be showing you how to quickly setup Quark to compile maps
+for Valve's Half-Life2. Please remember to be able to create maps for Half-Life2, or any
+of its modifications you must have the latest version of the <a href="http://collective.valve-erc.com/index.php?doc=1047496381-02062100">Steam SDK pack</a> downloaded
+and installed for the necessary <g>build tools</g> & materials.
+
+You must also give QuArK access to two .dll files from one of your Half-Life2 SteamApps sub-directories. The names of these files are tier0.dll and vstdlib.dll.
+
+There are two way to handle this.
+
+1) <b><u>Copy method</u></b>:<br>
+Copy the two .dll files, from one of your Half-Life2 SteamApps sub-directories to your main QuArK installation folder. You can find these files by using their names for a file search.
+
+2) <b><u>Set system path</u></b>:<br>
+This method is a little more involved but the advantage is, when either of these files are updated you will be working with the latest version. And if you reinstall or upgrade QuArK, you do not need to go through this part again setting it up. See the <a href="intro.configuration.games.specificgames.hl2.html#misc">Misc. Info.</a> selection below on how to set the system path.
+
+Also, when ever working in QuArK's Half-Life2 game mode you must first start Steam before you start QuArK to avoid unnecessary error messages and possibly QuArK shutting down completely. So please do both of these steps now before continuing on with this setup tutorial.
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Part 1 – Setting up QuArK to work with Half-Life2</b>
+
+In this section we will quickly go over how to setup Quark to work with Half-Life2.
+To start with load up Quark, you should be greeted with the 'Quark Explorer' panel.
+The Quark Explorer allows you to define which game environment you wish to work in,
+as well as doing many other things.
+
+First we need to select the game we want to map for. We do this by simply going
+to the 'Games' button located on the top right of the Explorer panel, once pressed it
+will present you with a drop list of all the currently available games, select
+Half-Life2 as shown in the screen shot to the right.
+
+Next we need to setup Quark to work with the HL2 compiler, to do so go back to the
+'Games' button and press the 'Configuration' button at the bottom of the list. 
+
+Once selected a new window will be opened called 'Configuration', making sure you have
+Half-Life2 selected on the left navigation panel, (under the Games Tab) as we now need
+to fill out some of the necessary game settings on the right of the Configuration panel. 
+
+To start with we must select which of the Half-Life2 games we wish to work with. To do
+so simply use the drop down menu to the right of the 'Half-Life2 command-line' setting
+(under the Game Settings tab). This should give you a selection of three, for this
+tutorials we are going to be working with Counter-Strike: Source, so select:
+
+"C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console ...."
+
+You must also set the <b>Steam App Id</b> to 240 as well or QuArK will not be able to start the game after a build is done.
+
+So how do I know which one to select?<br>
+Each Half-Life2 program/mod has an specific ID number<br>
+& each ID number is located within the command line:<br>
+<ul>
+<li>220 – Half-Life2
+<li>240 – Counter-Strike: Source   
+<li>320 – Half-Life2 Death Match
+</ul>
+</td>
+<td>
+<img valign=top align=right>hl2_config1.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+(Tip: You may also want to increase the width & height of the Half-Life2 window for when we use the 'Run Half-Life2' option later on in the tutorial<br>
+e.g. '-window -width 1280 -height 1024.)
+
+The rest of the compiler settings are relatively straight forward to setup, though you will need to know the location of where you
+have installed Steam. If you use its default setting it should be as shown on the "Steam Directory" line below, or:
+<ul>
+<li>C:/Program Files/Valve/Steam
+</ul>
+For the rest of the settings for the compiler just use the screen shot below to go by. If you are unsure on any of the settings hold your mouse cursor over the white box and it will come up with a quick example.
+</td></tr>
+<tr><td valign=top align=middle>
+<img border=1 valign=top align=middle>hl2_config2.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=middle>
+<tr><td>
+Once you have finished setting Quark to work with the HL2 compiler, simply hit the 'Apply' button, and then press the 'OK' button to<br>
+close the Configuration panel; this will leave you back in the Quark Explorer.
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>QuArK 6.5.0 Beta1 Changes</b>
+
+Because of massive changes needed for all of the 3D renders to work properly, Half-Life 2 was also effected which caused it not to work
+with the newer Beta releases. However, with a few changes to some of the Half-Life 2 setup files this problem has been corrected.
+These are the additional steps you need to do if you are using QuArK 6.5.0 Beta1 or a newer version.
+
+1) Go to your <b>C:\Program Files\Valve\Steam</b> folder and make a new folder there and give it this exact name:
+<code><b>QuArKApps</b></code>
+2) In the <b>QuArKApps</b> folder make another folder called:
+<code><b>cstrike</b></code>
+3) In your <b>C:\Program Files\Valve\Steam\SteamApps</b> folder open these two files:
+<code><b>source materials.gcf<br>
+counter-strike source shared.gcf</b></code>
+using Nem's Tools <b>GCFScape</b> that you can download from here:
+<a href="http://nemesis.thewavelength.net/index.php?p=1">Nem's Tools</a><br>
+
+4) Extract the <b>hl2</b> folder from the <b>source materials.gcf</b> file shown above and place the <b>hl2</b> folder into your new <b>QuArKApps</b> folder.
+
+OPEN the <b>cstrike</b> folder inside the <b>counter-strike source shared.gcf</b> file, also shown above, and ONLY extract the <b>materials</b>
+folder and place that into your new <b>QuArKApps\cstrike</b> folder.
+
+NOTE: These extractions will take some time and you may think nothing is happening, but it is, so be patient and do ONE AT A TIME.
+
+5) The final step is to download the <a href="http://quark.planetquake.gamespy.com/gamepaks.php3">QuArK_HL2_CS_textures.zip</a> game support package
+from the Official QuArK site and unzip that file, using the <b>folders</b> option, by pointing it to your <b>QuArKApps</b> folder. It will ask if you
+wish to over write the existing files, just click <b>Yes to all</b>.
+
+You should now be able to make your maps in QuArK and view the textures for both Half-Life 2 and Counter Strike.
+
+A VERY nice feature of this method is that you <b>DO NOT</b> need to have Steam running while using QuArK! Only if you wish to build your map and see it
+in Half-Life 2 or Counter Strike. AND by simply building your map with the <b>GO!</b> or <b>QuickGo!</b> command...it will start Steam for you.
+However, using this method of starting Steam, the first time you will need to bring down the game console by pressing the <b>Esc</b> or <b>`</b> Tilley key
+and load your map from the menu there.
+
+Also, you DO NOT need to start Steam before starting QuArK, you can do either at any time and in any order that you wish!
+
+All the textures will be available for your use just the same.
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Part 2 – Compiling</b>
+</td></tr>
+
+<tr><td valign=top align=left>
+In the section above we setup Quark to work with the HL2 compiler. Now its time to do something more exciting.
+First we need to create a new map. To do this click on the 'New Map' icon which is the 2nd button to the left of the
+'Games' button. You should now be confronted with the map editor itself with some pre-made structures and entities as shown below.
+</td><td valign=top>
+<img border=1 valign=top align=right>hl2_config3.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=middle>
+<img border=1 valign=top align=middle>hl2_config4.png</img>
+</td></tr>
+<tr><td>
+(Your Quark Map editor may look slightly different to mine, this is because I have Quad view ports set, and the colors have been
+slightly adjusted to my own personnel taste)
+
+If we compile the map as it stands, it will work fine in game though you may not be able to spawn (only look around). 
+To compile the map simply go up to the 'Half-Life2' button at the top of the page, and on the drop down list select the
+'Complete Rebuild' Option.
+</td></tr>
+
+<tr><td valign=top align=middle>
+<img border=1 valign=top align=middle>hl2_config5.png</img>
+</td></tr>
+
+<tr><td valign=top align=left>
+The Quark 'Console' should now appear, and a text output will show the progress of the compile. Once completed you should see the
+following text at the bottom of the Console window:
+
+<ul>
+<li>/quark.cfg: exists
+<li>/maps/newmap.bsp: ready
+<li>/maps/newmap.pts: ignored
+<li>Files stored in C:Program FilesValveSteamSteamAppscounte
+<li>r-strike sourcecstrike
+<li>Operation finished.
+</ul>
+The Console outputs what the Valve compiler is doing, and you should always review the output regarding any error reports such<br>
+as Map Leaks.
+
+With the map now compiled, you can either load up Counter-Strike: Source, and create a server making sure you have select your<br>
+map from the CS:S Map list (as default it should be called 'newmap'); or within the Quark Map Editor once again press the<br>
+Half-Life2 button at the top tool bar & select 'Run Half-Life2', this should now start CS:S, and automatically create a server<br>
+with your newly compiled map.
+
+With the default pre-made map you will not be able to spawn with CS:S, only join as a Spectator; and with any luck you should<br>
+now be viewing a box room with sky like the one shown below. 
+</td></tr>
+
+<tr><td valign=top align=middle>
+<img border=1 valign=top align=middle>hl2_config6.png</img>
+</td></tr>
+</table>

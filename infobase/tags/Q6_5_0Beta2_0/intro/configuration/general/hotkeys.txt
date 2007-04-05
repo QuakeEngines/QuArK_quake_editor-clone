@@ -1,0 +1,6 @@
+title: HotKeys
+author: DanielPharos
+
+<img align=right>hotkeys.png</img>
+Here you can set the HotKey bindings. Just type in what key or what
+key combination you want to use for a specific function.

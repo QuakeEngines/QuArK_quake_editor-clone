@@ -1,0 +1,13 @@
+title: Math Background
+subdir:  vectors linear
+
+Map editing involves a substantial amount of 3D math;
+here is some
+brief discussion of various aspects of the background.
+It would be cool of the discussion could be followed on
+the basis of high school trigonometry, but it's almost
+certainly
+not there yet, especially without pictures; if you start,
+go on fine for a while and then get stuck, it would be
+useful to know where.
+

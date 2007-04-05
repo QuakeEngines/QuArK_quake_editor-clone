@@ -1,0 +1,13 @@
+title: Distribution and Aftermath
+author: tiglari
+
+Once things get into a useable state, or possibly even before,
+somebody with SourceForge access should start committing your stuff to
+the repository, and it will begin to appear in snapshots.
+
+By `aftermath' I mean that if you initiate QuArK support for a game,
+people will tend to expect you to fix bugs in the game data, etc., and
+there always are some, so this can drag on for a while.  People will
+also expect you to be able to answer basic questions about the peculiarities
+of editing the game, so if you don't want to assume the mantle of a guru,
+it's better to keep quiet and just use Radiant...

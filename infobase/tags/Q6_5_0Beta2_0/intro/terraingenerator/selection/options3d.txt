@@ -1,0 +1,48 @@
+title: 3D views Options Dialog Box
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+The last button on the toolbar is the <a href="intro.terraingenerator.selection.html#options3d">3D views Options</a> which opens its own <b>Dialog Box</b> and is laid out in the same order as the <a href="intro.mapeditor.toolpalettes.display.html">Display tool-palette</a>.
+
+This dialog give you the ability to customize every <b>3D view</b> that QuArK provides and does so independently from one 3D view to the next.
+</td>
+<td valign=top align=middle>
+<img border=0>options3d1.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+   <table border=0 cellspacing=0>
+   <tr><td valign=top align=left>
+   <img border=1>options3d3.png</img>
+   <img border=1>options3d4.png</img>
+   </td>
+   <td valign=top>
+All of the <a href="intro.mapeditor.floating3dview.html">Floating 3D window</a> titles have also been updated to correspond to the titles on this dialog to make it easy to identify them as you make your view selections. Each has its own grouped settings.
+
+The <b>3D views Options</b> dialog was placed on the <a href="intro.terraingenerator.selection.html">Terrain modes toolbar</a> because it primarily deals with those items.
+
+However, the first selection, <b>No icons</b>, of each 3D view group does also apply to the other <a href="intro.mapeditor.toolpalettes.mousemodes.html">standard QuArK Selectors</a> and will remain in effect when they are being used. The dialog will remain open until manually closed, it is movable, resizable and will save its settings.
+
+<img border=1>options3d5.png</img><img border=1>options3d6.png</img>
+</td></tr></table>
+<b>No icons</b> refers to the <b>camera eye</b> icon and its handle that you see when positioning a 3D view.<br>
+<b>Drag</b> is the displaying of the blue selection circle and center drag handle.<br>
+<b>Red faces</b> are the selected, movable terrain surface faces that show their locations.
+</td>
+<td valign=top align=right>
+<img border=1>options3d2.png</img>
+</td></tr>
+</table>
+<b>Color Guide</b> are the color outlining of the faces before apply new texture and other actions. These also works in conjunction with the <a href="intro.terraingenerator.selection.html#paintbrush">Texture Applicator</a> dialog Color Guide to add even more effects to their settings and can be quite effective when needed.
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+
+As a general note, you will never see the <b>blue movement ring</b>, as shown in the above left hand views, when you are in the <a href="intro.terraingenerator.shaping.html#touchuptool">Touch-up Selector</a> mode because it uses its own movement handle configuration.
+
+For more screen shots and information on the <b>Color Guide</b> settings and variations see the <a href="intro.terraingenerator.shaping.html#touchuptool">Touch-up Selector</a> section.
+</td></tr>
+</table>

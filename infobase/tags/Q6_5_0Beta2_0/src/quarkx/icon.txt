@@ -1,0 +1,20 @@
+title: Icon objects
+author: Armin Rigo
+
+Icon Objects are the individual items of Image Lists.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+icon.size
+</td><td>
+The (x,y) size of the icon. This is the same for all icons of an image list.
+</td></tr>
+
+<tr><td class="doccode">
+icon.disabledimage
+</td><td>
+The disabled (grayed out) version of the icon, returned as another icon.
+</td></tr>
+
+</table>

@@ -1,0 +1,69 @@
+title: Unfreed Event (don't mess with)
+author: Decker (mostly) & tiglari
+
+The kernel error CreatEvent generated at QkFileObjects.pas:RestoreAutoSaved
+line 2061 should not be fixed by deleting the event; here's what Decker had
+to say about my attempt to do that:
+
+Oops I believe you just introduced "an unintended bug".
+
+I've looked at that particular piece of code before (less than a month
+ago I think), and made up my mind of what it does. Unfortunatly I never
+got around to document it. Armin should have done that, when he coded
+it. It has something to do, when running two or more instances of QuArK
+on the same machine at the same time, and the crashes of QuArK.
+
+Here's my thoughts of it:
+
+- The procedure is called "RestoreAutoSaved", so it might have something
+to do with when QuArK crashes and is started again.<br>
+- There is a call to "GetCurrentProcessId" at the bottom of the
+procedure. So some kind of 'uniqueness' is apparently needed.<br>
+- The call to "WaitForSingleObject" has a timeout-value of 0, e.g. don't
+wait (quite strange!?).<br>
+- The file named "auto-save-<something>", is also referenced in the
+procedure "QFileObject.PyGetAttr", where it too use
+"GetCurrentProcessId".<br>
+- "OldId" gets assigned the value from the file named
+"auto-save-<something>".<br>
+- So "OldId" may actually be the ProcessId of the QuArK-instance which
+created the auto-save file.<br>
+- Note that the const "TagAtom" with value "~QuArK-tag-auto-save-%x",
+gets its "%x" replaced by "OldId".<br>
+- The Delphi documentation for "CreateEvent()" does not directly states
+what will be returned, if the name-of-the-event-semaphore already exists
+(e.g. another instance of QuArK is already running.) I believe that we
+get an invalid handle back in that case.<br>
+- The "WaitForSingleObject()" call, destroys "OldId" and assigns it a
+completly different purpose; it now contains the return value of the
+call. (Bad code style! Better use a variable clearly defined for the
+purpose, instead of reusing variables).<br>
+- "OldId", which is now the return-value from "WaitForSingleObject()",
+gets compared against zero. So can "WaitForSingleObject()" return zero,
+and what does zero mean in that case? The Delphi documentation does not
+say, so a dig into WINDOWS.PAS searching for the documented return
+symbols may tell us what zero means.<br>
+- I find that the symbol "WAIT_OBJECT_0" has the constant value of zero,
+so statement in "RestoreAutoSaved" would be better written as:<br>
+        if (OldId = WAIT_OBJECT_0) then<br>
+- Putting some of the stuff together:<br>
+  CreateEvent(nil, false, TRUE, <a replaced TagAtom string>);<br>
+Note the TRUE, according to the Delphi documentation, this sets the
+event-semaphore into a Signaled-State. I then believe, that if
+CreateEvent() did not succeed in creating the event-semaphore, the event
+is Not Signaled, and therefore WaitForSingleObject() will not return
+WAIT_OBJECT_0.<br>
+- This could mean that there is another QuArK instance running at the
+same time, and therefore the auto-save file is not due to a crashed
+QuArK, as it is still running.<br>
+
+- Note also, that any events owned by a process, the one who called
+CreateEvent(), gets automatically released/closed by the
+operation-system when that process stops/crashes. Thats why Armin never
+did nor should do a CloseHandle() on the last CreateEvent(), as it will
+destroy the purpose of the WaitForSingleObject() check.
+
+Phew... that was a bit much, for such a little thing ;-)
+
+I know a bit about event/mutex-semaphores, as I use them at work these
+days, porting an OS/2-application to Windows 2000 Advanced Server.

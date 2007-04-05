@@ -1,0 +1,54 @@
+title: Texturing
+author: Decker
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr><td>
+
+<img width=179 height=201 align=right>image11.png</img>
+It would be quite a dull level, if you only used one <g>texture</g>. So how do
+we change the texture on a brush?
+
+First the brush(es) must be selected. When they are selected, the
+<ref> intro/mapeditor/dataforms/polyhedronview </ref> will appear
+instead of the tree-view, showing you some information about the selected
+brush(es) and the texture, as shown in the image.
+
+To change the texture on the whole brush, press on the choose texture
+icon <img width=24 height=22 align=absmiddle>image12.png</img>, or right-click
+on the brush to get a context menu up, where you can select <tt>Texture...</tt>
+
+In the <ref> intro/texturebrowser \ texture-browser </ref>, you can
+browse (wow!) through the available textures, and select the one you want
+assigned to the brush(es). You select a texture by double-clicking on it, in
+the texture-browser.
+
+</td></tr>
+<tr><td>
+
+<img width=170 height=238 align=right>image13.png</img>
+To change the texture on just one face, you select the face by clicking on its
+face-handle. The same handle you used to size the brush with.
+You will see that the <ref> intro/mapeditor/dataforms/faceview </ref> now
+appears instead of the polyhedron-view.
+
+Again, to change the texture, press on the choose texture icon
+<img width=25 height=23 align=absmiddle>image14.png</img>, or right-click on
+the face-handle to get a context menu up, where you can select
+<tt>Texture...</tt>
+
+This should be enough introduction for you, to mess around with texturing the
+rest of your cubes. Try also to assign different textures to each face of a
+cube, and see what happens.
+
+</td></tr>
+</table>
+
+<u>Face flags</u>
+
+Quake-2 introduced face-flags for brushes, which controls; transparency, water,
+sky, clip, currents and some other stuff.
+
+QuArK will show you this icon
+<img width=27 height=22 align=absmiddle>image15.png</img> in the same row as
+the above mentioned 2 icons, but only when the selected game you have choosen,
+supports these face-flags.

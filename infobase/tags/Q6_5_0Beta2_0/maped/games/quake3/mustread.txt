@@ -1,0 +1,12 @@
+title: A MUST READ for all Quake-3: Arena map-designers
+author: Decker
+
+If you plan on making maps for Quake-3: Arena, it should be almost mandatory to read the Q3Radiant manual written by Paul
+Jaquays of id Software.
+
+Yes you read it correct, I did write "the Q3Radiant manual". It contains very good hints and tips, that a map-designer
+should know, or at least would want to, before falling into the utter frustration when something just won't work.
+
+The manual should be available from
+<a href="http://www.qeradiant.com">www.qeradiant.com</a>,
+or other well assorted Quake-3: Arena/Q3Radiant editing sites.

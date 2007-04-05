@@ -1,0 +1,48 @@
+title: Overview
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=0 align=right valign=top>overview1.png</img>
+<b>Bot Waypointer</b>: This is used to set the paths and actions of game bots, or computer players
+and is the first of this menus extended items. Detailed information on its use and capabilities can
+be found in its <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#botwaypointer">Index section below</a>.
+
+<b>Unrestrict Selection</b>: When a selection is restricted (see the Containing Groups right-mouse menu),
+clicking on this will un-restrict the selection and restore things to normal.
+
+<b>Insert map item</b>: This opens the <a href="intro.mapeditor.misctools.html#newmapitem">
+New Map items</a> window. This window contains all of the objects that can be use in the
+<a href="intro.mapeditor.maplayout.html#classic">map-views</a> and
+<a href="intro.mapeditor.dataforms.html#treeview">Tree-view</a>.
+
+<b>Undo</b> or <b>Redo</b>  <i>[something] </i>: This menu item will be active, if you can undo or redo
+a previous action. The something , will be the action it will undo or redo.
+
+<b>Paste here</b>: This will paste an object, that has been copied, in the view and exact location where
+the mouse cursor was when the <g>RMB</g> was clicked. The co-ordinance also appear in the lower left hand
+<a href="intro.mapeditor.overview.html#hintbox">hint box</a>.
+
+<b>Tag point</b>: This <a href="maped.plugins.tagside.html#basic">Tags</a> the point below the mouse for
+reference in later operations of positioning and alignment. The tagged point then appears in red.
+
+<b>Wireframe Solid Textured</b>: Each view can be set to one of these three
+<a href="intro.mapeditor.menu.html#layoutmenu">rendering modes</a>. The commands in this menu lets you
+select the mode for the view you right-clicked on. You can set the mode for all views at once in the
+<a href="intro.mapeditor.overview.html#overview">Layout</a> menu.
+
+<b>Background image</b>: When selected, this will open a dialog box where you can choose a .bmp image
+file to place and display in the 2D view that the cursor was in when the RMB was clicked. This is the
+second of this menus extended items. Detailed information on its use and capabilities can be found in
+its <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#background">Index section below</a>.
+
+<b>Add Camera Position</b>: This item only appears on this menu when the <g>RMB</g> is clicked in the
+3D view and nothing is selected. When selected, this will open
+<a href="intro.mapeditor.rmb_menus.noselectionmenu.html#addcamerapos">its dialog box</a> where you can
+add a new 'Camera view' for a quick jump to see your work from a different preset angle when this camera
+ icon is clicked in the <a href="intro.mapeditor.dataforms.html#treeview">Tree-view</a>.
+This is the final extended item of this menu. Detailed information on its use and capabilities
+can be found in its own section under
+<a href="intro.mapeditor.floating3dview.html#camera">Floating 3D windows</a> in the Infobase docs.
+</td></tr>
+</table>

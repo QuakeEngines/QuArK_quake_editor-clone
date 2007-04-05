@@ -1,0 +1,133 @@
+title: Duplicators
+
+Duplicators are 'abstract' QuArK-only mapobjects that generate ordinary
+mapobjects (brushes, entities, patches) from data.  Their original use
+was to make copies of things, whence the name; the data consisted of
+the brushes and entities to be copied, plus some specifics on the duplicator,
+such as how many to make, their offsets, etc.
+When did Armin realize that they could do more than make copies?  Probably
+from the start, but anyway the patch and brush-curve builders, wall extruder
+and even the threepoint plane are duplicators that don't make copies,
+but use data of a more abstract nature, such as the box that a curve will
+be contained in.
+
+Since the usual purpose of a duplicator is to construct some mapobjects,
+its most important method is its buildimages method, which takes some
+parameters and produces a list consisting of the mapobjects that will
+be produced.  The parameters are 'self', and `singleimage', which is
+only relevant when the duplicator is being used to make multiple copies.
+It is set to None unless the method is being called to dissociate the images
+of the duplicator, in which case the duplicator is called once for each copy
+with singleimage set to the series number of the copy, starting with 0.
+This can make coding certain kinds of things rather complicated, since
+when singleimage is none, buildimages needs to loop, and when it's set to
+a number, it doesn't, but the result is that when the images are dissociated,
+each copy gets located in its own individual group.  The actual calling
+of the buildimages method is done by the Delphi in duplicator.pas, by
+methods I don't understand.
+
+The fundamental duplicator classes and methods are defined in
+quarkpy.duplicator.py, and are exploited so as to produce most of the
+ordinary copying duplicators in plugins.mapdups.py.  The base class is
+DuplicatorManager, with the following methods:
+<UL>
+<LI>buildimages: not defined to do anything useful in the base class
+<LI>applylinear: this ought to specify how to operate on the duplicator's
+data when the linear mapping specified by the matrix argument is applied;
+specifying this is ignored for many of the shape-building duplicators (it's
+complicated, nobody seems to be howling about the omission)
+<LI>sourcelist: explained in the comments.  This method will normally
+be called by buildimages.
+<LI>siblingexluded: explained in comments
+<LI>dataformname: this method is used by code elsewhere (such as
+in quarkpy.mapentities.py) to figure out what form to to use to display
+the duplicator's specifics on the specifics page of the multi-pages-panel.
+See 'dup lin:form' in defaults.qrk for an example.
+<LI>handles: returns a handle to drag the thing around with.
+</UL>
+Many of the shape builders (path duplicator in plugins.mapdupspath.py)
+are defined as descendents of DuplicatorManager, and probably some of
+the others such as the brush and patch curve-builders should have been.
+
+Duplicators that make copies are however mostly descendents of
+StandardDuplicator, which, unfortunately for people who want to learn
+how the code works, gotten monstrously complicated due to the
+series trigger-targeting, progressive linear mapping and other facilities
+that got engineered in.
+
+So here are some of the major methods as they were in a simpler age
+end of June, 2000):
+
+<code>
+    def readvalues(self):
+        self.origin = self.dup.origin
+        if self.origin is None:
+            self.origin = quarkx.vect(0,0,0)
+        s = self.dup["offset"]
+        if s:
+            self.offset = quarkx.vect(s)
+        else:
+            self.offset = None
+        self.matrix = None
+</code>
+The old readvalues method just picks up an origin and an offset.  The newer
+one does things like try to find a file with texture-substiutions, and
+stuff needed for applying to linear mappings to copies around individual
+centerpoints (e.g. spin each copy by 30 degrees w.r.t the last around its
+center).
+
+The 'do' method applies the changes to be made to the item.  each change
+is w.r.t. the previously made copy.
+<code>
+    def do(self, item):
+        "Default code to apply a one-step operation on 'item'."
+        if self.offset:
+            item.translate(self.offset)
+        if self.matrix:
+            item.linear(self.origin, self.matrix)
+        return [item]
+</code>
+And here's the old buildimages:
+<code>
+    def buildimages(self, singleimage=None):
+        try:
+            self.readvalues()
+        except:
+            print "Note: Invalid Duplicator Specific/Args."
+            return
+        list = self.sourcelist()
+        newobjs = []
+        try:
+            count = int(self.dup["count"])
+        except:
+            count = 1
+        for i in range(count):
+            self.imagenumber = i
+            # the following line :
+            #  - makes copies of the items in "list";
+            #  - calls "self.do" for the copies;
+            #  - puts the results of these calls into a list;
+            #  - removes all None objects;
+            #  - and stores the new list back in "list".
+            list = reduce(lambda x,y: x+y, map(lambda item, fn=self.do: fn(item.copy()), list), [])
+            if (singleimage is None) or (i==singleimage):
+                newobjs = newobjs + list
+        del self.imagenumber
+        return newobjs
+</code>
+It features Armin's facility with the functional programming facilities of Python,
+and you might notice that it's quite inefficient for buildimages!=None:
+for each copy that it makes, it goes thru the whole list and chucks away
+all but the one specified by the singlimages parameter.
+
+The remaining code is concered with generating handles, one for the
+duplicator and one for each image-position, and a clever scheme for
+changing the offset value by dragging the handles around.  This is
+done in the drag method of DupOffsetHandle, the idea being that the
+difference between the old and new handle positions (v2-v1) is used to
+operate on the duplicator's specifics (the CenterHandle code sets the
+duplicator as the .centerof value).
+
+Finally a good number of duplicators are defined in plugins.mapduplicators.py;
+these derived duplicator classes mostly work by reading in or setting
+matrices, although one has a special 'do' method.

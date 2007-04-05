@@ -1,0 +1,62 @@
+title: Creating holes (carving) using Diggers and Negative brushes
+author: Decker
+
+<table border=0 cellpadding=0 cellspacing=0>
+<tr><td>
+
+<img width=150 height=149 align=right>image35.png</img>
+If you think, that to create a hole in a brush, you have to brush-subtract
+(carve), then think again when using QuArK!
+
+A very powerful feature in QuArK,
+is the ability to use diggers and negative polys, which first does the real
+brush-subtraction when you compile your map. This lets you experiment placing a
+hole if you're not quite sure about its position, without messing with
+brush-subtraction and more brushes than necessary.
+
+A digger and negative poly will only create holes in brushes of the
+<ref> ./grouptechniques \ same group </ref>, or sub-groups of that group, that
+they exists in.
+
+</td></tr>
+<tr><td>
+
+<img width=135 height=122 align=right>image36.png</img>
+There are no actual difference between a digger macro and a negative poly,
+other than in the tree-view you can see the Digger object. You can't see a
+negative poly, unless you rename it by selected it in the tree-view, and press
+the F2 key.
+
+In the 2D-view, these cubes will be drawn with a different line-color
+(See also <ref> intro/configuration/map/colors </ref>.)
+
+</td></tr>
+<tr><td>
+
+<img width=146 height=154 align=right>image38.png</img>
+<img width=146 height=154 align=right>image37.png</img>
+The texture of a face on a digger or negative poly, will be applied to the
+brush that is carved, but only if that brush hasn't already been carved
+or cut at that coplanar plane that the face of the digger/negative poly will
+carve/cut it at. This can get tricky at times, and depends on which
+digger/negative poly does the first carving/cut.
+
+Example: In the image to the right, there are two negative polys both with
+different textures (RED, BLUE), and two normal brushes.
+
+After the negative polys have done their job (during compile), it may look like
+this in the game:
+
+<ul>
+<li>The cut-lines <b>1</b>, <b>3</b> and <b>C</b> will get their texture from
+    the negative polys' faces.
+<li>The cut-line <b>A</b> will keep its texture, because it was already
+    <i>cut</i> beforehand.
+<li>The cut-lines <b>2</b> and <b>B</b> will get their textures from the
+    negative poly who <u>first</u> does the carving/cut. In this case, the face
+    <b>B12</b> became RED and face <b>B23</b> became BLUE, but face <b>2AB</b>
+    is still RED.
+</ul>
+
+</td></tr>
+</table>

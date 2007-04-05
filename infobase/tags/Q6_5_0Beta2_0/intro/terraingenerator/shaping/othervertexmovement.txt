@@ -1,0 +1,23 @@
+title: Other Vertex Movement 
+author: cdunde
+
+<table width=100% border=0 cellspacing=0>
+<tr><td valign=top>
+Another very useful tool, but not really part of the original <a href="intro.terraingenerator.selection.html">Terrain modes tool bar</a>, is the <b>vertex movement</b> function and its <b>HotKey</b> options. This was originally created to be used for standard <g>polys</g> but will also apply to any terrain <g>poly</g> as well.
+
+To activate this feature simply select, click on, any part of a <g>polys</g> body. This will cause it to be outlined in white and give it small white circle vertex handles. Place your pointer over one of these handles and hold your <g>LMB</g> to drag that vertex.
+
+Three optional <b>HotKeys</b> can also be used in conjunction with this feature and they are:
+
+<i>The 'n' key :</i> This allows the movement of only ONE vertex and may add additional faces to obtain the shape.
+
+<i>The Ctrl key :</i> This will cause the vertex to snap to the grid.
+
+<i>The Alt key :</i> This allows only one face to move. It appears like you are moving the vertex of the polyhedron. In this case be aware that you might not always get the expected results, because you are not really dragging the vertex, but just rotating the adjacent faces in a way that simulates the vertex movement. If you move the vertex too far away, it might just disappear.
+
+One other important factor to remember is that when using this function it can pull the poly away from other terrain surface polys since it allows you to move on the <b>Z</b> plan as well, unlike the <a href="intro.terraingenerator.selection.html#touchup">Touch-up Selector</a> that only allows movement on the <b>X</b> and <b>Y</b> planes.
+</td>
+<td valign=top align=right>
+<img border=1 align=right>othervertexmovement1.png</img>
+</td></tr>
+</table>
