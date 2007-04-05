@@ -1,0 +1,8 @@
+title: X Y Z Axis locks
+author: cdunde
+
+<img  border=0 align=right>xyzlocks.png</img>
+There tree icon buttons lock each axis independently in all
+of the 2D and 3D views for added control when moving <g>vertexes</g> of the model's mesh.
+
+They are also interactive with the same items listed on the Commands menu.
