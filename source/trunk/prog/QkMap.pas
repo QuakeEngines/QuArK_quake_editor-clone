@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2007/03/25 13:52:25  danielpharos
+Moved a few dictionnary words around.
+
 Revision 1.58  2006/04/27 06:19:59  cdunde
 To setup Quake4 support and code changes for Doom3 and material handling of both.
 Related file changes
@@ -426,7 +429,7 @@ var
  Q : QPixelSet;
  Header : TQ2MipTex;
 
- { Rowdy, for Doom 3 stuff}
+ { Rowdy, for Doom 3 and Quake 4 stuff}
  MapVersion: Integer;
 
  function ReadInt(str : string) : LongInt;
@@ -895,7 +898,10 @@ expected one.
    EntiteBezier.SubElements.Add(B); //&&&
    B.NomTex:=S;   { here we get the texture-name }
 
-   ReadSymbol(sStringToken); // lparen follows texture
+   if MapVersion>1 then
+     ReadSymbol(sStringQuotedToken) // lparen follows texture
+   else
+     ReadSymbol(sStringToken); // lparen follows texture
 
    // now comes 5 numbers which tell how many control points there are
    // use ReadVect5 which is the same as ReadVect but expects 5 numbers
@@ -944,7 +950,7 @@ expected one.
  var
    I, J: Integer;
  begin
-   ReadSymbol(sStringToken); // lbrace follows "patchDef2"
+   ReadSymbol(sStringToken); // lbrace follows "patchDef3"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
 
    {$IFDEF TexUpperCase}
@@ -956,7 +962,10 @@ expected one.
    EntiteBezier.SubElements.Add(B); //&&&
    B.NomTex:=S;   { here we get the texture-name }
 
-   ReadSymbol(sStringToken); // lparen follows texture
+   if MapVersion>1 then
+     ReadSymbol(sStringQuotedToken) // lparen follows texture
+   else
+     ReadSymbol(sStringToken); // lparen follows texture
 
    // now comes 5 numbers which tell how many control points there are
    // use ReadVect5 which is the same as ReadVect but expects 5 numbers
@@ -988,13 +997,13 @@ expected one.
          Inc(pCP1, MeshBuf1.W);
        end;
        ReadSymbol(sBracketRight); // read the trailing rparen for the line end
-       ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
-       ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
-       ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+     end;
+     B.ControlPoints:=MeshBuf1;
+     B.AutoSetSmooth;
 
-       B.ControlPoints:=MeshBuf1;
-       B.AutoSetSmooth;
-     end;     
+     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
    finally
      FreeMem(MeshBuf1.CP);
    end;
@@ -1084,7 +1093,7 @@ expected one.
    texparm : TFaceParams;
    Matrix : TMatrixTransformation;
  begin
-  ReadSymbol(sStringToken); // lbrace follows "patchDef2"
+  ReadSymbol(sStringToken); // lbrace follows "brushDef3"
   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
   P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
   EntitePoly.SubElements.Add(P);
@@ -1114,13 +1123,22 @@ expected one.
     ReadSymbolForceToText:=false;
 
     ReadSymbol(sTokenForcedToString);
-    v[3].x := NumericValue;
-    ReadSymbol(sNumValueToken);
-    v[3].y := NumericValue;
-    ReadSymbol(sNumValueToken);
-    v[3].z := NumericValue;
 
-    ReadSymbol(sNumValueToken);
+    if MapVersion<2 then
+    begin
+      v[3].x := NumericValue;
+      ReadSymbol(sNumValueToken);
+      v[3].y := NumericValue;
+      ReadSymbol(sNumValueToken);
+      v[3].z := NumericValue;
+      ReadSymbol(sNumValueToken);
+    end
+    else
+    begin
+      v[3].x := 0;
+      v[3].y := 0;
+      v[3].z := 0;
+    end;
 
     Surface:=TFace.Create(LoadStr1(139), P);
     P.SubElements.Add(Surface);
@@ -1449,11 +1467,10 @@ begin
          ReadSymbol(sStringToken); // get the map version number // NumValueToken);
          if SymbolType<>sNumValueToken then
            raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]); // invalid number
-         MapVersion := Round(NumericValue+0.5);
+         MapVersion := Trunc(NumericValue+0.5);
          case MapVersion of
          1: Result:=mjDoom3;   // this is a Doom 3 Version 1 map
-         2: // this is a Doom 3 Version 2 map
-            raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(266)]); // can't read Doom 3 version 2 maps
+         2: Result:=mjDoom3;   // this is a Doom 3 Version 2 map
          3: Result:=mjQuake4;  // this is a Quake 4 Version 3 map
             //Right now all Quake 4 maps are Version 3
          else
@@ -1565,7 +1582,8 @@ begin
              if LowerCase(s)='patchdef2' then
              begin
               { Armin: a patchDef2 means it is a Quake 3 map }
-               Result:=mjQ3A;
+              if Result=mjQuake then
+                Result:=mjQ3A;
               { Armin: create the MapStructureB group if not already done }
                if EntiteBezier=Nil then
                begin
@@ -1577,8 +1595,9 @@ begin
              end
              else if LowerCase(s)='patchdef3' then
              begin
-              { Armin: a patchDef2 means it is a Quake 3 map }
-              { Result:=mjQ3A;}
+              { A patchDef3 means it is a Doom 3 map }
+              if Result=mjQuake then
+                Result:=mjDoom3;
               { Armin: create the MapStructureB group if not already done }
                if EntiteBezier=Nil then
                begin
@@ -1590,10 +1609,9 @@ begin
              end
              else if LowerCase(s)='brushdef' then
              begin
-              { tiglari: a brushDef means it is a Quake 3 map -
+              { A brushDef means it is a Quake 3 map }
+              if Result=mjQuake then
                Result:=mjQ3A;
-                not any more, anyone could write tools to support it
-                in a brush-based game }
                ReadQ3BrushDef(); {DECKER - moved to local-procedure to increase readability}
              end
              else if LowerCase(s)='brushdef3' then
@@ -1876,6 +1894,8 @@ var
  List: TQList;
  saveflags : Integer;
  MapOptionSpecs : TStringList;
+  { Rowdy, for Doom 3 and Quake 4 stuff}
+// MapVersion: Integer;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -1899,26 +1919,45 @@ begin
        Dest.Add(CommentMapLine(FmtLoadStr1(177, [SetupGameSet.Name])));
        Dest.Add(CommentMapLine(FmtLoadStr1(178, [])));
        Dest.Add('');
+
+//       MapVersion:=0;
+       MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
        if ObjectGameCode=mjDoom3 then
        begin
          // Rowdy: write an extra line to indicate we are using version 1 .map file
-         // format (instead of Doom 3's default Version 2).  Maybe later on this could
-         // become an option, so QuArK could write either version 1 or version 2
-         // depending on a configuration setting
-         Dest.Add('Version 1');
+         // format or Doom 3's default version 2.
+         if MapOptionSpecs.Values['SaveMapVersion'] = '1' then
+         begin
+//           MapVersion:=1;
+           Dest.Add('Version 1');
+         end
+         else if MapOptionSpecs.Values['SaveMapVersion'] = '2' then
+         begin
+//           MapVersion:=2;
+           Dest.Add('Version 2');
+         end
+         else
+         begin
+//           MapVersion:=2;
+           Dest.Add('Version 2');  //Default to map version 2
+         end;
          Dest.Add('');
+       end;
+       if ObjectGameCode=mjQuake4 then
+       begin
+//         MapVersion:=3;
+         Dest.Add('Version 3');
        end;
        Dest.Text:=Dest.Text;   { #13 -> #13#10 }
 
        saveflags:=0;
-       MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
        if MapOptionSpecs.Values['IgnoreToBuild']<>'' then
          saveflags:=saveflags or soIgnoreToBuild;
        if MapOptionSpecs.Values['DisableFPCoord']<>'' then
          saveflags:=saveflags or soDisableFPCoord;
-        if MapOptionSpecs.Values['UseIntegralVertices']<>'' then
+       if MapOptionSpecs.Values['UseIntegralVertices']<>'' then
          saveflags:=saveflags or soUseIntegralVertices;
-     saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
+       saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
      { TTreeMap(Racine).SaveAsText(List, Dest, IntSpec['saveflags'], HxStrings); }
        TTreeMap(Racine).SaveAsText(List, Dest, saveflags, HxStrings);

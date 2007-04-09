@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.86  2007/02/07 14:33:07  danielpharos
+Cleaned up a little bit of dirty code
+
 Revision 1.85  2007/02/06 13:08:47  danielpharos
 Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
 
@@ -3106,7 +3109,7 @@ begin
 
  if MapFormat=BPType then
  begin
-  Brush.Add('brushDef');
+  Brush.Add(' brushDef');
   Brush.Add(' {');
  end;
  if g_DrawInfo.ConstruirePolyedres then

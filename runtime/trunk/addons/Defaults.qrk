@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.325  2007/04/04 21:34:17  cdunde
+//Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+//
 //Revision 1.324  2007/04/04 21:06:19  danielpharos
 //Changed a few descriptions.
 //
@@ -2880,6 +2883,7 @@ QQRKSRC1
         Options3Dviews_redfaces4 = "1"
         Options3Dviews_color4 = "1"
         DrawAxis                = "1"
+        EntityLinesDispersion   = "1"
         SolidGrid               = ""
         GridVisible             = "1"
         GridActive              = "1"
@@ -2905,16 +2909,15 @@ QQRKSRC1
         HideFaces               = ""
         AutoClosePoly           = ""
         Recenter                = "1"
+        AutoCheckMap            = ""
         HandleHints             = "1"
         TreeKeybDelay           = "1"
         IgnoreToBuild           = "1"
         DisableMapComments      = ""
       //DisableEnhTex           = ""
         DisableFPCoord          = ""
-// Experimental; disable in distributions:
-//        UseIntetralVertices     = ""
-        AutoCheckMap            = ""
-        EntityLinesDispersion   = "1"
+        UseIntetralVertices     = ""
+        SaveMapVersion          = "2"
         CompassNumbers          = "1"
         ComputePolys            = "1"
         HideMouseDrag           = "1"
@@ -6475,6 +6478,15 @@ QQRKSRC1
     //DisableEnhTex:            = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
       DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
       UseIntegralVertices:      = {Typ="X" Txt="   ``"                          Cap="Use Integral Vertices as Threepoints" }
+      SaveMapVersion: = {
+        Typ = "CL"
+        Txt     = "Map version to use for Doom 3"
+        Items   = "Map version 1"
+               $0D"Map version 2"
+        Values =  "1"
+               $0D"2"
+        Hint    = "Doom 3 works with two different map versions. Map version 2 should be used."
+      }
     }
     MdlOptions:form =
     {

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.29  2002/05/13 10:23:12  tiglari
 Select beziers from the backside
 
@@ -1396,6 +1399,8 @@ var
  I, J, K, R: Integer;
  S: String;
  Value: PSingle;
+  { Rowdy, for Doom 3 and Quake 4 stuff}
+ MapVersion: Integer;
 begin
  cp:=ControlPoints;
  if (cp.W>1) and (cp.H>1) then
@@ -1404,10 +1409,30 @@ begin
    Target.Add(' {');
    Target.Add('  patchDef2');
    Target.Add('  {');
+
+   MapVersion:=0;
+   if CharModeJeu=mjDoom3 then
+   begin
+     if SetupSubSet(ssMap,'Options').Specifics.Values['SaveMapVersion'] = '1' then
+       MapVersion:=1
+     else if SetupSubSet(ssMap,'Options').Specifics.Values['SaveMapVersion'] = '2' then
+       MapVersion:=2
+     else
+       MapVersion:=2;
+   end;
+   if CharModeJeu=mjQuake4 then
+     MapVersion:=3;
+   
    {$IFDEF TexUpperCase}
-   Target.Add('   ' + UpperCase(NomTex));
+   if MapVersion>1 then
+     Target.Add('   "' + UpperCase(NomTex) + '"')
+   else
+     Target.Add('   ' + UpperCase(NomTex));
    {$ELSE}
-   Target.Add('   ' + NomTex);
+   if MapVersion>1 then
+     Target.Add('   "' + NomTex + '"')
+   else
+     Target.Add('   ' + NomTex);
    {$ENDIF}
    Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
    Target.Add('(');
