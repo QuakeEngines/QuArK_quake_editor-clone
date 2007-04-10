@@ -12,8 +12,15 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
-6.5.0 Beta 2
+6.5.0 Beta 2.1
 =============
+
+* [cdunde]: Setup mesh movement using common drag handles in the Skin-view for skinning model textures.
+
+* [cdunde]: Fixed vertex position display in Model Editor's hint box while dragging.
+
+6.5.0 Beta 2.0
+==============
 
 * [cdunde]: Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
 
