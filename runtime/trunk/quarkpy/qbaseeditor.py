@@ -700,7 +700,8 @@ class BaseEditor:
             if self.dragobject is not None:
                 self.dragobject.dragto(x, y, flags)
             if isinstance(self, mdleditor.ModelEditor):
-                pass
+                if self.dragobject.hint is not None:
+                    self.showhint(self.dragobject.hint)
             else:
                 try:
                     self.dragobject.lastdrag=time.clock(),x,y
@@ -1006,6 +1007,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.40  2007/04/04 21:34:17  cdunde
+#Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+#
 #Revision 1.39  2007/04/02 22:12:21  danielpharos
 #Moved one line to the dictionnary.
 #
