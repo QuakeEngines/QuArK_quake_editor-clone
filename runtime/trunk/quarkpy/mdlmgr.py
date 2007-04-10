@@ -163,14 +163,18 @@ class ModelLayout(BaseLayout):
         cv.brushcolor = GRAY
         cv.rectangle(0,0,w,h)
 
-    def bs_skinform(self, panel):
+    def bs_skinform(self, panel):  ### This is the Skin-view setup items (form, buttons & view).
         ico_maped=ico_dict['ico_maped']
         fp = panel.newpanel()
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
-        self.buttons["skinzoom"] = skinzoombtn
+        self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_maped, 9, "Skin-view", infobaselink='intro.modeleditor.model.html#mesh')
+        self.Vertexdragmode.mode = self.MODE
+        self.Vertexdragmode.tag = "SingleVertexDrag"
+        self.Vertexdragmode.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
+        self.buttons.update({"skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode})
         tp = fp.newtoppanel(123,0) # Sets the height of the top panel.
-        btnp = tp.newbottompanel(23,0).newbtnpanel([skinzoombtn])
+        btnp = tp.newbottompanel(23,0).newbtnpanel([skinzoombtn, self.Vertexdragmode])
         btnp.margins = (0,0)
         self.skinform = tp.newdataform()
         self.skinform.header = 0
@@ -371,8 +375,8 @@ class ModelLayout(BaseLayout):
         try:
             if NewSellist != [] and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
                 self.editor.layout.explorer.sellist = NewSellist
-                for item in editor.layout.explorer.sellist:
-                    editor.layout.explorer.expand(item.parent)
+                for item in self.editor.layout.explorer.sellist:
+                    self.editor.layout.explorer.expand(item.parent)
                 mdlhandles.NewSellist = []
                 return
         except:
@@ -474,6 +478,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.24  2007/03/29 18:02:19  cdunde
+#Just some comment stuff.
+#
 #Revision 1.23  2007/03/22 20:14:15  cdunde
 #Proper selection and display of skin textures for all model configurations,
 #single or multi component, skin or no skin, single or multi skins or any combination.

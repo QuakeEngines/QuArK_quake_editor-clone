@@ -208,7 +208,6 @@ class SkinHandle(qhandles.GenericHandle):
       self.texWidth = texWidth
       self.texHeight = texHeight
       self.triangle = triangle
-      self.count = 0
       self.undomsg = "Skin-view move"
 
  #  For setting stuff up at the beginning of a handle drag.
@@ -285,7 +284,6 @@ class SkinHandle(qhandles.GenericHandle):
       texWidth = self.texWidth
       texHeight = self.texHeight
       triangle = self.triangle
-      count = self.count
       p = view.proj(self.pos)
       if p.visible:
           cv.pencolor = skinviewmesh
@@ -336,12 +334,15 @@ class SkinHandle(qhandles.GenericHandle):
               delta = quarkx.vect(0, delta.y, 0)
           if editor.lock_y==1:
               delta = quarkx.vect(delta.x, 0, 0)
-      self.draghint = "moving s/t vertex: " + ftoss(delta.x) + ", " + ftoss(delta.y)
+      ### just gives how far you have moved the mouse.
+   #   self.draghint = "moving Skin-view vertex: " + ftoss(delta.x) + ", " + ftoss(delta.y)
+      ### shows how far from the center of the skin texture the vertex is, its true position.
+      self.draghint = "x, y pos from ctr: " + ftoss(self.pos.x+delta.x) + ", " + ftoss(-self.pos.y-delta.y)
       new = self.comp.copy()
       if delta or (flags&MB_REDIMAGE):
           tris = new.triangles ### These are all the triangle faces of the model mesh.
 
-          ### Code below draws the Skin-view green triangle face guide lines while being dragged.
+          ### Code below draws the Skin-view green guide lines for the triangle face being dragged.
       try:
           editor.finishdrawing(view)
           view.repaint()
@@ -350,7 +351,6 @@ class SkinHandle(qhandles.GenericHandle):
           cv.pencolor = skinviewdraglines
           oldtri = tris[self.tri_index]
           oldvert = oldtri[self.ver_index]
-
           newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
           if (self.ver_index == 0):
               newtri = (newvert, oldtri[1], oldtri[2])
@@ -358,37 +358,61 @@ class SkinHandle(qhandles.GenericHandle):
               facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
               oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
               oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
-              view.drawmap(cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y)))
-              view.drawmap(cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y)))
+              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
+              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
           elif (self.ver_index == 1):
               newtri = (oldtri[0], newvert, oldtri[2])
               facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
               facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
               oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
               oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
-              view.drawmap(cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y)))
-              view.drawmap(cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y)))
+              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
+              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
           elif (self.ver_index == 2):
               newtri = (oldtri[0], oldtri[1], newvert)
               facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
               facev4 = quarkx.vect(oldtri[1][1]-int(texWidth*.5), oldtri[1][2]-int(texHeight*.5), 0)
               oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
               oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
-              view.drawmap(cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y)))
-              view.drawmap(cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y)))
+              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
+              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
 
           tris[self.tri_index] = newtri
-          new.triangles = tris
-
-          return [self.comp], [new]
       except:
-          try:
-              new.triangles = self.comp
-              return [self.comp], [new]
-          except:
-              return None, None
+          new.triangles = self.comp
 
-    #  return [self.comp], [new]
+  ####### new code for Skin-view mesh to drag using common handles option. ########
+      setup = quarkx.setupsubset(SS_MODEL, "Options")
+      if not setup["SingleVertexDrag"]:
+          component = editor.Root.currentcomponent
+          if component is not None:
+              if component.name.endswith(":mc"):
+                  handlevertex = self.tri_index
+                  dragtris = find2DTriangles(self.comp, self.tri_index, self.ver_index) # This is the funciton that gets the common vertexes in mdlutils.py.
+
+                  newtrilist = []
+
+                  newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
+                  for index,tri in dragtris.iteritems():
+                      vtx_index = 0
+                      for vtx in tri:
+                          if str(vtx) == str(self.comp.triangles[self.tri_index][self.ver_index]):
+                              drag_vtx_index = vtx_index
+                              pass
+                          else:
+                              vtx_index = vtx_index + 1
+                              fixedvertex = quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0)
+                              fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
+                              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(fixedX), int(fixedY))
+                      if drag_vtx_index == 0:
+                          newtriangle = (newvert, tri[1], tri[2])
+                      elif drag_vtx_index == 1:
+                          newtriangle = (tri[0], newvert, tri[2])
+                      else:
+                          newtriangle = (tri[0], tri[1], newvert)
+                      tris[index] = newtriangle
+      new.triangles = tris    
+      return [self.comp], [new]
 
 
 class BoneHandle(qhandles.GenericHandle):
@@ -608,6 +632,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
 
     linecount = 0
     from qbaseeditor import flagsmouse
+
     for i in range(len(tris)):
         tri = tris[i]
         for j in range(len(tri)):
@@ -801,6 +826,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.29  2007/04/04 21:34:17  cdunde
+#Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+#
 #Revision 1.28  2007/03/22 20:14:15  cdunde
 #Proper selection and display of skin textures for all model configurations,
 #single or multi component, skin or no skin, single or multi skins or any combination.

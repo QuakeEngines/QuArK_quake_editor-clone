@@ -273,10 +273,34 @@ class MdlUserDataPanel(UserDataPanel):
         #            list = [group2folder(list[0])]
         #UserDataPanel.drop(self, btnpanel, list, i, source)
 
+
+def find2DTriangles(comp, tri_index, ver_index):
+  "This function returns triangles and their index of a component's"
+  "mesh that have a common vertex position of the 2D drag view."
+  "This is primarily used for the Skin-view mesh drag option."
+  "See the mdlhandles.py file class SkinHandle, drag funciton for its use."
+  tris = comp.triangles
+  tris_out = {}
+  i = 0
+  for tri in tris:
+    for vtx in tri:
+        if str(vtx) == str(tris[tri_index][ver_index]):
+          if i == tri_index:
+              break
+          else:
+              tris_out[i] = tri
+              break
+    i = i + 1
+  return tris_out
+
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.12  2007/03/29 15:25:34  danielpharos
+#Cleaned up the tabs.
+#
 #Revision 1.11  2006/12/06 04:05:59  cdunde
 #For explanation comment on how to use def findTriangles function.
 #
