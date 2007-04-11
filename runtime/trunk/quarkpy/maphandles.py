@@ -967,7 +967,7 @@ class CyanLHandle(qhandles.GenericHandle):
 
     def __init__(self, n, tp4, face, texsrc):
         self.tp4 = tp4
-        self.pos = tp4[n]
+        qhandles.GenericHandle.__init__(self, self.t4p[n])
         self.n = n
         self.face = face
         self.cursor = (CR_DRAG, CR_LINEARV, CR_LINEARV, CR_CROSSH)[n]
@@ -1941,6 +1941,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.55  2006/11/30 01:19:33  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.54  2006/11/29 07:00:25  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.
