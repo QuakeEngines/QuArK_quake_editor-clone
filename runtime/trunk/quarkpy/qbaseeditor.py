@@ -524,16 +524,11 @@ class BaseEditor:
         undo.ok(self.Root, msg)
 
 
-    def invalidateviews(self, rebuild=0):
+    def invalidateviews(self, rebuild=0, viewmodes=''):
         "Force all views to be redrawn."
         for v in self.layout.views:
-            v.invalidate(rebuild)
-
-    def invalidatetexviews(self):
-        "Force all non-wireframe views to be redrawn."
-        for v in self.layout.views:
-            if v.viewmode != "wire":
-                v.invalidate(1)
+            if (viewmodes == '') or (v.viewmode == viewmodes):
+                v.invalidate(rebuild)
 
 
     def explorerrootchange(self, ex, old, new):
@@ -588,11 +583,11 @@ class BaseEditor:
                                 if isinstance(self.dragobject, qhandles.HandleDragObject):
                                     pass
                                 else:
-                                    import mdleditor
+                                    #import mdleditor     ###Already imported above!
                                     mdleditor.commonhandles(self)
                             else:
                                 if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow":
-                                    import mdleditor
+                                    #import mdleditor     ###Already imported above!
                                     mdleditor.commonhandles(self)
                                 else:
                                     if flagsmouse == 2064 and (currentview.info["viewname"] == "XY" or currentview.info["viewname"] == "XZ" or currentview.info["viewname"] == "YZ"):
@@ -1007,6 +1002,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.41  2007/04/10 05:43:41  cdunde
+#Fixed vertex position display in Model Editor's hint box while dragging.
+#
 #Revision 1.40  2007/04/04 21:34:17  cdunde
 #Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
 #
