@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
 Revision 1.7  2007/03/27 19:22:22  danielpharos
 Fixed loading VTF files from inside a gcf-file.
 
@@ -53,7 +56,16 @@ interface
 uses Windows, Classes, QkWad, QkPixelSet, QkObjects, QkFileObjects, QkVTFLib;
 
 type
-  QVMT = class(QPixelSet)
+  QVMTStage = class(QObject)
+         private
+           function DumpData: String;
+         public
+           class function TypeInfo: String; override;
+         end;
+  QVMTFile = class(QPixelSet)
+         private
+           DefaultImageName: String;
+           DefaultImageType: Integer;
          protected
            DefaultImageCache : QPixelSet;
          public
@@ -85,12 +97,83 @@ begin
   Raise Exception.Create(x);
 end;
 
-class function QVMT.TypeInfo: String;
+class function QVMTStage.TypeInfo: String;
+begin
+ TypeInfo:='.vmtstage';
+end;
+
+function QVMTStage.DumpData : String;
+const
+  NumberChars: string = '0123456789-';
+type
+  vlDataType = (vlString, vlInteger, vlSingle);
+var
+  I, J, K: Integer;
+  Q: QObject;
+  Spec: String;
+  SpecName: String;
+  SpecDataType: vlDataType;
+  CharFound: Boolean;
+begin
+  for I:=0 to Specifics.Count-1 do
+  begin
+    Spec:=Specifics[I];
+    J:=Pos('=', Spec);
+    SpecName:=LeftStr(Spec,J-1);
+    Spec:=RightStr(Spec,Length(Spec)-J);
+
+    //DanielPharos: Ugly, slow and inaccurate way of determining the type...
+    SpecDataType:=vlInteger;
+    for J:=0 to Length(Spec) do
+    begin
+      CharFound:=false;
+      for K:=0 to 10 do
+      begin
+        if NumberChars[K]=Spec[J] then
+        begin
+          CharFound:=true;
+          break;
+        end;
+      end;
+      if CharFound=false then
+      begin
+        SpecDataType:=vlString;
+        break;
+      end;
+    end;
+    if SpecDataType=vlInteger then
+    begin
+      K:=Pos(Spec,'.');
+      if K>0 then
+        SpecDataType:=vlSingle;
+    end;
+
+    case SpecDataType of
+    vlString: vlMaterialAddNodeString(PChar(SpecName),PChar(Spec));
+    vlInteger: vlMaterialAddNodeInteger(PChar(SpecName),StrToInt(Spec));
+    vlSingle: vlMaterialAddNodeSingle(PChar(SpecName),StrToFloat(Spec));
+    end;
+  end;
+
+  for I:=0 to SubElements.Count-1 do
+  begin
+    Q:=SubElements[I];
+    if Q is QVMTStage then
+    begin
+      vlMaterialAddNodeGroup(PChar(Q.name));
+      vlMaterialGetChildNode(PChar(Q.name));
+      QVMTStage(Q).DumpData;
+      vlMaterialGetParentNode;
+    end;
+  end;
+end;
+
+class function QVMTFile.TypeInfo: String;
 begin
  TypeInfo:='.vmt';
 end;
 
-class procedure QVMT.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+class procedure QVMTFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
   Info.FileObjectDescriptionText:=LoadStr1(5716);
@@ -98,10 +181,9 @@ begin
   Info.WndInfo:=[wiWindow];
 end;
 
-function QVMT.DefaultImage : QPixelSet;
+function QVMTFile.DefaultImage : QPixelSet;
 var
  I: integer;
- S: String;
  GameDir: String;
  SteamAppsDir: String;
  SteamDirectory: String;
@@ -128,7 +210,6 @@ begin
 
   if (self.Protocol<>'') then
   begin
-    s:=self.Name;
     GCFFile:=self;
     GCFFileChild0:=nil;
     GCFFileChild1:=nil;
@@ -195,71 +276,14 @@ begin
     TexturePath3:=LeftStr(TexturePath3,I);
   end;
 
-  S:=Specifics.Values['%tooltexture'];
-  if (s<>'') then
+  if (Result=nil) and (DefaultImageName<>'') then
   begin
-    Log(LOG_VERBOSE,'attempting to load $basetexture '+S);
+    Log(LOG_VERBOSE,'attempting to load '+DefaultImageName);
     try
       if (self.Protocol<>'') then
-        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
+        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + DefaultImageName + '.vtf') as QPixelSet
       else
-        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
-    except
-      Result:=nil;
-    end;
-  end;
-
-  S:=Specifics.Values['$basetexture'];
-  if (Result=nil) and (s<>'') then
-  begin
-    Log(LOG_VERBOSE,'attempting to load $basetexture '+S);
-    try
-      if (self.Protocol<>'') then
-        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
-      else
-        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
-    except
-      Result:=nil;
-    end;
-  end;
-
-  S:=Specifics.Values['$Material'];
-  if (Result=nil) and (s<>'') then
-  begin
-    Log(LOG_VERBOSE,'attempting to load $Material '+S);
-    try
-      if (self.Protocol<>'') then
-        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
-      else
-        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
-    except
-      Result:=nil;
-    end;
-  end;
-
-  S:=Specifics.Values['$dudvmap'];
-  if (Result=nil) and (s<>'') then
-  begin
-    Log(LOG_VERBOSE,'attempting to load $dudvmap '+S);
-    try
-      if (self.Protocol<>'') then
-        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
-      else
-        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
-    except
-      Result:=nil;
-    end;
-  end;
-
-  S:=Specifics.Values['$envmap'];
-  if (Result=nil) and (s<>'') then
-  begin
-    Log(LOG_VERBOSE,'attempting to load $envmap '+S);
-    try
-      if (self.Protocol<>'') then
-        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + s + '.vtf') as QPixelSet
-      else
-        Result:=NeedGameFileBase(TexturePath, TexturePath2 + s + '.vtf') as QPixelSet;
+        Result:=NeedGameFileBase(TexturePath, TexturePath2 + DefaultImageName + '.vtf') as QPixelSet;
     except
       Result:=nil;
     end;
@@ -284,7 +308,7 @@ begin
   shaders are being loaded }
   if Result<>Nil then
   begin
-    Log(LOG_VERBOSE, LoadStr1(5708), [S]);
+    Log(LOG_VERBOSE, LoadStr1(5708), [DefaultImageName]);
     Size:=Result.GetSize;
     V[1]:=Size.X;
     V[2]:=Size.Y;
@@ -297,7 +321,7 @@ begin
   end;
 end;
 
-function QVMT.GetSize : TPoint;
+function QVMTFile.GetSize : TPoint;
 var
  Image: QPixelSet;
 begin
@@ -307,7 +331,7 @@ begin
  Result:=Image.GetSize;
 end;
 
-function QVMT.Description : TPixelSetDescription;
+function QVMTFile.Description : TPixelSetDescription;
 var
  Image: QPixelSet;
 begin
@@ -316,22 +340,27 @@ begin
  Result:=Image.Description;
 end;
 
-procedure QVMT.SetSize;
+procedure QVMTFile.SetSize;
 begin
  Raise EError(5696);
 end;
 
-function QVMT.SetDescription;
+function QVMTFile.SetDescription;
 begin
  Raise EError(5696);
 end;
 
-procedure QVMT.LoadFile(F: TStream; FSize: Integer);
+procedure QVMTFile.LoadFile(F: TStream; FSize: Integer);
 var
   RawBuffer: String;
   VMTMaterial: Cardinal;
+  Stage: QVMTStage;
+  StageList: array of QObject;
+  ImageType: Integer;
+  GroupEndWorkaround: Boolean;
+  GroupEndWorkaroundName: String;
 
-  //NodeLevel: Cardinal;
+  NodeLevel: Cardinal;
   NodeType: VMTNodeType;
   NodeName: String;
   NodeValueString: String;
@@ -374,7 +403,17 @@ begin
         vlDeleteMaterial(VMTMaterial);
         Fatal('Unable to load VMT file. Call to vlMaterialGetFirstNode failed.');
       end;
-      //NodeLevel:=0;
+      DefaultImageName:='';
+      DefaultImageType:=8;
+      NodeLevel:=0;
+      SetLength(StageList, NodeLevel+1);
+      StageList[NodeLevel]:=Self;
+      GroupEndWorkaround:=false;
+      { DanielPharos:
+        We need a workaround for the fact that VTFLib reports a GROUP with
+        exactly the same name AFTER each GROUPEND (unless it's the last one
+        of the file). So we will simply ignore the first GROUP after any
+        GROUPEND if it has the same name as the GROUPEND.}
 
       repeat
         NodeName:=vlMaterialGetNodeName;
@@ -382,30 +421,69 @@ begin
         case NodeType of
         NODE_TYPE_GROUP:
           begin
-            //NodeLevel:=NodeLevel+1;
-            //...
+            if (GroupEndWorkaround=false) or (NodeName<>GroupEndWorkaroundName) then
+            begin
+              NodeLevel:=NodeLevel+1;
+              Stage:=QVMTStage.Create(NodeName, StageList[NodeLevel-1]);
+              StageList[NodeLevel-1].SubElements.Add(Stage);
+              SetLength(StageList, NodeLevel+1);
+              StageList[NodeLevel]:=Stage;
+            end;
           end;
         NODE_TYPE_GROUP_END:
           begin
-            //NodeLevel:=NodeLevel-1;
-            //...
+            NodeLevel:=NodeLevel-1;
+            SetLength(StageList, NodeLevel+1);
           end;
         NODE_TYPE_STRING:
           begin
             NodeValueString:=vlMaterialGetNodeString;
-            Specifics.Add(NodeName+'='+NodeValueString);
+            StageList[NodeLevel].Specifics.Add(NodeName+'='+NodeValueString);
+
+            if LowerCase(NodeName)='%tooltexture' then
+              ImageType:=0
+            else if LowerCase(NodeName)='$basetexture' then
+              ImageType:=1
+            else if LowerCase(NodeName)='$material' then
+              ImageType:=2
+            else if LowerCase(NodeName)='$bumpmap' then
+              ImageType:=3
+            else if LowerCase(NodeName)='$normalmap' then
+              ImageType:=4
+            else if LowerCase(NodeName)='$dudvmap' then
+              ImageType:=5
+            else if LowerCase(NodeName)='$envmap' then
+              ImageType:=6
+            else if LowerCase(NodeName)='$parallaxmap' then
+              ImageType:=7
+            else
+              ImageType:=8;
+
+            if DefaultImageType>ImageType then
+            begin
+              DefaultImageType:=ImageType;
+              DefaultImageName:=NodeValueString;
+            end;
           end;
         NODE_TYPE_INTEGER:
           begin
             NodeValueInteger:=vlMaterialGetNodeInteger;
-            Specifics.Add(NodeName+'='+IntToStr(NodeValueInteger));
+            StageList[NodeLevel].Specifics.Add(NodeName+'='+IntToStr(NodeValueInteger));
           end;
         NODE_TYPE_SINGLE:
           begin
             NodeValueSingle:=vlMaterialGetNodeSingle;
-            Specifics.Add(NodeName+'='+FloatToStr(NodeValueSingle));
+            StageList[NodeLevel].Specifics.Add(NodeName+'='+FloatToStr(NodeValueSingle));
           end;
         end;
+
+        if NodeType=NODE_TYPE_GROUP_END then
+        begin
+          GroupEndWorkaround:=true;
+          GroupEndWorkaroundName:=NodeName;
+        end
+        else
+          GroupEndWorkaround:=false;
       until vlMaterialGetNextNode=false;
 
       vlDeleteMaterial(VMTMaterial);
@@ -415,8 +493,10 @@ begin
   end;
 end;
 
-procedure QVMT.SaveFile(Info: TInfoEnreg1);
+procedure QVMTFile.SaveFile(Info: TInfoEnreg1);
 var
+  I: Integer;
+  Q: QObject;
   RawBuffer: String;
   VMTMaterial, OutputSize: Cardinal;
 begin
@@ -440,9 +520,23 @@ begin
     if vlBindMaterial(VMTMaterial)=false then
       Fatal('Unable to save VMT file. Call to vlBindMaterial failed.');
 
-    //DanielPharos: Do saving stuff...!
-    RawBuffer:='';
+    for I:=0 to SubElements.Count-1 do
+    begin
+      Q:=SubElements[I];
+      if Q is QVMTStage then
+      begin
+        //DanielPharos: There should only one subelement: the root
+        if vlMaterialCreate(PChar(Q.name))=false then
+          Fatal('Unable to save VMT file. Call to vlMaterialCreate failed.');
+        if vlMaterialGetFirstNode=false then
+          Fatal('Unable to save VMT file. Call to vlMaterialGetFirstNode failed.');
 
+        QVMTStage(Q).DumpData;
+        break;
+      end;
+    end;
+
+    SetLength(RawBuffer, 1024);     {1024 is just a number. We need a better way!}
     if vlMaterialSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
       Fatal('Unable to save VMT file. Call to vlMaterialSaveLump failed.');
 
@@ -458,7 +552,7 @@ end;
 
 initialization
 begin
-  RegisterQObject(QVMT, 'v');
+  RegisterQObject(QVMTFile, 'v');
 end;
 
 finalization

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
 Revision 1.10  2007/03/17 15:43:12  danielpharos
 Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
 
@@ -369,11 +372,22 @@ var
   vlMaterialSaveLump: function (lpData : PByte; uiBufferSize : Cardinal; uiSize : PCardinal) : Boolean; cdecl;
   vlMaterialGetFirstNode: function : Boolean; cdecl;
   vlMaterialGetNextNode: function : Boolean; cdecl;
-  vlMaterialGetNodeName: function : PChar; cdecl; //DP Does it really return a string...?
+  vlMaterialGetNodeName: function : PChar; cdecl;
   vlMaterialGetNodeType: function : VMTNodeType; cdecl;
-  vlMaterialGetNodeString: function : PChar; cdecl; //DP Does it really return a string...?
+  vlMaterialGetNodeString: function : PChar; cdecl;
   vlMaterialGetNodeInteger: function : Cardinal; cdecl;
   vlMaterialGetNodeSingle: function : Single; cdecl;
+  vlMaterialSetNodeName: procedure (cName : PChar); cdecl;
+  vlMaterialSetNodeString: procedure (cValue : PChar); cdecl;
+  vlMaterialSetNodeInteger: procedure (iValue : Cardinal); cdecl;
+  vlMaterialSetNodeSingle: procedure (sValue : Single); cdecl;
+  vlMaterialAddNodeGroup: procedure (cName : PChar); cdecl;
+  vlMaterialAddNodeString: procedure (cName : PChar; cValue : PChar); cdecl;
+  vlMaterialAddNodeInteger: procedure (cName : PChar; iValue : Cardinal); cdecl;
+  vlMaterialAddNodeSingle: procedure (cName : PChar; sValue : Single); cdecl;
+  vlMaterialCreate: function (cRoot : PChar) : Boolean; cdecl;
+  vlMaterialGetParentNode: procedure; cdecl;
+  vlMaterialGetChildNode: procedure (cName : PChar); cdecl;
 
 implementation
 
@@ -530,8 +544,19 @@ begin
       vlMaterialGetNodeString   := InitDllPointer(HVTFLib, 'vlMaterialGetNodeString');
       vlMaterialGetNodeInteger  := InitDllPointer(HVTFLib, 'vlMaterialGetNodeInteger');
       vlMaterialGetNodeSingle   := InitDllPointer(HVTFLib, 'vlMaterialGetNodeSingle');
-      {DanielPharos: If one of the API func's fails, we should stop loading, and return False!}
+      vlMaterialSetNodeName     := InitDllPointer(HVTFLib, 'vlMaterialSetNodeName');
+      vlMaterialSetNodeString   := InitDllPointer(HVTFLib, 'vlMaterialSetNodeString');
+      vlMaterialSetNodeInteger  := InitDllPointer(HVTFLib, 'vlMaterialSetNodeInteger');
+      vlMaterialSetNodeSingle   := InitDllPointer(HVTFLib, 'vlMaterialSetNodeSingle');
+      vlMaterialAddNodeGroup    := InitDllPointer(HVTFLib, 'vlMaterialAddNodeGroup');
+      vlMaterialAddNodeString   := InitDllPointer(HVTFLib, 'vlMaterialAddNodeString');
+      vlMaterialAddNodeInteger  := InitDllPointer(HVTFLib, 'vlMaterialAddNodeInteger');
+      vlMaterialAddNodeSingle   := InitDllPointer(HVTFLib, 'vlMaterialAddNodeSingle');
+      vlMaterialCreate          := InitDllPointer(HVTFLib, 'vlMaterialCreate');
+      vlMaterialGetParentNode   := InitDllPointer(HVTFLib, 'vlMaterialGetParentNode');
+      vlMaterialGetChildNode    := InitDllPointer(HVTFLib, 'vlMaterialGetChildNode');
 
+      //DanielPharos: If one of the API func's fails, we should stop loading, and return False!
       if vlGetVersion<125 then
       begin
         LogError('VTFLib version mismatch!');
@@ -601,6 +626,17 @@ begin
       vlMaterialGetNodeString   := nil;
       vlMaterialGetNodeInteger  := nil;
       vlMaterialGetNodeSingle   := nil;
+      vlMaterialSetNodeName     := nil;
+      vlMaterialSetNodeString   := nil;
+      vlMaterialSetNodeInteger  := nil;
+      vlMaterialSetNodeSingle   := nil;
+      vlMaterialAddNodeGroup    := nil;
+      vlMaterialAddNodeString   := nil;
+      vlMaterialAddNodeInteger  := nil;
+      vlMaterialAddNodeSingle   := nil;
+      vlMaterialCreate          := nil;
+      vlMaterialGetParentNode   := nil;
+      vlMaterialGetChildNode    := nil;
     end;
 
     if Hvstdlib <> 0 then
