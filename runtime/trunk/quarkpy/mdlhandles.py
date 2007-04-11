@@ -75,12 +75,12 @@ class VertexHandle(qhandles.GenericHandle):
             addvertex(editor.Root.currentcomponent, self.pos)
         def removevertex1click(m, self=self, editor=editor, view=view):
             removevertex(editor.Root.currentcomponent, self.index)
-	def pick_vertex(m, self=self, editor=editor, view=view):
-	    if self.index not in editor.picked:
-              editor.picked = editor.picked + [ self.index ]
+        def pick_vertex(m, self=self, editor=editor, view=view):
+            if self.index not in editor.picked:
+                editor.picked = editor.picked + [ self.index ]
             else:
-              editor.picked.remove(self.index)
-              
+                editor.picked.remove(self.index)
+
         return [qmenu.item("&Add Vertex Here", addhere1click, "add vertex to component"),
                 qmenu.item("&Remove Vertex", removevertex1click, "removes a vertex from the component"),
                 qmenu.item("&Pick Vertex", pick_vertex, "picks a vertex for creating triangles"),
@@ -826,6 +826,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.30  2007/04/10 06:00:36  cdunde
+#Setup mesh movement using common drag handles
+#in the Skin-view for skinning model textures.
+#
 #Revision 1.29  2007/04/04 21:34:17  cdunde
 #Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
 #
