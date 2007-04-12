@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/03/19 21:01:20  danielpharos
+Re-done 1.10, but this time (hopefully) better. There seems to be a race condition where Timer1 fires after it should have been disabled. Shouldn't happen anymore (crosses fingers).
+
 Revision 1.11  2007/02/02 10:45:42  danielpharos
 Reverted: Workaround for an access violation on shutdown
 
@@ -445,7 +448,12 @@ end;
 procedure TConfigDlg.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  GlobalDoAccept{(Self)};
- if ApplyBtn.Enabled then
+ { DanielPharos: Another brave attempt to fix a sometimes-happening
+ crash-on-exit bug. The ApplyBtn might already have been destroyed
+ by the time we try to check it. My first attempt (counting my try-
+ statement as zero :)  ) was with Timer1, so I'm going to use the
+ same variable here: DisableTimer.}
+ if DisableTimer and ApplyBtn.Enabled then
   begin
    ActivateNow(Self);
    case MessageDlg(LoadStr1(5642), mtConfirmation, mbYesNoCancel, 0) of
