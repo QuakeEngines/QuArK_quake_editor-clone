@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2007/04/12 10:05:21  danielpharos
+Improved texture name handling for Doom 3 and Quake 4.
+
 Revision 1.60  2007/04/09 21:44:24  danielpharos
 Started work on Doom 3 map version 2 and Quake 4 map version 3.
 
@@ -927,9 +930,11 @@ expected one.
    // use ReadVect5 which is the same as ReadVect but expects 5 numbers
    // and we only need the X and Y values
    V5:=ReadVect5(False);
-   // X tells us how many lines of control points there are (height)
-   // Y tells us how many control points on each line (width)
-
+   // Nr 1: Width (many lines of control points there are)
+   // Nr 2: Height (how many control points on each line)
+   // Nr 3: HorzSubdivisions (?)
+   // Nr 4: VertSubdivisions (?)
+   // Nr 5: ?
 
    MeshBuf1.W := Round(V5.X);
    MeshBuf1.H := Round(V5.Y);
@@ -998,13 +1003,17 @@ expected one.
    else
      ReadSymbol(sStringToken); // lparen follows texture
 
-   // now comes 5 numbers which tell how many control points there are
-   // use ReadVect5 which is the same as ReadVect but expects 5 numbers
-   // and we only need the X and Y values
+   // now comes 7 numbers which tell how many control points there are
+   // use ReadVect7 which is the same as ReadVect but expects 7 numbers
+   // and we only need the first and second values
    V5:=ReadVect7(False);
-   // X tells us how many lines of control points there are (height)
-   // Y tells us how many control points on each line (width)
-
+   // Nr 1: Width (many lines of control points there are)
+   // Nr 2: Height (how many control points on each line)
+   // Nr 3: HorzSubdivisions (?)
+   // Nr 4: VertSubdivisions (?)
+   // Nr 5: ?
+   // Nr 6: ?
+   // Nr 7: ?
 
    MeshBuf1.W := Round(V5.X);
    MeshBuf1.H := Round(V5.Y);
@@ -1659,14 +1668,22 @@ begin
                  Racine.SubElements.Add(MapStructureB);
                  EntiteBezier:=MapStructureB;
                end;
-               ReadPatchDef3(); {DECKER - moved to local-procedure to increase readability}
+               ReadPatchDef3(); //DECKER - moved to local-procedure to increase readability
              end
              else if LowerCase(s)='brushdef' then
              begin
                // A brushDef means it is at least a Quake 3 map
                if Result=mjQuake then
                  Result:=mjQ3A;
-               ReadBrushDef(); {DECKER - moved to local-procedure to increase readability}
+               ReadBrushDef(); //DECKER - moved to local-procedure to increase readability
+             end
+             else if LowerCase(s)='brushdef2' then
+             begin
+               // A brushDef2 means it is at least a Doom 3 map (not sure about this)
+               if Result=mjQuake then
+                 Result:=mjDoom3;
+               ReadBrushDef3(); //DECKER - moved to local-procedure to increase readability
+               // The difference between brushdef2 and brushdef3 is minimal...
              end
              else if LowerCase(s)='brushdef3' then
              begin

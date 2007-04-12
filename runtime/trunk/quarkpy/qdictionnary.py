@@ -105,7 +105,7 @@ Strings = {
     257: "QuArK has found %d invalid polyhedron face(s) in this file. Look for the \042broken face\042 icons in the list.",
     # 258: "Polyhedrons with the 'origin' content flag are not allowed in 'worldspawn'. Ignored.",
 
-    260: "\042patchDef2\042 expected",
+    260: "Unknown brushdef or patchdef found",
     261: "bezier",
     262: "Map beziers",
     265: "unexpected surface attribute",
@@ -1016,6 +1016,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.90  2007/04/02 22:12:21  danielpharos
+#Moved one line to the dictionnary.
+#
 #Revision 1.89  2007/03/29 21:01:35  danielpharos
 #Changed a few comments and error messages
 #
