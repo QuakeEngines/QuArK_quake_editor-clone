@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2007/04/12 15:28:11  danielpharos
+Minor clean up.
+
 Revision 1.63  2007/04/12 15:04:43  danielpharos
 BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
 
@@ -222,7 +225,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkFileObjects, TB97, QkObjects, CursorScrollBox, ExtCtrls, StdCtrls,
-  QkForm, QkMapObjects, QkBsp, EnterEditCtrl, PyMapView, PyMath,
+  QkForm, QkMapObjects, QkBsp, EnterEditCtrl, PyMapView, PyMath, qmath,
   qmatrices, Python, Duplicator, { tiglari } QkTextures, QkSin { /tiglari};
 
 { $DEFINE TexUpperCase}
@@ -230,6 +233,15 @@ uses
 {$DEFINE RemoveEmptySpecs}
 
 type
+ TThreePoints = array[1..3] of TVect;  //Copied from QkMapPoly
+
+ MapFormatTypes = (
+     CQType, { Classic Quake1/2/3 }
+     QetpType,  { Quark Enhanced Texture Positioning }
+     V220Type,  { Valve Mapformat 220 }
+     BPType,     { Brush Primitives }
+     HL2Type     {that one used in hl2 tools}
+  );
 
  QMap = class(QFileObject)
         protected
@@ -290,12 +302,14 @@ type
 
  {------------------------}
 
+function GetMapFormatType : MapFormatTypes;
 function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Dest, HxStrings: TStrings; Flags: Integer; EntityNumber: Integer);
 procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags: Integer);
 procedure SaveAsMapTextTBezier(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Target: TStrings);
 procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 
@@ -303,7 +317,7 @@ procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVer
 
 implementation
 
-uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
+uses Qk1, QkQme, Travail, Setup, QkMapPoly,
   Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet {Rowdy}, Bezier {/Rowdy},
   QkQ2, QkObjectClassList, MapError, StrUtils;
 
@@ -326,6 +340,48 @@ begin
  Inc(EntityNoCounting);
  Result := EntityNoCounting;
 end;
+
+function FindGameDecimalPlaces: integer;
+begin
+ // Rowdy: 17-Feb-2005 it seems that Torque wants more decimal places in .map files,
+ //        something to do with an idiosyncracy in Torque's map2dif utility that
+ //        converts a .map file written by QuArK to a .dif file (?) that Torque
+ //        can use.  cdunde has done some comprehensive testing with Lee Davies
+ //        (thanx guys!) and the results are inconclusive, but in order to make
+ //        QuArK play a bit nicer with Torque, or at least with map2dif, this
+ //        little hack was orchestrated so that each game has a configurable number
+ //        of decimal places for polys written to .map files.  The old (hard-coded)
+ //        default was 5, so we drop back to that if we read something we don't
+ //        understand.  The range is set from 1 to 40 - less than 1 (i.e. 0 (i.e.
+ //        integers)) should still be controlled by the existing option to write
+ //        only integers to .map files (see the Configutation window), anything
+ //        more than 40 decimal places is ludicrously insanely stupendously
+ //        silly :-P  So there.  Does this make the longest single comment in the
+ //        QuArK source???  Anyway, this function is called from a couple of
+ //        places, common code blah blah blah
+ Result := Trunc(SetupGameSet.GetFloatSpec('BrushDecimalPlaces', 5));
+ if Result <= 0 then
+  Result := 5;
+end;
+
+function GetMapFormatType : MapFormatTypes;
+var
+  S : PChar;
+begin
+    S:=PChar(SetupGameSet.Specifics.Values['OutputMapFormat']);
+   { ShowMessage(S); }
+    if      StrComp(S, 'Classic Quake')    = 0 then Result := CQType
+    else if StrComp(S, 'Quark etp')        = 0 then Result := QetpType
+    else if StrComp(S, 'Valve 220')        = 0 then Result := V220Type
+    else if StrComp(S, 'Brush Primitives') = 0 then Result := BPType
+    else if StrComp(S, 'HL2') = 0 then Result := HL2Type
+    else
+    begin
+     { Raise EErrorFmt(5702, [S]); }
+      Result:=CQType
+    end;
+end;
+
  {------------------------}
 
 function QMap.OpenWindow(nOwner: TComponent) : TQForm1;
@@ -1937,6 +1993,245 @@ begin
     GlobalWarning(FmtLoadStr1(256, [InvPoly]));
 end;
 
+procedure Valve220MapParams( HL2: bool; const Normale: TVect; const F: TFace; var S: String);
+var
+  Plan: Char;
+  Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2:TVect;
+
+  S1, S2, UOff, VOff : Double;
+  Dot22, Dot23, Dot33, Mdet,aa, bb, dd : Double; // from zoner's
+  QV0, QV1, UAxis, VAxis : TVect; // from Zoners
+  BrushDecimalPlaces: integer;
+
+  procedure write4vect(const V: TVect; D : Double; var S: String);
+  begin
+    S:=S+' [ ';
+    S:=S+FloatToStrF(V.X, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(V.Y, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(V.Z, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(D, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+'] ';
+  end;
+
+  procedure write4vectHL2(const V: TVect; D : Double; var S: String);
+  begin
+    S:=S+'[';
+    S:=S+FloatToStrF(V.X, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(V.Y, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(V.Z, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(D, ffFixed, 20, BrushDecimalPlaces);
+    S:=S+']';
+  end;
+
+begin
+  // Rowdy: this is an attempt to write more decimal places (but configurable) to
+  //        help Torque mappers
+  BrushDecimalPlaces := FindGameDecimalPlaces;
+
+  Plan:=PointsToPlane(Normale);
+  case Plan of
+   'X' : Axis := MakeVect(1, 0, 0);
+   'Y' : Axis := MakeVect(0, 1, 0);
+   'Z' : Axis := MakeVect(0, 0, 1);
+  end;
+
+  Origin:=MakeVect(0,0,0);
+
+
+  F.GetThreePointsT(PP0, PP1, PP2);
+(*
+   this code seems to show that the results of
+     GetThreePointsT are the same as getting the
+     simulated 3points, and swapping P2 and P1 when
+     the mirror bit is set
+
+  F.SimulateEnhTex(V0, V1, V2, Mirror);
+  if Mirror then
+  begin
+   // ShowMessage('Mirror');
+    V2b:=V2;
+    V2:=V1;
+    V1:=V2b;
+  end;
+  if VecLength(VecDiff(V0,P0))>rien then
+  begin
+    ShowMessage('P0 discrepancy');
+  end;
+   if VecLength(VecDiff(V1,P1))>rien then
+  begin
+    ShowMessage('P1 discrepancy');
+  end;
+   if VecLength(VecDiff(V2,P2))>rien then
+  begin
+    ShowMessage('P2 discrepancy');
+  end;
+
+ *)
+
+  P0:=ProjectPointToPlane(PP0, Axis, Origin, Axis);
+  P1:=ProjectPointToPlane(PP1, Axis, Origin, Axis);
+  P2:=ProjectPointToPlane(PP2, Axis, Origin, Axis);
+
+  // D1|D2 = Zoner's TexPt[0|1]
+  D1:= VecScale(1.0/128.0, VecDiff(P1, P0));
+  D2:= VecScale(1.0/128.0, VecDiff(P2, P0));
+ {
+        dot22 = DotProduct(TexPt[0], TexPt[0]);
+        dot23 = DotProduct(TexPt[0], TexPt[1]);
+        dot33 = DotProduct(TexPt[1], TexPt[1]);
+        mdet = dot22 * dot33 - dot23 * dot23;
+ }
+
+  Dot22:=Dot(D1, D1);
+  Dot23:=Dot(D1, D2);
+  Dot33:=Dot(D2, D2);
+  Mdet:= Dot22*Dot33 - Dot23*Dot23;
+
+ {
+         mdet = 1.0 / mdet;
+         aa = dot33 * mdet;
+         bb = -dot23 * mdet;
+         dd = dot22 * mdet;
+  }
+
+  Mdet := 1.0/MDet;
+  aa:=Dot33*MDet;
+  bb:=-Dot23*Mdet;
+  dd:= Dot22*Mdet;
+
+(*
+     for (j = 0; j < 3; j++)
+     {
+       side->td.vects.quark.vects[0][j] = aa * TexPt[0][j] + bb * TexPt[1][j];
+       side->td.vects.quark.vects[1][j] = -( /*cc */ bb * TexPt[0][j] + dd * TexPt[1][j]);
+     }
+*)
+  QV0:=VecSum(VecScale(aa, D1), VecScale(bb, D2));
+  QV1:=VecSum(VecScale(-bb, D1), VecScale(-dd, D2));
+
+  {
+    side->td.vects.quark.vects[0][3] = -DotProduct(side->td.vects.quark.vects[0], side->planepts[0]);
+    side->td.vects.quark.vects[1][3] = -DotProduct(side->td.vects.quark.vects[1], side->planepts[0]);
+  }
+
+  UOff:=-Dot(QV0,P0);
+  VOff:=-Dot(QV1,P0);
+
+  { up do this point, QV0,UOff and QV1,VOff seem to be identical to the
+     quark.vects structure in zoner's }
+
+  UAxis:=QV0;
+  VAxis:=QV1;
+
+
+  Normalise(QV0, S1);
+  Normalise(QV1, S2);
+
+
+  if HL2 then
+  begin
+    S1:=1.0/S1;
+    S2:=1.0/S2;
+
+    S:=S+#13#10'  "uaxis" "';
+    write4vectHL2(QV0, UOff, S);
+    S:=S+' '+FloatToStrF(S1, ffFixed, 20, BrushDecimalPlaces)+'"';
+    S:=S+#13#10'  "vaxis" "';
+    write4vectHL2(QV1, VOff, S);
+    S:=S+' '+FloatToStrF(S2, ffFixed, 20, BrushDecimalPlaces)+'"';
+  end
+  else
+  begin
+//  if (veclength(qv0)>1) or (veclength(qv1)>1) then
+//    ShowMessage('oops');
+  write4vect(QV0, UOff, S);
+  write4vect(QV1, VOff, S);
+
+(*
+  write4vect(D1, -PP0.X/S1, S);
+  write4vect(D2, PP0.Y/S2, S);
+*)
+
+  S1:=1.0/S1;
+  S2:=1.0/S2;
+
+  S:=S+' 0 ';
+  S:=S+' '+FloatToStrF(S1, ffFixed, 20, BrushDecimalPlaces);
+  { sign flip engineered into Scale }
+  S:=S+' '+FloatToStrF(S2, ffFixed, 20, BrushDecimalPlaces);
+  end;
+
+end;
+
+
+procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean; GameCode: char);
+var
+  PX, PY: array[1..3] of TDouble;
+  A, P2, S, C: TDouble;
+  I: Integer;
+  Plan: Char;
+begin
+  Plan:=PointsToPlane(Normale);
+  for I:=1 to 3 do
+    case Plan of
+      'X': begin
+             PX[I]:=V[I].Y;
+             PY[I]:=V[I].Z;
+           end;
+      'Y': begin
+             PX[I]:=V[I].X;
+             PY[I]:=V[I].Z;
+           end;
+      'Z': begin
+             PX[I]:=V[I].X;
+             PY[I]:=V[I].Y;
+           end;
+  end;
+  if not Mirror then
+  begin
+    P2:=PX[2]; PX[2]:=PX[3]; PX[3]:=P2;
+    P2:=PY[2]; PY[2]:=PY[3]; PY[3]:=P2;
+  end;
+  PY[3]:=PY[3]-PY[1];
+  PX[2]:=PX[2]-PX[1];
+  PY[2]:=PY[2]-PY[1];
+  if Abs(PY[2])<rien then
+    Params[3]:=0
+  else
+  begin
+    A:=AngleXY(PX[2], PY[2]);
+    S:=Sin(A);
+    C:=Cos(A);
+   {PX[2]:=Sqrt(Sqr(PX[2])+Sqr(PY[2]));}
+    PX[2]:=PX[2]*C + PY[2]*S;
+    Params[3]:=A*(180/pi);
+
+    PX[3]:=PX[3]-PX[1];
+    PY[3]:=PY[3]*C - PX[3]*S;
+
+    P2:=PX[1];
+    PX[1]:=P2*C + PY[1]*S;
+    PY[1]:=PY[1]*C - P2*S;
+  end;
+  Params[4]:=PX[2] / EchelleTexture;
+  if GameCode=mjGenesis3d then
+  begin
+    Params[3]:=Round(Params[3]);
+    if Plan='Y' then
+      Params[3]:=-Params[3];
+  end;
+  Params[5]:=PY[3] / EchelleTexture;  { approximation is here : we ignore the angle that the third vector may do }
+  if Abs(Params[4])<rien2 then A:=1 else A:=1/Params[4];
+  Params[1]:=-PX[1]*A;
+  if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
+  Params[2]:=PY[1]*A;
+  if GameCode=mjGenesis3d then
+  begin
+    if Plan='X' then
+      Params[4]:=-Params[4]
+  end
+end;
+
  {------------------------}
 
 class function QHmfFile.TypeInfo;
@@ -2063,8 +2358,6 @@ begin
        saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
        SaveAsMapText(Root, ObjectGameCode, MapVersion, List, Dest, saveflags, HxStrings);
-//     { TTreeMap(Root).SaveAsText(List, Dest, IntSpec['saveflags'], HxStrings); }
-//       TTreeMap(Root).SaveAsText(List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;
@@ -2218,6 +2511,94 @@ end;
 
  {------------------------}
 
+function AlmostIntegral(const V: TVect; var V2: TVect) : boolean;
+var
+  DV: TVect;
+begin
+  V2:=MakeVect(Round(V.X), Round(V.Y), Round(V.Z));
+  DV:=VecDiff(V, V2);
+  if sqr(DV.X)+sqr(DV.Y)+sqr(DV.Z)<0.0001 then
+    Result:=true
+  else
+    Result:=false;
+end;
+
+function EqualVect(V1, V2 : TVect) : boolean;
+begin
+  if (V1.X=V2.X) and (V1.Y=V2.Y) and (V1.Z=V2.Z) then
+    Result:=true
+  else
+    Result:=false;
+end;
+
+function CoLinear(V1, V2, V3: TVect) : boolean ;
+var
+  D1, D2: TVect;
+begin
+  if EqualVect(V1,V2) or EqualVect(V2,V3) or
+      EqualVect(V1, V3) then
+    Result:=true
+  else
+  begin
+    D1:=VecDiff(V2,V1);
+    D2:=VecDiff(V3,V2);
+    Normalise(D1); Normalise(D2);
+    if Dot(D1,D2)>0.999 then
+      Result:=true
+    else
+      Result:=false;
+  end;
+end;
+
+function InvertDenom(P0, P1, P2 : TVect) : Double;
+begin
+ Result:=-P2.X*P1.Y + P2.X*P0.Y + P2.Y*P1.X
+   - P2.Y*P0.X + P0.X*P1.Y - P0.Y*P1.X;
+end;
+
+{ based on information about Q3R brush primitives format
+  provided by Timothee Besset }
+procedure GetPXPY(const Normal: TVect; const V: TThreePoints; var PX, PY: array of Double; const Dist : Double);
+var
+  texS, texT, texO, P0, P1, P2: TVect;
+  D : Double;
+begin
+  { get basis vectors for affine plane of face }
+  GetAxisBase(Normal, texS, texT);
+  { origin of plane's coordindate system }
+  texO:=VecScale(Dist, Normal);
+  { get the texture points.  V has been provided by
+     Face.GetThreePointsUserTex, so if texture scale
+     is 1:1, (P1-P0) will be texture width, P2-P0
+     texture height.  In written out map, for 1:1
+     texture scale these #'s will be 128 }
+
+    P0:=V[1];
+    P2:=V[3]; P1:=V[2];
+
+   { redo threepoints in plane coordinate system }
+   P0:=CoordShift(P0, texO, texS, texT);
+   P1:=CoordShift(P1, texO, texS, texT);
+   P2:=CoordShift(P2, texO, texS, texT);
+
+   { Now solve the equation system produced
+     where PX, PY are to be row 1 and row 2
+     of the homogenous matrix that will map
+     (0,0), (1,0) and (0,-1) onto P0, P1, P2
+     respectively (note sign swap) }
+
+   D:=InvertDenom(P0, P1, P2);
+
+   PX[1]:=(P2.Y-P0.Y)/D;
+   PX[2]:=(P0.X-P2.X)/D;
+   PX[3]:=(-P2.Y*P0.X+P2.X*P0.Y)/D;
+   PY[1]:=(P1.Y-P0.Y)/D;
+   PY[2]:=(P0.X-P1.X)/D;
+   PY[3]:=(-P0.X*P1.Y+P0.Y*P1.X)/D;
+end;
+
+ {------------------------}
+
 procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 var
   MapOptionSpecs : TStringList;
@@ -2244,6 +2625,10 @@ begin
     SaveAsMapTextTTreeMapEntity(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
   else if ObjectToSave is TTreeMapGroup then
     SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
+  else if ObjectToSave is TPolyedre then
+    //SaveAsMapTextTPolygon(ObjectToSave, GameCode, MapVersion, Texte, OriginBrush, Flags)
+  else if ObjectToSave is TBezier then
+    //SaveAsMapTextTBezier(ObjectToSave, GameCode, MapVersion, Texte)
   else if ObjectToSave is TDuplicator then
     SaveAsMapTextTDuplicator(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
   else
@@ -2315,7 +2700,7 @@ begin
     for I:=0 to Polyedres.Count-1 do
      begin
       Texte.Add(CommentMapLine('Brush '+IntToStr(I)));
-      TPolyedre(Polyedres[I]).SaveAsTextPolygon(Texte, OriginBrush, Flags);
+      SaveAsMapTextTPolygon(TPolyedre(Polyedres[I]), GameCode, MapVersion, Texte, OriginBrush, Flags);
      end;
     { proceed with Bezier patches }
     I:=Polyedres.Count-1;
@@ -2331,25 +2716,26 @@ begin
     Polyedres.Free;
    end;
   end;
- if (Flags and soWrite6DXHierarky <> 0) then
- begin
-  { For 6DX support }
-   if (Flags and soOutsideWorldspawn = 0) then
-   begin
-     Texte.Add('}');
-     SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
-   end
-   else
-   begin
-     SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
-     Texte.Add('}');
-   end;
- end
- else
- begin
-   Texte.Add('}');
-   SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
- end;
+  // Does 6DX support work correctly?
+  if ((Flags and soWrite6DXHierarky) <> 0) then
+  begin
+   { For 6DX support }
+    if (Flags and soOutsideWorldspawn) = 0 then
+    begin
+      Texte.Add('}');
+      SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+    end
+    else
+    begin
+      SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+      Texte.Add('}');
+    end;
+  end
+  else
+  begin
+    Texte.Add('}');
+    SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+  end;
 
  end;
 end;
@@ -2358,7 +2744,7 @@ procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVe
 const
  LineStarts: array[Boolean] of String = (' "', '"');
 var
- MJ, S, Msg, LineStart,outputname: String;
+ S, Msg, LineStart,outputname: String;
  P1, I, J, P, hashpos: Integer;
  typedspecs:Bool;
  DoneNameSpecific: boolean; // Rowdy: for Doom 3
@@ -2367,7 +2753,6 @@ begin
  begin
 
  DoneNameSpecific:=False;
- MJ:=CharModeJeu;
  if Flags and soBsp=0 then
    Dest.Add(CommentMapLine(Ancestry));
  if (GetMapFormatType=HL2Type) then
@@ -2508,13 +2893,671 @@ begin
  end;
 end;
 
+procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags: Integer);
+var
+ J: Integer;
+ Q: QObject;
+ S:String;
+ { BrushPrim, Valve220Map : Boolean }
+ WriteIntegers, UseIntegralVertices, ExpandThreePoints : Boolean;
+ MapFormat: MapFormatTypes;
+ BrushDecimalPlaces: integer;
+ MapOptionSpecs : TStringList;
+ BrushDefVersion: Integer;
+
+    procedure write3vect(const P: array of Double; var S: String);
+{
+    var
+     I: Integer;
+     R: Double;
+}
+    begin
+     S:=S+'( ';
+     S:=S+FloatToStrF(P[1], ffFixed, 20, BrushDecimalPlaces)+' ';
+     S:=S+FloatToStrF(P[2], ffFixed, 20, BrushDecimalPlaces)+' ';
+     S:=S+FloatToStrF(P[3], ffFixed, 20, BrushDecimalPlaces)+' ';
+
+     {     for I:=1 to 3 do
+     begin
+       R:=P[I]/EchelleTexture;
+       S:=S+FloatToStrF(R, ffFixed, 20, BrushDecimalPlaces)+' ';
+     end;
+}     S:=S+') ';
+    end;
+
+
+  procedure WriteFace(F: TFace);
+  const
+   TxField: array[Boolean, Boolean] of String =
+    ((' //TX1', ' //TX2'),
+     (' ;TX1',  ' ;TX2' ));
+  var
+   S, S1, S2, S3, SpecStr, Spec, Val, Val2: String;
+   I, R, J, K, Pozzie : Integer;
+   P, PT, VT: TThreePoints;
+   Params: TFaceParams;
+   Delta1, V, V2: TVect;
+   Facteur: TDouble;
+   FS: PSurface;
+   PX, PY: array[1..3] of Double;
+   Single3: array[1..3] of Single;
+   { tiglari }
+   rval : Single; { for Value/lightvalue }
+   Q: QPixelSet;
+   Mirror, EtpMirror: Boolean;
+   type
+     FlagDef = record
+      name: Pchar;
+      pos:  integer;
+     end;
+
+   const
+     FlagsTable : array[0..30] of FlagDef =
+      ((name: 'light'; pos: 0),
+       (name: 'masked'; pos: 1),
+       (name: 'sky'; pos: 2),
+       (name: 'warping'; pos: 3),
+       (name: 'nonlit'; pos: 4),
+       (name: 'nofilter'; pos: 5),
+       (name: 'conveyor'; pos: 6),
+       (name: 'nodraw'; pos: 7),
+       (name: 'hint'; pos: 8),
+       (name: 'skip'; pos: 9),
+       (name: 'wavy'; pos: 10),
+       (name: 'ricochet'; pos: 11),
+       (name: 'prelit'; pos: 12),
+       (name: 'mirror'; pos: 13),
+       (name: 'console'; pos: 14),
+       (name: 'usecolor'; pos: 15),
+       (name: 'hardwareonly'; pos: 16),
+       (name: 'damage'; pos: 17),
+       (name: 'weak'; pos: 18),
+       (name: 'normal'; pos: 19),
+       (name: 'add'; pos: 20),
+       (name: 'envmapped'; pos: 21),
+       (name: 'random'; pos: 22),
+       (name: 'animate'; pos: 23),
+       (name: 'rndtime'; pos: 24),
+       (name: 'translate'; pos: 25),
+       (name: 'nomerge'; pos: 26),
+       (name: 'surfbit0'; pos: 27),
+       (name: 'surfbit1'; pos: 28),
+       (name: 'surfbit2'; pos: 29),
+       (name: 'surfbit3'; pos: 30));
+
+     ContentsTable : array[0..20] of FlagDef =
+      ((name: 'solid'; pos: 0),
+       (name: 'window'; pos: 1),
+       (name: 'fence'; pos: 2),
+       (name: 'lava'; pos: 3),
+       (name: 'slime'; pos: 4),
+       (name: 'water'; pos: 5),
+       (name: 'mist'; pos: 6),
+       (name: 'playerclip'; pos: 16),
+       (name: 'monsterclip'; pos: 17),
+       (name: 'current_0'; pos: 18),
+       (name: 'current_90'; pos: 19),
+       (name: 'current_180'; pos: 20),
+       (name: 'current_270'; pos: 21),
+       (name: 'current_up'; pos: 22),
+       (name: 'current_dn'; pos: 23),
+       (name: 'origin'; pos: 24),
+       (name: 'monster'; pos: 25),
+       (name: 'corpse'; pos: 26),
+       (name: 'detail'; pos: 27),
+       (name: 'translucent'; pos: 28),
+       (name: 'ladder'; pos: 29));
+
+    {tiglari}
+    function CheckFieldDefault(const spec, linkspec:String; const Q:QPixelSet) : String;
+    begin
+      { fixed? by Armin }
+     Result:=F.Specifics.Values[spec];
+     if Result<>'' then   { if spec was found in the face, we are done }
+      Exit;
+     if Q<>Nil then   { is there a texture link to look into for default flags ? }
+      Result:=Q.Specifics.Values[linkspec];   { yes }
+     if Result='' then
+      Result:='0';      { if not found at all, supply a numeric default }
+    end;
+    {/tiglari}
+
+    procedure StashFloatFlag(const spec : String; const places : integer);
+    var val : Single;
+    begin
+      val:=F.GetFloatSpec(spec, -1);
+      if val >= 0 then
+        if val <> Q.GetFloatSpec(spec, -1) then
+          S:=S+' '+spec+' '+FloatToStrF(val, ffFixed, 7, places);
+    end;
+
+    procedure StashIntFlag(const spec : String);
+    var val : string;
+    begin
+      val:=F.Specifics.Values[spec];
+      if val<>'' then
+        if val<>Q.Specifics.Values[spec] then
+          S:=S+' '+spec+' '+val+'.0'
+    end;
+
+    procedure StashStrFlag(const spec : String);
+    var val : string;
+    begin
+      val:=F.Specifics.Values[spec];
+      if val <>'' then
+         if val<>Q.Specifics.Values[spec] then
+           S:=S+' '+spec+' '+val;
+    end;
+
+
+    procedure WriteNonDefaultFlags(const specstring : String; const defaults: LongInt;
+                                    const table: array of FlagDef);
+    var
+     len, i: integer;
+     specif, pozzies, neggos: LongInt;
+    begin
+      if specstring<>'' then
+      begin
+        specif:=StrToInt(specstring);
+        len:=High(table);
+        pozzies:=specif and (not defaults);
+        neggos:=(not specif) and defaults;
+        for i:=0 to len do
+        begin
+          if (pozzies shr table[i].pos) and 1=1 then
+             S:=S+' +'+table[i].name
+          else if (neggos shr table[i].pos) and 1=1 then
+             S:=S+' -'+table[i].name
+        end
+      end
+    end;
+    { /tiglari }
+
+  {writeface}
+  begin
+   if F.GetThreePoints(P[1], P[3], P[2]) and F.LoadData then
+{
+     if BrushPrim then
+       F.GetThreePointsBP(P[1], P[3], P[2]);
+}
+    begin
+
+     if (MapFormat=QetpType) or (MapFormat=V220Type) then
+     begin
+       F.SimulateEnhTex(P[1], P[3], P[2], EtpMirror); {doesn't scale}
+
+{
+       if EtpMirror then
+       begin
+         V:=P[2];
+         P[2]:=P[3];
+         P[3]:=V;
+       end;
+}
+
+     end;
+
+
+     if OriginBrush<>Nil then
+      begin
+       Delta1:=OriginBrush^;
+       Facteur:=Dot(F.Normale, Delta1);
+       Delta1.X:=Delta1.X - F.Normale.X*Facteur;
+       Delta1.Y:=Delta1.Y - F.Normale.Y*Facteur;    { force Delta1 in the plane of the face }
+       Delta1.Z:=Delta1.Z - F.Normale.Z*Facteur;
+       for I:=1 to 3 do
+        begin
+         P[I].X:=P[I].X-Delta1.X;
+         P[I].Y:=P[I].Y-Delta1.Y;
+         P[I].Z:=P[I].Z-Delta1.Z;
+        end;
+      end;
+     S:='  ';
+     { experiment }
+     if UseIntegralVertices then
+     begin
+       { wacko crap to get the vertexes }
+       { FS is first of a linked list of structures
+          specifying vertex cycles }
+       FS:=F.FaceOfPoly;
+       K:=1;
+       while Assigned(FS) do {FS is not Nil, why not say it that way?
+                              imitating vertices(of) code below) }
+       begin
+         K:=1;
+         for J:=0 to FS^.prvVertexCount-1 do {one more than # vertexes useed }
+         { try to find some that are almost integers }
+         begin
+           V:=FS^.prvVertexTable[J]^.P;  { an actual vertex }
+           if AlmostIntegral(V,V2) then
+           begin
+             if (K=2) and EqualVect(VT[1],V2) then
+               continue;
+             if (K=3) and CoLinear(VT[1],VT[2],V2) then
+               continue;
+             VT[K]:=V2;
+             K:=K+1;
+             if K>3 then break;
+           end;
+         end;
+         if K>3 then break;
+         FS:=FS^.NextF;
+       end;
+       if K>3 then {we got some nearly integral threepoints
+         so lets usem }
+       begin
+         P[1]:=VT[1];
+         { if normal would be wrong, exchange }
+         if Dot(Cross(VecDiff(VT[2],VT[1]),VecDiff(VT[3],VT[1])),F.Normale)>0 then
+         begin
+            P[2]:=VT[3]; P[3]:=VT[2];
+         end
+         else
+         begin
+           P[2]:=VT[2]; P[3]:=VT[3]
+         end
+       end
+(* We could use 1 or two integral ones if they  are found, but
+   atm I'm not convinced it's worth it.
+     else if K>1 then  { use the first integral vertex as P[1] }
+     begin
+       P[1]:=VT[1];
+       VT[2]:=VecSum(P[1],VecScale(100,VecDiff(P[2],P[1])));
+       VT[3]:=VecSum(P[1],VecScale(100,VecDiff(P[3],P[1])));
+         if Dot(Cross(VecDiff(VT[2],VT[1]),VecDiff(VT[3],VT[1])),F.Normale)>0 then
+         begin
+            P[2]:=VT[3]; P[3]:=VT[2];
+         end
+         else
+         begin
+           P[2]:=VT[2]; P[3]:=VT[3]
+         end
+     end
+*)
+     else if ExpandThreePoints then
+     (* slower but more accurate alternative, suggested by gage144
+        on Quake3World editing forum: make a 2d grid of points on
+        the axis plane closest to the face plane, project them onto
+        the face, then use the three projected points that are nearest
+        to being integral, rounded to integral *)
+     begin
+        P[2]:=VecSum(P[1],VecScale(100,VecDiff(P[2],P[1])));
+        P[3]:=VecSum(P[1],VecScale(100,VecDiff(P[3],P[1])));
+     end
+     end;
+
+     {start writing out a face}
+
+     if MapFormat=HL2Type then
+       S:= S+ '"plane" "';
+
+     for I:=1 to 3 do
+      with P[I] do
+       begin
+        if MapFormat=HL2Type then
+          S:=S+'('
+        else
+          S:=S+'( ';
+        R:=Round(X);
+
+        if WriteIntegers or (Abs(X-R) < rien) then
+         S:=S+IntToStr(R)+' '
+        else
+         S:=S+FloatToStrF(X, ffFixed, 20, BrushDecimalPlaces)+' ';
+        R:=Round(Y);
+
+        if WriteIntegers or (Abs(Y-R) < rien) then
+         S:=S+IntToStr(R)+' '
+        else
+         S:=S+FloatToStrF(Y, ffFixed, 20, BrushDecimalPlaces)+' ';
+        R:=Round(Z);
+
+        if WriteIntegers or (Abs(Z-R) < rien) then
+         S:=S+IntToStr(R)
+        else
+         S:=S+FloatToStrF(Z, ffFixed, 20, BrushDecimalPlaces);
+
+        if MapFormat=HL2Type then
+          S:=S+')'
+        else
+          S:=S+' ) ';
+
+       end;
+
+     if MapFormat=HL2Type then
+       S:= S+'"';
+
+     {start writing out a texture coordinates}
+     if MapFormat=BPType then
+      with F do
+       begin
+        GetThreePointsUserTex(PT[1], PT[2], PT[3],Nil);
+        GetPXPY(Normale, PT, PX, PY, Dist);
+        S:=S+'( ';
+        write3vect(PX,S);
+        write3vect(PY,S);
+        S:=S+') ';
+       end;
+
+
+     {start writing out a texture name and tx coordinates}
+     with F do
+      begin
+
+       {texture name}
+       if MapFormat=HL2Type then
+         S:= S+#13#10'  "material" "';
+
+       {$IFDEF TexUpperCase}
+       if MapVersion>1 then
+         S:=S+'"TEXTURES/'+UpperCase(NomTex)
+       else
+         S:=S+UpperCase(NomTex);
+       {$ELSE}
+       if MapVersion>1 then
+       begin
+         if GameCode=mjHalfLife then
+           S:=S+'"TEXTURES/'+UpperCase(NomTex)   // This is actually impossible...
+         else
+           S:=S+'"textures/'+NomTex;
+       end
+       else
+       begin
+         if GameCode=mjHalfLife then
+           S:=S+UpperCase(NomTex)
+         else
+           S:=S+NomTex;
+       end;
+       {$ENDIF}
+
+       if MapFormat=HL2Type then
+         S:= S+'"';
+
+       {texture coordinates}
+       case MapFormat of
+        V220Type:
+          Valve220MapParams(False,Normale, F, S);
+        HL2Type:
+          Valve220MapParams(True,Normale, F, S);
+
+        else {case}
+          if not (MapFormat=BPType) then
+          begin
+            SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
+
+            ApproximateParams(Normale, PT, Params, Mirror, GameCode); {does scale}
+            for I:=1 to 2 do
+              S:=S+' '+IntToStr(Round(Params[I]));
+            for I:=3 to 5 do
+            begin
+              R:=Round(Params[I]);
+              if Abs(R-Params[I])<rien then
+                S:=S+' '+IntToStr(R)
+              else
+                S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, BrushDecimalPlaces);
+            end;
+        end;
+       end;{case MapFormat}
+     end; {with f}
+
+     if GameCode=mjHexen then
+       S:=S+' -1'
+     else
+     if GameCode=mjSin then
+     { tiglari: Sin/KP/SOF/Q2 code below manages the content/
+        flags/value information in textures.  It's complicated
+        because there is in general default info in the textures
+        which can be overridden in the faces, Sin is the most
+        complex. }
+     begin
+        Q := GlobalFindTexture(F.NomTex,Nil);
+        if Q<>Nil then
+        begin { see comments to QkMap on what's going on here }
+         Q:=Q.LoadPixelSet;
+         if not (Q is QTextureSin) then
+           Q:=Nil;
+        end;
+        if Q=Nil then
+          Q:=QTextureSin.Create('', Nil);
+        Q.AddRef(+1);
+        try
+         { these function below updates S }
+         StashFloatFlag('friction',2);     { for flags stored as floats }
+         StashFloatFlag('restitution',2);
+         StashIntFlag('direct');        { stash string as float }
+         StashIntFlag('directangle');
+         StashStrFlag('directstyle');   { stash string as string }
+         StashFloatFlag('translucence',2);
+         StashFloatFlag('trans_mag',2);
+         StashFloatFlag('animtime', 2);
+         StashIntFlag('trans_angle');
+         StashStrFlag('color');
+         WriteNonDefaultFlags(F.Specifics.Values['Flags'],StrToInt(Q.Specifics.Values['Flags']), FlagsTable);
+         WriteNonDefaultFlags(F.Specifics.Values['Contents'],StrToInt(Q.Specifics.Values['Flags']), ContentsTable);
+         { maybe the internal storage of these should be changed to fit
+           the Sin file format }
+         S1:=F.Specifics.Values['Value'];
+         if S1<>'' then
+           if Q.Specifics.Values['Value']<>S1 then
+             S:=S+' lightvalue '+F.Specifics.Values['Value'];
+       {  StashFloatFlag('nonlitvalue', 2);   { Nun functiona }
+         rval:=F.GetFloatSpec('nonlit', -1);
+         if rval >= 0 then
+           if Q.GetFloatSpec('nonlit', -1)<>rval then
+             S:=S+' nonlitvalue '+FloatToStrF(rval, ffFixed, 7, 2);
+        finally
+          Q.AddRef(-1);
+        end;
+     end
+     else  { kp seems to need field values
+               written into the map.  Alex write code to
+               put the c, f, v flags into the texture link }
+     if (GameCode=mjKingPin) then
+     begin
+       Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
+       if Q<>Nil then Q.Acces;              { load it (but not the texture it points to !) }
+       S1:=CheckFieldDefault('Contents','c', Q);
+       S2:=CheckFieldDefault('Flags','f', Q);
+       S3:=CheckFieldDefault('Value','v', Q);
+       S:=S+' '+S1+' '+S2+' '+S3;
+     end
+     else {for me, SOF seems to behave like Q2, but for other
+        people, default flags seem to be written into the map
+        to work, so that's what happens here }
+     if (GameCode=mjSOF) then
+     begin
+        Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
+        if Q<>Nil then Q:=Q.LoadPixelSet;      { load it, since the default flags
+                are in the actual texture, not the link.) }
+        S1:=CheckFieldDefault('Contents','Contents', Q);
+        S2:=CheckFieldDefault('Flags','Flags', Q);
+        S3:=CheckFieldDefault('Value','Value', Q);
+        S:=S+' '+S1+' '+S2+' '+S3;
+     end
+     else
+      { and in Q2, default flags get written into the map
+        automatically, no wuccaz (<- wuccin furries) }
+      {\tiglari}
+      {Decker - Until we figure out how to clearly handle MOHAA's
+       face-flags, we now just write them to the .MAP so the
+       MOHAA-Q3MAP.EXE will be happy.}
+     begin
+        S1:=F.Specifics.Values['Contents'];
+        S2:=F.Specifics.Values['Flags'];
+        S3:=F.Specifics.Values['Value'];
+        if (S1<>'') or (S2<>'') or (S3<>'')
+        or (GameCode=mjMOHAA) then {Decker - write face-flags when MOHAA}
+        begin
+          if S1='' then S1:='0';
+          if S2='' then S2:='0';
+          if S3='' then S3:='0';
+          S:=S+' '+S1+' '+S2+' '+S3;
+//<mohaa>
+          if GameCode=mjMOHAA then
+          begin
+            Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
+            if Q<>Nil then Q:=Q.LoadPixelSet;      { load it }
+            for I := 0 to F.Specifics.Count-1 do
+            begin
+              SpecStr:=F.Specifics.Strings[I];
+              if Copy(SpecStr,0,5)='_esp_' then
+              begin
+                Pozzie:=Pos('=', SpecStr);
+                Spec:=Copy(SpecStr,6,Pozzie-6);
+                Val:=Copy(SpecStr,Pozzie+1,Maxint);
+                { we only want to write it if it's different from the
+                  shader's spec }
+                Val2:=Q.Specifics.Values['_esp_'+Spec];
+                if Val='1' then  // the face is positively specified
+                begin
+                  if Val2<>'1' then  // the shader is not specified
+                    S:=S+' +surfaceparm '+Spec
+                end
+                else
+                if Val2='1' then //the face is not positively specified and the shader is
+                    S:=S+' -surfaceparm '+Spec;
+              end;
+            end;
+           { tiglari - now write the other face properties }
+            S1:=F.Specifics.Values['surfaceLight'];
+            if (S1<>'') then
+              S:=S+' surfaceLight '+S1;
+            if F.GetFloatsSpec('surfaceColor',Single3) then
+            begin
+              S:=S+' surfaceColor '+FloatToStrF(Single3[1], ffFixed, 20, 6);
+              S:=S+' '+FloatToStrF(Single3[2], ffFixed, 20, 6);
+              S:=S+' '+FloatToStrF(Single3[3], ffFixed, 20, 6);
+            end;
+            S1:=F.Specifics.Values['surfaceAngle'];
+            if (S1<>'') then
+              S:=S+' surfaceAngle '+S1;
+            rval:=F.GetFloatSpec('tesselation',0);
+            if (rval<>0) then
+              S:=S+' tesselation '+FloatToStrF(rval, ffFixed, 20, 6);
+          end;
+
+//</mohaa>
+        end;
+     end;
+
+     if (MapFormat=QetpType) then
+       S:=S+TxField[(GameCode>='A') and (GameCode<='Z'), EtpMirror];
+
+     Brush.Add(S);
+    end;
+  end;
+
+begin
+  if MapVersion=-1 then
+  begin
+    MapVersion:=0;
+    if GameCode=mjDoom3 then
+    begin
+      MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
+      if MapOptionSpecs.Values['SaveMapVersion'] = '1' then
+        MapVersion:=1
+      else if MapOptionSpecs.Values['SaveMapVersion'] = '2' then
+        MapVersion:=2
+      else
+        MapVersion:=2;
+    end;
+    if GameCode=mjQuake4 then
+      MapVersion:=3;
+  end;
+
+  BrushDefVersion:=0;
+  if MapVersion>0 then
+    BrushDefVersion:=3
+  else
+    if GameCode=mjQ3A then
+      BrushDefVersion:=1;
+
+  //DanielPharos: At the moment, the only one supported!
+  BrushDefVersion:=1;
+
+ with TPolyhedron(ObjectToSave) do
+ begin
+
+ // Rowdy: this is an attempt to write more decimal places (but configurable) to
+ //        help Torque mappers
+ BrushDecimalPlaces := FindGameDecimalPlaces;
+
+ if g_DrawInfo.ConstruirePolyedres and not CheckPolyhedron then Exit;
+ { these means brutally round off the threepoints, whatever they are }
+ WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
+ MapFormat:=GetMapFormatType;
+{
+ UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags and soDisableEnhTex<>0);
+ ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
+ }
+ UseIntegralVertices:=(MapFormat<>QetpType) and (Flags and soUseIntegralVertices<>0);
+ ExpandThreePoints:=false; { abandon this heroic but foolish measure.  The
+   idea was to force threepoints to integers with less distortion, in aid
+   of easier commerce between QuArK and Radiant, but it's just a Bad Idea. }
+ Brush.Add(CommentMapLine(Ancestry));
+
+ if MapFormat=HL2Type then
+  Brush.Add('solid');
+
+ Brush.Add(' {');
+
+ if MapFormat=BPType then
+ begin
+  case BrushDefVersion of
+  0: ;
+  1: Brush.Add(' brushDef');
+  2: Brush.Add(' brushDef2');
+  3: Brush.Add(' brushDef3');
+  end;
+  Brush.Add(' {');
+ end;
+ if g_DrawInfo.ConstruirePolyedres then
+  for J:=0 to Faces.Count-1 do
+  begin
+   if MapFormat=HL2Type then
+     Brush.Add(' side {');
+   WriteFace(PSurface(Faces[J])^.F);
+   if MapFormat=HL2Type then
+   begin
+     S:=PSurface(Faces[J])^.F.Specifics.values['lightmapscale'];
+     if S<>'' then
+       Brush.Add('  "lightmapscale" "'+S+'"')
+     else
+       Brush.Add('  "lightmapscale" "16"');
+     Brush.Add(' }');
+   end
+  end
+ else
+  for J:=0 to SubElements.Count-1 do
+   begin
+    Q:=SubElements[J];
+    if Q is TFace then
+     WriteFace(TFace(Q));
+   end;
+ if MapFormat=BPType then
+   Brush.Add(' }');
+ Brush.Add(' }');
+
+ end;
+end;
+
 procedure SaveAsMapTextTBezier(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Target: TStrings);
 var
  cp: TBezierMeshBuf5;
  I, J, K, R: Integer;
  S: String;
  Value: PSingle;
+ PatchDefVersion: Integer;
+ PatchDecimalPlaces: Integer;
 begin
+ PatchDefVersion:=2;
+ if MapVersion=3 then
+   PatchDefVersion:=3;
+
+ // Rowdy: this is an attempt to write more decimal places (but configurable) to
+ //        help Torque mappers
+ PatchDecimalPlaces := FindGameDecimalPlaces;
+
  with TBezier(ObjectToSave) do
  begin
 
@@ -2523,26 +3566,34 @@ begin
   begin   { ignore Bezier lines (with only 1 row or 1 column of control points) }
    Target.Add(CommentMapLine(Ancestry));
    Target.Add(' {');
-   Target.Add('  patchDef2');
+   case PatchDefVersion of
+   2: Target.Add('  patchDef2');
+   3: Target.Add('  patchDef3');
+   end;
    Target.Add('  {');
 
    {$IFDEF TexUpperCase}
    if MapVersion>1 then
-     Target.Add('   "' + UpperCase(NomTex) + '"')
+     Target.Add('   "TEXTURES/' + UpperCase(NomTex) + '"')
    else
      Target.Add('   ' + UpperCase(NomTex));
    {$ELSE}
    if MapVersion>1 then
-     Target.Add('   "' + NomTex + '"')
+     Target.Add('   "textures/' + NomTex + '"')
    else
      Target.Add('   ' + NomTex);
    {$ENDIF}
-   Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
-   Target.Add('(');
+   { We should start saving the other values too, once we've
+     figured out what they actually are... }
+   case PatchDefVersion of
+   2: Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
+   3: Target.Add(Format('   ( %d %d 0 0 0 0 0 )', [cp.W, cp.H]));
+   end;
+   Target.Add('   (');
    for J:=0 to cp.W-1 do
     begin
      Value:=@cp.CP^[5*J];
-     S:='( ';
+     S:='    ( ';
      for I:=1 to cp.H do
       begin
        S:=S+'( ';
@@ -2552,7 +3603,7 @@ begin
          if {WriteIntegers or} (Abs(Value^-R) < rien) then
           S:=S+IntToStr(R)+' '
          else
-          S:=S+FloatToStrF(Value^, ffFixed, 20, 5)+' ';
+          S:=S+FloatToStrF(Value^, ffFixed, 20, PatchDecimalPlaces)+' ';
          Inc(Value);
         end;
        S:=S+') ';
@@ -2560,7 +3611,7 @@ begin
       end;
      Target.Add(S+')');
     end;
-   Target.Add(')');
+   Target.Add('   )');
    Target.Add('  }');
    Target.Add(' }');
   end;
