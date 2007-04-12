@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2007/04/12 20:54:07  danielpharos
+Another BIG update for Doom 3 and Quake 4: patchdef2 should be saving correctly now.
+
 Revision 1.64  2007/04/12 15:28:11  danielpharos
 Minor clean up.
 
@@ -2357,7 +2360,8 @@ begin
          saveflags:=saveflags or soUseIntegralVertices;
        saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
-       SaveAsMapText(Root, ObjectGameCode, MapVersion, List, Dest, saveflags, HxStrings);
+       // ObjectGameCode is not always defined...
+       SaveAsMapText(Root, CharModeJeu, MapVersion, List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;
