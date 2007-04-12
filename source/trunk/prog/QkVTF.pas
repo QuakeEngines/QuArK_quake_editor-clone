@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2007/03/15 22:19:13  danielpharos
+Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files not supported yet.
+
 Revision 1.28  2007/03/12 20:26:18  danielpharos
 Made the VTF file loading more crash-safe. Also, changing the settings during runtime should be better handled.
 
@@ -440,7 +443,7 @@ begin
     if vlImageCreate(PSD.size.X, PSD.size.Y,1,1,1,TexFormat,false,false,false)=false then
       Fatal('Unable to load VTF file. Call to vlImageCreate failed.');
     vlImageSetData(0, 0, 0, 0, RawData);
-    SetLength(RawBuffer, TexSize+80);   {80 is just a random number. When not added, the call fails. Probably header-bytes that need to be added.}
+    SetLength(RawBuffer, vlImageGetSize);
     if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
       Fatal('Unable to save VTF file. Call to vlImageSaveLump failed.');
 

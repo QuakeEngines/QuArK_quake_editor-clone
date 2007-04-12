@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/04/11 16:14:52  danielpharos
+Full support for VMT files: loading everything and saving everything. Note: Saving not fully correct.
+
 Revision 1.11  2007/03/29 21:01:39  danielpharos
 Changed a few comments and error messages
 
@@ -360,6 +363,7 @@ var
   vlImageGetHeight: function : Cardinal; cdecl;
   vlImageConvert: function (lpSource : PByte; lpDest : PByte; uiWidth : Cardinal; uiHeight : Cardinal; SourceFormat : VTFImageFormat; DestFormat : VTFImageFormat) : Boolean; cdecl;
   vlImageComputeImageSize: function (uiWidth : Cardinal; uiHeight : Cardinal; uiDepth : Cardinal; uiMipmaps : Cardinal; ImageFormat : VTFImageFormat) : Cardinal; cdecl;
+  vlImageGetSize: function : Cardinal; cdecl;
   vlImageGetData: function (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal) : PByte; cdecl;
   vlImageSetData: procedure (uiFrame : Cardinal; uiFace : Cardinal; uiSlice : Cardinal; uiMipmapLevel : Cardinal; lpData : PByte); cdecl;
   vlImageCreate: function (uiWidth : Cardinal; uiHeight : Cardinal; uiFrames : Cardinal; uiFaces : Cardinal; uiSlices : Cardinal; ImageFormat :VTFImageFormat; bThumbnail : Boolean; bMipmaps: Boolean; bNullImageData : Boolean) : Boolean; cdecl;
@@ -525,6 +529,7 @@ begin
       vlImageGetHeight  := InitDllPointer(HVTFLib, 'vlImageGetHeight');
       vlImageConvert    := InitDllPointer(HVTFLib, 'vlImageConvert');
       vlImageComputeImageSize    := InitDllPointer(HVTFLib, 'vlImageComputeImageSize');
+      vlImageGetSize    := InitDllPointer(HVTFLib, 'vlImageGetSize');
       vlImageGetData    := InitDllPointer(HVTFLib, 'vlImageGetData');
       vlImageSetData    := InitDllPointer(HVTFLib, 'vlImageSetData');
       vlImageCreate     := InitDllPointer(HVTFLib, 'vlImageCreate');
@@ -609,6 +614,7 @@ begin
       vlImageGetHeight  := nil;
       vlImageConvert    := nil;
       vlImageComputeImageSize    := nil;
+      vlImageGetSize    := nil;
       vlImageGetData    := nil;
       vlImageSetData    := nil;
       vlImageCreate     := nil;
