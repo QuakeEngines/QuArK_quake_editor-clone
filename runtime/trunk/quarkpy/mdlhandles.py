@@ -68,6 +68,7 @@ class VertexHandle(qhandles.GenericHandle):
         self.cursor = CR_CROSSH
         self.undomsg = "mesh vertex move"
 
+
     def menu(self, editor, view):
         def forcegrid1click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
@@ -87,8 +88,8 @@ class VertexHandle(qhandles.GenericHandle):
                 qmenu.sep,
                 qmenu.item("&Force to grid", forcegrid1click,"force vertex to grid")] + self.OriginItems(editor, view)
 
-    def draw(self, view, cv, draghandle=None):
 
+    def draw(self, view, cv, draghandle=None):
         from qbaseeditor import flagsmouse, currentview # To stop all drawing, causing slowdown, during a zoom.
 
         if (flagsmouse == 520 or flagsmouse == 1032) and draghandle is not None: return # LMB pressed or dragging model mesh handle.
@@ -150,7 +151,17 @@ class VertexHandle(qhandles.GenericHandle):
                 delta = quarkx.vect(delta.x, 0, delta.z)
             if editor.lock_z==1:
                 delta = quarkx.vect(delta.x, delta.y, 0)
-        self.draghint = vtohint(delta)
+
+        if view.info["viewname"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["viewname"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["viewname"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        self.draghint = s
+
         new = self.frame.copy()
         if delta or (flags&MB_REDIMAGE):
             vtxs = new.vertices
@@ -179,12 +190,6 @@ class VertexHandle(qhandles.GenericHandle):
         return [self.frame], [new]
 
 
-  #  For setting stuff up at the beginning of a drag
-  #
-  #  def start_drag(self, view, x, y):
-  #      editor = mapeditor()
-
-
   #  For setting stuff up at the end of a drag
   #
   #  def ok(self, editor, undo, old, new):
@@ -209,71 +214,6 @@ class SkinHandle(qhandles.GenericHandle):
       self.texHeight = texHeight
       self.triangle = triangle
       self.undomsg = "Skin-view move"
-
- #  For setting stuff up at the beginning of a handle drag.
- #
- # def start_drag(self, view, x, y):
-
-  def ok(self, editor, undo, old, new):
-      global HoldObject, NewSellist
-      from mdlmgr import saveskin
-      NewSellist = []
-      HoldObjectList = []
-
-      for Object in editor.layout.explorer.sellist:
-          HoldObject = Object
-          if HoldObject is None:
-              Expanded = False
-              ParentNames = []
-          else:
-              ParentNames = [HoldObject.name]
-              while HoldObject.parent is not None:
-                  HoldObject = HoldObject.parent
-                  ParentNames.append(HoldObject.name)
-
-          HoldObjectList.append(ParentNames)
-
-      undo.ok(editor.Root, self.undomsg) ### editor.Root changes uniquesel to the component, WE DO NOT WANT THAT
-
-      for ParentNames in HoldObjectList:
-          HoldObject = editor.Root
-          ParentNames.reverse()
-          if len(ParentNames) == 0:
-              EditorRoot = 0
-          else:
-              EditorRoot = ParentNames.index(HoldObject.name)
-      
-          for x in range(len(ParentNames)-EditorRoot-1):
-              if x+EditorRoot == 1:
-                  HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
-              elif x+EditorRoot == 2:
-                  HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
-              elif x+EditorRoot == 3:
-                  HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
-
-         ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
-         ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
-         # editor.layout.explorer.sellist = [HoldObject]
-
-          NewSellist.append(HoldObject)
-      try:
-          if (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
-              pass
-          else:
-              editor.layout.explorer.sellist = NewSellist  # go around if bone is in the list
-      except:
-          pass    
-
-      if len(NewSellist) <= 1:
-          if len(NewSellist) == 1 and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg")):
-              pass
-          else:
-              for item in editor.layout.explorer.sellist:
-                  editor.layout.explorer.expand(item.parent)
-      else:
-          HoldObject = None
-          for item in editor.layout.explorer.sellist:
-              editor.layout.explorer.expand(item.parent)
 
 
   def draw(self, view, cv, draghandle=None):
@@ -305,10 +245,7 @@ class SkinHandle(qhandles.GenericHandle):
 
       ### shows the true vertex position in relation to each tile section of the texture.
       if MapOption("HandleHints", SS_MODEL):
-          if self.comp.currentskin is not None:
-              self.hint = "x, y @ start: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos) + "  x, y pos: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos)
-          else:
-              self.hint = "Skin-vertex: " + quarkx.ftos(self.tri_index)
+          self.hint = "Skin-vertex: " + quarkx.ftos(self.tri_index)
 
       p = view.proj(self.pos)
       if p.visible:
@@ -344,6 +281,11 @@ class SkinHandle(qhandles.GenericHandle):
               cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
 #py2.4          cv.setpixel(p.x, p.y, vertexdotcolor)
           cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
+
+
+ #  For setting stuff up at the beginning of a handle drag.
+ #
+ # def start_drag(self, view, x, y):
 
 
   def drag(self, v1, v2, flags, view):
@@ -404,9 +346,9 @@ class SkinHandle(qhandles.GenericHandle):
 
       ### shows the true vertex position as you move it and in relation to each tile section of the texture.
       if self.comp.currentskin is not None:
-          self.draghint = "x, y @ start: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos) + "  x, y pos: " + ftoss(int(Xtogo)) + ", " + ftoss(int(Ytogo))
+          self.draghint = "was " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos) + " now " + ftoss(int(Xtogo)) + ", " + ftoss(int(Ytogo))
       else:
-          self.draghint = "x, y @ start: " + ftoss(int(view.proj(v1).tuple[0])) + ", " + ftoss(int(view.proj(v1).tuple[1])) + "  x, y pos: " + ftoss(view.proj(v2).tuple[0]) + ", " + ftoss(view.proj(v2).tuple[1])
+          self.draghint = "was " + ftoss(int(view.proj(v1).tuple[0])) + ", " + ftoss(int(view.proj(v1).tuple[1])) + " now " + ftoss(view.proj(v2).tuple[0]) + ", " + ftoss(view.proj(v2).tuple[1])
 
       new = self.comp.copy()
       if delta or (flags&MB_REDIMAGE):
@@ -485,6 +427,68 @@ class SkinHandle(qhandles.GenericHandle):
       return [self.comp], [new]
 
 
+  def ok(self, editor, undo, old, new):
+      global HoldObject, NewSellist
+      from mdlmgr import saveskin
+      NewSellist = []
+      HoldObjectList = []
+      for Object in editor.layout.explorer.sellist:
+          HoldObject = Object
+          if HoldObject is None:
+              Expanded = False
+              ParentNames = []
+          else:
+              ParentNames = [HoldObject.name]
+              while HoldObject.parent is not None:
+                  HoldObject = HoldObject.parent
+                  ParentNames.append(HoldObject.name)
+
+          HoldObjectList.append(ParentNames)
+
+      undo.ok(editor.Root, self.undomsg) ### editor.Root changes uniquesel to the component, WE DO NOT WANT THAT
+
+      for ParentNames in HoldObjectList:
+          HoldObject = editor.Root
+          ParentNames.reverse()
+          if len(ParentNames) == 0:
+              EditorRoot = 0
+          else:
+              EditorRoot = ParentNames.index(HoldObject.name)
+      
+          for x in range(len(ParentNames)-EditorRoot-1):
+              if x+EditorRoot == 1:
+                  HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
+              elif x+EditorRoot == 2:
+                  HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
+              elif x+EditorRoot == 3:
+                  HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
+
+         ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
+         ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
+         # editor.layout.explorer.sellist = [HoldObject]
+
+          NewSellist.append(HoldObject)
+      try:
+          if (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
+              pass
+          else:
+              editor.layout.explorer.sellist = NewSellist  # go around if bone is in the list
+      except:
+          pass    
+
+      if len(NewSellist) <= 1:
+          if len(NewSellist) == 1 and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg")):
+              pass
+          else:
+              for item in editor.layout.explorer.sellist:
+                  editor.layout.explorer.expand(item.parent)
+      else:
+          HoldObject = None
+          for item in editor.layout.explorer.sellist:
+              editor.layout.explorer.expand(item.parent)
+
+
+
 class BoneHandle(qhandles.GenericHandle):
   "Bone Handle"
 
@@ -492,6 +496,25 @@ class BoneHandle(qhandles.GenericHandle):
   def __init__(self, pos):
       qhandles.GenericHandle.__init__(self, pos)
       self.cursor = CR_CROSSH
+
+
+  def draw(self, view, cv, draghandle=None):
+      p = None
+      if self.pos is None:
+          pass
+      else:
+          p = view.proj(self.pos)
+      if p is None:
+          p = view.proj(0,0,0)
+      if p.visible:
+          cv.penwidth = 1
+          cv.pencolor = BLUE
+          cv.penstyle = PS_INSIDEFRAME
+          cv.brushcolor = WHITE
+          cv.brushstyle = BS_SOLID
+#py2.4          cv.ellipse(p.x-3, p.y-3, p.x+3, p.y+3)
+          cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+
 
   def drag(self, v1, v2, flags, view):
       self.handle = self
@@ -509,7 +532,16 @@ class BoneHandle(qhandles.GenericHandle):
               delta = quarkx.vect(delta.x, 0, delta.z)
           if editor.lock_z==1:
               delta = quarkx.vect(delta.x, delta.y, 0)
-      self.draghint = vtohint(delta)
+
+      if view.info["viewname"] == "XY":
+          s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+      elif view.info["viewname"] == "XZ":
+          s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+      elif view.info["viewname"] == "YZ":
+          s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+      else:
+          s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+      self.draghint = s
 
       new = self.bone.copy()
       if delta or (flags&MB_REDIMAGE):
@@ -570,23 +602,6 @@ class BoneHandle(qhandles.GenericHandle):
 
       return [self.bone], [new]
 
-  def draw(self, view, cv, draghandle=None):
-      p = None
-      if self.pos is None:
-          pass
-      else:
-          p = view.proj(self.pos)
-      if p is None:
-          p = view.proj(0,0,0)
-      if p.visible:
-          cv.penwidth = 1
-          cv.pencolor = BLUE
-          cv.penstyle = PS_INSIDEFRAME
-          cv.brushcolor = WHITE
-          cv.brushstyle = BS_SOLID
-#py2.4          cv.ellipse(p.x-3, p.y-3, p.x+3, p.y+3)
-          cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
-
 
 
 def buildskinvertices(editor, view, layout, component, skindrawobject):
@@ -608,7 +623,6 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
                 viewscale = Width
             else:
                 viewscale = Height
-
         except:
             pass
         else:
@@ -804,8 +818,6 @@ def BuildHandles(editor, explorer, view):
   #  return qhandles.FilterHandles(h, SS_MODEL)
     return h
 
-
-
 #
 # Drag Objects
 #
@@ -896,6 +908,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.32  2007/04/12 03:50:22  cdunde
+#Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
+#and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
+#Also activated the 'Hints for handles' function for the Skin-view.
+#
 #Revision 1.31  2007/04/11 15:52:16  danielpharos
 #Removed a few tabs.
 #

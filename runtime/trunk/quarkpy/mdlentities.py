@@ -145,7 +145,9 @@ class FrameType(EntityManager):
             item = h[i]
             item.frame = o
             item.index = i
-            item.hint = "Vertex %s"%item.index
+            item.name = "Vertex"
+            if MapOption("HandleHints", SS_MODEL):
+                item.hint = item.name + " %s"%item.index
         return h
 
 
@@ -160,8 +162,9 @@ class BoneType(EntityManager):
 
     def handlesopt(o, editor):
         h = []
+        index = ""
         if o["start_point"] is None:
-          o = quarkx.newobj("FalseBone:bone")   # false internal object
+          o = quarkx.newobj("BoneFrame:bone")   # false internal object
 
           start = quarkx.newobj('start_point')
           end = quarkx.newobj('end_point')
@@ -176,22 +179,27 @@ class BoneType(EntityManager):
         else:
           start_p = o.start_point
           end_p = o.end_point
-
         s = mdlhandles.BoneHandle(start_p)
-        s.hint = "Start of %s"%o.shortname
-	s.bone = o
-	s.s_or_e = 0
-	h = h + [s]
+        if MapOption("HandleHints", SS_MODEL):
+            s.hint = "Start of %s"%o.shortname
+        s.bone = o
+        s.s_or_e = 0
+        s.name = "Start of BoneFrame"
+        s.index = index
+        h = h + [s]
 
-        e = mdlhandles.BoneHandle(end_p) 
-        e.hint = "End of %s"%o.shortname
-	e.bone = o
+        e = mdlhandles.BoneHandle(end_p)
+        if MapOption("HandleHints", SS_MODEL):
+            e.hint = "End of %s"%o.shortname
+        e.bone = o
         e.start_point = quarkx.vect(0,0,0)
         e.end_point = quarkx.vect(8,2,2)
         e.bone_length = None
-	e.s_or_e = 1
-	h = h + [e]
-	return h
+        e.s_or_e = 1
+        e.name = "End of BoneFrame"
+        e.index = index
+        h = h + [e]
+        return h
     
 # /AiV
 
@@ -252,6 +260,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.12  2006/11/30 01:19:33  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.11  2006/11/29 07:00:25  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

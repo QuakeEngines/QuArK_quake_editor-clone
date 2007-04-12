@@ -583,11 +583,9 @@ class BaseEditor:
                                 if isinstance(self.dragobject, qhandles.HandleDragObject):
                                     pass
                                 else:
-                                    #import mdleditor     ###Already imported above!
                                     mdleditor.commonhandles(self)
                             else:
                                 if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow":
-                                    #import mdleditor     ###Already imported above!
                                     mdleditor.commonhandles(self)
                                 else:
                                     if flagsmouse == 2064 and (currentview.info["viewname"] == "XY" or currentview.info["viewname"] == "XZ" or currentview.info["viewname"] == "YZ"):
@@ -742,13 +740,21 @@ class BaseEditor:
                                     Ystartpos = -handle.pos.y
 
                                 ### shows the true vertex position in relation to each tile section of the texture.
-                                s = "x, y @ start: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos) + "  x, y pos: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos)
+                                s = "Skin-vertex " + "%s "%handle.tri_index + " x: %s"%ftoss(Xstartpos) + " y: %s"%ftoss(Ystartpos)
                             except:
                                 s = quarkx.getlonghint(handle.hint)
                         else:
                             s = "Skin-vertex: " + quarkx.ftos(handle.tri_index) + "  x, y pos: " + ftoss(x) + ", " + ftoss(y)
                     else:
-                        s = quarkx.getlonghint(handle.hint)
+                        s = view.info["viewname"] + " view"
+                        if view.info["viewname"] == "XY":
+                            s = handle.name + " " + "%s "%handle.index + s + " x: %s"%ftoss(handle.pos.tuple[0]) + " y: %s"%ftoss(handle.pos.tuple[1])
+                        elif view.info["viewname"] == "XZ":
+                            s = handle.name + " " + "%s "%handle.index + s + " x: %s"%ftoss(handle.pos.tuple[0]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                        elif view.info["viewname"] == "YZ":
+                            s = handle.name + " " + "%s "%handle.index + s + " y: %s"%ftoss(handle.pos.tuple[1]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                        else:
+                            s = handle.name + " " + "%s "%handle.index + " x,y,z: %s"%handle.pos
                 else:
                     s = quarkx.getlonghint(handle.hint)
             self.showhint(s)
@@ -1071,6 +1077,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.45  2007/04/12 23:55:04  cdunde
+#To reverse last reversal that was not causing a problem in the Model Editor after all.
+#
 #Revision 1.44  2007/04/12 06:09:12  cdunde
 #To reverse combined two procedures which caused Model Editor
 #multi meshfill function to not operate properly.
