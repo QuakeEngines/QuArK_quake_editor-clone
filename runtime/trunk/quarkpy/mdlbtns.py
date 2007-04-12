@@ -114,8 +114,11 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
             return
         new = newitem.copy()
         prepareobjecttodrop(editor, new)
-        if delta:
-            new.translate(delta)
+        try:
+            if delta:
+                new.translate(delta)
+        except:
+            pass
         undo.put(nparent, new, nib)
     undo.ok(editor.Root, text)
     editor.layout.actionmpp()
@@ -341,6 +344,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.12  2007/04/03 15:17:45  danielpharos
+#Read the recenter option for the correct editor mode.
+#
 #Revision 1.11  2007/03/31 14:32:43  danielpharos
 #Should fix the Screen Center behaviour
 #
