@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2007/04/12 22:18:13  danielpharos
+Small fix, mainly for Quake 2.
+
 Revision 1.65  2007/04/12 20:54:07  danielpharos
 Another BIG update for Doom 3 and Quake 4: patchdef2 should be saving correctly now.
 
@@ -2888,7 +2891,8 @@ begin
  for I:=0 to SubElements.Count-1 do
   begin
    T:=TTreeMap(SubElements[I]);
-   if (Flags and soSelOnly = 0) or ControleSelection(T) then
+   // Is this right?
+   if not ((Flags and soSelOnly <> 0) and ControleSelection(T)) then
    begin
     SaveAsMapText(T, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings);
    end;
