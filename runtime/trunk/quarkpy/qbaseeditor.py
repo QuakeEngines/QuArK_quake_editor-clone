@@ -524,16 +524,11 @@ class BaseEditor:
         undo.ok(self.Root, msg)
 
 
-    def invalidateviews(self, rebuild=0):
+    def invalidateviews(self, rebuild=0, viewmodes=''):
         "Force all views to be redrawn."
         for v in self.layout.views:
-            v.invalidate(rebuild)
-
-    def invalidatetexviews(self):
-        "Force all non-wireframe views to be redrawn."
-        for v in self.layout.views:
-            if v.viewmode != "wire":
-                v.invalidate(1)
+            if (viewmodes == '') or (v.viewmode == viewmodes):
+                v.invalidate(rebuild)
 
 
     def explorerrootchange(self, ex, old, new):
@@ -1076,6 +1071,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.44  2007/04/12 06:09:12  cdunde
+#To reverse combined two procedures which caused Model Editor
+#multi meshfill function to not operate properly.
+#
 #Revision 1.43  2007/04/12 03:50:22  cdunde
 #Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
 #and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
