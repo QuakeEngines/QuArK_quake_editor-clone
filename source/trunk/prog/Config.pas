@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/04/12 18:23:14  danielpharos
+Attempt 2 to fix a crash-on-exit with the ConfigDlg.
+
 Revision 1.12  2007/03/19 21:01:20  danielpharos
 Re-done 1.10, but this time (hopefully) better. There seems to be a race condition where Timer1 fires after it should have been disabled. Shouldn't happen anymore (crosses fingers).
 
@@ -453,16 +456,19 @@ begin
  by the time we try to check it. My first attempt (counting my try-
  statement as zero :)  ) was with Timer1, so I'm going to use the
  same variable here: DisableTimer.}
- if DisableTimer and ApplyBtn.Enabled then
+ if DisableTimer then
   begin
-   ActivateNow(Self);
-   case MessageDlg(LoadStr1(5642), mtConfirmation, mbYesNoCancel, 0) of
-    mrYes: ApplyBtnClick(Nil);
-    mrNo: CancelNow;
-    else Abort;
-   end;
+   if ApplyBtn.Enabled then
+    begin
+     ActivateNow(Self);
+     case MessageDlg(LoadStr1(5642), mtConfirmation, mbYesNoCancel, 0) of
+      mrYes: ApplyBtnClick(Nil);
+      mrNo: CancelNow;
+      else Abort;
+     end;
+    end;
+   MAJAffichage(Nil);
   end;
- MAJAffichage(Nil);
 end;
 
 procedure TConfigDlg.OkBtnClick(Sender: TObject);
