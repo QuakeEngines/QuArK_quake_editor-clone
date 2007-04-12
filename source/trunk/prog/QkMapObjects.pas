@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2007/04/12 15:04:44  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
 Revision 1.46  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -184,8 +187,6 @@ uses Windows, SysUtils, Classes, Menus, Controls, Graphics, CommCtrl,
      QkObjects, qmath, QkExplorer, QkFileObjects, QkForm, qmatrices,
      Qk3D, QkModel, QkFrame, QkMdlObject, QkComponent, Python;
 
-{$DEFINE RemoveEmptySpecs}
-
 const
  vfGrayedout        = 1;
  vfHidden           = 2;
@@ -218,8 +219,6 @@ const
 type
  TBBoxInfo = array[0..6] of Single;
  TEntityChoice = set of (ecEntity, ecBrushEntity, ecBezier);
- TTreeMap = class;
- TTreeMapClass = class of TTreeMap;
  TTreeMap = class(Q3DObject)   { all objects in a map }
             private
              {procedure SetOrigin(const nOrigin: TVect);

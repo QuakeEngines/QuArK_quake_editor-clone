@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2007/04/12 15:04:43  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
 Revision 1.62  2007/04/12 10:51:10  danielpharos
 Added brushdef2 loading support.
 
@@ -224,6 +227,7 @@ uses
 
 { $DEFINE TexUpperCase}
 { $DEFINE ClassnameLowerCase}
+{$DEFINE RemoveEmptySpecs}
 
 type
 
@@ -2243,7 +2247,7 @@ begin
   else if ObjectToSave is TDuplicator then
     SaveAsMapTextTDuplicator(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
   else
-    raise Exception.Create('Unknown entity');
+    raise InternalE(LoadStr1(5525));
 end;
 
 procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
@@ -2253,7 +2257,7 @@ var
  V1, V2: TVect;
  OriginBrush: PVect;
 begin
- with TTreeMap(ObjectToSave) do
+ with TTreeMapBrush(ObjectToSave) do
  begin
 
  { If this is the first time we're called, soOutsideWorldspawn is not set,

@@ -705,7 +705,7 @@ Strings = {
     5522: "(Missing)",
     5523: "(Empty data)",
     5524: "Texture '%s' not found in %s",
-
+    5525: "Unable to save entity, invalid type",
     5526: "Could not add this file to the QuArK Explorer",
     5527: "This file is opened in several windows. You must close them before you can do this operation",
     # 5528: "You cannot make changes here because QuArK could not find in which file this data is stored",
@@ -1016,6 +1016,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.91  2007/04/12 10:51:03  danielpharos
+#Added brushdef2 loading support.
+#
 #Revision 1.90  2007/04/02 22:12:21  danielpharos
 #Moved one line to the dictionnary.
 #
