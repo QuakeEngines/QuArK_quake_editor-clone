@@ -274,6 +274,7 @@ def paintframefill(self, v, currentview):
 
 def commonhandles(self, redraw=1):
     from qbaseeditor import flagsmouse, currentview
+
     if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
         componentnames = []
         for item in self.Root.dictitems:
@@ -353,7 +354,6 @@ def commonhandles(self, redraw=1):
     except:
         pass
 
-
     if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056):
         try:
             if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow"):
@@ -406,7 +406,7 @@ def commonhandles(self, redraw=1):
         hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
 
     for v in self.layout.views:
-        if v.info["viewname"] == "editors3Dview" and  flagsmouse != 2064:
+        if v.info["viewname"] == "editors3Dview" and flagsmouse != 2064:
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
                 pass
             else:
@@ -455,6 +455,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.23  2007/04/04 21:34:17  cdunde
+#Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+#
 #Revision 1.22  2007/04/01 23:12:09  cdunde
 #To remove Model Editor code no longer needed and
 #improve Model Editor fillmesh color control when panning.
