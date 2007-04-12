@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2007/04/09 21:44:24  danielpharos
+Started work on Doom 3 map version 2 and Quake 4 map version 3.
+
 Revision 1.59  2007/03/25 13:52:25  danielpharos
 Moved a few dictionnary words around.
 
@@ -284,8 +287,8 @@ function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QB
 implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
-  Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet {Rowdy}, Bezier {/Rowdy}
-  ,QkQ2, QkObjectClassList, MapError;
+  Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet {Rowdy}, Bezier {/Rowdy},
+  QkQ2, QkObjectClassList, MapError, StrUtils;
 
 {$R *.DFM}
 
@@ -668,7 +671,13 @@ expected one.
      if (C=#13) or ((C=#10) {and not Juste13}) then
        Inc(LineNoBeingParsed);
      Juste13:=C=#13;
-     SymbolType:=sStringToken;
+     if (LeftStr(S,1)='"') and (RightStr(S,1)='"') then
+     begin
+       S:=MidStr(S,2,Length(S)-2);
+       SymbolType:=sStringQuotedToken;
+     end
+     else
+       SymbolType:=sStringToken;
    end;
 
  begin
@@ -882,12 +891,23 @@ expected one.
    ReadSymbolForceToText:=False;
  end;
 
- procedure ReadQ3PatchDef;
+ procedure ReadPatchDef2;
  var
    I, J: Integer;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchDef2"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+
+   { DanielPharos: We've got a problem here...
+   Map versions 2 and higher explicitly put 'textures/' in front
+   of the paths! All we can do for the moment is cutting that off.
+   In the future, somebody should change QuArK's behaviour to where
+   you can set if this path gets prefixed. }
+   if MapVersion>1 then
+   begin
+     if LowerCase(LeftStr(S,9))='textures/' then
+       S:=RightStr(S,Length(S)-9);
+   end;
 
    {$IFDEF TexUpperCase}
    S:=LowerCase(S);
@@ -953,6 +973,17 @@ expected one.
    ReadSymbol(sStringToken); // lbrace follows "patchDef3"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
 
+   { DanielPharos: We've got a problem here...
+   Map versions 2 and higher explicitly put 'textures/' in front
+   of the paths! All we can do for the moment is cutting that off.
+   In the future, somebody should change QuArK's behaviour to where
+   you can set if this path gets prefixed. }
+   if MapVersion>1 then
+   begin
+     if LowerCase(LeftStr(S,9))='textures/' then
+       S:=RightStr(S,Length(S)-9);
+   end;
+
    {$IFDEF TexUpperCase}
    S:=LowerCase(S);
    {$ENDIF}
@@ -1010,14 +1041,14 @@ expected one.
  end;
 
 
- procedure ReadQ3BrushDef;
+ procedure ReadBrushDef;
  var
    R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
    Denom : Double;
    Matrix : TMatrixTransformation;
  begin
-  ReadSymbol(sStringToken); // lbrace follows "patchDef2"
-  ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+  ReadSymbol(sStringToken); // lbrace follows "brushDef"
+  ReadSymbol(sCurlyBracketLeft); // data follows lbrace
   P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
   EntitePoly.SubElements.Add(P);
   ContentsFlags:=0;
@@ -1061,6 +1092,20 @@ expected one.
     P1:=VecSum(MatrixMultByVect(Matrix,P1),Tex0);
     P2:=VecSum(MatrixMultByVect(Matrix,P2),Tex0);
 
+    { DanielPharos: We've got a problem here...
+    Map versions 2 and higher explicitly put 'textures/' in front
+    of the paths! All we can do for the moment is cutting that off.
+    In the future, somebody should change QuArK's behaviour to where
+    you can set if this path gets prefixed. }
+    if MapVersion>1 then
+    begin
+      if LowerCase(LeftStr(S,9))='textures/' then
+         S:=RightStr(S,Length(S)-9);
+    end;
+
+    {$IFDEF TexUpperCase}
+    S:=LowerCase(S);
+    {$ENDIF}
     Q2Tex:=Q2Tex or (Pos('/',S)<>0);
     Surface.NomTex:=S;   { here we get the texture-name }
     Surface.SetThreePointsUserTex(P0,P1,P2,nil);
@@ -1124,7 +1169,7 @@ expected one.
 
     ReadSymbol(sTokenForcedToString);
 
-    if MapVersion<2 then
+    if MapVersion<3 then
     begin
       v[3].x := NumericValue;
       ReadSymbol(sNumValueToken);
@@ -1173,6 +1218,20 @@ expected one.
     P1:=VecSum(MatrixMultByVect(Matrix,P1),Tex0);
     P2:=VecSum(MatrixMultByVect(Matrix,P2),Tex0);
 
+    { DanielPharos: We've got a problem here...
+    Map versions 2 and higher explicitly put 'textures/' in front
+    of the paths! All we can do for the moment is cutting that off.
+    In the future, somebody should change QuArK's behaviour to where
+    you can set if this path gets prefixed. }
+    if MapVersion>1 then
+    begin
+      if LowerCase(LeftStr(texname,9))='textures/' then
+         texname:=RightStr(texname,Length(texname)-9);
+    end;
+
+    {$IFDEF TexUpperCase}
+    texname:=LowerCase(texname);
+    {$ENDIF}
     Q2Tex:=Q2Tex or (Pos('/',texname)<>0);
     Surface.NomTex:=texname;   { here we get the texture-name }
     Surface.SetThreePointsUserTex(P0,P1,P2,nil);
@@ -1572,16 +1631,11 @@ begin
           Inc(BrushNum);
           FaceNum:=-1;
           ReadSymbol(sCurlyBracketLeft);
-          {Rowdy}
-          // Q3A might have 'patchDef2'
           if SymbolType=sStringToken then
            begin
-             {DECKER - dont expect that patchDef2 is the only stringToken
-              that can appear in a future .MAP-file format. So compare instead
-              of 'is-not-equal-to then raise exception'.}
              if LowerCase(s)='patchdef2' then
              begin
-              { Armin: a patchDef2 means it is a Quake 3 map }
+              // A patchDef2 means it is at least a Quake 3 map
               if Result=mjQuake then
                 Result:=mjQ3A;
               { Armin: create the MapStructureB group if not already done }
@@ -1591,14 +1645,14 @@ begin
                  Racine.SubElements.Add(MapStructureB);
                  EntiteBezier:=MapStructureB;
                end;
-               ReadQ3PatchDef(); {DECKER - moved to local-procedure to increase readability}
+               ReadPatchDef2(); {DECKER - moved to local-procedure to increase readability}
              end
              else if LowerCase(s)='patchdef3' then
              begin
-              { A patchDef3 means it is a Doom 3 map }
-              if Result=mjQuake then
-                Result:=mjDoom3;
-              { Armin: create the MapStructureB group if not already done }
+               // A patchDef3 means it is at least a Doom 3 map
+               if Result=mjQuake then
+                 Result:=mjDoom3;
+               { Armin: create the MapStructureB group if not already done }
                if EntiteBezier=Nil then
                begin
                  MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
@@ -1609,21 +1663,23 @@ begin
              end
              else if LowerCase(s)='brushdef' then
              begin
-              { A brushDef means it is a Quake 3 map }
-              if Result=mjQuake then
-               Result:=mjQ3A;
-               ReadQ3BrushDef(); {DECKER - moved to local-procedure to increase readability}
+               // A brushDef means it is at least a Quake 3 map
+               if Result=mjQuake then
+                 Result:=mjQ3A;
+               ReadBrushDef(); {DECKER - moved to local-procedure to increase readability}
              end
              else if LowerCase(s)='brushdef3' then
              begin
-                 ReadBrushDef3();
+               // A brushDef3 means it is at least a Doom 3 map
+               if Result=mjQuake then
+                 Result:=mjDoom3;
+               ReadBrushDef3();
              end
              else
-               raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(260)]); // "patchDef2" expected
+               raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(260)]);
            end
           else
            begin
-           {/Rowdy}
             P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
             EntitePoly.SubElements.Add(P);
             ContentsFlags:=0;
