@@ -618,7 +618,7 @@ class BaseEditor:
                     else:
                         self.dragobject = None
         #
-        # Are we simply moving the mouse over the view ?
+        # If the mouse is simply being moved around inside one of the editor's views.
         #
 
         elif flags & MB_MOUSEMOVE:
@@ -630,8 +630,9 @@ class BaseEditor:
                 if editor == None: return
                 else:
                     if isinstance(editor, mdleditor.ModelEditor):
-                        return
-                    if editor.layout.toolbars["tb_terrmodes"] is not None:
+                     #   return
+                        pass
+                    elif editor.layout.toolbars["tb_terrmodes"] is not None:
                         tb2 = editor.layout.toolbars["tb_terrmodes"]
                         i = quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode")
                         if i < 20 and i != 0:
@@ -679,12 +680,77 @@ class BaseEditor:
                     else:
                         raise
                 except:
-                    s = view.info["type"] + " view"
-                    if   tag==6: s = s + " y:" + list[1] + " z:" + list[2]
-                    elif tag==5: s = s + " x:" + list[0] + " z:" + list[2]
-                    elif tag==3: s = s + " x:" + list[0] + " y:" + list[1]
+                    if isinstance(self, mdleditor.ModelEditor):
+                        s = view.info["viewname"]
+                        if view.info["viewname"] == "skinview":
+                            try:
+                                texWidth,texHeight = editor.Root.currentcomponent.currentskin["Size"]
+                                cursorXpos = float(list[0])
+                                cursorYpos = float(list[1])
+                                if cursorXpos > (texWidth * .5):
+                                    Xstart = int((cursorXpos / texWidth) -.5)
+                                    Xpos = -texWidth + cursorXpos - (texWidth * Xstart)
+                                elif cursorXpos < (-texWidth * .5):
+                                    Xstart = int((cursorXpos / texWidth) +.5)
+                                    Xpos = texWidth + cursorXpos + (texWidth * -Xstart)
+                                else:
+                                    Xpos = cursorXpos
+
+                                if -cursorYpos > (texHeight * .5):
+                                    Ystart = int((-cursorYpos / texHeight) -.5)
+                                    Ypos = -texHeight + -cursorYpos - (texHeight * Ystart)
+                                elif -cursorYpos < (-texHeight * .5):
+                                    Ystart = int((-cursorYpos / texHeight) +.5)
+                                    Ypos = texHeight + -cursorYpos + (texHeight * -Ystart)
+                                else:
+                                    Ypos = -cursorYpos
+                                s = s + " x:" + ftoss(int(Xpos)) + " y:" + ftoss(int(Ypos))
+                            except:
+                                s = s + " x:" + ftoss(int(x)) + " y:" + ftoss(int(y))
+                        else:
+                            if   tag==6: s = s + " view y:" + list[1] + " z:" + list[2]
+                            elif tag==5: s = s + " view x:" + list[0] + " z:" + list[2]
+                            elif tag==3: s = s + " view x:" + list[0] + " y:" + list[1]
+                    else:
+                        s = view.info["type"] + " view"
+                        if   tag==6: s = s + " y:" + list[1] + " z:" + list[2]
+                        elif tag==5: s = s + " x:" + list[0] + " z:" + list[2]
+                        elif tag==3: s = s + " x:" + list[0] + " y:" + list[1]
             else:
-                s = quarkx.getlonghint(handle.hint)
+                if isinstance(self, mdleditor.ModelEditor):
+                    if view.info["viewname"] == "skinview":
+                        if handle.comp.currentskin is not None:
+                            try:
+                                texWidth = handle.texWidth
+                                texHeight = handle.texHeight
+                                if handle.pos.x > (texWidth * .5):
+                                    Xstart = int((handle.pos.x / texWidth) -.5)
+                                    Xstartpos = -texWidth + handle.pos.x - (texWidth * Xstart)
+                                elif handle.pos.x < (-texWidth * .5):
+                                    Xstart = int((handle.pos.x / texWidth) +.5)
+                                    Xstartpos = texWidth + handle.pos.x + (texWidth * -Xstart)
+                                else:
+                                    Xstartpos = handle.pos.x
+
+                                if -handle.pos.y > (texHeight * .5):
+                                    Ystart = int((-handle.pos.y / texHeight) -.5)
+                                    Ystartpos = -texHeight + -handle.pos.y - (texHeight * Ystart)
+                                elif -handle.pos.y < (-texHeight * .5):
+                                    Ystart = int((-handle.pos.y / texHeight) +.5)
+                                    Ystartpos = texHeight + -handle.pos.y + (texHeight * -Ystart)
+                                else:
+                                    Ystartpos = -handle.pos.y
+
+                                ### shows the true vertex position in relation to each tile section of the texture.
+                                s = "x, y @ start: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos) + "  x, y pos: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos)
+                            except:
+                                s = quarkx.getlonghint(handle.hint)
+                        else:
+                            s = "Skin-vertex: " + quarkx.ftos(handle.tri_index) + "  x, y pos: " + ftoss(x) + ", " + ftoss(y)
+                    else:
+                        s = quarkx.getlonghint(handle.hint)
+                else:
+                    s = quarkx.getlonghint(handle.hint)
             self.showhint(s)
 
         #
@@ -695,8 +761,11 @@ class BaseEditor:
             if self.dragobject is not None:
                 self.dragobject.dragto(x, y, flags)
             if isinstance(self, mdleditor.ModelEditor):
-                if self.dragobject.hint is not None:
-                    self.showhint(self.dragobject.hint)
+                try:
+                    if self.dragobject.hint is not None:
+                        self.showhint(self.dragobject.hint)
+                except:
+                    pass
             else:
                 try:
                     self.dragobject.lastdrag=time.clock(),x,y
@@ -1002,6 +1071,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.42  2007/04/11 15:51:15  danielpharos
+#Combined two procedures.
+#
 #Revision 1.41  2007/04/10 05:43:41  cdunde
 #Fixed vertex position display in Model Editor's hint box while dragging.
 #

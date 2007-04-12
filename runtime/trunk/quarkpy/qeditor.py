@@ -1337,6 +1337,7 @@ def ToolsMenu(editor, toolbars):
 #
 ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
 ico_mdled = LoadIconSet1("mdled", 1.0)
+ico_mdlskv = LoadIconSet1("mdlskv", 1.0)
 ico_dict['ico_mapedsm'] = LoadIconSet1("mapedsm", 0.5)    # small
 ico_maped_y = ico_dict['ico_maped'][0][0].size[1] + 7
 
@@ -1541,6 +1542,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.35  2007/01/31 15:12:16  danielpharos
+#Removed bogus OpenGL texture mode
+#
 #Revision 1.34  2007/01/30 06:45:53  cdunde
 #To add UNDERSTANDABLE and needed comments about mouse button "flags" keys available.
 #

@@ -284,6 +284,32 @@ class SkinHandle(qhandles.GenericHandle):
       texWidth = self.texWidth
       texHeight = self.texHeight
       triangle = self.triangle
+
+      if self.pos.x > (self.texWidth * .5):
+          Xstart = int((self.pos.x / self.texWidth) -.5)
+          Xstartpos = -self.texWidth + self.pos.x - (self.texWidth * Xstart)
+      elif self.pos.x < (-self.texWidth * .5):
+          Xstart = int((self.pos.x / self.texWidth) +.5)
+          Xstartpos = self.texWidth + self.pos.x + (self.texWidth * -Xstart)
+      else:
+          Xstartpos = self.pos.x
+
+      if -self.pos.y > (self.texHeight * .5):
+          Ystart = int((-self.pos.y / self.texHeight) -.5)
+          Ystartpos = -self.texHeight + -self.pos.y - (self.texHeight * Ystart)
+      elif -self.pos.y < (-self.texHeight * .5):
+          Ystart = int((-self.pos.y / self.texHeight) +.5)
+          Ystartpos = self.texHeight + -self.pos.y + (self.texHeight * -Ystart)
+      else:
+          Ystartpos = -self.pos.y
+
+      ### shows the true vertex position in relation to each tile section of the texture.
+      if MapOption("HandleHints", SS_MODEL):
+          if self.comp.currentskin is not None:
+              self.hint = "x, y @ start: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos) + "  x, y pos: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos)
+          else:
+              self.hint = "Skin-vertex: " + quarkx.ftos(self.tri_index)
+
       p = view.proj(self.pos)
       if p.visible:
           cv.pencolor = skinviewmesh
@@ -337,7 +363,51 @@ class SkinHandle(qhandles.GenericHandle):
       ### just gives how far you have moved the mouse.
    #   self.draghint = "moving Skin-view vertex: " + ftoss(delta.x) + ", " + ftoss(delta.y)
       ### shows how far from the center of the skin texture the vertex is, its true position.
-      self.draghint = "x, y pos from ctr: " + ftoss(self.pos.x+delta.x) + ", " + ftoss(-self.pos.y-delta.y)
+   #   self.draghint = "x, y pos from ctr: " + ftoss(self.pos.x+delta.x) + ", " + ftoss(-self.pos.y-delta.y)
+
+      if self.pos.x > (self.texWidth * .5):
+          Xstart = int((self.pos.x / self.texWidth) -.5)
+          Xstartpos = -self.texWidth + self.pos.x - (self.texWidth * Xstart)
+      elif self.pos.x < (-self.texWidth * .5):
+          Xstart = int((self.pos.x / self.texWidth) +.5)
+          Xstartpos = self.texWidth + self.pos.x + (self.texWidth * -Xstart)
+      else:
+          Xstartpos = self.pos.x
+
+      if (self.pos.x+delta.x) > (self.texWidth * .5):
+          Xhowmany = int(((self.pos.x+delta.x) / self.texWidth) -.5)
+          Xtogo = -self.texWidth + (self.pos.x+delta.x) - (self.texWidth * Xhowmany)
+
+      elif (self.pos.x+delta.x) < (-self.texWidth * .5):
+          Xhowmany = int(((self.pos.x+delta.x) / self.texWidth) +.5)
+          Xtogo = self.texWidth + (self.pos.x+delta.x) + (self.texWidth * -Xhowmany)
+      else:
+          Xtogo = (self.pos.x+delta.x)
+
+      if -self.pos.y > (self.texHeight * .5):
+          Ystart = int((-self.pos.y / self.texHeight) -.5)
+          Ystartpos = -self.texHeight + -self.pos.y - (self.texHeight * Ystart)
+      elif -self.pos.y < (-self.texHeight * .5):
+          Ystart = int((-self.pos.y / self.texHeight) +.5)
+          Ystartpos = self.texHeight + -self.pos.y + (self.texHeight * -Ystart)
+      else:
+          Ystartpos = -self.pos.y
+
+      if (-self.pos.y-delta.y) > (self.texHeight * .5):
+          Ystart = int(((-self.pos.y-delta.y) / self.texHeight) -.5)
+          Ytogo = -self.texHeight + (-self.pos.y-delta.y) - (self.texHeight * Ystart)
+      elif (-self.pos.y-delta.y) < (-self.texHeight * .5):
+          Ystart = int(((-self.pos.y-delta.y) / self.texHeight) +.5)
+          Ytogo = self.texHeight + (-self.pos.y-delta.y) + (self.texHeight * -Ystart)
+      else:
+          Ytogo = (-self.pos.y-delta.y)
+
+      ### shows the true vertex position as you move it and in relation to each tile section of the texture.
+      if self.comp.currentskin is not None:
+          self.draghint = "x, y @ start: " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos) + "  x, y pos: " + ftoss(int(Xtogo)) + ", " + ftoss(int(Ytogo))
+      else:
+          self.draghint = "x, y @ start: " + ftoss(int(view.proj(v1).tuple[0])) + ", " + ftoss(int(view.proj(v1).tuple[1])) + "  x, y pos: " + ftoss(view.proj(v2).tuple[0]) + ", " + ftoss(view.proj(v2).tuple[1])
+
       new = self.comp.copy()
       if delta or (flags&MB_REDIMAGE):
           tris = new.triangles ### These are all the triangle faces of the model mesh.
@@ -826,6 +896,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.31  2007/04/11 15:52:16  danielpharos
+#Removed a few tabs.
+#
 #Revision 1.30  2007/04/10 06:00:36  cdunde
 #Setup mesh movement using common drag handles
 #in the Skin-view for skinning model textures.

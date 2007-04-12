@@ -168,7 +168,7 @@ class ModelLayout(BaseLayout):
         fp = panel.newpanel()
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
-        self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_maped, 9, "Skin-view", infobaselink='intro.modeleditor.model.html#mesh')
+        self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.model.html#mesh')
         self.Vertexdragmode.mode = self.MODE
         self.Vertexdragmode.tag = "SingleVertexDrag"
         self.Vertexdragmode.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
@@ -478,6 +478,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.25  2007/04/10 06:00:36  cdunde
+#Setup mesh movement using common drag handles
+#in the Skin-view for skinning model textures.
+#
 #Revision 1.24  2007/03/29 18:02:19  cdunde
 #Just some comment stuff.
 #
