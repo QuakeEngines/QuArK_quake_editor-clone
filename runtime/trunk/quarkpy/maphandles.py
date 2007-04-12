@@ -967,7 +967,7 @@ class CyanLHandle(qhandles.GenericHandle):
 
     def __init__(self, n, tp4, face, texsrc):
         self.tp4 = tp4
-        qhandles.GenericHandle.__init__(self, self.t4p[n])
+        qhandles.GenericHandle.__init__(self, self.tp4[n])
         self.n = n
         self.face = face
         self.cursor = (CR_DRAG, CR_LINEARV, CR_LINEARV, CR_CROSSH)[n]
@@ -1941,6 +1941,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.56  2007/04/11 15:53:01  danielpharos
+#Added a missing call to init. Should be there, even if only for future changes.
+#
 #Revision 1.55  2006/11/30 01:19:33  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
