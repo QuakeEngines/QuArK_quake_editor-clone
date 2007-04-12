@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/03/25 13:52:24  danielpharos
+Moved a few dictionnary words around.
+
 Revision 1.14  2007/03/11 12:03:10  danielpharos
 Big changes to Logging. Simplified the entire thing.
 
@@ -1013,9 +1016,9 @@ begin
          saveflags:=saveflags or soDisableFPCoord;
         if MapOptionSpecs.Values['UseIntegralVertices']<>'' then
          saveflags:=saveflags or soUseIntegralVertices;
-     saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
+       saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
-       TTreeMap(Root).SaveAsText(List, Dest, saveflags, HxStrings);
+       SaveAsMapText(TTreeMap(Root), ObjectGameCode, -1, List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;

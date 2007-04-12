@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2007/04/12 10:51:10  danielpharos
+Added brushdef2 loading support.
+
 Revision 1.61  2007/04/12 10:05:21  danielpharos
 Improved texture name handling for Doom 3 and Quake 4.
 
@@ -217,7 +220,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkFileObjects, TB97, QkObjects, CursorScrollBox, ExtCtrls, StdCtrls,
   QkForm, QkMapObjects, QkBsp, EnterEditCtrl, PyMapView, PyMath,
-  qmatrices, Python, { tiglari } QkTextures, QkSin { /tiglari};
+  qmatrices, Python, Duplicator, { tiglari } QkTextures, QkSin { /tiglari};
 
 { $DEFINE TexUpperCase}
 { $DEFINE ClassnameLowerCase}
@@ -284,6 +287,13 @@ type
  {------------------------}
 
 function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
+procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Dest, HxStrings: TStrings; Flags: Integer; EntityNumber: Integer);
+procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTBezier(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Target: TStrings);
+procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 
  {------------------------}
 
@@ -295,6 +305,23 @@ uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
 
 {$R *.DFM}
 
+
+var
+  EntityNoCounting: Integer;
+
+function GetFirstEntityNo: Integer;
+begin
+ { Exporting .MAP entity numbering scheme. Resets to zero }
+ EntityNoCounting := 0;
+ Result := EntityNoCounting;
+end;
+
+function GetNextEntityNo: Integer;
+begin
+ { Exporting .MAP entity numbering scheme. Increment by one }
+ Inc(EntityNoCounting);
+ Result := EntityNoCounting;
+end;
  {------------------------}
 
 function QMap.OpenWindow(nOwner: TComponent) : TQForm1;
@@ -1963,19 +1990,18 @@ end;
 procedure QBaseMapFile.SaveFile(Info: TInfoEnreg1);
 var
  Dest, HxStrings: TStringList;
- Racine: QObject;
+ Root: QObject;
  List: TQList;
  saveflags : Integer;
  MapOptionSpecs : TStringList;
-  { Rowdy, for Doom 3 and Quake 4 stuff}
-// MapVersion: Integer;
+ MapVersion: Integer;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-      Racine:=SubElements.FindName(Specifics.Values['Root']);
-      if (Racine=Nil) or not (Racine is TTreeMapBrush) then
+      Root:=SubElements.FindName(Specifics.Values['Root']);
+      if (Root=Nil) or not (Root is TTreeMapBrush) then
        Raise EError(5558);
-      Racine.LoadAll;
+      Root.LoadAll;
       HxStrings:=Nil;
       List:=TQList.Create;
       Dest:=TStringList.Create;
@@ -1993,7 +2019,7 @@ begin
        Dest.Add(CommentMapLine(FmtLoadStr1(178, [])));
        Dest.Add('');
 
-//       MapVersion:=0;
+       MapVersion:=0;
        MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
        if ObjectGameCode=mjDoom3 then
        begin
@@ -2001,24 +2027,24 @@ begin
          // format or Doom 3's default version 2.
          if MapOptionSpecs.Values['SaveMapVersion'] = '1' then
          begin
-//           MapVersion:=1;
+           MapVersion:=1;
            Dest.Add('Version 1');
          end
          else if MapOptionSpecs.Values['SaveMapVersion'] = '2' then
          begin
-//           MapVersion:=2;
+           MapVersion:=2;
            Dest.Add('Version 2');
          end
          else
          begin
-//           MapVersion:=2;
+           MapVersion:=2;
            Dest.Add('Version 2');  //Default to map version 2
          end;
          Dest.Add('');
        end;
        if ObjectGameCode=mjQuake4 then
        begin
-//         MapVersion:=3;
+         MapVersion:=3;
          Dest.Add('Version 3');
        end;
        Dest.Text:=Dest.Text;   { #13 -> #13#10 }
@@ -2032,8 +2058,9 @@ begin
          saveflags:=saveflags or soUseIntegralVertices;
        saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
-     { TTreeMap(Racine).SaveAsText(List, Dest, IntSpec['saveflags'], HxStrings); }
-       TTreeMap(Racine).SaveAsText(List, Dest, saveflags, HxStrings);
+       SaveAsMapText(Root, ObjectGameCode, MapVersion, List, Dest, saveflags, HxStrings);
+//     { TTreeMap(Root).SaveAsText(List, Dest, IntSpec['saveflags'], HxStrings); }
+//       TTreeMap(Root).SaveAsText(List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;
@@ -2072,7 +2099,7 @@ procedure TFQMap.wmInternalMessage(var Msg: TMessage);
 var
  S: String;
  Min, Max, D: TVect;
- Racine: QObject;
+ Root: QObject;
  M: TMatrixTransformation;
 begin
  if Msg.wParam=wp_AfficherObjet then
@@ -2095,10 +2122,10 @@ begin
    if FileObject=Nil then Exit;
    S:=FileObject.Specifics.Values['Root'];
    if S='' then Exit;  { no data }
-   Racine:=FileObject.SubElements.FindName(S);
-   if (Racine=Nil) or not (Racine is TTreeMap) then Exit;  { no data }
-   CheckTreeMap(TTreeMap(Racine));
-   Racine.ClearAllSelection;
+   Root:=FileObject.SubElements.FindName(S);
+   if (Root=Nil) or not (Root is TTreeMap) then Exit;  { no data }
+   CheckTreeMap(TTreeMap(Root));
+   Root.ClearAllSelection;
 
    Min.X:=-10;
    Min.Y:=-10;
@@ -2106,7 +2133,7 @@ begin
    Max.X:=+10;
    Max.Y:=+10;
    Max.Z:=+10;
-   TTreeMap(Racine).ChercheExtremites(Min, Max);
+   TTreeMap(Root).ChercheExtremites(Min, Max);
 
    D.X:=(ScrollBox1.ClientWidth-20)/(Max.X-Min.X);
    D.Y:=(ScrollBox1.ClientHeight-18)/(Max.Y-Min.Y);
@@ -2124,7 +2151,7 @@ begin
    D.X:=(Min.X+Max.X)*0.5;
    D.Y:=(Min.Y+Max.Y)*0.5;
    D.Z:=(Min.Z+Max.Z)*0.5;
-   FRoot:=TTreeMap(Racine);
+   FRoot:=TTreeMap(Root);
    ScrollBox1.CentreEcran:=D;
   end
  else
@@ -2183,6 +2210,374 @@ procedure TFQMap.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  FRoot:=Nil;
  inherited;
+end;
+
+ {------------------------}
+
+procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+var
+  MapOptionSpecs : TStringList;
+begin
+  if MapVersion=-1 then
+  begin
+    MapVersion:=0;
+    if GameCode=mjDoom3 then
+    begin
+      MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
+      if MapOptionSpecs.Values['SaveMapVersion'] = '1' then
+        MapVersion:=1
+      else if MapOptionSpecs.Values['SaveMapVersion'] = '2' then
+        MapVersion:=2
+      else
+        MapVersion:=2;
+    end;
+    if GameCode=mjQuake4 then
+      MapVersion:=3;
+  end;
+  if ObjectToSave is TTreeMapBrush then
+    SaveAsMapTextTTreeMapBrush(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
+  else if ObjectToSave is TTreeMapEntity then
+    SaveAsMapTextTTreeMapEntity(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
+  else if ObjectToSave is TTreeMapGroup then
+    SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
+  else if ObjectToSave is TDuplicator then
+    SaveAsMapTextTDuplicator(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
+  else
+    raise Exception.Create('Unknown entity');
+end;
+
+procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+var
+ Polyedres: TQList;
+ I, J: Integer;
+ V1, V2: TVect;
+ OriginBrush: PVect;
+begin
+ with TTreeMap(ObjectToSave) do
+ begin
+
+ { If this is the first time we're called, soOutsideWorldspawn is not set,
+   and we have to reset the entity-numbering-scheme to zero (zero = worldspawn) }
+ if (Flags and soOutsideWorldspawn = 0) then
+ begin
+  { Do some checking of the spec/args in worldspawn,
+    to set up special .MAP writing methods.
+    Note, that specifics that starts with a ';'-character
+    will not be written to the .MAP file! }
+  { this is nuked, maps will now be written based on OutputMapFormat
+  if Specifics.Values['mapversion']='220' then
+    Flags:=Flags + soWriteValve220, except we'll leave 6dx the same for now 
+  else }
+  if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
+    Flags:=Flags + soWrite6DXHierarky;
+
+  if GetMapFormatType=V220Type then
+    Specifics.Values['mapversion']:='220';
+  I := GetFirstEntityNo;
+ end
+ else
+  I := GetNextEntityNo;
+ if Flags and soBSP = 0 then
+   Texte.Add(CommentMapLine('Entity '+IntToStr(I)));
+ SaveAsMapTextTTreeMapSpec(ObjectToSave, GameCode, MapVersion, Texte, HxStrings, Flags, I);
+ if Flags and soBSP = 0 then
+  begin
+   Polyedres:=TQList.Create;
+   try
+    ListePolyedres(Polyedres, Negatif, Flags and not soDirectDup, 1);
+    OriginBrush:=Nil;
+    if (Flags and soOutsideWorldspawn <> 0) and (CharModeJeu>=mjQuake2) then
+     for I:=Polyedres.Count-1 downto 0 do
+      with TPolyedre(Polyedres[I]) do
+       if CheckPolyhedron and (Faces.Count>0)
+       and (StrToIntDef(PSurface(Faces[0]).F.Specifics.Values['Contents'], 0) and ContentsOrigin <> 0) then
+        begin
+         V1.X:=MaxInt;
+         V1.Y:=MaxInt;
+         V1.Z:=MaxInt;
+         V2.X:=-MaxInt;
+         V2.Y:=-MaxInt;
+         V2.Z:=-MaxInt;
+         ChercheExtremites(V1, V2);
+         if V1.X<V2.X then
+          begin
+           V1.X:=0.5*(V1.X+V2.X);
+           V1.Y:=0.5*(V1.Y+V2.Y);      { center of the 'origin brush' }
+           V1.Z:=0.5*(V1.Z+V2.Z);
+           OriginBrush:=@V1;
+          end;
+         Break;
+        end;
+    for I:=0 to Polyedres.Count-1 do
+     begin
+      Texte.Add(CommentMapLine('Brush '+IntToStr(I)));
+      TPolyedre(Polyedres[I]).SaveAsTextPolygon(Texte, OriginBrush, Flags);
+     end;
+    { proceed with Bezier patches }
+    I:=Polyedres.Count-1;
+    Polyedres.Clear;
+    ListeBeziers(Polyedres, Flags);
+    for J:=0 to Polyedres.Count-1 do
+    begin
+     I:=I+1;
+     Texte.Add(CommentMapLine('Bezier '+IntToStr(J)+' (Brush '+IntToStr(I)+')'));
+     SaveAsMapTextTBezier(TBezier(Polyedres[J]), GameCode, MapVersion, Texte);
+    end;
+   finally
+    Polyedres.Free;
+   end;
+  end;
+ if (Flags and soWrite6DXHierarky <> 0) then
+ begin
+  { For 6DX support }
+   if (Flags and soOutsideWorldspawn = 0) then
+   begin
+     Texte.Add('}');
+     SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+   end
+   else
+   begin
+     SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+     Texte.Add('}');
+   end;
+ end
+ else
+ begin
+   Texte.Add('}');
+   SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+ end;
+
+ end;
+end;
+
+procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Dest, HxStrings: TStrings; Flags: Integer; EntityNumber: Integer);
+const
+ LineStarts: array[Boolean] of String = (' "', '"');
+var
+ MJ, S, Msg, LineStart,outputname: String;
+ P1, I, J, P, hashpos: Integer;
+ typedspecs:Bool;
+ DoneNameSpecific: boolean; // Rowdy: for Doom 3
+begin
+ with ObjectToSave do
+ begin
+
+ DoneNameSpecific:=False;
+ MJ:=CharModeJeu;
+ if Flags and soBsp=0 then
+   Dest.Add(CommentMapLine(Ancestry));
+ if (GetMapFormatType=HL2Type) then
+   if (Name = 'worldspawn') then
+     Dest.Add(LineStart+'world')
+   else
+     Dest.Add(LineStart+'entity');
+ Dest.Add('{');
+ LineStart:=LineStarts[Flags and soBSP <> 0];
+ Dest.Add(LineStart+SpecClassname+'" "'+Name+'"');
+ typedspecs:=false;
+ for J:=0 to Specifics.Count-1 do
+ begin
+   S:=Specifics[J];
+
+   // process untyped specifics
+   hashpos:=Pos('#', S);
+   if (hashpos=0) or (hashpos=1) then
+   begin
+     if (S<>'') and (S[1]<>';') and (Ord(S[1])<chrFloatSpec) then
+     begin
+       P:=Pos('=', S);
+       Msg:=Copy(S, P+1, 255);
+       // special processing for hxstrings
+       if (S[1]='#') and (HxStrings<>Nil) then
+       begin
+         I:=0;
+         while (I<HxStrings.Count) and (Msg<>HxStrings[I]) do
+          Inc(I);
+         if I=HxStrings.Count then
+          HxStrings.Add(Msg);
+         Msg:=IntToStr(I+1);
+         P1:=2;
+         Dec(P);
+       end
+       else
+         P1:=1;
+       {$IFDEF RemoveEmptySpecs}
+       if Msg<>'' then
+       begin
+       {$ENDIF}
+         Dest.Add(LineStart+Copy(S, P1, P-1)+'" "'+Msg+'"');
+         // Rowdy: Doom 3 requires each entity to have a unique "name" specific
+         // and we can use the entity number for that
+         if LowerCase(Copy(S, P1, P-1)) = 'name' then
+           DoneNameSpecific:=True;
+       {$IFDEF RemoveEmptySpecs}
+       end;
+       {$ENDIF}
+     end;
+   end
+   else
+     typedspecs:=true;
+ end; // for J:=...
+
+ if typedspecs and (GetMapFormatType=HL2Type)then
+ begin
+   Dest.Add('  connections');
+   Dest.Add('  {');
+   for J:=0 to Specifics.Count-1 do
+   begin
+     S:=Specifics[J];
+     P:=Pos('=', S);
+     Msg:=Copy(S, P+1, 255);
+
+// not neeeded in map file
+//     hashpos:=Pos('input#',S);
+//     if hashpos <> 0 then
+//       Dest.Add('   "'+Copy(S, 7, P-7)+'" "'+Msg+'"');
+
+     hashpos:=Pos('output#',S);
+     if hashpos <> 0 then
+     begin
+       outputname:=Copy(S, 8, P-8);
+       for i := length(outputname) downto 1 do
+       begin
+         if outputname[i] in ['0'..'9'] then
+           setlength(outputname,i-1)
+         else
+           break;
+       end;
+       Dest.Add('   "'+outputname+'" "'+Msg+'"');
+     end;
+
+   end;
+   Dest.Add('  }');
+ end;
+
+  // Rowdy: Doom 3 entity names: use the entity class + '_' + entity number
+  // e.g. if entity 17 was a light, the name specific would be 'light_17'
+  if (CharModeJeu=mjDoom3) and not(DoneNameSpecific) then
+   Dest.Add(LineStart+'name" "'+Name+'_'+IntToStr(EntityNumber)+'"');
+
+ end;
+end;
+
+procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+var
+ EntityNumber: Integer;
+begin
+ with TTreeMapEntity(ObjectToSave) do
+ begin
+
+ EntityNumber:=0;
+ if Flags and soBSP=0 then
+  begin
+   EntityNumber:=GetNextEntityNo;
+   Texte.Add(CommentMapLine('Entity '+IntToStr(EntityNumber)));
+  end;
+ SaveAsMapTextTTreeMapSpec(ObjectToSave, GameCode, MapVersion, Texte, HxStrings, Flags, EntityNumber);
+ Texte.Add('}');
+
+ end;
+end;
+
+procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+var
+ I: Integer;
+ T: TTreeMap;
+begin
+ with TTreeMapGroup(ObjectToSave) do
+ begin
+
+ if (Flags and soIgnoreToBuild <> 0)
+ and (ViewFlags and vfIgnoreToBuildMap <> 0) then
+  Exit;
+ if Odd(SelMult) then
+  Flags:=Flags and not soSelOnly;
+ for I:=0 to SubElements.Count-1 do
+  begin
+   T:=TTreeMap(SubElements[I]);
+   if (Flags and soSelOnly = 0) or ControleSelection(T) then
+   begin
+    SaveAsMapText(T, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings);
+   end;
+  end;
+
+ end;
+end;
+
+procedure SaveAsMapTextTBezier(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Target: TStrings);
+var
+ cp: TBezierMeshBuf5;
+ I, J, K, R: Integer;
+ S: String;
+ Value: PSingle;
+begin
+ with TBezier(ObjectToSave) do
+ begin
+
+ cp:=ControlPoints;
+ if (cp.W>1) and (cp.H>1) then
+  begin   { ignore Bezier lines (with only 1 row or 1 column of control points) }
+   Target.Add(CommentMapLine(Ancestry));
+   Target.Add(' {');
+   Target.Add('  patchDef2');
+   Target.Add('  {');
+
+   {$IFDEF TexUpperCase}
+   if MapVersion>1 then
+     Target.Add('   "' + UpperCase(NomTex) + '"')
+   else
+     Target.Add('   ' + UpperCase(NomTex));
+   {$ELSE}
+   if MapVersion>1 then
+     Target.Add('   "' + NomTex + '"')
+   else
+     Target.Add('   ' + NomTex);
+   {$ENDIF}
+   Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
+   Target.Add('(');
+   for J:=0 to cp.W-1 do
+    begin
+     Value:=@cp.CP^[5*J];
+     S:='( ';
+     for I:=1 to cp.H do
+      begin
+       S:=S+'( ';
+       for K:=1 to 5 do
+        begin
+         R:=Round(Value^);
+         if {WriteIntegers or} (Abs(Value^-R) < rien) then
+          S:=S+IntToStr(R)+' '
+         else
+          S:=S+FloatToStrF(Value^, ffFixed, 20, 5)+' ';
+         Inc(Value);
+        end;
+       S:=S+') ';
+       Inc(Value, 5*(cp.W-1));
+      end;
+     Target.Add(S+')');
+    end;
+   Target.Add(')');
+   Target.Add('  }');
+   Target.Add(' }');
+  end;
+
+ end;
+end;
+
+procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+var
+ I: Integer;
+begin
+ with TDuplicator(ObjectToSave) do
+ begin
+
+{if (Specifics.Values['out']<>'')
+ and (FParent<>Nil) and (TvParent.TvParent=Nil) then
+  GlobalWarning(LoadStr1(230));}  { FIXME: do various map tests globally }
+ for I:=0 to LengthBuildImages-1 do
+   SaveAsMapText(ItemToSave(I), GameCode, MapVersion, Negatif, Texte, Flags, HxStrings);
+  
+ end;
 end;
 
 initialization

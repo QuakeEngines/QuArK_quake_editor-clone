@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2007/02/07 14:33:10  danielpharos
+Cleaned up a little bit of dirty code
+
 Revision 1.59  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -218,9 +221,9 @@ unit QkBsp;
 interface
 
 uses
-  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, TB97, ComCtrls, QkForm, QkMapObjects, qmath,
-  StdCtrls, Python, PyObjects, PyMath, Game, QkUnknown;
+  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls,
+  Forms, Dialogs, QkObjects, QkFileObjects, QkForm, QkMapObjects, qmath,
+  StdCtrls, Python, PyObjects, PyMath, Game, QkUnknown, TB97;
 
 type
  TBsp1EntryTypes =
@@ -1399,7 +1402,7 @@ begin
    FStructure.LoadAll;
    Dest:=TStringList.Create;
    try
-    FStructure.SaveAsText(Nil, Dest, soBSP, Nil);
+    SaveAsMapText(FStructure, GameCode, -1, Nil, Dest, soBSP, Nil);
     S:=Dest.Text;
    finally
     Dest.Free;

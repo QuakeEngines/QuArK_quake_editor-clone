@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2007/04/09 21:44:24  danielpharos
+Started work on Doom 3 map version 2 and Quake 4 map version 3.
+
 Revision 1.31  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -176,7 +179,6 @@ type
 
              procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
              procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
-             procedure SaveAsTextBezier(Target: TStrings);
 
              {function CountBezierTriangles(var Cache: TBezierMeshBuf3) : Integer;}
              function GetMeshCache : TBezierMeshBuf3;
@@ -1389,77 +1391,6 @@ begin
    if Max.Y < cp.CP^[1] then Max.Y:=cp.CP^[1];
    if Max.Z < cp.CP^[2] then Max.Z:=cp.CP^[2];
    Inc(cp.CP);
-  end;
-end;
-
- { save as text for .map files }
-procedure TBezier.SaveAsTextBezier(Target: TStrings);
-var
- cp: TBezierMeshBuf5;
- I, J, K, R: Integer;
- S: String;
- Value: PSingle;
-  { Rowdy, for Doom 3 and Quake 4 stuff}
- MapVersion: Integer;
-begin
- cp:=ControlPoints;
- if (cp.W>1) and (cp.H>1) then
-  begin   { ignore Bezier lines (with only 1 row or 1 column of control points) }
-   Target.Add(CommentMapLine(Ancestry));
-   Target.Add(' {');
-   Target.Add('  patchDef2');
-   Target.Add('  {');
-
-   MapVersion:=0;
-   if CharModeJeu=mjDoom3 then
-   begin
-     if SetupSubSet(ssMap,'Options').Specifics.Values['SaveMapVersion'] = '1' then
-       MapVersion:=1
-     else if SetupSubSet(ssMap,'Options').Specifics.Values['SaveMapVersion'] = '2' then
-       MapVersion:=2
-     else
-       MapVersion:=2;
-   end;
-   if CharModeJeu=mjQuake4 then
-     MapVersion:=3;
-   
-   {$IFDEF TexUpperCase}
-   if MapVersion>1 then
-     Target.Add('   "' + UpperCase(NomTex) + '"')
-   else
-     Target.Add('   ' + UpperCase(NomTex));
-   {$ELSE}
-   if MapVersion>1 then
-     Target.Add('   "' + NomTex + '"')
-   else
-     Target.Add('   ' + NomTex);
-   {$ENDIF}
-   Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
-   Target.Add('(');
-   for J:=0 to cp.W-1 do
-    begin
-     Value:=@cp.CP^[5*J];
-     S:='( ';
-     for I:=1 to cp.H do
-      begin
-       S:=S+'( ';
-       for K:=1 to 5 do
-        begin
-         R:=Round(Value^);
-         if {WriteIntegers or} (Abs(Value^-R) < rien) then
-          S:=S+IntToStr(R)+' '
-         else
-          S:=S+FloatToStrF(Value^, ffFixed, 20, 5)+' ';
-         Inc(Value);
-        end;
-       S:=S+') ';
-       Inc(Value, 5*(cp.W-1));
-      end;
-     Target.Add(S+')');
-    end;
-   Target.Add(')');
-   Target.Add('  }');
-   Target.Add(' }');
   end;
 end;
 
