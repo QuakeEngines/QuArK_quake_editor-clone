@@ -1,10 +1,10 @@
 title: Shaders
 author: Armin Rigo
 
-The Quake 3 shaders are stored in a set of ".shader" file. This file format
+The Quake 3 shaders are stored in a set of ".shader" files. This file format
 corresponds to the QShaderFile object class. Each .shader file can contain
 several shaders, so when loaded from disk, the QShaderFile object loads each
-shader in a subobject; this subobject itself is of class QShader.
+shader in a subobject; this subobject itself is of the class QShader.
 
 Here is an example of a shader in a .shader file:
 
@@ -26,7 +26,7 @@ textures/base_button/shootme2
   }
   {
     map textures/base_button/shootme_glow.tga
-    rgbGen wave sin 0.5 1.0 0 ..3
+    rgbGen wave sin 0.5 1.0 0 .3
     blendFunc GL_ONE GL_ONE
   }
 }
