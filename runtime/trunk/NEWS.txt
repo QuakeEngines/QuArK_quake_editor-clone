@@ -15,6 +15,10 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
+          - and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
+          - Also activated the 'Hints for handles' function for the Skin-view.
+
 * [cdunde]: Setup mesh movement using common drag handles in the Skin-view for skinning model textures.
 
 * [cdunde]: Fixed vertex position display in Model Editor's hint box while dragging.
