@@ -144,6 +144,10 @@ def vtohint(v):
     "Turns a signed vector into a string."
     return "dragging  " + ftoss(v.x)+" "+ftoss(v.y)+" "+ftoss(v.z)
 
+def vtoposhint(v):
+    "Turns a signed vector into a string."
+    return ftoss(v.x)+" "+ftoss(v.y)+" "+ftoss(v.z)
+
 
 def mouseflags(flags):
     "Returns a string with the mouse button name and the Drag, Shift or Ctrl state."
@@ -1542,6 +1546,11 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.36  2007/04/12 03:50:22  cdunde
+#Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
+#and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
+#Also activated the 'Hints for handles' function for the Skin-view.
+#
 #Revision 1.35  2007/01/31 15:12:16  danielpharos
 #Removed bogus OpenGL texture mode
 #
