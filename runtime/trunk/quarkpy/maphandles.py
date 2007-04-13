@@ -218,7 +218,33 @@ class FaceHandle(qhandles.GenericHandle):
                 g1 = 0
         if g1:
             delta = qhandles.aligntogrid(delta, 0)
-        self.draghint = vtohint(delta)
+
+        if view.info["type"] == "XY":
+            if self.face.normal.tuple[0] <> 0:
+                s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
+            if self.face.normal.tuple[1] <> 0:
+                s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.y+delta.y)
+        elif view.info["type"] == "XZ":
+            if self.face.normal.tuple[0] <> 0:
+                s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
+            if self.face.normal.tuple[2] <> 0:
+                s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
+        elif view.info["type"] == "YZ":
+            if self.face.normal.tuple[1] <> 0:
+                s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.x+delta.y)
+            if self.face.normal.tuple[2] <> 0:
+                s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
+        else:
+            if self.face.normal.tuple[0] == 1 or self.face.normal.tuple[0] == -1:
+                s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
+            elif self.face.normal.tuple[1] == 1 or self.face.normal.tuple[1] == -1:
+                s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.y+delta.y)
+            elif self.face.normal.tuple[2] == 1 or self.face.normal.tuple[2] == -1:
+                s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
+            else:
+                s = "was: " + vtoposhint(self.pos) + " now: " + vtoposhint(delta + self.pos)
+        self.draghint = s
+
         if delta or (flags&MB_REDIMAGE):
             new = self.face.copy()
             if self.face.faceof[0].type == ":p":
@@ -715,7 +741,16 @@ class VertexHandle(qhandles.GenericHandle):
         #
         # if we are dragging
         #
-        self.draghint = vtohint(delta)
+        if view.info["type"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["type"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["type"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was: " + vtoposhint(self.pos) + " now: " + vtoposhint(delta + self.pos)
+        self.draghint = s
+
         if delta or (flags&MB_REDIMAGE):
 
             #
@@ -1941,6 +1976,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.57  2007/04/12 10:50:50  danielpharos
+#Fixed a very stupid typo.
+#
 #Revision 1.56  2007/04/11 15:53:01  danielpharos
 #Added a missing call to init. Should be there, even if only for future changes.
 #
