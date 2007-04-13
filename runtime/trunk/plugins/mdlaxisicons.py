@@ -156,7 +156,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
             if (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056) and view.viewmode == "tex":
                 if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
                     quarkpy.mdleditor.paintframefill(editor, view, currentview)
-                view.repaint()
+             #   view.repaint()
             ### This is the 2D views WireFrame mode scroller section
             else:
                 if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
@@ -221,6 +221,9 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.7  2007/04/04 21:34:17  cdunde
+#Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+#
 #Revision 1.6  2007/03/04 19:37:03  cdunde
 #To stop unneeded redrawing of handles in other views
 #when scrolling in a Model Editor's 3D view.
