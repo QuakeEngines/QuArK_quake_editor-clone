@@ -1080,6 +1080,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.47  2007/04/13 19:47:42  cdunde
+#To fix console error for Linear handle in Model Editor.
+#
 #Revision 1.46  2007/04/12 23:57:31  cdunde
 #Activated the 'Hints for handles' function for the Model Editors model mesh vertex hints
 #and Bone Frames hints. Also added their position data display to the Hint Box.
