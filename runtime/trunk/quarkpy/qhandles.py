@@ -431,7 +431,17 @@ class CenterHandle(GenericHandle):
         else:
             delta = aligntogrid(delta, 0)
             g1 = 0
-        self.draghint = vtohint(delta)
+
+        if view.info["type"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["type"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["type"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was: " + vtoposhint(self.pos) + " now: " + vtoposhint(delta + self.pos)
+        self.draghint = s
+
         if delta or (flags&MB_REDIMAGE):
             new = self.centerof.copy()
             new.translate(delta, g1)
@@ -633,7 +643,16 @@ class LinRedHandle(LinearHandle):
     def linoperation(self, list, delta, g1, view):
         for obj in list:
             obj.translate(delta, g1 and grid[0])
-        self.draghint = vtohint(delta)
+
+        if view.info["type"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["type"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["type"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was: " + vtoposhint(self.pos) + " now: " + vtoposhint(delta + self.pos)
+        self.draghint = s
 
         return delta
 
@@ -1891,6 +1910,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.43  2007/04/04 21:34:17  cdunde
+#Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+#
 #Revision 1.42  2007/04/02 22:18:22  danielpharos
 #Fixed the rotation in linear mode.
 #

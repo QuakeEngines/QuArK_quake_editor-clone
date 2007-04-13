@@ -746,15 +746,18 @@ class BaseEditor:
                         else:
                             s = "Skin-vertex: " + quarkx.ftos(handle.tri_index) + "  x, y pos: " + ftoss(x) + ", " + ftoss(y)
                     else:
-                        s = view.info["viewname"] + " view"
-                        if view.info["viewname"] == "XY":
-                            s = handle.name + " " + "%s "%handle.index + s + " x: %s"%ftoss(handle.pos.tuple[0]) + " y: %s"%ftoss(handle.pos.tuple[1])
-                        elif view.info["viewname"] == "XZ":
-                            s = handle.name + " " + "%s "%handle.index + s + " x: %s"%ftoss(handle.pos.tuple[0]) + " z: %s"%ftoss(handle.pos.tuple[2])
-                        elif view.info["viewname"] == "YZ":
-                            s = handle.name + " " + "%s "%handle.index + s + " y: %s"%ftoss(handle.pos.tuple[1]) + " z: %s"%ftoss(handle.pos.tuple[2])
-                        else:
-                            s = handle.name + " " + "%s "%handle.index + " x,y,z: %s"%handle.pos
+                        try:
+                            s = view.info["viewname"] + " view"
+                            if view.info["viewname"] == "XY":
+                                s = handle.name + " " + "%s "%handle.index + s + " x: %s"%ftoss(handle.pos.tuple[0]) + " y: %s"%ftoss(handle.pos.tuple[1])
+                            elif view.info["viewname"] == "XZ":
+                                s = handle.name + " " + "%s "%handle.index + s + " x: %s"%ftoss(handle.pos.tuple[0]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                            elif view.info["viewname"] == "YZ":
+                                s = handle.name + " " + "%s "%handle.index + s + " y: %s"%ftoss(handle.pos.tuple[1]) + " z: %s"%ftoss(handle.pos.tuple[2])
+                            else:
+                                s = handle.name + " " + "%s "%handle.index + " x,y,z: %s"%handle.pos
+                        except:
+                            pass
                 else:
                     s = quarkx.getlonghint(handle.hint)
             self.showhint(s)
@@ -1077,6 +1080,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.46  2007/04/12 23:57:31  cdunde
+#Activated the 'Hints for handles' function for the Model Editors model mesh vertex hints
+#and Bone Frames hints. Also added their position data display to the Hint Box.
+#
 #Revision 1.45  2007/04/12 23:55:04  cdunde
 #To reverse last reversal that was not causing a problem in the Model Editor after all.
 #
