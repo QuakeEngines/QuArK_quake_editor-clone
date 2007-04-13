@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Changed face and vertex dragging hint for both the Map Editor and Model Editor
+          - to give start and progressive drag positions based on grid location.
+
 * [cdunde]: Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
           - and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
           - Also activated the 'Hints for handles' function for the Skin-view.
