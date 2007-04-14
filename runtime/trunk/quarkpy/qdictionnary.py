@@ -1,12 +1,14 @@
 """   QuArK  -  Quake Army Knife
 
-Dictionnary of all strings used within the program
+Dictionary of all strings used within the program
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+
+# The filename has a typo in it! :|
 
 #$Header$
 
@@ -62,7 +64,7 @@ Strings = {
     163: "-- Specifics common to selected items --",
     172: "Searching for holes...",
     175: "Extracting files...",
-#   176: "// This map has been written by QuArK - Quake Army Knife, %s\n// It is a map for the game %s.\n\n// It is recommended that you compile this map using TXQBSP, a version of QBSP\n// that can process floating-point coordinates and enhanced texture positionning.\n// For more information see QuArK's Home Page :  http://www.planetquake.com/quark\n\n",
+#   176: "// This map has been written by QuArK - Quake Army Knife, %s\n// It is a map for the game %s.\n\n// It is recommended that you compile this map using TXQBSP, a version of QBSP\n// that can process floating-point coordinates and enhanced texture positioning.\n// For more information see QuArK's Home Page :  http://www.planetquake.com/quark\n\n",
     ### The entries 176,177,178 are used in [QkMap.PAS] QMapFile.SaveFile()
     176: "This map has been written by QuArK - Quake Army Knife, %s",
     177: "It is a map for the game %s.",
@@ -127,7 +129,7 @@ Strings = {
     502: "Saving compiled model...",
     503: "Reworking model...",
     504: "Conifying...",
-    505: "Interrupted !\nCancelling, please wait...",
+    505: "Interrupted !\nCanceling, please wait...",
     507: "Making hollow...",
     508: "Brush subtraction...",
     509: "Map operation...",
@@ -579,15 +581,15 @@ Strings = {
     5195: "unexpected data after the final '}' has been ignored.",
     5196: "invalid property definition",
     5197: "'=' expected",
-    5198: "unexpected end of line, unbalenced quotes",
+    5198: "unexpected end of line, unbalanced quotes",
     5199: "hexadecimal code expected",
     5200: "// This file has been written by QuArK %s\n// It's the text version of file: %s\n",
     5201: "Could not open '%s' : Unknown file extension",
     5202: "'%s' cannot be opened in a new window",
     5203: "File not found : %s//Current directory is %s",
     5204: "Cannot load the configuration file (Defaults.qrk). Be sure QuArK is correctly installed. You may need to reinstall it.\n\n%s",
-    5205: "Invalid configuration file (Defaults.qrk). Reinstall QuArK.  (Missing SetupSet '%s')",
-    5206: "Wrong version of configuration file (Defaults.qrk). Reinstall QuArK.  (QuArK is '%s' and Defaults.qrk is '%s')",
+    5205: "Invalid configuration file (Defaults.qrk). Please reinstall QuArK.  (Missing SetupSet '%s')",
+    5206: "Wrong version of configuration file (Defaults.qrk). Please reinstall QuArK.  (QuArK is '%s' and Defaults.qrk is '%s')",
     # 5207: "Error loading file '%s'.//Object initialization failed",
     5207: "Polyhedron has no width.",
     5208: "Only %d valid faces are left.",
@@ -759,7 +761,7 @@ Strings = {
     5572: "'%s' looks like a Quake-2 (or one of its game descendants) BSP file,\nbut its BSP-version is not recognized and therefore not supported.//%d should be %d",
     5573: "QuArK does not know if '%s' is a Quake 1 or Hexen II file. Is it an Hexen II map ?",
     5574: "Missing information : QuArK cannot determine the target game for this file//Specific 'Game' missing",
-    # 5575: "The skin path in this Model is ambiguous : several .pcx files with the same name exist in various paths. QuArK may have choosen a wrong one.",
+    # 5575: "The skin path in this Model is ambiguous : several .pcx files with the same name exist in various paths. QuArK may have chosen a wrong one.",
     5575: "Missing skin image file '%s' in model '%s'",
     5576: "This Model is invalid and contains no data.",
     5577: "Macro processing error in '%s' : %s",
@@ -834,7 +836,7 @@ Strings = {
     5645: "Press the key you want for this action...",
     5646: "%s\n\nAre you sure you want to INTERRUPT this process ?",
     5647: "You are about to remove all association to QuArK from your Windows Registry. Note that the next time you run QuArK, it will automatically associate itself with .qrk files again.\n\nDo you want to continue ?",
-    5648: "Done ! To explicitely remove file associations, use the button\n'remove all associations' below.",
+    5648: "Done ! To explicitly remove file associations, use the button\n'remove all associations' below.",
     5649: "This documentation is in HTML format, but QuArK failed to open your web browser.\n\nTried to open : %s//Error: %s",
     5650: "No .html or .htm key in Registry",
     5651: "No key \"%s\" in Registry",
@@ -972,7 +974,7 @@ Strings = {
     6300: "Could not load the OpenGL drivers//Error code %d",
     6301: "Error in OpenGL initialization//'%s' failed",
     6302: "Error in OpenGL commands [Error code(s) %s step %d]",
-    6303: "An error occured in the OpenGL routines: %s",
+    6303: "An error occurred in the OpenGL routines: %s",
 
     6310: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer",
     6311: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
@@ -982,7 +984,7 @@ Strings = {
     6315: "Failed to swap buffers. Try updating your video card drivers. If that doesn't work, disable the double buffering option in the Configuration dialog box",
 
     6320: "OpenGL renderer does not support fullscreen views (yet)",
-    6321: "An error occured in the OpenGL routines: CurrentSurf is nil!",
+    6321: "An error occurred in the OpenGL routines: CurrentSurf is nil!",
 
     # DanielPharos would like to reserve 6400 .. 6499 for the DirectX renderer :-)
     6400: "Error in DirectX initialization//'%s'",
@@ -1016,6 +1018,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.92  2007/04/12 15:28:04  danielpharos
+#Minor clean up.
+#
 #Revision 1.91  2007/04/12 10:51:03  danielpharos
 #Added brushdef2 loading support.
 #
