@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2007/04/12 22:41:31  danielpharos
+Possible fix for entities disappearing when exporting .map file.
+
 Revision 1.66  2007/04/12 22:18:13  danielpharos
 Small fix, mainly for Quake 2.
 
@@ -471,7 +474,7 @@ const
  cSeperators = [' ', #13, #10, Chr(vk_Tab)];
  cExponentChars = ['E', 'e'];
  Granularite = 8192;
- FinDeLigne = False;
+ EndOfLine = False;
 type
  TSymbols = (sEOF,
              sBracketLeft,
@@ -497,7 +500,7 @@ var
  Entite, EntitePoly: TTreeMapSpec;
  L: TStringList;
  LineNoBeingParsed: Integer;
- Juste13{, FinDeLigne}, Q2Tex, ReadSymbolForceToText: Boolean;
+ Juste13{, EndOfLine}, Q2Tex, ReadSymbolForceToText: Boolean;
  HullNum, BrushNum, FaceNum: Integer;
  HullList: TList;
  Source, Prochain: PChar;
@@ -764,7 +767,7 @@ expected one.
          Break;
        Inc(Source);
      until C in cSeperators;
-     if (C=#13) or ((C=#10) {and not Juste13}) then
+     if (C=#13) or ((C=#10) and not Juste13) then
        Inc(LineNoBeingParsed);
      Juste13:=C=#13;
      if (LeftStr(S,1)='"') and (RightStr(S,1)='"') then
@@ -825,7 +828,10 @@ expected one.
            C:=Source^;
            if C in [#0, #13, #10] then
            begin
-             if FinDeLigne and (S<>'') and (S[Length(S)]='"') then
+             if (C=#13) or ((C=#10) and not Juste13) then
+               Inc(LineNoBeingParsed);
+             Juste13:=C=#13;
+             if EndOfLine and (S<>'') and (S[Length(S)-1]='"') then
              begin
                SetLength(S, Length(S)-1);
                Break;
@@ -835,7 +841,7 @@ expected one.
            end;
 
            Inc(Source);
-           if (C='"') and not FinDeLigne then
+           if (C='"') and not EndOfLine then
              Break;
            S:=S+C;
          until False;
@@ -872,7 +878,7 @@ expected one.
 
            if (C=#0) or (C in cSeperators) then
            begin
-             if (C=#13) or ((C=#10) {and not Juste13}) then
+             if (C=#13) or ((C=#10) and not Juste13) then
                Inc(LineNoBeingParsed);
              Juste13:=C=#13;
              NumericValue:=StrToFloat(S);
@@ -901,9 +907,8 @@ expected one.
              Inc(Source);
            until C in [#13, #10];
 
-           if (C=#13) or ((C=#10) {and not Juste13}) then
+           if (C=#13) or ((C=#10) and not Juste13) then
              Inc(LineNoBeingParsed);
-
            Juste13:=C=#13;
            Arret:=False;
          end
@@ -1596,7 +1601,7 @@ begin
     InvPoly:=0;
     InvFaces:=0;
     Juste13:=False;
-   {FinDeLigne:=False;}
+   {EndOfLine:=False;}
     HullList:=Nil;
     L:=TStringList.Create;
     try   { L and HullList get freed by finally, regardless of exceptions }
@@ -1661,9 +1666,9 @@ begin
          //    raise EErrorFmt(266, [LineNoBeingParsed, LoadStr1(260)]); // don't read Doom 3 version 2 maps
          //end;
 
-        {FinDeLigne:=True;}
+        {EndOfLine:=True;}
          ReadSymbol(sStringQuotedToken);
-        {FinDeLigne:=False;}
+        {EndOfLine:=False;}
          if SymbolType=sStringQuotedToken then
           { SpecClassname is `classname', defined in QKMapObjects }
           if CompareText(S1, SpecClassname)=0 then
