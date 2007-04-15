@@ -19,6 +19,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.14  2007/03/29 16:06:02  danielpharos
+//Added the _sun specifics. Thanks OmnificienT!
+//Also fixed a few typo's.
+//
 //Revision 1.13  2007/03/25 20:42:52  danielpharos
 //Added a missing target-specific to func_explosive.
 //
@@ -7698,7 +7702,6 @@ QQRKSRC1
       _sun_ambient: =
       {
         txt = "&"
-        Typ = "LN"
         Hint = "This controls the amount of diffuse light in shadows,"$0D
                "if set to 0, shadows will be completely unlit (good values are 50-200)."$0D
                "Alternatively, you can also set three seperate values: red, green and blue."$0D
