@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.68  2007/04/14 11:25:12  danielpharos
+Putted some end-of-line checks back in.
+
 Revision 1.67  2007/04/12 22:41:31  danielpharos
 Possible fix for entities disappearing when exporting .map file.
 
@@ -2331,7 +2334,7 @@ begin
 
        MapVersion:=0;
        MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
-       if ObjectGameCode=mjDoom3 then
+       if CharModeJeu=mjDoom3 then
        begin
          // Rowdy: write an extra line to indicate we are using version 1 .map file
          // format or Doom 3's default version 2.
@@ -2352,7 +2355,7 @@ begin
          end;
          Dest.Add('');
        end;
-       if ObjectGameCode=mjQuake4 then
+       if CharModeJeu=mjQuake4 then
        begin
          MapVersion:=3;
          Dest.Add('Version 3');
@@ -3263,16 +3266,16 @@ var
 
        {$IFDEF TexUpperCase}
        if MapVersion>1 then
-         S:=S+'"TEXTURES/'+UpperCase(NomTex)
+         S:=S+'"TEXTURES/'+UpperCase(NomTex)+'"'
        else
          S:=S+UpperCase(NomTex);
        {$ELSE}
        if MapVersion>1 then
        begin
          if GameCode=mjHalfLife then
-           S:=S+'"TEXTURES/'+UpperCase(NomTex)   // This is actually impossible...
+           S:=S+'"TEXTURES/'+UpperCase(NomTex)+'"'   // This is actually impossible...
          else
-           S:=S+'"textures/'+NomTex;
+           S:=S+'"textures/'+NomTex+'"';
        end
        else
        begin
@@ -3486,7 +3489,8 @@ begin
       BrushDefVersion:=1;
 
   //DanielPharos: At the moment, the only one supported!
-  BrushDefVersion:=1;
+  if BrushDefVersion>1 then
+    BrushDefVersion:=1;
 
  with TPolyhedron(ObjectToSave) do
  begin
@@ -3564,7 +3568,7 @@ var
  PatchDecimalPlaces: Integer;
 begin
  PatchDefVersion:=2;
- if MapVersion=3 then
+ if MapVersion>2 then
    PatchDefVersion:=3;
 
  // Rowdy: this is an attempt to write more decimal places (but configurable) to
