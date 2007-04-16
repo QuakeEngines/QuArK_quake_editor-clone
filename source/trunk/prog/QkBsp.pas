@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2007/04/12 15:04:44  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
 Revision 1.60  2007/02/07 14:33:10  danielpharos
 Cleaned up a little bit of dirty code
 
@@ -766,7 +769,7 @@ begin
   if  ((NeedObjectGameCode>=mjQuake2) and (NeedObjectGameCode<mjQ3A)) then
     S:=Bsp2EntryNames[E2]
   else
-  if (NeedObjectGameCode=mjQ3A) or (NeedObjectGameCode=mjStarTrekEF) then
+  if (NeedObjectGameCode=mjQ3A) or (NeedObjectGameCode=mjSTVEF) then
     S:=Bsp3EntryNames[E3]
   else
     S:=Bsp1EntryNames[E1];
@@ -775,7 +778,7 @@ begin
 
   (* this is set when the .bsp is opened, from the version,
       why isn't it just used below?
-  if (ObjectGameCode=mjQ3A) or (ObjectGameCode=mjStarTrekEF) then
+  if (ObjectGameCode=mjQ3A) or (ObjectGameCode=mjSTVEF) then
     S:=Bsp3EntryNames[E3]
   else
   if (ObjectGameCode>=mjQuake2) and (ObjectGameCode<mjQ3A) then

@@ -27,6 +27,11 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.327  2007/04/12 03:50:22  cdunde
+//Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
+//and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
+//Also activated the 'Hints for handles' function for the Skin-view.
+//
 //Revision 1.326  2007/04/09 21:44:14  danielpharos
 //Started work on Doom 3 map version 2 and Quake 4 map version 3.
 //
@@ -1332,6 +1337,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
 
         TexturesPath = "textures/"
         Q2TexFlags = "1"
@@ -1361,7 +1367,7 @@ QQRKSRC1
         Form = "Game6DX"
         LightFactor = '0.9'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Crystal Space:config =
@@ -1375,7 +1381,8 @@ QQRKSRC1
         CheckDirectory = "WALKTEST.EXE"
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
 
         BuildPgm1 = "MAP2CS.EXE"
         BuildArgs1 = "%mapfile% %file%.zip c:\map2cs\map2cs.cfg"
@@ -1408,7 +1415,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameCrystalSpace"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Doom 3:config =
@@ -1428,12 +1435,13 @@ QQRKSRC1
         DefaultTextureOrigin = "Does not use an origin texture"
         DefaultTextureCaulk = "common/caulk"
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
         BuildPgmsDir = "nothing needed, preset in Defaults.qrk file"
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
         OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         SupportsBrushPrim = "1"        // hidden setting
         AlwaysWriteThreeFields = "1"   // hidden setting
 
@@ -1482,6 +1490,74 @@ QQRKSRC1
         Form = "GameDoom3"
       }
 
+      EF2:config =
+      {
+        Game = "EF2"
+        Code = "o" // Hardcoded value in Setup.PAS
+
+        Program = "EF2.EXE +set sv_pure 0"
+        Directory = "C:\Program Files\Activision\EF2"
+        CheckDirectory = "EF2.EXE"   // hidden setting
+
+        CD = ""
+        CDDir = "Setup\Base"   // hidden setting
+
+        DefaultTexture = "cargo/walllow"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+
+        Console = "1"
+        BuildPgmsDir = "C:\Program Files\Activision\EF2\QuArk files\bspc"
+        StupidBuildToolKludge = "1" // Run tools from base directory setting
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = "1"
+        AlwaysWriteThreeFields = "1"
+        BuildPgm1  = "UBERMAP.EXE"
+        BuildArgs1 = ""
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "UBERMAP.EXE"
+        BuildArgs2 = "-vis"
+        BuildPgm3  = "UBERMAP.EXE"
+        BuildArgs3 = "-light"
+        BuildPgm4  = "BSPC.EXE"
+        BuildArgs4 = "-bsp2aas"
+        BuildCheck4= "+AAS"
+
+        MapCommentsPrefix = "//"
+
+        TexturesPath = "textures/"
+        ShadersPath = "scripts/"
+        Q2TexFlags = "1"
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        TextureFormat = ".tga"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
+        TextureWriteFormat = ".tga"
+        TextureShaders = "scripts/quark.shader"
+
+        BaseDir = "base"
+        tmpQuArK = "base"
+    //    MapLimit = '65536 65536 65536'
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %s"
+        RunMapCmdLine = " +devmap %s"
+        AddOns = "DataEF2.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk3"
+        PakFormat = "*.PK3"
+        LightFactor = '0.9'
+        3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        DecimalPlaces = '5'
+
+        Form = "GameEF2"
+      }
+
       Genesis3D:config =
       {
         Game = "Genesis3D"
@@ -1495,6 +1571,7 @@ QQRKSRC1
         MapCommentsPrefix = "//"
 
         OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
         BuildPgm1  = "TXQBSP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,+PRT"
@@ -1529,7 +1606,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameQuake1"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Half-Life:config =
@@ -1544,6 +1621,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat = "Valve 220"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "HLCSG.EXE"
         BuildArgs1 = ""
@@ -1588,7 +1666,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameHalfLife"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Half-Life2:config =
@@ -1606,6 +1684,7 @@ QQRKSRC1
         BaseDir = "hl2"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
+        ForceFaceFlags = ""
         AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"$0D"models-hl2.qrk"$0D"soundscapes-hl2.qrk"$0D
         "gamesounds-hl2.qrk"$0D"textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
         "halflife2.qrk"$0D"hl2mp.qrk"$0D"prefabs-hl2.qrk"
@@ -1652,7 +1731,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameHalfLife2"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Heretic II:config =
@@ -1701,7 +1780,7 @@ QQRKSRC1
         Form = "GameHeretic2"
         LightFactor = '0.9'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Hexen II:config =
@@ -1716,6 +1795,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "QBSP.EXE"
         BuildArgs1 = ""
@@ -1754,7 +1834,7 @@ QQRKSRC1
         3DLight = '640'
         HxStrings = "strings.txt"
         PlayerClass = "1"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       JA:config =
@@ -1772,7 +1852,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
@@ -1817,7 +1898,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       JK2:config =
@@ -1835,7 +1916,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
@@ -1883,7 +1965,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       KingPin:config =
@@ -1901,6 +1983,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "KPBSP.EXE"
         BuildArgs1 = ""
@@ -1938,7 +2021,7 @@ QQRKSRC1
         Form = "GameKingPin"
         LightFactor = '0.90000' //adjust radius around light that it shows how far the light goes
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       MOHAA:config =
@@ -1957,7 +2040,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = "1"
         AlwaysWriteThreeFields = "1"
         EditableSurfaceParms="1"
 
@@ -2007,7 +2091,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
       //PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Quake 1:config =
@@ -2023,6 +2107,7 @@ QQRKSRC1
         MapCommentsPrefix = "//"
 
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
         BuildPgm1  = "TXQBSP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,+PRT,-PTS{LoadLinFile}"
@@ -2057,7 +2142,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameQuake1"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Quake 2:config =
@@ -2075,6 +2160,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "TXQBSP3.EXE"
         BuildArgs1 = ""
@@ -2111,7 +2197,7 @@ QQRKSRC1
         Form = "GameQuake2"
         LightFactor = '0.9'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Quake 3:config =
@@ -2131,6 +2217,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         StupidBuildToolKludge = "1" //those guys should get shot for that
         AlwaysWriteThreeFields = "1"
         SupportsBrushPrim = "1"
@@ -2179,7 +2266,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Quake 4:config =
@@ -2199,12 +2286,13 @@ QQRKSRC1
         DefaultTextureOrigin = "Does not use an origin texture"
         DefaultTextureCaulk = "common/caulk"
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
         BuildPgmsDir = "nothing needed, preset in Defaults.qrk file"
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
         OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         SupportsBrushPrim = "1"        // hidden setting
         AlwaysWriteThreeFields = "1"   // hidden setting
 
@@ -2274,7 +2362,8 @@ QQRKSRC1
         Console = "1"
         BuildPgmsDir = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\bspc"
         StupidBuildToolKludge = "" // Run tools from base directory setting
-        OutputMapFormat="Brush Primitives"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
         BuildPgm1  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22""
@@ -2315,7 +2404,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Form = "GameRTCW"
       }
@@ -2338,12 +2427,13 @@ QQRKSRC1
         DefaultTextureOrigin = "common/origin"
         DefaultTextureCaulk = "common/caulk"
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
         BuildPgmsDir = ""
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
-        OutputMapFormat="Brush Primitives"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"   // hidden setting
 
         BuildPgm1  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
@@ -2401,6 +2491,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "QBSP3.EXE"
         BuildArgs1 = ""
@@ -2435,7 +2526,7 @@ QQRKSRC1
         Form = "GameSin"
         LightFactor = '0.9'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       SOF:config =
@@ -2453,6 +2544,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
 
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "SOFBSP.EXE"
@@ -2487,7 +2579,7 @@ QQRKSRC1
         Form = "GameSOF"
         LightFactor = '0.90000'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       SoF2:config =
@@ -2505,7 +2597,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
@@ -2553,7 +2646,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       STVEF:config =
@@ -2578,7 +2671,8 @@ QQRKSRC1
         Console = "1"
         BuildPgmsDir = "C:\Program Files\Raven\Star Trek Voyager Elite Force\QuArk files\bspc"
         StupidBuildToolKludge = "" // Run tools from base directory setting
-        OutputMapFormat="Brush Primitives"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = "-qdir stvef"
@@ -2618,7 +2712,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Form = "GameSTVEF"
       }
@@ -2634,7 +2728,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
-	  BuildPgmsDir = "c:\sylphis\tools"
+        BuildPgmsDir = "c:\sylphis\tools"
         BuildPgm1 = "mc.exe"
         BuildArgs1 = "-read %mapfile% -write"
         DefaultTexture = "none"
@@ -2648,7 +2742,7 @@ QQRKSRC1
         TextureFileExtensions = ".png,.tga,.jpg"
         TextureWriteFormat = ".jpg"
         TextureShaders = "scripts/quark.shader"
-	WateryTex = ")"
+        WateryTex = ")"
         BaseDir = "base"
         tmpQuArK = "tmpQuArK"
         Palette = ""
@@ -2659,7 +2753,7 @@ QQRKSRC1
         AddOns = "DataSylphis.qrk"$0D"Sylphis_autogen.qrk"
         Console = "1"
         Form = "GameSylphis"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Torque:config =
@@ -2677,12 +2771,13 @@ QQRKSRC1
         //   DefaultTextureOrigin = "origin"
         //   DefaultTextureCaulk = "caulk"
         3DLight = '512'
-        BrushDecimalPlaces = '16'
+        DecimalPlaces = '16'
 
         Console = "1"                  // "Run these build-programs..." setting
 
         //   StupidBuildToolKludge = "1"     // "Run tools from base directory" setting
         OutputMapFormat = "Valve 220"
+        ForceFaceFlags = ""
         UseQrkGroupFolder = ""
 
         // 220 MAPVERSION
@@ -2754,7 +2849,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Brush Primitives"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
         StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgmsDir = "c:\Progra~1\Return~1\Radiant"
@@ -2805,7 +2901,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
     }
 
@@ -3424,7 +3520,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -3504,7 +3600,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -3602,7 +3698,106 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
+    GameEF2:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Star Trek: Elite Force 2 command-line"
+        Items = "EF2.EXE +set sv_pure 0"
+             $0D"EF2HM.EXE +set sv_pure 0"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Star Trek: Elite Force 2"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "EF2.EXE"
+      }
+      CD: =
+      {
+        Txt = "Star Trek: Elite Force 2 CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed EF2 minimally, this is the drive of the CD-ROM."
+        CheckFile = "SETUP\BASE\PAK0.PK3"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMo"}    // switches to EF2 (cmd=GAM, game=o)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMo"}    // switches to EF2 (cmd=GAM, game=o)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "EF2"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+      }
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -3689,7 +3884,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -3918,7 +4113,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4020,7 +4215,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4113,7 +4308,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4204,7 +4399,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4295,7 +4490,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4383,7 +4578,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4480,7 +4675,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4567,7 +4762,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4660,7 +4855,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4760,7 +4955,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4858,7 +5053,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -4964,7 +5159,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -5068,7 +5263,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -5156,7 +5351,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -5244,7 +5439,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -5341,7 +5536,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -5359,23 +5554,23 @@ QQRKSRC1
       sep: = {Typ="S" Txt="---- Game Settings ----"}
       Program: = {
         Typ = "C"     // combo box
-        Txt = "StarTrek Voyager Elite Force command-line"
+        Txt = "Star Trek: Voyager - Elite Force command-line"
         Items = "STVoy.EXE +set sv_pure 0"
              $0D"STVoyHM.EXE +set sv_pure 0"
         t_ProgramHint=!
       }
       Directory: =
       {
-        Txt = "Directory of StarTrek Voyager Elite Force"
+        Txt = "Directory of Star Trek: Voyager - Elite Force"
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "STVOY.EXE"
       }
       CD: =
       {
-        Txt = "StarTrek Voyager Elite Force CD-ROM drive"
+        Txt = "Star Trek: Voyager - Elite Force CD-ROM drive"
         Typ = "ED"      // Edit Directory
-        Hint = "If you installed StarTrek minimally, this is the drive of the CD-ROM."
+        Hint = "If you installed Star Trek: Voyager - Elite Force minimally, this is the drive of the CD-ROM."
         CheckFile = "SETUP\BASEEF\PAK0.PK3"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
@@ -5387,7 +5582,7 @@ QQRKSRC1
                $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
                $666000407787877866608777777777784448444844487F785C77CF77CC487778
                $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to StarTrek (cmd=GAM, game=b)
+        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to Star Trek: Voyager - Elite Force (cmd=GAM, game=b)
         cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
       }
       Outp:tbbtn =
@@ -5399,7 +5594,7 @@ QQRKSRC1
                $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
                $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
                $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to StarTrek (cmd=GAM, game=b)
+        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to Star Trek: Voyager - Elite Force (cmd=GAM, game=b)
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
       sep: = {Typ="S" Txt = ""}
@@ -5440,7 +5635,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -5465,7 +5660,7 @@ QQRKSRC1
         Typ = "C"
         Txt = "Sylphis command line"
         Items = "sylphis.exe"
-	t_ProgramHint=!
+        t_ProgramHint=!
       }
       ExtraCmdLine: =
       {
@@ -5554,7 +5749,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -5626,7 +5821,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -5729,7 +5924,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
+      DecimalPlaces: = {
         Txt = "No. of Decimal Places for Brushes"
         Typ = "EF1"
         Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
@@ -6510,7 +6705,7 @@ QQRKSRC1
       HideMouseDrag:            = {Typ="X" Txt="   ``"                          Cap="Hidden while dragging"                }
       AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                      }
       PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
-      HandleHints:              = {Typ="X" Txt="Hints (help rectangles)"        Cap="Hints for handles"                }
+      HandleHints:              = {Typ="X" Txt="Hints (help rectangles)"        Cap="Hints for model handles"              }
       Recenter:                 = {Typ="X" Txt="Position of new objects"        Cap="Screen center"                        }
     }
     MapBuilding:form =

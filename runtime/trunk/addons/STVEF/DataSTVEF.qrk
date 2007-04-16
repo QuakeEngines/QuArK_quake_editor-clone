@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.15  2007/03/21 23:25:47  danielpharos
+//Fixed a few typo's and removed the tabs
+//
 //Revision 1.14  2006/11/30 01:16:36  cdunde
 //To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 //
@@ -66,7 +69,7 @@ QQRKSRC1
 //
 {
   QuArKProtected = "1"
-  Description = "Base StarTrek data"
+  Description = "Base STVEF data"
   Default forms.qctx =
   {
     dup arenafilemaker:form =
@@ -80,7 +83,7 @@ QQRKSRC1
       longname: =
       {
         Txt = "&"
-        Hint = "This name will be shown in StarTrek-EF"
+        Hint = "This name will be shown in Star Trek: Voyager - Elite Force"
       }
       fraglimit: =
       {

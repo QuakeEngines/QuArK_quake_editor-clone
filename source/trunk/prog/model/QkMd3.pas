@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2007/03/13 18:58:20  danielpharos
+Removed some redundant includes.
+
 Revision 1.29  2007/03/11 12:03:11  danielpharos
 Big changes to Logging. Simplified the entire thing.
 
@@ -214,7 +217,7 @@ type
     Maxs: vec3_t;
     Position: vec3_t;
     Radius: single;
-    Name: array[1..16]of char;
+    Name: array[1..16] of char;
   end;
   { TMD3BoneFrame
      If you divide the maximum and minimum xyz values of all the vertices from each meshframe you get
@@ -823,7 +826,7 @@ begin
       end
       else if (head.id='RDM5') and (head.version=2) then
       begin
-        ObjectGameCode:=mjStarTrekEF;
+        ObjectGameCode:=mjSTVEF;
       end;
       Root:=Loaded_Root;
       Misc:=Root.GetMisc;

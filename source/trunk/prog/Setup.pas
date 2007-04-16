@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2007/02/06 13:07:56  danielpharos
+Fixed a possible resource leak
+
 Revision 1.49  2006/12/18 05:38:06  cdunde
 Added color setting options for various Model Editor mesh and drag lines.
 
@@ -249,7 +252,7 @@ const
  mj6DX          = 'Z';
 
  mjQ3A          = 'a';  { Quake-3:Arena / Quake-3:Team Arena }
- mjStarTrekEF   = 'b';  { Star Trek:Voyager - Elite Force }
+ mjSTVEF        = 'b';  { Star Trek: Voyager - Elite Force }
  mjCrystalSpace = 'c';
  mjRTCW         = 'd';  { Return To Castle Wolfenstein }
  mjMOHAA        = 'e';  { Medal Of Honor:Allied Assault }
@@ -262,6 +265,7 @@ const
  mjJA           = 'l';  { Jedi Academy }
  mjQuake4       = 'm';  { Quake 4 }
  mjRTCWET       = 'n';  { Return To Castle Wolfenstein - Enemy Territory}
+ mjEF2          = 'o';  { Star Trek: Elite Force 2 }
  mjWildWest     = 'w';  { WildWest }
 
  mjAny          = #1;
