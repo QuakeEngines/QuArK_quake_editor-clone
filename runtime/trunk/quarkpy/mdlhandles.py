@@ -68,7 +68,6 @@ class VertexHandle(qhandles.GenericHandle):
         self.cursor = CR_CROSSH
         self.undomsg = "mesh vertex move"
 
-
     def menu(self, editor, view):
         def forcegrid1click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
@@ -76,17 +75,44 @@ class VertexHandle(qhandles.GenericHandle):
             addvertex(editor.Root.currentcomponent, self.pos)
         def removevertex1click(m, self=self, editor=editor, view=view):
             removevertex(editor.Root.currentcomponent, self.index)
+            if self.index in editor.picked:
+                editor.picked.remove(self.index)
         def pick_vertex(m, self=self, editor=editor, view=view):
             if self.index not in editor.picked:
-                editor.picked = editor.picked + [ self.index ]
+                if len(editor.picked) > 2:
+                    quarkx.msgbox("Improper Selection!\n\nYou can not choose more then\n3 vertexes for a triangle.\n\nSelection Canceled", MT_ERROR, MB_OK)
+                    return None, None
+                else:
+                    editor.picked = editor.picked + [ self.index ]
             else:
                 editor.picked.remove(self.index)
+            invalidateviews()
+            import mdleditor
+            mdleditor.paintframefill(editor, view, view) ## Does not repaint the 3D views, needs fixing.
+        def pick_cleared(m, editor=editor, view=view):
+            editor.picked = []
+            invalidateviews()
+            import mdleditor
+            mdleditor.paintframefill(editor, view, view) ## Does not repaint the 3D views, needs fixing.
 
-        return [qmenu.item("&Add Vertex Here", addhere1click, "add vertex to component"),
-                qmenu.item("&Remove Vertex", removevertex1click, "removes a vertex from the component"),
-                qmenu.item("&Pick Vertex", pick_vertex, "picks a vertex for creating triangles"),
-                qmenu.sep,
-                qmenu.item("&Force to grid", forcegrid1click,"force vertex to grid")] + self.OriginItems(editor, view)
+        AddVertex = qmenu.item("&Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        RemoveVertex = qmenu.item("&Remove Vertex", removevertex1click, "|Remove Vertex:\n\nThis will remove a vertex from the component and all of its animation frames.\n\nWARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well. If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        PickVertex = qmenu.item("&Pick Vertex", pick_vertex, "|Pick Vertex:\n\n This is used for picking 3 vertexes to create a triangle with. It also works in conjunction with the 'Clear Pick list' below.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+
+        if len(editor.picked) == 0:
+            ClearPicklist.state = qmenu.disabled
+
+        try:
+            if self.index is not None:
+                menu = [AddVertex, RemoveVertex, PickVertex, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+            else:
+                menu = [AddVertex, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+        except:
+            menu = [AddVertex, ClearPicklist]
+
+        return menu
 
 
     def draw(self, view, cv, draghandle=None):
@@ -118,19 +144,23 @@ class VertexHandle(qhandles.GenericHandle):
             if MldOption("Ticks") == "1":
                 cv.brushcolor = WHITE
                 cv.brushstyle = BS_SOLID
-#py2.4                cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
                 cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
             else:
                 cv.brushcolor = vertexdotcolor
                 cv.brushstyle = BS_SOLID
-#py2.4                cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
                 cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
 
-      #      editor = mapeditor()
-      #      if editor is not None:
-      #          if self.index in editor.picked:
-#py2.4                    cv.rectangle(p.x-3, p.y-3, p.x+3, p.y+3)
-      #              cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+            cv.brushcolor = drag3Dlines
+            editor = mapeditor()
+            if editor is not None:
+                if self.index in editor.picked:
+                    cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+
+
+  #  For setting stuff up at the beginning of a drag
+  #
+  #  def start_drag(self, view, x, y):
+  #      editor = mapeditor()
 
 
     def drag(self, v1, v2, flags, view):
@@ -889,17 +919,16 @@ def MouseClicked(self, view, x, y, s, handle):
                 return flags
             if ("M" in s) and obj.selected:    # if Menu, we try to keep the currently selected objects
                 return flags
-          # if "T" in s:    # if Multiple selection request
-          #     obj.togglesel()
-          #     if obj.selected:
-          #         self.layout.explorer.focus = obj
-          #     self.layout.explorer.selchanged()
-          # else:
-          #     ...
-          #     self.layout.explorer.uniquesel = obj
+            if "T" in s:    # if Multiple selection request
+                obj.togglesel()
+                if obj.selected:
+                    self.layout.explorer.focus = obj
+                self.layout.explorer.selchanged()
+            else:
+                self.layout.explorer.uniquesel = obj
         else:
             if not ("T" in s):    # clear current selection
-                self.layout.explorer.uniquesel = None
+                pass
         return flags+"S"
     return flags
 
@@ -908,6 +937,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.33  2007/04/12 23:57:31  cdunde
+#Activated the 'Hints for handles' function for the Model Editors model mesh vertex hints
+#and Bone Frames hints. Also added their position data display to the Hint Box.
+#
 #Revision 1.32  2007/04/12 03:50:22  cdunde
 #Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
 #and advanced Skin-view vertex handle positioning and coordinates output data to hint box.

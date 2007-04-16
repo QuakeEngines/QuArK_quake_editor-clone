@@ -73,6 +73,13 @@ def BuildMenuBar(editor):
 def BackgroundMenu(editor, view=None, origin=None):
     "Menu that appears when the user right-clicks on nothing."
 
+    import mdlhandles
+    import mdlcommands
+
+    File1, sc1 = qmenu.DefaultFileMenu()
+    Commands1, sc2 = mdlcommands.CommandsMenu()
+    sc1.update(sc2)   # merge shortcuts
+
     undo, redo = quarkx.undostate(editor.Root)
     if undo is None:   # to undo
         Undo1 = qmenu.item(Strings[113], None)
@@ -91,12 +98,14 @@ def BackgroundMenu(editor, view=None, origin=None):
     paste1.cmd = "paste"
     paste1.state = not quarkx.pasteobj() and qmenu.disabled
     extra = extra + [qmenu.sep, paste1]
+
     if view is not None:
+        vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
         def backbmp1click(m, view=view, form=editor.form):
             import qbackbmp
             qbackbmp.BackBmpDlg(form, view)
         backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
-        extra = extra + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+        extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
     return [Undo1] + extra
 
 
@@ -139,6 +148,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.9  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.8  2006/11/29 07:00:28  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

@@ -88,6 +88,8 @@ def removeTriangle(comp, index):
   undo = quarkx.action()
   undo.exchange(comp, new_comp)
   mapeditor().ok(undo, "remove triangle")
+  editor = mapeditor()
+  editor.picked = []
   invalidateviews()
 
 
@@ -143,7 +145,6 @@ def addvertex(comp, org):
   undo = quarkx.action()
   undo.exchange(comp, new_comp)
   mapeditor().ok(undo, "add vertex")
-
   invalidateviews()
   
 #
@@ -298,6 +299,10 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.13  2007/04/10 06:00:36  cdunde
+#Setup mesh movement using common drag handles
+#in the Skin-view for skinning model textures.
+#
 #Revision 1.12  2007/03/29 15:25:34  danielpharos
 #Cleaned up the tabs.
 #

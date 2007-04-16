@@ -34,7 +34,7 @@ class ModelEditor(BaseEditor):
     HandlesModule = mdlhandles
     MouseDragMode = mdlhandles.RectSelDragObject
 
-    picked = [ ]
+    picked = []
  
     def OpenRoot(self):
         Root = self.fileobject['Root']
@@ -58,7 +58,7 @@ class ModelEditor(BaseEditor):
         self.lock_z = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
     def CloseRoot(self):
-        picked = [ ]
+        picked = []
         ### To stop crossing of skins from model to model when a new model, even with the same name,
         ### is opened in the Model Editor without closing QuArK completely.
         try:
@@ -123,12 +123,17 @@ class ModelEditor(BaseEditor):
 
 
     def explorermenu(self, reserved, view=None, origin=None):
-        "The pop-up menu for the Explorer."
+        "The pop-up menu for the Explorer and views."
 
         import mdlmenus
         sellist = self.layout.explorer.sellist
         if len(sellist)==0:
             return mdlmenus.BackgroundMenu(self, view, origin)
+        try:
+            if view is not None and (sellist[0].type != ':mr' and sellist[0].type != ':mg' and sellist[0].type != ':bone'):
+                return mdlmenus.BackgroundMenu(self, view, origin)
+        except:
+            pass
         if view is None:
             extra = []
         else:
@@ -224,6 +229,7 @@ def paintframefill(self, v, currentview):
         self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
 
     comp = self.Root.currentcomponent
+
     try:
         for v in self.layout.views:
             if ((v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow") and self.dragobject != None):
@@ -263,7 +269,6 @@ def paintframefill(self, v, currentview):
                     pass
     except:
         pass
-
 
     if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
         fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
@@ -455,6 +460,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.24  2007/04/12 13:31:44  cdunde
+#Minor cleanup.
+#
 #Revision 1.23  2007/04/04 21:34:17  cdunde
 #Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
 #
