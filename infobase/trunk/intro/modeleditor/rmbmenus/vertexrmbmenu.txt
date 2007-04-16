@@ -1,0 +1,49 @@
+title: Vertex RMB menu
+author: cdunde
+
+<img border=1 align=right>vertexrmbmenu1.png</img>
+
+<i>Add Vertex Here </i>&nbsp;: This will add a single vertex to the currently selected model component
+(and all of its animation frames) to make a new triangle. You need 3 new vertexes to make a triangle.
+You can also make a new triangle by creating just one or two new vertexes and then use pre-existing
+vertexes to complete the group of three. Then select each vertex using the RMB menu when your cursor is
+over one of the vertexes you wish to use. Once all three have been 'picked' then RMB click on any open
+area (area that the model is not in) of any view to get the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, covered above,
+and select 'Commands' then 'Add Triangle'. This can be done from the editor's main 'Commands' menu as well.
+
+<i>Remove Vertex </i>&nbsp;: This will remove a vertex from the component and all of its animation frames.
+WARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well.
+If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.
+
+<i>Pick Vertex </i>&nbsp;: This is used for picking 3 vertexes to create a triangle with. It also works in
+conjunction with the <b>Clear Pick list</b> below. You need 3 vertexes to make a triangle. Once all 3 have
+been 'picked' use the <b>Add Triangle</b> funciton on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">'Commands' sub-menu</a>, covered in detail above,
+to create a the triangle.
+
+<i>Clear Pick list </i>&nbsp;: This Clears the 'Pick Vertex' list of all vertexes and it becomes active
+when one or more vertexes have been selected. The list can contain a maximum of three individual vertex
+selections to do two things with, <b>Add Triangle</b> or <b>Delete Triangle</b> which are both commands on
+the <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">'Commands' sub-menu</a> covered in detail above.
+Once a vertex has been 'picked' it will be displayed in all views as a larger and different color vertex
+then those not 'picked'. If a vertex that has been 'picked' is picked a second time it will be removed from the
+list and return to its normal appearance and another vertex can then be selected to take its place in the list.
+
+
+<i>Force to grid </i>&nbsp;: This will cause any vertex to 'snap' to the nearest location on the editor's
+grid for the view that the RMB click was made in.
+
+<i>Coordinates... </i>&nbsp;: Clicking on this menu item will open the coordinates <b>Enter position</b>
+dialog box which does two things, first it gives the view location of the vertex, and second you can enter
+a new set of coordinates to move the vertex that was under your cursor when the <g>RMB</g> click was made
+to relocate that vertex to an exact position on that views grid.
+
+<b><u>Special Notes:</u></b>
+
+Once a new triangle(s) has been created it still needs to be <b>Skinned</b> on the
+<a href="intro.modeleditor.model.html#mesh">Skin-view page</a> for proper viewing and completion of the
+triangle. At first, the new triangle(s) will not appear on the Skin-view, you will only see <b>ONE</b>
+new vertex located at the top left hand corner of the 'base' skin texture position. Click on the vertex
+and move it on the Skin-view. As you do you will see the next vertex of that triangle and so on until
+you have moved all of the new vertexes and triangles to their proper skinning location.

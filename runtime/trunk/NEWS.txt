@@ -15,6 +15,12 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
+          - Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
+          - Added Commands menu to the open area RMB menu for faster and easer selection.
+          
+* [cdunde]: Stopped Add Triangle and Delete Triangle from causing errors and added menu links to the Infobase.
+
 * [cdunde]: Changed face and vertex dragging hint for both the Map Editor and Model Editor
           - to give start and progressive drag positions based on grid location.
 

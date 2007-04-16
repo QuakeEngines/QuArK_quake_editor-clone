@@ -1,9 +1,9 @@
-title: Menubar
+title: Right Mouse Button (RMB) Menus
 author: cdunde
-desc: commandsmenu
-desc: optionsmenu
+desc: viewsrmbmenus
+desc: vertexrmbmenu
 
-<img>menu.png</img>
+This is a special section that only covers the Model Editor's <g>RMB</g> menus.
 
 New commands are constantly being added to the all menus. If there is
 no F1 help for some command, or you can not understand
