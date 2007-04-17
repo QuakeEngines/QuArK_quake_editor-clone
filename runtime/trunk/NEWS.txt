@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Fixed Duplicate current frame function to stop Model Editor views from crashing
+          - and updated its popup help and Infobase link description data.
+
 * [cdunde]: Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
           - Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
           - Added Commands menu to the open area RMB menu for faster and easer selection.
