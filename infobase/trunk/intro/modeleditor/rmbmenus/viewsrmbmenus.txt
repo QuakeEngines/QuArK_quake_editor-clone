@@ -49,8 +49,9 @@ about its functions and settings.
 
 <img border=1 align=right>viewsrmbmenus3.png</img>
 
-<i>Duplicate Current Frame </i>&nbsp;: This adds a 'new frame' to the currently selected model component's
-animation frames list.
+<i>Duplicate Current Frame </i>&nbsp;: This copies a single frame that is currently selected and
+adds that copy to that model component's animation frames list.
+For multiple frame copies use the 'Duplicate' function on the 'Edit' menu.
 
 <i>Add Triangle </i>&nbsp;: This adds a new triangle to the currently selected component. It works
 in conjunction with the <b>Pick Vertex</b> function on the
