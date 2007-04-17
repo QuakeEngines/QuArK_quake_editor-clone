@@ -62,6 +62,7 @@ CheckC = qmenu.item("Check Components", checkcomponents, "|Check Components:\n\n
 
 AutoBuild = qmenu.item("Auto Assemble", autobuild, "|Auto Assemble:\n\nSome models are made up of seperate model files for example .md3 files. This function attempts to auto-load those related models model files and attach them using what is known as tags to match them up correctly.|intro.modeleditor.menu.html#commandsmenu")
 
+NewFrame.state = qmenu.disabled
 AddTriangle.state = qmenu.disabled
 RemoveTriangle.state = qmenu.disabled
 
@@ -88,6 +89,10 @@ def commandsclick(menu, oldcommand=onclick):
     if editor is None:
         return
     try:
+        if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
+            NewFrame.state = qmenu.disabled
+        else:
+            NewFrame.state = qmenu.normal
         if len(editor.picked) == 3:
             AddTriangle.state = qmenu.normal
             RemoveTriangle.state = qmenu.normal
@@ -103,6 +108,10 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.9  2007/04/17 12:55:34  cdunde
+# Fixed Duplicate current frame function to stop Model Editor views from crashing
+# and updated its popup help and Infobase link description data.
+#
 # Revision 1.8  2007/04/16 16:55:07  cdunde
 # Stopped Add Triangle and Delete Triangle from causing errors and added menu links to the Infobase.
 #
