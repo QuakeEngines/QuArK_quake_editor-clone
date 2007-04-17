@@ -17,7 +17,6 @@ import dlgclasses
 def newframeclick(m):
     editor = mapeditor()
     addframe(editor.Root.currentcomponent)
-    editor.fileobject = editor.fileobject
 
 
 def addvertexclick(m):
@@ -53,7 +52,7 @@ def autobuild(m):
     editor.fileobject = editor.fileobject
 
 
-NewFrame = qmenu.item("&Duplicate Current Frame", newframeclick, "|Duplicate Current Frame:\n\nThis adds a 'new frame' to the currently selected model component's animation frames list.|intro.modeleditor.menu.html#commandsmenu")
+NewFrame = qmenu.item("&Duplicate Current Frame", newframeclick, "|Duplicate Current Frame:\n\nThis copies a single frame that is currently selected and adds that copy to that model component's animation frames list.\n\nFor multiple frame copies use the 'Duplicate' function on the 'Edit' menu.|intro.modeleditor.menu.html#commandsmenu")
 
 AddTriangle = qmenu.item("&Add Triangle", addtriclick, "|Add Triangle:\n\nThis adds a new triangle to the currently selected component.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.menu.html#commandsmenu")
 
@@ -104,6 +103,9 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.8  2007/04/16 16:55:07  cdunde
+# Stopped Add Triangle and Delete Triangle from causing errors and added menu links to the Infobase.
+#
 # Revision 1.7  2005/10/15 00:47:57  cdunde
 # To reinstate headers and history
 #

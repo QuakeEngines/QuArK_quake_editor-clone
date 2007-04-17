@@ -16,145 +16,165 @@ import quarkx
 from qeditor import *
 from math import *
 
+
 #
 # Calculate Position of a Point along the vector AC, Keeping L (Length)
 #
 def ProjectKeepingLength(A,C,L):
-  def NormaliseVect(v1, v2):
-    le = sqrt( pow(v2.x - v1.x, 2) + 
-               pow(v2.y - v1.y, 2) + 
-               pow(v2.z - v1.z, 2) )
-    if (le <> 0): 
-      v = quarkx.vect( \
-        (v2.x - v1.x) / le, \
-        (v2.y - v1.y) / le, \
-        (v2.z - v1.z) / le  )
-    else:
-      v = quarkx.vect(0,0,0)
-    return v
-  n = NormaliseVect(A, C)
-  xxx = quarkx.vect(
-    A.x + (L * n.x),
-    A.y + (L * n.y),
-    A.z + (L * n.z)
-    )
-  return xxx
+    def NormaliseVect(v1, v2):
+        le = sqrt( pow(v2.x - v1.x, 2) + 
+                   pow(v2.y - v1.y, 2) + 
+                   pow(v2.z - v1.z, 2) )
+        if (le <> 0): 
+            v = quarkx.vect( \
+                (v2.x - v1.x) / le, \
+                (v2.y - v1.y) / le, \
+                (v2.z - v1.z) / le  )
+        else:
+            v = quarkx.vect(0,0,0)
+        return v
+    n = NormaliseVect(A, C)
+    xxx = quarkx.vect(
+        A.x + (L * n.x),
+        A.y + (L * n.y),
+        A.z + (L * n.z)
+        )
+    return xxx
+
 
 #
 # Invalidate all views
 #
 def invalidateviews():
-  editor = mapeditor()
-  if editor is None: return
-  editor.invalidateviews(1)
+    editor = mapeditor()
+    if editor is None: return
+    editor.invalidateviews(1)
 
 
 #
 #  Find a triangle based on vertex indexs
 #
 def findTriangle(comp, v1, v2, v3):
-  tris = comp.triangles
-  index = -1
-  for tri in tris:
-    index = index + 1
-    b = 0
-    for c in tri:
-      if ((c[0] == v1) | (c[0] == v2) | (c[0] == v3)):
-        b = b + 1
-      else:
+    tris = comp.triangles
+    index = -1
+    for tri in tris:
+        index = index + 1
         b = 0
-    if b==3:
-      return index
-  return None
+        for c in tri:
+            if ((c[0] == v1) | (c[0] == v2) | (c[0] == v3)):
+                b = b + 1
+            else:
+                b = 0
+        if b==3:
+            return index
+    return None
 
 
 #
 # Remove a triangle from a given component
 #
 def removeTriangle_v3(comp, v1, v2, v3):
-  removeTriangle(comp, findTriangle(comp, v1,v2,v3))
+    removeTriangle(comp, findTriangle(comp, v1,v2,v3))
   
   
 #
 # Remove a triangle from a given component
 #
 def removeTriangle(comp, index):
-  if (index is None):
-    return
-  new_comp = comp.copy()
-  old_tris = new_comp.triangles
-  tris = old_tris[:index] + old_tris[index+1:]
-  new_comp.triangles = tris
-  undo = quarkx.action()
-  undo.exchange(comp, new_comp)
-  mapeditor().ok(undo, "remove triangle")
-  editor = mapeditor()
-  editor.picked = []
-  invalidateviews()
+    if (index is None):
+        return
+    new_comp = comp.copy()
+    old_tris = new_comp.triangles
+    tris = old_tris[:index] + old_tris[index+1:]
+    new_comp.triangles = tris
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    mapeditor().ok(undo, "remove triangle")
+    editor = mapeditor()
+    editor.picked = []
+    invalidateviews()
 
 
 #
 # Add a frame to a given component (ie duplicate last one)
 #
 def addframe(comp):
-  if (comp is None):
-    return
-  new_comp = comp.copy()
-  f = new_comp.addframe() # easier - done in delphi code :-)
-  f.refreshtv()
-  undo = quarkx.action()
-  undo.exchange(comp, new_comp)
-  mapeditor().ok(undo, "add frame")
+    if (comp is None):
+        return
+
+    editor = mapeditor()
+    if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
+        quarkx.msgbox("You need to select a\nsingle frame to duplicate.", MT_ERROR, MB_OK)
+        return
+    
+    newframe = editor.layout.explorer.uniquesel.copy()
+    new_comp = comp.copy(1)
+
+    count = 0
+    for item in new_comp.dictitems['Frames:fg'].dictitems:
+        count = count + 1
+        if item == editor.layout.explorer.uniquesel.name:
+            break
+
+    newframe.shortname = newframe.shortname + " copy"
+    new_comp.dictitems['Frames:fg'].insertitem(count, newframe) # Needs to be in 'sort' correctly to follow frame copied.
+  #  new_comp.dictitems['Frames:fg'].appenditem(newframe) # This will just append the new frame copy at the end of the frames list.
+
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    mapeditor().ok(undo, "add frame")
   
-  invalidateviews()
-  return f
+    invalidateviews()
+
 
 #
 # Add a triangle to a given component
 #
 def addtriangle(comp,v1,v2,v3,s1,t1,s2,t2,s3,t3):
-  if (comp is None) or (v1 is None) or (v2 is None) or (v3 is None):
-    return
-  if (s1 is None) or (s2 is None) or (s3 is None):
-    return
-  if (t1 is None) or (t2 is None) or (t3 is None):
-    return
-  tris = comp.triangles
-  tris = tris + [((v1,s1,t1),(v2,s2,t2),(v3,s3,t3))]
-  new_comp = comp.copy()
-  new_comp.triangles = tris
+    if (comp is None) or (v1 is None) or (v2 is None) or (v3 is None):
+        return
+    if (s1 is None) or (s2 is None) or (s3 is None):
+        return
+    if (t1 is None) or (t2 is None) or (t3 is None):
+        return
+    tris = comp.triangles
+    tris = tris + [((v1,s1,t1),(v2,s2,t2),(v3,s3,t3))]
+    new_comp = comp.copy()
+    new_comp.triangles = tris
 
-  undo = quarkx.action()
-  undo.exchange(comp, new_comp)
-  mapeditor().ok(undo, "add triangle")
-  invalidateviews()
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    mapeditor().ok(undo, "add triangle")
+    invalidateviews()
+
 
 #
 # Add a vertex to a given component at origin specified
 #
 def addvertex(comp, org):
-  if (comp is None) or (org is None):
-    return
-  new_comp = comp.copy()
-  frames = new_comp.findallsubitems("", ':mf')   # find all frames
-  for frame in frames:
-    vtxs = frame.vertices
-    vtxs = vtxs + [org]
-    frame.vertices = vtxs
+    if (comp is None) or (org is None):
+        return
+    new_comp = comp.copy()
+    frames = new_comp.findallsubitems("", ':mf')   # find all frames
+    for frame in frames:
+        vtxs = frame.vertices
+        vtxs = vtxs + [org]
+        frame.vertices = vtxs
 
-  undo = quarkx.action()
-  undo.exchange(comp, new_comp)
-  mapeditor().ok(undo, "add vertex")
-  invalidateviews()
-  
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    mapeditor().ok(undo, "add vertex")
+    invalidateviews()
+
+
 #
 # Checks triangle for vertex [index]
 #
 def checkTriangle(tri, index):
-  for c in tri:
-    if ( c[0] == index): # c[0] is the 'vertexno'
-      return 1
-  return 0
+    for c in tri:
+        if ( c[0] == index): # c[0] is the 'vertexno'
+            return 1
+    return 0
 
 
 #
@@ -171,36 +191,39 @@ def checkTriangle(tri, index):
 #        tris = findTriangles(comp, self.index)
 #
 def findTriangles(comp, index):
-  tris = comp.triangles
-  tris_out = [ ]
-  for tri in tris:
-    isit = checkTriangle(tri, index)
-    if (isit == 1):
-      tris_out = tris_out + [ tri ]
-  return tris_out
+    tris = comp.triangles
+    tris_out = [ ]
+    for tri in tris:
+        isit = checkTriangle(tri, index)
+        if (isit == 1):
+            tris_out = tris_out + [ tri ]
+    return tris_out
+
+
 
 def fixTri(tri, index):
-  new_tri = [ ]
-  for c in tri:
-    v = 0
-    if ( c[0] > index):
-      v = c[0]-1
-    else:
-      v = c[0]
-    s = c[1]
-    t = c[2]
-    new_tri = new_tri + [(v,s,t)]
-  return (new_tri[0], new_tri[1], new_tri[2])
-  
+    new_tri = [ ]
+    for c in tri:
+        v = 0
+        if ( c[0] > index):
+            v = c[0]-1
+        else:
+            v = c[0]
+        s = c[1]
+        t = c[2]
+        new_tri = new_tri + [(v,s,t)]
+    return (new_tri[0], new_tri[1], new_tri[2])
+
+
 #
 # goes through tri list: if greaterthan index then takes 1 away from vertexno
 #
 def fixUpVertexNos(tris, index):
-  new_tris = [ ]
-  for tri in tris:
-     x = fixTri(tri, index)
-     new_tris = new_tris + [x]
-  return new_tris
+    new_tris = [ ]
+    for tri in tris:
+         x = fixTri(tri, index)
+         new_tris = new_tris + [x]
+    return new_tris
 
 def checkinlist(tri, toberemoved):
   for tbr in toberemoved:
@@ -208,34 +231,36 @@ def checkinlist(tri, toberemoved):
       return 1
   return 0
 
+
 #
 # remove a vertex from a component
 #
 def removevertex(comp, index):
-  if (comp is None) or (index is None):
-    return
-  #### 1) find all triangles that use vertex 'index' and delete them.
-  toBeRemoved = findTriangles(comp, index)
-  tris = comp.triangles
-  new_tris = []
-  for tri in tris:
-    p = checkinlist(tri, toBeRemoved)
-    if (p==0):
-      new_tris = new_tris + [ tri ]
-  enew_tris = fixUpVertexNos(new_tris, index)
-  new_comp = comp.copy() # create a copy to edit (we store the old one in the undo list)
-  new_comp.triangles = enew_tris
-  #### 2) loop through all frames and delete vertex.
-  frames = new_comp.findallsubitems("", ':mf')   # find all frames
-  for frame in frames: 
-    old_vtxs = frame.vertices
-    vtxs = old_vtxs[:index] + old_vtxs[index+1:]
-    frame.vertices = vtxs
-  #### 3) re-build all views
-  undo = quarkx.action()
-  undo.exchange(comp, new_comp)
-  mapeditor().ok(undo, "remove vertex")
-  invalidateviews()
+    if (comp is None) or (index is None):
+        return
+    #### 1) find all triangles that use vertex 'index' and delete them.
+    toBeRemoved = findTriangles(comp, index)
+    tris = comp.triangles
+    new_tris = []
+    for tri in tris:
+        p = checkinlist(tri, toBeRemoved)
+        if (p==0):
+            new_tris = new_tris + [ tri ]
+    enew_tris = fixUpVertexNos(new_tris, index)
+    new_comp = comp.copy() # create a copy to edit (we store the old one in the undo list)
+    new_comp.triangles = enew_tris
+    #### 2) loop through all frames and delete vertex.
+    frames = new_comp.findallsubitems("", ':mf')   # find all frames
+    for frame in frames: 
+        old_vtxs = frame.vertices
+        vtxs = old_vtxs[:index] + old_vtxs[index+1:]
+        frame.vertices = vtxs
+    #### 3) re-build all views
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    mapeditor().ok(undo, "remove vertex")
+    invalidateviews()
+
 
 #
 # Is a given object still in the tree view, or was it removed ?
@@ -249,10 +274,12 @@ def checktree(root, obj):
     return 1
 
 
+
 #
 # The UserDataPanel class, overridden to be model-specific.
 #
 class MdlUserDataPanel(UserDataPanel):
+
 
     def btnclick(self, btn):
         #
@@ -261,13 +288,13 @@ class MdlUserDataPanel(UserDataPanel):
         import mdlbtns
         mdlbtns.mdlbuttonclick(btn)
 
+
     #def drop(self, btnpanel, list, i, source):
         #if len(list)==1 and list[0].type == ':g':
         #    quarkx.clickform = btnpanel.owner
         #    editor = mapeditor()
         #    if editor is not None and source is editor.layout.explorer:
-        #        choice = quarkx.msgbox("You are about to create a new button from this group. Do you want the button to display a menu with the items in this group ?\n\nYES: you can pick up individual items when you click on this button.\nNO: you can insert the whole group in your map by clicking on this button.",
-        #          MT_CONFIRMATION, MB_YES_NO_CANCEL)
+        #        choice = quarkx.msgbox("You are about to create a new button from this group. Do you want the button to display a menu with the items in this group ?\n\nYES: you can pick up individual items when you click on this button.\nNO: you can insert the whole group in your map by clicking on this button.", MT_CONFIRMATION, MB_YES_NO_CANCEL)
         #        if choice == MR_CANCEL:
         #            return
         #        if choice == MR_YES:
@@ -275,30 +302,36 @@ class MdlUserDataPanel(UserDataPanel):
         #UserDataPanel.drop(self, btnpanel, list, i, source)
 
 
+
 def find2DTriangles(comp, tri_index, ver_index):
-  "This function returns triangles and their index of a component's"
-  "mesh that have a common vertex position of the 2D drag view."
-  "This is primarily used for the Skin-view mesh drag option."
-  "See the mdlhandles.py file class SkinHandle, drag funciton for its use."
-  tris = comp.triangles
-  tris_out = {}
-  i = 0
-  for tri in tris:
-    for vtx in tri:
-        if str(vtx) == str(tris[tri_index][ver_index]):
-          if i == tri_index:
-              break
-          else:
-              tris_out[i] = tri
-              break
-    i = i + 1
-  return tris_out
+    "This function returns triangles and their index of a component's"
+    "mesh that have a common vertex position of the 2D drag view."
+    "This is primarily used for the Skin-view mesh drag option."
+    "See the mdlhandles.py file class SkinHandle, drag funciton for its use."
+    tris = comp.triangles
+    tris_out = {}
+    i = 0
+    for tri in tris:
+        for vtx in tri:
+            if str(vtx) == str(tris[tri_index][ver_index]):
+              if i == tri_index:
+                  break
+              else:
+                  tris_out[i] = tri
+                  break
+        i = i + 1
+    return tris_out
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.14  2007/04/16 16:55:59  cdunde
+#Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
+#Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
+#Added Commands menu to the open area RMB menu for faster and easer selection.
+#
 #Revision 1.13  2007/04/10 06:00:36  cdunde
 #Setup mesh movement using common drag handles
 #in the Skin-view for skinning model textures.
