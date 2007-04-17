@@ -106,7 +106,7 @@ def addframe(comp):
     if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
         quarkx.msgbox("You need to select a\nsingle frame to duplicate.", MT_ERROR, MB_OK)
         return
-    
+
     newframe = editor.layout.explorer.uniquesel.copy()
     new_comp = comp.copy(1)
 
@@ -115,7 +115,7 @@ def addframe(comp):
         count = count + 1
         if item == editor.layout.explorer.uniquesel.name:
             break
-
+    selname = editor.layout.explorer.uniquesel.name
     newframe.shortname = newframe.shortname + " copy"
     new_comp.dictitems['Frames:fg'].insertitem(count, newframe) # Needs to be in 'sort' correctly to follow frame copied.
   #  new_comp.dictitems['Frames:fg'].appenditem(newframe) # This will just append the new frame copy at the end of the frames list.
@@ -123,7 +123,8 @@ def addframe(comp):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     mapeditor().ok(undo, "add frame")
-  
+    editor.layout.explorer.uniquesel = new_comp.dictitems['Frames:fg'].dictitems[selname]
+    editor.layout.explorer.expand(editor.layout.explorer.uniquesel.parent)
     invalidateviews()
 
 
@@ -327,6 +328,10 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.15  2007/04/17 12:55:34  cdunde
+#Fixed Duplicate current frame function to stop Model Editor views from crashing
+#and updated its popup help and Infobase link description data.
+#
 #Revision 1.14  2007/04/16 16:55:59  cdunde
 #Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
 #Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
