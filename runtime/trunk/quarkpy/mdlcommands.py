@@ -30,7 +30,20 @@ def addtriclick(m):
     if editor is None:
         return
     if len(editor.picked) == 3:
-        addtriangle(editor.Root.currentcomponent,editor.picked[0],editor.picked[1],editor.picked[2],0,0,0,0,0,0)
+        tex = editor.Root.currentcomponent.currentskin
+        texWidth,texHeight = tex["Size"]
+        newtriangleindex = len(editor.Root.currentcomponent.triangles)-1
+        newtri = editor.Root.currentcomponent.triangles[newtriangleindex]
+
+        s1 = newtri[0][1]-int(texWidth*.5)
+        t1 = newtri[0][2]-int(texWidth*.5)
+        s2 = newtri[1][1]-int(texWidth*.5)
+        t2 = newtri[1][2]-int(texWidth*.5)
+        s3 = newtri[2][1]-int(texWidth*.5)
+        t3 = newtri[2][2]-int(texWidth*.5)
+
+        addtriangle(editor.Root.currentcomponent,editor.picked[0],editor.picked[1],editor.picked[2],s1,t1,s2,t2,s3,t3)
+
 
 
 def remtriclick(m):
@@ -108,6 +121,9 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.10  2007/04/17 13:27:48  cdunde
+# Added safeguard on menu item until it can be used correctly.
+#
 # Revision 1.9  2007/04/17 12:55:34  cdunde
 # Fixed Duplicate current frame function to stop Model Editor views from crashing
 # and updated its popup help and Infobase link description data.
