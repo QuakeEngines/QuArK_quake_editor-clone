@@ -375,8 +375,8 @@ class ModelLayout(BaseLayout):
         try:
             if NewSellist != [] and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
                 self.editor.layout.explorer.sellist = NewSellist
-                for item in self.editor.layout.explorer.sellist:
-                    self.editor.layout.explorer.expand(item.parent)
+                for item in editor.layout.explorer.sellist:
+                    editor.layout.explorer.expand(item.parent)
                 mdlhandles.NewSellist = []
                 return
         except:
@@ -478,6 +478,11 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.26  2007/04/12 03:50:22  cdunde
+#Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
+#and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
+#Also activated the 'Hints for handles' function for the Skin-view.
+#
 #Revision 1.25  2007/04/10 06:00:36  cdunde
 #Setup mesh movement using common drag handles
 #in the Skin-view for skinning model textures.
