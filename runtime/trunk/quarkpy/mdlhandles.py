@@ -33,8 +33,6 @@ skinviewdraglines = 0
 mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
-HoldObject = None
-NewSellist = []
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
@@ -457,67 +455,6 @@ class SkinHandle(qhandles.GenericHandle):
       return [self.comp], [new]
 
 
-  def ok(self, editor, undo, old, new):
-      global HoldObject, NewSellist
-      from mdlmgr import saveskin
-      NewSellist = []
-      HoldObjectList = []
-      for Object in editor.layout.explorer.sellist:
-          HoldObject = Object
-          if HoldObject is None:
-              Expanded = False
-              ParentNames = []
-          else:
-              ParentNames = [HoldObject.name]
-              while HoldObject.parent is not None:
-                  HoldObject = HoldObject.parent
-                  ParentNames.append(HoldObject.name)
-
-          HoldObjectList.append(ParentNames)
-
-      undo.ok(editor.Root, self.undomsg) ### editor.Root changes uniquesel to the component, WE DO NOT WANT THAT
-
-      for ParentNames in HoldObjectList:
-          HoldObject = editor.Root
-          ParentNames.reverse()
-          if len(ParentNames) == 0:
-              EditorRoot = 0
-          else:
-              EditorRoot = ParentNames.index(HoldObject.name)
-      
-          for x in range(len(ParentNames)-EditorRoot-1):
-              if x+EditorRoot == 1:
-                  HoldObject = HoldObject.findname(ParentNames[EditorRoot+x+1])
-              elif x+EditorRoot == 2:
-                  HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
-              elif x+EditorRoot == 3:
-                  HoldObject = HoldObject.dictitems[ParentNames[EditorRoot+x+1]]
-
-         ### Line below moved to mdlmgr.py, def selectcomponent, using HoldObject as global
-         ### to allow Skin-view to complete its new undo mesh and handles, was not working from here.
-         # editor.layout.explorer.sellist = [HoldObject]
-
-          NewSellist.append(HoldObject)
-      try:
-          if (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
-              pass
-          else:
-              editor.layout.explorer.sellist = NewSellist  # go around if bone is in the list
-      except:
-          pass    
-
-      if len(NewSellist) <= 1:
-          if len(NewSellist) == 1 and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg")):
-              pass
-          else:
-              for item in editor.layout.explorer.sellist:
-                  editor.layout.explorer.expand(item.parent)
-      else:
-          HoldObject = None
-          for item in editor.layout.explorer.sellist:
-              editor.layout.explorer.expand(item.parent)
-
-
 
 class BoneHandle(qhandles.GenericHandle):
   "Bone Handle"
@@ -937,6 +874,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.34  2007/04/16 16:55:59  cdunde
+#Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
+#Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
+#Added Commands menu to the open area RMB menu for faster and easer selection.
+#
 #Revision 1.33  2007/04/12 23:57:31  cdunde
 #Activated the 'Hints for handles' function for the Model Editors model mesh vertex hints
 #and Bone Frames hints. Also added their position data display to the Hint Box.

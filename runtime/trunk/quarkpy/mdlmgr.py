@@ -16,6 +16,7 @@ Model editor Layout managers.
 #
 
 
+import mdleditor
 import math
 import quarkx
 import qtoolbar
@@ -371,18 +372,18 @@ class ModelLayout(BaseLayout):
             comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
 ##########
 
-        from mdlhandles import NewSellist
+        from mdleditor import NewSellist
         try:
             if NewSellist != [] and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
                 self.editor.layout.explorer.sellist = NewSellist
                 for item in editor.layout.explorer.sellist:
                     editor.layout.explorer.expand(item.parent)
-                mdlhandles.NewSellist = []
+                mdleditor.NewSellist = []
                 return
         except:
-            mdlhandles.NewSellist = []
+            mdleditor.NewSellist = []
             pass
-        mdlhandles.NewSellist = []
+        mdleditor.NewSellist = []
         self.mpp.resetpage() # This calls for the Skin-view to be updated and redrawn.
 
 
@@ -478,6 +479,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.27  2007/04/19 02:50:01  cdunde
+#To fix selection retention, Skin-view drag that got broken when a bone(s) was selected.
+#
 #Revision 1.26  2007/04/12 03:50:22  cdunde
 #Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
 #and advanced Skin-view vertex handle positioning and coordinates output data to hint box.

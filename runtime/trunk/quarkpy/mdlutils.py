@@ -83,14 +83,14 @@ def removeTriangle_v3(comp, v1, v2, v3):
 def removeTriangle(comp, index):
     if (index is None):
         return
+    editor = mapeditor()
     new_comp = comp.copy()
     old_tris = new_comp.triangles
     tris = old_tris[:index] + old_tris[index+1:]
     new_comp.triangles = tris
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
-    mapeditor().ok(undo, "remove triangle")
-    editor = mapeditor()
+    editor.ok(undo, "remove triangle")
     editor.picked = []
     invalidateviews()
 
@@ -110,21 +110,18 @@ def addframe(comp):
     newframe = editor.layout.explorer.uniquesel.copy()
     new_comp = comp.copy(1)
 
-    count = 0
-    for item in new_comp.dictitems['Frames:fg'].dictitems:
-        count = count + 1
-        if item == editor.layout.explorer.uniquesel.name:
+    for obj in new_comp.dictitems['Frames:fg'].subitems:
+       if obj.name == editor.layout.explorer.uniquesel.name:
+            count = new_comp.dictitems['Frames:fg'].subitems.index(obj)+1
             break
-    selname = editor.layout.explorer.uniquesel.name
+
     newframe.shortname = newframe.shortname + " copy"
-    new_comp.dictitems['Frames:fg'].insertitem(count, newframe) # Needs to be in 'sort' correctly to follow frame copied.
+    new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
   #  new_comp.dictitems['Frames:fg'].appenditem(newframe) # This will just append the new frame copy at the end of the frames list.
 
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
-    mapeditor().ok(undo, "add frame")
-    editor.layout.explorer.uniquesel = new_comp.dictitems['Frames:fg'].dictitems[selname]
-    editor.layout.explorer.expand(editor.layout.explorer.uniquesel.parent)
+    editor.ok(undo, "add frame")
     invalidateviews()
 
 
@@ -328,6 +325,9 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.16  2007/04/17 16:01:25  cdunde
+#To retain selection of original animation frame when duplicated.
+#
 #Revision 1.15  2007/04/17 12:55:34  cdunde
 #Fixed Duplicate current frame function to stop Model Editor views from crashing
 #and updated its popup help and Infobase link description data.
