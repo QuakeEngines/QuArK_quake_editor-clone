@@ -792,6 +792,16 @@ class BaseEditor:
         # Are we finished dragging the mouse ? Notify the dragobject.
         #
         else:
+            if isinstance(self, mdleditor.ModelEditor) and flags == 520:
+                import mdlhandles
+                if isinstance(handle, mdlhandles.VertexHandle) and self.layout.explorer.uniquesel.type != ":mf":
+                    quarkx.msgbox("You must select a single frame of this component\nbefore you can drag any of its vertexes.", MT_ERROR, MB_OK)
+                    handles = None
+            #        self.flags = view
+     #               flags = 2056
+                    self.dragobject = None
+                    return None
+
             #
             # Read the setup to determine what the mouse click should do.
             #
@@ -1080,6 +1090,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.48  2007/04/13 19:50:57  cdunde
+#To correct comment for version 1.47
+#
 #Revision 1.47  2007/04/13 19:47:42  cdunde
 #To fix console error for Linear handle in Model Editor.
 #
