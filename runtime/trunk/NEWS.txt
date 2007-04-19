@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [DanielPharos/cdunde]: Setup selection retention system in Model Editor so selected items would not
+          - be dropped unexpectedly and something else selected when other functions were used.
+
 * [cdunde]: Fixed Duplicate current frame function to stop Model Editor views from crashing
           - and updated its popup help and Infobase link description data.
 
