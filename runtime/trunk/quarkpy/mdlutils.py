@@ -52,6 +52,16 @@ def invalidateviews():
 
 
 #
+# Checks triangle for vertex [index]
+#
+def checkTriangle(tri, index):
+    for c in tri:
+        if ( c[0] == index): # c[0] is the 'vertexno'
+            return 1
+    return 0
+
+
+#
 #  Find a triangle based on vertex indexs
 #
 def findTriangle(comp, v1, v2, v3):
@@ -68,111 +78,6 @@ def findTriangle(comp, v1, v2, v3):
         if b==3:
             return index
     return None
-
-
-#
-# Remove a triangle from a given component
-#
-def removeTriangle_v3(comp, v1, v2, v3):
-    removeTriangle(comp, findTriangle(comp, v1,v2,v3))
-  
-  
-#
-# Remove a triangle from a given component
-#
-def removeTriangle(comp, index):
-    if (index is None):
-        return
-    editor = mapeditor()
-    new_comp = comp.copy()
-    old_tris = new_comp.triangles
-    tris = old_tris[:index] + old_tris[index+1:]
-    new_comp.triangles = tris
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    editor.ok(undo, "remove triangle")
-    editor.picked = []
-    invalidateviews()
-
-
-#
-# Add a frame to a given component (ie duplicate last one)
-#
-def addframe(comp):
-    if (comp is None):
-        return
-
-    editor = mapeditor()
-    if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
-        quarkx.msgbox("You need to select a\nsingle frame to duplicate.", MT_ERROR, MB_OK)
-        return
-
-    newframe = editor.layout.explorer.uniquesel.copy()
-    new_comp = comp.copy(1)
-
-    for obj in new_comp.dictitems['Frames:fg'].subitems:
-       if obj.name == editor.layout.explorer.uniquesel.name:
-            count = new_comp.dictitems['Frames:fg'].subitems.index(obj)+1
-            break
-
-    newframe.shortname = newframe.shortname + " copy"
-    new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
-  #  new_comp.dictitems['Frames:fg'].appenditem(newframe) # This will just append the new frame copy at the end of the frames list.
-
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    editor.ok(undo, "add frame")
-    invalidateviews()
-
-
-#
-# Add a triangle to a given component
-#
-def addtriangle(comp,v1,v2,v3,s1,t1,s2,t2,s3,t3):
-    if (comp is None) or (v1 is None) or (v2 is None) or (v3 is None):
-        return
-    if (s1 is None) or (s2 is None) or (s3 is None):
-        return
-    if (t1 is None) or (t2 is None) or (t3 is None):
-        return
-    tris = comp.triangles
-    tris = tris + [((v1,s1,t1),(v2,s2,t2),(v3,s3,t3))]
-    new_comp = comp.copy()
-    new_comp.triangles = tris
-
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    mapeditor().ok(undo, "add triangle")
-    invalidateviews()
-
-
-#
-# Add a vertex to a given component at origin specified
-#
-def addvertex(comp, org):
-    if (comp is None) or (org is None):
-        return
-    new_comp = comp.copy()
-    frames = new_comp.findallsubitems("", ':mf')   # find all frames
-    for frame in frames:
-        vtxs = frame.vertices
-        vtxs = vtxs + [org]
-        frame.vertices = vtxs
-
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    mapeditor().ok(undo, "add vertex")
-    invalidateviews()
-
-
-#
-# Checks triangle for vertex [index]
-#
-def checkTriangle(tri, index):
-    for c in tri:
-        if ( c[0] == index): # c[0] is the 'vertexno'
-            return 1
-    return 0
 
 
 #
@@ -223,41 +128,215 @@ def fixUpVertexNos(tris, index):
          new_tris = new_tris + [x]
     return new_tris
 
-def checkinlist(tri, toberemoved):
-  for tbr in toberemoved:
-    if (tri == tbr):
-      return 1
-  return 0
+
+#
+# Add a vertex to the currently selected model component or frame(s)
+# at the position where the cursor was when the RMB was clicked.
+#
+def addvertex(editor, comp, pos):
+    new_comp = comp.copy()
+    frames = new_comp.findallsubitems("", ':mf')   # find all frames
+    for frame in frames:
+        vtxs = frame.vertices
+        vtxs = vtxs + [pos]
+        frame.vertices = vtxs
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, "add vertex")
+    invalidateviews()
 
 
 #
 # remove a vertex from a component
 #
-def removevertex(comp, index):
-    if (comp is None) or (index is None):
+def removevertex(comp, index, all3=0):
+    editor = mapeditor()
+    if editor is None:
         return
+
+    new_comp = comp.copy() # create a copy to edit (we store the old one in the undo list)
+    tris = new_comp.triangles
     #### 1) find all triangles that use vertex 'index' and delete them.
+    if all3 == 1:
+        index = editor.picked[0][0]
     toBeRemoved = findTriangles(comp, index)
-    tris = comp.triangles
     new_tris = []
     for tri in tris:
         p = checkinlist(tri, toBeRemoved)
         if (p==0):
             new_tris = new_tris + [ tri ]
-    enew_tris = fixUpVertexNos(new_tris, index)
-    new_comp = comp.copy() # create a copy to edit (we store the old one in the undo list)
-    new_comp.triangles = enew_tris
-    #### 2) loop through all frames and delete vertex.
-    frames = new_comp.findallsubitems("", ':mf')   # find all frames
-    for frame in frames: 
-        old_vtxs = frame.vertices
-        vtxs = old_vtxs[:index] + old_vtxs[index+1:]
-        frame.vertices = vtxs
+    #### 2) loop through all frames and delete vertex(s).
+    if all3 == 1:
+        frames = new_comp.findallsubitems("", ':mf')   # find all frames
+        for vertex in editor.picked:
+            index = vertex[0]
+            for frame in frames: 
+                old_vtxs = frame.vertices
+                vtxs = old_vtxs[:index]
+                frame.vertices = vtxs
+        for vertex in editor.picked:
+            index = vertex[0]
+            new_tris = fixUpVertexNos(new_tris, index)
+        new_comp.triangles = new_tris
+    else:
+        enew_tris = fixUpVertexNos(new_tris, index)
+        new_comp.triangles = enew_tris
+        frames = new_comp.findallsubitems("", ':mf')   # find all frames
+        for frame in frames: 
+            old_vtxs = frame.vertices
+            vtxs = old_vtxs[:index] + old_vtxs[index+1:]
+            frame.vertices = vtxs
+
     #### 3) re-build all views
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
-    mapeditor().ok(undo, "remove vertex")
+    if all3 == 1:
+        editor.ok(undo, "remove triangle")
+        editor.picked = []
+    else:
+        editor.ok(undo, "remove vertex")
+        editor.picked = []
     invalidateviews()
+
+
+#
+# Add a triangle to a given component
+#
+def addtriangle(editor):
+    comp = editor.Root.currentcomponent
+    if (comp is None):
+        return
+
+    v1 = editor.picked[0][0]
+    v2 = editor.picked[1][0]
+    v3 = editor.picked[2][0]
+
+    try:
+        tex = comp.currentskin
+        texWidth,texHeight = tex["Size"]
+    except:
+        from qbaseeditor import currentview
+        view = currentview
+        texWidth,texHeight = view.clientarea
+
+### Method 1 with proj (same in mdlhandles.py file)
+    s1 = int(editor.picked[0][1].tuple[0]+int(texWidth*.5))
+    t1 = int(editor.picked[0][1].tuple[1]-int(texHeight*.5))
+    s2 = int(editor.picked[1][1].tuple[0]+int(texWidth*.5))
+    t2 = int(editor.picked[1][1].tuple[1]-int(texHeight*.5))
+    s3 = int(editor.picked[2][1].tuple[0]+int(texWidth*.5))
+    t3 = int(editor.picked[2][1].tuple[1]-int(texHeight*.5))
+
+### Method 2 without proj (same in mdlhandles.py file) doesn't work right
+ #   s1 = int(editor.picked[0][1].tuple[1])+int(texWidth*.5)
+ #   t1 = int(-editor.picked[0][1].tuple[2])+int(texWidth*.5)
+ #   s2 = int(editor.picked[1][1].tuple[1])+int(texWidth*.5)
+ #   t2 = int(-editor.picked[1][1].tuple[2])+int(texWidth*.5)
+ #   s3 = int(editor.picked[2][1].tuple[1])+int(texWidth*.5)
+ #   t3 = int(-editor.picked[2][1].tuple[2])+int(texWidth*.5)
+
+### Method 3 with proj (same in mdlhandles.py file)
+ #   s1 = int(-editor.picked[0][1].tuple[0])+int(texWidth*.5)
+ #   t1 = int(editor.picked[0][1].tuple[1])+int(texWidth*.5)
+ #   s2 = int(-editor.picked[1][1].tuple[0])+int(texWidth*.5)
+ #   t2 = int(editor.picked[1][1].tuple[1])+int(texWidth*.5)
+ #   s3 = int(-editor.picked[2][1].tuple[0])+int(texWidth*.5)
+ #   t3 = int(editor.picked[2][1].tuple[1])+int(texWidth*.5)
+
+### Method 4 without proj (same in mdlhandles.py file) doesn't work right
+ #   s1 = int(editor.picked[0][1].tuple[1]*2)+int(texWidth*.5)
+ #   t1 = int(editor.picked[0][1].tuple[2]*.5)+int(texHeight*.5)
+ #   s2 = int(editor.picked[1][1].tuple[1]*2)+int(texWidth*.5)
+ #   t2 = int(-editor.picked[1][1].tuple[2]*.5)+int(texHeight)
+ #   s3 = int(editor.picked[2][1].tuple[1])+int(texWidth*.5)
+ #   t3 = int(editor.picked[2][1].tuple[2]*.5)+int(texHeight*.5)
+
+  # (for test ref only)  h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
+
+
+    if findTriangle(comp, v1, v2, v3) is not None:
+        quarkx.msgbox("Improper Selection!\n\nA triangle using these 3 vertexes already exist.\n\nSelect at least one different vertex\nto make a new triangle with.\n\nTo 'Un-pick' a vertex from the 'Pick' list\nplace your cursor over that vertex,\nRMB click and select 'Pick Vertex'.\nThen you can pick another vertex to replace it.", MT_ERROR, MB_OK)
+        return
+
+    tris = comp.triangles
+
+    tris = tris + [((v1,s1,t1),(v2,s2,t2),(v3,s3,t3))] # This is where the 'actual' texture positions s and t are needed to add to the triangles vertexes.
+
+    print "mdlutils line149 tri vertex 0 ",(v1,s1,t1)
+    print "mdlutils line150 tri vertex 1 ",(v2,s2,t2)
+    print "mdlutils line151 tri vertex 2 ",(v3,s3,t3)
+
+    new_comp = comp.copy()
+    new_comp.triangles = tris
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    mapeditor().ok(undo, "add triangle")
+    invalidateviews()
+  
+  
+#
+# Remove a triangle ,using its triangle index, from the current component
+#
+def removeTriangle(editor, comp, index):
+    if (index is None):
+        return
+    todo = quarkx.msgbox("Do you also want to\nremove the 3 vertexes?",MT_CONFIRMATION, MB_YES_NO_CANCEL)
+    if todo == MR_CANCEL: return
+    if todo == MR_YES:
+        removevertex(comp, index, 1)
+        return
+    new_comp = comp.copy()
+    old_tris = new_comp.triangles
+    tris = old_tris[:index] + old_tris[index+1:]
+    new_comp.triangles = tris
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, "remove triangle")
+    invalidateviews()
+
+
+#
+# Remove a triangle ,using its vertexes, from the current component
+#
+def removeTriangle_v3(editor):
+    comp = editor.Root.currentcomponent
+    v1 = editor.picked[0][0]
+    v2 = editor.picked[1][0]
+    v3 = editor.picked[2][0]
+    removeTriangle(editor, comp, findTriangle(comp, v1,v2,v3))
+
+
+#
+# Add a frame to a given component (ie duplicate last one)
+#
+def addframe(editor):
+    comp = editor.Root.currentcomponent
+    if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
+        quarkx.msgbox("You need to select a\nsingle frame to duplicate.", MT_ERROR, MB_OK)
+        return
+
+    newframe = editor.layout.explorer.uniquesel.copy()
+    new_comp = comp.copy(1)
+    for obj in new_comp.dictitems['Frames:fg'].subitems:
+       if obj.name == editor.layout.explorer.uniquesel.name:
+            count = new_comp.dictitems['Frames:fg'].subitems.index(obj)+1
+            break
+
+    newframe.shortname = newframe.shortname + " copy"
+    new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
+  #  new_comp.dictitems['Frames:fg'].appenditem(newframe) # This will just append the new frame copy at the end of the frames list.
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, "add frame")
+    invalidateviews()
+
+
+
+def checkinlist(tri, toberemoved):
+  for tbr in toberemoved:
+    if (tri == tbr):
+      return 1
+  return 0
 
 
 #
@@ -272,12 +351,10 @@ def checktree(root, obj):
     return 1
 
 
-
 #
 # The UserDataPanel class, overridden to be model-specific.
 #
 class MdlUserDataPanel(UserDataPanel):
-
 
     def btnclick(self, btn):
         #
@@ -325,6 +402,10 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.17  2007/04/19 03:20:06  cdunde
+#To move the selection retention code for the Skin-view vertex drags from the mldhandles.py file
+#to the mdleditor.py file so it can be used for many other functions that cause the same problem.
+#
 #Revision 1.16  2007/04/17 16:01:25  cdunde
 #To retain selection of original animation frame when duplicated.
 #

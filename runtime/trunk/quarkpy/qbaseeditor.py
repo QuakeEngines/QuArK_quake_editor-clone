@@ -740,11 +740,11 @@ class BaseEditor:
                                     Ystartpos = -handle.pos.y
 
                                 ### shows the true vertex position in relation to each tile section of the texture.
-                                s = "Skin-vertex " + "%s "%handle.tri_index + " x: %s"%ftoss(Xstartpos) + " y: %s"%ftoss(Ystartpos)
+                                s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str(handle.ver_index) + " x:%s"%ftoss(Xstartpos) + " y:%s"%ftoss(Ystartpos)
                             except:
                                 s = quarkx.getlonghint(handle.hint)
                         else:
-                            s = "Skin-vertex: " + quarkx.ftos(handle.tri_index) + "  x, y pos: " + ftoss(x) + ", " + ftoss(y)
+                            s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str(handle.ver_index) + " x:%s"%ftoss(x) + " y:%s"%ftoss(y)
                     else:
                         try:
                             s = view.info["viewname"] + " view"
@@ -1090,6 +1090,11 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.49  2007/04/19 03:02:40  cdunde
+#Added error message box to stop the dragging of handles in Model Editor if a main component is
+#selected instead of a single fame of that component, thus causing unwanted frames to be created.
+#But can't get mouse to release in the view after clicking message OK button, still needs fixing.
+#
 #Revision 1.48  2007/04/13 19:50:57  cdunde
 #To correct comment for version 1.47
 #

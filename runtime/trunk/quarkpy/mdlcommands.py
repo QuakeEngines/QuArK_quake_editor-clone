@@ -16,43 +16,19 @@ import dlgclasses
 
 def newframeclick(m):
     editor = mapeditor()
-    addframe(editor.Root.currentcomponent)
-
-
-def addvertexclick(m):
-    editor = mapeditor()
-    zerozerozero = quarkx.vect(0,0,0)
-    addvertex(editor.Root.currentcomponent, zerozerozero)
+    addframe(editor)
    
 
 def addtriclick(m):
     editor = mapeditor()
-    if editor is None:
-        return
     if len(editor.picked) == 3:
-        tex = editor.Root.currentcomponent.currentskin
-        texWidth,texHeight = tex["Size"]
-        newtriangleindex = len(editor.Root.currentcomponent.triangles)-1
-        newtri = editor.Root.currentcomponent.triangles[newtriangleindex]
-
-        s1 = newtri[0][1]-int(texWidth*.5)
-        t1 = newtri[0][2]-int(texWidth*.5)
-        s2 = newtri[1][1]-int(texWidth*.5)
-        t2 = newtri[1][2]-int(texWidth*.5)
-        s3 = newtri[2][1]-int(texWidth*.5)
-        t3 = newtri[2][2]-int(texWidth*.5)
-
-        addtriangle(editor.Root.currentcomponent,editor.picked[0],editor.picked[1],editor.picked[2],s1,t1,s2,t2,s3,t3)
-
+        addtriangle(editor)
 
 
 def remtriclick(m):
     editor = mapeditor()
-    if editor is None:
-        return
     if len(editor.picked) == 3:
-        removeTriangle_v3(editor.Root.currentcomponent,editor.picked[0],editor.picked[1],editor.picked[2])
-
+        removeTriangle_v3(editor)
 
 def checkcomponents(m):
     editor = mapeditor()
@@ -121,6 +97,9 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.11  2007/04/19 03:30:27  cdunde
+# First attempt to get newly created triangles to draw correctly on the Skin-view. Still needs work.
+#
 # Revision 1.10  2007/04/17 13:27:48  cdunde
 # Added safeguard on menu item until it can be used correctly.
 #

@@ -67,23 +67,47 @@ class VertexHandle(qhandles.GenericHandle):
         self.undomsg = "mesh vertex move"
 
     def menu(self, editor, view):
+
         def forcegrid1click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+
         def addhere1click(m, self=self, editor=editor, view=view):
-            addvertex(editor.Root.currentcomponent, self.pos)
+            addvertex(editor, editor.Root.currentcomponent, self.pos)
+
         def removevertex1click(m, self=self, editor=editor, view=view):
             removevertex(editor.Root.currentcomponent, self.index)
-            if self.index in editor.picked:
-                editor.picked.remove(self.index)
+            editor.picked = []
+
         def pick_vertex(m, self=self, editor=editor, view=view):
-            if self.index not in editor.picked:
-                if len(editor.picked) > 2:
-                    quarkx.msgbox("Improper Selection!\n\nYou can not choose more then\n3 vertexes for a triangle.\n\nSelection Canceled", MT_ERROR, MB_OK)
-                    return None, None
-                else:
-                    editor.picked = editor.picked + [ self.index ]
+            itemcount = 0
+            if editor.picked == []:
+                ### Method 1 (same in mdlutils.py file)
+                editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
+                ### Method 2 (same in mdlutils.py file)
+             #   editor.picked = editor.picked + [(self.index, self.pos)]
+                ### Method 3 (same in mdlutils.py file)
+             #   editor.picked = editor.picked + [(self.index, view.proj(self.pos + quarkx.vect(0, 0, 0)))]
+
             else:
-                editor.picked.remove(self.index)
+                for item in editor.picked:
+                    itemcount = itemcount + 1
+                    if self.index == item[0]:
+                        editor.picked.remove(item)
+                        break
+                    if itemcount == len(editor.picked):
+                        if len(editor.picked) == 3:
+                            quarkx.msgbox("Improper Selection!\n\nYou can not choose more then\n3 vertexes for a triangle.\n\nSelection Canceled", MT_ERROR, MB_OK)
+                            return None, None
+                        else:
+                            ### Method 1 (same in mdlutils.py file)
+                            editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
+                            ### Method 2 (same in mdlutils.py file) doesn't work right
+                         #   editor.picked = editor.picked + [(self.index, self.pos)]
+                            ### Method 3 (same in mdlutils.py file)
+                         #   editor.picked = editor.picked + [(self.index, view.proj(self.pos + quarkx.vect(0, 0, 0)))]
+
+
+
             invalidateviews()
             import mdleditor
             mdleditor.paintframefill(editor, view, view) ## Does not repaint the 3D views, needs fixing.
@@ -102,13 +126,18 @@ class VertexHandle(qhandles.GenericHandle):
         if len(editor.picked) == 0:
             ClearPicklist.state = qmenu.disabled
 
+        if editor.layout.explorer.sellist != [] and (editor.layout.explorer.sellist[0].type == ":mc" or editor.layout.explorer.sellist[0].type == ":fg" or editor.layout.explorer.sellist[0].type == ":mf"):
+            AddVertex.state = qmenu.normal
+        else:
+            AddVertex.state = qmenu.disabled
+
         try:
             if self.index is not None:
-                menu = [AddVertex, RemoveVertex, PickVertex, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+                menu = [AddVertex, RemoveVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
             else:
-                menu = [AddVertex, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+                menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
         except:
-            menu = [AddVertex, ClearPicklist]
+            menu = [AddVertex, qmenu.sep, ClearPicklist]
 
         return menu
 
@@ -151,8 +180,10 @@ class VertexHandle(qhandles.GenericHandle):
             cv.brushcolor = drag3Dlines
             editor = mapeditor()
             if editor is not None:
-                if self.index in editor.picked:
-                    cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                if editor.picked != []:
+                    for item in editor.picked:
+                        if self.index == item[0]:
+                            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
 
   #  For setting stuff up at the beginning of a drag
@@ -273,7 +304,7 @@ class SkinHandle(qhandles.GenericHandle):
 
       ### shows the true vertex position in relation to each tile section of the texture.
       if MapOption("HandleHints", SS_MODEL):
-          self.hint = "Skin-vertex: " + quarkx.ftos(self.tri_index)
+          self.hint = "      Skin tri \\ vertex " + quarkx.ftos(self.tri_index) + " \\ " + quarkx.ftos(self.ver_index)
 
       p = view.proj(self.pos)
       if p.visible:
@@ -874,6 +905,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.35  2007/04/19 03:20:06  cdunde
+#To move the selection retention code for the Skin-view vertex drags from the mldhandles.py file
+#to the mdleditor.py file so it can be used for many other functions that cause the same problem.
+#
 #Revision 1.34  2007/04/16 16:55:59  cdunde
 #Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
 #Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
