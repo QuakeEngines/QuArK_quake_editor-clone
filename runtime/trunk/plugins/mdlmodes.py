@@ -842,7 +842,7 @@ quarkpy.mdlcommands.shortcuts["Shift+Y"] = Lock_Y
 quarkpy.mdlcommands.shortcuts["Shift+Z"] = Lock_Z
 
 #--- register the new toolbar ---
-quarkpy.mdltools.toolbars["tb_AxisLock"] = AxisLockBar
+quarkpy.mdltoolbars.toolbars["tb_AxisLock"] = AxisLockBar
 
 Lock_X.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"])
 Lock_Y.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"])
@@ -851,6 +851,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.11  2007/04/05 08:13:39  cdunde
+# To add toolbar button links to their Infobase data.
+#
 # Revision 1.10  2007/04/04 21:34:17  cdunde
 # Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
 #

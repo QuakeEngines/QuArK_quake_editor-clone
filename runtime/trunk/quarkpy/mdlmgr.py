@@ -24,7 +24,7 @@ import qmenu
 from mdlutils import *
 import mdlbtns
 import mdlhandles
-import mdltools
+import mdltoolbars
 from qdictionnary import Strings
 from qbasemgr import BaseLayout
 from qbasemgr import MPPage
@@ -59,7 +59,7 @@ class ModelLayout(BaseLayout):
     #    self.faceflags = None
 
     def readtoolbars(self, config):
-        readtoolbars(mdltools.toolbars, self, self.editor.form, config)
+        readtoolbars(mdltoolbars.toolbars, self, self.editor.form, config)
 
     def getskin(self):
         "Use currentskin or find new selected skin."
@@ -479,6 +479,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.28  2007/04/19 03:20:06  cdunde
+#To move the selection retention code for the Skin-view vertex drags from the mldhandles.py file
+#to the mdleditor.py file so it can be used for many other functions that cause the same problem.
+#
 #Revision 1.27  2007/04/19 02:50:01  cdunde
 #To fix selection retention, Skin-view drag that got broken when a bone(s) was selected.
 #

@@ -27,7 +27,7 @@ EditMenuShortcuts = {}
 def BuildMenuBar(editor):
     import mdlmgr
     import mdlcommands
-    import mdltools
+    import mdltoolbars
     import mdloptions
 
     File1, sc1 = qmenu.DefaultFileMenu()
@@ -60,7 +60,7 @@ def BuildMenuBar(editor):
     Commands1, sc2 = mdlcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
 
-    Tools1, sc2 = mdltools.ToolsMenu(editor, mdltools.toolbars)
+    Tools1, sc2 = mdltoolbars.ToolsMenu(editor, mdltoolbars.toolbars)
     sc1.update(sc2)   # merge shortcuts
 
     Options1, sc2 = mdloptions.OptionsMenu()
@@ -148,6 +148,11 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.10  2007/04/16 16:55:59  cdunde
+#Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
+#Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
+#Added Commands menu to the open area RMB menu for faster and easer selection.
+#
 #Revision 1.9  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
