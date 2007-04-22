@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
+          - as well as its code relocation to proper file and elimination of unnecessary code.
+
 * [DanielPharos/cdunde]: Setup selection retention system in Model Editor so selected items would not
           - be dropped unexpectedly and something else selected when other functions were used.
 
