@@ -316,7 +316,7 @@ def addframe(editor):
         return
 
     newframe = editor.layout.explorer.uniquesel.copy()
-    new_comp = comp.copy(1)
+    new_comp = comp.copy()
     for obj in new_comp.dictitems['Frames:fg'].subitems:
        if obj.name == editor.layout.explorer.uniquesel.name:
             count = new_comp.dictitems['Frames:fg'].subitems.index(obj)+1
@@ -402,6 +402,10 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.18  2007/04/22 21:06:04  cdunde
+#Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
+#as well as its code relocation to proper file and elimination of unnecessary code.
+#
 #Revision 1.17  2007/04/19 03:20:06  cdunde
 #To move the selection retention code for the Skin-view vertex drags from the mldhandles.py file
 #to the mdleditor.py file so it can be used for many other functions that cause the same problem.
