@@ -3,7 +3,7 @@ author: cdunde
 
 A model is constructed from a mesh, which is a list of triangles grouped together to create its shape.
 The model can be a single mesh or it can consist of a number of meshes. In QuArK we call these meshes components.
-And therefore, each component of a model has its own group of triangles which are know as a component's
+And therefore, each component of a model has its own group of triangles which are known as a component's
 <a href="src.quarkx.html#objectsmodeleditor">Tris Specific</a> as stated in the
 <a href="src.quarkx.html#objectsmodeleditor">Quarkx Model Editor section</a> of these Infobase docs.
 Tris is an abbreviation for triangles.
@@ -16,8 +16,8 @@ Instead of a set of 3 <g>tuples</g> of 3 values each (x, y and z) that give the 
 the triangle of a component gives these values for its 3 <g>tuples</g>:<br>
 
 &nbsp;&nbsp;<i>1st item:</i> The triangle’s <g>vertexnumber</g>, also known as its <g>index number</g>, which can be used to call a specific triangle.<br>
-&nbsp;&nbsp;<i>2nd item:</i> The <g>skin_s</g> value for the position of the models skin texture on the triangle.<br>
-&nbsp;&nbsp;<i>3rd item:</i> The <g>skin_t</g> value for the 2nd position of the models skin texture on the triangle.
+&nbsp;&nbsp;<i>2nd item:</i> The <g>skin_s</g> value for the horizontal position location of the models triangle on its skin texture image.<br>
+&nbsp;&nbsp;<i>3rd item:</i> The <g>skin_t</g> value for the vertical position location of the models triangle on its skin texture image.
 
 This can be misleading if you do not understand the differences between the 3 <g>tuples</g> of a
 standard poly triangle and the triangle of a models component mesh or Tris. This is also discribed in the
@@ -37,7 +37,7 @@ Next we can see how the <g>component.triangles</g> is called to retrieve its Tri
 Now we can call for the <g>vertices</g> of each triangle, in a loop function, by its index <g>vertexnumber</g> (lines 3 and 4).<br>
 Once we get one vertices of a triangle, we then go into another loop to retrieve each of the 3 vertex point values (x, y and z)<br>
 for one of the 3 points of that triangel (lines 5 and 6).<br>
-We then do two things as one, pass the data to the second section of code, which is covered down,<br>
+We then do two things as one, pass the data to the second section of code, which is covered further down,<br>
 and <g>append</g> (add) the returned handle to our <g>h</g> handle list (line 7). Which in this case is for the Skin-view handles.
 
 <g>(line 1) &nbsp;&nbsp;&nbsp;h = [ ]</g><br>
@@ -69,7 +69,7 @@ Now for the <g>class SkinHandle</g> part of the code, located above this code, i
 
 The <g>class SkinHandle</g> section consist of two main parts, the <g>def draw</g> and the <g>def drag</g> sections, the first of the two being simpler and more direct to the point I am making to the code. So we will take
 a look at the <g>def draw</g> section in part. One basic point about classes here is that we do not pass all of the above <g>arguments</g> directly to the <g>def drag</g> section itself, but to the class that it lies within.
-From the base class we can then pass is on to the actual <g>def draw</g> section by attaching the word <g>self</g>, meaning the class itself, and because the <g>def draw</g> is within that class we can then use <g>self.triangle</g>
+From the base class we can then pass it on to the actual <g>def draw</g> section by attaching the word <g>self</g>, meaning the class itself, and because the <g>def draw</g> is within that class we can then use <g>self.triangle</g>
 and use that arguments data in the draw section. Note how we also changed the arguments variable name from just <g>tri</g> to <g>triangle</g> to make it more clear in the code as to what that item really represents (or actually contains).
 
 Now , in the <g>def draw</g> section of code, we will just look at a few lines intermittently to see how it uses this particular argument.
@@ -93,8 +93,8 @@ Once we have defined our <g>vector</g> it also becomes a <g>tuple</g>, so now we
 Because these positions are actually pixels on a flat 2D screen (your monitor), with 0,0 being at the upper left hand corner of the Skin-view, the value for Z is not needed.<br>
 So we just ignore that one and use the X and Y positions for the fixed end of a line and the X and Y positions of our vertex handle for the other end( line 12).
 
-Remember, this is done for each line that is drawn as the handle vertex and its triangle are passes to the <g>class  SkinHandle</g> from the first section of code.
-looking at the actual and complete code in the file will fill in the gaps and help answer any questions of other items shown below.
+Remember, this is done for each line that is drawn as the handle vertex and its triangle are passed to the <g>class  SkinHandle</g> from the first section of code.
+Looking at the actual and complete code in the file will fill in the gaps and help answer any questions of other items shown below.
 
 <g>(line 1) &nbsp;&nbsp;&nbsp;triangle = self.triangle</g>
 
