@@ -169,7 +169,7 @@ class ModelLayout(BaseLayout):
         fp = panel.newpanel()
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
-        self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.model.html#mesh')
+        self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.skinview.html#overview')
         self.Vertexdragmode.mode = self.MODE
         self.Vertexdragmode.tag = "SingleVertexDrag"
         self.Vertexdragmode.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
@@ -479,6 +479,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.29  2007/04/22 22:41:50  cdunde
+#Renamed the file mdltools.py to mdltoolbars.py to clarify the files use and avoid
+#confliction with future mdltools.py file to be created for actual tools for the Editor.
+#
 #Revision 1.28  2007/04/19 03:20:06  cdunde
 #To move the selection retention code for the Skin-view vertex drags from the mldhandles.py file
 #to the mdleditor.py file so it can be used for many other functions that cause the same problem.
