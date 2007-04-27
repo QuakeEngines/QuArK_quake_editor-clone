@@ -147,6 +147,49 @@ def addvertex(editor, comp, pos):
 
 
 #
+# Updates (drags) a vertex or vertexes in the 'editor.skinviewpicked' list, or similar list,
+#    of the currently selected model component or frame(s),
+#    to the same position of the 1st item in the 'editor.skinviewpicked' list.
+# The 'editor.skinviewpicked' list is a group of lists within a list.
+# Each group list must be created in the manner below then added to the 'editor.skinviewpicked' list:
+#    editor.skinviewpicked + [[self.pos, self, self.tri_index, self.ver_index]]
+#
+def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
+    new_comp = comp.copy()
+    tris = new_comp.triangles
+
+    try:
+        tex = comp.currentskin
+        texWidth,texHeight = tex["Size"]
+    except:
+        texWidth,texHeight = view.clientarea
+
+    if comp.currentskin is not None:
+        newpos = vertexlist[0][0] + quarkx.vect(texWidth*.5, texHeight*.5, 0)
+    else:
+        newpos = vertexlist[0][0] + quarkx.vect(int((texWidth*.5) +.5), int((texHeight*.5) -.5), 0)
+
+    for triindex in range(len(tris)):
+        tri = tris[triindex]
+        for item in vertexlist:
+            if triindex == item[2]:
+                for j in range(len(tri)):
+                    if j == item[3]:
+                        if j == 0:
+                            newtriangle = ((tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[1], tri[2])
+                        elif j == 1:
+                            newtriangle = (tri[0], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[2])
+                        else:
+                            newtriangle = (tri[0], tri[1], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])))
+
+                        tris[triindex] = newtriangle
+    new_comp.triangles = tris
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, undomsg)
+
+
+#
 # remove a vertex from a component
 #
 def removevertex(comp, index, all3=0):
@@ -251,8 +294,7 @@ def addtriangle(editor):
  #   s3 = int(editor.picked[2][1].tuple[1])+int(texWidth*.5)
  #   t3 = int(editor.picked[2][1].tuple[2]*.5)+int(texHeight*.5)
 
-  # (for test ref only)  h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
-
+ #  (for test ref only)  h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
 
     if findTriangle(comp, v1, v2, v3) is not None:
         quarkx.msgbox("Improper Selection!\n\nA triangle using these 3 vertexes already exist.\n\nSelect at least one different vertex\nto make a new triangle with.\n\nTo 'Un-pick' a vertex from the 'Pick' list\nplace your cursor over that vertex,\nRMB click and select 'Pick Vertex'.\nThen you can pick another vertex to replace it.", MT_ERROR, MB_OK)
@@ -262,18 +304,14 @@ def addtriangle(editor):
 
     tris = tris + [((v1,s1,t1),(v2,s2,t2),(v3,s3,t3))] # This is where the 'actual' texture positions s and t are needed to add to the triangles vertexes.
 
-    print "mdlutils line149 tri vertex 0 ",(v1,s1,t1)
-    print "mdlutils line150 tri vertex 1 ",(v2,s2,t2)
-    print "mdlutils line151 tri vertex 2 ",(v3,s3,t3)
-
     new_comp = comp.copy()
     new_comp.triangles = tris
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
-    mapeditor().ok(undo, "add triangle")
+    editor.ok(undo, "add triangle")
     invalidateviews()
-  
-  
+
+
 #
 # Remove a triangle ,using its triangle index, from the current component
 #
@@ -402,6 +440,9 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.19  2007/04/22 23:02:17  cdunde
+#Fixed slight error in Duplicate current frame, was coping incorrect frame.
+#
 #Revision 1.18  2007/04/22 21:06:04  cdunde
 #Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
 #as well as its code relocation to proper file and elimination of unnecessary code.

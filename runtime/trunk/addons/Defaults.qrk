@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.328  2007/04/16 11:35:43  danielpharos
+//Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+//
 //Revision 1.327  2007/04/12 03:50:22  cdunde
 //Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
 //and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
@@ -3102,6 +3105,9 @@ QQRKSRC1
         MiddleDragShift = "R-"
         MiddleDragCtrl  = "R+"
         Form = "MapMouse"
+      }
+      Keys:config =
+      {
       }
       Options:config =
       {

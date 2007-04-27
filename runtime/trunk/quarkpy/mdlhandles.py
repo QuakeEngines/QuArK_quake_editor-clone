@@ -34,8 +34,11 @@ mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
 
+
+
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
+
 
 #
 # The handle classes.
@@ -46,14 +49,18 @@ class CenterHandle(qhandles.CenterHandle):
     def menu(self, editor, view):
         return mdlentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
 
+
+
 class IconHandle(qhandles.IconHandle):
     "Like qhandles.IconHandle, but specifically for the Model editor."
     def menu(self, editor, view):
         return mdlentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
 
 
+
 class MdlEyeDirection(qhandles.EyeDirection):
     MODE = SS_MODEL
+
 
 
 class VertexHandle(qhandles.GenericHandle):
@@ -65,6 +72,7 @@ class VertexHandle(qhandles.GenericHandle):
         qhandles.GenericHandle.__init__(self, pos)
         self.cursor = CR_CROSSH
         self.undomsg = "mesh vertex move"
+
 
     def menu(self, editor, view):
 
@@ -105,23 +113,21 @@ class VertexHandle(qhandles.GenericHandle):
                          #   editor.picked = editor.picked + [(self.index, self.pos)]
                             ### Method 3 (same in mdlutils.py file)
                          #   editor.picked = editor.picked + [(self.index, view.proj(self.pos + quarkx.vect(0, 0, 0)))]
-
-
-
             invalidateviews()
             import mdleditor
             mdleditor.paintframefill(editor, view, view) ## Does not repaint the 3D views, needs fixing.
+
         def pick_cleared(m, editor=editor, view=view):
             editor.picked = []
             invalidateviews()
             import mdleditor
             mdleditor.paintframefill(editor, view, view) ## Does not repaint the 3D views, needs fixing.
 
+        Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AddVertex = qmenu.item("&Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         RemoveVertex = qmenu.item("&Remove Vertex", removevertex1click, "|Remove Vertex:\n\nThis will remove a vertex from the component and all of its animation frames.\n\nWARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well. If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         PickVertex = qmenu.item("&Pick Vertex", pick_vertex, "|Pick Vertex:\n\n This is used for picking 3 vertexes to create a triangle with. It also works in conjunction with the 'Clear Pick list' below.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
 
         if len(editor.picked) == 0:
             ClearPicklist.state = qmenu.disabled
@@ -259,346 +265,493 @@ class VertexHandle(qhandles.GenericHandle):
 
 
 class SkinHandle(qhandles.GenericHandle):
-  "Skin Handle for skin\texture positioning"
+    "Skin Handle for skin\texture positioning"
 
-  size = (3,3)
+    size = (3,3)
 
-  def __init__(self, pos, tri_index, ver_index, comp, texWidth, texHeight, triangle):
-      qhandles.GenericHandle.__init__(self, pos)
-      self.cursor = CR_CROSSH
-      self.tri_index = tri_index
-      self.ver_index = ver_index
-      self.comp = comp
-      self.texWidth = texWidth
-      self.texHeight = texHeight
-      self.triangle = triangle
-      self.undomsg = "Skin-view move"
+    def __init__(self, pos, tri_index, ver_index, comp, texWidth, texHeight, triangle):
+        qhandles.GenericHandle.__init__(self, pos)
+        self.cursor = CR_CROSSH
+        self.tri_index = tri_index
+        self.ver_index = ver_index
+        self.comp = comp
+        self.texWidth = texWidth
+        self.texHeight = texHeight
+        self.triangle = triangle
+        self.undomsg = "Skin-view drag"
 
 
-  def draw(self, view, cv, draghandle=None):
-      editor = mapeditor()
+    def menu(self, editor, view):
 
-      from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
-      if flagsmouse == 2056: return # Stops duplicated handle drawing at the end of a drag.
-      texWidth = self.texWidth
-      texHeight = self.texHeight
-      triangle = self.triangle
+        def pick_basevertex(m, self=self, editor=editor, view=view):
+            if editor.skinviewpicked == []:
+                editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, self.tri_index, self.ver_index]]
+            else:
+                if str(self.pos) == str(editor.skinviewpicked[0][0]):
+                    editor.skinviewpicked = []
+            view.invalidate()
 
-      if self.pos.x > (self.texWidth * .5):
-          Xstart = int((self.pos.x / self.texWidth) -.5)
-          Xstartpos = -self.texWidth + self.pos.x - (self.texWidth * Xstart)
-      elif self.pos.x < (-self.texWidth * .5):
-          Xstart = int((self.pos.x / self.texWidth) +.5)
-          Xstartpos = self.texWidth + self.pos.x + (self.texWidth * -Xstart)
-      else:
-          Xstartpos = self.pos.x
+        def change_basevertex(m, self=self, editor=editor, view=view):
+            for item in editor.skinviewpicked:
+                if str(self.pos) == str(item[0]) and str(self.pos) != str(editor.skinviewpicked[0][0]):
+                    quarkx.msgbox("Improper Selection!\n\nYou can not choose this vertex\nuntil you remove it from the Skin list.\n\nSelection Canceled", MT_ERROR, MB_OK)
+                    return None, None
+            if str(self.pos) == str(editor.skinviewpicked[0][0]):
+                skinpick_cleared(self)
+            else:
+                editor.skinviewpicked[0] = [self.pos, self, self.tri_index, self.ver_index]
+            view.invalidate()
 
-      if -self.pos.y > (self.texHeight * .5):
-          Ystart = int((-self.pos.y / self.texHeight) -.5)
-          Ystartpos = -self.texHeight + -self.pos.y - (self.texHeight * Ystart)
-      elif -self.pos.y < (-self.texHeight * .5):
-          Ystart = int((-self.pos.y / self.texHeight) +.5)
-          Ystartpos = self.texHeight + -self.pos.y + (self.texHeight * -Ystart)
-      else:
-          Ystartpos = -self.pos.y
+        def pick_skinvertex(m, self=self, editor=editor, view=view):
+            itemcount = 0
+            removedcount = 0
+            holdlist = []
+            if editor.skinviewpicked == []:
+                editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, self.tri_index, self.ver_index]]
+            else:
+                if str(self.pos) == str(editor.skinviewpicked[0][0]):
+                    editor.skinviewpicked = []
+                else:
+                    setup = quarkx.setupsubset(SS_MODEL, "Options")
+                    for item in editor.skinviewpicked:
 
-      ### shows the true vertex position in relation to each tile section of the texture.
-      if MapOption("HandleHints", SS_MODEL):
-          self.hint = "      Skin tri \\ vertex " + quarkx.ftos(self.tri_index) + " \\ " + quarkx.ftos(self.ver_index)
+                        if not setup["SingleVertexDrag"]:
+                            if str(self.pos) == str(item[0]):
+                                removedcount = removedcount + 1
+                            else:
+                                holdlist = holdlist + [item]
+                        else:
+                            if str(self.pos) == str(item[0]):
+                                editor.skinviewpicked.remove(editor.skinviewpicked[itemcount])
+                                view.invalidate()
+                                return
+                            itemcount = itemcount + 1
 
-      p = view.proj(self.pos)
-      if p.visible:
-          cv.pencolor = skinviewmesh
-          pv2 = p.tuple
-          for vertex in triangle:
-              fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
-              fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
-              cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
+                    if removedcount != 0:
+                        editor.skinviewpicked = holdlist
+                        view.invalidate()
+                        return
+                    else:
+                        if not setup["SingleVertexDrag"]:
+                            editor.skinviewpicked = holdlist
 
-          cv.reset()
+                    editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, self.tri_index, self.ver_index]]
 
-        #  try:
-        #      from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
-        #      if flagsmouse & MB_DRAGSTART or flagsmouse & MB_DRAGGING: return
-        #  except:
-        #      pass
+                    if not setup["SingleVertexDrag"]:
+                        dragtris = find2DTriangles(self.comp, self.tri_index, self.ver_index) # This is the funciton that gets the common vertexes in mdlutils.py.
+                        for index,tri in dragtris.iteritems():
+                            vtx_index = 0
+                            for vtx in tri:
+                                if str(vtx) == str(self.comp.triangles[self.tri_index][self.ver_index]):
+                                    drag_vtx_index = vtx_index
+                                    editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, index, drag_vtx_index]]
+                                vtx_index = vtx_index + 1
+            view.invalidate()
 
-          if flagsmouse == 520  or flagsmouse == 1032:  # pressed LMB to start & while dragging.
-              return
-          if flagsmouse == 528 or flagsmouse == 1040:  # pressed RMB to start & while panning.
-              return
-          if flagsmouse == 536 or flagsmouse == 544:  # pressed L & RMB's or CMB to start zooming.
-              return
-          if flagsmouse == 1056 or flagsmouse == 1048:  # zooming with L & RMB's or CMB pressed.
-              return
+        def alignskinvertexesclick(m, self=self, editor=editor, view=view):
 
-          if MldOption("Ticks") == "1":
-#py2.4              cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
-              cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-          else:
-#py2.4              cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
-              cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
-#py2.4          cv.setpixel(p.x, p.y, vertexdotcolor)
-          cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
+            if len(editor.skinviewpicked) > 1:
+                self = editor.skinviewpicked[1][1]
+                oldpos = editor.skinviewpicked[1][0]
+            else:
+                oldpos = self.pos
+
+            pickedpos = editor.skinviewpicked[0][0]
+            setup = quarkx.setupsubset(SS_MODEL, "Options")
+
+            if len(editor.skinviewpicked) > 2:
+
+                if self.comp is None:
+                    self.comp = editor.Root.currentcomponent
+
+                replacevertexes(editor, self.comp, editor.skinviewpicked, MB_CTRL, view, "multi Skin vertex alignment")
+                editor.skinviewpicked = []
+            else:
+                self.Action(editor, oldpos, pickedpos, MB_CTRL, view, "single Skin vertex alignment")
+                if len(editor.skinviewpicked) > 1:
+                    editor.skinviewpicked.remove(editor.skinviewpicked[1])
+
+        def skinpick_cleared(m, editor=editor, view=view):
+            editor.skinviewpicked = []
+            view.invalidate()
+
+        setup = quarkx.setupsubset(SS_MODEL, "Options")
+        if len(editor.skinviewpicked) > 2 or not setup["SingleVertexDrag"]:
+            AlignText = "&Align skin vertexes"
+        else:
+            AlignText = "&Align skin vertex"
+
+        PickBaseVertex = qmenu.item("&Pick Base Vertex", pick_basevertex, "|Pick Base Vertex:\n\n This is used to pick, or remove, the 'Base' (stationary) vertex to align other vertexes to on the Skin-view. It also works in conjunction with the 'Clear Skin Pick list' below it.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
+        ChangeBaseVertex = qmenu.item("&Change Base Vertex", change_basevertex, "|Change Base Vertex:\n\n This is used to select another vertex as the 'Base' (stationary) vertex to align other vertexes to on the Skin-view. It also works in conjunction with the 'Clear Skin Pick list' below it.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
+        PickSkinVertex = qmenu.item("&Pick Skin Vertex", pick_skinvertex, "|Pick Skin Vertex:\n\n This is used to pick, or remove, skin vertexes to align them with the 'Base' (stationary) vertex on the Skin-view. A base Vertex must be chosen first. It also works in conjunction with the 'Clear Skin Pick list' below it and the multi or single drag mode button on the Skin-view page.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
+        AlignSkinVertexes = qmenu.item(AlignText, alignskinvertexesclick,"|Align skin vertex(s):\n\nOnce a set of vertexes have been 'Picked' on the Skin-view all of those vertexes will be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned for possible multiple vertex movement. It also works in conjunction with the 'Clear Skin Pick list' below it and the multi or single drag mode button on the Skin-view page.|intro.modeleditor.skinview.html#funcsnmenus")
+        ClearSkinPicklist = qmenu.item("&Clear Skin Pick list", skinpick_cleared, "|Clear Skin Pick list:\n\nThis Clears the 'Base' (stationary) vertex and the 'Pick Skin Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
+
+        if len(editor.skinviewpicked) == 0:
+            ClearSkinPicklist.state = qmenu.disabled
+
+        try:
+            if self.ver_index is not None:
+                if len(editor.skinviewpicked) == 0:
+                    AlignSkinVertexes.state = qmenu.disabled
+                    PickSkinVertex.state = qmenu.disabled
+                    menu = [PickBaseVertex, PickSkinVertex, qmenu.sep, ClearSkinPicklist, qmenu.sep, AlignSkinVertexes]
+                else:
+                    if str(self.pos) == str(editor.skinviewpicked[0][0]):
+                        AlignSkinVertexes.state = qmenu.disabled
+                        PickSkinVertex.state = qmenu.disabled
+                    menu = [ChangeBaseVertex, PickSkinVertex, qmenu.sep, ClearSkinPicklist, qmenu.sep, AlignSkinVertexes]
+            else:
+                if len(editor.skinviewpicked) < 2:
+                    AlignSkinVertexes.state = qmenu.disabled
+                menu = [ClearSkinPicklist, qmenu.sep, AlignSkinVertexes]
+        except:
+            if len(editor.skinviewpicked) < 2:
+                AlignSkinVertexes.state = qmenu.disabled
+            menu = [ClearSkinPicklist, qmenu.sep, AlignSkinVertexes]
+
+        return menu
+
+
+    def draw(self, view, cv, draghandle=None):
+        editor = mapeditor()
+
+        from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
+        if flagsmouse == 2056: return # Stops duplicated handle drawing at the end of a drag.
+        texWidth = self.texWidth
+        texHeight = self.texHeight
+        triangle = self.triangle
+
+        if self.pos.x > (self.texWidth * .5):
+            Xstart = int((self.pos.x / self.texWidth) -.5)
+            Xstartpos = -self.texWidth + self.pos.x - (self.texWidth * Xstart)
+        elif self.pos.x < (-self.texWidth * .5):
+            Xstart = int((self.pos.x / self.texWidth) +.5)
+            Xstartpos = self.texWidth + self.pos.x + (self.texWidth * -Xstart)
+        else:
+            Xstartpos = self.pos.x
+
+        if -self.pos.y > (self.texHeight * .5):
+            Ystart = int((-self.pos.y / self.texHeight) -.5)
+            Ystartpos = -self.texHeight + -self.pos.y - (self.texHeight * Ystart)
+        elif -self.pos.y < (-self.texHeight * .5):
+            Ystart = int((-self.pos.y / self.texHeight) +.5)
+            Ystartpos = self.texHeight + -self.pos.y + (self.texHeight * -Ystart)
+        else:
+            Ystartpos = -self.pos.y
+
+        ### shows the true vertex position in relation to each tile section of the texture.
+        if MapOption("HandleHints", SS_MODEL):
+            self.hint = "      Skin tri \\ vertex " + quarkx.ftos(self.tri_index) + " \\ " + quarkx.ftos(self.ver_index)
+
+        p = view.proj(self.pos)
+        if p.visible:
+            cv.pencolor = skinviewmesh
+            pv2 = p.tuple
+            for vertex in triangle:
+                fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
+                fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
+                cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
+
+            cv.reset()
+
+            if flagsmouse == 520  or flagsmouse == 1032:  # pressed LMB to start & while dragging.
+                return
+            if flagsmouse == 528 or flagsmouse == 1040:  # pressed RMB to start & while panning.
+                return
+            if flagsmouse == 536 or flagsmouse == 544:  # pressed L & RMB's or CMB to start zooming.
+                return
+            if flagsmouse == 1056 or flagsmouse == 1048:  # zooming with L & RMB's or CMB pressed.
+                return
+
+            if MldOption("Ticks") == "1":
+#py2.4                cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+                cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+            else:
+#py2.4                cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
+                cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
+#py2.4            cv.setpixel(p.x, p.y, vertexdotcolor)
+            cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
+
+            if editor.skinviewpicked != []:
+                for item in editor.skinviewpicked:
+                    if self.tri_index == item[2] and self.ver_index == item[3]:
+                        item[0] = self.pos
+
+            if editor is not None:
+                if editor.skinviewpicked != []:
+                    itemcount = len(editor.skinviewpicked)
+                    for item in editor.skinviewpicked:
+                        if str(self.pos) == str(editor.skinviewpicked[0][0]):
+                            cv.brushcolor = drag3Dlines
+                            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                        else:
+                            if len(editor.skinviewpicked) > 1 and itemcount != 0:
+                                if str(self.pos) == str(editor.skinviewpicked[itemcount-1][0]):
+                                    cv.brushcolor = skinviewpicked
+                                    cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                                itemcount = itemcount - 1
 
 
  #  For setting stuff up at the beginning of a handle drag.
  #
- # def start_drag(self, view, x, y):
+ #   def start_drag(self, view, x, y):
 
 
-  def drag(self, v1, v2, flags, view):
-      texWidth = self.texWidth
-      texHeight = self.texHeight
-      editor = mapeditor()
-      p0 = view.proj(self.pos)
-      if not p0.visible: return
-      if flags&MB_CTRL:
-          v2 = qhandles.aligntogrid(v2, 0)
-      delta = v2-v1
-      if editor is not None:
-          if editor.lock_x==1:
-              delta = quarkx.vect(0, delta.y, 0)
-          if editor.lock_y==1:
-              delta = quarkx.vect(delta.x, 0, 0)
-      ### just gives how far you have moved the mouse.
-   #   self.draghint = "moving Skin-view vertex: " + ftoss(delta.x) + ", " + ftoss(delta.y)
-      ### shows how far from the center of the skin texture the vertex is, its true position.
-   #   self.draghint = "x, y pos from ctr: " + ftoss(self.pos.x+delta.x) + ", " + ftoss(-self.pos.y-delta.y)
+    def drag(self, v1, v2, flags, view):
+        texWidth = self.texWidth
+        texHeight = self.texHeight
+        editor = mapeditor()
+        p0 = view.proj(self.pos)
+        if not p0.visible: return
+        if flags&MB_CTRL:
+            v2 = qhandles.aligntogrid(v2, 0)
+        delta = v2-v1
+        if editor is not None:
+            if editor.lock_x==1:
+                delta = quarkx.vect(0, delta.y, 0)
+            if editor.lock_y==1:
+                delta = quarkx.vect(delta.x, 0, 0)
+        ### just gives how far you have moved the mouse.
+     #   self.draghint = "moving Skin-view vertex: " + ftoss(delta.x) + ", " + ftoss(delta.y)
+        ### shows how far from the center of the skin texture the vertex is, its true position.
+     #   self.draghint = "x, y pos from ctr: " + ftoss(self.pos.x+delta.x) + ", " + ftoss(-self.pos.y-delta.y)
 
-      if self.pos.x > (self.texWidth * .5):
-          Xstart = int((self.pos.x / self.texWidth) -.5)
-          Xstartpos = -self.texWidth + self.pos.x - (self.texWidth * Xstart)
-      elif self.pos.x < (-self.texWidth * .5):
-          Xstart = int((self.pos.x / self.texWidth) +.5)
-          Xstartpos = self.texWidth + self.pos.x + (self.texWidth * -Xstart)
-      else:
-          Xstartpos = self.pos.x
+        if self.pos.x > (self.texWidth * .5):
+            Xstart = int((self.pos.x / self.texWidth) -.5)
+            Xstartpos = -self.texWidth + self.pos.x - (self.texWidth * Xstart)
+        elif self.pos.x < (-self.texWidth * .5):
+            Xstart = int((self.pos.x / self.texWidth) +.5)
+            Xstartpos = self.texWidth + self.pos.x + (self.texWidth * -Xstart)
+        else:
+            Xstartpos = self.pos.x
 
-      if (self.pos.x+delta.x) > (self.texWidth * .5):
-          Xhowmany = int(((self.pos.x+delta.x) / self.texWidth) -.5)
-          Xtogo = -self.texWidth + (self.pos.x+delta.x) - (self.texWidth * Xhowmany)
+        if (self.pos.x+delta.x) > (self.texWidth * .5):
+            Xhowmany = int(((self.pos.x+delta.x) / self.texWidth) -.5)
+            Xtogo = -self.texWidth + (self.pos.x+delta.x) - (self.texWidth * Xhowmany)
 
-      elif (self.pos.x+delta.x) < (-self.texWidth * .5):
-          Xhowmany = int(((self.pos.x+delta.x) / self.texWidth) +.5)
-          Xtogo = self.texWidth + (self.pos.x+delta.x) + (self.texWidth * -Xhowmany)
-      else:
-          Xtogo = (self.pos.x+delta.x)
+        elif (self.pos.x+delta.x) < (-self.texWidth * .5):
+            Xhowmany = int(((self.pos.x+delta.x) / self.texWidth) +.5)
+            Xtogo = self.texWidth + (self.pos.x+delta.x) + (self.texWidth * -Xhowmany)
+        else:
+            Xtogo = (self.pos.x+delta.x)
 
-      if -self.pos.y > (self.texHeight * .5):
-          Ystart = int((-self.pos.y / self.texHeight) -.5)
-          Ystartpos = -self.texHeight + -self.pos.y - (self.texHeight * Ystart)
-      elif -self.pos.y < (-self.texHeight * .5):
-          Ystart = int((-self.pos.y / self.texHeight) +.5)
-          Ystartpos = self.texHeight + -self.pos.y + (self.texHeight * -Ystart)
-      else:
-          Ystartpos = -self.pos.y
+        if -self.pos.y > (self.texHeight * .5):
+            Ystart = int((-self.pos.y / self.texHeight) -.5)
+            Ystartpos = -self.texHeight + -self.pos.y - (self.texHeight * Ystart)
+        elif -self.pos.y < (-self.texHeight * .5):
+            Ystart = int((-self.pos.y / self.texHeight) +.5)
+            Ystartpos = self.texHeight + -self.pos.y + (self.texHeight * -Ystart)
+        else:
+            Ystartpos = -self.pos.y
 
-      if (-self.pos.y-delta.y) > (self.texHeight * .5):
-          Ystart = int(((-self.pos.y-delta.y) / self.texHeight) -.5)
-          Ytogo = -self.texHeight + (-self.pos.y-delta.y) - (self.texHeight * Ystart)
-      elif (-self.pos.y-delta.y) < (-self.texHeight * .5):
-          Ystart = int(((-self.pos.y-delta.y) / self.texHeight) +.5)
-          Ytogo = self.texHeight + (-self.pos.y-delta.y) + (self.texHeight * -Ystart)
-      else:
-          Ytogo = (-self.pos.y-delta.y)
+        if (-self.pos.y-delta.y) > (self.texHeight * .5):
+            Ystart = int(((-self.pos.y-delta.y) / self.texHeight) -.5)
+            Ytogo = -self.texHeight + (-self.pos.y-delta.y) - (self.texHeight * Ystart)
+        elif (-self.pos.y-delta.y) < (-self.texHeight * .5):
+            Ystart = int(((-self.pos.y-delta.y) / self.texHeight) +.5)
+            Ytogo = self.texHeight + (-self.pos.y-delta.y) + (self.texHeight * -Ystart)
+        else:
+            Ytogo = (-self.pos.y-delta.y)
 
-      ### shows the true vertex position as you move it and in relation to each tile section of the texture.
-      if self.comp.currentskin is not None:
-          self.draghint = "was " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos) + " now " + ftoss(int(Xtogo)) + ", " + ftoss(int(Ytogo))
-      else:
-          self.draghint = "was " + ftoss(int(view.proj(v1).tuple[0])) + ", " + ftoss(int(view.proj(v1).tuple[1])) + " now " + ftoss(view.proj(v2).tuple[0]) + ", " + ftoss(view.proj(v2).tuple[1])
+        ### shows the true vertex position as you move it and in relation to each tile section of the texture.
+        if self.comp.currentskin is not None:
+            self.draghint = "was " + ftoss(Xstartpos) + ", " + ftoss(Ystartpos) + " now " + ftoss(int(Xtogo)) + ", " + ftoss(int(Ytogo))
+        else:
+            self.draghint = "was " + ftoss(int(view.proj(v1).tuple[0])) + ", " + ftoss(int(view.proj(v1).tuple[1])) + " now " + ftoss(view.proj(v2).tuple[0]) + ", " + ftoss(view.proj(v2).tuple[1])
 
-      new = self.comp.copy()
-      if delta or (flags&MB_REDIMAGE):
-          tris = new.triangles ### These are all the triangle faces of the model mesh.
+        new = self.comp.copy()
+        if delta or (flags&MB_REDIMAGE):
+            tris = new.triangles ### These are all the triangle faces of the model mesh.
 
-          ### Code below draws the Skin-view green guide lines for the triangle face being dragged.
-      try:
-          editor.finishdrawing(view)
-          view.repaint()
-          pv2 = view.proj(v2)
-          cv = view.canvas()
-          cv.pencolor = skinviewdraglines
-          oldtri = tris[self.tri_index]
-          oldvert = oldtri[self.ver_index]
-          newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
-          if (self.ver_index == 0):
-              newtri = (newvert, oldtri[1], oldtri[2])
-              facev3 = quarkx.vect(oldtri[1][1]-int(texWidth*.5), oldtri[1][2]-int(texHeight*.5), 0)
-              facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
-              oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
-              oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
-              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
-              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
-          elif (self.ver_index == 1):
-              newtri = (oldtri[0], newvert, oldtri[2])
-              facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
-              facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
-              oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
-              oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
-              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
-              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
-          elif (self.ver_index == 2):
-              newtri = (oldtri[0], oldtri[1], newvert)
-              facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
-              facev4 = quarkx.vect(oldtri[1][1]-int(texWidth*.5), oldtri[1][2]-int(texHeight*.5), 0)
-              oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
-              oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
-              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
-              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
+            ### Code below draws the Skin-view green guide lines for the triangle face being dragged.
+        try:
+            editor.finishdrawing(view)
+            view.repaint()
+            pv2 = view.proj(v2)
+            cv = view.canvas()
+            cv.pencolor = skinviewdraglines
+            oldtri = tris[self.tri_index]
+            oldvert = oldtri[self.ver_index]
+            newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
+            if (self.ver_index == 0):
+                newtri = (newvert, oldtri[1], oldtri[2])
+                facev3 = quarkx.vect(oldtri[1][1]-int(texWidth*.5), oldtri[1][2]-int(texHeight*.5), 0)
+                facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
+                oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
+                oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
+                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
+                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
+            elif (self.ver_index == 1):
+                newtri = (oldtri[0], newvert, oldtri[2])
+                facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
+                facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
+                oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
+                oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
+                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
+                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
+            elif (self.ver_index == 2):
+                newtri = (oldtri[0], oldtri[1], newvert)
+                facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
+                facev4 = quarkx.vect(oldtri[1][1]-int(texWidth*.5), oldtri[1][2]-int(texHeight*.5), 0)
+                oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
+                oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
+                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
+                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
 
-          tris[self.tri_index] = newtri
-      except:
-          new.triangles = self.comp
+            tris[self.tri_index] = newtri
 
-  ####### new code for Skin-view mesh to drag using common handles option. ########
-      setup = quarkx.setupsubset(SS_MODEL, "Options")
-      if not setup["SingleVertexDrag"]:
-          component = editor.Root.currentcomponent
-          if component is not None:
-              if component.name.endswith(":mc"):
-                  handlevertex = self.tri_index
-                  dragtris = find2DTriangles(self.comp, self.tri_index, self.ver_index) # This is the funciton that gets the common vertexes in mdlutils.py.
+        except:
+            new.triangles = self.comp
 
-                  newtrilist = []
+    ####### new code for Skin-view mesh to drag using common handles option. ########
+        setup = quarkx.setupsubset(SS_MODEL, "Options")
+        if not setup["SingleVertexDrag"]:
+            component = editor.Root.currentcomponent
+            if component is not None:
+                if component.name.endswith(":mc"):
+                    handlevertex = self.tri_index
+                    dragtris = find2DTriangles(self.comp, self.tri_index, self.ver_index) # This is the funciton that gets the common vertexes in mdlutils.py.
 
-                  newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
-                  for index,tri in dragtris.iteritems():
-                      vtx_index = 0
-                      for vtx in tri:
-                          if str(vtx) == str(self.comp.triangles[self.tri_index][self.ver_index]):
-                              drag_vtx_index = vtx_index
-                              pass
-                          else:
-                              vtx_index = vtx_index + 1
-                              fixedvertex = quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0)
-                              fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
-                              cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(fixedX), int(fixedY))
-                      if drag_vtx_index == 0:
-                          newtriangle = (newvert, tri[1], tri[2])
-                      elif drag_vtx_index == 1:
-                          newtriangle = (tri[0], newvert, tri[2])
-                      else:
-                          newtriangle = (tri[0], tri[1], newvert)
-                      tris[index] = newtriangle
-      new.triangles = tris    
-      return [self.comp], [new]
+                    newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
+                    for index,tri in dragtris.iteritems():
+                        vtx_index = 0
+                        for vtx in tri:
+                            if str(vtx) == str(self.comp.triangles[self.tri_index][self.ver_index]):
+                                drag_vtx_index = vtx_index
+                            else:
+                                vtx_index = vtx_index + 1
+                                fixedvertex = quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0)
+                                fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
+                                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(fixedX), int(fixedY))
+                        if drag_vtx_index == 0:
+                            newtriangle = (newvert, tri[1], tri[2])
+                        elif drag_vtx_index == 1:
+                            newtriangle = (tri[0], newvert, tri[2])
+                        else:
+                            newtriangle = (tri[0], tri[1], newvert)
+                        tris[index] = newtriangle
+        new.triangles = tris    
+        return [self.comp], [new]
+
+
+#    def ok(self, editor, undo, old, new):
+#        undo.ok(editor.Root, self.undomsg)
 
 
 
 class BoneHandle(qhandles.GenericHandle):
-  "Bone Handle"
+    "Bone Handle"
 
-  size = (3,3)
-  def __init__(self, pos):
-      qhandles.GenericHandle.__init__(self, pos)
-      self.cursor = CR_CROSSH
-
-
-  def draw(self, view, cv, draghandle=None):
-      p = None
-      if self.pos is None:
-          pass
-      else:
-          p = view.proj(self.pos)
-      if p is None:
-          p = view.proj(0,0,0)
-      if p.visible:
-          cv.penwidth = 1
-          cv.pencolor = BLUE
-          cv.penstyle = PS_INSIDEFRAME
-          cv.brushcolor = WHITE
-          cv.brushstyle = BS_SOLID
-#py2.4          cv.ellipse(p.x-3, p.y-3, p.x+3, p.y+3)
-          cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+    size = (3,3)
+    def __init__(self, pos):
+        qhandles.GenericHandle.__init__(self, pos)
+        self.cursor = CR_CROSSH
 
 
-  def drag(self, v1, v2, flags, view):
-      self.handle = self
-      self.bone_length = v2-v1
-      p0 = view.proj(self.pos)
-      if not p0.visible: return
-      if flags&MB_CTRL:
-          v2 = qhandles.aligntogrid(v2, 0)
-      delta = v2-v1
-      editor = mapeditor()
-      if editor is not None:
-          if editor.lock_x==1:
-              delta = quarkx.vect(0, delta.y, delta.z)
-          if editor.lock_y==1:
-              delta = quarkx.vect(delta.x, 0, delta.z)
-          if editor.lock_z==1:
-              delta = quarkx.vect(delta.x, delta.y, 0)
+    def draw(self, view, cv, draghandle=None):
+        p = None
+        if self.pos is None:
+            pass
+        else:
+            p = view.proj(self.pos)
+        if p is None:
+            p = view.proj(0,0,0)
+        if p.visible:
+            cv.penwidth = 1
+            cv.pencolor = BLUE
+            cv.penstyle = PS_INSIDEFRAME
+            cv.brushcolor = WHITE
+            cv.brushstyle = BS_SOLID
+#py2.4            cv.ellipse(p.x-3, p.y-3, p.x+3, p.y+3)
+            cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
 
-      if view.info["viewname"] == "XY":
-          s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
-      elif view.info["viewname"] == "XZ":
-          s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
-      elif view.info["viewname"] == "YZ":
-          s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
-      else:
-          s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
-      self.draghint = s
 
-      new = self.bone.copy()
-      if delta or (flags&MB_REDIMAGE):
-          if (self.s_or_e == 0):
-              apoint = self.bone.start_point
-              apoint = apoint + delta
-              new.start_point = apoint
-          else:
-              apoint = self.bone.end_point
-              debug(str(self.bone.bone_length))
-              if self.bone["length_locked"]=="1":
-                  apoint = ProjectKeepingLength(
-                              self.bone.start_point,
-                              self.bone.end_point + delta,
-                              self.bone.bone_length
-                           )
-              else:
-                  for item in self.bone.dictitems["end_point"].dictitems:
-                      vX,vY,vZ = item.split(" ") # To change the "string" item into real vectors
-                      vX = float(vX)
-                      vY = float(vY)
-                      vZ = float(vZ)
-                      apoint = quarkx.vect(vX,vY,vZ)
-                  apoint = apoint + delta
+    def drag(self, v1, v2, flags, view):
+        self.handle = self
+        self.bone_length = v2-v1
+        p0 = view.proj(self.pos)
+        if not p0.visible: return
+        if flags&MB_CTRL:
+            v2 = qhandles.aligntogrid(v2, 0)
+        delta = v2-v1
+        editor = mapeditor()
+        if editor is not None:
+            if editor.lock_x==1:
+                delta = quarkx.vect(0, delta.y, delta.z)
+            if editor.lock_y==1:
+                delta = quarkx.vect(delta.x, 0, delta.z)
+            if editor.lock_z==1:
+                delta = quarkx.vect(delta.x, delta.y, 0)
 
-                  for item in self.bone.dictitems["start_point"].dictitems:
-                      vX,vY,vZ = item.split(" ") # To change the "string" item into real vectors
-                      vX = float(vX)
-                      vY = float(vY)
-                      vZ = float(vZ)
-                      start_point = quarkx.vect(vX,vY,vZ)
+        if view.info["viewname"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["viewname"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["viewname"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        self.draghint = s
 
-              if self.bone.start_point is not None:
-                  new.end_offset = apoint - self.bone.start_point
-              else:
-                  new = apoint - start_point
-                  cv = view.canvas()
-                  cv.penwidth = 8
-                  cv.line(view.proj(self.start_point), view.proj(self.end_point))
-                  cv.penwidth = 6
-                  cv.pencolor = BLUE
-                  cv.penstyle = PS_INSIDEFRAME
-                  cv.brushcolor = WHITE
-                  cv.brushstyle = BS_SOLID
-                  cv.line(view.proj(self.start_point), view.proj(self.end_point))
-                  cv.reset()
-                  cv.penwidth = 1
-                  cv.pencolor = BLUE
-                  cv.penstyle = PS_INSIDEFRAME
-                  cv.brushcolor = WHITE
-                  cv.brushstyle = BS_SOLID
+        new = self.bone.copy()
+        if delta or (flags&MB_REDIMAGE):
+            if (self.s_or_e == 0):
+                apoint = self.bone.start_point
+                apoint = apoint + delta
+                new.start_point = apoint
+            else:
+                apoint = self.bone.end_point
+                debug(str(self.bone.bone_length))
+                if self.bone["length_locked"]=="1":
+                    apoint = ProjectKeepingLength(
+                                self.bone.start_point,
+                                self.bone.end_point + delta,
+                                self.bone.bone_length
+                             )
+                else:
+                    for item in self.bone.dictitems["end_point"].dictitems:
+                        vX,vY,vZ = item.split(" ") # To change the "string" item into real vectors
+                        vX = float(vX)
+                        vY = float(vY)
+                        vZ = float(vZ)
+                        apoint = quarkx.vect(vX,vY,vZ)
+                    apoint = apoint + delta
 
-                  p = view.proj(self.start_point)
-                  cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
-                  p = view.proj(self.end_point)
-                  cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
-                  view.invalidate
+                    for item in self.bone.dictitems["start_point"].dictitems:
+                        vX,vY,vZ = item.split(" ") # To change the "string" item into real vectors
+                        vX = float(vX)
+                        vY = float(vY)
+                        vZ = float(vZ)
+                        start_point = quarkx.vect(vX,vY,vZ)
 
-      return [self.bone], [new]
+                if self.bone.start_point is not None:
+                    new.end_offset = apoint - self.bone.start_point
+                else:
+                    new = apoint - start_point
+                    cv = view.canvas()
+                    cv.penwidth = 8
+                    cv.line(view.proj(self.start_point), view.proj(self.end_point))
+                    cv.penwidth = 6
+                    cv.pencolor = BLUE
+                    cv.penstyle = PS_INSIDEFRAME
+                    cv.brushcolor = WHITE
+                    cv.brushstyle = BS_SOLID
+                    cv.line(view.proj(self.start_point), view.proj(self.end_point))
+                    cv.reset()
+                    cv.penwidth = 1
+                    cv.pencolor = BLUE
+                    cv.penstyle = PS_INSIDEFRAME
+                    cv.brushcolor = WHITE
+                    cv.brushstyle = BS_SOLID
+
+                    p = view.proj(self.start_point)
+                    cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+                    p = view.proj(self.end_point)
+                    cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
+                    view.invalidate
+
+        return [self.bone], [new]
 
 
 
@@ -741,14 +894,17 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     return 1
 
 
+
 def singleskinzoom(view):
     sc = view.screencenter
     view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
     view.screencenter = sc
-      
+
+
 #
 # Functions to build common lists of handles.
 #
+
 
 def BuildCommonHandles(editor, explorer):
     "Build a list of handles to display on all map views."
@@ -774,6 +930,7 @@ def BuildCommonHandles(editor, explorer):
         # Get the list of handles from the entity manager.
         #
         return mdlentities.CallManager("handlesopt", fs, editor)
+
 
 
 def BuildHandles(editor, explorer, view):
@@ -816,6 +973,7 @@ def BuildHandles(editor, explorer, view):
   #  return qhandles.FilterHandles(h, SS_MODEL)
     return h
 
+
 #
 # Drag Objects
 #
@@ -835,6 +993,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         if lastsel is not None:
             editor.layout.explorer.focus = lastsel
             editor.layout.explorer.selchanged()
+
 
 #
 # Mouse Clicking and Dragging on map views.
@@ -862,13 +1021,13 @@ def MouseDragging(self, view, x, y, s, handle):
     return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("GrayImage", SS_MODEL))
 
 
+
 def MouseClicked(self, view, x, y, s, handle):
     "Mouse Click on a Model view."
 
     #
     # qhandles.MouseClicked manages the click but doesn't actually select anything
     #
-
     flags = qhandles.MouseClicked(self, view, x, y, s, handle)
 
     if "1" in flags:
@@ -905,6 +1064,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.36  2007/04/22 21:06:04  cdunde
+#Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
+#as well as its code relocation to proper file and elimination of unnecessary code.
+#
 #Revision 1.35  2007/04/19 03:20:06  cdunde
 #To move the selection retention code for the Skin-view vertex drags from the mldhandles.py file
 #to the mdleditor.py file so it can be used for many other functions that cause the same problem.

@@ -19,11 +19,28 @@ from mdlutils import *
 import mdlcommands
 #import mapbtns
 
+### Setup for future use. See mapmenus.py for examples
+MdlEditMenuCmds = []
+MdlEditMenuShortcuts = {}
 
-EditMenuCmds = []
-EditMenuShortcuts = {}
+
+#
+# Model Editor MdlQuickKey shortcuts
+# The area below is for future def's for those MdlQuickKeys, see mapmenus.py for examples.
 
 
+
+# Note: the function *names* are used to look up the key from Defaults.qrk
+# See mapmenus.py file for examples of these key names def's.
+# To start using function def are made in the above section.
+# Each def becomes a keyname which is inserted in the MdlQuickKeys list below and
+# in the Defaults.qrk file in the Keys:config section of Model:config.
+MdlQuickKeys = []
+
+
+#
+# Menu bar builder
+#
 def BuildMenuBar(editor):
     import mdlmgr
     import mdlcommands
@@ -52,10 +69,10 @@ def BuildMenuBar(editor):
 
     Edit1, sc2 = qmenu.DefaultEditMenu(editor)
     sc1.update(sc2)   # merge shortcuts
-    l1 = EditMenuCmds
+    l1 = MdlEditMenuCmds
     if len(l1):
         Edit1.items = Edit1.items + [qmenu.sep] + l1
-    sc1.update(EditMenuShortcuts)   # merge shortcuts
+    sc1.update(MdlEditMenuShortcuts)   # merge shortcuts
 
     Commands1, sc2 = mdlcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
@@ -70,7 +87,7 @@ def BuildMenuBar(editor):
 
 
 
-def BackgroundMenu(editor, view=None, origin=None):
+def MdlBackgroundMenu(editor, view=None, origin=None):
     "Menu that appears when the user right-clicks on nothing."
 
     import mdlhandles
@@ -100,12 +117,16 @@ def BackgroundMenu(editor, view=None, origin=None):
     extra = extra + [qmenu.sep, paste1]
 
     if view is not None:
-        vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
-        def backbmp1click(m, view=view, form=editor.form):
-            import qbackbmp
-            qbackbmp.BackBmpDlg(form, view)
-        backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
-        extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+        if view.info["viewname"] != "skinview":
+            vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            def backbmp1click(m, view=view, form=editor.form):
+                import qbackbmp
+                qbackbmp.BackBmpDlg(form, view)
+            backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
+            extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+        else:
+            skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            extra = [qmenu.sep] + [skinviewcommands]
     return [Undo1] + extra
 
 
@@ -118,13 +139,13 @@ def set_mpp_page(btn):
     editor.layout.mpp.viewpage(btn.page)
 
 
-
 #
 # Entities pop-up menus.
 #
 
 def MultiSelMenu(sellist, editor):
     return BaseMenu(sellist, editor)
+
 
 
 def BaseMenu(sellist, editor):
@@ -148,6 +169,10 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.11  2007/04/22 22:41:50  cdunde
+#Renamed the file mdltools.py to mdltoolbars.py to clarify the files use and avoid
+#confliction with future mdltools.py file to be created for actual tools for the Editor.
+#
 #Revision 1.10  2007/04/16 16:55:59  cdunde
 #Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
 #Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.

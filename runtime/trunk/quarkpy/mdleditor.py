@@ -38,7 +38,9 @@ class ModelEditor(BaseEditor):
     MouseDragMode = mdlhandles.RectSelDragObject
 
     picked = []
+    skinviewpicked = []
  
+
     def OpenRoot(self):
         Root = self.fileobject['Root']
      #   if Root is not None: # If you have to open a model to open the Model Editor, how could it be None?
@@ -60,6 +62,7 @@ class ModelEditor(BaseEditor):
         self.lock_y = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"])
         self.lock_z = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
+
     def CloseRoot(self):
         picked = []
         ### To stop crossing of skins from model to model when a new model, even with the same name,
@@ -73,11 +76,23 @@ class ModelEditor(BaseEditor):
     def ListComponents(self):
         return self.Root.findallsubitems("", ':mc')   # find all components
 
+
     def initmenu(self, form):
         "Builds the menu bar."
         import mdlmenus
         form.menubar, form.shortcuts = mdlmenus.BuildMenuBar(self)
         quarkx.update(form)
+        self.initquickkeys(mdlmenus.MdlQuickKeys)
+
+
+    def setupchanged(self, level):
+        BaseEditor.setupchanged(self, level)
+        mdlhandles.vertexdotcolor = MapColor("Vertices", SS_MODEL)
+        mdlhandles.drag3Dlines = MapColor("Drag3DLines", SS_MODEL)
+        mdlhandles.skinviewmesh = MapColor("SkinLines", SS_MODEL)
+        mdlhandles.skinviewdraglines = MapColor("SkinDragLines", SS_MODEL)
+        mdlhandles.skinviewpicked = MapColor("SelXZ", SS_MODEL)
+
 
     def buildhandles(self):
         "Build the handles for all model views."
@@ -100,12 +115,6 @@ class ModelEditor(BaseEditor):
             delayfactor = delay*1000
             quarkx.settimer(commonhandles, self, int(delayfactor))
 
-    def setupchanged(self, level):
-        BaseEditor.setupchanged(self, level)
-        mdlhandles.vertexdotcolor = MapColor("Vertices", SS_MODEL)
-        mdlhandles.drag3Dlines = MapColor("Drag3DLines", SS_MODEL)
-        mdlhandles.skinviewmesh = MapColor("SkinLines", SS_MODEL)
-        mdlhandles.skinviewdraglines = MapColor("SkinDragLines", SS_MODEL)
 
     def setupview(self, v, drawmap=None, flags=MV_AUTOFOCUS, copycol=1):
         BaseEditor.setupview(self, v, drawmap, flags, copycol)
@@ -119,54 +128,6 @@ class ModelEditor(BaseEditor):
             for obj in self.Root.subitems:
                 if obj.type == ':mc':      # Expand the Component objects
                      nlayout.explorer.expand(obj)
-
-    def dropmap(self, view, newlist, x, y, src):
-        center = view.space(x, y, view.proj(view.screencenter).z)
-        mdlbtns.dropitemsnow(self, newlist, center=center)
-
-
-    def explorermenu(self, reserved, view=None, origin=None):
-        "The pop-up menu for the Explorer and views."
-
-        import mdlmenus
-        sellist = self.layout.explorer.sellist
-        if len(sellist)==0:
-            return mdlmenus.BackgroundMenu(self, view, origin)
-        try:
-            if view is not None and (sellist[0].type != ':mr' and sellist[0].type != ':mg' and sellist[0].type != ':bone'):
-                return mdlmenus.BackgroundMenu(self, view, origin)
-        except:
-            pass
-        if view is None:
-            extra = []
-        else:
-            extra = [qmenu.sep] + mdlmenus.TexModeMenu(self, view)
-        if len(sellist)==1:
-            return mdlentities.CallManager("menu", sellist[0], self) + extra
-        return mdlmenus.MultiSelMenu(sellist, self) + extra
-
-
-    def explorerdrop(self, ex, list, text):
-        return mdlbtns.dropitemsnow(self, list, text)
-
-    def explorerinsert(self, ex, list):
-        for obj in list:
-            mdlbtns.prepareobjecttodrop(self, obj)
-
-    def editcmdclick(self, m):
-        # dispatch the command to mdlbtns' "edit_xxx" procedure
-        getattr(mdlbtns, "edit_" + m.cmd)(self, m)
-
-    def deleteitems(self, list):
-        mdlbtns.deleteitems(self.Root, list)
-
-
-    def ForceEverythingToGrid(self, m):
-        mdlbtns.ForceToGrid(self, self.gridstep, self.layout.explorer.sellist)
-
-
-    def moveby(self, text, delta):
-        mdlbtns.moveselection(self, text, delta)
 
 
     def ok(self, undo, msg, autoremove=[]):
@@ -227,6 +188,70 @@ class ModelEditor(BaseEditor):
           HoldObject = None
           for item in self.layout.explorer.sellist:
               self.layout.explorer.expand(item.parent)
+
+
+    def dropmap(self, view, newlist, x, y, src):
+        center = view.space(x, y, view.proj(view.screencenter).z)
+        mdlbtns.dropitemsnow(self, newlist, center=center)
+
+
+    def explorermenu(self, reserved, view=None, origin=None):
+        "The pop-up menu for the Explorer and views."
+
+        import mdlmenus
+
+        try:
+            if view.info["viewname"] == "skinview":
+                return mdlmenus.MdlBackgroundMenu(self, view, origin)
+        except:
+            pass
+
+        sellist = self.layout.explorer.sellist
+        if len(sellist)==0:
+            return mdlmenus.MdlBackgroundMenu(self, view, origin)
+        try:
+            if view is not None and (sellist[0].type != ':mr' and sellist[0].type != ':mg' and sellist[0].type != ':bone'):
+                return mdlmenus.MdlBackgroundMenu(self, view, origin)
+        except:
+            pass
+        if view is None:
+            extra = []
+        else:
+            extra = [qmenu.sep] + mdlmenus.TexModeMenu(self, view)
+        if len(sellist)==1:
+            if sellist[0].type == ':mf':
+                import mdlcommands
+                mdlcommands.NewFrame.state = qmenu.normal
+                return [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+            else:
+                return mdlentities.CallManager("menu", sellist[0], self) + extra
+        return mdlmenus.MultiSelMenu(sellist, self) + extra
+
+
+    def explorerdrop(self, ex, list, text):
+        return mdlbtns.dropitemsnow(self, list, text)
+
+
+    def explorerinsert(self, ex, list):
+        for obj in list:
+            mdlbtns.prepareobjecttodrop(self, obj)
+
+
+    def editcmdclick(self, m):
+        # dispatch the command to mdlbtns' "edit_xxx" procedure
+        getattr(mdlbtns, "edit_" + m.cmd)(self, m)
+
+
+    def deleteitems(self, list):
+        mdlbtns.deleteitems(self.Root, list)
+
+
+    def ForceEverythingToGrid(self, m):
+        mdlbtns.ForceToGrid(self, self.gridstep, self.layout.explorer.sellist)
+
+
+    def moveby(self, text, delta):
+        mdlbtns.moveselection(self, text, delta)
 
 
 
@@ -525,6 +550,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.26  2007/04/19 03:20:06  cdunde
+#To move the selection retention code for the Skin-view vertex drags from the mldhandles.py file
+#to the mdleditor.py file so it can be used for many other functions that cause the same problem.
+#
 #Revision 1.25  2007/04/16 16:55:58  cdunde
 #Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
 #Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
