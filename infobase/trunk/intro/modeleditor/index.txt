@@ -1,8 +1,10 @@
 title: Model-editor in QuArK
+subdir: overview
 subdir: model
 subdir: menu
 subdir: rmbmenus
 subdir: toolpalettes
+subdir: skinview
 
 The model editor is the secondary part of QuArK. A model can represent a number of things
 depending on the game it is being crated for. It can be an object like a prop, a table or chair.

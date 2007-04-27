@@ -1,0 +1,12 @@
+title: Toolbars menu
+author: cdunde
+
+<img border=0 align=right>toolbars.png</img>
+<i>Movement Tool Palette</i>. Whether or not the Movement toolbar should be
+visible.
+
+<i>View Selection Modes</i>. Whether or not the View Selection Modes toolbar should be
+visible.
+
+<i>Display</i>. Wether or not the Display toolbar should be visible.
+

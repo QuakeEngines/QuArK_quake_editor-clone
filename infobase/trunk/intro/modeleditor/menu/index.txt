@@ -1,7 +1,13 @@
 title: Menubar
 author: cdunde
+desc: filemenu
+desc: layoutmenu
+desc: editmenu
+desc: toolboxesmenu
 desc: commandsmenu
+desc: toolbarsmenu
 desc: optionsmenu
+desc: helpmenu
 
 <img>menu.png</img>
 

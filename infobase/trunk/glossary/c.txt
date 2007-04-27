@@ -7,6 +7,7 @@ author: Decker
 <dt><a name="carving">       </a>Carving         <dd>See <a href="#brushsubtraction">Brush subtraction</a>.
 <dt><a name="classname">     </a>Classname       <dd>The name of an <a href="#entity">entity</a>.
 <dt><a name="compile">       </a>Compile         <dd>(map/level) The action that must be performed to create a file of the map which the <a href="#fps">FPS-game</a> can understand as a level. Typically this includes execution of one or more <a href="#buildtools">build tools</a>.
+<dt><a name="component">     </a>Component       <dd>(model editor item) A group of triangles, or <a href="#tris">Tris</a>, that make up <a href="intro.modeleditor.model.html#components">a model's actual shape</a>.
 <dt><a name="concave">       </a>Concave         <dd>When an 2D/3D-object is concave, you can draw a straight line through it, and it can enter the 2D/3D-object many times on its route through, and leaves it just as many times. The opposite of concave is <a href="#convex">convex</a>.<br>
                                                      <pic>convex_concave.png</pic>
 <dt><a name="console">       </a>Console         <dd>In most <a href="#idsoftware">id Software</a> licensed games, you can bring down a console, in which different commands can be typed to perform actions which will affect the game. In most <a href="#fps">FPS-games</a>, to bring down the console, press the key that is just below the ESCAPE-key on the keyboard. On US-style keyboards its the <b>~</b> (tilde) character.

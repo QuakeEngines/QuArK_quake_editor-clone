@@ -2,15 +2,15 @@ title: The Model's Mesh(s)
 author: cdunde
 
 A model is constructed from a mesh, which is a list of triangles grouped together to create its shape.
-The model can be a single mesh or it can consist of a number of meshes. In QuArK we call these meshes components.
-And therefore, each component of a model has its own group of triangles which are known as a component's
+The model can be a single mesh or it can consist of a number of meshes. In QuArK we call these meshes <g>components</g>.
+And therefore, each <g>component</g> of a model has its own group of triangles which are known as a components
 <a href="src.quarkx.html#objectsmodeleditor">Tris Specific</a> as stated in the
 <a href="src.quarkx.html#objectsmodeleditor">Quarkx Model Editor section</a> of these Infobase docs.
-Tris is an abbreviation for triangles.
+<g>Tris</g> is an abbreviation for triangles.
 
 Even though you can think of a component's Tris as a very complex poly, like those used in the QuArK Map Editor,
 and each triangle as a face of that poly, these triangles are handled differently in the Model Editor.
-However, like a poly face, each triangle has three vertexes arranged in a specific order which tells which side of that triangle face is facing outwards.
+However, like a poly face, each triangle has three <g>vertexes</g> arranged in a specific order which tells which side of that triangle face is facing outwards.
 
 Instead of a set of 3 <g>tuples</g> of 3 values each (x, y and z) that give the 3 points of a triangle,
 the triangle of a component gives these values for its 3 <g>tuples</g>:<br>
@@ -113,8 +113,8 @@ Looking at the actual and complete code in the file will fill in the gaps and he
 <g>(line 12)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))</g><br>
 
 And in the screen shot below you can see these vertex handles for the component <g>deadeye</g> Tris as they
-are displayed in both the Model Editors views and its Skin-view page. Just remember though, the handles in the
-Model Editor views, which move the components mesh for the models shape, are NOT the same handles that are shown on the Skin-view page,
+are displayed in both the Model Editors views and its <ref> intro/modeleditor/skinview </ref>. Just remember though, the handles in the
+Model Editor views, which move the components mesh for the models shape, are NOT the same handles that are shown on the <ref> intro/modeleditor/skinview </ref>,
 which move the <g>unwrapped</g> components mesh for skinning purposes. So one handle type will NOT effect the other.
 But both are created and drawn in the same way, they just wind up in different <g>handle lists</g>.
 
