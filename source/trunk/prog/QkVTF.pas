@@ -1,6 +1,6 @@
 (**************************************************************************
-QuArK -- Quake Army Knife -- 3D game editor - Vtf texture loader
-Copyright (C) Alexander Haarer
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2007/04/30 21:52:45  danielpharos
+Small cleanup of code around VTFLib.
+
 Revision 1.30  2007/04/12 09:08:33  danielpharos
 The VTF file saving buffer should always have the correct size now.
 
