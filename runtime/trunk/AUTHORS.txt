@@ -73,3 +73,40 @@ The contributing developers of QuArK
 - "DanielPharos"
         e-mail:         ***
 
+
+The developers of used libraries/programs
+-----------------------------------------
+
+- VTFLib & HLLib:
+                        Ryan "NEMESIS" Gregg
+                        http://nemesis.thewavelength.net/
+
+- DevIL:
+                        Denton Woods
+                        Nicolas Weber
+                        http://openil.sourceforge.net/
+
+- FastMM:
+                        Pierre le Riche
+                        http://fastmm.sourceforge.net/
+
+- DirectX Delphi library:
+                        Alexey Barkovoy
+                        http://www.clootie.ru/
+
+- Toolbar97:
+                        Jordan Russell
+                        http://www.jrsoftware.org/
+
+- MarsCap:
+                        Chen Ken
+                        http://www.nease.net/~marspark (BROKEN)
+
+- Python:
+                        http://www.python.org/
+
+- Delphi:
+                        http://www.borland.com/
+
+- NSIS:
+                        http://nsis.sourceforge.net/
