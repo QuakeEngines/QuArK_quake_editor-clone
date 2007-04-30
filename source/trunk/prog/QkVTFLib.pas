@@ -1,6 +1,6 @@
 (**************************************************************************
-QuArK -- Quake Army Knife -- 3D game editor - Vtf texture loader
-Copyright (C) Alexander Haarer
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/04/12 09:08:33  danielpharos
+The VTF file saving buffer should always have the correct size now.
+
 Revision 1.12  2007/04/11 16:14:52  danielpharos
 Full support for VMT files: loading everything and saving everything. Note: Saving not fully correct.
 
@@ -137,7 +140,7 @@ unit QkVTFLib;
 interface
 uses Windows, SysUtils, QkObjects;
 
-function ReloadNeeded : Boolean;
+function ReloadNeededVTFLib: Boolean;
 function LoadVTFLib : Boolean;
 procedure UnloadVTFLib(ForceUnload: boolean);
 
@@ -399,7 +402,6 @@ uses Setup, Quarkx, Logging;
 
 var
   TimesLoaded: Integer;
-
   Htier0  : HMODULE;
   Hvstdlib  : HMODULE;
   HVTFLib  : HMODULE;
@@ -420,7 +422,7 @@ begin
      LogError('API Func "'+APIFuncname+ '" not found in dlls/VTFLib.dll');
 end;
 
-function ReloadNeeded : Boolean;
+function ReloadNeededVTFLib : Boolean;
 var
   Tier0Module, VstdlibModule: string;
 begin
@@ -562,6 +564,7 @@ begin
       vlMaterialGetChildNode    := InitDllPointer(HVTFLib, 'vlMaterialGetChildNode');
 
       //DanielPharos: If one of the API func's fails, we should stop loading, and return False!
+
       if vlGetVersion<125 then
       begin
         LogError('VTFLib version mismatch!');

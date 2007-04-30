@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2007/04/12 09:08:33  danielpharos
+The VTF file saving buffer should always have the correct size now.
+
 Revision 1.29  2007/03/15 22:19:13  danielpharos
 Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files not supported yet.
 
@@ -186,13 +189,16 @@ var
   RawData, RawData2: PByte;
   HasAlpha: Boolean;
   V: array[1..2] of Single;
+  ReloadVTFLib: Boolean;
 begin
   Log(LOG_VERBOSE,'load vtf %s',[self.name]);;
   case ReadFormat of
     1: begin  { as stand-alone file }
-      if (not VTFLoaded) or ReloadNeeded then
+
+      ReloadVTFLib:=ReloadNeededVTFLib;
+      if (not VTFLoaded) or ReloadVTFLib then
       begin
-        if ReloadNeeded then
+        if ReloadVTFLib then
           VTFLoaded:=false;
         if not LoadVTFLib then
           Raise EErrorFmt(5718, [GetLastError]);
@@ -335,15 +341,17 @@ var
   I,J: Integer;
   TexFormat, ImageFormat: VTFImageFormat;
   VTFImage, OutputSize: Cardinal;
+  ReloadVTFLib: Boolean;
 begin
  Log(LOG_VERBOSE,'save vtf %s',[self.name]);
  with Info do case Format of
   1:
   begin  { as stand-alone file }
 
-    if (not VTFLoaded) or ReloadNeeded then
+    ReloadVTFLib:=ReloadNeededVTFLib;
+    if (not VTFLoaded) or ReloadVTFLib then
     begin
-      if ReloadNeeded then
+      if ReloadVTFLib then
         VTFLoaded:=false;
       if not LoadVTFLib then
         Raise EErrorFmt(5718, [GetLastError]);

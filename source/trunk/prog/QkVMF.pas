@@ -1,6 +1,6 @@
 (**************************************************************************
-QuArK -- Quake Army Knife -- 3D game editor - Vmf map loader
-Copyright (C) Alexander Haarer
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/04/12 15:04:42  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
 Revision 1.15  2007/03/25 13:52:24  danielpharos
 Moved a few dictionnary words around.
 

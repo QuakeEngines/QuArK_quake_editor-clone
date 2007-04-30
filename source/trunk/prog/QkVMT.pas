@@ -1,6 +1,6 @@
 (**************************************************************************
-QuArK -- Quake Army Knife -- 3D game editor - Vtf texture loader
-Copyright (C) Alexander Haarer
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/04/11 16:14:52  danielpharos
+Full support for VMT files: loading everything and saving everything. Note: Saving not fully correct.
+
 Revision 1.8  2007/03/29 21:01:39  danielpharos
 Changed a few comments and error messages
 
@@ -359,6 +362,7 @@ var
   ImageType: Integer;
   GroupEndWorkaround: Boolean;
   GroupEndWorkaroundName: String;
+  ReloadVTFLib: Boolean;
 
   NodeLevel: Cardinal;
   NodeType: VMTNodeType;
@@ -370,9 +374,11 @@ begin
   Log(LOG_VERBOSE,'load vmt %s',[self.name]);;
   case ReadFormat of
     1: begin  { as stand-alone file }
-      if (not VMTLoaded) or ReloadNeeded then
+
+      ReloadVTFLib:=ReloadNeededVTFLib;
+      if (not VMTLoaded) or ReloadVTFLib then
       begin
-        if ReloadNeeded then
+        if ReloadVTFLib then
           VMTLoaded:=false;
         if not LoadVTFLib then
           Raise EErrorFmt(5718, [GetLastError]);
@@ -499,15 +505,17 @@ var
   Q: QObject;
   RawBuffer: String;
   VMTMaterial, OutputSize: Cardinal;
+  ReloadVTFLib: Boolean;
 begin
  Log(LOG_VERBOSE,'save vmt %s',[self.name]);
  with Info do case Format of
   1:
   begin  { as stand-alone file }
 
-    if (not VMTLoaded) or ReloadNeeded then
+    ReloadVTFLib:=ReloadNeededVTFLib;
+    if (not VMTLoaded) or ReloadVTFLib then
     begin
-      if ReloadNeeded then
+      if ReloadVTFLib then
         VMTLoaded:=false;
       if not LoadVTFLib then
         Raise EErrorFmt(5718, [GetLastError]);
