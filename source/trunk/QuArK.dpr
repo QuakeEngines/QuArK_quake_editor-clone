@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2007/04/30 21:52:55  danielpharos
+Added basic interface to DevIL.
+
 Revision 1.39  2007/03/15 22:19:13  danielpharos
 Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files not supported yet.
 
@@ -173,6 +176,7 @@ uses
   QkCin in 'prog\QkCin.pas',
   QkD3 in 'prog\QkD3.pas',
   QkDevIL in 'prog\QkDevIL.pas',
+  QkDDS in 'prog\QkDDS.pas',
   QkExplorer in 'prog\QkExplorer.pas',
   QkFileExplorer in 'prog\QkFileExplorer.pas',
   QkFileObjects in 'prog\QkFileObjects.pas' {QForm1},

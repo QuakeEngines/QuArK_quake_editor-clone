@@ -111,7 +111,7 @@ Strings = {
     261: "bezier",
     262: "Map beziers",
     265: "unexpected surface attribute",
-    266: "Sorry, Doom 3 version 2 maps are not currently supported",
+    # 266: "Sorry, Doom 3 version 2 maps are not currently supported",
     267: "Unknown map version",
     268: "Sorry, unsupported HL2 map format",
 
@@ -275,6 +275,7 @@ Strings = {
     816: "Steam Cache File (*.gcf)|*.gcf",
     817: "Valve Map File (*.vmf)|*.vmf",
     818: "Steam FS (*.SteamFS)|*.SteamFS",
+    819: "DDS image (*.dds)|*.dds",
 
     2368: "Skins",
     2369: "Frames",
@@ -575,7 +576,7 @@ Strings = {
     5189: "Cannot write into file '%s', because it is currently opened in another window. Save your work in another file",
     5190: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
     # 5191: "Cannot read file objects of type '%s' with format %d",
-
+    5192: "DDS image",
     5193: "Syntax error in source file, line %d : %s",
     5194: "'{' expected",
     5195: "unexpected data after the final '}' has been ignored.",
@@ -922,6 +923,8 @@ Strings = {
     #5727: "reserved for hl2",
     #5728: "reserved for hl2",
     #5729: "reserved for hl2",
+    5730: "Could no load the DevIL library//Error code %d",
+    5731: "An error occurred in the DevIL library: %s",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
     5750: "Material '%s' has no image to display",
@@ -1018,6 +1021,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.93  2007/04/14 11:33:31  danielpharos
+#Fixed a few typo's.
+#
 #Revision 1.92  2007/04/12 15:28:04  danielpharos
 #Minor clean up.
 #
