@@ -923,7 +923,7 @@ Strings = {
     #5727: "reserved for hl2",
     #5728: "reserved for hl2",
     #5729: "reserved for hl2",
-    5730: "Could no load the DevIL library//Error code %d",
+    5730: "Could not load the DevIL library//Error code %d",
     5731: "An error occurred in the DevIL library: %s",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
@@ -1021,6 +1021,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.94  2007/05/02 22:34:43  danielpharos
+#Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
+#
 #Revision 1.93  2007/04/14 11:33:31  danielpharos
 #Fixed a few typo's.
 #
