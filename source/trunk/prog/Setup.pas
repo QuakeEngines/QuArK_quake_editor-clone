@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2007/04/16 11:34:55  danielpharos
+Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+
 Revision 1.50  2007/02/06 13:07:56  danielpharos
 Fixed a possible resource leak
 
@@ -339,7 +342,8 @@ procedure StoreTexExtensions; {--CONVEX--}
 
  {------------------------}
 
-function CharModeJeu: Char;
+function CharModeJeu: Char;      
+function ModeJeuEF2: Boolean;
 function ModeJeuQuake2: Boolean;
 function ModeJeuQuake4: Boolean; 
 function ModeJeuRTCWET: Boolean;
@@ -1021,6 +1025,11 @@ begin
   CharModeJeu:=mjQuake
  else
   CharModeJeu:=S[1];
+end;                
+
+function ModeJeuEF2: Boolean;
+begin
+ Result := CharModeJeu >= mjEF2;
 end;
 
 function ModeJeuQuake2: Boolean;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2007/04/16 11:34:55  danielpharos
+Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+
 Revision 1.30  2007/03/13 18:58:20  danielpharos
 Removed some redundant includes.
 
@@ -815,6 +818,8 @@ begin
       org2:=f.position;
       if (head.id='IDP3') and ModeJeuQuake4 then
           ObjectGameCode := mjQuake4;
+      if (head.id='IDP3') and ModeJeuEF2 then
+          ObjectGameCode := mjEF2;   
       if (head.id='IDP3') and ModeJeuRTCWET then
           ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (head.version=15) then
