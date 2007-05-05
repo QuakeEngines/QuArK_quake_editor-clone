@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2007/03/22 22:19:14  danielpharos
+Fixed a memory leak.
+
 Revision 1.39  2007/02/07 20:03:05  danielpharos
 Fixes for memory leaks
 
@@ -373,6 +376,9 @@ begin
  else
  if CompareText(ExtractFileExt(Name), '.tga') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
+ else    
+ if CompareText(ExtractFileExt(Name), '.dds') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
  else
  if CompareText(ExtractFileExt(Name), '.jpg') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
@@ -464,6 +470,9 @@ begin
   end
  else
  if CompareText(ExtractFileExt(Name), '.tga') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
+ else    
+ if CompareText(ExtractFileExt(Name), '.dds') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
  if CompareText(ExtractFileExt(Name), '.jpg') = 0 then

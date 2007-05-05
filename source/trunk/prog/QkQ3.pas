@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2007/03/25 13:52:24  danielpharos
+Moved a few dictionnary words around.
+
 Revision 1.31  2006/06/23 07:27:26  cdunde
 To reverse 1.30 change, Q3 did not like that one!
 Stopped shader texture from displaying in the game.
@@ -281,11 +284,15 @@ begin
      begin
        try
          Result:=NeedGameFile(S+'.tga') as QPixelSet;
-       except
+       except                                     
          try
-           Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+           Result:=NeedGameFile(S+'.dds') as QPixelSet;
          except
-           Result:=NeedGameFile(S+'.png') as QPixelSet;
+           try
+             Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+           except
+             Result:=NeedGameFile(S+'.png') as QPixelSet;
+           end
          end
        end;
      end
@@ -302,11 +309,15 @@ begin
    try
      try
        Result:=NeedGameFile(Name+'.tga') as QPixelSet;
-     except
+     except  
        try
-         Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+         Result:=NeedGameFile(Name+'.dds') as QPixelSet;
        except
-         Result:=NeedGameFile(Name+'.png') as QPixelSet;
+         try
+           Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+         except
+           Result:=NeedGameFile(Name+'.png') as QPixelSet;
+         end
        end
      end;
    except

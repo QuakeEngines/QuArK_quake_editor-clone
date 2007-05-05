@@ -1,4 +1,6 @@
 inherited FQImages: TFQImages
+  Left = 126
+  Top = 208
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
