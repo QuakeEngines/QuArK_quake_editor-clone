@@ -27,6 +27,11 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.329  2007/04/27 17:27:42  cdunde
+//To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
+//Added new functions for aligning, single and multi selections, Skin-view vertexes.
+//To establish the Model Editors MdlQuickKeys for future use.
+//
 //Revision 1.328  2007/04/16 11:35:43  danielpharos
 //Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
 //
@@ -1503,9 +1508,9 @@ QQRKSRC1
         CheckDirectory = "EF2.EXE"   // hidden setting
 
         CD = ""
-        CDDir = "Setup\Base"   // hidden setting
+        CDDir = "Setup\base"   // hidden setting
 
-        DefaultTexture = "cargo/walllow"
+        DefaultTexture = "attrexian-colony/acwall5"
         DefaultTextureTrigger = "common/trigger"
         DefaultTextureClip = "common/clip"
         DefaultTextureOrigin = "common/origin"
@@ -1538,9 +1543,9 @@ QQRKSRC1
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
-        TextureFormat = ".tga"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
+        TextureFormat = ".dds"                  // primary texture fileextension
+        TextureFileExtensions = ".dds,.tga,.jpg"     // possible texture fileextensions
+        TextureWriteFormat = ".dds"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "base"
@@ -3739,7 +3744,7 @@ QQRKSRC1
         Txt = "Star Trek: Elite Force 2 CD-ROM drive"
         Typ = "ED"      // Edit Directory
         Hint = "If you installed EF2 minimally, this is the drive of the CD-ROM."
-        CheckFile = "SETUP\BASE\PAK0.PK3"
+        CheckFile = "PAK15.PK3"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {

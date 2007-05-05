@@ -62,7 +62,7 @@ QQRKSRC1
       {
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
           0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1 1'
-        tex = "cargo/walllow"
+        tex = "attrexian-colony/acwall5"
       }
     }
     ArenaFileMaker: =
