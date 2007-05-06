@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2007/05/05 22:16:44  cdunde
+To add .md3 model support for EF2.
+
 Revision 1.31  2007/04/16 11:34:55  danielpharos
 Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
 
@@ -166,30 +169,41 @@ type
     BoneFrame_num: Longint;        //number of BoneFrames
     Tag_num: Longint;              //number of 'tags' per BoneFrame
     Mesh_num: Longint;             //number of meshes/skins
-    MaxSkin_num: Longint;          //maximum number of unique skins
-                                   //used in md3 file
-    HeaderLength: Longint;         //always equal to the length of
-                                   //this header
-    Tag_Start: Longint;            //starting position of
-                                   //tag-structures
-    Tag_End: Longint;              //ending position of
-                                   //tag-structures/starting
-                                   //position of mesh-structures
-    FileSize: Longint;             //size of file
+    Skin_num: Longint;             //number of unique skins
+    BoneFrame_offset: Longint;     //offset of the frames
+    Tag_offset: Longint;           //offset of the tags
+    Surface_offset: Longint;       //offset of the surface
+    End_offset: Longint;           //offset of the end of the file
   end;
   { Comments to TMD3Header
-     If Tag_Start is the same as Tag_End then there are no tags.
+     If Tag_offset is the same as Tag_surface then there are no tags.
 
      Tag_Num is sometimes 0, this is alright it means that there are no tags...
      i'm not sure what Tags are used for, altough there is a clear connection
      with boneframe, together they're probably used for bone based animations
      (where you rotate meshes around eachother to create animations).
 
-     After the header comes a list of tags, if available.
-     The ammount of tags is the header variable Tag_num times the header variable BoneFrame_num.
+     After the header comes a list of frame, then follows a list of tags, if available.
+     The amount of tags is the header variable Tag_num times the header variable BoneFrame_num.
      So it is highly probably that tags have something to do with boneframes and that objects
      can have 0 to n tags 'attached' to them.
      Note: We call them 'Tags' because the name in tag usually starts with "tag_".
+  }
+
+  TMD3BoneFrame = packed record
+    Mins: vec3_t;
+    Maxs: vec3_t;
+    Position: vec3_t;
+    Radius: single;
+    Name: array[1..16] of char;
+  end;
+  { TMD3BoneFrame
+     If you divide the maximum and minimum xyz values of all the vertices from each meshframe you get
+     the exact values as mins and maxs..
+     Position is the exact center of mins and maxs, most of the time anyway.
+
+     Name is very probably just the name of the program or file of which it (the boneframe?) was created,
+     sometimes it's "(from ASE)" sometimes it's the name of a .3ds file.
   }
 
   TMD3Tag = packed record
@@ -213,22 +227,6 @@ type
      After the tags come the 'boneframes', frames in the bone animation.
      The number of meshframes is usually identical to this number or simply 1.
      The header variable BoneFrame_num holds the ammount of BoneFrame..
-  }
-
-  TMD3BoneFrame = packed record
-    Mins: vec3_t;
-    Maxs: vec3_t;
-    Position: vec3_t;
-    Radius: single;
-    Name: array[1..16] of char;
-  end;
-  { TMD3BoneFrame
-     If you divide the maximum and minimum xyz values of all the vertices from each meshframe you get
-     the exact values as mins and maxs..
-     Position is the exact center of mins and maxs, most of the time anyway.
-
-     Name is very probably just the name of the program or file of which it (the boneframe?) was created,
-     sometimes it's "(from ASE)" sometimes it's the name of a .3ds file.
   }
 
   TMD3Mesh = packed record
@@ -816,12 +814,10 @@ begin
       org:=f.position;
       f.readbuffer(head, sizeof(head));
       org2:=f.position;
-      if (head.id='IDP3') and ModeJeuQuake4 then
-          ObjectGameCode := mjQuake4;
-      if (head.id='IDP3') and ModeJeuEF2 then
-          ObjectGameCode := mjEF2;   
-      if (head.id='IDP3') and ModeJeuRTCWET then
-          ObjectGameCode := mjRTCWET;
+      if (head.id='IDP3') and (CharModeJeu=mjEF2) then
+        ObjectGameCode := mjEF2;
+      if (head.id='IDP3') and (CharModeJeu=mjRTCWET) then
+        ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (head.version=15) then
       begin
         if CharModeJeu<mjQ3A then
@@ -845,18 +841,18 @@ begin
           OBone.SetQ3AData(boneframe.position, boneframe.mins, boneframe.maxs, boneframe.radius);
           Misc.SubElements.Add(OBone);
         end;
-        if not((head.Tag_num=0) or (head.Tag_Start=head.Tag_End)) then
+        if not((head.Tag_num=0) or (head.Tag_offset=head.Surface_offset)) then
         begin
-          f.seek(head.Tag_Start + org,soFromBeginning);
+          f.seek(head.Tag_offset + org,soFromBeginning);
           for j:=1 to head.boneframe_num do
           begin
+            bone:=Misc.FindSubObject('Bone Frame '+inttostr(j), QModelBone, nil);
+            if bone = nil then
+              bone:=Misc;
             for i:=1 to head.tag_num do
             begin
               fillchar(tag, sizeof(tag), #0);
               f.readbuffer(tag,sizeof(tag));
-              bone:=Misc.FindSubObject('Bone Frame '+inttostr(j), QModelBone, nil);
-              if bone = nil then
-                bone:=Misc;
               OTag:=QModelTag.Create(BeforeZero(tag.name), bone);
               OTag.SetPosition(Tag.position);
               OTag.SetRotMatrix(_3vec3t_to_matrix(Tag));
@@ -868,7 +864,7 @@ begin
       end;
       if head.Mesh_num<>0 then
       begin
-        f.seek(org + head.tag_end, sofrombeginning);
+        f.seek(org + head.Surface_offset, sofrombeginning);
         for i:=1 to head.Mesh_num do
         begin
           ReadMesh(f, Root);

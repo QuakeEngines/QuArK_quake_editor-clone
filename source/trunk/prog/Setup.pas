@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2007/05/05 22:16:45  cdunde
+To add .md3 model support for EF2.
+
 Revision 1.51  2007/04/16 11:34:55  danielpharos
 Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
 
@@ -342,11 +345,9 @@ procedure StoreTexExtensions; {--CONVEX--}
 
  {------------------------}
 
-function CharModeJeu: Char;      
-function ModeJeuEF2: Boolean;
+function CharModeJeu: Char;
 function ModeJeuQuake2: Boolean;
-function ModeJeuQuake4: Boolean; 
-function ModeJeuRTCWET: Boolean;
+function ModeJeuQuake4: Boolean;
 function CurrentQuake1Mode: Char;
 function CurrentQuake2Mode: Char;
 function GetGameName(nMode: Char) : String;
@@ -1025,11 +1026,6 @@ begin
   CharModeJeu:=mjQuake
  else
   CharModeJeu:=S[1];
-end;                
-
-function ModeJeuEF2: Boolean;
-begin
- Result := CharModeJeu >= mjEF2;
 end;
 
 function ModeJeuQuake2: Boolean;
@@ -1040,11 +1036,6 @@ end;
 function ModeJeuQuake4: Boolean;
 begin
  Result := CharModeJeu >= mjQuake4;
-end;
-
-function ModeJeuRTCWET: Boolean;
-begin
- Result := CharModeJeu >= mjRTCWET;
 end;
 
 function CurrentQuake1Mode: Char;
