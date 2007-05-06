@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2007/03/27 19:49:01  cdunde
+Added two comments to help devs find what draws a Models Mesh.
+
 Revision 1.22  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -398,9 +401,11 @@ procedure QComponent.SetCurrentSkin(nSkin: QImage);
 begin
   FCurrentSkin.AddRef(-1);
   FCurrentSkin:=nSkin;
-  if nSkin<>Nil then begin
+  if nSkin<>Nil then
+  begin
     nSkin.AddRef(+1);
     FSkinCounter:=GlobalSkinCounter;
+    // DanielPharos: GlobalSkinCounter never decreases. Eventually, we're going to overflow!
     Inc(GlobalSkinCounter);
   end;
 end;
@@ -446,7 +451,8 @@ procedure QComponent.AddTo3DScene;
 var
   Info: PModel3DInfo;
 begin
-  if CurrentFrame=Nil then begin
+  if CurrentFrame=Nil then
+  begin
     SetCurrentFrame(GetFrameFromIndex(0));
     if CurrentFrame=Nil then
       Exit;
@@ -557,12 +563,13 @@ begin
     Result:=Nil;
     Exit;
   end;
-  L:=TQList.Create; try
-  FindAllSubObjects('', QImage, Nil, L);
-  if N>=L.Count then
-    Result:=Nil
-  else
-    Result:=L[N] as QImage;
+  L:=TQList.Create;
+  try
+    FindAllSubObjects('', QImage, Nil, L);
+    if N>=L.Count then
+      Result:=Nil
+    else
+      Result:=L[N] as QImage;
   finally
     L.Clear;
     L.Free;
@@ -737,10 +744,17 @@ begin
   SubElements.Add(Result);
 end;
 
+Function QComponent.CreateFrameGroup: QFrameGroup;
+begin
+  Result:=QFrameGroup.Create('Frames', Self);
+  Result.IntSpec['type']:=MDL_GROUP_FRAME;
+  SubElements.Add(Result);
+end;
+
 Function QComponent.CreateSDO: QSkinDrawObject;
 begin
-  result:=QSkinDrawObject.Create('SDO', Self);
-  Subelements.add(result);
+  Result:=QSkinDrawObject.Create('SDO', Self);
+  SubElements.Add(result);
 end;
 
 Function QComponent.SDO: QSkinDrawObject;
@@ -758,13 +772,6 @@ begin
   end;
   if result=nil then
     Result:=CreateSDO;
-end;
-
-Function QComponent.CreateFrameGroup: QFrameGroup;
-begin
-  Result:=QFrameGroup.Create('Frames', Self);
-  Result.IntSpec['type']:=MDL_GROUP_FRAME;
-  SubElements.Add(Result);
 end;
 
 Function QComponent.BoneGroup: QBoneGroup;
