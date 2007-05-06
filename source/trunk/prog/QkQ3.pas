@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/05/05 22:17:52  cdunde
+To add .dds Texture Browser loading from .pk3 files.
+
 Revision 1.32  2007/03/25 13:52:24  danielpharos
 Moved a few dictionnary words around.
 
@@ -282,18 +285,19 @@ begin
    try
      if (ExtractFileExt(S)='') then
      begin
-       try
-         Result:=NeedGameFile(S+'.tga') as QPixelSet;
-       except                                     
+       if CharModeJeu=mjEF2 then
+         Result:=NeedGameFile(S+'.dds') as QPixelSet
+       else
+       begin
          try
-           Result:=NeedGameFile(S+'.dds') as QPixelSet;
+           Result:=NeedGameFile(S+'.tga') as QPixelSet;
          except
            try
              Result:=NeedGameFile(S+'.jpg') as QPixelSet;
            except
              Result:=NeedGameFile(S+'.png') as QPixelSet;
            end
-         end
+         end;
        end;
      end
      else
@@ -306,22 +310,23 @@ begin
  { If no image could be found yet, try the shader-name itself }
  if Result=Nil then
  begin
-   try
+   if CharModeJeu=mjEF2 then
+     Result:=NeedGameFile(Name+'.dds') as QPixelSet
+   else
+   begin
      try
-       Result:=NeedGameFile(Name+'.tga') as QPixelSet;
-     except  
        try
-         Result:=NeedGameFile(Name+'.dds') as QPixelSet;
+         Result:=NeedGameFile(Name+'.tga') as QPixelSet;
        except
          try
            Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
          except
            Result:=NeedGameFile(Name+'.png') as QPixelSet;
          end
-       end
+       end;
+     except
+       Result:=NIL
      end;
-   except
-     Result:=NIL
    end;
  end;
 
