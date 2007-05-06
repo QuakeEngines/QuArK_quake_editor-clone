@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
 Revision 1.56  2007/03/29 15:26:03  danielpharos
 Removed a little bit of redundant code.
 
@@ -2384,18 +2387,17 @@ end;
 
 procedure CheckOpenGLError(GlError: GLenum);
 begin
-  if GlError = GL_INVALID_VALUE then
-    Raise EErrorFmt(6303, ['GL_INVALID_VALUE'])
-  else if GlError = GL_INVALID_ENUM then
-    Raise EErrorFmt(6303, ['GL_INVALID_ENUM'])
-  else if GlError = GL_INVALID_OPERATION then
-    Raise EErrorFmt(6303, ['GL_INVALID_OPERATION'])
-  else if GlError = GL_STACK_OVERFLOW then
-    Raise EErrorFmt(6303, ['GL_STACK_OVERFLOW'])
-  else if GlError = GL_STACK_UNDERFLOW then
-    Raise EErrorFmt(6303, ['GL_STACK_UNDERFLOW'])
-  else if GlError = GL_OUT_OF_MEMORY then
-    Raise EErrorFmt(6303, ['GL_OUT_OF_MEMORY']);
+  case GlError of
+  GL_NO_ERROR: ;
+  GL_INVALID_VALUE: Raise EErrorFmt(6303, ['GL_INVALID_VALUE']);
+  GL_INVALID_ENUM: Raise EErrorFmt(6303, ['GL_INVALID_ENUM']);
+  GL_INVALID_OPERATION: Raise EErrorFmt(6303, ['GL_INVALID_OPERATION']);
+  GL_STACK_OVERFLOW: Raise EErrorFmt(6303, ['GL_STACK_OVERFLOW']);
+  GL_STACK_UNDERFLOW: Raise EErrorFmt(6303, ['GL_STACK_UNDERFLOW']);
+  GL_OUT_OF_MEMORY: Raise EErrorFmt(6303, ['GL_OUT_OF_MEMORY']);
+  else
+    Raise EErrorFmt(6303, ['Unknown error code']);
+  end;
 end;
 
 end.
