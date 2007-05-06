@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2007/04/16 11:34:55  danielpharos
+Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+
 Revision 1.69  2007/04/15 10:44:41  danielpharos
 Doom 3 and Quake 4 will now always export the new mapversion files. Fixed a quote mistake in the brush texture names.
 
@@ -3492,7 +3495,8 @@ begin
   if MapVersion>0 then
     BrushDefVersion:=3
   else
-    if GameCode=mjQ3A then
+    if GameCode>=mjQ3A then
+      //DanielPharos: This should select all Quake3 and higher games.
       BrushDefVersion:=1;
 
   //DanielPharos: At the moment, the only one supported!
