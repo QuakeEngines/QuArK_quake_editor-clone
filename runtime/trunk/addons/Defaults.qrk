@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.330  2007/05/05 22:33:31  cdunde
+//Added support for EF2 and its .dds texture loading to the Texture Browser.
+//
 //Revision 1.329  2007/04/27 17:27:42  cdunde
 //To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
 //Added new functions for aligning, single and multi selections, Skin-view vertexes.
@@ -1537,7 +1540,7 @@ QQRKSRC1
         MapCommentsPrefix = "//"
 
         TexturesPath = "textures/"
-        ShadersPath = "scripts/"
+        ShadersPath = "shaders/"
         Q2TexFlags = "1"
 
         BezierPatchSupport = "1" // this game supports bezier-patches
@@ -1546,7 +1549,7 @@ QQRKSRC1
         TextureFormat = ".dds"                  // primary texture fileextension
         TextureFileExtensions = ".dds,.tga,.jpg"     // possible texture fileextensions
         TextureWriteFormat = ".dds"
-        TextureShaders = "scripts/quark.shader"
+        TextureShaders = "shaders/quark.shader"
 
         BaseDir = "base"
         tmpQuArK = "base"
@@ -3532,9 +3535,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3612,9 +3615,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3710,9 +3713,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3809,9 +3812,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3896,9 +3899,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4125,9 +4128,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4227,9 +4230,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4320,9 +4323,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4411,9 +4414,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4502,9 +4505,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4590,9 +4593,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4687,9 +4690,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4774,9 +4777,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4867,9 +4870,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4967,9 +4970,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5065,9 +5068,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5171,9 +5174,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5275,9 +5278,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5363,9 +5366,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5451,9 +5454,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5548,9 +5551,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5647,9 +5650,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5761,9 +5764,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5833,9 +5836,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 16 places."
         Min = '1'
         Max = '40'
       }
@@ -5936,9 +5939,9 @@ QQRKSRC1
         Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
       DecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
