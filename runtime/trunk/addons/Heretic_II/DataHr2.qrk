@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.19  2007/03/21 23:22:29  danielpharos
+//Fixed a few typo's and removed the tabs
+//
 //Revision 1.18  2006/11/30 01:16:36  cdunde
 //To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 //
@@ -7716,31 +7719,25 @@ QQRKSRC1
         obj_moss1:e =
         {
           origin = "0 0 0"
-          ;desc = "some moss"
+          ;desc = "small moss"
           angle = "0"
         }
         obj_moss2:e =
         {
           origin = "0 0 0"
-          ;desc = "some moss"
+          ;desc = "medium moss"
           angle = "0"
         }
         obj_moss3:e =
         {
           origin = "0 0 0"
-          ;desc = "some moss"
+          ;desc = "long moss"
           angle = "0"
         }
         obj_moss4:e =
         {
           origin = "0 0 0"
-          ;desc = "some moss"
-          angle = "0"
-        }
-        obj_moss5:e =
-        {
-          origin = "0 0 0"
-          ;desc = "some moss"
+          ;desc = "vine"
           angle = "0"
         }
         obj_plant1:e =
@@ -10937,7 +10934,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X8"
           Cap = "ANIMATED"
-          Hint = "Not needed"
+          Hint = "For animated textures"
         }
         spawnflags: =
         {
@@ -11007,6 +11004,7 @@ QQRKSRC1
         Help = "Repository of info about level for monster IQ"$0D"  Push the h"
          "tml button for lots more info."
         bbox = '-24 -24 -24 24 24 24 1'
+        mdl = "models/objects/eggs/chickenegg/tris.fm"
         HTML = "help/hr2/buoy.htm#info_buoy"
         angle: =
         {
@@ -11441,7 +11439,7 @@ QQRKSRC1
       }
       item_mana_combo_half:form =
       {
-        Help = "Pickup for both defensive and offensive mana (50 points)."
+        Help = "Pickup for both defensive & offensive mana (50 points)."
         bbox = '-16 -16 -16 16 16 16 1'
         HTML = "help/hr2/g_items.htm#item_mana_combo_half"
         mdl = "models/items/mana/half/tris.fm"
@@ -11451,7 +11449,7 @@ QQRKSRC1
         Help = "Pickup for both defensive and offensive mana (25 points)."
         bbox = '-16 -16 -16 16 16 16 1'
         HTML = "help/hr2/g_items.htm#item_mana_combo_quarter"
-        mdl = "models/items/mana/half/tris.fm"
+        mdl = "models/items/mana/combo/tris.fm"
       }
       item_mana_defensive_full:form =
       {
@@ -15909,6 +15907,14 @@ QQRKSRC1
           Typ = "L 3"
           Hint = "color-selection button"
         }
+        skinnum: =
+        {
+          Txt = "&"
+          Hint = "default 0 = Mossy"
+          Typ = "C"
+          Items = "0) Mossy"$0D"1) Bare"
+          values = "0"$0D"1"
+        }
         scale: =
         {
           Txt = "&"
@@ -18814,7 +18820,7 @@ QQRKSRC1
       }
       obj_moss1:form =
       {
-        Help = "some moss"
+        Help = "small moss"
         bbox = '-4 -10 0 4 10 80 1'
         HTML = "help/hr2/g_obj.htm#obj_moss1"
         mdl = "models/objects/moss/tris.fm"
@@ -18851,7 +18857,7 @@ QQRKSRC1
       }
       obj_moss2:form =
       {
-        Help = "some moss"
+        Help = "medium moss"
         bbox = '-4 -9 0 4 9 80 1'
         HTML = "help/hr2/g_obj.htm#obj_moss2"
         mdl = "models/objects/moss/tris.fm"
@@ -18888,7 +18894,7 @@ QQRKSRC1
       }
       obj_moss3:form =
       {
-        Help = "some moss"
+        Help = "long moss"
         bbox = '-4 -15 0 4 15 80 1'
         HTML = "help/hr2/g_obj.htm#obj_moss3"
         mdl = "models/objects/moss/tris.fm"
@@ -18925,46 +18931,9 @@ QQRKSRC1
       }
       obj_moss4:form =
       {
-        Help = "some moss"
+        Help = "vine"
         bbox = '-4 -12 0 4 12 80 1'
         HTML = "help/hr2/g_obj.htm#obj_moss4"
-        mdl = "models/objects/moss/tris.fm"
-        angle: =
-        {
-          Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
-        }
-        abslight: =
-        {
-          Txt = "&"
-          Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays and selects visually."
-        }
-        abslight: =
-        {
-          Txt = "&"
-          Typ = "L 3"
-          Hint = "color-selection button"
-        }
-        scale: =
-        {
-          Txt = "&"
-          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
-        }
-        more: =
-        {
-          Typ = "B"
-          Txt = "obj_targetting"
-          Cap = "Push"
-          Form = "obj_targetting:form"
-          Hint = "specifics for targetting"
-        }
-      }
-      obj_moss5:form =
-      {
-        Help = "some moss"
-        bbox = '-4 -10 0 4 10 80 1'
-        HTML = "help/hr2/g_obj.htm#obj_moss5"
         mdl = "models/objects/moss/tris.fm"
         angle: =
         {
