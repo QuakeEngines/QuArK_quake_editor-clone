@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2007/05/02 22:34:49  danielpharos
+Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
+
 
 
 }
@@ -110,7 +113,6 @@ begin
       SetLength(RawBuffer, F.Size);
       F.Seek(0, 0);
       F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
-
 
       ilGenImages(1, @DevILImage);
       CheckDevILError(ilGetError);
@@ -217,17 +219,24 @@ begin
 end;
 
 procedure QDDS.SaveFile(Info: TInfoEnreg1);
-{type
-  PRGBA = ^TRGBA;
-  TRGBA = array[0..3] of char;
-  PRGB = ^TRGB;
-  TRGB = array[0..2] of char;
+//type
+//  PRGBA = ^TRGBA;
+//  TRGBA = array[0..3] of char;
+//  PRGB = ^TRGB;
+//  TRGB = array[0..2] of char;
 var
   PSD: TPixelSetDescription;
-  TexSize : longword;
-  S, RawBuffer: String;
+//  TexSize : longword;
+  RawBuffer: String;
   RawData, RawData2: PByte;
-  SourceImg, SourceAlpha, Dest, pSourceImg, pSourceAlpha, pDest: PChar;}
+  SourceImg, SourceAlpha, pSourceImg, pSourceAlpha: PChar;
+
+  DevILImage: Cardinal;
+  ImageBpp: Byte;
+  ImageFormat: DevILFormat;
+  Width, Height: Integer;
+  I, J: Integer;
+  OutputSize: Cardinal;
 begin
  Log(LOG_VERBOSE,'save dds %s',[self.name]);
  with Info do case Format of
@@ -241,13 +250,97 @@ begin
       DevILLoaded:=true;
     end;
 
-    //@
+    ilGenImages(1, @DevILImage);
+    CheckDevILError(ilGetError);
+    ilBindImage(DevILImage);
+    CheckDevILError(ilGetError);
 
-//    F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
+    PSD:=Description;
+    Width:=PSD.size.x;
+    Height:=PSD.size.y;
+    if PSD.AlphaBits=psa8bpp then
+    begin
+      ImageBpp:=4;
+      ImageFormat:=IL_RGBA;
+      GetMem(RawData, Width*Height*4);
+      RawData2:=RawData;
 
-//    FreeMem(RawData2);
-//    FreeMem(RawData);
-//    vlDeleteImage(VTFImage);
+      SourceImg:=PChar(PSD.Data) + Width * Height * 3;
+      SourceAlpha:=PChar(PSD.AlphaData) + Width * Height;
+      for J:=0 to Height-1 do
+      begin
+        Dec(SourceImg, 3 * Width);
+        Dec(SourceAlpha, Width);
+        pSourceImg:=SourceImg;
+        pSourceAlpha:=SourceAlpha;
+        for I:=0 to Width-1 do
+        begin
+          PChar(RawData2)^:=pSourceImg^;
+          Inc(pSourceImg);
+          Inc(RawData2);
+          PChar(RawData2)^:=pSourceImg^;
+          Inc(pSourceImg);
+          Inc(RawData2);
+          PChar(RawData2)^:=pSourceImg^;
+          Inc(pSourceImg);
+          Inc(RawData2);
+          PChar(RawData2)^:=pSourceAlpha^;
+          Inc(pSourceAlpha);
+          Inc(RawData2);
+        end;
+      end;
+    end
+    else
+    begin
+      ImageBpp:=3;
+      ImageFormat:=IL_RGB;
+      GetMem(RawData, Width*Height*3);
+      RawData2:=RawData;
+
+      SourceImg:=PChar(PSD.Data) + Width * Height * 3;
+      for J:=0 to Height-1 do
+      begin
+        Dec(SourceImg, 3 * Width);
+        pSourceImg:=SourceImg;
+        for I:=0 to Width-1 do
+        begin
+          PChar(RawData2)^:=pSourceImg^;
+          Inc(pSourceImg);
+          Inc(RawData2);
+          PChar(RawData2)^:=pSourceImg^;
+          Inc(pSourceImg);
+          Inc(RawData2);
+          PChar(RawData2)^:=pSourceImg^;
+          Inc(pSourceImg);
+          Inc(RawData2);
+        end;
+      end;
+    end;
+
+    if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, RawData)=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. Call to ilTexImage failed.');
+    end;
+
+    FreeMem(RawData);
+
+    //DanielPharos: How do we retrieve the correct value of the lump?
+    OutputSize:=Width*Height*10;
+    SetLength(RawBuffer,OutputSize);
+
+    OutputSize:=ilSaveL(IL_DDS, Pointer(RawBuffer), OutputSize);
+    CheckDevILError(ilGetError);
+    if OutputSize=0 then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. Call to ilSaveL failed.');
+    end;
+
+    F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
+
+    ilDeleteImages(1, @DevILImage);
+    CheckDevILError(ilGetError);
   end
  else inherited;
  end;
@@ -259,7 +352,7 @@ procedure CheckDevILError(DevILError: DevILError);
 begin
   case DevILError of
   IL_NO_ERROR: ;
-  IL_INVALID_ENUM: Raise EErrorFmt(5731, ['IL_INVALID_VALUE']);
+  IL_INVALID_ENUM: Raise EErrorFmt(5731, ['IL_INVALID_ENUM']);
   IL_OUT_OF_MEMORY: Raise EErrorFmt(5731, ['IL_OUT_OF_MEMORY']);
   IL_FORMAT_NOT_SUPPORTED: Raise EErrorFmt(5731, ['IL_FORMAT_NOT_SUPPORTED']);
   IL_INTERNAL_ERROR: Raise EErrorFmt(5731, ['IL_INTERNAL_ERROR']);

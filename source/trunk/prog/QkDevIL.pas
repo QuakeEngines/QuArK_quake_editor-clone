@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2007/05/02 22:34:50  danielpharos
+Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
+
 Revision 1.1  2007/04/30 21:52:55  danielpharos
 Added basic interface to DevIL.
 
@@ -113,6 +116,28 @@ const
   IL_ACTIVE_LAYER= $0DF6;
   IL_CUR_IMAGE= $0DF7;
 
+// Mode types (file specific):
+  IL_TGA_CREATE_STAMP        =$0710;
+  IL_JPG_QUALITY             =$0711;
+  IL_PNG_INTERLACE           =$0712;
+  IL_TGA_RLE                 =$0713;
+  IL_BMP_RLE                 =$0714;
+  IL_SGI_RLE                 =$0715;
+  IL_TGA_ID_STRING           =$0717;
+  IL_TGA_AUTHNAME_STRING     =$0718;
+  IL_TGA_AUTHCOMMENT_STRING  =$0719;
+  IL_PNG_AUTHNAME_STRING     =$071A;
+  IL_PNG_TITLE_STRING        =$071B;
+  IL_PNG_DESCRIPTION_STRING  =$071C;
+  IL_TIF_DESCRIPTION_STRING  =$071D;
+  IL_TIF_HOSTCOMPUTER_STRING =$071E;
+  IL_TIF_DOCUMENTNAME_STRING =$071F;
+  IL_TIF_AUTHNAME_STRING     =$0720;
+  IL_JPG_SAVE_FORMAT         =$0721;
+  IL_CHEAD_HEADER_STRING     =$0722;
+  IL_PCD_PICNUM              =$0723;
+  IL_PNG_ALPHA_INDEX         =$0724;
+
 // Error types
   IL_NO_ERROR=             $0000;
   IL_INVALID_ENUM=         $0501;
@@ -174,8 +199,9 @@ var
   ilGetError: function : DevILError; stdcall;
   ilGetBoolean: function (Mode : DevILMode) : Boolean; stdcall;
   //ilGetBooleanv: procedure (Mode : DevILMode; Param : PBoolean); stdcall;
-  ilGetInteger: function (Mode : DevILMode) : SmallInt; stdcall;
-  //ilGetIntegerv: procedure (Mode : DevILMode; Param : PSmallInt); stdcall;
+  ilGetInteger: function (Mode : DevILMode) : Integer; stdcall;
+  //ilGetIntegerv: procedure (Mode : DevILMode; Param : PInteger); stdcall;
+  ilSetInteger: procedure (Mode : DevILMode; Param : Integer); stdcall;
 
   //DanielPharos: I'm guessing this is a mistake in DevIL. The return should be a Cardinal!
   //ilGenImage: function : Integer; stdcall;
@@ -187,13 +213,16 @@ var
   { DanielPharos: The first parameter should be named Type, but since this is
   a statement in Delphi, we can't use that name }
   ilLoadL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Boolean; stdcall;
-  ilSaveL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Boolean; stdcall;
+  ilSaveL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Integer; stdcall;
   //ilConvertImage: function (DestFormat : DevILFormat; DestType : DevILFormatType) : Boolean; stdcall;
   //ilGetData: function : PByte; stdcall;
   //ilSetData: function (Data : PByte) : Boolean; stdcall;
   ilCopyPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
 
-  
+  //ilSetPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
+  ilTexImage: function (Width : Cardinal; Height : Cardinal; Depth : Cardinal; Bpp : Byte; Format : DevILFormat; xType : DevILType; Data : PByte) : Boolean; stdcall;
+
+
 implementation
 
 uses Setup, Quarkx, Logging;
@@ -237,6 +266,7 @@ begin
       //ilGetBooleanv     := InitDllPointer(HDevIL, 'ilGetBooleanv');
       ilGetInteger      := InitDllPointer(HDevIL, 'ilGetInteger');
       //ilGetIntegerv     := InitDllPointer(HDevIL, 'ilGetIntegerv');
+      ilSetInteger      := InitDllPointer(HDevIL, 'ilSetInteger');
       //ilGenImage        := InitDllPointer(HDevIL, 'ilGenImage');
       ilGenImages       := InitDllPointer(HDevIL, 'ilGenImages');
       ilBindImage       := InitDllPointer(HDevIL, 'ilBindImage');
@@ -248,6 +278,8 @@ begin
       //ilGetData         := InitDllPointer(HDevIL, 'ilGetData');
       //ilSetData         := InitDllPointer(HDevIL, 'ilSetData');
       ilCopyPixels      := InitDllPointer(HDevIL, 'ilCopyPixels');
+      //ilSetPixels       := InitDllPointer(HDevIL, 'ilSetPixels');
+      ilTexImage        := InitDllPointer(HDevIL, 'ilTexImage');
       //DanielPharos: If one of the API func's fails, we should stop loading, and return False!
 
       if ilGetInteger(IL_VERSION_NUM) < 168 then
@@ -289,6 +321,7 @@ begin
       //ilGetBooleanv         := nil;
       ilGetInteger          := nil;
       //ilGetIntegerv         := nil;
+      ilSetInteger          := nil;
       //ilGenImage            := nil;
       ilGenImages           := nil;
       ilBindImage           := nil;
@@ -300,6 +333,8 @@ begin
       //ilGetData             := nil;
       //ilSetData             := nil;
       ilCopyPixels          := nil;
+      //ilSetPixels           := nil;
+      ilTexImage            := nil;
     end;
 
     TimesLoaded := 0;
