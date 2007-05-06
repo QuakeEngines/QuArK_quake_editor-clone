@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2007/05/05 22:17:52  cdunde
+To add .dds Texture Browser loading from .pk3 files.
+
 Revision 1.40  2007/03/22 22:19:14  danielpharos
 Fixed a memory leak.
 
@@ -241,7 +244,7 @@ function GameShaderList : String;
 begin
   Result:=SetupGameSet.Specifics.Values['ShaderList'];
   if Result='' then
-    Result:='scripts/shaderlist.txt'
+    Result:=GameShadersPath+'shaderlist.txt';
 end;
 
 function Link1(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String) : QObject; overload
@@ -376,14 +379,14 @@ begin
  else
  if CompareText(ExtractFileExt(Name), '.tga') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
- else    
- if CompareText(ExtractFileExt(Name), '.dds') = 0 then
-  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
  else
  if CompareText(ExtractFileExt(Name), '.jpg') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
  else
  if CompareText(ExtractFileExt(Name), '.png') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
+ else
+ if CompareText(ExtractFileExt(Name), '.dds') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
  else
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then
@@ -471,14 +474,14 @@ begin
  else
  if CompareText(ExtractFileExt(Name), '.tga') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
- else    
- if CompareText(ExtractFileExt(Name), '.dds') = 0 then
-  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
  if CompareText(ExtractFileExt(Name), '.jpg') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
  if CompareText(ExtractFileExt(Name), '.png') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
+ else
+ if CompareText(ExtractFileExt(Name), '.dds') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then
