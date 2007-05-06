@@ -4,6 +4,13 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.12  2007/03/20 18:29:37  cdunde
+//Added trigger_changelevel and trigger_clickitem specifics.
+//Fixed an error and added sound specifics and file selectors.
+//Added specific for func_emitter.
+//Also added specifics for light and all script specifics.
+//All above items by OmnificienT.
+//
 //Revision 1.11  2007/03/13 05:08:50  cdunde
 //By OmnificienT - Added all specifics for worldspawn, dropdown menu for func_crate, specifics for
 //func_exploder, func_rain, func_remove and also added target and targetname for func_emitter.
@@ -2018,6 +2025,52 @@ QQRKSRC1
         typ = "X128"
         cap = "DAMAGE"
       }
+      health: =
+      {
+      Txt = "&"
+      Hint = "If this is set, the trigger must be killed to activate each time."
+      }
+      delay: =
+      {
+      Txt = "&"
+      Hint = "The trigger waits some time after activation, before firing."
+      }
+      setthread: =
+      {
+      Txt = "&"
+      Hint = "Name of the thread to trigger."
+      }
+      angle: =
+      {
+      Txt = "&"
+      Hint = "If this is set, the trigger will only fire when someone faces"$0D
+             "the angle."
+      }
+      cone: =
+      {
+      Txt = "&"
+      Hint = "The cone in which a directed trigger can be triggered (default is 60 degrees)."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Seconds between dus triggerings (0.2 is default)."
+      }
+      cnt: =
+      {
+      Txt = "&"
+      Hint = "How many times it can be triggered (default is infinite)."
+      }
+      triggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger on."
+      }
+      nottriggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger off."
+      }
     }
     trigger_vehicle:form =
     {
@@ -2061,6 +2114,47 @@ QQRKSRC1
       {
         typ = "X128"
         cap = "DAMAGE"
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "If this is set, the trigger must be killed to activate each time."
+      }
+      delay: =
+      {
+      Txt = "&"
+      Hint = "The trigger waits some time after activation, before firing."
+      }
+      setthread: =
+      {
+      Txt = "&"
+      Hint = "Name of the thread to trigger."
+      }
+      angle: =
+      {
+      Txt = "&"
+      Hint = "If this is set, the trigger will only fire when someone faces"$0D
+             "the angle."
+      }
+      cone: =
+      {
+      Txt = "&"
+      Hint = "The cone in which a directed trigger can be triggered (default is 60 degrees)."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Seconds between dus triggerings (0.2 is default)."
+      }
+      triggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger on."
+      }
+      nottriggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger off."
       }
     }
     trigger_save:form =
@@ -2309,18 +2403,26 @@ QQRKSRC1
       Typ="C"
         items = 
         "Auto."$0D
-        "Weapon."$0D
-        "Voice."$0D
+        "Body"$0D
         "Item."$0D
-        "Body."$0D
-        "Don't use PHS."
+        "Weaponidle."$0D
+        "Voice."$0D
+        "Local."$0D
+        "Weapon."$0D
+        "Dialog_Secondary."$0D
+        "Dialog."$0D
+        "Menu."
       values = 
         "0"$0D
         "1"$0D
         "2"$0D
         "3"$0D
         "4"$0D
-        "8"
+        "5"$0D
+        "6"$0D
+        "7"$0D
+        "8"$0D
+        "9"
       }
       volume: =
       {
@@ -2412,18 +2514,26 @@ QQRKSRC1
       Typ="C"
         items = 
         "Auto."$0D
-        "Weapon."$0D
-        "Voice."$0D
+        "Body"$0D
         "Item."$0D
-        "Body."$0D
-        "Don't use PHS."
+        "Weaponidle."$0D
+        "Voice."$0D
+        "Local."$0D
+        "Weapon."$0D
+        "Dialog_Secondary."$0D
+        "Dialog."$0D
+        "Menu."
       values = 
         "0"$0D
         "1"$0D
         "2"$0D
         "3"$0D
         "4"$0D
-        "8"
+        "5"$0D
+        "6"$0D
+        "7"$0D
+        "8"$0D
+        "9"
       }
     }
     trigger_changelevel:form =
@@ -2551,6 +2661,39 @@ QQRKSRC1
       {
         typ = "X16"
         cap = "PROJECTILES"
+      }
+      damage: =
+      {
+      Txt = "&"
+      Hint = "Amount of damage to cause (default is 10)."
+      }
+      damagetype: =
+      {
+      Txt = "&"
+      Hint = "What type of damage a player should reveive (default is CRUSH)."
+      Typ = "C"  
+        items =
+          "water"$0D
+          "lava"$0D
+          "spikes"$0D
+          "bottomless pit"$0D
+          "grass"
+        values =
+          "0"$0D
+          "1"$0D
+          "2"$0D
+          "3"$0D
+          "4"
+      }
+      triggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger on."
+      }
+      nottriggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger off."
       }
     }
     trigger_pushobject:form =
