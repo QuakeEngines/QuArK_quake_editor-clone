@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.16  2007/04/16 11:35:43  danielpharos
+//Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+//
 //Revision 1.15  2007/03/21 23:25:47  danielpharos
 //Fixed a few typo's and removed the tabs
 //
@@ -411,7 +414,7 @@ QQRKSRC1
     Root = "STVEF Textures and Shaders.qtxfolder"
     STVEF Textures and Shaders.qtxfolder =
     {
-      STVEF Textures and Shaders.osfolder =
+      Dynamically Found.osfolder =
       {
         path = "BaseEF"
         //build = "1"
