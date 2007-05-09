@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2007/05/06 21:19:04  danielpharos
+Changed a big if-mess into a switch.
+
 Revision 1.57  2007/03/29 21:01:39  danielpharos
 Changed a few comments and error messages
 
@@ -1033,6 +1036,8 @@ begin
   else
     MakeSections:=False;
 
+  if (DestWnd<>0) and (ViewDC<>0) then
+    ReleaseDC(DestWnd,ViewDC);
   ViewDC:=GetDC(Wnd);
   if Wnd<>DestWnd then
   begin
