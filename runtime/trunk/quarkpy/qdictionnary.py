@@ -995,7 +995,7 @@ Strings = {
     6402: "Could not load the DirectX drivers//Error code %d",
     6403: "Error using DirectX//Function '%s' failed with '%s'",
 
-    6410: "The DirectX renderer has not been fully implemented yet, but it did initialize correctly!",
+    6410: "Internal driver error in DirectX. Try updating your video card drivers and DirectX. If that doesn't work, use another renderer",
     6411: "Unable to load DirectX 9. Make sure DirectX 9.0c is installed",
     6412: "Unable to find a DirectX 9 compatible device",
 
@@ -1021,6 +1021,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.95  2007/05/05 17:55:41  cdunde
+#To fix small typo error.
+#
 #Revision 1.94  2007/05/02 22:34:43  danielpharos
 #Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
 #
