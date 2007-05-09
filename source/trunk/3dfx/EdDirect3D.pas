@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/05/09 16:14:43  danielpharos
+Big update to the DirectX renderer. Fade color should now display. Stability is still an issue however.
+
 Revision 1.18  2007/04/03 13:08:54  danielpharos
 Added a back buffer format selection option.
 
@@ -137,6 +140,7 @@ type
     procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
     procedure ReleaseResources;
     procedure BuildTexture(Texture: PTexture3); override;
+    function CheckDeviceState : Boolean;
   public
     destructor Destroy; override;
     procedure Init(Wnd: HWnd;
@@ -485,12 +489,124 @@ begin
 
 end;
 
+function TDirect3DSceneObject.CheckDeviceState : Boolean;
+var
+  l_Res: HResult;
+  OrigBackBuffer: IDirect3DSurface9;
+  pBackBuffer: IDirect3DSurface9;
+  I: Integer;
+  NeedReset: Boolean;
+begin
+  Result:=false;
+  NeedReset:=false;
+  l_Res:=D3DDevice.TestCooperativeLevel;
+  case l_Res of
+  D3D_OK: ;
+  D3DERR_DEVICELOST:  Exit;  //Device lost and can't be restored at this time.
+  D3DERR_DEVICENOTRESET: NeedReset:=True;  //Device can be recovered
+  D3DERR_DRIVERINTERNALERROR: raise EError(6410);  //Big problem!
+  end;
+
+  if not NeedReset and not ScreenResized then
+  begin
+    Result:=True;
+    Exit;
+  end;
+
+  //The first paramter isn't necessarily 0!
+  l_Res:=D3DDevice.GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, OrigBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetRenderTarget(0, OrigBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetDepthStencilSurface(nil);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  //Releasing surfs...
+  while (OrigBackBuffer._Release > 0) do;
+  Pointer(OrigBackBuffer):=nil;
+
+  if NeedReset then
+  begin
+    for I:=0 to Length(ListItemUsed)-1 do
+    begin
+      if ListItemUsed[I]=true then
+      begin
+        if not (DepthStencilSurface[I]=nil) then
+        begin
+          while (DepthStencilSurface[I]._Release > 0) do;
+          Pointer(DepthStencilSurface[I]):=nil;
+        end;
+
+        if not (SwapChain[I]=nil) then
+        begin
+          while (SwapChain[I]._Release > 0) do;
+          Pointer(SwapChain[I]):=nil;
+        end;
+      end;
+    end;
+
+    l_Res:=D3DDevice.Reset(pPresParm);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['Reset', DXGetErrorString9(l_Res)]);
+
+    // We now need to reload all the textures and stuff!
+  end
+  else
+  begin
+    if not (DepthStencilSurface[ListIndex-1]=nil) then
+    begin
+      while (DepthStencilSurface[ListIndex-1]._Release > 0) do;
+      Pointer(DepthStencilSurface[ListIndex-1]):=nil;
+    end;
+
+    if not (SwapChain[ListIndex-1]=nil) then
+    begin
+      while (SwapChain[ListIndex-1]._Release > 0) do;
+      Pointer(SwapChain[ListIndex-1]):=nil;
+    end;
+  end;
+
+  l_Res:=D3DDevice.CreateAdditionalSwapChain(pPresParm, SwapChain[ListIndex-1]);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['CreateAdditionalSwapChain', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.CreateDepthStencilSurface(pPresParm.BackBufferWidth, pPresParm.BackBufferHeight, pPresParm.AutoDepthStencilFormat, pPresParm.MultiSampleType, pPresParm.MultiSampleQuality, false, DepthStencilSurface[ListIndex-1], nil);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['CreateDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  l_Res:=SwapChain[ListIndex-1].GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, pBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetRenderTarget(0, pBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  while (pBackBuffer._Release > 0) do;
+  Pointer(pBackBuffer):=nil;
+
+  Result:=True;
+end;
+
 procedure TDirect3DSceneObject.Copy3DView;
 var
   l_Res: HResult;
 begin
   if SwapChain[ListIndex-1]=nil then
-    Exit;
+    Render3DView;
   l_Res:=SwapChain[ListIndex-1].Present(nil, nil, 0, nil, 0);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['Present', DXGetErrorString9(l_Res)]);
@@ -518,105 +634,27 @@ var
   l_CameraEye: TD3DXMatrix;
   l_matRotation: TD3DXMatrix;
   l_quaRotation: TD3DXQuaternion;}
-  OrigBackBuffer: IDirect3DSurface9;
-  pBackBuffer: IDirect3DSurface9;
   PList: PSurfaces;
-  I: Integer;
 begin
   if not Direct3DLoaded then
     Exit;
 
-  l_Res:=D3DDevice.TestCooperativeLevel;
-  case l_Res of
-  //D3D_OK: ;
-  D3DERR_DEVICELOST: Exit;  //Device lost and can't be restored at this time.
-  D3DERR_DEVICENOTRESET:  //Device may be recovered
-  begin
-    l_Res:=D3DDevice.Reset(pPresParm);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['Reset', DXGetErrorString9(l_Res)]);
-  end;
-  D3DERR_DRIVERINTERNALERROR: raise EError(6410);  //Big problem!
-  end;
-
-  //If viewport have been resized, then tell Direct3D what happend
+  //If the viewport has been resized, then tell Direct3D what happened
   if (ScreenResized = True) then
   begin
     pPresParm.BackBufferWidth:=ScreenX;
     pPresParm.BackBufferHeight:=ScreenY;
     pPresParm.hDeviceWindow:=DestWnd;
     //DanielPharos: How do we apply the possible change to ViewDC?
-
-    //The first paramter isn't necessarily 0!
-    l_Res:=D3DDevice.GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, OrigBackBuffer);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
-
-    l_Res:=D3DDevice.SetRenderTarget(0, OrigBackBuffer);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
-
-    l_Res:=D3DDevice.SetDepthStencilSurface(nil);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
-
-    //Releasing surfs...
-    while (OrigBackBuffer._Release > 0) do;
-    Pointer(OrigBackBuffer):=nil;
-
-    for I:=0 to Length(ListItemUsed)-1 do
-    begin
-      if ListItemUsed[I]=true then
-      begin
-        if not (DepthStencilSurface[I]=nil) then
-        begin
-          while (DepthStencilSurface[I]._Release > 0) do;
-          Pointer(DepthStencilSurface[I]):=nil;
-        end;
-
-        if not (SwapChain[I]=nil) then
-        begin
-          while (SwapChain[I]._Release > 0) do;
-          Pointer(SwapChain[I]):=nil;
-        end;
-      end;
-    end;
-
-    l_Res:=D3DDevice.Reset(pPresParm);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['Reset', DXGetErrorString9(l_Res)]);
-
-    l_Res:=D3DDevice.CreateAdditionalSwapChain(pPresParm, SwapChain[ListIndex-1]);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['CreateAdditionalSwapChain', DXGetErrorString9(l_Res)]);
-
-    l_Res:=D3DDevice.CreateDepthStencilSurface(pPresParm.BackBufferWidth, pPresParm.BackBufferHeight, pPresParm.AutoDepthStencilFormat, pPresParm.MultiSampleType, pPresParm.MultiSampleQuality, false, DepthStencilSurface[ListIndex-1], nil);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['CreateDepthStencilSurface', DXGetErrorString9(l_Res)]);
-
-    l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
-
-    l_Res:=SwapChain[ListIndex-1].GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, pBackBuffer);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
-
-    l_Res:=D3DDevice.SetRenderTarget(0, pBackBuffer);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
-
-    l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
-
-    while (pBackBuffer._Release > 0) do;
-    Pointer(pBackBuffer):=nil;
-
-    ScreenResized := False;
   end;
 
-  D3DDevice.Clear(0, nil, D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER, DXFogColor, 1, 0);
+  if not CheckDeviceState then
+    Exit;
+  ScreenResized := False;
+
+  l_Res:=D3DDevice.Clear(0, nil, D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER, DXFogColor, 1, 0);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
 
     { set camera }
   {with TCameraCoordinates(Coord) do
