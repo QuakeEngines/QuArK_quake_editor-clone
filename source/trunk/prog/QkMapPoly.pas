@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.88  2007/04/12 20:54:07  danielpharos
+Another BIG update for Doom 3 and Quake 4: patchdef2 should be saving correctly now.
+
 Revision 1.87  2007/04/09 21:44:24  danielpharos
 Started work on Doom 3 map version 2 and Quake 4 map version 3.
 
@@ -1863,6 +1866,9 @@ begin
       {$ENDIF}
       ReallocMem(DescFaces, PChar(TamponArete)+SizeOf(Word)-PChar(DescFaces));
       {$IFDEF Debug}
+      //FIXME: This happens! The guy that build this was mad enough to think
+      //ReallocMem never changes the pointer itself! This ofcourse DOES happen,
+      //so this code produces garbage in most cases!!!
       if Pointer(Source)<>DescFaces then Raise InternalE('ReallocMem modified DescFaces');
       {$ENDIF}
       NbAretes2:=(PChar(Surface)-PChar(DescFaces)) div SizeOf(PVertex);
