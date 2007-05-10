@@ -69,9 +69,21 @@ Q3MAP.EXE, Q3MAP2.EXE
 </td></tr>
 
 <tr><td>
+Return to Castle Wolfenstein
+</td><td>
+Q3MAP.EXE, Q3MAP2.EXE
+</td></tr>
+
+<tr><td>
 Star Trek: Voyager - Elite Force
 </td><td>
 Q3MAP.EXE, Q3MAP2.EXE
+</td></tr>
+
+<tr><td>
+Star Trek: Elite Force 2
+</td><td>
+UBERMAP.EXE
 </td></tr>
 
 </table></center>

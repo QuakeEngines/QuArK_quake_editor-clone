@@ -68,9 +68,21 @@ Quake-3: Arena
 </td></tr>
 
 <tr><td>
+Return to Castle Wolfenstein
+</td><td>
+"Q3MAP.EXE -light", "Q3MAP2.EXE -light"
+</td></tr>
+
+<tr><td>
 Star Trek: Voyager - Elite Force
 </td><td>
 "Q3MAP.EXE -light", "Q3MAP2.EXE -light"
+</td></tr>
+
+<tr><td>
+Star Trek: Elite Force 2
+</td><td>
+"UBERMAP.EXE -light"
 </td></tr>
 
 </table></center>

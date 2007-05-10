@@ -3,6 +3,7 @@ subdir: csg
 subdir: bsp
 subdir: vis
 subdir: rad
+subdir: aas
 subdir: console
 
 Here you will find information, gathered from various places, about map compiling errors.
