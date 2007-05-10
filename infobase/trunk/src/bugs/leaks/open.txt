@@ -9,7 +9,7 @@ author: tiglari
 <LI> 1 attempt to free an unexisting resource, triggered from QkForm.pas:422(QkForm.Destroy)
 </UL>
 <LI> 1 unclosed event handle, which shouldn't be dealt with.  Some
-discussion of it by Decker appears in <ref>src/leaks/event</ref>.
+discussion of it by Decker appears in <ref>src/bugs/leaks/event</ref>.
 
 <LI>Live Pointers (memory leaks)
 <UL>

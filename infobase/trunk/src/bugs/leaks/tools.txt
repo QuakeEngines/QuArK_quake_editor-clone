@@ -51,7 +51,7 @@ into your runtime directory.  See the FastMM readme file for
 more information.
 
 Location:
-source/prog/FastMM474/*<br>
+source/prog/FastMM478/*<br>
 Website:
 <a target=_blank href="http://sourceforge.net/projects/fastmm/">sourceforge.net/projects/fastmm/</a>
 
@@ -59,7 +59,7 @@ Website:
 Also, don't forget:<br>
 There are a lot of debugging options already present in
 Delphi (at least in 6 and higher).  Don't forget to check
-the Project>Options>Compiler/Compiler Messages/Linker
+the Project > Options > Compiler/Compiler Messages/Linker
 settings in Delphi.  Also, some of these options have to
 be enabled in order to use the full power of the tools
 listed above.  Read the respective readme file that comes
