@@ -16,7 +16,7 @@ to be delayed till 6.6, or never to happen at all.
 <br>status: well underway
 
 <LI>Fully working Direct3D renderer (DanielPharos)
-<br>status: envisioned
+<br>status: slowly making progress
 
 <LI>OpenGL shader-rendering (DanielPharos)
 <br>status: envisioned
