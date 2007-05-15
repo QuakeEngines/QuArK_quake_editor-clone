@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/03/11 12:03:11  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
 Revision 1.19  2007/02/26 22:25:11  danielpharos
 Deleted an obsolete Exit.
 
@@ -342,7 +345,7 @@ var
 begin
   Result:=nil;
   try
-    tex:= NeedGameFileBase('steamaccess://220', tex_name);
+    tex:= NeedGameFile(tex_name);
     if tex = nil then
       exit;
     tex.acces;
@@ -741,7 +744,7 @@ var
     end;
 }
     base_tex_name:='hl2/materials/dev/dev_hazzardstripe01a.vtf';
-//    skin:= NeedGameFileBase('220.SteamFS', base_tex_name) as QImage;
+//    skin:= NeedGameFile(base_tex_name) as QImage;
     skin:=Loaded_HL2Skin(Comp, base_tex_name );
     if skin=nil then
       skin:=CantFindTexture(Comp, base_tex_name, Size);
