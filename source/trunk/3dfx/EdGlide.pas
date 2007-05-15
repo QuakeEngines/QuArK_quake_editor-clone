@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
 Revision 1.6  2007/03/22 20:53:14  danielpharos
 Improved tracking of the target DC. Should fix a few grey screens.
 Also fixed a Delphi warning.
@@ -418,6 +421,8 @@ var
  Setup: QObject;
  ScreenResolution: Integer;
  ScreenRes: GrScreenResolution_t;
+ ScreenMirror: Integer;
+ ScreenOrigin: Integer;
 begin
  ClearScene;
 
@@ -510,11 +515,18 @@ begin
   else begin
         ScreenSizeX:=640;
         ScreenSizeY:=480;
-        ScreenRes:=GR_RESOLUTION_640x480;  {Default to 640x480}
+        ScreenRes:=GR_RESOLUTION_640x480;  //Default to 640x480
       end;
  end;
  ScreenCenterX:=ScreenSizeX div 2;
  ScreenCenterY:=ScreenSizeY div 2;
+ ScreenMirror:=StrToInt(Setup.Specifics.Values['Mirror']);
+ case ScreenMirror of
+ 0: ScreenOrigin:=GR_ORIGIN_UPPER_LEFT;
+ 1: ScreenOrigin:=GR_ORIGIN_LOWER_LEFT;
+ else
+   ScreenOrigin:=GR_ORIGIN_UPPER_LEFT; //Default to upper left
+ end;
 
  if not GlideLoaded then
   begin
@@ -533,7 +545,7 @@ begin
                         ScreenRes,
                         GR_REFRESH_60HZ,
                         GR_COLORFORMAT_ARGB,
-                        GR_ORIGIN_UPPER_LEFT,
+                        ScreenOrigin,
                         2, 1) then
        Raise EErrorFmt(6200, ['grSstWinOpen']);
    finally

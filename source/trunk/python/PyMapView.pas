@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2007/03/22 20:52:58  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+
 Revision 1.30  2007/03/17 15:43:12  danielpharos
 Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
 
@@ -515,7 +518,7 @@ begin
    if S='qrksoftg.dll' then
      Result:=SetupSubSet(ssGeneral, 'Software 3D')
    else if S='glide2x.dll' then
-     Result:=SetupSubSet(ssGeneral, 'Glide (3DFX)')
+     Result:=SetupSubSet(ssGeneral, 'Glide (3Dfx)')
    else if S='OpenGL32.dll' then
      Result:=SetupSubSet(ssGeneral, 'OpenGL')
    else if S='d3d9.dll' then
@@ -542,7 +545,7 @@ begin
   begin
    if Scene is TGlideSceneObject then   {DanielPharos: Renderer should take care of this}
     begin
-     if Specifics.Values['3DFXLogo']='' then
+     if Specifics.Values['3DfxLogo']='' then
       SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')
      else
       SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', Nil);

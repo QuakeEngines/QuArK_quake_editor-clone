@@ -27,6 +27,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.331  2007/05/06 21:12:52  danielpharos
+//Fixed the name of the scripts folder for EF2.
+//DecimalPlaces now also applies to beziers.
+//
 //Revision 1.330  2007/05/05 22:33:31  cdunde
 //Added support for EF2 and its .dds texture loading to the Texture Browser.
 //
@@ -1157,9 +1161,9 @@ QQRKSRC1
         MovingQuality = "2"
         Form = "GeneralSoftware3D"
       }
-      Glide (3DFX):config =
+      Glide (3Dfx):config =
       {
-        //3DFXLogo = ""
+        //3DfxLogo = ""
         //FullScreen = ""
         TwoMonitors = ""
         FullScreenGamma = '1.3'
@@ -1167,6 +1171,7 @@ QQRKSRC1
         TranspFactor = '0.3'  // in isometric views, an additional 30% of the normal depth is visible but transparent
         Fog = "1"
         Resolution = "7"
+        Mirror = "0"
         Form = "GeneralGlide"
       }
       OpenGL:config =
@@ -2384,9 +2389,9 @@ QQRKSRC1
         BuildPgm3  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22""
         BuildPgm4 = "BSPC.EXE"
-        BuildArgs4 = "-threads 2 -ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
+        BuildArgs4 = "-ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
         BuildPgm5 = "BSPC.EXE"
-        BuildArgs5 = "-threads 2 -ext _b1 -cfg "$22"%buildpgmsdir%\aascfg_sm.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
+        BuildArgs5 = "-ext _b1 -cfg "$22"%buildpgmsdir%\aascfg_sm.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
         BuildPgm6 = "Rename.bat"
         BuildArgs6 = "%filename% "$22"%mappath%"$22""
 
@@ -6406,7 +6411,7 @@ QQRKSRC1
       Lib: = {
         Txt="Select 3D viewer"
         Typ="CL"
-        Items  = "Software 3D" $0D "Glide (3DFX)" $0D "OpenGL" $0D "DirectX (Direct3D)"
+        Items  = "Software 3D" $0D "Glide (3Dfx)" $0D "OpenGL" $0D "DirectX (Direct3D)"
         Values = "qrksoftg.dll" $0D "glide2x.dll" $0D "OpenGL32.dll" $0D "d3d9.dll"
         Hint="see also the viewers configuration pages"
       }
@@ -6502,6 +6507,13 @@ QQRKSRC1
         Items  = "320x200" $0D "400x300" $0D "640x480" $0D "800x600" $0D "1024x768" $0D "1280x1024" $0D "1600x1200"
         Values =       "0" $0D      "15" $0D       "7" $0D       "8" $0D       "12" $0D        "13" $0D        "14"
         Hint = "The lower the faster, but the quality may suffer"
+      }
+      Mirror: = {
+        Txt="Mirroring"
+        Typ="CL"
+        Items  = "No mirroring" $0D "Vertical mirroring"
+        Values = "0"            $0D "1"
+        Hint = "Flips the screen around. Change this option if your view is upside down"
       }
     }
     GeneralOpenGL:form =
