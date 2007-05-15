@@ -965,13 +965,13 @@ Strings = {
     6100: "Error with the Software 3D drivers//%s failed",
 
     6120: "Software 3D renderer does not support fullscreen views (yet)",
-    6121: "You must first call Open3dFX",
+    6121: "You must first call Open3Dfx",
 
     # DanielPharos would like to reserve 6200 .. 6299 for the Glide renderer :-)
-    6200: "Error with the 3DFX Glide drivers//%s failed",
+    6200: "Error with the 3Dfx Glide drivers//%s failed",
 
     6220: "Glide renderer does not support fullscreen views (yet)",
-    6221: "You must first call Open3dFX",
+    6221: "You must first call Open3Dfx",
 
     # DanielPharos would like to reserve 6300 .. 6399 for the OpenGL renderer :-)
     6300: "Could not load the OpenGL drivers//Error code %d",
@@ -1021,6 +1021,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.96  2007/05/09 16:14:47  danielpharos
+#Big update to the DirectX renderer. Fade color should now display. Stability is still an issue however.
+#
 #Revision 1.95  2007/05/05 17:55:41  cdunde
 #To fix small typo error.
 #
