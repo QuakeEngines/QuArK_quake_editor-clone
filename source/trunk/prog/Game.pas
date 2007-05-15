@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2007/03/15 22:15:35  danielpharos
+Made the crash-safe gamebuffer size 8 MB instead of 2 MB.
+
 Revision 1.42  2007/02/07 18:48:34  danielpharos
 Fixes for memory leaks
 
@@ -702,7 +705,6 @@ function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : Q
 var
  AbsolutePath, AbsolutePathAndFilename: String;
  FilenameAlias,name,namerest: String;
- index:integer;
  PakFile: QFileObject;
  GetPakNames: TGetPakNames;
  CDSearch: Boolean;
@@ -754,8 +756,7 @@ begin
     end;
 
     {HL2 steam access}
-    index:=AnsiPos('steamaccess://', BaseDir);
-    if index<>0 then
+    if LeftStr(BaseDir,14)='steamaccess://' then
     begin
       RestartAliasing;
       name:= Copy(BaseDir,15,3);
