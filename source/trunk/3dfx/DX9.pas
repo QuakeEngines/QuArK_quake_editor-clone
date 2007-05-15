@@ -28,8 +28,8 @@ interface
 uses Windows, Direct3D, Direct3D9;
 
 var
- g_D3D : IDirect3D9 = nil;
- g_D3DCaps : D3DCAPS9;
+ D3D : IDirect3D9 = nil;
+ D3DCaps : D3DCAPS9;
  RenderingType : D3DDEVTYPE;
  BehaviorFlags : DWORD;
  PresParm: D3DPRESENT_PARAMETERS;
@@ -61,15 +61,15 @@ begin
     Result := False;
     try
 
-      g_D3D := Direct3DCreate9(D3D_SDK_VERSION);
-      if g_D3D=nil then
+      D3D := Direct3DCreate9(D3D_SDK_VERSION);
+      if D3D=nil then
         raise EError(6411);
 
       RenderingType:=D3DDEVTYPE_HAL;
-      if g_D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, g_D3DCaps) <> D3D_OK then
+      if D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DCaps) <> D3D_OK then
       begin
         RenderingType:=D3DDEVTYPE_REF;
-        if g_D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, g_D3DCaps) <> D3D_OK then
+        if D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, D3DCaps) <> D3D_OK then
         begin
           raise EError(6412);
         end;
@@ -77,7 +77,7 @@ begin
 
       //Check for software/hardware vertex processing
       BehaviorFlags:=0;
-      if (g_D3DCaps.DevCaps and D3DDEVCAPS_HWTRANSFORMANDLIGHT)<>0 then
+      if (D3DCaps.DevCaps and D3DDEVCAPS_HWTRANSFORMANDLIGHT)<>0 then
       begin
         Log(LOG_VERBOSE,LoadStr1(6421));
         BehaviorFlags:=BehaviorFlags or D3DCREATE_HARDWARE_VERTEXPROCESSING;
@@ -89,7 +89,7 @@ begin
       end;
 
       //Check for Pure Device
-      if (g_D3DCaps.DevCaps and D3DDEVCAPS_PUREDEVICE)<>0 then
+      if (D3DCaps.DevCaps and D3DDEVCAPS_PUREDEVICE)<>0 then
       begin
         Log(LOG_VERBOSE,LoadStr1(6423));
         BehaviorFlags:=BehaviorFlags or D3DCREATE_PUREDEVICE;
@@ -103,7 +103,7 @@ begin
       begin
         try
           BackBufferFormat:=strtoint(S);
-          if (BackBufferFormat < 0) or (BackBufferFormat >= 1) then
+          if (BackBufferFormat < 0) or (BackBufferFormat > 5) then
           begin
             Log(LOG_WARNING, LoadStr1(6011), ['BackBufferFormat',S]);
             BackBufferFormat := 0;
@@ -123,7 +123,7 @@ begin
       begin
         try
           StencilBufferBits:=strtoint(S);
-          if (StencilBufferBits < 0) or (StencilBufferBits >= 1) then
+          if (StencilBufferBits < 0) or (StencilBufferBits > 1) then
           begin
             Log(LOG_WARNING, LoadStr1(6011), ['StencilBufferBits',S]);
             StencilBufferBits := 0;
@@ -174,7 +174,7 @@ begin
       PresParm.FullScreen_RefreshRateInHz := 0;
       PresParm.PresentationInterval := D3DPRESENT_INTERVAL_DEFAULT;
 
-      l_Res:=g_D3D.CreateDevice(D3DADAPTER_DEFAULT, RenderingType, 0, BehaviorFlags, @PresParm, D3DDevice);
+      l_Res:=D3D.CreateDevice(D3DADAPTER_DEFAULT, RenderingType, 0, BehaviorFlags, @PresParm, D3DDevice);
       if (l_Res <> D3D_OK) then
         raise EErrorFmt(6403, ['CreateDevice', DXGetErrorString9(l_Res)]);
 
@@ -209,13 +209,19 @@ begin
   if TimesLoaded = 1 then
   begin
 
-    while (D3DDevice._Release > 0) do;
-    Pointer(D3DDevice):=nil;
+    if not (D3DDevice=nil) then
+    begin
+      while (D3DDevice._Release > 0) do;
+      Pointer(D3DDevice):=nil;
+    end;
 
-    //Delete g_D3DCaps and others...
+    //Delete D3DCaps and others...
 
-    while (g_D3D._Release > 0) do;
-    Pointer(g_D3D):=nil;
+    if not (D3D=nil) then
+    begin
+      while (D3D._Release > 0) do;
+      Pointer(D3D):=nil;
+    end;
 
     TimesLoaded := 0;
   end
