@@ -589,7 +589,7 @@ class BaseEditor:
                                     mdleditor.commonhandles(self)
                                 else:
                                     if flagsmouse == 2064 and (currentview.info["viewname"] == "XY" or currentview.info["viewname"] == "XZ" or currentview.info["viewname"] == "YZ"):
-                                        mdleditor.paintframefill(self, view, currentview)
+                                        mdleditor.paintframefill(self, view)
 
                 try:
                     last,x,y=self.dragobject.lastdrag
@@ -629,7 +629,7 @@ class BaseEditor:
                 else:
                     if isinstance(editor, mdleditor.ModelEditor):
                      #   return
-                        pass
+                        pass # This allows the coors to be displayed in the 'Help Box'.
                     elif editor.layout.toolbars["tb_terrmodes"] is not None:
                         tb2 = editor.layout.toolbars["tb_terrmodes"]
                         i = quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode")
@@ -871,7 +871,7 @@ class BaseEditor:
                                         pass
                                     else:
                                         if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
-                                            mdleditor.paintframefill(self, view, currentview)
+                                            mdleditor.paintframefill(self, view)
                                         return
                                 else:
                                     if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
@@ -1090,6 +1090,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.50  2007/04/22 21:06:04  cdunde
+#Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
+#as well as its code relocation to proper file and elimination of unnecessary code.
+#
 #Revision 1.49  2007/04/19 03:02:40  cdunde
 #Added error message box to stop the dragging of handles in Model Editor if a main component is
 #selected instead of a single fame of that component, thus causing unwanted frames to be created.

@@ -115,13 +115,13 @@ class VertexHandle(qhandles.GenericHandle):
                          #   editor.picked = editor.picked + [(self.index, view.proj(self.pos + quarkx.vect(0, 0, 0)))]
             invalidateviews()
             import mdleditor
-            mdleditor.paintframefill(editor, view, view) ## Does not repaint the 3D views, needs fixing.
+            mdleditor.paintframefill(editor, view) ## Does not repaint the 3D views, needs fixing.
 
         def pick_cleared(m, editor=editor, view=view):
             editor.picked = []
             invalidateviews()
             import mdleditor
-            mdleditor.paintframefill(editor, view, view) ## Does not repaint the 3D views, needs fixing.
+            mdleditor.paintframefill(editor, view) ## Does not repaint the 3D views, needs fixing.
 
         Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AddVertex = qmenu.item("&Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -1098,6 +1098,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.39  2007/05/16 19:39:46  cdunde
+#Added the 2D views gridscale function to the Model Editor's Options menu.
+#
 #Revision 1.38  2007/05/16 06:56:23  cdunde
 #To increase drawing speed of Skin-view during drag
 #and fix picked vertexes for snapping to base location

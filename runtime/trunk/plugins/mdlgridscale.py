@@ -474,7 +474,7 @@ def All2DviewsClick(m):
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = None
     editor.invalidateviews()
   #  from quarkpy.qbaseeditor import currentview
-  #  quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+  #  quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def All2DviewsScalesCentered(m):
     editor = mapeditor()
@@ -494,7 +494,7 @@ def All2DviewsScalesCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     editor.invalidateviews()
   #  from quarkpy.qbaseeditor import currentview
-  #  quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+  #  quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def XviewScaleClick(m):
     editor = mapeditor()
@@ -508,7 +508,7 @@ def XviewScaleClick(m):
         quarkx.setupsubset(SS_MODEL, "Options")['XviewScale'] = None
   #  editor.invalidateviews()
     from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+    quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def XviewYScaleCentered(m):
     editor = mapeditor()
@@ -521,7 +521,7 @@ def XviewYScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['XyScaleCentered'] = None
   #  editor.invalidateviews()
     from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+    quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def XviewZScaleCentered(m):
     editor = mapeditor()
@@ -534,7 +534,7 @@ def XviewZScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['XzScaleCentered'] = None
   #  editor.invalidateviews()
     from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+    quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def YviewScaleClick(m):
     editor = mapeditor()
@@ -548,7 +548,7 @@ def YviewScaleClick(m):
         quarkx.setupsubset(SS_MODEL, "Options")['YviewScale'] = None
   #  editor.invalidateviews()
     from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+    quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def YviewXScaleCentered(m):
     editor = mapeditor()
@@ -561,7 +561,7 @@ def YviewXScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['YxScaleCentered'] = None
   #  editor.invalidateviews()
     from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+    quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def YviewZScaleCentered(m):
     editor = mapeditor()
@@ -574,7 +574,7 @@ def YviewZScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['YzScaleCentered'] = None
   #  editor.invalidateviews()
     from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+    quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def ZviewScaleClick(m):
     editor = mapeditor()
@@ -588,7 +588,7 @@ def ZviewScaleClick(m):
         quarkx.setupsubset(SS_MODEL, "Options")['ZviewScale'] = None
   #  editor.invalidateviews()
     from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+    quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def ZviewXScaleCentered(m):
     editor = mapeditor()
@@ -601,7 +601,7 @@ def ZviewXScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['ZxScaleCentered'] = None
   #  editor.invalidateviews()
     from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+    quarkpy.mdleditor.paintframefill(editor, currentview)
 
 def ZviewYScaleCentered(m):
     editor = mapeditor()
@@ -614,7 +614,7 @@ def ZviewYScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['ZyScaleCentered'] = None
   #  editor.invalidateviews()
     from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+    quarkpy.mdleditor.paintframefill(editor, currentview)
 
 
 
@@ -679,5 +679,8 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.4  2007/05/16 19:56:30  cdunde
+#Added the 2D views gridscale function to the Model Editors Options menu.
+#
 #
 #

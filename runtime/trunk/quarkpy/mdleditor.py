@@ -307,7 +307,7 @@ def setframefillcolor(self, view):
             comp.filltris = [(None,None)]*len(comp.triangles)
 
 
-def paintframefill(self, v, currentview):
+def paintframefill(self, v):
 
     from qbaseeditor import flagsmouse, currentview
     if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
@@ -553,6 +553,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.28  2007/05/16 19:39:46  cdunde
+#Added the 2D views gridscale function to the Model Editor's Options menu.
+#
 #Revision 1.27  2007/04/27 17:27:42  cdunde
 #To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
 #Added new functions for aligning, single and multi selections, Skin-view vertexes.

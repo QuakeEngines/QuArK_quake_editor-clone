@@ -155,12 +155,12 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
             ### This is the 2D views Textured mode scroller section
             if (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056) and view.viewmode == "tex":
                 if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
-                    quarkpy.mdleditor.paintframefill(editor, view, currentview)
-             #   view.repaint()
+                    quarkpy.mdleditor.paintframefill(editor, view)
+             #   view.repaint() # If uncommented, causes gridscale to jitter.
             ### This is the 2D views WireFrame mode scroller section
             else:
                 if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
-                    quarkpy.mdleditor.paintframefill(editor, currentview, currentview)
+                    quarkpy.mdleditor.paintframefill(editor, currentview)
              #   view.update()
         return scroller
     quarkpy.qhandles.MakeScroller = MakeScroller
@@ -221,6 +221,9 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.8  2007/04/13 19:41:48  cdunde
+#Minor improvement in the multi meshfill coloring when scrolling or zooming.
+#
 #Revision 1.7  2007/04/04 21:34:17  cdunde
 #Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
 #
