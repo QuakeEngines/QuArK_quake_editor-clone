@@ -83,6 +83,7 @@ axisicons = quarkx.loadimages("images\\axisicons.bmp",32,(0,0))
 #  of the map editor, only the functions they define are.
 #
 
+
 def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
     global saveeditor
     saveeditor = editor
@@ -121,21 +122,18 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
                             comp = editor.Root.currentcomponent
                             fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
                             comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
-                        else:
-                            comp.filltris = [(None,None)]*len(comp.triangles)
 
                     if view.info["viewname"] == "3Dwindow":
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
                             comp = editor.Root.currentcomponent
                             fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
                             comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
-                        else:
-                            comp.filltris = [(None,None)]*len(comp.triangles)
 
                     view.repaint()
                     return scroller
             except:
                 pass
+
             if hlink is not None:
                 if hlink[0]:
                     hlink[1].scrollto(None, x)
@@ -161,7 +159,6 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
             else:
                 if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
                     quarkpy.mdleditor.paintframefill(editor, currentview)
-             #   view.update()
         return scroller
     quarkpy.qhandles.MakeScroller = MakeScroller
 
@@ -169,15 +166,6 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
 
 
     # The following sets the canvas function to draw the images.
-
-    from quarkpy.qbaseeditor import flagsmouse
-    try:
-        if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
-            pass
-        else:
-            if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056): return
-    except:
-        pass
     cv = view.canvas()
     type = view.info["type"]  # These type values are set
                               #  in the layout-defining plugins.
@@ -195,8 +183,8 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
     #  to the window it appears in.
     #
 
-    from quarkpy.qbaseeditor import flagsmouse, currentview
-    if (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056):
+    from quarkpy.qbaseeditor import flagsmouse
+    if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056):
         pass
     else:
         cv.draw(axisicons[index],14,1)
@@ -221,6 +209,9 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.9  2007/05/16 20:59:02  cdunde
+#To remove unused argument for the mdleditor paintframefill function.
+#
 #Revision 1.8  2007/04/13 19:41:48  cdunde
 #Minor improvement in the multi meshfill coloring when scrolling or zooming.
 #
