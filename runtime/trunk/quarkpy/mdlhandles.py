@@ -359,7 +359,7 @@ class SkinHandle(qhandles.GenericHandle):
             pickedpos = editor.skinviewpicked[0][0]
             setup = quarkx.setupsubset(SS_MODEL, "Options")
 
-            if len(editor.skinviewpicked) > 2:
+            if len(editor.skinviewpicked) > 1:
 
                 if self.comp is None:
                     self.comp = editor.Root.currentcomponent
@@ -474,9 +474,12 @@ class SkinHandle(qhandles.GenericHandle):
             cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
 
             if editor.skinviewpicked != []:
+                itemnbr = 0
                 for item in editor.skinviewpicked:
-                    if self.tri_index == item[2] and self.ver_index == item[3]:
-                        item[0] = self.pos
+                    if self.tri_index == item[2] and self.ver_index == item[3] and self != item[1]:
+                        editor.skinviewpicked[itemnbr][0] = self.pos
+                        editor.skinviewpicked[itemnbr][1] = self
+                    itemnbr = itemnbr + 1
 
             if editor is not None:
                 if editor.skinviewpicked != []:
@@ -499,9 +502,9 @@ class SkinHandle(qhandles.GenericHandle):
 
 
     def drag(self, v1, v2, flags, view):
+        editor = mapeditor()
         texWidth = self.texWidth
         texHeight = self.texHeight
-        editor = mapeditor()
         p0 = view.proj(self.pos)
         if not p0.visible: return
         if flags&MB_CTRL:
@@ -566,41 +569,67 @@ class SkinHandle(qhandles.GenericHandle):
 
             ### Code below draws the Skin-view green guide lines for the triangle face being dragged.
         try:
-            editor.finishdrawing(view)
-            view.repaint()
+            if flags == 2056:
+                pass
+            else:
+                view.repaint()
+         #       editor.finishdrawing(view) # This could be used if we want to add something to the Skin-view drawing in the future.
+                cv = view.canvas()
+      ### To draw the skin mesh while doing a handle drag.
+                cv.pencolor = skinviewmesh
+                for triangle in self.comp.triangles:
+                    vertex0 = triangle[0]
+                    vertex1 = triangle[1]
+                    vertex2 = triangle[2]
+                    trivertex0 = quarkx.vect(vertex0[1]-int(texWidth*.5), vertex0[2]-int(texHeight*.5), 0)
+                    trivertex1 = quarkx.vect(vertex1[1]-int(texWidth*.5), vertex1[2]-int(texHeight*.5), 0)
+                    trivertex2 = quarkx.vect(vertex2[1]-int(texWidth*.5), vertex2[2]-int(texHeight*.5), 0)
+                    vertex0X, vertex0Y,vertex0Z = view.proj(trivertex0).tuple
+                    vertex1X, vertex1Y,vertex1Z = view.proj(trivertex1).tuple
+                    vertex2X, vertex2Y,vertex2Z = view.proj(trivertex2).tuple
+                    cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
+                    cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
+                    cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
+      ### To draw to dragging 'guide' lines.
+                cv.pencolor = skinviewdraglines
             pv2 = view.proj(v2)
-            cv = view.canvas()
-            cv.pencolor = skinviewdraglines
             oldtri = tris[self.tri_index]
             oldvert = oldtri[self.ver_index]
             newvert = (int(oldvert[0]), int(oldvert[1])+int(delta.x), int(oldvert[2])+int(delta.y))
-            if (self.ver_index == 0):
-                newtri = (newvert, oldtri[1], oldtri[2])
-                facev3 = quarkx.vect(oldtri[1][1]-int(texWidth*.5), oldtri[1][2]-int(texHeight*.5), 0)
-                facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
-                oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
-                oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
-                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
-                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
-            elif (self.ver_index == 1):
-                newtri = (oldtri[0], newvert, oldtri[2])
-                facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
-                facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
-                oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
-                oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
-                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
-                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
-            elif (self.ver_index == 2):
-                newtri = (oldtri[0], oldtri[1], newvert)
-                facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
-                facev4 = quarkx.vect(oldtri[1][1]-int(texWidth*.5), oldtri[1][2]-int(texHeight*.5), 0)
-                oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
-                oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
-                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
-                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
+            if flags == 2056:
+                if (self.ver_index == 0):
+                    newtri = (newvert, oldtri[1], oldtri[2])
+                elif (self.ver_index == 1):
+                    newtri = (oldtri[0], newvert, oldtri[2])
+                elif (self.ver_index == 2):
+                    newtri = (oldtri[0], oldtri[1], newvert)
+            else:
+                if (self.ver_index == 0):
+                    newtri = (newvert, oldtri[1], oldtri[2])
+                    facev3 = quarkx.vect(oldtri[1][1]-int(texWidth*.5), oldtri[1][2]-int(texHeight*.5), 0)
+                    facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
+                    oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
+                    oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
+                    cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
+                    cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
+                elif (self.ver_index == 1):
+                    newtri = (oldtri[0], newvert, oldtri[2])
+                    facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
+                    facev4 = quarkx.vect(oldtri[2][1]-int(texWidth*.5), oldtri[2][2]-int(texHeight*.5), 0)
+                    oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
+                    oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
+                    cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
+                    cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
+                elif (self.ver_index == 2):
+                    newtri = (oldtri[0], oldtri[1], newvert)
+                    facev3 = quarkx.vect(oldtri[0][1]-int(texWidth*.5), oldtri[0][2]-int(texHeight*.5), 0)
+                    facev4 = quarkx.vect(oldtri[1][1]-int(texWidth*.5), oldtri[1][2]-int(texHeight*.5), 0)
+                    oldvect3X, oldvect3Y,oldvect3Z = view.proj(facev3).tuple
+                    oldvect4X, oldvect4Y,oldvect4Z = view.proj(facev4).tuple
+                    cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect3X), int(oldvect3Y))
+                    cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(oldvect4X), int(oldvect4Y))
 
             tris[self.tri_index] = newtri
-
         except:
             new.triangles = self.comp
 
@@ -623,7 +652,10 @@ class SkinHandle(qhandles.GenericHandle):
                                 vtx_index = vtx_index + 1
                                 fixedvertex = quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0)
                                 fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
-                                cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(fixedX), int(fixedY))
+                                if flags == 2056:
+                                    pass
+                                else:
+                                    cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(fixedX), int(fixedY))
                         if drag_vtx_index == 0:
                             newtriangle = (newvert, tri[1], tri[2])
                         elif drag_vtx_index == 1:
@@ -1064,6 +1096,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.37  2007/04/27 17:27:42  cdunde
+#To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
+#Added new functions for aligning, single and multi selections, Skin-view vertexes.
+#To establish the Model Editors MdlQuickKeys for future use.
+#
 #Revision 1.36  2007/04/22 21:06:04  cdunde
 #Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
 #as well as its code relocation to proper file and elimination of unnecessary code.
