@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Added the 2D views gridscale function to the Model Editor's Options menu.
+
 * [cdunde]: Model Editor, increased drawing speed of Skin-view during drag and fix picked vertexes for
           - snapping to base location if dragged in the Skin-view before the action is completed.
 
