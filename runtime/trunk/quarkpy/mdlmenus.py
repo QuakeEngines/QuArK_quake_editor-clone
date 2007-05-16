@@ -82,6 +82,11 @@ def BuildMenuBar(editor):
 
     Options1, sc2 = mdloptions.OptionsMenu()
     sc1.update(sc2)   # merge shortcuts
+    l1 = plugins.mdlgridscale.GridMenuCmds
+    l2 = [qmenu.sep]
+    if len(l1):
+        Options1.items = l1 + l2 + Options1.items
+        sc1.update(sc2)   # merge shortcuts
 
     return [File1, Layout1, Edit1, quarkx.toolboxmenu, Commands1, Tools1, Options1], sc1
 
@@ -169,6 +174,11 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.12  2007/04/27 17:27:42  cdunde
+#To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
+#Added new functions for aligning, single and multi selections, Skin-view vertexes.
+#To establish the Model Editors MdlQuickKeys for future use.
+#
 #Revision 1.11  2007/04/22 22:41:50  cdunde
 #Renamed the file mdltools.py to mdltoolbars.py to clarify the files use and avoid
 #confliction with future mdltools.py file to be created for actual tools for the Editor.

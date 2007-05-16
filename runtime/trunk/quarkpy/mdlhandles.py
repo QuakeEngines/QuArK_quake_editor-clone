@@ -950,9 +950,11 @@ def BuildCommonHandles(editor, explorer):
                 pass
             else:
                 plugins.mdlaxisicons.newfinishdrawing(editor, view)
+                plugins.mdlgridscale.gridfinishdrawing(editor, view)
     else:
         for view in editor.layout.views:
             plugins.mdlaxisicons.newfinishdrawing(editor, view)
+            plugins.mdlgridscale.gridfinishdrawing(editor, view)
 
     fs = explorer.uniquesel
     if (fs is None) or editor.linearbox:
@@ -1096,6 +1098,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.38  2007/05/16 06:56:23  cdunde
+#To increase drawing speed of Skin-view during drag
+#and fix picked vertexes for snapping to base location
+#if dragged in the Skin-view before the action is completed.
+#
 #Revision 1.37  2007/04/27 17:27:42  cdunde
 #To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
 #Added new functions for aligning, single and multi selections, Skin-view vertexes.

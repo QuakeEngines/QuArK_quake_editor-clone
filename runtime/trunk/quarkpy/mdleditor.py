@@ -334,6 +334,7 @@ def paintframefill(self, v, currentview):
                         else:
                             comp.filltris = [(None,None)]*len(comp.triangles)
                             v.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(self, v)
                 except:
                     pass
 
@@ -345,6 +346,7 @@ def paintframefill(self, v, currentview):
                     else:
                         comp.filltris = [(None,None)]*len(comp.triangles)
                         v.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(self, v)
 
                 if v.info["viewname"] == "XZ":
                     fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
@@ -354,6 +356,7 @@ def paintframefill(self, v, currentview):
                     else:
                         comp.filltris = [(None,None)]*len(comp.triangles)
                         v.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(self, v)
 
                 if v.info["viewname"] == "3Dwindow":
                     pass
@@ -550,6 +553,11 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.27  2007/04/27 17:27:42  cdunde
+#To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
+#Added new functions for aligning, single and multi selections, Skin-view vertexes.
+#To establish the Model Editors MdlQuickKeys for future use.
+#
 #Revision 1.26  2007/04/19 03:20:06  cdunde
 #To move the selection retention code for the Skin-view vertex drags from the mldhandles.py file
 #to the mdleditor.py file so it can be used for many other functions that cause the same problem.
