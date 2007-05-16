@@ -23,7 +23,7 @@ Info = {
 
 import quarkpy.qhandles
 from quarkpy.mdlmgr import *
-from quarkpy.mdleditor import setframefillcolor
+#from quarkpy.mdleditor import setframefillcolor
 
 
 def lockxclick(m):
@@ -83,16 +83,6 @@ def lockzclick(m):
 Lock_X = qmenu.item("Lock &X", lockxclick, "lock x axis movement")  # Commands menu item
 Lock_Y = qmenu.item("Lock &Y", lockyclick, "lock y axis movement")  # Commands menu item
 Lock_Z = qmenu.item("Lock &Z", lockzclick, "lock z axis movement")  # Commands menu item
-
-
-def clickedbutton(editor):
-    "Rebuilds all the handles depending on active toolbar button"
-    "and deals with filling the model mesh and its color selection"
-
-    for view in editor.layout.views:
-        if view.info["viewname"] == "XY" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
-            setframefillcolor(editor, view)
-    editor.layout.explorer.selchanged()
 
 
 ### Start of 3D views Options Dialog ###
@@ -315,6 +305,10 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
         fillColor5 = $FF8080
           }
         }
+
+        sep: = { Typ="S" Txt=""}
+
+        exit:py = {Txt="Close" }
       }
     """
 
@@ -322,10 +316,9 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
 def OptionsViewsClick(m):
     editor = mapeditor()
     if editor is None: return
-
-    clickedbutton(editor)
   
     def setup(self):
+        editor.findtargetdlg=self
         self.editor = editor
         src = self.src
 
@@ -398,162 +391,123 @@ def OptionsViewsClick(m):
 
         if src["nohandles1"]:
             onenohandles = src["nohandles1"]
-            clickedbutton(editor)
         else:
             onenohandles = "0"
-            clickedbutton(editor)
 
 
         if src["drawnohandles1"]:
             onedrawnohandles = src["drawnohandles1"]
-            clickedbutton(editor)
         else:
             onedrawnohandles = "0"
-            clickedbutton(editor)
 
 
         if src["fillmesh1"]:
             onefillmesh = src["fillmesh1"]
-            clickedbutton(editor)
         else:
             onefillmesh = "0"
-            clickedbutton(editor)
 
 
         if src["fillColor1"]:
             onefillColor = src["fillColor1"]
-            clickedbutton(editor)
         else:
             onefillColor = "$FF8080"
-            clickedbutton(editor)
 
 
         if src["nohandles2"]:
             twonohandles = src["nohandles2"]
-            clickedbutton(editor)
         else:
             twonohandles = "0"
-            clickedbutton(editor)
 
 
         if src["drawnohandles2"]:
             twodrawnohandles = src["drawnohandles2"]
-            clickedbutton(editor)
         else:
             twodrawnohandles = "0"
-            clickedbutton(editor)
 
 
         if src["fillmesh2"]:
             twofillmesh = src["fillmesh2"]
-            clickedbutton(editor)
         else:
             twofillmesh = "0"
-            clickedbutton(editor)
 
 
         if src["fillColor2"]:
             twofillColor = src["fillColor2"]
-            clickedbutton(editor)
         else:
             twofillColor = "$FF8080"
-            clickedbutton(editor)
 
 
         if src["nohandles3"]:
             threenohandles = src["nohandles3"]
-            clickedbutton(editor)
         else:
             threenohandles = "0"
-            clickedbutton(editor)
 
 
         if src["drawnohandles3"]:
             threedrawnohandles = src["drawnohandles3"]
-            clickedbutton(editor)
         else:
             threedrawnohandles = "0"
-            clickedbutton(editor)
+
 
 
         if src["fillmesh3"]:
             threefillmesh = src["fillmesh3"]
-            clickedbutton(editor)
         else:
             threefillmesh = "0"
-            clickedbutton(editor)
 
 
         if src["fillColor3"]:
             threefillColor = src["fillColor3"]
-            clickedbutton(editor)
         else:
             threefillColor = "$FF8080"
-            clickedbutton(editor)
 
 
         if src["nohandles4"]:
             fournohandles = src["nohandles4"]
-            clickedbutton(editor)
         else:
             fournohandles = "0"
-            clickedbutton(editor)
 
 
         if src["drawnohandles4"]:
             fourdrawnohandles = src["drawnohandles4"]
-            clickedbutton(editor)
         else:
             fourdrawnohandles = "0"
-            clickedbutton(editor)
 
 
         if src["fillmesh4"]:
             fourfillmesh = src["fillmesh4"]
-            clickedbutton(editor)
         else:
             fourfillmesh = "0"
-            clickedbutton(editor)
 
 
         if src["fillColor4"]:
             fourfillColor = src["fillColor4"]
-            clickedbutton(editor)
         else:
             fourfillColor = "$FF8080"
-            clickedbutton(editor)
 
 
         if src["nohandles5"]:
             fivenohandles = src["nohandles5"]
-            clickedbutton(editor)
         else:
             fivenohandles = "0"
-            clickedbutton(editor)
 
 
         if src["drawnohandles5"]:
             fivedrawnohandles = src["drawnohandles5"]
-            clickedbutton(editor)
         else:
             fivedrawnohandles = "0"
-            clickedbutton(editor)
 
 
         if src["fillmesh5"]:
             fivefillmesh = src["fillmesh5"]
-            clickedbutton(editor)
         else:
             fivefillmesh = "0"
-            clickedbutton(editor)
 
 
         if src["fillColor5"]:
             fivefillColor = src["fillColor5"]
-            clickedbutton(editor)
         else:
             fivefillColor = "$FF8080"
-            clickedbutton(editor)
 
 
     def action(self, editor=editor):
@@ -782,11 +736,18 @@ def OptionsViewsClick(m):
     #        type = view.info["type"]
     #        if type == "3D":
     #            view.invalidate(1)
-    #            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+    #    qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
-    #    clickedbutton(editor)
+     #   for view in editor.layout.views:
+     #       if view.info["viewname"] == "XY" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
+     #           setframefillcolor(editor, view)
+        editor.layout.explorer.selchanged()
 
-    OptionsViewsDlg(quarkx.clickform, 'optionsviewsdlg', editor, setup, action)
+
+    def onclosing(self,editor=editor):
+        del editor.findtargetdlg
+        
+    OptionsViewsDlg(quarkx.clickform, 'optionsviewsdlg', editor, setup, action, onclosing)
 
 
 
@@ -851,6 +812,10 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.12  2007/04/22 22:41:49  cdunde
+# Renamed the file mdltools.py to mdltoolbars.py to clarify the files use and avoid
+# confliction with future mdltools.py file to be created for actual tools for the Editor.
+#
 # Revision 1.11  2007/04/05 08:13:39  cdunde
 # To add toolbar button links to their Infobase data.
 #
