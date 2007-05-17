@@ -888,7 +888,17 @@ class BaseEditor:
                                 else:
                                     self.dragobject.views = self.layout.views
                                 self.dragobject.dragto(x, y, flags | MB_DRAGGING)
-
+                        else:
+                            self.dragobject.views = view
+                            self.dragobject.dragto(x, y, flags | MB_DRAGGING)
+                         #   if isinstance(self, qhandles.Rotator2D) or isinstance(self, qhandles.ScrollViewDragObject):
+                         #   if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544):
+                         #       if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow"):
+                         #           if isinstance(self, qhandles.HandleDragObject):
+                         #               pass
+                         #           else:
+                         #               view.handles = []
+                         #               view.invalidate()
                     else:
                         self.dragobject.views = self.layout.views
                         self.dragobject.dragto(x, y, flags | MB_DRAGGING)
@@ -1090,6 +1100,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.51  2007/05/16 20:59:03  cdunde
+#To remove unused argument for the mdleditor paintframefill function.
+#
 #Revision 1.50  2007/04/22 21:06:04  cdunde
 #Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
 #as well as its code relocation to proper file and elimination of unnecessary code.

@@ -99,8 +99,13 @@ class ModelEditor(BaseEditor):
         "This builds all the model mesh handles when the Model Editor is first opened."
         " It is also used to rebuild the handles by various functions later."
 
-        for v in self.layout.views:
-            v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
+        from qbaseeditor import flagsmouse
+        if flagsmouse == 1032:
+            return
+        else:
+            for v in self.layout.views:
+                v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
+
      #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
      # linux issue with single quote
         try:
@@ -309,7 +314,7 @@ def setframefillcolor(self, view):
 
 def paintframefill(self, v):
 
-    from qbaseeditor import flagsmouse, currentview
+
     if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
         componentnames = []
         for item in self.Root.dictitems:
@@ -334,19 +339,8 @@ def paintframefill(self, v):
                         else:
                             comp.filltris = [(None,None)]*len(comp.triangles)
                             v.repaint()
-                        plugins.mdlgridscale.gridfinishdrawing(self, v)
                 except:
                     pass
-
-                if v.info["viewname"] == "YZ":
-                    fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
-                        comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
-                        v.repaint()
-                    else:
-                        comp.filltris = [(None,None)]*len(comp.triangles)
-                        v.repaint()
-                        plugins.mdlgridscale.gridfinishdrawing(self, v)
 
                 if v.info["viewname"] == "XZ":
                     fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
@@ -356,10 +350,21 @@ def paintframefill(self, v):
                     else:
                         comp.filltris = [(None,None)]*len(comp.triangles)
                         v.repaint()
-                        plugins.mdlgridscale.gridfinishdrawing(self, v)
+
+                if v.info["viewname"] == "YZ":
+                    fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
+                        comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                        v.repaint()
+                    else:
+                        comp.filltris = [(None,None)]*len(comp.triangles)
+                        v.repaint()
 
                 if v.info["viewname"] == "3Dwindow":
                     pass
+
+                ### Allows the drawing of the gridscale when actually panning.
+                plugins.mdlgridscale.gridfinishdrawing(self, v)
     except:
         pass
 
@@ -553,6 +558,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.29  2007/05/16 20:59:03  cdunde
+#To remove unused argument for the mdleditor paintframefill function.
+#
 #Revision 1.28  2007/05/16 19:39:46  cdunde
 #Added the 2D views gridscale function to the Model Editor's Options menu.
 #

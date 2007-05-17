@@ -34,11 +34,8 @@ mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
 
-
-
-def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
-    oldfinish(editor, view)
-
+#def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
+#    oldfinish(editor, view)
 
 #
 # The handle classes.
@@ -232,9 +229,11 @@ class VertexHandle(qhandles.GenericHandle):
             vtxs = new.vertices
             vtxs[self.index] = vtxs[self.index] + delta
             new.vertices = vtxs
-        editor.finishdrawing(view)    ## Clears the last set of drag lines from the view.
+   #     editor.finishdrawing(view)    ## Clears the last set of drag lines from the view.
         if flags == 1032:             ## To stop drag starting lines from being erased.
             view.repaint()            ## Same as above, not sure why we need both.
+            plugins.mdlgridscale.gridfinishdrawing(editor, view)
+            plugins.mdlaxisicons.newfinishdrawing(editor, view)
         cv = view.canvas()            ## Sets the canvas up.
         cv.pencolor = drag3Dlines     ## Gives the pen color of the lines that will be drawn.
 
@@ -250,7 +249,7 @@ class VertexHandle(qhandles.GenericHandle):
                             pass
                         else:
                             projvtx = view.proj(view.handles[vtx[0]].pos)
-                            view.drawmap(cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1])))
+                            cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
 
         return [self.frame], [new]
 
@@ -1098,6 +1097,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.40  2007/05/16 20:59:04  cdunde
+#To remove unused argument for the mdleditor paintframefill function.
+#
 #Revision 1.39  2007/05/16 19:39:46  cdunde
 #Added the 2D views gridscale function to the Model Editor's Options menu.
 #

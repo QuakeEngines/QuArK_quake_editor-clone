@@ -104,7 +104,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
     #  in the Option menu.
     #
 
-    if not MldOption("AxisXYZ"):return
+
 
     def MakeScroller(layout, view):
         sbviews = [None, None]
@@ -162,6 +162,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
         return scroller
     quarkpy.qhandles.MakeScroller = MakeScroller
 
+    if not MldOption("AxisXYZ"):return
 
 
 
@@ -209,6 +210,10 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.10  2007/05/16 23:28:22  cdunde
+#Fixed panning function that stopped model mesh from being drawn
+#during panning (scrolling) action and removed unnecessary code.
+#
 #Revision 1.9  2007/05/16 20:59:02  cdunde
 #To remove unused argument for the mdleditor paintframefill function.
 #
