@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Fixed model mesh drag guide lines not always displaying during a drag.
+          - Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
+
 * [cdunde]: Added the 2D views gridscale function to the Model Editor's Options menu.
 
 * [cdunde]: Model Editor, increased drawing speed of Skin-view during drag and fix picked vertexes for
