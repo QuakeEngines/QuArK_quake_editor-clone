@@ -87,13 +87,7 @@ class VertexHandle(qhandles.GenericHandle):
         def pick_vertex(m, self=self, editor=editor, view=view):
             itemcount = 0
             if editor.picked == []:
-                ### Method 1 (same in mdlutils.py file)
                 editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
-                ### Method 2 (same in mdlutils.py file)
-             #   editor.picked = editor.picked + [(self.index, self.pos)]
-                ### Method 3 (same in mdlutils.py file)
-             #   editor.picked = editor.picked + [(self.index, view.proj(self.pos + quarkx.vect(0, 0, 0)))]
-
             else:
                 for item in editor.picked:
                     itemcount = itemcount + 1
@@ -105,21 +99,16 @@ class VertexHandle(qhandles.GenericHandle):
                             quarkx.msgbox("Improper Selection!\n\nYou can not choose more then\n3 vertexes for a triangle.\n\nSelection Canceled", MT_ERROR, MB_OK)
                             return None, None
                         else:
-                            ### Method 1 (same in mdlutils.py file)
                             editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
-                            ### Method 2 (same in mdlutils.py file) doesn't work right
-                         #   editor.picked = editor.picked + [(self.index, self.pos)]
-                            ### Method 3 (same in mdlutils.py file)
-                         #   editor.picked = editor.picked + [(self.index, view.proj(self.pos + quarkx.vect(0, 0, 0)))]
-            editor.invalidateviews()
-            import mdleditor
-            mdleditor.paintframefill(editor, view) ## Does not repaint the 3D views, needs fixing.
+            for view in editor.layout.views:
+                mdleditor.setsingleframefillcolor(editor, view)
+                view.repaint()
 
         def pick_cleared(m, editor=editor, view=view):
             editor.picked = []
-            editor.invalidateviews()
-            import mdleditor
-            mdleditor.paintframefill(editor, view) ## Does not repaint the 3D views, needs fixing.
+            for view in editor.layout.views:
+                mdleditor.setsingleframefillcolor(editor, view)
+                view.repaint()
 
         Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AddVertex = qmenu.item("&Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -1097,6 +1086,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.43  2007/05/18 04:57:38  cdunde
+#Fixed individual view modelfill color to display correctly during a model mesh vertex drag.
+#
 #Revision 1.42  2007/05/18 02:16:48  cdunde
 #To remove duplicate definition of the qbaseeditor.py files def invalidateviews function called
 #for in some functions and not others. Too confusing, unnecessary and causes missed functions.
