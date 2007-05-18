@@ -259,6 +259,55 @@ class ModelEditor(BaseEditor):
         mdlbtns.moveselection(self, text, delta)
 
 
+   
+def setsingleframefillcolor(self, view):
+
+    if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+        componentnames = []
+        for item in self.Root.dictitems:
+            if item.endswith(":mc"):
+                componentnames.append(item)
+        componentnames.sort()
+        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+
+    comp = self.Root.currentcomponent
+    
+    if view.info["viewname"] == "XY":
+        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
+            fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
+            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+        else:
+            comp.filltris = [(None,None)]*len(comp.triangles)
+
+    if view.info["viewname"] == "XZ":
+        fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
+        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
+            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+        else:
+            comp.filltris = [(None,None)]*len(comp.triangles)
+
+    if view.info["viewname"] == "YZ":
+        fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
+        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
+            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+        else:
+            comp.filltris = [(None,None)]*len(comp.triangles)
+
+    if view.info["viewname"] == "editors3Dview":
+        fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
+            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+        else:
+            comp.filltris = [(None,None)]*len(comp.triangles)
+  
+    if view.info["viewname"] == "3Dwindow":
+        fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
+            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+        else:
+            comp.filltris = [(None,None)]*len(comp.triangles)
+
+
 
 def setframefillcolor(self, view):
     from qbaseeditor import currentview
@@ -558,6 +607,11 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.30  2007/05/17 23:56:54  cdunde
+#Fixed model mesh drag guide lines not always displaying during a drag.
+#Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
+#General code proper rearrangement and cleanup.
+#
 #Revision 1.29  2007/05/16 20:59:03  cdunde
 #To remove unused argument for the mdleditor paintframefill function.
 #

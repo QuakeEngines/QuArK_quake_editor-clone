@@ -22,6 +22,7 @@ from mdlutils import *
 import mdlentities
 import qmenu
 import qbaseeditor
+import mdleditor
 
 #py2.4 indicates upgrade change for python 2.4
 
@@ -229,12 +230,11 @@ class VertexHandle(qhandles.GenericHandle):
             vtxs = new.vertices
             vtxs[self.index] = vtxs[self.index] + delta
             new.vertices = vtxs
-   #     editor.finishdrawing(view)    ## Clears the last set of drag lines from the view.
         if flags == 1032:             ## To stop drag starting lines from being erased.
-            view.repaint()            ## Same as above, not sure why we need both.
-            plugins.mdlgridscale.gridfinishdrawing(editor, view)
-            plugins.mdlaxisicons.newfinishdrawing(editor, view)
-        cv = view.canvas()            ## Sets the canvas up.
+            mdleditor.setsingleframefillcolor(editor, view)
+            view.repaint()            ## Repaints the view to clear the old lines.
+            plugins.mdlgridscale.gridfinishdrawing(editor, view) ## Sets the modelfill color.
+        cv = view.canvas()            ## Sets the canvas up to draw on.
         cv.pencolor = drag3Dlines     ## Gives the pen color of the lines that will be drawn.
 
         component = editor.Root.currentcomponent
@@ -1097,6 +1097,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.42  2007/05/18 02:16:48  cdunde
+#To remove duplicate definition of the qbaseeditor.py files def invalidateviews function called
+#for in some functions and not others. Too confusing, unnecessary and causes missed functions.
+#Also fixed error message when in the Skin-view after a new triangle is added.
+#
 #Revision 1.41  2007/05/17 23:56:54  cdunde
 #Fixed model mesh drag guide lines not always displaying during a drag.
 #Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
