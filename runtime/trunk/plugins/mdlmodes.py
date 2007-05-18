@@ -745,7 +745,10 @@ def OptionsViewsClick(m):
 
 
     def onclosing(self,editor=editor):
-        del editor.findtargetdlg
+        try:
+            del editor.findtargetdlg
+        except:
+            pass
         
     OptionsViewsDlg(quarkx.clickform, 'optionsviewsdlg', editor, setup, action, onclosing)
 
@@ -812,6 +815,10 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.13  2007/05/16 21:45:58  cdunde
+# To stop all the handles from being redrawn when just clicking the button to open the 3D Options dialog.
+# This also sped up the setting changes substantially. Also fixed and put the close button back in.
+#
 # Revision 1.12  2007/04/22 22:41:49  cdunde
 # Renamed the file mdltools.py to mdltoolbars.py to clarify the files use and avoid
 # confliction with future mdltools.py file to be created for actual tools for the Editor.
