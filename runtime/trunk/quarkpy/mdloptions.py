@@ -18,12 +18,12 @@ from mdlutils import *
 import qmenu
 import qbaseeditor
 
-MdlOption = quarkx.setupsubset(SS_MODEL, "Options")
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
 
     oldfinish(editor, view)
-    if not MapOption("Ticks"):return
+    MdlOption = quarkx.setupsubset(SS_MODEL, "Options")
+    if not MdlOption["Ticks"]:return
 
 
 def RotationMenu2click(menu):
@@ -171,6 +171,10 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.14  2007/03/04 19:40:04  cdunde
+#Added option to draw or not draw handles in the Model Editor 3D views
+#while rotating the model to increase drawing speed.
+#
 #Revision 1.13  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
