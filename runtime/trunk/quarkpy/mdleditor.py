@@ -25,6 +25,7 @@ from qeditor import *
 # Globals
 HoldObject = None
 NewSellist = []
+currentview = None
 
 #py2.4 indicates upgrade change for python 2.4
 
@@ -39,13 +40,16 @@ class ModelEditor(BaseEditor):
 
     picked = []
     skinviewpicked = []
- 
+    dragobject = None
+    
 
     def OpenRoot(self):
         Root = self.fileobject['Root']
      #   if Root is not None: # If you have to open a model to open the Model Editor, how could it be None?
         Root = self.fileobject.findname(Root)
         self.Root = Root
+        self.dragobject = None
+        self.list = ()
 
         if (quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] is None):
             Lock_X = "0"
@@ -65,6 +69,7 @@ class ModelEditor(BaseEditor):
 
     def CloseRoot(self):
         picked = []
+        self.dragobject = None
         ### To stop crossing of skins from model to model when a new model, even with the same name,
         ### is opened in the Model Editor without closing QuArK completely.
         try:
@@ -607,6 +612,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.32  2007/05/18 16:56:23  cdunde
+#Minor file cleanup and comments.
+#
 #Revision 1.31  2007/05/18 04:57:38  cdunde
 #Fixed individual view modelfill color to display correctly during a model mesh vertex drag.
 #
