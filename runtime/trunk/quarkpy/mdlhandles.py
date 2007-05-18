@@ -110,13 +110,13 @@ class VertexHandle(qhandles.GenericHandle):
                          #   editor.picked = editor.picked + [(self.index, self.pos)]
                             ### Method 3 (same in mdlutils.py file)
                          #   editor.picked = editor.picked + [(self.index, view.proj(self.pos + quarkx.vect(0, 0, 0)))]
-            invalidateviews()
+            editor.invalidateviews()
             import mdleditor
             mdleditor.paintframefill(editor, view) ## Does not repaint the 3D views, needs fixing.
 
         def pick_cleared(m, editor=editor, view=view):
             editor.picked = []
-            invalidateviews()
+            editor.invalidateviews()
             import mdleditor
             mdleditor.paintframefill(editor, view) ## Does not repaint the 3D views, needs fixing.
 
@@ -471,29 +471,30 @@ class SkinHandle(qhandles.GenericHandle):
                 cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
 #py2.4            cv.setpixel(p.x, p.y, vertexdotcolor)
             cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
-
-            if editor.skinviewpicked != []:
-                itemnbr = 0
-                for item in editor.skinviewpicked:
-                    if self.tri_index == item[2] and self.ver_index == item[3] and self != item[1]:
-                        editor.skinviewpicked[itemnbr][0] = self.pos
-                        editor.skinviewpicked[itemnbr][1] = self
-                    itemnbr = itemnbr + 1
-
-            if editor is not None:
+            try:
                 if editor.skinviewpicked != []:
-                    itemcount = len(editor.skinviewpicked)
+                    itemnbr = 0
                     for item in editor.skinviewpicked:
-                        if str(self.pos) == str(editor.skinviewpicked[0][0]):
-                            cv.brushcolor = drag3Dlines
-                            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
-                        else:
-                            if len(editor.skinviewpicked) > 1 and itemcount != 0:
-                                if str(self.pos) == str(editor.skinviewpicked[itemcount-1][0]):
-                                    cv.brushcolor = skinviewpicked
-                                    cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
-                                itemcount = itemcount - 1
+                        if self.tri_index == item[2] and self.ver_index == item[3] and self != item[1]:
+                            editor.skinviewpicked[itemnbr][0] = self.pos
+                            editor.skinviewpicked[itemnbr][1] = self
+                        itemnbr = itemnbr + 1
 
+                if editor is not None:
+                    if editor.skinviewpicked != []:
+                        itemcount = len(editor.skinviewpicked)
+                        for item in editor.skinviewpicked:
+                            if str(self.pos) == str(editor.skinviewpicked[0][0]):
+                                cv.brushcolor = drag3Dlines
+                                cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                            else:
+                                if len(editor.skinviewpicked) > 1 and itemcount != 0:
+                                    if str(self.pos) == str(editor.skinviewpicked[itemcount-1][0]):
+                                        cv.brushcolor = skinviewpicked
+                                        cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
+                                    itemcount = itemcount - 1
+            except:
+                pass
 
  #  For setting stuff up at the beginning of a handle drag.
  #
@@ -776,11 +777,11 @@ class BoneHandle(qhandles.GenericHandle):
                     cv.brushcolor = WHITE
                     cv.brushstyle = BS_SOLID
 
+                    view.invalidate
                     p = view.proj(self.start_point)
                     cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
                     p = view.proj(self.end_point)
                     cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
-                    view.invalidate
 
         return [self.bone], [new]
 
@@ -981,8 +982,7 @@ def BuildHandles(editor, explorer, view):
         if box is None:
             h = []
         else:
-            manager = qhandles.LinHandlesManager(MapColor("Linear"), box, list)
-            h = manager.BuildHandles(editor.interestingpoint())
+            h = qhandles.LinHandlesManager(MapColor("Linear"), box, list).BuildHandles()
         h = qhandles.FilterHandles(h, SS_MODEL)
     else:
         #
@@ -1097,6 +1097,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.41  2007/05/17 23:56:54  cdunde
+#Fixed model mesh drag guide lines not always displaying during a drag.
+#Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
+#General code proper rearrangement and cleanup.
+#
 #Revision 1.40  2007/05/16 20:59:04  cdunde
 #To remove unused argument for the mdleditor paintframefill function.
 #

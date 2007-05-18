@@ -43,15 +43,6 @@ def ProjectKeepingLength(A,C,L):
 
 
 #
-# Invalidate all views
-#
-def invalidateviews():
-    editor = mapeditor()
-    if editor is None: return
-    editor.invalidateviews(1)
-
-
-#
 # Checks triangle for vertex [index]
 #
 def checkTriangle(tri, index):
@@ -143,8 +134,7 @@ def addvertex(editor, comp, pos):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "add vertex")
-    invalidateviews()
-
+    editor.invalidateviews(1)
 
 #
 # Updates (drags) a vertex or vertexes in the 'editor.skinviewpicked' list, or similar list,
@@ -239,7 +229,7 @@ def removevertex(comp, index, all3=0):
     else:
         editor.ok(undo, "remove vertex")
         editor.picked = []
-    invalidateviews()
+    editor.invalidateviews(1)
 
 
 #
@@ -309,7 +299,7 @@ def addtriangle(editor):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "add triangle")
-    invalidateviews()
+    editor.invalidateviews(1)
 
 
 #
@@ -330,7 +320,7 @@ def removeTriangle(editor, comp, index):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "remove triangle")
-    invalidateviews()
+    editor.invalidateviews(1)
 
 
 #
@@ -366,7 +356,7 @@ def addframe(editor):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "add frame")
-    invalidateviews()
+    editor.invalidateviews(1)
 
 
 
@@ -440,6 +430,11 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.20  2007/04/27 17:27:42  cdunde
+#To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
+#Added new functions for aligning, single and multi selections, Skin-view vertexes.
+#To establish the Model Editors MdlQuickKeys for future use.
+#
 #Revision 1.19  2007/04/22 23:02:17  cdunde
 #Fixed slight error in Duplicate current frame, was coping incorrect frame.
 #
