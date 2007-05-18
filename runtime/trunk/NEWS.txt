@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Fixed individual view modelfill color to display correctly during a model mesh vertex drag.
+
 * [cdunde]: Fixed error message when in the Skin-view after a new triangle is added.
 
 * [cdunde]: Fixed model mesh drag guide lines not always displaying during a drag.
