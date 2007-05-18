@@ -766,7 +766,7 @@ class BoneHandle(qhandles.GenericHandle):
                     cv.brushcolor = WHITE
                     cv.brushstyle = BS_SOLID
 
-                    view.invalidate
+                    view.invalidate ### This may need to be changed to view.invalidate(1) if the view does not draw correctly.
                     p = view.proj(self.start_point)
                     cv.ellipse(int(p.x)-4, int(p.y)-4, int(p.x)+4, int(p.y)+4)
                     p = view.proj(self.end_point)
@@ -1086,6 +1086,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.44  2007/05/18 14:06:35  cdunde
+#A little faster way to draw picked model mesh vertexes and clearing them.
+#
 #Revision 1.43  2007/05/18 04:57:38  cdunde
 #Fixed individual view modelfill color to display correctly during a model mesh vertex drag.
 #

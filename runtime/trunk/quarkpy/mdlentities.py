@@ -121,6 +121,7 @@ class ComponentType(EntityManager):
  
 
     def handles(o, editor, view):
+        "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
         frame = o.currentframe
         if frame is None:
             return []
@@ -128,6 +129,7 @@ class ComponentType(EntityManager):
             return CallManager("handles", frame, editor, view)
 
     def handlesopt(o, editor):
+        "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
         frame = o.currentframe
         if frame is None:
             return []
@@ -260,6 +262,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.13  2007/04/12 23:57:31  cdunde
+#Activated the 'Hints for handles' function for the Model Editors model mesh vertex hints
+#and Bone Frames hints. Also added their position data display to the Hint Box.
+#
 #Revision 1.12  2006/11/30 01:19:33  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

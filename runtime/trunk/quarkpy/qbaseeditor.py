@@ -327,11 +327,9 @@ class BaseEditor:
 
     def finishdrawing(self, view):
         "Additionnal map view drawings, e.g. handles."
-
         #
         # Which handle is the user currently dragging ?
         #
-
         if self.dragobject is None:
             draghandle = None
         else:
@@ -340,7 +338,6 @@ class BaseEditor:
         #
         # Draw all handles.
         #
-
         cv = view.canvas()
         for h in view.handles:
             h.draw(view, cv, draghandle)
@@ -546,6 +543,7 @@ class BaseEditor:
         flagsmouse = flags              ### Used for the Model Editor only.
         currentview = view              ### Used for the Model Editor only.
         import mdleditor                ### Used for the Model Editor only.
+
         if flags & MB_DRAGEND: ### This is when the mouse button(s) is ACTUALLY released.
             if self.dragobject is not None:
                 if isinstance(self, mdleditor.ModelEditor):
@@ -797,8 +795,6 @@ class BaseEditor:
                 if isinstance(handle, mdlhandles.VertexHandle) and self.layout.explorer.uniquesel.type != ":mf":
                     quarkx.msgbox("You must select a single frame of this component\nbefore you can drag any of its vertexes.", MT_ERROR, MB_OK)
                     handles = None
-            #        self.flags = view
-     #               flags = 2056
                     self.dragobject = None
                     return None
 
@@ -1100,6 +1096,11 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.52  2007/05/17 23:56:54  cdunde
+#Fixed model mesh drag guide lines not always displaying during a drag.
+#Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
+#General code proper rearrangement and cleanup.
+#
 #Revision 1.51  2007/05/16 20:59:03  cdunde
 #To remove unused argument for the mdleditor paintframefill function.
 #

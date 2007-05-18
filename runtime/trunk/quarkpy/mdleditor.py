@@ -106,8 +106,8 @@ class ModelEditor(BaseEditor):
             for v in self.layout.views:
                 v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
 
-     #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
-     # linux issue with single quote
+         #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
+         # linux issue with single quote
         try:
             delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
         except:
@@ -607,6 +607,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.31  2007/05/18 04:57:38  cdunde
+#Fixed individual view modelfill color to display correctly during a model mesh vertex drag.
+#
 #Revision 1.30  2007/05/17 23:56:54  cdunde
 #Fixed model mesh drag guide lines not always displaying during a drag.
 #Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
