@@ -93,22 +93,25 @@ class VertexHandle(qhandles.GenericHandle):
                     itemcount = itemcount + 1
                     if self.index == item[0]:
                         editor.picked.remove(item)
-                        break
+                        for v in editor.layout.views:
+                            mdleditor.setsingleframefillcolor(editor, v)
+                            v.repaint()
+                        return
                     if itemcount == len(editor.picked):
                         if len(editor.picked) == 3:
                             quarkx.msgbox("Improper Selection!\n\nYou can not choose more then\n3 vertexes for a triangle.\n\nSelection Canceled", MT_ERROR, MB_OK)
                             return None, None
                         else:
                             editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
-            for view in editor.layout.views:
-                mdleditor.setsingleframefillcolor(editor, view)
-                view.repaint()
+            for v in editor.layout.views:
+                cv = v.canvas()
+                self.draw(v, cv, self)
 
         def pick_cleared(m, editor=editor, view=view):
             editor.picked = []
-            for view in editor.layout.views:
-                mdleditor.setsingleframefillcolor(editor, view)
-                view.repaint()
+            for v in editor.layout.views:
+                mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
 
         Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AddVertex = qmenu.item("&Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -274,10 +277,12 @@ class SkinHandle(qhandles.GenericHandle):
         def pick_basevertex(m, self=self, editor=editor, view=view):
             if editor.skinviewpicked == []:
                 editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, self.tri_index, self.ver_index]]
+                cv = view.canvas()
+                self.draw(view, cv, self)
             else:
                 if str(self.pos) == str(editor.skinviewpicked[0][0]):
                     editor.skinviewpicked = []
-            view.invalidate()
+                    view.invalidate()
 
         def change_basevertex(m, self=self, editor=editor, view=view):
             for item in editor.skinviewpicked:
@@ -1087,6 +1092,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.46  2007/05/19 21:12:39  cdunde
+#Changed picked vertex functions to much faster drawing method.
+#
 #Revision 1.45  2007/05/18 16:56:23  cdunde
 #Minor file cleanup and comments.
 #
