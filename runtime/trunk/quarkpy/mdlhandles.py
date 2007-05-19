@@ -334,7 +334,8 @@ class SkinHandle(qhandles.GenericHandle):
                                     drag_vtx_index = vtx_index
                                     editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, index, drag_vtx_index]]
                                 vtx_index = vtx_index + 1
-            view.invalidate()
+            cv = view.canvas()
+            self.draw(view, cv, self)
 
         def alignskinvertexesclick(m, self=self, editor=editor, view=view):
 
@@ -1086,6 +1087,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.45  2007/05/18 16:56:23  cdunde
+#Minor file cleanup and comments.
+#
 #Revision 1.44  2007/05/18 14:06:35  cdunde
 #A little faster way to draw picked model mesh vertexes and clearing them.
 #
