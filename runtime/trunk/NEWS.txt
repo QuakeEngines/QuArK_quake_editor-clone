@@ -11,9 +11,11 @@ $Id$
    ########     ########## ####    #### ####         ####    ####
        #####
         #####       Quake Army Knife 6.5 Changelog
-Changed picked vertex functions to much faster drawing method.
+
 6.5.0 Beta 2.1
 =============
+
+* [cdunde]: Model Editor, New methods to stop over draw of handles causing massive program slow down.
 
 * [cdunde]: Model Editor, Changed picked vertex functions to much faster drawing method.
 
