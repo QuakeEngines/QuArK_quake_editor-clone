@@ -103,7 +103,6 @@ class ModelEditor(BaseEditor):
         "Build the handles for all model views."
         "This builds all the model mesh handles when the Model Editor is first opened."
         " It is also used to rebuild the handles by various functions later."
-
         from qbaseeditor import flagsmouse, currentview
         try:
             if flagsmouse == 1032:
@@ -116,6 +115,8 @@ class ModelEditor(BaseEditor):
             if currentview.info["viewname"] == "skinview" and flagsmouse == 2056:
                 for v in self.layout.views:
                     v.handles = v.handles
+            if currentview.info["viewname"] == "3Dwindow" and (flagsmouse == 1048 or flagsmouse == 1056):
+                currentview.handles = currentview.handles
             else:
                 for v in self.layout.views:
                     v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
@@ -497,7 +498,7 @@ def commonhandles(self, redraw=1):
         if isinstance(self.dragobject, qhandles.HandleDragObject):
             pass
         else:
-            if (flagsmouse == 1032 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
+            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "editors3Dview":
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
@@ -517,7 +518,7 @@ def commonhandles(self, redraw=1):
         if isinstance(self.dragobject, qhandles.HandleDragObject):
             pass
         else:
-            if (flagsmouse == 1032 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
+            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "3Dwindow":
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
@@ -699,6 +700,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.35  2007/05/20 09:13:13  cdunde
+#Substantially increased the drawing speed of the
+#Model Editor Skin-view mesh lines and handles.
+#
 #Revision 1.34  2007/05/20 08:42:43  cdunde
 #New methods to stop over draw of handles causing massive program slow down.
 #
