@@ -440,32 +440,37 @@ class SkinHandle(qhandles.GenericHandle):
 
         p = view.proj(self.pos)
         if p.visible:
+
+         #   if flagsmouse == 520  or flagsmouse == 1032:  # pressed LMB to start & while dragging.
+         #       return
+         #   if flagsmouse == 528 or flagsmouse == 1040:  # pressed RMB to start & while panning.
+         #       return
+         #   if flagsmouse == 536 or flagsmouse == 544:  # pressed L & RMB's or CMB to start zooming.
+         #       return
+         #   if flagsmouse == 1048 or flagsmouse == 1056:  # zooming with L & RMB's or CMB pressed.
+         #       return
+                
             cv.pencolor = skinviewmesh
             pv2 = p.tuple
-            for vertex in triangle:
-                fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
-                fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
-                cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
+          #  if flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080:  # This drawing is now done in the qbaseeditor.py finishdrawing function, much faster.
+          #      pass
+          #  else:
+          #      for vertex in triangle:
+          #          fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
+          #          fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
+          #          cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
 
-            cv.reset()
-
-            if flagsmouse == 520  or flagsmouse == 1032:  # pressed LMB to start & while dragging.
-                return
-            if flagsmouse == 528 or flagsmouse == 1040:  # pressed RMB to start & while panning.
-                return
-            if flagsmouse == 536 or flagsmouse == 544:  # pressed L & RMB's or CMB to start zooming.
-                return
-            if flagsmouse == 1056 or flagsmouse == 1048:  # zooming with L & RMB's or CMB pressed.
-                return
-
-            if MldOption("Ticks") == "1":
-#py2.4                cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
-                cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-            else:
-#py2.4                cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
-                cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
-#py2.4            cv.setpixel(p.x, p.y, vertexdotcolor)
-            cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
+          #      cv.reset()
+          #      cv.pencolor = vertexdotcolor
+          #      if MldOption("Ticks") == "1":
+#py2.4                    cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
+          #          cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+          #      else:
+#py2.4                    cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
+          #          cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
+#py2.4                cv.setpixel(p.x, p.y, vertexdotcolor)
+          #  cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
+            cv.pencolor = vertexdotcolor
             try:
                 if editor.skinviewpicked != []:
                     itemnbr = 0
@@ -479,7 +484,7 @@ class SkinHandle(qhandles.GenericHandle):
                     if editor.skinviewpicked != []:
                         itemcount = len(editor.skinviewpicked)
                         for item in editor.skinviewpicked:
-                            if str(self.pos) == str(editor.skinviewpicked[0][0]):
+                            if str(self.pos) == str(editor.skinviewpicked[0][0]) and (self.tri_index == item[2] and self.ver_index == item[3]):
                                 cv.brushcolor = drag3Dlines
                                 cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                             else:
@@ -585,7 +590,7 @@ class SkinHandle(qhandles.GenericHandle):
                     cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
                     cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
                     cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
-      ### To draw to dragging 'guide' lines.
+      ### To draw the dragging 'guide' lines.
                 cv.pencolor = skinviewdraglines
             pv2 = view.proj(v2)
             oldtri = tris[self.tri_index]
@@ -1092,6 +1097,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.47  2007/05/19 21:23:41  cdunde
+#Committed incorrect copy of previous changes.
+#
 #Revision 1.46  2007/05/19 21:12:39  cdunde
 #Changed picked vertex functions to much faster drawing method.
 #

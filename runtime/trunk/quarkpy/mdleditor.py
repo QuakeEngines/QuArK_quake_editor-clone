@@ -497,7 +497,7 @@ def commonhandles(self, redraw=1):
         if isinstance(self.dragobject, qhandles.HandleDragObject):
             pass
         else:
-            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
+            if (flagsmouse == 1032 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "editors3Dview":
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
@@ -517,7 +517,7 @@ def commonhandles(self, redraw=1):
         if isinstance(self.dragobject, qhandles.HandleDragObject):
             pass
         else:
-            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
+            if (flagsmouse == 1032 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "3Dwindow":
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
@@ -537,7 +537,8 @@ def commonhandles(self, redraw=1):
         return
 
     for v in self.layout.views:
-
+        if v.info["viewname"] == "skinview":
+            continue
         ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
         try:
             if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and self.dragobject is None:
@@ -617,12 +618,6 @@ def commonhandles(self, redraw=1):
         hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
 
     for v in self.layout.views:
-        try:
-            if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and self.dragobject is None:
-                if v.viewmode != "tex":
-                    continue
-        except:
-            pass
         if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
             continue
         else:
@@ -631,6 +626,8 @@ def commonhandles(self, redraw=1):
 
     try:
         for v in self.layout.views:
+            if v.info["viewname"] == "skinview":
+                continue
     
             ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
             if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and self.dragobject is None:
@@ -638,7 +635,7 @@ def commonhandles(self, redraw=1):
                     continue
             
             try:
-                if (currentview.info["viewname"] != "editors3Dview") and flagsmouse == 1040:
+                if (currentview.info["viewname"] != "editors3Dview") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056):
                     pass
                 else:
                     if v.info["viewname"] == "editors3Dview" and flagsmouse != 2064:
@@ -702,6 +699,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.34  2007/05/20 08:42:43  cdunde
+#New methods to stop over draw of handles causing massive program slow down.
+#
 #Revision 1.33  2007/05/18 18:16:44  cdunde
 #Reset items added.
 #

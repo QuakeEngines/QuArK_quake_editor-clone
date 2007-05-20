@@ -204,7 +204,6 @@ class BaseEditor:
                         viewcolor = 0
                     mode = mode + highlight
                     gridhcol = quarkx.middlecolor(gridcol, viewcolor, setup["GridHFactor"][0])
-                    # print gridcol, gridhcol
                     nullvect = view.vector('0')
                     zero = view.proj(nullvect)
                     xyz = [(view.proj(quarkx.vect(gs,0,0))-zero),
@@ -334,6 +333,84 @@ class BaseEditor:
             draghandle = None
         else:
             draghandle = self.dragobject.handle
+            
+        import mdleditor
+        if isinstance(self, mdleditor.ModelEditor):
+            try:
+                if currentview.info["viewname"] == "skinview" or view.info["viewname"] == "skinview":
+               #     if flagsmouse == 2056:
+               #         return
+                  #  if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or  flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080 or flagsmouse == 16384) and (currentview.info["viewname"] == "skinview" and view.info["viewname"] == "skinview"):
+                    if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or  flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080 or flagsmouse == 16384) and (view.info["viewname"] == "skinview"):
+                        cv = view.canvas()
+                  #      for h in view.handles:
+                  #          h.draw(view, cv, draghandle)
+                        tex = self.Root.currentcomponent.currentskin
+                        if tex is not None:
+                            texWidth,texHeight = tex["Size"]
+                        else:
+                            if view.info["viewname"] != "skinview":
+                                texWidth,texHeight = currentview.clientarea
+                            else:
+                                texWidth,texHeight = view.clientarea
+                        for triangle in self.Root.currentcomponent.triangles:
+                            cv.pencolor = MapColor("SkinLines", SS_MODEL)
+                            vertex0 = triangle[0]
+                            vertex1 = triangle[1]
+                            vertex2 = triangle[2]
+                            trivertex0 = quarkx.vect(vertex0[1]-int(texWidth*.5), vertex0[2]-int(texHeight*.5), 0)
+                            trivertex1 = quarkx.vect(vertex1[1]-int(texWidth*.5), vertex1[2]-int(texHeight*.5), 0)
+                            trivertex2 = quarkx.vect(vertex2[1]-int(texWidth*.5), vertex2[2]-int(texHeight*.5), 0)
+                            vertex0X, vertex0Y,vertex0Z = view.proj(trivertex0).tuple
+                            vertex1X, vertex1Y,vertex1Z = view.proj(trivertex1).tuple
+                            vertex2X, vertex2Y,vertex2Z = view.proj(trivertex2).tuple
+                            cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
+                            cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
+                            cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
+                       #     if flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080 or flagsmouse == 16384:
+                            if flagsmouse == 16384:
+                       #         cv.reset()
+                                cv.pencolor = MapColor("Vertices", SS_MODEL)
+                                if MldOption("Ticks") == "1":
+                                    cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
+                                    cv.ellipse(int(vertex1X)-2, int(vertex1Y)-2, int(vertex1X)+2, int(vertex1Y)+2)
+                                    cv.ellipse(int(vertex2X)-2, int(vertex2Y)-2, int(vertex2X)+2, int(vertex2Y)+2)
+                                else:
+                                    cv.ellipse(int(vertex0X)-1, int(vertex0Y)-1, int(vertex0X)+1, int(vertex0Y)+1)
+                                    cv.ellipse(int(vertex1X)-1, int(vertex1Y)-1, int(vertex1X)+1, int(vertex1Y)+1)
+                                    cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
+                        if flagsmouse == 16384:
+                            if self.skinviewpicked != []:
+                                for h in view.handles:
+                                    h.draw(view, cv, draghandle)
+
+
+
+
+                #    elif flagsmouse == 16384 and view.info["viewname"] == "skinview":
+                #        pass
+                #        cv = view.canvas()
+                #        for h in view.handles:
+                #            h.draw(view, cv, draghandle)
+                    return
+                else:
+                    if flagsmouse == 16384 or flagsmouse == 2056:
+                        cv = view.canvas()
+                        for h in view.handles:
+                            h.draw(view, cv, draghandle)
+                        return
+                    if flagsmouse == 2064 and (view.info["viewname"] == "XY" or view.info["viewname"] == "YZ" or view.info["viewname"] == "XZ"):
+            #            cv = view.canvas()
+            #            for h in view.handles:
+            #                h.draw(view, cv, draghandle)
+                        return
+                    if flagsmouse == 1032:
+                        cv = view.canvas()
+                        for h in view.handles:
+                            h.draw(view, cv, draghandle)
+                return
+            except:
+                pass
 
         #
         # Draw all handles.
@@ -523,9 +600,43 @@ class BaseEditor:
 
     def invalidateviews(self, rebuild=0, viewmodes=''):
         "Force all views to be redrawn."
-        for v in self.layout.views:
-            if (viewmodes == '') or (v.viewmode == viewmodes):
-                v.invalidate(rebuild)
+
+        import mdleditor
+        if isinstance(self, mdleditor.ModelEditor) and currentview is not None:
+            try:
+                if currentview.info["viewname"] == "skinview":
+                    if flagsmouse == 2056 or flagsmouse == 16384:
+                   #     currentview.invalidate()
+                        return
+                    elif self.layout.selchange:
+                        for v in self.layout.views:
+                            v.invalidate(rebuild)
+                        return
+                    else:
+                   #     currentview.invalidate()
+                        return
+                else:
+             #       if currentview.info["viewname"] == "3Dwindow" and flagsmouse == 2056:
+             #           return
+                    #    if isinstance(self.dragobject, qhandles.HandleDragObject):
+                    #        for v in self.layout.views:
+                    #            v.invalidate(rebuild)
+                    #   #     return
+
+                    if self.layout.selchange:
+                        for v in self.layout.views:
+                            if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow":
+                                v.invalidate(rebuild)
+                        return
+
+                    else:
+                        return
+            except:
+                pass
+        else:
+            for v in self.layout.views:
+                if (viewmodes == '') or (v.viewmode == viewmodes):
+                    v.invalidate(rebuild)
 
 
     def explorerrootchange(self, ex, old, new):
@@ -548,7 +659,7 @@ class BaseEditor:
             if self.dragobject is not None:
                 if isinstance(self, mdleditor.ModelEditor):
                     if view.info["viewname"] == "skinview":
-                        if flags == 2064 or flags == 2072 or flags == 2080:
+                        if flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080:
                             import mdlhandles
                             if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
                                 componentnames = []
@@ -562,57 +673,40 @@ class BaseEditor:
                             except:
                                 skindrawobject = None
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
+                            self.finishdrawing(view)
+                            return
                         else:
                             import mdlhandles
+                            holdflagsmouse = flagsmouse
                             self.dragobject.ok(self, x, y, flags)
-                            try:
-                                skindrawobject = self.Root.currentcomponent.currentskin
-                            except:
-                                skindrawobject = None
-                            self.layout.mpp.resetpage()
-                            self.dragobject = None
+                            flagsmouse = holdflagsmouse
+                        #    try:
+                        #        skindrawobject = self.Root.currentcomponent.currentskin
+                        #    except:
+                        #        skindrawobject = None
+                        #    self.layout.mpp.resetpage()
+                    ##        self.dragobject = None
                             return
 
-                    else:
-                        if (flags == 2056 and currentview.info["viewname"] != "skinview") or flags == 2064:
-                            ### Allows handles to be redrawn after rotating model in 3D views
-                            ### but does not when done dragging a handle to stop dupe drawing of them.
-                            if flags == 2056:
-                                if isinstance(self.dragobject, qhandles.HandleDragObject):
-                                    pass
-                                else:
-                                    mdleditor.commonhandles(self)
-                            else:
-                                if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow":
-                                    mdleditor.commonhandles(self)
-                                else:
-                                    if flagsmouse == 2064 and (currentview.info["viewname"] == "XY" or currentview.info["viewname"] == "XZ" or currentview.info["viewname"] == "YZ"):
-                                        mdleditor.paintframefill(self, view)
-
+                holdflagsmouse = flagsmouse
                 try:
                     last,x,y=self.dragobject.lastdrag
 #                    debug('last yes')
                     self.dragobject.ok(self, x, y, flags)
                     self.dragobject = None
+                    flagsmouse = holdflagsmouse
                 except:
 #                    debug('last no')
                     self.dragobject.ok(self, x, y, flags)
+                    flagsmouse = holdflagsmouse
 
-                    if isinstance(self, mdleditor.ModelEditor):
-                        if flags == 2056:
-                            return
-                        else:
-                            if currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow" or currentview.info["viewname"] == "skinview":
-                                pass
-                            else:
-                                for view in self.layout.views:
-                                    if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
-                                        pass
-                                    else:
-                                        plugins.mdlaxisicons.newfinishdrawing(self, view)
-
+                if isinstance(self, mdleditor.ModelEditor):
+                    if (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
+                        mdleditor.commonhandles(self)
                     else:
-                        self.dragobject = None
+                        return
+                else:
+                    self.dragobject = None
         #
         # If the mouse is simply being moved around inside one of the editor's views.
         #
@@ -789,12 +883,12 @@ class BaseEditor:
         #
         # Are we finished dragging the mouse ? Notify the dragobject.
         #
+
         else:
-            if isinstance(self, mdleditor.ModelEditor) and flags == 520:
+            if isinstance(self, mdleditor.ModelEditor) and flagsmouse == 520:
                 import mdlhandles
                 if isinstance(handle, mdlhandles.VertexHandle) and self.layout.explorer.uniquesel.type != ":mf":
-                    quarkx.msgbox("You must select a single frame of this component\nbefore you can drag any of its vertexes.", MT_ERROR, MB_OK)
-                    handles = None
+                    quarkx.msgbox("You must select a single frame of this component\nbefore you can drag any of its vertexes.\n\nClick your LMB once in the\nsame view to release your mouse.", MT_ERROR, MB_OK)
                     self.dragobject = None
                     return None
 
@@ -866,8 +960,13 @@ class BaseEditor:
                                     if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
                                         pass
                                     else:
-                                        if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
-                                            mdleditor.paintframefill(self, view)
+                                    #    for view in self.layout.views:
+                                    #        if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
+                                    #            pass
+                                    #        else:
+                                    #            view.repaint()
+                        #                if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
+                        #                    mdleditor.paintframefill(self, view)
                                         return
                                 else:
                                     if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
@@ -876,17 +975,15 @@ class BaseEditor:
                         if flagsmouse == 2064:
                             if view.info["viewname"] == "skinview":
                                 pass
-                            else:
-                                fs = self.layout.explorer.uniquesel
-                                view.handles = mdlentities.CallManager("handlesopt", fs, self)
-                                if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
-                                    self.dragobject.views = view
-                                else:
-                                    self.dragobject.views = self.layout.views
-                                self.dragobject.dragto(x, y, flags | MB_DRAGGING)
-                        else:
-                            self.dragobject.views = view
-                            self.dragobject.dragto(x, y, flags | MB_DRAGGING)
+                         #   else:
+                         #       fs = self.layout.explorer.uniquesel
+                         #       view.handles = mdlentities.CallManager("handlesopt", fs, self)
+                         #       if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
+                         #           self.dragobject.views = view
+                         #       else:
+                         #           self.dragobject.views = self.layout.views
+                         #       self.dragobject.dragto(x, y, flags | MB_DRAGGING)
+       #                 else:
                          #   if isinstance(self, qhandles.Rotator2D) or isinstance(self, qhandles.ScrollViewDragObject):
                          #   if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544):
                          #       if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow"):
@@ -1096,6 +1193,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.53  2007/05/18 16:56:23  cdunde
+#Minor file cleanup and comments.
+#
 #Revision 1.52  2007/05/17 23:56:54  cdunde
 #Fixed model mesh drag guide lines not always displaying during a drag.
 #Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
