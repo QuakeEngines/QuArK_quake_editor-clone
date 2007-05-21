@@ -367,15 +367,15 @@ class BaseEditor:
                             cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
                             cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
                             cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
-                       #     if flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080 or flagsmouse == 16384:
                             if flagsmouse == 16384:
-                       #         cv.reset()
-                                cv.pencolor = MapColor("Vertices", SS_MODEL)
                                 if MldOption("Ticks") == "1":
+                                    cv.pencolor = MapColor("Vertices", SS_MODEL)
+                                    cv.brushcolor = WHITE
                                     cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
                                     cv.ellipse(int(vertex1X)-2, int(vertex1Y)-2, int(vertex1X)+2, int(vertex1Y)+2)
                                     cv.ellipse(int(vertex2X)-2, int(vertex2Y)-2, int(vertex2X)+2, int(vertex2Y)+2)
                                 else:
+                                    cv.pencolor = MapColor("Vertices", SS_MODEL)
                                     cv.ellipse(int(vertex0X)-1, int(vertex0Y)-1, int(vertex0X)+1, int(vertex0Y)+1)
                                     cv.ellipse(int(vertex1X)-1, int(vertex1Y)-1, int(vertex1X)+1, int(vertex1Y)+1)
                                     cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
@@ -1193,6 +1193,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.54  2007/05/20 09:13:13  cdunde
+#Substantially increased the drawing speed of the
+#Model Editor Skin-view mesh lines and handles.
+#
 #Revision 1.53  2007/05/18 16:56:23  cdunde
 #Minor file cleanup and comments.
 #
