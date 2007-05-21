@@ -94,7 +94,7 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (160,530)
+    size = (160,545)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
     dfsep = 0.62    # sets 62% for labels and the rest for edit boxes
     dlgdef = """
@@ -815,6 +815,10 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.14  2007/05/18 18:19:32  cdunde
+# Fixed console error if Views Options icon button is clicked when the
+# dialog is already opened and then try to close it using its 'X' button.
+#
 # Revision 1.13  2007/05/16 21:45:58  cdunde
 # To stop all the handles from being redrawn when just clicking the button to open the 3D Options dialog.
 # This also sped up the setting changes substantially. Also fixed and put the close button back in.
