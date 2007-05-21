@@ -1886,18 +1886,23 @@ def flat3Dview(view3d, layout, selonly=0):
         #
         # Final part of methods for rotation in the Model Editors 3D views.
         #
-    rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
-    if rotationmode == 2:
-        center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the MODEL at the center of the view.
-    elif rotationmode == 3:
+    editor = mapeditor()
+    import mdleditor
+    if isinstance(editor, mdleditor.ModelEditor):
         from mdlhandles import cursorposatstart
-        if cursorposatstart is None:
-            center = quarkx.vect(0,0,0) + modelcenter
+        rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
+        if rotationmode == 2:
+            center = quarkx.vect(0,0,0) + modelcenter ### Keeps the center of the MODEL at the center of the view.
+        elif rotationmode == 3:
+            if cursorposatstart is None:
+                center = quarkx.vect(0,0,0) + modelcenter
+            else:
+                center = cursorposatstart
         else:
-            center = cursorposatstart
+            center = quarkx.vect(0,0,0) ### For the Original QuArK rotation and "Lock to center of 3Dview" methods.
+        view3d.info["center"] = center
     else:
-        center = quarkx.vect(0,0,0) ### For the Original QuArK rotation and "Lock to center of 3Dview" methods.
-    view3d.info["center"] = center
+        view3d.info["center"] = quarkx.vect(0,0,0)
 
     if selonly:
         layout.editor.setupview(view3d, layout.editor.drawmapsel)
@@ -1910,6 +1915,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.44  2007/04/13 19:48:35  cdunde
+#Changed Center and Linear center Handle dragging hint to give start
+#and progressive drag positions based on grid location.
+#
 #Revision 1.43  2007/04/04 21:34:17  cdunde
 #Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
 #
