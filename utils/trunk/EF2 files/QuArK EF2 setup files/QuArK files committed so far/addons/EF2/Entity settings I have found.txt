@@ -1,0 +1,149 @@
+
+{
+"wait" "-1"
+"angle" "180"
+"classname" "func_door"
+"sound_move" "sound/doors/klingon_jtube.wav"
+// brush 0 (means this entity takes a poly)
+
+{
+"targetname" "t317"
+"classname" "func_explodeobject"
+"spawnflags" "148"
+"dmg" "0"
+"debrismodel" "efx/glass_debris-lg.tik efx/glass_debris-sml.tik"
+// brush 0 (means this entity takes a poly)
+
+{
+"classname" "puzzle_object"
+"puzzleobject_timerHudName" "romtimerhud"
+"targetname" "gus2Credentials"
+"origin" "10056 74 -44"
+}
+
+{
+"type" "patchCapped"
+"classname" "func_group"
+// brush 0 (means this entity takes a poly)
+
+{
+"classname" "sound_speaker"
+"noise" "sound/ships/drull/drull_tilebreak.wav"
+"targetname" "t307"
+"origin" "13192 -2304 120"
+}
+
+{
+"origin" "11220.00 -714.00 -128.00"
+"spawnflags" "1"
+"make_static" "1"
+"model" "enviro/romulan_crate.tik"
+"classname" "enviro_romulan_crate1"
+}
+
+{
+"origin" "15300.68 -303.79 308.00"
+"angle" "315"
+"model" "enviro/romulan_health_console.tik"
+"classname" "enviro_romulan_health-console"
+}
+
+{
+"origin" "15356 -624 416"
+"targetname" "commRoomPlasmaFX2"
+"modelname" "fx/fx-plasmajet-green-directional.tik"
+"classname" "func_spawn"
+"angle" "45"
+"angles" "135.000000 240.000000 0.000000"
+}
+
+{
+"spawnflags" "1"
+"make_static" "1"
+"origin" "17536.00 96.00 128.00"
+"model" "enviro/romulan_crate.tik"
+"classname" "enviro_romulan_crate1"
+"scale" "4"
+}
+
+{
+"origin" "17514.00 -2270.00 36.00"
+"model" "char/romulan-m10-snowguard-rifle-m.tik"
+"classname" "char_romulan_m10_neutral_snowguard_rifle-male1"
+"angle" "90"
+"setgroupid" "666"
+}
+
+"classname" "trigger_hurt"
+"damage" "16576"
+// brush 0 (means this entity takes a poly)
+
+{
+"wait" ".5"
+"classname" "trigger_use"
+"thread" "consoleBeep"
+// brush 0 (means this entity takes a poly)
+
+{
+"classname" "trigger_use"
+"thread" "doorLocked"
+"wait" ".5"
+// brush 0 (means this entity takes a poly)
+
+{
+"dmg" "0"
+"targetname" "secretRock0"
+"killtarget" "secretRockSI"
+"doexplosion" "fx/fx-explosion-debris-rocks-dust-gray.tik"
+"health" "200"
+"spawnflags" "132"
+"classname" "func_explodeobject"
+// brush 0 (means this entity takes a poly)
+
+{
+"targetname" "searchLightConeAttackOrigin5"
+"origin" "7692 -576 728"
+"classname" "script_origin"
+}
+
+{
+"viewmode" "structuralintegrity"
+"targetname" "secretRockSI0"
+"spawnflags" "1"
+"classname" "script_object"
+// brush 0 (means this entity takes a poly)
+
+{
+"target" "secretRock0"
+"killtarget" "secretRockSI0"
+"classname" "trigger_once"
+// brush 0 (means this entity takes a poly)
+
+{
+"triggerondeath" "1"
+"target" "t317"
+"health" "10"
+"classname" "trigger_multiple"
+// brush 0 (means this entity takes a poly)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
