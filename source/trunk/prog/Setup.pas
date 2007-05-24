@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2007/05/06 21:23:40  danielpharos
+Cleaned up some code for Md3 models.
+
 Revision 1.52  2007/05/05 22:16:45  cdunde
 To add .md3 model support for EF2.
 
@@ -229,20 +232,10 @@ uses Windows, SysUtils, Classes, Graphics, Forms, Dialogs, Controls, Reg2,
 const
 {FIXME: This should not be constants, but read from
  the games config: entry }
-{DECKER: These should be made into bit-values instead. Something like:
-  mjQuake     = $00000001;
-  mjHexen     = $00000002;
-  mjQuake2    = $00000004;
-  ...
-  mjSOF       = $00000080;
-  mjQ3A       = $00000100;
-  mjAny       = $FFFFFFFF;
-  mjNotQuake1 = (mjAny - mjQuake1);
-  mjNotQuake2 = (mjAny - mjQuake2);
- This so it will be easier to implement support for games, which could for
- instance have a mixture of file-formats like .WADs _and_ .SHADERS.
- Of cause this will only allow up to 32 different games, but shouldn't that
- be enough? }
+{DanielPharos: These should be changed into 'real' constants,
+without any explicit value. That would allow easier addition
+of new games, and will make invalid any 'spooky' weird
+comparison between gamemodes.}
  mjQuake        = '1';
  mjHexen        = '2';
  mjHalfLife     = '3';
@@ -270,8 +263,10 @@ const
  mjHL2          = 'k';  { Half Life 2 }
  mjJA           = 'l';  { Jedi Academy }
  mjQuake4       = 'm';  { Quake 4 }
- mjRTCWET       = 'n';  { Return To Castle Wolfenstein - Enemy Territory}
+ mjRTCWET       = 'n';  { Return To Castle Wolfenstein - Enemy Territory }
  mjEF2          = 'o';  { Star Trek: Elite Force 2 }
+ mjCOD          = 'p';  { Call of Duty }
+ mjCOD2         = 'q';  { Call of Duty 2 }
  mjWildWest     = 'w';  { WildWest }
 
  mjAny          = #1;

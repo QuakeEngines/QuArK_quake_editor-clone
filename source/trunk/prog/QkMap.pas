@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2007/05/06 21:20:50  danielpharos
+Fixed a bunch of missing BrushDef's in Q3 .map files.
+
 Revision 1.70  2007/04/16 11:34:55  danielpharos
 Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
 
@@ -1638,7 +1641,9 @@ begin
 
        // ... except for Doom 3, where we might have a "version 1" or "version 2" line BEFORE
        // the first "}" ...
-       if (SymbolType=sStringToken) and (CompareText(S,'Version')=0) then
+       if (SymbolType=sStringToken) then
+       begin
+        if (CompareText(S,'Version')=0) then
         begin
          ReadSymbol(sStringToken); // get the map version number // NumValueToken);
          if SymbolType<>sNumValueToken then
@@ -1648,12 +1653,26 @@ begin
          1: Result:=mjDoom3;   // this is a Doom 3 Version 1 map
          2: Result:=mjDoom3;   // this is a Doom 3 Version 2 map
          3: Result:=mjQuake4;  // this is a Quake 4 Version 3 map
-            //Right now all Quake 4 maps are Version 3
+            //Right now all Quake 4 maps are Version 3 to my knowledge
+         else
+           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(267)]); // can't read this map version
+         end;
+         ReadSymbol(sNumValueToken);
+        end
+        else if (CompareText(S,'iwmap')=0) then
+        begin
+         ReadSymbol(sStringToken); // get the map version number // NumValueToken);
+         if SymbolType<>sNumValueToken then
+           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]); // invalid number
+         MapVersion := Trunc(NumericValue+0.5);
+         case MapVersion of
+         4: Result:=mjCOD2;   // this is a Call of Duty 2 map
          else
            raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(267)]); // can't read this map version
          end;
          ReadSymbol(sNumValueToken);
         end;
+       end;
 
        ReadSymbol(sCurlyBracketLeft);
        L.Clear;

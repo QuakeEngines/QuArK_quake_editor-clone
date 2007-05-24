@@ -49,6 +49,8 @@ Code    abbreviation            Name          or Screen name    taken
  n      RTCW-ET         RTCW-Enemy Territory  cdunde            25/06/06
  o      EF2             Star Trek: Elite      DanielPharos      04/16/07
                         Force 2
+ p      COD             Call of Duty          DanielPharos      05/22/07
+ q      COD2            Call of Duty 2        DanielPharos      05/22/07
  w      WildWest        WildWest              Silverpaladin     08/31/03
 
 Note: Some of the above Authors and dates may not be correct
