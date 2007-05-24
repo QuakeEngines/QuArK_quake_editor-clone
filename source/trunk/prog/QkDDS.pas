@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2007/05/06 21:19:53  danielpharos
+Big changes to allow DDS file saving, although it seems DevIL doesn't support that at this time.
+
 Revision 1.1  2007/05/02 22:34:49  danielpharos
 Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
 
@@ -227,7 +230,7 @@ procedure QDDS.SaveFile(Info: TInfoEnreg1);
 var
   PSD: TPixelSetDescription;
 //  TexSize : longword;
-  RawBuffer: String;
+  //RawBuffer: String;
   RawData, RawData2: PByte;
   SourceImg, SourceAlpha, pSourceImg, pSourceAlpha: PChar;
 
@@ -236,7 +239,10 @@ var
   ImageFormat: DevILFormat;
   Width, Height: Integer;
   I, J: Integer;
-  OutputSize: Cardinal;
+  //OutputSize: Cardinal;
+  DumpBuffer: TFileStream;
+  DumpFileName: String;
+  T: Integer;
 begin
  Log(LOG_VERBOSE,'save dds %s',[self.name]);
  with Info do case Format of
@@ -261,18 +267,16 @@ begin
     if PSD.AlphaBits=psa8bpp then
     begin
       ImageBpp:=4;
-      ImageFormat:=IL_RGBA;
+      ImageFormat:=IL_BGRA;
       GetMem(RawData, Width*Height*4);
       RawData2:=RawData;
 
-      SourceImg:=PChar(PSD.Data) + Width * Height * 3;
-      SourceAlpha:=PChar(PSD.AlphaData) + Width * Height;
+      SourceImg:=PChar(PSD.Data);
+      SourceAlpha:=PChar(PSD.AlphaData);
+      pSourceImg:=SourceImg;
+      pSourceAlpha:=SourceAlpha;
       for J:=0 to Height-1 do
       begin
-        Dec(SourceImg, 3 * Width);
-        Dec(SourceAlpha, Width);
-        pSourceImg:=SourceImg;
-        pSourceAlpha:=SourceAlpha;
         for I:=0 to Width-1 do
         begin
           PChar(RawData2)^:=pSourceImg^;
@@ -297,11 +301,10 @@ begin
       GetMem(RawData, Width*Height*3);
       RawData2:=RawData;
 
-      SourceImg:=PChar(PSD.Data) + Width * Height * 3;
+      SourceImg:=PChar(PSD.Data);
+      pSourceImg:=SourceImg;
       for J:=0 to Height-1 do
       begin
-        Dec(SourceImg, 3 * Width);
-        pSourceImg:=SourceImg;
         for I:=0 to Width-1 do
         begin
           PChar(RawData2)^:=pSourceImg^;
@@ -325,7 +328,11 @@ begin
 
     FreeMem(RawData);
 
-    //DanielPharos: How do we retrieve the correct value of the lump?
+    {DanielPharos: This is the code that should be used. It doesn't work however,
+    because of limitations in the current versions of the DevIL library. We
+    bypass this by saving it to a temporary file, and loading that into memory.
+    I know this is dodgy and ugly, but I don't see any other (easy) way.}
+    {//DanielPharos: How do we retrieve the correct value of the lump?
     OutputSize:=Width*Height*10;
     SetLength(RawBuffer,OutputSize);
 
@@ -337,7 +344,52 @@ begin
       Fatal('Unable to save DDS file. Call to ilSaveL failed.');
     end;
 
-    F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
+    F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);}
+
+    //DanielPharos: The bypass:
+    DumpFileName:='C:\0';
+    while FileExists(DumpFileName+'.bmp') or FileExists(DumpFileName+'.dds') do
+    begin
+      //DanielPharos: Ugly way of creating a unique filename...
+      DumpFileName:='C:\'+IntToStr(Random(999999));
+    end;
+    //DanielPharos: Can't save to IL_DDS, DevIL gives
+    //an error then.Format..
+    if ilSave(IL_BMP, PChar(DumpFileName+'.bmp'))=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. Call to ilSave failed.');
+    end;
+
+    //DanielPharos: Now convert the BMP to DDS with NVIDIA's DDS tool...
+    if WinExec(PChar('dlls/nvdxt.exe -file "'+DumpFileName+'.bmp" -output "'+DumpFileName+'.dds" -dxt3 -quality_normal'),SW_HIDE) < 32 then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. Call to WinExec failed.');
+    end;
+    //DanielPharos: Apparently, we have to wait a few secs for NVIDIA's tool to complete...
+    for T:=1 to 20 do
+    begin
+      Sleep(100);
+      if FileExists(DumpFileName+'.dds')=false then
+        break;
+    end;
+
+    if DeleteFile(DumpFileName+'.bmp')=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. Call to DeleteFile(bmp) failed.');
+    end;
+
+    //DanielPharos: Now let's read in that DDS file and be done!
+    DumpBuffer:=TFileStream.Create(DumpFileName+'.dds',fmOpenRead);
+    F.CopyFrom(DumpBuffer,DumpBuffer.Size);
+    DumpBuffer.Free;
+    if DeleteFile(DumpFileName+'.dds')=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. Call to DeleteFile(dds) failed.');
+    end;    
 
     ilDeleteImages(1, @DevILImage);
     CheckDevILError(ilGetError);

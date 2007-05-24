@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2007/05/06 21:19:53  danielpharos
+Big changes to allow DDS file saving, although it seems DevIL doesn't support that at this time.
+
 Revision 1.2  2007/05/02 22:34:50  danielpharos
 Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
 
@@ -212,6 +215,8 @@ var
 
   { DanielPharos: The first parameter should be named Type, but since this is
   a statement in Delphi, we can't use that name }
+  //ilLoad: function (xType : DevILType; const FileName : PChar) : Boolean; stdcall;
+  ilSave: function (xType : DevILType; FileName : PChar) : Boolean; stdcall;
   ilLoadL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Boolean; stdcall;
   ilSaveL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Integer; stdcall;
   //ilConvertImage: function (DestFormat : DevILFormat; DestType : DevILFormatType) : Boolean; stdcall;
@@ -272,6 +277,8 @@ begin
       ilBindImage       := InitDllPointer(HDevIL, 'ilBindImage');
       //ilDeleteImage     := InitDllPointer(HDevIL, 'ilDeleteImage');
       ilDeleteImages    := InitDllPointer(HDevIL, 'ilDeleteImages');
+      //ilLoad            := InitDllPointer(HDevIL, 'ilLoad');
+      ilSave            := InitDllPointer(HDevIL, 'ilSave');
       ilLoadL           := InitDllPointer(HDevIL, 'ilLoadL');
       ilSaveL           := InitDllPointer(HDevIL, 'ilSaveL');
       //ilConvertImage    := InitDllPointer(HDevIL, 'ilConvertImage');
@@ -327,6 +334,8 @@ begin
       ilBindImage           := nil;
       //ilDeleteImage         := nil;
       ilDeleteImages        := nil;
+      //ilLoad                := nil;
+      ilSave                := nil;
       ilLoadL               := nil;
       ilSaveL               := nil;
       //ilConvertImage        := nil;
