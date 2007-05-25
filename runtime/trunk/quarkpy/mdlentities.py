@@ -112,7 +112,7 @@ class EntityManager:
         "Called to draw the Model's Mesh for the 'Component' object 'o'"
         "when in 'Wireframe' view mode, for each animation 'frame'."
  
-       from mdleditor import mdleditor
+        from mdleditor import mdleditor
         editor = mdleditor
         if view.info["viewname"] == "XY":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
@@ -376,6 +376,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.15  2007/05/25 07:44:19  cdunde
+#Added new functions to 'Views Options' to set the model's
+#mesh lines color and draw in frame selection.
+#
 #Revision 1.14  2007/05/18 16:56:22  cdunde
 #Minor file cleanup and comments.
 #
