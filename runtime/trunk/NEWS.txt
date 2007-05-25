@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Model Editor, Added new functions to 'Views Options' to set the model's mesh lines color
+          - and draw in frame selection.
+
 * [cdunde]: Substantially increased the drawing speed of the Model Editor Skin-view mesh lines and handles.
 
 * [cdunde]: Model Editor, New methods to stop over draw of handles causing massive program slow down.
