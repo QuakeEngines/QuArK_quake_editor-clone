@@ -26,6 +26,7 @@ from qeditor import *
 HoldObject = None
 NewSellist = []
 currentview = None
+mdleditor = None
 
 #py2.4 indicates upgrade change for python 2.4
 
@@ -44,6 +45,8 @@ class ModelEditor(BaseEditor):
     
 
     def OpenRoot(self):
+        global mdleditor
+        mdleditor = self
         Root = self.fileobject['Root']
      #   if Root is not None: # If you have to open a model to open the Model Editor, how could it be None?
         Root = self.fileobject.findname(Root)
@@ -700,6 +703,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.36  2007/05/20 22:08:03  cdunde
+#To fix 3D views not drawing handles using the timer during zoom.
+#
 #Revision 1.35  2007/05/20 09:13:13  cdunde
 #Substantially increased the drawing speed of the
 #Model Editor Skin-view mesh lines and handles.
