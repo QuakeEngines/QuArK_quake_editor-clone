@@ -941,21 +941,6 @@ def singleskinzoom(view):
 def BuildCommonHandles(editor, explorer):
     "Build a list of handles to display on all map views."
 
-    import plugins.mdlaxisicons
-    from qbaseeditor import flagsmouse, currentview
-   # if flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080 or flagsmouse == 2088 or flagsmouse == 2096:
-    if flagsmouse == 2064:
-        for view in editor.layout.views:
-            if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
-                pass
-            else:
-                plugins.mdlaxisicons.newfinishdrawing(editor, view)
-                plugins.mdlgridscale.gridfinishdrawing(editor, view)
-    else:
-        for view in editor.layout.views:
-            plugins.mdlaxisicons.newfinishdrawing(editor, view)
-            plugins.mdlgridscale.gridfinishdrawing(editor, view)
-
     fs = explorer.uniquesel
     if (fs is None) or editor.linearbox:
         return []
@@ -1097,6 +1082,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.48  2007/05/20 09:13:13  cdunde
+#Substantially increased the drawing speed of the
+#Model Editor Skin-view mesh lines and handles.
+#
 #Revision 1.47  2007/05/19 21:23:41  cdunde
 #Committed incorrect copy of previous changes.
 #
