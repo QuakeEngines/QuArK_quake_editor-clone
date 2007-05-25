@@ -110,16 +110,14 @@ class ModelEditor(BaseEditor):
         try:
             if flagsmouse == 1032:
                 return
-            if (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
+            elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
                 pass
-            if currentview.info["viewname"] == "editors3Dview" and (flagsmouse == 2056 or flagsmouse == 2064):
+            elif currentview.info["viewname"] == "editors3Dview" and (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
                 for v in self.layout.views:
                     v.handles = v.handles
-            if currentview.info["viewname"] == "skinview" and flagsmouse == 2056:
+            elif currentview.info["viewname"] == "skinview" and flagsmouse == 2056:
                 for v in self.layout.views:
                     v.handles = v.handles
-            if currentview.info["viewname"] == "3Dwindow" and (flagsmouse == 1048 or flagsmouse == 1056):
-                currentview.handles = currentview.handles
             else:
                 for v in self.layout.views:
                     v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
@@ -636,6 +634,8 @@ def commonhandles(self, redraw=1):
             ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
             if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and self.dragobject is None:
                 if v.viewmode != "tex":
+                    if len(v.handles) == 0:
+                        v.handles = hlist
                     continue
             
             try:
@@ -703,6 +703,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.37  2007/05/25 07:21:52  cdunde
+#To try to get a stable global for 'mdleditor'.
+#
 #Revision 1.36  2007/05/20 22:08:03  cdunde
 #To fix 3D views not drawing handles using the timer during zoom.
 #
