@@ -48,14 +48,128 @@ class EntityManager:
     #
 
     def drawback(o, editor, view, mode):
-        "Called to draw a background for the object 'o'."
-        view.drawmap(o, mode)  # draw a dark background for "o"
-#        pass
+        "Called to draw the Model's Mesh for the 'Component' object 'o'"
+        "when in 'Textured' or 'Solid' view mode, for each animation 'frame'."
+
+        if view.info["viewname"] == "XY":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "XZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "YZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "editors3Dview":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "3Dwindow":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+        else:
+            view.drawmap(o, mode)  # draws default color for model mesh lines
 
     def drawsel(o, view, mode):
-        "Called to draw the object 'o' selected."
-#        view.drawmap(o, DM_SELECTED, YELLOW)  # draw normally by default
-        pass
+        "Called to draw the Model's Mesh for the 'Component' object 'o'"
+        "when in 'Wireframe' view mode, for each animation 'frame'."
+ 
+       from mdleditor import mdleditor
+        editor = mdleditor
+        if view.info["viewname"] == "XY":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "XZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "YZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "editors3Dview":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "3Dwindow":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+        else:
+            view.drawmap(o, mode)  # draws default color for model mesh lines
 
     def handles(o, editor, view):
         "Build a list of handles related to this object."
@@ -262,6 +376,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.14  2007/05/18 16:56:22  cdunde
+#Minor file cleanup and comments.
+#
 #Revision 1.13  2007/04/12 23:57:31  cdunde
 #Activated the 'Hints for handles' function for the Model Editors model mesh vertex hints
 #and Bone Frames hints. Also added their position data display to the Hint Box.

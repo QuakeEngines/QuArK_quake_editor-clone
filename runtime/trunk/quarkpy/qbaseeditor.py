@@ -625,7 +625,7 @@ class BaseEditor:
 
                     if self.layout.selchange:
                         for v in self.layout.views:
-                            if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow":
+                            if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
                                 v.invalidate(rebuild)
                         return
 
@@ -1193,6 +1193,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.55  2007/05/21 00:06:46  cdunde
+#To fix Model Editor Skin-view vertexes color drawing.
+#
 #Revision 1.54  2007/05/20 09:13:13  cdunde
 #Substantially increased the drawing speed of the
 #Model Editor Skin-view mesh lines and handles.

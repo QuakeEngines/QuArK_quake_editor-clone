@@ -94,7 +94,7 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (160,545)
+    size = (160,705)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
     dfsep = 0.62    # sets 62% for labels and the rest for edit boxes
     dlgdef = """
@@ -118,6 +118,20 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
         Txt = "Draw no handles"
         Typ = "X1"
         Hint = "No handles will be drawn"
+        }
+
+        framemesh1: =
+        {
+        Txt = "Mesh in Frames"
+        Typ = "X1"
+        Hint = "Mesh will be drawn"
+        }
+
+        frameColor1: =
+        {
+        Txt = "Model mesh color"
+        Typ = "LI"
+        Hint = "Mesh solid fill color"
         }
 
         fillmesh1: =
@@ -155,6 +169,20 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
         Hint = "No handles will be drawn"
         }
 
+        framemesh2: =
+        {
+        Txt = "Mesh in Frames"
+        Typ = "X1"
+        Hint = "Mesh will be drawn"
+        }
+
+        frameColor2: =
+        {
+        Txt = "Model mesh color"
+        Typ = "LI"
+        Hint = "Mesh solid fill color"
+        }
+
         fillmesh2: =
         {
         Txt = "Fill in Mesh"
@@ -188,6 +216,20 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
         Txt = "Draw no handles"
         Typ = "X1"
         Hint = "No handles will be drawn"
+        }
+
+        framemesh3: =
+        {
+        Txt = "Mesh in Frames"
+        Typ = "X1"
+        Hint = "Mesh will be drawn"
+        }
+
+        frameColor3: =
+        {
+        Txt = "Model mesh color"
+        Typ = "LI"
+        Hint = "Mesh solid fill color"
         }
 
         fillmesh3: =
@@ -225,6 +267,20 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
         Hint = "No handles will be drawn"
         }
 
+        framemesh4: =
+        {
+        Txt = "Mesh in Frames"
+        Typ = "X1"
+        Hint = "Mesh will be drawn"
+        }
+
+        frameColor4: =
+        {
+        Txt = "Model mesh color"
+        Typ = "LI"
+        Hint = "Mesh solid fill color"
+        }
+
         fillmesh4: =
         {
         Txt = "Fill in Mesh"
@@ -260,6 +316,20 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
         Hint = "No handles will be drawn"
         }
 
+        framemesh5: =
+        {
+        Txt = "Mesh in Frames"
+        Typ = "X1"
+        Hint = "Mesh will be drawn"
+        }
+
+        frameColor5: =
+        {
+        Txt = "Model mesh color"
+        Typ = "LI"
+        Hint = "Mesh solid fill color"
+        }
+
         fillmesh5: =
         {
         Txt = "Fill in Mesh"
@@ -285,22 +355,32 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
           {            // the button resets to these amounts
         nohandles1 = "0"
         drawnohandles1 = "0"
+        framemesh1 = "0"
+        frameColor1 = $FFFFFF
         fillmesh1 = "0"
         fillColor1 = $FF8080
         nohandles2 = "0"
         drawnohandles2 = "0"
+        framemesh2 = "0"
+        frameColor2 = $FFFFFF
         fillmesh2 = "0"
         fillColor2 = $FF8080
         nohandles3 = "0"
         drawnohandles3 = "0"
+        framemesh3 = "0"
+        frameColor3 = $FFFFFF
         fillmesh3 = "0"
         fillColor3 = $FF8080
         nohandles4 = "0"
         drawnohandles4 = "0"
+        framemesh4 = "0"
+        frameColor4 = $FFFFFF
         fillmesh4 = "0"
         fillColor4 = $FF8080
         nohandles5 = "0"
         drawnohandles5 = "0"
+        framemesh5 = "0"
+        frameColor5 = $FFFFFF
         fillmesh5 = "0"
         fillColor5 = $FF8080
           }
@@ -323,68 +403,98 @@ def OptionsViewsClick(m):
         src = self.src
 
       ### To populate settings...
-        if (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor2"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor5"] is None):
+        if (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor1"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor2"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor2"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor3"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor4"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor5"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] is None) and (quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor5"] is None):
 
             src["nohandles1"] = "0"
             src["drawnohandles1"] = "0"
+            src["framemesh1"] = "0"
+            src["frameColor1"] = "$FFFFFF"
             src["fillmesh1"] = "0"
             src["fillColor1"] = "$FF8080"
             src["nohandles2"] = "0"
             src["drawnohandles2"] = "0"
+            src["framemesh2"] = "0"
+            src["frameColor2"] = "$FFFFFF"
             src["fillmesh2"] = "0"
             src["fillColor2"] = "$FF8080"
             src["nohandles3"] = "0"
             src["drawnohandles3"] = "0"
+            src["framemesh3"] = "0"
+            src["frameColor3"] = "$FFFFFF"
             src["fillmesh3"] = "0"
             src["fillColor3"] = "$FF8080"
             src["nohandles4"] = "0"
             src["drawnohandles4"] = "0"
+            src["framemesh4"] = "0"
+            src["frameColor4"] = "$FFFFFF"
             src["fillmesh4"] = "0"
             src["fillColor4"] = "$FF8080"
             src["nohandles5"] = "0"
             src["drawnohandles5"] = "0"
+            src["framemesh5"] = "0"
+            src["frameColor5"] = "$FFFFFF"
             src["fillmesh5"] = "0"
             src["fillColor5"] = "$FF8080"
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] = src["nohandles1"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] = src["drawnohandles1"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] = src["framemesh1"]
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor1"] = src["frameColor1"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] = src["fillmesh1"]
             quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor1"] = src["fillColor1"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] = src["nohandles2"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] = src["drawnohandles2"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] = src["framemesh2"]
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor2"] = src["frameColor2"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] = src["fillmesh2"]
             quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor2"] = src["fillColor2"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] = src["nohandles3"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] = src["drawnohandles3"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] = src["framemesh3"]
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor3"] = src["frameColor3"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] = src["fillmesh3"]
             quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor3"] = src["fillColor3"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] = src["nohandles4"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] = src["drawnohandles4"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] = src["framemesh4"]
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor4"] = src["frameColor4"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] = src["fillmesh4"]
             quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor4"] = src["fillColor4"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] = src["nohandles5"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] = src["drawnohandles5"]
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] = src["framemesh5"]
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor5"] = src["frameColor5"]
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] = src["fillmesh5"]
             quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor5"] = src["fillColor5"]
 
         else:
             src["nohandles1"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"]
             src["drawnohandles1"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"]
+            src["framemesh1"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"]
+            src["frameColor1"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor1"]
             src["fillmesh1"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"]
             src["fillColor1"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor1"]
             src["nohandles2"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"]
             src["drawnohandles2"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"]
+            src["framemesh2"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"]
+            src["frameColor2"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor2"]
             src["fillmesh2"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"]
             src["fillColor2"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor2"]
             src["nohandles3"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"]
             src["drawnohandles3"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"]
+            src["framemesh3"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"]
+            src["frameColor3"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor3"]
             src["fillmesh3"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"]
             src["fillColor3"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor3"]
             src["nohandles4"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"]
             src["drawnohandles4"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"]
+            src["framemesh4"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"]
+            src["frameColor4"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor4"]
             src["fillmesh4"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"]
             src["fillColor4"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor4"]
             src["nohandles5"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"]
             src["drawnohandles5"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"]
+            src["framemesh5"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"]
+            src["frameColor5"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor5"]
             src["fillmesh5"] = quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"]
             src["fillColor5"] = quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor5"]
 
@@ -399,6 +509,18 @@ def OptionsViewsClick(m):
             onedrawnohandles = src["drawnohandles1"]
         else:
             onedrawnohandles = "0"
+
+
+        if src["framemesh1"]:
+            oneframemesh = src["framemesh1"]
+        else:
+            oneframemesh = "0"
+
+
+        if src["frameColor1"]:
+            oneframemesh = src["frameColor1"]
+        else:
+            oneframeColor = "$FFFFFF"
 
 
         if src["fillmesh1"]:
@@ -425,6 +547,18 @@ def OptionsViewsClick(m):
             twodrawnohandles = "0"
 
 
+        if src["framemesh2"]:
+            twoframemesh = src["framemesh2"]
+        else:
+            twoframemesh = "0"
+
+
+        if src["frameColor2"]:
+            twoframemesh = src["frameColor2"]
+        else:
+            twoframeColor = "$FFFFFF"
+
+
         if src["fillmesh2"]:
             twofillmesh = src["fillmesh2"]
         else:
@@ -448,6 +582,17 @@ def OptionsViewsClick(m):
         else:
             threedrawnohandles = "0"
 
+
+        if src["framemesh3"]:
+            threeframemesh = src["framemesh3"]
+        else:
+            threeframemesh = "0"
+
+
+        if src["frameColor3"]:
+            threeframemesh = src["frameColor3"]
+        else:
+            threeframeColor = "$FFFFFF"
 
 
         if src["fillmesh3"]:
@@ -474,6 +619,18 @@ def OptionsViewsClick(m):
             fourdrawnohandles = "0"
 
 
+        if src["framemesh4"]:
+            fourframemesh = src["framemesh4"]
+        else:
+            fourframemesh = "0"
+
+
+        if src["frameColor4"]:
+            fourframemesh = src["frameColor4"]
+        else:
+            fourframeColor = "$FFFFFF"
+
+
         if src["fillmesh4"]:
             fourfillmesh = src["fillmesh4"]
         else:
@@ -496,6 +653,18 @@ def OptionsViewsClick(m):
             fivedrawnohandles = src["drawnohandles5"]
         else:
             fivedrawnohandles = "0"
+
+
+        if src["framemesh5"]:
+            fiveframemesh = src["framemesh5"]
+        else:
+            fiveframemesh = "0"
+
+
+        if src["frameColor5"]:
+            fiveframemesh = src["frameColor5"]
+        else:
+            fiveframeColor = "$FFFFFF"
 
 
         if src["fillmesh5"]:
@@ -526,7 +695,21 @@ def OptionsViewsClick(m):
             onenohandles = (self.src["nohandles1"])
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] = onenohandles
 
+        if (self.src["framemesh1"]) == "1":
+            oneframemesh = (self.src["framemesh1"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] = oneframemesh
+        else:
+            (self.src["framemesh1"]) = "0"
+            oneframemesh = (self.src["framemesh1"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] = oneframemesh
 
+        if (self.src["frameColor1"]) != None and quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor1"] != None:
+            oneframeColor = (self.src["frameColor1"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor1"] = oneframeColor
+        else:
+            (self.src["frameColor1"]) = "$FFFFFF"
+            oneframeColor = (self.src["frameColor1"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor1"] = oneframeColor
 
         if (self.src["fillmesh1"]) == "1":
             onefillmesh = (self.src["fillmesh1"])
@@ -536,7 +719,6 @@ def OptionsViewsClick(m):
             onefillmesh = (self.src["fillmesh1"])
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] = onefillmesh
 
-
         if (self.src["fillColor1"]) != None and quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor1"] != None:
             onefillColor = (self.src["fillColor1"])
             quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor1"] = onefillColor
@@ -544,8 +726,6 @@ def OptionsViewsClick(m):
             (self.src["fillColor1"]) = "$FF8080"
             onefillColor = (self.src["fillColor1"])
             quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor1"] = onefillColor
-
-
 
         if (self.src["nohandles2"]) == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] == "1":
             twonohandles = (self.src["nohandles2"])
@@ -560,6 +740,22 @@ def OptionsViewsClick(m):
             (self.src["nohandles2"]) = "0"
             twonohandles = (self.src["nohandles2"])
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] = twonohandles
+
+        if (self.src["framemesh2"]) == "1":
+            twoframemesh = (self.src["framemesh2"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] = twoframemesh
+        else:
+            (self.src["framemesh2"]) = "0"
+            twoframemesh = (self.src["framemesh2"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] = twoframemesh
+
+        if (self.src["frameColor2"]) != None and quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor2"] != None:
+            twoframeColor = (self.src["frameColor2"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor2"] = twoframeColor
+        else:
+            (self.src["frameColor2"]) = "$FFFFFF"
+            twoframeColor = (self.src["frameColor2"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor2"] = twoframeColor
 
         if (self.src["fillmesh2"]) == "1":
             twofillmesh = (self.src["fillmesh2"])
@@ -591,6 +787,22 @@ def OptionsViewsClick(m):
             threenohandles = (self.src["nohandles3"])
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] = threenohandles
 
+        if (self.src["framemesh3"]) == "1":
+            threeframemesh = (self.src["framemesh3"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] = threeframemesh
+        else:
+            (self.src["framemesh3"]) = "0"
+            threeframemesh = (self.src["framemesh3"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] = threeframemesh
+
+        if (self.src["frameColor3"]) != None and quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor3"] != None:
+            threeframeColor = (self.src["frameColor3"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor3"] = threeframeColor
+        else:
+            (self.src["frameColor3"]) = "$FFFFFF"
+            threeframeColor = (self.src["frameColor3"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor3"] = threeframeColor
+
         if (self.src["fillmesh3"]) == "1":
             threefillmesh = (self.src["fillmesh3"])
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] = threefillmesh
@@ -598,7 +810,6 @@ def OptionsViewsClick(m):
             (self.src["fillmesh3"]) = "0"
             threefillmesh = (self.src["fillmesh3"])
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] = threefillmesh
-
 
         if (self.src["fillColor3"]) != None and quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor3"] != None:
             threefillColor = (self.src["fillColor3"])
@@ -621,6 +832,22 @@ def OptionsViewsClick(m):
             (self.src["nohandles4"]) = "0"
             fournohandles = (self.src["nohandles4"])
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] = fournohandles
+
+        if (self.src["framemesh4"]) == "1":
+            fourframemesh = (self.src["framemesh4"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] = fourframemesh
+        else:
+            (self.src["framemesh4"]) = "0"
+            fourframemesh = (self.src["framemesh4"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] = fourframemesh
+
+        if (self.src["frameColor4"]) != None and quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor4"] != None:
+            fourframeColor = (self.src["frameColor4"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor4"] = fourframeColor
+        else:
+            (self.src["frameColor4"]) = "$FFFFFF"
+            fourframeColor = (self.src["frameColor4"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor4"] = fourframeColor
 
         if (self.src["fillmesh4"]) == "1":
             fourfillmesh = (self.src["fillmesh4"])
@@ -652,6 +879,22 @@ def OptionsViewsClick(m):
             fivenohandles = (self.src["nohandles5"])
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] = fivenohandles
 
+        if (self.src["framemesh5"]) == "1":
+            fiveframemesh = (self.src["framemesh5"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] = fiveframemesh
+        else:
+            (self.src["framemesh5"]) = "0"
+            fiveframemesh = (self.src["framemesh5"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] = fiveframemesh
+
+        if (self.src["frameColor5"]) != None and quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor5"] != None:
+            fiveframeColor = (self.src["frameColor5"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor5"] = fiveframeColor
+        else:
+            (self.src["frameColor5"]) = "$FFFFFF"
+            fiveframeColor = (self.src["frameColor5"])
+            quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor5"] = fiveframeColor
+
         if (self.src["fillmesh5"]) == "1":
             fivefillmesh = (self.src["fillmesh5"])
             quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] = fivefillmesh
@@ -670,77 +913,100 @@ def OptionsViewsClick(m):
 
         onenohandles = (self.src["nohandles1"])
         onedrawnohandles = (self.src["drawnohandles1"])
+        oneframemesh = (self.src["framemesh1"])
+        oneframeColor = (self.src["frameColor1"])
         onefillmesh = (self.src["fillmesh1"])
         onefillColor = (self.src["fillColor1"])
         twonohandles = (self.src["nohandles2"])
         twodrawnohandles = (self.src["drawnohandles2"])
+        twoframemesh = (self.src["framemesh2"])
+        twoframeColor = (self.src["frameColor2"])
         twofillmesh = (self.src["fillmesh2"])
         twofillColor = (self.src["fillColor2"])
         threenohandles = (self.src["nohandles3"])
         threedrawnohandles = (self.src["drawnohandles3"])
+        threeframemesh = (self.src["framemesh3"])
+        threeframeColor = (self.src["frameColor3"])
         threefillmesh = (self.src["fillmesh3"])
         threefillColor = (self.src["fillColor3"])
         fournohandles = (self.src["nohandles4"])
         fourdrawnohandles = (self.src["drawnohandles4"])
+        fourframemesh = (self.src["framemesh4"])
+        fourframeColor = (self.src["frameColor4"])
         fourfillmesh = (self.src["fillmesh4"])
         fourfillColor = (self.src["fillColor4"])
         fivenohandles = (self.src["nohandles5"])
         fivedrawnohandles = (self.src["drawnohandles5"])
+        fiveframemesh = (self.src["framemesh5"])
+        fiveframeColor = (self.src["frameColor5"])
         fivefillmesh = (self.src["fillmesh5"])
         fivefillColor = (self.src["fillColor5"])
 
       ### Save the settings...
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] = onenohandles
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles1"] = onedrawnohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] = oneframemesh
+        quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor1"] = oneframeColor
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] = onefillmesh
         quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor1"] = onefillColor
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] = twonohandles
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles2"] = twodrawnohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] = twoframemesh
+        quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor2"] = twoframeColor
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] = twofillmesh
         quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor2"] = twofillColor
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] = threenohandles
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles3"] = threedrawnohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] = threeframemesh
+        quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor3"] = threeframeColor
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] = threefillmesh
         quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor3"] = threefillColor
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] = fournohandles
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles4"] = fourdrawnohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] = fourframemesh
+        quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor4"] = fourframeColor
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] = fourfillmesh
         quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor4"] = fourfillColor
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] = fivenohandles
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_drawnohandles5"] = fivedrawnohandles
+        quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] = fiveframemesh
+        quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_frameColor5"] = fiveframeColor
         quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] = fivefillmesh
         quarkx.setupsubset(SS_MODEL, "Colors")["Options3Dviews_fillColor5"] = fivefillColor
 
         self.src["nohandles1"] = onenohandles
         self.src["drawnohandles1"] = onedrawnohandles
+        self.src["framemesh1"] = oneframemesh
+        self.src["frameColor1"] = oneframeColor
         self.src["fillmesh1"] = onefillmesh
         self.src["fillColor1"] = onefillColor
         self.src["nohandles2"] = twonohandles
         self.src["drawnohandles2"] = twodrawnohandles
+        self.src["framemesh2"] = twoframemesh
+        self.src["frameColor2"] = twoframeColor
         self.src["fillmesh2"] = twofillmesh
         self.src["fillColor2"] = twofillColor
         self.src["nohandles3"] = threenohandles
         self.src["drawnohandles3"] = threedrawnohandles
+        self.src["framemesh3"] = threeframemesh
+        self.src["frameColor3"] = threeframeColor
         self.src["fillmesh3"] = threefillmesh
         self.src["fillColor3"] = threefillColor
         self.src["nohandles4"] = fournohandles
         self.src["drawnohandles4"] = fourdrawnohandles
+        self.src["framemesh4"] = fourframemesh
+        self.src["frameColor4"] = fourframeColor
         self.src["fillmesh4"] = fourfillmesh
         self.src["fillColor4"] = fourfillColor
         self.src["nohandles5"] = fivenohandles
         self.src["drawnohandles5"] = fivedrawnohandles
+        self.src["framemesh5"] = fiveframemesh
+        self.src["frameColor5"] = fiveframeColor
         self.src["fillmesh5"] = fivefillmesh
         self.src["fillColor5"] = fivefillColor
 
-    #    for view in editor.layout.views:
-    #        type = view.info["type"]
-    #        if type == "3D":
-    #            view.invalidate(1)
-    #    qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
-
-     #   for view in editor.layout.views:
-     #       if view.info["viewname"] == "XY" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
-     #           setframefillcolor(editor, view)
+        for view in editor.layout.views:
+            view.invalidate(1)
         editor.layout.explorer.selchanged()
 
 
@@ -815,6 +1081,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.15  2007/05/21 00:05:45  cdunde
+# To resize default setting for dialog box.
+#
 # Revision 1.14  2007/05/18 18:19:32  cdunde
 # Fixed console error if Views Options icon button is clicked when the
 # dialog is already opened and then try to close it using its 'X' button.
