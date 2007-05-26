@@ -459,19 +459,23 @@ def commonhandles(self, redraw=1):
                 if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
                     return
 
-        if flagsmouse == 16384:
-            if self.dragobject is None:
-                pass
-
         if self.layout.selchange:
             pass
 
-        if flagsmouse == 16384 and self.dragobject is not None:
-            if isinstance(self.dragobject, qhandles.HandleDragObject):
-                self.dragobject = None
+        if flagsmouse == 16384:
+            if self.dragobject is None:
+                pass
             else:
-                self.dragobject = None
-                return
+                if isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
+                    pass
+                elif isinstance(self.dragobject, qhandles.HandleDragObject):
+                    self.dragobject = None
+                else:
+                    self.dragobject = None
+                    if currentview.info["viewname"] == "skinview":
+                        pass
+                    else:
+                        return
     except:
         pass
 
@@ -543,7 +547,7 @@ def commonhandles(self, redraw=1):
             continue
         ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
         try:
-            if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and self.dragobject is None:
+            if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
                 if v.viewmode != "tex":
                     continue
                 else:
@@ -632,11 +636,14 @@ def commonhandles(self, redraw=1):
                 continue
     
             ### To update only those views that are in 'Textured' mode after a Skin-view drag has been done.
-            if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and self.dragobject is None:
-                if v.viewmode != "tex":
-                    if len(v.handles) == 0:
-                        v.handles = hlist
-                    continue
+            try:
+                if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
+                    if v.viewmode != "tex":
+                        if len(v.handles) == 0:
+                            v.handles = hlist
+                        continue
+            except:
+                pass
             
             try:
                 if (currentview.info["viewname"] != "editors3Dview") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056):
@@ -695,7 +702,9 @@ def commonhandles(self, redraw=1):
                                 for h in hlist:
                                     h.draw(v, cv, None)
             except:
-                pass    
+                pass
+        if currentview.info["viewname"] == "skinview":
+            self.dragobject = None
     except:
         pass
 
@@ -703,6 +712,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.38  2007/05/25 07:27:41  cdunde
+#Removed blocked out dead code and tried to stabilize view handles being lost, going dead.
+#
 #Revision 1.37  2007/05/25 07:21:52  cdunde
 #To try to get a stable global for 'mdleditor'.
 #

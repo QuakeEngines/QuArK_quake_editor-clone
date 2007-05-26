@@ -606,6 +606,10 @@ class BaseEditor:
             try:
                 if currentview.info["viewname"] == "skinview":
                     if flagsmouse == 2056 or flagsmouse == 16384:
+                        if flagsmouse == 16384:
+                            for v in self.layout.views:
+                                if v.viewmode != "wire":
+                                    v.invalidate(rebuild)
                    #     currentview.invalidate()
                         return
                     elif self.layout.selchange:
@@ -1193,6 +1197,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.56  2007/05/25 07:44:19  cdunde
+#Added new functions to 'Views Options' to set the model's
+#mesh lines color and draw in frame selection.
+#
 #Revision 1.55  2007/05/21 00:06:46  cdunde
 #To fix Model Editor Skin-view vertexes color drawing.
 #
