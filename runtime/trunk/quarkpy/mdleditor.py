@@ -112,9 +112,9 @@ class ModelEditor(BaseEditor):
                 return
             elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
                 pass
-            elif currentview.info["viewname"] == "editors3Dview" and (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
-                for v in self.layout.views:
-                    v.handles = v.handles
+      #      elif currentview.info["viewname"] == "editors3Dview" and (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
+      #          for v in self.layout.views:
+      #              v.handles = v.handles
             elif currentview.info["viewname"] == "skinview" and flagsmouse == 2056:
                 for v in self.layout.views:
                     v.handles = v.handles
@@ -472,7 +472,7 @@ def commonhandles(self, redraw=1):
                     self.dragobject = None
                 else:
                     self.dragobject = None
-                    if currentview.info["viewname"] == "skinview":
+                    if currentview.info["viewname"] == "XY" or currentview.info["viewname"] == "XZ" or currentview.info["viewname"] == "YZ" or currentview.info["viewname"] == "skinview":
                         pass
                     else:
                         return
@@ -555,7 +555,7 @@ def commonhandles(self, redraw=1):
         except:
             pass
 
-        if v.info["viewname"] == "XY": # or currentview.info["viewname"] == "XY":
+        if v.info["viewname"] == "XY":
             fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
                 comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
@@ -565,7 +565,7 @@ def commonhandles(self, redraw=1):
                 v.repaint()
 
 
-        if v.info["viewname"] == "XZ": # or currentview.info["viewname"] == "XZ":
+        if v.info["viewname"] == "XZ":
             fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
                 comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
@@ -575,7 +575,7 @@ def commonhandles(self, redraw=1):
                 v.repaint()
 
 
-        if v.info["viewname"] == "YZ": # or currentview.info["viewname"] == "YZ":
+        if v.info["viewname"] == "YZ":
             fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
                 comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
@@ -661,7 +661,7 @@ def commonhandles(self, redraw=1):
             except:
                 pass    
 
-            if v.info["viewname"] == "XY": # and flagsmouse != 2056:
+            if v.info["viewname"] == "XY":
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
                     pass
                 else:
@@ -670,7 +670,7 @@ def commonhandles(self, redraw=1):
                     for h in hlist:
                         h.draw(v, cv, None)
 
-            if v.info["viewname"] == "YZ": # and flagsmouse != 2056:
+            if v.info["viewname"] == "YZ":
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
                     pass
                 else:
@@ -679,7 +679,7 @@ def commonhandles(self, redraw=1):
                     for h in hlist:
                         h.draw(v, cv, None)
 
-            if v.info["viewname"] == "XZ": # and flagsmouse != 2056:
+            if v.info["viewname"] == "XZ":
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
                     pass
                 else:
@@ -712,6 +712,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.39  2007/05/26 07:00:57  cdunde
+#To allow rebuild and handle drawing after selection has changed
+#of all non-wireframe views when currentview is the 'skinview'.
+#
 #Revision 1.38  2007/05/25 07:27:41  cdunde
 #Removed blocked out dead code and tried to stabilize view handles being lost, going dead.
 #
