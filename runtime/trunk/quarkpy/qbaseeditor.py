@@ -979,23 +979,6 @@ class BaseEditor:
                         if flagsmouse == 2064:
                             if view.info["viewname"] == "skinview":
                                 pass
-                         #   else:
-                         #       fs = self.layout.explorer.uniquesel
-                         #       view.handles = mdlentities.CallManager("handlesopt", fs, self)
-                         #       if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
-                         #           self.dragobject.views = view
-                         #       else:
-                         #           self.dragobject.views = self.layout.views
-                         #       self.dragobject.dragto(x, y, flags | MB_DRAGGING)
-       #                 else:
-                         #   if isinstance(self, qhandles.Rotator2D) or isinstance(self, qhandles.ScrollViewDragObject):
-                         #   if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544):
-                         #       if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow"):
-                         #           if isinstance(self, qhandles.HandleDragObject):
-                         #               pass
-                         #           else:
-                         #               view.handles = []
-                         #               view.invalidate()
                     else:
                         self.dragobject.views = self.layout.views
                         self.dragobject.dragto(x, y, flags | MB_DRAGGING)
@@ -1197,6 +1180,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.57  2007/05/26 07:00:57  cdunde
+#To allow rebuild and handle drawing after selection has changed
+#of all non-wireframe views when currentview is the 'skinview'.
+#
 #Revision 1.56  2007/05/25 07:44:19  cdunde
 #Added new functions to 'Views Options' to set the model's
 #mesh lines color and draw in frame selection.
