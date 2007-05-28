@@ -457,6 +457,12 @@ def commonhandles(self, redraw=1):
                 return
 
         if flagsmouse == 16384:
+            if isinstance(self.dragobject, qhandles.ScrollViewDragObject):
+                if treeviewselchanged == 1:
+                    mdlmgr.treeviewselchanged = 0
+                    self.dragobject = None
+                else:
+                    return
             if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
                 if treeviewselchanged == 1:
                     mdlmgr.treeviewselchanged = 0
@@ -709,6 +715,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.41  2007/05/28 05:33:01  cdunde
+#To stop 'Zoom' from doing multiple handle drawings.
+#
 #Revision 1.40  2007/05/26 07:07:32  cdunde
 #Commented out code causing complete mess up in all views after drag in editors 3D view.
 #Added code to allow 2D views to complete handle drawing process after zoom.
