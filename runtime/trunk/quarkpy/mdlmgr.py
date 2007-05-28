@@ -36,6 +36,11 @@ startup = 0
 saveskin = None
 savedskins = {}
 skincount = 0
+treeviewselchanged = 0 ### This global is set to 1 when any new item is selected in the Tree-view.
+                       ### 1) Use it like this in any file: from mdlmgr import treeviewselchanged
+                       ### 2) Test for its value of 0 or 1:     if treeviewselchanged == 1:
+                       ### 3) After using be SURE to reset:         mdlmgr.treeviewselchanged = 0
+                       ### 4) Then complete your function :         return
 
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
@@ -430,6 +435,7 @@ class ModelLayout(BaseLayout):
 
     def selchange(self):
         "This calls for what ever selection def you are using above."
+        global treeviewselchanged
 
         if self.explorer.sellist != []:
             fs = self.explorer.sellist[0]
@@ -437,6 +443,7 @@ class ModelLayout(BaseLayout):
             fs = None
 
         if fs is not None:
+            treeviewselchanged = 1
             if fs.type == ':mf':       # frame
                 self.selectframe(fs)
             elif fs.type == ':fg':     # frame group
@@ -479,6 +486,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.30  2007/04/27 17:26:59  cdunde
+#Update Infobase links.
+#
 #Revision 1.29  2007/04/22 22:41:50  cdunde
 #Renamed the file mdltools.py to mdltoolbars.py to clarify the files use and avoid
 #confliction with future mdltools.py file to be created for actual tools for the Editor.
