@@ -86,6 +86,9 @@ The developers of used libraries/programs
                         Nicolas Weber
                         http://openil.sourceforge.net/
 
+- NVDXT:
+                        http://www.nvidia.com/
+
 - FastMM:
                         Pierre le Riche
                         http://fastmm.sourceforge.net/

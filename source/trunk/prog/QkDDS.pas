@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2007/05/24 20:41:20  danielpharos
+Workaround for DDS file saving. Ugly, but it should work (most of the time).
+
 Revision 1.2  2007/05/06 21:19:53  danielpharos
 Big changes to allow DDS file saving, although it seems DevIL doesn't support that at this time.
 
@@ -56,7 +59,7 @@ procedure CheckDevILError(DevILError: DevILError);
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging;
+uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, QkApplPaths;
 
 var
   DevILLoaded: Boolean;
@@ -242,7 +245,8 @@ var
   //OutputSize: Cardinal;
   DumpBuffer: TFileStream;
   DumpFileName: String;
-  T: Integer;
+  NVDXTStartupInfo: StartUpInfo;
+  NVDXTProcessInformation: Process_Information;
 begin
  Log(LOG_VERBOSE,'save dds %s',[self.name]);
  with Info do case Format of
@@ -348,37 +352,53 @@ begin
 
     //DanielPharos: The bypass:
     DumpFileName:='C:\0';
-    while FileExists(DumpFileName+'.bmp') or FileExists(DumpFileName+'.dds') do
+    while FileExists(DumpFileName+'.tga') or FileExists(DumpFileName+'.dds') do
     begin
       //DanielPharos: Ugly way of creating a unique filename...
       DumpFileName:='C:\'+IntToStr(Random(999999));
     end;
-    //DanielPharos: Can't save to IL_DDS, DevIL gives
-    //an error then.Format..
-    if ilSave(IL_BMP, PChar(DumpFileName+'.bmp'))=false then
+    //DanielPharos: Can't save to IL_DDS, DevIL gives an error.
+    if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=false then
     begin
       ilDeleteImages(1, @DevILImage);
       Fatal('Unable to save DDS file. Call to ilSave failed.');
     end;
 
-    //DanielPharos: Now convert the BMP to DDS with NVIDIA's DDS tool...
-    if WinExec(PChar('dlls/nvdxt.exe -file "'+DumpFileName+'.bmp" -output "'+DumpFileName+'.dds" -dxt3 -quality_normal'),SW_HIDE) < 32 then
+    //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
+    FillChar(NVDXTStartupInfo, SizeOf(NVDXTStartupInfo), 0);
+    FillChar(NVDXTProcessInformation, SizeOf(NVDXTProcessInformation), 0);
+    NVDXTStartupInfo.cb:=SizeOf(NVDXTStartupInfo);
+    NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
+    NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
+    //If you delete this, don't forget the implementation-link to QkApplPaths
+    if Windows.CreateProcess(nil, PChar('nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -dxt3 -quality_normal'), nil, nil, false, 0, nil, PChar(GetApplicationDllPath), NVDXTStartupInfo, NVDXTProcessInformation)=false then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to WinExec failed.');
-    end;
-    //DanielPharos: Apparently, we have to wait a few secs for NVIDIA's tool to complete...
-    for T:=1 to 20 do
-    begin
-      Sleep(100);
-      if FileExists(DumpFileName+'.dds')=false then
-        break;
+      Fatal('Unable to save DDS file. Call to CreateProcess failed.');
     end;
 
-    if DeleteFile(DumpFileName+'.bmp')=false then
+    //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
+    if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to DeleteFile(bmp) failed.');
+      Fatal('Unable to save DDS file. Call to WaitForSingleObject failed.');
+    end;
+
+    if CloseHandle(NVDXTProcessInformation.hThread)=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. Call to CloseHandle(thread) failed.');
+    end;
+    if CloseHandle(NVDXTProcessInformation.hProcess)=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. Call to CloseHandle(process) failed.');
+    end;
+
+    if DeleteFile(DumpFileName+'.tga')=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. Call to DeleteFile(tga) failed.');
     end;
 
     //DanielPharos: Now let's read in that DDS file and be done!

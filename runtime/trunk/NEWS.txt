@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [DanielPharos]: Finalized .dds image format support. Saving is now possible and reliable.
+
 * [cdunde]: Model Editor, Added new functions to 'Views Options' to set the model's mesh lines color
           - and draw in frame selection.
 
