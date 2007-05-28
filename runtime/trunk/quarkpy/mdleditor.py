@@ -446,6 +446,7 @@ def paintframefill(self, v):
 def commonhandles(self, redraw=1):
     from qbaseeditor import flagsmouse, currentview
     import qhandles
+    from mdlmgr import treeviewselchanged
 
     try:
         if currentview.info["viewname"] =="3Dwindow":
@@ -455,12 +456,13 @@ def commonhandles(self, redraw=1):
                     h.draw(currentview, cv, None)
                 return
 
-            if flagsmouse == 16384:
-                if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
+        if flagsmouse == 16384:
+            if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
+                if treeviewselchanged == 1:
+                    mdlmgr.treeviewselchanged = 0
+                    self.dragobject = None
+                else:
                     return
-
-        if self.layout.selchange:
-            pass
 
         if flagsmouse == 16384:
             if self.dragobject is None:
@@ -469,10 +471,9 @@ def commonhandles(self, redraw=1):
                 if isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
                     pass
                 elif isinstance(self.dragobject, qhandles.HandleDragObject):
-                    self.dragobject = None
+                    pass
                 else:
-                    self.dragobject = None
-                    if currentview.info["viewname"] == "XY" or currentview.info["viewname"] == "XZ" or currentview.info["viewname"] == "YZ" or currentview.info["viewname"] == "skinview":
+                    if currentview.info["viewname"] == "XY" or currentview.info["viewname"] == "XZ" or currentview.info["viewname"] == "YZ" or currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow" or currentview.info["viewname"] == "skinview":
                         pass
                     else:
                         return
@@ -488,16 +489,6 @@ def commonhandles(self, redraw=1):
         self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
 
     comp = self.Root.currentcomponent
-
-
- ### need the line below to stop all handles from drawing after drag in skinview
- ### but QuArK messes up the last true flagsmouse.
- ###       if self.layout.selchange and currentview.info["viewname"] !="skinview":
- #   try:
- #       if currentview.info["viewname"] == "skinview" and self.dragobject is None:
- #           return
- #   except:
- #      pass
 
     try:
         if isinstance(self.dragobject, qhandles.HandleDragObject):
@@ -708,10 +699,20 @@ def commonhandles(self, redraw=1):
     except:
         pass
 
+    mdlmgr.treeviewselchanged = 0
+    if flagsmouse == 16384 and self.dragobject is not None:
+        self.dragobject.handle = None
+        self.dragobject = None
+               
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.40  2007/05/26 07:07:32  cdunde
+#Commented out code causing complete mess up in all views after drag in editors 3D view.
+#Added code to allow 2D views to complete handle drawing process after zoom.
+#
 #Revision 1.39  2007/05/26 07:00:57  cdunde
 #To allow rebuild and handle drawing after selection has changed
 #of all non-wireframe views when currentview is the 'skinview'.
