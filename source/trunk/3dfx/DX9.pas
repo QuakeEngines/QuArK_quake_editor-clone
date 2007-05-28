@@ -58,6 +58,7 @@ var
 begin
   if TimesLoaded = 0 then
   begin
+    //DanielPharos: We need to check for changes, and force a rebuild if needed!
     Result := False;
     try
 
@@ -139,8 +140,9 @@ begin
         StencilBufferBits:=0;
       end;
 
-      //DanielPharos: Some of these need to be set dynamically!
-      //DanielPharos: We need to check for changes, and force a rebuild in needed!
+      //DanielPharos: We're going to need to check if the settings here are OK.
+      //using calls in DirectX. That way, we can do a nice error and shutdown, without
+      //needing a restart of QuArK.
 
       //This is a dummy swapchain. This swapchain will make sure there always is a
       //valid device available for shared resources.
@@ -156,7 +158,6 @@ begin
       else
         raise EErrorFmt(6400, ['BackBufferFormat']);
       end;
-
       PresParm.BackBufferCount := 1;
       PresParm.MultiSampleType := D3DMULTISAMPLE_NONE;
       PresParm.MultiSampleQuality := 0;
@@ -178,7 +179,7 @@ begin
       if (l_Res <> D3D_OK) then
         raise EErrorFmt(6403, ['CreateDevice', DXGetErrorString9(l_Res)]);
 
-      //The first paramter isn't necessarily 0!
+      //The first parameter isn't necessarily 0!
       l_Res:=D3DDevice.GetSwapChain(0, OrigSwapChain);
       if (l_Res <> D3D_OK) then
         raise EErrorFmt(6403, ['GetSwapChain', DXGetErrorString9(l_Res)]);
