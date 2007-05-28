@@ -134,7 +134,7 @@ def addvertex(editor, comp, pos):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "add vertex")
-    editor.invalidateviews(1)
+  #  editor.invalidateviews(1)
 
 #
 # Updates (drags) a vertex or vertexes in the 'editor.skinviewpicked' list, or similar list,
@@ -229,7 +229,7 @@ def removevertex(comp, index, all3=0):
     else:
         editor.ok(undo, "remove vertex")
         editor.picked = []
-    editor.invalidateviews(1)
+  #  editor.invalidateviews(1)
 
 
 #
@@ -299,7 +299,7 @@ def addtriangle(editor):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "add triangle")
-    editor.invalidateviews(1)
+ #   editor.invalidateviews(1)
 
 
 #
@@ -320,7 +320,7 @@ def removeTriangle(editor, comp, index):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "remove triangle")
-    editor.invalidateviews(1)
+ #   editor.invalidateviews(1)
 
 
 #
@@ -356,7 +356,7 @@ def addframe(editor):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "add frame")
-    editor.invalidateviews(1)
+ #   editor.invalidateviews(1)
 
 
 
@@ -430,6 +430,11 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.21  2007/05/18 02:16:48  cdunde
+#To remove duplicate definition of the qbaseeditor.py files def invalidateviews function called
+#for in some functions and not others. Too confusing, unnecessary and causes missed functions.
+#Also fixed error message when in the Skin-view after a new triangle is added.
+#
 #Revision 1.20  2007/04/27 17:27:42  cdunde
 #To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
 #Added new functions for aligning, single and multi selections, Skin-view vertexes.
