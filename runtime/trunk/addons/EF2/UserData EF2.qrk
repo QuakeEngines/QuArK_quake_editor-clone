@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2007/05/06 02:00:35  cdunde
+//Needed to comment out the saving of textures until that is implemented.
+//
 
 
 {
@@ -87,7 +90,7 @@ QQRKSRC1
       Txt = "&GO ! (textures+scripts+build+STVEF)"
       Shortcut = "Ctrl+R"
       RunGame = "1"
-    //  Textures = "1" not ready for texture saving yet
+      Textures = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
@@ -98,7 +101,7 @@ QQRKSRC1
       Txt = "Quic&kGO ! (fast -vis)"
       Shortcut = "Ctrl+K"
       RunGame = "1"
-    //  Textures = "1" not ready for texture saving yet
+      Textures = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
@@ -108,7 +111,7 @@ QQRKSRC1
     {
       Txt = "&Fastest (full bright)"
       Shortcut = "Ctrl+F"
-    //  Textures = "1" not ready for texture saving yet
+      Textures = "1"
       RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
@@ -118,7 +121,7 @@ QQRKSRC1
       Txt = "Fastest on &selection only"
       Shortcut = "Ctrl+P"
       SelOnly = "1"
-    //  Textures = "1" not ready for texture saving yet
+      Textures = "1"
       RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
@@ -130,7 +133,7 @@ QQRKSRC1
     item: =
     {
       Txt = "&Prepare used textures and scripts"
-    //  Textures = "1" not ready for texture saving yet
+      Textures = "1"
     }
     item: =
     {
@@ -140,7 +143,7 @@ QQRKSRC1
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"
-    //  Textures = "1" not ready for texture saving yet
+      Textures = "1"
     }
     item: =
     {
