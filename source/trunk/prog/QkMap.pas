@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2007/05/24 20:42:45  danielpharos
+Reserved gamecodes for Call of Duty 1 and 2.
+
 Revision 1.71  2007/05/06 21:20:50  danielpharos
 Fixed a bunch of missing BrushDef's in Q3 .map files.
 
@@ -1153,7 +1156,7 @@ expected one.
      B.AutoSetSmooth;
 
      ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef3 }
      ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
    finally
      FreeMem(MeshBuf1.CP);
@@ -1243,7 +1246,7 @@ expected one.
       Result:=mjNotQuake1;
     end
   end;
-  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brushDef }
   ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
  end;
 
@@ -1356,8 +1359,64 @@ expected one.
     Surface.NomTex:=texname;   { here we get the texture-name }
     Surface.SetThreePointsUserTex(P0,P1,P2,nil);
   end;
-  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brushDef3 }
   ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+ end;
+
+ procedure ReadCurve;
+ var
+   texname : String;
+   lightmapname : String;
+   CurveParams : array[1..4] of double;
+   I,J: Integer;
+ begin
+   ReadSymbol(sStringToken); // lbrace follows "curve"
+   ReadSymbol(sCurlyBracketLeft); // data follows lbrace
+   //Always toolFlags;?
+   if S<>'toolFlags;' then
+   begin
+     //Better exception handling needed!
+     raise Exception.Create('toolFlags not found!');
+   end;
+   ReadSymbol(sStringToken);
+   texname:=S;
+   ReadSymbol(sStringToken);
+   lightmapname:=S;
+   ReadSymbol(sStringToken);
+   for I:=1 to 4 do
+   begin
+     CurveParams[I]:=NumericValue;
+     ReadSymbol(sNumValueToken);
+   end;
+   //There probably is a how-many-point-are-there number in the params...
+   for I:=1 to 3 do
+   begin
+     ReadSymbol(sBracketLeft);
+     for J:=1 to 3 do
+     begin
+       //v
+       ReadSymbol(sStringToken);
+       //NR 1
+       ReadSymbol(sNumValueToken);
+       //NR 2
+       ReadSymbol(sNumValueToken);
+       //NR 3
+       ReadSymbol(sNumValueToken);
+       //t
+       ReadSymbol(sStringToken);
+       //NR 1
+       ReadSymbol(sNumValueToken);
+       //NR 2
+       ReadSymbol(sNumValueToken);
+       //NR 3
+       ReadSymbol(sNumValueToken);
+       //NR 4
+       ReadSymbol(sNumValueToken);
+     end;
+     ReadSymbol(sBracketRight);
+   end;
+   ReadSymbol(sCurlyBracketRight); // rbrace which finishes the curve
+   ReadSymbol(sCurlyBracketRight); // rbrace which finishes the brush
  end;
 
  procedure ReadSinSurfaceFlags;
@@ -1575,7 +1634,7 @@ expected one.
   divide by the scale to get the .bsp-version of the axis.
   (Zoner's HL tools source, textures.cpp) *)
 
-procedure WC33Params;
+ procedure WC33Params;
  var
   PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
  begin
@@ -1598,6 +1657,26 @@ procedure WC33Params;
        g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
      end;
   end;
+ end;
+
+ procedure ReadCOD2SurfaceParams;
+ begin
+   //We need to do this right. At the moment, we're just dumping the data!
+
+   //Lightmap name...
+   ReadSymbol(sStringToken);
+   //Param 1
+   ReadSymbol(sNumValueToken);
+   //Param 2
+   ReadSymbol(sNumValueToken);
+   //Param 3
+   ReadSymbol(sNumValueToken);
+   //Param 4
+   ReadSymbol(sNumValueToken);
+   //Param 5
+   ReadSymbol(sNumValueToken);
+   //Param 6
+   ReadSymbol(sNumValueToken);
  end;
 
 begin
@@ -1819,6 +1898,13 @@ begin
                  Result:=mjDoom3;
                ReadBrushDef3();
              end
+             else if LowerCase(s)='curve' then
+             begin
+               // A curve means it is a least a Call of Duty 2 (sure not 1?) map
+               if Result=mjQuake then
+                 Result:=mjCOD2;
+               ReadCurve();
+             end
              else
                raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(260)]);
            end
@@ -1868,39 +1954,50 @@ begin
                   Params[I]:=NumericValue;
                   ReadSymbol(sNumValueToken);
                  end;
-              if charmodejeu=mjGenesis3D then
-              begin
-                if PointsToPlane(Surface.Normale)='X' then
-                   Params[4]:=-Params[4];
-              end;
+                if charmodejeu=mjGenesis3D then
+                begin
+                  if PointsToPlane(Surface.Normale)='X' then
+                     Params[4]:=-Params[4];
+                end;
               end;
               {/DECKER}
-              if SymbolType=sNumValueToken then
-               begin
+              if Result=mjCOD2 then
+              begin
+                //What is this 6th number...?
                 NumericValue1:=Round(NumericValue);
                 ReadSymbol(sNumValueToken);
-                if SymbolType<>sNumValueToken then
-                 Result:=mjHexen  { Hexen II : ignore la luminosité de radiation }
-                else
-                 begin  { Quake 2, Heretic2 and Mohaa : read the three fields }
-                  ContentsFlags:=NumericValue1;
-                  Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
-                  Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
-                  ReadSymbol(sNumValueToken);
-                  Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
-                  ReadSymbol(sNumValueToken);
-                  Result:=mjNotQuake1;
-                  if SymbolType=sStringToken then // Mohaa
-                    ReadMohaaSurfaceParms
-                 end;
-               end
-              else
-               if SymbolType=sStringToken then
-                begin  { Sin : extra surface flags as text }
-                 Result:=mjSin;
-                 ReadSinSurfaceFlags(); {DECKER - moved to procedure to increase readability}
-                end;
 
+                ReadCOD2SurfaceParams;
+              end
+              else
+              begin
+                if SymbolType=sNumValueToken then
+                 begin
+                  NumericValue1:=Round(NumericValue);
+                  ReadSymbol(sNumValueToken);
+                  if SymbolType<>sNumValueToken then
+                   Result:=mjHexen  { Hexen II : ignore la luminosité de radiation }
+                   //Could also be bad Call of Duty 2 file (when the 'iwmap 4' header is missing)
+                  else
+                   begin  { Quake 2, Heretic2 and Mohaa : read the three fields }
+                    ContentsFlags:=NumericValue1;
+                    Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
+                    Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
+                    ReadSymbol(sNumValueToken);
+                    Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
+                    ReadSymbol(sNumValueToken);
+                    Result:=mjNotQuake1;
+                    if SymbolType=sStringToken then // Mohaa
+                      ReadMohaaSurfaceParms
+                   end;
+                 end
+                else
+                 if SymbolType=sStringToken then
+                  begin  { Sin : extra surface flags as text }
+                   Result:=mjSin;
+                   ReadSinSurfaceFlags(); {DECKER - moved to procedure to increase readability}
+                  end;
+              end;
               if not Surface.LoadData then
                Inc(InvFaces)
               else
@@ -1923,9 +2020,7 @@ begin
             else
              if ContentsFlags and ContentsOrigin <> 0 then
               OriginBrush:=P;
-         {Rowdy}
-           end; // end of not patchDef2
-         {/Rowdy}
+           end;
          end;
 
        if (OriginBrush<>Nil) and (EntitePoly<>MapStructure) then
