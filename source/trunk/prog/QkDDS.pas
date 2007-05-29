@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2007/05/28 20:37:45  danielpharos
+Finalized .dds image format support. Saving is now possible and reliable.
+
 Revision 1.3  2007/05/24 20:41:20  danielpharos
 Workaround for DDS file saving. Ugly, but it should work (most of the time).
 
@@ -234,6 +237,7 @@ var
   PSD: TPixelSetDescription;
 //  TexSize : longword;
   //RawBuffer: String;
+  S: String;
   RawData, RawData2: PByte;
   SourceImg, SourceAlpha, pSourceImg, pSourceAlpha: PChar;
 
@@ -243,6 +247,10 @@ var
   Width, Height: Integer;
   I, J: Integer;
   //OutputSize: Cardinal;
+  TexFormat: Integer;
+  TexFormatParameter: String;
+  Quality: Integer;
+  QualityParameter: String;
   DumpBuffer: TFileStream;
   DumpFileName: String;
   NVDXTStartupInfo: StartUpInfo;
@@ -265,11 +273,23 @@ begin
     ilBindImage(DevILImage);
     CheckDevILError(ilGetError);
 
+    TexFormat:=2;
     PSD:=Description;
     Width:=PSD.size.x;
     Height:=PSD.size.y;
     if PSD.AlphaBits=psa8bpp then
     begin
+      S:=SetupGameSet.Specifics.Values['TextureWriteSubFormatA'];
+      if S<>'' then
+      begin
+        try
+          TexFormat:=strtoint(S);
+          if (TexFormat < 0) or (TexFormat > 11) then
+            TexFormat := 2;
+        except
+          TexFormat := 2;
+        end;
+      end;
       ImageBpp:=4;
       ImageFormat:=IL_BGRA;
       GetMem(RawData, Width*Height*4);
@@ -300,6 +320,17 @@ begin
     end
     else
     begin
+      S:=SetupGameSet.Specifics.Values['TextureWriteSubFormat'];
+      if S<>'' then
+      begin
+        try
+          TexFormat:=strtoint(S);
+          if (TexFormat < 0) or (TexFormat > 11) then
+            TexFormat := 2;
+        except
+          TexFormat := 2;
+        end;
+      end;
       ImageBpp:=3;
       ImageFormat:=IL_RGB;
       GetMem(RawData, Width*Height*3);
@@ -332,6 +363,19 @@ begin
 
     FreeMem(RawData);
 
+    Quality:=2;
+    S:=SetupGameSet.Specifics.Values['TextureWriteQuality'];
+    if S<>'' then
+    begin
+      try
+        Quality:=strtoint(S);
+        if (Quality < 0) or (Quality > 3) then
+          Quality := 2;
+      except
+        Quality := 2;
+      end;
+    end;
+
     {DanielPharos: This is the code that should be used. It doesn't work however,
     because of limitations in the current versions of the DevIL library. We
     bypass this by saving it to a temporary file, and loading that into memory.
@@ -351,11 +395,11 @@ begin
     F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);}
 
     //DanielPharos: The bypass:
-    DumpFileName:='C:\0';
+    DumpFileName:=GetApplicationPath+'0';
     while FileExists(DumpFileName+'.tga') or FileExists(DumpFileName+'.dds') do
     begin
       //DanielPharos: Ugly way of creating a unique filename...
-      DumpFileName:='C:\'+IntToStr(Random(999999));
+      DumpFileName:=GetApplicationPath+IntToStr(Random(999999));
     end;
     //DanielPharos: Can't save to IL_DDS, DevIL gives an error.
     if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=false then
@@ -365,13 +409,39 @@ begin
     end;
 
     //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
+    if FileExists(GetApplicationDllPath+'nvdxt.exe')=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      Fatal('Unable to save DDS file. dlls/nvdxt.exe not found.');
+    end;
+
+    case TexFormat of
+    0: TexFormatParameter:='dxt1c';
+    1: TexFormatParameter:='dxt1a';
+    2: TexFormatParameter:='dxt3';
+    3: TexFormatParameter:='dxt5';
+    4: TexFormatParameter:='u1555';
+    5: TexFormatParameter:='u4444';
+    6: TexFormatParameter:='u565';
+    7: TexFormatParameter:='u8888';
+    8: TexFormatParameter:='u888';
+    9: TexFormatParameter:='u555';
+    10: TexFormatParameter:='l8';
+    11: TexFormatParameter:='a8';
+    end;
+    case Quality of
+    0: QualityParameter:='quick';
+    1: QualityParameter:='quality_normal';
+    2: QualityParameter:='quality_production';
+    3: QualityParameter:='quality_highest';
+    end;
     FillChar(NVDXTStartupInfo, SizeOf(NVDXTStartupInfo), 0);
     FillChar(NVDXTProcessInformation, SizeOf(NVDXTProcessInformation), 0);
     NVDXTStartupInfo.cb:=SizeOf(NVDXTStartupInfo);
     NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
     NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
     //If you delete this, don't forget the implementation-link to QkApplPaths
-    if Windows.CreateProcess(nil, PChar('nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -dxt3 -quality_normal'), nil, nil, false, 0, nil, PChar(GetApplicationDllPath), NVDXTStartupInfo, NVDXTProcessInformation)=false then
+    if Windows.CreateProcess(nil, PChar('nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetApplicationDllPath), NVDXTStartupInfo, NVDXTProcessInformation)=false then
     begin
       ilDeleteImages(1, @DevILImage);
       Fatal('Unable to save DDS file. Call to CreateProcess failed.');
@@ -381,6 +451,8 @@ begin
     if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
     begin
       ilDeleteImages(1, @DevILImage);
+      CloseHandle(NVDXTProcessInformation.hThread);
+      CloseHandle(NVDXTProcessInformation.hProcess);
       Fatal('Unable to save DDS file. Call to WaitForSingleObject failed.');
     end;
 
