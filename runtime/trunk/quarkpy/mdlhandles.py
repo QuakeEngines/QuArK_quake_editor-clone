@@ -34,6 +34,7 @@ skinviewdraglines = 0
 mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
+lastmodelfaceremovedlist = []
 
 #def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
 #    oldfinish(editor, view)
@@ -58,6 +59,257 @@ class IconHandle(qhandles.IconHandle):
 
 class MdlEyeDirection(qhandles.EyeDirection):
     MODE = SS_MODEL
+
+
+
+class ModelFaceHandle(qhandles.GenericHandle):
+    "Model Mesh Face selection and edit."
+
+    size = None
+
+    def __init__(self, pos):
+        qhandles.GenericHandle.__init__(self, pos)
+        self.cursor = CR_CROSSH
+        self.undomsg = "model mesh face edit"
+
+
+    def menu(self, editor, view):
+
+        def forcegrid1click(m, self=self, editor=editor, view=view):
+            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+
+        def addhere1click(m, self=self, editor=editor, view=view):
+            addvertex(editor, editor.Root.currentcomponent, self.pos)
+
+        def removevertex1click(m, self=self, editor=editor, view=view):
+            removevertex(editor.Root.currentcomponent, self.index)
+            editor.picked = []
+
+        def pick_vertex(m, self=self, editor=editor, view=view):
+            itemcount = 0
+            if editor.picked == []:
+                editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
+            else:
+                for item in editor.picked:
+                    itemcount = itemcount + 1
+                    if self.index == item[0]:
+                        editor.picked.remove(item)
+                        for v in editor.layout.views:
+                            mdleditor.setsingleframefillcolor(editor, v)
+                            v.repaint()
+                        return
+                    if itemcount == len(editor.picked):
+                        if len(editor.picked) == 3:
+                            quarkx.msgbox("Improper Selection!\n\nYou can not choose more then\n3 vertexes for a triangle.\n\nSelection Canceled", MT_ERROR, MB_OK)
+                            return None, None
+                        else:
+                            editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
+            for v in editor.layout.views:
+                cv = v.canvas()
+                self.draw(v, cv, self)
+
+        def pick_cleared(m, editor=editor, view=view):
+            editor.picked = []
+            for v in editor.layout.views:
+                mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+
+        Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AddVertex = qmenu.item("&Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        RemoveVertex = qmenu.item("&Remove Vertex", removevertex1click, "|Remove Vertex:\n\nThis will remove a vertex from the component and all of its animation frames.\n\nWARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well. If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        PickVertex = qmenu.item("&Pick Vertex", pick_vertex, "|Pick Vertex:\n\n This is used for picking 3 vertexes to create a triangle with. It also works in conjunction with the 'Clear Pick list' below.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+
+        if len(editor.picked) == 0:
+            ClearPicklist.state = qmenu.disabled
+
+        if editor.layout.explorer.sellist != [] and (editor.layout.explorer.sellist[0].type == ":mc" or editor.layout.explorer.sellist[0].type == ":fg" or editor.layout.explorer.sellist[0].type == ":mf"):
+            AddVertex.state = qmenu.normal
+        else:
+            AddVertex.state = qmenu.disabled
+
+        try:
+            if self.index is not None:
+                menu = [AddVertex, RemoveVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+            else:
+                menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+        except:
+            menu = [AddVertex, qmenu.sep, ClearPicklist]
+
+        return menu
+
+
+    def selection(self, editor, view, modelfacelist, flagsmouse, draghandle=None):
+        global lastmodelfaceremovedlist
+        if flagsmouse == 536:
+            lastmodelfaceremovedlist = []
+        print "qbaseeditor 1 modelfacelist ",modelfacelist
+        print "qbaseeditor 1 modelfacelist name ",modelfacelist[0][1].name
+        print "qbaseeditor 1 currentcomponent name  ",editor.Root.currentcomponent.name
+        print "qbaseeditor currentcomponent currentframe ",editor.Root.currentcomponent.currentframe.name
+        for item in modelfacelist:
+            print "qbaseeditor item in modelfacelist name ",item[1].name
+        print "qbaseeditor 1 modelfacelist view ",view.info["viewname"]
+        print "qbaseeditor 1 This is triangle # ",modelfacelist[0][2]
+        print "qbaseeditor 1 modelfacelist[1] ",modelfacelist[0][1].subitems[0].name
+        print "qbaseeditor 1 modelfacelist triangle ",modelfacelist[0][1].triangles[modelfacelist[0][2]]
+        itemsremoved = 0
+        templist = editor.ModelFaceSelList
+        print "qbaseeditor len, templist ",len(templist), templist
+        for item in modelfacelist:
+            if item[1].name == editor.Root.currentcomponent.name:
+                faceremoved = 0
+                if templist == []:
+                    templist = templist + [item]
+                    lastmodelfaceremovedlist = []
+                    break
+                elif lastmodelfaceremovedlist != [] and item[2] == lastmodelfaceremovedlist[0][2]:
+                    pass
+                else:
+                    listsize = len(templist)
+                    lastface = templist[listsize-1]
+                    print "******* WE ARE OVER ************ ",item
+                    print "******* LAST IN LIST ************ ",lastface
+                    if item[2] == lastface[2]:
+                        print "******* SAME FACE WE ARE NOT ADDING ************ ",item
+                        pass
+                    else:
+                        facecount = 0
+                        for face in templist:
+                            if face[2] == item[2]:
+                                templist.remove(templist[facecount])
+                                lastmodelfaceremovedlist = [item]
+                                faceremoved = 1
+                                itemsremoved = itemsremoved + 1
+                                break
+                            facecount = facecount + 1
+                        if faceremoved == 0:
+                            templist = templist + [item]
+                            print "******* NOW FACE NOW BEING ADDED IS ************ ",item
+                break
+        editor.ModelFaceSelList = templist
+        for v in editor.layout.views:
+        #    if v.info["viewname"] == "skinview":
+        #        pass
+        #    else:
+            if itemsremoved != 0:
+                mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()     
+            self.draw(editor, v, editor.ModelFaceSelList)
+
+
+    def draw(self, editor, view, list):
+                
+        cv = view.canvas()
+        cv.pencolor = WHITE
+        cv.penwidth = 2 # add an option to set the penwidth
+        cv.brushcolor = WHITE
+        cv.brushstyle = BS_SOLID
+        print "******* editor.ModelFaceSelList IS ************ ",editor.ModelFaceSelList
+        print "************ NUMBER IN FACE LIST IS  ****************  ",len(editor.ModelFaceSelList)
+        print "******* DRAWING LIST IS ************ ",list
+        print "************ NUMBER IN DRAWING LIST IS  ****************  ",len(list)
+        if len(list) != 0:
+            for item in list:
+                triangleindex = item[2]
+                triangle = item[1].triangles[triangleindex]
+                vertex0 = triangle[0][0]
+                vertex1 = triangle[1][0]
+                vertex2 = triangle[2][0]
+            #    print "qbaseeditor triangle currentframe vertices ",editor.Root.currentcomponent.currentframe.vertices
+            #    print "qbaseeditor triangle vertex0 currentframe ",vertex0
+          #      print "qbaseeditor vertex0 currentframe ",editor.Root.currentcomponent.currentframe.vertices[vertex0]
+          #      print "qbaseeditor vertex1 currentframe ",editor.Root.currentcomponent.currentframe.vertices[vertex1]
+          #      print "qbaseeditor vertex2 currentframe ",editor.Root.currentcomponent.currentframe.vertices[vertex2]
+          #      print "qbaseeditor proj vertex0 ",view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex0]).tuple
+          #      print "qbaseeditor proj vertex1 ",view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex1]).tuple
+          #      print "qbaseeditor proj vertex2 ",view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex2]).tuple
+
+                vertex0X, vertex0Y,vertex0Z = view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex0]).tuple
+                vertex1X, vertex1Y,vertex1Z = view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex1]).tuple
+                vertex2X, vertex2Y,vertex2Z = view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex2]).tuple
+                cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
+                cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
+                cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
+         #       tri = editor.Root.currentcomponent.triangles[item[2]]
+         #       print "qbaseeditor tri has vtx tri0, type currentframe ",tri[0], type(tri[0])
+         #       print "qbaseeditor tri has vtx tri1 currentframe ",tri[1]
+         #       print "qbaseeditor tri has vtx tri2 currentframe ",tri[2]
+         #       for j in range(len(tri)):
+         #           vtx = tri[j]
+         #           print "qbaseeditor tri has j, vtx currentframe ",j, vtx
+
+
+  #  For setting stuff up at the beginning of a drag
+  #
+  #  def start_drag(self, view, x, y):
+  #      editor = mapeditor()
+
+
+    def drag(self, v1, v2, flags, view):
+        editor = mapeditor()
+        pv2 = view.proj(v2)        ### v2 is the SINGLE handle's (being dragged) 3D position (x,y and z in space).
+                                   ### And this converts its 3D position to the monitor's FLAT screen 2D and 3D views
+                                   ### 2D (x,y) position to draw it, (NOTICE >) using the 3D "y" and "z" position values.
+        p0 = view.proj(self.pos)
+
+        if not p0.visible: return
+        if flags&MB_CTRL:
+            v2 = qhandles.aligntogrid(v2, 0)
+        delta = v2-v1
+        if editor is not None:
+            if editor.lock_x==1:
+                delta = quarkx.vect(0, delta.y, delta.z)
+            if editor.lock_y==1:
+                delta = quarkx.vect(delta.x, 0, delta.z)
+            if editor.lock_z==1:
+                delta = quarkx.vect(delta.x, delta.y, 0)
+
+        if view.info["viewname"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["viewname"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["viewname"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        self.draghint = s
+
+        new = self.frame.copy()
+        if delta or (flags&MB_REDIMAGE):
+            vtxs = new.vertices
+            vtxs[self.index] = vtxs[self.index] + delta
+            new.vertices = vtxs
+        if flags == 1032:             ## To stop drag starting lines from being erased.
+            mdleditor.setsingleframefillcolor(editor, view)
+            view.repaint()            ## Repaints the view to clear the old lines.
+            plugins.mdlgridscale.gridfinishdrawing(editor, view) ## Sets the modelfill color.
+        cv = view.canvas()            ## Sets the canvas up to draw on.
+        cv.pencolor = drag3Dlines     ## Gives the pen color of the lines that will be drawn.
+
+        component = editor.Root.currentcomponent
+        if component is not None:
+            if component.name.endswith(":mc"):
+                handlevertex = self.index
+                tris = findTriangles(component, handlevertex)
+                for tri in tris:
+                    if len(view.handles) == 0: continue
+                    for vtx in tri:
+                        if self.index == vtx[0]:
+                            pass
+                        else:
+                            projvtx = view.proj(view.handles[vtx[0]].pos)
+                            cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+
+        return [self.frame], [new]
+
+
+  #  For setting stuff up at the end of a drag
+  #
+  #  def ok(self, editor, undo, old, new):
+  #  def ok(self, editor, x, y, flags):
+  #      undo=quarkx.action()
+  #      editor.ok(undo, self.undomsg)
 
 
 
@@ -502,7 +754,8 @@ class SkinHandle(qhandles.GenericHandle):
 
 
     def drag(self, v1, v2, flags, view):
-        editor = mapeditor()
+        from mdleditor import mdleditor
+        editor = mdleditor
         texWidth = self.texWidth
         texHeight = self.texHeight
         p0 = view.proj(self.pos)
@@ -1085,6 +1338,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.51  2007/06/03 21:09:26  cdunde
+#To stop selection from changing on RMB click over model to get RMB menu.
+#
 #Revision 1.50  2007/06/03 20:56:07  cdunde
 #To free up L & RMB combo dragging for Model Editor Face selection use
 #and start model face selection and drawing functions.
