@@ -364,11 +364,15 @@ class ModelLayout(BaseLayout):
     def selectcomponent(self, comp):
         "This is when you select a particular 'Component' or any 'Group' within it in the Tree-view."
         global savedskins
+        from qbaseeditor import currentview
 
         if comp != self.editor.Root.currentcomponent:
             self.reset()
-            self.editor.ModelFaceSelList = []
-            self.editor.SkinFaceSelList = []
+            if currentview.info["viewname"] == "skinview":
+                pass
+            else:
+                self.editor.ModelFaceSelList = []
+         #       self.editor.SkinFaceSelList = [] # For later use.
         self.editor.Root.setcomponent(comp)
 
 ########## commenting out the lines below brakes Misc dragging
@@ -494,6 +498,11 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.32  2007/06/03 21:59:20  cdunde
+#Added new Model Editor lists, ModelFaceSelList and SkinFaceSelList,
+#Implementation of the face selection function for the model mesh.
+#(To clear the lists when a new component or a non-component item is selected)
+#
 #Revision 1.31  2007/05/28 05:32:44  cdunde
 #Added new global 'treeviewselchanged' that returns 1
 #if any new selection is made in the Tree-view.
