@@ -52,7 +52,9 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
     #
 
     gridoldfinish(editor, view)
-
+    
+    if editor.ModelFaceSelList != []:
+        quarkpy.mdlhandles.ModelFaceHandle(quarkpy.qhandles.GenericHandle).draw(editor, view, editor.ModelFaceSelList)
     #
     # Below test if the grid is even on
     #
@@ -67,7 +69,6 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
     gridunits = quarkx.ftos(grid)  # Converts float nbr to string
     type = view.info["type"]       # These type values are set
                                    #  in the layout-defining plugins.
-
 # ===============
 # X view settings
 # ===============
@@ -675,6 +676,11 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.6  2007/05/17 23:56:54  cdunde
+#Fixed model mesh drag guide lines not always displaying during a drag.
+#Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
+#General code proper rearrangement and cleanup.
+#
 #Revision 1.5  2007/05/16 20:59:02  cdunde
 #To remove unused argument for the mdleditor paintframefill function.
 #
