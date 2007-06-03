@@ -123,12 +123,16 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
 
     if view is not None:
         if view.info["viewname"] != "skinview":
+            mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             def backbmp1click(m, view=view, form=editor.form):
                 import qbackbmp
                 qbackbmp.BackBmpDlg(form, view)
             backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
-            extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+            if editor.ModelFaceSelList != []:
+                extra = extra + [qmenu.sep] + [mdlfacepop] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+            else:
+                extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             extra = [qmenu.sep] + [skinviewcommands]
@@ -174,6 +178,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.13  2007/05/16 19:39:46  cdunde
+#Added the 2D views gridscale function to the Model Editor's Options menu.
+#
 #Revision 1.12  2007/04/27 17:27:42  cdunde
 #To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
 #Added new functions for aligning, single and multi selections, Skin-view vertexes.
