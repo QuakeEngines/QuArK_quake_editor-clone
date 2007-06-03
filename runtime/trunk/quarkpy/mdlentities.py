@@ -94,6 +94,8 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            if editor.ModelFaceSelList != []: # draws model mesh faces, if selected, during rotation and panning pauses
+                mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.ModelFaceSelList)
 
         elif view.info["viewname"] == "3Dwindow":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
@@ -105,6 +107,8 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            if editor.ModelFaceSelList != []: # draws model mesh faces, if selected, during rotation and panning pauses
+                mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.ModelFaceSelList)
         else:
             view.drawmap(o, mode)  # draws default color for model mesh lines
 
@@ -212,10 +216,28 @@ class SkinGroupType(EntityManager):
 def ShowHideComp(x):
     editor = mapeditor()
     if editor is None: return
+    import mdleditor
+    editor.ModelFaceSelList = []
     obj = editor.layout.explorer.uniquesel
     if obj is None: return
     obj.showhide(x)
-    editor.invalidateviews(1)
+  #  editor.invalidateviews(1)
+    if x == 0:
+        for view in editor.layout.views:
+            view.handles = []
+            if view.viewmode == "wire":
+                view.invalidate()
+            else:
+                view.invalidate(1)
+    else:
+        for view in editor.layout.views:
+            if view.viewmode == "wire":
+                pass
+            else:
+                view.invalidate(1)
+    #    mdleditor.commonhandles(editor)
+            mdleditor.setsingleframefillcolor(editor, view)
+            view.repaint()
 
 def ShowComp(m):
     ShowHideComp(1)
@@ -376,6 +398,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.16  2007/05/25 08:33:18  cdunde
+#To fix indention error.
+#
 #Revision 1.15  2007/05/25 07:44:19  cdunde
 #Added new functions to 'Views Options' to set the model's
 #mesh lines color and draw in frame selection.
