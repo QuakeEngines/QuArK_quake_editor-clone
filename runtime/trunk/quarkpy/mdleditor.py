@@ -232,6 +232,18 @@ class ModelEditor(BaseEditor):
         except:
             pass
 
+        if self.ModelFaceSelList != []:
+            from qbaseeditor import cursorpos
+            x, y = cursorpos
+            import maphandles
+            choice = maphandles.ClickOnView(self, view, x, y)
+            for item in choice:
+                for face in self.ModelFaceSelList:
+                    if item[2] == face[2]:
+                        import mdlhandles
+                        return mdlhandles.ModelFaceHandle(qhandles.GenericHandle).menu(self, view)
+                    
+        
         sellist = self.layout.explorer.sellist
         if len(sellist)==0:
             return mdlmenus.MdlBackgroundMenu(self, view, origin)
@@ -717,6 +729,11 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.43  2007/06/03 21:58:13  cdunde
+#Added new Model Editor lists, ModelFaceSelList and SkinFaceSelList,
+#Implementation of the face selection function for the model mesh.
+#(To setup the ModelFaceSelList and SkinFaceSelList lists as attributes of the editor)
+#
 #Revision 1.42  2007/05/28 06:13:22  cdunde
 #To stop 'Panning' (scrolling) from doing multiple handle drawings.
 #
