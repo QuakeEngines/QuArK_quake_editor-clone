@@ -641,38 +641,22 @@ class BaseEditor:
         currentview = view              ### Used for the Model Editor only.
         import mdleditor                ### Used for the Model Editor only.
 
-
-         ### This section to free up L & RMB combo dragging for Model Editor Face selection use
-         ### and start model face selection and drawing functions.
+         ### This section just for Model Editor face selection and editor views drawing manipulation
+         ### and to free up L & RMB combo dragging for Model Editor Face selection use.
         if isinstance(self, mdleditor.ModelEditor):
             import maphandles
-            choice = maphandles.ClickOnView(self, view, x, y) # This makes a list of what is under the cursor, in the view, click or no click, to work with.
-            if choice != [] and (flagsmouse == 544 or flagsmouse == 1056):
-                cv = view.canvas()
-                cv.pencolor = WHITE
-                cv.penwidth = 2 # add an option to set the penwidth
-                cv.brushcolor = WHITE
-                cv.brushstyle = BS_SOLID
-                for item in choice:
-                    if item[1].name == self.Root.currentcomponent.name:
-                        triangleindex = item[2]
-                        triangle = item[1].triangles[triangleindex]
+            modelfacelist = maphandles.ClickOnView(self, view, x, y) # This makes a list of what is under the cursor, in the view, click or no click, to work with.
 
-                        vertex0 = triangle[0][0]
-                        vertex1 = triangle[1][0]
-                        vertex2 = triangle[2][0]
-
-                        vertex0X, vertex0Y,vertex0Z = view.proj(self.Root.currentcomponent.currentframe.vertices[vertex0]).tuple
-                        vertex1X, vertex1Y,vertex1Z = view.proj(self.Root.currentcomponent.currentframe.vertices[vertex1]).tuple
-                        vertex2X, vertex2Y,vertex2Z = view.proj(self.Root.currentcomponent.currentframe.vertices[vertex2]).tuple
-
-                        cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
-                        cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
-                        cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
-
-                        tri = self.Root.currentcomponent.triangles[item[2]]
-                        break
-         ### End of section Model Editor Face selection use.
+            if modelfacelist == [] and flagsmouse == 536 and currentview.info["viewname"] != "skinview":
+                self.ModelFaceSelList = []
+                for v in self.layout.views:
+                    mdleditor.setsingleframefillcolor(self, v)
+                    v.repaint()
+            if modelfacelist != [] and (flagsmouse == 536 or flagsmouse == 1048):
+                import mdlhandles
+                mdlhandles.ModelFaceHandle(qhandles.GenericHandle).selection(self, view, modelfacelist, flagsmouse)
+            if modelfacelist == [] and flagsmouse == 2072 and currentview.info["viewname"] != "skinview":
+                mdleditor.commonhandles(self)
 
 
         if flags & MB_DRAGEND: ### This is when the mouse button(s) is ACTUALLY released.
@@ -1188,6 +1172,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.59  2007/06/03 20:56:07  cdunde
+#To free up L & RMB combo dragging for Model Editor Face selection use
+#and start model face selection and drawing functions.
+#
 #Revision 1.58  2007/05/28 05:32:08  cdunde
 #Removed unneeded commented out code.
 #
