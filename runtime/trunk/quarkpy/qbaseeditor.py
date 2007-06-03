@@ -29,6 +29,7 @@ from qdictionnary import Strings
 # Globals
 flagsmouse = None
 currentview = None
+cursorpos = None
 
 def drawview(view,mapobj,mode=0):
         #
@@ -636,10 +637,11 @@ class BaseEditor:
     def mousemap(self, view, x, y, flags, handle):
         "Called by QuArK upon mouse operation."
 
-        global flagsmouse, currentview  ### Used for the Model Editor only.
-        flagsmouse = flags              ### Used for the Model Editor only.
-        currentview = view              ### Used for the Model Editor only.
-        import mdleditor                ### Used for the Model Editor only.
+        global flagsmouse, currentview, cursorpos  ### Used for the Model Editor only.
+        flagsmouse = flags                         ### Used for the Model Editor only.
+        currentview = view                         ### Used for the Model Editor only.
+        cursorpos = (x, y)                         ### Used for the Model Editor only.
+        import mdleditor                           ### Used for the Model Editor only.
 
          ### This section just for Model Editor face selection and editor views drawing manipulation
          ### and to free up L & RMB combo dragging for Model Editor Face selection use.
@@ -657,7 +659,6 @@ class BaseEditor:
                 mdlhandles.ModelFaceHandle(qhandles.GenericHandle).selection(self, view, modelfacelist, flagsmouse)
             if modelfacelist == [] and flagsmouse == 2072 and currentview.info["viewname"] != "skinview":
                 mdleditor.commonhandles(self)
-
 
         if flags & MB_DRAGEND: ### This is when the mouse button(s) is ACTUALLY released.
             if self.dragobject is not None:
@@ -1172,6 +1173,12 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.60  2007/06/03 21:59:59  cdunde
+#Added new Model Editor lists, ModelFaceSelList and SkinFaceSelList,
+#Implementation of the face selection function for the model mesh.
+#(Move the face selection functions to their own new class, ModelFaceHandle in mdlhandles.py)
+#(and to clear the ModelFaceSelList and SkinFaceSelList(not in code yet) lists if nothing is selected.)
+#
 #Revision 1.59  2007/06/03 20:56:07  cdunde
 #To free up L & RMB combo dragging for Model Editor Face selection use
 #and start model face selection and drawing functions.
