@@ -367,6 +367,8 @@ class ModelLayout(BaseLayout):
 
         if comp != self.editor.Root.currentcomponent:
             self.reset()
+            self.editor.ModelFaceSelList = []
+            self.editor.SkinFaceSelList = []
         self.editor.Root.setcomponent(comp)
 
 ########## commenting out the lines below brakes Misc dragging
@@ -462,6 +464,12 @@ class ModelLayout(BaseLayout):
                 self.selectskin(fs)
             elif fs.type == '.tga':    # skin
                 self.selectskin(fs)
+            else:
+                self.editor.ModelFaceSelList = []
+                self.editor.SkinFaceSelList = []
+        else:
+            self.editor.ModelFaceSelList = []
+            self.editor.SkinFaceSelList = []
 
 
     def NewItem1Click(self, m):
@@ -486,6 +494,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.31  2007/05/28 05:32:44  cdunde
+#Added new global 'treeviewselchanged' that returns 1
+#if any new selection is made in the Tree-view.
+#
 #Revision 1.30  2007/04/27 17:26:59  cdunde
 #Update Infobase links.
 #
