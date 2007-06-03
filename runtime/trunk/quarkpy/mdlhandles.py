@@ -1070,10 +1070,12 @@ def MouseClicked(self, view, x, y, s, handle):
                 if obj.selected:
                     self.layout.explorer.focus = obj
                 self.layout.explorer.selchanged()
-            else:
-                self.layout.explorer.uniquesel = obj
+     #       else:
+     #           self.layout.explorer.uniquesel = obj
         else:
-            if not ("T" in s):    # clear current selection
+      #      if not ("T" in s):    # clear current selection
+      #          self.layout.explorer.uniquesel = None
+            if not ("T" in s):    # clear current selection *** NOT ANY MORE, leave what's selected.
                 pass
         return flags+"S"
     return flags
@@ -1083,6 +1085,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.50  2007/06/03 20:56:07  cdunde
+#To free up L & RMB combo dragging for Model Editor Face selection use
+#and start model face selection and drawing functions.
+#
 #Revision 1.49  2007/05/25 07:31:57  cdunde
 #To stop the drawing of handles in all views after just rotating in a 3D view.
 #
