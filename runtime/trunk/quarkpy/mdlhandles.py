@@ -160,33 +160,33 @@ class ModelFaceHandle(qhandles.GenericHandle):
             if item[1].name == editor.Root.currentcomponent.name:
                 faceremoved = 0
                 if templist == []:
-                    templist = templist + [item]
+                    templist = templist + [item[2]]
                     lastmodelfaceremovedlist = []
                     break
-                elif lastmodelfaceremovedlist != [] and item[2] == lastmodelfaceremovedlist[0][2]:
+                elif lastmodelfaceremovedlist != [] and item[2] == lastmodelfaceremovedlist[0]:
                     pass
                 else:
                     listsize = len(templist)
                     lastface = templist[listsize-1]
                     print "******* WE ARE OVER ************ ",item
                     print "******* LAST IN LIST ************ ",lastface
-                    if item[2] == lastface[2]:
+                    if item[2] == lastface:
                         print "******* SAME FACE WE ARE NOT ADDING ************ ",item
                         pass
                     else:
                         facecount = 0
                         for face in templist:
-                            if face[2] == item[2]:
+                            if face == item[2]:
                                 templist.remove(templist[facecount])
-                                lastmodelfaceremovedlist = [item]
+                                lastmodelfaceremovedlist = [item[2]]
                                 faceremoved = 1
                                 itemsremoved = itemsremoved + 1
                                 break
                             facecount = facecount + 1
                         if faceremoved == 0:
-                            templist = templist + [item]
+                            templist = templist + [item[2]]
                             print "******* NOW FACE NOW BEING ADDED IS ************ ",item
-                break
+                break ### This limits the faces that can be selected to the closest face to the camera.
         editor.ModelFaceSelList = templist
         for v in editor.layout.views:
         #    if v.info["viewname"] == "skinview":
@@ -210,9 +210,8 @@ class ModelFaceHandle(qhandles.GenericHandle):
         print "******* DRAWING LIST IS ************ ",list
         print "************ NUMBER IN DRAWING LIST IS  ****************  ",len(list)
         if len(list) != 0:
-            for item in list:
-                triangleindex = item[2]
-                triangle = item[1].triangles[triangleindex]
+            for triangleindex in list:
+                triangle = editor.Root.currentcomponent.triangles[triangleindex]
                 vertex0 = triangle[0][0]
                 vertex1 = triangle[1][0]
                 vertex2 = triangle[2][0]
@@ -1161,7 +1160,6 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
           #  h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
 
             if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 544) and len(view.handles) > 4000: # LMB or R & LMB's pressed or CMB pressed.
-
                 if linecount > 0:
                     if linecount >= 2:
                         linecount = 0
@@ -1294,6 +1292,14 @@ def MouseDragging(self, view, x, y, s, handle):
 
 
 
+def ClickOnView(editor, view, x, y):
+    #
+    # defined in QkPyMapview.pas
+    #
+    return view.clicktarget(editor.Root, int(x), int(y))
+    
+    
+    
 def MouseClicked(self, view, x, y, s, handle):
     "Mouse Click on a Model view."
 
@@ -1338,6 +1344,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.52  2007/06/03 21:58:55  cdunde
+#Added new Model Editor lists, ModelFaceSelList and SkinFaceSelList,
+#Implementation of the face selection function for the model mesh.
+#(To setup a new class, ModelFaceHandle, for the face selection, drawing and menu functions.)
+#
 #Revision 1.51  2007/06/03 21:09:26  cdunde
 #To stop selection from changing on RMB click over model to get RMB menu.
 #
