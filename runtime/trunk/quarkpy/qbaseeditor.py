@@ -642,21 +642,34 @@ class BaseEditor:
         currentview = view                         ### Used for the Model Editor only.
         cursorpos = (x, y)                         ### Used for the Model Editor only.
         import mdleditor                           ### Used for the Model Editor only.
+        import mdlhandles                          ### Used for the Model Editor only.
 
          ### This section just for Model Editor face selection and editor views drawing manipulation
          ### and to free up L & RMB combo dragging for Model Editor Face selection use.
         if isinstance(self, mdleditor.ModelEditor):
-            import maphandles
-            modelfacelist = maphandles.ClickOnView(self, view, x, y) # This makes a list of what is under the cursor, in the view, click or no click, to work with.
+            modelfacelist = mdlhandles.ClickOnView(self, view, x, y)
+     #       print "qbaseeditor line 681 ----------------------"
 
+             # This clears the face selection list when both the LMB & RMB are pressed with the cursor in an open area of a view.
             if modelfacelist == [] and flagsmouse == 536 and currentview.info["viewname"] != "skinview":
                 self.ModelFaceSelList = []
                 for v in self.layout.views:
                     mdleditor.setsingleframefillcolor(self, v)
                     v.repaint()
-            if modelfacelist != [] and (flagsmouse == 536 or flagsmouse == 1048):
-                import mdlhandles
+
+             # This is the first call at the start of the selection drag\or causes only one item to be selected.
+            if modelfacelist != [] and flagsmouse == 536:
+                ### Below causes all handles to be erased at start of selection, but very blipping.
+             #   for v in self.layout.views:
+             #       mdleditor.setsingleframefillcolor(self, v)
+             #       v.repaint()
                 mdlhandles.ModelFaceHandle(qhandles.GenericHandle).selection(self, view, modelfacelist, flagsmouse)
+
+             # This loops through calling the selection function.
+            if modelfacelist != [] and flagsmouse == 1048:
+                mdlhandles.ModelFaceHandle(qhandles.GenericHandle).selection(self, view, modelfacelist, flagsmouse)
+
+             # This causes all in all views to be redrawn at end of selection drag.
             if modelfacelist == [] and flagsmouse == 2072 and currentview.info["viewname"] != "skinview":
                 mdleditor.commonhandles(self)
 
@@ -665,7 +678,6 @@ class BaseEditor:
                 if isinstance(self, mdleditor.ModelEditor):
                     if view.info["viewname"] == "skinview":
                         if flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080:
-                            import mdlhandles
                             if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
                                 componentnames = []
                                 for item in self.Root.dictitems:
@@ -681,7 +693,6 @@ class BaseEditor:
                             self.finishdrawing(view)
                             return
                         else:
-                            import mdlhandles
                             holdflagsmouse = flagsmouse
                             self.dragobject.ok(self, x, y, flags)
                             flagsmouse = holdflagsmouse
@@ -700,7 +711,7 @@ class BaseEditor:
                     flagsmouse = holdflagsmouse
 
                 if isinstance(self, mdleditor.ModelEditor):
-                    if (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
+                    if (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
 
                         mdleditor.commonhandles(self)
                     else:
@@ -862,6 +873,16 @@ class BaseEditor:
                 ### To free up L & RMB combo dragging for Model Editor face selection use.
                 if isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject, qhandles.FreeZoomDragObject) and flagsmouse == 1048:
                     pass
+                ### Need to do something here, stops Zoom drag handle when selecting faces but does not always remake handles at end of drag.
+                elif isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject, qhandles.HandleDragObject) and (flagsmouse == 1048):
+           #         self.dragobject = dragobject = None
+                    pass
+        #        elif flagsmouse == 2072 and isinstance(self.dragobject, mdlhandles.ModelFaceHandle):
+                    self.dragobject = dragobject = None
+        #            mdleditor.commonhandles(self)
+                elif flagsmouse == 16384 and isinstance(self.dragobject, mdlhandles.ModelFaceHandle):
+                    self.dragobject = dragobject = None
+                    mdleditor.commonhandles(self)
                 else:
                     self.dragobject.dragto(x, y, flags)
             if isinstance(self, mdleditor.ModelEditor):
@@ -890,7 +911,6 @@ class BaseEditor:
         else:
             if isinstance(self, mdleditor.ModelEditor) and flagsmouse == 536 and view.info["viewname"] == "skinview": return
             if isinstance(self, mdleditor.ModelEditor) and flagsmouse == 520:
-                import mdlhandles
                 if isinstance(handle, mdlhandles.VertexHandle) and self.layout.explorer.uniquesel.type != ":mf":
                     quarkx.msgbox("You must select a single frame of this component\nbefore you can drag any of its vertexes.\n\nClick your LMB once in the\nsame view to release your mouse.", MT_ERROR, MB_OK)
                     self.dragobject = None
@@ -942,7 +962,6 @@ class BaseEditor:
 
                     if isinstance(self, mdleditor.ModelEditor):
                         if view.info["viewname"] == "skinview":
-                            import mdlhandles
                             try:
                                 skindrawobject = self.Root.currentcomponent.currentskin
                             except:
@@ -1173,6 +1192,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.61  2007/06/03 22:51:24  cdunde
+#To add the model mesh Face Selection RMB menus.
+#(Added a global "cursorpos" to get the cursor position when it was clicked, if not provided)
+#
 #Revision 1.60  2007/06/03 21:59:59  cdunde
 #Added new Model Editor lists, ModelFaceSelList and SkinFaceSelList,
 #Implementation of the face selection function for the model mesh.

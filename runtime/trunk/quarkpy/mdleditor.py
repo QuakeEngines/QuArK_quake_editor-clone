@@ -55,6 +55,7 @@ class ModelEditor(BaseEditor):
         self.Root = Root
         self.dragobject = None
         self.list = ()
+        currentcomponent = self.Root
 
         if (quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] is None):
             Lock_X = "0"
@@ -110,9 +111,9 @@ class ModelEditor(BaseEditor):
         " It is also used to rebuild the handles by various functions later."
         from qbaseeditor import flagsmouse, currentview
         try:
-            if flagsmouse == 1032:
+            if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
                 return
-            elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1048 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
+            elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
                 pass
       #      elif currentview.info["viewname"] == "editors3Dview" and (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
       #          for v in self.layout.views:
@@ -232,15 +233,13 @@ class ModelEditor(BaseEditor):
         except:
             pass
 
-        if self.ModelFaceSelList != []:
+        if self.ModelFaceSelList != [] and view is not None:
             from qbaseeditor import cursorpos
             x, y = cursorpos
-            import maphandles
-            choice = maphandles.ClickOnView(self, view, x, y)
+            choice = mdlhandles.ClickOnView(self, view, x, y)
             for item in choice:
                 for face in self.ModelFaceSelList:
-                    if item[2] == face[2]:
-                        import mdlhandles
+                    if item[2] == face:
                         return mdlhandles.ModelFaceHandle(qhandles.GenericHandle).menu(self, view)
                     
         
@@ -463,6 +462,19 @@ def commonhandles(self, redraw=1):
     from mdlmgr import treeviewselchanged
 
     try:
+        if flagsmouse == 536:
+            return
+            
+     #   if flagsmouse == 2072: ## This FINNALLY STOPS EVERYTHING
+     #       return
+            
+        if flagsmouse == 2072 and isinstance(self.dragobject, qhandles.FreeZoomDragObject):
+            self.dragobject = None
+        
+        if flagsmouse == 2072 and isinstance(self.dragobject, mdlhandles.VertexHandle):
+    #        self.dragobject = None
+            return
+
         if currentview.info["viewname"] =="3Dwindow":
             if flagsmouse == 1048 or flagsmouse == 1056:
                 cv = currentview.canvas()
@@ -514,7 +526,7 @@ def commonhandles(self, redraw=1):
         if isinstance(self.dragobject, qhandles.HandleDragObject):
             pass
         else:
-            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
+            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "editors3Dview":
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
@@ -534,7 +546,7 @@ def commonhandles(self, redraw=1):
         if isinstance(self.dragobject, qhandles.HandleDragObject):
             pass
         else:
-            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
+            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "3Dwindow":
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
@@ -729,6 +741,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.44  2007/06/03 22:50:21  cdunde
+#To add the model mesh Face Selection RMB menus.
+#(To add the RMB Face menu when the cursor is over one of the selected model mesh faces)
+#
 #Revision 1.43  2007/06/03 21:58:13  cdunde
 #Added new Model Editor lists, ModelFaceSelList and SkinFaceSelList,
 #Implementation of the face selection function for the model mesh.
