@@ -338,13 +338,8 @@ class BaseEditor:
         if isinstance(self, mdleditor.ModelEditor):
             try:
                 if currentview.info["viewname"] == "skinview" or view.info["viewname"] == "skinview":
-               #     if flagsmouse == 2056:
-               #         return
-                  #  if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or  flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080 or flagsmouse == 16384) and (currentview.info["viewname"] == "skinview" and view.info["viewname"] == "skinview"):
-                    if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or  flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080 or flagsmouse == 16384) and (view.info["viewname"] == "skinview"):
+                    if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 544 or flagsmouse == 1040 or flagsmouse == 1056 or  flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080 or flagsmouse == 16384) and (view.info["viewname"] == "skinview"):
                         cv = view.canvas()
-                  #      for h in view.handles:
-                  #          h.draw(view, cv, draghandle)
                         tex = self.Root.currentcomponent.currentskin
                         if tex is not None:
                             texWidth,texHeight = tex["Size"]
@@ -383,15 +378,9 @@ class BaseEditor:
                             if self.skinviewpicked != []:
                                 for h in view.handles:
                                     h.draw(view, cv, draghandle)
+                            if isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, qhandles.ScrollViewDragObject):
+                                self.dragobject = self.dragobject = dragobject = None
 
-
-
-
-                #    elif flagsmouse == 16384 and view.info["viewname"] == "skinview":
-                #        pass
-                #        cv = view.canvas()
-                #        for h in view.handles:
-                #            h.draw(view, cv, draghandle)
                     return
                 else:
                     if flagsmouse == 16384 or flagsmouse == 2056:
@@ -400,9 +389,6 @@ class BaseEditor:
                             h.draw(view, cv, draghandle)
                         return
                     if flagsmouse == 2064 and (view.info["viewname"] == "XY" or view.info["viewname"] == "YZ" or view.info["viewname"] == "XZ"):
-            #            cv = view.canvas()
-            #            for h in view.handles:
-            #                h.draw(view, cv, draghandle)
                         return
                     if flagsmouse == 1032:
                         cv = view.canvas()
@@ -605,28 +591,24 @@ class BaseEditor:
         if isinstance(self, mdleditor.ModelEditor) and currentview is not None:
             try:
                 if currentview.info["viewname"] == "skinview":
+                    if flagsmouse == 16384 and self.dragobject is not None:
+                        self.dragobject = None
+                        self.dragobject.handle = None
+                        dragobject = None
+                        return
                     if flagsmouse == 2056 or flagsmouse == 16384:
                         if flagsmouse == 16384:
                             for v in self.layout.views:
                                 if v.viewmode != "wire":
                                     v.invalidate(rebuild)
-                   #     currentview.invalidate()
                         return
                     elif self.layout.selchange:
                         for v in self.layout.views:
                             v.invalidate(rebuild)
                         return
                     else:
-                   #     currentview.invalidate()
                         return
                 else:
-             #       if currentview.info["viewname"] == "3Dwindow" and flagsmouse == 2056:
-             #           return
-                    #    if isinstance(self.dragobject, qhandles.HandleDragObject):
-                    #        for v in self.layout.views:
-                    #            v.invalidate(rebuild)
-                    #   #     return
-
                     if self.layout.selchange:
                         for v in self.layout.views:
                             if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
@@ -659,6 +641,40 @@ class BaseEditor:
         currentview = view              ### Used for the Model Editor only.
         import mdleditor                ### Used for the Model Editor only.
 
+
+         ### This section to free up L & RMB combo dragging for Model Editor Face selection use
+         ### and start model face selection and drawing functions.
+        if isinstance(self, mdleditor.ModelEditor):
+            import maphandles
+            choice = maphandles.ClickOnView(self, view, x, y) # This makes a list of what is under the cursor, in the view, click or no click, to work with.
+            if choice != [] and (flagsmouse == 544 or flagsmouse == 1056):
+                cv = view.canvas()
+                cv.pencolor = WHITE
+                cv.penwidth = 2 # add an option to set the penwidth
+                cv.brushcolor = WHITE
+                cv.brushstyle = BS_SOLID
+                for item in choice:
+                    if item[1].name == self.Root.currentcomponent.name:
+                        triangleindex = item[2]
+                        triangle = item[1].triangles[triangleindex]
+
+                        vertex0 = triangle[0][0]
+                        vertex1 = triangle[1][0]
+                        vertex2 = triangle[2][0]
+
+                        vertex0X, vertex0Y,vertex0Z = view.proj(self.Root.currentcomponent.currentframe.vertices[vertex0]).tuple
+                        vertex1X, vertex1Y,vertex1Z = view.proj(self.Root.currentcomponent.currentframe.vertices[vertex1]).tuple
+                        vertex2X, vertex2Y,vertex2Z = view.proj(self.Root.currentcomponent.currentframe.vertices[vertex2]).tuple
+
+                        cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
+                        cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
+                        cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
+
+                        tri = self.Root.currentcomponent.triangles[item[2]]
+                        break
+         ### End of section Model Editor Face selection use.
+
+
         if flags & MB_DRAGEND: ### This is when the mouse button(s) is ACTUALLY released.
             if self.dragobject is not None:
                 if isinstance(self, mdleditor.ModelEditor):
@@ -684,12 +700,6 @@ class BaseEditor:
                             holdflagsmouse = flagsmouse
                             self.dragobject.ok(self, x, y, flags)
                             flagsmouse = holdflagsmouse
-                        #    try:
-                        #        skindrawobject = self.Root.currentcomponent.currentskin
-                        #    except:
-                        #        skindrawobject = None
-                        #    self.layout.mpp.resetpage()
-                    ##        self.dragobject = None
                             return
 
                 holdflagsmouse = flagsmouse
@@ -705,7 +715,8 @@ class BaseEditor:
                     flagsmouse = holdflagsmouse
 
                 if isinstance(self, mdleditor.ModelEditor):
-                    if (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
+                    if (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
+
                         mdleditor.commonhandles(self)
                     else:
                         return
@@ -724,7 +735,6 @@ class BaseEditor:
                 if editor == None: return
                 else:
                     if isinstance(editor, mdleditor.ModelEditor):
-                     #   return
                         pass # This allows the coors to be displayed in the 'Help Box'.
                     elif editor.layout.toolbars["tb_terrmodes"] is not None:
                         tb2 = editor.layout.toolbars["tb_terrmodes"]
@@ -864,7 +874,11 @@ class BaseEditor:
 
         elif flags & MB_DRAGGING:
             if self.dragobject is not None:
-                self.dragobject.dragto(x, y, flags)
+                ### To free up L & RMB combo dragging for Model Editor face selection use.
+                if isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject, qhandles.FreeZoomDragObject) and flagsmouse == 1048:
+                    pass
+                else:
+                    self.dragobject.dragto(x, y, flags)
             if isinstance(self, mdleditor.ModelEditor):
                 try:
                     if self.dragobject.hint is not None:
@@ -889,6 +903,7 @@ class BaseEditor:
         #
 
         else:
+            if isinstance(self, mdleditor.ModelEditor) and flagsmouse == 536 and view.info["viewname"] == "skinview": return
             if isinstance(self, mdleditor.ModelEditor) and flagsmouse == 520:
                 import mdlhandles
                 if isinstance(handle, mdlhandles.VertexHandle) and self.layout.explorer.uniquesel.type != ":mf":
@@ -964,13 +979,6 @@ class BaseEditor:
                                     if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
                                         pass
                                     else:
-                                    #    for view in self.layout.views:
-                                    #        if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
-                                    #            pass
-                                    #        else:
-                                    #            view.repaint()
-                        #                if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
-                        #                    mdleditor.paintframefill(self, view)
                                         return
                                 else:
                                     if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
@@ -1180,6 +1188,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.58  2007/05/28 05:32:08  cdunde
+#Removed unneeded commented out code.
+#
 #Revision 1.57  2007/05/26 07:00:57  cdunde
 #To allow rebuild and handle drawing after selection has changed
 #of all non-wireframe views when currentview is the 'skinview'.

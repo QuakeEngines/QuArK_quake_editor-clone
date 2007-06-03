@@ -907,7 +907,8 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
                ### This sets the Skin-view model mesh vertexes and line drawing location(s).
           #  h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
 
-            if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544) and len(view.handles) > 2600: # LMB or R & LMB's pressed or CMB pressed.
+            if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 544) and len(view.handles) > 4000: # LMB or R & LMB's pressed or CMB pressed.
+
                 if linecount > 0:
                     if linecount >= 2:
                         linecount = 0
@@ -1082,6 +1083,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.49  2007/05/25 07:31:57  cdunde
+#To stop the drawing of handles in all views after just rotating in a 3D view.
+#
 #Revision 1.48  2007/05/20 09:13:13  cdunde
 #Substantially increased the drawing speed of the
 #Model Editor Skin-view mesh lines and handles.
