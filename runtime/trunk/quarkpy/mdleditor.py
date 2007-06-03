@@ -42,6 +42,8 @@ class ModelEditor(BaseEditor):
     picked = []
     skinviewpicked = []
     dragobject = None
+    ModelFaceSelList = []
+    SkinFaceSelList = []
     
 
     def OpenRoot(self):
@@ -715,6 +717,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.42  2007/05/28 06:13:22  cdunde
+#To stop 'Panning' (scrolling) from doing multiple handle drawings.
+#
 #Revision 1.41  2007/05/28 05:33:01  cdunde
 #To stop 'Zoom' from doing multiple handle drawings.
 #
