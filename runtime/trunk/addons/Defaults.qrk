@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.333  2007/05/29 13:05:03  danielpharos
+//Added some quality settings for DDS file saving.
+//
 //Revision 1.332  2007/05/15 15:00:58  danielpharos
 //Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
 //
@@ -3132,18 +3135,23 @@ QQRKSRC1
       {
         Options3Dviews_nohandles1 = "0"
         Options3Dviews_drawnohandles1 = "0"
+        Options3Dviews_framemesh1 = "0"
         Options3Dviews_fillmesh1 = "0"
         Options3Dviews_nohandles2 = "0"
         Options3Dviews_drawnohandles2 = "0"
+        Options3Dviews_framemesh2 = "1"
         Options3Dviews_fillmesh2 = "0"
         Options3Dviews_nohandles3 = "0"
         Options3Dviews_drawnohandles3 = "0"
+        Options3Dviews_framemesh3 = "1"
         Options3Dviews_fillmesh3 = "0"
         Options3Dviews_nohandles4 = "0"
         Options3Dviews_drawnohandles4 = "0"
+        Options3Dviews_framemesh4 = "1"
         Options3Dviews_fillmesh4 = "0"
         Options3Dviews_nohandles5 = "0"
         Options3Dviews_drawnohandles5 = "0"
+        Options3Dviews_framemesh5 = "0"
         Options3Dviews_fillmesh5 = "0"
         setLock_X          = "0"
         setLock_Y          = "0"
@@ -3193,10 +3201,15 @@ QQRKSRC1
       Colors:config =
       {
         InvertedColors = ""
+        Options3Dviews_frameColor1  = $FFFFFF
         Options3Dviews_fillColor1  = $FF8080
+        Options3Dviews_frameColor2  = $FFFFFFFF
         Options3Dviews_fillColor2  = $FF8080
+        Options3Dviews_frameColor3  = $FFFFFFFF
         Options3Dviews_fillColor3  = $FF8080
+        Options3Dviews_frameColor4  = $FFFFFFFF
         Options3Dviews_fillColor4  = $FF8080
+        Options3Dviews_frameColor5  = $FFFFFF
         Options3Dviews_fillColor5  = $FF8080
         ViewXZ        = $E8E8B8
         ViewXY        = $E8DCB8

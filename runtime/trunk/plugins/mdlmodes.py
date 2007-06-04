@@ -361,20 +361,20 @@ class OptionsViewsDlg(quarkpy.dlgclasses.LiveEditDlg):
         fillColor1 = $FF8080
         nohandles2 = "0"
         drawnohandles2 = "0"
-        framemesh2 = "0"
-        frameColor2 = $FFFFFF
+        framemesh2 = "1"
+        frameColor2 = $FFFFFFFF
         fillmesh2 = "0"
         fillColor2 = $FF8080
         nohandles3 = "0"
         drawnohandles3 = "0"
-        framemesh3 = "0"
-        frameColor3 = $FFFFFF
+        framemesh3 = "1"
+        frameColor3 = $FFFFFFFF
         fillmesh3 = "0"
         fillColor3 = $FF8080
         nohandles4 = "0"
         drawnohandles4 = "0"
-        framemesh4 = "0"
-        frameColor4 = $FFFFFF
+        framemesh4 = "1"
+        frameColor4 = $FFFFFFFF
         fillmesh4 = "0"
         fillColor4 = $FF8080
         nohandles5 = "0"
@@ -413,20 +413,20 @@ def OptionsViewsClick(m):
             src["fillColor1"] = "$FF8080"
             src["nohandles2"] = "0"
             src["drawnohandles2"] = "0"
-            src["framemesh2"] = "0"
-            src["frameColor2"] = "$FFFFFF"
+            src["framemesh2"] = "1"
+            src["frameColor2"] = "$FFFFFFFF"
             src["fillmesh2"] = "0"
             src["fillColor2"] = "$FF8080"
             src["nohandles3"] = "0"
             src["drawnohandles3"] = "0"
-            src["framemesh3"] = "0"
-            src["frameColor3"] = "$FFFFFF"
+            src["framemesh3"] = "1"
+            src["frameColor3"] = "$FFFFFFFF"
             src["fillmesh3"] = "0"
             src["fillColor3"] = "$FF8080"
             src["nohandles4"] = "0"
             src["drawnohandles4"] = "0"
-            src["framemesh4"] = "0"
-            src["frameColor4"] = "$FFFFFF"
+            src["framemesh4"] = "1"
+            src["frameColor4"] = "$FFFFFFFF"
             src["fillmesh4"] = "0"
             src["fillColor4"] = "$FF8080"
             src["nohandles5"] = "0"
@@ -1081,6 +1081,10 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.16  2007/05/25 07:44:19  cdunde
+# Added new functions to 'Views Options' to set the model's
+# mesh lines color and draw in frame selection.
+#
 # Revision 1.15  2007/05/21 00:05:45  cdunde
 # To resize default setting for dialog box.
 #
