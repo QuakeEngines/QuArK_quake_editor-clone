@@ -209,6 +209,11 @@ procedure UnloadDirect3D;
 begin
   if TimesLoaded = 1 then
   begin
+    if not (OrigSwapChain=nil) then
+    begin
+      while (OrigSwapChain._Release > 0) do;
+      Pointer(OrigSwapChain):=nil;
+    end;
 
     if not (D3DDevice=nil) then
     begin

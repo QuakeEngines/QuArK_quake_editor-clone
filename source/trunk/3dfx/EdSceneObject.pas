@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
 Revision 1.31  2007/03/26 21:01:46  danielpharos
 Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
 
@@ -293,6 +296,7 @@ type
    procedure ClearFrame; virtual;
    procedure SetViewRect(SX, SY: Integer); virtual; abstract;
    procedure SetViewDC(DC: HDC); virtual; abstract;
+   procedure SetViewWnd(Wnd: HWnd); virtual; abstract;
    procedure SetCoords(nCoord: TCoordinates);
    procedure BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
 Revision 1.6  2007/03/22 20:53:10  danielpharos
 Improved tracking of the target DC. Should fix a few grey screens.
 Also fixed a Delphi warning.
@@ -198,6 +201,8 @@ type
 
  TSoftwareSceneObject = class(TSceneObject)
  private
+   ViewWnd: HWnd;
+   ViewDC: HDC;
    FBuildNo: Integer;
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
@@ -208,7 +213,6 @@ type
    FogTableCache: ^GrFogTable_t;
    Hardware3DFX: Boolean;
    GlideLoaded: Boolean;
-   ViewDC: HDC;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
    ScreenX, ScreenY: Integer;
@@ -238,6 +242,7 @@ type
    procedure ClearScene; override;
    procedure SetViewRect(SX, SY: Integer); override;
    procedure SetViewDC(DC: HDC); override;
+   procedure SetViewWnd(Wnd: HWnd); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -2129,6 +2134,14 @@ begin
   if ViewDC<>DC then
   begin
     ViewDC:=DC;
+  end;
+end;
+
+procedure TSoftwareSceneObject.SetViewWnd(Wnd: HWnd);
+begin
+  if ViewWnd<>Wnd then
+  begin
+    ViewWnd:=Wnd;
   end;
 end;
 

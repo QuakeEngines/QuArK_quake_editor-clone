@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/05/09 17:51:55  danielpharos
+Another big improvement. Stability and speed should be much better now.
+
 Revision 1.19  2007/05/09 16:14:43  danielpharos
 Big update to the DirectX renderer. Fade color should now display. Stability is still an issue however.
 
@@ -111,7 +114,7 @@ uses Windows, Classes,
 type
   TDirect3DSceneObject = class(TSceneObject)
   private
-    DestWnd: HWnd;
+    ViewWnd: HWnd;
     ViewDC: HDC;
     Fog: Boolean;
     Transparency: Boolean;
@@ -122,6 +125,7 @@ type
     MapLimitSmallest: Double;
     pPresParm: D3DPRESENT_PARAMETERS;
     DXFogColor: D3DColor;
+    LightingQuality: Integer;
     ListIndex: Integer;
     procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
   protected
@@ -155,12 +159,14 @@ type
  *)
     procedure SetViewRect(SX, SY: Integer); override;
     procedure SetViewDC(DC: HDC); override;
+    procedure SetViewWnd(Wnd: HWnd); override;
     procedure Render3DView; override;
     procedure Copy3DView; override;
  (*
     procedure SwapBuffers(Synch: Boolean); override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
  *)
+    function ChangeQuality(nQuality: Integer) : Boolean; override;
   end;
 
 type  { this is the data shared by all existing TDirect3DSceneObjects }
@@ -215,12 +221,38 @@ begin
     ScreenResized := True;
     //DanielPharos: Do we need to do this?
 
-    //DanielPharos: We need the new Wnd too!!!
-    //DanielPharos: And we might need to reset the chain?
+    //DanielPharos: Do we need to reset the swapchains?
 
-    ReleaseDC(DestWnd,ViewDC);    
+    ReleaseDC(ViewWnd, ViewDC);
     ViewDC:=DC;
   end;
+end;
+
+procedure TDirect3DSceneObject.SetViewWnd(Wnd: HWnd);
+begin
+  if ViewWnd<>Wnd then
+  begin
+    ScreenResized := True;
+    //DanielPharos: Do we need to do this?
+
+    if (ViewWnd<>0) and (ViewDC<>0) then
+      ReleaseDC(ViewWnd,ViewDC);
+    ViewWnd:=Wnd;
+    pPresParm.hDeviceWindow:=ViewWnd;
+    ViewDC:=GetDC(Wnd);
+    SetViewDC(ViewDC);
+  end;
+end;
+
+function TDirect3DSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
+begin
+ if not ((nQuality=0) or (nQuality=1) or (nQuality=2)) then
+ begin
+  Result:=False;
+  Exit;
+ end;
+ Result:=LightingQuality<>nQuality;
+ LightingQuality:=nQuality;
 end;
 
 procedure TDirect3DSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
@@ -303,8 +335,11 @@ begin
     ListItemUsed[ListIndex-1]:=false;
   ListIndex:=0;
 
-  ReleaseDC(DestWnd,ViewDC);
-  ViewDC:=0;
+  if ViewDC<>0 then
+  begin
+    ReleaseDC(ViewWnd, ViewDC);
+    ViewDC:=0;
+  end;
 end;
 
 destructor TDirect3DSceneObject.Destroy;
@@ -408,13 +443,7 @@ begin
     Culling:=False;
   end;
 
-  if (DestWnd<>0) and (ViewDC<>0) then
-    ReleaseDC(DestWnd,ViewDC);
-  ViewDC:=GetDC(Wnd);
-  if Wnd<>DestWnd then
-  begin
-    DestWnd:=Wnd;
-  end;
+  SetViewWnd(Wnd);
   if GetWindowRect(Wnd, WindowRect)=false then
     Raise EErrorFmt(6400, ['GetWindowRect']);
   ScreenX:=WindowRect.Right-WindowRect.Left;
@@ -644,7 +673,7 @@ begin
   begin
     pPresParm.BackBufferWidth:=ScreenX;
     pPresParm.BackBufferHeight:=ScreenY;
-    pPresParm.hDeviceWindow:=DestWnd;
+    pPresParm.hDeviceWindow:=ViewWnd;
     //DanielPharos: How do we apply the possible change to ViewDC?
   end;
 

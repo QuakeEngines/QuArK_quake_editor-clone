@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/05/15 15:01:22  danielpharos
+Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
+
 Revision 1.7  2007/03/29 21:01:39  danielpharos
 Changed a few comments and error messages
 
@@ -181,6 +184,8 @@ type
 
  TGlideSceneObject = class(TSceneObject)
  private
+   ViewWnd: HWnd;
+   ViewDC: HDC;
    FBuildNo: Integer;
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
@@ -190,7 +195,6 @@ type
    SoftBufferFormat: Integer;
    FogTableCache: ^GrFogTable_t;
    GlideLoaded: Boolean;
-   ViewDC: HDC;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
    ScreenX, ScreenY: Integer;
@@ -220,6 +224,7 @@ type
    procedure ClearScene; override;
    procedure SetViewRect(SX, SY: Integer); override;
    procedure SetViewDC(DC: HDC); override;
+   procedure SetViewWnd(Wnd: HWnd); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -419,10 +424,10 @@ var
  hwconfig: GrHwConfiguration;
  FogColor, FrameColor: TColorRef;
  Setup: QObject;
- ScreenResolution: Integer;
- ScreenRes: GrScreenResolution_t;
- ScreenMirror: Integer;
- ScreenOrigin: Integer;
+ SetupResolution: Integer;
+ Resolution: GrScreenResolution_t;
+ SetupMirror: Integer;
+ Origin: GrOriginLocation_t;
 begin
  ClearScene;
 
@@ -430,102 +435,102 @@ begin
  CurrentDisplayType:=DisplayType;
 
  Setup:=SetupSubSet(ssGeneral, 'Glide (3DFX)');
- ScreenResolution:=StrToInt(Setup.Specifics.Values['Resolution']);
- case ScreenResolution of
+ SetupResolution:=StrToInt(Setup.Specifics.Values['Resolution']);
+ case SetupResolution of
   0 : begin
         ScreenSizeX:=320;
         ScreenSizeY:=200;
-        ScreenRes:=GR_RESOLUTION_320x200;
+        Resolution:=GR_RESOLUTION_320x200;
       end;
   1 : begin
         ScreenSizeX:=320;
         ScreenSizeY:=240;
-        ScreenRes:=GR_RESOLUTION_320x240;
+        Resolution:=GR_RESOLUTION_320x240;
       end;
   2 : begin
         ScreenSizeX:=400;
         ScreenSizeY:=256;
-        ScreenRes:=GR_RESOLUTION_400x256;
+        Resolution:=GR_RESOLUTION_400x256;
       end;
   3 : begin
         ScreenSizeX:=512;
         ScreenSizeY:=384;
-        ScreenRes:=GR_RESOLUTION_512x384;
+        Resolution:=GR_RESOLUTION_512x384;
       end;
   4 : begin
         ScreenSizeX:=640;
         ScreenSizeY:=200;
-        ScreenRes:=GR_RESOLUTION_640x200;
+        Resolution:=GR_RESOLUTION_640x200;
       end;
   5 : begin
         ScreenSizeX:=640;
         ScreenSizeY:=350;
-        ScreenRes:=GR_RESOLUTION_640x350;
+        Resolution:=GR_RESOLUTION_640x350;
       end;
   6 : begin
         ScreenSizeX:=640;
         ScreenSizeY:=400;
-        ScreenRes:=GR_RESOLUTION_640x400;
+        Resolution:=GR_RESOLUTION_640x400;
       end;
   7 : begin
         ScreenSizeX:=640;
         ScreenSizeY:=480;
-        ScreenRes:=GR_RESOLUTION_640x480;
+        Resolution:=GR_RESOLUTION_640x480;
       end;
   8 : begin
         ScreenSizeX:=800;
         ScreenSizeY:=600;
-        ScreenRes:=GR_RESOLUTION_800x600;
+        Resolution:=GR_RESOLUTION_800x600;
       end;
   9 : begin
         ScreenSizeX:=960;
         ScreenSizeY:=720;
-        ScreenRes:=GR_RESOLUTION_960x720;
+        Resolution:=GR_RESOLUTION_960x720;
       end;
   10: begin
         ScreenSizeX:=856;
         ScreenSizeY:=480;
-        ScreenRes:=GR_RESOLUTION_856x480;
+        Resolution:=GR_RESOLUTION_856x480;
       end;
   11: begin
         ScreenSizeX:=512;
         ScreenSizeY:=256;
-        ScreenRes:=GR_RESOLUTION_512x256;
+        Resolution:=GR_RESOLUTION_512x256;
       end;
   12: begin
         ScreenSizeX:=1024;
         ScreenSizeY:=768;
-        ScreenRes:=GR_RESOLUTION_1024x768;
+        Resolution:=GR_RESOLUTION_1024x768;
       end;
   13: begin
         ScreenSizeX:=1280;
         ScreenSizeY:=1024;
-        ScreenRes:=GR_RESOLUTION_1280x1024;
+        Resolution:=GR_RESOLUTION_1280x1024;
       end;
   14: begin
         ScreenSizeX:=1600;
         ScreenSizeY:=1200;
-        ScreenRes:=GR_RESOLUTION_1600x1200;
+        Resolution:=GR_RESOLUTION_1600x1200;
       end;
   15: begin
         ScreenSizeX:=400;
         ScreenSizeY:=300;
-        ScreenRes:=GR_RESOLUTION_400x300;
+        Resolution:=GR_RESOLUTION_400x300;
       end;
   else begin
         ScreenSizeX:=640;
         ScreenSizeY:=480;
-        ScreenRes:=GR_RESOLUTION_640x480;  //Default to 640x480
+        Resolution:=GR_RESOLUTION_640x480;  //Default to 640x480
       end;
  end;
  ScreenCenterX:=ScreenSizeX div 2;
  ScreenCenterY:=ScreenSizeY div 2;
- ScreenMirror:=StrToInt(Setup.Specifics.Values['Mirror']);
- case ScreenMirror of
- 0: ScreenOrigin:=GR_ORIGIN_UPPER_LEFT;
- 1: ScreenOrigin:=GR_ORIGIN_LOWER_LEFT;
+ SetupMirror:=StrToInt(Setup.Specifics.Values['Mirror']);
+ case SetupMirror of
+ 0: Origin:=GR_ORIGIN_UPPER_LEFT;
+ 1: Origin:=GR_ORIGIN_LOWER_LEFT;
  else
-   ScreenOrigin:=GR_ORIGIN_UPPER_LEFT; //Default to upper left
+   Origin:=GR_ORIGIN_UPPER_LEFT;  //Default to upper left
  end;
 
  if not GlideLoaded then
@@ -542,10 +547,10 @@ begin
     grSstSelect(0);
     if GlideTimesLoaded=1 then
       if not grSstWinOpen(0,
-                        ScreenRes,
+                        Resolution,
                         GR_REFRESH_60HZ,
                         GR_COLORFORMAT_ARGB,
-                        ScreenOrigin,
+                        Origin,
                         2, 1) then
        Raise EErrorFmt(6200, ['grSstWinOpen']);
    finally
@@ -2117,6 +2122,15 @@ begin
   if ViewDC<>DC then
   begin
     ViewDC:=DC;
+  end;
+end;
+
+procedure TGlideSceneObject.SetViewWnd(Wnd: HWnd);
+begin
+  if ViewWnd<>Wnd then
+  begin
+    //DanielPharos: Do we need to set grSstWinOpen again?
+    ViewWnd:=Wnd;
   end;
 end;
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2007/05/09 15:48:00  danielpharos
+Fixed a potential handle leak.
+
 Revision 1.58  2007/05/06 21:19:04  danielpharos
 Changed a big if-mess into a switch.
 
@@ -243,7 +246,7 @@ type
 
  TGLSceneObject = class(TSceneObject)
  private
-   DestWnd: HWnd;
+   ViewWnd: HWnd;
    ViewDC: HDC;
    RC: HGLRC;
    CurrentAlpha: LongInt;
@@ -297,6 +300,7 @@ type
    property Ready: Boolean read FReady write FReady;
    procedure SetViewRect(SX, SY: Integer); override;
    procedure SetViewDC(DC: HDC); override;
+   procedure SetViewWnd(Wnd: HWnd); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -740,7 +744,7 @@ var
 begin
   if ViewDC<>DC then
   begin
-    ReleaseDC(DestWnd, ViewDC);
+    ReleaseDC(ViewWnd, ViewDC);
     ViewDC:=DC;
     Setup:=SetupSubSet(ssGeneral, 'OpenGL');
     DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
@@ -765,6 +769,18 @@ begin
       if not SetPixelFormat(ViewDC, pfi, @pfd) then
         Raise EErrorFmt(4869, ['SetPixelFormat']);
      end;
+  end;
+end;
+
+procedure TGLSceneObject.SetViewWnd(Wnd: HWnd);
+begin
+  if ViewWnd<>Wnd then
+  begin
+    if (ViewWnd<>0) and (ViewDC<>0) then
+      ReleaseDC(ViewWnd,ViewDC);
+    ViewWnd:=Wnd;
+    ViewDC:=GetDC(Wnd);
+    SetViewDC(ViewDC);
   end;
 end;
 
@@ -888,8 +904,11 @@ begin
       if wglDeleteContext(RC) = false then
         raise EError(6312);
 
-    ReleaseDC(DestWnd, ViewDC);
-    ViewDC:=0;
+    if ViewDC<>0 then
+    begin
+      ReleaseDC(ViewWnd, ViewDC);
+      ViewDC:=0;
+    end;
 
     I:=0;
     while I<=Length(RCs)-1 do
@@ -930,13 +949,11 @@ procedure TGLSceneObject.Init(Wnd: HWnd;
                               const LibName: String;
                               var AllowsGDI: Boolean);
 var
- pfd: TPixelFormatDescriptor;
- pfi: Integer;
  nFogColor: GLfloat4;
  FogColor{, FrameColor}: TColorRef;
  Setup: QObject;
- CurrentPixelFormat: Integer;
  LightParam: array[0..3] of GLfloat;
+ I: Integer;
 begin
   ClearScene;
 
@@ -1036,35 +1053,7 @@ begin
   else
     MakeSections:=False;
 
-  if (DestWnd<>0) and (ViewDC<>0) then
-    ReleaseDC(DestWnd,ViewDC);
-  ViewDC:=GetDC(Wnd);
-  if Wnd<>DestWnd then
-  begin
-    DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
-    FillChar(pfd, SizeOf(pfd), 0);
-    pfd.nSize:=SizeOf(pfd);
-    pfd.nversion:=1;
-    pfd.dwflags:=pfd_Support_OpenGl or pfd_Draw_To_Window;
-    pfd.iPixelType:=pfd_Type_RGBA;
-    if DoubleBuffered then
-      pfd.dwflags:=pfd.dwflags or pfd_DoubleBuffer;
-    if Setup.Specifics.Values['SupportsGDI']<>'' then
-      pfd.dwflags:=pfd.dwflags or pfd_Support_GDI;
-    pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
-    if pfd.cColorBits<=0 then
-      pfd.cColorBits:=GetDeviceCaps(ViewDC, BITSPIXEL);
-    pfd.cDepthBits:=DepthBufferBits;
-    pfd.iLayerType:=pfd_Main_Plane;
-    pfi:=ChoosePixelFormat(ViewDC, @pfd);
-    CurrentPixelFormat:=GetPixelFormat(ViewDC);
-    if CurrentPixelFormat<>pfi then
-     begin
-      if not SetPixelFormat(ViewDC, pfi, @pfd) then
-        Raise EErrorFmt(6301, ['SetPixelFormat']);
-     end;
-    DestWnd:=Wnd;
-  end;
+  SetViewWnd(Wnd);
 
   if RC = 0 then
    begin
@@ -1072,11 +1061,11 @@ begin
     if RC = 0 then
      raise EError(6311);
 
-    for pfi:=0 to Length(RCs)-1 do
+    for I:=0 to Length(RCs)-1 do
     begin
-      if RCs[pfi]<>0 then
+      if RCs[I]<>0 then
       begin
-        if wglShareLists(RCs[pfi],RC)=false then
+        if wglShareLists(RCs[I],RC)=false then
           Raise EErrorFmt(6301, ['wglShareLists']);
         break;
       end;

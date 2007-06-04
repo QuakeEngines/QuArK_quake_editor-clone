@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2007/05/15 15:01:22  danielpharos
+Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
+
 Revision 1.31  2007/03/22 20:52:58  danielpharos
 Improved tracking of the target DC. Should fix a few grey screens.
 
@@ -2843,6 +2846,7 @@ begin
      if ViewMode<>vmWireframe then
       begin
        DC:=Canvas.Handle;
+       Scene.SetViewWnd(Handle);
        Scene.SetViewDC(DC);
        if Drawing and dfRebuildScene <> 0 then
         begin
