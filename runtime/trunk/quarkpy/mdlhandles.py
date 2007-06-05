@@ -143,19 +143,8 @@ class ModelFaceHandle(qhandles.GenericHandle):
         global lastmodelfaceremovedlist
         if flagsmouse == 536:
             lastmodelfaceremovedlist = []
-        print "qbaseeditor 1 modelfacelist ",modelfacelist
-        print "qbaseeditor 1 modelfacelist name ",modelfacelist[0][1].name
-        print "qbaseeditor 1 currentcomponent name  ",editor.Root.currentcomponent.name
-        print "qbaseeditor currentcomponent currentframe ",editor.Root.currentcomponent.currentframe.name
-        for item in modelfacelist:
-            print "qbaseeditor item in modelfacelist name ",item[1].name
-        print "qbaseeditor 1 modelfacelist view ",view.info["viewname"]
-        print "qbaseeditor 1 This is triangle # ",modelfacelist[0][2]
-        print "qbaseeditor 1 modelfacelist[1] ",modelfacelist[0][1].subitems[0].name
-        print "qbaseeditor 1 modelfacelist triangle ",modelfacelist[0][1].triangles[modelfacelist[0][2]]
         itemsremoved = 0
         templist = editor.ModelFaceSelList
-        print "qbaseeditor len, templist ",len(templist), templist
         for item in modelfacelist:
             if item[1].name == editor.Root.currentcomponent.name:
                 faceremoved = 0
@@ -168,10 +157,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
                 else:
                     listsize = len(templist)
                     lastface = templist[listsize-1]
-                    print "******* WE ARE OVER ************ ",item
-                    print "******* LAST IN LIST ************ ",lastface
                     if item[2] == lastface:
-                        print "******* SAME FACE WE ARE NOT ADDING ************ ",item
                         pass
                     else:
                         facecount = 0
@@ -185,8 +171,10 @@ class ModelFaceHandle(qhandles.GenericHandle):
                             facecount = facecount + 1
                         if faceremoved == 0:
                             templist = templist + [item[2]]
-                            print "******* NOW FACE NOW BEING ADDED IS ************ ",item
                 break ### This limits the faces that can be selected to the closest face to the camera.
+         #   else: ### Clears ModelFaceSelList properly but stops selection through other components.
+         #       editor.ModelFaceSelList = []
+         #       return
         editor.ModelFaceSelList = templist
         for v in editor.layout.views:
         #    if v.info["viewname"] == "skinview":
@@ -201,42 +189,26 @@ class ModelFaceHandle(qhandles.GenericHandle):
     def draw(self, editor, view, list):
                 
         cv = view.canvas()
-        cv.pencolor = WHITE
+        cv.pencolor = WHITE # add an option to set the pencolor
         cv.penwidth = 2 # add an option to set the penwidth
         cv.brushcolor = WHITE
         cv.brushstyle = BS_SOLID
-        print "******* editor.ModelFaceSelList IS ************ ",editor.ModelFaceSelList
-        print "************ NUMBER IN FACE LIST IS  ****************  ",len(editor.ModelFaceSelList)
-        print "******* DRAWING LIST IS ************ ",list
-        print "************ NUMBER IN DRAWING LIST IS  ****************  ",len(list)
-        if len(list) != 0:
-            for triangleindex in list:
-                triangle = editor.Root.currentcomponent.triangles[triangleindex]
-                vertex0 = triangle[0][0]
-                vertex1 = triangle[1][0]
-                vertex2 = triangle[2][0]
-            #    print "qbaseeditor triangle currentframe vertices ",editor.Root.currentcomponent.currentframe.vertices
-            #    print "qbaseeditor triangle vertex0 currentframe ",vertex0
-          #      print "qbaseeditor vertex0 currentframe ",editor.Root.currentcomponent.currentframe.vertices[vertex0]
-          #      print "qbaseeditor vertex1 currentframe ",editor.Root.currentcomponent.currentframe.vertices[vertex1]
-          #      print "qbaseeditor vertex2 currentframe ",editor.Root.currentcomponent.currentframe.vertices[vertex2]
-          #      print "qbaseeditor proj vertex0 ",view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex0]).tuple
-          #      print "qbaseeditor proj vertex1 ",view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex1]).tuple
-          #      print "qbaseeditor proj vertex2 ",view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex2]).tuple
+        try:
+            if len(list) != 0:
+                for triangleindex in list:
+                    triangle = editor.Root.currentcomponent.triangles[triangleindex]
+                    vertex0 = triangle[0][0]
+                    vertex1 = triangle[1][0]
+                    vertex2 = triangle[2][0]
 
-                vertex0X, vertex0Y,vertex0Z = view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex0]).tuple
-                vertex1X, vertex1Y,vertex1Z = view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex1]).tuple
-                vertex2X, vertex2Y,vertex2Z = view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex2]).tuple
-                cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
-                cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
-                cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
-         #       tri = editor.Root.currentcomponent.triangles[item[2]]
-         #       print "qbaseeditor tri has vtx tri0, type currentframe ",tri[0], type(tri[0])
-         #       print "qbaseeditor tri has vtx tri1 currentframe ",tri[1]
-         #       print "qbaseeditor tri has vtx tri2 currentframe ",tri[2]
-         #       for j in range(len(tri)):
-         #           vtx = tri[j]
-         #           print "qbaseeditor tri has j, vtx currentframe ",j, vtx
+                    vertex0X, vertex0Y,vertex0Z = view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex0]).tuple
+                    vertex1X, vertex1Y,vertex1Z = view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex1]).tuple
+                    vertex2X, vertex2Y,vertex2Z = view.proj(editor.Root.currentcomponent.currentframe.vertices[vertex2]).tuple
+                    cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
+                    cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
+                    cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
+        except:
+            editor.ModelFaceSelList = []
 
 
   #  For setting stuff up at the beginning of a drag
@@ -1344,6 +1316,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.53  2007/06/03 23:45:23  cdunde
+#Changed what was kept in the ModelFaceSelList to only the triangle index number to stop
+#Access Violation errors when a drag is made and the objects them selves are changed.
+#
 #Revision 1.52  2007/06/03 21:58:55  cdunde
 #Added new Model Editor lists, ModelFaceSelList and SkinFaceSelList,
 #Implementation of the face selection function for the model mesh.
