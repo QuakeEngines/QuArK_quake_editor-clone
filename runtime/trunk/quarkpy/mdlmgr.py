@@ -53,7 +53,7 @@ class ModelLayout(BaseLayout):
         startup = 0
         savedskins = {}
         skincount = 0
-        mdleditor.mdleditor.skinviewpicked = []
+  #      mdleditor.mdleditor.skinviewpicked = []
         BaseLayout.clearrefs(self)
         self.reset()
         slist = None
@@ -369,14 +369,18 @@ class ModelLayout(BaseLayout):
 
         if comp != self.editor.Root.currentcomponent:
             self.reset()
-            try:
-                if currentview.info["viewname"] == "skinview":
+            if currentview.info["viewname"] == "skinview":
+                if self.editor.dragobject is not None and isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle):
                     pass
                 else:
-                    self.editor.ModelFaceSelList = []
+                    self.editor.skinviewpicked = []
+            else:
+                self.editor.skinviewpicked = []
+                self.editor.ModelFaceSelList = []
              #       self.editor.SkinFaceSelList = [] # For future use.
-            except:
-                pass
+            for view in self.editor.layout.views:
+                if view.info["viewname"] == "skinview":
+                    view.invalidate()
         self.editor.Root.setcomponent(comp)
 
 ########## commenting out the lines below brakes Misc dragging
@@ -502,6 +506,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.36  2007/06/05 02:17:39  cdunde
+#To stop exception error in Skin-view when a different
+#model is opened without shutting down QuArK.
+#
 #Revision 1.35  2007/06/05 01:17:12  cdunde
 #To stop Skin-view not drawing handles and skin mesh if skinviewpicked list has not been
 #cleared or a component is not selected and the editors layout is changed.
