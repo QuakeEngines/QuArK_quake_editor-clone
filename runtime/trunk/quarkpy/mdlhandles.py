@@ -678,22 +678,26 @@ class SkinHandle(qhandles.GenericHandle):
           #  if flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080:  # This drawing is now done in the qbaseeditor.py finishdrawing function, much faster.
           #      pass
           #  else:
-          #      for vertex in triangle:
-          #          fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
-          #          fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
-          #          cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
+            if flagsmouse == 16384 and editor.skinviewpicked == []:
+                for vertex in triangle:
+                    fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
+                    fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
+                    cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
 
-          #      cv.reset()
+                cv.reset()
           #      cv.pencolor = vertexdotcolor
-          #      if MldOption("Ticks") == "1":
+                if MldOption("Ticks") == "1":
+                    cv.pencolor = MapColor("Vertices", SS_MODEL)
+                    cv.brushcolor = WHITE
 #py2.4                    cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
-          #          cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-          #      else:
+                    cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
+                else:
+                    cv.pencolor = MapColor("Vertices", SS_MODEL)
 #py2.4                    cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
-          #          cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
+                    cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
 #py2.4                cv.setpixel(p.x, p.y, vertexdotcolor)
           #  cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
-            cv.pencolor = vertexdotcolor
+          #  cv.pencolor = vertexdotcolor
             try:
                 if editor.skinviewpicked != []:
                     itemnbr = 0
@@ -1316,6 +1320,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.54  2007/06/05 01:08:13  cdunde
+#To stop exception error when ModelFaceSelList is not cleared and component is changed.
+#
 #Revision 1.53  2007/06/03 23:45:23  cdunde
 #Changed what was kept in the ModelFaceSelList to only the triangle index number to stop
 #Access Violation errors when a drag is made and the objects them selves are changed.

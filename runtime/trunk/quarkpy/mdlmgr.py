@@ -53,6 +53,7 @@ class ModelLayout(BaseLayout):
         startup = 0
         savedskins = {}
         skincount = 0
+        mdleditor.mdleditor.skinviewpicked = []
         BaseLayout.clearrefs(self)
         self.reset()
         slist = None
@@ -501,6 +502,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.34  2007/06/05 01:13:21  cdunde
+#To stop exception error if component selection changed and currentview is "skinview".
+#
 #Revision 1.33  2007/06/03 23:46:14  cdunde
 #To stop face selection list from being cleared when drag is done in Skin-view.
 #
