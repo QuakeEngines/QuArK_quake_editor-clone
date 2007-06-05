@@ -24,7 +24,6 @@ import quarkpy.qhandles
 from quarkpy.mdlmgr import *
 import quarkpy.mdleditor
 
-
 #
 # See comments in map4viewslayout.py.
 #
@@ -239,6 +238,7 @@ class FourViewsLayout(ModelLayout):
 
 class FourViewsLayout2(FourViewsLayout):
 
+    from quarkpy.qbaseeditor import currentview
     shortname = "4 views"
 
     def buildscreen(self, form):
@@ -291,6 +291,12 @@ class FourViewsLayout2(FourViewsLayout):
         self.ViewYZ.flags = self.ViewYZ.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
         self.ViewXY.flags = self.ViewXY.flags &~ MV_HSCROLLBAR
 
+        #
+        # To set the qbaseeditor's global currentview for proper creation and
+        # drawing of handles when switching from one layout to another.
+        #
+        
+        quarkpy.qbaseeditor.currentview = self.View3D
 
 
 
@@ -304,6 +310,9 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.9  2007/06/05 01:01:16  cdunde
+# To try and stop model editor "loosing" itself when the Skin-view is the currentview and other stuff.
+#
 # Revision 1.8  2007/01/21 19:41:17  cdunde
 # Gave a viewname for all views of the Model Editor
 # to add new Model Editor Views Options button and functions.
