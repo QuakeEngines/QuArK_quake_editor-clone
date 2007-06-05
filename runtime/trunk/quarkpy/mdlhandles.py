@@ -141,6 +141,8 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
     def selection(self, editor, view, modelfacelist, flagsmouse, draghandle=None):
         global lastmodelfaceremovedlist
+        
+        if view.info["viewname"] == "skinview": return
         if flagsmouse == 536:
             lastmodelfaceremovedlist = []
         itemsremoved = 0
@@ -177,17 +179,18 @@ class ModelFaceHandle(qhandles.GenericHandle):
          #       return
         editor.ModelFaceSelList = templist
         for v in editor.layout.views:
-        #    if v.info["viewname"] == "skinview":
-        #        pass
-        #    else:
-            if itemsremoved != 0:
-                mdleditor.setsingleframefillcolor(editor, v)
-                v.repaint()     
-            self.draw(editor, v, editor.ModelFaceSelList)
+            if v.info["viewname"] == "skinview":
+                pass
+            else:
+                if itemsremoved != 0:
+                    mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()     
+                self.draw(editor, v, editor.ModelFaceSelList)
 
 
     def draw(self, editor, view, list):
-                
+
+        if view.info["viewname"] == "skinview": return
         cv = view.canvas()
         cv.pencolor = WHITE # add an option to set the pencolor
         cv.penwidth = 2 # add an option to set the penwidth
@@ -631,7 +634,7 @@ class SkinHandle(qhandles.GenericHandle):
 
 
     def draw(self, view, cv, draghandle=None):
-        editor = mapeditor()
+        editor = mdleditor.mdleditor
 
         from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
         if flagsmouse == 2056: return # Stops duplicated handle drawing at the end of a drag.
@@ -1320,6 +1323,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.55  2007/06/05 01:17:12  cdunde
+#To stop Skin-view not drawing handles and skin mesh if skinviewpicked list has not been
+#cleared or a component is not selected and the editors layout is changed.
+#
 #Revision 1.54  2007/06/05 01:08:13  cdunde
 #To stop exception error when ModelFaceSelList is not cleared and component is changed.
 #
