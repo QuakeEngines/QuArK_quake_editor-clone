@@ -250,7 +250,7 @@ class ModelLayout(BaseLayout):
      #   self.skinview.onmouse = self.polyviewmouse  ### was commented out, causes zoom to change when aother "component" folder is selected
                                                      ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
                                                      ### Commenting out due to conflict but possible future use.
-        self.editor = mapeditor()
+        self.editor = mdleditor.mdleditor
 
         if self.editor.Root.currentcomponent is not None:
             pass
@@ -502,6 +502,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.35  2007/06/05 01:17:12  cdunde
+#To stop Skin-view not drawing handles and skin mesh if skinviewpicked list has not been
+#cleared or a component is not selected and the editors layout is changed.
+#
 #Revision 1.34  2007/06/05 01:13:21  cdunde
 #To stop exception error if component selection changed and currentview is "skinview".
 #
