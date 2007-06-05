@@ -368,11 +368,14 @@ class ModelLayout(BaseLayout):
 
         if comp != self.editor.Root.currentcomponent:
             self.reset()
-            if currentview.info["viewname"] == "skinview":
+            try:
+                if currentview.info["viewname"] == "skinview":
+                    pass
+                else:
+                    self.editor.ModelFaceSelList = []
+             #       self.editor.SkinFaceSelList = [] # For future use.
+            except:
                 pass
-            else:
-                self.editor.ModelFaceSelList = []
-         #       self.editor.SkinFaceSelList = [] # For later use.
         self.editor.Root.setcomponent(comp)
 
 ########## commenting out the lines below brakes Misc dragging
@@ -498,6 +501,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.33  2007/06/03 23:46:14  cdunde
+#To stop face selection list from being cleared when drag is done in Skin-view.
+#
 #Revision 1.32  2007/06/03 21:59:20  cdunde
 #Added new Model Editor lists, ModelFaceSelList and SkinFaceSelList,
 #Implementation of the face selection function for the model mesh.
