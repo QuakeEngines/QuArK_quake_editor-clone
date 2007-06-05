@@ -22,6 +22,7 @@ Info = {
 
 import quarkpy.qhandles   
 from quarkpy.mdlmgr import *
+import quarkpy.mdleditor
 
 
 #
@@ -32,6 +33,7 @@ class FourViewsLayout(ModelLayout):
     "The 4-views layout, abstract class for FourViewsLayout1 and FourViewsLayout2."
 
     def buildbase(self, form):
+        self.editor = mdleditor.mdleditor
 
         #
         # We put the standard left panel first.
@@ -302,6 +304,10 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.8  2007/01/21 19:41:17  cdunde
+# Gave a viewname for all views of the Model Editor
+# to add new Model Editor Views Options button and functions.
+#
 # Revision 1.7  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
