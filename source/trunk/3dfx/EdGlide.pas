@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/06/04 19:20:25  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
 Revision 1.8  2007/05/15 15:01:22  danielpharos
 Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
 
@@ -224,7 +227,7 @@ type
    procedure ClearScene; override;
    procedure SetViewRect(SX, SY: Integer); override;
    procedure SetViewDC(DC: HDC); override;
-   procedure SetViewWnd(Wnd: HWnd); override;
+   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -2125,7 +2128,7 @@ begin
   end;
 end;
 
-procedure TGlideSceneObject.SetViewWnd(Wnd: HWnd);
+procedure TGlideSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
 begin
   if ViewWnd<>Wnd then
   begin

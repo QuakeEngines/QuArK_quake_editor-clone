@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2007/06/04 19:20:24  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
 Revision 1.59  2007/05/09 15:48:00  danielpharos
 Fixed a potential handle leak.
 
@@ -300,7 +303,7 @@ type
    property Ready: Boolean read FReady write FReady;
    procedure SetViewRect(SX, SY: Integer); override;
    procedure SetViewDC(DC: HDC); override;
-   procedure SetViewWnd(Wnd: HWnd); override;
+   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -736,7 +739,6 @@ end;
 
 procedure TGLSceneObject.SetViewDC(DC: HDC);
 var
-  DoubleBuffered: Boolean;
   pfd: TPixelFormatDescriptor;
   pfi: Integer;
   Setup: QObject;
@@ -744,7 +746,8 @@ var
 begin
   if ViewDC<>DC then
   begin
-    ReleaseDC(ViewWnd, ViewDC);
+    if (ViewWnd<>0) and (ViewDC<>0) then
+      ReleaseDC(ViewWnd, ViewDC);
     ViewDC:=DC;
     Setup:=SetupSubSet(ssGeneral, 'OpenGL');
     DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
@@ -772,15 +775,19 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.SetViewWnd(Wnd: HWnd);
+procedure TGLSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
 begin
   if ViewWnd<>Wnd then
   begin
-    if (ViewWnd<>0) and (ViewDC<>0) then
-      ReleaseDC(ViewWnd,ViewDC);
+    if ResetViewDC then
+      if (ViewWnd<>0) and (ViewDC<>0) then
+      begin
+        ReleaseDC(ViewWnd,ViewDC);
+        ViewDC:=0;
+      end;
     ViewWnd:=Wnd;
-    ViewDC:=GetDC(Wnd);
-    SetViewDC(ViewDC);
+    if ResetViewDC then
+      SetViewDC(GetDC(Wnd));
   end;
 end;
 
@@ -904,7 +911,7 @@ begin
       if wglDeleteContext(RC) = false then
         raise EError(6312);
 
-    if ViewDC<>0 then
+    if (ViewWnd<>0) and (ViewDC<>0) then
     begin
       ReleaseDC(ViewWnd, ViewDC);
       ViewDC:=0;
@@ -930,6 +937,7 @@ begin
   inherited Create(nViewMode);
   RC:=0;
   ViewDC:=0;
+  ViewWnd:=0;
 end;
 
 destructor TGLSceneObject.Destroy;
@@ -1053,7 +1061,7 @@ begin
   else
     MakeSections:=False;
 
-  SetViewWnd(Wnd);
+  SetViewWnd(Wnd,true);
 
   if RC = 0 then
    begin

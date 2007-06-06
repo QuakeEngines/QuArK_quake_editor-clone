@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/06/04 19:20:24  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
 Revision 1.20  2007/05/09 17:51:55  danielpharos
 Another big improvement. Stability and speed should be much better now.
 
@@ -159,7 +162,7 @@ type
  *)
     procedure SetViewRect(SX, SY: Integer); override;
     procedure SetViewDC(DC: HDC); override;
-    procedure SetViewWnd(Wnd: HWnd); override;
+    procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
     procedure Render3DView; override;
     procedure Copy3DView; override;
  (*
@@ -223,24 +226,29 @@ begin
 
     //DanielPharos: Do we need to reset the swapchains?
 
-    ReleaseDC(ViewWnd, ViewDC);
+    if (ViewWnd<>0) and (ViewDC<>0) then
+      ReleaseDC(ViewWnd, ViewDC);
     ViewDC:=DC;
   end;
 end;
 
-procedure TDirect3DSceneObject.SetViewWnd(Wnd: HWnd);
+procedure TDirect3DSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
 begin
   if ViewWnd<>Wnd then
   begin
     ScreenResized := True;
     //DanielPharos: Do we need to do this?
 
-    if (ViewWnd<>0) and (ViewDC<>0) then
-      ReleaseDC(ViewWnd,ViewDC);
+    if ResetViewDC then
+      if (ViewWnd<>0) and (ViewDC<>0) then
+      begin
+        ReleaseDC(ViewWnd,ViewDC);
+        ViewDC:=0;
+      end;
     ViewWnd:=Wnd;
     pPresParm.hDeviceWindow:=ViewWnd;
-    ViewDC:=GetDC(Wnd);
-    SetViewDC(ViewDC);
+    if ResetViewDC then
+      SetViewDC(GetDC(Wnd));
   end;
 end;
 
@@ -335,11 +343,12 @@ begin
     ListItemUsed[ListIndex-1]:=false;
   ListIndex:=0;
 
-  if ViewDC<>0 then
+  if (ViewWnd<>0) and (ViewDC<>0) then
   begin
     ReleaseDC(ViewWnd, ViewDC);
     ViewDC:=0;
   end;
+  ViewWnd:=0;
 end;
 
 destructor TDirect3DSceneObject.Destroy;

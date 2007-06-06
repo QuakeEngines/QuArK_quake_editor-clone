@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/06/04 19:20:25  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
 Revision 1.32  2007/03/29 21:01:39  danielpharos
 Changed a few comments and error messages
 
@@ -296,7 +299,7 @@ type
    procedure ClearFrame; virtual;
    procedure SetViewRect(SX, SY: Integer); virtual; abstract;
    procedure SetViewDC(DC: HDC); virtual; abstract;
-   procedure SetViewWnd(Wnd: HWnd); virtual; abstract;
+   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); virtual; abstract;
    procedure SetCoords(nCoord: TCoordinates);
    procedure BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;

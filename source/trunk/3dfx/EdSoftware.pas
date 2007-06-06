@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/06/04 19:20:25  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
 Revision 1.7  2007/03/29 21:01:39  danielpharos
 Changed a few comments and error messages
 
@@ -242,7 +245,7 @@ type
    procedure ClearScene; override;
    procedure SetViewRect(SX, SY: Integer); override;
    procedure SetViewDC(DC: HDC); override;
-   procedure SetViewWnd(Wnd: HWnd); override;
+   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -2137,7 +2140,7 @@ begin
   end;
 end;
 
-procedure TSoftwareSceneObject.SetViewWnd(Wnd: HWnd);
+procedure TSoftwareSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
 begin
   if ViewWnd<>Wnd then
   begin
