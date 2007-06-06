@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2007/05/29 13:06:11  danielpharos
+Added ignore-what-I-don't-understand support for iwmap 4 .map files, which is used by Call of Duty 2.
+
 Revision 1.72  2007/05/24 20:42:45  danielpharos
 Reserved gamecodes for Call of Duty 1 and 2.
 
@@ -328,14 +331,14 @@ type
 
 function GetMapFormatType : MapFormatTypes;
 function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
-procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
-procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
-procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Dest, HxStrings: TStrings; Flags: Integer; EntityNumber: Integer);
-procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
-procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
-procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags: Integer);
+procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Dest, HxStrings: TStrings; Flags2: Integer; EntityNumber: Integer);
+procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
 procedure SaveAsMapTextTBezier(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Target: TStrings);
-procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 
  {------------------------}
 
@@ -2737,7 +2740,7 @@ end;
 
  {------------------------}
 
-procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapText(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
   MapOptionSpecs : TStringList;
 begin
@@ -2758,22 +2761,22 @@ begin
       MapVersion:=3;
   end;
   if ObjectToSave is TTreeMapBrush then
-    SaveAsMapTextTTreeMapBrush(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
+    SaveAsMapTextTTreeMapBrush(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TTreeMapEntity then
-    SaveAsMapTextTTreeMapEntity(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
+    SaveAsMapTextTTreeMapEntity(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TTreeMapGroup then
-    SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
+    SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TPolyedre then
-    //SaveAsMapTextTPolygon(ObjectToSave, GameCode, MapVersion, Texte, OriginBrush, Flags)
+    //SaveAsMapTextTPolygon(ObjectToSave, GameCode, MapVersion, Texte, OriginBrush, Flags2)
   else if ObjectToSave is TBezier then
     //SaveAsMapTextTBezier(ObjectToSave, GameCode, MapVersion, Texte)
   else if ObjectToSave is TDuplicator then
-    SaveAsMapTextTDuplicator(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings)
+    SaveAsMapTextTDuplicator(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
   else
     raise InternalE(LoadStr1(5525));
 end;
 
-procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
  Polyedres: TQList;
  I, J: Integer;
@@ -2785,7 +2788,7 @@ begin
 
  { If this is the first time we're called, soOutsideWorldspawn is not set,
    and we have to reset the entity-numbering-scheme to zero (zero = worldspawn) }
- if (Flags and soOutsideWorldspawn = 0) then
+ if (Flags2 and soOutsideWorldspawn = 0) then
  begin
   { Do some checking of the spec/args in worldspawn,
     to set up special .MAP writing methods.
@@ -2793,10 +2796,10 @@ begin
     will not be written to the .MAP file! }
   { this is nuked, maps will now be written based on OutputMapFormat
   if Specifics.Values['mapversion']='220' then
-    Flags:=Flags + soWriteValve220, except we'll leave 6dx the same for now 
+    Flags2:=Flags2 + soWriteValve220, except we'll leave 6dx the same for now
   else }
   if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
-    Flags:=Flags + soWrite6DXHierarky;
+    Flags2:=Flags2 + soWrite6DXHierarky;
 
   if GetMapFormatType=V220Type then
     Specifics.Values['mapversion']:='220';
@@ -2804,16 +2807,16 @@ begin
  end
  else
   I := GetNextEntityNo;
- if Flags and soBSP = 0 then
+ if Flags2 and soBSP = 0 then
    Texte.Add(CommentMapLine('Entity '+IntToStr(I)));
  SaveAsMapTextTTreeMapSpec(ObjectToSave, GameCode, MapVersion, Texte, HxStrings, Flags, I);
- if Flags and soBSP = 0 then
+ if Flags2 and soBSP = 0 then
   begin
    Polyedres:=TQList.Create;
    try
-    ListePolyedres(Polyedres, Negatif, Flags and not soDirectDup, 1);
+    ListePolyedres(Polyedres, Negatif, Flags2 and not soDirectDup, 1);
     OriginBrush:=Nil;
-    if (Flags and soOutsideWorldspawn <> 0) and (CharModeJeu>=mjQuake2) then
+    if (Flags2 and soOutsideWorldspawn <> 0) and (CharModeJeu>=mjQuake2) then
      for I:=Polyedres.Count-1 downto 0 do
       with TPolyedre(Polyedres[I]) do
        if CheckPolyhedron and (Faces.Count>0)
@@ -2838,12 +2841,12 @@ begin
     for I:=0 to Polyedres.Count-1 do
      begin
       Texte.Add(CommentMapLine('Brush '+IntToStr(I)));
-      SaveAsMapTextTPolygon(TPolyedre(Polyedres[I]), GameCode, MapVersion, Texte, OriginBrush, Flags);
+      SaveAsMapTextTPolygon(TPolyedre(Polyedres[I]), GameCode, MapVersion, Texte, OriginBrush, Flags2);
      end;
     { proceed with Bezier patches }
     I:=Polyedres.Count-1;
     Polyedres.Clear;
-    ListeBeziers(Polyedres, Flags);
+    ListeBeziers(Polyedres, Flags2);
     for J:=0 to Polyedres.Count-1 do
     begin
      I:=I+1;
@@ -2855,30 +2858,30 @@ begin
    end;
   end;
   // Does 6DX support work correctly?
-  if ((Flags and soWrite6DXHierarky) <> 0) then
+  if ((Flags2 and soWrite6DXHierarky) <> 0) then
   begin
    { For 6DX support }
-    if (Flags and soOutsideWorldspawn) = 0 then
+    if (Flags2 and soOutsideWorldspawn) = 0 then
     begin
       Texte.Add('}');
-      SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+      SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2 or soOutsideWorldspawn, HxStrings);
     end
     else
     begin
-      SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+      SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2 or soOutsideWorldspawn, HxStrings);
       Texte.Add('}');
     end;
   end
   else
   begin
     Texte.Add('}');
-    SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+    SaveAsMapTextTTreeMapGroup(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2 or soOutsideWorldspawn, HxStrings);
   end;
 
  end;
 end;
 
-procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Dest, HxStrings: TStrings; Flags: Integer; EntityNumber: Integer);
+procedure SaveAsMapTextTTreeMapSpec(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Dest, HxStrings: TStrings; Flags2: Integer; EntityNumber: Integer);
 const
  LineStarts: array[Boolean] of String = (' "', '"');
 var
@@ -2891,7 +2894,7 @@ begin
  begin
 
  DoneNameSpecific:=False;
- if Flags and soBsp=0 then
+ if Flags2 and soBsp=0 then
    Dest.Add(CommentMapLine(Ancestry));
  if (GetMapFormatType=HL2Type) then
    if (Name = 'worldspawn') then
@@ -2899,7 +2902,7 @@ begin
    else
      Dest.Add(LineStart+'entity');
  Dest.Add('{');
- LineStart:=LineStarts[Flags and soBSP <> 0];
+ LineStart:=LineStarts[Flags2 and soBSP <> 0];
  Dest.Add(LineStart+SpecClassname+'" "'+Name+'"');
  typedspecs:=false;
  for J:=0 to Specifics.Count-1 do
@@ -2987,7 +2990,7 @@ begin
  end;
 end;
 
-procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
  EntityNumber: Integer;
 begin
@@ -2995,18 +2998,18 @@ begin
  begin
 
  EntityNumber:=0;
- if Flags and soBSP=0 then
+ if Flags2 and soBSP=0 then
   begin
    EntityNumber:=GetNextEntityNo;
    Texte.Add(CommentMapLine('Entity '+IntToStr(EntityNumber)));
   end;
- SaveAsMapTextTTreeMapSpec(ObjectToSave, GameCode, MapVersion, Texte, HxStrings, Flags, EntityNumber);
+ SaveAsMapTextTTreeMapSpec(ObjectToSave, GameCode, MapVersion, Texte, HxStrings, Flags2, EntityNumber);
  Texte.Add('}');
 
  end;
 end;
 
-procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
  I: Integer;
  T: TTreeMap;
@@ -3014,25 +3017,25 @@ begin
  with TTreeMapGroup(ObjectToSave) do
  begin
 
- if (Flags and soIgnoreToBuild <> 0)
+ if (Flags2 and soIgnoreToBuild <> 0)
  and (ViewFlags and vfIgnoreToBuildMap <> 0) then
   Exit;
  if Odd(SelMult) then
-  Flags:=Flags and not soSelOnly;
+  Flags2:=Flags2 and not soSelOnly;
  for I:=0 to SubElements.Count-1 do
   begin
    T:=TTreeMap(SubElements[I]);
    // Is this right?
-   if not ((Flags and soSelOnly <> 0) and ControleSelection(T)) then
+   if not ((Flags2 and soSelOnly <> 0) and ControleSelection(T)) then
    begin
-    SaveAsMapText(T, GameCode, MapVersion, Negatif, Texte, Flags, HxStrings);
+    SaveAsMapText(T, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings);
    end;
   end;
 
  end;
 end;
 
-procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags: Integer);
+procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
 var
  J: Integer;
  Q: QObject;
@@ -3626,13 +3629,13 @@ begin
 
  if g_DrawInfo.ConstruirePolyedres and not CheckPolyhedron then Exit;
  { these means brutally round off the threepoints, whatever they are }
- WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
+ WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags2 and soDisableFPCoord <> 0 {$ENDIF};
  MapFormat:=GetMapFormatType;
 {
- UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags and soDisableEnhTex<>0);
+ UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags2 and soDisableEnhTex<>0);
  ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
  }
- UseIntegralVertices:=(MapFormat<>QetpType) and (Flags and soUseIntegralVertices<>0);
+ UseIntegralVertices:=(MapFormat<>QetpType) and (Flags2 and soUseIntegralVertices<>0);
  ExpandThreePoints:=false; { abandon this heroic but foolish measure.  The
    idea was to force threepoints to integers with less distortion, in aid
    of easier commerce between QuArK and Radiant, but it's just a Bad Idea. }
@@ -3761,7 +3764,7 @@ begin
  end;
 end;
 
-procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; GameCode: Char; MapVersion: Integer; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 var
  I: Integer;
 begin
@@ -3772,7 +3775,7 @@ begin
  and (FParent<>Nil) and (TvParent.TvParent=Nil) then
   GlobalWarning(LoadStr1(230));}  { FIXME: do various map tests globally }
  for I:=0 to LengthBuildImages-1 do
-   SaveAsMapText(ItemToSave(I), GameCode, MapVersion, Negatif, Texte, Flags, HxStrings);
+   SaveAsMapText(ItemToSave(I), GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings);
   
  end;
 end;
