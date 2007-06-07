@@ -27,10 +27,7 @@ import mdleditor
 #py2.4 indicates upgrade change for python 2.4
 
 # Globals
-vertexdotcolor = 0
-drag3Dlines = 0
-skinviewmesh = 0
-skinviewdraglines = 0
+
 mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
@@ -688,19 +685,13 @@ class SkinHandle(qhandles.GenericHandle):
                     cv.line(int(pv2[0]), int(pv2[1]), int(fixedX), int(fixedY))
 
                 cv.reset()
-          #      cv.pencolor = vertexdotcolor
                 if MldOption("Ticks") == "1":
-                    cv.pencolor = MapColor("Vertices", SS_MODEL)
+                    cv.pencolor = vertexdotcolor
                     cv.brushcolor = WHITE
-#py2.4                    cv.ellipse(p.x-2, p.y-2, p.x+2, p.y+2)
                     cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
                 else:
-                    cv.pencolor = MapColor("Vertices", SS_MODEL)
-#py2.4                    cv.ellipse(p.x-1, p.y-1, p.x+1, p.y+1)
+                    cv.pencolor = vertexdotcolor
                     cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
-#py2.4                cv.setpixel(p.x, p.y, vertexdotcolor)
-          #  cv.setpixel(int(p.x), int(p.y), vertexdotcolor)
-          #  cv.pencolor = vertexdotcolor
             try:
                 if editor.skinviewpicked != []:
                     itemnbr = 0
@@ -715,12 +706,12 @@ class SkinHandle(qhandles.GenericHandle):
                         itemcount = len(editor.skinviewpicked)
                         for item in editor.skinviewpicked:
                             if str(self.pos) == str(editor.skinviewpicked[0][0]) and (self.tri_index == item[2] and self.ver_index == item[3]):
-                                cv.brushcolor = drag3Dlines
+                                cv.brushcolor = skinviewdraglines
                                 cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                             else:
                                 if len(editor.skinviewpicked) > 1 and itemcount != 0:
                                     if str(self.pos) == str(editor.skinviewpicked[itemcount-1][0]):
-                                        cv.brushcolor = skinviewpicked
+                                        cv.brushcolor = skinviewpickedcolor
                                         cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                                     itemcount = itemcount - 1
             except:
@@ -1323,6 +1314,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.56  2007/06/05 22:55:57  cdunde
+#To stop it from drawing the model mesh selected faces in the Skin-view
+#and to try and stop it from loosing the editor. Also removed try statement
+#to allow errors to show up so we can TRY to fix them right.
+#
 #Revision 1.55  2007/06/05 01:17:12  cdunde
 #To stop Skin-view not drawing handles and skin mesh if skinviewpicked list has not been
 #cleared or a component is not selected and the editors layout is changed.

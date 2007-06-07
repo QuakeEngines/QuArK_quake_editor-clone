@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.334  2007/06/04 12:27:01  cdunde
+//To update some default settings.
+//
 //Revision 1.333  2007/05/29 13:05:03  danielpharos
 //Added some quality settings for DDS file saving.
 //
@@ -3202,31 +3205,29 @@ QQRKSRC1
       {
         InvertedColors = ""
         Options3Dviews_frameColor1  = $FFFFFF
-        Options3Dviews_fillColor1  = $FF8080
+        Options3Dviews_fillColor1   = $FF8080
         Options3Dviews_frameColor2  = $FFFFFFFF
-        Options3Dviews_fillColor2  = $FF8080
+        Options3Dviews_fillColor2   = $FF8080
         Options3Dviews_frameColor3  = $FFFFFFFF
-        Options3Dviews_fillColor3  = $FF8080
+        Options3Dviews_fillColor3   = $FF8080
         Options3Dviews_frameColor4  = $FFFFFFFF
-        Options3Dviews_fillColor4  = $FF8080
+        Options3Dviews_fillColor4   = $FF8080
         Options3Dviews_frameColor5  = $FFFFFF
-        Options3Dviews_fillColor5  = $FF8080
-        ViewXZ        = $E8E8B8
-        ViewXY        = $E8DCB8
-        SelXZ         = $0080C0
-        SelXY         = $0090C0
-        Gray          = $BABABA
-        Axis          = $A6CAF0
-        GridXZ        = $008000
-        GridXY        = $808000
-        GridLines     = $D0D0FF
-        Tag           = $FF0000
-        GrayImage     = $FF0000
-        Linear        = $FF0080
-        Vertices      = $FF0000
-        Drag3DLines   = $00F000
-        SkinLines     = $FF0000
-        SkinDragLines = $00FF00
+        Options3Dviews_fillColor5   = $FF8080
+        ViewXZ                      = $E8E8B8
+        ViewXY                      = $E8DCB8
+        Gray                        = $BABABA
+        Axis                        = $A6CAF0
+        GridXZ                      = $008000
+        GridXY                      = $808000
+        GridLines                   = $D0D0FF
+        Vertices                    = $FF0000
+        Drag3DLines                 = $00F000
+        BackFaceColor1              = $FFFFFF
+        BackFaceColor2              = $BABABA
+        SkinLines                   = $FF0000
+        SkinDragLines               = $00FF00
+        SkinViewPickedColor         = $0080C0
         Form = "MdlColors"
       }
       Layouts:config =
@@ -6187,22 +6188,20 @@ QQRKSRC1
           Options3Dviews_fillColor3  = $FF8080
           Options3Dviews_fillColor4  = $FF8080
           Options3Dviews_fillColor5  = $FF8080
-          ViewXZ     = $E8E8B8
-          ViewXY     = $E8DCB8
-          SelXZ      = $0080C0
-          SelXY      = $0090C0
-          Gray       = $BABABA
-          Axis       = $A6CAF0
-          GridXZ     = $008000
-          GridXY     = $808000
-          GridLines  = $D0D0FF
-          Tag        = $FF0000
-          GrayImage  = $FF0000
-          Linear     = $FF0080
-          Vertices   = $FF0000
-          Drag3DLines= $00F000
-          SkinLines  = $FF0000
-          SkinDragLines=$00F000
+          ViewXZ                     = $E8E8B8
+          ViewXY                     = $E8DCB8
+          Gray                       = $BABABA
+          Axis                       = $A6CAF0
+          GridXZ                     = $008000
+          GridXY                     = $808000
+          GridLines                  = $D0D0FF
+          Vertices                   = $FF0000
+          Drag3DLines                = $00F000
+          BackFaceColor1             = $FFFFFF
+          BackFaceColor2             = $BABABA
+          SkinLines                  = $FF0000
+          SkinDragLines              = $00F000
+          SkinViewPickedColor        = $0080C0
         }
       }
       Sep1: =
@@ -6216,22 +6215,20 @@ QQRKSRC1
         Typ = "X"     // checkboX
         Cap = "white on black"
       }
-      ViewXZ:        = { Txt = "Side map view (XZ)" Typ = "LI" }
-      ViewXY:        = { Txt = "Top map view (XY)" Typ = "LI" }
-      SelXZ:         = { Txt = "Selected brushes, side view" Typ = "LI" }
-      SelXY:         = { Txt = "Selected brushes, top view" Typ = "LI" }
-      Gray:          = { Txt = "Out-of-view grayed parts" Typ = "LI" }
-      Axis:          = { Txt = "Axis" Typ = "LI" }
-      GridXZ:        = { Txt = "Grid dots, side view" Typ = "LI" }
-      GridXY:        = { Txt = "Grid dots, top view" Typ = "LI" }
-      GridLines:     = { Txt = "Grid lines" Typ = "LI" }
-      Tag:           = { Txt = "Tagged point / group handle" Typ = "LI" }
-      GrayImage:     = { Txt = "While dragging" Typ = "LI" }
-      Linear:        = { Txt = "Linear Mapping box" Typ = "LI" }
-      Vertices:      = { Txt = "Vertex dots" Typ = "LI" }
-      Drag3DLines:   = { Txt = "3D views drag lines" Typ = "LI" }
-      SkinLines:     = { Txt = "Skin-view mesh lines" Typ = "LI" }
-      SkinDragLines: = { Txt = "Skin-view drag lines" Typ = "LI" }
+      ViewXZ:              = { Txt = "Side map view (XZ)" Typ = "LI" }
+      ViewXY:              = { Txt = "Top map view (XY)" Typ = "LI" }
+      Gray:                = { Txt = "Out-of-view grayed parts" Typ = "LI" }
+      Axis:                = { Txt = "Axis" Typ = "LI" }
+      GridXZ:              = { Txt = "Grid dots, side view" Typ = "LI" }
+      GridXY:              = { Txt = "Grid dots, top view" Typ = "LI" }
+      GridLines:           = { Txt = "Grid lines" Typ = "LI" }
+      Vertices:            = { Txt = "Vertex dots" Typ = "LI" }
+      Drag3DLines:         = { Txt = "Editor views drag lines / Picked Vertexes" Typ = "LI" }
+      BackFaceColor1:      = { Txt = "Editor views back faces pattern - color 1" Typ = "LI" }
+      BackFaceColor2:      = { Txt = "Editor views back faces pattern - color 2" Typ = "LI" }
+      SkinLines:           = { Txt = "Skin-view mesh lines" Typ = "LI" }
+      SkinDragLines:       = { Txt = "Skin-view drag lines / Base Vertex pick" Typ = "LI" }
+      SkinViewPickedColor: = { Txt = "Skin-view Skin Vertex picks" Typ = "LI" }
     }
     HotKeyForm:incl =
     {

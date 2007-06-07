@@ -121,13 +121,17 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
                             comp = editor.Root.currentcomponent
                             fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
-                            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                            backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
+                            backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
+                            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
 
                     if view.info["viewname"] == "3Dwindow":
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
                             comp = editor.Root.currentcomponent
                             fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
-                            comp.filltris = [(fillcolor,(WHITE,GRAY))]*len(comp.triangles)
+                            backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
+                            backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
+                            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
 
                     view.repaint()
                     return scroller
@@ -210,6 +214,11 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.11  2007/05/17 23:56:54  cdunde
+#Fixed model mesh drag guide lines not always displaying during a drag.
+#Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
+#General code proper rearrangement and cleanup.
+#
 #Revision 1.10  2007/05/16 23:28:22  cdunde
 #Fixed panning function that stopped model mesh from being drawn
 #during panning (scrolling) action and removed unnecessary code.
