@@ -561,7 +561,10 @@ def commonhandles(self, redraw=1):
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
                     else:
-                        hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                            return
+                        else:
+                            hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
                         currentview.handles = hlist
                         cv = currentview.canvas()
                         for h in hlist:
@@ -581,7 +584,10 @@ def commonhandles(self, redraw=1):
                     if (quarkx.setupsubset(SS_MODEL, "Options")["DHWR"] == "1") and (flagsmouse == 2056):
                         return
                     else:
-                        hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                            return
+                        else:
+                            hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
                         currentview.handles = hlist
                         cv = currentview.canvas()
                         for h in hlist:
@@ -781,6 +787,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.46  2007/06/07 04:23:21  cdunde
+#To setup selected model mesh face colors, remove unneeded globals
+#and correct code for model colors.
+#
 #Revision 1.45  2007/06/03 23:45:58  cdunde
 #Started mdlhandles.ClickOnView function for the Model Editor instead of using maphandles.py file.
 #
