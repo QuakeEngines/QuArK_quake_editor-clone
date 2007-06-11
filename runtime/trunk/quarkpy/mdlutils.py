@@ -198,18 +198,52 @@ def removevertex(comp, index, all3=0):
         p = checkinlist(tri, toBeRemoved)
         if (p==0):
             new_tris = new_tris + [ tri ]
-    #### 2) loop through all frames and delete vertex(s).
+    
     if all3 == 1:
-        frames = new_comp.findallsubitems("", ':mf')   # find all frames
+        new_tris = []
+        for tri in tris:
+            if (editor.picked[0][0] == tri[0][0]) and (editor.picked[1][0] == tri[1][0]) and (editor.picked[2][0] == tri[2][0]):
+                index = editor.picked[0][0]
+                continue
+            elif (editor.picked[0][0] == tri[0][0]) and (editor.picked[2][0] == tri[1][0]) and (editor.picked[1][0] == tri[2][0]):
+                index = editor.picked[0][0]
+                continue
+            elif (editor.picked[1][0] == tri[0][0]) and (editor.picked[2][0] == tri[1][0]) and (editor.picked[0][0] == tri[2][0]):
+                index = editor.picked[1][0]
+                continue
+            elif (editor.picked[1][0] == tri[0][0]) and (editor.picked[0][0] == tri[1][0]) and (editor.picked[2][0] == tri[2][0]):
+                index = editor.picked[1][0]
+                continue
+            elif (editor.picked[2][0] == tri[0][0]) and (editor.picked[1][0] == tri[1][0]) and (editor.picked[0][0] == tri[2][0]):
+                index = editor.picked[2][0]
+                continue
+            elif (editor.picked[2][0] == tri[0][0]) and (editor.picked[0][0] == tri[1][0]) and (editor.picked[1][0] == tri[2][0]):
+                index = editor.picked[2][0]
+                continue
+            else:
+                new_tris = new_tris + [ tri ]
+
+    #### 2) loop through all frames and delete unused vertex(s).
+    if all3 == 1:
+        vertexestoremove = []
         for vertex in editor.picked:
-            index = vertex[0]
+            vtxcount = 0
+            for tri in tris:
+                for vtx in tri:
+                    if vtx[0] == vertex[0]:
+                        vtxcount = vtxcount + 1
+            if vtxcount > 1:
+                pass
+            else:
+                vertexestoremove = vertexestoremove + [vertex]
+        frames = new_comp.findallsubitems("", ':mf')   # find all frames
+        for unusedvertex in vertexestoremove:
+            unusedindex = unusedvertex[0]
             for frame in frames: 
                 old_vtxs = frame.vertices
-                vtxs = old_vtxs[:index]
+                vtxs = old_vtxs[:unusedindex]
                 frame.vertices = vtxs
-        for vertex in editor.picked:
-            index = vertex[0]
-            new_tris = fixUpVertexNos(new_tris, index)
+        new_tris = fixUpVertexNos(new_tris, index)
         new_comp.triangles = new_tris
     else:
         enew_tris = fixUpVertexNos(new_tris, index)
@@ -311,8 +345,23 @@ def removeTriangle(editor, comp, index):
     todo = quarkx.msgbox("Do you also want to\nremove the 3 vertexes?",MT_CONFIRMATION, MB_YES_NO_CANCEL)
     if todo == MR_CANCEL: return
     if todo == MR_YES:
-        removevertex(comp, index, 1)
-        return
+        vertexestoremove = []
+        for vertex in editor.picked:
+            vtxcount = 0
+            tris = comp.triangles
+            for tri in tris:
+                for vtx in tri:
+                    if vtx[0] == vertex[0]:
+                        vtxcount = vtxcount + 1
+            if vtxcount > 1:
+                pass
+            else:
+                vertexestoremove = vertexestoremove + [vertex]
+        if len(vertexestoremove) == 0:
+            pass
+        else:
+            removevertex(comp, index, 1)
+            return
     new_comp = comp.copy()
     old_tris = new_comp.triangles
     tris = old_tris[:index] + old_tris[index+1:]
@@ -430,6 +479,9 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.22  2007/05/28 23:46:26  cdunde
+#To remove unneeded view invalidations.
+#
 #Revision 1.21  2007/05/18 02:16:48  cdunde
 #To remove duplicate definition of the qbaseeditor.py files def invalidateviews function called
 #for in some functions and not others. Too confusing, unnecessary and causes missed functions.

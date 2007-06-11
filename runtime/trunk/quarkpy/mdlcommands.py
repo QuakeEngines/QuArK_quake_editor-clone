@@ -22,7 +22,15 @@ def newframeclick(m):
 def addtriclick(m):
     editor = mapeditor()
     if len(editor.picked) == 3:
-        addtriangle(editor)
+        if (editor.picked[0][0] < editor.picked[1][0]) or (editor.picked[0][0] < editor.picked[2][0]):
+            if editor.picked[1][0] > editor.picked[2][0]:
+                quarkx.msgbox("You need to select\nvertex "+str(editor.picked[1][0])+" first.", MT_ERROR, MB_OK)
+                return
+            else:
+                quarkx.msgbox("You need to select\nvertex "+str(editor.picked[2][0])+" first.", MT_ERROR, MB_OK)
+                return
+        else:
+            addtriangle(editor)
 
 
 def remtriclick(m):
@@ -97,6 +105,10 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.12  2007/04/22 21:06:04  cdunde
+# Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
+# as well as its code relocation to proper file and elimination of unnecessary code.
+#
 # Revision 1.11  2007/04/19 03:30:27  cdunde
 # First attempt to get newly created triangles to draw correctly on the Skin-view. Still needs work.
 #
