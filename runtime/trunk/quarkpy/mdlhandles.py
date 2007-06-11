@@ -317,6 +317,9 @@ class VertexHandle(qhandles.GenericHandle):
                     if self.index == item[0]:
                         editor.picked.remove(item)
                         for v in editor.layout.views:
+                            if len(v.handles) == 0:
+                                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                                continue
                             mdleditor.setsingleframefillcolor(editor, v)
                             v.repaint()
                         return
@@ -333,6 +336,9 @@ class VertexHandle(qhandles.GenericHandle):
         def pick_cleared(m, editor=editor, view=view):
             editor.picked = []
             for v in editor.layout.views:
+                if len(v.handles) == 0:
+                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                    continue
                 mdleditor.setsingleframefillcolor(editor, v)
                 v.repaint()
 
@@ -1314,6 +1320,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.57  2007/06/07 04:23:21  cdunde
+#To setup selected model mesh face colors, remove unneeded globals
+#and correct code for model colors.
+#
 #Revision 1.56  2007/06/05 22:55:57  cdunde
 #To stop it from drawing the model mesh selected faces in the Skin-view
 #and to try and stop it from loosing the editor. Also removed try statement
