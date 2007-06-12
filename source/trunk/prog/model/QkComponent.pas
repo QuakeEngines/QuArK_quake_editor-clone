@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2007/05/06 21:24:24  danielpharos
+A little cleanup.
+
 Revision 1.23  2007/03/27 19:49:01  cdunde
 Added two comments to help devs find what draws a Models Mesh.
 
@@ -221,8 +224,8 @@ begin
       index:=-1;
       for i:=1 to cnt do begin
         f1:=(tris^[0].vertexno=v1)or(tris^[0].vertexno=v2)or(tris^[0].vertexno=v3);
-        f2:=(tris^[1].vertexno=v2)or(tris^[1].vertexno=v2)or(tris^[1].vertexno=v3);
-        f3:=(tris^[2].vertexno=v2)or(tris^[2].vertexno=v2)or(tris^[2].vertexno=v3);
+        f2:=(tris^[1].vertexno=v1)or(tris^[1].vertexno=v2)or(tris^[1].vertexno=v3);
+        f3:=(tris^[2].vertexno=v1)or(tris^[2].vertexno=v2)or(tris^[2].vertexno=v3);
         if f1 and f2 and f3 then begin  // v1, v2 & v3 can be in any order!
           index:=i;
           break;
