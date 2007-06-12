@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/02/02 21:10:23  danielpharos
+Fixed a typo
+
 Revision 1.17  2006/11/30 00:44:55  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
@@ -1195,48 +1198,97 @@ var
  I: Integer;
  Pt: PPointProj;
  Dest, PtBuffer: PPoint;
- P1, P2: TPointProj;
+ P1, P2, P3: TPointProj;
  OffScr: Boolean;
 begin
  OffScr:=False;
  Pt:=@Pts;
- for I:=1 to NbPts do
+ if NbPts = 3 then
   begin
-   {CheckVisible(Pt^);}
-   OffScr:=OffScr or (Pt^.OffScreen <> 0);
-   Inc(Pt);
-  end;
- Pt:=@Pts;
- if OffScr then
-  begin
-   for I:=2 to NbPts do
+   for I:=3 to NbPts do
     begin
-     P1:=Pt^;
+     OffScr:=OffScr or (Pt^.OffScreen <> 0);
      Inc(Pt);
-     P2:=Pt^;
-     if Ligne95(P1, P2, not FlatDisplay) then
-      begin
-       Windows.MoveToEx(g_DrawInfo.DC, Round(P1.x), Round(P1.y), Nil);
-       Windows.LineTo(g_DrawInfo.DC, Round(P2.x), Round(P2.y));
-      end;
     end;
-  end
+   Pt:=@Pts;
+   if (not OffScr) or (OffScr) then
+    begin
+     for I:=3 to NbPts do
+      begin
+       P1:=Pt^;
+       Inc(Pt);
+       P2:=Pt^;
+       Inc(Pt);
+       P3:=Pt^;
+       if Ligne95(P1, P2, not FlatDisplay) then
+        begin
+         Windows.MoveToEx(g_DrawInfo.DC, Round(P1.x), Round(P1.y), Nil);
+         Windows.LineTo(g_DrawInfo.DC, Round(P2.x), Round(P2.y));
+         Windows.MoveToEx(g_DrawInfo.DC, Round(P2.x), Round(P2.y), Nil);
+         Windows.LineTo(g_DrawInfo.DC, Round(P3.x), Round(P3.y));
+         Windows.MoveToEx(g_DrawInfo.DC, Round(P3.x), Round(P3.y), Nil);
+         Windows.LineTo(g_DrawInfo.DC, Round(P1.x), Round(P1.y));
+        end;
+      end;
+    end
+   else
+    begin
+     GetMem(PtBuffer, NbPts*SizeOf(TPoint));
+     Dest:=PtBuffer;
+     for I:=1 to NbPts do
+      begin
+       with Pt^ do
+        begin
+         Dest^.X:=Round(x);
+         Dest^.Y:=Round(y);
+        end;
+       Inc(Pt);
+       Inc(Dest);
+      end;
+     Windows.Polyline(g_DrawInfo.DC, PtBuffer^, NbPts);
+     FreeMem(PtBuffer);
+    end;
+   end
  else
   begin
-   GetMem(PtBuffer, NbPts*SizeOf(TPoint));
-   Dest:=PtBuffer;
    for I:=1 to NbPts do
     begin
-     with Pt^ do
-      begin
-       Dest^.X:=Round(x);
-       Dest^.Y:=Round(y);
-      end;
+    // CheckVisible(Pt^);
+     OffScr:=OffScr or (Pt^.OffScreen <> 0);
      Inc(Pt);
-     Inc(Dest);
     end;
-   Windows.Polyline(g_DrawInfo.DC, PtBuffer^, NbPts);
-   FreeMem(PtBuffer);
+   Pt:=@Pts;
+   if OffScr then
+    begin
+     for I:=2 to NbPts do
+      begin
+       P1:=Pt^;
+       Inc(Pt);
+       P2:=Pt^;
+       if Ligne95(P1, P2, not FlatDisplay) then
+        begin
+         Windows.MoveToEx(g_DrawInfo.DC, Round(P1.x), Round(P1.y), Nil);
+         Windows.LineTo(g_DrawInfo.DC, Round(P2.x), Round(P2.y));
+        end;
+      end;
+    end
+   else
+    begin
+     GetMem(PtBuffer, NbPts*SizeOf(TPoint));
+     Dest:=PtBuffer;
+     for I:=1 to NbPts do
+      begin
+       with Pt^ do
+        begin
+         Dest^.X:=Round(x);
+         Dest^.Y:=Round(y);
+        end;
+       Inc(Pt);
+       Inc(Dest);
+      end;
+     Windows.Polyline(g_DrawInfo.DC, PtBuffer^, NbPts);
+     FreeMem(PtBuffer);
+    end;
   end;
 end;
 
