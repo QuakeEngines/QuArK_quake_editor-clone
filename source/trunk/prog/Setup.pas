@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2007/05/24 20:42:45  danielpharos
+Reserved gamecodes for Call of Duty 1 and 2.
+
 Revision 1.53  2007/05/06 21:23:40  danielpharos
 Cleaned up some code for Md3 models.
 
@@ -282,12 +285,12 @@ type
   (mcVueXZ, mcVueXY, mcSelXZ, mcSelXY, mcOutOfView, mcAxes, mcGridXZ, mcGridXY, mcGridLines,
    mcTag, mcGrayImage, mcLinear, mcVertices, mcDrag3DLines, mcSkinLines, mcSkinDragLines);
  TSetupSet =
-  (ssGeneral, ssGames, ssMap, ssModel, ssToolbars{, ssTempData});
+  (ssGeneral, ssGames, ssFiles, ssMap, ssModel, ssToolbars{, ssTempData});
  TSetupSetArray = array[TSetupSet] of QObject;
 
 const
  SetupSetName : array[TSetupSet] of String =
-  ('General', 'Games', 'Map', 'Model', 'Toolbars and Menus'{, 'temp'});
+  ('General', 'Games', 'Files', 'Map', 'Model', 'Toolbars and Menus'{, 'temp'});
 
 type
   QConfig = class(QObject)

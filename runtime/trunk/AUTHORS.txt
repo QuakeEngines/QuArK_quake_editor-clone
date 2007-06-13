@@ -86,6 +86,10 @@ The developers of used libraries/programs
                         Nicolas Weber
                         http://openil.sourceforge.net/
 
+- FreeImage:
+                        Hervé Drolon
+                        http://freeimage.sourceforge.net/
+
 - NVDXT:
                         http://www.nvidia.com/
 

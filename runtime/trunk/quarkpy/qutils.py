@@ -59,11 +59,13 @@ SAVEDIALOG     = 1
 MULTIPLEFILES  = 64
 
 # setupset
-SS_GENERAL     = 0
+SS_GENERAL     = 0   # These have to match the ones in Setup.pas
 SS_GAMES       = 1
-SS_MAP         = 2
-SS_MODEL       = 3
-SS_TOOLBARS    = 4
+SS_FILES       = 2
+SS_MAP         = 3
+SS_MODEL       = 4
+SS_TOOLBARS    = 5
+#SS_TEMP        = 6
 
 # floating windows flags
 FWF_NOCAPTION  = 1
@@ -730,6 +732,9 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.30  2007/02/02 21:16:36  danielpharos
+#Fixed a typo
+#
 #Revision 1.29  2006/12/13 04:55:03  cdunde
 #Added a new developers "tool" function "WhatIsThisObject" with various options
 #to print everything about a QuArK Internal Object to the console and a hard copy

@@ -27,6 +27,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.335  2007/06/07 04:23:20  cdunde
+//To setup selected model mesh face colors, remove unneeded globals
+//and correct code for model colors.
+//
 //Revision 1.334  2007/06/04 12:27:01  cdunde
 //To update some default settings.
 //
@@ -1561,9 +1565,6 @@ QQRKSRC1
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
         TextureFormat = ".dds"                  // primary texture fileextension
-        TextureWriteSubFormat = "2"
-        TextureWriteSubFormatA = "2"
-        TextureWriteQuality = "2"
         TextureFileExtensions = ".dds,.tga,.jpg"     // possible texture fileextensions
         TextureWriteFormat = ".dds"
         TextureShaders = "shaders/quark.shader"
@@ -1744,8 +1745,6 @@ QQRKSRC1
         TextureFormat = ".vmt"
      //   TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
-        TextureWriteSubFormat = "3"
-        TextureWriteSubFormatA = "15"
         TexturesPath = "materials/"
 
         MapHoles = ".pts"
@@ -2933,6 +2932,42 @@ QQRKSRC1
       }
     }
 
+    Files:config =
+    {
+      DDS:config =
+      {
+        LoadLibrary = "DevIL"
+        SaveLibrary = "NVDXT"
+        SaveFormat = "2"
+        SaveFormatA = "2"
+        SaveQuality = "2"
+        Form = "FilesDDS"
+      }
+      JPG:config =
+      {
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
+        LoadQualityFreeImage = "2"
+        SaveQualityFreeImage = "4"
+        SaveProgressiveFreeImage = ""
+        Form = "FilesJPG"
+      }
+      PNG:config =
+      {
+        LoadLibrary = "DevIL"
+        SaveLibrary = "DevIL"
+        Form = "FilesPNG"
+      }
+      VTF:config =
+      {
+        LoadLibrary = "VTFLib"
+        SaveLibrary = "VTFLib"
+        SaveFormat = "3"
+        SaveFormatA = "15"
+        Form = "FilesVTF"
+      }
+    }
+
     Map:config =
     {
       Mouse:config =
@@ -3799,56 +3834,6 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
       sep: = {Typ="S" Txt = ""}
-      sep: = {Typ="S" Txt="---- Advanced Game Settings ----"}
-      TextureWriteSubFormatA: =
-      {
-        Typ = "CL"
-        Txt = "Format of exported alpha textures"
-        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
-                 "10"$0D"11"
-        Items = "DXT1c"
-             $0D "DXT1a"
-             $0D "DXT3"
-             $0D "DXT5"
-             $0D "U1555"
-             $0D "U4444"
-             $0D "U565"
-             $0D "U8888"
-             $0D "U888"
-             $0D "U555"
-             $0D "L8"
-             $0D "A8"
-      }
-      TextureWriteSubFormat: =
-      {
-        Typ = "CL"
-        Txt = "Format of exported non-alpha textures"
-        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
-                 "10"$0D"11"
-        Items = "DXT1c"
-             $0D "DXT1a"
-             $0D "DXT3"
-             $0D "DXT5"
-             $0D "U1555"
-             $0D "U4444"
-             $0D "U565"
-             $0D "U8888"
-             $0D "U888"
-             $0D "U555"
-             $0D "L8"
-             $0D "A8"
-      }
-      TextureWriteQuality: =
-      {
-        Typ = "CL"
-        Txt = "Quality of exported textures"
-        Values =  "0"$0D "1"$0D "2"$0D "3"
-        Items = "Quick"
-             $0D "Normal"
-             $0D "Production"
-             $0D "Highest"
-      }
-      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -4092,82 +4077,6 @@ QQRKSRC1
                $0022002A200666002AAAA20006666666002A200666666666660006666666
         cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
-      }
-      sep: = {Typ="S" Txt = ""}
-      sep: = {Typ="S" Txt="---- Advanced Game Settings ----"}
-      TextureWriteSubFormatA: =
-      {
-        Typ = "CL"
-        Txt = "Format of exported alpha textures"
-        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
-                 "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
-                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
-        Items = "RGBA8888"
-             $0D "ABGR8888"
-             $0D "RGB888"
-             $0D "BGR888"
-             $0D "RGB565"
-             $0D "I8"
-             $0D "IA88"
-             $0D "P8"
-             $0D "A8"
-             $0D "RGB888_BLUESCREEN"
-             $0D "BGR888_BLUESCREEN"
-             $0D "ARGB8888"
-             $0D "BGRA8888"
-             $0D "DXT1"
-             $0D "DXT3"
-             $0D "DXT5"
-             $0D "BGRX8888"
-             $0D "BGR565"
-             $0D "BGRX5551"
-             $0D "BGRA4444"
-             $0D "DXT1_ONEBITALPHA"
-             $0D "BGRA5551"
-             $0D "UV88/UVWQ8888"
-             $0D "RGBA16161616F"
-             $0D "RGBA16161616"
-             $0D "UVLX8888"
-             $0D "I32F"
-             $0D "RGB323232F"
-             $0D "RGBA32323232F"
-      }
-      TextureWriteSubFormat: =
-      {
-        Typ = "CL"
-        Txt = "Format of exported non-alpha textures"
-        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
-                 "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
-                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
-        Items = "RGBA8888"
-             $0D "ABGR8888"
-             $0D "RGB888"
-             $0D "BGR888"
-             $0D "RGB565"
-             $0D "I8"
-             $0D "IA88"
-             $0D "P8"
-             $0D "A8"
-             $0D "RGB888_BLUESCREEN"
-             $0D "BGR888_BLUESCREEN"
-             $0D "ARGB8888"
-             $0D "BGRA8888"
-             $0D "DXT1"
-             $0D "DXT3"
-             $0D "DXT5"
-             $0D "BGRX8888"
-             $0D "BGR565"
-             $0D "BGRX5551"
-             $0D "BGRA4444"
-             $0D "DXT1_ONEBITALPHA"
-             $0D "BGRA5551"
-             $0D "UV88/UVWQ8888"
-             $0D "RGBA16161616F"
-             $0D "RGBA16161616"
-             $0D "UVLX8888"
-             $0D "I32F"
-             $0D "RGB323232F"
-             $0D "RGBA32323232F"
       }
       sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
@@ -6023,6 +5932,240 @@ QQRKSRC1
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
+    }
+
+    FilesDDS:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading DDS files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving DDS files"
+        Typ="CL"
+        Items  = "NVDXT"
+        Values = "NVDXT"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+      sep: = {Typ="S" Txt="---- Advanced Saving Settings ----"}
+      SaveFormat: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported non-alpha DDS textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"
+        Items = "DXT1c"
+             $0D "DXT1a"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "U1555"
+             $0D "U4444"
+             $0D "U565"
+             $0D "U8888"
+             $0D "U888"
+             $0D "U555"
+             $0D "L8"
+             $0D "A8"
+      }
+      SaveFormatA: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported alpha DDS textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"
+        Items = "DXT1c"
+             $0D "DXT1a"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "U1555"
+             $0D "U4444"
+             $0D "U565"
+             $0D "U8888"
+             $0D "U888"
+             $0D "U555"
+             $0D "L8"
+             $0D "A8"
+      }
+      SaveQuality: =
+      {
+        Typ = "CL"
+        Txt = "Quality of exported DDS textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"
+        Items = "Quick"
+             $0D "Normal"
+             $0D "Production"
+             $0D "Highest"
+      }
+    }
+    FilesJPG:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading JPG files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving JPG files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+      sep: = {Typ="S" Txt="---- Advanced FreeImage Settings ----"}
+      LoadQualityFreeImage: =
+      {
+        Typ = "CL"
+        Txt = "Loading quality"
+        Values =  "0"$0D "1"$0D "2"
+        Items = "Default"
+             $0D "Fast"
+             $0D "Accurate"
+        Hint = "The quality the JPG texture will be loaded with when using the FreeImage library"
+      }
+      SaveQualityFreeImage: =
+      {
+        Typ = "CL"
+        Txt = "Saving quality"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"
+        Items = "Default"
+             $0D "Bad (10:1)"
+             $0D "Average (25:1)"
+             $0D "Normal (50:1)"
+             $0D "Good (75:1)"
+             $0D "Superb (100:1)"
+        Hint = "The quality the JPG texture will be saved with when using the FreeImage library"
+      }
+      SaveProgressiveFreeImage: = { Typ="X" Txt="Save Progressive" Cap="Enabled" Hint="Save the JPG texture as a progressive image."}
+    }
+    FilesPNG:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading PNG files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving PNG files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+    }
+    FilesVTF:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading VTF files"
+        Typ="CL"
+        Items  = "VTFLib"
+        Values = "VTFLib"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving VTF files"
+        Typ="CL"
+        Items  = "VTFLib"
+        Values = "VTFLib"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+      sep: = {Typ="S" Txt="---- Advanced Saving Settings ----"}
+      SaveFormat: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported non-alpha VTF textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+        Items = "RGBA8888"
+             $0D "ABGR8888"
+             $0D "RGB888"
+             $0D "BGR888"
+             $0D "RGB565"
+             $0D "I8"
+             $0D "IA88"
+             $0D "P8"
+             $0D "A8"
+             $0D "RGB888_BLUESCREEN"
+             $0D "BGR888_BLUESCREEN"
+             $0D "ARGB8888"
+             $0D "BGRA8888"
+             $0D "DXT1"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "BGRX8888"
+             $0D "BGR565"
+             $0D "BGRX5551"
+             $0D "BGRA4444"
+             $0D "DXT1_ONEBITALPHA"
+             $0D "BGRA5551"
+             $0D "UV88/UVWQ8888"
+             $0D "RGBA16161616F"
+             $0D "RGBA16161616"
+             $0D "UVLX8888"
+             $0D "I32F"
+             $0D "RGB323232F"
+             $0D "RGBA32323232F"
+      }
+      SaveFormatA: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported alpha VTF textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+        Items = "RGBA8888"
+             $0D "ABGR8888"
+             $0D "RGB888"
+             $0D "BGR888"
+             $0D "RGB565"
+             $0D "I8"
+             $0D "IA88"
+             $0D "P8"
+             $0D "A8"
+             $0D "RGB888_BLUESCREEN"
+             $0D "BGR888_BLUESCREEN"
+             $0D "ARGB8888"
+             $0D "BGRA8888"
+             $0D "DXT1"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "BGRX8888"
+             $0D "BGR565"
+             $0D "BGRX5551"
+             $0D "BGRA4444"
+             $0D "DXT1_ONEBITALPHA"
+             $0D "BGRA5551"
+             $0D "UV88/UVWQ8888"
+             $0D "RGBA16161616F"
+             $0D "RGBA16161616"
+             $0D "UVLX8888"
+             $0D "I32F"
+             $0D "RGB323232F"
+             $0D "RGBA32323232F"
+      }
     }
 
     MapColors:form =

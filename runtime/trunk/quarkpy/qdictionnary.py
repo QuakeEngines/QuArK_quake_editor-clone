@@ -921,8 +921,8 @@ Strings = {
     #5727: "reserved for hl2",
     #5728: "reserved for hl2",
     #5729: "reserved for hl2",
-    5730: "Could not load the DevIL library//Error code %d",
-    5731: "An error occurred in the DevIL library: %s",
+    5730: "Could not load the %s//Error code %d",
+    5731: "An error occurred in the %s: %s",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
     5750: "Material '%s' has no image to display",
@@ -1019,6 +1019,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.99  2007/06/13 11:44:46  danielpharos
+#Changed a number of a string and removed an unused one.
+#
 #Revision 1.98  2007/06/13 11:43:23  danielpharos
 #Small cleanup in code for reading setup.
 #

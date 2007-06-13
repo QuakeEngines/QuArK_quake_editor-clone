@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2007/05/29 13:05:13  danielpharos
+Added some quality settings for DDS file saving.
+
 Revision 1.4  2007/05/28 20:37:45  danielpharos
 Finalized .dds image format support. Saving is now possible and reliable.
 
@@ -42,7 +45,8 @@ Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS f
 unit QkDDS;
 
 interface
-uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects, QkDevIL;
+
+uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects, QkDevIL, QkFreeImage;
 
 type
   QDDS = class(QImage)
@@ -56,20 +60,17 @@ type
 
 {-------------------}
 
-procedure CheckDevILError(DevILError: DevILError);
-
-{-------------------}
-
 implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, QkApplPaths;
 
 var
   DevILLoaded: Boolean;
+  FreeImageLoaded: Boolean;
 
 procedure Fatal(x:string);
 begin
-  Log(LOG_CRITICAL,'load dds %s',[x]);
+  Log(LOG_CRITICAL,'Error during operation on DDS file: %s',[x]);
   Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise Exception.Create(x);
 end;
@@ -88,34 +89,46 @@ begin
 end;
 
 procedure QDDS.LoadFile(F: TStream; FSize: Integer);
-type
-  PRGB = ^TRGB;
-  TRGB = array[0..2] of Byte;
 const
   Spec1 = 'Image1=';
 //  Spec2 = 'Pal=';
   Spec3 = 'Alpha=';
+type
+  PRGB = ^TRGB;
+  TRGB = array[0..2] of Byte;
 var
   RawBuffer: String;
   Source, Source2: PByte;
   AlphaData, ImgData: String;
   DestAlpha, DestImg: PChar;
   I, J: Integer;
-  
+  LibraryToUse: string;
+  Setup: QObject;
+
+  //DevIL:
   DevILImage: Cardinal;
+
+  //FreeImage:
+  FIBuffer: FIMEMORY;
+  FIImage, FIConvertedImage: FIBITMAP;
+  Pitch: Cardinal;
+
   ImageFormat: DevILFormat;
   Width, Height: Cardinal;
   NumberOfPixels: Integer;
   V: array[1..2] of Single;
 begin
-  Log(LOG_VERBOSE,'load dds %s',[self.name]);;
+  Log(LOG_VERBOSE,'Loading DDS file: %s',[self.name]);;
   case ReadFormat of
-    1: begin  { as stand-alone file }
-
+  1: begin  { as stand-alone file }
+    Setup:=SetupSubSet(ssFiles, 'DDS');
+    LibraryToUse:=Setup.Specifics.Values['LoadLibrary'];
+    if LibraryToUse='DevIL' then
+    begin
       if (not DevILLoaded) then
       begin
         if not LoadDevIL then
-          Raise EErrorFmt(5730, [GetLastError]);
+          Raise EErrorFmt(5730, ['DevIL library', GetLastError]);
         DevILLoaded:=true;
       end;
 
@@ -149,16 +162,16 @@ begin
       V[2]:=Height;
       SetFloatsSpec('Size', V);
 
-      {allocate quarks image buffers}
-      ImgData:=Spec1;
-      AlphaData:=Spec3;
-      SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
-      Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
-
       ImageFormat:=ilGetInteger(IL_IMAGE_FORMAT);
       CheckDevILError(ilGetError);
       if (ImageFormat=IL_RGBA) or (ImageFormat=IL_BGRA) or (ImageFormat=IL_LUMINANCE_ALPHA) then
       begin
+        //Allocate quarks image buffers
+        ImgData:=Spec1;
+        AlphaData:=Spec3;
+        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+        Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
+
         GetMem(Source,NumberOfPixels*4);
         ilCopyPixels(0, 0, 0, Width, Height, 1, IL_RGBA, IL_UNSIGNED_BYTE, Source);
         CheckDevILError(ilGetError);
@@ -191,6 +204,10 @@ begin
       end
       else
       begin
+        //Allocate quarks image buffers
+        ImgData:=Spec1;
+        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+
         GetMem(Source,NumberOfPixels*3);
         ilCopyPixels(0, 0, 0, Width, Height, 1, IL_RGB, IL_UNSIGNED_BYTE, Source);
         CheckDevILError(ilGetError);
@@ -221,18 +238,120 @@ begin
 
       ilDeleteImages(1, @DevILImage);
       CheckDevILError(ilGetError);
-    end;
+
+    end
+    else if LibraryToUse='FreeImage' then
+    begin
+      if (not FreeImageLoaded) then
+      begin
+        if not LoadFreeImage then
+          Raise EErrorFmt(5730, ['FreeImage library', GetLastError]);
+        FreeImageLoaded:=true;
+      end;
+
+      SetLength(RawBuffer, F.Size);
+      F.Seek(0, 0);
+      F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
+
+      FIBuffer := FreeImage_OpenMemory(Pointer(RawBuffer), Length(RawBuffer));
+      FIImage := FreeImage_LoadFromMemory(FIF_DDS, FIBuffer, DDS_DEFAULT);
+
+      Width:=FreeImage_GetWidth(FIImage);
+      Height:=FreeImage_GetHeight(FIImage);
+      //DanielPharos: 46340 squared is just below the integer max value.
+      if (Width>46340) or (Height>46340) then
+      begin
+        FreeImage_Unload(FIImage);
+        FreeImage_CloseMemory(FIBuffer);
+        Fatal('Unable to load DDS file. Picture is too large.');
+      end;
+      NumberOfPixels:=Width * Height;
+      V[1]:=Width;
+      V[2]:=Height;
+      SetFloatsSpec('Size', V);
+
+      if FreeImage_IsTransparent(FIImage) then
+      begin
+        //Allocate quarks image buffers
+        ImgData:=Spec1;
+        AlphaData:=Spec3;
+        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+        Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
+
+        FIConvertedImage:=FreeImage_ConvertTo32Bits(FIImage);
+        Pitch:=FreeImage_GetPitch(FIConvertedImage);
+        GetMem(Source,Height * Pitch);
+        FreeImage_ConvertToRawBits(Source, FIConvertedImage, Pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
+
+        DestImg:=PChar(ImgData) + Length(Spec1);
+        DestAlpha:=PChar(AlphaData) + Length(Spec3);
+        Source2:=Source;
+        for J:=Height-1 downto 0 do
+        begin
+          for I:=0 to Width-1 do
+          begin
+            PRGB(DestImg)^[0]:=Source2^;
+            Inc(Source2, 1);
+            PRGB(DestImg)^[1]:=Source2^;
+            Inc(Source2, 1);
+            PRGB(DestImg)^[2]:=Source2^;
+            Inc(Source2, 1);
+            PRGB(DestAlpha)^[0]:=Source2^;
+            Inc(Source2, 1);
+            Inc(DestImg, 3);
+            Inc(DestAlpha, 1);
+          end;
+        end;
+
+        Specifics.Add(AlphaData);
+        Specifics.Add(ImgData);
+      end
+      else
+      begin
+        //Allocate quarks image buffers
+        ImgData:=Spec1;
+        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+
+        FIConvertedImage:=FreeImage_ConvertTo24Bits(FIImage);
+        Pitch:=FreeImage_GetPitch(FIConvertedImage);
+        GetMem(Source,Height * Pitch);
+        FreeImage_ConvertToRawBits(Source, FIConvertedImage, Pitch, 24, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
+
+        DestImg:=PChar(ImgData) + Length(Spec1);
+        Source2:=Source;
+        for J:=Height-1 downto 0 do
+        begin
+          for I:=0 to Width-1 do
+          begin
+            PRGB(DestImg)^[0]:=Source2^;
+            Inc(Source2, 1);
+            PRGB(DestImg)^[1]:=Source2^;
+            Inc(Source2, 1);
+            PRGB(DestImg)^[2]:=Source2^;
+            Inc(Source2, 1);
+            Inc(DestImg, 3);
+          end;
+        end;
+
+        Specifics.Add(ImgData);
+      end;
+
+      FreeMem(Source);
+      FreeImage_Unload(FIConvertedImage);
+      FreeImage_Unload(FIImage);
+      FreeImage_CloseMemory(FIBuffer);
+    end
     else
-      inherited;
+    begin
+      Fatal('Unable to load DDS file. No valid loading library selected.');
+    end;
+  end;
+  else
+    inherited;
   end;
 end;
 
 procedure QDDS.SaveFile(Info: TInfoEnreg1);
-//type
-//  PRGBA = ^TRGBA;
-//  TRGBA = array[0..3] of char;
-//  PRGB = ^TRGB;
-//  TRGB = array[0..2] of char;
 var
   PSD: TPixelSetDescription;
 //  TexSize : longword;
@@ -256,15 +375,15 @@ var
   NVDXTStartupInfo: StartUpInfo;
   NVDXTProcessInformation: Process_Information;
 begin
- Log(LOG_VERBOSE,'save dds %s',[self.name]);
- with Info do case Format of
+ Log(LOG_VERBOSE,'Saving DDS file: %s',[self.name]);
+ with Info do
+  case Format of
   1:
   begin  { as stand-alone file }
-
     if (not DevILLoaded) then
     begin
       if not LoadDevIL then
-        Raise EErrorFmt(5730, [GetLastError]);
+        Raise EErrorFmt(5730, ['DevIL library', GetLastError]);
       DevILLoaded:=true;
     end;
 
@@ -279,7 +398,7 @@ begin
     Height:=PSD.size.y;
     if PSD.AlphaBits=psa8bpp then
     begin
-      S:=SetupGameSet.Specifics.Values['TextureWriteSubFormatA'];
+      S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormatA'];
       if S<>'' then
       begin
         try
@@ -320,7 +439,7 @@ begin
     end
     else
     begin
-      S:=SetupGameSet.Specifics.Values['TextureWriteSubFormat'];
+      S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormat'];
       if S<>'' then
       begin
         try
@@ -332,7 +451,7 @@ begin
         end;
       end;
       ImageBpp:=3;
-      ImageFormat:=IL_RGB;
+      ImageFormat:=IL_BGR;
       GetMem(RawData, Width*Height*3);
       RawData2:=RawData;
 
@@ -364,7 +483,7 @@ begin
     FreeMem(RawData);
 
     Quality:=2;
-    S:=SetupGameSet.Specifics.Values['TextureWriteQuality'];
+    S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveQuality'];
     if S<>'' then
     begin
       try
@@ -486,55 +605,19 @@ begin
     ilDeleteImages(1, @DevILImage);
     CheckDevILError(ilGetError);
   end
- else inherited;
- end;
-end;
-
-{-------------------}
-
-procedure CheckDevILError(DevILError: DevILError);
-begin
-  case DevILError of
-  IL_NO_ERROR: ;
-  IL_INVALID_ENUM: Raise EErrorFmt(5731, ['IL_INVALID_ENUM']);
-  IL_OUT_OF_MEMORY: Raise EErrorFmt(5731, ['IL_OUT_OF_MEMORY']);
-  IL_FORMAT_NOT_SUPPORTED: Raise EErrorFmt(5731, ['IL_FORMAT_NOT_SUPPORTED']);
-  IL_INTERNAL_ERROR: Raise EErrorFmt(5731, ['IL_INTERNAL_ERROR']);
-  IL_INVALID_VALUE: Raise EErrorFmt(5731, ['IL_INVALID_VALUE']);
-  IL_ILLEGAL_OPERATION: Raise EErrorFmt(5731, ['IL_ILLEGAL_OPERATION']);
-  IL_ILLEGAL_FILE_VALUE: Raise EErrorFmt(5731, ['IL_ILLEGAL_FILE_VALUE']);
-  IL_INVALID_FILE_HEADER: Raise EErrorFmt(5731, ['IL_INVALID_FILE_HEADER']);
-  IL_INVALID_PARAM: Raise EErrorFmt(5731, ['IL_INVALID_PARAM']);
-  IL_COULD_NOT_OPEN_FILE: Raise EErrorFmt(5731, ['IL_COULD_NOT_OPEN_FILE']);
-  IL_INVALID_EXTENSION: Raise EErrorFmt(5731, ['IL_INVALID_EXTENSION']);
-  IL_FILE_ALREADY_EXISTS: Raise EErrorFmt(5731, ['IL_FILE_ALREADY_EXISTS']);
-  IL_OUT_FORMAT_SAME: Raise EErrorFmt(5731, ['IL_OUT_FORMAT_SAME']);
-  IL_STACK_OVERFLOW: Raise EErrorFmt(5731, ['IL_STACK_OVERFLOW']);
-  IL_STACK_UNDERFLOW: Raise EErrorFmt(5731, ['IL_STACK_UNDERFLOW']);
-  IL_INVALID_CONVERSION: Raise EErrorFmt(5731, ['IL_INVALID_CONVERSION']);
-  IL_BAD_DIMENSIONS: Raise EErrorFmt(5731, ['IL_BAD_DIMENSIONS']);
-  IL_FILE_READ_ERROR: Raise EErrorFmt(5731, ['IL_FILE_READ_ERROR or IL_FILE_WRITE_ERROR']);
-//  IL_FILE_READ_ERROR: Raise EErrorFmt(5731, ['IL_FILE_READ_ERROR']);
-//  IL_FILE_WRITE_ERROR: Raise EErrorFmt(5731, ['IL_FILE_WRITE_ERROR']);
-  IL_LIB_GIF_ERROR: Raise EErrorFmt(5731, ['IL_LIB_GIF_ERROR']);
-  IL_LIB_JPEG_ERROR: Raise EErrorFmt(5731, ['IL_LIB_JPEG_ERROR']);
-  IL_LIB_PNG_ERROR: Raise EErrorFmt(5731, ['IL_LIB_PNG_ERROR']);
-  IL_LIB_TIFF_ERROR: Raise EErrorFmt(5731, ['IL_LIB_TIFF_ERROR']);
-  IL_LIB_MNG_ERROR: Raise EErrorFmt(5731, ['IL_LIB_MNG_ERROR']);
-  IL_UNKNOWN_ERROR: Raise EErrorFmt(5731, ['IL_UNKNOWN_ERROR']);
   else
-    Raise EErrorFmt(5731, ['Unknown error code']);
+    inherited;
   end;
 end;
 
 {-------------------}
 
-
 initialization
-begin
   RegisterQObject(QDDS, 'k');
-end;
 
 finalization
-  UnloadDevIl(true);
+  if DevILLoaded then
+    UnloadDevIl(false);
+  if FreeImageLoaded then
+    UnloadFreeImage(false);
 end.

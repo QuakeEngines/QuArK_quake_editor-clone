@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2007/05/02 22:34:50  danielpharos
+Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
+
 Revision 1.40  2007/04/30 21:52:55  danielpharos
 Added basic interface to DevIL.
 
@@ -157,8 +160,6 @@ uses
   Game in 'prog\Game.pas' {GameCfgDlg},
   Game2 in 'prog\Game2.pas' {AddOnsAddDlg},
   HelpPopup1 in 'prog\HelpPopup1.pas' {HelpPopup},
-  JmoreCfg in 'components\jpeg\JMORECFG.PAS',
-  JPEGLib in 'components\JPEG\jpeglib.pas',
   Keys in 'prog\Keys.pas' {KeyDlg},
   KeySel in 'prog\KeySel.pas' {KeySelDlg},
   Logging in 'prog\Logging.pas',
@@ -183,6 +184,7 @@ uses
   QkForm in 'prog\QkForm.pas',
   QkFormCfg in 'prog\QkFormCfg.pas',
   QkFormVw in 'prog\QkFormVw.pas' {FQFormVw},
+  QkFreeImage in 'prog\QkFreeImage.pas',
   QkGCF in 'prog\QkGCF.pas',
   QkGroup in 'prog\QkGroup.pas' {FQGroup},
   QkHL in 'prog\QkHL.pas',
