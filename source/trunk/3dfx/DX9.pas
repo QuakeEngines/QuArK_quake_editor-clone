@@ -51,7 +51,6 @@ var
 function LoadDirect3D : Boolean;
 var
   l_Res: HResult;
-  S: String;
   BackBufferFormat: Integer;
   StencilBufferBits: Integer;
   Setup: QObject;
@@ -99,45 +98,27 @@ begin
         Log(LOG_VERBOSE,LoadStr1(6424));
 
       Setup:=SetupSubSet(ssGeneral, 'DirectX');
-      S:=Setup.Specifics.Values['BackBufferFormat'];
-      if S<>'' then
-      begin
-        try
-          BackBufferFormat:=strtoint(S);
-          if (BackBufferFormat < 0) or (BackBufferFormat > 5) then
-          begin
-            Log(LOG_WARNING, LoadStr1(6011), ['BackBufferFormat',S]);
-            BackBufferFormat := 0;
-          end;
-        except
-          Log(LOG_WARNING, LoadStr1(6011), ['BackBufferFormat',S]);
+      try
+        BackBufferFormat:=StrToInt(Setup.Specifics.Values['BackBufferFormat']);
+        if (BackBufferFormat < 0) or (BackBufferFormat > 5) then
+        begin
+          Log(LOG_WARNING, LoadStr1(6011), ['BackBufferFormat',BackBufferFormat]);
           BackBufferFormat := 0;
         end;
-      end
-      else
-      begin
-        Log(LOG_WARNING, LoadStr1(6012), ['BackBufferFormat','0']);
-        BackBufferFormat:=0;
+      except
+        Log(LOG_CRITICAL, LoadStr1(6012), ['BackBufferFormat',0]);
+        BackBufferFormat := 0;
       end;
-      S:=Setup.Specifics.Values['StencilBufferBits'];
-      if S<>'' then
-      begin
-        try
-          StencilBufferBits:=strtoint(S);
-          if (StencilBufferBits < 0) or (StencilBufferBits > 1) then
-          begin
-            Log(LOG_WARNING, LoadStr1(6011), ['StencilBufferBits',S]);
-            StencilBufferBits := 0;
-          end;
-        except
-          Log(LOG_WARNING, LoadStr1(6011), ['StencilBufferBits',S]);
+      try
+        StencilBufferBits:=StrToInt(Setup.Specifics.Values['StencilBufferBits']);
+        if (StencilBufferBits < 0) or (StencilBufferBits > 1) then
+        begin
+          Log(LOG_WARNING, LoadStr1(6011), ['StencilBufferBits',StencilBufferBits]);
           StencilBufferBits := 0;
         end;
-      end
-      else
-      begin
-        Log(LOG_WARNING, LoadStr1(6012), ['StencilBufferBits','0']);
-        StencilBufferBits:=0;
+      except
+        Log(LOG_CRITICAL, LoadStr1(6012), ['StencilBufferBits',0]);
+        StencilBufferBits := 0;
       end;
 
       //DanielPharos: We're going to need to check if the settings here are OK.

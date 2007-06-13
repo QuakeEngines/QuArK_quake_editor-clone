@@ -948,7 +948,7 @@ Strings = {
     # 5768: reserved
     # 5769: reserved
 
-    # DanielPharos would like to reserve 6000 .. 6099 for all renderers :-)
+    # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
     6001: "No 3D driver configured. Please select a 3D driver in the Configuration dialog box",
     6002: "Could not find the 3D drivers (%s). You need either a graphics card with installed drivers or the software 3D library, depending on the choice you made in the Configuration dialog box//Error code %d",
@@ -958,22 +958,22 @@ Strings = {
     6006: "Bad aspect ratio",
 
     6010: "Texture not loaded",
-    6011: "Invalid value for %s found: %s",
-    6012: "No value for %s found, defaulting to: %s",
+    6011: "Invalid value for %s found: %d. Using default",
+    6012: "No valid value for %s found, defaulting to: %d",
 
-    # DanielPharos would like to reserve 6100 .. 6199 for the software renderer :-)
+    # DanielPharos would like to reserve 6100 .. 6199 for the software renderer
     6100: "Error with the Software 3D drivers//%s failed",
 
     6120: "Software 3D renderer does not support fullscreen views (yet)",
     6121: "You must first call Open3Dfx",
 
-    # DanielPharos would like to reserve 6200 .. 6299 for the Glide renderer :-)
+    # DanielPharos would like to reserve 6200 .. 6299 for the Glide renderer
     6200: "Error with the 3Dfx Glide drivers//%s failed",
 
     6220: "Glide renderer does not support fullscreen views (yet)",
     6221: "You must first call Open3Dfx",
 
-    # DanielPharos would like to reserve 6300 .. 6399 for the OpenGL renderer :-)
+    # DanielPharos would like to reserve 6300 .. 6399 for the OpenGL renderer
     6300: "Could not load the OpenGL drivers//Error code %d",
     6301: "Error in OpenGL initialization//'%s' failed",
     6302: "Error in OpenGL commands [Error code(s) %s step %d]",
@@ -989,7 +989,7 @@ Strings = {
     6320: "OpenGL renderer does not support fullscreen views (yet)",
     6321: "An error occurred in the OpenGL routines: CurrentSurf is nil!",
 
-    # DanielPharos would like to reserve 6400 .. 6499 for the DirectX renderer :-)
+    # DanielPharos would like to reserve 6400 .. 6499 for the DirectX renderer
     6400: "Error in DirectX initialization//'%s'",
     6401: "Error in DirectX uninitialization//'%s'",
     6402: "Could not load the DirectX drivers//Error code %d",
@@ -1021,6 +1021,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.97  2007/05/15 15:25:27  danielpharos
+#Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
+#
 #Revision 1.96  2007/05/09 16:14:47  danielpharos
 #Big update to the DirectX renderer. Fade color should now display. Stability is still an issue however.
 #
