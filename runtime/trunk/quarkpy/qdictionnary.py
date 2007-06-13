@@ -82,7 +82,9 @@ Strings = {
     193: "No matching item found.",
     194: "One matching item found.",
     195: "%d matching item(s) found.",
+
     216: "Cannot move an item into one of its sub-items",
+
     221: "No help available about '%s'",
     222: "No selection.",
     223: "Select the polyhedrons, entities, and groups to include in the test build, and try again.\n\nNote that the game will crash if there is no player start in the selection. If the normal player start is not in the selection, you should use a 'testplayerstart' entity (see the New Items window).",
@@ -125,6 +127,8 @@ Strings = {
     389: "Add a Specific/Arg",
     390: "Delete Specific/Arg",
 
+    400: "Warning...",
+
     501: "Checking map...",
     502: "Saving compiled model...",
     503: "Reworking model...",
@@ -134,7 +138,6 @@ Strings = {
     508: "Brush subtraction...",
     509: "Map operation...",
     # 511: "Interrupt",
-
     512: "edit Specific/Arg",
     513: "rotation",
     514: "move",
@@ -251,9 +254,7 @@ Strings = {
     794: "Sin Pak files (*.sin)|*.sin",
     795: "Heretic II models (*.fm)|*.fm",
     796: "TGA image (*.tga)|*.tga",
-    # zip archive support
     797: "ZIP archives (*.zip)|*.zip",
-    # Q3 Pak Support
     798: "Quake 3 Pak Files (*.pk3)|*.pk3",
     799: "Quake 1 / Half-Life Sprite Files (*.spr)|*.spr",
     800: "Quake 2 Sprite Files (*.sp2)|*.sp2",
@@ -387,9 +388,6 @@ Strings = {
     3264: "Joy2",
     3265: "Joy3",
     3266: "Joy4",
-
-    3500: "Warning...",
-    3501: "Information",
 
     4095: "Invalid version number in Quake's original Progs.dat",
     4096: "Real number expected",
@@ -1021,6 +1019,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.98  2007/06/13 11:43:23  danielpharos
+#Small cleanup in code for reading setup.
+#
 #Revision 1.97  2007/05/15 15:25:27  danielpharos
 #Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
 #
