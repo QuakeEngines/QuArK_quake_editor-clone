@@ -15,6 +15,13 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Model Editor, Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+          - Added model mesh face selection using RMB and LMB together along with various options for selected
+          - face outlining, color selections and face color filltris but this will not fill the triangles
+          - correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+          - file (for the TCoordinates.Polyline95f procedure).
+          - Also setup passing selected faces from the editors views to the Skin-view on Options menu.                             
+
 * [DanielPharos]: Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these
           - two libraries. Set-up a new section in the Configuration for all of this.
 
