@@ -377,6 +377,7 @@ class ModelLayout(BaseLayout):
             else:
                 self.editor.skinviewpicked = []
                 self.editor.ModelFaceSelList = []
+                self.editor.Root.currentcomponent.filltris = []
              #       self.editor.SkinFaceSelList = [] # For future use.
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
@@ -506,6 +507,11 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.37  2007/06/05 22:57:38  cdunde
+#To allow the skinviewpicked list to remain when switching layouts and
+#to clear the skinviewpicked list when switching from one component
+#to another to stop improper vertex selection in the list.
+#
 #Revision 1.36  2007/06/05 02:17:39  cdunde
 #To stop exception error in Skin-view when a different
 #model is opened without shutting down QuArK.

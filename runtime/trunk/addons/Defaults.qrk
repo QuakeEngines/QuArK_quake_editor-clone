@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.336  2007/06/13 11:57:34  danielpharos
+//Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+//
 //Revision 1.335  2007/06/07 04:23:20  cdunde
 //To setup selected model mesh face colors, remove unneeded globals
 //and correct code for model colors.
@@ -3171,26 +3174,26 @@ QQRKSRC1
       }
       Options:config =
       {
-        Options3Dviews_nohandles1 = "0"
+        Options3Dviews_nohandles1     = "0"
         Options3Dviews_drawnohandles1 = "0"
-        Options3Dviews_framemesh1 = "0"
-        Options3Dviews_fillmesh1 = "0"
-        Options3Dviews_nohandles2 = "0"
+        Options3Dviews_framemesh1     = "0"
+        Options3Dviews_fillmesh1      = "0"
+        Options3Dviews_nohandles2     = "0"
         Options3Dviews_drawnohandles2 = "0"
-        Options3Dviews_framemesh2 = "1"
-        Options3Dviews_fillmesh2 = "0"
-        Options3Dviews_nohandles3 = "0"
+        Options3Dviews_framemesh2     = "1"
+        Options3Dviews_fillmesh2      = "0"
+        Options3Dviews_nohandles3     = "0"
         Options3Dviews_drawnohandles3 = "0"
-        Options3Dviews_framemesh3 = "1"
-        Options3Dviews_fillmesh3 = "0"
-        Options3Dviews_nohandles4 = "0"
+        Options3Dviews_framemesh3     = "1"
+        Options3Dviews_fillmesh3      = "0"
+        Options3Dviews_nohandles4     = "0"
         Options3Dviews_drawnohandles4 = "0"
-        Options3Dviews_framemesh4 = "1"
-        Options3Dviews_fillmesh4 = "0"
-        Options3Dviews_nohandles5 = "0"
+        Options3Dviews_framemesh4     = "1"
+        Options3Dviews_fillmesh4      = "0"
+        Options3Dviews_nohandles5     = "0"
         Options3Dviews_drawnohandles5 = "0"
-        Options3Dviews_framemesh5 = "0"
-        Options3Dviews_fillmesh5 = "0"
+        Options3Dviews_framemesh5     = "0"
+        Options3Dviews_fillmesh5      = "0"
         setLock_X          = "0"
         setLock_Y          = "0"
         setLock_Z          = "0"
@@ -3253,16 +3256,21 @@ QQRKSRC1
         ViewXY                      = $E8DCB8
         Gray                        = $BABABA
         Axis                        = $A6CAF0
+        ModelAxisX                  = $FF
+        ModelAxisY                  = $00FF
+        ModelAxisZ                  = $FF00FF
         GridXZ                      = $008000
         GridXY                      = $808000
         GridLines                   = $D0D0FF
         Vertices                    = $FF0000
         Drag3DLines                 = $00F000
+        FaceSelOutline              = $0080FF
         BackFaceColor1              = $FFFFFF
         BackFaceColor2              = $BABABA
         SkinLines                   = $FF0000
         SkinDragLines               = $00FF00
         SkinViewPickedColor         = $0080C0
+        SkinViewFaceOutline          = $FFFFFF
         Form = "MdlColors"
       }
       Layouts:config =
@@ -6300,7 +6308,7 @@ QQRKSRC1
       SelXZ:      = { Txt="Selected brushes, side view" Typ="LI" }
       SelXY:      = { Txt="Selected brushes, top view"  Typ="LI" }
       Gray:       = { Txt="Out-of-view grayed parts"    Typ="LI" }
-      Axis:       = { Txt="Axis"                        Typ="LI" }
+      Axis:       = { Txt="Editors Axis"                Typ="LI" }
       GridXZ:     = { Txt="Grid dots, side view"        Typ="LI" }
       GridXY:     = { Txt="Grid dots, top view"         Typ="LI" }
       GridLines:  = { Txt="Grid lines"                  Typ="LI" }
@@ -6335,16 +6343,21 @@ QQRKSRC1
           ViewXY                     = $E8DCB8
           Gray                       = $BABABA
           Axis                       = $A6CAF0
+          ModelAxisX                 = $FF
+          ModelAxisY                 = $00FF
+          ModelAxisZ                 = $FF00FF
           GridXZ                     = $008000
           GridXY                     = $808000
           GridLines                  = $D0D0FF
           Vertices                   = $FF0000
           Drag3DLines                = $00F000
+          FaceSelOutline             = $0080FF
           BackFaceColor1             = $FFFFFF
           BackFaceColor2             = $BABABA
           SkinLines                  = $FF0000
           SkinDragLines              = $00F000
           SkinViewPickedColor        = $0080C0
+          SkinViewFaceOutline         = $FFFFFF
         }
       }
       Sep1: =
@@ -6361,17 +6374,22 @@ QQRKSRC1
       ViewXZ:              = { Txt = "Side map view (XZ)" Typ = "LI" }
       ViewXY:              = { Txt = "Top map view (XY)" Typ = "LI" }
       Gray:                = { Txt = "Out-of-view grayed parts" Typ = "LI" }
-      Axis:                = { Txt = "Axis" Typ = "LI" }
+      Axis:                = { Txt = "Editors Axis" Typ = "LI" }
+      ModelAxisX:          = { Txt = "Models X Axis" Typ = "LI" }
+      ModelAxisY:          = { Txt = "Models Y Axis" Typ = "LI" }
+      ModelAxisZ:          = { Txt = "Models Z Axis" Typ = "LI" }
       GridXZ:              = { Txt = "Grid dots, side view" Typ = "LI" }
       GridXY:              = { Txt = "Grid dots, top view" Typ = "LI" }
       GridLines:           = { Txt = "Grid lines" Typ = "LI" }
       Vertices:            = { Txt = "Vertex dots" Typ = "LI" }
       Drag3DLines:         = { Txt = "Editor views drag lines / Picked Vertexes" Typ = "LI" }
+      FaceSelOutline:      = { Txt = "Editor views selected faces outline color" Typ = "LI" }
       BackFaceColor1:      = { Txt = "Editor views back faces pattern - color 1" Typ = "LI" }
       BackFaceColor2:      = { Txt = "Editor views back faces pattern - color 2" Typ = "LI" }
       SkinLines:           = { Txt = "Skin-view mesh lines" Typ = "LI" }
       SkinDragLines:       = { Txt = "Skin-view drag lines / Base Vertex pick" Typ = "LI" }
       SkinViewPickedColor: = { Txt = "Skin-view Skin Vertex picks" Typ = "LI" }
+      SkinViewFaceOutline:  = { Txt = "Skin-view Face Outline" Typ = "LI" }
     }
     HotKeyForm:incl =
     {

@@ -118,21 +118,32 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
             try:
                 if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
                     if view.info["viewname"] == "editors3Dview":
+                        comp = editor.Root.currentcomponent
+                        fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+                        backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
+                        backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
-                            comp = editor.Root.currentcomponent
-                            fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
-                            backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
-                            backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                             comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                        else:
+                            if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] == "1":
+                                comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)             
+                            else:
+                                if editor.ModelFaceSelList != []:
+                                    comp.filltris = quarkpy.mdleditor.faceselfilllist(view)
 
                     if view.info["viewname"] == "3Dwindow":
+                        comp = editor.Root.currentcomponent
+                        fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+                        backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
+                        backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
-                            comp = editor.Root.currentcomponent
-                            fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
-                            backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
-                            backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                             comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
-
+                        else:
+                            if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] == "1":
+                                comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)            
+                            else:
+                                if editor.ModelFaceSelList != []:
+                                    comp.filltris = quarkpy.mdleditor.faceselfilllist(view)
                     view.repaint()
                     return scroller
             except:
@@ -214,6 +225,10 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.12  2007/06/07 04:23:21  cdunde
+#To setup selected model mesh face colors, remove unneeded globals
+#and correct code for model colors.
+#
 #Revision 1.11  2007/05/17 23:56:54  cdunde
 #Fixed model mesh drag guide lines not always displaying during a drag.
 #Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.

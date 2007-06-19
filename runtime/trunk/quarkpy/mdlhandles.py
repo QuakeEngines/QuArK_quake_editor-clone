@@ -143,13 +143,14 @@ class ModelFaceHandle(qhandles.GenericHandle):
         if flagsmouse == 536:
             lastmodelfaceremovedlist = []
         itemsremoved = 0
+        faceremoved = 0
         templist = editor.ModelFaceSelList
         for item in modelfacelist:
             if item[1].name == editor.Root.currentcomponent.name:
-                faceremoved = 0
                 if templist == []:
                     templist = templist + [item[2]]
                     lastmodelfaceremovedlist = []
+                    faceremoved = -1
                     break
                 elif lastmodelfaceremovedlist != [] and item[2] == lastmodelfaceremovedlist[0]:
                     pass
@@ -170,6 +171,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
                             facecount = facecount + 1
                         if faceremoved == 0:
                             templist = templist + [item[2]]
+                            faceremoved = -1
                 break ### This limits the faces that can be selected to the closest face to the camera.
          #   else: ### Clears ModelFaceSelList properly but stops selection through other components.
          #       editor.ModelFaceSelList = []
@@ -179,19 +181,49 @@ class ModelFaceHandle(qhandles.GenericHandle):
             if v.info["viewname"] == "skinview":
                 pass
             else:
-                if itemsremoved != 0:
-                    mdleditor.setsingleframefillcolor(editor, v)
-                    v.repaint()     
-                self.draw(editor, v, editor.ModelFaceSelList)
+                if faceremoved != 0 or itemsremoved != 0:
+                    comp = editor.Root.currentcomponent
+                    if v.info["viewname"] == "XY":
+                        fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
+                        comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        v.repaint()
+                    if v.info["viewname"] == "XZ":
+                        fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
+                        comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        v.repaint()
+                    if v.info["viewname"] == "YZ":
+                        fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
+                        comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        v.repaint()
+                    if v.info["viewname"] == "editors3Dview":
+                        fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+                        comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        v.repaint()
+                    if v.info["viewname"] == "3Dwindow":
+                        fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+                        comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        v.repaint()
+                if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] != "1":
+                    self.draw(editor, v, editor.ModelFaceSelList)
 
 
     def draw(self, editor, view, list):
+        if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] == "1":
+            return
+        from qbaseeditor import flagsmouse, currentview
+        if (flagsmouse == 1040 or flagsmouse == 1056):
+            if (currentview.info["viewname"] != "editors3Dview" and currentview.info["viewname"] != "3Dwindow"):
+                if quarkx.setupsubset(SS_MODEL,"Options")['NFOWM'] == "1":
+                    return
 
         if view.info["viewname"] == "skinview": return
         cv = view.canvas()
-        cv.pencolor = WHITE # add an option to set the pencolor
-        cv.penwidth = 2 # add an option to set the penwidth
-        cv.brushcolor = WHITE
+        cv.pencolor = faceseloutline
+        try:
+            cv.penwidth = float(quarkx.setupsubset(SS_MODEL,"Options")['linethickness'])
+        except:
+            cv.penwidth = 2
+        cv.brushcolor = faceseloutline
         cv.brushstyle = BS_SOLID
         try:
             if len(list) != 0:
@@ -210,6 +242,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
         except:
             editor.ModelFaceSelList = []
 
+        return
 
   #  For setting stuff up at the beginning of a drag
   #
@@ -1320,6 +1353,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.58  2007/06/11 21:31:45  cdunde
+#To fix model mesh vertex handles not always redrawing
+#when picked list is cleared or a vertex is deselected.
+#
 #Revision 1.57  2007/06/07 04:23:21  cdunde
 #To setup selected model mesh face colors, remove unneeded globals
 #and correct code for model colors.
