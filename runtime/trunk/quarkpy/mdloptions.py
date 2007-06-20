@@ -211,6 +211,28 @@ def setLineThick(m):
 lineThicknessItem = qmenu.item("Set Line Thickness (2)",setLineThick,"|Set Line Thickness:\n\nThis lets you set the thickness of certain lines that are drawn on the editors view, such as the outlining of selected model mesh faces and the models axis lines.|intro.modeleditor.menu.html#optionsmenu")
 
 
+def mSFSISV(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("SFSISV"):
+        quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = "1"
+        quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
+        editor.SkinFaceSelList = []
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
+    quarkx.reloadsetup()
+
+
+def mPFSTSV(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("PFSTSV"):
+        quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = "1"
+        quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
+        editor.SkinFaceSelList = editor.ModelFaceSelList
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
+    quarkx.reloadsetup()
+
+
 def mNFO(m):
     editor = mdleditor.mdleditor
     if not MldOption("NFO"):
@@ -265,17 +287,19 @@ def mBFONLY(m):
 
 
 def FaceMenu(editor):
-    Xsfsisv = toggleitem("S&how selection in Skin-view", "SFSISV", (1,1), hint="|Show selection in Skin-view:\n\nBecause the Skin-view and the rest of the editor views work independently, this will pass selected editor model mesh triangle faces to the 'Skin-view' to be outlined and distinguish them.\n\nHowever, it does not actually select them in the 'Skin-view'.\n\nThe 'Skin-view' outline color can be changed in the 'Configuration Model Colors' section.|intro.modeleditor.menu.html#optionsmenu")
+    Xsfsisv = qmenu.item("S&how selection in Skin-view", mSFSISV, "|Show selection in Skin-view:\n\nBecause the Skin-view and the rest of the editor views work independently, this will pass selected editor model mesh triangle faces to the 'Skin-view' to be outlined and distinguish them.\n\nHowever, it does not actually select them in the 'Skin-view'.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
+    Xpfstsv = qmenu.item("&Pass selection to Skin-view", mPFSTSV, "|Pass selection to Skin-view:\n\nThis function will pass selected editor model mesh triangle faces and select the coordinated skin triangles in the 'Skin-view'.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the 'Skin-view' for its use there.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' selected face outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
     Xnfo = qmenu.item("&No face outlines", mNFO, "|No face outlines:\n\nThis will stop the outlining of any models mesh faces have been selected. This will increase the drawing speed of the editor dramatically when a model with a large number of face triangles is being edited.\n\nThe solid fill of selected faces will still be available.|intro.modeleditor.menu.html#optionsmenu")
     Xnfowm = qmenu.item("N&o face outlines while moving in 2D views", mNFOWM, "|No face outlines while moving in 2D views:\n\nFace outlining can be very taxing on the editors drawing speed when panning (scrolling) or zooming in the '2D views' when a lot of the models mesh faces have been selected. This is because so many views need to be redrawn repeatedly.\n\nIf you experience this problem check this option to increase the drawing and movement speed. The lines will be redrawn at the end of the move.|intro.modeleditor.menu.html#optionsmenu")
     Xnosf = qmenu.item("No &selection fill", mNOSF, "|No selection fill:\n\nThis stops the color filling and backface pattern from being drawn for any of the models mesh faces that are selected. Only the outline of the selected faces will be drawn.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
     Xffonly = qmenu.item("&Front faces only", mFFONLY, "|Front faces only:\n\nThis will only allow the solid color filling of the front faces to be drawn for any of the models mesh faces that are selected. The back faces will be outlined allowing the models texture to be displayed if the view is in 'Textured' mode.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
     Xbfonly = qmenu.item("&Back faces only", mBFONLY, "|Back faces only:\n\nThis will only allow the drawing of the backface pattern to be drawn for any of the models mesh faces that are selected. The front faces will be outlined allowing the models texture to be displayed if the view is in 'Textured' mode.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
 
-    menulist = [Xsfsisv, qmenu.sep, Xnfo, Xnfowm, qmenu.sep, Xnosf, Xffonly, Xbfonly]
+    menulist = [Xsfsisv, Xpfstsv, qmenu.sep, Xnfo, Xnfowm, qmenu.sep, Xnosf, Xffonly, Xbfonly]
     
     items = menulist
     Xsfsisv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SFSISV")
+    Xpfstsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PFSTSV")
     Xnosf.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NOSF")
     Xffonly.state = quarkx.setupsubset(SS_MODEL,"Options").getint("FFONLY")
     Xbfonly.state = quarkx.setupsubset(SS_MODEL,"Options").getint("BFONLY")
@@ -329,6 +353,14 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.16  2007/06/19 06:16:04  cdunde
+#Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+#Added model mesh face selection using RMB and LMB together along with various options
+#for selected face outlining, color selections and face color filltris but this will not fill the triangles
+#correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+#file (for the TCoordinates.Polyline95f procedure).
+#Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+#
 #Revision 1.15  2007/05/18 03:11:37  cdunde
 #Fixed newfinishdrawing code call to qbaseeditor.py finishdrawing function.
 #

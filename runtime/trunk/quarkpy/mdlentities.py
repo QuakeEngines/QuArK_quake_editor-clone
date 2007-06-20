@@ -218,6 +218,7 @@ def ShowHideComp(x):
     if editor is None: return
     import mdleditor
     editor.ModelFaceSelList = []
+    editor.SkinFaceSelList = []
     obj = editor.layout.explorer.uniquesel
     if obj is None: return
     obj.showhide(x)
@@ -398,6 +399,11 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.17  2007/06/03 23:44:35  cdunde
+#To stop Access violation error when a component is "Hidden" that has faces selected.
+#def ShowHideComp still needs a lot of work to stop any handles from being drawn while
+#component is "Hidden" allowing them to be dragged still and double draw when un-Hidden.
+#
 #Revision 1.16  2007/05/25 08:33:18  cdunde
 #To fix indention error.
 #

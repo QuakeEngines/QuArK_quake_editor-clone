@@ -351,14 +351,23 @@ class BaseEditor:
                                 texWidth,texHeight = view.clientarea
                         tricount = -1
                         for triangle in self.Root.currentcomponent.triangles:
-                            if (self.ModelFaceSelList != []) and (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1"):
+                            if (self.ModelFaceSelList != []) and (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1"):
                                 tricount = tricount + 1
                                 for triangleindex in self.ModelFaceSelList:
                                     if tricount == triangleindex:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1":
                                             cv.pencolor = MapColor("SkinViewFaceOutline", SS_MODEL)
-                                        else:
-                                            cv.pencolor = MapColor("SkinViewFaceOutline", SS_MODEL)
+                                        if quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1":
+                                            cv.pencolor = MapColor("SkinViewFaceSelected", SS_MODEL)
+                                            self.SkinFaceSelList = self.ModelFaceSelList
+                                        break
+                                    else:
+                                        cv.pencolor = MapColor("SkinLines", SS_MODEL)
+                            elif (self.SkinFaceSelList != []) and (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] != "1"):
+                                tricount = tricount + 1
+                                for triangleindex in self.SkinFaceSelList:
+                                    if tricount == triangleindex:
+                                        cv.pencolor = MapColor("SkinViewFaceSelected", SS_MODEL)
                                         break
                                     else:
                                         cv.pencolor = MapColor("SkinLines", SS_MODEL)
@@ -410,7 +419,7 @@ class BaseEditor:
                         cv = view.canvas()
                         for h in view.handles:
                             h.draw(view, cv, draghandle)
-                    if (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1") and flagsmouse == 2072:
+                    if ( quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1") and flagsmouse == 2072:
                         quarkx.reloadsetup()
                 return
             except:
@@ -1208,6 +1217,14 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.63  2007/06/19 06:16:05  cdunde
+#Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+#Added model mesh face selection using RMB and LMB together along with various options
+#for selected face outlining, color selections and face color filltris but this will not fill the triangles
+#correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+#file (for the TCoordinates.Polyline95f procedure).
+#Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+#
 #Revision 1.62  2007/06/03 23:45:58  cdunde
 #Started mdlhandles.ClickOnView function for the Model Editor instead of using maphandles.py file.
 #

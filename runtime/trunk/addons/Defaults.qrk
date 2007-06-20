@@ -27,6 +27,14 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.337  2007/06/19 06:16:06  cdunde
+//Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+//Added model mesh face selection using RMB and LMB together along with various options
+//for selected face outlining, color selections and face color filltris but this will not fill the triangles
+//correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+//file (for the TCoordinates.Polyline95f procedure).
+//Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+//
 //Revision 1.336  2007/06/13 11:57:34  danielpharos
 //Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
 //
@@ -3270,7 +3278,8 @@ QQRKSRC1
         SkinLines                   = $FF0000
         SkinDragLines               = $00FF00
         SkinViewPickedColor         = $0080C0
-        SkinViewFaceOutline          = $FFFFFF
+        SkinViewFaceOutline         = $FFFFFF
+        SkinViewFaceSelected        = $00FF00
         Form = "MdlColors"
       }
       Layouts:config =
@@ -6357,7 +6366,8 @@ QQRKSRC1
           SkinLines                  = $FF0000
           SkinDragLines              = $00F000
           SkinViewPickedColor        = $0080C0
-          SkinViewFaceOutline         = $FFFFFF
+          SkinViewFaceOutline        = $FFFFFF
+          SkinViewFaceSelected       = $00FF00
         }
       }
       Sep1: =
@@ -6371,25 +6381,26 @@ QQRKSRC1
         Typ = "X"     // checkboX
         Cap = "white on black"
       }
-      ViewXZ:              = { Txt = "Side map view (XZ)" Typ = "LI" }
-      ViewXY:              = { Txt = "Top map view (XY)" Typ = "LI" }
-      Gray:                = { Txt = "Out-of-view grayed parts" Typ = "LI" }
-      Axis:                = { Txt = "Editors Axis" Typ = "LI" }
-      ModelAxisX:          = { Txt = "Models X Axis" Typ = "LI" }
-      ModelAxisY:          = { Txt = "Models Y Axis" Typ = "LI" }
-      ModelAxisZ:          = { Txt = "Models Z Axis" Typ = "LI" }
-      GridXZ:              = { Txt = "Grid dots, side view" Typ = "LI" }
-      GridXY:              = { Txt = "Grid dots, top view" Typ = "LI" }
-      GridLines:           = { Txt = "Grid lines" Typ = "LI" }
-      Vertices:            = { Txt = "Vertex dots" Typ = "LI" }
-      Drag3DLines:         = { Txt = "Editor views drag lines / Picked Vertexes" Typ = "LI" }
-      FaceSelOutline:      = { Txt = "Editor views selected faces outline color" Typ = "LI" }
-      BackFaceColor1:      = { Txt = "Editor views back faces pattern - color 1" Typ = "LI" }
-      BackFaceColor2:      = { Txt = "Editor views back faces pattern - color 2" Typ = "LI" }
-      SkinLines:           = { Txt = "Skin-view mesh lines" Typ = "LI" }
-      SkinDragLines:       = { Txt = "Skin-view drag lines / Base Vertex pick" Typ = "LI" }
-      SkinViewPickedColor: = { Txt = "Skin-view Skin Vertex picks" Typ = "LI" }
+      ViewXZ:               = { Txt = "Side map view (XZ)" Typ = "LI" }
+      ViewXY:               = { Txt = "Top map view (XY)" Typ = "LI" }
+      Gray:                 = { Txt = "Out-of-view grayed parts" Typ = "LI" }
+      Axis:                 = { Txt = "Editors Axis" Typ = "LI" }
+      ModelAxisX:           = { Txt = "Models X Axis" Typ = "LI" }
+      ModelAxisY:           = { Txt = "Models Y Axis" Typ = "LI" }
+      ModelAxisZ:           = { Txt = "Models Z Axis" Typ = "LI" }
+      GridXZ:               = { Txt = "Grid dots, side view" Typ = "LI" }
+      GridXY:               = { Txt = "Grid dots, top view" Typ = "LI" }
+      GridLines:            = { Txt = "Grid lines" Typ = "LI" }
+      Vertices:             = { Txt = "Vertex dots" Typ = "LI" }
+      Drag3DLines:          = { Txt = "Editor views drag lines / Picked Vertexes" Typ = "LI" }
+      FaceSelOutline:       = { Txt = "Editor views selected faces outline color" Typ = "LI" }
+      BackFaceColor1:       = { Txt = "Editor views back faces pattern - color 1" Typ = "LI" }
+      BackFaceColor2:       = { Txt = "Editor views back faces pattern - color 2" Typ = "LI" }
+      SkinLines:            = { Txt = "Skin-view mesh lines" Typ = "LI" }
+      SkinDragLines:        = { Txt = "Skin-view drag lines / Base Vertex pick" Typ = "LI" }
+      SkinViewPickedColor:  = { Txt = "Skin-view Skin Vertex picks" Typ = "LI" }
       SkinViewFaceOutline:  = { Txt = "Skin-view Face Outline" Typ = "LI" }
+      SkinViewFaceSelected: = { Txt = "Skin-view Face Selected" Typ = "LI" }
     }
     HotKeyForm:incl =
     {

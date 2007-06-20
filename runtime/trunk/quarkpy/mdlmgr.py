@@ -378,7 +378,7 @@ class ModelLayout(BaseLayout):
                 self.editor.skinviewpicked = []
                 self.editor.ModelFaceSelList = []
                 self.editor.Root.currentcomponent.filltris = []
-             #       self.editor.SkinFaceSelList = [] # For future use.
+                self.editor.SkinFaceSelList = []
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
                     view.invalidate()
@@ -507,6 +507,14 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.38  2007/06/19 06:16:04  cdunde
+#Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+#Added model mesh face selection using RMB and LMB together along with various options
+#for selected face outlining, color selections and face color filltris but this will not fill the triangles
+#correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+#file (for the TCoordinates.Polyline95f procedure).
+#Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+#
 #Revision 1.37  2007/06/05 22:57:38  cdunde
 #To allow the skinviewpicked list to remain when switching layouts and
 #to clear the skinviewpicked list when switching from one component
