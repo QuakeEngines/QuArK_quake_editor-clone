@@ -339,7 +339,7 @@ class BaseEditor:
         if isinstance(self, mdleditor.ModelEditor):
             try:
                 if currentview.info["viewname"] == "skinview" or view.info["viewname"] == "skinview":
-                    if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 544 or flagsmouse == 1040 or flagsmouse == 1056 or  flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080 or flagsmouse == 16384) and (view.info["viewname"] == "skinview"):
+                    if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 544 or flagsmouse == 1040 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080 or flagsmouse == 16384) and (view.info["viewname"] == "skinview"):
                         cv = view.canvas()
                         tex = self.Root.currentcomponent.currentskin
                         if tex is not None:
@@ -833,9 +833,17 @@ class BaseEditor:
                             except:
                                 s = s + " x:" + ftoss(int(x)) + " y:" + ftoss(int(y))
                         else:
-                            if   tag==6: s = s + " view y:" + list[1] + " z:" + list[2]
-                            elif tag==5: s = s + " view x:" + list[0] + " z:" + list[2]
-                            elif tag==3: s = s + " view x:" + list[0] + " y:" + list[1]
+                            triangle = mdlhandles.ClickOnView(self, view, x, y)
+                            if triangle != []:
+                                if   tag==6: s = s + " view y:" + list[1] + " z:" + list[2] + " triangle: " + str(triangle[0][2])
+                                elif tag==5: s = s + " view x:" + list[0] + " z:" + list[2] + " triangle: " + str(triangle[0][2])
+                                elif tag==3: s = s + " view x:" + list[0] + " y:" + list[1] + " triangle: " + str(triangle[0][2])
+                                else:
+                                    s = s + " triangle: " + str(triangle[0][2])
+                            else:
+                                if   tag==6: s = s + " view y:" + list[1] + " z:" + list[2]
+                                elif tag==5: s = s + " view x:" + list[0] + " z:" + list[2]
+                                elif tag==3: s = s + " view x:" + list[0] + " y:" + list[1]
                     else:
                         s = view.info["type"] + " view"
                         if   tag==6: s = s + " y:" + list[1] + " z:" + list[2]
@@ -1217,6 +1225,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.64  2007/06/20 22:04:08  cdunde
+#Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
+#and start of face selection capabilities in the Skin-view for future functions there.
+#
 #Revision 1.63  2007/06/19 06:16:05  cdunde
 #Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
 #Added model mesh face selection using RMB and LMB together along with various options
