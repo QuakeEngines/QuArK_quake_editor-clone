@@ -919,6 +919,9 @@ def commonhandles(self, redraw=1):
                         if len(v.handles) == 0:
                             v.handles = hlist
                         continue
+                    else:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                            modelaxis(v)
             except:
                 pass
             
@@ -995,6 +998,14 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.48  2007/06/19 06:16:05  cdunde
+#Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+#Added model mesh face selection using RMB and LMB together along with various options
+#for selected face outlining, color selections and face color filltris but this will not fill the triangles
+#correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+#file (for the TCoordinates.Polyline95f procedure).
+#Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+#
 #Revision 1.47  2007/06/09 08:13:25  cdunde
 #Fixed 3D views nohandles option that got broken.
 #
