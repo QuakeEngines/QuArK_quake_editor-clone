@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2007/04/30 21:52:42  danielpharos
+Small cleanup of code around VTFLib.
+
 Revision 1.16  2007/04/12 15:04:42  danielpharos
 BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
 
@@ -94,10 +97,6 @@ type
           procedure LoadFile(F: TStream; FSize: Integer); override;
           procedure SaveFile(Info: TInfoEnreg1); override;
         end;
-
-
- {------------------------}
-
 
  {------------------------}
 
@@ -628,18 +627,18 @@ expected one.
 
    procedure AddConnection(var List: TStringlist;outputname,value:string);
    var
-     i,num,lastfound : integer;
+     i,num{,lastfound} : integer;
 
    begin
      num:=0;
-     lastfound:=0;
+     //lastfound:=0;
      for i:=0 to list.count-1 do
      begin
        // count occurances
        if pos(outputname,list[i])<>0 then
        begin
          num:=num+1;
-         lastfound:=i;
+         //lastfound:=i;
        end;
      end;
 
