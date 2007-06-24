@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2007/06/13 11:56:24  danielpharos
+Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+
 Revision 1.54  2007/05/24 20:42:45  danielpharos
 Reserved gamecodes for Call of Duty 1 and 2.
 
@@ -285,12 +288,16 @@ type
   (mcVueXZ, mcVueXY, mcSelXZ, mcSelXY, mcOutOfView, mcAxes, mcGridXZ, mcGridXY, mcGridLines,
    mcTag, mcGrayImage, mcLinear, mcVertices, mcDrag3DLines, mcSkinLines, mcSkinDragLines);
  TSetupSet =
-  (ssGeneral, ssGames, ssFiles, ssMap, ssModel, ssToolbars{, ssTempData});
+  (ssGeneral, ssGames, ssMap, ssModel, ssToolbars, ssFiles{, ssTempData});
  TSetupSetArray = array[TSetupSet] of QObject;
 
 const
  SetupSetName : array[TSetupSet] of String =
-  ('General', 'Games', 'Files', 'Map', 'Model', 'Toolbars and Menus'{, 'temp'});
+  ('General', 'Games', 'Map', 'Model', 'Toolbars and Menus', 'Files'{, 'temp'});
+
+{DanielPharos: The order of the keywords of SetupSet is not logical. 'Files' was added later (2007/06/13),
+but it caused backwards compatibility problems (user won't notice either way of writing the keywords,
+by the way). Thus 'Files' was added to the end, instead of after 'Games'.}
 
 type
   QConfig = class(QObject)
