@@ -916,8 +916,7 @@ def commonhandles(self, redraw=1):
             try:
                 if flagsmouse == 16384 and currentview.info["viewname"] == "skinview" and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
                     if v.viewmode != "tex":
-                        if len(v.handles) == 0:
-                            v.handles = hlist
+                        v.handles = hlist
                         continue
                     else:
                         if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
@@ -998,6 +997,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.49  2007/06/24 22:27:08  cdunde
+#To fix model axis not redrawing in textured views after Skin-view drag is made.
+#
 #Revision 1.48  2007/06/19 06:16:05  cdunde
 #Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
 #Added model mesh face selection using RMB and LMB together along with various options
