@@ -349,30 +349,24 @@ class BaseEditor:
                                 texWidth,texHeight = currentview.clientarea
                             else:
                                 texWidth,texHeight = view.clientarea
+                        if (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1"):
+                            self.SkinFaceSelList = self.ModelFaceSelList
                         tricount = -1
                         for triangle in self.Root.currentcomponent.triangles:
-                            if (self.ModelFaceSelList != []) and (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1"):
-                                tricount = tricount + 1
-                                for triangleindex in self.ModelFaceSelList:
+                            tricount = tricount + 1
+                            cv.pencolor = MapColor("SkinLines", SS_MODEL)
+                            if self.SkinFaceSelList != []:
+                                for triangleindex in self.SkinFaceSelList:
                                     if tricount == triangleindex:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1":
                                             cv.pencolor = MapColor("SkinViewFaceOutline", SS_MODEL)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1":
+                                            break
+                                        elif quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1":
                                             cv.pencolor = MapColor("SkinViewFaceSelected", SS_MODEL)
-                                            self.SkinFaceSelList = self.ModelFaceSelList
-                                        break
-                                    else:
-                                        cv.pencolor = MapColor("SkinLines", SS_MODEL)
-                            elif (self.SkinFaceSelList != []) and (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] != "1"):
-                                tricount = tricount + 1
-                                for triangleindex in self.SkinFaceSelList:
-                                    if tricount == triangleindex:
-                                        cv.pencolor = MapColor("SkinViewFaceSelected", SS_MODEL)
-                                        break
-                                    else:
-                                        cv.pencolor = MapColor("SkinLines", SS_MODEL)
-                            else:
-                                cv.pencolor = MapColor("SkinLines", SS_MODEL)
+                                            break
+                                        else:
+                                            cv.pencolor = MapColor("SkinViewFaceSelected", SS_MODEL)
+                                            break
                             vertex0 = triangle[0]
                             vertex1 = triangle[1]
                             vertex2 = triangle[2]
@@ -408,7 +402,7 @@ class BaseEditor:
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                         mdleditor.modelaxis(view)
-                    if flagsmouse == 16384 or flagsmouse == 2056:
+                    if (flagsmouse == 16384 and self.dragobject is None):
                         cv = view.canvas()
                         for h in view.handles:
                             h.draw(view, cv, draghandle)
@@ -419,8 +413,11 @@ class BaseEditor:
                         cv = view.canvas()
                         for h in view.handles:
                             h.draw(view, cv, draghandle)
-                    if ( quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1") and flagsmouse == 2072:
-                        quarkx.reloadsetup()
+                    if flagsmouse == 2072:
+                        from mdlhandles import SkinView1
+                        if SkinView1 is not None:
+                            if ( quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1"):
+                                SkinView1.invalidate(1)
                 return
             except:
                 pass
@@ -636,12 +633,19 @@ class BaseEditor:
                     else:
                         return
                 else:
+                    if flagsmouse == 2056:
+                        import qhandles
+                        if isinstance(self.dragobject, qhandles.HandleDragObject):
+                            for v in self.layout.views:
+                                v.invalidate(rebuild)
+                            return
+                        else:
+                            return
                     if self.layout.selchange:
                         for v in self.layout.views:
                             if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
                                 v.invalidate(rebuild)
                         return
-
                     else:
                         return
             except:
@@ -995,12 +999,20 @@ class BaseEditor:
 
                     if isinstance(self, mdleditor.ModelEditor):
                         if view.info["viewname"] == "skinview":
+                            if flagsmouse == 520 and self.dragobject is None:
+                                return
                             try:
                                 skindrawobject = self.Root.currentcomponent.currentskin
                             except:
                                 skindrawobject = None
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
-
+                        else:
+                            if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
+                                view.handles = []
+                                view.invalidate(1)
+                                mdleditor.setsingleframefillcolor(self, view)
+                                plugins.mdlgridscale.gridfinishdrawing(self, view)
+                                plugins.mdlaxisicons.newfinishdrawing(self, view)
                 #
                 # If successful, immediately begin to drag
                 #
@@ -1020,14 +1032,12 @@ class BaseEditor:
                                 else:
                                     if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
                                         mdleditor.setframefillcolor(self, view)
-
                         if flagsmouse == 2064:
                             if view.info["viewname"] == "skinview":
                                 pass
                     else:
                         self.dragobject.views = self.layout.views
                         self.dragobject.dragto(x, y, flags | MB_DRAGGING)
-
 
     def gridmenuclick(self, sender):
         self.setgrid(sender.grid)
@@ -1225,6 +1235,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.65  2007/06/22 20:24:57  cdunde
+#Added display of triangle number in Help box then just passing over one in a view.
+#
 #Revision 1.64  2007/06/20 22:04:08  cdunde
 #Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
 #and start of face selection capabilities in the Skin-view for future functions there.

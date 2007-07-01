@@ -31,7 +31,10 @@ import mdleditor
 mdleditorsave = None
 mdleditorview = None
 cursorposatstart = None
+cursordragstartpos = None
 lastmodelfaceremovedlist = []
+SkinView1 = None  # Used to get the Skin-view at any time because
+                  # it is not in the "editors.layout.views" list.
 
 #def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
 #    oldfinish(editor, view)
@@ -436,7 +439,7 @@ class VertexHandle(qhandles.GenericHandle):
                 cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
 
             cv.brushcolor = drag3Dlines
-            editor = mapeditor()
+            editor = mdleditor.mdleditor
             if editor is not None:
                 if editor.picked != []:
                     for item in editor.picked:
@@ -1050,7 +1053,7 @@ class BoneHandle(qhandles.GenericHandle):
 
 def buildskinvertices(editor, view, layout, component, skindrawobject):
     "builds a list of handles to display on the skinview"
-
+    global SkinView1
   ### begin code from maphandles def viewsinglebezier
     if skindrawobject is not None:
         view.viewmode = "tex" # Don't know why, but if model HAS skin, making this "wire" causes black lines on zooms.
@@ -1152,6 +1155,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
                  "viewname": "skinview",
                  "mousemode": None
                  }
+    SkinView1 = view
 
     if skindrawobject is None:
         editor.setupview(view, drawsingleskin, 0)
@@ -1258,20 +1262,107 @@ def BuildHandles(editor, explorer, view):
 #
 
 class RectSelDragObject(qhandles.RectangleDragObject):
-    "A red rectangle that selects the polyhedrons it touches."
+    "A red rectangle that selects the model vertexes it touches or inside it."
 
-    def rectanglesel(self, editor, x,y, rectangle):
-        if not ("T" in self.todo):
-            editor.layout.explorer.uniquesel = None
-        polylist = editor.Root.findallsubitems("", ":p")
-        lastsel = None
-        for p in polylist:
-            if rectangle.intersects(p):
-                p.selected = 1
-                lastsel = p
-        if lastsel is not None:
-            editor.layout.explorer.focus = lastsel
-            editor.layout.explorer.selchanged()
+    def rectanglesel(self, editor, x,y, rectangle, view):
+        cursordragendpos = (x, y)
+        sellist = []
+        vertexes = editor.Root.currentcomponent.currentframe.vertices
+        vertexindex = -1
+        for vertex in vertexes:
+            vertexindex = vertexindex + 1
+            vertexpos = view.proj(vertex)
+            # Grid quad 1
+            if (cursordragstartpos[0] < cursordragendpos[0] and cursordragstartpos[1] < cursordragendpos[1]):
+                if (vertexpos.tuple[0] >= cursordragstartpos[0] and vertexpos.tuple[1] >= cursordragstartpos[1])and (vertexpos.tuple[0] <= cursordragendpos[0] and vertexpos.tuple[1] <= cursordragendpos[1]):
+                    sellist = sellist + [(vertexindex, vertexpos)]
+            # Grid quad 2
+            elif (cursordragstartpos[0] > cursordragendpos[0] and cursordragstartpos[1] < cursordragendpos[1]):
+                if (vertexpos.tuple[0] <= cursordragstartpos[0] and vertexpos.tuple[1] >= cursordragstartpos[1])and (vertexpos.tuple[0] >= cursordragendpos[0] and vertexpos.tuple[1] <= cursordragendpos[1]):
+                    sellist = sellist + [(vertexindex, vertexpos)]
+            # Grid quad 3
+            elif (cursordragstartpos[0] < cursordragendpos[0] and cursordragstartpos[1] > cursordragendpos[1]):
+                if (vertexpos.tuple[0] >= cursordragstartpos[0] and vertexpos.tuple[1] <= cursordragstartpos[1])and (vertexpos.tuple[0] <= cursordragendpos[0] and vertexpos.tuple[1] >= cursordragendpos[1]):
+                    sellist = sellist + [(vertexindex, vertexpos)]
+            # Grid quad 4
+            elif (cursordragstartpos[0] > cursordragendpos[0] and cursordragstartpos[1] > cursordragendpos[1]):
+                if (vertexpos.tuple[0] <= cursordragstartpos[0] and vertexpos.tuple[1] <= cursordragstartpos[1])and (vertexpos.tuple[0] >= cursordragendpos[0] and vertexpos.tuple[1] >= cursordragendpos[1]):
+                    sellist = sellist + [(vertexindex, vertexpos)]
+
+        if editor.picked != [] and sellist == []:
+            editor.picked = []
+            for v in editor.layout.views:
+                mdleditor.setsingleframefillcolor(editor, v)
+                plugins.mdlgridscale.gridfinishdrawing(editor, v)
+                plugins.mdlaxisicons.newfinishdrawing(editor, v)
+                v.repaint()
+                cv = v.canvas()
+                if len(v.handles) == 0:
+                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                for h in v.handles:
+                    h.draw(v, cv, h)
+            return
+
+        removeditem = 0
+        for vertex in sellist:
+            itemcount = 0
+            if editor.picked == []:
+                editor.picked = editor.picked + [vertex]
+            else:
+                for item in editor.picked:
+                    itemcount = itemcount + 1
+                    if vertex[0] == item[0]:
+                        editor.picked.remove(item)
+                        removeditem = removeditem + 1
+                        for v in editor.layout.views:
+                            if len(v.handles) == 0:
+                                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                        break
+                    elif itemcount == len(editor.picked):
+                        editor.picked = editor.picked + [vertex]
+        if removeditem != 0:
+            for v in editor.layout.views:
+                mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+                plugins.mdlgridscale.gridfinishdrawing(editor, v)
+                plugins.mdlaxisicons.newfinishdrawing(editor, v)
+                cv = v.canvas()
+                if len(v.handles) == 0:
+                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                for h in v.handles:
+                    h.draw(v, cv, h)
+                for vtx in editor.picked:
+                    h = v.handles[vtx[0]]
+                    h.draw(v, cv, h)
+        else:
+            if editor.picked != []:
+                for v in editor.layout.views:
+                    cv = v.canvas()
+                    if len(v.handles) == 0:
+                        v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                        if len(v.handles) == 0:
+                            editor.picked = []
+                            from qbaseeditor import currentview
+                            currentview.repaint()
+                            plugins.mdlgridscale.gridfinishdrawing(editor, currentview)
+                            plugins.mdlaxisicons.newfinishdrawing(editor, currentview)
+                            return
+                        view.repaint() # This is not an error in coding, do not change, eliminates double drawing of selected handles.
+                        plugins.mdlgridscale.gridfinishdrawing(editor, v)
+                        plugins.mdlaxisicons.newfinishdrawing(editor, v)
+                        for h in view.handles: # This is not an error in coding, do not change, eliminates double drawing of selected handles.
+                            h.draw(v, cv, self)
+                    for vtx in editor.picked:
+                        h = v.handles[vtx[0]]
+                        h.draw(v, cv, h)
+            else:
+                view.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                view.repaint()
+                plugins.mdlgridscale.gridfinishdrawing(editor, view)
+                plugins.mdlaxisicons.newfinishdrawing(editor, view)
+                cv = view.canvas()
+                for h in view.handles:
+                    h.draw(view, cv, self)
 
 
 #
@@ -1280,7 +1371,8 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
 def MouseDragging(self, view, x, y, s, handle):
     "Mouse Drag on a Model View."
-    global mdleditorsave, mdleditorview, cursorposatstart
+    global mdleditorsave, mdleditorview, cursorposatstart, cursordragstartpos
+    cursordragstartpos = (x, y) # Used for start where clicked for Model Editor RectSelDragObject just above here.
     mdleditorsave = self
     mdleditorview = view
     for item in view.info:
@@ -1353,6 +1445,14 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.59  2007/06/19 06:16:05  cdunde
+#Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+#Added model mesh face selection using RMB and LMB together along with various options
+#for selected face outlining, color selections and face color filltris but this will not fill the triangles
+#correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+#file (for the TCoordinates.Polyline95f procedure).
+#Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+#
 #Revision 1.58  2007/06/11 21:31:45  cdunde
 #To fix model mesh vertex handles not always redrawing
 #when picked list is cleared or a vertex is deselected.

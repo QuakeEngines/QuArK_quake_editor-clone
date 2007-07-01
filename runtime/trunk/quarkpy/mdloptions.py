@@ -216,10 +216,12 @@ def mSFSISV(m):
     if not MldOption("SFSISV"):
         quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
-        editor.SkinFaceSelList = []
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
-    quarkx.reloadsetup()
+        editor.SkinFaceSelList = []
+    from mdlhandles import SkinView1
+    if SkinView1 is not None:
+        SkinView1.invalidate(1)
 
 
 def mPFSTSV(m):
@@ -230,7 +232,9 @@ def mPFSTSV(m):
         editor.SkinFaceSelList = editor.ModelFaceSelList
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
-    quarkx.reloadsetup()
+    from mdlhandles import SkinView1
+    if SkinView1 is not None:
+        SkinView1.invalidate(1)
 
 
 def mNFO(m):
@@ -353,6 +357,10 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.17  2007/06/20 22:04:08  cdunde
+#Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
+#and start of face selection capabilities in the Skin-view for future functions there.
+#
 #Revision 1.16  2007/06/19 06:16:04  cdunde
 #Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
 #Added model mesh face selection using RMB and LMB together along with various options

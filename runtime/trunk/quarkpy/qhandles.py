@@ -966,10 +966,15 @@ class RedImageDragObject(DragObject):
         editor = self.editor
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
-            return
-          #  pass
+            editor = mdleditor.mdleditor
+            ### To stop the Model Editor from drawing incorrect component image in Skin-view.
+   #         return
+            import mdlhandles
+            from qbaseeditor import currentview
+            ### Will need to change to allow red rectangle selection of vertexes in Skin-view later.
+            if currentview.info["viewname"] == "skinview" or not isinstance(editor.dragobject, mdlhandles.RectSelDragObject):
+                return
         else:
-
 ## Deals with Terrain Selector 3D face drawing, movement is in ok section
 
             if (editor is not None) and (editor.layout.toolbars["tb_terrmodes"] is not None):
@@ -986,18 +991,13 @@ class RedImageDragObject(DragObject):
                                         if type == "3D":
                                             qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                                             return
-
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
             special, refresh = self.ricmd()
             if special is None:    # can draw a red image only
                 if internal==1:    # erase the previous image
-                       ### Stopped the Model Editor from drawing incorrect image in Skin-view.
-                    if isinstance(editor, mdleditor.ModelEditor):
-                        return
                     for r in self.redimages:
                         view.drawmap(r, mode)
-
 ## cdunde added these 3 lines 05-14-05 to stop the
 ## 3d Textured view from erasing other items
 ## in the view when dragging redline objects in it.
@@ -1020,14 +1020,22 @@ class RedImageDragObject(DragObject):
                                 view.drawmap(r, mode, self.redcolor)
                         if self.handle is not None:
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
-
                     else:
                         import mdleditor
                         if isinstance(editor, mdleditor.ModelEditor):
-                            return
+                            self.redcolor = RED
+                            view.handles = []
+
+                            plugins.mdlgridscale.gridfinishdrawing(editor, view)
+                            plugins.mdlaxisicons.newfinishdrawing(editor, view)
+                            for r in self.redimages:
+                                view.drawmap(r, mode, self.redcolor)
+                            if self.handle is not None:
+                                self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
 ## Deals with Terrain Selector 2D face drawing, movement is in ok section and
 ## Deals with Standard Selector 2D face drawing, movement is in ok section
-                        if editor.layout.toolbars["tb_terrmodes"] is not None:
+                        elif editor.layout.toolbars["tb_terrmodes"] is not None:
                             tb2 = editor.layout.toolbars["tb_terrmodes"]
                             for b in tb2.tb.buttons:
                                 if b.state == 2:
@@ -1056,7 +1064,6 @@ class RedImageDragObject(DragObject):
             else:   # must redraw everything
                 if internal==2:
                     view.invalidate()
-
             if internal==2:    # set up a timer to update the other views as well
                 quarkx.settimer(refresh, self, 150)
 
@@ -1153,8 +1160,38 @@ class HandleDragObject(RedImageDragObject):
 
 
 def refreshtimer(self):
-    for v in self.views:
-        v.invalidate()
+    import mdleditor
+    if isinstance(self.editor, mdleditor.ModelEditor):
+        from qbaseeditor import flagsmouse, currentview
+     #   if flagsmouse == 2056:
+        #    pass
+        if flagsmouse != 1032:
+            if len(currentview.handles) == 0:
+                import mdlhandles
+                currentview.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
+            cv = currentview.canvas()
+            for h in currentview.handles:
+                h.draw(currentview, cv, self)
+            if self.editor.picked != []:
+                for vtx in self.editor.picked:
+                    h = currentview.handles[vtx[0]]
+                    h.draw(currentview, cv, h)
+            return
+        else:
+            mode = DM_OTHERCOLOR|DM_BBOX
+            for r in self.redimages:
+                currentview.repaint()
+                currentview.drawmap(r, mode, RED)
+        editor = mdleditor.mdleditor
+        plugins.mdlgridscale.gridfinishdrawing(editor, currentview)
+        plugins.mdlaxisicons.newfinishdrawing(editor, currentview)
+    else:
+        try:
+            for v in self.views:
+                v.invalidate()
+        except:
+            for v in self.editor.views:
+                v.invalidate()
 
 def refreshtimertex(self):
     for v in self.views:
@@ -1463,10 +1500,32 @@ class RectangleDragObject(RedImageDragObject):
     def ok(self, editor, x, y, flags):
         self.autoscroll_stop()
         self.dragto(x, y, flags)
-        if self.redimages is not None:
-            self.rectanglesel(editor, x,y, self.redimages[0])
-        self.view.invalidate()
-        editor.invalidateviews()
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            from qbaseeditor import flagsmouse
+            if flagsmouse == 2056:
+                import mdlhandles
+                if isinstance(editor.dragobject, mdlhandles.RectSelDragObject):
+                    if self.redimages is not None:
+                        self.rectanglesel(editor, x,y, self.redimages[0], self.view)
+                    else:
+                        if len(self.view.handles) == 0:
+                            import mdlhandles
+                            self.view.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
+                        cv = self.view.canvas()
+                        for h in self.view.handles:
+                            h.draw(self.view, cv, self)
+                        if editor.picked != []:
+                            for vtx in editor.picked:
+                                h = self.view.handles[vtx[0]]
+                                h.draw(self.view, cv, h)
+                        return
+        else:
+            if self.redimages is not None:
+                self.rectanglesel(editor, x,y, self.redimages[0])
+            if self.view not in editor.layout.views:
+                self.view.invalidate()
+            editor.invalidateviews()
 
     def rectanglesel(self, editor, x,y, rectangle):
         "Called when the drag is over."
@@ -1915,6 +1974,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.45  2007/05/21 15:21:31  cdunde
+#To fix QuArK editors crossover errors.
+#
 #Revision 1.44  2007/04/13 19:48:35  cdunde
 #Changed Center and Linear center Handle dragging hint to give start
 #and progressive drag positions based on grid location.

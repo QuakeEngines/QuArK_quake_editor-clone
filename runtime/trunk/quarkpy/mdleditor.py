@@ -38,11 +38,35 @@ class ModelEditor(BaseEditor):
     ObjectMgr = mdlentities.CallManager
     HandlesModule = mdlhandles
     MouseDragMode = mdlhandles.RectSelDragObject
+    dragobject = None
+
+    ### Different lists of the Model Editor.
+    ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
+    # Editor vertexes    (index, view.proj(pos))
+    #                                       Its "Frame" "vertices" number, projected x,y view position.
 
     picked = []
+
+    # Skin-view vertexes (pos, self, tri_index, ver_index)
+    #                                       Its projected x,y Skin-view position.
+    #                                       The "SkinHandle" vertex drag handle instance itself.
+    #                                       Model component mesh triangle number it belongs to.
+    #                                       Model "Frame" "vertices" number.
+    #                                       First vertex in this list can be used as a "base vertex".
+
     skinviewpicked = []
-    dragobject = None
+
+    # Editor triangles    (tri_index)
+    #                                       Its triangle number in the Model component mesh "triangles" list
+    #                                       of the Models "currentcomponent".
+
     ModelFaceSelList = []
+
+    # Editor triangles    (tri_index)
+    #                                       The triangle number in the Model component mesh "triangles" list
+    #                                       of the Models "currentcomponent". The Skin-view does not have its
+    #                                       own actual triangles, these are copied from the ModelFaceSelList.
+
     SkinFaceSelList = []
     
 
@@ -55,7 +79,13 @@ class ModelEditor(BaseEditor):
         self.Root = Root
         self.dragobject = None
         self.list = ()
-        currentcomponent = self.Root
+        if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+            componentnames = []
+            for item in self.Root.dictitems:
+                if item.endswith(":mc"):
+                    componentnames.append(item)
+            componentnames.sort()
+        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
 
         if (quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] is None):
             Lock_X = "0"
@@ -114,7 +144,12 @@ class ModelEditor(BaseEditor):
         " It is also used to rebuild the handles by various functions later."
         from qbaseeditor import flagsmouse, currentview
         try:
-            if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
+ ### This is a problem area, if 1032 is added back in it causes multiple redraws.
+ ### But with it out like this drag handles do not get drawn in the 2D views if you
+ ### do a drag immediately after doing a zoom in the 3D view and will now straighten out
+ ### until you do a slight zoom in one of the 2D views.
+    #        if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
+            if flagsmouse == 1048 or flagsmouse == 2072:
                 return
             elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
                 pass
@@ -997,6 +1032,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.50  2007/06/25 02:26:39  cdunde
+#To update view handles after Skin-view drag for non-textured views
+#causing immediate drag afterwards in those views to not take place.
+#
 #Revision 1.49  2007/06/24 22:27:08  cdunde
 #To fix model axis not redrawing in textured views after Skin-view drag is made.
 #
