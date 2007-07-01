@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Model Editor, Setup red rectangle selection support in the Model Editor for face and vertex selection methods
+          - and completed vertex selection for all the editors 2D views.
+
 * [cdunde]: Model Editor, Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
           - Added model mesh face selection using RMB and LMB together along with various options for selected
           - face outlining, color selections and face color filltris but this will not fill the triangles
