@@ -392,7 +392,7 @@ class BaseEditor:
                                     cv.ellipse(int(vertex1X)-1, int(vertex1Y)-1, int(vertex1X)+1, int(vertex1Y)+1)
                                     cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
                         if flagsmouse == 16384:
-                            if self.skinviewpicked != []:
+                            if self.SkinVertexSelList != []:
                                 for h in view.handles:
                                     h.draw(view, cv, draghandle)
                             if isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, qhandles.ScrollViewDragObject):
@@ -1235,6 +1235,12 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.66  2007/07/01 04:56:52  cdunde
+#Setup red rectangle selection support in the Model Editor for face and vertex
+#selection methods and completed vertex selection for all the editors 2D views.
+#Added new global in mdlhandles.py "SkinView1" to get the Skin-view,
+#which is not in the editors views.
+#
 #Revision 1.65  2007/06/22 20:24:57  cdunde
 #Added display of triangle number in Help box then just passing over one in a view.
 #

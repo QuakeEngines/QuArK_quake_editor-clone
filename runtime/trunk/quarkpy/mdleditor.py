@@ -42,10 +42,15 @@ class ModelEditor(BaseEditor):
 
     ### Different lists of the Model Editor.
     ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
-    # Editor vertexes    (index, view.proj(pos))
+    # Editor vertexes    (ver_index, view.proj(pos))
     #                                       Its "Frame" "vertices" number, projected x,y view position.
+    #                                       This needs to be a projected position for a decent size application
+    #                                       to the "Skin-view" when a new triangle is made in the editor.
+    #                                       This list can also be used more effectively by adding all of the
+    #                                       tri_index numbers (after the ver_index and pos) that use this vertex,
+    #                                       allowing direct call of those "component.triangles" by the tri_index(s).
 
-    picked = []
+    ModelVertexSelList = []
 
     # Skin-view vertexes (pos, self, tri_index, ver_index)
     #                                       Its projected x,y Skin-view position.
@@ -54,7 +59,7 @@ class ModelEditor(BaseEditor):
     #                                       Model "Frame" "vertices" number.
     #                                       First vertex in this list can be used as a "base vertex".
 
-    skinviewpicked = []
+    SkinVertexSelList = []
 
     # Editor triangles    (tri_index)
     #                                       Its triangle number in the Model component mesh "triangles" list
@@ -104,7 +109,7 @@ class ModelEditor(BaseEditor):
 
 
     def CloseRoot(self):
-        picked = []
+        ModelVertexSelList = []
         self.dragobject = None
         ### To stop crossing of skins from model to model when a new model, even with the same name,
         ### is opened in the Model Editor without closing QuArK completely.
@@ -135,7 +140,7 @@ class ModelEditor(BaseEditor):
         mdlhandles.backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
         mdlhandles.skinviewmesh = MapColor("SkinLines", SS_MODEL)
         mdlhandles.skinviewdraglines = MapColor("SkinDragLines", SS_MODEL)
-        mdlhandles.skinviewpickedcolor = MapColor("SkinViewPickedColor", SS_MODEL)
+        mdlhandles.skinvertexsellistcolor = MapColor("SkinVertexSelListColor", SS_MODEL)
 
 
     def buildhandles(self):
@@ -1032,6 +1037,12 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.51  2007/07/01 04:56:52  cdunde
+#Setup red rectangle selection support in the Model Editor for face and vertex
+#selection methods and completed vertex selection for all the editors 2D views.
+#Added new global in mdlhandles.py "SkinView1" to get the Skin-view,
+#which is not in the editors views.
+#
 #Revision 1.50  2007/06/25 02:26:39  cdunde
 #To update view handles after Skin-view drag for non-textured views
 #causing immediate drag afterwards in those views to not take place.

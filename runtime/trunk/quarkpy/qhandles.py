@@ -1172,8 +1172,8 @@ def refreshtimer(self):
             cv = currentview.canvas()
             for h in currentview.handles:
                 h.draw(currentview, cv, self)
-            if self.editor.picked != []:
-                for vtx in self.editor.picked:
+            if self.editor.ModelVertexSelList != []:
+                for vtx in self.editor.ModelVertexSelList:
                     h = currentview.handles[vtx[0]]
                     h.draw(currentview, cv, h)
             return
@@ -1515,8 +1515,8 @@ class RectangleDragObject(RedImageDragObject):
                         cv = self.view.canvas()
                         for h in self.view.handles:
                             h.draw(self.view, cv, self)
-                        if editor.picked != []:
-                            for vtx in editor.picked:
+                        if editor.ModelVertexSelList != []:
+                            for vtx in editor.ModelVertexSelList:
                                 h = self.view.handles[vtx[0]]
                                 h.draw(self.view, cv, h)
                         return
@@ -1974,6 +1974,12 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.46  2007/07/01 04:56:52  cdunde
+#Setup red rectangle selection support in the Model Editor for face and vertex
+#selection methods and completed vertex selection for all the editors 2D views.
+#Added new global in mdlhandles.py "SkinView1" to get the Skin-view,
+#which is not in the editors views.
+#
 #Revision 1.45  2007/05/21 15:21:31  cdunde
 #To fix QuArK editors crossover errors.
 #

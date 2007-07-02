@@ -83,33 +83,33 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
         def removevertex1click(m, self=self, editor=editor, view=view):
             removevertex(editor.Root.currentcomponent, self.index)
-            editor.picked = []
+            editor.ModelVertexSelList = []
 
         def pick_vertex(m, self=self, editor=editor, view=view):
             itemcount = 0
-            if editor.picked == []:
-                editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
+            if editor.ModelVertexSelList == []:
+                editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
             else:
-                for item in editor.picked:
+                for item in editor.ModelVertexSelList:
                     itemcount = itemcount + 1
                     if self.index == item[0]:
-                        editor.picked.remove(item)
+                        editor.ModelVertexSelList.remove(item)
                         for v in editor.layout.views:
                             mdleditor.setsingleframefillcolor(editor, v)
                             v.repaint()
                         return
-                    if itemcount == len(editor.picked):
-                        if len(editor.picked) == 3:
+                    if itemcount == len(editor.ModelVertexSelList):
+                        if len(editor.ModelVertexSelList) == 3:
                             quarkx.msgbox("Improper Selection!\n\nYou can not choose more then\n3 vertexes for a triangle.\n\nSelection Canceled", MT_ERROR, MB_OK)
                             return None, None
                         else:
-                            editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
+                            editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
             for v in editor.layout.views:
                 cv = v.canvas()
                 self.draw(v, cv, self)
 
         def pick_cleared(m, editor=editor, view=view):
-            editor.picked = []
+            editor.ModelVertexSelList = []
             for v in editor.layout.views:
                 mdleditor.setsingleframefillcolor(editor, v)
                 v.repaint()
@@ -120,7 +120,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
         PickVertex = qmenu.item("&Pick Vertex", pick_vertex, "|Pick Vertex:\n\n This is used for picking 3 vertexes to create a triangle with. It also works in conjunction with the 'Clear Pick list' below.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
 
-        if len(editor.picked) == 0:
+        if len(editor.ModelVertexSelList) == 0:
             ClearPicklist.state = qmenu.disabled
 
         if editor.layout.explorer.sellist != [] and (editor.layout.explorer.sellist[0].type == ":mc" or editor.layout.explorer.sellist[0].type == ":fg" or editor.layout.explorer.sellist[0].type == ":mf"):
@@ -341,17 +341,17 @@ class VertexHandle(qhandles.GenericHandle):
 
         def removevertex1click(m, self=self, editor=editor, view=view):
             removevertex(editor.Root.currentcomponent, self.index)
-            editor.picked = []
+            editor.ModelVertexSelList = []
 
         def pick_vertex(m, self=self, editor=editor, view=view):
             itemcount = 0
-            if editor.picked == []:
-                editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
+            if editor.ModelVertexSelList == []:
+                editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
             else:
-                for item in editor.picked:
+                for item in editor.ModelVertexSelList:
                     itemcount = itemcount + 1
                     if self.index == item[0]:
-                        editor.picked.remove(item)
+                        editor.ModelVertexSelList.remove(item)
                         for v in editor.layout.views:
                             if len(v.handles) == 0:
                                 v.handles = BuildCommonHandles(editor, editor.layout.explorer)
@@ -359,18 +359,18 @@ class VertexHandle(qhandles.GenericHandle):
                             mdleditor.setsingleframefillcolor(editor, v)
                             v.repaint()
                         return
-                    if itemcount == len(editor.picked):
-                        if len(editor.picked) == 3:
+                    if itemcount == len(editor.ModelVertexSelList):
+                        if len(editor.ModelVertexSelList) == 3:
                             quarkx.msgbox("Improper Selection!\n\nYou can not choose more then\n3 vertexes for a triangle.\n\nSelection Canceled", MT_ERROR, MB_OK)
                             return None, None
                         else:
-                            editor.picked = editor.picked + [(self.index, view.proj(self.pos))]
+                            editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
             for v in editor.layout.views:
                 cv = v.canvas()
                 self.draw(v, cv, self)
 
         def pick_cleared(m, editor=editor, view=view):
-            editor.picked = []
+            editor.ModelVertexSelList = []
             for v in editor.layout.views:
                 if len(v.handles) == 0:
                     v.handles = BuildCommonHandles(editor, editor.layout.explorer)
@@ -384,7 +384,7 @@ class VertexHandle(qhandles.GenericHandle):
         PickVertex = qmenu.item("&Pick Vertex", pick_vertex, "|Pick Vertex:\n\n This is used for picking 3 vertexes to create a triangle with. It also works in conjunction with the 'Clear Pick list' below.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
 
-        if len(editor.picked) == 0:
+        if len(editor.ModelVertexSelList) == 0:
             ClearPicklist.state = qmenu.disabled
 
         if editor.layout.explorer.sellist != [] and (editor.layout.explorer.sellist[0].type == ":mc" or editor.layout.explorer.sellist[0].type == ":fg" or editor.layout.explorer.sellist[0].type == ":mf"):
@@ -441,8 +441,8 @@ class VertexHandle(qhandles.GenericHandle):
             cv.brushcolor = drag3Dlines
             editor = mdleditor.mdleditor
             if editor is not None:
-                if editor.picked != []:
-                    for item in editor.picked:
+                if editor.ModelVertexSelList != []:
+                    for item in editor.ModelVertexSelList:
                         if self.index == item[0]:
                             cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
 
@@ -540,38 +540,38 @@ class SkinHandle(qhandles.GenericHandle):
     def menu(self, editor, view):
 
         def pick_basevertex(m, self=self, editor=editor, view=view):
-            if editor.skinviewpicked == []:
-                editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, self.tri_index, self.ver_index]]
+            if editor.SkinVertexSelList == []:
+                editor.SkinVertexSelList = editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
                 cv = view.canvas()
                 self.draw(view, cv, self)
             else:
-                if str(self.pos) == str(editor.skinviewpicked[0][0]):
-                    editor.skinviewpicked = []
+                if str(self.pos) == str(editor.SkinVertexSelList[0][0]):
+                    editor.SkinVertexSelList = []
                     view.invalidate()
 
         def change_basevertex(m, self=self, editor=editor, view=view):
-            for item in editor.skinviewpicked:
-                if str(self.pos) == str(item[0]) and str(self.pos) != str(editor.skinviewpicked[0][0]):
+            for item in editor.SkinVertexSelList:
+                if str(self.pos) == str(item[0]) and str(self.pos) != str(editor.SkinVertexSelList[0][0]):
                     quarkx.msgbox("Improper Selection!\n\nYou can not choose this vertex\nuntil you remove it from the Skin list.\n\nSelection Canceled", MT_ERROR, MB_OK)
                     return None, None
-            if str(self.pos) == str(editor.skinviewpicked[0][0]):
+            if str(self.pos) == str(editor.SkinVertexSelList[0][0]):
                 skinpick_cleared(self)
             else:
-                editor.skinviewpicked[0] = [self.pos, self, self.tri_index, self.ver_index]
+                editor.SkinVertexSelList[0] = [self.pos, self, self.tri_index, self.ver_index]
             view.invalidate()
 
         def pick_skinvertex(m, self=self, editor=editor, view=view):
             itemcount = 0
             removedcount = 0
             holdlist = []
-            if editor.skinviewpicked == []:
-                editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, self.tri_index, self.ver_index]]
+            if editor.SkinVertexSelList == []:
+                editor.SkinVertexSelList = editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
             else:
-                if str(self.pos) == str(editor.skinviewpicked[0][0]):
-                    editor.skinviewpicked = []
+                if str(self.pos) == str(editor.SkinVertexSelList[0][0]):
+                    editor.SkinVertexSelList = []
                 else:
                     setup = quarkx.setupsubset(SS_MODEL, "Options")
-                    for item in editor.skinviewpicked:
+                    for item in editor.SkinVertexSelList:
 
                         if not setup["SingleVertexDrag"]:
                             if str(self.pos) == str(item[0]):
@@ -580,20 +580,20 @@ class SkinHandle(qhandles.GenericHandle):
                                 holdlist = holdlist + [item]
                         else:
                             if str(self.pos) == str(item[0]):
-                                editor.skinviewpicked.remove(editor.skinviewpicked[itemcount])
+                                editor.SkinVertexSelList.remove(editor.SkinVertexSelList[itemcount])
                                 view.invalidate()
                                 return
                             itemcount = itemcount + 1
 
                     if removedcount != 0:
-                        editor.skinviewpicked = holdlist
+                        editor.SkinVertexSelList = holdlist
                         view.invalidate()
                         return
                     else:
                         if not setup["SingleVertexDrag"]:
-                            editor.skinviewpicked = holdlist
+                            editor.SkinVertexSelList = holdlist
 
-                    editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, self.tri_index, self.ver_index]]
+                    editor.SkinVertexSelList = editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
 
                     if not setup["SingleVertexDrag"]:
                         dragtris = find2DTriangles(self.comp, self.tri_index, self.ver_index) # This is the funciton that gets the common vertexes in mdlutils.py.
@@ -602,40 +602,40 @@ class SkinHandle(qhandles.GenericHandle):
                             for vtx in tri:
                                 if str(vtx) == str(self.comp.triangles[self.tri_index][self.ver_index]):
                                     drag_vtx_index = vtx_index
-                                    editor.skinviewpicked = editor.skinviewpicked + [[self.pos, self, index, drag_vtx_index]]
+                                    editor.SkinVertexSelList = editor.SkinVertexSelList + [[self.pos, self, index, drag_vtx_index]]
                                 vtx_index = vtx_index + 1
             cv = view.canvas()
             self.draw(view, cv, self)
 
         def alignskinvertexesclick(m, self=self, editor=editor, view=view):
 
-            if len(editor.skinviewpicked) > 1:
-                self = editor.skinviewpicked[1][1]
-                oldpos = editor.skinviewpicked[1][0]
+            if len(editor.SkinVertexSelList) > 1:
+                self = editor.SkinVertexSelList[1][1]
+                oldpos = editor.SkinVertexSelList[1][0]
             else:
                 oldpos = self.pos
 
-            pickedpos = editor.skinviewpicked[0][0]
+            pickedpos = editor.SkinVertexSelList[0][0]
             setup = quarkx.setupsubset(SS_MODEL, "Options")
 
-            if len(editor.skinviewpicked) > 1:
+            if len(editor.SkinVertexSelList) > 1:
 
                 if self.comp is None:
                     self.comp = editor.Root.currentcomponent
 
-                replacevertexes(editor, self.comp, editor.skinviewpicked, MB_CTRL, view, "multi Skin vertex alignment")
-                editor.skinviewpicked = []
+                replacevertexes(editor, self.comp, editor.SkinVertexSelList, MB_CTRL, view, "multi Skin vertex alignment")
+                editor.SkinVertexSelList = []
             else:
                 self.Action(editor, oldpos, pickedpos, MB_CTRL, view, "single Skin vertex alignment")
-                if len(editor.skinviewpicked) > 1:
-                    editor.skinviewpicked.remove(editor.skinviewpicked[1])
+                if len(editor.SkinVertexSelList) > 1:
+                    editor.SkinVertexSelList.remove(editor.SkinVertexSelList[1])
 
         def skinpick_cleared(m, editor=editor, view=view):
-            editor.skinviewpicked = []
+            editor.SkinVertexSelList = []
             view.invalidate()
 
         setup = quarkx.setupsubset(SS_MODEL, "Options")
-        if len(editor.skinviewpicked) > 2 or not setup["SingleVertexDrag"]:
+        if len(editor.SkinVertexSelList) > 2 or not setup["SingleVertexDrag"]:
             AlignText = "&Align skin vertexes"
         else:
             AlignText = "&Align skin vertex"
@@ -646,26 +646,26 @@ class SkinHandle(qhandles.GenericHandle):
         AlignSkinVertexes = qmenu.item(AlignText, alignskinvertexesclick,"|Align skin vertex(s):\n\nOnce a set of vertexes have been 'Picked' on the Skin-view all of those vertexes will be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned for possible multiple vertex movement. It also works in conjunction with the 'Clear Skin Pick list' below it and the multi or single drag mode button on the Skin-view page.|intro.modeleditor.skinview.html#funcsnmenus")
         ClearSkinPicklist = qmenu.item("&Clear Skin Pick list", skinpick_cleared, "|Clear Skin Pick list:\n\nThis Clears the 'Base' (stationary) vertex and the 'Pick Skin Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
 
-        if len(editor.skinviewpicked) == 0:
+        if len(editor.SkinVertexSelList) == 0:
             ClearSkinPicklist.state = qmenu.disabled
 
         try:
             if self.ver_index is not None:
-                if len(editor.skinviewpicked) == 0:
+                if len(editor.SkinVertexSelList) == 0:
                     AlignSkinVertexes.state = qmenu.disabled
                     PickSkinVertex.state = qmenu.disabled
                     menu = [PickBaseVertex, PickSkinVertex, qmenu.sep, ClearSkinPicklist, qmenu.sep, AlignSkinVertexes]
                 else:
-                    if str(self.pos) == str(editor.skinviewpicked[0][0]):
+                    if str(self.pos) == str(editor.SkinVertexSelList[0][0]):
                         AlignSkinVertexes.state = qmenu.disabled
                         PickSkinVertex.state = qmenu.disabled
                     menu = [ChangeBaseVertex, PickSkinVertex, qmenu.sep, ClearSkinPicklist, qmenu.sep, AlignSkinVertexes]
             else:
-                if len(editor.skinviewpicked) < 2:
+                if len(editor.SkinVertexSelList) < 2:
                     AlignSkinVertexes.state = qmenu.disabled
                 menu = [ClearSkinPicklist, qmenu.sep, AlignSkinVertexes]
         except:
-            if len(editor.skinviewpicked) < 2:
+            if len(editor.SkinVertexSelList) < 2:
                 AlignSkinVertexes.state = qmenu.disabled
             menu = [ClearSkinPicklist, qmenu.sep, AlignSkinVertexes]
 
@@ -720,7 +720,7 @@ class SkinHandle(qhandles.GenericHandle):
           #  if flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080:  # This drawing is now done in the qbaseeditor.py finishdrawing function, much faster.
           #      pass
           #  else:
-            if flagsmouse == 16384 and editor.skinviewpicked == []:
+            if flagsmouse == 16384 and editor.SkinVertexSelList == []:
                 for vertex in triangle:
                     fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
                     fixedX, fixedY,fixedZ = view.proj(fixedvertex).tuple
@@ -735,25 +735,25 @@ class SkinHandle(qhandles.GenericHandle):
                     cv.pencolor = vertexdotcolor
                     cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
             try:
-                if editor.skinviewpicked != []:
+                if editor.SkinVertexSelList != []:
                     itemnbr = 0
-                    for item in editor.skinviewpicked:
+                    for item in editor.SkinVertexSelList:
                         if self.tri_index == item[2] and self.ver_index == item[3] and self != item[1]:
-                            editor.skinviewpicked[itemnbr][0] = self.pos
-                            editor.skinviewpicked[itemnbr][1] = self
+                            editor.SkinVertexSelList[itemnbr][0] = self.pos
+                            editor.SkinVertexSelList[itemnbr][1] = self
                         itemnbr = itemnbr + 1
 
                 if editor is not None:
-                    if editor.skinviewpicked != []:
-                        itemcount = len(editor.skinviewpicked)
-                        for item in editor.skinviewpicked:
-                            if str(self.pos) == str(editor.skinviewpicked[0][0]) and (self.tri_index == item[2] and self.ver_index == item[3]):
+                    if editor.SkinVertexSelList != []:
+                        itemcount = len(editor.SkinVertexSelList)
+                        for item in editor.SkinVertexSelList:
+                            if str(self.pos) == str(editor.SkinVertexSelList[0][0]) and (self.tri_index == item[2] and self.ver_index == item[3]):
                                 cv.brushcolor = skinviewdraglines
                                 cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                             else:
-                                if len(editor.skinviewpicked) > 1 and itemcount != 0:
-                                    if str(self.pos) == str(editor.skinviewpicked[itemcount-1][0]):
-                                        cv.brushcolor = skinviewpickedcolor
+                                if len(editor.SkinVertexSelList) > 1 and itemcount != 0:
+                                    if str(self.pos) == str(editor.SkinVertexSelList[itemcount-1][0]):
+                                        cv.brushcolor = skinvertexsellistcolor
                                         cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                                     itemcount = itemcount - 1
             except:
@@ -1289,8 +1289,8 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 if (vertexpos.tuple[0] <= cursordragstartpos[0] and vertexpos.tuple[1] <= cursordragstartpos[1])and (vertexpos.tuple[0] >= cursordragendpos[0] and vertexpos.tuple[1] >= cursordragendpos[1]):
                     sellist = sellist + [(vertexindex, vertexpos)]
 
-        if editor.picked != [] and sellist == []:
-            editor.picked = []
+        if editor.ModelVertexSelList != [] and sellist == []:
+            editor.ModelVertexSelList = []
             for v in editor.layout.views:
                 mdleditor.setsingleframefillcolor(editor, v)
                 plugins.mdlgridscale.gridfinishdrawing(editor, v)
@@ -1306,20 +1306,20 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         removeditem = 0
         for vertex in sellist:
             itemcount = 0
-            if editor.picked == []:
-                editor.picked = editor.picked + [vertex]
+            if editor.ModelVertexSelList == []:
+                editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
             else:
-                for item in editor.picked:
+                for item in editor.ModelVertexSelList:
                     itemcount = itemcount + 1
                     if vertex[0] == item[0]:
-                        editor.picked.remove(item)
+                        editor.ModelVertexSelList.remove(item)
                         removeditem = removeditem + 1
                         for v in editor.layout.views:
                             if len(v.handles) == 0:
                                 v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                         break
-                    elif itemcount == len(editor.picked):
-                        editor.picked = editor.picked + [vertex]
+                    elif itemcount == len(editor.ModelVertexSelList):
+                        editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
         if removeditem != 0:
             for v in editor.layout.views:
                 mdleditor.setsingleframefillcolor(editor, v)
@@ -1331,17 +1331,17 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                 for h in v.handles:
                     h.draw(v, cv, h)
-                for vtx in editor.picked:
+                for vtx in editor.ModelVertexSelList:
                     h = v.handles[vtx[0]]
                     h.draw(v, cv, h)
         else:
-            if editor.picked != []:
+            if editor.ModelVertexSelList != []:
                 for v in editor.layout.views:
                     cv = v.canvas()
                     if len(v.handles) == 0:
                         v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                         if len(v.handles) == 0:
-                            editor.picked = []
+                            editor.ModelVertexSelList = []
                             from qbaseeditor import currentview
                             currentview.repaint()
                             plugins.mdlgridscale.gridfinishdrawing(editor, currentview)
@@ -1352,7 +1352,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                         plugins.mdlaxisicons.newfinishdrawing(editor, v)
                         for h in view.handles: # This is not an error in coding, do not change, eliminates double drawing of selected handles.
                             h.draw(v, cv, self)
-                    for vtx in editor.picked:
+                    for vtx in editor.ModelVertexSelList:
                         h = v.handles[vtx[0]]
                         h.draw(v, cv, h)
             else:
@@ -1445,6 +1445,12 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.60  2007/07/01 04:56:52  cdunde
+#Setup red rectangle selection support in the Model Editor for face and vertex
+#selection methods and completed vertex selection for all the editors 2D views.
+#Added new global in mdlhandles.py "SkinView1" to get the Skin-view,
+#which is not in the editors views.
+#
 #Revision 1.59  2007/06/19 06:16:05  cdunde
 #Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
 #Added model mesh face selection using RMB and LMB together along with various options
@@ -1467,7 +1473,7 @@ def MouseClicked(self, view, x, y, s, handle):
 #to allow errors to show up so we can TRY to fix them right.
 #
 #Revision 1.55  2007/06/05 01:17:12  cdunde
-#To stop Skin-view not drawing handles and skin mesh if skinviewpicked list has not been
+#To stop Skin-view not drawing handles and skin mesh if SkinVertexSelList list has not been
 #cleared or a component is not selected and the editors layout is changed.
 #
 #Revision 1.54  2007/06/05 01:08:13  cdunde

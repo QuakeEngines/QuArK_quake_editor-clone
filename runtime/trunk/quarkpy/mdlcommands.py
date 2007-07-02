@@ -21,13 +21,13 @@ def newframeclick(m):
 
 def addtriclick(m):
     editor = mapeditor()
-    if len(editor.picked) == 3:
-        if (editor.picked[0][0] < editor.picked[1][0]) or (editor.picked[0][0] < editor.picked[2][0]):
-            if editor.picked[1][0] > editor.picked[2][0]:
-                quarkx.msgbox("You need to select\nvertex "+str(editor.picked[1][0])+" first.", MT_ERROR, MB_OK)
+    if len(editor.ModelVertexSelList) == 3:
+        if (editor.ModelVertexSelList[0][0] < editor.ModelVertexSelList[1][0]) or (editor.ModelVertexSelList[0][0] < editor.ModelVertexSelList[2][0]):
+            if editor.ModelVertexSelList[1][0] > editor.ModelVertexSelList[2][0]:
+                quarkx.msgbox("You need to select\nvertex "+str(editor.ModelVertexSelList[1][0])+" first.", MT_ERROR, MB_OK)
                 return
             else:
-                quarkx.msgbox("You need to select\nvertex "+str(editor.picked[2][0])+" first.", MT_ERROR, MB_OK)
+                quarkx.msgbox("You need to select\nvertex "+str(editor.ModelVertexSelList[2][0])+" first.", MT_ERROR, MB_OK)
                 return
         else:
             addtriangle(editor)
@@ -35,7 +35,7 @@ def addtriclick(m):
 
 def remtriclick(m):
     editor = mapeditor()
-    if len(editor.picked) == 3:
+    if len(editor.ModelVertexSelList) == 3:
         removeTriangle_v3(editor)
 
 def checkcomponents(m):
@@ -90,7 +90,7 @@ def commandsclick(menu, oldcommand=onclick):
             NewFrame.state = qmenu.disabled
         else:
             NewFrame.state = qmenu.normal
-        if len(editor.picked) == 3:
+        if len(editor.ModelVertexSelList) == 3:
             AddTriangle.state = qmenu.normal
             RemoveTriangle.state = qmenu.normal
         else:
@@ -105,6 +105,10 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.13  2007/06/11 19:52:31  cdunde
+# To add message box for proper vertex order of selection to add a triangle to the models mesh.
+# and changed code for deleting a triangle to stop access violation errors and 3D views graying out.
+#
 # Revision 1.12  2007/04/22 21:06:04  cdunde
 # Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
 # as well as its code relocation to proper file and elimination of unnecessary code.

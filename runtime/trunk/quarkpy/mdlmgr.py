@@ -53,7 +53,7 @@ class ModelLayout(BaseLayout):
         startup = 0
         savedskins = {}
         skincount = 0
-  #      mdleditor.mdleditor.skinviewpicked = []
+  #      mdleditor.mdleditor.SkinVertexSelList = []
         BaseLayout.clearrefs(self)
         self.reset()
         slist = None
@@ -373,9 +373,9 @@ class ModelLayout(BaseLayout):
                 if self.editor.dragobject is not None and isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle):
                     pass
                 else:
-                    self.editor.skinviewpicked = []
+                    self.editor.SkinVertexSelList = []
             else:
-                self.editor.skinviewpicked = []
+                self.editor.SkinVertexSelList = []
                 self.editor.ModelFaceSelList = []
                 self.editor.Root.currentcomponent.filltris = []
                 self.editor.SkinFaceSelList = []
@@ -507,6 +507,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.39  2007/06/20 22:04:08  cdunde
+#Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
+#and start of face selection capabilities in the Skin-view for future functions there.
+#
 #Revision 1.38  2007/06/19 06:16:04  cdunde
 #Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
 #Added model mesh face selection using RMB and LMB together along with various options
@@ -516,8 +520,8 @@ mppages = []
 #Also setup passing selected faces from the editors views to the Skin-view on Options menu.
 #
 #Revision 1.37  2007/06/05 22:57:38  cdunde
-#To allow the skinviewpicked list to remain when switching layouts and
-#to clear the skinviewpicked list when switching from one component
+#To allow the SkinVertexSelList list to remain when switching layouts and
+#to clear the SkinVertexSelList list when switching from one component
 #to another to stop improper vertex selection in the list.
 #
 #Revision 1.36  2007/06/05 02:17:39  cdunde
@@ -525,7 +529,7 @@ mppages = []
 #model is opened without shutting down QuArK.
 #
 #Revision 1.35  2007/06/05 01:17:12  cdunde
-#To stop Skin-view not drawing handles and skin mesh if skinviewpicked list has not been
+#To stop Skin-view not drawing handles and skin mesh if SkinVertexSelList list has not been
 #cleared or a component is not selected and the editors layout is changed.
 #
 #Revision 1.34  2007/06/05 01:13:21  cdunde

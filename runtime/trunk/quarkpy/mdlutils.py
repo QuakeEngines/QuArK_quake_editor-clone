@@ -137,12 +137,12 @@ def addvertex(editor, comp, pos):
   #  editor.invalidateviews(1)
 
 #
-# Updates (drags) a vertex or vertexes in the 'editor.skinviewpicked' list, or similar list,
+# Updates (drags) a vertex or vertexes in the 'editor.SkinVertexSelList' list, or similar list,
 #    of the currently selected model component or frame(s),
-#    to the same position of the 1st item in the 'editor.skinviewpicked' list.
-# The 'editor.skinviewpicked' list is a group of lists within a list.
-# Each group list must be created in the manner below then added to the 'editor.skinviewpicked' list:
-#    editor.skinviewpicked + [[self.pos, self, self.tri_index, self.ver_index]]
+#    to the same position of the 1st item in the 'editor.SkinVertexSelList' list.
+# The 'editor.SkinVertexSelList' list is a group of lists within a list.
+# Each group list must be created in the manner below then added to the 'editor.SkinVertexSelList' list:
+#    editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
 #
 def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
     new_comp = comp.copy()
@@ -191,7 +191,7 @@ def removevertex(comp, index, all3=0):
     tris = new_comp.triangles
     #### 1) find all triangles that use vertex 'index' and delete them.
     if all3 == 1:
-        index = editor.picked[0][0]
+        index = editor.ModelVertexSelList[0][0]
     toBeRemoved = findTriangles(comp, index)
     new_tris = []
     for tri in tris:
@@ -202,23 +202,23 @@ def removevertex(comp, index, all3=0):
     if all3 == 1:
         new_tris = []
         for tri in tris:
-            if (editor.picked[0][0] == tri[0][0]) and (editor.picked[1][0] == tri[1][0]) and (editor.picked[2][0] == tri[2][0]):
-                index = editor.picked[0][0]
+            if (editor.ModelVertexSelList[0][0] == tri[0][0]) and (editor.ModelVertexSelList[1][0] == tri[1][0]) and (editor.ModelVertexSelList[2][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[0][0]
                 continue
-            elif (editor.picked[0][0] == tri[0][0]) and (editor.picked[2][0] == tri[1][0]) and (editor.picked[1][0] == tri[2][0]):
-                index = editor.picked[0][0]
+            elif (editor.ModelVertexSelList[0][0] == tri[0][0]) and (editor.ModelVertexSelList[2][0] == tri[1][0]) and (editor.ModelVertexSelList[1][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[0][0]
                 continue
-            elif (editor.picked[1][0] == tri[0][0]) and (editor.picked[2][0] == tri[1][0]) and (editor.picked[0][0] == tri[2][0]):
-                index = editor.picked[1][0]
+            elif (editor.ModelVertexSelList[1][0] == tri[0][0]) and (editor.ModelVertexSelList[2][0] == tri[1][0]) and (editor.ModelVertexSelList[0][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[1][0]
                 continue
-            elif (editor.picked[1][0] == tri[0][0]) and (editor.picked[0][0] == tri[1][0]) and (editor.picked[2][0] == tri[2][0]):
-                index = editor.picked[1][0]
+            elif (editor.ModelVertexSelList[1][0] == tri[0][0]) and (editor.ModelVertexSelList[0][0] == tri[1][0]) and (editor.ModelVertexSelList[2][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[1][0]
                 continue
-            elif (editor.picked[2][0] == tri[0][0]) and (editor.picked[1][0] == tri[1][0]) and (editor.picked[0][0] == tri[2][0]):
-                index = editor.picked[2][0]
+            elif (editor.ModelVertexSelList[2][0] == tri[0][0]) and (editor.ModelVertexSelList[1][0] == tri[1][0]) and (editor.ModelVertexSelList[0][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[2][0]
                 continue
-            elif (editor.picked[2][0] == tri[0][0]) and (editor.picked[0][0] == tri[1][0]) and (editor.picked[1][0] == tri[2][0]):
-                index = editor.picked[2][0]
+            elif (editor.ModelVertexSelList[2][0] == tri[0][0]) and (editor.ModelVertexSelList[0][0] == tri[1][0]) and (editor.ModelVertexSelList[1][0] == tri[2][0]):
+                index = editor.ModelVertexSelList[2][0]
                 continue
             else:
                 new_tris = new_tris + [ tri ]
@@ -226,7 +226,8 @@ def removevertex(comp, index, all3=0):
     #### 2) loop through all frames and delete unused vertex(s).
     if all3 == 1:
         vertexestoremove = []
-        for vertex in editor.picked:
+        nbrofvtxtoremove = 0
+        for vertex in editor.ModelVertexSelList:
             vtxcount = 0
             for tri in tris:
                 for vtx in tri:
@@ -235,6 +236,7 @@ def removevertex(comp, index, all3=0):
             if vtxcount > 1:
                 pass
             else:
+                nbrofvtxtoremove = nbrofvtxtoremove + 1
                 vertexestoremove = vertexestoremove + [vertex]
         frames = new_comp.findallsubitems("", ':mf')   # find all frames
         for unusedvertex in vertexestoremove:
@@ -259,10 +261,10 @@ def removevertex(comp, index, all3=0):
     undo.exchange(comp, new_comp)
     if all3 == 1:
         editor.ok(undo, "remove triangle")
-        editor.picked = []
+        editor.ModelVertexSelList = []
     else:
         editor.ok(undo, "remove vertex")
-        editor.picked = []
+        editor.ModelVertexSelList = []
   #  editor.invalidateviews(1)
 
 
@@ -274,9 +276,9 @@ def addtriangle(editor):
     if (comp is None):
         return
 
-    v1 = editor.picked[0][0]
-    v2 = editor.picked[1][0]
-    v3 = editor.picked[2][0]
+    v1 = editor.ModelVertexSelList[0][0]
+    v2 = editor.ModelVertexSelList[1][0]
+    v3 = editor.ModelVertexSelList[2][0]
 
     try:
         tex = comp.currentskin
@@ -287,36 +289,36 @@ def addtriangle(editor):
         texWidth,texHeight = view.clientarea
 
 ### Method 1 with proj (same in mdlhandles.py file)
-    s1 = int(editor.picked[0][1].tuple[0]+int(texWidth*.5))
-    t1 = int(editor.picked[0][1].tuple[1]-int(texHeight*.5))
-    s2 = int(editor.picked[1][1].tuple[0]+int(texWidth*.5))
-    t2 = int(editor.picked[1][1].tuple[1]-int(texHeight*.5))
-    s3 = int(editor.picked[2][1].tuple[0]+int(texWidth*.5))
-    t3 = int(editor.picked[2][1].tuple[1]-int(texHeight*.5))
+    s1 = int(editor.ModelVertexSelList[0][1].tuple[0]+int(texWidth*.5))
+    t1 = int(editor.ModelVertexSelList[0][1].tuple[1]-int(texHeight*.5))
+    s2 = int(editor.ModelVertexSelList[1][1].tuple[0]+int(texWidth*.5))
+    t2 = int(editor.ModelVertexSelList[1][1].tuple[1]-int(texHeight*.5))
+    s3 = int(editor.ModelVertexSelList[2][1].tuple[0]+int(texWidth*.5))
+    t3 = int(editor.ModelVertexSelList[2][1].tuple[1]-int(texHeight*.5))
 
 ### Method 2 without proj (same in mdlhandles.py file) doesn't work right
- #   s1 = int(editor.picked[0][1].tuple[1])+int(texWidth*.5)
- #   t1 = int(-editor.picked[0][1].tuple[2])+int(texWidth*.5)
- #   s2 = int(editor.picked[1][1].tuple[1])+int(texWidth*.5)
- #   t2 = int(-editor.picked[1][1].tuple[2])+int(texWidth*.5)
- #   s3 = int(editor.picked[2][1].tuple[1])+int(texWidth*.5)
- #   t3 = int(-editor.picked[2][1].tuple[2])+int(texWidth*.5)
+ #   s1 = int(editor.ModelVertexSelList[0][1].tuple[1])+int(texWidth*.5)
+ #   t1 = int(-editor.ModelVertexSelList[0][1].tuple[2])+int(texWidth*.5)
+ #   s2 = int(editor.ModelVertexSelList[1][1].tuple[1])+int(texWidth*.5)
+ #   t2 = int(-editor.ModelVertexSelList[1][1].tuple[2])+int(texWidth*.5)
+ #   s3 = int(editor.ModelVertexSelList[2][1].tuple[1])+int(texWidth*.5)
+ #   t3 = int(-editor.ModelVertexSelList[2][1].tuple[2])+int(texWidth*.5)
 
 ### Method 3 with proj (same in mdlhandles.py file)
- #   s1 = int(-editor.picked[0][1].tuple[0])+int(texWidth*.5)
- #   t1 = int(editor.picked[0][1].tuple[1])+int(texWidth*.5)
- #   s2 = int(-editor.picked[1][1].tuple[0])+int(texWidth*.5)
- #   t2 = int(editor.picked[1][1].tuple[1])+int(texWidth*.5)
- #   s3 = int(-editor.picked[2][1].tuple[0])+int(texWidth*.5)
- #   t3 = int(editor.picked[2][1].tuple[1])+int(texWidth*.5)
+ #   s1 = int(-editor.ModelVertexSelList[0][1].tuple[0])+int(texWidth*.5)
+ #   t1 = int(editor.ModelVertexSelList[0][1].tuple[1])+int(texWidth*.5)
+ #   s2 = int(-editor.ModelVertexSelList[1][1].tuple[0])+int(texWidth*.5)
+ #   t2 = int(editor.ModelVertexSelList[1][1].tuple[1])+int(texWidth*.5)
+ #   s3 = int(-editor.ModelVertexSelList[2][1].tuple[0])+int(texWidth*.5)
+ #   t3 = int(editor.ModelVertexSelList[2][1].tuple[1])+int(texWidth*.5)
 
 ### Method 4 without proj (same in mdlhandles.py file) doesn't work right
- #   s1 = int(editor.picked[0][1].tuple[1]*2)+int(texWidth*.5)
- #   t1 = int(editor.picked[0][1].tuple[2]*.5)+int(texHeight*.5)
- #   s2 = int(editor.picked[1][1].tuple[1]*2)+int(texWidth*.5)
- #   t2 = int(-editor.picked[1][1].tuple[2]*.5)+int(texHeight)
- #   s3 = int(editor.picked[2][1].tuple[1])+int(texWidth*.5)
- #   t3 = int(editor.picked[2][1].tuple[2]*.5)+int(texHeight*.5)
+ #   s1 = int(editor.ModelVertexSelList[0][1].tuple[1]*2)+int(texWidth*.5)
+ #   t1 = int(editor.ModelVertexSelList[0][1].tuple[2]*.5)+int(texHeight*.5)
+ #   s2 = int(editor.ModelVertexSelList[1][1].tuple[1]*2)+int(texWidth*.5)
+ #   t2 = int(-editor.ModelVertexSelList[1][1].tuple[2]*.5)+int(texHeight)
+ #   s3 = int(editor.ModelVertexSelList[2][1].tuple[1])+int(texWidth*.5)
+ #   t3 = int(editor.ModelVertexSelList[2][1].tuple[2]*.5)+int(texHeight*.5)
 
  #  (for test ref only)  h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
 
@@ -346,7 +348,7 @@ def removeTriangle(editor, comp, index):
     if todo == MR_CANCEL: return
     if todo == MR_YES:
         vertexestoremove = []
-        for vertex in editor.picked:
+        for vertex in editor.ModelVertexSelList:
             vtxcount = 0
             tris = comp.triangles
             for tri in tris:
@@ -377,9 +379,9 @@ def removeTriangle(editor, comp, index):
 #
 def removeTriangle_v3(editor):
     comp = editor.Root.currentcomponent
-    v1 = editor.picked[0][0]
-    v2 = editor.picked[1][0]
-    v3 = editor.picked[2][0]
+    v1 = editor.ModelVertexSelList[0][0]
+    v2 = editor.ModelVertexSelList[1][0]
+    v3 = editor.ModelVertexSelList[2][0]
     removeTriangle(editor, comp, findTriangle(comp, v1,v2,v3))
 
 
@@ -479,6 +481,10 @@ def find2DTriangles(comp, tri_index, ver_index):
 #
 #
 #$Log$
+#Revision 1.23  2007/06/11 19:52:31  cdunde
+#To add message box for proper vertex order of selection to add a triangle to the models mesh.
+#and changed code for deleting a triangle to stop access violation errors and 3D views graying out.
+#
 #Revision 1.22  2007/05/28 23:46:26  cdunde
 #To remove unneeded view invalidations.
 #
