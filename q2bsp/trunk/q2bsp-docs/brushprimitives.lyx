@@ -1,0 +1,281 @@
+#LyX 1.4.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 245
+\begin_document
+\begin_header
+\textclass article
+\language english
+\inputencoding auto
+\fontscheme palatino
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize a4paper
+\use_geometry false
+\use_amsmath 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Brush Primitives Texture Transformations
+\end_layout
+
+\begin_layout Author
+Peter Brett
+\end_layout
+
+\begin_layout Date
+August 2006
+\end_layout
+
+\begin_layout Section
+Notation
+\end_layout
+
+\begin_layout Standard
+I'm using the subscript notation such that:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+M=\begin{array}{ccc}
+m_{11} & m_{12} & \cdots\\
+m_{21} & m_{22} & \cdots\\
+\vdots & \vdots & \ddots\end{array}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Overview
+\end_layout
+
+\begin_layout Standard
+Firstly, I haven't checked that this algorithm works.
+ It may be totally wrong.
+ It may have subtle bugs.
+ I disclaim all responsibility for anything that goes wrong with it, even
+ if implementing it causes a rift in space-time through which dire beasts
+ from the void come to ravage the Earth.
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $\boldsymbol{n}$
+\end_inset
+
+ be the normal vector of a polygon in the map's 3D space.
+ Let 
+\begin_inset Formula $d$
+\end_inset
+
+ be the shortest distance from the polygon's plane to the origin of the
+ map's 3D space.
+ 
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $\boldsymbol{r}$
+\end_inset
+
+ be a point in the map's 3D space lying within the polygon.
+ Let 
+\begin_inset Formula $\boldsymbol{t}$
+\end_inset
+
+ be the corresponding coordinate in 2D texture space.
+ Then
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\boldsymbol{t}=AB\boldsymbol{r}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Where 
+\begin_inset Formula $B$
+\end_inset
+
+ transforms 
+\begin_inset Formula $\boldsymbol{r}$
+\end_inset
+
+ to a point in the 2D space defined by the polygon's plane, and 
+\begin_inset Formula $A$
+\end_inset
+
+ transforms that point into 2D texture space.
+ Note that both 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ are square matrices of order 3.
+\end_layout
+
+\begin_layout Standard
+Discarding 
+\begin_inset Formula $t_{3}$
+\end_inset
+
+will render the UV coordinate corresponding to 
+\begin_inset Formula $\boldsymbol{r}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Origins
+\end_layout
+
+\begin_layout Standard
+The origin of the map's 3D space is implicit.
+\end_layout
+
+\begin_layout Standard
+The origin of the 2D space defined by the polygon's plane is the closest
+ point on the plane to the map's origin.
+\end_layout
+
+\begin_layout Standard
+The origin of the 2D space defined by the texture is congruent with the
+ origin of the 2D space defined by the polygon's plane.
+\end_layout
+
+\begin_layout Section
+Transforming to polygon space
+\end_layout
+
+\begin_layout Standard
+For any plane, there are an infinite number of ways to generate 
+\begin_inset Formula $B$
+\end_inset
+
+, and all of them would give different results.
+ The Brush Primitives format requires a particular algorithm
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+For optimisation, the bottom row of 
+\begin_inset Formula $B$
+\end_inset
+
+ could be 
+\begin_inset Formula $\left[\begin{array}{ccc}
+0 & 0 & 1\end{array}\right]$
+\end_inset
+
+.
+ The composition as shown avoids throwing away any information.
+\end_layout
+
+\end_inset
+
+.
+ Then
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\theta=-\arctan\left(\frac{n_{3}}{\sqrt{n_{1}^{2}+n_{2}^{2}}}\right)\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\phi=\arctan\left(\frac{n_{2}}{n_{1}}\right)\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+B=\left[\begin{array}{ccc}
+-\sin\phi & \cos\phi & 0\\
+-\sin\theta\cos\phi & -\sin\theta\sin\phi & -\cos\theta\\
+n_{1} & n_{2} & n_{3}\end{array}\right]\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that the implementation must work when 
+\begin_inset Formula $n_{1}=0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Transforming to texture space
+\end_layout
+
+\begin_layout Standard
+The matrix 
+\begin_inset Formula $A$
+\end_inset
+
+ is provided in the MAP file's brush face definition.
+ After the three points defining the polygon's plane, the definition gives
+ the first two rows of 
+\begin_inset Formula $A$
+\end_inset
+
+, so that
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+A=\left[\begin{array}{ccc}
+a_{11} & a_{12} & a_{13}\\
+a_{21} & a_{22} & a_{23}\\
+0 & 0 & 1\end{array}\right]\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This allows the MAP format to represent 
+\emph on
+any 
+\emph default
+linear transformation of the texture on the face.
+\end_layout
+
+\end_body
+\end_document
