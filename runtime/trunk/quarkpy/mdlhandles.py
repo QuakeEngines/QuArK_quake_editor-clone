@@ -1314,7 +1314,6 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 v.repaint()
                 plugins.mdlgridscale.gridfinishdrawing(editor, v)
                 plugins.mdlaxisicons.newfinishdrawing(editor, v)
-                v.repaint()
                 cv = v.canvas()
                 if len(v.handles) == 0:
                     v.handles = BuildCommonHandles(editor, editor.layout.explorer)
@@ -1469,6 +1468,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.62  2007/07/04 18:51:23  cdunde
+#To fix multiple redraws and conflicts of code for RectSelDragObject in the Model Editor.
+#
 #Revision 1.61  2007/07/02 22:49:44  cdunde
 #To change the old mdleditor "picked" list name to "ModelVertexSelList"
 #and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
