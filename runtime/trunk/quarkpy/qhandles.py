@@ -1163,8 +1163,25 @@ def refreshtimer(self):
     import mdleditor
     if isinstance(self.editor, mdleditor.ModelEditor):
         from qbaseeditor import flagsmouse, currentview
-     #   if flagsmouse == 2056:
-        #    pass
+        if flagsmouse == 16384:
+            cv = currentview.canvas()
+            if len(currentview.handles) == 0:
+                import mdlhandles
+                currentview.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
+            for h in currentview.handles:
+                h.draw(currentview, cv, self)
+            return
+        if flagsmouse == 2056:
+            for view in self.editor.layout.views:
+                if view == currentview:
+                    continue
+                mdleditor.setsingleframefillcolor(self.editor, currentview)
+                plugins.mdlgridscale.gridfinishdrawing(self.editor, currentview)
+                plugins.mdlaxisicons.newfinishdrawing(self.editor, currentview)
+        mdleditor.setsingleframefillcolor(self.editor, currentview)
+        plugins.mdlgridscale.gridfinishdrawing(self.editor, currentview)
+        plugins.mdlaxisicons.newfinishdrawing(self.editor, currentview)
+ #       currentview.repaint()
         if flagsmouse != 1032:
             if len(currentview.handles) == 0:
                 import mdlhandles
@@ -1182,9 +1199,14 @@ def refreshtimer(self):
             for r in self.redimages:
                 currentview.repaint()
                 currentview.drawmap(r, mode, RED)
-        editor = mdleditor.mdleditor
-        plugins.mdlgridscale.gridfinishdrawing(editor, currentview)
-        plugins.mdlaxisicons.newfinishdrawing(editor, currentview)
+                mdleditor.setsingleframefillcolor(self.editor, currentview)
+                plugins.mdlgridscale.gridfinishdrawing(self.editor, currentview)
+                plugins.mdlaxisicons.newfinishdrawing(self.editor, currentview)
+         #       self.view.handles = []
+         #       self.view.invalidate(1)
+         #       mdleditor.setsingleframefillcolor(editor, self.view)
+         #       plugins.mdlgridscale.gridfinishdrawing(editor, self.view)
+         #       plugins.mdlaxisicons.newfinishdrawing(editor, self.view)
     else:
         try:
             for v in self.views:
@@ -1503,7 +1525,17 @@ class RectangleDragObject(RedImageDragObject):
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
             from qbaseeditor import flagsmouse
+         #   if flagsmouse == 520:
+         #       self.view.handles = []
+         #       self.view.invalidate(1)
+         #       mdleditor.setsingleframefillcolor(editor, self.view)
+         #       plugins.mdlgridscale.gridfinishdrawing(editor, self.view)
+         #       plugins.mdlaxisicons.newfinishdrawing(editor, self.view)
+         #       return
             if flagsmouse == 2056:
+                mdleditor.setsingleframefillcolor(editor, self.view)
+                plugins.mdlgridscale.gridfinishdrawing(editor, self.view)
+                plugins.mdlaxisicons.newfinishdrawing(editor, self.view)
                 import mdlhandles
                 if isinstance(editor.dragobject, mdlhandles.RectSelDragObject):
                     if self.redimages is not None:
@@ -1974,6 +2006,11 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.47  2007/07/02 22:49:42  cdunde
+#To change the old mdleditor "picked" list name to "ModelVertexSelList"
+#and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+#Also start of function to pass vertex selection from the Skin-view to the Editor.
+#
 #Revision 1.46  2007/07/01 04:56:52  cdunde
 #Setup red rectangle selection support in the Model Editor for face and vertex
 #selection methods and completed vertex selection for all the editors 2D views.

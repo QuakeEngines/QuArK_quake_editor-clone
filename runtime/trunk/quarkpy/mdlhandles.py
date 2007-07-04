@@ -355,9 +355,17 @@ class VertexHandle(qhandles.GenericHandle):
                         for v in editor.layout.views:
                             if len(v.handles) == 0:
                                 v.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                                continue
+                                continue # I know it looks weird, but needs to be here or errors can occur.
                             mdleditor.setsingleframefillcolor(editor, v)
                             v.repaint()
+                            plugins.mdlgridscale.gridfinishdrawing(editor, v)
+                            plugins.mdlaxisicons.newfinishdrawing(editor, v)
+                            cv = v.canvas()
+                            for h in v.handles:
+                                h.draw(v, cv, h)
+                            for vtx in editor.ModelVertexSelList:
+                                h = v.handles[vtx[0]]
+                                h.draw(v, cv, h)
                         return
                     if itemcount == len(editor.ModelVertexSelList):
                         if len(editor.ModelVertexSelList) == 3:
@@ -371,12 +379,22 @@ class VertexHandle(qhandles.GenericHandle):
 
         def pick_cleared(m, editor=editor, view=view):
             editor.ModelVertexSelList = []
+            editor.dragobject = None
             for v in editor.layout.views:
                 if len(v.handles) == 0:
                     v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                     continue
                 mdleditor.setsingleframefillcolor(editor, v)
                 v.repaint()
+                ### Needed to move finishdrawing functions and handle drawing here
+                ### becasue they were not being done in 2D views after drag in Skin-view.
+                ### Also needed to kill handle drawing prior fix in qbaseeditor.py "finishdrawing"
+                ### function to stop dupe drawing of the handles drawing call below.
+                plugins.mdlgridscale.gridfinishdrawing(editor, v)
+                plugins.mdlaxisicons.newfinishdrawing(editor, v)
+                cv = v.canvas()
+                for h in v.handles:
+                    h.draw(v, cv, None)
 
         Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AddVertex = qmenu.item("&Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -1293,6 +1311,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
             editor.ModelVertexSelList = []
             for v in editor.layout.views:
                 mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
                 plugins.mdlgridscale.gridfinishdrawing(editor, v)
                 plugins.mdlaxisicons.newfinishdrawing(editor, v)
                 v.repaint()
@@ -1336,22 +1355,24 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     h.draw(v, cv, h)
         else:
             if editor.ModelVertexSelList != []:
+                mdleditor.setsingleframefillcolor(editor, view)
+                view.repaint()
+                plugins.mdlgridscale.gridfinishdrawing(editor, view)
+                plugins.mdlaxisicons.newfinishdrawing(editor, view)
+                cv = view.canvas()
+                if len(view.handles) == 0:
+                    view.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                for h in view.handles:
+                    h.draw(view, cv, h)
+                for vtx in editor.ModelVertexSelList:
+                    h = view.handles[vtx[0]]
+                    h.draw(view, cv, h)
                 for v in editor.layout.views:
+                    if v == view:
+                        continue
                     cv = v.canvas()
                     if len(v.handles) == 0:
                         v.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                        if len(v.handles) == 0:
-                            editor.ModelVertexSelList = []
-                            from qbaseeditor import currentview
-                            currentview.repaint()
-                            plugins.mdlgridscale.gridfinishdrawing(editor, currentview)
-                            plugins.mdlaxisicons.newfinishdrawing(editor, currentview)
-                            return
-                        view.repaint() # This is not an error in coding, do not change, eliminates double drawing of selected handles.
-                        plugins.mdlgridscale.gridfinishdrawing(editor, v)
-                        plugins.mdlaxisicons.newfinishdrawing(editor, v)
-                        for h in view.handles: # This is not an error in coding, do not change, eliminates double drawing of selected handles.
-                            h.draw(v, cv, self)
                     for vtx in editor.ModelVertexSelList:
                         h = v.handles[vtx[0]]
                         h.draw(v, cv, h)
@@ -1379,7 +1400,7 @@ def MouseDragging(self, view, x, y, s, handle):
         if item == 'center':
             center = view.info["center"]
             cursorposatstart = view.space(x,y,view.proj(center).z) # Used for start where clicked for Model Editor rotation.
-
+    
     #
     # qhandles.MouseDragging builds the DragObject.
     #
@@ -1394,6 +1415,9 @@ def MouseDragging(self, view, x, y, s, handle):
 
 
 def ClickOnView(editor, view, x, y):
+    "Constantly reads what the mouse cursor is over"
+    "in the view and returns those items if any."
+
     #
     # defined in QkPyMapview.pas
     #
@@ -1445,6 +1469,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.61  2007/07/02 22:49:44  cdunde
+#To change the old mdleditor "picked" list name to "ModelVertexSelList"
+#and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+#Also start of function to pass vertex selection from the Skin-view to the Editor.
+#
 #Revision 1.60  2007/07/01 04:56:52  cdunde
 #Setup red rectangle selection support in the Model Editor for face and vertex
 #selection methods and completed vertex selection for all the editors 2D views.

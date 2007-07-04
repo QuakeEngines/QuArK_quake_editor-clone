@@ -153,8 +153,9 @@ class ModelEditor(BaseEditor):
  ### But with it out like this drag handles do not get drawn in the 2D views if you
  ### do a drag immediately after doing a zoom in the 3D view and will now straighten out
  ### until you do a slight zoom in one of the 2D views.
-    #        if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
-            if flagsmouse == 1048 or flagsmouse == 2072:
+ ### Update, believe this is pretty well resolved. Redraws now come from other areas.
+            if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
+   #         if flagsmouse == 1048 or flagsmouse == 2072:
                 return
             elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
                 pass
@@ -427,7 +428,6 @@ def faceselfilllist(view, fillcolor=None):
 
 
 def setsingleframefillcolor(self, view):
-
     if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
         componentnames = []
         for item in self.Root.dictitems:
@@ -707,6 +707,7 @@ def paintframefill(self, v):
 def commonhandles(self, redraw=1):
     from qbaseeditor import flagsmouse, currentview
     import qhandles
+    import mdlhandles
     from mdlmgr import treeviewselchanged
 
     try:
@@ -731,6 +732,8 @@ def commonhandles(self, redraw=1):
                 return
 
         if flagsmouse == 16384:
+            if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
+                return
             if isinstance(self.dragobject, qhandles.ScrollViewDragObject):
                 if treeviewselchanged == 1:
                     mdlmgr.treeviewselchanged = 0
@@ -817,6 +820,16 @@ def commonhandles(self, redraw=1):
         pass
 
     if flagsmouse == 2056:
+      ### Fixes quick drag not finishing the drawing but if you use need to draw the handles
+      ### which will most likely cause dupe drawing of them.
+      #  if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
+      #      for view in self.layout.views:
+      #          if view.info["viewname"] == "skinview":
+      #              continue
+      #          setsingleframefillcolor(self, view)
+      #          plugins.mdlgridscale.gridfinishdrawing(self, view)
+      #          plugins.mdlaxisicons.newfinishdrawing(self, view)
+      #          view.repaint()
         return
 
     for v in self.layout.views:
@@ -1031,12 +1044,17 @@ def commonhandles(self, redraw=1):
     if flagsmouse == 16384 and self.dragobject is not None:
         self.dragobject.handle = None
         self.dragobject = None
-               
+
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.52  2007/07/02 22:49:43  cdunde
+#To change the old mdleditor "picked" list name to "ModelVertexSelList"
+#and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+#Also start of function to pass vertex selection from the Skin-view to the Editor.
+#
 #Revision 1.51  2007/07/01 04:56:52  cdunde
 #Setup red rectangle selection support in the Model Editor for face and vertex
 #selection methods and completed vertex selection for all the editors 2D views.

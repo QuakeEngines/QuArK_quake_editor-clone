@@ -396,16 +396,21 @@ class BaseEditor:
                                 for h in view.handles:
                                     h.draw(view, cv, draghandle)
                             if isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, qhandles.ScrollViewDragObject):
-                                self.dragobject = self.dragobject = dragobject = None
+                                self.dragobject = None
 
                     return
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                         mdleditor.modelaxis(view)
+                    import mdlhandles
+                    if flagsmouse == 16384 and (isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, mdlhandles.RectSelDragObject)):
+                        self.dragobject = None
+            ### Don't put back in will cause dupe draw of handles. Had to move handle drawing code
+            ### to mdlhandles.py, class VertexHandle, def menu, def pick_cleared funciton, see notes there.
                     if (flagsmouse == 16384 and self.dragobject is None):
-                        cv = view.canvas()
-                        for h in view.handles:
-                            h.draw(view, cv, draghandle)
+            #            cv = view.canvas()
+            #            for h in view.handles:
+            #                h.draw(view, cv, draghandle)
                         return
                     if flagsmouse == 2064 and (view.info["viewname"] == "XY" or view.info["viewname"] == "YZ" or view.info["viewname"] == "XZ"):
                         return
@@ -421,7 +426,6 @@ class BaseEditor:
                 return
             except:
                 pass
-
         #
         # Draw all handles.
         #
@@ -432,7 +436,6 @@ class BaseEditor:
         #
         # Draw the red wireframe image.
         #
-
         if self.dragobject is not None:
             self.dragobject.drawredimages(view)
 
@@ -1008,11 +1011,17 @@ class BaseEditor:
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
                         else:
                             if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
-                                view.handles = []
-                                view.invalidate(1)
-                                mdleditor.setsingleframefillcolor(self, view)
-                                plugins.mdlgridscale.gridfinishdrawing(self, view)
-                                plugins.mdlaxisicons.newfinishdrawing(self, view)
+                             ### Tried to clear drawn handles from the view at start of drag
+                             ### but this only works once. After editor vertex drag it stops working.
+                             ### If we ever figure out why this would be nice to have.
+                             #   view.handles = []
+                             #   view.invalidate(1)
+                             #   mdleditor.setsingleframefillcolor(self, view)
+                             #   plugins.mdlgridscale.gridfinishdrawing(self, view)
+                             #   plugins.mdlaxisicons.newfinishdrawing(self, view)
+                             #   print "qbaseeditor line 1070 self, flagsmouse, dragobject, view, handle, currentview"
+                             #   print self, flagsmouse, self.dragobject, view.info["viewname"], handle, currentview.info["viewname"]
+                                return
                 #
                 # If successful, immediately begin to drag
                 #
@@ -1235,6 +1244,11 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.67  2007/07/02 22:49:44  cdunde
+#To change the old mdleditor "picked" list name to "ModelVertexSelList"
+#and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+#Also start of function to pass vertex selection from the Skin-view to the Editor.
+#
 #Revision 1.66  2007/07/01 04:56:52  cdunde
 #Setup red rectangle selection support in the Model Editor for face and vertex
 #selection methods and completed vertex selection for all the editors 2D views.
