@@ -14,6 +14,7 @@ $Id$
 
 6.5.0 Beta 2.1
 =============
+* [DanielPharos]: In Half Life 2 mode, QuArK will now save a .vmf file instead of a Quake .map.
 
 * [cdunde]: Model Editor, Setup red rectangle selection support in the Model Editor for face and vertex selection methods
           - and completed vertex selection for all the editors 2D views.
@@ -23,7 +24,7 @@ $Id$
           - face outlining, color selections and face color filltris but this will not fill the triangles
           - correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
           - file (for the TCoordinates.Polyline95f procedure).
-          - Also setup passing selected faces from the editors views to the Skin-view on Options menu.                             
+          - Also setup passing selected faces from the editors views to the Skin-view on Options menu.
 
 * [DanielPharos]: Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these
           - two libraries. Set-up a new section in the Configuration for all of this.
