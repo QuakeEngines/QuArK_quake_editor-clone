@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2007/04/16 11:34:55  danielpharos
+Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+
 Revision 1.61  2007/04/12 15:04:44  danielpharos
 BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
 
@@ -538,7 +541,7 @@ function BspType : Char; overload;
 
 implementation
 
-uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls,
+uses Travail, QkWad, Setup, QkText, QkQuakeMap, QkBspHulls,
      Undo, Quarkx, PyForms, QkObjectClassList, ToolBox1,
      ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkQ1, QkFormCfg;
 

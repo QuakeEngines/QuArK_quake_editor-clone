@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.89  2007/05/10 13:55:19  danielpharos
+Added a comment about a crash that's happening.
+
 Revision 1.88  2007/04/12 20:54:07  danielpharos
 Another BIG update for Doom 3 and Quake 4: patchdef2 should be saving correctly now.
 
@@ -333,6 +336,8 @@ const
  CannotEditFaceYet = '!';
 
 type
+ TThreePoints = array[1..3] of TVect;
+
  TTexOpacityInfo = record
                     Value: Byte; { 0..1 (like 0..255 in Half-Life) }
                     Mode: Integer; { Rendermode (0=Normal, 1=Color, 2=Texture, 4=Solid, 5=Additive }
@@ -534,16 +539,11 @@ procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
 
 implementation
 
-uses QkFileObjects, Undo, PyMapView, QkMap, QkPixelSet, Dialogs,
-     {EdSoftware,} Quarkx, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
+uses QkFileObjects, Undo, PyMapView, QkQuakeMap, QkPixelSet, Dialogs,
+     Quarkx, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
 
 const
  TmpFaceSpec = '!~tmp~!this is a bug';
-
-type
- TThreePoints = array[1..3] of TVect;
-
- {------------------------}
 
  {------------------------}
 

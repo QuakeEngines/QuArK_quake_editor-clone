@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2007/06/13 11:56:48  danielpharos
+Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+
 Revision 1.41  2007/05/02 22:34:50  danielpharos
 Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
 
@@ -210,6 +213,7 @@ uses
   QkQme in 'prog\QkQme.pas' {FQQme},
   QkQuakeC in 'prog\QkQuakeC.pas' {FQQuakeC},
   QkQuakeCtx in 'prog\QkQuakeCtx.pas',
+  QkQuakeMap in 'prog\QkQuakeMap.pas',
   QkRawFile in 'prog\QkRawFile.pas' {FQRawFile},
   QkSin in 'prog\QkSin.pas',
   QkSoF in 'prog\QkSoF.pas',

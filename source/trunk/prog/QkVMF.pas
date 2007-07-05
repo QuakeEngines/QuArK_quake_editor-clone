@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/06/24 20:38:06  danielpharos
+Comment out unused code.
+
 Revision 1.17  2007/04/30 21:52:42  danielpharos
 Small cleanup of code around VTFLib.
 
@@ -82,15 +85,13 @@ unit QkVMF;
 interface
 
 uses
-  Windows,  SysUtils, Classes,  Dialogs,
-  QkFileObjects,  QkObjects,
+  Windows, SysUtils, Classes, Dialogs,
+  QkFileObjects, QkObjects,
   QkMapObjects, QkBsp,
-  qmatrices,  QkMap;
+  qmatrices, QkQuakeMap;
 
 type
-
-
- QVMFFile = class(QBaseMapFile)
+ QVMFFile = class(QMapFile)
         public
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
