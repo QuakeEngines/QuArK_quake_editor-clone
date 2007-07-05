@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2007/06/13 11:56:24  danielpharos
+Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+
 Revision 1.4  2007/05/24 20:41:20  danielpharos
 Workaround for DDS file saving. Ugly, but it should work (most of the time).
 
@@ -243,7 +246,8 @@ var
 procedure LogError(x:string);
 begin
   Log(LOG_CRITICAL, x);
-  Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  //Raise Exception.Create(x);
 end;
 
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;

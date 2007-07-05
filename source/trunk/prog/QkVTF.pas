@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2007/04/30 21:54:44  danielpharos
+Small cleanup of code around VTFLib.
+
 Revision 1.31  2007/04/30 21:52:45  danielpharos
 Small cleanup of code around VTFLib.
 
@@ -126,6 +129,7 @@ new: support for vtf file loading
 unit QkVTF;
 
 interface
+
 uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects, QkVTFLib;
 
 type
@@ -137,7 +141,6 @@ type
     class function TypeInfo: String; override;
     class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
   end;
-
 
 {-------------------}
 
@@ -153,8 +156,8 @@ var
 
 procedure Fatal(x:string);
 begin
-  Log(LOG_CRITICAL,'load vtf %s',[x]);
-  Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Log(LOG_CRITICAL,'Error during operation on VTF file: %s',[x]);
+  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise Exception.Create(x);
 end;
 
@@ -173,16 +176,16 @@ end;
 
 procedure QVTF.LoadFile(F: TStream; FSize: Integer);
 const
-
-  ImageSpec = 'Image1=';
-  AlphaSpec = 'Alpha=';
-
+  Spec1 = 'Image1=';
+//  Spec2 = 'Pal=';
+  Spec3 = 'Alpha=';
 type
   PRGB = ^TRGB;
   TRGB = array[0..2] of Byte;
 var
-  AlphaData, ImgData, RawBuffer: String;
+  RawBuffer: String;
   Source, DestAlpha, DestImg, pSource, pDestAlpha, pDestImg: PChar;
+  AlphaData, ImgData: String;
   I,J: Integer;
 
   VTFImage: Cardinal;
@@ -194,7 +197,7 @@ var
   V: array[1..2] of Single;
   ReloadVTFLib: Boolean;
 begin
-  Log(LOG_VERBOSE,'load vtf %s',[self.name]);;
+  Log(LOG_VERBOSE,'Loading VTF file: %s',[self.name]);;
   case ReadFormat of
     1: begin  { as stand-alone file }
 
@@ -252,19 +255,19 @@ begin
         Fatal('Unable to load VTF file. Call to vlImageConvert failed.');
       end;
 
-      {allocate quarks image buffers}
-      ImgData:=ImageSpec;
-      AlphaData:=AlphaSpec;
-      SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
-      Setlength(AlphaData,Length(AlphaSpec) + NumberOfPixels);     {alpha buffer}
+      //Allocate quarks image buffers
+      ImgData:=Spec1;
+      AlphaData:=Spec3;
+      SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+      Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
 
       if HasAlpha then
       begin
         {copy and reverse the upside down RGBA image to quarks internal format}
         {also the alpha channel is split}
         Source:=PChar(RawData) + NumberOfPixels * 4;
-        DestImg:=PChar(ImgData) + Length(ImageSpec);
-        DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
+        DestImg:=PChar(ImgData) + Length(Spec1);
+        DestAlpha:=PChar(AlphaData)+Length(Spec3);
         for J:=1 to Height do
         begin
           Dec(Source, 4 * Width);
@@ -290,16 +293,14 @@ begin
 
       end
       else
-      begin // no alpha
-
-        {allocate quarks image buffers}
-        ImgData:=ImageSpec;
-        SetLength(ImgData, Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
-        AlphaData:=AlphaSpec;
+      begin
+        //Allocate quarks image buffers
+        ImgData:=Spec1;
+        SetLength(ImgData, Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
 
         {copy and reverse the upside down RGB image to quarks internal format}
         Source:=PChar(RawData) + NumberOfPixels * 3;
-        DestImg:=PChar(ImgData) + Length(ImageSpec);
+        DestImg:=PChar(ImgData) + Length(Spec1);
         for J:=1 to Height do
         begin
           Dec(Source, 3 * Width);
@@ -341,16 +342,18 @@ var
   S, RawBuffer: String;
   RawData, RawData2: PByte;
   SourceImg, SourceAlpha, Dest, pSourceImg, pSourceAlpha, pDest: PChar;
-  I,J: Integer;
+
+  VTFImage: Cardinal;
   TexFormat, ImageFormat: VTFImageFormat;
-  VTFImage, OutputSize: Cardinal;
   ReloadVTFLib: Boolean;
+  I, J: Integer;
+  OutputSize: Cardinal;
 begin
- Log(LOG_VERBOSE,'save vtf %s',[self.name]);
- with Info do case Format of
+ Log(LOG_VERBOSE,'Saving VTF file: %s',[self.name]);
+ with Info do
+  case Format of
   1:
   begin  { as stand-alone file }
-
     ReloadVTFLib:=ReloadNeededVTFLib;
     if (not VTFLoaded) or ReloadVTFLib then
     begin
@@ -371,7 +374,7 @@ begin
     PSD:=Description;
     if PSD.AlphaBits=psa8bpp then
     begin
-      S:=SetupGameSet.Specifics.Values['TextureWriteSubFormatA'];
+      S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormatA'];
       if S<>'' then
       begin
         try
@@ -414,7 +417,7 @@ begin
     end
     else
     begin
-      S:=SetupGameSet.Specifics.Values['TextureWriteSubFormat'];
+      S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormat'];
       if S<>'' then
       begin
         try
@@ -464,8 +467,9 @@ begin
     FreeMem(RawData);
     vlDeleteImage(VTFImage);
   end
- else inherited;
- end;
+  else
+    inherited;
+  end;
 end;
 
 {-------------------}

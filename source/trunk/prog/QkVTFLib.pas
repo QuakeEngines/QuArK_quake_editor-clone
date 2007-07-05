@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/04/30 21:52:40  danielpharos
+Small cleanup of code around VTFLib.
+
 Revision 1.13  2007/04/12 09:08:33  danielpharos
 The VTF file saving buffer should always have the correct size now.
 
@@ -412,7 +415,8 @@ var
 procedure LogError(x:string);
 begin
   Log(LOG_CRITICAL, x);
-  Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  //Raise Exception.Create(x);
 end;
 
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;

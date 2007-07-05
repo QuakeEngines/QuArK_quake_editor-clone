@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/06/13 11:56:24  danielpharos
+Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+
 Revision 1.17  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -94,7 +97,7 @@ var
 procedure Fatal(x:string);
 begin
   Log(LOG_CRITICAL,'Error during operation on JPG file: %s',[x]);
-  Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise Exception.Create(x);
 end;
 

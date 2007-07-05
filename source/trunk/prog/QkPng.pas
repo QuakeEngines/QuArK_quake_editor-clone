@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/06/13 11:56:25  danielpharos
+Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+
 Revision 1.11  2007/02/25 21:23:58  danielpharos
 Fixed the last few obvious bugs in PNG file handling. QuArK should now be able to handle most PNG files correctly!
 
@@ -85,7 +88,7 @@ var
 procedure Fatal(x:string);
 begin
   Log(LOG_CRITICAL,'Error during operation on PNG file: %s',[x]);
-  Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise Exception.Create(x);
 end;
 

@@ -128,6 +128,7 @@ Strings = {
     390: "Delete Specific/Arg",
 
     400: "Warning...",
+    401: "Fatal Error",
 
     501: "Checking map...",
     502: "Saving compiled model...",
@@ -1019,6 +1020,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.100  2007/06/13 11:57:33  danielpharos
+#Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+#
 #Revision 1.99  2007/06/13 11:44:46  danielpharos
 #Changed a number of a string and removed an unused one.
 #

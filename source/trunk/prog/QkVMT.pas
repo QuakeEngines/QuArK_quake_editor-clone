@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/04/30 21:52:45  danielpharos
+Small cleanup of code around VTFLib.
+
 Revision 1.9  2007/04/11 16:14:52  danielpharos
 Full support for VMT files: loading everything and saving everything. Note: Saving not fully correct.
 
@@ -96,7 +99,7 @@ var
 procedure Fatal(x:string);
 begin
   Log(LOG_CRITICAL,'load vmt %s',[x]);
-  Windows.MessageBox(0, pchar(X), 'Fatal Error', MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise Exception.Create(x);
 end;
 
