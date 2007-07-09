@@ -208,7 +208,7 @@ def setLineThick(m):
     LineThickDlg(quarkx.clickform, editor, m)
     
     
-lineThicknessItem = qmenu.item("Set Line Thickness (2)",setLineThick,"|Set Line Thickness:\n\nThis lets you set the thickness of certain lines that are drawn on the editors view, such as the outlining of selected model mesh faces and the models axis lines.|intro.modeleditor.menu.html#optionsmenu")
+lineThicknessItem = qmenu.item("Set Line Thickness (2)",setLineThick,"|Set Line Thickness:\n\nThis lets you set the thickness of certain lines that are drawn on the Editor's views, such as the outlining of selected model mesh faces and the models axis lines.|intro.modeleditor.menu.html#optionsmenu")
 
 
 def mSFSISV(m):
@@ -313,34 +313,65 @@ def FaceMenu(editor):
     return menulist
 
 
-def mPVSTEV(m):
-    editor = mdleditor.mdleditor
-    if not MldOption("PVSTEV"):
-        quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = "1"
-        tris = editor.Root.currentcomponent.triangles
-        for vtx in editor.SkinVertexSelList:
-            if editor.ModelVertexSelList == []:
-                editor.ModelVertexSelList = editor.ModelVertexSelList + [(tris[vtx[2]][vtx[3]][0], vtx[0])]
-            else:
-                for vertex in range(len(editor.ModelVertexSelList)):
-                    if tris[vtx[2]][vtx[3]][0] == editor.ModelVertexSelList[[vertex][0]][0]:
-                        break
-                    if vertex == len(editor.ModelVertexSelList)-1:
-                        editor.ModelVertexSelList = editor.ModelVertexSelList + [(tris[vtx[2]][vtx[3]][0], vtx[0])]
-        quarkx.reloadsetup()
-    else:
-        quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
-
-
 def VertexMenu(editor):
-    Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
 
-    menulist = [Xpvstev]
+    def mPVSTSV(m):
+        editor = mdleditor.mdleditor
+        if not MldOption("PVSTSV"):
+            quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = "1"
+            quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
+            from mdlhandles import SkinView1
+            if SkinView1 is not None:
+                import mdlutils
+                mdlutils.PassEditorSel2Skin(editor)
+                cv = SkinView1.canvas()
+                for vertex in editor.SkinVertexSelList:
+                    h = vertex[1]
+                    h.draw(SkinView1, cv, h)
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
+
+    Xpvstsv = qmenu.item("&Pass selection to Skin-view", mPVSTSV, "|Pass selection to Skin-view:\n\nThis function will pass selected Editor model mesh vertexes and select the coordinated 'Model Skin mesh' vertexes in the Skin-view, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the 'Skin-view' for its use there.\n\nThe Editor's selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
+
+    menulist = [Xpvstsv]
     
     items = menulist
-    Xpvstev.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTEV")
+    Xpvstsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTSV")
 
     return menulist
+
+
+def FaceViewMenu(editor):
+    def mPVSTEV(m):
+        editor = mdleditor.mdleditor
+        if not MldOption("PVSTEV"):
+            quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = "1"
+            quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
+            import mdlutils
+            import mdlhandles
+            mdlutils.PassSkinSel2Editor(editor)
+            for view in editor.layout.views:
+                if view.info["viewname"] == "skinview":
+                    pass
+                else:
+                    cv = view.canvas()
+                    if len(view.handles) == 0:
+                        view.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
+                    for h in view.handles:
+                        h.draw(view, cv, h)
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
+            
+    Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
+
+    menulist = [Xpvstev]
+
+    items = menulist
+    
+    Xpvstev.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTEV")
+    
+    return menulist
+
 
 # ******************Creates the Popup menu********************
 def FaceSelOptionsClick(m):
@@ -350,6 +381,10 @@ def FaceSelOptionsClick(m):
 def VertexSelOptionsClick(m):
     editor = mdleditor.mdleditor
     m.items = VertexMenu(editor)
+
+def SkinViewOptionsClick(m):
+    editor = mdleditor.mdleditor
+    m.items = FaceViewMenu(editor)
 
 #
 # Global variables to update from plug-ins.
@@ -380,18 +415,24 @@ qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 def OptionsMenu():
     "The Options menu, with its shortcuts."
 
-    FaceSelOptions = qmenu.popup("Face Selection Options", [], FaceSelOptionsClick, "|Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
-    VertexSelOptions = qmenu.popup("Vertex Selection Options", [], VertexSelOptionsClick, "|Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     RotationOptions = qmenu.popup("3D Rotation Options", rotateitems, RotationMenu2click)
+    FaceSelOptions = qmenu.popup("Editor Face Selection Options", [], FaceSelOptionsClick, "|Editor Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
+    VertexSelOptions = qmenu.popup("Editor Vertex Selection Options", [], VertexSelOptionsClick, "|Editor Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
+    SkinViewOptions = qmenu.popup("Skin-view Options", [], SkinViewOptionsClick, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click)
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
-    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, qmenu.sep]+[maiv, dbf, FaceSelOptions, VertexSelOptions, lineThicknessItem, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
+    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, FaceSelOptions, VertexSelOptions, SkinViewOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
     return Options1, shortcuts
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.19  2007/07/02 22:49:42  cdunde
+#To change the old mdleditor "picked" list name to "ModelVertexSelList"
+#and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+#Also start of function to pass vertex selection from the Skin-view to the Editor.
+#
 #Revision 1.18  2007/07/01 04:56:52  cdunde
 #Setup red rectangle selection support in the Model Editor for face and vertex
 #selection methods and completed vertex selection for all the editors 2D views.

@@ -1,3 +1,7 @@
+# Two lines below to stop encoding errors in the console.
+#!/usr/bin/python
+# -*- coding: ascii -*-
+
 """   QuArK  -  Quake Army Knife
 
 Various Model editor utilities.
@@ -120,6 +124,59 @@ def fixUpVertexNos(tris, index):
     return new_tris
 
 
+def MakeEditorFaceObject(editor, option=1):
+    "Creates a QuArK Internal Face Object from 3 selected vertexes in the ModelVertexSelList"
+
+    facelist = []
+    v0 = editor.ModelVertexSelList[0][0] # Gives the index number of the 1st vertex in the list.
+    v1 = editor.ModelVertexSelList[1][0] # Gives the index number of the 2nd vertex in the list.
+    v2 = editor.ModelVertexSelList[2][0] # Gives the index number of the 3rd vertex in the list.
+    comp = editor.Root.currentcomponent
+    tris = comp.triangles                # A list of all the triangles of the current component if there is more than one.
+                                         # If NONE of the sub-items of a models component(s) have been selected,
+                                         # then it uses the 1st item of each sub-item, of the 1st component of the model.
+                                         # For example, the 1st skin, the 1st frame and so on, of the 1st component.
+    if option == 1: # Returns only one object & tri_index for the triangle's vertexes we have selected.
+                    # This object can then be used with other Map Editor and Quarkx functions.
+        for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
+            # Compares all of the triangle's vertex index numbers, in their proper order, to the above 3 items.
+            # Thus insuring it will return the actual single triangle that we want.
+            if (tris[trinbr][0][0] == v0) and (tris[trinbr][1][0] == v1 or tris[trinbr][1][0] == v2) and (tris[trinbr][2][0] == v1 or tris[trinbr][2][0] == v2):
+                tri_index = trinbr       # The iterating count number (trinbr) IS the tri_index number.
+                face = quarkx.newobj(comp.shortname+" face\\tri "+str(tri_index)+":f")
+                face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                vtxindexes = (float(v0), float(v1), float(v2), 0.0, 0.0, 0.0) # We use this triangle's 3 vertex_index numbers here just to create the face object.
+                face["tv"] = (vtxindexes)                                     # They don't really give usable values for texture positioning.
+                verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
+                                                                           # current animation frame selected, if any, if not then its 1st frame.
+                vect00 ,vect01, vect02 = verts[v0].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 1st vertex.
+                vect10 ,vect11, vect12 = verts[v1].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 2nd vertex.
+                vect20 ,vect21, vect22 = verts[v2].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 3rd vertex.
+                vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
+                face["v"] = vertexlist
+                facelist = facelist + [[face, tri_index]]
+                return facelist
+                break
+    elif option == 2: # Returns an object & tri_index for each triangle that shares the 1st vertex of our selected triangle's vertexes.
+                    # These objects can then be used with other Map Editor and Quarkx functions.
+        for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
+            if tris[trinbr][0][0] == v0 or tris[trinbr][1][0] == v0 or tris[trinbr][2][0] == v0:
+                tri_index = trinbr
+                face = quarkx.newobj(comp.shortname+" face\\tri "+str(tri_index)+":f")
+                face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0) # We use each triangle's 3 vertex_index numbers here just to create it's face object.
+                face["tv"] = (vtxindexes)                                                                                     # They don't really give usable values for texture positioning.
+                verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
+                                                                           # current animation frame selected, if any, if not then its 1st frame.
+                vect00 ,vect01, vect02 = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 1st vertex.
+                vect10 ,vect11, vect12 = verts[tris[trinbr][1][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 2nd vertex.
+                vect20 ,vect21, vect22 = verts[tris[trinbr][2][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 3rd vertex.
+                vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
+                face["v"] = vertexlist
+                facelist = facelist + [[face, tri_index]]
+        return facelist
+
+
 #
 # Add a vertex to the currently selected model component or frame(s)
 # at the position where the cursor was when the RMB was clicked.
@@ -226,7 +283,6 @@ def removevertex(comp, index, all3=0):
     #### 2) loop through all frames and delete unused vertex(s).
     if all3 == 1:
         vertexestoremove = []
-        nbrofvtxtoremove = 0
         for vertex in editor.ModelVertexSelList:
             vtxcount = 0
             for tri in tris:
@@ -236,7 +292,6 @@ def removevertex(comp, index, all3=0):
             if vtxcount > 1:
                 pass
             else:
-                nbrofvtxtoremove = nbrofvtxtoremove + 1
                 vertexestoremove = vertexestoremove + [vertex]
         frames = new_comp.findallsubitems("", ':mf')   # find all frames
         for unusedvertex in vertexestoremove:
@@ -477,10 +532,100 @@ def find2DTriangles(comp, tri_index, ver_index):
     return tris_out
 
 
+def PassSkinSel2Editor(editor):
+    "For passing selected vertexes(faces) from the Skin-view to the Editor's views."
+    "After you call this function you will need to also call to draw the handels in the views."
+    # tri_index = tris[vtx[2]]
+    # ver_index = tris[vtx[2]][vtx[3]][0]
+
+    tris = editor.Root.currentcomponent.triangles
+    for vtx in editor.SkinVertexSelList:
+        if editor.ModelVertexSelList == []:
+            editor.ModelVertexSelList = editor.ModelVertexSelList + [[tris[vtx[2]][vtx[3]][0], vtx[0]]]
+        else:
+            for vertex in range(len(editor.ModelVertexSelList)):
+                if tris[vtx[2]][vtx[3]][0] == editor.ModelVertexSelList[[vertex][0]][0]:
+                    break
+                if vertex == len(editor.ModelVertexSelList)-1:
+                    editor.ModelVertexSelList = editor.ModelVertexSelList + [[tris[vtx[2]][vtx[3]][0], vtx[0]]]
+
+
+def PassEditorSel2Skin(editor, option=1):
+    "For passing selected vertexes(faces) from the Editor's views to the Skin-view."
+    "After you call this function you will need to also call to draw the handels in the Skin-view."
+    "option value of 1 uses the ModelVertexSelList for passing."
+        # tri_index = tris[tri][0][0]
+        # ver_index = (see skinvtx_index below, the models mesh and skin mesh vertex format are not the same.)
+        # The 1st item in the models mesh ver_index is that vertexes position in the 'Frame objects vertices' list.
+        # All 3 of the items in the models skin mesh are their 'order' of the triangle (0, 1, 2).
+    "value of 2 uses the ModelFaceSelList for passing."
+    "Both will be applied to the Skin-view's SkinVertexSelList of 'existing' vertex selection, if any."
+
+    tris = editor.Root.currentcomponent.triangles
+    from mdlhandles import SkinView1
+    print "mdlutils line 588 tris",tris
+    if option == 1:
+        for vtx in editor.ModelVertexSelList:
+            ver_index = vtx[0]
+            print "mdlustils line 592 ver_index",ver_index
+            print "mdlustils line 593 1st tri in tris",tris[0]
+            print "mdlustils line 594 1st tri's vertex",tris[0][0]
+            print "mdlustils line 595 tri_index",tris[0][0][0]
+            if editor.SkinVertexSelList == []:
+                for tri in range(len(tris)):
+                    print "mdlustils line 598 tri",tri
+                    print "mdlustils line 599 tri in tris",tris[tri]
+                    print "mdlustils line 600 1st vtx in tri ",tris[tri][0]
+                    print "mdlustils line 601 1st vtx in tri ver_index ",tris[tri][0][0]
+
+                    for vertex in range(len(tris[tri])):
+                        if ver_index == tris[tri][vertex][0]:
+                            editor_tri_index = tri
+                            skinvtx_index = vertex
+                            break
+                for handle in SkinView1.handles:
+                    if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
+                        skinhandle = handle
+                        print "mdlustils line 612 skinhandle", handle, skinhandle
+                print "mdlustils line 613 ver_index",ver_index
+                print "mdlustils line 614 skinhandle",skinhandle
+                print "mdlustils line 616 skinhandle.pos",skinhandle.pos
+                print "mdlustils line 616 skinhandle.tri_index",skinhandle.tri_index
+                print "mdlustils line 617 skinhandle.ver_index",skinhandle.ver_index
+                editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+            else:
+                for tri in range(len(tris)):
+                    for vertex in range(len(tris[tri])):
+                        if ver_index == tris[tri][vertex][0]:
+                            editor_tri_index = tri
+                            skinvtx_index = vertex
+                            break
+                for handle in SkinView1.handles:
+                    if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
+                        skinhandle = handle
+                        print "mdlustils line 630 skinhandle", handle, skinhandle
+                for vertex in range(len(editor.SkinVertexSelList)):
+                    print "mdlustils line 632 SkinVertexSelList vertex",editor.SkinVertexSelList[vertex]
+                    print "mdlustils line 633 SkinVertexSelList vertex.tri_index",editor.SkinVertexSelList[vertex][2]
+                    print "mdlustils line 634 skinhandle.tri_index",skinhandle.tri_index
+                    print "mdlustils line 635 SkinVertexSelList vertex.ver_index",editor.SkinVertexSelList[vertex][3]
+                    print "mdlustils line 636 skinhandle.ver_index",skinhandle.ver_index
+                    if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
+                        break
+                    if vertex == len(editor.SkinVertexSelList)-1:
+                        editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+        print "************* SkinVertexSelList list after 2 passing from the Editor ****",editor.SkinVertexSelList
+
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.24  2007/07/02 22:49:43  cdunde
+#To change the old mdleditor "picked" list name to "ModelVertexSelList"
+#and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+#Also start of function to pass vertex selection from the Skin-view to the Editor.
+#
 #Revision 1.23  2007/06/11 19:52:31  cdunde
 #To add message box for proper vertex order of selection to add a triangle to the models mesh.
 #and changed code for deleting a triangle to stop access violation errors and 3D views graying out.

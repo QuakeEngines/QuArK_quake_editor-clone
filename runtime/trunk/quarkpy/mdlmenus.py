@@ -135,7 +135,8 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
-            extra = [qmenu.sep] + [skinviewcommands]
+            skinviewoptions = qmenu.popup("Skin-view Options", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).optionsmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            extra = [qmenu.sep] + [skinviewcommands, skinviewoptions]
     return [Undo1] + extra
 
 
@@ -178,6 +179,10 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.14  2007/06/03 22:50:55  cdunde
+#To add the model mesh Face Selection RMB menus.
+#(To add the RMB Face menu items when the cursor is not over one of the selected model mesh faces)
+#
 #Revision 1.13  2007/05/16 19:39:46  cdunde
 #Added the 2D views gridscale function to the Model Editor's Options menu.
 #
