@@ -10,6 +10,7 @@ subdir: kingpin
 subdir: sof
 subdir: quake3
 subdir: stvef
+subdir: ef2
 subdir: crystalspace
 subdir: rtcw
 subdir: jk2

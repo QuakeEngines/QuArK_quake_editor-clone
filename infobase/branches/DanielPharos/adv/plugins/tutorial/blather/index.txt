@@ -6,7 +6,7 @@ terms of previous programming experience; some experience with
 hand, messing with Python is a good way to acquire such experience
 (definitely a kinder and gentler start than C++).  So why not give
 it a go!  If you're a reasonably experienced programmer, you
-can probably learn enough python by concurrently browing the
+can probably learn enough Python by concurrently browsing the
 Python tutorial that comes with the Python distribution,
 but if you're a newbie, you'll probably want to study
 a book about Python first (suggestions in
@@ -14,7 +14,7 @@ a book about Python first (suggestions in
 
 This tutorial is
 not to teach programming, but rather to make up for inexperience
-and general lack of talent at figuring out how OOP program work;
+and general lack of talent at figuring out how OOP programming works;
 it's based on my first asking Armin lots of questions about how to do things
 and writing up the answers, and later on seeing how he revised things
 I had written.  It would be fair to say that the Three Commandments
@@ -42,12 +42,11 @@ And of course you will need to consult
 <ref>src/quarkx</ref>, the guide to the facilities that Delphi provides for Python.
 This is certainly not an introduction, but does present all the basic
 facilities that QuArK provides to the Python code, and as you get
-more experience  writing plugins, you will be able to figure out more
+more experience writing plugins, you will be able to figure out more
 just by browsing it.  Don't worry if it seems like a completely
 impenetrable thicket at first!
 And if you get stuck or think you've found a mistake
-(it's been done before :)), don't hesitate
-to post a query to the
-<A HREF="http://www.planetquake.com/quark/forums.shtml">QuArK-Python discussion list</A>,
+(it's been done before :)), don't hesitate to post a query to the
+<a href="http://www.dark-forge.com/forums/">QuArK forum</a>,
 or email directly to
-<A HREF="mailto:tiglari@hexenworld.net">tiglari@hexenworld.net</A>.
+<a href="mailto:tiglari@hexenworld.net">tiglari@hexenworld.net</a>.

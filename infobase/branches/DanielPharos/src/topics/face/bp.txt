@@ -41,7 +41,7 @@ this is gotten by scaling the face's normal vector by its
 Dist (-ance from the origin).
 
 So what goes on in GetPXPY is that the (texture-scaled,
-etc.) threepoints are converted to the Axis Base coordiante
+etc.) threepoints are converted to the Axis Base coordinate
 system, and then these equations are solved for the
 coefficients aij making up the matrix (I used Maple V
 to get the solution):

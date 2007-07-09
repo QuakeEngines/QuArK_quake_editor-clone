@@ -30,7 +30,7 @@ button at the bottom of the list.
 Once selected a new window will be opened called 'Configuration', making sure you have
 RTCW selected on the left navigation panel, (under the Games Tab) as we now need
 to fill out some of the necessary game settings on the right of the Configuration panel which
-is shown in the next image just below.
+is shown in the configuration image further down.
 
 But before we do that, go to your QuArK > addons > RTCW folder, copy the <b>QuArK files</b>
 folder that is there and paste it into your <b>Return to Castle Wolfenstein game folder</b>
@@ -39,9 +39,8 @@ In that folder is <b>one</b> of the compiling programs I spoke about briefly abo
 files.
 
 The other folder shown below that is the <b>second</b> compiling program folder and
-its files. You will need to download this program from the
-<a href="http://quark.planetquake.gamespy.com/game_support/q3map_2.5.16_win32_x86.zip">Official QuArK</a>
-site.
+its files. You will need to download the <a href="http://quark.planetquake.gamespy.com/gamepaks.php3">q3map_2.5.16_win32_x86.zip</a>
+file from the Official QuArK site.
 
 Also, see the <a href="intro.configuration.games.specificgames.rtcw.html#misc">Misc. Info.</a>
 section below for more detailed instructions on its installation.
@@ -55,14 +54,11 @@ section below for more detailed instructions on its installation.
 <tr><td valign=top align=left>
 <b>Part 2 – QuArK game pack download</b>
 
-This is the QuArK RTCW game support package. Download the QuArK_RTCW.zip file and extract it, using the 
-folders path option, to the game folder location where you have RTCW installed on your computer.
+This is the QuArK RTCW game support package. Download the <a href="http://quark.planetquake.gamespy.com/gamepaks.php3">QuArK_RTCW.zip</a>
+file and extract it, using the folders path option, to the game folder location where you have RTCW installed on your computer.
 
 All the paths to the "Main" sub-folder have already been set in the zip file.
-
-You can download this package from the 
-<a href="http://quark.planetquake.gamespy.com/game_support/RTCW/QuArK_RTCW.zip">Official QuArK</a>
-site. The zip file is about 64.7 MB and will take around 2 minutes with cable or DSL.
+The zip file is about 64.7 MB and will take around 2 minutes with cable or DSL.
 
 This package has been created to work with QuArK 6.5.0 alpha 8 or later and will give the most complete
 support available.

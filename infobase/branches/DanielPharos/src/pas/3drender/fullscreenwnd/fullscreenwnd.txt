@@ -1,0 +1,4 @@
+title: FullScreenWnd
+author: DanielPharos
+
+<i>info missing...</i>

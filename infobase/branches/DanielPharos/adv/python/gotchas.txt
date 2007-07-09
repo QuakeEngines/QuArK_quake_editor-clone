@@ -28,12 +28,12 @@ or false, including the Delphi-defined objects -- at least
 the Python core expects it so, and the Delphi code doesn't
 do it right :-(  So always explicitely compare with None.
 
-<strong>vector equality</strong>:
+<strong>Vector equality</strong>:
 Don't try to compare Quarkx vectors with equality,
 rather test their difference for being zero.  Armin discusses
 this in the <ref> src/quarkx </ref> document.
 
-<strong>tuples & assigment</strong>:
+<strong>Tuples & assigment</strong>:
 Python has a concept of `tuple', which is a sequence of numbers whose members can't
 be changed (they're `immutable').  1-element tuples are
 written with a comma after them, which leads to wierd

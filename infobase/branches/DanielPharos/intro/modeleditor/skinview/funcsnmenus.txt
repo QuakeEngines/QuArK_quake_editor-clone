@@ -1,0 +1,39 @@
+title: Functions & RMB Menus
+author: cdunde
+
+<img border=0 align=right>funcsnmenus1.png</img>
+
+Picking up from where we left off from above, these are the <g>RMB</g> menus available in the
+Skin-view that can assist you in multi and single vertex movement and <g>realignment</g>.
+All of these functions work in conjunction with the <g>Vertex drag mode</g> button which is
+shown set to the <g>Single drag mode</g> in the screen shot to the right.
+
+Basically, these functions all center around <g>snapping</g> one or more <g>Picked</g> vertexes,
+shown here as blue handles, to a <g>Base</g> location, shown to the right as lime green.
+These colors are changeable by selection from the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Model Editors Colors Configuration</a>
+section. The <g>Base Vertex</g> uses the same color setting as the <g>Selected brushes, side view</g>
+and the <g>Skin Vertexes</g> use the same color as the <g>3D views drag lines</g> setting.
+
+The procedure is simple, first select a <g>Base Vertex</g> by placing your cursor over the one
+you wish to choose, then <g>RMB</g> click and select <g>Pick Base Vertex</g> (not shown here but it's
+at the top off the menu where it displays <g>Change Base Vertex</g> now).
+
+Second, do the same for each skin vertex choosing the <g>Pick Skin Vertex</g> menu item each time.
+
+Finally, when you are ready to make your <g>snap</g> either place your cursor over any of the selected
+skin vertexes or anywhere in the Skin-view, <g>RMB</g> click and select <g>Align skin vertexes</g>.
+
+The snap will take place and the final results will look something like the second image of the eye
+at the bottom of the screen shot. Now a couple of special situations in using these menu functions.
+
+If you are only going to snap one <g>Skin Vertex</g> to the <g>Base Vertex</g> then all you need to do
+is select that <g>Base Vertex</g> and the <g>Align skin vertexes</g> menu items following the steps above.
+You do not need to use the <g>Pick Skin Vertex</g> menu item. In addition, the <g>Base Vertex</g> will
+remain selected for you, so you can simply <g>RMB</g> click over another skin vertex to move it to the
+same position <b>or</b> you can place your cursor over any unselected vertex and choose the
+<g>Change Base Vertex</g> menu item and it will jump to that new location and you can carry on from there.
+
+Using these along with the <g>Vertex drag mode</g> button a number of various combinations of aligning
+vertexes can be accomplished. And as stated in the section above, the exact co-ordnances will be displayed
+of all of these items will be shown in the editor's Help box as you proceed through the phases of your editing.

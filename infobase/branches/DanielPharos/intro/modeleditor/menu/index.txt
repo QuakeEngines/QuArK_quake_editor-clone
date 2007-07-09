@@ -1,0 +1,21 @@
+title: Menubar
+author: cdunde
+desc: filemenu
+desc: layoutmenu
+desc: editmenu
+desc: toolboxesmenu
+desc: commandsmenu
+desc: toolbarsmenu
+desc: optionsmenu
+desc: helpmenu
+
+<img>menu.png</img>
+
+New commands are constantly being added to the all menus. If there is
+no F1 help for some command, or you can not understand
+what it says, post to the <a href=http://games.groups.yahoo.com/group/quark/>QuArK
+messageboard</a> for help (and a heads-up to the docco writers).
+
+Most of the commands on the menus also have hot keys (accelerators), which
+you can customize from Configuration at the bottom of the
+<ref>intro/modeleditor/menu/optionsmenu</ref>.

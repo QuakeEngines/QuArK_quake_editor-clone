@@ -14,5 +14,5 @@ For the basic QuArK-related operations, you can get help from one of the availab
 <a href="../help/maps/index.html">documentation of the map editor</a> (included in the QuArK distribution).
 Other ones are found on the <a href="http://www.planetquake.com/quark">QuArK web site</a>.
 
-Questions about this subject are welcome in the <a href="http://www.planetquake.com/quark/forums.shtml">QuArK forum</a>.
+Questions about this subject are welcome in the <a href="http://www.dark-forge.com/forums/">QuArK forum</a>.
 See also the <a href="http://www.planetquake.com/quark/help/index.html">on-line docs</a> on the web site.

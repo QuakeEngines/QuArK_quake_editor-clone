@@ -4,6 +4,7 @@ subdir: hl2
 subdir: quake4
 subdir: rtcw
 subdir: rtcw-et
+subdir: stvef
 subdir: torgue
 author: Decker
 

@@ -1,10 +1,18 @@
 title: 3D View
-author: Decker
+author: Decker, DanielPharos
 
 <img align=right>3dview.png</img>
 <i>Select 3D viewer</i>. If you have a 3Dfx-compatible 3D-acceleration
-graphicscard installed, QuArK will use it to speed up drawing in 3D-windows. If
-you don't have one, you must select Software-only.
+graphics card, an OpenGL-compatible 3D-acceleration graphics card, or a DirectX
+3D-acceleration graphics card installed, QuArK can use it to speed up drawing
+in all windows. If you don't have one or neither of those work correctly, you
+can default to Software 3D rendering. Also, other renderers have more features
+than the Software 3D.
+
+<i>Position/size of window</i>. The position and size of the floating 3D-
+windows. The first two numbers are the X and Y positions of the window, counted
+in pixels from the upper left corner of the screen. The last two numbers are the
+width and height of the window, also counted in pixels.
 
 <i>Entities in 3D</i>. Whether or not QuArK should draw entities (3D-models) in
 the 3D-windows.
@@ -12,39 +20,22 @@ the 3D-windows.
 <i>"Far" distance</i>. How deep QuArK should draw in the 3D-windows. Lower
 values will speed up drawing.
 
+<i>Fade density</i>. The lower the fading fog, the more you can see, but keep in
+mind that the <b>"Far" distance</b> and the <b>fade density</b> are somewhat
+connected.
+
 <i>Vertical view angle</i>. The field of view of the perspective views, in
 degrees. Just as with cameras expected it is not the width but the height of
 the view that you enter.
 
+<i>Fade color</i>. Want green fading fog? Change it here!
+
 <i>Frame color</i>. The color to use on the bounding area of the 3D-windows,
 where QuArK won't draw due to the choosen size of the view.
 
-
-<u>3Dfx card owners only</u>
-
-<i>Second monitor on 3Dfx</i>. If you have two monitors, one connected to your
-regular 2D-graphicscard and one connected to the 3Dfx-acceleratorcard.
-
-<i>Full-screen gamma correction</i>. As it says.
-
-<i>Full-screen size</i>. As it says. Do not go above what your
-3Dfx-acceleratorcard can handle. A typical max value would be 640 480.
-
-<i>Fog density</i>. The lower the fog, the more you can see, but keep in mind
-that the <b>"Far" distance</b> and the <b>fog density</b> are somewhat
-connected.
-
-<i>Fog color</i>. Want green fog? Change it here!
-
-<i>Isometric transparent fraction</i>. Ehhh, read the flyover-help yourself,
-and experiment with the value if you want.
-
-
-<u>Software drivers only</u>
-
-If you have selected 'Software-only' in the 3D-viewer, then you can here change
-how fast the software-render should be able to draw things in the 3D-window,
-while standing still and while walking/moving around.
+<i>Texture max-dimension</i>. The maximum width and height of a texture. Software
+and 3Dfx are limited to a maximum of 256, but this is looked after automatically
+by QuArK. Also, if you set it too high, QuArK will automatically scale back.
 
 
 <u>Mouse sensitivity</u>
@@ -67,3 +58,23 @@ that you know how to move around in 3D-window using the keys.
 Change these values if you feel, that moving around using the keys, isn't quite
 fast or slow enough. You must experiment a bit to find a setting that you like
 using.
+
+
+<u>Additional settings</u>
+
+<i>The next time...</i>. Enables or disables the warning box that shows up when you
+open the 3D-windows for the first time.
+
+<i>Close views when the game is run</i>. When enabled, QuArK will close any
+3D-windows and multi-pages panels open when the game is run using the menu. This
+will reduce the amount of resources QuArK uses, so the game runs more smoothly.
+
+<i>Close views when the configurations are changed</i>. When enabled, QuArK will
+close any 3D-windows and multi-pages panels open when the configurations are
+changed. This will prevent any of the new settings from not correctly being
+applied to views that are already open.
+
+<i>Allow multiple 3D windows</i>. When enabled, clicking the 3D button will open new
+floating 3D windows. When disabled, clicking the 3D button will just toggle one view
+open/closed. Opening more than several windows will slow QuArK down, so use multiple
+windows with care!

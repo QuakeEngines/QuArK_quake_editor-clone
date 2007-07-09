@@ -2,8 +2,8 @@ title: Suggestions
 author: tiglari, etc.
 
 Suggestions for implementation (proposer parenthesized).  Ideally these
-should be sorted into <ref>plans/q64</ref>, <ref>plans/unlikely</ref>
-or <ref>plans/q6n</ref>, but for some reason or other I can't make up
+should be sorted into <ref>plans/q65</ref>, <ref>plans/unlikely</ref>
+or <ref>plans/bigideas</ref>, but for some reason or other I can't make up
 my mind today.
 
 <UL>
@@ -15,12 +15,11 @@ my mind today.
 
 <li>Patch-based terrain builder: (tiglari)
 
-<li> new projection option, 
+<li>New projection option, 
 'project from nearest plane', emulating classic qe texture
-alignment: the projection
-of the texture scale on the closest axis plane to the tagged
-face normal is found, then that is projected onto the tagged
-face. (tiglari)
+alignment: the projection of the texture scale on the closest
+axis plane to the tagged face normal is found, then that is
+projected onto the tagged face. (tiglari)
 
 <li>Optional plugins:
 <br>Some plugins wouldn't load unless they were 'registered'

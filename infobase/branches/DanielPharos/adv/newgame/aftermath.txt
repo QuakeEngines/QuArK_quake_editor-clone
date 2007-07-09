@@ -2,7 +2,7 @@ title: Distribution and Aftermath
 author: tiglari
 
 Once things get into a useable state, or possibly even before,
-somebody with SourceForge access will start committing your stuff to
+somebody with SourceForge access should start committing your stuff to
 the repository, and it will begin to appear in snapshots.
 
 By `aftermath' I mean that if you initiate QuArK support for a game,

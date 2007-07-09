@@ -1,0 +1,49 @@
+title: Options menu
+author: cdunde
+
+<img border=0 align=right>options.png</img>
+<i>Original 3Dview rotation </i>&nbsp;: This is the way QuArK's model rotation has worked in the past.
+As long as the model drag is started flat (z at 0) it rotates and tilts during rotation fine.
+But if it does a hiccup during the drag with the model tilted that is when it starts to drift
+off center and possibly out of the view eventually. The model can be placed anywhere in the view and
+rotated from that location.
+
+<i>Lock to center of 3Dview </i>&nbsp;: This method 'locks' the center of the grid to the center of the 3D view
+and rotates from the 0,0,0, point of the grid, its center. If the grid is off to another location of
+the view it will 'snap' back to the views center. The cursor location does not matter for dragging,
+the grid will remain in the views center. This makes the rotation very consistent.
+You can rotate and zoom in for close detail work on the model. But if you start another rotation
+it will jump back to the grids center and probably throw your up close position off.
+
+<i>Lock to center of model </i>&nbsp;: This function 'locks' the center of the model to the center of the view.
+It functions just like the 'Lock to center of 3Dview' method above
+based on the center of the model. However, because not all models are created at the center of their grid
+the method above could cause it to be near the edge of the view or completely out of view.
+This option compensates for that and will put the model in the proper center location of the view.
+The same situation will exist for up close detail work if a new rotation is started.
+
+<i>Rotate at start position </i>&nbsp;: This function is designed to give far more rotation consistency based on
+where the cursor is at the time it is clicked to start a rotation at some place on the model.
+It will then re-center that position to the center of the view to start rotating from.
+Unlike the 'Original 3Dview rotation' method, this would allow close up detail rotation without
+the model jumping back to some other location as in all of the above cases.
+
+<i>Draw handles while rotating </i>&nbsp;: This allows the models vertex handles (if active) to be drawn during
+rotation, but this will slow down the redrawing process and can make rotation seem jerky.
+
+<i>Paste objects at screen center </i>&nbsp;: Check this if you want objects that you
+paste into the map-view, appear in the center of the current map-view. Uncheck
+it, and it will paste it at the exact position as the original.
+
+<i>Enlarge Vertices Ticks </i>&nbsp;: This makes the model's ticks 1 size larger for easer viewing.
+
+<i>Rebuild 3D views </i>&nbsp;: This rebuilds the 3D views (actually all views) in the Model Editor
+in case of a lockup. You may have to do this a few times to clear the views up. The easiest way is to just push the HotKey 'Tab' until the views unlock and clear up.
+
+<i>Axis XYZ letter indicator in view windows </i>&nbsp;: This display s the X Y or Z indicator letter
+per view to associate the rotation menu buttons. These are for reference only and are not selectable
+with the mouse.
+
+<i>List of Plug-ins </i>&nbsp;: Opens a window which shows what plug-ins QuArK has loaded.
+
+<i>Configuration </i>&nbsp;: Takes you to the <ref> intro/configuration </ref>.

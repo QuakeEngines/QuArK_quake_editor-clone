@@ -1,0 +1,4 @@
+title: FullScreenWnd.PAS
+desc: fullscreenwnd
+
+<i>info missing...</i>

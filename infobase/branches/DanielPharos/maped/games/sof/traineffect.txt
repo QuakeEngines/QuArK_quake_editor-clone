@@ -2,7 +2,7 @@ title: Train Effect
 author:
 
 <b>Question:</b><br>
-In level 2 of SoF your on a train and it looks like your moving.
+In level 2 of SoF you're on a train and it looks like you're moving.
 Can you please tell me how to do it.
 
 <b>Answer:</b><br>

@@ -1,4 +1,4 @@
-title: QuArK 6.4 (no release yet)
+title: QuArK 6.4 (alpha released)
 author: tiglari, etc.
 
 The QuArK 6.x series is intended for incremental development.  The
@@ -43,7 +43,6 @@ and integration into quarkpy.
 > This algorithm was originally designed by Greg 'Tree' Lewis and 
 > fixed/improved by Tyrann and me. The algorithm can be found in source 
 > file outside.c and is called SimplifyLeakline.
-> 
 </code>
 
 <li>Mixed-face contents finder: (tiglari)
@@ -60,7 +59,7 @@ visible in only one view.
 <br>would be called something like`arc builder', probably
 basically a duplicator, emulating the wc thing's functionality.
 
-<Li>Finish spport for Mohaa: (tiglari)
+<Li>Finish support for Mohaa: (tiglari)
 <br>Needs info about lod terrain format, model format and where
 the entity editing info is stored.
 

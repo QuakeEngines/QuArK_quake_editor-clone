@@ -1,7 +1,9 @@
 title: Configuration of QuArK
 subdir: general
 subdir: games
+subdir: files
 subdir: map
+subdir: model
 
 In the configuration-window you can specify many things, to change the lookout
 and feel of QuArK. It is <u>recommended</u> that you study these settings, to
@@ -9,3 +11,7 @@ learn what can and can't be done in QuArK.
 
 Also, as QuArK is constantly going through changes, it would be wise to study
 the fly-over hints, of the controls you're pointing at, in QuArK.
+
+You can access the configuration-window by opening the Edit menu and then
+selecting the configuration option when you aren't in the map/model editor, or
+using Options and then configuration when you have opened a map or model.

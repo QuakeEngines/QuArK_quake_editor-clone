@@ -6,10 +6,10 @@ the classes that directly or indirectly inherit from QObject, defined in qobject
 
 Although the class QObject has got a few fields, these fields should be regarded as used by QuArK's internal management only.
 All important data must be stored using a combination of the two main features of QObjects : their Specific/Args and their
-subobjects.
+subobjects (called subelements in the code).
 
 Specific/Args are similar to the ones of Quake entities : it is a list of pairs of strings. The first string, the Specific, is
-an arbirary name for a setting; the corresponding second string gives the value of this setting.
+an arbitrary name for a setting; the corresponding second string gives the value of this setting.
 
 Objects also each have a list of subobjects. This lets objects be organized in a hierarchy.
 
