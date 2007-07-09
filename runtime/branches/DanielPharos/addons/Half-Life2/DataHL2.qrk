@@ -27,13 +27,13 @@ QQRKSRC1
 
 // custom polys for use with specific brush entities
 
-	trigger_tex:incl= {tex = "tools/toolstrigger"}
-	origin_tex:incl= {tex = "tools/toolsorigin"}
-	portal_tex:incl= {tex = "tools/toolsareaportal"}
-	nodraw_tex:incl= {tex = "tools/toolsnodraw"}
-	occluder_tex:incl= {tex = "tools/toolsoccluder"}
-	ladder_tex:incl= {tex = "tools/toolsinvisibleladder"}
-	detail_tex:incl= {tex = "Dev/dev_measuregeneric01"}
+  trigger_tex:incl= {tex = "tools/toolstrigger"}
+  origin_tex:incl= {tex = "tools/toolsorigin"}
+  portal_tex:incl= {tex = "tools/toolsareaportal"}
+  nodraw_tex:incl= {tex = "tools/toolsnodraw"}
+  occluder_tex:incl= {tex = "tools/toolsoccluder"}
+  ladder_tex:incl= {tex = "tools/toolsinvisibleladder"}
+  detail_tex:incl= {tex = "Dev/dev_measuregeneric01"}
 
   t_triggerpoly:incl =
   {
@@ -145,237 +145,237 @@ QQRKSRC1
       {
         wall:p =
         {
-	        east:f =
-	        {
-	          v = '384 256 0 384 288 0 384 256 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        west:f =
-	        {
-	          v = '-384 256 0 -384 224 0 -384 256 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        north:f =
-	        {
-	          v = '-384 272 0 -416 272 0 -384 272 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        south:f =
-	        {
-	          v = '-384 256 0 -352 256 0 -384 256 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        up:f =
-	        {
-	          v = '-384 256 128 -352 256 128 -384 288 128'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 0 32 32 0'
-	        }
-	        down:f =
-	        {
-	          v = '-384 256 -128 -352 256 -128 -384 224 -128'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 0 -32 -32 0'
-	        }
-	      }
-	      wall:p =
-	      {
-	        east:f =
-	        {
-	          v = '384 -320 0 384 -288 0 384 -320 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        west:f =
-	        {
-	          v = '-384 -320 0 -384 -352 0 -384 -320 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        north:f =
-	        {
-	          v = '-384 -256 0 -416 -256 0 -384 -256 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        south:f =
-	        {
-	          v = '-384 -272 0 -352 -272 0 -384 -272 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        up:f =
-	        {
-	          v = '-384 -320 128 -352 -320 128 -384 -288 128'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 0 32 32 0'
-	        }
-	        down:f =
-	        {
-	          v = '-384 -320 -128 -352 -320 -128 -384 -352 -128'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 0 -32 -32 0'
-	        }
-	      }
-	      floor:p =
-	      {
-	        east:f =
-	        {
-	          v = '384 -256 -64 384 -224 -64 384 -256 -32'
-	          tex = "Dev/dev_measuregeneric01b"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        west:f =
-	        {
-	          v = '-384 -256 -64 -384 -288 -64 -384 -256 -32'
-	          tex = "Dev/dev_measuregeneric01b"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        north:f =
-	        {
-	          v = '-384 256 -64 -416 256 -64 -384 256 -32'
-	          tex = "Dev/dev_measuregeneric01b"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        south:f =
-	        {
-	          v = '-384 -256 -64 -352 -256 -64 -384 -256 -32'
-	          tex = "Dev/dev_measuregeneric01b"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        up:f =
-	        {
-	          v = '-384 -256 -128 -352 -256 -128 -384 -224 -128'
-	          tex = "Dev/dev_measuregeneric01b"
-	          tv = '0 0 0 32 32 0'
-	        }
-	        down:f =
-	        {
-	          v = '-384 -256 -144 -352 -256 -144 -384 -288 -144'
-	          tex = "Dev/dev_measuregeneric01b"
-	          tv = '0 0 0 -32 -32 0'
-	        }
-	      }
-	      sky:p =
-	      {
-	        east:f =
-	        {
-	          v = '384 -256 256 384 -224 256 384 -256 288'
-	          tex = "Tools/toolsskybox"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        west:f =
-	        {
-	          v = '-384 -256 256 -384 -288 256 -384 -256 288'
-	          tex = "Tools/toolsskybox"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        north:f =
-	        {
-	          v = '-384 256 256 -416 256 256 -384 256 288'
-	          tex = "Tools/toolsskybox"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        south:f =
-	        {
-	          v = '-384 -256 256 -352 -256 256 -384 -256 288'
-	          tex = "Tools/toolsskybox"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        up:f =
-	        {
-	          v = '-384 -256 144 -352 -256 144 -384 -224 144'
-	          tex = "Tools/toolsskybox"
-	          tv = '0 0 0 32 32 0'
-	        }
-	        down:f =
-	        {
-	          v = '-384 -256 128 -352 -256 128 -384 -288 128'
-	          tex = "Tools/toolsskybox"
-	          tv = '0 0 0 -32 -32 0'
-	        }
-	      }
-	      wall:p =
-	      {
-	        east:f =
-	        {
-	          v = '-384 0 0 -384 32 0 -384 0 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        west:f =
-	        {
-	          v = '-400 0 0 -400 -32 0 -400 0 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        north:f =
-	        {
-	          v = '-448 256 0 -480 256 0 -448 256 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        south:f =
-	        {
-	          v = '-448 -256 0 -416 -256 0 -448 -256 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        up:f =
-	        {
-	          v = '-448 0 128 -416 0 128 -448 32 128'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 0 32 32 0'
-	        }
-	        down:f =
-	        {
-	          v = '-448 0 -128 -416 0 -128 -448 -32 -128'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 0 -32 -32 0'
-	        }
-	      }
-	      wall:p =
-	      {
-	        east:f =
-	        {
-	          v = '400 0 0 400 32 0 400 0 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        west:f =
-	        {
-	          v = '384 0 0 384 -32 0 384 0 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        north:f =
-	        {
-	          v = '384 256 0 352 256 0 384 256 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        south:f =
-	        {
-	          v = '384 -256 0 416 -256 0 384 -256 32'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 32 0 0 -32'
-	        }
-	        up:f =
-	        {
-	          v = '384 0 128 416 0 128 384 32 128'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 0 32 32 0'
-	        }
-	        down:f =
-	        {
-	          v = '384 0 -128 416 0 -128 384 -32 -128'
-	          tex = "Dev/dev_measurewall01a"
-	          tv = '0 0 0 -32 -32 0'
-	        }
+          east:f =
+          {
+            v = '384 256 0 384 288 0 384 256 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-384 256 0 -384 224 0 -384 256 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-384 272 0 -416 272 0 -384 272 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-384 256 0 -352 256 0 -384 256 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-384 256 128 -352 256 128 -384 288 128'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-384 256 -128 -352 256 -128 -384 224 -128'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        wall:p =
+        {
+          east:f =
+          {
+            v = '384 -320 0 384 -288 0 384 -320 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-384 -320 0 -384 -352 0 -384 -320 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-384 -256 0 -416 -256 0 -384 -256 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-384 -272 0 -352 -272 0 -384 -272 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-384 -320 128 -352 -320 128 -384 -288 128'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-384 -320 -128 -352 -320 -128 -384 -352 -128'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        floor:p =
+        {
+          east:f =
+          {
+            v = '384 -256 -64 384 -224 -64 384 -256 -32'
+            tex = "Dev/dev_measuregeneric01b"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-384 -256 -64 -384 -288 -64 -384 -256 -32'
+            tex = "Dev/dev_measuregeneric01b"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-384 256 -64 -416 256 -64 -384 256 -32'
+            tex = "Dev/dev_measuregeneric01b"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-384 -256 -64 -352 -256 -64 -384 -256 -32'
+            tex = "Dev/dev_measuregeneric01b"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-384 -256 -128 -352 -256 -128 -384 -224 -128'
+            tex = "Dev/dev_measuregeneric01b"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-384 -256 -144 -352 -256 -144 -384 -288 -144'
+            tex = "Dev/dev_measuregeneric01b"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        sky:p =
+        {
+          east:f =
+          {
+            v = '384 -256 256 384 -224 256 384 -256 288'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-384 -256 256 -384 -288 256 -384 -256 288'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-384 256 256 -416 256 256 -384 256 288'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-384 -256 256 -352 -256 256 -384 -256 288'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-384 -256 144 -352 -256 144 -384 -224 144'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-384 -256 128 -352 -256 128 -384 -288 128'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        wall:p =
+        {
+          east:f =
+          {
+            v = '-384 0 0 -384 32 0 -384 0 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-400 0 0 -400 -32 0 -400 0 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-448 256 0 -480 256 0 -448 256 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-448 -256 0 -416 -256 0 -448 -256 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-448 0 128 -416 0 128 -448 32 128'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-448 0 -128 -416 0 -128 -448 -32 -128'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        wall:p =
+        {
+          east:f =
+          {
+            v = '400 0 0 400 32 0 400 0 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '384 0 0 384 -32 0 384 0 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '384 256 0 352 256 0 384 256 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '384 -256 0 416 -256 0 384 -256 32'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '384 0 128 416 0 128 384 32 128'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '384 0 -128 416 0 -128 384 -32 -128'
+            tex = "Dev/dev_measurewall01a"
+            tv = '0 0 0 -32 -32 0'
+          }
         }
       }
       info_player_start:e =
@@ -388,8 +388,8 @@ QQRKSRC1
   Entity Forms.fctx =
   {
     info_player_start:form =
-     {
-        bbox = '-16 -16 -24 16 16 32'
+    {
+      bbox = '-16 -16 -24 16 16 32'
       spawnflags: =
       {
         txt = "&"
@@ -402,6 +402,5 @@ QQRKSRC1
   {
     Game = "Half-Life2"
     HTML = "help/index.html"
-
   }
 }

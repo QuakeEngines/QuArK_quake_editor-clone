@@ -13,7 +13,7 @@ QQRKSRC1
     {
 
 // filter entities
-        
+
       filter_* entities.qtxfolder =
       {
         filter_activator_team:e =
@@ -27,7 +27,7 @@ QQRKSRC1
 // info entities
 
       info_* entities.qtxfolder =
-      {			
+      {
         info_player_combine:e =
         {
           origin = "0 0 0"
@@ -56,7 +56,7 @@ QQRKSRC1
            "orter will appear on vgui_screen entities whose panel is 'teleport"
            "_countdown_screen'."
         }
-			}
+      }
 
 // prop entities
 
@@ -69,18 +69,18 @@ QQRKSRC1
            "after it breaks"
           RespawnTime = "60"
         }
-			}
+      }
 
 // weapon entities
-	
+
       weapon_* entities.qtxfolder =
-      {			        
-         weapon_slam:e =
+      {
+        weapon_slam:e =
         {
           origin = "0 0 0"
           ;desc = "S.L.A.M. - Selectable Lightweight Attack Munition"
         }
-      }  
+      }
     }
   }
 
@@ -154,6 +154,4 @@ QQRKSRC1
       t_Weapon = !
     }
   }
-}  
-  
-  
+}

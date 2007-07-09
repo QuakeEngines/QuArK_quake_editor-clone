@@ -6,6 +6,12 @@ QQRKSRC1
 // ----------- REVISION HISTORY ------------
 
 //$Log$
+//Revision 1.3  2007/03/29 15:25:50  danielpharos
+//Fixed a very silly typo.
+//
+//Revision 1.2  2006/07/17 07:28:20  cdunde
+//*** keyword substitution change ***
+//
 //Revision 1.1  2006/07/15 07:32:06  cdunde
 //To setup RTCW-ET as its own game
 //with md3 model display support.
@@ -326,8 +332,8 @@ QQRKSRC1
   Textures.qtx =
   {
     ToolBox = "Texture Browser..."
-    Root = "ET (Enemy Terror) Textures and Shaders.qtxfolder"
-    ET (Enemy Terror) Textures and Shaders.qtxfolder =
+    Root = "ET (Enemy Territory) Textures and Shaders.qtxfolder"
+    ET (Enemy Territory) Textures and Shaders.qtxfolder =
     {
       ET Textures & Shaders.osfolder =
       {
@@ -363,8 +369,8 @@ QQRKSRC1
   Toolbox Folders.qtx =
   {
     Toolbox = "New map items..."
-    Root = "ET (Enemy Terror) Entities.qtxfolder"
-    ET (Enemy Terror) Entities.qtxfolder =
+    Root = "ET (Enemy Territory) Entities.qtxfolder"
+    ET (Enemy Territory) Entities.qtxfolder =
     {
       ;desc = "Created from ET.def"
       _* entities.qtxfolder =
@@ -3500,7 +3506,8 @@ QQRKSRC1
                "Set scale per-axis.  Overrides 'modelscale', so if you have both, the 'modelscale' is ignored."
       }
       skin: =
-      { typ="C"
+      {
+        typ="C"
         txt = "&"
         hint = ".skin file to define model shader."$0D
                "Must match with model name to animate."$0D
@@ -6037,12 +6044,12 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
     }
     misc_cabinet_supply:form =
@@ -6056,12 +6063,12 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
     }
     func_debris:form =

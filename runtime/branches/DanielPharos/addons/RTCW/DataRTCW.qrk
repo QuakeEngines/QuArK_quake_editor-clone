@@ -4,6 +4,12 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.16  2007/03/29 16:04:57  danielpharos
+//Cleaned up the tabs.
+//
+//Revision 1.15  2006/07/01 07:13:44  cdunde
+//Add 'count' to weapons to set ammo amount.
+//
 //Revision 1.14  2006/07/01 00:34:00  cdunde
 //Update
 //
@@ -975,7 +981,7 @@ QQRKSRC1
       }
       other entities.qtxfolder =
       {
-          ;desc = "Light and Worldspawn entities."
+        ;desc = "Light and Worldspawn entities."
         corona:e =
         {
           angle = "360"
@@ -3740,7 +3746,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "This is a model for QuArK 3D views only."$0D
+        hint = "This is a model for QuArK 3D views only."$0D
                "For "$22"Other ai's"$22" only the 'Default' version is displayed."$0D
                "This entity’s voice sound does NOT change."$0D
                "For the GAME use the same MODEL for the"$0D
@@ -3805,23 +3811,23 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The original head_xxxx.skin file to use for this entity."$0D
+        hint = "The original head_xxxx.skin file to use for this entity."$0D
                "The .skin file (without head_) to use for her head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
@@ -3853,7 +3859,7 @@ QQRKSRC1
       skin: =
       {
         Txt = "&"
-	hint = "The original body_xxxx.skin file to use for this entity."$0D
+        hint = "The original body_xxxx.skin file to use for this entity."$0D
                "The .skin file (without body_) to use for her body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
@@ -3889,7 +3895,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "This is a model for QuArK 3D views only."$0D
+        hint = "This is a model for QuArK 3D views only."$0D
                "Only the 'Default' version is displayed."$0D
                "This entity’s voice sound does NOT change."$0D
                "For the GAME use the same MODEL for the"$0D
@@ -3938,23 +3944,23 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The original head_xxxx.skin file to use for this entity."$0D
+        hint = "The original head_xxxx.skin file to use for this entity."$0D
                "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
@@ -4020,7 +4026,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The original body_xxxx.skin file to use for this entity."$0D
+        hint = "The original body_xxxx.skin file to use for this entity."$0D
                "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
@@ -4070,22 +4076,22 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint = "Name of AI file to use or blank for default."
+        hint = "Name of AI file to use or blank for default."
       }
       head: =
       {
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+        hint = "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -4094,7 +4100,7 @@ QQRKSRC1
       skin: =
       {
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+        hint = "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       }
@@ -4127,22 +4133,22 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint = "Name of AI file to use or blank for default."
+        hint = "Name of AI file to use or blank for default."
       }
       head: =
       {
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+        hint = "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -4151,7 +4157,7 @@ QQRKSRC1
       skin: =
       {
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+        hint = "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       }
@@ -4198,7 +4204,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "This is a model for QuArK 3D views only."$0D
+        hint = "This is a model for QuArK 3D views only."$0D
                "Only the 'Default' version is displayed."$0D
                "This entity’s voice sound does NOT change."$0D
                "For the GAME use the same MODEL for the"$0D
@@ -4247,23 +4253,23 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+        hint = "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -4303,7 +4309,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+        hint = "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       items=
@@ -4352,23 +4358,23 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for her head."$0D
+        hint = "The .skin file (without head_) to use for her head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -4406,7 +4412,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+        hint = "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       items=
@@ -4456,23 +4462,23 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+        hint = "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -4490,7 +4496,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+        hint = "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       items=
@@ -4531,7 +4537,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "This is a model for QuArK 3D views only."$0D
+        hint = "This is a model for QuArK 3D views only."$0D
                "Only the 'Default' version is displayed."$0D
                "This entity’s voice sound does NOT change."$0D
                "For the GAME use the same MODEL for the"$0D
@@ -4580,23 +4586,23 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The original head_xxxx.skin file to use for this entity."$0D
+        hint = "The original head_xxxx.skin file to use for this entity."$0D
                "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
@@ -4622,7 +4628,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The original body_xxxx.skin file to use for this entity."$0D
+        hint = "The original body_xxxx.skin file to use for this entity."$0D
                "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
@@ -4666,22 +4672,22 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint = "Name of AI file to use or blank for default."
+        hint = "Name of AI file to use or blank for default."
       }
       head: =
       {
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+        hint = "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -4690,7 +4696,7 @@ QQRKSRC1
       skin: =
       {
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+        hint = "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       }
@@ -4724,7 +4730,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "This is a model for QuArK 3D views only."$0D
+        hint = "This is a model for QuArK 3D views only."$0D
                "Only the 'Default' version is displayed."$0D
                "This entity’s voice sound does NOT change."$0D
                "For the GAME use the same MODEL for the"$0D
@@ -4773,22 +4779,22 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       { typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+        hint = "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -4943,7 +4949,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "These are the normal model skins that go with this entity."$0D
+        hint = "These are the normal model skins that go with this entity."$0D
                "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
@@ -5043,22 +5049,22 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint = "Name of AI file to use or blank for default."
+        hint = "Name of AI file to use or blank for default."
       }
       head: =
       {
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+        hint = "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -5067,7 +5073,7 @@ QQRKSRC1
       skin: =
       {
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+        hint = "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       }
@@ -5088,19 +5094,19 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-	hint = "Seconds between triggerings."$0D
+        hint = "Seconds between triggerings."$0D
                "-1 = one time only (default)."
       }
       ainame: =
       {
         Txt = "&"
-	hint = "Name of AI to target."$0D
+        hint = "Name of AI to target."$0D
                "Use 'player' for the... player."
       }
       target: =
       {
         Txt = "&"
-	hint = "Trigger identifier for that AI script."
+        hint = "Trigger identifier for that AI script."
       }
     }
     ai_venom:form =
@@ -5131,7 +5137,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "This is a model for QuArK 3D views only."$0D
+        hint = "This is a model for QuArK 3D views only."$0D
                "Only the 'Default' version is displayed."$0D
                "This entity’s voice sound does NOT change."$0D
                "For the GAME use the same MODEL for the"$0D
@@ -5180,23 +5186,23 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The original head_xxxx.skin file to use for this entity."$0D
+        hint = "The original head_xxxx.skin file to use for this entity."$0D
                "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
@@ -5216,7 +5222,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The original body_xxxx.skin file to use for this entity."$0D
+        hint = "The original body_xxxx.skin file to use for this entity."$0D
                "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
@@ -5260,23 +5266,23 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+        hint = "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -5298,7 +5304,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+        hint = "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       items=
@@ -5346,23 +5352,23 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-	hint = "Name of this entity, used as a target by another entity."
+        hint = "Name of this entity, used as a target by another entity."
       }
       target: =
       {
         Txt = "&"
-	hint = "Name of the entity that this one targets."
+        hint = "Name of the entity that this one targets."
       }
       ainame: =
       {
         Txt = "&"
-	hint ="Name of AI file to use or blank for default."
+        hint ="Name of AI file to use or blank for default."
       }
       head: =
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without head_) to use for his head."$0D
+        hint = "The .skin file (without head_) to use for his head."$0D
                "The 'head_XX.skin' file must be in 'players' folder,"$0D
                "otherwise the 'default' is used."$0D
                "This is a custom model for the actual game play only."$0D
@@ -5396,7 +5402,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "The .skin file (without body_) to use for his body."$0D
+        hint = "The .skin file (without body_) to use for his body."$0D
                "Must give player's folder name & the 'body_XX.skin'"$0D
                "file be in that folder, otherwise 'default' will be used."
       items=
@@ -5913,7 +5919,7 @@ QQRKSRC1
       track: =
       {
         Txt = "&"
-	hint ="Is the targetname of the entity providing"$0D
+        hint ="Is the targetname of the entity providing"$0D
               "the starting direction, use an info_notnull."
       }
     }
@@ -5925,7 +5931,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	hint ="Used will reset the player back to his last position."
+        hint ="Used will reset the player back to his last position."
       }
     }
     func_bobbing:form =
@@ -6209,7 +6215,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint ="Use sounds based on construction of door."
+        hint ="Use sounds based on construction of door."
       items=
         "nosound (default)"$0D
         "metal"$0D
@@ -6360,7 +6366,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Use sounds based on construction of door."
+        hint = "Use sounds based on construction of door."
       items=
         "nosound (default)"$0D
         "metal"$0D
@@ -6523,7 +6529,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris. Default is 'wood'."$0D
+        hint = "Type of debris. Default is 'wood'."$0D
                "Click the 'help book' above for more detail."
       items=
         "glass"$0D
@@ -6642,81 +6648,81 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Cursor types: probably more, they /don't/ need to be all uppercase."
+        hint = "Cursor types: probably more, they /don't/ need to be all uppercase."
       items=
-	"HINT_NONE"$0D
-	"HINT_PLAYER"$0D
-	"HINT_ACTIVATE"$0D
-	"HINT_DOOR"$0D
-	"HINT_DOOR_ROTATING"$0D
-	"HINT_DOOR_LOCKED"$0D
-	"HINT_DOOR_ROTATING_LOCKED"$0D
-	"HINT_MG42"$0D
-	"HINT_BREAKABLE"$0D
-	"HINT_BREAKABLE_BIG"$0D
-	"HINT_CHAIR"$0D
-	"HINT_ALARM"$0D
-	"HINT_HEALTH"$0D
-	"HINT_TREASURE"$0D
-	"HINT_KNIFE"$0D
-	"HINT_LADDER"$0D
-	"HINT_BUTTON"$0D
-	"HINT_WATER"$0D
-	"HINT_CAUTION"$0D
-	"HINT_DANGER"$0D
-	"HINT_SECRET"$0D
-	"HINT_QUESTION"$0D
-	"HINT_EXCLAMATION"$0D
-	"HINT_CLIPBOARD"$0D
-	"HINT_WEAPON"$0D
-	"HINT_AMMO"$0D
-	"HINT_ARMOR"$0D
-	"HINT_POWERUP"$0D
-	"HINT_HOLDABLE"$0D
-	"HINT_INVENTORY"$0D
-	"HINT_SCENARIC"$0D
-	"HINT_EXIT"$0D
-	"HINT_PLYR_FRIEND"$0D
-	"HINT_PLYR_NEUTRAL"$0D
-	"HINT_PLYR_ENEMY"$0D
-	"HINT_PLYR_UNKNOWN"
+        "HINT_NONE"$0D
+        "HINT_PLAYER"$0D
+        "HINT_ACTIVATE"$0D
+        "HINT_DOOR"$0D
+        "HINT_DOOR_ROTATING"$0D
+        "HINT_DOOR_LOCKED"$0D
+        "HINT_DOOR_ROTATING_LOCKED"$0D
+        "HINT_MG42"$0D
+        "HINT_BREAKABLE"$0D
+        "HINT_BREAKABLE_BIG"$0D
+        "HINT_CHAIR"$0D
+        "HINT_ALARM"$0D
+        "HINT_HEALTH"$0D
+        "HINT_TREASURE"$0D
+        "HINT_KNIFE"$0D
+        "HINT_LADDER"$0D
+        "HINT_BUTTON"$0D
+        "HINT_WATER"$0D
+        "HINT_CAUTION"$0D
+        "HINT_DANGER"$0D
+        "HINT_SECRET"$0D
+        "HINT_QUESTION"$0D
+        "HINT_EXCLAMATION"$0D
+        "HINT_CLIPBOARD"$0D
+        "HINT_WEAPON"$0D
+        "HINT_AMMO"$0D
+        "HINT_ARMOR"$0D
+        "HINT_POWERUP"$0D
+        "HINT_HOLDABLE"$0D
+        "HINT_INVENTORY"$0D
+        "HINT_SCENARIC"$0D
+        "HINT_EXIT"$0D
+        "HINT_PLYR_FRIEND"$0D
+        "HINT_PLYR_NEUTRAL"$0D
+        "HINT_PLYR_ENEMY"$0D
+        "HINT_PLYR_UNKNOWN"
       values=
-	"HINT_NONE"$0D
-	"HINT_PLAYER"$0D
-	"HINT_ACTIVATE"$0D
-	"HINT_DOOR"$0D
-	"HINT_DOOR_ROTATING"$0D
-	"HINT_DOOR_LOCKED"$0D
-	"HINT_DOOR_ROTATING_LOCKED"$0D
-	"HINT_MG42"$0D
-	"HINT_BREAKABLE"$0D
-	"HINT_BREAKABLE_BIG"$0D
-	"HINT_CHAIR"$0D
-	"HINT_ALARM"$0D
-	"HINT_HEALTH"$0D
-	"HINT_TREASURE"$0D
-	"HINT_KNIFE"$0D
-	"HINT_LADDER"$0D
-	"HINT_BUTTON"$0D
-	"HINT_WATER"$0D
-	"HINT_CAUTION"$0D
-	"HINT_DANGER"$0D
-	"HINT_SECRET"$0D
-	"HINT_QUESTION"$0D
-	"HINT_EXCLAMATION"$0D
-	"HINT_CLIPBOARD"$0D
-	"HINT_WEAPON"$0D
-	"HINT_AMMO"$0D
-	"HINT_ARMOR"$0D
-	"HINT_POWERUP"$0D
-	"HINT_HOLDABLE"$0D
-	"HINT_INVENTORY"$0D
-	"HINT_SCENARIC"$0D
-	"HINT_EXIT"$0D
-	"HINT_PLYR_FRIEND"$0D
-	"HINT_PLYR_NEUTRAL"$0D
-	"HINT_PLYR_ENEMY"$0D
-	"HINT_PLYR_UNKNOWN"
+        "HINT_NONE"$0D
+        "HINT_PLAYER"$0D
+        "HINT_ACTIVATE"$0D
+        "HINT_DOOR"$0D
+        "HINT_DOOR_ROTATING"$0D
+        "HINT_DOOR_LOCKED"$0D
+        "HINT_DOOR_ROTATING_LOCKED"$0D
+        "HINT_MG42"$0D
+        "HINT_BREAKABLE"$0D
+        "HINT_BREAKABLE_BIG"$0D
+        "HINT_CHAIR"$0D
+        "HINT_ALARM"$0D
+        "HINT_HEALTH"$0D
+        "HINT_TREASURE"$0D
+        "HINT_KNIFE"$0D
+        "HINT_LADDER"$0D
+        "HINT_BUTTON"$0D
+        "HINT_WATER"$0D
+        "HINT_CAUTION"$0D
+        "HINT_DANGER"$0D
+        "HINT_SECRET"$0D
+        "HINT_QUESTION"$0D
+        "HINT_EXCLAMATION"$0D
+        "HINT_CLIPBOARD"$0D
+        "HINT_WEAPON"$0D
+        "HINT_AMMO"$0D
+        "HINT_ARMOR"$0D
+        "HINT_POWERUP"$0D
+        "HINT_HOLDABLE"$0D
+        "HINT_INVENTORY"$0D
+        "HINT_SCENARIC"$0D
+        "HINT_EXIT"$0D
+        "HINT_PLYR_FRIEND"$0D
+        "HINT_PLYR_NEUTRAL"$0D
+        "HINT_PLYR_ENEMY"$0D
+        "HINT_PLYR_UNKNOWN"
       }
     }
     func_leaky:form =
@@ -6737,7 +6743,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Leaks particles of this type."
+        hint = "Leaks particles of this type."
       items=
         "oil"$0D
         "water"$0D
@@ -6997,7 +7003,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -7215,8 +7221,8 @@ QQRKSRC1
       sprint: =
       {
         Txt = "&"
-	hint ="Using this will not fatigue the character."$0D
-	      "model = "$22"models/powerups/holdable/stamina.md3"$22
+        hint ="Using this will not fatigue the character."$0D
+              "model = "$22"models/powerups/holdable/stamina.md3"$22
       }
       pickup_sound: =
       {
@@ -7398,7 +7404,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	hint ="If the start position is targeting an entity,"$0D
+        hint ="If the start position is targeting an entity,"$0D
               "the players camera will start out facing that"$0D
               "entity (example target an info_notnull entity)."
       }
@@ -7532,7 +7538,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Path and name of an .md3 model to use."$0D
+        hint = "Path and name of an .md3 model to use."$0D
                "Viewable in game and QuArK."
       items=
         "default-clipboard.md3 hanging"$0D
@@ -7551,7 +7557,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint ="Menu to popup.  No default since you won't want"$0D
+        hint ="Menu to popup.  No default since you won't want"$0D
               "the same clipboard laying around."$0D
               "Some standard game clipboard messages are listed."$0D
               "(clipboard will display a 'put popup here' message)"
@@ -7615,7 +7621,7 @@ QQRKSRC1
       notebookpage: =
       {
         Txt = "&"
-	hint ="When clipboard is picked up, this page (menu)"$0D
+        hint ="When clipboard is picked up, this page (menu)"$0D
               "will be added to your notebook."$0D
               "We currently use:"$0D
               "clip_interrogation"$0D
@@ -7850,7 +7856,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = ".md3 model to display in the game and QuArK."$0D
+        hint = ".md3 model to display in the game and QuArK."$0D
                "Defaults to 'models/powerups/treasure/goldbar.md3'"
       items=
         "chalice-goblet"$0D
@@ -7872,7 +7878,7 @@ QQRKSRC1
       message: =
       {
         Txt = "&"
-	hint ="What to call the item when it's picked up."
+        hint ="What to call the item when it's picked up."
       }
     }
     key_binocs:form =
@@ -8148,32 +8154,32 @@ QQRKSRC1
       adist: =
       {
         Txt = "&"
-	hint = "Radius of 'wakeup' box.  player passing closer than distance activates grabber (def: 64)"
+        hint = "Radius of 'wakeup' box.  player passing closer than distance activates grabber (def: 64)"
       }
       bdist: =
       {
         Txt = "&"
-	hint = "Radius of 'attack' box.  player passing into this gets a swipe.  (def: 32)"
+        hint = "Radius of 'attack' box.  player passing into this gets a swipe.  (def: 32)"
       }
       health: =
       {
         Txt = "&"
-	hint = "How much damage grabber can take after 'wakeup' (def: 100)"
+        hint = "How much damage grabber can take after 'wakeup' (def: 100)"
       }
       range: =
       {
         Txt = "&"
-	hint = "When attacking, how far from the origin the grabber can strike (def: 64)"
+        hint = "When attacking, how far from the origin the grabber can strike (def: 64)"
       }
       dmg: =
       {
         Txt = "&"
-	hint = "Max damage to give on a successful strike (def: 10)"
+        hint = "Max damage to give on a successful strike (def: 10)"
       }
       wait: =
       {
         Txt = "&"
-	hint = "How long to wait between strikes if the player stays within the 'attack' box (def: see below)"
+        hint = "How long to wait between strikes if the player stays within the 'attack' box (def: see below)"
       }
     }
     misc_light_surface:form =
@@ -8225,27 +8231,27 @@ QQRKSRC1
       harc: =
       {
         Txt = "&"
-	hint = "Horizonal fire arc Default is 115."
+        hint = "Horizonal fire arc Default is 115."
       }
       varc: =
       {
         Txt = "&"
-	hint = "Vertical fire arc Default is 45."
+        hint = "Vertical fire arc Default is 45."
       }
       health: =
       {
         Txt = "&"
-	hint = "How much damage can it take default is 50."
+        hint = "How much damage can it take default is 50."
       }
       damage: =
       {
         Txt = "&"
-	hint = "Determines how much the weapon will inflict if a non player uses it."
+        hint = "Determines how much the weapon will inflict if a non player uses it."
       }
       accuracy: =
       {
         Txt = "&"
-	hint = "All guns are 100% accurate an entry of 0.5 would make it 50%."
+        hint = "All guns are 100% accurate an entry of 0.5 would make it 50%."
       }
     }
     misc_model:form =
@@ -9115,12 +9121,12 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-	Hint = "Seconds to wait before beginning move to next corner."
+        Hint = "Seconds to wait before beginning move to next corner."
       }
-	count2: =
+        count2: =
       {
         Txt = "&"
-	Hint = "Used only in conjunction with the truck_cam"$0D
+        Hint = "Used only in conjunction with the truck_cam"$0D
                "to control playing of gear changes."
       }
     }
@@ -9151,24 +9157,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 10 how many shards to spawn."$0D
+        Hint = "Defaults to 10 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9198,7 +9204,7 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
     }
     props_box_32:form =
@@ -9279,24 +9285,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 10 how many shards to spawn."$0D
+        Hint = "Defaults to 10 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9335,24 +9341,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 5 how many shards to spawn."$0D
+        Hint = "Defaults to 5 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9391,24 +9397,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 5 how many shards to spawn."$0D
+        Hint = "Defaults to 5 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9447,24 +9453,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 5 how many shards to spawn."$0D
+        Hint = "Defaults to 5 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9503,24 +9509,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 5 how many shards to spawn."$0D
+        Hint = "Defaults to 5 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9559,24 +9565,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 5 how many shards to spawn."$0D
+        Hint = "Defaults to 5 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9614,24 +9620,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 5 how many shards to spawn."$0D
+        Hint = "Defaults to 5 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9671,24 +9677,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 20."
+        Hint = "Defaults to 20."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 20."
+        Hint = "Defaults to 20."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 10 how many shards to spawn."$0D
+        Hint = "Defaults to 10 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9726,24 +9732,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 20."
+        Hint = "Defaults to 20."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 20."
+        Hint = "Defaults to 20."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 10 how many shards to spawn."$0D
+        Hint = "Defaults to 10 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -9849,7 +9855,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris. Default is 'wood'."
+        hint = "Type of debris. Default is 'wood'."
       items=
         "glass"$0D
         "wood"$0D
@@ -9866,34 +9872,34 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-	Hint = "How much debris ie. default 4 pieces."
+        Hint = "How much debris ie. default 4 pieces."
       }
       high: =
       {
         Txt = "&"
-	Hint = "You will need to specify the bounding box for the entity."$0D
+        Hint = "You will need to specify the bounding box for the entity."$0D
                "Default is 4."
       }
       wide: =
       {
         Txt = "&"
-	Hint = "You will need to specify the bounding box for the entity."$0D
+        Hint = "You will need to specify the bounding box for the entity."$0D
                "Default is 4."
       }
       frames: =
       {
         Txt = "&"
-	Hint = "How many frames of animation to play."
+        Hint = "How many frames of animation to play."
       }
       loop: =
       {
         Txt = "&"
-	Hint = "When the animation is done start again on this frame."
+        Hint = "When the animation is done start again on this frame."
       }
       startonframe: =
       {
         Txt = "&"
-	Hint = "On what frame do you want to start the animation."
+        Hint = "On what frame do you want to start the animation."
       }
     }
     props_decoration_scale:form =
@@ -9989,7 +9995,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris. Default is 'wood'."
+        hint = "Type of debris. Default is 'wood'."
       items=
         "glass"$0D
         "wood"$0D
@@ -10006,34 +10012,34 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-	Hint = "How much debris ie. default 4 pieces."
+        Hint = "How much debris ie. default 4 pieces."
       }
       high: =
       {
         Txt = "&"
-	Hint = "You will need to specify the bounding box for the entity."$0D
+        Hint = "You will need to specify the bounding box for the entity."$0D
                "Default is 4."
       }
       wide: =
       {
         Txt = "&"
-	Hint = "You will need to specify the bounding box for the entity."$0D
+        Hint = "You will need to specify the bounding box for the entity."$0D
                "Default is 4."
       }
       frames: =
       {
         Txt = "&"
-	Hint = "How many frames of animation to play."
+        Hint = "How many frames of animation to play."
       }
       loop: =
       {
         Txt = "&"
-	Hint = "When the animation is done start again on this frame."
+        Hint = "When the animation is done start again on this frame."
       }
       startonframe: =
       {
         Txt = "&"
-	Hint = "On what frame do you want to start the animation."
+        Hint = "On what frame do you want to start the animation."
       }
     }
     props_decorBRUSH:form =
@@ -10107,7 +10113,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris. Default is 'wood'."
+        hint = "Type of debris. Default is 'wood'."
       items=
         "glass"$0D
         "wood"$0D
@@ -10124,22 +10130,22 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-	Hint = "How much debris ie. default 4 pieces."
+        Hint = "How much debris ie. default 4 pieces."
       }
       frames: =
       {
         Txt = "&"
-	Hint = "How many frames of animation to play."
+        Hint = "How many frames of animation to play."
       }
       loop: =
       {
         Txt = "&"
-	Hint = "When the animation is done start again on this frame."
+        Hint = "When the animation is done start again on this frame."
       }
       startonframe: =
       {
         Txt = "&"
-	Hint = "On what frame do you want to start the animation."
+        Hint = "On what frame do you want to start the animation."
       }
     }
     props_desklamp:form =
@@ -10167,24 +10173,24 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       default: =
       {
         Txt = "&"
-	Hint = "Defaults to 10."
+        Hint = "Defaults to 10."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 5 how many shards to spawn."$0D
+        Hint = "Defaults to 5 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -10264,7 +10270,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Wood concrete or stone."
+        hint = "Wood concrete or stone."
       items=
         "wood"$0D
         "concrete"$0D
@@ -10277,7 +10283,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-	Hint = "In the absense of a model,"$0D
+        Hint = "In the absense of a model,"$0D
                "'count' will determine the piece to spawn."$0D
       }
     }
@@ -10524,7 +10530,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris. Default is 'wood'."$0D
+        hint = "Type of debris. Default is 'wood'."$0D
                "Click the 'help book' above for more detail."
       items=
         "glass"$0D
@@ -10672,14 +10678,14 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-	Hint = "Defaults to 5 how many shards to spawn."$0D
+        Hint = "Defaults to 5 how many shards to spawn."$0D
                "( try not to exceed 20 )"
       }
       shard: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris."
+        hint = "Type of debris."
       items=
         "shard_glass"$0D
         "shard_wood"$0D
@@ -10714,28 +10720,28 @@ QQRKSRC1
       fov: =
       {
         Txt = "&"
-	Hint = "For the skybox default is 90."
+        Hint = "For the skybox default is 90."
       }
       fogcolor: =
       {
         Txt = "&"
         Typ = "LN"
-	Hint = "Use 'color picker' or (r g b) (values 0.0-1.0)."
+        Hint = "Use 'color picker' or (r g b) (values 0.0-1.0)."
       }
       fogcolor: =
       {
         Txt = "&"
-	Hint = "Use 'color picker' or (r g b) (values 0.0-1.0)."
+        Hint = "Use 'color picker' or (r g b) (values 0.0-1.0)."
       }
       fognear: =
       {
         Txt = "&"
-	Hint = "Distance from entity to start fogging."
+        Hint = "Distance from entity to start fogging."
       }
       fogfar: =
       {
         Txt = "&"
-	Hint = "Distance from entity that fog is opaque."
+        Hint = "Distance from entity that fog is opaque."
       }
     }
     props_smokedust:form =
@@ -10755,7 +10761,7 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-	Hint = "How many pieces, 16 is default."
+        Hint = "How many pieces, 16 is default."
       }
     }
     props_snowGenerator:form =
@@ -10781,7 +10787,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity brush needs to be targeted to an info_notnull."$0D
+        Hint = "Entity brush needs to be targeted to an info_notnull."$0D
                "This will determine the direction the snow particles will travel."
       }
       targetname: =
@@ -10792,27 +10798,27 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-	Hint = "Speed of fall."
+        Hint = "Speed of fall."
       }
       gravity: =
       {
         Txt = "&"
-	Hint = "Gravity effect on snow flakes."
+        Hint = "Gravity effect on snow flakes."
       }
       turb: =
       {
         Txt = "&"
-	Hint = "How turbulent the air is."
+        Hint = "How turbulent the air is."
       }
       count: =
       {
         Txt = "&"
-	Hint = "The number of snowflurries, 3 to 5 would be a good number."
+        Hint = "The number of snowflurries, 3 to 5 would be a good number."
       }
       duration: =
       {
         Txt = "&"
-	Hint = "How long the effect will last, 1 is 1 second."
+        Hint = "How long the effect will last, 1 is 1 second."
       }
     }
     props_sparks:form =
@@ -10842,7 +10848,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity brush needs to be targeted to an info_notnull."$0D
+        Hint = "Entity brush needs to be targeted to an info_notnull."$0D
                "This will determine the direction, the default is strait up."
       }
       targetname: =
@@ -10853,33 +10859,33 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-	Hint = "Controls how quickly the sparks will travel, default is 2."
+        Hint = "Controls how quickly the sparks will travel, default is 2."
       }
       delay: =
       {
         Txt = "&"
-	Hint = "How long till next spark effect."
+        Hint = "How long till next spark effect."
       }
       wait: =
       {
         Txt = "&"
-	Hint = "Life of the spark with some random variance, default is 1.0 sec."
+        Hint = "Life of the spark with some random variance, default is 1.0 sec."
       }
       health: =
       {
         Txt = "&"
-	Hint = "Random number of sparks up to specified amount, default is 8."
+        Hint = "Random number of sparks up to specified amount, default is 8."
       }
       start_size: =
       {
         Txt = "&"
-	Hint = "Default is 8 along the x."$0D
+        Hint = "Default is 8 along the x."$0D
                "Click the 'help book' above for more detail."
       }
       end_size: =
       {
         Txt = "&"
-	Hint = "Default is 8 along the y."$0D
+        Hint = "Default is 8 along the y."$0D
                "Click the 'help book' above for more detail."
       }
     }
@@ -10946,7 +10952,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris. Default is 'wood'."
+        hint = "Type of debris. Default is 'wood'."
       items=
         "glass"$0D
         "wood"$0D
@@ -10968,34 +10974,34 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-	Hint = "How much debris ie. default 4 pieces."
+        Hint = "How much debris ie. default 4 pieces."
       }
       frames: =
       {
         Txt = "&"
-	Hint = "How many frames of animation to play."
+        Hint = "How many frames of animation to play."
       }
       delay: =
       {
         Txt = "&"
-	Hint = "How long of a delay before damage is inflicted"$0D
+        Hint = "How long of a delay before damage is inflicted"$0D
                "ie. 0.5 sec or 2.7 sec."
       }
       damage: =
       {
         Txt = "&"
-	Hint = "Amount of damage to be inflicted."
+        Hint = "Amount of damage to be inflicted."
       }
       high: =
       {
         Txt = "&"
-	Hint = "You will need to specify the bounding box for the entity."$0D
+        Hint = "You will need to specify the bounding box for the entity."$0D
                "Default is 4."
       }
       wide: =
       {
         Txt = "&"
-	Hint = "You will need to specify the bounding box for the entity."$0D
+        Hint = "You will need to specify the bounding box for the entity."$0D
                "Default is 4."
       }
     }
@@ -11058,7 +11064,7 @@ QQRKSRC1
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris. Default is 'wood'."
+        hint = "Type of debris. Default is 'wood'."
       items=
         "glass"$0D
         "wood"$0D
@@ -11075,17 +11081,17 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-	Hint = "How much debris ie. default 4 pieces."
+        Hint = "How much debris ie. default 4 pieces."
       }
       frames: =
       {
         Txt = "&"
-	Hint = "How many frames of animation to play."
+        Hint = "How many frames of animation to play."
       }
       delay: =
       {
         Txt = "&"
-	Hint = "How long of a delay before damage is inflicted"$0D
+        Hint = "How long of a delay before damage is inflicted"$0D
                "ie. 0.5 sec or 2.7 sec."
       }
     }
@@ -11110,13 +11116,13 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-	Hint = "Duration of fade out."$0D
+        Hint = "Duration of fade out."$0D
                "Click the 'help book' above for more detail."
       }
       delay: =
       {
         Txt = "&"
-	Hint = "Duration of fade in."$0D
+        Hint = "Duration of fade in."$0D
                "Click the 'help book' above for more detail."
       }
     }
@@ -11145,7 +11151,7 @@ QQRKSRC1
       scriptname: =
       {
         Txt = "&"
-	Hint = "Name used for scripting purposes,"$0D
+        Hint = "Name used for scripting purposes,"$0D
                "(like aiName in AI scripting)."
       }
     }
@@ -11183,7 +11189,7 @@ QQRKSRC1
       scriptname: =
       {
         Txt = "&"
-	Hint = "Name used for scripting purposes,"$0D
+        Hint = "Name used for scripting purposes,"$0D
                "(like aiName in AI scripting)."
       }
     }
@@ -11244,7 +11250,7 @@ QQRKSRC1
       scriptname: =
       {
         Txt = "&"
-	Hint = "Name used for scripting purposes,"$0D
+        Hint = "Name used for scripting purposes,"$0D
                "(like aiName in AI scripting)."
       }
       health: =
@@ -11273,7 +11279,7 @@ QQRKSRC1
       scriptname: =
       {
         Txt = "&"
-	Hint = "Name used for scripting purposes,"$0D
+        Hint = "Name used for scripting purposes,"$0D
                "(REQUIRED=='game_manager')."
       }
     }
@@ -11286,7 +11292,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to fire at. Default is the current direction."
+        Hint = "Entity to fire at. Default is the current direction."
       }
       targetname: =
       {
@@ -11296,7 +11302,7 @@ QQRKSRC1
       random: =
       {
         Txt = "&"
-	Hint = "Number of degrees of deviance from the target,"$0D
+        Hint = "Number of degrees of deviance from the target,"$0D
                "(1.0 default)."
       }
     }
@@ -11321,7 +11327,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Lobs mortar that will pass through the info_notnull targeted."
+        Hint = "Lobs mortar that will pass through the info_notnull targeted."
       }
       targetname: =
       {
@@ -11331,7 +11337,7 @@ QQRKSRC1
       random: =
       {
         Txt = "&"
-	Hint = "Number of degrees of deviance from the target,"$0D
+        Hint = "Number of degrees of deviance from the target,"$0D
                "(1.0 default)."
       }
     }
@@ -11344,7 +11350,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to fire at. Default is the current direction."
+        Hint = "Entity to fire at. Default is the current direction."
       }
       targetname: =
       {
@@ -11354,7 +11360,7 @@ QQRKSRC1
       random: =
       {
         Txt = "&"
-	Hint = "Number of degrees of deviance from the target,"$0D
+        Hint = "Number of degrees of deviance from the target,"$0D
                "(1.0 default)."
       }
     }
@@ -11372,7 +11378,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to fire at. Default is the current direction."
+        Hint = "Entity to fire at. Default is the current direction."
       }
       targetname: =
       {
@@ -11382,25 +11388,25 @@ QQRKSRC1
       random: =
       {
         Txt = "&"
-	Hint = "Number of degrees of deviance from the target,"$0D
+        Hint = "Number of degrees of deviance from the target,"$0D
                "(1.0 default)."
       }
       damage: =
       {
         Txt = "&"
-	Hint = "The amount of damage sniper will cause"$0D
+        Hint = "The amount of damage sniper will cause"$0D
                "when he hits his target, default is 10."
       }
       radius: =
       {
         Txt = "&"
-	Hint = "The dist the target would need to travel"$0D
+        Hint = "The dist the target would need to travel"$0D
                "before sniper lost his bea,t default 256."
       }
       delay: =
       {
         Txt = "&"
-	Hint = "Is the rate of fire, defaults to 1 sec."
+        Hint = "Is the rate of fire, defaults to 1 sec."
       }
     }
     shooter_tesla:form =
@@ -11445,35 +11451,35 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to fire at. Default is the current direction."
+        Hint = "Entity to fire at. Default is the current direction."
       }
       sticktime: =
       {
         Txt = "&"
-	Hint = "How long each bolt should 'stick' to an impact point,"$0D
+        Hint = "How long each bolt should 'stick' to an impact point,"$0D
                "(.5 default)."
       }
       random: =
       {
         Txt = "&"
-	Hint = "How far away to drift from the target,"$0D
+        Hint = "How far away to drift from the target,"$0D
                "(0.0 default)."
       }
       width: =
       {
         Txt = "&"
-	Hint = "Width of the bolts, (20 default)."
+        Hint = "Width of the bolts, (20 default)."
       }
       count: =
       {
         Txt = "&"
-	Hint = "Number of bolts to fire per impact point,"$0D
+        Hint = "Number of bolts to fire per impact point,"$0D
                "(2 default)."
       }
       dlightsize: =
       {
         Txt = "&"
-	Hint = "How big to make the attached light,"$0D
+        Hint = "How big to make the attached light,"$0D
                "(500 default)."
       }
     }
@@ -11487,7 +11493,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to fire at. Default is the current direction."
+        Hint = "Entity to fire at. Default is the current direction."
       }
       targetname: =
       {
@@ -11497,7 +11503,7 @@ QQRKSRC1
       random: =
       {
         Txt = "&"
-	Hint = "The number of degrees of deviance from the taget,"$0D
+        Hint = "The number of degrees of deviance from the taget,"$0D
                "(1.0 default)."
       }
     }
@@ -11508,7 +11514,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to fire at."
+        Hint = "Entity to fire at."
       }
       targetname: =
       {
@@ -11564,7 +11570,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-	Hint = "The key for the count value."
+        Hint = "The key for the count value."
       }
     }
     target_delay:form =
@@ -11576,7 +11582,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to fire at."
+        Hint = "Entity to fire at."
       }
       targetname: =
       {
@@ -11586,12 +11592,12 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-	Hint = "Seconds to pause before firing targets."$0D
+        Hint = "Seconds to pause before firing targets."$0D
       }
       random: =
       {
         Txt = "&"
-	Hint = "Delay variance,"$0D
+        Hint = "Delay variance,"$0D
                "total delay = delay +/- random seconds."
       }
     }
@@ -11653,19 +11659,19 @@ QQRKSRC1
       mass: =
       {
         Txt = "&"
-	Hint = "Determines how much debris is emitted when it explodes,"$0D
+        Hint = "Determines how much debris is emitted when it explodes,"$0D
                "(number of pieces). Default is 15."
       }
       dmg: =
       {
         Txt = "&"
-	Hint = "Damage radius blast when triggered. Default is 15."
+        Hint = "Damage radius blast when triggered. Default is 15."
       }
       type: =
       {
         typ="C"
         Txt = "&"
-	hint = "Type of debris. Default is 'wood'."
+        hint = "Type of debris. Default is 'wood'."
       items=
         "glass"$0D
         "wood"$0D
@@ -11712,28 +11718,28 @@ QQRKSRC1
       {
         Txt = "&"
         Typ = "LN"
-	Hint = "Use 'color picker' or (r g b) (values 0.0-1.0)."
+        Hint = "Use 'color picker' or (r g b) (values 0.0-1.0)."
       }
       fogcolor: =
       {
         Txt = "&"
-	Hint = "Use 'color picker' or (r g b) (values 0.0-1.0)."
+        Hint = "Use 'color picker' or (r g b) (values 0.0-1.0)."
       }
       distance: =
       {
         Txt = "&"
-	Hint = "Sets fog distance."$0D
+        Hint = "Sets fog distance."$0D
                "Click the 'help book' above for more detail."
       }
       near: =
       {
         Txt = "&"
-	Hint = "Fog start distance when using fog 'distance'."
+        Hint = "Fog start distance when using fog 'distance'."
       }
       time: =
       {
         Txt = "&"
-	Hint = "Time it takes to change fog to new value, default is 1 sec."
+        Hint = "Time it takes to change fog to new value, default is 1 sec."
       }
     }
     target_give:form =
@@ -11743,7 +11749,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to be targeted."
+        Hint = "Entity to be targeted."
       }
       targetname: =
       {
@@ -11766,7 +11772,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to be targeted."
+        Hint = "Entity to be targeted."
       }
       targetname: =
       {
@@ -11787,7 +11793,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to be targeted."
+        Hint = "Entity to be targeted."
       }
       targetname: =
       {
@@ -11816,12 +11822,12 @@ QQRKSRC1
       message: =
       {
         Txt = "&"
-	Hint = "Set to the name of this location."
+        Hint = "Set to the name of this location."
       }
       count: =
       {
         Txt = "&"
-	Hint = "Set 0 to 7 for color. 0:white 1:red 2:green"$0D
+        Hint = "Set 0 to 7 for color. 0:white 1:red 2:green"$0D
                "3:yellow 4:blue 5:cyan 6:magenta 7:white"
       }
     }
@@ -11842,12 +11848,12 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to be targeted by this one."
+        Hint = "Entity to be targeted by this one."
       }
       key: =
       {
         Txt = "&"
-	Hint = "Sets the door to a state requiring key 'n'."$0D
+        Hint = "Sets the door to a state requiring key 'n'."$0D
                "keys are:"$0D
                "0 unlocks the door."$0D
                "-1 locks the door until a target_lock with key:0 is used."$0D
@@ -11888,7 +11894,7 @@ QQRKSRC1
       message: =
       {
         Txt = "&"
-	Hint = "Text to print."
+        Hint = "Text to print."
       }
     }
     target_push:form =
@@ -11906,7 +11912,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-	Hint = "Entity to be targeted by this one."
+        Hint = "Entity to be targeted by this one."
       }
       targetname: =
       {
@@ -11916,7 +11922,7 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-	Hint = "Default is 1000."
+        Hint = "Default is 1000."
       }
     }
     target_relay:form =

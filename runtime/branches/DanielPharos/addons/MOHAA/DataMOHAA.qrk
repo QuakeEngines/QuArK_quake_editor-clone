@@ -4,6 +4,26 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.13  2007/05/06 22:28:57  cdunde
+//Added trigger_multiple, trigger_hurt and some things to the sound by OmnificienT.
+//
+//Revision 1.12  2007/03/20 18:29:37  cdunde
+//Added trigger_changelevel and trigger_clickitem specifics.
+//Fixed an error and added sound specifics and file selectors.
+//Added specific for func_emitter.
+//Also added specifics for light and all script specifics.
+//All above items by OmnificienT.
+//
+//Revision 1.11  2007/03/13 05:08:50  cdunde
+//By OmnificienT - Added all specifics for worldspawn, dropdown menu for func_crate, specifics for
+//func_exploder, func_rain, func_remove and also added target and targetname for func_emitter.
+//
+//Revision 1.10  2007/03/12 19:32:21  cdunde
+//Added specifics for func_door, func_rotatingdoor and func_barrel by OmnificienT.
+//
+//Revision 1.9  2005/10/15 01:00:30  cdunde
+//To reinstate headers and history
+//
 //Revision 1.6  2004/12/21 04:49:32  cdunde
 //Weapon entities added by raginggoblin12.
 //
@@ -837,6 +857,18 @@ QQRKSRC1
 
   Entity forms.qctx =
   {
+    // Definition of "includes"
+
+    t_soundbrowser:incl =
+    {
+      txt = "&"
+      Typ = "EP"
+      BasePath = "$Game\tmpQuArK\sound"
+      CutPath = "$Game\?\?\"
+      DefExt = "wav"
+      DirSep = "/"
+    }
+
     ai_actor:form =
     {
       bbox = '-16 -16 0 16 16 92'
@@ -860,7 +892,31 @@ QQRKSRC1
         typ = "X1"
         cap = "INDESTRUCTABLE"
       }
-    }
+      targetname: =
+      {
+      Txt = "&"
+      }
+      target: =
+      {
+      Txt = "&"
+      }
+      barreltype: =
+        {
+        Txt = "&"
+        Hint = $0D
+        Typ="C"
+          items =
+          "water" $0D
+          "oil" $0D
+          "gas" $0D
+          "empty" $0D
+          values =
+          "water" $0D
+          "oil" $0D
+          "gas" $0D
+          "empty" $0D
+        }
+      }
     info_splinepath:form =
     {
       bbox = '-16 -16 -16 16 16 16'
@@ -879,6 +935,7 @@ QQRKSRC1
        "Valid values are from 0 - ?. Default is 0"$0D"0: wooden crate 32 units"
        " to a side"$0D"1: wooden crate 64 units to a side"$0D"2: cardboard cra"
        "te 16 units to a side"$0D"3: cardboard crate 32 units to a side"
+
       spawnflags: =
       {
         typ = "X1"
@@ -889,6 +946,40 @@ QQRKSRC1
         typ = "X2"
         cap = "NOTSTACKEDON"
       }
+      targetname: =
+      {
+      Txt = "&"
+      }
+      target: =
+      {
+      Txt = "&"
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "Sets the crates health. Default is 300."
+      }
+      debristype: =
+      {
+      Txt = "&"
+      Hint = "Sets the type of debris from the crate. Default is 0."
+      Typ="C"
+        items = 
+        "Wooden crate, 32 units to a side." $0D
+        "Wooden crate, 64 units to a side." $0D
+        "Cardboard crate, 16 units to a side." $0D
+        "Cardboard crate, 32 units to a side."
+        values =
+        "0"$0D
+        "1"$0D
+        "2"$0D
+        "3"
+        }	
+      spawnitems: =
+      {
+      Txt = "&"
+      Hint = "This is a list of items to spawn when the crate is destroyed."
+      }	
     }
     func_rotatingdoor:form =
     {
@@ -960,6 +1051,82 @@ QQRKSRC1
         typ = "X128"
         cap = "TARGETED"
       }
+      targetname: = 
+      {
+      Txt = "&"
+      Hint = "If set, no touchfield will be spawned and a trigger or " $0D
+      "button activates the door."
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      message: =
+      {
+      Txt = "&"
+      Hint = "This text is printed when the door is touched, but"$0D 
+      "only if it is a trigger door and hasn't been fired yet."
+      }
+      openangle: =
+      {
+      Txt = "&"
+      Hint = "How wide to open the door."
+      }
+      angle: =
+      {
+      Txt = "&"
+      Hint = "Determines the opening direction."
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "If set, the door must be shot open."
+      }
+      time: =
+      {
+      Txt = "&"
+      Hint = "Move time (default is 0.3)."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Time to wait before returning." $0D
+      "3 is default, -1 = never return."
+      }
+      dmg: =
+      {
+      Txt = "&"
+      Hint = "Damage to inflict when blocked."
+      }
+      alwaysaway: =
+      {
+      Txt = "&"
+      Hint = "Makes the door always open away from the opener."
+      }
+      sound_open: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "starts opening (default is global door_wood open)."
+      }
+      sound_close: = 
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "starts closing (default is global door_wood open)."
+      }
+      sound_message: =
+      {
+      Txt = "&"
+      Hint = "Specify the sounds that is played when displaying a message."
+      }
+      sound_locked: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door is locked" $0D
+      "(default is global door_wood_locked)."
+      }
     }
     func_door:form =
     {
@@ -1025,6 +1192,77 @@ QQRKSRC1
       {
         typ = "X128"
         cap = "TARGETED"
+      }
+      targetname: = 
+      {
+      Txt = "&"
+      Hint = "If set, no touchfield will be spawned and a trigger or " $0D
+      "button activates the door."
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      message: =
+      {
+      Txt = "&"
+      Hint = "This text is printed when the door is touched, but"$0D 
+      "only if it is a trigger door and hasn't been fired yet."
+      }
+      angle: =
+      {
+      Txt = "&"
+      Hint = "Determines the opening direction."
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "If set, the door must be shot open."
+      }
+      time: =
+      {
+      Txt = "&"
+      Hint = "Move time (default is 0.3)."
+      }
+      lip: = 
+      {
+      Txt = "&"
+      Hint = "Lip remaining at end of move (default is 8)."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Time to wait before returning." $0D
+      "3 is default, -1 = never return."
+      }
+      dmg: =
+      {
+      Txt = "&"
+      Hint = "Damage to inflict when blocked."
+      }
+      sound_open: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "starts opening (default is global door_wood open)."
+      }
+      sound_close: = 
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "starts closing (default is global door_wood open)."
+      }
+      sound_message: =
+      {
+      Txt = "&"
+      Hint = "Specify the sounds that is played when displaying a message."
+      }
+      sound_locked: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door is locked" $0D
+      "(default is global door_wood_locked)."
       }
     }
     script_door:form =
@@ -1096,6 +1334,92 @@ QQRKSRC1
       {
         typ = "X128"
         cap = "TARGETED"
+      }	
+      targetname: = 
+      {
+      Txt = "&"
+      Hint = "If set, no touchfield will be spawned and a trigger or " $0D
+      "button activates the door."
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      message: =
+      {
+      Txt = "&"
+      Hint = "This text is printed when the door is touched, but"$0D 
+      "only if it is a trigger door and hasn't been fired yet."
+      }
+      angle: =
+      {
+      Txt = "&"
+      Hint = "Determines the opening direction."
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "If set, the door must be shot open."
+      }
+      speed: =
+      {
+      Txt = "&"
+      Hint = "Move speed (100 is default)."
+      }
+      time: =
+      {
+      Txt = "&"
+      Hint = "Move time (default is 0.3). Overrides speed."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Time to wait before returning." $0D
+      "3 is default, -1 = never return."
+      }
+      dmg: =
+      {
+      Txt = "&"
+      Hint = "Damage to inflict when blocked."
+      }
+      initthread: =
+      {
+      Txt = "&"
+      Hint = "Code to execute to setup the door (optional)."
+      }
+      openthread: =
+      {
+      Txt = "&"
+      Hint = "Code to execute when opening the door (required)."
+      }
+      closethread: = 
+      {
+      Txt = "&"
+      Hint = "Code to execute when closing the door (required)."
+      }
+      sound_move: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "opens or closes. (default is global door_moving)."
+      }
+      sound_stop: = 
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door" $0D
+      "stops moving (default is global door_stop)."
+      }
+      sound_message: =
+      {
+      Txt = "&"
+      Hint = "Specify the sounds that is played when displaying a message."
+      }
+      sound_locked: =
+      {
+      Txt = "&"
+      Hint = "Specify the sound that plays when the door is locked" $0D
+      "(default is global door_wood_locked)."
       }
     }
     func_viewjitter:form =
@@ -1110,8 +1434,19 @@ QQRKSRC1
        "l off over the jitter's duraction in degrees per second. Default is "$22
        "2 2 3"$220D22"donedeath"$22" makes the view jitter remove itself after"
        " being fired once. Any non-zero value will work."
-      bbox = '-8 -8 -8 8 8 8'
-    }
+        bbox = '-8 -8 -8 8 8 8'
+        radius: =
+        {
+        Txt = "&"
+        Hint = "Sets the max effective range for the view jitter (default is 128)."
+        }
+        edgeeffect: =
+        {
+        Txt = "&"
+        Hint = "Sets the fraction of the total jitter to apply at" $0D
+        "at the maximum range (default is 0.2)."
+        }
+      }
     func_exploder:form =
     {
       help = "Spawns an explosion when triggered.  Triggers any targets."$0D22
@@ -1120,6 +1455,32 @@ QQRKSRC1
        "etthread"$22" name of thread to trigger.  This can be in a different s"
        "cript file as well\"$0D"by using the '::' notation."
       bbox = '0 0 0 8 8 8'
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: = 
+      {
+      Txt = "&"
+      Hint = "&"
+      }
+      dmg: =
+      {
+      Txt = "&"
+      Hint = "Specifies how much damge to cause (default is 120)."
+      }
+      key: =
+      {
+      Txt = "&"
+      Hint = "The item needed to activate this (default is none)."
+      }
+      setthread: =
+      {
+      Txt = "&"
+      Hint = "Name of the thread to trigger (this can be in a different"$0D
+             "script file as well, by using the '::' notation)."
+      }
     }
     info_grenadehint:form =
     {
@@ -1166,6 +1527,59 @@ QQRKSRC1
         typ = "X8"
         cap = "ENTITY_ONLY"
       }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      light: =
+      {
+      Txt = "&"
+      Hint = "The intensity of the light (default 300)."
+      }
+      color: =
+      {
+      Txt = "&"
+      Typ = "LN"
+      Hint = "The color of the light."
+      }
+      falloff: =
+      {
+      Txt = "&"
+      Hint = "If the light is linear, this specifies"$0D
+      "the linear fallof (default is 1)."
+      }
+      radius: =
+      {
+      Txt = "&"
+      Hint= "Makes this a spotlight with the given radius."
+      }
+      angles: =
+      {
+      Txt = "&"
+      Hint = "Makes this a spotlight centered on angles."
+      }
+      spot_angle: =
+      {
+      Txt = "&"
+      Hint = "If this is a spotlight, this specifies what angle to use (default is 45)."
+      }
+      entity_trace: =
+      {
+      Txt = "&"
+      Hint = "Trace between the entity and the light."
+      }
+      overbright_range: =
+      {
+      Txt = "&"
+      Hint = "Fraction of standard overbright range used"$0D
+      "for overbrighting (0.01 - 2.5, default is 1)."
+      }
     }
     detail:form =
     {
@@ -1182,6 +1596,16 @@ QQRKSRC1
     func_remove:form =
     {
       help = "Used for lighting and such"
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
     }
     info_null:form =
     {
@@ -1240,6 +1664,16 @@ QQRKSRC1
     {
       help = "Point trigger_teleport at these."
       bbox = '-32 -32 0 32 32 8'
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "This should be name you point trigger_teleport at."
+      }
     }
     info_waypoint:form =
     {
@@ -1271,19 +1705,79 @@ QQRKSRC1
       help = "Pushable object"$0D22"dmg"$22" how much damage to cause when blo"
        "cked.  (default 2)"$0D22"pushsound"$22" Sound to play when object is p"
        "ushed (default is none)"
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
+      dmg: =
+      {
+      Txt = "&"
+      Hint = "How much damage to cause when blocked."
+      }
+      pushsound: =
+      {
+      Txt = "&"
+      Hint = "Sound to play when the object is pushed (default is none)."
+      }
     }
     func_ladder:form =
     {
       help = "Ladder trigger volume"
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: = 
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
     }
     func_emitter:form =
     {
       help = $22"emitter"$22" - Name of emitter to use."
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
+      emitter: =
+      {
+      Txt = "&"
+      Hint = "Name of the emitter to use."
+      }
     }
     func_rain:form =
     {
       help = "This creates a raining effect in the brush"$0D22"emitter"$22" - "
        "Name of emitter to use for the rain."
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
+      emitter: =
+      {
+      Txt = "&"
+      Hint = "Name of the emitter to use for the rain."
+      }
     }
     info_pathnode:form =
     {
@@ -1385,6 +1879,16 @@ QQRKSRC1
       help = "The portal surface nearest this entity will show a view from the"
        " targeted portal_camera, or a mirror view if untargeted."
       bbox = '-8 -8 -8 8 8 8'
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
     }
     portal_camera:form =
     {
@@ -1402,6 +1906,16 @@ QQRKSRC1
         typ = "X2"
         cap = "fastrotate"
       }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
     }
     script_object:form =
     {
@@ -1409,6 +1923,16 @@ QQRKSRC1
       {
         typ = "X1"
         cap = "NOT_SOLID"
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
       }
     }
     script_model:form =
@@ -1424,16 +1948,46 @@ QQRKSRC1
         typ = "X2"
         cap = "ALWAYS_DRAW"
       }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
     }
     script_origin:form =
     {
       help = "Used as an alternate origin for objects.  Bind the object to the"
        " script_origin"$0D"in order to simulate changing that object's origin."
       bbox = '-8 -8 -8 8 8 8'
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+	  }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
     }
     script_skyorigin:form =
     {
       help = "Used to specify the origin of a portal sky"
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
     }
     trigger_multiple:form =
     {
@@ -1473,6 +2027,52 @@ QQRKSRC1
       {
         typ = "X128"
         cap = "DAMAGE"
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "If this is set, the trigger must be killed to activate each time."
+      }
+      delay: =
+      {
+      Txt = "&"
+      Hint = "The trigger waits some time after activation, before firing."
+      }
+      setthread: =
+      {
+      Txt = "&"
+      Hint = "Name of the thread to trigger."
+      }
+      angle: =
+      {
+      Txt = "&"
+      Hint = "If this is set, the trigger will only fire when someone faces"$0D
+             "the angle."
+      }
+      cone: =
+      {
+      Txt = "&"
+      Hint = "The cone in which a directed trigger can be triggered (default is 60 degrees)."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Seconds between dus triggerings (0.2 is default)."
+      }
+      cnt: =
+      {
+      Txt = "&"
+      Hint = "How many times it can be triggered (default is infinite)."
+      }
+      triggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger on."
+      }
+      nottriggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger off."
       }
     }
     trigger_vehicle:form =
@@ -1517,6 +2117,47 @@ QQRKSRC1
       {
         typ = "X128"
         cap = "DAMAGE"
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "If this is set, the trigger must be killed to activate each time."
+      }
+      delay: =
+      {
+      Txt = "&"
+      Hint = "The trigger waits some time after activation, before firing."
+      }
+      setthread: =
+      {
+      Txt = "&"
+      Hint = "Name of the thread to trigger."
+      }
+      angle: =
+      {
+      Txt = "&"
+      Hint = "If this is set, the trigger will only fire when someone faces"$0D
+             "the angle."
+      }
+      cone: =
+      {
+      Txt = "&"
+      Hint = "The cone in which a directed trigger can be triggered (default is 60 degrees)."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Seconds between dus triggerings (0.2 is default)."
+      }
+      triggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger on."
+      }
+      nottriggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger off."
       }
     }
     trigger_save:form =
@@ -1736,6 +2377,67 @@ QQRKSRC1
         typ = "X512"
         cap = "TOGGLE"
       }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
+      noise: =
+      {
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
+      }
+      channel: =
+      {
+      Txt = "&"
+      Hint = "The channel on which to play the sound."
+      Typ="C"
+        items = 
+        "Auto."$0D
+        "Body"$0D
+        "Item."$0D
+        "Weaponidle."$0D
+        "Voice."$0D
+        "Local."$0D
+        "Weapon."$0D
+        "Dialog_Secondary."$0D
+        "Dialog."$0D
+        "Menu."
+      values = 
+        "0"$0D
+        "1"$0D
+        "2"$0D
+        "3"$0D
+        "4"$0D
+        "5"$0D
+        "6"$0D
+        "7"$0D
+        "8"$0D
+        "9"
+      }
+      volume: =
+      {
+      Txt = "&"
+      Hint = "The loudness of the sound (1 is default, ranges from 0 to 4)."
+      }
+      setthread: =
+      {
+      Txt = "&"
+      Hint ="Name of the thread to trigger. This can be in a different" 
+		  "script file as well by using the '::' notation."
+      }
     }
     sound_randomspeaker:form =
     {
@@ -1765,6 +2467,76 @@ QQRKSRC1
       {
         typ = "X16"
         cap = "PROJECTILES"
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname:=
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
+      mindelay: =
+      {
+      Txt = "&"
+      Hint = "Minimum delay between soundtriggers (default is 3)."
+      }
+      maxdelay: =
+      {
+      Txt = "&"
+      Hint = "The maximum delay between soundtriggers (default is 10)."
+      }
+      chance: =
+      {
+      Txt = "&"
+      Hint = "The chance that a sound will play when fired (default is 1)."
+      }
+      volume: =
+      {
+      Txt = "&"
+      Hint = "The loudness of the sound (1 is default, ranges from 0 to 4)."
+      }
+      noise: =
+      {
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
+      }
+      channel: =
+      {
+      Txt = "&"
+      Hint = "The channel on which to play the sound."
+      Typ="C"
+        items = 
+        "Auto."$0D
+        "Body"$0D
+        "Item."$0D
+        "Weaponidle."$0D
+        "Voice."$0D
+        "Local."$0D
+        "Weapon."$0D
+        "Dialog_Secondary."$0D
+        "Dialog."$0D
+        "Menu."
+      values = 
+        "0"$0D
+        "1"$0D
+        "2"$0D
+        "3"$0D
+        "4"$0D
+        "5"$0D
+        "6"$0D
+        "7"$0D
+        "8"$0D
+        "9"
       }
     }
     trigger_changelevel:form =
@@ -1799,6 +2571,36 @@ QQRKSRC1
       {
         typ = "X16"
         cap = "PROJECTILES"
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
+      spawnspot: =
+      {
+      Txt = "&"
+      Hint = "Name of the spawnlocation to start at in the next map."
+      }
+      setthread: =
+      {
+      Txt = "&"
+      Hint = "This defaults to 'LevelComplete' and should point to a thread that is called just before the level ends."
+      }
+      triggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger on."
+      }
+      nottriggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger off."
       }
     }
     trigger_use:form =
@@ -1863,6 +2665,39 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      damage: =
+      {
+      Txt = "&"
+      Hint = "Amount of damage to cause (default is 10)."
+      }
+      damagetype: =
+      {
+      Txt = "&"
+      Hint = "What type of damage a player should reveive (default is CRUSH)."
+      Typ = "C"  
+        items =
+          "water"$0D
+          "lava"$0D
+          "spikes"$0D
+          "bottomless pit"$0D
+          "grass"
+        values =
+          "0"$0D
+          "1"$0D
+          "2"$0D
+          "3"$0D
+          "4"
+      }
+      triggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger on."
+      }
+      nottriggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger off."
+      }
     }
     trigger_pushobject:form =
     {
@@ -1888,6 +2723,91 @@ QQRKSRC1
        "times it can be triggered (infinite default)"$0D22"oneshot"$22" make t"
        "his a one time trigger"$0D22"triggerable"$22" turn trigger on"$0D22"no"
        "ttriggerable"$22" turn trigger off"
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
+      delay: =
+      {
+      Txt = "&"
+      Hint = "If set the trigger waits after activating before firing."
+      }
+      reverbtype: =
+      {
+      Txt = "&"
+      Hint = "What kind of reverb should be used."
+      }
+      reverblevel: =
+      {
+      Txt = "&"
+      Hint = "How much of the reverb effect should be applied."
+      }
+      altreverbtype: =
+      {
+      Txt = "&"
+      Hint = "What kind of reverb should be used."
+      }
+      altreverblevel: =
+      {
+      Txt = "&"
+      Hint = "How much of the reverb effect should be applied."
+      }
+      edgeTriggerable: =
+      {
+      Txt = "&"
+      Hint = "Trigger only fires when entering a trigger."
+      }
+      multiFaced: =
+      {
+      Txt = "&"
+      Hint = "If 1, then the trigger is North/South separate triggerable."$0D
+             "If 2, then the trigger is East/West saparate triggerable."
+      Typ="C"
+      items = 
+        "Neither."$0D
+        "North/South."$0D
+        "East/West."
+        values = 
+        "0"$0D
+        "1"$0D
+        "2"
+      }
+      setthread: =
+      {
+      Txt = "&"
+      Hint = "Name of thread to trigger."
+      }
+      wait: =
+      {
+      Txt = "&"
+      Hint = "Seconds between triggerings (default is 0."
+      }
+      cnt: =
+      {
+      Txt = "&"
+      Hint = "How many times it can be triggered (default is infinite)."
+      }
+      oneshot: =
+      {
+      Txt = "&"
+      Hint = "Makes this a one time trigger."
+      }
+      triggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger on."
+      }
+      nottriggerable: =
+      {
+      Txt = "&"
+      Hint = "Turn trigger off."
+      }
     }
     func_window:form =
     {
@@ -1903,6 +2823,38 @@ QQRKSRC1
       {
         typ = "X1"
         cap = "WINDOW_BROKEN_BLOCK"
+      }
+      target: =
+      {
+      Txt = "&"
+      Hint = "Target."
+      }
+      targetname: =
+      {
+      Txt = "&"
+      Hint = "Targetname."
+      }
+      spawnitems: =
+      {
+      Txt = "&"
+      Hint = "This is a list of items to spawn when the window is destroyed."
+      }
+      health: =
+      {
+      Txt = "&"
+      Hint = "This sets the window's health (default is 250)."
+      }
+      debristype: =
+      {
+      Txt = "&"
+      Hint = "Sets the type of debris to spawn from the window."
+      Typ="C"
+      items =
+        "Clear glass."$0D
+        "Coloured glass."
+        values = 
+        "0"$0D
+        "1"
       }
     }
     worldspawn:form =
@@ -1944,6 +2896,128 @@ QQRKSRC1
         typ = "X1"
         cap = "CINEMATIC"
       }
+      soundtrack: =
+      {
+      	Txt = "&"
+      	Hint = "The soundtrack to use on the map."
+      }
+      gravity: =
+      {
+      	Txt = "&"
+      	Hint = "Default gravity is 800."
+      }
+      skipthread: = 
+      {
+      	Txt = "&"
+      	Hint = "Thread that is activated to skip this level (if cinematic)."
+      }
+      nextmap: =
+      {
+      	Txt = "&"
+      	Hint = "Map to go to when player exits this level."
+      }
+      message: =
+      {
+      	Txt = "&"
+      	Hint = "Text to print at user logon."
+      }
+      script: = 
+      {
+      	Txt = "&"
+      	Hint = "Script to run at the start of the level."
+      }
+      farplane_color: =
+      {
+      	Txt = "&"
+      	Hint = "Colour to fade when the far clip plane is on."
+      }
+      farplane_cull: =
+      {
+      	Txt = "&"
+      	Hint = "Whether or not the far plane should cull (default is yes)."
+      }
+      farplane: =
+      {
+      	Txt = "&"
+      	Hint = "Distance from the viewer that the far clip plane is set."
+      }
+      ambientlight: =
+      {
+      	Txt = "&"
+      	Hint = "Ambient lightning to be applied to all entities."
+      }
+      ambient: =
+      {
+      	Txt = "&"
+      	Hint = "Abient lightning to be applied to all entities, use _color to specifie the colour."
+      }
+      suncolor: =
+      {
+      	Txt = "&"
+      	Hint = "Color (and intensity) of the sun. Full daylight is 70 70 70."
+      }
+      sundirection: =
+      {
+      	Txt = "&"
+      	Hint = "Direction of the sun in the level."
+      }
+      sundiffuse: =
+      {
+      	Txt = "&"
+      	Hint = "Fraction of the sunlight to make diffuse (default is 1)."
+      }
+      sundiffusecolor: =
+      {
+      	Txt = "&"
+      	Hint = "Colour of the diffuse sunlight. Uses the same scale as suncolor."
+      }
+      sunflarename: =
+      {
+      	Txt = "&"
+      	Hint = "Sets the flare to use for the sun (default is sun)."
+      }
+      sunflaredirection: =
+      {
+      	Txt = "&"
+      	Hint = "Allows you to specify the direction of the sun flare"$0D
+      		   "(defaults to using the direction specified for the sunlight)."
+      }
+      lightmapdensity: =
+      {
+      	Txt = "&"
+      	Hint = "Default lightmap density to be used for all surfaces."
+      }
+      overbright: = 
+      {
+      	Txt = "&"
+      	Hint = "Forces on overbright lightening. 'World' makes it only"$0D
+      		   "affect the world, 'entities' makes it affect entity lightning,"$0D
+      		   " and 'all' makes it affect both. Setting it to 'none' forces"$0D
+      		   "all overbright lightning off."
+      }
+      skyalpha: =
+      {
+      	Txt = "&"
+      	Hint = "Initial value of the sky's alpha (default is 1)."
+      }
+      vis_derived: =
+      {
+      	Txt = "&"
+      	Hint = "Whether or not the vis compiler derives additional vis info from the manual vis (default is 0)."$0D   
+      	"Setting the value to 0 means will be slower since manual vis data is added after auto vis data. Setting"$0D
+      	"the value to 1 means vis is faster and lower runtime poly count, but erroneous no draw could result"$0D 
+      	"from incorrect manual vis data."
+      }
+      ai_visiondistance: =
+      {
+      	Txt = "&"
+      	Hint = "Default vision distance for all ai (default is 2048)."
+      }
+      northyaw: =
+      {
+      	Txt = "&"
+      	Hint = "Sets the yaw angle that is considered to be north."
+      }	
     }
   }
 }

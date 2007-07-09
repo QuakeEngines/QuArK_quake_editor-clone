@@ -70,7 +70,7 @@ QQRKSRC1
           ;desc = "Hostage Rescue Zone. When a hostage is led into this zone, "
            "it is marked as rescued."
         }
-				func_ladder:b =
+        func_ladder:b =
         {
           t_ladderpoly=!
           ;desc = "Ladder. Players will be able to freely along this brush, as"
