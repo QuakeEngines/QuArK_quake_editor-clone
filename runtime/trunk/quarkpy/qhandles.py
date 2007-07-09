@@ -1196,17 +1196,13 @@ def refreshtimer(self):
             return
         else:
             mode = DM_OTHERCOLOR|DM_BBOX
-            for r in self.redimages:
-                currentview.repaint()
-                currentview.drawmap(r, mode, RED)
-                mdleditor.setsingleframefillcolor(self.editor, currentview)
-                plugins.mdlgridscale.gridfinishdrawing(self.editor, currentview)
-                plugins.mdlaxisicons.newfinishdrawing(self.editor, currentview)
-         #       self.view.handles = []
-         #       self.view.invalidate(1)
-         #       mdleditor.setsingleframefillcolor(editor, self.view)
-         #       plugins.mdlgridscale.gridfinishdrawing(editor, self.view)
-         #       plugins.mdlaxisicons.newfinishdrawing(editor, self.view)
+            if self.redimages is not None:
+                for r in self.redimages:
+                    currentview.repaint()
+                    currentview.drawmap(r, mode, RED)
+                    mdleditor.setsingleframefillcolor(self.editor, currentview)
+                    plugins.mdlgridscale.gridfinishdrawing(self.editor, currentview)
+                    plugins.mdlaxisicons.newfinishdrawing(self.editor, currentview)
     else:
         try:
             for v in self.views:
@@ -2006,6 +2002,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.48  2007/07/04 18:51:23  cdunde
+#To fix multiple redraws and conflicts of code for RectSelDragObject in the Model Editor.
+#
 #Revision 1.47  2007/07/02 22:49:42  cdunde
 #To change the old mdleditor "picked" list name to "ModelVertexSelList"
 #and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
