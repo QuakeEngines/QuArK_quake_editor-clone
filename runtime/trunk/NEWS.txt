@@ -14,6 +14,16 @@ $Id$
 
 6.5.0 Beta 2.1
 =============
+
+* [cdunde]: Setup to clear all Editor and Skin-view selection lists when something outside the
+          - currentcomponent is selected to start clean and avoid crossing of list items.
+
+* [cdunde]: Setup RMB menu sub-menu "skin-view Options" and added its "Pass selection to Editor views" function.
+          - Also added Skin-view Options to editors main Options menu.
+
+* [cdunde]: Setup editors Rectangle selection to properly create a new triangle if only 3 vertexes are selected
+          - and a new function to reverse the direction of a triangles creation.
+
 * [DanielPharos]: In Half Life 2 mode, QuArK will now save a .vmf file instead of a Quake .map.
 
 * [cdunde]: Model Editor, Setup red rectangle selection support in the Model Editor for face and vertex selection methods
