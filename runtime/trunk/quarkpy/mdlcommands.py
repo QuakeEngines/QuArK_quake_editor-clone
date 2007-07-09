@@ -30,6 +30,10 @@ def addtriclick(m):
                 quarkx.msgbox("You need to select\nvertex "+str(editor.ModelVertexSelList[2][0])+" first.", MT_ERROR, MB_OK)
                 return
         else:
+          ### This will reverse the direction the triangle face is facing, when it is created, if the "Reverse Direction" command is active (checked).
+            templist = editor.ModelVertexSelList
+            if quarkx.setupsubset(SS_MODEL, "Options")["RevDir"] == "1":
+                editor.ModelVertexSelList = [templist[0], templist[2], templist[1]]
             addtriangle(editor)
 
 
@@ -48,10 +52,20 @@ def autobuild(m):
     editor.Root.tryautoloadparts()
     editor.fileobject = editor.fileobject
 
+def revdir(m):
+    if not MldOption("RevDir"):
+        quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = "1"
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = None
+    quarkx.reloadsetup()
+    ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
+
 
 NewFrame = qmenu.item("&Duplicate Current Frame", newframeclick, "|Duplicate Current Frame:\n\nThis copies a single frame that is currently selected and adds that copy to that model component's animation frames list.\n\nFor multiple frame copies use the 'Duplicate' function on the 'Edit' menu.|intro.modeleditor.menu.html#commandsmenu")
 
 AddTriangle = qmenu.item("&Add Triangle", addtriclick, "|Add Triangle:\n\nThis adds a new triangle to the currently selected component.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.menu.html#commandsmenu")
+
+ReverseDirection = qmenu.item("Reverse Direction", revdir, "|Reverse Direction:\n\nNormally, in QuArK, creating a new triangles vertexes in a 'clockwise' direction will produce a triangle that faces 'outwards'.\n\nBut sometimes this does not work for adding new triangles to existing ones.\n\nActivating this function (checking it) will reverse that direction causing the triangle to face the opposite way.\n\nClick on the 'InfoBase' button for more detail.|intro.modeleditor.menu.html#commandsmenu")
 
 RemoveTriangle = qmenu.item("&Delete Triangle", remtriclick, "|Delete Triangle:\n\nThis removes a triangle from the currently selected component.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.menu.html#commandsmenu")
 
@@ -62,12 +76,13 @@ AutoBuild = qmenu.item("Auto Assemble", autobuild, "|Auto Assemble:\n\nSome mode
 NewFrame.state = qmenu.disabled
 AddTriangle.state = qmenu.disabled
 RemoveTriangle.state = qmenu.disabled
+ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
 
 #
 # Global variables to update from plug-ins.
 #
 
-items = [NewFrame, qmenu.sep, AddTriangle, RemoveTriangle, qmenu.sep, CheckC, AutoBuild]
+items = [NewFrame, qmenu.sep, AddTriangle, ReverseDirection, RemoveTriangle, qmenu.sep, CheckC, AutoBuild]
 shortcuts = {"Ins": NewFrame}
 
 
@@ -105,6 +120,11 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.14  2007/07/02 22:49:42  cdunde
+# To change the old mdleditor "picked" list name to "ModelVertexSelList"
+# and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+# Also start of function to pass vertex selection from the Skin-view to the Editor.
+#
 # Revision 1.13  2007/06/11 19:52:31  cdunde
 # To add message box for proper vertex order of selection to add a triangle to the models mesh.
 # and changed code for deleting a triangle to stop access violation errors and 3D views graying out.

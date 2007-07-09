@@ -189,22 +189,27 @@ class ModelFaceHandle(qhandles.GenericHandle):
                     if v.info["viewname"] == "XY":
                         fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
                     if v.info["viewname"] == "XZ":
                         fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
                     if v.info["viewname"] == "YZ":
                         fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
                     if v.info["viewname"] == "editors3Dview":
                         fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
                     if v.info["viewname"] == "3Dwindow":
                         fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
+                        mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
                 if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] != "1":
                     self.draw(editor, v, editor.ModelFaceSelList)
@@ -255,9 +260,9 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
     def drag(self, v1, v2, flags, view):
         editor = mapeditor()
-        pv2 = view.proj(v2)        ### v2 is the SINGLE handle's (being dragged) 3D position (x,y and z in space).
-                                   ### And this converts its 3D position to the monitor's FLAT screen 2D and 3D views
-                                   ### 2D (x,y) position to draw it, (NOTICE >) using the 3D "y" and "z" position values.
+        pv2 = view.proj(v2)  ### v2 is the SINGLE handle's (being dragged) 3D position (x,y and z in space).
+                             ### And this converts its 3D position to the monitor's FLAT screen 2D and 3D views
+                             ### 2D (x,y) position to draw it, (NOTICE >) using the 3D "y" and "z" position values.
         p0 = view.proj(self.pos)
 
         if not p0.visible: return
@@ -347,6 +352,13 @@ class VertexHandle(qhandles.GenericHandle):
             itemcount = 0
             if editor.ModelVertexSelList == []:
                 editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
+                if quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" and SkinView1 is not None:
+                    import mdlutils
+                    mdlutils.PassEditorSel2Skin(editor)
+                    cv = SkinView1.canvas()
+                    for vertex in editor.SkinVertexSelList:
+                        h = vertex[1]
+                        h.draw(SkinView1, cv, h)
             else:
                 for item in editor.ModelVertexSelList:
                     itemcount = itemcount + 1
@@ -376,6 +388,13 @@ class VertexHandle(qhandles.GenericHandle):
             for v in editor.layout.views:
                 cv = v.canvas()
                 self.draw(v, cv, self)
+            if quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" and SkinView1 is not None:
+                import mdlutils
+                mdlutils.PassEditorSel2Skin(editor)
+                cv = SkinView1.canvas()
+                for vertex in editor.SkinVertexSelList:
+                    h = vertex[1]
+                    h.draw(SkinView1, cv, h)
 
         def pick_cleared(m, editor=editor, view=view):
             editor.ModelVertexSelList = []
@@ -562,6 +581,18 @@ class SkinHandle(qhandles.GenericHandle):
                 editor.SkinVertexSelList = editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
                 cv = view.canvas()
                 self.draw(view, cv, self)
+                if quarkx.setupsubset(SS_MODEL, "Options")["PVSTEV"] == "1":
+                    import mdlutils
+                    mdlutils.PassSkinSel2Editor(editor)
+                    for view in editor.layout.views:
+                        if view.info["viewname"] == "skinview":
+                            pass
+                        else:
+                            cv = view.canvas()
+                            if len(view.handles) == 0:
+                                view.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                            for h in view.handles:
+                                h.draw(view, cv, h)
             else:
                 if str(self.pos) == str(editor.SkinVertexSelList[0][0]):
                     editor.SkinVertexSelList = []
@@ -582,6 +613,7 @@ class SkinHandle(qhandles.GenericHandle):
             itemcount = 0
             removedcount = 0
             holdlist = []
+                
             if editor.SkinVertexSelList == []:
                 editor.SkinVertexSelList = editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
             else:
@@ -590,7 +622,6 @@ class SkinHandle(qhandles.GenericHandle):
                 else:
                     setup = quarkx.setupsubset(SS_MODEL, "Options")
                     for item in editor.SkinVertexSelList:
-
                         if not setup["SingleVertexDrag"]:
                             if str(self.pos) == str(item[0]):
                                 removedcount = removedcount + 1
@@ -624,6 +655,18 @@ class SkinHandle(qhandles.GenericHandle):
                                 vtx_index = vtx_index + 1
             cv = view.canvas()
             self.draw(view, cv, self)
+            if quarkx.setupsubset(SS_MODEL, "Options")["PVSTEV"] == "1":
+                import mdlutils
+                mdlutils.PassSkinSel2Editor(editor)
+                for view in editor.layout.views:
+                    if view.info["viewname"] == "skinview":
+                        pass
+                    else:
+                        cv = view.canvas()
+                        if len(view.handles) == 0:
+                            view.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                        for h in view.handles:
+                            h.draw(view, cv, h)
 
         def alignskinvertexesclick(m, self=self, editor=editor, view=view):
 
@@ -690,6 +733,38 @@ class SkinHandle(qhandles.GenericHandle):
         return menu
 
 
+    def optionsmenu(self, editor, view=None):
+        "This is the Skin-view Options menu items."
+        
+        # Pass Vertex Selection To Editors Views function.
+        def mPVSTEV(m, self=self, editor=editor, view=view):
+            if not MldOption("PVSTEV"):
+                quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = "1"
+                quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
+                import mdlutils
+                mdlutils.PassSkinSel2Editor(editor)
+                for view in editor.layout.views:
+                    if view.info["viewname"] == "skinview":
+                        pass
+                    else:
+                        cv = view.canvas()
+                        if len(view.handles) == 0:
+                            view.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                        for h in view.handles:
+                            h.draw(view, cv, h)
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
+                
+        Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
+
+        opsmenulist = [Xpvstev]
+    
+        items = opsmenulist
+        Xpvstev.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTEV")
+
+        return opsmenulist
+
+
     def draw(self, view, cv, draghandle=None):
         editor = mdleditor.mdleditor
 
@@ -723,21 +798,9 @@ class SkinHandle(qhandles.GenericHandle):
 
         p = view.proj(self.pos)
         if p.visible:
-
-         #   if flagsmouse == 520  or flagsmouse == 1032:  # pressed LMB to start & while dragging.
-         #       return
-         #   if flagsmouse == 528 or flagsmouse == 1040:  # pressed RMB to start & while panning.
-         #       return
-         #   if flagsmouse == 536 or flagsmouse == 544:  # pressed L & RMB's or CMB to start zooming.
-         #       return
-         #   if flagsmouse == 1048 or flagsmouse == 1056:  # zooming with L & RMB's or CMB pressed.
-         #       return
                 
             cv.pencolor = skinviewmesh
             pv2 = p.tuple
-          #  if flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080:  # This drawing is now done in the qbaseeditor.py finishdrawing function, much faster.
-          #      pass
-          #  else:
             if flagsmouse == 16384 and editor.SkinVertexSelList == []:
                 for vertex in triangle:
                     fixedvertex = quarkx.vect(vertex[1]-int(texWidth*.5), vertex[2]-int(texHeight*.5), 0)
@@ -765,12 +828,12 @@ class SkinHandle(qhandles.GenericHandle):
                     if editor.SkinVertexSelList != []:
                         itemcount = len(editor.SkinVertexSelList)
                         for item in editor.SkinVertexSelList:
-                            if str(self.pos) == str(editor.SkinVertexSelList[0][0]) and (self.tri_index == item[2] and self.ver_index == item[3]):
+                            if (self.tri_index == item[2] and self.ver_index == item[3] and itemcount == len(editor.SkinVertexSelList)):
                                 cv.brushcolor = skinviewdraglines
                                 cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                             else:
                                 if len(editor.SkinVertexSelList) > 1 and itemcount != 0:
-                                    if str(self.pos) == str(editor.SkinVertexSelList[itemcount-1][0]):
+                                    if (self.tri_index == item[2] and self.ver_index == item[3]):
                                         cv.brushcolor = skinvertexsellistcolor
                                         cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                                     itemcount = itemcount - 1
@@ -1284,12 +1347,25 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
     def rectanglesel(self, editor, x,y, rectangle, view):
         cursordragendpos = (x, y)
+        ### To stop selection or selection change if nothing, or something,
+        ### or more then one item is selected in the tree-view.
+        ### And to retain existing selected items, if any, in the ModelVertexSelList.
+        if len(editor.layout.explorer.sellist) != 0:
+            if (editor.layout.explorer.sellist[0].type == ":mc") or (editor.layout.explorer.sellist[0].type == ":mf") and (len(editor.layout.explorer.sellist) == 1):
+                pass
+            else:
+                for view in editor.layout.views:
+                    mdleditor.setsingleframefillcolor(editor, view)
+                    view.repaint()
+                return
+
         sellist = []
         vertexes = editor.Root.currentcomponent.currentframe.vertices
         vertexindex = -1
         for vertex in vertexes:
             vertexindex = vertexindex + 1
             vertexpos = view.proj(vertex)
+
             # Grid quad 1
             if (cursordragstartpos[0] < cursordragendpos[0] and cursordragstartpos[1] < cursordragendpos[1]):
                 if (vertexpos.tuple[0] >= cursordragstartpos[0] and vertexpos.tuple[1] >= cursordragstartpos[1])and (vertexpos.tuple[0] <= cursordragendpos[0] and vertexpos.tuple[1] <= cursordragendpos[1]):
@@ -1347,11 +1423,19 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 cv = v.canvas()
                 if len(v.handles) == 0:
                     v.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                for h in v.handles:
-                    h.draw(v, cv, h)
-                for vtx in editor.ModelVertexSelList:
-                    h = v.handles[vtx[0]]
-                    h.draw(v, cv, h)
+                ### To avoid an error if something is selected that does not display the view handles.
+                if len(view.handles) == 0:
+                    pass
+                else:
+                    for h in v.handles:
+                        h.draw(v, cv, h)
+                    for vtx in editor.ModelVertexSelList:
+                        h = v.handles[vtx[0]]
+                        h.draw(v, cv, h)
+            if quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" and SkinView1 is not None:
+                import mdlutils
+                mdlutils.PassEditorSel2Skin(editor)
+                SkinView1.invalidate()
         else:
             if editor.ModelVertexSelList != []:
                 mdleditor.setsingleframefillcolor(editor, view)
@@ -1361,20 +1445,28 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 cv = view.canvas()
                 if len(view.handles) == 0:
                     view.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                for h in view.handles:
-                    h.draw(view, cv, h)
-                for vtx in editor.ModelVertexSelList:
-                    h = view.handles[vtx[0]]
-                    h.draw(view, cv, h)
-                for v in editor.layout.views:
-                    if v == view:
-                        continue
-                    cv = v.canvas()
-                    if len(v.handles) == 0:
-                        v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                ### To avoid an error if something is selected that does not display the view handles.
+                if len(view.handles) == 0:
+                    pass
+                else:
+                    for h in view.handles:
+                        h.draw(view, cv, h)
                     for vtx in editor.ModelVertexSelList:
-                        h = v.handles[vtx[0]]
-                        h.draw(v, cv, h)
+                        h = view.handles[vtx[0]]
+                        h.draw(view, cv, h)
+                    for v in editor.layout.views:
+                        if v == view:
+                            continue
+                        cv = v.canvas()
+                        if len(v.handles) == 0:
+                            v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                        for vtx in editor.ModelVertexSelList:
+                            h = v.handles[vtx[0]]
+                            h.draw(v, cv, h)
+                if quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" and SkinView1 is not None:
+                    import mdlutils
+                    mdlutils.PassEditorSel2Skin(editor)
+                    SkinView1.invalidate()
             else:
                 view.handles = BuildCommonHandles(editor, editor.layout.explorer)
                 view.repaint()
@@ -1383,6 +1475,26 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 cv = view.canvas()
                 for h in view.handles:
                     h.draw(view, cv, self)
+        ### This section test to see if there are only 3 vertexes selected.
+        ### If so, then it sorts them for proper order based on if the face
+        ### vertexes were created in a clockwise direction (facing outwards, towards the 2D view)
+        ### or a counter clockwise direction (facing inwards, away from the 2D view).
+        ### The direction of the selection makes no difference. It's all in the order the vertexes were made.
+        if editor.ModelVertexSelList != [] and len(editor.ModelVertexSelList) == 3:
+            templist = editor.ModelVertexSelList
+            if templist[1][0] > templist[0][0] and templist[1][0] > templist[2][0]:
+                if templist[0][0] > templist[2][0]:
+                    editor.ModelVertexSelList = [templist[1], templist[2], templist[0]]
+                else:
+                    editor.ModelVertexSelList = [templist[1], templist[0], templist[2]]
+            elif templist[2][0] > templist[0][0] and templist[2][0] > templist[1][0]:
+                if templist[0][0] > templist[1][0]:
+                    editor.ModelVertexSelList = [templist[2], templist[1], templist[0]]
+                else:
+                    editor.ModelVertexSelList = [templist[2], templist[0], templist[1]]
+            else:
+                pass
+            
 
 
 #
@@ -1468,6 +1580,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.63  2007/07/04 19:11:47  cdunde
+#Missed this in the last change.
+#
 #Revision 1.62  2007/07/04 18:51:23  cdunde
 #To fix multiple redraws and conflicts of code for RectSelDragObject in the Model Editor.
 #
