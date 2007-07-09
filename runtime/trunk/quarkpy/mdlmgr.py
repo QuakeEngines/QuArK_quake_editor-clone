@@ -373,12 +373,17 @@ class ModelLayout(BaseLayout):
                 if self.editor.dragobject is not None and isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle):
                     pass
                 else:
+                    self.editor.ModelVertexSelList = []
                     self.editor.SkinVertexSelList = []
+                    self.editor.ModelFaceSelList = []
+                    self.editor.SkinFaceSelList = []
+                    self.editor.Root.currentcomponent.filltris = []
             else:
+                self.editor.ModelVertexSelList = []
                 self.editor.SkinVertexSelList = []
                 self.editor.ModelFaceSelList = []
-                self.editor.Root.currentcomponent.filltris = []
                 self.editor.SkinFaceSelList = []
+                self.editor.Root.currentcomponent.filltris = []
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
                     view.invalidate()
@@ -418,6 +423,14 @@ class ModelLayout(BaseLayout):
         "This is when you select a particular bone(s) in the 'Misc' group of the Tree-view."
         global startup
         startup = 0
+        self.editor.ModelVertexSelList = []
+        self.editor.SkinVertexSelList = []
+        self.editor.ModelFaceSelList = []
+        self.editor.SkinFaceSelList = []
+        self.editor.Root.currentcomponent.filltris = []
+        from mdlhandles import SkinView1
+        if SkinView1 is not None:
+            SkinView1.invalidate()
 
     def selectframe(self, frame):
         "This is when you select a particular frame in the 'Frames' group of the Tree-view."
@@ -446,6 +459,9 @@ class ModelLayout(BaseLayout):
         if skin is not c.currentskin:
             c.currentskin = skin
             saveskin = skin
+            self.selectcomponent(c)
+            
+        if c != self.editor.Root.currentcomponent:
             self.selectcomponent(c)
 
     def selchange(self):
@@ -478,11 +494,21 @@ class ModelLayout(BaseLayout):
             elif fs.type == '.tga':    # skin
                 self.selectskin(fs)
             else:
+                self.editor.ModelVertexSelList = []
+                self.editor.SkinVertexSelList = []
                 self.editor.ModelFaceSelList = []
                 self.editor.SkinFaceSelList = []
+                from mdlhandles import SkinView1
+                if SkinView1 is not None:
+                    SkinView1.invalidate()
         else:
+            self.editor.ModelVertexSelList = []
+            self.editor.SkinVertexSelList = []
             self.editor.ModelFaceSelList = []
             self.editor.SkinFaceSelList = []
+            from mdlhandles import SkinView1
+            if SkinView1 is not None:
+                SkinView1.invalidate()
 
 
     def NewItem1Click(self, m):
@@ -507,6 +533,11 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.40  2007/07/02 22:49:43  cdunde
+#To change the old mdleditor "picked" list name to "ModelVertexSelList"
+#and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+#Also start of function to pass vertex selection from the Skin-view to the Editor.
+#
 #Revision 1.39  2007/06/20 22:04:08  cdunde
 #Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
 #and start of face selection capabilities in the Skin-view for future functions there.
