@@ -119,7 +119,7 @@ def LoadPortalFile(editor, filename):
     editor.invalidateviews()
 
 
-def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing):
+def DrawLines(view, editor, oldFinishDrawing = mapeditor.MapEditor.finishdrawing):
     try:
         Portals = editor.Portals
         cv = view.canvas()
@@ -131,15 +131,21 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
                 pt1 = view.proj(portal[i])
                 cv.line(pt0, pt1)
                 pt0 = pt1
-    except AttributeError:
+    except:
         pass
-    oldFinishDrawing(editor, view)
+    oldFinishDrawing(view, editor)
 
 
 mapeditor.MapEditor.finishdrawing = DrawLines
 
 
 #$Log$
+#Revision 1.10  2007/01/09 23:11:46  danielpharos
+#Fixed an annoying crash with map portals (for instance when you set the light-entity's color too high)
+#
+#Revision 1.9  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.6  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #

@@ -83,6 +83,7 @@ axisicons = quarkx.loadimages("images\\axisicons.bmp",32,(0,0))
 #  of the map editor, only the functions they define are.
 #
 
+
 def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
     global saveeditor
     saveeditor = editor
@@ -103,17 +104,51 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
     #  in the Option menu.
     #
 
-    if not MldOption("AxisXYZ"):return
 
 
-    def MyMakeScroller(layout, view):
+    def MakeScroller(layout, view):
         sbviews = [None, None]
         for ifrom, linkfrom, ito, linkto in layout.sblinks:
             if linkto is view:
                 sbviews[ito] = (ifrom, linkfrom)
         def scroller(x, y, view=view, hlink=sbviews[0], vlink=sbviews[1]):
+            from quarkpy.qbaseeditor import flagsmouse, currentview
             editor = saveeditor
             view.scrollto(x, y)
+            try:
+                if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
+                    if view.info["viewname"] == "editors3Dview":
+                        comp = editor.Root.currentcomponent
+                        fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
+                        backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
+                        backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
+                            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                        else:
+                            if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] == "1":
+                                comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)             
+                            else:
+                                if editor.ModelFaceSelList != []:
+                                    comp.filltris = quarkpy.mdleditor.faceselfilllist(view)
+
+                    if view.info["viewname"] == "3Dwindow":
+                        comp = editor.Root.currentcomponent
+                        fillcolor = MapColor("Options3Dviews_fillColor5", SS_MODEL)
+                        backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
+                        backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
+                            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                        else:
+                            if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] == "1":
+                                comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)            
+                            else:
+                                if editor.ModelFaceSelList != []:
+                                    comp.filltris = quarkpy.mdleditor.faceselfilllist(view)
+                    view.repaint()
+                    return scroller
+            except:
+                pass
+
             if hlink is not None:
                 if hlink[0]:
                     hlink[1].scrollto(None, x)
@@ -130,18 +165,23 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
                 editor = saveeditor
                 if editor is None:
                     pass
-                else:
-                    editor.invalidateviews()
-            #    view.repaint()
-                view.update()
+            ### This is the 2D views Textured mode scroller section
+            if (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056) and view.viewmode == "tex":
+                if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
+                    quarkpy.mdleditor.paintframefill(editor, view)
+             #   view.repaint() # If uncommented, causes gridscale to jitter.
+            ### This is the 2D views WireFrame mode scroller section
+            else:
+                if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
+                    quarkpy.mdleditor.paintframefill(editor, currentview)
         return scroller
-    quarkpy.qhandles.MakeScroller = MyMakeScroller
+    quarkpy.qhandles.MakeScroller = MakeScroller
 
+    if not MldOption("AxisXYZ"):return
 
 
 
     # The following sets the canvas function to draw the images.
-
     cv = view.canvas()
     type = view.info["type"]  # These type values are set
                               #  in the layout-defining plugins.
@@ -159,7 +199,11 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
     #  to the window it appears in.
     #
 
-    cv.draw(axisicons[index],14,1)
+    from quarkpy.qbaseeditor import flagsmouse
+    if (flagsmouse == 528 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056):
+        pass
+    else:
+        cv.draw(axisicons[index],14,1)
 
 #
 # Now set our new function as the finishdrawing method.
@@ -181,6 +225,44 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.13  2007/06/19 06:16:07  cdunde
+#Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+#Added model mesh face selection using RMB and LMB together along with various options
+#for selected face outlining, color selections and face color filltris but this will not fill the triangles
+#correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+#file (for the TCoordinates.Polyline95f procedure).
+#Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+#
+#Revision 1.12  2007/06/07 04:23:21  cdunde
+#To setup selected model mesh face colors, remove unneeded globals
+#and correct code for model colors.
+#
+#Revision 1.11  2007/05/17 23:56:54  cdunde
+#Fixed model mesh drag guide lines not always displaying during a drag.
+#Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
+#General code proper rearrangement and cleanup.
+#
+#Revision 1.10  2007/05/16 23:28:22  cdunde
+#Fixed panning function that stopped model mesh from being drawn
+#during panning (scrolling) action and removed unnecessary code.
+#
+#Revision 1.9  2007/05/16 20:59:02  cdunde
+#To remove unused argument for the mdleditor paintframefill function.
+#
+#Revision 1.8  2007/04/13 19:41:48  cdunde
+#Minor improvement in the multi meshfill coloring when scrolling or zooming.
+#
+#Revision 1.7  2007/04/04 21:34:17  cdunde
+#Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+#
+#Revision 1.6  2007/03/04 19:37:03  cdunde
+#To stop unneeded redrawing of handles in other views
+#when scrolling in a Model Editor's 3D view.
+#
+#Revision 1.5  2007/01/30 06:37:37  cdunde
+#To get the Skin-view to scroll without having to redraw all the handles in every view.
+#Increases response time and drawing speed.
+#
 #Revision 1.4  2006/11/30 01:17:48  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

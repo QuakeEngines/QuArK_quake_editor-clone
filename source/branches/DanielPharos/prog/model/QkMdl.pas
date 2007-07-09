@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/05/15 15:04:30  danielpharos
+Don't force HL2 skin loading through Steam, but rather use the normal way for loading files.
+
+Revision 1.20  2007/03/11 12:03:11  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
+Revision 1.19  2007/02/26 22:25:11  danielpharos
+Deleted an obsolete Exit.
+
+Revision 1.18  2006/04/06 19:44:56  nerdiii
+Cleaned some compiler hints
+
 Revision 1.17  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -290,12 +302,12 @@ begin
           SetLength(S, Length(Spec1) + (mesh.numtris * Sizeof(TComponentTris)));
           PChar(CTris) := PChar(S) + Length(Spec1);
           for ii := 1 to mesh.numtris do begin
-            //          LogEx('Triangle %d = {',[ii]);
+            //          Log('Triangle %d = {',[ii]);
             for jj := 0 to 2 do begin
               CTris^[jj].VertexNo := atri[ii][jj].vertindex;
               CTris^[jj].S := atri[ii][jj].S;
               CTris^[jj].T := atri[ii][jj].T;
-              //            LogEx('  (VertexNo: %d, S:%d, T:%d)',[CTris^[jj].VertexNo, CTris^[jj].S, CTris^[jj].T]);
+              //            Log('  (VertexNo: %d, S:%d, T:%d)',[CTris^[jj].VertexNo, CTris^[jj].S, CTris^[jj].T]);
             end;
             //          Log('}{');
             inc(CTris);
@@ -336,7 +348,7 @@ var
 begin
   Result:=nil;
   try
-    tex:= NeedGameFileBase('steamaccess://220', tex_name);
+    tex:= NeedGameFile(tex_name);
     if tex = nil then
       exit;
     tex.acces;
@@ -349,7 +361,6 @@ begin
       Exit;
     end;
     Comp.SkinGroup.Subelements.Add(result);
-    exit;
   finally
   end;
 end;
@@ -736,7 +747,7 @@ var
     end;
 }
     base_tex_name:='hl2/materials/dev/dev_hazzardstripe01a.vtf';
-//    skin:= NeedGameFileBase('220.SteamFS', base_tex_name) as QImage;
+//    skin:= NeedGameFile(base_tex_name) as QImage;
     skin:=Loaded_HL2Skin(Comp, base_tex_name );
     if skin=nil then
       skin:=CantFindTexture(Comp, base_tex_name, Size);

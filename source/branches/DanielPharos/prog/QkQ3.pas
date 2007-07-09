@@ -23,6 +23,19 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2007/05/06 21:21:43  danielpharos
+Changed DDS support to be EF2-specific.
+
+Revision 1.33  2007/05/05 22:17:52  cdunde
+To add .dds Texture Browser loading from .pk3 files.
+
+Revision 1.32  2007/03/25 13:52:24  danielpharos
+Moved a few dictionnary words around.
+
+Revision 1.31  2006/06/23 07:27:26  cdunde
+To reverse 1.30 change, Q3 did not like that one!
+Stopped shader texture from displaying in the game.
+
 Revision 1.30  2006/05/08 06:40:36  cdunde
 To make same kind of change for Q3 as Rowdy
 just did for D3 and Q4 in QkD3.pas.
@@ -275,14 +288,19 @@ begin
    try
      if (ExtractFileExt(S)='') then
      begin
-       try
-         Result:=NeedGameFile(S+'.tga') as QPixelSet;
-       except
+       if CharModeJeu=mjEF2 then
+         Result:=NeedGameFile(S+'.dds') as QPixelSet
+       else
+       begin
          try
-           Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+           Result:=NeedGameFile(S+'.tga') as QPixelSet;
          except
-           Result:=NeedGameFile(S+'.png') as QPixelSet;
-         end
+           try
+             Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+           except
+             Result:=NeedGameFile(S+'.png') as QPixelSet;
+           end
+         end;
        end;
      end
      else
@@ -295,18 +313,23 @@ begin
  { If no image could be found yet, try the shader-name itself }
  if Result=Nil then
  begin
-   try
+   if CharModeJeu=mjEF2 then
+     Result:=NeedGameFile(Name+'.dds') as QPixelSet
+   else
+   begin
      try
-       Result:=NeedGameFile(Name+'.tga') as QPixelSet;
-     except
        try
-         Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+         Result:=NeedGameFile(Name+'.tga') as QPixelSet;
        except
-         Result:=NeedGameFile(Name+'.png') as QPixelSet;
-       end
+         try
+           Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+         except
+           Result:=NeedGameFile(Name+'.png') as QPixelSet;
+         end
+       end;
+     except
+       Result:=NIL
      end;
-   except
-     Result:=NIL
    end;
  end;
 
@@ -343,17 +366,6 @@ begin
 
  end;
 
- // SilverPaladin - 10/25/03 - Added Missing Shader Texture texture
- // To try to prevent Access Violations in 3d views
- if (Result = NIL)
- then begin
-   try
-     Result := NeedGameFile('radiant/shadernotex') as QPixelSet;
-   except
-     Result:=NIL
-   end;
- end;
-
  {tiglari: giving shaders a size.  a presumably
   horrible place to do it, but doesn't work when
   shaders are being loaded }
@@ -364,6 +376,8 @@ begin
    V[2]:=Size.Y;
    SetFloatsSpec('Size',V);
  end
+ else
+   Raise EErrorFmt(5695, [self.name]);
  {/tiglari}
 end;
 

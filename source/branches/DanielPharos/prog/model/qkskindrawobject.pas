@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/01/08 19:28:41  danielpharos
+Splitted the Ed3DFX file into two separate renderers: Software and Glide
+
 Revision 1.8  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 

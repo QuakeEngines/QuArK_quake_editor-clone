@@ -23,6 +23,31 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/06/06 22:31:21  danielpharos
+Fix a (recent introduced) problem with OpenGL not drawing anymore.
+
+Revision 1.8  2007/06/04 19:20:25  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
+Revision 1.7  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
+Revision 1.6  2007/03/22 20:53:10  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+Also fixed a Delphi warning.
+
+Revision 1.5  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
+Revision 1.4  2007/02/27 21:32:29  danielpharos
+The colors of Solid Mode view should now be correct.
+
+Revision 1.3  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
+Revision 1.2  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
 Revision 1.1  2006/12/26 22:49:06  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -182,15 +207,21 @@ type
 
  TSoftwareSceneObject = class(TSceneObject)
  private
+   ViewWnd: HWnd;
+   ViewDC: HDC;
    FBuildNo: Integer;
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
    CurrentAlpha: FxU32;
    Fog: Boolean;
    ViewRect: TViewRect;
+   SoftBufferFormat: Integer;
+   FogTableCache: ^GrFogTable_t;
+   Hardware3DFX: Boolean;
    GlideLoaded: Boolean;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
+   ScreenX, ScreenY: Integer;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -202,9 +233,6 @@ type
    procedure RenderTransparent(Transparent: Boolean);
    procedure BuildTexture(Texture: PTexture3); override;
  public
-   SoftBufferFormat: Integer;
-   FogTableCache: ^GrFogTable_t;
-   Hardware3DFX: Boolean;
    constructor Create(ViewMode: TMapViewMode);
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
@@ -215,10 +243,12 @@ type
    destructor Destroy; override;
    procedure Render3DView; override;
    procedure ClearFrame; override;
-   procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
-   procedure SwapBuffers(Synch: Boolean; DC: HDC); override;
+   procedure Copy3DView; override;
+   procedure SwapBuffers(Synch: Boolean); override;
    procedure ClearScene; override;
    procedure SetViewRect(SX, SY: Integer); override;
+   procedure SetViewDC(DC: HDC); override;
+   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
@@ -333,7 +363,10 @@ begin
    if Assigned(grTexLodBiasValue) then
     grTexLodBiasValue(GR_TMU0, +0.5);
    grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
-   grFogMode(GR_FOG_WITH_TABLE);
+{   if Fog=true then
+     grFogMode(GR_FOG_WITH_TABLE)
+   else
+     grFogMode(GR_FOG_DISABLED);}
   end;
 end;
 
@@ -356,7 +389,7 @@ var
 begin
  {$IFDEF Debug}
  if PTex^.info.data=Nil then
-  Raise InternalE('NeedTex: texture not loaded');
+  Raise InternalE(LoadStr1(6010));
  {$ENDIF}
  if (PTex^.startAddress = GR_NULL_MIPMAP_HANDLE)
  and (qrkGlideVersion>=HardwareGlideVersion) then
@@ -463,15 +496,15 @@ begin
  if (not GlideLoaded) or (qrkGlideLibName<>LibName) then
   begin
    if LibName='' then
-    Raise EError(4867);
+    Raise EError(6001);
    if not LoadGlide(LibName, GetApplicationDllPath()) then
-    Raise EErrorFmt(4865, [LibName, GetLastError]);
+    Raise EErrorFmt(6002, [LibName, GetLastError]);
    try
     SetIntelPrecision;
     grGlideInit;
     if Assigned(grSstQueryHardware) then
      if not grSstQueryHardware(hwconfig) then
-      Raise EErrorFmt(4866, ['grSstQueryHardware']);
+      Raise EErrorFmt(6100, ['grSstQueryHardware']);
     if Assigned(grSstSelect) then
      grSstSelect(0);
     if Assigned(grSstWinOpen) and (GlideTimesLoaded=1) then
@@ -481,7 +514,7 @@ begin
                         GR_COLORFORMAT_ARGB,
                         GR_ORIGIN_UPPER_LEFT,
                         2, 1) then
-       Raise EErrorFmt(4866, ['grSstWinOpen']);
+       Raise EErrorFmt(6100, ['grSstWinOpen']);
    finally
     RestoreIntelPrecision;
    end;
@@ -494,17 +527,22 @@ begin
    qrkGlideState:=TGlideState.Create;
    GlideLoaded:=true;
   end;
- if (CurrentDisplayMode=dmFullScreen) or (LibName='glide2x.dll') then   {Second check: So Glide kinda works...}
-  Do3DFXTwoMonitorsActivation
+ if (CurrentDisplayMode=dmFullScreen) then
+ begin
+  Raise InternalE(LoadStr1(6120));
+  //DanielPharos: We have to check all this...
+  Do3DFXTwoMonitorsActivation;
+ end
  else
   if TwoMonitorsDlg=Nil then
    Do3DFXTwoMonitorsDeactivation;
+ 
  Coord:=nCoord;
  TTextureManager.AddScene(Self);
  
  // Assigned check added by SilverPaladin
  if (not Assigned(qrkGlideState)) then
-   raise Exception.Create('You must first call Open3dFX');
+   raise InternalE(LoadStr1(6121));
  TGlideState(qrkGlideState).Init;
  Hardware3DFX:=qrkGlideVersion>=HardwareGlideVersion;
  if qrkGlideVersion>=HardwareGlideVersion then
@@ -527,7 +565,7 @@ begin
  end
  else
  begin
-   FarDistance:=1500;   {Daniel: This should be zero... = Disabled FarDistance}
+   FarDistance:=1500;   //DanielPharos: This should be zero... = Disabled FarDistance
  end;
  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
  FogColor:=SwapColor(Setup.IntSpec['FogColor']);
@@ -538,7 +576,7 @@ begin
  Setup:=SetupSubSet(ssGeneral, 'Software 3D');
  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
  begin
-   Fog:=Setup.Specifics.Values['Fog']<>'';
+   Fog:=Setup.Specifics.Values['Fog']<>'';   //DanielPharos: This is not an option at the moment
  end
  else
  begin
@@ -978,29 +1016,12 @@ procedure TSoftwareSceneObject.RenderTransparent(Transparent: Boolean);
 var
  PList: PSurfaces;
 begin
-  if not SolidColors then
-  begin
-    PList:=FListSurfaces;
-    while Assigned(PList) do
-    begin
-      if Transparent in PList^.Transparent then
-      begin
-        PList^.ok:=False;
-        if PList^.Texture^.startAddress<>GR_NULL_MIPMAP_HANDLE then
-          RenderPList(PList, Transparent);
-      end;
-
-      PList:=PList^.Next;
-    end;
-  end;
-
   PList:=FListSurfaces;
   while Assigned(PList) do
   begin
-    if Transparent in PList^.Transparent then
-      if SolidColors or not PList^.ok then
-        RenderPList(PList, Transparent);
-
+    RenderPList(PList, False);
+    if PList^.NumberTransparentFaces>0 then
+      RenderPList(PList, True);
     PList:=PList^.Next;
   end;
 end;
@@ -1091,7 +1112,8 @@ begin
      CCoord.MinDistance:=OldMinDist - (OldMaxDist-OldMinDist)*TranspFactor;
      CCoord.MaxDistance:=OldMinDist;
      InitFlatZ;
-     grFogMode(GR_FOG_DISABLE);
+     if Assigned(grFogMode) then
+       grFogMode(GR_FOG_DISABLE);
      grDepthMask(FXFALSE);
      grDepthBufferFunction(GR_CMP_ALWAYS);
      RenderTransparent(False);
@@ -1100,7 +1122,8 @@ begin
      grDepthBufferFunction(GR_CMP_LESS);
      grDepthMask(FXTRUE);
      if Fog=True then
-       grFogMode(GR_FOG_WITH_TABLE);
+       if Assigned(grFogMode) then
+         grFogMode(GR_FOG_WITH_TABLE);
      CCoord.MinDistance:=OldMinDist;
      CCoord.MaxDistance:=OldMaxDist;
    end;
@@ -1547,8 +1570,7 @@ begin
    begin
     Inc(Surf);
 
-    if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
-    and CCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
+    if (((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces) and CCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
     begin
       nColor:=AlphaColor;
 
@@ -1565,9 +1587,10 @@ begin
               PSD.Done;
             end;
           end;
-          nColor:=  (((nColor         and $FF)* (MeanColor         and $FF))              shr 8)
+          nColor:= ((((nColor         and $FF)* (MeanColor         and $FF)) and $00FF00) shl 8)
                or  ((((nColor shr 8)  and $FF)*((MeanColor shr 8)  and $FF)) and $00FF00)
-               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8);
+               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shr 8)
+               or (((nColor shr 24) and $FF) shl 24);
         end;
       end;
 
@@ -1894,8 +1917,6 @@ begin
     Inc(PVertex3D(Surf), VertexCount);
    end;
  end;
-
- PList^.ok:=True;
 end;
 
 function TSoftwareSceneObject.ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
@@ -1920,7 +1941,7 @@ begin
   end;
 end;
 
-procedure TSoftwareSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
+procedure TSoftwareSceneObject.Copy3DView;
 var
  I, L, R, T, B, Count1: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -1937,7 +1958,7 @@ var
    if FrameBrush=0 then
     FrameBrush:=CreateSolidBrush(SwapColor(FRAME_COLOR));
    Rect:=Bounds(X,Y,W,H);
-   FillRect(DC, Rect, FrameBrush);
+   FillRect(ViewDC, Rect, FrameBrush);
   end;
 
 begin
@@ -1953,15 +1974,15 @@ begin
  ScreenExtent(L, R, bmiHeader);
  BmpInfo.bmiHeader:=bmiHeader;
 
- DIBSection:=CreateDIBSection(DC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
+ DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
  if DIBSection = 0 then
-   Raise EErrorFmt(4866, ['CreateDIBSection']);
+   Raise EErrorFmt(6100, ['CreateDIBSection']);
  if qrkGlideVersion>=HardwareGlideVersion then
   begin
    try
     if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
           GR_ORIGIN_ANY, FXFALSE, info) then
-     Raise EErrorFmt(4866, ['grLfbLock']);
+     Raise EErrorFmt(6100, ['grLfbLock']);
     I:=bmiHeader.biHeight;
     SrcPtr:=info.lfbptr;
     Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*info.strideInBytes);
@@ -2035,25 +2056,25 @@ begin
   end
   else
    softgLoadFrameBuffer(Bits, SoftBufferFormat);
-  L:=(SX-bmiHeader.biWidth) div 2;
-  T:=(SY-bmiHeader.biHeight) div 2;
+  L:=(ScreenX-bmiHeader.biWidth) div 2;
+  T:=(ScreenY-bmiHeader.biHeight) div 2;
   R:=L+bmiHeader.biWidth;
   B:=T+bmiHeader.biHeight;
   FrameBrush:=0;
   if L>0 then  Frame(0, T, L, B-T);
-  if T>0 then  Frame(0, 0, SX, T);
-  if R<SX then Frame(R, T, SX-R, B-T);
-  if B<SY then Frame(0, B, SX, SY-B);
+  if T>0 then  Frame(0, 0, ScreenX, T);
+  if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
+  if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
   if FrameBrush<>0 then
    DeleteObject(FrameBrush);
-  if SetDIBitsToDevice(DC, L, T,
+  if SetDIBitsToDevice(ViewDC, L, T,
    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
-    Raise EErrorFmt(4866, ['SetDIBitsToDevice']);
+    Raise EErrorFmt(6100, ['SetDIBitsToDevice']);
   DeleteObject(DIBSection);
 end;
 
-procedure TSoftwareSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
+procedure TSoftwareSceneObject.SwapBuffers(Synch: Boolean);
 begin
  if Assigned(grBufferSwap) then
   grBufferSwap(0);
@@ -2065,6 +2086,8 @@ procedure TSoftwareSceneObject.SetViewRect(SX, SY: Integer);
 var
  XMargin, YMargin: Integer;
 begin
+ ScreenX:=SX;
+ ScreenY:=SY;
  if SoftBufferFormat>0 then
   begin
    SX:=(SX+1) div 2;
@@ -2088,28 +2111,44 @@ begin
  ViewRect.R.Top:=YMargin;
  ViewRect.R.Right:=ScreenSizeX-XMargin;
  ViewRect.R.Bottom:=ScreenSizeY-YMargin;
- if qrkGlideVersion>=HardwareGlideVersion then
-  begin
-  end
- else
+ if qrkGlideVersion<HardwareGlideVersion then
   begin
    ViewRect.R.Left:=((ViewRect.R.Left-2) and not 3) + 2;
    ViewRect.R.Right:=((ViewRect.R.Right+3+2) and not 3) - 2;
   end;
- ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-Coord.ScrCenter.X;
- ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
 
- ViewRect.DoubleSize:=False;
  if SoftBufferFormat>0 then
   begin
    ViewRect.DoubleSize:=True;
    ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-0.5*Coord.ScrCenter.X;
    ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+0.5*Coord.ScrCenter.Y;
-  end;
+  end
+ else
+  begin
+   ViewRect.DoubleSize:=False;
+   ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-Coord.ScrCenter.X;
+   ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
+ end;
  ViewRect.Left  := ViewRect.R.Left  + (VertexSnapper-0.5);
  ViewRect.Top   := ViewRect.R.Top   + (VertexSnapper-0.5);
  ViewRect.Right := ViewRect.R.Right + (VertexSnapper+0.5);
  ViewRect.Bottom:= ViewRect.R.Bottom+ (VertexSnapper+0.5);
+end;
+
+procedure TSoftwareSceneObject.SetViewDC(DC: HDC);
+begin
+  if ViewDC<>DC then
+  begin
+    ViewDC:=DC;
+  end;
+end;
+
+procedure TSoftwareSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
+begin
+  if ViewWnd<>Wnd then
+  begin
+    ViewWnd:=Wnd;
+  end;
 end;
 
 function TSoftwareSceneObject.ChangeQuality(nQuality: Integer) : Boolean;

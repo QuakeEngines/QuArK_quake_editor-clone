@@ -23,6 +23,24 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/04/12 21:11:28  danielpharos
+Heroic attempt number 3: And stay down!
+
+Revision 1.13  2007/04/12 18:23:14  danielpharos
+Attempt 2 to fix a crash-on-exit with the ConfigDlg.
+
+Revision 1.12  2007/03/19 21:01:20  danielpharos
+Re-done 1.10, but this time (hopefully) better. There seems to be a race condition where Timer1 fires after it should have been disabled. Shouldn't happen anymore (crosses fingers).
+
+Revision 1.11  2007/02/02 10:45:42  danielpharos
+Reverted: Workaround for an access violation on shutdown
+
+Revision 1.10  2007/01/31 16:42:40  danielpharos
+Workaround for an access violation on shutdown
+
+Revision 1.9  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2002/05/15 22:04:50  tiglari
 fixes to map reading error recording (so that new maps can be created ..)
 
@@ -84,6 +102,7 @@ type
     SetupQrk: QFileObject;
     AncienSel: String;
     IsModal, ClickedOk: Boolean;
+    DisableTimer: Boolean;
    {InternalOnly: Boolean;}
     procedure FormCfg1Change(Sender: TObject);
     procedure MAJAffichage(T: QObject);
@@ -273,7 +292,10 @@ end;
 
 procedure TConfigDlg.Timer1Timer(Sender: TObject);
 begin
- MAJAffichage(Explorer.TMSelUnique);
+  if not DisableTimer then
+    MAJAffichage(Explorer.TMSelUnique)
+  else
+    Timer1.Enabled:=False;
 end;
 
 procedure TConfigDlg.MAJAffichage(T: QObject);
@@ -322,6 +344,7 @@ end;
 
 procedure TConfigDlg.FormDestroy(Sender: TObject);
 begin
+ DisableTimer:=true;
  MAJAffichage(Nil);
  SetupQrk.AddRef(-1);
  SetupQrk:=Nil;
@@ -431,16 +454,24 @@ end;
 procedure TConfigDlg.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  GlobalDoAccept{(Self)};
- if ApplyBtn.Enabled then
+ { DanielPharos: Another brave attempt to fix a sometimes-happening
+ crash-on-exit bug. The ApplyBtn might already have been destroyed
+ by the time we try to check it. My first attempt (counting my try-
+ statement as zero :)  ) was with Timer1, so I'm going to use the
+ same variable here: DisableTimer.}
+ if DisableTimer then
   begin
-   ActivateNow(Self);
-   case MessageDlg(LoadStr1(5642), mtConfirmation, mbYesNoCancel, 0) of
-    mrYes: ApplyBtnClick(Nil);
-    mrNo: CancelNow;
-    else Abort;
-   end;
+   if ApplyBtn.Enabled then
+    begin
+     ActivateNow(Self);
+     case MessageDlg(LoadStr1(5642), mtConfirmation, mbYesNoCancel, 0) of
+      mrYes: ApplyBtnClick(Nil);
+      mrNo: CancelNow;
+      else Abort;
+     end;
+    end;
+   MAJAffichage(Nil);
   end;
- MAJAffichage(Nil);
 end;
 
 procedure TConfigDlg.OkBtnClick(Sender: TObject);

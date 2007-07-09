@@ -49,8 +49,6 @@ MV_NOSCROLLBAR  = 16   # overrides the settings of flags 1 and 2
 MV_TOPREDLINE   = 32   # display the top red line
 MV_BOTTOMREDLINE= 64   # display the bottom red line
 
-texturedmodes = ("tex", "opengl")    # textured modes for map views
-
 # explorer flags
 EF_AUTOFOCUS    = 8    # see MV_AUTOFOCUS
 EF_NOKEYBDELAY  = 16   # no delay between movements in the tree from the keyboard and screen updates
@@ -63,21 +61,22 @@ DF_AUTOFOCUS    = 8    # see MV_AUTOFOCUS
 DG_LINES            = 0x10000      # lines instead of dots
 DG_ONLYHIGHLIGHTED  = 0x20000      # omit the non-highlighted dots and draw the other ones using the 1st color instead
 
-# onmouse and onkey flags (for MapView objects)
+# onmouse and onkey flags (for MapView(s) and ModelView(s) objects)
+# These are added together to get the total Mouse Button "flags" value.
 MB_SHIFT        = 1
 MB_ALT          = 2
 MB_CTRL         = 4
-MB_LEFTBUTTON   = 8
-MB_RIGHTBUTTON  = 16
-MB_MIDDLEBUTTON = 32
+MB_LEFTBUTTON   = 8   ### This is WHEN this mouse button is being used by itself or with others.
+MB_RIGHTBUTTON  = 16  ### This is WHEN this mouse button is being used by itself or with others.
+MB_MIDDLEBUTTON = 32  ### This is WHEN this mouse button is being used by itself or with others.
 MB_DOUBLECLICK  = 64
 MB_CLICKED      = 256
-MB_DRAGSTART    = 512
-MB_DRAGGING     = 1024
-MB_DRAGEND      = 2048
+MB_DRAGSTART    = 512  ### This is WHEN the mouse button(s) are FIRST pressed.
+MB_DRAGGING     = 1024 ### This is WHILE the mouse button(s) are being pressed.
+MB_DRAGEND      = 2048 ### This is when the mouse button(s) is actually RELEASED.
 MB_KEYDOWN      = 4096
 MB_KEYUP        = 8192
-MB_MOUSEMOVE    = 16384
+MB_MOUSEMOVE    = 16384 ### This is when NO mouse button(s) are pressed and the mouse is being moved around.
 
 MB_NOGRID       = 65536
 MB_REDIMAGE     = MB_DRAGGING|MB_CTRL
@@ -144,6 +143,10 @@ def ftoss(f):
 def vtohint(v):
     "Turns a signed vector into a string."
     return "dragging  " + ftoss(v.x)+" "+ftoss(v.y)+" "+ftoss(v.z)
+
+def vtoposhint(v):
+    "Turns a signed vector into a string."
+    return ftoss(v.x)+" "+ftoss(v.y)+" "+ftoss(v.z)
 
 
 def mouseflags(flags):
@@ -398,7 +401,6 @@ def AutoZoom(views, bbox, margin=(20,18), scale1=1.0):
                 if (bx2 is None) or (p.x>bx2): bx2=p.x
                 if (by2 is None) or (p.y>by2): by2=p.y
             scale = v.info["scale"]
-            #print v.redlinesrect, scale, bx1, by1, bx2, by2
             x1,y1,x2,y2 = v.redlinesrect
             if bx2-bx1>0.1:
                 bx = scale * (x2-x1-margin[0])/(bx2-bx1)
@@ -1339,6 +1341,7 @@ def ToolsMenu(editor, toolbars):
 #
 ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
 ico_mdled = LoadIconSet1("mdled", 1.0)
+ico_mdlskv = LoadIconSet1("mdlskv", 1.0)
 ico_dict['ico_mapedsm'] = LoadIconSet1("mapedsm", 0.5)    # small
 ico_maped_y = ico_dict['ico_maped'][0][0].size[1] + 7
 
@@ -1443,13 +1446,13 @@ def TexModeMenu(editor, view):
                 view.screencenter = center
                 setprojmode(view)
 
-    if view.viewmode == "opengl":
-        modhint = "the mode is fixed to OpenGL"
-        infobaselink = "intro.mapeditor.menu.html#layoutmenu"
-    else:
-        import qbasemgr
-        modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
-        infobaselink = "intro.mapeditor.menu.html#layoutmenu"
+    #if view.viewmode == "opengl":
+        #modhint = "the mode is fixed to OpenGL"
+        #infobaselink = "intro.mapeditor.menu.html#layoutmenu"
+    #else:
+    import qbasemgr
+    modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
+    infobaselink = "intro.mapeditor.menu.html#layoutmenu"
     Mod1 = qmenu.item("&Wireframe", setviewmode, modhint, infobaselink)
     Mod1.mode = "wire"
     Mod2 = qmenu.item("&Solid", setviewmode, modhint, infobaselink)
@@ -1458,10 +1461,10 @@ def TexModeMenu(editor, view):
     Mod3.mode = "tex"
     List = [Mod1, Mod2, Mod3]
     for menu in List:
-        if view.viewmode == "opengl":
-            menu.state = qmenu.disabled
-        else:
-            menu.state = menu.mode==view.viewmode and qmenu.radiocheck
+        #if view.viewmode == "opengl":
+            #menu.state = qmenu.disabled
+        #else:
+        menu.state = menu.mode==view.viewmode and qmenu.radiocheck
     import mdleditor
     if isinstance(editor, mdleditor.ModelEditor):
         if view.info["type"] == "2D":
@@ -1543,6 +1546,20 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.37  2007/04/13 19:46:57  cdunde
+#Added new function vtoposhint to give only x, y and z position without added hint text.
+#
+#Revision 1.36  2007/04/12 03:50:22  cdunde
+#Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
+#and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
+#Also activated the 'Hints for handles' function for the Skin-view.
+#
+#Revision 1.35  2007/01/31 15:12:16  danielpharos
+#Removed bogus OpenGL texture mode
+#
+#Revision 1.34  2007/01/30 06:45:53  cdunde
+#To add UNDERSTANDABLE and needed comments about mouse button "flags" keys available.
+#
 #Revision 1.33  2006/12/22 01:12:17  cdunde
 #Updated Forums link.
 #

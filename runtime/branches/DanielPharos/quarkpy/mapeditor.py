@@ -135,8 +135,7 @@ class MapEditor(BaseEditor):
         except:
             pending = None
         if pending:
-#py2.4            quarkx.settimer(autosave, self, 0.0)
-            quarkx.settimer(autosave, self, int(0.0))
+            quarkx.settimer(autosave, self, 0)
             del self.pending
         if self.tmpsaved:
             try:
@@ -175,7 +174,7 @@ class MapEditor(BaseEditor):
         except:
             pending = 0.0
         if (now is not None) or (time1 != pending):
-            quarkx.settimer(autosave, self, time1)
+            quarkx.settimer(autosave, self, int(time1))
             self.pending = time1
 
 
@@ -322,7 +321,7 @@ class MapEditor(BaseEditor):
         mapbtns.moveselection(self, text, delta)
 
 
-            
+
 def loadbbox(sender):
     "Load Bounding Boxes information."
     bbox = LoadPoolObj("BoundingBoxes", quarkx.getqctxlist, ":form")
@@ -336,7 +335,7 @@ def autosavetime():
     try: 
         minutes = int(quarkx.setupsubset(SS_MAP, "Building")["AutoSave"])
     except:
-        return 600000 # linux issue with single quote
+        return 10 * 60000.0 # linux issue with single quote
     else:
         return minutes * 60000.0
 
@@ -363,6 +362,12 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.12  2007/04/02 22:17:08  danielpharos
+#Fix a float-integer problem
+#
+#Revision 1.11  2007/03/31 14:32:53  danielpharos
+#Fixed a typo
+#
 #Revision 1.10  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2007/03/17 15:43:12  danielpharos
+Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
+
+Revision 1.51  2007/03/15 22:16:20  danielpharos
+Removed a redundant include.
+
+Revision 1.50  2007/02/07 18:48:34  danielpharos
+Fixes for memory leaks
+
+Revision 1.49  2006/05/07 09:25:49  rowdy
+fix a couple of vaguely possible access violation situations while reading shaders/materials
+
 Revision 1.48  2006/05/05 06:04:44  cdunde
 To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
 handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
@@ -383,7 +395,7 @@ implementation
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
   CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkFormCfg,
-  QkQ1 ,QkQ2, QkObjectClassList, QkD3, QkHL2mat;
+  QkQ1, QkQ2, QkObjectClassList, QkD3;
 
 {$R *.DFM}
 
@@ -867,7 +879,7 @@ var
           if ShaderFile<>Nil then
           begin  { write the shaders file }
             if S='' then
-              Raise InternalE('"TextureShaders" expected in Defaults.qrk');
+              Raise EErrorFmt(5693, ['TextureShaders', 'Defaults.qrk']);
             ShaderFile.SaveInFile(rf_Default, OutputFile(S));
           end;
 
@@ -1099,7 +1111,7 @@ begin
       P:=@P^.Next;
     end;
     P^:=Next;  { breaks the linked list }
-    Link.AddRef(-1);
+    Link.AddRef(-1); {DanielPharos: Apparently, this not always destroys the link?}
     Link:=Nil;
   end;
 end;

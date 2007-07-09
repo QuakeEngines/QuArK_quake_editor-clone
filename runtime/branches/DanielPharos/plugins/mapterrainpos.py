@@ -554,12 +554,12 @@ def PaintBrushClick(m):
             angleX, angleY = read2values(quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_angles"]) # fix for linux
             for view in editor.layout.views:
                 type = view.info["type"]
-                if type == "3D" and view.viewmode == "tex" or view.viewmode == "opengl":
+                if type == "3D" and view.viewmode == "tex":
                     quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
         else:
             for view in editor.layout.views:
                 type = view.info["type"]
-                if type == "3D" and view.viewmode == "tex" or view.viewmode == "opengl":
+                if type == "3D" and view.viewmode == "tex":
                     quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
         curguide = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]
@@ -945,6 +945,9 @@ def Options3DviewsClick(m):
 #
 #
 # $Log$
+# Revision 1.11  2007/01/31 15:12:16  danielpharos
+# Removed bogus OpenGL texture mode
+#
 # Revision 1.10  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

@@ -22,7 +22,7 @@ Info = {
 
 import quarkpy.qhandles   
 from quarkpy.mdlmgr import *
-
+import quarkpy.mdleditor
 
 #
 # See comments in map4viewslayout.py.
@@ -32,6 +32,7 @@ class FourViewsLayout(ModelLayout):
     "The 4-views layout, abstract class for FourViewsLayout1 and FourViewsLayout2."
 
     def buildbase(self, form):
+        self.editor = mdleditor.mdleditor
 
         #
         # We put the standard left panel first.
@@ -69,25 +70,28 @@ class FourViewsLayout(ModelLayout):
 
         self.ViewXY.info = {
           "type": "XY",     # XY view
+          "viewname": "XY", # name
           "angle": 0.0,     # compass angle
           "scale": scale,   # scale
           "vangle": 0.0}    # vertical angle
 
         self.ViewXZ.info = {
           "type": "XZ",     # XZ view
+          "viewname": "XZ", # name
           "angle": 0.0,
           "scale": scale,
           "vangle": 0.0}
 
         self.ViewYZ.info = {
           "type": "YZ",     # YZ view
+          "viewname": "YZ", # name
           "angle": 0.0,
           "scale": scale,
           "vangle": 0.0}
 
         self.View3D.info = {
           "type": "3D",     # 3D view
-          "viewname": "editors3Dview"}
+          "viewname": "editors3Dview"} # name
 
     ### Calling this function causes the 3D view mouse maneuvering to change,
     ### rotation is based on the center of the editor view or the model (0,0,0).
@@ -234,6 +238,7 @@ class FourViewsLayout(ModelLayout):
 
 class FourViewsLayout2(FourViewsLayout):
 
+    from quarkpy.qbaseeditor import currentview
     shortname = "4 views"
 
     def buildscreen(self, form):
@@ -286,6 +291,12 @@ class FourViewsLayout2(FourViewsLayout):
         self.ViewYZ.flags = self.ViewYZ.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
         self.ViewXY.flags = self.ViewXY.flags &~ MV_HSCROLLBAR
 
+        #
+        # To set the qbaseeditor's global currentview for proper creation and
+        # drawing of handles when switching from one layout to another.
+        #
+        
+        quarkpy.qbaseeditor.currentview = self.View3D
 
 
 
@@ -299,6 +310,17 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.10  2007/06/05 22:42:26  cdunde
+# To set the qbaseeditor's global currentview for proper creation and
+# drawing of handles when switching from one layout to another.
+#
+# Revision 1.9  2007/06/05 01:01:16  cdunde
+# To try and stop model editor "loosing" itself when the Skin-view is the currentview and other stuff.
+#
+# Revision 1.8  2007/01/21 19:41:17  cdunde
+# Gave a viewname for all views of the Model Editor
+# to add new Model Editor Views Options button and functions.
+#
 # Revision 1.7  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

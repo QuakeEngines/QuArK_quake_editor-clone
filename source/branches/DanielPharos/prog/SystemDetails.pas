@@ -23,6 +23,27 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
+Revision 1.26  2007/03/12 13:21:59  danielpharos
+Fixed a few stupid bugs introduced in the last change.
+
+Revision 1.25  2007/03/11 12:03:10  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
+Revision 1.24  2007/03/10 22:02:08  danielpharos
+Some changes to OS detection. Also added a few CPU vendors. Removed some useless calls.
+
+Revision 1.23  2007/03/05 00:41:57  danielpharos
+Updated OS checks. All OS's of today should be detected now.
+
+Revision 1.22  2007/02/09 10:44:17  danielpharos
+Fixes for memory leaks
+
+Revision 1.21  2007/02/07 20:03:18  danielpharos
+Fixes for memory leaks
+
 Revision 1.20  2007/01/05 19:48:03  danielpharos
 Fixed a range check error with the reading of the amounts of memory available
 
@@ -89,12 +110,11 @@ uses
   SysUtils, Windows, Classes, Registry;
 
 const
-SM_CXVIRTUALSCREEN   =	78;
-SM_CYVIRTUALSCREEN   =  79;
+  SM_CXVIRTUALSCREEN   =	78;
+  SM_CYVIRTUALSCREEN   =  79;
 
 var
-
-g_CxScreen, g_CyScreen: Integer;
+  g_CxScreen, g_CyScreen: Integer;
 
 Procedure LogSystemDetails;
 
@@ -106,7 +126,6 @@ type
      Int64 = TLargeInteger;
      LongWord = DWORD;
   {$ENDIF}
-  TPlatFormType = (os9x,osNT4,os2K);
   TStrBuf = array[0..11] of char;
 
   TCPU = class(TPersistent)
@@ -124,7 +143,7 @@ type
     FVendorNo,
     FFreq :integer;
     FCPUID :boolean;
-    function CPUIDExists: boolean;
+    function CPUIDExists :boolean;
     procedure GetCPUID;
     function GetCPUIDLevel :integer;
     function GetCPUType :integer;
@@ -154,7 +173,7 @@ type
 
   TMemory = class(TPersistent)
   private
-    FMemoryLoad: longword;    {Daniel: This is not 64-bit compatible. Some are Size_T, which will be 64 bit variables.}
+    FMemoryLoad: longword;    //DanielPharos: This is not 64-bit compatible. Some are Size_T, which will be 64 bit variables.
     FPhysicalTotal: longword;
     FPhysicalFree: longword;
     FVirtualTotal: longword;
@@ -187,9 +206,9 @@ type
     property MaxAppAddress :integer read FMaxAppAddress write FMaxAppAddress stored false;
     property MinAppAddress :integer read FMinAppAddress write FMinAppAddress stored false;
     property PageSize :integer read FPageSize write FPageSize stored false;
-    property Win9x_SystemRes: Byte read FSystemRes write FSystemRes stored false;
-    property Win9x_GDIRes: Byte read FGDIRes write FGDIRes stored false;
-    property Win9x_UserRes: Byte read FUserRes write FUserRes stored false;
+    property Win9x_SystemRes :Byte read FSystemRes write FSystemRes stored false;
+    property Win9x_GDIRes :Byte read FGDIRes write FGDIRes stored false;
+    property Win9x_UserRes :Byte read FUserRes write FUserRes stored false;
   end;
 
   TOperatingSystem = class(TPersistent)
@@ -223,7 +242,7 @@ type
     property RegisteredUser :string read FRegUser write FRegUser stored false;
     property RegisteredOrg :string read FRegOrg write FRegOrg stored false;
     property Environment :TStrings read FEnv write FEnv stored false;
-    property Directories: TStrings read FDirs write FDirs stored False;
+    property Directories :TStrings read FDirs write FDirs stored False;
   end;
 
   TWorkstation = class(TPersistent)
@@ -252,9 +271,9 @@ type
     property BIOSDate :string read FBIOSDate write FBIOSDate stored false;
     property BIOSExtendedInfo :string read FBIOSExtendedInfo write FBIOSExtendedInfo stored false;
     property BIOSName :string read FBIOSName write FBIOSName stored false;
-    property CapsLock: Boolean read FCapsLock write FCapsLock stored false;
-    property NumLock: Boolean read FNumLock write FNumLock stored false;
-    property ScrollLock: Boolean read FScrollLock write FScrollLock stored false;
+    property CapsLock :Boolean read FCapsLock write FCapsLock stored false;
+    property NumLock :Boolean read FNumLock write FNumLock stored false;
+    property ScrollLock :Boolean read FScrollLock write FScrollLock stored false;
   end;
 
   TCurveCap = (ccCircles,ccPieWedges,ccChords,ccEllipses,ccWideBorders,ccStyledBorders,
@@ -352,18 +371,13 @@ implementation
 
 uses ShlObj, Logging;
 
+type
+  TPlatformType = (osWin95, osWinNT);
+
 var
-  IsNT, Is95, Is2000 : Boolean;
-  WindowsUser, MachineName: string;
-  // These are not currently used.
-  // Is98, IsOSR2: Boolean;
-  // Platform: TPlatformType;
-var
-  VLevel, VFamily, VModel, VStepping, VTyp :Byte;
-  VFeatures :LongInt;
-  ClassKey: string;
-const
-  DescValue = 'DriverDesc';
+  WindowsPlatformCompatibility: TPlatformType;
+  VLevel, VFamily, VModel, VStepping, VTyp: Byte;
+  VFeatures: LongInt;
 
 constructor TCPU.Create;
 begin
@@ -378,19 +392,27 @@ end;
 const
   ID_Bit = $200000;    // EFLAGS ID bit
 
-  CPUVendorIDs :array[0..5] of string = ('GenuineIntel',
+  CPUVendorIDs :array[0..9] of string = ('GenuineIntel',
                                          'UMC UMC UMC',
                                          'AuthenticAMD',
                                          'CyrixInstead',
                                          'NexGenDriven',
-                                         'CentaurHauls');
+                                         'CentaurHauls',
+                                         'RiseRiseRise',
+                                         'SiS SiS SiS',
+                                         'GenuineTMx86',
+                                         'Geode by NSC');
 
-  CPUVendors :array[0..5] of string = ('Intel',
+  CPUVendors :array[0..9] of string = ('Intel',
                                        'UMC',
                                        'AMD',
                                        'Cyrix',
                                        'NexGen',
-                                       'CentaurHauls');
+                                       'CentaurHauls',
+                                       'Rise Technology',
+                                       'SiS',
+                                       'Transmeta',
+                                       'National Semiconductor');
 
 function TCPU.CPUIDExists: boolean; register;
 asm
@@ -852,12 +874,13 @@ end;
 
 procedure TOperatingSystem.GetInfo;
 var
-  OS :TOSVersionInfo;
-  OK: Boolean;
+  OS: TOSVersionInfo;
   p: pchar;
   n: DWORD;
   WinH: HWND;
   s: string;
+  rkOSInfo: string;
+  rvVersionName: string;
 const
   rkOSInfo95 = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\Windows\CurrentVersion';
   rkOSInfoNT = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\Windows NT\CurrentVersion';
@@ -868,7 +891,7 @@ const
   rvProductID = 'ProductID';
 
   cUserProfile = 'USERPROFILE';
-  cUserProfileReg = {HKEY_CURRENT_USER\}'Software\Microsoft\Windows\CurrentVersion\ProfileList';
+  cUserProfileReg = {HKEY_CURRENT_USER\}'SOFTWARE\Microsoft\Windows\CurrentVersion\ProfileList';
   cUserProfileRec = {HKEY_CURRENT_USER\}'SOFTWARE\Microsoft\Windows\CurrentVersion\ProfileReconciliation';
   cProfileDir = 'ProfileDirectory';
 begin
@@ -878,24 +901,106 @@ begin
   GetVersionEx(OS);
   MajorVersion:=OS.dwMajorVersion;
   MinorVersion:=OS.dwMinorVersion;
-  if Is95 then
-  begin
-    g_CxScreen:=sm_CxScreen;
-    g_CyScreen:=sm_CyScreen;
-  end
-  else
-  begin
-    g_CxScreen:=SM_CXVIRTUALSCREEN;
-    g_CyScreen:=SM_CYVIRTUALSCREEN;
-  end;
   BuildNumber:=word(OS.dwBuildNumber);
   case OS.dwPlatformId of
-    VER_PLATFORM_WIN32s:        Platform:='Windows 3.1x';
-    VER_PLATFORM_WIN32_WINDOWS: Platform:='Windows 95';
-    VER_PLATFORM_WIN32_NT:      Platform:='Windows NT';
+    VER_PLATFORM_WIN32s:
+     begin
+      Platform:='Windows 32s';
+      WindowsPlatformCompatibility:=osWin95;
+     end;
+    VER_PLATFORM_WIN32_WINDOWS:
+      case MajorVersion of
+      4:
+       begin
+        case MinorVersion of
+        0: Platform:='Windows 95';
+        10: Platform:='Windows 98';
+        90: Platform:='Windows ME';
+        else Platform:='Unknown (Probably OK)';
+        end;
+        WindowsPlatformCompatibility:=osWin95;
+       end;
+      5:
+       begin
+        case MinorVersion of
+        0: Platform:='Windows Vista or Windows Server "Longhorn"';
+        else Platform:='Unknown (Probably OK)';
+        end;
+        WindowsPlatformCompatibility:=osWinNT;
+       end;
+      else
+       begin
+        if MajorVersion>5 then
+        begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatformCompatibility:=osWin95;
+        end
+        else
+        begin
+          Platform:='Unknown';
+          WindowsPlatformCompatibility:=osWinNT;
+        end;
+       end;
+      end;
+    VER_PLATFORM_WIN32_NT:
+      case MajorVersion of
+      4:
+       begin
+        case MinorVersion of
+        0: Platform:='Windows NT4';
+        else Platform:='Unknown (Probably OK)';
+        end;
+        WindowsPlatformCompatibility:=osWinNT;
+       end;
+      5:
+       begin
+        case MinorVersion of
+        0: Platform:='Windows 2000';
+        1: Platform:='Windows XP';
+        2: Platform:='Windows 2003 or Windows XP 64-bit';
+        else Platform:='Unknown (Probably OK)';
+        end;
+        WindowsPlatformCompatibility:=osWinNT;
+       end;
+      6:
+       begin
+        case MinorVersion of
+        0: Platform:='Windows Vista or Windows Server "Longhorn"';
+        else Platform:='Unknown (Probably OK)';
+        end;
+        WindowsPlatformCompatibility:=osWinNT;
+       end;
+      else
+       begin
+        if MajorVersion>6 then
+        begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatformCompatibility:=osWinNT;
+        end
+        else
+        begin
+          Platform:='Unknown';
+          WindowsPlatformCompatibility:=osWin95;
+        end;
+       end;
+      end;
   end;
-  if MajorVersion>4 then
-    Platform:='Windows 2000';
+  case WindowsPlatformCompatibility of
+  osWin95:
+   begin
+    g_CxScreen:=sm_CxScreen;
+    g_CyScreen:=sm_CyScreen;
+    rkOSInfo:=rkOSInfo95;
+    rvVersionName:=rvVersionName95;
+   end;
+  osWinNT:
+   begin
+    g_CxScreen:=SM_CXVIRTUALSCREEN;
+    g_CyScreen:=SM_CYVIRTUALSCREEN;
+    rkOSInfo:=rkOSInfoNT;
+    rvVersionName:=rvVersionNameNT;
+   end;
+  end;
   CSD:=strpas(OS.szCSDVersion);
   Version:='';
   RegisteredUser:='';
@@ -904,43 +1009,16 @@ begin
   with TRegistry.create do
   begin
     rootkey:=HKEY_LOCAL_MACHINE;
-    if isnt then
+    if OpenKey(rkOSInfo,false) then
     begin
-      if OpenKey(rkOSInfoNT,false) then
-      begin
-        if ValueExists(rvVersionNameNT) then
-          Version:=ReadString(rvVersionNameNT);
-        if ValueExists(rvRegOrg) then
-          RegisteredOrg:=ReadString(rvRegOrg);
-        if ValueExists(rvRegOwn) then
-          RegisteredUser:=ReadString(rvRegOwn);
-        if ValueExists(rvProductID) then
-          SerialNumber:=ReadString(rvProductID);
-        closekey;
-      end;
-    end
-    else
-    begin
-      if OpenKey(rkOSInfo95,false) then
-      begin
-        if ValueExists(rvVersionName95) then
-          Version:=ReadString(rvVersionName95);
-        if ValueExists(rvRegOrg) then
-          RegisteredOrg:=ReadString(rvRegOrg);
-        if ValueExists(rvRegOwn) then
-          RegisteredUser:=ReadString(rvRegOwn);
-        if ValueExists(rvProductID) then
-          SerialNumber:=ReadString(rvProductID);
-        closekey;
-      end;
-    end;
-    rootkey:=HKEY_LOCAL_MACHINE;
-    if IsNT then
-      OK:=OpenKey(rkOSInfoNT,False)
-    else
-      OK:=OpenKey(rkOSInfo95,False);
-    if OK then
-    begin
+      if ValueExists(rvVersionName) then
+        Version:=ReadString(rvVersionName);
+      if ValueExists(rvRegOrg) then
+        RegisteredOrg:=ReadString(rvRegOrg);
+      if ValueExists(rvRegOwn) then
+        RegisteredUser:=ReadString(rvRegOwn);
+      if ValueExists(rvProductID) then
+        SerialNumber:=ReadString(rvProductID);
       FDirs.Add('CommonFiles='  +ReadString('CommonFilesDir'));
       FDirs.Add('ProgramFiles=' +ReadString('ProgramFilesDir'));
       FDirs.Add('Device='       +ReadString('DevicePath'));
@@ -1066,12 +1144,23 @@ begin
 end;
 
 procedure TMemory.Report(var sl: TStringList);
+var
+  buf: string;
 begin
   with sl do
   begin
-    add(formatfloat('Physical Memory Total: #,## B',PhysicalTotal));
-    add(formatfloat('Physical Memory Free: #,## B',PhysicalFree));
-    add(formatfloat('Virtual Memory Free: #,## B',VirtualFree));
+    buf:=formatfloat('#,##',PhysicalTotal);
+    if length(buf)=0 then
+      buf:='0';
+    add('Physical Memory Total: '+buf+' Bytes');
+    buf:=formatfloat('#,##',PhysicalFree);
+    if length(buf)=0 then
+      buf:='0';
+    add('Physical Memory Free: '+buf+' Bytes');
+    buf:=formatfloat('#,##',VirtualFree);
+    if length(buf)=0 then
+      buf:='0';
+    add('Virtual Memory Free: '+buf+' Bytes');
   end;
 end;
 
@@ -1085,19 +1174,19 @@ begin
   result:=FSystemUpTime;
 end;
 
-function GetMachine :string;
+function GetMachine: string;
 var
-  n :dword;
-  buf :pchar;
+  n: dword;
+  buf: string;
 const
   rkMachine = {HKEY_LOCAL_MACHINE\}'SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName';
-    rvMachine = 'ComputerName';
+  rvMachine = 'ComputerName';
 begin
-  n:=255;
-  buf:=stralloc(n);
-  GetComputerName(buf,n);
-  result:=strpas(buf);
-  strdispose(buf);
+  n:=254;
+  SetLength(buf,n);
+  GetComputerName(PChar(buf),n);
+  SetLength(buf,n-1);
+  result:=buf;
   with TRegistry.Create do
   begin
     rootkey:=HKEY_LOCAL_MACHINE;
@@ -1105,28 +1194,28 @@ begin
     begin
       if ValueExists(rvMachine) then
         result:=ReadString(rvMachine);
-      closekey;
+      CloseKey;
     end;
     free;
   end;
 end;
 
-function GetUser :string;
+function GetUser: string;
 var
-  n :dword;
-  buf :pchar;
+  n: dword;
+  buf: string;
 begin
-  n:=255;
-  buf:=stralloc(n);
-  GetUserName(buf,n);
-  result:=strpas(buf);
-  strdispose(buf);
+  n:=254;
+  SetLength(buf,n);
+  GetUserName(PChar(buf),n);
+  SetLength(buf,n-1);
+  result:=buf;
 end;
 
 procedure TWorkstation.GetInfo;
 var
-  bdata :pchar;
-  KeyState : TKeyBoardState;
+  bdata: pchar;
+  KeyState: TKeyBoardState;
 const
   cBIOSName = $FE061;
   cBIOSDate = $FFFF5;
@@ -1134,9 +1223,9 @@ const
   cBIOSCopyright = $FE091;
 
   rkBIOS = {HKEY_LOCAL_MACHINE\}'HARDWARE\DESCRIPTION\System';
-    rvBiosDate = 'SystemBiosDate';
-    rvBiosID = 'Identifier';
-    rvBiosVersion = 'SystemBiosVersion';
+  rvBiosDate = 'SystemBiosDate';
+  rvBiosID = 'Identifier';
+  rvBiosVersion = 'SystemBiosVersion';
 
 begin
   try
@@ -1147,7 +1236,7 @@ begin
   FSystemUpTime:=GetSystemUpTime;
   FName:=GetMachine;
   FUser:=GetUser;
-  if isNT then
+  if WindowsPlatformCompatibility=osWinNT then
   begin
     with TRegistry.Create do
     begin
@@ -1167,7 +1256,7 @@ begin
         end;
         if ValueExists(rvBIOSDate) then
           FBIOSDate:=ReadString(rvBIOSDate);
-        closekey;
+        CloseKey;
       end;
       free;
     end;
@@ -1184,7 +1273,6 @@ begin
   FNumLock:=KeyState[VK_NUMLOCK]=1;
   FScrollLock:=KeyState[VK_SCROLL]=1;
 end;
-
 
 procedure TWorkstation.Report(var sl: TStringList);
 begin
@@ -1224,7 +1312,7 @@ begin
             rclass:=UpperCase(ReadString(rvClass));
             if rclass=UpperCase(AClassName) then
             begin
-              if not IsNT then
+              if WindowsPlatformCompatibility=osWin95 then
               begin
                 s:=UpperCase(ReadString(rvLink));
                 CloseKey;
@@ -1280,36 +1368,39 @@ procedure TDisplay.GetInfo;
 var
   rk :string;
   bdata :pchar;
-  idata:integer;
+  idata :integer;
   sl :tstringlist;
   i :integer;
-  DevMode : TDevMode;
+  DevMode :TDevMode;
   Found: Boolean;
   l_hdc: HDC;
+  ClassKey: string;
 const
   rkVideoHardware = {HKEY_LOCAL_MACHINE\}'HARDWARE\DEVICEMAP\VIDEO';
   rvVideoKey1 = '\Device\Video0';
   rvVideoKey2 = '\\Device\\Video0';
-   rvHardware = 'HardwareInformation';
-    rvHWVideo = 'AdapterString';
-    rvHWDAC = 'DacType';
-    rvHWChip = 'ChipType';
-    rvHWMem = 'MemorySize';
+  rvHardware = 'HardwareInformation';
+  rvHWVideo = 'AdapterString';
+  rvHWDAC = 'DacType';
+  rvHWChip = 'ChipType';
+  rvHWMem = 'MemorySize';
 
   rvVideoClass = 'Display';
 
-    rkClassInfo = 'INFO';
-    rvCIVideo = 'DriverDesc';
-    rvCIDAC = 'DACType';
-    rvCIChip = 'ChipType';
-    rvCIMem = 'VideoMemory';
-    rvCIRev = 'Revision';
+  rkClassInfo = 'INFO';
+  rvCIVideo = 'DriverDesc';
+  rvCIDAC = 'DACType';
+  rvCIChip = 'ChipType';
+  rvCIMem = 'VideoMemory';
+  rvCIRev = 'Revision';
 
   rv3DClass = '3D Accelerators';
 
   rkBIOS = {HKEY_LOCAL_MACHINE\}'HARDWARE\DESCRIPTION\System';
-    rvVideoBiosDate = 'VideoBiosDate';
-    rvVideoBiosVersion = 'VideoBiosVersion';
+  rvVideoBiosDate = 'VideoBiosDate';
+  rvVideoBiosVersion = 'VideoBiosVersion';
+
+  DescValue = 'DriverDesc';
 begin
   l_hdc := GetDC(0); {Remember to call ReleaseDC() - as written in the Win32 API documentation}
 
@@ -1456,6 +1547,11 @@ begin
 
   ReleaseDC(0, l_hdc);
 
+  if WindowsPlatformCompatibility=osWinNT then
+    ClassKey:='SYSTEM\CurrentControlSet\Control\Class'
+  else
+    ClassKey:='SYSTEM\CurrentControlSet\Services\Class';
+
   sl:=tstringlist.create;
   FAdapter.Clear;
   FDevices.Clear;
@@ -1516,7 +1612,7 @@ begin
           else
             rk:='';
         end;
-        closekey;
+        CloseKey;
 
         if rk<>'' then
         begin
@@ -1547,7 +1643,7 @@ begin
                 FMemory.Add(inttostr(idata));
               except
               end;
-            closekey;
+            CloseKey;
           end;
         end;
       end;
@@ -1564,7 +1660,7 @@ begin
       end;
       if ValueExists(rvVideoBIOSDate) then
         FBIOSDate:=ReadString(rvVideoBIOSDate);
-      closekey;
+      CloseKey;
     end;
     free;
   end;
@@ -1585,14 +1681,6 @@ begin
   sl.free;
 end;
 
-function Bool2YN(b :boolean) :string;
-begin
-  if b then
-    result:='Yes'
-  else
-    result:='No';
-end;
-
 constructor TDisplay.Create;
 begin
   inherited;
@@ -1609,11 +1697,11 @@ destructor TDisplay.Destroy;
 begin
   FAdapter.Free;
   FDevices.Free;
+  FModes.Free;
+  FAcc.Free;
   FDAc.Free;
   FChipset.Free;
   FMemory.Free;
-  FAcc.Free;
-  FModes.Free;
   inherited;
 end;
 
@@ -1632,7 +1720,7 @@ begin
       add(format('[Adapter %d] %s', [i+1,Adapter[i]]));
       add('    Chipset: '   +Chipset[i]);
       add('    DAC: '       +DAC[i]);
-      add('    Memory: '    +Memory[i] + ' B');
+      add('    Memory: '    +Memory[i] + ' Bytes');
     end;
   end;
 end;
@@ -1656,12 +1744,12 @@ var
   i :integer;
 const
   rkDirectX = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectX';
-    rvDXVersionNT = 'InstalledVersion';
-    rvDXVersion95 = 'Version';
+  rvDXVersion = 'Version';
+  rvDXInstalledVersion = 'InstalledVersion';
   rkDirect3D = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\Direct3D\Drivers';
   rkDirectPlay = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectPlay\Services';
   rkDirectMusic = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectMusic\SoftwareSynths';
-    rvDesc = 'Description';
+  rvDesc = 'Description';
 begin
   with TRegistry.Create do
   begin
@@ -1669,23 +1757,24 @@ begin
     if OpenKey(rkDirectX,false) then
     begin
       bdata:=stralloc(255);
-      if ValueExists(rvDXVersion95) then
-        FVersion:=ReadString(rvDXVersion95);
+      FVersion:=ReadString(rvDXVersion);
       if FVersion='' then
-        if ValueExists(rvDXVersionNT) then
+      begin
+        if ValueExists(rvDXInstalledVersion) then
           try
-            readbinarydata(rvDXVersionNT,bdata^,4);
+            readbinarydata(rvDXInstalledVersion,bdata^,4);
             FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
           except
             {$IFDEF Delphi4orNewerCompiler}
             try
-              readbinarydata(rvDXVersionNT,bdata^,8);
+              readbinarydata(rvDXInstalledVersion,bdata^,8);
               FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
             except
             end;
             {$ENDIF}
           end;
-      closekey;
+      end;
+      CloseKey;
       strdispose(bdata);
     end;
     FDirect3D.Clear;
@@ -1693,20 +1782,19 @@ begin
     if OpenKey(rkDirect3D,false) then
     begin
       getkeynames(sl);
-      closekey;
+      CloseKey;
       for i:=0 to sl.count-1 do
         if OpenKey(rkDirect3D+'\'+sl[i],false) then
         begin
           if ValueExists(rvDesc) then
             FDirect3D.Add(ReadString(rvDesc));
-          closekey;
+          CloseKey;
         end;
     end;
     sl.free;
     free;
   end;
 end;
-
 
 procedure TDirectX.Report(var sl: TStringList);
 begin
@@ -1719,68 +1807,6 @@ begin
     end
     else
       add('Not installed.');
-  end;
-end;
-
-function IsOSNT :boolean;
-var
-  OS :TOSVersionInfo;
-begin
-  ZeroMemory(@OS,SizeOf(OS));
-  OS.dwOSVersionInfoSize:=SizeOf(OS);
-  GetVersionEx(OS);
-  result:=OS.dwPlatformId=VER_PLATFORM_WIN32_NT;
-end;
-
-function IsOS95 :boolean;
-var
-  OS :TOSVersionInfo;
-begin
-  ZeroMemory(@OS,SizeOf(OS));
-  OS.dwOSVersionInfoSize:=SizeOf(OS);
-  GetVersionEx(OS);
-  result:=(OS.dwMajorVersion>=4) and (OS.dwMinorVersion=0) and (OS.dwPlatformId=VER_PLATFORM_WIN32_WINDOWS);
-end;
-
-function IsOS98 :boolean;
-var
-  OS :TOSVersionInfo;
-begin
-  ZeroMemory(@OS,SizeOf(OS));
-  OS.dwOSVersionInfoSize:=SizeOf(OS);
-  GetVersionEx(OS);
-  result:=(OS.dwMajorVersion>=4) and (OS.dwMinorVersion>0) and (OS.dwPlatformId=VER_PLATFORM_WIN32_WINDOWS);
-end;
-
-function IsOSOSR2 :boolean;
-var
-  OS :TOSVersionInfo;
-begin
-  ZeroMemory(@OS,SizeOf(OS));
-  OS.dwOSVersionInfoSize:=SizeOf(OS);
-  GetVersionEx(OS);
-  result:=(OS.dwMajorVersion>=4) and (OS.dwMinorVersion=0) and (lo(OS.dwBuildNumber)>1000) and (OS.dwPlatformId=VER_PLATFORM_WIN32_WINDOWS);
-end;
-
-function IsOS2000 :boolean;
-var
-  OS :TOSVersionInfo;
-begin
-  ZeroMemory(@OS,SizeOf(OS));
-  OS.dwOSVersionInfoSize:=SizeOf(OS);
-  GetVersionEx(OS);
-  result:=(OS.dwMajorVersion>=5) and (OS.dwPlatformId=VER_PLATFORM_WIN32_NT);
-end;
-
-function GetPlatform: TPlatformType;
-begin
-  Result:=os9x;
-  if isNT then
-  begin
-    if is2000 then
-      Result:=os2K
-    else
-      Result:=osNT4;
   end;
 end;
 
@@ -1844,7 +1870,7 @@ begin
   c.free;
 end;
 
-procedure GetPythonDetails(var S: TStringlist);
+procedure GetPythonDetails(var s: TStringlist);
 {
   Peter: deprecated as of 18-08-2003.
   Logging of Python interpreter details now done in Python.pas.
@@ -1859,22 +1885,21 @@ var
 begin
   R:=TRegistry.Create;
   R.RootKey:=HKEY_LOCAL_MACHINE;
-  installed:=R.KeyExists('\Software\Python\PythonCore\CurrentVersion');
+  installed:=R.KeyExists('\SOFTWARE\Python\PythonCore\CurrentVersion');
   if installed then
   begin
-    R.OpenKey('\Software\Python\PythonCore\CurrentVersion', false);
+    R.OpenKey('\SOFTWARE\Python\PythonCore\CurrentVersion', false);
     v:=R.ReadString('');
-    S.Add('Version: '+v);
-    R.OpenKey('\Software\Python\PythonCore\'+v+'\Dll', false);
-    S.Add('Dll path: '+R.ReadString(''));
+    s.Add('Version: '+v);
+    R.OpenKey('\SOFTWARE\Python\PythonCore\'+v+'\Dll', false);
+    s.Add('Dll path: '+R.ReadString(''));
   end
   else
   begin
-    S.Add('Not Installed!');
+    s.Add('Not Installed.');
   end;
   R.free;
 end;
-
 
 Procedure LogSystemDetails;
 var
@@ -1890,10 +1915,10 @@ begin
   s.add('');
   s.add('OS:');
   GetOperatingSystemDetails(s);
-  s.add('');
 (*Peter: removed as of 18-08-2003.
   Logging of Python interpreter details now done in Python.pas.
 
+  s.add('');
   s.add('PYTHON:');
   GetPythonDetails(s);
   s.add('');
@@ -1902,35 +1927,18 @@ begin
 (*DECKER 2001.03.17 - we're not interested in Machine-/Username. We're not Login-Crackers!
   s.add('MACHINE:');
   GetWorkStationDetails(s);
-  s.add('');
 *)
+  s.add('');
   s.add('VIDEO:');
   GetDisplayDetails(s);
   s.add('');
   s.add('DIRECTX:');
   GetDirectxDetails(s);
-  s.add('');
   for i:=0 to s.count-1 do
   begin
-    aLog(-1,'SysLog> '+s.strings[i]);
+    Log(LOG_SYS, s.strings[i]);
   end;
   s.free;
 end;
 
-initialization
-  IsNT:=IsOSNT;
-  Is95:=IsOS95;
-  Is2000:=IsOS2000;
-  WindowsUser:=GetUser;
-  MachineName:=GetMachine;
-  if IsNT then
-    ClassKey:='SYSTEM\CurrentControlSet\Control\Class'
-  else
-    ClassKey:='SYSTEM\CurrentControlSet\Services\Class';
-    
-  // These are not currently used.
-  // Is98:=IsOS98;
-  // IsOSR2:=IsOSOSR2;
-  // Platform:=GetPlatform;
 end.
-

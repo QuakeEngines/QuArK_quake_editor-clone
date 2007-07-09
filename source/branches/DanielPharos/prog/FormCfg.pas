@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2007/06/13 11:44:40  danielpharos
+Changed a number of a string and removed an unused one.
+
 Revision 1.34  2006/12/12 23:06:01  cdunde
 Made additional fix to stop filling multiple dropdown list with erroneous data,
 for example like a misc_model for func_bobbing entity.
@@ -1494,18 +1497,18 @@ begin
                            S:=Copy(S,I,Length(S));
                          end else begin
                            {$ifdef Delphi1-5}
-                           Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)),0);
+                           Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(400)),0);
                            {$else}
-                           Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)));
+                           Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(400)));
                            {$endif}
                            goto again;
                          end;
                        end;
                      end else begin
                        {$ifdef Delphi1-5}
-                       Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)),0);
+                       Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(400)),0);
                        {$else}
-                       Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)));
+                       Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(400)));
                        {$endif}
                        goto again;
                      end;

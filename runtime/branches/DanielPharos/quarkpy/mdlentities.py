@@ -48,14 +48,132 @@ class EntityManager:
     #
 
     def drawback(o, editor, view, mode):
-        "Called to draw a background for the object 'o'."
-        view.drawmap(o, mode)  # draw a dark background for "o"
-#        pass
+        "Called to draw the Model's Mesh for the 'Component' object 'o'"
+        "when in 'Textured' or 'Solid' view mode, for each animation 'frame'."
+
+        if view.info["viewname"] == "XY":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "XZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "YZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "editors3Dview":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            if editor.ModelFaceSelList != []: # draws model mesh faces, if selected, during rotation and panning pauses
+                mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.ModelFaceSelList)
+
+        elif view.info["viewname"] == "3Dwindow":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            if editor.ModelFaceSelList != []: # draws model mesh faces, if selected, during rotation and panning pauses
+                mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.ModelFaceSelList)
+        else:
+            view.drawmap(o, mode)  # draws default color for model mesh lines
 
     def drawsel(o, view, mode):
-        "Called to draw the object 'o' selected."
-#        view.drawmap(o, DM_SELECTED, YELLOW)  # draw normally by default
-        pass
+        "Called to draw the Model's Mesh for the 'Component' object 'o'"
+        "when in 'Wireframe' view mode, for each animation 'frame'."
+ 
+        from mdleditor import mdleditor
+        editor = mdleditor
+        if view.info["viewname"] == "XY":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "XZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh4"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor4", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "YZ":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh3"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor3", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "editors3Dview":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh1"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+
+        elif view.info["viewname"] == "3Dwindow":
+            if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
+                if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
+                    o = editor.Root
+                else:
+                    o = editor.Root.currentcomponent # Redefining o like this allows the model's mesh lines to be drawn.
+            else:
+                pass
+            meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
+            view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+        else:
+            view.drawmap(o, mode)  # draws default color for model mesh lines
 
     def handles(o, editor, view):
         "Build a list of handles related to this object."
@@ -98,10 +216,29 @@ class SkinGroupType(EntityManager):
 def ShowHideComp(x):
     editor = mapeditor()
     if editor is None: return
+    import mdleditor
+    editor.ModelFaceSelList = []
+    editor.SkinFaceSelList = []
     obj = editor.layout.explorer.uniquesel
     if obj is None: return
     obj.showhide(x)
-    editor.invalidateviews(1)
+  #  editor.invalidateviews(1)
+    if x == 0:
+        for view in editor.layout.views:
+            view.handles = []
+            if view.viewmode == "wire":
+                view.invalidate()
+            else:
+                view.invalidate(1)
+    else:
+        for view in editor.layout.views:
+            if view.viewmode == "wire":
+                pass
+            else:
+                view.invalidate(1)
+    #    mdleditor.commonhandles(editor)
+            mdleditor.setsingleframefillcolor(editor, view)
+            view.repaint()
 
 def ShowComp(m):
     ShowHideComp(1)
@@ -121,6 +258,7 @@ class ComponentType(EntityManager):
  
 
     def handles(o, editor, view):
+        "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
         frame = o.currentframe
         if frame is None:
             return []
@@ -128,6 +266,7 @@ class ComponentType(EntityManager):
             return CallManager("handles", frame, editor, view)
 
     def handlesopt(o, editor):
+        "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
         frame = o.currentframe
         if frame is None:
             return []
@@ -145,7 +284,9 @@ class FrameType(EntityManager):
             item = h[i]
             item.frame = o
             item.index = i
-            item.hint = "Vertex %s"%item.index
+            item.name = "Vertex"
+            if MapOption("HandleHints", SS_MODEL):
+                item.hint = item.name + " %s"%item.index
         return h
 
 
@@ -160,8 +301,9 @@ class BoneType(EntityManager):
 
     def handlesopt(o, editor):
         h = []
+        index = ""
         if o["start_point"] is None:
-          o = quarkx.newobj("FalseBone:bone")   # false internal object
+          o = quarkx.newobj("BoneFrame:bone")   # false internal object
 
           start = quarkx.newobj('start_point')
           end = quarkx.newobj('end_point')
@@ -176,22 +318,27 @@ class BoneType(EntityManager):
         else:
           start_p = o.start_point
           end_p = o.end_point
-
         s = mdlhandles.BoneHandle(start_p)
-        s.hint = "Start of %s"%o.shortname
-	s.bone = o
-	s.s_or_e = 0
-	h = h + [s]
+        if MapOption("HandleHints", SS_MODEL):
+            s.hint = "Start of %s"%o.shortname
+        s.bone = o
+        s.s_or_e = 0
+        s.name = "Start of BoneFrame"
+        s.index = index
+        h = h + [s]
 
-        e = mdlhandles.BoneHandle(end_p) 
-        e.hint = "End of %s"%o.shortname
-	e.bone = o
+        e = mdlhandles.BoneHandle(end_p)
+        if MapOption("HandleHints", SS_MODEL):
+            e.hint = "End of %s"%o.shortname
+        e.bone = o
         e.start_point = quarkx.vect(0,0,0)
         e.end_point = quarkx.vect(8,2,2)
         e.bone_length = None
-	e.s_or_e = 1
-	h = h + [e]
-	return h
+        e.s_or_e = 1
+        e.name = "End of BoneFrame"
+        e.index = index
+        h = h + [e]
+        return h
     
 # /AiV
 
@@ -252,6 +399,29 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.18  2007/06/20 22:04:08  cdunde
+#Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
+#and start of face selection capabilities in the Skin-view for future functions there.
+#
+#Revision 1.17  2007/06/03 23:44:35  cdunde
+#To stop Access violation error when a component is "Hidden" that has faces selected.
+#def ShowHideComp still needs a lot of work to stop any handles from being drawn while
+#component is "Hidden" allowing them to be dragged still and double draw when un-Hidden.
+#
+#Revision 1.16  2007/05/25 08:33:18  cdunde
+#To fix indention error.
+#
+#Revision 1.15  2007/05/25 07:44:19  cdunde
+#Added new functions to 'Views Options' to set the model's
+#mesh lines color and draw in frame selection.
+#
+#Revision 1.14  2007/05/18 16:56:22  cdunde
+#Minor file cleanup and comments.
+#
+#Revision 1.13  2007/04/12 23:57:31  cdunde
+#Activated the 'Hints for handles' function for the Model Editors model mesh vertex hints
+#and Bone Frames hints. Also added their position data display to the Hint Box.
+#
 #Revision 1.12  2006/11/30 01:19:33  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

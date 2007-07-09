@@ -23,6 +23,49 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/06/06 22:31:19  danielpharos
+Fix a (recent introduced) problem with OpenGL not drawing anymore.
+
+Revision 1.21  2007/06/04 19:20:24  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
+Revision 1.20  2007/05/09 17:51:55  danielpharos
+Another big improvement. Stability and speed should be much better now.
+
+Revision 1.19  2007/05/09 16:14:43  danielpharos
+Big update to the DirectX renderer. Fade color should now display. Stability is still an issue however.
+
+Revision 1.18  2007/04/03 13:08:54  danielpharos
+Added a back buffer format selection option.
+
+Revision 1.17  2007/03/29 21:02:08  danielpharos
+Made a Stencil Buffer Bits selection option
+
+Revision 1.16  2007/03/29 20:18:32  danielpharos
+DirectX interfaces should be unloading correctly now.
+Also added a bit of fog code.
+
+Revision 1.15  2007/03/29 17:27:25  danielpharos
+Updated the Direct3D renderer. It should now initialize correctly.
+
+Revision 1.14  2007/03/26 21:13:14  danielpharos
+Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
+
+Revision 1.13  2007/03/22 20:53:18  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+
+Revision 1.12  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
+Revision 1.11  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
+Revision 1.10  2007/02/02 21:09:55  danielpharos
+Rearranged the layout of the Direct3D file
+
+Revision 1.9  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
 Revision 1.8  2006/11/30 00:42:32  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
@@ -69,26 +112,35 @@ unit EdDirect3D;
 
 interface
 
-uses Windows, Classes, Setup,
+uses Windows, Classes,
      qmath, PyMath, PyMath3D,
-     DX9,
+     DX9, Direct3D9,
      EdSceneObject;
 
 type
   TDirect3DSceneObject = class(TSceneObject)
   private
-    DirectXLoaded: Boolean;
+    ViewWnd: HWnd;
+    ViewDC: HDC;
+    Fog: Boolean;
+    Transparency: Boolean;
+    Lighting: Boolean;
+    Culling: Boolean;
+    Direct3DLoaded: Boolean;
+    MapLimit: TVect;
+    MapLimitSmallest: Double;
+    pPresParm: D3DPRESENT_PARAMETERS;
+    DXFogColor: D3DColor;
+    LightingQuality: Integer;
+    ListIndex: Integer;
+    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
   protected
-    m_ScreenX, m_ScreenY: Integer;
-    m_Resized: Boolean;
+    ScreenResized: Boolean;
 
-{    m_pD3DX: ID3DXContext;
-    m_pD3D: IDirect3D7;
-    m_pD3DDevice: IDIRECT3DDEVICE7;
-    m_pDD: IDirectDraw7;}
+//    m_pD3DX: ID3DXContext;
 
     m_CurrentAlpha, m_CurrentColor: Integer;
-
+    ScreenX, ScreenY: Integer;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
     procedure EndBuildScene; override;
     procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -96,11 +148,9 @@ type
     procedure stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
     procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
     procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
- //   procedure BuildTexture(Texture: PTexture3); override;
     procedure ReleaseResources;
-    procedure RenderDirect3D();
-    procedure RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
-    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+    procedure BuildTexture(Texture: PTexture3); override;
+    function CheckDeviceState : Boolean;
   public
     destructor Destroy; override;
     procedure Init(Wnd: HWnd;
@@ -109,24 +159,39 @@ type
                    DisplayType: TDisplayType;
                    const LibName: String;
                    var AllowsGDI: Boolean); override;
- (*
     procedure ClearScene; override;
+ (*
     procedure ClearFrame; override;
  *)
     procedure SetViewRect(SX, SY: Integer); override;
+    procedure SetViewDC(DC: HDC); override;
+    procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
     procedure Render3DView; override;
-    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
+    procedure Copy3DView; override;
  (*
-    procedure SwapBuffers(Synch: Boolean; DC: HDC); override;
+    procedure SwapBuffers(Synch: Boolean); override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
  *)
+    function ChangeQuality(nQuality: Integer) : Boolean; override;
   end;
+
+type  { this is the data shared by all existing TDirect3DSceneObjects }
+  TDirect3DState = class
+  public
+    procedure ClearTexture(Tex: PTexture3);
+  end;
+var
+  qrkDXState: TDirect3DState;
+  SwapChain: array of IDirect3DSwapChain9;
+  DepthStencilSurface: array of IDirect3DSurface9;
+  ListItemUsed: array of Boolean;
 
  {------------------------}
 
 implementation
 
-uses QkMapPoly, QkObjects, Quarkx, DXTypes, Direct3D, Direct3D9, DXErr9;
+uses Logging, Quarkx, Setup, SysUtils,
+     QkObjects, QkMapPoly, DXTypes, D3DX9, Direct3D, DXErr9;
 
 type
  PVertex3D = ^TVertex3D;
@@ -134,26 +199,71 @@ type
 
  {------------------------}
 
-destructor TDirect3DSceneObject.Destroy;
+procedure UnpackColor(Color: TColorRef; var v: array of float);
 begin
-  ReleaseResources;
-  if DirectXLoaded = True then
-    UnloadDirect3D;
-  inherited;
+  v[0]:=((Color       ) and $FF) * (1/255.0);
+  v[1]:=((Color shr  8) and $FF) * (1/255.0);
+  v[2]:=((Color shr 16) and $FF) * (1/255.0);
+  v[3]:=((Color shr 24) and $FF) * (1/255.0);
 end;
 
 procedure TDirect3DSceneObject.SetViewRect(SX, SY: Integer);
 begin
-  if ((m_ScreenX <> SX) or (m_ScreenY <> SY)) then
+  if SX<1 then SX:=1;
+  if SY<1 then SY:=1;
+  if ((ScreenX <> SX) or (ScreenY <> SY)) then
   begin
-    m_Resized := True;
+    ScreenResized := True;
 
-    m_ScreenX:=SX;
-    m_ScreenY:=SY;
-
-    if m_ScreenX<1 then m_ScreenX:=1;
-    if m_ScreenY<1 then m_ScreenY:=1;
+    ScreenX:=SX;
+    ScreenY:=SY;
   end;
+end;
+
+procedure TDirect3DSceneObject.SetViewDC(DC: HDC);
+begin
+  if ViewDC<>DC then
+  begin
+    ScreenResized := True;
+    //DanielPharos: Do we need to do this?
+
+    //DanielPharos: Do we need to reset the swapchains?
+
+    if (ViewWnd<>0) and (ViewDC<>0) then
+      ReleaseDC(ViewWnd, ViewDC);
+    ViewDC:=DC;
+  end;
+end;
+
+procedure TDirect3DSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
+begin
+  if ViewWnd<>Wnd then
+  begin
+    ScreenResized := True;
+    //DanielPharos: Do we need to do this?
+
+    if ResetViewDC then
+      if (ViewWnd<>0) and (ViewDC<>0) then
+      begin
+        ReleaseDC(ViewWnd,ViewDC);
+        ViewDC:=0;
+      end;
+    ViewWnd:=Wnd;
+    pPresParm.hDeviceWindow:=ViewWnd;
+    if ResetViewDC then
+      SetViewDC(GetDC(Wnd));
+  end;
+end;
+
+function TDirect3DSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
+begin
+ if not ((nQuality=0) or (nQuality=1) or (nQuality=2)) then
+ begin
+  Result:=False;
+  Exit;
+ end;
+ Result:=LightingQuality<>nQuality;
+ LightingQuality:=nQuality;
 end;
 
 procedure TDirect3DSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
@@ -191,7 +301,7 @@ end;
 
 procedure TDirect3DSceneObject.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
 begin
-  if HiRes then
+{  if HiRes then
   begin
     PVertex3D(PV)^.x := PVect(Source)^.X;
     PVertex3D(PV)^.y := PVect(Source)^.Y;
@@ -205,7 +315,7 @@ begin
   end;
 
   PVertex3D(PV)^.tu := ns;
-  PVertex3D(PV)^.tv := nt;
+  PVertex3D(PV)^.tv := nt;}
 
 
   {PVertex3D(PV)^.color := D3DXColorToDWord(D3DXColor(random, random, random, 0));}
@@ -213,6 +323,337 @@ begin
 end;
 
 procedure TDirect3DSceneObject.ReleaseResources;
+begin
+  if not (DepthStencilSurface[ListIndex-1]=nil) then
+  begin
+    while (DepthStencilSurface[ListIndex-1]._Release > 0) do;
+    Pointer(DepthStencilSurface[ListIndex-1]):=nil;
+  end;
+
+  if not (SwapChain[ListIndex-1]=nil) then
+  begin
+    while (SwapChain[ListIndex-1]._Release > 0) do;
+    Pointer(SwapChain[ListIndex-1]):=nil;
+  end;
+
+  if (Length(ListItemUsed)=ListIndex-1) then
+  begin
+    SetLength(SwapChain,Length(SwapChain)-1);
+    SetLength(DepthStencilSurface,Length(DepthStencilSurface)-1);
+    SetLength(ListItemUsed,Length(ListItemUsed)-1);
+  end
+  else
+    ListItemUsed[ListIndex-1]:=false;
+  ListIndex:=0;
+
+  if (ViewWnd<>0) and (ViewDC<>0) then
+  begin
+    ReleaseDC(ViewWnd, ViewDC);
+    ViewDC:=0;
+  end;
+  ViewWnd:=0;
+end;
+
+destructor TDirect3DSceneObject.Destroy;
+begin
+  ReleaseResources;
+  if Direct3DLoaded = True then
+    UnloadDirect3D;
+  inherited;
+end;
+
+procedure TDirect3DSceneObject.Init(Wnd: HWnd;
+                                    nCoord: TCoordinates;
+                                    DisplayMode: TDisplayMode;
+                                    DisplayType: TDisplayType;
+                                    const LibName: String;
+                                    var AllowsGDI: Boolean);
+var
+  nFogColor: array[0..3] of float;
+  FogColor{, FrameColor}: TColorRef;
+  Setup: QObject;
+  l_Res: HResult;
+  WindowRect: TRect;
+  I: Integer;
+begin
+  ClearScene;
+
+  CurrentDisplayMode:=DisplayMode;
+  CurrentDisplayType:=DisplayType;
+
+  { is the Direct3D object already loaded? }
+  if Direct3DLoaded = False then
+  begin
+    if LibName='' then
+      Raise EError(6001);
+    { try to load the Direct3D object }
+    if not LoadDirect3D() then
+      Raise EErrorFmt(6402, [GetLastError]);
+    Direct3DLoaded := true;
+  end;
+  if (DisplayMode=dmFullScreen) then
+   Raise InternalE(LoadStr1(6420));
+
+  Coord:=nCoord;
+  TTextureManager.AddScene(Self);
+
+  try
+   Setup:=SetupSubSet(ssGames, g_SetupSet[ssGames].Specifics.Values['GameCfg']);
+   MapLimit:=Setup.VectSpec['MapLimit'];
+  except
+   Setup:=SetupSubSet(ssMap, 'Display');
+   MapLimit:=Setup.VectSpec['MapLimit'];
+  end;
+  if (MapLimit.X=OriginVectorZero.X) and (MapLimit.Y=OriginVectorZero.Y) and (MapLimit.Z=OriginVectorZero.Z) then
+   begin
+    MapLimit.X:=4096;
+    MapLimit.Y:=4096;
+    MapLimit.Z:=4096;
+   end;
+  if (MapLimit.X < MapLimit.Y) then
+   begin
+    if (MapLimit.X < MapLimit.Z) then
+     MapLimitSmallest:=MapLimit.X
+    else
+     MapLimitSmallest:=MapLimit.Z;
+   end
+  else
+   begin
+    if (MapLimit.Y < MapLimit.Z) then
+     MapLimitSmallest:=MapLimit.Y
+    else
+     MapLimitSmallest:=MapLimit.Z;
+   end;
+
+  Setup:=SetupSubSet(ssGeneral, '3D View');
+  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
+  begin
+    FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
+    if (FarDistance>MapLimitSmallest) then
+      FarDistance:=MapLimitSmallest;
+  end
+  else
+  begin
+    FarDistance:=MapLimitSmallest;
+  end;
+  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
+  FogColor:=Setup.IntSpec['FogColor'];
+  {FrameColor:=Setup.IntSpec['FrameColor'];}
+  Setup:=SetupSubSet(ssGeneral, 'DirectX');
+  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
+  begin
+    Fog:=Setup.Specifics.Values['Fog']<>'';
+    Transparency:=Setup.Specifics.Values['Transparency']<>'';
+    Lighting:=Setup.Specifics.Values['Lights']<>'';
+    Culling:=Setup.Specifics.Values['Culling']<>'';
+  end
+  else
+  begin
+    Fog:=False;
+    Transparency:=False;
+    Lighting:=False;
+    Culling:=False;
+  end;
+
+  SetViewWnd(Wnd);
+  if GetWindowRect(Wnd, WindowRect)=false then
+    Raise EErrorFmt(6400, ['GetWindowRect']);
+  ScreenX:=WindowRect.Right-WindowRect.Left;
+  ScreenY:=WindowRect.Bottom-WindowRect.Top;
+
+  pPresParm:=PresParm;
+  pPresParm.BackBufferWidth:=ScreenX;
+  pPresParm.BackBufferHeight:=ScreenY;
+  pPresParm.hDeviceWindow:=Wnd;
+
+  if ListIndex=0 then
+  begin
+    for I:=0 to Length(ListItemUsed)-1 do
+    begin
+      if ListItemUsed[I]=false then
+      begin
+        ListIndex:=I+1;
+        break;
+      end;
+    end;
+    if ListIndex=0 then
+    begin
+      ListIndex:=Length(ListItemUsed)+1;
+      SetLength(SwapChain,Length(SwapChain)+1);
+      SetLength(DepthStencilSurface,Length(DepthStencilSurface)+1);
+      SetLength(ListItemUsed,Length(ListItemUsed)+1);
+    end;
+    ListItemUsed[ListIndex-1]:=true;
+  end;
+
+  //Using CreateAdditionalSwapChain to create new chains will automatically share
+  //textures and other resources between views.
+  l_Res:=D3DDevice.CreateAdditionalSwapChain(pPresParm, SwapChain[ListIndex-1]);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['CreateAdditionalSwapChain', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.CreateDepthStencilSurface(ScreenX, ScreenY, pPresParm.AutoDepthStencilFormat, pPresParm.MultiSampleType, pPresParm.MultiSampleQuality, false, DepthStencilSurface[ListIndex-1], nil);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['CreateDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  UnpackColor(FogColor, nFogColor);
+
+  //These calls are for the SwapChain!!!
+
+  DXFogColor:=D3DXColorToDWord(D3DXColor(nFogColor[0],nFogColor[1],nFogColor[2],nFogColor[3]));
+  D3DDevice.SetRenderState(D3DRS_AMBIENT, $ffffffff);
+  if Fog then
+  begin
+    D3DDevice.SetRenderState(D3DRS_FOGENABLE, 1);  //True := 1
+    D3DDevice.SetRenderState(D3DRS_FOGTABLEMODE, 2);  //D3DFOG_EXP2 := 2
+   {D3DDevice.SetRenderState(D3DRS_FOGSTART, FarDistance * kDistFarToShort);
+    D3DDevice.SetRenderState(D3DRS_FOGEND, FarDistance);}
+//DanielPharos: Got to find a conversion...
+//    D3DDevice.SetRenderState(D3DRS_FOGDENSITY, FogDensity/FarDistance);
+//DanielPharos: Got to make sure the color is send in the same format
+//    D3DDevice.SetRenderState(D3DRS_FOGCOLOR, FogColor);
+  end
+  else
+    D3DDevice.SetRenderState(D3DRS_FOGENABLE, 0);  //False := 0
+
+{  // Create material
+  FillChar(l_Material, SizeOf(l_Material), 0);
+  l_Material.dcvDiffuse  := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
+  l_Material.dcvAmbient  := TD3DColorValue(D3DXColor(1.00, 1.00, 1.00, 0.00));
+  l_Material.dcvSpecular := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
+  l_Material.dvPower     := 100.0;
+  D3DDevice.SetMaterial(l_Material);   }
+
+end;
+
+function TDirect3DSceneObject.CheckDeviceState : Boolean;
+var
+  l_Res: HResult;
+  OrigBackBuffer: IDirect3DSurface9;
+  pBackBuffer: IDirect3DSurface9;
+  I: Integer;
+  NeedReset: Boolean;
+begin
+  Result:=false;
+  NeedReset:=false;
+  l_Res:=D3DDevice.TestCooperativeLevel;
+  case l_Res of
+  D3D_OK: ;
+  D3DERR_DEVICELOST:  Exit;  //Device lost and can't be restored at this time.
+  D3DERR_DEVICENOTRESET: NeedReset:=True;  //Device can be recovered
+  D3DERR_DRIVERINTERNALERROR: raise EError(6410);  //Big problem!
+  end;
+
+  if not NeedReset and not ScreenResized then
+  begin
+    Result:=True;
+    Exit;
+  end;
+
+  //The first paramter isn't necessarily 0!
+  l_Res:=D3DDevice.GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, OrigBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetRenderTarget(0, OrigBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetDepthStencilSurface(nil);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  //Releasing surfs...
+  while (OrigBackBuffer._Release > 0) do;
+  Pointer(OrigBackBuffer):=nil;
+
+  if NeedReset then
+  begin
+    for I:=0 to Length(ListItemUsed)-1 do
+    begin
+      if ListItemUsed[I]=true then
+      begin
+        if not (DepthStencilSurface[I]=nil) then
+        begin
+          while (DepthStencilSurface[I]._Release > 0) do;
+          Pointer(DepthStencilSurface[I]):=nil;
+        end;
+
+        if not (SwapChain[I]=nil) then
+        begin
+          while (SwapChain[I]._Release > 0) do;
+          Pointer(SwapChain[I]):=nil;
+        end;
+      end;
+    end;
+
+    l_Res:=D3DDevice.Reset(pPresParm);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['Reset', DXGetErrorString9(l_Res)]);
+
+    // We now need to reload all the textures and stuff!
+  end
+  else
+  begin
+    if not (DepthStencilSurface[ListIndex-1]=nil) then
+    begin
+      while (DepthStencilSurface[ListIndex-1]._Release > 0) do;
+      Pointer(DepthStencilSurface[ListIndex-1]):=nil;
+    end;
+
+    if not (SwapChain[ListIndex-1]=nil) then
+    begin
+      while (SwapChain[ListIndex-1]._Release > 0) do;
+      Pointer(SwapChain[ListIndex-1]):=nil;
+    end;
+  end;
+
+  l_Res:=D3DDevice.CreateAdditionalSwapChain(pPresParm, SwapChain[ListIndex-1]);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['CreateAdditionalSwapChain', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.CreateDepthStencilSurface(pPresParm.BackBufferWidth, pPresParm.BackBufferHeight, pPresParm.AutoDepthStencilFormat, pPresParm.MultiSampleType, pPresParm.MultiSampleQuality, false, DepthStencilSurface[ListIndex-1], nil);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['CreateDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  l_Res:=SwapChain[ListIndex-1].GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, pBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetRenderTarget(0, pBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetDepthStencilSurface(DepthStencilSurface[ListIndex-1]);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  while (pBackBuffer._Release > 0) do;
+  Pointer(pBackBuffer):=nil;
+
+  Result:=True;
+end;
+
+procedure TDirect3DSceneObject.Copy3DView;
+var
+  l_Res: HResult;
+begin
+  if SwapChain[ListIndex-1]=nil then
+    Render3DView;
+  l_Res:=SwapChain[ListIndex-1].Present(nil, nil, 0, nil, 0);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['Present', DXGetErrorString9(l_Res)]);
+end;
+
+procedure TDirect3DSceneObject.ClearScene;
 begin
 end;
 
@@ -226,109 +667,37 @@ procedure TDirect3DSceneObject.EndBuildScene;
 begin
 end;
 
-procedure TDirect3DSceneObject.Init(Wnd: HWnd;
-                                    nCoord: TCoordinates;
-                                    DisplayMode: TDisplayMode;
-                                    DisplayType: TDisplayType;
-                                    const LibName: String;
-                                    var AllowsGDI: Boolean);
+procedure TDirect3DSceneObject.Render3DView;
 var
   l_Res: HResult;
-  {FogColor, FrameColor: TColorRef;}
-  Setup: QObject;
-begin
-  ClearScene;
-
-  CurrentDisplayMode:=DisplayMode;
-  CurrentDisplayType:=DisplayType;
-
-  raise InternalE('The DirectX renderer has not been implemented yet.');
-
-  { is the Direct3D object already loaded? }
-  if DirectXLoaded = False then
-  begin
-    { try to load the Direct3D object }
-    if not LoadDirect3D() then
-      Raise EErrorFmt(4868, [GetLastError]);  {Daniel: Is this error message correct? No 'OpenGL' in it?}
-  end;
-  if (DisplayMode=dmFullScreen) then
-   Raise InternalE('Direct3D renderer does not support fullscreen views (yet)');
-
-  //FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
-  Coord:=nCoord;
-  TTextureManager.AddScene(Self);
-  //TTextureManager.GetInstance.FFreeTexture:=FreeDirect3DTexture;
-
-  {Check for software/hardware vertex processing and PureDevice}
-
-  l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, Wnd, 0, nil, g_D3DDevice);
-  if (l_Res <> D3D_OK) then   {Can't get a Hardware Accelerated Device, try Software Device}
-   begin
-    l_Res := g_D3D.CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, Wnd, 0, nil, g_D3DDevice);
-    if (l_Res <> D3D_OK) then   {Can't get any decent device, exiting}
-      raise EErrorFmt(4882, ['CreateDevice', DXGetErrorString9(l_Res)]);   {Daniel: Check all the error messages.}
-   end;
-
-   {Should we use the pPresentationParameters instead of creating a new device each time?}
-
-  Setup:=SetupSubSet(ssGeneral, '3D View');
-  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
-  begin
-    FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
-  end
-  else
-  begin
-    FarDistance:=1500;
-  end;
-  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
-  {FogColor:=Setup.IntSpec['FogColor'];}
-  {FrameColor:=Setup.IntSpec['FrameColor'];}
-{  g_D3DDevice.SetClearColor(D3DXColorToDWord(D3DXColor(0,0,0,0)));
-  g_D3DDevice.SetRenderState(D3DRENDERSTATE_AMBIENT, $ffffffff);
-
-  // Create material
-  FillChar(l_Material, SizeOf(l_Material), 0);
-  l_Material.dcvDiffuse  := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
-  l_Material.dcvAmbient  := TD3DColorValue(D3DXColor(1.00, 1.00, 1.00, 0.00));
-  l_Material.dcvSpecular := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
-  l_Material.dvPower     := 100.0;
-  m_pD3DDevice.SetMaterial(l_Material);   }
-
-end;
-
-procedure TDirect3DSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
-begin
-
-end;
-
-procedure TDirect3DSceneObject.Render3DView;
-begin
-  RenderDirect3D();      {Daniel: Kinda empty procedure, isn't it?}
-end;
-
-procedure TDirect3DSceneObject.RenderDirect3D();
-{var
-  l_Res: HResult;
-  l_VCenter: D3DVector;
+{  l_VCenter: D3DVector;
   l_Projection: TD3DXMatrix;
   l_CameraEye: TD3DXMatrix;
   l_matRotation: TD3DXMatrix;
   l_quaRotation: TD3DXQuaternion;}
+  PList: PSurfaces;
 begin
-  { make sure that Direct3D have been set up }
-  if (g_D3DDevice = nil) then
-    raise EErrorFmt(4882, ['Render3DView', 'g_D3DDevice = nil']);
+  if not Direct3DLoaded then
+    Exit;
 
-  { if viewport have been resized, then tell Direct3D what happend }
-  {if (m_Resized = True) then
+  //If the viewport has been resized, then tell Direct3D what happened
+  if (ScreenResized = True) then
   begin
-    g_D3DDevice.Resize(m_ScreenX, m_ScreenY);
-    D3DXMatrixPerspectiveFov(l_Projection, D3DXToRadian(60.0), m_ScreenY/m_ScreenX, 1.0, 1000.0);
-    m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_PROJECTION, TD3DMatrix(l_Projection));
-    m_Resized := False;
-  end;}
+    pPresParm.BackBufferWidth:=ScreenX;
+    pPresParm.BackBufferHeight:=ScreenY;
+    pPresParm.hDeviceWindow:=ViewWnd;
+    //DanielPharos: How do we apply the possible change to ViewDC?
+  end;
 
-  { set camera }
+  if not CheckDeviceState then
+    Exit;
+  ScreenResized := False;
+
+  l_Res:=D3DDevice.Clear(0, nil, D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER, DXFogColor, 1, 0);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+    { set camera }
   {with TCameraCoordinates(Coord) do
   begin
     D3DXMatrixTranslation(l_CameraEye, Camera.X, Camera.Y, Camera.Z);
@@ -344,41 +713,53 @@ begin
     D3DXMatrixMultiply(l_CameraEye, l_CameraEye, l_matRotation);
 
     m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_VIEW, TD3DMatrix(l_CameraEye));
-  end;
+  end;}
+  //    D3DXMatrixPerspectiveFov(l_Projection, D3DXToRadian(60.0), ScreenY/ScreenX, 1.0, 1000.0);
+//    m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_PROJECTION, TD3DMatrix(l_Projection));
 
-  l_Res := m_pD3DDevice.BeginScene;
+  l_Res := D3DDevice.BeginScene;
   if (l_Res <> 0) then
-    raise EErrorFmt(4882, ['BeginScene', D3DXGetErrorMsg(l_Res)]);
-
-  m_pD3DX.Clear(D3DCLEAR_TARGET or D3DCLEAR_ZBUFFER);
+    raise EErrorFmt(6403, ['BeginScene', DXGetErrorString9(l_Res)]);
 
 //  m_CurrentAlpha  :=0;
 //  m_CurrentColor:=0;
+ 
 
-  RenderTransparentD3D(FListSurfaces, False, DisplayLights, Coord);
-//  RenderTransparentD3D(FListSurfaces, True,  DisplayLights, Coord);
-
-  m_pD3DDevice.EndScene;
-
-  l_Res := m_pD3DX.UpdateFrame(0);
-  if (l_Res <> 0) then
-    raise EErrorFmt(4882, ['UpdateFrane', D3DXGetErrorMsg(l_Res)]);}
-end;
-
-procedure TDirect3DSceneObject.RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
-var
- PList: PSurfaces;
-begin
   PList:=ListSurfaces;
   while Assigned(PList) do
   begin
-    if Transparent in PList^.Transparent then
+    if PList^.Transparent=False then
     begin
-      if SolidColors or not PList^.ok then
-        RenderPList(PList, Transparent, SourceCoord);
+      if Transparency then
+      begin
+        if PList^.Transparent=False then
+          RenderPList(PList, False, Coord);
+      end
+      else
+        RenderPList(PList, False, Coord);
+      PList:=PList^.Next;
     end;
-    PList:=PList^.Next;
+
+    if Transparency then
+    begin
+      PList:=FListSurfaces;
+      while Assigned(PList) do
+      begin
+        if PList^.Transparent=True then
+          RenderPList(PList, True, Coord);
+        PList:=PList^.Next;
+      end;
+    end;
   end;
+
+  l_Res:=D3DDevice.EndScene;
+  if (l_Res <> 0) then
+    raise EErrorFmt(6403, ['EndScene', DXGetErrorString9(l_Res)]);
+
+{  l_Res := m_pD3DX.UpdateFrame(0);
+  if (l_Res <> 0) then
+    raise EErrorFmt(6403, ['UpdateFrame', D3DXGetErrorMsg(l_Res)]);}
+
 end;
 
 procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
@@ -426,8 +807,21 @@ begin
         Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
     end;
   end;
-
-  PList^.ok:=True;
 end;
+
+procedure TDirect3DSceneObject.BuildTexture(Texture: PTexture3);
+begin
+
+end;
+
+ {------------------------}
+
+procedure TDirect3DState.ClearTexture(Tex: PTexture3);
+begin
+  //DanielPharos: How can you be sure Direct3D has been loaded?
+  
+end;
+
+ {------------------------}
 
 end.

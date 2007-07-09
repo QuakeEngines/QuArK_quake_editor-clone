@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/04/12 15:04:42  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
+Revision 1.13  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.11  2001/06/05 18:38:06  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -74,10 +80,12 @@ type
  TDuplicator = class(TTreeMapEntity)
                private
                  FCache: PyObject;
-                 function BuildImages: PyObject;
                  procedure SetCache(nCache: PyObject);
+                 function BuildImages: PyObject;
                 {function CallDuplicatorMethod(const MethodName: String; args: PyObject) : PyObject;}
                public
+                 function ItemToSave(Number: Integer): TTreeMap;
+                 function LengthBuildImages: Integer;
                  class function TypeInfo: String; override;
                  property Images: PyObject read BuildImages write SetCache;
                  procedure ObjectState(var E: TEtatObjet); override;
@@ -90,7 +98,6 @@ type
                  procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                  procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                  procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
-                 procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                  procedure AddTo3DScene; override;
                  function PyGetAttr(attr: PChar) : PyObject; override;
                  function ReplaceTexture(const Source, Dest: String; U: Boolean) : Integer; override;
@@ -104,6 +111,16 @@ implementation
 uses QkFileObjects, PyMapView, QkMapPoly, Qk3D, QkObjectClassList, Undo;
 
  {------------------------}
+
+function TDuplicator.ItemToSave(Number: Integer): TTreeMap;
+begin
+ Result:=(QkObjFromPyObj(PyList_GetItem(FCache, Number)) as TTreeMap);
+end;
+
+function TDuplicator.LengthBuildImages: Integer;
+begin
+  Result:=PyObject_Length(BuildImages);
+end;
 
 class function TDuplicator.TypeInfo: String;
 begin
@@ -320,17 +337,6 @@ var
 begin
  for I:=0 to PyObject_Length(BuildImages)-1 do
   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeBeziers(Entites, Flags);
-end;
-
-procedure TDuplicator.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
-var
- I: Integer;
-begin
-{if (Specifics.Values['out']<>'')
- and (FParent<>Nil) and (TvParent.TvParent=Nil) then
-  GlobalWarning(LoadStr1(230));}  { FIXME: do various map tests globally }
- for I:=0 to PyObject_Length(BuildImages)-1 do
-  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).SaveAsText(Negatif, Texte, Flags, HxStrings);
 end;
 
 procedure TDuplicator.AddTo3DScene;

@@ -44,7 +44,7 @@ The contributing developers of QuArK
         e-mail:         Marco.Leise@gmx.de
 
 - Bob "cdunde" Jarrett
-        e-mail:         cdunde1@comcast.net
+        e-mail:         cdunde@sbcglobal.net
 
 - "DG"
         e-mail:         david@fielden.com.au
@@ -70,3 +70,50 @@ The contributing developers of QuArK
 - "Fredrick Vamstad"
         e-mail:         fredrick.vamstad@gmail.com
 
+- "DanielPharos"
+        e-mail:         ***
+
+
+The developers of used libraries/programs
+-----------------------------------------
+
+- VTFLib & HLLib:
+                        Ryan "NEMESIS" Gregg
+                        http://nemesis.thewavelength.net/
+
+- DevIL:
+                        Denton Woods
+                        Nicolas Weber
+                        http://openil.sourceforge.net/
+
+- FreeImage:
+                        Hervé Drolon
+                        http://freeimage.sourceforge.net/
+
+- NVDXT:
+                        http://www.nvidia.com/
+
+- FastMM:
+                        Pierre le Riche
+                        http://fastmm.sourceforge.net/
+
+- DirectX Delphi library:
+                        Alexey Barkovoy
+                        http://www.clootie.ru/
+
+- Toolbar97:
+                        Jordan Russell
+                        http://www.jrsoftware.org/
+
+- MarsCap:
+                        Chen Ken
+                        http://www.nease.net/~marspark (BROKEN)
+
+- Python:
+                        http://www.python.org/
+
+- Delphi:
+                        http://www.borland.com/
+
+- NSIS:
+                        http://nsis.sourceforge.net/

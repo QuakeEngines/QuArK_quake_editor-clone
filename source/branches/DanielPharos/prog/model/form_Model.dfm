@@ -1,4 +1,6 @@
 inherited FQMdl: TFQMdl
+  Left = 287
+  Top = 232
   PixelsPerInch = 96
   TextHeight = 13
   inherited leftdock: TDock97

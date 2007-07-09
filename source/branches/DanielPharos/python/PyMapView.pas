@@ -23,6 +23,36 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/06/04 19:20:26  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
+Revision 1.32  2007/05/15 15:01:22  danielpharos
+Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
+
+Revision 1.31  2007/03/22 20:52:58  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+
+Revision 1.30  2007/03/17 15:43:12  danielpharos
+Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
+
+Revision 1.29  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
+Revision 1.28  2007/03/05 00:42:01  danielpharos
+Fixed a typo.
+
+Revision 1.27  2007/03/01 17:36:54  danielpharos
+Stopped many redundant calls from being made when moving the camera. Should take care of some weird problems, and be faster too.
+
+Revision 1.26  2007/02/28 08:27:18  danielpharos
+Fixed things disappearing in Software and Glide mode.
+
+Revision 1.25  2007/02/27 21:20:08  danielpharos
+Fixed a huge slowdown in the rendering process.
+
+Revision 1.24  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
 Revision 1.23  2006/12/31 21:40:50  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -179,7 +209,8 @@ type
                  RedLines: array[0..1] of Single;
                  FScene: TSceneObject;
                  SceneConfigSrc: QObject;
-                 SoftQuality, DynamicQuality: Byte;
+                 SceneConfigSubSrc: QObject;
+                 StillQuality, MovingQuality: Byte;
                  FullScreen: Boolean;
                  SecondMonitor: Char;  { #0: none, '1': left, '2': right }
                  FKey3D: array[TKey3D] of Word;
@@ -197,7 +228,9 @@ type
                  procedure MouseTimerTimer(Sender: TObject);
                  function GetHandle(X,Y: Integer; Corrige: Boolean; MouseArea: PRect) : PyObject;
                  function ConfigSrc : QObject;
+                 function ConfigSubSrc : QObject;
                  procedure ReadSetupInformation(Inv: Boolean);
+                 procedure UpdateCoords(Inv: Boolean);
                  procedure SetScreenSize(SX, SY: Integer);
                  procedure ClearPanel(const S: String);
                  function GetKey3D(Key: Word; var Key3D: TKey3D) : Boolean;
@@ -375,7 +408,7 @@ begin
      FEntityForms:=Nil;
      if ViewMode<>vmWireframe then
       begin
-       if Scene.ChangeQuality(SoftQuality) then
+       if Scene.ChangeQuality(StillQuality) then
         SetScreenSize(ClientWidth, ClientHeight);
        Invalidate;
       end;
@@ -408,7 +441,7 @@ begin
       Brush:=0;}
       if not FullScreen then
        begin
-        if Scene.ChangeQuality(DynamicQuality) then
+        if Scene.ChangeQuality(MovingQuality) then
          SetScreenSize(ClientWidth, ClientHeight);
         DC:=GetDC(Handle)
        end
@@ -465,7 +498,7 @@ begin
   wp_OpenGL: if Scene is TGLSceneObject then
               TGLSceneObject(Scene).Ready:=True;
  {wp_Direct3D: if Scene is TDirect3DSceneObject then
-              TDirect3DSceneObject(Scene).Ready:=True;}  {Daniel: Can we combine these two?}
+              TDirect3DSceneObject(Scene).Ready:=True;}  {DanielPharos: Can we combine these two?}
  {wp_ResetFullScreen: ResetFullScreen(lParam<>0);}
  else
   if not DefControlMessage(Msg) then
@@ -481,6 +514,28 @@ begin
   Result:=SceneConfigSrc;
 end;
 
+function TPyMapView.ConfigSubSrc : QObject;
+var
+ S: String;
+begin
+ if SceneConfigSubSrc=Nil then
+ begin
+   S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
+   if S='qrksoftg.dll' then
+     Result:=SetupSubSet(ssGeneral, 'Software 3D')
+   else if S='glide2x.dll' then
+     Result:=SetupSubSet(ssGeneral, 'Glide (3Dfx)')
+   else if S='OpenGL32.dll' then
+     Result:=SetupSubSet(ssGeneral, 'OpenGL')
+   else if S='d3d9.dll' then
+     Result:=SetupSubSet(ssGeneral, 'DirectX')
+   else
+     raise InternalE('ConfigSubSrc');
+ end
+ else
+  Result:=SceneConfigSubSrc;
+end;
+
 procedure TPyMapView.ReadSetupInformation(Inv: Boolean);
 var
 {Size: array[1..2] of Single;}
@@ -494,15 +549,12 @@ begin
   Invalidate;
  with ConfigSrc do
   begin
-   if Scene is TGlideSceneObject then   {Daniel: Renderer should take care of this}
+   if Scene is TGlideSceneObject then   {DanielPharos: Renderer should take care of this}
     begin
-     if Specifics.Values['3DFXLogo']='' then
+     if Specifics.Values['3DfxLogo']='' then
       SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')
      else
       SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', Nil);
-      SoftQuality:=StrToIntDef(Specifics.Values['SoftQuality'], 0);
-      DynamicQuality:=StrToIntDef(Specifics.Values['DynamicQuality'], 0);
-     TGlideSceneObject(Scene).SoftBufferFormat:=SoftQuality;
     end;
 
    if MapViewProj is TCameraCoordinates then
@@ -547,6 +599,12 @@ begin
 
    if Scene<>Nil then
     begin
+     if (Scene is TSoftwareSceneObject) or (Scene is TGLSceneObject) then
+     begin
+       StillQuality:=StrToIntDef(ConfigSubSrc.Specifics.Values['StillQuality'], 0);
+       MovingQuality:=StrToIntDef(ConfigSubSrc.Specifics.Values['MovingQuality'], 2);
+       Scene.ChangeQuality(StillQuality);
+     end;
      if Specifics.Values['Entities']='' then
       ve1:=veNever
      else
@@ -574,7 +632,7 @@ begin
       else if ViewType=vtFullScreen then
         DisplayMode:=dmFullScreen
       else
-        raise EError(5772);
+        raise EErrorFmt(6000, ['Invalid ViewType']);
 
       Scene.Init(Self.Handle, MapViewProj, DisplayMode, DisplayType,
        Specifics.Values['Lib'], AllowsGDI);
@@ -606,6 +664,49 @@ begin
 
    for K:=Low(K) to High(K) do
     FKey3D[K]:=IntSpec['Key'+Key3DTexts[K]];
+  end;
+end;
+
+procedure TPyMapView.UpdateCoords(Inv: Boolean);
+var
+ VAngle: TDouble;
+begin
+ if Inv then
+  Invalidate;
+ with ConfigSrc do
+  begin
+   if MapViewProj is TCameraCoordinates then
+    begin
+     VAngle:=GetFloatSpec('VAngle', 45);
+     if VAngle<5 then
+      VAngle:=5
+     else
+      if VAngle>80 then
+       VAngle:=80;
+
+     with TCameraCoordinates(MapViewProj) do
+      begin
+       VAngleDegrees:=VAngle;
+       VAngle:=VAngle * (pi/180);
+       RFactorBase:=Cos(VAngle)/Sin(VAngle);
+       Resize(Self.ClientWidth, Self.ClientHeight);
+       MinDistance:=Minoow / GetFloatSpec('DarkFactor', 1);
+      end;
+    end;
+
+   if Scene<>Nil then
+    begin
+     try
+      Scene.ErrorMsg:='';
+
+      Scene.SetCoords(MapViewProj);
+
+     except
+      on E: Exception do
+       Scene.ErrorMsg:=GetExceptionMessage(E);
+     end;
+
+    end;
   end;
 end;
 
@@ -700,8 +801,6 @@ procedure TPyMapView.NeedScene(NeedSetup: Boolean);
 var
  S: String;
 begin
- if NeedSetup then
-   ReadSetupInformation(True);
  if Scene=Nil then
   begin
    S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
@@ -714,10 +813,13 @@ begin
    else if S='d3d9.dll' then
      FScene:=TDirect3DSceneObject.Create(ViewMode)
    else
-     raise InternalE('NeedScene');
+     raise EErrorFmt(6000, ['Invalid LibName']);
    ReadSetupInformation(NeedSetup);
    Drawing:=Drawing or dfRebuildScene;
-  end;
+  end
+  else
+   if NeedSetup then
+    ReadSetupInformation(True);
 end;
 
 procedure TPyMapView.PaintBackground;
@@ -824,6 +926,7 @@ begin
    MapViewProj.pDeltaX:=kDelta.X - DisplayHPos;
    MapViewProj.pDeltaY:=kDelta.Y - DisplayVPos;
   end;
+ UpdateCoords(False);
 
  Drawing:=Drawing or dfDrawing;
  ExceptionMethod:=ClearPanel;
@@ -845,7 +948,7 @@ begin
    end
   else
    begin  { solid or textured mode }
-    NeedScene(False);  {Daniel: Shouldn't this one be True if the Setup has just changed?}
+    NeedScene(False);  {DanielPharos: Shouldn't this one be True if the Setup has just changed?}
     if Scene.ErrorMsg='' then
      begin
       if Drawing and dfRebuildScene <> 0 then
@@ -1474,7 +1577,7 @@ begin
 
      if not FullScreen then
       begin
-       if Scene.ChangeQuality(DynamicQuality) then
+       if Scene.ChangeQuality(MovingQuality) then
         SetScreenSize(ClientWidth, ClientHeight);
        DC:=GetDC(Handle)
       end
@@ -1598,6 +1701,7 @@ begin
       end;
 
      { draw the view with the updated camera }
+     UpdateCoords(False);
      if ViewMode = vmWireframe then
       begin
        FillRect(SrcDC, GetClientRect, Brush);
@@ -1606,11 +1710,12 @@ begin
       end
      else
       begin
+       Scene.SetViewDC(DC);
        Scene.Render3DView;
        if FullScreen then
-        Scene.SwapBuffers(True, DC)
+        Scene.SwapBuffers(True)
        else
-        Scene.Copy3DView(ClientWidth, ClientHeight, DC);
+        Scene.Copy3DView;
       end;
 
      while PeekMessage(Msg, Handle, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE) do ;
@@ -1639,7 +1744,7 @@ begin
 
     if ViewMode<>vmWireframe then
      begin
-      if Scene.ChangeQuality(SoftQuality) then
+      if Scene.ChangeQuality(StillQuality) then
        SetScreenSize(ClientWidth, ClientHeight);
       Invalidate;
      end;
@@ -2147,8 +2252,6 @@ begin
        MapViewProj.Free;
        MapViewProj:=Nil;
       end;
-    {Invalidate; done by ReadSetupInformation}
-     Drawing:=Drawing or dfRebuildScene;
    (*case Upcase(P[0]) of
       'X': case Upcase(P[1]) of
             'Y': begin   { XY: angle, scale }
@@ -2212,7 +2315,6 @@ begin
           end
          else
           SetCameraPosition(OldCameraPos);
-         {FarDistance:=1500;}
         end;
       end
      else
@@ -2240,7 +2342,7 @@ begin
         Exit;
        MapViewProj:=GetMatrixCoordinates(mx^.M);
       end;
-     ReadSetupInformation(True);
+     UpdateCoords(True);           
      if (MapViewProj<>Nil) and ((rng=Nil) or PyObject_IsTrue(rng)) then
       begin
        if MapViewProj.FlatDisplay then
@@ -2258,8 +2360,6 @@ begin
        {Resize;}
        CentreEcran:=Centre;
       end;
-     {if SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib']='OpenGl32.dll' then
-      NeedScene(False);}
     end;
   Result:=PyNoResult;
  except
@@ -2749,6 +2849,8 @@ begin
      if ViewMode<>vmWireframe then
       begin
        DC:=Canvas.Handle;
+       Scene.SetViewWnd(Handle);
+       Scene.SetViewDC(DC);
        if Drawing and dfRebuildScene <> 0 then
         begin
          if Drawing and dfNoGDI = 0 then
@@ -2756,7 +2858,7 @@ begin
          else
           DC1:=0;
          Scene.BuildScene(DC1, QkObjFromPyObj(AltTexSrc));
-         Drawing:=Drawing and not dfRebuildScene
+         Drawing:=Drawing and not dfRebuildScene;
         end;
        Drawing:=Drawing and not dfBuilding;
        if FullScreen then
@@ -2764,11 +2866,11 @@ begin
        Scene.Render3DView;
        if FullScreen then
         begin
-         Scene.SwapBuffers(False, DC);
+         Scene.SwapBuffers(False);
          Do3DFXTwoMonitorsActivation;
         end
        else
-        Scene.Copy3DView(ClientWidth, ClientHeight, DC);
+        Scene.Copy3DView;
       end;
     except
      on E: Exception do
@@ -2797,7 +2899,7 @@ begin
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
     begin
-     mode:=0;            {Daniel: Gotta change all of this!!! Separate fullscreen option!}
+     mode:=0;            {DanielPharos: Gotta change all of this!!! Separate fullscreen option!}
      if mode>=0 then
       if ResetFullScreen(mode>0) then
        returnvalue:=1;
@@ -2820,7 +2922,7 @@ begin
      begin
       TGLSceneObject(Scene).Ready:=False;
       PostMessage(Handle, wm_InternalMessage, wp_OpenGL, 0);
-      {Daniel: What does this do exactly?}
+      {DanielPharos: What does this do exactly?}
      end;
   Result:=PyNoResult;
  except
@@ -3098,11 +3200,12 @@ begin
                  end
                 else
                  begin
+                  Scene.SetViewDC(DC);
                   Scene.Render3DView;
                   if FullScreen then
-                   Scene.SwapBuffers(True, DC)
+                   Scene.SwapBuffers(True)
                   else
-                   Scene.Copy3DView(ClientWidth, ClientHeight, DC);
+                   Scene.Copy3DView;
                  end;
              end;
            Result:=0;

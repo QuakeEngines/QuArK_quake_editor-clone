@@ -11,19 +11,19 @@ Implementation of QuArK Model editor's "Options" menu
 #$Header$
 
 
-
 import quarkx
 from qdictionnary import Strings
 from mdlutils import *
 import qmenu
 import qbaseeditor
+import mdleditor
 
-MdlOption = quarkx.setupsubset(SS_MODEL, "Options")
 
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
 
     oldfinish(editor, view)
-    if not MapOption("Ticks"):return
+    MdlOption = quarkx.setupsubset(SS_MODEL, "Options")
+    if not MdlOption["Ticks"]:return
 
 
 def RotationMenu2click(menu):
@@ -41,9 +41,7 @@ def RotationMenu2click(menu):
 
 def Rotate(item):
     quarkx.setupsubset(SS_MODEL, "Options").setint("3DRotation", item.tas)
- #   quarkx.reloadsetup(1) # causes load bar to show
-
-    editor = mapeditor()
+    editor = mdleditor.mdleditor
     for view in editor.layout.views:
         if view.info["type"] == "2D":
             view.info["scale"] = 2.0
@@ -98,6 +96,7 @@ def Config1Click(item):
     "Configuration Dialog Box."
     quarkx.openconfigdlg()
 
+
 def Plugins1Click(item):
     "Lists the loaded plug-ins."
     import plugins
@@ -128,6 +127,10 @@ def Options1Click(menu):
             item.state = not (not setup[item.tog]) and qmenu.checked
         except:
             pass
+        if item == lineThicknessItem:
+            item.thick = getLineThickness()
+            item.text = "Set Line Thickness (%1.0f)"%item.thick
+
 
 def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MODEL,"Options"), hint=None):
     item = qmenu.item(txt, ToggleOption, hint)
@@ -135,15 +138,235 @@ def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MODEL,"Options"), hint=No
     item.sset = sset
     item.sendupdate = sendupdate
     return item
+
+
+class LineThickDlg(SimpleCancelDlgBox):
+    #
+    # dialog layout
+    #
+    size = (160, 75)
+    dfsep = 0.7 
+    
+    dlgdef = """
+    {
+        Style = "9"
+        Caption = "Line Thickness Dialog"
+
+        thick: =
+        {
+        Txt = "Line Thickness:"
+        Typ = "EF1"
+        Hint = "Needn't be an integer."
+        }
+        cancel:py = {Txt="" }
+    }
+    """
+
+    def __init__(self, form, editor, m):
+        self.editor = editor
+        src = quarkx.newobj(":")
+        thick =  quarkx.setupsubset(SS_MODEL,"Options")['linethickness']
+        if thick:
+            thick=eval(thick)
+        else:
+            thick=2
+        src["thick"] = thick,
+        self.src = src
+        SimpleCancelDlgBox.__init__(self,form,src)
+
+    def ok(self):
+        pass
+        thick = self.src['thick']    
+        if thick is not None:
+            thick, = thick
+            if thick==2:
+                quarkx.setupsubset(SS_MODEL,"Options")['linethickness']=""
+            else:
+                quarkx.setupsubset(SS_MODEL,"Options")['linethickness']="%4.2f"%thick
+        for view in self.editor.layout.views:
+            if view.info["viewname"] == "skinview":
+                pass
+            else:
+                view.invalidate(1)
+                mdleditor.setsingleframefillcolor(self.editor, view)
+                if view.viewmode != "tex":
+                    view.repaint()
+
+
+def getLineThickness():
+     thick =  quarkx.setupsubset(SS_MODEL,"Options")['linethickness']
+     if thick:
+         return eval(thick)
+     else:
+         return 2
+
+
+def setLineThick(m):
+    editor = mdleditor.mdleditor
+    if editor is None:
+        return
+    LineThickDlg(quarkx.clickform, editor, m)
+    
+    
+lineThicknessItem = qmenu.item("Set Line Thickness (2)",setLineThick,"|Set Line Thickness:\n\nThis lets you set the thickness of certain lines that are drawn on the editors view, such as the outlining of selected model mesh faces and the models axis lines.|intro.modeleditor.menu.html#optionsmenu")
+
+
+def mSFSISV(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("SFSISV"):
+        quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = "1"
+        quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
+        editor.SkinFaceSelList = []
+    from mdlhandles import SkinView1
+    if SkinView1 is not None:
+        SkinView1.invalidate(1)
+
+
+def mPFSTSV(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("PFSTSV"):
+        quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = "1"
+        quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
+        editor.SkinFaceSelList = editor.ModelFaceSelList
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
+    from mdlhandles import SkinView1
+    if SkinView1 is not None:
+        SkinView1.invalidate(1)
+
+
+def mNFO(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("NFO"):
+        quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = "1"
+        quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = None
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = None
+    quarkx.reloadsetup()
+
+
+def mNFOWM(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("NFOWM"):
+        quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = "1"
+        quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = None
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = None
+    quarkx.reloadsetup()
+
+
+def mNOSF(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("NOSF"):
+        quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = "1"
+        quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = None
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
+    quarkx.reloadsetup()
+
+
+def mFFONLY(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("FFONLY"):
+        quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = "1"
+        quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = None
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
+    quarkx.reloadsetup()
+
+
+def mBFONLY(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("BFONLY"):
+        quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = "1"
+        quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
+        quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = None
+    quarkx.reloadsetup()
+
+
+def FaceMenu(editor):
+    Xsfsisv = qmenu.item("S&how selection in Skin-view", mSFSISV, "|Show selection in Skin-view:\n\nBecause the Skin-view and the rest of the editor views work independently, this will pass selected editor model mesh triangle faces to the 'Skin-view' to be outlined and distinguish them.\n\nHowever, it does not actually select them in the 'Skin-view'.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
+    Xpfstsv = qmenu.item("&Pass selection to Skin-view", mPFSTSV, "|Pass selection to Skin-view:\n\nThis function will pass selected editor model mesh triangle faces and select the coordinated skin triangles in the 'Skin-view' where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the 'Skin-view' for its use there.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' selected face outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
+    Xnfo = qmenu.item("&No face outlines", mNFO, "|No face outlines:\n\nThis will stop the outlining of any models mesh faces have been selected. This will increase the drawing speed of the editor dramatically when a model with a large number of face triangles is being edited.\n\nThe solid fill of selected faces will still be available.|intro.modeleditor.menu.html#optionsmenu")
+    Xnfowm = qmenu.item("N&o face outlines while moving in 2D views", mNFOWM, "|No face outlines while moving in 2D views:\n\nFace outlining can be very taxing on the editors drawing speed when panning (scrolling) or zooming in the '2D views' when a lot of the models mesh faces have been selected. This is because so many views need to be redrawn repeatedly.\n\nIf you experience this problem check this option to increase the drawing and movement speed. The lines will be redrawn at the end of the move.|intro.modeleditor.menu.html#optionsmenu")
+    Xnosf = qmenu.item("No &selection fill", mNOSF, "|No selection fill:\n\nThis stops the color filling and backface pattern from being drawn for any of the models mesh faces that are selected. Only the outline of the selected faces will be drawn.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
+    Xffonly = qmenu.item("&Front faces only", mFFONLY, "|Front faces only:\n\nThis will only allow the solid color filling of the front faces to be drawn for any of the models mesh faces that are selected. The back faces will be outlined allowing the models texture to be displayed if the view is in 'Textured' mode.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
+    Xbfonly = qmenu.item("&Back faces only", mBFONLY, "|Back faces only:\n\nThis will only allow the drawing of the backface pattern to be drawn for any of the models mesh faces that are selected. The front faces will be outlined allowing the models texture to be displayed if the view is in 'Textured' mode.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
+
+    menulist = [Xsfsisv, Xpfstsv, qmenu.sep, Xnfo, Xnfowm, qmenu.sep, Xnosf, Xffonly, Xbfonly]
+    
+    items = menulist
+    Xsfsisv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SFSISV")
+    Xpfstsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PFSTSV")
+    Xnosf.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NOSF")
+    Xffonly.state = quarkx.setupsubset(SS_MODEL,"Options").getint("FFONLY")
+    Xbfonly.state = quarkx.setupsubset(SS_MODEL,"Options").getint("BFONLY")
+    Xnfo.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NFO")
+    Xnfowm.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NFOWM")
+
+    return menulist
+
+
+def mPVSTEV(m):
+    editor = mdleditor.mdleditor
+    if not MldOption("PVSTEV"):
+        quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = "1"
+        tris = editor.Root.currentcomponent.triangles
+        for vtx in editor.SkinVertexSelList:
+            if editor.ModelVertexSelList == []:
+                editor.ModelVertexSelList = editor.ModelVertexSelList + [(tris[vtx[2]][vtx[3]][0], vtx[0])]
+            else:
+                for vertex in range(len(editor.ModelVertexSelList)):
+                    if tris[vtx[2]][vtx[3]][0] == editor.ModelVertexSelList[[vertex][0]][0]:
+                        break
+                    if vertex == len(editor.ModelVertexSelList)-1:
+                        editor.ModelVertexSelList = editor.ModelVertexSelList + [(tris[vtx[2]][vtx[3]][0], vtx[0])]
+        quarkx.reloadsetup()
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
+
+
+def VertexMenu(editor):
+    Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
+
+    menulist = [Xpvstev]
+    
+    items = menulist
+    Xpvstev.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTEV")
+
+    return menulist
+
+# ******************Creates the Popup menu********************
+def FaceSelOptionsClick(m):
+    editor = mdleditor.mdleditor
+    m.items = FaceMenu(editor)
+
+def VertexSelOptionsClick(m):
+    editor = mdleditor.mdleditor
+    m.items = VertexMenu(editor)
+
 #
 # Global variables to update from plug-ins.
 #
+dhwr = toggleitem("Draw &handles while rotating", "DHWR", (0,0),
+      hint="|Draw handles while rotating:\n\nThis allows the models vertex handles (if active) to be drawn during rotation, but this will slow down the redrawing process and can make rotation seem jerky.|intro.modeleditor.menu.html#optionsmenu")
+
+maiv = toggleitem("Model A&xis in views", "MAIV", (1,1),
+      hint="|Model Axis in views:\n\nThis displays the models axis on which it was built in all views, showing its X, Y and Z direction.\n\nThe size of its letter indicators and line thickness can be increased or decreased by using the 'Set Line Thickness' function.\n\nTheir individual colors can be changed in the 'Configuration Model Colors' section.|intro.modeleditor.menu.html#optionsmenu")
+
+dbf = toggleitem("Draw &back faces", "DBF", (1,1),
+      hint="|Draw back faces:\n\nThis allows the back face checkerboard pattern to be drawn in all view modes when the 'Views Options', 'Mesh in Frames' is checked for that view.\n\nUsing the option in this manner will help to distinguish which direction the faces are facing for proper construction.|intro.modeleditor.menu.html#optionsmenu")
 
 items = [
     toggleitem("&Paste objects at screen center", "Recenter", (0,0)),
     ]
 shortcuts = { }
-
 
 ticks = toggleitem("Enlarge Vertices &Ticks", "Ticks", (1,1),
       hint="|Enlarge Vertices Ticks:\n\nThis makes the model's ticks 1 size larger for easer viewing.|intro.modeleditor.menu.html#optionsmenu")
@@ -157,16 +380,48 @@ qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 def OptionsMenu():
     "The Options menu, with its shortcuts."
 
+    FaceSelOptions = qmenu.popup("Face Selection Options", [], FaceSelOptionsClick, "|Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
+    VertexSelOptions = qmenu.popup("Vertex Selection Options", [], VertexSelOptionsClick, "|Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     RotationOptions = qmenu.popup("3D Rotation Options", rotateitems, RotationMenu2click)
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click)
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
-    Options1 = qmenu.popup("&Options", [RotationOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
+    Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, qmenu.sep]+[maiv, dbf, FaceSelOptions, VertexSelOptions, lineThicknessItem, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
     return Options1, shortcuts
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.19  2007/07/02 22:49:42  cdunde
+#To change the old mdleditor "picked" list name to "ModelVertexSelList"
+#and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+#Also start of function to pass vertex selection from the Skin-view to the Editor.
+#
+#Revision 1.18  2007/07/01 04:56:52  cdunde
+#Setup red rectangle selection support in the Model Editor for face and vertex
+#selection methods and completed vertex selection for all the editors 2D views.
+#Added new global in mdlhandles.py "SkinView1" to get the Skin-view,
+#which is not in the editors views.
+#
+#Revision 1.17  2007/06/20 22:04:08  cdunde
+#Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
+#and start of face selection capabilities in the Skin-view for future functions there.
+#
+#Revision 1.16  2007/06/19 06:16:04  cdunde
+#Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+#Added model mesh face selection using RMB and LMB together along with various options
+#for selected face outlining, color selections and face color filltris but this will not fill the triangles
+#correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+#file (for the TCoordinates.Polyline95f procedure).
+#Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+#
+#Revision 1.15  2007/05/18 03:11:37  cdunde
+#Fixed newfinishdrawing code call to qbaseeditor.py finishdrawing function.
+#
+#Revision 1.14  2007/03/04 19:40:04  cdunde
+#Added option to draw or not draw handles in the Model Editor 3D views
+#while rotating the model to increase drawing speed.
+#
 #Revision 1.13  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

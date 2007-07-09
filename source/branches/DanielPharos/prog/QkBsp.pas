@@ -23,6 +23,21 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2007/07/05 10:19:45  danielpharos
+Moved the Quake .map format code to a separate file.
+
+Revision 1.62  2007/04/16 11:34:55  danielpharos
+Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+
+Revision 1.61  2007/04/12 15:04:44  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
+Revision 1.60  2007/02/07 14:33:10  danielpharos
+Cleaned up a little bit of dirty code
+
+Revision 1.59  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.57  2005/01/11 02:15:26  alexander
 detect hl2 bsp format
 
@@ -215,9 +230,9 @@ unit QkBsp;
 interface
 
 uses
-  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, TB97, ComCtrls, QkForm, QkMapObjects, qmath,
-  StdCtrls, Python, PyObjects, PyMath, Game, QkUnknown;
+  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls,
+  Forms, Dialogs, QkObjects, QkFileObjects, QkForm, QkMapObjects, qmath,
+  StdCtrls, Python, PyObjects, PyMath, Game, QkUnknown, TB97;
 
 type
  TBsp1EntryTypes =
@@ -529,7 +544,7 @@ function BspType : Char; overload;
 
 implementation
 
-uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls,
+uses Travail, QkWad, Setup, QkText, QkQuakeMap, QkBspHulls,
      Undo, Quarkx, PyForms, QkObjectClassList, ToolBox1,
      ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkQ1, QkFormCfg;
 
@@ -760,7 +775,7 @@ begin
   if  ((NeedObjectGameCode>=mjQuake2) and (NeedObjectGameCode<mjQ3A)) then
     S:=Bsp2EntryNames[E2]
   else
-  if (NeedObjectGameCode=mjQ3A) or (NeedObjectGameCode=mjStarTrekEF) then
+  if (NeedObjectGameCode=mjQ3A) or (NeedObjectGameCode=mjSTVEF) then
     S:=Bsp3EntryNames[E3]
   else
     S:=Bsp1EntryNames[E1];
@@ -769,7 +784,7 @@ begin
 
   (* this is set when the .bsp is opened, from the version,
       why isn't it just used below?
-  if (ObjectGameCode=mjQ3A) or (ObjectGameCode=mjStarTrekEF) then
+  if (ObjectGameCode=mjQ3A) or (ObjectGameCode=mjSTVEF) then
     S:=Bsp3EntryNames[E3]
   else
   if (ObjectGameCode>=mjQuake2) and (ObjectGameCode<mjQ3A) then
@@ -1396,7 +1411,7 @@ begin
    FStructure.LoadAll;
    Dest:=TStringList.Create;
    try
-    FStructure.SaveAsText(Nil, Dest, soBSP, Nil);
+    SaveAsMapText(FStructure, GameCode, -1, Nil, Dest, soBSP, Nil);
     S:=Dest.Text;
    finally
     Dest.Free;
@@ -1463,8 +1478,7 @@ begin
      Exit;
    with QkObjFromPyObj(self) as QBsp do
    begin
-         Result:=GetClosePlanes(r);
-         Exit;
+     Result:=GetClosePlanes(r);
    end;
  except
   EBackToPython;
@@ -2095,7 +2109,6 @@ begin
    with QkObjFromPyObj(self) as TTreeBspPlane do
    begin
      Result:=GetNearPlanes(r,QBsp(QkObjFromPyObj(bsp)));
-     Exit;
    end;
  except
   EBackToPython;

@@ -32,8 +32,7 @@ ModesHint = "|Each view can be set to one of three rendering modes :\n\nWirefram
 class BaseLayout:
     "An abstract base class for Map and Model Editor screen layouts."
 
-    #CurrentRendererOwner = "NEVER"
-    CurrentRendererOwner = None
+    Floating3DWindows = []
 
     def __init__(self):
         # debug("Creation of layout '%s'" % self.__class__.__name__)
@@ -49,7 +48,6 @@ class BaseLayout:
         self.buttons = {}
         self.toolbars = {}
         self.leftpanel = None
-        self.full3Dview = None
         self.hintcontrol = None
         self.hinttext = ""
         self.compass = None
@@ -83,11 +81,18 @@ class BaseLayout:
 
     def setupchanged(self, level):
         "Reads setup-dependant information for the layout."
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+        if setup["CloseOnSetup"]:
+            try:
+                if self.buttons["3D"].state == qtoolbar.selected:
+                    self.buttons["3D"].state = 0
+                    quarkx.update(self.editor.form)
+            except KeyError:
+                pass
+            for floating in BaseLayout.Floating3DWindows:
+                floating.close()
+            self.editor.layout.mpp.viewpage(0)
         if len(self.views):
-            if BaseLayout.CurrentRendererOwner is not None:
-                self.full3Dview.close()  #Daniel: Can't find any other easy way of doing this...
-            self.editor.layout.mpp.viewpage(0)   #Change the MultiPagesPanel to Tree-view, to avoid problems if the renderer has changed
-            #Daniel: Free up the view allocated with viewpage, so it is set to the correct renderer the next time around
             if MapOption("CrossCursor", self.MODE):
                 ncursor = CR_CROSS
                 nhandlecursor = CR_ARROW
@@ -205,7 +210,7 @@ class BaseLayout:
                 common = test
         for m in menu.items[0:3]: # position of (self.getlayoutmenu) Mod1, Mod2 and Mod3
             m.state = (m.mode == common) and qmenu.radiocheck
-        #menu.items[4].state = (self is BaseLayout.CurrentRendererOwner) and qmenu.checked
+        #menu.items[4].state = (self is BaseLayout.CurrentRendererOwner) and qmenu.checked  #DanielPharos: CurrentRendererOwner is not used anymore anyway...
         for m in menu.items[5:8]: # position of (self.getlayoutmenu) DrM1, DrM2 and DrM3
             m.state = (m.mode == (self.editor.drawmode&DM_MASKOOV)) and qmenu.radiocheck
         menu.items[9].state = (self.leftpanel.align=="right") and qmenu.checked # position of (self.getlayoutmenu) PanelRight
@@ -226,24 +231,28 @@ class BaseLayout:
         self.leftpanel.align = ("right", "left")[self.leftpanel.align=="right"]
 
     def full3Dclick(self, menu):
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         if self.buttons["3D"].state == 0:
-            setup = quarkx.setupsubset(SS_GENERAL, "3D View")
             if setup["Warning3D"]:
                 if quarkx.msgbox(Strings[-104], MT_WARNING, MB_YES|MB_NO) != MR_YES:
                     raise quarkx.abort
             self.openfull3Dview()
-            if BaseLayout.CurrentRendererOwner is not None:
+            setup["Warning3D"] = ""
+            if not setup["AllowMultiple"]:
                 self.buttons["3D"].state = qtoolbar.selected
                 quarkx.update(self.editor.form)
         else:
-            self.full3Dview.close()
+            if not setup["AllowMultiple"]:
+                for floating in BaseLayout.Floating3DWindows:
+                    floating.close()
 
     def openfull3Dview(self):
         "Opens the 3D view."
-        floating = BaseLayout.CurrentRendererOwner
-        if floating is not None:
-            self.closefull3Dview(floating)
-        #Daniel: Check for FullScreen. If set, go fullscreen!
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+        if not setup["AllowMultiple"]:
+            for floating in BaseLayout.Floating3DWindows:
+                floating.close()
+        #DanielPharos: Check for FullScreen. If set, go fullscreen!
         floating = quarkx.clickform.newfloating(0, "Full 3D view")
         view = floating.mainpanel.newmapview()
         #floating.rect = view.setup["FullScreenSize"]
@@ -260,12 +269,12 @@ class BaseLayout:
             view.viewtype = "editor"
             quarkpy.qhandles.flat3Dview(view, self)
             del view.info["noclick"]
+            view.info["viewname"]="3Dwindow"
 
         setprojmode(view)
         self.editor.setupview(view)
         floating.info = view
         floating.onclose = self.closefull3Dview
-        self.full3Dview = floating
         mode = view.full3Dview()
         if mode!=2: #Check for fullscreen
             #if mode==1: #Check for hidden?
@@ -284,25 +293,22 @@ class BaseLayout:
         if not (view in self.views):
             self.views.append(view)
         self.update3Dviews(view)
-        BaseLayout.CurrentRendererOwner = floating  #Check if this works OK!
+        BaseLayout.Floating3DWindows.append(floating)
 
     def closefull3Dview(self, floating):
         "Closes the 3D view."
         view = floating.mainpanel.controls()[0]
         view.full3Dview()
-        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
-        setup["Warning3D"] = ""
         #if not offscreen:  #This should be used!
         r = floating.windowrect
         r = r[:2] + floating.rect
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         setup["WndRect"] = r
         if view in self.views:
             self.views.remove(view)
             self.update3Dviews()
-        #self.full3Dview.close()
-        self.full3Dview = None
-        BaseLayout.CurrentRendererOwner = None  #Check if this works OK!
-        if BaseLayout.CurrentRendererOwner is None:    #Optimize this!
+        BaseLayout.Floating3DWindows.remove(floating)
+        if not setup["AllowMultiple"]:
             self.buttons["3D"].state = 0
             quarkx.update(self.editor.form)
 
@@ -587,6 +593,19 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.30  2007/03/27 22:36:29  danielpharos
+#Fixed a stupid bug.
+#
+#Revision 1.29  2007/03/27 22:28:43  danielpharos
+#Fixed a stupid bug with some new options. CloseOnSetup is now enabled by default too.
+#
+#Revision 1.28  2007/03/27 15:48:58  danielpharos
+#Re-added the ability to open multiple floating 3D windows! This time there's an option to toggle it on and off in the options.
+#
+#Revision 1.27  2007/01/21 19:44:44  cdunde
+#To change view name for floating Full 3D view for separate
+#control of options from Model Editor 3D view.
+#
 #Revision 1.26  2006/12/17 08:59:54  cdunde
 #Needed to reverse this change, caused an error when the floating 3D window is opened.
 #

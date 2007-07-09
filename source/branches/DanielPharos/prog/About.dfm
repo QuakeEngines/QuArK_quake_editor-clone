@@ -1,6 +1,6 @@
 object AboutBox: TAboutBox
-  Left = 55
-  Top = 140
+  Left = 174
+  Top = 130
   HelpContext = -1
   ActiveControl = Edit1
   BorderStyle = bsDialog
@@ -170,14 +170,14 @@ object AboutBox: TAboutBox
       Top = 65
       Width = 227
       Height = 13
-      Caption = '  Copyright (C) 1996-2006 Armin Rigo and others'
+      Caption = '  Copyright (C) 1996-2007 Armin Rigo and others'
     end
     object UsedCompilerLabel: TLabel
       Left = 454
       Top = 7
-      Width = 188
+      Width = 193
       Height = 11
-      Caption = 'Beta1 Compiled with Delphi 6.0 - Nov.-30-2006'
+      Caption = 'Beta2.0 Compiled with Delphi 6.0 - April.-5-2007'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
@@ -188,9 +188,9 @@ object AboutBox: TAboutBox
     object Label1: TLabel
       Left = 472
       Top = 272
-      Width = 173
+      Width = 156
       Height = 11
-      Caption = 'http://www.sourceforge.net/projects/quark'
+      Caption = 'http://sourceforge.net/projects/quark/'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9

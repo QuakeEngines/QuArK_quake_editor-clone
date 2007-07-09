@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/02/28 08:50:50  danielpharos
+Fixed a range check error when trying to read non-existing values from the registry.
+
+Revision 1.6  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2003/09/06 00:55:50  silverpaladin
 Casting Cleanup
 
@@ -57,7 +63,7 @@ implementation
 
 function TRegistry2.ReadString;
 var
-  Len: Cardinal;
+  Len: Integer;
   DataType: Cardinal;
   Courant: String;
 begin

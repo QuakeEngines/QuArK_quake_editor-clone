@@ -1,5 +1,5 @@
 (**************************************************************************
-QkSteamFS.pas access steam filesystem for  -- Quake Army Knife -- 3D game editor
+QuArK -- Quake Army Knife -- 3D game editor - QkSteamFS.pas access steam filesystem
 Copyright (C) Alexander Haarer
 
 This program is free software; you can redistribute it and/or
@@ -23,6 +23,30 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/03/13 18:59:25  danielpharos
+Changed the interface to the Steam dll-files. Should prevent QuArK from crashing on HL2 files.
+
+Revision 1.15  2007/03/11 12:03:10  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
+Revision 1.14  2007/02/02 10:07:07  danielpharos
+Fixed a problem with the dll loading not loading tier0 correctly
+
+Revision 1.13  2007/02/02 00:51:02  danielpharos
+The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
+
+Revision 1.12  2007/02/01 23:13:53  danielpharos
+Fixed a few copyright headers
+
+Revision 1.11  2007/01/31 15:05:20  danielpharos
+Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
+
+Revision 1.10  2007/01/11 17:45:37  danielpharos
+Fixed wrong return checks for LoadLibrary, and commented out the fatal ExitProcess call. QuArK should no longer crash-to-desktop when it's missing a Steam dll file.
+
+Revision 1.9  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2005/07/31 12:12:28  alexander
 add logging, remove some dead code
 
@@ -54,6 +78,9 @@ unit QkSteamFS;
 interface
 
 uses  Windows,  SysUtils, Classes, QkObjects, QkFileObjects, QkPak,Setup;
+
+procedure initdll;
+procedure uninitdll;
 
 type
  QSteamFSFolder = class(QPakFolder)
@@ -90,7 +117,10 @@ end;
 
 var
 // binding to c dll
-  Hsteamfswrap  : HINST=0;
+  Htier0  : HINST;
+  Hvstdlib  : HINST;
+  Hsteamfswrap  : HINST;
+  curTier0Module,curVstdlibModule:string;
 
 // c signatures
 
@@ -112,32 +142,32 @@ var
 //DLL_EXPORT const char * SteamFSFindName(psteamfindfile pff)
 //DLL_EXPORT unsigned long  SteamFSFindIsDir(psteamfindfile pff)
 
-  APIVersion          : function    : Longword; stdcall;
+  APIVersion          : function    : Longword; cdecl;
 
   SteamFSInit       : function  (FileSystemDLLName : PChar;
                                  contentid : Longword ;
                                  pSteamAppUser : PChar;
                                  pSteamUserPassphrase : PChar;
                                  pSteamAppId : PChar;
-                                 pSteamPath : PChar) : Pointer; stdcall;// returns pfs
-  SteamFSTerm       : procedure (pfs : Pointer);   stdcall;
-  SteamFSOpen       : function  (pfs : Pointer; name: PChar ; mode: PChar ): Pointer; stdcall;// returns pf
-  SteamFSClose      : procedure (pf  : Pointer); stdcall;
-  SteamFSSize       : function  (pf  : Pointer): Longword; stdcall;// returns file size
-  SteamFSRead       : function  (pf  : Pointer;  buffer: Pointer ; size: longword ): Longword; stdcall;// returns read data size
-  SteamFSFindFirst  : Function  (pfs : Pointer;   pattern : Pchar) : Pointer; stdcall;//returns pff
-  SteamFSFindNext   : Function  (pff : Pointer) : Pointer; stdcall;//returns pff
-  SteamFSFindFinish : procedure (pff : Pointer);
-  SteamFSFindName   : function  (pff : Pointer): Pchar ; stdcall;//returns name
-  SteamFSFindIsDir  : function  (pff : Pointer): longword ; stdcall;//returns 0 if no dir
+                                 pSteamPath : PChar) : Pointer; cdecl;// returns pfs
+  SteamFSTerm       : procedure (pfs : Pointer);   cdecl;
+  SteamFSOpen       : function  (pfs : Pointer; name: PChar ; mode: PChar ): Pointer; cdecl;// returns pf
+  SteamFSClose      : procedure (pf  : Pointer); cdecl;
+  SteamFSSize       : function  (pf  : Pointer): Longword; cdecl;// returns file size
+  SteamFSRead       : function  (pf  : Pointer;  buffer: Pointer ; size: longword ): Longword; cdecl;// returns read data size
+  SteamFSFindFirst  : Function  (pfs : Pointer;   pattern : Pchar) : Pointer; cdecl;//returns pff
+  SteamFSFindNext   : Function  (pff : Pointer) : Pointer; cdecl;//returns pff
+  SteamFSFindFinish : procedure (pff : Pointer); cdecl;
+  SteamFSFindName   : function  (pff : Pointer): Pchar ; cdecl;//returns name
+  SteamFSFindIsDir  : function  (pff : Pointer): longword ; cdecl;//returns 0 if no dir
 
 
 
 procedure Fatal(x:string);
 begin
-  LogEx(LOG_CRITICAL,'init steam %s',[x]);
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);
+  Log(LOG_CRITICAL,'init steam %s',[x]);
+  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Raise InternalE(x);
 end;
 
 
@@ -150,23 +180,35 @@ end;
 
 procedure initdll;
 var
- Htier0  : HINST;
- Hvstdlib  : HINST;
+  Tier0Module,VstdlibModule:string;
 begin
+  Tier0Module:=SetupGameSet.Specifics.Values['SteamTier0Module'];
+  VstdlibModule:=SetupGameSet.Specifics.Values['SteamVstdlibModule'];
+  if ((Tier0Module<>curTier0Module) and (curTier0Module<>'')) or ((VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'')) then
+    uninitdll;
+  curTier0Module:=Tier0Module;
+  curVstdlibModule:=VstdlibModule;
+
+  if Htier0 = 0 then
+  begin
+    Htier0 := LoadLibrary(PChar(Tier0Module));
+    if Htier0 = 0 then
+      Fatal('Unable to load '+Tier0Module);
+  end;
+
+  if Hvstdlib = 0 then
+  begin
+    Hvstdlib := LoadLibrary(PChar(VstdlibModule));
+    if Hvstdlib = 0 then
+      Fatal('Unable to load '+VstdlibModule);
+  end;
+
   if Hsteamfswrap = 0 then
   begin
-    Htier0 := LoadLibrary('tier0.dll');
-    if Htier0 < 32 then
-      Fatal('tier0.dll not found');
-
-    Hvstdlib := LoadLibrary('vstdlib.dll');
-    if Hvstdlib < 32 then
-      Fatal('vstdlib.dll not found');
-
-
-
     Hsteamfswrap := LoadLibrary('dlls/QuArKSteamFS.dll');
-    if Hsteamfswrap >= 32 then { success }
+    if Hsteamfswrap = 0 then
+      Fatal('Unable to load dlls/QuArKSteamFS.dll')
+    else
     begin
       APIVersion      := InitDllPointer(Hsteamfswrap, 'APIVersion');
       if APIVersion <> RequiredSTEAMFSAPI then
@@ -183,11 +225,45 @@ begin
       SteamFSFindName        := InitDllPointer(Hsteamfswrap, 'SteamFSFindName');
       SteamFSFindIsDir       := InitDllPointer(Hsteamfswrap, 'SteamFSFindIsDir');
     end
-    else
-      Fatal('dlls/QuArKSteamFS.dll not found');
   end;
 end;
 
+procedure uninitdll;
+begin
+  if Htier0 <> 0 then
+  begin
+    if FreeLibrary(Htier0) = false then
+      Fatal('Unable to unload tier0.dll');
+    Htier0 := 0;
+  end;
+  
+  if Hvstdlib <> 0 then
+  begin
+    if FreeLibrary(Hvstdlib) = false then
+      Fatal('Unable to unload vstdlib.dll');
+    Hvstdlib := 0;
+  end;
+
+  if Hsteamfswrap <> 0 then
+  begin
+    if FreeLibrary(Hsteamfswrap) = false then
+      Fatal('Unable to unload dlls/QuArKSteamFS.dll');
+    Hsteamfswrap := 0;
+
+    APIVersion      := nil;
+    SteamFSInit            := nil;
+    SteamFSTerm            := nil;
+    SteamFSOpen            := nil;
+    SteamFSClose           := nil;
+    SteamFSSize            := nil;
+    SteamFSRead            := nil;
+    SteamFSFindFirst       := nil;
+    SteamFSFindNext        := nil;
+    SteamFSFindFinish      := nil;
+    SteamFSFindName        := nil;
+    SteamFSFindIsDir       := nil;
+  end;
+end;
 
  {------------ QSteamFSFolder ------------}
 
@@ -420,7 +496,15 @@ end;
  {------------------------}
 
 initialization
+begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QSteamFS, 's');
   RegisterQObject(QSteamFSFolder, 'a');
+  Hsteamfswrap:=0;
+  curTier0Module:='';
+  curVstdlibModule:='';
+end;
+
+finalization
+  uninitdll;
 end.

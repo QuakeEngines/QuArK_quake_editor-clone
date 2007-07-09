@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/07/05 10:19:45  danielpharos
+Moved the Quake .map format code to a separate file.
+
+Revision 1.12  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2001/03/20 21:44:19  decker_dk
 Updated copyright-header
 
@@ -58,7 +64,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, QkForm, TB97, QkMap, QkQuakeC, QkWad, QkPak,
+  QkObjects, QkFileObjects, QkForm, TB97, QkQuakeMap, QkQuakeC, QkWad, QkPak,
   QkMdl, QkGroup, Python;
 
 type

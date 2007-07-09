@@ -1,5 +1,6 @@
 (**************************************************************************
-Vmf map loader (c) by  alexander
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,6 +23,30 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/07/05 10:19:44  danielpharos
+Moved the Quake .map format code to a separate file.
+
+Revision 1.18  2007/06/24 20:38:06  danielpharos
+Comment out unused code.
+
+Revision 1.17  2007/04/30 21:52:42  danielpharos
+Small cleanup of code around VTFLib.
+
+Revision 1.16  2007/04/12 15:04:42  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
+Revision 1.15  2007/03/25 13:52:24  danielpharos
+Moved a few dictionnary words around.
+
+Revision 1.14  2007/03/11 12:03:10  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
+Revision 1.13  2007/02/01 23:13:53  danielpharos
+Fixed a few copyright headers
+
+Revision 1.12  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2005/07/30 23:04:44  alexander
 introduced dispface class for faces with displacement mapping
 vmf loader sets some displacement info
@@ -63,25 +88,19 @@ unit QkVMF;
 interface
 
 uses
-  Windows,  SysUtils, Classes,  Dialogs,
-  QkFileObjects,  QkObjects,
+  Windows, SysUtils, Classes, Dialogs,
+  QkFileObjects, QkObjects,
   QkMapObjects, QkBsp,
-  qmatrices,  QkMap;
+  qmatrices, QkQuakeMap;
 
 type
-
-
- QVMFFile = class(QBaseMapFile)
+ QVMFFile = class(QMapFile)
         public
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
           procedure SaveFile(Info: TInfoEnreg1); override;
         end;
-
-
- {------------------------}
-
 
  {------------------------}
 
@@ -612,18 +631,18 @@ expected one.
 
    procedure AddConnection(var List: TStringlist;outputname,value:string);
    var
-     i,num,lastfound : integer;
+     i,num{,lastfound} : integer;
 
    begin
      num:=0;
-     lastfound:=0;
+     //lastfound:=0;
      for i:=0 to list.count-1 do
      begin
        // count occurances
        if pos(outputname,list[i])<>0 then
        begin
          num:=num+1;
-         lastfound:=i;
+         //lastfound:=i;
        end;
      end;
 
@@ -825,9 +844,9 @@ expected one.
 
 //tbd : what versions to allow ?
 //           if (S1='mapversion') and (S<>'1') then
-//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(270)]);
+//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(268)]);
 //           if (S1='formatversion') and (S<>'100') then
-//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(270)]);
+//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(268)]);
      ReadSymbol(sStringQuotedToken);
    end;
    ReadSymbol(sCurlyBracketRight);
@@ -942,7 +961,7 @@ var
  ModeJeu: Char;
  Source: String;
 begin
- LogEx(LOG_VERBOSE,'load vmf file %s',[self.name]);
+ Log(LOG_VERBOSE,'load vmf file %s',[self.name]);
  case ReadFormat of
   1: begin  { as stand-alone file }
       SetLength(Source, FSize);
@@ -1003,9 +1022,9 @@ begin
          saveflags:=saveflags or soDisableFPCoord;
         if MapOptionSpecs.Values['UseIntegralVertices']<>'' then
          saveflags:=saveflags or soUseIntegralVertices;
-     saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
+       saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
-       TTreeMap(Root).SaveAsText(List, Dest, saveflags, HxStrings);
+       SaveAsMapText(TTreeMap(Root), ObjectGameCode, -1, List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;

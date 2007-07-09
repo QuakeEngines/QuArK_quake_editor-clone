@@ -23,6 +23,76 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2007/06/06 22:31:19  danielpharos
+Fix a (recent introduced) problem with OpenGL not drawing anymore.
+
+Revision 1.60  2007/06/04 19:20:24  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
+Revision 1.59  2007/05/09 15:48:00  danielpharos
+Fixed a potential handle leak.
+
+Revision 1.58  2007/05/06 21:19:04  danielpharos
+Changed a big if-mess into a switch.
+
+Revision 1.57  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
+Revision 1.56  2007/03/29 15:26:03  danielpharos
+Removed a little bit of redundant code.
+
+Revision 1.55  2007/03/26 21:01:46  danielpharos
+Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
+
+Revision 1.54  2007/03/24 19:21:07  danielpharos
+Removed some double and possibly wrong code.
+
+Revision 1.53  2007/03/22 22:08:08  danielpharos
+Moved a debug routine into a debug section.
+
+Revision 1.52  2007/03/22 21:51:27  danielpharos
+Fix for abnormal lighting effects in OpenGL introduced in last 'fix'.
+
+Revision 1.51  2007/03/22 20:53:46  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+Also fixed the solid-color not showing up with lighting enabled.
+
+Revision 1.50  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
+Revision 1.49  2007/03/11 12:03:11  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
+Revision 1.48  2007/03/11 10:59:52  danielpharos
+Fixed a warning during compiling.
+
+Revision 1.47  2007/03/01 17:36:54  danielpharos
+Stopped many redundant calls from being made when moving the camera. Should take care of some weird problems, and be faster too.
+
+Revision 1.46  2007/02/27 21:20:08  danielpharos
+Fixed a huge slowdown in the rendering process.
+
+Revision 1.45  2007/02/27 17:02:52  danielpharos
+Fix a few bugs in OpenGL lighting, and sort the transparent faces. Transparency is not working properly yet, but it's a decent start.
+
+Revision 1.44  2007/02/06 14:07:39  danielpharos
+Another transparency fix. Beziers, sprites and models should now also have transparency.
+
+Revision 1.43  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
+Revision 1.42  2007/02/02 21:01:28  danielpharos
+Made the OpenGL lights respond to the light-setting, and made the ambient lighting match software lighting better
+
+Revision 1.41  2007/01/31 17:06:53  danielpharos
+Fixed the colors in OpenGL solid view mode
+
+Revision 1.40  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
+Revision 1.39  2007/01/11 18:08:06  danielpharos
+Fix for the panels sometimes not displaying anything
+
 Revision 1.38  2007/01/05 19:47:11  danielpharos
 Build in proper Maplimit handling
 Fixed a debug comment
@@ -161,11 +231,11 @@ uses Windows, Classes,
 {x $ ENDIF}
 
 const
-{kZeroLight = 0.23;}
  kScaleCos = 0.5;
-{kBrightnessSaturation = 256/0.5;}
 
 var
+ TexturesToDelete: array of Integer;
+ DisplayListsToDelete: array of Integer;
  RCs: array of HGLRC;
 
 type
@@ -176,27 +246,14 @@ type
                Brightness, Brightness2: scalar_t;
                Color: TColorRef;
               end;
- GLfloat4 = array[0..3] of GLfloat;
  TLightParams = record
                  ZeroLight, BrightnessSaturation, LightFactor: scalar_t;
                 end;
 
- TGLSceneBase = class(TSceneObject)        {Daniel: Why two different objects?}
- protected
-   ScreenX, ScreenY: Integer;
-   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
-   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
-   procedure stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
-   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
-   procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
- public
-   procedure SetViewRect(SX, SY: Integer); override;
- end;
-
- TGLSceneObject = class(TGLSceneBase)
+ TGLSceneObject = class(TSceneObject)
  private
-   DestWnd: HWnd;
-   GLDC: HDC;
+   ViewWnd: HWnd;
+   ViewDC: HDC;
    RC: HGLRC;
    CurrentAlpha: LongInt;
    Currentf: GLfloat4;
@@ -205,25 +262,36 @@ type
    Fog: Boolean;
    Transparency: Boolean;
    Lighting: Boolean;
+   Culling: Boolean;
+   MakeSections: Boolean;
    VCorrection2: Single;
    Lights: PLightList;
-   DisplayLists: Integer;
+   NumberOfLights: LongInt;
+   DisplayLists: Boolean;
    LightParams: TLightParams;
    FullBright: TLightParams;
    OpenGLLoaded: Boolean;
    MapLimit: TVect;
    MapLimitSmallest: Double;
    DepthBufferBits: Byte;
+   MaxLights: GLint;
+   LightingQuality: Integer;
+   OpenGLDisplayLists: array[0..2] of Integer;
+   procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
    Bilinear: boolean;
+   ScreenX, ScreenY: Integer;
+   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
+   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
+   procedure stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
+   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
+   procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure EndBuildScene; override;
-   procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
-   procedure RenderTransparentGL(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
-   procedure RenderOpenGL(Source: TGLSceneBase);
    procedure ReleaseResources;
    procedure BuildTexture(Texture: PTexture3); override;
  public
+   constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
                   nCoord: TCoordinates;
@@ -233,15 +301,22 @@ type
                   var AllowsGDI: Boolean); override;
    procedure ClearScene; override;
    procedure Render3DView; override;
-   procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
+   procedure Copy3DView; override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
    property Ready: Boolean read FReady write FReady;
+   procedure SetViewRect(SX, SY: Integer); override;
+   procedure SetViewDC(DC: HDC); override;
+   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
+   function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
- TGLTextureManager = class(TTextureManager)
- public
-   procedure ClearTexture(Tex: PTexture3); override;
- end;
+type  { this is the data shared by all existing TGLSceneObjects }
+  TGLState = class
+  public
+    procedure ClearTexture(Tex: PTexture3);
+  end;
+var
+  qrkGLState: TGlState;
 
  {------------------------}
 
@@ -251,14 +326,12 @@ procedure CheckOpenGLError(GlError: GLenum);
 
 implementation
 
-uses SysUtils, Forms,
-     Quarkx, Setup,
-     Python, PyMapView,
-     Logging, {Math,}
+uses SysUtils, Quarkx, Setup, Python, Logging, {Math,}
      QkObjects, QkMapPoly, QkPixelSet, QkForm;
 
  {------------------------}
 
+{$IFDEF DebugGLErr}
 var
   HackIgnoreErrors: Boolean = False;
 
@@ -267,11 +340,11 @@ var
   I, J: Integer;
   S: String;
 begin
-  //LogEx('EdOpenGL #%d %s', [Pos, Format(Text, Args)]); //Decker 2003.03.14
   if HackIgnoreErrors then
     Exit;
+  Log(LOG_VERBOSE,'EdOpenGL #%d %s', [Pos, Format(Text, Args)]);
   S:='';
-  for I:=1 to 25 do   {Daniel: Why is it trying exactly 25 times?}
+  for I:=1 to 25 do   {DanielPharos: Why is it trying exactly 25 times?}
   begin
     J:=glGetError;
     if J = GL_NO_ERROR then
@@ -281,36 +354,10 @@ begin
   if S<>'' then
   begin
     //Log(S);
-    Raise EErrorFmt(4870, [S, Pos]);
+    Raise EErrorFmt(6302, [S, Pos]);
   end
 end;
-
- {------------------------}
-
-var
-  CurrentGLSceneObject: TGLSceneObject = Nil;
- {VersionGLSceneObject: Integer;}
-
-procedure NeedGLSceneObject(MinX, MinY: Integer);
-begin
- {if CurrentGLSceneObject=Nil then
-  begin}
-    Py_XDECREF(CallMacroEx(Py_BuildValueX('ii', [MinX, MinY]), 'OpenGL'));
-    PythonCodeEnd;
-    if CurrentGLSceneObject=Nil then
-      Raise EAbort.Create('Python failure in OpenGL view creation');
- {end;}
-end;
-
- {------------------------}
-
-procedure UnpackColor(Color: TColorRef; var v: GLfloat4);
-begin
-  v[0]:=((Color       ) and $FF) * (1/255.0);
-  v[1]:=((Color shr  8) and $FF) * (1/255.0);
-  v[2]:=((Color shr 16) and $FF) * (1/255.0);
-  v[3]:=((Color shr 24) and $FF) * (1/255.0);
-end;
+{$ENDIF}
 
  {------------------------}
 
@@ -327,6 +374,14 @@ type
          v: TVertex3D;
          light_rgb: array[0..3] of GLfloat;
         end;
+
+procedure UnpackColor(Color: TColorRef; var v: GLfloat4);
+begin
+  v[0]:=((Color       ) and $FF) * (1/255.0);
+  v[1]:=((Color shr  8) and $FF) * (1/255.0);
+  v[2]:=((Color shr 16) and $FF) * (1/255.0);
+  v[3]:=((Color shr 24) and $FF) * (1/255.0);
+end;
 
 procedure Interpole(var Dest: TP3D; const De, A: TP3D; f: Single);
 var
@@ -352,7 +407,6 @@ procedure LightAtPoint(var Point1: TP3D;
 var
  LP: PLightList;
  Light: array[0..2] of TDouble;
- ColoredLights: Boolean;
  Incoming: vec3_t;
  Dist1, DistToSource: TDouble;
  K: Integer;
@@ -361,7 +415,8 @@ begin
   begin
     LP:=SubList;
     Light[0]:=0;
-    ColoredLights:=False;
+    Light[1]:=0;
+    Light[2]:=0;
     while Assigned(LP) do
     begin
       //with LP^ do
@@ -376,6 +431,8 @@ begin
           Incoming[1]:=LP^.Position[1]-Point1.v.xyz[1];
           Incoming[2]:=LP^.Position[2]-Point1.v.xyz[2];
           DistToSource:=Sqr(Incoming[0])+Sqr(Incoming[1])+Sqr(Incoming[2]);
+          //DanielPharos: Shouldn't it be this?
+          //DistToSource:=Sqr(Incoming[0]*Incoming[0]+Incoming[1]*Incoming[1]+Incoming[2]*Incoming[2]);
           if DistToSource<LP^.Brightness2 then
           begin
             if DistToSource < rien then
@@ -386,57 +443,20 @@ begin
               Dist1:=(LP^.Brightness - DistToSource) * ((1.0-kScaleCos) + kScaleCos * (Incoming[0]*NormalePlan[0] + Incoming[1]*NormalePlan[1] + Incoming[2]*NormalePlan[2]) / DistToSource);
             end;
 
-            if LP^.Color = $FFFFFF then
-            begin
-              Light[0]:=Light[0] + Dist1;
-              if not ColoredLights then
-              begin
-                if Light[0]>=LightParams.BrightnessSaturation then
-                begin   { saturation }
-                  Move(Currentf, Point1.light_rgb, SizeOf(GLfloat)*3{SizeOf(Point1.light_rgb)});
-                  Exit;
-                end;
-                //else
-                //  Continue;
-              end
-              else
-              begin
-                Light[1]:=Light[1] + Dist1;
-                Light[2]:=Light[2] + Dist1;
-              end;
-            end
+            if LP^.Color and $FF = $FF then
+              Light[0]:=Light[0] + Dist1
             else
-            begin
-              if not ColoredLights then
-              begin
-                Light[1]:=Light[0];
-                Light[2]:=Light[0];
-                ColoredLights:=True;
-              end;
+              Light[0]:=Light[0] + Dist1 * (LP^.Color and $FF) * (1/$100);
 
-              if LP^.Color and $FF = $FF then
-                Light[0]:=Light[0] + Dist1
-              else
-                Light[0]:=Light[0] + Dist1 * (LP^.Color and $FF) * (1/$100);
+            if (LP^.Color shr 8) and $FF = $FF then
+              Light[1]:=Light[1] + Dist1
+            else
+              Light[1]:=Light[1] + Dist1 * ((LP^.Color shr 8) and $FF) * (1/$100);
 
-              if (LP^.Color shr 8) and $FF = $FF then
-                Light[1]:=Light[1] + Dist1
-              else
-                Light[1]:=Light[1] + Dist1 * ((LP^.Color shr 8) and $FF) * (1/$100);
-
-              if LP^.Color shr 16 = $FF then
-                Light[2]:=Light[2] + Dist1
-              else
-                Light[2]:=Light[2] + Dist1 * (LP^.Color shr 16) * (1/$100);
-            end;
-
-           {if  (Light[0]>=LightParams.BrightnessSaturation)
-            and (Light[1]>=LightParams.BrightnessSaturation)
-            and (Light[2]>=LightParams.BrightnessSaturation) then
-            begin
-              Saturation:=True;
-              Break;
-            end;}
+            if (LP^.Color shr 16) and $FF = $FF then
+              Light[2]:=Light[2] + Dist1
+            else
+              Light[2]:=Light[2] + Dist1 * ((LP^.Color shr 16) and $FF) * (1/$100);
           end;
         end;
 
@@ -444,23 +464,12 @@ begin
       end;
     end;
 
-    if ColoredLights then
-    begin
-      Point1.light_rgb[3]:=Currentf[3];
-      for K:=0 to 2 do
-        if Light[K] >= LightParams.BrightnessSaturation then
-          Point1.light_rgb[K]:=Currentf[K]
-        else
-          Point1.light_rgb[K]:=(LightParams.ZeroLight + Light[K]*LightParams.LightFactor) * Currentf[K];
-    end
-    else
-    begin
-      Light[0]:=LightParams.ZeroLight + Light[0]*LightParams.LightFactor;
-      Point1.light_rgb[0]:=Light[0] * Currentf[0];
-      Point1.light_rgb[1]:=Light[0] * Currentf[1];
-      Point1.light_rgb[2]:=Light[0] * Currentf[2];
-      Point1.light_rgb[3]:=Currentf[3];
-    end;
+    Point1.light_rgb[3]:=Currentf[3];
+    for K:=0 to 2 do
+      if Light[K] >= LightParams.BrightnessSaturation then
+        Point1.light_rgb[K]:=Currentf[K]
+      else
+        Point1.light_rgb[K]:=(LightParams.ZeroLight + (Light[K]*LightParams.LightFactor)) * Currentf[K];
   end;
 end;
 
@@ -469,7 +478,8 @@ procedure RenderQuad(PV1, PV2, PV3, PV4: PVertex3D;
                      LP: PLightList;
                      const NormalePlan: vec3_t;
                      Dist: scalar_t;
-                     const LightParams: TLightParams);
+                     const LightParams: TLightParams;
+                     MakeSections: Boolean);
 const
  StandardSectionSize = 77.0;
  SectionsI = 8;
@@ -482,48 +492,24 @@ var
  LPP: ^PLightList;
  DistToSource, Dist1: TDouble;
  light: array[0..3] of GLfloat;
+ NormalVector: array[0..2] of GLfloat;
 begin
-  SubList:=Nil;
-  LPP:=@SubList;
-
-  while Assigned(LP) do
+  if MakeSections=False then
   begin
-    with LP^ do
-    begin
-      if Position[0]*NormalePlan[0] + Position[1]*NormalePlan[1] + Position[2]*NormalePlan[2] > Dist then
-      begin
-        if ((PV1^.xyz[0]>Min[0]) and (PV1^.xyz[0]<Max[0])
-        and (PV1^.xyz[1]>Min[1]) and (PV1^.xyz[1]<Max[1])
-        and (PV1^.xyz[2]>Min[2]) and (PV1^.xyz[2]<Max[2]))
-        or ((PV2^.xyz[0]>Min[0]) and (PV2^.xyz[0]<Max[0])
-        and (PV2^.xyz[1]>Min[1]) and (PV2^.xyz[1]<Max[1])
-        and (PV2^.xyz[2]>Min[2]) and (PV2^.xyz[2]<Max[2]))
-        or ((PV3^.xyz[0]>Min[0]) and (PV3^.xyz[0]<Max[0])
-        and (PV3^.xyz[1]>Min[1]) and (PV3^.xyz[1]<Max[1])
-        and (PV3^.xyz[2]>Min[2]) and (PV3^.xyz[2]<Max[2]))
-        or ((PV4^.xyz[0]>Min[0]) and (PV4^.xyz[0]<Max[0])
-        and (PV4^.xyz[1]>Min[1]) and (PV4^.xyz[1]<Max[1])
-        and (PV4^.xyz[2]>Min[2]) and (PV4^.xyz[2]<Max[2])) then
-        begin
-          LPP^:=LP;
-          LP^.SubLightList:=Nil;
-          LPP:=@LP^.SubLightList;
-        end;
-      end;
-    end;
-    LP:=LP^.Next;
-  end;
-
-  if SubList=Nil then
-  begin
-    {$IFDEF DebugGLErr} DebugOpenGL(-121, '', []); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(-121, 'glBegin(GL_QUADS)', []); {$ENDIF}
+    glBegin(GL_QUADS);
     light[0]:=LightParams.ZeroLight * Currentf[0];
     light[1]:=LightParams.ZeroLight * Currentf[1];
     light[2]:=LightParams.ZeroLight * Currentf[2];
     light[3]:=Currentf[3];
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@light);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@light);
     glColor4fv(light);
-    {$IFDEF DebugGLErr} DebugOpenGL(-121, 'glBegin(GL_QUADS)', []); {$ENDIF}
-    glBegin(GL_QUADS);
+    NormalVector[0]:=NormalePlan[0];
+    NormalVector[1]:=NormalePlan[1];
+    NormalVector[2]:=NormalePlan[2];
+    glNormal3fv(@NormalVector);
+
     //with PV1^ do
     begin
       glTexCoord2fv(PV1^.st);
@@ -549,11 +535,41 @@ begin
   end
   else
   begin
+    SubList:=Nil;
+    LPP:=@SubList;
+    while Assigned(LP) do
+    begin
+      with LP^ do
+      begin
+        if Position[0]*NormalePlan[0] + Position[1]*NormalePlan[1] + Position[2]*NormalePlan[2] > Dist then
+        begin
+          if ((PV1^.xyz[0]>Min[0]) and (PV1^.xyz[0]<Max[0])
+          and (PV1^.xyz[1]>Min[1]) and (PV1^.xyz[1]<Max[1])
+          and (PV1^.xyz[2]>Min[2]) and (PV1^.xyz[2]<Max[2]))
+          or ((PV2^.xyz[0]>Min[0]) and (PV2^.xyz[0]<Max[0])
+          and (PV2^.xyz[1]>Min[1]) and (PV2^.xyz[1]<Max[1])
+          and (PV2^.xyz[2]>Min[2]) and (PV2^.xyz[2]<Max[2]))
+          or ((PV3^.xyz[0]>Min[0]) and (PV3^.xyz[0]<Max[0])
+          and (PV3^.xyz[1]>Min[1]) and (PV3^.xyz[1]<Max[1])
+          and (PV3^.xyz[2]>Min[2]) and (PV3^.xyz[2]<Max[2]))
+          or ((PV4^.xyz[0]>Min[0]) and (PV4^.xyz[0]<Max[0])
+          and (PV4^.xyz[1]>Min[1]) and (PV4^.xyz[1]<Max[1])
+          and (PV4^.xyz[2]>Min[2]) and (PV4^.xyz[2]<Max[2])) then
+          begin
+            LPP^:=LP;
+            LP^.SubLightList:=Nil;
+            LPP:=@LP^.SubLightList;
+          end;
+        end;
+      end;
+      LP:=LP^.Next;
+    end;
+
     {$IFDEF DebugGLErr} DebugOpenGL(-109, '', []); {$ENDIF}
-    Points[0,        0        ].v:=PV1^;
-    Points[0,        SectionsI].v:=PV2^;
-    Points[SectionsJ,SectionsI].v:=PV3^;
-    Points[SectionsJ,0        ].v:=PV4^;
+    Points[0,        0        ].v:=PV4^;
+    Points[0,        SectionsI].v:=PV3^;
+    Points[SectionsJ,SectionsI].v:=PV2^;
+    Points[SectionsJ,0        ].v:=PV1^;
 
     DistToSource:=Abs(Points[0,        SectionsI].v.xyz[0]-Points[0,        0].v.xyz[0]);
     Dist1:=       Abs(Points[0,        SectionsI].v.xyz[1]-Points[0,        0].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
@@ -640,18 +656,26 @@ begin
     begin
       {$IFDEF DebugGLErr} DebugOpenGL(-122, 'glBegin(GL_QUAD_STRIP)', []); {$ENDIF}
       glBegin(GL_QUAD_STRIP);
+      NormalVector[0]:=NormalePlan[0];
+      NormalVector[1]:=NormalePlan[1];
+      NormalVector[2]:=NormalePlan[2];
+      glNormal3fv(@NormalVector);
 
       I:=0;
       while I<=SectionsI do
       begin
         //with Points[J,I] do
         begin
+          glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Points[J,I].light_rgb);
+          glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J,I].light_rgb);
           glColor4fv(Points[J,I].light_rgb);
           glTexCoord2fv(Points[J,I].v.st);
           glVertex3fv(Points[J,I].v.xyz);
         end;
         //with Points[J+StepJ,I] do
         begin
+          glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Points[J+StepJ,I].light_rgb);
+          glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Points[J+StepJ,I].light_rgb);
           glColor4fv(Points[J+StepJ,I].light_rgb);
           glTexCoord2fv(Points[J+StepJ,I].v.st);
           glVertex3fv(Points[J+StepJ,I].v.xyz);
@@ -671,11 +695,13 @@ procedure RenderQuadStrip(PV: PVertex3D;
                           VertexCount: Integer;
                           var Currentf: GLfloat4;
                           LP: PLightList;
+                          const NormalePlan: vec3_t;
                           const LightParams: TLightParams);
 var
  LP1: PLightList;
  I: Integer;
  Point: TP3D;
+ NormalVector: array[0..2] of GLfloat;
 begin
   LP1:=LP;
   while Assigned(LP1) do
@@ -684,12 +710,19 @@ begin
     LP1:=LP1^.SubLightList;
   end;
   glBegin(GL_TRIANGLE_STRIP);
+  NormalVector[0]:=NormalePlan[0];
+  NormalVector[1]:=NormalePlan[1];
+  NormalVector[2]:=NormalePlan[2];
+  glNormal3fv(@NormalVector);
+
   for I:=1 to VertexCount do
   begin
     Point.v:=PV^;
     Inc(PV);
     LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
     Inc(vec3_p(PV));
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,@Point.light_rgb);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,@Point.light_rgb);
     glColor4fv(Point.light_rgb);
     glTexCoord2fv(Point.v.st);
     glVertex3fv(Point.v.xyz);
@@ -699,7 +732,7 @@ end;
 
  {------------------------}
 
-procedure TGLSceneBase.SetViewRect(SX, SY: Integer);
+procedure TGLSceneObject.SetViewRect(SX, SY: Integer);
 begin
   if SX<1 then SX:=1;
   if SY<1 then SY:=1;
@@ -707,7 +740,72 @@ begin
   ScreenY:=SY;
 end;
 
-procedure TGLSceneBase.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
+procedure TGLSceneObject.SetViewDC(DC: HDC);
+var
+  pfd: TPixelFormatDescriptor;
+  pfi: Integer;
+  Setup: QObject;
+  CurrentPixelFormat: Integer;
+begin
+  if ViewDC<>DC then
+  begin
+    if (ViewWnd<>0) and (ViewDC<>0) then
+      ReleaseDC(ViewWnd, ViewDC);
+    ViewDC:=DC;
+    Setup:=SetupSubSet(ssGeneral, 'OpenGL');
+    DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
+    FillChar(pfd, SizeOf(pfd), 0);
+    pfd.nSize:=SizeOf(pfd);
+    pfd.nversion:=1;
+    pfd.dwflags:=pfd_Support_OpenGl or pfd_Draw_To_Window;
+    pfd.iPixelType:=pfd_Type_RGBA;
+    if DoubleBuffered then
+      pfd.dwflags:=pfd.dwflags or pfd_DoubleBuffer;
+    if Setup.Specifics.Values['SupportsGDI']<>'' then
+      pfd.dwflags:=pfd.dwflags or pfd_Support_GDI;
+    pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
+    if pfd.cColorBits<=0 then
+      pfd.cColorBits:=GetDeviceCaps(ViewDC, BITSPIXEL);
+    pfd.cDepthBits:=DepthBufferBits;
+    pfd.iLayerType:=pfd_Main_Plane;
+    pfi:=ChoosePixelFormat(ViewDC, @pfd);
+    CurrentPixelFormat:=GetPixelFormat(ViewDC);
+    if CurrentPixelFormat<>pfi then
+     begin
+      if not SetPixelFormat(ViewDC, pfi, @pfd) then
+        Raise EErrorFmt(4869, ['SetPixelFormat']);
+     end;
+  end;
+end;
+
+procedure TGLSceneObject.SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false);
+begin
+  if ViewWnd<>Wnd then
+  begin
+    if ResetViewDC then
+      if (ViewWnd<>0) and (ViewDC<>0) then
+      begin
+        ReleaseDC(ViewWnd,ViewDC);
+        ViewDC:=0;
+      end;
+    ViewWnd:=Wnd;
+    if ResetViewDC then
+      SetViewDC(GetDC(Wnd));
+  end;
+end;
+
+function TGLSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
+begin
+ if not ((nQuality=0) or (nQuality=1) or (nQuality=2)) then
+ begin
+  Result:=False;
+  Exit;
+ end;
+ Result:=LightingQuality<>nQuality;
+ LightingQuality:=nQuality;
+end;
+
+procedure TGLSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
   //with Texture^ do
   begin
@@ -716,7 +814,7 @@ begin
   end;
 end;
 
-procedure TGLSceneBase.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
+procedure TGLSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
   //with Skin^ do
   begin
@@ -725,7 +823,7 @@ begin
   end;
 end;
 
-procedure TGLSceneBase.stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
+procedure TGLSceneObject.stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
   //with Skin^ do
   begin
@@ -734,13 +832,13 @@ begin
   end;
 end;
 
-procedure TGLSceneBase.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
+procedure TGLSceneObject.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
   ScaleS:=1;
   ScaleT:=1;
 end;
 
-procedure TGLSceneBase.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
+procedure TGLSceneObject.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
 begin
   with PVertex3D(PV)^ do
   begin
@@ -768,11 +866,8 @@ var
  I: Integer;
 { NameArray, NameAreaWalker: ^GLuint;}
 begin
-  CurrentGLSceneObject:=Nil;
   RenderingTextureBuffer.Free;
   RenderingTextureBuffer:=Nil;
-
-  ClearScene;
 
   {with TTextureManager.GetInstance do
   begin
@@ -806,41 +901,56 @@ begin
 
   if RC<>0 then
   begin
-    if OpenGLLoaded then
+    for I:=0 to 2 do
     begin
-      I:=0;
-      while I<Length(RCs) do
+      if OpenGLDisplayLists[I]<>0 then
       begin
-        if RCs[I]=RC then
-        begin
-          RCs[I]:=RCs[Length(RCs)-1];
-          SetLength(RCs,Length(RCs)-1);
-        end
-        else
-          Inc(I);
+        SetLength(DisplayListsToDelete,Length(DisplayListsToDelete)+1);
+        DisplayListsToDelete[Length(DisplayListsToDelete)-1]:=OpenGLDisplayLists[I];
+        OpenGLDisplayLists[I]:=0;
       end;
-      wglMakeCurrent(0,0);
+    end;
+    if OpenGLLoaded then
       if wglDeleteContext(RC) = false then
-        raise EError(5779);
+        raise EError(6312);
+
+    if (ViewWnd<>0) and (ViewDC<>0) then
+    begin
+      ReleaseDC(ViewWnd, ViewDC);
+      ViewDC:=0;
+    end;
+
+    I:=0;
+    while I<=Length(RCs)-1 do
+    begin
+      if RCs[I]=RC then
+      begin
+        RCs[I]:=RCs[Length(RCs)-1];
+        SetLength(RCs,Length(RCs)-1);
+      end
+      else
+        Inc(I);
     end;
     RC:=0;
   end;
+end;
 
-  if GLDC<>0 then
-  begin
-    ReleaseDC(DestWnd, GLDC);
-    GLDC:=0;
-  end;
+constructor TGLSceneObject.Create(nViewMode: TMapViewMode);
+begin
+  inherited Create(nViewMode);
+  RC:=0;
+  ViewDC:=0;
+  ViewWnd:=0;
 end;
 
 destructor TGLSceneObject.Destroy;
 begin
-  HackIgnoreErrors:=True;
+  {$IFDEF DebugGLErr} HackIgnoreErrors:=True; {$ENDIF}
+  inherited;
   ReleaseResources;
   if OpenGLLoaded = true then
     UnloadOpenGl;
-  inherited;
-  HackIgnoreErrors:=False;
+  {$IFDEF DebugGLErr} HackIgnoreErrors:=False; {$ENDIF}
 end;
 
 procedure TGLSceneObject.Init(Wnd: HWnd;
@@ -850,36 +960,30 @@ procedure TGLSceneObject.Init(Wnd: HWnd;
                               const LibName: String;
                               var AllowsGDI: Boolean);
 var
- pfd: TPixelFormatDescriptor;
- pfi: Integer;
  nFogColor: GLfloat4;
  FogColor{, FrameColor}: TColorRef;
  Setup: QObject;
- CurrentPixelFormat: Integer;
+ LightParam: array[0..3] of GLfloat;
+ I: Integer;
 begin
   ClearScene;
 
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
 
-  FillChar(FullBright,SizeOf(FullBright),0);
-  FullBright.ZeroLight:=1;
-
-  { have the OpenGL DLL already been loaded? }
+  { has the OpenGL DLL already been loaded? }
   if not OpenGLLoaded then
   begin
+    if LibName='' then
+      Raise EError(6001);
     { try to load the OpenGL DLL, and set pointers to its functions }
     if not LoadOpenGl() then
-      Raise EErrorFmt(4868, [GetLastError]);
+      Raise EErrorFmt(6300, [GetLastError]);
     OpenGLLoaded := true;
   end;
   if (DisplayMode=dmFullScreen) then
-   Raise InternalE('OpenGL renderer does not support fullscreen views (yet)');
+   Raise InternalE(LoadStr1(6320));
 
- {$IFDEF Debug}
-  if not (nCoord is TCameraCoordinates) then
-    Raise InternalE('TCameraCoordinates expected');
- {$ENDIF}
   Coord:=nCoord;
   TTextureManager.AddScene(Self);
 
@@ -931,110 +1035,92 @@ begin
     Fog:=Setup.Specifics.Values['Fog']<>'';
     Transparency:=Setup.Specifics.Values['Transparency']<>'';
     Lighting:=Setup.Specifics.Values['Lights']<>'';
-    LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.2);
-    LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256/0.5);
+    Culling:=Setup.Specifics.Values['Culling']<>'';
+    LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.4);
+    LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256);
     LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
   end
   else
   begin
     Fog:=False;
-    Transparency:=False;   {Daniel: Use this to disable transparency}
+    Transparency:=False;
     Lighting:=False;
+    Culling:=False;
+    LightParams.ZeroLight:=1;
+    LightParams.BrightnessSaturation:=256;
+    LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
   end;
+  FullBright.ZeroLight:=1;
+  FullBright.BrightnessSaturation:=0;
+  FullBright.LightFactor:=0;
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
   AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
-  if Setup.Specifics.Values['GLLists']<>'' then
-    DisplayLists:=0
-  else
-    DisplayLists:=-1;
+  DisplayLists:=Setup.Specifics.Values['GLLists']<>'';
   DepthBufferBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
+  if Lighting then
+    MakeSections:=True
+    {DanielPharos: Not configurable at the moment.
+    It creates small sections out of big poly's, so the lighting effects are better.}
+  else
+    MakeSections:=False;
 
-  GLDC:=GetDC(Wnd);
-  if Wnd<>DestWnd then
-  begin
-    DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
-    FillChar(pfd, SizeOf(pfd), 0);
-    pfd.nSize:=SizeOf(pfd);
-    pfd.nversion:=1;
-    pfd.dwflags:=pfd_Support_OpenGl or pfd_Draw_To_Window;
-    pfd.iPixelType:=pfd_Type_RGBA;
-    if DoubleBuffered then
-      pfd.dwflags:=pfd.dwflags or pfd_DoubleBuffer;
-    if Setup.Specifics.Values['SupportsGDI']<>'' then
-      pfd.dwflags:=pfd.dwflags or pfd_Support_GDI;
-    pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
-    if pfd.cColorBits<=0 then
-      pfd.cColorBits:=GetDeviceCaps(GLDC, BITSPIXEL);
-    pfd.cDepthBits:=DepthBufferBits;
-    pfd.iLayerType:=pfd_Main_Plane;
-    pfi:=ChoosePixelFormat(GLDC, @pfd);
-    CurrentPixelFormat:=GetPixelFormat(GLDC);
-    if CurrentPixelFormat<>pfi then
-     begin
-      if not SetPixelFormat(GLDC, pfi, @pfd) then
-        Raise EErrorFmt(4869, ['SetPixelFormat']);
-     end;
-    DestWnd:=Wnd;
-  end;
+  SetViewWnd(Wnd,true);
 
   if RC = 0 then
    begin
-    RC:=wglCreateContext(GLDC);
+    RC:=wglCreateContext(ViewDC);
     if RC = 0 then
-     raise EError(5771);
-    if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
-    CheckOpenGLError(glGetError);  {#}
-    if RC=0 then
-      Raise EErrorFmt(4869, ['wglCreateContext']);
+     raise EError(6311);
 
-    for pfi:=0 to Length(RCs)-1 do
+    for I:=0 to Length(RCs)-1 do
     begin
-      if RCs[pfi]<>0 then
+      if RCs[I]<>0 then
       begin
-        if wglShareLists(RCs[pfi],RC)=false then
-          Raise EErrorFmt(4869, ['wglShareLists']);    {Is this the correct error message?}
+        if wglShareLists(RCs[I],RC)=false then
+          Raise EErrorFmt(6301, ['wglShareLists']);
         break;
       end;
     end;
-    SetLength(RCs,Length(RCs)+1);   {Increase the RCs-array by one element}
+    SetLength(RCs,Length(RCs)+1);
     RCs[Length(RCs)-1]:=RC;
-   end
-  else
-   begin
-    if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
    end;
+
+  if wglMakeCurrent(ViewDC,RC) = false then
+    raise EError(6310);
 
   { set up OpenGL }
   {$IFDEF DebugGLErr} DebugOpenGL(0, '', []); {$ENDIF}
   UnpackColor(FogColor, nFogColor);
   glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
  {glClearDepth(1);}
-  glEnable(GL_DEPTH_TEST);
- {glDepthFunc(GL_LEQUAL);}
- {glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);}
+  if (DisplayMode=dmPanel) then
+  begin
+    glDisable(GL_DEPTH_TEST);
+  end
+  else
+  begin
+    glEnable(GL_DEPTH_TEST);
+   {glDepthFunc(GL_LEQUAL);}
+  end;
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+  glEnable(GL_NORMALIZE);  
   glEdgeFlag(0);
   {$IFDEF DebugGLErr} DebugOpenGL(1, '', []); {$ENDIF}
 
-  { set up texture parameters }  //Daniel: These are set per texture, in the BuildTexture procedure
+  { set up texture parameters }  //DanielPharos: These are set per texture, in the BuildTexture procedure
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);}
-  {glShadeModel(GL_FLAT);}
   if Setup.Specifics.Values['Bilinear']<>'' then
     Bilinear:=true
   else
     Bilinear:=false;
-  glEnable(GL_TEXTURE_2D);
-  CheckOpenGLError(glGetError);  {#}
-  {$IFDEF DebugGLErr} DebugOpenGL(2, '', []); {$ENDIF}
 
- {Inc(VersionGLSceneObject);}
-  CurrentGLSceneObject:=Self;  { at this point the scene object is more or less initialized }
+  { at this point the scene object is more or less initialized }
   if not Ready then
     PostMessage(Wnd, wm_InternalMessage, wp_OpenGL, 0);
 
@@ -1048,74 +1134,84 @@ begin
     glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
     glFogfv(GL_FOG_COLOR, nFogColor);
     glHint(GL_FOG_HINT, GL_NICEST);
+    CheckOpenGLError(glGetError);
   end
   else
   begin
     glDisable(GL_FOG);
+    CheckOpenGLError(glGetError);
   end;
   
   if Lighting then
   begin
-    {glEnable(GL_LIGHTING);}
-    {Daniel: This currently actually breaks lighting...}
+    glEnable(GL_LIGHTING);
+    LightParam[0]:=LightParams.ZeroLight;
+    LightParam[1]:=LightParams.ZeroLight;
+    LightParam[2]:=LightParams.ZeroLight;
+    LightParam[3]:=1.0;
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, @LightParam);
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    glShadeModel(GL_SMOOTH);
+    CheckOpenGLError(glGetError);
   end
   else
   begin
-    {glDisable(GL_LIGHTING);}   {Daniel: Make sure Lighting is disabled}
+    glDisable(GL_LIGHTING);
+    CheckOpenGLError(glGetError);
   end;
 
   if Transparency then
   begin
-    {glEnable(GL_BLEND);}
-    {Daniel: This currently actually breaks transparency...}
+    glEnable(GL_BLEND);
+    CheckOpenGLError(glGetError);
   end
   else
   begin
-    {glDisable(GL_BLEND);}   {Daniel: Make sure Transparency is disabled}
+    glDisable(GL_BLEND);
+    CheckOpenGLError(glGetError);
   end;
-  {Daniel: Things like normal maps, bump-maps etc. should be added in a similar way}
-  CheckOpenGLError(glGetError);  {#}
+  //DanielPharos: Things like normal maps, bump-maps etc. should be added in a similar way
+
+  glFrontFace(GL_CW);
+  if Culling then
+  begin
+    glEnable(GL_CULL_FACE);
+    CheckOpenGLError(glGetError);
+  end
+  else
+  begin
+    glDisable(GL_CULL_FACE);
+    CheckOpenGLError(glGetError);
+  end;
+
+  glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
+  CheckOpenGLError(glGetError);
+  if MaxLights<=0 then
+    MaxLights:=8;
 
   {$IFDEF DebugGLErr} DebugOpenGL(3, '', []); {$ENDIF}  
   wglMakeCurrent(0,0);
 end;
 
-procedure TGLSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
+procedure TGLSceneObject.Copy3DView;
 begin
   if DoubleBuffered then
-    Windows.SwapBuffers(DC);
+    if Windows.SwapBuffers(ViewDC)=false then
+      raise exception.create(LoadStr1(6315));
 end;
 
 procedure TGLSceneObject.ClearScene;
 var
  PL: PLightList;
 begin
-  inherited;
-
   while Assigned(Lights) do
   begin
     PL:=Lights;
     Lights:=PL^.Next;
     Dispose(PL);
   end;
-
-  if (RC<>0) and (DisplayLists>0) then
-  begin
-    if OpenGlLoaded then
-    begin
-      if wglMakeCurrent(GLDC,RC) = true then
-       begin
-        {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
-        glDeleteLists(1, DisplayLists);
-        {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
-        CheckOpenGLError(glGetError);  {#}
-        wglMakeCurrent(0,0);
-       end;
-    end;
-    DisplayLists:=0;
-  end;
-  {Daniel: We need to clear the DisplayList...}
-
+  NumberOfLights:=0;
+  inherited;
 end;
 
 procedure TGLSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
@@ -1143,15 +1239,43 @@ begin
   PL^.Max[0]:=Position.X+Brightness;
   PL^.Max[1]:=Position.Y+Brightness;
   PL^.Max[2]:=Position.Z+Brightness;
+
+  NumberOfLights:=NumberOfLights+1;
 end;
 
 function TGLSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
+var
+  I: Integer;
 begin
  {PW:=Nil;}
   VertexSize:=SizeOf(TVertex3D);
   Result:=bmOpenGL;
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
+  for I:=0 to 2 do
+  begin
+    if OpenGLDisplayLists[I]<>0 then
+    begin
+      SetLength(DisplayListsToDelete,Length(DisplayListsToDelete)+1);
+      DisplayListsToDelete[Length(DisplayListsToDelete)-1]:=OpenGLDisplayLists[I];
+      OpenGLDisplayLists[I]:=0;
+    end;
+  end;
+  if wglMakeCurrent(ViewDC,RC) = false then
+    raise EError(6310);
+  for I:=0 to Length(DisplayListsToDelete)-1 do
+  begin
+    glDeleteLists(1,DisplayListsToDelete[I]);
+    CheckOpenGLError(glGetError);
+  end;
+  SetLength(DisplayListsToDelete,0);
+  for I:=0 to Length(TexturesToDelete)-1 do
+  begin
+    glDeleteTextures(1,TexturesToDelete[I]);
+    CheckOpenGLError(glGetError);
+  end;
+  SetLength(TexturesToDelete,0);
+  wglMakeCurrent(0,0);
 end;
 
 procedure TGLSceneObject.EndBuildScene;
@@ -1160,106 +1284,7 @@ begin
   RenderingTextureBuffer:=Nil;
 end;
 
-procedure TGLSceneObject.RenderTransparentGL(ListSurfaces: PSurfaces; Transparent: Boolean; SourceCoord: TCoordinates);
-var
- PList: PSurfaces;
- Count: Integer;
-{ Buffer, BufEnd: ^GLuint;
- ResidentResult: GLboolean;
- BufResident: ^GLboolean;}
-begin
-  // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
-  if Transparent=true then
-  begin
-    glEnable(GL_BLEND);
-  end
-  else
-  begin
-    glDisable(GL_BLEND);
-  end;
-
-  CheckOpenGLError(glGetError);  {#}
-
-  {DECKER 2003-03-12 if not SolidColors then}
-  begin
-    Count:=0;
-    PList:=ListSurfaces;
-    while Assigned(PList) do
-    begin
-      PList^.ok:=(Transparent in PList^.Transparent) and (PList^.Texture^.OpenGLName<>0);
-      if PList^.ok then
-        Inc(Count);
-      PList:=PList^.Next;
-    end;
-
-    if Count>0 then
-    begin
-{      GetMem(Buffer, Count*(SizeOf(GLuint)+SizeOf(GLboolean)));}
-{      GetMem(Buffer, Count*(SizeOf(GLuint)));}
-      try
-{        BufEnd:=Buffer;
-        PList:=ListSurfaces;
-        while Assigned(PList) do
-        begin
-          if PList^.ok then
-          begin
-            BufEnd^:=PList^.Texture^.OpenGLName;
-            Inc(BufEnd);
-          end;
-          PList:=PList^.Next;
-        end;}
-{        PChar(BufResident):=PChar(BufEnd);}
-{      GetMem(BufResident, Count*(SizeOf(GLboolean)));}
-
-        {$IFDEF DebugGLErr} DebugOpenGL(-103, 'glAreTexturesResident(<%d>, <%d>, <%d>)', [Count, Buffer^, BufResident^]); {$ENDIF}
-{        ResidentResult:=glAreTexturesResident(Count, Buffer^, BufResident^);}
-        {$IFDEF DebugGLErr} DebugOpenGL(103, 'glAreTexturesResident(<%d>, <%d>, <%d>)', [Count, Buffer^, BufResident^]); {$ENDIF}
-
-        PList:=ListSurfaces;
-        while Assigned(PList) do
-        begin
-          if PList^.ok then
-          begin
-            PList^.ok:=False;
-{            if BufResident^<>0 then}   {Daniel: So what if the textures aren't resident?}
-              RenderPList(PList, Transparent, SourceCoord);
-{            Inc(BufResident);}
-          end;
-          PList:=PList^.Next;
-        end;
-      finally
-{        FreeMem(Buffer);}
-      end;
-    end;
-  end;
-
-  CheckOpenGLError(glGetError);   {#}
-
-  PList:=ListSurfaces;
-  while Assigned(PList) do
-  begin
-    if Transparent in PList^.Transparent then
-    begin
-      if {DECKER 2003-03-12 SolidColors or} not PList^.ok then
-        RenderPList(PList, Transparent, SourceCoord);
-    end;
-    PList:=PList^.Next;
-  end;
-  CheckOpenGLError(glGetError);   {#}
-end;
-
 procedure TGLSceneObject.Render3DView;
-begin
-  if not OpenGlLoaded then
-    Exit;
-  if wglMakeCurrent(GLDC,RC) = false then
-   raise EError(5770);
-  CheckOpenGLError(glGetError);   {#}
-  RenderOpenGL(Self);
-  wglMakeCurrent(0,0);
-end;
-
-procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase);
 var
  SX, SY: Integer;
  DX, DY, DZ: Double;
@@ -1268,20 +1293,46 @@ var
  LocX, LocY: GLdouble;
  TransX, TransY, TransZ: GLdouble;
  MatrixTransform: TMatrix4f;
+ PS: PSurfaces;
+ PO: POpenGLLightingList;
+ Surf: PSurface3D;
+ SurfEnd: PChar;
+ PL: PLightList;
+ PV: PVertex3D;
+ Distance: Double;
+ LargestDistance: Double;
+ FirstItem: Boolean;
+ DistanceList: array of Double;
+ TempDistance: Double;
+ TempLight: LongInt;
+ VertexNR: Integer;
+ SurfAveragePosition: vec3_t;
+ PAveragePosition: vec3_t;
+ LightNR: LongInt;
+ LightCurrent: LongInt;
+ LightList: LongInt;
+ Sz: Integer;
+ PList: PSurfaces;
+ CurrentPList: PSurfaces;
+ RebuildDisplayList: Boolean;
 begin
+  if not OpenGlLoaded then
+    Exit;
+  if wglMakeCurrent(ViewDC,RC) = false then
+   raise EError(6310);
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
-  SX:=Source.ScreenX;
-  SY:=Source.ScreenY;
+  SX:=ScreenX;
+  SY:=ScreenY;
   glViewport(0, 0, SX, SY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
   {$IFDEF DebugGLErr} DebugOpenGL(50, '', []); {$ENDIF}
 
-  CheckOpenGLError(glGetError);  {#}
+  CheckOpenGLError(glGetError);
 
-  if Source.Coord.FlatDisplay then
+  if Coord.FlatDisplay then
    begin
     if CurrentDisplayType=dtXY then
      begin
-      with TXYCoordinates(Source.Coord) do
+      with TXYCoordinates(Coord) do
        begin
         Scaling:=ScalingFactor(Nil);
         LocX:=pDeltaX-ScrCenter.X;
@@ -1293,7 +1344,7 @@ begin
      end
     else if CurrentDisplayType=dtXZ then
      begin
-      with TXZCoordinates(Source.Coord) do
+      with TXZCoordinates(Coord) do
        begin
         Scaling:=ScalingFactor(Nil);
         LocX:=pDeltaX-ScrCenter.X;
@@ -1305,7 +1356,7 @@ begin
      end
     else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
      begin
-      with T2DCoordinates(Source.Coord) do
+      with T2DCoordinates(Coord) do
        begin
         Scaling:=ScalingFactor(Nil);
         LocX:=pDeltaX-ScrCenter.X;
@@ -1318,7 +1369,7 @@ begin
     DX:=(SX/2)/(Scaling*Scaling);
     DY:=(SY/2)/(Scaling*Scaling);
     {DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);}
-    DZ:=100000;   {Daniel: Workaround for the zoom-in-disappear problem}
+    DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
     TransX:=LocX/(Scaling*Scaling);
     TransY:=LocY/(Scaling*Scaling);
     TransZ:=-MapLimitSmallest;
@@ -1350,47 +1401,308 @@ begin
    end
   else
    begin
-    with TCameraCoordinates(Source.Coord) do
+    with TCameraCoordinates(Coord) do
      begin
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity;
       {gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / Power(2, DepthBufferBits), FarDistance);}
-      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     {Daniel: Assuming 16 bit depth buffer}
+      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
 
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity;
       glRotated(PitchAngle * (180/pi), -1,0,0);
       glRotated(HorzAngle * (180/pi), 0,-1,0);
       glRotated(120, -1,1,1);
-      glTranslated(-Camera.X, -Camera.Y, -Camera.Z);
+      TransX:=-Camera.X;
+      TransY:=-Camera.Y;
+      TransZ:=-Camera.Z;
+      glTranslated(TransX, TransY, TransZ);
      end;
    end;
+  CheckOpenGLError(glGetError);
 
-  CheckOpenGLError(glGetError);   {#}
+  if (Lighting and (LightingQuality=0)) or Transparency then
+  begin
+    PS:=FListSurfaces;
+    while Assigned(PS) do
+    begin
+      if (Lighting and (LightingQuality=0)) or (Transparency and ((PS^.Transparent=True) or (PS^.NumberTransparentFaces>0))) then
+      begin
+        Surf:=PS^.Surf;
+        SurfEnd:=PChar(Surf)+PS^.SurfSize;
+        PAveragePosition[0]:=0;
+        PAveragePosition[1]:=0;
+        PAveragePosition[2]:=0;
+        while (Surf<SurfEnd) do
+        begin
+          with Surf^ do
+          begin
+            Inc(Surf);
+            SurfAveragePosition[0]:=0;
+            SurfAveragePosition[1]:=0;
+            SurfAveragePosition[2]:=0;
+            if not (VertexCount = 0) then
+            begin
+              PV:=PVertex3D(Surf);
+              if VertexCount>=0 then
+                Sz:=SizeOf(TVertex3D)
+              else
+                Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
+              for VertexNR:=1 to Abs(VertexCount) do
+              begin
+                SurfAveragePosition[0]:=SurfAveragePosition[0]+PV^.xyz[0];
+                SurfAveragePosition[1]:=SurfAveragePosition[1]+PV^.xyz[1];
+                SurfAveragePosition[2]:=SurfAveragePosition[2]+PV^.xyz[2];
+                Inc(PChar(PV), Sz);
+              end;
+              SurfAveragePosition[0]:=SurfAveragePosition[0]/VertexCount;
+              SurfAveragePosition[1]:=SurfAveragePosition[1]/VertexCount;
+              SurfAveragePosition[2]:=SurfAveragePosition[2]/VertexCount;
+            end;
+            PAveragePosition[0]:=PAveragePosition[0]+SurfAveragePosition[0];
+            PAveragePosition[1]:=PAveragePosition[1]+SurfAveragePosition[1];
+            PAveragePosition[2]:=PAveragePosition[2]+SurfAveragePosition[2];
+            OpenGLAveragePosition:=SurfAveragePosition;
+            if VertexCount>=0 then
+              Inc(PVertex3D(Surf), VertexCount)
+            else
+              Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+          end;
+        end;
+      end;
+      PS.OpenGLAveragePosition:=PAveragePosition;
+      PS:=PS^.Next;
+    end;
+  end;
+
+  if Lighting and (LightingQuality=0) then
+  begin
+    PS:=FListSurfaces;
+    while Assigned(PS) do
+    begin
+      Surf:=PS^.Surf;
+      SurfEnd:=PChar(Surf)+PS^.SurfSize;
+      while (Surf<SurfEnd) do
+      begin
+        with Surf^ do
+        begin
+          Inc(Surf);
+          if not (OpenGLLightList = nil) then
+          begin
+            FreeMem(OpenGLLightList);
+            OpenGLLightList := nil;
+          end;
+          if (NumberOfLights<MaxLights) then
+          begin
+            GetMem(OpenGLLightList, NumberOfLights*sizeof(LongInt));
+            PO:=OpenGLLightList;
+            for LightNR := 0 to NumberOfLights-1 do
+            begin
+              PO^:=LightNR;
+              Inc(PO);
+            end;
+          end
+          else
+          begin
+            SetLength(DistanceList, MaxLights);
+            for LightNR:=0 to MaxLights-1 do
+            begin
+              DistanceList[LightNR]:=-1;
+            end;
+            GetMem(OpenGLLightList, MaxLights*sizeof(LongInt));
+            PL:=Lights;
+            LightCurrent:=0;
+            while Assigned(PL) do
+            begin
+              Distance:=(OpenGLAveragePosition[0]-PL.Position[0])*(OpenGLAveragePosition[0]-PL.Position[0])+(OpenGLAveragePosition[1]-PL.Position[1])*(OpenGLAveragePosition[1]-PL.Position[1])+(OpenGLAveragePosition[2]-PL.Position[2])*(OpenGLAveragePosition[2]-PL.Position[2]);
+              //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
+              LightList:=LightCurrent;
+              PO:=OpenGLLightList;
+              for LightNR:=0 to MaxLights-1 do
+              begin
+                if DistanceList[LightNR] = -1 then
+                begin
+                  DistanceList[LightNR]:=Distance;
+                  PO^:=LightList;
+                  break;
+                end;
+                if Distance < DistanceList[LightNR] then
+                begin
+                  TempDistance:=Distance;
+                  Distance:=DistanceList[LightNR];
+                  DistanceList[LightNR]:=TempDistance;
+                  TempLight:=PO^;
+                  PO^:=LightList;
+                  LightList:=TempLight;
+                end;
+                Inc(PO);
+              end;
+              PL:=PL^.Next;
+              LightCurrent:=LightCurrent+1;
+            end;
+          end;
+          if VertexCount>=0 then
+            Inc(PVertex3D(Surf), VertexCount)
+          else
+            Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+        end;
+      end;
+      PS:=PS^.Next;
+    end;
+  end;
 
   {$IFDEF DebugGLErr} DebugOpenGL(51, 'glClear', []); {$ENDIF}
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
-  {$IFDEF DebugGLErr} DebugOpenGL(52, 'RenderTransparentGL(...False...)', []); {$ENDIF}
   CurrentAlpha:=0;
   FillChar(Currentf, SizeOf(Currentf), 0);
-  RenderTransparentGL(Source.FListSurfaces, False, Source.Coord);
-  {$IFDEF DebugGLErr} DebugOpenGL(53, 'RenderTransparentGL(...True...)', []); {$ENDIF}
-  RenderTransparentGL(Source.FListSurfaces, True, Source.Coord);
+
+  case ViewMode of
+  vmWireframe:
+    begin
+      glDisable(GL_TEXTURE_2D);
+      glDisable(GL_COLOR_MATERIAL);
+    end;
+  vmSolidcolor:
+    begin
+      glDisable(GL_TEXTURE_2D);
+      glDisable(GL_COLOR_MATERIAL);
+    end;
+  vmTextured:
+    begin
+      glEnable(GL_TEXTURE_2D);
+      glEnable(GL_COLOR_MATERIAL);
+    end;
+  else
+    begin
+      glEnable(GL_TEXTURE_2D);
+      glEnable(GL_COLOR_MATERIAL);
+    end;
+  end;
+  CheckOpenGLError(glGetError);
+
+  RebuildDisplayList:=False;
+  if DisplayLists then
+  begin
+    if (OpenGLDisplayLists[LightingQuality]=0) then
+    begin
+      OpenGLDisplayLists[LightingQuality]:=glGenLists(1);
+      if OpenGLDisplayLists[LightingQuality] = 0 then
+        raise EError(6313);
+
+      {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE]); {$ENDIF}
+      glNewList(OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE);
+      {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE]); {$ENDIF}
+
+      CheckOpenGLError(glGetError);
+      RebuildDisplayList:=True;
+    end;
+  end;
+
+  if RebuildDisplayList or not (DisplayLists) then
+  begin
+    PList:=FListSurfaces;
+    while Assigned(PList) do
+    begin
+      if Transparency then
+      begin
+        if (PList^.Transparent=False) then
+          RenderPList(PList, False, Coord);
+      end
+      else
+      begin
+        RenderPList(PList, False, Coord);
+        if PList^.NumberTransparentFaces>0 then
+          RenderPList(PList, True, Coord);
+      end;
+      PList:=PList^.Next;
+    end;
+
+    if RebuildDisplayList then
+    begin
+      {$IFDEF DebugGLErr} DebugOpenGL(-113, 'glEndList', []); {$ENDIF}
+      glEndList;
+      {$IFDEF DebugGLErr} DebugOpenGL(113, 'glEndList', []); {$ENDIF}
+      CheckOpenGLError(glGetError);
+    end;
+  end
+  else
+  begin
+    {$IFDEF DebugGLErr} DebugOpenGL(-114, 'glCallList(<%d>)', [OpenGLDisplayLists[LightingQuality]]); {$ENDIF}
+    glCallList(OpenGLDisplayLists[LightingQuality]);
+    {$IFDEF DebugGLErr} DebugOpenGL(114, 'glCallList(<%d>)', [OpenGLDisplayLists[LightingQuality]]); {$ENDIF}
+    CheckOpenGLError(glGetError);
+  end;
+
+  if Transparency then
+  begin
+    glDisable(GL_CULL_FACE);
+    CheckOpenGLError(glGetError);
+
+    PList:=FListSurfaces;
+    while Assigned(PList) do
+    begin
+      if (PList^.Transparent=True) or (PList^.NumberTransparentFaces>0) then
+      begin
+        PList^.TransparentDrawn:=false;
+        PList.OpenGLDistance:=(Plist.OpenGLAveragePosition[0]-TransX)*(Plist.OpenGLAveragePosition[0]-TransX)+(Plist.OpenGLAveragePosition[1]-TransY)*(Plist.OpenGLAveragePosition[1]-TransY)+(Plist.OpenGLAveragePosition[2]-TransZ)*(Plist.OpenGLAveragePosition[2]-TransZ);
+      end
+      else
+        PList^.TransparentDrawn:=true;
+      PList:=PList^.Next;
+    end;
+    repeat
+      FirstItem:=true;
+      LargestDistance:=-1;
+      CurrentPList:=nil;
+      PList:=FListSurfaces;
+      while Assigned(PList) do
+      begin
+        if PList^.TransparentDrawn=false then
+        begin
+          Distance:=PList.OpenGLDistance;
+          //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
+          if (FirstItem or ((not FirstItem) and (Distance>LargestDistance))) then
+          begin
+            FirstItem:=false;
+            LargestDistance:=Distance;
+            CurrentPList:=Plist;
+          end;
+        end;
+        PList:=PList^.Next;
+      end;
+
+      if not (CurrentPList=nil) then
+      begin
+        RenderPList(CurrentPList, True, Coord);
+        CurrentPList^.TransparentDrawn:=true;
+      end;
+    until (CurrentPList=nil);
+    if Culling then
+    begin
+      glEnable(GL_CULL_FACE);
+      glFrontFace(GL_CW);
+      CheckOpenGLError(glGetError);
+    end;
+  end;
+
   {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFinish', []); {$ENDIF}
   glFinish;
   {$IFDEF DebugGLErr} DebugOpenGL(55, '', []); {$ENDIF}
+  wglMakeCurrent(0,0);
 end;
 
 procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
 var
  TexData: PChar;
  MemSize, W, H, J: Integer;
-{Alphasource,}Source, Dest: PChar;
+ Alphasource, Source, Dest: PChar;
  PaletteEx: array[0..255] of LongInt;
 {BasePalette: Pointer;}
  PSD, PSD2: TPixelSetDescription;
  GammaBuf: Pointer;
  MaxTexDim: GLint;
+ NumberOfComponents: GLint;
+ BufferType: GLenum;
 begin
   if Texture^.OpenGLName=0 then
   begin
@@ -1425,7 +1737,7 @@ begin
       glGenTextures(1, Texture^.OpenGLName);
       {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
       if Texture^.OpenGLName=0 then
-        Raise InternalE('out of texture numbers');
+        Raise InternalE(LoadStr(6314));
       glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
       {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
 
@@ -1464,9 +1776,10 @@ begin
 
     {GetwhForTexture(Texture^.info, W, H);}
     
-    wglMakeCurrent(GLDC,RC);
+    if wglMakeCurrent(ViewDC,RC) = false then
+      raise EError(6310);
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, @MaxTexDim);
-    CheckOpenGLError(glGetError);  {#}
+    CheckOpenGLError(glGetError);
     wglMakeCurrent(0,0);
     if MaxTexDim<=0 then
       MaxTexDim:=256;
@@ -1500,41 +1813,87 @@ begin
 
       GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
 
+      NumberOfComponents:=3;
+      BufferType:=GL_RGB;
       if PSD2.Format = psf24bpp then
       begin
-        { Make a gamma-corrected copy of the 24-bits (RGB) texture to TexData-buffer }
-        for J:=1 to H do
+        if (PSD2.AlphaBits = psa8bpp) then
         begin
-          asm
-           push esi
-           push edi
-           push ebx
-           mov ecx, [W]             { get the width, and put it into ecx-register, for the 'loop' to work with }
-           mov esi, [Source]        { get the Source-pointer, and put it into esi-register }
-           mov edi, [Dest]          { get the Dest-pointer, and put it into edi-register }
-           mov ebx, [GammaBuf]      { get the GammaBuf-pointer, and put it into ebx-register }
-           cld
-           xor edx, edx             { clear the edx-register value (edx-high-register must be zero!) }
+          NumberOfComponents:=4;
+          BufferType:=GL_RGBA;
+          AlphaSource:=PSD2.AlphaStartPointer;
+          for J:=1 to H do
+          begin
+            asm
+             push esi
+             push edi
+             push ebx
+             mov ecx, [W]             { get the width, and put it into ecx-register, for the 'loop' to work with }
+             mov esi, [Source]        { get the Source-pointer, and put it into esi-register }
+             mov edi, [Dest]          { get the Dest-pointer, and put it into edi-register }
+             mov ebx, [AlphaSource]   { get the AlphaSource-pointer, and put it into ebx-register }
+             cld
+             xor edx, edx             { clear the edx-register value (edx-high-register must be zero!) }
 
-           @xloop:
-            mov dl, [esi+2]         { copy 'Red' byte from source to edx-low-register }
-            mov al, [ebx+edx]   {R} { copy the gamma-corrected 'Red'-byte from gammabuf to eax-low-register }
-            mov dl, [esi+1]         { copy 'Green' byte from source to edx-low-register }
-            mov ah, [ebx+edx]   {G} { copy the gamma-corrected 'Green'-byte from gammabuf to eax-high-register }
-            stosw                   { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
-            mov dl, [esi]           { copy 'Blue' byte  from source to edx-low-register }
-            mov al, [ebx+edx]   {B} { copy the gamma-corrected 'Blue'-byte from gammabuf to eax-low-register }
-            stosb                   { store the single-byte eax-low-register value to dest which edi-register points to, and increment edi with 1 }
-            add esi, 3              { increment source-pointer, the esi-register with 3 }
-           loop @xloop              { decrement ecx-register with 1, and continue to loop if ecx value is bigger than zero }
+             @xloop:
+              mov dl, [esi+2]         { copy 'Red' byte from source to edx-low-register }
+              mov al, dl          {R} { copy the gamma-corrected 'Red'-byte from gammabuf to eax-low-register }
+              mov dl, [esi+1]         { copy 'Green' byte from source to edx-low-register }
+              mov ah, dl          {G} { copy the gamma-corrected 'Green'-byte from gammabuf to eax-high-register }
+              stosw                   { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
+              mov dl, [esi]           { copy 'Blue' byte from source to edx-low-register }
+              mov al, dl          {B} { copy the gamma-corrected 'Blue'-byte from gammabuf to eax-low-register }
+              mov dl, [ebx]
+              mov ah, dl
+              stosw                   { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
+              add esi, 3              { increment source-pointer, the esi-register with 3 }
+              add ebx, 1              { increment alphasource-pointer, the ebx-register with 1 }
+             loop @xloop              { decrement ecx-register with 1, and continue to loop if ecx value is bigger than zero }
 
-           mov [Dest], edi          { put the now incremented edi-register value, back as the Dest-pointer }
-           pop ebx
-           pop edi
-           pop esi
+             mov [Dest], edi          { put the now incremented edi-register value, back as the Dest-pointer }
+             pop ebx
+             pop edi
+             pop esi
+            end;
+            Inc(Source, PSD2.ScanLine);
+            Inc(AlphaSource, PSD2.AlphaScanLine);
           end;
+        end
+        else
+        begin
+          { Make a gamma-corrected copy of the 24-bits (RGB) texture to TexData-buffer }
+          for J:=1 to H do
+          begin
+            asm
+             push esi
+             push edi
+             push ebx
+             mov ecx, [W]             { get the width, and put it into ecx-register, for the 'loop' to work with }
+             mov esi, [Source]        { get the Source-pointer, and put it into esi-register }
+             mov edi, [Dest]          { get the Dest-pointer, and put it into edi-register }
+             mov ebx, [GammaBuf]      { get the GammaBuf-pointer, and put it into ebx-register }
+             cld
+             xor edx, edx             { clear the edx-register value (edx-high-register must be zero!) }
 
-          Inc(Source, PSD2.ScanLine);
+             @xloop:
+              mov dl, [esi+2]         { copy 'Red' byte from source to edx-low-register }
+              mov al, [ebx+edx]   {R} { copy the gamma-corrected 'Red'-byte from gammabuf to eax-low-register }
+              mov dl, [esi+1]         { copy 'Green' byte from source to edx-low-register }
+              mov ah, [ebx+edx]   {G} { copy the gamma-corrected 'Green'-byte from gammabuf to eax-high-register }
+              stosw                   { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
+              mov dl, [esi]           { copy 'Blue' byte from source to edx-low-register }
+              mov al, [ebx+edx]   {B} { copy the gamma-corrected 'Blue'-byte from gammabuf to eax-low-register }
+              stosb                   { store the single-byte eax-low-register value to dest which edi-register points to, and increment edi with 1 }
+              add esi, 3              { increment source-pointer, the esi-register with 3 }
+             loop @xloop              { decrement ecx-register with 1, and continue to loop if ecx value is bigger than zero }
+
+             mov [Dest], edi          { put the now incremented edi-register value, back as the Dest-pointer }
+             pop ebx
+             pop edi
+             pop esi
+            end;
+            Inc(Source, PSD2.ScanLine);
+          end;
         end;
       end
       else
@@ -1609,19 +1968,17 @@ begin
       PSD2.Done;
     end;
 
-
-    if wglMakeCurrent(GLDC,RC) = false then
-     raise EError(5770);
-   {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
-    glGenTextures(1, Texture^.OpenGLName);
-
-    CheckOpenGLError(glGetError);   {#}
-
+    if wglMakeCurrent(ViewDC,RC) = false then
+     raise EError(6310);
+    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
+    glGenTextures(1, Texture^.OpenGLName);
+    CheckOpenGLError(glGetError);
+
     if Texture^.OpenGLName=0 then
-      Raise InternalE('out of texture numbers');
+      Raise InternalE(LoadStr(6314));
+    {$IFDEF DebugGLErr} DebugOpenGL(105, 'glBindTexture(GL_TEXTURE_2D, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
-    {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
 
     {$IFDEF DebugGLErr} DebugOpenGL(106, '', []); {$ENDIF}
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -1629,21 +1986,20 @@ begin
     if Bilinear then
     begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  {Daniel: Changed to GL_LINEAR}
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     end
     else
     begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     end;
-    CheckOpenGLError(glGetError);  {#}
+    CheckOpenGLError(glGetError);
 
       // To reverse changes that broke OpenGL for odd sized textures in version 1.24 2004/12/14
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
+    glTexImage2D(GL_TEXTURE_2D, 0, NumberOfComponents, W, H, 0, BufferType, GL_UNSIGNED_BYTE, TexData^);
   (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
     end;//paletted textures   *)
-
-    CheckOpenGLError(glGetError);  {#}
+    CheckOpenGLError(glGetError);
 
     wglMakeCurrent(0,0);
 
@@ -1652,262 +2008,383 @@ begin
 end;
 
 procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
-
 var
+ CurrentSurf: PSurface3D;
  Surf: PSurface3D;
+ Surf2: PSurface3D;
  SurfEnd: PChar;
  PV, PVBase, PV2, PV3: PVertex3D;
  NeedTex, NeedColor: Boolean;
- I, K, Sz: Integer;
-
+ I: Integer;
+ MaxLightNumber: LongInt;
+ LightIndex: LongInt;
+ PL: PLightList;
+ PO: POpenGLLightingList;
+ LightNR: LongInt;
+ LightParam: array[0..3] of GLfloat;
+ GLColor: GLfloat4;
+ PSD: TPixelSetDescription;
+ CurrentfTMP: GLfloat4;
+ Distance: Double;
+ LargestDistance: Double;
+ FirstItem: Boolean;
+ Scaling: TDouble;
+ LocX, LocY: GLdouble;
+ TransX, TransY, TransZ: GLdouble;
 begin
-  FullBright.ZeroLight:=1;
-  FullBright.BrightnessSaturation:=0;
-  FullBright.LightFactor:=0;
   case ViewMode of
-    vmWireframe:
+  vmWireframe:
     begin
+      NeedColor:=False;
       NeedTex:=False;
-      glDisable(GL_TEXTURE_2D);
     end;
   vmSolidcolor:
     begin
+      NeedColor:=True;
       NeedTex:=False;
-      glDisable(GL_TEXTURE_2D);
     end;
   vmTextured:
     begin
+      NeedColor:=False;
       NeedTex:=True;
-      glEnable(GL_TEXTURE_2D);
     end;
   else
     begin
+      NeedColor:=False;
       NeedTex:=True;
-      glEnable(GL_TEXTURE_2D);
     end;
   end;
+
+  if (NumberOfLights<MaxLights) then
+    MaxLightNumber:=NumberOfLights
+  else
+    MaxLightNumber:=MaxLights;
+  for LightNR := 0 to MaxLights-1 do
+  begin
+    if (LightNR<NumberOfLights) then
+      glEnable(GL_LIGHT0+LightNR)
+    else
+      glDisable(GL_LIGHT0+LightNR);
+    CheckOpenGLError(glGetError);
+  end;
+  if Lighting and (LightingQuality=0) then
+    glEnable(GL_LIGHTING)
+  else
+    glDisable(GL_LIGHTING);
+  CheckOpenGLError(glGetError);
+
+  {if Transparency and TransparentFaces then
+  begin}
+    if Coord.FlatDisplay then
+    begin
+      if CurrentDisplayType=dtXY then
+      begin
+        with TXYCoordinates(Coord) do
+        begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+        end;
+      end
+      else if CurrentDisplayType=dtXZ then
+      begin
+        with TXZCoordinates(Coord) do
+        begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+        end;
+      end
+      else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
+      begin
+        with T2DCoordinates(Coord) do
+        begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+        end;
+      end;
+      TransX:=LocX/(Scaling*Scaling);
+      TransY:=LocY/(Scaling*Scaling);
+      TransZ:=-MapLimitSmallest;
+    end
+    else
+    begin
+      with TCameraCoordinates(Coord) do
+      begin
+        TransX:=-Camera.X;
+        TransY:=-Camera.Y;
+        TransZ:=-Camera.Z;
+      end;
+    end;
+  {end;}
+
+  if Transparency and TransparentFaces then
+  begin
+    Surf:=PList^.Surf;
+    SurfEnd:=PChar(Surf)+PList^.SurfSize;
+    while Surf<SurfEnd do
+    begin
+      with Surf^ do
+      begin
+        Inc(Surf);
+
+        TransparentDrawn:=false;
+
+        if VertexCount>=0 then
+          Inc(PVertex3D(Surf), VertexCount)
+        else
+          Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+      end;
+    end;
+  end;
+
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
-
-  CheckOpenGLError(glGetError);   {#}
   while Surf<SurfEnd do
   begin
-    with Surf^ do
+    if Transparency and TransparentFaces then
     begin
-      Inc(Surf);
-      if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
-      and ((VertexCount<0) or SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist)) then
+      FirstItem:=true;
+      LargestDistance:=-1;
+      Surf2:=PList^.Surf;
+      CurrentSurf:=nil;
+      while Surf2<SurfEnd do
       begin
-        if AlphaColor<>CurrentAlpha then
+        with Surf2^ do
         begin
-          CurrentAlpha:=AlphaColor;
-          NeedColor:=True;
-        end
-        else
-          NeedColor:=False;
-
-        CheckOpenGLError(glGetError); {#}
-
-        if NeedTex then
-        begin
-          {$IFDEF Debug}
-          if PList^.Texture^.OpenGLName=0 then
-            Raise InternalE('Texture not loaded');
-          {$ENDIF}
-          {$IFDEF DebugGLErr} DebugOpenGL(-108, '', []); {$ENDIF}
-          glBindTexture(GL_TEXTURE_2D, PList^.Texture^.OpenGLName);
-          {$IFDEF DebugGLErr} DebugOpenGL(108, '', []); {$ENDIF}
-          NeedTex:=False;
-        end;
-
-        CheckOpenGLError(glGetError); {#}
-
-        PV:=PVertex3D(Surf);
-
-        // tbd: transparent rendering should not depend on light enabled !
-      //  if DisplayLights then
-        // It's not any more. Fixed with its own option in QuArK's Config OpenGL section.
-        if Transparency then
-        begin
-          if OpenGLDisplayList=0 then
+          if TransparentDrawn=false then
           begin
-            UnpackColor(AlphaColor, Currentf);
+            Distance:=(OpenGLAveragePosition[0]-TransX)*(OpenGLAveragePosition[0]-TransX)+(OpenGLAveragePosition[1]-TransY)*(OpenGLAveragePosition[1]-TransY)+(OpenGLAveragePosition[2]-TransZ)*(OpenGLAveragePosition[2]-TransZ);
+            //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
 
-            if DisplayLists<>-1 then
+            if (FirstItem or ((not FirstItem) and (Distance>LargestDistance))) then
             begin
-              DisplayLists:=glGenLists(1);
-              if DisplayLists = 0 then
-                raise EError(5693);
-
-              OpenGLDisplayList:=DisplayLists;
-              {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
-              glNewList(DisplayLists, GL_COMPILE_AND_EXECUTE);
-              {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
-
-              CheckOpenGLError(glGetError); {#}
-
-              glColor4fv(Currentf);
-              {$IFDEF DebugGLErr} DebugOpenGL(111, '', []); {$ENDIF}
-            end
-            else
-            begin
-              if NeedColor then
-              begin
-                {$IFDEF DebugGLErr} DebugOpenGL(-112, '', []); {$ENDIF}
-                glColor4fv(Currentf);
-                {$IFDEF DebugGLErr} DebugOpenGL(112, '', []); {$ENDIF}
-              end;
+              FirstItem:=false;
+              LargestDistance:=Distance;
+              CurrentSurf:=Surf2;
             end;
-
-            if VertexCount>=0 then
-            begin  { normal polygon }
-              PVBase:=PV;
-              if not Odd(VertexCount) then
-                Inc(PV);
-              for I:=0 to (VertexCount-3) div 2 do
-              begin
-                PV2:=PV;
-                Inc(PV);
-                PV3:=PV;
-                Inc(PV);
-                Case TextureMode of
-                  1,2,3:
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
-                  5:
-                    glBlendFunc(GL_ONE, GL_ONE);
-                End;
-                If Byte(Ptr(LongWord(@AlphaColor)+3)^)<>0 then Case TextureMode of
-                  0:
-                    RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
-                  4:
-                    RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
-                  else
-                  begin
-                    If TextureMode=5 then
-                    begin
-                      Currentf[0]:=Byte(Ptr(LongWord(@AlphaColor)+3)^)/255;
-                      for K := 1 to 2 do
-                        Currentf[K]:=Currentf[0];
-                    end;
-                    RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright);
-                  end;
-                end;
-              end;
-            end
-            else
-            begin { strip }
-              RenderQuadStrip(PV, -VertexCount, Currentf, Lights, LightParams);
-            end;
-
-            if DisplayLists<>-1 then
-            begin
-              {$IFDEF DebugGLErr} DebugOpenGL(-113, 'glEndList', []); {$ENDIF}
-              glEndList;
-              {$IFDEF DebugGLErr} DebugOpenGL(113, 'glEndList', []); {$ENDIF}
-            end;
-          end
-          else
-          begin
-            {$IFDEF DebugGLErr} DebugOpenGL(-114, 'glCallList(<%d>)', [AnyInfo.DisplayList]); {$ENDIF}
-            glCallList(OpenGLDisplayList);
-            {$IFDEF DebugGLErr} DebugOpenGL(114, 'glCallList(<%d>)', [AnyInfo.DisplayList]); {$ENDIF}
-          end
-        (*for I:=1 to VertexCount do
-           begin
-            Light:=0;
-            PL:=Lights;
-            with PV^ do
-             while Assigned(PL) do
-              with PL^ do
-               begin
-                if  (xyz[0]>Min[0]) and (xyz[0]<Max[0])
-                and (xyz[1]>Min[1]) and (xyz[1]<Max[1])
-                and (xyz[2]>Min[2]) and (xyz[2]<Max[2]) then
-                 begin
-                  DistToSource:=Sqr(xyz[0]-Position[0])+Sqr(xyz[1]-Position[1])+Sqr(xyz[2]-Position[2]);
-                  if DistToSource<Brightness2 then
-                   Light:=Light + Brightness-Sqrt(DistToSource);
-                 end;
-                PL:=Next;
-               end;
-            if Light>=kBrightnessSaturation then
-             glColor3f(Currentf[0], Currentf[1], Currentf[2])
-            else
-             begin
-              Light:=Light * (1.0/kBrightnessSaturation);
-              glColor3f(Light*Currentf[0], Light*Currentf[1], Light*Currentf[2]);
-             end;
-            glTexCoord2fv(PV^.st);
-            glVertex3fv(PV^.xyz);
-            Inc(PV);
-           end;
-         end*)
-        end
-
-        else // not displaylights
-
-        begin
-    (*  // Needed to comment these lines out, broke transparency dependence on having light entity in map.
-// testing blending always
-    glEnable(GL_BLEND);
-          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
-          glEnable(GL_TEXTURE_2D);  *)
-
-          if NeedColor then
-          begin
-            UnpackColor(AlphaColor, Currentf);
-            {$IFDEF DebugGLErr} DebugOpenGL(-115, '', []); {$ENDIF}
-            glColor4fv(Currentf);
-            {$IFDEF DebugGLErr} DebugOpenGL(115, '', []); {$ENDIF}
           end;
+
+          Inc(Surf2);
 
           if VertexCount>=0 then
-          begin
-          {$IFDEF DebugGLErr} DebugOpenGL(-116, 'glBegin(GL_POLYGON)', []); {$ENDIF}
-            glBegin(GL_POLYGON);
-            Sz:=SizeOf(TVertex3D);
-          end
+            Inc(PVertex3D(Surf2), VertexCount)
           else
-          begin
-          {$IFDEF DebugGLErr} DebugOpenGL(-116, 'glBegin(GL_TRIANGLE_STRIP)', []); {$ENDIF}
-            glBegin(GL_TRIANGLE_STRIP);
-            Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
-          end;
+            Inc(PChar(Surf2), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+        end;
+      end;
+      if CurrentSurf=nil then
+        raise InternalE(LoadStr1(6321));
+      CurrentSurf^.TransparentDrawn:=true;
+    end
+    else
+      CurrentSurf:=Surf;
 
-          for I:=1 to Abs(VertexCount) do
-          begin
-            glTexCoord2fv(PV^.st);
-            glVertex3fv(PV^.xyz);
-            Inc(PChar(PV), Sz);
-          end;
+    with CurrentSurf^ do
+    begin
+      Inc(CurrentSurf);
+      
+      if ((PList^.Transparent=TransparentFaces) or (((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces)) then
+      begin
 
-          glEnd;
-          {$IFDEF DebugGLErr} DebugOpenGL(116, 'glEnd', []); {$ENDIF}
+      if Lighting and (LightingQuality=0) then
+      begin
+        if not(OpenGLLightList = nil) then
+        begin
+          for LightNR := 0 to MaxLightNumber-1 do
+          begin
+            PO:=OpenGLLightList;
+            for LightIndex := 1 to LightNR do
+              Inc(PO);
+            PL:=Lights;
+            for LightIndex := 0 to PO^-1 do
+              PL:=PL^.Next;
+            LightParam[0]:=PL.Position[0];
+            LightParam[1]:=PL.Position[1];
+            LightParam[2]:=PL.Position[2];
+            LightParam[3]:=1.0;
+
+            glLightfv(GL_LIGHT0+LightNR, GL_POSITION, @LightParam);
+            CheckOpenGLError(glGetError);
+
+            UnpackColor(PL.Color, GLColor);
+            LightParam[0]:=GLColor[0];
+            LightParam[1]:=GLColor[1];
+            LightParam[2]:=GLColor[2];
+            //LightParam[3]:=GLColor[3];
+            LightParam[3]:=1.0;
+            glLightfv(GL_LIGHT0+LightNR, GL_DIFFUSE, @LightParam);
+            CheckOpenGLError(glGetError);
+
+            glLightf(GL_LIGHT0+LightNR, GL_CONSTANT_ATTENUATION, 1.0);
+            glLightf(GL_LIGHT0+LightNR, GL_LINEAR_ATTENUATION, 0.0);
+            glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 5.0/PL.Brightness2);
+            CheckOpenGLError(glGetError);
+          end;
+        end;
+      end;
+
+      CurrentAlpha:=AlphaColor;
+      UnpackColor(AlphaColor, Currentf);
+
+      if NeedColor then
+      begin
+        with PList^.Texture^ do
+        begin
+          if MeanColor = MeanColorNotComputed then
+          begin
+            PSD:=GetTex3Description(PList^.Texture^);
+            try
+              MeanColor:=ComputeMeanColor(PSD);
+            finally
+              PSD.Done;
+            end;
+          end;
+          UnpackColor(MeanColor, CurrentfTMP);
+          Currentf[0]:=Currentf[0]*CurrentfTMP[0];
+          Currentf[1]:=Currentf[1]*CurrentfTMP[1];
+          Currentf[2]:=Currentf[2]*CurrentfTMP[2];
+          Currentf[3]:=Currentf[3];
+        end;
+      end;
+
+      if NeedTex then
+      begin
+        {$IFDEF Debug}
+        if PList^.Texture^.OpenGLName=0 then
+          Raise InternalE(LoadStr1(6010));
+        {$ENDIF}
+        {$IFDEF DebugGLErr} DebugOpenGL(-108, '', []); {$ENDIF}
+        glBindTexture(GL_TEXTURE_2D, PList^.Texture^.OpenGLName);
+        {$IFDEF DebugGLErr} DebugOpenGL(108, '', []); {$ENDIF}
+        CheckOpenGLError(glGetError);
+      end;
+
+      PV:=PVertex3D(CurrentSurf);
+
+      if Transparency and TransparentFaces then
+      begin
+        {$IFDEF DebugGLErr} DebugOpenGL(-112, '', []); {$ENDIF}
+        glColor4fv(Currentf);
+        {$IFDEF DebugGLErr} DebugOpenGL(112, '', []); {$ENDIF}
+
+        Case TextureMode of
+        0:
+          glBlendFunc(GL_ONE, GL_ZERO);
+        1,2,3:
+          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        4:
+          glBlendFunc(GL_ONE, GL_ZERO);
+        5:
+          glBlendFunc(GL_ONE, GL_ONE);
         end;
       end;
 
       if VertexCount>=0 then
-        Inc(PVertex3D(Surf), VertexCount)
+      begin  { normal polygon }
+        PVBase:=PV;
+        if not Odd(VertexCount) then
+          Inc(PV);
+        for I:=0 to (VertexCount-3) div 2 do
+        begin
+          PV2:=PV;
+          Inc(PV);
+          PV3:=PV;
+          Inc(PV);
+          If Byte(Ptr(LongWord(@AlphaColor)+3)^)<>0 then
+            Case TextureMode of
+            0:
+              if Lighting and (LightingQuality=1) then
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, MakeSections)
+              else
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, MakeSections);
+            4:
+              if Lighting and (LightingQuality=1) then
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, MakeSections)
+              else
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, MakeSections);
+            else
+            begin
+              if TextureMode=5 then
+              begin
+                Currentf[0]:=Byte(Ptr(LongWord(@AlphaColor)+3)^)/255;
+                Currentf[1]:=Currentf[0];
+                Currentf[2]:=Currentf[0];
+              end;
+              if Lighting and (LightingQuality=1) then
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, MakeSections)
+              else
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, MakeSections);
+            end;
+          end;
+        end;
+      end
       else
-        Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+      begin { strip }
+        if Lighting and (LightingQuality=1) then
+          RenderQuadStrip(PV, -VertexCount, Currentf, Lights, Normale, LightParams)
+        else
+          RenderQuadStrip(PV, -VertexCount, Currentf, nil, Normale, FullBright);
+      end;
+
+      end;
+    Inc(Surf);
+    if VertexCount>=0 then
+      Inc(PVertex3D(Surf), VertexCount)
+    else
+      Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
     end;
   end;
-
-  PList^.ok:=True;
 end;
 
  {------------------------}
 
-procedure TGLTextureManager.ClearTexture(Tex: PTexture3);
+procedure TGLState.ClearTexture(Tex: PTexture3);
+{var
+  I: Integer;
+  UseRC: HGLRC;
+  UseViewDC: HDC;}
 begin
-  {Daniel: How can you be sure OpenGL has been loaded?}
+  //DanielPharos: How can you be sure OpenGL has been loaded?
   if (Tex^.OpenGLName<>0) then
   begin
-    {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
-    glDeleteTextures(1, Tex^.OpenGLName);
-    {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+    SetLength(TexturesToDelete,Length(TexturesToDelete)+1);
+    TexturesToDelete[Length(TexturesToDelete)-1]:=Tex^.OpenGLName;
     Tex^.OpenGLName:=0;
-    CheckOpenGLError(glGetError);  {#}
+
+    {DanielPharos: OK, let me explain this hack:
+    At the moment, the Device Context (DC) of the window in with OpenGL renders
+    gets destroyed before the TextureManager gets the call to clean up. This
+    means we can't make the context that's going to be destroyed current,
+    because of the invalid DC we're using. So instead of hacking into the code
+    to make a call to delete the texture before deleting the DC, we're keeping
+    track of the textures that need to be destroyed, and destroy them when
+    StartBuildScene is called.
+    We're doing the same for DisplayLists.}
+    
+(*    UseRC:=0;
+    UseViewDC:=0;
+    for I:=0 to Length(RCs)-1 do
+    begin
+      if RCs[I]<>0 then
+      begin
+        UseRC:=RCs[I];
+        UseViewDC:=ViewDCs[I];
+        break;
+      end;
+    end;
+    if (UseRC<>0) and (UseViewDC<>0) then
+    begin
+      if wglMakeCurrent(UseViewDC,UseRC) = false then
+        raise EError(6310);
+      {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+      glDeleteTextures(1, Tex^.OpenGLName);
+      {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
+      CheckOpenGLError(glGetError);
+      wglMakeCurrent(0,0);
+    end;
+    Tex^.OpenGLName:=0; *)
   end;
 end;
 
@@ -1915,18 +2392,17 @@ end;
 
 procedure CheckOpenGLError(GlError: GLenum);
 begin
-  if GlError = GL_INVALID_VALUE then
-    raise EError(5773)
-  else if GlError = GL_INVALID_ENUM then
-    raise EError(5774)
-  else if GlError = GL_INVALID_OPERATION then
-    raise EError(5775)
-  else if GlError = GL_STACK_OVERFLOW then
-    raise EError(5776)
-  else if GlError = GL_STACK_UNDERFLOW then
-    raise EError(5777)
-  else if GlError = GL_OUT_OF_MEMORY then
-    raise EError(5778);
+  case GlError of
+  GL_NO_ERROR: ;
+  GL_INVALID_VALUE: Raise EErrorFmt(6303, ['GL_INVALID_VALUE']);
+  GL_INVALID_ENUM: Raise EErrorFmt(6303, ['GL_INVALID_ENUM']);
+  GL_INVALID_OPERATION: Raise EErrorFmt(6303, ['GL_INVALID_OPERATION']);
+  GL_STACK_OVERFLOW: Raise EErrorFmt(6303, ['GL_STACK_OVERFLOW']);
+  GL_STACK_UNDERFLOW: Raise EErrorFmt(6303, ['GL_STACK_UNDERFLOW']);
+  GL_OUT_OF_MEMORY: Raise EErrorFmt(6303, ['GL_OUT_OF_MEMORY']);
+  else
+    Raise EErrorFmt(6303, ['Unknown error code']);
+  end;
 end;
 
 end.

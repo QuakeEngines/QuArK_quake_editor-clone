@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2007/04/12 15:28:11  danielpharos
+Minor clean up.
+
+Revision 1.47  2007/04/12 15:04:44  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
+Revision 1.46  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.44  2005/01/11 02:19:28  alexander
 read also angles specific for roll and pitch model orientation
 use general transformation algorithm also for angle specific
@@ -181,8 +190,6 @@ uses Windows, SysUtils, Classes, Menus, Controls, Graphics, CommCtrl,
      QkObjects, qmath, QkExplorer, QkFileObjects, QkForm, qmatrices,
      Qk3D, QkModel, QkFrame, QkMdlObject, QkComponent, Python;
 
-{$DEFINE RemoveEmptySpecs}
-
 const
  vfGrayedout        = 1;
  vfHidden           = 2;
@@ -215,8 +222,6 @@ const
 type
  TBBoxInfo = array[0..6] of Single;
  TEntityChoice = set of (ecEntity, ecBrushEntity, ecBezier);
- TTreeMap = class;
- TTreeMapClass = class of TTreeMap;
  TTreeMap = class(Q3DObject)   { all objects in a map }
             private
              {procedure SetOrigin(const nOrigin: TVect);
@@ -245,7 +250,6 @@ type
               procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); virtual;
               procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); virtual;
               procedure ListeBeziers(Entites: TQList; Flags: Integer); virtual;
-              procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); virtual;
               function GetFormName : String; virtual;
              {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
              {procedure RefreshColor(Plan: Pointer); virtual;}
@@ -259,7 +263,6 @@ type
             end;
  TTreeMapSpec = class(TTreeMap)
                 protected
-                  procedure SaveAsTextSpecArgs(Dest, HxStrings: TStrings; Flags: Integer; EntityNumber: Integer);
                  {procedure DessinePoignee(const Pts0: TPoint); virtual;}
                   procedure CouleurDessin(var C: TColor); virtual;
                 public
@@ -296,7 +299,6 @@ type
                     procedure Dessiner; override;
                     procedure Deplacement(const PasGrille: TDouble); override;
                     procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
-                    procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                     function GetFormName : String; override;
                    {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
                     procedure AddTo3DScene; override;
@@ -317,7 +319,6 @@ type
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                    procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
-                   procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                    procedure AddTo3DScene; override;
                    procedure AnalyseClic(Liste: PyObject); override;
                   {function SingleLevel: Boolean; virtual;}
@@ -333,7 +334,6 @@ type
                    procedure ObjectState(var E: TEtatObjet); override;
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
-                   procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                    function GetFormName : String; override;
                    function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                    function PyGetAttr(attr: PChar) : PyObject; override;
@@ -367,6 +367,7 @@ procedure ReleaseMapIcons;
 function LongueurVectNormal : Single;}
 procedure CheckTreeMap(Racine: TTreeMap);
 function CommentMapLine(const a_Comment:String) : String;
+function ControleSelection(T: TTreeMap) : Boolean;
 
  {------------------------}
 
@@ -401,23 +402,6 @@ begin
 end;
 
  {------------------------}
-
-var
- EntityNoCounting: Integer;
-
-function GetFirstEntityNo: Integer;
-begin
- { Exporting .MAP entity numbering scheme. Resets to zero }
- EntityNoCounting := 0;
- Result := EntityNoCounting;
-end;
-
-function GetNextEntityNo: Integer;
-begin
- { Exporting .MAP entity numbering scheme. Increment by one }
- Inc(EntityNoCounting);
- Result := EntityNoCounting;
-end;
 
 (*procedure PoigneeRouge(const Pts0: TPoint);
 var
@@ -699,10 +683,6 @@ begin
 end;
 
 procedure TTreeMap.ListeBeziers;
-begin
-end;
-
-procedure TTreeMap.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 begin
 end;
 
@@ -1215,111 +1195,6 @@ begin
   PoigneeRouge(CCoord.Proj(Pt));
 end;*)
 
-procedure TTreeMapSpec.SaveAsTextSpecArgs(Dest, HxStrings: TStrings; Flags: Integer; EntityNumber: Integer);
-const
- LineStarts: array[Boolean] of String = (' "', '"');
-var
- MJ, S, Msg, LineStart,outputname: String;
- P1, I, J, P, hashpos: Integer;
- typedspecs:Bool;
- DoneNameSpecific: boolean; // Rowdy: for Doom 3
-begin
- DoneNameSpecific:=False;
- MJ:=CharModeJeu;
- if Flags and soBsp=0 then
-   Dest.Add(CommentMapLine(Ancestry));
- if (GetMapFormatType=HL2Type) then
-   if (Name = 'worldspawn') then
-     Dest.Add(LineStart+'world')
-   else
-     Dest.Add(LineStart+'entity');
- Dest.Add('{');
- LineStart:=LineStarts[Flags and soBSP <> 0];
- Dest.Add(LineStart+SpecClassname+'" "'+Name+'"');
- typedspecs:=false;
- for J:=0 to Specifics.Count-1 do
- begin
-   S:=Specifics[J];
-
-   // process untyped specifics
-   hashpos:=Pos('#', S);
-   if (hashpos=0) or (hashpos=1) then
-   begin
-     if (S<>'') and (S[1]<>';') and (Ord(S[1])<chrFloatSpec) then
-     begin
-       P:=Pos('=', S);
-       Msg:=Copy(S, P+1, 255);
-       // special processing for hxstrings
-       if (S[1]='#') and (HxStrings<>Nil) then
-       begin
-         I:=0;
-         while (I<HxStrings.Count) and (Msg<>HxStrings[I]) do
-          Inc(I);
-         if I=HxStrings.Count then
-          HxStrings.Add(Msg);
-         Msg:=IntToStr(I+1);
-         P1:=2;
-         Dec(P);
-       end
-       else
-         P1:=1;
-       {$IFDEF RemoveEmptySpecs}
-       if Msg<>'' then
-       begin
-       {$ENDIF}
-         Dest.Add(LineStart+Copy(S, P1, P-1)+'" "'+Msg+'"');
-         // Rowdy: Doom 3 requires each entity to have a unique "name" specific
-         // and we can use the entity number for that
-         if LowerCase(Copy(S, P1, P-1)) = 'name' then
-           DoneNameSpecific:=True;
-       {$IFDEF RemoveEmptySpecs}
-       end;
-       {$ENDIF}
-     end;
-   end
-   else
-     typedspecs:=true;
- end; // for J:=...
-
- if typedspecs and (GetMapFormatType=HL2Type)then
- begin
-   Dest.Add('  connections');
-   Dest.Add('  {');
-   for J:=0 to Specifics.Count-1 do
-   begin
-     S:=Specifics[J];
-     P:=Pos('=', S);
-     Msg:=Copy(S, P+1, 255);
-
-// not neeeded in map file
-//     hashpos:=Pos('input#',S);
-//     if hashpos <> 0 then
-//       Dest.Add('   "'+Copy(S, 7, P-7)+'" "'+Msg+'"');
-
-     hashpos:=Pos('output#',S);
-     if hashpos <> 0 then
-     begin
-       outputname:=Copy(S, 8, P-8);
-       for i := length(outputname) downto 1 do
-       begin
-         if outputname[i] in ['0'..'9'] then
-           setlength(outputname,i-1)
-         else
-           break;
-       end;
-       Dest.Add('   "'+outputname+'" "'+Msg+'"');
-     end;
-
-   end;
-   Dest.Add('  }');
- end;
-
-  // Rowdy: Doom 3 entity names: use the entity class + '_' + entity number
-  // e.g. if entity 17 was a light, the name specific would be 'light_17'
-  if (CharModeJeu=mjDoom3) and not(DoneNameSpecific) then
-   Dest.Add(LineStart+'name" "'+Name+'_'+IntToStr(EntityNumber)+'"');
-end;
-
 procedure TTreeMapSpec.CouleurDessin;
 var
  S: String;
@@ -1437,19 +1312,6 @@ procedure TTreeMapEntity.ListeEntites(Entites: TQList; Cat: TEntityChoice);
 begin
  if ecEntity in Cat then
   Entites.Add(Self);
-end;
-
-procedure TTreeMapEntity.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
-var EntityNumber: Integer;
-begin
- EntityNumber:=0;
- if Flags and soBSP=0 then
-  begin
-   EntityNumber:=GetNextEntityNo;
-   Texte.Add(CommentMapLine('Entity '+IntToStr(EntityNumber)));
-  end;
- SaveAsTextSpecArgs(Texte, HxStrings, Flags, EntityNumber);
- Texte.Add('}');
 end;
 
 procedure TTreeMapEntity.ChercheExtremites;
@@ -2471,26 +2333,6 @@ begin
   end;
 end;
 
-procedure TTreeMapGroup.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
-var
- I: Integer;
- T: TTreeMap;
-begin
- if (Flags and soIgnoreToBuild <> 0)
- and (ViewFlags and vfIgnoreToBuildMap <> 0) then
-  Exit;
- if Odd(SelMult) then
-  Flags:=Flags and not soSelOnly;
- for I:=0 to SubElements.Count-1 do
-  begin
-   T:=TTreeMap(SubElements[I]);
-   if (Flags and soSelOnly = 0) or ControleSelection(T) then
-   begin
-    T.SaveAsText(Negatif, Texte, Flags, HxStrings);
-   end;
-  end;
-end;
-
 procedure TTreeMapGroup.Compute3DDiggers;
 var
  Polyedres, Negatifs: TQList;
@@ -2553,105 +2395,6 @@ begin
  if ecBrushEntity in Cat then
   Entites.Add(Self);
  inherited;
-end;
-
-procedure TTreeMapBrush.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
-var
- Polyedres: TQList;
- I, J: Integer;
- V1, V2: TVect;
- OriginBrush: PVect;
-begin
- { If this is the first time we're called, soOutsideWorldspawn is not set,
-   and we have to reset the entity-numbering-scheme to zero (zero = worldspawn) }
- if (Flags and soOutsideWorldspawn = 0) then
- begin
-  { Do some checking of the spec/args in worldspawn,
-    to set up special .MAP writing methods.
-    Note, that specifics that starts with a ';'-character
-    will not be written to the .MAP file! }
-  { this is nuked, maps will now be written based on OutputMapFormat
-  if Specifics.Values['mapversion']='220' then
-    Flags:=Flags + soWriteValve220, except we'll leave 6dx the same for now 
-  else }
-  if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
-    Flags:=Flags + soWrite6DXHierarky;
-
-  if GetMapFormatType=V220Type then
-    Specifics.Values['mapversion']:='220';
-  I := GetFirstEntityNo;
- end
- else
-  I := GetNextEntityNo;
- if Flags and soBSP = 0 then
-   Texte.Add(CommentMapLine('Entity '+IntToStr(I)));
- SaveAsTextSpecArgs(Texte, HxStrings, Flags, I);
- if Flags and soBSP = 0 then
-  begin
-   Polyedres:=TQList.Create;
-   try
-    ListePolyedres(Polyedres, Negatif, Flags and not soDirectDup, 1);
-    OriginBrush:=Nil;
-    if (Flags and soOutsideWorldspawn <> 0) and (CharModeJeu>=mjQuake2) then
-     for I:=Polyedres.Count-1 downto 0 do
-      with TPolyedre(Polyedres[I]) do
-       if CheckPolyhedron and (Faces.Count>0)
-       and (StrToIntDef(PSurface(Faces[0]).F.Specifics.Values['Contents'], 0) and ContentsOrigin <> 0) then
-        begin
-         V1.X:=MaxInt;
-         V1.Y:=MaxInt;
-         V1.Z:=MaxInt;
-         V2.X:=-MaxInt;
-         V2.Y:=-MaxInt;
-         V2.Z:=-MaxInt;
-         ChercheExtremites(V1, V2);
-         if V1.X<V2.X then
-          begin
-           V1.X:=0.5*(V1.X+V2.X);
-           V1.Y:=0.5*(V1.Y+V2.Y);      { center of the 'origin brush' }
-           V1.Z:=0.5*(V1.Z+V2.Z);
-           OriginBrush:=@V1;
-          end;
-         Break;
-        end;
-    for I:=0 to Polyedres.Count-1 do
-     begin
-      Texte.Add(CommentMapLine('Brush '+IntToStr(I)));
-      TPolyedre(Polyedres[I]).SaveAsTextPolygon(Texte, OriginBrush, Flags);
-     end;
-    { proceed with Bezier patches }
-    I:=Polyedres.Count-1;
-    Polyedres.Clear;
-    ListeBeziers(Polyedres, Flags);
-    for J:=0 to Polyedres.Count-1 do
-    begin
-     I:=I+1;
-     Texte.Add(CommentMapLine('Bezier '+IntToStr(J)+' (Brush '+IntToStr(I)+')'));
-     TBezier(Polyedres[J]).SaveAsTextBezier(Texte);
-    end;
-   finally
-    Polyedres.Free;
-   end;
-  end;
- if (Flags and soWrite6DXHierarky <> 0) then
- begin
-  { For 6DX support }
-   if (Flags and soOutsideWorldspawn = 0) then
-   begin
-     Texte.Add('}');
-     inherited SaveAsText(Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
-   end
-   else
-   begin
-     inherited SaveAsText(Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
-     Texte.Add('}');
-   end;
- end
- else
- begin
-   Texte.Add('}');
-   inherited SaveAsText(Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
- end;
 end;
 
 (*procedure TTreeMapBrush.AddTo3DScene;

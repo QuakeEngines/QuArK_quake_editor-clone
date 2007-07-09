@@ -23,6 +23,27 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2007/06/24 20:43:26  danielpharos
+Changed the order of the SetupSet keyword for better backwards compatibility.
+
+Revision 1.55  2007/06/13 11:56:24  danielpharos
+Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+
+Revision 1.54  2007/05/24 20:42:45  danielpharos
+Reserved gamecodes for Call of Duty 1 and 2.
+
+Revision 1.53  2007/05/06 21:23:40  danielpharos
+Cleaned up some code for Md3 models.
+
+Revision 1.52  2007/05/05 22:16:45  cdunde
+To add .md3 model support for EF2.
+
+Revision 1.51  2007/04/16 11:34:55  danielpharos
+Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+
+Revision 1.50  2007/02/06 13:07:56  danielpharos
+Fixed a possible resource leak
+
 Revision 1.49  2006/12/18 05:38:06  cdunde
 Added color setting options for various Model Editor mesh and drag lines.
 
@@ -220,20 +241,10 @@ uses Windows, SysUtils, Classes, Graphics, Forms, Dialogs, Controls, Reg2,
 const
 {FIXME: This should not be constants, but read from
  the games config: entry }
-{DECKER: These should be made into bit-values instead. Something like:
-  mjQuake     = $00000001;
-  mjHexen     = $00000002;
-  mjQuake2    = $00000004;
-  ...
-  mjSOF       = $00000080;
-  mjQ3A       = $00000100;
-  mjAny       = $FFFFFFFF;
-  mjNotQuake1 = (mjAny - mjQuake1);
-  mjNotQuake2 = (mjAny - mjQuake2);
- This so it will be easier to implement support for games, which could for
- instance have a mixture of file-formats like .WADs _and_ .SHADERS.
- Of cause this will only allow up to 32 different games, but shouldn't that
- be enough? }
+{DanielPharos: These should be changed into 'real' constants,
+without any explicit value. That would allow easier addition
+of new games, and will make invalid any 'spooky' weird
+comparison between gamemodes.}
  mjQuake        = '1';
  mjHexen        = '2';
  mjHalfLife     = '3';
@@ -249,7 +260,7 @@ const
  mj6DX          = 'Z';
 
  mjQ3A          = 'a';  { Quake-3:Arena / Quake-3:Team Arena }
- mjStarTrekEF   = 'b';  { Star Trek:Voyager - Elite Force }
+ mjSTVEF        = 'b';  { Star Trek: Voyager - Elite Force }
  mjCrystalSpace = 'c';
  mjRTCW         = 'd';  { Return To Castle Wolfenstein }
  mjMOHAA        = 'e';  { Medal Of Honor:Allied Assault }
@@ -261,7 +272,10 @@ const
  mjHL2          = 'k';  { Half Life 2 }
  mjJA           = 'l';  { Jedi Academy }
  mjQuake4       = 'm';  { Quake 4 }
- mjRTCWET       = 'n';  { Return To Castle Wolfenstein - Enemy Territory}
+ mjRTCWET       = 'n';  { Return To Castle Wolfenstein - Enemy Territory }
+ mjEF2          = 'o';  { Star Trek: Elite Force 2 }
+ mjCOD          = 'p';  { Call of Duty }
+ mjCOD2         = 'q';  { Call of Duty 2 }
  mjWildWest     = 'w';  { WildWest }
 
  mjAny          = #1;
@@ -277,12 +291,16 @@ type
   (mcVueXZ, mcVueXY, mcSelXZ, mcSelXY, mcOutOfView, mcAxes, mcGridXZ, mcGridXY, mcGridLines,
    mcTag, mcGrayImage, mcLinear, mcVertices, mcDrag3DLines, mcSkinLines, mcSkinDragLines);
  TSetupSet =
-  (ssGeneral, ssGames, ssMap, ssModel, ssToolbars{, ssTempData});
+  (ssGeneral, ssGames, ssMap, ssModel, ssToolbars, ssFiles{, ssTempData});
  TSetupSetArray = array[TSetupSet] of QObject;
 
 const
  SetupSetName : array[TSetupSet] of String =
-  ('General', 'Games', 'Map', 'Model', 'Toolbars and Menus'{, 'temp'});
+  ('General', 'Games', 'Map', 'Model', 'Toolbars and Menus', 'Files'{, 'temp'});
+
+{DanielPharos: The order of the keywords of SetupSet is not logical. 'Files' was added later (2007/06/13),
+but it caused backwards compatibility problems (user won't notice either way of writing the keywords,
+by the way). Thus 'Files' was added to the end, instead of after 'Games'.}
 
 type
   QConfig = class(QObject)
@@ -337,8 +355,7 @@ procedure StoreTexExtensions; {--CONVEX--}
 
 function CharModeJeu: Char;
 function ModeJeuQuake2: Boolean;
-function ModeJeuQuake4: Boolean; 
-function ModeJeuRTCWET: Boolean;
+function ModeJeuQuake4: Boolean;
 function CurrentQuake1Mode: Char;
 function CurrentQuake2Mode: Char;
 function GetGameName(nMode: Char) : String;
@@ -1029,11 +1046,6 @@ begin
  Result := CharModeJeu >= mjQuake4;
 end;
 
-function ModeJeuRTCWET: Boolean;
-begin
- Result := CharModeJeu >= mjRTCWET;
-end;
-
 function CurrentQuake1Mode: Char;
 begin
  if CharModeJeu < mjQuake2 then
@@ -1284,6 +1296,7 @@ begin
            P:=Round(GetFloatSpec('i'+Ext, -1));
            if (P>=0) and Reg.OpenKey('DefaultIcon', True) then
             Reg.WriteString('', Format('%s,%d', [Application.ExeName, P]));
+           Reg.CloseKey;
           end;
         end;
 

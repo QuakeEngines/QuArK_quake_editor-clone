@@ -51,7 +51,6 @@ Unit zDeflate;
        Fiala,E.R., and Greene,D.H.
           Data Compression with Finite Windows, Comm.ACM, 32,4 (1989) 490-595}
 
-{ $Id$ }
 
 interface
 
@@ -1757,7 +1756,7 @@ begin
     if (s.strstart = 0) or (ulg(s.strstart) >= max_start) then
     begin
       { strstart = 0 is possible when wraparound on 16-bit machine }
-      s.lookahead := uInt(s.strstart - uInt(max_start)); {Decker 2003-01-01}
+      s.lookahead := uInt(s.strstart) - uInt(max_start); {Decker 2003-01-01}
       s.strstart := uInt(max_start);
       {FLUSH_BLOCK(s, FALSE);}
       FLUSH_BLOCK_ONLY(s, FALSE);

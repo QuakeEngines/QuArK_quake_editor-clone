@@ -333,7 +333,7 @@ class FaceType(EntityManager):
         #
         # Face handles
         #
-        if view.viewmode in texturedmodes:
+        if view.viewmode == "tex":
             #
             # Cyan L handles are useful on textured views only.
             #
@@ -700,6 +700,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.54  2007/01/31 15:12:16  danielpharos
+#Removed bogus OpenGL texture mode
+#
 #Revision 1.53  2006/12/13 03:17:46  cdunde
 #Changed Specifics so multiple selections of the same entity can be set together.
 #

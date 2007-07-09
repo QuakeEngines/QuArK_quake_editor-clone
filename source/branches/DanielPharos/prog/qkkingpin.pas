@@ -25,6 +25,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
+Revision 1.4  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.2  2003/01/01 13:49:56  decker_dk
 added cvs headers
 
@@ -151,7 +157,7 @@ function QTextureKP.GetTexOpacity(var Info: TTexOpacityInfo) : Integer;
 var
   S: String;
 begin
-  S:=Specifics.Values['Flags'];
+  S:=Specifics.Values['Contents'];
   if S='' then
     Result:=255
   else

@@ -412,14 +412,14 @@ def paintcursor(view, x, y, flags):
     editor = saveeditor
     tb2 = editor.layout.toolbars["tb_terrmodes"]
     type = view.info["type"]
-    if type == "3D" and flags & MB_CLICKED is not None or view.viewmode == "opengl":
+    if type == "3D" and flags & MB_CLICKED is not None or view.viewmode == "tex":
         if tb2.tb.buttons[10].state == 2 and view.cursor != -21:
             view.cursor = CR_HAND
 
         if tb2.tb.buttons[11].state == 2:
-            if view.viewmode == "tex" and view.cursor != 12 or view.viewmode == "opengl" and view.cursor != 12:
+            if view.viewmode == "tex" and view.cursor != 12:
                 view.cursor = CR_BRUSH
-            if view.viewmode != "tex" and view.viewmode != "opengl" and view.cursor == 12 or view.cursor == -21:
+            if view.viewmode != "tex" and view.cursor == 12 or view.cursor == -21:
                 if MapOption("CrossCursor", editor.MODE):
                     view.cursor = CR_CROSS
                     view.handlecursor = CR_ARROW
@@ -1666,7 +1666,7 @@ class TerrainTouchupClick(TerrainRectSelDragObject):
         editor = self.editor
         view = self.view
         type = view.info["type"]
-        if type == "3D" and view.viewmode == "tex" or view.viewmode == "opengl":
+        if type == "3D" and view.viewmode == "tex":
 
 ### This section just keeps the rectangle from working in the 3D views
 
@@ -1697,7 +1697,7 @@ class TerrainVertexHandle(quarkpy.qhandles.GenericHandle):
     def __init__(self, pos, poly):
         quarkpy.qhandles.GenericHandle.__init__(self, pos)
 
-        # This makes sure we have the editor if we are in the OpenGl, NewWindow 3D view or FullScreen 3D view
+        # This makes sure we have the editor if we are in the 3D window view or FullScreen 3D view
         editor = mapeditor()
         if editor is None:
             self.editor = saveeditor
@@ -2096,7 +2096,7 @@ class TerrainPaintClick(TerrainRectSelDragObject):
         editor = self.editor
         view = self.view
         type = view.info["type"]
-        if type == "3D" and view.viewmode == "tex" or view.viewmode == "opengl":
+        if type == "3D" and view.viewmode == "tex":
 
 ### Start of new section to get face and apply texture in 3D view only
 
@@ -2372,6 +2372,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.26  2007/01/31 15:12:16  danielpharos
+# Removed bogus OpenGL texture mode
+#
 # Revision 1.25  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

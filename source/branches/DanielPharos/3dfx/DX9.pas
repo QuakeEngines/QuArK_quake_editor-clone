@@ -28,13 +28,20 @@ interface
 uses Windows, Direct3D, Direct3D9;
 
 var
- g_D3D : IDirect3D9;
- g_D3DDevice : IDirect3DDevice9;
+ D3D : IDirect3D9 = nil;
+ D3DCaps : D3DCAPS9;
+ RenderingType : D3DDEVTYPE;
+ BehaviorFlags : DWORD;
+ PresParm: D3DPRESENT_PARAMETERS;
+ D3DDevice: IDirect3DDevice9;
+ OrigSwapChain: IDirect3DSwapChain9;
 
 function LoadDirect3D : Boolean;
 procedure UnloadDirect3D;
 
 implementation
+
+uses SysUtils, Logging, QkObjects, Setup, quarkx, DXErr9, Qk1;
 
 var
   TimesLoaded : Integer;
@@ -42,17 +49,125 @@ var
  { ----------------- }
 
 function LoadDirect3D : Boolean;
+var
+  l_Res: HResult;
+  BackBufferFormat: Integer;
+  StencilBufferBits: Integer;
+  Setup: QObject;
 begin
   if TimesLoaded = 0 then
   begin
+    //DanielPharos: We need to check for changes, and force a rebuild if needed!
     Result := False;
     try
 
-     g_D3D := Direct3DCreate9(D3D_SDK_VERSION);
-     {if (!g_D3D) then
-       begin
+      D3D := Direct3DCreate9(D3D_SDK_VERSION);
+      if D3D=nil then
+        raise EError(6411);
 
-       end;}
+      RenderingType:=D3DDEVTYPE_HAL;
+      if D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DCaps) <> D3D_OK then
+      begin
+        RenderingType:=D3DDEVTYPE_REF;
+        if D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, D3DCaps) <> D3D_OK then
+        begin
+          raise EError(6412);
+        end;
+      end;
+
+      //Check for software/hardware vertex processing
+      BehaviorFlags:=0;
+      if (D3DCaps.DevCaps and D3DDEVCAPS_HWTRANSFORMANDLIGHT)<>0 then
+      begin
+        Log(LOG_VERBOSE,LoadStr1(6421));
+        BehaviorFlags:=BehaviorFlags or D3DCREATE_HARDWARE_VERTEXPROCESSING;
+      end
+      else
+      begin
+        Log(LOG_VERBOSE,LoadStr1(6422));
+        BehaviorFlags:=BehaviorFlags or D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+      end;
+
+      //Check for Pure Device
+      if (D3DCaps.DevCaps and D3DDEVCAPS_PUREDEVICE)<>0 then
+      begin
+        Log(LOG_VERBOSE,LoadStr1(6423));
+        BehaviorFlags:=BehaviorFlags or D3DCREATE_PUREDEVICE;
+      end
+      else
+        Log(LOG_VERBOSE,LoadStr1(6424));
+
+      Setup:=SetupSubSet(ssGeneral, 'DirectX');
+      try
+        BackBufferFormat:=StrToInt(Setup.Specifics.Values['BackBufferFormat']);
+        if (BackBufferFormat < 0) or (BackBufferFormat > 5) then
+        begin
+          Log(LOG_WARNING, LoadStr1(6011), ['BackBufferFormat',BackBufferFormat]);
+          BackBufferFormat := 0;
+        end;
+      except
+        Log(LOG_CRITICAL, LoadStr1(6012), ['BackBufferFormat',0]);
+        BackBufferFormat := 0;
+      end;
+      try
+        StencilBufferBits:=StrToInt(Setup.Specifics.Values['StencilBufferBits']);
+        if (StencilBufferBits < 0) or (StencilBufferBits > 1) then
+        begin
+          Log(LOG_WARNING, LoadStr1(6011), ['StencilBufferBits',StencilBufferBits]);
+          StencilBufferBits := 0;
+        end;
+      except
+        Log(LOG_CRITICAL, LoadStr1(6012), ['StencilBufferBits',0]);
+        StencilBufferBits := 0;
+      end;
+
+      //DanielPharos: We're going to need to check if the settings here are OK.
+      //using calls in DirectX. That way, we can do a nice error and shutdown, without
+      //needing a restart of QuArK.
+
+      //This is a dummy swapchain. This swapchain will make sure there always is a
+      //valid device available for shared resources.
+      PresParm.BackBufferHeight := 1;
+      PresParm.BackBufferWidth := 1;
+      case BackBufferFormat of
+      0: PresParm.BackBufferFormat := D3DFMT_A2R10G10B10;
+      1: PresParm.BackBufferFormat := D3DFMT_A8R8G8B8;
+      2: PresParm.BackBufferFormat := D3DFMT_X8R8G8B8;
+      3: PresParm.BackBufferFormat := D3DFMT_A1R5G5B5;
+      4: PresParm.BackBufferFormat := D3DFMT_X1R5G5B5;
+      5: PresParm.BackBufferFormat := D3DFMT_R5G6B5;
+      else
+        raise EErrorFmt(6400, ['BackBufferFormat']);
+      end;
+      PresParm.BackBufferCount := 1;
+      PresParm.MultiSampleType := D3DMULTISAMPLE_NONE;
+      PresParm.MultiSampleQuality := 0;
+      PresParm.SwapEffect := D3DSWAPEFFECT_FLIP;
+      PresParm.hDeviceWindow := Form1.Handle;
+      PresParm.Windowed := True;
+      PresParm.EnableAutoDepthStencil := False;
+      case StencilBufferBits of
+      0: PresParm.AutoDepthStencilFormat := D3DFMT_D16;
+      1: PresParm.AutoDepthStencilFormat := D3DFMT_D32;
+      else
+        raise EErrorFmt(6400, ['StencilBufferBits']);
+      end;
+      PresParm.Flags := 0;
+      PresParm.FullScreen_RefreshRateInHz := 0;
+      PresParm.PresentationInterval := D3DPRESENT_INTERVAL_DEFAULT;
+
+      l_Res:=D3D.CreateDevice(D3DADAPTER_DEFAULT, RenderingType, 0, BehaviorFlags, @PresParm, D3DDevice);
+      if (l_Res <> D3D_OK) then
+        raise EErrorFmt(6403, ['CreateDevice', DXGetErrorString9(l_Res)]);
+
+      //The first parameter isn't necessarily 0!
+      l_Res:=D3DDevice.GetSwapChain(0, OrigSwapChain);
+      if (l_Res <> D3D_OK) then
+        raise EErrorFmt(6403, ['GetSwapChain', DXGetErrorString9(l_Res)]);
+
+      l_Res:=D3DDevice.SetRenderState(D3DRS_ZENABLE, 1);  //D3DZB_TRUE := 1
+      if (l_Res <> D3D_OK) then
+        raise EErrorFmt(6403, ['SetRenderState(D3DRS_ZENABLE)', DXGetErrorString9(l_Res)]);
 
       TimesLoaded := 1;
       Result := True;
@@ -74,19 +189,33 @@ end;
 procedure UnloadDirect3D;
 begin
   if TimesLoaded = 1 then
+  begin
+    if not (OrigSwapChain=nil) then
     begin
-    if not (g_D3D=Nil) then
-      begin
-      {g_D3D->Release();}  {Daniel: Shouldn't we release it with the release-procedure?}
-      g_D3D:=Nil;
-      end;
+      while (OrigSwapChain._Release > 0) do;
+      Pointer(OrigSwapChain):=nil;
+    end;
+
+    if not (D3DDevice=nil) then
+    begin
+      while (D3DDevice._Release > 0) do;
+      Pointer(D3DDevice):=nil;
+    end;
+
+    //Delete D3DCaps and others...
+
+    if not (D3D=nil) then
+    begin
+      while (D3D._Release > 0) do;
+      Pointer(D3D):=nil;
+    end;
+
     TimesLoaded := 0;
-    end
+  end
   else
     TimesLoaded := TimesLoaded + 1;
 end;
 
 initialization
-
   TimesLoaded := 0;
 end.

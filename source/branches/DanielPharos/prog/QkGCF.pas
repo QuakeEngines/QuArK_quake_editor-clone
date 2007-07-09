@@ -23,6 +23,21 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/03/13 18:59:25  danielpharos
+Changed the interface to the Steam dll-files. Should prevent QuArK from crashing on HL2 files.
+
+Revision 1.14  2007/02/02 00:51:02  danielpharos
+The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
+
+Revision 1.13  2007/01/31 15:05:20  danielpharos
+Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
+
+Revision 1.12  2007/01/11 17:45:37  danielpharos
+Fixed wrong return checks for LoadLibrary, and commented out the fatal ExitProcess call. QuArK should no longer crash-to-desktop when it's missing a Steam dll file.
+
+Revision 1.11  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.9  2005/07/31 12:14:45  alexander
 add logging, set the protocol to gcffile
 
@@ -109,22 +124,22 @@ var
 //DLL_EXPORT unsigned long GCFReadFile(p_packagefile p ,LPBYTE lpData)
 //DLL_EXPORT unsigned long GCFFileSize(p_packagefile p )
 
-  APIVersion          : function    : Longword; stdcall;
-  GCFOpen             : function   (name: PChar) : PChar; stdcall;
-  GCFClose            : procedure  (package: PChar); stdcall;
-  GCFOpenElement      : function   (package: PChar; name: PChar ) : PChar; stdcall;
-  GCFCloseElement     : procedure  (pkgfile: PChar); stdcall;
-  GCFReadFile         : function   (pkgfile: PChar; data: PChar) : Longword	; stdcall;
-  GCFFileSize         : function   (pkgfile: PChar) : Longword	; stdcall;
-  GCFElementIsFolder  : function   (pkgfile: PChar): Integer; stdcall;
-  GCFNumSubElements   : function   (pkgfile: PChar): Integer; stdcall;
-  GCFGetSubElement    : function   (pkgfile: PChar;index : Longword): PChar; stdcall;
-  GCFSubElementName   : function   (pkgfile: PChar): PChar; stdcall;
+  APIVersion          : function    : Longword; cdecl;
+  GCFOpen             : function   (name: PChar) : PChar; cdecl;
+  GCFClose            : procedure  (package: PChar); cdecl;
+  GCFOpenElement      : function   (package: PChar; name: PChar ) : PChar; cdecl;
+  GCFCloseElement     : procedure  (pkgfile: PChar); cdecl;
+  GCFReadFile         : function   (pkgfile: PChar; data: PChar) : Longword	; cdecl;
+  GCFFileSize         : function   (pkgfile: PChar) : Longword	; cdecl;
+  GCFElementIsFolder  : function   (pkgfile: PChar): Integer; cdecl;
+  GCFNumSubElements   : function   (pkgfile: PChar): Integer; cdecl;
+  GCFGetSubElement    : function   (pkgfile: PChar;index : Longword): PChar; cdecl;
+  GCFSubElementName   : function   (pkgfile: PChar): PChar; cdecl;
 
 procedure Fatal(x:string);
 begin
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);
+  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Raise InternalE(x);
 end;
 
 function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
@@ -139,7 +154,9 @@ begin
   if Hgcfwrap = 0 then
   begin
     Hgcfwrap := LoadLibrary('dlls/QuArKGCF.dll');
-    if Hgcfwrap >= 32 then { success }
+    if Hgcfwrap = 0 then
+      Fatal('Unable to load dlls/QuArKGCF.dll')
+    else
     begin
       APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
       if APIVersion<>RequiredGCFAPI then
@@ -154,12 +171,30 @@ begin
       GCFNumSubElements   := InitDllPointer(Hgcfwrap, 'GCFNumSubElements');
       GCFGetSubElement    := InitDllPointer(Hgcfwrap, 'GCFGetSubElement');
       GCFSubElementName   := InitDllPointer(Hgcfwrap, 'GCFSubElementName');
-    end
-    else
-      Fatal('dlls/QuArKGCF.dll not found');
+    end;
   end;
 end;
 
+procedure uninitdll;
+begin
+  if Hgcfwrap <> 0 then
+  begin
+    if FreeLibrary(Hgcfwrap)=false then
+      Fatal('Unable to unload dlls/QuArKGCF.dll');
+    Hgcfwrap := 0;
+    APIVersion      := nil;
+    GCFOpen         := nil;
+    GCFClose        := nil;
+    GCFOpenElement  := nil;
+    GCFCloseElement := nil;
+    GCFReadFile     := nil;
+    GCFFileSize     := nil;
+    GCFElementIsFolder  := nil;
+    GCFNumSubElements   := nil;
+    GCFGetSubElement    := nil;
+    GCFSubElementName   := nil;
+  end;
+end;
 
  {------------ QGCFFolder ------------}
 
@@ -371,7 +406,13 @@ end;
  {------------------------}
 
 initialization
+begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QGCF, 's');
   RegisterQObject(QGCFFolder, 'a');
+  Hgcfwrap :=0;
+end;
+
+finalization
+  uninitdll;
 end.

@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
+Revision 1.8  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.6  2001/03/20 21:42:44  decker_dk
 Updated copyright-header
 
@@ -1823,7 +1829,7 @@ begin
  Origine:=Source.Position;
  Source.ReadBuffer(Header, SizeOf(Header));
  if Header.Version <> VersionProgsDat then
-  Raise EError(809);
+  Raise EError(4095);
  Chaines:=ReadEntry(5);
  GetMem(Vars, Pred(Header.Entrees[2].Nb)*SizeOf(TVarStruct));
  Datas:=TMemoryStream.Create;

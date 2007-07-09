@@ -23,6 +23,20 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2007/05/15 15:01:38  danielpharos
+Fixed a dirty looking check for Steam Access.
+
+Revision 1.43  2007/03/15 22:15:35  danielpharos
+Made the crash-safe gamebuffer size 8 MB instead of 2 MB.
+
+Revision 1.42  2007/02/07 18:48:34  danielpharos
+Fixes for memory leaks
+
+Revision 1.41  2006/05/05 06:04:44  cdunde
+To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
+handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
+increases causing prog crash, can not use scrole bar in TB.
+
 Revision 1.40  2006/04/07 21:36:31  nerdiii
 bugfix: latest version caused access violation if .WAD not found
 
@@ -283,7 +297,7 @@ var
  Remove: Boolean;
  Q: QObject;}
 begin
- Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 2)* (1024*1024));
+ Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 8) * (1024*1024));
 
  if GameFiles=Nil then
   Exit;
@@ -694,7 +708,6 @@ function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : Q
 var
  AbsolutePath, AbsolutePathAndFilename: String;
  FilenameAlias,name,namerest: String;
- index:integer;
  PakFile: QFileObject;
  GetPakNames: TGetPakNames;
  CDSearch: Boolean;
@@ -746,8 +759,7 @@ begin
     end;
 
     {HL2 steam access}
-    index:=AnsiPos('steamaccess://', BaseDir);
-    if index<>0 then
+    if LeftStr(BaseDir,14)='steamaccess://' then
     begin
       RestartAliasing;
       name:= Copy(BaseDir,15,3);
@@ -1483,4 +1495,8 @@ begin
   CloseGlobalImageList(ListView1);
 end;
 
+initialization
+
+finalization
+  FreeGBList.Free;
 end.

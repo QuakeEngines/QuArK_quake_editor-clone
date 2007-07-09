@@ -23,12 +23,29 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/05/06 21:23:40  danielpharos
+Cleaned up some code for Md3 models.
+
+Revision 1.32  2007/05/05 22:16:44  cdunde
+To add .md3 model support for EF2.
+
+Revision 1.31  2007/04/16 11:34:55  danielpharos
+Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+
+Revision 1.30  2007/03/13 18:58:20  danielpharos
+Removed some redundant includes.
+
+Revision 1.29  2007/03/11 12:03:11  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
+Revision 1.28  2007/02/26 22:30:26  danielpharos
+Fixed an access violation when trying to save MD3 files.
+
+Revision 1.27  2007/02/26 22:25:44  danielpharos
+Made the MD3 file loading a little bit more standard-compatible.
+
 Revision 1.26  2006/08/02 07:17:57  cdunde
 To add .md3 model editor 3D view support for Quake 4.
-
-Revision 1.26.2.8  2006/11/01 22:22:28  danielpharos
-BackUp 1 November 2006
-Mainly reduce OpenGL memory leak
 
 Revision 1.25  2006/07/17 06:58:00  cdunde
 To setup RTCW-ET as its own game
@@ -113,10 +130,10 @@ unit QkMd3;
 
 interface
 
-uses Windows, SysUtils, ExtraFunctionality, Classes, QkObjects, Qk3D, QkForm, Graphics,
-     QkImages, qmath, QkTextures, PyMath, Python, QkFileObjects, Dialogs, QkPcx,
+uses Windows, SysUtils, Classes, QkObjects, QkForm, Graphics,
+     QkImages, qmath, QkTextures, QkFileObjects, QkPcx,
      QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag, QkModelBone,
-     QkMiscGroup, QkFrameGRoup, qmatrices;
+     QkMiscGroup, {QkFrameGroup,} qmatrices;
 
 type
   QMd3File = class(QModelFile)
@@ -142,43 +159,58 @@ implementation
 
 uses QuarkX, Setup, QkObjectClassList, game, qkq3, qkpixelset, logging;
 
+const
+ MAX_QPATH = 64;
+
 type
 
   TMD3Header = packed record
     id: array[1..4] of char;       //id of file, always "IDP3"
     version: longint;              //version number, always 15
-    filename: array[1..68] of char;//sometimes left Blank...
+    filename: array[1..MAX_QPATH] of char;//sometimes left Blank...
+    flags: Longint;                //???
     BoneFrame_num: Longint;        //number of BoneFrames
     Tag_num: Longint;              //number of 'tags' per BoneFrame
     Mesh_num: Longint;             //number of meshes/skins
-    MaxSkin_num: Longint;          //maximum number of unique skins
-                                   //used in md3 file
-    HeaderLength: Longint;         //always equal to the length of
-                                   //this header
-    Tag_Start: Longint;            //starting position of
-                                   //tag-structures
-    Tag_End: Longint;              //ending position of
-                                   //tag-structures/starting
-                                   //position of mesh-structures
-    FileSize: Longint;             //size of file
+    Skin_num: Longint;             //number of unique skins
+    BoneFrame_offset: Longint;     //offset of the frames
+    Tag_offset: Longint;           //offset of the tags
+    Surface_offset: Longint;       //offset of the surface
+    End_offset: Longint;           //offset of the end of the file
   end;
   { Comments to TMD3Header
-     If Tag_Start is the same as Tag_End then there are no tags.
+     If Tag_offset is the same as Tag_surface then there are no tags.
 
      Tag_Num is sometimes 0, this is alright it means that there are no tags...
      i'm not sure what Tags are used for, altough there is a clear connection
      with boneframe, together they're probably used for bone based animations
      (where you rotate meshes around eachother to create animations).
 
-     After the header comes a list of tags, if available.
-     The ammount of tags is the header variable Tag_num times the header variable BoneFrame_num.
+     After the header comes a list of frame, then follows a list of tags, if available.
+     The amount of tags is the header variable Tag_num times the header variable BoneFrame_num.
      So it is highly probably that tags have something to do with boneframes and that objects
      can have 0 to n tags 'attached' to them.
      Note: We call them 'Tags' because the name in tag usually starts with "tag_".
   }
 
+  TMD3BoneFrame = packed record
+    Mins: vec3_t;
+    Maxs: vec3_t;
+    Position: vec3_t;
+    Radius: single;
+    Name: array[1..16] of char;
+  end;
+  { TMD3BoneFrame
+     If you divide the maximum and minimum xyz values of all the vertices from each meshframe you get
+     the exact values as mins and maxs..
+     Position is the exact center of mins and maxs, most of the time anyway.
+
+     Name is very probably just the name of the program or file of which it (the boneframe?) was created,
+     sometimes it's "(from ASE)" sometimes it's the name of a .3ds file.
+  }
+
   TMD3Tag = packed record
-    Name: array[1..64] of char;    //name of 'tag' as it's usually
+    Name: array[1..MAX_QPATH] of char;    //name of 'tag' as it's usually
                                    //called in the md3 files try to
                                    //see it as a sub-mesh/seperate
                                    //mesh-part.
@@ -200,29 +232,10 @@ type
      The header variable BoneFrame_num holds the ammount of BoneFrame..
   }
 
-  TMD3BoneFrame = packed record
-    //unverified:
-    Mins: vec3_t;
-    Maxs: vec3_t;
-    Position: vec3_t;
-    scale: single;
-    Creator: array[1..16]of char; //i think this is the
-                                  //"creator" name..
-                                  //but i'm only guessing.
-  end;
-  { TMD3BoneFrame
-     Mins, Maxs, and position are very likely to be correct, scale is just a guess.
-     If you divide the maximum and minimum xyz values of all the vertices from each meshframe you get
-     the exact values as mins and maxs..
-     Position is the exact center of mins and maxs, most of the time anyway.
-
-     Creator is very probably just the name of the program or file of which it (the boneframe?) was created..
-     sometimes it's "(from ASE)" sometimes it's the name of a .3ds file.
-  }
-
   TMD3Mesh = packed record
     ID: array[1..4] of char;          //id, must be IDP3
-    Name: array[1..68] of char;       //name of mesh
+    Name: array[1..MAX_QPATH] of char;       //name of mesh
+    flags: Longint;                   //???
     MeshFrame_num: Longint;           //number of meshframes
                                       //in mesh
     Skin_num: Longint;                //number of skins in mesh
@@ -250,7 +263,10 @@ type
      start of the triangle, texvec and vertex data (in that order).
   }
 
-  TMD3Skin = packed array[1..68] of char; //name of skin used by mesh
+  TMD3Skin = packed record
+    Name: array[1..MAX_QPATH] of char; //name of skin used by mesh
+    Shader_index: LongInt;              //?
+  end;
   { Comments to TMD3Skin
      Name holds the name of the texture, relative to the baseq3 path.
      Q3 has a peculiar way of handling textures..
@@ -296,6 +312,7 @@ type
      1. these texture coordinates need to be interpolated when the model changes shape,
      2. these texture coordinates are different from the normal texture coordinates but still both need to be used (with shaders you can
      have multi-layered surfaces, one could be an enviromental map, an other could be a transparent texture)
+     DanielPharos: envtex are probably not interpreted correctly... Or not at al!
   }
 
 {--------------------------}
@@ -518,9 +535,9 @@ begin
   begin  
     fs.Seek(mhead.HeaderSize - sizeof(mhead), 1);
     fs.readbuffer(tex, sizeof(tex));
-    if tex[1]=#0 then
-      tex[1]:='m';
-    base_tex_name:=trim(string(tex));
+    if tex.name[1]=#0 then
+      tex.name[1]:='m';
+    base_tex_name:=trim(string(tex.name));
     { The Raven guys seem to have used #0 as the filename-extension
       separator for textures in their .md3's !!! }
     if CharModeJeu=mjSoF2 then
@@ -756,7 +773,7 @@ function QMd3File.AttachModelToTag(Tag_Name: string; model: QModelFile): boolean
 var
   other_root: QModelRoot;
 begin
-//  Logex('attaching %s to %s',[self.name, model.name]);
+//  Log('attaching %s to %s',[self.name, model.name]);
   model.acces;
   other_root:=model.getRoot;
   other_root.Specifics.Values['linked_to']:=tag_name;
@@ -800,10 +817,10 @@ begin
       org:=f.position;
       f.readbuffer(head, sizeof(head));
       org2:=f.position;
-      if (head.id='IDP3') and ModeJeuQuake4 then
-          ObjectGameCode := mjQuake4;
-      if (head.id='IDP3') and ModeJeuRTCWET then
-          ObjectGameCode := mjRTCWET;
+      if (head.id='IDP3') and (CharModeJeu=mjEF2) then
+        ObjectGameCode := mjEF2;
+      if (head.id='IDP3') and (CharModeJeu=mjRTCWET) then
+        ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (head.version=15) then
       begin
         if CharModeJeu<mjQ3A then
@@ -813,7 +830,7 @@ begin
       end
       else if (head.id='RDM5') and (head.version=2) then
       begin
-        ObjectGameCode:=mjStarTrekEF;
+        ObjectGameCode:=mjSTVEF;
       end;
       Root:=Loaded_Root;
       Misc:=Root.GetMisc;
@@ -824,21 +841,21 @@ begin
           f.readbuffer(boneframe,sizeof(boneframe));
           OBone:=QModelBone.Create('Bone Frame '+inttostr(i), Misc);
           OBone.IntSpec['Q3A_Style']:=1;
-          OBone.SetQ3AData(boneframe.position, boneframe.mins, boneframe.maxs, boneframe.scale);
+          OBone.SetQ3AData(boneframe.position, boneframe.mins, boneframe.maxs, boneframe.radius);
           Misc.SubElements.Add(OBone);
         end;
-        if not((head.Tag_num=0) or (head.Tag_Start=head.Tag_End)) then
+        if not((head.Tag_num=0) or (head.Tag_offset=head.Surface_offset)) then
         begin
-          f.seek(head.Tag_Start + org,soFromBeginning);
+          f.seek(head.Tag_offset + org,soFromBeginning);
           for j:=1 to head.boneframe_num do
           begin
+            bone:=Misc.FindSubObject('Bone Frame '+inttostr(j), QModelBone, nil);
+            if bone = nil then
+              bone:=Misc;
             for i:=1 to head.tag_num do
             begin
               fillchar(tag, sizeof(tag), #0);
               f.readbuffer(tag,sizeof(tag));
-              bone:=Misc.FindSubObject('Bone Frame '+inttostr(j), QModelBone, nil);
-              if bone = nil then
-                bone:=Misc;
               OTag:=QModelTag.Create(BeforeZero(tag.name), bone);
               OTag.SetPosition(Tag.position);
               OTag.SetRotMatrix(_3vec3t_to_matrix(Tag));
@@ -850,7 +867,7 @@ begin
       end;
       if head.Mesh_num<>0 then
       begin
-        f.seek(org + head.tag_end, sofrombeginning);
+        f.seek(org + head.Surface_offset, sofrombeginning);
         for i:=1 to head.Mesh_num do
         begin
           ReadMesh(f, Root);
@@ -879,7 +896,7 @@ begin
           Exit;
         Root:=Saving_Root;
         Info.TempObject:=Root;
-        Components:=Root.BuildCOmponentList;
+        Components:=Root.BuildComponentList;
         try
           for I:=0 to Components.Count-1 do
           begin
@@ -892,7 +909,7 @@ begin
                 Info.WriteSibling(SkinObj.Name+SkinObj.TypeInfo, SkinObj);
               end;
             finally
-              skins.free;
+              Skins.free;
             end;
           end;
         finally
@@ -901,7 +918,15 @@ begin
         end;
       end;
       1: begin  { write the .md3 file }
-        raise exception.create('Unsupported!');
+        if Info.TempObject=Nil then
+{         Root:=Saving_Root}      {DanielPharos: Not needed at the moment}
+        else
+         begin
+{          Root:=Info.TempObject as QModelRoot;}      {DanielPharos: Not needed at the moment}
+          Info.TempObject:=Nil;
+         end;
+         
+        raise exception.create('MD3 file saving is unsupported at the moment! Skinfiles are saved, but the actual MD3 file not.');
       end;
     else
       inherited;

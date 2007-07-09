@@ -29,6 +29,21 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2007/03/11 12:03:11  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
+Revision 1.23  2007/03/05 00:43:09  danielpharos
+Updated the Python-code to use the 2.3 api, and put dynamic Python DLL loading code back in.
+
+Revision 1.22  2007/01/31 15:05:20  danielpharos
+Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
+
+Revision 1.21  2007/01/11 17:44:36  danielpharos
+Changed the Python Dll loading stuff. QuArK now only asks for Python.dll, and let's Windows do the searching work.
+
+Revision 1.20  2006/04/06 19:44:56  nerdiii
+Cleaned some compiler hints
+
 Revision 1.19  2005/09/28 10:49:03  peter-b
 Revert removal of Log and Header keywords
 
@@ -318,7 +333,7 @@ const
  //   1010 for Python 2.1a2 (and probably 2.1 as well)
  //   1011 for Python 2.2
  //   1012 for Python 2.3
- PYTHON_API_VERSION = 1011; // Rowdy (was: 1007;)
+ PYTHON_API_VERSION = 1012;
  METH_VARARGS  = $0001;
  METH_KEYWORDS = $0002;
 
@@ -430,6 +445,8 @@ procedure Py_XDECREF(o: PyObject);
 function PySeq_Item(o: PyObject; index: Integer) : PyObject;}
 
 var
+ PythonLib: THandle;
+ PythonDll: String;
  PyInt_Type:    PyTypeObject;
  PyType_Type:   PyTypeObject;
  PyList_Type:   PyTypeObject;
@@ -444,8 +461,8 @@ function InitializePython : Integer;
 implementation
 
 uses
-{$IFDEF Debug} QkObjects, {$ENDIF}
-     Windows, Registry, SysUtils;
+ {$IFDEF Debug} QkObjects, {$ENDIF}
+  Windows, Registry, SysUtils, QkObjects;
 
  {-------------------}
 
@@ -517,96 +534,64 @@ const
 
  {-------------------}
 
-(* hoping to retire this one, see IFDEFs in InitializePython
-  below  *)
-function try_alternative_python_version: string;
-(* var      // SilverPaladin - Commented this out too in order to remove hints
-  R: TRegistry;
-  v: string;
-  installed: boolean;
-*)
-begin
-  result:='';
-  (*
-  R:=TRegistry.Create;
-  try
-    R.RootKey:=HKEY_LOCAL_MACHINE;
-    installed:=R.KeyExists('\Software\Python\PythonCore\CurrentVersion');
-    if installed then begin
-      R.OpenKey('\Software\Python\PythonCore\CurrentVersion', false);
-      v:=R.ReadString('');
-      R.OpenKey('\Software\Python\PythonCore\'+v+'\Dll', false);
-      Result:=R.ReadString('');
-    end;
-  finally
-    R.free;
-  end;
-  *)
-  // ugh, there really doesn't seem to be a sensible way to
-  // clean this up
-  if FileExists('c:\WINNT\system32\python22.dll') then
-    Result := 'c:\WINNT\system32\python22.dll';
-end;
-
 function InitializePython : Integer;
 type
   PPointer = ^Pointer;
 var
   obj1: PyObject;
   I: Integer;
-  Lib: THandle;
   P: Pointer;
-  dll: string;  // SilverPaladin - Commented out to clear hint
-                // Peter - Put back in for re-use
   s: string;
 begin
   Result:=3;
-{$IFDEF PYTHON_BUNDLED}
-// Python's bundled with QuArK, so look for python.dll in the Dlls directory
-  dll:=GetApplicationDllPath()+'python.dll';
-  Lib:=LoadLibrary(PChar(dll));
-{$ELSE}
-  Lib:=0;
-// Python isn't bundled with QuArK, so look on system
-// dll:=try_alternative_python_version;
-{$IFDEF PYTHON23}
-    dll:='python23.dll';
-    Lib:=LoadLibrary(PChar(dll));
-{$ELSE}
-{$IFDEF PYTHON22}
-    if Lib=0 then
-      dll:='python22.dll';
-      Lib:=LoadLibrary(PChar(dll));
-{$ELSE}
-{$IFDEF PYTHON21}
-    if Lib=0 then
-      dll:='python21.dll';
-      Lib:=LoadLibrary(PChar(dll));
-{$ELSE}
-{$IFDEF PYTHON20}
-    if Lib=0 then
-      dll:='python20.dll';
-      Lib:=LoadLibrary(PChar(dll));
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
-  if Lib=0 then
-    Exit;
+  if PythonLib=0 then
+  begin
+    {$IFDEF PYTHON_BUNDLED}
+      PythonDll:='python.dll';
+    {$ELSE}
+     {$IFDEF PYTHON23}
+      PythonDll:='python23.dll';
+     {$ELSE}
+      {$IFDEF PYTHON22}
+       PythonDll:='python22.dll';
+      {$ELSE}
+       {$IFDEF PYTHON21}
+        PythonDll:='python21.dll';
+       {$ELSE}
+        {$IFDEF PYTHON20}
+         PythonDll:='python20.dll';
+         {$ELSE}
+         PythonDll:='';
+        {$ENDIF}
+       {$ENDIF}
+      {$ENDIF}
+     {$ENDIF}
+    {$ENDIF}
+
+    if PythonDll='' then
+      {Raise InternalE('No valid Python DLL file set!');}
+      Exit;
+
+    PythonLib:=LoadLibrary(PChar('dlls/'+PythonDll));
+    if PythonLib=0 then
+    begin
+      Exit;  {This is handled manually}
+      {Raise InternalE('Unable to load dlls/PythonLib.dll');}
+    end;
+  end;
   Result:=2;
   for I:=Low(PythonProcList) to High(PythonProcList) do
   begin
-    P:=GetProcAddress(Lib, PythonProcList[I].Name);
+    P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
     if P=Nil then
      Exit;
     PPointer(PythonProcList[I].Variable)^:=P;
   end;
   Py_Initialize;
   s:=Py_GetVersion;
-  aLog(LOG_PYTHONSOURCE,'Version: '+s);
-  aLog(LOG_PYTHONSOURCE,'DLL: '+dll);
-  aLog(LOG_PYTHONSOURCE,'');
+  Log(LOG_PYTHON,'Version: '+s);
+  Log(LOG_PYTHON,'DLL: '+'dlls/'+PythonDll);  {DanielPharos: We should (somehow) retrieve the actual filename of the DLL loaded...}
+  Log(LOG_PYTHON,'');
   Result:=1;
 
  { tiglari:
@@ -647,6 +632,12 @@ begin
   Result:=0;
 end;
 
+procedure UnInitializePython;
+begin
+  if FreeLibrary(PythonLib)=false then
+    raise InternalE('Unable to unload dlls/'+PythonDll); {DanielPharos: The path might be off this way!}
+  PythonLib:=0;
+end;
 
 function PyObject_NEW(t: PyTypeObject) : PyObject;
 var
@@ -889,5 +880,11 @@ begin
    Result:=tp_as_sequence^.sq_item(o, index);
 end;}
 
+initialization
+  PythonLib:=0;
+
+finalization
+  {UnInitializePython;}
+  {This apparently creates problems...}
 end.
 

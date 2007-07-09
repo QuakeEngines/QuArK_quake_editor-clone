@@ -1,5 +1,6 @@
 (**************************************************************************
-Vtf texture loader by (c) alexander
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,6 +23,67 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/07/05 10:18:28  danielpharos
+Moved a string to the dictionary.
+
+Revision 1.32  2007/04/30 21:54:44  danielpharos
+Small cleanup of code around VTFLib.
+
+Revision 1.31  2007/04/30 21:52:45  danielpharos
+Small cleanup of code around VTFLib.
+
+Revision 1.30  2007/04/12 09:08:33  danielpharos
+The VTF file saving buffer should always have the correct size now.
+
+Revision 1.29  2007/03/15 22:19:13  danielpharos
+Re-did the entire VMT file loading! It's using the VTFLib now. Saving VMT files not supported yet.
+
+Revision 1.28  2007/03/12 20:26:18  danielpharos
+Made the VTF file loading more crash-safe. Also, changing the settings during runtime should be better handled.
+
+Revision 1.27  2007/03/11 12:03:28  danielpharos
+Big changes to Logging. Simplified the entire thing.
+Better error-recovery, and more informative error messages.
+
+Revision 1.26  2007/02/26 22:24:33  danielpharos
+Fixed a typo.
+
+Revision 1.25  2007/02/20 14:57:02  danielpharos
+Small clean-up of the code.
+
+Revision 1.24  2007/02/19 21:42:07  danielpharos
+Fixed the VTF SaveFile. VTF file can now be saved properly!
+
+Revision 1.23  2007/02/19 13:32:11  danielpharos
+Moved VTFLib dll interface to a separate file, and build the SaveFile for VTF's using it. SaveFile has not been fully tested yet!
+
+Revision 1.22  2007/02/12 01:06:18  danielpharos
+Fix for a major crash with the external calls to the VTFLib
+
+Revision 1.21  2007/02/08 16:36:49  danielpharos
+Updated VTF handling to use VTFLib. The HL2 memory leak is gone! Warning: SaveFile not working!
+
+Revision 1.20  2007/02/07 21:43:12  danielpharos
+Fixed a typo.
+
+Revision 1.19  2007/02/02 10:07:07  danielpharos
+Fixed a problem with the dll loading not loading tier0 correctly
+
+Revision 1.18  2007/02/02 00:51:02  danielpharos
+The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
+
+Revision 1.17  2007/02/01 23:13:53  danielpharos
+Fixed a few copyright headers
+
+Revision 1.16  2007/01/31 15:05:20  danielpharos
+Unload unused dlls to prevent handle leaks. Also fixed multiple loading of certain dlls
+
+Revision 1.15  2007/01/11 17:45:37  danielpharos
+Fixed wrong return checks for LoadLibrary, and commented out the fatal ExitProcess call. QuArK should no longer crash-to-desktop when it's missing a Steam dll file.
+
+Revision 1.14  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.12  2005/07/05 19:12:48  alexander
 logging to file using loglevels
 
@@ -70,10 +132,8 @@ new: support for vtf file loading
 unit QkVTF;
 
 interface
-uses Classes, QkImages,QkPixelSet, QkObjects, QkFileObjects;
 
-
-
+uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects, QkVTFLib;
 
 type
   QVTF = class(QImage)
@@ -85,105 +145,24 @@ type
     class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
   end;
 
-
 {-------------------}
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows,Logging;
+uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging;
 
-const RequiredVTFAPI=5;
-
-const IF_RGBA8888 = 0;
-const IF_ABGR8888= 1;
-const IF_RGB888= 2;
-const IF_BGR888= 3;
-const IF_RGB565= 4;
-const IF_I8= 5;
-const IF_IA88= 6;
-const IF_P8= 7;
-const IF_A8= 8;
-const IF_RGB888_BLUESCREEN= 9;
-const IF_BGR888_BLUESCREEN= 10;
-const IF_ARGB8888= 11;
-const IF_BGRA8888= 12;
-const IF_DXT1= 13;
-const IF_DXT3= 14;
-const IF_DXT5= 15;
-const IF_BGRX8888= 16;
-const IF_BGR565= 17;
-const IF_BGRX5551= 18;
-const IF_BGRA4444= 19;
-const IF_DXT1_ONEBITALPHA= 20;
-const IF_BGRA5551= 21;
-const IF_UV88= 22;
-const IF_UVWQ8888= 22;
-const IF_RGBA16161616F= 23;
-const IF_RGBA16161616= 24;
-const IF_UVLX8888= 25;
-const IF_LAST= 26;
+type
+  VTFImageFormat = Integer;
 
 var
-  HQuArKVTF   : HINST;
-
-// c signatures
-// DWORD APIVersion(void)
-// int vtf_to_mem(void* bufmem, long readlength, long iMipLevel, unsigned char *pDstImage)
-// int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels);
-// long filesize_of_vtf(long usealpha, int iWidth, int iHeight)
-// int mem_to_vtf(void* bufmem, long length, unsigned char *pSrcImage, long usealpha, int iWidth, int iHeight)
-  APIVersion : function    : Longword; stdcall;
-  vtf_to_mem : function ( buf: PChar; length: Integer;miplevel :longword; outbuf: PChar;usealpha :longword): Integer; stdcall;
-  vtf_info   : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger; hasalpha: PInteger): Integer; stdcall;
-  filesize_of_vtf: function (usealpha :longword; iWidth : integer; iHeight : integer; iOutformat:integer):longword; stdcall;
-  mem_to_vtf : function (bufmem: Pchar; length:longword; pSrcImage :pchar; usealpha:longword; iWidth: integer; iHeight:integer; iOutformat:integer):integer; stdcall;
+  VTFLoaded: Boolean;
 
 procedure Fatal(x:string);
 begin
-  LogEx(LOG_CRITICAL,'load vtf %s',[x]);
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);
+  Log(LOG_CRITICAL,'Error during operation on VTF file: %s',[x]);
+  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Raise Exception.Create(x);
 end;
-
-function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
-begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKGCF.dll');
-end;
-
-procedure initdll;
-var
- Htier0  : HINST;
- Hvstdlib  : HINST;
-begin
-  if HQuArKVTF = 0 then
-  begin
-    Htier0 := LoadLibrary('tier0.dll');
-    if Htier0 < 32 then
-      Fatal('tier0.dll not found');
-
-    Hvstdlib := LoadLibrary('vstdlib.dll');
-    if Hvstdlib < 32 then
-      Fatal('vstdlib.dll not found');
-
-
-    HQuArKVTF := LoadLibrary('dlls/QuArKVTF.dll');
-    if HQuArKVTF >= 32 then { success }
-    begin
-      APIVersion      := InitDllPointer(HQuArKVTF, 'APIVersion');
-      if APIVersion<>RequiredVTFAPI then
-        Fatal('dlls/QuArKVTF.dll API version mismatch');
-      vtf_to_mem := InitDllPointer(HQuArKVTF, 'vtf_to_mem');
-      vtf_info   := InitDllPointer(HQuArKVTF, 'vtf_info');
-      filesize_of_vtf:=InitDllPointer(HQuArKVTF, 'filesize_of_vtf');
-      mem_to_vtf:=InitDllPointer(HQuArKVTF, 'mem_to_vtf');
-    end
-    else
-      Fatal('dlls/QuArKVTF.dll not found');
-  end;
-end;
-
 
 class function QVTF.TypeInfo: String;
 begin
@@ -200,84 +179,110 @@ end;
 
 procedure QVTF.LoadFile(F: TStream; FSize: Integer);
 const
-
-  ImageSpec = 'Image1=';
-  AlphaSpec = 'Alpha=';
-
+  Spec1 = 'Image1=';
+//  Spec2 = 'Pal=';
+  Spec3 = 'Alpha=';
 type
   PRGB = ^TRGB;
   TRGB = array[0..2] of Byte;
 var
-  AlphaData,ImgData, RawBuffer, DecodedBuffer: String;
-  Source, DestAlpha, DestImg,pSource, pDestAlpha, pDestImg: PChar;
+  RawBuffer: String;
+  Source, DestAlpha, DestImg, pSource, pDestAlpha, pDestImg: PChar;
+  AlphaData, ImgData: String;
   I,J: Integer;
-  NumberOfPixels,mip: Integer;
-  Width,Height,MipLevels,HasAlpha:Integer;
+
+  VTFImage: Cardinal;
+  ImageFormat: VTFImageFormat;
+  Width, Height: Cardinal;
+  NumberOfPixels: Integer;
+  RawData, RawData2: PByte;
+  HasAlpha: Boolean;
+  V: array[1..2] of Single;
+  ReloadVTFLib: Boolean;
 begin
-  LogEx(LOG_VERBOSE,'load vtf %s',[self.name]);
-  initdll;
+  Log(LOG_VERBOSE,'Loading VTF file: %s',[self.name]);;
   case ReadFormat of
     1: begin  { as stand-alone file }
 
-// new code
-      SetLength(RawBuffer, FSize);
-      F.Seek(0, 0	  );
-      F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
-
-     if @vtf_info <> nil then
-     begin
-      if 0 = vtf_info (PChar(RawBuffer), FSize, @Width, @Height, @MipLevels, @HasAlpha) then
-        Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
-
-      mip:=0;
-
-      for i:=1 to mip do
+      ReloadVTFLib:=ReloadNeededVTFLib;
+      if (not VTFLoaded) or ReloadVTFLib then
       begin
-        width:=width div 2;
-        height:=height div 2;
+        if ReloadVTFLib then
+          VTFLoaded:=false;
+        if not LoadVTFLib then
+          Raise EErrorFmt(5718, [GetLastError]);
+        VTFLoaded:=true;
       end;
 
-      NumberOfPixels:= Width*Height;
-      SetSize(Point(Width , Height ));
-      if HasAlpha=1 then
-        SetLength(DecodedBuffer, NumberOfPixels * 4 )
-      else
-        SetLength(DecodedBuffer, NumberOfPixels * 3 );
+      SetLength(RawBuffer, F.Size);
+      F.Seek(0, 0);
+      F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
 
-      if 0 = vtf_to_mem (PChar(RawBuffer), FSize,mip ,PChar(DecodedBuffer),HasAlpha) then
-        Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
+      if vlCreateImage(@VTFImage)=false then
+        Fatal('Unable to load VTF file. Call to vlCreateImage failed.');
 
-     end
-     else
-       Raise EError(5705);
-
-
-      if HasAlpha=1 then
+      if vlBindImage(VTFImage)=false then
       begin
+        vlDeleteImage(VTFImage);
+        Fatal('Unable to load VTF file. Call to vlBindImage failed.');
+      end;
 
-        {allocate quarks image buffers}
-        ImgData:=ImageSpec;
-        AlphaData:=AlphaSpec;
-        SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
-        Setlength(AlphaData,Length(AlphaSpec) + NumberOfPixels);     {alpha buffer}
+      if vlImageLoadLump(Pointer(RawBuffer), Length(RawBuffer), false)=false then
+      begin
+        vlDeleteImage(VTFImage);
+        Fatal('Unable to load VTF file. Call to vlImageLoadLump failed. Please make sure the file is a valid VTF file, and not damaged or corrupt.');
+      end;
 
+      HasAlpha := (vlImageGetFlags() and (TEXTUREFLAGS_ONEBITALPHA or TEXTUREFLAGS_EIGHTBITALPHA))<>0;
+      if HasAlpha then
+        ImageFormat:=IMAGE_FORMAT_RGBA8888
+      else
+        ImageFormat:=IMAGE_FORMAT_RGB888;
+      Width:=vlImageGetWidth();
+      Height:=vlImageGetHeight();
+      //DanielPharos: 46340 squared is just below the integer max value.
+      if (Width>46340) or (Height>46340) then
+      begin
+        vlDeleteImage(VTFImage);
+        Fatal('Unable to load VTF file. Picture is too large.');
+      end;
+      NumberOfPixels:=Width * Height;
+      V[1]:=Width;
+      V[2]:=Height;
+      SetFloatsSpec('Size', V);
+      GetMem(RawData,vlImageComputeImageSize(Width, Height, 1, 1, ImageFormat));
+      RawData2:=vlImageGetData(0, 0, 0, 0);
+      if vlImageConvert(RawData2, RawData, Width, Height, vlImageGetFormat(), ImageFormat)=false then
+      begin
+        vlDeleteImage(VTFImage);
+        Fatal('Unable to load VTF file. Call to vlImageConvert failed.');
+      end;
+
+      //Allocate quarks image buffers
+      ImgData:=Spec1;
+      AlphaData:=Spec3;
+      SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+      Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
+
+      if HasAlpha then
+      begin
         {copy and reverse the upside down RGBA image to quarks internal format}
         {also the alpha channel is split}
-        Source:=PChar(DecodedBuffer)+ NumberOfPixels*4;
-        DestImg:=PChar(ImgData)+Length(ImageSpec);
-        DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
+        Source:=PChar(RawData) + NumberOfPixels * 4;
+        DestImg:=PChar(ImgData) + Length(Spec1);
+        DestAlpha:=PChar(AlphaData)+Length(Spec3);
         for J:=1 to Height do
         begin
-          Dec(Source,  4 * Width);
+          Dec(Source, 4 * Width);
           pSource:=Source;
           pDestImg:=DestImg;
           pDestAlpha:=DestAlpha;
           for I:=1 to Width do
           begin
-            PRGB(pDestImg)^[0]:=PRGB(pSource)^[0];  { rgb }
-            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];  { rgb }
-            PRGB(pDestImg)^[2]:=PRGB(pSource)^[2];  { rgb }
-            pDestAlpha^:=pSource[3];                { alpha }
+            PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];
+            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];
+            PRGB(pDestImg)^[2]:=PRGB(pSource)^[0];
+            pDestAlpha^:=pSource[3];
             Inc(pSource, 4);
             Inc(pDestImg, 3);
             Inc(pDestAlpha);
@@ -291,26 +296,24 @@ begin
 
       end
       else
-      begin // no alpha
-
-        {allocate quarks image buffers}
-        ImgData:=ImageSpec;
-        SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
-        AlphaData:=AlphaSpec;
+      begin
+        //Allocate quarks image buffers
+        ImgData:=Spec1;
+        SetLength(ImgData, Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
 
         {copy and reverse the upside down RGB image to quarks internal format}
-        Source:=PChar(DecodedBuffer)+ NumberOfPixels*3;
-        DestImg:=PChar(ImgData)+Length(ImageSpec);
+        Source:=PChar(RawData) + NumberOfPixels * 3;
+        DestImg:=PChar(ImgData) + Length(Spec1);
         for J:=1 to Height do
         begin
-          Dec(Source,  3 * Width);
+          Dec(Source, 3 * Width);
           pSource:=Source;
           pDestImg:=DestImg;
           for I:=1 to Width do
           begin
-            PRGB(pDestImg)^[0]:=PRGB(pSource)^[0];  { rgb }
-            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];  { rgb }
-            PRGB(pDestImg)^[2]:=PRGB(pSource)^[2];  { rgb }
+            PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];
+            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];
+            PRGB(pDestImg)^[2]:=PRGB(pSource)^[0];
             Inc(pSource, 3);
             Inc(pDestImg, 3);
           end;
@@ -321,11 +324,13 @@ begin
         Specifics.Add(ImgData);
 
       end;
+      FreeMem(RawData);
 
-     end;
-     else
-       inherited;
-   end;
+      vlDeleteImage(VTFImage);
+    end;
+    else
+      inherited;
+  end;
 end;
 
 procedure QVTF.SaveFile(Info: TInfoEnreg1);
@@ -336,65 +341,70 @@ type
   TRGB = array[0..2] of char;
 var
   PSD: TPixelSetDescription;
-  filesize : longword;
-  S,RawBuffer, converted_image: String;
-  SourceImg, SourceAlpha, Dest,pSourceImg, pSourceAlpha, pDest: PChar;
-  I,J,TexFormatalpha,texformatnonalpha: Integer;
+  TexSize : longword;
+  S, RawBuffer: String;
+  RawData, RawData2: PByte;
+  SourceImg, SourceAlpha, Dest, pSourceImg, pSourceAlpha, pDest: PChar;
+
+  VTFImage: Cardinal;
+  TexFormat, ImageFormat: VTFImageFormat;
+  ReloadVTFLib: Boolean;
+  I, J: Integer;
+  OutputSize: Cardinal;
 begin
-  LogEx(LOG_VERBOSE,'save vtf %s',[self.name]);
-  initdll;
-  texformatalpha := 15;
-  S:=SetupGameSet.Specifics.Values['TextureWriteSubFormatA'];
-  if S<>'' then
-  begin
-    try
-      texformatalpha:=strtoint(S);
-      if (texformatalpha < 0) or (texformatalpha > IF_LAST) then
-        texformatalpha := 15;
-    except
-      Raise exception.create('unsupported texture format, fall back to 15');
-      texformatalpha := 15;
-    end;
-  end;
-
-  texformatnonalpha := 15;
-  S:=SetupGameSet.Specifics.Values['TextureWriteSubFormat'];
-  if S<>'' then
-  begin
-    try
-      texformatnonalpha:=strtoint(S);
-      if (texformatnonalpha < 0) or (texformatnonalpha > IF_LAST) then
-        texformatnonalpha := 15;
-    except
-      Raise exception.create('unsupported texture format, fall back to 15');
-      texformatnonalpha := 15;
-    end;
-  end;
-
- with Info do case Format of
+ Log(LOG_VERBOSE,'Saving VTF file: %s',[self.name]);
+ with Info do
+  case Format of
   1:
   begin  { as stand-alone file }
+    ReloadVTFLib:=ReloadNeededVTFLib;
+    if (not VTFLoaded) or ReloadVTFLib then
+    begin
+      if ReloadVTFLib then
+        VTFLoaded:=false;
+      if not LoadVTFLib then
+        Raise EErrorFmt(5718, [GetLastError]);
+      VTFLoaded:=true;
+    end;
+
+    if vlCreateImage(@VTFImage)=false then
+      Fatal('Unable to save VTF file. Call to vlCreateImage failed.');
+
+    if vlBindImage(VTFImage)=false then
+      Fatal('Unable to save VTF file. Call to vlBindImage failed.');
+
+    TexFormat := IMAGE_FORMAT_DXT5;
     PSD:=Description;
     if PSD.AlphaBits=psa8bpp then
     begin
-      filesize:=filesize_of_vtf(1,PSD.size.X,PSD.size.Y,texformatalpha);
-      SetLength(RawBuffer, filesize);
-      SetLength(converted_image, PSD.size.X * PSD.size.Y * 4);
+      S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormatA'];
+      if S<>'' then
+      begin
+        try
+          TexFormat:=strtoint(S);
+          if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
+            TexFormat := IMAGE_FORMAT_DXT5;
+        except
+          TexFormat := IMAGE_FORMAT_DXT5;
+        end;
+      end;
+      ImageFormat:=IMAGE_FORMAT_RGBA8888;
+      GetMem(RawData2, PSD.size.X * PSD.size.Y * 4);
 
-      SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
+      SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
       SourceAlpha:=PChar(PSD.AlphaData) + PSD.size.X * PSD.size.Y;
-      Dest:=PChar(converted_image);
+      Dest:=PChar(RawData2);
       for J:=1 to PSD.size.Y do
       begin
-        Dec(SourceImg,  3 * PSD.size.X);
+        Dec(SourceImg, 3 * PSD.size.X);
         pSourceAlpha:=SourceAlpha;
         pSourceImg:=SourceImg;
         pDest:=Dest;
         for I:=1 to PSD.size.X do
         begin
-          PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[0];  { rgb }
+          PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
           PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
-          PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[2];  { rgb }
+          PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
           PRGBA(pDest)^[3]:=pSourceAlpha^;          { alpha }
           Inc(pDest, 4);
           Inc(pSourceImg, 3);
@@ -402,48 +412,77 @@ begin
         end;
         Inc(Dest, 4 * PSD.size.X);
       end;
+      TexSize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
+      GetMem(RawData, TexSize);
 
-      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),1,PSD.size.X,PSD.size.Y,texformatalpha) then
-        Raise exception.create('mem_to_vtf fails');
+      if vlImageConvert(RawData2, RawData, PSD.size.X, PSD.size.Y, ImageFormat, TexFormat)=false then
+        Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
     end
     else
     begin
-      filesize:=filesize_of_vtf(0,PSD.size.X,PSD.size.Y,texformatnonalpha);
-      SetLength(RawBuffer, filesize);
-      SetLength(converted_image, PSD.size.X * PSD.size.Y * 3);
+      S:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['SaveFormat'];
+      if S<>'' then
+      begin
+        try
+          TexFormat:=strtoint(S);
+          if (TexFormat < 0) or (TexFormat >= IMAGE_FORMAT_COUNT) then
+            TexFormat := IMAGE_FORMAT_DXT5;
+        except
+          TexFormat := IMAGE_FORMAT_DXT5;
+        end;
+      end;
+      ImageFormat:=IMAGE_FORMAT_RGB888;
+      GetMem(RawData2, PSD.size.X * PSD.size.Y * 3);
 
-      SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
-      Dest:=PChar(converted_image);
+      SourceImg:=PChar(PSD.Data) + PSD.size.X * PSD.size.Y * 3;
+      Dest:=PChar(RawData2);
       for J:=1 to PSD.size.Y do
       begin
-        Dec(SourceImg,  3 * PSD.size.X);
+        Dec(SourceImg, 3 * PSD.size.X);
         pSourceImg:=SourceImg;
         pDest:=Dest;
         for I:=1 to PSD.size.X do
         begin
-          PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[0];  { rgb }
-          PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
-          PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[2];  { rgb }
+          PRGB(pDest)^[0]:=PRGB(pSourceImg)^[2];  { rgb }
+          PRGB(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
+          PRGB(pDest)^[2]:=PRGB(pSourceImg)^[0];  { rgb }
           Inc(pDest, 3);
           Inc(pSourceImg, 3);
         end;
         Inc(Dest, 3 * PSD.size.X);
       end;
+      TexSize:=vlImageComputeImageSize(PSD.size.X,PSD.size.Y,1,1,TexFormat);
+      GetMem(RawData, TexSize);
 
-
-      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),0,PSD.size.X,PSD.size.Y,texformatnonalpha) then
-        Raise exception.create('mem_to_vtf fails');
+      if vlImageConvert(RawData2, RawData, PSD.size.X, PSD.size.Y, ImageFormat, TexFormat)=false then
+        Fatal('Unable to save VTF file. Call to vlImageConvert failed.');
     end;
-    F.WriteBuffer(Pointer(RawBuffer)^,filesize)
+    if vlImageCreate(PSD.size.X, PSD.size.Y,1,1,1,TexFormat,false,false,false)=false then
+      Fatal('Unable to load VTF file. Call to vlImageCreate failed.');
+    vlImageSetData(0, 0, 0, 0, RawData);
+    SetLength(RawBuffer, vlImageGetSize);
+    if vlImageSaveLump(Pointer(RawBuffer), Length(RawBuffer), @OutputSize)=false then
+      Fatal('Unable to save VTF file. Call to vlImageSaveLump failed.');
+
+    F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
+
+    FreeMem(RawData2);
+    FreeMem(RawData);
+    vlDeleteImage(VTFImage);
   end
- else inherited;
- end;
+  else
+    inherited;
+  end;
 end;
 
 {-------------------}
 
 
 initialization
-  {tbd is the code ok to be used ?  }
+begin
   RegisterQObject(QVTF, 'v');
+end;
+
+finalization
+  UnloadVTFLib(true);
 end.

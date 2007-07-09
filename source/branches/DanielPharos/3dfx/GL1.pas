@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/03/29 17:26:54  danielpharos
+Fixed a typo.
+
+Revision 1.17  2007/03/26 21:00:24  danielpharos
+Fixed a few typo's
+
+Revision 1.16  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
 Revision 1.15  2006/12/26 22:48:16  danielpharos
 A little fix to reduce the amount of grid-draw-problems with OpenGL
 
@@ -97,6 +106,7 @@ type
   GLdouble   = Double;
   GLclampd   = Double;
   PGLint     = ^GLint;
+  PGLfloat   = ^GLfloat;
 
 const
   (* AccumOp *)
@@ -660,6 +670,7 @@ const
 
 type
   TMatrix4f = array[0..3, 0..3] of GLdouble;
+  GLfloat4 = array[0..3] of GLfloat;
 
 var
   (*
@@ -719,6 +730,14 @@ var
   glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall; {Decker 2003.03.12 - Added}
   glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall; {Daniel 2006.09.19 - Added}
   glGetIntegerv: procedure (pname: GLenum; params: PGLint) stdcall; {Daniel 2006.12.03 - Added}
+  glLightModelf: procedure (pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.15 - Added}
+  glLightModelfv: procedure (pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.14 - Added}
+  glLightf: procedure (light: GLenum; pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.14 - Added}
+  glLightfv: procedure (light: GLenum; pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.14 - Added}
+  glMaterialf: procedure (face: GLenum; pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.15 - Added}
+  glMaterialfv: procedure (face: GLenum; pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.15 - Added}
+  glNormal3fv: procedure (v: PGLfloat) stdcall; {Daniel 2007.01.23 - Added}
+  glFrontFace: procedure (mode: GLenum) stdcall; {Daniel 2007.01.30 - Added}
 
   (*
   ** Utility routines from GLU32.DLL
@@ -733,7 +752,7 @@ procedure UnloadOpenGl;
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..45] of //Daniel 2006.12.03 - modified
+  OpenGL32DLL_FuncList : array[0..53] of //DanielPharos 2007.01.30 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -741,8 +760,8 @@ const
   ( (FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
-   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //Daniel 2006.09.26 - Added
-   ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        ) {Decker 2002.02.26 - Added}
+   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //DanielPharos 2006.09.26 - Added
+   ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        ) //Decker 2002.02.26 - Added
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
    ,(FuncPtr: @@glEnable;              FuncName: 'glEnable'              )
@@ -779,15 +798,23 @@ const
    ,(FuncPtr: @@glAreTexturesResident; FuncName: 'glAreTexturesResident' )
    ,(FuncPtr: @@glBindTexture;         FuncName: 'glBindTexture'         )
    ,(FuncPtr: @@glGenTextures;         FuncName: 'glGenTextures'         )
-   ,(FuncPtr: @@glGenLists;            FuncName: 'glGenLists'            ) //Daniel 2006.09.19 - Added
+   ,(FuncPtr: @@glGenLists;            FuncName: 'glGenLists'            ) //DanielPharos 2006.09.19 - Added
    ,(FuncPtr: @@glNewList;             FuncName: 'glNewList'             )
    ,(FuncPtr: @@glEndList;             FuncName: 'glEndList'             )
    ,(FuncPtr: @@glCallList;            FuncName: 'glCallList'            )
    ,(FuncPtr: @@glDeleteLists;         FuncName: 'glDeleteLists'         )
    ,(FuncPtr: @@glReadPixels;          FuncName: 'glReadPixels'          )
    ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           ) //Decker 2003.03.12 - Added
-   ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //Daniel 2006.09.28 - Added
-   ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         ) //Daniel 2006.12.03 - Added
+   ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //DanielPharos 2006.09.28 - Added
+   ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         ) //DanielPharos 2006.12.03 - Added
+   ,(FuncPtr: @@glLightModelf;         FuncName: 'glLightModelf'         ) //DanielPharos 2007.01.15 - Added
+   ,(FuncPtr: @@glLightModelfv;        FuncName: 'glLightModelfv'        ) //DanielPharos 2007.01.14 - Added
+   ,(FuncPtr: @@glLightf;              FuncName: 'glLightf'              ) //DanielPharos 2007.01.14 - Added
+   ,(FuncPtr: @@glLightfv;             FuncName: 'glLightfv'             ) //DanielPharos 2007.01.14 - Added
+   ,(FuncPtr: @@glMaterialf;           FuncName: 'glMaterialf'           ) //DanielPharos 2007.01.15 - Added
+   ,(FuncPtr: @@glMaterialfv;          FuncName: 'glMaterialfv'          ) //DanielPharos 2007.01.15 - Added
+   ,(FuncPtr: @@glNormal3fv;           FuncName: 'glNormal3fv'           ) //DanielPharos 2007.01.23 - Added
+   ,(FuncPtr: @@glFrontFace;           FuncName: 'glFrontFace'           ) //DanielPharos 2007.01.30 - Added
  );
 
   Glu32DLL_FuncList : array[0..0] of
@@ -817,7 +844,7 @@ begin
   begin
     Result := False;
     try
-      if OpenGL32Lib = 0 then  {Daniel: We don't want to load it twice, now do we?}
+      if OpenGL32Lib = 0 then  //DanielPharos: We don't want to load it twice, now do we?
        begin
         OpenGL32Lib := LoadLibrary('OPENGL32.DLL');
         if OpenGL32Lib=0 then
@@ -867,7 +894,7 @@ begin
   begin
     {if OpenGL32Lib<>0 then
       FreeLibrary(OpenGL32Lib);
-    OpenGL32Lib := 0;}   {Daniel: This cannot be freed, because the pixel format will then fail!}
+    OpenGL32Lib := 0;}   //DanielPharos: This cannot be freed, because the pixel format will then fail!
 
     if Glu32Lib<>0 then
       FreeLibrary(Glu32Lib);

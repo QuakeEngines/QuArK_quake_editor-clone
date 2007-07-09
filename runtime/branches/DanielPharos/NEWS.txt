@@ -12,8 +12,160 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
-6.5.0 Beta 2
+6.5.0 Beta 2.1
 =============
+* [DanielPharos]: In Half Life 2 mode, QuArK will now save a .vmf file instead of a Quake .map.
+
+* [cdunde]: Model Editor, Setup red rectangle selection support in the Model Editor for face and vertex selection methods
+          - and completed vertex selection for all the editors 2D views.
+
+* [cdunde]: Model Editor, Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+          - Added model mesh face selection using RMB and LMB together along with various options for selected
+          - face outlining, color selections and face color filltris but this will not fill the triangles
+          - correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+          - file (for the TCoordinates.Polyline95f procedure).
+          - Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+
+* [DanielPharos]: Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these
+          - two libraries. Set-up a new section in the Configuration for all of this.
+
+* [cdunde]: Model Editor, Added section to handle drawing all the lines of a models mesh to the source code.
+
+* [cdunde]: Model Editor, free up L & RMB combo dragging for Model Editor Face selection use
+          - and start model face selection and drawing functions.
+
+* [DanielPharos]: Finalized .dds image format support. Saving is now possible and reliable.
+
+* [cdunde]: Model Editor, Added new functions to 'Views Options' to set the model's mesh lines color
+          - and draw in frame selection.
+
+* [cdunde]: Substantially increased the drawing speed of the Model Editor Skin-view mesh lines and handles.
+
+* [cdunde]: Model Editor, New methods to stop over draw of handles causing massive program slow down.
+
+* [cdunde]: Model Editor, Changed picked vertex functions to much faster drawing method.
+
+* [cdunde]: Fixed individual view modelfill color to display correctly during a model mesh vertex drag.
+
+* [cdunde]: Fixed error message when in the Skin-view after a new triangle is added.
+
+* [cdunde]: Fixed model mesh drag guide lines not always displaying during a drag.
+          - Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
+
+* [cdunde]: Added the 2D views gridscale function to the Model Editor's Options menu.
+
+* [cdunde]: Model Editor, increased drawing speed of Skin-view during drag and fix picked vertexes for
+          - snapping to base location if dragged in the Skin-view before the action is completed.
+
+* [DanielPharos/cdunde]: Added game support for EF2 (Elite Force 2), .md3 model and .dds image format support.
+
+* [cdunde]: Model Editor, added new functions for aligning, single and multi selections, Skin-view vertexes.
+          - Also added a new and complete section to the Infobase on its use with editor menu links.
+
+* [cdunde]: Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
+          - as well as its code relocation to proper file and elimination of unnecessary code.
+
+* [DanielPharos/cdunde]: Setup selection retention system in Model Editor so selected items would not
+          - be dropped unexpectedly and something else selected when other functions were used.
+
+* [cdunde]: Fixed Duplicate current frame function to stop Model Editor views from crashing
+          - and updated its popup help and Infobase link description data.
+
+* [cdunde]: Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
+          - Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
+          - Added Commands menu to the open area RMB menu for faster and easer selection.
+          
+* [cdunde]: Stopped Add Triangle and Delete Triangle from causing errors and added menu links to the Infobase.
+
+* [cdunde]: Changed face and vertex dragging hint for both the Map Editor and Model Editor
+          - to give start and progressive drag positions based on grid location.
+
+* [cdunde]: Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
+          - and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
+          - Also activated the 'Hints for handles' function for the Skin-view.
+
+* [cdunde]: Setup mesh movement using common drag handles in the Skin-view for skinning model textures.
+
+* [cdunde]: Fixed vertex position display in Model Editor's hint box while dragging.
+
+6.5.0 Beta 2.0
+==============
+
+* [cdunde]: Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+
+* [DanielPharos]: Fixed the rotation in linear mode.
+
+* [DanielPharos]: Fixed the Screen Center behaviour when creating new objects.
+
+* [cdunde]: Changed Model Editor's FillMesh function to individual view settings on Views Options Dialog
+          - allowing each view to have its own fill option and color selection.
+
+* [cdunde]: Fixed Model Editor view axis icons not always redrawing after zoom in 2D views.
+
+* [cdunde]: Added a 'Quick Color Options' button to the Model Editors modes tool bar for color selection settings.
+
+* [DanielPharos]: Changed the way renderers track the drawing DC handle. Should fix a lot of OpenGL context
+          - errors. A small timing issue with this fix was noticed however. Put it is working: simply try
+          - again, and it should pop right up.
+
+* [DanielPharos]: Fixed a whole load of memory leak. QuArK now starts up and closes without leaking memory!
+          - Every starting a new map and OpenGL doesn't cause any leaks!
+
+* [DanielPharos]: Fixed all the colors and lighting effects in Solid view mode. OpenGL lighting should be
+          - set up correctly now.
+
+* [DanielPharos]: Changed the way the renderers work with camera-positions. Should be a lot faster.
+
+* [DanielPharos]: Implemented proper OpenGL display lists.
+
+* [cdunde]: Removed Model Editors 3D Options dialog Icon X button close button to stop problems caused when used.
+
+* [cdunde]: Proper selection and display of skin textures for all model configurations,
+          - single or multi component, skin or no skin, single or multi skins or any combination.
+
+* [cdunde]: To stop crossing of skins from model to model when a new model, even with the same name,
+          - is opened in the Model Editor without closing QuArK completely.
+
+* [cdunde]: To add skin texture size to the Skin-view page top section.
+
+* [cdunde]: Half-Life2 - light, light_spot and light_environment specifics and arguments added
+          - to support HDR and many additions to the UserData Half-Life2.qrk file by Riggsy.
+
+* [cdunde]: MOHAA - by OmnificienT - Added specifics for func_door, func_rotatingdoor, func_barrel,
+          - func_exploder, func_rain, func_remove all worldspawn specifics and dropdownmenu for func_crate.
+
+* [cdunde/DanielPharos]: Added code to retain selection in Model Editor when making a Skin-view drag.
+
+* [cdunde]: Made numerous changes to stop unneeded redrawing of handles in other views
+          - in the Model Editor to increase drawing speed.
+
+* [cdunde]: Added option to draw or not draw handles in the Model Editor 3D views
+          - while rotating the model to increase drawing speed.
+
+* [DanielPharos]: Fixed an access violation when trying to save MD3 files. Althought this is
+                  currently not supported, it doesn't wreck QuArK anymore.
+
+* [DanielPharos]: QuArK should now be able to handle most PNG files correctly!
+
+* [DanielPharos]: Updated VTF handling to use VTFLib. The HL2 memory leak is gone!
+                   Also, VTF file loading AND saving is now working properly!
+
+* [DanielPharos]: Added realtime OpenGL lighting and OpenGL transparency! Also added an option
+          - for OpenGL face culling.
+
+* [DanielPharos]: The tier0 and vstdlib dll files for HL2 can now be pointed to using the
+          - configuration, so you don't need to copy them to the local QuArK directory anymore!
+
+ * [cdunde]: Fixed errors that occur when switching layouts in the Model Editor.
+
+ * [cdunde]: Stopped handles and limited line drawing in the Model Editor
+          - Skin-view to increase reaction time when zooming.
+
+ * [cdunde]: Add new Model Editor Views Options button and functions to reduce
+          - handle drawing to increase reaction time.
+
+ * [cdunde]: Stop the line, resizing bar, from drawing across the editors
+          - when certain view pages were pulled out as floating windows.
 
  * [cdunde]: Added a detailed section to the Infobase Model Editor about the model structure.
 
@@ -47,7 +199,7 @@ $Id$
  * [cdunde]: Made additional fix to stop filling multiple dropdown list with erroneous data,
          - for example like a misc_model for func_bobbing entity.
 
- * [Daniel Pharos]: Fixed the software & glide lock-up!
+ * [DanielPharos]: Fixed the software & glide lock-up!
 
  * [cdunde]: Fixed Model Editor's Skin-view to draw model mesh correctly and fairly fast.
 
@@ -69,14 +221,14 @@ $Id$
  * [cdunde]: Added a new sub-menu to the Model Editors "Options" menu,
           - with various methods of rotation in 3D views to choose from.
  
- * [Daniel Pharos]: Fixed the access violation and subsequent grey OpenGL windows when
+ * [DanielPharos]: Fixed the access violation and subsequent grey OpenGL windows when
          - loading a model without a skin.
 
- * [Daniel Pharos]: OpenGL is now able to render 2D views.
+ * [DanielPharos]: OpenGL is now able to render 2D views.
 
- * [Daniel Pharos]: Turned Glide right side up.
+ * [DanielPharos]: Turned Glide right side up.
 
- * [Daniel Pharos]: Added higher texture-size support (only works in OpenGL).
+ * [DanielPharos]: Added higher texture-size support (only works in OpenGL).
 
  * [cdunde]: Started dragging lines support for Skin-view vertex movement.
 
@@ -139,10 +291,10 @@ $Id$
          - to allow their viewing in the editor, all available textures for QuArK's Texture
          - Browser and added its link to a new STVEF Infobase Configuration doc section.
 
- * [Daniel Pharos and cdunde]: Complete revamping of STVEF files and addition of HM addon
+ * [DanielPharos and cdunde]: Complete revamping of STVEF files and addition of HM addon
          - for multiplayer editing by DanielPharos.
 
- * [Daniel Pharos and cdunde]: As far back as mid 2000 Access Violation errors would
+ * [DanielPharos and cdunde]: As far back as mid 2000 Access Violation errors would
          - occurred with various entity forms, causing QuArK to crash. That is now fixed!
 
  * [cdunde]: Changed "Poly size" display in "hint box" to w, d, h to reduce confusion
@@ -254,8 +406,8 @@ $Id$
         -  Also cleanup of DataD3.qrk and DataQ4.qrk files.
         
  * [cdunde] : Removed "id Software Textures" common.txlist, no longer needed,
- 		- from the Texture Browser with the materials handling fix.
- 		- These items are now located in the mtr_invisible items folder.
+        - from the Texture Browser with the materials handling fix.
+        - These items are now located in the mtr_invisible items folder.
 
  * [cdunde] : Fixed the RMB Mark function for tree view restructuring with
         -  the marking of objects. Bug found by jal - Thanks for your input.
@@ -854,7 +1006,7 @@ $Id$
       when one is closed.
 
  * [SilverPaladin]: Added support for Return to Castle Wolfenstein:
-      The WildWest (1.4).	
+      The WildWest (1.4).
 
  * [nerdiii]: Edited default.qrk so texture origin and size are
       displayed with two decimals

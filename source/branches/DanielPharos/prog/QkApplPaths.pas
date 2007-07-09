@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/03/10 21:56:10  danielpharos
+Fixed a backslash-linux problem.
+
 Revision 1.8  2006/11/30 01:21:02  cdunde
 To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 
@@ -120,7 +123,7 @@ end;
 function GetApplicationAddonsPath() : String;
 { Returns the application\ADDONS\ path }
 const
-  ADDONS_SUBDIRECTORY = 'Addons\';
+  ADDONS_SUBDIRECTORY = 'Addons'+PathDelim;
 begin
   Result := ApplicationPath + ADDONS_SUBDIRECTORY;
 end;

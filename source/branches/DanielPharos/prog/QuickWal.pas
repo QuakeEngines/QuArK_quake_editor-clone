@@ -23,6 +23,25 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2007/05/06 21:23:00  danielpharos
+Fixed the name of the scripts folder for EF2.
+Changed DDS support to be EF2-specific.
+
+Revision 1.41  2007/05/05 22:17:52  cdunde
+To add .dds Texture Browser loading from .pk3 files.
+
+Revision 1.40  2007/03/22 22:19:14  danielpharos
+Fixed a memory leak.
+
+Revision 1.39  2007/02/07 20:03:05  danielpharos
+Fixes for memory leaks
+
+Revision 1.38  2007/02/07 14:08:22  danielpharos
+Fix a memory leak.
+
+Revision 1.37  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.35  2004/12/22 11:42:15  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -222,13 +241,14 @@ begin
   for I:=0 to List2.Count-1 do
     List.Add(List2[I]);
   Result:=List;
+  List2.Free;
 end;
 
 function GameShaderList : String;
 begin
   Result:=SetupGameSet.Specifics.Values['ShaderList'];
   if Result='' then
-    Result:='scripts/shaderlist.txt'
+    Result:=GameShadersPath+'shaderlist.txt';
 end;
 
 function Link1(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String) : QObject; overload
@@ -370,6 +390,9 @@ begin
  if CompareText(ExtractFileExt(Name), '.png') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
  else
+ if CompareText(ExtractFileExt(Name), '.dds') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
+ else
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then
   begin
    if Loaded=Nil then
@@ -460,6 +483,9 @@ begin
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
  if CompareText(ExtractFileExt(Name), '.png') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
+ else
+ if CompareText(ExtractFileExt(Name), '.dds') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then
@@ -588,6 +614,7 @@ begin
          Q.Specifics.Values['b']:=Name;
          Q.Specifics.Values['shader']:='1';
        end;
+       Path.Free;
      end;
     end;
   end;
@@ -1062,12 +1089,18 @@ begin
     PakList:=ListPakFiles(Path);
 
   FoundShaders:=TStringList.Create;
-  ShaderList:=TStringList.Create;
   if ShaderFilter then
-    ShaderList.Add(Copy(Filter,1,Length(Filter)-Length(ShaderExt)))
+  begin
+    ShaderList:=TStringList.Create;
+    ShaderList.Add(Copy(Filter,1,Length(Filter)-Length(ShaderExt)));
+  end
   else
-  if not allshaders then
-    GetShaderList(Base,ShaderList);
+  begin
+    if not allshaders then
+      GetShaderList(Base,ShaderList)
+    else
+      ShaderList:=TStringList.Create;
+  end;
 
   TexturesPath:=GameTexturesPath;
   if FolderFilter then
@@ -1086,31 +1119,31 @@ begin
   if not FolderFilter then
   for I:=PakList.Count-1 downto 0 do
   begin
-       Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
-       PakName:=Pak.Name;
-       Pak.AddRef(+1);
-       try
-        Pak.Acces;
-       { SearchResultList:=Nil;  }
-        try
-         { Find Quake-3:Arena .shader files in PK3's }
-         { if a .shader file is already in directory, don't
-           get the one from the pk3 }
-         if (Pak is QZipFolder) then
-           SearchFolder:=QZipFolder(Pak).GetFolder(GameShadersPath)
-         else
-           SearchFolder:=Pak.GetFolder(GameShadersPath);
-         if SearchFolder<>Nil then
-         begin
-           Q:=ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q, ShaderList, FoundShaders);
-         end;
-        except
-         (*do nothing*)
+    Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
+    PakName:=Pak.Name;
+    Pak.AddRef(+1);
+    try
+      Pak.Acces;
+      { SearchResultList:=Nil;  }
+      try
+        { Find Quake-3:Arena .shader files in PK3's }
+        { if a .shader file is already in directory, don't
+          get the one from the pk3 }
+        if (Pak is QZipFolder) then
+          SearchFolder:=QZipFolder(Pak).GetFolder(GameShadersPath)
+        else
+          SearchFolder:=Pak.GetFolder(GameShadersPath);
+        if SearchFolder<>Nil then
+        begin
+          Q:=ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q, ShaderList, FoundShaders);
         end;
-       finally
-        Pak.AddRef(-1);
-       end;
+      except
+        (*do nothing*)
       end;
+    finally
+      Pak.AddRef(-1);
+    end;
+  end;
 
   { Get Textures (don't list ones with same name as
      shader) }
@@ -1130,31 +1163,33 @@ begin
   if not (ShaderFilter or FolderFilter) then
   for I:=PakList.Count-1 downto 0 do
   begin
-       Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
-       PakName:=Pak.Name;
-       Pak.AddRef(+1);
-       try
-        Pak.Acces;
-       { SearchResultList:=Nil;  }
-        try
-         { Find 'game' textures in package-files }
-         { Merge in the textures from the .pk3's that
+    Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
+    PakName:=Pak.Name;
+    Pak.AddRef(+1);
+    try
+      Pak.Acces;
+      {SearchResultList:=Nil;}
+      try
+        { Find 'game' textures in package-files }
+        { Merge in the textures from the .pk3's that
            aren't already in the directory }
-         if (Pak is QZipFolder) then
-           SearchFolder:=QZipFolder(Pak).GetFolder(GameTexturesPath)
-         else
-           SearchFolder:=Pak.GetFolder(GameTexturesPath);
-         if SearchFolder<>Nil then
-           Q:=ParsePakTextureFolders(SearchFolder as QPakFolder, Base, '', Q);
-        except
-         (*do nothing*)
-        end;
-       finally
-        Pak.AddRef(-1);
-       end;
+        if (Pak is QZipFolder) then
+          SearchFolder:=QZipFolder(Pak).GetFolder(GameTexturesPath)
+        else
+          SearchFolder:=Pak.GetFolder(GameTexturesPath);
+        if SearchFolder<>Nil then
+          Q:=ParsePakTextureFolders(SearchFolder as QPakFolder, Base, '', Q);
+      except
+        (*do nothing*)
+      end;
+    finally
+      Pak.AddRef(-1);
     end;
+  end;
 
-
+  PakList.Free;
+  ShaderList.Free;
+  FoundShaders.Free;
 end;
 
 procedure TQuickWalParser.FormActivate(Sender: TObject);

@@ -64,6 +64,8 @@ class BackBmpDlg(qmacro.dialogbox):
     def __init__(self, form, view):
         ico_maped=ico_dict['ico_maped']
         self.view = view
+        #FIXME
+        #DanielPharos: We should check if it's a 3D window. If so, don't allow a background!
         src = quarkx.newobj(":")
         if view.background is None:
             src["center"] = (0,0,0)
@@ -95,11 +97,6 @@ class BackBmpDlg(qmacro.dialogbox):
               "Close"))
 
     def ok(self, m):
-        if mapeditor() is not None:
-            editor = mapeditor()
-        else:
-            quarkx.clickform = self.view.owner
-            editor = mapeditor()
         quarkx.globalaccept()
         src = self.src
         filename = src["filename"]
@@ -112,19 +109,13 @@ class BackBmpDlg(qmacro.dialogbox):
           ### Save the settings...
             quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"] = PolySelectNoFill
             quarkx.setupsubset(SS_MAP, "Colors")["NoFillSel"] = NoFillSel
-            editor.invalidateviews()
         else:
           ### Save the settings...
             quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"] = src["PolySelectNoFill"]
             quarkx.setupsubset(SS_MAP, "Colors")["NoFillSel"] = src["NoFillSel"]
-            editor.invalidateviews()
+        self.view.invalidate(1)
 
     def remove(self, m):
-        if mapeditor() is not None:
-            editor = mapeditor()
-        else:
-            quarkx.clickform = self.view.owner
-            editor = mapeditor()
         src = self.src
         self.view.background = None
         PolySelectNoFill = src["PolySelectNoFill"]
@@ -132,27 +123,25 @@ class BackBmpDlg(qmacro.dialogbox):
           ### Save the settings...
         quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"] = PolySelectNoFill
         quarkx.setupsubset(SS_MAP, "Colors")["NoFillSel"] = NoFillSel
-        editor.invalidateviews()
+        self.view.invalidate(1)
 
     def no(self, m):
-        if mapeditor() is not None:
-            editor = mapeditor()
-        else:
-            quarkx.clickform = self.view.owner
-            editor = mapeditor()
         src = self.src
         PolySelectNoFill = src["PolySelectNoFill"]
         NoFillSel = src["NoFillSel"]
           ### Save the settings...
         quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"] = PolySelectNoFill
         quarkx.setupsubset(SS_MAP, "Colors")["NoFillSel"] = NoFillSel
-        editor.invalidateviews()
+        self.view.invalidate(1)
         self.close()
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.9  2007/04/11 15:52:00  danielpharos
+#Fixed a crash. As a happy side-effect, it now only refreshes the view changed.
+#
 #Revision 1.8  2006/05/19 17:10:03  cdunde
 #To add new transparent poly options for viewing background image.
 #

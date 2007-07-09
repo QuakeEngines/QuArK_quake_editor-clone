@@ -23,6 +23,21 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2007/04/10 12:25:34  danielpharos
+A potential fix for the infobase-help not opening on non-IE browsers.
+
+Revision 1.44  2007/03/11 12:03:11  danielpharos
+Big changes to Logging. Simplified the entire thing.
+
+Revision 1.43  2007/02/02 21:15:56  danielpharos
+The fatal crash error box now is has the critical appearance it deserves
+
+Revision 1.42  2007/01/31 15:03:41  danielpharos
+Fix a possible undefined return value
+
+Revision 1.41  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.39  2003/12/17 14:00:11  peter-b
 - Rewrote defines for setting Python version
 - Removed back-compatibility with Python 1.5
@@ -213,7 +228,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      Output1, About, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
-     QkApplPaths, MapError;
+     QkApplPaths, MapError, StrUtils;
 
  {-------------------}
 
@@ -292,6 +307,7 @@ var
  oObj: PyObject;
  DT: Boolean;
 begin
+ Result:=False;
  if Pool<>Nil then
   begin
    DT:=False;
@@ -315,10 +331,7 @@ begin
         Py_DECREF(oObj);
         Dec(Count);
         if Count=0 then
-         begin
-          Result:=False;
           Exit;
-         end;
        end
       else
        Inc(I);
@@ -705,7 +718,7 @@ begin
        Exit;
       end;
     end;
-   aLog(LOG_PYTHONSOURCE,'Making image '+Filename);
+   Log(LOG_PYTHON,'Making image '+Filename);
    Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio);
   finally
    Bitmap.Free;
@@ -2108,7 +2121,8 @@ begin
   Reg.Free;
  end;
 
- if S2[1]='"' then
+// DanielPharos: Old method
+{ if S2[1]='"' then
   begin
    System.Delete(S2, 1, 1);
    I:=Pos('"', S2);
@@ -2117,7 +2131,24 @@ begin
   I:=Pos(' ', S2);
  if I>0 then
   SetLength(S2, I-1);
- S2:=S2+' "'+URL+'"';
+ S2:=S2+' "'+URL+'"';}
+
+// DanielPharos: This new method should fix a few
+// problems people were having with Firefox and other
+// browsers.
+ if LeftStr(URL,8)<>'file:///' then
+   S1:='file:///'+URL
+ else
+   S1:=URL;
+
+ I:=Pos('%1', S2);
+ if I>0 then
+ begin
+   System.Delete(S2,I,2);
+   System.Insert(S1,S2,I);
+ end
+ else
+   S2:=S2+' "'+S1+'"';
 
  FillChar(SI, SizeOf(SI), 0);
  FillChar(PI, SizeOf(PI), 0);
@@ -2467,7 +2498,7 @@ begin
     P:=PyString_AsString(Args);
     if P=Nil then
       Exit;
-    aLog(LOG_PYTHONSOURCE, P^);
+    Log(LOG_PYTHON, P^);
     Result:=PyNoResult;
   except
     EBackToPython;
@@ -2944,7 +2975,7 @@ begin
  StrCat(X, P);
  StrCat(X, ProbableCauseOfFatalError[err]);
  ShowConsole(True);
- Windows.MessageBox(0, X, FatalErrorCaption, MB_TASKMODAL);
+ Windows.MessageBox(0, X, FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
  Log(strPas(x)+ ' Error Code '+IntToStr(Err));
  ExitProcess(Err);
 end;

@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/05/05 22:17:53  cdunde
+To add .dds Texture Browser loading from .pk3 files.
+
+Revision 1.13  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.11  2004/11/08 22:47:43  alexander
 hl2 support started
 
@@ -140,7 +146,7 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, QkJpg, QkPng, QkSoF,QkVTF, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
+uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF,QkVTF, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
 
 {$R *.DFM}
 
@@ -165,7 +171,7 @@ end;*)
 
 function TestConversionImages(var I: Integer) : QImageClass;
 const
- IntlImages: array[1..7] of QImageClass = (QPcx, QTga, QBmp, QJPeg, QPng, QM32,QVTF);
+ IntlImages: array[1..8] of QImageClass = (QPcx, QTga, QDDS, QBmp, QJPeg, QPng, QM32,QVTF);
 begin
  if I>High(IntlImages) then
   begin

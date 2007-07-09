@@ -1,12 +1,14 @@
 """   QuArK  -  Quake Army Knife
 
-Dictionnary of all strings used within the program
+Dictionary of all strings used within the program
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+
+# The filename has a typo in it! :|
 
 #$Header$
 
@@ -62,7 +64,7 @@ Strings = {
     163: "-- Specifics common to selected items --",
     172: "Searching for holes...",
     175: "Extracting files...",
-#   176: "// This map has been written by QuArK - Quake Army Knife, %s\n// It is a map for the game %s.\n\n// It is recommended that you compile this map using TXQBSP, a version of QBSP\n// that can process floating-point coordinates and enhanced texture positionning.\n// For more information see QuArK's Home Page :  http://www.planetquake.com/quark\n\n",
+#   176: "// This map has been written by QuArK - Quake Army Knife, %s\n// It is a map for the game %s.\n\n// It is recommended that you compile this map using TXQBSP, a version of QBSP\n// that can process floating-point coordinates and enhanced texture positioning.\n// For more information see QuArK's Home Page :  http://www.planetquake.com/quark\n\n",
     ### The entries 176,177,178 are used in [QkMap.PAS] QMapFile.SaveFile()
     176: "This map has been written by QuArK - Quake Army Knife, %s",
     177: "It is a map for the game %s.",
@@ -80,13 +82,15 @@ Strings = {
     193: "No matching item found.",
     194: "One matching item found.",
     195: "%d matching item(s) found.",
+
     216: "Cannot move an item into one of its sub-items",
+
     221: "No help available about '%s'",
     222: "No selection.",
     223: "Select the polyhedrons, entities, and groups to include in the test build, and try again.\n\nNote that the game will crash if there is no player start in the selection. If the normal player start is not in the selection, you should use a 'testplayerstart' entity (see the New Items window).",
     226: "Thank you for having registered, %s !",
     229: "intersection",
-    230: "Duplicators should not be put directly under ""worldspawn"", because they duplicate ""worldspawn"" itself; the resulting .map file is not valid.",
+    230: "Duplicators should not be put directly under 'worldspawn', because they duplicate 'worldspawn' itself; the resulting .map file is not valid.",
     236: "Position of the selected vertex",
     237: "Position of the duplicator image",
     238: "Enter the new origin :   (X Y Z)",
@@ -105,38 +109,36 @@ Strings = {
     257: "QuArK has found %d invalid polyhedron face(s) in this file. Look for the \042broken face\042 icons in the list.",
     # 258: "Polyhedrons with the 'origin' content flag are not allowed in 'worldspawn'. Ignored.",
 
-    # Rowdy
-    260: "\042patchDef2\042 expected",
+    260: "Unknown brushdef or patchdef found",
     261: "bezier",
-    #262: "JPG image",
-    #263: "JPG image (*.jpg)|*.jpg",
-    264: "Map beziers",
-    # /Rowdy
+    262: "Map beziers",
     265: "unexpected surface attribute",
-    266: "Sorry, Doom 3 version 2 maps are not currently supported.",
-
-    270: "Sorry, unsupported HL2 map format.",
+    # 266: "Sorry, Doom 3 version 2 maps are not currently supported",
+    267: "Unknown map version",
+    268: "Sorry, unsupported HL2 map format",
 
     288: "Help snippet - (press ESC to close window)",
     289: "||Red line : these red lines delimit which portion of the map are to be considered visible on the other view. The objects that are not visible on both map views are considered invisible, and if you see them on one view, they will be grayed out and not selectable with the mouse.\n\nMove these red lines if you need, for example, a quick way to select objects in a room without selecting the ceiling first every time : in this case, scroll the XZ view and/or move its red line until it is below the ceiling, so that the ceiling doesn't come in the way any more.|intro.mapeditor.menu.html#optionsmenu",
+    # 290: "This would display help about entity if an entity was selected",
 
     384: "Impossible to create the file :\n\n%s",
     385: "QuArK failed to open the file :\n\n%s",
 
     389: "Add a Specific/Arg",
     390: "Delete Specific/Arg",
-    421: "This would display help about entity if an entity was selected",
+
+    400: "Warning...",
+    401: "Fatal Error",
 
     501: "Checking map...",
     502: "Saving compiled model...",
     503: "Reworking model...",
     504: "Conifying...",
-    505: "Interrupted !\nCancelling, please wait...",
+    505: "Interrupted !\nCanceling, please wait...",
     507: "Making hollow...",
     508: "Brush subtraction...",
     509: "Map operation...",
     # 511: "Interrupt",
-
     512: "edit Specific/Arg",
     513: "rotation",
     514: "move",
@@ -253,9 +255,7 @@ Strings = {
     794: "Sin Pak files (*.sin)|*.sin",
     795: "Heretic II models (*.fm)|*.fm",
     796: "TGA image (*.tga)|*.tga",
-    # zip archive support
     797: "ZIP archives (*.zip)|*.zip",
-    # Q3 Pak Support
     798: "Quake 3 Pak Files (*.pk3)|*.pk3",
     799: "Quake 1 / Half-Life Sprite Files (*.spr)|*.spr",
     800: "Quake 2 Sprite Files (*.sp2)|*.sp2",
@@ -266,20 +266,18 @@ Strings = {
     805: "Quake 3 .md3 file (*.md3)|*.md3",
     806: "SoF Texture (*.m32)|*.m32",
     807: "3d studio file (*.3ds)|*.3ds",
-    808: "Hmf (6DX) map format (*.hmf)|*.hmf",
-
-    809: "Invalid version number in Quake's original Progs.dat",
+    808: "Hmf (6DX) map file (*.hmf)|*.hmf",
 
     810: "PNG image (*.png)|*.png",
     811: "Tribes 2 VL2 Files (*.vl2)|*.vl2",
     812: "Tribes 2 CS-script Files (*.cs)|*.cs",
-
     813: "Doom 3 Pak Files (*.pk4)|*.pk4",
-    814: "Valve Texture File  (*.vtf)|*.vtf",
-    815: "Valve Material File  (*.vmt)|*.vmt",
-    816: "Steam Cache File  (*.gcf)|*.gcf",
-    817: "Valve Map File  (*.vmf)|*.vmf",
+    814: "Valve Texture File (*.vtf)|*.vtf",
+    815: "Valve Material File (*.vmt)|*.vmt",
+    816: "Steam Cache File (*.gcf)|*.gcf",
+    817: "Valve Map File (*.vmf)|*.vmf",
     818: "Steam FS (*.SteamFS)|*.SteamFS",
+    819: "DDS image (*.dds)|*.dds",
 
     2368: "Skins",
     2369: "Frames",
@@ -392,9 +390,7 @@ Strings = {
     3265: "Joy3",
     3266: "Joy4",
 
-    3500: "Warning...",
-    3501: "Information",
-
+    4095: "Invalid version number in Quake's original Progs.dat",
     4096: "Real number expected",
     4097: "Unexpected symbol.    Expected : %s    Found : %s",
     4098: "\253 ' \273 expected",
@@ -410,7 +406,7 @@ Strings = {
     4109: "Cannot initialize these type of variable",
     4110: "Declaration expected",
     4111: "\042void()\042 function expected",
-    4112: "Too many code ! Overflow is due to the structure of Progs.dat",
+    4112: "Too much code! Overflow is due to the structure of Progs.dat",
     4113: "frame name expected",
     4114: "Unknown identifier ('%s')",
     4115: "Wrong argument count in function call",
@@ -513,18 +509,6 @@ Strings = {
     4618: "//Description of the invalid polygon :",
     4620: "Impossible to create the surface for a polygon//Three aligned points don't define a plane.",
 
-    4864: "",
-    4865: "Could not find the 3D drivers (%s). You need either a graphics card with installed drivers or the software 3D library, depending on the choice you made in the Configuration dialog box//Error code %d",
-    4866: "Error with the 3DFX Glide drivers//%s failed",
-    4867: "No 3D driver configured. Please select a 3D driver in the Configuration dialog box",
-    4868: "Could not load the OpenGL drivers//Error code %d",
-    4869: "Error in OpenGL initialization//'%s' failed",
-    4870: "Error in OpenGL commands [Error code(s) %s step %d]",
-
-    4880: "Error in Direct3D initialization//'%s'",
-    4881: "Error in Direct3D uninitialization//'%s'",
-    4882: "Error using Direct3D//Function '%s' failed with '%s'",
-
     5119: "(new)",
     5120: "Explorer Group",
     5121: "Imported File",
@@ -583,31 +567,29 @@ Strings = {
     5181: "PNG image",
     5182: "Tribes 2 VL2 file",
     5183: "Tribes 2 CS-script file",
-
-    5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
     5184: "'%s' is not a QuArK-5 file",
     5185: "'%s' was created with a more recent version of QuArK",
     5186: "'%s' is invalid (the end of the file seems to be missing)",
     5187: "The file extension of '%s' does not match the file contents, which seems to be of type '%s'",
     5188: "The file '%s' does not exist",
     5189: "Cannot write into file '%s', because it is currently opened in another window. Save your work in another file",
-    # 5190: "Internal error L - this program is buggy !//QList",
-    # 5191: "Internal error R - this program is buggy !//Cannot read file objects of type '%s' with format %d",
-    # 5192: "Internal error W - this program is buggy !//Cannot write file objects of type '%s' with format %d",
+    5190: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
+    # 5191: "Cannot read file objects of type '%s' with format %d",
+    5192: "DDS image",
     5193: "Syntax error in source file, line %d : %s",
     5194: "'{' expected",
     5195: "unexpected data after the final '}' has been ignored.",
     5196: "invalid property definition",
     5197: "'=' expected",
-    5198: "unexpected end of line, unbalenced quotes",
+    5198: "unexpected end of line, unbalanced quotes",
     5199: "hexadecimal code expected",
     5200: "// This file has been written by QuArK %s\n// It's the text version of file: %s\n",
     5201: "Could not open '%s' : Unknown file extension",
     5202: "'%s' cannot be opened in a new window",
     5203: "File not found : %s//Current directory is %s",
     5204: "Cannot load the configuration file (Defaults.qrk). Be sure QuArK is correctly installed. You may need to reinstall it.\n\n%s",
-    5205: "Invalid configuration file (Defaults.qrk). Reinstall QuArK.  (Missing SetupSet '%s')",
-    5206: "Wrong version of configuration file (Defaults.qrk). Reinstall QuArK.  (QuArK is '%s' and Defaults.qrk is '%s')",
+    5205: "Invalid configuration file (Defaults.qrk). Please reinstall QuArK.  (Missing SetupSet '%s')",
+    5206: "Wrong version of configuration file (Defaults.qrk). Please reinstall QuArK.  (QuArK is '%s' and Defaults.qrk is '%s')",
     # 5207: "Error loading file '%s'.//Object initialization failed",
     5207: "Polyhedron has no width.",
     5208: "Only %d valid faces are left.",
@@ -621,7 +603,7 @@ Strings = {
     5216: "QuArK has left %d temporary file(s) in path %s, probably because it crashed or because of a bug. Do you want to delete this(these) file(s) now ?",
     5217: "'%s' : Cannot (un)do this operation any more because the file has been closed",
     # 5218: "Warning: the tree view you see is incomplete, because the Explorer views of QuArK cannot display the same objects more than once.",
-    # 5219: "Internal error X - this program is buggy !//No Explorer from root",
+
     5220: "'%s' : Invalid file size. The file is %d bytes length instead of %d",
     5221: "Cannot display '%s' in the tree view, because it is already visible in another Explorer views in QuArK.",
     5222: "This file contains a link to the file '%s' which cannot be found. The link has been ignored (and deleted).",
@@ -703,17 +685,17 @@ Strings = {
     5459: "preparing Faces...",
     5460: "preparing Models...",
 
+    5502: "Sprite object not found!",
     5503: "'%s' is a Half-Life Model which cannot be read (yet)",
     5504: "No texture image//Missing or invalid %s",
     5505: "'%s' is not a WAD file//%d should be %d or %d",
     5506: "'%s' is not a PACK file//%d should be %d",
-    # 5507: "Internal error N - this program is buggy !//Acces without FNode",
+
     5508: "Files names in PACK files are limited to %d characters, including the path. '%s' is too long",
     5509: "Invalid data. The file is probably corrupted//Error %d",
-    # 5510: "Internal error S - this program is buggy !//Empty Specific with data '%s'",
+
     5511: "The WAD file contains data that cannot be written to this type of file.//'%s' invalid",
-    # 5512: "Internal error A - this program is buggy !//Acces",
-    # 5513: "Internal error C - this program is buggy !//CloseReadOnly",
+
     5514: "'%s' : structure invalid for a Quake %d-like texture",
     5515: "FILE ERROR !!\n\nThe file has been correctly saved to :\n\n%s\n\nbut QuArK cannot reopen it. You can't continue editing the file.\n\nQuit QuArK now, find this temporary file and rename it '%s'",
     5516: "Could not save the file '%s'. The file is maybe read-only or opened in another application.//The file has been correctly saved to :\n\n%s\n\nbut QuArK failed to move it to the correct location. You can look for this temporary file and rename it '%s' yourself",
@@ -725,7 +707,7 @@ Strings = {
     5522: "(Missing)",
     5523: "(Empty data)",
     5524: "Texture '%s' not found in %s",
-    # 5525: "Internal error R - this program is buggy !//DoRemoveReference",
+    5525: "Unable to save entity, invalid type",
     5526: "Could not add this file to the QuArK Explorer",
     5527: "This file is opened in several windows. You must close them before you can do this operation",
     # 5528: "You cannot make changes here because QuArK could not find in which file this data is stored",
@@ -773,14 +755,13 @@ Strings = {
     5566: "This map contains unsupported objects. It might have been created with a more recent version of QuArK.\n\n%d object(s) of unknown type deleted",
     5567: "Cannot undo this operation, sorry",
     5568: "Could not build the tool bar '%s'.",
-    # 5569: "The data in this file ('%s') does not match the file name ('%s').",
-    5569: "",
+    5569: "The data in this file ('%s') does not match the file name ('%s').",
     5570: "(switch back to %s game mode)",
     5571: "'%s' is not a Quake 2 MD2 file//%d-%d should be %d-%d",
     5572: "'%s' looks like a Quake-2 (or one of its game descendants) BSP file,\nbut its BSP-version is not recognized and therefore not supported.//%d should be %d",
     5573: "QuArK does not know if '%s' is a Quake 1 or Hexen II file. Is it an Hexen II map ?",
     5574: "Missing information : QuArK cannot determine the target game for this file//Specific 'Game' missing",
-    # 5575: "The skin path in this Model is ambiguous : several .pcx files with the same name exist in various paths. QuArK may have choosen a wrong one.",
+    # 5575: "The skin path in this Model is ambiguous : several .pcx files with the same name exist in various paths. QuArK may have chosen a wrong one.",
     5575: "Missing skin image file '%s' in model '%s'",
     5576: "This Model is invalid and contains no data.",
     5577: "Macro processing error in '%s' : %s",
@@ -847,7 +828,7 @@ Strings = {
     5637: "This BSP or parts of it are still opened. Cannot open the map display again",
     5638: "The hull number %d contains %d invalid face(s).\n%s",
     5639: "No texture number %d",
-    5640: "Cannot edit BSP faces yet. Wait for a future version of QuArK !..",
+    5640: "Cannot edit BSP faces (yet).",
     5641: "The BSP structure seems a bit strange. Be sure the file didn't get truncated.",
     5642: "Save changes in the configuration ?",
     5643: "Load-time include command '%s' : not found",
@@ -855,7 +836,7 @@ Strings = {
     5645: "Press the key you want for this action...",
     5646: "%s\n\nAre you sure you want to INTERRUPT this process ?",
     5647: "You are about to remove all association to QuArK from your Windows Registry. Note that the next time you run QuArK, it will automatically associate itself with .qrk files again.\n\nDo you want to continue ?",
-    5648: "Done ! To explicitely remove file associations, use the button\n'remove all associations' below.",
+    5648: "Done ! To explicitly remove file associations, use the button\n'remove all associations' below.",
     5649: "This documentation is in HTML format, but QuArK failed to open your web browser.\n\nTried to open : %s//Error: %s",
     5650: "No .html or .htm key in Registry",
     5651: "No key \"%s\" in Registry",
@@ -899,8 +880,8 @@ Strings = {
     5689: "This image has got no palette : it is a true-color 24-bit image",
     5690: "Setup file was cleared. QuArK is restarted with its default configuration.\n\nDo you want to activate Colorful Captions again ?",
     5691: "Invalid Sprite File!",
-    5692: "The File %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
-    5693: "Out of OpenGL display lists. Disable lighting in configuration box",
+    5692: "The file %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
+    5693: "'%s' expected in %s",
     5694: "Syntax error in Shader file, line %d",
     5695: "Shader '%s' has no image to display",
     5696: "Shader images are read-only",
@@ -911,35 +892,40 @@ Strings = {
     5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
     5702: "Files in this directory wont work. Select a file in a subdirectory please.",
 
-    # hl2
-    # alexander would like to reserve 5703 .. 5725 for HL2 :-)
+    # alexander would like to reserve 5703 .. 5729 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
-    5704: "no vtf file",
-    5705: "QuArKVTF.dll not found, QuArK need this to load VTF Textures",
+    5704: "Unable to retrieve the location of '%s'. Please make sure the location is set correctly in the Half-Life 2 configurations.",
+    #5705: "reserved for hl2",
     5706: "%s not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
-    5708: "reserved for hl2",
+    5708: "Image found",
     5709: "VTF file",
     5710: "GCF file",
     5711: "GCF folder",
-    5712: 'cannot initialize Steam Service filesystem Access, '+\
-          'please check the following QuArK configuration items \n'+\
-          ' steam filesystem dll\n steam account name (case sensitive!)\n steam app id\n steam directory \n',
-    5713: 'steam file system',
-    5714: 'bad content id: %s',
-    5715: 'vmf file',
-    5716: 'VMT file',
-    5717: 'Syntax error in Material file %s, line %d',
-    5718: 'reserved for hl2',
-    5719: 'reserved for hl2',
-    5720: 'reserved for hl2',
-    5721: 'reserved for hl2',
-    5722: 'reserved for hl2',
-    5723: 'reserved for hl2',
-    5724: 'reserved for hl2',
+    5712: "cannot initialize Steam Service filesystem Access, "+\
+          "please check the following QuArK configuration items \n"+\
+          " steam filesystem dll\n steam account name (case sensitive!)\n steam app id\n steam directory \n",
+    5713: "steam file system",
+    5714: "bad content id: %s",
+    5715: "VMF file",
+    5716: "VMT file",
+    5717: "Syntax error in Material file %s, line %d",
+    5718: "Could not load the VTF Lib//Error code %d",
+    5719: "Could not load the HL Lib//Error code %d",
+    #5720: "reserved for hl2",
+    #5721: "reserved for hl2",
+    #5722: "reserved for hl2",
+    #5723: "reserved for hl2",
+    #5724: "reserved for hl2",
+    #5725: "reserved for hl2",
+    #5726: "reserved for hl2",
+    #5727: "reserved for hl2",
+    #5728: "reserved for hl2",
+    #5729: "reserved for hl2",
+    5730: "Could not load the %s//Error code %d",
+    5731: "An error occurred in the %s: %s",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
-
     5750: "Material '%s' has no image to display",
     5751: "Material images are read-only",
     5752: "Material stage '%s' has no image to display",
@@ -961,16 +947,62 @@ Strings = {
     # 5768: reserved
     # 5769: reserved
 
-    5770: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer.",
-    5771: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer.",
-    5772: "Unable to create SceneObject",
-    5773: "An error occured in the OpenGL routines: GL_INVALID_VALUE",
-    5774: "An error occured in the OpenGL routines: GL_INVALID_ENUM",
-    5775: "An error occured in the OpenGL routines: GL_INVALID_OPERATION",
-    5776: "An error occured in the OpenGL routines: GL_STACK_OVERFLOW",
-    5777: "An error occured in the OpenGL routines: GL_STACK_UNDERFLOW",
-    5778: "An error occured in the OpenGL routines: GL_OUT_OF_MEMORY",
-    5779: "Unable to delete OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer.",
+    # DanielPharos would like to reserve 6000 .. 6099 for all renderers
+    6000: "Unable to create SceneObject//%s",
+    6001: "No 3D driver configured. Please select a 3D driver in the Configuration dialog box",
+    6002: "Could not find the 3D drivers (%s). You need either a graphics card with installed drivers or the software 3D library, depending on the choice you made in the Configuration dialog box//Error code %d",
+    6003: "BuildScene - empty face",
+    6004: "Bad LOD",
+    6005: "Bad reverse LOD",
+    6006: "Bad aspect ratio",
+
+    6010: "Texture not loaded",
+    6011: "Invalid value for %s found: %d. Using default",
+    6012: "No valid value for %s found, defaulting to: %d",
+
+    # DanielPharos would like to reserve 6100 .. 6199 for the software renderer
+    6100: "Error with the Software 3D drivers//%s failed",
+
+    6120: "Software 3D renderer does not support fullscreen views (yet)",
+    6121: "You must first call Open3Dfx",
+
+    # DanielPharos would like to reserve 6200 .. 6299 for the Glide renderer
+    6200: "Error with the 3Dfx Glide drivers//%s failed",
+
+    6220: "Glide renderer does not support fullscreen views (yet)",
+    6221: "You must first call Open3Dfx",
+
+    # DanielPharos would like to reserve 6300 .. 6399 for the OpenGL renderer
+    6300: "Could not load the OpenGL drivers//Error code %d",
+    6301: "Error in OpenGL initialization//'%s' failed",
+    6302: "Error in OpenGL commands [Error code(s) %s step %d]",
+    6303: "An error occurred in the OpenGL routines: %s",
+
+    6310: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer",
+    6311: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
+    6312: "Unable to delete OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
+    6313: "Out of OpenGL display lists. Try updating your video card drivers. If that doesn't work, disable the display lists option in the Configuration dialog box",
+    6314: "Out of OpenGL texture numbers. Try updating your video card drivers. If that doesn't work, use another renderer",
+    6315: "Failed to swap buffers. Try updating your video card drivers. If that doesn't work, disable the double buffering option in the Configuration dialog box",
+
+    6320: "OpenGL renderer does not support fullscreen views (yet)",
+    6321: "An error occurred in the OpenGL routines: CurrentSurf is nil!",
+
+    # DanielPharos would like to reserve 6400 .. 6499 for the DirectX renderer
+    6400: "Error in DirectX initialization//'%s'",
+    6401: "Error in DirectX uninitialization//'%s'",
+    6402: "Could not load the DirectX drivers//Error code %d",
+    6403: "Error using DirectX//Function '%s' failed with '%s'",
+
+    6410: "Internal driver error in DirectX. Try updating your video card drivers and DirectX. If that doesn't work, use another renderer",
+    6411: "Unable to load DirectX 9. Make sure DirectX 9.0c is installed",
+    6412: "Unable to find a DirectX 9 compatible device",
+
+    6420: "DirectX renderer does not support fullscreen views (yet)",
+    6421: "Direct3D: Hardware vertex processing selected",
+    6422: "Direct3D: Software vertex processing selected",
+    6423: "Direct3D: Pure device enabled",
+    6424: "Direct3D: Pure device disabled",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 
@@ -978,18 +1010,79 @@ Strings = {
     #-102: "\nNote: to use a bitmap as a texture, you must first convert the bitmap into a texture : in the Texture Browser, choose 'Paste Special' instead of 'Paste'.",
     -103: "%d texture(s) could not be found. Are you sure you want to continue ?",
     -104: "This command uses the 3D viewer selected in options. Note that if you get a black screen it probably means you are looking at a part of your map where there is no light. In case of trouble (or to disable light computation) see the viewer section of the configuration dialog box and try again.\n\nIt is recommended to save your work first. Ok to load 3D viewer now ?",
+    -105: "Note: when this button is pressed, the normal handles around the objects in your map are replaced by pink handles that let you do 'linear mapping' operations.\n\n'Linear mapping' operations include rotations, zooms, and various distortions.\n\nClick again on this button to get the normal handles.",
 
     -409: "Bezier",
 
     -459: "Parameters about the selected Bezier patch(es)|bezier patches",
 
-
 }
 
 # ----------- REVISION HISTORY ------------
-#
-#
 #$Log$
+#Revision 1.101  2007/07/05 10:18:34  danielpharos
+#Moved a string to the dictionary.
+#
+#Revision 1.100  2007/06/13 11:57:33  danielpharos
+#Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+#
+#Revision 1.99  2007/06/13 11:44:46  danielpharos
+#Changed a number of a string and removed an unused one.
+#
+#Revision 1.98  2007/06/13 11:43:23  danielpharos
+#Small cleanup in code for reading setup.
+#
+#Revision 1.97  2007/05/15 15:25:27  danielpharos
+#Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
+#
+#Revision 1.96  2007/05/09 16:14:47  danielpharos
+#Big update to the DirectX renderer. Fade color should now display. Stability is still an issue however.
+#
+#Revision 1.95  2007/05/05 17:55:41  cdunde
+#To fix small typo error.
+#
+#Revision 1.94  2007/05/02 22:34:43  danielpharos
+#Added DDS file support. Fixed wrong (but unused then) DevIL DDL interface. DDS file saving not supported at the moment.
+#
+#Revision 1.93  2007/04/14 11:33:31  danielpharos
+#Fixed a few typo's.
+#
+#Revision 1.92  2007/04/12 15:28:04  danielpharos
+#Minor clean up.
+#
+#Revision 1.91  2007/04/12 10:51:03  danielpharos
+#Added brushdef2 loading support.
+#
+#Revision 1.90  2007/04/02 22:12:21  danielpharos
+#Moved one line to the dictionnary.
+#
+#Revision 1.89  2007/03/29 21:01:35  danielpharos
+#Changed a few comments and error messages
+#
+#Revision 1.88  2007/03/29 17:27:27  danielpharos
+#Updated the Direct3D renderer. It should now initialize correctly.
+#
+#Revision 1.87  2007/03/26 21:06:40  danielpharos
+#Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
+#
+#Revision 1.86  2007/03/25 13:51:50  danielpharos
+#Moved a few dictionnary words around.
+#
+#Revision 1.85  2007/03/17 15:43:02  danielpharos
+#Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
+#
+#Revision 1.84  2007/03/17 14:32:50  danielpharos
+#Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+#
+#Revision 1.83  2007/03/01 17:34:44  danielpharos
+#Added two new error messages for HL2.
+#
+#Revision 1.82  2007/02/08 16:36:43  danielpharos
+#Updated VTF handling to use VTFLib. The HL2 memory leak is gone! Warning: SaveFile not working!
+#
+#Revision 1.81  2007/02/02 21:14:55  danielpharos
+#Added a DirectX error message
+#
 #Revision 1.80  2006/12/03 23:13:28  danielpharos
 #Fixed the maximum texture dimension for OpenGL
 #

@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/02/19 12:06:20  danielpharos
+Fixed an access violation with disabled button bitmaps
+
+Revision 1.17  2007/02/09 10:44:17  danielpharos
+Fixes for memory leaks
+
+Revision 1.16  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.14  2003/08/13 04:17:32  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -372,6 +381,8 @@ begin
    begin
     ImageList^.Images[DisabledBmp<>Nil][Index]:=Nil;
     Py_DECREF(ImageList);
+    if (DisabledBmp<>nil) and (DisabledBmp<>DisabledNak) then
+      DisabledBmp.free;
     if BitmapCopy<>0 then
      DeleteObject(BitmapCopy);
    end;

@@ -258,8 +258,8 @@ def qmenuitem1click(m):
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         if setup["CloseOnGame"]:
             editor.layout.mpp.viewpage(0)
-            if editor.layout.CurrentRendererOwner is not None:
-                editor.layout.full3Dview.close()
+            for floating in editor.layout.Floating3DWindows:
+              floating.close()
     RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor,
       m.info["RunGame"], m.text, 0, [], "", None)
 
@@ -292,7 +292,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
 
         if buildmode["ExportMapFile"]:
             if MapOption("AutoCheckMap", SS_MAP):
-                setup = quarkx.setupsubset()
                 if setup["NoMapChecks"]!="1":
                     import mapsearch
                     if mapsearch.CheckMap() == 0:
@@ -379,15 +378,20 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     #
     # Precompute a few variables.
     #
-    tmpquark = quarkx.outputfile("")
-    if tmpquark[-1]=='\\':
-        tmpquark = tmpquark[:-1]
+    outputfilepath = quarkx.outputfile("")
+    if outputfilepath[-1]=='\\':
+        outputfilepath = outputfilepath[:-1]
     consolecloser = CloseConsole()   # close or reopens the console at the end
     consolecloser.console = len(maplist) and maplist[-1][2]["Pause"]
     next = consolecloser
     missing = ""
     hxstr = ""
     hxstrfile = setup["HxStrings"]
+    setupdirectory = setup["Directory"]
+    setupbasedir = setup["BaseDir"]
+    setuptmpquark = setup["tmpQuArK"]
+    if setuptmpquark == "":
+        setuptmpquark = "tmpQuArK"
     if hxstrfile and len(maplist):
         try:
             hxstr = quarkx.needgamefile(hxstrfile)["Data"]
@@ -422,13 +426,13 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
 
         if setup["StupidBuildToolKludge"]:
             # stupid tool that wants to run in the base dir
-            toolworkdir = setup["Directory"] + "/" + setup["BaseDir"]
-            argument_mappath = "../tmpquark/maps"
-            argument_mapfile = "../tmpquark/maps/%s.map" % map
-            argument_file    = "../tmpquark/maps/%s" % map
+            toolworkdir = setupdirectory + "/" + setupbasedir
+            argument_mappath = "../" + setuptmpquark + "/maps"
+            argument_mapfile = "../" + setuptmpquark + "/maps/%s.map" % map
+            argument_file    = "../" + setuptmpquark + "/maps/%s" % map
         else:
             # clever tool that can run anywhere
-            toolworkdir = tmpquark
+            toolworkdir = outputfilepath
             argument_mappath = "maps"
             argument_mapfile = "maps/%s.map" % map
             argument_file    = "maps/%s" % map
@@ -483,8 +487,8 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     newcmdline = newcmdline.replace("%mapfile%",  argument_mapfile)
                     newcmdline = newcmdline.replace("%file%",     argument_file)
                     newcmdline = newcmdline.replace("%filename%", argument_filename)
-                    newcmdline = newcmdline.replace("%basepath%", setup["Directory"])
-                    newcmdline = newcmdline.replace("%gamedir%", setup["tmpQuArK"])
+                    newcmdline = newcmdline.replace("%basepath%", setupdirectory)
+                    newcmdline = newcmdline.replace("%gamedir%", setuptmpquark)
                     newcmdline = newcmdline.replace("%quarkpath%", quarkx.exepath)
                     newcmdline = newcmdline.replace("%grouppath%", argument_grouppath)
                     if setup["BuildPgmsDir"] is not None:
@@ -691,6 +695,12 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.49  2007/04/16 11:24:15  danielpharos
+#Changed some directory routines: tmpQuArK isn't hardcoded anymore.
+#
+#Revision 1.48  2007/03/27 15:48:58  danielpharos
+#Re-added the ability to open multiple floating 3D windows! This time there's an option to toggle it on and off in the options.
+#
 #Revision 1.47  2006/11/30 01:19:33  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

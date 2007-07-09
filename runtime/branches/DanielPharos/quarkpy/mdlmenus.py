@@ -19,15 +19,32 @@ from mdlutils import *
 import mdlcommands
 #import mapbtns
 
+### Setup for future use. See mapmenus.py for examples
+MdlEditMenuCmds = []
+MdlEditMenuShortcuts = {}
 
-EditMenuCmds = []
-EditMenuShortcuts = {}
+
+#
+# Model Editor MdlQuickKey shortcuts
+# The area below is for future def's for those MdlQuickKeys, see mapmenus.py for examples.
 
 
+
+# Note: the function *names* are used to look up the key from Defaults.qrk
+# See mapmenus.py file for examples of these key names def's.
+# To start using function def are made in the above section.
+# Each def becomes a keyname which is inserted in the MdlQuickKeys list below and
+# in the Defaults.qrk file in the Keys:config section of Model:config.
+MdlQuickKeys = []
+
+
+#
+# Menu bar builder
+#
 def BuildMenuBar(editor):
     import mdlmgr
     import mdlcommands
-    import mdltools
+    import mdltoolbars
     import mdloptions
 
     File1, sc1 = qmenu.DefaultFileMenu()
@@ -52,26 +69,38 @@ def BuildMenuBar(editor):
 
     Edit1, sc2 = qmenu.DefaultEditMenu(editor)
     sc1.update(sc2)   # merge shortcuts
-    l1 = EditMenuCmds
+    l1 = MdlEditMenuCmds
     if len(l1):
         Edit1.items = Edit1.items + [qmenu.sep] + l1
-    sc1.update(EditMenuShortcuts)   # merge shortcuts
+    sc1.update(MdlEditMenuShortcuts)   # merge shortcuts
 
     Commands1, sc2 = mdlcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
 
-    Tools1, sc2 = mdltools.ToolsMenu(editor, mdltools.toolbars)
+    Tools1, sc2 = mdltoolbars.ToolsMenu(editor, mdltoolbars.toolbars)
     sc1.update(sc2)   # merge shortcuts
 
     Options1, sc2 = mdloptions.OptionsMenu()
     sc1.update(sc2)   # merge shortcuts
+    l1 = plugins.mdlgridscale.GridMenuCmds
+    l2 = [qmenu.sep]
+    if len(l1):
+        Options1.items = l1 + l2 + Options1.items
+        sc1.update(sc2)   # merge shortcuts
 
     return [File1, Layout1, Edit1, quarkx.toolboxmenu, Commands1, Tools1, Options1], sc1
 
 
 
-def BackgroundMenu(editor, view=None, origin=None):
+def MdlBackgroundMenu(editor, view=None, origin=None):
     "Menu that appears when the user right-clicks on nothing."
+
+    import mdlhandles
+    import mdlcommands
+
+    File1, sc1 = qmenu.DefaultFileMenu()
+    Commands1, sc2 = mdlcommands.CommandsMenu()
+    sc1.update(sc2)   # merge shortcuts
 
     undo, redo = quarkx.undostate(editor.Root)
     if undo is None:   # to undo
@@ -91,12 +120,22 @@ def BackgroundMenu(editor, view=None, origin=None):
     paste1.cmd = "paste"
     paste1.state = not quarkx.pasteobj() and qmenu.disabled
     extra = extra + [qmenu.sep, paste1]
+
     if view is not None:
-        def backbmp1click(m, view=view, form=editor.form):
-            import qbackbmp
-            qbackbmp.BackBmpDlg(form, view)
-        backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
-        extra = extra + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+        if view.info["viewname"] != "skinview":
+            mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            def backbmp1click(m, view=view, form=editor.form):
+                import qbackbmp
+                qbackbmp.BackBmpDlg(form, view)
+            backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
+            if editor.ModelFaceSelList != []:
+                extra = extra + [qmenu.sep] + [mdlfacepop] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+            else:
+                extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+        else:
+            skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            extra = [qmenu.sep] + [skinviewcommands]
     return [Undo1] + extra
 
 
@@ -109,13 +148,13 @@ def set_mpp_page(btn):
     editor.layout.mpp.viewpage(btn.page)
 
 
-
 #
 # Entities pop-up menus.
 #
 
 def MultiSelMenu(sellist, editor):
     return BaseMenu(sellist, editor)
+
 
 
 def BaseMenu(sellist, editor):
@@ -139,6 +178,27 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.14  2007/06/03 22:50:55  cdunde
+#To add the model mesh Face Selection RMB menus.
+#(To add the RMB Face menu items when the cursor is not over one of the selected model mesh faces)
+#
+#Revision 1.13  2007/05/16 19:39:46  cdunde
+#Added the 2D views gridscale function to the Model Editor's Options menu.
+#
+#Revision 1.12  2007/04/27 17:27:42  cdunde
+#To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
+#Added new functions for aligning, single and multi selections, Skin-view vertexes.
+#To establish the Model Editors MdlQuickKeys for future use.
+#
+#Revision 1.11  2007/04/22 22:41:50  cdunde
+#Renamed the file mdltools.py to mdltoolbars.py to clarify the files use and avoid
+#confliction with future mdltools.py file to be created for actual tools for the Editor.
+#
+#Revision 1.10  2007/04/16 16:55:59  cdunde
+#Added Vertex Commands to add, remove or pick a vertex to the open area RMB menu for creating triangles.
+#Also added new function to clear the 'Pick List' of vertexes already selected and built in safety limit.
+#Added Commands menu to the open area RMB menu for faster and easer selection.
+#
 #Revision 1.9  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

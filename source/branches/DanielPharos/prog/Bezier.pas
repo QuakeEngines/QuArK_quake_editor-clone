@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/04/12 15:04:43  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
+Revision 1.32  2007/04/09 21:44:24  danielpharos
+Started work on Doom 3 map version 2 and Quake 4 map version 3.
+
+Revision 1.31  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.29  2002/05/13 10:23:12  tiglari
 Select beziers from the backside
 
@@ -173,7 +182,6 @@ type
 
              procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
              procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
-             procedure SaveAsTextBezier(Target: TStrings);
 
              {function CountBezierTriangles(var Cache: TBezierMeshBuf3) : Integer;}
              function GetMeshCache : TBezierMeshBuf3;
@@ -1386,55 +1394,6 @@ begin
    if Max.Y < cp.CP^[1] then Max.Y:=cp.CP^[1];
    if Max.Z < cp.CP^[2] then Max.Z:=cp.CP^[2];
    Inc(cp.CP);
-  end;
-end;
-
- { save as text for .map files }
-procedure TBezier.SaveAsTextBezier(Target: TStrings);
-var
- cp: TBezierMeshBuf5;
- I, J, K, R: Integer;
- S: String;
- Value: PSingle;
-begin
- cp:=ControlPoints;
- if (cp.W>1) and (cp.H>1) then
-  begin   { ignore Bezier lines (with only 1 row or 1 column of control points) }
-   Target.Add(CommentMapLine(Ancestry));
-   Target.Add(' {');
-   Target.Add('  patchDef2');
-   Target.Add('  {');
-   {$IFDEF TexUpperCase}
-   Target.Add('   ' + UpperCase(NomTex));
-   {$ELSE}
-   Target.Add('   ' + NomTex);
-   {$ENDIF}
-   Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
-   Target.Add('(');
-   for J:=0 to cp.W-1 do
-    begin
-     Value:=@cp.CP^[5*J];
-     S:='( ';
-     for I:=1 to cp.H do
-      begin
-       S:=S+'( ';
-       for K:=1 to 5 do
-        begin
-         R:=Round(Value^);
-         if {WriteIntegers or} (Abs(Value^-R) < rien) then
-          S:=S+IntToStr(R)+' '
-         else
-          S:=S+FloatToStrF(Value^, ffFixed, 20, 5)+' ';
-         Inc(Value);
-        end;
-       S:=S+') ';
-       Inc(Value, 5*(cp.W-1));
-      end;
-     Target.Add(S+')');
-    end;
-   Target.Add(')');
-   Target.Add('  }');
-   Target.Add(' }');
   end;
 end;
 

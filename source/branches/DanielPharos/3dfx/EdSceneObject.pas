@@ -23,6 +23,54 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2007/06/06 22:31:20  danielpharos
+Fix a (recent introduced) problem with OpenGL not drawing anymore.
+
+Revision 1.33  2007/06/04 19:20:25  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
+Revision 1.32  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
+Revision 1.31  2007/03/26 21:01:46  danielpharos
+Big change to OpenGL. Fixed a huge memory leak. Better handling of shared display lists.
+
+Revision 1.30  2007/03/22 20:52:58  danielpharos
+Improved tracking of the target DC. Should fix a few grey screens.
+
+Revision 1.29  2007/03/17 14:32:38  danielpharos
+Moved some dictionary entries around, moved some error messages into the dictionary and added several new error messages to improve feedback to the user.
+
+Revision 1.28  2007/03/02 13:09:22  danielpharos
+Fixed a HUGE slowdown with textures in BuildScene.
+
+Revision 1.27  2007/03/01 17:36:54  danielpharos
+Stopped many redundant calls from being made when moving the camera. Should take care of some weird problems, and be faster too.
+
+Revision 1.26  2007/02/27 17:02:52  danielpharos
+Fix a few bugs in OpenGL lighting, and sort the transparent faces. Transparency is not working properly yet, but it's a decent start.
+
+Revision 1.25  2007/02/08 16:30:45  danielpharos
+Oops, fixed a goof.
+
+Revision 1.24  2007/02/07 20:02:53  danielpharos
+Ugly but working fix for an OpenGL lighting memory leak
+
+Revision 1.23  2007/02/06 14:07:39  danielpharos
+Another transparency fix. Beziers, sprites and models should now also have transparency.
+
+Revision 1.22  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
+Revision 1.21  2007/02/02 12:06:35  danielpharos
+Forgot to upload some changes, and changed the MeanColor function so it doesn't overflow anymore, and produces better results faster
+
+Revision 1.20  2007/01/31 15:11:21  danielpharos
+HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+
+Revision 1.19  2007/01/06 11:37:23  danielpharos
+Fixed the 'Image data missing' error when loading a shader without valid image. Also, QuArK will now automatically use the checkboard-pattern for those faces.
+
 Revision 1.18  2006/12/26 22:49:05  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -136,6 +184,8 @@ type
  TDisplayMode = (dmEditor, dmPanel, dmWindow, dmFullScreen);
  TDisplayType = (dtXY, dtXZ, dtYZ, dt2D, dt3D);
 
+ POpenGLLightingList = ^LongInt;
+
  PModel3DInfo = ^TModel3DInfo;
  TModel3DInfo = record
                   Base: QComponent;
@@ -159,10 +209,12 @@ type
                Normale: vec3_t;          { not defined if GL_TRI_STRIP }
                Dist: scalar_t;           { not defined if GL_TRI_STRIP }
                GlideRadius: scalar_t;
-               OpenGLDisplayList: Integer;
+               OpenGLLightList: POpenGLLightingList;
+               OpenGLAveragePosition: vec3_t;
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: FxU32;
                TextureMode: Integer;
+               TransparentDrawn: Boolean;
               end;
 
  PGuPalette = ^GuTexPalette;
@@ -171,6 +223,8 @@ type
               SourceTexture: QPixelSet;
               TexW, TexH: Integer;
               LoadedTexW, LoadedTexH: Integer;
+              ColorBits: TPixelSetFormat;
+              AlphaBits: TPixelSetAlpha;
               info: GrTexInfo;
               MeanColor: FxU32;
               startAddress, endAddress: FxU32;
@@ -188,11 +242,22 @@ type
               TexName: String;
               SurfSize: Integer;
               Surf, tmp: PSurface3D;
-              ok: Boolean;
-              Transparent: set of Boolean;
+              Transparent: Boolean;
+              NumberFaces: Integer;
+              NumberTransparentFaces: Integer;
+              OpenGLAveragePosition: vec3_t;
+              OpenGLDistance: Double;
+              TransparentDrawn: Boolean;
              end;
 
  {------------------------}
+
+type
+ PVertex3D = ^TVertex3D;
+ TVertex3D = record
+              st: array[0..1] of Single;
+              xyz: vec3_t;
+             end;
 
 type
  TBuildMode = (bmSoftware, bmGlide, bmOpenGL, bmDirect3D);
@@ -236,10 +301,13 @@ type
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
    procedure SetViewRect(SX, SY: Integer); virtual; abstract;
-   procedure BuildScene(DC: HDC; AltTexSrc: QObject);
+   procedure SetViewDC(DC: HDC); virtual; abstract;
+   procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); virtual; abstract;
+   procedure SetCoords(nCoord: TCoordinates);
+   procedure BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
-   procedure SwapBuffers(Synch: Boolean; DC: HDC); virtual;
-   procedure Copy3DView(SX,SY: Integer; DC: HDC); virtual; abstract;
+   procedure SwapBuffers(Synch: Boolean); virtual;
+   procedure Copy3DView; virtual; abstract;
    function ChangeQuality(nQuality: Integer) : Boolean; virtual;
    procedure SetColor(nColor: TColorRef);
    procedure AddPolyFace(const a_PolyFace: PSurface);
@@ -285,7 +353,6 @@ type
    class procedure FreeNonVisibleTextures;
    procedure GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject{; PalWarning: TPaletteWarning});
    procedure FreeTextures(ForceAll: Boolean);
-   procedure ClearTexture(Tex: PTexture3); virtual;
    function CanFree: Boolean;
    function UnifiedPalette: Boolean;
    function ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
@@ -304,7 +371,8 @@ implementation
 
 uses SysUtils,
      Travail, Quarkx, Setup,
-     QkMdlObject, QkTextures, QkImages, QkFileObjects;
+     QkMdlObject, QkTextures, QkImages, QkFileObjects,
+     EdOpenGL;
      {EdTListP2;}
 
 const
@@ -377,12 +445,41 @@ end;
 procedure TSceneObject.ClearPList;
 var
  P: PSurfaces;
+ Surf: PSurface3D;
+ SurfEnd: PChar;
 begin
  while Assigned(FListSurfaces) do
   begin
    P:=FListSurfaces;
    FListSurfaces:=P^.Next;
-   FreeMem(P^.Surf);
+   if Assigned(P^.Surf) then
+    begin
+     if (self is TGLSceneObject) then
+     begin
+       Surf:=P^.Surf;
+       SurfEnd:=PChar(Surf)+P^.SurfSize;
+       while (Surf<SurfEnd) do
+        begin
+         with Surf^ do
+          begin
+           Inc(Surf);
+           if not (OpenGLLightList = nil) then
+            begin
+             FreeMem(OpenGLLightList);
+             OpenGLLightList := nil;
+             {DanielPharos: This should be done in the EdOpenGL,
+             then the Vertex3D-type above can also be removed,
+             and the link to EdOpenGL.}
+            end;
+           if VertexCount>=0 then
+             Inc(PVertex3D(Surf), VertexCount)
+           else
+             Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+          end;
+        end;
+      end;
+     FreeMem(P^.Surf);
+   end;
    Dispose(P);
   end;
 end;
@@ -434,6 +531,11 @@ begin
  SpriteInfo.Add(TObject(nColor));
 end;
 
+procedure TSceneObject.SetCoords(nCoord: TCoordinates);
+begin
+  Coord:=nCoord;
+end;
+
 procedure TSceneObject.SwapBuffers;
 begin
 end;
@@ -446,7 +548,7 @@ procedure TSceneObject.PostBuild(nVertexList, nVertexList2: TList);
 begin
 end;
 
-procedure TSceneObject.BuildScene(DC: HDC; AltTexSrc: QObject);
+procedure TSceneObject.BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
 const
  cProgressBarWidth = 256;
  cProgressBarHeight = 20;
@@ -497,8 +599,11 @@ var
   begin
     { try finding if the texturename already have been added to the list }
     if TexNames.Find(a_TexName, Idx) then
+    begin
       { it had, now get the associated Surfaces-element }
-      SurfacesElement:=PSurfaces(TexNames.Objects[Idx])
+      SurfacesElement:=PSurfaces(TexNames.Objects[Idx]);
+      SurfacesElement^.NumberFaces:=SurfacesElement^.NumberFaces+1;
+    end
     else
     begin
       { allocate memory for a TSurfaces-structure, and clear it }
@@ -509,6 +614,8 @@ var
       FListSurfaces:=SurfacesElement;  // Set the new starting point of the chain
       { assign the texturename, and some tmp value }
       SurfacesElement^.TexName:=a_TexName;
+      SurfacesElement^.NumberFaces:=1;
+      SurfacesElement^.NumberTransparentFaces:=0;
       Pointer(SurfacesElement^.tmp):=a_Tmp;
       { add texturename to list, and associate it with the newly allocated Surfaces-element }
       TexNames.AddObject(a_TexName, TObject(SurfacesElement));
@@ -575,6 +682,7 @@ var
 
         Dist:=vp0^[0]*Normale[0] + vp0^[1]*Normale[1] + vp0^[2]*Normale[2];
 
+        OpenGLLightList:=nil;
         if nRadius2>Radius2 then
           GlideRadius:=Sqrt(nRadius2)
         else
@@ -758,24 +866,24 @@ begin
      // needed to backup to version 1.09, due to version 1.10 causing constant editor lockups.
      { Setup a progress-bar, depending on what type of device-context
        thats been rendering to }
-     if DC=HDC(-1) then
+     if ProgressDC=HDC(-1) then
        ProgressIndicatorStart(5454, NewTextures)
      else
      begin
-       if DC<>0 then
+       if ProgressDC<>0 then
        begin
-         GetClipBox(DC, R);
+         GetClipBox(ProgressDC, R);
          Gauche:=(R.Right+R.Left-cProgressBarWidth) div 2;
          R.Left:=Gauche;
          R.Right:=Gauche+cProgressBarWidth;
          R.Top:=(R.Top+R.Bottom-cProgressBarHeight) div 2;
          R.Bottom:=R.Top+cProgressBarHeight;
-         SetBkColor(DC, $FFFFFF);
-         SetTextColor(DC, $000000);
+         SetBkColor(ProgressDC, $FFFFFF);
+         SetTextColor(ProgressDC, $000000);
          TextePreparation:=LoadStr1(5454);
-         ExtTextOut(DC, Gauche+38, R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
+         ExtTextOut(ProgressDC, Gauche+38, R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
          InflateRect(R, +1, +1);
-         FrameRect(DC, R, GetStockObject(Black_brush));
+         FrameRect(ProgressDC, R, GetStockObject(Black_brush));
          InflateRect(R, -1, -1);
          GdiFlush;
          R.Right:=R.Left;
@@ -793,17 +901,17 @@ begin
          if PList^.Texture=Nil then
          begin
            { update progressbar }
-           if DC=HDC(-1) then
+           if ProgressDC=HDC(-1) then
            begin
              ProgressIndicatorIncrement;
            end
            else
            begin
-             if DC<>0 then
+             if ProgressDC<>0 then
              begin
                Inc(NewTexCount);
                R.Right:=Gauche + MulDiv(cProgressBarWidth, NewTexCount, NewTextures);
-               FillRect(DC, R, Brush);
+               FillRect(ProgressDC, R, Brush);
                R.Left:=R.Right;
              end;
            end;
@@ -817,7 +925,7 @@ begin
 
      finally
        { clean up the progress-bar }
-       if DC=HDC(-1) then
+       if ProgressDC=HDC(-1) then
          ProgressIndicatorStop;
        if Brush<>0 then
          DeleteObject(Brush);
@@ -869,30 +977,30 @@ begin
 
            Dist:=F.Dist;
            VertexCount:=prvVertexCount;
+           OpenGLLightList:=nil;
 
-           with F.GetFaceOpacity(PList^.Texture^.DefaultAlpha) do
-           begin
-             If Mode=1 then
-               AlphaColor:=Integer(Addr(Color)^) or (Value shl 24)
-             else
-               AlphaColor:=CurrentColor or (Value shl 24);
-             TextureMode:=Mode;
-           end;
-           Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
-
-      (*   // version 1.9 caused 6.4.1 alpha 2 slowdown with code below.
+           AlphaColor:=CurrentColor or (254 shl 24);
+           TextureMode:=0;
            // if the texture has alpha channel its probably transparent
-           if assigned (PList^.Texture^.SourceTexture) then
-             if PList^.Texture^.SourceTexture.Description.AlphaBits = psa8bpp then
-               begin
-                 Include(PList^.Transparent,True);
-                 TextureMode:=2;
-                 AlphaColor:=CurrentColor or (254 shl 24);
-               end   *)
+           if Assigned(PList^.Texture^.SourceTexture) then
+           begin
+             TextureMode:=2;
+             case PList^.Texture^.AlphaBits of
+             psaDefault: PList^.Transparent:=False;
+             psaNoAlpha: PList^.Transparent:=False;
+             psaGlobalAlpha: PList^.Transparent:=False;
+             psa8bpp: PList^.Transparent:=True;
+             end;
+           end;
+
+           AlphaColor:=CurrentColor or (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha).Value shl 24);
+           if (AlphaColor and $FF000000) <> $FF000000 then
+             PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
+
          end;
 
          if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
-           Raise InternalE('BuildScene - empty face');
+           Raise InternalE(LoadStr1(6003));
 
        (*TexPt[2].X:=TexPt[2].X-TexPt[1].X;
          TexPt[2].Y:=TexPt[2].Y-TexPt[1].Y;
@@ -1000,9 +1108,7 @@ begin
          end;
 
          if (Mode=bmSoftware) or (Mode=bmGlide) then
-           Surf3D^.GlideRadius:=Sqrt(Radius2)
-         else
-           Surf3D^.OpenGLDisplayList:=0;
+           Surf3D^.GlideRadius:=Sqrt(Radius2);
 
          PList^.tmp:=PSurface3D(PV);
        end;
@@ -1037,7 +1143,8 @@ begin
          else
            Surf3D:=PList^.tmp;
 
-         Include(PList^.Transparent, ModelAlpha<>255);
+         if ModelAlpha<>255 then
+           PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
 
          stScaleModel(PList^.Texture, CorrW, CorrH);
 
@@ -1088,6 +1195,7 @@ begin
                Normale[2]:=DeltaV.Z*dd;
 
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+               OpenGLLightList:=nil;
 
                if (Mode=bmSoftware) or (Mode=bmGlide) then
                begin
@@ -1095,14 +1203,23 @@ begin
                    GlideRadius:=Sqrt(nRadius2)
                  else
                    GlideRadius:=Sqrt(Radius2);
-               end
-               else
-                 OpenGLDisplayList:=0;
+               end;
 
                VertexCount:=3;
+               Texturemode:= ModelRenderMode;
                AlphaColor:=CurrentColor or (ModelAlpha shl 24);
 
-               Texturemode:= ModelRenderMode;
+               // if the texture has alpha channel its probably transparent
+               if Assigned(PList^.Texture^.SourceTexture) then
+               begin
+                 TextureMode:=2;
+                 case PList^.Texture^.AlphaBits of
+                 psaDefault: PList^.Transparent:=False;
+                 psaNoAlpha: PList^.Transparent:=False;
+                 psaGlobalAlpha: PList^.Transparent:=False;
+                 psa8bpp: PList^.Transparent:=True;
+                 end;
+               end;
              end;
 
              Inc(PChar(Surf3D), VertexSize3m);
@@ -1142,7 +1259,8 @@ begin
          else
            Surf3D:=PList^.tmp;
 
-         Include(PList^.Transparent, Alpha<>255);
+         if Alpha<>255 then
+           PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
 
          stScaleSprite(PList^.Texture, CorrW, CorrH);
 
@@ -1193,6 +1311,7 @@ begin
                Normale[2]:=DeltaV.Z*dd;
 
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+               OpenGLLightList:=nil;
 
                if (Mode=bmSoftware) or (Mode=bmGlide) then
                begin
@@ -1200,12 +1319,22 @@ begin
                    GlideRadius:=Sqrt(nRadius2)
                  else
                    GlideRadius:=Sqrt(Radius2);
-               end
-               else
-                 OpenGLDisplayList:=0;
+               end;
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (Alpha shl 24);
+               
+               // if the texture has alpha channel its probably transparent
+               if Assigned(PList^.Texture^.SourceTexture) then
+               begin
+                 TextureMode:=2;
+                 case PList^.Texture^.AlphaBits of
+                 psaDefault: PList^.Transparent:=False;
+                 psaNoAlpha: PList^.Transparent:=False;
+                 psaGlobalAlpha: PList^.Transparent:=False;
+                 psa8bpp: PList^.Transparent:=True;
+                 end;
+               end;
              end;
 
              Inc(PChar(Surf3D), VertexSize3m);
@@ -1252,7 +1381,8 @@ begin
            NewRenderMode:=Mode;
          end;
 
-         Include(PList^.Transparent, ObjectColor and $FF000000 <> $FF000000);
+         if ObjectColor and $FF000000 <> $FF000000 then
+           PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
 
          stScaleBezier(PList^.Texture, CorrW, CorrH);
          BezierBuf:=GetMeshCache;
@@ -1293,10 +1423,22 @@ begin
              begin
                with Surf3D^ do
                begin
-                 OpenGLDisplayList:=0;
+                 OpenGLLightList:=nil;
                  VertexCount:=-(2*BezierBuf.W);
                  AlphaColor:=ObjectColor;
                  TextureMode:=NewRenderMode;
+
+                 // if the texture has alpha channel its probably transparent
+                 if Assigned(PList^.Texture^.SourceTexture) then
+                 begin
+                   TextureMode:=2;
+                   case PList^.Texture^.AlphaBits of
+                   psaDefault: PList^.Transparent:=False;
+                   psaNoAlpha: PList^.Transparent:=False;
+                   psaGlobalAlpha: PList^.Transparent:=False;
+                   psa8bpp: PList^.Transparent:=True;
+                   end;
+                 end;
                end;
 
                PV:=PChar(Surf3D)+SizeOf(TSurface3D);
@@ -1384,7 +1526,9 @@ end;
 
 procedure TTextureManager.FreeTexture(Tex: PTexture3);
 begin
- ClearTexture(Tex);
+ //DanielPharos: How can you be sure OpenGL has been loaded?
+ if Tex^.OpenGLName<>0 then
+   qrkGLState.ClearTexture(Tex);
  FreeMem(Tex^.info.data);
  Tex^.SourceTexture.AddRef(-1);
  Dispose(Tex);
@@ -1639,6 +1783,7 @@ var
 {Lmp: PPaletteLmp;}
  Size: TPoint;
  TextureMaxDimension: Integer;
+ PSD: TPixelSetDescription;
 begin
  if Textures.Find(P^.TexName, w) then
   PTex:=PTexture3(Textures.Objects[w])
@@ -1690,8 +1835,14 @@ begin
     end
    else
     begin
-     Size:=Q.GetSize;
-     Q.AddRef(+1);
+     try
+      Size:=Q.GetSize;
+      Q.AddRef(+1);
+     except
+      Size.X:=cDummyTextureWHSize;
+      Size.Y:=cDummyTextureWHSize;
+      Q:=nil;
+     end;
     end;
 
    { the maximum width/height dimension, to reduce memory-consumption if possible }
@@ -1754,6 +1905,13 @@ begin
     max:=h;
    PTex^.LoadedTexW:=w;
    PTex^.LoadedTexH:=h;
+   if Q<>Nil then
+   begin
+     PSD:=Q.Description;
+     PTex^.ColorBits:=Q.Description.Format;
+     PTex^.AlphaBits:=Q.Description.AlphaBits;
+     PSD.Done;
+   end;
  (*MemSize:=w*h;
 
    if PSD.Format=psf24bpp then
@@ -1901,10 +2059,6 @@ begin
   end;
 end;
 
-procedure TTextureManager.ClearTexture(Tex: PTexture3);
-begin
-end;
-
  {------------------------}
 
 function GetTex3Description(const Tex3: TTexture3) : TPixelSetDescription;
@@ -1939,10 +2093,10 @@ end;
 
 function ComputeMeanColor(const PSD: TPixelSetDescription) : FxU32;
 var
- re, gr, bl: Integer;
- pl: array[0..255] of record pr, pg, pb: Integer; end;
+ re, gr, bl: LongInt;
+ re2, gr2, bl2: LongInt;
+ pl: array[0..255] of record pr, pg, pb: LongInt; end;
  I, J: Integer;
- Facteur: TDouble;
  P: PChar;
 begin
  re:=0;
@@ -1954,23 +2108,29 @@ begin
             for I:=0 to 255 do
              with pl[I] do
               begin
-               pr:=Integer(Ord(P^) div 2) * (Succ(Integer(Ord(P^))) div 2);
+               pr:=LongInt(Ord(P^));
                Inc(P);
-               pg:=Integer(Ord(P^) div 2) * (Succ(Integer(Ord(P^))) div 2);
+               pg:=LongInt(Ord(P^));
                Inc(P);
-               pb:=Integer(Ord(P^) div 2) * (Succ(Integer(Ord(P^))) div 2);
+               pb:=LongInt(Ord(P^));
                Inc(P);
               end;
             P:=PSD.StartPointer;
             for J:=1 to PSD.Size.Y do
              begin
+              re2:=0;
+              gr2:=0;
+              bl2:=0;
               for I:=0 to PSD.Size.X-1 do
                with pl[Ord(P[I])] do
                 begin
-                 Inc(re, pr);
-                 Inc(gr, pg);
-                 Inc(bl, pb);
+                 Inc(re2, pr);
+                 Inc(gr2, pg);
+                 Inc(bl2, pb);
                 end;
+              Inc(re,re2 div PSD.Size.X);
+              Inc(gr,gr2 div PSD.Size.X);
+              Inc(bl,bl2 div PSD.Size.X);
               Inc(P, PSD.ScanLine);
              end;
            end;
@@ -1978,16 +2138,22 @@ begin
              P:=PSD.StartPointer;
              for J:=1 to PSD.Size.Y do
               begin
+               re2:=0;
+               gr2:=0;
+               bl2:=0;
                I:=PSD.Size.X*3;
                while I>0 do
                 begin
                  Dec(I);
-                 Inc(bl, Integer(Ord(P[I]) div 2) * (Succ(Integer(Ord(P[I]))) div 2));
+                 Inc(bl2, LongInt(Ord(P[I])));
                  Dec(I);
-                 Inc(gr, Integer(Ord(P[I]) div 2) * (Succ(Integer(Ord(P[I]))) div 2));
+                 Inc(gr2, LongInt(Ord(P[I])));
                  Dec(I);
-                 Inc(re, Integer(Ord(P[I]) div 2) * (Succ(Integer(Ord(P[I]))) div 2));
+                 Inc(re2, LongInt(Ord(P[I])));
                 end;
+               Inc(re,re2 div PSD.Size.X);
+               Inc(gr,gr2 div PSD.Size.X);
+               Inc(bl,bl2 div PSD.Size.X);
                Inc(P, PSD.ScanLine);
               end;
             end;
@@ -1997,10 +2163,9 @@ begin
    Exit;
   end;
  end;
- Facteur:=4.0 / (PSD.Size.X * PSD.Size.Y);
- Result:=Round(Sqrt(bl * Facteur))
-     or (Round(Sqrt(gr * Facteur)) shl 8)
-     or (Round(Sqrt(re * Facteur)) shl 16);
+ Result:=(bl div PSD.Size.Y)
+     or ((gr div PSD.Size.Y) shl 8)
+     or ((re div PSD.Size.Y) shl 16);
 end;
 
 function SwapColor(Col: TColorRef) : TColorRef;
@@ -2013,8 +2178,8 @@ end;
 function GetLodFor(w: Integer) : GrLOD_t;
 begin
  case w of
-  4096: Result:=GR_LOD_256;  {Daniel: The software and 3DFX don't support higher LODs}
-  2048: Result:=GR_LOD_256;
+  4096: Result:=GR_LOD_256;  //DanielPharos: The software and 3DFX don't support higher LODs
+  2048: Result:=GR_LOD_256;  //              Other renderers therefore shouldn't use these function
   1024: Result:=GR_LOD_256;
   512:  Result:=GR_LOD_256;
   256:  Result:=GR_LOD_256;
@@ -2027,7 +2192,7 @@ begin
   2:    Result:=GR_LOD_2;
   1:    Result:=GR_LOD_1;
  else
-  Raise InternalE('Bad LOD');
+  Raise InternalE(LoadStr1(6004));
  end;
 end;
 
@@ -2044,7 +2209,7 @@ begin
   GR_LOD_2:   w:=2;
   GR_LOD_1:   w:=1;
  else
-  Raise InternalE('Bad reverse LOD');
+  Raise InternalE(LoadStr1(6005));
  end;
 
  h:=w;
@@ -2053,9 +2218,12 @@ begin
   GR_ASPECT_8x1: h:=h div 8;
   GR_ASPECT_4x1: h:=h div 4;
   GR_ASPECT_2x1: h:=h div 2;
+  GR_ASPECT_1x1: ;
   GR_ASPECT_1x2: w:=w div 2;
   GR_ASPECT_1x4: w:=w div 4;
   GR_ASPECT_1x8: w:=w div 8;
+ else
+  Raise InternalE(LoadStr1(6006));
  end;
 end;
 

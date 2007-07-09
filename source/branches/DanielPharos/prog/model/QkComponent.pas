@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2007/06/12 11:23:49  cdunde
+Fixed what looks like a type error in vertex comparisons for line drawing.
+
+Revision 1.24  2007/05/06 21:24:24  danielpharos
+A little cleanup.
+
+Revision 1.23  2007/03/27 19:49:01  cdunde
+Added two comments to help devs find what draws a Models Mesh.
+
+Revision 1.22  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.20  2003/01/01 14:07:39  decker_dk
 Fixed compiler-warning, by commenting an unused function out-of-scope.
 
@@ -215,8 +227,8 @@ begin
       index:=-1;
       for i:=1 to cnt do begin
         f1:=(tris^[0].vertexno=v1)or(tris^[0].vertexno=v2)or(tris^[0].vertexno=v3);
-        f2:=(tris^[1].vertexno=v2)or(tris^[1].vertexno=v2)or(tris^[1].vertexno=v3);
-        f3:=(tris^[2].vertexno=v2)or(tris^[2].vertexno=v2)or(tris^[2].vertexno=v3);
+        f2:=(tris^[1].vertexno=v1)or(tris^[1].vertexno=v2)or(tris^[1].vertexno=v3);
+        f3:=(tris^[2].vertexno=v1)or(tris^[2].vertexno=v2)or(tris^[2].vertexno=v3);
         if f1 and f2 and f3 then begin  // v1, v2 & v3 can be in any order!
           index:=i;
           break;
@@ -395,9 +407,11 @@ procedure QComponent.SetCurrentSkin(nSkin: QImage);
 begin
   FCurrentSkin.AddRef(-1);
   FCurrentSkin:=nSkin;
-  if nSkin<>Nil then begin
+  if nSkin<>Nil then
+  begin
     nSkin.AddRef(+1);
     FSkinCounter:=GlobalSkinCounter;
+    // DanielPharos: GlobalSkinCounter never decreases. Eventually, we're going to overflow!
     Inc(GlobalSkinCounter);
   end;
 end;
@@ -443,7 +457,8 @@ procedure QComponent.AddTo3DScene;
 var
   Info: PModel3DInfo;
 begin
-  if CurrentFrame=Nil then begin
+  if CurrentFrame=Nil then
+  begin
     SetCurrentFrame(GetFrameFromIndex(0));
     if CurrentFrame=Nil then
       Exit;
@@ -554,12 +569,13 @@ begin
     Result:=Nil;
     Exit;
   end;
-  L:=TQList.Create; try
-  FindAllSubObjects('', QImage, Nil, L);
-  if N>=L.Count then
-    Result:=Nil
-  else
-    Result:=L[N] as QImage;
+  L:=TQList.Create;
+  try
+    FindAllSubObjects('', QImage, Nil, L);
+    if N>=L.Count then
+      Result:=Nil
+    else
+      Result:=L[N] as QImage;
   finally
     L.Clear;
     L.Free;
@@ -734,10 +750,17 @@ begin
   SubElements.Add(Result);
 end;
 
+Function QComponent.CreateFrameGroup: QFrameGroup;
+begin
+  Result:=QFrameGroup.Create('Frames', Self);
+  Result.IntSpec['type']:=MDL_GROUP_FRAME;
+  SubElements.Add(Result);
+end;
+
 Function QComponent.CreateSDO: QSkinDrawObject;
 begin
-  result:=QSkinDrawObject.Create('SDO', Self);
-  Subelements.add(result);
+  Result:=QSkinDrawObject.Create('SDO', Self);
+  SubElements.Add(result);
 end;
 
 Function QComponent.SDO: QSkinDrawObject;
@@ -755,13 +778,6 @@ begin
   end;
   if result=nil then
     Result:=CreateSDO;
-end;
-
-Function QComponent.CreateFrameGroup: QFrameGroup;
-begin
-  Result:=QFrameGroup.Create('Frames', Self);
-  Result.IntSpec['type']:=MDL_GROUP_FRAME;
-  SubElements.Add(Result);
 end;
 
 Function QComponent.BoneGroup: QBoneGroup;
@@ -1000,9 +1016,9 @@ begin
               CurPenMode:=NewPenMode;
             end;
             if Hollow then
-              CCoord.Polyline95f(Pts, 3)
+              CCoord.Polyline95f(Pts, 3)           // This line draws the Model Mesh lines only
             else begin
-              CCoord.Polygon95f(Pts, 3, not Back);
+              CCoord.Polygon95f(Pts, 3, not Back); // This line draws the Model Mesh lines and color filled
               Hollow:=True;
             end;
           end;  { note: "Continue" used in the loop }
