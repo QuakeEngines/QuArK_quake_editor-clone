@@ -1350,14 +1350,20 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         ### To stop selection or selection change if nothing, or something,
         ### or more then one item is selected in the tree-view.
         ### And to retain existing selected items, if any, in the ModelVertexSelList.
-        if len(editor.layout.explorer.sellist) != 0:
-            if (editor.layout.explorer.sellist[0].type == ":mc") or (editor.layout.explorer.sellist[0].type == ":mf") and (len(editor.layout.explorer.sellist) == 1):
-                pass
-            else:
+        if view.info["viewname"] != "skinview":
+            if len(editor.layout.explorer.sellist) == 0:
                 for view in editor.layout.views:
                     mdleditor.setsingleframefillcolor(editor, view)
                     view.repaint()
                 return
+            else:
+                if (editor.layout.explorer.sellist[0].type == ":mc") or (editor.layout.explorer.sellist[0].type == ":mf") and (len(editor.layout.explorer.sellist) == 1):
+                    pass
+                else:
+                    for view in editor.layout.views:
+                        mdleditor.setsingleframefillcolor(editor, view)
+                        view.repaint()
+                    return
 
         sellist = []
         vertexes = editor.Root.currentcomponent.currentframe.vertices
@@ -1580,6 +1586,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.64  2007/07/09 18:36:47  cdunde
+#Setup editors Rectangle selection to properly create a new triangle if only 3 vertexes
+#are selected and a new function to reverse the direction of a triangles creation.
+#
 #Revision 1.63  2007/07/04 19:11:47  cdunde
 #Missed this in the last change.
 #
