@@ -624,7 +624,7 @@ def buildwallmakerimages(self, singleimage=None):
                             newface.swapsides()
                         poly.rebuildall()
                         if poly.broken:
-                            debug('fuck, still busted')
+                            debug('rats, still busted')
  
             #
             # Now generate the caulk hull if wanted
@@ -784,6 +784,9 @@ quarkpy.mapentities.GroupType.menu = groupmenu
 
 #
 # $Log$
+# Revision 1.14  2005/10/15 00:51:24  cdunde
+# To reinstate headers and history
+#
 # Revision 1.11  2003/01/31 20:19:43  tiglari
 # improvements, tsx from rel63a branch (post 630 release)
 #
