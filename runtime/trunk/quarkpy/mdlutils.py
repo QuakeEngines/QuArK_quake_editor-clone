@@ -647,6 +647,9 @@ def PassEditorSel2Skin(editor, option=1):
                             skinvtx_index = vertex
                             break
                 for handle in SkinView1.handles:
+                    # Here we compair the Skin-view handle (in its handles list) tri_index item
+                    # to the editor_tri_index we got above to see if they match.
+                    # The same applies to the comparison of the Skin-view handel ver_index and skinvtx_index.
                     if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                         skinhandle = handle
                editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
@@ -672,6 +675,9 @@ def PassEditorSel2Skin(editor, option=1):
 #
 #
 #$Log$
+#Revision 1.26  2007/07/11 20:00:55  cdunde
+#Setup Red Rectangle Selector in the Model Editor Skin-view for multiple selections.
+#
 #Revision 1.25  2007/07/09 18:59:23  cdunde
 #Setup RMB menu sub-menu "skin-view Options" and added its "Pass selection to Editor views"
 #function. Also added Skin-view Options to editors main Options menu.
