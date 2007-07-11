@@ -380,11 +380,7 @@ class VertexHandle(qhandles.GenericHandle):
                                 h.draw(v, cv, h)
                         return
                     if itemcount == len(editor.ModelVertexSelList):
-                        if len(editor.ModelVertexSelList) == 3:
-                            quarkx.msgbox("Improper Selection!\n\nYou can not choose more then\n3 vertexes for a triangle.\n\nSelection Canceled", MT_ERROR, MB_OK)
-                            return None, None
-                        else:
-                            editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
+                        editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
             for v in editor.layout.views:
                 cv = v.canvas()
                 self.draw(v, cv, self)
@@ -1462,7 +1458,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                         v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                     for h in v.handles:
                         h.draw(v, cv, h)
-                from qbaseeditor import flagsmouse # just for print below
+
                 return
 
             removeditem = 0
@@ -1647,6 +1643,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.66  2007/07/11 20:00:56  cdunde
+#Setup Red Rectangle Selector in the Model Editor Skin-view for multiple selections.
+#
 #Revision 1.65  2007/07/10 00:24:26  cdunde
 #Was still selecting model mesh vertexes when nothing was selected in the tree-view.
 #
