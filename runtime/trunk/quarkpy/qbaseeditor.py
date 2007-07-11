@@ -1035,7 +1035,7 @@ class BaseEditor:
                             else:
                                 if (flagsmouse == 528 or flagsmouse == 1040):
                                     if (view.info["viewname"] == "editors3Dview") or (view.info["viewname"] == "3Dwindow"):
-                                        pass
+                                        mdleditor.setframefillcolor(self, view)
                                     else:
                                         return
                                 else:
@@ -1244,6 +1244,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.68  2007/07/04 18:51:23  cdunde
+#To fix multiple redraws and conflicts of code for RectSelDragObject in the Model Editor.
+#
 #Revision 1.67  2007/07/02 22:49:44  cdunde
 #To change the old mdleditor "picked" list name to "ModelVertexSelList"
 #and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
