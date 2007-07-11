@@ -532,11 +532,58 @@ def find2DTriangles(comp, tri_index, ver_index):
     return tris_out
 
 
+def SkinVertexSel(editor, sellist):
+    "Used when a single or multiple vertexes are selected in the Skin-view"
+    "by 'picking' them individually or by using the Red Rectangle Selector."
+    "The selected Skin vertexes will be added, if not already selected, to the SkinVertexSelList."
+    "The first Skin vertex in the SkinVertexSelList will always be used as the Skin-view's 'base' vertex."
+    "You will need to call to redraw the Skin-view or this list once it is updated to display the selections."
+
+    for selection in range(len(sellist)):
+        itemcount = 0
+        removedcount = 0
+        holdlist = []
+        if editor.SkinVertexSelList == []:
+            editor.SkinVertexSelList = editor.SkinVertexSelList + [sellist[selection]]
+            if len(sellist) == 1:
+                return
+        else:
+            if len(sellist) == 1 and len(editor.SkinVertexSelList) == 1 and sellist[0][2] == editor.SkinVertexSelList[0][2] and sellist[0][3] == editor.SkinVertexSelList[0][3]:
+                editor.SkinVertexSelList = []
+                return
+            else:
+                setup = quarkx.setupsubset(SS_MODEL, "Options")
+                for item in editor.SkinVertexSelList:
+                    if not setup["SingleVertexDrag"]:
+                        if sellist[0][2] == editor.SkinVertexSelList[0][2] and sellist[0][3] == editor.SkinVertexSelList[0][3]:
+                            removedcount = removedcount + 1
+                        else:
+                            holdlist = holdlist + [item]
+                    else:
+                        if sellist[0][2] == editor.SkinVertexSelList[0][2] and sellist[0][3] == editor.SkinVertexSelList[0][3]:
+                            editor.SkinVertexSelList.remove(editor.SkinVertexSelList[itemcount])
+                            break
+                        itemcount = itemcount + 1
+
+                if removedcount != 0:
+                    editor.SkinVertexSelList = editor.SkinVertexSelList + holdlist
+                    break
+                else:
+                    if not setup["SingleVertexDrag"]:
+                        editor.SkinVertexSelList = editor.SkinVertexSelList + holdlist
+
+                editor.SkinVertexSelList = editor.SkinVertexSelList + [sellist[selection]]
+
+
 def PassSkinSel2Editor(editor):
     "For passing selected vertexes(faces) from the Skin-view to the Editor's views."
     "After you call this function you will need to also call to draw the handels in the views."
-    # tri_index = tris[vtx[2]]
-    # ver_index = tris[vtx[2]][vtx[3]][0]
+    "This uses the SkinVertexSelList for passing to the ModelVertexSelList."
+    "How to convert from the SkinVertexSelList to the ModelVertexSelList using tri_index and ver_index."
+    " tri_index = tris[vtx[2]] this is the 3rd item in a SkinVertexSelList item."
+    " ver_index = tris[vtx[2]][vtx[3]][0] this is the 4th item in a SkinVertexSelList item."
+    "The above indexes are used to find the corresponding triangle vertex index in the model meshes triangles."
+    "Also see the explanation of 'PassEditorSel2Skin' below for further detail."
 
     tris = editor.Root.currentcomponent.triangles
     for vtx in editor.SkinVertexSelList:
@@ -553,31 +600,47 @@ def PassSkinSel2Editor(editor):
 def PassEditorSel2Skin(editor, option=1):
     "For passing selected vertexes(faces) from the Editor's views to the Skin-view."
     "After you call this function you will need to also call to draw the handels in the Skin-view."
-    "option value of 1 uses the ModelVertexSelList for passing."
-        # tri_index = tris[tri][0][0]
-        # ver_index = (see skinvtx_index below, the models mesh and skin mesh vertex format are not the same.)
-        # The 1st item in the models mesh ver_index is that vertexes position in the 'Frame objects vertices' list.
-        # All 3 of the items in the models skin mesh are their 'order' of the triangle (0, 1, 2).
-    "value of 2 uses the ModelFaceSelList for passing."
+    "The 'option' value of 1 uses the ModelVertexSelList for passing individual selected vertexes."
+    "The 'option' value of 2 uses the ModelFaceSelList for passing selected 'faces' vertexes.(not coded yet)"
     "Both will be applied to the Skin-view's SkinVertexSelList of 'existing' vertex selection, if any."
+    " See the mdleditor.py file (very beginning) for each individual item's, list of items-their format."
+    "     tri_index (or editor_tri_index in the case below) = tris[tri]"
+    "     tri being the sequential number (starting with zero) as it iterates (counts)"
+    "     through the list of 'component triangles'."
+
+    "     ver_index = tris[tri][vertex][0]"
+    "     [vertex] being each vertex 'item' of the triangle as we iterate through all 3 of them"
+    "     and [0] being the 1st item in each of the triangles vertex 'items'. That is ...(see below)"
+
+    "     Each triangle vertex 'item' is another list of items, the 1st item being its ver_index,"
+    "     where this vertex lies in a 'frames vertices' list of vertexes."
+    "     Each 'frame' has its own list that gives every vertex point of the models mesh for that frame."
+    "     Or, each of the 'frame vertices' is the actual 3D position of that triangles vertex 'x,y,z point'."
+
+    "     (see skinvtx_index below, the models mesh and skin mesh vertex formats are not the same.)"
+    "     The Skin-view has no triangles, it only uses a list of vertices."
+    "     That list of vertices is made up in the same order that the 'frame vertices' lists are."
+    "     Which is starting with the 1st vertex of the 1st triangle"
+    "     and ending with the last vertex of the last triangle. This list make up the Skin-view view.handles."
+    "     Therefore, you can call for a specific triangles Skin-view vertex"
+    "     by using that triangles 'item' ver_index number."
+    "     The 1st item in the models mesh ver_index is that vertexe's position in the 'Frame objects vertices' list"
+    "     AND the Skin-view's view.handles list."
+
+    "     All 3 of the items in the models 'skin mesh' (or view.handles)"
+    "     are in the same 'order' of the triangle (0, 1, 2) vertexes."
+    "     So for each model components mesh triangle in the Editor,"
+    "     there are 3 vertex view.handles in the Skin-view mesh"
+    "     and why we need to iterate through the Skin-view view.handles"
+    "     to match up its corresponding triangle vertex."
 
     tris = editor.Root.currentcomponent.triangles
     from mdlhandles import SkinView1
-    print "mdlutils line 588 tris",tris
     if option == 1:
         for vtx in editor.ModelVertexSelList:
             ver_index = vtx[0]
-            print "mdlustils line 592 ver_index",ver_index
-            print "mdlustils line 593 1st tri in tris",tris[0]
-            print "mdlustils line 594 1st tri's vertex",tris[0][0]
-            print "mdlustils line 595 tri_index",tris[0][0][0]
             if editor.SkinVertexSelList == []:
                 for tri in range(len(tris)):
-                    print "mdlustils line 598 tri",tri
-                    print "mdlustils line 599 tri in tris",tris[tri]
-                    print "mdlustils line 600 1st vtx in tri ",tris[tri][0]
-                    print "mdlustils line 601 1st vtx in tri ver_index ",tris[tri][0][0]
-
                     for vertex in range(len(tris[tri])):
                         if ver_index == tris[tri][vertex][0]:
                             editor_tri_index = tri
@@ -586,13 +649,7 @@ def PassEditorSel2Skin(editor, option=1):
                 for handle in SkinView1.handles:
                     if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                         skinhandle = handle
-                        print "mdlustils line 612 skinhandle", handle, skinhandle
-                print "mdlustils line 613 ver_index",ver_index
-                print "mdlustils line 614 skinhandle",skinhandle
-                print "mdlustils line 616 skinhandle.pos",skinhandle.pos
-                print "mdlustils line 616 skinhandle.tri_index",skinhandle.tri_index
-                print "mdlustils line 617 skinhandle.ver_index",skinhandle.ver_index
-                editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+               editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
             else:
                 for tri in range(len(tris)):
                     for vertex in range(len(tris[tri])):
@@ -603,13 +660,7 @@ def PassEditorSel2Skin(editor, option=1):
                 for handle in SkinView1.handles:
                     if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                         skinhandle = handle
-                        print "mdlustils line 630 skinhandle", handle, skinhandle
                 for vertex in range(len(editor.SkinVertexSelList)):
-                    print "mdlustils line 632 SkinVertexSelList vertex",editor.SkinVertexSelList[vertex]
-                    print "mdlustils line 633 SkinVertexSelList vertex.tri_index",editor.SkinVertexSelList[vertex][2]
-                    print "mdlustils line 634 skinhandle.tri_index",skinhandle.tri_index
-                    print "mdlustils line 635 SkinVertexSelList vertex.ver_index",editor.SkinVertexSelList[vertex][3]
-                    print "mdlustils line 636 skinhandle.ver_index",skinhandle.ver_index
                     if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
                         break
                     if vertex == len(editor.SkinVertexSelList)-1:
@@ -621,6 +672,10 @@ def PassEditorSel2Skin(editor, option=1):
 #
 #
 #$Log$
+#Revision 1.25  2007/07/09 18:59:23  cdunde
+#Setup RMB menu sub-menu "skin-view Options" and added its "Pass selection to Editor views"
+#function. Also added Skin-view Options to editors main Options menu.
+#
 #Revision 1.24  2007/07/02 22:49:43  cdunde
 #To change the old mdleditor "picked" list name to "ModelVertexSelList"
 #and "skinviewpicked" to "SkinVertexSelList" to make them more specific.

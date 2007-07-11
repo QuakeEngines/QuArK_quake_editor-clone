@@ -1346,6 +1346,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
     "A red rectangle that selects the model vertexes it touches or inside it."
 
     def rectanglesel(self, editor, x,y, rectangle, view):
+        import mdlutils
         cursordragendpos = (x, y)
         ### To stop selection or selection change if nothing, or something,
         ### or more then one item is selected in the tree-view.
@@ -1365,122 +1366,182 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                         view.repaint()
                     return
 
-        sellist = []
-        vertexes = editor.Root.currentcomponent.currentframe.vertices
-        vertexindex = -1
-        for vertex in vertexes:
-            vertexindex = vertexindex + 1
-            vertexpos = view.proj(vertex)
+        ### This is the selection Grid section for the Skin-view's view.
+        if view.info["viewname"] == "skinview":
+            sellist = []
+            tris = editor.Root.currentcomponent.triangles
+            try:
+                tex = editor.Root.currentcomponent.currentskin
+                texWidth,texHeight = tex["Size"]
+            except:
+                texWidth,texHeight = view.clientarea
+            for vertex in range(len(view.handles)):
+                pos = view.handles[vertex].pos
+                handle = view.handles[vertex]
+                tri_index = view.handles[vertex].tri_index
+                ver_index = view.handles[vertex].ver_index
+                tri_vtx = tris[tri_index][ver_index]
+                trivertex = quarkx.vect(tri_vtx[1]-int(texWidth*.5), tri_vtx[2]-int(texHeight*.5), 0)
+                vertexX, vertexY,vertexZ = view.proj(trivertex).tuple
+                vertexpos = view.proj(trivertex)
 
-            # Grid quad 1
-            if (cursordragstartpos[0] < cursordragendpos[0] and cursordragstartpos[1] < cursordragendpos[1]):
-                if (vertexpos.tuple[0] >= cursordragstartpos[0] and vertexpos.tuple[1] >= cursordragstartpos[1])and (vertexpos.tuple[0] <= cursordragendpos[0] and vertexpos.tuple[1] <= cursordragendpos[1]):
-                    sellist = sellist + [(vertexindex, vertexpos)]
-            # Grid quad 2
-            elif (cursordragstartpos[0] > cursordragendpos[0] and cursordragstartpos[1] < cursordragendpos[1]):
-                if (vertexpos.tuple[0] <= cursordragstartpos[0] and vertexpos.tuple[1] >= cursordragstartpos[1])and (vertexpos.tuple[0] >= cursordragendpos[0] and vertexpos.tuple[1] <= cursordragendpos[1]):
-                    sellist = sellist + [(vertexindex, vertexpos)]
-            # Grid quad 3
-            elif (cursordragstartpos[0] < cursordragendpos[0] and cursordragstartpos[1] > cursordragendpos[1]):
-                if (vertexpos.tuple[0] >= cursordragstartpos[0] and vertexpos.tuple[1] <= cursordragstartpos[1])and (vertexpos.tuple[0] <= cursordragendpos[0] and vertexpos.tuple[1] >= cursordragendpos[1]):
-                    sellist = sellist + [(vertexindex, vertexpos)]
-            # Grid quad 4
-            elif (cursordragstartpos[0] > cursordragendpos[0] and cursordragstartpos[1] > cursordragendpos[1]):
-                if (vertexpos.tuple[0] <= cursordragstartpos[0] and vertexpos.tuple[1] <= cursordragstartpos[1])and (vertexpos.tuple[0] >= cursordragendpos[0] and vertexpos.tuple[1] >= cursordragendpos[1]):
-                    sellist = sellist + [(vertexindex, vertexpos)]
+                # Grid quad 1
+                if (cursordragstartpos[0] < cursordragendpos[0] and cursordragstartpos[1] < cursordragendpos[1]):
+                    if (vertexpos.tuple[0] >= cursordragstartpos[0] and vertexpos.tuple[1] >= cursordragstartpos[1])and (vertexpos.tuple[0] <= cursordragendpos[0] and vertexpos.tuple[1] <= cursordragendpos[1]):
+                        sellist = sellist + [[pos, handle, tri_index, ver_index]]
+                # Grid quad 2
+                elif (cursordragstartpos[0] > cursordragendpos[0] and cursordragstartpos[1] < cursordragendpos[1]):
+                    if (vertexpos.tuple[0] <= cursordragstartpos[0] and vertexpos.tuple[1] >= cursordragstartpos[1])and (vertexpos.tuple[0] >= cursordragendpos[0] and vertexpos.tuple[1] <= cursordragendpos[1]):
+                        sellist = sellist + [[pos, handle, tri_index, ver_index]]
+                # Grid quad 3
+                elif (cursordragstartpos[0] < cursordragendpos[0] and cursordragstartpos[1] > cursordragendpos[1]):
+                    if (vertexpos.tuple[0] >= cursordragstartpos[0] and vertexpos.tuple[1] <= cursordragstartpos[1])and (vertexpos.tuple[0] <= cursordragendpos[0] and vertexpos.tuple[1] >= cursordragendpos[1]):
+                        sellist = sellist + [[pos, handle, tri_index, ver_index]]
+                # Grid quad 4
+                elif (cursordragstartpos[0] > cursordragendpos[0] and cursordragstartpos[1] > cursordragendpos[1]):
+                    if (vertexpos.tuple[0] <= cursordragstartpos[0] and vertexpos.tuple[1] <= cursordragstartpos[1])and (vertexpos.tuple[0] >= cursordragendpos[0] and vertexpos.tuple[1] >= cursordragendpos[1]):
+                        sellist = sellist + [[pos, handle, tri_index, ver_index]]
 
-        if editor.ModelVertexSelList != [] and sellist == []:
-            editor.ModelVertexSelList = []
-            for v in editor.layout.views:
-                mdleditor.setsingleframefillcolor(editor, v)
-                v.repaint()
-                plugins.mdlgridscale.gridfinishdrawing(editor, v)
-                plugins.mdlaxisicons.newfinishdrawing(editor, v)
-                cv = v.canvas()
-                if len(v.handles) == 0:
-                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                for h in v.handles:
-                    h.draw(v, cv, h)
+        else:
+            ### This is the selection Grid section for the Editor's views.
+            sellist = []
+            vertexes = editor.Root.currentcomponent.currentframe.vertices
+            vertexindex = -1
+            for vertex in vertexes:
+                vertexindex = vertexindex + 1
+                vertexpos = view.proj(vertex)
+
+                # Grid quad 1
+                if (cursordragstartpos[0] < cursordragendpos[0] and cursordragstartpos[1] < cursordragendpos[1]):
+                    if (vertexpos.tuple[0] >= cursordragstartpos[0] and vertexpos.tuple[1] >= cursordragstartpos[1])and (vertexpos.tuple[0] <= cursordragendpos[0] and vertexpos.tuple[1] <= cursordragendpos[1]):
+                        sellist = sellist + [[vertexindex, vertexpos]]
+                # Grid quad 2
+                elif (cursordragstartpos[0] > cursordragendpos[0] and cursordragstartpos[1] < cursordragendpos[1]):
+                    if (vertexpos.tuple[0] <= cursordragstartpos[0] and vertexpos.tuple[1] >= cursordragstartpos[1])and (vertexpos.tuple[0] >= cursordragendpos[0] and vertexpos.tuple[1] <= cursordragendpos[1]):
+                        sellist = sellist + [[vertexindex, vertexpos]]
+                # Grid quad 3
+                elif (cursordragstartpos[0] < cursordragendpos[0] and cursordragstartpos[1] > cursordragendpos[1]):
+                    if (vertexpos.tuple[0] >= cursordragstartpos[0] and vertexpos.tuple[1] <= cursordragstartpos[1])and (vertexpos.tuple[0] <= cursordragendpos[0] and vertexpos.tuple[1] >= cursordragendpos[1]):
+                        sellist = sellist + [[vertexindex, vertexpos]]
+                # Grid quad 4
+                elif (cursordragstartpos[0] > cursordragendpos[0] and cursordragstartpos[1] > cursordragendpos[1]):
+                    if (vertexpos.tuple[0] <= cursordragstartpos[0] and vertexpos.tuple[1] <= cursordragstartpos[1])and (vertexpos.tuple[0] >= cursordragendpos[0] and vertexpos.tuple[1] >= cursordragendpos[1]):
+                        sellist = sellist + [[vertexindex, vertexpos]]
+
+        ### This area for the Skin-view code only. Must return at the end to stop erroneous model drawing.
+        if view.info["viewname"] == "skinview":
+            mdlutils.SkinVertexSel(editor, sellist)
+            if quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] == "1":
+                mdlutils.PassSkinSel2Editor(editor)
+                view.invalidate()
+                for v in editor.layout.views:
+                    if v.info["viewname"] == view.info["viewname"]:
+                        pass
+                    else:
+                        mdleditor.setsingleframefillcolor(editor, v)
+                        v.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(editor, v)
+                        plugins.mdlaxisicons.newfinishdrawing(editor, v)
+                        cv = v.canvas()
+                        for h in v.handles:
+                            h.draw(v, cv, h)
             return
 
-        removeditem = 0
-        for vertex in sellist:
-            itemcount = 0
-            if editor.ModelVertexSelList == []:
-                editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
-            else:
-                for item in editor.ModelVertexSelList:
-                    itemcount = itemcount + 1
-                    if vertex[0] == item[0]:
-                        editor.ModelVertexSelList.remove(item)
-                        removeditem = removeditem + 1
-                        for v in editor.layout.views:
-                            if len(v.handles) == 0:
-                                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                        break
-                    elif itemcount == len(editor.ModelVertexSelList):
-                        editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
-        if removeditem != 0:
-            for v in editor.layout.views:
-                mdleditor.setsingleframefillcolor(editor, v)
-                v.repaint()
-                plugins.mdlgridscale.gridfinishdrawing(editor, v)
-                plugins.mdlaxisicons.newfinishdrawing(editor, v)
-                cv = v.canvas()
-                if len(v.handles) == 0:
-                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                ### To avoid an error if something is selected that does not display the view handles.
-                if len(view.handles) == 0:
-                    pass
-                else:
+
+        ### From here down deals with all the Editor views.
+        else:
+            if editor.ModelVertexSelList != [] and sellist == []:
+                editor.ModelVertexSelList = []
+                for v in editor.layout.views:
+                    mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(editor, v)
+                    plugins.mdlaxisicons.newfinishdrawing(editor, v)
+                    cv = v.canvas()
+                    if len(v.handles) == 0:
+                        v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                     for h in v.handles:
                         h.draw(v, cv, h)
-                    for vtx in editor.ModelVertexSelList:
-                        h = v.handles[vtx[0]]
-                        h.draw(v, cv, h)
-            if quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" and SkinView1 is not None:
-                import mdlutils
-                mdlutils.PassEditorSel2Skin(editor)
-                SkinView1.invalidate()
-        else:
-            if editor.ModelVertexSelList != []:
-                mdleditor.setsingleframefillcolor(editor, view)
-                view.repaint()
-                plugins.mdlgridscale.gridfinishdrawing(editor, view)
-                plugins.mdlaxisicons.newfinishdrawing(editor, view)
-                cv = view.canvas()
-                if len(view.handles) == 0:
-                    view.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                ### To avoid an error if something is selected that does not display the view handles.
-                if len(view.handles) == 0:
-                    pass
+                from qbaseeditor import flagsmouse # just for print below
+                return
+
+            removeditem = 0
+            for vertex in sellist:
+                itemcount = 0
+                if editor.ModelVertexSelList == []:
+                    editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
                 else:
-                    for h in view.handles:
-                        h.draw(view, cv, h)
-                    for vtx in editor.ModelVertexSelList:
-                        h = view.handles[vtx[0]]
-                        h.draw(view, cv, h)
-                    for v in editor.layout.views:
-                        if v == view:
-                            continue
-                        cv = v.canvas()
-                        if len(v.handles) == 0:
-                            v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                    for item in editor.ModelVertexSelList:
+                        itemcount = itemcount + 1
+                        if vertex[0] == item[0]:
+                            editor.ModelVertexSelList.remove(item)
+                            removeditem = removeditem + 1
+                            for v in editor.layout.views:
+                                if len(v.handles) == 0:
+                                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                            break
+                        elif itemcount == len(editor.ModelVertexSelList):
+                            editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
+            if removeditem != 0:
+                for v in editor.layout.views:
+                    mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(editor, v)
+                    plugins.mdlaxisicons.newfinishdrawing(editor, v)
+                    cv = v.canvas()
+                    if len(v.handles) == 0:
+                        v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                    ### To avoid an error if something is selected that does not display the view handles.
+                    if len(view.handles) == 0:
+                        pass
+                    else:
+                        for h in v.handles:
+                            h.draw(v, cv, h)
                         for vtx in editor.ModelVertexSelList:
                             h = v.handles[vtx[0]]
                             h.draw(v, cv, h)
                 if quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" and SkinView1 is not None:
-                    import mdlutils
                     mdlutils.PassEditorSel2Skin(editor)
                     SkinView1.invalidate()
             else:
-                view.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                view.repaint()
-                plugins.mdlgridscale.gridfinishdrawing(editor, view)
-                plugins.mdlaxisicons.newfinishdrawing(editor, view)
-                cv = view.canvas()
-                for h in view.handles:
-                    h.draw(view, cv, self)
+                if editor.ModelVertexSelList != []:
+                    mdleditor.setsingleframefillcolor(editor, view)
+                    view.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(editor, view)
+                    plugins.mdlaxisicons.newfinishdrawing(editor, view)
+                    cv = view.canvas()
+                    if len(view.handles) == 0:
+                        view.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                    ### To avoid an error if something is selected that does not display the view handles.
+                    if len(view.handles) == 0:
+                        pass
+                    else:
+                        for h in view.handles:
+                            h.draw(view, cv, h)
+                        for vtx in editor.ModelVertexSelList:
+                            h = view.handles[vtx[0]]
+                            h.draw(view, cv, h)
+                        for v in editor.layout.views:
+                            if v == view:
+                                continue
+                            cv = v.canvas()
+                            if len(v.handles) == 0:
+                                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                            for vtx in editor.ModelVertexSelList:
+                                h = v.handles[vtx[0]]
+                                h.draw(v, cv, h)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" and SkinView1 is not None:
+                        mdlutils.PassEditorSel2Skin(editor)
+                        SkinView1.invalidate()
+                else:
+                    view.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                    view.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(editor, view)
+                    plugins.mdlaxisicons.newfinishdrawing(editor, view)
+                    cv = view.canvas()
+                    for h in view.handles:
+                        h.draw(view, cv, self)
+                    
         ### This section test to see if there are only 3 vertexes selected.
         ### If so, then it sorts them for proper order based on if the face
         ### vertexes were created in a clockwise direction (facing outwards, towards the 2D view)
@@ -1586,6 +1647,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.65  2007/07/10 00:24:26  cdunde
+#Was still selecting model mesh vertexes when nothing was selected in the tree-view.
+#
 #Revision 1.64  2007/07/09 18:36:47  cdunde
 #Setup editors Rectangle selection to properly create a new triangle if only 3 vertexes
 #are selected and a new function to reverse the direction of a triangles creation.
