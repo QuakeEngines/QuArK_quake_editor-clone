@@ -97,10 +97,12 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
 
     import mdlhandles
     import mdlcommands
+    import mdloptions
 
     File1, sc1 = qmenu.DefaultFileMenu()
     Commands1, sc2 = mdlcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
+    FaceSelOptions, VertexSelOptions = mdloptions.OptionsMenuRMB()
 
     undo, redo = quarkx.undostate(editor.Root)
     if undo is None:   # to undo
@@ -123,6 +125,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
 
     if view is not None:
         if view.info["viewname"] != "skinview":
+            import mdloptions
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             def backbmp1click(m, view=view, form=editor.form):
@@ -130,9 +133,9 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 qbackbmp.BackBmpDlg(form, view)
             backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
             if editor.ModelFaceSelList != []:
-                extra = extra + [qmenu.sep] + [mdlfacepop] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep] + [mdlfacepop] + [vertexpop] + [Commands1] + [qmenu.sep] + [FaceSelOptions] + [VertexSelOptions] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
             else:
-                extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
+                extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + [FaceSelOptions] + [VertexSelOptions] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             skinviewoptions = qmenu.popup("Skin-view Options", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).optionsmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
@@ -179,6 +182,10 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.15  2007/07/09 18:59:23  cdunde
+#Setup RMB menu sub-menu "skin-view Options" and added its "Pass selection to Editor views"
+#function. Also added Skin-view Options to editors main Options menu.
+#
 #Revision 1.14  2007/06/03 22:50:55  cdunde
 #To add the model mesh Face Selection RMB menus.
 #(To add the RMB Face menu items when the cursor is not over one of the selected model mesh faces)

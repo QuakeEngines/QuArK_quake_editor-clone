@@ -340,6 +340,12 @@ class BaseEditor:
             try:
                 if currentview.info["viewname"] == "skinview" or view.info["viewname"] == "skinview":
                     if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 544 or flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080 or flagsmouse == 16384) and (view.info["viewname"] == "skinview"):
+                        if flagsmouse == 2056 and quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1":
+                            quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
+                            quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = "1"
+                        if flagsmouse == 2056 and quarkx.setupsubset(SS_MODEL, "Options")["SYNC_SVwED"] == "1":
+                            quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
+                            quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = "1"
                         cv = view.canvas()
                         tex = self.Root.currentcomponent.currentskin
                         if tex is not None:
@@ -354,6 +360,9 @@ class BaseEditor:
                         else:
                             if (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1"):
                                 self.SkinFaceSelList = self.ModelFaceSelList
+                                if quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1":
+                                    import mdlutils
+                                    mdlutils.PassEditorSel2Skin(self, 3)
                         tricount = -1
                         for triangle in self.Root.currentcomponent.triangles:
                             tricount = tricount + 1
@@ -1257,6 +1266,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.70  2007/07/11 20:00:56  cdunde
+#Setup Red Rectangle Selector in the Model Editor Skin-view for multiple selections.
+#
 #Revision 1.69  2007/07/11 16:49:51  cdunde
 #Fixed colorfill for 3D views that was not working properly after pan in 2D views.
 #

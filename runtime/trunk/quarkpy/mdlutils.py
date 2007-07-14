@@ -539,40 +539,69 @@ def SkinVertexSel(editor, sellist):
     "The first Skin vertex in the SkinVertexSelList will always be used as the Skin-view's 'base' vertex."
     "You will need to call to redraw the Skin-view or this list once it is updated to display the selections."
 
-    for selection in range(len(sellist)):
+    # Equivalent of skinpick_cleared in mdlhandles.py file.
+    if sellist == []:
+        editor.SkinVertexSelList = []
+        return
+
+    if len(sellist) > 1:
+        setup = quarkx.setupsubset(SS_MODEL, "Options")
+        if not setup["SingleVertexDrag"]:
+    # Compares the 1st Skin-view vertex position in the sellist to all others 3D position (pos) and places the
+    # last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
+            holditem = sellist[0]
+            for item in range (len(sellist)):
+                if item == 0:
+                    pass
+                else:
+                    if holditem[0] == sellist[item][0]:
+                        holditem = sellist[item]
+            dupe = holditem
+            sellist.remove(dupe)
+            sellist = [holditem] + sellist
+        else:
+            newlist = []
+            for item in range (len(sellist)):
+                holditem = sellist[item]
+                if newlist == []:
+                    newlist = newlist + [holditem]
+                    continue
+                compaircount = -1
+                for compairitem in newlist:
+                    compaircount = compaircount + 1
+                    if str(holditem[0]) == str(compairitem[0]):
+                        break
+                if compaircount == len(newlist)-1:
+                    newlist = newlist + [holditem]
+            sellist = newlist
+    # Compares the 1st Skin-view vertex position in the sellist to all others 3D position (pos) and places the
+    # last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
+            holditem = sellist[0]
+            for item in range (len(sellist)):
+                if item == 0:
+                    pass
+                else:
+                    if holditem[0] == sellist[item][0]:
+                        holditem = sellist[item]
+            dupe = holditem
+            sellist.remove(dupe)
+            sellist = [holditem] + sellist
+
+  # Checks for and removes any duplications of items in the list.
+    for vertex in sellist:
         itemcount = 0
-        removedcount = 0
-        holdlist = []
         if editor.SkinVertexSelList == []:
-            editor.SkinVertexSelList = editor.SkinVertexSelList + [sellist[selection]]
+            editor.SkinVertexSelList = editor.SkinVertexSelList + [vertex]
             if len(sellist) == 1:
                 return
         else:
-            if len(sellist) == 1 and len(editor.SkinVertexSelList) == 1 and sellist[0][2] == editor.SkinVertexSelList[0][2] and sellist[0][3] == editor.SkinVertexSelList[0][3]:
-                editor.SkinVertexSelList = []
-                return
-            else:
-                setup = quarkx.setupsubset(SS_MODEL, "Options")
-                for item in editor.SkinVertexSelList:
-                    if not setup["SingleVertexDrag"]:
-                        if sellist[0][2] == editor.SkinVertexSelList[0][2] and sellist[0][3] == editor.SkinVertexSelList[0][3]:
-                            removedcount = removedcount + 1
-                        else:
-                            holdlist = holdlist + [item]
-                    else:
-                        if sellist[0][2] == editor.SkinVertexSelList[0][2] and sellist[0][3] == editor.SkinVertexSelList[0][3]:
-                            editor.SkinVertexSelList.remove(editor.SkinVertexSelList[itemcount])
-                            break
-                        itemcount = itemcount + 1
-
-                if removedcount != 0:
-                    editor.SkinVertexSelList = editor.SkinVertexSelList + holdlist
+            for item in editor.SkinVertexSelList:
+                itemcount = itemcount + 1
+                if vertex[2] == item[2] and  vertex[3] == item[3]:
+                    editor.SkinVertexSelList.remove(item)
                     break
-                else:
-                    if not setup["SingleVertexDrag"]:
-                        editor.SkinVertexSelList = editor.SkinVertexSelList + holdlist
-
-                editor.SkinVertexSelList = editor.SkinVertexSelList + [sellist[selection]]
+                elif itemcount == len(editor.SkinVertexSelList):
+                    editor.SkinVertexSelList = editor.SkinVertexSelList + [vertex]
 
 
 def PassSkinSel2Editor(editor):
@@ -636,45 +665,129 @@ def PassEditorSel2Skin(editor, option=1):
 
     tris = editor.Root.currentcomponent.triangles
     from mdlhandles import SkinView1
+
     if option == 1:
-        for vtx in editor.ModelVertexSelList:
+        vertexlist = editor.ModelVertexSelList
+
+    if option == 2:
+        vertexlist = []
+        for tri_index in editor.ModelFaceSelList:
+            for vertex in range(len(tris[tri_index])):
+                vtx = tris[tri_index][vertex][0]
+                vertexlist = vertexlist + [[vtx, tri_index]]
+
+    if option == 3:
+        vertexlist = []
+        for tri_index in editor.SkinFaceSelList:
+            for vertex in range(len(tris[tri_index])):
+                vtx = tris[tri_index][vertex][0]
+                vertexlist = vertexlist + [[vtx, tri_index]]
+
+    if option == 1 or option == 2 or option == 3:
+        for vtx in vertexlist:
             ver_index = vtx[0]
             if editor.SkinVertexSelList == []:
-                for tri in range(len(tris)):
-                    for vertex in range(len(tris[tri])):
-                        if ver_index == tris[tri][vertex][0]:
-                            editor_tri_index = tri
+                if option == 1:
+                    for tri in range(len(tris)):
+
+                        for vertex in range(len(tris[tri])):
+                            if ver_index == tris[tri][vertex][0]:
+                                editor_tri_index = tri
+                                skinvtx_index = vertex
+                                break
+                if option == 2 or option == 3:
+                    for vertex in range(len(tris[vtx[1]])):
+                        if ver_index == tris[vtx[1]][vertex][0]:
+                            editor_tri_index = vtx[1]
                             skinvtx_index = vertex
                             break
+
                 for handle in SkinView1.handles:
                     # Here we compair the Skin-view handle (in its handles list) tri_index item
                     # to the editor_tri_index we got above to see if they match.
                     # The same applies to the comparison of the Skin-view handel ver_index and skinvtx_index.
                     if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                         skinhandle = handle
-               editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+                        break
+                editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
             else:
-                for tri in range(len(tris)):
-                    for vertex in range(len(tris[tri])):
-                        if ver_index == tris[tri][vertex][0]:
-                            editor_tri_index = tri
+                if option == 1:
+                    for tri in range(len(tris)):
+                        for vertex in range(len(tris[tri])):
+                            if ver_index == tris[tri][vertex][0]:
+                                editor_tri_index = tri
+                                skinvtx_index = vertex
+                                break
+                if option == 2 or option == 3:
+                    for vertex in range(len(tris[vtx[1]])):
+                        if ver_index == tris[vtx[1]][vertex][0]:
+                            editor_tri_index = vtx[1]
                             skinvtx_index = vertex
                             break
+
                 for handle in SkinView1.handles:
                     if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                         skinhandle = handle
+                        break
                 for vertex in range(len(editor.SkinVertexSelList)):
                     if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
                         break
                     if vertex == len(editor.SkinVertexSelList)-1:
                         editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
-        print "************* SkinVertexSelList list after 2 passing from the Editor ****",editor.SkinVertexSelList
+
+
+    # Compares the 1st Skin-view vertex position in the sellist to all others 3D position (pos) and places the
+    # last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
+    if len(editor.SkinVertexSelList) > 1:
+        holditem = editor.SkinVertexSelList[0]
+        for item in range (len(editor.SkinVertexSelList)):
+            if item == 0:
+                pass
+            else:
+                if holditem[0] == editor.SkinVertexSelList[item][0]:
+                    holditem = editor.SkinVertexSelList[item]
+        dupe = holditem
+        editor.SkinVertexSelList.remove(dupe)
+        editor.SkinVertexSelList = [holditem] + editor.SkinVertexSelList
+
+
+def Update_Editor_Views(editor, option=4):
+    "Updates the Editors views once something has chaged in the Skin-view,"
+    "such as synchronized or added 'skin mesh' vertex selections."
+    "It can also be used to just update all of the Editor's views only."
+    "Various 'option' items are shown below in their proper order of sequence."
+    "This is done to increase drawing speed, only use what it takes to do the job."
+
+    for v in editor.layout.views:
+        if v.info["viewname"] == "skinview":
+            pass
+        else:
+            if option == 1:
+                v.invalidate(1)
+            if option <= 4:
+                import mdleditor
+                mdleditor.setsingleframefillcolor(editor, v)
+            if option <= 4:
+                v.repaint()
+            if option == 4:
+                plugins.mdlgridscale.gridfinishdrawing(editor, v)
+                plugins.mdlaxisicons.newfinishdrawing(editor, v)
+            if option <= 4 or option == 5:
+                cv = v.canvas()
+                if len(v.handles) == 0:
+                    import mdlhandles
+                    v.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
+                for h in v.handles:
+                    h.draw(v, cv, h)
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.27  2007/07/11 20:48:23  cdunde
+#Opps, forgot a couple of things with the last change.
+#
 #Revision 1.26  2007/07/11 20:00:55  cdunde
 #Setup Red Rectangle Selector in the Model Editor Skin-view for multiple selections.
 #
