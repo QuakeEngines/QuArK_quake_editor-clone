@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
+          - Can run either way with single pick selection or rectangle drag selection in all views.
+
 * [cdunde]: Setup Red Rectangle Selector in the Model Editor Skin-view for multiple selections.
 
 * [cdunde]: Setup to clear all Editor and Skin-view selection lists when something outside the
