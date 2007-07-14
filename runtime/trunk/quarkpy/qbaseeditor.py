@@ -1050,8 +1050,6 @@ class BaseEditor:
                             self.dragobject.view = view
                             self.dragobject.dragto(x, y, flags | MB_DRAGGING)
                         elif (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040):
-
-                        if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1040):
                             if view.info["viewname"] == "skinview":
                                 pass
                             else:
@@ -1266,6 +1264,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.71  2007/07/14 22:42:45  cdunde
+#Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
+#Can run either way with single pick selection or rectangle drag selection in all views.
+#
 #Revision 1.70  2007/07/11 20:00:56  cdunde
 #Setup Red Rectangle Selector in the Model Editor Skin-view for multiple selections.
 #
