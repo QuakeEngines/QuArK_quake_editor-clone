@@ -1036,8 +1036,6 @@ class BaseEditor:
                              #   mdleditor.setsingleframefillcolor(self, view)
                              #   plugins.mdlgridscale.gridfinishdrawing(self, view)
                              #   plugins.mdlaxisicons.newfinishdrawing(self, view)
-                             #   print "qbaseeditor line 1070 self, flagsmouse, dragobject, view, handle, currentview"
-                             #   print self, flagsmouse, self.dragobject, view.info["viewname"], handle, currentview.info["viewname"]
                                 return
                 #
                 # If successful, immediately begin to drag
@@ -1264,6 +1262,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.72  2007/07/14 23:44:43  cdunde
+#To remove erroneous line added by text editor.
+#
 #Revision 1.71  2007/07/14 22:42:45  cdunde
 #Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
 #Can run either way with single pick selection or rectangle drag selection in all views.

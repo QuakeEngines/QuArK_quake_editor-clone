@@ -947,7 +947,6 @@ class RedImageDragObject(DragObject):
             self.redimages = ri
 
        ### This is for the Skin-view RedImageDragObject use only.
-            print "qhandles line 951 RedImageDragObject drawredimages ***** THIS IS WHERE IT DRAWS needs refresh timer"
             try:
                 if self.view.info["viewname"] == "skinview":
                     import mdlhandles
@@ -2026,6 +2025,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.50  2007/07/11 20:00:55  cdunde
+#Setup Red Rectangle Selector in the Model Editor Skin-view for multiple selections.
+#
 #Revision 1.49  2007/07/09 19:33:59  cdunde
 #To fix error in Model Editor when RectSelDragObject had no rectangle during drag.
 #
