@@ -387,10 +387,12 @@ def addtriangle(editor):
 
     new_comp = comp.copy()
     new_comp.triangles = tris
+    new_comp.currentskin = editor.Root.currentcomponent.currentskin
+    new_comp.currentframe = editor.Root.currentcomponent.currentframe
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
+    editor.Root.currentcomponent = new_comp
     editor.ok(undo, "add triangle")
- #   editor.invalidateviews(1)
 
 
 #
@@ -629,9 +631,11 @@ def PassSkinSel2Editor(editor):
 def PassEditorSel2Skin(editor, option=1):
     "For passing selected vertexes(faces) from the Editor's views to the Skin-view."
     "After you call this function you will need to also call to draw the handels in the Skin-view."
-    "The 'option' value of 1 uses the ModelVertexSelList for passing individual selected vertexes."
-    "The 'option' value of 2 uses the ModelFaceSelList for passing selected 'faces' vertexes.(not coded yet)"
-    "Both will be applied to the Skin-view's SkinVertexSelList of 'existing' vertex selection, if any."
+    "The 'option' value of 1 uses the ModelVertexSelList for passing individual selected vertexes to the Skin-view."
+    "The 'option' value of 2 uses the ModelFaceSelList for passing selected 'faces' vertexes to the Skin-view."
+    "The 'option' value of 3 uses the SkinFaceSelList for passing selected 'faces' vertexes but retains its own data"
+    "which is used to draw the highlighted outlines of the Skin-view selected faces in the qbaseeditor.py 'finishdrawing' function."
+    "All three will be applied to the Skin-view's SkinVertexSelList of 'existing' vertex selection, if any."
     " See the mdleditor.py file (very beginning) for each individual item's, list of items-their format."
     "     tri_index (or editor_tri_index in the case below) = tris[tri]"
     "     tri being the sequential number (starting with zero) as it iterates (counts)"
@@ -787,6 +791,10 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.29  2007/07/15 01:20:49  cdunde
+#To fix error for trying to pass selected vertex(es) that do not belong to a triangle
+#(new ones or leftovers from any delete triangles) to the Skin-view.
+#
 #Revision 1.28  2007/07/14 22:42:43  cdunde
 #Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
 #Can run either way with single pick selection or rectangle drag selection in all views.
