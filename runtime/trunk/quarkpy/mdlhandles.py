@@ -379,8 +379,11 @@ class VertexHandle(qhandles.GenericHandle):
                             for h in v.handles:
                                 h.draw(v, cv, h)
                             for vtx in editor.ModelVertexSelList:
-                                h = v.handles[vtx[0]]
-                                h.draw(v, cv, h)
+                                try:
+                                    h = v.handles[vtx[0]]
+                                    h.draw(v, cv, h)
+                                except:
+                                    pass
                         if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
                             editor.SkinVertexSelList = []
                             mdlutils.PassEditorSel2Skin(editor)
@@ -1682,6 +1685,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.68  2007/07/14 22:42:45  cdunde
+#Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
+#Can run either way with single pick selection or rectangle drag selection in all views.
+#
 #Revision 1.67  2007/07/11 20:40:49  cdunde
 #Opps, forgot a couple of things with the last change.
 #
