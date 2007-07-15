@@ -684,24 +684,25 @@ def PassEditorSel2Skin(editor, option=1):
                 vertexlist = vertexlist + [[vtx, tri_index]]
 
     if option == 1 or option == 2 or option == 3:
+        editor_tri_index = None
         for vtx in vertexlist:
             ver_index = vtx[0]
             if editor.SkinVertexSelList == []:
                 if option == 1:
                     for tri in range(len(tris)):
-
                         for vertex in range(len(tris[tri])):
                             if ver_index == tris[tri][vertex][0]:
                                 editor_tri_index = tri
                                 skinvtx_index = vertex
                                 break
+                    if editor_tri_index is None: continue
                 if option == 2 or option == 3:
                     for vertex in range(len(tris[vtx[1]])):
                         if ver_index == tris[vtx[1]][vertex][0]:
                             editor_tri_index = vtx[1]
                             skinvtx_index = vertex
                             break
-
+                    if editor_tri_index is None: continue
                 for handle in SkinView1.handles:
                     # Here we compair the Skin-view handle (in its handles list) tri_index item
                     # to the editor_tri_index we got above to see if they match.
@@ -718,13 +719,14 @@ def PassEditorSel2Skin(editor, option=1):
                                 editor_tri_index = tri
                                 skinvtx_index = vertex
                                 break
+                    if editor_tri_index is None: continue
                 if option == 2 or option == 3:
                     for vertex in range(len(tris[vtx[1]])):
                         if ver_index == tris[vtx[1]][vertex][0]:
                             editor_tri_index = vtx[1]
                             skinvtx_index = vertex
                             break
-
+                    if editor_tri_index is None: continue
                 for handle in SkinView1.handles:
                     if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                         skinhandle = handle
@@ -785,6 +787,10 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.28  2007/07/14 22:42:43  cdunde
+#Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
+#Can run either way with single pick selection or rectangle drag selection in all views.
+#
 #Revision 1.27  2007/07/11 20:48:23  cdunde
 #Opps, forgot a couple of things with the last change.
 #
