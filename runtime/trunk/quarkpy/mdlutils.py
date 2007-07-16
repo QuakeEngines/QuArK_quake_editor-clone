@@ -1,7 +1,3 @@
-# Two lines below to stop encoding errors in the console.
-#!/usr/bin/python
-# -*- coding: ascii -*-
-
 """   QuArK  -  Quake Army Knife
 
 Various Model editor utilities.
@@ -667,6 +663,14 @@ def PassEditorSel2Skin(editor, option=1):
     "     and why we need to iterate through the Skin-view view.handles"
     "     to match up its corresponding triangle vertex."
 
+    "     Another way to call a triangles Skin-view 'view.handles' would be with the following formula:"
+    "     (tri_index * 3) + its vertex position number, either 0, 1 or 2. For example to get the 3 view.handles of tri_index 5:"
+    "         from mdlhandles import SkinView1                   "
+    "         if SkinView1 is not None:                          "
+    "             vertex0 = SkinView1.handles[(tri_index*3)+0]   "
+    "             vertex1 = SkinView1.handles[(tri_index*3)+1]   "
+    "             vertex2 = SkinView1.handles[(tri_index*3)+2]   "
+
     tris = editor.Root.currentcomponent.triangles
     from mdlhandles import SkinView1
 
@@ -791,6 +795,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.30  2007/07/15 21:22:46  cdunde
+#Added needed item updates when a new triangle is created.
+#
 #Revision 1.29  2007/07/15 01:20:49  cdunde
 #To fix error for trying to pass selected vertex(es) that do not belong to a triangle
 #(new ones or leftovers from any delete triangles) to the Skin-view.
