@@ -52,12 +52,14 @@ class ModelEditor(BaseEditor):
 
     ModelVertexSelList = []
 
-    # Skin-view vertexes (pos, self, tri_index, ver_index)
+    # Skin-view vertexes [pos, self, tri_index, ver_index]
     #                                       Its projected x,y Skin-view position.
     #                                       The "SkinHandle" vertex drag handle instance itself.
     #                                       Model component mesh triangle number it belongs to.
     #                                       Model "Frame" "vertices" number.
     #                                       First vertex in this list can be used as a "base vertex".
+    #                                       This list and its items MUST use square brackets [ ] to work,
+    #                                       so that the handle "self" and its "pos" can be updated when moved.
 
     SkinVertexSelList = []
 
@@ -1050,6 +1052,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.53  2007/07/04 18:51:23  cdunde
+#To fix multiple redraws and conflicts of code for RectSelDragObject in the Model Editor.
+#
 #Revision 1.52  2007/07/02 22:49:43  cdunde
 #To change the old mdleditor "picked" list name to "ModelVertexSelList"
 #and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
