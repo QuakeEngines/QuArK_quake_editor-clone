@@ -15,6 +15,12 @@ when your courser is over it. These are strictly vertex related and are covered 
 when your courser is over it. These are the same commands located on the 'Commands' menu of the Main
 menu bar and are more Triangle related. These are also covered in detail below.
 
+<i>Editor Face Options </i>&nbsp;: These functions deal with the Model Mesh selection methods
+available and various visual tools to work with. They are strictly face related and are covered in detail below.
+
+<i>Editor Vertex Options </i>&nbsp;: These functions deal with the Model Mesh selection methods
+available and various visual tools to work with. They are strictly vertex related and are covered in detail below.
+
 <i>Reset 3D view </i>&nbsp;: If the model becomes 'lost', goes out of the 3D view, you can use this
 function to reset the 3D view and bring the model back to its starting position when it was first opened
 and based on the 'Rotation Method' you last chose to rotate the model by.
@@ -34,9 +40,9 @@ file to place and display in the 2D view that the cursor was in when the RMB was
 Click <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#background">here</a> for full detailed information
 about its functions and settings.
 
-<b><u>Vertex Commands :</u></b> This is the sub-menu described above and its functions in detail.
-
 <img border=1 align=right>viewsrmbmenus2.png</img>
+
+<b><u>Vertex Commands sub-menu :</u></b> This is the sub-menu described above and its functions in detail.
 
 <i>Add Vertex Here </i>&nbsp;: This funciton is also located on the
 <a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below, please click on the menu link for this functions full description.
@@ -44,10 +50,14 @@ about its functions and settings.
 <i>Clear Pick list </i>&nbsp;: This funciton is also located on the
 <a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below, please click on the menu link for this functions full description.
 
-<b><u>Commands sub-menu :</u></b> This is the sub-menu described further above and its functions in detail. It is a duplication of the
-<a href="intro.modeleditor.menu.html#commandsmenu">Commands</a> menu on the editor's main menu bar for easer and quicker access.
-
+<table border=0 cellspacing=0>
+<tr><td valign=top>
 <img border=1 align=right>viewsrmbmenus3.png</img>
+
+<b><u>Commands sub-menu :</u></b> This is the sub-menu described further above and its functions in detail.<br>
+It is a duplication of the <a href="intro.modeleditor.menu.html#commandsmenu">Commands</a> menu on the editor's
+main menu bar for easer and quicker access.
+Please click on the menu link above for this sub-menu's functions full descriptions.
 
 <i>Duplicate Current Frame </i>&nbsp;: This copies a single frame that is currently selected and
 adds that copy to that model component's animation frames list.
@@ -72,5 +82,72 @@ as tags to match them up correctly.
 They restrict any <g>vertex</g> movement in their related direction for all views and are interactive with their
 corrisponding buttons on the
 <a href="intro.modeleditor.toolpalettes.viewselection.html">View Selection tool-palette</a>.
+</td></tr>
 
+<tr><td valign=top><br>
+<img border=1 align=right valign=top>viewsrmbmenus4.png</img>
 
+<b><u>Editor Face Options sub-menu :</u></b> This is the sub-menu described above and its functions in detail.<br>
+(also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)
+
+<i>Show selection in Skin-view </i>&nbsp;: Because the Skin-view and the rest of the editor views work independently,
+this will pass selected editor model mesh triangle faces to the 'Skin-view' to be outlined and distinguish them. However,
+it does not actually select them in the <a href="intro.modeleditor.skinview.html">Skin-view</a>. Any selections or deselections will
+not show in the 'Skin-view' until the mouse buttons have been released. The <a href="intro.modeleditor.skinview.html">Skin-view</a>
+outline color can be changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>Pass selection to Skin-view </i>&nbsp;: This function will pass selected editor model mesh triangle faces  and select the
+coordinated skin triangles in the <a href="intro.modeleditor.skinview.html">Skin-view</a> where they can be used for editing purposes.
+Once the selection has been passed, if this function is turned off, the selection will remain in the
+<a href="intro.modeleditor.skinview.html">Skin-view</a> for its use there. Any selections  or deselections will not show
+in the <a href="intro.modeleditor.skinview.html">Skin-view</a> until the mouse buttons have been released.
+The <a href="intro.modeleditor.skinview.html">Skin-view</a> selected face outline color can be changed in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>No face outlines </i>&nbsp;: This will stop the outlining of any models mesh faces have been selected. This will
+increase the drawing speed of the editor dramatically when a model with a large number of face triangles is being edited.
+The solid fill of selected faces will still be available.
+
+<i>No face outlines while moving in 2D views </i>&nbsp;: Face outlining can be very taxing on the editors drawing speed
+when panning (scrolling) or zooming in the <g>2D views</g> when a lot of the models mesh faces have been selected.
+This is because so many views need to be redrawn repeatedly. If you experience this problem check this option to increase
+the drawing and movement speed. The lines will be redrawn at the end of the move.
+
+<i>No selection fill </i>&nbsp;: This stops the color filling and backface pattern from being drawn for any of the models
+mesh faces that are selected. Only the outline of the selected faces will be drawn. This will not apply for any view that
+has its <g>Fill in Mesh</g> function active (checked) in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#viewoptions">Views Options</a> dialog.
+
+<i>Front faces only </i>&nbsp;: This will only allow the solid color filling of the front faces to be drawn for any of the
+models mesh faces that are selected. The back faces will be outlined allowing the models texture to be displayed if the
+view is in <g>Textured</g> mode. This will not apply for any view that has its <g>Fill in Mesh</g> function active
+(checked) in the <a href="intro.modeleditor.toolpalettes.viewselection.html#viewoptions">Views Options</a> dialog.
+
+<i>Back faces only </i>&nbsp;: This will only allow the drawing of the backface pattern to be drawn for any of the models
+mesh faces that are selected. The front faces will be outlined allowing the models texture to be displayed if the view is
+in 'Textured' mode. This will not apply for any view that has its <g>Fill in Mesh</g> function active (checked) in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#viewoptions">Views Options</a> dialog.
+</td></tr>
+
+<tr><td valign=top><br>
+<img border=1 align=right valign=top>viewsrmbmenus5.png</img>
+
+<b><u>Editor Vertex Options sub-menu :</u></b> This is the sub-menu described above and its functions in detail.<br>
+(also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)
+
+<i>Sync Skin-view with Editor views </i>&nbsp;: This function will turn off other related options and synchronize selected
+Editor views mesh vertexes, passing and selecting the coordinated <g>Skin mesh vertexes</g> in the <a href="intro.modeleditor.skinview.html">Skin-view</a>,
+where they can be used for editing purposes. Any selection changes in the Editor views will be updated to the
+<a href="intro.modeleditor.skinview.html">Skin-view</a> as well. Once the selection has been passed, if this function is
+turned off, the selection will remain in both the Editor and the <a href="intro.modeleditor.skinview.html">Skin-view</a> for further use.
+The <a href="intro.modeleditor.skinview.html">Skin-view</a> and Editor views selected vertex colors can be changed in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>Pass selection to Skin-view </i>&nbsp;: This function will pass selected Editor model mesh vertexes and select the
+coordinated <g>Model Skin mesh</g> vertexes in the <a href="intro.modeleditor.skinview.html">Skin-view</a>,
+along with any others currently selected, where they can be used for editing purposes. Once the selection has been passed,
+if this function is turned off, the selection will remain in the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+for its use there. The Editor's selected vertex colors can be changed in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+</td></tr>
+</table>

@@ -2,6 +2,13 @@ title: Options menu
 author: cdunde
 
 <img border=0 align=right>options.png</img>
+<i><b>Grid scale in 2D views</b> </i>&nbsp;: These functions allow you to display a scale and tick mark guides
+of the current grid setting in any one, combination, or all of the 2D views of the Editor, as
+shown in the top sub-menu. You can also center any one or combination of the scales for
+each view. If ' All 2D views '  or ' all scales centered '  is checked, it will deactivate this
+menu's individual items.
+
+<i><b>3D Rotation Options</b> - submenu items </i>&nbsp;:<br>
 <i>Original 3Dview rotation </i>&nbsp;: This is the way QuArK's model rotation has worked in the past.
 As long as the model drag is started flat (z at 0) it rotates and tilts during rotation fine.
 But if it does a hiccup during the drag with the model tilted that is when it starts to drift
@@ -28,22 +35,76 @@ It will then re-center that position to the center of the view to start rotating
 Unlike the 'Original 3Dview rotation' method, this would allow close up detail rotation without
 the model jumping back to some other location as in all of the above cases.
 
-<i>Draw handles while rotating </i>&nbsp;: This allows the models vertex handles (if active) to be drawn during
+<i><b>Draw handles while rotating</b> </i>&nbsp;: This allows the models vertex handles (if active) to be drawn during
 rotation, but this will slow down the redrawing process and can make rotation seem jerky.
 
-<i>Paste objects at screen center </i>&nbsp;: Check this if you want objects that you
+<i><b>Model Axis in views</b> </i>&nbsp;: This displays the models axis on which it was built in all views,
+showing its X, Y and Z direction. The size of its letter indicators and line thickness can be increased or
+decreased by using the '<g>Set Line Thickness</g>' function, a little further down. Their individual colors can
+be changedin the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i><b>Draw back faces</b> </i>&nbsp;: This allows the back face checkerboard pattern to be drawn in all view modes when the
+<g>'Views Options', 'Mesh in Frames'</g> of the <a href="intro.modeleditor.toolpalettes.viewselection.html#viewoptions">Views Options</a>
+is checked for that view. Using the option in this manner will help to distinguish which direction the faces are facing for proper construction.
+
+<i><b>Set Line Thickness</b> </i>&nbsp;: This lets you set the thickness of certain lines that are drawn on the Editor's views,
+such as the outlining of selected model mesh faces and the models axis lines.
+
+<i><b>Editor Face Selection Options</b> - submenu items </i>&nbsp;:<br>
+<i>Show selection in Skin-view </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<i>Pass selection to Skin-view </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<i>No face outlines </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<i>No face outlines while moving in 2D views </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<i>No selection fill </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<i>Front faces only </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<i>Back faces only </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<i><b>Editor Vertex Selection Options</b> - submenu items </i>&nbsp;:<br>
+<i>Sync Skin-view with Editor views </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<i>Pass selection to Skin-view </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+
+<i><b>Skin-view Options</b> - submenu items </i>&nbsp;:<br>
+<i>Sync Editor views with Skin-view </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.skinview.html#funcsnmenus">Skin-view RMB menu</a>, please click on the menu link for this functions full description.
+
+<i>Pass selection to Editor views </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.skinview.html#funcsnmenus">Skin-view RMB menu</a>, please click on the menu link for this functions full description.
+
+<i>Clear Selected Faces </i>&nbsp;: This function will clear all faces in the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+that have been drawn as <g>Selected</g> or <g>Show</g> but any related selected vertexes will remain that way for editing
+purposes. The <a href="intro.modeleditor.skinview.html">Skin-view</a> selected face, show face and selected vertex colors
+can be changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i><b>Paste objects at screen center</b> </i>&nbsp;: Check this if you want objects that you
 paste into the map-view, appear in the center of the current map-view. Uncheck
 it, and it will paste it at the exact position as the original.
 
-<i>Enlarge Vertices Ticks </i>&nbsp;: This makes the model's ticks 1 size larger for easer viewing.
+<i><b>Enlarge Vertices Ticks</b> </i>&nbsp;: This makes the model's ticks 1 size larger for easer viewing.
 
-<i>Rebuild 3D views </i>&nbsp;: This rebuilds the 3D views (actually all views) in the Model Editor
+<i><b>Rebuild 3D views</b> </i>&nbsp;: This rebuilds the 3D views (actually all views) in the Model Editor
 in case of a lockup. You may have to do this a few times to clear the views up. The easiest way is to just push the HotKey 'Tab' until the views unlock and clear up.
 
-<i>Axis XYZ letter indicator in view windows </i>&nbsp;: This display s the X Y or Z indicator letter
+<i><b>Axis XYZ letter indicator in view windows</b> </i>&nbsp;: This display s the X Y or Z indicator letter
 per view to associate the rotation menu buttons. These are for reference only and are not selectable
 with the mouse.
 
-<i>List of Plug-ins </i>&nbsp;: Opens a window which shows what plug-ins QuArK has loaded.
+<i><b>List of Plug-ins</b> </i>&nbsp;: Opens a window which shows what plug-ins QuArK has loaded.
 
-<i>Configuration </i>&nbsp;: Takes you to the <ref> intro/configuration </ref>.
+<i><b>Configuration</b> </i>&nbsp;: Takes you to the <ref> intro/configuration </ref>.

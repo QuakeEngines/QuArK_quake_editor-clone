@@ -35,5 +35,22 @@ same position <b>or</b> you can place your cursor over any unselected vertex and
 <g>Change Base Vertex</g> menu item and it will jump to that new location and you can carry on from there.
 
 Using these along with the <g>Vertex drag mode</g> button a number of various combinations of aligning
-vertexes can be accomplished. And as stated in the section above, the exact co-ordnances will be displayed
-of all of these items will be shown in the editor's Help box as you proceed through the phases of your editing.
+vertexes can be accomplished. And as stated in the section above, the exact co-ordnances
+,of all of these items, will be displayed in the editor's Help box as you proceed through the phases of your editing.
+
+Two additional RMB items are located on the <g>Skin-view Options</g> sub-menu. These are:
+
+<i><b>Skin-view Options</b> - submenu items </i>&nbsp;: (also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)<br>
+<i>Sync Editor views with Skin-view </i>&nbsp;: This function will turn off other related options and synchronize selected
+<g>Skin-view mesh vertexes</g>, passing and selecting the coordinated <g>Model mesh vertexes</g> in the Editors views,
+where they can be used for editing purposes. Any selection changes in the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+will be updated to the Editors views as well. Once the selection has been passed, if this function is turned off,
+the selection will remain in both the Editor and the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+for further use. The <a href="intro.modeleditor.skinview.html">Skin-view</a> and Editor views selected vertex colors can
+be changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>Pass selection to Editor views </i>&nbsp;: This function will pass selected <g>Skin-view mesh vertexes</g> and select
+the coordinated <g>Model mesh vertexes</g> in the Editors views, along with any others currently selected, where they can
+be used for editing purposes. Once the selection has been passed, if this function is turned off, the selection will remain
+in the Editor for its use there. The <a href="intro.modeleditor.skinview.html">Skin-view</a> selected vertex colors can be
+changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.

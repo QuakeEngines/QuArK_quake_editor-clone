@@ -2,6 +2,7 @@ title: QuArK's Model Structure
 author: cdunde
 desc: components
 desc: mesh
+desc: skinmesh
 
 This section covers more of the technical part, in detail, of QuArK's Model Structure for programming
 purposes and is very important to understand if you plan to do any code writing for the Model Editor.

@@ -3,5 +3,5 @@ author: cdunde
 
 The <a href="intro.modeleditor.html">Model-editor in QuArK</a> is laid out and functions
 very much in the same way that the 
-<a href="intro.mapeditor.overview.html">Map-editor in QuArK</a> is for constancy in its use.
+<a href="intro.mapeditor.overview.html">Map-editor in QuArK</a> does for constancy in its use.
 Please see that section for more basic detail.
