@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde/DanielPharos]: To setup selected model mesh faces so they will draw correctly in all views.
+
 * [cdunde]: Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
           - Can run either way with single pick selection or rectangle drag selection in all views.
 
