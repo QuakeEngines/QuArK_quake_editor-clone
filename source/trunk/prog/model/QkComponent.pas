@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2007/06/12 11:23:49  cdunde
+Fixed what looks like a type error in vertex comparisons for line drawing.
+
 Revision 1.24  2007/05/06 21:24:24  danielpharos
 A little cleanup.
 
@@ -885,7 +888,7 @@ begin
           SourceCTris:=CTris;
           for K:=0 to 2 do begin
             J:=CTris^[K].VertexNo;
-            if J > FCurrentFrameCount then begin    { ignore the invalid triangle }
+            if J > FCurrentFrameCount then begin    // ignore the invalid triangle 
               Dec(TrisCount);
               Dec(Tris);
               Break;
@@ -911,10 +914,10 @@ begin
           L.Add(Tris);
           Inc(Tris);
         end;
-        L.Sort(ByOow);
+   //     L.Sort(ByOow);   draws all the filltris triangles wrong
         NewPen:=0;
         DeletePen:=0;
-        if g_DrawInfo.GreyBrush <> 0 then begin    { if color changes must be made now }
+        if g_DrawInfo.GreyBrush <> 0 then begin    // if color changes must be made now 
           if not Odd(SelMult) then begin
             C1:=clDefault;
             CouleurDessin(C1);
