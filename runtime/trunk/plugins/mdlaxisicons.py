@@ -123,7 +123,9 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
                         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
-                            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+     # The line below can be used later if we want an option to draw the back faces as well.
+     #2                       comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                         else:
                             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] == "1":
                                 comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)             
@@ -137,7 +139,9 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
                         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
-                            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+     # The line below can be used later if we want an option to draw the back faces as well.
+     #2                       comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                         else:
                             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] == "1":
                                 comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)            
@@ -225,6 +229,14 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.13  2007/06/19 06:16:07  cdunde
+#Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+#Added model mesh face selection using RMB and LMB together along with various options
+#for selected face outlining, color selections and face color filltris but this will not fill the triangles
+#correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+#file (for the TCoordinates.Polyline95f procedure).
+#Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+#
 #Revision 1.12  2007/06/07 04:23:21  cdunde
 #To setup selected model mesh face colors, remove unneeded globals
 #and correct code for model colors.

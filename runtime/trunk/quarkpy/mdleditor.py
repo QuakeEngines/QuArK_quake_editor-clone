@@ -445,7 +445,9 @@ def setsingleframefillcolor(self, view):
         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
-            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+     # The line below can be used later if we want an option to draw the back faces as well.
+     #2       comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                 if self.ModelFaceSelList != []:
@@ -460,7 +462,9 @@ def setsingleframefillcolor(self, view):
         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
-            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+     # The line below can be used later if we want an option to draw the back faces as well.
+     #2       comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                 if self.ModelFaceSelList != []:
@@ -475,7 +479,9 @@ def setsingleframefillcolor(self, view):
         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
-            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+    # The line below can be used later if we want an option to draw the back faces as well.
+    #2        comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                 if self.ModelFaceSelList != []:
@@ -490,7 +496,9 @@ def setsingleframefillcolor(self, view):
         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
-            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+    # The line below can be used later if we want an option to draw the back faces as well.
+    #2        comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                 if self.ModelFaceSelList != []:
@@ -505,7 +513,9 @@ def setsingleframefillcolor(self, view):
         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
-            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+    # The line below can be used later if we want an option to draw the back faces as well.
+    #2        comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                 if self.ModelFaceSelList != []:
@@ -536,7 +546,9 @@ def setframefillcolor(self, view):
                     fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
                     backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                     backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
-                    comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+      # The line below can be used later if we want an option to draw the back faces as well.
+      #2              comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                    comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                         if self.ModelFaceSelList != []:
@@ -551,7 +563,9 @@ def setframefillcolor(self, view):
                 backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                 backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
-                    comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+     # The line below can be used later if we want an option to draw the back faces as well.
+     #2               comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                    comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                         if self.ModelFaceSelList != []:
@@ -566,7 +580,9 @@ def setframefillcolor(self, view):
                 backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                 backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
-                    comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+      # The line below can be used later if we want an option to draw the back faces as well.
+      #2              comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                    comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                         if self.ModelFaceSelList != []:
@@ -582,7 +598,9 @@ def setframefillcolor(self, view):
         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
-            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+     # The line below can be used later if we want an option to draw the back faces as well.
+     #2       comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                 if self.ModelFaceSelList != []:
@@ -598,7 +616,9 @@ def setframefillcolor(self, view):
         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
-            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+    # The line below can be used later if we want an option to draw the back faces as well.
+    #2        comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
                 if self.ModelFaceSelList != []:
@@ -633,7 +653,9 @@ def paintframefill(self, v):
                         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
-                            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+     # The line below can be used later if we want an option to draw the back faces as well.
+     #2                       comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                            comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                             v.repaint()
                         else:
                             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
@@ -652,7 +674,9 @@ def paintframefill(self, v):
                     backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                     backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                     if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
-                        comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+      # The line below can be used later if we want an option to draw the back faces as well.
+      #2                  comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                        comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                         v.repaint()
                     else:
                         if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
@@ -669,7 +693,9 @@ def paintframefill(self, v):
                     backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                     backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                     if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
-                        comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+      # The line below can be used later if we want an option to draw the back faces as well.
+      #2                  comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                        comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                         v.repaint()
                     else:
                         if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
@@ -693,7 +719,9 @@ def paintframefill(self, v):
         fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
         backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
         backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
-        comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+  # The line below can be used later if we want an option to draw the back faces as well.
+  #2      comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+        comp.filltris = [(fillcolor,None)]*len(comp.triangles)
     else:
         if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
             if self.ModelFaceSelList != []:
@@ -852,7 +880,9 @@ def commonhandles(self, redraw=1):
             backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
             backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
-                comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+    # The line below can be used later if we want an option to draw the back faces as well.
+    #2            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                 v.repaint()
             else:
                 if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
@@ -870,7 +900,9 @@ def commonhandles(self, redraw=1):
             backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
             backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh4"] == "1":
-                comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+    # The line below can be used later if we want an option to draw the back faces as well.
+    #2            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                 v.repaint()
             else:
                 if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
@@ -888,7 +920,9 @@ def commonhandles(self, redraw=1):
             backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
             backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh3"] == "1":
-                comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+    # The line below can be used later if we want an option to draw the back faces as well.
+    #2            comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                 v.repaint()
             else:
                 if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
@@ -909,7 +943,9 @@ def commonhandles(self, redraw=1):
                     backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                     backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                     if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh1"] == "1":
-                        comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+    # The line below can be used later if we want an option to draw the back faces as well.
+    #2                    comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                        comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                         v.repaint()
                     else:
                         if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
@@ -934,7 +970,9 @@ def commonhandles(self, redraw=1):
                     backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
                     backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
                     if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh5"] == "1":
-                        comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+    # The line below can be used later if we want an option to draw the back faces as well.
+    #2                    comp.filltris = [(fillcolor,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
+                        comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                         v.repaint()
                     else:
                         if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
@@ -1052,6 +1090,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.54  2007/07/17 01:11:54  cdunde
+#Comment update.
+#
 #Revision 1.53  2007/07/04 18:51:23  cdunde
 #To fix multiple redraws and conflicts of code for RectSelDragObject in the Model Editor.
 #
