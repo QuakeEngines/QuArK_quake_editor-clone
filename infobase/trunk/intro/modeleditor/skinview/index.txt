@@ -1,5 +1,6 @@
 title: Skin-view page
 desc: overview
+desc: selection
 desc: funcsnmenus
 
 QuArK's Model Skin-view page is quite different then its 
