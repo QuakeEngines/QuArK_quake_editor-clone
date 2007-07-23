@@ -551,7 +551,7 @@ class VertexHandle(qhandles.GenericHandle):
             #
             # Force "n" to be perpendicular to the screen direction.
             #
-            vertical = view.vector(self.pos).normalized   # vertical vector at this point
+            vertical = view.vector("z").normalized   # vertical vector at this point
             n = (n - vertical * (n*vertical)).normalized
             #
             # Find a "model" face for the new one.
@@ -1976,6 +1976,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.58  2007/04/13 19:47:13  cdunde
+#Changed face and vertex dragging hint to give start and progressive drag positions based on grid location.
+#
 #Revision 1.57  2007/04/12 10:50:50  danielpharos
 #Fixed a very stupid typo.
 #
