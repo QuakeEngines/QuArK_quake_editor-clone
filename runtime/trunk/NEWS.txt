@@ -15,7 +15,7 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
-* [DanielPharos]: Fixed the 'cut out corner' function broken in Beta 1.
+* [DanielPharos/cdunde]: Fixed the 'cut out corner' function broken in Beta 1.
 
 * [cdunde/DanielPharos]: To setup selected model mesh faces so they will draw correctly in all views.
 
