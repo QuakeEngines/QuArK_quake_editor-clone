@@ -27,6 +27,11 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.339  2007/07/02 22:49:44  cdunde
+//To change the old mdleditor "picked" list name to "ModelVertexSelList"
+//and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+//Also start of function to pass vertex selection from the Skin-view to the Editor.
+//
 //Revision 1.338  2007/06/20 22:04:09  cdunde
 //Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
 //and start of face selection capabilities in the Skin-view for future functions there.
@@ -2969,7 +2974,7 @@ QQRKSRC1
       }
       PNG:config =
       {
-        LoadLibrary = "DevIL"
+        LoadLibrary = "FreeImage"
         SaveLibrary = "DevIL"
         Form = "FilesPNG"
       }
