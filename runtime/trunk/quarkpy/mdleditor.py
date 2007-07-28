@@ -156,6 +156,8 @@ class ModelEditor(BaseEditor):
  ### do a drag immediately after doing a zoom in the 3D view and will now straighten out
  ### until you do a slight zoom in one of the 2D views.
  ### Update, believe this is pretty well resolved. Redraws now come from other areas.
+            if flagsmouse is None:
+                return
             if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
    #         if flagsmouse == 1048 or flagsmouse == 2072:
                 return
@@ -168,8 +170,7 @@ class ModelEditor(BaseEditor):
                 for v in self.layout.views:
                     v.handles = v.handles
             else:
-                for v in self.layout.views:
-                    v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
+                currentview.handles = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
         except:
             for v in self.layout.views:
                 v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
@@ -335,6 +336,84 @@ class ModelEditor(BaseEditor):
 
     def moveby(self, text, delta):
         mdlbtns.moveselection(self, text, delta)
+
+
+    def linear1click(self, btn):
+        "Click on the 'Linear Handle edit' button for the LinearHandle classes in the mdlhandles.py file."
+
+        editorview = self.layout.views[0]
+        if not self.linearbox:
+            quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "1"
+            setup = quarkx.setupsubset(self.MODE, "Building")
+            self.linearbox = True
+     #       if setup["LinearWarning"]:
+     #           if quarkx.msgbox(Strings[-105], MT_INFORMATION, MB_OK|MB_CANCEL) != MR_OK:
+     #               return
+     #       setup["LinearWarning"] = ""
+            if len(self.ModelFaceSelList) or len(self.ModelVertexSelList):
+                import mdlhandles
+                newhandles = []
+                newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
+                for view in self.layout.views:
+                    import plugins.mdlgridscale
+                    import plugins.mdlaxisicons
+                    setsingleframefillcolor(self, view)
+                    view.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(self, view)
+                    plugins.mdlaxisicons.newfinishdrawing(self, view)
+                    view.handles = newhandles
+                    cv = view.canvas()
+                    for h in view.handles:
+                        h.draw(view, cv, h)
+            else:
+                for view in self.layout.views:
+                    import plugins.mdlgridscale
+                    import plugins.mdlaxisicons
+                    plugins.mdlgridscale.gridfinishdrawing(self, view)
+                    plugins.mdlaxisicons.newfinishdrawing(self, view)
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "0"
+            import mdlhandles
+            newhandles = []
+            if self.layout.explorer.uniquesel is not None and self.layout.explorer.uniquesel.type == ':mf':
+                newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
+            for view in self.layout.views:
+                import plugins.mdlgridscale
+                import plugins.mdlaxisicons
+                view.handles = []
+                if self.layout.explorer.sellist == []:
+                    setsingleframefillcolor(self, view)
+                    view.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(self, view)
+                    plugins.mdlaxisicons.newfinishdrawing(self, view)
+                elif len(self.layout.explorer.sellist) > 1:
+                    if self.ModelFaceSelList == []:
+                        setsingleframefillcolor(self, view)
+                        view.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(self, view)
+                        plugins.mdlaxisicons.newfinishdrawing(self, view)
+                    else:
+                        setsingleframefillcolor(self, view)
+                        view.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(self, view)
+                        plugins.mdlaxisicons.newfinishdrawing(self, view)
+                else:
+                    setsingleframefillcolor(self, view)
+                    view.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(self, view)
+                    plugins.mdlaxisicons.newfinishdrawing(self, view)
+                    view.handles = newhandles
+                    cv = view.canvas()
+                    for h in view.handles:
+                        h.draw(view, cv, h)
+            
+            self.linearbox = not self.linearbox
+        self.savesetupinfos()
+        try:
+            self.layout.buttons["linear"].state = self.linearbox and qtoolbar.selected
+            quarkx.update(self.layout.editor.form)
+        except KeyError:
+            pass
         
         
 def modelaxis(view):
@@ -815,7 +894,10 @@ def commonhandles(self, redraw=1):
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
                             return
                         else:
-                            hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
+                            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                                hlist = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
+                            else:
+                                hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
                         currentview.handles = hlist
                         cv = currentview.canvas()
                         for h in hlist:
@@ -838,7 +920,10 @@ def commonhandles(self, redraw=1):
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                             return
                         else:
-                            hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
+                            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                                hlist = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
+                            else:
+                                hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles
                         currentview.handles = hlist
                         cv = currentview.canvas()
                         for h in hlist:
@@ -991,7 +1076,10 @@ def commonhandles(self, redraw=1):
     if flagsmouse == 1048 or flagsmouse == 1056:
         hlist = []
     else:
-        hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+            hlist = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
+        else:
+            hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
 
     for v in self.layout.views:
         if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
@@ -1090,6 +1178,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.55  2007/07/20 01:41:04  cdunde
+#To setup selected model mesh faces so they will draw correctly in all views.
+#
 #Revision 1.54  2007/07/17 01:11:54  cdunde
 #Comment update.
 #

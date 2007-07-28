@@ -365,7 +365,7 @@ class ModelLayout(BaseLayout):
     def selectcomponent(self, comp):
         "This is when you select a particular 'Component' or any 'Group' within it in the Tree-view."
         global savedskins
-        from qbaseeditor import currentview
+        from qbaseeditor import currentview, flagsmouse
 
         if comp != self.editor.Root.currentcomponent:
             self.reset()
@@ -379,11 +379,14 @@ class ModelLayout(BaseLayout):
                     self.editor.SkinFaceSelList = []
                     self.editor.Root.currentcomponent.filltris = []
             else:
-                self.editor.ModelVertexSelList = []
-                self.editor.SkinVertexSelList = []
-                self.editor.ModelFaceSelList = []
-                self.editor.SkinFaceSelList = []
-                self.editor.Root.currentcomponent.filltris = []
+                if flagsmouse == 2056:
+                    pass
+                else:
+                    self.editor.ModelVertexSelList = []
+                    self.editor.SkinVertexSelList = []
+                    self.editor.ModelFaceSelList = []
+                    self.editor.SkinFaceSelList = []
+                    self.editor.Root.currentcomponent.filltris = []
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
                     view.invalidate()
@@ -533,6 +536,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.41  2007/07/09 19:06:14  cdunde
+#Setup to clear all Editor and Skin-view selection lists when something outside the
+#currentcomponent is selected to start clean and avoid crossing of list items.
+#
 #Revision 1.40  2007/07/02 22:49:43  cdunde
 #To change the old mdleditor "picked" list name to "ModelVertexSelList"
 #and "skinviewpicked" to "SkinVertexSelList" to make them more specific.

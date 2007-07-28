@@ -991,6 +991,9 @@ class RedImageDragObject(DragObject):
             if isinstance(editor.dragobject.handle, mdlhandles.VertexHandle):
                 ### Stops Model Editor Vertex drag handles from drawing if not returned.
                 return
+            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle):
+                ### Stops Model Editor Linear drag handles from drawing incorrectly drawn redline drag objects.
+                return
             from qbaseeditor import currentview
             if view.info["viewname"] == "skinview" and isinstance(editor.dragobject.handle, mdlhandles.SkinHandle):
                 return
@@ -1107,11 +1110,14 @@ class RedImageDragObject(DragObject):
             if currentview.info["viewname"] == "skinview":
                 skinviewdraghandle = self
                 old = self.dragto(x, y, flags)
-
-        old = self.dragto(x, y, flags)
-        if (self.redimages is None) or (len(old)!=len(self.redimages)):
-            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
-            return
+            else:
+                skinviewdraghandle = self
+                old = self.dragto(x, y, flags)
+        else:
+            old = self.dragto(x, y, flags)
+            if (self.redimages is None) or (len(old)!=len(self.redimages)):
+                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                return
 
 ## This section added for Terrain Generator - stops broken faces - cdunde 05-19-05
 
@@ -1216,6 +1222,18 @@ def refreshtimer(self):
                     h = currentview.handles[vtx[0]]
                     h.draw(currentview, cv, h)
             return
+        if flagsmouse == 1032 and self.editor.linearbox:
+            import mdlhandles
+            if isinstance(self.editor.dragobject, mdlhandles.RectSelDragObject):
+                self.view.repaint()
+                mode = DM_OTHERCOLOR|DM_BBOX
+                if self.redimages is not None:
+                    for r in self.redimages:
+                        self.view.drawmap(r, mode, RED)
+            else:
+                if not isinstance(self.editor.dragobject, mdlhandles.LinearHandle):
+                    return
+                    
         else:
             mode = DM_OTHERCOLOR|DM_BBOX
             if self.redimages is not None:
@@ -1274,8 +1292,10 @@ class FreeZoomDragObject(DragObject):
             sensitivity = 1 # linux issue with single quote
 
         scale = self.scale0 * math.exp((x-self.x0+y-self.y0) * sensitivity * self.BaseSensitivity)
-        if scale<self.AbsoluteMinimum: scale=self.AbsoluteMinimum
-        elif scale>self.AbsoluteMaximum: scale=self.AbsoluteMaximum
+        if scale<self.AbsoluteMinimum:
+            scale=self.AbsoluteMinimum
+        elif scale>self.AbsoluteMaximum:
+            scale=self.AbsoluteMaximum
         setviews(self.viewlist, "scale", scale)
 
         ### To enable Model Editor multiple meshfill color selection zooming.
@@ -1559,6 +1579,18 @@ class RectangleDragObject(RedImageDragObject):
                         self.rectanglesel(editor, x,y, self.redimages[0], self.view)
                         if self.view.info["viewname"] == "skinview":
                             return
+                        else:
+                            if (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1") and (len(editor.ModelFaceSelList) != 0 or len(editor.ModelVertexSelList) != 0):
+                                if len(self.view.handles) == 0:
+                                    import mdlhandles
+                                    self.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, self.view)
+                                cv = self.view.canvas()
+                                for h in self.view.handles:
+                                    h.draw(self.view, cv, self)
+                                if editor.ModelVertexSelList != []:
+                                    for vtx in editor.ModelVertexSelList:
+                                        h = self.view.handles[vtx[0]]
+                                        h.draw(self.view, cv, h)
                     else:
                         if len(self.view.handles) == 0:
                             import mdlhandles
@@ -2025,6 +2057,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.51  2007/07/15 00:16:49  cdunde
+#To remove testing print statements missed during cleanup.
+#
 #Revision 1.50  2007/07/11 20:00:55  cdunde
 #Setup Red Rectangle Selector in the Model Editor Skin-view for multiple selections.
 #

@@ -36,7 +36,7 @@ class DisplayBar(ToolBar):
 
         Btn3D = qtoolbar.button(layout.full3Dclick, "Full 3D view||Full 3D view will create a new floating 3D-window, which you can place anywhere on your desktop.\nIt only exist as long as you are in the model editor.", ico_maped, 21, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
 
-        LinearVBtn = qtoolbar.button(layout.editor.linear1click, "Linear mapping circle on selection||Linear mapping circle on selection:\n\nWhen this button is selected, QuArK always displays a pink circle around the selected objects; otherwise, it only appears if multiple objects are selected.\n\nThis circle and its attached handles let you apply 'linear mappings' on the objects. 'Linear mapping' means any transformation like rotation, enlarging/shrinking, symmetry, or a combination of them all. When you use the rotate, enlarge, shrink, and symmetry buttons of the movement tool palette, you actually apply a linear mapping on the selected objects. This is only interesting to know for a special kind of Duplicators, the one that can apply linear mappings. It means that this kind of Duplicator can create images with any of the previous movement commands applied, for example to create spiral stairs.", ico_maped, 19,  infobaselink="intro.mapeditor.toolpalettes.display.html#linear")
+        LinearVBtn = qtoolbar.button(layout.editor.linear1click, "Linear Drag Handle for selection||Linear Drag Handle for selection:\n\nWhen this button is selected, QuArK always displays the 'Linear Drag Handle' circle around the selected objects for editing purposes.\n\nThis circle and its attached handles let you apply 'linear movement' to the objects. 'Linear movement' means any transformation like rotation, enlarging/shrinking, symmetry, or a combination of them all. When you use the rotate, enlarge, shrink, and symmetry buttons of the movement tool palette, you actually apply a linear movement on the selected objects.", ico_maped, 19,  infobaselink="intro.modeleditor.toolpalettes.display.html#linear")
 
         LockViewsBtn = qtoolbar.button(layout.editor.lockviewsclick, "Lock views||Lock views:\n\nThis will cause all of the 2D views to move and zoom together.\n\nWhen this is in the unlocked mode, the 2d views can then be moved and zoomed on individually.\n\nIf the lock is reset then the 2D views will realign themselves.", ico_maped, 28)
 
@@ -61,6 +61,10 @@ toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 #
 #
 #$Log$
+#Revision 1.3  2007/04/22 22:44:47  cdunde
+#Renamed the file mdltools.py to mdltoolbars.py to clarify the files use and avoid
+#confliction with future mdltools.py file to be created for actual tools for the Editor.
+#
 #Revision 1.9  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

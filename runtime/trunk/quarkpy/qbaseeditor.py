@@ -415,25 +415,23 @@ class BaseEditor:
 
                     return
                 else:
+                    import mdlhandles
                     if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                         mdleditor.modelaxis(view)
-                    import mdlhandles
                     if flagsmouse == 16384 and (isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, mdlhandles.RectSelDragObject)):
                         self.dragobject = None
+                        return
             ### Don't put back in will cause dupe draw of handles. Had to move handle drawing code
             ### to mdlhandles.py, class VertexHandle, def menu, def pick_cleared funciton, see notes there.
-                    if (flagsmouse == 16384 and self.dragobject is None):
-            #            cv = view.canvas()
-            #            for h in view.handles:
-            #                h.draw(view, cv, draghandle)
+                    elif (flagsmouse == 16384 and self.dragobject is None):
                         return
-                    if flagsmouse == 2064 and (view.info["viewname"] == "XY" or view.info["viewname"] == "YZ" or view.info["viewname"] == "XZ"):
+                    elif flagsmouse == 2064 and (view.info["viewname"] == "XY" or view.info["viewname"] == "YZ" or view.info["viewname"] == "XZ"):
                         return
-                    if flagsmouse == 1032:
+                    elif flagsmouse == 1032:
                         cv = view.canvas()
                         for h in view.handles:
                             h.draw(view, cv, draghandle)
-                    if flagsmouse == 2072:
+                    elif flagsmouse == 2072:
                         from mdlhandles import SkinView1
                         if SkinView1 is not None:
                             if ( quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1"):
@@ -701,6 +699,7 @@ class BaseEditor:
             if modelfacelist == [] and flagsmouse == 536 and currentview.info["viewname"] != "skinview":
                 self.ModelFaceSelList = []
                 for v in self.layout.views:
+                    v.handles = []
                     mdleditor.setsingleframefillcolor(self, v)
                     v.repaint()
 
@@ -939,7 +938,11 @@ class BaseEditor:
                     self.dragobject = dragobject = None
                     mdleditor.commonhandles(self)
                 else:
-                    self.dragobject.dragto(x, y, flags)
+                    if isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
+             #           self.dragobject.handle.drag(self.dragobject.handle.pos, quarkx.vect(x,y,0), flags, view)
+                        self.dragobject.dragto(x, y, flags)
+                    else:
+                        self.dragobject.dragto(x, y, flags)
             if isinstance(self, mdleditor.ModelEditor):
                 try:
                     if self.dragobject.hint is not None:
@@ -1262,6 +1265,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.73  2007/07/15 00:16:55  cdunde
+#To remove testing print statements missed during cleanup.
+#
 #Revision 1.72  2007/07/14 23:44:43  cdunde
 #To remove erroneous line added by text editor.
 #

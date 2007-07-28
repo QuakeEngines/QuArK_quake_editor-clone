@@ -968,25 +968,10 @@ class SkinHandle(qhandles.GenericHandle):
                 pass
             else:
                 view.repaint()
-         #       editor.finishdrawing(view) # This could be used if we want to add something to the Skin-view drawing in the future.
                 cv = view.canvas()
-      ### To draw the skin mesh while doing a handle drag.
-                cv.pencolor = skinviewmesh
-                for triangle in self.comp.triangles:
-                    vertex0 = triangle[0]
-                    vertex1 = triangle[1]
-                    vertex2 = triangle[2]
-                    trivertex0 = quarkx.vect(vertex0[1]-int(texWidth*.5), vertex0[2]-int(texHeight*.5), 0)
-                    trivertex1 = quarkx.vect(vertex1[1]-int(texWidth*.5), vertex1[2]-int(texHeight*.5), 0)
-                    trivertex2 = quarkx.vect(vertex2[1]-int(texWidth*.5), vertex2[2]-int(texHeight*.5), 0)
-                    vertex0X, vertex0Y,vertex0Z = view.proj(trivertex0).tuple
-                    vertex1X, vertex1Y,vertex1Z = view.proj(trivertex1).tuple
-                    vertex2X, vertex2Y,vertex2Z = view.proj(trivertex2).tuple
-                    cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
-                    cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
-                    cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
-      ### To draw the dragging 'guide' lines.
                 cv.pencolor = skinviewdraglines
+         #       editor.finishdrawing(view) # This could be used if we want to add something to the Skin-view drawing in the future.
+      ### To draw the dragging 'guide' lines.
             pv2 = view.proj(v2)
             oldtri = tris[self.tri_index]
             oldvert = oldtri[self.ver_index]
@@ -1354,22 +1339,39 @@ def BuildHandles(editor, explorer, view):
     "def buildhandles function and returns the list of handles to that function."
 
     fs = explorer.uniquesel
-    if (fs is None) or editor.linearbox:
+    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+        if len(explorer.sellist) >= 1:
+            for item in explorer.sellist:
+                if item.type != ':mf':
+                    h = []
+                    return h
         #
-        # Display a linear mapping box.
+        # Display a linear editing circle.
         #
-        list = explorer.sellist
+        if len(editor.ModelFaceSelList) != 0:
+            h = []
+            import mdlutils
+            list = mdlutils.MakeEditorFaceObject(editor)
+        else:
+            h = []
+            return h
         box = quarkx.boundingboxof(list)
         if box is None:
             h = []
         else:
-            h = qhandles.LinHandlesManager(MapColor("Linear"), box, list).BuildHandles()
+            h = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, list).BuildHandles()
         h = qhandles.FilterHandles(h, SS_MODEL)
     else:
         #
         # Get the list of handles from the entity manager.
         #
-        h = mdlentities.CallManager("handles", fs, editor, view)
+        h = []
+        if fs is not None:
+            h = mdlentities.CallManager("handlesopt", fs, editor)
+        elif explorer.sellist != []:
+            h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
+        else:
+            h = []
     #
     # The 3D view "eyes".
     #
@@ -1599,11 +1601,306 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     editor.ModelVertexSelList = [templist[2], templist[0], templist[1]]
             else:
                 pass
-            
 
 
 #
-# Mouse Clicking and Dragging on map views.
+# Classes that manage and create the linear handle, its center box, corner & side handles and its circle.
+# The normal redimages drawn in the Map Editor need to be stopped for the Model Editor since we use triangles.
+#   instead of rectangles and that is all it will draw until a new drawing function can be added to the source code.
+# The redimages drawing is stopped in the qhandels.py "def drawredimages" function for the "class RedImageDragObject".
+# Each Linear handle must be stopped there using that handles class name specifically. See the qhandels code that does that.
+#
+
+class ModelEditorLinHandlesManager:
+    "Linear Handle manager. This is the class called to manage and build"
+    "the Linear Handle by calling its other related classes below this one."
+
+    def __init__(self, color, bbox, list):
+        self.color = color
+        self.bbox = bbox
+        bmin, bmax = bbox
+        bmin1 = bmax1 = ()
+        for dir in "xyz":
+            cmin = getattr(bmin, dir)
+            cmax = getattr(bmax, dir)
+            diff = cmax-cmin
+            if diff<32:
+                diff = 0.5*(32-diff)
+                cmin = cmin - diff
+                cmax = cmax + diff
+            bmin1 = bmin1 + (cmin,)
+            bmax1 = bmax1 + (cmax,)
+        self.bmin = quarkx.vect(bmin1)
+        self.bmax = quarkx.vect(bmax1)
+        self.list = list
+
+    def BuildHandles(self, center=None, minimal=None):
+        "Build a list of handles to put around the circle for linear distortion."
+
+        if center is None:
+            center = 0.5 * (self.bmin + self.bmax)
+        self.center = center
+        if minimal is not None:
+            view, grid = minimal
+            closeto = view.space(view.proj(center) + quarkx.vect(-99,-99,0))
+            distmin = 1E99
+            mX, mY, mZ = self.bmin.tuple
+            X, Y, Z = self.bmax.tuple
+            for x in (X,mX):
+                for y in (Y,mY):
+                    for z in (Z,mZ):
+                        ptest = quarkx.vect(x,y,z)
+                        dist = abs(ptest-closeto)
+                        if dist<distmin:
+                            distmin = dist
+                            pmin = ptest
+            f = -grid * view.scale(pmin)
+            return [LinCornerHandle(self.center, view.space(view.proj(pmin) + quarkx.vect(f, f, 0)), self, pmin)]
+        h = []
+        for side in (self.bmin, self.bmax):
+            for dir in (0,1,2):
+                h.append(LinSideHandle(self.center, side, dir, self, not len(h)))
+        mX, mY, mZ = self.bmin.tuple
+        X, Y, Z = self.bmax.tuple
+        for x in (X,mX):
+            for y in (Y,mY):
+                for z in (Z,mZ):
+                    h.append(LinCornerHandle(self.center, quarkx.vect(x,y,z), self))
+        return h + [LinRedHandle(self.center, self)]
+
+
+    def drawbox(self, view):
+        "Draws the circle around all objects. Started as a box, but didn't look right."
+
+        cx, cy = [], []
+        mX, mY, mZ = self.bmin.tuple
+        X, Y, Z = self.bmax.tuple
+        for x in (X,mX):
+            for y in (Y,mY):
+                for z in (Z,mZ):
+                    p = view.proj(x,y,z)
+                    if not p.visible: return
+                    cx.append(p.x)
+                    cy.append(p.y)
+        mX = min(cx)
+        mY = min(cy)
+        X = max(cx)
+        Y = max(cy)
+        cx = (X+mX)*0.5
+        cy = (Y+mY)*0.5
+        mX = int(mX)   #py2.4
+        mY = int(mY)   #py2.4
+        X = int(X)     #py2.4
+        Y = int(Y)     #py2.4
+        cx = int(cx)   #py2.4
+        cy = int(cy)   #py2.4
+        dx = X-cx
+        dy = Y-cy
+        radius = math.sqrt(dx*dx+dy*dy)
+        radius = int(radius)   #py2.4
+        cv = view.canvas()
+        cv.pencolor = self.color
+        cv.brushstyle = BS_CLEAR
+        cv.ellipse(cx-radius, cy-radius, cx+radius+1, cy+radius+1)
+        cv.line(mX, cy, cx-radius, cy)
+        cv.line(cx, mY, cx, cy-radius)
+        cv.line(cx+radius, cy, X, cy)
+        cv.line(cx, cy+radius, cx, Y)
+
+
+#
+# Linear Drag Handle Circle's handles.
+#
+
+class LinearHandle(qhandles.GenericHandle):
+    "Linear Circle handles."
+
+    def __init__(self, pos, mgr):
+        qhandles.GenericHandle.__init__(self, pos)
+        self.mgr = mgr    # a LinHandlesManager instance
+
+    def drag(self, v1, v2, flags, view):
+        delta = v2-v1
+        if flags&MB_CTRL:
+            g1 = 1
+        else:
+            g1 = 1
+        if delta or (flags&MB_REDIMAGE):
+            new = map(lambda obj: obj.copy(), self.mgr.list)
+            if not self.linoperation(new, delta, g1, view):
+                if not flags&MB_REDIMAGE:
+                    new = None
+        else:
+            new = None
+
+        return self.mgr.list, new
+
+    def linoperation(self, list, delta, g1, view):
+        matrix = self.buildmatrix(delta, g1, view)
+        if matrix is None:
+            return
+        for obj in list:
+            obj.linear(self.center, matrix)
+
+        return 1
+
+
+class LinRedHandle(LinearHandle):
+    "Linear Circle: handle at the center."
+
+    hint = "           move selection (Ctrl key: force to grid)|move selection"
+
+    def __init__(self, pos, mgr):
+        LinearHandle.__init__(self, pos, mgr)
+        self.cursor = CR_MULTIDRAG
+        self.undomsg = "model mesh Linear Center face move"
+
+    def draw(self, view, cv, draghandle=None):
+
+        p = view.proj(self.pos)
+        if p.visible:
+            cv.reset()
+            cv.brushcolor = MapColor("LinearHandleCenter", SS_MODEL)
+            cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
+
+    def linoperation(self, list, delta, g1, view):
+        view.repaint()
+        for obj in list:
+            from qhandles import grid
+            obj.translate(delta)
+            vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
+            vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
+            vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
+            vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
+            cv = view.canvas()
+            cv.pencolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
+            cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
+            cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
+            cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
+
+        if view.info["type"] == "XY":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
+        elif view.info["type"] == "XZ":
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+        elif view.info["type"] == "YZ":
+            s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
+        else:
+            s = "was: " + vtoposhint(self.pos) + " now: " + vtoposhint(delta + self.pos)
+        self.draghint = s
+
+        return delta
+
+
+    def ok(self, editor, undo, oldobjectslist, newobjectslist):
+        "Returned final lists of objects to convert back into Model mesh vertexes."
+        
+        import mdlutils
+        from qbaseeditor import currentview
+        mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, self.undomsg)
+
+
+class LinSideHandle(LinearHandle):
+    "Linear Circle: handles at the sides for distortion/shearing."
+
+    undomsg = Strings[527]
+    hint = "enlarge / shear (Ctrl key: either enlarge or shear)||This handle lets you distort the selected object(s).\n\nIf you move the handle in the direction of or away from the center, you will shrink or enlarge the objects correspondingly. If you move the handle in the other direction, you will 'shear' the objects. Hold down the Ctrl key to prevents the objects from being enlarged and sheared at the same time."
+
+    def __init__(self, center, side, dir, mgr, firstone):
+        pos1 = quarkx.vect(center.tuple[:dir] + (side.tuple[dir],) + center.tuple[dir+1:])
+        LinearHandle.__init__(self, pos1, mgr)
+        self.center = center - (pos1-center)
+        self.dir = dir
+        self.firstone = firstone
+        self.inverse = side.tuple[dir] < center.tuple[dir]
+        self.cursor = CR_LINEARV
+
+    def draw(self, view, cv, draghandle=None):
+        if self.firstone:
+            self.mgr.drawbox(view)   # draw the full box
+        p = view.proj(self.pos)
+        if p.visible:
+            cv.reset()
+            cv.brushcolor = MapColor("LinearHandleSides", SS_MODEL)
+            cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
+            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
+
+    def buildmatrix(self, delta, g1, view):
+        npos = self.pos+delta
+        if g1:
+             npos = qhandles.aligntogrid(npos, 1)
+        normal = view.vector("Z").normalized
+        dir = self.dir
+        v = (npos - self.center) / abs(self.pos - self.center)
+        if self.inverse:
+            v = -v
+        m = [quarkx.vect(1,0,0), quarkx.vect(0,1,0), quarkx.vect(0,0,1)]
+        if g1:
+            w = list(v.tuple)
+            x = w[dir]-1
+            if x*x > w[dir-1]*w[dir-1] + w[dir-2]*w[dir-2]:
+                w[dir-1] = w[dir-2] = 0   # force distortion in this single direction
+            else:
+                w[dir] = 1                # force pure shearing
+            v = quarkx.vect(tuple(w))
+        else:
+            w = v.tuple
+        self.draghint = "enlarge %d %%   shear %d deg." % (100.0*w[dir], math.atan2(math.sqrt(w[dir-1]*w[dir-1] + w[dir-2]*w[dir-2]), w[dir])*180.0/math.pi)
+        m[dir] = v
+
+        return quarkx.matrix(tuple(m))
+
+
+class LinCornerHandle(LinearHandle):
+    "Linear Circle: handles at the corners for rotation/zooming."
+
+    undomsg = Strings[528]
+    hint = "zoom / rotate (Ctrl key: either zoom or rotate)||This handle lets you rotate and scale the selected object(s).\n\nIf you move the handle in the direction of or away from the center, you will zoom the objects and make them smaller or larger. If you move the handle around the center, the objects rotate. Hold down the Ctrl key to prevent zooming and rotation to occur simultaneously."
+
+    def __init__(self, center, pos1, mgr, realpoint=None):
+        LinearHandle.__init__(self, pos1, mgr)
+        if realpoint is None:
+            self.pos0 = pos1
+        else:
+            self.pos0 = realpoint
+        self.center = center - (pos1-center)
+        self.cursor = CR_CROSSH
+
+    def draw(self, view, cv, draghandle=None):
+        p = view.proj(self.pos)
+        if p.visible:
+            cv.reset()
+            cv.brushcolor = MapColor("LinearHandleCorners", SS_MODEL)
+            cv.pencolor = MapColor("LinearHandleOutline", SS_MODEL)
+            cv.polygon([(int(p.x)-3,int(p.y)), (int(p.x),int(p.y)-3), (int(p.x)+3,int(p.y)), (int(p.x),int(p.y)+3)])
+
+    def buildmatrix(self, delta, g1, view):
+        normal = view.vector("Z").normalized
+        texp4 = self.pos-self.center
+        texp4 = texp4 - normal*(normal*texp4)
+        npos = self.pos + delta
+        if g1:
+            npos = qhandles.aligntogrid(npos, 1)
+        npos = npos-self.center
+        npos = npos - normal*(normal*npos)
+        m = diff = None
+        if g1 and npos:
+            v = npos.normalized * abs(texp4)
+            if abs(v-texp4) > abs(v-npos):
+                diff = 1.0  # force pure rotation
+            else:
+                m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))    # force pure zooming
+        if m is None:
+            m = qhandles.UserRotationMatrix(normal, npos, texp4, 0)
+            if m is None: return
+        if diff is None: diff = abs(npos) / abs(texp4)
+        self.draghint = "rotate %d deg.   zoom %d %%" % (math.acos(m[0,0])*180.0/math.pi, 100.0*diff)
+
+        return m * diff
+
+
+#
+# Mouse Clicking and Dragging on Model Editor views.
 #
 
 def MouseDragging(self, view, x, y, s, handle):
@@ -1685,6 +1982,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.69  2007/07/15 02:00:19  cdunde
+#To fix error when redrawing handles in a list when one has been removed.
+#
 #Revision 1.68  2007/07/14 22:42:45  cdunde
 #Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
 #Can run either way with single pick selection or rectangle drag selection in all views.
