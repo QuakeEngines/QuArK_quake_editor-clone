@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
+          - to use for editing movement of model faces, vertexes and bones (in the future).
+
 * [DanielPharos]: Fixed the infobase-help not opening on several browsers.
 
 * [DanielPharos/cdunde]: Fixed the 'cut out corner' function broken in Beta 1.
