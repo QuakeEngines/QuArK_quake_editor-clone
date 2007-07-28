@@ -294,6 +294,7 @@ class BaseLayout:
             self.views.append(view)
         self.update3Dviews(view)
         BaseLayout.Floating3DWindows.append(floating)
+        self.editor.layout.explorer.selchanged()
 
     def closefull3Dview(self, floating):
         "Closes the 3D view."
@@ -311,6 +312,7 @@ class BaseLayout:
         if not setup["AllowMultiple"]:
             self.buttons["3D"].state = 0
             quarkx.update(self.editor.form)
+        self.editor.layout.explorer.selchanged()
 
     def setupdepth(self, view):
         pass    # abstract
@@ -593,6 +595,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.30  2007/03/27 22:36:29  danielpharos
+#Fixed a stupid bug.
+#
 #Revision 1.29  2007/03/27 22:28:43  danielpharos
 #Fixed a stupid bug with some new options. CloseOnSetup is now enabled by default too.
 #
