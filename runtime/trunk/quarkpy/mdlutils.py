@@ -120,46 +120,152 @@ def fixUpVertexNos(tris, index):
     return new_tris
 
 
-def MakeEditorFaceObject(editor, option=1):
+# The 'editor.SkinVertexSelList' list is a group of lists within a list.
+# Each group list must be created in the manner below then added to the 'editor.SkinVertexSelList' list:
+#    editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
+#
+# def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
+def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option=0):
+    "Does the opposite of the 'MakeEditorFaceObject' (just below this function) to convert"
+    "a list of faces that have been manipulated by some function using QuArK Internal Face Objects."
+    "The 'new' objects list in the functions 'ok' section is passed to here where it is converted to"
+    "the above list format items and that new list is then passed to the replacevertexes function in"
+    "this file further above for final processing and 'ok' exchange to finish the components mesh change."
+
+    if option == 0:
+        comp = editor.Root.currentcomponent
+        new_comp = comp.copy()
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            for listframe in editor.layout.explorer.sellist:
+                if compframe.name == listframe.name:
+                    old_vtxs = compframe.vertices
+                    for face in newobjectslist:
+                        tuplename = tuple(str(s) for s in face.shortname.split(','))
+                        compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
+                        old_vtxs[int(ver_index0)] = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])
+                        old_vtxs[int(ver_index1)] = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])
+                        old_vtxs[int(ver_index2)] = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])
+                        compframe.vertices = old_vtxs
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+
+    if option == 1:
+        comp = editor.Root.currentcomponent
+        vertexlist = []
+        for face in newobjectslist:
+            tuplename = tuple(str(s) for s in face.shortname.split(','))
+            vtxpos0 = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])
+            vtxpos1 = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])
+            vtxpos2 = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])
+            pos0X, pos0Y, pos0Z = view.proj(vtxpos0).tuple
+            pos1X, pos1Y, pos1Z = view.proj(vtxpos1).tuple
+            pos2X, pos2Y, pos2Z = view.proj(vtxpos2).tuple
+            pos0 = quarkx.vect(pos0Y, pos0Z, 0)
+            pos1 = quarkx.vect(pos1Y, pos1Z, 0)
+            pos2 = quarkx.vect(pos2Y, pos2Z, 0)
+            compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
+            tri_index = int(tri_index)
+            ver_index0 = int(ver_index0)
+            ver_index1 = int(ver_index1)
+            ver_index2 = int(ver_index2)
+            vertex0 = editor.Root.currentcomponent.currentframe.vertices[ver_index0]
+            vertex1 = editor.Root.currentcomponent.currentframe.vertices[ver_index1]
+            vertex2 = editor.Root.currentcomponent.currentframe.vertices[ver_index2]
+            if vertexlist == []:
+                vertexlist = vertexlist + [[pos0, vertex0, tri_index, ver_index0]] + [[pos1, vertex1, tri_index, ver_index1]] + [[pos2, vertex2, tri_index, ver_index2]]
+            else:
+                for item in range(len(vertexlist)):
+                    if vertexlist[item][2] == int(tuplename[1]):
+                        break
+                    if item == len(vertexlist)-1:
+                        vertexlist = vertexlist + [[pos0, vertex0, tri_index, ver_index0]] + [[pos1, vertex1, tri_index, ver_index1]] + [[pos2, vertex2, tri_index, ver_index2]]
+        replacevertexes(editor, comp, vertexlist, flags, view, undomsg)
+
+
+
+def MakeEditorFaceObject(editor, option=0):
     "Creates a QuArK Internal Face Object from 3 selected vertexes in the ModelVertexSelList"
+    " or by using the ModelFaceSelList 'tri_index' items in the list directly."
 
     facelist = []
-    v0 = editor.ModelVertexSelList[0][0] # Gives the index number of the 1st vertex in the list.
-    v1 = editor.ModelVertexSelList[1][0] # Gives the index number of the 2nd vertex in the list.
-    v2 = editor.ModelVertexSelList[2][0] # Gives the index number of the 3rd vertex in the list.
     comp = editor.Root.currentcomponent
     tris = comp.triangles                # A list of all the triangles of the current component if there is more than one.
                                          # If NONE of the sub-items of a models component(s) have been selected,
                                          # then it uses the 1st item of each sub-item, of the 1st component of the model.
                                          # For example, the 1st skin, the 1st frame and so on, of the 1st component.
-    if option == 1: # Returns only one object & tri_index for the triangle's vertexes we have selected.
+    if option == 0: # Returns one QuArK Internal Object (a face), identified by the currentcomponent's 'shortname' and tri_index,
+                    # for each tri_index item in the ModelFaceSelList.
+                    # These Objects can then be used with other Map Editor and Quarkx functions.
+                    # They can also be easily converted back to the Model Editor's needed format using the Object's shortname and tri_index.
+        for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
+            for tri_index in range(len(editor.ModelFaceSelList)):
+                if trinbr == editor.ModelFaceSelList[tri_index]:
+                    face = quarkx.newobj(comp.shortname+","+str(trinbr)+","+str(tris[trinbr][0][0])+","+str(tris[trinbr][1][0])+","+str(tris[trinbr][2][0])+":f")
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
+                    # Here we need to use the triangles 3 vertex_index numbers to maintain their proper order to create the face Object.
+                    # The last 3 amount are usually for texture positioning on a face, but can not be used for the Model Editor's format.
+                    vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0)
+                    face["tv"] = (vtxindexes)                                  # They don't really give usable values for texture positioning.
+                    verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
+                                                                               # current animation frame selected, if any, if not then its 1st frame.
+                    vect0X ,vect0Y, vect0Z = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 1st vertex.
+                    vect1X ,vect1Y, vect1Z = verts[tris[trinbr][1][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 2nd vertex.
+                    vect2X ,vect2Y, vect2Z = verts[tris[trinbr][2][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 3rd vertex.
+                    vertexlist = (vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z)
+                    face["v"] = vertexlist
+                    facelist = facelist + [face]
+        return facelist
+
+    editor.ModelFaceSelList = []
+    v0 = editor.ModelVertexSelList[0][0] # Gives the index number of the 1st vertex in the list.
+    v1 = editor.ModelVertexSelList[1][0] # Gives the index number of the 2nd vertex in the list.
+    v2 = editor.ModelVertexSelList[2][0] # Gives the index number of the 3rd vertex in the list.
+    if option == 1: # Returns only one object (face) & tri_index for the 3 selected vertexes used by the same triangle.
                     # This object can then be used with other Map Editor and Quarkx functions.
         for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
             # Compares all of the triangle's vertex index numbers, in their proper order, to the above 3 items.
             # Thus insuring it will return the actual single triangle that we want.
-            if (tris[trinbr][0][0] == v0) and (tris[trinbr][1][0] == v1 or tris[trinbr][1][0] == v2) and (tris[trinbr][2][0] == v1 or tris[trinbr][2][0] == v2):
+            if (tris[trinbr][0][0] == v0 or tris[trinbr][0][0] == v1 or tris[trinbr][0][0] == v2) and (tris[trinbr][1][0] == v0 or tris[trinbr][1][0] == v1 or tris[trinbr][1][0] == v2) and (tris[trinbr][2][0] == v0 or tris[trinbr][2][0] == v1 or tris[trinbr][2][0] == v2):
                 tri_index = trinbr       # The iterating count number (trinbr) IS the tri_index number.
                 face = quarkx.newobj(comp.shortname+" face\\tri "+str(tri_index)+":f")
-                face["tex"] = editor.Root.currentcomponent.currentskin.shortname
-                vtxindexes = (float(v0), float(v1), float(v2), 0.0, 0.0, 0.0) # We use this triangle's 3 vertex_index numbers here just to create the face object.
+                if editor.Root.currentcomponent.currentskin is not None:
+                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                else:
+                    face["tex"] = "None"
+                # Here we need to use the triangles vertexes to maintain their proper order.
+                vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0) # We use this triangle's 3 vertex_index numbers here just to create the face object.
                 face["tv"] = (vtxindexes)                                     # They don't really give usable values for texture positioning.
                 verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
                                                                            # current animation frame selected, if any, if not then its 1st frame.
-                vect00 ,vect01, vect02 = verts[v0].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 1st vertex.
-                vect10 ,vect11, vect12 = verts[v1].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 2nd vertex.
-                vect20 ,vect21, vect22 = verts[v2].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 3rd vertex.
+                vect00 ,vect01, vect02 = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 1st vertex.
+                vect10 ,vect11, vect12 = verts[tris[trinbr][1][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 2nd vertex.
+                vect20 ,vect21, vect22 = verts[tris[trinbr][2][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 3rd vertex.
                 vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
                 face["v"] = vertexlist
                 facelist = facelist + [[face, tri_index]]
+                editor.ModelFaceSelList = editor.ModelFaceSelList + [tri_index]
+
                 return facelist
+    elif option == 2: # Returns an object (face) & tri_index for each triangle that shares the 1st vertex of the 3 selected vertexes used by the same triangle.
+                      # Meaning, any triangle (face) using this 'common' vertex will be returned.
+                      # Its 1st vertex must be selected by itself first, then its other 2 vertexes in any order.
+                      # These objects can then be used with other Map Editor and Quarkx functions.
+        for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
+            if (tris[trinbr][0][0] == v0 or tris[trinbr][0][0] == v1 or tris[trinbr][0][0] == v2) and (tris[trinbr][1][0] == v0 or tris[trinbr][1][0] == v1 or tris[trinbr][1][0] == v2) and (tris[trinbr][2][0] == v0 or tris[trinbr][2][0] == v1 or tris[trinbr][2][0] == v2):
+                tri_index = trinbr
                 break
-    elif option == 2: # Returns an object & tri_index for each triangle that shares the 1st vertex of our selected triangle's vertexes.
-                    # These objects can then be used with other Map Editor and Quarkx functions.
         for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
             if tris[trinbr][0][0] == v0 or tris[trinbr][1][0] == v0 or tris[trinbr][2][0] == v0:
-                tri_index = trinbr
-                face = quarkx.newobj(comp.shortname+" face\\tri "+str(tri_index)+":f")
-                face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                face = quarkx.newobj(comp.shortname+" face\\tri "+str(trinbr)+":f")
+                if editor.Root.currentcomponent.currentskin is not None:
+                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                else:
+                    face["tex"] = "None"
                 vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0) # We use each triangle's 3 vertex_index numbers here just to create it's face object.
                 face["tv"] = (vtxindexes)                                                                                     # They don't really give usable values for texture positioning.
                 verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
@@ -170,6 +276,33 @@ def MakeEditorFaceObject(editor, option=1):
                 vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
                 face["v"] = vertexlist
                 facelist = facelist + [[face, tri_index]]
+                editor.ModelFaceSelList = editor.ModelFaceSelList + [trinbr]
+        return facelist
+        
+    elif option == 3: # Returns an object & tri_index for each triangle that shares the 1st and one other vertex of our selected triangle's vertexes.
+                    # These objects can then be used with other Map Editor and Quarkx functions.
+        for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
+            if (tris[trinbr][0][0] == v0 or tris[trinbr][0][0] == v1 or tris[trinbr][0][0] == v2) and (tris[trinbr][1][0] == v0 or tris[trinbr][1][0] == v1 or tris[trinbr][1][0] == v2) and (tris[trinbr][2][0] == v0 or tris[trinbr][2][0] == v1 or tris[trinbr][2][0] == v2):
+                tri_index = trinbr
+                break
+        for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
+            if (tris[trinbr][0][0] is v0 or tris[trinbr][0][0] is v1 or tris[trinbr][0][0] is v2) and ((tris[trinbr][1][0] is v0 or tris[trinbr][1][0] is v1 or tris[trinbr][1][0] is v2) or (tris[trinbr][2][0] is v0 or tris[trinbr][2][0] is v1 or tris[trinbr][2][0] is v2)):
+                face = quarkx.newobj(comp.shortname+" face\\tri "+str(trinbr)+":f")
+                if editor.Root.currentcomponent.currentskin is not None:
+                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                else:
+                    face["tex"] = "None"
+                vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0) # We use each triangle's 3 vertex_index numbers here just to create it's face object.
+                face["tv"] = (vtxindexes)                                                                                     # They don't really give usable values for texture positioning.
+                verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
+                                                                           # current animation frame selected, if any, if not then its 1st frame.
+                vect00 ,vect01, vect02 = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 1st vertex.
+                vect10 ,vect11, vect12 = verts[tris[trinbr][1][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 2nd vertex.
+                vect20 ,vect21, vect22 = verts[tris[trinbr][2][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 3rd vertex.
+                vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
+                face["v"] = vertexlist
+                facelist = facelist + [[face, trinbr]]
+                editor.ModelFaceSelList = editor.ModelFaceSelList + [trinbr]
         return facelist
 
 
@@ -346,32 +479,6 @@ def addtriangle(editor):
     t2 = int(editor.ModelVertexSelList[1][1].tuple[1]-int(texHeight*.5))
     s3 = int(editor.ModelVertexSelList[2][1].tuple[0]+int(texWidth*.5))
     t3 = int(editor.ModelVertexSelList[2][1].tuple[1]-int(texHeight*.5))
-
-### Method 2 without proj (same in mdlhandles.py file) doesn't work right
- #   s1 = int(editor.ModelVertexSelList[0][1].tuple[1])+int(texWidth*.5)
- #   t1 = int(-editor.ModelVertexSelList[0][1].tuple[2])+int(texWidth*.5)
- #   s2 = int(editor.ModelVertexSelList[1][1].tuple[1])+int(texWidth*.5)
- #   t2 = int(-editor.ModelVertexSelList[1][1].tuple[2])+int(texWidth*.5)
- #   s3 = int(editor.ModelVertexSelList[2][1].tuple[1])+int(texWidth*.5)
- #   t3 = int(-editor.ModelVertexSelList[2][1].tuple[2])+int(texWidth*.5)
-
-### Method 3 with proj (same in mdlhandles.py file)
- #   s1 = int(-editor.ModelVertexSelList[0][1].tuple[0])+int(texWidth*.5)
- #   t1 = int(editor.ModelVertexSelList[0][1].tuple[1])+int(texWidth*.5)
- #   s2 = int(-editor.ModelVertexSelList[1][1].tuple[0])+int(texWidth*.5)
- #   t2 = int(editor.ModelVertexSelList[1][1].tuple[1])+int(texWidth*.5)
- #   s3 = int(-editor.ModelVertexSelList[2][1].tuple[0])+int(texWidth*.5)
- #   t3 = int(editor.ModelVertexSelList[2][1].tuple[1])+int(texWidth*.5)
-
-### Method 4 without proj (same in mdlhandles.py file) doesn't work right
- #   s1 = int(editor.ModelVertexSelList[0][1].tuple[1]*2)+int(texWidth*.5)
- #   t1 = int(editor.ModelVertexSelList[0][1].tuple[2]*.5)+int(texHeight*.5)
- #   s2 = int(editor.ModelVertexSelList[1][1].tuple[1]*2)+int(texWidth*.5)
- #   t2 = int(-editor.ModelVertexSelList[1][1].tuple[2]*.5)+int(texHeight)
- #   s3 = int(editor.ModelVertexSelList[2][1].tuple[1])+int(texWidth*.5)
- #   t3 = int(editor.ModelVertexSelList[2][1].tuple[2]*.5)+int(texHeight*.5)
-
- #  (for test ref only)  h.append(SkinHandle(quarkx.vect(vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0), i, j, component, texWidth, texHeight, tri))
 
     if findTriangle(comp, v1, v2, v3) is not None:
         quarkx.msgbox("Improper Selection!\n\nA triangle using these 3 vertexes already exist.\n\nSelect at least one different vertex\nto make a new triangle with.\n\nTo 'Un-pick' a vertex from the 'Pick' list\nplace your cursor over that vertex,\nRMB click and select 'Pick Vertex'.\nThen you can pick another vertex to replace it.", MT_ERROR, MB_OK)
@@ -795,6 +902,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.31  2007/07/16 12:20:24  cdunde
+#Commented info update.
+#
 #Revision 1.30  2007/07/15 21:22:46  cdunde
 #Added needed item updates when a new triangle is created.
 #
