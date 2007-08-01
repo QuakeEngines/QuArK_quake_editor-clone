@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: Changed to only allow model component frames to cause handles to be drawn, as should be the case.
+
 * [cdunde]: To allow individual model mesh vertex movement for multiple frames of the same model component
           - to work in conjunction with the new Linear Handle functions capable of doing the same.
 
