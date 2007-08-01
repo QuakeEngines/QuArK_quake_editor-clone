@@ -124,7 +124,7 @@ def fixUpVertexNos(tris, index):
 # Each group list must be created in the manner below then added to the 'editor.SkinVertexSelList' list:
 #    editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
 #
-# def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
+
 def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option=0):
     "Does the opposite of the 'MakeEditorFaceObject' (just below this function) to convert"
     "a list of faces that have been manipulated by some function using QuArK Internal Face Objects."
@@ -151,6 +151,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
 
+# for test reference only - def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
     if option == 1:
         comp = editor.Root.currentcomponent
         vertexlist = []
@@ -902,6 +903,15 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.32  2007/07/28 23:11:26  cdunde
+#Needed to fix the MakeEditorFaceObject function to maintain the face vertexes in their proper order.
+#Also expanded the function to create a list of QuArK Internal Objects (faces) directly from the
+#ModelFaceSelList for use with the newly added ModelEditorLinHandlesManager class and its related classes
+#to the mdlhandles.py file to use for editing movement of model faces, vertexes and bones (in the future).
+#Also changed those Object face names to include their component name, tri_index and vertex_index(s) for
+#extraction to convert the Object face back into usable vertexes and triangles in the models mesh using
+#a new function added to this file called 'ConvertEditorFaceObject'.
+#
 #Revision 1.31  2007/07/16 12:20:24  cdunde
 #Commented info update.
 #
