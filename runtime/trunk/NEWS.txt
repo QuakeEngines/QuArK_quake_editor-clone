@@ -15,6 +15,16 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: To allow individual model mesh vertex movement for multiple frames of the same model component
+          - to work in conjunction with the new Linear Handle functions capable of doing the same.
+
+* [cdunde]: Model Editor, stop error if object is moved back to where it started from at beginning of a linear drag.
+          - Also added a 'rotationspeed' control to the 'UserRotationMatrix' function.
+          - To allow all Linear drag handle hints to show in the 'Help' box when dragging.
+
+* [cdunde]: Setup variable setting for Model Editor 'Linear Handle (size) Setting'
+          - and 'Rotation Speed' using the 'cfg' button on the movement toolbar.
+
 * [cdunde]: Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
           - to use for editing movement of model faces, vertexes and bones (in the future).
 
