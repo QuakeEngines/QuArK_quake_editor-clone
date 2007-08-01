@@ -267,10 +267,10 @@ class ComponentType(EntityManager):
 
     def handlesopt(o, editor):
         "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
-        frame = o.currentframe
-        if frame is None:
+        if o.type != ':mf':
             return []
         else:
+            frame = o
             return CallManager("handlesopt", frame, editor)
 
 
@@ -399,6 +399,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.18  2007/06/20 22:04:08  cdunde
+#Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
+#and start of face selection capabilities in the Skin-view for future functions there.
+#
 #Revision 1.17  2007/06/03 23:44:35  cdunde
 #To stop Access violation error when a component is "Hidden" that has faces selected.
 #def ShowHideComp still needs a lot of work to stop any handles from being drawn while
