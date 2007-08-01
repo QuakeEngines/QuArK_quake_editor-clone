@@ -92,7 +92,10 @@ class ModelEditor(BaseEditor):
                 if item.endswith(":mc"):
                     componentnames.append(item)
             componentnames.sort()
-        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+        try:
+            self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+        except:
+            pass
 
         if (quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"] is None) and  (quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"] is None):
             Lock_X = "0"
@@ -1178,6 +1181,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.56  2007/07/28 23:12:52  cdunde
+#Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
+#to use for editing movement of model faces, vertexes and bones (in the future).
+#
 #Revision 1.55  2007/07/20 01:41:04  cdunde
 #To setup selected model mesh faces so they will draw correctly in all views.
 #
