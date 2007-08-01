@@ -973,12 +973,8 @@ class BaseEditor:
         #
 
         else:
-            if isinstance(self, mdleditor.ModelEditor) and flagsmouse == 536 and view.info["viewname"] == "skinview": return
-            if isinstance(self, mdleditor.ModelEditor) and flagsmouse == 520:
-                if isinstance(handle, mdlhandles.VertexHandle) and self.layout.explorer.uniquesel.type != ":mf":
-                    quarkx.msgbox("You must select a single frame of this component\nbefore you can drag any of its vertexes.\n\nClick your LMB once in the\nsame view to release your mouse.", MT_ERROR, MB_OK)
-                    self.dragobject = None
-                    return None
+            if isinstance(self, mdleditor.ModelEditor) and flagsmouse == 536 and view.info["viewname"] == "skinview":
+                return
 
             #
             # Read the setup to determine what the mouse click should do.
@@ -1271,6 +1267,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.75  2007/08/01 06:12:47  cdunde
+#To allow all Linear drag handle hints to show in the 'Help' box when dragging.
+#
 #Revision 1.74  2007/07/28 23:12:53  cdunde
 #Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
 #to use for editing movement of model faces, vertexes and bones (in the future).

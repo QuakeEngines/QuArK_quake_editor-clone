@@ -529,33 +529,48 @@ class VertexHandle(qhandles.GenericHandle):
             s = "was %s"%self.pos + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
         self.draghint = s
 
-        new = self.frame.copy()
-        if delta or (flags&MB_REDIMAGE):
-            vtxs = new.vertices
-            vtxs[self.index] = vtxs[self.index] + delta
-            new.vertices = vtxs
-        if flags == 1032:             ## To stop drag starting lines from being erased.
-            mdleditor.setsingleframefillcolor(editor, view)
-            view.repaint()            ## Repaints the view to clear the old lines.
-            plugins.mdlgridscale.gridfinishdrawing(editor, view) ## Sets the modelfill color.
-        cv = view.canvas()            ## Sets the canvas up to draw on.
-        cv.pencolor = drag3Dlines     ## Gives the pen color of the lines that will be drawn.
+     #1   new = self.frame.copy() # Didn't know you could call a specific handles 'frame' like this. 8-o
 
-        component = editor.Root.currentcomponent
-        if component is not None:
-            if component.name.endswith(":mc"):
-                handlevertex = self.index
-                tris = findTriangles(component, handlevertex)
-                for tri in tris:
-                    if len(view.handles) == 0: continue
-                    for vtx in tri:
-                        if self.index == vtx[0]:
-                            pass
-                        else:
-                            projvtx = view.proj(view.handles[vtx[0]].pos)
-                            cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+        oldlist = editor.layout.explorer.sellist
+        newlist = []
+        for frame in range(len(oldlist)):
+            new = oldlist[frame].copy()
+            if frame == 0:
+                if delta or (flags&MB_REDIMAGE):
+                    vtxs = new.vertices
+                    vtxs[self.index] = vtxs[self.index] + delta
+                    new.vertices = vtxs
+                    newlist = newlist + [new]
+                # Drag handle drawing section using only the 1st frame of the 'sellist' for speed.
+                if flags == 1032:             ## To stop drag starting lines from being erased.
+                    mdleditor.setsingleframefillcolor(editor, view)
+                    view.repaint()            ## Repaints the view to clear the old lines.
+                    plugins.mdlgridscale.gridfinishdrawing(editor, view) ## Sets the modelfill color.
+                cv = view.canvas()            ## Sets the canvas up to draw on.
+                cv.pencolor = drag3Dlines     ## Gives the pen color of the lines that will be drawn.
 
-        return [self.frame], [new]
+                component = editor.Root.currentcomponent
+                if component is not None:
+                    if component.name.endswith(":mc"):
+                        handlevertex = self.index
+                        tris = findTriangles(component, handlevertex)
+                        for tri in tris:
+                            if len(view.handles) == 0: continue
+                            for vtx in tri:
+                                if self.index == vtx[0]:
+                                    pass
+                                else:
+                                    projvtx = view.proj(view.handles[vtx[0]].pos)
+                                    cv.line(int(pv2.tuple[0]), int(pv2.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+            else:
+                if delta or (flags&MB_REDIMAGE):
+                    vtxs = new.vertices
+                    vtxs[self.index] = vtxs[self.index] + delta
+                    new.vertices = vtxs
+                    newlist = newlist + [new]
+
+     #1   return [self.frame], [new]
+        return oldlist, newlist
 
 
   #  For setting stuff up at the end of a drag
@@ -2038,6 +2053,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.71  2007/08/01 06:09:25  cdunde
+#Setup variable setting for Model Editor 'Linear Handle (size) Setting' and
+#'Rotation Speed' using the 'cfg' button on the movement toolbar.
+#
 #Revision 1.70  2007/07/28 23:12:53  cdunde
 #Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
 #to use for editing movement of model faces, vertexes and bones (in the future).
