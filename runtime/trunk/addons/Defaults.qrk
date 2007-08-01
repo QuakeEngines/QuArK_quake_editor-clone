@@ -27,6 +27,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.341  2007/07/28 23:12:51  cdunde
+//Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
+//to use for editing movement of model faces, vertexes and bones (in the future).
+//
 //Revision 1.340  2007/07/24 15:58:24  danielpharos
 //DevIL seems to have trouble with 8-bit PNG loading. Switching to FreeImage instead.
 //
@@ -3243,6 +3247,8 @@ QQRKSRC1
         mpRotate = '15'
         ForceAngleStep = '15'
         LinearWarning = "1"
+        LinearSetting = '8'
+        LinRotationSpeed = '.2'
         Form = "MdlBuilding"
       }
       Display:config =

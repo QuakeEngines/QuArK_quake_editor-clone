@@ -68,7 +68,7 @@ class ConfigDialog(qmacro.dialogbox):
     dlgflags = FWF_NOESCCLOSE
     begincolor = RED
     endcolor = MAROON
-    size = (300,198)
+    size = (300,260)
     dlgdef = """
       {
         Style = "9"
@@ -94,6 +94,19 @@ class ConfigDialog(qmacro.dialogbox):
           Txt="Rotation angle :"
           Typ="EF1"
           Hint="the angle that each rotation makes the objects turn"
+        }
+        sep: = {Typ="S" Txt="Model Editor only"}    // designator title
+        LinearSetting: = {
+          Txt="Linear Handle Setting :"
+          Typ="EF"
+          Min="0.01"
+          Hint="larger value makes the handle bigger & visa-versa, default is 8"
+        }
+        LinRotationSpeed: = {
+          Txt="Linear Rotation Speed :"
+          Typ="EF0001"
+          Min="0.01"
+          Hint="larger value causes faster rotation & visa-versa, default is .2"
         }
         sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
@@ -210,6 +223,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.12  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.9  2004/01/24 16:27:03  cdunde
 #To reset defaults for toolbars
 #

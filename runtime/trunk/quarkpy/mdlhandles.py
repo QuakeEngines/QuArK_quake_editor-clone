@@ -1338,15 +1338,17 @@ def BuildHandles(editor, explorer, view):
     "This function is called from quarkpy\mdleditor.py, class ModelEditor,"
     "def buildhandles function and returns the list of handles to that function."
 
-    fs = explorer.uniquesel
+    if len(explorer.sellist) >= 1:
+        for item in explorer.sellist:
+            if item.type != ':mf':
+                h = []
+                return h
+    else:
+        h = []
+        return h
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-        if len(explorer.sellist) >= 1:
-            for item in explorer.sellist:
-                if item.type != ':mf':
-                    h = []
-                    return h
         #
-        # Display a linear editing circle.
+        # Linear Handles and Selected Face Object Build call section.
         #
         if len(editor.ModelFaceSelList) != 0:
             h = []
@@ -1360,18 +1362,12 @@ def BuildHandles(editor, explorer, view):
             h = []
         else:
             h = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, list).BuildHandles()
-        h = qhandles.FilterHandles(h, SS_MODEL)
     else:
         #
-        # Get the list of handles from the entity manager.
+        # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
         h = []
-        if fs is not None:
-            h = mdlentities.CallManager("handlesopt", fs, editor)
-        elif explorer.sellist != []:
-            h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
-        else:
-            h = []
+        h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
     #
     # The 3D view "eyes".
     #
@@ -1385,9 +1381,7 @@ def BuildHandles(editor, explorer, view):
         h.append(qhandles.EyePosition(view, view))
         h.append(MdlEyeDirection(view, view))
 
-  # Why are we wasting time sending the whole handle list here just to go through it again?
-  #  return qhandles.FilterHandles(h, SS_MODEL)
-    return h
+    return qhandles.FilterHandles(h, SS_MODEL)
 
 
 #
@@ -1616,6 +1610,8 @@ class ModelEditorLinHandlesManager:
     "the Linear Handle by calling its other related classes below this one."
 
     def __init__(self, color, bbox, list):
+        import mdleditor
+        self.editor = mdleditor.mdleditor
         self.color = color
         self.bbox = bbox
         bmin, bmax = bbox
@@ -1624,8 +1620,9 @@ class ModelEditorLinHandlesManager:
             cmin = getattr(bmin, dir)
             cmax = getattr(bmax, dir)
             diff = cmax-cmin
-            if diff<32:
-                diff = 0.5*(32-diff)
+            linhdlsetting = quarkx.setupsubset(SS_MODEL,"Building")['LinearSetting'][0]
+            if diff<linhdlsetting:
+                diff = 0.5*(linhdlsetting-diff)
                 cmin = cmin - diff
                 cmax = cmax + diff
             bmin1 = bmin1 + (cmin,)
@@ -1724,7 +1721,9 @@ class LinearHandle(qhandles.GenericHandle):
         if flags&MB_CTRL:
             g1 = 1
         else:
-            g1 = 1
+            delta = qhandles.aligntogrid(delta, 0)
+            g1 = 0
+      #1       g1 = 1  #1 draws best but then no option for Ctrl key when swapped with code above.
         if delta or (flags&MB_REDIMAGE):
             new = map(lambda obj: obj.copy(), self.mgr.list)
             if not self.linoperation(new, delta, g1, view):
@@ -1732,15 +1731,33 @@ class LinearHandle(qhandles.GenericHandle):
                     new = None
         else:
             new = None
-
+        self.mgr.drawbox(view)    # Draws the full circle and all handles during drag and Ctrl key is being held down.
+        cv = view.canvas()        # If vertex handles are added to Linear handles this is where to stop drawing all of them.
+        for h in view.handles:
+            h.draw(view, cv, h)
         return self.mgr.list, new
 
     def linoperation(self, list, delta, g1, view):
         matrix = self.buildmatrix(delta, g1, view)
         if matrix is None:
             return
-        for obj in list:
-            obj.linear(self.center, matrix)
+
+        editor = self.mgr.editor
+        mdleditor.setsingleframefillcolor(editor, view)
+        view.repaint()
+        plugins.mdlgridscale.gridfinishdrawing(editor, view)
+        plugins.mdlaxisicons.newfinishdrawing(editor, view)
+        for obj in self.mgr.list: # Moves and draws the models triangles correctly for the matrix handles.
+            obj.linear(self.mgr.center, matrix)
+            vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
+            vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
+            vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
+            vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
+            cv = view.canvas()
+            cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
+            cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
+            cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
+            cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
 
         return 1
 
@@ -1748,12 +1765,12 @@ class LinearHandle(qhandles.GenericHandle):
 class LinRedHandle(LinearHandle):
     "Linear Circle: handle at the center."
 
-    hint = "           move selection (Ctrl key: force to grid)|move selection"
+    hint = "           move selection on grid (Ctrl key = free floating)"
 
     def __init__(self, pos, mgr):
         LinearHandle.__init__(self, pos, mgr)
         self.cursor = CR_MULTIDRAG
-        self.undomsg = "model mesh Linear Center face move"
+        self.undomsg = "editor-linear movement"
 
     def draw(self, view, cv, draghandle=None):
 
@@ -1765,16 +1782,19 @@ class LinRedHandle(LinearHandle):
             cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def linoperation(self, list, delta, g1, view):
+        editor = self.mgr.editor
+        mdleditor.setsingleframefillcolor(editor, view)
         view.repaint()
-        for obj in list:
-            from qhandles import grid
+        plugins.mdlgridscale.gridfinishdrawing(editor, view)
+        plugins.mdlaxisicons.newfinishdrawing(editor, view)
+        for obj in list: # Moves and draws the models triangles correctly.
             obj.translate(delta)
             vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
             vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
             vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
             vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
             cv = view.canvas()
-            cv.pencolor = MapColor("Options3Dviews_frameColor2", SS_MODEL)
+            cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
             cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
             cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
             cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
@@ -1801,10 +1821,9 @@ class LinRedHandle(LinearHandle):
 
 
 class LinSideHandle(LinearHandle):
-    "Linear Circle: handles at the sides for distortion/shearing."
+    "Linear Circle: handles at the sides for enlarge/shrink holding Ctrl key allows distortion/shearing."
 
-    undomsg = Strings[527]
-    hint = "enlarge / shear (Ctrl key: either enlarge or shear)||This handle lets you distort the selected object(s).\n\nIf you move the handle in the direction of or away from the center, you will shrink or enlarge the objects correspondingly. If you move the handle in the other direction, you will 'shear' the objects. Hold down the Ctrl key to prevents the objects from being enlarged and sheared at the same time."
+    hint = "enlarge/shrink selection (Ctrl key = distort/shear selection)"
 
     def __init__(self, center, side, dir, mgr, firstone):
         pos1 = quarkx.vect(center.tuple[:dir] + (side.tuple[dir],) + center.tuple[dir+1:])
@@ -1814,10 +1833,12 @@ class LinSideHandle(LinearHandle):
         self.firstone = firstone
         self.inverse = side.tuple[dir] < center.tuple[dir]
         self.cursor = CR_LINEARV
+        self.undomsg = "editor-linear distort/shear"
 
     def draw(self, view, cv, draghandle=None):
         if self.firstone:
-            self.mgr.drawbox(view)   # draw the full box
+            self.mgr.drawbox(view)   # Draws the full circle and all handles during drag and Ctrl key is NOT being held down.
+                                     # If vertex handles are added to Linear handles this may need changing to stop drawing all of them.
         p = view.proj(self.pos)
         if p.visible:
             cv.reset()
@@ -1826,6 +1847,7 @@ class LinSideHandle(LinearHandle):
             cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def buildmatrix(self, delta, g1, view):
+        delta = quarkx.vect(0,0,delta.tuple[2])
         npos = self.pos+delta
         if g1:
              npos = qhandles.aligntogrid(npos, 1)
@@ -1851,11 +1873,18 @@ class LinSideHandle(LinearHandle):
         return quarkx.matrix(tuple(m))
 
 
+    def ok(self, editor, undo, oldobjectslist, newobjectslist):
+        "Returned final lists of objects to convert back into Model mesh vertexes."
+
+        import mdlutils
+        from qbaseeditor import currentview
+        mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, self.undomsg)
+
+
 class LinCornerHandle(LinearHandle):
     "Linear Circle: handles at the corners for rotation/zooming."
 
-    undomsg = Strings[528]
-    hint = "zoom / rotate (Ctrl key: either zoom or rotate)||This handle lets you rotate and scale the selected object(s).\n\nIf you move the handle in the direction of or away from the center, you will zoom the objects and make them smaller or larger. If you move the handle around the center, the objects rotate. Hold down the Ctrl key to prevent zooming and rotation to occur simultaneously."
+    hint = "rotate selection (Ctrl key = scale selection)"
 
     def __init__(self, center, pos1, mgr, realpoint=None):
         LinearHandle.__init__(self, pos1, mgr)
@@ -1865,6 +1894,7 @@ class LinCornerHandle(LinearHandle):
             self.pos0 = realpoint
         self.center = center - (pos1-center)
         self.cursor = CR_CROSSH
+        self.undomsg = "editor-linear rotate/scaling"
 
     def draw(self, view, cv, draghandle=None):
         p = view.proj(self.pos)
@@ -1879,24 +1909,50 @@ class LinCornerHandle(LinearHandle):
         texp4 = self.pos-self.center
         texp4 = texp4 - normal*(normal*texp4)
         npos = self.pos + delta
-        if g1:
+        if g1 == 0 or g1 == 1:
             npos = qhandles.aligntogrid(npos, 1)
         npos = npos-self.center
         npos = npos - normal*(normal*npos)
         m = diff = None
-        if g1 and npos:
-            v = npos.normalized * abs(texp4)
-            if abs(v-texp4) > abs(v-npos):
-                diff = 1.0  # force pure rotation
-            else:
-                m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))    # force pure zooming
-        if m is None:
-            m = qhandles.UserRotationMatrix(normal, npos, texp4, 0)
-            if m is None: return
-        if diff is None: diff = abs(npos) / abs(texp4)
-        self.draghint = "rotate %d deg.   zoom %d %%" % (math.acos(m[0,0])*180.0/math.pi, 100.0*diff)
+  ### Rotation section.
+        if g1 == 0 and npos:
+            v = self.mgr.center
+            if m is None:
+                rotationspeed = quarkx.setupsubset(SS_MODEL,"Building")['LinRotationSpeed'][0]
+                rotationspeed = abs(rotationspeed)*-1
+                m = qhandles.UserRotationMatrix(normal, npos, delta, 0, rotationspeed)
+            diff = 1.0  # Forces pure rotation.
+            if m is None:
+                return
+  ### Scaling (zooming) section.
+        else:
+            rotationspeed = quarkx.setupsubset(SS_MODEL,"Building")['LinRotationSpeed'][0]
+         #   v = npos.normalized* abs(texp4)
+       #     v = self.mgr.center+quarkx.vect(0,0,delta.normalized.tuple[2]*50)
+            v = self.mgr.center
+            m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))  # Forces pure zooming.
+            if diff is None:
+                diff = abs(npos) / abs(texp4)
+  ### Drag Hint section.
+    #org    self.draghint = "rotate %d deg.   zoom %d %%" % (math.acos(m[0,0])*180.0/math.pi, 100.0*diff)
+        self.draghint = "rotate %d deg.   zoom %d %%" % (math.acos(m[0,0])*180.0/math.pi, 100.0 * (diff - (diff * abs(rotationspeed)*.00125))+1)
 
-        return m * diff
+        if g1 == 0 and npos:
+            return m
+        else:
+            if diff > 1:
+                return m * (diff - (diff * abs(rotationspeed)*.00125))
+            else:
+                return m * (diff + (diff * abs(rotationspeed)*.00125))
+
+
+    def ok(self, editor, undo, oldobjectslist, newobjectslist):
+        "Returned final lists of objects to convert back into Model mesh vertexes."
+
+        import mdlutils
+        from qbaseeditor import currentview
+        mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, self.undomsg)
+
 
 
 #
@@ -1982,6 +2038,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.70  2007/07/28 23:12:53  cdunde
+#Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
+#to use for editing movement of model faces, vertexes and bones (in the future).
+#
 #Revision 1.69  2007/07/15 02:00:19  cdunde
 #To fix error when redrawing handles in a list when one has been removed.
 #
