@@ -827,6 +827,12 @@ class BaseEditor:
                         raise
                 except:
                     if isinstance(self, mdleditor.ModelEditor):
+                        import mdlhandles
+                        try:
+                            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle):
+                                return
+                        except:
+                            pass
                         s = view.info["viewname"]
                         if view.info["viewname"] == "skinview":
                             try:
@@ -1265,6 +1271,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.74  2007/07/28 23:12:53  cdunde
+#Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
+#to use for editing movement of model faces, vertexes and bones (in the future).
+#
 #Revision 1.73  2007/07/15 00:16:55  cdunde
 #To remove testing print statements missed during cleanup.
 #
