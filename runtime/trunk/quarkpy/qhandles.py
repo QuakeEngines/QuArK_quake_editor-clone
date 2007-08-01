@@ -797,11 +797,12 @@ def FilterHandles(handlelist, mode):
 # Function that computes a rotation matrix out of a mouse movement.
 #
 
-def UserRotationMatrix(normal, texpdest, texp4, g1):
+def UserRotationMatrix(normal, texpdest, texp4, g1, rotationspeed=1):
      # normal: normal vector for the view plane
      # texpdest: new position of the reference vector texp4
      # texp4: reference vector (handle position minus rotation center)
      # g1: if True, snap angle to grid
+     # rotationspeed, example .5 = half rotation speed, 2 = twice as fast.
     SNAP = 0.998
     if not texp4: return
     v3 = normal
@@ -809,6 +810,7 @@ def UserRotationMatrix(normal, texpdest, texp4, g1):
     if not texpdest: return
     norme2 = abs(texpdest)
     sinangle = (v3*(texp4^texpdest)) / (norme1*norme2)
+    sinangle = sinangle * rotationspeed
     norme1 = sinangle*sinangle
     if norme1 > SNAP:
         if sinangle>0:
@@ -991,7 +993,7 @@ class RedImageDragObject(DragObject):
             if isinstance(editor.dragobject.handle, mdlhandles.VertexHandle):
                 ### Stops Model Editor Vertex drag handles from drawing if not returned.
                 return
-            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle):
+            if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle):
                 ### Stops Model Editor Linear drag handles from drawing incorrectly drawn redline drag objects.
                 return
             from qbaseeditor import currentview
@@ -1146,7 +1148,7 @@ class RedImageDragObject(DragObject):
 
 ## Deals with Model Editor Skin-view movement, face drawing is in python\mdlhandles.py class SkinHandle section
 
-        if isinstance(editor, mdleditor.ModelEditor):
+        if isinstance(editor, mdleditor.ModelEditor) and old is not None and self.redimages is not None:
             from qbaseeditor import currentview, flagsmouse
             undo = quarkx.action()
             for i in range(0,len(old)):
@@ -2057,6 +2059,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.52  2007/07/28 23:12:51  cdunde
+#Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
+#to use for editing movement of model faces, vertexes and bones (in the future).
+#
 #Revision 1.51  2007/07/15 00:16:49  cdunde
 #To remove testing print statements missed during cleanup.
 #
