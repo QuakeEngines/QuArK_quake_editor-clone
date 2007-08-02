@@ -345,70 +345,66 @@ class ModelEditor(BaseEditor):
         "Click on the 'Linear Handle edit' button for the LinearHandle classes in the mdlhandles.py file."
 
         editorview = self.layout.views[0]
+        newhandles = []
         if not self.linearbox:
             quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "1"
             setup = quarkx.setupsubset(self.MODE, "Building")
             self.linearbox = True
-     #       if setup["LinearWarning"]:
-     #           if quarkx.msgbox(Strings[-105], MT_INFORMATION, MB_OK|MB_CANCEL) != MR_OK:
-     #               return
-     #       setup["LinearWarning"] = ""
             if len(self.ModelFaceSelList) or len(self.ModelVertexSelList):
                 import mdlhandles
-                newhandles = []
                 newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
                 for view in self.layout.views:
-                    import plugins.mdlgridscale
-                    import plugins.mdlaxisicons
-                    setsingleframefillcolor(self, view)
-                    view.repaint()
-                    plugins.mdlgridscale.gridfinishdrawing(self, view)
-                    plugins.mdlaxisicons.newfinishdrawing(self, view)
-                    view.handles = newhandles
-                    cv = view.canvas()
-                    for h in view.handles:
-                        h.draw(view, cv, h)
-            else:
-                for view in self.layout.views:
-                    import plugins.mdlgridscale
-                    import plugins.mdlaxisicons
-                    plugins.mdlgridscale.gridfinishdrawing(self, view)
-                    plugins.mdlaxisicons.newfinishdrawing(self, view)
-        else:
-            quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "0"
-            import mdlhandles
-            newhandles = []
-            if self.layout.explorer.uniquesel is not None and self.layout.explorer.uniquesel.type == ':mf':
-                newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
-            for view in self.layout.views:
-                import plugins.mdlgridscale
-                import plugins.mdlaxisicons
-                view.handles = []
-                if self.layout.explorer.sellist == []:
-                    setsingleframefillcolor(self, view)
-                    view.repaint()
-                    plugins.mdlgridscale.gridfinishdrawing(self, view)
-                    plugins.mdlaxisicons.newfinishdrawing(self, view)
-                elif len(self.layout.explorer.sellist) > 1:
-                    if self.ModelFaceSelList == []:
-                        setsingleframefillcolor(self, view)
-                        view.repaint()
-                        plugins.mdlgridscale.gridfinishdrawing(self, view)
-                        plugins.mdlaxisicons.newfinishdrawing(self, view)
+                    if view.info["viewname"] == "skinview":
+                        continue
                     else:
                         setsingleframefillcolor(self, view)
                         view.repaint()
                         plugins.mdlgridscale.gridfinishdrawing(self, view)
                         plugins.mdlaxisicons.newfinishdrawing(self, view)
+                        view.handles = newhandles
+                        cv = view.canvas()
+                        for h in view.handles:
+                            h.draw(view, cv, h)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                            modelaxis(view)
+            else:
+                for view in self.layout.views:
+                    if view.info["viewname"] == "skinview":
+                        continue
+                    else:
+                        setsingleframefillcolor(self, view)
+                        view.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(self, view)
+                        plugins.mdlaxisicons.newfinishdrawing(self, view)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                            modelaxis(view)
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "0"
+            import mdlhandles
+            if len(self.layout.explorer.sellist) >= 1:
+                newhandles = mdlhandles.BuildHandles(self, self.layout.explorer, editorview)
+            for view in self.layout.views:
+                if view.info["viewname"] == "skinview":
+                    continue
                 else:
-                    setsingleframefillcolor(self, view)
-                    view.repaint()
-                    plugins.mdlgridscale.gridfinishdrawing(self, view)
-                    plugins.mdlaxisicons.newfinishdrawing(self, view)
                     view.handles = newhandles
-                    cv = view.canvas()
-                    for h in view.handles:
-                        h.draw(view, cv, h)
+                    if view.handles == []:
+                        setsingleframefillcolor(self, view)
+                        view.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(self, view)
+                        plugins.mdlaxisicons.newfinishdrawing(self, view)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                            modelaxis(view)
+                    else:
+                        setsingleframefillcolor(self, view)
+                        view.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(self, view)
+                        plugins.mdlaxisicons.newfinishdrawing(self, view)
+                        cv = view.canvas()
+                        for h in view.handles:
+                            h.draw(view, cv, h)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                            modelaxis(view)
             
             self.linearbox = not self.linearbox
         self.savesetupinfos()
@@ -821,7 +817,6 @@ def commonhandles(self, redraw=1):
     import qhandles
     import mdlhandles
     from mdlmgr import treeviewselchanged
-
     try:
         if flagsmouse == 536:
             return
@@ -1181,6 +1176,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.57  2007/08/01 07:19:04  cdunde
+#To stop error message at occasionally.
+#
 #Revision 1.56  2007/07/28 23:12:52  cdunde
 #Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
 #to use for editing movement of model faces, vertexes and bones (in the future).

@@ -823,9 +823,12 @@ def PassEditorSel2Skin(editor, option=1):
                     # Here we compair the Skin-view handle (in its handles list) tri_index item
                     # to the editor_tri_index we got above to see if they match.
                     # The same applies to the comparison of the Skin-view handel ver_index and skinvtx_index.
-                    if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
-                        skinhandle = handle
-                        break
+                    try:
+                        if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
+                            skinhandle = handle
+                            break
+                    except:
+                        return
                 editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
             else:
                 if option == 1:
@@ -903,6 +906,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.33  2007/08/01 07:36:35  cdunde
+#Notation change only.
+#
 #Revision 1.32  2007/07/28 23:11:26  cdunde
 #Needed to fix the MakeEditorFaceObject function to maintain the face vertexes in their proper order.
 #Also expanded the function to create a list of QuArK Internal Objects (faces) directly from the

@@ -1337,14 +1337,39 @@ def singleskinzoom(view):
 def BuildCommonHandles(editor, explorer):
     "Build a list of handles to display on all map views."
 
-    fs = explorer.uniquesel
-    if (fs is None) or editor.linearbox:
-        return []
+    if len(explorer.sellist) >= 1:
+        for item in explorer.sellist:
+            if item.type != ':mf':
+                h = []
+                return h
+    else:
+        h = []
+        return h
+    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+        #
+        # Linear Handles and Selected Face Object Build call section.
+        #
+        if len(editor.ModelFaceSelList) != 0:
+            h = []
+            import mdlutils
+            list = mdlutils.MakeEditorFaceObject(editor)
+        else:
+            h = []
+            return h
+        box = quarkx.boundingboxof(list)
+        if box is None:
+            h = []
+        else:
+            h = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, list).BuildHandles()
+ #       h = qhandles.FilterHandles(h, SS_MODEL)
     else:
         #
-        # Get the list of handles from the entity manager.
+        # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
-        return mdlentities.CallManager("handlesopt", fs, editor)
+        h = []
+        h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
+
+    return qhandles.FilterHandles(h, SS_MODEL)
 
 
 
@@ -1419,7 +1444,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     view.repaint()
                 return
             else:
-                if (editor.layout.explorer.sellist[0].type == ":mc") or (editor.layout.explorer.sellist[0].type == ":mf") and (len(editor.layout.explorer.sellist) == 1):
+                if editor.layout.explorer.sellist[0].type == ":mf":
                     pass
                 else:
                     for view in editor.layout.views:
@@ -2053,6 +2078,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.72  2007/08/01 06:52:25  cdunde
+#To allow individual model mesh vertex movement for multiple frames of the same model component
+#to work in conjunction with the new Linear Handle functions capable of doing the same.
+#
 #Revision 1.71  2007/08/01 06:09:25  cdunde
 #Setup variable setting for Model Editor 'Linear Handle (size) Setting' and
 #'Rotation Speed' using the 'cfg' button on the movement toolbar.
