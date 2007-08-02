@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2007/03/01 22:15:25  danielpharos
+Added cvs headers.
+
 Revision 1.3  2007/02/07 18:48:34  danielpharos
 Fixes for memory leaks
 
@@ -39,45 +42,42 @@ unit MapError;
 interface
 
 type
-
-TMapError = class
- public
-  procedure Clear;
-  procedure AddText(const Text: String);
-  function Text : String;
- protected
-  S: String;
-end;
+  TMapError = class
+   public
+    procedure Clear;
+    procedure AddText(const Text: String);
+    function Text : String;
+   protected
+    MapErrorText: String;
+  end;
 
 var
-g_MapError : TMapError;
+  g_MapError : TMapError;
 
 implementation
 
 procedure TMapError.Clear;
 begin
-  S:='';
+  MapErrorText:='';
 end;
 
 procedure TMapError.AddText(const Text: String);
 begin
-  S:=S+Text+'\n';
+  MapErrorText:=MapErrorText+Text+'\n';
 end;
 
 function TMapError.Text: String;
 begin
-  Result:=S;
-  S:='';
+  Result:=MapErrorText;
+  MapErrorText:='';
 end;
 
 initialization
-
-g_MapError:=TMapError.Create;
-g_MapError.Clear();
+  g_MapError:=TMapError.Create;
+  g_MapError.Clear;
 
 finalization
-
-g_MapError.free;
+  g_MapError.free;
 
 end.
 
