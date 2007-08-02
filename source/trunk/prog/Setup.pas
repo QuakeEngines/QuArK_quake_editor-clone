@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2007/06/24 20:43:26  danielpharos
+Changed the order of the SetupSet keyword for better backwards compatibility.
+
 Revision 1.55  2007/06/13 11:56:24  danielpharos
 Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
 
@@ -273,6 +276,7 @@ comparison between gamemodes.}
  mjEF2          = 'o';  { Star Trek: Elite Force 2 }
  mjCOD          = 'p';  { Call of Duty }
  mjCOD2         = 'q';  { Call of Duty 2 }
+ mjPrey         = 'r';  { Prey }
  mjWildWest     = 'w';  { WildWest }
 
  mjAny          = #1;
