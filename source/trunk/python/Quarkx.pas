@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2007/04/10 12:25:34  danielpharos
+A potential fix for the infobase-help not opening on non-IE browsers.
+
 Revision 1.44  2007/03/11 12:03:11  danielpharos
 Big changes to Logging. Simplified the entire thing.
 
@@ -211,6 +214,7 @@ function MiddleColor(c1, c2: TColorRef; const f: Single) : TColorRef;
 {procedure GetStdMenus(var HelpMenu: PyObject);}
 procedure ClickForm(nForm: TForm);
 procedure HTMLDoc(const URL: String);
+function OpenSplashScreen : TForm;
 
  {-------------------}
 
@@ -223,7 +227,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      PyMath, PyCanvas, PyUndo, qmatrices, QkMapObjects, QkTextures,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
-     Output1, About, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
+     Output1, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
      QkApplPaths, MapError, StrUtils;
 
@@ -2255,6 +2259,7 @@ function xGetMapError(self, args: PyObject) : PyObject; cdecl;
 begin
  try
   Result:=PyString_FromString(PChar(g_MapError.Text));
+  g_MapError.Clear;
  except
   EBackToUser;
   Result:=Nil;
@@ -2981,49 +2986,36 @@ procedure PythonLoadMain;
 var
  S: String;
  I: Integer;
- Splash: TForm;
- Disclaimer: THandle;
 begin
- Splash:=OpenSplashScreen;
- try
-  Disclaimer:=DisclaimerThread(Splash);
-  try
-  {InitConsole;}
-   I:=InitializePython;
-   if I>0 then FatalError(I);
+ {InitConsole;}
+ I:=InitializePython;
+ if I>0 then FatalError(I);
 
-   SetApplicationPath(ExtractFilePath(Application.Exename));
+ SetApplicationPath(ExtractFilePath(Application.Exename));
 
-   if not InitializeQuarkx then FatalError(-9);
+ if not InitializeQuarkx then FatalError(-9);
 
-   S:=GetApplicationPath();
-   if (Length(S)>0) and (S[Length(S)]=PathDelim) then
-    SetLength(S, Length(S)-1);
-   for I:=Length(S) downto 1 do
-    if S[I]='\' then
-     System.Insert('\', S, I);
-   S:=Format(PythonSetupString, [S, S]);
-   { tiglari, peter-b:
-     S will now be the python commands:
-      import sys
-      sys.path=["<the path to the quark exe>", "<the path to the quark lib directory>"]
-      import quarkpy
-   }
-   if PyRun_SimpleString(PChar(S))<>0 then FatalError(-8);
-   InitSetup;
-   { tiglari:
-     runs quarkpy.RunQuArK(), defined in quarkpy.__init__.py;
-     mostly sets up icons and stuff like that.}
-   if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
-   PythonCodeEnd;
-   PythonUpdateAll;
-   WaitForSingleObject(Disclaimer, 10000);
-  finally
-   CloseHandle(Disclaimer);
-  end;
- finally
-  Splash.Release;
- end;
+ S:=GetApplicationPath();
+ if (Length(S)>0) and (S[Length(S)]=PathDelim) then
+  SetLength(S, Length(S)-1);
+ for I:=Length(S) downto 1 do
+  if S[I]='\' then
+   System.Insert('\', S, I);
+ S:=Format(PythonSetupString, [S, S]);
+ { tiglari, peter-b:
+   S will now be the python commands:
+    import sys
+    sys.path=["<the path to the quark exe>", "<the path to the quark lib directory>"]
+    import quarkpy
+ }
+ if PyRun_SimpleString(PChar(S))<>0 then FatalError(-8);
+ InitSetup;
+ { tiglari:
+   runs quarkpy.RunQuArK(), defined in quarkpy.__init__.py;
+   mostly sets up icons and stuff like that.}
+ if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
+ PythonCodeEnd;
+ PythonUpdateAll;
 end;
 
 procedure PythonCodeEnd;

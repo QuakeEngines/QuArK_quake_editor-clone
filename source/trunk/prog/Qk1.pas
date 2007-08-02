@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2007/03/01 22:16:03  danielpharos
+Big fix for the enormous slowdown.
+
 Revision 1.40  2006/05/05 06:04:44  cdunde
 To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
 handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
@@ -191,6 +194,12 @@ type
               Next: PIdleJob;
               Working: Boolean;
              end;
+  
+  CmdLineOptions = record
+                    DoSplash: Boolean;
+                    FileNR: Cardinal;
+                    Files: array of string;
+                   end;
 
   TQrkExplorer = class(TFileExplorer)
   protected
@@ -329,7 +338,7 @@ type
     procedure SetGlobalModified(Value: Boolean);}
     procedure MenuCopyAs;
 {$IFDEF Debug} procedure DataDump1Click(Sender: TObject); {$ENDIF}
-    function ProcessCmdLine(Counter: Integer) : Integer;
+    function ExecuteCmdLine(Counter: Integer) : Integer;
     procedure FreeNonVisibleForms(Sender: TObject);
   protected
     procedure AppIdle(Sender: TObject; var Done: Boolean);
@@ -372,14 +381,15 @@ var
   Form1: TForm1;
   g_Form1: TForm1;
   g_Form1Handle: HWnd;
+  g_CmdOptions: CmdLineOptions;
 
  {------------------------}
 
 implementation
 
 uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
-  QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, About, Running,
-  Output1, QkTreeView, Quarkx, PyProcess, Console, Python,
+  QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, Running,
+  Output1, QkTreeView, PyProcess, Console, Python, Quarkx, About,
   {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D,
   EdSceneObject, QkObjectClassList, QkApplPaths, QkQuakeCtx;
 
@@ -387,6 +397,33 @@ uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
 {$R ICONES\ICONES.RES}
 
  {------------------------}
+
+procedure ProcessCmdLine;
+var
+ I: Integer;
+ S: String;
+begin
+ // ParamStr(0) is the executable name, so don't process it
+ for I := 1 to ParamCount do
+ begin
+  S := UpperCase(ParamStr(I));
+  if S = '/?' then
+   MessageBox(0, 'Available parameters:' + #13 + #10
+   + #13 + #10
+   + '/?: Displays this window' + #13 + #10
+   + '/NOSPLASH: Skips the splash-screen' + #13 + #10
+   + #13 + #10
+   + 'All other parameters will be interpreted as files to load.', 'QuArK', MB_OK)
+  else if S = '/NOSPLASH' then
+   g_CmdOptions.DoSplash := false
+  else
+  begin
+   g_CmdOptions.FileNR := g_CmdOptions.FileNR + 1;
+   SetLength(g_CmdOptions.Files, g_CmdOptions.FileNR);
+   g_CmdOptions.Files[g_CmdOptions.FileNR - 1] := ParamStr(I);
+  end;
+ end;
+end;
 
  (*procedure TForm1Button1Click(Sender: TObject);
 var
@@ -468,6 +505,8 @@ var
  S: String;
  L: TStringList;
  C: TColor;
+ Splash: TForm;
+ Disclaimer: THandle;
 begin
  // This next line is done so that the G_ standard carries through for all of
  // the global variables. 
@@ -477,11 +516,27 @@ begin
  DecimalSeparator:='.';
  g_Form1Handle:=Handle;
 
- { comment by tiglari:
-   in quarkx: splash & nag screens,
-   python initialization,
-   loading defaults.qrk, setup.qrk }
- PythonLoadMain;
+ // DanielPharos: This processes the commandline and prepares it for further use
+ g_CmdOptions.DoSplash := true; //These are the defaults
+ g_CmdOptions.FileNR := 0;
+ ProcessCmdLine;
+
+ if g_CmdOptions.DoSplash then
+ begin
+   // splash & nag screens
+   Splash:=OpenSplashScreen;
+   Disclaimer:=DisclaimerThread(Splash);
+
+   // tiglari: in quarkx: python initialization, loading defaults.qrk, setup.qrk
+   PythonLoadMain;
+
+   WaitForSingleObject(Disclaimer, 10000); // Same as MAX_DELAY * 1000 in About
+   CloseHandle(Disclaimer);
+   Splash.Release;
+ end
+ else
+    // tiglari: in quarkx: python initialization, loading defaults.qrk, setup.qrk
+   PythonLoadMain;
 
 (*ImageList1.Handle:=ImageList_LoadImage(HInstance, MakeIntResource(101),
   16, 2, clTeal, Image_Bitmap, 0);
@@ -553,7 +608,7 @@ begin
  Item.OnClick:=DataDump1Click;
  HelpMenu.Items.Add(Item);
  Item:=TMenuItem.Create(Self);
- Item.Caption:='Free some memory (for DEBUG only)';
+ Item.Caption:='Free unused forms (for DEBUG only)';
  Item.OnClick:=FreeNonVisibleForms;
  HelpMenu.Items.Add(Item);
  {$ENDIF}
@@ -1802,13 +1857,13 @@ begin
  OnActivate:=Nil;
  DragAcceptFiles(Handle, True);
  if PyDict_GetItemString(QuarkxDict, 'setupchanged')<>Py_None then
-  StartIdleJob(ProcessCmdLine, Self);
+  StartIdleJob(ExecuteCmdLine, Self);
 end;
 
-function TForm1.ProcessCmdLine(Counter: Integer) : Integer;
+function TForm1.ExecuteCmdLine(Counter: Integer) : Integer;
 begin
  Inc(Counter);
- if Counter>ParamCount then
+ if Counter>Integer(g_CmdOptions.FileNR) then //DanielPharos: A little bit overflow dangerous...
   begin
    RefreshAssociations(False);
    RestoreAutoSaved('.qkm');
@@ -1816,7 +1871,7 @@ begin
   end
  else
   if Counter>0 then
-   OpenAFile(ParamStr(Counter), False);
+   OpenAFile(g_CmdOptions.Files[Counter - 1], False);
  Result:=Counter;
 end;
 
@@ -1895,12 +1950,10 @@ end;
 procedure TForm1.Games1Click(Sender: TObject);
 var
  I: Integer;
- C: Char;
 begin
- C:=CharModeJeu;
  for I:=0 to GameSep1.MenuIndex-1 do
   with GamesMenu.Items[I] do
-   Checked:=Chr(Tag)=C;
+   Checked:=Chr(Tag)=CharModeJeu;
  Go1.Enabled:=Explorer.Roots.Count>0;
 end;
 

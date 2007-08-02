@@ -184,15 +184,16 @@ begin
 end;
 
 const
-  MAX_DELAY = 15;
-  MIN_DELAY = 4;
+  MAX_DELAY = 10;
+  MIN_FLASH_COUNT = 2; //Must be larger than zero!
 
 type
   PDisclaimerInfo = ^TDisclaimerInfo;
   TDisclaimerInfo = record
     H: HWnd;
     R: TRect;
-    Delay: Integer;
+    FlashCount: Cardinal;
+    Delay: Cardinal;
     TextSize: Integer;
     Text: array[0..255] of Char;
     Event: THandle;
@@ -203,6 +204,7 @@ var
   DC: HDC;
   I, C: Integer;
   Font, Font1: HFont;
+  SkipDelay: Boolean;
 begin
   InflateRect(Info^.R, -7, -4);
   Info^.R.Top := Info^.R.Bottom - 20;
@@ -218,7 +220,11 @@ begin
   SetBkColor(DC, clWhite);
   SetBkMode(DC, TRANSPARENT);
   {SetTextAlign(DC, TA_BOTTOM or TA_CENTER);}
-  I := Info^.Delay;
+  SkipDelay := false;
+  I := Info^.FlashCount;
+  if I < MIN_FLASH_COUNT then
+    I := MIN_FLASH_COUNT;
+  I := I * 10 - 5;
   repeat
     C := (I + 5) mod 10;
     if C > 5 then
@@ -231,11 +237,19 @@ begin
       Sleep(50)
     else
       if WaitForSingleObject(Info^.Event, 50) <> WAIT_TIMEOUT then
+      begin
+        SkipDelay := true;
         Break;
+      end;
     Dec(I);
   until I < 0;
-  if Info^.Delay > MIN_DELAY then
-    Sleep(999);
+  if not SkipDelay then
+  begin
+    I := Info^.Delay;
+    if I > MAX_DELAY then
+      I := MAX_DELAY;
+    Sleep(I * 1000);
+  end;
   SelectObject(DC, Font1);
   ReleaseDC(Info^.H, DC);
   DeleteObject(Font);
@@ -251,14 +265,15 @@ var
   S: string;
 begin
   Info^.TextSize := 10;
-  Info^.Delay := MAX_DELAY; // MIN_DELAY would also be a possibility
+  Info^.FlashCount := MIN_FLASH_COUNT;
+  Info^.Delay := 2;
   S := 'QuArK comes with ABSOLUTELY NO WARRANTY; this is free software, and you are welcome '
        + 'to redistribute it under certain conditions. For details, see ''?'', ''About''.';
   {$IFDEF Debug}
   S := 'BETA ' + QuArKVersion;
   Info^.TextSize := 22;
   {$ENDIF}
-  StrPCopy(Info^.Text, S);
+  StrPCopy(Info^.Text, S); //DanielPharos: S must NOT be longer than 255 characters!
   Result := CreateThread(nil, 0, @DisclaimerProc, Info, 0, Dummy);
   SetThreadPriority(Result, THREAD_PRIORITY_ABOVE_NORMAL);
 end;
@@ -294,7 +309,9 @@ begin
   begin
     SetEvent(Event);
     CloseHandle(Event);
-    Event:=0; // Strange error under Win2K (others?) if 'event' isn't set to 0 after call to CloseHandle(..)
+    Event:=0;
+    // Strange error if 'event' isn't set to 0 after call to CloseHandle(..)
+    // DanielPharos: That's because this procedure is called mulitple times !!!
   end;
 end;
 
