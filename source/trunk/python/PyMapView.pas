@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/06/04 19:20:26  danielpharos
+Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
+
 Revision 1.32  2007/05/15 15:01:22  danielpharos
 Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
 
@@ -406,8 +409,7 @@ begin
      if ViewMode<>vmWireframe then
       begin
        if Scene.ChangeQuality(StillQuality) then
-        SetScreenSize(ClientWidth, ClientHeight);
-       Invalidate;
+        Invalidate;
       end;
     end;
    CameraMoved;
@@ -438,9 +440,8 @@ begin
       Brush:=0;}
       if not FullScreen then
        begin
-        if Scene.ChangeQuality(MovingQuality) then
-         SetScreenSize(ClientWidth, ClientHeight);
-        DC:=GetDC(Handle)
+        Scene.ChangeQuality(MovingQuality);
+        DC:=GetDC(Handle);
        end
       else
        begin
@@ -1574,9 +1575,8 @@ begin
 
      if not FullScreen then
       begin
-       if Scene.ChangeQuality(MovingQuality) then
-        SetScreenSize(ClientWidth, ClientHeight);
-       DC:=GetDC(Handle)
+       Scene.ChangeQuality(MovingQuality);
+       DC:=GetDC(Handle);
       end
      else
       begin
@@ -1588,7 +1588,7 @@ begin
 
    try
     {$IFDEF POSITIONLOG}
-    System.Assign(F, 'c:\windows\bureau\positions.txt');
+    System.Assign(F, 'positions.txt');
     Rewrite(F);
     {$ENDIF}
 
@@ -1742,8 +1742,7 @@ begin
     if ViewMode<>vmWireframe then
      begin
       if Scene.ChangeQuality(StillQuality) then
-       SetScreenSize(ClientWidth, ClientHeight);
-      Invalidate;
+       Invalidate;
      end;
    end;
 
