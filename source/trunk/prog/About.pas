@@ -96,10 +96,15 @@ begin
 end;
 
 procedure TAboutBox.FormCreate(Sender: TObject);
+var
+  DateFormat: TFormatSettings;
 begin
   Version.Caption := QuarkVersion;
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, DateFormat);
+  UsedCompilerLabel.Caption := QuArKMinorVersion + ' Compiled with ' + QuArKUsedCompiler + ' - ' + DateToStr(QuArKCompileDate, DateFormat);
+  Label10.Caption := '  ' + QuArKCopyright;
   {$IFDEF Debug}
-  Version.Caption := Version.Caption + '  DEBUG - BETA VERSION ONLY';
+  Version.Caption := Version.Caption + '  DEBUG VERSION';
   {$ENDIF}
   ProgramIcon.Picture.Icon.Handle := LoadImage(HInstance, 'MAINICON', image_Icon, 0, 0, 0);
   Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');

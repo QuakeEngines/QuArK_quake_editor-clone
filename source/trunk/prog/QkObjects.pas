@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.86  2007/03/17 15:43:12  danielpharos
+Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
+
 Revision 1.85  2007/03/05 01:00:43  danielpharos
 Found another place where NoShare was used. Commented out, and added a reference in QkObjects.
 
@@ -305,6 +308,14 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 
 const
   QuArKVersion            = 'QuArK 6.5 Beta';
+  QuArKMinorVersion       = 'Beta2.0';
+  QuArKCopyright          = 'Copyright (C) 1996-2007 Armin Rigo and others';
+  QuArKUsedCompiler       = 'Delphi 6.0';
+  QuArKCompileDate        = 39177;   //This is 5 April 2007
+  {Amount of days after 31 Dec 1899 (Delphi 2+).
+  You can use EncodeDate(Year, Month, Day) to compute it, but this value
+  really needs to be a constant, so put the resulting value in here.
+  The result can be checked in the About form.}
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;

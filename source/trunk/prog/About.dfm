@@ -112,7 +112,7 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object Label5: TLabel
-      Left = 573
+      Left = 570
       Top = 27
       Width = 9
       Height = 13
@@ -125,7 +125,7 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object Label6: TLabel
-      Left = 580
+      Left = 577
       Top = 27
       Width = 22
       Height = 13
@@ -170,14 +170,12 @@ object AboutBox: TAboutBox
       Top = 65
       Width = 227
       Height = 13
-      Caption = '  Copyright (C) 1996-2007 Armin Rigo and others'
     end
     object UsedCompilerLabel: TLabel
       Left = 454
       Top = 7
       Width = 193
       Height = 11
-      Caption = 'Beta2.0 Compiled with Delphi 6.0 - April.-5-2007'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
@@ -215,9 +213,9 @@ object AboutBox: TAboutBox
     object Label11: TLabel
       Left = 408
       Top = 288
-      Width = 117
+      Width = 120
       Height = 13
-      Caption = 'QuArK Resource Forums'
+      Caption = 'QuArK Resource Forums:'
     end
     object Label12: TLabel
       Left = 536

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2007/08/02 16:15:56  danielpharos
+Added a commandline check, and an option in it to skip the splash screen. Also, some of the internal workings of the splash-screen were changed a bit.
+
 Revision 1.41  2007/03/01 22:16:03  danielpharos
 Big fix for the enormous slowdown.
 
@@ -179,7 +182,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkGroup, StdCtrls, ExtCtrls, CommCtrl, QkExplorer, QkObjects,
   QkFileObjects, Menus, TB97, QkFileExplorer, ShellApi,
-  QkForm, ComCtrls, Buttons;
+  QkForm, ComCtrls, Buttons, DateUtils;
 
 const
   BlueHintPrefix = '?';
@@ -197,6 +200,7 @@ type
   
   CmdLineOptions = record
                     DoSplash: Boolean;
+                    DoUpdate: Boolean;
                     FileNR: Cardinal;
                     Files: array of string;
                    end;
@@ -412,10 +416,13 @@ begin
    + #13 + #10
    + '/?: Displays this window' + #13 + #10
    + '/NOSPLASH: Skips the splash-screen' + #13 + #10
+   + '/NOUPDATE: Skips the update check' + #13 + #10
    + #13 + #10
    + 'All other parameters will be interpreted as files to load.', 'QuArK', MB_OK)
   else if S = '/NOSPLASH' then
    g_CmdOptions.DoSplash := false
+  else if S = '/NOUPDATE' then
+   g_CmdOptions.DoUpdate := false
   else
   begin
    g_CmdOptions.FileNR := g_CmdOptions.FileNR + 1;
@@ -518,6 +525,7 @@ begin
 
  // DanielPharos: This processes the commandline and prepares it for further use
  g_CmdOptions.DoSplash := true; //These are the defaults
+ g_CmdOptions.DoUpdate := true;
  g_CmdOptions.FileNR := 0;
  ProcessCmdLine;
 
@@ -530,13 +538,35 @@ begin
    // tiglari: in quarkx: python initialization, loading defaults.qrk, setup.qrk
    PythonLoadMain;
 
+   //Check for updates...
+   if g_CmdOptions.DoUpdate then
+   begin
+     if DaySpan(Now, QuArKCompileDate) >= 270 then
+     begin
+       //About a 9 month difference...
+       MessageBox(0, 'This version of QuArK is rather old. Check for updates on the QuArK website.', 'QuArK', MB_OK);
+     end;
+   end;
+
    WaitForSingleObject(Disclaimer, 10000); // Same as MAX_DELAY * 1000 in About
    CloseHandle(Disclaimer);
    Splash.Release;
  end
  else
+ begin
     // tiglari: in quarkx: python initialization, loading defaults.qrk, setup.qrk
    PythonLoadMain;
+
+   //Check for updates...
+   if g_CmdOptions.DoUpdate then
+   begin
+     if DaySpan(Now, QuArKCompileDate) >= 270 then
+     begin
+       //About a 9 month difference...
+       MessageBox(0, 'This version of QuArK is rather old. Check for updates on the QuArK website.', 'QuArK', MB_OK);
+     end;
+   end;
+ end;
 
 (*ImageList1.Handle:=ImageList_LoadImage(HInstance, MakeIntResource(101),
   16, 2, clTeal, Image_Bitmap, 0);
