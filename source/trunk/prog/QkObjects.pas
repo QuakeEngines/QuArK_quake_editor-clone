@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.87  2007/08/04 14:47:23  danielpharos
+Added a very basic update check when starting up QuArK.
+
 Revision 1.86  2007/03/17 15:43:12  danielpharos
 Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
 
@@ -312,7 +315,7 @@ const
   QuArKCopyright          = 'Copyright (C) 1996-2007 Armin Rigo and others';
   QuArKUsedCompiler       = 'Delphi 6.0';
   QuArKCompileDate        = 39177;   //This is 5 April 2007
-  {Amount of days after 31 Dec 1899 (Delphi 2+).
+  {Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
   You can use EncodeDate(Year, Month, Day) to compute it, but this value
   really needs to be a constant, so put the resulting value in here.
   The result can be checked in the About form.}
