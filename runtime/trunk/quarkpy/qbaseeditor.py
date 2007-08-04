@@ -84,7 +84,10 @@ class BaseEditor:
 
     def drawmap(self, view):
         "Draws the map/model on the given view."
-        list = self.list
+        try:
+            list = self.list
+        except:
+            pass
 
         #
         # Stop any pending timer that would cause this view to be redrawn later.
@@ -1085,7 +1088,11 @@ class BaseEditor:
             self.layout.setgrid(self)
         self.savesetupinfos()
         if repaint:
-            self.invalidateviews()
+            import mdleditor
+            if isinstance(self, mdleditor.ModelEditor):
+                mdleditor.commonhandles(self)
+            else:
+                self.invalidateviews()
 
     def togglegrid(self, sender):
         self.grid = not self.grid and self.gridstep
@@ -1267,6 +1274,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.76  2007/08/01 06:52:25  cdunde
+#To allow individual model mesh vertex movement for multiple frames of the same model component
+#to work in conjunction with the new Linear Handle functions capable of doing the same.
+#
 #Revision 1.75  2007/08/01 06:12:47  cdunde
 #To allow all Linear drag handle hints to show in the 'Help' box when dragging.
 #
