@@ -143,7 +143,7 @@ begin
       PresParm.MultiSampleType := D3DMULTISAMPLE_NONE;
       PresParm.MultiSampleQuality := 0;
       PresParm.SwapEffect := D3DSWAPEFFECT_FLIP;
-      PresParm.hDeviceWindow := Form1.Handle;
+      PresParm.hDeviceWindow := g_Form1Handle;
       PresParm.Windowed := True;
       PresParm.EnableAutoDepthStencil := False;
       case StencilBufferBits of
