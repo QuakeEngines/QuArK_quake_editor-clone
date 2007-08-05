@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2003/08/13 04:18:02  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -191,7 +194,7 @@ begin
   end;
   for i:=0 to l.count-1 do begin
     c:=QComponent(l.Items1[i]);
-    if c.IntSpec['includeincheck']=0 then // skip coomponent.
+    if c.IntSpec['includeincheck']=0 then // skip component
       continue;
     f:=c.BuildFrameList;
     cnt:=f.count;
