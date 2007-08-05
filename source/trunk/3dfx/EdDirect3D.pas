@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/06/06 22:31:19  danielpharos
+Fix a (recent introduced) problem with OpenGL not drawing anymore.
+
 Revision 1.21  2007/06/04 19:20:24  danielpharos
 Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
 
@@ -725,28 +728,18 @@ begin
   PList:=ListSurfaces;
   while Assigned(PList) do
   begin
-    if PList^.Transparent=False then
-    begin
-      if Transparency then
-      begin
-        if PList^.Transparent=False then
-          RenderPList(PList, False, Coord);
-      end
-      else
-        RenderPList(PList, False, Coord);
-      PList:=PList^.Next;
-    end;
-
     if Transparency then
     begin
-      PList:=FListSurfaces;
-      while Assigned(PList) do
-      begin
-        if PList^.Transparent=True then
-          RenderPList(PList, True, Coord);
-        PList:=PList^.Next;
-      end;
+      if (PList^.Transparent=False) then
+        RenderPList(PList, False, Coord);
+    end
+    else
+    begin
+      RenderPList(PList, False, Coord);
+      if PList^.NumberTransparentFaces>0 then
+        RenderPList(PList, True, Coord);
     end;
+    PList:=PList^.Next;
   end;
 
   l_Res:=D3DDevice.EndScene;
