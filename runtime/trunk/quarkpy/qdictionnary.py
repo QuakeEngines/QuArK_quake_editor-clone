@@ -890,7 +890,7 @@ Strings = {
     5699: "(complex)",
     5700: "%s or %s",
     5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
-    5702: "Files in this directory wont work. Select a file in a subdirectory please.",
+    #5702: "Unknown map format: %s\n",
 
     # alexander would like to reserve 5703 .. 5729 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
@@ -1020,6 +1020,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.101  2007/07/05 10:18:34  danielpharos
+#Moved a string to the dictionary.
+#
 #Revision 1.100  2007/06/13 11:57:33  danielpharos
 #Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
 #
