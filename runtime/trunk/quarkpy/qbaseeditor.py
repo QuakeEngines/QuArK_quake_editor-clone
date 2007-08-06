@@ -1087,11 +1087,11 @@ class BaseEditor:
         if self.layout is not None:
             self.layout.setgrid(self)
         self.savesetupinfos()
-        if repaint:
-            import mdleditor
-            if isinstance(self, mdleditor.ModelEditor):
-                mdleditor.commonhandles(self)
-            else:
+        import mdleditor
+        if isinstance(self, mdleditor.ModelEditor):
+            mdleditor.commonhandles(self)
+        else:
+            if repaint:
                 self.invalidateviews()
 
     def togglegrid(self, sender):
@@ -1274,6 +1274,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.77  2007/08/04 23:14:13  cdunde
+#To stop error because of the need for Model Editor 'list'  setup for selection items.
+#Also fixed grid change that was not updating the views afterwards for the Model Editor.
+#
 #Revision 1.76  2007/08/01 06:52:25  cdunde
 #To allow individual model mesh vertex movement for multiple frames of the same model component
 #to work in conjunction with the new Linear Handle functions capable of doing the same.
