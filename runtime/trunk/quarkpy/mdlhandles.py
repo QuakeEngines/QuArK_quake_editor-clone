@@ -1757,6 +1757,7 @@ class LinearHandle(qhandles.GenericHandle):
         self.mgr = mgr    # a LinHandlesManager instance
 
     def drag(self, v1, v2, flags, view):
+        editor = mapeditor()
         delta = v2-v1
         if flags&MB_CTRL:
             g1 = 1
@@ -1771,6 +1772,7 @@ class LinearHandle(qhandles.GenericHandle):
                     new = None
         else:
             new = None
+
         self.mgr.drawbox(view)    # Draws the full circle and all handles during drag and Ctrl key is being held down.
         cv = view.canvas()        # If vertex handles are added to Linear handles this is where to stop drawing all of them.
         for h in view.handles:
@@ -1824,6 +1826,15 @@ class LinRedHandle(LinearHandle):
     def linoperation(self, list, delta, g1, view):
         editor = self.mgr.editor
         mdleditor.setsingleframefillcolor(editor, view)
+
+        if editor is not None:
+            if editor.lock_x==1:
+                delta = quarkx.vect(0, delta.y, delta.z)
+            if editor.lock_y==1:
+                delta = quarkx.vect(delta.x, 0, delta.z)
+            if editor.lock_z==1:
+                delta = quarkx.vect(delta.x, delta.y, 0)
+
         view.repaint()
         plugins.mdlgridscale.gridfinishdrawing(editor, view)
         plugins.mdlaxisicons.newfinishdrawing(editor, view)
@@ -1887,6 +1898,16 @@ class LinSideHandle(LinearHandle):
             cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def buildmatrix(self, delta, g1, view):
+
+        editor = mapeditor()
+        if editor is not None:
+            if editor.lock_x==1:
+                delta = quarkx.vect(0, delta.y, delta.z)
+            if editor.lock_y==1:
+                delta = quarkx.vect(delta.x, 0, delta.z)
+            if editor.lock_z==1:
+                delta = quarkx.vect(delta.x, delta.y, 0)
+
         delta = quarkx.vect(0,0,delta.tuple[2])
         npos = self.pos+delta
         if g1:
@@ -1945,6 +1966,16 @@ class LinCornerHandle(LinearHandle):
             cv.polygon([(int(p.x)-3,int(p.y)), (int(p.x),int(p.y)-3), (int(p.x)+3,int(p.y)), (int(p.x),int(p.y)+3)])
 
     def buildmatrix(self, delta, g1, view):
+
+        editor = mapeditor()
+        if editor is not None:
+            if editor.lock_x==1:
+                delta = quarkx.vect(0, delta.y, delta.z)
+            if editor.lock_y==1:
+                delta = quarkx.vect(delta.x, 0, delta.z)
+            if editor.lock_z==1:
+                delta = quarkx.vect(delta.x, delta.y, 0)
+
         normal = view.vector("Z").normalized
         texp4 = self.pos-self.center
         texp4 = texp4 - normal*(normal*texp4)
@@ -2078,6 +2109,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.73  2007/08/02 08:33:54  cdunde
+#To get the model axis to draw and other things to work corretly with Linear handle toolbar button.
+#
 #Revision 1.72  2007/08/01 06:52:25  cdunde
 #To allow individual model mesh vertex movement for multiple frames of the same model component
 #to work in conjunction with the new Linear Handle functions capable of doing the same.
