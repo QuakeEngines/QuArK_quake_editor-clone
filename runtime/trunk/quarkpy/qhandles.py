@@ -1563,8 +1563,6 @@ class RectangleDragObject(RedImageDragObject):
             from qbaseeditor import flagsmouse
             if flagsmouse == 2056 or flagsmouse == 2096:
                 mdleditor.setsingleframefillcolor(editor, self.view)
-                plugins.mdlgridscale.gridfinishdrawing(editor, self.view)
-                plugins.mdlaxisicons.newfinishdrawing(editor, self.view)
                 import mdlhandles
                 if isinstance(editor.dragobject, mdlhandles.RectSelDragObject):
                     if self.redimages is not None:
@@ -2053,6 +2051,11 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.54  2007/08/08 21:07:47  cdunde
+#To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
+#for vertex selection in those views.
+#Also setup Linear Handle functions for multiple vertex selection movement using same.
+#
 #Revision 1.53  2007/08/01 06:12:12  cdunde
 #To stop the rest of the Model Editor Linear Handles from going through code and causing problems.
 #And stop error if object is moved back to where it started from at beginning of a linear drag.
