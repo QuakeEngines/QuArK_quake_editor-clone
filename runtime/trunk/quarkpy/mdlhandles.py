@@ -1334,8 +1334,10 @@ def singleskinzoom(view):
 #
 
 
-def BuildCommonHandles(editor, explorer):
-    "Build a list of handles to display on all map views."
+def BuildCommonHandles(editor, explorer, option=1):
+    "Build a list of handles to display in all of the editor views."
+    "option=1: Clears all exising handles in the 'h' list and rebuilds it for specific handle type."
+    "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
 
     if len(explorer.sellist) >= 1:
         for item in explorer.sellist:
@@ -1366,17 +1368,31 @@ def BuildCommonHandles(editor, explorer):
         #
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
-        h = []
+        if len(editor.ModelVertexSelList) >= 2:
+            option = 2
+            import mdlutils
+            from qbaseeditor import currentview
+            vtxlist = mdlutils.MakeEditorVertexPolyObject(editor)
+        if option == 1:
+            h = []
         h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
+        if option == 2:
+            box = quarkx.boundingboxof(vtxlist)
+            if len(box) != 2:
+                editor.ModelVertexSelList = []
+            else:
+                h = h + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist).BuildHandles()
 
     return qhandles.FilterHandles(h, SS_MODEL)
 
 
 
-def BuildHandles(editor, explorer, view):
-    "Builds a list of handles to display in ALL VIEWS, one map view at a time."
+def BuildHandles(editor, explorer, view, option=1):
+    "Builds a list of handles to display in one specific map view, or more if calling for each one."
     "This function is called from quarkpy\mdleditor.py, class ModelEditor,"
     "def buildhandles function and returns the list of handles to that function."
+    "option=1: Clears all exising handles in the 'h' list and rebuilds it for specific handle type."
+    "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
 
     if len(explorer.sellist) >= 1:
         for item in explorer.sellist:
@@ -1406,8 +1422,19 @@ def BuildHandles(editor, explorer, view):
         #
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
-        h = []
+        if len(editor.ModelVertexSelList) >= 2:
+            option = 2
+            import mdlutils
+            vtxlist = mdlutils.MakeEditorVertexPolyObject(editor)
+        if option == 1:
+            h = []
         h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
+        if option == 2:
+            box = quarkx.boundingboxof(vtxlist)
+            if len(box) != 2:
+                editor.ModelVertexSelList = []
+            else:
+                h = h + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist).BuildHandles()
     #
     # The 3D view "eyes".
     #
@@ -1434,8 +1461,8 @@ class RectSelDragObject(qhandles.RectangleDragObject):
     def rectanglesel(self, editor, x,y, rectangle, view):
         import mdlutils
         cursordragendpos = (x, y)
-        ### To stop selection or selection change if nothing, or something,
-        ### or more then one item is selected in the tree-view.
+        ### To stop selection or selection change if nothing, or something
+        ### other then a components "frame(s)" is selected in the tree-view.
         ### And to retain existing selected items, if any, in the ModelVertexSelList.
         if view.info["viewname"] != "skinview":
             if len(editor.layout.explorer.sellist) == 0:
@@ -1528,6 +1555,11 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         else:
             if editor.ModelVertexSelList != [] and sellist == []:
                 editor.ModelVertexSelList = []
+                view.handles = BuildHandles(editor, editor.layout.explorer, view)
+                for v in editor.layout.views:
+                    if v.info["viewname"] == "skinview" or v == view:
+                        continue
+                    v.handles = view.handles
                 mdlutils.Update_Editor_Views(editor, 4)
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
                     editor.SkinVertexSelList = []
@@ -1546,12 +1578,14 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                         if vertex[0] == item[0]:
                             editor.ModelVertexSelList.remove(item)
                             removeditem = removeditem + 1
-                            for v in editor.layout.views:
-                                if len(v.handles) == 0:
-                                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                             break
                         elif itemcount == len(editor.ModelVertexSelList):
                             editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
+            view.handles = BuildHandles(editor, editor.layout.explorer, view)
+            for v in editor.layout.views:
+                if v.info["viewname"] == "skinview" or v == view:
+                    continue
+                v.handles = view.handles
             if removeditem != 0:
                 for v in editor.layout.views:
                     mdleditor.setsingleframefillcolor(editor, v)
@@ -1577,44 +1611,12 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     SkinView1.invalidate()
             else:
                 if editor.ModelVertexSelList != []:
-                    mdleditor.setsingleframefillcolor(editor, view)
-                    view.repaint()
-                    plugins.mdlgridscale.gridfinishdrawing(editor, view)
-                    plugins.mdlaxisicons.newfinishdrawing(editor, view)
-                    cv = view.canvas()
-                    if len(view.handles) == 0:
-                        view.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                    ### To avoid an error if something is selected that does not display the view handles.
-                    if len(view.handles) == 0:
-                        pass
-                    else:
-                        for h in view.handles:
-                            h.draw(view, cv, h)
-                        for vtx in editor.ModelVertexSelList:
-                            h = view.handles[vtx[0]]
-                            h.draw(view, cv, h)
-                        for v in editor.layout.views:
-                            if v == view:
-                                continue
-                            cv = v.canvas()
-                            if len(v.handles) == 0:
-                                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                            for vtx in editor.ModelVertexSelList:
-                                h = v.handles[vtx[0]]
-                                h.draw(v, cv, h)
+                    mdlutils.Update_Editor_Views(editor, 4)
                     if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
                         if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
                             editor.SkinVertexSelList = []
                         mdlutils.PassEditorSel2Skin(editor)
                         SkinView1.invalidate()
-                else:
-                    view.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                    view.repaint()
-                    plugins.mdlgridscale.gridfinishdrawing(editor, view)
-                    plugins.mdlaxisicons.newfinishdrawing(editor, view)
-                    cv = view.canvas()
-                    for h in view.handles:
-                        h.draw(view, cv, self)
                     
         ### This section test to see if there are only 3 vertexes selected.
         ### If so, then it sorts them for proper order based on if the face
@@ -1757,7 +1759,6 @@ class LinearHandle(qhandles.GenericHandle):
         self.mgr = mgr    # a LinHandlesManager instance
 
     def drag(self, v1, v2, flags, view):
-        editor = mapeditor()
         delta = v2-v1
         if flags&MB_CTRL:
             g1 = 1
@@ -1790,16 +1791,20 @@ class LinearHandle(qhandles.GenericHandle):
         plugins.mdlgridscale.gridfinishdrawing(editor, view)
         plugins.mdlaxisicons.newfinishdrawing(editor, view)
         for obj in self.mgr.list: # Moves and draws the models triangles correctly for the matrix handles.
-            obj.linear(self.mgr.center, matrix)
-            vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
-            vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
-            vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
-            vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
             cv = view.canvas()
-            cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
-            cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
-            cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
-            cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
+            obj.linear(self.mgr.center, matrix)
+            if obj.name.endswith(":g"):
+                newobj = obj.copy()
+                view.drawmap(newobj, DM_OTHERCOLOR, RED)
+            else:
+                vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
+                vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
+                vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
+                vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
+                cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
+                cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
+                cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
+                cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
 
         return 1
 
@@ -1812,7 +1817,6 @@ class LinRedHandle(LinearHandle):
     def __init__(self, pos, mgr):
         LinearHandle.__init__(self, pos, mgr)
         self.cursor = CR_MULTIDRAG
-        self.undomsg = "editor-linear movement"
 
     def draw(self, view, cv, draghandle=None):
 
@@ -1840,15 +1844,18 @@ class LinRedHandle(LinearHandle):
         plugins.mdlaxisicons.newfinishdrawing(editor, view)
         for obj in list: # Moves and draws the models triangles correctly.
             obj.translate(delta)
-            vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
-            vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
-            vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
-            vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
             cv = view.canvas()
-            cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
-            cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
-            cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
-            cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
+            if obj.name.endswith(":g"):
+                view.drawmap(obj, DM_OTHERCOLOR, RED)
+            else:
+                vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
+                vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
+                vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
+                vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
+                cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
+                cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
+                cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
+                cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
 
         if view.info["type"] == "XY":
             s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
@@ -1868,7 +1875,12 @@ class LinRedHandle(LinearHandle):
         
         import mdlutils
         from qbaseeditor import currentview
-        mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, self.undomsg)
+        if newobjectslist[0].name.endswith(":f"):
+            undomsg = "editor-linear face movement"
+            mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
+        else:
+            undomsg = "editor-linear vertex movement"
+            mdlutils.ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
 
 
 class LinSideHandle(LinearHandle):
@@ -1884,7 +1896,6 @@ class LinSideHandle(LinearHandle):
         self.firstone = firstone
         self.inverse = side.tuple[dir] < center.tuple[dir]
         self.cursor = CR_LINEARV
-        self.undomsg = "editor-linear distort/shear"
 
     def draw(self, view, cv, draghandle=None):
         if self.firstone:
@@ -1899,7 +1910,7 @@ class LinSideHandle(LinearHandle):
 
     def buildmatrix(self, delta, g1, view):
 
-        editor = mapeditor()
+        editor = self.mgr.editor
         if editor is not None:
             if editor.lock_x==1:
                 delta = quarkx.vect(0, delta.y, delta.z)
@@ -1939,7 +1950,12 @@ class LinSideHandle(LinearHandle):
 
         import mdlutils
         from qbaseeditor import currentview
-        mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, self.undomsg)
+        if newobjectslist[0].name.endswith(":f"):
+            undomsg = "editor-linear face distort/shear"
+            mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
+        else:
+            undomsg = "editor-linear vertex distort/shear"
+            mdlutils.ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
 
 
 class LinCornerHandle(LinearHandle):
@@ -1955,7 +1971,6 @@ class LinCornerHandle(LinearHandle):
             self.pos0 = realpoint
         self.center = center - (pos1-center)
         self.cursor = CR_CROSSH
-        self.undomsg = "editor-linear rotate/scaling"
 
     def draw(self, view, cv, draghandle=None):
         p = view.proj(self.pos)
@@ -1967,7 +1982,7 @@ class LinCornerHandle(LinearHandle):
 
     def buildmatrix(self, delta, g1, view):
 
-        editor = mapeditor()
+        editor = self.mgr.editor
         if editor is not None:
             if editor.lock_x==1:
                 delta = quarkx.vect(0, delta.y, delta.z)
@@ -2022,7 +2037,12 @@ class LinCornerHandle(LinearHandle):
 
         import mdlutils
         from qbaseeditor import currentview
-        mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, self.undomsg)
+        if newobjectslist[0].name.endswith(":f"):
+            undomsg = "editor-linear face rotate/scaling"
+            mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
+        else:
+            undomsg = "editor-linear vertex rotate/scaling"
+            mdlutils.ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
 
 
 
@@ -2109,6 +2129,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.74  2007/08/06 02:37:14  cdunde
+#To tie the Linear Handle movements to the X, Y and Z limitation selections.
+#
 #Revision 1.73  2007/08/02 08:33:54  cdunde
 #To get the model axis to draw and other things to work corretly with Linear handle toolbar button.
 #

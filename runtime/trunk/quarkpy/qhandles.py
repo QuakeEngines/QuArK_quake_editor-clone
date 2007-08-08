@@ -1190,46 +1190,49 @@ def refreshtimer(self):
     import mdleditor
     if isinstance(self.editor, mdleditor.ModelEditor):
         from qbaseeditor import flagsmouse, currentview
-        if flagsmouse == 16384:
-            if self.view.info["viewname"] == "skinview":
-                self.view.invalidate()
-                return
-            cv = currentview.canvas()
-            if len(currentview.handles) == 0:
-                import mdlhandles
-                currentview.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
-            for h in currentview.handles:
-                h.draw(currentview, cv, self)
+        if self.view.info["viewname"] == "skinview":
             return
-        if flagsmouse == 2056:
-            for view in self.editor.layout.views:
-                if view == currentview:
-                    continue
-                mdleditor.setsingleframefillcolor(self.editor, currentview)
-                plugins.mdlgridscale.gridfinishdrawing(self.editor, currentview)
-                plugins.mdlaxisicons.newfinishdrawing(self.editor, currentview)
-        mdleditor.setsingleframefillcolor(self.editor, currentview)
-        plugins.mdlgridscale.gridfinishdrawing(self.editor, currentview)
-        plugins.mdlaxisicons.newfinishdrawing(self.editor, currentview)
- #       currentview.repaint()
+        if flagsmouse == 16384:
+            self.editor.dragobject = None
+            return
         if flagsmouse != 1032:
-            if len(currentview.handles) == 0:
+            if len(self.view.handles) == 0:
                 import mdlhandles
-                currentview.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
-            cv = currentview.canvas()
-            for h in currentview.handles:
-                h.draw(currentview, cv, self)
+                self.view.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
+            if flagsmouse == 1072:
+                mdleditor.setsingleframefillcolor(self.editor, self.view)
+                self.view.repaint()
+            cv = self.view.canvas()
+            for h in self.view.handles:
+                h.draw(self.view, cv, self)
             if self.editor.ModelVertexSelList != []:
                 for vtx in self.editor.ModelVertexSelList:
-                    h = currentview.handles[vtx[0]]
-                    h.draw(currentview, cv, h)
-            return
-        if flagsmouse == 1032 and self.editor.linearbox:
-            import mdlhandles
-            if isinstance(self.editor.dragobject, mdlhandles.RectSelDragObject):
-                self.view.repaint()
+                    h = self.view.handles[vtx[0]]
+                    h.draw(self.view, cv, h)
+            if flagsmouse == 1072:
                 mode = DM_OTHERCOLOR|DM_BBOX
                 if self.redimages is not None:
+                    for r in self.redimages:
+                        self.view.drawmap(r, mode, RED)
+            return
+        if flagsmouse == 1032:
+            import mdlhandles
+            if isinstance(self.editor.dragobject, mdlhandles.RectSelDragObject):
+                if len(self.view.handles) == 0:
+                    import mdlhandles
+                    self.view.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
+                mode = DM_OTHERCOLOR|DM_BBOX
+                if self.redimages is not None:
+                    mdleditor.setsingleframefillcolor(self.editor, self.view)
+                    self.view.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(self.editor, self.view)
+                    cv = self.view.canvas()
+                    for h in self.view.handles:
+                        h.draw(self.view, cv, self)
+                    if self.editor.ModelVertexSelList != []:
+                        for vtx in self.editor.ModelVertexSelList:
+                            h = self.view.handles[vtx[0]]
+                            h.draw(self.view, cv, h)
                     for r in self.redimages:
                         self.view.drawmap(r, mode, RED)
             else:
@@ -1237,14 +1240,7 @@ def refreshtimer(self):
                     return
                     
         else:
-            mode = DM_OTHERCOLOR|DM_BBOX
-            if self.redimages is not None:
-                for r in self.redimages:
-                    currentview.repaint()
-                    currentview.drawmap(r, mode, RED)
-                    mdleditor.setsingleframefillcolor(self.editor, currentview)
-                    plugins.mdlgridscale.gridfinishdrawing(self.editor, currentview)
-                    plugins.mdlaxisicons.newfinishdrawing(self.editor, currentview)
+            pass
     else:
         try:
             for v in self.views:
@@ -1565,7 +1561,7 @@ class RectangleDragObject(RedImageDragObject):
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
             from qbaseeditor import flagsmouse
-            if flagsmouse == 2056:
+            if flagsmouse == 2056 or flagsmouse == 2096:
                 mdleditor.setsingleframefillcolor(editor, self.view)
                 plugins.mdlgridscale.gridfinishdrawing(editor, self.view)
                 plugins.mdlaxisicons.newfinishdrawing(editor, self.view)
@@ -2015,7 +2011,6 @@ def flat3Dview(view3d, layout, selonly=0):
     except:
         curviewname = "editors3Dview"
     view3d.info = {"type": "2D",
-                #   "viewname": "mdleditor3Dview",
                    "viewname": curviewname,
                    "scale": 2.0,
                    "angle": -0.7,
@@ -2052,13 +2047,17 @@ def flat3Dview(view3d, layout, selonly=0):
         layout.editor.setupview(view3d, layout.editor.drawmapsel)
     else:
         layout.editor.setupview(view3d)
-    #setprojmode(view3d)
     return view3d
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.53  2007/08/01 06:12:12  cdunde
+#To stop the rest of the Model Editor Linear Handles from going through code and causing problems.
+#And stop error if object is moved back to where it started from at beginning of a linear drag.
+#Also added a 'rotationspeed' control to the 'UserRotationMatrix' function.
+#
 #Revision 1.52  2007/07/28 23:12:51  cdunde
 #Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
 #to use for editing movement of model faces, vertexes and bones (in the future).

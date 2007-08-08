@@ -382,9 +382,10 @@ class ModelLayout(BaseLayout):
                 if flagsmouse == 2056:
                     pass
                 else:
-                    self.editor.ModelVertexSelList = []
                     self.editor.SkinVertexSelList = []
-                    self.editor.ModelFaceSelList = []
+                # Had to comment these two out to stop undo 'ok' function from loosing the selection when Ctrl key is used in Linear Handle, need to fix this right.
+                #    self.editor.ModelVertexSelList = []
+                #    self.editor.ModelFaceSelList = []
                     self.editor.SkinFaceSelList = []
                     self.editor.Root.currentcomponent.filltris = []
             for view in self.editor.layout.views:
@@ -536,6 +537,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.42  2007/07/28 23:12:52  cdunde
+#Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
+#to use for editing movement of model faces, vertexes and bones (in the future).
+#
 #Revision 1.41  2007/07/09 19:06:14  cdunde
 #Setup to clear all Editor and Skin-view selection lists when something outside the
 #currentcomponent is selected to start clean and avoid crossing of list items.

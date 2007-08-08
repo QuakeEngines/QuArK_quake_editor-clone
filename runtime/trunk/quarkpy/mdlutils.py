@@ -120,17 +120,75 @@ def fixUpVertexNos(tris, index):
     return new_tris
 
 
-# The 'editor.SkinVertexSelList' list is a group of lists within a list.
-# Each group list must be created in the manner below then added to the 'editor.SkinVertexSelList' list:
-#    editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
-#
 
-def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option=0):
-    "Does the opposite of the 'MakeEditorFaceObject' (just below this function) to convert"
-    "a list of faces that have been manipulated by some function using QuArK Internal Face Objects."
-    "The 'new' objects list in the functions 'ok' section is passed to here where it is converted to"
-    "the above list format items and that new list is then passed to the replacevertexes function in"
-    "this file further above for final processing and 'ok' exchange to finish the components mesh change."
+def MakeEditorVertexPolyObject(editor, option=0):
+    "Creates a QuArK Internal Group Object which consist of QuArK internal Poly Objects created from each selected vertex in the"
+    "ModelVertexSelList that can be manipulated by some function using QuArK Internal Poly Objects such as the Linear Handle."
+
+    from qbaseeditor import currentview
+    
+    if option == 0:
+        polylist = []
+        group = quarkx.newobj("selected:g");
+        for vtx in range (len(editor.Root.currentcomponent.currentframe.vertices)):
+            for ver_index in range (len(editor.ModelVertexSelList)):
+                if vtx == editor.ModelVertexSelList[ver_index][0]:
+                    vertex = editor.Root.currentcomponent.currentframe.vertices[vtx]
+                    p = quarkx.newobj(str(vtx)+":p");
+                    face = quarkx.newobj("east:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(1.0,0.0,0.0)/currentview.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,1.0,0.0)/currentview.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    p.appenditem(face)
+                    face = quarkx.newobj("west:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(-1.0,0.0,0.0)/currentview.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(-1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    p.appenditem(face)
+                    face = quarkx.newobj("north:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,1.0,0.0)/currentview.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,1.0,0.0)/currentview.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/currentview.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    p.appenditem(face)
+                    face = quarkx.newobj("south:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,1.0)/currentview.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    p.appenditem(face)
+                    face = quarkx.newobj("up:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,1.0)/currentview.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/currentview.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    p.appenditem(face)
+                    face = quarkx.newobj("down:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,-1.0)/currentview.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,-1.0)/currentview.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,-1.0)/currentview.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    p.appenditem(face)
+                    group.appenditem(p)
+
+        polylist = polylist + [group]
+        return polylist
+
+
+
+def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option=0):
+    "Does the opposite of the 'MakeEditorVertexPolyObject' (just above this function) to convert a list"
+    "of a group of polys that have been manipulated by some function using QuArK Internal Poly Objects."
+    "The 'new' objects list in the functions 'ok' section is passed to here where it is converted back to"
+    "usable model component mesh vertexes and the final 'ok' function is performed."
 
     if option == 0:
         comp = editor.Root.currentcomponent
@@ -140,55 +198,21 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
             for listframe in editor.layout.explorer.sellist:
                 if compframe.name == listframe.name:
                     old_vtxs = compframe.vertices
-                    for face in newobjectslist:
-                        tuplename = tuple(str(s) for s in face.shortname.split(','))
-                        compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
-                        old_vtxs[int(ver_index0)] = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])
-                        old_vtxs[int(ver_index1)] = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])
-                        old_vtxs[int(ver_index2)] = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])
+                    for poly in newobjectslist[0].subitems:
+                        vtxnbr = int(poly.shortname)
+                        face = poly.subitems[0]
+                        vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                        old_vtxs[vtxnbr] = vertex
                         compframe.vertices = old_vtxs
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
 
-# for test reference only - def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
-    if option == 1:
-        comp = editor.Root.currentcomponent
-        vertexlist = []
-        for face in newobjectslist:
-            tuplename = tuple(str(s) for s in face.shortname.split(','))
-            vtxpos0 = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])
-            vtxpos1 = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])
-            vtxpos2 = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])
-            pos0X, pos0Y, pos0Z = view.proj(vtxpos0).tuple
-            pos1X, pos1Y, pos1Z = view.proj(vtxpos1).tuple
-            pos2X, pos2Y, pos2Z = view.proj(vtxpos2).tuple
-            pos0 = quarkx.vect(pos0Y, pos0Z, 0)
-            pos1 = quarkx.vect(pos1Y, pos1Z, 0)
-            pos2 = quarkx.vect(pos2Y, pos2Z, 0)
-            compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
-            tri_index = int(tri_index)
-            ver_index0 = int(ver_index0)
-            ver_index1 = int(ver_index1)
-            ver_index2 = int(ver_index2)
-            vertex0 = editor.Root.currentcomponent.currentframe.vertices[ver_index0]
-            vertex1 = editor.Root.currentcomponent.currentframe.vertices[ver_index1]
-            vertex2 = editor.Root.currentcomponent.currentframe.vertices[ver_index2]
-            if vertexlist == []:
-                vertexlist = vertexlist + [[pos0, vertex0, tri_index, ver_index0]] + [[pos1, vertex1, tri_index, ver_index1]] + [[pos2, vertex2, tri_index, ver_index2]]
-            else:
-                for item in range(len(vertexlist)):
-                    if vertexlist[item][2] == int(tuplename[1]):
-                        break
-                    if item == len(vertexlist)-1:
-                        vertexlist = vertexlist + [[pos0, vertex0, tri_index, ver_index0]] + [[pos1, vertex1, tri_index, ver_index1]] + [[pos2, vertex2, tri_index, ver_index2]]
-        replacevertexes(editor, comp, vertexlist, flags, view, undomsg)
-
 
 
 def MakeEditorFaceObject(editor, option=0):
-    "Creates a QuArK Internal Face Object from 3 selected vertexes in the ModelVertexSelList"
-    " or by using the ModelFaceSelList 'tri_index' items in the list directly."
+    "Creates a single QuArK Internal Face Object from 3 selected vertexes in the ModelVertexSelList"
+    "or list of Face Objects by using the ModelFaceSelList 'tri_index' items in the list directly."
 
     facelist = []
     comp = editor.Root.currentcomponent
@@ -305,6 +329,66 @@ def MakeEditorFaceObject(editor, option=0):
                 facelist = facelist + [[face, trinbr]]
                 editor.ModelFaceSelList = editor.ModelFaceSelList + [trinbr]
         return facelist
+
+
+
+def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option=0):
+    "Does the opposite of the 'MakeEditorFaceObject' (just above this function) to convert"
+    "a list of faces that have been manipulated by some function using QuArK Internal Face Objects."
+    "The 'new' objects list in the functions 'ok' section is passed to here where it is converted back"
+    "to usable model component mesh vertexes of those faces and the final 'ok' function is performed."
+
+    if option == 0:
+        comp = editor.Root.currentcomponent
+        new_comp = comp.copy()
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            for listframe in editor.layout.explorer.sellist:
+                if compframe.name == listframe.name:
+                    old_vtxs = compframe.vertices
+                    for face in newobjectslist:
+                        tuplename = tuple(str(s) for s in face.shortname.split(','))
+                        compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
+                        old_vtxs[int(ver_index0)] = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])
+                        old_vtxs[int(ver_index1)] = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])
+                        old_vtxs[int(ver_index2)] = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])
+                        compframe.vertices = old_vtxs
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+
+# for test reference only - def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
+    if option == 1:
+        comp = editor.Root.currentcomponent
+        vertexlist = []
+        for face in newobjectslist:
+            tuplename = tuple(str(s) for s in face.shortname.split(','))
+            vtxpos0 = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])
+            vtxpos1 = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])
+            vtxpos2 = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])
+            pos0X, pos0Y, pos0Z = view.proj(vtxpos0).tuple
+            pos1X, pos1Y, pos1Z = view.proj(vtxpos1).tuple
+            pos2X, pos2Y, pos2Z = view.proj(vtxpos2).tuple
+            pos0 = quarkx.vect(pos0Y, pos0Z, 0)
+            pos1 = quarkx.vect(pos1Y, pos1Z, 0)
+            pos2 = quarkx.vect(pos2Y, pos2Z, 0)
+            compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
+            tri_index = int(tri_index)
+            ver_index0 = int(ver_index0)
+            ver_index1 = int(ver_index1)
+            ver_index2 = int(ver_index2)
+            vertex0 = editor.Root.currentcomponent.currentframe.vertices[ver_index0]
+            vertex1 = editor.Root.currentcomponent.currentframe.vertices[ver_index1]
+            vertex2 = editor.Root.currentcomponent.currentframe.vertices[ver_index2]
+            if vertexlist == []:
+                vertexlist = vertexlist + [[pos0, vertex0, tri_index, ver_index0]] + [[pos1, vertex1, tri_index, ver_index1]] + [[pos2, vertex2, tri_index, ver_index2]]
+            else:
+                for item in range(len(vertexlist)):
+                    if vertexlist[item][2] == int(tuplename[1]):
+                        break
+                    if item == len(vertexlist)-1:
+                        vertexlist = vertexlist + [[pos0, vertex0, tri_index, ver_index0]] + [[pos1, vertex1, tri_index, ver_index1]] + [[pos2, vertex2, tri_index, ver_index2]]
+        replacevertexes(editor, comp, vertexlist, flags, view, undomsg)
 
 
 #
@@ -643,7 +727,7 @@ def SkinVertexSel(editor, sellist):
     "by 'picking' them individually or by using the Red Rectangle Selector."
     "The selected Skin vertexes will be added, if not already selected, to the SkinVertexSelList."
     "The first Skin vertex in the SkinVertexSelList will always be used as the Skin-view's 'base' vertex."
-    "You will need to call to redraw the Skin-view or this list once it is updated to display the selections."
+    "You will need to call to redraw the Skin-view for this list once it is updated to display the selections."
 
     # Equivalent of skinpick_cleared in mdlhandles.py file.
     if sellist == []:
@@ -906,6 +990,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.34  2007/08/02 08:33:44  cdunde
+#To get the model axis to draw and other things to work corretly with Linear handle toolbar button.
+#
 #Revision 1.33  2007/08/01 07:36:35  cdunde
 #Notation change only.
 #

@@ -696,6 +696,16 @@ class BaseEditor:
          ### This section just for Model Editor face selection and editor views drawing manipulation
          ### and to free up L & RMB combo dragging for Model Editor Face selection use.
         if isinstance(self, mdleditor.ModelEditor):
+            if (flagsmouse == 560 or flagsmouse == 1072) and (view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
+                if flagsmouse == 560 and self.dragobject is None:
+                    self.dragobject = mdlhandles.RectSelDragObject(view, x, y, RED, None)
+                    self.dragobject.view = view
+                    return
+                else:
+                    if not isinstance(self.dragobject, mdlhandles.RectSelDragObject):
+                        self.dragobject = mdlhandles.RectSelDragObject(view, x, y, RED, None)
+                        self.dragobject.view = view
+
             modelfacelist = mdlhandles.ClickOnView(self, view, x, y)
 
              # This clears the face selection list when both the LMB & RMB are pressed with the cursor in an open area of a view.
@@ -1028,6 +1038,7 @@ class BaseEditor:
                             if flagsmouse == 520 and self.dragobject is None:
                                 view.depth = (-view.clientarea[0], view.clientarea[1])
                                 self.dragobject = mdlhandles.RectSelDragObject(view, x, y, RED, None)
+                                self.dragobject.view = view
                                 return
                             try:
                                 skindrawobject = self.Root.currentcomponent.currentskin
@@ -1036,6 +1047,7 @@ class BaseEditor:
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
                         else:
                             if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
+                                self.dragobject.view = view
                              ### Tried to clear drawn handles from the view at start of drag
                              ### but this only works once. After editor vertex drag it stops working.
                              ### If we ever figure out why this would be nice to have.
@@ -1274,6 +1286,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.78  2007/08/06 02:27:13  cdunde
+#Had to re-fix grid change that was not updating the views afterwards for the Model Editor.
+#
 #Revision 1.77  2007/08/04 23:14:13  cdunde
 #To stop error because of the need for Model Editor 'list'  setup for selection items.
 #Also fixed grid change that was not updating the views afterwards for the Model Editor.
