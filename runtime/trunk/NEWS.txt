@@ -15,6 +15,10 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [cdunde]: To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
+          - for vertex selection in those views.
+          - Also setup Linear Handle functions for multiple vertex selection movement using same.
+
 * [DanielPharos]: Added a simple update-notifier: it just checks the age of the QuArK release.
           - Added /NOSPLASH and /NOUPDATE to the commandline.
 
