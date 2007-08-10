@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.343  2007/08/10 12:16:15  danielpharos
+//Updated the update-check. You can disable it in the Config, and it now asks if you want to go to the website.
+//
 //Revision 1.342  2007/08/01 06:09:23  cdunde
 //Setup variable setting for Model Editor 'Linear Handle (size) Setting' and
 //'Rotation Speed' using the 'cfg' button on the movement toolbar.
@@ -1556,6 +1559,8 @@ QQRKSRC1
         Game = "EF2"
         Code = "o" // Hardcoded value in Setup.PAS
 
+        BaseMenu = "Star Trek: Elite Force"
+
         Program = "EF2.EXE +set sv_pure 0"
         Directory = "C:\Program Files\Activision\EF2"
         CheckDirectory = "EF2.EXE"   // hidden setting
@@ -1675,8 +1680,9 @@ QQRKSRC1
         Game = "Half-Life"
         Code = "3" // Hardcoded value in Setup.PAS
 
-        Program = "HL.EXE -console -dev -zone 1024 +set sv_cheats 1"
+        BaseMenu = "Half Life"
 
+        Program = "HL.EXE -console -dev -zone 1024 +set sv_cheats 1"
         Directory = "\Sierra\Half-Life"
         CheckDirectory = "HL.EXE"
 
@@ -1734,6 +1740,8 @@ QQRKSRC1
       {
         Game = "Half-Life2"
         Code = "k" // Hardcoded value in Setup.PAS
+
+        BaseMenu = "Half Life"
 
         SteamFSModule = ""
         SteamTier0Module = ""
@@ -2157,9 +2165,9 @@ QQRKSRC1
       {
         Game = "Quake 1"
         Code = "1" // Hardcoded value in Setup.PAS
+        BaseMenu = "Quake"
 
         Program = "Quake.EXE"
-
         Directory = "\Quake"
         CheckDirectory = "QUAKE.EXE"
 
@@ -2209,8 +2217,9 @@ QQRKSRC1
         Game = "Quake 2"
         Code = "A" // Hardcoded value in Setup.PAS
 
-        Program = "Quake2.EXE"
+        BaseMenu = "Quake"
 
+        Program = "Quake2.EXE"
         Directory = "C:\Quake2"
         CheckDirectory = "QUAKE2.EXE"
 
@@ -2263,8 +2272,10 @@ QQRKSRC1
       {
         Game = "Quake 3"
         Code = "a" // Hardcoded value in Setup.PAS
-        Program = "Quake3.EXE +set sv_pure 0"
 
+        BaseMenu = "Quake"
+
+        Program = "Quake3.EXE +set sv_pure 0"
         Directory = "C:\Program Files\Quake III Arena"
         //CheckDirectory = "QUAKE3.EXE"
         CheckDirectory = "*.EXE"
@@ -2332,6 +2343,9 @@ QQRKSRC1
       {
         Game = "Quake 4"
         Code = "m" // Hardcoded value in Setup.PAS
+
+        BaseMenu = "Quake"
+
         Program = "quake4.exe +seta com_allowconsole 1 +dmap %filename%"
         Directory = "C:\Program Files\Quake 4"
         CheckDirectory = "quake4.exe"   // hidden setting
@@ -2712,6 +2726,8 @@ QQRKSRC1
       {
         Game = "STVEF"
         Code = "b" // Hardcoded value in Setup.PAS
+
+        BaseMenu = "Star Trek: Elite Force"
 
         Program = "STVoy.EXE +set sv_pure 0"
         Directory = "C:\Program Files\Raven\Star Trek Voyager Elite Force"

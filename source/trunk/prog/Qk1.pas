@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2007/08/10 12:16:08  danielpharos
+Updated the update-check. You can disable it in the Config, and it now asks if you want to go to the website.
+
 Revision 1.43  2007/08/04 14:47:23  danielpharos
 Added a very basic update check when starting up QuArK.
 
@@ -509,10 +512,27 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+
+ function FindAlphabeticInsert(NewCaption: String; List: TMenuItem; Count: Integer; Start: Integer = 0) : Integer;
+ var
+  I: Integer;
+ begin
+  for I:=Start to Count-1 do
+  begin
+   if (NewCaption < List[I].Caption) then
+   begin
+    Result:=I;
+    Exit;
+   end;
+  end;
+  Result:=Count;
+ end;
+
 var
- Item: TMenuItem;
- I, J: Integer;
- S: String;
+ Item, BaseItem: TMenuItem;
+ I: Integer;
+ ItemIndex: Integer;
+ S, T: String;
  L: TStringList;
  C: TColor;
  Splash: TForm;
@@ -612,34 +632,60 @@ begin
 {Application.OnHelp:=AppHelp;}
 {Application.OnRestore:=AppRestore;}     { MARSCAPFIX }
 
- J:=0;
+ ItemIndex:=0;
  with g_SetupSet[ssGames] do
-  for I:=0 to SubElements.Count-1 do
+   for I:=0 to SubElements.Count-1 do
    begin
-    S:=SubElements[I].Specifics.Values['Code'];
-    if S<>'' then
+     S:=SubElements[I].Specifics.Values['Code'];
+     if S<>'' then
      begin
-      Item:=TMenuItem.Create(Self);
-      Item.Caption:=SubElements[I].Name;
-      Item.OnClick:=GameSwitch1Click;
-      Item.Tag:=Ord(S[1]);
-      Item.RadioItem:=True;
-      GamesMenu.Items.Insert(J, Item);
-      Inc(J);
+       T:=SubElements[I].Specifics.Values['BaseMenu'];
+       if T<>'' then
+       begin
+         { DanielPharos: This entire idea comes tumbling down when somebody
+           adds a game with the same name as a BaseMenu. So don't do that! }
+         BaseItem:=GamesMenu.Items.Find(T);
+         if BaseItem=nil then
+         begin
+           BaseItem:=TMenuItem.Create(Self);
+           BaseItem.Caption:=T;
+           GamesMenu.Items.Insert(FindAlphabeticInsert(T, GamesMenu.Items, ItemIndex), BaseItem);
+           Inc(ItemIndex);
+         end;
+       end
+       else
+         BaseItem:=nil;
+       Item:=TMenuItem.Create(Self);
+       Item.Caption:=SubElements[I].Name;
+       Item.OnClick:=GameSwitch1Click;
+       Item.Tag:=Ord(S[1]);
+       Item.RadioItem:=True;
+       if BaseItem<>nil then
+         { DanielPharos: Can't use FindAlphabeticInsert here (technical reasons),
+           but it shouldn't be necessary here anyway. }
+         BaseItem.Add(Item)
+       else
+       begin
+         GamesMenu.Items.Insert(FindAlphabeticInsert(Item.Caption, GamesMenu.Items, ItemIndex), Item);
+         Inc(ItemIndex);
+       end;
      end;
    end;
 
- L:=TStringList.Create; try
- InitGamesMenu(L);
- for I:=0 to L.Count-1 do
-  begin
-   Item:=TMenuItem.Create(Self);
-   Item.Caption:=L[I];
-   Item.OnClick:=Go1Click;
-   Item.Tag:=I;
-   Go1.Add(Item);
-  end;
- finally L.Free; end;
+ L:=TStringList.Create;
+ try
+  InitGamesMenu(L);
+  for I:=0 to L.Count-1 do
+   begin
+    Item:=TMenuItem.Create(Self);
+    Item.Caption:=L[I];
+    Item.OnClick:=Go1Click;
+    Item.Tag:=I;
+    Go1.Add(Item);
+   end;
+ finally
+  L.Free;
+ end;
 
  {$IFDEF Debug}
  Item:=TMenuItem.Create(Self);
@@ -1988,11 +2034,16 @@ end;
 
 procedure TForm1.Games1Click(Sender: TObject);
 var
- I: Integer;
+ I, J: Integer;
 begin
  for I:=0 to GameSep1.MenuIndex-1 do
   with GamesMenu.Items[I] do
-   Checked:=Chr(Tag)=CharModeJeu;
+   begin
+    Checked:=Chr(Tag)=CharModeJeu;
+    for J:=0 to GamesMenu.Items[I].Count-1 do
+     with GamesMenu.Items[I].Items[J] do
+      Checked:=Chr(Tag)=CharModeJeu;
+   end;
  Go1.Enabled:=Explorer.Roots.Count>0;
 end;
 
