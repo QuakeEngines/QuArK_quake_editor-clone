@@ -34,7 +34,7 @@ source directory, comment out MemTester, comment in MemCheck
 AND the MemChk below at the end of the file, and you're done.
 
 Location:
-source/prog/MemCheck274/*<br>
+source/prog/MemCheck275/*<br>
 Website:
 <a target=_blank href="http://v.mahon.free.fr/pro/freeware/memcheck/">v.mahon.free.fr/pro/freeware/memcheck/</a>
 

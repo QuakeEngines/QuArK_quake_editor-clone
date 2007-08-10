@@ -1,7 +1,7 @@
 (*
 MemCheck: the ultimate memory troubles hunter
 Created by: Jean Marc Eber & Vincent Mahon, Société Générale, INFI/SGOP/R&D
-Version 2.74	-> Also update OutputFileHeader when changing the version #
+Version 2.75	-> Also update OutputFileHeader when changing the version #
 
 Contact...
 	Vincent.Mahon@free.fr
@@ -181,7 +181,6 @@ uses
 	Math,
 	SyncObjs,
 	{$IFDEF USE_JEDI_JCL}JclDebug,{$ENDIF}
-  {$IFDEF USE_MADEXCEPT}madStackTrace,{$ENDIF}
 	{$IFDEF DELPHI6_OR_LATER}Variants,{$ENDIF}
 	SysUtils;						   {Because of this uses, SysUtils must be finalized after MemCheck - Which is necessary anyway because SysUtils calls DoneExceptions in its finalization}
 
@@ -478,7 +477,7 @@ var
 	RoutinesCount: integer;
 	Units: array of TUnitDebugInfos;
 	UnitsCount: integer;
-	OutputFileHeader: string = 'MemCheck version 2.74'#13#10;
+	OutputFileHeader: string = 'MemCheck version 2.75'#13#10;
 	HeapStatusSynchro : TSynchroObject;
 
 {$IFDEF USE_JEDI_JCL}
@@ -1535,14 +1534,14 @@ var
 const
 	DummyToFinalizationOffset = {$IFOPT I+}356{$ELSE}352{$ENDIF};
 begin
-	{$IFDEF VER180} // BDS 2006
-	UnitsInfo := PInitContext(PChar(@AllocMemSize) + 8728).InitTable;
-	{$ELSE}
-	{$IFNDEF DELPHI7_OR_LATER}
-	UnitsInfo:= PackageInfo(pointer(Pointer(PChar(@AllocMemSize) + 31 * 4 + 8)^));	//Hacky, no ? I learnt to count on my fingers ! (this stuff is not exported by system.pas)
-	{$ELSE}
-	UnitsInfo := PInitContext(PChar(@AllocMemSize) + 128).InitTable;
-	{$ENDIF}
+  {$IFDEF VER180} // BDS 2006
+  UnitsInfo := PInitContext(PChar(@AllocMemSize) + 8728).InitTable;
+  {$ELSE}
+    {$IFNDEF DELPHI7_OR_LATER}
+    UnitsInfo:= PackageInfo(pointer(Pointer(PChar(@AllocMemSize) + 31 * 4 + 8)^));	//Hacky, no ? I learnt to count on my fingers ! (this stuff is not exported by system.pas)
+    {$ELSE}
+    UnitsInfo := PInitContext(PChar(@AllocMemSize) + 128).InitTable;
+    {$ENDIF}
 	{$ENDIF}
 	NewUnitsInfoOrder:= TList.Create;
 	for i:= 0 to UnitsInfo.UnitCount - 1 do
@@ -1550,21 +1549,18 @@ begin
 			CurrentUnitInfo:= UnitsInfo.UnitInfo^[i];
 			GetMem(CurrentUnitInfoCopy, SizeOf(PackageUnitEntry));
 			CurrentUnitInfoCopy^:= CurrentUnitInfo;
-			if {$IFNDEF DELPHI6_OR_LATER}@{$ENDIF}CurrentUnitInfo.Init = @System.System then
+			if {$IFNDEF DELPHI6_OR_LATER}@{$ENDIF}CurrentUnitInfo.Init = @System.InitProc then
 				NewUnitsInfoOrder.Insert(0, CurrentUnitInfoCopy)
 			else
-				if {$IFNDEF DELPHI6_OR_LATER}@{$ENDIF}CurrentUnitInfo.Init = @SysUtils.SysUtils then
-					NewUnitsInfoOrder.Insert(1, CurrentUnitInfoCopy)
+				{$IFDEF DELPHI6_OR_LATER}
+				if CurrentUnitInfo.Init = @Variants.Variants then
+					NewUnitsInfoOrder.Insert(2, CurrentUnitInfoCopy)
 				else
-					{$IFDEF DELPHI6_OR_LATER}
-					if CurrentUnitInfo.Init = @Variants.Variants then
-						NewUnitsInfoOrder.Insert(2, CurrentUnitInfoCopy)
+				{$ENDIF}
+					if {$IFNDEF DELPHI6_OR_LATER}@{$ENDIF}CurrentUnitInfo.Init = Pointer(PChar(@Dummy) + DummyToFinalizationOffset) then
+						NewUnitsInfoOrder.Insert(4, CurrentUnitInfoCopy)
 					else
-					{$ENDIF}
-						if {$IFNDEF DELPHI6_OR_LATER}@{$ENDIF}CurrentUnitInfo.Init = Pointer(PChar(@Dummy) + DummyToFinalizationOffset) then
-							NewUnitsInfoOrder.Insert(4, CurrentUnitInfoCopy)
-						else
-							NewUnitsInfoOrder.Add(CurrentUnitInfoCopy);
+						NewUnitsInfoOrder.Add(CurrentUnitInfoCopy);
 		end;
 	ProcessHandle:= openprocess(PROCESS_ALL_ACCESS, True, GetCurrentProcessId);
 	for i:= 0 to NewUnitsInfoOrder.Count - 1 do
@@ -2027,6 +2023,7 @@ type
 		property OtherIsDestroyed: Boolean read fOtherIsDestroyed;
 		procedure OutputToFile(const F: Text);
 		procedure OutputOneLineToFile(const F: Text);
+    function TotalSize: integer;
 	end;
 
 	TLeakList = class
@@ -2093,6 +2090,13 @@ begin
 	WriteLn(F, CallStackTextualRepresentation(Block.CallerAddress, #9));
 end;
 
+function TLeak.TotalSize: integer;
+begin
+  Result := 0;
+  if Assigned(fBlock) then
+    Result := fOccurences*fBlock^.AllocatedSize;
+end;
+
 procedure TLeak.OutputOneLineToFile(const F: Text);
 begin
 	case Block.KindOfBlock of
@@ -2152,7 +2156,7 @@ end;
 
 function TLeakList.Item(const I: integer): TLeak;
 begin
-	Assert((i >= 0) and (i < fCount), 'TLeakList.Item: out of bounds');
+	Assert((i >= 0) and (i < fCount), Format('TLeakList.Item: out of bounds (%d)', [I]));
 
 	Result := fItems[i]
 end;
@@ -2263,7 +2267,13 @@ begin
 		StoppedDueToMaxBlock := True;
 end;
 
-procedure OutputAllCollectedInformation;
+ function SortTLeaks(Item1, Item2: Pointer): Integer;
+ begin
+   // sort descending
+   Result := TLeak(Item2).TotalSize - TLeak(Item1).TotalSize;
+ end;
+ 
+ procedure OutputAllCollectedInformation;
 var
 	OutputFile: Text;
 	LeaksList: TLeakList;			   //Contains all instances of TLeak
@@ -2273,6 +2283,8 @@ var
 	i, j: integer;
 	LastDisplayedTimeStamp: integer;
 	BadBlocks: TBlockList;
+  TopLeakRefs: TList;
+  MinIdx: integer;
 begin
 	//Initalize
 	InitializeOnce;
@@ -2288,6 +2300,34 @@ begin
 
 	//We collect the list of allocated blocks
 	GetLeaks(LeaksList, ChronogicalInfo, MaxLeak, StoppedDueToMax);
+
+  TopLeakRefs := TList.Create;
+  try
+	for i := 0 to Min(9, LeaksList.Count - 1) do
+	  TopLeakRefs.Add(LeaksList.Item(i));
+
+    for i := 9 + 1 to LeaksList.Count - 1 do
+    begin
+      MinIdx := 0;
+      for j := 0 to TopLeakRefs.Count - 1 do
+      begin
+        if TLeak(TopLeakRefs[j]).TotalSize < TLeak(TopLeakRefs[MinIdx]).TotalSize then
+          MinIdx := j;
+	  end;//for
+
+      if LeaksList.Item(i).TotalSize > TLeak(TopLeakRefs[MinIdx]).TotalSize then
+        TopLeakRefs[MinIdx] := LeaksList.Item(i);
+    end;//for
+
+    TopLeakRefs.Sort(SortTLeaks);
+
+    WriteLn(OutputFile, 'TOP 10 Leaks: begin');
+    for i := 0 to TopLeakRefs.Count - 1 do
+      TLeak(TopLeakRefs[i]).OutputToFile(OutputFile);
+    WriteLn(OutputFile, 'TOP 10 Leaks: end'#13#10);
+  finally
+    TopLeakRefs.Free;
+  end;
 
 	//Improve the header
 	TotalLeak := 0;
@@ -2508,37 +2548,31 @@ end;
 
 function TextualDebugInfoForAddress(const TheAddress: Cardinal): string;
 {$IFNDEF USE_JEDI_JCL}
-  {$IFNDEF USE_MADEXCEPT}
 var
 	U: TUnitDebugInfos;
 	AddressInDebugInfos: Cardinal;
-  {$ENDIF}
 {$ENDIF}
 begin
-{$IFDEF USE_MADEXCEPT}
-  Result := StackAddrToStr(Pointer(TheAddress));
+{$IFNDEF USE_JEDI_JCL}
+	InitializeOnce;
+
+	if UseDebugInfos and (TheAddress > Displ) then
+		begin
+			AddressInDebugInfos := TheAddress - Displ;
+
+			U := UnitWhichContainsAddress(AddressInDebugInfos);
+
+			if U <> nil then
+				Result := 'Module ' + U.Name + RoutineWhichContainsAddress(AddressInDebugInfos) + U.LineWhichContainsAddress(AddressInDebugInfos)
+			else
+				Result := RoutineWhichContainsAddress(AddressInDebugInfos);
+		end
+	else
+		Result := NoDebugInfo;
+
+	Result := Result + ' Find error: ' + CardinalToHexa(TheAddress);
 {$ELSE}
-  {$IFDEF USE_JEDI_JCL}
-    Result := PointerToDebugInfo(Pointer(TheAddress));
-  {$ELSE}
-    InitializeOnce;
-
-    if UseDebugInfos and (TheAddress > Displ) then
-      begin
-        AddressInDebugInfos := TheAddress - Displ;
-
-        U := UnitWhichContainsAddress(AddressInDebugInfos);
-
-        if U <> nil then
-          Result := 'Module ' + U.Name + RoutineWhichContainsAddress(AddressInDebugInfos) + U.LineWhichContainsAddress(AddressInDebugInfos)
-        else
-          Result := RoutineWhichContainsAddress(AddressInDebugInfos);
-      end
-    else
-      Result := NoDebugInfo;
-
-    Result := Result + ' Find error: ' + CardinalToHexa(TheAddress);
-  {$ENDIF}
+	Result := PointerToDebugInfo(Pointer(TheAddress));
 {$ENDIF}
 end;
 
@@ -2576,4 +2610,5 @@ finalization
 				DeleteFile(MemCheckLogFileName);
 		end;
 end.
+
 
