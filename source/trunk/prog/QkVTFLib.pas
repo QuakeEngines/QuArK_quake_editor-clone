@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/07/05 10:18:27  danielpharos
+Moved a string to the dictionary.
+
 Revision 1.14  2007/04/30 21:52:40  danielpharos
 Small cleanup of code around VTFLib.
 
@@ -429,10 +432,12 @@ end;
 function ReloadNeededVTFLib : Boolean;
 var
   Tier0Module, VstdlibModule: string;
+  Setup: QObject;
 begin
   Result:=false;
-  Tier0Module:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamTier0Module'];
-  VstdlibModule:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamVstdlibModule'];
+  Setup:=SetupSubSet(ssGames,'Steam');
+  Tier0Module:=Setup.Specifics.Values['SteamTier0Module'];
+  VstdlibModule:=Setup.Specifics.Values['SteamVstdlibModule'];
   if Tier0Module<>curTier0Module then
   begin
     IgnoreErrorTier0Module:=false;
@@ -448,6 +453,8 @@ begin
 end;
 
 function LoadVTFLib : Boolean;
+var
+  Setup: QObject;
 begin
   if ReloadVTF then
   begin
@@ -457,8 +464,9 @@ begin
   if (TimesLoaded=0) then
   begin
     Result:=False;
-    curTier0Module:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamTier0Module'];
-    curVstdlibModule:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['SteamVstdlibModule'];
+    Setup:=SetupSubSet(ssGames,'Steam');
+    curTier0Module:=Setup.Specifics.Values['SteamTier0Module'];
+    curVstdlibModule:=Setup.Specifics.Values['SteamVstdlibModule'];
     if (curTier0Module='') then
     begin
       if not IgnoreErrorTier0Module then
