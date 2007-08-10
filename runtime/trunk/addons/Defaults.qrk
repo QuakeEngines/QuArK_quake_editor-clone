@@ -27,6 +27,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.342  2007/08/01 06:09:23  cdunde
+//Setup variable setting for Model Editor 'Linear Handle (size) Setting' and
+//'Rotation Speed' using the 'cfg' button on the movement toolbar.
+//
 //Revision 1.341  2007/07/28 23:12:51  cdunde
 //Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
 //to use for editing movement of model faces, vertexes and bones (in the future).
@@ -1147,6 +1151,7 @@ QQRKSRC1
         Sel = "1"
         MppTopBtns = "1"
         IconPath = "images\\"
+        UpdateCheck = "1"
         Form = "GeneralDisplay"
       }
       3D view:config =
@@ -6641,6 +6646,7 @@ QQRKSRC1
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
       sep: = {Typ="S" Txt = ""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
+      UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
     }
     GeneralMemory:form =
     {

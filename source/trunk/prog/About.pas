@@ -31,27 +31,27 @@ type
   TAboutBox = class(TQkForm)
     Panel1: TPanel;
     ProgramIcon: TImage;
-    ProductName: TLabel;
+    ProductName1: TLabel;
+    ProductName2: TLabel;
+    ProductName3: TLabel;
+    ProductName4: TLabel;
+    ProductName5: TLabel;
+    ProductName6: TLabel;
     Version: TLabel;
     OKButton: TButton;
     Edit1: TEdit;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Label6: TLabel;
     Image1: TImage;
     Bevel1: TBevel;
-    Label7: TLabel;
+    Label1: TLabel;
     WebsiteAddress: TLabel;
-    Label10: TLabel;
+    Copyright: TLabel;
     Memo1: TMemo;
     UsedCompilerLabel: TLabel;
-    Label1: TLabel;
-    Label8: TLabel;
-    Label9: TLabel;
-    Label11: TLabel;
-    Label12: TLabel;
+    RepositoryAddress: TLabel;
+    ForumAddress: TLabel;
+    Label3: TLabel;
+    Label2: TLabel;
+    Label4: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -102,10 +102,13 @@ begin
   Version.Caption := QuarkVersion;
   GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, DateFormat);
   UsedCompilerLabel.Caption := QuArKMinorVersion + ' Compiled with ' + QuArKUsedCompiler + ' - ' + DateToStr(QuArKCompileDate, DateFormat);
-  Label10.Caption := '  ' + QuArKCopyright;
+  Copyright.Caption := '  ' + QuArKCopyright;
   {$IFDEF Debug}
   Version.Caption := Version.Caption + '  DEBUG VERSION';
   {$ENDIF}
+  WebsiteAddress.Caption := QuArKWebsite;
+  RepositoryAddress.caption := QuArKRepository;
+  ForumAddress.caption := QuArKForum;
   ProgramIcon.Picture.Icon.Handle := LoadImage(HInstance, 'MAINICON', image_Icon, 0, 0, 0);
   Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');
 

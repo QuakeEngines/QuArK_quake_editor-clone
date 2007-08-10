@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2007/08/04 14:47:23  danielpharos
+Added a very basic update check when starting up QuArK.
+
 Revision 1.42  2007/08/02 16:15:56  danielpharos
 Added a commandline check, and an option in it to skip the splash screen. Also, some of the internal workings of the splash-screen were changed a bit.
 
@@ -534,38 +537,44 @@ begin
    // splash & nag screens
    Splash:=OpenSplashScreen;
    Disclaimer:=DisclaimerThread(Splash);
-
-   // tiglari: in quarkx: python initialization, loading defaults.qrk, setup.qrk
-   PythonLoadMain;
-
-   //Check for updates...
-   if g_CmdOptions.DoUpdate then
-   begin
-     if DaySpan(Now, QuArKCompileDate) >= 270 then
-     begin
-       //About a 9 month difference...
-       MessageBox(0, 'This version of QuArK is rather old. Check for updates on the QuArK website.', 'QuArK', MB_OK);
-     end;
-   end;
-
-   WaitForSingleObject(Disclaimer, 10000); // Same as MAX_DELAY * 1000 in About
-   CloseHandle(Disclaimer);
-   Splash.Release;
  end
  else
  begin
-    // tiglari: in quarkx: python initialization, loading defaults.qrk, setup.qrk
-   PythonLoadMain;
+   Splash:=nil;
+   Disclaimer:=0;
+ end;
 
-   //Check for updates...
-   if g_CmdOptions.DoUpdate then
+ // tiglari: in quarkx: python initialization, loading defaults.qrk, setup.qrk
+ PythonLoadMain;
+
+ { DanielPharos: It's safer to do the update-check BEFORE loading Python,
+   but then then option in the Default will have to be removed, since it
+   won't be loaded then. Change this when the update-screen isn't a nag-screen
+   anymore! (Store data in registry?) }
+ //Check for updates...
+ if g_CmdOptions.DoUpdate then
+ begin
+   if SetupSubSet(ssGeneral, 'Display').Specifics.Values['UpdateCheck']<>'' then
    begin
-     if DaySpan(Now, QuArKCompileDate) >= 270 then
+     if DaySpan(Now, QuArKCompileDate) >= QuArKDaysOld then
      begin
-       //About a 9 month difference...
-       MessageBox(0, 'This version of QuArK is rather old. Check for updates on the QuArK website.', 'QuArK', MB_OK);
+       if MessageBox(0, 'This version of QuArK is rather old. Do you want to open the QuArK website to check for updates?', 'QuArK', MB_YESNO) = IDYES then
+       begin
+         if ShellExecute(0, 'open', QuArKWebsite, nil, nil, SW_SHOWDEFAULT) <= 32 then
+         begin
+           MessageBox(0, 'Unable to open website: Call to ShellExecute failed!' + #13#10#13#10 + 'Please manually go to: ' + QuArKWebsite, 'QuArK', MB_OK);
+         end;
+       end;
      end;
    end;
+ end;
+
+ if g_CmdOptions.DoSplash then
+ begin
+   Splash.Update; //Redraw the Splash if needed, before we go waiting
+   WaitForSingleObject(Disclaimer, 10000); // Same as MAX_DELAY * 1000 in About
+   CloseHandle(Disclaimer);
+   Splash.Release;
  end;
 
 (*ImageList1.Handle:=ImageList_LoadImage(HInstance, MakeIntResource(101),

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.88  2007/08/04 14:53:07  danielpharos
+Fixed a small mistake in comment from prev rev.
+
 Revision 1.87  2007/08/04 14:47:23  danielpharos
 Added a very basic update check when starting up QuArK.
 
@@ -315,10 +318,17 @@ const
   QuArKCopyright          = 'Copyright (C) 1996-2007 Armin Rigo and others';
   QuArKUsedCompiler       = 'Delphi 6.0';
   QuArKCompileDate        = 39177;   //This is 5 April 2007
-  {Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
-  You can use EncodeDate(Year, Month, Day) to compute it, but this value
-  really needs to be a constant, so put the resulting value in here.
-  The result can be checked in the About form.}
+  { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
+    You can use EncodeDate(Year, Month, Day) to compute it, but this value
+    really needs to be a constant, so put the resulting value in here.
+    The result can be checked in the About form. }
+  QuArKDaysOld            = 270;     //About a 9 month difference...
+  { This is the amount of days after which a certain build is considered
+    old by the update-check. }
+  QuArKWebsite            = 'http://quark.planetquake.gamespy.com/';
+  QuArKRepository         = 'http://sourceforge.net/projects/quark/';
+  QuArKForum              = 'http://www.dark-forge.com/';
+
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
