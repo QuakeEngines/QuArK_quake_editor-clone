@@ -233,6 +233,9 @@ def mPFSTSV(m):
         quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
         quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
+        if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
+            quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
+            quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = "1"
         editor.SkinFaceSelList = editor.ModelFaceSelList
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
@@ -331,6 +334,9 @@ def VertexMenu(editor):
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
+            if quarkx.setupsubset(SS_MODEL,"Options")["PFSTSV"] == "1":
+                quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
+                quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = "1"
             import mdlutils
             import mdlhandles
             if editor.ModelVertexSelList != []:
@@ -344,9 +350,10 @@ def VertexMenu(editor):
                         h = vertex[1]
                         h.draw(SkinView1, cv, h)
             else:
-                if editor.SkinVertexSelList != []:
-                    mdlutils.PassSkinSel2Editor(editor)
-                    mdlutils.Update_Editor_Views(editor, 5)
+                editor.SkinVertexSelList = []
+                from mdlhandles import SkinView1
+                if SkinView1 is not None:
+                    SkinView1.repaint()
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
 
@@ -513,6 +520,10 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.21  2007/07/14 22:42:43  cdunde
+#Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
+#Can run either way with single pick selection or rectangle drag selection in all views.
+#
 #Revision 1.20  2007/07/09 18:59:23  cdunde
 #Setup RMB menu sub-menu "skin-view Options" and added its "Pass selection to Editor views"
 #function. Also added Skin-view Options to editors main Options menu.
