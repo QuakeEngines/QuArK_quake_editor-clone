@@ -367,9 +367,9 @@ class BaseEditor:
                                     import mdlutils
                                     mdlutils.PassEditorSel2Skin(self, 3)
                         tricount = -1
+                        cv.pencolor = MapColor("SkinLines", SS_MODEL)
                         for triangle in self.Root.currentcomponent.triangles:
                             tricount = tricount + 1
-                            cv.pencolor = MapColor("SkinLines", SS_MODEL)
                             if flagsmouse == 520 or flagsmouse == 1032:
                                 pass
                             else:
@@ -1286,6 +1286,11 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.79  2007/08/08 21:07:48  cdunde
+#To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
+#for vertex selection in those views.
+#Also setup Linear Handle functions for multiple vertex selection movement using same.
+#
 #Revision 1.78  2007/08/06 02:27:13  cdunde
 #Had to re-fix grid change that was not updating the views afterwards for the Model Editor.
 #
