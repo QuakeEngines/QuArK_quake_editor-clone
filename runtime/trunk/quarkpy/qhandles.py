@@ -994,10 +994,11 @@ class RedImageDragObject(DragObject):
                 ### Stops Model Editor Vertex drag handles from drawing if not returned.
                 return
             if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle):
-                ### Stops Model Editor Linear drag handles from drawing incorrectly drawn redline drag objects.
+                ### Stops Model Editor Linear drag handles from drawing redline drag objects incorrectly.
                 return
             from qbaseeditor import currentview
             if view.info["viewname"] == "skinview" and isinstance(editor.dragobject.handle, mdlhandles.SkinHandle):
+                ### Stops Model Editor Skin-view Vertex drag handles from drawing if not returned.
                 return
         else:
 ## Deals with Terrain Selector 3D face drawing, movement is in ok section
@@ -1150,10 +1151,13 @@ class RedImageDragObject(DragObject):
 
         if isinstance(editor, mdleditor.ModelEditor) and old is not None and self.redimages is not None:
             from qbaseeditor import currentview, flagsmouse
-            undo = quarkx.action()
-            for i in range(0,len(old)):
-                undo.exchange(old[i], self.redimages[i])
-            self.handle.ok(editor, undo, old, self.redimages)
+            try:
+                undo = quarkx.action()
+                for i in range(0,len(old)):
+                    undo.exchange(old[i], self.redimages[i])
+                self.handle.ok(editor, undo, old, self.redimages)
+            except:
+                pass
             if currentview.info["viewname"] == "skinview":
                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 pass
@@ -2051,6 +2055,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.55  2007/08/08 21:29:52  cdunde
+#Missed two line changes in the last update.
+#
 #Revision 1.54  2007/08/08 21:07:47  cdunde
 #To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
 #for vertex selection in those views.
