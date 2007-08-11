@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2007/08/10 12:24:22  danielpharos
+Added a BaseMenu item. Now games from the same series can be grouped together in the Games-menu!
+
 Revision 1.44  2007/08/10 12:16:08  danielpharos
 Updated the update-check. You can disable it in the Config, and it now asks if you want to go to the website.
 
@@ -649,6 +652,7 @@ begin
          begin
            BaseItem:=TMenuItem.Create(Self);
            BaseItem.Caption:=T;
+           BaseItem.RadioItem:=True;
            GamesMenu.Items.Insert(FindAlphabeticInsert(T, GamesMenu.Items, ItemIndex), BaseItem);
            Inc(ItemIndex);
          end;
@@ -2040,9 +2044,14 @@ begin
   with GamesMenu.Items[I] do
    begin
     Checked:=Chr(Tag)=CharModeJeu;
-    for J:=0 to GamesMenu.Items[I].Count-1 do
-     with GamesMenu.Items[I].Items[J] do
-      Checked:=Chr(Tag)=CharModeJeu;
+    for J:=0 to Count-1 do
+     if Chr(Items[J].Tag)=CharModeJeu then
+      begin
+       Checked:=True;
+       Items[J].Checked:=True;
+      end
+     else
+      Items[J].Checked:=False;
    end;
  Go1.Enabled:=Explorer.Roots.Count>0;
 end;
