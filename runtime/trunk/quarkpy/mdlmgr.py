@@ -383,9 +383,15 @@ class ModelLayout(BaseLayout):
                     pass
                 else:
                     self.editor.SkinVertexSelList = []
-                # Had to comment these two out to stop undo 'ok' function from loosing the selection when Ctrl key is used in Linear Handle, need to fix this right.
-                #    self.editor.ModelVertexSelList = []
-                #    self.editor.ModelFaceSelList = []
+                    try:
+                        if flagsmouse == 2060 and (isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
+                            pass
+                        else:
+                            self.editor.ModelVertexSelList = []
+                            self.editor.ModelFaceSelList = []
+                    except:
+                        self.editor.ModelVertexSelList = []
+                        self.editor.ModelFaceSelList = []                        
                     self.editor.SkinFaceSelList = []
                     self.editor.Root.currentcomponent.filltris = []
             for view in self.editor.layout.views:
@@ -537,6 +543,11 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.43  2007/08/08 21:07:47  cdunde
+#To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
+#for vertex selection in those views.
+#Also setup Linear Handle functions for multiple vertex selection movement using same.
+#
 #Revision 1.42  2007/07/28 23:12:52  cdunde
 #Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
 #to use for editing movement of model faces, vertexes and bones (in the future).
