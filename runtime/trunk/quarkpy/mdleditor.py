@@ -162,13 +162,9 @@ class ModelEditor(BaseEditor):
             if flagsmouse is None:
                 return
             if flagsmouse == 1032 or flagsmouse == 1048 or flagsmouse == 2072:
-   #         if flagsmouse == 1048 or flagsmouse == 2072:
                 return
             elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
                 pass
-      #      elif currentview.info["viewname"] == "editors3Dview" and (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
-      #          for v in self.layout.views:
-      #              v.handles = v.handles
             elif currentview.info["viewname"] == "skinview" and flagsmouse == 2056:
                 for v in self.layout.views:
                     v.handles = v.handles
@@ -389,12 +385,8 @@ class ModelEditor(BaseEditor):
                 else:
                     view.handles = newhandles
                     if view.handles == []:
-                        setsingleframefillcolor(self, view)
-                        view.repaint()
-                        plugins.mdlgridscale.gridfinishdrawing(self, view)
-                        plugins.mdlaxisicons.newfinishdrawing(self, view)
-                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                            modelaxis(view)
+                        pass
+
                     else:
                         setsingleframefillcolor(self, view)
                         view.repaint()
@@ -1176,6 +1168,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.58  2007/08/02 08:33:47  cdunde
+#To get the model axis to draw and other things to work corretly with Linear handle toolbar button.
+#
 #Revision 1.57  2007/08/01 07:19:04  cdunde
 #To stop error message at occasionally.
 #
