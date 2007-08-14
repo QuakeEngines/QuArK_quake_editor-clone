@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 2.1
 =============
 
+* [DanielPharos]: HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 * [DanielPharos]: Now games from the same series can be grouped together in the Games-menu!
 
 * [cdunde]: To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
