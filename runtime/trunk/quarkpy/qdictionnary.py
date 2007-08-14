@@ -457,6 +457,7 @@ Strings = {
     4201: "'$'",
     4202: "'['",
     4203: "']'",
+    4204: " or ",
 
     4416: "Cannot set this attribute to screen panel objects",
     4417: "QuArK file object expected",
@@ -746,8 +747,8 @@ Strings = {
     5557: "QuArK did not find the registered add-on '%s'.",
     5558: "This map is invalid and contains no data.",
     5559: "QuArK needs the file '%1:s' from %0:s and could not find it on your disk. Please insert the CD-ROM now.",
-    5560: "QuArK needs the file '%1:s' from %0:s and could not find it. You must set up the path(s) to %0:s in the Configuration dialog box",
-    5561: "QuArK needs the file '%1:s' from %0:s (directory '%2:s') and could not find it. You must set up the path(s) to %0:s in the Configuration dialog box",
+    5560: "QuArK needs the file '%1:s' from %0:s and could not find it. You must set up the correct path(s) to %0:s in the Configuration dialog box",
+    5561: "QuArK needs the file '%1:s' from %0:s (directory '%2:s') and could not find it. You must set up the correct path(s) to %0:s in the Configuration dialog box",
     # 5562: "The clipboard contains %d objects. Do you want to open them all ?",
     5563: "You must enter a Specific",
     5564: "A Specific cannot begin with the symbol '%s'",
@@ -816,9 +817,9 @@ Strings = {
     5625: "%s cannot run multiple TCs together :\n%s\nOnly the last one is used.",
     5626: "the temporary directory '%s'",
     5627: "The directory to %s seems to be wrong : could not find %s. Do you want to enter the correct path now ?",
-    5628: "Remove the temporary tag of file '%s' ? QuArK will no more consider it as a temporary file.",
+    5628: "Remove the temporary tag of file '%s' ? QuArK will then no more consider it a temporary file.",
     5629: "Always create pak files instead of writing files in '%s'",
-    5630: "Cannot create a new temporary .pak file. The names are in use up to '%s'",
+    5630: "Cannot create a new temporary pak file. The names are in use up to '%s'",
     5631: "There is an error in the definition of this button//Form '%s' not found",
     5632: "The WAVE file has bad formatted data at the end that will be ignored.",
     5633: "This object has been moved or deleted",
@@ -902,9 +903,7 @@ Strings = {
     5709: "VTF file",
     5710: "GCF file",
     5711: "GCF folder",
-    5712: "cannot initialize Steam Service filesystem Access, "+\
-          "please check the following QuArK configuration items \n"+\
-          " steam filesystem dll\n steam account name (case sensitive!)\n steam app id\n steam directory \n",
+    5712: "QuArK is about to clear the Steam cache in %s. Are you sure you want to continue?",
     5713: "steam file system",
     5714: "bad content id: %s",
     5715: "VMF file",
@@ -1020,6 +1019,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.102  2007/08/05 19:55:55  danielpharos
+#Corrected and commented-out an unused and wrong line.
+#
 #Revision 1.101  2007/07/05 10:18:34  danielpharos
 #Moved a string to the dictionary.
 #

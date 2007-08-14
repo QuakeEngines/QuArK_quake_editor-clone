@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2002/03/07 19:13:57  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -259,7 +262,7 @@ begin
       try
        if lgr<>0 then
         begin
-         ColorMap:=NeedGameFile(SetupGameSet.Specifics.Values['Gradient']);
+         ColorMap:=NeedGameFile(SetupGameSet.Specifics.Values['Gradient'], '');
          ColorMap.Acces;
          if ColorMap is QImage then
           begin

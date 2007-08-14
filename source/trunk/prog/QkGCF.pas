@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/03/13 18:59:25  danielpharos
+Changed the interface to the Steam dll-files. Should prevent QuArK from crashing on HL2 files.
+
 Revision 1.14  2007/02/02 00:51:02  danielpharos
 The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
 
@@ -312,7 +315,7 @@ begin
            subgcfelement:= GCFGetSubElement(gcfelement,i);
            AddTree(Self,subgcfelement,False,F);
          end;
-         self.Protocol:='gcffile://';
+         //self.Protocol:='gcffile://';
        end;
     else
       inherited;

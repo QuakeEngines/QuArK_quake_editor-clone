@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2007/07/05 10:22:36  danielpharos
+Moved the Quake .map format code to a separate file.
+
 Revision 1.42  2007/06/13 11:56:48  danielpharos
 Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
 
@@ -171,6 +174,7 @@ uses
   ObjProp in 'prog\ObjProp.pas' {FormObjProp},
   OsFolder in 'prog\OsFolder.pas',
   Output1 in 'prog\Output1.pas' {OutputDirDlg},
+  PakFiles in 'prog\PakFiles.pas',
   Qk1 in 'prog\Qk1.pas' {Form1},
   Qk3D in 'prog\Qk3D.pas',
   QkApplPaths in 'prog\QkApplPaths.pas',

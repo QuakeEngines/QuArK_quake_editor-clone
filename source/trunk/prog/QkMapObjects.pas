@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2007/04/12 15:28:11  danielpharos
+Minor clean up.
+
 Revision 1.47  2007/04/12 15:04:44  danielpharos
 BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
 
@@ -1789,9 +1792,9 @@ begin
    { loads mdl }
    MdlBase:=Q.Specifics.Values['mdlbase'];
    if MdlBase='' then
-     FileObj1:=NeedGameFile(MdlPath)
+     FileObj1:=NeedGameFile(MdlPath, '')
    else
-     FileObj1:=NeedGameFileBase(MdlBase, MdlPath);
+     FileObj1:=NeedGameFileBase(MdlBase, MdlPath, '');
    if (FileObj1 = nil) or not (FileObj1 is QModel) then
      Exit;
 
@@ -1893,12 +1896,12 @@ begin
          { load skin from external file }
          if MdlBase='' then
          begin
-           FileObj1:=NeedGameFile(S);
+           FileObj1:=NeedGameFile(S, '');
            SkinDescr:=S;
          end
          else
          begin
-           FileObj1:=NeedGameFileBase(MdlBase, S);
+           FileObj1:=NeedGameFileBase(MdlBase, S, '');
            SkinDescr:=MdlBase+':'+S;
          end;
          if FileObj1 is QImage then

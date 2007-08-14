@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.11  2001/06/05 18:38:46  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -71,7 +74,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, QkForm, StdCtrls, Buttons, TB97;
+  QkForm, StdCtrls, Buttons, TB97;
 
 type
   TOutputDirDlg = class(TQkForm)
@@ -104,279 +107,19 @@ type
     procedure ViewOutputConfig;
   public
   end;
-{DECKER-begin}
-  TGetPakNames = class
-  private
-   StrList : TStringList;
-   StrListIter : Integer;
-   procedure FindFiles(const Path, FileFilter: String);
-  public
-   constructor Create;
-   destructor Destroy; override;
-   procedure CreatePakTempList(const Path: String; Back: Boolean);
-   procedure CreatePakList(const Path: String; Back: Boolean);
-   function GetPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
-  end;
-{DECKER-end}
 
  {------------------------}
 
 procedure OutputDirDlg;
 {procedure PrepareRunGame(InternalSpecs: QObject);}
 
-function FindNextAvailablePakFilename(Force: Boolean) : String;
-function IsPakTemp(const theFilename: String) : Boolean;
-(*DECKER-begin
-function GetPakZero(const Path: String; Back: Boolean) : String;
-function GetNextPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
-DECKER-end*)
-
  {------------------------}
 
 implementation
 
-uses FormCfg, Game, QkPak, Setup, QkQuakeCtx, QkUnknown, QkMacro, Travail,
-  Qk1, Quarkx;
+uses FormCfg, Game, QkPak, Setup, Travail, Qk1, Quarkx, PakFiles;
 
 {$R *.DFM}
-
-function IsPakTemp(const theFilename: String) : Boolean;
-var
- F: TFileStream;
- IntroEx: TIntroPakEx;
-begin
- try
-  F:=TFileStream.Create(theFilename, fmOpenRead or fmShareDenyNone);
-  try
-   F.ReadBuffer(IntroEx, SizeOf(IntroEx));
-   Result:=((IntroEx.Intro.Signature=SignaturePACK)
-         or (IntroEx.Intro.Signature=SignatureSPAK))
-        and (IntroEx.Code1=SignatureQuArKPAK1)
-        and (IntroEx.Code2=SignatureQuArKPAK2);
-  finally
-   F.Free;
-  end;
- except
-  Result:=False;
- end;
-end;
-
-{DECKER-begin}
-constructor TGetPakNames.Create;
-begin
-  StrList := TStringList.Create;
-  StrList.Sorted := TRUE;
-end;
-
-destructor TGetPakNames.Destroy;
-begin
-  StrList.Free;
-end;
-
-procedure TGetPakNames.FindFiles(const Path, FileFilter: String);
-var
-  sr: TSearchRec;
-  PathAndFileFilter: String;
-begin
-  PathAndFileFilter:=PathAndFile(Path, FileFilter);
-  if FindFirst(PathAndFileFilter, faAnyFile, sr) = 0 then
-  begin
-    StrList.Add(PathAndFile(Path, sr.Name));
-    while FindNext(sr) = 0 do
-    begin
-      StrList.Add(PathAndFile(Path, sr.Name));
-    end;
-    FindClose(sr);
-  end;
-end;
-
-procedure TGetPakNames.CreatePakTempList(const Path: String; Back: Boolean);
-var
- FileFilter, Search : String;
- i,p : Integer;
- ptr : PChar;
-begin
-  FileFilter:=SetupGameSet.Specifics.Values['PakFormat'];
-  if (Length(FileFilter)<=4) then
-    FileFilter:='PAK#.PAK';
-  if (FileFilter[Length(FileFilter)-4] = '#') then
-  begin
-    {setup a list of strings; "PAK0.PAK", "PAK1.PAK", ... "PAK9.PAK"}
-    for i:=0 to 9 do
-    begin
-      FileFilter[Length(FileFilter)-4] := chr(ord('0') + i);
-      StrList.Add(PathAndFile(Path, FileFilter));
-    end;
-  end
-  else
-  begin
-    Search:='*';
-    ptr:=StrPos(PChar(FileFilter), PChar(Search));
-    if (ptr <> nil) then
-    begin
-      p := PChar(FileFilter) - ptr;
-      if (p = 0) then
-      begin
-        FileFilter:='tmpQuArK'+FileFilter;
-        p:=1+length('tmpQuArK');
-      end;
-      for i:=0 to 9 do
-      begin
-        FileFilter[p] := chr(ord('0') + i);
-        StrList.Add(PathAndFile(Path, FileFilter));
-      end;
-    end;
-  end;
-
-  if (Back) then
-    StrListIter:=StrList.Count
-  else
-  if StrList.Count > 0 then
-    StrListIter:=-1 {-- will be increased in GetNextPakName --}
-  else
-    StrListIter:=-99;
-end;
-
-procedure TGetPakNames.CreatePakList(const Path: String; Back: Boolean);
-var
- FileFilter : String;
- i : Integer;
-begin
- FileFilter:=SetupGameSet.Specifics.Values['PakFormat'];
- if (Length(FileFilter)<=4) then
-   FileFilter:='PAK#.PAK';
- if (FileFilter[Length(FileFilter)-4] = '#') then
- begin
-   {setup a list of strings; "PAK0.PAK", "PAK1.PAK", ... "PAK9.PAK"}
-   for i:=0 to 9 do
-   begin
-     FileFilter[Length(FileFilter)-4] := chr(ord('0') + i);
-     StrList.Add(PathAndFile(Path, FileFilter));
-   end;
- end
- else
- begin
-   {get the list of strings, by looking in the path for files matching the filefilter}
-   FindFiles(Path, FileFilter);
- end;
-
- if (Back) then
-   StrListIter:=StrList.Count
- else
- if (StrList.Count > 0) then
-   StrListIter:=-1 {-- will be increased in GetNextPakName --}
- else
-   StrListIter:=-99;
-end;
-
-function TGetPakNames.GetPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
-begin
-  Result:=False;
-  repeat
-    if (Back) then
-      Dec(StrListIter)
-    else
-      Inc(StrListIter);
-    if (StrListIter<0) or (StrListIter>=StrList.Count) then
-      Exit;
-    FileName:=StrList.Strings[StrListIter];
-  until not MustExist or FileExists(FileName);
-  Result:=True;
-end;
-{DECKER-end}
-
-(*DECKER-begin
-function GetPakZero(const Path: String; Back: Boolean) : String;
-const
- Init: array[Boolean] of Char = (Pred('0'), Succ('9'));
-begin
- Result:=SetupGameSet.Specifics.Values['PakFormat'];
- if (Length(Result)<=4) or (Result[Length(Result)-4]<>'#') then
-  Result:='PAK#.PAK';
- Result:=PathAndFile(Path, Result);
- Result[Length(Result)-4]:=Init[Back];
-end;
-
-function GetNextPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
-var
- C: Char;
-begin
- Result:=False;
- C:=FileName[Length(FileName)-4];
- repeat
-  if Back then
-   begin
-    Dec(C);
-    if C<'0' then Exit;
-   end
-  else
-   begin
-    Inc(C);
-    if C>'9' then Exit;
-   end;
-  FileName[Length(FileName)-4]:=C;
- until not MustExist or FileExists(FileName);
- Result:=True;
-end;
-DECKER-end*)
-
-function FindNextAvailablePakFilename(Force: Boolean) : String;
-var
- GameModDir, AvailablePakFile: String;
-{DECKER-begin}
- FoundIt: Boolean;
- GetPakNames: TGetPakNames;
-{DECKER-end}
-begin
- GameModDir:=GetGameDir;
- if (SetupGameSet.Specifics.Values['AlwaysPak']='')
- and (GameModDir=GettmpQuArK) and not Force then
- begin
-   FindNextAvailablePakFilename:='';  { no .pak file to write }
-   Exit;
- end;
- GameModDir:=PathAndFile(QuakeDir, GameModDir);
-{DECKER-begin}
-{
- AvailablePakFile:=GetPakZero(ExpandFileName(GameModDir), True);
- if GetNextPakName(True, AvailablePakFile, True) then
-  begin
-   if IsPakTemp(AvailablePakFile) then
-    begin
-     FindNextAvailablePakFilename:=AvailablePakFile;
-     Exit;
-    end;
-  end
- else
-  AvailablePakFile:=GetPakZero(ExpandFileName(GameModDir), False);
- if not GetNextPakName(False, AvailablePakFile, False) then
-  Raise EErrorFmt(5630, [AvailablePakFile]);
- FindNextAvailablePakFilename:=AvailablePakFile;
-}
- FoundIt:=FALSE;
- GetPakNames := TGetPakNames.Create;
- try
-   {-- Find last existing package with QuArK-tag --}
-   GetPakNames.CreatePakTempList(ExpandFileName(GameModDir), True);
-   if GetPakNames.GetPakName(True, AvailablePakFile, True) then
-   begin
-     if IsPakTemp(AvailablePakFile) then
-       FoundIt:=TRUE;
-   end;
-   if not FoundIt then
-   begin
-     if not GetPakNames.GetPakName(False, AvailablePakFile, False) then
-     begin
-       Raise EErrorFmt(5630, [AvailablePakFile]);
-       AvailablePakFile:='';
-     end
-   end;
-   FindNextAvailablePakFilename:=AvailablePakFile;
- finally
-   GetPakNames.Destroy;
- end;
-{DECKER-end}
-end;
 
 procedure OutputDirDlg;
 begin
@@ -498,7 +241,7 @@ end;
 
 procedure TOutputDirDlg.FormActivate(Sender: TObject);
 var
-  S: TSearchRec;
+  sr: TSearchRec;
   QD1, PakFilename: String;
   GetPakNames: TGetPakNames;
 begin
@@ -507,16 +250,16 @@ begin
   try
     Update;
     QD1:=QuakeDir;
-    { Find all QuArK-created PAK files }
-    if FindFirst(PathAndFile(QD1, '*.*'), faDirectory, S) = 0 then
+    // Find all QuArK-created PAK files
+    if FindFirst(QD1+'\*', faDirectory, sr) = 0 then
     begin
       repeat
-        if (S.Name<>'.') and (S.Name<>'..') and (S.Attr and faDirectory > 0) then {DECKER added "S.Attr & faDirectory" check}
+        if (sr.Name<>'.') and (sr.Name<>'..') and (sr.Attr and faDirectory > 0) then
         begin
           GetPakNames := TGetPakNames.Create;
           try
-            GetPakNames.CreatePakList(PathAndFile(QD1, S.Name), False);
-            while GetPakNames.GetPakName(True, PakFilename, False) do
+            GetPakNames.CreatePakList(PathAndFile(QD1, sr.Name), '', False, True);
+            while GetPakNames.GetNextPakName(True, PakFilename, False) do
             begin
               if IsPakTemp(PakFilename) then
               begin
@@ -526,12 +269,12 @@ begin
               end;
             end;
           finally
-            GetPakNames.Destroy;
+            GetPakNames.Free;
           end;
         end;
-      until FindNext(S)<>0;
+      until FindNext(sr)<>0;
     end;
-    FindClose(S);
+    FindClose(sr);
   finally
     Screen.Cursor:=crDefault;
   end;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2007/08/02 16:06:45  danielpharos
+Reserved a gamecode for Prey.
+
 Revision 1.56  2007/06/24 20:43:26  danielpharos
 Changed the order of the SetupSet keyword for better backwards compatibility.
 
@@ -312,10 +315,11 @@ type
             end;
 
 var
-{DECKER ApplicationPath: String;}
  g_SetupSet: TSetupSetArray;
 {--CONVEX-- support for multiple texture formats}
  g_TexExtensions : TStringList = NIL;
+{DanielPharos: Support for multiple pak formats}
+ g_PakExtensions : TStringList = NIL;
 
 const  { for SetupChanged }
  scInit      = 0;
@@ -461,6 +465,36 @@ begin
       Inc(Idx);
     end;
     g_TexExtensions.Add(SubStr);
+  end;
+end;
+
+procedure StorePakExtensions;
+var
+ C:Char;
+ Idx : Byte;
+ S, SubStr : String;
+begin
+  if g_PakExtensions<>NIL then
+   g_PakExtensions.Free;
+  g_PakExtensions := TStringList.Create;
+  try
+   S := SetupGameSet.Specifics.Values['PakFileExtensions'];
+  except
+   S := '';
+  end;
+  Idx := 1;
+  while (Idx <= Length(S)) do
+  begin
+    SubStr := '';
+    C := #0;
+    while ((C <> ' ') and (C <> ',') and (Idx <= Length(S))) do
+    begin
+      C := S[Idx];
+      if ((C <> ' ') and (C <> ',')) then
+        SubStr := SubStr + C;
+      Inc(Idx);
+    end;
+    g_PakExtensions.Add(SubStr);
   end;
 end;
 {--CONVEX-end--}
@@ -711,6 +745,7 @@ begin
   { sends the reset message to all windows }
  PosteMessageFiches(wp_SetupChanged, Level);
  StoreTexExtensions; {--Convex--}
+ StorePakExtensions; {--Convex--}
  if Level = scInit then Exit;
 
   { sends the reset message to Python }
@@ -1366,13 +1401,14 @@ end;
 
 initialization
   RegisterQObject(QConfig, 'a');
+
 finalization
   CloseSetupSet;
-{$IFDEF Debug}
-//  Clear_g_MemQObject;
-{$ENDIF}
 
-  if g_TexExtensions<>NIL then
+  if g_TexExtensions<>nil then
    g_TexExtensions.Free;
+
+  if g_PakExtensions<>nil then
+   g_PakExtensions.Free;
 
 end.

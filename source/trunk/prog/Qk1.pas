@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2007/08/11 13:20:45  danielpharos
+BaseMenu-items are now checked when a subitem is checked. That makes it WAY easier to find the selected gamemode if it's a subitem.
+
 Revision 1.45  2007/08/10 12:24:22  danielpharos
 Added a BaseMenu item. Now games from the same series can be grouped together in the Games-menu!
 
@@ -404,7 +407,7 @@ uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, Running,
   Output1, QkTreeView, PyProcess, Console, Python, Quarkx, About,
   {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D,
-  EdSceneObject, QkObjectClassList, QkApplPaths, QkQuakeCtx;
+  EdSceneObject, QkObjectClassList, QkApplPaths, QkQuakeCtx, QkSteamFS;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
@@ -1637,6 +1640,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  end;
  ClearGameBuffers(False);
  ClearPool(True);
+ ClearSteamCache;
 // QObjectClassList.Free;
  st:='hi';
  s:=PyString_FromString(PChar(st));

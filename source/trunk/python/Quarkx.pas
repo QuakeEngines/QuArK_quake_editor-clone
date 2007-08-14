@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2007/08/02 16:15:57  danielpharos
+Added a commandline check, and an option in it to skip the splash screen. Also, some of the internal workings of the splash-screen were changed a bit.
+
 Revision 1.45  2007/04/10 12:25:34  danielpharos
 A potential fix for the infobase-help not opening on non-IE browsers.
 
@@ -227,7 +230,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      PyMath, PyCanvas, PyUndo, qmatrices, QkMapObjects, QkTextures,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
-     Output1, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
+     PakFiles, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
      QkApplPaths, MapError, StrUtils;
 
@@ -2480,9 +2483,9 @@ begin
   if not PyArg_ParseTupleX(args, 's|s', [@f, @b]) then
    Exit;
   if b=Nil then
-   Q:=NeedGameFile(f)
+   Q:=NeedGameFile(f, '')
   else
-   Q:=NeedGameFileBase(b, f);
+   Q:=NeedGameFileBase(b, f, '');
   Result:=GetPyObj(Q);
  except
   EBackToPython;

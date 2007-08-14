@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/05/15 15:04:30  danielpharos
+Don't force HL2 skin loading through Steam, but rather use the normal way for loading files.
+
 Revision 1.20  2007/03/11 12:03:11  danielpharos
 Big changes to Logging. Simplified the entire thing.
 
@@ -345,7 +348,7 @@ var
 begin
   Result:=nil;
   try
-    tex:= NeedGameFile(tex_name);
+    tex:= NeedGameFile(tex_name, '');
     if tex = nil then
       exit;
     tex.acces;
@@ -369,100 +372,100 @@ const
   SpecVtx = 'Vertices=';
 type
   hl2_vtx_fileHeader_t = record
-	// file version as defined by OPTIMIZED_MODEL_FILE_VERSION
-	version: Longint;
+    // file version as defined by OPTIMIZED_MODEL_FILE_VERSION
+    version: Longint;
 
-	// hardware params that affect how the model is to be optimized.
-	vertCacheSize: Longint;
-	maxBonesPerStrip: word;
-	maxBonesPerTri: word;
-	maxBonesPerVert: Longint;
+    // hardware params that affect how the model is to be optimized.
+    vertCacheSize: Longint;
+    maxBonesPerStrip: word;
+    maxBonesPerTri: word;
+    maxBonesPerVert: Longint;
 
-	// must match checkSum in the .mdl
-	checkSum: longword;
+    // must match checkSum in the .mdl
+    checkSum: longword;
 
-	numLODs: Longint; // garymcthack - this is also specified in ModelHeader_t and should match
+    numLODs: Longint; // garymcthack - this is also specified in ModelHeader_t and should match
 
-	// one of these for each LOD
-	materialReplacementListOffset: Longint;
+    // one of these for each LOD
+    materialReplacementListOffset: Longint;
 
-	numBodyParts: Longint;
-	bodyPartOffset: Longint;
+    numBodyParts: Longint;
+    bodyPartOffset: Longint;
   end;
 
   hl2_vtx_BodyPartHeader_t = record
-	numModels: Longint;
-	modelOffset: Longint;
+    numModels: Longint;
+    modelOffset: Longint;
   end;
 
 
   hl2_vtx_ModelHeader_t  = record
-	numLODs: Longint;
-	lodOffset: Longint;
+    numLODs: Longint;
+    lodOffset: Longint;
   end;
 
 
   hl2_vtx_ModelLODHeader_t  = record
-	numMeshes: Longint;
-	meshOffset: Longint;
-	switchPoint: Single;
+    numMeshes: Longint;
+    meshOffset: Longint;
+    switchPoint: Single;
   end;
 
   hl2_vtx_MeshHeader_t  = record
-	numStripGroups: Longint;
-	stripGroupHeaderOffset: Longint;
-	flags: byte;
+    numStripGroups: Longint;
+    stripGroupHeaderOffset: Longint;
+    flags: byte;
   end;
 
   hl2_vtx_StripGroupHeader_t  = record
-	// These are the arrays of all verts and indices for this mesh.  strips index into this.
-	numVerts: Longint;
-	vertOffset: Longint;
+    // These are the arrays of all verts and indices for this mesh.  strips index into this.
+    numVerts: Longint;
+    vertOffset: Longint;
 
-	numIndices: Longint;
-	indexOffset: Longint;
+    numIndices: Longint;
+    indexOffset: Longint;
 
-	numStrips: Longint;
-	stripOffset: Longint;
+    numStrips: Longint;
+    stripOffset: Longint;
 
-	flags: byte;
+    flags: byte;
   end;
 
   hl2_vtx_Vertex_t  = record
-	// these index into the mesh's vert[origMeshVertID]'s bones
-	boneWeightIndex:array[1..3]of Byte;
-	numBones: byte;
+    // these index into the mesh's vert[origMeshVertID]'s bones
+    boneWeightIndex:array[1..3]of Byte;
+    numBones: byte;
 
-	origMeshVertID : word;
+    origMeshVertID : word;
 
-	// for sw skinned verts, these are indices into the global list of bones
-	// for hw skinned verts, these are hardware bone indices
-	boneID:array[1..3]of Byte;
+    // for sw skinned verts, these are indices into the global list of bones
+    // for hw skinned verts, these are hardware bone indices
+    boneID:array[1..3]of Byte;
   end;
 
   hl2_vtx_BoneStateChangeHeader_t   = record
-	hardwareID: Longint;
-	newBoneID: Longint;
+    hardwareID: Longint;
+    newBoneID: Longint;
   end;
 
   hl2_vtx_StripHeader_t   = record
-	// indexOffset offsets into the mesh's index array.
-	numIndices: Longint;
-	indexOffset: Longint;
+    // indexOffset offsets into the mesh's index array.
+    numIndices: Longint;
+    indexOffset: Longint;
 
-	// vertexOffset offsets into the mesh's vert array.
-	numVerts: Longint;
-	vertOffset: Longint;
+    // vertexOffset offsets into the mesh's vert array.
+    numVerts: Longint;
+    vertOffset: Longint;
 
-	// use this to enable/disable skinning.
-	// May decide (in optimize.cpp) to put all with 1 bone in a different strip
-	// than those that need skinning.
-	numBones: word;
+    // use this to enable/disable skinning.
+    // May decide (in optimize.cpp) to put all with 1 bone in a different strip
+    // than those that need skinning.
+    numBones: word;
 
-	flags: byte;
+    flags: byte;
 
-	numBoneStateChanges: Longint;
-	boneStateChangeOffset: Longint;
+    numBoneStateChanges: Longint;
+    boneStateChangeOffset: Longint;
   end;
 
 
@@ -499,87 +502,87 @@ const
   SpecVtx = 'Vertices=';
 type
   hl2_model_t = record
-	id: Longint;
-	version: Longint;
-	checksum: longword;		// this has to be the same in the phy and vtx files to load!
-	name: array [1..64] of char;
-	length: Longint;
-	eyeposition: vec3_t;	// ideal eye position
-	illumposition: vec3_t;	// illumination center
-	hull_min: vec3_t;		// ideal movement hull size
-	hull_max: vec3_t;
-	view_bbmin: vec3_t;		// clipping bounding box
-	view_bbmax: vec3_t;
-	flags: Longint;
-	numbones: Longint;			// bones
-	boneindex: Longint;
-	numbonecontrollers: Longint;		// bone controllers
-	bonecontrollerindex: Longint;
-	numhitboxsets: Longint;
-	hitboxsetindex: Longint;
-	// file local animations? and sequences
-	numlocalanim: Longint;			// animations/poses
-	localanimindex: Longint;		// animation descriptions
-	numlocalseq: Longint;				// sequences
-	localseqindex: Longint;
-	activitylistversion: Longint;	// initialization flag - have the sequences been indexed?
-	eventsindexed: Longint;
-	// raw textures
-	numtextures: Longint;
-	textureindex: Longint;
-	// raw textures search paths
-	numcdtextures: Longint;
-	cdtextureindex: Longint;
-	// replaceable textures tables
-	numskinref: Longint;
-	numskinfamilies: Longint;
-	skinindex: Longint;
-	numbodyparts: Longint;
-	bodypartindex: Longint;
-	// queryable attachable points
-	numlocalattachments: Longint;
-	localattachmentindex: Longint;
-	// animation node to animation node transition graph
-	numlocalnodes: Longint;
-	localnodeindex: Longint;
-	localnodenameindex: Longint;
-	numflexdesc: Longint;
-	flexdescindex: Longint;
-	numflexcontrollers: Longint;
-	flexcontrollerindex: Longint;
-	numflexrules: Longint;
-	flexruleindex: Longint;
-	numikchains: Longint;
-	ikchainindex: Longint;
-	nummouths: Longint;
-	mouthindex: Longint;
-	numlocalposeparameters: Longint;
-	localposeparamindex: Longint;
-	surfacepropindex: Longint;
-	// Key values
-	keyvalueindex: Longint;
-	keyvaluesize: Longint;
-	numlocalikautoplaylocks: Longint;
-	localikautoplaylockindex: Longint;
-	// The collision model mass that jay wanted
-	mass: Single;
-	contents: Longint;
-	// external animations, models, etc.
-	numincludemodels: Longint;
-	includemodelindex: Longint;
-	// implementation specific back pointer to virtual data
-	virtualModel :Pointer;
-	// for demand loaded animation blocks
-	szanimblocknameindex: Longint;
-	numanimblocks: Longint;
-	animblockindex: Longint;
-	animblockModel:Pointer;
-	bonetablebynameindex: Longint;
-	// used by tools only that don't cache, but persist mdl's peer data
-	// engine uses virtualModel to back link to cache pointers
-	pVertexBase:Pointer;
-	pIndexBase:Pointer;
-	unused: array [1..8] of longint;		// remove as appropriate
+    id: Longint;
+    version: Longint;
+    checksum: longword;        // this has to be the same in the phy and vtx files to load!
+    name: array [1..64] of char;
+    length: Longint;
+    eyeposition: vec3_t;    // ideal eye position
+    illumposition: vec3_t;    // illumination center
+    hull_min: vec3_t;        // ideal movement hull size
+    hull_max: vec3_t;
+    view_bbmin: vec3_t;        // clipping bounding box
+    view_bbmax: vec3_t;
+    flags: Longint;
+    numbones: Longint;            // bones
+    boneindex: Longint;
+    numbonecontrollers: Longint;        // bone controllers
+    bonecontrollerindex: Longint;
+    numhitboxsets: Longint;
+    hitboxsetindex: Longint;
+    // file local animations? and sequences
+    numlocalanim: Longint;            // animations/poses
+    localanimindex: Longint;        // animation descriptions
+    numlocalseq: Longint;                // sequences
+    localseqindex: Longint;
+    activitylistversion: Longint;    // initialization flag - have the sequences been indexed?
+    eventsindexed: Longint;
+    // raw textures
+    numtextures: Longint;
+    textureindex: Longint;
+    // raw textures search paths
+    numcdtextures: Longint;
+    cdtextureindex: Longint;
+    // replaceable textures tables
+    numskinref: Longint;
+    numskinfamilies: Longint;
+    skinindex: Longint;
+    numbodyparts: Longint;
+    bodypartindex: Longint;
+    // queryable attachable points
+    numlocalattachments: Longint;
+    localattachmentindex: Longint;
+    // animation node to animation node transition graph
+    numlocalnodes: Longint;
+    localnodeindex: Longint;
+    localnodenameindex: Longint;
+    numflexdesc: Longint;
+    flexdescindex: Longint;
+    numflexcontrollers: Longint;
+    flexcontrollerindex: Longint;
+    numflexrules: Longint;
+    flexruleindex: Longint;
+    numikchains: Longint;
+    ikchainindex: Longint;
+    nummouths: Longint;
+    mouthindex: Longint;
+    numlocalposeparameters: Longint;
+    localposeparamindex: Longint;
+    surfacepropindex: Longint;
+    // Key values
+    keyvalueindex: Longint;
+    keyvaluesize: Longint;
+    numlocalikautoplaylocks: Longint;
+    localikautoplaylockindex: Longint;
+    // The collision model mass that jay wanted
+    mass: Single;
+    contents: Longint;
+    // external animations, models, etc.
+    numincludemodels: Longint;
+    includemodelindex: Longint;
+    // implementation specific back pointer to virtual data
+    virtualModel :Pointer;
+    // for demand loaded animation blocks
+    szanimblocknameindex: Longint;
+    numanimblocks: Longint;
+    animblockindex: Longint;
+    animblockModel:Pointer;
+    bonetablebynameindex: Longint;
+    // used by tools only that don't cache, but persist mdl's peer data
+    // engine uses virtualModel to back link to cache pointers
+    pVertexBase:Pointer;
+    pIndexBase:Pointer;
+    unused: array [1..8] of longint;        // remove as appropriate
   end;
 
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/05/06 21:23:40  danielpharos
+Cleaned up some code for Md3 models.
+
 Revision 1.32  2007/05/05 22:16:44  cdunde
 To add .md3 model support for EF2.
 
@@ -451,7 +454,7 @@ begin
   shader_texturename:=copy(tex_name, 1, pos('.', tex_name)-1);
 
   try
-    shader_file:=needgamefile(shader_filename);
+    shader_file:=needgamefile(shader_filename, '');
     if shader_file = nil then
       exit;
     shader_file.acces;
@@ -552,7 +555,7 @@ begin
       // files (pure mode) that have been loaded for the game.   
       if (Skin = NIL)   
       then begin   
-        ImageFile := NeedGameFile(base_tex_name);
+        ImageFile := NeedGameFile(base_tex_name, '');
         if (ImageFile <> NIL)   
         then begin   
          ImageFile.AddRef(+1);   
@@ -618,6 +621,7 @@ begin
         with CTris^[J] do
         begin
           VertexNo:=Tris2^.triangle[J+1];
+          //DanielPharos: The following line results in FALSE range check errors!
           with texCoord^[Tris2^.triangle[J+1]] do
           begin
             S:=round(vec[1]*Size.X);
@@ -748,7 +752,7 @@ var
   FileObj2: QObject;
 begin
   Result:=false;
-  FileObj2:=NeedGameFile(filename);
+  FileObj2:=NeedGameFile(filename, '');
   if FileObj2=nil then
   begin
     FileObj2:=ExactFileLink(filename, nil, false);

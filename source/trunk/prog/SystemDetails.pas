@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
 Revision 1.26  2007/03/12 13:21:59  danielpharos
 Fixed a few stupid bugs introduced in the last change.
 
@@ -114,6 +117,8 @@ var
   g_CxScreen, g_CyScreen: Integer;
 
 Procedure LogSystemDetails;
+function ProcessExists(exeFileName: string): Boolean;
+function WindowExists(WindowName: String): Boolean;
 
 type
   {$IFDEF Delphi4orNewerCompiler}
@@ -366,15 +371,17 @@ type
 
 implementation
 
-uses ShlObj, Logging;
+uses ShlObj, TlHelp32, Logging, Qk1;
 
 type
-  TPlatformType = (osWin95, osWinNT);
+  TPlatformType = (osWin95Comp, osWinNTComp);
+  TPlatform = (osWin95, osWin98, osWinME, osWinNT4, osWin2000, osWinXP, osWin2003, osWinVista, osWin2008);
 
 var
-  WindowsPlatformCompatibility: TPlatformType;
   VLevel, VFamily, VModel, VStepping, VTyp: Byte;
   VFeatures: LongInt;
+  WindowsPlatformCompatibility: TPlatformType;
+  WindowsPlatform: TPlatform;
 
 constructor TCPU.Create;
 begin
@@ -903,39 +910,66 @@ begin
     VER_PLATFORM_WIN32s:
      begin
       Platform:='Windows 32s';
-      WindowsPlatformCompatibility:=osWin95;
+      WindowsPlatformCompatibility:=osWin95Comp;
+      WindowsPlatform:=osWin95;
      end;
     VER_PLATFORM_WIN32_WINDOWS:
       case MajorVersion of
       4:
        begin
         case MinorVersion of
-        0: Platform:='Windows 95';
-        10: Platform:='Windows 98';
-        90: Platform:='Windows ME';
-        else Platform:='Unknown (Probably OK)';
+        0:
+         begin
+          Platform:='Windows 95';
+          WindowsPlatform:=osWin95;
+         end;
+        10:
+         begin
+          Platform:='Windows 98';
+          WindowsPlatform:=osWin98;
+         end;
+        90:
+         begin
+          Platform:='Windows ME';
+          WindowsPlatform:=osWinME;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWin95;
+         end;
         end;
-        WindowsPlatformCompatibility:=osWin95;
+        WindowsPlatformCompatibility:=osWin95Comp;
        end;
       5:
        begin
         case MinorVersion of
-        0: Platform:='Windows Vista or Windows Server "Longhorn"';
-        else Platform:='Unknown (Probably OK)';
+        0:
+         begin
+          Platform:='Windows Vista or Windows Server 2008';
+          WindowsPlatform:=osWinVista;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWinVista;
+         end;
         end;
-        WindowsPlatformCompatibility:=osWinNT;
+        WindowsPlatformCompatibility:=osWinNTComp;
        end;
       else
        begin
         if MajorVersion>5 then
         begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatformCompatibility:=osWin95;
+          WindowsPlatform:=osWin95;
+          WindowsPlatformCompatibility:=osWin95Comp;
         end
         else
         begin
           Platform:='Unknown';
-          WindowsPlatformCompatibility:=osWinNT;
+          WindowsPlatform:=osWinNT4;
+          WindowsPlatformCompatibility:=osWinNTComp;
         end;
        end;
       end;
@@ -944,53 +978,87 @@ begin
       4:
        begin
         case MinorVersion of
-        0: Platform:='Windows NT4';
-        else Platform:='Unknown (Probably OK)';
+        0:
+         begin
+          Platform:='Windows NT4';
+          WindowsPlatform:=osWinNT4;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWinNT4;
+         end;
         end;
-        WindowsPlatformCompatibility:=osWinNT;
+        WindowsPlatformCompatibility:=osWinNTComp;
        end;
       5:
        begin
         case MinorVersion of
-        0: Platform:='Windows 2000';
-        1: Platform:='Windows XP';
-        2: Platform:='Windows 2003 or Windows XP 64-bit';
-        else Platform:='Unknown (Probably OK)';
+        0:
+         begin
+          Platform:='Windows 2000';
+          WindowsPlatform:=osWin2000;
+         end;
+        1:
+         begin
+          Platform:='Windows XP';
+          WindowsPlatform:=osWinXP;
+         end;
+        2:
+         begin
+          Platform:='Windows 2003 or Windows XP 64-bit';
+          WindowsPlatform:=osWin2003;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWin2000;
+         end;
         end;
-        WindowsPlatformCompatibility:=osWinNT;
+        WindowsPlatformCompatibility:=osWinNTComp;
        end;
       6:
        begin
         case MinorVersion of
-        0: Platform:='Windows Vista or Windows Server "Longhorn"';
-        else Platform:='Unknown (Probably OK)';
+        0:
+         begin
+          Platform:='Windows Vista or Windows Server "Longhorn"';
+          WindowsPlatform:=osWinVista;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWinVista;
+         end;
         end;
-        WindowsPlatformCompatibility:=osWinNT;
+        WindowsPlatformCompatibility:=osWinNTComp;
        end;
       else
        begin
         if MajorVersion>6 then
         begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatformCompatibility:=osWinNT;
+          WindowsPlatform:=osWinNT4;
+          WindowsPlatformCompatibility:=osWinNTComp;
         end
         else
         begin
           Platform:='Unknown';
-          WindowsPlatformCompatibility:=osWin95;
+          WindowsPlatform:=osWin95;
+          WindowsPlatformCompatibility:=osWin95Comp;
         end;
        end;
       end;
   end;
   case WindowsPlatformCompatibility of
-  osWin95:
+  osWin95Comp:
    begin
     g_CxScreen:=sm_CxScreen;
     g_CyScreen:=sm_CyScreen;
     rkOSInfo:=rkOSInfo95;
     rvVersionName:=rvVersionName95;
    end;
-  osWinNT:
+  osWinNTComp:
    begin
     g_CxScreen:=SM_CXVIRTUALSCREEN;
     g_CyScreen:=SM_CYVIRTUALSCREEN;
@@ -1233,7 +1301,7 @@ begin
   FSystemUpTime:=GetSystemUpTime;
   FName:=GetMachine;
   FUser:=GetUser;
-  if WindowsPlatformCompatibility=osWinNT then
+  if WindowsPlatformCompatibility=osWinNTComp then
   begin
     with TRegistry.Create do
     begin
@@ -1309,7 +1377,7 @@ begin
             rclass:=UpperCase(ReadString(rvClass));
             if rclass=UpperCase(AClassName) then
             begin
-              if WindowsPlatformCompatibility=osWin95 then
+              if WindowsPlatformCompatibility=osWin95Comp then
               begin
                 s:=UpperCase(ReadString(rvLink));
                 CloseKey;
@@ -1544,7 +1612,7 @@ begin
 
   ReleaseDC(0, l_hdc);
 
-  if WindowsPlatformCompatibility=osWinNT then
+  if WindowsPlatformCompatibility=osWinNTComp then
     ClassKey:='SYSTEM\CurrentControlSet\Control\Class'
   else
     ClassKey:='SYSTEM\CurrentControlSet\Services\Class';
@@ -1896,6 +1964,48 @@ begin
     s.Add('Not Installed.');
   end;
   R.free;
+end;
+
+function ProcessExists(exeFileName: string): Boolean;
+var 
+  ContinueLoop: BOOL; 
+  FSnapshotHandle: THandle; 
+  FProcessEntry32: TProcessEntry32; 
+begin
+  Result := False;
+
+  //The following check only works on non-NT4 systems...
+  if WindowsPlatform=osWinNT4 then
+  begin
+    Log(LOG_WARNING, 'Unable to determine if '+exeFileName+' is running. (Windows NT 4)');
+    Exit;
+  end;
+
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+  while ContinueLoop <> false do
+  begin 
+    if (ExtractFileName(FProcessEntry32.szExeFile) = ExeFileName)
+      or (FProcessEntry32.szExeFile = ExeFileName) then
+    begin 
+      Result := True;
+      break;
+    end; 
+    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32); 
+  end; 
+  CloseHandle(FSnapshotHandle); 
+end;
+
+function WindowExists(WindowName: String): Boolean;
+var
+  FoundWindow: HWND;
+begin
+  FoundWindow:=FindWindow(nil, PChar(WindowName));
+  if FoundWindow<>0 then
+    Result := True
+  else
+    Result := False;
 end;
 
 Procedure LogSystemDetails;

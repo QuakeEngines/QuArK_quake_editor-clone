@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.344  2007/08/10 12:24:29  danielpharos
+//Added a BaseMenu item. Now games from the same series can be grouped together in the Games-menu!
+//
 //Revision 1.343  2007/08/10 12:16:15  danielpharos
 //Updated the update-check. You can disable it in the Config, and it now asks if you want to go to the website.
 //
@@ -1616,6 +1619,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
@@ -1736,20 +1740,15 @@ QQRKSRC1
         DecimalPlaces = '5'
       }
 
-      Half-Life2:config =
+      Half-Life 2:config =
       {
-        Game = "Half-Life2"
+        Game = "Half-Life 2"
         Code = "k" // Hardcoded value in Setup.PAS
 
         BaseMenu = "Half Life"
 
-        SteamFSModule = ""
-        SteamTier0Module = ""
-        SteamVstdlibModule = ""
-        Directory = "C:/Program Files/Valve/Steam"
-        SteamAppUser = "<Your Steam Account>"
-        SteamAppId = ""
-
+        Steam = "1" //This game uses Steam
+        SteamAppID = "220"
         BaseDir = "hl2"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
@@ -1782,7 +1781,7 @@ QQRKSRC1
         DefaultTextureScale = "0.25"
     //    EnableTransparency = ""
         WateryTex = "!"
-        TextureFormat = ".vmt"
+        TextureFormat = ".vmt"                  // primary texture fileextension
      //   TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
         TexturesPath = "materials/"
@@ -1793,6 +1792,7 @@ QQRKSRC1
 
         PakExt = ".gcf"
         PakFormat = "*.gcf"
+        PakForceUse = "source materials"
         LightFactor = '0.9'
         3DLight = '512'
         Console = "1"
@@ -1960,6 +1960,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameJA"
         LightFactor = '0.9'
@@ -2027,6 +2028,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameJK2"
         LightFactor = '0.9'
@@ -2153,6 +2155,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameMOHAA"
         LightFactor = '0.9'
@@ -2331,6 +2334,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameQuake3"
         LightFactor = '0.9'
@@ -2474,6 +2478,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
@@ -2531,6 +2536,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         LightFactor = '0.9'
     //    PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas),  does not use aas files.
 
@@ -2714,12 +2720,29 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameSoF2"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
         DecimalPlaces = '5'
+      }
+
+      Steam:config =
+      {
+        SteamUser = "<Your Steam Account>"
+        Directory = "C:/Program Files/Valve/Steam"
+        ExtractorParameters = ""
+        Autostart = "1"
+        CopyGCF = "1"
+        WarnBeforeClear = "1"
+        AllowRecycle = "0"
+        ClearcacheGCF = "0"
+        Clearcache = "1"
+
+        CacheDirectory = "QuArKApps"
+        Form = "GameSteam"
       }
 
       STVEF:config =
@@ -2784,6 +2807,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
@@ -2896,6 +2920,7 @@ QQRKSRC1
         //   AlwaysPak = ""
         //   PakExt = ".pk3"
         //   PakFormat = "*.PK3"
+        //   PakMaxNumber = "99"
         LightFactor = '0.9'
         //   PlayerClass = "X"
 
@@ -2971,6 +2996,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameWildWest"
         LightFactor = '0.9'
@@ -4048,72 +4074,45 @@ QQRKSRC1
     {
       Style = "3"
       sep: = {Typ="S" Txt="---- Game Settings ----"}
+      L0: = {Typ="S" Bold="0" Txt="Note: Don't forget so also configure the Steam settings!"}
       Program: =
       {
-        Txt = "Half-Life2 command-line"
+        Txt = "Half-Life 2 command-line"
         Typ = "C"     // combo box
         t_ProgramHint=!
         Items = "C:/Program Files/Valve/Steam/steam.exe -applaunch 220 -dev -console -window -width 800 -height 600"
                 $0D"C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console -window -width 800 -height 600"
                 $0D"C:/Program Files/Valve/Steam/steam.exe -applaunch 320 -dev -console -window -width 800 -height 600"
       }
-      SteamFSModule: =
+      tmpQuArK: =
       {
-        Txt = "Steam Filesystem Dll"
-        Typ = "EP"
-        DefExt="dll"
-        Hint = "Select the FileSystem_Steam.dll in your sourcesdk/bin folder"
-        CheckFile = "FileSystem_Steam.dll"
-      }
-      SteamTier0Module: =
-      {
-        Txt = "Steam Tier 0 Dll"
-        Typ = "EP"
-        DefExt="dll"
-        Hint = "Select the tier0.dll in your Steam folder"
-        CheckFile = "tier0.dll"
-      }
-      SteamVstdlibModule: =
-      {
-        Txt = "Steam Value Standard Library Dll"
-        Typ = "EP"
-        DefExt="dll"
-        Hint = "Select the vstdlib.dll in your Steam folder"
-        CheckFile = "vstdlib.dll"
-      }
-      SteamAppUser: =
-      {
-        Txt = "Steam Account Name"
-        Hint = "The Name you logon into steam with"
+        Txt = "Game Directory"
+        Typ = "C"   // combo box
+        Hint = "relative to steam install directory, e.g. SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
+        Items = "SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
+                $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
+                $0D"SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
       }
       SteamAppId: =
       {
         Txt = "Steam App Id"
         Typ = "C"     // combo box
         Hint = "set to 211 for Source SDK"$0D
-               "220 for Half-Life2"$0D
+               "220 for Half-Life 2"$0D
                "240 for Counter-Strike: Source"$0D
-               "320 for Half-Life2 Death Match"
+               "280 for Half-Life: Source"$0D
+               "320 for Half-Life 2 Death Match"$0D
+               "340 for Half-Life 2: Lost Coast"$0D
+               "360 for Half-Life Deathmatch: Source"$0D
+               "380 for Half-Life 2: Episode One"
         Items = "211"$0D
                "220"$0D
                "240"$0D
-               "320"
-      }
-      Directory: =
-      {
-        Txt = "Steam Directory"
-        Typ = "ED"      // Edit Directory
-        Hint = "Steam Install Directory folder"
-        CheckFile = "steam.exe"
-      }
-      tmpQuArK: =
-      {
-        Txt = "Game Directory"
-        Typ = "C"   // combo box    
-        Hint = "relative to steam install directory, e.g. SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
-        Items = "SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
-                $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
-                $0D"SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
+               "280"$0D
+               "320"$0D
+               "340"$0D
+               "360"$0D
+               "380"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -4124,7 +4123,7 @@ QQRKSRC1
                $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
                $666000407787877866608777777777784448444844487F785C77CF77CC487778
                $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life 2
         cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
       }
       Outp:tbbtn =
@@ -4136,7 +4135,7 @@ QQRKSRC1
                $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
                $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
                $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life 2
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
       sep: = {Typ="S" Txt = ""}
@@ -4144,27 +4143,27 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
-        GameCfg = "Half-Life2"
+        GameCfg = "Half-Life 2"
       }
       DefaultTextureTerrain: =
       {
         t_DefaultTextureTerrain = !
-        GameCfg = "Half-Life2"
+        GameCfg = "Half-Life 2"
       }
       DefaultTextureTrigger: =
       {
         t_DefaultTextureTrigger = !
-        GameCfg = "Half-Life2"
+        GameCfg = "Half-Life 2"
       }
       DefaultTextureClip: =
       {
         t_DefaultTextureClip = !
-        GameCfg = "Half-Life2"
+        GameCfg = "Half-Life 2"
       }
       DefaultTextureOrigin: =
       {
         t_DefaultTextureOrigin = !
-        GameCfg = "Half-Life2"
+        GameCfg = "Half-Life 2"
       }
       3DLight: =
       {
@@ -5605,6 +5604,73 @@ QQRKSRC1
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
+    }
+
+    GameSteam:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Steam Settings ----"}
+      SteamUser: =
+      {
+        Txt = "Steam Account Name"
+        Hint = "The name you logon into steam with"
+            $0D"(actually, the name under which all the apps are installed in the steamapps folder)"
+      }
+      Directory: =
+      {
+        Txt = "Steam Directory"
+        Typ = "ED"      // Edit Directory
+        Hint = "Steam directory"
+        CheckFile = "steam.exe"
+      }
+      ExtractorParameters: =
+      {
+        Txt = "QuArKSAS Parameters"
+        Hint = "Any additional parameters to send to the QuArKSAS extractor"
+      }
+      Autostart: = {
+        Txt="Autostart"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables autostart. This will start Steam if it's needed, but isn't running."
+      }
+      CopyGCF: = {
+        Txt="Cache GCF files"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables caching for GCF files. This will copy GCF files to the cache location,"
+            $0D"so they can be accessed even when Steam is running."
+            $0D"The copying will probably only succeed when Steam is not running."
+      }
+      WarnBeforeClear: = {
+        Txt="Warn Before Clearing Cache"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables a warning before QuArK clears the cache. This will allow you to cancel the clearing."
+      }
+      AllowRecycle: = {
+        Txt="Allow Deletion to Recycle Bin"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "This will delete the files to the recycle bin (if set in Windows), so they can be restored."
+            $0D"You will have to manually delete them from the bin."
+      }
+      ClearcacheGCF: = {
+        Txt="Clear Cache GCF"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables clearing the cache of GCF files. This will clear the Steam cache of GCF files when QuArK shutsdown,"
+            $0D"saving disc space. However, next time the files will have to be copied again,"
+            $0D"which is a slow process."
+      }
+      Clearcache: = {
+        Txt="Clear Cache other files"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables clearing the cache. This will clear the Steam cache when QuArK shutsdown,"
+            $0D"saving disc space. However, next time the files will have to be extracted again,"
+            $0D"which is a (relatively) slow process."
+      }
     }
 
     GameSTVEF:form =
@@ -7114,22 +7180,41 @@ QQRKSRC1
       ImageListTextureDimension: = {
         Txt="Dimension of textures in texture-list"
         Hint="The bigger the dimension, more memory is needed, so make sure you don't overdo it."
-          $0D"Only dimensions 32 to 128 in steps of 16 are allowed: 32, 48, 64, 80, 96, 112, 128."
+          $0D"Only dimensions 16 to 256 in steps of 16 are allowed."
         Typ="C"
-        items  = "32  (32x32)"
+        items  = "16  (16x16)"
+              $0D"32  (32x32)"
               $0D"48  (48x48)"
               $0D"64  (64x64)"
               $0D"80  (80x80)"
               $0D"96  (96x96)"
               $0D"112  (112x112)"
               $0D"128  (128x128)"
-        values = "32"
+              $0D"144  (144x144)"
+              $0D"160  (160x160)"
+              $0D"176  (176x176)"
+              $0D"192  (192x192)"
+              $0D"208  (208x208)"
+              $0D"224  (224x224)"
+              $0D"240  (240x240)"
+              $0D"256  (256x256)"
+        values = "16"
+              $0D"32"
               $0D"48"
               $0D"64"
               $0D"80"
               $0D"96"
               $0D"112"
               $0D"128"
+              $0D"144"
+              $0D"160"
+              $0D"128"
+              $0D"176"
+              $0D"192"
+              $0D"208"
+              $0D"224"
+              $0D"240"
+              $0D"256"
       }
       ImageListLoadNoOfTexAtEachCall: = {
         Txt="No. of textures to load per update"
@@ -7676,7 +7761,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Half-Life2"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"RTCW_ET"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"$0D"Quake 4"
+        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Half-Life 2"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"RTCW_ET"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"$0D"Quake 4"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {
