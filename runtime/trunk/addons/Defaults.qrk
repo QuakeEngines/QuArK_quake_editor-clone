@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.345  2007/08/14 16:33:33  danielpharos
+//HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+//
 //Revision 1.344  2007/08/10 12:24:29  danielpharos
 //Added a BaseMenu item. Now games from the same series can be grouped together in the Games-menu!
 //
@@ -2737,8 +2740,8 @@ QQRKSRC1
         Autostart = "1"
         CopyGCF = "1"
         WarnBeforeClear = "1"
-        AllowRecycle = "0"
-        ClearcacheGCF = "0"
+        AllowRecycle = ""
+        ClearcacheGCF = ""
         Clearcache = "1"
 
         CacheDirectory = "QuArKApps"
