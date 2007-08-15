@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.346  2007/08/15 15:43:55  danielpharos
+//Fixed two default-settings typo's in the Steam config concerning the cache.
+//
 //Revision 1.345  2007/08/14 16:33:33  danielpharos
 //HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 //
@@ -1743,9 +1746,9 @@ QQRKSRC1
         DecimalPlaces = '5'
       }
 
-      Half-Life 2:config =
+      Half-Life2:config =
       {
-        Game = "Half-Life 2"
+        Game = "Half-Life2"
         Code = "k" // Hardcoded value in Setup.PAS
 
         BaseMenu = "Half Life"
