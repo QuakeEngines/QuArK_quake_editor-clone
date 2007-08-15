@@ -96,12 +96,14 @@ begin
 end;
 
 procedure TAboutBox.FormCreate(Sender: TObject);
+{* DanielPharos: Commented out thread-safe date-convertion with the asterix.
+  This because that is Delphi 7+, so it breaks compilation on Delphi 6.
 var
-  DateFormat: TFormatSettings;
+  DateFormat: TFormatSettings;}
 begin
   Version.Caption := QuarkVersion;
-  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, DateFormat);
-  UsedCompilerLabel.Caption := QuArKMinorVersion + ' Compiled with ' + QuArKUsedCompiler + ' - ' + DateToStr(QuArKCompileDate, DateFormat);
+  {*GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, DateFormat);}
+  UsedCompilerLabel.Caption := QuArKMinorVersion + ' Compiled with ' + QuArKUsedCompiler + ' - ' + DateToStr(QuArKCompileDate{*, DateFormat});
   Copyright.Caption := '  ' + QuArKCopyright;
   {$IFDEF Debug}
   Version.Caption := Version.Caption + '  DEBUG VERSION';
