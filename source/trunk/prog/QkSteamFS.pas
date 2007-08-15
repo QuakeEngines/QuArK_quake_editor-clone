@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/08/15 16:28:08  danielpharos
+HUGE update to HL2: Took out some code that's now not needed anymore.
+
 Revision 1.17  2007/08/14 16:32:59  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -248,7 +251,7 @@ begin
   while WaitForSteam do
   begin
     Sleep(200);  //Let's give the system a little bit of time to boot Steam...
-    //WaitForSteam:=not WindowExists(SteamWindowName);
+    WaitForSteam:=not WindowExists(SteamWindowName);
     if I>50 then
     begin
       //We've been waiting for 10 SECONDS! Let's assume something went terribly wrong...!
