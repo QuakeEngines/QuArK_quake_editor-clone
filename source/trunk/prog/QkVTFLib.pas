@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/08/10 12:23:38  danielpharos
+Don't call SetupSubSet so often!
+
 Revision 1.15  2007/07/05 10:18:27  danielpharos
 Moved a string to the dictionary.
 
@@ -146,7 +149,6 @@ unit QkVTFLib;
 interface
 uses Windows, SysUtils, QkObjects;
 
-function ReloadNeededVTFLib: Boolean;
 function LoadVTFLib : Boolean;
 procedure UnloadVTFLib(ForceUnload: boolean);
 
@@ -408,12 +410,7 @@ uses Setup, Quarkx, Logging;
 
 var
   TimesLoaded: Integer;
-  Htier0  : HMODULE;
-  Hvstdlib  : HMODULE;
   HVTFLib  : HMODULE;
-  curTier0Module, curVstdlibModule: string;
-  IgnoreErrorTier0Module, IgnoreErrorVstdlibModule: boolean;
-  ReloadVTF: boolean;
 
 procedure LogError(x:string);
 begin
@@ -429,90 +426,11 @@ begin
      LogError('API Func "'+APIFuncname+ '" not found in dlls/VTFLib.dll');
 end;
 
-function ReloadNeededVTFLib : Boolean;
-var
-  Tier0Module, VstdlibModule: string;
-  Setup: QObject;
-begin
-  Result:=false;
-  Setup:=SetupSubSet(ssGames,'Steam');
-  Tier0Module:=Setup.Specifics.Values['SteamTier0Module'];
-  VstdlibModule:=Setup.Specifics.Values['SteamVstdlibModule'];
-  if Tier0Module<>curTier0Module then
-  begin
-    IgnoreErrorTier0Module:=false;
-    ReloadVTF:=true;
-    Result:=true;
-  end;
-  if VstdlibModule<>curVstdlibModule then
-  begin
-    IgnoreErrorVstdlibModule:=false;
-    ReloadVTF:=true;
-    Result:=true;
-  end;
-end;
-
 function LoadVTFLib : Boolean;
-var
-  Setup: QObject;
 begin
-  if ReloadVTF then
-  begin
-    UnloadVTFLib(true);
-    ReloadVTF:=false;
-  end;
   if (TimesLoaded=0) then
   begin
     Result:=False;
-    Setup:=SetupSubSet(ssGames,'Steam');
-    curTier0Module:=Setup.Specifics.Values['SteamTier0Module'];
-    curVstdlibModule:=Setup.Specifics.Values['SteamVstdlibModule'];
-    if (curTier0Module='') then
-    begin
-      if not IgnoreErrorTier0Module then
-      begin
-        LogError(format(LoadStr1(5704),['tier0.dll']));
-        IgnoreErrorTier0Module:=true;
-      end;
-      Exit;
-    end;
-    if (curVstdlibModule='') then
-    begin
-      if not IgnoreErrorVstdlibModule then
-      begin
-        LogError(format(LoadStr1(5704),['vstdlib.dll']));
-        IgnoreErrorVstdlibModule:=true;
-      end;
-      Exit;
-    end;
-
-    if Htier0 = 0 then
-    begin
-      Htier0 := LoadLibrary(PChar(curTier0Module));
-      if Htier0 = 0 then
-      begin
-        if not IgnoreErrorTier0Module then
-        begin
-          LogError('Unable to load '+curTier0Module);
-          IgnoreErrorTier0Module:=true;
-        end;
-        Exit;
-      end;
-    end;
-
-    if Hvstdlib = 0 then
-    begin
-      Hvstdlib := LoadLibrary(PChar(curVstdlibModule));
-      if Hvstdlib = 0 then
-      begin
-        if not IgnoreErrorVstdlibModule then
-        begin
-          LogError('Unable to load '+curVstdlibModule);
-          IgnoreErrorVstdlibModule:=true;
-        end;
-        Exit;
-      end;
-    end;
 
     if HVTFLib = 0 then
     begin
@@ -660,19 +578,6 @@ begin
       vlMaterialGetChildNode    := nil;
     end;
 
-    if Hvstdlib <> 0 then
-    begin
-      if FreeLibrary(Hvstdlib) = false then
-        LogError('Unable to unload vstdlib.dll');
-      Hvstdlib := 0;
-    end;
-
-    if Htier0 <> 0 then
-    begin
-      if FreeLibrary(Htier0) = false then
-        LogError('Unable to unload tier0.dll');
-      Htier0 := 0;
-    end;
     TimesLoaded := 0;
   end
   else
@@ -683,12 +588,6 @@ end;
 {-------------------}
 
 initialization
-begin
-  Htier0:=0;
-  Hvstdlib:=0;
   HVTFLib:=0;
-  curTier0Module:='';
-  curVstdlibModule:='';
-end;
 
 end.

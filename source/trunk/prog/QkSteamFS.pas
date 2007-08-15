@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.16  2007/03/13 18:59:25  danielpharos
 Changed the interface to the Steam dll-files. Should prevent QuArK from crashing on HL2 files.
 
@@ -97,6 +100,63 @@ begin
   Raise Exception.Create(x);
 end;
 
+function DoFileOperation(Operation: Word; FilesFrom: TStringList; FilesFromCharLength: Integer; FilesTo: TStringList; FilesToCharLength: Integer; FileOpFlags: Word): Boolean;
+
+  procedure ParseFiles(Files: TStringList; Target: Pointer);
+  var
+    Dest: PChar;
+    I: Integer;
+  begin
+    Dest:=Target;
+    for I:=0 to Files.Count-1 do
+    begin
+      StrPCopy(Dest, Files[I]);
+      Inc(Dest, Length(Files[I])+1);
+    end;
+  end;
+
+var
+  PFilesFrom, PFilesTo: Pointer;
+  FileOp: TSHFileOpStruct;
+begin
+  if FilesFrom.Count > 0 then
+  begin
+    GetMem(PFilesFrom, FilesFromCharLength+1);
+    ZeroMemory(PFilesFrom, FilesFromCharLength+1);
+    ParseFiles(FilesFrom, PFilesFrom);
+  end
+  else
+    PFilesFrom := nil;
+  if FilesTo.Count > 0 then
+  begin
+    GetMem(PFilesTo, FilesToCharLength+1);
+    ZeroMemory(PFilesTo, FilesToCharLength+1);
+    ParseFiles(FilesTo, PFilesTo);
+  end
+  else
+   PFilesTo := nil;
+  FillChar(FileOp, SizeOf(FileOp), 0);
+  FileOp.wFunc := Operation;
+  FileOp.pFrom := PFilesFrom;
+  FileOp.pTo := PFilesTo;
+  FileOp.fFlags := FileOpFlags;
+  if SHFileOperation(FileOp) <> 0 then
+  begin
+    if FileOp.fAnyOperationsAborted = false then
+      Log(LOG_WARNING, 'Warning: User aborted file operation!');
+    Result:=false;
+  end
+  else
+  begin
+    Log(LOG_WARNING, 'Warning: File operation failed!');
+    Result:=false;
+  end;
+  if PFilesTo <> nil then
+    FreeMem(PFilesTo);
+  if PFilesFrom <> nil then
+    FreeMem(PFilesFrom);
+end;
+
 function GetGCFFile(const Filename : String) : String;
 var
   Setup: QObject;
@@ -104,6 +164,11 @@ var
   CacheDirectory: String;
   FullFileName: String;
   SteamGCFFile: String;
+  FilesToCopyFrom: TStringList;
+  FilesToCopyFromCharLength: Integer;
+  FilesToCopyTo: TStringList;
+  FilesToCopyToCharLength: Integer;
+  FilesToCopyFlags: Word;
 begin
   Setup:=SetupSubSet(ssGames, 'Steam');
   SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
@@ -120,13 +185,27 @@ begin
     end;
     if Setup.Specifics.Values['CopyGCF'] = '1' then
     begin
-      //@Create the QuArKApps dictory if it doesn't exists!!!
-      if CopyFile(PChar(SteamGCFFile), PChar(FullFileName), True) = false then
+      if DirectoryExists(SteamDirectory+CacheDirectory) = false then
+        if CreateDir(SteamDirectory+CacheDirectory) = false then
+          Fatal('Unable to extract file from Steam. Cannot create cache directory.');
+
+      FilesToCopyFrom:=TStringList.Create;
+      FilesToCopyFrom.Add(SteamGCFFile);
+      FilesToCopyFromCharLength:=Length(SteamGCFFile)+1;
+      FilesToCopyTo:=TStringList.Create;
+      FilesToCopyTo.Add(FullFileName);
+      FilesToCopyToCharLength:=Length(FullFileName)+1;
+      FilesToCopyFlags:=0;
+      if DoFileOperation(FO_COPY, FilesToCopyFrom, FilesToCopyFromCharLength, FilesToCopyTo, FilesToCopyToCharLength, FilesToCopyFlags) = false then
       begin
         Log(LOG_WARNING, 'Unable to copy GCF file to cache: CopyFile failed!');
         Result:=SteamGCFFile;
+        FilesToCopyFrom.Free;
+        FilesToCopyTo.Free;
         Exit;
       end;
+      FilesToCopyFrom.Free;
+      FilesToCopyTo.Free;
     end
     else
     begin
@@ -286,11 +365,8 @@ var
   SteamFullCacheDirectory: String;
   FilesToDelete: TStringList;
   FilesToDeleteCharLength: Integer;
-  FilesDelete: Pointer;
-  Dest: PChar;
+  FilesToDeleteFlags: Word;
   sr: TSearchRec;
-  FileOp: TSHFileOpStruct;
-  I: Integer;
 begin
   Setup:=SetupSubSet(ssGames, 'Steam');
   ClearCache:=Setup.Specifics.Values['Clearcache']<>'';
@@ -305,9 +381,6 @@ begin
   begin
     WarnBeforeClear:=Setup.Specifics.Values['WarnBeforeClear']<>'';
     AllowRecycle:=Setup.Specifics.Values['AllowRecycle']<>'';
-    if WarnBeforeClear then
-      if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_ICONWARNING+ MB_YESNO) = IDNO then
-        Exit;
     if ClearCache then
     begin
       if FindFirst(SteamFullCacheDirectory + '*.*', faDirectory	, sr) = 0 then
@@ -323,41 +396,37 @@ begin
             end;
         until FindNext(sr) <> 0;
         FindClose(sr);
-        if FilesToDelete.Count> 0 then
+        if FilesToDelete.Count > 0 then
         begin
-          GetMem(FilesDelete, FilesToDeleteCharLength+1);
-          ZeroMemory(FilesDelete, FilesToDeleteCharLength+1);
-          Dest:=FilesDelete;
-          for I:=0 to FilesToDelete.Count-1 do
+          if WarnBeforeClear then
           begin
-            StrpCopy(Dest, FilesToDelete[I]);
-            Inc(Dest, Length(FilesToDelete[I])+1);
+            if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_ICONWARNING+ MB_YESNO) = IDNO then
+               Exit;
+            WarnBeforeClear := false;    //So we don't show the warning multiple times!
           end;
-          FilesToDelete.Free;
-          FillChar(FileOp, SizeOf(FileOp), 0);
-          FileOp.wFunc := FO_DELETE;
-          FileOp.pFrom := FilesDelete;
-          FileOp.fFlags := FOF_NOCONFIRMATION;
+          FilesToDeleteFlags := FOF_NOCONFIRMATION;
           if AllowRecycle then
-            FileOp.fFlags := FileOp.fFlags or FOF_ALLOWUNDO;
-          if SHFileOperation(FileOp) <> 0 then
-            if FileOp.fAnyOperationsAborted = false then
-              Log(LOG_WARNING, 'Warning: Clearing of cache failed!');
-          FreeMem(FilesDelete);
+            FilesToDeleteFlags := FilesToDeleteFlags or FOF_ALLOWUNDO;
+          if DoFileOperation(FO_DELETE, FilesToDelete, FilesToDeleteCharLength, nil, 0, FilesToDeleteFlags) = false then
+            Log(LOG_WARNING, 'Warning: Clearing of cache failed!');
         end;
+        FilesToDelete.Free;
       end;
     end;
     if ClearCacheGCF then
     begin
-      FillChar(FileOp, SizeOf(FileOp), 0);
-      FileOp.wFunc := FO_DELETE;
-      FileOp.pFrom := PChar(SteamFullCacheDirectory + '*.gcf'+#0);
-      FileOp.fFlags := FOF_NOCONFIRMATION;
+      if WarnBeforeClear then
+        if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_ICONWARNING+ MB_YESNO) = IDNO then
+          Exit;
+      FilesToDelete := TStringList.Create;
+      FilesToDelete.Add(SteamFullCacheDirectory + '*.gcf');
+      FilesToDeleteCharLength := Length(SteamFullCacheDirectory + '*.gcf')+1;
+      FilesToDeleteFlags := FOF_NOCONFIRMATION;
       if AllowRecycle then
-        FileOp.fFlags := FileOp.fFlags or FOF_ALLOWUNDO;
-      if SHFileOperation(FileOp) <> 0 then
-        if FileOp.fAnyOperationsAborted = false then
-          Log(LOG_WARNING, 'Warning: Clearing of GCF cache failed!');
+        FilesToDeleteFlags := FilesToDeleteFlags or FOF_ALLOWUNDO;
+      if DoFileOperation(FO_DELETE, FilesToDelete, FilesToDeleteCharLength, nil, 0, FilesToDeleteFlags) = false then
+        Log(LOG_WARNING, 'Warning: Clearing of GCF cache failed!');
+      FilesToDelete.Free;
     end;
   end;
 end;

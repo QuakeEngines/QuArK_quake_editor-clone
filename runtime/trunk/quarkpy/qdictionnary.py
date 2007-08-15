@@ -903,7 +903,7 @@ Strings = {
     5709: "VTF file",
     5710: "GCF file",
     5711: "GCF folder",
-    5712: "QuArK is about to clear the Steam cache in %s. Are you sure you want to continue?",
+    5712: "QuArK is about to clear the Steam cache in %s. Are you sure you want QuArK to do this?",
     5713: "steam file system",
     5714: "bad content id: %s",
     5715: "VMF file",
@@ -1019,6 +1019,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.103  2007/08/14 16:33:33  danielpharos
+#HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+#
 #Revision 1.102  2007/08/05 19:55:55  danielpharos
 #Corrected and commented-out an unused and wrong line.
 #

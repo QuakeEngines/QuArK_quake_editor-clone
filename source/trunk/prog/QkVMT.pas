@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.11  2007/07/05 10:18:28  danielpharos
 Moved a string to the dictionary.
 
@@ -299,7 +302,6 @@ var
   ImageType: Integer;
   GroupEndWorkaround: Boolean;
   GroupEndWorkaroundName: String;
-  ReloadVTFLib: Boolean;
 
   NodeLevel: Cardinal;
   NodeType: VMTNodeType;
@@ -312,12 +314,8 @@ begin
   Log(LOG_VERBOSE,'load vmt %s',[self.name]);;
   case ReadFormat of
     1: begin  { as stand-alone file }
-
-      ReloadVTFLib:=ReloadNeededVTFLib;
-      if (not VMTLoaded) or ReloadVTFLib then
+      if not VMTLoaded then
       begin
-        if ReloadVTFLib then
-          VMTLoaded:=false;
         if not LoadVTFLib then
           Raise EErrorFmt(5718, [GetLastError]);
         VMTLoaded:=true;
@@ -446,18 +444,14 @@ var
   Q: QObject;
   RawBuffer: String;
   VMTMaterial, OutputSize: Cardinal;
-  ReloadVTFLib: Boolean;
 begin
  Log(LOG_VERBOSE,'save vmt %s',[self.name]);
  with Info do case Format of
   1:
   begin  { as stand-alone file }
 
-    ReloadVTFLib:=ReloadNeededVTFLib;
-    if (not VMTLoaded) or ReloadVTFLib then
+    if not VMTLoaded then
     begin
-      if ReloadVTFLib then
-        VMTLoaded:=false;
       if not LoadVTFLib then
         Raise EErrorFmt(5718, [GetLastError]);
       VMTLoaded:=true;
