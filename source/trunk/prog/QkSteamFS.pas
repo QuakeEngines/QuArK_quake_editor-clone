@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/08/15 22:18:57  danielpharos
+Forgot to uncomment a single line :|
+
 Revision 1.18  2007/08/15 16:28:08  danielpharos
 HUGE update to HL2: Took out some code that's now not needed anymore.
 
@@ -103,7 +106,7 @@ begin
   Raise Exception.Create(x);
 end;
 
-function DoFileOperation(Operation: Word; FilesFrom: TStringList; FilesFromCharLength: Integer; FilesTo: TStringList; FilesToCharLength: Integer; FileOpFlags: Word): Boolean;
+function DoFileOperation(Operation: Word; FilesFrom: TStringList; FilesTo: TStringList; FileOpFlags: Word): Boolean;
 
   procedure ParseFiles(Files: TStringList; Target: Pointer);
   var
@@ -121,9 +124,15 @@ function DoFileOperation(Operation: Word; FilesFrom: TStringList; FilesFromCharL
 var
   PFilesFrom, PFilesTo: Pointer;
   FileOp: TSHFileOpStruct;
+  FilesFromCharLength: Integer;
+  FilesToCharLength: Integer;
+  I: Integer;
 begin
   if FilesFrom.Count > 0 then
   begin
+    FilesFromCharLength := 1;
+    for I:=0 to FilesFrom.Count-1 do
+      FilesFromCharLength := FilesFromCharLength + Length(FilesFrom[I]) + 1;
     GetMem(PFilesFrom, FilesFromCharLength+1);
     ZeroMemory(PFilesFrom, FilesFromCharLength+1);
     ParseFiles(FilesFrom, PFilesFrom);
@@ -132,12 +141,15 @@ begin
     PFilesFrom := nil;
   if FilesTo.Count > 0 then
   begin
+    FilesToCharLength := 1;
+    for I:=0 to FilesTo.Count-1 do
+      FilesToCharLength := FilesToCharLength + Length(FilesTo[I]) + 1;
     GetMem(PFilesTo, FilesToCharLength+1);
     ZeroMemory(PFilesTo, FilesToCharLength+1);
     ParseFiles(FilesTo, PFilesTo);
   end
   else
-   PFilesTo := nil;
+    PFilesTo := nil;
   FillChar(FileOp, SizeOf(FileOp), 0);
   FileOp.wFunc := Operation;
   FileOp.pFrom := PFilesFrom;
@@ -168,9 +180,7 @@ var
   FullFileName: String;
   SteamGCFFile: String;
   FilesToCopyFrom: TStringList;
-  FilesToCopyFromCharLength: Integer;
   FilesToCopyTo: TStringList;
-  FilesToCopyToCharLength: Integer;
   FilesToCopyFlags: Word;
 begin
   Setup:=SetupSubSet(ssGames, 'Steam');
@@ -194,12 +204,10 @@ begin
 
       FilesToCopyFrom:=TStringList.Create;
       FilesToCopyFrom.Add(SteamGCFFile);
-      FilesToCopyFromCharLength:=Length(SteamGCFFile)+1;
       FilesToCopyTo:=TStringList.Create;
       FilesToCopyTo.Add(FullFileName);
-      FilesToCopyToCharLength:=Length(FullFileName)+1;
       FilesToCopyFlags:=0;
-      if DoFileOperation(FO_COPY, FilesToCopyFrom, FilesToCopyFromCharLength, FilesToCopyTo, FilesToCopyToCharLength, FilesToCopyFlags) = false then
+      if DoFileOperation(FO_COPY, FilesToCopyFrom, FilesToCopyTo, FilesToCopyFlags) = false then
       begin
         Log(LOG_WARNING, 'Unable to copy GCF file to cache: CopyFile failed!');
         Result:=SteamGCFFile;
@@ -367,7 +375,6 @@ var
   WarnBeforeClear, AllowRecycle, ClearCache, ClearCacheGCF: Boolean;
   SteamFullCacheDirectory: String;
   FilesToDelete: TStringList;
-  FilesToDeleteCharLength: Integer;
   FilesToDeleteFlags: Word;
   sr: TSearchRec;
 begin
@@ -388,15 +395,11 @@ begin
     begin
       if FindFirst(SteamFullCacheDirectory + '*.*', faDirectory	, sr) = 0 then
       begin
-        FilesToDeleteCharLength:=0;
         FilesToDelete := TStringList.Create;
         repeat
           if (sr.name <> '.') and (sr.name <> '..') then
             if Lowercase(RightStr(sr.Name, 4)) <> '.gcf' then
-            begin
               FilesToDelete.Add(SteamFullCacheDirectory + sr.Name);
-              FilesToDeleteCharLength:=FilesToDeleteCharLength+Length(FilesToDelete[FilesToDelete.Count-1])+1;
-            end;
         until FindNext(sr) <> 0;
         FindClose(sr);
         if FilesToDelete.Count > 0 then
@@ -410,7 +413,7 @@ begin
           FilesToDeleteFlags := FOF_NOCONFIRMATION;
           if AllowRecycle then
             FilesToDeleteFlags := FilesToDeleteFlags or FOF_ALLOWUNDO;
-          if DoFileOperation(FO_DELETE, FilesToDelete, FilesToDeleteCharLength, nil, 0, FilesToDeleteFlags) = false then
+          if DoFileOperation(FO_DELETE, FilesToDelete, nil, FilesToDeleteFlags) = false then
             Log(LOG_WARNING, 'Warning: Clearing of cache failed!');
         end;
         FilesToDelete.Free;
@@ -423,11 +426,10 @@ begin
           Exit;
       FilesToDelete := TStringList.Create;
       FilesToDelete.Add(SteamFullCacheDirectory + '*.gcf');
-      FilesToDeleteCharLength := Length(SteamFullCacheDirectory + '*.gcf')+1;
       FilesToDeleteFlags := FOF_NOCONFIRMATION;
       if AllowRecycle then
         FilesToDeleteFlags := FilesToDeleteFlags or FOF_ALLOWUNDO;
-      if DoFileOperation(FO_DELETE, FilesToDelete, FilesToDeleteCharLength, nil, 0, FilesToDeleteFlags) = false then
+      if DoFileOperation(FO_DELETE, FilesToDelete, nil, FilesToDeleteFlags) = false then
         Log(LOG_WARNING, 'Warning: Clearing of GCF cache failed!');
       FilesToDelete.Free;
     end;
