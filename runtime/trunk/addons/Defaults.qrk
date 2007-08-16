@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.348  2007/08/16 12:43:19  danielpharos
+//Change the name of HL2 back for backwards compatibility reasons.
+//
 //Revision 1.347  2007/08/15 22:35:48  danielpharos
 //Change the name of HL2 back for backwards compatibility reasons.
 //
@@ -4083,7 +4086,7 @@ QQRKSRC1
     {
       Style = "3"
       sep: = {Typ="S" Txt="---- Game Settings ----"}
-      L0: = {Typ="S" Bold="0" Txt="Note: Don't forget so also configure the Steam settings!"}
+      L0: = {Typ="S" Bold="0" Txt="Note: Don't forget to also configure the Steam settings!"}
       Program: =
       {
         Txt = "Half-Life 2 command-line"
