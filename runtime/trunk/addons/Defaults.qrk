@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.347  2007/08/15 22:35:48  danielpharos
+//Change the name of HL2 back for backwards compatibility reasons.
+//
 //Revision 1.346  2007/08/15 15:43:55  danielpharos
 //Fixed two default-settings typo's in the Steam config concerning the cache.
 //
@@ -4149,27 +4152,27 @@ QQRKSRC1
       DefaultTexture: =
       {
         t_DefaultTexture = !
-        GameCfg = "Half-Life 2"
+        GameCfg = "Half-Life2"
       }
       DefaultTextureTerrain: =
       {
         t_DefaultTextureTerrain = !
-        GameCfg = "Half-Life 2"
+        GameCfg = "Half-Life2"
       }
       DefaultTextureTrigger: =
       {
         t_DefaultTextureTrigger = !
-        GameCfg = "Half-Life 2"
+        GameCfg = "Half-Life2"
       }
       DefaultTextureClip: =
       {
         t_DefaultTextureClip = !
-        GameCfg = "Half-Life 2"
+        GameCfg = "Half-Life2"
       }
       DefaultTextureOrigin: =
       {
         t_DefaultTextureOrigin = !
-        GameCfg = "Half-Life 2"
+        GameCfg = "Half-Life2"
       }
       3DLight: =
       {
@@ -7767,7 +7770,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Half-Life 2"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"RTCW_ET"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"$0D"Quake 4"
+        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Half-Life2"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"RTCW_ET"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"$0D"Quake 4"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {

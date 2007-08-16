@@ -130,7 +130,7 @@ QQRKSRC1
 
   NewMap:incl =
   {
-    Game = "Half-Life 2"
+    Game = "Half-Life2"
     Root = "worldspawn:b"
     worldspawn:b =
     {
@@ -398,9 +398,9 @@ QQRKSRC1
       }
     }
   }
-  Half-Life 2 setup.qctx =
+  Half-Life2 setup.qctx =
   {
-    Game = "Half-Life 2"
+    Game = "Half-Life2"
     HTML = "help/index.html"
   }
 }
