@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.57  2007/08/02 16:06:45  danielpharos
 Reserved a gamecode for Prey.
 
@@ -355,6 +358,7 @@ function AssociationWithQuArK(const FileExt: String) : Boolean;
 function UsesMiptex : boolean; overload;
 function UsesMiptex(mj : Char) : boolean; overload;
 procedure StoreTexExtensions; {--CONVEX--}
+procedure StorePakExtensions; {--CONVEX--}
 
  {------------------------}
 
@@ -1167,6 +1171,7 @@ begin
   Raise EErrorFmt(5542, [CharModeJeu+nMode]);
  ChangeGameModeStr(S, Confirm);
  StoreTexExtensions; {--Convex--}
+ StorePakExtensions; {--Convex--}
 end;
 
 function GameModeOk(nMode: Char) : Boolean;
