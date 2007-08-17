@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/08/15 22:34:14  danielpharos
+Simplified the DoFileOperation call.
+
 Revision 1.19  2007/08/15 22:18:57  danielpharos
 Forgot to uncomment a single line :|
 
@@ -128,7 +131,7 @@ var
   FilesToCharLength: Integer;
   I: Integer;
 begin
-  if FilesFrom.Count > 0 then
+  if (FilesFrom<>nil) and (FilesFrom.Count > 0) then
   begin
     FilesFromCharLength := 1;
     for I:=0 to FilesFrom.Count-1 do
@@ -139,7 +142,7 @@ begin
   end
   else
     PFilesFrom := nil;
-  if FilesTo.Count > 0 then
+  if (FilesTo<>nil) and (FilesTo.Count > 0) then
   begin
     FilesToCharLength := 1;
     for I:=0 to FilesTo.Count-1 do
