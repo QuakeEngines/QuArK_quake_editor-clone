@@ -358,7 +358,7 @@ class BaseEditor:
             try:
                 if currentview.info["viewname"] == "skinview" or view.info["viewname"] == "skinview":
                     if (flagsmouse != 536 or flagsmouse != 1048 or flagsmouse != 2072) and (view.info["viewname"] == "skinview"):
-                            quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = "1"
+
                         cv = view.canvas()
                         tex = self.Root.currentcomponent.currentskin
                         if tex is not None:
@@ -414,13 +414,11 @@ class BaseEditor:
                                 cv.pencolor = MapColor("SkinLines", SS_MODEL)
                             if flagsmouse == 16384:
                                 if MldOption("Ticks") == "1":
-                                    cv.pencolor = MapColor("Vertices", SS_MODEL)
                                     cv.brushcolor = WHITE
                                     cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
                                     cv.ellipse(int(vertex1X)-2, int(vertex1Y)-2, int(vertex1X)+2, int(vertex1Y)+2)
                                     cv.ellipse(int(vertex2X)-2, int(vertex2Y)-2, int(vertex2X)+2, int(vertex2Y)+2)
                                 else:
-                                    cv.pencolor = MapColor("Vertices", SS_MODEL)
                                     cv.ellipse(int(vertex0X)-1, int(vertex0Y)-1, int(vertex0X)+1, int(vertex0Y)+1)
                                     cv.ellipse(int(vertex1X)-1, int(vertex1Y)-1, int(vertex1X)+1, int(vertex1Y)+1)
                                     cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
@@ -1341,6 +1339,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.81  2007/08/20 19:58:24  cdunde
+#Added Linear Handle to the Model Editor's Skin-view page
+#and setup color selection and drag options for it and other fixes.
+#
 #Revision 1.80  2007/08/11 02:38:40  cdunde
 #To increase drawing speed of Skin-view rectangle selection drag handle.
 #

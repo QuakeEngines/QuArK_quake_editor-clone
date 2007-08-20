@@ -2208,8 +2208,6 @@ class LinCornerHandle(LinearHandle):
   ### Scaling (zooming) section.
         else:
             rotationspeed = quarkx.setupsubset(SS_MODEL,"Building")['LinRotationSpeed'][0]
-         #   v = npos.normalized* abs(texp4)
-       #     v = self.mgr.center+quarkx.vect(0,0,delta.normalized.tuple[2]*50)
             v = self.mgr.center
             m = quarkx.matrix((1,0,0),(0,1,0),(0,0,1))  # Forces pure zooming.
             if diff is None:
@@ -2336,6 +2334,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.76  2007/08/20 19:58:24  cdunde
+#Added Linear Handle to the Model Editor's Skin-view page
+#and setup color selection and drag options for it and other fixes.
+#
 #Revision 1.75  2007/08/08 21:07:48  cdunde
 #To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
 #for vertex selection in those views.

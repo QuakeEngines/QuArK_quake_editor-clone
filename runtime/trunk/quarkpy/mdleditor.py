@@ -832,14 +832,10 @@ def commonhandles(self, redraw=1):
         if flagsmouse == 536:
             return
             
-     #   if flagsmouse == 2072: ## This FINNALLY STOPS EVERYTHING
-     #       return
-            
         if flagsmouse == 2072 and isinstance(self.dragobject, qhandles.FreeZoomDragObject):
             self.dragobject = None
         
         if flagsmouse == 2072 and isinstance(self.dragobject, mdlhandles.VertexHandle):
-    #        self.dragobject = None
             return
 
         if currentview.info["viewname"] =="3Dwindow":
@@ -1198,6 +1194,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.60  2007/08/20 19:58:24  cdunde
+#Added Linear Handle to the Model Editor's Skin-view page
+#and setup color selection and drag options for it and other fixes.
+#
 #Revision 1.59  2007/08/11 02:39:20  cdunde
 #To stop Linear Drag toolbar button from causing duplicate view drawings.
 #
