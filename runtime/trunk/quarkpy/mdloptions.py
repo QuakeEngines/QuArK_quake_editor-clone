@@ -228,6 +228,7 @@ def mSFSISV(m):
 def mPFSTSV(m):
     # Pass selection to Skin-view function.
     editor = mdleditor.mdleditor
+    from mdlhandles import SkinView1
     if not MldOption("PFSTSV"):
         quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
@@ -237,11 +238,18 @@ def mPFSTSV(m):
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = "1"
         editor.SkinFaceSelList = editor.ModelFaceSelList
+        import mdlutils
+        import mdlhandles
+        mdlutils.PassEditorSel2Skin(editor, 2)
+        try:
+            skindrawobject = editor.Root.currentcomponent.currentskin
+        except:
+            skindrawobject = None
+        mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
-    from mdlhandles import SkinView1
-    if SkinView1 is not None:
-        SkinView1.invalidate(1)
+        if SkinView1 is not None:
+            SkinView1.invalidate(1)
 
 
 def mNFO(m):
@@ -344,11 +352,11 @@ def VertexMenu(editor):
                 from mdlhandles import SkinView1
                 if SkinView1 is not None:
                     mdlutils.PassEditorSel2Skin(editor)
-                    SkinView1.repaint()
-                    cv = SkinView1.canvas()
-                    for vertex in editor.SkinVertexSelList:
-                        h = vertex[1]
-                        h.draw(SkinView1, cv, h)
+                    try:
+                        skindrawobject = editor.Root.currentcomponent.currentskin
+                    except:
+                        skindrawobject = None
+                    mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
             else:
                 editor.SkinVertexSelList = []
                 from mdlhandles import SkinView1
@@ -368,11 +376,13 @@ def VertexMenu(editor):
             from mdlhandles import SkinView1
             if SkinView1 is not None:
                 import mdlutils
+                import mdlhandles
                 mdlutils.PassEditorSel2Skin(editor)
-                cv = SkinView1.canvas()
-                for vertex in editor.SkinVertexSelList:
-                    h = vertex[1]
-                    h.draw(SkinView1, cv, h)
+                try:
+                    skindrawobject = editor.Root.currentcomponent.currentskin
+                except:
+                    skindrawobject = None
+                mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
 
@@ -394,23 +404,29 @@ def SkinViewOptionsMenu(editor):
         editor = mdleditor.mdleditor
         if not MldOption("SYNC_EDwSV"):
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = "1"
-            quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
+            quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
             import mdlutils
+            import mdlhandles
             if editor.SkinVertexSelList != []:
                 editor.ModelVertexSelList = []
                 mdlutils.PassSkinSel2Editor(editor)
+                handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                for v in editor.layout.views:
+                    if v.info["viewname"] == "skinview":
+                        continue
+                    v.handles = handles
                 mdlutils.Update_Editor_Views(editor, 1)
             else:
-                if editor.ModelVertexSelList != []:
-                    if SkinView1 is not None:
-                        mdlutils.PassEditorSel2Skin(editor)
-                        cv = SkinView1.canvas()
-                        for vertex in editor.SkinVertexSelList:
-                            h = vertex[1]
-                            h.draw(SkinView1, cv, h)
+                editor.ModelVertexSelList = []
+                handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                for v in editor.layout.views:
+                    if v.info["viewname"] == "skinview":
+                        continue
+                    v.handles = handles
+                mdlutils.Update_Editor_Views(editor, 1)
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
 
@@ -424,8 +440,14 @@ def SkinViewOptionsMenu(editor):
             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
             import mdlutils
+            import mdlhandles
             if editor.SkinVertexSelList != []:
                 mdlutils.PassSkinSel2Editor(editor)
+                handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
+                for v in editor.layout.views:
+                    if v.info["viewname"] == "skinview":
+                        continue
+                    v.handles = handles
                 mdlutils.Update_Editor_Views(editor, 5)
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
@@ -520,6 +542,10 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.22  2007/08/11 02:37:36  cdunde
+#To stop crossover of face and vertex selections in
+#the editor and Skin-view causing error to occur.
+#
 #Revision 1.21  2007/07/14 22:42:43  cdunde
 #Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
 #Can run either way with single pick selection or rectangle drag selection in all views.

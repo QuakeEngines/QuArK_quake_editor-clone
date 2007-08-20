@@ -68,7 +68,7 @@ class ConfigDialog(qmacro.dialogbox):
     dlgflags = FWF_NOESCCLOSE
     begincolor = RED
     endcolor = MAROON
-    size = (300,260)
+    size = (300,300)
     dlgdef = """
       {
         Style = "9"
@@ -100,16 +100,23 @@ class ConfigDialog(qmacro.dialogbox):
           Txt="Linear Handle Setting :"
           Typ="EF"
           Min="0.01"
-          Hint="larger value makes the handle bigger & visa-versa, default is 8"
+          Hint="larger value makes the handle bigger & visa-versa, default is 4"
         }
         LinRotationSpeed: = {
           Txt="Linear Rotation Speed :"
           Typ="EF0001"
           Min="0.01"
-          Hint="larger value causes faster rotation & visa-versa, default is .2"
+          Hint="larger value causes faster rotation & visa-versa, default is .057"
+        }
+        SkinLinearSetting: = {
+          Txt="Skin-view Linear Setting :"
+          Typ="EF"
+          Min="0.01"
+          Hint="larger value makes the handle bigger & visa-versa, default is 4"
         }
         sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
+        applychange:py = {Txt="" }
         ok:py = {Txt="" }
         cancel:py = {Txt="" }
       }
@@ -122,14 +129,47 @@ class ConfigDialog(qmacro.dialogbox):
             self.mode = menu
         setup = quarkx.setupsubset(self.mode, "Building").copy()
         qmacro.dialogbox.__init__(self, quarkx.clickform, setup,
-          ok = qtoolbar.button(self.close, "close this box", ico_editor, 3, "Close"),
+          applychange = qtoolbar.button(self.apply, "apply the change", ico_editor, 1, "Apply"),
+          ok = qtoolbar.button(self.close, "apply and close", ico_editor, 3, "Close"),
           cancel = qtoolbar.button(self.cancel, "cancel changes", ico_editor, 0, "Cancel"))
+
+    def apply(self, dlg):
+        if self.src is not None:
+            quarkx.globalaccept()
+            setup = quarkx.setupsubset(self.mode, "Building")
+            setup.copyalldata(self.src)
+            import mdleditor
+            if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
+                editor = mdleditor.mdleditor
+                if len(editor.ModelVertexSelList) > 1 or len(editor.ModelFaceSelList) > 1 or len(editor.SkinVertexSelList) > 1:
+                    quarkx.reloadsetup()
+                    from mdlhandles import SkinView1
+                    if SkinView1 is not None:
+                        import mdlhandles
+                        try:
+                            skindrawobject = editor.Root.currentcomponent.currentskin
+                        except:
+                            skindrawobject = None
+                        mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
 
     def onclose(self, dlg):
         if self.src is not None:
             quarkx.globalaccept()
             setup = quarkx.setupsubset(self.mode, "Building")
             setup.copyalldata(self.src)
+            import mdleditor
+            if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
+                editor = mdleditor.mdleditor
+                if len(editor.ModelVertexSelList) > 1 or len(editor.ModelFaceSelList) > 1 or len(editor.SkinVertexSelList) > 1:
+                    quarkx.reloadsetup()
+                    from mdlhandles import SkinView1
+                    if SkinView1 is not None:
+                        import mdlhandles
+                        try:
+                            skindrawobject = editor.Root.currentcomponent.currentskin
+                        except:
+                            skindrawobject = None
+                        mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
         qmacro.dialogbox.onclose(self, dlg)
 
     def cancel(self, reserved):
@@ -223,6 +263,10 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.13  2007/08/01 06:09:24  cdunde
+#Setup variable setting for Model Editor 'Linear Handle (size) Setting' and
+#'Rotation Speed' using the 'cfg' button on the movement toolbar.
+#
 #Revision 1.12  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

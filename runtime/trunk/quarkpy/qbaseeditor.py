@@ -84,6 +84,7 @@ class BaseEditor:
 
     def drawmap(self, view):
         "Draws the map/model on the given view."
+        import mdleditor
         try:
             list = self.list
         except:
@@ -105,12 +106,21 @@ class BaseEditor:
         #
 
         scale1 = self.lastscale
-        if scale1<=0: scale1=1.0
-        if view.info["type"]!="3D":
-            try:
-                scale1 = view.info["scale"]
-            except KeyError:
-                pass
+        if scale1<=0:
+            scale1=1.0
+        if isinstance(self, mdleditor.ModelEditor):
+            # Stops duplicate drawing of handles in all views after a zoom in a 3D view.
+            if view.info["type"] != "3D" and (view.info["viewname"] != "editors3Dview" and view.info["viewname"] != "3Dwindow"):
+                try:
+                    scale1 = view.info["scale"]
+                except KeyError:
+                    pass
+        else:
+            if view.info["type"]!="3D":
+                try:
+                    scale1 = view.info["scale"]
+                except KeyError:
+                    pass
 
         #
         # If the scale has just changed, we must rebuild the handles
@@ -182,6 +192,11 @@ class BaseEditor:
                     highlight = 0
 
                 gs = self.gridstep
+                # Should have a check like this to stop division by 0 errors.
+                if gs == 0:
+                    gs = 1
+                if self.lastscale == 0:
+                    self.lastscale = 1
                 diff = setup["GridMinStep"][0] / (gs*self.lastscale)
                 if diff>1:
                     if diff*diff*diff > highlight:
@@ -342,12 +357,7 @@ class BaseEditor:
         if isinstance(self, mdleditor.ModelEditor):
             try:
                 if currentview.info["viewname"] == "skinview" or view.info["viewname"] == "skinview":
-                    if (flagsmouse == 520 or flagsmouse == 528 or flagsmouse == 544 or flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080 or flagsmouse == 16384) and (view.info["viewname"] == "skinview"):
-                        if flagsmouse == 2056 and quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1":
-                            quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
-                            quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = "1"
-                        if flagsmouse == 2056 and quarkx.setupsubset(SS_MODEL, "Options")["SYNC_SVwED"] == "1":
-                            quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
+                    if (flagsmouse != 536 or flagsmouse != 1048 or flagsmouse != 2072) and (view.info["viewname"] == "skinview"):
                             quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = "1"
                         cv = view.canvas()
                         tex = self.Root.currentcomponent.currentskin
@@ -360,15 +370,15 @@ class BaseEditor:
                                 texWidth,texHeight = view.clientarea
                         if flagsmouse == 520 or flagsmouse == 1032:
                             pass
+
                         else:
                             if (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1"):
                                 self.SkinFaceSelList = self.ModelFaceSelList
-                                if quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1":
-                                    import mdlutils
-                                    mdlutils.PassEditorSel2Skin(self, 3)
+
                         tricount = -1
                         cv.pencolor = MapColor("SkinLines", SS_MODEL)
                         for triangle in self.Root.currentcomponent.triangles:
+                            faceselected = 0
                             tricount = tricount + 1
                             if flagsmouse == 520 or flagsmouse == 1032:
                                 pass
@@ -378,12 +388,15 @@ class BaseEditor:
                                         if tricount == triangleindex:
                                             if quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1":
                                                 cv.pencolor = MapColor("SkinViewFaceOutline", SS_MODEL)
+                                                faceselected = 1
                                                 break
                                             elif quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1":
                                                 cv.pencolor = MapColor("SkinViewFaceSelected", SS_MODEL)
+                                                faceselected = 1
                                                 break
                                             else:
                                                 cv.pencolor = MapColor("SkinViewFaceSelected", SS_MODEL)
+                                                faceselected = 1
                                                 break
                             vertex0 = triangle[0]
                             vertex1 = triangle[1]
@@ -397,6 +410,8 @@ class BaseEditor:
                             cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
                             cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
                             cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
+                            if faceselected != 0:
+                                cv.pencolor = MapColor("SkinLines", SS_MODEL)
                             if flagsmouse == 16384:
                                 if MldOption("Ticks") == "1":
                                     cv.pencolor = MapColor("Vertices", SS_MODEL)
@@ -842,6 +857,7 @@ class BaseEditor:
                     if isinstance(self, mdleditor.ModelEditor):
                         import mdlhandles
                         try:
+                            # This returns during Linear Handle drag so that actual drag hints will appear properly in the 'Help box'.
                             if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.dragobject.handle, mdlhandles.LinCornerHandle) or isinstance(self.dragobject.handle, mdlhandles.LinSideHandle):
                                 return
                         except:
@@ -892,7 +908,36 @@ class BaseEditor:
             else:
                 if isinstance(self, mdleditor.ModelEditor):
                     if view.info["viewname"] == "skinview":
-                        if handle.comp.currentskin is not None:
+                        if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
+                            try:
+                                tex = self.Root.currentcomponent.currentskin
+                                texWidth,texHeight = tex["Size"]
+                            except:
+                                texWidth,texHeight = view.clientarea
+                            try:
+                                if handle.pos.x > (texWidth * .5):
+                                    Xstart = int((handle.pos.x / texWidth) -.5)
+                                    Xstartpos = -texWidth + handle.pos.x - (texWidth * Xstart)
+                                elif handle.pos.x < (-texWidth * .5):
+                                    Xstart = int((handle.pos.x / texWidth) +.5)
+                                    Xstartpos = texWidth + handle.pos.x + (texWidth * -Xstart)
+                                else:
+                                    Xstartpos = handle.pos.x
+
+                                if -handle.pos.y > (texHeight * .5):
+                                    Ystart = int((-handle.pos.y / texHeight) -.5)
+                                    Ystartpos = -texHeight + -handle.pos.y - (texHeight * Ystart)
+                                elif -handle.pos.y < (-texHeight * .5):
+                                    Ystart = int((-handle.pos.y / texHeight) +.5)
+                                    Ystartpos = texHeight + -handle.pos.y + (texHeight * -Ystart)
+                                else:
+                                    Ystartpos = -handle.pos.y
+
+                                ### shows the true vertex position in relation to each tile section of the texture.
+                                s = "Linear handle pos " + " x:%s"%ftoss(Xstartpos) + " y:%s"%ftoss(Ystartpos)
+                            except:
+                                s = str(handle.pos)
+                        elif self.Root.currentcomponent.currentskin is not None:
                             try:
                                 texWidth = handle.texWidth
                                 texHeight = handle.texHeight
@@ -920,6 +965,15 @@ class BaseEditor:
                                 s = quarkx.getlonghint(handle.hint)
                         else:
                             s = "Skin tri \\ vertex " + str(handle.tri_index) + " \\ " + str(handle.ver_index) + " x:%s"%ftoss(x) + " y:%s"%ftoss(y)
+                    elif (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
+                        if view.info["viewname"] == "XY":
+                            s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.x) + " y:%s"%ftoss(handle.pos.y)
+                        elif view.info["viewname"] == "XZ":
+                            s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.x) + " y:%s"%ftoss(handle.pos.z)
+                        elif view.info["viewname"] == "YZ":
+                            s = "Linear handle pos " + " x:%s"%ftoss(handle.pos.y) + " y:%s"%ftoss(handle.pos.z)
+                        else:
+                            s = "Linear handle pos " + " x,y,z: %s"%handle.pos
                     else:
                         try:
                             s = view.info["viewname"] + " view"
@@ -1101,7 +1155,8 @@ class BaseEditor:
         self.savesetupinfos()
         import mdleditor
         if isinstance(self, mdleditor.ModelEditor):
-            mdleditor.commonhandles(self)
+            import mdlutils
+            mdlutils.Update_Editor_Views(self)
         else:
             if repaint:
                 self.invalidateviews()
@@ -1286,6 +1341,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.80  2007/08/11 02:38:40  cdunde
+#To increase drawing speed of Skin-view rectangle selection drag handle.
+#
 #Revision 1.79  2007/08/08 21:07:48  cdunde
 #To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
 #for vertex selection in those views.

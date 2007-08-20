@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.349  2007/08/16 14:28:40  danielpharos
+//Fixed (another) typo :|
+//
 //Revision 1.348  2007/08/16 12:43:19  danielpharos
 //Change the name of HL2 back for backwards compatibility reasons.
 //
@@ -3306,8 +3309,9 @@ QQRKSRC1
         mpRotate = '15'
         ForceAngleStep = '15'
         LinearWarning = "1"
-        LinearSetting = '8'
-        LinRotationSpeed = '.2'
+        LinearSetting = '4'
+        LinRotationSpeed = '.057'
+        SkinLinearSetting = '4'
         Form = "MdlBuilding"
       }
       Display:config =
@@ -6534,7 +6538,7 @@ QQRKSRC1
       ModelAxisY:              = { Txt = "Models Y Axis" Typ = "LI" }
       ModelAxisZ:              = { Txt = "Models Z Axis" Typ = "LI" }
       Vertices:                = { Txt = "Vertex dots" Typ = "LI" }
-      Drag3DLines:             = { Txt = "Drag Lines / Picked Vertexes" Typ = "LI" }
+      Drag3DLines:             = { Txt = "Drag Lines/ Rec Selector / Picked Vertexes" Typ = "LI" }
       FaceSelOutline:          = { Txt = "Selected Faces Outline Color" Typ = "LI" }
       BackFaceColor1:          = { Txt = "Back Faces Pattern - color 1" Typ = "LI" }
       BackFaceColor2:          = { Txt = "Back Faces Pattern - color 2" Typ = "LI" }
@@ -6549,7 +6553,7 @@ QQRKSRC1
         Txt = "Skin-view:"
       }
       SkinLines:               = { Txt = "Skin Mesh Lines" Typ = "LI" }
-      SkinDragLines:           = { Txt = "Drag Lines / Base Vertex pick" Typ = "LI" }
+      SkinDragLines:           = { Txt = "Drag Lines/ Rec Selector / Base Vertex pick" Typ = "LI" }
       SkinVertexSelListColor:  = { Txt = "Skin Vertex picks" Typ = "LI" }
       SkinViewFaceOutline:     = { Txt = "Face Outline" Typ = "LI" }
       SkinViewFaceSelected:    = { Txt = "Face Selected" Typ = "LI" }

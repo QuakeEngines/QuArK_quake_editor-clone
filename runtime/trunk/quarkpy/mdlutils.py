@@ -74,6 +74,8 @@ def findTriangle(comp, v1, v2, v3):
 #
 # Find other triangles containing a vertex at the same location
 # as the one selected creating a VertexHandle instance.
+# ONLY returns the triangle objects themselves, but NOT their tri_index numbers.
+# To get both use the findTrianglesAndIndex function below this one.
 # For example call this function like this (for clarity):
 #    component = editor.layout.explorer.uniquesel
 #    handlevertex = self.index
@@ -88,9 +90,41 @@ def findTriangles(comp, index):
     tris = comp.triangles
     tris_out = [ ]
     for tri in tris:
-        isit = checkTriangle(tri, index)
-        if (isit == 1):
+        found_com_vtx_pos_tri = checkTriangle(tri, index)
+        if (found_com_vtx_pos_tri == 1):
             tris_out = tris_out + [ tri ]
+    return tris_out
+    
+    
+    
+#
+# Find and return other triangles (AND their tri_index and ver_index_order_pos numbers)
+# containing a vertex at the same location as the one selected creating a VertexHandle instance.
+# Also returns each triangles vertex, vert)index and vert_pos for the following complete list items.
+###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
+#   Editor vertexes  (frame_vertices_index, view.proj(pos), tri_index, ver_index_order_pos, (tri_vert0,tri_vert1,tri_vert2))
+#                    Created using:    editor.Root.currentcomponent.currentframe.vertices
+#                                         (see Infobase docs help/src.quarkx.html#objectsmodeleditor)
+#                               item 0: Its "Frame" "vertices" number, which is the same number as a triangles "ver_index" number.
+#                               item 1: Its 3D grid pos "projected" to a x,y 2D view position.
+#                                       The "pos" needs to be a projected position for a decent size application
+#                                       to the "Skin-view" when a new triangle is made in the editor.
+#                               item 2: The Model component mesh triangle number this vertex is used in (usually more then one triangle).
+#                               item 3: The ver_index_order_pos number is its order number position of the triangle points, either 0, 1 or 2.
+#                               item 4: All 3 of the triangles vertexes data (ver_index, u and v (or x,y) projected texture 2D Skin-view positions)
+# 
+def findTrianglesAndIndexes(comp, vert_index, vert_pos):
+    tris = comp.triangles
+    tris_out = [ ]
+    for tri_index in range(len(tris)):
+        found_com_vtx_pos_tri = checkTriangle(tris[tri_index], vert_index)
+        if (found_com_vtx_pos_tri == 1):
+            if vert_index == tris[tri_index][0][0]:
+                tris_out = tris_out + [[vert_index, vert_pos, tri_index, 0, tris[tri_index]]]
+            elif vert_index == tris[tri_index][1][0]:
+                tris_out = tris_out + [[vert_index, vert_pos, tri_index, 1, tris[tri_index]]]
+            else:
+                tris_out = tris_out + [[vert_index, vert_pos, tri_index, 2, tris[tri_index]]]
     return tris_out
 
 
@@ -122,12 +156,15 @@ def fixUpVertexNos(tris, index):
 
 
 def MakeEditorVertexPolyObject(editor, option=0):
-    "Creates a QuArK Internal Group Object which consist of QuArK internal Poly Objects created from each selected vertex in the"
-    "ModelVertexSelList that can be manipulated by some function using QuArK Internal Poly Objects such as the Linear Handle."
+    "Creates a QuArK Internal Group Object which consist of QuArK internal Poly Objects"
+    "created from each selected vertex in the"
+    "option=0 uses the ModelVertexSelList for the editor and"
+    "option=1 uses the SkinVertexSelList for the Skin-view"
+    "that can be manipulated by some function using QuArK Internal Poly Objects"
+    "such as the Linear Handle functions."
 
-    from qbaseeditor import currentview
-    
     if option == 0:
+        from qbaseeditor import currentview
         polylist = []
         group = quarkx.newobj("selected:g");
         for vtx in range (len(editor.Root.currentcomponent.currentframe.vertices)):
@@ -140,42 +177,141 @@ def MakeEditorVertexPolyObject(editor, option=0):
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
                     p.appenditem(face)
                     face = quarkx.newobj("west:f")
                     vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(-1.0,0.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(-1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
                     p.appenditem(face)
                     face = quarkx.newobj("north:f")
                     vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
                     p.appenditem(face)
                     face = quarkx.newobj("south:f")
                     vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,-1.0,0.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
                     p.appenditem(face)
                     face = quarkx.newobj("up:f")
                     vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,1.0)/currentview.info["scale"]*2).tuple
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,1.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
                     p.appenditem(face)
                     face = quarkx.newobj("down:f")
                     vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,-1.0)/currentview.info["scale"]*2).tuple
                     vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,-1.0)/currentview.info["scale"]*2).tuple
                     vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,-1.0)/currentview.info["scale"]*2).tuple
                     face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-                    face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
+                    p.appenditem(face)
+                    group.appenditem(p)
+
+        polylist = polylist + [group]
+        return polylist
+    
+    if option == 1:
+        from mdlhandles import SkinView1
+        import mdlhandles
+        from qbaseeditor import currentview
+        polylist = []
+        group = quarkx.newobj("selected:g");
+        for vtx in range (len(SkinView1.handles)):
+            if (isinstance(SkinView1.handles[vtx], mdlhandles.LinRedHandle)) or (isinstance(SkinView1.handles[vtx], mdlhandles.LinSideHandle)) or (isinstance(SkinView1.handles[vtx], mdlhandles.LinCornerHandle)):
+                continue
+            for handle in range (len(editor.SkinVertexSelList)):
+                tri_index = int(editor.SkinVertexSelList[handle][2])
+                ver_index = int(editor.SkinVertexSelList[handle][3])
+                handlevtx = (tri_index * 3) + ver_index
+                if vtx == handlevtx:
+                    vertex = SkinView1.handles[vtx].pos
+                    p = quarkx.newobj(str(tri_index)+","+str(ver_index)+":p");
+                    face = quarkx.newobj("east:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(1.0,0.0,0.0)/SkinView1.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,1.0,0.0)/SkinView1.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(1.0,0.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
+                    p.appenditem(face)
+                    face = quarkx.newobj("west:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(-1.0,0.0,0.0)/SkinView1.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,-1.0,0.0)/SkinView1.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(-1.0,0.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
+                    p.appenditem(face)
+                    face = quarkx.newobj("north:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,1.0,0.0)/SkinView1.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(-1.0,1.0,0.0)/SkinView1.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
+                    p.appenditem(face)
+                    face = quarkx.newobj("south:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,-1.0,0.0)/SkinView1.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,-1.0,0.0)/SkinView1.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
+                    p.appenditem(face)
+                    face = quarkx.newobj("up:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,1.0,1.0)/SkinView1.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
+                    p.appenditem(face)
+                    face = quarkx.newobj("down:f")
+                    vtx0X, vtx0Y, vtx0Z = (vertex + quarkx.vect(0.0,0.0,-1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx1X, vtx1Y, vtx1Z = (vertex + quarkx.vect(1.0,0.0,-1.0)/SkinView1.info["scale"]*2).tuple
+                    vtx2X, vtx2Y, vtx2Z = (vertex + quarkx.vect(0.0,-1.0,-1.0)/SkinView1.info["scale"]*2).tuple
+                    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+                    if editor.Root.currentcomponent.currentskin is not None:
+                        face["tex"] = editor.Root.currentcomponent.currentskin.shortname
+                    else:
+                        face["tex"] = "None"
                     p.appenditem(face)
                     group.appenditem(p)
 
@@ -189,6 +325,8 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
     "of a group of polys that have been manipulated by some function using QuArK Internal Poly Objects."
     "The 'new' objects list in the functions 'ok' section is passed to here where it is converted back to"
     "usable model component mesh vertexes and the final 'ok' function is performed."
+    "option=0 does the conversion for the Editor."
+    "option=1 does the conversion for the Skin-view."
 
     if option == 0:
         comp = editor.Root.currentcomponent
@@ -208,6 +346,42 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
 
+    if option == 1:
+        from qbaseeditor import currentview
+        comp = editor.Root.currentcomponent
+        new_comp = comp.copy()
+        tris = new_comp.triangles
+        try:
+            tex = comp.currentskin
+            texWidth,texHeight = tex["Size"]
+        except:
+            texWidth,texHeight = currentview.clientarea
+        for poly in range(len(newobjectslist[0].subitems)):
+            polygon = newobjectslist[0].subitems[poly]
+            face = polygon.subitems[0]
+            if comp.currentskin is not None:
+                newpos = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) + quarkx.vect(texWidth*.5, texHeight*.5, 0)
+            else:
+                newpos = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) + quarkx.vect(int((texWidth*.5) +.5), int((texHeight*.5) -.5), 0)    
+            tuplename = tuple(str(s) for s in polygon.shortname.split(','))
+            tri_index, ver_index = tuplename
+            tri_index = int(tri_index)
+            ver_index = int(ver_index)
+            tri = tris[tri_index]
+            for j in range(len(tri)):
+                if j == ver_index:
+                    if j == 0:
+                        newtriangle = ((tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[1], tri[2])
+                    elif j == 1:
+                        newtriangle = (tri[0], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[2])
+                    else:
+                        newtriangle = (tri[0], tri[1], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])))
+                    tris[tri_index] = newtriangle
+        new_comp.triangles = tris
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+
 
 
 def MakeEditorFaceObject(editor, option=0):
@@ -216,10 +390,10 @@ def MakeEditorFaceObject(editor, option=0):
 
     facelist = []
     comp = editor.Root.currentcomponent
-    tris = comp.triangles                # A list of all the triangles of the current component if there is more than one.
-                                         # If NONE of the sub-items of a models component(s) have been selected,
-                                         # then it uses the 1st item of each sub-item, of the 1st component of the model.
-                                         # For example, the 1st skin, the 1st frame and so on, of the 1st component.
+    tris = comp.triangles  # A list of all the triangles of the current component if there is more than one.
+                           # If NONE of the sub-items of a models component(s) have been selected,
+                           # then it uses the 1st item of each sub-item, of the 1st component of the model.
+                           # For example, the 1st skin, the 1st frame and so on, of the 1st component.
     if option == 0: # Returns one QuArK Internal Object (a face), identified by the currentcomponent's 'shortname' and tri_index,
                     # for each tri_index item in the ModelFaceSelList.
                     # These Objects can then be used with other Map Editor and Quarkx functions.
@@ -250,13 +424,15 @@ def MakeEditorFaceObject(editor, option=0):
     v0 = editor.ModelVertexSelList[0][0] # Gives the index number of the 1st vertex in the list.
     v1 = editor.ModelVertexSelList[1][0] # Gives the index number of the 2nd vertex in the list.
     v2 = editor.ModelVertexSelList[2][0] # Gives the index number of the 3rd vertex in the list.
+    
     if option == 1: # Returns only one object (face) & tri_index for the 3 selected vertexes used by the same triangle.
                     # This object can then be used with other Map Editor and Quarkx functions.
         for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
+
             # Compares all of the triangle's vertex index numbers, in their proper order, to the above 3 items.
             # Thus insuring it will return the actual single triangle that we want.
             if (tris[trinbr][0][0] == v0 or tris[trinbr][0][0] == v1 or tris[trinbr][0][0] == v2) and (tris[trinbr][1][0] == v0 or tris[trinbr][1][0] == v1 or tris[trinbr][1][0] == v2) and (tris[trinbr][2][0] == v0 or tris[trinbr][2][0] == v1 or tris[trinbr][2][0] == v2):
-                tri_index = trinbr       # The iterating count number (trinbr) IS the tri_index number.
+                tri_index = trinbr  # The iterating count number (trinbr) IS the tri_index number.
                 face = quarkx.newobj(comp.shortname+" face\\tri "+str(tri_index)+":f")
                 if editor.Root.currentcomponent.currentskin is not None:
                     face["tex"] = editor.Root.currentcomponent.currentskin.shortname
@@ -264,7 +440,7 @@ def MakeEditorFaceObject(editor, option=0):
                     face["tex"] = "None"
                 # Here we need to use the triangles vertexes to maintain their proper order.
                 vtxindexes = (float(tris[trinbr][0][0]), float(tris[trinbr][1][0]), float(tris[trinbr][2][0]), 0.0, 0.0, 0.0) # We use this triangle's 3 vertex_index numbers here just to create the face object.
-                face["tv"] = (vtxindexes)                                     # They don't really give usable values for texture positioning.
+                face["tv"] = (vtxindexes)                                  # They don't really give usable values for texture positioning.
                 verts = editor.Root.currentcomponent.currentframe.vertices # The list of vertex positions of the current component’s
                                                                            # current animation frame selected, if any, if not then its 1st frame.
                 vect00 ,vect01, vect02 = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 1st vertex.
@@ -274,8 +450,8 @@ def MakeEditorFaceObject(editor, option=0):
                 face["v"] = vertexlist
                 facelist = facelist + [[face, tri_index]]
                 editor.ModelFaceSelList = editor.ModelFaceSelList + [tri_index]
-
                 return facelist
+
     elif option == 2: # Returns an object (face) & tri_index for each triangle that shares the 1st vertex of the 3 selected vertexes used by the same triangle.
                       # Meaning, any triangle (face) using this 'common' vertex will be returned.
                       # Its 1st vertex must be selected by itself first, then its other 2 vertexes in any order.
@@ -284,6 +460,7 @@ def MakeEditorFaceObject(editor, option=0):
             if (tris[trinbr][0][0] == v0 or tris[trinbr][0][0] == v1 or tris[trinbr][0][0] == v2) and (tris[trinbr][1][0] == v0 or tris[trinbr][1][0] == v1 or tris[trinbr][1][0] == v2) and (tris[trinbr][2][0] == v0 or tris[trinbr][2][0] == v1 or tris[trinbr][2][0] == v2):
                 tri_index = trinbr
                 break
+
         for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
             if tris[trinbr][0][0] == v0 or tris[trinbr][1][0] == v0 or tris[trinbr][2][0] == v0:
                 face = quarkx.newobj(comp.shortname+" face\\tri "+str(trinbr)+":f")
@@ -305,11 +482,12 @@ def MakeEditorFaceObject(editor, option=0):
         return facelist
         
     elif option == 3: # Returns an object & tri_index for each triangle that shares the 1st and one other vertex of our selected triangle's vertexes.
-                    # These objects can then be used with other Map Editor and Quarkx functions.
+                      # These objects can then be used with other Map Editor and Quarkx functions.
         for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
             if (tris[trinbr][0][0] == v0 or tris[trinbr][0][0] == v1 or tris[trinbr][0][0] == v2) and (tris[trinbr][1][0] == v0 or tris[trinbr][1][0] == v1 or tris[trinbr][1][0] == v2) and (tris[trinbr][2][0] == v0 or tris[trinbr][2][0] == v1 or tris[trinbr][2][0] == v2):
                 tri_index = trinbr
                 break
+
         for trinbr in range(len(tris)):  # Iterates, goes through, the above list, starting with a count number of zero, 0, NOT 1.
             if (tris[trinbr][0][0] is v0 or tris[trinbr][0][0] is v1 or tris[trinbr][0][0] is v2) and ((tris[trinbr][1][0] is v0 or tris[trinbr][1][0] is v1 or tris[trinbr][1][0] is v2) or (tris[trinbr][2][0] is v0 or tris[trinbr][2][0] is v1 or tris[trinbr][2][0] is v2)):
                 face = quarkx.newobj(comp.shortname+" face\\tri "+str(trinbr)+":f")
@@ -388,6 +566,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
                         break
                     if item == len(vertexlist)-1:
                         vertexlist = vertexlist + [[pos0, vertex0, tri_index, ver_index0]] + [[pos1, vertex1, tri_index, ver_index1]] + [[pos2, vertex2, tri_index, ver_index2]]
+
         replacevertexes(editor, comp, vertexlist, flags, view, undomsg)
 
 
@@ -405,7 +584,7 @@ def addvertex(editor, comp, pos):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "add vertex")
-  #  editor.invalidateviews(1)
+
 
 #
 # Updates (drags) a vertex or vertexes in the 'editor.SkinVertexSelList' list, or similar list,
@@ -534,7 +713,6 @@ def removevertex(comp, index, all3=0):
     else:
         editor.ok(undo, "remove vertex")
         editor.ModelVertexSelList = []
-  #  editor.invalidateviews(1)
 
 
 #
@@ -590,7 +768,8 @@ def removeTriangle(editor, comp, index):
     if (index is None):
         return
     todo = quarkx.msgbox("Do you also want to\nremove the 3 vertexes?",MT_CONFIRMATION, MB_YES_NO_CANCEL)
-    if todo == MR_CANCEL: return
+    if todo == MR_CANCEL:
+        return
     if todo == MR_YES:
         vertexestoremove = []
         for vertex in editor.ModelVertexSelList:
@@ -616,7 +795,6 @@ def removeTriangle(editor, comp, index):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "remove triangle")
- #   editor.invalidateviews(1)
 
 
 #
@@ -652,7 +830,6 @@ def addframe(editor):
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "add frame")
- #   editor.invalidateviews(1)
 
 
 
@@ -720,6 +897,7 @@ def find2DTriangles(comp, tri_index, ver_index):
                   break
         i = i + 1
     return tris_out
+
 
 
 def SkinVertexSel(editor, sellist):
@@ -794,6 +972,7 @@ def SkinVertexSel(editor, sellist):
                     editor.SkinVertexSelList = editor.SkinVertexSelList + [vertex]
 
 
+
 def PassSkinSel2Editor(editor):
     "For passing selected vertexes(faces) from the Skin-view to the Editor's views."
     "After you call this function you will need to also call to draw the handels in the views."
@@ -814,6 +993,7 @@ def PassSkinSel2Editor(editor):
                     break
                 if vertex == len(editor.ModelVertexSelList)-1:
                     editor.ModelVertexSelList = editor.ModelVertexSelList + [[tris[vtx[2]][vtx[3]][0], vtx[0]]]
+
 
 
 def PassEditorSel2Skin(editor, option=1):
@@ -865,9 +1045,21 @@ def PassEditorSel2Skin(editor, option=1):
 
     tris = editor.Root.currentcomponent.triangles
     from mdlhandles import SkinView1
+    import mdlhandles
 
     if option == 1:
         vertexlist = editor.ModelVertexSelList
+        if editor.Root.currentcomponent is None:
+            componentnames = []
+            for item in editor.Root.dictitems:
+                if item.endswith(":mc"):
+                    componentnames.append(item)
+            componentnames.sort()
+            editor.Root.currentcomponent = editor.Root.dictitems[componentnames[0]]
+        comp = editor.Root.currentcomponent
+        commontris = []
+        for vert in vertexlist:
+            commontris = commontris + findTrianglesAndIndexes(comp, vert[0], vert[1])
 
     if option == 2:
         vertexlist = []
@@ -883,27 +1075,14 @@ def PassEditorSel2Skin(editor, option=1):
                 vtx = tris[tri_index][vertex][0]
                 vertexlist = vertexlist + [[vtx, tri_index]]
 
-    if option == 1 or option == 2 or option == 3:
-        editor_tri_index = None
-        for vtx in vertexlist:
-            ver_index = vtx[0]
+    if option == 1:
+        for vert in commontris:
+            editor_tri_index = vert[2]
+            skinvtx_index = vert[3]
             if editor.SkinVertexSelList == []:
-                if option == 1:
-                    for tri in range(len(tris)):
-                        for vertex in range(len(tris[tri])):
-                            if ver_index == tris[tri][vertex][0]:
-                                editor_tri_index = tri
-                                skinvtx_index = vertex
-                                break
-                    if editor_tri_index is None: continue
-                if option == 2 or option == 3:
-                    for vertex in range(len(tris[vtx[1]])):
-                        if ver_index == tris[vtx[1]][vertex][0]:
-                            editor_tri_index = vtx[1]
-                            skinvtx_index = vertex
-                            break
-                    if editor_tri_index is None: continue
                 for handle in SkinView1.handles:
+                    if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
+                        continue
                     # Here we compair the Skin-view handle (in its handles list) tri_index item
                     # to the editor_tri_index we got above to see if they match.
                     # The same applies to the comparison of the Skin-view handel ver_index and skinvtx_index.
@@ -915,22 +1094,9 @@ def PassEditorSel2Skin(editor, option=1):
                         return
                 editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
             else:
-                if option == 1:
-                    for tri in range(len(tris)):
-                        for vertex in range(len(tris[tri])):
-                            if ver_index == tris[tri][vertex][0]:
-                                editor_tri_index = tri
-                                skinvtx_index = vertex
-                                break
-                    if editor_tri_index is None: continue
-                if option == 2 or option == 3:
-                    for vertex in range(len(tris[vtx[1]])):
-                        if ver_index == tris[vtx[1]][vertex][0]:
-                            editor_tri_index = vtx[1]
-                            skinvtx_index = vertex
-                            break
-                    if editor_tri_index is None: continue
                 for handle in SkinView1.handles:
+                    if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
+                        continue
                     if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                         skinhandle = handle
                         break
@@ -940,6 +1106,48 @@ def PassEditorSel2Skin(editor, option=1):
                     if vertex == len(editor.SkinVertexSelList)-1:
                         editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
 
+    if option == 2 or option == 3:
+        editor_tri_index = None
+        for vtx in vertexlist:
+            ver_index = vtx[0]
+            if editor.SkinVertexSelList == []:
+                for vertex in range(len(tris[vtx[1]])):
+                    if ver_index == tris[vtx[1]][vertex][0]:
+                        editor_tri_index = vtx[1]
+                        skinvtx_index = vertex
+                        break
+                if editor_tri_index is None: continue
+                for handle in SkinView1.handles:
+                    if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
+                        continue
+                    # Here we compair the Skin-view handle (in its handles list) tri_index item
+                    # to the editor_tri_index we got above to see if they match.
+                    # The same applies to the comparison of the Skin-view handel ver_index and skinvtx_index.
+                    try:
+                        if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
+                            skinhandle = handle
+                            break
+                    except:
+                        return
+                editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+            else:
+                for vertex in range(len(tris[vtx[1]])):
+                    if ver_index == tris[vtx[1]][vertex][0]:
+                        editor_tri_index = vtx[1]
+                        skinvtx_index = vertex
+                        break
+                if editor_tri_index is None: continue
+                for handle in SkinView1.handles:
+                    if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
+                        continue
+                    if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
+                        skinhandle = handle
+                        break
+                for vertex in range(len(editor.SkinVertexSelList)):
+                    if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
+                        break
+                    if vertex == len(editor.SkinVertexSelList)-1:
+                        editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
 
     # Compares the 1st Skin-view vertex position in the sellist to all others 3D position (pos) and places the
     # last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
@@ -956,6 +1164,7 @@ def PassEditorSel2Skin(editor, option=1):
         editor.SkinVertexSelList = [holditem] + editor.SkinVertexSelList
 
 
+
 def Update_Editor_Views(editor, option=4):
     "Updates the Editors views once something has chaged in the Skin-view,"
     "such as synchronized or added 'skin mesh' vertex selections."
@@ -963,6 +1172,8 @@ def Update_Editor_Views(editor, option=4):
     "Various 'option' items are shown below in their proper order of sequence."
     "This is done to increase drawing speed, only use what it takes to do the job."
 
+    import mdleditor
+    import mdlhandles
     for v in editor.layout.views:
         if v.info["viewname"] == "skinview":
             pass
@@ -970,7 +1181,6 @@ def Update_Editor_Views(editor, option=4):
             if option == 1:
                 v.invalidate(1)
             if option <= 4:
-                import mdleditor
                 mdleditor.setsingleframefillcolor(editor, v)
             if option <= 4:
                 v.repaint()
@@ -980,16 +1190,22 @@ def Update_Editor_Views(editor, option=4):
             if option <= 4 or option == 5:
                 cv = v.canvas()
                 if len(v.handles) == 0:
-                    import mdlhandles
                     v.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
                 for h in v.handles:
                     h.draw(v, cv, h)
+                if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                    mdleditor.modelaxis(v)
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.35  2007/08/08 21:07:47  cdunde
+#To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
+#for vertex selection in those views.
+#Also setup Linear Handle functions for multiple vertex selection movement using same.
+#
 #Revision 1.34  2007/08/02 08:33:44  cdunde
 #To get the model axis to draw and other things to work corretly with Linear handle toolbar button.
 #

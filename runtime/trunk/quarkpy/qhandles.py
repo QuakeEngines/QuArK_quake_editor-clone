@@ -942,13 +942,13 @@ class RedImageDragObject(DragObject):
     def dragto(self, x, y, flags):
         self.flags = flags
         if flags&MB_DRAGGING:
-            self.autoscroll(x,y)
-        old, ri = self.buildredimages(x, y, flags)
+            self.autoscroll(x,y) # old is the object at its original position at the very beginning of a drag. This does not change.
+        old, ri = self.buildredimages(x, y, flags) # ri stands for 'redimage'. It's the object while it's being moved in a drag.
         if self.view.info["type"] != "3D":
-            self.drawredimages(self.view, 1)
+            self.drawredimages(self.view, 1) # 1 is 'internal' value. If commented out draws green rectangle.
             self.redimages = ri
 
-       ### This is for the Skin-view RedImageDragObject use only.
+       ### This is for the Model Editor Skin-view RedImageDragObject use only.
             try:
                 if self.view.info["viewname"] == "skinview":
                     import mdlhandles
@@ -959,11 +959,10 @@ class RedImageDragObject(DragObject):
                         if self.redimages is not None:
                             mode = DM_OTHERCOLOR|DM_BBOX
                             special, refresh = self.ricmd()
-                            self.view.repaint()
-                            for r in self.redimages:
-                                self.view.drawmap(r, mode)
-                        else:
-                            pass
+                            if refresh is not None:
+                                rectanglecolor = MapColor("SkinDragLines", SS_MODEL)
+                                for r in self.redimages: # Draws rectangle when LMB is release.
+                                    self.view.drawmap(r, mode, rectanglecolor)
             except:
                 pass
 
@@ -997,12 +996,22 @@ class RedImageDragObject(DragObject):
                 ### Stops Model Editor Linear drag handles from drawing redline drag objects incorrectly.
                 return
             from qbaseeditor import currentview
-            if view.info["viewname"] == "skinview" and isinstance(editor.dragobject.handle, mdlhandles.SkinHandle):
-                ### Stops Model Editor Skin-view Vertex drag handles from drawing if not returned.
-                return
+            # Draws rectangle selector and Skin-view lines much faster this way.
+            if view.info["viewname"] == "skinview":
+                if isinstance(editor.dragobject.handle, mdlhandles.SkinHandle):
+                    ### Stops Model Editor Skin-view Vertex drag handles from drawing if not returned and
+                    ### draws erroneous image of the model in the Skin-view if allowed to continue on like below.
+                    return
+                else:
+                    # This area draws the rectangle selector (and view handles if added)
+                    #   in the Model Editor Skin-view when it pauses.
+                    if self.redimages is not None:
+                        mode = DM_OTHERCOLOR|DM_BBOX
+                        rectanglecolor = MapColor("SkinDragLines", SS_MODEL)
+                        for r in self.redimages:
+                            view.drawmap(r, mode, rectanglecolor)
         else:
 ## Deals with Terrain Selector 3D face drawing, movement is in ok section
-
             if (editor is not None) and (editor.layout.toolbars["tb_terrmodes"] is not None):
                 tb2 = editor.layout.toolbars["tb_terrmodes"]
                 for b in tb2.tb.buttons:
@@ -1033,7 +1042,6 @@ class RedImageDragObject(DragObject):
                     if type == "3D":
                         # during 1 face drag both go here but TG better, no hang
                         view.repaint()
-                  #      view.invalidate()  # might want to put back in
                         return
                     if self.redhandledata is not None:
                         self.handle.drawred(self.redimages, view, view.color, self.redhandledata)
@@ -1049,15 +1057,30 @@ class RedImageDragObject(DragObject):
                     else:
                         import mdleditor
                         if isinstance(editor, mdleditor.ModelEditor):
-                            self.redcolor = RED
-                            view.handles = []
+                            # This area draws the rectangle selector and view handles
+                            #   in the Model Editor 3D and 2D view while dragging.
+                            # It also does one draw of the rectangle selector for the
+                            #   Skin-view when a pause in the drag takes place.
 
-                            plugins.mdlgridscale.gridfinishdrawing(editor, view)
-                            plugins.mdlaxisicons.newfinishdrawing(editor, view)
-                            for r in self.redimages:
-                                view.drawmap(r, mode, self.redcolor)
-                            if self.handle is not None:
-                                self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+                            if view.info["viewname"] == "skinview":
+                                plugins.mdlgridscale.gridfinishdrawing(editor, view) # This is just here to slow down the Skin-view from drawing too fast?
+                                rectanglecolor = MapColor("SkinDragLines", SS_MODEL)
+                                for r in self.redimages:
+                                    view.drawmap(r, mode, rectanglecolor)
+                                if self.handle is not None:
+                                    self.redhandledata = self.handle.drawred(self.redimages, view, rectanglecolor)
+                            else:
+                                reccolor = MapColor("Drag3DLines", SS_MODEL)
+                                # Really slows down the editors 2D view rectangle selection
+                                # when the view handles are being drawn if we don't kill them here.
+                                # They do still exist at the end of the drag though.
+                                view.handles = []
+                                plugins.mdlgridscale.gridfinishdrawing(editor, view)
+                                plugins.mdlaxisicons.newfinishdrawing(editor, view)
+                                for r in self.redimages:
+                                    view.drawmap(r, mode, reccolor)
+                                if self.handle is not None:
+                                    self.redhandledata = self.handle.drawred(self.redimages, view, reccolor)
 
 ## Deals with Terrain Selector 2D face drawing, movement is in ok section and
 ## Deals with Standard Selector 2D face drawing, movement is in ok section
@@ -1091,7 +1114,10 @@ class RedImageDragObject(DragObject):
                 if internal==2:
                     view.invalidate()
             if internal==2:    # set up a timer to update the other views as well
-                quarkx.settimer(refresh, self, 150)
+                if isinstance(editor, mdleditor.ModelEditor) and self.view.info["viewname"] == "skinview":
+                    quarkx.settimer(refresh, self, 50)
+                else:
+                    quarkx.settimer(refresh, self, 150)
 
 
     def backup(self):
@@ -1109,13 +1135,8 @@ class RedImageDragObject(DragObject):
 
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
-            from qbaseeditor import currentview
-            if currentview.info["viewname"] == "skinview":
-                skinviewdraghandle = self
-                old = self.dragto(x, y, flags)
-            else:
-                skinviewdraghandle = self
-                old = self.dragto(x, y, flags)
+            skinviewdraghandle = self
+            old = self.dragto(x, y, flags)
         else:
             old = self.dragto(x, y, flags)
             if (self.redimages is None) or (len(old)!=len(self.redimages)):
@@ -1192,14 +1213,16 @@ class HandleDragObject(RedImageDragObject):
 
 def refreshtimer(self):
     import mdleditor
+    if self.editor is None:
+        self.editor = mdleditor.mdleditor
     if isinstance(self.editor, mdleditor.ModelEditor):
         from qbaseeditor import flagsmouse, currentview
-        if self.view.info["viewname"] == "skinview":
-            return
         if flagsmouse == 16384:
             self.editor.dragobject = None
             return
         if flagsmouse != 1032:
+            # This area draws the rectangle selector and view handles
+            #   in the Model Editor 3D view when it pauses.
             if len(self.view.handles) == 0:
                 import mdlhandles
                 self.view.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
@@ -1209,36 +1232,46 @@ def refreshtimer(self):
             cv = self.view.canvas()
             for h in self.view.handles:
                 h.draw(self.view, cv, self)
-            if self.editor.ModelVertexSelList != []:
-                for vtx in self.editor.ModelVertexSelList:
-                    h = self.view.handles[vtx[0]]
-                    h.draw(self.view, cv, h)
+            try:
+                if self.editor.ModelVertexSelList != []:
+                    for vtx in self.editor.ModelVertexSelList:
+                        h = self.view.handles[vtx[0]]
+                        h.draw(self.view, cv, h)
+            except:
+                pass
             if flagsmouse == 1072:
                 mode = DM_OTHERCOLOR|DM_BBOX
+                reccolor = MapColor("Drag3DLines", SS_MODEL)
                 if self.redimages is not None:
                     for r in self.redimages:
-                        self.view.drawmap(r, mode, RED)
+                        self.view.drawmap(r, mode, reccolor)
             return
         if flagsmouse == 1032:
             import mdlhandles
             if isinstance(self.editor.dragobject, mdlhandles.RectSelDragObject):
-                if len(self.view.handles) == 0:
-                    import mdlhandles
-                    self.view.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
+                # This area draws the rectangle selector and view handles
+                #   in the Model Editor 2D view or Skin-view when it pauses.
                 mode = DM_OTHERCOLOR|DM_BBOX
                 if self.redimages is not None:
-                    mdleditor.setsingleframefillcolor(self.editor, self.view)
-                    self.view.repaint()
-                    plugins.mdlgridscale.gridfinishdrawing(self.editor, self.view)
-                    cv = self.view.canvas()
-                    for h in self.view.handles:
-                        h.draw(self.view, cv, self)
-                    if self.editor.ModelVertexSelList != []:
-                        for vtx in self.editor.ModelVertexSelList:
-                            h = self.view.handles[vtx[0]]
-                            h.draw(self.view, cv, h)
-                    for r in self.redimages:
-                        self.view.drawmap(r, mode, RED)
+                    if self.view.info["viewname"] == "skinview":
+                        self.view.repaint()
+                        rectanglecolor = MapColor("SkinDragLines", SS_MODEL)
+                        for r in self.redimages:
+                            self.view.drawmap(r, mode, rectanglecolor)
+                    else:
+                        if len(self.view.handles) == 0:
+                            import mdlhandles
+                            self.view.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
+                  # Line below stops the editor 2D view handles from drawing during rec drag after the timer
+                  # goes off one time, but does not recreate the handles if nothing is selected at end of drag.
+                  #      self.view.handles = []
+                        mdleditor.setsingleframefillcolor(self.editor, self.view)
+                        self.view.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(self.editor, self.view)
+                        reccolor = MapColor("Drag3DLines", SS_MODEL)
+                        for r in self.redimages:
+                            self.view.drawmap(r, mode, reccolor)
+  # GOT IT! ^
             else:
                 if not isinstance(self.editor.dragobject, mdlhandles.LinearHandle):
                     return
@@ -1564,6 +1597,9 @@ class RectangleDragObject(RedImageDragObject):
         self.dragto(x, y, flags)
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
+            # All views including Skin-view come here at the end of a rectangle selector drag,
+            # then go on to qbaseeditor.py 'finishdrawing' function then mdleditor.py 'commonhandles'.
+            # Need to call to rebuild a views handles if an option is setup for no handles during drag.
             from qbaseeditor import flagsmouse
             if flagsmouse == 2056 or flagsmouse == 2096:
                 mdleditor.setsingleframefillcolor(editor, self.view)
@@ -2055,6 +2091,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.56  2007/08/11 02:38:59  cdunde
+#To stop error in Model Editor if a Vertex Handle is clicked on but no movement is made.
+#
 #Revision 1.55  2007/08/08 21:29:52  cdunde
 #Missed two line changes in the last update.
 #

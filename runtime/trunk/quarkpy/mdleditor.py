@@ -42,39 +42,55 @@ class ModelEditor(BaseEditor):
 
     ### Different lists of the Model Editor.
     ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
-    # Editor vertexes    (ver_index, view.proj(pos))
-    #                                       Its "Frame" "vertices" number, projected x,y view position.
-    #                                       This needs to be a projected position for a decent size application
-    #                                       to the "Skin-view" when a new triangle is made in the editor.
-    #                                       This list can also be used more effectively by adding all of the
-    #                                       tri_index numbers (after the ver_index and pos) that use this vertex,
-    #                                       allowing direct call of those "component.triangles" by the tri_index(s).
+
+    # modelfacelist = mdlhandles.ClickOnView(self, view, x, y) located in qbaseeditor.py file.
+    #                     Created using:    what the mouse cursor is over in a view's x,y pos. at the time of selection.
+    #                      list example: [(<vect 174 170 -543.72>, <QuArK Internal object at 0x00C74060>, 777)]
+    #                        item disc.: cursor view's x,y,z pos. --- autopsy:mc (model component) --- comp tri_index,
+    #                                                 Its triangle number in the Model component mesh "triangles" list
+    #                                                    of the Models "currentcomponent".
+
+
 
     ModelVertexSelList = []
+    # Editor vertexes    (frame_vertices_index, view.proj(pos))
+    #                     Created using:    editor.Root.currentcomponent.currentframe.vertices
+    #                                         (see Infobase docs help/src.quarkx.html#objectsmodeleditor)
+    #                               item 0: Its "Frame" "vertices" number, which is the same number as a triangles "ver_index" number.
+    #                               item 1: Its 3D grid pos "projected" to a x,y 2D view position.
+    #                                       This list can also be used more effectively by adding all of the
+    #                                       tri_index numbers (after the frame_vertices_index and pos) that use this vertex,
+    #                                       allowing direct call of those "component.triangles" by the tri_index(s).
+    #                                       The "pos" needs to be a projected position for a decent size application
+    #                                       to the "Skin-view" when a new triangle is made in the editor.
 
-    # Skin-view vertexes [pos, self, tri_index, ver_index]
-    #                                       Its projected x,y Skin-view position.
+    SkinVertexSelList = []
+    # Skin-view vertexes [pos, self, tri_index, ver_index_order_pos]
+    #                     Created using:    editor.Root.currentcomponent.triangles
+    #                                         (see Infobase docs help/src.quarkx.html#objectsmodeleditor)
+    #                                       Its 3D grid pos "projected" to the Skin-view x,y view 2D position.
     #                                       The "SkinHandle" vertex drag handle instance itself.
-    #                                       Model component mesh triangle number it belongs to.
-    #                                       Model "Frame" "vertices" number.
+    #                                       Model component mesh triangle number this handle (vertex) belongs to.
+    #                                       The ver_index_order_pos number is its order number position of the triangle points, either 0, 1 or 2.
     #                                       First vertex in this list can be used as a "base vertex".
     #                                       This list and its items MUST use square brackets [ ] to work,
     #                                       so that the handle "self" and its "pos" can be updated when moved.
 
-    SkinVertexSelList = []
-
+    ModelFaceSelList = []
     # Editor triangles    (tri_index)
+    #                     Created using:    modelfacelist (see above for what items this list consist of)
+    #
     #                                       Its triangle number in the Model component mesh "triangles" list
     #                                       of the Models "currentcomponent".
 
-    ModelFaceSelList = []
-
+    SkinFaceSelList = []
     # Editor triangles    (tri_index)
+    #                     Created using:    editor.SkinFaceSelList = editor.ModelFaceSelList
+    #                                       (Copied in the mdloptions.py and qbaseeditor.py files)
+    #
     #                                       The triangle number in the Model component mesh "triangles" list
     #                                       of the Models "currentcomponent". The Skin-view does not have its
     #                                       own actual triangles, these are copied from the ModelFaceSelList.
-
-    SkinFaceSelList = []
     
 
     def OpenRoot(self):
@@ -169,7 +185,10 @@ class ModelEditor(BaseEditor):
                 for v in self.layout.views:
                     v.handles = v.handles
             else:
-                currentview.handles = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
+            # This was killing the handles for the Skin-view,
+            #    currentview.handles = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
+                pass
+
         except:
             for v in self.layout.views:
                 v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
@@ -1108,6 +1127,9 @@ def commonhandles(self, redraw=1):
                                 cv = v.canvas()
                                 for h in hlist:
                                     h.draw(v, cv, None)
+
+                            if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                                modelaxis(v)
             except:
                 pass    
 
@@ -1119,6 +1141,8 @@ def commonhandles(self, redraw=1):
                     cv = v.canvas()
                     for h in hlist:
                         h.draw(v, cv, None)
+                if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                    modelaxis(v)
 
             if v.info["viewname"] == "YZ":
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
@@ -1128,6 +1152,8 @@ def commonhandles(self, redraw=1):
                     cv = v.canvas()
                     for h in hlist:
                         h.draw(v, cv, None)
+                if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                    modelaxis(v)
 
             if v.info["viewname"] == "XZ":
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
@@ -1137,6 +1163,8 @@ def commonhandles(self, redraw=1):
                     cv = v.canvas()
                     for h in hlist:
                         h.draw(v, cv, None)
+                if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                    modelaxis(v)
 
             try:
                 if (currentview.info["viewname"] != "3Dwindow") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2072 or flagsmouse == 2080):
@@ -1151,6 +1179,8 @@ def commonhandles(self, redraw=1):
                                 cv = v.canvas()
                                 for h in hlist:
                                     h.draw(v, cv, None)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                                modelaxis(v)
             except:
                 pass
         if currentview.info["viewname"] == "skinview":
@@ -1168,6 +1198,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.59  2007/08/11 02:39:20  cdunde
+#To stop Linear Drag toolbar button from causing duplicate view drawings.
+#
 #Revision 1.58  2007/08/02 08:33:47  cdunde
 #To get the model axis to draw and other things to work corretly with Linear handle toolbar button.
 #

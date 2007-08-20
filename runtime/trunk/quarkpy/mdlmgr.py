@@ -370,7 +370,7 @@ class ModelLayout(BaseLayout):
         if comp != self.editor.Root.currentcomponent:
             self.reset()
             if currentview.info["viewname"] == "skinview":
-                if self.editor.dragobject is not None and isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle):
+                if self.editor.dragobject is not None and (isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
                     pass
                 else:
                     self.editor.ModelVertexSelList = []
@@ -382,17 +382,19 @@ class ModelLayout(BaseLayout):
                 if flagsmouse == 2056:
                     pass
                 else:
-                    self.editor.SkinVertexSelList = []
                     try:
                         if flagsmouse == 2060 and (isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
                             pass
                         else:
+                            self.editor.SkinVertexSelList = []
                             self.editor.ModelVertexSelList = []
                             self.editor.ModelFaceSelList = []
+                            self.editor.SkinFaceSelList = []
                     except:
+                        self.editor.SkinVertexSelList = []
                         self.editor.ModelVertexSelList = []
                         self.editor.ModelFaceSelList = []                        
-                    self.editor.SkinFaceSelList = []
+                        self.editor.SkinFaceSelList = []
                     self.editor.Root.currentcomponent.filltris = []
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
@@ -543,6 +545,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.44  2007/08/11 02:38:19  cdunde
+#To stop "editor.ok" function calls in mdlutils.py from loosing the
+#selection when Ctrl key is used in Linear Handle drags.
+#
 #Revision 1.43  2007/08/08 21:07:47  cdunde
 #To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
 #for vertex selection in those views.
