@@ -369,6 +369,7 @@ class BaseEditor:
                             else:
                                 texWidth,texHeight = view.clientarea
                         if flagsmouse == 520 or flagsmouse == 1032:
+                            import mdlhandles # Needed for 'Ticks' drawing methods further below.
                             pass
 
                         else:
@@ -412,7 +413,30 @@ class BaseEditor:
                             cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
                             if faceselected != 0:
                                 cv.pencolor = MapColor("SkinLines", SS_MODEL)
-                            if flagsmouse == 16384:
+                        # No Ticks drawn during RecSelDrag or Method 1, Ticks drawn during RecSelDrag.
+                            if (flagsmouse == 16384) or (flagsmouse == 1032 and isinstance(self.dragobject, mdlhandles.RectSelDragObject) and quarkx.setupsubset(SS_MODEL, "Options")["RDT_M1"] == "1"):
+                                if MldOption("Ticks") == "1":
+                                    cv.brushcolor = WHITE
+                                    cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
+                                    cv.ellipse(int(vertex1X)-2, int(vertex1Y)-2, int(vertex1X)+2, int(vertex1Y)+2)
+                                    cv.ellipse(int(vertex2X)-2, int(vertex2Y)-2, int(vertex2X)+2, int(vertex2Y)+2)
+                                else:
+                                    cv.ellipse(int(vertex0X)-1, int(vertex0Y)-1, int(vertex0X)+1, int(vertex0Y)+1)
+                                    cv.ellipse(int(vertex1X)-1, int(vertex1Y)-1, int(vertex1X)+1, int(vertex1Y)+1)
+                                    cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
+                        # Method 2, Ticks drawn during RecSelDrag.
+                        if (flagsmouse == 1032 and isinstance(self.dragobject, mdlhandles.RectSelDragObject) and quarkx.setupsubset(SS_MODEL, "Options")["RDT_M2"] == "1"):
+                            cv.pencolor = MapColor("Vertices", SS_MODEL)
+                            for triangle in self.Root.currentcomponent.triangles:
+                                vertex0 = triangle[0]
+                                vertex1 = triangle[1]
+                                vertex2 = triangle[2]
+                                trivertex0 = quarkx.vect(vertex0[1]-int(texWidth*.5), vertex0[2]-int(texHeight*.5), 0)
+                                trivertex1 = quarkx.vect(vertex1[1]-int(texWidth*.5), vertex1[2]-int(texHeight*.5), 0)
+                                trivertex2 = quarkx.vect(vertex2[1]-int(texWidth*.5), vertex2[2]-int(texHeight*.5), 0)
+                                vertex0X, vertex0Y,vertex0Z = view.proj(trivertex0).tuple
+                                vertex1X, vertex1Y,vertex1Z = view.proj(trivertex1).tuple
+                                vertex2X, vertex2Y,vertex2Z = view.proj(trivertex2).tuple
                                 if MldOption("Ticks") == "1":
                                     cv.brushcolor = WHITE
                                     cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
@@ -428,7 +452,6 @@ class BaseEditor:
                                     h.draw(view, cv, draghandle)
                             if isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, qhandles.ScrollViewDragObject):
                                 self.dragobject = None
-
                     return
                 else:
                     import mdlhandles
@@ -1339,6 +1362,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.82  2007/08/20 23:14:42  cdunde
+#Minor file cleanup.
+#
 #Revision 1.81  2007/08/20 19:58:24  cdunde
 #Added Linear Handle to the Model Editor's Skin-view page
 #and setup color selection and drag options for it and other fixes.

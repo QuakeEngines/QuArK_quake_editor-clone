@@ -398,6 +398,37 @@ def VertexMenu(editor):
     return menulist
 
 
+def TicksViewingMenu(editor):
+    # Rectangle Drag Ticks_Method 1
+    def mRDT_M1(m):
+        editor = mdleditor.mdleditor
+        if not MldOption("RDT_M1"):
+            quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = "1"
+            quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = None
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = None
+
+    # Rectangle Drag Ticks_Method 2
+    def mRDT_M2(m):
+        editor = mdleditor.mdleditor
+        if not MldOption("RDT_M2"):
+            quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = "1"
+            quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = None
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = None
+            
+    Xrdt_m1 = qmenu.item("Rectangle drag-method 1", mRDT_M1, "|Rectangle drag-method 1:\n\nThis function will draw the Skin-view mesh vertex 'Ticks' during a rectangle drag with a minimum amount of flickering, but is a slower drawing method.|intro.modeleditor.menu.html#optionsmenu")
+    Xrdt_m2 = qmenu.item("Rectangle drag-method 2", mRDT_M2, "|Rectangle drag-method 2:\n\nThis function will draw the Skin-view mesh vertex 'Ticks', using the fastest method, during a rectangle drag, but will cause the greatest amount of flickering.|intro.modeleditor.menu.html#optionsmenu")
+
+    menulist = [Xrdt_m1, Xrdt_m2]
+
+    items = menulist
+    Xrdt_m1.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RDT_M1")
+    Xrdt_m2.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RDT_M2")
+
+    return menulist
+
+
 def SkinViewOptionsMenu(editor):
     # Sync Editor views with Skin-view function.
     def mSYNC_EDwSV(m):
@@ -464,12 +495,13 @@ def SkinViewOptionsMenu(editor):
             editor.SkinFaceSelList = []
             qbaseeditor.BaseEditor.finishdrawing(editor, SkinView1)
 
-            
+
     Xsync_edwsv = qmenu.item("&Sync Editor views with Skin-view", mSYNC_EDwSV, "|Sync Editor views with Skin-view:\n\nThis function will turn off other related options and synchronize selected Skin-view mesh vertexes, passing and selecting the coordinated 'Model mesh' vertexes in the Editors views, where they can be used for editing purposes. Any selection changes in the Skin-view will be updated to the Editors views as well.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in both the Editor and the Skin-view for further use.\n\nThe 'Skin-view' and Editor views selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
     Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
     Xcsf = qmenu.item("&Clear Selected Faces", mCSF, "|Clear Selected Faces:\n\nThis function will clear all faces in the Skin-view that have been drawn as 'Selected' or 'Show' but any related selected vertexes will remain that way for editing purposes.\n\nThe 'Skin-view' selected face, show face and selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
+    TicksViewing = qmenu.popup("Draw Ticks During Drag", [], TicksViewingClick, "|Draw Ticks During Drag:\n\nThese functions give various methods for drawing the Models Skin Mesh Vertex Ticks while doing a drag.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
 
-    menulist = [Xsync_edwsv, Xpvstev, Xcsf]
+    menulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, TicksViewing]
 
     items = menulist
     Xsync_edwsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_EDwSV")
@@ -486,6 +518,10 @@ def FaceSelOptionsClick(m):
 def VertexSelOptionsClick(m):
     editor = mdleditor.mdleditor
     m.items = VertexMenu(editor)
+
+def TicksViewingClick(m):
+    editor = mdleditor.mdleditor
+    m.items = TicksViewingMenu(editor)
 
 def SkinViewOptionsClick(m):
     editor = mdleditor.mdleditor
@@ -523,7 +559,7 @@ def OptionsMenu():
     RotationOptions = qmenu.popup("3D Rotation Options", rotateitems, RotationMenu2click)
     FaceSelOptions = qmenu.popup("Editor Face Selection Options", [], FaceSelOptionsClick, "|Editor Face Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
     VertexSelOptions = qmenu.popup("Editor Vertex Selection Options", [], VertexSelOptionsClick, "|Editor Vertex Selection Options:\n\nThese functions deal with the Model Mesh selection methods available and various visual tools to work with.", "intro.mapeditor.menu.html#optionsmenu")
-    SkinViewOptions = qmenu.popup("Skin-view Options", [], SkinViewOptionsClick, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
+    SkinViewOptions = qmenu.popup("Skin-view Options", [], SkinViewOptionsClick, "|Skin-view Options:\n\nThese functions deal with various Options pertaining directly to the Skin-view and the way certain elements can be manipulated and displayed while working on the Models Skin Mesh.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
     PlugIns = qmenu.item("List of Plug-ins...", Plugins1Click)
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
     Options1 = qmenu.popup("&Options", [RotationOptions, dhwr, qmenu.sep]+[maiv, dbf, lineThicknessItem, qmenu.sep, FaceSelOptions, VertexSelOptions, SkinViewOptions, qmenu.sep]+items+[qmenu.sep, PlugIns, Config1], Options1Click)
@@ -542,6 +578,10 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.23  2007/08/20 19:58:23  cdunde
+#Added Linear Handle to the Model Editor's Skin-view page
+#and setup color selection and drag options for it and other fixes.
+#
 #Revision 1.22  2007/08/11 02:37:36  cdunde
 #To stop crossover of face and vertex selections in
 #the editor and Skin-view causing error to occur.
