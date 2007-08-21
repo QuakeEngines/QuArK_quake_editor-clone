@@ -387,9 +387,9 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     missing = ""
     hxstr = ""
     hxstrfile = setup["HxStrings"]
-    setupdirectory = quarkx.getquakedir
+    setupdirectory = quarkx.getquakedir()
     setupbasedir = setup["BaseDir"]
-    setuptmpquark = quarkx.gettmpquark
+    setuptmpquark = quarkx.gettmpquark()
     if hxstrfile and len(maplist):
         try:
             hxstr = quarkx.needgamefile(hxstrfile)["Data"]
@@ -687,6 +687,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.50  2007/08/21 10:26:34  danielpharos
+#Small changes to let HL2 build again.
+#
 #Revision 1.49  2007/04/16 11:24:15  danielpharos
 #Changed some directory routines: tmpQuArK isn't hardcoded anymore.
 #
