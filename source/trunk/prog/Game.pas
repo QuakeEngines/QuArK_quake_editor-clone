@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.44  2007/05/15 15:01:38  danielpharos
 Fixed a dirty looking check for Steam Access.
 
@@ -490,6 +493,11 @@ begin
  Result:=SetupGameSet.Specifics.Values['tmpQuArK'];
  if Result='' then
   Result:='tmpQuArK';
+ {$IFDEF LINUX}
+ Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
+ {$ELSE}
+ Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
+ {$ENDIF}
 end;
 
 function QuakeDir : String;

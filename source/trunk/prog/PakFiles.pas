@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 
 }
 
@@ -203,7 +206,7 @@ begin
  if (SetupGameSet.Specifics.Values['AlwaysPak']='')
  and (GameModDir=GettmpQuArK) and not Force then
  begin
-   FindNextAvailablePakFilename:='';  // no .pak file to write
+   FindNextAvailablePakFilename:='';  // no pak file to write
    Exit;
  end;
  GameModDir:=PathAndFile(QuakeDir, GameModDir);
@@ -215,6 +218,8 @@ begin
    begin
      PakFileExt:=SetupGameSet.Specifics.Values['PakExt'];
      PakFileMaxNumber:=SetupGameSet.IntSpec['PakMaxNumber'];
+     if PakFileMaxNumber<=0 then
+       PakFileMaxNumber:=9;
      FoundFreeOne:=False;
      for I:=0 to PakFileMaxNumber do
      begin

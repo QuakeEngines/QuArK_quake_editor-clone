@@ -27,6 +27,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.350  2007/08/20 19:58:25  cdunde
+//Added Linear Handle to the Model Editor's Skin-view page
+//and setup color selection and drag options for it and other fixes.
+//
 //Revision 1.349  2007/08/16 14:28:40  danielpharos
 //Fixed (another) typo :|
 //
@@ -1765,6 +1769,7 @@ QQRKSRC1
         Steam = "1" //This game uses Steam
         SteamAppID = "220"
         BaseDir = "hl2"
+        tmpQuArK = "SteamApps/<insert your Steam Account Name here>/half-life 2"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
         ForceFaceFlags = ""
@@ -4090,7 +4095,7 @@ QQRKSRC1
     {
       Style = "3"
       sep: = {Typ="S" Txt="---- Game Settings ----"}
-      L0: = {Typ="S" Bold="0" Txt="Note: Don't forget to also configure the Steam settings!"}
+      L0: = {Typ="S" Bold="0" Txt="Note: Don't forget to also configure the settings in the Steam-game section on the left!"}
       Program: =
       {
         Txt = "Half-Life 2 command-line"
