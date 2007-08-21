@@ -78,8 +78,9 @@ class GameConsole(BatchConsole):
         self.filelistdata = flst
         self.pakfile = quarkx.outputpakfile(forcepak)
 
-        dir = setup["Directory"]
+        dir = quarkx.getquakedir()
         program = setup["Program"]
+        tmpquarkdir = quarkx.gettmpquark()
         if not dir or not program:
             quarkx.openconfigdlg(":")
             raise "Invalid configuration of the game executable"
@@ -117,8 +118,8 @@ class GameConsole(BatchConsole):
                 cmdline = cmdline.replace("%mapfile%",  argument_mapfile)
                 cmdline = cmdline.replace("%file%",     argument_file)
                 cmdline = cmdline.replace("%filename%", argument_filename)
-                cmdline = cmdline.replace("%basepath%", setup["Directory"])
-                cmdline = cmdline.replace("%gamedir%", setup["tmpQuArK"])
+                cmdline = cmdline.replace("%basepath%", dir)
+                cmdline = cmdline.replace("%gamedir%", tmpquarkdir)
                 cmdline = cmdline.replace("%quarkpath%", quarkx.exepath)
 
                 #debug('rowdy: after mangle run game command: "%s"' % cmdline)
@@ -227,6 +228,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.14  2007/03/22 22:27:31  danielpharos
+#Fixed a typo.
+#
 #Revision 1.13  2006/11/30 01:19:33  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

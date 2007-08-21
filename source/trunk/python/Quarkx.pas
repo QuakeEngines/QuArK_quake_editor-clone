@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.46  2007/08/02 16:15:57  danielpharos
 Added a commandline check, and an option in it to skip the splash screen. Also, some of the internal workings of the splash-screen were changed a bit.
 
@@ -949,6 +952,36 @@ begin
     Result:=GetPyObj(g_SetupSet[TSetupSet(SetIndex)])
    else
     Result:=GetPyObj(SetupGameSet);
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xGetQuakeDir(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  Result:=PyString_FromString(PChar(QuakeDir));
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xGetGameDir(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  Result:=PyString_FromString(PChar(GetGameDir));
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xGettmpQuArK(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  Result:=PyString_FromString(PChar(GettmpQuArK));
  except
   EBackToPython;
   Result:=Nil;
@@ -2558,12 +2591,15 @@ begin
 end;
 
 const
- MethodTable: array[0..69] of TyMethodDef =
+ MethodTable: array[0..72] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
    (ml_name: 'openfileobj';     ml_meth: xOpenFileObj;    ml_flags: METH_VARARGS),
    (ml_name: 'setupsubset';     ml_meth: xSetupSubSet;    ml_flags: METH_VARARGS),
+   (ml_name: 'getquakedir';     ml_meth: xGetQuakeDir;    ml_flags: METH_VARARGS),
+   (ml_name: 'getgamedir';      ml_meth: xGetGameDir;     ml_flags: METH_VARARGS),
+   (ml_name: 'gettmpquark';     ml_meth: xGettmpQuArK;    ml_flags: METH_VARARGS),
    (ml_name: 'lines2list';      ml_meth: xLines2List;     ml_flags: METH_VARARGS),
    (ml_name: 'list2lines';      ml_meth: xList2Lines;     ml_flags: METH_VARARGS),
    (ml_name: 'truncstr';        ml_meth: xTruncStr;       ml_flags: METH_VARARGS),
@@ -2602,7 +2638,7 @@ const
    (ml_name: 'getqctxlist';     ml_meth: xGetQCtxList;    ml_flags: METH_VARARGS),
    (ml_name: 'listfileext';     ml_meth: xListFileExt;    ml_flags: METH_VARARGS),
    (ml_name: 'filedialogbox';   ml_meth: xFileDialogBox;  ml_flags: METH_VARARGS),
-   (ml_name: 'examine';         ml_meth: xExamine;     ml_flags: METH_VARARGS),
+   (ml_name: 'examine';         ml_meth: xExamine;        ml_flags: METH_VARARGS),
    (ml_name: 'loadimages';      ml_meth: xLoadImages;     ml_flags: METH_VARARGS),
    (ml_name: 'reloadsetup';     ml_meth: xReloadSetup;    ml_flags: METH_VARARGS),
    (ml_name: 'screenrect';      ml_meth: xScreenRect;     ml_flags: METH_VARARGS),
@@ -2622,7 +2658,7 @@ const
    (ml_name: 'sethint';         ml_meth: xSetHint;        ml_flags: METH_VARARGS),
    (ml_name: 'helppopup';       ml_meth: xHelpPopup;      ml_flags: METH_VARARGS),
    (ml_name: 'helpmenuitem';    ml_meth: xHelpMenuItem;   ml_flags: METH_VARARGS),
-   (ml_name: 'entitymenuitem';    ml_meth: xEntityMenuItem;   ml_flags: METH_VARARGS),
+   (ml_name: 'entitymenuitem';  ml_meth: xEntityMenuItem; ml_flags: METH_VARARGS),
    (ml_name: 'htmldoc';         ml_meth: xHTMLDoc;        ml_flags: METH_VARARGS),
    (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;   ml_flags: METH_VARARGS),
    (ml_name: 'wait';            ml_meth: xWait;           ml_flags: METH_VARARGS),

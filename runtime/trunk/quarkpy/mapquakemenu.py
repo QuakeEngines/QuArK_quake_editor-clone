@@ -387,11 +387,9 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     missing = ""
     hxstr = ""
     hxstrfile = setup["HxStrings"]
-    setupdirectory = setup["Directory"]
+    setupdirectory = quarkx.getquakedir
     setupbasedir = setup["BaseDir"]
-    setuptmpquark = setup["tmpQuArK"]
-    if setuptmpquark == "":
-        setuptmpquark = "tmpQuArK"
+    setuptmpquark = quarkx.gettmpquark
     if hxstrfile and len(maplist):
         try:
             hxstr = quarkx.needgamefile(hxstrfile)["Data"]
@@ -494,12 +492,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     if setup["BuildPgmsDir"] is not None:
                        newcmdline = newcmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
                     newcmdline = newcmdline.replace("%output%", quarkx.outputfile())
-
-#                    debug('mappath: '+argument_mappath)
-#                    debug('mapfile: '+argument_mapfile)
-#                    debug('file: '+argument_file)
-#                    debug('basepath: '+setup["Directory"])
-#                    debug('output: '+quarkx.outputfile())
 
                     # If user-variable were not replaced, automatically append map-filename
                     if (newcmdline == cmdline):
@@ -695,6 +687,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.49  2007/04/16 11:24:15  danielpharos
+#Changed some directory routines: tmpQuArK isn't hardcoded anymore.
+#
 #Revision 1.48  2007/03/27 15:48:58  danielpharos
 #Re-added the ability to open multiple floating 3D windows! This time there's an option to toggle it on and off in the options.
 #
