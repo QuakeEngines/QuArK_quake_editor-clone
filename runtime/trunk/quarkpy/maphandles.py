@@ -552,6 +552,13 @@ class VertexHandle(qhandles.GenericHandle):
             # Force "n" to be perpendicular to the screen direction.
             #
             vertical = view.vector("z").normalized   # vertical vector at this point
+            # Correction for 3D views, still needs some work though.
+            if view.info["type"] == "3D":
+                vertX, vertY, vertZ = vertical.tuple
+                vertX = round(vertX)
+                vertY = round(vertY)
+                vertZ = round(vertZ)
+                vertical = quarkx.vect(vertX, vertY, vertZ)
             n = (n - vertical * (n*vertical)).normalized
             #
             # Find a "model" face for the new one.
@@ -1976,6 +1983,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.61  2007/07/24 13:54:50  danielpharos
+#Revert maphandles 1.60: Fixed the underlying problem in PyMath3D.
+#
 #Revision 1.60  2007/07/23 20:45:43  cdunde
 #Added fix for cut corner in 3D views.
 #
