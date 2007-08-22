@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.351  2007/08/21 23:43:39  danielpharos
+//Another fix to the HL2 building process.
+//
 //Revision 1.350  2007/08/20 19:58:25  cdunde
 //Added Linear Handle to the Model Editor's Skin-view page
 //and setup color selection and drag options for it and other fixes.
@@ -3501,11 +3504,13 @@ QQRKSRC1
         $0D"will _not_ append a '<path>/<mapfile>' to the command-line arg.,"
         $0D"so you better remember to do this yourself."
         $0D
+        $0D"%filename% - Gives the map's filename only, without extension"
         $0D"%file%     - Gives the map's path and filename without extension"
         $0D"%mappath%  - Gives the map's path with ending backslash"
         $0D"%mapfile%  - Gives the map's path and filename with .MAP extension"
         $0D"%basepath% - Gives the base directory of the game (see Game Settings above)"
         $0D"%gamedir%  - Gives the game directory of the game (see Game Settings above)"
+        $0D"%buildpgmsdir% - Gives the Default directory of the build program(s)"
         $0D
         $0D"Examples:"
         $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
