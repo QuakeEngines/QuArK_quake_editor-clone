@@ -691,14 +691,21 @@ class BaseEditor:
                     if flagsmouse == 2056:
                         import qhandles
                         if isinstance(self.dragobject, qhandles.HandleDragObject):
+                            import mdleditor
                             for v in self.layout.views:
+                                mdleditor.setsingleframefillcolor(self, v)
+                                v.repaint()
+                                plugins.mdlgridscale.gridfinishdrawing(self, v)
                                 v.invalidate(rebuild)
                             return
                         else:
                             return
                     if self.layout.selchange:
+                        import mdleditor
                         for v in self.layout.views:
                             if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
+                                mdleditor.setsingleframefillcolor(self, v)
+                                v.repaint()
                                 v.invalidate(rebuild)
                         return
                     else:
@@ -1362,6 +1369,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.83  2007/08/21 11:08:39  cdunde
+#Added Model Editor Skin-view 'Ticks' drawing methods, during drags, to its Options menu.
+#
 #Revision 1.82  2007/08/20 23:14:42  cdunde
 #Minor file cleanup.
 #
