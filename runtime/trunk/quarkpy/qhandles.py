@@ -1223,9 +1223,25 @@ def refreshtimer(self):
         if flagsmouse != 1032:
             # This area draws the rectangle selector and view handles
             #   in the Model Editor 3D view when it pauses.
-            if len(self.view.handles) == 0:
-                import mdlhandles
-                self.view.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
+            if self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                self.view.handles = []
+                return
+            elif self.view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                self.view.handles = []
+                return
+            elif self.view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                self.view.handles = []
+                return
+            elif self.view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                self.view.handles = []
+                return
+            elif self.view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                self.view.handles = []
+                return
+            else:
+                if len(self.view.handles) == 0:
+                    import mdlhandles
+                    self.view.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
             if flagsmouse == 1072:
                 mdleditor.setsingleframefillcolor(self.editor, self.view)
                 self.view.repaint()
@@ -1617,16 +1633,32 @@ class RectangleDragObject(RedImageDragObject):
                             return
                         else:
                             if (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1") and (len(editor.ModelFaceSelList) != 0 or len(editor.ModelVertexSelList) != 0):
-                                if len(self.view.handles) == 0:
-                                    import mdlhandles
-                                    self.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, self.view)
-                                cv = self.view.canvas()
-                                for h in self.view.handles:
-                                    h.draw(self.view, cv, self)
-                                if editor.ModelVertexSelList != []:
-                                    for vtx in editor.ModelVertexSelList:
-                                        h = self.view.handles[vtx[0]]
-                                        h.draw(self.view, cv, h)
+                                if self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                                    self.view.handles = []
+                                    return
+                                elif self.view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                                    self.view.handles = []
+                                    return
+                                elif self.view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                                    self.view.handles = []
+                                    return
+                                elif self.view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                                    self.view.handles = []
+                                    return
+                                elif self.view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                                    self.view.handles = []
+                                    return
+                                else:
+                                    if len(self.view.handles) == 0:
+                                        import mdlhandles
+                                        self.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, self.view)
+                                    cv = self.view.canvas()
+                                    for h in self.view.handles:
+                                        h.draw(self.view, cv, self)
+                                    if editor.ModelVertexSelList != []:
+                                        for vtx in editor.ModelVertexSelList:
+                                            h = self.view.handles[vtx[0]]
+                                            h.draw(self.view, cv, h)
                     else:
                         if len(self.view.handles) == 0:
                             import mdlhandles
@@ -2091,6 +2123,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.57  2007/08/20 19:58:23  cdunde
+#Added Linear Handle to the Model Editor's Skin-view page
+#and setup color selection and drag options for it and other fixes.
+#
 #Revision 1.56  2007/08/11 02:38:59  cdunde
 #To stop error in Model Editor if a Vertex Handle is clicked on but no movement is made.
 #

@@ -371,17 +371,30 @@ class ModelEditor(BaseEditor):
                 for view in self.layout.views:
                     if view.info["viewname"] == "skinview":
                         continue
+                    elif view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                        view.handles = []
+                    elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                        view.handles = []
+                    elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                        view.handles = []
+                    elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                        view.handles = []
+                    elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                        view.handles = []
                     else:
-                        setsingleframefillcolor(self, view)
-                        view.repaint()
-                        plugins.mdlgridscale.gridfinishdrawing(self, view)
-                        plugins.mdlaxisicons.newfinishdrawing(self, view)
                         view.handles = newhandles
+                    setsingleframefillcolor(self, view)
+                    view.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(self, view)
+                    plugins.mdlaxisicons.newfinishdrawing(self, view)
+                    if view.handles == []:
+                        pass
+                    else:
                         cv = view.canvas()
                         for h in view.handles:
                             h.draw(view, cv, h)
-                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                            modelaxis(view)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                        modelaxis(view)
             else:
                 for view in self.layout.views:
                     if view.info["viewname"] == "skinview":
@@ -401,21 +414,30 @@ class ModelEditor(BaseEditor):
             for view in self.layout.views:
                 if view.info["viewname"] == "skinview":
                     continue
+                elif view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                    view.handles = []
                 else:
                     view.handles = newhandles
-                    if view.handles == []:
-                        pass
-
-                    else:
-                        setsingleframefillcolor(self, view)
-                        view.repaint()
-                        plugins.mdlgridscale.gridfinishdrawing(self, view)
-                        plugins.mdlaxisicons.newfinishdrawing(self, view)
-                        cv = view.canvas()
-                        for h in view.handles:
-                            h.draw(view, cv, h)
-                        if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
-                            modelaxis(view)
+                setsingleframefillcolor(self, view)
+                view.repaint()
+                plugins.mdlgridscale.gridfinishdrawing(self, view)
+                plugins.mdlaxisicons.newfinishdrawing(self, view)
+                if view.handles == []:
+                    pass
+                else:
+                    cv = view.canvas()
+                    for h in view.handles:
+                        h.draw(view, cv, h)
+                if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                    modelaxis(view)
             
             self.linearbox = not self.linearbox
         self.savesetupinfos()
@@ -897,6 +919,7 @@ def commonhandles(self, redraw=1):
                         return
                     else:
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                            currentview.handles = []
                             return
                         else:
                             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
@@ -923,6 +946,7 @@ def commonhandles(self, redraw=1):
                         return
                     else:
                         if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                            currentview.handles = []
                             return
                         else:
                             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
@@ -950,6 +974,21 @@ def commonhandles(self, redraw=1):
       #          plugins.mdlgridscale.gridfinishdrawing(self, view)
       #          plugins.mdlaxisicons.newfinishdrawing(self, view)
       #          view.repaint()
+
+        for v in self.layout.views:
+            if v.info["viewname"] == "skinview":
+                continue
+            elif v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                v.handles = []
+            elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                v.handles = []
+            elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                v.handles = []
+            elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                v.handles = []
+            elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                v.handles = []
+
         return
 
     for v in self.layout.views:
@@ -1117,7 +1156,7 @@ def commonhandles(self, redraw=1):
                     if v.info["viewname"] == "editors3Dview" and flagsmouse != 2064:
                         if currentview is None or currentview.info["viewname"] == "editors3Dview" or self.layout.selchange:
                             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
-                                pass
+                                v.handles = []
                             else:
                                 v.handles = hlist
                                 cv = v.canvas()
@@ -1131,7 +1170,7 @@ def commonhandles(self, redraw=1):
 
             if v.info["viewname"] == "XY":
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
-                    pass
+                    v.handles = []
                 else:
                     v.handles = hlist
                     cv = v.canvas()
@@ -1142,7 +1181,7 @@ def commonhandles(self, redraw=1):
 
             if v.info["viewname"] == "YZ":
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
-                    pass
+                    v.handles = []
                 else:
                     v.handles = hlist
                     cv = v.canvas()
@@ -1153,7 +1192,7 @@ def commonhandles(self, redraw=1):
 
             if v.info["viewname"] == "XZ":
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
-                    pass
+                    v.handles = []
                 else:
                     v.handles = hlist
                     cv = v.canvas()
@@ -1169,7 +1208,7 @@ def commonhandles(self, redraw=1):
                     if v.info["viewname"] == "3Dwindow" and flagsmouse != 2064:
                         if currentview is None or currentview.info["viewname"] == "3Dwindow" or self.layout.selchange:
                             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
-                                pass
+                                v.handles = []
                             else:
                                 v.handles = hlist
                                 cv = v.canvas()
@@ -1194,6 +1233,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.61  2007/08/20 23:14:42  cdunde
+#Minor file cleanup.
+#
 #Revision 1.60  2007/08/20 19:58:24  cdunde
 #Added Linear Handle to the Model Editor's Skin-view page
 #and setup color selection and drag options for it and other fixes.

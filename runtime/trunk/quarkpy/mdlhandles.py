@@ -1685,11 +1685,27 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         else:
             if editor.ModelVertexSelList != [] and sellist == []:
                 editor.ModelVertexSelList = []
-                view.handles = BuildHandles(editor, editor.layout.explorer, view)
+                handles = BuildHandles(editor, editor.layout.explorer, view)
                 for v in editor.layout.views:
-                    if v.info["viewname"] == "skinview" or v == view:
+                    if v.info["viewname"] == "skinview":
                         continue
-                    v.handles = view.handles
+                    elif v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                        v.handles = []
+                        continue
+                    elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                        v.handles = []
+                        continue
+                    elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                        v.handles = []
+                        continue
+                    elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                        v.handles = []
+                        continue
+                    elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                        v.handles = []
+                        continue
+                    else:
+                        v.handles = handles
                 mdlutils.Update_Editor_Views(editor, 4)
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
                     editor.SkinVertexSelList = []
@@ -1711,11 +1727,27 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                             break
                         elif itemcount == len(editor.ModelVertexSelList):
                             editor.ModelVertexSelList = editor.ModelVertexSelList + [vertex]
-            view.handles = BuildHandles(editor, editor.layout.explorer, view)
+            handles = BuildHandles(editor, editor.layout.explorer, view)
             for v in editor.layout.views:
-                if v.info["viewname"] == "skinview" or v == view:
+                if v.info["viewname"] == "skinview":
                     continue
-                v.handles = view.handles
+                elif v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                    v.handles = []
+                    continue
+                elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                    v.handles = []
+                    continue
+                elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                    v.handles = []
+                    continue
+                elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                    v.handles = []
+                    continue
+                elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                    v.handles = []
+                    continue
+                else:
+                    v.handles = handles
             if removeditem != 0:
                 for v in editor.layout.views:
                     mdleditor.setsingleframefillcolor(editor, v)
@@ -1723,17 +1755,20 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     plugins.mdlgridscale.gridfinishdrawing(editor, v)
                     plugins.mdlaxisicons.newfinishdrawing(editor, v)
                     cv = v.canvas()
-                    if len(v.handles) == 0:
-                        v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+        #1            if len(v.handles) == 0:
+        #1                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                     ### To avoid an error if something is selected that does not display the view handles.
-                    if len(view.handles) == 0:
+                    if len(v.handles) == 0:
                         pass
                     else:
                         for h in v.handles:
                             h.draw(v, cv, h)
-                        for vtx in editor.ModelVertexSelList:
-                            h = v.handles[vtx[0]]
-                            h.draw(v, cv, h)
+                        try:
+                            for vtx in editor.ModelVertexSelList:
+                                h = v.handles[vtx[0]]
+                                h.draw(v, cv, h)
+                        except:
+                            pass
                 if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
                         editor.SkinVertexSelList = []
@@ -1750,6 +1785,20 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     SkinView1.invalidate()
             else:
                 if editor.ModelVertexSelList != []:
+                    for v in editor.layout.views:
+                        if v.info["viewname"] == "skinview":
+                            continue
+                        elif v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                            v.handles = []
+                        elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                            v.handles = []
+                        elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                            v.handles = []
+                        elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                            v.handles = []
+                        elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                            v.handles = []
+
                     mdlutils.Update_Editor_Views(editor, 4)
                     if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
                         if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
@@ -1761,7 +1810,21 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                             skindrawobject = None
                         buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
                         SkinView1.invalidate()
-                    
+                else:
+                    for v in editor.layout.views:
+                        if v.info["viewname"] == "skinview":
+                            continue
+                        elif v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                            v.handles = []
+                        elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                            v.handles = []
+                        elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                            v.handles = []
+                        elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                            v.handles = []
+                        elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                            v.handles = []
+
         ### This section test to see if there are only 3 vertexes selected.
         ### If so, then it sorts them for proper order based on if the face
         ### vertexes were created in a clockwise direction (facing outwards, towards the 2D view)
@@ -1828,6 +1891,26 @@ class ModelEditorLinHandlesManager:
         self.center = center
         if minimal is not None:
             view, grid = minimal
+            if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                view.handles = []
+                h = []
+                return h
+            elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                view.handles = []
+                h = []
+                return h
+            elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                view.handles = []
+                h = []
+                return h
+            elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                view.handles = []
+                h = []
+                return h
+            elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                view.handles = []
+                h = []
+                return h
             closeto = view.space(view.proj(center) + quarkx.vect(-99,-99,0))
             distmin = 1E99
             mX, mY, mZ = self.bmin.tuple
@@ -1858,6 +1941,21 @@ class ModelEditorLinHandlesManager:
     def drawbox(self, view):
         "Draws the circle around all objects. Started as a box, but didn't look right."
 
+        if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+            view.handles = []
+            return
         cx, cy = [], []
         mX, mY, mZ = self.bmin.tuple
         X, Y, Z = self.bmax.tuple
@@ -1970,6 +2068,21 @@ class LinRedHandle(LinearHandle):
         self.cursor = CR_MULTIDRAG
 
     def draw(self, view, cv, draghandle=None):
+        if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+            view.handles = []
+            return
 
         p = view.proj(self.pos)
         if p.visible:
@@ -2119,6 +2232,22 @@ class LinSideHandle(LinearHandle):
         if self.firstone:
             self.mgr.drawbox(view)   # Draws the full circle and all handles during drag and Ctrl key is NOT being held down.
 
+        if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+            view.handles = []
+            return
+
         p = view.proj(self.pos)
         if p.visible:
             cv.reset()
@@ -2203,6 +2332,22 @@ class LinCornerHandle(LinearHandle):
         self.cursor = CR_CROSSH
 
     def draw(self, view, cv, draghandle=None):
+        if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+            view.handles = []
+            return
+        elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+            view.handles = []
+            return
+            
         p = view.proj(self.pos)
         if p.visible:
             cv.reset()
@@ -2369,6 +2514,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.78  2007/08/21 11:08:40  cdunde
+#Added Model Editor Skin-view 'Ticks' drawing methods, during drags, to its Options menu.
+#
 #Revision 1.77  2007/08/20 23:14:42  cdunde
 #Minor file cleanup.
 #
