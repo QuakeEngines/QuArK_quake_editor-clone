@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/08/17 10:33:41  danielpharos
+Fix an access violation.
+
 Revision 1.20  2007/08/15 22:34:14  danielpharos
 Simplified the DoFileOperation call.
 
@@ -101,6 +104,9 @@ procedure ClearSteamCache;
 implementation
 
 uses ShellAPI, SysUtils, StrUtils, Quarkx, Setup, Logging, SystemDetails, ExtraFunctionality, QkObjects;
+
+var
+  ClearCacheNeeded: Boolean;
 
 procedure Fatal(x:string);
 begin
@@ -193,6 +199,8 @@ begin
   if FileExists(FullFileName)=false then
   begin
     //Try to copy original file...
+    ClearCacheNeeded:=true;
+
     SteamGCFFile:=SteamDirectory+'steamapps\'+Filename;
     if FileExists(SteamGCFFile) = false then
     begin
@@ -294,6 +302,7 @@ var
   I, J: Integer;
 begin
   //This function uses QuArKSAS to extract files from Steam
+  ClearCacheNeeded:=true;
   
   I := Pos('\', Filename);
   J := Pos('/', Filename);
@@ -381,6 +390,9 @@ var
   FilesToDeleteFlags: Word;
   sr: TSearchRec;
 begin
+  if ClearCacheNeeded=false then
+    Exit;
+  ClearCacheNeeded:=false;
   Setup:=SetupSubSet(ssGames, 'Steam');
   ClearCache:=Setup.Specifics.Values['Clearcache']<>'';
   ClearCacheGCF:=Setup.Specifics.Values['ClearcacheGCF']<>'';
@@ -439,5 +451,7 @@ begin
   end;
 end;
 
+initialization
+  ClearCacheNeeded:=false;
 end.
 
