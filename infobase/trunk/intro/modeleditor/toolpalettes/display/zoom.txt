@@ -1,0 +1,11 @@
+title: Zoom settings
+author: cdunde
+
+<img border=1 align=right>zoom.png</img>
+This button also has two parts. The left will bring down the menu, where you
+can select a zoom-factor. The right part will, when no objects are selected, fit
+the entire model into view. When a object is selected, you can click one time
+to zoom to selection, and click again to fit the entire model into view.
+
+You can also use keys to zoom in or out. See
+<ref> intro/configuration/map/keys </ref> for these.

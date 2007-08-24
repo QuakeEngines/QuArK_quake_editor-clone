@@ -1,0 +1,10 @@
+title: Lock Views
+author: cdunde
+
+<img border=1 align=right>lockviews.png</img>
+
+This will cause all of the 2D views to move and zoom together.
+
+When this is in the unlocked mode, the 2d views can then be moved and zoomed on individually.
+
+If the lock is reset then the 2D views will realign themselves.

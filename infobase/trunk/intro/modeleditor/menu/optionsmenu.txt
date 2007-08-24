@@ -92,6 +92,12 @@ that have been drawn as <g>Selected</g> or <g>Show</g> but any related selected 
 purposes. The <a href="intro.modeleditor.skinview.html">Skin-view</a> selected face, show face and selected vertex colors
 can be changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
 
+<i>Draw Ticks During Drag </i>&nbsp;: These functions give various methods for drawing the Models Skin Mesh Vertex Ticks while doing a drag.<br>
+The 1st &nbsp;<g><u>Rectangle drag-method 1</u> &nbsp;</g>: This function will draw the Skin-view mesh vertex 'Ticks' during a rectangle drag with<br>
+a minimum amount of flickering, but is a slower drawing method.<br>
+The 2nd <g><u>Rectangle drag-method 2</u> &nbsp;</g>: This function will draw the Skin-view mesh vertex 'Ticks', using the fastest method,<br>
+during a rectangle drag, but will cause the greatest amount of flickering.
+
 <i><b>Paste objects at screen center</b> </i>&nbsp;: Check this if you want objects that you
 paste into the map-view, appear in the center of the current map-view. Uncheck
 it, and it will paste it at the exact position as the original.
