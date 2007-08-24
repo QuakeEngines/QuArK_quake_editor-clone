@@ -1190,7 +1190,18 @@ def Update_Editor_Views(editor, option=4):
             if option <= 4 or option == 5:
                 cv = v.canvas()
                 if len(v.handles) == 0:
-                    v.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
+                    if v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                        v.handles = []
+                    elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                        v.handles = []
+                    elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                        v.handles = []
+                    elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                        v.handles = []
+                    elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                        v.handles = []
+                    else:
+                        v.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
                 for h in v.handles:
                     h.draw(v, cv, h)
                 if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
@@ -1201,6 +1212,10 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.36  2007/08/20 19:58:23  cdunde
+#Added Linear Handle to the Model Editor's Skin-view page
+#and setup color selection and drag options for it and other fixes.
+#
 #Revision 1.35  2007/08/08 21:07:47  cdunde
 #To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
 #for vertex selection in those views.

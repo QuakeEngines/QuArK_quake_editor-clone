@@ -362,25 +362,26 @@ class VertexHandle(qhandles.GenericHandle):
             itemcount = 0
             if editor.ModelVertexSelList == []:
                 editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
-                if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
-                    if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
-                        editor.SkinVertexSelList = []
-                    mdlutils.PassEditorSel2Skin(editor)
-                    cv = SkinView1.canvas()
-                    for vertex in editor.SkinVertexSelList:
-                        h = vertex[1]
-                        h.draw(SkinView1, cv, h)
             else:
                 for item in editor.ModelVertexSelList:
                     itemcount = itemcount + 1
                     if self.index == item[0]:
                         editor.ModelVertexSelList.remove(item)
                         for v in editor.layout.views:
-                            if len(editor.ModelVertexSelList) == 1:
+                            if view.info["viewname"] == "skinview":
+                                continue
+                            elif v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                                v.handles = []
+                            elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                                v.handles = []
+                            elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                                v.handles = []
+                            elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                                v.handles = []
+                            elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                                v.handles = []
+                            else:
                                 v.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                            if len(v.handles) == 0:
-                                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
-                                continue # I know it looks weird, but needs to be here or errors can occur.
                             mdleditor.setsingleframefillcolor(editor, v)
                             v.repaint()
                             plugins.mdlgridscale.gridfinishdrawing(editor, v)
@@ -408,7 +409,21 @@ class VertexHandle(qhandles.GenericHandle):
                         editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
             handles = BuildCommonHandles(editor, editor.layout.explorer)
             for v in editor.layout.views:
-                v.handles = handles
+                if view.info["viewname"] == "skinview":
+                    continue
+                elif v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                    v.handles = []
+                else:
+                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+
             mdlutils.Update_Editor_Views(editor, 4)
             if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
@@ -425,7 +440,20 @@ class VertexHandle(qhandles.GenericHandle):
             editor.ModelVertexSelList = []
             editor.dragobject = None
             for v in editor.layout.views:
-                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
+                if view.info["viewname"] == "skinview":
+                    continue
+                elif v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                    v.handles = []
+                elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                    v.handles = []
+                else:
+                    v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                 mdleditor.setsingleframefillcolor(editor, v)
                 v.repaint()
                 ### Needed to move finishdrawing functions and handle drawing here
@@ -2514,6 +2542,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.79  2007/08/23 20:32:59  cdunde
+#Fixed the Model Editor Linear Handle to work properly in
+#conjunction with the Views Options dialog settings.
+#
 #Revision 1.78  2007/08/21 11:08:40  cdunde
 #Added Model Editor Skin-view 'Ticks' drawing methods, during drags, to its Options menu.
 #
