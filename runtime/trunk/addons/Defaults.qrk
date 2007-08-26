@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.352  2007/08/22 20:09:49  cdunde
+//Update of command line variables not listed.
+//
 //Revision 1.351  2007/08/21 23:43:39  danielpharos
 //Another fix to the HL2 building process.
 //
@@ -4116,8 +4119,8 @@ QQRKSRC1
         Typ = "C"   // combo box
         Hint = "relative to steam install directory, e.g. SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
         Items = "SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
-                $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
-                $0D"SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
+             $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
+             $0D"SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
       }
       SteamAppId: =
       {
@@ -4127,7 +4130,7 @@ QQRKSRC1
                "220 for Half-Life 2"$0D
                "240 for Counter-Strike: Source"$0D
                "280 for Half-Life: Source"$0D
-               "320 for Half-Life 2 Death Match"$0D
+               "320 for Half-Life 2: Deathmatch"$0D
                "340 for Half-Life 2: Lost Coast"$0D
                "360 for Half-Life Deathmatch: Source"$0D
                "380 for Half-Life 2: Episode One"
@@ -4139,6 +4142,26 @@ QQRKSRC1
                "340"$0D
                "360"$0D
                "380"
+      }
+      BaseDir: =
+      {
+        Txt = "Game data directory"
+        Typ = "C"   // combo box
+        Hint = "Set this to the directory containing the game data, e.g. hl2 for Half-Life 2"
+            $0D"cstrike for Counter-Strike Source"
+            $0D"hl2mp for Half-Life 2: Deathmatch"
+        Items = "hl2"
+             $0D"cstrike"
+             $0D"hl2mp"
+      }
+      PakForceUse: =
+      {
+        Txt = "GCF Filename"
+        Typ = "C"   // combo box
+        Hint = "Set this to the gcf filename that belongs to the game, e.g. source materials for Half-Life 2"
+            $0D"counter-strike source shared for Counter-Strike Source"
+        Items = "source materials"
+             $0D"counter-strike source shared"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
