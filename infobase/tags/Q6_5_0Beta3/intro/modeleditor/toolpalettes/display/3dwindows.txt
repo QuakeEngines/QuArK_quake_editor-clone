@@ -1,0 +1,10 @@
+title: 3D windows
+author: cdunde
+
+<img border=1 align=right>3dwindows.png</img>
+
+<i>Full 3D view</i> will create a new floating 3D-window, which you can place
+anywhere on your desktop and resize as you wish.
+
+Additional 3D windows can be opened if the 'Allow multiple 3D windows' option is
+selected in the Configuration, General, 3D view, Additional settings section.

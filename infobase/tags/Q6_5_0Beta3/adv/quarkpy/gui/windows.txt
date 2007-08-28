@@ -1,0 +1,42 @@
+title: GUI Window Basics
+author: Tiglari
+
+Since one reason for getting involved in QuArK development
+is to learn something about GUI (Graphical User Interface)
+programming, I thought I'd start at the beginning - if you want
+to learn it, you probably don't know it already.  People with
+GUI experience will want to skip this.
+
+One of the fundamental ideas of GUI programs is 'window'.
+is a region (typically a rectangle) on the screen that is
+looked after by some code. The job of this code is to;
+
+<ol>
+<li>draw the window's region, typically in different ways depending on what's going on at the time.
+<li>respond to events that occur when the mouse cursor is in the window's region.
+</ol>
+
+So a 'button' is a little window that draws a picture that
+looks something like a button in an 'up position', but if
+a mouse-button is pressed down while the mouse cursor is in
+the window, the picture will change to that of a button
+in a down position, and some additional code will get
+executed that does whatever pressing the button is supposed
+to accomplish.
+
+These windows are arranged in a vast familial hierarchy:
+an 'application' (main program) has a main window which
+has as 'child windows' all of the other windows that the
+application throws up.  So for example when the application
+is closed, a shut-down message is sent to its children,
+and so on to their children, so if everything is correctly
+coded, all the windows will vanish from the screen.
+Likewise windows can 'delegate' tasks to their parents,
+for example an 'edit window' in a dialog box can delegate
+processing of an ESC or Enter keypress to its parent
+dialog box, to close the dialog and throw away or record
+the results of the dialog.
+
+Happily for the Python coder, Delphi code manages all of the
+details of this, but it's probably good to have at least
+this much of an idea of what's going on under the hood.

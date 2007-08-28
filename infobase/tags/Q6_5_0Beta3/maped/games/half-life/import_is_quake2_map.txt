@@ -1,0 +1,25 @@
+title: Imported .MAP is a Quake-2 map?
+author:
+
+<b>Question:</b><br>
+I have a problem while trying to load an Half-Life .MAP file which is
+decompiled with WinBSPC v1.2 (BSP decompiler to map).
+
+The problem is that QuArK is trying to load the .MAP file as Quake 2 map, even while Half-Life
+game is being selected.
+I think that something in the .MAP file cause QuArK
+to think it is a Quake 2 map. (For example take the C3A1B.BSP decompiled
+map file.)
+
+<b>Answer:</b><br>
+The problem is, that when WinBSPC 'encounters' an ORIGIN-brush, it is hardcoded to create
+a brush with the texture
+<tt>e1u1/origin</tt>.
+When QuArK imports a .MAP-file, it scans it, and if
+it finds a '/' in a texture-name, it thinks the .MAP is a Quake-2 map.
+
+To solve this problem, you have to open the decompiled Half-Life .MAP file in Notepad or other
+ASCII-texteditor, and search-replace
+<tt>e1u1/origin</tt> with <tt>origin</tt>,
+before you import it into QuArK.
+

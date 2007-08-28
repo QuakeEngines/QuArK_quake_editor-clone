@@ -1,0 +1,13 @@
+title: Color Options
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=0 align=right valign=top>coloroptions.png</img>
+This button directly opens the <a href="intro.configuration.html">Model Editors Colors Configuration</a>
+dialog to allow quick access for changing the color of a variety of different items used in the
+Model Editor and the <a href="intro.modeleditor.model.html#mesh">Skin-view</a> page.
+
+<img border=1 align=right valign=top>coloroptions1.png</img>
+</td></tr>
+</table>

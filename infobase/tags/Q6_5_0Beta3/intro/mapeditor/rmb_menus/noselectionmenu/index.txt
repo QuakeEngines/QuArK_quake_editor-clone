@@ -1,0 +1,14 @@
+title: No Selection RMB menu
+desc: overview
+desc: botwaypointer
+desc: background
+desc: addcamerapos
+
+If you place you mouse cursor over an unused area in one of the 2D or 3D views and click your <g>RMB</g>
+this is the menu that you will see pop-up. The No Selection RMB menu. On this menu you will find a
+couple of extended function items that will lead you to some very useful and powerful editing tools.
+
+For these items, we have given them their own <b>Index</b> listing below where you will find full
+detailed instructions on their capabilities and applications.<br>
+Access directly to their Index listing can also be achieved easily, for a quick review, while in the
+editor by simply placing you cursor over their menu listing and pressing the <b>F1</b> key twice.

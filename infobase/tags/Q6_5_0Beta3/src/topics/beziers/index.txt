@@ -1,0 +1,11 @@
+title: Beziers
+author: tiglari
+
+For the math behind beziers, see <ref>src/pas/bezier</ref>. Here
+I just say a bit about where some relevant Python code is.
+
+The routines for Face-Bezier texture projections are
+in quarkpy\b2utils, texPlaneFromCph and texcpFromFace.
+The former is rather complicated; I think it might be
+possible to clean it up using the Axis Base idea, but
+anway the code as some comments.

@@ -1,0 +1,90 @@
+title: BSP - Binary Space Partition
+author: Decker
+desc: error_parsing newportal pointoffplane
+
+This page lists various encountered errors, that may occur during the BSP map-compiling phase.
+
+All QuArK supported games, are know to use a BSP map-compiling phase:
+
+<center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
+
+<tr><td>
+Quake-1
+</td><td>
+QBSP.EXE, TXQBSP.EXE
+</td></tr>
+
+<tr><td>
+Hexen-2
+</td><td>
+QBSP.EXE, HXBSP06.EXE
+</td></tr>
+
+<tr><td>
+Quake-2
+</td><td>
+QBSP3.EXE, TXQBSP39.EXE
+</td></tr>
+
+<tr><td>
+Heretic-2
+</td><td>
+QBSP3.EXE, TXQBSP39.EXE
+</td></tr>
+
+<tr><td>
+Half-Life
+</td><td>
+BSP.EXE, HLBSP.EXE
+</td></tr>
+
+<tr><td>
+Sin
+</td><td>
+QBSP3.EXE
+</td></tr>
+
+<tr><td>
+Kingpin
+</td><td>
+KPBSP.EXE
+</td></tr>
+
+<tr><td>
+Soldier of Fortune
+</td><td>
+SOFBSP.EXE
+</td></tr>
+
+<tr><td>
+Soldier of Fortune 2
+</td><td>
+Q3MAP.EXE, Q3MAP2.EXE
+</td></tr>
+
+<tr><td>
+Quake-3: Arena
+</td><td>
+Q3MAP.EXE, Q3MAP2.EXE
+</td></tr>
+
+<tr><td>
+Return to Castle Wolfenstein
+</td><td>
+Q3MAP.EXE, Q3MAP2.EXE
+</td></tr>
+
+<tr><td>
+Star Trek: Voyager - Elite Force
+</td><td>
+Q3MAP.EXE, Q3MAP2.EXE
+</td></tr>
+
+<tr><td>
+Star Trek: Elite Force 2
+</td><td>
+UBERMAP.EXE
+</td></tr>
+
+</table></center>
+

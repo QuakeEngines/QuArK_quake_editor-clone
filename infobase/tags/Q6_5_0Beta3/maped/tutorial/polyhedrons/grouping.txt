@@ -1,0 +1,31 @@
+title: Group your brushes
+author: Decker
+
+<img width=134 height=119 align=right>image16.png</img>
+Now your tree-view might look something like as in this image:
+
+Imagine what would happen, when you have 400+ brushes like that. How on earth
+are you going to know what brush are related to what?
+
+This is where <g>groups</g> are used. You can group together, those brushes and
+entities which, e.g. belongs to a single room, an advanced multi-segmented
+door, a vehicle which consists of many brushes, etc.
+
+To group brushes and entities, you first <ref> ../starting/deleting \ select </ref>
+the ones which should be grouped together. Then you press the
+<ref> intro/mapeditor/misctools/newgroup \ new group </ref> icon
+<img width=25 height=22 align=absmiddle>image17.png</img>.
+
+<img width=134 height=149 align=right>image18.png</img>
+Try to group your 6 brushes, which is your room. The tree-view should show you
+something similar as shown in this image:
+
+You can of cause give the group a more meaningful name, by selecting the
+group-object, and press the F2 key, or slowly double-clicking on it. (Just like
+in Windows' File-Explorer.)
+
+I suggest you rename your newly created group to: <tt>My first room</tt>.
+
+There are some special things you can do with groups, but that is explained in
+the <ref> ../advanced/grouptechniques </ref>. However, if you are curious, just
+right-click on the group-object, to get its context-menu up.

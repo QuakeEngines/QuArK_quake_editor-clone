@@ -1,0 +1,90 @@
+title: Shaders
+author: Armin Rigo
+
+The Quake 3 shaders are stored in a set of ".shader" files. This file format
+corresponds to the QShaderFile object class. Each .shader file can contain
+several shaders, so when loaded from disk, the QShaderFile object loads each
+shader in a subobject; this subobject itself is of the class QShader.
+
+Here is an example of a shader in a .shader file:
+
+<code>
+textures/base_button/shootme2
+{
+  qer_editorimage textures/base_button/shootme1.tga
+  q3map_lightimage textures/base_button/shootme_glow.tga
+  q3map_surfacelight 1000
+  light 1
+  {
+    map $lightmap
+    rgbGen identity
+  }
+  {
+    map textures/base_support/metal3_3.tga
+    blendFunc GL_DST_COLOR GL_ZERO
+    rgbGen identity
+  }
+  {
+    map textures/base_button/shootme_glow.tga
+    rgbGen wave sin 0.5 1.0 0 .3
+    blendFunc GL_ONE GL_ONE
+  }
+}
+</code>
+
+A shader like this is loaded into a single QShader file with the first few
+lines as specific/args, that is, 'qer_editorimage' with value
+'textures/base_button/shootme1.tga', then 'q3map_lightimage' with value
+'textures/base_button/shootme_glow.tga', followed by 'q3map_surfacelight' with
+value '1000', and then 'light' with value '1'.
+
+The following brace-enclosed parts are stored in a subobject each. The name of
+these subobjects is what 'map' specify (just like the name of the entities in a
+map is what their 'classname' specify). The other specific/args are stored as
+is in the subobject.
+
+This was the loading process; as always in QuArK it does little more than
+mapping a file format into an organized hierarchy of objects with
+specific/args. Actual interpretation of these specific/args is given by the
+class of the objects : QShaderFile, which contain QShader objects, each of
+which contain a list of objects of class QShaderItem. QShaderFile inherits from
+QLvFileObject because it has no particular purpose other than being a list of
+shaders.
+
+QShader is more subtle. It inherits from QPixelSet because a shader can be used
+as a texture in the map editor. A QShader object must actually provide an image
+by overriding the abstract "Description" method of QPixelSet; this is needed so
+that the map editor knows the image it must display in places such as the 3D
+viewers. But a shader generally involves several texture images, in Quake 3's
+point of view. This means that the QShader object must build a "best-possible"
+single image. The easiest way to do this is to use, say, the first specified
+texture that is not a special one ("map $lightmap" is a special one). Be aware
+however that this image is just a trick required by map editing; it does not
+reflect the quantity of information that a whole shader actually contains.
+That's why QShader inherits from QPixelSet directly and not from QTexture nor
+QImage.
+
+The QShaderItem class, on the other hand, inherits from QTextureLnk because it
+is really a kind of link to a texture. It differs from QTextureLnk in its
+implementation of "LoadPixelSet" : a QShaderItem loads the texture based on the
+object name (originally the 'map' entry in the .shader file). Special names
+like $lightmap correspond to a default texture -- e.g. the $lightmap should be
+matched to a special image object similar to the 'clip' textures of Quake 1&2;
+in this case it would be some black image with the text 'lightmap' on it.
+
+The object structure itself is enough to make the texture browser work
+correctly with shaders : when viewed from inside a texture list, they display
+their default best-possible image, but they can also be expanded in the tree
+(as you would open a group) to reveal their QShaderItem sub-images.
+
+QShader itself overrides the function 'OpenWindow'
+so that when one clicks on a shader in the texture browser it displays a list
+of its QShaderItems. This is done by a form "TFQShader" overriding "TQForm2",
+similarly to "TFQWad", which displays the list of textures inside a QWad
+object.
+
+The last main issue about shaders is in an extension of
+QTextureLnk.LoadPixelSet, which must look for a shader when instructed to do
+so. In this case it loads the shader file using NeedBaseGameFile (just like a
+Quake 1 texture needs to be loaded from .bsp file); then it looks for the good
+QShader inside this QShaderFile object.

@@ -1,0 +1,21 @@
+title: Map-editor in QuArK
+subdir: overview
+subdir: menu
+subdir: rmb_menus
+subdir: toolpalettes
+subdir: userdata
+subdir: misctools
+subdir: compass
+subdir: dataforms
+subdir: maplayout
+subdir: floating3dview
+
+The map editor is the main part of QuArK. A map is a 3D world in which you can
+play; the map editor lets you build your own 3D worlds, and you can use the
+<g>FPS-game</g> to play in the worlds you built.
+
+Basically, a map is made out of mathematical <g>polyhedrons</g> in 3D space.
+Each of these polyhedron will be shown in the FPS-game as a wall, floor,
+ceiling, furniture, or just anything with a fixed 3D shape. Monsters, weapons,
+and other <g>entities</g> are not made out of polyhedrons, and you cannot use
+the map editor to build their shape.

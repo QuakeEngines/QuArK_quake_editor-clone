@@ -1,0 +1,123 @@
+title: QuArK 6.4 (alpha released)
+author: tiglari, etc.
+
+The QuArK 6.x series is intended for incremental development.  The
+further down on the list something appears, the more likely it is
+to be delayed till 6.5, or never to happen at all.
+
+<UL>
+<LI>Transparency in OGL views: (Decker)
+<BR>status: done.
+
+<LI>Infobase link button in help popup: (cdunde et al)
+<BR>status: various implementations worked out, dithering
+between alternatives.
+
+<li>Toobar buttons: (cdunde, tiglari)
+<BR>status: implemented as plugin, wants further development
+and integration into quarkpy.
+
+<li>bot waypoint editor: (decker)
+<br>status: limited implementation as plugin.
+
+<li>Flexible vertex movement: (milifaar, tiglari)
+<br>status: a plugin by Milifaar.
+
+<li>Targetted and targetter finder: (tiglari)
+<br> suggestion by quantum_red.
+<br>status: done.
+
+<LI>Manual .lin and .prt file loading: (tiglari)
+<br>status: envisioned
+
+<LI>Leak line simplification:
+<br> information from Bengt Jardrup:
+<br>Tiglari, if you take a look at the Q1 compilers at my site 
+<code>
+> http://user.tninet.se/~xir870k , you'll find that both of them 
+> already have a leak line "simplification" algorithm default active 
+> that significantly reduces the leak trail length and complexity. As a 
+> result, the .pts file size shrinks significantly. For large leaky 
+> maps, this is an enormous advantage.
+> 
+> This algorithm was originally designed by Greg 'Tree' Lewis and 
+> fixed/improved by Tyrann and me. The algorithm can be found in source 
+> file outside.c and is called SimplifyLeakline.
+</code>
+
+<li>Mixed-face contents finder: (tiglari)
+<br> suggestion by funkiedamouse.
+
+<li>More flexible greyout: (suggestion by quantum red)
+<br>Provide an option so that things are selectable when
+visible in only one view.
+
+<li>Patch bend mode: (tiglari)
+<br>Or something like it, and other patch-handling extensions.
+
+<li>Ripoff of WC `arch maker': (tiglari)
+<br>would be called something like`arc builder', probably
+basically a duplicator, emulating the wc thing's functionality.
+
+<Li>Finish support for Mohaa: (tiglari)
+<br>Needs info about lod terrain format, model format and where
+the entity editing info is stored.
+
+<li>A Radiant-style XY view with vertical Z window: (tiglari)
+<br>The justification being that that gives maximal screen real estate
+for the top-down view (if you think about it, it's an extreme development
+of the Classic QuArK view).
+
+<li>importable and exportable config info (some discussion of this
+in early May2002 on quark-python)
+
+<li>L-square menu enhancements: (tiglari, ax2grind)
+<br>status: started, align & glue to tagged done.  I intend
+to leave further enhancements as an exercise for someone who
+wants to learn more about QuArK-Python programming.
+Suggested additions are:
+<UL>
+<LI> checkbox for relative to tagged/join of L
+(better to just tag the join, I think now)
+<LI> move to fraction of distance to tagged (arm only)
+<LI> end position
+<LI> arm length
+<LI> arm angle
+</UL>
+What about L-join options?
+
+<li>Radiant-style Regioning: (?)
+<br>Hide and don't write to map everything not in the rectangle.
+
+<li>Tag side plugin: (tiglari)
+<br>More flexibility for wrap across tagged.
+
+<li>Brush-based shape-builders: (tiglari, Decker)
+<br>'inner boxes' (two independently manipulable boxes, one inside
+   the other, giving more control over arch shapes).
+<br> redo prism-builder as shape-builder.
+<br> more fancy options for stair-builder
+
+<li>Patch-based shape-builders: (tiglari)
+<br> sphere, 'inner boxes', 'square cylinders' (s/b easy, but no
+requests for it)
+
+<li>full equivalence to GtkR patch texturing: (tiglari)
+
+<li>Expand/Contract faces: (tiglari)
+<br>As enhancement to experimental mapmovevertex plugin
+<br>Plus extension of vertex locks to ordinary vertex dragging.
+
+<li>CTF duplicator: (tiglari)
+<br>status: started, nothing committed.
+
+<li>Model Editor: (Andy, tiglari?)
+<br>more progress
+
+<li>Incorporate 'entity info files' into toolboxes: (tiglari)
+<br>tiglari has PERL scripts that generate various kinds of info (hints, bounding
+bpxes etc) from Radiant .def files and other sources, the idea being to
+let these be automatically integrated into the toolboxes generated
+by Andy's addon-builder.
+
+</UL>

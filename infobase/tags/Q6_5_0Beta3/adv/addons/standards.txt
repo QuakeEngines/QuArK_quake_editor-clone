@@ -1,0 +1,137 @@
+title: Add-on standards for new supported games
+author: Decker
+
+If you create a new add-on for a new game that is going to be supported by
+QuArK, there are some basic standards you must include in the add-on:
+<ul>
+<li>The Default Room
+<li>Grouping of Entities
+<li>Grouping of Textures
+<ul>
+<li>Access of Mod & Custom Textures
+</ul>
+<li>A Nice Layout in the Add-on Data*.QRK File
+</ul>
+
+
+<u>The Default Room</u><br>
+Make sure the add-on contains a default room. You know, the one that appears
+when the user wants to create a new map. The default room must be made of 4
+walls, one floor and one sky/ceiling. It must also have a one spawn-point
+for the player and a single white light in the center of the room.
+
+
+It is utterly important that you remember to place the player spawn-point
+correctly. Its bounding-box must not intersect any of the brushes that the
+room is made of. Else when the user tries to play the default room, he will be
+stuck to the floor upon spawning, and we don't want that.
+
+
+<u>Grouping of Entities</u><br>
+Try to place the game's entities, into folders of identical behaviour. For
+instance, place weapons and ammo into an <i>Weapons & Ammo Entities</i>
+folder, and trigger entities into an <i>Trigger_ Entities</i> folder.
+
+
+Take a look at the existing add-ons for the other supported games, and get
+inspired.
+
+
+<u>Grouping of Textures</u><br>
+Placing textures into sub-folders in the texture-browser, is something that
+takes lot of time, and you won't always create a perfect grouping of textures.
+
+
+A good suggestion would be, that if the game itself already have placed
+its textures into sub-directories (in a PAK file or similar), then try to
+follow that structure too.
+
+
+You may need to sort and group the textures, directly in the add-on .QRK
+text-file, this will usually be a little bit faster, if you have all the
+texture filenames ready at hand.
+
+
+<ul><u>
+<li>Access of Mod & Custom Textures
+</u><br>
+</ul>
+
+Another way of setting up access to textures for Mods and Custom Textures
+is to use the blanket command name "build" with a value of "1" setting.
+This is covered in detail in the 
+<a href="adv.newgame.html#gamedata">Game Data Addons</a> section.
+
+Basically what this does is tell QuArK to search the given path folder for
+all texture folders and files in all .pak files, no matter what their name
+is, and folders that have been named "textures" and, if the game supports
+them, "scripts" which are shader texture files like the ones used in Quake 3.
+
+In addition, any custom textures and shader files will also be included
+that are placed in the "textures" and "scripts" folders or in their own
+sub-folder placed in these folders, with any name you wish to give them.
+These custom sub-folders can also have sub-folder within them as well for
+a better grouping of files. All of the folders will then be grouped in the
+<a href="intro.texturebrowser.overview.html">Texture Browser</a> under the
+caption "Directories" and will be displayed by their individual folder and
+sub-folder names.
+
+
+<u>A Nice Layout in the Add-on Data*.QRK File</u><br>
+Since add-on .QRK files need to be modified now and then, when bug-fixes and
+other relevant information about the game becomes available, you should keep a
+nice layout in the add-on file.
+
+
+By this, I mean you should keep the indent-levels and try to place the
+information into columns. Take for instance this structure:
+
+
+<code>
+Valve Textures.qtxfolder =
+{
+  Spraypaing.txlist =
+  {
+    8BALL1.wl =
+    {
+      s = "valve"
+      d = "spraypaint"
+      h = "C"
+    }
+    ANDRE.wl =
+    {
+      s = "valve"
+      d = "spraypaint"
+      h = "C"
+    }
+    CAMP1.wl =
+    {
+      s = "valve"
+      d = "spraypaint"
+      h = "C"
+    }
+<i>..etc..</i>
+  }
+}
+</code>
+
+It can be made much more readable and smaller, if you put one texture-link
+on one line, and also use the ':incl' feature. Notice also that I've put some
+of the information into columns, so it will be easier to sort or block-mark if
+you have a text-editor thats capable of block-column-marking:
+
+
+<code>
+t_spraypaint:incl = { s = "valve" d = "spraypaint" h = "C" }
+
+Valve Textures.qtxfolder =
+{
+  Spraypaint.txlist =
+  {
+    8BALL1.wl = { t_spraypaint = ! }
+    ANDRE.wl =  { t_spraypaint = ! }
+    CAMP1.wl =  { t_spraypaint = ! }
+<i>..etc..</i>
+  }
+}
+</code>

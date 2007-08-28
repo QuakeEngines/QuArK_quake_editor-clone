@@ -1,0 +1,98 @@
+title: Releasing a Distribution
+author: Peter Brett
+
+Before you'll be able to follow the process outlined below, you'll
+need to read <a href="http://sourceforge.net/docman/display_doc.php?docid=6841&group_id=1">Introduction
+to SSH on SourceForge.net</a>, and set up your system with PuTTY
+accordingly.  I'm going to assume that you're running Windows. 
+
+In preparation for creating a distribution, you'll need to carry out a
+couple of preliminary steps.
+
+<ol><li>Download and install Nullsoft Scriptable Install System (NSIS)
+2.0 beta 4 or higher from 
+<a href="http://nsis.sourceforge.net">http://nsis.sourceforge.net</a>.
+</li>
+<li>Checkout the <tt>utils</tt> module from QuArK CVS on SourceForge.
+This module contains the scripts and other files you'll need to be
+able to create the distribution.</li>
+<li>Make sure you have access permissions to work with the SourceForge
+release system.</li>
+</ol>
+
+So, once you've decided that you're ready to create a distribution,
+here's what you do.
+
+<ol>
+<li>First, work out what the version number is for this distribution
+(see <ref>src/distribution/policy</ref>). You'll probably need to
+discuss with other developers to decide what the state is going to be
+and whether to increment the the minor version, but for the sake of
+argument lets say the version number you come up with is '6.4.1beta3'.
+</li>
+<li>Most of creating a distribution is similar to creating a snapshot.
+First, do steps 1 to 11 of <ref>src/distribution/snapshot</ref>, with
+the difference that you name the files with the '6.4.1beta3' instead
+of the date, so <tt>quark-win32-20070831</tt> becomes
+<tt>quark-win32-6.4.1beta3</tt>.</li>
+<li>Move your <tt>quark-win32-6.4.1beta3.zip</tt> to your shell server home
+directory.
+<code>$ mv quark-win32-6.4.1beta3.zip ~/</code></li>
+<li>Upload the source and help distributions to the release system's
+incoming directory.
+<code>$ ftp
+ftp&gt; open upload.sourceforge.net
+ftp&gt; binary
+ftp&gt; put quark-src-6.4.1beta3.zip
+ftp&gt; put quark-help-6.4.1beta3.zip
+ftp&gt; put quark-win32-6.4.1beta3.zip
+ftp&gt; quit</code></li>
+<li>Use PSFTP to download your <tt>quark-win32-6.4.1beta3.zip</tt> to your
+own computer.
+<code>&gt; psftp shell.sourceforge.net
+psftp&gt; get quark-win32-6.4.1beta3.zip
+psftp&gt; quit</code></li>
+<li>Create a new directory somewhere on your system - let's say
+<tt>C:\qrkinstall</tt> - and copy the files from your checkout of
+<tt>utils/nsis-dist-tools</tt> to that directory.  You will need:
+<ul>
+<li>install_header.bmp</li>
+<li>install_splash.bmp</li>
+<li>license.rtf</li>
+<li>QuArK.nsi</li>
+</ul>
+Use your favourite archiving program to extract the files from your
+<tt>quark-win32-6.4.1beta3.zip</tt> to <tt>C:\qrkinstall\quark</tt>.
+</li>
+<li>Open <tt>QuArK.nsi</tt> and edit the "QuArK Version" section as
+applicable.  In this case, you'd want it to look something like this:
+<code>!define QRK_MAJOR_VER 6.4
+!define QRK_MINOR_VER 1
+!define QRK_STATE "beta"
+!define QRK_RELEASE 3
+</code>
+Save and close.
+</li>
+<li>Right click on <tt>QuArK.nsi</tt> in Windows Explorer and select "Compile
+NSI (with bz2)".  Please use BZ2 compression, as it provides much better
+compression ratios that ZIP (the default).</li>
+<li>Upload the newly created <tt>quark-win32-6.4.1beta3.exe</tt> to the
+incoming directory for the SourceForge release system.
+<code>&gt; ftp
+ftp&gt; open upload.sourceforge.net
+ftp&gt; binary
+ftp&gt; put quark-win32-6.4.1beta3.exe
+ftp&gt; quit</code></li>
+<li>All the distribution files (<tt>quark-src-6.4.1beta3.zip</tt>,
+<tt>quark-help-6.4.1beta3</tt>, and <tt>quark-win32-6.4.1beta3</tt>)
+are now ready for you to process them through the SourceForge release
+system.  Don't forget that the release system upload directory is
+flushed every 24 hours.</li>
+</ol>
+
+Once you've finished doing the release, it would probably be a good
+idea to update the main QuArK website and to post an announcement to the
+quark and quark-news mailing lists, as well as adding links to the
+snapshot webpage.
+
+TODO: Add instructions for actually using the SourceForge release system.

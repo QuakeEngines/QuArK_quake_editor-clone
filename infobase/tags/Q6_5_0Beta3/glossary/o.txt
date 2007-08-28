@@ -1,0 +1,4 @@
+title: O...
+author: Decker
+
+<dt><a name="opengl">           </a>OpenGL              <dd>[OGL] A cross-platform library that allows developers to use 3D hardware to draw/render images.

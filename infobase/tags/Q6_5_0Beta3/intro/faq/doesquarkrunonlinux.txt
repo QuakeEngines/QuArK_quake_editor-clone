@@ -1,0 +1,5 @@
+title: Does QuArK run on Linux?
+author: Peter Brett
+
+Yes, QuArK can be made to run on Linux. See <ref>../quarkonlinux</ref>
+for details of how to install QuArK on a Linux system.
