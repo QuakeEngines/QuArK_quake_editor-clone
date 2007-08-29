@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.89  2007/08/10 12:16:08  danielpharos
+Updated the update-check. You can disable it in the Config, and it now asks if you want to go to the website.
+
 Revision 1.88  2007/08/04 14:53:07  danielpharos
 Fixed a small mistake in comment from prev rev.
 
@@ -314,10 +317,10 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 
 const
   QuArKVersion            = 'QuArK 6.5 Beta';
-  QuArKMinorVersion       = 'Beta2.0';
+  QuArKMinorVersion       = 'Beta3.0';
   QuArKCopyright          = 'Copyright (C) 1996-2007 Armin Rigo and others';
   QuArKUsedCompiler       = 'Delphi 6.0';
-  QuArKCompileDate        = 39177;   //This is 5 April 2007
+  QuArKCompileDate        = 39325;   //This is 31 August 2007
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value
     really needs to be a constant, so put the resulting value in here.
