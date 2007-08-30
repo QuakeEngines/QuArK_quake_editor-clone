@@ -12,8 +12,8 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
-6.5.0 Beta 2.1
-=============
+6.5.0 Beta 3.0
+==============
 
 * [cdunde]: Fixed the Model Editor Linear Handle to work properly in
           - conjunction with the Views Options dialog settings.
