@@ -12,6 +12,9 @@ $Id$
        #####
         #####       Quake Army Knife 6.5 Changelog
 
+6.5.0 Beta 4
+============
+
 6.5.0 Beta 3.0
 ==============
 
