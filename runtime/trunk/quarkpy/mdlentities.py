@@ -51,6 +51,7 @@ class EntityManager:
         "Called to draw the Model's Mesh for the 'Component' object 'o'"
         "when in 'Textured' or 'Solid' view mode, for each animation 'frame'."
 
+        import qhandles
         if view.info["viewname"] == "XY":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
                 if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
@@ -94,8 +95,10 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
-            if editor.ModelFaceSelList != []: # draws model mesh faces, if selected, during rotation and panning pauses
-                mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.ModelFaceSelList)
+            if editor.ModelFaceSelList != []:
+                # draws model mesh faces, if selected, while rotating, panning or zooming.
+                if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
+                    mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
 
         elif view.info["viewname"] == "3Dwindow":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
@@ -107,15 +110,18 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
-            if editor.ModelFaceSelList != []: # draws model mesh faces, if selected, during rotation and panning pauses
-                mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.ModelFaceSelList)
+            if editor.ModelFaceSelList != []:
+                # draws model mesh faces, if selected, while rotating, panning or zooming.
+                if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
+                    mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
         else:
             view.drawmap(o, mode)  # draws default color for model mesh lines
 
     def drawsel(o, view, mode):
         "Called to draw the Model's Mesh for the 'Component' object 'o'"
         "when in 'Wireframe' view mode, for each animation 'frame'."
- 
+
+        import qhandles
         from mdleditor import mdleditor
         editor = mdleditor
         if view.info["viewname"] == "XY":
@@ -161,6 +167,10 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            if editor.ModelFaceSelList != []:
+                # draws model mesh faces, if selected, while rotating, panning or zooming.
+                if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
+                    mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
 
         elif view.info["viewname"] == "3Dwindow":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
@@ -172,6 +182,10 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            if editor.ModelFaceSelList != []:
+                # draws model mesh faces, if selected, while rotating, panning or zooming.
+                if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
+                    mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
         else:
             view.drawmap(o, mode)  # draws default color for model mesh lines
 
@@ -399,6 +413,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.19  2007/08/01 07:37:30  cdunde
+#Changed to only allow model component frames to cause handles to be drawn, as should be the case.
+#
 #Revision 1.18  2007/06/20 22:04:08  cdunde
 #Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
 #and start of face selection capabilities in the Skin-view for future functions there.

@@ -388,7 +388,7 @@ def MakeEditorFaceObject(editor, option=0):
     "Creates a single QuArK Internal Face Object from 3 selected vertexes in the ModelVertexSelList"
     "or list of Face Objects by using the ModelFaceSelList 'tri_index' items in the list directly."
 
-    facelist = []
+    editor.EditorObjectList = []
     comp = editor.Root.currentcomponent
     tris = comp.triangles  # A list of all the triangles of the current component if there is more than one.
                            # If NONE of the sub-items of a models component(s) have been selected,
@@ -417,8 +417,8 @@ def MakeEditorFaceObject(editor, option=0):
                     vect2X ,vect2Y, vect2Z = verts[tris[trinbr][2][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 3rd vertex.
                     vertexlist = (vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z)
                     face["v"] = vertexlist
-                    facelist = facelist + [face]
-        return facelist
+                    editor.EditorObjectList = editor.EditorObjectList + [face]
+        return editor.EditorObjectList
 
     editor.ModelFaceSelList = []
     v0 = editor.ModelVertexSelList[0][0] # Gives the index number of the 1st vertex in the list.
@@ -448,9 +448,9 @@ def MakeEditorFaceObject(editor, option=0):
                 vect20 ,vect21, vect22 = verts[tris[trinbr][2][0]].tuple # Gives the actual 3D vector x,y and z positions of the triangle's 3rd vertex.
                 vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
                 face["v"] = vertexlist
-                facelist = facelist + [[face, tri_index]]
+                editor.EditorObjectList = editor.EditorObjectList + [[face, tri_index]]
                 editor.ModelFaceSelList = editor.ModelFaceSelList + [tri_index]
-                return facelist
+                return editor.EditorObjectList
 
     elif option == 2: # Returns an object (face) & tri_index for each triangle that shares the 1st vertex of the 3 selected vertexes used by the same triangle.
                       # Meaning, any triangle (face) using this 'common' vertex will be returned.
@@ -477,9 +477,9 @@ def MakeEditorFaceObject(editor, option=0):
                 vect20 ,vect21, vect22 = verts[tris[trinbr][2][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 3rd vertex.
                 vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
                 face["v"] = vertexlist
-                facelist = facelist + [[face, tri_index]]
+                editor.EditorObjectList = editor.EditorObjectList + [[face, tri_index]]
                 editor.ModelFaceSelList = editor.ModelFaceSelList + [trinbr]
-        return facelist
+        return editor.EditorObjectList
         
     elif option == 3: # Returns an object & tri_index for each triangle that shares the 1st and one other vertex of our selected triangle's vertexes.
                       # These objects can then be used with other Map Editor and Quarkx functions.
@@ -504,9 +504,9 @@ def MakeEditorFaceObject(editor, option=0):
                 vect20 ,vect21, vect22 = verts[tris[trinbr][2][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 3rd vertex.
                 vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
                 face["v"] = vertexlist
-                facelist = facelist + [[face, trinbr]]
+                editor.EditorObjectList = editor.EditorObjectList + [[face, trinbr]]
                 editor.ModelFaceSelList = editor.ModelFaceSelList + [trinbr]
-        return facelist
+        return editor.EditorObjectList
 
 
 
@@ -814,7 +814,7 @@ def removeTriangle_v3(editor):
 def addframe(editor):
     comp = editor.Root.currentcomponent
     if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
-        quarkx.msgbox("You need to select a\nsingle frame to duplicate.", MT_ERROR, MB_OK)
+        quarkx.msgbox("You need to select a single\nframe to duplicate.", MT_ERROR, MB_OK)
         return
 
     newframe = editor.layout.explorer.uniquesel.copy()
@@ -1174,6 +1174,9 @@ def Update_Editor_Views(editor, option=4):
 
     import mdleditor
     import mdlhandles
+    import qhandles
+    editorview = editor.layout.views[0]
+    newhandles = mdlhandles.BuildHandles(editor, editor.layout.explorer, editorview)
     for v in editor.layout.views:
         if v.info["viewname"] == "skinview":
             pass
@@ -1188,22 +1191,26 @@ def Update_Editor_Views(editor, option=4):
                 plugins.mdlgridscale.gridfinishdrawing(editor, v)
                 plugins.mdlaxisicons.newfinishdrawing(editor, v)
             if option <= 4 or option == 5:
-                cv = v.canvas()
-                if len(v.handles) == 0:
-                    if v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
-                        v.handles = []
-                    elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
-                        v.handles = []
-                    elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
-                        v.handles = []
-                    elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
-                        v.handles = []
-                    elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
-                        v.handles = []
-                    else:
-                        v.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
-                for h in v.handles:
-                    h.draw(v, cv, h)
+                if v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                    v.handles = []
+                elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                    v.handles = []
+                else:
+                    v.handles = newhandles
+                if editor.ModelFaceSelList != []:
+                    mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(editor, v, editor.EditorObjectList)
+                if v.handles == []:
+                    pass
+                else:
+                    cv = v.canvas()
+                    for h in v.handles:
+                       h.draw(v, cv, h)
                 if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
                     mdleditor.modelaxis(v)
 
@@ -1212,6 +1219,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.37  2007/08/24 00:33:08  cdunde
+#Additional fixes for the editor vertex selections and the View Options settings.
+#
 #Revision 1.36  2007/08/20 19:58:23  cdunde
 #Added Linear Handle to the Model Editor's Skin-view page
 #and setup color selection and drag options for it and other fixes.

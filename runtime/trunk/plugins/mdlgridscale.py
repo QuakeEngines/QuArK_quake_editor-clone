@@ -54,7 +54,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
     gridoldfinish(editor, view)
     
     if editor.ModelFaceSelList != []:
-        quarkpy.mdlhandles.ModelFaceHandle(quarkpy.qhandles.GenericHandle).draw(editor, view, editor.ModelFaceSelList)
+        quarkpy.mdlhandles.ModelFaceHandle(quarkpy.qhandles.GenericHandle).draw(editor, view, editor.EditorObjectList)
     #
     # Below test if the grid is even on
     #
@@ -676,6 +676,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.7  2007/06/03 23:43:30  cdunde
+#To draw model mesh selected faces for all actions in 2D views and some for 3D views.
+#
 #Revision 1.6  2007/05/17 23:56:54  cdunde
 #Fixed model mesh drag guide lines not always displaying during a drag.
 #Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.

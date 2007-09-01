@@ -91,7 +91,13 @@ class ModelEditor(BaseEditor):
     #                                       The triangle number in the Model component mesh "triangles" list
     #                                       of the Models "currentcomponent". The Skin-view does not have its
     #                                       own actual triangles, these are copied from the ModelFaceSelList.
-    
+
+    EditorObjectList = []
+    # (various items)     (QuArK Internal Objects)
+    #                     Created using:    The mdlutils.py file "MakeEditorFaceObject" function which in turn
+    #                                       can use any of the above 4 list to create and return this list of
+    #                                       "QuArK Internal Objects" that can be used for other QuArK Object
+    #                                       functions and faster drawing of these objects.
 
     def OpenRoot(self):
         global mdleditor
@@ -357,7 +363,7 @@ class ModelEditor(BaseEditor):
 
 
     def linear1click(self, btn):
-        "Click on the 'Linear Handle edit' button for the LinearHandle classes in the mdlhandles.py file."
+        "Click on the 'Linear Drag Handles' button for the LinearHandle classes in the mdlhandles.py file."
 
         editorview = self.layout.views[0]
         newhandles = []
@@ -383,6 +389,7 @@ class ModelEditor(BaseEditor):
                         view.handles = []
                     else:
                         view.handles = newhandles
+
                     setsingleframefillcolor(self, view)
                     view.repaint()
                     plugins.mdlgridscale.gridfinishdrawing(self, view)
@@ -426,6 +433,7 @@ class ModelEditor(BaseEditor):
                     view.handles = []
                 else:
                     view.handles = newhandles
+
                 setsingleframefillcolor(self, view)
                 view.repaint()
                 plugins.mdlgridscale.gridfinishdrawing(self, view)
@@ -899,16 +907,9 @@ def commonhandles(self, redraw=1):
     except:
         pass
 
-    if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
-        componentnames = []
-        for item in self.Root.dictitems:
-            if item.endswith(":mc"):
-                componentnames.append(item)
-        componentnames.sort()
-        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
 
-    comp = self.Root.currentcomponent
-
+### 3D Views ONLY Section for special needs:
+### =======================================
     try:
         if isinstance(self.dragobject, qhandles.HandleDragObject):
             pass
@@ -963,6 +964,8 @@ def commonhandles(self, redraw=1):
     except:
         pass
 
+### Draw No Handles Setting Section:
+### ===============================
     if flagsmouse == 2056:
       ### Fixes quick drag not finishing the drawing but if you use need to draw the handles
       ### which will most likely cause dupe drawing of them.
@@ -991,6 +994,8 @@ def commonhandles(self, redraw=1):
 
         return
 
+### Skin-view Invalidate for Textured Views Only Section:
+### ====================================================
     for v in self.layout.views:
         if v.info["viewname"] == "skinview":
             continue
@@ -1003,6 +1008,17 @@ def commonhandles(self, redraw=1):
                     v.invalidate(1)
         except:
             pass
+
+### Set Views Fill Color and Repaint Section:
+### ========================================
+        if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+            componentnames = []
+            for item in self.Root.dictitems:
+                if item.endswith(":mc"):
+                    componentnames.append(item)
+            componentnames.sort()
+            self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+        comp = self.Root.currentcomponent
 
         if v.info["viewname"] == "XY":
             fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
@@ -1117,6 +1133,8 @@ def commonhandles(self, redraw=1):
         except:
             pass
 
+### Rebuild View Handles & Selected Faces Section:
+### =============================================
     if flagsmouse == 1048 or flagsmouse == 1056:
         hlist = []
     else:
@@ -1125,6 +1143,8 @@ def commonhandles(self, redraw=1):
         else:
             hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
 
+### Draw Needed Views GrigScale and AxisIcons Section:
+### =================================================
     for v in self.layout.views:
         if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
             continue
@@ -1132,6 +1152,9 @@ def commonhandles(self, redraw=1):
             plugins.mdlgridscale.gridfinishdrawing(self, v)
             plugins.mdlaxisicons.newfinishdrawing(self, v)
 
+
+### Draw View Handles & Selected Faces Section:
+### ==========================================
     try:
         for v in self.layout.views:
             if v.info["viewname"] == "skinview":
@@ -1155,6 +1178,8 @@ def commonhandles(self, redraw=1):
                 else:
                     if v.info["viewname"] == "editors3Dview" and flagsmouse != 2064:
                         if currentview is None or currentview.info["viewname"] == "editors3Dview" or self.layout.selchange:
+                            if self.ModelFaceSelList != []:
+                                mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, v, self.EditorObjectList)
                             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
                                 v.handles = []
                             else:
@@ -1207,6 +1232,8 @@ def commonhandles(self, redraw=1):
                 else:
                     if v.info["viewname"] == "3Dwindow" and flagsmouse != 2064:
                         if currentview is None or currentview.info["viewname"] == "3Dwindow" or self.layout.selchange:
+                            if self.ModelFaceSelList != []:
+                                mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, v, self.EditorObjectList)
                             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
                                 v.handles = []
                             else:
@@ -1233,6 +1260,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.62  2007/08/23 20:32:58  cdunde
+#Fixed the Model Editor Linear Handle to work properly in
+#conjunction with the Views Options dialog settings.
+#
 #Revision 1.61  2007/08/20 23:14:42  cdunde
 #Minor file cleanup.
 #

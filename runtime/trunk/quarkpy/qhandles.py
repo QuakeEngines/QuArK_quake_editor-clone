@@ -1655,10 +1655,13 @@ class RectangleDragObject(RedImageDragObject):
                                     cv = self.view.canvas()
                                     for h in self.view.handles:
                                         h.draw(self.view, cv, self)
-                                    if editor.ModelVertexSelList != []:
-                                        for vtx in editor.ModelVertexSelList:
-                                            h = self.view.handles[vtx[0]]
-                                            h.draw(self.view, cv, h)
+                                    try:
+                                        if editor.ModelVertexSelList != []:
+                                            for vtx in editor.ModelVertexSelList:
+                                                h = self.view.handles[vtx[0]]
+                                                h.draw(self.view, cv, h)
+                                    except:
+                                        pass
                     else:
                         if len(self.view.handles) == 0:
                             import mdlhandles
@@ -2123,6 +2126,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.58  2007/08/23 20:32:58  cdunde
+#Fixed the Model Editor Linear Handle to work properly in
+#conjunction with the Views Options dialog settings.
+#
 #Revision 1.57  2007/08/20 19:58:23  cdunde
 #Added Linear Handle to the Model Editor's Skin-view page
 #and setup color selection and drag options for it and other fixes.

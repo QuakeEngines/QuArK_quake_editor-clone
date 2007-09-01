@@ -688,18 +688,6 @@ class BaseEditor:
                     else:
                         return
                 else:
-                    if flagsmouse == 2056:
-                        import qhandles
-                        if isinstance(self.dragobject, qhandles.HandleDragObject):
-                            import mdleditor
-                            for v in self.layout.views:
-                                mdleditor.setsingleframefillcolor(self, v)
-                                v.repaint()
-                                plugins.mdlgridscale.gridfinishdrawing(self, v)
-                                v.invalidate(rebuild)
-                            return
-                        else:
-                            return
                     if self.layout.selchange:
                         import mdleditor
                         for v in self.layout.views:
@@ -1369,6 +1357,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.84  2007/08/22 06:44:32  cdunde
+#Fixed Model Editor fillcolor to display correctly in 3D view after vertex drag.
+#
 #Revision 1.83  2007/08/21 11:08:39  cdunde
 #Added Model Editor Skin-view 'Ticks' drawing methods, during drags, to its Options menu.
 #
