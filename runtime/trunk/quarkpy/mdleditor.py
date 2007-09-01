@@ -162,6 +162,7 @@ class ModelEditor(BaseEditor):
         BaseEditor.setupchanged(self, level)
         mdlhandles.vertexdotcolor = MapColor("Vertices", SS_MODEL)
         mdlhandles.drag3Dlines = MapColor("Drag3DLines", SS_MODEL)
+        mdlhandles.vertexsellistcolor = MapColor("VertexSelListColor", SS_MODEL)
         mdlhandles.faceseloutline = MapColor("FaceSelOutline", SS_MODEL)
         mdlhandles.backfacecolor1 = MapColor("BackFaceColor1", SS_MODEL)
         mdlhandles.backfacecolor2 = MapColor("BackFaceColor2", SS_MODEL)
@@ -1260,6 +1261,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.63  2007/09/01 19:36:40  cdunde
+#Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
+#Changed selected face outline drawing method to greatly increase drawing speed.
+#
 #Revision 1.62  2007/08/23 20:32:58  cdunde
 #Fixed the Model Editor Linear Handle to work properly in
 #conjunction with the Views Options dialog settings.

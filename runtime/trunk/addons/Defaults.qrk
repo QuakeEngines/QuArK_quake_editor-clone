@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.353  2007/08/26 19:56:21  danielpharos
+//Added extra options so HL2 mode can be used for CSS again
+//
 //Revision 1.352  2007/08/22 20:09:49  cdunde
 //Update of command line variables not listed.
 //
@@ -3369,6 +3372,7 @@ QQRKSRC1
         ModelAxisZ                  = $FF00FF
         Vertices                    = $FF0000
         Drag3DLines                 = $00F000
+        VertexSelListColor          = $0080C0
         FaceSelOutline              = $0080FF
         BackFaceColor1              = $FFFFFF
         BackFaceColor2              = $BABABA
@@ -6524,6 +6528,7 @@ QQRKSRC1
           ModelAxisZ                 = $FF00FF
           Vertices                   = $FF0000
           Drag3DLines                = $00F000
+          VertexSelListColor         = $0080C0
           FaceSelOutline             = $0080FF
           BackFaceColor1             = $FFFFFF
           BackFaceColor2             = $BABABA
@@ -6571,7 +6576,8 @@ QQRKSRC1
       ModelAxisY:              = { Txt = "Models Y Axis" Typ = "LI" }
       ModelAxisZ:              = { Txt = "Models Z Axis" Typ = "LI" }
       Vertices:                = { Txt = "Vertex dots" Typ = "LI" }
-      Drag3DLines:             = { Txt = "Drag Lines/ Rec Selector / Picked Vertexes" Typ = "LI" }
+      Drag3DLines:             = { Txt = "Drag Lines/ Rec Selector / Base Vertex pick" Typ = "LI" }
+      VertexSelListColor:      = { Txt = "Picked Vertexes" Typ = "LI" }
       FaceSelOutline:          = { Txt = "Selected Faces Outline Color" Typ = "LI" }
       BackFaceColor1:          = { Txt = "Back Faces Pattern - color 1" Typ = "LI" }
       BackFaceColor2:          = { Txt = "Back Faces Pattern - color 2" Typ = "LI" }

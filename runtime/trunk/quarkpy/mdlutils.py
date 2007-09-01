@@ -515,6 +515,8 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
     "a list of faces that have been manipulated by some function using QuArK Internal Face Objects."
     "The 'new' objects list in the functions 'ok' section is passed to here where it is converted back"
     "to usable model component mesh vertexes of those faces and the final 'ok' function is performed."
+    "option=0 is the function for the Model Editor and"
+    "option=1 is the function for the Skin-view"
 
     if option == 0:
         comp = editor.Root.currentcomponent
@@ -567,7 +569,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
                     if item == len(vertexlist)-1:
                         vertexlist = vertexlist + [[pos0, vertex0, tri_index, ver_index0]] + [[pos1, vertex1, tri_index, ver_index1]] + [[pos2, vertex2, tri_index, ver_index2]]
 
-        replacevertexes(editor, comp, vertexlist, flags, view, undomsg)
+        replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=option)
 
 
 #
@@ -591,42 +593,70 @@ def addvertex(editor, comp, pos):
 #    of the currently selected model component or frame(s),
 #    to the same position of the 1st item in the 'editor.SkinVertexSelList' list.
 # The 'editor.SkinVertexSelList' list is a group of lists within a list.
-# Each group list must be created in the manner below then added to the 'editor.SkinVertexSelList' list:
+# If 'option 1' is used for the Skin-view then
+# each group list must be created in the manner below then added to the 'editor.SkinVertexSelList' list:
 #    editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
+# if 'option 0' is used for the Model Editor then
+# each group list must be created in the manner below then added to the 'editor.ModelVertexSelList' list:
+#    editor.ModelVertexSelList + [[frame_vertices_index, view.proj(pos)]]
 #
-def replacevertexes(editor, comp, vertexlist, flags, view, undomsg):
+def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, method=1):
+    "option=0 uses the ModelVertexSelList for the editor and"
+    "option=1 uses the SkinVertexSelList for the Skin-view"
+    "method=1 other selected vertexes move to the 'Base' vertex position of each tree-view selected 'frame', only applies to option=0."
+    "method=2 other selected vertexes move to the 'Base' vertex position of the 1st tree-view selected 'frame', only applies to option=0."
+
     new_comp = comp.copy()
-    tris = new_comp.triangles
+    if option == 1:
+        tris = new_comp.triangles
+        try:
+            tex = comp.currentskin
+            texWidth,texHeight = tex["Size"]
+        except:
+            texWidth,texHeight = view.clientarea
 
-    try:
-        tex = comp.currentskin
-        texWidth,texHeight = tex["Size"]
-    except:
-        texWidth,texHeight = view.clientarea
+        if comp.currentskin is not None:
+            newpos = vertexlist[0][0] + quarkx.vect(texWidth*.5, texHeight*.5, 0)
+        else:
+            newpos = vertexlist[0][0] + quarkx.vect(int((texWidth*.5) +.5), int((texHeight*.5) -.5), 0)
 
-    if comp.currentskin is not None:
-        newpos = vertexlist[0][0] + quarkx.vect(texWidth*.5, texHeight*.5, 0)
-    else:
-        newpos = vertexlist[0][0] + quarkx.vect(int((texWidth*.5) +.5), int((texHeight*.5) -.5), 0)
-
-    for triindex in range(len(tris)):
-        tri = tris[triindex]
-        for item in vertexlist:
-            if triindex == item[2]:
-                for j in range(len(tri)):
-                    if j == item[3]:
-                        if j == 0:
-                            newtriangle = ((tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[1], tri[2])
-                        elif j == 1:
-                            newtriangle = (tri[0], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[2])
-                        else:
-                            newtriangle = (tri[0], tri[1], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])))
-
-                        tris[triindex] = newtriangle
-    new_comp.triangles = tris
-    undo = quarkx.action()
-    undo.exchange(comp, new_comp)
-    editor.ok(undo, undomsg)
+        for triindex in range(len(tris)):
+            tri = tris[triindex]
+            for item in vertexlist:
+                if triindex == item[2]:
+                    for j in range(len(tri)):
+                        if j == item[3]:
+                            if j == 0:
+                                newtriangle = ((tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[1], tri[2])
+                            elif j == 1:
+                                newtriangle = (tri[0], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])), tri[2])
+                            else:
+                                newtriangle = (tri[0], tri[1], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])))
+                            tris[triindex] = newtriangle
+        new_comp.triangles = tris
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+    else: # option=0 section
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            for listframe in editor.layout.explorer.sellist:
+                if compframe.name == listframe.name:
+                    old_vtxs = compframe.vertices
+                    if quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method1'] == "1":
+                        newpos = old_vtxs[vertexlist[0][0]]
+                    elif quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method2'] == "1":
+                        newpos = editor.layout.explorer.sellist[0].vertices[vertexlist[0][0]]
+                    else:
+                        newpos = old_vtxs[vertexlist[0][0]]
+                    for vtx in vertexlist:
+                        if vtx == vertexlist[0]:
+                            continue
+                        old_vtxs[vtx[0]] = newpos
+                        compframe.vertices = old_vtxs
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
 
 
 #
@@ -1219,6 +1249,10 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.38  2007/09/01 19:36:40  cdunde
+#Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
+#Changed selected face outline drawing method to greatly increase drawing speed.
+#
 #Revision 1.37  2007/08/24 00:33:08  cdunde
 #Additional fixes for the editor vertex selections and the View Options settings.
 #
