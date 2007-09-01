@@ -15,6 +15,11 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
+
+* [cdunde]: Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
+          - Changed selected face outline drawing method to greatly increase drawing speed.
+
 6.5.0 Beta 3.0
 ==============
 
