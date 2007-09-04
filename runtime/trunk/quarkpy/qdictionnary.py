@@ -976,6 +976,7 @@ Strings = {
     6301: "Error in OpenGL initialization//'%s' failed",
     6302: "Error in OpenGL commands [Error code(s) %s step %d]",
     6303: "An error occurred in the OpenGL routines: %s",
+    6304: "Unable to load OpenGL extention list. All OpenGL extentions will be disabled",
 
     6310: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer",
     6311: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
@@ -1019,6 +1020,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.104  2007/08/15 16:28:11  danielpharos
+#HUGE update to HL2: Took out some code that's now not needed anymore.
+#
 #Revision 1.103  2007/08/14 16:33:33  danielpharos
 #HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 #

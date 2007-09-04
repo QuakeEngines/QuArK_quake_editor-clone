@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2007/06/06 22:31:19  danielpharos
+Fix a (recent introduced) problem with OpenGL not drawing anymore.
+
 Revision 1.60  2007/06/04 19:20:24  danielpharos
 Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
 
@@ -234,6 +237,7 @@ var
  TexturesToDelete: array of Integer;
  DisplayListsToDelete: array of Integer;
  RCs: array of HGLRC;
+ glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall; {Daniel 2007.08.28 - Added}
 
 type
  PLightList = ^TLightList;
@@ -252,6 +256,7 @@ type
    ViewWnd: HWnd;
    ViewDC: HDC;
    RC: HGLRC;
+   WinSwapHint: Pointer;
    CurrentAlpha: LongInt;
    Currentf: GLfloat4;
    RenderingTextureBuffer: TMemoryStream;
@@ -277,6 +282,7 @@ type
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
    Bilinear: boolean;
+   DrawRect: TRect;
    ScreenX, ScreenY: Integer;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -301,7 +307,8 @@ type
    procedure Copy3DView; override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
    property Ready: Boolean read FReady write FReady;
-   procedure SetViewRect(SX, SY: Integer); override;
+   procedure SetDrawRect(NewRect: TRect); override;
+   procedure SetViewSize(SX, SY: Integer); override;
    procedure SetViewDC(DC: HDC); override;
    procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
@@ -729,7 +736,12 @@ end;
 
  {------------------------}
 
-procedure TGLSceneObject.SetViewRect(SX, SY: Integer);
+procedure TGLSceneObject.SetDrawRect(NewRect: TRect);
+begin
+  DrawRect:=NewRect;
+end;
+
+procedure TGLSceneObject.SetViewSize(SX, SY: Integer);
 begin
   if SX<1 then SX:=1;
   if SY<1 then SY:=1;
@@ -1085,6 +1097,8 @@ begin
   if wglMakeCurrent(ViewDC,RC) = false then
     raise EError(6310);
 
+  WinSwapHint:=LoadSwapHint;
+
   { set up OpenGL }
   {$IFDEF DebugGLErr} DebugOpenGL(0, '', []); {$ENDIF}
   UnpackColor(FogColor, nFogColor);
@@ -1191,10 +1205,28 @@ begin
 end;
 
 procedure TGLSceneObject.Copy3DView;
+var
+  Int4Array: array[0..3] of Integer;
 begin
+  if wglMakeCurrent(ViewDC,RC) = false then
+    raise EError(6310);
+
+  if WinSwapHint<>nil then
+  begin
+    glAddSwapHintRectWIN:=WinSwapHint;
+    Int4Array[0]:=DrawRect.Left;
+    Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
+    Int4Array[2]:=DrawRect.Right - DrawRect.Left;
+    Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
+    glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
+    CheckOpenGLError(glGetError);
+  end;
+  
   if DoubleBuffered then
     if Windows.SwapBuffers(ViewDC)=false then
       raise exception.create(LoadStr1(6315));
+
+  wglMakeCurrent(0,0);
 end;
 
 procedure TGLSceneObject.ClearScene;

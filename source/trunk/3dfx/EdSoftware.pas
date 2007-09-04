@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/06/06 22:31:21  danielpharos
+Fix a (recent introduced) problem with OpenGL not drawing anymore.
+
 Revision 1.8  2007/06/04 19:20:25  danielpharos
 Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
 
@@ -218,6 +221,7 @@ type
    GlideLoaded: Boolean;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
+   //DrawRect: TRect;
    ScreenX, ScreenY: Integer;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -243,7 +247,8 @@ type
    procedure Copy3DView; override;
    procedure SwapBuffers(Synch: Boolean); override;
    procedure ClearScene; override;
-   procedure SetViewRect(SX, SY: Integer); override;
+   procedure SetDrawRect(NewRect: TRect); override;
+   procedure SetViewSize(SX, SY: Integer); override;
    procedure SetViewDC(DC: HDC); override;
    procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
@@ -2079,10 +2084,17 @@ begin
   grSstIdle;
 end;
 
-procedure TSoftwareSceneObject.SetViewRect(SX, SY: Integer);
+procedure TSoftwareSceneObject.SetDrawRect(NewRect: TRect);
+begin
+  //DrawRect:=NewRect;
+end;
+
+procedure TSoftwareSceneObject.SetViewSize(SX, SY: Integer);
 var
  XMargin, YMargin: Integer;
 begin
+ if SX<1 then SX:=1;
+ if SY<1 then SY:=1;
  ScreenX:=SX;
  ScreenY:=SY;
  if SoftBufferFormat>0 then
@@ -2153,6 +2165,8 @@ begin
  Result:=(qrkGlideVersion<HardwareGlideVersion)
      and (SoftBufferFormat<>nQuality);
  SoftBufferFormat:=nQuality;
+ if Coord<>nil then
+   SetViewSize(ScreenX, ScreenY);
 end;
 
 procedure TSoftwareSceneObject.BuildTexture(Texture: PTexture3);

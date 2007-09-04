@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/03/29 17:26:54  danielpharos
+Fixed a typo.
+
 Revision 1.17  2007/03/26 21:00:24  danielpharos
 Fixed a few typo's
 
@@ -104,6 +107,7 @@ type
   GLclampd   = Double;
   PGLint     = ^GLint;
   PGLfloat   = ^GLfloat;
+  PGLubyte   = ^GLubyte;
 
 const
   (* AccumOp *)
@@ -673,6 +677,7 @@ var
   (*
   ** OpenGL routines from OPENGL32.DLL
   *)
+  wglGetProcAddress: function (lpszProc : LPCSTR) : Pointer; stdcall;
   wglMakeCurrent: function (DC: HDC; p2: HGLRC): Bool; stdcall;
   wglDeleteContext: function (p1: HGLRC): Bool; stdcall;
   wglCreateContext: function (DC: HDC): HGLRC; stdcall;
@@ -727,6 +732,7 @@ var
   glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall; {Decker 2003.03.12 - Added}
   glOrtho: procedure (left: GLdouble; right: GLdouble; bottom: GLdouble; top: GLdouble; near: GLdouble; far: GLdouble) stdcall; {Daniel 2006.09.19 - Added}
   glGetIntegerv: procedure (pname: GLenum; params: PGLint) stdcall; {Daniel 2006.12.03 - Added}
+  glGetString: function (name: GLenum) : PGLubyte; stdcall; {Daniel 2007.08.28 - Added}
   glLightModelf: procedure (pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.15 - Added}
   glLightModelfv: procedure (pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.14 - Added}
   glLightf: procedure (light: GLenum; pname: GLenum; params: GLfloat) stdcall; {Daniel 2007.01.14 - Added}
@@ -737,6 +743,11 @@ var
   glFrontFace: procedure (mode: GLenum) stdcall; {Daniel 2007.01.30 - Added}
 
   (*
+  ** Utility routines from OPENGL32.DLL - GL_WIN_swap_hint
+  *)
+  //glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall; {Daniel 2007.08.28 - Added}
+
+  (*
   ** Utility routines from GLU32.DLL
   *)
   gluPerspective: procedure (fovy, aspect, zNear, zFar: GLdouble); stdcall;
@@ -744,17 +755,21 @@ var
 
 function LoadOpenGl : Boolean;
 procedure UnloadOpenGl;
+function LoadSwapHint : Pointer;
 
 
 implementation
 
+uses Classes, StrUtils, Quarkx, Logging;
+
 const
-  OpenGL32DLL_FuncList : array[0..53] of //DanielPharos 2007.01.30 - modified
+  OpenGL32DLL_FuncList : array[0..55] of
     record
       FuncPtr: Pointer;
       FuncName: PChar;
     end =
-  ( (FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
+  ( (FuncPtr: @@wglGetProcAddress;     FuncName: 'wglGetProcAddress'     ) //DanielPharos 2007.08.28 - Added
+   ,(FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
    ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //DanielPharos 2006.09.26 - Added
@@ -804,6 +819,7 @@ const
    ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           ) //Decker 2003.03.12 - Added
    ,(FuncPtr: @@glOrtho;               FuncName: 'glOrtho'               ) //DanielPharos 2006.09.28 - Added
    ,(FuncPtr: @@glGetIntegerv;         FuncName: 'glGetIntegerv'         ) //DanielPharos 2006.12.03 - Added
+   ,(FuncPtr: @@glGetString;           FuncName: 'glGetString'           ) //DanielPharos 2007.08.28 - Added
    ,(FuncPtr: @@glLightModelf;         FuncName: 'glLightModelf'         ) //DanielPharos 2007.01.15 - Added
    ,(FuncPtr: @@glLightModelfv;        FuncName: 'glLightModelfv'        ) //DanielPharos 2007.01.14 - Added
    ,(FuncPtr: @@glLightf;              FuncName: 'glLightf'              ) //DanielPharos 2007.01.14 - Added
@@ -902,8 +918,69 @@ begin
     TimesLoaded := TimesLoaded - 1;
 end;
 
+var
+ ExtentionListLoaded: Boolean;
+ GLExtentions: TStringList;
+
+function LoadExtentionList : Boolean;
+var
+  P: PGLubyte;
+  S: String;
+  I, OldPos: Integer;
+  Ext: String;
+begin
+  P:=glGetString(GL_EXTENSIONS);
+  if P=nil then
+  begin
+    Result:=false;
+    Exit;
+  end;
+  S:=PChar(P);
+  GLExtentions:=TStringList.Create;
+  OldPos:=0;
+  I:=Pos(' ', S);
+  while I>0 do
+  begin
+    Ext:=MidStr(S, OldPos+1, I - OldPos - 1);
+    GLExtentions.Add(Ext);
+    OldPos:=I;
+    //DanielPharos: PosEx doesn't exist in Delphi6-,
+    //so let's work-around (yet again!)
+    //I:=PosEx(' ', S, OldPos + 1);
+    I:=Pos(' ', RightStr(S, Length(S) - OldPos));
+    if I<>0 then
+      I:=I+OldPos;
+  end;
+  if (OldPos<>Length(S)) and (OldPos<>0) then
+    GLExtentions.Add(RightStr(S, Length(S) - OldPos));
+  Result:=True;
+end;
+
+function LoadSwapHint : Pointer;
+begin
+ if not ExtentionListLoaded then
+   if not LoadExtentionList then
+   begin
+     Log(LOG_WARNING, LoadStr1(6304));
+     Result:=nil;
+     Exit;
+   end;
+
+ //We need to check for GL_WIN_swap_hint before loading...
+ if GLExtentions.IndexOf('GL_WIN_swap_hint')=-1 then
+ begin
+   Result:=nil;
+   Exit;
+ end;
+ Result:=wglGetProcAddress('glAddSwapHintRectWIN');
+end;
+
 initialization
   TimesLoaded := 0;
   OpenGL32Lib := 0;
   Glu32Lib := 0;
+
+finalization
+  if ExtentionListLoaded then
+    GLExtentions.Free;
 end.

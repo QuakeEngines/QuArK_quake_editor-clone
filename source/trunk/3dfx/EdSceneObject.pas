@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2007/06/06 22:31:20  danielpharos
+Fix a (recent introduced) problem with OpenGL not drawing anymore.
+
 Revision 1.33  2007/06/04 19:20:25  danielpharos
 Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
 
@@ -297,7 +300,8 @@ type
                   var AllowsGDI: Boolean); virtual; abstract;
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
-   procedure SetViewRect(SX, SY: Integer); virtual; abstract;
+   procedure SetDrawRect(NewRect: TRect); virtual; abstract;
+   procedure SetViewSize(SX, SY: Integer); virtual; abstract;
    procedure SetViewDC(DC: HDC); virtual; abstract;
    procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); virtual; abstract;
    procedure SetCoords(nCoord: TCoordinates);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2007/08/04 14:41:24  danielpharos
+Don't invalidate when not needed
+
 Revision 1.33  2007/06/04 19:20:26  danielpharos
 Window pull-out now works with DirectX too. Fixed an access violation on shutdown after using DirectX.
 
@@ -217,6 +220,7 @@ type
                  FRAMETIME: TDouble;
                  Animation: PAnimationSeq;
                  OldCameraPos: PyObject;
+                 ClipRect: TRect;
                  procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                  procedure Paint(Sender: TObject; DC: {HDC}Integer; const rcPaint: TRect);
                  procedure Render;
@@ -471,9 +475,12 @@ begin
                      Drawing:=Drawing and not dfFull3Dview;
                      if FullScreen then
                       begin
-                       Canvas.Handle:=HDC(-1); try
-                       Render;
-                       finally Canvas.Handle:=0; end;
+                       Canvas.Handle:=HDC(-1);
+                       try
+                        Render;
+                       finally
+                        Canvas.Handle:=0;
+                       end;
                       end;
                     end;
   wp_MoveRedLine: begin
@@ -711,7 +718,7 @@ end;
 procedure TPyMapView.SetScreenSize(SX, SY: Integer);
 begin
  if (Scene<>Nil) and (Scene.ErrorMsg='') then
-  Scene.SetViewRect(SX, SY);
+   Scene.SetViewSize(SX, SY);
 end;
 
 procedure TPyMapView.ClearPanel(const S: String);
@@ -785,6 +792,9 @@ begin
   Canvas.Handle:=Animation^.DC
  else
   Canvas.Handle:=DC;
+
+ ClipRect:=rcPaint;
+
  try
   Render;
  finally
@@ -1708,6 +1718,7 @@ begin
      else
       begin
        Scene.SetViewDC(DC);
+       Scene.SetDrawRect(ClipRect);
        Scene.Render3DView;
        if FullScreen then
         Scene.SwapBuffers(True)
@@ -2859,6 +2870,7 @@ begin
        Drawing:=Drawing and not dfBuilding;
        if FullScreen then
         Scene.ClearFrame;
+       Scene.SetDrawRect(ClipRect);
        Scene.Render3DView;
        if FullScreen then
         begin
@@ -3197,6 +3209,7 @@ begin
                 else
                  begin
                   Scene.SetViewDC(DC);
+                  Scene.SetDrawRect(ClipRect);
                   Scene.Render3DView;
                   if FullScreen then
                    Scene.SwapBuffers(True)

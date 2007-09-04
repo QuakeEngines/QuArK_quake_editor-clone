@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2007/08/05 19:53:30  danielpharos
+Fix an infinite loop due to rubbish transparency code.
+
 Revision 1.22  2007/06/06 22:31:19  danielpharos
 Fix a (recent introduced) problem with OpenGL not drawing anymore.
 
@@ -140,6 +143,7 @@ type
 //    m_pD3DX: ID3DXContext;
 
     m_CurrentAlpha, m_CurrentColor: Integer;
+    DrawRect: TRect;
     ScreenX, ScreenY: Integer;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
     procedure EndBuildScene; override;
@@ -163,7 +167,8 @@ type
  (*
     procedure ClearFrame; override;
  *)
-    procedure SetViewRect(SX, SY: Integer); override;
+    procedure SetDrawRect(NewRect: TRect); override;
+    procedure SetViewSize(SX, SY: Integer); override;
     procedure SetViewDC(DC: HDC); override;
     procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
     procedure Render3DView; override;
@@ -207,11 +212,16 @@ begin
   v[3]:=((Color shr 24) and $FF) * (1/255.0);
 end;
 
-procedure TDirect3DSceneObject.SetViewRect(SX, SY: Integer);
+procedure TDirect3DSceneObject.SetDrawRect(NewRect: TRect);
+begin
+  DrawRect:=NewRect;
+end;
+
+procedure TDirect3DSceneObject.SetViewSize(SX, SY: Integer);
 begin
   if SX<1 then SX:=1;
   if SY<1 then SY:=1;
-  if ((ScreenX <> SX) or (ScreenY <> SY)) then
+  if (SX<>ScreenX) or (SY<>ScreenY) then
   begin
     ScreenResized := True;
 
@@ -373,7 +383,6 @@ var
   FogColor{, FrameColor}: TColorRef;
   Setup: QObject;
   l_Res: HResult;
-  WindowRect: TRect;
   I: Integer;
 begin
   ClearScene;
@@ -456,10 +465,10 @@ begin
   end;
 
   SetViewWnd(Wnd);
-  if GetWindowRect(Wnd, WindowRect)=false then
+  if GetWindowRect(Wnd, DrawRect)=false then
     Raise EErrorFmt(6400, ['GetWindowRect']);
-  ScreenX:=WindowRect.Right-WindowRect.Left;
-  ScreenY:=WindowRect.Bottom-WindowRect.Top;
+  ScreenX:=DrawRect.Right-DrawRect.Left;
+  ScreenY:=DrawRect.Bottom-DrawRect.Top;
 
   pPresParm:=PresParm;
   pPresParm.BackBufferWidth:=ScreenX;
