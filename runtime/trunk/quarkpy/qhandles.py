@@ -1075,8 +1075,6 @@ class RedImageDragObject(DragObject):
                                 # when the view handles are being drawn if we don't kill them here.
                                 # They do still exist at the end of the drag though.
                                 view.handles = []
-                                plugins.mdlgridscale.gridfinishdrawing(editor, view)
-                                plugins.mdlaxisicons.newfinishdrawing(editor, view)
                                 for r in self.redimages:
                                     view.drawmap(r, mode, reccolor)
                                 if self.handle is not None:
@@ -1245,6 +1243,11 @@ def refreshtimer(self):
             if flagsmouse == 1072:
                 mdleditor.setsingleframefillcolor(self.editor, self.view)
                 self.view.repaint()
+                try:
+                    if self.editor.ModelFaceSelList != []:
+                        mdlhandles.ModelFaceHandle(GenericHandle).draw(self.editor, self.view, self.editor.EditorObjectList)
+                except:
+                    pass
             cv = self.view.canvas()
             for h in self.view.handles:
                 h.draw(self.view, cv, self)
@@ -1283,7 +1286,8 @@ def refreshtimer(self):
                   #      self.view.handles = []
                         mdleditor.setsingleframefillcolor(self.editor, self.view)
                         self.view.repaint()
-                        plugins.mdlgridscale.gridfinishdrawing(self.editor, self.view)
+                        if isinstance(self.editor.dragobject, mdlhandles.RectSelDragObject) and (self.view.info["viewname"] != "editors3dview" or self.view.info["viewname"] != "3Dwindow"):
+                            plugins.mdlgridscale.gridfinishdrawing(self.editor, self.view)
                         reccolor = MapColor("Drag3DLines", SS_MODEL)
                         for r in self.redimages:
                             self.view.drawmap(r, mode, reccolor)
@@ -2126,6 +2130,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.59  2007/09/01 19:36:40  cdunde
+#Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
+#Changed selected face outline drawing method to greatly increase drawing speed.
+#
 #Revision 1.58  2007/08/23 20:32:58  cdunde
 #Fixed the Model Editor Linear Handle to work properly in
 #conjunction with the Views Options dialog settings.

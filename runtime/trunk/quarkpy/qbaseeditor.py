@@ -729,6 +729,8 @@ class BaseEditor:
         if isinstance(self, mdleditor.ModelEditor):
             if (flagsmouse == 560 or flagsmouse == 1072) and (view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
                 if flagsmouse == 560 and self.dragobject is None:
+                    s = "RS"
+                    mdlhandles.MouseDragging(self, view, x, y, s, None)
                     self.dragobject = mdlhandles.RectSelDragObject(view, x, y, RED, None)
                     self.dragobject.view = view
                     return
@@ -1357,6 +1359,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.85  2007/09/01 19:36:40  cdunde
+#Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
+#Changed selected face outline drawing method to greatly increase drawing speed.
+#
 #Revision 1.84  2007/08/22 06:44:32  cdunde
 #Fixed Model Editor fillcolor to display correctly in 3D view after vertex drag.
 #

@@ -1150,6 +1150,7 @@ def commonhandles(self, redraw=1):
         if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
             continue
         else:
+            mdlmgr.treeviewselchanged = 0
             plugins.mdlgridscale.gridfinishdrawing(self, v)
             plugins.mdlaxisicons.newfinishdrawing(self, v)
 
@@ -1251,7 +1252,6 @@ def commonhandles(self, redraw=1):
     except:
         pass
 
-    mdlmgr.treeviewselchanged = 0
     if flagsmouse == 16384 and self.dragobject is not None:
         self.dragobject.handle = None
         self.dragobject = None
@@ -1261,6 +1261,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.64  2007/09/01 20:32:06  cdunde
+#Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
+#
 #Revision 1.63  2007/09/01 19:36:40  cdunde
 #Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
 #Changed selected face outline drawing method to greatly increase drawing speed.

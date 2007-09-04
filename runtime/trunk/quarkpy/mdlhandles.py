@@ -187,7 +187,8 @@ class ModelFaceHandle(qhandles.GenericHandle):
                 skindrawobject = editor.Root.currentcomponent.currentskin
             except:
                 skindrawobject = None
-            buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+            if SkinView1 is not None:
+                buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
 
         for v in editor.layout.views:
             if v.info["viewname"] == "skinview":
@@ -226,6 +227,9 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
 
     def draw(self, editor, view, list):
+        from mdlmgr import treeviewselchanged
+        if treeviewselchanged == 1:
+            return
         if view.info["viewname"] == "skinview":
             return
         if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] == "1":
@@ -346,17 +350,17 @@ class VertexHandle(qhandles.GenericHandle):
 
     def menu(self, editor, view):
 
-        def forcegrid1click(m, self=self, editor=editor, view=view):
+        def force_to_grid_click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
 
-        def addhere1click(m, self=self, editor=editor, view=view):
+        def add_vertex_click(m, self=self, editor=editor, view=view):
             addvertex(editor, editor.Root.currentcomponent, self.pos)
 
-        def removevertex1click(m, self=self, editor=editor, view=view):
+        def remove_vertex_click(m, self=self, editor=editor, view=view):
             removevertex(editor.Root.currentcomponent, self.index)
             editor.ModelVertexSelList = []
 
-        def pick_basevertex(m, self=self, editor=editor, view=view):
+        def pick_base_vertex(m, self=self, editor=editor, view=view):
             import mdlutils
             if editor.ModelVertexSelList == []:
                 editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
@@ -374,7 +378,7 @@ class VertexHandle(qhandles.GenericHandle):
                         editor.SkinVertexSelList = []
                         SkinView1.invalidate(1)
 
-        def change_basevertex(m, self=self, editor=editor, view=view):
+        def change_base_vertex(m, self=self, editor=editor, view=view):
             import mdlutils
             for item in editor.ModelVertexSelList:
                 if str(view.proj(self.pos)) == str(item[1]) and str(view.proj(self.pos)) != str(editor.ModelVertexSelList[0][1]):
@@ -471,7 +475,7 @@ class VertexHandle(qhandles.GenericHandle):
                 buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
                 SkinView1.invalidate(1)
 
-        def alignvertexesclick(m, self=self, editor=editor, view=view):
+        def align_vertexes_click(m, self=self, editor=editor, view=view):
             if editor.Root.currentcomponent is None:
                 return
             else:
@@ -553,7 +557,7 @@ class VertexHandle(qhandles.GenericHandle):
             Xapv_m2.state = quarkx.setupsubset(SS_MODEL,"Options").getint("APVexs_Method2")
             return menulist
 
-        def alignvertopsclick(m):
+        def align_vert_ops_click(m):
             editor = mdleditor.mdleditor
             m.items = AlignVertOpsMenu(editor)
 
@@ -562,18 +566,23 @@ class VertexHandle(qhandles.GenericHandle):
         else:
             AlignText = "&Align mesh vertex"
 
-        Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        AddVertex = qmenu.item("&Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        RemoveVertex = qmenu.item("&Remove Vertex", removevertex1click, "|Remove Vertex:\n\nThis will remove a vertex from the component and all of its animation frames.\n\nWARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well. If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        PickBaseVertex = qmenu.item("&Pick Base Vertex", pick_basevertex, "|Pick Base Vertex:\n\n This is used to pick, or remove, the 'Base' vertex to align other vertexes to in one of the editor's views. It also works in conjunction with the 'Clear Pick list' below it.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        ChangeBaseVertex = qmenu.item("&Change Base Vertex", change_basevertex, "|Change Base Vertex:\n\n This is used to select another vertex as the 'Base' vertex to align other vertexes to on the Skin-view. It also works in conjunction with the 'Clear Skin Pick list' below it.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AddVertex = qmenu.item("&Add Vertex Here", add_vertex_click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        RemoveVertex = qmenu.item("&Remove Vertex", remove_vertex_click, "|Remove Vertex:\n\nThis will remove a vertex from the component and all of its animation frames.\n\nWARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well. If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        PickBaseVertex = qmenu.item("&Pick Base Vertex", pick_base_vertex, "|Pick Base Vertex:\n\n This is used to pick, or remove, the 'Base' vertex to align other vertexes to in one of the editor's views. It also works in conjunction with the 'Clear Pick list' below it.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        ChangeBaseVertex = qmenu.item("&Change Base Vertex", change_base_vertex, "|Change Base Vertex:\n\n This is used to select another vertex as the 'Base' vertex to align other vertexes to on the Skin-view. It also works in conjunction with the 'Clear Skin Pick list' below it.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         PickVertex = qmenu.item("&Pick Vertex", pick_vertex, "|Pick Vertex:\n\n This is used for picking 3 vertexes to create a triangle with. It also works in conjunction with the 'Clear Pick list' below.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        AlignVertexes = qmenu.item(AlignText, alignvertexesclick,"|Align mesh vertex(s):\n\nOnce a set of vertexes have been 'Picked' in one of the editor views all of those vertexes will be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned with that 'Base' vertex. It also works in conjunction with the 'Clear Pick list' above it.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AlignVertexes = qmenu.item(AlignText, align_vertexes_click,"|Align mesh vertex(s):\n\nOnce a set of vertexes have been 'Picked' in one of the editor views all of those vertexes will be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned with that 'Base' vertex. It also works in conjunction with the 'Clear Pick list' above it.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        AlignVertOpsPop = qmenu.popup("Align Vertex Options", [], alignvertopsclick, "|Align Vertex Options:\n\nThis menu gives different methods of aligning 'Picked' vertexes to the 'Base' vertex.\n\nSee the help for each method for detail on how they work.", "intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        AlignVertOpsPop = qmenu.popup("Align Vertex Options", [], align_vert_ops_click, "|Align Vertex Options:\n\nThis menu gives different methods of aligning 'Picked' vertexes to the 'Base' vertex.\n\nSee the help for each method for detail on how they work.", "intro.modeleditor.rmbmenus.html#vertexrmbmenu")
 
         if len(editor.ModelVertexSelList) == 0:
             ClearPicklist.state = qmenu.disabled
+
+        if editor.layout.explorer.sellist != [] and (editor.layout.explorer.sellist[0].type == ":mc" or editor.layout.explorer.sellist[0].type == ":fg" or editor.layout.explorer.sellist[0].type == ":mf"):
+            AddVertex.state = qmenu.normal
+        else:
+            AddVertex.state = qmenu.disabled
 
         try:
             if self.index is not None:
@@ -581,24 +590,20 @@ class VertexHandle(qhandles.GenericHandle):
                     AlignVertexes.state = qmenu.disabled
                     PickVertex.state = qmenu.disabled
                     ClearPicklist.state = qmenu.disabled
-                    menu = [PickBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Forcetogrid]
+                    menu = [AddVertex, RemoveVertex, qmenu.sep, PickBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Forcetogrid]
                 else:
                     if len(editor.ModelVertexSelList) < 2:
                         AlignVertexes.state = qmenu.disabled
-                    menu = [ChangeBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Forcetogrid]
+                    menu = [AddVertex, RemoveVertex, qmenu.sep, ChangeBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Forcetogrid]
             else:
                 if len(editor.ModelVertexSelList) < 2:
                     AlignVertexes.state = qmenu.disabled
-                menu = [ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop]
+                menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop]
         except:
             if len(editor.ModelVertexSelList) < 2:
                 AlignVertexes.state = qmenu.disabled
-            menu = [ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop]
+            menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop]
 
-        if editor.layout.explorer.sellist != [] and (editor.layout.explorer.sellist[0].type == ":mc" or editor.layout.explorer.sellist[0].type == ":fg" or editor.layout.explorer.sellist[0].type == ":mf"):
-            AddVertex.state = qmenu.normal
-        else:
-            AddVertex.state = qmenu.disabled
 
         return menu
 
@@ -2641,6 +2646,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.82  2007/09/01 20:32:06  cdunde
+#Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
+#
 #Revision 1.81  2007/09/01 19:36:40  cdunde
 #Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
 #Changed selected face outline drawing method to greatly increase drawing speed.
