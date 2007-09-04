@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [DanielPharos]: OpenGL renderer shouldn't cause weird line-erasing when a tooltip disappears anymore.
+
 * [cdunde]: Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
 
 * [cdunde]: Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
