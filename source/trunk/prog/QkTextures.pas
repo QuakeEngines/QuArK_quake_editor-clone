@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.52  2007/03/17 15:43:12  danielpharos
 Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
 
@@ -442,7 +445,7 @@ function GameShadersPath : String;
 begin
   Result:=SetupGameSet.Specifics.Values['ShadersPath'];
   if Result='' then
-    Raise EError(4429);
+    Result:=GameTexturesPath;
 end;
 
 function ScaleDown(var W, H: Integer) : Boolean;
