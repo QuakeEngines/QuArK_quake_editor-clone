@@ -93,7 +93,8 @@ def BuildMenuBar(editor):
 
 
 def MdlBackgroundMenu(editor, view=None, origin=None):
-    "Menu that appears when the user right-clicks on nothing."
+    "Menu that appears when the user right-clicks on nothing in one of the"
+    "editor views or Skin-view or on something or nothing in the tree-view."
 
     import mdlhandles
     import mdlcommands
@@ -182,6 +183,10 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.16  2007/07/14 22:42:44  cdunde
+#Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
+#Can run either way with single pick selection or rectangle drag selection in all views.
+#
 #Revision 1.15  2007/07/09 18:59:23  cdunde
 #Setup RMB menu sub-menu "skin-view Options" and added its "Pass selection to Editor views"
 #function. Also added Skin-view Options to editors main Options menu.
