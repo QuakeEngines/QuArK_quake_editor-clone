@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2007/09/04 14:38:12  danielpharos
+Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
+
 Revision 1.61  2007/06/06 22:31:19  danielpharos
 Fix a (recent introduced) problem with OpenGL not drawing anymore.
 
@@ -782,7 +785,7 @@ begin
     if CurrentPixelFormat<>pfi then
      begin
       if not SetPixelFormat(ViewDC, pfi, @pfd) then
-        Raise EErrorFmt(4869, ['SetPixelFormat']);
+        Raise EErrorFmt(6303, ['SetPixelFormat']);
      end;
   end;
 end;
