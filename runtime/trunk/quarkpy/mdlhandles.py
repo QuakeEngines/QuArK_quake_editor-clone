@@ -181,6 +181,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
          #       return
         editor.ModelFaceSelList = templist
         import mdlutils
+        mdlutils.MakeEditorFaceObject(editor)
         if quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
             mdlutils.PassEditorSel2Skin(editor, 2)
             try:
@@ -2646,6 +2647,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.83  2007/09/04 23:16:22  cdunde
+#To try and fix face outlines to draw correctly when another
+#component frame in the tree-view is selected.
+#
 #Revision 1.82  2007/09/01 20:32:06  cdunde
 #Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
 #
