@@ -182,14 +182,21 @@ class ModelFaceHandle(qhandles.GenericHandle):
         editor.ModelFaceSelList = templist
         import mdlutils
         mdlutils.MakeEditorFaceObject(editor)
-        if quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
-            mdlutils.PassEditorSel2Skin(editor, 2)
-            try:
-                skindrawobject = editor.Root.currentcomponent.currentskin
-            except:
-                skindrawobject = None
+        if quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
             if SkinView1 is not None:
-                buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+                if quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
+                    try:
+                        skindrawobject = editor.Root.currentcomponent.currentskin
+                    except:
+                        skindrawobject = None
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1":
+                        editor.SkinVertexSelList = []
+                    mdlutils.PassEditorSel2Skin(editor, 2)
+                    buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1":
+                        editor.SkinVertexSelList = []
+                    SkinView1.repaint()
 
         for v in editor.layout.views:
             if v.info["viewname"] == "skinview":
@@ -2647,6 +2654,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.84  2007/09/05 05:34:53  cdunde
+#To fix XY (Z top) view lagging behind drawing Face selections and de-selections.
+#
 #Revision 1.83  2007/09/04 23:16:22  cdunde
 #To try and fix face outlines to draw correctly when another
 #component frame in the tree-view is selected.

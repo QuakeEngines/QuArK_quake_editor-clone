@@ -374,7 +374,10 @@ class BaseEditor:
 
                         else:
                             if (quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1"):
-                                self.SkinFaceSelList = self.ModelFaceSelList
+                                if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1":
+                                    self.SkinFaceSelList = self.ModelFaceSelList
+                                else:
+                                    self.SkinFaceSelList = self.SkinFaceSelList + self.ModelFaceSelList
 
                         tricount = -1
                         cv.pencolor = MapColor("SkinLines", SS_MODEL)
@@ -1359,6 +1362,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.86  2007/09/04 23:16:22  cdunde
+#To try and fix face outlines to draw correctly when another
+#component frame in the tree-view is selected.
+#
 #Revision 1.85  2007/09/01 19:36:40  cdunde
 #Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
 #Changed selected face outline drawing method to greatly increase drawing speed.
