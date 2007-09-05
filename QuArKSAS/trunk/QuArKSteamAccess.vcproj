@@ -72,6 +72,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="&quot;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\AdvAPI32.Lib&quot;"
 				OutputFile=".\Release/QuArKSAS.exe"
+				Version="1.01"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ProgramDatabaseFile=".\Release/QuArKSAS.pdb"

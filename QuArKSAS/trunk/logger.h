@@ -11,11 +11,11 @@ public:
   {
     level=40;
     fh=fopen(name,"wb");
-    msg(0,"(Start logging)\n");
+    msg(0,"(Start logging)\r\n");
   }
   ~Logger()
   {
-    msg(0,"(Stop logging)\n");
+    msg(0,"(Stop logging)\r\n");
     fclose(fh);
   }
 
