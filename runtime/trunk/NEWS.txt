@@ -15,6 +15,12 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
+          - model component from selected Model Mesh faces and remove them from their current component.
+          - Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
+          - before the Skin-view is opened at least once in that session.
+          - Fixed redrawing of handles in areas that hints show once they are gone.
+
 * [cdunde]: Changed "Pass Face Selection to Skin-view" to real time updating and
           - added function to Sync Face Selection in the Editor to the Skin-view.
 
