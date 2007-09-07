@@ -141,6 +141,9 @@ class ConfigDialog(qmacro.dialogbox):
             import mdleditor
             if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
                 editor = mdleditor.mdleditor
+                import mdlmgr
+                from mdlmgr import treeviewselchanged
+                mdlmgr.treeviewselchanged = 1
                 if len(editor.ModelVertexSelList) > 1 or len(editor.ModelFaceSelList) > 1 or len(editor.SkinVertexSelList) > 1:
                     quarkx.reloadsetup()
                     from mdlhandles import SkinView1
@@ -160,6 +163,9 @@ class ConfigDialog(qmacro.dialogbox):
             import mdleditor
             if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
                 editor = mdleditor.mdleditor
+                import mdlmgr
+                from mdlmgr import treeviewselchanged
+                mdlmgr.treeviewselchanged = 1
                 if len(editor.ModelVertexSelList) > 1 or len(editor.ModelFaceSelList) > 1 or len(editor.SkinVertexSelList) > 1:
                     quarkx.reloadsetup()
                     from mdlhandles import SkinView1
@@ -263,6 +269,10 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.14  2007/08/20 19:58:23  cdunde
+#Added Linear Handle to the Model Editor's Skin-view page
+#and setup color selection and drag options for it and other fixes.
+#
 #Revision 1.13  2007/08/01 06:09:24  cdunde
 #Setup variable setting for Model Editor 'Linear Handle (size) Setting' and
 #'Rotation Speed' using the 'cfg' button on the movement toolbar.

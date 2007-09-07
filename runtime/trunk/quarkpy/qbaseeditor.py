@@ -352,7 +352,7 @@ class BaseEditor:
             draghandle = None
         else:
             draghandle = self.dragobject.handle
-            
+
         import mdleditor
         if isinstance(self, mdleditor.ModelEditor):
             try:
@@ -465,19 +465,30 @@ class BaseEditor:
                         return
             ### Don't put back in will cause dupe draw of handles. Had to move handle drawing code
             ### to mdlhandles.py, class VertexHandle, def menu, def pick_cleared funciton, see notes there.
-                    elif (flagsmouse == 16384 and self.dragobject is None):
-                        return
                     elif flagsmouse == 2064 and (view.info["viewname"] == "XY" or view.info["viewname"] == "YZ" or view.info["viewname"] == "XZ"):
                         return
                     elif flagsmouse == 1032:
                         cv = view.canvas()
                         for h in view.handles:
                             h.draw(view, cv, draghandle)
+                        return
                     elif flagsmouse == 2072:
                         from mdlhandles import SkinView1
                         if SkinView1 is not None:
                             if ( quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1"):
                                 SkinView1.invalidate(1)
+                        return
+                 ### Kind of getting the hint control redraw area fixed.
+                    from mdlmgr import treeviewselchanged
+                    if flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2080 or treeviewselchanged != 0:
+                        # This stops dupe handle drawing from the hintcontrol redraw section below.
+                        return
+                    if self.layout.hintcontrol is not None and not isinstance(self.dragobject, mdlhandles.RectSelDragObject) and not isinstance(self.dragobject, qhandles.HandleDragObject):
+                        mdleditor.setsingleframefillcolor(self, view)
+                        cv = view.canvas()
+                        for h in view.handles:
+                            h.draw(view, cv, self.layout.hintcontrol)
+                        return
                 return
             except:
                 pass
@@ -695,9 +706,14 @@ class BaseEditor:
                         import mdleditor
                         for v in self.layout.views:
                             if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
-                                mdleditor.setsingleframefillcolor(self, v)
+                                try:
+                                    from mdlmgr import treeviewselchanged
+                                    mdlmgr.treeviewselchanged = 1
+                                except:
+                                    pass
+                #                mdleditor.setsingleframefillcolor(self, v)
                                 v.repaint()
-                                v.invalidate(rebuild)
+                                v.invalidate(1)
                         return
                     else:
                         return
@@ -726,6 +742,7 @@ class BaseEditor:
         cursorpos = (x, y)                         ### Used for the Model Editor only.
         import mdleditor                           ### Used for the Model Editor only.
         import mdlhandles                          ### Used for the Model Editor only.
+        import mdlmgr                              ### Used for the Model Editor only.
 
          ### This section just for Model Editor face selection and editor views drawing manipulation
          ### and to free up L & RMB combo dragging for Model Editor Face selection use.
@@ -823,7 +840,8 @@ class BaseEditor:
                     editor = mapeditor()
                 else:
                     editor = self
-                if editor == None: return
+                if editor == None:
+                    return
                 else:
                     if isinstance(editor, mdleditor.ModelEditor):
                         pass # This allows the coors to be displayed in the 'Help Box'.
@@ -1008,6 +1026,9 @@ class BaseEditor:
                                 s = handle.name + " " + "%s "%handle.index + " x,y,z: %s"%handle.pos
                         except:
                             pass
+                    from mdlmgr import treeviewselchanged
+                    if mdlmgr.treeviewselchanged == 1:
+                        mdlmgr.treeviewselchanged = 0
                 else:
                     s = quarkx.getlonghint(handle.hint)
             self.showhint(s)
@@ -1362,6 +1383,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.87  2007/09/05 18:53:11  cdunde
+#Changed "Pass Face Selection to Skin-view" to real time updating and
+#added function to Sync Face Selection in the Editor to the Skin-view.
+#
 #Revision 1.86  2007/09/04 23:16:22  cdunde
 #To try and fix face outlines to draw correctly when another
 #component frame in the tree-view is selected.

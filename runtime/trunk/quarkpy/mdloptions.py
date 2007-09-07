@@ -84,6 +84,9 @@ shortcuts = { }
 
 def ToggleOption(item):
     "Toggle an option in the setup."
+    import mdlmgr
+    from mdlmgr import treeviewselchanged
+    mdlmgr.treeviewselchanged = 1
     tag = item.tog
     setup = apply(quarkx.setupsubset, item.sset)
     newvalue = not setup[tag]
@@ -256,6 +259,9 @@ def mPFSTSV(m):
 def mNFO(m):
     # No face outlines function.
     editor = mdleditor.mdleditor
+    import mdlmgr
+    from mdlmgr import treeviewselchanged
+    mdlmgr.treeviewselchanged = 1
     if not MldOption("NFO"):
         quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = None
@@ -267,6 +273,9 @@ def mNFO(m):
 def mNFOWM(m):
     # No face outlines while moving in 2D views function.
     editor = mdleditor.mdleditor
+    import mdlmgr
+    from mdlmgr import treeviewselchanged
+    mdlmgr.treeviewselchanged = 1
     if not MldOption("NFOWM"):
         quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = None
@@ -278,6 +287,9 @@ def mNFOWM(m):
 def mNOSF(m):
     # No selection fill function.
     editor = mdleditor.mdleditor
+    import mdlmgr
+    from mdlmgr import treeviewselchanged
+    mdlmgr.treeviewselchanged = 1
     if not MldOption("NOSF"):
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
@@ -290,6 +302,9 @@ def mNOSF(m):
 def mFFONLY(m):
     # (draw) Front faces only function.
     editor = mdleditor.mdleditor
+    import mdlmgr
+    from mdlmgr import treeviewselchanged
+    mdlmgr.treeviewselchanged = 1
     if not MldOption("FFONLY"):
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
@@ -302,6 +317,9 @@ def mFFONLY(m):
 def mBFONLY(m):
     # (draw) Back faces only function.
     editor = mdleditor.mdleditor
+    import mdlmgr
+    from mdlmgr import treeviewselchanged
+    mdlmgr.treeviewselchanged = 1
     if not MldOption("BFONLY"):
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
@@ -581,6 +599,10 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.25  2007/09/05 18:53:11  cdunde
+#Changed "Pass Face Selection to Skin-view" to real time updating and
+#added function to Sync Face Selection in the Editor to the Skin-view.
+#
 #Revision 1.24  2007/08/21 11:08:38  cdunde
 #Added Model Editor Skin-view 'Ticks' drawing methods, during drags, to its Options menu.
 #

@@ -599,8 +599,20 @@ def CustomZoom(views):
 
 def getzoommenu(zoombtn):
     def zoomclick(m, views=zoombtn.views):
+        editor = mapeditor()
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
         setviews(views, "scale", m.scale)
     def customzoom(m, views=zoombtn.views):
+        editor = mapeditor()
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
         CustomZoom(views)
     if zoombtn.near:
         # For mdl-editor
@@ -862,6 +874,12 @@ class ZoomBar:
 
 
     def Update(self, scale1):
+        editor = mapeditor()
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
         #
         # Compute the visual position corresponding to the new scale.
         #
@@ -1546,6 +1564,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.37  2007/04/13 19:46:57  cdunde
+#Added new function vtoposhint to give only x, y and z position without added hint text.
+#
 #Revision 1.36  2007/04/12 03:50:22  cdunde
 #Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
 #and advanced Skin-view vertex handle positioning and coordinates output data to hint box.

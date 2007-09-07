@@ -235,9 +235,6 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
 
     def draw(self, editor, view, list):
-        from mdlmgr import treeviewselchanged
-        if treeviewselchanged == 1:
-            return
         if view.info["viewname"] == "skinview":
             return
         if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] == "1":
@@ -2654,6 +2651,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.85  2007/09/05 18:53:11  cdunde
+#Changed "Pass Face Selection to Skin-view" to real time updating and
+#added function to Sync Face Selection in the Editor to the Skin-view.
+#
 #Revision 1.84  2007/09/05 05:34:53  cdunde
 #To fix XY (Z top) view lagging behind drawing Face selections and de-selections.
 #

@@ -14,6 +14,11 @@ import qmenu
 import dlgclasses
 
 
+def newcomponentclick(m):
+    editor = mapeditor()
+    addcomponent(editor)
+
+
 def newframeclick(m):
     editor = mapeditor()
     addframe(editor)
@@ -57,9 +62,10 @@ def revdir(m):
         quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = "1"
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['RevDir'] = None
-    quarkx.reloadsetup()
     ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
 
+
+NewComponent = qmenu.item("&Create New Component", newcomponentclick, "|Create New Component:\n\nThis will create a new model component of currently selected Model Mesh faces only including its Skins, Frames and Skeleton sub-items.\n\nThe selected faces will also be removed from their current components group.\n\nOnce created you can change the temporary name 'new component' to something else by double clicking on it.|intro.modeleditor.menu.html#commandsmenu")
 
 NewFrame = qmenu.item("&Duplicate Current Frame", newframeclick, "|Duplicate Current Frame:\n\nThis copies a single frame that is currently selected and adds that copy to that model component's animation frames list.\n\nFor multiple frame copies use the 'Duplicate' function on the 'Edit' menu.|intro.modeleditor.menu.html#commandsmenu")
 
@@ -73,6 +79,7 @@ CheckC = qmenu.item("Check Components", checkcomponents, "|Check Components:\n\n
 
 AutoBuild = qmenu.item("Auto Assemble", autobuild, "|Auto Assemble:\n\nSome models are made up of seperate model files for example .md3 files. This function attempts to auto-load those related models model files and attach them using what is known as tags to match them up correctly.|intro.modeleditor.menu.html#commandsmenu")
 
+NewComponent.state = qmenu.disabled
 NewFrame.state = qmenu.disabled
 AddTriangle.state = qmenu.disabled
 RemoveTriangle.state = qmenu.disabled
@@ -82,7 +89,7 @@ ReverseDirection.state = quarkx.setupsubset(SS_MODEL,"Options").getint("RevDir")
 # Global variables to update from plug-ins.
 #
 
-items = [NewFrame, qmenu.sep, AddTriangle, ReverseDirection, RemoveTriangle, qmenu.sep, CheckC, AutoBuild]
+items = [NewComponent, NewFrame, qmenu.sep, AddTriangle, ReverseDirection, RemoveTriangle, qmenu.sep, CheckC, AutoBuild]
 shortcuts = {"Ins": NewFrame}
 
 
@@ -101,9 +108,11 @@ def commandsclick(menu, oldcommand=onclick):
     if editor is None:
         return
     try:
-        if (editor.layout.explorer.uniquesel is None) or (editor.layout.explorer.uniquesel.type != ":mf"):
+        if (len(editor.layout.explorer.sellist) == 0) or (editor.layout.explorer.sellist[0].type != ":mf"):
+            NewComponent.state = qmenu.disabled
             NewFrame.state = qmenu.disabled
         else:
+            NewComponent.state = qmenu.normal
             NewFrame.state = qmenu.normal
         if len(editor.ModelVertexSelList) == 3:
             AddTriangle.state = qmenu.normal
@@ -120,6 +129,10 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.15  2007/07/09 18:36:47  cdunde
+# Setup editors Rectangle selection to properly create a new triangle if only 3 vertexes
+# are selected and a new function to reverse the direction of a triangles creation.
+#
 # Revision 1.14  2007/07/02 22:49:42  cdunde
 # To change the old mdleditor "picked" list name to "ModelVertexSelList"
 # and "skinviewpicked" to "SkinVertexSelList" to make them more specific.

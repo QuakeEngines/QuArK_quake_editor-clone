@@ -330,8 +330,9 @@ class ModelEditor(BaseEditor):
         if len(sellist)==1:
             if sellist[0].type == ':mf':
                 import mdlcommands
+                mdlcommands.NewComponent.state = qmenu.normal
                 mdlcommands.NewFrame.state = qmenu.normal
-                return [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+                return [mdlcommands.NewComponent, mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             else:
                 return mdlentities.CallManager("menu", sellist[0], self) + extra
         return mdlmenus.MultiSelMenu(sellist, self) + extra
@@ -344,6 +345,18 @@ class ModelEditor(BaseEditor):
     def explorerinsert(self, ex, list):
         for obj in list:
             mdlbtns.prepareobjecttodrop(self, obj)
+
+
+    def explorerselchange(self, ex=None):
+        self.layout.selchange()
+        self.buildhandles()
+        try:
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
+        except:
+            pass
+        self.invalidateviews(1)
 
 
     def editcmdclick(self, m):
@@ -368,6 +381,8 @@ class ModelEditor(BaseEditor):
 
         editorview = self.layout.views[0]
         newhandles = []
+        from mdlmgr import treeviewselchanged
+        mdlmgr.treeviewselchanged = 1
         if not self.linearbox:
             quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "1"
             setup = quarkx.setupsubset(self.MODE, "Building")
@@ -1108,7 +1123,7 @@ def commonhandles(self, redraw=1):
             pass
 
         try:
-            if (currentview.info["viewname"] != "3Dwindow") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2072 or flagsmouse == 2080):
+            if (currentview.info["viewname"] != "3Dwindow") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2080):
                 pass
             else:
                 if v.info["viewname"] == "3Dwindow" and flagsmouse != 2064:
@@ -1179,7 +1194,7 @@ def commonhandles(self, redraw=1):
                     pass
                 else:
                     if v.info["viewname"] == "editors3Dview" and flagsmouse != 2064:
-                        if currentview is None or currentview.info["viewname"] == "editors3Dview" or self.layout.selchange:
+                        if currentview is None or currentview.info["viewname"] == "editors3Dview" or self.layout.selchange or flagsmouse == 2080:
                             if self.ModelFaceSelList != []:
                                 mdlhandles.ModelFaceHandle(qhandles.GenericHandle).draw(self, v, self.EditorObjectList)
                             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
@@ -1229,7 +1244,7 @@ def commonhandles(self, redraw=1):
                     modelaxis(v)
 
             try:
-                if (currentview.info["viewname"] != "3Dwindow") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2072 or flagsmouse == 2080):
+                if (currentview.info["viewname"] != "3Dwindow") and (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2080):
                     pass
                 else:
                     if v.info["viewname"] == "3Dwindow" and flagsmouse != 2064:
@@ -1251,6 +1266,9 @@ def commonhandles(self, redraw=1):
             self.dragobject = None
     except:
         pass
+        
+    if treeviewselchanged == 1:
+        mdlmgr.treeviewselchanged = 0
 
     if flagsmouse == 16384 and self.dragobject is not None:
         self.dragobject.handle = None
@@ -1261,6 +1279,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.65  2007/09/04 23:16:22  cdunde
+#To try and fix face outlines to draw correctly when another
+#component frame in the tree-view is selected.
+#
 #Revision 1.64  2007/09/01 20:32:06  cdunde
 #Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
 #
