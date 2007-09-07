@@ -1,14 +1,14 @@
 QuArK SAS (Steam Access System)
 -------------------------------
-Version 1.0
-14 August 2007
+Version 1.01
+5 September 2007
 
 
 
 Program description
 -------------------
 QuArK SAS is a small command-line utility that allows you to extract files from Steam. For this to work, Steam must be running, and you probably have to be logged in. It produces a log-file which easily allows diagnoses when the program for some reason doesn't work. It's designed to be as light-weighted as possible (that's why there is no GUI), and run on as many systems as possible.
-The executable file has to be placed in the %Steam%/steamapps/%username%/sourcesdk/bin folder to work, although it might also function from other bin folders in the Steam directory.
+The executable file has to be placed in the %Steam%/steamapps/%username%/sourcesdk/bin folder to work, although it might also function from other bin folders in the Steam directory. When not placed in a correct directory, it will not be able to find several Steam files (like tier0.dll) and will not run at all.
 
 
 
@@ -33,6 +33,21 @@ After all parameters have been read from left to right,
 the rest will be interpreted as <filenames>.
 
 Note: all parameters are case-sensitive.
+Note: do NOT include trailing slashes in pathnames!
+
+
+
+Source code
+-----------
+The source code of this program is freely available (also see 'License' below), and can be downloaded from the SourceForge site (http://www.sourceforge.net/projects/quark).
+
+
+
+Comments and suggestions
+------------------------
+Do you have any comments or suggestions about this program? Below are links where you can find me.
+QuArK website: http://quark.planetquake.gamespy.com/
+QuArK forum:   http://www.dark-forge.com/forums/
 
 
 
@@ -44,6 +59,12 @@ This program is used by the map/model editor QuArK (hence the name). However, it
 
 Version changes
 ---------------
+Version 1.01 - 5 September 2007:
+    More output is writen to the log-file
+    Log now uses Windows text format
+    Several small clean-up-on-exit fixes
+    Set verbose to its default 20
+
 Version 1.0 - 14 August 2007:
     Initial release
 
@@ -52,7 +73,7 @@ Version 1.0 - 14 August 2007:
 Credits
 -------
 DanielPharos  - Author of QuArKSAS and developer of QuArK
-cdunde        - Developer of QuArK
+cdunde        - Developer of QuArK ("Hail the Master!")
 Mike Durand   - For helping with the technical part
 Valve         - For creating Steam
 
