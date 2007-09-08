@@ -1436,6 +1436,14 @@ def TexModeMenu(editor, view):
     "Menu items to set the textured mode of 'view'."
 
     def setviewmode(menu, editor=editor, view=view):
+        try:
+            import mdleditor
+            if isinstance(editor, mdleditor.ModelEditor):
+                import mdlmgr
+                from mdlmgr import treeviewselchanged
+                mdlmgr.treeviewselchanged = 1
+        except:
+            pass
         view.viewmode = menu.mode
         editor.lastscale = 0    # force a call to buildhandles()
 
@@ -1564,6 +1572,13 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.38  2007/09/07 23:55:29  cdunde
+#1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
+#     model component from selected Model Mesh faces and remove them from their current component.
+#2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
+#     before the Skin-view is opened at least once in that session.
+#3) Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.37  2007/04/13 19:46:57  cdunde
 #Added new function vtoposhint to give only x, y and z position without added hint text.
 #
