@@ -423,6 +423,7 @@ class ModelEditor(BaseEditor):
                     if view.info["viewname"] == "skinview":
                         continue
                     else:
+                        view.handles = []
                         setsingleframefillcolor(self, view)
                         view.repaint()
                         plugins.mdlgridscale.gridfinishdrawing(self, view)
@@ -895,11 +896,7 @@ def commonhandles(self, redraw=1):
             if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
                 return
             if isinstance(self.dragobject, qhandles.ScrollViewDragObject):
-                if treeviewselchanged == 1:
-                    mdlmgr.treeviewselchanged = 0
                     self.dragobject = None
-                else:
-                    return
             if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
                 if treeviewselchanged == 1:
                     mdlmgr.treeviewselchanged = 0
@@ -1165,7 +1162,6 @@ def commonhandles(self, redraw=1):
         if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
             continue
         else:
-            mdlmgr.treeviewselchanged = 0
             plugins.mdlgridscale.gridfinishdrawing(self, v)
             plugins.mdlaxisicons.newfinishdrawing(self, v)
 
@@ -1279,6 +1275,13 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.66  2007/09/07 23:55:29  cdunde
+#1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
+#     model component from selected Model Mesh faces and remove them from their current component.
+#2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
+#     before the Skin-view is opened at least once in that session.
+#3) Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.65  2007/09/04 23:16:22  cdunde
 #To try and fix face outlines to draw correctly when another
 #component frame in the tree-view is selected.
