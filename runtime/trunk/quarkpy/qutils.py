@@ -454,8 +454,17 @@ SetupRoutines = []
 
 def SetupChanged(level):
     "Called by QuArK when the setup is modified."
-    for s in SetupRoutines:
-        s(level)
+    try:
+        import mdleditor
+        if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
+        for s in SetupRoutines:
+            s(level)
+    except:
+        for s in SetupRoutines:
+            s(level)
 
 
 #
@@ -732,6 +741,9 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.32  2007/06/24 20:43:29  danielpharos
+#Changed the order of the SetupSet keyword for better backwards compatibility.
+#
 #Revision 1.31  2007/06/13 11:57:33  danielpharos
 #Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
 #

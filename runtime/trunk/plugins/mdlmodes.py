@@ -1005,9 +1005,9 @@ def OptionsViewsClick(m):
         self.src["fillmesh5"] = fivefillmesh
         self.src["fillColor5"] = fivefillColor
 
-        for view in editor.layout.views:
-            view.invalidate(1)
-        editor.layout.explorer.selchanged()
+        from quarkpy.mdlmgr import treeviewselchanged
+        quarkpy.mdlmgr.treeviewselchanged = 1
+        quarkx.reloadsetup()
 
 
     def onclosing(self,editor=editor):
@@ -1081,6 +1081,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.17  2007/06/04 12:27:01  cdunde
+# To update some default settings.
+#
 # Revision 1.16  2007/05/25 07:44:19  cdunde
 # Added new functions to 'Views Options' to set the model's
 # mesh lines color and draw in frame selection.

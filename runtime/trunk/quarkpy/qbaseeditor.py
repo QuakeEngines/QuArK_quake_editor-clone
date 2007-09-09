@@ -703,7 +703,7 @@ class BaseEditor:
                         return
                 else:
                     if self.layout.selchange:
-                        import mdleditor
+
                         for v in self.layout.views:
                             if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
                                 try:
@@ -711,8 +711,6 @@ class BaseEditor:
                                     mdlmgr.treeviewselchanged = 1
                                 except:
                                     pass
-                #                mdleditor.setsingleframefillcolor(self, v)
-                                v.repaint()
                                 v.invalidate(1)
                         return
                     else:
@@ -1383,6 +1381,13 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.88  2007/09/07 23:55:29  cdunde
+#1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
+#     model component from selected Model Mesh faces and remove them from their current component.
+#2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
+#     before the Skin-view is opened at least once in that session.
+#3) Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.87  2007/09/05 18:53:11  cdunde
 #Changed "Pass Face Selection to Skin-view" to real time updating and
 #added function to Sync Face Selection in the Editor to the Skin-view.
