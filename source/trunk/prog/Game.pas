@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2007/08/21 23:43:44  danielpharos
+Another fix to the HL2 building process.
+
 Revision 1.45  2007/08/14 16:32:59  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -748,7 +751,7 @@ function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD:
      Exit;  // no CD to look in
    CD:=SetupGameSet.Specifics.Values['CD'];
    if CD='' then
-     Exit; // no CD drive configured }
+     Exit; // no CD drive configured
    Result:=PathAndFile(PathAndFile(CD, CDDir), BaseDir);
    if DirectoryExists(Result) = false then
      if MessageDlg(FmtLoadStr1(5559, [SetupGameSet.Name, FileName]), mtInformation, mbOkCancel, 0) <> mrOk then
