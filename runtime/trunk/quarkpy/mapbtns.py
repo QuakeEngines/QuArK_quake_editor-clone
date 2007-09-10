@@ -95,6 +95,11 @@ def dropitemsnow(editor, newlist, text=Strings[544], center=quarkx.vect(0,0,0)):
             #    msg = msg + Strings[-102]
             quarkx.msgbox(msg, MT_ERROR, MB_OK)
             return
+        if not newitem.isallowedparent(nparent):
+            undo.cancel()    # not required, but it's better when it's done
+            msg = Strings[-106]
+            quarkx.msgbox(msg, MT_ERROR, MB_OK)
+            return
         new = newitem.copy()
         prepareobjecttodrop(editor, new)
         if delta:
@@ -709,6 +714,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.27  2007/04/03 15:17:44  danielpharos
+#Read the recenter option for the correct editor mode.
+#
 #Revision 1.26  2007/03/31 14:32:43  danielpharos
 #Should fix the Screen Center behaviour
 #

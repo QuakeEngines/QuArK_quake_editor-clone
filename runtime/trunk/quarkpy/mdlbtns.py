@@ -112,6 +112,11 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
             msg = Strings[-101]
             quarkx.msgbox(msg, MT_ERROR, MB_OK)
             return
+        if not newitem.isallowedparent(nparent):
+            undo.cancel()    # not required, but it's better when it's done
+            msg = Strings[-106]
+            quarkx.msgbox(msg, MT_ERROR, MB_OK)
+            return
         new = newitem.copy()
         prepareobjecttodrop(editor, new)
         try:
@@ -344,6 +349,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.13  2007/04/12 03:37:34  cdunde
+#Fixed error for dropitemsnow function when selecting a texture for a Model Skin.
+#
 #Revision 1.12  2007/04/03 15:17:45  danielpharos
 #Read the recenter option for the correct editor mode.
 #

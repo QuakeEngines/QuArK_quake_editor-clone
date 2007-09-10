@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2001/03/20 21:37:33  decker_dk
 Updated copyright-header
 
@@ -70,6 +73,7 @@ type
     Component: QObject;
   public
     class function TypeInfo: String; override;
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
     destructor Destroy; override;
     procedure ObjectState(var E: TEtatObjet); override;
     function GetVertices(var P: vec3_p) : Integer;
@@ -86,7 +90,16 @@ type
 
 implementation
 
-uses Quarkx, QkObjectClassList, QkComponent, QkModelRoot, QkModelTag;
+uses Quarkx, QkObjectClassList, QkComponent, QkModelRoot, QkModelTag, QkFrameGroup,
+     QkMiscGroup;
+
+function QFrame.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or (Parent is QFrameGroup) then
+    Result:=true
+  else
+    Result:=false;
+end;
 
 function QFrame.GetRoot(RootParent: Boolean): QObject;
 var
@@ -262,12 +275,15 @@ var
 //  sc: double;
 begin
   result:=0;
-  s_tag:=nil; o_tag:=nil;
-  bf:=nil; bf2:=nil;
+  s_tag:=nil;
+  o_tag:=nil;
+  bf:=nil;
+  bf2:=nil;
   myRoot:=QModelRoot(GetRoot(false));
   modelRoot:=QModelRoot(GetRoot(true));
   if myRoot<>modelRoot then
   begin
+    //This only happens if a model is loaded INSIDE another model using MD3-tagging.
     currentFrame:=modelRoot.GetComponentFromIndex(0).CurrentFrame;
     if currentFrame<>nil then begin
       bf:=QModelBone(modelRoot.getmisc.FindSubObject('Bone Frame '+inttostr(Round(currentFrame.GetFloatSpec('index',1))), QModelBone, nil));

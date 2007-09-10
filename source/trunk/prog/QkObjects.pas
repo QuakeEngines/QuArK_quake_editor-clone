@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.90  2007/08/29 20:23:04  cdunde
+To update date and version name for new release.
+
 Revision 1.89  2007/08/10 12:16:08  danielpharos
 Updated the update-check. You can disable it in the Config, and it now asks if you want to go to the website.
 
@@ -607,6 +610,7 @@ type
     { stuff that should be done when an object has been read in from text rep. }
     procedure FinalizeFromText; virtual;
     function WriteSubelements : Boolean; virtual;
+    function IsAllowedParent(Parent: QObject) : Boolean; virtual;
   end;
 
   TQList = class(TList)
@@ -724,7 +728,8 @@ implementation
 
 uses
   {$IFDEF Debug} MemTester, {$ENDIF}
-  QkObjectClassList, QkFileObjects, QkExplorer, Travail, PyObjects, PyImages, Quarkx, Qk1, Logging;
+  QkObjectClassList, QkFileObjects, QkExplorer, Travail,
+  PyObjects, PyImages, Quarkx, Qk1, Logging;
 
  {------------------------}
 
@@ -1392,6 +1397,9 @@ begin
 
   FSpecifics:=TStringList.Create;
   FSubElements:=TQList.Create;
+
+  if not IsAllowedParent(nParent) then
+    Log(LOG_VERBOSE, 'Object '+nName+' is being created in a non-allowed parent! This might produce errors!');
 end;
 
 destructor QObject.Destroy;
@@ -2258,6 +2266,11 @@ begin
 end;
 
 function QObject.WriteSubElements;
+begin
+  Result:=true;
+end;
+
+function QObject.IsAllowedParent(Parent: QObject) : Boolean;
 begin
   Result:=true;
 end;

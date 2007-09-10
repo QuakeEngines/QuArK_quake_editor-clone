@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [DanielPharos]: Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere
+          - where they don't belong.
+
 * [cdunde]: Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
           - model component from selected Model Mesh faces and remove them from their current component.
           - Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor

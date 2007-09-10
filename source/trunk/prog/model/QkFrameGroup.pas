@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2001/03/20 21:37:33  decker_dk
 Updated copyright-header
 
@@ -44,11 +47,20 @@ type
   QFrameGroup = Class(QMdlObject)
   public
     class function TypeInfo: String; override;
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
   end;
 
 implementation
 
-uses QkObjectClassList;
+uses QkObjectClassList, QkComponent;
+
+function QFrameGroup.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or (Parent is QComponent) then
+    Result:=true
+  else
+    Result:=false;
+end;
 
 class function QFrameGroup.TypeInfo;
 begin
