@@ -943,16 +943,13 @@ def addcomponent(editor):
     # triangle that is not being removed, in the remove_triangle_list, to avoid any invalid triangle errors.
     dumylist = remove_vertices_list
     for tri in range(len(change_comp.triangles)):
-        for tri_index in range(len(remove_triangle_list)):
-            if tri == remove_triangle_list[tri_index]:
-                break
-            if tri_index == len(remove_triangle_list)-1:
-                for vtx in range(len(change_comp.triangles[tri])):
-                    for vert_index in remove_vertices_list:
-                        if change_comp.triangles[tri][vtx][0] == vert_index:
-                            for item in dumylist:
-                                if item == vert_index:
-                                    dumylist.remove(item)
+        if tri in remove_triangle_list:
+            continue
+        else:
+            for vtx in range(len(change_comp.triangles[tri])):
+                testvtx = change_comp.triangles[tri][vtx][0]
+                if testvtx in dumylist:
+                    dumylist.remove(testvtx)
     remove_vertices_list = dumylist
 
     # This section uses the "remove_triangle_list" to recreate the original
@@ -973,15 +970,15 @@ def addcomponent(editor):
     # This section uses the "remove_vertices_list" to recreate the
     # original component's frames without any unused vertexes.
     new_tris = change_comp.triangles
+    frames = change_comp.findallsubitems("", ':mf')   # find all frames
     for index in remove_vertices_list:
         enew_tris = fixUpVertexNos(new_tris, index)
         new_tris = enew_tris
-        frames = change_comp.findallsubitems("", ':mf')   # find all frames
         for frame in frames: 
             old_vtxs = frame.vertices
             vtxs = old_vtxs[:index] + old_vtxs[index+1:]
             frame.vertices = vtxs
-        change_comp.triangles = new_tris
+    change_comp.triangles = new_tris
 
     # This updates the original component finishing the process for that.
     undo = quarkx.action()
@@ -1410,6 +1407,13 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.40  2007/09/07 23:55:29  cdunde
+#1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
+#     model component from selected Model Mesh faces and remove them from their current component.
+#2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
+#     before the Skin-view is opened at least once in that session.
+#3) Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.39  2007/09/01 20:32:06  cdunde
 #Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
 #
