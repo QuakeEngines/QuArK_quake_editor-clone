@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2001/03/20 21:34:29  decker_dk
 Updated copyright-header
 
@@ -108,9 +111,10 @@ function qLoadText(self, args: PyObject) : PyObject; cdecl;
 function qGetIcon(self, args: PyObject) : PyObject; cdecl;
 function qRefreshTV(self, args: PyObject) : PyObject; cdecl;
 function qSpecAdd(self, args: PyObject) : PyObject; cdecl;
+function qIsAllowedParent(self, args: PyObject) : PyObject; cdecl;
 
 const
- PyObjMethodTable: array[0..17] of TyMethodDef =
+ PyObjMethodTable: array[0..18] of TyMethodDef =
   ((ml_name: 'subitem';         ml_meth: qSubItem;         ml_flags: METH_VARARGS),
    (ml_name: 'findname';        ml_meth: qFindName;        ml_flags: METH_VARARGS),
    (ml_name: 'findshortname';   ml_meth: qFindShortName;   ml_flags: METH_VARARGS),
@@ -128,7 +132,8 @@ const
    (ml_name: 'loadtext';        ml_meth: qLoadText;        ml_flags: METH_VARARGS),
    (ml_name: 'geticon';         ml_meth: qGetIcon;         ml_flags: METH_VARARGS),
    (ml_name: 'refreshtv';       ml_meth: qRefreshTV;       ml_flags: METH_VARARGS),
-   (ml_name: 'specificadd';     ml_meth: qspecadd;         ml_flags: METH_VARARGS));
+   (ml_name: 'specificadd';     ml_meth: qSpecAdd;         ml_flags: METH_VARARGS),
+   (ml_name: 'isallowedparent'; ml_meth: qIsAllowedParent; ml_flags: METH_VARARGS));
 
  {-------------------}
 
@@ -899,6 +904,28 @@ begin
   if Q=nil then
     exit;
   Q.SpecificsAdd(nSpec);
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function qIsAllowedParent(self, args: PyObject) : PyObject; cdecl;
+var
+ Q, Q1: QObject;
+ obj: PyObject;
+begin
+ try
+  Result:=PyNoResult;
+  if not PyArg_ParseTupleX(args, 'O', [@obj]) then
+    Exit;
+  Q:=QkObjFromPyObj(self);
+  if Q=nil then
+    exit;
+  Q1:=QkObjFromPyObj(obj);
+  if Q1=nil then
+    exit;
+  Result:=PyInt_FromLong(Ord(Q.IsAllowedParent(Q1)));
  except
   EBackToPython;
   Result:=Nil;
