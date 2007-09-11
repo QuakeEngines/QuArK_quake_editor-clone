@@ -174,15 +174,21 @@ def BaseMenu(sellist, editor):
     Cut1.cmd = "cut"
     Copy1 = qmenu.item("Cop&y", editor.editcmdclick)
     Copy1.cmd = "copy"
+    paste1 = qmenu.item("Paste", editor.editcmdclick)
+    paste1.cmd = "paste"
+    paste1.state = not quarkx.pasteobj() and qmenu.disabled
     Delete1 = qmenu.item("&Delete", editor.editcmdclick)
     Delete1.cmd = "del"
 
-    return [Force1, qmenu.sep, Cut1, Copy1, Delete1]
+    return [Force1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.17  2007/09/05 18:43:10  cdunde
+#Minor comment addition and grammar corrections.
+#
 #Revision 1.16  2007/07/14 22:42:44  cdunde
 #Setup new options to synchronize the Model Editors view and Skin-view vertex selections.
 #Can run either way with single pick selection or rectangle drag selection in all views.
