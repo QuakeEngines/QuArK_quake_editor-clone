@@ -947,9 +947,8 @@ def addcomponent(editor):
             continue
         else:
             for vtx in range(len(change_comp.triangles[tri])):
-                testvtx = change_comp.triangles[tri][vtx][0]
-                if testvtx in dumylist:
-                    dumylist.remove(testvtx)
+                if change_comp.triangles[tri][vtx][0] in dumylist:
+                    dumylist.remove(change_comp.triangles[tri][vtx][0])
     remove_vertices_list = dumylist
 
     # This section uses the "remove_triangle_list" to recreate the original
@@ -1407,6 +1406,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.41  2007/09/10 01:33:19  cdunde
+#To speed up "Make new component" function.
+#
 #Revision 1.40  2007/09/07 23:55:29  cdunde
 #1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
 #     model component from selected Model Mesh faces and remove them from their current component.
