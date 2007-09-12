@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2007/09/12 15:18:36  danielpharos
+Get the Steam pak-file name from the Defaults.
+
 Revision 1.54  2007/09/04 15:26:36  danielpharos
 Fix for the 'Unknown attribute' error when ShadersPath is not defined for the current game mode.
 
@@ -273,7 +276,6 @@ type
               function BaseGame : Char; virtual; abstract;
               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
               function TestConversionType(I: Integer) : QFileObjectClass; override;
-             {function PyGetAttr(attr: PChar) : PyObject; override;}
             end;
  QTextureLnk = class(QTexture)  { link to a QPixelSet object in the game's directories }
                protected
@@ -1940,7 +1942,8 @@ end;
 
 procedure QTextureFile.CheckTexName;
 begin
-  CheckForName(nName, GetTexName);
+  if SetupSubSet(ssGeneral, 'Display').Specifics.Values['TextureNameCheck']<>'' then
+    CheckForName(nName, GetTexName);
 end;
 
 function QTextureFile.GetTexName : String;

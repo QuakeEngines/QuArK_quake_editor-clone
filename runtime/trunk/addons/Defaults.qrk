@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.354  2007/09/01 20:32:06  cdunde
+//Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
+//
 //Revision 1.353  2007/08/26 19:56:21  danielpharos
 //Added extra options so HL2 mode can be used for CSS again
 //
@@ -1185,6 +1188,7 @@ QQRKSRC1
         Sel = "1"
         MppTopBtns = "1"
         IconPath = "images\\"
+        TextureNameCheck = "1"
         UpdateCheck = "1"
         Form = "GeneralDisplay"
       }
@@ -6783,6 +6787,7 @@ QQRKSRC1
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
       sep: = {Typ="S" Txt = ""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
+      TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
       UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
     }
     GeneralMemory:form =
