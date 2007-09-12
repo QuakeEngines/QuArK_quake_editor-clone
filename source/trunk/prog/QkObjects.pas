@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.91  2007/09/10 10:24:19  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
 Revision 1.90  2007/08/29 20:23:04  cdunde
 To update date and version name for new release.
 
@@ -548,7 +551,6 @@ type
     property Specifics: TStringList read {$IFDEF Debug} GetSpecifics; {$ELSE} FSpecifics; {$ENDIF}
     property SetSpecificsList: TStringList read FSpecifics write FSpecifics;
     property SubElements: TQList read {$IFDEF Debug} GetSubElements; {$ELSE} FSubElements; {$ENDIF}
-    property SubElementsC: TQList read FSubElements;
     function Ancestry: String;
     procedure AddRef(Delta: Integer);
     { incr/decr Py reference count, frees if 0 }
@@ -1798,9 +1800,9 @@ var
   Q: QObject;
 begin
   { no call to Acces }
-  for I:=Parent.SubElementsC.Count-1 downto 0
+  for I:=Parent.SubElements.Count-1 downto 0
   do begin
-    Q:=Parent.SubElementsC[I];
+    Q:=Parent.SubElements[I];
     if (Assigned(Q) and (Q.Name <> ''))
     then begin
       Q.FixupReference;
@@ -3051,8 +3053,8 @@ var
 begin
   case Aj of
   asRetire:
-    for I:=0 to SubElementsC.Count-1 do
-      SubElementsC[I].OperationInScene(Aj, PosRel+1);
+    for I:=0 to SubElements.Count-1 do
+      SubElements[I].OperationInScene(Aj, PosRel+1);
   end;
 
   if PosRel=0 then
@@ -3068,14 +3070,14 @@ begin
   case Aj of
   asAjoute,
   asDeplace2:
-    for I:=0 to SubElementsC.Count-1 do
-      SubElementsC[I].OperationInScene(Aj, PosRel+1);
+    for I:=0 to SubElements.Count-1 do
+      SubElements[I].OperationInScene(Aj, PosRel+1);
 
   asModifieParent:
     if g_WorkingExplorer<>Nil then
     begin
-      for I:=0 to SubElementsC.Count-1 do
-        SubElementsC[I].OperationInScene(asModifieFrere, MaxInt);
+      for I:=0 to SubElements.Count-1 do
+        SubElements[I].OperationInScene(asModifieFrere, MaxInt);
       if PosRel = -1 then
         g_WorkingExplorer.ControlerEtatNoeud(Self);
     end;
@@ -3128,15 +3130,15 @@ procedure QObject.ClearAllSelection;
 var
   I: Integer;
 begin
-  for I:=0 to SubElementsC.Count-1 do
-    SubElementsC[I].ClearAllSelection;
+  for I:=0 to SubElements.Count-1 do
+    SubElements[I].ClearAllSelection;
   FSelMult:=smSousSelVide;
 end;
 
 function QObject.IsClosed: Boolean;
 begin
   Result:=Flags and ofTreeViewExpanded = 0;
-  if Result and (SubElementsC.Count = 0) then
+  if Result and (SubElements.Count = 0) then
   begin
     Flags:=Flags or ofTreeViewExpanded;
     Result:=False;
@@ -3450,5 +3452,8 @@ initialization
 
 finalization
   QFileList.Free;
+  {$IFDEF Debug}
+  g_MemQObject.Free;
+  {$ENDIF}
 
 end.
