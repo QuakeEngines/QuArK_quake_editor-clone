@@ -25,6 +25,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2007/02/06 13:08:47  danielpharos
+Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
+
 Revision 1.4  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -66,21 +69,6 @@ QTextureKP = class(QTextureFile)
  {------------------------}
 
 
-{
-  QFileObject
-   +-- QTexture
-   |    +-- QTextureFile
-   |         +-- QTexture1
-   |         +-- QTexture2
-   |         +-- QTextureSin
-   |         +-- QTextureKP
-   +-- QImage
-        +-- QBmp
-        +-- QPcx
-        +-- QTga
-}
-
-
 implementation
 
 uses Game, Setup, Quarkx;
@@ -109,7 +97,7 @@ end;
 
 class procedure QTextureKP.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
-  inherited;               {### which strings ?}
+  inherited;
   Info.NomClasseEnClair:=LoadStr1(5168);
   Info.FileExt:=796;
 end;
@@ -117,9 +105,8 @@ end;
 class function QTextureKP.CustomParams : Integer;
 begin
   {this really sucks, but the texture display code
-  requires the multuple texure images, and we need to fake them}
+  requires multiple texure images, and we need to fake them}
   Result:=4 or cpAnyHeight;
-
 end;
 
 function QTextureKP.BaseGame : Char;

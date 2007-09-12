@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2007/09/12 15:23:28  danielpharos
+Added option to stop texturename checks
+
 Revision 1.55  2007/09/12 15:18:36  danielpharos
 Get the Steam pak-file name from the Defaults.
 
@@ -253,6 +256,20 @@ const
 
  {TEX_FLAGS_TRANSPARENT33 = 16;
   TEX_FLAGS_TRANSPARENT66 = 32;}
+
+{
+  QFileObject
+   +-- QTexture
+   |    +-- QTextureFile
+   |         +-- QTexture1
+   |         +-- QTexture2
+   |         +-- QTextureSin
+   |         +-- QTextureKP
+   +-- QImage
+        +-- QBmp
+        +-- QPcx
+        +-- QTga
+}
 
 type
 {TTexture3D = record
