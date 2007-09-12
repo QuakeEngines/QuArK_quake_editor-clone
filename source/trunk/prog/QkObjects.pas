@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.92  2007/09/12 15:28:16  danielpharos
+Replaced redundant property.
+
 Revision 1.91  2007/09/10 10:24:19  danielpharos
 Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 
@@ -337,6 +340,8 @@ const
   QuArKWebsite            = 'http://quark.planetquake.gamespy.com/';
   QuArKRepository         = 'http://sourceforge.net/projects/quark/';
   QuArKForum              = 'http://www.dark-forge.com/';
+  QuArKUpdateSite         = 'quark.planetquake.gamespy.com';
+  QuArKUpdateFile         = 'update/index.dat';
 
 
   iiUnknownFile           = 0;
