@@ -330,9 +330,11 @@ class ModelEditor(BaseEditor):
         if len(sellist)==1:
             if sellist[0].type == ':mf':
                 import mdlcommands
-                mdlcommands.NewComponent.state = qmenu.normal
+                if self.ModelFaceSelList != []:
+                    mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(self, view), hint="")
+                    return [mdlcommands.NewFrame , qmenu.sep , mdlfacepop, qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
                 mdlcommands.NewFrame.state = qmenu.normal
-                return [mdlcommands.NewComponent, mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
+                return [mdlcommands.NewFrame , qmenu.sep] + mdlentities.CallManager("menu", sellist[0], self) + extra
             else:
                 return mdlentities.CallManager("menu", sellist[0], self) + extra
         return mdlmenus.MultiSelMenu(sellist, self) + extra
@@ -1275,6 +1277,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.67  2007/09/08 07:16:18  cdunde
+#One more item for the last change of:
+#Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.66  2007/09/07 23:55:29  cdunde
 #1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
 #     model component from selected Model Mesh faces and remove them from their current component.
