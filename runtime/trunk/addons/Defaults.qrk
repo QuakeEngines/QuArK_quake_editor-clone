@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.355  2007/09/12 15:23:09  danielpharos
+//Added option to stop texturename checks
+//
 //Revision 1.354  2007/09/01 20:32:06  cdunde
 //Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
 //
@@ -1189,7 +1192,6 @@ QQRKSRC1
         MppTopBtns = "1"
         IconPath = "images\\"
         TextureNameCheck = "1"
-        UpdateCheck = "1"
         Form = "GeneralDisplay"
       }
       3D view:config =
@@ -1292,6 +1294,12 @@ QQRKSRC1
         CompressionBufferSize = '16' // KBytes
         CompressionLevel = '9' // Where else to put this?
         Form = "GeneralMemory"
+      }
+      Update:config =
+      {
+        UpdateCheck = "1"
+        UpdateCheckOnline = "1"
+        Form = "GeneralUpdate"
       }
       QuakeC:config =
       {
@@ -6788,7 +6796,6 @@ QQRKSRC1
       sep: = {Typ="S" Txt = ""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
       TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
-      UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
     }
     GeneralMemory:form =
     {
@@ -6800,6 +6807,12 @@ QQRKSRC1
       GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files (e.g. textures)"}
       CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of Compression to use for zip files (0 .. 9)"}
       CompressionBufferSize: = {Txt="Size of compression buffer (KB)" Typ="EF1" Hint="Size of memory buffer to allocate when compressing files"}
+    }
+    GeneralUpdate:form =
+    {
+      Style = "3"
+      UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
+      UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
     }
     externaledit:incl = {
       Typ = "EP"

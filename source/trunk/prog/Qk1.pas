@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.46  2007/08/11 13:20:45  danielpharos
 BaseMenu-items are now checked when a subitem is checked. That makes it WAY easier to find the selected gamemode if it's a subitem.
 
@@ -213,6 +216,7 @@ type
   CmdLineOptions = record
                     DoSplash: Boolean;
                     DoUpdate: Boolean;
+                    OnlineUpdate: Boolean;
                     FileNR: Cardinal;
                     Files: array of string;
                    end;
@@ -407,7 +411,8 @@ uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, Running,
   Output1, QkTreeView, PyProcess, Console, Python, Quarkx, About,
   {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D,
-  EdSceneObject, QkObjectClassList, QkApplPaths, QkQuakeCtx, QkSteamFS;
+  EdSceneObject, QkObjectClassList, QkApplPaths, QkQuakeCtx, QkSteamFS,
+  AutoUpdater, Logging;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
@@ -543,6 +548,7 @@ var
  C: TColor;
  Splash: TForm;
  Disclaimer: THandle;
+ Setup: QObject;
 begin
  // This next line is done so that the G_ standard carries through for all of
  // the global variables. 
@@ -555,6 +561,7 @@ begin
  // DanielPharos: This processes the commandline and prepares it for further use
  g_CmdOptions.DoSplash := true; //These are the defaults
  g_CmdOptions.DoUpdate := true;
+ g_CmdOptions.OnlineUpdate := true;
  g_CmdOptions.FileNR := 0;
  ProcessCmdLine;
 
@@ -575,20 +582,39 @@ begin
 
  { DanielPharos: It's safer to do the update-check BEFORE loading Python,
    but then then option in the Default will have to be removed, since it
-   won't be loaded then. Change this when the update-screen isn't a nag-screen
+   won't be loaded yet. Change this when the update-screen isn't a nag-screen
    anymore! (Store data in registry?) }
  //Check for updates...
  if g_CmdOptions.DoUpdate then
  begin
-   if SetupSubSet(ssGeneral, 'Display').Specifics.Values['UpdateCheck']<>'' then
+   Setup:=SetupSubSet(ssGeneral, 'Update');
+   if Setup.Specifics.Values['UpdateCheck']<>'' then
    begin
-     if DaySpan(Now, QuArKCompileDate) >= QuArKDaysOld then
+     if g_CmdOptions.OnlineUpdate then
      begin
-       if MessageBox(0, 'This version of QuArK is rather old. Do you want to open the QuArK website to check for updates?', 'QuArK', MB_YESNO) = IDYES then
+       if Setup.Specifics.Values['UpdateCheckOnline']<>'' then
        begin
-         if ShellExecute(0, 'open', QuArKWebsite, nil, nil, SW_SHOWDEFAULT) <= 32 then
+         //Online update
+         if AutoUpdate=false then
          begin
-           MessageBox(0, 'Unable to open website: Call to ShellExecute failed!' + #13#10#13#10 + 'Please manually go to: ' + QuArKWebsite, 'QuArK', MB_OK);
+           //Something went wrong, let's fall back to the offline 'update'
+           Log(LOG_WARNING, 'Unable to check for updates online! Using offline update routine.');
+           g_CmdOptions.OnlineUpdate:=false;
+         end;
+       end;
+     end
+     else
+       g_CmdOptions.OnlineUpdate:=false;
+     if not g_CmdOptions.OnlineUpdate then
+     begin
+       //Offline 'update'
+       if DaySpan(Now, QuArKCompileDate) >= QuArKDaysOld then
+       begin
+         Log(LOG_WARNING, 'Offline update: Old version of QuArK detected!');
+         if MessageBox(0, 'This version of QuArK is rather old. Do you want to open the QuArK website to check for updates?', 'QuArK', MB_YESNO) = IDYES then
+         begin
+           if ShellExecute(0, 'open', QuArKWebsite, nil, nil, SW_SHOWDEFAULT) <= 32 then
+             MessageBox(0, 'Unable to open website: Call to ShellExecute failed!' + #13#10#13#10 + 'Please manually go to: ' + QuArKWebsite, 'QuArK', MB_OK);
          end;
        end;
      end;

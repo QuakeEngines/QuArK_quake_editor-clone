@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.43  2007/07/05 10:22:36  danielpharos
 Moved the Quake .map format code to a separate file.
 
@@ -154,6 +157,7 @@ uses
   qkskindrawobject in 'prog\model\qkskindrawobject.pas',
   QkSkinGroup in 'prog\model\QkSkinGroup.pas',
   About in 'prog\About.pas' {AboutBox},
+  AutoUpdater in 'prog\AutoUpdater.pas',
   Bezier in 'prog\Bezier.pas',
   CCode in 'prog\CCode.pas',
   Config in 'prog\Config.pas' {ConfigDlg},
