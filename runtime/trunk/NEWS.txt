@@ -15,6 +15,12 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: To move Make New Component menu function from Commands menu to RMB Face Commands menu and
+          - also add to it new functions to:
+          - move selected faces from one component to another,
+          - copy selected faces from one component to another and
+          - delete selected faces from the currently selected component.
+
 * [DanielPharos]: Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere
           - where they don't belong.
 
