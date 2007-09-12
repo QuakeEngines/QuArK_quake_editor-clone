@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/08/23 21:09:43  danielpharos
+No clearcache-warning when the Steam cache was not used.
+
 Revision 1.21  2007/08/17 10:33:41  danielpharos
 Fix an access violation.
 
@@ -103,10 +106,12 @@ procedure ClearSteamCache;
 
 implementation
 
-uses ShellAPI, SysUtils, StrUtils, Quarkx, Setup, Logging, SystemDetails, ExtraFunctionality, QkObjects;
+uses ShellAPI, SysUtils, StrUtils, Quarkx, Setup, Logging, SystemDetails,
+     ExtraFunctionality, QkObjects, Md5Hash;
 
 var
   ClearCacheNeeded: Boolean;
+  CheckQuArKSAS: Boolean;
 
 procedure Fatal(x:string);
 begin
@@ -286,6 +291,13 @@ begin
 end;
 
 function RunSteamExtractor(const Filename : String) : Boolean;
+
+  procedure RemoveTrailingSlash(var Path : String);
+  begin
+    if (RightStr(Path, 1) = '\') or (RightStr(Path, 1) = '/') then
+      Path:=LeftStr(Path, Length(Path) - 1);
+  end;
+
 var
   Setup: QObject;
   SteamDirectory: String;
@@ -295,6 +307,7 @@ var
   SteamAppID: String;
   GameIDDir: String;
   FullFileName: String;
+  QSASMd5Hash, CurQSASMd5Hash: String;
   QSASFile, QSASPath, QSASParameters: String;
   QSASAdditionalParameters: String;
   QSASStartupInfo: StartUpInfo;
@@ -343,22 +356,38 @@ begin
     if CreateDir(SteamDirectory+SteamCacheDirectory) = false then
       Fatal('Unable to extract file from Steam. Cannot create cache directory.');
 
-  if DirectoryExists(SteamDirectory+'QuArKApps\'+GameIDDir) = false then
-    if CreateDir(SteamDirectory+'QuArKApps\'+GameIDDir) = false then
+  if DirectoryExists(SteamDirectory+SteamCacheDirectory+'\'+GameIDDir) = false then
+    if CreateDir(SteamDirectory+SteamCacheDirectory+'\'+GameIDDir) = false then
       Fatal('Unable to extract file from Steam. Cannot create cache directory.');
 
-  if FileExists(QSASFile) = false then
+  if CheckQuArKSAS then
   begin
-    if FileExists('dlls/QuArKSAS.exe') = false then
+    if FileExists(QSASFile) = false then
     begin
-      Fatal('Unable to extract file from Steam. dlls/QuArKSAS.exe not found!');
-    end;
-
-    if CopyFile(PChar('dlls/QuArKSAS.exe'), PChar(QSASFile), true) = false then
+      if FileExists('dlls/QuArKSAS.exe') = false then
+        Fatal('Unable to extract file from Steam. dlls/QuArKSAS.exe not found.');
+      if CopyFile(PChar('dlls/QuArKSAS.exe'), PChar(QSASFile), true) = false then
+        Fatal('Unable to extract file from Steam. Call to CopyFile failed.');
+    end
+    else
     begin
-      Fatal('Unable to extract file from Steam. Call to CopyFile failed.');
+      //Check version!
+      QSASMd5Hash:=Md5GetFileHash('dlls/QuArKSAS.exe');
+      CurQSASMd5Hash:=Md5GetFileHash(QSASFile);
+      if QSASMd5Hash<>CurQSASMd5Hash then
+      begin
+        //Files do not match. The one in dlls is probably the most current one,
+        //so let's update the Steam one.
+        if CopyFile(PChar('dlls/QuArKSAS.exe'), PChar(QSASFile), false) = false then
+          Fatal('Unable to extract file from Steam. Call to CopyFile failed.');
+      end;
     end;
+    CheckQuArKSAS:=false;
   end;
+
+  //No trailing slashes in paths allowed!
+  RemoveTrailingSlash(SteamGameDirectory);
+  RemoveTrailingSlash(GameIDDir);
 
   QSASParameters:='-g '+SteamAppID+' -gamedir "'+SteamDirectory+SteamGameDirectory+'" -o "'+SteamDirectory+SteamCacheDirectory+'\'+GameIDDir+'" -overwrite' + QSASAdditionalParameters;
 
@@ -453,5 +482,6 @@ end;
 
 initialization
   ClearCacheNeeded:=false;
+  CheckQuArKSAS:=true;
 end.
 

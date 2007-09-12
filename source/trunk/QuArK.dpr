@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2007/09/12 15:35:40  danielpharos
+Moved update settings to seperate config section and added beginnings of online update check.
+
 Revision 1.44  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -174,6 +177,7 @@ uses
   KeySel in 'prog\KeySel.pas' {KeySelDlg},
   Logging in 'prog\Logging.pas',
   MapError in 'prog\MapError.pas',
+  MD5Hash in 'prog\MD5Hash.pas',
   NewFolder in 'prog\NewFolder.pas' {NewFolderDlg},
   ObjProp in 'prog\ObjProp.pas' {FormObjProp},
   OsFolder in 'prog\OsFolder.pas',

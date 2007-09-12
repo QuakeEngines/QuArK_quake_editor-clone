@@ -90,6 +90,9 @@ The developers of used libraries/programs
                         Hervé Drolon
                         http://freeimage.sourceforge.net/
 
+- MD5DLL:
+                        ckv
+
 - NVDXT:
                         http://www.nvidia.com/
 
