@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.356  2007/09/12 15:35:28  danielpharos
+//Moved update settings to seperate config section and added beginnings of online update check.
+//
 //Revision 1.355  2007/09/12 15:23:09  danielpharos
 //Added option to stop texturename checks
 //
@@ -6797,66 +6800,6 @@ QQRKSRC1
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
       TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
     }
-    GeneralMemory:form =
-    {
-      Style = "3"
-      MaxUndo: = {Txt="Max. undo levels" Typ="EF1" Hint="Maximum number of consecutive undos allowed"}
-      MinUndo: = {Txt="Min. undo levels" Typ="EF1" Hint="Minimum number of consecutive undos allowed (warn if not enough memory for this number)"}
-      GameFiles: = {Txt="Number of game files" Typ="EF1" Hint="Number of game files to keep in memory (e.g. textures)"}
-      UndoBufferSize: = {Txt="Size of undo buffer (MB)" Typ="EF1" Hint="Deletes older undo levels if it would take more memory than this"}
-      GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files (e.g. textures)"}
-      CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of Compression to use for zip files (0 .. 9)"}
-      CompressionBufferSize: = {Txt="Size of compression buffer (KB)" Typ="EF1" Hint="Size of memory buffer to allocate when compressing files"}
-    }
-    GeneralUpdate:form =
-    {
-      Style = "3"
-      UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
-      UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
-    }
-    externaledit:incl = {
-      Typ = "EP"
-      DefExt = "exe"
-      Hint = "the program to use to edit files of this type, or <open> or <edit>"
-    }
-    GeneralExternalEditors:form =
-    {
-      Style = "3"
-      Info: = {Typ="S" Txt="External editors to called from QuArK"}
-      Info2: = {Typ="S" Txt = ""}
-      .pcx: = { Txt="PCX images" externaledit = ! }
-      .tga: = { Txt="TGA images" externaledit = ! }
-      .bmp: = { Txt="BMP images" externaledit = ! }
-      .jpg: = { Txt="JPG images" externaledit = ! }
-      .png: = { Txt="PNG images" externaledit = ! }
-      .wav: = { Txt="WAV sounds" externaledit = ! }
-      .cin: = { Txt="CIN videos" externaledit = ! }
-      .mdl: = { Txt="MDL models" externaledit = ! }
-      .md2: = { Txt="MD2 models" externaledit = ! }
-      .map: = { Txt="MAP text files" externaledit = ! }
-      .wal: = { Txt="WAL textures" externaledit = ! }
-      .swl: = { Txt="SWL Sin textures" externaledit = ! }
-      .m8:  = { Txt="M8 textures" externaledit = ! }
-      .pak: = { Txt="PAK archives" externaledit = ! }
-      .pk3: = { Txt="PK3 archives" externaledit = ! }
-      .pk4: = { Txt="PK4 archives" externaledit = ! }
-      .sin: = { Txt="SIN Pak archives" externaledit = ! }
-      .bsp: = { Txt="BSP compiled maps" externaledit = ! }
-      .wad: = { Txt="WAD texture lists" externaledit = ! }
-    }
-    GeneralQuakeC:form =
-    {
-      Style = "3"
-      Font0: = {Typ="F" Txt="Plain text" Cap="Plain text sample"}
-      Font5: = {Typ="F" Txt="Reserved words" Cap="if else float"}
-      Font1: = {Typ="F" Txt="Vectors" Cap="'100 -50 20'"}
-      Font3: = {Typ="F" Txt="Strings" Cap=$22"String sample"$22}
-      Font2: = {Typ="F" Txt="Operators" Cap="+ - * / < > = !"}
-      Font4: = {Typ="F" Txt="Comments" Cap="// Comments"}
-      Font6: = {Typ="F" Txt="Brackets" Cap="{   }"}
-      Sep1: = {Typ="S" Txt = ""}
-      Enabled: = {Typ="X" Txt="Code Syntax Highlighting" Cap="Enabled"}
-    }
     General3DView:form =
     {
       style = "3"
@@ -7063,6 +7006,66 @@ QQRKSRC1
         Hint="The amount of bits per pixel in the depth buffer. The higher,"
           $0D"the smaller the chance of non-overlapping faces starting to flicker at a distance."
       }
+    }
+    GeneralMemory:form =
+    {
+      Style = "3"
+      MaxUndo: = {Txt="Max. undo levels" Typ="EF1" Hint="Maximum number of consecutive undos allowed"}
+      MinUndo: = {Txt="Min. undo levels" Typ="EF1" Hint="Minimum number of consecutive undos allowed (warn if not enough memory for this number)"}
+      GameFiles: = {Txt="Number of game files" Typ="EF1" Hint="Number of game files to keep in memory (e.g. textures)"}
+      UndoBufferSize: = {Txt="Size of undo buffer (MB)" Typ="EF1" Hint="Deletes older undo levels if it would take more memory than this"}
+      GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files (e.g. textures)"}
+      CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of Compression to use for zip files (0 .. 9)"}
+      CompressionBufferSize: = {Txt="Size of compression buffer (KB)" Typ="EF1" Hint="Size of memory buffer to allocate when compressing files"}
+    }
+    GeneralUpdate:form =
+    {
+      Style = "3"
+      UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
+      UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
+    }
+    externaledit:incl = {
+      Typ = "EP"
+      DefExt = "exe"
+      Hint = "the program to use to edit files of this type, or <open> or <edit>"
+    }
+    GeneralExternalEditors:form =
+    {
+      Style = "3"
+      Info: = {Typ="S" Txt="External editors to called from QuArK"}
+      Info2: = {Typ="S" Txt = ""}
+      .pcx: = { Txt="PCX images" externaledit = ! }
+      .tga: = { Txt="TGA images" externaledit = ! }
+      .bmp: = { Txt="BMP images" externaledit = ! }
+      .jpg: = { Txt="JPG images" externaledit = ! }
+      .png: = { Txt="PNG images" externaledit = ! }
+      .wav: = { Txt="WAV sounds" externaledit = ! }
+      .cin: = { Txt="CIN videos" externaledit = ! }
+      .mdl: = { Txt="MDL models" externaledit = ! }
+      .md2: = { Txt="MD2 models" externaledit = ! }
+      .map: = { Txt="MAP text files" externaledit = ! }
+      .wal: = { Txt="WAL textures" externaledit = ! }
+      .swl: = { Txt="SWL Sin textures" externaledit = ! }
+      .m8:  = { Txt="M8 textures" externaledit = ! }
+      .pak: = { Txt="PAK archives" externaledit = ! }
+      .pk3: = { Txt="PK3 archives" externaledit = ! }
+      .pk4: = { Txt="PK4 archives" externaledit = ! }
+      .sin: = { Txt="SIN Pak archives" externaledit = ! }
+      .bsp: = { Txt="BSP compiled maps" externaledit = ! }
+      .wad: = { Txt="WAD texture lists" externaledit = ! }
+    }
+    GeneralQuakeC:form =
+    {
+      Style = "3"
+      Font0: = {Typ="F" Txt="Plain text" Cap="Plain text sample"}
+      Font5: = {Typ="F" Txt="Reserved words" Cap="if else float"}
+      Font1: = {Typ="F" Txt="Vectors" Cap="'100 -50 20'"}
+      Font3: = {Typ="F" Txt="Strings" Cap=$22"String sample"$22}
+      Font2: = {Typ="F" Txt="Operators" Cap="+ - * / < > = !"}
+      Font4: = {Typ="F" Txt="Comments" Cap="// Comments"}
+      Font6: = {Typ="F" Txt="Brackets" Cap="{   }"}
+      Sep1: = {Typ="S" Txt = ""}
+      Enabled: = {Typ="X" Txt="Code Syntax Highlighting" Cap="Enabled"}
     }
     GeneralAssociations:form =
     {
