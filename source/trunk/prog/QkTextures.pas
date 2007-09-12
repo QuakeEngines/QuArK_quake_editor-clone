@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2007/09/04 15:26:36  danielpharos
+Fix for the 'Unknown attribute' error when ShadersPath is not defined for the current game mode.
+
 Revision 1.53  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -1149,6 +1152,8 @@ var
   Bsp: QBsp;
   TexList: QWad;
   I: Integer;
+  PakExt: String;
+  PakFileName: String;
   ShaderFile: QShaderFile;
   MaterialFile: D3MaterialFile;
 begin
@@ -1165,16 +1170,16 @@ begin
       S:=Specifics.Values[StdGameTextureLinks[I].LinkSpecificChar];
       if S<>'' then
       begin   { standard link }
-        // for hl2 we need individual paths
         if CharModeJeu=mjHL2 then
         begin
+          PakFileName:=SetupGameSet.Specifics.Values['PakForceUse'];
+          PakExt:=SetupGameSet.Specifics.Values['PakExt'];
           try // failing to load the textures produces an exception
-//@SET THE PAKFILE !!!
-            Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt, 'source materials.gcf') as QPixelSet;
+            Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt, PakFileName+PakExt) as QPixelSet;
           except
             // fall back to vtf file loading if default texture extension (vmt) fails
             if Link=Nil then
-              Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+'.vtf', 'source materials.gcf') as QPixelSet;
+              Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+'.vtf', PakFileName+PakExt) as QPixelSet;
           end;
           if Link=Nil then
             Raise EErrorFmt(5755, [TexName, Arg]);
