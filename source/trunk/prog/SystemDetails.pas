@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.27  2007/03/29 21:01:39  danielpharos
 Changed a few comments and error messages
 
@@ -110,13 +113,14 @@ uses
   SysUtils, Windows, Classes, Registry;
 
 const
-  SM_CXVIRTUALSCREEN   =	78;
-  SM_CYVIRTUALSCREEN   =  79;
+  SM_CXVIRTUALSCREEN = 78;
+  SM_CYVIRTUALSCREEN = 79;
 
 var
   g_CxScreen, g_CyScreen: Integer;
 
 Procedure LogSystemDetails;
+function CheckWindowsNT: Boolean;
 function ProcessExists(exeFileName: string): Boolean;
 function WindowExists(WindowName: String): Boolean;
 
@@ -2006,6 +2010,11 @@ begin
     Result := True
   else
     Result := False;
+end;
+
+function CheckWindowsNT: Boolean;
+begin
+  Result:=(WindowsPlatformCompatibility=osWinNTComp);
 end;
 
 Procedure LogSystemDetails;

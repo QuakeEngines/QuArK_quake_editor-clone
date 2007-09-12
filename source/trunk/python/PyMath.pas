@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/06/12 11:26:37  cdunde
+Added section to handle drawing all the lines of a models mesh
+which needs to be done differently that drawing lines for the map editor.
+
 Revision 1.18  2007/02/02 21:10:23  danielpharos
 Fixed a typo
 
@@ -287,7 +291,6 @@ function VectorAbsolute(v1: PyObject) : PyObject; cdecl;
 function VectorNonZero(v1: PyObject) : Integer; cdecl;
 function VectorXor(v1, v2: PyObject) : PyObject; cdecl;
 function VectorCoerce(var v1, v2: PyObject) : Integer; cdecl;
-function Point2Vect(Point: TPointProj) : TVect;
 
 const
  VectNumbers: TyNumberMethods =
@@ -379,7 +382,7 @@ implementation
 
 { $DEFINE DebugCoord}
 
-uses QkMapObjects, QkMapPoly, Qk3D;
+uses QkMapObjects, QkMapPoly, Qk3D, SystemDetails;
 
  {------------------------}
 
@@ -2644,25 +2647,6 @@ begin
  end;
 end;
 
- {------------------------}
-
-procedure CheckWindowsNT;
-var
- OSVersion: TOSVersionInfo;
-begin
- OSVersion.dwOSVersionInfoSize:=SizeOf(OSVersion);
- g_DrawInfo.WindowsNT:=GetVersionEx(OSVersion) and (OSVersion.dwPlatformId=VER_PLATFORM_WIN32_NT);
-end;
-
-
-function Point2Vect(Point: TPointProj) : TVect;
-begin
-  Result.X:=Point.x;
-  Result.Y:=Point.y;
-  Result.Z:=0;
-end;
-
-
 initialization
-  CheckWindowsNT;
+  g_DrawInfo.WindowsNT:=CheckWindowsNT;
 end.
