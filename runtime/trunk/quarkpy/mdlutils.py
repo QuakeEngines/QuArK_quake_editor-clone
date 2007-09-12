@@ -864,10 +864,28 @@ def addcomponent(editor):
     remove_vertices_list = []
 
     # Now we start creating our data copies to work with and the final "ok" swapping function at the end.
+    # But first we check for any other "new component"s, if so we name this one 1 more then the largest number.
     tris = comp.triangles
     change_comp = comp.copy()
     new_comp = comp.copy()
-    new_comp.shortname = "new component"
+    new_comp.shortname = "None"
+    comparenbr = 0
+    for item in editor.Root.dictitems:
+        if editor.Root.dictitems[item].shortname.startswith('new component'):
+            getnbr = editor.Root.dictitems[item].shortname
+            getnbr = getnbr.replace('new component', '')
+            if getnbr == "":
+               nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+            nbr = comparenbr + 1
+            new_comp.shortname = "new component " + str(nbr)
+    if new_comp.shortname != "None":
+        pass
+    else:
+        new_comp.shortname = "new component 1"
 
     ###### NEW COMPONENT SECTION ######
 
@@ -892,9 +910,7 @@ def addcomponent(editor):
                 pass
             else:
                 temp_list.append(tris[tri_index][vtx][0])
-
     temp_list.sort()
-
     for item in reversed(temp_list):
         remove_vertices_list.append(item)
 
@@ -935,7 +951,7 @@ def addcomponent(editor):
 
     ## This last part places the new component into the editor and the model.
     import mdlbtns
-    mdlbtns.dropitemsnow(editor, [new_comp], "new component created")
+    mdlbtns.dropitemsnow(editor, [new_comp], new_comp.shortname + " created")
 
     ###### ORIGINAL COMPONENT SECTION ######
 
@@ -956,15 +972,9 @@ def addcomponent(editor):
     old_tris = change_comp.triangles
     remove_triangle_list.sort()
     remove_triangle_list = reversed(remove_triangle_list)
-  #  for index in remove_triangle_list:
-  #      tris = old_tris[:index] + old_tris[index+1:]
-  #      old_tris = tris
-  #  change_comp.triangles = tris
-    # Dan's change for above code
     for index in remove_triangle_list:
         old_tris = old_tris[:index] + old_tris[index+1:]
     change_comp.triangles = old_tris
-
 
     # This section uses the "remove_vertices_list" to recreate the
     # original component's frames without any unused vertexes.
@@ -979,10 +989,157 @@ def addcomponent(editor):
             frame.vertices = vtxs
     change_comp.triangles = new_tris
 
-    # This updates the original component finishing the process for that.
+    # This last section updates the original component finishing the process for it.
     undo = quarkx.action()
     undo.exchange(comp, change_comp)
-    editor.ok(undo, "updated original component")
+    editor.ok(undo, change_comp.shortname + " updated")
+
+
+#
+# The 'option' value of 1 COPIES the currently selected faces of a component to another component (that is not Hidden).
+# The 'option' value of 2 MOVES the currently selected faces of a component to another component (that is not Hidden).
+# This function will also remove the selected faces and unused vertexes from the original component.
+# The 'option' value of 3 DELETES the currently selected faces of a component.
+# This function will also remove any unused vertexes of those faces from that component.
+#
+def movefaces(editor, movetocomponent, option=2):
+    comp = editor.Root.currentcomponent
+
+    # This section does a selection test and gives an error message box if needed.
+    for item in editor.layout.explorer.sellist:
+        if item.parent.parent.name != comp.name:
+            quarkx.msgbox("IMPROPER SELECTION !\n\nYou need to select a frame && faces from\none component to move them to another component.\n\nYou have selected items that are not\npart of the ''"+editor.Root.currentcomponent.shortname+"'' Frames group.\nPlease un-select these items.\n\nAction Canceled.", MT_ERROR, MB_OK)
+            return
+
+    # These are things that we need to setup first for use later on.
+    temp_list = []
+    remove_triangle_list = []
+    remove_vertices_list = []
+
+    # Now we start creating our data copies to work with and the final "ok" swapping function at the end.
+    tris = comp.triangles
+    change_comp = comp.copy()
+    if option < 3:
+        new_comp = editor.Root.dictitems[movetocomponent + ':mc'].copy()
+
+    # This section creates the "remove_triangle_list" from the ModelFaceSelList which is already
+    #    in ascending numerical order but may have duplicate tri_index numbers that need to be removed.
+    # The order also needs to be descending so when triangles are removed from another list it
+    #    does not select an improper triangle due to list items shifting forward numerically.
+    # The "remove_triangle_list" is used to re-create the current component.triangles and new_comp.triangles.
+    for tri_index in reversed(editor.ModelFaceSelList):
+        if tri_index in remove_triangle_list:
+            pass
+        else:
+            remove_triangle_list = remove_triangle_list + [tri_index]
+
+    # This section creates the "remove_vertices_list" to be used
+    #    to re-create the current component's frame.vertices.
+    # It also skips over any duplicated vertex_index numbers of the triangles to be moved
+    #    to the new_comp and\or removed from the original component if 'option' calls to.
+    for tri_index in remove_triangle_list:
+        for vtx in range(len(tris[tri_index])):
+            if tris[tri_index][vtx][0] in temp_list:
+                pass
+            else:
+                temp_list.append(tris[tri_index][vtx][0])
+
+    # This section sorts the "remove_vertices_list" numerically in ascending order then
+    # recreates it in descending order for the same reason that the triangles above were done.
+    temp_list.sort()
+    for item in reversed(temp_list):
+        remove_vertices_list.append(item)
+
+    ###### NEW COMPONENT SECTION ######
+    if option < 3:
+
+    # This first part adds the new triangles, which are the ones that have been selected,
+    #    to the "moveto" new_comp.triangles using the "remove_triangle_list" which are also
+    #    the same ones to be removed from the original component if 'option' calls to.
+        newtris = []
+        for tri_index in range(len(remove_triangle_list)):
+            newtris = newtris + [comp.triangles[remove_triangle_list[tri_index]]]
+
+    # This second part adds the NEW vertices to end of each frames "frame.vertices"
+    #    to construct the new triangles that are being added just below this section.
+        nbr_of_new_comp_vtxs_before_adding = len(new_comp.dictitems['Frames:fg'].subitems[0].vertices)
+        for frame in range(len(comp.dictitems['Frames:fg'].subitems)):
+            newframe_vertices = new_comp.dictitems['Frames:fg'].subitems[frame].vertices
+            for vert_index in range(len(remove_vertices_list)):
+                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[frame].vertices[remove_vertices_list[vert_index]]]
+            new_comp.dictitems['Frames:fg'].subitems[frame].vertices = newframe_vertices
+
+    # This third part fixes up the 'new_comp.triangles', NEW triangles vertex index numbers
+    #    to coordinate with those frame.vertices lists updated above.
+        temptris = []
+        for tri in range(len(newtris)):
+            for index in range(len(newtris[tri])):
+                for vert_index in range(len(remove_vertices_list)):
+                    if newtris[tri][index][0] == remove_vertices_list[vert_index]:
+                        if index == 0:
+                            tri0 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
+                            break
+                        elif index == 1:
+                            tri1 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
+                            break
+                        else:
+                            tri2 = (nbr_of_new_comp_vtxs_before_adding + vert_index, newtris[tri][index][1], newtris[tri][index][2])
+                            temptris = temptris + [(tri0, tri1, tri2)]
+                            break
+        new_comp.triangles = new_comp.triangles + temptris
+
+    # This last part updates the "moveto" component finishing the process for that.
+        undo = quarkx.action()
+        undo.exchange(editor.Root.dictitems[movetocomponent + ':mc'], new_comp)
+        if option == 1:
+            editor.ok(undo, "faces copied to " + new_comp.shortname)
+        else:
+            editor.ok(undo, "faces moved to " + new_comp.shortname)
+
+    ###### ORIGINAL COMPONENT SECTION ######
+    if option > 1:
+
+    # This section checks and takes out, from the remove_vertices_list, any vert_index that is being used by a
+    #    triangle that is not being removed, in the remove_triangle_list, to avoid any invalid triangle errors.
+        dumylist = remove_vertices_list
+        for tri in range(len(change_comp.triangles)):
+            if tri in remove_triangle_list:
+                continue
+            else:
+                for vtx in range(len(change_comp.triangles[tri])):
+                    if change_comp.triangles[tri][vtx][0] in dumylist:
+                        dumylist.remove(change_comp.triangles[tri][vtx][0])
+        remove_vertices_list = dumylist
+
+    # This section uses the "remove_triangle_list" to recreate the original
+    #    component.triangles without the selected faces.
+        old_tris = change_comp.triangles
+        remove_triangle_list.sort()
+        remove_triangle_list = reversed(remove_triangle_list)
+        for index in remove_triangle_list:
+            old_tris = old_tris[:index] + old_tris[index+1:]
+        change_comp.triangles = old_tris
+
+    # This section uses the "remove_vertices_list" to recreate the
+    #    original component's frames without any unused vertexes.
+        new_tris = change_comp.triangles
+        frames = change_comp.findallsubitems("", ':mf')   # find all frames
+        for index in remove_vertices_list:
+            enew_tris = fixUpVertexNos(new_tris, index)
+            new_tris = enew_tris
+            for frame in frames: 
+                old_vtxs = frame.vertices
+                vtxs = old_vtxs[:index] + old_vtxs[index+1:]
+                frame.vertices = vtxs
+        change_comp.triangles = new_tris
+
+    # This updates the original component finishing the process for that.
+        undo = quarkx.action()
+        undo.exchange(comp, change_comp)
+        if option == 2:
+            editor.ok(undo, "faces moved from " + change_comp.shortname)
+        else:
+            editor.ok(undo, "faces deleted from " + change_comp.shortname)
 
 
 #
@@ -1093,7 +1250,7 @@ def SkinVertexSel(editor, sellist):
         setup = quarkx.setupsubset(SS_MODEL, "Options")
         if not setup["SingleVertexDrag"]:
     # Compares the 1st Skin-view vertex position in the sellist to all others 3D position (pos) and places the
-    # last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
+    #    last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
             holditem = sellist[0]
             for item in range (len(sellist)):
                 if item == 0:
@@ -1120,7 +1277,7 @@ def SkinVertexSel(editor, sellist):
                     newlist = newlist + [holditem]
             sellist = newlist
     # Compares the 1st Skin-view vertex position in the sellist to all others 3D position (pos) and places the
-    # last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
+    #    last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
             holditem = sellist[0]
             for item in range (len(sellist)):
                 if item == 0:
@@ -1261,7 +1418,7 @@ def PassEditorSel2Skin(editor, option=1):
                     if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
                         continue
                     # Here we compair the Skin-view handle (in its handles list) tri_index item
-                    # to the editor_tri_index we got above to see if they match.
+                    #    to the editor_tri_index we got above to see if they match.
                     # The same applies to the comparison of the Skin-view handel ver_index and skinvtx_index.
                     try:
                         if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
@@ -1302,7 +1459,7 @@ def PassEditorSel2Skin(editor, option=1):
                         if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
                             continue
                         # Here we compair the Skin-view handle (in its handles list) tri_index item
-                        # to the editor_tri_index we got above to see if they match.
+                        #    to the editor_tri_index we got above to see if they match.
                         # The same applies to the comparison of the Skin-view handel ver_index and skinvtx_index.
                         try:
                             if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
@@ -1331,7 +1488,7 @@ def PassEditorSel2Skin(editor, option=1):
                         editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
 
     # Compares the 1st Skin-view vertex position in the sellist to all others 3D position (pos) and places the
-    # last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
+    #    last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
     if len(editor.SkinVertexSelList) > 1:
         holditem = editor.SkinVertexSelList[0]
         for item in range (len(editor.SkinVertexSelList)):
@@ -1406,6 +1563,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.42  2007/09/11 00:09:20  cdunde
+#Small update.
+#
 #Revision 1.41  2007/09/10 01:33:19  cdunde
 #To speed up "Make new component" function.
 #

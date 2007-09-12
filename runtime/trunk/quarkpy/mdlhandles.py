@@ -75,6 +75,73 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
     def menu(self, editor, view):
 
+        def newcomponentclick(m, self=self, editor=editor, view=view):
+            addcomponent(editor)
+
+        def movefacestoclick(movetocomponent, option, self=self, editor=editor, view=view):
+            movefaces(editor, movetocomponent, option)
+
+        def onclick1(m):
+            movefacestoclick(m.text, 1)
+
+        def onclick2(m):
+            movefacestoclick(m.text, 2)
+
+        def onclick3(m):
+            movefacestoclick(None, 3)
+
+        def movefacesclick(m, self=self, editor=editor, view=view):
+            componentnames = []
+            hiddenlist = []
+            for item in editor.Root.dictitems:
+                if item.endswith(":mc"):
+                    if (editor.Root.dictitems[item].name == editor.Root.currentcomponent.name) or (len(editor.Root.dictitems[item].triangles) == 0): # This last one indicates that the component is "Hidden"
+                        if (len(editor.Root.dictitems[item].triangles) == 0):
+                            hiddenlist = hiddenlist + [editor.Root.dictitems[item].shortname]
+                        else:
+                            pass
+                    else:
+                        componentnames.append(editor.Root.dictitems[item].shortname)
+            if len(componentnames) < 1:
+                if hiddenlist == []:
+                    quarkx.msgbox("Improper Selection!\n\nThere are no other components available\nto move the selected faces to.\n\nUse the 'Create New Component'\nfunction to make one.", MT_ERROR, MB_OK)
+                    return None, None
+                else:
+                    quarkx.msgbox("Improper Selection!\n\nThere are no other components available\nto move the selected faces to\nbecause they are ALL HIDDEN.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                    return None, None
+            else:
+                componentnames.sort()
+                menu = []
+                for name in componentnames:
+                    menu = menu + [qmenu.item(name, onclick2)]
+                m.items = menu
+
+        def copyfacesclick(m, self=self, editor=editor, view=view):
+            componentnames = []
+            hiddenlist = []
+            for item in editor.Root.dictitems:
+                if item.endswith(":mc"):
+                    if (editor.Root.dictitems[item].name == editor.Root.currentcomponent.name) or (len(editor.Root.dictitems[item].triangles) == 0): # This last one indicates that the component is "Hidden"
+                        if (len(editor.Root.dictitems[item].triangles) == 0):
+                            hiddenlist = hiddenlist + [editor.Root.dictitems[item].shortname]
+                        else:
+                            pass
+                    else:
+                        componentnames.append(editor.Root.dictitems[item].shortname)
+            if len(componentnames) < 1:
+                if hiddenlist == []:
+                    quarkx.msgbox("Improper Selection!\n\nThere are no other components available\nto copy the selected faces to.\n\nUse the 'Create New Component'\nfunction to make one.", MT_ERROR, MB_OK)
+                    return None, None
+                else:
+                    quarkx.msgbox("Improper Selection!\n\nThere are no other components available\nto copy the selected faces to\nbecause they are ALL HIDDEN.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                    return None, None
+            else:
+                componentnames.sort()
+                menu = []
+                for name in componentnames:
+                    menu = menu + [qmenu.item(name, onclick1)]
+                m.items = menu
+
         def forcegrid1click(m, self=self, editor=editor, view=view):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
 
@@ -114,28 +181,39 @@ class ModelFaceHandle(qhandles.GenericHandle):
                 mdleditor.setsingleframefillcolor(editor, v)
                 v.repaint()
 
-        Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        AddVertex = qmenu.item("&Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        RemoveVertex = qmenu.item("&Remove Vertex", removevertex1click, "|Remove Vertex:\n\nThis will remove a vertex from the component and all of its animation frames.\n\nWARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well. If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        PickVertex = qmenu.item("&Pick Vertex", pick_vertex, "|Pick Vertex:\n\n This is used for picking 3 vertexes to create a triangle with. It also works in conjunction with the 'Clear Pick list' below.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        NewComponent = qmenu.item("&Create New Component", newcomponentclick, "|Create New Component:\n\nThis will create a new model component of currently selected Model Mesh faces only including its Skins, Frames and Skeleton sub-items.\n\nThe selected faces will also be removed from their current components group.\n\nOnce created you can change the temporary name 'new component' to something else by clicking on it.|intro.modeleditor.rmbmenus.html#facermbmenu")
+        MoveFaces = qmenu.popup("&Move Faces To", [], movefacesclick, "|Move Faces To:\n\nThis will move currently selected Model Mesh faces from one component to another (if NOT Hidden) by means of a menu that will appear listing all available components to choose from.\n\nIf none others exist it will instruct you to create a 'New Component' first using the function above this one in the RMB menu.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+        CopyFaces = qmenu.popup("&Copy Faces To", [], copyfacesclick, "|Copy Faces To:\n\nThis will copy currently selected Model Mesh faces from one component to another (if NOT Hidden) by means of a menu that will appear listing all available components to choose from.\n\nIf none others exist it will instruct you to create a 'New Component' first using the function above this one in the RMB menu.", "intro.modeleditor.rmbmenus.html#facermbmenu")
+        DeleteFaces = qmenu.item("&Delete Faces", onclick3, "|Delete Faces:\n\nThis will delete currently selected Model Mesh faces from the currently selected component and any unused vertexes, by other faces (triangles), of those faces.|intro.modeleditor.rmbmenus.html#facermbmenu")
+    #    Forcetogrid = qmenu.item("&Force to grid", forcegrid1click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+    #    AddVertex = qmenu.item("&MY NEW Add Vertex Here", addhere1click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+    #    RemoveVertex = qmenu.item("&Remove Vertex", removevertex1click, "|Remove Vertex:\n\nThis will remove a vertex from the component and all of its animation frames.\n\nWARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well. If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+    #    PickVertex = qmenu.item("&Pick Vertex", pick_vertex, "|Pick Vertex:\n\n This is used for picking 3 vertexes to create a triangle with. It also works in conjunction with the 'Clear Pick list' below.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+    #    ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
 
-        if len(editor.ModelVertexSelList) == 0:
-            ClearPicklist.state = qmenu.disabled
+    #    if len(editor.ModelVertexSelList) == 0:
+    #        ClearPicklist.state = qmenu.disabled
 
-        if editor.layout.explorer.sellist != [] and (editor.layout.explorer.sellist[0].type == ":mc" or editor.layout.explorer.sellist[0].type == ":fg" or editor.layout.explorer.sellist[0].type == ":mf"):
-            AddVertex.state = qmenu.normal
+        if (len(editor.layout.explorer.sellist) == 0) or (editor.layout.explorer.sellist[0].type != ":mf"):
+            NewComponent.state = qmenu.disabled
+            MoveFaces.state = qmenu.disabled
+            CopyFaces.state = qmenu.disabled
+            DeleteFaces.state = qmenu.disabled
         else:
-            AddVertex.state = qmenu.disabled
+            NewComponent.state = qmenu.normal
+            MoveFaces.state = qmenu.normal
+            CopyFaces.state = qmenu.normal
+            DeleteFaces.state = qmenu.normal
 
-        try:
-            if self.index is not None:
-                menu = [AddVertex, RemoveVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
-            else:
-                menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
-        except:
-            menu = [AddVertex, qmenu.sep, ClearPicklist]
+    #    try:
+    #        if self.index is not None:
+    #            menu = [NewComponent, MoveFaces, CopyFaces, DeleteFaces, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+    #        else:
+    #            menu = [NewComponent, MoveFaces, CopyFaces, DeleteFaces, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+    #    except:
+    #        menu = [NewComponent, MoveFaces, CopyFaces, DeleteFaces]
 
+        menu = [NewComponent, MoveFaces, CopyFaces, DeleteFaces]
         return menu
 
 
@@ -2651,6 +2729,13 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.86  2007/09/07 23:55:29  cdunde
+#1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
+#     model component from selected Model Mesh faces and remove them from their current component.
+#2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
+#     before the Skin-view is opened at least once in that session.
+#3) Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.85  2007/09/05 18:53:11  cdunde
 #Changed "Pass Face Selection to Skin-view" to real time updating and
 #added function to Sync Face Selection in the Editor to the Skin-view.
