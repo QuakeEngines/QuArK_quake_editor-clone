@@ -228,7 +228,7 @@ def edit_newgroup(editor, m=None):
         nib = None
 
     #
-    # Do it !
+    # The undo to perform this functions action
     #
 
     undo = quarkx.action()
@@ -349,6 +349,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.14  2007/09/10 10:24:26  danielpharos
+#Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+#
 #Revision 1.13  2007/04/12 03:37:34  cdunde
 #Fixed error for dropitemsnow function when selecting a texture for a Model Skin.
 #
