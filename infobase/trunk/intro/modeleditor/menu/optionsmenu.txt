@@ -51,6 +51,9 @@ is checked for that view. Using the option in this manner will help to distingui
 such as the outlining of selected model mesh faces and the models axis lines.
 
 <i><b>Editor Face Selection Options</b> - submenu items </i>&nbsp;:<br>
+<i>Sync Skin-view with Editor views </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
 <i>Show selection in Skin-view </i>&nbsp;: This funciton is also located on the
 <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
 

@@ -8,6 +8,12 @@ author: cdunde
 <i>Paste here </i>&nbsp;: This is a simple paste command to drop something you have copied into
 one of the editors views if it can be.
 
+<i>Face Commands </i>&nbsp;: This is the link to the Face Commands sub-menu that will appear
+when your courser is over it. To implement this menu you must have the
+<a href="intro.modeleditor.toolpalettes.display.html">Linear Drag Handles</a> button
+activated (in face mode) and select at least one face in a model component, then this menu
+item will appear. These are strictly face (triangle) related and are covered in detail below.
+
 <i>Vertex Commands </i>&nbsp;: This is the link to the Vertex Commands sub-menu that will appear
 when your courser is over it. These are strictly vertex related and are covered in detail below.
 
@@ -40,15 +46,52 @@ file to place and display in the 2D view that the cursor was in when the RMB was
 Click <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#background">here</a> for full detailed information
 about its functions and settings.
 
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right>facermbmenu1.png</img>
+
+<b><u>Face Commands sub-menu :</u></b> This is the sub-menu described above and its functions.
+
+<i>Empty Component </i>&nbsp;: This will create a new <g>Clean</g> Model component.
+This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>New Component </i>&nbsp;: This will create a new model component of currently selected Model Mesh faces.
+This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Move Faces To </i>&nbsp;: This will move currently selected Model Mesh faces to another component.
+This item creates its own sub-menu consisting of all available components of the model that is currently
+in the Model Editor. This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Copy Faces To </i>&nbsp;: This will copy currently selected Model Mesh faces to another component.
+This item creates its own sub-menu consisting of all available components of the model that is currently
+in the Model Editor. This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Delete Faces </i>&nbsp;: This will delete currently selected Model Mesh faces.
+This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<tr><td valign=top>
 <img border=1 align=right>viewsrmbmenus2.png</img>
 
-<b><u>Vertex Commands sub-menu :</u></b> This is the sub-menu described above and its functions in detail.
+<b><u>Vertex Commands sub-menu :</u></b> This is the sub-menu described above and its functions.
 
-<i>Add Vertex Here </i>&nbsp;: This funciton is also located on the
-<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below, please click on the menu link for this functions full description.
+<i>Add Vertex Here </i>&nbsp;: This will add a single vertex to the currently selected model component
+(and all of its animation frames) to make a new triangle. This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description and use.
 
 <i>Clear Pick list </i>&nbsp;: This funciton is also located on the
-<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below, please click on the menu link for this functions full description.
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description and use.
 
 <table border=0 cellspacing=0>
 <tr><td valign=top>
@@ -93,6 +136,9 @@ corrisponding buttons on the
 
 <b><u>Editor Face Options sub-menu :</u></b> This is the sub-menu described above and its functions in detail.<br>
 (also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)
+
+<i>Sync Skin-view with Editor views </i>&nbsp;: When checked this will synchronize the Skin-view with the Editor views
+for either of the active selection options below, <g>Show selection in Skin-view</g> and <g>Pass selection to Skin-view</g>.
 
 <i>Show selection in Skin-view </i>&nbsp;: Because the Skin-view and the rest of the editor views work independently,
 this will pass selected editor model mesh triangle faces to the 'Skin-view' to be outlined and distinguish them. However,
