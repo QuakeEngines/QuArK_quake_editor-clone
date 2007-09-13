@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Added LMB click on a Model Component function that selects
+          - that component's main folder in the tree-view of the Model Editor.
+
 * [DanielPharos]: The name of a pakfile containing a texture can now be specified per texture. This
           - will allow you to mix HL2 and CSS texture in a single map!
 
