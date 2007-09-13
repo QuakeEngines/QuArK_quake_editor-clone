@@ -1094,6 +1094,13 @@ class BaseEditor:
             #
 
             if flags & MB_CLICKED:
+                if isinstance(self, mdleditor.ModelEditor):
+                    # This takes you directly to (selects) the main model component folder for the
+                    #    component that was LMB clicked on if there was one under the
+                    #    cursor, if not then nothing happens.
+                    choice = mdlhandles.ClickOnView(self, view, x, y)
+                    if choice != []:
+                        self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
                 #
                 # Send the click to MouseClicked
                 #
@@ -1381,6 +1388,13 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.89  2007/09/09 18:34:39  cdunde
+#To stop quarkx.reloadsetup call (which just calls qutils.SetupChanged)
+#from duplicate handle drawing in the Model Editor and use quarkx.reloadsetup
+#in mdlmodes for setting "colors" Config. to stop the loss of settings during
+#a session when the "Apply" button is clicked which calls quarkx.reloadsetup,
+#wiping out all the settings if editor.layout.explorer.selchanged() is used instead.
+#
 #Revision 1.88  2007/09/07 23:55:29  cdunde
 #1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
 #     model component from selected Model Mesh faces and remove them from their current component.
