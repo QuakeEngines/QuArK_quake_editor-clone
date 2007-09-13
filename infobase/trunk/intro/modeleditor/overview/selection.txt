@@ -1,10 +1,18 @@
 title: Selection & Navigation Methods
 author: cdunde
 
-<i><b><u>Selection Methods </u></b></i>: Three different selection methods have been designed into the
+<i><b><u>Selection Methods </u></b></i>: Different selection methods have been designed into the
 QuArK Model Editor for the editor itself. Also see the
 <a href="intro.modeleditor.skinview.html">Skin-view page</a> for its particular
 <a href="intro.modeleditor.skinview.html#selection">Selection & Navigation Methods</a>.
+
+<i><g>LMB</g> Click on Component</i> : A model can be made up of a single
+<a href="intro.modeleditor.model.html#components">Component</a> (part) or a whole lot of components,
+sometimes becoming very complicated. Such as a separate component for the head, upper torso, upper arm,
+elbow, lower arm.....and so on. So to make these different components easy to select and find in the
+<a href="intro.mapeditor.dataforms.html">editor's tree-view</a> all you need to do is make a quick
+<g>LMB Click</g> on any component in one of the editors views and that component will become selected
+as well as its main folder in the tree-view.
 
 <i><g>LMB</g> Vertex Handle Drag</i> : This method is available when your cursor is directly over a model
 components mesh <g>vertex</g> (point) <g>drag handle</g> and the cursor will change in appearance when it is.
