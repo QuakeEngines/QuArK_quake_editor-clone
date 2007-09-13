@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/08/15 16:28:09  danielpharos
+HUGE update to HL2: Took out some code that's now not needed anymore.
+
 Revision 1.12  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -197,11 +200,11 @@ function QVMTFile.DefaultImage : QPixelSet;
 var
  GCFFilename: String;
  TexturePath: String;
+ FullTextureFile: String;
  ImageFileName: String;
  Size: TPoint;
  V: array [1..2] of Single;
  TexExt: String;
- PakExt: String;
 begin
   Acces;
   Result:=nil;
@@ -212,20 +215,33 @@ begin
   else
   begin}
 
-  GCFFilename:=SetupGameSet.Specifics.Values['PakForceUse'];
-  TexturePath:=ReverseLink.Specifics.Values['path'];
+  if ReverseLink<>nil then
+  begin
+    GCFFilename:=ReverseLink.Specifics.Values['PakFile'];
+    TexturePath:=ReverseLink.Specifics.Values['path'];
+    {$IFDEF LINUX}
+    TexturePath:=StringReplace(TexturePath,'\',PathDelim,[rfReplaceAll]);
+    {$ELSE}
+    TexturePath:=StringReplace(TexturePath,'/',PathDelim,[rfReplaceAll]);
+    {$ENDIF}
+  end
+  else
+  begin
+    GCFFilename:='';
+    TexturePath:='';
+  end;
 
   //TexExt:=SetupGameSet.Specifics.Values['TextureFormat'];
   TexExt:='.vtf';
-  PakExt:=SetupGameSet.Specifics.Values['PakExt'];
   while ((Result=nil) and (DefaultImageIndex<8)) do
   begin
     if (DefaultImageName[DefaultImageIndex]<>'') then
     begin
       ImageFileName:=DefaultImageName[DefaultImageIndex]+TexExt;
-      Log(LOG_VERBOSE,'attempting to load '+TexturePath+ImageFileName);
+      FullTextureFile:=IncludeTrailingPathDelimiter(TexturePath) + ImageFileName;
+      Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
       try
-        Result:=NeedGameFile(TexturePath + ImageFileName, GCFFilename + PakExt) as QPixelSet
+        Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet
       except
         Result:=nil;
       end;
@@ -237,9 +253,10 @@ begin
   if (Result=nil) then
   begin
     ImageFileName:=self.name + TexExt;
-    Log(LOG_VERBOSE,'attempting to load '+TexturePath+ImageFileName);
+    FullTextureFile:=IncludeTrailingPathDelimiter(TexturePath) + ImageFileName;
+    Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
     try
-      Result:=NeedGameFile(TexturePath + ImageFileName, GCFFilename + PakExt) as QPixelSet;
+      Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet;
     except
       Result:=nil;
     end;

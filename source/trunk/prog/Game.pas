@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2007/09/10 10:08:11  danielpharos
+Fix a comment-sign
+
 Revision 1.46  2007/08/21 23:43:44  danielpharos
 Another fix to the HL2 building process.
 
@@ -451,13 +454,15 @@ end;
 
 function PathAndFile(Path, FileName: String) : String;
 begin
+ {$IFDEF LINUX}
+ Path:=StringReplace(Path,'\',PathDelim,[rfReplaceAll]);
+ FileName:=StringReplace(FileName,'\',PathDelim,[rfReplaceAll]);
+ {$ELSE}
+ Path:=StringReplace(Path,'/',PathDelim,[rfReplaceAll]);
+ FileName:=StringReplace(FileName,'/',PathDelim,[rfReplaceAll]);
+ {$ENDIF}
  if Path<>'' then Path:=IncludeTrailingPathDelimiter(Path);
  Result:=Path+FileName;
- {$IFDEF LINUX}
- Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
- {$ELSE}
- Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
- {$ENDIF}
  if (Result<>'') and (Result[Length(Result)]=PathDelim) then   { this is a path }
   begin
    Result:=ExpandFileName(Result);

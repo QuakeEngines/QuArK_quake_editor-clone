@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2007/09/12 15:39:51  danielpharos
+Small file cleanup.
+
 Revision 1.56  2007/09/12 15:23:28  danielpharos
 Added option to stop texturename checks
 
@@ -1171,8 +1174,6 @@ var
   Bsp: QBsp;
   TexList: QWad;
   I: Integer;
-  PakExt: String;
-  PakFileName: String;
   ShaderFile: QShaderFile;
   MaterialFile: D3MaterialFile;
 begin
@@ -1191,14 +1192,12 @@ begin
       begin   { standard link }
         if CharModeJeu=mjHL2 then
         begin
-          PakFileName:=SetupGameSet.Specifics.Values['PakForceUse'];
-          PakExt:=SetupGameSet.Specifics.Values['PakExt'];
           try // failing to load the textures produces an exception
-            Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt, PakFileName+PakExt) as QPixelSet;
+            Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt, Specifics.Values['PakFile']) as QPixelSet;
           except
             // fall back to vtf file loading if default texture extension (vmt) fails
             if Link=Nil then
-              Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+'.vtf', PakFileName+PakExt) as QPixelSet;
+              Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+'.vtf', Specifics.Values['PakFile']) as QPixelSet;
           end;
           if Link=Nil then
             Raise EErrorFmt(5755, [TexName, Arg]);

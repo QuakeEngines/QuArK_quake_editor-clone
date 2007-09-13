@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.357  2007/09/12 15:41:00  danielpharos
+//Moved a few sections around to match order.
+//
 //Revision 1.356  2007/09/12 15:35:28  danielpharos
 //Moved update settings to seperate config section and added beginnings of online update check.
 //
@@ -1836,7 +1839,6 @@ QQRKSRC1
 
         PakExt = ".gcf"
         PakFormat = "*.gcf"
-        PakForceUse = "source materials"
         LightFactor = '0.9'
         3DLight = '512'
         Console = "1"
@@ -4172,15 +4174,6 @@ QQRKSRC1
         Items = "hl2"
              $0D"cstrike"
              $0D"hl2mp"
-      }
-      PakForceUse: =
-      {
-        Txt = "GCF Filename"
-        Typ = "C"   // combo box
-        Hint = "Set this to the gcf filename that belongs to the game, e.g. source materials for Half-Life 2"
-            $0D"counter-strike source shared for Counter-Strike Source"
-        Items = "source materials"
-             $0D"counter-strike source shared"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {

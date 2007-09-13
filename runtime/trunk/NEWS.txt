@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [DanielPharos]: The name of a pakfile containing a texture can now be specified per texture. This
+          - will allow you to mix HL2 and CSS texture in a single map!
+
 * [cdunde]: Added a new function, to the Faces RMB menu, for a "Empty Component" to start fresh from.
 
 * [DanielPharos]: Added option to stop texturename checks. Be careful: this will allow you to use
