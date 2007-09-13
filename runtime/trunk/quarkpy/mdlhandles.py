@@ -99,7 +99,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
             for item in editor.Root.dictitems:
                 if item.endswith(":mc"):
                     if (editor.Root.dictitems[item].name == editor.Root.currentcomponent.name) or (len(editor.Root.dictitems[item].triangles) == 0): # This last one indicates that the component is "Hidden"
-                        if item.startswith('new clean'):
+                        if item.startswith('new clean') and item != editor.Root.currentcomponent.name:
                             componentnames.append(editor.Root.dictitems[item].shortname)
                         elif (len(editor.Root.dictitems[item].triangles) == 0):
                             hiddenlist = hiddenlist + [editor.Root.dictitems[item].shortname]
@@ -127,7 +127,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
             for item in editor.Root.dictitems:
                 if item.endswith(":mc"):
                     if (editor.Root.dictitems[item].name == editor.Root.currentcomponent.name) or (len(editor.Root.dictitems[item].triangles) == 0): # This last one indicates that the component is "Hidden"
-                        if item.startswith('new clean'):
+                        if item.startswith('new clean') and item != editor.Root.currentcomponent.name:
                             componentnames.append(editor.Root.dictitems[item].shortname)
                         elif (len(editor.Root.dictitems[item].triangles) == 0):
                             hiddenlist = hiddenlist + [editor.Root.dictitems[item].shortname]
@@ -2739,6 +2739,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.88  2007/09/13 01:04:59  cdunde
+#Added a new function, to the Faces RMB menu, for a "Empty Component" to start fresh from.
+#
 #Revision 1.87  2007/09/12 05:25:51  cdunde
 #To move Make New Component menu function from Commands menu to RMB Face Commands menu and
 #setup new function to move selected faces from one component to another.
