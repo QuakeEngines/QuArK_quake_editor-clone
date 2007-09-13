@@ -843,49 +843,76 @@ def removeTriangle_v3(editor):
 
 
 #
-# Add a new component to the model using currently selected faces of another component.
-# This function will also remove the selected faces and unused vertexes from the original component.
+# The 'option' value of 1 MAKES a "clean" brand new component with NO triangles or frame.vertecies, only frames.
+# The 'option' value of 2 ADDS a new component to the model using currently selected faces of another component.
+#    This function will also remove the selected faces and unused vertexes from the original component.
 #
-def addcomponent(editor):
+def addcomponent(editor, option=2):
     comp = editor.Root.currentcomponent
 
     # This section does a few selection test and gives an error message box if needed.
-    for item in editor.layout.explorer.sellist:
-        if item.parent.parent.name != comp.name:
-            quarkx.msgbox("IMPROPER SELECTION !\n\nYou need to select a frame && faces from\none component to make a new component.\n\nYou have selected items that are not\npart of the ''"+editor.Root.currentcomponent.shortname+"'' Frames group.\nPlease un-select these items.\nYou can add other component faces\nafter the new component is created.\n\nAction Canceled.", MT_ERROR, MB_OK)
+    if option == 2:
+        for item in editor.layout.explorer.sellist:
+            if item.parent.parent.name != comp.name:
+                quarkx.msgbox("IMPROPER SELECTION !\n\nYou need to select a frame && faces from\none component to make a new component.\n\nYou have selected items that are not\npart of the ''"+editor.Root.currentcomponent.shortname+"'' Frames group.\nPlease un-select these items.\nYou can add other component faces\nafter the new component is created.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                return
+        if editor.ModelFaceSelList == []:
+            quarkx.msgbox("You need to select a group of faces\nto make a new component from.", MT_ERROR, MB_OK)
             return
-    if editor.ModelFaceSelList == []:
-        quarkx.msgbox("You need to select a group of faces\nto make a new component from.", MT_ERROR, MB_OK)
-        return
+    else:
+        for item in editor.layout.explorer.sellist:
+            if item.parent.parent.name != comp.name:
+                quarkx.msgbox("IMPROPER SELECTION !\n\nYou need to select a frame from\none component to make a new clean component.\n\nYou have selected items that are not\npart of the ''"+editor.Root.currentcomponent.shortname+"'' Frames group.\nPlease un-select these items.\nYou can add other component faces\nafter the new clean component is created.\n\nAction Canceled.", MT_ERROR, MB_OK)
+                return
 
     # These are things that we need to setup first for use later on.
-    temp_list = []
-    remove_triangle_list = []
-    remove_vertices_list = []
+    if option == 2:
+        temp_list = []
+        remove_triangle_list = []
+        remove_vertices_list = []
 
     # Now we start creating our data copies to work with and the final "ok" swapping function at the end.
     # But first we check for any other "new component"s, if so we name this one 1 more then the largest number.
-    tris = comp.triangles
-    change_comp = comp.copy()
+    if option == 2:
+        tris = comp.triangles
+        change_comp = comp.copy()
     new_comp = comp.copy()
     new_comp.shortname = "None"
     comparenbr = 0
-    for item in editor.Root.dictitems:
-        if editor.Root.dictitems[item].shortname.startswith('new component'):
-            getnbr = editor.Root.dictitems[item].shortname
-            getnbr = getnbr.replace('new component', '')
-            if getnbr == "":
-               nbr = 0
-            else:
-                nbr = int(getnbr)
-            if nbr > comparenbr:
-                comparenbr = nbr
-            nbr = comparenbr + 1
-            new_comp.shortname = "new component " + str(nbr)
-    if new_comp.shortname != "None":
-        pass
+    if option == 2:
+        for item in editor.Root.dictitems:
+            if editor.Root.dictitems[item].shortname.startswith('new component'):
+                getnbr = editor.Root.dictitems[item].shortname
+                getnbr = getnbr.replace('new component', '')
+                if getnbr == "":
+                   nbr = 0
+                else:
+                    nbr = int(getnbr)
+                if nbr > comparenbr:
+                    comparenbr = nbr
+                nbr = comparenbr + 1
+                new_comp.shortname = "new component " + str(nbr)
+        if new_comp.shortname != "None":
+            pass
+        else:
+            new_comp.shortname = "new component 1"
     else:
-        new_comp.shortname = "new component 1"
+        for item in editor.Root.dictitems:
+            if editor.Root.dictitems[item].shortname.startswith('new clean component'):
+                getnbr = editor.Root.dictitems[item].shortname
+                getnbr = getnbr.replace('new clean component', '')
+                if getnbr == "":
+                   nbr = 0
+                else:
+                    nbr = int(getnbr)
+                if nbr > comparenbr:
+                    comparenbr = nbr
+                nbr = comparenbr + 1
+                new_comp.shortname = "new clean component " + str(nbr)
+        if new_comp.shortname != "None":
+            pass
+        else:
+            new_comp.shortname = "new clean component 1"
 
     ###### NEW COMPONENT SECTION ######
 
@@ -894,64 +921,72 @@ def addcomponent(editor):
     # The order also needs to be descending so when triangles are removed from another list it
     #    does not select an improper triangle due to list items shifting forward numerically.
     # The "remove_triangle_list" is used to re-create the current component.triangles and new_comp.triangles.
-    for tri_index in reversed(editor.ModelFaceSelList):
-        if tri_index in remove_triangle_list:
-            pass
-        else:
-            remove_triangle_list = remove_triangle_list + [tri_index]
+    if option == 2:
+        for tri_index in reversed(editor.ModelFaceSelList):
+            if tri_index in remove_triangle_list:
+                pass
+            else:
+                remove_triangle_list = remove_triangle_list + [tri_index]
 
     # This section creates the "remove_vertices_list" to be used
     #    to re-create the current component's frame.vertices.
     # It also skips over any vertexes of the triangles to be removed but should not be included
     #    because they are "common" vertexes and still being used by other remaining triangles.
-    for tri_index in remove_triangle_list:
-        for vtx in range(len(tris[tri_index])):
-            if tris[tri_index][vtx][0] in temp_list:
-                pass
-            else:
-                temp_list.append(tris[tri_index][vtx][0])
-    temp_list.sort()
-    for item in reversed(temp_list):
-        remove_vertices_list.append(item)
+        for tri_index in remove_triangle_list:
+            for vtx in range(len(tris[tri_index])):
+                if tris[tri_index][vtx][0] in temp_list:
+                    pass
+                else:
+                    temp_list.append(tris[tri_index][vtx][0])
+        temp_list.sort()
+        for item in reversed(temp_list):
+            remove_vertices_list.append(item)
 
     # This creates the new component and places it under the main Model Root with the other components.
     ## This first part sets up the new_comp.triangles, which are the ones that have been selected, using the
     ##    "remove_triangle_list" which are also the same ones to be removed from the original component.
-    newtris = []
-    for tri_index in range(len(remove_triangle_list)):
-        newtris = newtris + [comp.triangles[remove_triangle_list[tri_index]]]
-    new_comp.triangles = newtris
+        newtris = []
+        for tri_index in range(len(remove_triangle_list)):
+            newtris = newtris + [comp.triangles[remove_triangle_list[tri_index]]]
+        new_comp.triangles = newtris
 
     ## This second part reconstructs each frames "frame.vertices" to consist
     ##    of only those that are needed, removing any that are unused.
     ## Then it fixes up the new_comp.triangles vertex index numbers
     ##    to coordinate with those frame.vertices lists.
-    for frame in range(len(comp.dictitems['Frames:fg'].subitems)):
-        newframe_vertices = []
-        for vert_index in range(len(remove_vertices_list)):
-            newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[frame].vertices[remove_vertices_list[vert_index]]]
-        new_comp.dictitems['Frames:fg'].subitems[frame].vertices = newframe_vertices
-
-    newtris = []
-    for tri in range(len(new_comp.triangles)):
-        for index in range(len(new_comp.triangles[tri])):
+        for frame in range(len(comp.dictitems['Frames:fg'].subitems)):
+            newframe_vertices = []
             for vert_index in range(len(remove_vertices_list)):
-                if new_comp.triangles[tri][index][0] == remove_vertices_list[vert_index]:
-                    if index == 0:
-                        tri0 = (vert_index, new_comp.triangles[tri][index][1], new_comp.triangles[tri][index][2])
-                        break
-                    elif index == 1:
-                        tri1 = (vert_index, new_comp.triangles[tri][index][1], new_comp.triangles[tri][index][2])
-                        break
-                    else:
-                        tri2 = (vert_index, new_comp.triangles[tri][index][1], new_comp.triangles[tri][index][2])
-                        newtris = newtris + [(tri0, tri1, tri2)]
-                        break
-    new_comp.triangles = newtris
+                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[frame].vertices[remove_vertices_list[vert_index]]]
+            new_comp.dictitems['Frames:fg'].subitems[frame].vertices = newframe_vertices
+
+        newtris = []
+        for tri in range(len(new_comp.triangles)):
+            for index in range(len(new_comp.triangles[tri])):
+                for vert_index in range(len(remove_vertices_list)):
+                    if new_comp.triangles[tri][index][0] == remove_vertices_list[vert_index]:
+                        if index == 0:
+                            tri0 = (vert_index, new_comp.triangles[tri][index][1], new_comp.triangles[tri][index][2])
+                            break
+                        elif index == 1:
+                            tri1 = (vert_index, new_comp.triangles[tri][index][1], new_comp.triangles[tri][index][2])
+                            break
+                        else:
+                            tri2 = (vert_index, new_comp.triangles[tri][index][1], new_comp.triangles[tri][index][2])
+                            newtris = newtris + [(tri0, tri1, tri2)]
+                            break
+        new_comp.triangles = newtris
+    else:
+        new_comp.triangles = []
+        for frame in range(len(new_comp.dictitems['Frames:fg'].subitems)):
+            new_comp.dictitems['Frames:fg'].subitems[frame].vertices = []
+        new_comp.dictitems['Skeleton:bg'] = []
 
     ## This last part places the new component into the editor and the model.
     import mdlbtns
     mdlbtns.dropitemsnow(editor, [new_comp], new_comp.shortname + " created")
+    if option == 1:
+        return
 
     ###### ORIGINAL COMPONENT SECTION ######
 
@@ -1563,6 +1598,10 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.43  2007/09/12 05:25:51  cdunde
+#To move Make New Component menu function from Commands menu to RMB Face Commands menu and
+#setup new function to move selected faces from one component to another.
+#
 #Revision 1.42  2007/09/11 00:09:20  cdunde
 #Small update.
 #

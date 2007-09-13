@@ -75,8 +75,11 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
     def menu(self, editor, view):
 
+        def cleancomponentclick(m, self=self, editor=editor, view=view):
+            addcomponent(editor, 1)
+
         def newcomponentclick(m, self=self, editor=editor, view=view):
-            addcomponent(editor)
+            addcomponent(editor, 2)
 
         def movefacestoclick(movetocomponent, option, self=self, editor=editor, view=view):
             movefaces(editor, movetocomponent, option)
@@ -96,7 +99,9 @@ class ModelFaceHandle(qhandles.GenericHandle):
             for item in editor.Root.dictitems:
                 if item.endswith(":mc"):
                     if (editor.Root.dictitems[item].name == editor.Root.currentcomponent.name) or (len(editor.Root.dictitems[item].triangles) == 0): # This last one indicates that the component is "Hidden"
-                        if (len(editor.Root.dictitems[item].triangles) == 0):
+                        if item.startswith('new clean'):
+                            componentnames.append(editor.Root.dictitems[item].shortname)
+                        elif (len(editor.Root.dictitems[item].triangles) == 0):
                             hiddenlist = hiddenlist + [editor.Root.dictitems[item].shortname]
                         else:
                             pass
@@ -122,7 +127,9 @@ class ModelFaceHandle(qhandles.GenericHandle):
             for item in editor.Root.dictitems:
                 if item.endswith(":mc"):
                     if (editor.Root.dictitems[item].name == editor.Root.currentcomponent.name) or (len(editor.Root.dictitems[item].triangles) == 0): # This last one indicates that the component is "Hidden"
-                        if (len(editor.Root.dictitems[item].triangles) == 0):
+                        if item.startswith('new clean'):
+                            componentnames.append(editor.Root.dictitems[item].shortname)
+                        elif (len(editor.Root.dictitems[item].triangles) == 0):
                             hiddenlist = hiddenlist + [editor.Root.dictitems[item].shortname]
                         else:
                             pass
@@ -181,7 +188,8 @@ class ModelFaceHandle(qhandles.GenericHandle):
                 mdleditor.setsingleframefillcolor(editor, v)
                 v.repaint()
 
-        NewComponent = qmenu.item("&Create New Component", newcomponentclick, "|Create New Component:\n\nThis will create a new model component of currently selected Model Mesh faces only including its Skins, Frames and Skeleton sub-items.\n\nThe selected faces will also be removed from their current components group.\n\nOnce created you can change the temporary name 'new component' to something else by clicking on it.|intro.modeleditor.rmbmenus.html#facermbmenu")
+        CleanComponent = qmenu.item("&Empty Component", cleancomponentclick, "|Empty Component:\n\nThis will create a new 'Clean' Model component. To use this function you must select at least one face of another component and have the 'Linear button' active (clicked on).\n\nAll Frames will be there but without any vertexes or triangle faces. Also the 'Skins' and 'Skeleton' sub-items will be empty as well for a fresh start.\n\nSkins or faces can then be moved or copied there from other components but do NOT change its name until you have at least one face (triangle) created or it will not appear on the 'move\copy to' menus.\n\nSkin textures can also be selected from the 'Texture Browser' if you have those setup.|intro.modeleditor.rmbmenus.html#facermbmenu")
+        NewComponent = qmenu.item("&New Component", newcomponentclick, "|New Component:\n\nThis will create a new model component of currently selected Model Mesh faces only, including its Skins, Frames and Skeleton sub-items.\n\nThe selected faces will also be removed from their current components group.\n\nOnce created you can change the temporary name 'new component' to something else by clicking on it.|intro.modeleditor.rmbmenus.html#facermbmenu")
         MoveFaces = qmenu.popup("&Move Faces To", [], movefacesclick, "|Move Faces To:\n\nThis will move currently selected Model Mesh faces from one component to another (if NOT Hidden) by means of a menu that will appear listing all available components to choose from.\n\nIf none others exist it will instruct you to create a 'New Component' first using the function above this one in the RMB menu.", "intro.modeleditor.rmbmenus.html#facermbmenu")
         CopyFaces = qmenu.popup("&Copy Faces To", [], copyfacesclick, "|Copy Faces To:\n\nThis will copy currently selected Model Mesh faces from one component to another (if NOT Hidden) by means of a menu that will appear listing all available components to choose from.\n\nIf none others exist it will instruct you to create a 'New Component' first using the function above this one in the RMB menu.", "intro.modeleditor.rmbmenus.html#facermbmenu")
         DeleteFaces = qmenu.item("&Delete Faces", onclick3, "|Delete Faces:\n\nThis will delete currently selected Model Mesh faces from the currently selected component and any unused vertexes, by other faces (triangles), of those faces.|intro.modeleditor.rmbmenus.html#facermbmenu")
@@ -195,11 +203,13 @@ class ModelFaceHandle(qhandles.GenericHandle):
     #        ClearPicklist.state = qmenu.disabled
 
         if (len(editor.layout.explorer.sellist) == 0) or (editor.layout.explorer.sellist[0].type != ":mf"):
+            CleanComponent.state = qmenu.disabled
             NewComponent.state = qmenu.disabled
             MoveFaces.state = qmenu.disabled
             CopyFaces.state = qmenu.disabled
             DeleteFaces.state = qmenu.disabled
         else:
+            CleanComponent.state = qmenu.normal
             NewComponent.state = qmenu.normal
             MoveFaces.state = qmenu.normal
             CopyFaces.state = qmenu.normal
@@ -207,13 +217,13 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
     #    try:
     #        if self.index is not None:
-    #            menu = [NewComponent, MoveFaces, CopyFaces, DeleteFaces, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+    #            menu = [CleanComponent, NewComponent, MoveFaces, CopyFaces, DeleteFaces, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
     #        else:
-    #            menu = [NewComponent, MoveFaces, CopyFaces, DeleteFaces, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
+    #            menu = [CleanComponent, NewComponent, MoveFaces, CopyFaces, DeleteFaces, qmenu.sep, Forcetogrid] + self.OriginItems(editor, view)
     #    except:
-    #        menu = [NewComponent, MoveFaces, CopyFaces, DeleteFaces]
+    #        menu = [CleanComponent, NewComponent, MoveFaces, CopyFaces, DeleteFaces]
 
-        menu = [NewComponent, MoveFaces, CopyFaces, DeleteFaces]
+        menu = [CleanComponent, NewComponent, MoveFaces, CopyFaces, DeleteFaces]
         return menu
 
 
@@ -2729,6 +2739,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.87  2007/09/12 05:25:51  cdunde
+#To move Make New Component menu function from Commands menu to RMB Face Commands menu and
+#setup new function to move selected faces from one component to another.
+#
 #Revision 1.86  2007/09/07 23:55:29  cdunde
 #1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
 #     model component from selected Model Mesh faces and remove them from their current component.
