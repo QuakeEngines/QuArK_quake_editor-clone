@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Added a new function, to the Faces RMB menu, for a "Empty Component" to start fresh from.
+
 * [DanielPharos]: Added option to stop texturename checks. Be careful: this will allow you to use
           - illegal textures without any warning!
 
