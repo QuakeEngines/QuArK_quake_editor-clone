@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/09/13 14:34:53  danielpharos
+The name of a pakfile containing a texture can now be specified per texture
+
 Revision 1.13  2007/08/15 16:28:09  danielpharos
 HUGE update to HL2: Took out some code that's now not needed anymore.
 
@@ -252,7 +255,10 @@ begin
 
   if (Result=nil) then
   begin
-    ImageFileName:=self.name + TexExt;
+    if ReverseLink<>nil then
+      ImageFileName:=ReverseLink.name + TexExt
+    else
+      ImageFileName:=self.name + TexExt;
     FullTextureFile:=IncludeTrailingPathDelimiter(TexturePath) + ImageFileName;
     Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
     try
