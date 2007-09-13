@@ -13,7 +13,11 @@ a single project. Just remember to give them a sensible name, so you can
 distinguish them. The model editor will automatically close itself when you use this menuitem.
 
 <i>Save as file</i>. If you want to export this model as a different supported model format type,
-select this menuitem.
+select this menu item. A <g>QuArK .qkl model work file</g> can be created using this function.
+Even though, at the present time, QuArK can only save <g>Quake 1 .mdl</g> and <g>Quake 2 .md2</g>
+files, it can save <g>Quake 3 .md3</g> files as a <g>QuArK .qkl model work file</g>.
+This format preserves all settings and <g>Components</g> of the model making it much easer
+when you start a new session of the <g>QuArK Model Editor</g>. to resume your work.
 
 <i>Save all</i> will save all opened files. This includes the current project
 and modified <g>add-on</g> data files.

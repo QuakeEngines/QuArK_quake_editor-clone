@@ -36,11 +36,24 @@ same position <b>or</b> you can place your cursor over any unselected vertex and
 
 Using these along with the <g>Vertex drag mode</g> button a number of various combinations of aligning
 vertexes can be accomplished. And as stated in the section above, the exact co-ordnances
-,of all of these items, will be displayed in the editor's Help box as you proceed through the phases of your editing.
+,of all of these items, will be displayed in the editor's, lower left corner,
+Help box as you proceed through the phases of your editing.
 
-Three additional RMB items are located on the <g>Skin-view Options</g> sub-menu. These are:
+<i>Clear Skin Pick list </i>&nbsp;: This will do just that, clear all of the <g>picked</g> vertexes including
+the <g>Base vertex</g> and start fresh.
 
-<i><b>Skin-view Options</b> - submenu items </i>&nbsp;: (also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)<br>
+<i>Force to grid </i>&nbsp;: Even thought it can not be seen in the <g>Skin-view</g> a grid does exist and
+can be changed by using the standard grid setting method on the editor's
+<a href="intro.modeleditor.toolpalettes.display.html">Display tool-palette</a>.
+
+<i><b>Vertex Commands</b> - submenu items </i>&nbsp;:
+
+<i>Clear Skin Pick list </i>&nbsp;: Described above.
+
+<i>Align skin vertexes </i>&nbsp;: Also described above.
+
+<i><b>Skin-view Options</b> - submenu items </i>&nbsp;: (also located on the
+<a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)<br>
 
 <i>Sync Editor views with Skin-view </i>&nbsp;: This function will turn off other related options and synchronize selected
 <g>Skin-view mesh vertexes</g>, passing and selecting the coordinated <g>Model mesh vertexes</g> in the Editors views,
