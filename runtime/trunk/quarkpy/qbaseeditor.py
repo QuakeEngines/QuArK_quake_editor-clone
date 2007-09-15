@@ -1099,7 +1099,7 @@ class BaseEditor:
                     #    component that was LMB clicked on if there was one under the
                     #    cursor, if not then nothing happens.
                     choice = mdlhandles.ClickOnView(self, view, x, y)
-                    if choice != []:
+                    if choice != [] and flagsmouse == 264:
                         self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
                 #
                 # Send the click to MouseClicked
@@ -1388,6 +1388,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.90  2007/09/13 22:27:00  cdunde
+#Added LMB click on a Model Component function that selects
+#that component's main folder in the tree-view of the Model Editor.
+#
 #Revision 1.89  2007/09/09 18:34:39  cdunde
 #To stop quarkx.reloadsetup call (which just calls qutils.SetupChanged)
 #from duplicate handle drawing in the Model Editor and use quarkx.reloadsetup
