@@ -129,6 +129,8 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             import mdloptions
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
+            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                vertexpop.state = qmenu.disabled
             def backbmp1click(m, view=view, form=editor.form):
                 import qbackbmp
                 qbackbmp.BackBmpDlg(form, view)
@@ -186,6 +188,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.18  2007/09/11 00:09:37  cdunde
+#Added paste to tree-view RMB menu when a component sub-folder is selected.
+#
 #Revision 1.17  2007/09/05 18:43:10  cdunde
 #Minor comment addition and grammar corrections.
 #
