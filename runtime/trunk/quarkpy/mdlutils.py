@@ -167,6 +167,14 @@ def MakeEditorVertexPolyObject(editor, option=0):
     "that can be manipulated by some function using QuArK Internal Poly Objects"
     "such as the Linear Handle functions."
 
+    if editor.Root.currentcomponent is None:
+        componentnames = []
+        for item in editor.Root.dictitems:
+            if item.endswith(":mc"):
+                componentnames.append(item)
+        componentnames.sort()
+        editor.Root.currentcomponent = editor.Root.dictitems[componentnames[0]]
+        
     if option == 0:
         from qbaseeditor import currentview
         polylist = []
@@ -1598,6 +1606,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.44  2007/09/13 01:04:59  cdunde
+#Added a new function, to the Faces RMB menu, for a "Empty Component" to start fresh from.
+#
 #Revision 1.43  2007/09/12 05:25:51  cdunde
 #To move Make New Component menu function from Commands menu to RMB Face Commands menu and
 #setup new function to move selected faces from one component to another.
