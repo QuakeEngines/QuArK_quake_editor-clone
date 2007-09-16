@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.358  2007/09/13 14:35:57  danielpharos
+//The name of a pakfile containing a texture can now be specified per texture
+//
 //Revision 1.357  2007/09/12 15:41:00  danielpharos
 //Moved a few sections around to match order.
 //
@@ -3320,6 +3323,8 @@ QQRKSRC1
         GridVisible        = "1"
         GridActive         = "1"
         GridVisibleTex     = ""
+        SkinGridVisible    = "1"
+        SkinGridActive     = "1"
         CompassNumbers     = "1"
         NoScrollBars       = "1"
         CrossCursor        = ""
@@ -3353,6 +3358,10 @@ QQRKSRC1
         MapLimit = '512 512 512'
         GridHighlight = "8"
         GridHFactor = '2'
+        SkinGridStep = '16'
+        SkinGridMinStep = '5'
+        SkinGridHighlight = "8"
+        SkinGridHFactor = '2'
         FreeZoom = '1'
         ViewMode = $01      // gray out of view by default
         ArrowSize = '40 27'
@@ -3394,10 +3403,11 @@ QQRKSRC1
         BackFaceColor1              = $FFFFFF
         BackFaceColor2              = $BABABA
         SkinLines                   = $FF0000
-        SkinDragLines               = $00FF00
+        SkinDragLines               = $00F000
         SkinVertexSelListColor      = $0080C0
         SkinViewFaceOutline         = $FFFFFF
         SkinViewFaceSelected        = $00FF00
+        SkinGridDots                = $00F000
         Form = "MdlColors"
       }
       Layouts:config =
@@ -3462,6 +3472,11 @@ QQRKSRC1
     MdlDisplay:form =
     {
       style = "7"
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = "Editor views:"
+      }
       GridStep: =
       {
         Txt = "Grid step"
@@ -3486,7 +3501,43 @@ QQRKSRC1
         Typ = "EF1"
         Min = '0'
         Max = '10'
-        Hint = "How much highlighted are the highlighted dots or lines ? (more or less than 1 to mean more or less visible than others)"
+        Hint = "How much highlighted are the highlighted dots or lines ?"$0D"(more or less than 1 to mean more or less visible than others)"
+      }
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = "Skin-view:"
+      }
+      SkinGridStep: =
+      {
+        Txt = "Grid step"
+        Typ = "EF1"    // Edit Float, 1 value
+        Min = '0'
+      }
+      SkinGridMinStep: =
+      {
+        Txt = "Hide grid dots if denser than"
+        Typ = "EF1"    // Edit Float, 1 value
+        Min = '0'
+      }
+      SkinGridHighlight: =
+      {
+        Txt = "Highlight every ...th grid line"
+        Typ = "E"
+        Hint = "Highlight grid dots or lines periodically (no value disables this feature)"
+      }
+      SkinGridHFactor: =
+      {
+        Txt = "Highlight them by a factor of"
+        Typ = "EF1"
+        Min = '0'
+        Max = '10'
+        Hint = "How much highlighted are the highlighted dots or lines ?"$0D"(more or less than 1 to mean more or less visible than others)"
+      }
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = ""
       }
       FreeZoom: =
       {
@@ -3494,12 +3545,11 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "By default, Mouse Free Zoom is Shift-Middle-mouse-button"$0D"Enter a negative value to reverse 'In' and 'Out' directions"
       }
-      sep: = {Typ="S" Txt = ""}
       HandlesDelay: =
       {
         Txt = "Delay to display handles"
         Typ = "EF1"
-        Hint = "If non-zero, some handles are not displayed immediately but after this delay (seconds)"
+        Hint = "If non-zero, some handles are not displayed immediately,"$0D"but are after this delay in seconds."
       }
     }
 
@@ -6545,6 +6595,7 @@ QQRKSRC1
           SkinVertexSelListColor     = $0080C0
           SkinViewFaceOutline        = $FFFFFF
           SkinViewFaceSelected       = $00FF00
+          SkinGridDots               = $00F000
         }
       }
       Sep1: =
@@ -6599,6 +6650,7 @@ QQRKSRC1
         Typ = "S"    // Separator
         Txt = "Skin-view:"
       }
+      SkinGridDots:            = { Txt = "Grid dots" Typ = "LI" }
       SkinLines:               = { Txt = "Skin Mesh Lines" Typ = "LI" }
       SkinDragLines:           = { Txt = "Drag Lines/ Rec Selector / Base Vertex pick" Typ = "LI" }
       SkinVertexSelListColor:  = { Txt = "Skin Vertex picks" Typ = "LI" }
@@ -7181,6 +7233,18 @@ QQRKSRC1
       PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
       HandleHints:              = {Typ="X" Txt="Hints (help rectangles)"        Cap="Hints for model handles"              }
       Recenter:                 = {Typ="X" Txt="Position of new objects"        Cap="Screen center"                        }
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = ""
+      }
+      sep: = 
+      {
+        Typ="S"
+        Txt = "Skin-view:"
+      }
+      SkinGridVisible:          = {Typ="X" Txt="Grid"                            Cap="Grid visible"                         }
+      SkinGridActive:           = {Typ="X" Txt="   ``"                           Cap="Grid active"                          }
     }
     MapBuilding:form =
     {

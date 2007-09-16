@@ -161,6 +161,80 @@ class ModelLayout(BaseLayout):
             slist.append(None)
         return slist
 
+  ### To setup the Skin-view grid independent from the editor grid.
+    def skingetgridmenu(self, gridbtn):
+        skingrid = self.editor.skingridstep[0]
+  #      setup = quarkx.setupsubset(self.MODE, "Display")
+  #      skingridstep = setup["SkinGridStep"]
+  #      skingrid = skingridstep[0]
+    #    if MapOption("SkinGridActive", self.MODE):
+    #        skingrid = skingridstep
+    #    else:
+    #        skingrid = 0
+  #      print "mdlmgr line 175 skingrid",skingrid, type(skingrid)
+        skingridmenu = []
+        for g in (0,256,128,64,32,16,8,4,2,1,.5,.25,.1):
+            if g:
+                cap = "grid \t%s" % g
+            else:
+                cap = "no grid"
+            item = qmenu.item(cap, self.skingridmenuclick)
+            item.skingrid = g
+            item.state = g==skingrid and qmenu.radiocheck
+            skingridmenu.append(item)
+        skingridmenu.append(qmenu.sep)
+        if skingrid==0:
+            txt = "&Other..."
+        else:
+            txt = "&Other...\t%s" % quarkx.ftos(skingrid)
+        skingridmenu.append(qmenu.item(txt, self.skincustomgrid))
+        return skingridmenu
+
+    def skingridmenuclick(self, sender):
+        self.skinsetgrid(sender.skingrid)
+
+    def skinsetgrid(self, ngrid):
+ #       print "mdlmgr line 198 ,ngrid, self.editor.skingrid, self.editor.skingridstep",ngrid, type(ngrid), self.editor.skingrid, type(self.editor.skingrid), self.editor.skingridstep, type(self.editor.skingridstep)
+        if (self.editor.skingrid[0] == float(ngrid)) and (self.editor.skingridstep[0] == float(ngrid)):
+ #           print "mdlmgr line 200 returning" 
+            return
+ #       print "mdlmgr line 202 went through" 
+        self.editor.skingrid = self.editor.skingridstep = (ngrid,)
+        self.skingridchanged()
+
+    def skingridchanged(self):
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        setup["SkinGridStep"] = (self.editor.skingridstep)
+        if self.editor.skingridstep:
+            setup = quarkx.setupsubset(self.editor.MODE, "Options")
+            setup["SkinGridActive"] = "1"[not self.editor.skingrid:]
+ #       print "mdlmgr line 218 self.editor.skingridstep",self.editor.skingridstep, type(self.editor.skingridstep)
+        ico_maped=ico_dict['ico_maped']
+        skingridbtn = qtoolbar.doublebutton(self.skintogglegrid, self.skingetgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it.", ico_maped, 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
+        skingridbtn.caption = str(self.editor.skingridstep[0])  # To show the setting value on the button.
+    #    skinzoombtn = self.buttons["skinzoom"]
+    #    vtxdragmode = self.buttons["vtxdragmode"]
+    #    self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode})
+        self.buttons.update({"skingrid": skingridbtn})
+        self.skinview.invalidate()
+   #     return self.buttons
+     #   return [skingridbtn]
+  #      quarkx.update(self.editor.form)
+
+    def skintogglegrid(self, sender):
+        self.editor.skingrid = not self.editor.skingrid and self.editor.skingridstep
+    #    self.skingridchanged(0)
+        self.skingridchanged()
+
+    def skincustomgrid(self, m):
+        import mdleditor
+        mdleditor.SkinCustomGrid(self.editor)
+
+    def skinaligntogrid(self, v):
+        import mdlhandles
+  #      mdlhandles.setupskingrid(self.editor)
+        return mdlhandles.alignskintogrid(v, 0)
+
   ### Used to setup the skinview.
   ### copied from mapmgr.py def polyviewdraw
     def skinviewdraw(self, view):
@@ -171,17 +245,20 @@ class ModelLayout(BaseLayout):
         cv.rectangle(0,0,w,h)
 
     def bs_skinform(self, panel):  ### This is the Skin-view setup items (form, buttons & view).
+ #       print "mdlmgr line 249 panel",panel
         ico_maped=ico_dict['ico_maped']
         fp = panel.newpanel()
+        skingridbtn = qtoolbar.doublebutton(self.skintogglegrid, self.skingetgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it.", ico_maped, 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
+        skingridbtn.caption = str(self.editor.skingridstep[0])  # To show the setting value on the button.
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
         self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.skinview.html#overview')
         self.Vertexdragmode.mode = self.MODE
         self.Vertexdragmode.tag = "SingleVertexDrag"
         self.Vertexdragmode.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
-        self.buttons.update({"skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode})
+        self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode})
         tp = fp.newtoppanel(123,0) # Sets the height of the top panel.
-        btnp = tp.newbottompanel(23,0).newbtnpanel([skinzoombtn, self.Vertexdragmode])
+        btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, self.Vertexdragmode])
         btnp.margins = (0,0)
         self.skinform = tp.newdataform()
         self.skinform.header = 0
@@ -191,6 +268,7 @@ class ModelLayout(BaseLayout):
         self.skinview = fp.newmapview()  ### This is the skin view where it should show.
         self.skinview.color = BLACK
         self.skinview.viewtype = "panel"
+        skingridbtn.views = [self.skinview]
         skinzoombtn.views = [self.skinview]
    #     self.skinview.ondraw = self.skinviewdraw
 #        self.skinview.onmouse = self.skinviewmouse   ### This may be needed later.
@@ -545,6 +623,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.45  2007/08/20 19:58:23  cdunde
+#Added Linear Handle to the Model Editor's Skin-view page
+#and setup color selection and drag options for it and other fixes.
+#
 #Revision 1.44  2007/08/11 02:38:19  cdunde
 #To stop "editor.ok" function calls in mdlutils.py from loosing the
 #selection when Ctrl key is used in Linear Handle drags.

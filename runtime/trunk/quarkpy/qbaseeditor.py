@@ -427,6 +427,11 @@ class BaseEditor:
                                     cv.ellipse(int(vertex0X)-1, int(vertex0Y)-1, int(vertex0X)+1, int(vertex0Y)+1)
                                     cv.ellipse(int(vertex1X)-1, int(vertex1Y)-1, int(vertex1X)+1, int(vertex1Y)+1)
                                     cv.ellipse(int(vertex2X)-1, int(vertex2Y)-1, int(vertex2X)+1, int(vertex2Y)+1)
+                        # Draws the Skin-view grid dots.
+                        if MapOption("SkinGridVisible", self.MODE):
+                            setup = quarkx.setupsubset(self.MODE, "Display")
+                            skingridstep = setup["SkinGridStep"][0]
+                            view.drawgrid(quarkx.vect((skingridstep*skingridstep*(texWidth/skingridstep)/texWidth*view.info["scale"]),0,0), quarkx.vect(0,(skingridstep*skingridstep*(texHeight/skingridstep)/texHeight*view.info["scale"]),0), MapColor("SkinGridDots", SS_MODEL))
                         # Method 2, Ticks drawn during RecSelDrag.
                         if (flagsmouse == 1032 and isinstance(self.dragobject, mdlhandles.RectSelDragObject) and quarkx.setupsubset(SS_MODEL, "Options")["RDT_M2"] == "1"):
                             cv.pencolor = MapColor("Vertices", SS_MODEL)
@@ -1388,6 +1393,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.91  2007/09/15 18:18:59  cdunde
+#To make the LMB click on  model component to select function more specific.
+#
 #Revision 1.90  2007/09/13 22:27:00  cdunde
 #Added LMB click on a Model Component function that selects
 #that component's main folder in the tree-view of the Model Editor.

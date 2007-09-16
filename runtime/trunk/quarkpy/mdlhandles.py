@@ -36,6 +36,45 @@ lastmodelfaceremovedlist = []
 SkinView1 = None  # Used to get the Skin-view at any time because
                   # it is not in the "editors.layout.views" list.
 
+#
+# Global variables that are set by the model editor.
+#
+# There are two skingrid values : they are the same, excepted when
+# there is a skingrid but disabled; in this case, the first value
+# is 0 and the second one is the disabled skingridstep - which is
+# used only if the user hold down Ctrl while dragging.
+#
+
+# skingrid = (0,0)
+
+
+def alignskintogrid(v, mode):
+    #
+    # mode=0: normal behaviour
+    # mode=1: if v is a 3D point that must be forced to skingrid (when the Ctrl key is down)
+    #
+    import mdleditor
+    editor = mdleditor.mdleditor
+    g = editor.skingrid[mode]
+#    print "mdlhandles line 59 alignskintogrid g, skingrid is",g, editor.skingrid
+    if g<=0.0:
+        return v   # no skingrid
+    rnd = quarkx.rnd
+    return quarkx.vect(rnd(v.x/g)*g, rnd(v.y/g)*g, rnd(v.z/g)*g)
+
+# def setupskingrid(editor):
+    #
+    # Set the skingrid variable from the model editor's current skingridstep.
+    #
+#     print "mdlhandles line 69 setupskingrid editor.skingrid, editor.skingridstep",editor.skingrid, editor.skingridstep
+#     global skingrid
+#     skingrid = (editor.skingrid, editor.skingridstep)
+
+# def clearskingrid():
+#     global skingrid
+#     print "mdlhandles line 75 clearskingrid skingrid is",skingrid
+#     skingrid = (0,0)
+
 #def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
 #    oldfinish(editor, view)
 
@@ -755,14 +794,16 @@ class VertexHandle(qhandles.GenericHandle):
 
     def drag(self, v1, v2, flags, view):
         editor = mapeditor()
-        pv2 = view.proj(v2)        ### v2 is the SINGLE handle's (being dragged) 3D position (x,y and z in space).
-                                   ### And this converts its 3D position to the monitor's FLAT screen 2D and 3D views
-                                   ### 2D (x,y) position to draw it, (NOTICE >) using the 3D "y" and "z" position values.
         p0 = view.proj(self.pos)
 
         if not p0.visible: return
         if flags&MB_CTRL:
             v2 = qhandles.aligntogrid(v2, 0)
+            view.repaint()
+            plugins.mdlgridscale.gridfinishdrawing(editor, view)
+        pv2 = view.proj(v2)        ### v2 is the SINGLE handle's (being dragged) 3D position (x,y and z in space).
+                                   ### And this converts its 3D position to the monitor's FLAT screen 2D and 3D views
+                                   ### 2D (x,y) position to draw it, (NOTICE >) using the 3D "y" and "z" position values.
         delta = v2-v1
         if editor is not None:
             if editor.lock_x==1:
@@ -1162,17 +1203,43 @@ class SkinHandle(qhandles.GenericHandle):
         def TicksViewingClick(m):
             editor = mdleditor.mdleditor
             m.items = TicksViewingMenu(editor)
+        
+        # Trun Model Options function SkinGridVisible on or off.
+        def mSGV(m, self=self, editor=editor, view=view):
+            if not MldOption("SkinGridVisible"):
+                quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = "1"
+                if SkinView1 is not None:
+                    SkinView1.invalidate()
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = None
+                if SkinView1 is not None:
+                    SkinView1.invalidate()
+        
+        # Trun Model Options function SkinGridActive on or off.
+        def mSGA(m, self=self, editor=editor, view=view):
+            if not MldOption("SkinGridActive"):
+                quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = "1"
+                if SkinView1 is not None:
+                    SkinView1.invalidate()
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = None
+                if SkinView1 is not None:
+                    SkinView1.invalidate()
             
         Xsync_edwsv = qmenu.item("&Sync Editor views with Skin-view", mSYNC_EDwSV, "|Sync Editor views with Skin-view:\n\nThis function will turn off other related options and synchronize selected Skin-view mesh vertexes, passing and selecting the coordinated 'Model mesh' vertexes in the Editors views, where they can be used for editing purposes. Any selection changes in the Skin-view will be updated to the Editors views as well.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in both the Editor and the Skin-view for further use.\n\nThe 'Skin-view' and Editor views selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         Xcsf = qmenu.item("&Clear Selected Faces", mCSF, "|Clear Selected Faces:\n\nThis function will clear all faces in the Skin-view that have been drawn as 'Selected' or 'Show' but any related selected vertexes will remain that way for editing purposes.\n\nThe 'Skin-view' selected face, show face and selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         TicksViewing = qmenu.popup("Draw Ticks During Drag", [], TicksViewingClick, "|Draw Ticks During Drag:\n\nThese functions give various methods for drawing the Models Skin Mesh Vertex Ticks while doing a drag.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
+        Xsgv = qmenu.item("Skin Grid Visible", mSGV, "|Skin Grid Visible:\n\nThis function gives quick access to the Model Options setting to turn the Skin-view grid on or off so that it is not visible, but it is still active for all functions that use it, such as 'Snap to grid'.|intro.modeleditor.skinview.html#funcsnmenus")
+        Xsga = qmenu.item("Skin Grid Active", mSGA, "|Skin Grid Active:\n\nThis function gives quick access to the Model Options setting to make the Skin-view grid Active or Inactive making it available or unavailable for all functions that use it, such as 'Snap to grid', even though it will still be displayed in the Skin-view.|intro.modeleditor.skinview.html#funcsnmenus")
 
-        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, TicksViewing]
+        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, TicksViewing, qmenu.sep, Xsgv, Xsga]
     
         items = opsmenulist
         Xsync_edwsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_EDwSV")
         Xpvstev.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTEV")
+        Xsgv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinGridVisible")
+        Xsga.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinGridActive")
 
         return opsmenulist
 
@@ -1261,8 +1328,8 @@ class SkinHandle(qhandles.GenericHandle):
         texHeight = self.texHeight
         p0 = view.proj(self.pos)
         if not p0.visible: return
-        if flags&MB_CTRL:
-            v2 = qhandles.aligntogrid(v2, 0)
+        if flags&MB_CTRL and quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] is not None:
+            v2 = alignskintogrid(v2, 0)
         delta = v2-v1
         if editor is not None:
             if editor.lock_x==1:
@@ -2233,8 +2300,15 @@ class LinearHandle(qhandles.GenericHandle):
         if flags&MB_CTRL:
             g1 = 1
         else:
-            delta = qhandles.aligntogrid(delta, 0)
-            g1 = 0
+            if view.info["viewname"] == "skinview":
+                if quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] is not None or not isinstance(self, LinRedHandle):
+                    delta = alignskintogrid(delta, 0)
+                    g1 = 0
+                else:
+                    g1 = 1
+            else:
+                delta = qhandles.aligntogrid(delta, 0)
+                g1 = 0
       #1       g1 = 1  #1 draws best but then no option for Ctrl key when swapped with code above.
         if delta or (flags&MB_REDIMAGE):
             new = map(lambda obj: obj.copy(), self.mgr.list)
@@ -2739,6 +2813,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.90  2007/09/13 06:58:01  cdunde
+#Minor function description correction.
+#
 #Revision 1.89  2007/09/13 06:07:47  cdunde
 #Update of selection for available component sub-menu creation.
 #

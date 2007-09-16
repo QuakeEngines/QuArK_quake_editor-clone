@@ -102,6 +102,14 @@ class ModelEditor(BaseEditor):
     def OpenRoot(self):
         global mdleditor
         mdleditor = self
+
+        setup = quarkx.setupsubset(self.MODE, "Display")
+        self.skingridstep = setup["SkinGridStep"]
+        if MapOption("SkinGridActive", self.MODE):
+            self.skingrid = self.skingridstep
+        else:
+            self.skingrid = 0
+
         Root = self.fileobject['Root']
      #   if Root is not None: # If you have to open a model to open the Model Editor, how could it be None?
         Root = self.fileobject.findname(Root)
@@ -473,11 +481,66 @@ class ModelEditor(BaseEditor):
             quarkx.update(self.layout.editor.form)
         except KeyError:
             pass
-        
-        
+
+class SkinCustomGridDlgBox(SimpleCancelDlgBox):
+    "The Custom Skin Grid dialog box to input a new grid setting of our own choice."
+
+    #
+    # Dialog box shape
+    #
+    endcolor = SILVER
+    size = (300,120)
+    dlgdef = """
+      {
+        Style = "9"
+        Caption = "Custom grid step"
+        sep: = {Typ="S" Txt=" "}    // some space
+        gridstep: = {
+          Txt=" Enter the grid step :"
+          Typ="EF1"
+          Min='0'
+          SelectMe="1"       // WARNING: be careful when using this
+        }
+        sep: = {Typ="S" Txt=" "}    // some space
+        sep: = {Typ="S" Txt=""}    // a separator line
+        cancel:py = {Txt="" }
+      }
+    """
+
+    def __init__(self, form, src, editor):
+        SimpleCancelDlgBox.__init__(self, form, src)
+        self.editor = editor
+
+    def ok(self):
+        #
+        # The user entered a new value...
+        #
+        grid = self.src["gridstep"]
+        if grid is not None:
+            #
+            # Update the grid step in the editor.
+            #
+            if (self.editor.skingrid[0] == grid[0]) and (self.editor.skingridstep[0] == grid[0]):
+                return
+            self.editor.skingrid = self.editor.skingridstep = (grid[0],)
+            setup = quarkx.setupsubset(self.editor.MODE, "Display")
+            setup["SkinGridStep"] = (self.editor.skingridstep)
+            self.editor.layout.skingridchanged()
+
+
+def SkinCustomGrid(editor):
+    "Calls to display the Custom Skin Grid dialog box for the Skin-view"
+    "   to enter a new grid setting of our own choice."
+
+    src = quarkx.newobj(":")   # new object to store the data displayed in the dialog box
+    src["gridstep"] = editor.skingridstep[0],
+    SkinCustomGridDlgBox(editor.form, src, editor)
+
+
+
 def modelaxis(view):
     "Creates and draws the models axis for all of the editors views."
-    
+
     editor = mdleditor
     for v in editor.layout.views:
         if v.info["viewname"] == "editors3Dview":
@@ -493,7 +556,7 @@ def modelaxis(view):
         Yend = view.proj(modelcenter+quarkx.vect(0,-10,0))
         Zend = view.proj(modelcenter+quarkx.vect(0,0,10))
     cv = view.canvas()
-    
+
     try:
         cv.penwidth = float(quarkx.setupsubset(SS_MODEL,"Options")['linethickness'])
     except:
@@ -501,7 +564,7 @@ def modelaxis(view):
         
     cv.pencolor = WHITE
     cv.ellipse(int(mc.x)-2, int(mc.y)-2, int(mc.x)+2, int(mc.y)+2)
-    
+
     cv.fontsize = 5 * cv.penwidth
     cv.fontbold = 1
     cv.fontname = "MS Serif"
@@ -1277,6 +1340,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.68  2007/09/12 19:47:51  cdunde
+#Small menu fix.
+#
 #Revision 1.67  2007/09/08 07:16:18  cdunde
 #One more item for the last change of:
 #Fixed redrawing of handles in areas that hints show once they are gone.
