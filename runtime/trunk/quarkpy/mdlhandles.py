@@ -1216,10 +1216,12 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = "1"
                 if SkinView1 is not None:
                     SkinView1.invalidate()
+                    qbaseeditor.BaseEditor.finishdrawing(editor, view)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = None
                 if SkinView1 is not None:
                     SkinView1.invalidate()
+                    qbaseeditor.BaseEditor.finishdrawing(editor, view)
         
         # Trun Model Options function SkinGridActive on or off.
         def mSGA(m, self=self, editor=editor, view=view):
@@ -1227,10 +1229,12 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = "1"
                 if SkinView1 is not None:
                     SkinView1.invalidate()
+                    qbaseeditor.BaseEditor.finishdrawing(editor, view)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = None
                 if SkinView1 is not None:
                     SkinView1.invalidate()
+                    qbaseeditor.BaseEditor.finishdrawing(editor, view)
             
         Xsync_edwsv = qmenu.item("&Sync Editor views with Skin-view", mSYNC_EDwSV, "|Sync Editor views with Skin-view:\n\nThis function will turn off other related options and synchronize selected Skin-view mesh vertexes, passing and selecting the coordinated 'Model mesh' vertexes in the Editors views, where they can be used for editing purposes. Any selection changes in the Skin-view will be updated to the Editors views as well.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in both the Editor and the Skin-view for further use.\n\nThe 'Skin-view' and Editor views selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
@@ -2819,6 +2823,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.93  2007/09/16 18:16:17  cdunde
+#To disable all forcetogrid menu items when a grid is inactive.
+#
 #Revision 1.92  2007/09/16 07:05:08  cdunde
 #Minor Skin-view RMB menu item relocation.
 #
