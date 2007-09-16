@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Fixed both editors from not drawing gridscale and ruler when grid is inactive.
+
 * [cdunde]: Added LMB click on a Model Component function that selects
           - that component's main folder in the tree-view of the Model Editor.
 
