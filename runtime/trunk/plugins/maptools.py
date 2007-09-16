@@ -45,12 +45,6 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
 
     gridoldfinish(editor, view)
 
-    #
-    # Below test if the grid is even on
-    #
-
-    if editor.grid == 0:return
-
     def MyMakeScroller(layout, view):
         sbviews = [None, None]
         for ifrom, linkfrom, ito, linkto in layout.sblinks:
@@ -579,6 +573,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2006/11/30 01:17:48  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.12  2006/11/29 06:58:35  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

@@ -55,11 +55,6 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
     
     if editor.ModelFaceSelList != []:
         quarkpy.mdlhandles.ModelFaceHandle(quarkpy.qhandles.GenericHandle).draw(editor, view, editor.EditorObjectList)
-    #
-    # Below test if the grid is even on
-    #
-
-    if editor.grid == 0:return
 
 # The following sets the canvas function to draw the images.
 
@@ -676,6 +671,10 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.8  2007/09/01 19:36:40  cdunde
+#Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
+#Changed selected face outline drawing method to greatly increase drawing speed.
+#
 #Revision 1.7  2007/06/03 23:43:30  cdunde
 #To draw model mesh selected faces for all actions in 2D views and some for 3D views.
 #
