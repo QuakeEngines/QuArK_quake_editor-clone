@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2007/08/10 12:23:19  danielpharos
+Fixed a few comments.
+
 Revision 1.1  2007/07/05 10:19:46  danielpharos
 Moved the Quake .map format code to a separate file.
 
@@ -2523,7 +2526,7 @@ begin
 
    // process untyped specifics
    hashpos:=Pos('#', S);
-   if (hashpos=0) or (hashpos=1) then
+   if (GetMapFormatType<>HL2Type) and ((hashpos=0) or (hashpos=1)) then
    begin
      if (S<>'') and (S[1]<>';') and (Ord(S[1])<chrFloatSpec) then
      begin
@@ -2561,7 +2564,7 @@ begin
      typedspecs:=true;
  end; // for J:=...
 
- if typedspecs and (GetMapFormatType=HL2Type)then
+ if typedspecs then
  begin
    Dest.Add('  connections');
    Dest.Add('  {');
@@ -2571,7 +2574,7 @@ begin
      P:=Pos('=', S);
      Msg:=Copy(S, P+1, 255);
 
-// not neeeded in map file
+// not needed in map file
 //     hashpos:=Pos('input#',S);
 //     if hashpos <> 0 then
 //       Dest.Add('   "'+Copy(S, 7, P-7)+'" "'+Msg+'"');
