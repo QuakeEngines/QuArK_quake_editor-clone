@@ -1106,6 +1106,8 @@ class BaseEditor:
                     choice = mdlhandles.ClickOnView(self, view, x, y)
                     if choice != [] and flagsmouse == 264:
                         self.layout.explorer.uniquesel = choice[0][1].subitems[0].parent
+                        import mdlutils
+                        mdlutils.Update_Editor_Views(self, 4)
                 #
                 # Send the click to MouseClicked
                 #
@@ -1393,6 +1395,11 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.92  2007/09/16 02:20:39  cdunde
+#Setup Skin-view with its own grid button and scale, from the Model Editor's,
+#and color setting for the grid dots to be drawn in it.
+#Also Skin-view RMB menu additions of "Grid visible" and Grid active".
+#
 #Revision 1.91  2007/09/15 18:18:59  cdunde
 #To make the LMB click on  model component to select function more specific.
 #
