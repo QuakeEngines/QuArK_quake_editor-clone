@@ -208,7 +208,7 @@ class ModelLayout(BaseLayout):
       #  if self.editor.skingridstep:
       #      setup = quarkx.setupsubset(self.editor.MODE, "Options")
       #      setup["SkinGridActive"] = "1"[not self.editor.skingrid:]
-        print "mdlmgr line 218 self.editor.skingridstep",self.editor.skingridstep, type(self.editor.skingridstep)
+  #     print "mdlmgr line 218 self.editor.skingridstep",self.editor.skingridstep, type(self.editor.skingridstep)
   #      ico_maped=ico_dict['ico_maped']
   #      skingridbtn = qtoolbar.doublebutton(self.skintogglegrid, self.skingetgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it.", ico_maped, 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
   #      skingridbtn.caption = str(self.editor.skingridstep[0])  # To show the setting value on the button.
@@ -623,6 +623,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.47  2007/09/16 02:39:25  cdunde
+#Needed to comment out some work stuff.
+#
 #Revision 1.46  2007/09/16 02:20:39  cdunde
 #Setup Skin-view with its own grid button and scale, from the Model Editor's,
 #and color setting for the grid dots to be drawn in it.
