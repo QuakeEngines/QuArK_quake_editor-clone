@@ -170,7 +170,8 @@ def BaseMenu(sellist, editor):
     mult = len(sellist)>1 or (len(sellist)==1 and sellist[0].type==':g')
     Force1 = qmenu.item(("&Force to grid", "&Force everything to grid")[mult],
       editor.ForceEverythingToGrid)
-    Force1.state = not editor.gridstep and qmenu.disabled
+    if not MldOption("GridActive"):
+        Force1.state = qmenu.disabled
 
     Cut1 = qmenu.item("&Cut", editor.editcmdclick)
     Cut1.cmd = "cut"
@@ -188,6 +189,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.20  2007/09/15 18:36:52  cdunde
+#To make "Vertex Commands" RMB active only if a model frame is selected.
+#
 #Revision 1.19  2007/09/15 18:17:54  cdunde
 #To turn off "Vertex Commands" menu when Linear Handle button is active.
 #

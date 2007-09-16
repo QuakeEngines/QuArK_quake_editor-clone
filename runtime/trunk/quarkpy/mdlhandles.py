@@ -708,6 +708,9 @@ class VertexHandle(qhandles.GenericHandle):
         ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AlignVertOpsPop = qmenu.popup("Align Vertex Options", [], align_vert_ops_click, "|Align Vertex Options:\n\nThis menu gives different methods of aligning 'Picked' vertexes to the 'Base' vertex.\n\nSee the help for each method for detail on how they work.", "intro.modeleditor.rmbmenus.html#vertexrmbmenu")
 
+        if not MldOption("GridActive"):
+            Forcetogrid.state = qmenu.disabled
+
         if len(editor.ModelVertexSelList) == 0:
             ClearPicklist.state = qmenu.disabled
 
@@ -1082,6 +1085,9 @@ class SkinHandle(qhandles.GenericHandle):
         PickSkinVertex = qmenu.item("&Pick Skin Vertex", pick_skinvertex, "|Pick Skin Vertex:\n\n This is used to pick, or remove, skin vertexes to align them with the 'Base' (stationary) vertex on the Skin-view. A base Vertex must be chosen first. It also works in conjunction with the 'Clear Skin Pick list' below it and the multi or single drag mode button on the Skin-view page.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
         AlignSkinVertexes = qmenu.item(AlignText, alignskinvertexesclick,"|Align skin vertex(s):\n\nOnce a set of vertexes have been 'Picked' on the Skin-view all of those vertexes will be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned for possible multiple vertex movement. It also works in conjunction with the 'Clear Skin Pick list' above it and the multi or single drag mode button on the Skin-view page.|intro.modeleditor.skinview.html#funcsnmenus")
         ClearSkinPicklist = qmenu.item("&Clear Skin Pick list", skinpick_cleared, "|Clear Skin Pick list:\n\nThis Clears the 'Base' (stationary) vertex and the 'Pick Skin Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
+
+        if not MldOption("SkinGridActive"):
+            Forcetogrid.state = qmenu.disabled
 
         if len(editor.SkinVertexSelList) == 0:
             ClearSkinPicklist.state = qmenu.disabled
@@ -2813,6 +2819,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.92  2007/09/16 07:05:08  cdunde
+#Minor Skin-view RMB menu item relocation.
+#
 #Revision 1.91  2007/09/16 02:20:39  cdunde
 #Setup Skin-view with its own grid button and scale, from the Model Editor's,
 #and color setting for the grid dots to be drawn in it.
