@@ -1,23 +1,24 @@
 title: Overview
 author: cdunde
 
+<table><tr><td>
 A model is a single <b>QuArK Internal Object</b> that can consist of a single or multiple <g>components</g>.
 Each component usually has its own <g>skin texture</g> image such as a .pcx, .jpg, .tga or similar type of file.
 
-The purpose of <ref> ../skinview </ref> is the application of various functions to correctly position the
+<img border=1 align=right>overview1.png</img>
+
+The purpose of the <ref> ../skinview </ref> is the application of various functions to correctly position the
 model's <g>skin mesh</g> over its <g>skin texture</g> giving that finished look to the model. This is done with the use
 of <g>drag handles</g> created at each <g>vertex</g> or point of each <g>triangle</g> of the <g>skin mesh</g>.
 
 The <g>skin mesh</g> is an <g>unwrapped</g> layout, or shape, of a model's <g>component</g>.
 
-Just below, we show a screen shot of the Skin-view page displaying the <g>skin mesh</g> of a model that only has
+To the right is a screen shot of the Skin-view page displaying the <g>skin mesh</g> of a model that only has
 one <g>component</g>. Only one <g>skin</g> can be viewed and edited at a time. The Skin-view consist of three areas.
 The top part displays information about the <g>skin mesh</g> and the <g>texture</g> image being used. Just under that is the
 Skin-view's button section that perform various different functions. These are covered in more detail latter.
 The third section is the actual <g>Skin-view</g> that displays the <g>mesh</g>, <g>skin</g>, <g>drag handles</g>
 and <g>RMB</g> menus when called upon. Now for their descriptions and other important information on their uses.
-
-<img border=0 align=right>overview1.png</img>
 
 <b><u>Selected Skin section</u></b>
 
@@ -34,22 +35,10 @@ that it can use.
 
 <i><u>Skin size </u></i>: This gives the actual size of the texture image displayed in <g>pixels</g> or sometimes known
 as <g>texels</g>.
-
-<img border=0 align=right>overview2.png</img>
-
-<b><u>Skin-view's button section</u></b>
-
-<i><u>Skin-view Zoom button </u></i>: This allows you to zoom in and out from the skin with some pre-set factors
-as well as a setting for a 'custom' zoom amount. It only applies to the Skin-view and not to any other view
-of the Model Editor.
-
-<i><u>Vertex drag mode </u></i>: This is a special feature of the Skin-view. It allows you to choose to make
-either a <b>multiple drag</b> (the default setting) using a single drag handle, meaning all other handles in the same location will be
-dragged also automatically keeping the <g>skin mesh</g> together, or a <b>single drag</b> only dragging the
-handle on top which will pull the <g>skin mesh</g> apart for individual placement. This button also works
-in conjunction with the <g>RMB</g> menus that we will cover further on.
-
+</td></tr></table>
 <b><u>Skin-view display section</u></b>
+
+<img border=1 align=right>overview2.png</img>
 
 As stated earlier, this section actually shows the <g>mesh</g>, <g>skin</g>, <g>drag handles</g> and <g>RMB</g>
 menus when called upon. It is also the editing work area for skinning the model. Something that you will notice
@@ -57,14 +46,13 @@ here is how the <g>skin texture</g> is repeated over and over again with red col
 This is called <g>Tiling</g> and goes on indefinitely. Most other model editors do not show the <g>skin texture</g>
 in this manner, yet it still exist and is usable. We chose to show it in its true fashion to assist you in
 various aspects.
-<img border=0 align=right>overview3.png</img>
 
 Some models have been skinned by over-laying parts or half of the <g>skin mesh</g> over the top of the other,
 to conserve texture file size and\or match the texturing exactly. This method is beneficial at times but it
 can also be awkward as well. By displaying the <g>tiled</g> areas, you can easily relocate any part of the
 <g>skin mesh</g> you choose to another tile section rapidly and with great accuracy in QuArK's Model Editor. 
+<img border=1 align=right>overview3.png</img>
 
-<img border=0 align=right>overview4.png</img>
 This is possible because of the way we have constructed the Skin-view to operate. Notice in the two screen shots
 to the right how the <b>help box</b> of the model editor displays not only the triangle (tri) and
 <g>vertex-index</g> number of the handle the cursor is about to grab for dragging, but it also gives you
@@ -74,8 +62,10 @@ in real time along with their <b>original</b> position as a reminder. So you sim
 on another tile section.
 
 In addition, this feature works in the same manner weather you are doing a multi-drag or a single drag by using
-the <g>Vertex drag mode</g> button above.
+the <g>Vertex drag mode</g> (covered below).
 
-Which brings us to another group of functions to assist you in your work with vertexes and their relocation.
+Which brings us to another group of functions and <g>modes</g> selection buttons to assist you in your work with vertexes and their relocation.
 
-The <g>RMB</g> Skin-view menus that are covered in detail just below here.
+The <g>RMB</g> Skin-view menus are covered in the
+<a href="intro.modeleditor.skinview.html#funcsnmenus">Functions & RMB Menus</a>
+section further down.

@@ -28,9 +28,29 @@ To <g>de-select</g> any and all vertexes, simply do another small <g>Rectangle d
 
 <i><g>LMB</g> & <g>RMB</g> Selector</i> : (not activated at this time, reserved for future use and functions.)
 
-A couple of other issues about all of the selection methods described above:
+<img border=1 align=right>selection1.png</img>
+<img border=1 align=right>selection2.png</img>
+<b><u>Skin-view's button section</u></b>
 
-1) Once a selection has been made the Skin-view <a href="intro.modeleditor.skinview.html#funcsnmenus">RMB menu, 'Vertex Commands'</a>
+<i><u>Skin-view Grid button </u></i>: Because the Model Editor and the Skin-view work on different aspects of
+a model, they require their own distinct and independent <g>Grids</g>, which is the first button to the far left.
+Each have their own <g>grid menu</g> with pre-set amounts, but any amount can be entered by clicking on the <g>Other</g>
+item shown at the very bottom of the menu. In addition, for the Skin-view, there are two
+<a href="intro.modeleditor.skinview.html#funcsnmenus">RMB menu</a> items for the <g> Skin-view grid</g> (see below).
+
+<i><u>Skin-view Zoom button </u></i>: (center button) This allows you to zoom in and out from the skin with some pre-set factors
+as well as a setting for a 'custom' zoom amount. It only applies to the Skin-view and not to any other view
+of the Model Editor.
+
+<i><u>Vertex drag mode </u></i>: (far right button) This is a special feature of the Skin-view. It allows you to choose to make
+either a <b>multiple drag</b> (the default setting) using a single drag handle, meaning all other handles in the same location will be
+dragged also automatically keeping the <g>skin mesh</g> together, or a <b>single drag</b> only dragging the
+handle on top which will pull the <g>skin mesh</g> apart for individual placement. This button also works
+in conjunction with the <g>RMB</g> menus that we will cover further on.
+
+A couple of other issues about all of the selection methods described at the beginning:
+
+1) Once a selection is made the Skin-view <a href="intro.modeleditor.skinview.html#funcsnmenus">RMB menu, 'Vertex Commands'</a>
 will become active for its items use.
 
 2) How and what a selection will select is also linked to the
