@@ -1233,7 +1233,7 @@ class SkinHandle(qhandles.GenericHandle):
         Xsgv = qmenu.item("Skin Grid Visible", mSGV, "|Skin Grid Visible:\n\nThis function gives quick access to the Model Options setting to turn the Skin-view grid on or off so that it is not visible, but it is still active for all functions that use it, such as 'Snap to grid'.|intro.modeleditor.skinview.html#funcsnmenus")
         Xsga = qmenu.item("Skin Grid Active", mSGA, "|Skin Grid Active:\n\nThis function gives quick access to the Model Options setting to make the Skin-view grid Active or Inactive making it available or unavailable for all functions that use it, such as 'Snap to grid', even though it will still be displayed in the Skin-view.|intro.modeleditor.skinview.html#funcsnmenus")
 
-        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, TicksViewing, qmenu.sep, Xsgv, Xsga]
+        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, Xsgv, Xsga, qmenu.sep, TicksViewing]
     
         items = opsmenulist
         Xsync_edwsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_EDwSV")
@@ -2813,6 +2813,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.91  2007/09/16 02:20:39  cdunde
+#Setup Skin-view with its own grid button and scale, from the Model Editor's,
+#and color setting for the grid dots to be drawn in it.
+#Also Skin-view RMB menu additions of "Grid visible" and Grid active".
+#
 #Revision 1.90  2007/09/13 06:58:01  cdunde
 #Minor function description correction.
 #
