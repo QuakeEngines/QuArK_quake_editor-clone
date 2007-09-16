@@ -205,17 +205,17 @@ class ModelLayout(BaseLayout):
     def skingridchanged(self):
         setup = quarkx.setupsubset(self.editor.MODE, "Display")
         setup["SkinGridStep"] = (self.editor.skingridstep)
-        if self.editor.skingridstep:
-            setup = quarkx.setupsubset(self.editor.MODE, "Options")
-            setup["SkinGridActive"] = "1"[not self.editor.skingrid:]
- #       print "mdlmgr line 218 self.editor.skingridstep",self.editor.skingridstep, type(self.editor.skingridstep)
-        ico_maped=ico_dict['ico_maped']
-        skingridbtn = qtoolbar.doublebutton(self.skintogglegrid, self.skingetgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it.", ico_maped, 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
-        skingridbtn.caption = str(self.editor.skingridstep[0])  # To show the setting value on the button.
+      #  if self.editor.skingridstep:
+      #      setup = quarkx.setupsubset(self.editor.MODE, "Options")
+      #      setup["SkinGridActive"] = "1"[not self.editor.skingrid:]
+        print "mdlmgr line 218 self.editor.skingridstep",self.editor.skingridstep, type(self.editor.skingridstep)
+  #      ico_maped=ico_dict['ico_maped']
+  #      skingridbtn = qtoolbar.doublebutton(self.skintogglegrid, self.skingetgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it.", ico_maped, 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
+  #      skingridbtn.caption = str(self.editor.skingridstep[0])  # To show the setting value on the button.
     #    skinzoombtn = self.buttons["skinzoom"]
     #    vtxdragmode = self.buttons["vtxdragmode"]
     #    self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode})
-        self.buttons.update({"skingrid": skingridbtn})
+   #     self.buttons.update({"skingrid": skingridbtn})
         self.skinview.invalidate()
    #     return self.buttons
      #   return [skingridbtn]
@@ -623,6 +623,11 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.46  2007/09/16 02:20:39  cdunde
+#Setup Skin-view with its own grid button and scale, from the Model Editor's,
+#and color setting for the grid dots to be drawn in it.
+#Also Skin-view RMB menu additions of "Grid visible" and Grid active".
+#
 #Revision 1.45  2007/08/20 19:58:23  cdunde
 #Added Linear Handle to the Model Editor's Skin-view page
 #and setup color selection and drag options for it and other fixes.
