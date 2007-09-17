@@ -55,7 +55,7 @@ def alignskintogrid(v, mode):
     #
     import mdleditor
     editor = mdleditor.mdleditor
-    g = editor.skingrid[mode]
+    g = editor.skingrid
 #    print "mdlhandles line 59 alignskintogrid g, skingrid is",g, editor.skingrid
     if g<=0.0:
         return v   # no skingrid
@@ -2823,6 +2823,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.94  2007/09/16 19:14:16  cdunde
+#To redraw Skin-view handles, if any appear, when selecting RMB grid setting items.
+#
 #Revision 1.93  2007/09/16 18:16:17  cdunde
 #To disable all forcetogrid menu items when a grid is inactive.
 #

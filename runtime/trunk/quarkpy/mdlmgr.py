@@ -163,15 +163,7 @@ class ModelLayout(BaseLayout):
 
   ### To setup the Skin-view grid independent from the editor grid.
     def skingetgridmenu(self, gridbtn):
-        skingrid = self.editor.skingridstep[0]
-  #      setup = quarkx.setupsubset(self.MODE, "Display")
-  #      skingridstep = setup["SkinGridStep"]
-  #      skingrid = skingridstep[0]
-    #    if MapOption("SkinGridActive", self.MODE):
-    #        skingrid = skingridstep
-    #    else:
-    #        skingrid = 0
-  #      print "mdlmgr line 175 skingrid",skingrid, type(skingrid)
+        skingrid = self.editor.skingridstep
         skingridmenu = []
         for g in (0,256,128,64,32,16,8,4,2,1,.5,.25,.1):
             if g:
@@ -194,32 +186,27 @@ class ModelLayout(BaseLayout):
         self.skinsetgrid(sender.skingrid)
 
     def skinsetgrid(self, ngrid):
- #       print "mdlmgr line 198 ,ngrid, self.editor.skingrid, self.editor.skingridstep",ngrid, type(ngrid), self.editor.skingrid, type(self.editor.skingrid), self.editor.skingridstep, type(self.editor.skingridstep)
-        if (self.editor.skingrid[0] == float(ngrid)) and (self.editor.skingridstep[0] == float(ngrid)):
- #           print "mdlmgr line 200 returning" 
+        if (self.editor.skingrid == ngrid) and (self.editor.skingridstep == ngrid):
             return
- #       print "mdlmgr line 202 went through" 
-        self.editor.skingrid = self.editor.skingridstep = (ngrid,)
+        self.editor.skingrid = self.editor.skingridstep = ngrid
         self.skingridchanged()
 
     def skingridchanged(self):
         setup = quarkx.setupsubset(self.editor.MODE, "Display")
-        setup["SkinGridStep"] = (self.editor.skingridstep)
-      #  if self.editor.skingridstep:
-      #      setup = quarkx.setupsubset(self.editor.MODE, "Options")
-      #      setup["SkinGridActive"] = "1"[not self.editor.skingrid:]
-  #     print "mdlmgr line 218 self.editor.skingridstep",self.editor.skingridstep, type(self.editor.skingridstep)
-  #      ico_maped=ico_dict['ico_maped']
-  #      skingridbtn = qtoolbar.doublebutton(self.skintogglegrid, self.skingetgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it.", ico_maped, 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
-  #      skingridbtn.caption = str(self.editor.skingridstep[0])  # To show the setting value on the button.
-    #    skinzoombtn = self.buttons["skinzoom"]
-    #    vtxdragmode = self.buttons["vtxdragmode"]
-    #    self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode})
-   #     self.buttons.update({"skingrid": skingridbtn})
+        setup["SkinGridStep"] = (self.editor.skingridstep,)
+        
+        # Update the display on the 'grid' button.
+        try:
+            gridbtn = self.buttons["skingrid"]
+        except:
+            return
+        if self.editor.skingridstep:
+            gridbtn.caption = quarkx.ftos(self.editor.skingridstep)
+        else:
+            gridbtn.caption = "off"
+        gridbtn.state = self.editor.skingrid and qtoolbar.selected
+        quarkx.update(self.editor.form)
         self.skinview.invalidate()
-   #     return self.buttons
-     #   return [skingridbtn]
-  #      quarkx.update(self.editor.form)
 
     def skintogglegrid(self, sender):
         self.editor.skingrid = not self.editor.skingrid and self.editor.skingridstep
@@ -245,11 +232,10 @@ class ModelLayout(BaseLayout):
         cv.rectangle(0,0,w,h)
 
     def bs_skinform(self, panel):  ### This is the Skin-view setup items (form, buttons & view).
- #       print "mdlmgr line 249 panel",panel
         ico_maped=ico_dict['ico_maped']
         fp = panel.newpanel()
         skingridbtn = qtoolbar.doublebutton(self.skintogglegrid, self.skingetgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it.", ico_maped, 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
-        skingridbtn.caption = str(self.editor.skingridstep[0])  # To show the setting value on the button.
+        skingridbtn.caption = str(self.editor.skingridstep)  # To show the setting value on the button.
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
         self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.skinview.html#overview')
@@ -623,6 +609,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.48  2007/09/16 07:09:55  cdunde
+#To comment out print statement.
+#
 #Revision 1.47  2007/09/16 02:39:25  cdunde
 #Needed to comment out some work stuff.
 #

@@ -520,11 +520,9 @@ class SkinCustomGridDlgBox(SimpleCancelDlgBox):
             #
             # Update the grid step in the editor.
             #
-            if (self.editor.skingrid[0] == grid[0]) and (self.editor.skingridstep[0] == grid[0]):
+            if (self.editor.skingrid == grid[0]) and (self.editor.skingridstep == grid[0]):
                 return
-            self.editor.skingrid = self.editor.skingridstep = (grid[0],)
-            setup = quarkx.setupsubset(self.editor.MODE, "Display")
-            setup["SkinGridStep"] = (self.editor.skingridstep)
+            self.editor.skingrid = self.editor.skingridstep = grid[0]
             self.editor.layout.skingridchanged()
 
 
@@ -533,7 +531,7 @@ def SkinCustomGrid(editor):
     "   to enter a new grid setting of our own choice."
 
     src = quarkx.newobj(":")   # new object to store the data displayed in the dialog box
-    src["gridstep"] = editor.skingridstep[0],
+    src["gridstep"] = editor.skingridstep,
     SkinCustomGridDlgBox(editor.form, src, editor)
 
 
@@ -1340,6 +1338,11 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.69  2007/09/16 02:20:39  cdunde
+#Setup Skin-view with its own grid button and scale, from the Model Editor's,
+#and color setting for the grid dots to be drawn in it.
+#Also Skin-view RMB menu additions of "Grid visible" and Grid active".
+#
 #Revision 1.68  2007/09/12 19:47:51  cdunde
 #Small menu fix.
 #
