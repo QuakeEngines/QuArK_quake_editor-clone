@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2007/08/21 10:26:40  danielpharos
+Small changes to let HL2 build again.
+
 Revision 1.47  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -220,7 +223,6 @@ function MiddleColor(c1, c2: TColorRef; const f: Single) : TColorRef;
 {procedure GetStdMenus(var HelpMenu: PyObject);}
 procedure ClickForm(nForm: TForm);
 procedure HTMLDoc(const URL: String);
-function OpenSplashScreen : TForm;
 
  {-------------------}
 
@@ -2958,27 +2960,6 @@ begin
   end
  else
   Result:=Result+'.';
-end;
-
- {-------------------}
-
-function OpenSplashScreen : TForm;
-var
- Image1: TImage;
-begin
- Result:=TForm.CreateNew(Application);
- Result.Position:=poScreenCenter;
- Result.BorderStyle:=bsNone;
- Result.Color:=clWhite;
- {Result.FormStyle:=fsStayOnTop;}
- Image1:=TImage.Create(Result);
- Image1.Parent:=Result;
- Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');
- Image1.AutoSize:=True;
- Result.ClientWidth:=Image1.Width;
- Result.ClientHeight:=Image1.Height;
- Result.Show;
- Result.Update;
 end;
 
 var ProbableCauseOfFatalError: array[-9..3] of PChar = (

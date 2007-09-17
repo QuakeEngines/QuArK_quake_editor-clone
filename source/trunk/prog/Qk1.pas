@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2007/09/12 15:35:40  danielpharos
+Moved update settings to seperate config section and added beginnings of online update check.
+
 Revision 1.47  2007/08/14 16:32:59  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -551,7 +554,7 @@ var
  Setup: QObject;
 begin
  // This next line is done so that the G_ standard carries through for all of
- // the global variables. 
+ // the global variables.
  g_Form1 := Self;
  Application.OnException:=AppException;
  Application.UpdateFormatSettings:=False;
@@ -623,10 +626,16 @@ begin
 
  if g_CmdOptions.DoSplash then
  begin
-   Splash.Update; //Redraw the Splash if needed, before we go waiting
-   WaitForSingleObject(Disclaimer, 10000); // Same as MAX_DELAY * 1000 in About
+   //Redraw the Splash if needed, before we go waiting
+   Splash.Update;
+   About.RedrawDisclaimer:=true;
+   repeat
+     Application.ProcessMessages;
+     Sleep(200);
+   until ExitDisclaimer;
    CloseHandle(Disclaimer);
    Splash.Release;
+   Application.ProcessMessages;
  end;
 
 (*ImageList1.Handle:=ImageList_LoadImage(HInstance, MakeIntResource(101),
