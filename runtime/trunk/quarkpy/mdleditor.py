@@ -104,7 +104,7 @@ class ModelEditor(BaseEditor):
         mdleditor = self
 
         setup = quarkx.setupsubset(self.MODE, "Display")
-        self.skingridstep = setup["SkinGridStep"]
+        self.skingridstep, = setup["SkinGridStep"]
         if MapOption("SkinGridActive", self.MODE):
             self.skingrid = self.skingridstep
         else:
@@ -1338,6 +1338,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.70  2007/09/17 06:10:17  cdunde
+#Update for Skin-view grid button and forcetogrid functions.
+#
 #Revision 1.69  2007/09/16 02:20:39  cdunde
 #Setup Skin-view with its own grid button and scale, from the Model Editor's,
 #and color setting for the grid dots to be drawn in it.

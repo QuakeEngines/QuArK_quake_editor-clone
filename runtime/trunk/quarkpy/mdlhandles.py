@@ -708,7 +708,7 @@ class VertexHandle(qhandles.GenericHandle):
         ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AlignVertOpsPop = qmenu.popup("Align Vertex Options", [], align_vert_ops_click, "|Align Vertex Options:\n\nThis menu gives different methods of aligning 'Picked' vertexes to the 'Base' vertex.\n\nSee the help for each method for detail on how they work.", "intro.modeleditor.rmbmenus.html#vertexrmbmenu")
 
-        if not MldOption("GridActive"):
+        if not MldOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
         if len(editor.ModelVertexSelList) == 0:
@@ -1086,7 +1086,7 @@ class SkinHandle(qhandles.GenericHandle):
         AlignSkinVertexes = qmenu.item(AlignText, alignskinvertexesclick,"|Align skin vertex(s):\n\nOnce a set of vertexes have been 'Picked' on the Skin-view all of those vertexes will be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned for possible multiple vertex movement. It also works in conjunction with the 'Clear Skin Pick list' above it and the multi or single drag mode button on the Skin-view page.|intro.modeleditor.skinview.html#funcsnmenus")
         ClearSkinPicklist = qmenu.item("&Clear Skin Pick list", skinpick_cleared, "|Clear Skin Pick list:\n\nThis Clears the 'Base' (stationary) vertex and the 'Pick Skin Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.skinview.html#funcsnmenus")
 
-        if not MldOption("SkinGridActive"):
+        if not MldOption("SkinGridActive") or editor.skingridstep <= 0:
             Forcetogrid.state = qmenu.disabled
 
         if len(editor.SkinVertexSelList) == 0:
@@ -2823,6 +2823,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.95  2007/09/17 06:10:17  cdunde
+#Update for Skin-view grid button and forcetogrid functions.
+#
 #Revision 1.94  2007/09/16 19:14:16  cdunde
 #To redraw Skin-view handles, if any appear, when selecting RMB grid setting items.
 #
