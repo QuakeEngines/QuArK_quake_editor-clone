@@ -15,7 +15,7 @@ $Id$
 6.5.0 Beta 4
 ============
 
-* [cdunde]: Setup Skin-view with its own grid button and scale, from the Model Editor's,
+* [cdunde/DanielPharos]: Setup Skin-view with its own grid button and scale, from the Model Editor's,
           - and color setting for the grid dots to be drawn in it.
           - Also Skin-view RMB menu additions of "Grid visible" and Grid active".
 
