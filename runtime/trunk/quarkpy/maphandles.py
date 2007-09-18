@@ -1569,7 +1569,7 @@ def MouseDragging(self, view, x, y, s, handle):
         if s and ("S" in s):
             self.layout.actionmpp()  # update the multi-pages-panel
 
-    return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("GrayImage"))
+    return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("DragImage"))
 
 
 def ClickOnView(editor, view, x, y):
@@ -1983,6 +1983,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.62  2007/08/21 03:38:09  cdunde
+#To reinstate this method for the 'Cut out corner' function that seems
+#to work better then not having this code added.
+#
 #Revision 1.61  2007/07/24 13:54:50  danielpharos
 #Revert maphandles 1.60: Fixed the underlying problem in PyMath3D.
 #

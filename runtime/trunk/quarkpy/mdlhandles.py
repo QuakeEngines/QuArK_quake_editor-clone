@@ -56,7 +56,6 @@ def alignskintogrid(v, mode):
     import mdleditor
     editor = mdleditor.mdleditor
     g = editor.skingrid
-#    print "mdlhandles line 59 alignskintogrid g, skingrid is",g, editor.skingrid
     if g<=0.0:
         return v   # no skingrid
     rnd = quarkx.rnd
@@ -66,13 +65,11 @@ def alignskintogrid(v, mode):
     #
     # Set the skingrid variable from the model editor's current skingridstep.
     #
-#     print "mdlhandles line 69 setupskingrid editor.skingrid, editor.skingridstep",editor.skingrid, editor.skingridstep
 #     global skingrid
 #     skingrid = (editor.skingrid, editor.skingridstep)
 
 # def clearskingrid():
 #     global skingrid
-#     print "mdlhandles line 75 clearskingrid skingrid is",skingrid
 #     skingrid = (0,0)
 
 #def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
@@ -2009,15 +2006,36 @@ class RectSelDragObject(qhandles.RectangleDragObject):
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
                 if editor.ModelFaceSelList != [] and sellist == []:
                     editor.ModelFaceSelList = []
+                    mdlutils.Update_Editor_Views(editor, 4)
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
+                        editor.SkinVertexSelList = []
+                        mdlutils.PassEditorSel2Skin(editor)
+                        SkinView1.invalidate()
+                    return
             else:
                 if editor.ModelVertexSelList != [] and sellist == []:
                     editor.ModelVertexSelList = []
+                    mdlutils.Update_Editor_Views(editor, 4)
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
+                        editor.SkinVertexSelList = []
+                        mdlutils.PassEditorSel2Skin(editor)
+                        SkinView1.invalidate()
+                    return
             if sellist == []:
-                mdlutils.Update_Editor_Views(editor, 4)
-                if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
-                    editor.SkinVertexSelList = []
-                    mdlutils.PassEditorSel2Skin(editor)
-                    SkinView1.invalidate()
+                if view.info["viewname"] == "skinview":
+                    return
+                elif view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                    view.handles = []
+                elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                    view.handles = []
+                else:
+                    view.handles = BuildHandles(editor, editor.layout.explorer, view)
                 return
 
             removeditem = 0
@@ -2764,7 +2782,7 @@ def MouseDragging(self, view, x, y, s, handle):
         if s and ("S" in s):
             self.layout.actionmpp()  # update the multi-pages-panel
 
-    return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("GrayImage", SS_MODEL))
+    return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("DragImage", SS_MODEL))
 
 
 
@@ -2823,6 +2841,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.96  2007/09/17 06:24:49  cdunde
+#Changes missed.
+#
 #Revision 1.95  2007/09/17 06:10:17  cdunde
 #Update for Skin-view grid button and forcetogrid functions.
 #
