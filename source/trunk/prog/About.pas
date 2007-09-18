@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2007/09/18 18:18:43  danielpharos
+Kill another disclaimer redraw, and add history to About.pas
 
 }
 
@@ -62,6 +64,7 @@ type
     procedure OKButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormPaint(Sender: TObject);
   private
     Event: THandle;
   public
@@ -170,20 +173,36 @@ begin
   until I < 0;
   if not SkipDelay then
   begin
-    I := Info^.Delay;
-    if I > MAX_DELAY then
-      I := MAX_DELAY;
-    I:=I*10;
-    repeat
-      if RedrawDisclaimer then
-      begin
-        RedrawDisclaimer:=false;
-        DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
-        GDIFlush;
-      end;
-      Sleep(100);
-      Dec(I);
-    until I < 0;
+    if Info^.Event = 0 then
+    begin
+      I := Info^.Delay;
+      if I > MAX_DELAY then
+        I := MAX_DELAY;
+      I:=I*10;
+      repeat
+        if RedrawDisclaimer then
+        begin
+          RedrawDisclaimer:=false;
+          DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
+          GDIFlush;
+        end;
+        Sleep(100);
+        Dec(I);
+      until I < 0;
+    end
+    else
+    begin
+      repeat
+        if RedrawDisclaimer then
+        begin
+          RedrawDisclaimer:=false;
+          DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
+          GDIFlush;
+        end;
+        if WaitForSingleObject(Info^.Event, 100) <> WAIT_TIMEOUT then
+          SkipDelay := true;
+      until SkipDelay;
+    end;
   end;
   SelectObject(DC, Font1);
   ReleaseDC(Info^.H, DC);
@@ -350,6 +369,11 @@ begin
     // Strange error if 'event' isn't set to 0 after call to CloseHandle(..)
     // DanielPharos: That's because this procedure is called mulitple times !!!
   end;
+end;
+
+procedure TAboutBox.FormPaint(Sender: TObject);
+begin
+  RedrawDisclaimer:=true;
 end;
 
  {-------------------}
