@@ -19,6 +19,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+}
 
 unit About;
 
@@ -171,9 +177,9 @@ begin
     repeat
       if RedrawDisclaimer then
       begin
+        RedrawDisclaimer:=false;
         DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
         GDIFlush;
-        RedrawDisclaimer:=false;
       end;
       Sleep(100);
       Dec(I);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2007/09/17 23:06:42  danielpharos
+Stop the disclaimer for disappearing sometimes, and move the splashscreen out of QuarkX.
+
 Revision 1.48  2007/09/12 15:35:40  danielpharos
 Moved update settings to seperate config section and added beginnings of online update check.
 
@@ -626,9 +629,6 @@ begin
 
  if g_CmdOptions.DoSplash then
  begin
-   //Redraw the Splash if needed, before we go waiting
-   Splash.Update;
-   About.RedrawDisclaimer:=true;
    repeat
      Application.ProcessMessages;
      Sleep(200);
