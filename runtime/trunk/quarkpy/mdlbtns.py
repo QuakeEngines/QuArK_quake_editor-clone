@@ -109,7 +109,7 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
         nparent, nib = droptarget(editor, newitem)
         if nparent is None:
             undo.cancel()    # not required, but it's better when it's done
-            msg = Strings[-101]
+            msg = Strings[-151]
             quarkx.msgbox(msg, MT_ERROR, MB_OK)
             return
         if not newitem.isallowedparent(nparent):
@@ -349,6 +349,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.15  2007/09/12 19:47:39  cdunde
+#To update comment to a meaningful statement.
+#
 #Revision 1.14  2007/09/10 10:24:26  danielpharos
 #Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 #
