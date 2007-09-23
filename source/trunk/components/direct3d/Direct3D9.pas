@@ -4255,29 +4255,34 @@ const
 // Due to the way Object Pascal handles functions resulting in 'native' interface
 // pointer we should declare result not as interface but as usial pointer
 
-function _Direct3DCreate9(SDKVersion: LongWord): Pointer; stdcall;
-
-function Direct3DCreate9(SDKVersion: LongWord): IDirect3D9; stdcall;
+function Direct3DCreate9(SDKVersion: LongWord): IDirect3D9;
 {$EXTERNALSYM Direct3DCreate9}
 
 (*
  * Stubs for graphics profiling.
  *)
 
-function D3DPERF_BeginEvent(col: TD3DColor; wszName: PWideChar): Integer; stdcall; external Direct3D9dll;
+var
+  D3DPERF_BeginEvent: function (col: TD3DColor; wszName: PWideChar): Integer; stdcall;
 {$EXTERNALSYM D3DPERF_BeginEvent}
-function D3DPERF_EndEvent: Integer; stdcall; external Direct3D9dll;
+var
+  D3DPERF_EndEvent: function : Integer; stdcall;
 {$EXTERNALSYM D3DPERF_EndEvent}
-procedure D3DPERF_SetMarker(col: TD3DColor; wszName: PWideChar); stdcall; external Direct3D9dll;
+var
+  D3DPERF_SetMarker: procedure (col: TD3DColor; wszName: PWideChar); stdcall;
 {$EXTERNALSYM D3DPERF_SetMarker}
-procedure D3DPERF_SetRegion(col: TD3DColor; wszName: PWideChar); stdcall; external Direct3D9dll;
+var
+  D3DPERF_SetRegion: procedure (col: TD3DColor; wszName: PWideChar); stdcall;
 {$EXTERNALSYM D3DPERF_SetRegion}
-function D3DPERF_QueryRepeatFrame: BOOL; stdcall; external Direct3D9dll;
+var
+  D3DPERF_QueryRepeatFrame: function : BOOL; stdcall;
 {$EXTERNALSYM D3DPERF_QueryRepeatFrame}
 
-procedure D3DPERF_SetOptions(dwOptions: DWORD); stdcall; external Direct3D9dll;
+var
+  D3DPERF_SetOptions: procedure (dwOptions: DWORD); stdcall;
 {$EXTERNALSYM D3DPERF_SetOptions}
-function D3DPERF_GetStatus: DWORD; stdcall; external Direct3D9dll;
+var
+  D3DPERF_GetStatus: function : DWORD; stdcall;
 {$EXTERNALSYM D3DPERF_GetStatus}
 
 
@@ -4464,27 +4469,110 @@ begin
   Result:= DWord((0 shl 31) or (_FACD3D shl 16)) or Code;
 end;
 
-function Direct3D9Loaded: Boolean;
-begin // Stub function for static linking
-  Result:= True;
-end;
+var
+  _Direct3DCreate9: function (SDKVersion: LongWord): Pointer; stdcall;
 
-function UnLoadDirect3D9: Boolean;
-begin // Stub function for static linking
-  Result:= True; // should emulate "normal" behaviour
-end;
-
-function LoadDirect3D9: Boolean;
-begin // Stub function for static linking
-  Result:= True;
-end;
-
-function _Direct3DCreate9(SDKVersion: LongWord): Pointer; external Direct3D9dll name 'Direct3DCreate9';
-
-function Direct3DCreate9(SDKVersion: LongWord): IDirect3D9; stdcall;
+function Direct3DCreate9(SDKVersion: LongWord): IDirect3D9;
 begin
   Result:= IDirect3D9(_Direct3DCreate9(SDKVersion));
   if Assigned(Result) then Result._Release; // Delphi autoincrement reference count
 end;
 
+var
+  HD3D9  : HMODULE;
+
+function LoadD3D9: Boolean;
+begin
+  HD3D9 := LoadLibrary('d3d9.dll');
+  If HD3D9 = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @D3DPERF_EndEvent := GetProcAddress(HD3D9, 'D3DPERF_EndEvent');
+  If @D3DPERF_EndEvent = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @D3DPERF_SetMarker := GetProcAddress(HD3D9, 'D3DPERF_SetMarker');
+  If @D3DPERF_SetMarker = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @D3DPERF_SetRegion := GetProcAddress(HD3D9, 'D3DPERF_SetRegion');
+  If @D3DPERF_SetRegion = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @D3DPERF_QueryRepeatFrame := GetProcAddress(HD3D9, 'D3DPERF_QueryRepeatFrame');
+  If @D3DPERF_QueryRepeatFrame = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @D3DPERF_SetOptions := GetProcAddress(HD3D9, 'D3DPERF_SetOptions');
+  If @D3DPERF_SetOptions = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @D3DPERF_GetStatus := GetProcAddress(HD3D9, 'D3DPERF_GetStatus');
+  If @D3DPERF_GetStatus = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @_Direct3DCreate9 := GetProcAddress(HD3D9, 'Direct3DCreate9');
+  If @_Direct3DCreate9 = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadD3D9: Boolean;
+begin
+  If FreeLibrary(HD3D9) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+var
+  l_Direct3D9Loaded: Boolean;
+
+function Direct3D9Loaded: Boolean;
+begin
+  Result:= l_Direct3D9Loaded;
+end;
+
+function UnLoadDirect3D9: Boolean;
+begin
+  if l_Direct3D9Loaded then
+  begin
+    Result:=UnloadD3D9;
+    l_Direct3D9Loaded:=Result;
+  end
+  else
+    Result:=True;
+end;
+
+function LoadDirect3D9: Boolean;
+begin
+  if not l_Direct3D9Loaded then
+  begin
+    Result:=LoadD3D9;
+    l_Direct3D9Loaded:=Result;
+  end
+  else
+    Result:=True;
+end;
+
 end.
+

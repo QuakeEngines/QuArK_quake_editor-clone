@@ -3296,18 +3296,23 @@ function UnLoadDirectInput: Boolean;
 function LoadDirectInput: Boolean;
 
 //{$IFDEF DIRECTINPUT_VERSION_8} (* #if(DIRECTINPUT_VERSION > 0x0700) *)
-function DirectInput8Create(hinst: THandle; dwVersion: DWORD; const riidltf: TGUID; out ppvOut{: Pointer}; punkOuter: IUnknown): HResult; stdcall; external DirectInput8Dll;
+var
+  DirectInput8Create: function (hinst: THandle; dwVersion: DWORD; const riidltf: TGUID; out ppvOut{: Pointer}; punkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectInput8Create}
 
 //{$ELSE}
-function DirectInputCreateA(hinst: THandle; dwVersion: DWORD; out ppDI: IDirectInputA; punkOuter: IUnknown): HResult; stdcall; external DirectInputDll name 'DirectInputCreateA';
+var
+  DirectInputCreateA: function (hinst: THandle; dwVersion: DWORD; out ppDI: IDirectInputA; punkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectInputCreateA}
-function DirectInputCreateW(hinst: THandle; dwVersion: DWORD; out ppDI: IDirectInputW; punkOuter: IUnknown): HResult; stdcall; external DirectInputDll name 'DirectInputCreateW';
+var
+  DirectInputCreateW: function (hinst: THandle; dwVersion: DWORD; out ppDI: IDirectInputW; punkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectInputCreateW}
-function DirectInputCreate(hinst: THandle; dwVersion: DWORD; out ppDI: IDirectInput; punkOuter: IUnknown): HResult; stdcall; external DirectInputDll name 'DirectInputCreateA';
+var
+  DirectInputCreate: function (hinst: THandle; dwVersion: DWORD; out ppDI: IDirectInput; punkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectInputCreate}
 
-function DirectInputCreateEx(hinst: THandle; dwVersion: DWORD; const riidltf: TGUID; out ppvOut{: Pointer}; punkOuter: IUnknown): HResult; stdcall; external DirectInputDll;
+var
+  DirectInputCreateEx: function (hinst: THandle; dwVersion: DWORD; const riidltf: TGUID; out ppvOut{: Pointer}; punkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectInputCreateEx}
 
 //{$ENDIF} (* DIRECTINPUT_VERSION >= 0x0700 *)
@@ -6047,7 +6052,8 @@ const
  *)
 const
   WinMMDll = 'WinMM.dll';
-function joyConfigChanged(dwFlags: DWORD): MMRESULT; stdcall; external WinMMDll;
+var
+  joyConfigChanged: function (dwFlags: DWORD): MMRESULT; stdcall;
 {$EXTERNALSYM joyConfigChanged}
 
 (*
@@ -6064,7 +6070,8 @@ const
   JoyCPL = 'joy.cpl';
 type
   TShowJoyCPL =  procedure(hWnd: HWND); stdcall;
-procedure ShowJoyCPL(hWnd: HWND); stdcall; external JoyCPL;
+var
+  ShowJoyCPL: procedure (hWnd: HWND); stdcall;
 {$EXTERNALSYM ShowJoyCPL}
 
 const
@@ -6246,4 +6253,124 @@ begin // Stub function for static linking
 end;
 
 
+
+
+var
+  HDInput8  : HMODULE;
+
+function LoadDInput8: Boolean;
+begin
+  HDInput8 := LoadLibrary('dinput8.dll');
+  If HDInput8 = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadDInput8: Boolean;
+begin
+  If FreeLibrary(HDInput8) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+
+var
+  HDInput  : HMODULE;
+
+function LoadDInput: Boolean;
+begin
+  HDInput := LoadLibrary('dinput.dll');
+  If HDInput = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectInputCreateW := GetProcAddress(HDInput, 'DirectInputCreateW');
+  If @DirectInputCreateW = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectInputCreate := GetProcAddress(HDInput, 'DirectInputCreateA');
+  If @DirectInputCreate = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectInputCreateEx := GetProcAddress(HDInput, 'DirectInputCreateEx');
+  If @DirectInputCreateEx = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadDInput: Boolean;
+begin
+  If FreeLibrary(HDInput) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+
+var
+  HWinMM  : HMODULE;
+
+function LoadWinMM: Boolean;
+begin
+  HWinMM := LoadLibrary('WinMM.dll');
+  If HWinMM = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadWinMM: Boolean;
+begin
+  If FreeLibrary(HWinMM) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+
+var
+  HJoy  : HMODULE;
+
+function LoadJoy: Boolean;
+begin
+  HJoy := LoadLibrary('joy.cpl');
+  If HJoy = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadJoy: Boolean;
+begin
+  If FreeLibrary(HJoy) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
 end.
+

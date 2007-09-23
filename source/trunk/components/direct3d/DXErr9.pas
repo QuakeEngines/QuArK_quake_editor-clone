@@ -215,4 +215,6 @@ finalization
     FreeLibrary(dxerr9DllInstance);
     dxerr9DllInstance := 0;
   end;
+
 end.
+

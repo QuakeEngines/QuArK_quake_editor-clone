@@ -651,6 +651,34 @@ end;
 const
   DXFileDLL = 'D3DXOF.DLL';
 
-function DirectXFileCreate; external DXFileDLL;
+var
+  DirectXFileCreate: function ;
+
+
+
+var
+  HD3DXOF  : HMODULE;
+
+function LoadD3DXOF: Boolean;
+begin
+  HD3DXOF := LoadLibrary('D3DXOF.DLL');
+  If HD3DXOF = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadD3DXOF: Boolean;
+begin
+  If FreeLibrary(HD3DXOF) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
 
 end.
+

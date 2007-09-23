@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2007/09/23 21:04:31  danielpharos
+Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+
 Revision 1.24  2007/09/04 14:38:12  danielpharos
 Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
 
@@ -338,27 +341,30 @@ end;
 
 procedure TDirect3DSceneObject.ReleaseResources;
 begin
-  if not (DepthStencilSurface[ListIndex-1]=nil) then
+  if ListIndex<>0 then
   begin
-    while (DepthStencilSurface[ListIndex-1]._Release > 0) do;
-    Pointer(DepthStencilSurface[ListIndex-1]):=nil;
-  end;
+    if not (DepthStencilSurface[ListIndex-1]=nil) then
+    begin
+      while (DepthStencilSurface[ListIndex-1]._Release > 0) do;
+      Pointer(DepthStencilSurface[ListIndex-1]):=nil;
+    end;
 
-  if not (SwapChain[ListIndex-1]=nil) then
-  begin
-    while (SwapChain[ListIndex-1]._Release > 0) do;
-    Pointer(SwapChain[ListIndex-1]):=nil;
-  end;
+    if not (SwapChain[ListIndex-1]=nil) then
+    begin
+      while (SwapChain[ListIndex-1]._Release > 0) do;
+      Pointer(SwapChain[ListIndex-1]):=nil;
+    end;
 
-  if (Length(ListItemUsed)=ListIndex-1) then
-  begin
-    SetLength(SwapChain,Length(SwapChain)-1);
-    SetLength(DepthStencilSurface,Length(DepthStencilSurface)-1);
-    SetLength(ListItemUsed,Length(ListItemUsed)-1);
-  end
-  else
-    ListItemUsed[ListIndex-1]:=false;
-  ListIndex:=0;
+    if (Length(ListItemUsed)=ListIndex-1) then
+    begin
+      SetLength(SwapChain,Length(SwapChain)-1);
+      SetLength(DepthStencilSurface,Length(DepthStencilSurface)-1);
+      SetLength(ListItemUsed,Length(ListItemUsed)-1);
+    end
+    else
+      ListItemUsed[ListIndex-1]:=false;
+    ListIndex:=0;
+  end;
 
   if (ViewWnd<>0) and (ViewDC<>0) then
   begin

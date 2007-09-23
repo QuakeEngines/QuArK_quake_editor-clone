@@ -402,18 +402,53 @@ type
 
 //--------------<F-U-N-C-T-I-O-N-S>-----------------------------------------//
 // sets all global 3D audio constants
-procedure X3DAudioInitialize(SpeakerChannelMask: LongWord; SpeedOfSound: FLOAT32;
-  out Instance: TX3DAudioHandle); stdcall; external X3DAudioDLL;
+var
+  X3DAudioInitialize: procedure (SpeakerChannelMask: LongWord; SpeedOfSound: FLOAT32;
+  out Instance: TX3DAudioHandle); stdcall;
 {$EXTERNALSYM X3DAudioInitialize}
 
 // calculates DSP settings with respect to 3D parameters
-procedure X3DAudioCalculate(const Instance: TX3DAudioHandle;
+var
+  X3DAudioCalculate: procedure (const Instance: TX3DAudioHandle;
   const pListener: TX3DAudioListener; const pEmitter: TX3DAudioEmitter;
-  Flags: LongWord; var pDSPSettings: TX3DAudioDspSettings); stdcall; external X3DAudioDLL;
+  Flags: LongWord; var pDSPSettings: TX3DAudioDspSettings); stdcall;
 {$EXTERNALSYM X3DAudioCalculate}
 
 implementation
 
-end.
+
 //---------------------------------<-EOF->----------------------------------//
+
+
+var
+  HX3DAudio  : HMODULE;
+
+function LoadX3DAudio: Boolean;
+begin
+  HX3DAudio := LoadLibrary('X3DAudio.dll');
+  If HX3DAudio = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @X3DAudioCalculate := GetProcAddress(HX3DAudio, 'X3DAudioCalculate');
+  If @X3DAudioCalculate = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadX3DAudio: Boolean;
+begin
+  If FreeLibrary(HX3DAudio) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+end.
 

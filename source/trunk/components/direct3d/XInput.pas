@@ -343,52 +343,122 @@ type
 // XInput APIs
 //
 
-function XInputGetState(
+var
+  XInputGetState: function (
     dwUserIndex: DWORD;      // [in] Index of the gamer associated with the device
     out pState: TXInputState // [out] Receives the current state
- ): DWORD; stdcall; external XINPUT_DLL;
+ ): DWORD; stdcall;
 {$EXTERNALSYM XInputGetState}
 
-function XInputSetState(
+var
+  XInputSetState: function (
     dwUserIndex: DWORD;                 // [in] Index of the gamer associated with the device
     const pVibration: TXInputVibration  // [in, out] The vibration information to send to the controller
- ): DWORD; stdcall; external XINPUT_DLL;
+ ): DWORD; stdcall;
 {$EXTERNALSYM XInputSetState}
 
-function XInputGetCapabilities(
+var
+  XInputGetCapabilities: function (
     dwUserIndex: DWORD;                     // [in] Index of the gamer associated with the device
     dwFlags: DWORD;                         // [in] Input flags that identify the device type
     out pCapabilities: TXInputCapabilities  // [out] Receives the capabilities
- ): DWORD; stdcall; external XINPUT_DLL;
+ ): DWORD; stdcall;
 {$EXTERNALSYM XInputGetCapabilities}
 
-procedure XInputEnable(
+var
+  XInputEnable: procedure (
     enable: BOOL     // [in] Indicates whether xinput is enabled or disabled.
-); stdcall; external XINPUT_DLL;
+); stdcall;
 {$EXTERNALSYM XInputEnable}
 
-function XInputGetDSoundAudioDeviceGuids(
+var
+  XInputGetDSoundAudioDeviceGuids: function (
     dwUserIndex: DWORD;           // [in] Index of the gamer associated with the device
     out pDSoundRenderGuid: TGUID; // [out] DSound device ID for render
     out pDSoundCaptureGuid: TGUID // [out] DSound device ID for capture
- ): DWORD; stdcall; external XINPUT_DLL;
+ ): DWORD; stdcall;
 {$EXTERNALSYM XInputGetDSoundAudioDeviceGuids}
 
-function XInputGetBatteryInformation(
+var
+  XInputGetBatteryInformation: function (
     dwUserIndex: DWORD;          // [in]  Index of the gamer associated with the device
     devType: Byte;               // [in]  Which device on this user index
     out pBatteryInformation: TXInputBatteryInformation // [out] Contains the level and types of batteries
- ): DWORD; stdcall; external XINPUT_DLL;
+ ): DWORD; stdcall;
 {$EXTERNALSYM XInputGetBatteryInformation}
 
-function XInputGetKeystroke(
+var
+  XInputGetKeystroke: function (
     dwUserIndex: DWORD;               // [in]  Index of the gamer associated with the device
     dwReserved: DWORD;                // [in]  Reserved for future use
     var pKeystroke: TXInputKeystroke  // [out] Pointer to an XINPUT_KEYSTROKE structure that receives an input event.
- ): DWORD; stdcall; external XINPUT_DLL;
+ ): DWORD; stdcall;
 {$EXTERNALSYM XInputGetKeystroke}
 
 
 implementation
 
+
+
+var
+  HXInput1_3  : HMODULE;
+
+function LoadXInput1_3: Boolean;
+begin
+  HXInput1_3 := LoadLibrary('xinput1_3.dll');
+  If HXInput1_3 = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @XInputSetState := GetProcAddress(HXInput1_3, 'XInputSetState');
+  If @XInputSetState = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @XInputGetCapabilities := GetProcAddress(HXInput1_3, 'XInputGetCapabilities');
+  If @XInputGetCapabilities = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @XInputEnable := GetProcAddress(HXInput1_3, 'XInputEnable');
+  If @XInputEnable = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @XInputGetDSoundAudioDeviceGuids := GetProcAddress(HXInput1_3, 'XInputGetDSoundAudioDeviceGuids');
+  If @XInputGetDSoundAudioDeviceGuids = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @XInputGetBatteryInformation := GetProcAddress(HXInput1_3, 'XInputGetBatteryInformation');
+  If @XInputGetBatteryInformation = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @XInputGetKeystroke := GetProcAddress(HXInput1_3, 'XInputGetKeystroke');
+  If @XInputGetKeystroke = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadXInput1_3: Boolean;
+begin
+  If FreeLibrary(HXInput1_3) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
 end.
+

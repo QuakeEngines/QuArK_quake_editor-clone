@@ -2117,49 +2117,62 @@ type
   {$HPPEMIT 'typedef LPDSENUMCALLBACK TDSEnumCallback;'}
 
 const
-  DirectSoundDll = 'dsound.dll';
+  DirectSoundDLL = 'dsound.dll';
 
 function DirectSoundLoaded: Boolean;
 function UnLoadDirectSound: Boolean;
 function LoadDirectSound: Boolean;
 
-function DirectSoundCreate(lpGuid: PGUID; out ppDS: IDirectSound; pUnkOuter: IUnknown): HResult; stdcall; external DirectSoundDLL;
+var
+  DirectSoundCreate: function (lpGuid: PGUID; out ppDS: IDirectSound; pUnkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectSoundCreate}
-function DirectSoundEnumerateW(lpDSEnumCallback: TDSEnumCallbackW; lpContext: Pointer): HResult; stdcall; external DirectSoundDLL name 'DirectSoundEnumerateW';
+var
+  DirectSoundEnumerateW: function (lpDSEnumCallback: TDSEnumCallbackW; lpContext: Pointer): HResult; stdcall;
 {$EXTERNALSYM DirectSoundEnumerateW}
-function DirectSoundEnumerateA(lpDSEnumCallback: TDSEnumCallbackA; lpContext: Pointer): HResult; stdcall; external DirectSoundDLL name 'DirectSoundEnumerateA';
+var
+  DirectSoundEnumerateA: function (lpDSEnumCallback: TDSEnumCallbackA; lpContext: Pointer): HResult; stdcall;
 {$EXTERNALSYM DirectSoundEnumerateA}
-function DirectSoundEnumerate(lpDSEnumCallback: TDSEnumCallback; lpContext: Pointer): HResult; stdcall; external DirectSoundDLL name 'DirectSoundEnumerateA';
+var
+  DirectSoundEnumerate: function (lpDSEnumCallback: TDSEnumCallback; lpContext: Pointer): HResult; stdcall;
 {$EXTERNALSYM DirectSoundEnumerate}
 
-function DirectSoundCaptureCreate(lpGUID: PGUID; out lplpDSC: IDirectSoundCapture; pUnkOuter: IUnknown): HResult; stdcall; external DirectSoundDLL;
+var
+  DirectSoundCaptureCreate: function (lpGUID: PGUID; out lplpDSC: IDirectSoundCapture; pUnkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectSoundCaptureCreate}
-function DirectSoundCaptureEnumerateW(lpDSEnumCallback: TDSEnumCallbackW; lpContext: Pointer): HResult; stdcall; external DirectSoundDLL name 'DirectSoundCaptureEnumerateW';
+var
+  DirectSoundCaptureEnumerateW: function (lpDSEnumCallback: TDSEnumCallbackW; lpContext: Pointer): HResult; stdcall;
 {$EXTERNALSYM DirectSoundCaptureEnumerateW}
-function DirectSoundCaptureEnumerateA(lpDSEnumCallback: TDSEnumCallbackA; lpContext: Pointer): HResult; stdcall; external DirectSoundDLL name 'DirectSoundCaptureEnumerateA';
+var
+  DirectSoundCaptureEnumerateA: function (lpDSEnumCallback: TDSEnumCallbackA; lpContext: Pointer): HResult; stdcall;
 {$EXTERNALSYM DirectSoundCaptureEnumerateA}
-function DirectSoundCaptureEnumerate(lpDSEnumCallback: TDSEnumCallback; lpContext: Pointer): HResult; stdcall; external DirectSoundDLL name 'DirectSoundCaptureEnumerateA';
+var
+  DirectSoundCaptureEnumerate: function (lpDSEnumCallback: TDSEnumCallback; lpContext: Pointer): HResult; stdcall;
 {$EXTERNALSYM DirectSoundCaptureEnumerate}
 
 //#if DIRECTSOUND_VERSION >= 0x0800
-function DirectSoundCreate8(pcGuidDevice: PGUID; out ppDS8: IDirectSound8; pUnkOuter: IUnknown): HResult; stdcall; external DirectSoundDLL;
+var
+  DirectSoundCreate8: function (pcGuidDevice: PGUID; out ppDS8: IDirectSound8; pUnkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectSoundCreate8}
-function DirectSoundCaptureCreate8(pcGuidDevice: PGUID; out ppDSC8: IDirectSoundCapture8; pUnkOuter: IUnknown): HResult; stdcall; external DirectSoundDLL;
+var
+  DirectSoundCaptureCreate8: function (pcGuidDevice: PGUID; out ppDSC8: IDirectSoundCapture8; pUnkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectSoundCaptureCreate8}
-function DirectSoundFullDuplexCreate(pcGuidCaptureDevice, pcGuidRenderDevice: PGUID;
+var
+  DirectSoundFullDuplexCreate: function (pcGuidCaptureDevice, pcGuidRenderDevice: PGUID;
   const pcDSCBufferDesc: TDSCBufferDesc; const pcDSBufferDesc: TDSBufferDesc;
   hWnd: hWnd; dwLevel: DWORD; out ppDSFD: IDirectSoundFullDuplex8;
   out ppDSCBuffer8: IDirectSoundCaptureBuffer8; out ppDSBuffer8: IDirectSoundBuffer8;
-  pUnkOuter: IUnknown): HResult; stdcall; external DirectSoundDLL;
+  pUnkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectSoundFullDuplexCreate}
-function DirectSoundFullDuplexCreate8(pcGuidCaptureDevice, pcGuidRenderDevice: PGUID;
+var
+  DirectSoundFullDuplexCreate8: function (pcGuidCaptureDevice, pcGuidRenderDevice: PGUID;
   const pcDSCBufferDesc: TDSCBufferDesc; const pcDSBufferDesc: TDSBufferDesc;
   hWnd: hWnd; dwLevel: DWORD; out ppDSFD: IDirectSoundFullDuplex8;
   out ppDSCBuffer8: IDirectSoundCaptureBuffer8; out ppDSBuffer8: IDirectSoundBuffer8;
-  pUnkOuter: IUnknown): HResult; stdcall; external DirectSoundDLL name 'DirectSoundFullDuplexCreate';
+  pUnkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectSoundFullDuplexCreate8}
 
-function GetDeviceID(pGuidSrc, pGuidDest: PGUID): HResult; stdcall; external DirectSoundDLL;
+var
+  GetDeviceID: function (pGuidSrc, pGuidDest: PGUID): HResult; stdcall;
 {$EXTERNALSYM GetDeviceID}
 //#endif // DIRECTSOUND_VERSION >= 0x0800
 
@@ -2208,4 +2221,103 @@ begin // Stub function for static linking
 end;
 
 
+
+
+var
+  HDSound  : HMODULE;
+
+function LoadDSound: Boolean;
+begin
+  HDSound := LoadLibrary('dsound.dll');
+  If HDSound = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundEnumerateW := GetProcAddress(HDSound, 'DirectSoundEnumerateW');
+  If @DirectSoundEnumerateW = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundEnumerateA := GetProcAddress(HDSound, 'DirectSoundEnumerateA');
+  If @DirectSoundEnumerateA = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundEnumerate := GetProcAddress(HDSound, 'DirectSoundEnumerateA');
+  If @DirectSoundEnumerate = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundCaptureCreate := GetProcAddress(HDSound, 'DirectSoundCaptureCreate');
+  If @DirectSoundCaptureCreate = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundCaptureEnumerateW := GetProcAddress(HDSound, 'DirectSoundCaptureEnumerateW');
+  If @DirectSoundCaptureEnumerateW = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundCaptureEnumerateA := GetProcAddress(HDSound, 'DirectSoundCaptureEnumerateA');
+  If @DirectSoundCaptureEnumerateA = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundCaptureEnumerate := GetProcAddress(HDSound, 'DirectSoundCaptureEnumerateA');
+  If @DirectSoundCaptureEnumerate = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundCreate8 := GetProcAddress(HDSound, 'DirectSoundCreate8');
+  If @DirectSoundCreate8 = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundCaptureCreate8 := GetProcAddress(HDSound, 'DirectSoundCaptureCreate8');
+  If @DirectSoundCaptureCreate8 = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundFullDuplexCreate := GetProcAddress(HDSound, 'DirectSoundFullDuplexCreate');
+  If @DirectSoundFullDuplexCreate = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectSoundFullDuplexCreate8 := GetProcAddress(HDSound, 'DirectSoundFullDuplexCreate');
+  If @DirectSoundFullDuplexCreate8 = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @GetDeviceID := GetProcAddress(HDSound, 'GetDeviceID');
+  If @GetDeviceID = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadDSound: Boolean;
+begin
+  If FreeLibrary(HDSound) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
 end.
+
