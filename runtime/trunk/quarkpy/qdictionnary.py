@@ -958,6 +958,7 @@ Strings = {
     6010: "Texture not loaded",
     6011: "Invalid value for %s found: %d. Using default",
     6012: "No valid value for %s found, defaulting to: %d",
+    6013: "Unable to load Desktop Window Manager (DWM).//Desktop Composition may be enabled, causing corruption in OpenGL and DirectX viewports",
 
     # DanielPharos would like to reserve 6100 .. 6199 for the software renderer
     6100: "Error with the Software 3D drivers//%s failed",
@@ -1022,6 +1023,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.107  2007/09/21 21:19:51  cdunde
+#To add message string that is model editor specific.
+#
 #Revision 1.106  2007/09/10 10:24:25  danielpharos
 #Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 #

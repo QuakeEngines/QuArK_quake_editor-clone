@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2007/09/05 10:30:07  danielpharos
+Fix a dictionary-number
+
 Revision 1.62  2007/09/04 14:38:12  danielpharos
 Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
 
@@ -276,6 +279,7 @@ type
    LightParams: TLightParams;
    FullBright: TLightParams;
    OpenGLLoaded: Boolean;
+   DWMLoaded: Boolean;
    MapLimit: TVect;
    MapLimitSmallest: Double;
    DepthBufferBits: Byte;
@@ -334,7 +338,7 @@ procedure CheckOpenGLError(GlError: GLenum);
 implementation
 
 uses SysUtils, Quarkx, Setup, Python, Logging, {Math,}
-     QkObjects, QkMapPoly, QkPixelSet, QkForm;
+     QkObjects, QkMapPoly, QkPixelSet, QkForm, SystemDetails, DWM;
 
  {------------------------}
 
@@ -960,8 +964,14 @@ begin
   {$IFDEF DebugGLErr} HackIgnoreErrors:=True; {$ENDIF}
   inherited;
   ReleaseResources;
-  if OpenGLLoaded = true then
+  if OpenGLLoaded then
     UnloadOpenGl;
+
+  if DWMLoaded then
+  begin
+    DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
+    UnloadDWM;
+  end;
   {$IFDEF DebugGLErr} HackIgnoreErrors:=False; {$ENDIF}
 end;
 
@@ -983,12 +993,26 @@ begin
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
 
-  { has the OpenGL DLL already been loaded? }
+  //We need to disable Desktop Composition on Vista and higher,
+  //because this causes Python-overlays to draw incorrectly
+  if CheckWindowsVista then
+  begin
+    if not DWMLoaded then
+    begin
+      DWMLoaded:=LoadDWM;
+      if not DWMLoaded then
+        Log(LOG_WARNING, LoadStr1(6013));
+    end;
+    if DWMLoaded then
+      DwmEnableComposition(DWM_EC_DISABLECOMPOSITION);
+  end;
+
+  //Has the OpenGL DLL already been loaded?
   if not OpenGLLoaded then
   begin
     if LibName='' then
       Raise EError(6001);
-    { try to load the OpenGL DLL, and set pointers to its functions }
+    //Try to load the OpenGL DLL, and set pointers to its functions
     if not LoadOpenGl() then
       Raise EErrorFmt(6300, [GetLastError]);
     OpenGLLoaded := true;
@@ -1211,6 +1235,9 @@ procedure TGLSceneObject.Copy3DView;
 var
   Int4Array: array[0..3] of Integer;
 begin
+  if not OpenGlLoaded then
+    Exit;
+
   if wglMakeCurrent(ViewDC,RC) = false then
     raise EError(6310);
 

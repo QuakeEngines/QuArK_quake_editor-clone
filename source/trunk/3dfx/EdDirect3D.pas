@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2007/09/04 14:38:12  danielpharos
+Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
+
 Revision 1.23  2007/08/05 19:53:30  danielpharos
 Fix an infinite loop due to rubbish transparency code.
 
@@ -130,6 +133,7 @@ type
     Lighting: Boolean;
     Culling: Boolean;
     Direct3DLoaded: Boolean;
+    DWMLoaded: Boolean;
     MapLimit: TVect;
     MapLimitSmallest: Double;
     pPresParm: D3DPRESENT_PARAMETERS;
@@ -195,7 +199,7 @@ var
 
 implementation
 
-uses Logging, Quarkx, Setup, SysUtils,
+uses Logging, Quarkx, Setup, SysUtils, DWM, SystemDetails,
      QkObjects, QkMapPoly, DXTypes, D3DX9, Direct3D, DXErr9;
 
 type
@@ -366,10 +370,15 @@ end;
 
 destructor TDirect3DSceneObject.Destroy;
 begin
-  ReleaseResources;
-  if Direct3DLoaded = True then
-    UnloadDirect3D;
   inherited;
+  ReleaseResources;
+  if Direct3DLoaded then
+    UnloadDirect3D;
+  if DWMLoaded then
+  begin
+    DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
+    UnloadDWM;
+  end;
 end;
 
 procedure TDirect3DSceneObject.Init(Wnd: HWnd;
@@ -390,12 +399,24 @@ begin
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
 
-  { is the Direct3D object already loaded? }
+  if CheckWindowsVista then
+  begin
+    if not DWMLoaded then
+    begin
+      DWMLoaded:=LoadDWM;
+      if not DWMLoaded then
+        Log(LOG_WARNING, LoadStr1(6013));
+    end;
+    if DWMLoaded then
+      DwmEnableComposition(DWM_EC_DISABLECOMPOSITION);
+  end;
+
+  //Is the Direct3D object already loaded?
   if Direct3DLoaded = False then
   begin
     if LibName='' then
       Raise EError(6001);
-    { try to load the Direct3D object }
+    //Try to load the Direct3D object
     if not LoadDirect3D() then
       Raise EErrorFmt(6402, [GetLastError]);
     Direct3DLoaded := true;
@@ -655,6 +676,8 @@ procedure TDirect3DSceneObject.Copy3DView;
 var
   l_Res: HResult;
 begin
+  if not Direct3DLoaded then
+    Exit;
   if SwapChain[ListIndex-1]=nil then
     Render3DView;
   l_Res:=SwapChain[ListIndex-1].Present(nil, nil, 0, nil, 0);

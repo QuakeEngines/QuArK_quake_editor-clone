@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2007/09/12 16:21:42  danielpharos
+Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
+
 Revision 1.45  2007/09/12 15:35:40  danielpharos
 Moved update settings to seperate config section and added beginnings of online update check.
 
@@ -129,6 +132,7 @@ uses
   {FastMM4 in 'prog\FastMM4.pas',}     {Enable for FastMM, copy the debug DLL to the runtime directory}
   {MemCheck in 'prog\MemCheck.pas',}     {Enable for MemCheck, also see below}
   Forms,
+  DWM in '3dfx\DWM.pas',
   DX9 in '3dfx\DX9.pas',
   EdDirect3D in '3dfx\EdDirect3D.pas',
   EdGlide in '3dfx\EdGlide.pas',
