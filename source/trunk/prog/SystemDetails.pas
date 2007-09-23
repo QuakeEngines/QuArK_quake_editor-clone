@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2007/09/23 21:33:39  danielpharos
+Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+
 Revision 1.29  2007/09/12 15:38:02  danielpharos
 Removed unused function in PyMath, and it will now use the SystemDetails Windows check result.
 
@@ -949,37 +952,20 @@ begin
         end;
         WindowsPlatformCompatibility:=osWin95Comp;
        end;
-      5:
-       begin
-        case MinorVersion of
-        0:
-         begin
-          Platform:='Windows Vista or Windows Server 2008';
-          WindowsPlatform:=osWinVista;
-         end;
-        else
-         begin
-          Platform:='Unknown (Probably OK)';
-          WindowsPlatform:=osWinVista;
-         end;
-        end;
-        WindowsPlatformCompatibility:=osWinNTComp;
-       end;
       else
        begin
-        if MajorVersion>5 then
+        if MajorVersion>4 then
         begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatform:=osWin95;
-          WindowsPlatformCompatibility:=osWin95Comp;
+          WindowsPlatform:=osWinME;
         end
         else
         begin
           Platform:='Unknown';
-          WindowsPlatform:=osWinNT4;
-          WindowsPlatformCompatibility:=osWinNTComp;
+          WindowsPlatform:=osWin95;
         end;
        end;
+       WindowsPlatformCompatibility:=osWin95Comp;
       end;
     VER_PLATFORM_WIN32_NT:
       case MajorVersion of
@@ -1014,7 +1000,7 @@ begin
          end;
         2:
          begin
-          Platform:='Windows 2003 or Windows XP 64-bit';
+          Platform:='Windows Server 2003 or Windows XP 64-bit';
           WindowsPlatform:=osWin2003;
          end;
         else
@@ -1030,7 +1016,7 @@ begin
         case MinorVersion of
         0:
          begin
-          Platform:='Windows Vista or Windows Server "Longhorn"';
+          Platform:='Windows Vista or Windows Server 2008';
           WindowsPlatform:=osWinVista;
          end;
         else
@@ -1046,7 +1032,7 @@ begin
         if MajorVersion>6 then
         begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatform:=osWinNT4;
+          WindowsPlatform:=osWinVista;
           WindowsPlatformCompatibility:=osWinNTComp;
         end
         else
