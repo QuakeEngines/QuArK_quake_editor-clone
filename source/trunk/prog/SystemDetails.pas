@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2007/09/12 15:38:02  danielpharos
+Removed unused function in PyMath, and it will now use the SystemDetails Windows check result.
+
 Revision 1.28  2007/08/14 16:32:59  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -121,6 +124,7 @@ var
 
 Procedure LogSystemDetails;
 function CheckWindowsNT: Boolean;
+function CheckWindowsVista: Boolean;
 function ProcessExists(exeFileName: string): Boolean;
 function WindowExists(WindowName: String): Boolean;
 
@@ -2015,6 +2019,11 @@ end;
 function CheckWindowsNT: Boolean;
 begin
   Result:=(WindowsPlatformCompatibility=osWinNTComp);
+end;
+
+function CheckWindowsVista: Boolean;
+begin
+  Result:=((WindowsPlatform = osWinVista) or (WindowsPlatform = osWin2008));
 end;
 
 Procedure LogSystemDetails;
