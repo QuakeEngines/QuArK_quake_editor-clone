@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2007/09/18 18:18:43  danielpharos
+Kill another disclaimer redraw, and add history to About.pas
+
 Revision 1.49  2007/09/17 23:06:42  danielpharos
 Stop the disclaimer for disappearing sometimes, and move the splashscreen out of QuarkX.
 
@@ -1146,6 +1149,7 @@ var
  Q: QObject;
  L: TStringList;
  I: Integer;
+ MaxRecentFiles: Integer;
 begin
  F:=ValidParentForm(FileMenu.PopupComponent as TControl);
  QF1:=F is TQForm1;
@@ -1187,19 +1191,34 @@ begin
  else
   Info.FileObjectDescriptionText:=LoadStr1(5125);
  News1.Caption:=FmtLoadStr1(2, [Info.FileObjectDescriptionText]);
+
+ //FileMenu.Tag is used to flag if the RecentFiles need to be updated
  if FileMenu.Tag=0 then
   begin
-   L:=TStringList.Create; try
-   L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
-   FileSep1.Visible:=L.Count>0;
-   for I:=0 to MaxRecentFiles-1 do
-    with FileMenu.Items[FileSep1.MenuIndex+I+1] do
-     begin
-      Visible:=I<L.Count;
-      if I<L.Count then
-       Caption:=FmtLoadStr1(3, [I+1, ExtractFileName(L[I])]);
-     end;
-   finally L.Free; end;
+   L:=TStringList.Create;
+   try
+    L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
+    MaxRecentFiles:=Round(SetupSubSet(ssGeneral, 'Display').GetFloatSpec('MaxRecentFiles', 5));
+    FileSep1.Visible:=(MaxRecentFiles>0) and (L.Count>0);
+    for I:=0 to 4 do //Loop over all the RecentFile menu-items
+     with FileMenu.Items[FileSep1.MenuIndex+I+1] do
+      begin
+      if I <= MaxRecentFiles-1 then
+       begin
+        if I<L.Count then
+        begin
+         Visible:=True;
+         Caption:=FmtLoadStr1(3, [I+1, ExtractFileName(L[I])]);
+        end
+        else
+         Visible:=False;
+       end
+      else
+       Visible:=False;
+      end;
+   finally
+    L.Free;
+   end;
    FileMenu.Tag:=1;
   end;
   CallMacro(GetEmptyTuple,'loadentityplugins');
@@ -2062,10 +2081,13 @@ var
  FileName: String;
 begin
  I:=(Sender as TMenuItem).MenuIndex - FileSep1.MenuIndex - 1;
- L:=TStringList.Create; try
- L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
- FileName:=L[I];
- finally L.Free; end;
+ L:=TStringList.Create;
+ try
+  L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
+  FileName:=L[I];
+ finally
+  L.Free;
+ end;
 
  OpenAFile(FileName, False);
 end;

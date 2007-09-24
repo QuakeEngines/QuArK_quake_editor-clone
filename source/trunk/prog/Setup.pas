@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2007/08/16 11:10:34  danielpharos
+Forgot to commit a few lines   :|
+
 Revision 1.58  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -711,6 +714,9 @@ begin
   ClearGameBuffers(False)
  else
   ClearGameBuffer1;
+
+ if Level>=scMinimal then
+  ResizeRecentFiles;
   
  for I:=0 to Screen.FormCount-1 do
   with Screen.Forms[I] do

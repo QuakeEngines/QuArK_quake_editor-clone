@@ -27,6 +27,11 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.360  2007/09/18 19:52:07  cdunde
+//Cleaned up some of the Defaults.qrk item alignment and
+//changed a color name from GrayImage to DragImage for clarity.
+//Fixed Rectangle Selector from redrawing all views handles if nothing was selected.
+//
 //Revision 1.359  2007/09/16 02:20:39  cdunde
 //Setup Skin-view with its own grid button and scale, from the Model Editor's,
 //and color setting for the grid dots to be drawn in it.
@@ -1206,6 +1211,7 @@ QQRKSRC1
         MppTopBtns = "1"
         IconPath = "images\\"
         TextureNameCheck = "1"
+        MaxRecentFiles = '5'
         Form = "GeneralDisplay"
       }
       3D view:config =
@@ -1219,7 +1225,7 @@ QQRKSRC1
         VAngle = '30'
         FogColor = $000000
         FrameColor = $000000
-        TextureMaxDimension="7"
+        TextureMaxDimension = "7"
         MouseHLook = '10'
         MouseVLook = '10'
         MouseWalk = '10'
@@ -6852,6 +6858,7 @@ QQRKSRC1
       sep: = {Typ="S" Txt = ""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
       TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
+      MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 5)"}
     }
     General3DView:form =
     {
