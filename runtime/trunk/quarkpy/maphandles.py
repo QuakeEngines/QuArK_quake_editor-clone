@@ -219,6 +219,7 @@ class FaceHandle(qhandles.GenericHandle):
         if g1:
             delta = qhandles.aligntogrid(delta, 0)
 
+        s = ""
         if view.info["type"] == "XY":
             if self.face.normal.tuple[0] <> 0:
                 s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
@@ -234,7 +235,7 @@ class FaceHandle(qhandles.GenericHandle):
                 s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.x+delta.y)
             if self.face.normal.tuple[2] <> 0:
                 s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
-        else:
+        if s == "":
             if self.face.normal.tuple[0] == 1 or self.face.normal.tuple[0] == -1:
                 s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
             elif self.face.normal.tuple[1] == 1 or self.face.normal.tuple[1] == -1:
@@ -1983,6 +1984,11 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.63  2007/09/18 19:52:07  cdunde
+#Cleaned up some of the Defaults.qrk item alignment and
+#changed a color name from GrayImage to DragImage for clarity.
+#Fixed Rectangle Selector from redrawing all views handles if nothing was selected.
+#
 #Revision 1.62  2007/08/21 03:38:09  cdunde
 #To reinstate this method for the 'Cut out corner' function that seems
 #to work better then not having this code added.
