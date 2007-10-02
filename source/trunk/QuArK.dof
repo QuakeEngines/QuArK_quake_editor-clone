@@ -72,14 +72,14 @@ Locale=1033
 CodePage=1252
 [Version Info Keys]
 CompanyName=GNU Public License
-FileDescription=Map Editor for Quake Style Games
+FileDescription=Editor for Quake Style Games
 FileVersion=6.5.0.9
 InternalName=QuArK
-LegalCopyright=Copyright (c) 2006
+LegalCopyright=Copyright (c) 2007
 LegalTrademarks=
 OriginalFilename=QuArK.EXE
 ProductName=Quake Army Knife
-ProductVersion=6.5 (Pre-Release)
+ProductVersion=6.5 (Beta)
 Comments=Original Coding by Armin Rigo
 Homepage=http://www.sourceforge.net/projects/quark
 [HistoryLists\hlDebugSourcePath]
