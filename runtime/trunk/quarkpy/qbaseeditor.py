@@ -483,11 +483,12 @@ class BaseEditor:
                             if ( quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1"):
                                 SkinView1.invalidate(1)
                         return
-                 ### Kind of getting the hint control redraw area fixed.
+                 ### To fix the hint control redraw area.
                     from mdlmgr import treeviewselchanged
                     if flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2080 or treeviewselchanged != 0:
                         # This stops dupe handle drawing from the hintcontrol redraw section below.
                         return
+
                     if self.layout.hintcontrol is not None and not isinstance(self.dragobject, mdlhandles.RectSelDragObject) and not isinstance(self.dragobject, qhandles.HandleDragObject):
                         mdleditor.setsingleframefillcolor(self, view)
                         cv = view.canvas()
@@ -1395,6 +1396,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.93  2007/09/16 19:14:34  cdunde
+#To clean up Model Editor views when handles are showing and LMB click jump to another component.
+#
 #Revision 1.92  2007/09/16 02:20:39  cdunde
 #Setup Skin-view with its own grid button and scale, from the Model Editor's,
 #and color setting for the grid dots to be drawn in it.
