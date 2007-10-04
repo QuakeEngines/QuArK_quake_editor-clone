@@ -129,7 +129,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             import mdloptions
             mdlfacepop = qmenu.popup("Face Commands", mdlhandles.ModelFaceHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             vertexpop = qmenu.popup("Vertex Commands", mdlhandles.VertexHandle(origin).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
-            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" or editor.layout.explorer.sellist[0].type != ":mf":
+            if editor.layout.explorer.sellist == [] or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" or editor.layout.explorer.sellist[0].type != ":mf":
                 vertexpop.state = qmenu.disabled
             def backbmp1click(m, view=view, form=editor.form):
                 import qbackbmp
@@ -189,6 +189,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.21  2007/09/16 18:16:17  cdunde
+#To disable all forcetogrid menu items when a grid is inactive.
+#
 #Revision 1.20  2007/09/15 18:36:52  cdunde
 #To make "Vertex Commands" RMB active only if a model frame is selected.
 #
