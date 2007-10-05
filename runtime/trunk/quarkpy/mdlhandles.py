@@ -1207,7 +1207,14 @@ class SkinHandle(qhandles.GenericHandle):
             editor = mdleditor.mdleditor
             m.items = TicksViewingMenu(editor)
         
-        # Trun Model Options function SkinGridVisible on or off.
+        # Turn taking Skin-view coors from editors 3D view on or off.
+        def mSF3DV(m, self=self, editor=editor, view=view):
+            if not MldOption("SkinFrom3Dview"):
+                quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = "1"
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = None
+        
+        # Turn Model Options function SkinGridVisible on or off.
         def mSGV(m, self=self, editor=editor, view=view):
             if not MldOption("SkinGridVisible"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = "1"
@@ -1220,7 +1227,7 @@ class SkinHandle(qhandles.GenericHandle):
                     SkinView1.invalidate()
                     qbaseeditor.BaseEditor.finishdrawing(editor, view)
         
-        # Trun Model Options function SkinGridActive on or off.
+        # Turn Model Options function SkinGridActive on or off.
         def mSGA(m, self=self, editor=editor, view=view):
             if not MldOption("SkinGridActive"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = "1"
@@ -1237,14 +1244,16 @@ class SkinHandle(qhandles.GenericHandle):
         Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         Xcsf = qmenu.item("&Clear Selected Faces", mCSF, "|Clear Selected Faces:\n\nThis function will clear all faces in the Skin-view that have been drawn as 'Selected' or 'Show' but any related selected vertexes will remain that way for editing purposes.\n\nThe 'Skin-view' selected face, show face and selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         TicksViewing = qmenu.popup("Draw Ticks During Drag", [], TicksViewingClick, "|Draw Ticks During Drag:\n\nThese functions give various methods for drawing the Models Skin Mesh Vertex Ticks while doing a drag.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
+        Xsf3Dv = qmenu.item("Skin From 3D view", mSF3DV, "|Skin From 3D view:\n\nThis turns the function on or off to take co-ordnances for the 'Skin-view' from the editors 3D view when new objects are created using the 'Quick Object Maker'\n\nIt will place that object on the skin exactly the same way you see it in the 3D view when the object is created.|intro.modeleditor.skinview.html#funcsnmenus")
         Xsgv = qmenu.item("Skin Grid Visible", mSGV, "|Skin Grid Visible:\n\nThis function gives quick access to the Model Options setting to turn the Skin-view grid on or off so that it is not visible, but it is still active for all functions that use it, such as 'Snap to grid'.|intro.modeleditor.skinview.html#funcsnmenus")
         Xsga = qmenu.item("Skin Grid Active", mSGA, "|Skin Grid Active:\n\nThis function gives quick access to the Model Options setting to make the Skin-view grid Active or Inactive making it available or unavailable for all functions that use it, such as 'Snap to grid', even though it will still be displayed in the Skin-view.|intro.modeleditor.skinview.html#funcsnmenus")
 
-        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, Xsgv, Xsga, qmenu.sep, TicksViewing]
+        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, Xsf3Dv, Xsgv, Xsga, qmenu.sep, TicksViewing]
     
         items = opsmenulist
         Xsync_edwsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_EDwSV")
         Xpvstev.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTEV")
+        Xsf3Dv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinFrom3Dview")
         Xsgv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinGridVisible")
         Xsga.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinGridActive")
 
@@ -1685,7 +1694,10 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
         try:
             org = component.originst
         except:
-            quarkx.msgbox("Component Hidden!\n\nYou must RMB click it\nand select 'Show Component'\nthen zoom slightly\nto recreate its handles.", MT_ERROR, MB_OK)
+            if len(component.dictitems["Frames:fg"].subitems[0].vertices) == 0:
+                org = quarkx.vect(0,0,0)
+            else:
+                quarkx.msgbox("Component Hidden!\n\nYou must RMB click it\nand select 'Show Component'\nthen zoom slightly\nto recreate its handles.", MT_ERROR, MB_OK)
 
     n = quarkx.vect(1,1,1) 
     v = orthogonalvect(n, view)
@@ -2782,6 +2794,15 @@ def MouseDragging(self, view, x, y, s, handle):
         if s and ("S" in s):
             self.layout.actionmpp()  # update the multi-pages-panel
 
+    # Kills the 2D views handles if an Object Maker item is active to speed up the drag drawing of the Object.
+    # But leaves the 3D views alone so not to interfere with drawing handles during rotation,
+    #    Objects can not be made in 3D views anyway or it causes a function lockup.
+    if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
+        pass
+    else:
+        if self.layout.toolbars["tb_objmodes"] is not None and quarkx.setupsubset(SS_MODEL, "Building").getint("ObjectMode") != 0:
+            for v in self.layout.views:
+                v.handles = []
     return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("DragImage", SS_MODEL))
 
 
@@ -2841,6 +2862,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.97  2007/09/18 19:52:07  cdunde
+#Cleaned up some of the Defaults.qrk item alignment and
+#changed a color name from GrayImage to DragImage for clarity.
+#Fixed Rectangle Selector from redrawing all views handles if nothing was selected.
+#
 #Revision 1.96  2007/09/17 06:24:49  cdunde
 #Changes missed.
 #

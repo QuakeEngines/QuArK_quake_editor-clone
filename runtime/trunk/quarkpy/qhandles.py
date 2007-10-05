@@ -1622,6 +1622,18 @@ class RectangleDragObject(RedImageDragObject):
             # Need to call to rebuild a views handles if an option is setup for no handles during drag.
             from qbaseeditor import flagsmouse
             if flagsmouse == 2056 or flagsmouse == 2096:
+                # This section allows the redimage objects to be drawn
+                # in the Model Editor's views when a Quick Object Maker
+                # item is being created during the dragging process.
+                if self.view.info["viewname"] == "skinview":
+                    pass
+                else:
+                    if flagsmouse == 2056 and quarkx.setupsubset(SS_MODEL, "Building")["ObjectMode"] is not None and quarkx.setupsubset(SS_MODEL, "Building").getint("ObjectMode") != 0:
+                        if self.redimages is not None:
+                            self.rectanglesel(editor, x,y, self.redimages[0])
+                        else:
+                            import mdlutils
+                            mdlutils.Update_Editor_Views(editor, 4)
                 mdleditor.setsingleframefillcolor(editor, self.view)
                 import mdlhandles
                 if isinstance(editor.dragobject, mdlhandles.RectSelDragObject):
@@ -2130,6 +2142,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.60  2007/09/04 23:16:22  cdunde
+#To try and fix face outlines to draw correctly when another
+#component frame in the tree-view is selected.
+#
 #Revision 1.59  2007/09/01 19:36:40  cdunde
 #Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
 #Changed selected face outline drawing method to greatly increase drawing speed.

@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.361  2007/09/24 00:16:07  danielpharos
+//Made MaxRecentFiles a configurable option.
+//
 //Revision 1.360  2007/09/18 19:52:07  cdunde
 //Cleaned up some of the Defaults.qrk item alignment and
 //changed a color name from GrayImage to DragImage for clarity.
@@ -3305,6 +3308,15 @@ QQRKSRC1
       }
       Options:config =
       {
+        QuickObjects_distortion           = "0"
+        QuickObjects_makehollow           = "0"
+        QuickObjects_torus_segs_faces     = "0 0"
+        QuickObjects_torus_radiuses       = "2 1"
+        QuickObjects_torus_xydistort      = "2 2"
+        QuickObjects_torus_zupdistort     = "2 0"
+        QuickObjects_torus_ring_seg_edges = "2 2"
+        QuickObjects_torus_hollowtorus    = "0"
+        QuickObjects_torus_nobulkheads    = "0"
         Options3Dviews_nohandles1     = "0"
         Options3Dviews_drawnohandles1 = "0"
         Options3Dviews_framemesh1     = "0"
@@ -3334,6 +3346,7 @@ QQRKSRC1
         GridVisible        = "1"
         GridActive         = "1"
         GridVisibleTex     = ""
+        SkinFrom3Dview     = ""
         SkinGridVisible    = "1"
         SkinGridActive     = "1"
         CompassNumbers     = "1"
@@ -7258,6 +7271,7 @@ QQRKSRC1
         Typ="S"
         Txt = "Skin-view:"
       }
+      SkinFrom3Dview:           = {Typ="X" Txt="Co-ordnances"                    Cap="Cords from 3D view"                         }
       SkinGridVisible:          = {Typ="X" Txt="Grid"                            Cap="Grid visible"                         }
       SkinGridActive:           = {Typ="X" Txt="   ``"                           Cap="Grid active"                          }
     }
