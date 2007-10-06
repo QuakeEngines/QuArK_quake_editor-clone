@@ -231,15 +231,15 @@ def mSYNC_ISV(m):
             skindrawobject = editor.Root.currentcomponent.currentskin
         except:
             skindrawobject = None
-        mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
         if SkinView1 is not None:
+            mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
             SkinView1.invalidate(1)
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] = None
 
 
 def mSFSISV(m):
-    # Show selection in Skin-view function.
+    # Show Face Selection In Skin-View function.
     editor = mdleditor.mdleditor
     if not MldOption("SFSISV"):
         quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = "1"
@@ -253,7 +253,7 @@ def mSFSISV(m):
 
 
 def mPFSTSV(m):
-    # Pass selection to Skin-view function.
+    # Pass Face Selection To Skin-View function.
     editor = mdleditor.mdleditor
     from mdlhandles import SkinView1
     if not MldOption("PFSTSV"):
@@ -621,6 +621,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.27  2007/10/06 03:23:13  cdunde
+#Updated Sync Skin-view with Editor function for the Model Editor.
+#
 #Revision 1.26  2007/09/07 23:55:29  cdunde
 #1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
 #     model component from selected Model Mesh faces and remove them from their current component.

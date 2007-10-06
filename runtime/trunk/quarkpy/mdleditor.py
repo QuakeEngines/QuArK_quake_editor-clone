@@ -44,7 +44,8 @@ class ModelEditor(BaseEditor):
     ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
 
     # modelfacelist = mdlhandles.ClickOnView(self, view, x, y) located in qbaseeditor.py file.
-    #                     Created using:    what the mouse cursor is over in a view's x,y pos. at the time of selection.
+    #                               Use:    To collect Internal Objects selected in all views for passing to various functions.
+    #                     Created using:    What the mouse cursor is over in a view's x,y pos. at the time of selection.
     #                      list example: [(<vect 174 170 -543.72>, <QuArK Internal object at 0x00C74060>, 777)]
     #                        item disc.: cursor view's x,y,z pos. --- autopsy:mc (model component) --- comp tri_index,
     #                                                 Its triangle number in the Model component mesh "triangles" list
@@ -54,6 +55,7 @@ class ModelEditor(BaseEditor):
 
     ModelVertexSelList = []
     # Editor vertexes    (frame_vertices_index, view.proj(pos))
+    #                               Use:    To handle editor views model mesh vertex selections and passing to the Skin-view's SkinVertexSelList.
     #                     Created using:    editor.Root.currentcomponent.currentframe.vertices
     #                                         (see Infobase docs help/src.quarkx.html#objectsmodeleditor)
     #                               item 0: Its "Frame" "vertices" number, which is the same number as a triangles "ver_index" number.
@@ -66,6 +68,7 @@ class ModelEditor(BaseEditor):
 
     SkinVertexSelList = []
     # Skin-view vertexes [pos, self, tri_index, ver_index_order_pos]
+    #                               Use:    To handle the Skin-view's skin mesh vertex selections and passing to the editor's ModelVertexSelList.
     #                     Created using:    editor.Root.currentcomponent.triangles
     #                                         (see Infobase docs help/src.quarkx.html#objectsmodeleditor)
     #                                       Its 3D grid pos "projected" to the Skin-view x,y view 2D position.
@@ -78,6 +81,7 @@ class ModelEditor(BaseEditor):
 
     ModelFaceSelList = []
     # Editor triangles    (tri_index)
+    #                               Use:    To handle editor views model mesh face selections and passing to the Skin-view's SkinFaceSelList.
     #                     Created using:    modelfacelist (see above for what items this list consist of)
     #
     #                                       Its triangle number in the Model component mesh "triangles" list
@@ -85,6 +89,7 @@ class ModelEditor(BaseEditor):
 
     SkinFaceSelList = []
     # Editor triangles    (tri_index)
+    #                               Use:    To handle editor views model mesh face selections passed to the Skin-view by the ModelFaceSelList.
     #                     Created using:    editor.SkinFaceSelList = editor.ModelFaceSelList
     #                                       (Copied in the mdloptions.py and qbaseeditor.py files)
     #
@@ -94,6 +99,7 @@ class ModelEditor(BaseEditor):
 
     EditorObjectList = []
     # (various items)     (QuArK Internal Objects)
+    #                               Use:    
     #                     Created using:    The mdlutils.py file "MakeEditorFaceObject" function which in turn
     #                                       can use any of the above 4 list to create and return this list of
     #                                       "QuArK Internal Objects" that can be used for other QuArK Object
@@ -1338,6 +1344,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.71  2007/09/17 06:24:49  cdunde
+#Changes missed.
+#
 #Revision 1.70  2007/09/17 06:10:17  cdunde
 #Update for Skin-view grid button and forcetogrid functions.
 #

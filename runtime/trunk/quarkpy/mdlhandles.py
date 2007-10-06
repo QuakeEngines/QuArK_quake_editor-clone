@@ -2019,10 +2019,17 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 if editor.ModelFaceSelList != [] and sellist == []:
                     editor.ModelFaceSelList = []
                     mdlutils.Update_Editor_Views(editor, 4)
-                    if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
                         editor.SkinVertexSelList = []
-                        mdlutils.PassEditorSel2Skin(editor)
-                        SkinView1.invalidate()
+                        editor.SkinFaceSelList = []
+                        if MldOption("PFSTSV"):
+                            mdlutils.PassEditorSel2Skin(editor)
+                        try:
+                            skindrawobject = editor.Root.currentcomponent.currentskin
+                        except:
+                            skindrawobject = None
+                        buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+                        SkinView1.invalidate(1)
                     return
             else:
                 if editor.ModelVertexSelList != [] and sellist == []:
@@ -2060,6 +2067,17 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                         if (sellist[vtx][0] == tris[tri][0][0]) or (sellist[vtx][0] == tris[tri][1][0]) or (sellist[vtx][0] == tris[tri][2][0]):
                             editor.ModelFaceSelList = editor.ModelFaceSelList + [tri]
                 mdlutils.MakeEditorFaceObject(editor)
+                if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
+                    editor.SkinVertexSelList = []
+                    editor.SkinFaceSelList = []
+                    if MldOption("PFSTSV"):
+                        mdlutils.PassEditorSel2Skin(editor, 2)
+                    try:
+                        skindrawobject = editor.Root.currentcomponent.currentskin
+                    except:
+                        skindrawobject = None
+                    buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+                    SkinView1.invalidate(1)
             else:
                 for vertex in sellist:
                     itemcount = 0
@@ -2141,7 +2159,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                         except:
                             skindrawobject = None
                         buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
-                        SkinView1.invalidate()
+                        SkinView1.invalidate(1)
                 else:
                     for v in editor.layout.views:
                         if v.info["viewname"] == "skinview":
@@ -2862,6 +2880,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.98  2007/10/05 20:47:50  cdunde
+#Creation and setup of the Quick Object Makers for the Model Editor.
+#
 #Revision 1.97  2007/09/18 19:52:07  cdunde
 #Cleaned up some of the Defaults.qrk item alignment and
 #changed a color name from GrayImage to DragImage for clarity.
