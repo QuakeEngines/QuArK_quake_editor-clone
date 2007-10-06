@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Creation and setup of new '2D Rulers' function and sub-menu to Model Editor Options menu.
+
 * [cdunde]: Creation and setup of the Quick Object Makers for the Model Editor.
 
 * [cdunde/DanielPharos]: Setup Skin-view with its own grid button and scale, from the Model Editor's,
