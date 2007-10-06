@@ -214,6 +214,30 @@ def setLineThick(m):
 lineThicknessItem = qmenu.item("Set Line Thickness (2)",setLineThick,"|Set Line Thickness:\n\nThis lets you set the thickness of certain lines that are drawn on the Editor's views, such as the outlining of selected model mesh faces and the models axis lines.|intro.modeleditor.menu.html#optionsmenu")
 
 
+def mSYNC_ISV(m):
+    # Sync editor selection in Skin-view function.
+    editor = mdleditor.mdleditor
+    from mdlhandles import SkinView1
+    if not MldOption("SYNC_ISV"):
+        quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] = "1"
+        editor.SkinVertexSelList = []
+        editor.SkinFaceSelList = []
+        import mdlhandles
+        if MldOption("PFSTSV"):
+            editor.SkinFaceSelList = editor.ModelFaceSelList
+            import mdlutils
+            mdlutils.PassEditorSel2Skin(editor, 2)
+        try:
+            skindrawobject = editor.Root.currentcomponent.currentskin
+        except:
+            skindrawobject = None
+        mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+        if SkinView1 is not None:
+            SkinView1.invalidate(1)
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] = None
+
+
 def mSFSISV(m):
     # Show selection in Skin-view function.
     editor = mdleditor.mdleditor
@@ -252,8 +276,6 @@ def mPFSTSV(m):
             mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
-        if SkinView1 is not None:
-            SkinView1.invalidate(1)
 
 
 def mNFO(m):
@@ -330,7 +352,7 @@ def mBFONLY(m):
 
 
 def FaceMenu(editor):
-    Xsync_isv = toggleitem("&Sync Skin-view with Editor views ", "SYNC_ISV", (1,1), hint="|Sync Skin-view with Editor views:\n\nWhen checked this will synchronize the Skin-view with the Editor views for either of the active selection options below.|intro.modeleditor.menu.html#optionsmenu")
+    Xsync_isv = qmenu.item("&Sync Skin-view with Editor views ", mSYNC_ISV, "|Sync Skin-view with Editor views:\n\nWhen checked this will synchronize the Skin-view with the Editor views for either of the active selection options below.|intro.modeleditor.menu.html#optionsmenu")
     Xsfsisv = qmenu.item("S&how selection in Skin-view", mSFSISV, "|Show selection in Skin-view:\n\nBecause the Skin-view and the rest of the editor views work independently, this will pass selected editor model mesh triangle faces to the 'Skin-view' to be outlined and distinguish them.\n\nHowever, it does not actually select them in the 'Skin-view'.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
     Xpfstsv = qmenu.item("&Pass selection to Skin-view", mPFSTSV, "|Pass selection to Skin-view:\n\nThis function will pass selected editor model mesh triangle faces and select the coordinated skin triangles in the 'Skin-view' where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the 'Skin-view' for its use there.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' selected face outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
     Xnfo = qmenu.item("&No face outlines", mNFO, "|No face outlines:\n\nThis will stop the outlining of any models mesh faces have been selected. This will increase the drawing speed of the editor dramatically when a model with a large number of face triangles is being edited.\n\nThe solid fill of selected faces will still be available.|intro.modeleditor.menu.html#optionsmenu")
@@ -599,6 +621,13 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.26  2007/09/07 23:55:29  cdunde
+#1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
+#     model component from selected Model Mesh faces and remove them from their current component.
+#2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
+#     before the Skin-view is opened at least once in that session.
+#3) Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.25  2007/09/05 18:53:11  cdunde
 #Changed "Pass Face Selection to Skin-view" to real time updating and
 #added function to Sync Face Selection in the Editor to the Skin-view.

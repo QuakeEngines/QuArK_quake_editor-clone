@@ -481,6 +481,8 @@ class BaseEditor:
                         from mdlhandles import SkinView1
                         if SkinView1 is not None:
                             if ( quarkx.setupsubset(SS_MODEL, "Options")["PFSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["SFSISV"] == "1"):
+                                if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and self.ModelFaceSelList == []:
+                                    self.SkinVertexSelList = []
                                 SkinView1.invalidate(1)
                         return
                  ### To fix the hint control redraw area.
@@ -1396,6 +1398,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.94  2007/10/04 01:51:06  cdunde
+#Small comment change.
+#
 #Revision 1.93  2007/09/16 19:14:34  cdunde
 #To clean up Model Editor views when handles are showing and LMB click jump to another component.
 #
