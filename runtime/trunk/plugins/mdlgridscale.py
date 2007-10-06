@@ -466,8 +466,7 @@ def All2DviewsClick(m):
         quarkx.setupsubset(SS_MODEL, "Options")['ZyScaleCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['All2DviewsScale'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def All2DviewsScalesCentered(m):
@@ -486,8 +485,7 @@ def All2DviewsScalesCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['ZyScaleCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def XviewScaleClick(m):
@@ -500,8 +498,7 @@ def XviewScaleClick(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['XviewScale'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def XviewYScaleCentered(m):
@@ -513,8 +510,7 @@ def XviewYScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['XyScaleCentered'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def XviewZScaleCentered(m):
@@ -526,8 +522,7 @@ def XviewZScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['XzScaleCentered'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def YviewScaleClick(m):
@@ -540,8 +535,7 @@ def YviewScaleClick(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['YviewScale'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def YviewXScaleCentered(m):
@@ -553,8 +547,7 @@ def YviewXScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['YxScaleCentered'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def YviewZScaleCentered(m):
@@ -566,8 +559,7 @@ def YviewZScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['YzScaleCentered'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def ZviewScaleClick(m):
@@ -580,8 +572,7 @@ def ZviewScaleClick(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['ZviewScale'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def ZviewXScaleCentered(m):
@@ -593,8 +584,7 @@ def ZviewXScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['ZxScaleCentered'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 def ZviewYScaleCentered(m):
@@ -606,8 +596,7 @@ def ZviewYScaleCentered(m):
         quarkx.setupsubset(SS_MODEL, "Options")['AllScalesCentered'] = None
     else:
         quarkx.setupsubset(SS_MODEL, "Options")['ZyScaleCentered'] = None
-    from quarkpy.qbaseeditor import currentview
-    quarkpy.mdleditor.paintframefill(editor, currentview)
+    quarkpy.mdlutils.Update_Editor_Views(editor, 6)
 
 
 
@@ -671,6 +660,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.9  2007/09/16 00:38:46  cdunde
+#Fixed both editors from not drawing gridscale and ruler when grid is inactive.
+#
 #Revision 1.8  2007/09/01 19:36:40  cdunde
 #Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
 #Changed selected face outline drawing method to greatly increase drawing speed.

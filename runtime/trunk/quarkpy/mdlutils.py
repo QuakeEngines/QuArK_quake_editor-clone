@@ -1549,7 +1549,7 @@ def PassEditorSel2Skin(editor, option=1):
 def Update_Editor_Views(editor, option=4):
     "Updates the Editors views once something has chaged in the Skin-view,"
     "such as synchronized or added 'skin mesh' vertex selections."
-    "It can also be used to just update all of the Editor's views only."
+    "It can also be used to just update all of the Editor's views or just its 2D views."
     "Various 'option' items are shown below in their proper order of sequence."
     "This is done to increase drawing speed, only use what it takes to do the job."
 
@@ -1567,17 +1567,19 @@ def Update_Editor_Views(editor, option=4):
     for v in editor.layout.views:
         if v.info["viewname"] == "skinview":
             pass
+        if (option == 6 and v.info["viewname"] == "editors3Dview") or (option == 6 and v.info["viewname"] == "3Dwindow"):
+            pass
         else:
             if option == 1:
                 v.invalidate(1)
-            if option <= 4:
+            if option <= 6:
                 mdleditor.setsingleframefillcolor(editor, v)
-            if option <= 4:
+            if option <= 6:
                 v.repaint()
-            if option == 4:
+            if option == 6:
                 plugins.mdlgridscale.gridfinishdrawing(editor, v)
                 plugins.mdlaxisicons.newfinishdrawing(editor, v)
-            if option <= 4 or option == 5:
+            if option <= 6 or option == 5:
                 if v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
                     v.handles = []
                 elif v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
@@ -1606,6 +1608,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.45  2007/09/15 19:19:15  cdunde
+#To fix if sometimes the model component it lost.
+#
 #Revision 1.44  2007/09/13 01:04:59  cdunde
 #Added a new function, to the Faces RMB menu, for a "Empty Component" to start fresh from.
 #
