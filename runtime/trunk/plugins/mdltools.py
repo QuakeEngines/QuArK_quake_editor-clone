@@ -573,4 +573,7 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2007/10/06 20:42:54  cdunde
+#To reset version.
+#
 #
