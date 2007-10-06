@@ -84,8 +84,10 @@ def BuildMenuBar(editor):
     sc1.update(sc2)   # merge shortcuts
     l1 = plugins.mdlgridscale.GridMenuCmds
     l2 = [qmenu.sep]
+    l3 = plugins.mdltools.RulerMenuCmds
+    l4 = [qmenu.sep]
     if len(l1):
-        Options1.items = l1 + l2 + Options1.items
+        Options1.items = l1 + l2 + l3 + l4 + Options1.items
         sc1.update(sc2)   # merge shortcuts
 
     return [File1, Layout1, Edit1, quarkx.toolboxmenu, Commands1, Tools1, Options1], sc1
@@ -189,6 +191,10 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.22  2007/10/04 01:50:48  cdunde
+#To fix error if RMB is clicked in a view for the popup menu
+#but nothing is selected in the tree-view.
+#
 #Revision 1.21  2007/09/16 18:16:17  cdunde
 #To disable all forcetogrid menu items when a grid is inactive.
 #

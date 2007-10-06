@@ -459,10 +459,10 @@ def objectruler(editor, view, poly):
 
     if type == "YZ":
 
-       if not MapOption("All2DviewsRulers") and not MapOption("AllTopRulers") and not MapOption("AllSideRulers") and not MapOption("XviewRulers") and not MapOption("XyTopRuler") and not MapOption("XzSideRuler"):
+       if not MapOption("All2DviewsRulers", SS_MODEL) and not MapOption("AllTopRulers", SS_MODEL) and not MapOption("AllSideRulers", SS_MODEL) and not MapOption("XviewRulers", SS_MODEL) and not MapOption("XyTopRuler", SS_MODEL) and not MapOption("XzSideRuler", SS_MODEL):
            return
 
-       if not MapOption("AllSideRulers") and not MapOption("XzSideRuler"):
+       if not MapOption("AllSideRulers", SS_MODEL) and not MapOption("XzSideRuler", SS_MODEL):
      # Makes the X view top ruler
         # Makes the line for Y axis
            ypoint1 = quarkx.vect(x1, y1, z2+grid)
@@ -493,7 +493,7 @@ def objectruler(editor, view, poly):
            cv.textout(x,y,quarkx.ftos(dist))
 
 
-       if not MapOption("AllTopRulers") and not MapOption("XyTopRuler"):
+       if not MapOption("AllTopRulers", SS_MODEL) and not MapOption("XyTopRuler", SS_MODEL):
      # Makes the Z view side ruler
         # Makes the line for Z axis
            ypoint2 = quarkx.vect(x2, y1-grid, z2)
@@ -530,10 +530,10 @@ def objectruler(editor, view, poly):
 
     elif type == "XZ":
 
-       if not MapOption("All2DviewsRulers") and not MapOption("AllTopRulers") and not MapOption("AllSideRulers") and not MapOption("YviewRulers") and not MapOption("YxTopRuler") and not MapOption("YzSideRuler"):
+       if not MapOption("All2DviewsRulers", SS_MODEL) and not MapOption("AllTopRulers", SS_MODEL) and not MapOption("AllSideRulers", SS_MODEL) and not MapOption("YviewRulers", SS_MODEL) and not MapOption("YxTopRuler", SS_MODEL) and not MapOption("YzSideRuler", SS_MODEL):
            return
 
-       if not MapOption("AllSideRulers") and not MapOption("YzSideRuler"):
+       if not MapOption("AllSideRulers", SS_MODEL) and not MapOption("YzSideRuler", SS_MODEL):
 
      # Makes the Y view top ruler
         # Makes the line for X axis
@@ -565,7 +565,7 @@ def objectruler(editor, view, poly):
            cv.textout(x,y,quarkx.ftos(dist))
 
 
-       if not MapOption("AllTopRulers") and not MapOption("YxTopRuler"):
+       if not MapOption("AllTopRulers", SS_MODEL) and not MapOption("YxTopRuler", SS_MODEL):
      # Makes the Y view side ruler
         # Makes the line for Y axis
            ypoint2 = quarkx.vect(x2+grid, y2, z2)
@@ -602,10 +602,10 @@ def objectruler(editor, view, poly):
 
     elif type == "XY":
 
-       if not MapOption("All2DviewsRulers") and not MapOption("AllTopRulers") and not MapOption("AllSideRulers") and not MapOption("ZviewRulers") and not MapOption("ZxTopRuler") and not MapOption("ZySideRuler"):
+       if not MapOption("All2DviewsRulers", SS_MODEL) and not MapOption("AllTopRulers", SS_MODEL) and not MapOption("AllSideRulers", SS_MODEL) and not MapOption("ZviewRulers", SS_MODEL) and not MapOption("ZxTopRuler", SS_MODEL) and not MapOption("ZySideRuler", SS_MODEL):
            return
 
-       if not MapOption("AllSideRulers") and not MapOption("ZySideRuler"):
+       if not MapOption("AllSideRulers", SS_MODEL) and not MapOption("ZySideRuler", SS_MODEL):
      # Makes the Z view top ruler
         # Makes the line for X axis
            xpoint1 = quarkx.vect(x1, y2+grid, z2)
@@ -636,7 +636,7 @@ def objectruler(editor, view, poly):
            cv.textout(x,y,quarkx.ftos(dist))
 
 
-       if not MapOption("AllTopRulers") and not MapOption("ZxTopRuler"):
+       if not MapOption("AllTopRulers", SS_MODEL) and not MapOption("ZxTopRuler", SS_MODEL):
      # Makes the Z view side ruler
         # Makes the line for Y axis
            ypoint2 = quarkx.vect(x2+grid, y2, z2)
@@ -4545,7 +4545,7 @@ def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = ObjectModes[btn.i]
     btn.state = quarkpy.qtoolbar.selected
     for view in editor.layout.views:
-        if MapOption("CrossCursor", editor.MODE):
+        if MapOption("CrossCursor", SS_MODEL):
             view.cursor = CR_CROSS
             view.handlecursor = CR_ARROW
         else:
@@ -5343,5 +5343,8 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2007/10/05 20:47:51  cdunde
+# Creation and setup of the Quick Object Makers for the Model Editor.
+#
 #
 
