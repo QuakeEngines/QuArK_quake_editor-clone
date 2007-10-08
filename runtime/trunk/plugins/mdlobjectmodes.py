@@ -32,6 +32,7 @@ from math import pi, sin, cos, fmod
 import mapdragmodes
 import quarkpy.qbaseeditor
 import quarkpy.dlgclasses
+import mdlgridscale
 # For hollowing Torus
 import quarkpy.mapcommands
 import quarkpy.mapentities
@@ -485,12 +486,12 @@ def objectruler(editor, view, poly):
         # Prints above the left marker line "0"
            x = view.proj(yrendt).tuple[0]-4
            y = view.proj(yrendt).tuple[1]-12
-           cv.textout(x,y,"0")
+           cv.textout(int(x),int(y),"0")
         # Prints above the right marker line the distance, on the Y axis
            x = view.proj(ylendt).tuple[0]
            y = view.proj(ylendt).tuple[1]-12
            dist = abs(y2-y1)
-           cv.textout(x,y,quarkx.ftos(dist))
+           cv.textout(int(x),int(y),quarkx.ftos(dist))
 
 
        if not MapOption("AllTopRulers", SS_MODEL) and not MapOption("XyTopRuler", SS_MODEL):
@@ -516,12 +517,12 @@ def objectruler(editor, view, poly):
         # Prints right of bottom marker line "0"
            x = view.proj(yrendb).tuple[0]+8
            y = view.proj(yrendb).tuple[1]-2
-           cv.textout(x,y,"0")
+           cv.textout(int(x),int(y),"0")
         # Prints right of top marker line the distance, on the Z axis
            x = view.proj(yrendt).tuple[0]+8
            y = view.proj(yrendt).tuple[1]-2
            higth = abs(z2-z1)
-           cv.textout(x,y,quarkx.ftos(higth))
+           cv.textout(int(x),int(y),quarkx.ftos(higth))
 
 
 # ===============
@@ -557,12 +558,12 @@ def objectruler(editor, view, poly):
         # Prints above the left marker line "0"
            x = view.proj(xlendt).tuple[0]-4
            y = view.proj(xlendt).tuple[1]-12
-           cv.textout(x,y,"0")
+           cv.textout(int(x),int(y),"0")
         # Prints above the right marker line the distance, on the X axis
            x = view.proj(xrendt).tuple[0]
            y = view.proj(xrendt).tuple[1]-12
            dist = abs(x1-x2)
-           cv.textout(x,y,quarkx.ftos(dist))
+           cv.textout(int(x),int(y),quarkx.ftos(dist))
 
 
        if not MapOption("AllTopRulers", SS_MODEL) and not MapOption("YxTopRuler", SS_MODEL):
@@ -588,12 +589,12 @@ def objectruler(editor, view, poly):
         # Prints right of bottom marker line "0"
            x = view.proj(yrendb).tuple[0]+8
            y = view.proj(yrendb).tuple[1]-2
-           cv.textout(x,y,"0")
+           cv.textout(int(x),int(y),"0")
         # Prints right of top marker line the distance, on the Y axis
            x = view.proj(yrendt).tuple[0]+8
            y = view.proj(yrendt).tuple[1]-2
            higth = abs(z2-z1)
-           cv.textout(x,y,quarkx.ftos(higth))
+           cv.textout(int(x),int(y),quarkx.ftos(higth))
 
 
 # ===============
@@ -628,12 +629,12 @@ def objectruler(editor, view, poly):
         # Prints above the left marker line "0"
            x = view.proj(xlendt).tuple[0]-4
            y = view.proj(xlendt).tuple[1]-12
-           cv.textout(x,y,"0")
+           cv.textout(int(x),int(y),"0")
         # Prints above the right marker line the distance, on the X axis
            x = view.proj(xrendt).tuple[0]
            y = view.proj(xrendt).tuple[1]-12
            dist = abs(x1-x2)
-           cv.textout(x,y,quarkx.ftos(dist))
+           cv.textout(int(x),int(y),quarkx.ftos(dist))
 
 
        if not MapOption("AllTopRulers", SS_MODEL) and not MapOption("ZxTopRuler", SS_MODEL):
@@ -659,12 +660,12 @@ def objectruler(editor, view, poly):
         # Prints right of bottom marker line "0"
            x = view.proj(yrendb).tuple[0]+8
            y = view.proj(yrendb).tuple[1]-2
-           cv.textout(x,y,"0")
+           cv.textout(int(x),int(y),"0")
         # Prints right of top marker line the distance, on the Y axis
            x = view.proj(yrendt).tuple[0]+8
            y = view.proj(yrendt).tuple[1]-2
            higth = abs(y2-y1)
-           cv.textout(x,y,quarkx.ftos(higth))
+           cv.textout(int(x),int(y),quarkx.ftos(higth))
 
     else:
        return
@@ -826,17 +827,28 @@ class SphereMakerDragObject(parent):
 
     ## This section just cleans the single view we are in or all of the views if there are red faces to draw
     ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
-    ## The original trigger is set in the def of this class, above.
+    ## The original trigger is set in the def of this Sphere class, above.
         if facecount == 0 and self.trigger == 0:
+            self.view.handles = []
+            quarkpy.mdleditor.setsingleframefillcolor(editor, self.view)
             self.view.repaint() # this just cleans the current view if no object is being drawn
+            mdlgridscale.gridfinishdrawing(editor, self.view)
         else:
-            for view in editor.layout.views:
-                view.repaint()  # this cleans all the views and allows the redlines to be drawn
-            if facecount < 3:
+            if facecount < 3 and self.trigger > 0:
                 facecount = 0
-                self.trigger = 2
+                self.trigger = self.trigger - 1
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
             else:
-                self.trigger = 1
+                self.trigger = 2
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
 
         self.facecount = facecount # To pass value to def rectanglesel below for error message testing
 
@@ -906,10 +918,13 @@ class SphereMakerDragObject(parent):
 
     ## This section cleans all the views 1 time and is the last part of the trigger device further above
         if facecount == 0 and self.trigger == 2:
-            for view in editor.layout.views:
-                view.repaint()
+            view.handles = []
+            for v in editor.layout.views:
+                v.handles = []
+                quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+                mdlgridscale.gridfinishdrawing(editor, v)
                 self.trigger = 0
-                editor.invalidateviews()
 
 
   #### This section creates the actual object, using its formula
@@ -1192,7 +1207,7 @@ class SphereMakerDragObject(parent):
 
    #### End of Sphere object creation area
 
-      ## This line calls for the ruler
+    #### This line calls for the ruler
         for view in editor.layout.views:
             objectruler(editor, view, [poly])
 
@@ -1415,17 +1430,28 @@ class PyramidMakerDragObject(parent):
 
     ## This section just cleans the single view we are in or all of the views if there are red faces to draw
     ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
-    ## The original trigger is set in the def of this class, above.
+    ## The original trigger is set in the def of this Pyramid class, above.
         if facecount == 0 and self.trigger == 0:
+            self.view.handles = []
+            quarkpy.mdleditor.setsingleframefillcolor(editor, self.view)
             self.view.repaint() # this just cleans the current view if no object is being drawn
+            mdlgridscale.gridfinishdrawing(editor, self.view)
         else:
-            for view in editor.layout.views:
-                view.repaint()  # this cleans all the views and allows the redlines to be drawn
-            if facecount < 3:
+            if facecount < 3 and self.trigger > 0:
                 facecount = 0
-                self.trigger = 2
+                self.trigger = self.trigger - 1
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
             else:
-                self.trigger = 1
+                self.trigger = 2
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
 
         self.facecount = facecount # To pass value to def rectanglesel below for error message testing
 
@@ -1495,10 +1521,13 @@ class PyramidMakerDragObject(parent):
 
     ## This section cleans all the views 1 time and is the last part of the trigger device further above
         if facecount == 0 and self.trigger == 2:
-            for view in editor.layout.views:
-                view.repaint()
+            view.handles = []
+            for v in editor.layout.views:
+                v.handles = []
+                quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+                mdlgridscale.gridfinishdrawing(editor, v)
                 self.trigger = 0
-                editor.invalidateviews()
 
 
   #### This section creates the actual object, using its formula
@@ -1652,7 +1681,9 @@ class PyramidMakerDragObject(parent):
             else:
                 break
 
-      ## This line calls for the ruler
+      ## End of Pyramid object creation section
+
+    #### This line calls for the ruler
         for view in editor.layout.views:
             objectruler(editor, view, [poly])
 
@@ -1662,8 +1693,6 @@ class PyramidMakerDragObject(parent):
         if self.x0-x == 0:
             return None, None
         return None, [poly]
-
-      ## End of object creation section
 
 
 ### This section actually creates the finished object and drops it into the map.
@@ -1883,17 +1912,28 @@ class DoubleConeMakerDragObject(parent):
 
     ## This section just cleans the single view we are in or all of the views if there are red faces to draw
     ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
-    ## The original trigger is set in the def of this class, above.
+    ## The original trigger is set in the def of this DoubleCone class, above.
         if facecount == 0 and self.trigger == 0:
+            self.view.handles = []
+            quarkpy.mdleditor.setsingleframefillcolor(editor, self.view)
             self.view.repaint() # this just cleans the current view if no object is being drawn
+            mdlgridscale.gridfinishdrawing(editor, self.view)
         else:
-            for view in editor.layout.views:
-                view.repaint()  # this cleans all the views and allows the redlines to be drawn
-            if facecount < 3:
+            if facecount < 3 and self.trigger > 0:
                 facecount = 0
-                self.trigger = 2
+                self.trigger = self.trigger - 1
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
             else:
-                self.trigger = 1
+                self.trigger = 2
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
 
         self.facecount = facecount # To pass value to def rectanglesel below for error message testing
 
@@ -1962,10 +2002,13 @@ class DoubleConeMakerDragObject(parent):
 
     ## This section cleans all the views 1 time and is the last part of the trigger device further above
         if facecount == 0 and self.trigger == 2:
-            for view in editor.layout.views:
-                view.repaint()
+            view.handles = []
+            for v in editor.layout.views:
+                v.handles = []
+                quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+                mdlgridscale.gridfinishdrawing(editor, v)
                 self.trigger = 0
-                editor.invalidateviews()
 
 
   #### This section creates the actual object, using its formula
@@ -2187,9 +2230,9 @@ class DoubleConeMakerDragObject(parent):
             else:
                 break
 
-   #### End of double-cone object creation area
+   #### End of Double-cone object creation area
 
-      ## This line calls for the ruler
+    #### This line calls for the ruler
         for view in editor.layout.views:
             objectruler(editor, view, [poly])
 
@@ -2416,17 +2459,28 @@ class CylinderMakerDragObject(parent):
 
     ## This section just cleans the single view we are in or all of the views if there are red faces to draw
     ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
-    ## The original trigger is set in the def of this class, above.
+    ## The original trigger is set in the def of this Cylinder class, above.
         if facecount == 0 and self.trigger == 0:
+            self.view.handles = []
+            quarkpy.mdleditor.setsingleframefillcolor(editor, self.view)
             self.view.repaint() # this just cleans the current view if no object is being drawn
+            mdlgridscale.gridfinishdrawing(editor, self.view)
         else:
-            for view in editor.layout.views:
-                view.repaint()  # this cleans all the views and allows the redlines to be drawn
-            if facecount < 3:
+            if facecount < 3 and self.trigger > 0:
                 facecount = 0
-                self.trigger = 2
+                self.trigger = self.trigger - 1
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
             else:
-                self.trigger = 1
+                self.trigger = 2
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
 
         self.facecount = facecount # To pass value to def rectanglesel below for error message testing
 
@@ -2496,10 +2550,13 @@ class CylinderMakerDragObject(parent):
 
     ## This section cleans all the views 1 time and is the last part of the trigger device further above
         if facecount == 0 and self.trigger == 2:
-            for view in editor.layout.views:
-                view.repaint()
+            view.handles = []
+            for v in editor.layout.views:
+                v.handles = []
+                quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+                mdlgridscale.gridfinishdrawing(editor, v)
                 self.trigger = 0
-                editor.invalidateviews()
 
 
   #### This section creates the actual object, using its formula
@@ -2670,9 +2727,9 @@ class CylinderMakerDragObject(parent):
         face.texturename = "[auto]"
         poly.appenditem(face)
 
-   #### end of object creation area
+   #### End of Cylinder object creation area
 
-      ## This line calls for the ruler
+    #### This line calls for the ruler
         for view in editor.layout.views:
             objectruler(editor, view, [poly])
 
@@ -2901,15 +2958,26 @@ class DomeMakerDragObject(parent):
 
     ## This section just cleans the single view we are in or all of the views if there are red faces to draw
     ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
-    ## The original trigger is set in the def of this class, above.
+    ## The original trigger is set in the def of this Dome class, above.
         if facecount == 0 and self.trigger == 0:
+            self.view.handles = []
+            quarkpy.mdleditor.setsingleframefillcolor(editor, self.view)
             self.view.repaint() # this just cleans the current view if no object is being drawn
+            mdlgridscale.gridfinishdrawing(editor, self.view)
         else:
-            for view in editor.layout.views:
-                view.repaint()  # this cleans all the views and allows the redlines to be drawn
+            for v in editor.layout.views:
+                v.handles = []
+                quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                mdlgridscale.gridfinishdrawing(editor, v)
             if facecount < 3:
                 facecount = 0
                 self.trigger = 2
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
             else:
                 self.trigger = 1
 
@@ -2980,10 +3048,12 @@ class DomeMakerDragObject(parent):
 
     ## This section cleans all the views 1 time and is the last part of the trigger device further above
         if facecount == 0 and self.trigger == 2:
-            for view in editor.layout.views:
-                view.repaint()
+            for v in editor.layout.views:
+                v.handles = []
+                quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+                mdlgridscale.gridfinishdrawing(editor, v)
                 self.trigger = 0
-                editor.invalidateviews()
 
 
   #### This section creates the actual object, using its formula
@@ -3266,9 +3336,9 @@ class DomeMakerDragObject(parent):
                     face.texturename = "[auto]" # gives texture to the face
                     poly.appenditem(face)
 
-   #### End of dome object creation area
+   #### End of Dome object creation area
 
-      ## This line calls for the ruler
+    #### This line calls for the ruler
         for view in editor.layout.views:
             objectruler(editor, view, [poly])
 
@@ -3492,12 +3562,18 @@ class FanMakerDragObject(parent):
 
     ## This section just cleans the single view we are in or all of the views if there are red faces to draw
     ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
-    ## The original trigger is set in the def of this class, above.
+    ## The original trigger is set in the def of this Fan class, above.
         if facecount == 0 and self.trigger == 0:
+            self.view.handles = []
+            quarkpy.mdleditor.setsingleframefillcolor(editor, self.view)
             self.view.repaint() # this just cleans the current view if no object is being drawn
+            mdlgridscale.gridfinishdrawing(editor, self.view)
         else:
-            for view in editor.layout.views:
-                view.repaint()  # this cleans all the views and allows the redlines to be drawn
+            for v in editor.layout.views:
+                v.handles = []
+                quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                mdlgridscale.gridfinishdrawing(editor, v)
             if facecount < 3:
                 facecount = 0
                 self.trigger = 2
@@ -3571,10 +3647,12 @@ class FanMakerDragObject(parent):
 
     ## This section cleans all the views 1 time and is the last part of the trigger device further above
         if facecount == 0 and self.trigger == 2:
-            for view in editor.layout.views:
-                view.repaint()
+            for v in editor.layout.views:
+                v.handles = []
+                quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+                mdlgridscale.gridfinishdrawing(editor, v)
                 self.trigger = 0
-                editor.invalidateviews()
 
 
   #### This section creates the actual object, using its formula
@@ -3876,9 +3954,9 @@ class FanMakerDragObject(parent):
                 face.texturename = "[auto]" # gives texture to the face
                 poly.appenditem(face)
 
-   #### End of fan object creation area
+   #### End of Fan object creation area
 
-      ## This line calls for the ruler
+    #### This line calls for the ruler
         for view in editor.layout.views:
             objectruler(editor, view, [poly])
 
@@ -4106,17 +4184,29 @@ class TorusMakerDragObject(parent):
 
     ## This section just cleans the single view we are in or all of the views if there are red faces to draw
     ## and sets up the trigger device for one final cleaning of all the views, below, to remove old red lines.
-    ## The original trigger is set in the def of this class, above.
+    ## The original trigger is set in the def of this Torus class, above.
         if facecount == 0 and self.trigger == 0:
+            self.view.handles = []
+            quarkpy.mdleditor.setsingleframefillcolor(editor, self.view)
             self.view.repaint() # this just cleans the current view if no object is being drawn
+            mdlgridscale.gridfinishdrawing(editor, self.view)
         else:
-            for view in editor.layout.views:
-                view.repaint()  # this cleans all the views and allows the redlines to be drawn
-            if facecount < 3:
+            if facecount < 3 and self.trigger > 0:
                 facecount = 0
-                self.trigger = 2
+                self.trigger = self.trigger - 1
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
             else:
-                self.trigger = 1
+                self.trigger = 2
+                for v in editor.layout.views:
+                    v.handles = []
+                    quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()  # this cleans all the views and allows the redlines to be drawn
+                    mdlgridscale.gridfinishdrawing(editor, v)
+
 
   #### This section sets up the curent view to draw the BLUE circle, lines, GREEN crosshairs and face lable
         cv = self.view.canvas()
@@ -4205,10 +4295,12 @@ class TorusMakerDragObject(parent):
 
     ## This section cleans all the views 1 time and is the last part of the trigger device further above
         if facecount == 0 and self.trigger == 2:
-            for view in editor.layout.views:
-                view.repaint()
+            for v in editor.layout.views:
+                v.handles = []
+                quarkpy.mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+                mdlgridscale.gridfinishdrawing(editor, v)
                 self.trigger = 0
-                editor.invalidateviews()
 
 
   #### This section creates the actual object, using its formula
@@ -4401,9 +4493,9 @@ class TorusMakerDragObject(parent):
 
             torusgroup.appenditem(poly)
 
-            ###################### End of torus object creation area #######################
+            ###################### End of Torus object creation area #######################
 
-      ## This line calls for the ruler
+    #### This line calls for the ruler
         for view in editor.layout.views:
             objectruler(editor, view, [torusgroup])
 
@@ -5343,6 +5435,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2007/10/06 20:15:00  cdunde
+# Added Ruler Guides to Options menu for Model Editor.
+#
 # Revision 1.1  2007/10/05 20:47:51  cdunde
 # Creation and setup of the Quick Object Makers for the Model Editor.
 #

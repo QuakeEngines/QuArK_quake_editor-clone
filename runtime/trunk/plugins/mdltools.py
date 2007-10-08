@@ -45,29 +45,6 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
 
     gridoldfinish(editor, view)
 
-    def MyMakeScroller(layout, view):
-        sbviews = [None, None]
-        for ifrom, linkfrom, ito, linkto in layout.sblinks:
-            if linkto is view:
-                sbviews[ito] = (ifrom, linkfrom)
-        def scroller(x, y, view=view, hlink=sbviews[0], vlink=sbviews[1]):
-            view.scrollto(x, y)
-            if hlink is not None:
-                if hlink[0]:
-                    hlink[1].scrollto(None, x)
-                else:
-                    hlink[1].scrollto(x, None)
-            if vlink is not None:
-                if vlink[0]:
-                    vlink[1].scrollto(None, y)
-                else:
-                    vlink[1].scrollto(y, None)
-            if not MldOption("AxisXYZ") and not MldOption("All2DviewsScale") and not MldOption("AllScalesCentered") and not MldOption("XviewScale") and not MldOption("XyScaleCentered") and not MldOption("XzScaleCentered") and not MldOption("YviewScale") and not MldOption("YxScaleCentered") and not MldOption("YzScaleCentered") and not MldOption("ZviewScale") and not MldOption("ZxScaleCentered") and not MldOption("ZyScaleCentered") and not MldOption("All2DviewsRulers") and not MldOption("AllTopRulers") and not MldOption("AllSideRulers") and not MldOption("XviewRulers") and not MldOption("XyTopRuler") and not MldOption("XzSideRuler") and not MldOption("YviewRulers") and not MldOption("YxTopRuler") and not MldOption("YzSideRuler") and not MldOption("ZviewRulers") and not MldOption("ZxTopRuler") and not MldOption("ZySideRuler"):
-                view.update()
-            else:
-                view.repaint()
-        return scroller
-    quarkpy.qhandles.MakeScroller = MyMakeScroller
 
 # The selection bases for setting up the rulers
     rulerlist = editor.layout.explorer.sellist
@@ -120,6 +97,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
        if not MldOption("All2DviewsRulers") and not MldOption("AllTopRulers") and not MldOption("AllSideRulers") and not MldOption("XviewRulers") and not MldOption("XyTopRuler") and not MldOption("XzSideRuler"):
            return
 
+       quarkpy.mdleditor.setsingleframefillcolor(editor, view)
        if not MldOption("AllSideRulers") and not MldOption("XzSideRuler"):
      # Makes the X view top ruler
         # Makes the line for Y axis
@@ -191,6 +169,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
        if not MldOption("All2DviewsRulers") and not MldOption("AllTopRulers") and not MldOption("AllSideRulers") and not MldOption("YviewRulers") and not MldOption("YxTopRuler") and not MldOption("YzSideRuler"):
            return
 
+       quarkpy.mdleditor.setsingleframefillcolor(editor, view)
        if not MldOption("AllSideRulers") and not MldOption("YzSideRuler"):
 
      # Makes the Y view top ruler
@@ -263,6 +242,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
        if not MldOption("All2DviewsRulers") and not MldOption("AllTopRulers") and not MldOption("AllSideRulers") and not MldOption("ZviewRulers") and not MldOption("ZxTopRuler") and not MldOption("ZySideRuler"):
            return
 
+       quarkpy.mdleditor.setsingleframefillcolor(editor, view)
        if not MldOption("AllSideRulers") and not MldOption("ZySideRuler"):
      # Makes the Z view top ruler
         # Makes the line for X axis
@@ -573,6 +553,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.9  2007/10/06 20:46:09  cdunde
+#To reset version.
+#
 #Revision 1.7  2007/10/06 20:42:54  cdunde
 #To reset version.
 #

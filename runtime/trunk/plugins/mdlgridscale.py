@@ -23,6 +23,7 @@ Info = {
 
 import quarkpy.mdloptions
 from quarkpy.mdlutils import *
+import mdltools
 
 #
 # -------- grid numbering routines
@@ -45,7 +46,7 @@ def NumberGrid(cv, view, text):
 #  of the map editor, only the functions they define are.
 #
 
-def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def gridfinishdrawing(editor, view, gridoldfinish=mdltools.gridfinishdrawing):
 
     #
     # execute the old method
@@ -660,6 +661,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.10  2007/10/06 20:14:31  cdunde
+#Added function option to just update the editors 2D views.
+#
 #Revision 1.9  2007/09/16 00:38:46  cdunde
 #Fixed both editors from not drawing gridscale and ruler when grid is inactive.
 #

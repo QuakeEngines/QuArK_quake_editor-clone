@@ -2812,15 +2812,6 @@ def MouseDragging(self, view, x, y, s, handle):
         if s and ("S" in s):
             self.layout.actionmpp()  # update the multi-pages-panel
 
-    # Kills the 2D views handles if an Object Maker item is active to speed up the drag drawing of the Object.
-    # But leaves the 3D views alone so not to interfere with drawing handles during rotation,
-    #    Objects can not be made in 3D views anyway or it causes a function lockup.
-    if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
-        pass
-    else:
-        if self.layout.toolbars["tb_objmodes"] is not None and quarkx.setupsubset(SS_MODEL, "Building").getint("ObjectMode") != 0:
-            for v in self.layout.views:
-                v.handles = []
     return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("DragImage", SS_MODEL))
 
 
@@ -2880,6 +2871,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.99  2007/10/06 05:24:56  cdunde
+#To add needed comments and finish setting up rectangle selection to work fully
+#with passing selected faces in the editors view to the Skin-view.
+#
 #Revision 1.98  2007/10/05 20:47:50  cdunde
 #Creation and setup of the Quick Object Makers for the Model Editor.
 #
