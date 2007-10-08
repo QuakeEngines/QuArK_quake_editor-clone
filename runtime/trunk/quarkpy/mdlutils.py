@@ -1576,7 +1576,7 @@ def Update_Editor_Views(editor, option=4):
                 mdleditor.setsingleframefillcolor(editor, v)
             if option <= 6:
                 v.repaint()
-            if option == 6:
+            if option <= 6:
                 plugins.mdlgridscale.gridfinishdrawing(editor, v)
                 plugins.mdlaxisicons.newfinishdrawing(editor, v)
             if option <= 6 or option == 5:
@@ -1608,6 +1608,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.46  2007/10/06 20:14:31  cdunde
+#Added function option to just update the editors 2D views.
+#
 #Revision 1.45  2007/09/15 19:19:15  cdunde
 #To fix if sometimes the model component it lost.
 #
