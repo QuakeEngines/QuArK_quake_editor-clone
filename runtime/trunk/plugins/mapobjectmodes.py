@@ -901,7 +901,6 @@ class SphereMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -1518,7 +1517,6 @@ class PyramidMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -2018,7 +2016,6 @@ class DoubleConeMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -2578,7 +2575,6 @@ class CylinderMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -3096,7 +3092,6 @@ class DomeMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -3717,7 +3712,6 @@ class FanMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -4359,7 +4353,6 @@ class TorusMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -4928,6 +4921,9 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2006/11/30 01:17:48  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 # Revision 1.10  2006/11/29 06:58:35  cdunde
 # To merge all runtime files that had changes from DanielPharos branch
 # to HEAD for QuArK 6.5.0 Beta 1.

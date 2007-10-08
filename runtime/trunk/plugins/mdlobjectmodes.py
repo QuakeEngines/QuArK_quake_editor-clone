@@ -772,7 +772,6 @@ class SphereMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -1375,7 +1374,6 @@ class PyramidMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -1857,7 +1855,6 @@ class DoubleConeMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -2403,7 +2400,6 @@ class CylinderMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -2903,7 +2899,6 @@ class DomeMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -3507,7 +3502,6 @@ class FanMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -4129,7 +4123,6 @@ class TorusMakerDragObject(parent):
             for y in (Y,mY):
                 for z in (Z,mZ):
                     p = self.view.proj(x,y,z)
-                    if not p.visible: return
                     cx.append(p.x)
                     cy.append(p.y)
                     cz.append(p.z)
@@ -5435,6 +5428,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2007/10/08 16:20:20  cdunde
+# To improve Model Editor rulers and Quick Object Makers working with other functions.
+#
 # Revision 1.2  2007/10/06 20:15:00  cdunde
 # Added Ruler Guides to Options menu for Model Editor.
 #
