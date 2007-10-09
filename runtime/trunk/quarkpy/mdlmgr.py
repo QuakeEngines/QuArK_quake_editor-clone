@@ -440,6 +440,7 @@ class ModelLayout(BaseLayout):
                     self.editor.ModelVertexSelList = []
                     self.editor.SkinVertexSelList = []
                     self.editor.ModelFaceSelList = []
+                    self.editor.EditorObjectList = []
                     self.editor.SkinFaceSelList = []
                     self.editor.Root.currentcomponent.filltris = []
             else:
@@ -453,11 +454,13 @@ class ModelLayout(BaseLayout):
                             self.editor.SkinVertexSelList = []
                             self.editor.ModelVertexSelList = []
                             self.editor.ModelFaceSelList = []
+                            self.editor.EditorObjectList = []
                             self.editor.SkinFaceSelList = []
                     except:
                         self.editor.SkinVertexSelList = []
                         self.editor.ModelVertexSelList = []
-                        self.editor.ModelFaceSelList = []                        
+                        self.editor.ModelFaceSelList = []
+                        self.editor.EditorObjectList = []
                         self.editor.SkinFaceSelList = []
                     self.editor.Root.currentcomponent.filltris = []
             for view in self.editor.layout.views:
@@ -502,6 +505,7 @@ class ModelLayout(BaseLayout):
         self.editor.ModelVertexSelList = []
         self.editor.SkinVertexSelList = []
         self.editor.ModelFaceSelList = []
+        self.editor.EditorObjectList = []
         self.editor.SkinFaceSelList = []
         self.editor.Root.currentcomponent.filltris = []
         from mdlhandles import SkinView1
@@ -573,6 +577,7 @@ class ModelLayout(BaseLayout):
                 self.editor.ModelVertexSelList = []
                 self.editor.SkinVertexSelList = []
                 self.editor.ModelFaceSelList = []
+                self.editor.EditorObjectList = []
                 self.editor.SkinFaceSelList = []
                 from mdlhandles import SkinView1
                 if SkinView1 is not None:
@@ -581,6 +586,7 @@ class ModelLayout(BaseLayout):
             self.editor.ModelVertexSelList = []
             self.editor.SkinVertexSelList = []
             self.editor.ModelFaceSelList = []
+            self.editor.EditorObjectList = []
             self.editor.SkinFaceSelList = []
             from mdlhandles import SkinView1
             if SkinView1 is not None:
@@ -609,6 +615,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.49  2007/09/17 06:10:17  cdunde
+#Update for Skin-view grid button and forcetogrid functions.
+#
 #Revision 1.48  2007/09/16 07:09:55  cdunde
 #To comment out print statement.
 #

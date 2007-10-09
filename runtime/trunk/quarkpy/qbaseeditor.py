@@ -770,6 +770,7 @@ class BaseEditor:
              # This clears the face selection list when both the LMB & RMB are pressed with the cursor in an open area of a view.
             if modelfacelist == [] and flagsmouse == 536 and currentview.info["viewname"] != "skinview":
                 self.ModelFaceSelList = []
+                self.EditorObjectList = []
                 for v in self.layout.views:
                     v.handles = []
                     mdleditor.setsingleframefillcolor(self, v)
@@ -1398,6 +1399,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.95  2007/10/06 03:23:13  cdunde
+#Updated Sync Skin-view with Editor function for the Model Editor.
+#
 #Revision 1.94  2007/10/04 01:51:06  cdunde
 #Small comment change.
 #

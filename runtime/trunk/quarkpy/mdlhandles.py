@@ -2018,6 +2018,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
                 if editor.ModelFaceSelList != [] and sellist == []:
                     editor.ModelFaceSelList = []
+                    editor.EditorObjectList = []
                     mdlutils.Update_Editor_Views(editor, 4)
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
                         editor.SkinVertexSelList = []
@@ -2871,6 +2872,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.100  2007/10/08 16:20:21  cdunde
+#To improve Model Editor rulers and Quick Object Makers working with other functions.
+#
 #Revision 1.99  2007/10/06 05:24:56  cdunde
 #To add needed comments and finish setting up rectangle selection to work fully
 #with passing selected faces in the editors view to the Skin-view.

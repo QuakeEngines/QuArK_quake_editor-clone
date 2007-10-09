@@ -232,6 +232,7 @@ def ShowHideComp(x):
     if editor is None: return
     import mdleditor
     editor.ModelFaceSelList = []
+    editor.EditorObjectList = []
     editor.SkinFaceSelList = []
     obj = editor.layout.explorer.uniquesel
     if obj is None: return
@@ -413,6 +414,10 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.20  2007/09/01 19:36:40  cdunde
+#Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
+#Changed selected face outline drawing method to greatly increase drawing speed.
+#
 #Revision 1.19  2007/08/01 07:37:30  cdunde
 #Changed to only allow model component frames to cause handles to be drawn, as should be the case.
 #
