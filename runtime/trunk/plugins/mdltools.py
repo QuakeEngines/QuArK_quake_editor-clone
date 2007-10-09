@@ -45,29 +45,67 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
 
     gridoldfinish(editor, view)
 
-
-# The selection bases for setting up the rulers
+# The selection bases for setting up the rulers.
     rulerlist = editor.layout.explorer.sellist
-    if len(rulerlist) == 1 and rulerlist[0].type==":f":
-        rulerlist = rulerlist[0].faceof
-    elif len(rulerlist) > 1:
-        newlist = []
-        for item in rulerlist:
-            if item.type==":e":
-                continue
-            else:
-                newlist.append(item)
-        rulerlist = newlist
-    else:
-        if len(rulerlist) == 1:
+    bmin = None
+    if len(rulerlist) == 1 and rulerlist[0].type==":mc":
+        # Shows the entire model component size when the
+        # main component folder is selected in the tree-view
+        # and clears the rulers if another item of another component
+        # is selected in the tree-view.
+        try:
+            org = rulerlist[0].originst
+        except:
+            return
+        else:
             rulerlist = editor.layout.explorer.sellist
-            if len(rulerlist) == 1 and rulerlist[0].type==":e": return
+    else:
+        # Shows the model component selected triangle(s) size
+        # when one or more frames are selected in the tree-view.
+        rulerlist = editor.EditorObjectList
+        if rulerlist != [] and rulerlist[0].name.endswith(":f"):
+            Xmax = Xmin = rulerlist[0].dictspec['v'][0]
+            Ymax = Ymin = rulerlist[0].dictspec['v'][1]
+            Zmax = Zmin = rulerlist[0].dictspec['v'][2]
+            for facenbr in range(len(rulerlist)):
+                vtxcount = 0
+                if facenbr == len(rulerlist):
+                    break
+                while vtxcount < 9:
+                    if (vtxcount == 0) or (vtxcount == 3) or (vtxcount == 6):
+                        if rulerlist[facenbr].dictspec['v'][vtxcount] > Xmax:
+                            Xmax = rulerlist[facenbr].dictspec['v'][vtxcount]
+                        if rulerlist[facenbr].dictspec['v'][vtxcount] < Xmin:
+                            Xmin = rulerlist[facenbr].dictspec['v'][vtxcount]
+                        vtxcount = vtxcount + 1
+                    if (vtxcount == 1) or (vtxcount == 4) or (vtxcount == 7):
+                        if rulerlist[facenbr].dictspec['v'][vtxcount] > Ymax:
+                            Ymax = rulerlist[facenbr].dictspec['v'][vtxcount]
+                        if rulerlist[facenbr].dictspec['v'][vtxcount] < Ymin:
+                            Ymin = rulerlist[facenbr].dictspec['v'][vtxcount]
+                        vtxcount = vtxcount + 1
+                    if (vtxcount == 2) or (vtxcount == 5) or (vtxcount == 8):
+                        if rulerlist[facenbr].dictspec['v'][vtxcount] > Zmax:
+                            Zmax = rulerlist[facenbr].dictspec['v'][vtxcount]
+                        if rulerlist[facenbr].dictspec['v'][vtxcount] < Zmin:
+                            Zmin = rulerlist[facenbr].dictspec['v'][vtxcount]
+                        vtxcount = vtxcount + 1
+            bmax = quarkx.vect(Xmax,Ymax,Zmax)
+            bmin = quarkx.vect(Xmin,Ymin,Zmin)
+        # Shows the size of any Quick Object Maker item
+        # while it is being dragged to create it in any 2D view.
+        elif len(rulerlist) > 1:
+            newlist = []
+            for item in rulerlist:
+                newlist.append(item)
+            rulerlist = newlist
 
-    if quarkx.boundingboxof(rulerlist) is not None:
+    if quarkx.boundingboxof(rulerlist) is not None and bmin is None:
         bbox = quarkx.boundingboxof(rulerlist)
         bmin, bmax = bbox
     else:
-        return
+        if bmin is None:
+            return
     x1 = bmin.tuple[0]
     y1 = bmin.tuple[1]
     z1 = bmin.tuple[2]
@@ -77,9 +115,11 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
 
 # The following sets the canvas function to draw the images.
     cv = view.canvas()
+    cv.fontname = "Terminal"
+    cv.fontbold = 0
     cv.transparent = 1
     cv.fontcolor = FUCHSIA
-    cv.fontsize = 8
+    cv.fontsize = 9
     cv.penwidth = 1
     cv.penstyle = PS_SOLID
     cv.pencolor = FUCHSIA
@@ -554,6 +594,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.12  2007/10/08 16:47:39  cdunde
+#Tying to get version control and change to ASCII.
+#
 #Revision 1.11  2007/10/06 20:46:09  cdunde
 #To reset version.
 #
