@@ -5290,7 +5290,7 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
         poly = newobjectslist[0]
         for vtx in range(len(poly.vertices)):
             v = poly.vertices[vtx]
-            vertex = quarkx.vect(v.tuple[0], v.tuple[1], v.tuple[2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+            vertex = quarkx.vect(v.tuple[0], v.tuple[1], v.tuple[2])
             new_vtxs.append(vertex)
 
         # Second we add those new vertex points to each of the
@@ -5326,7 +5326,7 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 count = 0
                 for vtx in range(len(face.verticesof(poly))):
                     for vertex in range(len(new_vtxs)):
-                        if str(face.verticesof(poly)[vtx].tuple[0]-1) == str(new_vtxs[vertex].tuple[0]) and str(face.verticesof(poly)[vtx].tuple[1]) == str(new_vtxs[vertex].tuple[1]) and str(face.verticesof(poly)[vtx].tuple[2]) == str(new_vtxs[vertex].tuple[2]):
+                        if str(face.verticesof(poly)[vtx].tuple[0]) == str(new_vtxs[vertex].tuple[0]) and str(face.verticesof(poly)[vtx].tuple[1]) == str(new_vtxs[vertex].tuple[1]) and str(face.verticesof(poly)[vtx].tuple[2]) == str(new_vtxs[vertex].tuple[2]):
                             if count == 0:
                                 tri0 = vertex
                                 count = count +1
@@ -5337,10 +5337,13 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                                 tri2 = vertex
                                 count = 0
                                 break
-                uv0 = cordsview.proj(new_vtxs[tri0])
-                uv1 = cordsview.proj(new_vtxs[tri1])
-                uv2 = cordsview.proj(new_vtxs[tri2])
-                tris = ((extvtx+tri0,int(uv0.tuple[0]),int(uv0.tuple[1])), (extvtx+tri1,int(uv1.tuple[0]),int(uv1.tuple[1])), (extvtx+tri2,int(uv2.tuple[0]),int(uv2.tuple[1])))
+                uv0u = int(cordsview.proj(new_vtxs[tri0]).tuple[0])
+                uv0v = int(cordsview.proj(new_vtxs[tri0]).tuple[1])
+                uv1u = int(cordsview.proj(new_vtxs[tri1]).tuple[0])
+                uv1v = int(cordsview.proj(new_vtxs[tri1]).tuple[1])
+                uv2u = int(cordsview.proj(new_vtxs[tri2]).tuple[0])
+                uv2v = int(cordsview.proj(new_vtxs[tri2]).tuple[1])
+                tris = ((extvtx+tri0,uv0u,uv0v), (extvtx+tri1,uv1u,uv1v), (extvtx+tri2,uv2u,uv2v))
                 newtris = newtris + [tris]
 
             # This first section handles the non-triangle faces of the poly,
@@ -5350,7 +5353,7 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 count = 0
                 for vtx in range(len(face.verticesof(poly))):
                     for vertex in range(len(new_vtxs)):
-                        if str(face.verticesof(poly)[vtx].tuple[0]-1) == str(new_vtxs[vertex].tuple[0]) and str(face.verticesof(poly)[vtx].tuple[1]) == str(new_vtxs[vertex].tuple[1]) and str(face.verticesof(poly)[vtx].tuple[2]) == str(new_vtxs[vertex].tuple[2]):
+                        if str(face.verticesof(poly)[vtx].tuple[0]) == str(new_vtxs[vertex].tuple[0]) and str(face.verticesof(poly)[vtx].tuple[1]) == str(new_vtxs[vertex].tuple[1]) and str(face.verticesof(poly)[vtx].tuple[2]) == str(new_vtxs[vertex].tuple[2]):
                             if count == 0:
                                 tri0 = vertex
                                 count = count +1
@@ -5364,17 +5367,21 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                                 tri3 = vertex
                                 count = 0
                                 break
-                uv0 = cordsview.proj(new_vtxs[tri0])
-                uv1 = cordsview.proj(new_vtxs[tri1])
-                uv2 = cordsview.proj(new_vtxs[tri2])
-                uv3 = cordsview.proj(new_vtxs[tri3])
-                tris1 = ((extvtx+tri0,int(uv0.tuple[0]),int(uv0.tuple[1])), (extvtx+tri1,int(uv1.tuple[0]),int(uv1.tuple[1])), (extvtx+tri2,int(uv2.tuple[0]),int(uv2.tuple[1])))
-                tris2 = ((extvtx+tri3,int(uv3.tuple[0]),int(uv3.tuple[1])), (extvtx+tri0,int(uv0.tuple[0]),int(uv0.tuple[1])), (extvtx+tri2,int(uv2.tuple[0]),int(uv2.tuple[1])))
+                uv0u = int(cordsview.proj(new_vtxs[tri0]).tuple[0])
+                uv0v = int(cordsview.proj(new_vtxs[tri0]).tuple[1])
+                uv1u = int(cordsview.proj(new_vtxs[tri1]).tuple[0])
+                uv1v = int(cordsview.proj(new_vtxs[tri1]).tuple[1])
+                uv2u = int(cordsview.proj(new_vtxs[tri2]).tuple[0])
+                uv2v = int(cordsview.proj(new_vtxs[tri2]).tuple[1])
+                uv3u = int(cordsview.proj(new_vtxs[tri3]).tuple[0])
+                uv3v = int(cordsview.proj(new_vtxs[tri3]).tuple[1])
+                tris1 = ((extvtx+tri0,uv0u,uv0v), (extvtx+tri1,uv1u,uv1v), (extvtx+tri2,uv2u,uv2v))
+                tris2 = ((extvtx+tri3,uv3u,uv3v), (extvtx+tri0,uv0u,uv0v), (extvtx+tri2,uv2u,uv2v))
                 newtris = newtris + [tris1] + [tris2]
                 # This part handles odd shape faces with more then 4 vertexes.
             elif len(face.verticesof(poly)) > 4:
                 for vertex in range(len(new_vtxs)):
-                    if str(face.verticesof(poly)[0].tuple[0]-1) == str(new_vtxs[vertex].tuple[0]) and str(face.verticesof(poly)[0].tuple[1]) == str(new_vtxs[vertex].tuple[1]) and str(face.verticesof(poly)[0].tuple[2]) == str(new_vtxs[vertex].tuple[2]):
+                    if str(face.verticesof(poly)[0].tuple[0]) == str(new_vtxs[vertex].tuple[0]) and str(face.verticesof(poly)[0].tuple[1]) == str(new_vtxs[vertex].tuple[1]) and str(face.verticesof(poly)[0].tuple[2]) == str(new_vtxs[vertex].tuple[2]):
                         tri0 = basevtx = vertex
                         prevvtx = None
                         count = 1
@@ -5384,7 +5391,7 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                         continue
                     else:
                         for vertex in range(len(new_vtxs)):
-                            if str(face.verticesof(poly)[vtx].tuple[0]-1) == str(new_vtxs[vertex].tuple[0]) and str(face.verticesof(poly)[vtx].tuple[1]) == str(new_vtxs[vertex].tuple[1]) and str(face.verticesof(poly)[vtx].tuple[2]) == str(new_vtxs[vertex].tuple[2]):
+                            if str(face.verticesof(poly)[vtx].tuple[0]) == str(new_vtxs[vertex].tuple[0]) and str(face.verticesof(poly)[vtx].tuple[1]) == str(new_vtxs[vertex].tuple[1]) and str(face.verticesof(poly)[vtx].tuple[2]) == str(new_vtxs[vertex].tuple[2]):
                                 if count == 1:
                                     if prevvtx is None:
                                         tri1 = vertex
@@ -5397,10 +5404,13 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                                     tri2 = vertex
                                     count = count +1
                                 if count >= 2:
-                                    uv0 = cordsview.proj(new_vtxs[tri0])
-                                    uv1 = cordsview.proj(new_vtxs[tri1])
-                                    uv2 = cordsview.proj(new_vtxs[tri2])
-                                    tris1 = ((extvtx+tri0,int(uv0.tuple[0]),int(uv0.tuple[1])), (extvtx+tri1,int(uv1.tuple[0]),int(uv1.tuple[1])), (extvtx+tri2,int(uv2.tuple[0]),int(uv2.tuple[1])))
+                                    uv0u = int(cordsview.proj(new_vtxs[tri0]).tuple[0])
+                                    uv0v = int(cordsview.proj(new_vtxs[tri0]).tuple[1])
+                                    uv1u = int(cordsview.proj(new_vtxs[tri1]).tuple[0])
+                                    uv1v = int(cordsview.proj(new_vtxs[tri1]).tuple[1])
+                                    uv2u = int(cordsview.proj(new_vtxs[tri2]).tuple[0])
+                                    uv2v = int(cordsview.proj(new_vtxs[tri2]).tuple[1])
+                                    tris1 = ((extvtx+tri0,uv0u,uv0v), (extvtx+tri1,uv1u,uv1v), (extvtx+tri2,uv2u,uv2v))
                                     newtris = newtris + [tris1]
                                     prevvtx = tri2
                                     break
@@ -5428,6 +5438,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2007/10/08 18:47:31  cdunde
+# To stop both editor's Quick Object Makers from braking when zoomed in close.
+#
 # Revision 1.3  2007/10/08 16:20:20  cdunde
 # To improve Model Editor rulers and Quick Object Makers working with other functions.
 #
