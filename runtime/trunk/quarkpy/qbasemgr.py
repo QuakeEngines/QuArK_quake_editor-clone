@@ -292,9 +292,15 @@ class BaseLayout:
                 floating.show()
         if not (view in self.views):
             self.views.append(view)
-        self.update3Dviews(view)
+            if self.editor.MODE == 3:
+                pass
+            else:
+                self.update3Dviews(view)
         BaseLayout.Floating3DWindows.append(floating)
-        self.editor.layout.explorer.selchanged()
+        if self.editor.MODE == 3:
+            pass
+        else:
+            self.editor.layout.explorer.selchanged()
 
     def closefull3Dview(self, floating):
         "Closes the 3D view."
@@ -307,12 +313,18 @@ class BaseLayout:
         setup["WndRect"] = r
         if view in self.views:
             self.views.remove(view)
-            self.update3Dviews()
+            if self.editor.MODE == 3:
+                pass
+            else:
+                self.update3Dviews()
         BaseLayout.Floating3DWindows.remove(floating)
         if not setup["AllowMultiple"]:
             self.buttons["3D"].state = 0
             quarkx.update(self.editor.form)
-        self.editor.layout.explorer.selchanged()
+        if self.editor.MODE == 3:
+            pass
+        else:
+            self.editor.layout.explorer.selchanged()
 
     def setupdepth(self, view):
         pass    # abstract
@@ -595,6 +607,10 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.31  2007/07/28 23:11:58  cdunde
+#To open and close floating 3D window(s) in Model Editor and
+#try to keep all views 3D Options color settings correct.
+#
 #Revision 1.30  2007/03/27 22:36:29  danielpharos
 #Fixed a stupid bug.
 #

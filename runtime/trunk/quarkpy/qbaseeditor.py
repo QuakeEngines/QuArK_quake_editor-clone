@@ -565,7 +565,12 @@ class BaseEditor:
         v.onkey = self.keymap
         v.ondrop = self.dropmap
         v.flags = v.flags | flags
-        self.lastscale = 0    # force a handle rebuild
+        if self.MODE == 3:
+            if v.info["viewname"] == "3Dwindow":
+                import mdlhandles
+                v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
+        else:
+            self.lastscale = 0    # force a handle rebuild
         if copycol and (self.layout is not None) and len(self.layout.views):
             copyfrom = self.layout.views[0]
             v.color = copyfrom.color
@@ -720,6 +725,8 @@ class BaseEditor:
                                 except:
                                     pass
                                 v.invalidate(1)
+                                mdleditor.setsingleframefillcolor(self, v)
+                                v.repaint()
                         return
                     else:
                         return
@@ -775,6 +782,7 @@ class BaseEditor:
                     v.handles = []
                     mdleditor.setsingleframefillcolor(self, v)
                     v.repaint()
+                    plugins.mdlgridscale.gridfinishdrawing(self, v)
 
              # This is the first call at the start of the selection drag\or causes only one item to be selected.
             if modelfacelist != [] and flagsmouse == 536:
@@ -1399,6 +1407,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.96  2007/10/09 04:16:25  cdunde
+#To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
+#
 #Revision 1.95  2007/10/06 03:23:13  cdunde
 #Updated Sync Skin-view with Editor function for the Model Editor.
 #

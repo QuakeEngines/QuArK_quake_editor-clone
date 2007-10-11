@@ -268,6 +268,8 @@ class ModelFaceHandle(qhandles.GenericHandle):
         
         if view.info["viewname"] == "skinview": return
         if flagsmouse == 536:
+            for v in editor.layout.views:
+                v.handles = []
             lastmodelfaceremovedlist = []
         itemsremoved = 0
         faceremoved = 0
@@ -333,16 +335,19 @@ class ModelFaceHandle(qhandles.GenericHandle):
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
                         mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(editor, v)
                     if v.info["viewname"] == "XZ":
                         fillcolor = MapColor("Options3Dviews_fillColor4", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
                         mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(editor, v)
                     if v.info["viewname"] == "YZ":
                         fillcolor = MapColor("Options3Dviews_fillColor3", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
                         mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
+                        plugins.mdlgridscale.gridfinishdrawing(editor, v)
                     if v.info["viewname"] == "editors3Dview":
                         fillcolor = MapColor("Options3Dviews_fillColor1", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
@@ -1893,9 +1898,11 @@ def BuildHandles(editor, explorer, view, option=1):
  #           h.append(qhandles.EyePosition(view, v))
  #           h.append(MdlEyeDirection(view, v))
 
-    if view.info["type"] == "3D":
-        h.append(qhandles.EyePosition(view, view))
-        h.append(MdlEyeDirection(view, view))
+ # We're not using the Eye icon right now but if it is added
+ # it will probably need to go into a "try" statement or an error will occur.
+ #   if view.info["type"] == "3D":
+ #       h.append(qhandles.EyePosition(view, view))
+ #       h.append(MdlEyeDirection(view, view))
 
     return qhandles.FilterHandles(h, SS_MODEL)
 
@@ -2220,9 +2227,12 @@ class ModelEditorLinHandlesManager:
             cmin = getattr(bmin, dir)
             cmax = getattr(bmax, dir)
             diff = cmax-cmin
-            if view is not None and view.info["viewname"] == "skinview":
-                linhdlsetting = quarkx.setupsubset(SS_MODEL,"Building")['SkinLinearSetting'][0] * 20
-            else:
+            try:
+                if view.info["viewname"] == "skinview":
+                    linhdlsetting = quarkx.setupsubset(SS_MODEL,"Building")['SkinLinearSetting'][0] * 20
+                else:
+                    linhdlsetting = quarkx.setupsubset(SS_MODEL,"Building")['LinearSetting'][0]
+            except:
                 linhdlsetting = quarkx.setupsubset(SS_MODEL,"Building")['LinearSetting'][0]
             if diff<linhdlsetting:
                 diff = 0.5*(linhdlsetting-diff)
@@ -2872,6 +2882,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.101  2007/10/09 04:16:25  cdunde
+#To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
+#
 #Revision 1.100  2007/10/08 16:20:21  cdunde
 #To improve Model Editor rulers and Quick Object Makers working with other functions.
 #
