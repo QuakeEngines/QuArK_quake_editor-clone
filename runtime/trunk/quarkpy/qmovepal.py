@@ -59,7 +59,74 @@ def btnclick(btn, mode=SS_MAP):
 
 
 class ConfigDialog(qmacro.dialogbox):
-    "The Movement Tool Palette configuration dialog box."
+    "The Map Editor's Movement Tool Palette configuration dialog box."
+
+    #
+    # Dialog box shape
+    #
+
+    dlgflags = FWF_NOESCCLOSE
+    begincolor = RED
+    endcolor = MAROON
+    size = (300,198)
+    dlgdef = """
+      {
+        Style = "9"
+        Caption = "Movement Tool Palette"
+        sep: = {Typ="S" Txt=" "}    // some space
+        mpOffset: = {
+          Txt="Move selection (x, y, z) :"
+          Typ="EF3"
+          Hint="x, y, z values to add to the coordinates in order to move the selection"
+        }
+        mpZoom: = {
+          Txt="Zoom factor :"
+          Typ="EF1"
+          Min='1'
+          Hint="scaling factor for enlarge and shrink"
+        }
+        WallWidth: = {
+          Txt="Inflate/Deflate by :"
+          Typ="EF1"
+          Hint="positive values inflate the polyhedrons, negative values deflate them"
+        }
+        mpRotate: = {
+          Txt="Rotation angle :"
+          Typ="EF1"
+          Hint="the angle that each rotation makes the objects turn"
+        }
+        sep: = {Typ="S" Txt=" "}    // some space
+        sep: = {Typ="S" Txt=""}    // a separator line
+        ok:py = {Txt="" }
+        cancel:py = {Txt="" }
+      }
+    """
+
+    def __init__(self, menu):
+        try:
+            self.mode = menu.mode
+        except:
+            self.mode = menu
+        setup = quarkx.setupsubset(self.mode, "Building").copy()
+        qmacro.dialogbox.__init__(self, quarkx.clickform, setup,
+          ok = qtoolbar.button(self.close, "close this box", ico_editor, 3, "Close"),
+          cancel = qtoolbar.button(self.cancel, "cancel changes", ico_editor, 0, "Cancel"))
+
+    def onclose(self, dlg):
+        if self.src is not None:
+            quarkx.globalaccept()
+            setup = quarkx.setupsubset(self.mode, "Building")
+            setup.copyalldata(self.src)
+        qmacro.dialogbox.onclose(self, dlg)
+
+    def cancel(self, reserved):
+        self.src = None
+        self.close()
+
+
+
+class MdlConfigDialog(qmacro.dialogbox):
+    "The Model Editor's Movement Tool Palette configuration dialog box."
 
     #
     # Dialog box shape
@@ -88,14 +155,14 @@ class ConfigDialog(qmacro.dialogbox):
         WallWidth: = {
           Txt="Inflate/Deflate by :"
           Typ="EF1"
-          Hint="positive values inflate the polyhedrons, negative values deflate them"
+          Hint="positive values inflate the objects, negative values deflate them"
         }
         mpRotate: = {
           Txt="Rotation angle :"
           Typ="EF1"
           Hint="the angle that each rotation makes the objects turn"
         }
-        sep: = {Typ="S" Txt="Model Editor only"}    // designator title
+        sep: = {Typ="S" Txt="Linear Handle settings"}    // designator title
         LinearSetting: = {
           Txt="Linear Handle Setting :"
           Typ="EF"
@@ -127,6 +194,9 @@ class ConfigDialog(qmacro.dialogbox):
             self.mode = menu.mode
         except:
             self.mode = menu
+        import mdleditor
+        editor = mdleditor.mdleditor
+        self.editor = editor
         setup = quarkx.setupsubset(self.mode, "Building").copy()
         qmacro.dialogbox.__init__(self, quarkx.clickform, setup,
           applychange = qtoolbar.button(self.apply, "apply the change", ico_editor, 1, "Apply"),
@@ -138,44 +208,38 @@ class ConfigDialog(qmacro.dialogbox):
             quarkx.globalaccept()
             setup = quarkx.setupsubset(self.mode, "Building")
             setup.copyalldata(self.src)
-            import mdleditor
-            if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
-                editor = mdleditor.mdleditor
-                import mdlmgr
-                from mdlmgr import treeviewselchanged
-                mdlmgr.treeviewselchanged = 1
-                if len(editor.ModelVertexSelList) > 1 or len(editor.ModelFaceSelList) > 1 or len(editor.SkinVertexSelList) > 1:
-                    quarkx.reloadsetup()
-                    from mdlhandles import SkinView1
-                    if SkinView1 is not None:
-                        import mdlhandles
-                        try:
-                            skindrawobject = editor.Root.currentcomponent.currentskin
-                        except:
-                            skindrawobject = None
-                        mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
+            if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
+                quarkx.reloadsetup()
+                from mdlhandles import SkinView1
+                if SkinView1 is not None:
+                    import mdlhandles
+                    try:
+                        skindrawobject = self.editor.Root.currentcomponent.currentskin
+                    except:
+                        skindrawobject = None
+                    mdlhandles.buildskinvertices(self.editor, SkinView1, self.editor.layout, self.editor.Root.currentcomponent, skindrawobject)
 
     def onclose(self, dlg):
         if self.src is not None:
             quarkx.globalaccept()
             setup = quarkx.setupsubset(self.mode, "Building")
             setup.copyalldata(self.src)
-            import mdleditor
-            if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
-                editor = mdleditor.mdleditor
-                import mdlmgr
-                from mdlmgr import treeviewselchanged
-                mdlmgr.treeviewselchanged = 1
-                if len(editor.ModelVertexSelList) > 1 or len(editor.ModelFaceSelList) > 1 or len(editor.SkinVertexSelList) > 1:
-                    quarkx.reloadsetup()
-                    from mdlhandles import SkinView1
-                    if SkinView1 is not None:
-                        import mdlhandles
-                        try:
-                            skindrawobject = editor.Root.currentcomponent.currentskin
-                        except:
-                            skindrawobject = None
-                        mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
+            if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
+                quarkx.reloadsetup()
+                from mdlhandles import SkinView1
+                if SkinView1 is not None:
+                    import mdlhandles
+                    try:
+                        skindrawobject = self.editor.Root.currentcomponent.currentskin
+                    except:
+                        skindrawobject = None
+                    mdlhandles.buildskinvertices(self.editor, SkinView1, self.editor.layout, self.editor.Root.currentcomponent, skindrawobject)
         qmacro.dialogbox.onclose(self, dlg)
 
     def cancel(self, reserved):
@@ -193,7 +257,6 @@ class ToolMoveBar(ToolBar):
     def buildbuttons(self, layout):
         if not ico_dict.has_key('ico_movepal'):
             ico_dict['ico_movepal']=LoadIconSet1("movepal", 1.0)
-#        icons = LoadPoolObj("ico_movepal", LoadIconSet1, "movepal", 1.0)
         icons = ico_dict['ico_movepal']
 
         btn1 = qtoolbar.button(btnclick, "Move selection||Move selection:\n\nOffsets the selected objects by the distance specified in the toolbar settings (last button of this toolbar).", icons, 1, infobaselink="intro.mapeditor.toolpalettes.movement.html#move")
@@ -253,7 +316,7 @@ class ToolMoveBar(ToolBar):
         btn12.spec = "mpRotate"
         btn12.matrix = lambda f: matrix_rot_z(f * deg2rad)
 
-        btn13 = qtoolbar.button(btnclick, "Inflate/Deflate||Inflate/Deflate:\n\nInflate or deflate the selected polyhedrons by an amount specified in the toolbar settings (last button of this toolbar).\n\nInflating or deflating means moving the planes of the faces of the polyhedrons by a fixed amount of pixels. This is not the same as simply zooming, which preserves the aspect of the polyhedron.\n\nThis setting is also used for the Make Hollow function for two different atributes.\n\n1)  The number set will be the thickness of the walls created in units.\n\n2)  If the number is positive, the walls will be created outside the perimeter of the current solid polygon.\nIf the number is negative, the walls will be created inside the perimeter of the current solid polygon.", icons, 13, infobaselink="intro.mapeditor.toolpalettes.movement.html#inflatedeflate")
+        btn13 = qtoolbar.button(btnclick, "Inflate/Deflate||Inflate/Deflate:\n\nInflate or deflate the selected objects by an amount specified in the toolbar settings (last button of this toolbar).\n\nInflating or deflating means moving the planes of the faces of the polyhedrons by a fixed amount of pixels. This is not the same as simply zooming, which preserves the aspect of the polyhedron.\n\nThis setting is also used for the Make Hollow function for two different atributes.\n\n1)  The number set will be the thickness of the walls created in units.\n\n2)  If the number is positive, the walls will be created outside the perimeter of the current solid polygon.\nIf the number is negative, the walls will be created inside the perimeter of the current solid polygon.", icons, 13, infobaselink="intro.mapeditor.toolpalettes.movement.html#inflatedeflate")
         btn13.text = Strings[549]
         btn13.spec = "WallWidth"
         btn13.inflate = lambda f: f
@@ -262,13 +325,28 @@ class ToolMoveBar(ToolBar):
         btncfg.icolist = icons
         btncfg.mode = layout.MODE
 
-        return [btn1, btn2, btn3, btn13, qtoolbar.sep, btn4, btn5, btn6,
-          btn7, btn8, btn9, btn10, btn11, btn12, qtoolbar.sep, btncfg]
+        mdlbtncfg = qtoolbar.button(MdlConfigDialog, "Change this toolbar settings||Change this toolbar settings:\n\nThis opens the Movement toolbar configuration window.\n\nIf you hold your mouse cursor over each of the setting input areas, a description- help display will appear to give you information about what settings to use and how they work.\n\nClick the check mark to apply the new settings.\n\nClick the X to close the window without changing the current settings.", icons, 0, infobaselink="intro.mapeditor.toolpalettes.movement.html#configuration")
+        mdlbtncfg.icolist = icons
+        mdlbtncfg.mode = layout.MODE
+
+        if layout.MODE == 2:
+            return [btn1, btn2, btn3, btn13, qtoolbar.sep, btn4, btn5, btn6,
+              btn7, btn8, btn9, btn10, btn11, btn12, qtoolbar.sep, btncfg]
+        else:
+            return [btn1, btn2, btn3, btn13, qtoolbar.sep, btn4, btn5, btn6,
+              btn7, btn8, btn9, btn10, btn11, btn12, qtoolbar.sep, mdlbtncfg]
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.15  2007/09/07 23:55:29  cdunde
+#1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
+#     model component from selected Model Mesh faces and remove them from their current component.
+#2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
+#     before the Skin-view is opened at least once in that session.
+#3) Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.14  2007/08/20 19:58:23  cdunde
 #Added Linear Handle to the Model Editor's Skin-view page
 #and setup color selection and drag options for it and other fixes.
