@@ -221,19 +221,19 @@ class FaceHandle(qhandles.GenericHandle):
 
         s = ""
         if view.info["type"] == "XY":
-            if self.face.normal.tuple[0] <> 0:
-                s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
-            if self.face.normal.tuple[1] <> 0:
-                s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.y+delta.y)
+            if abs(self.face.normal.tuple[0]) > abs(self.face.normal.tuple[1]):
+                s = "was x: " + ftoss(v1.x) + " now x: " + ftoss(v1.x+delta.x)
+            else:
+                s = "was y: " + ftoss(v1.y) + " now y: " + ftoss(v1.y+delta.y)
         elif view.info["type"] == "XZ":
-            if self.face.normal.tuple[0] <> 0:
+            if abs(self.face.normal.tuple[0]) > abs(self.face.normal.tuple[2]):
                 s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
-            if self.face.normal.tuple[2] <> 0:
+            else:
                 s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
         elif view.info["type"] == "YZ":
-            if self.face.normal.tuple[1] <> 0:
+            if abs(self.face.normal.tuple[1]) > abs(self.face.normal.tuple[2]):
                 s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.x+delta.y)
-            if self.face.normal.tuple[2] <> 0:
+            else:
                 s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
         if s == "":
             if self.face.normal.tuple[0] == 1 or self.face.normal.tuple[0] == -1:
@@ -1984,6 +1984,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.64  2007/09/28 18:36:13  cdunde
+#To fix hint error on drag.
+#
 #Revision 1.63  2007/09/18 19:52:07  cdunde
 #Cleaned up some of the Defaults.qrk item alignment and
 #changed a color name from GrayImage to DragImage for clarity.
