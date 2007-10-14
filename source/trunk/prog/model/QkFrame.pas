@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/09/10 10:24:15  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
 Revision 1.12  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -95,7 +98,7 @@ uses Quarkx, QkObjectClassList, QkComponent, QkModelRoot, QkModelTag, QkFrameGro
 
 function QFrame.IsAllowedParent(Parent: QObject) : Boolean;
 begin
-  if (Parent=nil) or (Parent is QFrameGroup) then
+  if (Parent=nil) or ((Parent is QFrameGroup) and (Parent.FParent = ParentComponent)) then
     Result:=true
   else
     Result:=false;
