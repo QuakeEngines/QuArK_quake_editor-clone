@@ -1112,6 +1112,9 @@ class BaseEditor:
 
             if flags & MB_CLICKED:
                 if isinstance(self, mdleditor.ModelEditor):
+                    # To stop L & RMB click from causing zooming in all views including Skin-view.
+                    if flagsmouse == 280 or flagsmouse == 344:
+                        return
                     # This takes you directly to (selects) the main model component folder for the
                     #    component that was LMB clicked on if there was one under the
                     #    cursor, if not then nothing happens.
@@ -1407,6 +1410,11 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.97  2007/10/11 09:58:34  cdunde
+#To keep the fillcolor correct for the editors 3D view after a
+#tree-view selection is made with the floating 3D view window open and
+#to stop numerous errors and dupe drawings when the floating 3D view window is closed.
+#
 #Revision 1.96  2007/10/09 04:16:25  cdunde
 #To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
 #
