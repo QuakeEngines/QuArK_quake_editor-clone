@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2007/09/04 14:38:12  danielpharos
+Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
+
 Revision 1.34  2007/06/06 22:31:20  danielpharos
 Fix a (recent introduced) problem with OpenGL not drawing anymore.
 
@@ -867,7 +870,7 @@ begin
      // needed to backup to version 1.09, due to version 1.10 causing constant editor lockups.
      { Setup a progress-bar, depending on what type of device-context
        thats been rendering to }
-     if ProgressDC=HDC(-1) then
+(*     if ProgressDC=HDC(-1) then
        ProgressIndicatorStart(5454, NewTextures)
      else
      begin
@@ -890,7 +893,7 @@ begin
          R.Right:=R.Left;
          Brush:=CreateSolidBrush($FF0000);
        end;
-     end;
+     end;*)
 
      { begin building the textures one by one, while updating the
        progress-bar at the same time }
@@ -902,7 +905,7 @@ begin
          if PList^.Texture=Nil then
          begin
            { update progressbar }
-           if ProgressDC=HDC(-1) then
+(*           if ProgressDC=HDC(-1) then
            begin
              ProgressIndicatorIncrement;
            end
@@ -915,7 +918,7 @@ begin
                FillRect(ProgressDC, R, Brush);
                R.Left:=R.Right;
              end;
-           end;
+           end;*)
 
            TextureManager.GetTexture(PList, True, AltTexSrc{, PalWarning});
            BuildTexture(PList^.Texture);
@@ -926,8 +929,8 @@ begin
 
      finally
        { clean up the progress-bar }
-       if ProgressDC=HDC(-1) then
-         ProgressIndicatorStop;
+(*       if ProgressDC=HDC(-1) then
+         ProgressIndicatorStop;*)
        if Brush<>0 then
          DeleteObject(Brush);
        EndBuildScene;
