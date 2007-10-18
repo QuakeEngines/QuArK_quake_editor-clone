@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.362  2007/10/05 20:47:49  cdunde
+//Creation and setup of the Quick Object Makers for the Model Editor.
+//
 //Revision 1.361  2007/09/24 00:16:07  danielpharos
 //Made MaxRecentFiles a configurable option.
 //
@@ -3337,6 +3340,7 @@ QQRKSRC1
         Options3Dviews_drawnohandles5 = "0"
         Options3Dviews_framemesh5     = "0"
         Options3Dviews_fillmesh5      = "0"
+        AnimationActive    = ""
         setLock_X          = "0"
         setLock_Y          = "0"
         setLock_Z          = "0"
@@ -3382,6 +3386,7 @@ QQRKSRC1
         MapLimit          = '512 512 512'
         GridHighlight     = "8"
         GridHFactor       = '2'
+        AnimationFPS      = '10'
         SkinGridStep      = '16'
         SkinGridMinStep   = '5'
         SkinGridHighlight = "8"
@@ -3527,6 +3532,17 @@ QQRKSRC1
         Min = '0'
         Max = '10'
         Hint = "How much highlighted are the highlighted dots or lines ?"$0D"(more or less than 1 to mean more or less visible than others)"
+      }
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = "Animation:"
+      }
+      AnimationFPS: =
+      {
+        Txt = "Fames Per Second"
+        Typ = "EF1"    // Edit Float, 1 value
+        Min = '0'
       }
       Sep: =
       {

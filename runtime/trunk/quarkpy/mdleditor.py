@@ -116,6 +116,12 @@ class ModelEditor(BaseEditor):
         else:
             self.skingrid = 0
 
+        self.animationFPSstep, = setup["AnimationFPS"]
+        if MapOption("AnimationActive", self.MODE):
+            self.animationFPS = self.animationFPSstep
+        else:
+            self.animationFPS = 0
+
         Root = self.fileobject['Root']
      #   if Root is not None: # If you have to open a model to open the Model Editor, how could it be None?
         Root = self.fileobject.findname(Root)
@@ -225,7 +231,14 @@ class ModelEditor(BaseEditor):
             commonhandles(self, 0)
         else:
 #py2.4            quarkx.settimer(commonhandles, self, delay*1000.0)
-            delayfactor = delay*1000
+       #     delayfactor = delay*1000
+            if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+   #             delayfactor = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
+                delayfactor = int(quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0]*.5)
+                if delayfactor < 1:
+                    delayfactor = 1
+            else:
+                delayfactor = delay*1000
             quarkx.settimer(commonhandles, self, int(delayfactor))
 
 
@@ -1344,6 +1357,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.72  2007/10/06 05:24:56  cdunde
+#To add needed comments and finish setting up rectangle selection to work fully
+#with passing selected faces in the editors view to the Skin-view.
+#
 #Revision 1.71  2007/09/17 06:24:49  cdunde
 #Changes missed.
 #

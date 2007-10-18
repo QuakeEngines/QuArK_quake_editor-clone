@@ -1178,10 +1178,10 @@ class RedImageDragObject(DragObject):
             except:
                 pass
             if currentview.info["viewname"] == "skinview":
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+        #        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 pass
             else:
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+        #        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 return
 
 ## End of above section for Terrain Generator changes
@@ -2142,6 +2142,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.61  2007/10/05 20:47:50  cdunde
+#Creation and setup of the Quick Object Makers for the Model Editor.
+#
 #Revision 1.60  2007/09/04 23:16:22  cdunde
 #To try and fix face outlines to draw correctly when another
 #component frame in the tree-view is selected.

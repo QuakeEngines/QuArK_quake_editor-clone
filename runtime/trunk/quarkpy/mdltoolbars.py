@@ -55,12 +55,16 @@ class DisplayBar(ToolBar):
 #
 
 import qmovepal
-toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
+import mdlanimation
+toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar, "tb_animation": mdlanimation.AnimationBar}
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.5  2007/08/24 09:27:28  cdunde
+#To update the toolbar links to new sections of the InfoBase for the Model Editor.
+#
 #Revision 1.4  2007/07/28 23:12:52  cdunde
 #Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
 #to use for editing movement of model faces, vertexes and bones (in the future).

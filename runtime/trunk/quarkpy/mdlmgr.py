@@ -161,6 +161,64 @@ class ModelLayout(BaseLayout):
             slist.append(None)
         return slist
 
+  ### To setup the Animation Toolbar FPS (frames per second) function.
+    def getFPSmenu(self, fpsbtn):
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        animationFPS = setup["AnimationFPS"]
+        animationfpsmenu = []
+        for g in (0,64,32,16,8,4,2,1):
+            if g:
+                cap = "fps \t%s" % g
+            else:
+                cap = "no fps"
+            item = qmenu.item(cap, self.animationfpsmenuclick)
+            item.animationFPS = g
+            item.state = g==animationFPS and qmenu.radiocheck
+            animationfpsmenu.append(item)
+        animationfpsmenu.append(qmenu.sep)
+        if animationFPS==0:
+            txt = "&Other..."
+        else:
+            txt = "&Other...\t%s" % quarkx.ftos(animationFPS[0])
+        animationfpsmenu.append(qmenu.item(txt, self.animationfpscustomgrid))
+        return animationfpsmenu
+
+    def animationfpsmenuclick(self, sender):
+        self.setanimationfps(sender.animationFPS)
+
+    def setanimationfps(self, ngrid):
+        if (self.editor.animationFPS == ngrid) and (self.editor.animationFPSstep == ngrid):
+            return
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        setup["AnimationFPS"] = (ngrid,)
+        self.editor.animationFPS = self.editor.animationFPSstep = ngrid
+        self.setanimationfpschanged()
+
+    def setanimationfpschanged(self):
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        setup["AnimationFPS"] = (self.editor.animationFPSstep,)
+        
+        # Update the display on the 'fps' button.
+        try:
+            fpsbtn = self.buttons["fps"]
+        except:
+            return
+        if self.editor.animationFPSstep:
+            fpsbtn.caption = quarkx.ftos(self.editor.animationFPSstep)
+        else:
+            fpsbtn.caption = "off"
+        fpsbtn.state = self.editor.animationFPS and qtoolbar.selected
+        quarkx.update(self.editor.form)
+
+    def toggleanimationfps(self, sender):
+        self.editor.animationFPS = not self.editor.animationFPS and self.editor.animationFPSstep
+        self.setanimationfpschanged()
+
+    def animationfpscustomgrid(self, m):
+        import mdleditor
+        mdleditor.SkinCustomGrid(self.editor)
+
+
   ### To setup the Skin-view grid independent from the editor grid.
     def skingetgridmenu(self, gridbtn):
         skingrid = self.editor.skingridstep
@@ -550,6 +608,8 @@ class ModelLayout(BaseLayout):
 
         if self.explorer.sellist != []:
             fs = self.explorer.sellist[0]
+        elif self.explorer.uniquesel is not None:
+            fs = self.explorer.uniquesel
         else:
             fs = None
 
@@ -583,14 +643,17 @@ class ModelLayout(BaseLayout):
                 if SkinView1 is not None:
                     SkinView1.invalidate()
         else:
-            self.editor.ModelVertexSelList = []
-            self.editor.SkinVertexSelList = []
-            self.editor.ModelFaceSelList = []
-            self.editor.EditorObjectList = []
-            self.editor.SkinFaceSelList = []
-            from mdlhandles import SkinView1
-            if SkinView1 is not None:
-                SkinView1.invalidate()
+            if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+                pass
+            else:
+                self.editor.ModelVertexSelList = []
+                self.editor.SkinVertexSelList = []
+                self.editor.ModelFaceSelList = []
+                self.editor.EditorObjectList = []
+                self.editor.SkinFaceSelList = []
+                from mdlhandles import SkinView1
+                if SkinView1 is not None:
+                    SkinView1.invalidate()
 
 
     def NewItem1Click(self, m):
@@ -615,6 +678,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.50  2007/10/09 04:16:25  cdunde
+#To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
+#
 #Revision 1.49  2007/09/17 06:10:17  cdunde
 #Update for Skin-view grid button and forcetogrid functions.
 #

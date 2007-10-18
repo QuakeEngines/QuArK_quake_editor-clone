@@ -716,7 +716,6 @@ class BaseEditor:
                         return
                 else:
                     if self.layout.selchange:
-
                         for v in self.layout.views:
                             if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
                                 try:
@@ -724,6 +723,9 @@ class BaseEditor:
                                     mdlmgr.treeviewselchanged = 1
                                 except:
                                     pass
+                                if self.ModelFaceSelList != []:
+                                    import mdlhandles
+                                    v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
                                 v.invalidate(1)
                                 mdleditor.setsingleframefillcolor(self, v)
                                 v.repaint()
@@ -1410,6 +1412,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.98  2007/10/14 06:04:49  cdunde
+#To stop L & RMB click from causing zooming in all views including Skin-view.
+#
 #Revision 1.97  2007/10/11 09:58:34  cdunde
 #To keep the fillcolor correct for the editors 3D view after a
 #tree-view selection is made with the floating 3D view window open and
