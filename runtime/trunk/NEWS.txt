@@ -15,6 +15,11 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde/DanielPharos]: Setup the Model Editor Animation system, functions and toolbar.
+          - Consist of numerous selection variations for animating, FPS control, pausing
+          - during animation at any frame and restart list or frame play selection
+          - as well as skin reselection for displaying during animation.
+
 * [DanielPharos]: Fix the frame-dragging in the Model Editor so they can be rearranged in each component.
 
 * [cdunde]: Creation and setup of new '2D Rulers' function and sub-menu to Model Editor Options menu.
