@@ -230,8 +230,6 @@ class ModelEditor(BaseEditor):
         if delay <= 0.0:
             commonhandles(self, 0)
         else:
-#py2.4            quarkx.settimer(commonhandles, self, delay*1000.0)
-       #     delayfactor = delay*1000
             if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
                 delayfactor = int(quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0]*.5)
                 if delayfactor < 1:
@@ -499,6 +497,61 @@ class ModelEditor(BaseEditor):
             quarkx.update(self.layout.editor.form)
         except KeyError:
             pass
+
+class AnimationCustomFPSDlgBox(SimpleCancelDlgBox):
+    "The Custom Animation FPS dialog box to input a new FPS setting of our own choice."
+
+    #
+    # Dialog box shape
+    #
+    endcolor = SILVER
+    size = (300,120)
+    dlgdef = """
+      {
+        Style = "9"
+        Caption = "Custom FPS"
+        sep: = {Typ="S" Txt=" "}    // some space
+        FPSstep: = {
+          Txt=" Enter the FPS :"
+          Typ="EF"
+          Min='1'
+          Max='64'
+          SelectMe="1"       // WARNING: be careful when using this
+        }
+        sep: = {Typ="S" Txt=" "}    // some space
+        sep: = {Typ="S" Txt=""}    // a separator line
+        cancel:py = {Txt="" }
+      }
+    """
+
+    def __init__(self, form, src, editor):
+        SimpleCancelDlgBox.__init__(self, form, src)
+        self.editor = editor
+
+    def ok(self):
+        #
+        # The user entered a new value...
+        #
+        FPS = self.src["FPSstep"]
+        if FPS is not None:
+            #
+            # Update the grid step in the editor.
+            #
+            if (self.editor.animationFPS == int(FPS[0])) and (self.editor.animationFPSstep == int(FPS[0])):
+                return
+            self.editor.animationFPS = self.editor.animationFPSstep = int(FPS[0])
+            self.editor.layout.setanimationfpschanged()
+
+
+def AnimationCustomFPS(editor):
+    "Calls to display the Custom Animation FPS dialog box for the editor"
+    "   to enter a new FPS setting of our own choice."
+
+    src = quarkx.newobj(":")   # new object to store the data displayed in the dialog box
+    src["FPSstep"] = editor.animationFPSstep,
+    AnimationCustomFPSDlgBox(editor.form, src, editor)
+
+
 
 class SkinCustomGridDlgBox(SimpleCancelDlgBox):
     "The Custom Skin Grid dialog box to input a new grid setting of our own choice."
@@ -1358,6 +1411,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.74  2007/10/18 16:11:31  cdunde
+#To implement selective view buttons for Model Editor Animation.
+#
 #Revision 1.73  2007/10/18 02:31:54  cdunde
 #Setup the Model Editor Animation system, functions and toolbar.
 #

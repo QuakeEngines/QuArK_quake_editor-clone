@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.363  2007/10/18 02:31:53  cdunde
+//Setup the Model Editor Animation system, functions and toolbar.
+//
 //Revision 1.362  2007/10/05 20:47:49  cdunde
 //Creation and setup of the Quick Object Makers for the Model Editor.
 //
@@ -3341,6 +3344,12 @@ QQRKSRC1
         Options3Dviews_framemesh5     = "0"
         Options3Dviews_fillmesh5      = "0"
         AnimationActive    = ""
+        AnimationPaused    = ""
+        AnimateEd3Dview    = "1"
+        AnimateX2Dview     = "1"
+        AnimateY2Dview     = "1"
+        AnimateZ2Dview     = "1"
+        AnimateFloat3Dview = "1"
         setLock_X          = "0"
         setLock_Y          = "0"
         setLock_Z          = "0"
@@ -3386,7 +3395,7 @@ QQRKSRC1
         MapLimit          = '512 512 512'
         GridHighlight     = "8"
         GridHFactor       = '2'
-        AnimationFPS      = '10'
+        AnimationFPS      = '16'
         SkinGridStep      = '16'
         SkinGridMinStep   = '5'
         SkinGridHighlight = "8"

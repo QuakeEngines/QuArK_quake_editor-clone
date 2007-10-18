@@ -166,32 +166,27 @@ class ModelLayout(BaseLayout):
         setup = quarkx.setupsubset(self.editor.MODE, "Display")
         animationFPS = setup["AnimationFPS"]
         animationfpsmenu = []
-        for g in (0,64,32,16,8,4,2,1):
+        for g in (64,32,16,8,4,2,1):
             if g:
                 cap = "fps \t%s" % g
-            else:
-                cap = "no fps"
             item = qmenu.item(cap, self.animationfpsmenuclick)
             item.animationFPS = g
             item.state = g==animationFPS and qmenu.radiocheck
             animationfpsmenu.append(item)
         animationfpsmenu.append(qmenu.sep)
-        if animationFPS==0:
-            txt = "&Other..."
-        else:
-            txt = "&Other...\t%s" % quarkx.ftos(animationFPS[0])
-        animationfpsmenu.append(qmenu.item(txt, self.animationfpscustomgrid))
+        txt = "&Other...\t%s" % quarkx.ftos(animationFPS[0])
+        animationfpsmenu.append(qmenu.item(txt, self.animationfpscustom))
         return animationfpsmenu
 
     def animationfpsmenuclick(self, sender):
         self.setanimationfps(sender.animationFPS)
 
-    def setanimationfps(self, ngrid):
-        if (self.editor.animationFPS == ngrid) and (self.editor.animationFPSstep == ngrid):
+    def setanimationfps(self, FPS):
+        if (self.editor.animationFPS == FPS) and (self.editor.animationFPSstep == FPS):
             return
         setup = quarkx.setupsubset(self.editor.MODE, "Display")
-        setup["AnimationFPS"] = (ngrid,)
-        self.editor.animationFPS = self.editor.animationFPSstep = ngrid
+        setup["AnimationFPS"] = (FPS,)
+        self.editor.animationFPS = self.editor.animationFPSstep = FPS
         self.setanimationfpschanged()
 
     def setanimationfpschanged(self):
@@ -214,9 +209,9 @@ class ModelLayout(BaseLayout):
         self.editor.animationFPS = not self.editor.animationFPS and self.editor.animationFPSstep
         self.setanimationfpschanged()
 
-    def animationfpscustomgrid(self, m):
+    def animationfpscustom(self, m):
         import mdleditor
-        mdleditor.SkinCustomGrid(self.editor)
+        mdleditor.AnimationCustomFPS(self.editor)
 
 
   ### To setup the Skin-view grid independent from the editor grid.
@@ -678,6 +673,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.51  2007/10/18 02:31:54  cdunde
+#Setup the Model Editor Animation system, functions and toolbar.
+#
 #Revision 1.50  2007/10/09 04:16:25  cdunde
 #To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
 #
