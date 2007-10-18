@@ -307,7 +307,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
          #       return
         editor.ModelFaceSelList = templist
         import mdlutils
-        mdlutils.MakeEditorFaceObject(editor)
+        list = mdlutils.MakeEditorFaceObject(editor)
         if quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
             if SkinView1 is not None:
                 if quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
@@ -359,7 +359,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
                         mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
                 if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] != "1":
-                    list = mdlutils.MakeEditorFaceObject(editor)
+      #              list = mdlutils.MakeEditorFaceObject(editor)
                     self.draw(editor, v, list)
 
 
@@ -2882,6 +2882,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.102  2007/10/11 09:58:34  cdunde
+#To keep the fillcolor correct for the editors 3D view after a
+#tree-view selection is made with the floating 3D view window open and
+#to stop numerous errors and dupe drawings when the floating 3D view window is closed.
+#
 #Revision 1.101  2007/10/09 04:16:25  cdunde
 #To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
 #
