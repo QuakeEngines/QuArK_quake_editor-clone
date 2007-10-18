@@ -723,12 +723,31 @@ class BaseEditor:
                                     mdlmgr.treeviewselchanged = 1
                                 except:
                                     pass
-                                if self.ModelFaceSelList != []:
-                                    import mdlhandles
-                                    v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
-                                v.invalidate(1)
-                                mdleditor.setsingleframefillcolor(self, v)
-                                v.repaint()
+                                if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+                                    if v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] != "1":
+                                        pass
+                                    elif v.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] != "1":
+                                        pass
+                                    elif v.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] != "1":
+                                        pass
+                                    elif v.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateEd3Dview'] != "1":
+                                        pass
+                                    elif v.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateFloat3Dview'] != "1":
+                                        pass
+                                    else:
+                                        if self.ModelFaceSelList != []:
+                                            import mdlhandles
+                                            v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
+                                        v.invalidate(1)
+                                        mdleditor.setsingleframefillcolor(self, v)
+                                        v.repaint()
+                                else:
+                                    if self.ModelFaceSelList != []:
+                                        import mdlhandles
+                                        v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
+                                    v.invalidate(1)
+                                    mdleditor.setsingleframefillcolor(self, v)
+                                    v.repaint()
                         return
                     else:
                         return
@@ -1412,6 +1431,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.99  2007/10/18 02:31:54  cdunde
+#Setup the Model Editor Animation system, functions and toolbar.
+#
 #Revision 1.98  2007/10/14 06:04:49  cdunde
 #To stop L & RMB click from causing zooming in all views including Skin-view.
 #

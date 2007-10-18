@@ -233,7 +233,6 @@ class ModelEditor(BaseEditor):
 #py2.4            quarkx.settimer(commonhandles, self, delay*1000.0)
        #     delayfactor = delay*1000
             if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
-   #             delayfactor = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
                 delayfactor = int(quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0]*.5)
                 if delayfactor < 1:
                     delayfactor = 1
@@ -953,6 +952,8 @@ def paintframefill(self, v):
 
 
 def commonhandles(self, redraw=1):
+    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+        return
     from qbaseeditor import flagsmouse, currentview
     import qhandles
     import mdlhandles
@@ -1357,6 +1358,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.73  2007/10/18 02:31:54  cdunde
+#Setup the Model Editor Animation system, functions and toolbar.
+#
 #Revision 1.72  2007/10/06 05:24:56  cdunde
 #To add needed comments and finish setting up rectangle selection to work fully
 #with passing selected faces in the editors view to the Skin-view.

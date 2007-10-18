@@ -27,14 +27,29 @@ playlist = []
 playNR = 0
 def drawanimation(view):
     global playNR
+    import mdleditor
+    editor = mdleditor.mdleditor
     FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] == "1":
-        pass
+        import mdlmgr
+        from mdlmgr import treeviewselchanged
+        if treeviewselchanged == 1:
+            for v in editor.layout.views:
+                if v.info["viewname"] == "XY" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] == "1":
+                    mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()
+                elif v.info["viewname"] == "XZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] == "1":
+                    mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()
+                elif v.info["viewname"] == "YZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] == "1":
+                    mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()
+                else:
+                    pass
+            mdlmgr.treeviewselchanged = 0
+        else:
+            pass
     else:
-        editor = mapeditor()
-        if editor is None:
-            import mdleditor
-            editor = mdleditor.mdleditor
         frame = playlist[playNR]
         if playNR == len(playlist) - 1:
             playNR = 0
@@ -42,7 +57,16 @@ def drawanimation(view):
             playNR = playNR + 1
         editor.layout.explorer.uniquesel = frame
         editor.layout.selchange
-        view.invalidate()
+        for v in editor.layout.views:
+            if v.info["viewname"] == "XY" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] == "1":
+                mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+            if v.info["viewname"] == "XZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] == "1":
+                mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
+            if v.info["viewname"] == "YZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] == "1":
+                mdleditor.setsingleframefillcolor(editor, v)
+                v.repaint()
     return FPS
 
 
@@ -380,12 +404,12 @@ class AnimationBar(ToolBar):
                 editor.layout.explorer.sellist = []
                 FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
                 playNR = 0
+                # This sets (starts) the timer and calls the drawing function for the first time.
+                # The drawing function will be recalled each time that the timer goes off
+                # and is reset in the drawanimation function.
                 for view in editor.layout.views:
                     if view.info["viewname"] == "XY":
                         view.info["timer"] = 1 # This gives the view a timer.
-                        # This initially sets the timer to call the drawing function.
-                        # The function will redraw the view each time the timer is reset
-                        # in the drawanimation function.
                         quarkx.settimer(drawanimation, view, FPS)
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = None
@@ -393,9 +417,9 @@ class AnimationBar(ToolBar):
             btn.state = qtoolbar.normal
             quarkx.update(editor.form)
             playNR = 0
+            # This terminates the animation timer stopping the repeditive drawing function.
             for view in editor.layout.views:
                 if view.info["viewname"] == "XY":
-                     # This terminates the view's timer.
                     quarkx.settimer(drawanimation, view, 0)
             editor.layout.explorer.sellist = playlist
 
@@ -621,6 +645,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.1  2007/10/18 02:31:55  cdunde
+#Setup the Model Editor Animation system, functions and toolbar.
+#
 #
 #
 #
