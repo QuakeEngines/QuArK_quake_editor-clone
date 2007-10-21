@@ -1,5 +1,5 @@
 title: Leakhunt
-desc: tools open map event popup
+desc: tools open map dicts event popup
 
 User reports and the use of Atanas Stoyanov's <a href=www.automatedqa.com>
 Memproof<a> reveals a substantial assortment of resource and memory
