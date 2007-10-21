@@ -706,7 +706,9 @@ class BaseEditor:
                         if flagsmouse == 16384:
                             for v in self.layout.views:
                                 if v.viewmode != "wire":
-                                    v.invalidate(rebuild)
+                                    v.invalidate(1)
+                                    mdleditor.setsingleframefillcolor(self, v)
+                                    v.repaint()
                         return
                     elif self.layout.selchange:
                         for v in self.layout.views:
@@ -1431,6 +1433,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.100  2007/10/18 16:11:31  cdunde
+#To implement selective view buttons for Model Editor Animation.
+#
 #Revision 1.99  2007/10/18 02:31:54  cdunde
 #Setup the Model Editor Animation system, functions and toolbar.
 #
