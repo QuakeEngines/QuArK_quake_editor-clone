@@ -36,6 +36,7 @@ startup = 0
 saveskin = None
 savedskins = {}
 skincount = 0
+savefacesel = 0
 treeviewselchanged = 0 ### This global is set to 1 when any new item is selected in the Tree-view.
                        ### 1) Use it like this in any file: from mdlmgr import treeviewselchanged
                        ### 2) Test for its value of 0 or 1:     if treeviewselchanged == 1:
@@ -263,7 +264,6 @@ class ModelLayout(BaseLayout):
 
     def skintogglegrid(self, sender):
         self.editor.skingrid = not self.editor.skingrid and self.editor.skingridstep
-    #    self.skingridchanged(0)
         self.skingridchanged()
 
     def skincustomgrid(self, m):
@@ -272,8 +272,13 @@ class ModelLayout(BaseLayout):
 
     def skinaligntogrid(self, v):
         import mdlhandles
-  #      mdlhandles.setupskingrid(self.editor)
         return mdlhandles.alignskintogrid(v, 0)
+
+    def reskin(self, m):
+        global savefacesel
+        savefacesel = 1
+        import mdlutils
+        mdlutils.skinremap(self.editor)
 
   ### Used to setup the skinview.
   ### copied from mapmgr.py def polyviewdraw
@@ -295,9 +300,10 @@ class ModelLayout(BaseLayout):
         self.Vertexdragmode.mode = self.MODE
         self.Vertexdragmode.tag = "SingleVertexDrag"
         self.Vertexdragmode.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
-        self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode})
+        self.skinremapbtn = qtoolbar.button(self.reskin, "Remap Snapshot||Remap Snapshot:\n\nClick this button when you have selected some faces in any of the editor's views and it will 'Re-map' those faces on the current Face-view skin for that component using the angle of view that is seen in the editor's 3D view when the button is clicked.\n\nChanging the angle, panning or zooming in the editor's 3D view and clicking the button again will change the size and re-mapping of those same faces once more.\n\nTo reverse what has been done use the 'Undo/Redo' list on the Edit menu.", ico_mdlskv, 1, "Skin-view", infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
+        self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode, "skinremap": self.skinremapbtn})
         tp = fp.newtoppanel(123,0) # Sets the height of the top panel.
-        btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, self.Vertexdragmode])
+        btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, self.Vertexdragmode, self.skinremapbtn])
         btnp.margins = (0,0)
         self.skinform = tp.newdataform()
         self.skinform.header = 0
@@ -481,7 +487,7 @@ class ModelLayout(BaseLayout):
 
     def selectcomponent(self, comp):
         "This is when you select a particular 'Component' or any 'Group' within it in the Tree-view."
-        global savedskins
+        global savedskins, savefacesel
         from qbaseeditor import currentview, flagsmouse
 
         if comp != self.editor.Root.currentcomponent:
@@ -490,12 +496,16 @@ class ModelLayout(BaseLayout):
                 if self.editor.dragobject is not None and (isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
                     pass
                 else:
-                    self.editor.ModelVertexSelList = []
-                    self.editor.SkinVertexSelList = []
-                    self.editor.ModelFaceSelList = []
-                    self.editor.EditorObjectList = []
-                    self.editor.SkinFaceSelList = []
-                    self.editor.Root.currentcomponent.filltris = []
+                    if savefacesel == 1:
+                        savefacesel = 0
+                    else:
+                        savefacesel = 0
+                        self.editor.ModelVertexSelList = []
+                        self.editor.SkinVertexSelList = []
+                        self.editor.ModelFaceSelList = []
+                        self.editor.EditorObjectList = []
+                        self.editor.SkinFaceSelList = []
+                        self.editor.Root.currentcomponent.filltris = []
             else:
                 if flagsmouse == 2056:
                     pass
@@ -504,11 +514,15 @@ class ModelLayout(BaseLayout):
                         if flagsmouse == 2060 and (isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
                             pass
                         else:
-                            self.editor.SkinVertexSelList = []
-                            self.editor.ModelVertexSelList = []
-                            self.editor.ModelFaceSelList = []
-                            self.editor.EditorObjectList = []
-                            self.editor.SkinFaceSelList = []
+                            if savefacesel == 1:
+                                savefacesel = 0
+                            else:
+                                savefacesel = 0
+                                self.editor.SkinVertexSelList = []
+                                self.editor.ModelVertexSelList = []
+                                self.editor.ModelFaceSelList = []
+                                self.editor.EditorObjectList = []
+                                self.editor.SkinFaceSelList = []
                     except:
                         self.editor.SkinVertexSelList = []
                         self.editor.ModelVertexSelList = []
@@ -673,6 +687,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.52  2007/10/18 23:53:43  cdunde
+#To setup Custom Animation FPS Dialog, remove possibility of using 0, causing a crash and Defaults.
+#
 #Revision 1.51  2007/10/18 02:31:54  cdunde
 #Setup the Model Editor Animation system, functions and toolbar.
 #

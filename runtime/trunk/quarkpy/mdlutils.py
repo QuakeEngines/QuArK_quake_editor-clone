@@ -585,6 +585,53 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
 
 
 #
+# Changes the selected faces (triangles), in the ModelFaceSelList of the editor,
+# u and v skinning coords based on the editor3Dview positions
+# which also changes their layout in the Skin-view causing a
+# "re-mapping" of those selected faces skin positions.
+#
+def skinremap(editor):
+    comp = editor.Root.currentcomponent
+    if (comp is None) or (comp.currentframe is None) or (editor.ModelFaceSelList == []):
+        quarkx.msgbox("Improper Action !\n\nYou need to select at least one\nface of a component to be re-skinned\nto activate this function.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
+        return
+    new_comp = comp.copy()
+    framevtxs = comp.currentframe.vertices
+
+    # Sets the editors 3D view to get the new u,v co-ordinances from.
+    for v in editor.layout.views:
+        if v.info["viewname"] == "editors3Dview":
+            cordsview = v
+
+    # Changes the old u,v Skin-view position values for each selected face
+    # to the new ones and replaces those old triangles with the updated ones.
+    for tri_index in editor.ModelFaceSelList:
+        # Because the original list can not be changed, we use a dummy list copy
+        # then pass the updated values back to the original list, and so on, in a loop.
+        newtris = new_comp.triangles
+        for vtx in range(len(comp.triangles[tri_index])):
+            u = int(cordsview.proj(framevtxs[comp.triangles[tri_index][vtx][0]]).tuple[0])
+            v = int(cordsview.proj(framevtxs[comp.triangles[tri_index][vtx][0]]).tuple[1])
+            if vtx == 0:
+                vtx0 = (comp.triangles[tri_index][vtx][0], u, v)
+            elif vtx == 1:
+                vtx1 = (comp.triangles[tri_index][vtx][0], u, v)
+            else:
+                vtx2 = (comp.triangles[tri_index][vtx][0], u, v)
+        tri = (vtx0, vtx1, vtx2)
+        newtris[tri_index:tri_index+1] = [tri]
+        new_comp.triangles = newtris
+
+    # Finally the undo exchange is made and ok called to finish the function.
+    undo = quarkx.action()
+    undo.exchange(comp, new_comp)
+    editor.ok(undo, "Skin-view remap")
+    for view in editor.layout.views:
+        if view.viewmode != "wire":
+            view.invalidate(1)
+
+
+#
 # Add a vertex to the currently selected model component or frame(s)
 # at the position where the cursor was when the RMB was clicked.
 #
@@ -1608,6 +1655,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.47  2007/10/08 16:19:42  cdunde
+#Missed a change item.
+#
 #Revision 1.46  2007/10/06 20:14:31  cdunde
 #Added function option to just update the editors 2D views.
 #
