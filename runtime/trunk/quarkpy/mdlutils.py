@@ -353,7 +353,7 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
                         face = poly.subitems[0]
                         vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
                         old_vtxs[vtxnbr] = vertex
-                        compframe.vertices = old_vtxs
+                    compframe.vertices = old_vtxs
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -1655,6 +1655,10 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.48  2007/10/21 04:52:27  cdunde
+#Added a "Snap Shot" function and button to the Skin-view to allow the re-skinning
+#of selected faces in the editor based on their position in the editor's 3D view.
+#
 #Revision 1.47  2007/10/08 16:19:42  cdunde
 #Missed a change item.
 #
