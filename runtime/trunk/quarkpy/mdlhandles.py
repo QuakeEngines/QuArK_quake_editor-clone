@@ -748,6 +748,9 @@ class VertexHandle(qhandles.GenericHandle):
     def draw(self, view, cv, draghandle=None):
         from qbaseeditor import flagsmouse, currentview # To stop all drawing, causing slowdown, during a zoom.
 
+        if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+            view.handles = []
+            return
         if (flagsmouse == 520 or flagsmouse == 1032) and draghandle is not None: return # LMB pressed or dragging model mesh handle.
         if flagsmouse == 528 or flagsmouse == 1040: return # RMB pressed or dragging to pan (scroll) in the view.
 
@@ -1787,6 +1790,13 @@ def BuildCommonHandles(editor, explorer, option=1):
     "option=1: Clears all exising handles in the 'h' list and rebuilds it for specific handle type."
     "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
 
+    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+        h = []
+        if len(editor.ModelFaceSelList) != 0:
+            import mdlutils
+            mdlutils.MakeEditorFaceObject(editor)
+        return h
+
     if len(explorer.sellist) >= 1:
         for item in explorer.sellist:
             if item.type != ':mf':
@@ -1844,6 +1854,14 @@ def BuildHandles(editor, explorer, view, option=1):
     "def buildhandles function and returns the list of handles to that function."
     "option=1: Clears all exising handles in the 'h' list and rebuilds it for specific handle type."
     "option=2: Does NOT clear the list but adds to it to allow a combination of view handles to use."
+
+    if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+        view.handles = []
+        h = []
+        if len(editor.ModelFaceSelList) != 0:
+            import mdlutils
+            mdlutils.MakeEditorFaceObject(editor)
+        return h
 
     if len(explorer.sellist) >= 1:
         for item in explorer.sellist:
@@ -2882,6 +2900,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.103  2007/10/18 23:53:16  cdunde
+#To remove dupe call to make selected face objects.
+#
 #Revision 1.102  2007/10/11 09:58:34  cdunde
 #To keep the fillcolor correct for the editors 3D view after a
 #tree-view selection is made with the floating 3D view window open and
