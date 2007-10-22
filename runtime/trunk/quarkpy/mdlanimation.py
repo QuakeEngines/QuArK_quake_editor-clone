@@ -25,7 +25,7 @@ from qdictionnary import Strings
 # =========
 playlist = []
 playNR = 0
-def drawanimation(view):
+def drawanimation(self):
     global playNR
     import mdleditor
     editor = mdleditor.mdleditor
@@ -386,7 +386,8 @@ class AnimationBar(ToolBar):
     def animate(self, btn):
         "Activates and deactivates animation."
         global playlist, playNR
-        editor = mapeditor()
+        import mdleditor
+        editor = mdleditor.mdleditor
         if not MldOption("AnimationActive"):
             if editor.layout.explorer.sellist == [] or len(editor.layout.explorer.sellist) < 2:
                 quarkx.msgbox("Improper Action !\n\nYou need to select at least two frames\n(and no other types of sub-items)\nof the same component to activate animation.\n\nPress 'F1' for InfoBase help\nof this function for details.\n\nAction Canceled.", MT_ERROR, MB_OK)
@@ -402,15 +403,15 @@ class AnimationBar(ToolBar):
                 quarkx.update(editor.form)
                 playlist = editor.layout.explorer.sellist
                 editor.layout.explorer.sellist = []
+                for view in editor.layout.views:
+                    view.handles = []
+                    mdleditor.setsingleframefillcolor(editor, view)
+                    view.repaint()
                 FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
                 playNR = 0
                 # This sets (starts) the timer and calls the drawing function for the first time.
-                # The drawing function will be recalled each time that the timer goes off
-                # and is reset in the drawanimation function.
-                for view in editor.layout.views:
-                    if view.info["viewname"] == "XY":
-                        view.info["timer"] = 1 # This gives the view a timer.
-                        quarkx.settimer(drawanimation, view, FPS)
+                # The drawing function will be recalled each time that the timer goes off.
+                quarkx.settimer(drawanimation, self, FPS)
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = None
             qtoolbar.toggle(btn)
@@ -418,9 +419,7 @@ class AnimationBar(ToolBar):
             quarkx.update(editor.form)
             playNR = 0
             # This terminates the animation timer stopping the repeditive drawing function.
-            for view in editor.layout.views:
-                if view.info["viewname"] == "XY":
-                    quarkx.settimer(drawanimation, view, 0)
+            quarkx.settimer(drawanimation, self, 0)
             editor.layout.explorer.sellist = playlist
 
     def incrementFPS(self, btn):
@@ -645,6 +644,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.2  2007/10/18 16:11:31  cdunde
+#To implement selective view buttons for Model Editor Animation.
+#
 #Revision 1.1  2007/10/18 02:31:55  cdunde
 #Setup the Model Editor Animation system, functions and toolbar.
 #
