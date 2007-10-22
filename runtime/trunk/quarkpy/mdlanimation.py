@@ -14,8 +14,6 @@ import qmenu
 from mdlutils import *
 import qbaseeditor
 import mdlhandles
-
-
 import qtoolbar
 import qmacro
 from qeditor import *
@@ -70,232 +68,6 @@ def drawanimation(self):
     return FPS
 
 
-def readmpvalues(spec, mode):
-    quarkx.globalaccept()
-    try:
-        setup = qmacro.dialogboxes[ConfigDialog.__name__].info.src
-    except:
-        setup = quarkx.setupsubset(mode, "Building")
-    return setup[spec]
-
-
-def btnclick(btn, mode=SS_MODEL):
-    editor = mapeditor(mode)
-    if editor is None: return
-    offset = matrix = inflate = val = None
-    try:
-        val = readmpvalues(btn.spec, mode)
-    except:
-        pass
-    try:
-        offset = btn.offset
-        offset = apply(offset, val)
-    except:
-        pass
-    try:
-        matrix = btn.matrix
-        matrix = apply(matrix, val)
-    except:
-        pass
-    try:
-        inflate = btn.inflate
-        inflate = apply(inflate, val)
-    except:
-        pass
-    import mdlbtns
-    mdlbtns.moveselection(editor, btn.text, offset, matrix, inflate=inflate)
-
-
-
-class ConfigDialog(qmacro.dialogbox):
-    "The Map Editor's Movement Tool Palette configuration dialog box."
-
-    #
-    # Dialog box shape
-    #
-
-    dlgflags = FWF_NOESCCLOSE
-    begincolor = RED
-    endcolor = MAROON
-    size = (300,198)
-    dlgdef = """
-      {
-        Style = "9"
-        Caption = "Movement Tool Palette"
-        sep: = {Typ="S" Txt=" "}    // some space
-        mpOffset: = {
-          Txt="Move selection (x, y, z) :"
-          Typ="EF3"
-          Hint="x, y, z values to add to the coordinates in order to move the selection"
-        }
-        mpZoom: = {
-          Txt="Zoom factor :"
-          Typ="EF1"
-          Min='1'
-          Hint="scaling factor for enlarge and shrink"
-        }
-        WallWidth: = {
-          Txt="Inflate/Deflate by :"
-          Typ="EF1"
-          Hint="positive values inflate the polyhedrons, negative values deflate them"
-        }
-        mpRotate: = {
-          Txt="Rotation angle :"
-          Typ="EF1"
-          Hint="the angle that each rotation makes the objects turn"
-        }
-        sep: = {Typ="S" Txt=" "}    // some space
-        sep: = {Typ="S" Txt=""}    // a separator line
-        ok:py = {Txt="" }
-        cancel:py = {Txt="" }
-      }
-    """
-
-    def __init__(self, menu):
-        try:
-            self.mode = menu.mode
-        except:
-            self.mode = menu
-        setup = quarkx.setupsubset(self.mode, "Building").copy()
-        qmacro.dialogbox.__init__(self, quarkx.clickform, setup,
-          ok = qtoolbar.button(self.close, "close this box", ico_editor, 3, "Close"),
-          cancel = qtoolbar.button(self.cancel, "cancel changes", ico_editor, 0, "Cancel"))
-
-    def onclose(self, dlg):
-        if self.src is not None:
-            quarkx.globalaccept()
-            setup = quarkx.setupsubset(self.mode, "Building")
-            setup.copyalldata(self.src)
-        qmacro.dialogbox.onclose(self, dlg)
-
-    def cancel(self, reserved):
-        self.src = None
-        self.close()
-
-
-
-class MdlConfigDialog(qmacro.dialogbox):
-    "The Model Editor's Movement Tool Palette configuration dialog box."
-
-    #
-    # Dialog box shape
-    #
-
-    dlgflags = FWF_NOESCCLOSE
-    begincolor = RED
-    endcolor = MAROON
-    size = (300,300)
-    dlgdef = """
-      {
-        Style = "9"
-        Caption = "Movement Tool Palette"
-        sep: = {Typ="S" Txt=" "}    // some space
-        mpOffset: = {
-          Txt="Move selection (x, y, z) :"
-          Typ="EF3"
-          Hint="x, y, z values to add to the coordinates in order to move the selection"
-        }
-        mpZoom: = {
-          Txt="Zoom factor :"
-          Typ="EF1"
-          Min='1'
-          Hint="scaling factor for enlarge and shrink"
-        }
-        WallWidth: = {
-          Txt="Inflate/Deflate by :"
-          Typ="EF1"
-          Hint="positive values inflate the objects, negative values deflate them"
-        }
-        mpRotate: = {
-          Txt="Rotation angle :"
-          Typ="EF1"
-          Hint="the angle that each rotation makes the objects turn"
-        }
-        sep: = {Typ="S" Txt="Linear Handle settings"}    // designator title
-        LinearSetting: = {
-          Txt="Linear Handle Setting :"
-          Typ="EF"
-          Min="0.01"
-          Hint="larger value makes the handle bigger & visa-versa, default is 4"
-        }
-        LinRotationSpeed: = {
-          Txt="Linear Rotation Speed :"
-          Typ="EF0001"
-          Min="0.01"
-          Hint="larger value causes faster rotation & visa-versa, default is .057"
-        }
-        SkinLinearSetting: = {
-          Txt="Skin-view Linear Setting :"
-          Typ="EF"
-          Min="0.01"
-          Hint="larger value makes the handle bigger & visa-versa, default is 4"
-        }
-        sep: = {Typ="S" Txt=" "}    // some space
-        sep: = {Typ="S" Txt=""}    // a separator line
-        applychange:py = {Txt="" }
-        ok:py = {Txt="" }
-        cancel:py = {Txt="" }
-      }
-    """
-
-    def __init__(self, menu):
-        try:
-            self.mode = menu.mode
-        except:
-            self.mode = menu
-        import mdleditor
-        editor = mdleditor.mdleditor
-        self.editor = editor
-        setup = quarkx.setupsubset(self.mode, "Building").copy()
-        qmacro.dialogbox.__init__(self, quarkx.clickform, setup,
-          applychange = qtoolbar.button(self.apply, "apply the change", ico_editor, 1, "Apply"),
-          ok = qtoolbar.button(self.close, "apply and close", ico_editor, 3, "Close"),
-          cancel = qtoolbar.button(self.cancel, "cancel changes", ico_editor, 0, "Cancel"))
-
-    def apply(self, dlg):
-        if self.src is not None:
-            quarkx.globalaccept()
-            setup = quarkx.setupsubset(self.mode, "Building")
-            setup.copyalldata(self.src)
-            import mdlmgr
-            from mdlmgr import treeviewselchanged
-            mdlmgr.treeviewselchanged = 1
-            if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
-                quarkx.reloadsetup()
-                from mdlhandles import SkinView1
-                if SkinView1 is not None:
-                    import mdlhandles
-                    try:
-                        skindrawobject = self.editor.Root.currentcomponent.currentskin
-                    except:
-                        skindrawobject = None
-                    mdlhandles.buildskinvertices(self.editor, SkinView1, self.editor.layout, self.editor.Root.currentcomponent, skindrawobject)
-
-    def onclose(self, dlg):
-        if self.src is not None:
-            quarkx.globalaccept()
-            setup = quarkx.setupsubset(self.mode, "Building")
-            setup.copyalldata(self.src)
-            import mdlmgr
-            from mdlmgr import treeviewselchanged
-            mdlmgr.treeviewselchanged = 1
-            if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
-                quarkx.reloadsetup()
-                from mdlhandles import SkinView1
-                if SkinView1 is not None:
-                    import mdlhandles
-                    try:
-                        skindrawobject = self.editor.Root.currentcomponent.currentskin
-                    except:
-                        skindrawobject = None
-                    mdlhandles.buildskinvertices(self.editor, SkinView1, self.editor.layout, self.editor.Root.currentcomponent, skindrawobject)
-        qmacro.dialogbox.onclose(self, dlg)
-
-    def cancel(self, reserved):
-        self.src = None
-        self.close()
-
-
 
 class DeactivateAnimation(mdlhandles.RectSelDragObject):
     "This is just a place holder to turn the Animation toolbar functions on and off."
@@ -340,29 +112,20 @@ AnimationModes = [(DeactivateAnimation                 ,0)
                  ,(Floating3Dview                      ,9)
                  ]
 
-### This part effects each buttons selection mode and
-### interacts with the Dragmodes and Terrainmodes toolbar buttons
+### This part effects each buttons selection mode.
 
 def selectmode(btn):
     editor = mapeditor(SS_MODEL)
     if editor is None: return
     try:
         tb1 = editor.layout.toolbars["tb_animation"]
-  #      tb2 = editor.layout.toolbars["tb_terrmodes"]
-  #      tb3 = editor.layout.toolbars["tb_dragmodes"]
     except:
         return
     for b in tb1.tb.buttons:
         b.state = quarkpy.qtoolbar.normal
     select1(btn, tb1, editor)
-  #  for b in tb2.tb.buttons:
-  #      b.state = quarkpy.qtoolbar.normal
-  #  for b in tb3.tb.buttons:
-  #      b.state = quarkpy.qtoolbar.normal
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MODEL, "Building").setint("AnimationMode", btn.i)
-  #  quarkx.setupsubset(SS_MODEL, "Building").setint("DragMode", 5)
-  #  quarkx.setupsubset(SS_MODEL, "Building").setint("TerrMode", 20)
 
 def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = AnimationModes[btn.i]
@@ -534,10 +297,6 @@ class AnimationBar(ToolBar):
               # to build the single click button
         ico_dict['ico_animmodes'] = LoadIconSet1("mdlanim", 1.0)
         ico_animmodes = ico_dict['ico_animmodes']
-
-    # In case we want to add some kind of dialog box.
-    #    BuildDialogbtn = qtoolbar.button(DialogClick, "Object Dialog Input||Object Dialog Input:\n\nThis will open a dialog input box for the 'Object modes Toolbar' item currently in use. Not all objects will use the same dialog input box. Which ever object button is active at the time this button is clicked, will produce that objects dialog input box.\n\nThese dialogs will remain open until they are closed manually.\n\nIf a particular object has its own dialog then that objects name will appear in the title. Other wise the standard ' Object Distortion Dialog ' will be used for all other objects.\n\nYou can have one or more dialogs open and active at a time. But they will only effect the objects that use them.", ico_objectmodes, 0, infobaselink="intro.mapeditor.toolpalettes.objectmodes.html#dialog")
-
               # to build the Mode buttons
         btns = []
         for i in range(len(AnimationModes)):
@@ -546,21 +305,7 @@ class AnimationBar(ToolBar):
             btn.i = i
             btns.append(btn)
         i = quarkx.setupsubset(SS_MODEL, "Building").getint("AnimationMode")
-     #   dm = quarkx.setupsubset(SS_MODEL, "Building").getint("DragMode")
-     #   tm = quarkx.setupsubset(SS_MODEL, "Building").getint("TerrMode")
-     #   if i == 20 or dm == 0 or tm == 0:
-     #       leave = 0
-     #   else:
-     #       select1(btns[i], self, layout.editor)
         select1(btns[i], self, layout.editor)
-        revbtns = [] # to put the single click Builderbtns first then the others.
-    # Incase we want to add some kind of dialog box.
-    #    revbtns.append(BuildDialogbtn)
-        revbtns = revbtns + btns
-
-        if not ico_dict.has_key('ico_movepal'):
-            ico_dict['ico_movepal']=LoadIconSet1("movepal", 1.0)
-        icons = ico_dict['ico_movepal']
 
         if not ico_dict.has_key('ico_mdlanim'):
             ico_dict['ico_mdlanim']=LoadIconSet1("mdlanim", 1.0)
@@ -581,10 +326,6 @@ class AnimationBar(ToolBar):
         y2dviewanimated = qtoolbar.button(self.animatey2dview, "Animate Y Side 2D view||Animate Y Side 2D view:\n\nActivate this button to animate in the Editor's Y Side 2D view.", ico_dict['ico_mdlanim'], 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
         z2dviewanimated = qtoolbar.button(self.animatez2dview, "Animate Z Top 2D view||Animate Z Top 2D view:\n\nActivate this button to animate in the Editor's Z Top 2D view.", ico_dict['ico_mdlanim'], 8, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
         float3dviewanimated = qtoolbar.button(self.animatefloat3dview, "Animate Floating 3D view||Animate Floating 3D view:\n\nActivate this button to animate in the Editor's Floating 3D view.", ico_dict['ico_mdlanim'], 9, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
-
-        mdlbtncfg = qtoolbar.button(MdlConfigDialog, "Change this toolbar settings||Change this toolbar settings:\n\nThis opens the Movement toolbar configuration window.\n\nIf you hold your mouse cursor over each of the setting input areas, a description- help display will appear to give you information about what settings to use and how they work.\n\nClick the check mark to apply the new settings.\n\nClick the X to close the window without changing the current settings.", icons, 0, infobaselink="intro.mapeditor.toolpalettes.movement.html#configuration")
-        mdlbtncfg.icolist = icons
-        mdlbtncfg.mode = layout.MODE
 
         if not MldOption("AnimationActive"):
             animateonoff.state = qtoolbar.normal
@@ -633,9 +374,6 @@ class AnimationBar(ToolBar):
                                "floatd3dview": float3dviewanimated
                              })
 
-    #    return [revbtns, animateonoff, fpsbtn, increasefps, decreasefps, qtoolbar.sep, animatepaused, qtoolbar.sep,
-    #            editor3dviewanimated, x2dviewanimated, y2dviewanimated, z2dviewanimated, float3dviewanimated]
-
         return [animateonoff, fpsbtn, increasefps, decreasefps, qtoolbar.sep, animatepaused, qtoolbar.sep,
                 editor3dviewanimated, x2dviewanimated, y2dviewanimated, z2dviewanimated, float3dviewanimated]
 
@@ -644,6 +382,11 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.3  2007/10/22 02:21:46  cdunde
+#Needed to change the Animation timer to be non-dependent on any view
+#to allow proper redrawing of all views when the Animation is stopped
+#and set fillcolor and repaint all views to properly clear handles drawn.
+#
 #Revision 1.2  2007/10/18 16:11:31  cdunde
 #To implement selective view buttons for Model Editor Animation.
 #
