@@ -64,31 +64,32 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
         # when one or more frames are selected in the tree-view.
         rulerlist = editor.EditorObjectList
         if rulerlist != [] and rulerlist[0].name.endswith(":f"):
-            Xmax = Xmin = rulerlist[0].dictspec['v'][0]
-            Ymax = Ymin = rulerlist[0].dictspec['v'][1]
-            Zmax = Zmin = rulerlist[0].dictspec['v'][2]
+            Xmax = Xmin = rulerlist[0]['v'][0]
+            Ymax = Ymin = rulerlist[0]['v'][1]
+            Zmax = Zmin = rulerlist[0]['v'][2]
             for facenbr in range(len(rulerlist)):
                 vtxcount = 0
                 if facenbr == len(rulerlist):
                     break
+                vtxlist = rulerlist[facenbr]['v']
                 while vtxcount < 9:
                     if (vtxcount == 0) or (vtxcount == 3) or (vtxcount == 6):
-                        if rulerlist[facenbr].dictspec['v'][vtxcount] > Xmax:
-                            Xmax = rulerlist[facenbr].dictspec['v'][vtxcount]
-                        if rulerlist[facenbr].dictspec['v'][vtxcount] < Xmin:
-                            Xmin = rulerlist[facenbr].dictspec['v'][vtxcount]
+                        if vtxlist[vtxcount] > Xmax:
+                            Xmax = vtxlist[vtxcount]
+                        if vtxlist[vtxcount] < Xmin:
+                            Xmin = vtxlist[vtxcount]
                         vtxcount = vtxcount + 1
                     if (vtxcount == 1) or (vtxcount == 4) or (vtxcount == 7):
-                        if rulerlist[facenbr].dictspec['v'][vtxcount] > Ymax:
-                            Ymax = rulerlist[facenbr].dictspec['v'][vtxcount]
-                        if rulerlist[facenbr].dictspec['v'][vtxcount] < Ymin:
-                            Ymin = rulerlist[facenbr].dictspec['v'][vtxcount]
+                        if vtxlist[vtxcount] > Ymax:
+                            Ymax = vtxlist[vtxcount]
+                        if vtxlist[vtxcount] < Ymin:
+                            Ymin = vtxlist[vtxcount]
                         vtxcount = vtxcount + 1
                     if (vtxcount == 2) or (vtxcount == 5) or (vtxcount == 8):
-                        if rulerlist[facenbr].dictspec['v'][vtxcount] > Zmax:
-                            Zmax = rulerlist[facenbr].dictspec['v'][vtxcount]
-                        if rulerlist[facenbr].dictspec['v'][vtxcount] < Zmin:
-                            Zmin = rulerlist[facenbr].dictspec['v'][vtxcount]
+                        if vtxlist[vtxcount] > Zmax:
+                            Zmax = vtxlist[vtxcount]
+                        if vtxlist[vtxcount] < Zmin:
+                            Zmin = vtxlist[vtxcount]
                         vtxcount = vtxcount + 1
             bmax = quarkx.vect(Xmax,Ymax,Zmax)
             bmin = quarkx.vect(Xmin,Ymin,Zmin)
@@ -594,6 +595,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.13  2007/10/09 22:05:43  cdunde
+#To change rulers selection measurement items for the Model Editor.
+#
 #Revision 1.12  2007/10/08 16:47:39  cdunde
 #Tying to get version control and change to ASCII.
 #
