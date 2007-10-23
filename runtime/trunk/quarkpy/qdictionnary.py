@@ -889,7 +889,7 @@ Strings = {
     5697: "Shader stage '%s' has no image to display",
     5698: "Shader '%s' not found in %s",
     5699: "(complex)",
-    5700: "%s or %s",
+    #5700: "%s or %s",
     5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
     #5702: "Unknown map format: %s\n",
 
@@ -1023,6 +1023,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.108  2007/09/23 21:04:35  danielpharos
+#Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+#
 #Revision 1.107  2007/09/21 21:19:51  cdunde
 #To add message string that is model editor specific.
 #

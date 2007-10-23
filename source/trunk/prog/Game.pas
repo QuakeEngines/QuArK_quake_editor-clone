@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2007/09/13 14:34:53  danielpharos
+The name of a pakfile containing a texture can now be specified per texture
+
 Revision 1.47  2007/09/10 10:08:11  danielpharos
 Fix a comment-sign
 
@@ -689,12 +692,10 @@ begin
   begin
     AliasName := GetNextAlias;
     if AliasName <> '' then
-      Result:=Result + LoadStr1(4204) + GetNextAlias;
+      Result:=Result + LoadStr1(4204) + AliasName;
   end;
   if Result='' then
-    Result:=FileName
-  else
-    Result:=FmtLoadStr1(5700, [FileName, Result]);
+    Result:=FileName;
 end;
 
 function NeedGameFile(const FileName, PakFile: String) : QFileObject;
