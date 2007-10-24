@@ -268,8 +268,14 @@ class ComponentType(EntityManager):
         import qmenu
         SC1 = qmenu.item("&Show Component", ShowComp)
         HC1 = qmenu.item("&Hide Component", HideComp)
+
+        if len(o.triangles) == 0:
+            HC1.state = qmenu.disabled
+        else:
+            SC1.state = qmenu.disabled
+
         import mdlmenus
-        return CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor) + [SC1, HC1]
+        return CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor) + [qmenu.sep, SC1, HC1]
  
 
     def handles(o, editor, view):
@@ -414,6 +420,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.21  2007/10/09 04:16:25  cdunde
+#To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
+#
 #Revision 1.20  2007/09/01 19:36:40  cdunde
 #Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
 #Changed selected face outline drawing method to greatly increase drawing speed.
