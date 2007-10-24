@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.364  2007/10/18 23:53:43  cdunde
+//To setup Custom Animation FPS Dialog, remove possibility of using 0, causing a crash and Defaults.
+//
 //Revision 1.363  2007/10/18 02:31:53  cdunde
 //Setup the Model Editor Animation system, functions and toolbar.
 //
@@ -3390,7 +3393,7 @@ QQRKSRC1
       Display:config =
       {
         NormalVector      = '40'
-        GridStep          = '1'
+        GridStep          = '2'
         GridMinStep       = '5'
         MapLimit          = '512 512 512'
         GridHighlight     = "8"
@@ -3451,7 +3454,19 @@ QQRKSRC1
       }
       Layouts:config =
       {
-        _layout = "Classic"
+        _layout = "4 views"
+        4 views:config =
+        {
+          LeftPanel = $B4
+          LeftPanelV = '0.37000'
+          ViewMode = "wwwt"
+          secs = '0.50000 0.50000'
+          tb_animation = "((208, 102, 429, 152), 'topdock', 0, 1, 1)"
+          tb_movepal = "((0, 0, 0, 0), 'topdock', 341, 0, 1)"
+          tb_AxisLock = "((0, 0, 0, 0), 'topdock', 218, 0, 1)"
+          tb_display = "((0, 0, 0, 0), 'topdock', 0, 0, 1)"
+          tb_objmodes = "((0, 0, 0, 0), 'topdock', 674, 0, 1)"
+        }
       }
     }
     Toolbars and Menus:config =
