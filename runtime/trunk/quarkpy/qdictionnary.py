@@ -292,6 +292,8 @@ Strings = {
     2434: "The current structure of this model is invalid. It cannot be saved in %s format.",
     2435: "The model contains no skin and the skin size is unspecified",
 
+    2549: "shift left / right",
+
     3001: "Esc",
     3002: "1",
     3003: "2",
@@ -1023,6 +1025,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.109  2007/10/23 14:47:51  danielpharos
+#Fixed the filename being double in the not-found error message.
+#
 #Revision 1.108  2007/09/23 21:04:35  danielpharos
 #Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
 #

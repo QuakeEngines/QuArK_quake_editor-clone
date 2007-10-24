@@ -176,6 +176,8 @@ def MakeEditorVertexPolyObject(editor, option=0):
         editor.Root.currentcomponent = editor.Root.dictitems[componentnames[0]]
         
     if option == 0:
+        if editor.ModelVertexSelList == []:
+            return []
         from qbaseeditor import currentview
         polylist = []
         group = quarkx.newobj("selected:g");
@@ -1655,6 +1657,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.49  2007/10/22 02:22:08  cdunde
+#To speed up conversion code.
+#
 #Revision 1.48  2007/10/21 04:52:27  cdunde
 #Added a "Snap Shot" function and button to the Skin-view to allow the re-skinning
 #of selected faces in the editor based on their position in the editor's 3D view.

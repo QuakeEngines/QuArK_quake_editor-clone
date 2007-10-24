@@ -277,10 +277,16 @@ def texturebrowser(reserved=None):
 def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=None):
     "Move the selection and/or apply a linear mapping on it."
 
+    import mdlutils
+    from qbaseeditor import currentview
     #
     # Get the list of selected items.
     #
-    items = editor.visualselection()
+    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+        items = editor.EditorObjectList
+        newlist = []
+    else:
+        items = mdlutils.MakeEditorVertexPolyObject(editor)
     if len(items):
         if matrix and (origin is None):
             #
@@ -293,7 +299,15 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
                     origin = quarkx.vect(0,0,0)
                 else:
                     origin = (bbox[0]+bbox[1])*0.5
-
+            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                if text == "symmetry":
+                    if items[0].type == ":f":
+                        matrix = matrix_rot_x(currentview.info["vangle"]) * matrix_rot_z(currentview.info["angle"])
+                else:
+                    pass
+            else:
+                if items[0].type == ":f":
+                    matrix = matrix_rot_x(currentview.info["vangle"]) * matrix_rot_z(currentview.info["angle"])
         undo = quarkx.action()
         for obj in items:
             new = obj.copy()
@@ -301,10 +315,35 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
                 new.translate(offset)     # offset the objects
             if matrix:
                 new.linear(origin, matrix)   # apply the linear mapping
+            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                if text == "symmetry":
+                    if obj.type == ":f":
+                        center = obj["usercenter"]
+                        if center is not None:
+                            newcenter = matrix*(quarkx.vect(center)-origin)+origin
+                            obj["usercenter"]=newcenter.tuple
+                else:
+                    pass
+            else:
+                if obj.type == ":f":
+                    center = obj["usercenter"]
+                    if center is not None:
+                        newcenter = matrix*(quarkx.vect(center)-origin)+origin
+                        obj["usercenter"]=newcenter.tuple
             if inflate:
                 new.inflate(inflate)    # inflate / deflate
-            undo.exchange(obj, new)
-        editor.ok(undo, text)
+
+            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                newlist = newlist + [new]
+        import mdlmgr
+        from mdlmgr import savefacesel
+        mdlmgr.savefacesel = 1
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+            text = "face " + text
+            mdlutils.ConvertEditorFaceObject(editor, newlist, currentview.flags, currentview, text)
+        else:
+            text = "vertex " + text
+            mdlutils.ConvertVertexPolyObject(editor, [new], currentview.flags, currentview, text, 0)
 
     else:
         #
@@ -349,6 +388,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.16  2007/09/21 21:19:51  cdunde
+#To add message string that is model editor specific.
+#
 #Revision 1.15  2007/09/12 19:47:39  cdunde
 #To update comment to a meaningful statement.
 #

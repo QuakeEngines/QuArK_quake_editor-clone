@@ -27,7 +27,11 @@ def readmpvalues(spec, mode):
 
 
 def btnclick(btn, mode=SS_MAP):
-    editor = mapeditor(mode)
+    if mode == 3:
+        import mdleditor
+        editor = mdleditor.mdleditor
+    else:
+        editor = mapeditor(mode)
     if editor is None: return
     offset = matrix = inflate = val = None
     try:
@@ -153,9 +157,9 @@ class MdlConfigDialog(qmacro.dialogbox):
           Hint="scaling factor for enlarge and shrink"
         }
         WallWidth: = {
-          Txt="Inflate/Deflate by :"
+          Txt="Shift Left/Right by :"
           Typ="EF1"
-          Hint="positive values inflate the objects, negative values deflate them"
+          Hint="negative values shifts the selection to the left,"$0D"positive values shifts the selection to the right"
         }
         mpRotate: = {
           Txt="Rotation angle :"
@@ -259,67 +263,75 @@ class ToolMoveBar(ToolBar):
             ico_dict['ico_movepal']=LoadIconSet1("movepal", 1.0)
         icons = ico_dict['ico_movepal']
 
-        btn1 = qtoolbar.button(btnclick, "Move selection||Move selection:\n\nOffsets the selected objects by the distance specified in the toolbar settings (last button of this toolbar).", icons, 1, infobaselink="intro.mapeditor.toolpalettes.movement.html#move")
+        def sendbtnclickmode(self, layout=layout):
+            mode = layout.editor.MODE
+            btnclick(self, mode)
+        btn1 = qtoolbar.button(sendbtnclickmode, "Move selection||Move selection:\n\nOffsets the selected objects by the distance specified in the toolbar settings (last button of this toolbar).", icons, 1, infobaselink="intro.mapeditor.toolpalettes.movement.html#move")
         btn1.text = Strings[552]
         btn1.spec = "mpOffset"
         btn1.offset = quarkx.vect
 
-        btn2 = qtoolbar.button(btnclick, "Enlarge||Enlarge:\n\nEnlarges the selected objects by a factor specified in the toolbar settings (last button of this toolbar).", icons, 2, infobaselink="intro.mapeditor.toolpalettes.movement.html#enlargeshrink")
+        btn2 = qtoolbar.button(sendbtnclickmode, "Enlarge||Enlarge:\n\nEnlarges the selected objects by a factor specified in the toolbar settings (last button of this toolbar).", icons, 2, infobaselink="intro.mapeditor.toolpalettes.movement.html#enlargeshrink")
         btn2.text = Strings[548]
         btn2.spec = "mpZoom"
         btn2.matrix = matrix_zoom
 
-        btn3 = qtoolbar.button(btnclick, "Shrink||Shrink:\n\nShrinks the selected objects by a factor specified in the toolbar settings (last button of this toolbar).", icons, 3, infobaselink="intro.mapeditor.toolpalettes.movement.html#enlargeshrink")
+        btn3 = qtoolbar.button(sendbtnclickmode, "Shrink||Shrink:\n\nShrinks the selected objects by a factor specified in the toolbar settings (last button of this toolbar).", icons, 3, infobaselink="intro.mapeditor.toolpalettes.movement.html#enlargeshrink")
         btn3.text = Strings[548]
         btn3.spec = "mpZoom"
         btn3.matrix = lambda f: matrix_zoom(1.0/f)
 
-        btn4 = qtoolbar.button(btnclick, "X symmetry||X-symmetry:\n\n Mirror around the selection's common X-axis.\n\nThese buttons will mirror your selection, around its common center. To see the common center of your selected object(s), you must be able to see the 'Linear handle' of the selection.", icons, 5, infobaselink="intro.mapeditor.toolpalettes.movement.html#mirror")
+        btn4 = qtoolbar.button(sendbtnclickmode, "X symmetry||X-symmetry:\n\n Mirror around the selection's common X-axis.\n\nThese buttons will mirror your selection, around its common center. To see the common center of your selected object(s), you must be able to see the 'Linear handle' of the selection.", icons, 5, infobaselink="intro.mapeditor.toolpalettes.movement.html#mirror")
         btn4.text = Strings[551]
         btn4.matrix = matrix_sym('x')
 
-        btn5 = qtoolbar.button(btnclick, "Y symmetry||Y-symmetry:\n\n Mirror around the selection's common Y-axis.\n\nThese buttons will mirror your selection, around its common center. To see the common center of your selected object(s), you must be able to see the 'Linear handle' of the selection.", icons, 6, infobaselink="intro.mapeditor.toolpalettes.movement.html#mirror")
+        btn5 = qtoolbar.button(sendbtnclickmode, "Y symmetry||Y-symmetry:\n\n Mirror around the selection's common Y-axis.\n\nThese buttons will mirror your selection, around its common center. To see the common center of your selected object(s), you must be able to see the 'Linear handle' of the selection.", icons, 6, infobaselink="intro.mapeditor.toolpalettes.movement.html#mirror")
         btn5.text = Strings[551]
         btn5.matrix = matrix_sym('y')
 
-        btn6 = qtoolbar.button(btnclick, "Z symmetry||Z-symmetry:\n\n Mirror around the selection's common Z-axis.\n\nThese buttons will mirror your selection, around its common center. To see the common center of your selected object(s), you must be able to see the 'Linear handle' of the selection.", icons, 4, infobaselink="intro.mapeditor.toolpalettes.movement.html#mirror")
+        btn6 = qtoolbar.button(sendbtnclickmode, "Z symmetry||Z-symmetry:\n\n Mirror around the selection's common Z-axis.\n\nThese buttons will mirror your selection, around its common center. To see the common center of your selected object(s), you must be able to see the 'Linear handle' of the selection.", icons, 4, infobaselink="intro.mapeditor.toolpalettes.movement.html#mirror")
         btn6.text = Strings[551]
         btn6.matrix = matrix_sym('z')
 
-        btn7 = qtoolbar.button(btnclick, "X-axis rotation\nclockwise||X-axis rotation clockwise:\n\nRotates the selected objects clockwise around the X axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 8, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
+        btn7 = qtoolbar.button(sendbtnclickmode, "X-axis rotation\nclockwise||X-axis rotation clockwise:\n\nRotates the selected objects clockwise around the X axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 8, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
         btn7.text = Strings[550]
         btn7.spec = "mpRotate"
         btn7.matrix = lambda f: matrix_rot_x(f * deg2rad)
 
-        btn8 = qtoolbar.button(btnclick, "X-axis rotation\ncounterclockwise||X-axis rotation counterclockwise:\n\nRotates the selected objects counterclockwise around the X axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 11, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
+        btn8 = qtoolbar.button(sendbtnclickmode, "X-axis rotation\ncounterclockwise||X-axis rotation counterclockwise:\n\nRotates the selected objects counterclockwise around the X axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 11, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
         btn8.text = Strings[550]
         btn8.spec = "mpRotate"
         btn8.matrix = lambda f: matrix_rot_x(-f * deg2rad)
 
-        btn9 = qtoolbar.button(btnclick, "Y-axis rotation\nclockwise||Y-axis rotation clockwise:\n\nRotates the selected objects clockwise around the Y axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 9, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
+        btn9 = qtoolbar.button(sendbtnclickmode, "Y-axis rotation\nclockwise||Y-axis rotation clockwise:\n\nRotates the selected objects clockwise around the Y axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 9, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
         btn9.text = Strings[550]
         btn9.spec = "mpRotate"
         btn9.matrix = lambda f: matrix_rot_y(-f * deg2rad)
 
-        btn10 = qtoolbar.button(btnclick, "Y-axis rotation\ncounterclockwise||Y-axis rotation counterclockwise:\n\nRotates the selected objects counterclockwise around the Y axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 12, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
+        btn10 = qtoolbar.button(sendbtnclickmode, "Y-axis rotation\ncounterclockwise||Y-axis rotation counterclockwise:\n\nRotates the selected objects counterclockwise around the Y axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 12, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
         btn10.text = Strings[550]
         btn10.spec = "mpRotate"
         btn10.matrix = lambda f: matrix_rot_y(f * deg2rad)
 
-        btn11 = qtoolbar.button(btnclick, "Z-axis rotation\nclockwise||Z-axis rotation clockwise:\n\nRotates the selected objects clockwise around the Z axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 10, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
+        btn11 = qtoolbar.button(sendbtnclickmode, "Z-axis rotation\nclockwise||Z-axis rotation clockwise:\n\nRotates the selected objects clockwise around the Z axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 10, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
         btn11.text = Strings[550]
         btn11.spec = "mpRotate"
         btn11.matrix = lambda f: matrix_rot_z(-f * deg2rad)
 
-        btn12 = qtoolbar.button(btnclick, "Z-axis rotation\ncounterclockwise||Z-axis rotation counterclockwise:\n\nRotates the selected objects counterclockwise around the Z axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 7, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
+        btn12 = qtoolbar.button(sendbtnclickmode, "Z-axis rotation\ncounterclockwise||Z-axis rotation counterclockwise:\n\nRotates the selected objects counterclockwise around the Z axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 7, infobaselink="intro.mapeditor.toolpalettes.movement.html#rotate")
         btn12.text = Strings[550]
         btn12.spec = "mpRotate"
         btn12.matrix = lambda f: matrix_rot_z(f * deg2rad)
 
-        btn13 = qtoolbar.button(btnclick, "Inflate/Deflate||Inflate/Deflate:\n\nInflate or deflate the selected objects by an amount specified in the toolbar settings (last button of this toolbar).\n\nInflating or deflating means moving the planes of the faces of the polyhedrons by a fixed amount of pixels. This is not the same as simply zooming, which preserves the aspect of the polyhedron.\n\nThis setting is also used for the Make Hollow function for two different atributes.\n\n1)  The number set will be the thickness of the walls created in units.\n\n2)  If the number is positive, the walls will be created outside the perimeter of the current solid polygon.\nIf the number is negative, the walls will be created inside the perimeter of the current solid polygon.", icons, 13, infobaselink="intro.mapeditor.toolpalettes.movement.html#inflatedeflate")
+        btn13 = qtoolbar.button(sendbtnclickmode, "Inflate/Deflate||Inflate/Deflate:\n\nInflate or deflate the selected objects by an amount specified in the toolbar settings (last button of this toolbar).\n\nInflating or deflating means moving the planes of the faces of the polyhedrons by a fixed amount of pixels. This is not the same as simply zooming, which preserves the aspect of the polyhedron.\n\nThis setting is also used for the Make Hollow function for two different atributes.\n\n1)  The number set will be the thickness of the walls created in units.\n\n2)  If the number is positive, the walls will be created outside the perimeter of the current solid polygon.\nIf the number is negative, the walls will be created inside the perimeter of the current solid polygon.", icons, 13, infobaselink="intro.mapeditor.toolpalettes.movement.html#inflatedeflate")
         btn13.text = Strings[549]
         btn13.spec = "WallWidth"
         btn13.inflate = lambda f: f
+
+        mdlbtn13 = qtoolbar.button(sendbtnclickmode, "Shift Left/Right||Shift Left/Right:\n\nShift the selected vertexes or faces (not dependable for faces) Left or Right by an amount specified in the toolbar settings (last button of this toolbar).\n\nShifting Left or Right means moving the selected items by a fixed amount of pixels, negative values shifts the selection to the left, positive values shifts the selection to the right.", icons, 13, infobaselink="intro.mapeditor.toolpalettes.movement.html#inflatedeflate")
+        mdlbtn13.text = Strings[2549]
+        mdlbtn13.spec = "WallWidth"
+        mdlbtn13.inflate = lambda f: f
 
         btncfg = qtoolbar.button(ConfigDialog, "Change this toolbar settings||Change this toolbar settings:\n\nThis opens the Movement toolbar configuration window.\n\nIf you hold your mouse cursor over each of the setting input areas, a description- help display will appear to give you information about what settings to use and how they work.\n\nClick the check mark to apply the new settings.\n\nClick the X to close the window without changing the current settings.", icons, 0, infobaselink="intro.mapeditor.toolpalettes.movement.html#configuration")
         btncfg.icolist = icons
@@ -333,13 +345,16 @@ class ToolMoveBar(ToolBar):
             return [btn1, btn2, btn3, btn13, qtoolbar.sep, btn4, btn5, btn6,
               btn7, btn8, btn9, btn10, btn11, btn12, qtoolbar.sep, btncfg]
         else:
-            return [btn1, btn2, btn3, btn13, qtoolbar.sep, btn4, btn5, btn6,
+            return [btn1, btn2, btn3, mdlbtn13, qtoolbar.sep, btn4, btn5, btn6,
               btn7, btn8, btn9, btn10, btn11, btn12, qtoolbar.sep, mdlbtncfg]
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.16  2007/10/11 09:57:33  cdunde
+#To separate Map and Model editor's movepal toolbars and config dialogs.
+#
 #Revision 1.15  2007/09/07 23:55:29  cdunde
 #1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
 #     model component from selected Model Mesh faces and remove them from their current component.
