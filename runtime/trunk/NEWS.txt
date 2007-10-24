@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Activated all Movement Tool Palette buttons and functions for the Model Editor, which
+          - handle preset values for Movement, Enlarge, Shrink, Shift, X, Y, and Z Symmetry and Rotation.
+
 * [cdunde]: Added a "Snap Shot" function and button to the Skin-view to allow the re-skinning
           - of selected faces in the editor based on their position in the editor's 3D view.
 
