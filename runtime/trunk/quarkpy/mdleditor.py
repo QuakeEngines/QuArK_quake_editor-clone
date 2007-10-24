@@ -165,6 +165,9 @@ class ModelEditor(BaseEditor):
             mdlmgr.saveskin = None
         except:
             pass
+        quarkx.setupsubset(SS_MODEL, "Building")["ObjectMode"] = 0
+        quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
                 
     def ListComponents(self):
         return self.Root.findallsubitems("", ':mc')   # find all components
@@ -1411,6 +1414,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.75  2007/10/18 23:53:43  cdunde
+#To setup Custom Animation FPS Dialog, remove possibility of using 0, causing a crash and Defaults.
+#
 #Revision 1.74  2007/10/18 16:11:31  cdunde
 #To implement selective view buttons for Model Editor Animation.
 #
