@@ -306,8 +306,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
          #       editor.ModelFaceSelList = []
          #       return
         editor.ModelFaceSelList = templist
-        import mdlutils
-        list = mdlutils.MakeEditorFaceObject(editor)
+        list = MakeEditorFaceObject(editor)
         if quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
             if SkinView1 is not None:
                 if quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
@@ -317,7 +316,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
                         skindrawobject = None
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1":
                         editor.SkinVertexSelList = []
-                    mdlutils.PassEditorSel2Skin(editor, 2)
+                    PassEditorSel2Skin(editor, 2)
                     buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1":
@@ -359,7 +358,6 @@ class ModelFaceHandle(qhandles.GenericHandle):
                         mdleditor.setsingleframefillcolor(editor, v)
                         v.repaint()
                 if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] != "1":
-      #              list = mdlutils.MakeEditorFaceObject(editor)
                     self.draw(editor, v, list)
 
 
@@ -495,25 +493,23 @@ class VertexHandle(qhandles.GenericHandle):
             editor.ModelVertexSelList = []
 
         def pick_base_vertex(m, self=self, editor=editor, view=view):
-            import mdlutils
             if editor.ModelVertexSelList == []:
                 editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
-                mdlutils.Update_Editor_Views(editor, 4)
+                Update_Editor_Views(editor, 4)
                 if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
                         editor.SkinVertexSelList = []
-                    mdlutils.PassEditorSel2Skin(editor)
+                    PassEditorSel2Skin(editor)
                     SkinView1.invalidate(1)
             else:
                 if self.index == editor.ModelVertexSelList[0][0]:
                     editor.ModelVertexSelList = []
-                    mdlutils.Update_Editor_Views(editor, 4)
+                    Update_Editor_Views(editor, 4)
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
                         editor.SkinVertexSelList = []
                         SkinView1.invalidate(1)
 
         def change_base_vertex(m, self=self, editor=editor, view=view):
-            import mdlutils
             for item in editor.ModelVertexSelList:
                 if str(view.proj(self.pos)) == str(item[1]) and str(view.proj(self.pos)) != str(editor.ModelVertexSelList[0][1]):
                     quarkx.msgbox("Improper Selection!\n\nYou can not choose this vertex\nuntil you remove it from the Mesh list.\n\nSelection Canceled", MT_ERROR, MB_OK)
@@ -523,15 +519,14 @@ class VertexHandle(qhandles.GenericHandle):
                     break
             else:
                 editor.ModelVertexSelList[0] = [self.index, view.proj(self.pos)]
-                mdlutils.Update_Editor_Views(editor, 4)
+                Update_Editor_Views(editor, 4)
                 if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
                         editor.SkinVertexSelList = []
-                    mdlutils.PassEditorSel2Skin(editor)
+                    PassEditorSel2Skin(editor)
                     SkinView1.invalidate(1)
 
         def pick_vertex(m, self=self, editor=editor, view=view):
-            import mdlutils
             itemcount = 0
             if editor.ModelVertexSelList == []:
                 editor.ModelVertexSelList = editor.ModelVertexSelList + [(self.index, view.proj(self.pos))]
@@ -570,7 +565,7 @@ class VertexHandle(qhandles.GenericHandle):
                                     pass
                         if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
                             editor.SkinVertexSelList = []
-                            mdlutils.PassEditorSel2Skin(editor)
+                            PassEditorSel2Skin(editor)
                             try:
                                 skindrawobject = editor.Root.currentcomponent.currentskin
                             except:
@@ -597,11 +592,11 @@ class VertexHandle(qhandles.GenericHandle):
                 else:
                     v.handles = BuildCommonHandles(editor, editor.layout.explorer)
 
-            mdlutils.Update_Editor_Views(editor, 4)
+            Update_Editor_Views(editor, 4)
             if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
                     editor.SkinVertexSelList = []
-                mdlutils.PassEditorSel2Skin(editor)
+                PassEditorSel2Skin(editor)
                 try:
                     skindrawobject = editor.Root.currentcomponent.currentskin
                 except:
@@ -907,7 +902,6 @@ class SkinHandle(qhandles.GenericHandle):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
 
         def pick_basevertex(m, self=self, editor=editor, view=view):
-            import mdlutils
             if editor.SkinVertexSelList == []:
                 editor.SkinVertexSelList = editor.SkinVertexSelList + [[self.pos, self, self.tri_index, self.ver_index]]
                 cv = view.canvas()
@@ -915,19 +909,18 @@ class SkinHandle(qhandles.GenericHandle):
                 if quarkx.setupsubset(SS_MODEL, "Options")["PVSTEV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                         editor.ModelVertexSelList = []
-                    mdlutils.PassSkinSel2Editor(editor)
-                    mdlutils.Update_Editor_Views(editor, 1)
+                    PassSkinSel2Editor(editor)
+                    Update_Editor_Views(editor, 1)
             else:
                 if str(self.pos) == str(editor.SkinVertexSelList[0][0]):
                     editor.SkinVertexSelList = []
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                         editor.ModelVertexSelList = []
-                    mdlutils.PassSkinSel2Editor(editor)
-                    mdlutils.Update_Editor_Views(editor, 1)
+                    PassSkinSel2Editor(editor)
+                    Update_Editor_Views(editor, 1)
                     view.invalidate()
 
         def change_basevertex(m, self=self, editor=editor, view=view):
-            import mdlutils
             for item in editor.SkinVertexSelList:
                 if str(self.pos) == str(item[0]) and str(self.pos) != str(editor.SkinVertexSelList[0][0]):
                     quarkx.msgbox("Improper Selection!\n\nYou can not choose this vertex\nuntil you remove it from the Skin list.\n\nSelection Canceled", MT_ERROR, MB_OK)
@@ -939,7 +932,7 @@ class SkinHandle(qhandles.GenericHandle):
                 if quarkx.setupsubset(SS_MODEL, "Options")["PVSTEV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                         editor.ModelVertexSelList = []
-                    mdlutils.PassSkinSel2Editor(editor)
+                    PassSkinSel2Editor(editor)
                     if len(editor.SkinVertexSelList) > 1:
                         try:
                             skindrawobject = editor.Root.currentcomponent.currentskin
@@ -952,11 +945,10 @@ class SkinHandle(qhandles.GenericHandle):
                             if v.info["viewname"] == "skinview":
                                 continue
                             v.handles = handles
-                    mdlutils.Update_Editor_Views(editor, 4)
+                    Update_Editor_Views(editor, 4)
             view.invalidate()
 
         def pick_skinvertex(m, self=self, editor=editor, view=view):
-            import mdlutils
             itemcount = 0
             removedcount = 0
             holdlist = []
@@ -985,13 +977,13 @@ class SkinHandle(qhandles.GenericHandle):
                                 view.invalidate(1)
                                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                                     editor.ModelVertexSelList = []
-                                    mdlutils.PassSkinSel2Editor(editor)
+                                    PassSkinSel2Editor(editor)
                                     handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
                                     for v in editor.layout.views:
                                         if v.info["viewname"] == "skinview":
                                             continue
                                         v.handles = handles
-                                    mdlutils.Update_Editor_Views(editor, 1)
+                                    Update_Editor_Views(editor, 1)
                                 return
                             itemcount = itemcount + 1
 
@@ -1005,13 +997,13 @@ class SkinHandle(qhandles.GenericHandle):
                         view.invalidate(1)
                         if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                             editor.ModelVertexSelList = []
-                            mdlutils.PassSkinSel2Editor(editor)
+                            PassSkinSel2Editor(editor)
                             handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
                             for v in editor.layout.views:
                                 if v.info["viewname"] == "skinview":
                                     continue
                                 v.handles = handles
-                            mdlutils.Update_Editor_Views(editor, 1)
+                            Update_Editor_Views(editor, 1)
                         return
                     else:
                         if not setup["SingleVertexDrag"]:
@@ -1037,13 +1029,13 @@ class SkinHandle(qhandles.GenericHandle):
             if quarkx.setupsubset(SS_MODEL, "Options")["PVSTEV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                     editor.ModelVertexSelList = []
-                mdlutils.PassSkinSel2Editor(editor)
+                PassSkinSel2Editor(editor)
                 handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
                 for v in editor.layout.views:
                     if v.info["viewname"] == "skinview":
                         continue
                     v.handles = handles
-                mdlutils.Update_Editor_Views(editor, 1)
+                Update_Editor_Views(editor, 1)
 
         def alignskinvertexesclick(m, self=self, editor=editor, view=view):
             if len(editor.SkinVertexSelList) > 1:
@@ -1070,13 +1062,12 @@ class SkinHandle(qhandles.GenericHandle):
             view.invalidate()
             if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                 editor.ModelVertexSelList = []
-                import mdlutils
                 handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
                 for v in editor.layout.views:
                     if v.info["viewname"] == "skinview":
                         continue
                     v.handles = handles
-                mdlutils.Update_Editor_Views(editor, 4)
+                Update_Editor_Views(editor, 4)
 
         setup = quarkx.setupsubset(SS_MODEL, "Options")
         if len(editor.SkinVertexSelList) > 2 or not setup["SingleVertexDrag"]:
@@ -1131,16 +1122,15 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
                 quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
-                import mdlutils
                 if editor.SkinVertexSelList != []:
                     editor.ModelVertexSelList = []
-                    mdlutils.PassSkinSel2Editor(editor)
+                    PassSkinSel2Editor(editor)
                     handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
                     for v in editor.layout.views:
                         if v.info["viewname"] == "skinview":
                             continue
                         v.handles = handles
-                    mdlutils.Update_Editor_Views(editor, 1)
+                    Update_Editor_Views(editor, 1)
                 else:
                     editor.ModelVertexSelList = []
                     handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
@@ -1148,7 +1138,7 @@ class SkinHandle(qhandles.GenericHandle):
                         if v.info["viewname"] == "skinview":
                             continue
                         v.handles = handles
-                    mdlutils.Update_Editor_Views(editor, 1)
+                    Update_Editor_Views(editor, 1)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
         
@@ -1160,15 +1150,14 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
                 quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] = None
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
-                import mdlutils
                 if editor.SkinVertexSelList != []:
-                    mdlutils.PassSkinSel2Editor(editor)
+                    PassSkinSel2Editor(editor)
                     handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
                     for v in editor.layout.views:
                         if v.info["viewname"] == "skinview":
                             continue
                         v.handles = handles
-                    mdlutils.Update_Editor_Views(editor, 5)
+                    Update_Editor_Views(editor, 5)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] = None
 
@@ -1757,8 +1746,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
 
     if len(editor.SkinVertexSelList) >= 2:
         view.handles = h
-        import mdlutils
-        vtxlist = mdlutils.MakeEditorVertexPolyObject(editor, 1)
+        vtxlist = MakeEditorVertexPolyObject(editor, 1)
         box = quarkx.boundingboxof(vtxlist)
         if box is None:
             return
@@ -1793,8 +1781,7 @@ def BuildCommonHandles(editor, explorer, option=1):
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
         h = []
         if len(editor.ModelFaceSelList) != 0:
-            import mdlutils
-            mdlutils.MakeEditorFaceObject(editor)
+            MakeEditorFaceObject(editor)
         return h
 
     if len(explorer.sellist) >= 1:
@@ -1811,8 +1798,7 @@ def BuildCommonHandles(editor, explorer, option=1):
         #
         if len(editor.ModelFaceSelList) != 0:
             h = []
-            import mdlutils
-            list = mdlutils.MakeEditorFaceObject(editor)
+            list = MakeEditorFaceObject(editor)
         else:
             h = []
             return h
@@ -1827,13 +1813,11 @@ def BuildCommonHandles(editor, explorer, option=1):
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
         if len(editor.ModelFaceSelList) != 0:
-            import mdlutils
-            mdlutils.MakeEditorFaceObject(editor)
+            MakeEditorFaceObject(editor)
         if len(editor.ModelVertexSelList) >= 2:
             option = 2
-            import mdlutils
             from qbaseeditor import currentview
-            vtxlist = mdlutils.MakeEditorVertexPolyObject(editor)
+            vtxlist = MakeEditorVertexPolyObject(editor)
         if option == 1:
             h = []
         h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
@@ -1859,8 +1843,7 @@ def BuildHandles(editor, explorer, view, option=1):
         view.handles = []
         h = []
         if len(editor.ModelFaceSelList) != 0:
-            import mdlutils
-            mdlutils.MakeEditorFaceObject(editor)
+            MakeEditorFaceObject(editor)
         return h
 
     if len(explorer.sellist) >= 1:
@@ -1877,8 +1860,7 @@ def BuildHandles(editor, explorer, view, option=1):
         #
         if len(editor.ModelFaceSelList) != 0:
             h = []
-            import mdlutils
-            list = mdlutils.MakeEditorFaceObject(editor)
+            list = MakeEditorFaceObject(editor)
         else:
             h = []
             return h
@@ -1892,12 +1874,10 @@ def BuildHandles(editor, explorer, view, option=1):
         # Call the Entity Manager in mdlentities.py to build the Vertex handles.
         #
         if len(editor.ModelFaceSelList) != 0:
-            import mdlutils
-            mdlutils.MakeEditorFaceObject(editor)
+            MakeEditorFaceObject(editor)
         if len(editor.ModelVertexSelList) >= 2:
             option = 2
-            import mdlutils
-            vtxlist = mdlutils.MakeEditorVertexPolyObject(editor)
+            vtxlist = MakeEditorVertexPolyObject(editor)
         if option == 1:
             h = []
         h = mdlentities.CallManager("handlesopt", explorer.sellist[0], editor)
@@ -1934,7 +1914,6 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
     def rectanglesel(self, editor, x,y, rectangle, view):
         import mdleditor
-        import mdlutils
         cursordragendpos = (x, y)
         ### To stop selection or selection change if nothing, or something
         ### other then a components "frame(s)" is selected in the tree-view.
@@ -2019,7 +1998,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
         ### This area for the Skin-view code only. Must return at the end to stop erroneous model drawing.
         if view.info["viewname"] == "skinview":
-            mdlutils.SkinVertexSel(editor, sellist)
+            SkinVertexSel(editor, sellist)
             try:
                 skindrawobject = editor.Root.currentcomponent.currentskin
             except:
@@ -2028,13 +2007,13 @@ class RectSelDragObject(qhandles.RectangleDragObject):
             if quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                     editor.ModelVertexSelList = []
-                mdlutils.PassSkinSel2Editor(editor)
+                PassSkinSel2Editor(editor)
                 handles = BuildHandles(editor, editor.layout.explorer, editor.layout.views[0])
                 for v in editor.layout.views:
                     if v.info["viewname"] == "skinview" or v == view:
                         continue
                     v.handles = handles
-                mdlutils.Update_Editor_Views(editor, 4)
+                Update_Editor_Views(editor, 4)
             return
 
 
@@ -2044,12 +2023,12 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 if editor.ModelFaceSelList != [] and sellist == []:
                     editor.ModelFaceSelList = []
                     editor.EditorObjectList = []
-                    mdlutils.Update_Editor_Views(editor, 4)
+                    Update_Editor_Views(editor, 4)
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
                         editor.SkinVertexSelList = []
                         editor.SkinFaceSelList = []
                         if MldOption("PFSTSV"):
-                            mdlutils.PassEditorSel2Skin(editor)
+                            PassEditorSel2Skin(editor)
                         try:
                             skindrawobject = editor.Root.currentcomponent.currentskin
                         except:
@@ -2060,10 +2039,10 @@ class RectSelDragObject(qhandles.RectangleDragObject):
             else:
                 if editor.ModelVertexSelList != [] and sellist == []:
                     editor.ModelVertexSelList = []
-                    mdlutils.Update_Editor_Views(editor, 4)
+                    Update_Editor_Views(editor, 4)
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1" and SkinView1 is not None:
                         editor.SkinVertexSelList = []
-                        mdlutils.PassEditorSel2Skin(editor)
+                        PassEditorSel2Skin(editor)
                         SkinView1.invalidate()
                     return
             if sellist == []:
@@ -2092,12 +2071,13 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     for vtx in range(len(sellist)):
                         if (sellist[vtx][0] == tris[tri][0][0]) or (sellist[vtx][0] == tris[tri][1][0]) or (sellist[vtx][0] == tris[tri][2][0]):
                             editor.ModelFaceSelList = editor.ModelFaceSelList + [tri]
-                mdlutils.MakeEditorFaceObject(editor)
+                MakeEditorFaceObject(editor)
+                print "mdlhandles line 1798 JUST MADE THE FACE OBJECTS ********************  view",view.info["viewname"]
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
                     editor.SkinVertexSelList = []
                     editor.SkinFaceSelList = []
                     if MldOption("PFSTSV"):
-                        mdlutils.PassEditorSel2Skin(editor, 2)
+                        PassEditorSel2Skin(editor, 2)
                     try:
                         skindrawobject = editor.Root.currentcomponent.currentskin
                     except:
@@ -2162,7 +2142,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
                         editor.SkinVertexSelList = []
-                    mdlutils.PassEditorSel2Skin(editor)
+                    PassEditorSel2Skin(editor)
                     # Has to be in this order because the function call above needs
                     # the SkinView1.handles to pass the selection first, or it crashes.
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
@@ -2175,11 +2155,11 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     SkinView1.invalidate()
             else:
                 if editor.ModelVertexSelList != [] or editor.ModelFaceSelList != []:
-                    mdlutils.Update_Editor_Views(editor, 4)
+                    Update_Editor_Views(editor, 4)
                     if (quarkx.setupsubset(SS_MODEL, "Options")["PVSTSV"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1") and SkinView1 is not None:
                         if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_SVwED'] == "1":
                             editor.SkinVertexSelList = []
-                        mdlutils.PassEditorSel2Skin(editor)
+                        PassEditorSel2Skin(editor)
                         try:
                             skindrawobject = editor.Root.currentcomponent.currentskin
                         except:
@@ -2578,11 +2558,10 @@ class LinRedHandle(LinearHandle):
     def ok(self, editor, undo, oldobjectslist, newobjectslist):
         "Returned final lists of objects to convert back into Model mesh or Skin-view vertexes."
         
-        import mdlutils
         from qbaseeditor import currentview
         if newobjectslist[0].name.endswith(":f"):
             undomsg = "editor-linear face movement"
-            mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
+            ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
         else:
             if currentview.info["viewname"] == "skinview":
                 undomsg = "skin view-linear vertex movement"
@@ -2591,13 +2570,13 @@ class LinRedHandle(LinearHandle):
                 except:
                     skindrawobject = None
                 buildskinvertices(editor, currentview, editor.layout, editor.Root.currentcomponent, skindrawobject)
-                mdlutils.ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 1)
+                ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 1)
                 for view in editor.layout.views:
                     if view.viewmode == "tex":
                         view.invalidate(1)
             else:
                 undomsg = "editor-linear vertex movement"
-                mdlutils.ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
+                ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
 
 
 class LinSideHandle(LinearHandle):
@@ -2681,11 +2660,10 @@ class LinSideHandle(LinearHandle):
     def ok(self, editor, undo, oldobjectslist, newobjectslist):
         "Returned final lists of objects to convert back into Model mesh or Skin-view vertexes."
 
-        import mdlutils
         from qbaseeditor import currentview
         if newobjectslist[0].name.endswith(":f"):
             undomsg = "editor-linear face distort/shear"
-            mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
+            ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
         else:
             if currentview.info["viewname"] == "skinview":
                 undomsg = "skin view-linear vertex distort/shear"
@@ -2694,13 +2672,13 @@ class LinSideHandle(LinearHandle):
                 except:
                     skindrawobject = None
                 buildskinvertices(editor, currentview, editor.layout, editor.Root.currentcomponent, skindrawobject)
-                mdlutils.ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 1)
+                ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 1)
                 for view in editor.layout.views:
                     if view.viewmode == "tex":
                         view.invalidate(1)
             else:
                 undomsg = "editor-linear vertex distort/shear"
-                mdlutils.ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
+                ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
 
 
 class LinCornerHandle(LinearHandle):
@@ -2794,11 +2772,10 @@ class LinCornerHandle(LinearHandle):
     def ok(self, editor, undo, oldobjectslist, newobjectslist):
         "Returned final lists of objects to convert back into Model mesh or Skin-view vertexes."
 
-        import mdlutils
         from qbaseeditor import currentview
         if newobjectslist[0].name.endswith(":f"):
             undomsg = "editor-linear face rotate/scaling"
-            mdlutils.ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
+            ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
         else:
             if currentview.info["viewname"] == "skinview":
                 undomsg = "skin view-linear vertex rotate/scaling"
@@ -2807,13 +2784,13 @@ class LinCornerHandle(LinearHandle):
                 except:
                     skindrawobject = None
                 buildskinvertices(editor, currentview, editor.layout, editor.Root.currentcomponent, skindrawobject)
-                mdlutils.ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 1)
+                ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 1)
                 for view in editor.layout.views:
                     if view.viewmode == "tex":
                         view.invalidate(1)
             else:
                 undomsg = "editor-linear vertex rotate/scaling"
-                mdlutils.ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
+                ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
 
 
 
@@ -2900,6 +2877,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.104  2007/10/22 02:26:09  cdunde
+#To stop drawing of all editor handles during animation to fix problem if pause is used
+#and then turned off and to make for cleaner animation drawing of views.
+#
 #Revision 1.103  2007/10/18 23:53:16  cdunde
 #To remove dupe call to make selected face objects.
 #
