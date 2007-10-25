@@ -53,7 +53,12 @@ def gridfinishdrawing(editor, view, gridoldfinish=mdltools.gridfinishdrawing):
     #
 
     gridoldfinish(editor, view)
-    
+
+    # Stops jerky movement during panning in 2D views.
+    from quarkpy.qbaseeditor import flagsmouse
+    if (flagsmouse == 528 or flagsmouse == 1040) and view.info["viewname"] != "editors3Dview" and view.info["viewname"] != "3Dwindow":
+        view.handles = []
+
     if editor.ModelFaceSelList != []:
         quarkpy.mdlhandles.ModelFaceHandle(quarkpy.qhandles.GenericHandle).draw(editor, view, editor.EditorObjectList)
 
@@ -661,6 +666,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.11  2007/10/08 16:20:20  cdunde
+#To improve Model Editor rulers and Quick Object Makers working with other functions.
+#
 #Revision 1.10  2007/10/06 20:14:31  cdunde
 #Added function option to just update the editors 2D views.
 #
