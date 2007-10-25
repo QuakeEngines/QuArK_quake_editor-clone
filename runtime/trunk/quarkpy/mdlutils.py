@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Various Model editor utilities.
+Various Model editor utility functions.
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -54,7 +54,7 @@ def checkTriangle(tri, index):
 
 
 #
-#  Find a triangle based on vertex indexs
+#  Find a triangle based on the 3 vertex indexs that are given.
 #
 def findTriangle(comp, v1, v2, v3):
     tris = comp.triangles
@@ -100,7 +100,7 @@ def findTriangles(comp, index):
 #
 # Find and return other triangles (AND their tri_index and ver_index_order_pos numbers)
 # containing a vertex at the same location as the one selected creating a VertexHandle instance.
-# Also returns each triangles vertex, vert)index and vert_pos for the following complete list items.
+# Also returns each triangles vertex, vert_index and vert_pos for the following complete list items.
 ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
 #   Editor vertexes  (frame_vertices_index, view.proj(pos), tri_index, ver_index_order_pos, (tri_vert0,tri_vert1,tri_vert2))
 #                    Created using:    editor.Root.currentcomponent.currentframe.vertices
@@ -129,7 +129,7 @@ def findTrianglesAndIndexes(comp, vert_index, vert_pos):
 
 
 
-# 'index' the a vertex index number that is being deleted and is used in the triangle 'tri'.
+# 'index' the vertex index number that is being deleted and is used in the triangle 'tri'.
 # This funciton fixes the vert_index number for one particular triangle.
 def fixTri(tri, index):
     new_tri = [ ]
@@ -1267,7 +1267,7 @@ def checkinlist(tri, toberemoved):
 
 
 #
-# Is a given object still in the tree view, or was it removed ?
+# Is a given object still in the tree view = 1, or was it removed = 0 ?
 #
 def checktree(root, obj):
     while obj is not root:
@@ -1657,6 +1657,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.50  2007/10/24 14:58:12  cdunde
+#To activate all Movement toolbar button functions for the Model Editor.
+#
 #Revision 1.49  2007/10/22 02:22:08  cdunde
 #To speed up conversion code.
 #
