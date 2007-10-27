@@ -478,6 +478,7 @@ class VertexHandle(qhandles.GenericHandle):
         qhandles.GenericHandle.__init__(self, pos)
         self.cursor = CR_CROSSH
         self.undomsg = "mesh vertex move"
+        self.editor = mdleditor.mdleditor
 
 
     def menu(self, editor, view):
@@ -736,13 +737,22 @@ class VertexHandle(qhandles.GenericHandle):
                 AlignVertexes.state = qmenu.disabled
             menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop]
 
-
         return menu
 
 
     def draw(self, view, cv, draghandle=None):
         from qbaseeditor import flagsmouse, currentview # To stop all drawing, causing slowdown, during a zoom.
+        import qhandles
 
+        # This stops the drawing of all the vertex handles during a Linear drag to speed drawing up.
+        if flagsmouse == 1032:
+            if isinstance(self.editor.dragobject, qhandles.Rotator2D) or draghandle is None:
+                pass
+            else:
+                return
+
+        if isinstance(self.editor.dragobject, qhandles.ScrollViewDragObject) and flagsmouse != 2064:
+            return # RMB pressed or dragging to pan (scroll) in the view.
         if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
             view.handles = []
             return
@@ -2242,6 +2252,33 @@ class ModelEditorLinHandlesManager:
         self.bmax = quarkx.vect(bmax1)
         self.list = list
 
+        # To get all the triangles that need to be drawn during the drag
+        # including ones that have vertexes that will be stationary.
+        self.tristodrawlist = []
+        self.selvtxlist = []
+        comp = self.editor.Root.currentcomponent
+        if view is not None and view.info["viewname"] == "skinview":
+            pass
+        else:
+            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                pass
+            else:
+      #          self.selvtxlist = []
+                for vtx in self.editor.ModelVertexSelList:
+                    print "mdlhandles line 2353 vtx in ModelVertexSelList",vtx
+                    if vtx[0] in self.selvtxlist:
+                        pass
+                    else:
+                        self.selvtxlist = self.selvtxlist + [vtx[0]] 
+                    self.tristodrawlist = self.tristodrawlist + findTrianglesAndIndexes(comp, vtx[0], vtx[1])
+        try:
+            print "mdlhandles line 2370 for view, self.tristodrawlist",view.info["viewname"]
+        except:
+            print "mdlhandles line 2372 we have NO VIEW, self.tristodrawlist"
+        print self.tristodrawlist
+        print "mdlhandles line 2371 for view, self.selvtxlist"
+        print self.selvtxlist
+
     def BuildHandles(self, center=None, minimal=None):
         "Build a list of handles to put around the circle for linear distortion."
 
@@ -2387,6 +2424,8 @@ class LinearHandle(qhandles.GenericHandle):
 
         self.mgr.drawbox(view)    # Draws the full circle and all handles during drag and Ctrl key is being held down.
         cv = view.canvas()
+
+        # This draws the Linear handles for all views and the Skin-view.
         for h in view.handles:
             h.draw(view, cv, h)
         return self.mgr.list, new
@@ -2410,7 +2449,11 @@ class LinearHandle(qhandles.GenericHandle):
                 else:
                     newobj = obj.copy()
                     dragcolor = MapColor("Drag3DLines", SS_MODEL)
-                    view.drawmap(newobj, DM_OTHERCOLOR, dragcolor)
+                    # To avoid division by zero errors.
+                    try:
+                        view.drawmap(newobj, DM_OTHERCOLOR, dragcolor)
+                    except:
+                        pass
             else:
                 vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
                 vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
@@ -2480,6 +2523,7 @@ class LinRedHandle(LinearHandle):
         for obj in list: # Draws the models triangles or vertexes correctly during drag in all views.
             obj.translate(delta)
             if obj.name.endswith(":g"):
+                # We can take this line out if we don't want the vertex cubes drawn durning drags.
                 view.drawmap(obj, DM_OTHERCOLOR, dragcolor)
             else:
                 vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
@@ -2490,6 +2534,20 @@ class LinRedHandle(LinearHandle):
                 cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
                 cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
                 cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
+
+        cv.pencolor = MapColor("Drag3DLines", SS_MODEL)
+        framevtxs = self.mgr.editor.Root.currentcomponent.currentframe.vertices
+        for tri in self.mgr.tristodrawlist:
+            dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
+            for vtx in range(len(tri[4])):
+                if tri[4][vtx][0] == tri[0]:
+                    continue
+                else:
+                    if tri[4][vtx][0] in self.mgr.selvtxlist:
+                        projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
+                    else:
+                        projvtx = view.proj(framevtxs[tri[4][vtx][0]])
+                    cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
 
         if view.info["type"] == "XY":
             s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
@@ -2877,6 +2935,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.105  2007/10/25 17:25:20  cdunde
+#To remove unnecessary import calls.
+#
 #Revision 1.104  2007/10/22 02:26:09  cdunde
 #To stop drawing of all editor handles during animation to fix problem if pause is used
 #and then turned off and to make for cleaner animation drawing of views.
