@@ -2082,7 +2082,6 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                         if (sellist[vtx][0] == tris[tri][0][0]) or (sellist[vtx][0] == tris[tri][1][0]) or (sellist[vtx][0] == tris[tri][2][0]):
                             editor.ModelFaceSelList = editor.ModelFaceSelList + [tri]
                 MakeEditorFaceObject(editor)
-                print "mdlhandles line 1798 JUST MADE THE FACE OBJECTS ********************  view",view.info["viewname"]
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
                     editor.SkinVertexSelList = []
                     editor.SkinFaceSelList = []
@@ -2265,19 +2264,11 @@ class ModelEditorLinHandlesManager:
             else:
       #          self.selvtxlist = []
                 for vtx in self.editor.ModelVertexSelList:
-                    print "mdlhandles line 2353 vtx in ModelVertexSelList",vtx
                     if vtx[0] in self.selvtxlist:
                         pass
                     else:
                         self.selvtxlist = self.selvtxlist + [vtx[0]] 
                     self.tristodrawlist = self.tristodrawlist + findTrianglesAndIndexes(comp, vtx[0], vtx[1])
-        try:
-            print "mdlhandles line 2370 for view, self.tristodrawlist",view.info["viewname"]
-        except:
-            print "mdlhandles line 2372 we have NO VIEW, self.tristodrawlist"
-        print self.tristodrawlist
-        print "mdlhandles line 2371 for view, self.selvtxlist"
-        print self.selvtxlist
 
     def BuildHandles(self, center=None, minimal=None):
         "Build a list of handles to put around the circle for linear distortion."
@@ -2935,6 +2926,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.106  2007/10/27 01:51:32  cdunde
+#To add the drawing of drag lines for editor vertex Linear center handle drags.
+#
 #Revision 1.105  2007/10/25 17:25:20  cdunde
 #To remove unnecessary import calls.
 #
