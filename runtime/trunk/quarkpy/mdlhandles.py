@@ -1953,6 +1953,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
             except:
                 texWidth,texHeight = view.clientarea
             for vertex in range(len(view.handles)):
+                # Below passes up any non-vertex handles in the view.handles list so we don't cause an error.
                 if (isinstance(view.handles[vertex], LinRedHandle)) or (isinstance(view.handles[vertex], LinSideHandle)) or (isinstance(view.handles[vertex], LinCornerHandle)):
                     continue
                 pos = view.handles[vertex].pos
@@ -2391,6 +2392,9 @@ class LinearHandle(qhandles.GenericHandle):
         self.mgr = mgr    # a LinHandlesManager instance
 
     def drag(self, v1, v2, flags, view):
+        if view.info["viewname"] == "skinview":
+            box = quarkx.boundingboxof(self.mgr.list)
+            view.handles = ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, self.mgr.list, view).BuildHandles()
         delta = v2-v1
         if flags&MB_CTRL:
             g1 = 1
@@ -2926,6 +2930,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.107  2007/10/27 23:34:45  cdunde
+#To remove test print statements missed.
+#
 #Revision 1.106  2007/10/27 01:51:32  cdunde
 #To add the drawing of drag lines for editor vertex Linear center handle drags.
 #
