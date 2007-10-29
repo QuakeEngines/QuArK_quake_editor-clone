@@ -15,6 +15,12 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Added option for Skin-view multiple drag lines drawing.
+
+* [cdunde]: To setup drag line drawing for multiple selected vertex drags in the Skin-view.
+
+* [cdunde]: To fix Skin-view Linear handle not drawing in correct position sometimes.
+
 * [cdunde]: Activated all Movement Tool Palette buttons and functions for the Model Editor, which
           - handle preset values for Movement, Enlarge, Shrink, Shift, X, Y, and Z Symmetry and Rotation.
 
