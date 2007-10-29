@@ -105,6 +105,19 @@ class ModelEditor(BaseEditor):
     #                                       "QuArK Internal Objects" that can be used for other QuArK Object
     #                                       functions and faster drawing of these objects.
 
+    SelVertexes = []
+    # A list of vertexes  [(vert)]
+    #                               Use:    A list of the Skin-view vertexes but as a vertex of a component's triangle, used with the SelCommonTriangles list
+    #                                       below and both will be used to draw all the drag lines in the Skin-view for those triangles. Can also be used for anything else.
+    #                     Created using:    SkinVertexSelList above created by the RectSelDragObject, rectanglesel function in mdlhandles.py.
+
+    SelCommonTriangles = []
+    # A list of triangles [(vert0, vert1, vert2)]
+    #                               Use:    A list of actual component triangles that have a common ver_index of selected Skin-view vertexes
+    #                                       that will be used to draw all the drag lines in the Skin-view for those triangles. Can also be used for anything else.
+    #                     Created using:    SkinVertexSelList above created by the RectSelDragObject, rectanglesel function in mdlhandles.py.
+
+
     def OpenRoot(self):
         global mdleditor
         mdleditor = self
@@ -1414,6 +1427,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.76  2007/10/24 14:57:08  cdunde
+#Reset Objects toolbar to Deactivated and Animation toolbar to Deactivated
+#and Pause off when a model file is closed to avoid conflict errors.
+#
 #Revision 1.75  2007/10/18 23:53:43  cdunde
 #To setup Custom Animation FPS Dialog, remove possibility of using 0, causing a crash and Defaults.
 #

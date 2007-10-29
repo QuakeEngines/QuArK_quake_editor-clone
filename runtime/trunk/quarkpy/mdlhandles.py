@@ -896,6 +896,8 @@ class SkinHandle(qhandles.GenericHandle):
 
     def __init__(self, pos, tri_index, ver_index, comp, texWidth, texHeight, triangle):
         qhandles.GenericHandle.__init__(self, pos)
+        from mdleditor import mdleditor
+        self.editor = mdleditor
         self.cursor = CR_CROSSH
         self.tri_index = tri_index
         self.ver_index = ver_index
@@ -1268,9 +1270,11 @@ class SkinHandle(qhandles.GenericHandle):
 
 
     def draw(self, view, cv, draghandle=None):
-        editor = mdleditor.mdleditor
-        from qbaseeditor import flagsmouse # To stop all drawing, causing slowdown, during a zoom.
-        if flagsmouse == 2056: return # Stops duplicated handle drawing at the end of a drag.
+        editor = self.editor
+        from qbaseeditor import flagsmouse
+        # To stop all drawing, causing slowdown, during a Linear, pan and zoom drag.
+        if flagsmouse == 2056 or flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1056:
+            return # Stops duplicated handle drawing at the end of a drag.
         texWidth = self.texWidth
         texHeight = self.texHeight
         triangle = self.triangle
@@ -1345,8 +1349,11 @@ class SkinHandle(qhandles.GenericHandle):
 
 
     def drag(self, v1, v2, flags, view):
-        from mdleditor import mdleditor
-        editor = mdleditor
+        editor = self.editor
+        from qbaseeditor import flagsmouse
+        # To stop all drawing, causing slowdown, during a Linear, pan and zoom drag.
+        if flagsmouse == 1032 and (editor.dragobject.handle is not self): return
+        if flagsmouse == 1040 or flagsmouse == 1056: return # Stops duplicated handle drawing at the end of a drag.
         texWidth = self.texWidth
         texHeight = self.texHeight
         p0 = view.proj(self.pos)
@@ -2009,12 +2016,13 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
         ### This area for the Skin-view code only. Must return at the end to stop erroneous model drawing.
         if view.info["viewname"] == "skinview":
+            comp = editor.Root.currentcomponent
             SkinVertexSel(editor, sellist)
             try:
-                skindrawobject = editor.Root.currentcomponent.currentskin
+                skindrawobject = comp.currentskin
             except:
                 skindrawobject = None
-            buildskinvertices(editor, view, editor.layout, editor.Root.currentcomponent, skindrawobject)
+            buildskinvertices(editor, view, editor.layout, comp, skindrawobject)
             if quarkx.setupsubset(SS_MODEL, "Options")['PVSTEV'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] == "1":
                     editor.ModelVertexSelList = []
@@ -2254,16 +2262,28 @@ class ModelEditorLinHandlesManager:
 
         # To get all the triangles that need to be drawn during the drag
         # including ones that have vertexes that will be stationary.
-        self.tristodrawlist = []
-        self.selvtxlist = []
         comp = self.editor.Root.currentcomponent
         if view is not None and view.info["viewname"] == "skinview":
-            pass
+            self.editor.SelVertexes = []
+            self.editor.SelCommonTriangles = []
+            for vtx in self.editor.SkinVertexSelList:
+                if comp.triangles[vtx[2]] in self.editor.SelCommonTriangles:
+                    pass
+                else:
+                    self.editor.SelCommonTriangles = self.editor.SelCommonTriangles + [comp.triangles[vtx[2]]]
+
+                trivtx = comp.triangles[vtx[2]][vtx[3]]
+                if trivtx in self.editor.SelVertexes:
+                    pass
+                else:
+                    self.editor.SelVertexes = self.editor.SelVertexes + [trivtx]
+
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
                 pass
             else:
-      #          self.selvtxlist = []
+                self.tristodrawlist = []
+                self.selvtxlist = []
                 for vtx in self.editor.ModelVertexSelList:
                     if vtx[0] in self.selvtxlist:
                         pass
@@ -2417,10 +2437,9 @@ class LinearHandle(qhandles.GenericHandle):
         else:
             new = None
 
+        # This draws the Linear handles for all views and the Skin-view problem starts for a drag.
         self.mgr.drawbox(view)    # Draws the full circle and all handles during drag and Ctrl key is being held down.
         cv = view.canvas()
-
-        # This draws the Linear handles for all views and the Skin-view.
         for h in view.handles:
             h.draw(view, cv, h)
         return self.mgr.list, new
@@ -2530,19 +2549,40 @@ class LinRedHandle(LinearHandle):
                 cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
                 cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
 
-        cv.pencolor = MapColor("Drag3DLines", SS_MODEL)
-        framevtxs = self.mgr.editor.Root.currentcomponent.currentframe.vertices
-        for tri in self.mgr.tristodrawlist:
-            dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
-            for vtx in range(len(tri[4])):
-                if tri[4][vtx][0] == tri[0]:
-                    continue
-                else:
-                    if tri[4][vtx][0] in self.mgr.selvtxlist:
-                        projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
+        cv.pencolor = dragcolor
+        if view.info["viewname"] == "skinview":
+            tex = self.mgr.editor.Root.currentcomponent.currentskin
+            if tex is not None:
+                texWidth,texHeight = tex["Size"]
+            else:
+                texWidth,texHeight = view.clientarea
+            for dragvtx in editor.SelVertexes:
+                dragprojvtx = view.proj(quarkx.vect((dragvtx[1]+delta.tuple[0]-int(texWidth*.5), dragvtx[2]+delta.tuple[1]-int(texHeight*.5), 0)))
+                for tri in editor.SelCommonTriangles:
+                    if dragvtx in tri:
+                        for vtx in tri:
+                            if vtx == dragvtx:
+                                continue
+                            else:
+                                if vtx in editor.SelVertexes:
+                                    projvtx = view.proj(quarkx.vect((vtx[1]+delta.tuple[0]-int(texWidth*.5), vtx[2]+delta.tuple[1]-int(texHeight*.5), 0)))
+                                else:
+                                    projvtx = view.proj(quarkx.vect((vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0)))
+                                cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+        else:
+            framevtxs = self.mgr.editor.Root.currentcomponent.currentframe.vertices
+            print "mdlhandles line 2745 delta is",delta, type(delta)
+            for tri in self.mgr.tristodrawlist:
+                dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
+                for vtx in range(len(tri[4])):
+                    if tri[4][vtx][0] == tri[0]:
+                        continue
                     else:
-                        projvtx = view.proj(framevtxs[tri[4][vtx][0]])
-                    cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+                        if tri[4][vtx][0] in self.mgr.selvtxlist:
+                            projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
+                        else:
+                            projvtx = view.proj(framevtxs[tri[4][vtx][0]])
+                        cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
 
         if view.info["type"] == "XY":
             s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
@@ -2930,6 +2970,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.108  2007/10/28 21:49:07  cdunde
+#To fix Skin-view Linear handle not drawing in correct position sometimes.
+#
 #Revision 1.107  2007/10/27 23:34:45  cdunde
 #To remove test print statements missed.
 #
