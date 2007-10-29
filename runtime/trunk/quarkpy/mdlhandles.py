@@ -1125,7 +1125,7 @@ class SkinHandle(qhandles.GenericHandle):
 
     def optionsmenu(self, editor, view=None):
         "This is the Skin-view Options menu items."
-            
+
         # Sync Editor views with Skin-view function.
         def mSYNC_EDwSV(m, self=self, editor=editor, view=view):
             if not MldOption("SYNC_EDwSV"):
@@ -1153,7 +1153,7 @@ class SkinHandle(qhandles.GenericHandle):
                     Update_Editor_Views(editor, 1)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SYNC_EDwSV'] = None
-        
+
         # Pass (Skin-view) Vertex Selection To Editors Views function.
         def mPVSTEV(m, self=self, editor=editor, view=view):
             if not MldOption("PVSTEV"):
@@ -1200,7 +1200,7 @@ class SkinHandle(qhandles.GenericHandle):
                     quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = None
                 else:
                     quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = None
-            
+
             Xrdt_m1 = qmenu.item("Rectangle drag-method 1", mRDT_M1, "|Rectangle drag-method 1:\n\nThis function will draw the Skin-view mesh vertex 'Ticks' during a rectangle drag with a minimum amount of flickering, but is a slower drawing method.|intro.modeleditor.menu.html#optionsmenu")
             Xrdt_m2 = qmenu.item("Rectangle drag-method 2", mRDT_M2, "|Rectangle drag-method 2:\n\nThis function will draw the Skin-view mesh vertex 'Ticks', using the fastest method, during a rectangle drag, but will cause the greatest amount of flickering.|intro.modeleditor.menu.html#optionsmenu")
 
@@ -1215,14 +1215,14 @@ class SkinHandle(qhandles.GenericHandle):
         def TicksViewingClick(m):
             editor = mdleditor.mdleditor
             m.items = TicksViewingMenu(editor)
-        
+
         # Turn taking Skin-view coors from editors 3D view on or off.
         def mSF3DV(m, self=self, editor=editor, view=view):
             if not MldOption("SkinFrom3Dview"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = "1"
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = None
-        
+
         # Turn Model Options function SkinGridVisible on or off.
         def mSGV(m, self=self, editor=editor, view=view):
             if not MldOption("SkinGridVisible"):
@@ -1235,20 +1235,21 @@ class SkinHandle(qhandles.GenericHandle):
                 if SkinView1 is not None:
                     SkinView1.invalidate()
                     qbaseeditor.BaseEditor.finishdrawing(editor, view)
-        
+
         # Turn Model Options function SkinGridActive on or off.
         def mSGA(m, self=self, editor=editor, view=view):
             if not MldOption("SkinGridActive"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = "1"
-                if SkinView1 is not None:
-                    SkinView1.invalidate()
-                    qbaseeditor.BaseEditor.finishdrawing(editor, view)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridActive'] = None
-                if SkinView1 is not None:
-                    SkinView1.invalidate()
-                    qbaseeditor.BaseEditor.finishdrawing(editor, view)
-            
+
+        # Turn Model Options function SingleSelDragLines on or off.
+        def mSSDL(m, self=self, editor=editor, view=view):
+            if not MldOption("SingleSelDragLines"):
+                quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] = "1"
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] = None
+
         Xsync_edwsv = qmenu.item("&Sync Editor views with Skin-view", mSYNC_EDwSV, "|Sync Editor views with Skin-view:\n\nThis function will turn off other related options and synchronize selected Skin-view mesh vertexes, passing and selecting the coordinated 'Model mesh' vertexes in the Editors views, where they can be used for editing purposes. Any selection changes in the Skin-view will be updated to the Editors views as well.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in both the Editor and the Skin-view for further use.\n\nThe 'Skin-view' and Editor views selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         Xcsf = qmenu.item("&Clear Selected Faces", mCSF, "|Clear Selected Faces:\n\nThis function will clear all faces in the Skin-view that have been drawn as 'Selected' or 'Show' but any related selected vertexes will remain that way for editing purposes.\n\nThe 'Skin-view' selected face, show face and selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
@@ -1256,15 +1257,17 @@ class SkinHandle(qhandles.GenericHandle):
         Xsf3Dv = qmenu.item("Skin From 3D view", mSF3DV, "|Skin From 3D view:\n\nThis turns the function on or off to take co-ordnances for the 'Skin-view' from the editors 3D view when new objects are created using the 'Quick Object Maker'\n\nIt will place that object on the skin exactly the same way you see it in the 3D view when the object is created.|intro.modeleditor.skinview.html#funcsnmenus")
         Xsgv = qmenu.item("Skin Grid Visible", mSGV, "|Skin Grid Visible:\n\nThis function gives quick access to the Model Options setting to turn the Skin-view grid on or off so that it is not visible, but it is still active for all functions that use it, such as 'Snap to grid'.|intro.modeleditor.skinview.html#funcsnmenus")
         Xsga = qmenu.item("Skin Grid Active", mSGA, "|Skin Grid Active:\n\nThis function gives quick access to the Model Options setting to make the Skin-view grid Active or Inactive making it available or unavailable for all functions that use it, such as 'Snap to grid', even though it will still be displayed in the Skin-view.|intro.modeleditor.skinview.html#funcsnmenus")
+        Xssdl = qmenu.item("Single Sel Drag Lines", mSSDL, "|Single Sel Drag Lines:\n\nThis function stops the multiple selection drag lines of the 'Linear Handle' from being drawn in the Skin-view to speed up the Skin-view selection and handle creation.|intro.modeleditor.skinview.html#funcsnmenus")
 
-        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, Xsf3Dv, Xsgv, Xsga, qmenu.sep, TicksViewing]
-    
+        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, Xsf3Dv, Xsgv, Xsga, Xssdl, qmenu.sep, TicksViewing]
+
         items = opsmenulist
         Xsync_edwsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_EDwSV")
         Xpvstev.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTEV")
         Xsf3Dv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinFrom3Dview")
         Xsgv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinGridVisible")
         Xsga.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinGridActive")
+        Xssdl.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SingleSelDragLines")
 
         return opsmenulist
 
@@ -2266,17 +2269,18 @@ class ModelEditorLinHandlesManager:
         if view is not None and view.info["viewname"] == "skinview":
             self.editor.SelVertexes = []
             self.editor.SelCommonTriangles = []
-            for vtx in self.editor.SkinVertexSelList:
-                if comp.triangles[vtx[2]] in self.editor.SelCommonTriangles:
-                    pass
-                else:
-                    self.editor.SelCommonTriangles = self.editor.SelCommonTriangles + [comp.triangles[vtx[2]]]
+            if quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] is None:
+                for vtx in self.editor.SkinVertexSelList:
+                    if comp.triangles[vtx[2]] in self.editor.SelCommonTriangles:
+                        pass
+                    else:
+                        self.editor.SelCommonTriangles = self.editor.SelCommonTriangles + [comp.triangles[vtx[2]]]
 
-                trivtx = comp.triangles[vtx[2]][vtx[3]]
-                if trivtx in self.editor.SelVertexes:
-                    pass
-                else:
-                    self.editor.SelVertexes = self.editor.SelVertexes + [trivtx]
+                    trivtx = comp.triangles[vtx[2]][vtx[3]]
+                    if trivtx in self.editor.SelVertexes:
+                        pass
+                    else:
+                        self.editor.SelVertexes = self.editor.SelVertexes + [trivtx]
 
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
@@ -2551,24 +2555,25 @@ class LinRedHandle(LinearHandle):
 
         cv.pencolor = dragcolor
         if view.info["viewname"] == "skinview":
-            tex = self.mgr.editor.Root.currentcomponent.currentskin
-            if tex is not None:
-                texWidth,texHeight = tex["Size"]
-            else:
-                texWidth,texHeight = view.clientarea
-            for dragvtx in editor.SelVertexes:
-                dragprojvtx = view.proj(quarkx.vect((dragvtx[1]+delta.tuple[0]-int(texWidth*.5), dragvtx[2]+delta.tuple[1]-int(texHeight*.5), 0)))
-                for tri in editor.SelCommonTriangles:
-                    if dragvtx in tri:
-                        for vtx in tri:
-                            if vtx == dragvtx:
-                                continue
-                            else:
-                                if vtx in editor.SelVertexes:
-                                    projvtx = view.proj(quarkx.vect((vtx[1]+delta.tuple[0]-int(texWidth*.5), vtx[2]+delta.tuple[1]-int(texHeight*.5), 0)))
+            if quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] is None:
+                tex = self.mgr.editor.Root.currentcomponent.currentskin
+                if tex is not None:
+                    texWidth,texHeight = tex["Size"]
+                else:
+                    texWidth,texHeight = view.clientarea
+                for dragvtx in editor.SelVertexes:
+                    dragprojvtx = view.proj(quarkx.vect((dragvtx[1]+delta.tuple[0]-int(texWidth*.5), dragvtx[2]+delta.tuple[1]-int(texHeight*.5), 0)))
+                    for tri in editor.SelCommonTriangles:
+                        if dragvtx in tri:
+                            for vtx in tri:
+                                if vtx == dragvtx:
+                                    continue
                                 else:
-                                    projvtx = view.proj(quarkx.vect((vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0)))
-                                cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+                                    if vtx in editor.SelVertexes:
+                                        projvtx = view.proj(quarkx.vect((vtx[1]+delta.tuple[0]-int(texWidth*.5), vtx[2]+delta.tuple[1]-int(texHeight*.5), 0)))
+                                    else:
+                                        projvtx = view.proj(quarkx.vect((vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0)))
+                                    cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
         else:
             framevtxs = self.mgr.editor.Root.currentcomponent.currentframe.vertices
             print "mdlhandles line 2745 delta is",delta, type(delta)
@@ -2650,7 +2655,7 @@ class LinRedHandle(LinearHandle):
 
     def ok(self, editor, undo, oldobjectslist, newobjectslist):
         "Returned final lists of objects to convert back into Model mesh or Skin-view vertexes."
-        
+
         from qbaseeditor import currentview
         if newobjectslist[0].name.endswith(":f"):
             undomsg = "editor-linear face movement"
@@ -2804,7 +2809,7 @@ class LinCornerHandle(LinearHandle):
         elif view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
             view.handles = []
             return
-            
+
         p = view.proj(self.pos)
         if p.visible:
             cv.reset()
@@ -2901,7 +2906,7 @@ def MouseDragging(self, view, x, y, s, handle):
         if item == 'center':
             center = view.info["center"]
             cursorposatstart = view.space(x,y,view.proj(center).z) # Used for start where clicked for Model Editor rotation.
-    
+
     #
     # qhandles.MouseDragging builds the DragObject.
     #
@@ -2923,9 +2928,9 @@ def ClickOnView(editor, view, x, y):
     # defined in QkPyMapview.pas
     #
     return view.clicktarget(editor.Root, int(x), int(y))
-    
-    
-    
+
+
+
 def MouseClicked(self, view, x, y, s, handle):
     "Mouse Click on a Model view."
 
@@ -2970,6 +2975,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.109  2007/10/29 12:45:41  cdunde
+#To setup drag line drawing for multiple selected vertex drags in the Skin-view.
+#
 #Revision 1.108  2007/10/28 21:49:07  cdunde
 #To fix Skin-view Linear handle not drawing in correct position sometimes.
 #
