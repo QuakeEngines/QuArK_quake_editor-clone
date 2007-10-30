@@ -112,7 +112,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
             if linkto is view:
                 sbviews[ito] = (ifrom, linkfrom)
         def scroller(x, y, view=view, hlink=sbviews[0], vlink=sbviews[1]):
-            from quarkpy.qbaseeditor import flagsmouse, currentview
+            from quarkpy.qbaseeditor import flagsmouse
             editor = saveeditor
             view.scrollto(x, y)
             try:
@@ -177,7 +177,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
             ### This is the 2D views WireFrame mode scroller section
             else:
                 if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
-                    quarkpy.mdleditor.paintframefill(editor, currentview)
+                    quarkpy.mdleditor.paintframefill(editor, view)
         return scroller
     quarkpy.qhandles.MakeScroller = MakeScroller
 
@@ -229,6 +229,9 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.14  2007/07/20 01:41:04  cdunde
+#To setup selected model mesh faces so they will draw correctly in all views.
+#
 #Revision 1.13  2007/06/19 06:16:07  cdunde
 #Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
 #Added model mesh face selection using RMB and LMB together along with various options
