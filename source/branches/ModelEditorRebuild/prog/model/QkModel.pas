@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2001/03/20 21:37:04  decker_dk
 Updated copyright-header
 
@@ -38,6 +41,16 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, QkObjects, QkFileObjects,
   QkForm, QkImages, Python, Game, QkPCX, QkTextures, qkmodelroot, Forms,
   PyForms;
+
+const   ///Sync with mdlentities.py!
+  MDL_GROUP          = 0;
+  MDL_GROUP_FRAME    = 1;
+  MDL_GROUP_SKIN     = 2;
+  MDL_SKIN           = 3;
+  MDL_GROUP_TAG      = 4;
+  MDL_GROUP_BONE     = 5;
+  MDL_GROUP_MISC     = 6;
+  MDL_GROUP_TRIANGLE = 7;
 
 type
   QModel = class(QFileObject)

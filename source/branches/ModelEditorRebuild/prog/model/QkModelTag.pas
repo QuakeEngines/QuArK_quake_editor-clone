@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/09/10 10:24:15  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
 Revision 1.7  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -47,30 +50,43 @@ uses QkMdlObject, QkObjects, qmath, qmatrices;
 
 type
   PMatrixTransformation = ^TMatrixTransformation;
+  QModelTagFrame = class(QMdlObject)
+  public
+    class function TypeInfo: String; override;
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
+    procedure ObjectState(var E: TEtatObjet); override;
+    procedure SetPosition(p: vec3_t);
+    function GetPosition: vec3_p;
+    procedure SetRotMatrix(P: TMatrixTransformation);
+    procedure GetRotMatrix(var P: PMatrixTransformation);
+  end;
   QModelTag = class(QMdlObject)
   public
     class function TypeInfo: String; override;
     function IsAllowedParent(Parent: QObject) : Boolean; override;
     procedure ObjectState(var E: TEtatObjet); override;
-    Procedure SetPosition(p: vec3_t);
-    Function GetPosition: vec3_p;
-    procedure SetRotMatrix(P: TMatrixTransformation);
-    procedure GetRotMatrix(var P: PMatrixTransformation);
+    function GetTagFrameFromIndex(N: Integer) : QModelTagFrame;
+    function GetTagFrameFromName(const nName: String) : QModelTagFrame;
+  end;
+  QTagGroup = class(QMdlObject)
+  public
+    class function TypeInfo: String; override;
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
   end;
 
 implementation
 
 uses QkObjectClassList, QkModelRoot;
 
-function QModelTag.IsAllowedParent(Parent: QObject) : Boolean;
+function QModelTagFrame.IsAllowedParent(Parent: QObject) : Boolean;
 begin
-  if (Parent=nil) or (Parent is QModelRoot) then
+  if (Parent=nil) or (Parent is QModelTag) then
     Result:=true
   else
     Result:=false;
 end;
 
-procedure QModelTag.SetPosition(P: vec3_t);
+procedure QModelTagFrame.SetPosition(P: vec3_t);
 const
   Spec2 = 'origin=';
 var
@@ -86,7 +102,7 @@ begin
   Specifics.Add(s);
 end;
 
-function QModelTag.GetPosition: vec3_p;
+function QModelTagFrame.GetPosition: vec3_p;
 const
   Spec2 = 'origin=';
 var
@@ -99,7 +115,7 @@ begin
   PChar(Result):=PChar(S) + Length(Spec2);
 end;
 
-procedure QModelTag.SetRotMatrix(P: TMatrixTransformation);
+procedure QModelTagFrame.SetRotMatrix(P: TMatrixTransformation);
 const
   Spec2 = 'rotmatrix=';
 var
@@ -113,7 +129,7 @@ begin
   Specifics.Add(s);
 end;
 
-procedure QModelTag.GetRotMatrix(var P: PMatrixTransformation);
+procedure QModelTagFrame.GetRotMatrix(var P: PMatrixTransformation);
 const
   Spec2 = 'rotmatrix=';
 var
@@ -126,9 +142,56 @@ begin
   PChar(P):=PChar(S) + Length(Spec2);
 end;
 
+procedure QModelTagFrame.ObjectState(var E: TEtatObjet);
+begin
+  inherited;
+  //E.IndexImage:=iiModelTagFrame;
+end;
+
+class function QModelTagFrame.TypeInfo;
+begin
+  TypeInfo:=':tagframe';
+end;
+
+{----------}
+
 class function QModelTag.TypeInfo;
 begin
   TypeInfo:=':tag';
+end;
+
+function QModelTag.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or (Parent is QTagGroup) then
+    Result:=true
+  else
+    Result:=false;
+end;
+
+function QModelTag.GetTagFrameFromName(const nName: String) : QModelTagFrame;
+begin
+  Result:=FindSubObject(nName, QModelTagFrame, Nil) as QModelTagFrame;
+end;
+
+function QModelTag.GetTagFrameFromIndex(N: Integer) : QModelTagFrame;
+var
+  L: TQList;
+begin
+  if N<0 then
+  begin
+    Result:=Nil;
+    Exit;
+  end;
+  L:=TQList.Create;
+  try
+    FindAllSubObjects('', QModelTagFrame, Nil, L);
+    if N>=L.Count then
+      Result:=Nil
+    else
+      Result:=L[N] as QModelTagFrame;
+  finally
+    L.Free;
+  end;
 end;
 
 procedure QModelTag.ObjectState(var E: TEtatObjet);
@@ -137,7 +200,26 @@ begin
   E.IndexImage:=iiModelTag;
 end;
 
+{----------}
+
+function QTagGroup.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or (Parent is QModelRoot) then
+    Result:=true
+  else
+    Result:=false;
+end;
+
+class function QTagGroup.TypeInfo;
+begin
+  TypeInfo:=':tg';
+end;
+
+{----------}
+
 initialization
-  RegisterQObject(QModelTag,   'a');
+  RegisterQObject(QModelTag,      'a');
+  RegisterQObject(QModelTagFrame, 'a');
+  RegisterQObject(QTagGroup,      'a');
 end.
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2007/09/23 21:04:31  danielpharos
+Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+
 Revision 1.46  2007/09/12 16:21:42  danielpharos
 Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
 
@@ -146,10 +149,8 @@ uses
   Glide in '3dfx\Glide.pas',
   form_Model in 'prog\model\form_Model.pas' {FQMdl},
   Qk3ds in 'prog\model\Qk3ds.pas',
-  QkBoneGroup in 'prog\model\QkBoneGroup.pas',
   QkComponent in 'prog\model\QkComponent.pas',
   QkFrame in 'prog\model\QkFrame.pas',
-  QkFrameGroup in 'prog\model\QkFrameGroup.pas',
   QkMd2 in 'prog\model\QkMd2.pas',
   QkMd3 in 'prog\model\QkMd3.pas',
   QkMdl in 'prog\model\QkMdl.pas',
@@ -160,9 +161,11 @@ uses
   QkModelFile in 'prog\model\QkModelFile.pas',
   QkModelRoot in 'prog\model\QkModelRoot.pas',
   QkModelTag in 'prog\model\QkModelTag.pas',
+  QkModelTriangle in 'prog\model\QkModelTriangle.pas',
+  QkModelVertex in 'prog\model\QkModelVertex.pas',
   QkQkl in 'prog\model\QkQkl.pas',
+  QkSkin in 'prog\model\QkSkin.pas',
   qkskindrawobject in 'prog\model\qkskindrawobject.pas',
-  QkSkinGroup in 'prog\model\QkSkinGroup.pas',
   About in 'prog\About.pas' {AboutBox},
   AutoUpdater in 'prog\AutoUpdater.pas',
   Bezier in 'prog\Bezier.pas',

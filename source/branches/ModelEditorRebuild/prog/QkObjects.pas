@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.93  2007/09/12 16:24:29  danielpharos
+Moved update settings to seperate config section and added beginnings of online update check.
+
 Revision 1.92  2007/09/12 15:28:16  danielpharos
 Replaced redundant property.
 
@@ -618,6 +621,7 @@ type
     procedure FinalizeFromText; virtual;
     function WriteSubelements : Boolean; virtual;
     function IsAllowedParent(Parent: QObject) : Boolean; virtual;
+    function CheckAllowedChilds : Boolean;
   end;
 
   TQList = class(TList)
@@ -2279,6 +2283,26 @@ end;
 
 function QObject.IsAllowedParent(Parent: QObject) : Boolean;
 begin
+  Result:=true;
+end;
+
+function QObject.CheckAllowedChilds : Boolean;
+var
+  I: Integer;
+begin
+  for I:=0 to SubElements.Count-1 do
+  begin
+    if SubElements[I].IsAllowedParent(self)=false then
+    begin
+      Result:=false;
+      Exit;
+    end;
+    if SubElements[I].CheckAllowedChilds=false then
+    begin
+      Result:=false;
+      Exit;
+    end;
+  end;
   Result:=true;
 end;
 

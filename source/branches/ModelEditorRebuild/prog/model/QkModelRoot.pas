@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2007/08/05 20:04:33  danielpharos
+Fix a typo in a comment.
+
 Revision 1.12  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -57,59 +60,40 @@ interface
 
 uses Windows, SysUtils, Classes, QkObjects, Qk3D, QkForm, Graphics,
      QkImages, QkTextures, PyMath, Python, QkMdlObject,
-     QkMiscGroup, QkComponent, QkFrameGroup, QkFrame;
+     QkMiscGroup, QkComponent, QkFrame, QkModelTag;
 
 type
   QModelRoot = class(QMdlObject)
   private
-    FCurrentComponentObj: QComponent;
-    procedure SetCurrentComponent(nComponent: QComponent);
+    FCurrentComponent: Integer;
   public
+    constructor Create(const nName: String; nParent: QObject);
     class function TypeInfo: String; override;
-    function Triangles(var P: PComponentTris) : Integer;
     function PyGetAttr(attr: PChar) : PyObject; override;
     function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
-    property CurrentComponent : QComponent read FCurrentComponentObj write SetCurrentComponent;
-    function GetComponentFromIndex(N: Integer) : QComponent;
-    Function GetMisc: QMiscGroup;
+    function MiscGroup: QMiscGroup;
+    function TagGroup: QTagGroup;
+    function CreateMiscGroup: QMiscGroup;
+    function CreateTagGroup: QTagGroup;
+    procedure SetCurrentComponent(NewComponent: Integer);
+    property CurrentComponent: Integer read FCurrentComponent write SetCurrentComponent;
+    function GetCurrentComponentObject: QComponent;
     function BuildComponentList : TQList;
-    procedure CheckComponentFrames;
-    procedure SetFrames(index: Integer);
-    procedure SetFramesByName(s: string);
+    procedure SetAllFrames(NewFrame: Integer);
+    procedure SetAllFramesByName(NewFrameName: String);
+    procedure FixComponentFrames;
     procedure Dessiner; override;
-    destructor Destroy; override;
   end;
 
 implementation
 
-uses quarkx, pyobjects, travail, QkObjectClassList, qkmd3;
-
-function qSetComponent(self, args: PyObject) : PyObject; cdecl;
-var
-  u: PyObject;
-  Q: QObject;
-begin
-  try
-    Result:=Nil;
-    if not PyArg_ParseTupleX(args, 'O', [@u]) then
-      Exit;
-    Q:=QkObjFromPyObj(u);
-    if not (Q is QComponent) then
-      Q:=Nil;
-    with QkObjFromPyObj(self) as QModelRoot do
-      SetCurrentComponent(QComponent(Q));
-    Result:=PyNoResult;
-  except
-    EBackToPython;
-    Result:=Nil;
-  end;
-end;
+uses quarkx, pyobjects, travail, QkObjectClassList, qkmd3, QkModel;
 
 function qCheckComponents(self, args: PyObject) : PyObject; cdecl;
 begin
   try
     with QkObjFromPyObj(self) as QModelRoot do
-      CheckComponentFrames;
+      FixComponentFrames;
     Result:=PyNoResult;
   except
     EBackToPython;
@@ -130,90 +114,16 @@ begin
 end;
 
 const
-  MethodTable: array[0..2] of TyMethodDef =
-    ((ml_name: 'setcomponent';  ml_meth: qSetComponent;  ml_flags: METH_VARARGS),
-     (ml_name: 'checkcomponents';ml_meth: qCheckComponents;ml_flags: METH_VARARGS),
-     (ml_name: 'tryautoloadparts';ml_meth: qTryAutoLoadParts;ml_flags: METH_VARARGS));
+  MethodTable: array[0..1] of TyMethodDef =
+    ((ml_name: 'checkcomponents';  ml_meth: qCheckComponents;  ml_flags: METH_VARARGS),
+     (ml_name: 'tryautoloadparts'; ml_meth: qTryAutoLoadParts; ml_flags: METH_VARARGS));
 
 { ----------------------------- }
 
-function Max(a,b: Longint): Longint;
+constructor QModelRoot.Create(const nName: String; nParent: QObject);
 begin
-  if a>b then result:=a else result:=b;
-end;
-
-destructor QModelRoot.Destroy;
-begin
-  FCurrentComponentObj.AddRef(-1);
   inherited;
-end;
-
-procedure QModelRoot.SetFrames(index: Integer);
-var
-  l: TQList;
-  i: Integer;
-begin
-  l:=BuildComponentList;
-  for i:=0 to l.count-1 do
-    QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromIndex(index);
-  l.clear;
-  l.free;
-end;
-
-procedure QModelRoot.setFramesByName(s: string);
-var
-  l: TQList;
-  i: Integer;
-begin
-  l:=BuildComponentList;
-  for i:=0 to l.count-1 do
-    QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromName(s);
-  l.clear;
-  l.free;
-end;
-
-procedure QModelRoot.CheckComponentFrames;
-var
-  l: TQList;
-  i: Integer;
-  f: TQlist;
-  c: QComponent;
-  fg: QFrameGroup;
-  qf: QFrame;
-  needed_framecount: Longint;
-  cnt: Longint;
-begin
-  l:=BuildComponentList;
-  needed_framecount:=-1;
-  for i:=0 to l.count-1 do begin
-    c:=QComponent(l.Items1[i]);
-    f:=c.BuildFrameList;
-    needed_framecount:=Max(needed_framecount, f.count-1);
-    f.clear;
-    f.free;
-  end;
-  for i:=0 to l.count-1 do begin
-    c:=QComponent(l.Items1[i]);
-    if c.IntSpec['includeincheck']=0 then // skip component
-      continue;
-    f:=c.BuildFrameList;
-    cnt:=f.count;
-    if cnt-1 < needed_framecount then begin
-      fg:=c.FrameGroup;
-      ProgressIndicatorStart(5459, needed_framecount-(cnt-1));
-      while f.count-1 < needed_framecount do begin
-        qf:=QFrame(f.Items1[cnt-1].Clone(fg,true));
-        fg.subelements.add(qf);
-        f.add(qf);
-        ProgressIndicatorIncrement;
-      end;
-      ProgressIndicatorStop;
-    end;
-    f.clear;
-    f.free;
-  end;
-  l.clear;
-  l.free;
+  CurrentComponent:=-1;
 end;
 
 class function QModelRoot.TypeInfo;
@@ -221,23 +131,138 @@ begin
   TypeInfo:=':mr';
 end;
 
-function QModelRoot.Triangles(var P: PComponentTris) : Integer;
-var
-  list: TQList;
+function QModelRoot.BuildComponentList : TQList;
 begin
-  list:=TQList.Create;
+  Result:=TQList.Create;
   try
-    FindAllSubObjects('', QComponent, Nil, list);
+    FindAllSubObjects('', QComponent, Nil, Result);
   except
-    list.clear;
-    list.Free;
+    Result.Free;
     Raise;
   end;
-  if list.count<0 then begin
-    result:=0;
-    exit;
-  end else begin
-    Result:=QComponent(List.Items1[0]).Triangles(p);
+end;
+
+function QModelRoot.GetCurrentComponentObject: QComponent;
+var
+  ComponentList: TQList;
+begin
+  if CurrentComponent < 0 then
+  begin
+    Result:=nil;
+    Exit;
+  end;
+  ComponentList:=TQList.Create;
+  try
+    FindAllSubObjects('', QComponent, Nil, ComponentList);
+    Result:=QComponent(ComponentList[FCurrentComponent]);
+  finally
+    ComponentList.Free;
+  end;
+end;
+
+procedure QModelRoot.SetCurrentComponent(NewComponent: Integer);
+var
+  ComponentList: TQList;
+begin
+  ComponentList:=TQList.Create;
+  try
+    FindAllSubObjects('', QComponent, Nil, ComponentList);
+    if NewComponent < 0 then
+      NewComponent := 0;
+    if NewComponent > ComponentList.Count-1 then
+      NewComponent := ComponentList.Count-1;
+  finally
+    ComponentList.Free;
+  end;
+  FCurrentComponent := NewComponent;
+end;
+
+procedure QModelRoot.SetAllFrames(NewFrame: Integer);
+var
+  ComponentList: TQList;
+  I: Integer;
+begin
+  ComponentList:=TQList.Create;
+  try
+    FindAllSubObjects('', QComponent, Nil, ComponentList);
+    for I:=0 to ComponentList.Count-1 do
+    begin
+      QComponent(ComponentList[I]).SetCurrentFrame(NewFrame);
+    end;
+  finally
+    ComponentList.Free;
+  end;
+end;
+
+procedure QModelRoot.SetAllFramesByName(NewFrameName: String);
+var
+  ComponentList: TQList;
+  NewFrame : Integer;
+  I: Integer;
+begin
+  ComponentList:=TQList.Create;
+  try
+    FindAllSubObjects('', QComponent, Nil, ComponentList);
+    for I:=0 to ComponentList.Count-1 do
+    begin
+      NewFrame:=QComponent(ComponentList[I]).GetFrameFromName(NewFrameName);
+      QComponent(ComponentList[I]).CurrentFrame:=NewFrame;
+    end;
+  finally
+    ComponentList.Free;
+  end;
+end;
+
+procedure QModelRoot.FixComponentFrames;
+var
+  ComponentList: TQList;
+  I: Integer;
+  FrameList: TQlist;
+  Component: QComponent;
+  FrameGroup: QFrameGroup;
+  Frame: QFrame;
+  needed_framecount: Longint;
+  FrameCount: Longint;
+begin
+  ComponentList:=TQList.Create;
+  try
+    FrameList:=TQList.Create;
+    try
+      FindAllSubObjects('', QComponent, Nil, ComponentList);
+      needed_framecount:=-1;
+      for I:=0 to ComponentList.count-1 do
+      begin
+        Component:=QComponent(ComponentList[I]);
+        Component.FindAllSubObjects('', QFrame, Nil, FrameList);
+        if FrameList.count-1>needed_framecount then
+          needed_framecount:=FrameList.count-1;
+        FrameList.Clear;
+      end;
+      for I:=0 to ComponentList.count-1 do
+      begin
+        Component:=QComponent(ComponentList[i]);
+        Component.FindAllSubObjects('', QFrame, Nil, FrameList);
+        FrameCount:=FrameList.count;
+        if FrameCount-1 < needed_framecount then
+        begin
+          FrameGroup:=Component.FrameGroup;
+          ProgressIndicatorStart(5459, needed_framecount-(FrameCount-1));
+          while FrameList.count-1 < needed_framecount do
+          begin
+            Frame:=QFrame(FrameList[FrameCount-1].Clone(FrameGroup,true));
+            FrameGroup.SubElements.Add(Frame);
+            FrameList.Add(Frame);
+            ProgressIndicatorIncrement;
+          end;
+          ProgressIndicatorStop;
+        end;
+        FrameList.Clear;
+      end;
+    finally
+      FrameList.free;
+    end;
+  finally
+    ComponentList.free;
   end;
 end;
 
@@ -254,11 +279,16 @@ begin
     end;
   case attr[0] of
     'c': if StrComp(attr, 'currentcomponent')=0 then begin
-      Result:=GetPyObj(CurrentComponent);
+      Result:=PyInt_FromLong(FCurrentComponent);
+      Exit;
+    end
+    else
+    if StrComp(attr, 'currentcomponentobject')=0 then begin
+      Result:=GetPyObj(GetCurrentComponentObject);
       Exit;
     end;
     'g': if StrComp(attr, 'group_misc')=0 then begin
-      Result:=GetPyObj(GetMisc);
+      Result:=GetPyObj(MiscGroup);
       Exit;
     end;
   end;
@@ -266,66 +296,29 @@ end;
 
 function QModelRoot.PySetAttr(attr: PChar; value: PyObject) : Boolean;
 var
-  Q: QObject;
+  I: Integer;
 begin
   Result:=inherited PySetAttr(attr, value);
   if not Result then
     case attr[0] of
     'c': if StrComp(attr, 'currentcomponent')=0 then begin
-      Q:=QkObjFromPyObj(value);
-      if not (Q is QComponent) then
-        Q:=Nil;
-      CurrentComponent:=QComponent(Q);
+      I:=0;
+      PyArg_ParseTupleX(value,'i',[@i]);
+      SetCurrentComponent(i);
       Result:=True;
       Exit;
     end;
   end;
 end;
 
-procedure QModelRoot.SetCurrentComponent(nComponent: QComponent);
+function QModelRoot.CreateMiscGroup: QMiscGroup;
 begin
-  FCurrentComponentObj.AddRef(-1);
-  FCurrentComponentObj:=nComponent;
-  FCurrentComponentObj.AddRef(+1);
+  Result:=QMiscGroup.Create('Misc', Self);
+  Result.IntSpec['type']:=MDL_GROUP_MISC;
+  SubElements.Add(Result);
 end;
 
-function QModelRoot.BuildComponentList : TQList;
-var
-  i: integer;
-begin
-  Result:=TQList.Create;
-  try
-    for i:=0 to SubElements.count-1 do
-      if Subelements[i] is QComponent then
-        Result.Add(Subelements[i]);
-  except
-    Result.Free;
-    Raise;
-  end;
-end;
-
-function QModelRoot.GetComponentFromIndex(N: Integer) : QComponent;
-var
-  L: TQList;
-begin
-  if N<0 then begin
-    Result:=Nil;
-    Exit;
-  end;
-  L:=TQList.Create;
-  try
-    FindAllSubObjects('', QComponent, Nil, L);
-    if N>=L.Count then
-      Result:=Nil
-    else
-      Result:=L[N] as QComponent;
-  finally
-    L.Clear;
-    L.Free;
-  end;
-end;
-
-function QModelRoot.GetMisc: QMiscGroup;
+function QModelRoot.MiscGroup: QMiscGroup;
 var
   i: Integer;
   x: QObject;
@@ -338,19 +331,38 @@ begin
       exit;
     end;
   end;
-  if result=nil then
-    raise exception.Create('GetMisc = nil (QModelRoot.GetMisc)');
+end;
+
+function QModelRoot.CreateTagGroup: QTagGroup;
+begin
+  Result:=QTagGroup.Create('Tags', Self);
+  Result.IntSpec['type']:=MDL_GROUP_TAG;
+  SubElements.Add(Result);
+end;
+
+function QModelRoot.TagGroup: QTagGroup;
+var
+  i: Integer;
+  x: QObject;
+begin
+  result:=nil;
+  for i:=0 to SubElements.Count-1 do begin
+    x:=SubElements.Items1[i];
+    if x is QTagGroup then begin
+      result:=QTagGroup(x);
+      exit;
+    end;
+  end;
 end;
 
 procedure QModelRoot.Dessiner;
 var
-  i: Integer;
+  I: Integer;
 begin
-  if CurrentComponent=nil then
-    CurrentComponent:=GetComponentFromIndex(0);
-  for i:=0 to SubElements.Count-1 do begin
-    if SubElements.Items1[i] is QComponent then
-      QComponent(SubElements.Items1[i]).Dessiner;
+  for I:=0 to SubElements.Count-1 do
+  begin
+    if SubElements[I] is QComponent then
+      QComponent(SubElements[I]).Dessiner;
   end;
 end;
 

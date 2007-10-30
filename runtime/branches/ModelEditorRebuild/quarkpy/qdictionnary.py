@@ -685,7 +685,7 @@ Strings = {
     5456: "Building .pak file...",
     5457: "Pasting...",
     5458: "Searching add-ons...",
-    5459: "preparing Faces...",
+    5459: "preparing Frames...",
     5460: "preparing Models...",
 
     5502: "Sprite object not found!",
@@ -1025,6 +1025,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.110  2007/10/24 14:58:12  cdunde
+#To activate all Movement toolbar button functions for the Model Editor.
+#
 #Revision 1.109  2007/10/23 14:47:51  danielpharos
 #Fixed the filename being double in the not-found error message.
 #

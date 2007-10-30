@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.33  2007/05/06 21:23:40  danielpharos
 Cleaned up some code for Md3 models.
 
@@ -131,49 +134,55 @@ unit QkMd3;
 interface
 
 uses Windows, SysUtils, Classes, QkObjects, QkForm, Graphics,
-     QkImages, qmath, QkTextures, QkFileObjects, QkPcx,
-     QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag, QkModelBone,
-     QkMiscGroup, {QkFrameGroup,} qmatrices;
+     QkImages, qmath,  qmatrices, QkTextures, QkFileObjects, QkSkin,
+     QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag,
+     QkModelBone, QkMiscGroup, QkModelVertex;
 
 type
   QMd3File = class(QModelFile)
     protected
       procedure LoadFile(F: TStream; Taille: Integer); override;
       procedure SaveFile(Info: TInfoEnreg1); override;
-      Procedure ReadMesh(fs: TStream; Root: QModelRoot);
+      Procedure ReadMesh(fs: TStream; Comp: QComponent);
     public
       class function TypeInfo: String; override;
       class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-      function Loaded_ShaderFile(Comp: QComponent; tex_name: string): QImage;
+      function LoadShaderFile(Comp: QComponent; tex_name: string): QSkin;
       function AttachModelToTag(Tag_Name: string; model: QModelFile): boolean;
       function AttachModelToTagFromFileName(Tag_Name: string; Filename: string): boolean;
       function TryAutoLoadParts: boolean;
       Function GetFullFilename: string;
       function GetBoneFrameForFrame(Root: QModelRoot; Frame: Integer): QModelBone;
-      procedure ChangeGameMode; virtual;
     end;
 
 {--------------------------}
 
 implementation
 
-uses QuarkX, Setup, QkObjectClassList, game, qkq3, qkpixelset, logging;
+uses Dialogs, QuarkX, Setup, Travail, QkObjectClassList, game,
+     qkq3, qkpixelset, logging, QkModelTriangle;
 
 const
  MAX_QPATH = 64;
+ MD3_MAX_FRAMES = 1024;
+ MD3_MAX_TAGS = 16;
+ MD3_MAX_SURFACES = 32;
+ MD3_MAX_SHADERS = 256;
+ MD3_MAX_VERTS = 4096;
+ MD3_MAX_TRIANGLES = 8192;
+ MD3_XYZ_SCALE = 1.0 / 64;
 
 type
-
   TMD3Header = packed record
     id: array[1..4] of char;       //id of file, always "IDP3"
     version: longint;              //version number, always 15
     filename: array[1..MAX_QPATH] of char;//sometimes left Blank...
     flags: Longint;                //???
-    BoneFrame_num: Longint;        //number of BoneFrames
-    Tag_num: Longint;              //number of 'tags' per BoneFrame
-    Mesh_num: Longint;             //number of meshes/skins
+    Frame_num: Longint;            //number of frames
+    Tag_num: Longint;              //number of tags/frame
+    Mesh_num: Longint;             //number of meshes
     Skin_num: Longint;             //number of unique skins
-    BoneFrame_offset: Longint;     //offset of the frames
+    Frame_offset: Longint;         //offset of the frames
     Tag_offset: Longint;           //offset of the tags
     Surface_offset: Longint;       //offset of the surface
     End_offset: Longint;           //offset of the end of the file
@@ -181,10 +190,10 @@ type
   { Comments to TMD3Header
      If Tag_offset is the same as Tag_surface then there are no tags.
 
-     Tag_Num is sometimes 0, this is alright it means that there are no tags...
-     i'm not sure what Tags are used for, altough there is a clear connection
-     with boneframe, together they're probably used for bone based animations
-     (where you rotate meshes around eachother to create animations).
+     Tag_Num is sometimes 0, this is alright. It just means that there are no
+     tags. Tages are used for adding another MD3 to the modelfile. Quake 3
+     uses these for playermodels: head, upper and lower, and also for holding
+     weapons.
 
      After the header comes a list of frame, then follows a list of tags, if available.
      The amount of tags is the header variable Tag_num times the header variable BoneFrame_num.
@@ -193,19 +202,19 @@ type
      Note: We call them 'Tags' because the name in tag usually starts with "tag_".
   }
 
-  TMD3BoneFrame = packed record
+  TMD3Frame = packed record
     Mins: vec3_t;
     Maxs: vec3_t;
     Position: vec3_t;
     Radius: single;
     Name: array[1..16] of char;
   end;
-  { TMD3BoneFrame
-     If you divide the maximum and minimum xyz values of all the vertices from each meshframe you get
-     the exact values as mins and maxs..
+  { TMD3Frame
+     If you divide the maximum and minimum xyz values of all the vertices from each meshframe
+     you get the exact values as mins and maxs..
      Position is the exact center of mins and maxs, most of the time anyway.
 
-     Name is very probably just the name of the program or file of which it (the boneframe?) was created,
+     Name is very probably just the name of the program or file of which it was created,
      sometimes it's "(from ASE)" sometimes it's the name of a .3ds file.
   }
 
@@ -236,15 +245,14 @@ type
     ID: array[1..4] of char;          //id, must be IDP3
     Name: array[1..MAX_QPATH] of char;       //name of mesh
     flags: Longint;                   //???
-    MeshFrame_num: Longint;           //number of meshframes
-                                      //in mesh
+    MeshFrame_num: Longint;           //number of meshframes in mesh
     Skin_num: Longint;                //number of skins in mesh
     Vertex_num: Longint;              //number of vertices
     Triangle_num: Longint;            //number of Triangles
     Triangle_Start: Longint;          //starting position of
                                       //Triangle data, relative
                                       //to start of Mesh_Header
-    HeaderSize: Longint;              //size of header
+    Skin_Start: Longint;              //size of header
     TexVec_Start: Longint;            //starting position of
                                       //texvector data, relative
                                       //to start of Mesh_Header
@@ -259,8 +267,8 @@ type
      eachother like in bone-based-animations)
      Skin_num is the number of skins in the md3 file..
      These skins are animated.
-     Triangle_Start, TexVec_Start & Vertex_Start are the number of bytes in the file from the start of the mesh header to the
-     start of the triangle, texvec and vertex data (in that order).
+     Triangle_Start, Skin_Start, TexVec_Start & Vertex_Start are the number of bytes in the file from the start of the mesh header
+     to the start of the triangle, skin, texvec and vertex data (in that order).
   }
 
   TMD3Skin = packed record
@@ -426,7 +434,7 @@ begin
  Info.FileExt:=805;
 end;
 
-function QMd3File.Loaded_ShaderFile(Comp: QComponent; tex_name: string): QImage;
+function QMd3File.LoadShaderFile(Comp: QComponent; tex_name: string): QSkin;
 var
   shader_filename: string;
   shader_texturename: string;
@@ -463,7 +471,7 @@ begin
       shader_texture:=QPixelSet(shader_file.subelements[i]);
       if (shader_texture is QShader) and (uppercase(shader_texture.name)=uppercase(shader_texturename)) then
       begin
-        Result:=QPcx.Create(shader_texturename, Comp.SkinGroup);
+        Result:=QSkin.Create(shader_texturename, Comp.SkinGroup);
         try
           Result.ConversionFrom(shader_texture);
         except
@@ -486,54 +494,58 @@ begin
   end;
 end;
 
-Procedure QMD3File.ReadMesh(fs: TStream; Root: QModelRoot);
-const
-  Spec1 = 'Tris=';
-  Spec2 = 'Vertices=';
+Procedure QMD3File.ReadMesh(fs: TStream; Comp: QComponent);
 type
   PVertxArray = ^TVertxArray;
-  TVertxArray = array[0..0] of TMD3TexVec;
+  TVertxArray = array of TMD3TexVec;
 var
   mhead: TMD3Mesh;
   tex: TMD3Skin;
   i, j, k: Integer;
-  Skin: QImage;
-  Frame: QFrame;
-  s: String;
+  OTriangle: QModelTriangle;
+  OVertex: QModelVertex;
+  OSkin: QSkin;
+  OFrame: QFrame;
+  VertexData: TVertexData;
   size: TPoint;
   sizeset: Boolean;
   org: Longint;
   fsize: array[1..2] of Single;
-  mn: String;
-  Comp: QComponent;
   t, base_tex_name: string;
   //------ Pointers from here
   Tris, Tris2: PMD3Triangle;
   TexCoord: PVertxArray;
+  TexCoord2: PMD3TexVec;
   Vertexes, Vertexes2: PMD3Vertex;
-  CTris: PComponentTris;
-  CVert: vec3_p; 
   ImageFile: QFileObject;
+  VecT: vec3_t;
 begin
   org:=fs.position;
   fs.readbuffer(mhead, sizeof(mhead));
+
+// @ Check for:
+// MD3_MAX_FRAMES = 1024;
+// MD3_MAX_TAGS = 16;
+// MD3_MAX_SURFACES = 32;
+// MD3_MAX_SHADERS = 256;
+// MD3_MAX_VERTS = 4096;
+// MD3_MAX_TRIANGLES = 8192;
   
   // SilverPaladin - 08/28/2003 - Skip past the remainder of the header...
   // Required for RtCW and other games that have a head larger than the TMD3Mesh
   // component allows for.
-  fs.Seek(mhead.HeaderSize - sizeof(mhead), 1);
+//DanielPharos: I don't believe that's the case...! (Commented out)
+//  fs.Seek(mhead.Skin_Start - sizeof(mhead), soFromCurrent);
 
   //-----------------------------------------------------------
   //-- LOAD SKINS + GET SIZE OF FIRST
   //-----------------------------------------------------------
-  mn := trim(BeforeZero(Mhead.name)); //Decker 2002-06-11
-  Comp:=Loaded_Component(Root, mn);
   sizeset:=false;
   size.x:=0;
   size.y:=0;
   for i:=1 to mhead.skin_Num do
   begin  
-    fs.Seek(mhead.HeaderSize - sizeof(mhead), 1);
+    //fs.Seek(mhead.Skin_Start - sizeof(mhead), soFromCurrent);
     fs.readbuffer(tex, sizeof(tex));
     if tex.name[1]=#0 then
       tex.name[1]:='m';
@@ -543,47 +555,52 @@ begin
     if CharModeJeu=mjSoF2 then
       if Pos(#0,base_tex_name)<>0 then
          base_tex_name[Pos(#0,base_tex_name)]:='.';
-    Skin:=Loaded_ShaderFile(Comp, base_tex_name);
-    if skin=nil then
-      skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.tga'), false);
-    if skin=nil then
-      skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.jpg'), false);
-    if skin=nil then
-      skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.png'), false);
-         // SilverPaladin - 12/01/2003 - If we have not been able to find a skin file   
-      // in the current directories (unpure has priority), look for it in the PK3
-      // files (pure mode) that have been loaded for the game.   
-      if (Skin = NIL)   
-      then begin   
-        ImageFile := NeedGameFile(base_tex_name, '');
-        if (ImageFile <> NIL)   
-        then begin   
-         ImageFile.AddRef(+1);   
-         try   
-           ImageFile.Acces;   
-           if (ImageFile is QImage)   
-           then Skin := QImage(ImageFile);   
-         finally   
-           ImageFile.AddRef(-1);   
-         end;   
-        end;   
-      end;   
-     
-      // If the files does not exist in the directories or in the packs then raise   
-      // an error. 
+    OSkin:=LoadShaderFile(Comp, base_tex_name);
+    if OSkin=nil then
+      OSkin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.tga'), false);
+    if OSkin=nil then
+      OSkin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.jpg'), false);
+    if OSkin=nil then
+      OSkin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.png'), false);
 
-    if skin=nil then
+    // SilverPaladin - 12/01/2003 - If we have not been able to find a skin file
+    // in the current directories (unpure has priority), look for it in the PK3
+    // files (pure mode) that have been loaded for the game.
+    if (OSkin = NIL) then
+    begin
+      try
+        ImageFile := NeedGameFile(base_tex_name, '');
+      except
+        ImageFile := nil;
+      end;
+      if (ImageFile <> NIL) then
+      begin
+       ImageFile.AddRef(+1);
+       try
+         ImageFile.Acces;
+         if (ImageFile is QImage) then
+           OSkin := QSkin(ImageFile);
+       finally
+         ImageFile.AddRef(-1);
+       end;
+      end;
+    end;
+
+    // If the files does not exist in the directories or in the packs then raise
+    // an error.
+
+    if OSkin=nil then
     begin
       t:=FmtLoadStr1(5575, [base_tex_name+' or '+ChangeFileExt(base_tex_name,'.jpg'), LoadName]);
       GlobalWarning(t);
-      skin:=CantFindTexture(Comp, base_tex_name, Size);
+      OSkin:=QSkin(CantFindTexture(Comp, base_tex_name, Size));
     end;
 
-    if skin<>nil then
+    if OSkin<>nil then
     begin
       if (not sizeset) then
       begin
-        Size:=Skin.GetSize;
+        Size:=OSkin.GetSize;
         Sizeset:=true;
       end;
     end;
@@ -595,78 +612,76 @@ begin
   //-----------------------------------------------------------
   //-- LOAD TRIANGLES
   //-----------------------------------------------------------
-  fs.seek(org+mhead.triangle_start, sofrombeginning);
+  fs.seek(org+mhead.triangle_start, soFromBeginning);
   getmem(tris, mhead.triangle_num*sizeof(TMD3Triangle));
   fs.readbuffer(tris^, mhead.triangle_num*sizeof(TMD3Triangle));
 
   //-----------------------------------------------------------
   //-- LOAD TEXTURE CO-ORDS
   //-----------------------------------------------------------
-  fs.seek(org+mhead.TexVec_Start, sofrombeginning);
-  getmem(texCoord, mhead.vertex_num*sizeof(TMD3TexVec));
-  fs.readbuffer(texCoord^, mhead.vertex_num*sizeof(TMD3TexVec));
+  fs.seek(org+mhead.TexVec_Start, soFromBeginning);
+  getmem(TexCoord, mhead.vertex_num*sizeof(TMD3TexVec));
+  fs.readbuffer(TexCoord^, mhead.vertex_num*sizeof(TMD3TexVec));
 
   //-----------------------------------------------------------
   //-- PROCESS TRIANGLES + TEXTURE CO-ORDS
   //-----------------------------------------------------------
   try
-    S:=Spec1;
-    SetLength(S, Length(Spec1)+mhead.Triangle_num*SizeOf(TComponentTris));
     Tris2:=Tris;
-    PChar(CTris):=PChar(S)+Length(Spec1);
     for I:=1 to mhead.Triangle_num do
     begin
+      OTriangle:=QModelTriangle.Create('Triangle '+inttostr(i), Comp.TriangleGroup);
+      Comp.TriangleGroup.SubElements.Add(OTriangle);
       for J:=0 to 2 do
       begin
-        with CTris^[J] do
-        begin
-          VertexNo:=Tris2^.triangle[J+1];
-          //DanielPharos: The following line results in FALSE range check errors!
-          with texCoord^[Tris2^.triangle[J+1]] do
+        K:=OTriangle.AddVertex(-1);
+        if K = -1 then
+          Log(LOG_WARNING, 'Unable to create model vertex! MD3 file loading might fail!')
+        else
+          VertexData.VertexNo:=Tris2^.triangle[J+1];
+          PChar(TexCoord2):=PChar(TexCoord)+Tris2^.triangle[J+1]*sizeof(PMD3TexVec);
+          with texCoord2^ do
           begin
-            S:=round(vec[1]*Size.X);
-            T:=round(vec[2]*Size.Y);
+            VertexData.S:=round(vec[1]*Size.X);
+            VertexData.T:=round(vec[2]*Size.Y);
           end;
-        end;
+          OTriangle.SetVertex(K, VertexData);
       end;
-      Inc(CTris);
       Inc(Tris2);
     end;
-    Comp.Specifics.Add(S); {tris=...}
   finally
     freemem(Tris);
-    freemem(texcoord);
+    freemem(TexCoord);
   end;
 
   //-----------------------------------------------------------
   //-- LOAD FRAMES + VERTEXES
   //-----------------------------------------------------------
-  fs.seek(org+mhead.Vertex_Start, sofrombeginning);
+  fs.seek(org+mhead.Vertex_Start, soFromBeginning);
   for i:=1 to mhead.MeshFrame_num do
   begin
-    Frame:=Loaded_Frame(Comp, format('Frame %d',[i]));
-    Frame.SetFloatSpec('index', i);
+    //We could set the frame-name from TMD3BoneFrame...
+    OFrame:=QFrame.Create(format('Frame %d',[i]), Comp.FrameGroup);
+    Comp.FrameGroup.SubElements.Add(OFrame);
     GetMem(Vertexes, mhead.vertex_Num * Sizeof(TMD3Vertex));
     try
       fs.readbuffer(Vertexes^, mhead.vertex_Num * Sizeof(TMD3Vertex));
       //-----------------------------------------------------------
       //-- PROCESS VERTEXES
       //-----------------------------------------------------------
-      S:=FloatSpecNameOf(Spec2);
-      SetLength(S, Length(Spec2)+mhead.Vertex_num*SizeOf(vec3_t));
-      PChar(CVert):=PChar(S)+Length(Spec2);
       Vertexes2:=Vertexes;
       for J:=0 to mhead.vertex_Num-1 do
       begin
+        OVertex:=QModelVertex.Create('Vertex '+inttostr(J), OFrame);
+        OFrame.SubElements.Add(OVertex);
         with Vertexes2^ do
         begin
           for k:=0 to 2 do
-            CVert^[k]:=(Vec[k+1] / 64);
+            VecT[k]:=Vec[k+1] * MD3_XYZ_SCALE;
+          OVertex.SetPosition(VecT);
         end;
         Inc(Vertexes2);
-        Inc(CVert);
       end;
-      Frame.Specifics.Add(S);
     finally
       FreeMem(Vertexes);
     end;
@@ -705,32 +720,18 @@ end;
 function QMd3File.TryAutoLoadParts: boolean;
 var
   tag: QModelTag;
-  b: QModelBone;
-  mg: QMiscGroup;
+  mg: QTagGroup;
   fname,x: string;
-  i,j:integer;
+  i: integer;
   TagList: TQList;
-  z_result: boolean;
 begin
-  z_result:=true;
-  mg:=GetRoot.GetMisc;
+  Result:=true;
   TagList:=TQList.Create;
-  for i:=0 to mg.Subelements.count-1 do
-  begin
-    if mg.Subelements[i] is QModelBone then
-    begin
-      b:=QModelBone(mg.Subelements[i]);
-      For j:=0 to b.subelements.count-1 do
-      begin
-        if b.subelements[j] is QModelTag then
-          TagList.Add(b.subelements[j]);
-      end;
-      break;
-    end;
-  end;
-  for i:=0 to TagList.count-1 do
-  begin
-    if TagList[i] is QModelTag then
+  try
+    mg:=GetRoot.TagGroup;
+    if mg<>nil then
+      mg.FindAllSubObjects('', QModelTag, Nil, TagList);
+    for i:=0 to TagList.count-1 do
     begin
       tag:=QModelTag(TagList[i]);
       fname:=extractfilepath(GetFullFilename);
@@ -739,12 +740,11 @@ begin
       if x='' then
         continue;
       fname:=fname+x;
-      z_result:=z_result and AttachModelToTagFromFilename(tag.name, fname);
+      Result:=Result and AttachModelToTagFromFilename(tag.name, fname);
     end;
+  finally
+    TagList.Free;
   end;
-  TagList.Clear;
-  TagList.Free;
-  result:=z_result;
 end;
 
 function QMd3File.AttachModelToTagFromFilename(Tag_Name: string; filename: string): boolean;
@@ -766,8 +766,13 @@ begin
 end;
 
 function QMD3File.GetBoneFrameForFrame(Root: QModelRoot; Frame: Integer): QModelBone;
+var
+  mg: QMiscGroup;
 begin
-  Result:=QModelBone(Root.getMisc.FindSubObject('Bone Frame '+inttostr(Frame), QModelBone, nil));
+  Result:=nil;
+  mg:=Root.MiscGroup;
+  if mg<>nil then
+    Result:=QModelBone(mg.FindSubObject('Bone Frame '+inttostr(Frame), QModelBone, nil));
 end;
 
 function QMd3File.AttachModelToTag(Tag_Name: string; model: QModelFile): boolean;
@@ -793,23 +798,20 @@ begin
   result:=true;
 end;
 
-procedure QMD3File.ChangeGameMode;
-begin
-  ObjectGameCode:=mjQ3A;
-end;
-
 procedure QMd3File.LoadFile(F: TStream; Taille: Integer);
 var
-  i, org, org2, j: Longint;
+  i, j, org: Longint;
   head: TMD3Header;
   tag: TMD3Tag;
-  boneframe: TMD3BoneFrame;
+  frame: TMD3Frame;
   //---
   Root: QModelRoot;
   OTag: QModelTag;
+  OTagFrame: QModelTagFrame;
   OBone: QModelBone;
   misc: QMiscGroup;
-  bone: QObject;
+  TagGroup: QTagGroup;
+  Component: QComponent;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
@@ -817,61 +819,69 @@ begin
         Raise EError(5519);
       org:=f.position;
       f.readbuffer(head, sizeof(head));
-      org2:=f.position;
-      if (head.id='IDP3') and (CharModeJeu=mjEF2) then
-        ObjectGameCode := mjEF2;
-      if (head.id='IDP3') and (CharModeJeu=mjRTCWET) then
-        ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (head.version=15) then
       begin
-        if CharModeJeu<mjQ3A then
-          ObjectGameCode := mjQ3A
+        if GameModeCompare(CharModeJeu, mjQ3A, gcCompatible) then
+          if CharModeJeu=mjSTVEF then
+            ObjectGameCode := mjQ3A
+          else
+            ObjectGameCode := CharModeJeu
         else
-          ObjectGameCode := CharModeJeu;
+          ObjectGameCode := mjQ3A;
       end
       else if (head.id='RDM5') and (head.version=2) then
+        ObjectGameCode:=mjSTVEF
+      else
+        raise exception.Create('Unknown MD3 format!');
+      Root:=ModelRoot;
+      Misc:=Root.MiscGroup;
+      if head.Frame_num<>0 then
       begin
-        ObjectGameCode:=mjSTVEF;
-      end;
-      Root:=Loaded_Root;
-      Misc:=Root.GetMisc;
-      if head.BoneFrame_num<>0 then
-      begin
-        for i:=1 to head.boneframe_num do
+        f.seek(head.Frame_offset + org, soFromBeginning);
+        for i:=1 to head.frame_num do
         begin
-          f.readbuffer(boneframe,sizeof(boneframe));
-          OBone:=QModelBone.Create('Bone Frame '+inttostr(i), Misc);
+          f.readbuffer(frame,sizeof(frame));
+          //BeforeZero(frame.Name);
+          OBone:=QModelBone.Create('Frame '+inttostr(i), Misc);
           OBone.IntSpec['Q3A_Style']:=1;
-          OBone.SetQ3AData(boneframe.position, boneframe.mins, boneframe.maxs, boneframe.radius);
+          OBone.SetQ3AData(frame.position, frame.mins, frame.maxs, frame.radius);
           Misc.SubElements.Add(OBone);
         end;
-        if not((head.Tag_num=0) or (head.Tag_offset=head.Surface_offset)) then
+        if head.Tag_num<>0 then
         begin
-          f.seek(head.Tag_offset + org,soFromBeginning);
-          for j:=1 to head.boneframe_num do
+          f.seek(head.Tag_offset + org, soFromBeginning);
+          TagGroup:=Root.CreateTagGroup;
+          for i:=1 to head.frame_num do
           begin
-            bone:=Misc.FindSubObject('Bone Frame '+inttostr(j), QModelBone, nil);
-            if bone = nil then
-              bone:=Misc;
-            for i:=1 to head.tag_num do
+            for j:=1 to head.Tag_num do
             begin
-              fillchar(tag, sizeof(tag), #0);
               f.readbuffer(tag,sizeof(tag));
-              OTag:=QModelTag.Create(BeforeZero(tag.name), bone);
-              OTag.SetPosition(Tag.position);
-              OTag.SetRotMatrix(_3vec3t_to_matrix(Tag));
-              bone.SubElements.Add(OTag);
+              if i=1 then
+              begin
+                OTag:=QModelTag.Create(BeforeZero(tag.name), TagGroup);
+                TagGroup.SubElements.Add(OTag);
+              end
+              else
+              begin
+                //Not really safe... We need a way of making sure this works!
+                OTag:=QModelTag(TagGroup.SubElements[j-1]);
+              end;
+              OTagFrame:=QModelTagFrame.Create('Frame ' + IntToStr(i), OTag);
+              OTagFrame.SetPosition(Tag.position);
+              OTagFrame.SetRotMatrix(_3vec3t_to_matrix(Tag));
+              OTag.SubElements.Add(OTagFrame);
             end;
           end;
-          f.seek(org2, sofrombeginning);
         end;
       end;
       if head.Mesh_num<>0 then
       begin
-        f.seek(org + head.Surface_offset, sofrombeginning);
+        f.seek(org + head.Surface_offset, soFromBeginning);
         for i:=1 to head.Mesh_num do
         begin
-          ReadMesh(f, Root);
+          Component:=QComponent.Create('Component ' + IntToStr(i), Root);
+          Root.Subelements.Add(Component);
+          ReadMesh(f, Component);
         end;
       end;
     end;
@@ -882,57 +892,159 @@ end;
 
 procedure QMd3File.SaveFile(Info: TInfoEnreg1);
 var
+  head: TMD3Header;
+  tag: TMD3Tag;
+  boneframe: TMD3Frame;
+  //---
   Root: QModelRoot;
+  TagGroup: QTagGroup;
   SkinObj: QImage;
+  Tags: TQList;
   Components: TQList;
   Comp: QComponent;
   Skins: TQList;
+  Frames: TQList;
   I, J: Longint;
+  Position0: LongInt;
 begin
   with Info do
-  begin
-    case Format of
-      rf_Siblings: begin  { write the skin files }
-        if Flags and ofNotLoadedToMemory <> 0 then
-          Exit;
-        Root:=Saving_Root;
-        Info.TempObject:=Root;
-        Components:=Root.BuildComponentList;
-        try
-          for I:=0 to Components.Count-1 do
-          begin
-            Comp:=QComponent(Components.Items1[I]);
-            Skins:=Comp.BuildSkinList;
-            try
-              for J:=0 to Skins.Count-1 do
-              begin
-                SkinObj:=QImage(Skins.Items1[J]);
-                Info.WriteSibling(SkinObj.Name+SkinObj.TypeInfo, SkinObj);
-              end;
-            finally
-              Skins.free;
-            end;
-          end;
-        finally
-          Components.clear;
-          Components.free;
-        end;
-      end;
-      1: begin  { write the .md3 file }
-        if Info.TempObject=Nil then
-{         Root:=Saving_Root}      {DanielPharos: Not needed at the moment}
-        else
-         begin
-{          Root:=Info.TempObject as QModelRoot;}      {DanielPharos: Not needed at the moment}
-          Info.TempObject:=Nil;
+   case Format of
+   rf_Siblings: begin  { write the skin files }
+     if Flags and ofNotLoadedToMemory <> 0 then
+       Exit;
+     Root:=Saving_Root;
+     Info.TempObject:=Root;
+     Components:=TQList.Create;
+     try
+       Root.FindAllSubObjects('', QComponent, Nil, Components);
+       for I:=0 to Components.Count-1 do
+       begin
+         Comp:=QComponent(Components.Items1[I]);
+         Skins:=Comp.BuildSkinList;
+         try
+           for J:=0 to Skins.Count-1 do
+           begin
+             SkinObj:=QImage(Skins.Items1[J]);
+             Info.WriteSibling(SkinObj.Name+SkinObj.TypeInfo, SkinObj);
+           end;
+         finally
+           Skins.free;
          end;
-         
-        raise exception.create('MD3 file saving is unsupported at the moment! Skinfiles are saved, but the actual MD3 file not.');
-      end;
-    else
-      inherited;
-    end;
-  end;
+       end;
+     finally
+       Components.free;
+     end;
+   end;
+   1: begin  { write the .md3 file }
+     if Info.TempObject=Nil then
+       Root:=Saving_Root
+     else
+     begin
+       Root:=Info.TempObject as QModelRoot;
+       Info.TempObject:=Nil;
+     end;
+
+     Root.FixComponentFrames;
+     Components:=Root.BuildComponentList;
+
+     try
+       ProgressIndicatorStart(502, Components.Count);
+       Position0:=F.Position;
+       F.WriteBuffer(head, SizeOf(head));
+
+       if ObjectGameCode=mjSTVEF then
+       begin
+         head.id:='IDP3';
+         head.version:=15;
+       end
+       else
+       begin
+         head.id:='RDM5';
+         head.version:=2;
+       end;
+
+       //We need to check for all the maxima!
+       //Original Q3 Tools source example:
+       //if ( g_data.model.numFrames >= MD3_MAX_FRAMES)
+       //  Error ("model.numFrames >= MD3_MAX_FRAMES");
+
+
+       //We need a decent way of setting this:
+       FillChar(head.filename, sizeof(head.filename), 0);
+       FillChar(head.flags, sizeof(head.flags), 0);
+
+       Comp:=QComponent(Components[0]); //@ Might not exist!
+       Frames:=Comp.BuildFrameList;
+       try
+       I := Frames.Count;
+       if I >= MD3_MAX_FRAMES then
+       begin
+         I := MD3_MAX_FRAMES;
+         ShowMessage('Too many frames. Only saving first '+IntToStr(MD3_MAX_FRAMES));
+       end;
+       head.Frame_num := I;
+
+       Tags:=TQlist.Create;
+       try
+         TagGroup:=Root.TagGroup;
+         if TagGroup <> nil then
+           TagGroup.FindAllSubObjects('', QModelTag, Nil, Tags);
+         I:=Tags.Count;
+         if I >= MD3_MAX_TAGS then
+         begin
+           I := MD3_MAX_TAGS;
+           ShowMessage('Too many tags. Only saving first '+IntToStr(MD3_MAX_TAGS));
+         end;
+         head.Tag_num := I;
+
+         head.Mesh_num := Components.Count; //@
+         head.Skin_num := 0;  //Not used, as far as known
+//         head.BoneFrame_offset := @;
+//         head.Tag_offset := @;
+//         head.Surface_offset := @;
+//         head.End_offset := @;
+
+         for I:=0 to head.Frame_num-1 do
+         begin
+           //@
+           for J:=0 to head.Tag_num-1 do
+           begin
+             //tag.Name := @;
+             //@
+           end;
+         end;
+       finally
+         Tags.Free;
+       end;
+       for I:=0 to Components.Count-1 do
+       begin
+         Comp:=QComponent(Components[I]);
+         //Frames:=Comp.BuildFrameList;
+         Skins:=Comp.BuildSkinList;
+         try
+           //@
+         finally
+           Skins.Free;
+         end;
+       end;
+       finally
+         Frames.Free;
+       end;
+
+     finally
+       ProgressIndicatorStop;
+       Components.Free;
+     end;
+
+     head.End_offset:=F.Position-Position0;
+     F.Position:=Position0;
+     F.WriteBuffer(head, SizeOf(head));
+     F.Position:=Position0+head.End_offset;
+
+     end;
+   else
+     inherited;
+   end;
 end;
 
 initialization

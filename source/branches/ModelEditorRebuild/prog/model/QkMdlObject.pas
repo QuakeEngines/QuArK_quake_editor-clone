@@ -49,28 +49,12 @@ type
     s,t: SmallInt;
   end;
 
-(***********  QuArK objects  ***********)
-
-type
-  PComponentVertex = ^TComponentVertex;
-  TComponentVertex = packed record
-    VertexNo: Word;
-    case Integer of
-      0: (S, T: SmallInt);
-      1: (st: dstvert_t);
-      2: (longst: LongInt);
-    end;
-  PComponentTris = ^TComponentTris;
-  TComponentTris = packed array[0..2] of TComponentVertex;
-
-type
   QMdlObject = class(Q3DObject)
   public
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
     function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
     procedure AddTo3DScene; override;
-    procedure BuildRefList(L: TQList); virtual;
     procedure ChercheExtremites(var Min, Max: TVect); override;
     procedure Dessiner; override;
     procedure AnalyseClic(Liste: PyObject); override;
@@ -94,13 +78,7 @@ end;
 
 function QMdlObject.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
-  if (Q is QSkinDrawObject) then
-    Result:=[]
-  else
-    if Q.IsAllowedParent(Self) then
-      Result:=[ieDisplay, ieCanDrop]
-    else
-      Result:=[ieDisplay];
+  Result:=ieResult[not (Q is QSkinDrawObject)];
 end;
 
 {procedure QMdlObject.FixupReference;
@@ -117,18 +95,6 @@ begin
     Q:=SubElements[I];
     if Q is QMdlObject then
       QMdlObject(Q).AddTo3DScene;
-  end;
-end;
-
-procedure QMdlObject.BuildRefList(L: TQList);
-var
-  I: Integer;
-  Q: QObject;
-begin
-  for I:=0 to SubElements.Count-1 do begin
-    Q:=SubElements[I];
-    if Q is QMdlObject then
-      QMdlObject(Q).BuildRefList(L);
   end;
 end;
 

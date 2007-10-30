@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.14  2001/03/20 21:46:07  decker_dk
 Updated copyright-header
 
@@ -111,7 +114,7 @@ type
 
 implementation
 
-uses Game, Setup, Quarkx, QkMdlObject, QkObjectClassList;
+uses Game, Setup, Quarkx, QkMdlObject, QkObjectClassList, QkComponent, QkModelTriangle;
 
 const
  MIP_VERSION = 2;
@@ -284,8 +287,10 @@ var
  Hr2Entry: THr2Entry;
  Hr2Header: THr2Header;
  S: String;
- I, J: Integer;
- CTris: PComponentTris;
+ I, J, K: Integer;
+ Components, Triangles: TQList;
+ OTriangle: QModelTriangle;
+ VerticesData: vertex_p;
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
@@ -333,13 +338,29 @@ begin
        Raise EErrorFmt(5672, [LoadName, S]);
 
       with ReadMd2File(F, Origine, mdl) do
-       for I:=1 to Triangles(CTris) do
-        begin
-         for J:=0 to 2 do
-          with CTris^[J] do
-           T:=mdl.skinheight-1-T;  { .m8 skins are top-down, but .pcx skins were bottom-up }
-         Inc(CTris);
+       begin
+        Components:=BuildComponentList;
+        try
+         for I:=0 to Components.Count-1 do
+          begin
+           Triangles:=QComponent(Components.Items1[I]).BuildTriangleList;
+           try
+            for J:=0 to Triangles.Count-1 do
+             begin
+              OTriangle:=QModelTriangle(Triangles.Items1[J]);
+              OTriangle.GetVertices(VerticesData);
+              for K:=0 to 2 do
+               VerticesData^[K].T:=mdl.skinheight-1-VerticesData^[K].T;  { .m8 skins are top-down, but .pcx skins were bottom-up }
+              OTriangle.SetVertices(VerticesData^);
+             end;
+           finally
+            Triangles.Free;
+           end;
+          end;
+        finally
+         Components.Free;
         end;
+       end;
      end;
  else inherited;
  end;

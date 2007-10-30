@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2006/02/19 00:13:10  cdunde
+To add support for md2 model file saving functions.
+
 Revision 1.8  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -110,7 +113,7 @@ const
 
 implementation
 
-uses QuarkX, Setup, Travail, QkObjectClassList;
+uses QuarkX, Setup, Travail, QkObjectClassList, QkModelTriangle, QkModelVertex;
 
 class function QMd2File.TypeInfo;
 begin
@@ -161,9 +164,6 @@ begin
 end;
 
 function QMd2File.ReadMd2File(F: TStream; Origine: Integer; const mdl: dmdl_t) : QModelRoot;
-const
-  Spec1 = 'Tris=';
-  Spec2 = 'Vertices=';
 type
   dstvert_array = array[0..99] of dstvert_t;
 var
@@ -171,19 +171,23 @@ var
   Root: QModelRoot;
   Comp: QComponent;
   Frame: QFrame;
+  OTriangle: QModelTriangle;
+  OVertex: QModelVertex;
+  VertexData: TVertexData;
   I, J, K: Integer;
   Z: array[0..MAX_SKINNAME-1] of Byte;
-  S: String;
   TrisData, Tris: dtriangle_p;
   FrameData: daliasframe_p;
   STData: ^dstvert_array;
-  CTris: PComponentTris;
-  CVert: vec3_p;
+  VecT: vec3_t;
 begin
    { setup Root }
-  Root:=Loaded_Root;
+  Root:=ModelRoot;
   Comp:=Loaded_Component(Root, '');
-  ObjectGameCode:=mjQuake2;
+  if GameModeCompare(CharModeJeu, mjQuake2, gcCompatible) then
+    ObjectGameCode:=CharModeJeu
+  else
+    ObjectGameCode:=mjQuake2;
 
    { load triangles in a single component }
   J:=mdl.num_tris*SizeOf(dtriangle_t);
@@ -198,26 +202,25 @@ begin
       F.Position:=Origine+mdl.ofs_st;
       F.ReadBuffer(STData^, J);
 
-      J:=mdl.num_tris*SizeOf(TComponentTris);
-      S:=Spec1;
-      SetLength(S, Length(Spec1)+J);
-
       Tris:=TrisData;
-      PChar(CTris):=PChar(S)+Length(Spec1);
       for I:=1 to mdl.num_tris do
        begin
+        OTriangle:=QModelTriangle.Create('Triangle '+inttostr(I), Comp.TriangleGroup);
+        Comp.TriangleGroup.SubElements.Add(OTriangle);
         for J:=0 to 2 do
          begin
-          with CTris^[J] do
+          K:=OTriangle.AddVertex(-1);
+          if K = -1 then
+            Log(LOG_WARNING, 'Unable to create model vertex! MD3 file loading might fail!')
+          else
            begin
-            VertexNo:=Tris^.index_xyz[J];
-            st:=STData^[Tris^.index_st[J]];
+            VertexData.VertexNo:=Tris^.index_xyz[J];
+            VertexData.st:=STData^[Tris^.index_st[J]];
+            OTriangle.SetVertex(K, VertexData); 
            end;
          end;
         Inc(Tris);
-        Inc(CTris);
        end;
-      Comp.Specifics.Add(S);    { Tris= }
     finally
       FreeMem(STData);
     end;
@@ -246,17 +249,17 @@ begin
      begin
       F.ReadBuffer(FrameData^, mdl.framesize);
       Frame:=Loaded_Frame(Comp, CharToPas(FrameData^.name));
-      S:=FloatSpecNameOf(Spec2);
-      SetLength(S, Length(Spec2)+mdl.num_xyz*SizeOf(vec3_t));
-      PChar(CVert):=PChar(S)+Length(Spec2);
       for J:=0 to mdl.num_xyz-1 do
        begin
+        OVertex:=QModelVertex.Create('Vertex '+inttostr(J), Frame);
+        Frame.SubElements.Add(OVertex);
         with FrameData^.verts[J] do
+         begin
           for K:=0 to 2 do
-            CVert^[K]:=v[K]*FrameData^.scale[K]+FrameData^.translate[K];
-        Inc(CVert);
+            VecT[K]:=v[K]*FrameData^.scale[K]+FrameData^.translate[K];
+          OVertex.SetPosition(VecT);
+         end;
        end;
-      Frame.Specifics.Add(S);
      end;
   finally
     FreeMem(FrameData);
@@ -470,7 +473,11 @@ var
   mdl: dmdl_t;
   Root: QModelRoot;
   Comp: QComponent;
-  Components, Skins: TQList;
+  Components, Frames, Skins, Triangles, VertexList: TQList;
+  OTriangle: QModelTriangle;
+  OVertex: QModelVertex;
+  VerticesData: vertex_p;
+  VecP: vec3_p;
   Position0, Taille1: LongInt;
   L, GlCmds: TList;
   I, J, K, K1: Integer;
@@ -479,13 +486,10 @@ var
   SkinSize: TPoint;
   Size: array[0..1] of Single;
   Z: array[0..MAX_SKINNAME-1] of Byte;
-  CTris, CTriangles: PComponentTris;
   stData: Pointer;
   TrisData, Tris: dtriangle_p;
   FrameData: daliasframe_p;
   Min, Max: TVect;
-  CVertArray: ^vec3_array_t;
-  CVert: vec3_p;
   NormalesSommets: ^TVect_array;
   Vert1, Vert2, Vert3: vec3_t;
   Vec1, Vec2, Vec3, EchelleCompacter: TVect;
@@ -498,7 +502,7 @@ begin
 
       Root:=Saving_Root;
       Info.TempObject:=Root;
-      Components:=Root.BuildCOmponentList;
+      Components:=Root.BuildComponentList;
       try
         for I:=0 to Components.Count-1 do
          begin
@@ -512,19 +516,14 @@ begin
              end;
           finally
             skins.free;
-         end;
+          end;
+        end;
+      finally
+        Components.free;
+      end;
      end;
-     finally
-       Components.Clear;
-       Components.free;
-     end;
-    end;
 
     1: begin  { write the .md2 file and skin .pcx file(s) }
-
-{$IFDEF xx}
- Raise InternalE('xx');
-{$ELSE}
 
       if Info.TempObject=Nil then
        Root:=Saving_Root
@@ -534,21 +533,17 @@ begin
         Info.TempObject:=Nil;
        end;
 
-          if Root.CurrentComponent = nil
-           then
-            Root.CurrentComponent := Root.GetComponentFromIndex(0);
-          Comp := Root.CurrentComponent;
-          if Comp = nil
-           then
-            raise Exception.Create('Nothing to save! (Root.CurrentComponent = nil [QMDLFILE.ENREGISTRER])');
+      Comp := Root.GetCurrentComponentObject;
+      if Comp = nil then
+        raise Exception.Create('Nothing to save! (Root.CurrentComponent = nil [QMDLFILE.ENREGISTRER])');
 
-          Components := Comp.BuildFrameList;
-          Skins := Comp.BuildSkinList;
-          ProgressIndicatorStart(502, Components.Count + Skins.Count);
+      Components:=Root.BuildComponentList;
+      Frames := Comp.BuildFrameList;
+      Skins := Comp.BuildSkinList;
+      ProgressIndicatorStart(502, Components.Count + Skins.Count);
 
       try
        Position0:=F.Position;
-       FillChar(mdl, SizeOf(mdl), 0);
        F.WriteBuffer(mdl, SizeOf(mdl));
 
        mdl.ident:=SignatureMdl2;
@@ -582,25 +577,21 @@ begin
          mdl.skinheight:=Round(Size[1]);
         end;
 
-         { save st verts }
-       mdl.num_tris:=Root.Triangles(CTriangles);
-       CTris:=CTriangles;
+       //  save st verts
+       Triangles:=Root.GetCurrentComponentObject.BuildTriangleList;
+       mdl.num_tris:=Triangles.Count;
        GlCmds:=TList.Create;
        L:=TList.Create;
-       Skins:=TQList.Create;
 
-    for I:=0 to mdl.num_tris-1 do
+       for I:=0 to mdl.num_tris-1 do
         begin
+         QModelTriangle(Triangles.Items1[I]).GetVertices(VerticesData);
          for K:=0 to 2 do
           begin
-           with CTris^[K] do
-            begin
-             stData:=Pointer(longst);
-             if L.IndexOf(stData)<0 then
-              L.Add(stData);
-            end;
+           stData:=Pointer(VerticesData^[K].longst);
+           if L.IndexOf(stData)<0 then
+            L.Add(stData);
           end;
-         Inc(CTris);
         end;
        mdl.ofs_st:=F.Position-Position0;
        mdl.num_st:=L.Count;
@@ -609,18 +600,16 @@ begin
          { save triangles }
        GetMem(TrisData, mdl.num_tris*SizeOf(dtriangle_t)); try
        Tris:=TrisData;
-       CTris:=CTriangles;
        for I:=0 to mdl.num_tris-1 do
         begin
+         QModelTriangle(Triangles.Items1[I]).GetVertices(VerticesData);
          for K:=0 to 2 do
-          with CTris^[K] do
-           begin
-            stData:=Pointer(longst);
-            Tris^.index_xyz[K]:=VertexNo;
-            Tris^.index_st[K]:=L.IndexOf(stData);
-           end;
+          begin
+           stData:=Pointer(VerticesData^[K].longst);
+           Tris^.index_xyz[K]:=VerticesData^[K].VertexNo;
+           Tris^.index_st[K]:=L.IndexOf(stData);
+          end;
          Inc(Tris);
-         Inc(CTris);
         end;
        mdl.ofs_tris:=F.Position-Position0;
        F.WriteBuffer(TrisData^, mdl.num_tris*SizeOf(dtriangle_t));
@@ -641,94 +630,105 @@ begin
          if Components[I] is QFrame then
           begin
            FrameObj:=QFrame(Components[I]);
-           K:=FrameObj.GetVertices(CVert);
-           vec3_p(CVertArray):=CVert;
-           if FrameData=Nil then
-            begin
-             mdl.num_xyz:=K;
-             mdl.framesize:=BaseAliasFrameSize+mdl.num_xyz*SizeOf(dtrivertx_t);
-             GetMem(FrameData, mdl.framesize);
-             GetMem(NormalesSommets, SizeOf(TVect)*mdl.num_xyz);
-            end
-           else
-            if mdl.num_xyz<>K then
-             Raise EErrorFmt(2433, ['VertexCount']);
-           PasToChar(FrameData^.name, FrameObj.Name);
-           Min.X:=MaxInt;
-           Min.Y:=MaxInt;
-           Min.Z:=MaxInt;
-           Max.X:=-MaxInt;
-           Max.Y:=-MaxInt;
-           Max.Z:=-MaxInt;
-           FrameObj.ChercheExtremites(Min, Max);
-           FrameData^.translate[0]:=Min.X;
-           FrameData^.translate[1]:=Min.Y;
-           FrameData^.translate[2]:=Min.Z;
-           FrameData^.scale[0]:=(Max.x-Min.x) * (1/255);
-           FrameData^.scale[1]:=(Max.y-Min.y) * (1/255);
-           FrameData^.scale[2]:=(Max.z-Min.z) * (1/255);
-           if FrameData^.scale[0] < rien then EchelleCompacter.x:=0 else EchelleCompacter.x:=1/FrameData^.scale[0];
-           if FrameData^.scale[1] < rien then EchelleCompacter.y:=0 else EchelleCompacter.y:=1/FrameData^.scale[1];
-           if FrameData^.scale[2] < rien then EchelleCompacter.z:=0 else EchelleCompacter.z:=1/FrameData^.scale[2];
-
-            { computes the normal vectors }
-           FillChar(NormalesSommets^, SizeOf(TVect)*mdl.num_xyz, 0);
-           CTris:=CTriangles;
-           for K:=1 to mdl.num_tris do
-            begin
-             if (CTris^[0].VertexNo >= mdl.num_xyz)
-             or (CTris^[1].VertexNo >= mdl.num_xyz)
-             or (CTris^[2].VertexNo >= mdl.num_xyz) then
-              Raise EError(5667);
-             Vert1:=CVertArray^[CTris^[0].VertexNo];
-             Vert2:=CVertArray^[CTris^[1].VertexNo];
-             Vert3:=CVertArray^[CTris^[2].VertexNo];
-             Vec1.X:=Vert1[0]-Vert2[0];
-             Vec1.Y:=Vert1[1]-Vert2[1];
-             Vec1.Z:=Vert1[2]-Vert2[2];
-             Vec2.X:=Vert3[0]-Vert2[0];
-             Vec2.Y:=Vert3[1]-Vert2[1];
-             Vec2.Z:=Vert3[2]-Vert2[2];
-             Vec3:=Cross(Vec1, Vec2);
-             Aire:=Sqrt(Sqr(Vec3.X)+Sqr(Vec3.Y)+Sqr(Vec3.Z));
-             if Aire > rien then
+           VertexList:=FrameObj.BuildVertexList;
+           try
+             K:=VertexList.Count;
+             if FrameData=Nil then
               begin
-               Aire:=1/Aire;
-               Vec3.X:=Vec3.X*Aire;
-               Vec3.Y:=Vec3.Y*Aire;
-               Vec3.Z:=Vec3.Z*Aire;
-               for K1:=0 to 2 do
-                with NormalesSommets^[CTris^[K1].VertexNo] do
-                 begin
-                  X:=X+Vec3.X;
-                  Y:=Y+Vec3.Y;
-                  Z:=Z+Vec3.Z;
-                 end;
-              end;
-             Inc(CTris);
-            end;
+               mdl.num_xyz:=K;
+               mdl.framesize:=BaseAliasFrameSize+mdl.num_xyz*SizeOf(dtrivertx_t);
+              GetMem(FrameData, mdl.framesize);
+               GetMem(NormalesSommets, SizeOf(TVect)*mdl.num_xyz);
+              end
+             else
+              if mdl.num_xyz<>K then
+               Raise EErrorFmt(2433, ['VertexCount']);
+             PasToChar(FrameData^.name, FrameObj.Name);
+             Min.X:=MaxInt;
+             Min.Y:=MaxInt;
+             Min.Z:=MaxInt;
+             Max.X:=-MaxInt;
+             Max.Y:=-MaxInt;
+             Max.Z:=-MaxInt;
+             FrameObj.ChercheExtremites(Min, Max);
+             FrameData^.translate[0]:=Min.X;
+             FrameData^.translate[1]:=Min.Y;
+             FrameData^.translate[2]:=Min.Z;
+             FrameData^.scale[0]:=(Max.x-Min.x) * (1/255);
+             FrameData^.scale[1]:=(Max.y-Min.y) * (1/255);
+             FrameData^.scale[2]:=(Max.z-Min.z) * (1/255);
+             if FrameData^.scale[0] < rien then EchelleCompacter.x:=0 else EchelleCompacter.x:=1/FrameData^.scale[0];
+             if FrameData^.scale[1] < rien then EchelleCompacter.y:=0 else EchelleCompacter.y:=1/FrameData^.scale[1];
+             if FrameData^.scale[2] < rien then EchelleCompacter.z:=0 else EchelleCompacter.z:=1/FrameData^.scale[2];
 
-           for K:=0 to mdl.num_xyz-1 do
-            begin
-             tvx.v[0]:=Round((CVert^[0] - FrameData^.translate[0]) * EchelleCompacter.x);
-             tvx.v[1]:=Round((CVert^[1] - FrameData^.translate[1]) * EchelleCompacter.y);
-             tvx.v[2]:=Round((CVert^[2] - FrameData^.translate[2]) * EchelleCompacter.z);
-             with NormalesSommets^[K] do
+              { computes the normal vectors }
+             FillChar(NormalesSommets^, SizeOf(TVect)*mdl.num_xyz, 0);
+             for K:=0 to mdl.num_tris - 1 do
               begin
-               Maximum:=-MaxInt;
-               for K1:=Low(VecteursNormaux) to High(VecteursNormaux) do
+               OTriangle:=QModelTriangle(Triangles.Items1[K]);
+               OTriangle.GetVertices(VerticesData);
+               if (VerticesData^[0].VertexNo >= mdl.num_xyz)
+               or (VerticesData^[1].VertexNo >= mdl.num_xyz)
+               or (VerticesData^[2].VertexNo >= mdl.num_xyz) then
+                Raise EError(5667);
+               OVertex:=QModelVertex(VertexList[VerticesData^[0].VertexNo]);
+               OVertex.GetPosition(VecP);
+               Vert1:=VecP^;
+               OVertex:=QModelVertex(VertexList[VerticesData^[1].VertexNo]);
+               OVertex.GetPosition(VecP);
+               Vert2:=VecP^;
+               OVertex:=QModelVertex(VertexList[VerticesData^[2].VertexNo]);
+               OVertex.GetPosition(VecP);
+               Vert3:=VecP^;
+               Vec1.X:=Vert1[0]-Vert2[0];
+               Vec1.Y:=Vert1[1]-Vert2[1];
+               Vec1.Z:=Vert1[2]-Vert2[2];
+               Vec2.X:=Vert3[0]-Vert2[0];
+               Vec2.Y:=Vert3[1]-Vert2[1];
+               Vec2.Z:=Vert3[2]-Vert2[2];
+               Vec3:=Cross(Vec1, Vec2);
+               Aire:=Sqrt(Sqr(Vec3.X)+Sqr(Vec3.Y)+Sqr(Vec3.Z));
+               if Aire > rien then
                 begin
-                 Aire:=X*VecteursNormaux[K1,0] + Y*VecteursNormaux[K1,1] + Z*VecteursNormaux[K1,2];
-                 if Aire > Maximum then
-                  begin
-                   Maximum:=Aire;
-                   tvx.lightnormalindex:=K1;   { trouvé une meilleure approximation }
-                  end;
+                 Aire:=1/Aire;
+                 Vec3.X:=Vec3.X*Aire;
+                 Vec3.Y:=Vec3.Y*Aire;
+                 Vec3.Z:=Vec3.Z*Aire;
+                 for K1:=0 to 2 do
+                  with NormalesSommets^[VerticesData^[K1].VertexNo] do
+                   begin
+                    X:=X+Vec3.X;
+                    Y:=Y+Vec3.Y;
+                    Z:=Z+Vec3.Z;
+                   end;
                 end;
               end;
-             FrameData^.verts[K]:=tvx;
-             Inc(CVert);
-            end;
+
+             for K:=0 to mdl.num_xyz-1 do
+              begin
+               OVertex:=QModelVertex(VertexList.Items1[K]);
+               OVertex.GetPosition(VecP);
+               tvx.v[0]:=Round((VecP^[0] - FrameData^.translate[0]) * EchelleCompacter.x);
+               tvx.v[1]:=Round((VecP^[1] - FrameData^.translate[1]) * EchelleCompacter.y);
+               tvx.v[2]:=Round((VecP^[2] - FrameData^.translate[2]) * EchelleCompacter.z);
+               with NormalesSommets^[K] do
+                begin
+                 Maximum:=-MaxInt;
+                 for K1:=Low(VecteursNormaux) to High(VecteursNormaux) do
+                  begin
+                   Aire:=X*VecteursNormaux[K1,0] + Y*VecteursNormaux[K1,1] + Z*VecteursNormaux[K1,2];
+                   if Aire > Maximum then
+                    begin
+                     Maximum:=Aire;
+                     tvx.lightnormalindex:=K1;   { trouvé une meilleure approximation }
+                    end;
+                  end;
+                end;
+               FrameData^.verts[K]:=tvx;
+              end;
+           finally
+             VertexList.Free;
+           end;
 
            F.WriteBuffer(FrameData^, mdl.framesize);
            ProgressIndicatorIncrement;
@@ -743,18 +743,17 @@ begin
        mdl.ofs_glcmds:=F.Position-Position0;
        mdl.num_glcmds:=Skins.Count;
        F.WriteBuffer(Skins.List^, mdl.num_glcmds*4);
-       finally
-         Components.Free;
-         Skins.Free;
-         ProgressIndicatorStop;
-       end;
+      finally
+        Components.Free;
+        Frames.Free;
+        Skins.Free;
+        ProgressIndicatorStop;
+      end;
 
       mdl.ofs_end:=F.Position-Position0;
       F.Position:=Position0;
       F.WriteBuffer(mdl, SizeOf(mdl));
       F.Position:=Position0+mdl.ofs_end;
-      
-{$ENDIF}
     end;
   else
     inherited;

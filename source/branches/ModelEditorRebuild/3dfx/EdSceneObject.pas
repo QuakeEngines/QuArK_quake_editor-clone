@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2007/10/16 22:30:48  danielpharos
+Stop the texture-loading bar from drawing (temporary), for the model editor animation.
+
 Revision 1.35  2007/09/04 14:38:12  danielpharos
 Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
 
@@ -194,7 +197,7 @@ type
                   Base: QComponent;
                   ModelAlpha: Byte;
                   ModelRendermode: Byte;
-                  StaticSkin: Boolean;
+                  TriangleCount: Integer;
                   VertexCount: Integer;
                   Vertices: vec3_p;
                 end;
@@ -376,6 +379,7 @@ implementation
 uses SysUtils,
      Travail, Quarkx, Setup,
      QkMdlObject, QkTextures, QkImages, QkFileObjects,
+     QkModelTriangle,
      EdOpenGL;
      {EdTListP2;}
 
@@ -558,12 +562,14 @@ const
  cProgressBarHeight = 20;
 var
  I, J, K, L: Integer;
+ TriangleList: TQList;
  NewTextures, NewTexCount: Integer;
  Surf3D: PSurface3D;
  S,spec: String;
  TexNames: TStringList;
  PList: PSurfaces;
  Dest: PChar;
+ VerticesData: vertex_p;
  PV: PChar;
  TexPt: array[1..3] of TVect;
  DeltaV, v2, v3: TVect;
@@ -573,7 +579,7 @@ var
  Gauche: Integer;
  TextePreparation: String;
  Brush: HBrush;
- CTris: PComponentTris;
+ CTris: PSpriteTris;
  CVertex: vec3_p;
  v3p: array[0..2] of vec3_p;
  nRadius2, Radius2: FxFloat;
@@ -582,7 +588,7 @@ var
  NewRenderMode: Integer;
  TextureManager: TTextureManager;
  Mode: TBuildMode;
- VertexSize, VertexSize3m: Integer;
+ VertexSize, VertexSize3m, VertexCount: Integer;
  BezierBuf: TBezierMeshBuf3;
  BControlPoints: TBezierMeshBuf5;
  stBuffer, st: vec_st_p;
@@ -755,8 +761,7 @@ begin
        end
        else
        begin
-         J:=Model3DInfo^.Base.Triangles(CTris);
-         AddSurfaceRef(Model3DInfo^.Base.GetSkinDescr(Model3DInfo^.StaticSkin), J * VertexSize3m, Model3DInfo^.Base.CurrentSkin);
+         AddSurfaceRef(Model3DInfo^.Base.GetCurrentSkinObject.Name, Model3DInfo^.TriangleCount * VertexSize3m, Model3DInfo^.Base.GetCurrentSkinObject);
          if nVertexList2<>Nil then
          begin
            CVertex:=Model3DInfo^.Vertices;
@@ -771,7 +776,7 @@ begin
        Inc(I); { Increment to get the next element }
      end;
 
-     I:=0;  // process the sprites, haven't looked into this one yet/
+     I:=0;  // process the sprites, haven't looked into this one yet
      while I<SpriteInfo.Count do
      begin
        xSpriteInfo:=PSpriteInfo(SpriteInfo[I]);
@@ -983,7 +988,7 @@ begin
            VertexCount:=prvVertexCount;
            OpenGLLightList:=nil;
 
-           AlphaColor:=CurrentColor or (254 shl 24);
+           //AlphaColor:=CurrentColor or (254 shl 24);
            TextureMode:=0;
            // if the texture has alpha channel its probably transparent
            if Assigned(PList^.Texture^.SourceTexture) then
@@ -1135,7 +1140,7 @@ begin
      begin
        with Model3DInfo^ do
        begin
-         if not TexNames.Find(Base.GetSkinDescr(StaticSkin), J) then
+         if not TexNames.Find(Base.GetCurrentSkinObject.Name, J) then
           {$IFDEF Debug}Raise InternalE('TexNames.Find.2'){$ENDIF};
 
          PList:=PSurfaces(TexNames.Objects[J]);
@@ -1147,87 +1152,92 @@ begin
          else
            Surf3D:=PList^.tmp;
 
-         if ModelAlpha<>255 then
-           PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
-
          stScaleModel(PList^.Texture, CorrW, CorrH);
 
-         for J:=1 to Base.Triangles(CTris) do
-         begin
-           PV:=PChar(Surf3D)+SizeOf(TSurface3D);
-           for L:=0 to 2 do
+         TriangleList:=Base.BuildTriangleList;
+         try
+           for J:=0 to TriangleList.Count-1 do
            begin
-             with CTris^[L] do
+             PV:=PChar(Surf3D)+SizeOf(TSurface3D);
+             VertexCount:=QModelTriangle(TriangleList[J]).GetVertices(VerticesData);
+             for L:=0 to VertexCount-1 do
              begin
-               if VertexNo >= VertexCount then
-                 Raise EError(5667);
-
-               v3p[L]:=Vertices;
-               Inc(v3p[L], VertexNo);
-
-               WriteVertex(PV, v3p[L], st.s * CorrW, st.t * CorrH, False);
-
-               Inc(PV, VertexSize);
-             end;
-           end;
-
-           Inc(CTris);
-
-           v2.X:=v3p[1]^[0] - v3p[0]^[0];
-           v2.Y:=v3p[1]^[1] - v3p[0]^[1];
-           v2.Z:=v3p[1]^[2] - v3p[0]^[2];
-
-           v3.X:=v3p[2]^[0] - v3p[0]^[0];
-           v3.Y:=v3p[2]^[1] - v3p[0]^[1];
-           v3.Z:=v3p[2]^[2] - v3p[0]^[2];
-
-           DeltaV:=Cross(v3, v2);
-           dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
-           if dd<rien then
-             Dec(PList^.SurfSize, VertexSize3m)
-           else
-           begin
-             dd:=1/Sqrt(dd);
-
-             Radius2 :=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
-             nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
-
-             with Surf3D^ do
-             begin
-               Normale[0]:=DeltaV.X*dd;
-               Normale[1]:=DeltaV.Y*dd;
-               Normale[2]:=DeltaV.Z*dd;
-
-               Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
-               OpenGLLightList:=nil;
-
-               if (Mode=bmSoftware) or (Mode=bmGlide) then
+               with VerticesData^[L] do
                begin
-                 if nRadius2>Radius2 then
-                   GlideRadius:=Sqrt(nRadius2)
-                 else
-                   GlideRadius:=Sqrt(Radius2);
+                 if VertexNo >= VertexCount then
+                   Raise EError(5667);
+
+                 v3p[L]:=Vertices;
+                 Inc(v3p[L], VertexNo);
+
+                 WriteVertex(PV, v3p[L], st.s * CorrW, st.t * CorrH, False);
+
+                 Inc(PV, VertexSize);
                end;
+             end;
 
-               VertexCount:=3;
-               Texturemode:= ModelRenderMode;
-               AlphaColor:=CurrentColor or (ModelAlpha shl 24);
+             v2.X:=v3p[1]^[0] - v3p[0]^[0];
+             v2.Y:=v3p[1]^[1] - v3p[0]^[1];
+             v2.Z:=v3p[1]^[2] - v3p[0]^[2];
 
-               // if the texture has alpha channel its probably transparent
-               if Assigned(PList^.Texture^.SourceTexture) then
+             v3.X:=v3p[2]^[0] - v3p[0]^[0];
+             v3.Y:=v3p[2]^[1] - v3p[0]^[1];
+             v3.Z:=v3p[2]^[2] - v3p[0]^[2];
+
+             DeltaV:=Cross(v3, v2);
+             dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
+             if dd<rien then
+               Dec(PList^.SurfSize, VertexSize3m)
+             else
+             begin
+               dd:=1/Sqrt(dd);
+
+               Radius2 :=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
+               nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
+
+               with Surf3D^ do
                begin
-                 TextureMode:=2;
-                 case PList^.Texture^.AlphaBits of
-                 psaDefault: PList^.Transparent:=False;
-                 psaNoAlpha: PList^.Transparent:=False;
-                 psaGlobalAlpha: PList^.Transparent:=False;
-                 psa8bpp: PList^.Transparent:=True;
+                 Normale[0]:=DeltaV.X*dd;
+                 Normale[1]:=DeltaV.Y*dd;
+                 Normale[2]:=DeltaV.Z*dd;
+
+                 Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+                 OpenGLLightList:=nil;
+
+                 if (Mode=bmSoftware) or (Mode=bmGlide) then
+                 begin
+                   if nRadius2>Radius2 then
+                     GlideRadius:=Sqrt(nRadius2)
+                   else
+                     GlideRadius:=Sqrt(Radius2);
                  end;
-               end;
-             end;
 
-             Inc(PChar(Surf3D), VertexSize3m);
+                 VertexCount:=3;
+                 Texturemode:= ModelRenderMode;
+                 AlphaColor:=CurrentColor or (ModelAlpha shl 24);
+
+                 // if the texture has alpha channel its probably transparent
+                 if Assigned(PList^.Texture^.SourceTexture) then
+                 begin
+                   TextureMode:=2;
+                   case PList^.Texture^.AlphaBits of
+                   psaDefault: PList^.Transparent:=False;
+                   psaNoAlpha: PList^.Transparent:=False;
+                   psaGlobalAlpha: PList^.Transparent:=False;
+                   psa8bpp: PList^.Transparent:=True;
+                   end;
+                 end;
+
+                 if ModelAlpha<>255 then
+                   PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
+
+               end;
+
+               Inc(PChar(Surf3D), VertexSize3m);
+             end;
            end;
+         finally
+           TriangleList.Free;
          end;
 
          PList^.tmp:=Surf3D;
@@ -1262,9 +1272,6 @@ begin
          end
          else
            Surf3D:=PList^.tmp;
-
-         if Alpha<>255 then
-           PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
 
          stScaleSprite(PList^.Texture, CorrW, CorrH);
 
@@ -1339,8 +1346,8 @@ begin
                  psa8bpp: PList^.Transparent:=True;
                  end;
                end;
-             end;
 
+             end;
              Inc(PChar(Surf3D), VertexSize3m);
            end;
          end;
@@ -1384,9 +1391,6 @@ begin
            ObjectColor:=CurrentColor or (Value shl 24);
            NewRenderMode:=Mode;
          end;
-
-         if ObjectColor and $FF000000 <> $FF000000 then
-           PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
 
          stScaleBezier(PList^.Texture, CorrW, CorrH);
          BezierBuf:=GetMeshCache;
@@ -1443,6 +1447,9 @@ begin
                    psa8bpp: PList^.Transparent:=True;
                    end;
                  end;
+                 
+                 if ObjectColor and $FF000000 <> $FF000000 then
+                   PList^.NumberTransparentFaces:=PList^.NumberTransparentFaces+1;
                end;
 
                PV:=PChar(Surf3D)+SizeOf(TSurface3D);

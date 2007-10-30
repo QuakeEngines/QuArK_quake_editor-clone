@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2002/03/07 19:17:48  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -48,20 +51,22 @@ unit QkModelFile;
 interface
 
 uses
-  windows, sysutils, QkObjects, QkFileObjects, QkForm, QkImages, Python, Game, QkModel, QkModelRoot,
-  qkcomponent, qkframe, qkskingroup, qkframegroup, qkbonegroup, qkpcx, qktextures, qkmiscgroup,
-  graphics, QkModelBone;
+  windows, sysutils, QkObjects, QkFileObjects, QkForm, QkImages, Python, Game,
+  QkModel, QkModelRoot, qkcomponent, qkframe, qkskin, qktextures, qkmiscgroup,
+  graphics, QkModelBone, qkpcx;
 
 type
   QModelFile = class(QModel)
+  private
+    function CreateModelRoot: QModelRoot;
   protected
-    function Loaded_Root : QModelRoot;
+    function ModelRoot : QModelRoot;
     function Saving_Root : QModelRoot;
-    function Loaded_Skin(Component: QComponent; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer) : QImage;
+    function Loaded_Skin(Component: QComponent; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer) : QSkin;
     function Loaded_Frame(Component: QComponent; const Name: String) : QFrame;
-    function Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QImage;
+    function Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QSkin;
     function Loaded_Component(Root: QModelRoot; cname: string): QComponent;
-    function Loaded_Bone(Component: QComponent; Parent: QModelBone; const Name: String): QModelBone;
+    function Loaded_Bone(Component: QComponent; const Name: String): QModelBone;
     function CantFindTexture(Component: QComponent; name: string; SZ: TPoint): QImage;
   end;
 
@@ -79,21 +84,14 @@ begin
     if cname='' then
       cname:=format('Component %d',[L.Count+1]);
     Result:=QComponent.Create(cname, Root);
-    with result do begin
-      IntSpec['show']:=1;
-      CreateSkinGroup;
-      CreateFrameGroup;
-      CreateBoneGroup;
-      CreateSDO;
-    end;
+    Result.IntSpec['show']:=1;
     Root.SubElements.Add(Result);
   finally
-    L.Clear;
     L.Free;
   end;
 end;
 
-function QModelFile.Loaded_Skin(Component: QComponent; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer) : QImage;
+function QModelFile.Loaded_Skin(Component: QComponent; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer) : QSkin;
 const
   Spec1 = 'Pal=';
   Spec2 = 'Image1=';
@@ -105,7 +103,7 @@ begin
     Skins:=nil
   else
     Skins:=Component.SkinGroup;
-  Result:=QPcx.Create(Name, Skins);
+  Result:=QSkin.Create(Name, Skins);
   if component<>nil then
     Skins.SubElements.Add(Result);
   Result.SetFloatsSpec('Size', Size);
@@ -130,19 +128,17 @@ begin
   Frames.SubElements.Add(Result);
 end;
 
-function QModelFile.Loaded_Bone(Component: QComponent; Parent: QModelBone; const Name: String): QModelBone;
+function QModelFile.Loaded_Bone(Component: QComponent; const Name: String): QModelBone;
 var
-  Bones: QObject;      // Actually a QBoneObject
+  Bones: QBoneGroup;
 begin
-  Bones:=Parent;
-  if Bones = nil then
-    Bones:=Component.BoneGroup;
+  Bones:=Component.BoneGroup;
   Result:=QModelBone.Create(Name, Bones);
   Result.ParentComponent:=Component;
   Bones.SubElements.Add(Result);
 end;
 
-function QModelFile.Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QImage;
+function QModelFile.Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QSkin;
 var
   Path: String;
   J: Integer;
@@ -153,19 +149,23 @@ begin
   Path:=Name;
   repeat
     nImage:=LoadSibling(Path);
-    if nImage<>Nil then begin
+    if nImage<>Nil then
+    begin
       try
-        if nImage is QTextureFile then begin
-          Result:=QPcx.Create('', Skins);
+        if nImage is QTextureFile then
+        begin
+          Result:=QSkin.Create('', Skins);
           try
             Result.ConversionFrom(QTextureFile(nImage));
           except
             Result.Free;
             Raise;
           end;
-        end else begin
-          Result:=nImage as QImage;
-          Result:=Result.Clone(Skins, False) as QImage;
+        end
+        else
+        begin
+          Result:=QSkin.Create('', Skins);
+          Result.ConversionFrom(QPcx(nImage));
         end;
         Skins.SubElements.Add(Result);
         Result.Name:=Copy(Name, 1, Length(Name)-Length(nImage.TypeInfo));
@@ -189,16 +189,29 @@ begin
   Result:=Nil;
 end;
 
-function QModelFile.Loaded_Root : QModelRoot;
+function QModelFile.ModelRoot : QModelRoot;
 var
-  misc: QMiscGroup;
+  i: Integer;
+  x: QObject;
+begin
+  result:=nil;
+  for i:=0 to SubElements.Count-1 do begin
+    x:=SubElements.Items1[i];
+    if x is QModelRoot then begin
+      result:=QModelRoot(x);
+      exit;
+    end;
+  end;
+  if result=nil then
+    Result:=CreateModelRoot;
+end;
+
+function QModelFile.CreateModelRoot : QModelRoot;
 begin
   Specifics.Values['FileName']:=ExtractFileName(LoadName);
   Result:=QModelRoot.Create(LoadStr1(2371), Self);
-  Misc:=QMiscGroup.Create('Misc', Result);
-  Misc.IntSpec['type']:=6;
+  Result.CreateMiscGroup;
   SubElements.Add(Result);
-  Result.SubElements.Add(Misc);
   Specifics.Values['Root']:=Result.Name+Result.TypeInfo;
 end;
 
@@ -229,7 +242,7 @@ var
   Skins: QSkinGroup;
 begin
   Skins:=Component.SkinGroup;
-  Result:=QPCX.Create(name, skins);
+  Result:=QSkin.Create(name, skins);
   bmp:=TBitmap.Create;
   if SZ.X<>0 then bmp.Width:=SZ.X else bmp.Width:=50;
   if SZ.Y<>0 then bmp.Height:=SZ.Y else bmp.Height:=50;

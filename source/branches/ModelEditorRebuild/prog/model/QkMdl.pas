@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.21  2007/05/15 15:04:30  danielpharos
 Don't force HL2 skin loading through Steam, but rather use the normal way for loading files.
 
@@ -154,15 +157,13 @@ type
     min, max: trivertx_t;
     Nom: array[0..15] of Byte;
   end;
-
-
-
-
-
+  
 
 implementation
 
-uses QuarkX, Setup, Travail, QkObjectClassList,QkPcx;
+uses
+  QuarkX, Setup, Travail, QkObjectClassList, QkModelTriangle, QkModelVertex,
+  QkSkin;
 
 class function QMdlFile.TypeInfo;
 begin
@@ -212,17 +213,17 @@ begin
   Root := Loaded_Root;
   ObjectGameCode := mjHalflife;
   F.ReadBuffer(Header, sizeof(StudioHdr_T));
-  f.seek(f_origin + Header.bodypartindex, sofrombeginning);
+  f.seek(f_origin + Header.bodypartindex, soFromBeginning);
   for i := 0 to header.numbodyparts - 1 do begin
     f.readbuffer(bp, sizeof(mstudiobodyparts_t));
-    f.seek(f_origin + bp.modelindex, sofrombeginning);
+    f.seek(f_origin + bp.modelindex, soFromBeginning);
     for z := 0 to bp.nummodels-1 do begin
       f.readbuffer(model, sizeof(mstudiomodel_t));
-      f.seek(f_origin + model.meshindex, soFrombeginning);
+      f.seek(f_origin + model.meshindex, soFromBeginning);
       for j := 0 to model.nummesh - 1 do begin
         f.readbuffer(mesh, sizeof(mstudiomesh_t));
         Comp := Loaded_Component(Root, Format('Body%d.Model%d.Mesh%d', [i, z, j]));
-        f.seek(f_origin + mesh.trisIndex, sofrombeginning);
+        f.seek(f_origin + mesh.trisIndex, soFromBeginning);
         f.readbuffer(cmd, 2);
         k := 0;
         setlength(atri, mesh.numtris );
@@ -352,7 +353,7 @@ begin
     if tex = nil then
       exit;
     tex.acces;
-    Result:=QPcx.Create(tex_name, Comp.SkinGroup);
+    Result:=QSkin.Create(tex_name, Comp.SkinGroup);
     try
       Result.ConversionFrom(tex);
     except
@@ -367,9 +368,6 @@ end;
 
 
 Procedure LoadHL2VTX(Fname: string);
-const
-  SpecTris = 'Tris=';
-  SpecVtx = 'Vertices=';
 type
   hl2_vtx_fileHeader_t = record
     // file version as defined by OPTIMIZED_MODEL_FILE_VERSION
@@ -497,9 +495,6 @@ begin
 end;
 
 Procedure QMdlFile.ReadHL2Model(F: TStream; FileSize: Integer);
-const
-  SpecTris = 'Tris=';
-  SpecVtx = 'Vertices=';
 type
   hl2_model_t = record
     id: Longint;
@@ -610,15 +605,18 @@ var
   Root: QModelRoot;
   mdl: hl2_model_t;
 
+  OTriangle: QModelTriangle;
+  OVertex: QModelVertex;
+  OFrame: QFrame;
+
+  VecT: vec3_t;
+  VertexData: TVertexData;
+
   Skin: QImage;
 
+  triangle_num, vertex_num, meshframe_num, skin_num:integer;
 
-  CTris: PComponentTris;
-  CVert: vec3_p;
-  S: string;
-  triangle_num, vertex_num, meshframe_num,skin_num:integer;
-
-  i, j, k,l: Integer;
+  i, j, k, l: Integer;
   Frame: QFrame;
   size: TPoint;
   Comp: QComponent;
@@ -626,14 +624,14 @@ var
   sizeset: Boolean;
   org: Longint;
   fsize: array[1..2] of Single;
-   t, base_tex_name: string;
+  S, t, base_tex_name: string;
 
   //------ Pointers from here
   Tris, Tris2: PMD3Triangle;
   TexCoord: PVertxArray;
   Vertexes, Vertexes2: PMD3Vertex;
 
-  vtxbox: array[0..7] of  TMD3Vertex;
+  vtxbox: array[0..7] of TMD3Vertex;
   xbounds: array[0..1]of single;
   ybounds: array[0..1]of single;
   zbounds: array[0..1]of single;
@@ -659,7 +657,7 @@ var
 
   ObjectGameCode := mjHL2;
   { setup Root }
-  Root := Loaded_Root;
+  Root := ModelRoot;
 
   Comp := Loaded_Component(Root, LoadName);
   LoadHL2VTX(Loadname);
@@ -765,14 +763,10 @@ var
   fSize[2]:=size.y;
   Comp.SetFloatsSpec('skinsize', fSize);
 
-
-
-
-
   //-----------------------------------------------------------
   //-- LOAD TRIANGLES
   //-----------------------------------------------------------
-//  fs.seek(org+mhead.triangle_start, sofrombeginning);
+//  fs.seek(org+mhead.triangle_start, soFromBeginning);
 //  getmem(tris, triangle_num*sizeof(TMD3Triangle));
 //  fs.readbuffer(tris^, mhead.triangle_num*sizeof(TMD3Triangle));
 
@@ -781,7 +775,7 @@ tris := @tribox;
   //-- LOAD TEXTURE CO-ORDS
   //-----------------------------------------------------------
 
-//  fs.seek(org+mhead.TexVec_Start, sofrombeginning);
+//  fs.seek(org+mhead.TexVec_Start, soFromBeginning);
 //  getmem(texCoord, vertex_num*sizeof(TMD3TexVec));
 //  fs.readbuffer(texCoord^, mhead.vertex_num*sizeof(TMD3TexVec));
 texcoord:=@texbox;
@@ -790,68 +784,57 @@ texcoord:=@texbox;
   //-----------------------------------------------------------
   //-- PROCESS TRIANGLES + TEXTURE CO-ORDS
   //-----------------------------------------------------------
-  try
-    S:=SpecTris;
-    SetLength(S, Length(SpecTris)+Triangle_num*SizeOf(TComponentTris));
-    Tris2:=Tris;
-    PChar(CTris):=PChar(S)+Length(SpecTris);
-    for I:=1 to Triangle_num do
+  Tris2:=Tris;
+  for i:=1 to Triangle_num do
+  begin
+    OTriangle:=QModelTriangle.Create('Triangle '+inttostr(i), Comp.TriangleGroup);
+    Comp.TriangleGroup.SubElements.Add(OTriangle);
+    for J:=0 to 2 do
     begin
-      for J:=0 to 2 do
+      K:=OTriangle.AddVertex(-1);
+      VertexData.VertexNo := Tris2^.triangle[J+1];
+      with texCoord^[Tris2^.triangle[J+1]] do
       begin
-        with CTris^[J] do
-        begin
-          VertexNo:=Tris2^.triangle[J+1];
-          with texCoord^[Tris2^.triangle[J+1]] do
-          begin
-            S:=round(vec[1]*Size.X);
-            T:=round(vec[2]*Size.Y);
-          end;
-        end;
+        VertexData.S:=round(vec[1]*Size.X);
+        VertexData.T:=round(vec[2]*Size.Y);
       end;
-      Inc(CTris);
-      Inc(Tris2);
+      OTriangle.SetVertex(K, VertexData);
     end;
-    Comp.Specifics.Add(S); {tris=...}
-  finally
-//    freemem(Tris);
-//    freemem(texcoord);
+    Inc(Tris2);
   end;
 
   //-----------------------------------------------------------
   //-- LOAD FRAMES + VERTEXES
   //-----------------------------------------------------------
 
-//  fs.seek(org+mhead.Vertex_Start, sofrombeginning);
+//  fs.seek(org+mhead.Vertex_Start, soFromBeginning);
 
   for i:=1 to MeshFrame_num do
   begin
-    Frame:=Loaded_Frame(Comp, format('Frame %d',[i]));
-    Frame.SetFloatSpec('index', i);
+    OFrame:=QFrame.Create(format('Frame %d',[i]), Comp.FrameGroup);
+    Comp.FrameGroup.SubElements.Add(OFrame);
 //    GetMem(Vertexes, vertex_Num * Sizeof(TMD3Vertex));
     try
 
-       Vertexes:=@vtxbox;
+      Vertexes:=@vtxbox;
 
 //      fs.readbuffer(Vertexes^, mhead.vertex_Num * Sizeof(TMD3Vertex));
       //-----------------------------------------------------------
       //-- PROCESS VERTEXES
       //-----------------------------------------------------------
-      S:=FloatSpecNameOf(SpecVtx);
-      SetLength(S, Length(SpecVtx)+Vertex_num*SizeOf(vec3_t));
-      PChar(CVert):=PChar(S)+Length(SpecVtx);
       Vertexes2:=Vertexes;
       for J:=0 to vertex_Num-1 do
       begin
+        OVertex:=QModelVertex.Create('Vertex '+inttostr(J), OFrame);
+        OFrame.SubElements.Add(OVertex);
         with Vertexes2^ do
         begin
           for k:=0 to 2 do
-            CVert^[k]:=(Vec[k+1] / 64);
+            VecT[k]:=(Vec[k+1] / 64);
+          OVertex.SetPosition(VecT);
         end;
         Inc(Vertexes2);
-        Inc(CVert);
       end;
-      Frame.Specifics.Add(S);
     finally
 //      FreeMem(Vertexes);
     end;
@@ -860,25 +843,24 @@ texcoord:=@texbox;
 end;
 
 procedure QMdlFile.LoadFile(F: TStream; FSize: Integer);
-const
-  Spec1 = 'Tris=';
-  Spec2 = 'Vertices=';
 type
   PVertxArray = ^TVertxArray;
-  TVertxArray = array[0..99] of stvert_t;
+  TVertxArray = array of stvert_t;
 var
   mdl: mdl_t;
   Root: QModelRoot;
   Size: array[1..2] of Single;
   I, J, K, Taille1, Delta, SkinCounter, DeltaW: Integer;
+  OTriangle: QModelTriangle;
+  OVertex: QModelVertex;
   SkinGroup: skingroup_t;
+  VecT: vec3_t;
+  VertexData: TVertexData;
   P: PChar;
   S: string;
   SkinObj: QImage;
   STData: PVertxArray;
   Triangles, Tris: ^itriangle_t;
-  CTris: PComponentTris;
-  CVert: vec3_p;
   Derriere: Boolean;
   Frame: frame_t;
   FrameGroup: framegroup_t;
@@ -891,7 +873,7 @@ var
   RA: Boolean;
   TrisRA: ^itriangle_ra_t absolute Tris;
   //----
-  C: QComponent;
+  Comp: QComponent;
 
   procedure Read1(var Buf; Count: Integer);
   begin
@@ -934,9 +916,12 @@ begin
         end;
 
         { setup Root }
-        Root := Loaded_Root;
-        C := Loaded_Component(Root, '');
-        ObjectGameCode := mjNotQuake2;
+        Root := ModelRoot;
+        Comp := Loaded_Component(Root, '');
+        if GameModeCompare(CharModeJeu, mjQuake1, gcCompatible) then
+          ObjectGameCode := CharModeJeu
+        else
+          ObjectGameCode := mjQuake1;
         Root.Specifics.Values['seamtrick'] := '1';
         Size[1] := mdl.synctype;
         Size[2] := mdl.flags;
@@ -961,7 +946,7 @@ begin
           PreviousTime := 0;
           for K := 1 to SkinGroup.count do begin
             J := F.Position;
-            SkinObj := Loaded_Skin(C, FmtLoadStr1(2372, [SkinCounter]), Size, P, DeltaW);
+            SkinObj := Loaded_Skin(Comp, FmtLoadStr1(2372, [SkinCounter]), Size, P, DeltaW);
             F.Position := J;
             Inc(SkinCounter);
             if NextTime <> nil then begin
@@ -988,47 +973,60 @@ begin
           try
             Read1(Triangles^, Taille1);
 
-            J := mdl.numtris * SizeOf(TComponentTris);
-            S := Spec1;
-            SetLength(S, Length(Spec1) + J);
-
             Delta := mdl.skinwidth div 2;
             Tris := Triangles;
-            PChar(CTris) := PChar(S) + Length(Spec1);
             if RA then begin
-              for I := 1 to mdl.numtris do begin { PoP Models }
+              for I := 1 to mdl.numtris do
+              begin { PoP Models }
                 Derriere := TrisRA^.facesfront = 0;
-                for J := 0 to 2 do begin
-                  with CTris^[J] do begin
-                    VertexNo := TrisRA^.index_xyz[J];
-                    with STData^[TrisRA^.index_st[J]] do begin
-                      S := ss;
-                      T := tt;
+                OTriangle:=QModelTriangle.Create('Triangle '+inttostr(i), Comp.TriangleGroup);
+                Comp.TriangleGroup.SubElements.Add(OTriangle);
+                for J := 0 to 2 do
+                begin
+                  K:=OTriangle.AddVertex(-1);
+                  if K = -1 then
+                    Log(LOG_WARNING, 'Unable to create model vertex! MD3 file loading might fail!')
+                  else
+                  begin
+                    VertexData.VertexNo:=TrisRA^.index_xyz[J];
+                    with STData^[TrisRA^.index_st[J]] do
+                    begin
+                      VertexData.S:=ss;
+                      VertexData.T:=tt;
                       if Derriere and (onseam and $20 <> 0) then
-                        Inc(S, Delta);
+                        Inc(VertexData.S, Delta);
                     end;
+                    OTriangle.SetVertex(K, VertexData);
                   end;
                 end;
-                Inc(TrisRA);
-                Inc(CTris);
+                Inc(TrisRA);  //@Are we increasing the pointer itself? Memory leak...!
               end;
-            end else { default Q1 and H2 Models }
+            end
+            else { default Q1 and H2 Models }
               for I := 1 to mdl.numtris do begin
                 Derriere := Tris^.facesfront = 0;
+                OTriangle:=QModelTriangle.Create('Triangle '+inttostr(i), Comp.TriangleGroup);
+                Comp.TriangleGroup.SubElements.Add(OTriangle);
                 for J := 0 to 2 do
-                  with CTris^[J] do begin
-                    VertexNo := Tris^.index_xyz[J];
-                    with STData^[Tris^.index_xyz[J]] do begin
-                      S := ss;
-                      T := tt;
+                begin
+                  K:=OTriangle.AddVertex(-1);
+                  if K = -1 then
+                    Log(LOG_WARNING, 'Unable to create model vertex! MD3 file loading might fail!')
+                  else
+                  begin
+                    VertexData.VertexNo:=Tris^.index_xyz[J];
+                    with STData^[Tris^.index_xyz[J]] do
+                    begin
+                      VertexData.S:=ss;
+                      VertexData.T:=tt;
                       if Derriere and (onseam and $20 <> 0) then
-                        Inc(S, Delta);
+                        Inc(VertexData.S, Delta);
                     end;
+                    OTriangle.SetVertex(K, VertexData);
                   end;
-                Inc(Tris);
-                Inc(CTris);
+                end;
+                Inc(Tris);  //@Are we increasing the pointer itself? Memory leak...!
               end;
-            C.Specifics.Add(S); { Tris= }
           finally
             FreeMem(Triangles);
           end;
@@ -1054,7 +1052,7 @@ begin
             for K := 1 to FrameGroup.count do begin
               Read1(Frame, SizeOf(Frame));
               Read1(FrSourcePts^, Taille1);
-              FrameObj := Loaded_Frame(C, CharToPas(Frame.Nom));
+              FrameObj := Loaded_Frame(Comp, CharToPas(Frame.Nom));
               if NextTime <> nil then begin
                 if K = 1 then
                   FrameObj.Specifics.Values['group'] := '1';
@@ -1062,20 +1060,20 @@ begin
                 PreviousTime := NextTime^;
                 Inc(NextTime);
               end;
-              S := FloatSpecNameOf(Spec2);
-              SetLength(S, Length(Spec2) + mdl.numverts * SizeOf(vec3_t));
-              PChar(CVert) := PChar(S) + Length(Spec2);
               FrSource := FrSourcePts;
-              for J := 0 to mdl.numverts - 1 do begin
-                with FrSource^ do begin
-                  CVert^[0] := mdl.scale[0] * X + mdl.origin[0];
-                  CVert^[1] := mdl.scale[1] * Y + mdl.origin[1];
-                  CVert^[2] := mdl.scale[2] * Z + mdl.origin[2];
+              for J := 0 to mdl.numverts - 1 do
+              begin
+                OVertex:=QModelVertex.Create('Vertex '+inttostr(J), FrameObj);
+                FrameObj.SubElements.Add(OVertex);
+                with FrSource^ do
+                begin
+                  VecT[0] := mdl.scale[0] * X + mdl.origin[0];
+                  VecT[1] := mdl.scale[1] * Y + mdl.origin[1];
+                  VecT[2] := mdl.scale[2] * Z + mdl.origin[2];
                 end;
+                OVertex.SetPosition(VecT);
                 Inc(FrSource);
-                Inc(CVert);
               end;
-              FrameObj.Specifics.Add(S);
             end;
           end;
         finally
@@ -1112,21 +1110,25 @@ type
 var
   Root: QModelRoot;
   TheComp: QComponent;
-  FrameList, SkinList: TQList;
+  TriangleList, FrameList, VertexList, SkinList: TQList;
+  VerticesData: vertex_p;
+  VertexNR: Integer;
+  VecP: vec3_p;
   mdl: mdl_t;
   Size: array[1..2] of Single;
-  Position0, I, J, K, K1, Taille1, Delta, InputVertexCount: Integer;
+  Position0, I, J, K, K1, Taille1, Delta, VertexCount: Integer;
   SkinGroup: skingroup_t;
   FrameGroup: framegroup_t;
   P: PChar;
   S: string;
+  OTriangle: QModelTriangle;
+  OVertex: QModelVertex;
   SkinObj: QImage;
   SkinSize: TPoint;
   STData: PVertxArray;
+
   Triangles, Tris: ^itriangle_t;
-  CTriangles, CTris: PComponentTris;
-  CVertArray: ^vec3_array_t;
-  CVert: vec3_p;
+
   Frame: frame_t;
   FrameObj: QFrame;
   FrSourcePts: ^trivertx_array_t;
@@ -1154,9 +1156,7 @@ begin
     case Format of
       1: begin
           Root := Self.GetRoot;
-          if Root.CurrentComponent = nil then
-            Root.CurrentComponent := Root.GetComponentFromIndex(0);
-          TheComp := Root.CurrentComponent;
+          TheComp := Root.GetCurrentComponentObject;
           if TheComp = nil then
             raise Exception.Create('Nothing to save! (Root.CurrentComponent = nil [QMDLFILE.ENREGISTRER])');
 
@@ -1234,21 +1234,8 @@ begin
             Max.X := -MaxInt;
             Max.Y := -MaxInt;
             Max.Z := -MaxInt;
-            InputVertexCount := 0;
-            for I := 0 to FrameList.Count - 1 do begin
-              if FrameList.Items1[I] is QFrame then begin
-                FrameObj := QFrame(FrameList.Items1[I]);
-                J := FrameObj.GetVertices(CVert);
-                if J > 0 then begin
-                  if InputVertexCount = 0 then
-                    InputVertexCount := J
-                  else
-                    if InputVertexCount <> J then
-                      raise EErrorFmt(2433, ['VertexCount']);
-                  FrameObj.ChercheExtremites(Min, Max);
-                end;
-              end;
-            end;
+            for I := 0 to FrameList.Count - 1 do
+              QFrame(FrameList.Items1[I]).ChercheExtremites(Min, Max);
             mdl.origin[0] := Min.X;
             mdl.origin[1] := Min.Y;
             mdl.origin[2] := Min.Z;
@@ -1275,204 +1262,230 @@ begin
                     it would be very hard and often impossible to convert the generic QuArK
                     models (inspired by Quake 2's) to the more restricted Quake 1 format. }
 
-            Taille1 := InputVertexCount * SizeOf(PVertexNode);
+            FrameObj := QFrame(FrameList.Items1[0]);
+            VertexList := FrameObj.BuildVertexList;
+            try
+              VertexCount := VertexList.Count;
+            finally
+              VertexList.Free;
+            end;
+            Taille1 := VertexCount * SizeOf(PVertexNode);
             GetMem(VertexMap, Taille1);
             FillChar(VertexMap^, Taille1, 0);
             try
-              mdl.numtris := TheComp.Triangles(CTriangles);
-              CTris := CTriangles;
-              for I := 1 to mdl.numtris do begin
-                for K := 0 to 2 do begin
-                  with CTris^[K] do begin
-                    if VertexNo > InputVertexCount then
+              AireTotale := 0;
+              TriangleList := TheComp.BuildTriangleList;
+              try
+                mdl.numtris := TriangleList.Count;
+                for I := 0 to mdl.numtris-1 do
+                begin
+                  OTriangle:=QModelTriangle(TriangleList.Items1[I]);
+                  if OTriangle.GetVertices(VerticesData) <> 3 then
+                    raise EErrorFmt(2433, ['VertexCount']);
+                  for K := 0 to 2 do
+                  begin
+                    VertexNR := VerticesData^[K].VertexNo;
+                    if VertexNR > VertexCount then
                       raise EErrorFmt(2433, ['VertexNo']);
-                    Node := VertexMap^[VertexNo];
-                    while (Node <> nil) and (Node^.longst <> longst) do
+                    Node := VertexMap^[VertexNR];
+                    while (Node <> nil) and (Node^.longst <> VerticesData^[K].longst) do
                       Node := Node^.Next;
                     if Node = nil then begin
                       New(Node);
                       Node^.OutputIndex := mdl.numverts;
                       Inc(mdl.numverts);
-                      Node^.st := st;
-                      Node^.Next := VertexMap^[VertexNo];
-                      VertexMap^[VertexNo] := Node;
+                      Node^.st := VerticesData^[K].st;
+                      Node^.Next := VertexMap^[VertexNR];
+                      VertexMap^[VertexNR] := Node;
                     end;
                   end;
                 end;
-                Inc(CTris);
-              end;
-              Taille1 := SizeOf(stvert_t) * mdl.numverts;
-              GetMem(STData, Taille1);
-              try
-                for I := 0 to InputVertexCount - 1 do begin
-                  Node := VertexMap^[I];
-                  while Node <> nil do begin
-                    with STData^[Node^.OutputIndex], Node^ do begin
-                      onseam := 0;
-                      ss := S;
-                      tt := T;
-                    end;
-                    Node := Node^.Next;
-                  end;
-                end;
-                F.WriteBuffer(STData^, Taille1);
-              finally
-                FreeMem(STData);
-              end;
 
-              Taille1 := SizeOf(itriangle_t) * mdl.numtris;
-              GetMem(Triangles, Taille1);
-              try
-                Tris := Triangles;
-                CTris := CTriangles;
-                for I := 1 to mdl.numtris do begin
-                  Tris^.facesfront := 1;
-                  for K := 0 to 2 do begin
-                    with CTris^[K] do begin
-                      Node := VertexMap^[VertexNo];
-                      while Node^.longst <> longst do
-                        Node := Node^.Next;
+                Taille1 := SizeOf(stvert_t) * mdl.numverts;
+                GetMem(STData, Taille1);
+                try
+                  for I := 0 to VertexCount - 1 do begin
+                    Node := VertexMap^[I];
+                    while Node <> nil do begin
+                      with STData^[Node^.OutputIndex], Node^ do begin
+                        onseam := 0;
+                        ss := S;
+                        tt := T;
+                      end;
+                      Node := Node^.Next;
                     end;
-                    Tris^.index_xyz[K] := Node^.OutputIndex;
                   end;
-                  Inc(CTris);
-                  Inc(Tris);
+                  F.WriteBuffer(STData^, Taille1);
+                finally
+                  FreeMem(STData);
                 end;
-                F.WriteBuffer(Triangles^, Taille1);
-              finally
-                FreeMem(Triangles);
-              end;
-              { save Frames }
-              AireTotale := 0;
-              Taille1 := SizeOf(trivertx_t) * mdl.numverts;
-              GetMem(FrSourcePts, Taille1);
-              GetMem(NormalesSommets, SizeOf(TVect) * InputVertexCount);
-              try
-                I := 0;
-                while I < FrameList.Count do begin
-                  FrameGroup.count := 1;
-                  FrameObj := QFrame(FrameList.Items1[I]);
-                  if FrameObj.GetFloatSpec('duration', 0) <= 0 then begin { not in a frame group }
-                    J := 0;
-                    F.WriteBuffer(J, SizeOf(LongInt));
-                  end else begin
-                    Min.X := MaxInt;
-                    Min.Y := MaxInt;
-                    Min.Z := MaxInt;
-                    Max.X := -MaxInt;
-                    Max.Y := -MaxInt;
-                    Max.Z := -MaxInt;
-                    FrameObj.ChercheExtremites(Min, Max);
-                    while (I + FrameGroup.count < FrameList.Count)
-                      and (QFrame(FrameList.Items1[I + FrameGroup.count]).GetFloatSpec('duration', 0) > 0)
-                      and (QFrame(FrameList.Items1[I + FrameGroup.count]).Specifics.Values['group'] = '') do begin
-                      QFrame(FrameList.Items1[I + FrameGroup.count]).ChercheExtremites(Min, Max);
-                      Inc(FrameGroup.count);
+
+                Taille1 := SizeOf(itriangle_t) * mdl.numtris;
+                GetMem(Triangles, Taille1);
+                try
+                  Tris := Triangles;
+                  for I := 0 to mdl.numtris - 1 do begin
+                    Tris^.facesfront := 1;
+                    OTriangle:=QModelTriangle(TriangleList.Items1[I]);
+                    OTriangle.GetVertices(VerticesData);
+                    for K := 0 to 2 do begin
+                      Node := VertexMap^[VerticesData^[K].VertexNo];
+                      while Node^.longst <> VerticesData^[K].longst do
+                        Node := Node^.Next;
+                      Tris^.index_xyz[K] := Node^.OutputIndex;
                     end;
-                    J := 1;
-                    F.WriteBuffer(J, SizeOf(LongInt));
-                    Vert1[0] := Min.X;
-                    Vert1[1] := Min.Y;
-                    Vert1[2] := Min.Z;
-                    FrameGroup.min := Compacter(Vert1);
-                    Vert1[0] := Max.X;
-                    Vert1[1] := Max.Y;
-                    Vert1[2] := Max.Z;
-                    FrameGroup.max := Compacter(Vert1);
-                    F.WriteBuffer(FrameGroup, SizeOf(FrameGroup));
-                    SetLength(Times, FrameGroup.count * SizeOf(Single));
-                    PChar(NextTime) := PChar(Times);
-                    PreviousTime := 0;
-                    for J := 0 to FrameGroup.count - 1 do begin
-                      PreviousTime := PreviousTime + QFrame(FrameList.Items1[I + J]).GetFloatSpec('duration', 0);
-                      NextTime^ := PreviousTime;
-                      Inc(NextTime);
-                    end;
-                    F.WriteBuffer(Times[1], FrameGroup.count * SizeOf(Single));
+                    Inc(Tris);
                   end;
-                  for J := 0 to FrameGroup.count - 1 do begin
+                  F.WriteBuffer(Triangles^, Taille1);
+                finally
+                  FreeMem(Triangles);
+                end;
+                { save Frames }
+                Taille1 := SizeOf(trivertx_t) * mdl.numverts;
+                GetMem(FrSourcePts, Taille1);
+                GetMem(NormalesSommets, SizeOf(TVect) * VertexCount);
+                try
+                  I := 0;
+                  while I < FrameList.Count do begin
+                    FrameGroup.count := 1;
                     FrameObj := QFrame(FrameList.Items1[I]);
-                    FrameObj.GetVertices(CVert);
-                    vec3_p(CVertArray) := CVert;
-                    { computes the normal vectors }
-                    FillChar(NormalesSommets^, SizeOf(TVect) * InputVertexCount, 0);
-                    CTris := CTriangles;
-                    for K := 1 to mdl.numtris do begin
-                      if (CTris^[0].VertexNo >= InputVertexCount)
-                        or (CTris^[1].VertexNo >= InputVertexCount)
-                        or (CTris^[2].VertexNo >= InputVertexCount) then
-                        raise EError(5667);
-                      Vert1 := CVertArray^[CTris^[0].VertexNo];
-                      Vert2 := CVertArray^[CTris^[1].VertexNo];
-                      Vert3 := CVertArray^[CTris^[2].VertexNo];
-                      Vec1.X := Vert1[0] - Vert2[0];
-                      Vec1.Y := Vert1[1] - Vert2[1];
-                      Vec1.Z := Vert1[2] - Vert2[2];
-                      Vec2.X := Vert3[0] - Vert2[0];
-                      Vec2.Y := Vert3[1] - Vert2[1];
-                      Vec2.Z := Vert3[2] - Vert2[2];
-                      Vec3 := Cross(Vec1, Vec2);
-                      Aire := Sqrt(Sqr(Vec3.X) + Sqr(Vec3.Y) + Sqr(Vec3.Z));
-                      AireTotale := AireTotale + Aire;
-                      if Aire > rien then begin
-                        Aire := 1 / Aire;
-                        Vec3.X := Vec3.X * Aire;
-                        Vec3.Y := Vec3.Y * Aire;
-                        Vec3.Z := Vec3.Z * Aire;
-                        for K1 := 0 to 2 do begin
-                          with NormalesSommets^[CTris^[K1].VertexNo] do begin
-                            X := X + Vec3.X;
-                            Y := Y + Vec3.Y;
-                            Z := Z + Vec3.Z;
+                    if FrameObj.GetFloatSpec('duration', 0) <= 0 then { not in a frame group }
+                    begin
+                      J := 0;
+                      F.WriteBuffer(J, SizeOf(LongInt));
+                    end
+                    else
+                    begin
+                      Min.X := MaxInt;
+                      Min.Y := MaxInt;
+                      Min.Z := MaxInt;
+                      Max.X := -MaxInt;
+                      Max.Y := -MaxInt;
+                      Max.Z := -MaxInt;
+                      FrameObj.ChercheExtremites(Min, Max);
+                      while (I + FrameGroup.count < FrameList.Count)
+                        and (QFrame(FrameList.Items1[I + FrameGroup.count]).GetFloatSpec('duration', 0) > 0)
+                        and (QFrame(FrameList.Items1[I + FrameGroup.count]).Specifics.Values['group'] = '') do begin
+                        QFrame(FrameList.Items1[I + FrameGroup.count]).ChercheExtremites(Min, Max);
+                        Inc(FrameGroup.count);
+                      end;
+                      J := 1;
+                      F.WriteBuffer(J, SizeOf(LongInt));
+                      Vert1[0] := Min.X;
+                      Vert1[1] := Min.Y;
+                      Vert1[2] := Min.Z;
+                      FrameGroup.min := Compacter(Vert1);
+                      Vert1[0] := Max.X;
+                      Vert1[1] := Max.Y;
+                      Vert1[2] := Max.Z;
+                      FrameGroup.max := Compacter(Vert1);
+                      F.WriteBuffer(FrameGroup, SizeOf(FrameGroup));
+                      SetLength(Times, FrameGroup.count * SizeOf(Single));
+                      PChar(NextTime) := PChar(Times);
+                      PreviousTime := 0;
+                      for J := 0 to FrameGroup.count - 1 do begin
+                        PreviousTime := PreviousTime + QFrame(FrameList.Items1[I + J]).GetFloatSpec('duration', 0);
+                        NextTime^ := PreviousTime;
+                        Inc(NextTime);
+                      end;
+                      F.WriteBuffer(Times[1], FrameGroup.count * SizeOf(Single));
+                    end;
+                    for J := 0 to FrameGroup.count - 1 do begin
+                      FrameObj := QFrame(FrameList.Items1[I]);
+                      { computes the normal vectors }
+                      FillChar(NormalesSommets^, SizeOf(TVect) * VertexCount, 0);
+                      VertexList := FrameObj.BuildVertexList;
+                      try
+                        for K := 0 to mdl.numtris - 1 do begin
+                          OTriangle := QModelTriangle(TriangleList.Items1[K]);
+                          OTriangle.GetVertices(VerticesData);
+                          if (VerticesData^[0].VertexNo >= VertexCount)
+                            or (VerticesData^[1].VertexNo >= VertexCount)
+                            or (VerticesData^[2].VertexNo >= VertexCount) then
+                            raise EError(5667);
+                          OVertex := QModelVertex(VertexList[VerticesData^[0].VertexNo]);
+                          OVertex.GetPosition(VecP);
+                          Vert1 := VecP^;
+                          OVertex := QModelVertex(VertexList[VerticesData^[1].VertexNo]);
+                          OVertex.GetPosition(VecP);
+                          Vert2 := VecP^;
+                          OVertex := QModelVertex(VertexList[VerticesData^[2].VertexNo]);
+                          OVertex.GetPosition(VecP);
+                          Vert3 := VecP^;
+                          Vec1.X := Vert1[0] - Vert2[0];
+                          Vec1.Y := Vert1[1] - Vert2[1];
+                          Vec1.Z := Vert1[2] - Vert2[2];
+                          Vec2.X := Vert3[0] - Vert2[0];
+                          Vec2.Y := Vert3[1] - Vert2[1];
+                          Vec2.Z := Vert3[2] - Vert2[2];
+                          Vec3 := Cross(Vec1, Vec2);
+                          Aire := Sqrt(Sqr(Vec3.X) + Sqr(Vec3.Y) + Sqr(Vec3.Z));
+                          AireTotale := AireTotale + Aire;
+                          if Aire > rien then begin
+                            Aire := 1 / Aire;
+                            Vec3.X := Vec3.X * Aire;
+                            Vec3.Y := Vec3.Y * Aire;
+                            Vec3.Z := Vec3.Z * Aire;
+                            for K1 := 0 to 2 do begin
+                              with NormalesSommets^[VerticesData^[K1].VertexNo] do begin
+                                X := X + Vec3.X;
+                                Y := Y + Vec3.Y;
+                                Z := Z + Vec3.Z;
+                              end;
+                            end;
                           end;
                         end;
-                      end;
-                      Inc(CTris);
-                    end;
-                    Frame.min.x := 255;
-                    Frame.min.y := 255;
-                    Frame.min.z := 255;
-                    Frame.min.n := 0;
-                    Frame.max.x := 0;
-                    Frame.max.y := 0;
-                    Frame.max.z := 0;
-                    Frame.max.n := 0;
-                    for K := 0 to InputVertexCount - 1 do begin
-                      tvx := Compacter(CVert^);
-                      if tvx.x < Frame.min.x then Frame.min.x := tvx.x;
-                      if tvx.y < Frame.min.y then Frame.min.y := tvx.y;
-                      if tvx.z < Frame.min.z then Frame.min.z := tvx.z;
-                      if tvx.x > Frame.max.x then Frame.max.x := tvx.x;
-                      if tvx.y > Frame.max.y then Frame.max.y := tvx.y;
-                      if tvx.z > Frame.max.z then Frame.max.z := tvx.z;
-                      with NormalesSommets^[K] do begin
-                        Maximum := -MaxInt;
-                        for K1 := Low(VecteursNormaux) to High(VecteursNormaux) do begin
-                          Aire := X * VecteursNormaux[K1, 0] + Y * VecteursNormaux[K1, 1] + Z * VecteursNormaux[K1, 2];
-                          if Aire > Maximum then begin
-                            Maximum := Aire;
-                            tvx.N := K1; { trouvé une meilleure approximation }
+                        Frame.min.x := 255;
+                        Frame.min.y := 255;
+                        Frame.min.z := 255;
+                        Frame.min.n := 0;
+                        Frame.max.x := 0;
+                        Frame.max.y := 0;
+                        Frame.max.z := 0;
+                        Frame.max.n := 0;
+                        for K := 0 to VertexCount - 1 do begin
+                          OVertex := QModelVertex(VertexList.Items[K]);
+                          OVertex.GetPosition(VecP);
+                          tvx := Compacter(VecP^);
+                          if tvx.x < Frame.min.x then Frame.min.x := tvx.x;
+                          if tvx.y < Frame.min.y then Frame.min.y := tvx.y;
+                          if tvx.z < Frame.min.z then Frame.min.z := tvx.z;
+                          if tvx.x > Frame.max.x then Frame.max.x := tvx.x;
+                          if tvx.y > Frame.max.y then Frame.max.y := tvx.y;
+                          if tvx.z > Frame.max.z then Frame.max.z := tvx.z;
+                          with NormalesSommets^[K] do begin
+                            Maximum := -MaxInt;
+                            for K1 := Low(VecteursNormaux) to High(VecteursNormaux) do begin
+                              Aire := X * VecteursNormaux[K1, 0] + Y * VecteursNormaux[K1, 1] + Z * VecteursNormaux[K1, 2];
+                              if Aire > Maximum then begin
+                                Maximum := Aire;
+                                tvx.N := K1; { trouvé une meilleure approximation }
+                              end;
+                            end;
+                          end;
+                          Node := VertexMap^[K];
+                          while Node <> nil do begin
+                            FrSourcePts^[Node^.OutputIndex] := tvx;
+                            Node := Node^.Next;
                           end;
                         end;
+                      finally
+                        VertexList.Free;
                       end;
-                      Node := VertexMap^[K];
-                      while Node <> nil do begin
-                        FrSourcePts^[Node^.OutputIndex] := tvx;
-                        Node := Node^.Next;
-                      end;
-                      Inc(CVert);
+                      PasToChar(Frame.Nom, FrameObj.Name);
+                      F.WriteBuffer(Frame, SizeOf(Frame));
+                      F.WriteBuffer(FrSourcePts^, Taille1);
+                      Inc(I);
+                      ProgressIndicatorIncrement;
                     end;
-                    PasToChar(Frame.Nom, FrameObj.Name);
-                    F.WriteBuffer(Frame, SizeOf(Frame));
-                    F.WriteBuffer(FrSourcePts^, Taille1);
-                    Inc(I);
-                    ProgressIndicatorIncrement;
+                    Inc(mdl.numframes);
                   end;
-                  Inc(mdl.numframes);
+                finally
+                  FreeMem(NormalesSommets);
+                  FreeMem(FrSourcePts);
                 end;
               finally
-                FreeMem(NormalesSommets);
-                FreeMem(FrSourcePts);
+                TriangleList.Free;
               end;
               if mdl.numframes = 0 then
                 mdl.size := 0
@@ -1483,7 +1496,7 @@ begin
               F.WriteBuffer(mdl, SizeOf(mdl));
               F.Position := J;
             finally
-              for I := 0 to InputVertexCount - 1 do begin
+              for I := 0 to VertexCount - 1 do begin
                 while VertexMap^[I] <> nil do begin
                   Node := VertexMap^[I];
                   VertexMap^[I] := Node^.Next;

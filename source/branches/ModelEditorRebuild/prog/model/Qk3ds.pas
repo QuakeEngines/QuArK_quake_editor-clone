@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.6  2001/06/05 18:42:41  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -245,7 +248,7 @@ var
   FrameObj: QFrame;
 begin
   org2:=org+6;
-  f.seek(org2, sofrombeginning);
+  f.seek(org2, soFromBeginning);
   Self.CantFindTexture(Comp, 'Texture1', point(512,512));
   found:=SkipUntilFound(F, Parent, Org, TAG_TEXVERTEX);
   if not found then
@@ -258,7 +261,7 @@ begin
   getmem(texvert, num_texvert * sizeof(ttexvert));
   try
     f.readbuffer(texvert^, num_texvert * sizeof(ttexvert));
-    f.seek(org2, sofrombeginning);
+    f.seek(org2, soFromBeginning);
     found:=SkipUntilFound(F, Parent, Org, TAG_TRIANGLE);
     if not found then
       raise exception.create('Cannot read .3ds File (mesh has no faces/triangles)'#13#10'Q3dsfile.ReadObject: SkipUntilFound(TAG_TRIANGLES)=false');
@@ -284,7 +287,7 @@ begin
   // Read Vertices                       //
   /////////////////////////////////////////
   FrameObj := Loaded_Frame(Comp, 'Frame');
-  f.seek(org2, sofrombeginning);
+  f.seek(org2, soFromBeginning);
   found:=SkipUntilFound(F, Parent, Org, TAG_VERTEX);
   if not found then
     raise exception.create('Cannot read .3ds File (mesh has no vertices)'#13#10'Q3dsfile.ReadObject: SkipUntilFound(TAG_VERTEX)=false');

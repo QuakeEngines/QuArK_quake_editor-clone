@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.3  2001/06/05 18:41:51  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -38,6 +41,17 @@ uses Windows, SysUtils, Classes, Python, qmath, qmatrices, PyMath, QkObjects,
      Quarkx, Setup, Qk3D, QkImages, QkMdlObject;
 
 type
+  PSpriteVertex = ^TSpriteVertex;
+  TSpriteVertex = packed record
+    VertexNo: Word;
+    case Integer of
+      0: (S, T: SmallInt);
+      1: (st: dstvert_t);
+      2: (longst: LongInt);
+    end;
+  PSpriteTris = ^TSpriteTris;
+  TSpriteTris = packed array[0..2] of TSpriteVertex;
+  
   QSprite = class(Q3DObject)
   public
     class function TypeInfo: String; override;
@@ -48,7 +62,7 @@ type
     procedure BuildRefList(L: TQList); virtual;
     procedure ChercheExtremites(var Min, Max: TVect); override;
     procedure GetVertices(var p: vec3_p);
-    function Triangles(var P: PComponentTris) : Integer;
+    function Triangles(var P: PSpriteTris) : Integer;
   end;
 
 implementation
@@ -88,14 +102,14 @@ begin
     FParent.Acces;
 end;
 
-function QSprite.Triangles(var P: PComponentTris) : Integer;
+function QSprite.Triangles(var P: PSpriteTris) : Integer;
 var
-  p_o: PComponentTris;
+  p_o: PSpriteTris;
   size: tpoint;
 begin
   size:=Skin0.getsize;
-  getmem(p_o, sizeof(TComponentTris)*2);
-  fillchar(p_o^, sizeof(TComponentTris)*2, #0);
+  getmem(p_o, sizeof(TSpriteTris)*2);
+  fillchar(p_o^, sizeof(TSpriteTris)*2, #0);
   p:=p_o;
   p_o^[0].VertexNo:=0; P^[0].S:=0; P^[0].T:=0;
   p_o^[1].VertexNo:=1; P^[1].S:=size.x; P^[1].T:=0;

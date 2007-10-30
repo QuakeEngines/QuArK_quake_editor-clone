@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.48  2007/04/12 15:28:11  danielpharos
 Minor clean up.
 
@@ -376,7 +379,8 @@ implementation
 uses Setup, QkMapPoly, Undo, FormCfg,
      Game, QkMacro, Quarkx, PyMath,
      PyMapView, PyObjects, QkImages, Bezier,
-     EdSceneObject, QkObjectClassList, QKmd3, QKModelFile, QkModelRoot;
+     EdSceneObject, QkObjectClassList, QkMd3,
+     QkModelFile, QkModelRoot, QkModelVertex;
 
  {------------------------}
 
@@ -1747,19 +1751,17 @@ var
  Q, FileObj1: QObject;
  Mdl: QModel;
  Frame1: QFrame;
- Skin1: QImage;
- Root: QMdlObject;
+ Root: QModelRoot;
  Component: QComponent;
- L: TQList;
+ L, TriangleList, VertexList: TQList;
  Model: PModel3DInfo;
  VSrc: vec3_p;
  VDest: vec3_p;
- I, K, Count: Integer;
+ I, K, VertexCount: Integer;
  ModelOrg: vec3_t;
  RotVec: vec3_t;
- SkinDescr: String;
  spec,comp_name: string;
- c: QComponent;
+ comp: QComponent;
  AnglesDefined:bool;
  mRotationMatrix:TMatrixTransformation;
 begin
@@ -1779,7 +1781,8 @@ begin
    MdlPath:=Q.Specifics.Values['mdl'];
    if MdlPath='' then
      Exit;
-   if (MdlPath[1]='[') and (MdlPath[length(mdlpath)]=']') then begin // uses model specified in entity (ie like in misc_model)
+   if (MdlPath[1]='[') and (MdlPath[length(mdlpath)]=']') then // uses model specified in entity (ie like in misc_model)
+   begin
      spec:=copy(mdlpath, 2, length(mdlpath)-2);
      mdlpath:=Specifics.Values[spec];
    end;
@@ -1789,7 +1792,7 @@ begin
    if (mdlpath[1]='/') or (mdlpath[1]='\') then
      mdlpath:=copy(mdlpath, 2, length(mdlpath)-1);
 
-   { loads mdl }
+   // loads model
    MdlBase:=Q.Specifics.Values['mdlbase'];
    if MdlBase='' then
      FileObj1:=NeedGameFile(MdlPath, '')
@@ -1801,11 +1804,12 @@ begin
    Mdl:=QModel(FileObj1);
    Mdl.Acces;
 
+   // Set the default frame, if set in config
    S:=Q.Specifics.Values['mdlframe'];
    if S<>'' then
-     QModelFile(Mdl).getRoot.setFramesByName(S)
+     QModelFile(Mdl).getRoot.SetAllFramesByName(S)
    else
-     QModelFile(Mdl).getRoot.setFrames(Round(Q.GetFloatSpec('mdlframe', 0)));
+     QModelFile(Mdl).getRoot.SetAllFrames(Round(Q.GetFloatSpec('mdlframe', 0)));
 
    // Check for auto-tag linking for .md3 files and derivatives (Doom3 ?? STVEF ??)
    if Q.Specifics.Values['md3_autolink']='1' then // auto link tags to models
@@ -1817,14 +1821,14 @@ begin
      if Q.Specifics.Names[i][1]=':' then  // text after a ':' is component name (for setting the frame number)
      begin
        comp_name:=Copy(Q.Specifics.Names[i], 2, length(Q.Specifics[i])-2);
-       c:=QComponent(mdl.findsubobject(comp_name, QComponent, QModelRoot));
-       if c=nil then
+       comp:=QComponent(mdl.findsubobject(comp_name, QComponent, QModelRoot));
+       if comp=nil then
          continue; // not found
        S:=Q.Specifics.Values[Q.Specifics.Names[i]];
        if S<>'' then
-         c.CurrentFrame:=c.GetFrameFromName(S)
+         comp.CurrentFrame:=comp.GetFrameFromName(S)
        else
-         c.CurrentFrame:=c.GetFrameFromIndex(Round(Q.GetFloatSpec(Q.Specifics.Names[i], 0)));
+         comp.CurrentFrame:=Round(Q.GetFloatSpec(Q.Specifics.Names[i], 0));
      end;
    end;
 
@@ -1832,14 +1836,13 @@ begin
    if Root=Nil then
      Exit;
 
-   { prepare positionning }
+   // prepare positioning
    with Origin do
    begin
      ModelOrg[0]:=X;
      ModelOrg[1]:=Y;
      ModelOrg[2]:=Z;
    end;
-
 
    AnglesDefined:=false;
    rotvec[0]:=0;
@@ -1864,110 +1867,85 @@ begin
      mRotationMatrix:=RotMatrixZ(rotvec[0],mRotationMatrix);
    end;
 
-
-   { list components }
-   L:=TQList.Create;
+   // list components
+   L := Root.BuildComponentList;
    try
-     Root.BuildRefList(L);
-
      for I:=0 to L.Count-1 do
      begin
-       { find frame & skin }
+       // find frame & skin
        Component:=QComponent(L[I]);
-       Frame1:=Component.CurrentFrame;
+       Frame1:=Component.GetCurrentFrameObject;
        if Frame1=nil then
          continue;
 {       S:=Q.Specifics.Values['mdlframe'];
        if S<>'' then
          Frame1:=Component.GetFrameFromName(S)
        else
-         Frame1:=Component.GetFrameFromIndex(Round(Q.GetFloatSpec('mdlframe', 0)));}
+         Frame1:=Component.GetFrameFromIndex(Round(Q.GetFloatSpec('mdlframe', 0)));
        if Frame1=Nil then
-         Continue;
+         Continue;}
 
-       S:=Q.Specifics.Values['mdlskin'];
-       if S<>'' then
-         Skin1:=Component.GetSkinFromName(S)
-       else
-         Skin1:=Component.GetSkinFromIndex(Round(Q.GetFloatSpec('mdlskin', 0)));
-
-       if (Skin1=Nil) and (S<>'') and ModeJeuQuake2 then
-       begin
-         { load skin from external file }
-         if MdlBase='' then
-         begin
-           FileObj1:=NeedGameFile(S, '');
-           SkinDescr:=S;
-         end
-         else
-         begin
-           FileObj1:=NeedGameFileBase(MdlBase, S, '');
-           SkinDescr:=MdlBase+':'+S;
-         end;
-         if FileObj1 is QImage then
-           Skin1:=QImage(FileObj1);
-       end
-       else
-       begin
-         if Skin1=Nil then
-           SkinDescr:='*'
-         else
-           SkinDescr:=Format('%s:%s:%s', [MdlBase, MdlPath, Skin1.Name]);
-       end;
-
-       Count:=Frame1.GetVertices(VSrc);
-       GetMem(Model, SizeOf(TModel3DInfo)+Count*SizeOf(vec3_t));
+       VertexList:=Frame1.BuildVertexList;
        try
-         Model^.VertexCount:=Count;
-         Model^.ModelRendermode:=0;
-         PChar(VDest):=PChar(Model)+SizeOf(TModel3DInfo);
-         Model^.Vertices:=VDest;
-         if not AnglesDefined then
-         begin
-           for K:=0 to Count-1 do
-           begin
-            VDest^:=VecAdd(VSrc^,ModelOrg);
-            Inc(VSrc);
-            Inc(VDest);
-           end;
-         end
-         else
-         begin
-           for K:=0 to Count-1 do
-           begin
-             VDest^:=VecAdd(VectByMatrix(mRotationMatrix,VSrc^), ModelOrg);
-             Inc(VSrc);
-             Inc(VDest);
-           end;
-         end;
-
-         { find alpha }
-         Model^.ModelAlpha:=255;
-         S:=Q.Specifics.Values['mdlopacity'];
+         VertexCount:=VertexList.Count;
+         GetMem(Model, SizeOf(TModel3DInfo)+VertexCount*SizeOf(vec3_t));
          try
-           if S<>'' then
-             Model^.ModelAlpha:=Round(255*StrToFloat(S));
-         finally;
-         end;
+           //@Must include tagging here!
+           TriangleList:=Component.BuildTriangleList;
+           try
+             Model^.TriangleCount:=TriangleList.Count;
+           finally
+             TriangleList.Free;
+           end;
+           Model^.VertexCount:=VertexCount;
+           PChar(VDest):=PChar(Model)+SizeOf(TModel3DInfo);
+           Model^.Vertices:=VDest;
+           if not AnglesDefined then
+           begin
+             for K:=0 to VertexCount-1 do
+             begin
+               QModelVertex(VertexList.Items1[K]).GetPosition(VSrc);
+               VDest^:=VecAdd(VSrc^,ModelOrg);
+               Inc(VDest);
+             end;
+           end
+           else
+           begin
+             for K:=0 to VertexCount-1 do
+             begin
+               QModelVertex(VertexList.Items1[K]).GetPosition(VSrc);
+               VDest^:=VecAdd(VectByMatrix(mRotationMatrix,VSrc^), ModelOrg);
+               Inc(VDest);
+             end;
+           end;
 
-         { find mode }
-         S:=Q.Specifics.Values['mdlrendermode'];
-         try
-           if S<>'' then
-             Model^.ModelRenderMode:=StrToInt(S);
-         finally;
-         end;
+           // find alpha
+           Model^.ModelAlpha:=255;
+           try
+             S:=Q.Specifics.Values['mdlopacity'];
+             if S<>'' then
+               Model^.ModelAlpha:=StrToInt(S);
+           except
+             Model^.ModelAlpha:=255;
+           end;
 
-// tbd this is bogus because mdlopacity is read from ONLY from config file and
-// binary speficics are not possible there
-//         Model^.ModelAlpha:=Round(255*Q.GetFloatSpec('mdlopacity', 1));
-       except
-         FreeMem(Model);
-         Raise;
+           // find mode
+           Model^.ModelRendermode:=0;
+           try
+             S:=Q.Specifics.Values['mdlrendermode'];
+             if S<>'' then
+               Model^.ModelRendermode:=StrToInt(S);
+           except
+             Model^.ModelRendermode:=0;
+           end;
+         except
+           FreeMem(Model);
+           Raise;
+         end;
+       finally
+         VertexList.Free;
        end;
 
-       Model^.Base:=Component.QuickSetSkin(Skin1, SkinDescr);
-       Model^.StaticSkin:=True;
        CurrentMapView.Scene.AddModel(Model);
        Result:=True;
      end;

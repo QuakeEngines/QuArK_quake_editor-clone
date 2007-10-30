@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/09/10 10:24:17  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
 Revision 1.26  2007/07/20 01:31:10  cdunde
 To setup selected model mesh faces so they will draw correctly in all views.
 
@@ -107,65 +110,64 @@ interface
 
 uses Windows, SysUtils, Classes, QkObjects, Qk3D, QkForm, Graphics,
      QkImages, qmath, QkTextures, PyMath, Python, dialogs, QkMdlObject,
-     QkFrame, QkFrameGroup, QkSkinGroup, QkBoneGroup, QkSkinDrawObject,
-     qmatrices;
-
-const
-  MDL_GROUP_FRAME = 1;
-  MDL_GROUP_SKIN  = 2;
-  MDL_GROUP_BONE  = 5;
+     QkFrame, QkModelTriangle, QkSkinDrawObject, qmatrices, QkSkin,
+     QkModelBone;
 
 type
-  TBoneVertexLink = packed record
-    BoneName: String;
-    VertexIndex: Integer;
-    Offset: vec3_t;
-  end;
-  PBoneVertexLink = ^TBoneVertexLink;
   QComponent = class(QMdlObject)
   private
-    FCurrentFrameObj: QFrame;
-    FCurrentSkin: QImage;
-    FSelTris: PyObject;    { List of integers }
+    FCurrentFrame: Integer;
+    FCurrentSkin: Integer;
     FInfo: PyObject;
-    FSkinCounter: Integer;
-    procedure SetCurrentSkin(nSkin: QImage);
-    procedure SetCurrentFrame(nFrame: QFrame);
+    VertexRefCount: array of Integer;
   protected
     procedure CouleurDessin(var C: TColor);
   public
+    constructor Create(const nName: String; nParent: QObject);
     class function TypeInfo: String; override;
     function IsAllowedParent(Parent: QObject) : Boolean; override;
     procedure ObjectState(var E: TEtatObjet); override;
     destructor Destroy; override;
-    function Triangles(var P: PComponentTris) : Integer;
-    function VertexLinks(var P: PBoneVertexLink) : Integer;
-    function GetSkinDescr(Static: Boolean) : String;
-    property CurrentSkin : QImage read FCurrentSkin write SetCurrentSkin;
-    property CurrentFrame : QFrame read FCurrentFrameObj write SetCurrentFrame;
-    procedure AddTo3DScene; override;
-    procedure BuildRefList(L: TQList); override;
-    function GetFrameFromIndex(N: Integer) : QFrame;
-    function GetFrameFromName(const nName: String) : QFrame;
-    function GetSkinFromIndex(N: Integer): QImage;
-    function GetSkinFromName(const nName: String) : QImage;
-    function BuildFrameList : TQList;
-    function BuildSkinList : TQList;
-    function QuickSetSkin(nSkin: QImage; const StaticBase: String) : QComponent;
-    procedure ChercheExtremites(var Min, Max: TVect); override;
-    function MergeVertices(Frames: TQList) : Boolean;
-    procedure Dessiner; override;
     function PyGetAttr(attr: PChar) : PyObject; override;
     function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
+    function FrameGroup: QFrameGroup;
+    function SkinGroup: QSkinGroup;
+    function BoneGroup: QBoneGroup;
+    function TriangleGroup: QTriangleGroup;
+    function SDO: QSkinDrawObject;
+    function CreateFrameGroup: QFrameGroup;
+    function CreateSkinGroup: QSkinGroup;
+    function CreateBoneGroup: QBoneGroup;
+    function CreateTriangleGroup: QTriangleGroup;
+    function CreateSDO: QSkinDrawObject;
+
+    procedure SetCurrentSkin(NewSkin: Integer);
+    property CurrentSkin: Integer read FCurrentSkin write SetCurrentSkin;
+    function GetCurrentSkinObject: QSkin;
+    procedure SetCurrentFrame(NewFrame: Integer);
+    property CurrentFrame: Integer read FCurrentFrame write SetCurrentFrame;
+    function GetCurrentFrameObject: QFrame;
+
+
+    function AddTriangle(Vertices : array of Integer) : Integer;
+
+    procedure RemoveTriangle(N: Integer);
+
+    procedure DeleteUnrefVertices;  
+
+    procedure AddTo3DScene; override;
+    function GetIndexFromFrame(FindFrame: QFrame): Integer;
+    function GetFrameFromIndex(N: Integer) : QFrame;
+    function GetFrameFromName(const nName: String) : Integer;
+    function GetSkinFromIndex(N: Integer): QSkin;
+    function GetSkinFromName(const nName: String) : QSkin;
+    function BuildTriangleList : TQList;
+    function BuildFrameList : TQList;
+    function BuildSkinList : TQList;
+    function BuildBoneList : TQList;
+    procedure ChercheExtremites(var Min, Max: TVect); override;
+    procedure Dessiner; override;
     procedure AnalyseClic(Liste: PyObject); override;
-    Function FrameGroup: QFrameGroup;
-    Function SkinGroup: QSkinGroup;
-    Function BoneGroup: QBoneGroup;
-    Function CreateBoneGroup: QBoneGroup;
-    Function CreateSkinGroup: QSkinGroup;
-    Function CreateFrameGroup: QFrameGroup;
-    Function CreateSDO: QSkinDrawObject;
-    Function SDO: QSkinDrawObject;
     procedure SetParentFrames(nFrame: QFrame);
     Function FindRoot: QObject;
     function GetOriginOfComponent(mode: Integer): TVect;
@@ -175,33 +177,34 @@ type
 implementation
 
 uses PyMapView, quarkx, travail, pyobjects, QkModelRoot,
-     EdSceneObject, QkObjectClassList, logging, QkModelBone,
-     QkMiscGroup;
+     EdSceneObject, QkObjectClassList, logging,
+     QkMiscGroup, QkModel, QkModelVertex;
 
-var
-  GlobalSkinCounter: Integer;
+{------------------------}
 
 function qAddFrame(self, args: PyObject) : PyObject; cdecl;
 var
   fg: QFrameGroup;
   f: QFrame;
+  frameNR: Integer;
 begin
   try
+    result:=nil;
+    if not PyArg_ParseTupleX(args, 'i', [@frameNR]) then
+      exit;
     with QkObjFromPyObj(self) as QComponent do begin
       fg:=FrameGroup;
-      if CurrentFrame<>nil then
-        f:=QFrame(CurrentFrame.Clone(fg, true))
-      else begin
+      if frameNR>-1 then
+        f:=QFrame(GetFrameFromIndex(frameNR).Clone(fg, true))
+      else
         f:=QFrame.Create('new frame', fg);
-        f.specificsadd(FloatSpecNameOf('Vertices='));
-      end;
       fg.subelements.add(f);
 
-//      CurrentFrame.SelUnique:=False;
-      CurrentFrame:=f;
-      CurrentFrame.Flags := CurrentFrame.Flags or ofTreeViewSubElement;
-//      CurrentFrame.SelUnique:=True;
-      Result:=GetPyObj(CurrentFrame);
+//      f.SelUnique:=False;
+      CurrentFrame:=GetFrameFromName(f.name);
+      f.Flags := f.Flags or ofTreeViewSubElement;
+//      f.SelUnique:=True;
+      Result:=GetPyObj(f);
     end;
   except
     EBackToPython;
@@ -210,63 +213,15 @@ begin
 end;
 
 function qRemoveTriangle(self, args: PyObject) : PyObject; cdecl;
-const
-  Spec1 = 'Tris';
-  BaseSize = Length('Tris=');
 var
-  index, cnt, i, j: Integer;
-  tris, tris2, dest: PComponentTris;
-  S: String;
-  f1, f2, f3: boolean;
-  v1,v2,v3: Integer;
+  i: Integer;
 begin
   try
     result:=nil;
-    if not PyArg_ParseTupleX(args, 'iii', [@v1, @v2,@v3]) then
+    if not PyArg_ParseTupleX(args, 'iii', [@i]) then
       exit;
-    with QkObjFromPyObj(self) as QComponent do begin
-      cnt:=Triangles(tris2);
-      tris:=tris2;
-      // Find number of triangles not containing vertex 'index'
-      index:=-1;
-      for i:=1 to cnt do begin
-        f1:=(tris^[0].vertexno=v1)or(tris^[0].vertexno=v2)or(tris^[0].vertexno=v3);
-        f2:=(tris^[1].vertexno=v1)or(tris^[1].vertexno=v2)or(tris^[1].vertexno=v3);
-        f3:=(tris^[2].vertexno=v1)or(tris^[2].vertexno=v2)or(tris^[2].vertexno=v3);
-        if f1 and f2 and f3 then begin  // v1, v2 & v3 can be in any order!
-          index:=i;
-          break;
-        end;
-        inc(tris);
-      end;
-      if index=-1 then
-        exit;
-      S:=Spec1+'=';
-      // Recompute size of specific.
-      SetLength(S, BaseSize+SizeOf(TComponentTris)*(cnt-1));
-      PChar(Dest):=PChar(S)+BaseSize;
-
-      // Recreate triangles array specific.
-      tris:=tris2;
-      for i:=1 to cnt do begin
-        if i<>index then begin
-          for j:=0 to 2 do begin
-//            if not (tris^[j].vertexno = index) then begin
-            with Dest^[j] do begin
-              VertexNo:= tris^[j].VertexNo;
-              S       := tris^[j].S;
-              T       := tris^[j].T;
-            end;
-//            end;
-          end;
-          Inc(Dest);
-        end;
-        inc(tris);
-      end;
-      Specifics.Delete(Specifics.IndexofName(Spec1));
-      Specifics.Add(S);
-
-    end;
+    with QkObjFromPyObj(self) as QComponent do
+      RemoveTriangle(i);
     Result:=PyNoResult;
   except
     EBackToPython;
@@ -286,52 +241,6 @@ begin
       IntSpec['show']:=index;
     end;
     Result:=PyNoResult;
-  except
-    EBackToPython;
-    Result:=Nil;
-  end;
-end;
-
-function qSetFrame(self, args: PyObject) : PyObject; cdecl;
-var
-  u: PyObject;
-  Q: QObject;
-begin
-  try
-    Result:=Nil;
-    if not PyArg_ParseTupleX(args, 'O', [@u]) then
-      Exit;
-    Q:=QkObjFromPyObj(u);
-    if not (Q is QFrame) then
-      Q:=Nil;
-    with QkObjFromPyObj(self) as QComponent do
-      SetCurrentFrame(QFrame(Q));
-    Result:=PyNoResult;
-  except
-    EBackToPython;
-    Result:=Nil;
-  end;
-end;
-
-function qMergeVertices(self, args: PyObject) : PyObject; cdecl;
-var
-  lst: PyObject;
-  Q: TQList;
-begin
-  try
-    Result:=Nil;
-    if not PyArg_ParseTupleX(args, 'O!', [PyList_Type, @lst]) then
-      Exit;
-    Q:=TQList.Create;
-    try
-      PyListToQList(lst, Q, QFrame);
-      with QkObjFromPyObj(self) as QComponent do begin
-        LoadAll;
-        Result:=PyInt_FromLong(Ord(MergeVertices(Q)));
-      end;
-    finally
-      Q.Free;
-    end;
   except
     EBackToPython;
     Result:=Nil;
@@ -359,14 +268,30 @@ begin
 end;
 
 const
-  MethodTable: array[0..5] of TyMethodDef =
-   ((ml_name: 'setframe';      ml_meth: qSetFrame;      ml_flags: METH_VARARGS),
-    (ml_name: 'mergevertices'; ml_meth: qMergeVertices; ml_flags: METH_VARARGS),
-    (ml_name: 'showhide';      ml_meth: qShowHideComp;  ml_flags: METH_VARARGS),
+  MethodTable: array[0..3] of TyMethodDef =
+   ((ml_name: 'showhide';      ml_meth: qShowHideComp;  ml_flags: METH_VARARGS),
 //    (ml_name: 'removevertex';  ml_meth: qRemoveVertex;  ml_flags: METH_VARARGS), now done in py code
     (ml_name: 'removetriangle';ml_meth: qRemoveTriangle;ml_flags: METH_VARARGS),
     (ml_name: 'addframe';      ml_meth: qAddFrame;      ml_flags: METH_VARARGS),
     (ml_name: 'setparentframes';ml_meth: qSetParentFrames; ml_flags: METH_VARARGS));
+
+{------------------------}
+
+constructor QComponent.Create(const nName: String; nParent: QObject);
+begin
+  inherited;
+  CreateSkinGroup;
+  CreateFrameGroup;
+  CreateBoneGroup;
+  CreateSDO;
+  CurrentFrame:=-1;
+  CurrentSkin:=-1;
+end;
+
+class function QComponent.TypeInfo;
+begin
+  TypeInfo:=':mc';
+end;
 
 function QComponent.IsAllowedParent(Parent: QObject) : Boolean;
 begin
@@ -374,6 +299,12 @@ begin
     Result:=true
   else
     Result:=false;
+end;
+
+destructor QComponent.Destroy;
+begin
+  Py_XDECREF(FInfo);
+  inherited;
 end;
 
 function QComponent.FindRoot: QObject;
@@ -392,140 +323,89 @@ begin
   E.IndexImage:=iiComponent;
 end;
 
-function QComponent.GetSkinDescr(Static: Boolean) : String;
-begin
-  if Static then
-    Result:=':'+Specifics.Values['ssd']
-  else
-    Result:=':'+IntToHex(FSkinCounter, 8);
-end;
-
-procedure QComponent.SetCurrentFrame(nFrame: QFrame);
-begin
-  FCurrentFrameObj.AddRef(-1);
-  FCurrentFrameObj:=nFrame;
-  FCurrentFrameObj.AddRef(+1);
-end;
-
 procedure QComponent.SetParentFrames(nFrame: QFrame);
 var
   index: Integer;
 begin
   index:=FrameGroup.SubElements.IndexOf(nframe);
-  QModelRoot(FindRoot).SetFrames(index);
+  QModelRoot(FindRoot).SetAllFrames(index);
 end;
 
-procedure QComponent.SetCurrentSkin(nSkin: QImage);
-begin
-  FCurrentSkin.AddRef(-1);
-  FCurrentSkin:=nSkin;
-  if nSkin<>Nil then
-  begin
-    nSkin.AddRef(+1);
-    FSkinCounter:=GlobalSkinCounter;
-    // DanielPharos: GlobalSkinCounter never decreases. Eventually, we're going to overflow!
-    Inc(GlobalSkinCounter);
-  end;
-end;
-
-destructor QComponent.Destroy;
-begin
-  Py_XDECREF(FInfo);
-  FCurrentSkin.AddRef(-1);
-  FCurrentFrameObj.AddRef(-1);
-  {FreeMem(FCurrentFrame);}
-  Py_XDECREF(FSelTris);
-  {Py_XDECREF(FColor);}
-  inherited;
-end;
-
-function QComponent.Triangles(var P: PComponentTris) : Integer;
-const
-  Spec1 = 'Tris';
+procedure QComponent.SetCurrentSkin(NewSkin: Integer);
 var
-  S: String;
+  SkinList: TQList;
 begin
-  if IntSpec['show']=0 then begin
-    result:=0;
-    exit;
+  SkinList:=TQList.Create;
+  try
+    FindAllSubObjects('', QSkin, Nil, SkinList);
+    if NewSkin < 0 then
+      NewSkin := 0;
+    if NewSkin > SkinList.Count-1 then
+      NewSkin := SkinList.Count-1;
+  finally
+    SkinList.Free;
   end;
-  S:=GetSpecArg(Spec1);
-  PChar(P):=PChar(S)+(Length(Spec1)+1);
-  Result:=(Length(S)-(Length(Spec1)+1)) div SizeOf(TComponentTris);
+  FCurrentSkin := NewSkin;
 end;
 
-function QComponent.VertexLinks(var P: PBoneVertexLink) : Integer;
-const
-  Spec1 = 'VertexLinks';
+function QComponent.GetCurrentSkinObject: QSkin;
 var
-  S: String;
+  SkinList: TQList;
 begin
-  S:=GetSpecArg(Spec1);
-  PChar(P):=PChar(S)+(Length(Spec1)+1);
-  Result:=(Length(S)-(Length(Spec1)+1)) div SizeOf(TBoneVertexLink);
+  Result:=nil;
+  if FCurrentSkin=-1 then
+    Exit;
+  SkinList:=BuildSkinList;
+  try
+    Result:=QSkin(SkinList.Items1[FCurrentSkin]);
+  finally
+    SkinList.Free;
+  end;
 end;
 
 procedure QComponent.AddTo3DScene;
 var
   Info: PModel3DInfo;
+  TriangleList, VertexList: TQList;
 begin
-  if CurrentFrame=Nil then
-  begin
-    SetCurrentFrame(GetFrameFromIndex(0));
-    if CurrentFrame=Nil then
-      Exit;
-  end;
-  if CurrentSkin=Nil then
-    CurrentSkin:=GetSkinFromIndex(0);
+  if FCurrentFrame<0 then
+    Exit;
+  if FCurrentSkin<0 then
+    Exit;
+    //@ Default to no skin!
   New(Info);
   FillChar(Info^, SizeOf(TModel3DInfo), 0);
   Info^.Base:=Self;
   Info^.ModelAlpha:=255;
-  Info^.VertexCount:=FCurrentFrameObj.GetVertices(Info^.Vertices);
+  TriangleList:=BuildTriangleList;
+  try
+    Info^.TriangleCount:=TriangleList.Count;
+  finally
+    TriangleList.Free;
+  end;
+  VertexList:=GetCurrentFrameObject.BuildVertexList;
+  try
+    Info^.VertexCount:=VertexList.Count;
+  finally
+    VertexList.Free;
+  end;
   AddRef(+1);
   CurrentMapView.Scene.AddModel(Info);
 end;
 
-procedure QComponent.BuildRefList(L: TQList);
-begin
-  L.Add(Self);
-end;
-
-class function QComponent.TypeInfo;
-begin
-  TypeInfo:=':mc';
-end;
-
 procedure QComponent.ChercheExtremites(var Min, Max: TVect);
 begin
-  if FCurrentFrameObj=Nil then
+  if FCurrentFrame<0 then
     inherited
   else
-    FCurrentFrameObj.ChercheExtremites(Min, Max);
+    GetCurrentFrameObject.ChercheExtremites(Min, Max);
 end;
 
-function QComponent.QuickSetSkin(nSkin: QImage; const StaticBase: String) : QComponent;
-begin
-  if nSkin = FCurrentSkin then
-    Result:=Self
-  else
-    if FCurrentSkin = Nil then begin
-      CurrentSkin:=nSkin;
-      Result:=Self;
-    end else begin
-      Result:=QComponent.Create('', Nil);
-      Result.Specifics.Add(GetSpecArg('Tris'));
-      Result.CurrentSkin:=nSkin;
-    end;
-  Result.Specifics.Values['ssd']:=StaticBase;
-  Result.AddRef(+1);
-end;
-
-function QComponent.BuildSkinList : TQList;
+function QComponent.BuildTriangleList : TQList;
 begin
   Result:=TQList.Create;
   try
-    FindAllSubObjects('', QImage, Nil, Result);
+    FindAllSubObjects('', QModelTriangle, Nil, Result);
   except
     Result.Free;
     Raise;
@@ -543,176 +423,254 @@ begin
   end;
 end;
 
-function QComponent.GetFrameFromName(const nName: String) : QFrame;
+function QComponent.BuildSkinList : TQList;
 begin
-  Result:=FindSubObject(nName, QFrame, Nil) as QFrame;
+  Result:=TQList.Create;
+  try
+    FindAllSubObjects('', QImage, Nil, Result);
+  except
+    Result.Free;
+    Raise;
+  end;
+end;
+
+function QComponent.BuildBoneList : TQList;
+begin
+  Result:=TQList.Create;
+  try
+    FindAllSubObjects('', QModelBone, Nil, Result);
+  except
+    Result.Free;
+    Raise;
+  end;
+end;
+
+procedure QComponent.SetCurrentFrame(NewFrame: Integer);
+var
+  FrameList: TQList;
+begin
+  FrameList:=TQList.Create;
+  try
+    FindAllSubObjects('', QFrame, Nil, FrameList);
+    if NewFrame<0 then
+      NewFrame:=0;
+    if NewFrame > FrameList.Count-1 then
+      NewFrame := FrameList.Count-1;
+  finally
+    FrameList.Free;
+  end;
+  FCurrentFrame:=NewFrame;
+end;
+
+function QComponent.GetCurrentFrameObject: QFrame;
+var
+  FrameList: TQList;
+begin
+  Result:=nil;
+  if FCurrentFrame=-1 then
+    Exit;
+  FrameList:=BuildFrameList;
+  try
+    Result:=QFrame(FrameList.Items1[FCurrentFrame]);
+  finally
+    FrameList.Free;
+  end;
+end;
+
+function QComponent.GetIndexFromFrame(FindFrame: QFrame): Integer;
+var
+  FrameList: TQList;
+  I: Integer;
+begin
+  if FindFrame=nil then
+  begin
+    Result:=-1;
+    Exit;
+  end;
+  FrameList:=TQList.Create;
+  try
+    FindAllSubObjects('', QFrame, Nil, FrameList);
+    for I:=0 to FrameList.Count-1 do
+      if (FrameList[I] as QFrame) = FindFrame then
+      begin
+        Result:=I;
+        Exit;
+      end;
+    Result:=-1;
+  finally
+    FrameList.Free;
+  end;
+end;
+
+function QComponent.GetFrameFromName(const nName: String) : Integer;
+var
+  Frame: QFrame;
+begin
+  Frame:=FindSubObject(nName, QFrame, Nil) as QFrame;
+  Result:=GetIndexFromFrame(Frame);
 end;
 
 function QComponent.GetFrameFromIndex(N: Integer) : QFrame;
 var
-  L: TQList;
+  FrameList: TQList;
 begin
   if N<0 then
   begin
     Result:=Nil;
     Exit;
   end;
-  L:=TQList.Create; try
-  FindAllSubObjects('', QFrame, Nil, L);
-  if N>=L.Count then
-    Result:=Nil
-  else
-    Result:=L[N] as QFrame;
-  finally
-    L.Clear;
-    L.Free;
-  end;
-end;
-
-function QComponent.GetSkinFromName(const nName: String) : QImage;
-begin
-  Result:=QImage(FindSubObject(nName, QImage, Nil));
-end;
-
-function QComponent.GetSkinFromIndex(N: Integer) : QImage;
-var
-  L: TQList;
-begin
-  if N<0 then
-  begin
-    Result:=Nil;
-    Exit;
-  end;
-  L:=TQList.Create;
+  FrameList:=TQList.Create;
   try
-    FindAllSubObjects('', QImage, Nil, L);
-    if N>=L.Count then
+    FindAllSubObjects('', QFrame, Nil, FrameList);
+    if N>=FrameList.Count then
       Result:=Nil
     else
-      Result:=L[N] as QImage;
+      Result:=FrameList[N] as QFrame;
   finally
-    L.Clear;
-    L.Free;
+    FrameList.Free;
   end;
 end;
 
-function QComponent.MergeVertices(Frames: TQList) : Boolean;
-const
-  Spec1 = 'Tris';
-  Spec2 = 'Vertices';
-type
-  TVertexMap = array[0..99] of Integer;
-var
-  Bits: TBits;
-  I, J, B: Integer;
-  CVert, CVertJ, CVertK: vec3_p;
-  VertexCount, nVertexCount, Target: Integer;
-  VertexMap: ^TVertexMap;
-  S: String;
-  CTris: PComponentTris;
-  FrSourcePts: vec3_p;
-  FrameObj: QFrame;
+function QComponent.GetSkinFromName(const nName: String) : QSkin;
 begin
-  Result:=False;
-  VertexCount:=-1;
-  for I:=0 to Frames.Count-1 do begin
-    J:=(Frames[I] as QFrame).GetVertices(CVert);
-    if VertexCount=-1 then
-      VertexCount:=J
-    else
-      if VertexCount<>J then
-        Raise EErrorFmt(2433, ['VertexCount']);
+  Result:=QSkin(FindSubObject(nName, QSkin, Nil));
+end;
+
+function QComponent.GetSkinFromIndex(N: Integer) : QSkin;
+var
+  SkinList: TQList;
+begin
+  if N<0 then
+  begin
+    Result:=Nil;
+    Exit;
   end;
-  if VertexCount<=0 then
-    Exit;  { no frames or no vertices }
-  ProgressIndicatorStart(503, Frames.Count+3);
+  SkinList:=BuildSkinList;
   try
-    Bits:=TBits.Create;
-    try
-      Bits.Size:=VertexCount*(VertexCount-1) div 2;
-      for I:=0 to Frames.Count-1 do begin
-        B:=0;
-        QFrame(Frames[I]).GetVertices(CVert);
-        CVertJ:=CVert;
-        for J:=2 to VertexCount do begin
-          CVertK:=CVert;
-          Inc(CVertJ);
-          repeat
-            if not Bits[B] then
-              if (Abs(CVertJ^[0] - CVertK^[0]) > rien) or (Abs(CVertJ^[1] - CVertK^[1]) > rien)
-                or (Abs(CVertJ^[2] - CVertK^[2]) > rien) then
-                Bits[B]:=True;
-                Inc(B);
-                Inc(CVertK);
-          until CVertK=CVertJ;
-        end;
-        ProgressIndicatorIncrement;
-      end;
-      GetMem(VertexMap, SizeOf(Integer)*VertexCount);
-      try
-        B:=0;
-        nVertexCount:=0;
-        for I:=0 to VertexCount-1 do begin
-          Target:=-1;
-          for J:=0 to I-1 do begin
-            if not Bits[B] then begin
-              VertexMap^[I]:=VertexMap^[J];
-              Inc(B, I-J);
-              Target:=J;
-              Break;
-            end;
-            Inc(B);
-          end;
-          if Target<0 then begin
-            VertexMap^[I]:=nVertexCount;
-            Inc(nVertexCount);
-          end;
-        end;
-        if nVertexCount = VertexCount then
-          Exit;  { no changes }
-        Bits.Size:=0;
-        ProgressIndicatorIncrement;
-        S:=GetSpecArg(Spec1);
-        UniqueString(S);
-        Specifics.Values[Spec1]:='';
-        Specifics.Add(S);
-        for I:=1 to Triangles(CTris) do begin
-          for J:=0 to 2 do begin
-            if CTris^[J].VertexNo >= VertexCount then
-              Raise EError(5667);
-            CTris^[J].VertexNo:=VertexMap^[CTris^[J].VertexNo];
-          end;
-          Inc(CTris);
-        end;
-        for I:=0 to VertexCount-1 do
-          VertexMap^[VertexMap^[I]]:=I;
-        ProgressIndicatorIncrement;
-        for I:=0 to Frames.Count-1 do begin
-          FrameObj:=QFrame(Frames[I]);
-          FrameObj.GetVertices(CVert);
-          S:=FloatSpecNameOf(Spec2)+'=';
-          SetLength(S, Length(Spec2+'=') + nVertexCount*SizeOf(vec3_t));
-          PChar(FrSourcePts):=PChar(S) + Length(Spec2+'=');
-          for J:=0 to nVertexCount-1 do begin
-            CVertJ:=CVert;
-            Inc(CVertJ, VertexMap^[J]);
-            FrSourcePts^:=CVertJ^;
-            Inc(FrSourcePts);
-          end;
-          FrameObj.Specifics.Values[FloatSpecNameOf(Spec2)]:='';
-          FrameObj.Specifics.Add(S);
-        end;
-        ProgressIndicatorIncrement;
-      finally
-        FreeMem(VertexMap);
-      end;
-    finally
-      Bits.Free;
+    if N>=SkinList.Count then
+      Result:=Nil
+    else
+      Result:=QSkin(SkinList.Items1[N]);
+  finally
+    SkinList.Free;
+  end;
+end;
+
+function QComponent.AddTriangle(Vertices : array of Integer) : Integer;
+var
+  VertCount, TriangleCount: Integer;
+  TriangleList: TQList;
+  OTriangle: QModelTriangle;
+  VerticesDataT: vertex_t;
+  I: Integer;
+begin
+  VertCount:=Length(Vertices);
+
+  TriangleList:=BuildTriangleList;
+  try
+    TriangleCount:=TriangleList.Count;
+  finally
+    TriangleList.Free;
+  end;
+
+  OTriangle:=QModelTriangle.Create('Triangle '+inttostr(TriangleCount), Self);
+  Self.SubElements.Add(OTriangle);
+
+  SetLength(VerticesDataT, VertCount);
+  for I:=0 to VertCount-1 do
+  begin
+    VerticesDataT[I].VertexNo:=Vertices[I];
+    VerticesDataT[I].longst:=0;
+  end;
+  OTriangle.SetVertices(VerticesDataT);
+
+  Result:=TriangleCount;
+end;
+
+procedure QComponent.RemoveTriangle(N: Integer);
+var
+  TriangleList: TQList;
+  VerticesData: vertex_p;
+  VertexCount: Integer;
+  I: Integer;
+  DoVertexDelete: Boolean;
+begin
+  DoVertexDelete := False;
+  TriangleList := BuildTriangleList;
+  try
+    if (N < 0) or (N > TriangleList.Count - 1) then
+      raise exception.create('RemoveTriangle: Invalid triangle number!');
+    VertexCount := QModelTriangle(TriangleList.Items1[N]).GetVertices(VerticesData);
+    for I := 0 to VertexCount - 1 do
+    begin
+      VertexRefCount[VerticesData^[I].VertexNo] := VertexRefCount[VerticesData^[I].VertexNo] - 1;
+      if VertexRefCount[VerticesData^[I].VertexNo] = 0 then
+        DoVertexDelete := True;
     end;
   finally
-    ProgressIndicatorStop;
+    TriangleList.Free;
   end;
-  Result:=True;
+  if DoVertexDelete then
+    DeleteUnrefVertices;
+end;
+
+procedure QComponent.DeleteUnrefVertices;
+var
+  TriangleList, FrameList: TQList;
+  VertexCount, EndVertexCount: Integer;
+  VertexTranslation: array of Integer;
+  OTriangle: QModelTriangle;
+  VerticesData: vertex_p;
+  I, J, K: Integer;
+begin
+  VertexCount := Length(VertexRefCount);
+  SetLength(VertexTranslation, VertexCount);
+  J := 0;
+  for I := 0 to VertexCount - 1 do
+  begin
+    VertexTranslation[I] := J;
+    if VertexRefCount[I] <> 0 then
+      Inc(J);
+  end;
+  EndVertexCount := J;
+  TriangleList := BuildTriangleList;
+  try
+    for I := 0 to TriangleList.Count - 1 do
+    begin
+      OTriangle := QModelTriangle(TriangleList.Items1[I]);
+      VertexCount := OTriangle.GetVertices(VerticesData);
+      for J := 0 to VertexCount - 1 do
+        VerticesData^[J].VertexNo := VertexTranslation[VerticesData^[J].VertexNo];
+      OTriangle.SetVertices(VerticesData^);
+    end;
+  finally
+    TriangleList.Free;
+  end;
+  VertexCount := Length(VertexRefCount);
+  J := EndVertexCount;
+  FrameList := BuildFrameList;
+  try
+    for I := VertexCount - 1 downto 0 do
+    begin
+      if J = VertexRefCount[I] then
+      begin
+        for K := 0 to FrameList.Count - 1 do
+          QFrame(FrameList.Items1[K]).SubElements.Delete(I);
+      end
+      else
+        J := VertexRefCount[I];
+    end;
+  finally
+    FrameList.Free;
+  end;
+  J := 0;
+  for I := 0 to EndVertexCount - 1 do
+  begin
+    while VertexRefCount[I + J] = 0 do   //Should automatically not go out-of-array...
+      Inc(J);
+    VertexRefCount[I] := VertexRefCount[I + J];
+  end;
+  SetLength(VertexRefCount, EndVertexCount - 1);
 end;
 
 procedure QComponent.CouleurDessin;
@@ -730,12 +688,130 @@ begin
   end;
 end;
 
+function QComponent.CreateBoneGroup: QBoneGroup;
+begin
+  Result:=QBoneGroup.Create('Skeleton', Self);
+  Result.IntSpec['type']:=MDL_GROUP_BONE;
+  SubElements.Add(Result);
+end;
+
+function QComponent.CreateSkinGroup: QSkinGroup;
+begin
+  Result:=QSkinGroup.Create('Skins', Self);
+  Result.IntSpec['type']:=MDL_GROUP_SKIN;
+  SubElements.Add(Result);
+end;
+
+function QComponent.CreateFrameGroup: QFrameGroup;
+begin
+  Result:=QFrameGroup.Create('Frames', Self);
+  Result.IntSpec['type']:=MDL_GROUP_FRAME;
+  SubElements.Add(Result);
+end;
+
+function QComponent.CreateTriangleGroup: QTriangleGroup;
+begin
+  Result:=QTriangleGroup.Create('Triangles', Self);
+  Result.IntSpec['type']:=MDL_GROUP_TRIANGLE;
+  SubElements.Add(Result);
+end;
+
+function QComponent.CreateSDO: QSkinDrawObject;
+begin
+  Result:=QSkinDrawObject.Create('SDO', Self);
+  SubElements.Add(result);
+end;
+
+function QComponent.SDO: QSkinDrawObject;
+var
+  i: Integer;
+  x: QObject;
+begin
+  result:=nil;
+  for i:=0 to SubElements.Count-1 do begin
+    x:=SubElements[i];
+    if x is QSkinDrawObject then begin
+      result:=QSkinDrawObject(x);
+      exit;
+    end;
+  end;
+  if result=nil then
+    Result:=CreateSDO;
+end;
+
+function QComponent.BoneGroup: QBoneGroup;
+var
+  i: Integer;
+  x: QObject;
+begin
+  result:=nil;
+  for i:=0 to SubElements.Count-1 do begin
+    x:=SubElements[i];
+    if x is QBoneGroup then begin
+      result:=QBoneGroup(x);
+      exit;
+    end;
+  end;
+  if result=nil then
+    Result:=CreateBoneGroup;
+end;
+
+function QComponent.SkinGroup: QSkinGroup;
+var
+  i: Integer;
+  x: QObject;
+begin
+  result:=nil;
+  for i:=0 to SubElements.Count-1 do begin
+    x:=SubElements[i];
+    if x is QSkinGroup then begin
+      result:=QSkinGroup(x);
+      exit;
+    end;
+  end;
+  if result=nil then
+    Result:=CreateSkinGroup;
+end;
+
+function QComponent.FrameGroup: QFrameGroup;
+var
+  i: Integer;
+  x: QObject;
+begin
+  result:=nil;
+  for i:=0 to SubElements.Count-1 do begin
+    x:=SubElements[i];
+    if x is QFrameGroup then begin
+      result:=QFrameGroup(x);
+      exit;
+    end;
+  end;
+  if result=nil then
+    Result:=CreateFrameGroup;
+end;
+
+function QComponent.TriangleGroup: QTriangleGroup;
+var
+  i: Integer;
+  x: QObject;
+begin
+  result:=nil;
+  for i:=0 to SubElements.Count-1 do begin
+    x:=SubElements[i];
+    if x is QTriangleGroup then begin
+      result:=QTriangleGroup(x);
+      exit;
+    end;
+  end;
+  if result=nil then
+    Result:=CreateTriangleGroup;
+end;
 
 type
   PTriangleInfo = ^TTriangleInfo;
   TTriangleInfo = record
     Vertices: array[0..2] of PPointProj;
-    SourceCTris: PComponentTris;
+    VerticesNo: array[0..2] of Integer;
     OowMin: Single;
   end;
 
@@ -750,109 +826,16 @@ begin
       Result:=0;
 end;
 
-Function QComponent.CreateBoneGroup: QBoneGroup;
-begin
-  Result:=QBoneGroup.Create('Skeleton', Self);
-  Result.IntSpec['type']:=MDL_GROUP_BONE;
-  SubElements.Add(Result);
-end;
-
-Function QComponent.CreateSkinGroup: QSkinGroup;
-begin
-  Result:=QSkinGroup.Create('Skins', Self);
-  Result.IntSpec['type']:=MDL_GROUP_SKIN;
-  SubElements.Add(Result);
-end;
-
-Function QComponent.CreateFrameGroup: QFrameGroup;
-begin
-  Result:=QFrameGroup.Create('Frames', Self);
-  Result.IntSpec['type']:=MDL_GROUP_FRAME;
-  SubElements.Add(Result);
-end;
-
-Function QComponent.CreateSDO: QSkinDrawObject;
-begin
-  Result:=QSkinDrawObject.Create('SDO', Self);
-  SubElements.Add(result);
-end;
-
-Function QComponent.SDO: QSkinDrawObject;
-var
-  i: Integer;
-  x: QObject;
-begin
-  result:=nil;
-  for i:=0 to SubElements.Count-1 do begin
-    x:=SubElements.Items1[i];
-    if x is QSkinDrawObject then begin
-      result:=QSkinDrawObject(x);
-      exit;
-    end;
-  end;
-  if result=nil then
-    Result:=CreateSDO;
-end;
-
-Function QComponent.BoneGroup: QBoneGroup;
-var
-  i: Integer;
-  x: QObject;
-begin
-  result:=nil;
-  for i:=0 to SubElements.Count-1 do begin
-    x:=SubElements.Items1[i];
-    if x is QBoneGroup then begin
-      result:=QBoneGroup(x);
-      exit;
-    end;
-  end;
-  if result=nil then
-    Result:=CreateBoneGroup;
-end;
-
-Function QComponent.SkinGroup: QSkinGroup;
-var
-  i: Integer;
-  x: QObject;
-begin
-  result:=nil;
-  for i:=0 to SubElements.Count-1 do begin
-    x:=SubElements.Items1[i];
-    if x is QSkinGroup then begin
-      result:=QSkinGroup(x);
-      exit;
-    end;
-  end;
-  if result=nil then
-    Result:=CreateSkinGroup;
-end;
-
-Function QComponent.FrameGroup: QFrameGroup;
-var
-  i: Integer;
-  x: QObject;
-begin
-  result:=nil;
-  for i:=0 to SubElements.Count-1 do begin
-    x:=SubElements.Items1[i];
-    if x is QFrameGroup then begin
-      result:=QFrameGroup(x);
-      exit;
-    end;
-  end;
-  if result=nil then
-    Result:=CreateFrameGroup;
-end;
-
 procedure QComponent.Dessiner;
-type
-  TProjArray = array[0..99] of TPointProj;
 var
-  I, J, K, TrisCount, FillTrisCount: Integer;
+  I, J, FillTrisCount: Integer;
   L: TList;
-  CTris: PComponentTris;
-  ProjPts: ^TProjArray;
+  VertexList, TriangleList: TQList;
+  OFrame: QFrame;
+  OTriangle: QModelTriangle;
+  OVertex: QModelVertex;
+  ProjPts: array of TPointProj;
+  VecP: vec3_p;
   SourceTris, Tris: PTriangleInfo;
   v3p: array[0..2] of vec3_p;
   Pts: array[0..2] of TPointProj;
@@ -861,198 +844,219 @@ var
   CurPenMode, NewPenMode, ScrAnd, ScrAnd0: Integer;
   C1, C2: TColor;
   V1, V2, Normale: TVect;
-  obj: PyObject;
-  patterns: array[Boolean] of PyObject;
   CDC: TCDC;
-  FCurrentFrame: vec3_p;
-  FCurrentFrameCount: Integer;
+  VerticesData: vertex_p;
+  VertexCount, TrisCount: Integer;
   S: String;
   test, total: Single;
   Mode3D: Boolean;
 Label
   PreExit;
 begin
-  if CurrentFrame=Nil then begin
-    CurrentFrame:=GetFrameFromIndex(0);
-    if CurrentFrame=Nil then
-      Goto PreExit;
-  end;
+  if FCurrentFrame<0 then
+    Goto PreExit;
 
-  FCurrentFrameCount:=FCurrentFrameObj.GetVertices(FCurrentFrame);
-  GetMem(ProjPts, FCurrentFrameCount * SizeOf(TPointProj));
+  OFrame:=GetCurrentFrameObject;
+  VertexList:=OFrame.BuildVertexList;
   try
-    v3p[0]:=FCurrentFrame;
-    for I:=0 to FCurrentFrameCount-1 do begin
-      V1.X:=v3p[0]^[0];
-      V1.Y:=v3p[0]^[1];
-      V1.Z:=v3p[0]^[2];
-      ProjPts^[I]:=CCoord.Proj(V1);
-      CCoord.CheckVisible(ProjPts^[I]);
-      Inc(v3p[0]);
+    VertexCount:=VertexList.Count;
+    SetLength(ProjPts, VertexCount);
+    for I:=0 to VertexCount-1 do
+    begin
+      OVertex:=QModelVertex(VertexList.Items1[I]);
+      OVertex.GetPosition(VecP);
+      V1:=MakeVect(VecP^);
+      ProjPts[I]:=CCoord.Proj(V1);
+      CCoord.CheckVisible(ProjPts[I]);
     end;
     Mode3D:=not CCoord.FlatDisplay;
-    TrisCount:=Triangles(CTris);
-    GetMem(SourceTris, TrisCount * SizeOf(TTriangleInfo));
+    TriangleList:=BuildTriangleList;
     try
-      Tris:=SourceTris;
-      for I:=1 to TrisCount do begin
-        with Tris^ do begin
-          OowMin:=-MaxInt;
-          total:=0;
-          SourceCTris:=CTris;
-          for K:=0 to 2 do begin
-            J:=CTris^[K].VertexNo;
-            if J > FCurrentFrameCount then begin    // ignore the invalid triangle 
-              Dec(TrisCount);
-              Dec(Tris);
-              Break;
-            end;
-            Vertices[K]:=@ProjPts^[J];
-            test:=Vertices[K]^.oow;
-            if Mode3D then
-              test:=-test;
-            total:=total+test;
-            if test > OowMin then
-              OowMin:=test;
-          end;
-          OowMin:=OowMin + total*0.01;
-        end;
-        Inc(Tris);
-        Inc(CTris);
-      end;
-      L:=TList.Create;
+      TrisCount:=TriangleList.Count;
+      GetMem(SourceTris, TrisCount * SizeOf(TTriangleInfo));
       try
-        L.Capacity:=TrisCount;
         Tris:=SourceTris;
-        for I:=1 to TrisCount do begin
-          L.Add(Tris);
+        for I:=0 to TrisCount - 1 do
+        begin
+          OTriangle:=QModelTriangle(TriangleList.Items1[I]);
+          OTriangle.GetVertices(VerticesData);
+          with Tris^ do
+          begin
+            OowMin:=-MaxInt;
+            total:=0;
+            for J:=0 to 2 do
+            begin
+              VerticesNo[J]:=VerticesData^[J].VertexNo;
+              Vertices[J]:=@ProjPts[VerticesNo[J]];
+              test:=Vertices[J]^.oow;
+              if Mode3D then
+                test:=-test;
+              total:=total+test;
+              if test > OowMin then
+                OowMin:=test;
+            end;
+            OowMin:=OowMin + total*0.01;
+          end;
           Inc(Tris);
         end;
-   //     L.Sort(ByOow);   draws all the filltris triangles wrong
-        NewPen:=0;
-        DeletePen:=0;
-        if g_DrawInfo.GreyBrush <> 0 then begin    // if color changes must be made now 
-          if not Odd(SelMult) then begin
-            C1:=clDefault;
-            CouleurDessin(C1);
-            if C1<>clDefault then
-              if C1=clNone then
-                NewPen:=GetStockObject(Null_pen)
-              else begin
-                DeletePen:=CreatePen(ps_Solid, 0, C1);
-                NewPen:=DeletePen;
-              end;
-          end;
-        end;
-        if NewPen<>0 then begin
-          OldPen:=g_DrawInfo.BlackBrush;
-          g_DrawInfo.BlackBrush:=NewPen;
-        end else
-          OldPen:=0;
-        SetupComponentDC(CDC);
-        if g_DrawInfo.SelectedBrush<>0 then begin
-          SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
-          SetROP2(g_DrawInfo.DC, R2_CopyPen);
-          CurPenMode:=0;
-          ScrAnd0:=0;
-        end else begin
-          CurPenMode:=-1;
-          if g_DrawInfo.ModeAff=0 then
-            ScrAnd0:=0
-          else
-            ScrAnd0:=os_Back or os_Far;
-        end;
+        L:=TList.Create;
         try
-          if FSelTris=Nil then
-            FillTrisCount:=0
+          L.Capacity:=TrisCount;
+          Tris:=SourceTris;
+          for I:=1 to TrisCount do
+          begin
+            L.Add(Tris);
+            Inc(Tris);
+          end;
+          L.Sort(ByOow);
+          NewPen:=0;
+          DeletePen:=0;
+          if g_DrawInfo.GreyBrush <> 0 then
+          begin    // if color changes must be made now
+            if not Odd(SelMult) then
+            begin
+              C1:=clDefault;
+              CouleurDessin(C1);
+              if C1<>clDefault then
+                if C1=clNone then
+                  NewPen:=GetStockObject(Null_pen)
+                else
+                begin
+                  DeletePen:=CreatePen(ps_Solid, 0, C1);
+                  NewPen:=DeletePen;
+                end;
+            end;
+          end;
+          if NewPen<>0 then
+          begin
+            OldPen:=g_DrawInfo.BlackBrush;
+            g_DrawInfo.BlackBrush:=NewPen;
+          end
           else
-            FillTrisCount:=PyObject_Length(FSelTris);
-          Back:=False;
-          Hollow:=True;
-          for I:=0 to TrisCount-1 do begin
-            Tris:=PTriangleInfo(L[I]);
-            if I<FillTrisCount then begin
-              obj:=PyList_GetItem(FSelTris, I);
-              if obj=Nil then
-                exit;
-              if obj^.ob_type=PyTuple_Type then begin
-                if not PyArg_ParseTupleX(obj, 'OO;filltris format error', [@patterns[False], @patterns[True]]) then
-                  exit;//Goto PreExit;
-                with Tris^ do
-                  for K:=0 to 2 do begin
-                    v3p[K]:=FCurrentFrame;
-                    Inc(v3p[K], SourceCTris^[K].VertexNo);
-                  end;
-                V1.X:=v3p[1]^[0] - v3p[0]^[0];
-                V1.Y:=v3p[1]^[1] - v3p[0]^[1];
-                V1.Z:=v3p[1]^[2] - v3p[0]^[2];
-                V2.X:=v3p[2]^[0] - v3p[0]^[0];
-                V2.Y:=v3p[2]^[1] - v3p[0]^[1];
-                V2.Z:=v3p[2]^[2] - v3p[0]^[2];
-                Normale:=Cross(V1, V2);
-                Back:=CCoord.PositiveHalf(Normale.X, Normale.Y, Normale.Z,
-                         Normale.X * v3p[0]^[0] + Normale.Y * v3p[0]^[1] + Normale.Z * v3p[0]^[2]);
-                obj:=patterns[Back];
-                if obj <> Py_None then begin
-                  Hollow:=False;
-                  if obj^.ob_type <> PyTuple_Type then begin
-                    C1:=PyInt_AsLong(obj);
-                    C2:=C1;
-                  end else
-                    if not PyArg_ParseTupleX(obj, 'ii;filltris format error', [@C1, @C2]) then
-                      exit;//Goto PreExit;
-                  SetTextColor(g_DrawInfo.DC, C1);
-                  SetBkColor(g_DrawInfo.DC, C2);
+            OldPen:=0;
+          SetupComponentDC(CDC);
+          if g_DrawInfo.SelectedBrush<>0 then
+          begin
+            SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
+            SetROP2(g_DrawInfo.DC, R2_CopyPen);
+            CurPenMode:=0;
+            ScrAnd0:=0;
+          end
+          else
+          begin
+            CurPenMode:=-1;
+            if g_DrawInfo.ModeAff=0 then
+              ScrAnd0:=0
+            else
+              ScrAnd0:=os_Back or os_Far;
+          end;
+          try
+            for I:=0 to TrisCount-1 do
+            begin
+              OTriangle:=QModelTriangle(TriangleList.Items1[I]);
+              Hollow:=OTriangle.AnyColor;
+              Tris:=PTriangleInfo(L[I]);
+              with Tris^ do
+                for J:=0 to 2 do
+                begin
+                  OVertex:=QModelVertex(VertexList.Items1[VerticesNo[J]]);
+                  OVertex.GetPosition(v3p[J]);
+                end;
+              V1.X:=v3p[1]^[0] - v3p[0]^[0];
+              V1.Y:=v3p[1]^[1] - v3p[0]^[1];
+              V1.Z:=v3p[1]^[2] - v3p[0]^[2];
+              V2.X:=v3p[2]^[0] - v3p[0]^[0];
+              V2.Y:=v3p[2]^[1] - v3p[0]^[1];
+              V2.Z:=v3p[2]^[2] - v3p[0]^[2];
+              Normale:=Cross(V1, V2);
+              Back:=CCoord.PositiveHalf(Normale.X, Normale.Y, Normale.Z,
+                    Normale.X * v3p[0]^[0] + Normale.Y * v3p[0]^[1] + Normale.Z * v3p[0]^[2]);
+              if not Back then
+              begin
+                if OTriangle.FrontColorDifferent then
+                begin
+                  C1:=OTriangle.FrontColor[0];
+                  C2:=OTriangle.FrontColor[1];
+                end
+                else
+                begin
+                  C1:=OTriangle.FrontColor[0];
+                  C2:=OTriangle.FrontColor[0];
+                end;
+              end
+              else
+              begin
+                if OTriangle.BackColorDifferent then
+                begin
+                  C1:=OTriangle.BackColor[0];
+                  C2:=OTriangle.BackColor[1];
+                end
+                else
+                begin
+                  C1:=OTriangle.BackColor[0];
+                  C2:=OTriangle.BackColor[0];
                 end;
               end;
-            end;
-            ScrAnd:=ScrAnd0;
-            with Tris^ do begin
-              for K:=0 to 2 do begin
-                Pts[K]:=Vertices[K]^;
-                ScrAnd:=ScrAnd and Pts[K].OffScreen;
+
+              SetTextColor(g_DrawInfo.DC, C1);
+              SetBkColor(g_DrawInfo.DC, C2);
+              ScrAnd:=ScrAnd0;
+              with Tris^ do
+              begin
+                for J:=0 to 2 do
+                begin
+                  Pts[J]:=Vertices[J]^;
+                  ScrAnd:=ScrAnd and Pts[J].OffScreen;
+                end;
               end;
-            end;
-            if ScrAnd<>0 then begin
-              NewPenMode:=1;
-              if (g_DrawInfo.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
-                Continue;
-            end else
-              NewPenMode:=0;
-            if NewPenMode<>CurPenMode then begin
-              if NewPenMode=0 then begin
-                SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
-                SetROP2(g_DrawInfo.DC, R2_CopyPen);
-              end else begin
-                SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
-                SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
+              if ScrAnd<>0 then
+              begin
+                NewPenMode:=1;
+                if (g_DrawInfo.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
+                  Continue;
+              end
+              else
+                NewPenMode:=0;
+              if NewPenMode<>CurPenMode then
+              begin
+                if NewPenMode=0 then
+                begin
+                  SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
+                  SetROP2(g_DrawInfo.DC, R2_CopyPen);
+                end
+                else
+                begin
+                  SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+                  SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
+                end;
+                CurPenMode:=NewPenMode;
               end;
-              CurPenMode:=NewPenMode;
+              if Hollow then
+                CCoord.Polyline95f(Pts, 3)           // This line draws the Model Mesh lines only
+              else
+                CCoord.Polygon95f(Pts, 3, not Back); // This line draws the Model Mesh lines and color filled
+            end;  { note: "Continue" used in the loop }
+          finally
+            CloseComponentDC(CDC);
+            if OldPen<>0 then
+            begin
+              SelectObject(g_DrawInfo.DC, OldPen);
+              g_DrawInfo.BlackBrush:=OldPen;
+              if DeletePen<>0 then
+                DeleteObject(DeletePen);
             end;
-            if Hollow then
-              CCoord.Polyline95f(Pts, 3)           // This line draws the Model Mesh lines only
-            else begin
-              CCoord.Polygon95f(Pts, 3, not Back); // This line draws the Model Mesh lines and color filled
-              Hollow:=True;
-            end;
-          end;  { note: "Continue" used in the loop }
-        finally
-          CloseComponentDC(CDC);
-          if OldPen<>0 then begin
-            SelectObject(g_DrawInfo.DC, OldPen);
-            g_DrawInfo.BlackBrush:=OldPen;
-            if DeletePen<>0 then
-              DeleteObject(DeletePen);
           end;
+        finally
+          L.Free;
         end;
       finally
-        L.Free;
+        FreeMem(SourceTris);
       end;
     finally
-      FreeMem(SourceTris);
+      TriangleList.Free;
     end;
   finally
-    FreeMem(ProjPts);
+    VertexList.Free;
   end;
 
 PreExit:
@@ -1061,73 +1065,89 @@ PreExit:
 end;
 
 procedure QComponent.AnalyseClic(Liste: PyObject);
-type
-  vec3_array_t = array[0..99] of record v3: vec3_t end;
 var
-  I, Count, L, PrevL: Integer;
-  CTris: PComponentTris;
-  CVertArray: ^vec3_array_t;
+  I, J, TriangleCount, PrevJ: Integer;
+  TriangleList, VertexList: TQList;
+  OTriangle: QModelTriangle;
+  OVertex: QModelVertex;
+  VerticesData: vertex_p;
+  VecP: vec3_p;
   V: array[0..2] of TVect;
   W1, W2: TVect;
   Normale: TVect;
   obj: PyObject;
   f, d0,dv,d1: TDouble;
 begin
-  if CurrentFrame=Nil then
+  if FCurrentFrame<0 then
     Exit;
-  Count:=CurrentFrame.GetVertices(vec3_p(CVertArray));
-  W2.X:=g_DrawInfo.Clic2.X - g_DrawInfo.Clic.X;
-  W2.Y:=g_DrawInfo.Clic2.Y - g_DrawInfo.Clic.Y;
-  W2.Z:=g_DrawInfo.Clic2.Z - g_DrawInfo.Clic.Z;
-  for I:=0 to Triangles(CTris)-1 do begin
-    if (CTris^[0].VertexNo < Count) and (CTris^[0].VertexNo < Count) and (CTris^[0].VertexNo < Count) then begin
-      for L:=0 to 2 do
-        with V[L], CVertArray^[CTris^[L].VertexNo] do begin
-          X:=v3[0];
-          Y:=v3[1];
-          Z:=v3[2];
+  VertexList:=GetCurrentFrameObject.BuildVertexList;
+  try
+    W2.X:=g_DrawInfo.Clic2.X - g_DrawInfo.Clic.X;
+    W2.Y:=g_DrawInfo.Clic2.Y - g_DrawInfo.Clic.Y;
+    W2.Z:=g_DrawInfo.Clic2.Z - g_DrawInfo.Clic.Z;
+    TriangleList:=BuildTriangleList;
+    try
+      TriangleCount:=TriangleList.Count;
+      for I:=0 to TriangleCount-1 do
+      begin
+        OTriangle:=QModelTriangle(TriangleList.Items1[I]);
+        OTriangle.GetVertices(VerticesData);
+        for J:=0 to 2 do
+        begin
+          OVertex:=QModelVertex(VertexList.Items1[VerticesData^[J].VertexNo]);
+          OVertex.GetPosition(VecP);
+          V[J]:=MakeVect(VecP^);
         end;
-       PrevL:=2;
-       L:=0;
-      repeat
-        W1.X:=V[L].X-V[PrevL].X;
-        W1.Y:=V[L].Y-V[PrevL].Y;
-        W1.Z:=V[L].Z-V[PrevL].Z;
-        Normale:=Cross(W1, W2);
-        if Dot(V[L], Normale) <= Dot(g_DrawInfo.Clic, Normale) then
-          Break;
-        PrevL:=L;
-        Inc(L);
-      until L=3;
-      if L=3 then begin
-        d0:=Dot(V[0], Normale);
-        d1:=Dot(V[1], Normale);
-        if Abs(d1-d0)>rien then begin
-          dv:=Dot(g_DrawInfo.Clic, Normale);
-          f:=(d1-dv) / (d1-d0);
-          W1:=W2;
-          Normalise(W1);
-          f:=Dot(V[1],W1) * (1-f) + Dot(V[0],W1) * f - Dot(g_DrawInfo.Clic,W1);
-          W1.X:=g_DrawInfo.Clic.X + W1.X*f;
-          W1.Y:=g_DrawInfo.Clic.Y + W1.Y*f;
-          W1.Z:=g_DrawInfo.Clic.Z + W1.Z*f;
-          obj:=PyInt_FromLong(I);
-          try
-            ResultatAnalyseClic(Liste, CCoord.Proj(W1), obj);
-          finally
-            Py_DECREF(obj);
+        PrevJ:=2;
+        J:=0;
+        repeat
+          W1.X:=V[J].X-V[PrevJ].X;
+          W1.Y:=V[J].Y-V[PrevJ].Y;
+          W1.Z:=V[J].Z-V[PrevJ].Z;
+          Normale:=Cross(W1, W2);
+          if Dot(V[J], Normale) <= Dot(g_DrawInfo.Clic, Normale) then
+            Break;
+          PrevJ:=J;
+          Inc(J);
+        until J=3;
+        if J=3 then
+        begin
+          d0:=Dot(V[0], Normale);
+          d1:=Dot(V[1], Normale);
+          if Abs(d1-d0)>rien then
+          begin
+            dv:=Dot(g_DrawInfo.Clic, Normale);
+            f:=(d1-dv) / (d1-d0);
+            W1:=W2;
+            Normalise(W1);
+            f:=Dot(V[1],W1) * (1-f) + Dot(V[0],W1) * f - Dot(g_DrawInfo.Clic,W1);
+            W1.X:=g_DrawInfo.Clic.X + W1.X*f;
+            W1.Y:=g_DrawInfo.Clic.Y + W1.Y*f;
+            W1.Z:=g_DrawInfo.Clic.Z + W1.Z*f;
+            obj:=PyInt_FromLong(I);
+            try
+              ResultatAnalyseClic(Liste, CCoord.Proj(W1), obj);
+            finally
+              Py_DECREF(obj);
+            end;
           end;
         end;
       end;
+    finally
+      TriangleList.Free;
     end;
-    Inc(CTris);
+  finally
+    VertexList.Free;
   end;
 end;
 
 function QComponent.GetOriginOfComponent(mode: Integer): TVect;
 var
-  tris, tris_o: PComponentTris;
-  numtris, i, j: integer;
+  i, j: integer;
+  TriangleList: TQList;
+  TriangleCount, VertCount, TotalCount: Integer;
+  OTriangle: QModelTriangle;
+  VerticesData: vertex_p;
 begin
   result:={Origine}OriginVectorZero;
   case mode of
@@ -1135,25 +1155,37 @@ begin
       raise exception.create('not implemented yet');
     end;
     1: begin  // st vertices
-      numtris:=triangles(tris_o);
-      tris:=tris_o;
-      result.z:=0;
-      for i:=0 to numtris-1 do begin
-        for j:=0 to 2 do begin
-          result.x:=result.x+tris^[j].s;
-          result.y:=result.y+tris^[j].t;
+      TriangleList:=BuildTriangleList;
+      try
+        TriangleCount:=TriangleList.Count;
+        result.z:=0;
+        TotalCount:=0;
+        for i:=0 to TriangleCount-1 do
+        begin
+          OTriangle:=QModelTriangle(TriangleList.Items1[i]);
+          VertCount:=OTriangle.GetVertices(VerticesData);
+          for j:=0 to VertCount-1 do
+          begin
+            result.x:=result.x+VerticesData^[j].s;
+            result.y:=result.y+VerticesData^[j].t;
+            TotalCount:=TotalCount+1;
+          end;
         end;
+        result.x:=result.x / TotalCount;
+        result.y:=result.y / TotalCount;
+      finally
+        TriangleList.Free;
       end;
-      result.x:=result.x / (numtris * 3);
-      result.y:=result.y / (numtris * 3);
     end;
   end;
 end;
 
 function QComponent.PyGetAttr(attr: PChar) : PyObject;
 var
-  I, L, Count: Integer;
-  CTris: PComponentTris;
+  I: Integer;
+  TriangleList: TQList;
+  TriangleCount: Integer;
+  OTriangle: QModelTriangle;
   tri: PyObject;
 begin
   Result:=inherited PyGetAttr(attr);
@@ -1165,17 +1197,31 @@ begin
     end;
   case attr[0] of
     'c': if StrComp(attr, 'currentframe')=0 then begin
-      Result:=GetPyObj(CurrentFrame);
+      Result:=PyInt_FromLong(FCurrentFrame);
       Exit;
-    end else if StrComp(attr, 'currentskin')=0 then begin
-      Result:=GetPyObj(CurrentSkin);
+    end
+    else
+    if StrComp(attr, 'currentskin')=0 then begin
+      Result:=PyInt_FromLong(FCurrentSkin);
       Exit;
     end;
     'f': if StrComp(attr, 'filltris')=0 then begin
-      if FSelTris=Nil then
-        FSelTris:=PyList_New(0);
-      Result:=FSelTris;
-      Py_INCREF(Result);
+      TriangleList:=BuildTriangleList;
+      try
+        TriangleCount:=TriangleList.Count;
+        Result:=PyList_New(TriangleCount);
+        for I:=0 to TriangleCount-1 do
+        begin
+          OTriangle:=QModelTriangle(TriangleList.Items1[I]);
+          //@ Check for AnyColor etc!
+          tri:=PyTuple_New(2);
+          PyTuple_SetItem(tri, 0, Py_BuildValueX('ii', [OTriangle.FrontColor[0], OTriangle.BackColor[0]]));
+          PyTuple_SetItem(tri, 1, Py_BuildValueX('ii', [OTriangle.FrontColor[1], OTriangle.BackColor[1]]));
+          PyList_SetItem(Result, I, tri);
+        end;
+      finally
+        TriangleList.Free;
+      end;
       Exit;
     end;
     's': if StrComp(attr, 'skindrawobject')=0 then begin
@@ -1207,103 +1253,75 @@ begin
       Result:=MakePyVect(GetOriginOfComponent(1));
       Exit;
     end;
-    't': if StrComp(attr, 'triangles')=0 then begin
-      Count:=Triangles(CTris);
-      Result:=PyList_New(Count);
-      for I:=0 to Count-1 do begin
-        tri:=PyTuple_New(3);
-        for L:=0 to 2 do
-          with CTris^[L] do
-            PyTuple_SetItem(tri, L, Py_BuildValueX('iii', [VertexNo, S, T]));
+    (*'t': if StrComp(attr, 'triangles')=0 then begin
+      TriangleList:=BuildTriangleList;
+      try
+        TriangleCount:=TriangleList.Count;
+        Result:=PyList_New(TriangleCount);
+        for I:=0 to TriangleCount-1 do begin
+          VertCount:=QModelTriangle(TriangleList.Items1[I]).GetVertices(VerticesData);
+          tri:=PyTuple_New(VertCount);
+          for J:=0 to VertCount-1 do
+            with VerticesData^[J] do
+              PyTuple_SetItem(tri, J, Py_BuildValueX('iii', [VertexNo, S, T]));
           PyList_SetItem(Result, I, tri);
-          Inc(CTris);
+        end;
+      finally
+        TriangleList.Free;
       end;
       Exit;
-    end;
+    end;*)
   end;
 end;
 
 function QComponent.PySetAttr(attr: PChar; value: PyObject) : Boolean;
-const
-  Spec1 = 'Tris';
-  BaseSize = Length('Tris=');
 var
-  Q: QObject;
-  S: String;
-  Count, I, L: Integer;
-  Dest: PComponentTris;
-  tri: PyObject;
-  pt: array[0..2] of PyObject;
-  VN, SS, TT: Integer;
+  Count, I: Integer;
+  TriangleList: TQList;
+  TriangleCount: Integer;
 begin
   Result:=inherited PySetAttr(attr, value);
   if not Result then
     case attr[0] of
     'c': if StrComp(attr, 'currentframe')=0 then begin
-      Q:=QkObjFromPyObj(value);
-      if not (Q is QFrame) then
-        Q:=Nil;
-      CurrentFrame:=QFrame(Q);
-      Result:=True;
-      Exit;
-    end else if StrComp(attr, 'currentskin') = 0 then begin
-      Q:=QkObjFromPyObj(value);
-      if not (Q is QImage) then
-        Q:=Nil;
-      CurrentSkin:=QImage(Q);
-      Result:=True;
-      Exit;
-    end else if StrComp(attr, 'currentframeindex') = 0 then begin
       I:=0;
-      PyArg_ParseTupleX(value,'i',[@i]);
-      CurrentFrame:=GetFrameFromIndex(I);
+      if not PyArg_ParseTupleX(value,'i',[@i]) then
+        Exit;
+      CurrentFrame:=I;
+      Result:=True;
+      Exit;
+    end
+    else
+    if StrComp(attr, 'currentskin')=0 then begin
+      I:=0;
+      if not PyArg_ParseTupleX(value,'i',[@i]) then
+        Exit;
+      CurrentSkin:=I;
       Result:=True;
       Exit;
     end;
     'f': if StrComp(attr, 'filltris')=0 then begin
-      Py_XDECREF(FSelTris);
-      if value^.ob_type = PyList_Type then begin
-        FSelTris:=value;
-        Py_INCREF(value);
-      end else
-        FSelTris:=Nil;
-      Result:=True;
+      if value^.ob_type <> PyList_Type then
+        Exit;
+      Count:=PyObject_Length(value);
+      TriangleList:=BuildTriangleList;
+      try
+        TriangleCount:=TriangleList.Count;
+        if Count<>TriangleCount then
+          Exit;
+
+        //@Interpret!
+        //AnyColor etc.!
+        Result:=True;
+      finally
+        TriangleList.Free;
+      end;
       Exit;
     end;
     'i': if StrComp(attr, 'info')=0 then begin
       Py_XDECREF(FInfo);
       FInfo:=value;
       Py_INCREF(value);
-      Result:=True;
-      Exit;
-    end;
-    't': if StrComp(attr, 'triangles')=0 then begin
-      Count:=PyObject_Length(value);
-      if Count<0 then
-        Exit;
-      S:=Spec1+'=';
-      SetLength(S, BaseSize+SizeOf(TComponentTris)*Count);
-      PChar(Dest):=PChar(S)+BaseSize;
-      for I:=0 to Count-1 do begin
-        tri:=PyList_GetItem(value, I);
-        if tri=Nil then
-          Exit;
-        if not PyArg_ParseTupleX(tri, 'OOO;a triangle needs three points', [@pt[0], @pt[1], @pt[2]]) then
-          Exit;
-        for L:=0 to 2 do begin
-          if not PyArg_ParseTupleX(pt[L], 'iii;bad tripoint format', [@VN, @SS, @TT]) then
-            Exit;
-          with Dest^[L] do begin
-            VertexNo:=VN;
-            S:=SS;
-            T:=TT;
-          end;
-        end;
-        Inc(Dest);
-      end;
-      if Specifics.IndexofName(Spec1)<>-1 then
-        Specifics.Delete(Specifics.IndexofName(Spec1));
-      Specifics.Add(S);
       Result:=True;
       Exit;
     end;

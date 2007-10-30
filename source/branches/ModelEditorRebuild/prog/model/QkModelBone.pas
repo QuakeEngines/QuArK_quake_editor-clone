@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/09/10 10:24:15  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
 Revision 1.11  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -119,10 +122,15 @@ type
     function GetQ3A_Position(var pos: vec3_p): boolean;
     function GetQ3A_Scale: single;
   end;
+  QBoneGroup = Class(QMdlObject)
+  public
+    class function TypeInfo: String; override;
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
+  end;
 
 implementation
 
-uses qk3d, pymath, quarkx, QkObjectClassList, QkMiscGroup;
+uses qk3d, pymath, quarkx, QkObjectClassList, QkMiscGroup, QkComponent;
 
 function QModelBone.IsAllowedParent(Parent: QObject) : Boolean;
 begin
@@ -446,7 +454,23 @@ begin
   end;
 end;
 
+{----------}
+
+function QBoneGroup.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or (Parent is QComponent) then
+    Result:=true
+  else
+    Result:=false;
+end;
+
+class function QBoneGroup.TypeInfo;
+begin
+  TypeInfo:=':bg';
+end;
+
 initialization
   RegisterQObject(QModelBone,  'a');
+  RegisterQObject(QBoneGroup,  'a');
 end.
 
