@@ -1,0 +1,385 @@
+QQRKSRC1
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.5  2006/02/25 05:37:33  cdunde
+//Fixed viewing of player models and other updates for Quake2 CTF addon.
+//
+//Revision 1.4  2005/10/15 01:00:02  cdunde
+//To reinstate headers and history
+//
+//Revision 1.1  2001/02/11 11:08:40  decker_dk
+//Moved from addons directory
+//
+{
+    QuArKProtected = "1"
+    Description = "Requires q2ctf150.zip at http://www.fileaholic.com/idgames.d/idstuff/quake2/ctf/"
+
+    CTF directory infos.qctx =    // Quake ConTeXt
+    {
+        Game = "Quake 2"    // based on Quake 2
+        SourceDir = "CTF"    // looks there for files
+        GameDir = "CTF"        // starts Quake 2 with "+set game CTF"
+    }
+    //    Dont forget, any maps using the CTF textures, must run Quake2 like this:
+    //    quake2 +set game ctf +map (your map)
+
+    //    Thankyou!
+
+    Textures.qtx =
+    {
+        ToolBox = "Texture Browser..."
+        Root = "CTF Textues.qtxfolder"
+        CTF Textues.qtxfolder =
+        {
+            CTF.txlist =
+            {
+                ctf/blues1_2.wl    ={w="ctf"}
+                ctf/blues1_4.wl    ={w="ctf"}
+                ctf/color1b2.wl    ={w="ctf"}
+                ctf/color1b4.wl    ={w="ctf"}
+                ctf/ggrateb_1.wl    ={w="ctf"}
+                ctf/grate3_1.wl    ={w="ctf"}
+                ctf/grate3_2.wl    ={w="ctf"}
+                ctf/grate3_3.wl    ={w="ctf"}
+                ctf/grate3_4.wl    ={w="ctf"}
+                ctf/grate3_5.wl    ={w="ctf"}
+                ctf/grate3_6.wl    ={w="ctf"}
+                ctf/grate4_1.wl    ={w="ctf"}
+                ctf/grate4_2.wl    ={w="ctf"}
+                ctf/grate4_3.wl    ={w="ctf"}
+                ctf/grate4_4.wl    ={w="ctf"}
+                ctf/grate4_5.wl    ={w="ctf"}
+                ctf/grate4_6.wl    ={w="ctf"}
+                ctf/metalb_1.wl    ={w="ctf"}
+                ctf/tcmet4r3.wl    ={w="ctf"}
+                ctf/tcmet4r4.wl    ={w="ctf"}
+                ctf/tcmt9r1.wl    ={w="ctf"}
+                ctf/tcmt9r2.wl    ={w="ctf"}
+                ctf/tcmt9r3.wl    ={w="ctf"}
+                ctf/troof5r5.wl    ={w="ctf"}
+                ctf/tw.wl        ={w="ctf"}
+            }
+            dark.txlist =
+            {
+                dark_1/0text_41.wl={w="ctf"}
+                dark_1/0text_44.wl={w="ctf"}
+                dark_1/0text_47.wl={w="ctf"}
+                dark_1/0text_59.wl={w="ctf"}
+                dark_1/0text_65.wl={w="ctf"}
+                dark_1/0text_68.wl={w="ctf"}
+                dark_1/0text_70.wl={w="ctf"}
+            }
+            e1u1.txlist=
+            {
+                e1u1/baslt3_5.wl={w="ctf"}
+                e1u1/baslt3_7.wl={w="ctf"}
+                e1u1/caution1_1.wl={w="ctf"}
+                e1u1/ceil1_5.wl={w="ctf"}
+                e1u1/color1_1.wl={w="ctf"}
+                e1u1/crate1_2.wl={w="ctf"}
+                e1u1/crate1_5.wl={w="ctf"}
+                e1u1/crate1_8.wl={w="ctf"}
+                e1u1/rock0_2.wl={w="ctf"}
+                e1u1/wplat1_1.wl={w="ctf"}
+            }
+            e1u2.txlist=
+            {
+                e1u2/box02_1.wl ={w="ctf"}
+                e1u2/box02_2.wl ={w="ctf"}
+                e1u2/box4_5.wl={w="ctf"}
+                e1u2/wsupport1_1.wl={w="ctf"}
+                e1u2/box4_6.wl={w="ctf"}
+                e1u2/hdoor1_1.wl={w="ctf"}
+                e1u2/hdoor1_2.wl={w="ctf"}
+                e1u2/yellow1_2.wl={w="ctf"}
+                e1u2/hvy_dr4_2.wl={w="ctf"}
+                e1u2/light1_4.wl={w="ctf"}
+                e1u2/metal2_3.wl={w="ctf"}
+                e1u2/metal2_4.wl={w="ctf"}
+                e1u2/metal3_3.wl={w="ctf"}
+                e1u2/metal4_1.wl={w="ctf"}
+                e1u2/metal4_3.wl={w="ctf"}
+                e1u2/metal9_5.wl={w="ctf"}
+                e1u2/metals_4.wl={w="ctf"}
+                e1u2/rock0_1.wl={w="ctf"}
+                e1u2/rocks24_1.wl={w="ctf"}
+                e1u2/sym6_1.wl={w="ctf"}
+                e1u2/symbol1_7.wl={w="ctf"}
+
+                e1u3/tcmet5_3.wl={w="ctf"}
+                e1u3/tcmt9_3.wl={w="ctf"}
+                e1u3/tcmt9_6.wl={w="ctf"}
+                e1u3/tcmt9_8.wl={w="ctf"}
+                e1u3/troof5_5.wl={w="ctf"}
+            }
+            e1u4.txlist=
+            {
+                e1u4/fmet3_6.wl={w="ctf"}
+                e1u4/slotwl4_2.wl={w="ctf"}
+                e1u4/slotwl4_4.wl={w="ctf"}
+                e1u4/slotwl6_2.wl={w="ctf"}
+                e1u4/tcmet4_2.wl={w="ctf"}
+                e1u4/tcmet4_3.wl={w="ctf"}
+                e1u4/tcmet5_1.wl={w="ctf"}
+                e1u4/tcmet5_4.wl={w="ctf"}
+                e1u4/tcmt9_5.wl={w="ctf"}
+                e1u4/troof1_1.wl={w="ctf"}
+                e1u4/troof1_2.wl={w="ctf"}
+                e1u4/troof1_3.wl={w="ctf"}
+
+                e2u2/refdr3_3.wl={w="ctf"}
+
+                e2u3/baselt_red.wl={w="ctf"}
+                e2u3/ceil1_16.wl={w="ctf"}
+                e2u3/ceil1_26.wl={w="ctf"}
+                e2u3/pow16_1.wl={w="ctf"}
+                e2u3/pow16_2.wl={w="ctf"}
+                e2u3/reds1_4.wl={w="ctf"}
+
+                e3u3/ggrat2_1.wl={w="ctf"}
+                e3u3/grate1_6.wl={w="ctf"}
+                e3u3/grate2_2.wl={w="ctf"}
+                e3u3/grate2_3.wl={w="ctf"}
+                e3u3/grate2_6.wl={w="ctf"}
+            }
+
+        }
+    }
+
+    NewMapItems.qtx =
+    {
+        ToolBox = "New Map Items..."
+        Root = "CTF Entities.qtxfolder"
+        CTF Entities.qtxfolder =
+        {
+            Player starts.qtxfolder =
+            {
+                info_player_team1:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Red team start point"
+                    angle = "0"
+                }
+                info_player_team2:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Blue team start point"
+                    angle = "0"
+                }
+                info_player_team3:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Green team start point"
+                    angle = "0"
+                }
+                info_player_team4:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "White team start point"
+                    angle = "0"
+                }
+            }
+            Flags & banners.qtxfolder =
+            {
+                item_flag_team1:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Red team Flag"
+                    angle = "0"
+                }
+                item_flag_team2:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Blue team Flag"
+                    angle = "0"
+                }
+                item_flag_team3:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Green team Flag"
+                    angle = "0"
+                }
+                item_flag_team4:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "White team Flag"
+                    angle = "0"
+                }
+                misc_ctf_banner:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Large CTF wall banner"
+                    angle = "0"
+                }
+                misc_ctf_small_banner:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Small CTF wall banner"
+                    angle = "0"
+                }
+            }
+            Tech Items.qtxfolder =
+            {
+                item_tech1:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Resistance tech"
+                    angle = "0"
+                }
+                item_tech2:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Stength tech"
+                    angle = "0"
+                }
+                item_tech3:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Haste tech"
+                    angle = "0"
+                }
+                item_tech4:e =
+                {
+                    origin = "0 0 0"
+                    ;desc = "Regeneration tech"
+                    angle = "0"
+                }
+            }
+        }
+    }
+
+    Entity forms.qctx =
+    {
+        info_player_team1:form =
+        {
+            Help = "This is a Red start for a CTF map"
+            bbox = '-16 -16 -24 16 16 32'
+            mdl = "players/male/tris.md2"
+            mdlskin = "/players/male/cipher.pcx"
+        }
+        info_player_team2:form =
+        {
+            Help = "This is a Blue start for a CTF map"
+            bbox = '-16 -16 -24 16 16 32'
+            mdl = "players/male/tris.md2"
+            mdlskin = "players/male/cipher.pcx"
+        }
+        info_player_team3:form =
+        {
+            Help = "This is a Green start for a CTF map"
+            bbox = '-16 -16 -24 16 16 32'
+            mdl = "players/male/tris.md2"
+            mdlskin = "players/male/cipher.pcx"
+        }
+        info_player_team4:form =
+        {
+            Help = "This is a White start for a CTF map"
+            bbox = '-16 -16 -24 16 16 32'
+            mdl = "players/male/tris.md2"
+            mdlskin = "players/male/cipher.pcx"
+        }
+        item_flag_team1:form =
+        {
+            Help = "The Red team flag"
+            bbox = '-5 -7 -25 21 18 52'
+            mdl = "players/male/flag1.md2"
+        }
+        item_flag_team2:form =
+        {
+            Help = "The Blue team flag"
+            bbox = '-5 -7 -25 21 18 52'
+            mdl = "players/male/flag1.md2"
+        }
+        item_flag_team3:form =
+        {
+            Help = "The Green team flag"
+            bbox = '-5 -7 -25 21 18 52'
+            mdl = "players/male/flag1.md2"
+        }
+        item_flag_team4:form =
+        {
+            Help = "The White team flag"
+            bbox = '-5 -7 -25 21 18 52'
+            mdl = "players/male/flag1.md2"
+        }
+        misc_ctf_banner:form =
+        {
+            Help = "Large CTF Red banner (Red by default)"
+            bbox = '-6 -76 -1 6 75 247'
+            mdl = "models/ctf/banner/tris.md2"
+            spawnflags: =
+            {
+                Txt="&"
+                Typ="X1"
+                Cap="BLUE_TEAM"
+                Hint="The banner is RED by default, click the checkbox to make it BLUE"
+            }
+            spawnflags: =
+            {
+                Txt="&"
+                Typ="X2"
+                Cap="GREEN_TEAM"
+                Hint="The banner is RED by default, click the checkbox to make it GREEN"
+            }
+            spawnflags: =
+            {
+                Txt="&"
+                Typ="X4"
+                Cap="WHITE_TEAM"
+                Hint="The banner is RED by default, click the checkbox to make it WHITE"
+            }
+        }
+        misc_ctf_small_banner:form =
+        {
+            Help = "Small CTF banner (Red by default)"
+            bbox = '-3 -38 -1 3 38 124'
+            mdl = "models/ctf/banner/small.md2"
+            spawnflags: =
+            {
+                Txt="&"
+                Typ="X1"
+                Cap="BLUE_TEAM"
+                Hint="The banner is RED by default, click the checkbox to make it BLUE"
+            }
+            spawnflags: =
+            {
+                Txt="&"
+                Typ="X2"
+                Cap="GREEN_TEAM"
+                Hint="The banner is RED by default, click the checkbox to make it GREEN"
+            }
+            spawnflags: =
+            {
+                Txt="&"
+                Typ="X4"
+                Cap="WHITE_TEAM"
+                Hint="The banner is RED by default, click the checkbox to make it WHITE"
+            }
+        }
+        item_tech1:form =
+        {
+            Help = "Resistance tech, you'll take less damage when attacked"
+            bbox = '-2 -18 0 2 18 36'
+            mdl = "models/ctf/resistance/tris.md2"
+        }
+        item_tech2:form =
+        {
+            Help = "Stength tech, increases you attacking power"
+            bbox = '-2 -18 0 2 18 36'
+            mdl = "models/ctf/strength/tris.md2"
+        }
+        item_tech3:form =
+        {
+            Help = "Haste tech, makes you run fire and genrally move faster!"
+            bbox = '-2 -18 0 2 18 36'
+            mdl = "models/ctf/haste/tris.md2"
+        }
+        item_tech4:form =
+        {
+            Help = "Regeneration tech, you'll gain your lost health back in no time with this Tech"
+            bbox = '-2 -18 0 2 18 36'
+            mdl = "models/ctf/regeneration/tris.md2"
+        }
+    }
+}
