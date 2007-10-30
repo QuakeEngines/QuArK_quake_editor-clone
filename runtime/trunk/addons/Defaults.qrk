@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.365  2007/10/24 14:55:50  cdunde
+//Reset a toolbar location.
+//
 //Revision 1.364  2007/10/18 23:53:43  cdunde
 //To setup Custom Animation FPS Dialog, remove possibility of using 0, causing a crash and Defaults.
 //
@@ -9068,7 +9071,7 @@ QQRKSRC1
       Tools.qtxfolder =
       {
         plane duplicator:d = {
-          ;desc = "'duplicator' for making a 3 ponit plane"
+          ;desc = "'duplicator' for making a 3 point plane"
           P1 = '0 64 0'
           P2 = '64 -64 0'
           P3 = '-64 -64 0'
