@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27.2.1  2007/10/30 20:59:02  danielpharos
+MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
+
 Revision 1.27  2007/09/10 10:24:17  danielpharos
 Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 
@@ -148,12 +151,10 @@ type
     property CurrentFrame: Integer read FCurrentFrame write SetCurrentFrame;
     function GetCurrentFrameObject: QFrame;
 
-
     function AddTriangle(Vertices : array of Integer) : Integer;
-
     procedure RemoveTriangle(N: Integer);
-
-    procedure DeleteUnrefVertices;  
+    procedure DeleteUnrefVertices;
+    function FindVertex(Positions : array of vec3_t) : Integer;
 
     procedure AddTo3DScene; override;
     function GetIndexFromFrame(FindFrame: QFrame): Integer;
@@ -671,6 +672,63 @@ begin
     VertexRefCount[I] := VertexRefCount[I + J];
   end;
   SetLength(VertexRefCount, EndVertexCount - 1);
+end;
+
+function QComponent.FindVertex(Positions : array of vec3_t) : Integer;
+var
+  VertCount: Integer;
+  FrameList, VertexList: TQList;
+  OFrame: QFrame;
+  OVertex: QModelVertex;
+  VecP: vec3_p;
+  I, J: Integer;
+  VertexToCheck: array of Integer;
+  VertexToCheckLen: Integer;
+begin
+  Result:=-1;
+  VertCount:=Length(VertexRefCount);
+  VertexToCheckLen:=VertCount;
+  SetLength(VertexToCheck, VertexToCheckLen);
+  for I:=0 to VertexToCheckLen-1 do
+    VertexToCheck[I]:=I;
+  FrameList:=BuildFrameList;
+  try
+    if FrameList.Count<>Length(Positions) then
+      raise exception.create('FindVertex: Wrong number of positions supplied!');
+    for I:=0 to FrameList.Count-1 do
+    begin
+      OFrame:=QFrame(FrameList.Items1[I]);
+      VertexList:=OFrame.BuildVertexList;
+      try
+        J:=0;
+        repeat
+          OVertex:=QModelVertex(VertexList.Items[VertexToCheck[J]]);
+          OVertex.GetPosition(VecP);
+          if (VecP^[0]<>Positions[I][0]) or (VecP^[1]<>Positions[I][1]) or (VecP^[2]<>Positions[I][2]) then
+          begin
+            VertexToCheck[J]:=VertexToCheck[VertexToCheckLen-1];
+            VertexToCheckLen:=VertexToCheckLen-1;
+            //DanielPharos: Commented out for speed reasons
+            //SetLength(VertexToCheck, VertexToCheckLen);
+          end
+          else
+            Inc(J);
+        until J=VertexToCheckLen-1;
+      finally
+        VertexList.Free;
+      end;
+      if VertexToCheckLen=0 then
+        break;
+    end;
+    if VertexToCheckLen>0 then
+    begin
+      Result:=VertexToCheck[0];
+      if VertexToCheckLen>1 then
+        Log(LOG_WARNING, 'FindVertex: Multiple matches found. Using first match.');
+    end;
+  finally
+    FrameList.Free;
+  end;
 end;
 
 procedure QComponent.CouleurDessin;
