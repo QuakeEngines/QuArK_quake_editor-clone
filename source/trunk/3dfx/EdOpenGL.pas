@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2007/09/23 21:04:31  danielpharos
+Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+
 Revision 1.63  2007/09/05 10:30:07  danielpharos
 Fix a dictionary-number
 
@@ -282,7 +285,6 @@ type
    DWMLoaded: Boolean;
    MapLimit: TVect;
    MapLimitSmallest: Double;
-   DepthBufferBits: Byte;
    MaxLights: GLint;
    LightingQuality: Integer;
    OpenGLDisplayLists: array[0..2] of Integer;
@@ -772,24 +774,43 @@ begin
     DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
     FillChar(pfd, SizeOf(pfd), 0);
     pfd.nSize:=SizeOf(pfd);
-    pfd.nversion:=1;
-    pfd.dwflags:=pfd_Support_OpenGl or pfd_Draw_To_Window;
-    pfd.iPixelType:=pfd_Type_RGBA;
+    pfd.nVersion:=1;
+    pfd.dwFlags:=PFD_SUPPORT_OPENGL or PFD_DRAW_TO_WINDOW;
+    pfd.iPixelType:=PFD_TYPE_RGBA;
     if DoubleBuffered then
-      pfd.dwflags:=pfd.dwflags or pfd_DoubleBuffer;
+      pfd.dwFlags:=pfd.dwFlags or pfd_DoubleBuffer;
     if Setup.Specifics.Values['SupportsGDI']<>'' then
-      pfd.dwflags:=pfd.dwflags or pfd_Support_GDI;
+      pfd.dwFlags:=pfd.dwFlags or PFD_SUPPORT_GDI;
     pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
     if pfd.cColorBits<=0 then
       pfd.cColorBits:=GetDeviceCaps(ViewDC, BITSPIXEL);
-    pfd.cDepthBits:=DepthBufferBits;
-    pfd.iLayerType:=pfd_Main_Plane;
+    pfd.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
+    if pfd.cDepthBits<=0 then
+      pfd.cDepthBits:=0;
+    pfd.iLayerType:=PFD_MAIN_PLANE;
     pfi:=ChoosePixelFormat(ViewDC, @pfd);
     CurrentPixelFormat:=GetPixelFormat(ViewDC);
     if CurrentPixelFormat<>pfi then
      begin
       if not SetPixelFormat(ViewDC, pfi, @pfd) then
         Raise EErrorFmt(6303, ['SetPixelFormat']);
+      {$IFDEF DebugGLErr}
+      Log(LOG_VERBOSE, 'OpenGL: Selected PixelFormat: ' + IntToStr(pfi));
+      if DescribePixelFormat(ViewDC, pfi, SizeOf(pfd), pfd) = false then
+        Raise EErrorFmt(6303, ['DescribePixelFormat']);
+      if ((pfd.dwFlags and PFD_GENERIC_FORMAT) <> 0) then
+        if ((pfd.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
+          Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (MCD)')
+        else
+          Log(LOG_VERBOSE, 'OpenGL: Not hardware accelerated (software)')
+      else
+        if ((pfd.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
+          Log(LOG_VERBOSE, 'OpenGL: Unknown acceleration')
+        else
+          Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (ICD)');
+      Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Color Bits: ' + IntToStr(pfd.cColorBits));
+      Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Depth Bits: ' + IntToStr(pfd.cDepthBits));
+      {$ENDIF}
      end;
   end;
 end;
@@ -1092,7 +1113,6 @@ begin
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
   AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
   DisplayLists:=Setup.Specifics.Values['GLLists']<>'';
-  DepthBufferBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
   if Lighting then
     MakeSections:=True
     {DanielPharos: Not configurable at the moment.
@@ -1464,7 +1484,6 @@ begin
      begin
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity;
-      {gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / Power(2, DepthBufferBits), FarDistance);}
       gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
 
       glMatrixMode(GL_MODELVIEW);
@@ -1713,6 +1732,7 @@ begin
       FirstItem:=true;
       LargestDistance:=-1;
       CurrentPList:=nil;
+      //DanielPharos: Maybe we can make a list of only the transparent faces? That could be faster!
       PList:=FListSurfaces;
       while Assigned(PList) do
       begin
