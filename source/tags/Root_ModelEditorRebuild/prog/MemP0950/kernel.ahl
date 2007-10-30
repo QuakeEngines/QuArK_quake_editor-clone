@@ -1,0 +1,176 @@
+[[kernel32.dll]]
+
+[DuplicateHandle]
+DuplicateHandle duplicates an object handle.
+The returned object handle must be freed with CloseHandle when no longer needed.
+
+[GetStdHandle]
+GetStdHandle returns a handle for the standard input, standard output, or standard error device.
+The returned handle must be freed with CloseHandle when no longer needed.
+
+[CreateFile,CreateFileA,CreateFileW]
+CreateFile creates or opens an object and returns a handle that can be used to
+access the object. Objects can be : files, pipes, mailslots, communications resources,
+disk devices (Windows NT only), consoles, directories (open only)
+The returned handle must be freed with CloseHandle when no longer needed.
+
+[CreateEvent,CreateEventA,CreateEventW]
+CreateEvent creates a named or unnamed event object.
+The returned handle must be freed with CloseHandle when no longer needed.
+
+[OpenEvent,OpenEventA,OpenEventW]
+OpenEvent returns a handle of an existing named event object.
+The returned handle must be freed with CloseHandle when no longer needed.
+
+[InitializeCriticalSection]
+InitializeCriticalSection initializes a critical section object.
+The critical section object must be freed with DeleteCriticalSection when no longer needed.
+
+[EnterCriticalSection]
+EnterCriticalSection waits for ownership of the specified critical section object.
+The critical section ownership must be released with LeaveCriticalSection when no longer needed.
+
+[TryEnterCriticalSection]
+TryEnterCriticalSection attempts to enter a critical section without blocking.
+If the call is succesful, the critical section ownership must be released with
+LeaveCriticalSection when no longer needed.
+
+[CreateProcess,CreateProcessA,CreateProcessW]
+CreateProcess creates a new process and its primary thread.
+The hProcess and hThread members of the lpProcessInformation structure must be closed
+with CloseHandle when no longer needed.
+
+[OpenProcess]
+OpenProcess returns a handle of an existing process object.
+The returned process handle must be closed with CloseHandle when no longer needed.
+
+[CreateThread]
+CreateThread creates a thread to execute within the address space of the calling process.
+The returned thread handle must be closed with CloseHandle when no longer needed.
+
+[CreateRemoteThread]
+CreateRemoteThread creates a thread that runs in the address space of another process.
+The returned thread handle must be closed with CloseHandle when no longer needed.
+
+[CreateFileMapping,CreateFileMappingA,CreateFileMappingW]
+CreateFileMapping creates a named or unnamed file-mapping object for the specified file.
+The returned thread handle must be closed with CloseHandle when no longer needed.
+
+[OpenFileMapping,OpenFileMappingA,OpenFileMappingW]
+OpenFileMapping opens a named file-mapping object.
+The returned thread handle must be closed with CloseHandle when no longer needed.
+
+[MapViewOfFile]
+MapViewOfFile maps a view of a file into the address space of the calling process.
+The returned mapped view must be freed with UnmapViewOfFile when no longer needed.
+
+[MapViewOfFileEx]
+MapViewOfFileEx maps a view of a file into the address space of the calling process
+and allows the calling process to specify a suggested memory address for the mapped view.
+The returned mapped view must be freed with UnmapViewOfFile when no longer needed.
+
+[CreateMutex]
+CreateMutex creates a named or unnamed mutex object.
+The returned mutex object must be freed with ReleaseMutex or CloseHandle
+when no longer needed.
+
+
+[OpenMutex,OpenMutexA,OpenMutexW]
+OpenMutex returns a handle of an existing named mutex object.
+The returned mutex object handle must be freed with ReleaseMutex or CloseHandle
+when no longer needed.
+
+
+[CreateNamedPipe,CreateNamedPipeA,CreateNamedPipeW]
+CreateNamedPipe creates an instance of a named pipe and returns a handle for
+subsequent pipe operations.
+The returned named pipe handle must be freed with CloseHandle when no longer needed.
+
+
+[CreatePipe]
+CreatePipe creates an anonymous pipe, and returns handles to the read and write
+ends of the pipe.
+The returned hReadPipe and hWritePipe pipe handles must be freed with CloseHandle
+when no longer needed.
+
+
+[CreateMailslot,CreateMailslotA,CreateMailslotW]
+CreateMailslot creates a mailslot with the specified name and returns a handle
+that a mailslot server can use to perform operations on the mailslot.
+The returned mailslot handle must be freed with CloseHandle when no longer needed.
+
+
+[CreateSemaphore,CreateSemaphoreA,CreateSemaphoreW]
+CreateSemaphore creates a named or unnamed semaphore object.
+The returned semaphore object must be freed with ReleaseSemaphore or CloseHandle
+when no longer needed.
+
+
+[OpenSemaphore,OpenSemaphoreA,OpenSemaphoreW]
+OpenSemaphore returns a handle of an existing named semaphore object.
+The returned semaphore object must be freed with ReleaseSemaphore or CloseHandle
+when no longer needed.
+
+
+[CreateConsoleScreenBuffer]
+CreateConsoleScreenBuffer creates a console screen buffer and returns a handle of it.
+The returned console screen buffer handle must be freed with CloseHandle when no longer needed.
+
+
+[CreateFiber]
+CreateFiber allocates a fiber object, assigns it a stack, and sets up execution
+to begin at the specified start address, typically the fiber function.
+The returned fiber object must be freed with DeleteFiber when no longer needed.
+
+
+[_lopen]
+_lopen opens an existing file and sets the file pointer to the beginning of the file.
+The returned file handle must be closed with _lclose or CloseHandle when no longer needed.
+
+
+[_lcreat]
+_lcreat creates or opens a specified file.
+The returned file handle must be closed with _lclose or CloseHandle when no longer needed.
+
+
+[OpenFile]
+OpenFile creates, opens, reopens, or deletes a file.
+The returned file handle must be closed with _lclose or CloseHandle when no longer needed.
+
+
+[FindFirstFile,FindFirstFileA,FindFirstFileW]
+FindFirstFile searches a directory for a file whose name matches the specified filename.
+The returned handle must be closed with FindClose when no longer needed.
+
+[FindFirstChangeNotification,FindFirstChangeNotificationA,FindFirstChangeNotificationW]
+FindFirstChangeNotification reates a change notification handle and sets up initial
+change notification filter conditions.
+The returned handle must be closed with FindCloseChangeNotification when no longer needed.
+
+[BeginUpdateResource,BeginUpdateResourceA,BeginUpdateResourceW]
+BeginUpdateResource returns a handle that can be used by the UpdateResource function
+to add, delete, or replace resources in an executable file.
+The returned handle must be closed with EndUpdateResource when no longer needed.
+
+
+[OpenEventLog,OpenEventLogA,OpenEventLogW]
+OpenEventLog opens a handle of an event log.
+The returned handle must be closed with CloseEventLog when no longer needed.
+
+[OpenBackupEventLog,OpenBackupEventLogA,OpenBackupEventLogW]
+OpenBackupEventLog opens a handle of a backup event log.
+The returned handle must be closed with CloseEventLog when no longer needed.
+
+[RegisterEventSource,RegisterEventSourceA,RegisterEventSourceW]
+RegisterEventSource returns a handle that can be used with the ReportEvent
+function to log an event.
+The returned handle must be closed with DeregisterEventSource when no longer needed.
+
+[TlsAlloc]
+TlsAlloc allocates a thread local storage (TLS) index.
+The returned thread local storage (TLS) index must be released with TlsFree
+when no longer needed.
+
+
+
+

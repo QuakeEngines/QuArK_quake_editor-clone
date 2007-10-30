@@ -1,0 +1,203 @@
+<HTML>
+<HEAD>
+<TITLE>
+Description of MD4 Format (2004 Apr 30)
+</TITLE>
+</HEAD>
+<BODY>
+<P>Document last updated 2004 Apr 30.
+<P>Much of the information was extracted from the header files provided in the Q3AToolsSource package from Id Software, Inc.
+
+<A NAME="Disclaimer"><H2>Disclaimer:</H2><P>
+<P>
+I make no claims as to the accuracy of the information provided within.
+I have made attempts to be as accurate as possible, but the information herein is still provided &quot;as-is&quot;.
+I am not affiliated with Id Software, Inc., nor RSA Data Security, Inc.
+Copyrights and trademarks are under the control of their respective holders.
+<P>
+The following information are educated guesses based on my experience with the MD3 format and Blender 3D modeller.
+At this time, I don't know of any MD4 file that works in Quake 3.
+
+<A NAME="Introduction"><H1>Introduction:</H1><P>
+<P>
+MD4 is a newer 3D data format that appeared in Quake 3 (PR 1.29?).
+MD4 uses "bones animation" (aka "skeletal animation", "skeletal deformation", ???), unlike the explicit vertex listings in MD3 (the 3D version of animated cels).
+Potential advantages over MD3 include smaller data files and the potential for more complex animation.
+Potential disadvantages include longer load time and/or requiring more processing power.
+These particular disadvantages become a moot point with GHz consumer computers.
+<P>
+A separate file format is used to describe maps, the environment of the game: a source MAP file that compiles into a BSP file.
+This document does not cover the MAP nor BSP file formats.
+<P>
+The MD4 file format from Id Software, Inc., should not be confused with Message Digest 4 algorithm from RSA Data Security, Inc., also called MD4.
+One is a file format, the other is an algorithm (&quot;math formula&quot;), but they are, unfortunately, both called &quot;MD4&quot;.
+To add to the confusion, the Quake series uses the MD4 algorithm (slightly modified?) as a checksum algorithm for network error-checking and pak file integrity (including the MD4 files).
+<P>
+To clarify, this document covers the MD4 file format, not the MD4 algorithm.
+<P>
+This document does not cover the older MD3 file format.
+<P>
+The Quake series was developed and run on IA32 (x86) machines, using C.
+The file format shows many remnants of x86-isms and C-isms (expected byte order, word sizes, data type names, etc.).
+Some of these isms spill over into this document.
+
+<P>The MD4 format is presented here from a larger scope to smaller ones.
+
+<P>
+<A NAME="Data type indicator"><H2>Data type indicator:</H2><P>
+<TABLE BORDER=1 CAPTION="Data type indicator">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>U8</TD><TD>char</TD><TD>8-bit unsigned octet (character).</TD></TR>
+ <TR><TD>S16</TD><TD>short</TD><TD>little-endian signed 16-bit integer.</TD></TR>
+ <TR><TD>S32</TD><TD>int</TD><TD>little-endian signed 32-bit integer.</TD></TR>
+ <TR><TD>F32</TD><TD>float</TD><TD>IEEE-754 32-bit floating-point.</TD></TR>
+ <TR><TD>VEC3</TD><TD>vec3_t</TD><TD>triplet of F32 in sequence (read 4 octets, make float, read 4, make float, read 4, make float), describing a 3-space vector.</TD></TR>
+ <TR><TD>*</TD><TD>[]</TD><TD>indicates sequential repeat count (homogenous aggregation, array, vector), as in &quot;U8 * 16&quot; to mean a 16-character array (i.e. character string).</TD></TR>
+ <TR><TD>-</TD><TD></TD><TD>file/array offset of which to make special note.</TD></TR>
+ <TR><TD>!</TD><TD></TD><TD>aggregate complex data that should be described elsewhere.</TD></TR>
+</TABLE>
+
+
+<P>
+<A NAME="MD4"><H2>MD4:</H2><P>
+<TABLE BORDER=1 CAPTION="MD4">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>-</TD><TD>MD4_START</TD><TD>offset of <A HREF="#MD4">MD4</A> object.  Usually 0, but not guaranteed.</TD></TR>
+ <TR><TD>S32</TD><TD>IDENT</TD><TD>Magic number.  As a string of 4 char, reads &quot;IDP4&quot;, as unsigned little-endian 1384147059 (0x52806873), as unsigned big endian 1936228434 (0x73688052).</TD></TR>
+ <TR><TD>S32</TD><TD>VERSION</TD><TD><A HREF="#MD4">MD4</A> version number, latest known is 1, but use the constant MD4_VERSION</TD></TR>
+ <TR><TD>U8 * <B>MAX_QPATH</B></TD><TD>NAME</TD><TD><A HREF="#MD4">MD4</A> name, usually its pathname in the PK3.  ASCII character string, NUL-terminated (C-style).  Current value of <B>MAX_QPATH</B> is 64.</TD></TR>
+ <TR><TD>S32</TD><TD>NUM_FRAMES</TD><TD>Number of <A HREF="#Frame">Frame</A> objects.  Current value of <B>MD3_MAX_FRAMES</B> is 1024.</TD></TR>
+ <TR><TD>S32</TD><TD>NUM_BONES</TD><TD>Number of <A HREF="#Bone">Bone</A> objects.  Current value of <B>MD4_MAX_BONES</B> is 128.</TD></TR>
+ <TR><TD>S32</TD><TD>OFS_FRAMES</TD><TD>Relative offset from start of <A HREF="#MD4">MD4</A> object where <A HREF="#Frame">Frame</A> objects start.</TD></TR>
+ <TR><TD>S32</TD><TD>NUM_LODS</TD><TD>Number of LOD (Level of Detail) surfaces.  Current value of <B>MD3_MAX_LODS</B> is 4.</TD></TR>
+ <TR><TD>S32</TD><TD>OFS_LODS</TD><TD>Relative offset from start of <A HREF="#MD4">MD4</A> where <A HREF="#LOD">LOD</A> objects start.  Written sequentially.</TD></TR>
+ <TR><TD>S32</TD><TD>OFS_EOF</TD><TD>Relative offset from start of <A HREF="#MD4">MD4</A> of the end of the <A HREF="#MD4">MD4</A> object.</TD></TR>
+ <TR><TD>!</TD><TD><I>(<A HREF="#Frame">Frame</A>)</I></TD><TD>The array of <A HREF="#Frame">Frame</A> objects, use OFS_FRAMES.</TD></TR>
+ <TR><TD>!</TD><TD><I>(<A HREF="#LOD">LOD</A>)</I></TD><TD>The array of <A HREF="#LOD">LOD</A> objects, use OFS_TAGS.</TD></TR>
+ <TR><TD>-</TD><TD>MD4_END</TD><TD>End of <A HREF="#MD4">MD4</A> object.  Should match OFS_EOF.</TD></TR>
+</TABLE>
+
+
+<P>
+<A NAME="Frame"><H3>Frame:</H3><P>(member of <A HREF="#MD4">MD4</A>)
+<TABLE BORDER=1 CAPTION="Frame">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>VEC3</TD><TD>MIN_BOUNDS</TD><TD>First corner of the bounding box.  The bounding box encloses all <A HREF="#Surface">Surface</A> objects for all <A HREF="#LOD">LOD</A> objects for this frame (that is, encloses the maximum possible volume occupied in this frame).</TD></TR>
+ <TR><TD>VEC3</TD><TD>MAX_BOUNDS</TD><TD>Second corner of the bounding box.</TD></TR>
+ <TR><TD>VEC3</TD><TD>LOCAL_ORIGIN</TD><TD>Midpoint of bounds, for bounding sphere (sphere cull?)</TD></TR>
+ <TR><TD>F32</TD><TD>RADIUS</TD><TD>Radius of bounding (culling?) sphere.</TD></TR>
+ <TR><TD>U8 * 16</TD><TD>NAME</TD><TD>Name of Frame.  ASCII character string, NUL-terminated (C-style).</TD></TR>
+ <TR><TD>!</TD><TD><I>(<A HREF="#Bone">Bone</A>)</I></TD><TD>List of <A HREF="#Bone">Bone</A> objects.  Number of <A HREF="#Bone">Bone</A> object is determined by NUM_BONES in the <A HREF="#MD4">MD4</A> header.  This lists all the bones used in this animation frame, and lists their parameters (position/rotation) for this frame.</TD></TR>
+</TABLE>
+
+
+<P>
+<A NAME="Bone"><H4>Bone:</H4><P>(member of <A HREF="#Frame">Frame</A>)
+<TABLE BORDER=1 CAPTION="Bone">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>VEC3</TD><TD>LOC?</TD><TD>3-space Cartesian coordinate?</TD></TR>
+ <TR><TD>VEC3</TD><TD>X_AXIS?</TD><TD>3-space Cartesian vector for X axis?</TD></TR>
+ <TR><TD>VEC3</TD><TD>Y_AXIS?</TD><TD>3-space Cartesian vector for Y axis?</TD></TR>
+ <TR><TD>VEC3</TD><TD>Z_AXIS?</TD><TD>3-space Cartesian vector for Z axis?</TD></TR>
+</TABLE>
+
+
+<P>
+<A NAME="LOD"><H3>LOD:</H3><P>(member of <A HREF="#MD4">MD4</A>)
+<TABLE BORDER=1 CAPTION="LOD">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>I32</TD><TD>NUM_SURFACES</TD><TD>Number of <A HREF="#Surface">Surface</A> objects for this LOD object.  Current value of <B>MD3_MAX_SURFACES</B> is 32.</TD></TR>
+ <TR><TD>I32</TD><TD>OFS_SURFACES</TD><TD>Offset of <A HREF="#Surface">Surface</A> object (XXX: relative to where?)</TD></TR>
+ <TR><TD>I32</TD><TD>OFS_END</TD><TD>Offset to end of <A HREF="#LOD">LOD</A> object (next <A HREF="#LOD">LOD</A> object follow) (XXX: what about final LOD?)</TD></TR>
+ <TR><TD>!</TD><TD><I>(<A HREF="#Surface">Surface</A>)</I></TD><TD>List of <A HREF="#Surface">Surface</A> objects.</TD></TR>
+</TABLE>
+
+
+<P>
+<A NAME="Surface"><H4>Surface:</H4><P>(member of <A HREF="#LOD">LOD</A>)
+<TABLE BORDER=1 CAPTION="Surface">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>-</TD><TD>SURFACE_START</TD><TD>Offset relative to start of <A HREF="#MD4">MD4</A> object.</TD></TR>
+ <TR><TD>S32</TD><TD>IDENT</TD><TD>Magic number.  As a string of 4 char, reads &quot;IDP4&quot;, as unsigned little-endian 1384147059 (0x52806873), as unsigned big endian 1936228434 (0x73688052).</TD></TR>
+ <TR><TD>U8 * <B>MAX_QPATH</B></TD><TD>NAME</TD><TD>Name of <A HREF="#Surface">Surface</A> object.  ASCII character string, NUL-terminated (C-style).  Current value of <B>MAX_QPATH</B> is 64.</TD></TR>
+ <TR><TD>U8 * <B>MAX_QPATH</B></TD><TD>NAME</TD><TD>Name of shader to use.   ASCII character string, NUL-terminated (C-style).  Current value of <B>MAX_QPATH</B> is 64.</TD></TR>
+ <TR><TD>I32</TD><TD>SHADER_INDEX</TD><TD>Index number of shader. (XXX: how assigned?)</TD></TR>
+ <TR><TD>I32</TD><TD>OFS_HEADER</TD><TD>Offset of header?  Relative to what?  ID source states this is a negative number.</TD></TR>
+ <TR><TD>I32</TD><TD>NUM_VERTS</TD><TD>Number of <A HREF="#Vertex">Vertex</A> objects for this <A HREF="#Surface">Surface</A> object.  Current value of <B>MD3_MAX_VERTS</B> is 4096.</TD></TR>
+ <TR><TD>I32</TD><TD>OFS_VERTS</TD><TD>Offset of list of <A HREF="#Vertex">Vertex</A> objects (XXX: relative to where?)</TD></TR>
+ <TR><TD>I32</TD><TD>NUM_TRIANGLES</TD><TD>Number of <A HREF="#Triangle">Triangle</A> objects for this <A HREF="#Surface">Surface</A> object.  Current value of <B>MD3_MAX_TRIANGLES</B> is 8192.</TD></TR>
+ <TR><TD>I32</TD><TD>OFS_TRIANGLES</TD><TD>Offset of list of <A HREF="#Triangle">Triangle</A> objects (XXX: relatvie to where?)</TD></TR>
+ <TR><TD>I32</TD><TD>NUM_BONE_REFERENCES</TD><TD>Number of <A HREF="#BoneReference">BoneReference</A> objects.  This allows the engine to look at only those bones which affect this <A HREF="#Surface">Surface</A> object, instead of calculating the effects of all <A HREF="#Bone">Bone</A> objects in the <A HREF="#MD4">MD4</A> object.</TD></TR>
+ <TR><TD>I32</TD><TD>OFS_BONE_REFERENCES</TD><TD>Offset of list of <A HREF="#BoneReference">BoneReference</A> objects (XXX: relative to where?)</TD></TR>
+ <TR><TD>I32</TD><TD>OFS_END</TD><TD>Offset to end of <A HREF="#MD4">MD4</A> object (XXX: relative to what?)</TD></TR>
+ <TR><TD>!</TD><TD><I>(<A HREF="#Triangle">Triangle</A>)</I></TD><TD>List of <A HREF="#Triangle">Triangle</A> objects, use OFS_TRIANGLES</TD></TR>
+ <TR><TD>!</TD><TD><I>(<A HREF="#Vertex">Vertex</A>)</I></TD><TD>List of <A HREF="#Vertex">Vertex</A> objects, use OFS_VERTS</TD></TR>
+ <TR><TD>!</TD><TD><I>(<A HREF="#BoneReference">BoneReference</A>)</I></TD><TD>List of <A HREF="#BoneReference">BoneReference</A> objects, use OFS_BONE_REFERENCES</TD></TR>
+ <TR><TD>-</TD><TD>SURFACE_END</TD><TD>End of <A HREF="#Surface">Surface</A> object.  Should match OFS_END.</TD></TR>
+</TABLE>
+
+
+<P>
+<A NAME="BoneReference"><H5>BoneReference:</H5><P>(member of <A HREF="#Surface">Surface</A>)
+<TABLE BORDER=1 CAPTION="BoneReference">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>I32</TD><TD>INDEX</TD><TD>Index into list of <A HREF="#Bone">Bone</A> objects.</TD></TR>
+</TABLE>
+
+
+<P>
+<A NAME="Triangle"><H5>Triangle:</H5><P>(member of <A HREF="#Surface">Surface</A>)
+<TABLE BORDER=1 CAPTION="Triangle">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>S32 * 3</TD><TD>INDEXES</TD><TD>List of offset values into the list of <A HREF="#Vertex">Vertex</A> objects that constitute the corners of the <A HREF="#Triangle">Triangle</A> object.
+<A HREF="#Vertex">Vertex</A> numbers are used instead of actual coordinates, as the coordinates are implicit in the <A HREF="#Vertex">Vertex</A> object. (XXX: does order matter?)</TD></TR>
+</TABLE>
+
+<P>
+<A NAME="Vertex"><H5>Vertex:</H5><P>(member of <A HREF="#Surface">Surface</A>)
+<TABLE BORDER=1 CAPTION="Vertex">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>VEC3</TD><TD>VERTEX</TD><TD>3-space Cartesian coordinate, left-handed geometry.</TD></TR>
+ <TR><TD>VEC3</TD><TD>NORMAL</TD><TD>Cartesian normal vector, left-handed geometry.</TD></TR>
+ <TR><TD>F32 * 2</TD><TD>TEXCOORD</TD><TD>Texture coordinate on shader that corresponds to this vertex.</TD></TR>
+ <TR><TD>I32</TD><TD>NUM_WEIGHTS</TD><TD>Number of bones that influence this <A HREF="#Vertex">Vertex</A> object, that is, number of <A HREF="#Weight">Weight</A> objects.</TD></TR>
+ <TR><TD>!</TD><TD><I>(<A HREF="#Weight">Weight</A>)</I></TD><TD>List of <A HREF="#Weight">Weight</A> objects that influence this <A HREF="#Vertex">Vertex</A> object.</TD></TR>
+</TABLE>
+
+<P>
+<A NAME="Weight"><H5>Weight:</H5><P>(member of <A HREF="#Vertex">Vertex</A>)
+<TABLE BORDER=1 CAPTION="Weight">
+<TR><TH>Datatype</TH><TH>name/purpose</TH><TH>Description</TH></TR>
+
+ <TR><TD>I32</TD><TD>BONE_INDEX</TD><TD>Index into list of <A HREF="#BoneReference">BoneReference</A> objects.</TD></TR>
+ <TR><TD>F32</TD><TD>BONE_WIDHT</TD><TD>How much this <A HREF="#BoneReference">BoneReference</A> object influences the <A HREF="#Vertex">Vertex</A> object, as a multiplier(?).</TD></TR>
+</TABLE>
+
+
+<H2>Notable format changes from MD3</H2>
+<P>
+First and foremost, the encoding of the normal vector is eliminated in favor of just using the Cartesian coordinates (yay, no crazy lat/lng calculations!).
+<P>
+Vertex coordinates are not scaled as in MD3, and are now full-blown floating-point values, not 16-bit integers.
+<P>
+LOD (Level Of Detail) sets are mashed into one MD4 object.
+<P>
+Only one shader may be associated with a <A HREF="#Surface">Surface</A> object.
+As a result, the list of shaders is eliminated (folded into the <A HREF="#Surface">Surface</A> object directly), and the texture coordinates are folded directly into the <A HREF="#Vertex">Vertex</A> objects, instead of in a separate list of TexCoords [per shader].
+
+<HR>
+<ADDRESS>
+-- PhaethonH
+(<A HREF="mailto:phaethon@linux.ucla.edu">phaethon@linux.ucla.edu</A>)
+</ADDRESS>
+</BODY>
+</HTML>

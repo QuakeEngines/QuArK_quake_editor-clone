@@ -1,0 +1,180 @@
+[[gdi32.dll]]
+
+[CreateBitmap,CreateBitmapIndirect]
+CreateBitmap creates a bitmap with the specified width, height, and color format.
+The returned bitmap handle must be freed with DeleteObject when no longer needed.
+
+[CreateCompatibleBitmap]
+CreateCompatibleBitmap creates a bitmap compatible with the device that is
+associated with the specified device context.
+The returned bitmap handle must be freed with DeleteObject when no longer needed.
+
+[CreateDIBitmap]
+CreateDIBitmap creates a device-dependent bitmap from a device-independent bitmap.
+The returned bitmap handle must be freed with DeleteObject when no longer needed.
+
+[CreateDiscardableBitmap]
+CreateDiscardableBitmap creates a discardable bitmap that is compatible with the specified device.
+The returned bitmap handle must be freed with DeleteObject when no longer needed.
+
+[CreateDIBSection]
+CreateDIBSection creates a device-independent bitmap that applications can write to directly.
+The returned bitmap handle must be freed with DeleteObject when no longer needed.
+
+[CreatePen]
+CreatePen creates a logical pen that has the specified style, width, and color.
+The returned pen handle must be freed with DeleteObject when no longer needed.
+
+[CreatePenIndirect]
+CreatePenIndirect creates a logical pen that has the specified style, width, and color.
+The returned pen handle must be freed with DeleteObject when no longer needed.
+
+
+[ExtCreatePen]
+ExtCreatePen creates a logical pen that has the specified style, width, and brush attributes.
+The returned pen handle must be freed with DeleteObject when no longer needed.
+
+[CreateBrushIndirect]
+CreateBrushIndirect creates a logical brush that has the specified style, color, and pattern.
+The returned brush handle must be freed with DeleteObject when no longer needed.
+
+[CreateDIBPatternBrush]
+CreateDIBPatternBrush creates a logical brush that has the pattern specified by
+the device-independent bitmap.
+The returned brush handle must be freed with DeleteObject when no longer needed.
+
+[CreateDIBPatternBrushPt]
+CreateDIBPatternBrushPt creates a logical brush that has the pattern specified by
+the device-independent bitmap
+The returned brush handle must be freed with DeleteObject when no longer needed.
+
+[CreateHatchBrush]
+CreateHatchBrush creates a logical brush that has the specified hatch pattern and color.
+The returned brush handle must be freed with DeleteObject when no longer needed.
+
+[CreatePatternBrush]
+CreatePatternBrush creates a logical brush with the specified bitmap pattern.
+The returned brush handle must be freed with DeleteObject when no longer needed.
+
+[CreateSolidBrush]
+CreateSolidBrush creates a logical brush that has the specified solid color.
+The returned brush handle must be freed with DeleteObject when no longer needed.
+
+[CloseMetaFile]
+CloseMetaFile closes a metafile device context and returns a handle that
+identifies a Windows-format metafile.
+The returned metafile handle must be freed with DeleteMetaFile when no longer needed.
+
+[CopyMetaFile,CopyMetaFileA,CopyMetaFileW]
+CopyMetaFile copies the content of a Windows-format metafile to the specified file.
+The returned metafile handle must be freed with DeleteMetaFile when no longer needed.
+
+[CreateMetaFile,CreateMetaFileA,CreateMetaFileW]
+CreateMetaFile creates a device context for a Windows-format metafile.
+The returned metafile handle must be freed with DeleteMetaFile when no longer needed.
+
+[GetMetaFile,GetMetaFileA,GetMetaFileW]
+GetMetaFile creates a handle that identifies the given Windows-format metafile.
+The returned metafile handle must be freed with DeleteMetaFile when no longer needed.
+
+[SetMetaFileBitsEx]
+SetMetaFileBitsEx creates a memory-based Windows-format metafile from the supplied data.
+The returned metafile handle must be freed with DeleteMetaFile when no longer needed.
+
+[CloseEnhMetaFile]
+CloseEnhMetaFile closes an enhanced-metafile device context and returns a handle
+that identifies an enhanced-format metafile.
+The returned metafile handle must be freed with DeleteEnhMetaFile when no longer needed.
+
+[CopyEnhMetaFile,CopyEnhMetaFileA,CopyEnhMetaFileW]
+CopyEnhMetaFile copies the contents of an enhanced-format metafile to a specified file.
+The returned metafile handle must be freed with DeleteEnhMetaFile when no longer needed.
+
+[CreateEnhMetaFile,CreateEnhMetaFileA,CreateEnhMetaFileW]
+CreateEnhMetaFile creates a device context for an enhanced-format metafile.
+The returned metafile handle must be freed with DeleteEnhMetaFile when no longer needed.
+
+[GetEnhMetaFile,GetEnhMetaFileA,GetEnhMetaFileW]
+GetEnhMetaFile creates a handle that identifies the enhanced-format metafile stored in the specified file.
+The returned metafile handle must be freed with DeleteEnhMetaFile when no longer needed.
+
+[SetEnhMetaFileBits]
+SetEnhMetaFileBits creates a memory-based enhanced-format metafile from the supplied data.
+The returned metafile handle must be freed with DeleteEnhMetaFile when no longer needed.
+
+[SetWinMetaFileBits]
+SetEnhMetaFileBits converts a metafile from the older Windows format to the new
+enhanced format and stores the new metafile in memory.
+The returned metafile handle must be freed with DeleteEnhMetaFile when no longer needed.
+
+
+[CreateFontIndirect,CreateFontIndirectA,CreateFontIndirectW]
+CreateFontIndirect creates a logical font that has the characteristics specified
+in the specified structure.
+The returned font handle must be freed with DeleteObject when no longer needed.
+
+[CreateFont,CreateFontA,CreateFontW]
+CreateFont creates a logical font that has specific characteristics.
+The returned font handle must be freed with DeleteObject when no longer needed.
+
+[CreatePalette]
+CreatePalette creates a logical color palette.
+The returned palette handle must be freed with DeleteObject when no longer needed.
+
+[CreateHalftonePalette]
+CreateHalftonePalette creates a halftone palette for the specified device context.
+The returned palette handle must be freed with DeleteObject when no longer needed.
+
+
+[CreateEllipticRgn]
+CreateEllipticRgn creates an elliptical region.
+The returned region handle must be freed with DeleteObject when no longer needed.
+
+[CreateEllipticRgnIndirect]
+CreateEllipticRgnIndirect creates an elliptical region.
+The returned region handle must be freed with DeleteObject when no longer needed.
+
+
+[CreatePolyPolygonRgn]
+CreatePolyPolygonRgn creates a region consisting of a series of polygons.
+The returned region handle must be freed with DeleteObject when no longer needed.
+
+[CreateRectRgn]
+CreateRectRgn creates a rectangular region.
+The returned region handle must be freed with DeleteObject when no longer needed.
+
+
+[CreateRectRgnIndirect]
+CreateRectRgnIndirect creates a rectangular region.
+The returned region handle must be freed with DeleteObject when no longer needed.
+
+[CreateRoundRectRgn]
+CreateRoundRectRgn creates a rectangular region with rounded corners.
+The returned region handle must be freed with DeleteObject when no longer needed.
+
+[ExtCreateRegion]
+ExtCreateRegion creates a region from the specified region and transformation data.
+The returned region handle must be freed with DeleteObject when no longer needed.
+
+[CreatePolygonRgn]
+CreatePolygonRgn creates a polygonal region.
+The returned region handle must be freed with DeleteObject when no longer needed.
+
+[CreateCompatibleDC]
+CreateCompatibleDC creates a memory device context (DC) compatible with the specified device.
+The returned device context handle must be freed with DeleteDC when no longer needed.
+
+
+[CreateDC,CreateDCA,CreateDCW]
+CreateDC creates a device context (DC) for a device by using the specified name.
+The returned device context handle must be freed with DeleteDC when no longer needed.
+
+[CreateIC,CreateICA,CreateICW]
+CreateIC creates an information context for the specified device.
+The returned device context handle must be freed with DeleteDC when no longer needed.
+
+[CreateColorSpace,CreateColorSpaceA,CreateColorSpaceW]
+CreateColorSpace creates a logical color space.
+The returned color space handle must be freed with DeleteObject when no longer needed.
+
+

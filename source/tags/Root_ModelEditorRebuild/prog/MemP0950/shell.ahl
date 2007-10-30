@@ -1,0 +1,22 @@
+[[shell32.dll]]
+
+[ExtractIcon,ExtractIconA,ExtractIconW]
+ExtractIcon retrieves the handle of an icon from the specified executable file,
+dynamic-link library (DLL), or icon file.
+The returned icon handle must be freed with DestroyIcon when no longer needed.
+
+[ExtractAssociatedIcon,ExtractAssociatedIconA,ExtractAssociatedIconW]
+ExtractAssociatedIcon returns the handle of an indexed icon found in a file or
+an icon found in an associated executable file.
+The returned icon handle must be freed with DestroyIcon when no longer needed.
+
+[DuplicateIcon]
+DuplicateIcon creates a duplicate of a specified icon.
+The returned icon handle must be freed with DestroyIcon when no longer needed.
+
+[SHFileOperation,SHFileOperationA,SHFileOperationW]
+SHFileOperation Copies, moves, renames, or deletes a file system object.
+If the FOF_WANTMAPPINGHANDLE flag is used, the returned file name mapping object
+must be freed with SHFreeNameMappings when no longer needed.
+
+

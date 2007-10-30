@@ -1,0 +1,40 @@
+[[kernel32.dll]]
+
+[VirtualAlloc]
+VirtualAlloc reserves or commits a region of pages in the virtual address space
+of the calling process.
+The allocated pages must be freed with VirtualFree when no longer needed.
+
+
+[HeapCreate]
+HeapCreate creates a heap object that can be used by the calling process.
+The returned heap object must be freed with HeapDestroy when no longer needed.
+
+[HeapAlloc]
+HeapAlloc allocates a block of non movable memory from a heap.
+The returned memory block must be freed with HeapFree when no longer needed.
+
+[HeapReAlloc]
+HeapReAlloc reallocates a block of non movable memory from a heap.
+The returned memory block must be freed with HeapFree when no longer needed.
+
+[GlobalAlloc]
+GlobalAlloc allocates a global memory object from the heap. Under Win32 there is no
+difference between local and global heap.
+The returned global memory object must be freed with GlobalFree when no longer needed.
+
+[GlobalReAlloc]
+GlobalReAlloc reallocates a global memory object from the heap. Under Win32 there is no
+difference between local and global heap.
+The returned global memory object must be freed with GlobalFree when no longer needed.
+
+[LocalAlloc]
+LocalAlloc allocates a memory object from the heap. Under Win32 there is no
+difference between local and global heap.
+The returned global memory object must be freed with LocalFree when no longer needed.
+
+[LocalReAlloc]
+LocalReAlloc reallocates a memory object from the heap. Under Win32 there is no
+difference between local and global heap.
+The returned global memory object must be freed with LocalFree when no longer needed.
+
