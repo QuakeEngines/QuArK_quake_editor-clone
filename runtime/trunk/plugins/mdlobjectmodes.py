@@ -677,7 +677,7 @@ def objectruler(editor, view, poly):
 class SphereMakerDragObject(parent):
     "A sphere maker."
 
-    Hint = hintPlusInfobaselink("Quick sphere maker||Quick sphere maker:\n\nAfter you click this button, you can create sphere model objects in the editor with the left mouse button. Each sphere will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.\nLarge number of faces may 'freeze' QuArK up, but it will return.", "intro.mapeditor.toolpalettes.objectmodes.html#sphere")
+    Hint = hintPlusInfobaselink("Quick sphere maker||Quick sphere maker:\n\nAfter you click this button, you can create sphere model objects in the editor with the left mouse button. Each sphere will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.\nLarge number of faces may 'freeze' QuArK up, but it will return.", "intro.modeleditor.toolpalettes.objectmodes.html#sphere")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -1280,7 +1280,7 @@ class SphereMakerDragObject(parent):
 class PyramidMakerDragObject(parent):
     "A pyramid-cone maker."
 
-    Hint = hintPlusInfobaselink("Quick pyramid-cone maker||Quick pyramid-cone maker:\n\nAfter you click this button, you can create pyramids-cones model objects in the editor with the left mouse button. Each pyramid-cone will be added to the component that is currently selected.\n\nThe more sides that are added the more it becomes a cone shape.\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.\nClick ' InfoBase ' for special vertex movement details.", "intro.mapeditor.toolpalettes.objectmodes.html#pyramid_cone")
+    Hint = hintPlusInfobaselink("Quick pyramid-cone maker||Quick pyramid-cone maker:\n\nAfter you click this button, you can create pyramids-cones model objects in the editor with the left mouse button. Each pyramid-cone will be added to the component that is currently selected.\n\nThe more sides that are added the more it becomes a cone shape.\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.\nClick ' InfoBase ' for special vertex movement details.", "intro.modeleditor.toolpalettes.objectmodes.html#pyramid_cone")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -1760,7 +1760,7 @@ class PyramidMakerDragObject(parent):
 class DoubleConeMakerDragObject(parent):
     "A double-cone maker."
 
-    Hint = hintPlusInfobaselink("Quick double-cone maker||Quick double-cone maker:\n\nAfter you click this button, you can create double-cones model objects in the editor with the left mouse button. Each double-cone will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#double_cone")
+    Hint = hintPlusInfobaselink("Quick double-cone maker||Quick double-cone maker:\n\nAfter you click this button, you can create double-cones model objects in the editor with the left mouse button. Each double-cone will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.modeleditor.toolpalettes.objectmodes.html#double_cone")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -2305,7 +2305,7 @@ class DoubleConeMakerDragObject(parent):
 class CylinderMakerDragObject(parent):
     "A cylinder maker."
 
-    Hint = hintPlusInfobaselink("Quick cylinder maker||Quick cylinder maker:\n\nAfter you click this button, you can create cylinder model objects in the editor with the left mouse button. Each cylinder will be added to the component that is currently selected. This can make angled sides or a more curved style cylinder by adding more faces.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#cylinder")
+    Hint = hintPlusInfobaselink("Quick cylinder maker||Quick cylinder maker:\n\nAfter you click this button, you can create cylinder model objects in the editor with the left mouse button. Each cylinder will be added to the component that is currently selected. This can make angled sides or a more curved style cylinder by adding more faces.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.modeleditor.toolpalettes.objectmodes.html#cylinder")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -2804,7 +2804,7 @@ class CylinderMakerDragObject(parent):
 class DomeMakerDragObject(parent):
     "A dome maker."
 
-    Hint = hintPlusInfobaselink("Quick dome maker||Quick dome maker:\n\nAfter you click this button, you can create dome model objects in the editor with the left mouse button. Each dome will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#dome")
+    Hint = hintPlusInfobaselink("Quick dome maker||Quick dome maker:\n\nAfter you click this button, you can create dome model objects in the editor with the left mouse button. Each dome will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.modeleditor.toolpalettes.objectmodes.html#dome")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -3407,7 +3407,7 @@ class DomeMakerDragObject(parent):
 class FanMakerDragObject(parent):
     "A fan maker."
 
-    Hint = hintPlusInfobaselink("Quick fan maker||Quick fan maker:\n\nAfter you click this button, you can create fan model objects in the editor with the left mouse button. Each fan will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#fan")
+    Hint = hintPlusInfobaselink("Quick fan maker||Quick fan maker:\n\nAfter you click this button, you can create fan model objects in the editor with the left mouse button. Each fan will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.modeleditor.toolpalettes.objectmodes.html#fan")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -4028,7 +4028,7 @@ class FanMakerDragObject(parent):
 class TorusMakerDragObject(parent):
     "A torus maker."
 
-    Hint = hintPlusInfobaselink("Quick torus maker||Quick torus maker:\n\nAfter you click this button, you can create torus model objects in the editor with the left mouse button. Each torus will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.mapeditor.toolpalettes.objectmodes.html#torus")
+    Hint = hintPlusInfobaselink("Quick torus maker||Quick torus maker:\n\nAfter you click this button, you can create torus model objects in the editor with the left mouse button. Each torus will be added to the component that is currently selected.\n\nMove the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make it smaller.\n\nNOTE: Less than 3 faces will not draw anything.", "intro.modeleditor.toolpalettes.objectmodes.html#torus")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -4580,7 +4580,7 @@ class TorusMakerDragObject(parent):
 class DeactivateDragObject(quarkpy.mdlhandles.RectSelDragObject):
     "This is just a place holder to turn off the Object Maker."
 
-    Hint = hintPlusInfobaselink("Deactivator button||Deactivator button:\n\nTo return to regular operation mode you must click this button to turn 'Off' the 'Quick Object Maker'. To reactivate it simply click on any of the 'Quick Object Maker' shapes you wish to use.", "intro.mapeditor.toolpalettes.objectmodes.html#sphere")
+    Hint = hintPlusInfobaselink("Deactivator button||Deactivator button:\n\nTo return to regular operation mode you must click this button to turn 'Off' the 'Quick Object Maker'. To reactivate it simply click on any of the 'Quick Object Maker' shapes you wish to use.", "intro.modeleditor.toolpalettes.objectmodes.html#deactivator")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -4650,7 +4650,7 @@ class ObjectModesBar(ToolBar):
         ico_dict['ico_objectmodes'] = LoadIconSet1("mdlobjm", 1.0)
         ico_objectmodes = ico_dict['ico_objectmodes']
 
-        BuildDialogbtn = qtoolbar.button(DialogClick, "Object Dialog Input||Object Dialog Input:\n\nThis will open a dialog input box for the 'Object modes Toolbar' item currently in use. Not all objects will use the same dialog input box. Which ever object button is active at the time this button is clicked, will produce that objects dialog input box.\n\nThese dialogs will remain open until they are closed manually.\n\nIf a particular object has its own dialog then that objects name will appear in the title. Other wise the standard ' Object Distortion Dialog ' will be used for all other objects.\n\nYou can have one or more dialogs open and active at a time. But they will only effect the objects that use them.", ico_objectmodes, 0, infobaselink="intro.mapeditor.toolpalettes.objectmodes.html#dialog")
+        BuildDialogbtn = qtoolbar.button(DialogClick, "Object Dialog Input||Object Dialog Input:\n\nThis will open a dialog input box for the 'Object modes Toolbar' item currently in use. Not all objects will use the same dialog input box. Which ever object button is active at the time this button is clicked, will produce that objects dialog input box.\n\nThese dialogs will remain open until they are closed manually.\n\nIf a particular object has its own dialog then that objects name will appear in the title. Other wise the standard ' Object Distortion Dialog ' will be used for all other objects.\n\nYou can have one or more dialogs open and active at a time. But they will only effect the objects that use them.", ico_objectmodes, 0, infobaselink="intro.modeleditor.toolpalettes.objectmodes.html#dialog")
 
               # to build the Mode buttons
         btns = []
@@ -5438,6 +5438,10 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2007/10/09 04:15:40  cdunde
+# Changed some of the "Fan" Quick Object Maker code
+# to provide integers where needed and stop crashing.
+#
 # Revision 1.4  2007/10/08 18:47:31  cdunde
 # To stop both editor's Quick Object Makers from braking when zoomed in close.
 #
