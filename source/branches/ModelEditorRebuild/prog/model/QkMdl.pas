@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22.2.1  2007/10/30 20:58:58  danielpharos
+MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
+
 Revision 1.22  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -918,10 +921,7 @@ begin
         { setup Root }
         Root := ModelRoot;
         Comp := Loaded_Component(Root, '');
-        if GameModeCompare(CharModeJeu, mjQuake1, gcCompatible) then
-          ObjectGameCode := CharModeJeu
-        else
-          ObjectGameCode := mjQuake1;
+        ObjectGameCode := mjQuake;
         Root.Specifics.Values['seamtrick'] := '1';
         Size[1] := mdl.synctype;
         Size[2] := mdl.flags;

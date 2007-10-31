@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9.4.1  2007/10/30 20:59:00  danielpharos
+MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
+
 Revision 1.9  2006/02/19 00:13:10  cdunde
 To add support for md2 model file saving functions.
 
@@ -184,10 +187,7 @@ begin
    { setup Root }
   Root:=ModelRoot;
   Comp:=Loaded_Component(Root, '');
-  if GameModeCompare(CharModeJeu, mjQuake2, gcCompatible) then
-    ObjectGameCode:=CharModeJeu
-  else
-    ObjectGameCode:=mjQuake2;
+  ObjectGameCode:=mjQuake2;
 
    { load triangles in a single component }
   J:=mdl.num_tris*SizeOf(dtriangle_t);

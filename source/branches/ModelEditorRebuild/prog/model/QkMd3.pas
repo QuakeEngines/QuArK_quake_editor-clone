@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34.2.1  2007/10/30 20:58:59  danielpharos
+MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
+
 Revision 1.34  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -820,15 +823,7 @@ begin
       org:=f.position;
       f.readbuffer(head, sizeof(head));
       if (head.id='IDP3') and (head.version=15) then
-      begin
-        if GameModeCompare(CharModeJeu, mjQ3A, gcCompatible) then
-          if CharModeJeu=mjSTVEF then
-            ObjectGameCode := mjQ3A
-          else
-            ObjectGameCode := CharModeJeu
-        else
-          ObjectGameCode := mjQ3A;
-      end
+        ObjectGameCode := mjQ3A
       else if (head.id='RDM5') and (head.version=2) then
         ObjectGameCode:=mjSTVEF
       else
