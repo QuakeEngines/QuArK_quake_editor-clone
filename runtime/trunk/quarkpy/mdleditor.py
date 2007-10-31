@@ -1161,6 +1161,8 @@ def commonhandles(self, redraw=1):
 
 ### Skin-view Invalidate for Textured Views Only Section:
 ### ====================================================
+    if self.layout is None:
+        return
     for v in self.layout.views:
         if v.info["viewname"] == "skinview":
             continue
@@ -1427,6 +1429,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.77  2007/10/29 12:45:41  cdunde
+#To setup drag line drawing for multiple selected vertex drags in the Skin-view.
+#
 #Revision 1.76  2007/10/24 14:57:08  cdunde
 #Reset Objects toolbar to Deactivated and Animation toolbar to Deactivated
 #and Pause off when a model file is closed to avoid conflict errors.

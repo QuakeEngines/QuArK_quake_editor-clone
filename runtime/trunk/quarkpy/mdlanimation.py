@@ -47,25 +47,30 @@ def drawanimation(self):
             mdlmgr.treeviewselchanged = 0
         else:
             pass
+        return FPS
     else:
         frame = playlist[playNR]
         if playNR == len(playlist) - 1:
             playNR = 0
         else:
             playNR = playNR + 1
-        editor.layout.explorer.uniquesel = frame
-        editor.layout.selchange
-        for v in editor.layout.views:
-            if v.info["viewname"] == "XY" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] == "1":
-                mdleditor.setsingleframefillcolor(editor, v)
-                v.repaint()
-            if v.info["viewname"] == "XZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] == "1":
-                mdleditor.setsingleframefillcolor(editor, v)
-                v.repaint()
-            if v.info["viewname"] == "YZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] == "1":
-                mdleditor.setsingleframefillcolor(editor, v)
-                v.repaint()
-    return FPS
+        if editor.layout is None:
+            quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
+            quarkx.settimer(drawanimation, self, 0)
+        else:
+            editor.layout.explorer.uniquesel = frame
+            editor.layout.selchange
+            for v in editor.layout.views:
+                if v.info["viewname"] == "XY" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] == "1":
+                    mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()
+                if v.info["viewname"] == "XZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateY2Dview'] == "1":
+                    mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()
+                if v.info["viewname"] == "YZ" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateX2Dview'] == "1":
+                    mdleditor.setsingleframefillcolor(editor, v)
+                    v.repaint()
+            return FPS
 
 
 
@@ -382,6 +387,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.5  2007/10/31 03:47:52  cdunde
+#Infobase button link updates.
+#
 #Revision 1.4  2007/10/22 15:43:40  cdunde
 #To remove unused code and clean up file.
 #
