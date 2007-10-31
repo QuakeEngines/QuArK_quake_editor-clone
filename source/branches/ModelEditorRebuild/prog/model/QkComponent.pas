@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27.2.2  2007/10/30 23:14:07  danielpharos
+Added FindVertex function, to check for duplicate vertices.
+
 Revision 1.27.2.1  2007/10/30 20:59:02  danielpharos
 MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
 
@@ -368,6 +371,9 @@ procedure QComponent.AddTo3DScene;
 var
   Info: PModel3DInfo;
   TriangleList, VertexList: TQList;
+  VertexCount: Integer;
+  p_o, VecP: vec3_p;
+  I: Integer;
 begin
   if FCurrentFrame<0 then
     Exit;
@@ -386,7 +392,16 @@ begin
   end;
   VertexList:=GetCurrentFrameObject.BuildVertexList;
   try
-    Info^.VertexCount:=VertexList.Count;
+    VertexCount:=VertexList.Count;
+    Info^.VertexCount:=VertexCount;
+    GetMem(p_o, sizeof(vec3_t)*VertexCount);
+    Info^.Vertices:=p_o;
+    for I:=0 to VertexCount-1 do
+    begin
+      QModelVertex(VertexList.Items1[I]).GetPosition(VecP);
+      p_o^:=VecP^;
+      inc(p_o);
+    end;
   finally
     VertexList.Free;
   end;
@@ -450,9 +465,8 @@ procedure QComponent.SetCurrentFrame(NewFrame: Integer);
 var
   FrameList: TQList;
 begin
-  FrameList:=TQList.Create;
+  FrameList:=BuildFrameList;
   try
-    FindAllSubObjects('', QFrame, Nil, FrameList);
     if NewFrame<0 then
       NewFrame:=0;
     if NewFrame > FrameList.Count-1 then
@@ -577,7 +591,7 @@ begin
   OTriangle:=QModelTriangle.Create('Triangle '+inttostr(TriangleCount), Self);
   Self.SubElements.Add(OTriangle);
 
-  SetLength(VerticesDataT, VertCount);
+  //@SetLength(VerticesDataT, VertCount);
   for I:=0 to VertCount-1 do
   begin
     VerticesDataT[I].VertexNo:=Vertices[I];

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9.4.2  2007/10/31 18:43:31  danielpharos
+Remove stupid mistake uploading untested code.
+
 Revision 1.9.4.1  2007/10/30 20:59:00  danielpharos
 MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
 
@@ -240,6 +243,7 @@ begin
     Loaded_SkinFile(Comp, CharToPas(Z), true);
     F.Position:=J;
    end;
+  Comp.CurrentSkin:=0;
 
    { load frames }
   F.Position:=Origine+mdl.ofs_frames;
@@ -264,6 +268,7 @@ begin
   finally
     FreeMem(FrameData);
   end;
+  Comp.CurrentFrame:=0;
   Result:=Root;
 end;
 

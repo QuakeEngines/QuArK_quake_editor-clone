@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34.2.2  2007/10/31 18:43:32  danielpharos
+Remove stupid mistake uploading untested code.
+
 Revision 1.34.2.1  2007/10/30 20:58:59  danielpharos
 MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
 
@@ -608,6 +611,7 @@ begin
       end;
     end;
   end;
+  Comp.CurrentSkin:=0;
   fSize[1]:=size.x;
   fSize[2]:=size.y;
   Comp.SetFloatsSpec('skinsize', fSize);
@@ -688,6 +692,7 @@ begin
     finally
       FreeMem(Vertexes);
     end;
+    Comp.CurrentFrame:=0;
   end;
 end;
 

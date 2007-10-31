@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1.2.1  2007/10/30 20:59:02  danielpharos
+MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
+
 
 }
 
@@ -41,10 +44,12 @@ type
       2: (longst: LongInt);
     end;
   PVertexData = ^TVertexData;
-  vertex_t = array of TVertexData;
+  vertex_t = packed array[0..2] of TVertexData;
   vertex_p = ^vertex_t;
 
   QModelTriangle = class(QMdlObject)
+  private
+    VertexNumber: Integer;
   public
     AnyColor: Boolean;
     FrontColor, BackColor: array[0..1] of TColor;
@@ -102,28 +107,32 @@ begin
     result:=0;
     exit;
   end;
-  Result:=(Length(S) - VertSpecLen) div sizeof(vertex_t);
+  if (Length(S) - VertSpecLen) div sizeof(TVertexData) <> VertexNumber then
+    raise exception.create('GetVertices: Vertices number mismatch');
+  Result:=VertexNumber;
   PChar(vertex):=PChar(S) + VertSpecLen;
 end;
 
 procedure QModelTriangle.SetVertices(vertex: vertex_t);
 var
-  S, S0: String;
+  S: String;
   VertP: PVertexData;
-  I, Count: Integer;
+  I: Integer;
 begin
-  S0:=FloatSpecNameOf(VertSpec);
-  S:=S0+'=';
-  Count:=Length(vertex);
-  SetLength(S, VertSpecLen+Count*sizeof(TVertexData));
+  S:=VertSpec+'=';
+  if Length(vertex)<>VertexNumber then
+    raise exception.create('SetVertices: Wrong number of vertices supplied');
+  SetLength(S, VertSpecLen+VertexNumber*sizeof(TVertexData));
   PChar(VertP):=PChar(S)+VertSpecLen;
-  for I := 0 to Count-1 do
+  for I := 0 to VertexNumber-1 do
   begin
     VertP.VertexNo:=vertex[I].VertexNo;
     VertP.longst:=vertex[I].longst;
     Inc(VertP);
   end;
-  Specifics.Delete(Specifics.IndexofName(S0));
+  I:=Specifics.IndexofName(FloatSpecNameOf(VertSpec));
+  if I>-1 then
+    Specifics.Delete(I);
   Specifics.Add(S);
 end;
 
@@ -133,9 +142,11 @@ var
   VecP: PVertexData;
   I: Integer;
 begin
+  if N > VertexNumber-1 then
+    raise exception.create('SetVertex: N out of range');
   S0:=FloatSpecNameOf(VertSpec);
-  S:=S0+'=';
-  SetLength(S, VertSpecLen+SizeOf(vec3_t));
+  S:=GetSpecArg(S0);
+  SetLength(S, VertSpecLen+VertexNumber*SizeOf(TVertexData));
   PChar(VecP):=PChar(S)+VertSpecLen+N*sizeof(TVertexData);
   VecP^.VertexNo:=vertex.VertexNo;
   VecP^.longst:=vertex.longst;
@@ -152,35 +163,19 @@ var
   OVertex: QModelVertex;
   I: Integer;
   VertexData: TVertexData;
-  FrameList, VertexList: TQList;
+  FrameList: TQList;
 begin
   if VertexNo > -1 then
   begin
     //@Check if Result is out-of-range...?
     Result := VertexNo;
-    VertexData.VertexNo := Result;
-    VertexData.longst := 0;
-    SetVertex(Result, VertexData);
   end
   else
   begin
+    Result := VertexNumber;
     OFrameGroup:=QFrameGroup(FParent);
     FrameList:=QComponent(OFrameGroup.FParent).BuildFrameList;
     try
-      if FrameList.Count = 0 then
-        Result := 0
-      else
-      begin
-        OFrame:=QFrame(FrameList.Items1[0]);
-        VertexList:=OFrame.BuildVertexList;
-        try
-          Result := VertexList.Count;
-        finally
-          VertexList.Free;
-        end;
-      end;
-      VertexData.VertexNo := Result;
-      VertexData.longst := 0;
       for I:=0 to FrameList.Count-1 do
       begin
         OFrame:=QFrame(FrameList.Items1[I]);
@@ -190,6 +185,10 @@ begin
     finally
       FrameList.Free;
     end;
+    VertexNumber := VertexNumber + 1;
+    VertexData.VertexNo := Result;
+    VertexData.longst := 0;
+    SetVertex(Result, VertexData);
   end;
 end;
 
