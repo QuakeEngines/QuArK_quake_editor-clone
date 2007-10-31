@@ -32,21 +32,29 @@ To <g>de-select</g> any and all vertexes, simply do another small <g>Rectangle d
 <img border=1 align=right>selection2.png</img>
 <b><u>Skin-view's button section</u></b>
 
-<i><u>Skin-view Grid button </u></i>: Because the Model Editor and the Skin-view work on different aspects of
+<i><u>Skin-view Grid button </u></i>: (far left button) Because the Model Editor and the Skin-view work on different aspects of
 a model, they require their own distinct and independent <g>Grids</g>, which is the first button to the far left.
 Each have their own <g>grid menu</g> with pre-set amounts, but any amount can be entered by clicking on the <g>Other</g>
 item shown at the very bottom of the menu. In addition, for the Skin-view, there are two
 <a href="intro.modeleditor.skinview.html#funcsnmenus">RMB menu</a> items for the <g> Skin-view grid</g> (see below).
 
-<i><u>Skin-view Zoom button </u></i>: (center button) This allows you to zoom in and out from the skin with some pre-set factors
+<i><u>Skin-view Zoom button </u></i>: (2nd button) This allows you to zoom in and out from the skin with some pre-set factors
 as well as a setting for a 'custom' zoom amount. It only applies to the Skin-view and not to any other view
 of the Model Editor.
 
-<i><u>Vertex drag mode </u></i>: (far right button) This is a special feature of the Skin-view. It allows you to choose to make
+<i><u>Vertex drag mode </u></i>: (3rd button) This is a special feature of the Skin-view. It allows you to choose to make
 either a <b>multiple drag</b> (the default setting) using a single drag handle, meaning all other handles in the same location will be
 dragged also automatically keeping the <g>skin mesh</g> together, or a <b>single drag</b> only dragging the
 handle on top which will pull the <g>skin mesh</g> apart for individual placement. This button also works
 in conjunction with the <g>RMB</g> menus that we will cover further on.
+
+<i><u>Remap Snapshot button </u></i>: (far right button) Pressing this icon, will reset the selected component's <g>skin mesh</g> using
+the angle of view that is seen in the editor's 3D view when the button is clicked. Doing it this way allows you to re-map any selected
+faces, of any component, at any angle or direction for complete control of that process. So if you originally skin from the side and the
+top faces are distorted, you can select those faces, rotate the editor's 3D view to look from the top and click this button to re-skin them.
+There is also an option on the Skin-view <g>RMB</g> menu, shown below, to turn off the 3D view and re-skin from the Skin-view 2D perspective instead.
+If the outcome does not go as planed, just use the <g>RMB</g> menu or editor's <a href="intro.modeleditor.menu.html#editmenu">undo function</a>
+to reverse the action.
 
 A couple of other issues about all of the selection methods described at the beginning:
 

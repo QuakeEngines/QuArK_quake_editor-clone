@@ -73,6 +73,10 @@ changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloro
 or 'Show' but any related selected vertexes will remain that way for editing purposes. The 'Skin-view' selected face,
 show face and selected vertex colors can be changed in the 'Configuration Model Colors' section.
 
+<i>Skin From 3D view </i>&nbsp;: This turns the function on or off to take co-ordnances for the 'Skin-view' from the
+editors 3D view when new objects are created using the 'Quick Object Maker'. It will place that object on the skin exactly
+the same way you see it in the 3D view when the object is created. This same process applies to selected faces in the editor.
+
 <i>Skin Grid Visible </i>&nbsp;: (Also located in the Model Editor Configuration Options section) This function gives
 quick access to turn the Skin-view Grid on and off, but it will still be active for functions that use it such as
 the <g>snap to</g> function.
@@ -80,6 +84,9 @@ the <g>snap to</g> function.
 <i>Skin Grid Active </i>&nbsp;: (Also located in the Model Editor Configuration Options section) This function also gives
 quick access to activate or deactivate the Skin-view Grid. But any functions that use it such as the <g>snap to</g> function
 will not be effective.
+
+<i>Single Sel Drag Lines </i>&nbsp;: This function stops the multiple selection drag lines of the 'Linear Handle' from
+being drawn in the Skin-view to speed up the Skin-view selection and handle creation.
 
 And Two more additional RMB items are located on the <g>Draw Ticks During Drag</g> sub-menu. These are:
 

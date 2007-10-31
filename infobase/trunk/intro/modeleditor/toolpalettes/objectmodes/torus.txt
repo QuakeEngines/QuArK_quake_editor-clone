@@ -1,0 +1,13 @@
+title: Torus
+author: cdunde
+
+<img border=1 align=middle>objects6.png</img>
+<I><u>Quick torus maker</u></I>:  After you click this button, you can draw a torus in the editor with
+the left mouse button and each torus will be turned into an actual model object.
+
+Move the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make
+it smaller.<br>NOTE: Less than 3 faces will not draw anything.
+
+This particular object maker has its own
+<a href="intro.mapeditor.toolpalettes.objectmodes.html#dialogboxes">Dialog Input Box</a>
+because of the many different shapes that can be obtained when using a torus object.

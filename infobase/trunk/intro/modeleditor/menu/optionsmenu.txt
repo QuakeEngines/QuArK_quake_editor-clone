@@ -8,6 +8,14 @@ shown in the top sub-menu. You can also center any one or combination of the sca
 each view. If ' All 2D views '  or ' all scales centered '  is checked, it will deactivate this
 menu's individual items.
 
+<i><b>Ruler guide in 2D views</b> </i>&nbsp;: These functions allow you to display a line with the unit distance
+of total selected items in any one, combination, or all of the 2D views of the Editor. Much like
+the&nbsp;'Grid scale in 2D views'&nbsp; function above, this feature also has its own list of selections,
+as shown in the far right sub-menu. If one of these sub-menu items is active, checked, then when ever a single
+<g>face</g>, <g>object</g> or <g>component</g> is selected a&nbsp;'Ruler'&nbsp; will be displayed above and/or
+beside them from the starting point to the end point of the selected items along with&nbsp;'0'&nbsp; at the
+starting point and the total amount of their distance at the end point.
+
 <i><b>3D Rotation Options</b> - submenu items </i>&nbsp;:<br>
 <i>Original 3Dview rotation </i>&nbsp;: This is the way QuArK's model rotation has worked in the past.
 As long as the model drag is started flat (z at 0) it rotates and tilts during rotation fine.

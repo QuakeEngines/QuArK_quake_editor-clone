@@ -1,0 +1,6 @@
+title: Move selection
+author: cdunde
+
+<img border=1 align=right>move.png</img>
+Offsets the selected objects by the distance specified in the toolbar settings
+ <ref> ./configuration </ref> (last button of this toolbar).

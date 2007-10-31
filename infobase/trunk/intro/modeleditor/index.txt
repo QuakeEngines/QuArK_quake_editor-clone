@@ -4,6 +4,7 @@ subdir: model
 subdir: menu
 subdir: rmbmenus
 subdir: toolpalettes
+subdir: dataforms
 subdir: skinview
 
 The model editor is the secondary part of QuArK. A model can represent a number of things
