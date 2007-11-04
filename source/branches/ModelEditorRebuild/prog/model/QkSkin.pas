@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1.2.1  2007/10/31 09:51:56  danielpharos
+MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
+
 Revision 1.6  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -72,6 +75,8 @@ begin
  TypeInfo:='.pcx';
 end;
 
+{----------}
+
 function QSkinGroup.IsAllowedParent(Parent: QObject) : Boolean;
 begin
   if (Parent=nil) or (Parent is QComponent) then
@@ -79,8 +84,6 @@ begin
   else
     Result:=false;
 end;
-
-{----------}
 
 class function QSkinGroup.TypeInfo;
 begin
