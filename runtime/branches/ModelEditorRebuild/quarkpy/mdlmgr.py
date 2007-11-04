@@ -90,7 +90,7 @@ class ModelLayout(BaseLayout):
             slist.append(self.editor.Root.currentcomponent.currentskin)
             return slist
         if self.explorer.sellist == []:
-            s = self.editor.Root.currentcomponent.currentskin
+            s = self.editor.Root.currentcomponentobject.currentskinobject
             if s is not None:
                 pass
             else:
@@ -112,6 +112,7 @@ class ModelLayout(BaseLayout):
                             else:
                                 break
                 if s.type == ':mc':
+                    compobj = self.editor.Root.currentcomponentobject
                     for item in s.subitems:
                         if item.type == ':sg':
                             skincount = len(item.dictitems)
@@ -133,27 +134,27 @@ class ModelLayout(BaseLayout):
                                         holddictitem = item.dictitems[dictitem]
                                     if len(item.dictitems) > 1:
                                         count = count + 1
-                                    s = self.editor.Root.currentcomponent.currentskin
+                                    s = compobj.currentskinobject
                                     if item.dictitems[dictitem] == s:
                                         slist.append(s)
                                         return slist
                                     if count == len(item.dictitems):
                                         slist.append(holddictitem)
                                         if len(item.dictitems) > 1:
-                                            self.editor.Root.currentcomponent.currentskin = holddictitem
+                                            compobj.currentskinobject = holddictitem
                         else:
-                            s = self.editor.Root.currentcomponent.currentskin
+                            s = compobj.currentskinobject
                             if saveskin is not None and s != saveskin:
-                                self.editor.Root.currentcomponent.currentskin = s = saveskin
+                                compobj.currentskinobject = s = saveskin
                                 slist.append(s)
                                 return slist
                 else:
                     # not sure this section should be in here, except for models w/o any skins.
-                    s = self.editor.Root.currentcomponent.currentskin
+                    s = self.editor.Root.currentcomponentobject.currentskinobject
                     if s is not None:
                         slist.append(s)
             # this section does the same thing right above here.
-            s = self.editor.Root.currentcomponent.currentskin
+            s = self.editor.Root.currentcomponentobject.currentskinobject
             if saveskin is not None and s != saveskin:
                 s = saveskin
             if slist == [] and s is not None:
@@ -490,7 +491,8 @@ class ModelLayout(BaseLayout):
         global savedskins, savefacesel
         from qbaseeditor import currentview, flagsmouse
 
-        if comp != self.editor.Root.currentcomponent:
+        oldcomp = self.editor.Root.currentcomponentobject
+        if oldcomp is not None and comp != oldcomp:
             self.reset()
             if currentview.info["viewname"] == "skinview":
                 if self.editor.dragobject is not None and (isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
@@ -505,7 +507,7 @@ class ModelLayout(BaseLayout):
                         self.editor.ModelFaceSelList = []
                         self.editor.EditorObjectList = []
                         self.editor.SkinFaceSelList = []
-                        self.editor.Root.currentcomponent.filltris = []
+                        oldcomp.filltris = []
             else:
                 if flagsmouse == 2056:
                     pass
@@ -529,19 +531,11 @@ class ModelLayout(BaseLayout):
                         self.editor.ModelFaceSelList = []
                         self.editor.EditorObjectList = []
                         self.editor.SkinFaceSelList = []
-                    self.editor.Root.currentcomponent.filltris = []
+                    oldcomp.filltris = []
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
                     view.invalidate()
-        self.editor.Root.setcomponent(comp)
-
-########## commenting out the lines below brakes Misc dragging
-        if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
-            slist = self.getskin()
-            comp.currentskin = slist[0]
-        else:
-            comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
-##########
+        self.editor.Root.currentcomponentobject = comp
 
         from mdleditor import NewSellist
         try:
@@ -687,6 +681,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.53  2007/10/21 04:52:27  cdunde
+#Added a "Snap Shot" function and button to the Skin-view to allow the re-skinning
+#of selected faces in the editor based on their position in the editor's 3D view.
+#
 #Revision 1.52  2007/10/18 23:53:43  cdunde
 #To setup Custom Animation FPS Dialog, remove possibility of using 0, causing a crash and Defaults.
 #

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13.2.1  2007/10/30 20:58:58  danielpharos
+MASSIVE UPDATE to Model Editor, in the hopes that it'll become faster and more manageable (and more future-proof).
+
 Revision 1.13  2007/08/05 20:04:33  danielpharos
 Fix a typo in a comment.
 
@@ -77,7 +80,9 @@ type
     function CreateTagGroup: QTagGroup;
     procedure SetCurrentComponent(NewComponent: Integer);
     property CurrentComponent: Integer read FCurrentComponent write SetCurrentComponent;
+    function GetComponentObject(Comp: Integer) : QComponent;
     function GetCurrentComponentObject: QComponent;
+    function FindComponentObject(Component: QComponent): Integer;
     function BuildComponentList : TQList;
     procedure SetAllFrames(NewFrame: Integer);
     procedure SetAllFramesByName(NewFrameName: String);
@@ -88,6 +93,23 @@ type
 implementation
 
 uses quarkx, pyobjects, travail, QkObjectClassList, qkmd3, QkModel;
+
+function qGetComponentObject(self, args: PyObject) : PyObject; cdecl;
+var
+  I: Integer;
+begin
+  try
+    with QkObjFromPyObj(self) as QModelRoot do
+    begin
+      if not PyArg_ParseTupleX(args, 'i', [@i]) then
+        Exit;
+      Result:=GetPyObj(GetComponentObject(i));
+    end;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
 
 function qCheckComponents(self, args: PyObject) : PyObject; cdecl;
 begin
@@ -114,9 +136,10 @@ begin
 end;
 
 const
-  MethodTable: array[0..1] of TyMethodDef =
-    ((ml_name: 'checkcomponents';  ml_meth: qCheckComponents;  ml_flags: METH_VARARGS),
-     (ml_name: 'tryautoloadparts'; ml_meth: qTryAutoLoadParts; ml_flags: METH_VARARGS));
+  MethodTable: array[0..2] of TyMethodDef =
+    ((ml_name: 'getcomponentobject'; ml_meth: qGetComponentObject; ml_flags: METH_VARARGS),
+     (ml_name: 'checkcomponents';    ml_meth: qCheckComponents;    ml_flags: METH_VARARGS),
+     (ml_name: 'tryautoloadparts';   ml_meth: qTryAutoLoadParts;   ml_flags: METH_VARARGS));
 
 { ----------------------------- }
 
@@ -142,31 +165,39 @@ begin
   end;
 end;
 
-function QModelRoot.GetCurrentComponentObject: QComponent;
+function QModelRoot.GetComponentObject(Comp: Integer) : QComponent;
 var
   ComponentList: TQList;
 begin
-  if CurrentComponent < 0 then
+  if Comp<0 then
   begin
     Result:=nil;
     Exit;
   end;
-  ComponentList:=TQList.Create;
+  ComponentList:=BuildComponentList;
   try
-    FindAllSubObjects('', QComponent, Nil, ComponentList);
+    if Comp>ComponentList.Count-1 then
+    begin
+      Result:=nil;
+      Exit;
+    end;
     Result:=QComponent(ComponentList[FCurrentComponent]);
   finally
     ComponentList.Free;
   end;
 end;
 
+function QModelRoot.GetCurrentComponentObject: QComponent;
+begin
+  Result:=GetComponentObject(FCurrentComponent);
+end;
+
 procedure QModelRoot.SetCurrentComponent(NewComponent: Integer);
 var
   ComponentList: TQList;
 begin
-  ComponentList:=TQList.Create;
+  ComponentList:=BuildComponentList;
   try
-    FindAllSubObjects('', QComponent, Nil, ComponentList);
     if NewComponent < 0 then
       NewComponent := 0;
     if NewComponent > ComponentList.Count-1 then
@@ -177,14 +208,34 @@ begin
   FCurrentComponent := NewComponent;
 end;
 
+function QModelRoot.FindComponentObject(Component: QComponent): Integer;
+var
+  ComponentList: TQList;
+  I: Integer;
+begin
+  Result:=-1;
+  ComponentList:=BuildComponentList;
+  try
+    for I:=0 to ComponentList.Count-1 do
+    begin
+      if QComponent(ComponentList.Items1[I])=Component then
+      begin
+        Result:=I;
+        Exit;
+      end;
+    end;
+  finally
+    ComponentList.Free;
+  end;
+end;
+
 procedure QModelRoot.SetAllFrames(NewFrame: Integer);
 var
   ComponentList: TQList;
   I: Integer;
 begin
-  ComponentList:=TQList.Create;
+  ComponentList:=BuildComponentList;
   try
-    FindAllSubObjects('', QComponent, Nil, ComponentList);
     for I:=0 to ComponentList.Count-1 do
     begin
       QComponent(ComponentList[I]).SetCurrentFrame(NewFrame);
@@ -200,9 +251,8 @@ var
   NewFrame : Integer;
   I: Integer;
 begin
-  ComponentList:=TQList.Create;
+  ComponentList:=BuildComponentList;
   try
-    FindAllSubObjects('', QComponent, Nil, ComponentList);
     for I:=0 to ComponentList.Count-1 do
     begin
       NewFrame:=QComponent(ComponentList[I]).GetFrameFromName(NewFrameName);
@@ -224,24 +274,25 @@ var
   needed_framecount: Longint;
   FrameCount: Longint;
 begin
-  ComponentList:=TQList.Create;
+  ComponentList:=BuildComponentList;
   try
-    FrameList:=TQList.Create;
-    try
-      FindAllSubObjects('', QComponent, Nil, ComponentList);
-      needed_framecount:=-1;
-      for I:=0 to ComponentList.count-1 do
-      begin
-        Component:=QComponent(ComponentList[I]);
-        Component.FindAllSubObjects('', QFrame, Nil, FrameList);
+    needed_framecount:=-1;
+    for I:=0 to ComponentList.count-1 do
+    begin
+      Component:=QComponent(ComponentList[I]);
+      FrameList:=Component.BuildFrameList;
+      try
         if FrameList.count-1>needed_framecount then
           needed_framecount:=FrameList.count-1;
-        FrameList.Clear;
+      finally
+        FrameList.free;
       end;
-      for I:=0 to ComponentList.count-1 do
-      begin
-        Component:=QComponent(ComponentList[i]);
-        Component.FindAllSubObjects('', QFrame, Nil, FrameList);
+    end;
+    for I:=0 to ComponentList.count-1 do
+    begin
+      Component:=QComponent(ComponentList[i]);
+      FrameList:=Component.BuildFrameList;
+      try
         FrameCount:=FrameList.count;
         if FrameCount-1 < needed_framecount then
         begin
@@ -256,10 +307,9 @@ begin
           end;
           ProgressIndicatorStop;
         end;
-        FrameList.Clear;
+      finally
+        FrameList.free;
       end;
-    finally
-      FrameList.free;
     end;
   finally
     ComponentList.free;
@@ -305,6 +355,15 @@ begin
       I:=0;
       PyArg_ParseTupleX(value,'i',[@i]);
       SetCurrentComponent(i);
+      Result:=True;
+      Exit;
+    end
+    else
+    if StrComp(attr, 'currentcomponentobject')=0 then begin
+      I:=FindComponentObject(QComponent(QkObjFromPyObj(value)));
+      if I<0 then
+        Exit;
+      SetCurrentComponent(I);
       Result:=True;
       Exit;
     end;

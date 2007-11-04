@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27.2.3  2007/10/31 21:08:31  danielpharos
+Small update: the model now draws again (skinless), and several crashes were fixed.
+
 Revision 1.27.2.2  2007/10/30 23:14:07  danielpharos
 Added FindVertex function, to check for duplicate vertices.
 
@@ -169,6 +172,10 @@ type
     function BuildFrameList : TQList;
     function BuildSkinList : TQList;
     function BuildBoneList : TQList;
+
+    //@
+    function GetTriangleCount : Integer;
+
     procedure ChercheExtremites(var Min, Max: TVect); override;
     procedure Dessiner; override;
     procedure AnalyseClic(Liste: PyObject); override;
@@ -458,6 +465,18 @@ begin
   except
     Result.Free;
     Raise;
+  end;
+end;
+
+function QComponent.GetTriangleCount : Integer;
+var
+  TriangleList: TQList;
+begin
+  TriangleList:=BuildTriangleList;
+  try
+    Result:=TriangleList.Count;
+  finally
+    TriangleList.Free;
   end;
 end;
 
@@ -1273,8 +1292,18 @@ begin
       Exit;
     end
     else
+    if StrComp(attr, 'currentframeobject')=0 then begin
+      Result:=GetPyObj(GetCurrentFrameObject);
+      Exit;
+    end
+    else
     if StrComp(attr, 'currentskin')=0 then begin
       Result:=PyInt_FromLong(FCurrentSkin);
+      Exit;
+    end
+    else
+    if StrComp(attr, 'currentskinobject')=0 then begin
+      Result:=GetPyObj(GetCurrentSkinObject);
       Exit;
     end;
     'f': if StrComp(attr, 'filltris')=0 then begin
@@ -1325,7 +1354,11 @@ begin
       Result:=MakePyVect(GetOriginOfComponent(1));
       Exit;
     end;
-    (*'t': if StrComp(attr, 'triangles')=0 then begin
+    't': if StrComp(attr, 'trianglescount')=0 then begin
+      Result:=PyInt_FromLong(GetTriangleCount);
+      Exit;
+    end;
+    (*if StrComp(attr, 'triangles')=0 then begin
       TriangleList:=BuildTriangleList;
       try
         TriangleCount:=TriangleList.Count;
