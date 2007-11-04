@@ -278,9 +278,27 @@ def mPFSTSV(m):
         quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] = None
 
 
+def mNFDL(m):
+    # No face drag lines function.
+    editor = mdleditor.mdleditor
+    if not MldOption("NFDL"):
+        quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] = "1"
+        editor.SelCommonTriangles = []
+        editor.SelVertexes = []
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] = None
+        comp = editor.Root.currentcomponent
+        for tri in editor.ModelFaceSelList:
+            for vtx in range(len(comp.triangles[tri])):
+                if comp.triangles[tri][vtx][0] in editor.SelVertexes:
+                    pass
+                else:
+                    editor.SelVertexes = editor.SelVertexes + [comp.triangles[tri][vtx][0]] 
+                editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
+
+
 def mNFO(m):
     # No face outlines function.
-    editor = mdleditor.mdleditor
     import mdlmgr
     from mdlmgr import treeviewselchanged
     mdlmgr.treeviewselchanged = 1
@@ -294,7 +312,6 @@ def mNFO(m):
 
 def mNFOWM(m):
     # No face outlines while moving in 2D views function.
-    editor = mdleditor.mdleditor
     import mdlmgr
     from mdlmgr import treeviewselchanged
     mdlmgr.treeviewselchanged = 1
@@ -308,7 +325,6 @@ def mNFOWM(m):
 
 def mNOSF(m):
     # No selection fill function.
-    editor = mdleditor.mdleditor
     import mdlmgr
     from mdlmgr import treeviewselchanged
     mdlmgr.treeviewselchanged = 1
@@ -323,7 +339,6 @@ def mNOSF(m):
 
 def mFFONLY(m):
     # (draw) Front faces only function.
-    editor = mdleditor.mdleditor
     import mdlmgr
     from mdlmgr import treeviewselchanged
     mdlmgr.treeviewselchanged = 1
@@ -338,7 +353,6 @@ def mFFONLY(m):
 
 def mBFONLY(m):
     # (draw) Back faces only function.
-    editor = mdleditor.mdleditor
     import mdlmgr
     from mdlmgr import treeviewselchanged
     mdlmgr.treeviewselchanged = 1
@@ -355,23 +369,25 @@ def FaceMenu(editor):
     Xsync_isv = qmenu.item("&Sync Skin-view with Editor views ", mSYNC_ISV, "|Sync Skin-view with Editor views:\n\nWhen checked this will synchronize the Skin-view with the Editor views for either of the active selection options below.|intro.modeleditor.menu.html#optionsmenu")
     Xsfsisv = qmenu.item("S&how selection in Skin-view", mSFSISV, "|Show selection in Skin-view:\n\nBecause the Skin-view and the rest of the editor views work independently, this will pass selected editor model mesh triangle faces to the 'Skin-view' to be outlined and distinguish them.\n\nHowever, it does not actually select them in the 'Skin-view'.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
     Xpfstsv = qmenu.item("&Pass selection to Skin-view", mPFSTSV, "|Pass selection to Skin-view:\n\nThis function will pass selected editor model mesh triangle faces and select the coordinated skin triangles in the 'Skin-view' where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the 'Skin-view' for its use there.\n\nAny selections or deselections will not show in the 'Skin-view' until the mouse buttons have been released.\n\nThe 'Skin-view' selected face outline color can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
+    Xnfdl = qmenu.item("No face &drag lines", mNFDL, "|No face drag lines:\n\nThis will stop the selection and drawing of all drag lines when model mesh faces have been selected which can increase the selection speed of the editor dramatically when a model with a large number of face triangles is being edited.|intro.modeleditor.menu.html#optionsmenu")
     Xnfo = qmenu.item("&No face outlines", mNFO, "|No face outlines:\n\nThis will stop the outlining of any models mesh faces have been selected. This will increase the drawing speed of the editor dramatically when a model with a large number of face triangles is being edited.\n\nThe solid fill of selected faces will still be available.|intro.modeleditor.menu.html#optionsmenu")
     Xnfowm = qmenu.item("N&o face outlines while moving in 2D views", mNFOWM, "|No face outlines while moving in 2D views:\n\nFace outlining can be very taxing on the editors drawing speed when panning (scrolling) or zooming in the '2D views' when a lot of the models mesh faces have been selected. This is because so many views need to be redrawn repeatedly.\n\nIf you experience this problem check this option to increase the drawing and movement speed. The lines will be redrawn at the end of the move.|intro.modeleditor.menu.html#optionsmenu")
-    Xnosf = qmenu.item("No &selection fill", mNOSF, "|No selection fill:\n\nThis stops the color filling and backface pattern from being drawn for any of the models mesh faces that are selected. Only the outline of the selected faces will be drawn.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
+    Xnosf = qmenu.item("No s&election fill", mNOSF, "|No selection fill:\n\nThis stops the color filling and backface pattern from being drawn for any of the models mesh faces that are selected. Only the outline of the selected faces will be drawn.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
     Xffonly = qmenu.item("&Front faces only", mFFONLY, "|Front faces only:\n\nThis will only allow the solid color filling of the front faces to be drawn for any of the models mesh faces that are selected. The back faces will be outlined allowing the models texture to be displayed if the view is in 'Textured' mode.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
     Xbfonly = qmenu.item("&Back faces only", mBFONLY, "|Back faces only:\n\nThis will only allow the drawing of the backface pattern to be drawn for any of the models mesh faces that are selected. The front faces will be outlined allowing the models texture to be displayed if the view is in 'Textured' mode.\n\nThis will not apply for any view that has its 'Fill in Mesh' function active (checked) in the 'Views Options' dialog.|intro.modeleditor.menu.html#optionsmenu")
 
-    menulist = [Xsync_isv, Xsfsisv, Xpfstsv, qmenu.sep, Xnfo, Xnfowm, qmenu.sep, Xnosf, Xffonly, Xbfonly]
+    menulist = [Xsync_isv, Xsfsisv, Xpfstsv, qmenu.sep, Xnfdl, Xnfo, Xnfowm, qmenu.sep, Xnosf, Xffonly, Xbfonly]
     
     items = menulist
     Xsync_isv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_ISV")
     Xsfsisv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SFSISV")
     Xpfstsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PFSTSV")
+    Xnfdl.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NFDL")
+    Xnfo.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NFO")
+    Xnfowm.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NFOWM")
     Xnosf.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NOSF")
     Xffonly.state = quarkx.setupsubset(SS_MODEL,"Options").getint("FFONLY")
     Xbfonly.state = quarkx.setupsubset(SS_MODEL,"Options").getint("BFONLY")
-    Xnfo.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NFO")
-    Xnfowm.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NFOWM")
 
     return menulist
 
@@ -429,14 +445,25 @@ def VertexMenu(editor):
         else:
             quarkx.setupsubset(SS_MODEL, "Options")['PVSTSV'] = None
 
+    # No muti Vertex Selection drag lines function.
+    def mNVDL(m):
+        editor = mdleditor.mdleditor
+        if not MldOption("NVDL"):
+            quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] = "1"
+        else:
+            quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] = None
+            Update_Editor_Views(editor)
+
     Xsync_svwed = qmenu.item("&Sync Skin-view with Editor views", mSYNC_SVwED, "|Sync Skin-view with Editor views:\n\nThis function will turn off other related options and synchronize selected Editor views mesh vertexes, passing and selecting the coordinated 'Skin mesh' vertexes in the Skin-view, where they can be used for editing purposes. Any selection changes in the Editor views will be updated to the Skin-view as well.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in both the Editor and the Skin-view for further use.\n\nThe 'Skin-view' and Editor views selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
     Xpvstsv = qmenu.item("&Pass selection to Skin-view", mPVSTSV, "|Pass selection to Skin-view:\n\nThis function will pass selected Editor model mesh vertexes and select the coordinated 'Model Skin mesh' vertexes in the Skin-view, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the 'Skin-view' for its use there.\n\nThe Editor's selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
+    Xnvdl = qmenu.item("No vertex &drag lines", mNVDL, "|No vertex drag lines:\n\nThis stops the multi selected Editor model mesh vertexes drag lines from being drawn, but not the vertex outlines.\n\nSingle vertex drag lines will also still be drawn.|intro.modeleditor.menu.html#optionsmenu")
 
-    menulist = [Xsync_svwed, Xpvstsv]
+    menulist = [Xsync_svwed, Xpvstsv, qmenu.sep, Xnvdl]
     
     items = menulist
     Xsync_svwed.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_SVwED")
     Xpvstsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTSV")
+    Xnvdl.state = quarkx.setupsubset(SS_MODEL,"Options").getint("NVDL")
 
     return menulist
 
@@ -444,7 +471,6 @@ def VertexMenu(editor):
 def TicksViewingMenu(editor):
     # Rectangle Drag Ticks_Method 1
     def mRDT_M1(m):
-        editor = mdleditor.mdleditor
         if not MldOption("RDT_M1"):
             quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = "1"
             quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = None
@@ -453,7 +479,6 @@ def TicksViewingMenu(editor):
 
     # Rectangle Drag Ticks_Method 2
     def mRDT_M2(m):
-        editor = mdleditor.mdleditor
         if not MldOption("RDT_M2"):
             quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = "1"
             quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = None
@@ -621,6 +646,10 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.28  2007/10/06 05:24:56  cdunde
+#To add needed comments and finish setting up rectangle selection to work fully
+#with passing selected faces in the editors view to the Skin-view.
+#
 #Revision 1.27  2007/10/06 03:23:13  cdunde
 #Updated Sync Skin-view with Editor function for the Model Editor.
 #

@@ -435,6 +435,8 @@ def MakeEditorFaceObject(editor, option=0):
         return editor.EditorObjectList
 
     editor.ModelFaceSelList = []
+    editor.SelCommonTriangles = []
+    editor.SelVertexes = []
     v0 = editor.ModelVertexSelList[0][0] # Gives the index number of the 1st vertex in the list.
     v1 = editor.ModelVertexSelList[1][0] # Gives the index number of the 2nd vertex in the list.
     v2 = editor.ModelVertexSelList[2][0] # Gives the index number of the 3rd vertex in the list.
@@ -1657,6 +1659,9 @@ def Update_Editor_Views(editor, option=4):
 #
 #
 #$Log$
+#Revision 1.51  2007/10/25 17:25:47  cdunde
+#To fix some small typo errors.
+#
 #Revision 1.50  2007/10/24 14:58:12  cdunde
 #To activate all Movement toolbar button functions for the Model Editor.
 #

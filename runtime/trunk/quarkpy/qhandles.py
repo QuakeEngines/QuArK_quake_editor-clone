@@ -960,8 +960,8 @@ class RedImageDragObject(DragObject):
                             mode = DM_OTHERCOLOR|DM_BBOX
                             special, refresh = self.ricmd()
                             if refresh is not None:
-                                rectanglecolor = MapColor("SkinDragLines", SS_MODEL)
-                                for r in self.redimages: # Draws rectangle when LMB is release.
+                                rectanglecolor = MapColor("SkinVertexSelListColor", SS_MODEL)
+                                for r in self.redimages: # Draws selected vertex rectangles while dragging.
                                     self.view.drawmap(r, mode, rectanglecolor)
             except:
                 pass
@@ -2142,6 +2142,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.62  2007/10/18 02:31:53  cdunde
+#Setup the Model Editor Animation system, functions and toolbar.
+#
 #Revision 1.61  2007/10/05 20:47:50  cdunde
 #Creation and setup of the Quick Object Makers for the Model Editor.
 #

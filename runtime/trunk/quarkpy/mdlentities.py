@@ -234,6 +234,8 @@ def ShowHideComp(x):
     editor.ModelFaceSelList = []
     editor.EditorObjectList = []
     editor.SkinFaceSelList = []
+    editor.SelCommonTriangles = []
+    editor.SelVertexes = []
     obj = editor.layout.explorer.uniquesel
     if obj is None: return
     obj.showhide(x)
@@ -420,6 +422,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.22  2007/10/24 14:57:43  cdunde
+#Added disabled to Hide and Show Component menu items for easer distinction.
+#
 #Revision 1.21  2007/10/09 04:16:25  cdunde
 #To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
 #

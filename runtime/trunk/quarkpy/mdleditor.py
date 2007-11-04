@@ -106,16 +106,16 @@ class ModelEditor(BaseEditor):
     #                                       functions and faster drawing of these objects.
 
     SelVertexes = []
-    # A list of vertexes  [(vert)]
-    #                               Use:    A list of the Skin-view vertexes but as a vertex of a component's triangle, used with the SelCommonTriangles list
-    #                                       below and both will be used to draw all the drag lines in the Skin-view for those triangles. Can also be used for anything else.
-    #                     Created using:    SkinVertexSelList above created by the RectSelDragObject, rectanglesel function in mdlhandles.py.
+    # A list of vertexes  [vert_index1, vert_index2, ...]
+    #                               Use:    A list of the editor's selected triangles vert_index numbers, used with the SelCommonTriangles list just below this list
+    #                                       and both will be used to draw all the drag lines in the editor's views for those triangles. Can also be used for anything else.
+    #                     Created using:    ModelFaceSelList above created by the RectSelDragObject, rectanglesel function and class FaceHandle, selection function in mdlhandles.py.
 
     SelCommonTriangles = []
-    # A list of triangles [(vert0, vert1, vert2)]
-    #                               Use:    A list of actual component triangles that have a common ver_index of selected Skin-view vertexes
-    #                                       that will be used to draw all the drag lines in the Skin-view for those triangles. Can also be used for anything else.
-    #                     Created using:    SkinVertexSelList above created by the RectSelDragObject, rectanglesel function in mdlhandles.py.
+    # A list of triangles [see mdlutils.py findTrianglesAndIndexes function for item listing]
+    #                               Use:    A list of actual component triangles that have a common ver_index of selected editor model mesh faces
+    #                                       that will be used to draw all the drag lines in the editor's views for those triangles. Can also be used for anything else.
+    #                     Created using:    ModelFaceSelList above created by the RectSelDragObject, rectanglesel function and class FaceHandle, selection function in mdlhandles.py.
 
 
     def OpenRoot(self):
@@ -1132,17 +1132,6 @@ def commonhandles(self, redraw=1):
 ### Draw No Handles Setting Section:
 ### ===============================
     if flagsmouse == 2056:
-      ### Fixes quick drag not finishing the drawing but if you use need to draw the handles
-      ### which will most likely cause dupe drawing of them.
-      #  if isinstance(self.dragobject, mdlhandles.RectSelDragObject):
-      #      for view in self.layout.views:
-      #          if view.info["viewname"] == "skinview":
-      #              continue
-      #          setsingleframefillcolor(self, view)
-      #          plugins.mdlgridscale.gridfinishdrawing(self, view)
-      #          plugins.mdlaxisicons.newfinishdrawing(self, view)
-      #          view.repaint()
-
         for v in self.layout.views:
             if v.info["viewname"] == "skinview":
                 continue
@@ -1429,6 +1418,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.78  2007/10/31 09:24:24  cdunde
+#To stop errors and crash if editor or QuArK is closed while animation is running.
+#
 #Revision 1.77  2007/10/29 12:45:41  cdunde
 #To setup drag line drawing for multiple selected vertex drags in the Skin-view.
 #

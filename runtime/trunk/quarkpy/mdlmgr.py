@@ -505,6 +505,8 @@ class ModelLayout(BaseLayout):
                         self.editor.ModelFaceSelList = []
                         self.editor.EditorObjectList = []
                         self.editor.SkinFaceSelList = []
+                        self.editor.SelCommonTriangles = []
+                        self.editor.SelVertexes = []
                         self.editor.Root.currentcomponent.filltris = []
             else:
                 if flagsmouse == 2056:
@@ -523,12 +525,16 @@ class ModelLayout(BaseLayout):
                                 self.editor.ModelFaceSelList = []
                                 self.editor.EditorObjectList = []
                                 self.editor.SkinFaceSelList = []
+                                self.editor.SelCommonTriangles = []
+                                self.editor.SelVertexes = []
                     except:
                         self.editor.SkinVertexSelList = []
                         self.editor.ModelVertexSelList = []
                         self.editor.ModelFaceSelList = []
                         self.editor.EditorObjectList = []
                         self.editor.SkinFaceSelList = []
+                        self.editor.SelCommonTriangles = []
+                        self.editor.SelVertexes = []
                     self.editor.Root.currentcomponent.filltris = []
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
@@ -574,6 +580,8 @@ class ModelLayout(BaseLayout):
         self.editor.ModelFaceSelList = []
         self.editor.EditorObjectList = []
         self.editor.SkinFaceSelList = []
+        self.editor.SelCommonTriangles = []
+        self.editor.SelVertexes = []
         self.editor.Root.currentcomponent.filltris = []
         from mdlhandles import SkinView1
         if SkinView1 is not None:
@@ -648,6 +656,8 @@ class ModelLayout(BaseLayout):
                 self.editor.ModelFaceSelList = []
                 self.editor.EditorObjectList = []
                 self.editor.SkinFaceSelList = []
+                self.editor.SelCommonTriangles = []
+                self.editor.SelVertexes = []
                 from mdlhandles import SkinView1
                 if SkinView1 is not None:
                     SkinView1.invalidate()
@@ -660,6 +670,8 @@ class ModelLayout(BaseLayout):
                 self.editor.ModelFaceSelList = []
                 self.editor.EditorObjectList = []
                 self.editor.SkinFaceSelList = []
+                self.editor.SelCommonTriangles = []
+                self.editor.SelVertexes = []
                 from mdlhandles import SkinView1
                 if SkinView1 is not None:
                     SkinView1.invalidate()
@@ -687,6 +699,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.54  2007/10/31 03:47:52  cdunde
+#Infobase button link updates.
+#
 #Revision 1.53  2007/10/21 04:52:27  cdunde
 #Added a "Snap Shot" function and button to the Skin-view to allow the re-skinning
 #of selected faces in the editor based on their position in the editor's 3D view.

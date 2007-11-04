@@ -265,6 +265,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
     def selection(self, editor, view, modelfacelist, flagsmouse, draghandle=None):
         global lastmodelfaceremovedlist
+        comp = editor.Root.currentcomponent
         
         if view.info["viewname"] == "skinview": return
         if flagsmouse == 536:
@@ -275,7 +276,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
         faceremoved = 0
         templist = editor.ModelFaceSelList
         for item in modelfacelist:
-            if item[1].name == editor.Root.currentcomponent.name:
+            if item[1].name == comp.name:
                 if templist == []:
                     templist = templist + [item[2]]
                     lastmodelfaceremovedlist = []
@@ -302,22 +303,30 @@ class ModelFaceHandle(qhandles.GenericHandle):
                             templist = templist + [item[2]]
                             faceremoved = -1
                 break ### This limits the faces that can be selected to the closest face to the camera.
-         #   else: ### Clears ModelFaceSelList properly but stops selection through other components.
-         #       editor.ModelFaceSelList = []
-         #       return
         editor.ModelFaceSelList = templist
         list = MakeEditorFaceObject(editor)
+        # Sets these lists up for the Linear Handle drag lines to be drawn.
+        editor.SelCommonTriangles = []
+        editor.SelVertexes = []
+        if quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
+            for tri in editor.ModelFaceSelList:
+                for vtx in range(len(comp.triangles[tri])):
+                    if comp.triangles[tri][vtx][0] in editor.SelVertexes:
+                        pass
+                    else:
+                        editor.SelVertexes = editor.SelVertexes + [comp.triangles[tri][vtx][0]] 
+                    editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
         if quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
             if SkinView1 is not None:
                 if quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
                     try:
-                        skindrawobject = editor.Root.currentcomponent.currentskin
+                        skindrawobject = comp.currentskin
                     except:
                         skindrawobject = None
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1":
                         editor.SkinVertexSelList = []
                     PassEditorSel2Skin(editor, 2)
-                    buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+                    buildskinvertices(editor, SkinView1, editor.layout, comp, skindrawobject)
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1":
                         editor.SkinVertexSelList = []
@@ -328,7 +337,6 @@ class ModelFaceHandle(qhandles.GenericHandle):
                 pass
             else:
                 if faceremoved != 0 or itemsremoved != 0:
-                    comp = editor.Root.currentcomponent
                     if v.info["viewname"] == "XY":
                         fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
@@ -392,6 +400,9 @@ class ModelFaceHandle(qhandles.GenericHandle):
                     cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
         except:
             editor.ModelFaceSelList = []
+            editor.EditorObjectList = []
+            editor.SelVertexes = []
+            editor.SelCommonTriangles = []
 
         return
 
@@ -1934,6 +1945,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
     def rectanglesel(self, editor, x,y, rectangle, view):
         import mdleditor
+        comp = editor.Root.currentcomponent
         cursordragendpos = (x, y)
         ### To stop selection or selection change if nothing, or something
         ### other then a components "frame(s)" is selected in the tree-view.
@@ -1956,9 +1968,9 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         ### This is the selection Grid section for the Skin-view's view.
         if view.info["viewname"] == "skinview":
             sellist = []
-            tris = editor.Root.currentcomponent.triangles
+            tris = comp.triangles
             try:
-                tex = editor.Root.currentcomponent.currentskin
+                tex = comp.currentskin
                 texWidth,texHeight = tex["Size"]
             except:
                 texWidth,texHeight = view.clientarea
@@ -1994,7 +2006,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         else:
             ### This is the selection Grid section for the Editor's views.
             sellist = []
-            vertexes = editor.Root.currentcomponent.currentframe.vertices
+            vertexes = comp.currentframe.vertices
             vertexindex = -1
             for vertex in vertexes:
                 vertexindex = vertexindex + 1
@@ -2019,7 +2031,6 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
         ### This area for the Skin-view code only. Must return at the end to stop erroneous model drawing.
         if view.info["viewname"] == "skinview":
-            comp = editor.Root.currentcomponent
             SkinVertexSel(editor, sellist)
             try:
                 skindrawobject = comp.currentskin
@@ -2045,6 +2056,8 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 if editor.ModelFaceSelList != [] and sellist == []:
                     editor.ModelFaceSelList = []
                     editor.EditorObjectList = []
+                    editor.SelCommonTriangles = []
+                    editor.SelVertexes = []
                     Update_Editor_Views(editor, 4)
                     if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
                         editor.SkinVertexSelList = []
@@ -2052,10 +2065,10 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                         if MldOption("PFSTSV"):
                             PassEditorSel2Skin(editor)
                         try:
-                            skindrawobject = editor.Root.currentcomponent.currentskin
+                            skindrawobject = comp.currentskin
                         except:
                             skindrawobject = None
-                        buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+                        buildskinvertices(editor, SkinView1, editor.layout, comp, skindrawobject)
                         SkinView1.invalidate(1)
                     return
             else:
@@ -2088,11 +2101,23 @@ class RectSelDragObject(qhandles.RectangleDragObject):
             # This section selects faces in the editor using the rectangle selector
             # if in the Linear Handles button is in the face mode.
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-                tris = editor.Root.currentcomponent.triangles
+                tris = comp.triangles
                 for tri in range(len(tris)):
                     for vtx in range(len(sellist)):
                         if (sellist[vtx][0] == tris[tri][0][0]) or (sellist[vtx][0] == tris[tri][1][0]) or (sellist[vtx][0] == tris[tri][2][0]):
                             editor.ModelFaceSelList = editor.ModelFaceSelList + [tri]
+                # Sets these lists up for the Linear Handle drag lines to be drawn.
+                editor.SelCommonTriangles = []
+                editor.SelVertexes = []
+                if quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
+                    for tri in editor.ModelFaceSelList:
+                        for vtx in range(len(comp.triangles[tri])):
+                            if comp.triangles[tri][vtx][0] in editor.SelVertexes:
+                                pass
+                            else:
+                                editor.SelVertexes = editor.SelVertexes + [comp.triangles[tri][vtx][0]] 
+                            editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
+
                 MakeEditorFaceObject(editor)
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
                     editor.SkinVertexSelList = []
@@ -2146,8 +2171,6 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                     plugins.mdlgridscale.gridfinishdrawing(editor, v)
                     plugins.mdlaxisicons.newfinishdrawing(editor, v)
                     cv = v.canvas()
-        #1            if len(v.handles) == 0:
-        #1                v.handles = BuildCommonHandles(editor, editor.layout.explorer)
                     ### To avoid an error if something is selected that does not display the view handles.
                     if len(v.handles) == 0:
                         pass
@@ -2236,7 +2259,7 @@ class ModelEditorLinHandlesManager:
     "the Linear Handle by calling its other related classes below this one."
 
     def __init__(self, color, bbox, list, view=None):
-        import mdleditor
+
         self.editor = mdleditor.mdleditor
         self.color = color
         self.bbox = bbox
@@ -2267,33 +2290,20 @@ class ModelEditorLinHandlesManager:
         # including ones that have vertexes that will be stationary.
         comp = self.editor.Root.currentcomponent
         if view is not None and view.info["viewname"] == "skinview":
-            self.editor.SelVertexes = []
-            self.editor.SelCommonTriangles = []
-            if quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] is None:
-                for vtx in self.editor.SkinVertexSelList:
-                    if comp.triangles[vtx[2]] in self.editor.SelCommonTriangles:
-                        pass
-                    else:
-                        self.editor.SelCommonTriangles = self.editor.SelCommonTriangles + [comp.triangles[vtx[2]]]
-
-                    trivtx = comp.triangles[vtx[2]][vtx[3]]
-                    if trivtx in self.editor.SelVertexes:
-                        pass
-                    else:
-                        self.editor.SelVertexes = self.editor.SelVertexes + [trivtx]
-
+            pass
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
                 pass
             else:
                 self.tristodrawlist = []
                 self.selvtxlist = []
-                for vtx in self.editor.ModelVertexSelList:
-                    if vtx[0] in self.selvtxlist:
-                        pass
-                    else:
-                        self.selvtxlist = self.selvtxlist + [vtx[0]] 
-                    self.tristodrawlist = self.tristodrawlist + findTrianglesAndIndexes(comp, vtx[0], vtx[1])
+                if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None:
+                    for vtx in self.editor.ModelVertexSelList:
+                        if vtx[0] in self.selvtxlist:
+                            pass
+                        else:
+                            self.selvtxlist = self.selvtxlist + [vtx[0]] 
+                        self.tristodrawlist = self.tristodrawlist + findTrianglesAndIndexes(comp, vtx[0], vtx[1])
 
     def BuildHandles(self, center=None, minimal=None):
         "Build a list of handles to put around the circle for linear distortion."
@@ -2466,21 +2476,22 @@ class LinearHandle(qhandles.GenericHandle):
                     pass
                 else:
                     newobj = obj.copy()
-                    dragcolor = MapColor("Drag3DLines", SS_MODEL)
+                    dragcolor = vertexsellistcolor
                     # To avoid division by zero errors.
                     try:
                         view.drawmap(newobj, DM_OTHERCOLOR, dragcolor)
                     except:
                         pass
-            else:
-                vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
-                vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
-                vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
-                vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
-                cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
-                cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
-                cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
-                cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
+      # Below causes duplicate and incorrect drawing of selected faces for corner and side Linear Handles.
+      #      else:
+      #          vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
+      #          vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
+      #          vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
+      #          vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
+      #          cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
+      #          cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
+      #          cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
+      #          cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
 
         return 1
 
@@ -2534,13 +2545,65 @@ class LinRedHandle(LinearHandle):
         plugins.mdlgridscale.gridfinishdrawing(editor, view)
         plugins.mdlaxisicons.newfinishdrawing(editor, view)
         if view.info["viewname"] == "skinview":
+            # This is for the drag lines color.
             dragcolor = MapColor("SkinDragLines", SS_MODEL)
         else:
             dragcolor = MapColor("Drag3DLines", SS_MODEL)
         cv = view.canvas()
+        cv.pencolor = dragcolor
+        comp = self.mgr.editor.Root.currentcomponent
+        if view.info["viewname"] == "skinview":
+            if quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] is None:
+                tex = comp.currentskin
+                if tex is not None:
+                    texWidth,texHeight = tex["Size"]
+                else:
+                    texWidth,texHeight = view.clientarea
+                for dragvtx in editor.SkinVertexSelList:
+                    dragprojvtx = view.proj(quarkx.vect((comp.triangles[dragvtx[2]][dragvtx[3]][1]+delta.tuple[0]-int(texWidth*.5), comp.triangles[dragvtx[2]][dragvtx[3]][2]+delta.tuple[1]-int(texHeight*.5), 0)))
+                    for vtx in range(len(comp.triangles[dragvtx[2]])):
+                        if vtx == dragvtx[3]:
+                            continue
+                        else:
+                            for selvtx in range(len(editor.SkinVertexSelList)):
+                                if vtx == editor.SkinVertexSelList[selvtx][3] and dragvtx[2] == editor.SkinVertexSelList[selvtx][2]:
+                                    projvtx = view.proj(quarkx.vect((comp.triangles[dragvtx[2]][vtx][1]+delta.tuple[0]-int(texWidth*.5), comp.triangles[dragvtx[2]][vtx][2]+delta.tuple[1]-int(texHeight*.5), 0)))
+                                    break
+                                if selvtx == len(editor.SkinVertexSelList)-1:
+                                    projvtx = view.proj(quarkx.vect((comp.triangles[dragvtx[2]][vtx][1]-int(texWidth*.5), comp.triangles[dragvtx[2]][vtx][2]-int(texHeight*.5), 0)))
+                            cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+        else:
+            framevtxs = comp.currentframe.vertices
+            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                for tri in editor.SelCommonTriangles:
+                    dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
+                    for vtx in range(len(tri[4])):
+                        if tri[4][vtx][0] == tri[0]:
+                            continue
+                        else:
+                            if tri[4][vtx][0] in editor.SelVertexes:
+                                projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
+                            else:
+                                projvtx = view.proj(framevtxs[tri[4][vtx][0]])
+                            cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+            else:
+                if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None:
+                    for tri in self.mgr.tristodrawlist:
+                        dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
+                        for vtx in range(len(tri[4])):
+                            if tri[4][vtx][0] == tri[0]:
+                                continue
+                            else:
+                                if tri[4][vtx][0] in self.mgr.selvtxlist:
+                                    projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
+                                else:
+                                    projvtx = view.proj(framevtxs[tri[4][vtx][0]])
+                                cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+
         for obj in list: # Draws the models triangles or vertexes correctly during drag in all views.
             obj.translate(delta)
             if obj.name.endswith(":g"):
+                dragcolor = vertexsellistcolor
                 # We can take this line out if we don't want the vertex cubes drawn durning drags.
                 view.drawmap(obj, DM_OTHERCOLOR, dragcolor)
             else:
@@ -2552,42 +2615,6 @@ class LinRedHandle(LinearHandle):
                 cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
                 cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
                 cv.line(int(vect2X), int(vect2Y), int(vect0X), int(vect0Y))
-
-        cv.pencolor = dragcolor
-        if view.info["viewname"] == "skinview":
-            if quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] is None:
-                tex = self.mgr.editor.Root.currentcomponent.currentskin
-                if tex is not None:
-                    texWidth,texHeight = tex["Size"]
-                else:
-                    texWidth,texHeight = view.clientarea
-                for dragvtx in editor.SelVertexes:
-                    dragprojvtx = view.proj(quarkx.vect((dragvtx[1]+delta.tuple[0]-int(texWidth*.5), dragvtx[2]+delta.tuple[1]-int(texHeight*.5), 0)))
-                    for tri in editor.SelCommonTriangles:
-                        if dragvtx in tri:
-                            for vtx in tri:
-                                if vtx == dragvtx:
-                                    continue
-                                else:
-                                    if vtx in editor.SelVertexes:
-                                        projvtx = view.proj(quarkx.vect((vtx[1]+delta.tuple[0]-int(texWidth*.5), vtx[2]+delta.tuple[1]-int(texHeight*.5), 0)))
-                                    else:
-                                        projvtx = view.proj(quarkx.vect((vtx[1]-int(texWidth*.5), vtx[2]-int(texHeight*.5), 0)))
-                                    cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
-        else:
-            framevtxs = self.mgr.editor.Root.currentcomponent.currentframe.vertices
-            print "mdlhandles line 2745 delta is",delta, type(delta)
-            for tri in self.mgr.tristodrawlist:
-                dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
-                for vtx in range(len(tri[4])):
-                    if tri[4][vtx][0] == tri[0]:
-                        continue
-                    else:
-                        if tri[4][vtx][0] in self.mgr.selvtxlist:
-                            projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
-                        else:
-                            projvtx = view.proj(framevtxs[tri[4][vtx][0]])
-                        cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
 
         if view.info["type"] == "XY":
             s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
@@ -2975,6 +3002,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.110  2007/10/29 17:56:31  cdunde
+#Added option for Skin-view multiple drag lines drawing.
+#
 #Revision 1.109  2007/10/29 12:45:41  cdunde
 #To setup drag line drawing for multiple selected vertex drags in the Skin-view.
 #

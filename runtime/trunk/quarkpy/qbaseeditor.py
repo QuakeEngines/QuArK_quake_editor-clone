@@ -801,6 +801,8 @@ class BaseEditor:
             if modelfacelist == [] and flagsmouse == 536 and currentview.info["viewname"] != "skinview":
                 self.ModelFaceSelList = []
                 self.EditorObjectList = []
+                self.SelCommonTriangles = []
+                self.SelVertexes = []
                 for v in self.layout.views:
                     v.handles = []
                     mdleditor.setsingleframefillcolor(self, v)
@@ -1433,6 +1435,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.101  2007/10/21 04:51:53  cdunde
+#To fix a problem with fillcolor when Skin-view is currentview and
+#some of the editor's views are not in wire mode.
+#
 #Revision 1.100  2007/10/18 16:11:31  cdunde
 #To implement selective view buttons for Model Editor Animation.
 #
