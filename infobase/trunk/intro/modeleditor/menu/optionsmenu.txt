@@ -68,6 +68,9 @@ such as the outlining of selected model mesh faces and the models axis lines.
 <i>Pass selection to Skin-view </i>&nbsp;: This funciton is also located on the
 <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
 
+<i>No face drag lines </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
 <i>No face outlines </i>&nbsp;: This funciton is also located on the
 <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
 
@@ -88,6 +91,9 @@ such as the outlining of selected model mesh faces and the models axis lines.
 <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
 
 <i>Pass selection to Skin-view </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
+
+<i>No vertex drag lines </i>&nbsp;: This funciton is also located on the
 <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>, please click on the menu link for this functions full description.
 
 

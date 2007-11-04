@@ -154,6 +154,10 @@ in the <a href="intro.modeleditor.skinview.html">Skin-view</a> until the mouse b
 The <a href="intro.modeleditor.skinview.html">Skin-view</a> selected face outline color can be changed in the
 <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
 
+<i>No face drag lines </i>&nbsp;: This will stop the selection and drawing of all drag lines when model mesh faces have
+been selected which can increase the selection speed of the editor dramatically when a model with a large number of face
+triangles is being edited.
+
 <i>No face outlines </i>&nbsp;: This will stop the outlining of any models mesh faces have been selected. This will
 increase the drawing speed of the editor dramatically when a model with a large number of face triangles is being edited.
 The solid fill of selected faces will still be available.
@@ -199,5 +203,8 @@ along with any others currently selected, where they can be used for editing pur
 if this function is turned off, the selection will remain in the <a href="intro.modeleditor.skinview.html">Skin-view</a>
 for its use there. The Editor's selected vertex colors can be changed in the
 <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>No vertex drag lines </i>&nbsp;: This stops the multi selected Editor model mesh vertexes drag lines from being drawn,
+but not the vertex outlines. Single vertex drag lines will also still be drawn.
 </td></tr>
 </table>
