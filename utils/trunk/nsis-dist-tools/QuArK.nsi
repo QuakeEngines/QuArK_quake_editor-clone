@@ -1,7 +1,7 @@
 
 ; QuArK installer x.x.x
 ; HomePage: http://quark.planetquake.gamespy.com/
-; Version:  NSIS 2.25
+; Version:  NSIS 2.28
 ; Author:  Fredrick Vamstad, DanielPharos & cdunde
 ; Date:     18 Aug. 2005 & 5 January 2007
 ; nullsoft NSIS installer program available at:
@@ -11,9 +11,9 @@
 ;
 ; Setup and Use to create QuArK NSIS installer:
 ; ============================================
-; 1) Change " PRODUCT_VERSION " (line 33) below to match the new version number.
-; 2) Change "PROGRAMFILES" (line 42) below.
-; 3) Change " INSTALLEREXENAME " name (line 31) below to the name of the installer executable file.
+; 1)  Change "INSTALLER_EXENAME" (line 31) below to the name of the installer executable file.
+; 2) Change "PRODUCT_VERSION" (line 33) below to match the new version number.
+; 3) Change "InstallDir" (line 44) below to the new Program Files location.
 ; 4) Create a folder named " QuArK_installer_files " in your C:\ directory.
 ; 5) Place the QuArK.exe, all runtime files and the help folder in the above folder.
 ; 6) Create a folder named " QuArK_installer_splash_image " in your C:\ directory.
@@ -28,18 +28,20 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 !define BUILDDIR "C:\QuArK_installer_files"
 !define SPLASHDIR "C:\QuArK_installer_splash_image"
-!define INSTALLEREXENAME "quark-win32-6.5.0Beta2.0.exe"
+!define INSTALLER_EXENAME "quark-win32-6.5.0Beta3.0.exe"
 !define PRODUCT_NAME "QuArK"
-!define PRODUCT_VERSION "6.5.0 Beta 2.0"
+!define PRODUCT_VERSION "6.5.0 Beta 3.0"
 !define PRODUCT_WEB_SITE "http://quark.planetquake.gamespy.com/"
-!define PRODUCT_WEB_FORUM "http://www.dark-forge.com/"
+!define PRODUCT_WEB_FORUM "http://www.dark-forge.com/forums/"     ; PuG's forum
+!define PRODUCT_INFOBASE "http://quark.planetquake.gamespy.com/infobase/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\QuArK.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
+!define PRODUCT_PUBLISHER "QuArK Development Team"
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "${INSTALLEREXENAME}"
-InstallDir "$PROGRAMFILES\QuArK 6.5.0 Beta 2.0"
+OutFile "${INSTALLER_EXENAME}"
+InstallDir "$PROGRAMFILES\QuArK 6.5.0 Beta 3.0"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -122,7 +124,7 @@ LangString TEXT_SEC02_TITLE ${LANG_TRADCHINESE} "Help Files"
 LangString TEXT_SEC01_DESC ${LANG_ENGLISH} "All the main files needed to run QuArK."
 LangString TEXT_SEC01_DESC ${LANG_FRENCH} "Main files."
 LangString TEXT_SEC01_DESC ${LANG_GERMAN} "Main files."
-LangString TEXT_SEC01_DESC ${LANG_DUTCH} "Alle programma bestanden die nodig zijn om QuArK te draaien."
+LangString TEXT_SEC01_DESC ${LANG_DUTCH} "Alle programma bestanden die nodig zijn om QuArK uit te voeren."
 LangString TEXT_SEC01_DESC ${LANG_FINNISH} "Main files."
 LangString TEXT_SEC01_DESC ${LANG_GREEK} "Main files."
 LangString TEXT_SEC01_DESC ${LANG_NORWEGIAN} "Main files."
@@ -176,9 +178,6 @@ LangString TEXT_UNINSTALL3 ${LANG_TRADCHINESE} "$(^Name) was successfully remove
 ; MUI end ------
 
 Section "$(TEXT_SEC01_TITLE)" SEC01
-  CreateDirectory "$SMPROGRAMS\QuArK"
-  CreateShortCut "$SMPROGRAMS\QuArK\QuArK.lnk" "$INSTDIR\QuArK.exe"
-  CreateShortCut "$DESKTOP\QuArK.lnk" "$INSTDIR\QuArK.exe"
   SetOutPath "$INSTDIR\addons\6DX"
   File "${BUILDDIR}\addons\6DX\*.*"
   SetOutPath "$INSTDIR\addons\Crystal_Space"
@@ -246,6 +245,7 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
   File "${BUILDDIR}\quarkpy\*.*"
   SetOutPath "$INSTDIR"
   File "${BUILDDIR}\*.*"
+  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
 SectionEnd
 
 Section "$(TEXT_SEC02_TITLE)" SEC02
@@ -253,10 +253,16 @@ Section "$(TEXT_SEC02_TITLE)" SEC02
   File "${BUILDDIR}\help\*.*"
 SectionEnd
 
-Section -AdditionalIcons
-  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
+Section -DesktopIcon
+  CreateShortCut "$DESKTOP\QuArK.lnk" "$INSTDIR\QuArK.exe"
+SectionEnd
+
+Section -StartMenuIcons
+  CreateDirectory "$SMPROGRAMS\QuArK"
+  CreateShortCut "$SMPROGRAMS\QuArK\QuArK.lnk" "$INSTDIR\QuArK.exe"
   CreateShortCut "$SMPROGRAMS\QuArK\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-  CreateShortCut "$SMPROGRAMS\QuArK\Forum.lnk" "${PRODUCT_WEB_FORUM}"   ; PuG's forum
+  CreateShortCut "$SMPROGRAMS\QuArK\Forum.lnk" "${PRODUCT_WEB_FORUM}"
+  CreateShortCut "$SMPROGRAMS\QuArK\Online Infobase.lnk" "${PRODUCT_INFOBASE}"
   CreateShortCut "$SMPROGRAMS\QuArK\Readme.lnk" "$INSTDIR\README.txt"
   CreateShortCut "$SMPROGRAMS\QuArK\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
@@ -268,8 +274,8 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\QuArK.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_Forum}"
 SectionEnd
 
 Section Uninstall
@@ -297,6 +303,7 @@ Section Uninstall
   Delete "$INSTDIR\addons\Half-Life2\*.*"
   Delete "$INSTDIR\addons\Half-Life\*.*"
   Delete "$INSTDIR\addons\Genesis3D\*.*"
+  Delete "$INSTDIR\addons\EF2\*.*"
   Delete "$INSTDIR\addons\Doom_3\*.*"
   Delete "$INSTDIR\addons\Crystal_Space\*.*"
   Delete "$INSTDIR\addons\6DX\*.*"
@@ -338,6 +345,7 @@ Section Uninstall
   RMDir "$INSTDIR\addons\Half-Life2"
   RMDir "$INSTDIR\addons\Half-Life"
   RMDir "$INSTDIR\addons\Genesis3D"
+  RMDir "$INSTDIR\addons\EF2"
   RMDir "$INSTDIR\addons\Doom_3"
   RMDir "$INSTDIR\addons\Crystal_Space"
   RMDir "$INSTDIR\addons\6DX"
