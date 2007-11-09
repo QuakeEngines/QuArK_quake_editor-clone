@@ -184,6 +184,8 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
   File "${BUILDDIR}\addons\Crystal_Space\*.*"
   SetOutPath "$INSTDIR\addons\Doom_3"
   File "${BUILDDIR}\addons\Doom_3\*.*"
+  SetOutPath "$INSTDIR\addons\EF2"
+  File "${BUILDDIR}\addons\EF2\*.*"
   SetOutPath "$INSTDIR\addons\Genesis3D"
   File "${BUILDDIR}\addons\Genesis3D\*.*"
   SetOutPath "$INSTDIR\addons\Half-Life"
