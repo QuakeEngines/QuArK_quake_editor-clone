@@ -10,6 +10,7 @@ object FormTravail: TFormTravail
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  FormStyle = fsStayOnTop
   Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13

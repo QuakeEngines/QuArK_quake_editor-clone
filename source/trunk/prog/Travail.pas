@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.6  2001/10/05 18:00:24  decker_dk
 Source-code layout (newlines and 2-steps indent)
 
@@ -64,7 +67,7 @@ type
               NextProgressIndicator: PProgressIndicator;
               Form: TFormTravail;
               Ignore, Texte: Integer;
-              Debut: LongInt;
+              Debut: Cardinal;
               Pos0, Position, IncrementStep, Max: Double;
              end;
 
@@ -171,7 +174,7 @@ end;
 
 procedure ProgressIndicatorIncrement();
 var
- Temps: Integer;
+ Temps: Cardinal;
  Arrivee, Stop: Boolean;
  Msg: TMsg;
  Pt: TPoint;
@@ -198,7 +201,9 @@ begin
 
     if Arrivee then
     begin
-      Temps:=Integer(GetTickCount)-Debut;
+      //DanielPharos: Might overflow,
+      //but you'd have to wait 49.7 days for it!
+      Temps:=GetTickCount-Debut;
       if (Temps<375) or (Temps < (1300/cBarMax)*Position) then
       begin
         Exit;
