@@ -1,0 +1,3 @@
+sysimg/2d/arrow_left
+sysimg/2d/arrow_right
+sysimg/2d/mouse_arrow

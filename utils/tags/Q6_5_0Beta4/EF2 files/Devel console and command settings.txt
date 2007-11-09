@@ -1,0 +1,31 @@
+
+
+
+
+
+
+
+
+
+First, you have to enable the console.
+
+Create a new shortcut to Elite Force 2 
+Right click > Properties > Shortcut tab 
+Add the parameter +set developer 1 at the end of the path to your elite force, after the end quote. And remember to put a space dividing the path and the parameters. 
+Examples:
+"c:\path\to\eliteforce2\EF2.EXE" +set developer 1
+"c:\program files\activision\star trek elite force II demo\EF2.EXE" +set developer 1
+
+After the game starts, if you get a blank screen with console, the press tilde key (~, next to 1) to close the console and the escape key and return to the main menu 
+You can now use the console by pressing the tilde (~, next to 1) key. 
+
+Cheat Description 
+Enter these commands into the console 
+-------------------------------------- 
+god :Activates invincibility mode and gives you unlimited ammo. 
+noclip :Disables clipping, so you can move through walls. Forward to move forward, Jump to move up, crouch to move down. 
+spawn modelpath :Spawns modelpath. Use command modellist to list the models. When using spawn, you must give the full path to the model. 
+kill :Suicide 
+notarget :Makes you invisible to enemies (untargetable) 
+health n :Changes your health to n where n is a number. 
+cg_3rd_person 1 :1 enables 3rd person view, 0 returns to normal view. 
