@@ -181,6 +181,8 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Building")["ObjectMode"] = 0
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationActive"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
+        quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
                 
     def ListComponents(self):
         return self.Root.findallsubitems("", ':mc')   # find all components
@@ -1418,6 +1420,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.79  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
 #Revision 1.78  2007/10/31 09:24:24  cdunde
 #To stop errors and crash if editor or QuArK is closed while animation is running.
 #

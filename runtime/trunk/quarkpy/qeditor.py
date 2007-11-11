@@ -1360,6 +1360,7 @@ def ToolsMenu(editor, toolbars):
 ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
 ico_mdled = LoadIconSet1("mdled", 1.0)
 ico_mdlskv = LoadIconSet1("mdlskv", 1.0)
+ico_mdltools = LoadIconSet1("mdltools", 1.0)
 ico_dict['ico_mapedsm'] = LoadIconSet1("mapedsm", 0.5)    # small
 ico_maped_y = ico_dict['ico_maped'][0][0].size[1] + 7
 
@@ -1572,6 +1573,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.39  2007/09/08 01:01:13  cdunde
+#One more item for the last change of:
+#Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.38  2007/09/07 23:55:29  cdunde
 #1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
 #     model component from selected Model Mesh faces and remove them from their current component.

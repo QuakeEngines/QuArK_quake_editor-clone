@@ -498,6 +498,9 @@ class VertexHandle(qhandles.GenericHandle):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
 
         def add_vertex_click(m, self=self, editor=editor, view=view):
+            import mdlmgr
+            from mdlmgr import savefacesel
+            mdlmgr.savefacesel = 1
             addvertex(editor, editor.Root.currentcomponent, self.pos)
 
         def remove_vertex_click(m, self=self, editor=editor, view=view):
@@ -628,6 +631,9 @@ class VertexHandle(qhandles.GenericHandle):
 
             pickedpos = editor.Root.currentcomponent.currentframe.vertices[editor.ModelVertexSelList[0][0]]
 
+            import mdlmgr
+            from mdlmgr import savefacesel
+            mdlmgr.savefacesel = 1
             if len(editor.ModelVertexSelList) > 1:
                 replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "multi Mesh vertex alignment", 0)
                 editor.ModelVertexSelList = []
@@ -2575,17 +2581,22 @@ class LinRedHandle(LinearHandle):
         else:
             framevtxs = comp.currentframe.vertices
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-                for tri in editor.SelCommonTriangles:
-                    dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
-                    for vtx in range(len(tri[4])):
-                        if tri[4][vtx][0] == tri[0]:
-                            continue
-                        else:
-                            if tri[4][vtx][0] in editor.SelVertexes:
-                                projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
-                            else:
-                                projvtx = view.proj(framevtxs[tri[4][vtx][0]])
-                            cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+                if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] is not None or quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None:
+                    pass
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["NFDL"] is None:
+                        # This draws the selected faces drag lines for a regular Linear Center Handle drag.
+                        for tri in editor.SelCommonTriangles:
+                            dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
+                            for vtx in range(len(tri[4])):
+                                if tri[4][vtx][0] == tri[0]:
+                                    continue
+                                else:
+                                    if tri[4][vtx][0] in editor.SelVertexes:
+                                        projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
+                                    else:
+                                        projvtx = view.proj(framevtxs[tri[4][vtx][0]])
+                                    cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
             else:
                 if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None:
                     for tri in self.mgr.tristodrawlist:
@@ -2600,17 +2611,30 @@ class LinRedHandle(LinearHandle):
                                     projvtx = view.proj(framevtxs[tri[4][vtx][0]])
                                 cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
 
-        for obj in list: # Draws the models triangles or vertexes correctly during drag in all views.
+        for obj in list: # Draws the models triangles or vertexes, that are being dragged, correctly during a drag in all views.
             obj.translate(delta)
             if obj.name.endswith(":g"):
                 dragcolor = vertexsellistcolor
+                # This section draws the vertex drag lines.
                 # We can take this line out if we don't want the vertex cubes drawn durning drags.
                 view.drawmap(obj, DM_OTHERCOLOR, dragcolor)
             else:
+                # This section draws the selected faces that are being dragged.
                 vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
                 vect0X ,vect0Y, vect0Z = view.proj(vect0X ,vect0Y, vect0Z).tuple
                 vect1X ,vect1Y, vect1Z = view.proj(vect1X ,vect1Y, vect1Z).tuple
                 vect2X ,vect2Y, vect2Z = view.proj(vect2X ,vect2Y, vect2Z).tuple
+                if (quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] is not None or quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None) and quarkx.setupsubset(SS_MODEL, "Options")["NFDL"] is None:
+                    # If Extruding faces this section draws the drag lines.
+                    tuplename = tuple(str(s) for s in obj.shortname.split(','))
+                    compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
+                    ver0X ,ver0Y, ver0Z = view.proj(framevtxs[int(ver_index0)]).tuple
+                    ver1X ,ver1Y, ver1Z = view.proj(framevtxs[int(ver_index1)]).tuple
+                    ver2X ,ver2Y, ver2Z = view.proj(framevtxs[int(ver_index2)]).tuple
+                    cv.pencolor = dragcolor
+                    cv.line(ver0X ,ver0Y, int(vect0X), int(vect0Y))
+                    cv.line(ver1X ,ver1Y, int(vect1X), int(vect1Y))
+                    cv.line(ver2X ,ver2Y, int(vect2X), int(vect2Y))
                 cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
                 cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
                 cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
@@ -2686,7 +2710,12 @@ class LinRedHandle(LinearHandle):
         from qbaseeditor import currentview
         if newobjectslist[0].name.endswith(":f"):
             undomsg = "editor-linear face movement"
-            ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
+            if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] is not None or quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None:
+                # This call handles the editor's selected faces extrusion functions.
+                ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 2)
+            else:
+                # This call handles a normal editor selected faces drag.
+                ConvertEditorFaceObject(editor, newobjectslist, currentview.flags, currentview, undomsg)
         else:
             if currentview.info["viewname"] == "skinview":
                 undomsg = "skin view-linear vertex movement"
@@ -3002,6 +3031,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.111  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
 #Revision 1.110  2007/10/29 17:56:31  cdunde
 #Added option for Skin-view multiple drag lines drawing.
 #

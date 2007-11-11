@@ -351,10 +351,17 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
                 if compframe.name == listframe.name:
                     old_vtxs = compframe.vertices
                     for poly in newobjectslist[0].subitems:
-                        vtxnbr = int(poly.shortname)
-                        face = poly.subitems[0]
-                        vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
-                        old_vtxs[vtxnbr] = vertex
+                        if listframe == editor.layout.explorer.sellist[0]:
+                            vtxnbr = int(poly.shortname)
+                            face = poly.subitems[0]
+                            vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                            delta = vertex - old_vtxs[vtxnbr]
+                            old_vtxs[vtxnbr] = vertex
+                        else:
+                            vtxnbr = int(poly.shortname)
+                            face = poly.subitems[0]
+                            vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                            old_vtxs[vtxnbr] = old_vtxs[vtxnbr] + delta
                     compframe.vertices = old_vtxs
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
@@ -433,10 +440,10 @@ def MakeEditorFaceObject(editor, option=0):
                     face["v"] = vertexlist
                     editor.EditorObjectList = editor.EditorObjectList + [face]
         return editor.EditorObjectList
-
-    editor.ModelFaceSelList = []
-    editor.SelCommonTriangles = []
-    editor.SelVertexes = []
+    if option != 2:
+        editor.ModelFaceSelList = []
+        editor.SelCommonTriangles = []
+        editor.SelVertexes = []
     v0 = editor.ModelVertexSelList[0][0] # Gives the index number of the 1st vertex in the list.
     v1 = editor.ModelVertexSelList[1][0] # Gives the index number of the 2nd vertex in the list.
     v2 = editor.ModelVertexSelList[2][0] # Gives the index number of the 3rd vertex in the list.
@@ -494,7 +501,7 @@ def MakeEditorFaceObject(editor, option=0):
                 vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
                 face["v"] = vertexlist
                 editor.EditorObjectList = editor.EditorObjectList + [[face, tri_index]]
-                editor.ModelFaceSelList = editor.ModelFaceSelList + [trinbr]
+      #          editor.ModelFaceSelList = editor.ModelFaceSelList + [trinbr]
         return editor.EditorObjectList
         
     elif option == 3: # Returns an object & tri_index for each triangle that shares the 1st and one other vertex of our selected triangle's vertexes.
@@ -525,14 +532,19 @@ def MakeEditorFaceObject(editor, option=0):
         return editor.EditorObjectList
 
 
-
+#
+# Does the opposite of the 'MakeEditorFaceObject' (just above this function) to convert
+#   a list of faces that have been manipulated by some function using QuArK Internal Face Objects.
+# The 'new' objects list in the functions 'ok' section is passed to here where it is converted back
+#   to usable model component mesh vertexes of those faces and the final 'ok' function is performed.
+# option=0 is the function for the Model Editor.
+# option=1 is the function for the Skin-view.
+# option=2, called from mdlhandles.py class LinRedHandle, ok function
+#   is for the editor's selected faces extrusion function.
+#
 def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option=0):
     "Does the opposite of the 'MakeEditorFaceObject' (just above this function) to convert"
     "a list of faces that have been manipulated by some function using QuArK Internal Face Objects."
-    "The 'new' objects list in the functions 'ok' section is passed to here where it is converted back"
-    "to usable model component mesh vertexes of those faces and the final 'ok' function is performed."
-    "option=0 is the function for the Model Editor and"
-    "option=1 is the function for the Skin-view"
 
     if option == 0:
         comp = editor.Root.currentcomponent
@@ -548,6 +560,24 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
                         old_vtxs[int(ver_index0)] = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])
                         old_vtxs[int(ver_index1)] = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])
                         old_vtxs[int(ver_index2)] = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])
+                    ### To try and get the Linear Face Handle to move faces correctly in animated frames.
+                    #    if listframe == editor.layout.explorer.sellist[0]:
+                    #        vertex0 = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                    #        vertex1 = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                    #        vertex2 = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                    #        delta0 = vertex0 - old_vtxs[int(ver_index0)]
+                    #        delta1 = vertex1 - old_vtxs[int(ver_index1)]
+                    #        delta2 = vertex2 - old_vtxs[int(ver_index2)]
+                    #        old_vtxs[int(ver_index0)] = vertex0
+                    #        old_vtxs[int(ver_index1)] = vertex1
+                    #        old_vtxs[int(ver_index2)] = vertex2
+                    #    else:
+                    #        vertex0 = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                    #        vertex1 = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                    #        vertex2 = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                    #        old_vtxs[int(ver_index0)] = old_vtxs[int(ver_index0)] + delta0
+                    #        old_vtxs[int(ver_index1)] = old_vtxs[int(ver_index1)] + delta1
+                    #        old_vtxs[int(ver_index2)] = old_vtxs[int(ver_index2)] + delta2
                         compframe.vertices = old_vtxs
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
@@ -586,6 +616,137 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
                         vertexlist = vertexlist + [[pos0, vertex0, tri_index, ver_index0]] + [[pos1, vertex1, tri_index, ver_index1]] + [[pos2, vertex2, tri_index, ver_index2]]
 
         replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=option)
+
+    if option == 2:
+        comp = editor.Root.currentcomponent
+        new_comp = comp.copy()
+        newtris = new_comp.triangles
+        newtri_index = len(comp.triangles)
+        newfaceselection = []
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        currentvertices = len(compframes[0].vertices)
+
+        for selface in editor.ModelFaceSelList:
+            netvtxs = []
+            for vtx in comp.triangles[selface]:
+                if vtx in netvtxs:
+                    pass
+                else:
+                    netvtxs = netvtxs + [vtx[0]]
+        newvtxsneeded = len(netvtxs)
+
+        old_vtxs = []
+        old_vtx_nbrs = []
+        editor.ModelFaceSelList.sort()
+
+        for face in newobjectslist:
+            tuplename = tuple(str(s) for s in face.shortname.split(','))
+            compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
+            tri_index = int(tri_index)
+            ver_index0 = int(ver_index0)
+            ver_index1 = int(ver_index1)
+            ver_index2 = int(ver_index2)
+
+            # This section makes the new vertexes of the editor's selected faces extrusion function.
+            if ver_index0 in old_vtx_nbrs:
+                pass
+            else:
+                old_vtxs = old_vtxs + [quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])]
+                old_vtx_nbrs = old_vtx_nbrs + [ver_index0]
+            if ver_index1 in old_vtx_nbrs:
+                pass
+            else:
+                old_vtxs = old_vtxs + [quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])]
+                old_vtx_nbrs = old_vtx_nbrs + [ver_index1]
+            if ver_index2 in old_vtx_nbrs:
+                pass
+            else:
+                old_vtxs = old_vtxs + [quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])]
+                old_vtx_nbrs = old_vtx_nbrs + [ver_index2]
+
+            # This section calculates the new selected triangle's (face) vertex index numbers.
+            vtx0,u0,v0 = comp.triangles[tri_index][0]
+            vtx1,u1,v1 = comp.triangles[tri_index][1]
+            vtx2,u2,v2 = comp.triangles[tri_index][2]
+            for oldnbr in range(len(old_vtx_nbrs)):
+                if vtx0 == old_vtx_nbrs[oldnbr]:
+                    newvtx0 = currentvertices + oldnbr
+                if vtx1 == old_vtx_nbrs[oldnbr]:
+                    newvtx1 = currentvertices + oldnbr
+                if vtx2 == old_vtx_nbrs[oldnbr]:
+                    newvtx2 = currentvertices + oldnbr
+
+            # This section makes the new 'side' triangles for the extruded faces.
+            vtx01 = vtx12 = vtx20 = 1
+            for selface in editor.ModelFaceSelList:
+                vtxs = []
+                for vtx in comp.triangles[selface]:
+                    vtxs = vtxs + [vtx[0]]
+                if selface == tri_index or len(editor.ModelFaceSelList) == 1:
+                    pass
+                else:
+                    if (vtx0 in vtxs and vtx1 in vtxs):
+                        vtx01 = 0
+                    if (vtx1 in vtxs and vtx2 in vtxs):
+                        vtx12 = 0
+                    if (vtx2 in vtxs and vtx0 in vtxs):
+                        vtx20 = 0
+
+            if vtx01 == 1:
+                newtris = newtris + [((newvtx0,u0,v0), (comp.triangles[tri_index][0][0],u0,v0), (newvtx1,u1,v1))]
+                newtris = newtris + [((newvtx1,u1,v1), (comp.triangles[tri_index][0][0],u0,v0), (comp.triangles[tri_index][1][0],u1,v1))]
+                newtri_index = newtri_index + 2
+            if vtx12 == 1:
+                newtris = newtris + [((newvtx2,u2,v2), (newvtx1,u1,v1), (comp.triangles[tri_index][1][0],u1,v1))]
+                newtris = newtris + [((newvtx2,u2,v2), (comp.triangles[tri_index][1][0],u1,v1), (comp.triangles[tri_index][2][0],u2,v2))]
+                newtri_index = newtri_index + 2
+            if vtx20 == 1:
+                newtris = newtris + [((newvtx2,u2,v2), (comp.triangles[tri_index][0][0],u0,v0), (newvtx0,u0,v0))]
+                newtris = newtris + [((newvtx2,u2,v2), (comp.triangles[tri_index][2][0],u2,v2), (comp.triangles[tri_index][0][0],u0,v0))]
+                newtri_index = newtri_index + 2
+            # This section makes the new selected faces being dragged.
+            newtris = newtris + [((newvtx0,u0,v0), (newvtx1,u1,v1), (newvtx2,u2,v2))]
+
+            if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None:
+                # This line leaves the 'bulkheads' in between extrusion drags.
+                newfaceselection = newfaceselection + [newtri_index]
+            else:
+                # This line, and the two noted below, remove the 'bulkheads' between extrusion drags.
+                newfaceselection = newfaceselection + [newtri_index-len(editor.ModelFaceSelList)]
+
+            newtri_index = newtri_index + 1
+
+        if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None:
+            pass
+        else:
+            # These lines, and the one noted above, remove the 'bulkheads' between extrusion drags.
+            for tri_index in reversed(editor.ModelFaceSelList):
+                newtris = newtris[:tri_index] + newtris[tri_index+1:]
+
+        # This updates (adds) the new vertices to each frame.
+        for compframe in compframes:
+            compframe.vertices = compframe.vertices + old_vtxs
+        # This updates (adds) the new triangles to the component.
+        new_comp.triangles = newtris
+
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+        editor.ModelFaceSelList = newfaceselection
+
+        # Sets these lists up for the Linear Handle drag lines to be drawn.
+        editor.SelCommonTriangles = []
+        editor.SelVertexes = []
+        if quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
+            for tri in editor.ModelFaceSelList:
+                for vtx in range(len(comp.triangles[tri])):
+                    if comp.triangles[tri][vtx][0] in editor.SelVertexes:
+                        pass
+                    else:
+                        editor.SelVertexes = editor.SelVertexes + [comp.triangles[tri][vtx][0]] 
+                    editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
+
+        MakeEditorFaceObject(editor)
 
 
 #
@@ -1655,10 +1816,152 @@ def Update_Editor_Views(editor, option=4):
                     mdleditor.modelaxis(v)
 
 
+
+def ReverseFaces(editor):
+    "Reverses or mirrors the selected faces, in the ModelFaceSelList, vertexes"
+    "making turning the face in the opposite direction."
+    comp = editor.Root.currentcomponent
+    if (len(editor.ModelFaceSelList) < 1) or (comp is None):
+        quarkx.msgbox("No selection has been made\n\nYou must first select some faces of a\nmodel component to flip their direction", MT_ERROR, MB_OK)
+        return
+    new_tris = comp.triangles
+    for tri in editor.ModelFaceSelList:
+        vtxs = comp.triangles[tri]
+        if vtxs[1][0] > vtxs[2][0]:
+            new_tris[tri] = (vtxs[1],vtxs[0],vtxs[2])
+        else:
+            new_tris[tri] = (vtxs[2],vtxs[1],vtxs[0])
+    comp.triangles = new_tris
+    Update_Editor_Views(editor)
+
+
+
+def SubdivideFaces(editor, pieces=None):
+    "Splits the selected faces, in the ModelFaceSelList, into the number of new triangles given as 'pieces'."
+    comp = editor.Root.currentcomponent
+    if (len(editor.ModelFaceSelList) < 1) or (comp is None):
+        quarkx.msgbox("No selection has been made\n\nYou must first select some faces of a\nmodel component to subdivide those faces.", MT_ERROR, MB_OK)
+        return
+
+    new_comp = comp.copy()
+    new_tris = new_comp.triangles
+    newtri_index = len(comp.triangles)-1
+    newfaceselection = []
+    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+    currentvertices = len(compframes[0].vertices)-1
+    checkframe0 = comp.currentframe
+
+    if pieces == 2:
+        # This updates (adds) the new vertices to each frame.
+        framecount = 0
+        for compframe in compframes:
+            for tri in editor.ModelFaceSelList:
+                old_vtxs = compframe.vertices
+                trivtxs = comp.triangles[tri]
+                if (abs(checkframe0.vertices[trivtxs[0][0]] - checkframe0.vertices[trivtxs[1][0]]) > abs(checkframe0.vertices[trivtxs[1][0]] - checkframe0.vertices[trivtxs[2][0]])) and (abs(checkframe0.vertices[trivtxs[0][0]] - checkframe0.vertices[trivtxs[1][0]]) > abs(checkframe0.vertices[trivtxs[2][0]] - checkframe0.vertices[trivtxs[0][0]])):
+                    sidecenter = (compframe.vertices[trivtxs[0][0]] + compframe.vertices[trivtxs[1][0]])*.5
+                    for vtx in range(len(compframe.vertices)):
+                        if str(sidecenter) == str(compframe.vertices[vtx]):
+                            if framecount == 0:
+                                newvtx_index0 = vtx
+                                newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
+                                newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
+                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
+                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                                newtri_index = newtri_index + 1
+                                newfaceselection = newfaceselection + [newtri_index]
+                            break
+                        if vtx == len(compframe.vertices)-1:
+                            old_vtxs = old_vtxs + [sidecenter]
+                            if framecount == 0:
+                                currentvertices = currentvertices + 1
+                                newvtx_index0 = currentvertices
+                                newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
+                                newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
+                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
+                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                                newtri_index = newtri_index + 1
+                                newfaceselection = newfaceselection + [newtri_index]
+                elif (abs(checkframe0.vertices[trivtxs[1][0]] - checkframe0.vertices[trivtxs[2][0]]) > abs(checkframe0.vertices[trivtxs[0][0]] - checkframe0.vertices[trivtxs[1][0]])) and (abs(checkframe0.vertices[trivtxs[1][0]] - checkframe0.vertices[trivtxs[2][0]]) > abs(checkframe0.vertices[trivtxs[2][0]] - checkframe0.vertices[trivtxs[0][0]])):
+                    sidecenter = (compframe.vertices[trivtxs[1][0]] + compframe.vertices[trivtxs[2][0]])*.5
+                    for vtx in range(len(compframe.vertices)):
+                        if str(sidecenter) == str(compframe.vertices[vtx]):
+                            if framecount == 0:
+                                newvtx_index0 = vtx
+                                newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
+                                newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
+                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
+                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])]
+                                newtri_index = newtri_index + 1
+                                newfaceselection = newfaceselection + [newtri_index]
+                            break
+                        if vtx == len(compframe.vertices)-1:
+                            old_vtxs = old_vtxs + [sidecenter]
+                            if framecount == 0:
+                                currentvertices = currentvertices + 1
+                                newvtx_index0 = currentvertices
+                                newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
+                                newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
+                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
+                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])]
+                                newtri_index = newtri_index + 1
+                                newfaceselection = newfaceselection + [newtri_index]
+                else:
+                    sidecenter = (compframe.vertices[trivtxs[2][0]] + compframe.vertices[trivtxs[0][0]])*.5
+                    for vtx in range(len(compframe.vertices)):
+                        if str(sidecenter) == str(compframe.vertices[vtx]):
+                            if framecount == 0:
+                                newvtx_index0 = vtx
+                                newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
+                                newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
+                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
+                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                                newtri_index = newtri_index + 1
+                                newfaceselection = newfaceselection + [newtri_index]
+                            break
+                        if vtx == len(compframe.vertices)-1:
+                            old_vtxs = old_vtxs + [sidecenter]
+                            if framecount == 0:
+                                currentvertices = currentvertices + 1
+                                newvtx_index0 = currentvertices
+                                newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
+                                newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
+                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
+                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                                newtri_index = newtri_index + 1
+                                newfaceselection = newfaceselection + [newtri_index]
+                compframe.vertices = old_vtxs
+            framecount = 1
+            new_comp.currentframe = compframe
+
+        # This updates (adds) the new triangles to the component.
+        new_comp.triangles = new_tris
+
+        new_comp.currentskin = editor.Root.currentcomponent.currentskin
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.Root.currentcomponent = new_comp
+        editor.ok(undo, "face Subdivision 2")
+        print "mdlutils line 1913 new_tris",len(new_tris), new_tris
+        print "mdlutils line 1914 vertices",currentvertices, len(comp.currentframe.vertices), comp.currentframe.vertices
+        print "mdlutils line 1915 new_tris",newfaceselection
+        editor.ModelFaceSelList = editor.ModelFaceSelList + newfaceselection
+        newfaceselection = []
+        print "mdlutils line 1921 ModelFaceSelList",editor.ModelFaceSelList
+        Update_Editor_Views(editor)
+        import mdlhandles
+        from mdlhandles import SkinView1
+        if SkinView1 is not None:
+            SkinView1.invalidate()
+        
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.52  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
 #Revision 1.51  2007/10/25 17:25:47  cdunde
 #To fix some small typo errors.
 #

@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-The map editor's "Toolbars" menu (to be extended by plug-ins)
+The model editor's "Toolbars" menu (to be extended by plug-ins)
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -14,7 +14,7 @@ The map editor's "Toolbars" menu (to be extended by plug-ins)
 
 import qmenu
 from mdlutils import *
-
+import mdleditor
 
 
 class DisplayBar(ToolBar):
@@ -47,6 +47,108 @@ class DisplayBar(ToolBar):
         return [gridbtn, zoombtn, Btn3D, LinearVBtn, LockViewsBtn, helpbtn]
 
 
+# Extrude selected faces in the ModelFaceSelList without bulkheads function.
+def extrudeclick(m):
+    editor = mdleditor.mdleditor
+    qtoolbar.toggle(m)
+    tb1 = editor.layout.toolbars["tb_edittools"]
+    tb2 = editor.layout.toolbars["tb_objmodes"]
+    if not MldOption("ExtrudeFaces"):
+        quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = "1"
+        tb1.tb.buttons[0].state = qtoolbar.selected
+        quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
+        tb1.tb.buttons[1].state = qtoolbar.normal
+        for b in tb2.tb.buttons:
+            b.state = qtoolbar.normal
+        tb2.tb.buttons[1].state = qtoolbar.selected
+        quarkx.update(editor.form)
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
+        tb1.tb.buttons[0].state = qtoolbar.normal
+        quarkx.update(editor.form)
+        comp = editor.Root.currentcomponent
+        for tri in editor.ModelFaceSelList:
+            for vtx in range(len(comp.triangles[tri])):
+                if comp.triangles[tri][vtx][0] in editor.SelVertexes:
+                    pass
+                else:
+                    editor.SelVertexes = editor.SelVertexes + [comp.triangles[tri][vtx][0]] 
+                editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
+
+
+# Extrude selected faces in the ModelFaceSelList with bulkheads function.
+def extrudebulkheadsclick(m):
+    editor = mdleditor.mdleditor
+    qtoolbar.toggle(m)
+    tb1 = editor.layout.toolbars["tb_edittools"]
+    tb2 = editor.layout.toolbars["tb_objmodes"]
+    if not MldOption("ExtrudeBulkHeads"):
+        quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = "1"
+        tb1.tb.buttons[1].state = qtoolbar.selected
+        quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
+        tb1.tb.buttons[0].state = qtoolbar.normal
+        for b in tb2.tb.buttons:
+            b.state = qtoolbar.normal
+        tb2.tb.buttons[1].state = qtoolbar.selected
+        quarkx.update(editor.form)
+    else:
+        quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
+        tb1.tb.buttons[1].state = qtoolbar.normal
+        quarkx.update(editor.form)
+        comp = editor.Root.currentcomponent
+        for tri in editor.ModelFaceSelList:
+            for vtx in range(len(comp.triangles[tri])):
+                if comp.triangles[tri][vtx][0] in editor.SelVertexes:
+                    pass
+                else:
+                    editor.SelVertexes = editor.SelVertexes + [comp.triangles[tri][vtx][0]] 
+                editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
+
+
+# Reverse selected faces direction in the ModelFaceSelList function.
+def ReverseFaceClick(m):
+    editor = mdleditor.mdleditor
+    ReverseFaces(editor)
+
+
+# Splits up selected faces in the ModelFaceSelList into 2 new triangles function.
+def Subdivide2Click(m):
+    editor = mdleditor.mdleditor
+    SubdivideFaces(editor, 2)
+
+
+# Splits up selected faces in the ModelFaceSelList into 3 new triangles function.
+def Subdivide3Click(m):
+    quarkx.msgbox("This function is not operative at this time.", MT_ERROR, MB_OK)
+    return
+
+
+# Splits up selected faces in the ModelFaceSelList into 4 new triangles function.
+def Subdivide4Click(m):
+    quarkx.msgbox("This function is not operative at this time.", MT_ERROR, MB_OK)
+    return
+
+
+
+class EditToolsBar(ToolBar):
+    "Special model editing tools toolbar."
+
+    Caption = "Editing Tools"
+    DefaultPos = ((0,0,0,0), "topdock", 0, 0, 1)
+
+    def buildbuttons(self, layout):
+        extrude = qtoolbar.button(extrudeclick, "Extrude Selected Faces||Extrude Selected Faces:\n\nThis function only works with selected faces in the Editor's views and the 'Linear Drag Handles' button active.\n\nOnce selected click this button to extrude those faces in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.", ico_mdltools, 0, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows")
+        extrudebulkheads = qtoolbar.button(extrudebulkheadsclick, "Extrude with Bulk Heads||Extrude with Bulk Heads: This does the same function as the 'Extrude' but leaves 'bulkheads' between each extrusion drag.\n\nThis function only works with selected faces in the Editor's views and the 'Linear Drag Handles' button active.\n\nOnce selected click this button to extrude those faces in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.", ico_mdltools, 1, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows")
+        revface = qtoolbar.button(ReverseFaceClick, "Reverse face direction||Reverse face direction:\n\nIf faces of a model component have been selected, the direction they face will be reversed by clicking this button.", ico_mdltools, 2, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows")
+        subdivide2 = qtoolbar.button(Subdivide2Click, "Subdivide 2||Subdivide 2:\n\nIf faces of a model component have been selected, those faces will be split into 2 new triangles when this button is clicked.", ico_mdltools, 3,  infobaselink="intro.modeleditor.toolpalettes.display.html#linear")
+     #   subdivide3 = qtoolbar.button(Subdivide3Click, "Subdivide 3||Subdivide 3:\n\nIf faces of a model component have been selected, those faces will be split into 3 new triangles when this button is clicked.", ico_mdltools, 4, infobaselink="intro.modeleditor.toolpalettes.display.html#lockviews")
+     #   subdivide4 = qtoolbar.button(Subdivide4Click, "Subdivide 4||Subdivide 4:\n\nIf faces of a model component have been selected, those faces will be split into 4 new triangles when this button is clicked.", ico_mdltools, 5, infobaselink="intro.modeleditor.toolpalettes.display.html#helpbook")
+        subdivide3 = qtoolbar.button(Subdivide3Click, "not operative|future function place holder", ico_mdltools, 6)
+        subdivide4 = qtoolbar.button(Subdivide4Click, "not operative|future function place holder", ico_mdltools, 6)
+
+        layout.buttons.update({"Extrude": extrude, "ExtrudeBulkHeads": extrudebulkheads, "RevFace": revface, "Subdivide2": subdivide2, "Subdivide3": subdivide3, "Subdivide4": subdivide4})
+
+        return [extrude, extrudebulkheads, revface, subdivide2, subdivide3, subdivide4]
 
 
 #
@@ -56,12 +158,15 @@ class DisplayBar(ToolBar):
 
 import qmovepal
 import mdlanimation
-toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar, "tb_animation": mdlanimation.AnimationBar}
+toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal": qmovepal.ToolMoveBar, "tb_animation": mdlanimation.AnimationBar}
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.6  2007/10/18 02:31:54  cdunde
+#Setup the Model Editor Animation system, functions and toolbar.
+#
 #Revision 1.5  2007/08/24 09:27:28  cdunde
 #To update the toolbar links to new sections of the InfoBase for the Model Editor.
 #
