@@ -15,7 +15,7 @@ $Id$
 6.5.0 Beta 4
 ============
 
-* [cdunde/DanielPharos]]: Started a new toolbar for the Model Editor to support "Editing Tools" along with four
+* [cdunde/DanielPharos]: Started a new toolbar for the Model Editor to support "Editing Tools" along with four
           - new functions: Extrude Selected Faces, Extrude with Bulkheads, Reverse face direction and Subdivide faces.
 
 * [cdunde]: Setup multiple selection drag lines for all editor views and the Skin-view with options.
