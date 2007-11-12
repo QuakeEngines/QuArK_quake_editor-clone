@@ -550,35 +550,30 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
         comp = editor.Root.currentcomponent
         new_comp = comp.copy()
         compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        VertToMove = []
+        for face in newobjectslist:
+            tuplename = tuple(str(s) for s in face.shortname.split(','))
+            compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
+            VertToCheck0 = [int(ver_index0), quarkx.vect(face["v"][0], face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2]
+            VertToCheck1 = [int(ver_index1), quarkx.vect(face["v"][3], face["v"][4], face["v"][5]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2]
+            VertToCheck2 = [int(ver_index2), quarkx.vect(face["v"][6], face["v"][7], face["v"][8]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2]
+            if not (VertToCheck0 in VertToMove):
+                VertToMove = VertToMove + [VertToCheck0]
+            if not (VertToCheck1 in VertToMove):
+                VertToMove = VertToMove + [VertToCheck1]
+            if not (VertToCheck2 in VertToMove):
+                VertToMove = VertToMove + [VertToCheck2]
         for compframe in compframes:
             for listframe in editor.layout.explorer.sellist:
                 if compframe.name == listframe.name:
                     old_vtxs = compframe.vertices
-                    for face in newobjectslist:
-                        tuplename = tuple(str(s) for s in face.shortname.split(','))
-                        compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
-                        old_vtxs[int(ver_index0)] = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])
-                        old_vtxs[int(ver_index1)] = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])
-                        old_vtxs[int(ver_index2)] = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])
-                    ### To try and get the Linear Face Handle to move faces correctly in animated frames.
-                    #    if listframe == editor.layout.explorer.sellist[0]:
-                    #        vertex0 = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
-                    #        vertex1 = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
-                    #        vertex2 = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
-                    #        delta0 = vertex0 - old_vtxs[int(ver_index0)]
-                    #        delta1 = vertex1 - old_vtxs[int(ver_index1)]
-                    #        delta2 = vertex2 - old_vtxs[int(ver_index2)]
-                    #        old_vtxs[int(ver_index0)] = vertex0
-                    #        old_vtxs[int(ver_index1)] = vertex1
-                    #        old_vtxs[int(ver_index2)] = vertex2
-                    #    else:
-                    #        vertex0 = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
-                    #        vertex1 = quarkx.vect(face["v"][3] , face["v"][4], face["v"][5]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
-                    #        vertex2 = quarkx.vect(face["v"][6] , face["v"][7], face["v"][8]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
-                    #        old_vtxs[int(ver_index0)] = old_vtxs[int(ver_index0)] + delta0
-                    #        old_vtxs[int(ver_index1)] = old_vtxs[int(ver_index1)] + delta1
-                    #        old_vtxs[int(ver_index2)] = old_vtxs[int(ver_index2)] + delta2
-                        compframe.vertices = old_vtxs
+                    for Vert in VertToMove:
+                        if listframe == editor.layout.explorer.sellist[0]:
+                            delta = Vert[1] - old_vtxs[Vert[0]]
+                            old_vtxs[Vert[0]] = Vert[1]
+                        else:
+                            old_vtxs[Vert[0]] = old_vtxs[Vert[0]] + delta
+                    compframe.vertices = old_vtxs
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -1959,6 +1954,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.53  2007/11/11 11:41:50  cdunde
+#Started a new toolbar for the Model Editor to support "Editing Tools".
+#
 #Revision 1.52  2007/11/04 00:33:33  cdunde
 #To make all of the Linear Handle drag lines draw faster and some selection color changes.
 #
