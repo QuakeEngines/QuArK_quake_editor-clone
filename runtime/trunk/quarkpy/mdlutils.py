@@ -1937,12 +1937,8 @@ def SubdivideFaces(editor, pieces=None):
         undo.exchange(comp, new_comp)
         editor.Root.currentcomponent = new_comp
         editor.ok(undo, "face Subdivision 2")
-        print "mdlutils line 1913 new_tris",len(new_tris), new_tris
-        print "mdlutils line 1914 vertices",currentvertices, len(comp.currentframe.vertices), comp.currentframe.vertices
-        print "mdlutils line 1915 new_tris",newfaceselection
         editor.ModelFaceSelList = editor.ModelFaceSelList + newfaceselection
         newfaceselection = []
-        print "mdlutils line 1921 ModelFaceSelList",editor.ModelFaceSelList
         Update_Editor_Views(editor)
         import mdlhandles
         from mdlhandles import SkinView1
@@ -1954,6 +1950,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.54  2007/11/12 00:29:18  cdunde
+#Fixed Linear Handle for selected faces and frames to draw
+#face vertexes locations properly for animation movement.
+#
 #Revision 1.53  2007/11/11 11:41:50  cdunde
 #Started a new toolbar for the Model Editor to support "Editing Tools".
 #
