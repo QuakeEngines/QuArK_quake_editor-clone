@@ -1844,90 +1844,118 @@ def SubdivideFaces(editor, pieces=None):
     newfaceselection = []
     compframes = new_comp.findallsubitems("", ':mf')   # get all frames
     currentvertices = len(compframes[0].vertices)-1
-    checkframe0 = comp.currentframe
+    curframe = comp.currentframe
 
     if pieces == 2:
         # This updates (adds) the new vertices to each frame.
+        commonvtxs = []
+        commonvtxnbr = []
+        for tri in editor.ModelFaceSelList:
+            for vtx in comp.triangles[tri]:
+                if not (curframe.vertices[vtx[0]] in commonvtxs):
+                    commonvtxs = commonvtxs + [curframe.vertices[vtx[0]]]
+                    commonvtxnbr = commonvtxnbr + [vtx[0]]
         framecount = 0
-        for compframe in compframes:
-            for tri in editor.ModelFaceSelList:
-                old_vtxs = compframe.vertices
-                trivtxs = comp.triangles[tri]
-                if (abs(checkframe0.vertices[trivtxs[0][0]] - checkframe0.vertices[trivtxs[1][0]]) > abs(checkframe0.vertices[trivtxs[1][0]] - checkframe0.vertices[trivtxs[2][0]])) and (abs(checkframe0.vertices[trivtxs[0][0]] - checkframe0.vertices[trivtxs[1][0]]) > abs(checkframe0.vertices[trivtxs[2][0]] - checkframe0.vertices[trivtxs[0][0]])):
-                    sidecenter = (compframe.vertices[trivtxs[0][0]] + compframe.vertices[trivtxs[1][0]])*.5
-                    for vtx in range(len(compframe.vertices)):
-                        if str(sidecenter) == str(compframe.vertices[vtx]):
-                            if framecount == 0:
-                                newvtx_index0 = vtx
-                                newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
-                                newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
-                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
-                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
-                                newtri_index = newtri_index + 1
-                                newfaceselection = newfaceselection + [newtri_index]
-                            break
-                        if vtx == len(compframe.vertices)-1:
+        for tri in editor.ModelFaceSelList:
+            trivtxs = comp.triangles[tri]
+            if (abs(curframe.vertices[trivtxs[0][0]] - curframe.vertices[trivtxs[1][0]]) > abs(curframe.vertices[trivtxs[1][0]] - curframe.vertices[trivtxs[2][0]])) and (abs(curframe.vertices[trivtxs[0][0]] - curframe.vertices[trivtxs[1][0]]) > abs(curframe.vertices[trivtxs[2][0]] - curframe.vertices[trivtxs[0][0]])):
+                sidecenter = (curframe.vertices[trivtxs[0][0]] + curframe.vertices[trivtxs[1][0]])*.5
+                for vtx in range(len(commonvtxs)):
+                    if str(sidecenter) == str(commonvtxs[vtx]):
+                        if framecount == 0:
+                            newvtx_index0 = commonvtxnbr[vtx]
+                            newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
+                            newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
+                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
+                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                            newtri_index = newtri_index + 1
+                            newfaceselection = newfaceselection + [newtri_index]
+                        break
+                    if vtx == len(commonvtxs)-1:
+
+                        if framecount == 0:
+                            currentvertices = currentvertices + 1
+                            newvtx_index0 = currentvertices
+                            newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
+                            newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
+                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
+                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                            newtri_index = newtri_index + 1
+                            newfaceselection = newfaceselection + [newtri_index]
+                        commonvtxs = commonvtxs + [sidecenter]
+                        commonvtxnbr = commonvtxnbr + [newvtx_index0]
+                        for compframe in compframes:
+                            old_vtxs = compframe.vertices
+                            sidecenter = (compframe.vertices[trivtxs[0][0]] + compframe.vertices[trivtxs[1][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
-                            if framecount == 0:
-                                currentvertices = currentvertices + 1
-                                newvtx_index0 = currentvertices
-                                newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
-                                newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
-                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
-                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
-                                newtri_index = newtri_index + 1
-                                newfaceselection = newfaceselection + [newtri_index]
-                elif (abs(checkframe0.vertices[trivtxs[1][0]] - checkframe0.vertices[trivtxs[2][0]]) > abs(checkframe0.vertices[trivtxs[0][0]] - checkframe0.vertices[trivtxs[1][0]])) and (abs(checkframe0.vertices[trivtxs[1][0]] - checkframe0.vertices[trivtxs[2][0]]) > abs(checkframe0.vertices[trivtxs[2][0]] - checkframe0.vertices[trivtxs[0][0]])):
-                    sidecenter = (compframe.vertices[trivtxs[1][0]] + compframe.vertices[trivtxs[2][0]])*.5
-                    for vtx in range(len(compframe.vertices)):
-                        if str(sidecenter) == str(compframe.vertices[vtx]):
-                            if framecount == 0:
-                                newvtx_index0 = vtx
-                                newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
-                                newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
-                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
-                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])]
-                                newtri_index = newtri_index + 1
-                                newfaceselection = newfaceselection + [newtri_index]
-                            break
-                        if vtx == len(compframe.vertices)-1:
+                            compframe.vertices = old_vtxs
+
+            elif (abs(curframe.vertices[trivtxs[1][0]] - curframe.vertices[trivtxs[2][0]]) > abs(curframe.vertices[trivtxs[0][0]] - curframe.vertices[trivtxs[1][0]])) and (abs(curframe.vertices[trivtxs[1][0]] - curframe.vertices[trivtxs[2][0]]) > abs(curframe.vertices[trivtxs[2][0]] - curframe.vertices[trivtxs[0][0]])):
+                sidecenter = (curframe.vertices[trivtxs[1][0]] + curframe.vertices[trivtxs[2][0]])*.5
+                for vtx in range(len(commonvtxs)):
+                    if str(sidecenter) == str(commonvtxs[vtx]):
+                        if framecount == 0:
+                            newvtx_index0 = commonvtxnbr[vtx]
+                            newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
+                            newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
+                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
+                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])]
+                            newtri_index = newtri_index + 1
+                            newfaceselection = newfaceselection + [newtri_index]
+                        break
+                    if vtx == len(commonvtxs)-1:
+
+                        if framecount == 0:
+                            currentvertices = currentvertices + 1
+                            newvtx_index0 = currentvertices
+                            newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
+                            newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
+                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
+                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])]
+                            newtri_index = newtri_index + 1
+                            newfaceselection = newfaceselection + [newtri_index]
+                        commonvtxs = commonvtxs + [sidecenter]
+                        commonvtxnbr = commonvtxnbr + [newvtx_index0]
+                        for compframe in compframes:
+                            old_vtxs = compframe.vertices
+                            sidecenter = (compframe.vertices[trivtxs[1][0]] + compframe.vertices[trivtxs[2][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
-                            if framecount == 0:
-                                currentvertices = currentvertices + 1
-                                newvtx_index0 = currentvertices
-                                newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
-                                newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
-                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
-                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])]
-                                newtri_index = newtri_index + 1
-                                newfaceselection = newfaceselection + [newtri_index]
-                else:
-                    sidecenter = (compframe.vertices[trivtxs[2][0]] + compframe.vertices[trivtxs[0][0]])*.5
-                    for vtx in range(len(compframe.vertices)):
-                        if str(sidecenter) == str(compframe.vertices[vtx]):
-                            if framecount == 0:
-                                newvtx_index0 = vtx
-                                newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
-                                newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
-                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
-                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
-                                newtri_index = newtri_index + 1
-                                newfaceselection = newfaceselection + [newtri_index]
-                            break
-                        if vtx == len(compframe.vertices)-1:
+                            compframe.vertices = old_vtxs
+
+            else:
+                sidecenter = (curframe.vertices[trivtxs[2][0]] + curframe.vertices[trivtxs[0][0]])*.5
+                for vtx in range(len(commonvtxs)):
+                    if str(sidecenter) == str(commonvtxs[vtx]):
+                        if framecount == 0:
+                            newvtx_index0 = commonvtxnbr[vtx]
+                            newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
+                            newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
+                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
+                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                            newtri_index = newtri_index + 1
+                            newfaceselection = newfaceselection + [newtri_index]
+                        break
+                    if vtx == len(commonvtxs)-1:
+
+                        if framecount == 0:
+                            currentvertices = currentvertices + 1
+                            newvtx_index0 = currentvertices
+                            newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
+                            newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
+                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
+                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                            newtri_index = newtri_index + 1
+                            newfaceselection = newfaceselection + [newtri_index]
+                        commonvtxs = commonvtxs + [sidecenter]
+                        commonvtxnbr = commonvtxnbr + [newvtx_index0]
+                        for compframe in compframes:
+                            old_vtxs = compframe.vertices
+                            sidecenter = (compframe.vertices[trivtxs[2][0]] + compframe.vertices[trivtxs[0][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
-                            if framecount == 0:
-                                currentvertices = currentvertices + 1
-                                newvtx_index0 = currentvertices
-                                newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
-                                newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
-                                new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
-                                new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
-                                newtri_index = newtri_index + 1
-                                newfaceselection = newfaceselection + [newtri_index]
-                compframe.vertices = old_vtxs
-            framecount = 1
-            new_comp.currentframe = compframe
+                            compframe.vertices = old_vtxs
+
+        framecount = 1
+        new_comp.currentframe = compframe
 
         # This updates (adds) the new triangles to the component.
         new_comp.triangles = new_tris
@@ -1950,6 +1978,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.55  2007/11/12 00:53:23  cdunde
+#To remove test print statements.
+#
 #Revision 1.54  2007/11/12 00:29:18  cdunde
 #Fixed Linear Handle for selected faces and frames to draw
 #face vertexes locations properly for animation movement.
