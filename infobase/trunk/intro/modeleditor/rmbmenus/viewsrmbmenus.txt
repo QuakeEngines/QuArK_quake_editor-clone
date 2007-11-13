@@ -1,7 +1,15 @@
 title: Editor Views RMB menus
 author: cdunde
 
-<img border=1 align=right>viewsrmbmenus1.png</img>
+<map name="rmbmenusMap0">
+<area href="#facecommands" shape="rect" coords="2, 55, 155, 69">
+<area href="#vertexcommands" shape="rect" coords="2, 73, 155, 86">
+<area href="#commands" shape="rect" coords="2, 91, 155, 104">
+<area href="#editorfaceoptions" shape="rect" coords="2, 116, 155, 130">
+<area href="#editorvertexoptions" shape="rect" coords="2, 134, 155, 148">
+</map>
+
+<img border=1 align=right usemap="#rmbmenusMap0">viewsrmbmenus1.png</img>
 
 <i>Undo </i>&nbsp;: This will display the last Undo\Redo action item that has taken place if any.
 
@@ -50,7 +58,8 @@ about its functions and settings.
 <tr><td valign=top>
 <img border=1 align=right>facermbmenu1.png</img>
 
-<b><u>Face Commands sub-menu :</u></b> This is the sub-menu described above and its functions.
+<a name="facecommands"></a>
+<b><u><a href="#viewsrmbmenus">Face Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions.
 
 <i>Empty Component </i>&nbsp;: This will create a new <g>Clean</g> Model component.
 This funciton is also located on the
@@ -82,7 +91,8 @@ please click on the menu link for this functions full description and use.
 <tr><td valign=top>
 <img border=1 align=right>viewsrmbmenus2.png</img>
 
-<b><u>Vertex Commands sub-menu :</u></b> This is the sub-menu described above and its functions.
+<a name="vertexcommands"></a>
+<b><u><a href="#viewsrmbmenus">Vertex Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions.
 
 <i>Add Vertex Here </i>&nbsp;: This will add a single vertex to the currently selected model component
 (and all of its animation frames) to make a new triangle. This funciton is also located on the
@@ -97,7 +107,8 @@ please click on the menu link for this functions full description and use.
 <tr><td valign=top>
 <img border=1 align=right>viewsrmbmenus3.png</img>
 
-<b><u>Commands sub-menu :</u></b> This is the sub-menu described further above and its functions in detail.<br>
+<a name="commands"></a>
+<b><u><a href="#viewsrmbmenus">Commands sub-menu :</a></u></b> This is the sub-menu described further above and its functions in detail.<br>
 It is a duplication of the <a href="intro.modeleditor.menu.html#commandsmenu">Commands</a> menu on the editor's
 main menu bar for easer and quicker access.
 Please click on the menu link above for this sub-menu's functions full descriptions.
@@ -134,7 +145,8 @@ corrisponding buttons on the
 <tr><td valign=top><br>
 <img border=1 align=right valign=top>viewsrmbmenus4.png</img>
 
-<b><u>Editor Face Options sub-menu :</u></b> This is the sub-menu described above and its functions in detail.<br>
+<a name="editorfaceoptions"></a>
+<b><u><a href="#viewsrmbmenus">Editor Face Options sub-menu :</a></u></b> This is the sub-menu described above and its functions in detail.<br>
 (also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)
 
 <i>Sync Skin-view with Editor views </i>&nbsp;: When checked this will synchronize the Skin-view with the Editor views
@@ -186,7 +198,8 @@ in 'Textured' mode. This will not apply for any view that has its <g>Fill in Mes
 <tr><td valign=top><br>
 <img border=1 align=right valign=top>viewsrmbmenus5.png</img>
 
-<b><u>Editor Vertex Options sub-menu :</u></b> This is the sub-menu described above and its functions in detail.<br>
+<a name="editorvertexoptions"></a>
+<b><u><a href="#viewsrmbmenus">Editor Vertex Options sub-menu :</a></u></b> This is the sub-menu described above and its functions in detail.<br>
 (also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)
 
 <i>Sync Skin-view with Editor views </i>&nbsp;: This function will turn off other related options and synchronize selected
