@@ -1663,32 +1663,33 @@ def PassEditorSel2Skin(editor, option=1):
         for vert in commontris:
             editor_tri_index = vert[2]
             skinvtx_index = vert[3]
-            if editor.SkinVertexSelList == []:
-                for handle in SkinView1.handles:
-                    if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
-                        continue
-                    # Here we compair the Skin-view handle (in its handles list) tri_index item
-                    #    to the editor_tri_index we got above to see if they match.
-                    # The same applies to the comparison of the Skin-view handel ver_index and skinvtx_index.
-                    try:
+            if SkinView1 is not None:
+                if editor.SkinVertexSelList == []:
+                    for handle in SkinView1.handles:
+                        if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
+                            continue
+                        # Here we compair the Skin-view handle (in its handles list) tri_index item
+                        #    to the editor_tri_index we got above to see if they match.
+                        # The same applies to the comparison of the Skin-view handel ver_index and skinvtx_index.
+                        try:
+                            if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
+                                skinhandle = handle
+                                break
+                        except:
+                            return
+                    editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+                else:
+                    for handle in SkinView1.handles:
+                        if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
+                            continue
                         if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                             skinhandle = handle
                             break
-                    except:
-                        return
-                editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
-            else:
-                for handle in SkinView1.handles:
-                    if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
-                        continue
-                    if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
-                        skinhandle = handle
-                        break
-                for vertex in range(len(editor.SkinVertexSelList)):
-                    if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
-                        break
-                    if vertex == len(editor.SkinVertexSelList)-1:
-                        editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+                    for vertex in range(len(editor.SkinVertexSelList)):
+                        if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
+                           break
+                        if vertex == len(editor.SkinVertexSelList)-1:
+                            editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
 
     if option == 2 or option == 3:
         editor_tri_index = None
@@ -1858,6 +1859,7 @@ def SubdivideFaces(editor, pieces=None):
         framecount = 0
         for tri in editor.ModelFaceSelList:
             trivtxs = comp.triangles[tri]
+            # Line for vertex 0 and vertex 1 will be split because it is the longest side.
             if (abs(curframe.vertices[trivtxs[0][0]] - curframe.vertices[trivtxs[1][0]]) > abs(curframe.vertices[trivtxs[1][0]] - curframe.vertices[trivtxs[2][0]])) and (abs(curframe.vertices[trivtxs[0][0]] - curframe.vertices[trivtxs[1][0]]) > abs(curframe.vertices[trivtxs[2][0]] - curframe.vertices[trivtxs[0][0]])):
                 sidecenter = (curframe.vertices[trivtxs[0][0]] + curframe.vertices[trivtxs[1][0]])*.5
                 for vtx in range(len(commonvtxs)):
@@ -1866,20 +1868,19 @@ def SubdivideFaces(editor, pieces=None):
                             newvtx_index0 = commonvtxnbr[vtx]
                             newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
                             newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
-                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
-                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
+                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
                             newtri_index = newtri_index + 1
                             newfaceselection = newfaceselection + [newtri_index]
                         break
                     if vtx == len(commonvtxs)-1:
-
                         if framecount == 0:
                             currentvertices = currentvertices + 1
                             newvtx_index0 = currentvertices
                             newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
                             newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
-                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
-                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
+                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
                             newtri_index = newtri_index + 1
                             newfaceselection = newfaceselection + [newtri_index]
                         commonvtxs = commonvtxs + [sidecenter]
@@ -1889,7 +1890,7 @@ def SubdivideFaces(editor, pieces=None):
                             sidecenter = (compframe.vertices[trivtxs[0][0]] + compframe.vertices[trivtxs[1][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
                             compframe.vertices = old_vtxs
-
+            # Line for vertex 1 and vertex 2 will be split because it is the longest side.
             elif (abs(curframe.vertices[trivtxs[1][0]] - curframe.vertices[trivtxs[2][0]]) > abs(curframe.vertices[trivtxs[0][0]] - curframe.vertices[trivtxs[1][0]])) and (abs(curframe.vertices[trivtxs[1][0]] - curframe.vertices[trivtxs[2][0]]) > abs(curframe.vertices[trivtxs[2][0]] - curframe.vertices[trivtxs[0][0]])):
                 sidecenter = (curframe.vertices[trivtxs[1][0]] + curframe.vertices[trivtxs[2][0]])*.5
                 for vtx in range(len(commonvtxs)):
@@ -1898,20 +1899,19 @@ def SubdivideFaces(editor, pieces=None):
                             newvtx_index0 = commonvtxnbr[vtx]
                             newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
                             newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
-                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
-                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])]
+                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
+                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])]
                             newtri_index = newtri_index + 1
                             newfaceselection = newfaceselection + [newtri_index]
                         break
                     if vtx == len(commonvtxs)-1:
-
                         if framecount == 0:
                             currentvertices = currentvertices + 1
                             newvtx_index0 = currentvertices
                             newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
                             newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
-                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[2], trivtxs[0])
-                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])]
+                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
+                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])]
                             newtri_index = newtri_index + 1
                             newfaceselection = newfaceselection + [newtri_index]
                         commonvtxs = commonvtxs + [sidecenter]
@@ -1921,7 +1921,7 @@ def SubdivideFaces(editor, pieces=None):
                             sidecenter = (compframe.vertices[trivtxs[1][0]] + compframe.vertices[trivtxs[2][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
                             compframe.vertices = old_vtxs
-
+            # Line for vertex 2 and vertex 0 will be split because it is the longest side.
             else:
                 sidecenter = (curframe.vertices[trivtxs[2][0]] + curframe.vertices[trivtxs[0][0]])*.5
                 for vtx in range(len(commonvtxs)):
@@ -1930,20 +1930,19 @@ def SubdivideFaces(editor, pieces=None):
                             newvtx_index0 = commonvtxnbr[vtx]
                             newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
                             newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
-                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
-                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])
+                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
                             newtri_index = newtri_index + 1
                             newfaceselection = newfaceselection + [newtri_index]
                         break
                     if vtx == len(commonvtxs)-1:
-
                         if framecount == 0:
                             currentvertices = currentvertices + 1
                             newvtx_index0 = currentvertices
                             newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
                             newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
-                            new_tris[tri] = ((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[0], trivtxs[1])
-                            new_tris = new_tris + [((newvtx_index0,int(newvtx0u),int(newvtx0v)), trivtxs[1], trivtxs[2])]
+                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])
+                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
                             newtri_index = newtri_index + 1
                             newfaceselection = newfaceselection + [newtri_index]
                         commonvtxs = commonvtxs + [sidecenter]
@@ -1953,13 +1952,10 @@ def SubdivideFaces(editor, pieces=None):
                             sidecenter = (compframe.vertices[trivtxs[2][0]] + compframe.vertices[trivtxs[0][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
                             compframe.vertices = old_vtxs
-
         framecount = 1
         new_comp.currentframe = compframe
-
         # This updates (adds) the new triangles to the component.
         new_comp.triangles = new_tris
-
         new_comp.currentskin = editor.Root.currentcomponent.currentskin
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
@@ -1978,6 +1974,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.56  2007/11/13 07:20:59  cdunde
+#Update to the way Subdivision, face splitting, works to greatly increase speed.
+#
 #Revision 1.55  2007/11/12 00:53:23  cdunde
 #To remove test print statements.
 #
