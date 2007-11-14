@@ -1,6 +1,7 @@
 title: Tool-palettes
 subdir: animation
 subdir: display
+subdir: edittools
 subdir: movement
 subdir: objectmodes
 subdir: viewselection

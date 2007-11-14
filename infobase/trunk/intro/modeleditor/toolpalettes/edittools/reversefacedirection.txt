@@ -1,0 +1,6 @@
+title: Reverse face direction
+author: cdunde
+
+<img border=1 align=right>reversefacedirection.png</img>
+If faces of a model component have been selected, the direction they face will
+be reversed by clicking this button.

@@ -1,0 +1,15 @@
+title: Extrude Selected Faces
+author: cdunde
+
+<img border=1 align=right>extrudeselectedfaces.png</img>
+This function only works with selected faces in the Editor's views and the
+<a href="intro.modeleditor.toolpalettes.display.html#linear">Linear Drag Handles</a> button active.
+
+Once selected click this button to extrude those faces in any of the editor's views,
+but the best control is done in one of its <g>2D views</g>.
+
+Each time a new drag is made a new set of faces will be created from that starting position
+to the position at the end of the drag with the new faces selected.
+
+Switching from view to view between drags will change the extruded drag direction.
+
