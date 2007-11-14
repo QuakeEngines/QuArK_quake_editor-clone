@@ -239,7 +239,7 @@ def ShowHideComp(x):
     obj = editor.layout.explorer.uniquesel
     if obj is None: return
     obj.showhide(x)
-  #  editor.invalidateviews(1)
+
     if x == 0:
         for view in editor.layout.views:
             view.handles = []
@@ -248,12 +248,25 @@ def ShowHideComp(x):
             else:
                 view.invalidate(1)
     else:
+        import mdlhandles
+        from mdlhandles import SkinView1
+        if SkinView1 is not None:
+            q = editor.layout.skinform.linkedobjects[0]
+            q["triangles"] = str(len(editor.Root.currentcomponent.triangles))
+            editor.layout.skinform.setdata(q, editor.layout.skinform.form)
+            SkinView1.invalidate()
+            try:
+                skindrawobject = editor.Root.currentcomponent.currentskin
+            except:
+                skindrawobject = None
+            mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+            editor.finishdrawing(SkinView1)
+
         for view in editor.layout.views:
             if view.viewmode == "wire":
                 pass
             else:
                 view.invalidate(1)
-    #    mdleditor.commonhandles(editor)
             mdleditor.setsingleframefillcolor(editor, view)
             view.repaint()
 
@@ -422,6 +435,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.23  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
 #Revision 1.22  2007/10/24 14:57:43  cdunde
 #Added disabled to Hide and Show Component menu items for easer distinction.
 #

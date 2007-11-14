@@ -525,7 +525,7 @@ def MakeEditorFaceObject(editor, option=0):
                 vect00 ,vect01, vect02 = verts[tris[trinbr][0][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 1st vertex.
                 vect10 ,vect11, vect12 = verts[tris[trinbr][1][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 2nd vertex.
                 vect20 ,vect21, vect22 = verts[tris[trinbr][2][0]].tuple # Gives the actual 3D vector x,y and z positions of this triangle's 3rd vertex.
-                vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
+                vertexlist = (vect00, vect01, vect02, vect10, vect11, vect12, vect20, vect21, vect22)
                 face["v"] = vertexlist
                 editor.EditorObjectList = editor.EditorObjectList + [[face, trinbr]]
                 editor.ModelFaceSelList = editor.ModelFaceSelList + [trinbr]
@@ -1467,7 +1467,7 @@ def find2DTriangles(comp, tri_index, ver_index):
     "This function returns triangles and their index of a component's"
     "mesh that have a common vertex position of the 2D drag view."
     "This is primarily used for the Skin-view mesh drag option."
-    "See the mdlhandles.py file class SkinHandle, drag funciton for its use."
+    "See the mdlhandles.py file class SkinHandle, drag function for its use."
     tris = comp.triangles
     tris_out = {}
     i = 0
@@ -1846,6 +1846,11 @@ def SubdivideFaces(editor, pieces=None):
     compframes = new_comp.findallsubitems("", ':mf')   # get all frames
     currentvertices = len(compframes[0].vertices)-1
     curframe = comp.currentframe
+    curframeNR = 0
+    for frames in comp.findallsubitems("", ':mf'):
+        if frames == curframe:
+            break
+        curframeNR = curframeNR + 1
 
     if pieces == 2:
         # This updates (adds) the new vertices to each frame.
@@ -1856,7 +1861,6 @@ def SubdivideFaces(editor, pieces=None):
                 if not (curframe.vertices[vtx[0]] in commonvtxs):
                     commonvtxs = commonvtxs + [curframe.vertices[vtx[0]]]
                     commonvtxnbr = commonvtxnbr + [vtx[0]]
-        framecount = 0
         for tri in editor.ModelFaceSelList:
             trivtxs = comp.triangles[tri]
             # Line for vertex 0 and vertex 1 will be split because it is the longest side.
@@ -1864,25 +1868,23 @@ def SubdivideFaces(editor, pieces=None):
                 sidecenter = (curframe.vertices[trivtxs[0][0]] + curframe.vertices[trivtxs[1][0]])*.5
                 for vtx in range(len(commonvtxs)):
                     if str(sidecenter) == str(commonvtxs[vtx]):
-                        if framecount == 0:
-                            newvtx_index0 = commonvtxnbr[vtx]
-                            newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
-                            newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
-                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
-                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
-                            newtri_index = newtri_index + 1
-                            newfaceselection = newfaceselection + [newtri_index]
+                        newvtx_index0 = commonvtxnbr[vtx]
+                        newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
+                        newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
+                        new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
+                        new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
+                        newtri_index = newtri_index + 1
+                        newfaceselection = newfaceselection + [newtri_index]
                         break
                     if vtx == len(commonvtxs)-1:
-                        if framecount == 0:
-                            currentvertices = currentvertices + 1
-                            newvtx_index0 = currentvertices
-                            newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
-                            newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
-                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
-                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
-                            newtri_index = newtri_index + 1
-                            newfaceselection = newfaceselection + [newtri_index]
+                        currentvertices = currentvertices + 1
+                        newvtx_index0 = currentvertices
+                        newvtx0u = (trivtxs[0][1] + trivtxs[1][1])*.5
+                        newvtx0v = (trivtxs[0][2] + trivtxs[1][2])*.5
+                        new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
+                        new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
+                        newtri_index = newtri_index + 1
+                        newfaceselection = newfaceselection + [newtri_index]
                         commonvtxs = commonvtxs + [sidecenter]
                         commonvtxnbr = commonvtxnbr + [newvtx_index0]
                         for compframe in compframes:
@@ -1895,25 +1897,23 @@ def SubdivideFaces(editor, pieces=None):
                 sidecenter = (curframe.vertices[trivtxs[1][0]] + curframe.vertices[trivtxs[2][0]])*.5
                 for vtx in range(len(commonvtxs)):
                     if str(sidecenter) == str(commonvtxs[vtx]):
-                        if framecount == 0:
-                            newvtx_index0 = commonvtxnbr[vtx]
-                            newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
-                            newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
-                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
-                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])]
-                            newtri_index = newtri_index + 1
-                            newfaceselection = newfaceselection + [newtri_index]
+                        newvtx_index0 = commonvtxnbr[vtx]
+                        newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
+                        newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
+                        new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
+                        new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])]
+                        newtri_index = newtri_index + 1
+                        newfaceselection = newfaceselection + [newtri_index]
                         break
                     if vtx == len(commonvtxs)-1:
-                        if framecount == 0:
-                            currentvertices = currentvertices + 1
-                            newvtx_index0 = currentvertices
-                            newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
-                            newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
-                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
-                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])]
-                            newtri_index = newtri_index + 1
-                            newfaceselection = newfaceselection + [newtri_index]
+                        currentvertices = currentvertices + 1
+                        newvtx_index0 = currentvertices
+                        newvtx0u = (trivtxs[1][1] + trivtxs[2][1])*.5
+                        newvtx0v = (trivtxs[1][2] + trivtxs[2][2])*.5
+                        new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[2], trivtxs[0])
+                        new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])]
+                        newtri_index = newtri_index + 1
+                        newfaceselection = newfaceselection + [newtri_index]
                         commonvtxs = commonvtxs + [sidecenter]
                         commonvtxnbr = commonvtxnbr + [newvtx_index0]
                         for compframe in compframes:
@@ -1926,25 +1926,23 @@ def SubdivideFaces(editor, pieces=None):
                 sidecenter = (curframe.vertices[trivtxs[2][0]] + curframe.vertices[trivtxs[0][0]])*.5
                 for vtx in range(len(commonvtxs)):
                     if str(sidecenter) == str(commonvtxs[vtx]):
-                        if framecount == 0:
-                            newvtx_index0 = commonvtxnbr[vtx]
-                            newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
-                            newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
-                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])
-                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
-                            newtri_index = newtri_index + 1
-                            newfaceselection = newfaceselection + [newtri_index]
+                        newvtx_index0 = commonvtxnbr[vtx]
+                        newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
+                        newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
+                        new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])
+                        new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
+                        newtri_index = newtri_index + 1
+                        newfaceselection = newfaceselection + [newtri_index]
                         break
                     if vtx == len(commonvtxs)-1:
-                        if framecount == 0:
-                            currentvertices = currentvertices + 1
-                            newvtx_index0 = currentvertices
-                            newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
-                            newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
-                            new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])
-                            new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
-                            newtri_index = newtri_index + 1
-                            newfaceselection = newfaceselection + [newtri_index]
+                        currentvertices = currentvertices + 1
+                        newvtx_index0 = currentvertices
+                        newvtx0u = (trivtxs[2][1] + trivtxs[0][1])*.5
+                        newvtx0v = (trivtxs[2][2] + trivtxs[0][2])*.5
+                        new_tris[tri] = ((newvtx_index0,newvtx0u,newvtx0v), trivtxs[0], trivtxs[1])
+                        new_tris = new_tris + [((newvtx_index0,newvtx0u,newvtx0v), trivtxs[1], trivtxs[2])]
+                        newtri_index = newtri_index + 1
+                        newfaceselection = newfaceselection + [newtri_index]
                         commonvtxs = commonvtxs + [sidecenter]
                         commonvtxnbr = commonvtxnbr + [newvtx_index0]
                         for compframe in compframes:
@@ -1952,11 +1950,12 @@ def SubdivideFaces(editor, pieces=None):
                             sidecenter = (compframe.vertices[trivtxs[2][0]] + compframe.vertices[trivtxs[0][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
                             compframe.vertices = old_vtxs
-        framecount = 1
-        new_comp.currentframe = compframe
+
         # This updates (adds) the new triangles to the component.
         new_comp.triangles = new_tris
         new_comp.currentskin = editor.Root.currentcomponent.currentskin
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        new_comp.currentframe = compframes[curframeNR]
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.Root.currentcomponent = new_comp
@@ -1967,6 +1966,9 @@ def SubdivideFaces(editor, pieces=None):
         import mdlhandles
         from mdlhandles import SkinView1
         if SkinView1 is not None:
+            q = editor.layout.skinform.linkedobjects[0]
+            q["triangles"] = str(len(editor.Root.currentcomponent.triangles))
+            editor.layout.skinform.setdata(q, editor.layout.skinform.form)
             SkinView1.invalidate()
         
 
@@ -1974,6 +1976,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.57  2007/11/13 19:36:09  cdunde
+#To fix error if Skin-view has not been opened at least once and
+#remove integer u,v conversion plus some file cleanup.
+#
 #Revision 1.56  2007/11/13 07:20:59  cdunde
 #Update to the way Subdivision, face splitting, works to greatly increase speed.
 #

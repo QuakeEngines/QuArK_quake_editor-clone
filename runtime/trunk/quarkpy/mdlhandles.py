@@ -1731,7 +1731,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
             if len(component.dictitems["Frames:fg"].subitems[0].vertices) == 0:
                 org = quarkx.vect(0,0,0)
             else:
-                quarkx.msgbox("Component Hidden!\n\nYou must RMB click it\nand select 'Show Component'\nthen zoom slightly\nto recreate its handles.", MT_ERROR, MB_OK)
+                quarkx.msgbox("Component Hidden!\n\nYou must RMB click it\nand select 'Show Component'\nto edit this component again.", MT_ERROR, MB_OK)
 
     n = quarkx.vect(1,1,1) 
     v = orthogonalvect(n, view)
@@ -3031,6 +3031,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.112  2007/11/11 11:41:54  cdunde
+#Started a new toolbar for the Model Editor to support "Editing Tools".
+#
 #Revision 1.111  2007/11/04 00:33:33  cdunde
 #To make all of the Linear Handle drag lines draw faster and some selection color changes.
 #
