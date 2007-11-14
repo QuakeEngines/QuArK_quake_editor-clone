@@ -1962,7 +1962,6 @@ def SubdivideFaces(editor, pieces=None):
         editor.ok(undo, "face Subdivision 2")
         editor.ModelFaceSelList = editor.ModelFaceSelList + newfaceselection
         newfaceselection = []
-        Update_Editor_Views(editor)
         import mdlhandles
         from mdlhandles import SkinView1
         if SkinView1 is not None:
@@ -1976,6 +1975,11 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.58  2007/11/14 00:11:13  cdunde
+#Corrections for face subdivision to stop models from drawing broken apart,
+#update Skin-view "triangles" amount displayed and proper full redraw
+#of the Skin-view when a component is un-hidden.
+#
 #Revision 1.57  2007/11/13 19:36:09  cdunde
 #To fix error if Skin-view has not been opened at least once and
 #remove integer u,v conversion plus some file cleanup.
