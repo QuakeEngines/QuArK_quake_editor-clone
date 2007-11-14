@@ -137,14 +137,14 @@ class EditToolsBar(ToolBar):
     DefaultPos = ((0,0,0,0), "topdock", 0, 0, 1)
 
     def buildbuttons(self, layout):
-        extrude = qtoolbar.button(extrudeclick, "Extrude Selected Faces||Extrude Selected Faces:\n\nThis function only works with selected faces in the Editor's views and the 'Linear Drag Handles' button active.\n\nOnce selected click this button to extrude those faces in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.", ico_mdltools, 0, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows")
-        extrudebulkheads = qtoolbar.button(extrudebulkheadsclick, "Extrude with Bulk Heads||Extrude with Bulk Heads: This does the same function as the 'Extrude' but leaves 'bulkheads' between each extrusion drag.\n\nThis function only works with selected faces in the Editor's views and the 'Linear Drag Handles' button active.\n\nOnce selected click this button to extrude those faces in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.", ico_mdltools, 1, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows")
-        revface = qtoolbar.button(ReverseFaceClick, "Reverse face direction||Reverse face direction:\n\nIf faces of a model component have been selected, the direction they face will be reversed by clicking this button.", ico_mdltools, 2, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows")
-        subdivide2 = qtoolbar.button(Subdivide2Click, "Subdivide 2||Subdivide 2:\n\nIf faces of a model component have been selected, those faces will be split into 2 new triangles when this button is clicked.", ico_mdltools, 3,  infobaselink="intro.modeleditor.toolpalettes.display.html#linear")
+        extrude = qtoolbar.button(extrudeclick, "Extrude Selected Faces||Extrude Selected Faces:\n\nThis function only works with selected faces in the Editor's views and the 'Linear Drag Handles' button active.\n\nOnce selected click this button to extrude those faces in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.", ico_mdltools, 0, infobaselink="intro.modeleditor.toolpalettes.edittools.html#extrudeselectedfaces")
+        extrudebulkheads = qtoolbar.button(extrudebulkheadsclick, "Extrude with Bulk Heads||Extrude with Bulk Heads: This does the same function as the 'Extrude' but leaves 'bulkheads' between each extrusion drag.\n\nThis function only works with selected faces in the Editor's views and the 'Linear Drag Handles' button active.\n\nOnce selected click this button to extrude those faces in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.", ico_mdltools, 1, infobaselink="intro.modeleditor.toolpalettes.edittools.html#extrudewithbulkheads")
+        revface = qtoolbar.button(ReverseFaceClick, "Reverse face direction||Reverse face direction:\n\nIf faces of a model component have been selected, the direction they face will be reversed by clicking this button.", ico_mdltools, 2, infobaselink="intro.modeleditor.toolpalettes.edittools.html#reversefacedirection")
+        subdivide2 = qtoolbar.button(Subdivide2Click, "Subdivide 2||Subdivide 2:\n\nIf faces of a model component have been selected, those faces will be split into 2 new triangles when this button is clicked.", ico_mdltools, 3,  infobaselink="intro.modeleditor.toolpalettes.edittools.html#subdivide2")
      #   subdivide3 = qtoolbar.button(Subdivide3Click, "Subdivide 3||Subdivide 3:\n\nIf faces of a model component have been selected, those faces will be split into 3 new triangles when this button is clicked.", ico_mdltools, 4, infobaselink="intro.modeleditor.toolpalettes.display.html#lockviews")
      #   subdivide4 = qtoolbar.button(Subdivide4Click, "Subdivide 4||Subdivide 4:\n\nIf faces of a model component have been selected, those faces will be split into 4 new triangles when this button is clicked.", ico_mdltools, 5, infobaselink="intro.modeleditor.toolpalettes.display.html#helpbook")
-        subdivide3 = qtoolbar.button(Subdivide3Click, "not operative|future function place holder", ico_mdltools, 6)
-        subdivide4 = qtoolbar.button(Subdivide4Click, "not operative|future function place holder", ico_mdltools, 6)
+        subdivide3 = qtoolbar.button(Subdivide3Click, "not operative||future function place holder", ico_mdltools, 6, infobaselink="intro.modeleditor.toolpalettes.edittools.html")
+        subdivide4 = qtoolbar.button(Subdivide4Click, "not operative||future function place holder", ico_mdltools, 6, infobaselink="intro.modeleditor.toolpalettes.edittools.html")
 
         layout.buttons.update({"Extrude": extrude, "ExtrudeBulkHeads": extrudebulkheads, "RevFace": revface, "Subdivide2": subdivide2, "Subdivide3": subdivide3, "Subdivide4": subdivide4})
 
@@ -164,6 +164,9 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.7  2007/11/11 11:41:52  cdunde
+#Started a new toolbar for the Model Editor to support "Editing Tools".
+#
 #Revision 1.6  2007/10/18 02:31:54  cdunde
 #Setup the Model Editor Animation system, functions and toolbar.
 #
