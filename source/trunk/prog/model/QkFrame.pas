@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/10/14 21:48:56  danielpharos
+Fix the frame-dragging in the Model Editor.
+
 Revision 1.13  2007/09/10 10:24:15  danielpharos
 Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 
@@ -61,8 +64,8 @@ unit QkFrame;
 
 interface
 
-uses Windows, SysUtils, Classes, QkObjects, Qk3D, PyMath, Python, QkMdlObject, QMath, QkModelBone,
-     qmatrices;
+uses Windows, SysUtils, Classes, QkObjects, Qk3D, PyMath, Python, QkMdlObject,
+     QMath, QkModelBone, qmatrices;
 
 type
   TBoneRec = packed record
@@ -93,8 +96,8 @@ type
 
 implementation
 
-uses Quarkx, QkObjectClassList, QkComponent, QkModelRoot, QkModelTag, QkFrameGroup,
-     QkMiscGroup;
+uses Quarkx, PyObjects, QkObjectClassList, QkComponent, QkModelRoot, QkModelTag,
+     QkFrameGroup, QkMiscGroup;
 
 function QFrame.IsAllowedParent(Parent: QObject) : Boolean;
 begin
@@ -400,6 +403,10 @@ begin
       end;
       Exit;
     end;   }
+    'c': if StrComp(attr, 'compparent')=0 then begin
+      Result:=GetPyObj(Component);
+      Exit;
+    end;
     'i': if StrComp(attr, 'info')=0 then begin
       if FInfo=Nil then
         Result:=Py_None
@@ -428,10 +435,21 @@ var
   P: PyVect;
   S, S0: String;
   Dest: vec3_p;
+  comp: QObject;
 begin
   Result:=inherited PySetAttr(attr, value);
   if not Result then begin
     case attr[0] of
+      'c': if StrComp(attr, 'compparent')=0 then begin
+        comp:=QkObjFromPyObj(value);
+        if comp=nil then
+         Exit;
+        if not (comp is QComponent) then
+         Exit;
+        Component:=QComponent(comp);
+        Result:=True;
+        Exit;
+      end;
       'i': if StrComp(attr, 'info')=0 then begin
         Py_XDECREF(FInfo);
         FInfo:=value;

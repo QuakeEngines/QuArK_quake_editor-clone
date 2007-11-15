@@ -1955,6 +1955,8 @@ def SubdivideFaces(editor, pieces=None):
         new_comp.triangles = new_tris
         new_comp.currentskin = editor.Root.currentcomponent.currentskin
         compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = new_comp
         new_comp.currentframe = compframes[curframeNR]
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
@@ -1975,6 +1977,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.59  2007/11/14 04:34:48  cdunde
+#To stop duplicate handle redrawing after face subdivision.
+#
 #Revision 1.58  2007/11/14 00:11:13  cdunde
 #Corrections for face subdivision to stop models from drawing broken apart,
 #update Skin-view "triangles" amount displayed and proper full redraw
