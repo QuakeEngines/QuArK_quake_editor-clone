@@ -126,6 +126,10 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
             pass
         undo.put(nparent, new, nib)
     undo.ok(editor.Root, text)
+    if newlist[0].type == ":mf":
+        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
     editor.layout.actionmpp()
     return 1
 
@@ -388,6 +392,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.17  2007/10/24 14:58:12  cdunde
+#To activate all Movement toolbar button functions for the Model Editor.
+#
 #Revision 1.16  2007/09/21 21:19:51  cdunde
 #To add message string that is model editor specific.
 #

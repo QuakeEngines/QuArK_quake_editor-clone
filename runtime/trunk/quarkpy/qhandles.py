@@ -240,6 +240,12 @@ class GenericHandle:
         old, ri = self.drag(v1, v2, flags, view)
         if (ri is None) or (len(old)!=len(ri)):
             return
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            if ri[0].type == ":mc":
+                compframes = ri[0].findallsubitems("", ':mf')   # get all frames
+                for compframe in compframes:
+                    compframe.compparent = ri[0] # To allow frame relocation after editing.
         undo = quarkx.action()
         for i in range(0,len(old)):
             undo.exchange(old[i], ri[i])
@@ -1171,17 +1177,23 @@ class RedImageDragObject(DragObject):
         if isinstance(editor, mdleditor.ModelEditor) and old is not None and self.redimages is not None:
             from qbaseeditor import currentview, flagsmouse
             try:
+                if self.redimages[0].type == ":mc":
+                    compframes = self.redimages[0].findallsubitems("", ':mf')   # get all frames
+                    for compframe in compframes:
+                        compframe.compparent = self.redimages[0] # To allow frame relocation after editing.
                 undo = quarkx.action()
                 for i in range(0,len(old)):
                     undo.exchange(old[i], self.redimages[i])
                 self.handle.ok(editor, undo, old, self.redimages)
+                if self.redimages[0].type == ":mf":
+                    compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+                    for compframe in compframes:
+                        compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
             except:
                 pass
             if currentview.info["viewname"] == "skinview":
-        #        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 pass
             else:
-        #        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 return
 
 ## End of above section for Terrain Generator changes
@@ -2142,6 +2154,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.63  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
 #Revision 1.62  2007/10/18 02:31:53  cdunde
 #Setup the Model Editor Animation system, functions and toolbar.
 #

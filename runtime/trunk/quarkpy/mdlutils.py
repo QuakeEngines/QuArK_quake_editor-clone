@@ -363,6 +363,7 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
                             vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
                             old_vtxs[vtxnbr] = old_vtxs[vtxnbr] + delta
                     compframe.vertices = old_vtxs
+            compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -399,6 +400,9 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
                         newtriangle = (tri[0], tri[1], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])))
                     tris[tri_index] = newtriangle
         new_comp.triangles = tris
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -574,6 +578,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
                         else:
                             old_vtxs[Vert[0]] = old_vtxs[Vert[0]] + delta
                     compframe.vertices = old_vtxs
+            compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -721,6 +726,7 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
         # This updates (adds) the new vertices to each frame.
         for compframe in compframes:
             compframe.vertices = compframe.vertices + old_vtxs
+            compframe.compparent = new_comp # To allow frame relocation after editing.
         # This updates (adds) the new triangles to the component.
         new_comp.triangles = newtris
 
@@ -782,6 +788,10 @@ def skinremap(editor):
         newtris[tri_index:tri_index+1] = [tri]
         new_comp.triangles = newtris
 
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = new_comp # To allow frame relocation after editing.
+
     # Finally the undo exchange is made and ok called to finish the function.
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
@@ -797,11 +807,12 @@ def skinremap(editor):
 #
 def addvertex(editor, comp, pos):
     new_comp = comp.copy()
-    frames = new_comp.findallsubitems("", ':mf')   # find all frames
-    for frame in frames:
-        vtxs = frame.vertices
+    compframes = new_comp.findallsubitems("", ':mf')   # find all frames
+    for compframe in compframes:
+        vtxs = compframe.vertices
         vtxs = vtxs + [pos]
-        frame.vertices = vtxs
+        compframe.vertices = vtxs
+        compframe.compparent = new_comp # To allow frame relocation after editing.
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "add vertex")
@@ -853,6 +864,9 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
                                 newtriangle = (tri[0], tri[1], (tri[j][0], int(newpos.tuple[0]), int(newpos.tuple[1])))
                             tris[triindex] = newtriangle
         new_comp.triangles = tris
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -873,6 +887,7 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
                             continue
                         old_vtxs[vtx[0]] = newpos
                         compframe.vertices = old_vtxs
+            compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -935,23 +950,25 @@ def removevertex(comp, index, all3=0):
                 pass
             else:
                 vertexestoremove = vertexestoremove + [vertex]
-        frames = new_comp.findallsubitems("", ':mf')   # find all frames
+        compframes = new_comp.findallsubitems("", ':mf')   # find all frames
         for unusedvertex in vertexestoremove:
             unusedindex = unusedvertex[0]
-            for frame in frames: 
-                old_vtxs = frame.vertices
+            for compframe in compframes: 
+                old_vtxs = compframe.vertices
                 vtxs = old_vtxs[:unusedindex]
-                frame.vertices = vtxs
+                compframe.vertices = vtxs
+                compframe.compparent = new_comp # To allow frame relocation after editing.
         new_tris = fixUpVertexNos(new_tris, index)
         new_comp.triangles = new_tris
     else:
         enew_tris = fixUpVertexNos(new_tris, index)
         new_comp.triangles = enew_tris
-        frames = new_comp.findallsubitems("", ':mf')   # find all frames
-        for frame in frames: 
-            old_vtxs = frame.vertices
+        compframes = new_comp.findallsubitems("", ':mf')   # find all frames
+        for compframe in compframes: 
+            old_vtxs = compframe.vertices
             vtxs = old_vtxs[:index] + old_vtxs[index+1:]
-            frame.vertices = vtxs
+            compframe.vertices = vtxs
+            compframe.compparent = new_comp # To allow frame relocation after editing.
 
     #### 3) re-build all views
     undo = quarkx.action()
@@ -1004,6 +1021,9 @@ def addtriangle(editor):
     new_comp.triangles = tris
     new_comp.currentskin = editor.Root.currentcomponent.currentskin
     new_comp.currentframe = editor.Root.currentcomponent.currentframe
+    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+    for compframe in compframes:
+        compframe.compparent = new_comp # To allow frame relocation after editing.
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.Root.currentcomponent = new_comp
@@ -1041,6 +1061,9 @@ def removeTriangle(editor, comp, index):
     old_tris = new_comp.triangles
     tris = old_tris[:index] + old_tris[index+1:]
     new_comp.triangles = tris
+    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+    for compframe in compframes:
+        compframe.compparent = new_comp # To allow frame relocation after editing.
     undo = quarkx.action()
     undo.exchange(comp, new_comp)
     editor.ok(undo, "remove triangle")
@@ -1169,11 +1192,11 @@ def addcomponent(editor, option=2):
     ##    of only those that are needed, removing any that are unused.
     ## Then it fixes up the new_comp.triangles vertex index numbers
     ##    to coordinate with those frame.vertices lists.
-        for frame in range(len(comp.dictitems['Frames:fg'].subitems)):
+        for compframe in range(len(comp.dictitems['Frames:fg'].subitems)):
             newframe_vertices = []
             for vert_index in range(len(remove_vertices_list)):
-                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[frame].vertices[remove_vertices_list[vert_index]]]
-            new_comp.dictitems['Frames:fg'].subitems[frame].vertices = newframe_vertices
+                newframe_vertices = newframe_vertices + [comp.dictitems['Frames:fg'].subitems[compframe].vertices[remove_vertices_list[vert_index]]]
+            new_comp.dictitems['Frames:fg'].subitems[compframe].vertices = newframe_vertices
 
         newtris = []
         for tri in range(len(new_comp.triangles)):
@@ -1193,13 +1216,17 @@ def addcomponent(editor, option=2):
         new_comp.triangles = newtris
     else:
         new_comp.triangles = []
-        for frame in range(len(new_comp.dictitems['Frames:fg'].subitems)):
-            new_comp.dictitems['Frames:fg'].subitems[frame].vertices = []
+        for compframe in range(len(new_comp.dictitems['Frames:fg'].subitems)):
+            new_comp.dictitems['Frames:fg'].subitems[compframe].vertices = []
         new_comp.dictitems['Skeleton:bg'] = []
 
     ## This last part places the new component into the editor and the model.
-    import mdlbtns
-    mdlbtns.dropitemsnow(editor, [new_comp], new_comp.shortname + " created")
+    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+    for compframe in compframes:
+        compframe.compparent = new_comp # To allow frame relocation after editing.
+    undo = quarkx.action()
+    undo.put(editor.Root, new_comp)
+    editor.ok(undo, new_comp.shortname + " created")
     if option == 1:
         return
 
@@ -1229,21 +1256,24 @@ def addcomponent(editor, option=2):
     # This section uses the "remove_vertices_list" to recreate the
     # original component's frames without any unused vertexes.
     new_tris = change_comp.triangles
-    frames = change_comp.findallsubitems("", ':mf')   # find all frames
+    compframes = change_comp.findallsubitems("", ':mf')   # find all frames
     for index in remove_vertices_list:
         enew_tris = fixUpVertexNos(new_tris, index)
         new_tris = enew_tris
-        for frame in frames: 
-            old_vtxs = frame.vertices
+        for compframe in compframes: 
+            old_vtxs = compframe.vertices
             vtxs = old_vtxs[:index] + old_vtxs[index+1:]
-            frame.vertices = vtxs
+            compframe.vertices = vtxs
     change_comp.triangles = new_tris
 
     # This last section updates the original component finishing the process for it.
+    compframes = change_comp.findallsubitems("", ':mf')   # get all frames
+    for compframe in compframes:
+        compframe.compparent = change_comp # To allow frame relocation after editing.
     undo = quarkx.action()
-    undo.exchange(comp, change_comp)
+    undo.exchange(comp, None)
+    undo.put(editor.Root, change_comp)
     editor.ok(undo, change_comp.shortname + " updated")
-
 
 #
 # The 'option' value of 1 COPIES the currently selected faces of a component to another component (that is not Hidden).
@@ -1340,7 +1370,12 @@ def movefaces(editor, movetocomponent, option=2):
 
     # This last part updates the "moveto" component finishing the process for that.
         undo = quarkx.action()
-        undo.exchange(editor.Root.dictitems[movetocomponent + ':mc'], new_comp)
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = new_comp # To allow frame relocation after editing.
+        undo = quarkx.action()
+        undo.exchange(editor.Root.dictitems[movetocomponent + ':mc'], None)
+        undo.put(editor.Root, new_comp)
         if option == 1:
             editor.ok(undo, "faces copied to " + new_comp.shortname)
         else:
@@ -1373,19 +1408,23 @@ def movefaces(editor, movetocomponent, option=2):
     # This section uses the "remove_vertices_list" to recreate the
     #    original component's frames without any unused vertexes.
         new_tris = change_comp.triangles
-        frames = change_comp.findallsubitems("", ':mf')   # find all frames
+        compframes = change_comp.findallsubitems("", ':mf')   # find all frames
         for index in remove_vertices_list:
             enew_tris = fixUpVertexNos(new_tris, index)
             new_tris = enew_tris
-            for frame in frames: 
-                old_vtxs = frame.vertices
+            for compframe in compframes: 
+                old_vtxs = compframe.vertices
                 vtxs = old_vtxs[:index] + old_vtxs[index+1:]
-                frame.vertices = vtxs
+                compframe.vertices = vtxs
         change_comp.triangles = new_tris
 
     # This updates the original component finishing the process for that.
+        compframes = change_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = change_comp # To allow frame relocation after editing.
         undo = quarkx.action()
-        undo.exchange(comp, change_comp)
+        undo.exchange(comp, None)
+        undo.put(editor.Root, change_comp)
         if option == 2:
             editor.ok(undo, "faces moved from " + change_comp.shortname)
         else:
@@ -1411,8 +1450,12 @@ def addframe(editor):
     newframe.shortname = newframe.shortname + " copy"
     new_comp.dictitems['Frames:fg'].insertitem(count, newframe)
   #  new_comp.dictitems['Frames:fg'].appenditem(newframe) # This will just append the new frame copy at the end of the frames list.
+    compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+    for compframe in compframes:
+        compframe.compparent = new_comp # To allow frame relocation after editing.
     undo = quarkx.action()
-    undo.exchange(comp, new_comp)
+    undo.exchange(comp, None)
+    undo.put(editor.Root, new_comp)
     editor.ok(undo, "add frame")
 
 
@@ -1630,6 +1673,7 @@ def PassEditorSel2Skin(editor, option=1):
     tris = editor.Root.currentcomponent.triangles
     from mdlhandles import SkinView1
     import mdlhandles
+    skinhandle = None
 
     if option == 1:
         vertexlist = editor.ModelVertexSelList
@@ -1677,7 +1721,8 @@ def PassEditorSel2Skin(editor, option=1):
                                 break
                         except:
                             return
-                    editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+                    if skinhandle is not None:
+                        editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
                 else:
                     for handle in SkinView1.handles:
                         if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
@@ -1685,11 +1730,12 @@ def PassEditorSel2Skin(editor, option=1):
                         if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                             skinhandle = handle
                             break
-                    for vertex in range(len(editor.SkinVertexSelList)):
-                        if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
-                           break
-                        if vertex == len(editor.SkinVertexSelList)-1:
-                            editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+                    if skinhandle is not None:
+                        for vertex in range(len(editor.SkinVertexSelList)):
+                            if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
+                               break
+                            if vertex == len(editor.SkinVertexSelList)-1:
+                                editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
 
     if option == 2 or option == 3:
         editor_tri_index = None
@@ -1718,7 +1764,8 @@ def PassEditorSel2Skin(editor, option=1):
                                 break
                         except:
                             return
-                    editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+                    if skinhandle is not None:
+                        editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
             else:
                 for vertex in range(len(tris[vtx[1]])):
                     if ver_index == tris[vtx[1]][vertex][0]:
@@ -1732,11 +1779,12 @@ def PassEditorSel2Skin(editor, option=1):
                     if handle.tri_index == editor_tri_index and handle.ver_index == skinvtx_index:
                         skinhandle = handle
                         break
-                for vertex in range(len(editor.SkinVertexSelList)):
-                    if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
-                        break
-                    if vertex == len(editor.SkinVertexSelList)-1:
-                        editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
+                if skinhandle is not None:
+                    for vertex in range(len(editor.SkinVertexSelList)):
+                        if editor.SkinVertexSelList[vertex][2] == skinhandle.tri_index and editor.SkinVertexSelList[vertex][3] == skinhandle.ver_index:
+                            break
+                        if vertex == len(editor.SkinVertexSelList)-1:
+                            editor.SkinVertexSelList = editor.SkinVertexSelList + [[skinhandle.pos, skinhandle, skinhandle.tri_index, skinhandle.ver_index]]
 
     # Compares the 1st Skin-view vertex position in the sellist to all others 3D position (pos) and places the
     #    last one that matches at the front of the sellist as the 'base vertex' to be drawn so it can be seen.
@@ -1892,6 +1940,7 @@ def SubdivideFaces(editor, pieces=None):
                             sidecenter = (compframe.vertices[trivtxs[0][0]] + compframe.vertices[trivtxs[1][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
                             compframe.vertices = old_vtxs
+                            compframe.compparent = new_comp
             # Line for vertex 1 and vertex 2 will be split because it is the longest side.
             elif (abs(curframe.vertices[trivtxs[1][0]] - curframe.vertices[trivtxs[2][0]]) > abs(curframe.vertices[trivtxs[0][0]] - curframe.vertices[trivtxs[1][0]])) and (abs(curframe.vertices[trivtxs[1][0]] - curframe.vertices[trivtxs[2][0]]) > abs(curframe.vertices[trivtxs[2][0]] - curframe.vertices[trivtxs[0][0]])):
                 sidecenter = (curframe.vertices[trivtxs[1][0]] + curframe.vertices[trivtxs[2][0]])*.5
@@ -1921,6 +1970,7 @@ def SubdivideFaces(editor, pieces=None):
                             sidecenter = (compframe.vertices[trivtxs[1][0]] + compframe.vertices[trivtxs[2][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
                             compframe.vertices = old_vtxs
+                            compframe.compparent = new_comp
             # Line for vertex 2 and vertex 0 will be split because it is the longest side.
             else:
                 sidecenter = (curframe.vertices[trivtxs[2][0]] + curframe.vertices[trivtxs[0][0]])*.5
@@ -1950,13 +2000,12 @@ def SubdivideFaces(editor, pieces=None):
                             sidecenter = (compframe.vertices[trivtxs[2][0]] + compframe.vertices[trivtxs[0][0]])*.5
                             old_vtxs = old_vtxs + [sidecenter]
                             compframe.vertices = old_vtxs
+                            compframe.compparent = new_comp
 
         # This updates (adds) the new triangles to the component.
         new_comp.triangles = new_tris
         new_comp.currentskin = editor.Root.currentcomponent.currentskin
         compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            compframe.compparent = new_comp
         new_comp.currentframe = compframes[curframeNR]
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
@@ -1977,6 +2026,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.60  2007/11/15 22:08:24  danielpharos
+#Fix the frame-won't-drag problem after a subdivide face action.
+#
 #Revision 1.59  2007/11/14 04:34:48  cdunde
 #To stop duplicate handle redrawing after face subdivision.
 #
