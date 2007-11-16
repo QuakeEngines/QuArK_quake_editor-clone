@@ -4716,6 +4716,7 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 compframes[compframe].vertices = new_vtxs
             else:
                 compframes[compframe].vertices = compframes[compframe].vertices + new_vtxs
+            compframes[compframe].compparent = new_comp # To allow frame relocation after editing.
 
         # Third we use that list of new vertexes to make the new faces,
         #    some of which are already triangles for some objects.
@@ -5201,6 +5202,8 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 compframes[compframe].vertices = new_vtxs
             else:
                 compframes[compframe].vertices = compframes[compframe].vertices + new_vtxs
+            compframes[compframe].compparent = new_comp # To allow frame relocation after editing.
+
 
         # Third we use that list of new vertexes to make the new triangle faces.
         #    some of which are already triangles for some objects.
@@ -5300,6 +5303,8 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 compframes[compframe].vertices = new_vtxs
             else:
                 compframes[compframe].vertices = compframes[compframe].vertices + new_vtxs
+            compframes[compframe].compparent = new_comp # To allow frame relocation after editing.
+
 
         # This part gives some kind of view to set skin positions by
         #    for the Skin-view if it has not been opened yet
@@ -5438,6 +5443,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2007/10/31 03:47:52  cdunde
+# Infobase button link updates.
+#
 # Revision 1.5  2007/10/09 04:15:40  cdunde
 # Changed some of the "Fan" Quick Object Maker code
 # to provide integers where needed and stop crashing.
