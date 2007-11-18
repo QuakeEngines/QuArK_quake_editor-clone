@@ -63,6 +63,12 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
         # Shows the model component selected triangle(s) size
         # when one or more frames are selected in the tree-view.
         rulerlist = editor.EditorObjectList
+        try:
+            if rulerlist[0].name.endswith(":f"):
+                pass
+        except:
+            if rulerlist != []:
+                return
         if rulerlist != [] and rulerlist[0].name.endswith(":f"):
             Xmax = Xmin = rulerlist[0]['v'][0]
             Ymax = Ymin = rulerlist[0]['v'][1]
@@ -595,6 +601,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.14  2007/10/22 02:22:27  cdunde
+#To remove use of the "dictspec" function which at this time causes a memory leak in the source code.
+#
 #Revision 1.13  2007/10/09 22:05:43  cdunde
 #To change rulers selection measurement items for the Model Editor.
 #
