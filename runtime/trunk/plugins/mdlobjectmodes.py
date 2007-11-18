@@ -73,7 +73,7 @@ class DistortionDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (190,90)
+    size = (190,115)
     dlgflags = FWF_KEEPFOCUS   # keeps dialog box open
     dfsep = 0.57    # sets 57% for labels and the rest for edit boxes
     dlgdef = """
@@ -96,6 +96,19 @@ class DistortionDlg(quarkpy.dlgclasses.LiveEditDlg):
 
         sep: = {Typ="S" Txt=""}
 
+        makehollow: =
+        {
+        Txt = "Make hollow"
+        Typ = "X1"
+        Cap="on/off" 
+        Hint = "Checking this box will make the object hollow"$0D
+               "when the LMB is released, no end faces."$0D
+               "This function only applies to"$0D
+               "the Pyramid and Cylinder Objects."
+        }
+
+        sep: = {Typ="S" Txt=""}
+
         exit:py = {Txt="" }
         }
     """
@@ -109,16 +122,24 @@ def DistortionClick(m):
         editor.distortiondlg=self
         src = self.src
       ### To populate settings...
-        if (quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_distortion"] is None):
+        if (quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_distortion"] is None) and (quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] is None):
             src["distortion"] = "0"
+            src["makehollow"] = "0"
             quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_distortion"] = src["distortion"]
+            quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_distortion"] = src["makehollow"]
         else:
             src["distortion"] = quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_distortion"]
+            src["makehollow"] = quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"]
 
         if src["distortion"]:
             distort = src["distortion"]
         else:
             distort = quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_distortion"]
+
+        if src["makehollow"]:
+            makehollow = src["makehollow"]
+        else:
+            makehollow = quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"]
 
 
     def action(self, editor=editor):
@@ -126,9 +147,15 @@ def DistortionClick(m):
         if distort is None:
             distort = quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_distortion"]
 
+        makehollow = (self.src["makehollow"])
+        if makehollow is None:
+            makehollow = quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"]
+
       ### Save the settings...
         quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_distortion"] = distort
+        quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] = makehollow
         self.src["distortion"] = distort
+        self.src["distortion"] = makehollow
 
 
     def onclosing(self, editor=editor):
@@ -4704,11 +4731,27 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
         # First we go through all of the vertexes of the new poly object
         #    and create vertexes that the Model Editor knows how to use.
         new_vtxs = []
+        topface_center_vtx = baseface_center_vtx = None
         for poly in newobjectslist:
             for vtx in range(len(poly.vertices)):
                 v = poly.vertices[vtx]
                 vertex = quarkx.vect(v.tuple[0], v.tuple[1], v.tuple[2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
                 new_vtxs.append(vertex)
+
+            if poly.name == "pyramid:p" and face.name == "BaseFace:f":
+                if quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] != "1":
+                    baseface_center_vtx = quarkx.vect(poly.vertices[1].tuple[0], poly.vertices[1].tuple[1], poly.vertices[0].tuple[2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                    new_vtxs.append(baseface_center_vtx)
+
+            if poly.name == "cylinder:p" and (face.name == "TopFace:f" or face.name == "BaseFace:f"):
+                if quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] != "1":
+                    bbmax, bbmin = quarkx.boundingboxof([face])
+                    pointX = ((bbmax.tuple[0]-bbmin.tuple[0])*.5)+bbmin.tuple[0]
+                    pointY = ((bbmax.tuple[1]-bbmin.tuple[1])*.5)+bbmin.tuple[1]
+                    topface_center_vtx = quarkx.vect(pointX, pointY, poly.vertices[1].tuple[2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                    new_vtxs.append(topface_center_vtx)
+                    baseface_center_vtx = quarkx.vect(pointX, pointY, poly.vertices[0].tuple[2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                    new_vtxs.append(baseface_center_vtx)
 
         # second we add those new vertex points to each of the currentcomponent's frames.
         for compframe in range(len(compframes)):
@@ -4717,6 +4760,12 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
             else:
                 compframes[compframe].vertices = compframes[compframe].vertices + new_vtxs
             compframes[compframe].compparent = new_comp # To allow frame relocation after editing.
+
+        if poly.name == "pyramid:p":
+            baseface_index = len(compframes[0].vertices)-1
+        if poly.name == "cylinder:p":
+            topface_index = len(compframes[0].vertices)-2
+            baseface_index = len(compframes[0].vertices)-1
 
         # Third we use that list of new vertexes to make the new faces,
         #    some of which are already triangles for some objects.
@@ -4904,6 +4953,13 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 toptri = ((extvtx+topvtx0,int(topuv0.tuple[0]),int(topuv0.tuple[1])), (extvtx+topvtx1,int(topuv1.tuple[0]),int(topuv1.tuple[1])), (extvtx+topvtx2,int(topuv2.tuple[0]),int(topuv2.tuple[1])))
                 if undomsg.startswith('new pyramid'):
                     newtris = newtris + [toptri]
+                  ## This section is for the option to make the end faces or not.
+                    if quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] != "1":
+                        topuv0 = cordsview.proj(new_vtxs[topvtx0])
+                        topuv1 = cordsview.proj(new_vtxs[topvtx1])
+                        topuv2 = cordsview.proj(new_vtxs[topvtx2])
+                        endtri = ((baseface_index,int(topuv1.tuple[0]),int(topuv1.tuple[1])), (extvtx+topvtx0,int(topuv0.tuple[0]),int(topuv0.tuple[1])), (extvtx+topvtx2,int(topuv2.tuple[0]),int(topuv2.tuple[1])))
+                        newtris = newtris + [endtri]
                 else:
                     bottomuv0 = cordsview.proj(new_vtxs[bottomvtx0])
                     bottomuv1 = cordsview.proj(new_vtxs[bottomvtx1])
@@ -5143,6 +5199,20 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 tri1 = ((extvtx+vtx10,int(uv10.tuple[0]),int(uv10.tuple[1])), (extvtx+vtx11,int(uv11.tuple[0]),int(uv11.tuple[1])), (extvtx+vtx12,int(uv12.tuple[0]),int(uv12.tuple[1])))
                 tri2 = ((extvtx+vtx20,int(uv20.tuple[0]),int(uv20.tuple[1])), (extvtx+vtx21,int(uv21.tuple[0]),int(uv21.tuple[1])), (extvtx+vtx22,int(uv22.tuple[0]),int(uv22.tuple[1])))
                 newtris = newtris + [tri1] + [tri2]
+
+              ## This section is for the option to make the end faces or not.
+                if poly.name == "cylinder:p" and quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] != "1":
+                    if face == 1: # and rings == 1:
+                        toptri = ((topface_index,int(uv10.tuple[0]),int(uv10.tuple[1])), (extvtx+vtx12,int(uv12.tuple[0]),int(uv12.tuple[1])), (extvtx+vtx11,int(uv11.tuple[0]),int(uv11.tuple[1])))
+                        endtri = ((baseface_index,int(uv21.tuple[0]),int(uv21.tuple[1])), (extvtx+vtx20,int(uv20.tuple[0]),int(uv20.tuple[1])), (extvtx+vtx22,int(uv22.tuple[0]),int(uv22.tuple[1])))
+                    elif face == nbroffaces:
+                        toptri = ((topface_index,int(uv12.tuple[0]),int(uv12.tuple[1])), (extvtx+vtx11,int(uv11.tuple[0]),int(uv11.tuple[1])), (extvtx+vtx10,int(uv10.tuple[0]),int(uv10.tuple[1])))
+                        endtri = ((baseface_index,int(uv21.tuple[0]),int(uv21.tuple[1])), (extvtx+vtx20,int(uv20.tuple[0]),int(uv20.tuple[1])), (extvtx+vtx22,int(uv22.tuple[0]),int(uv22.tuple[1])))
+                    elif face == nbroffaces-1 or (face > 9 and face < nbroffaces) or face <= nbroffaces-2: # and rings == 1:
+                        toptri = ((topface_index,int(uv11.tuple[0]),int(uv11.tuple[1])), (extvtx+vtx10,int(uv10.tuple[0]),int(uv10.tuple[1])), (extvtx+vtx12,int(uv12.tuple[0]),int(uv12.tuple[1])))
+                        endtri = ((baseface_index,int(uv20.tuple[0]),int(uv20.tuple[1])), (extvtx+vtx22,int(uv22.tuple[0]),int(uv22.tuple[1])), (extvtx+vtx21,int(uv21.tuple[0]),int(uv21.tuple[1])))
+                    newtris = newtris + [toptri] + [endtri]
+
                 if face == 1 and ringcount == 1:
                     face = face + 1
                     vtxcount = 6
@@ -5443,6 +5513,10 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2007/11/16 20:08:45  cdunde
+# To update all needed files for fix by DanielPharos
+# to allow frame relocation after editing.
+#
 # Revision 1.6  2007/10/31 03:47:52  cdunde
 # Infobase button link updates.
 #
