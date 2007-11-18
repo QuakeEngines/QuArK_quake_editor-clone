@@ -25,6 +25,13 @@ If set to '0', then it will have no effect and the object will be crated to its 
 effect on how many 'rings', sections, or faces that an object will have. That is done by the actual dragging process
 or a 'custom' dialog box possibly.
 
+&nbsp;&nbsp;&nbsp;<b>Make hollow</b>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Checking this box will make the object hollow
+when the LMB is released, no end faces. This function only applies to the Pyramid and Cylinder Objects.
+
+When not activated (unchecked) end faces will be created for the Pyramid and Cylinder Objects
+to allow extrusion and vertex manipulation to create shapes such as arms and leg parts.
+
 Clicking the 'X' will close any dialog box.
 </td></tr>
 </table>
