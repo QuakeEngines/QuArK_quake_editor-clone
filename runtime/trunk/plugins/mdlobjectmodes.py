@@ -4738,13 +4738,13 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 vertex = quarkx.vect(v.tuple[0], v.tuple[1], v.tuple[2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
                 new_vtxs.append(vertex)
 
-            if poly.name == "pyramid:p" and face.name == "BaseFace:f":
-                if quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] != "1":
+            if quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] != "1":
+                if poly.name == "pyramid:p":
                     baseface_center_vtx = quarkx.vect(poly.vertices[1].tuple[0], poly.vertices[1].tuple[1], poly.vertices[0].tuple[2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
                     new_vtxs.append(baseface_center_vtx)
 
-            if poly.name == "cylinder:p" and (face.name == "TopFace:f" or face.name == "BaseFace:f"):
-                if quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] != "1":
+                if poly.name == "cylinder:p":
+                    face = poly.subitems[len(poly.subitems)-1]
                     bbmax, bbmin = quarkx.boundingboxof([face])
                     pointX = ((bbmax.tuple[0]-bbmin.tuple[0])*.5)+bbmin.tuple[0]
                     pointY = ((bbmax.tuple[1]-bbmin.tuple[1])*.5)+bbmin.tuple[1]
@@ -5513,6 +5513,10 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2007/11/18 02:40:31  cdunde
+# Added "Make hollow" option to dialog & end faces for Pyramid and Cylinder Quick Object Makers
+# to allow extrusion and vertex manipulation to create shapes such as arms and leg parts.
+#
 # Revision 1.7  2007/11/16 20:08:45  cdunde
 # To update all needed files for fix by DanielPharos
 # to allow frame relocation after editing.
