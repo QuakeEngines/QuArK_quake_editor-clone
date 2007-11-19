@@ -505,7 +505,6 @@ def MakeEditorFaceObject(editor, option=0):
                 vertexlist = (vect00 ,vect01, vect02, vect10 ,vect11, vect12, vect20 ,vect21, vect22)
                 face["v"] = vertexlist
                 editor.EditorObjectList = editor.EditorObjectList + [[face, tri_index]]
-      #          editor.ModelFaceSelList = editor.ModelFaceSelList + [trinbr]
         return editor.EditorObjectList
         
     elif option == 3: # Returns an object & tri_index for each triangle that shares the 1st and one other vertex of our selected triangle's vertexes.
@@ -831,13 +830,37 @@ def addvertex(editor, comp, pos):
 #    editor.ModelVertexSelList + [[frame_vertices_index, view.proj(pos)]]
 #
 def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, method=1):
-    "option=0 uses the ModelVertexSelList for the editor and"
-    "option=1 uses the SkinVertexSelList for the Skin-view"
+    "option=0 uses the ModelVertexSelList for the editor."
+    "option=1 uses the SkinVertexSelList for the Skin-view."
+    "option=2 uses the ModelVertexSelList for the editor and merges two selected vertexes."
     "method=1 other selected vertexes move to the 'Base' vertex position of each tree-view selected 'frame', only applies to option=0."
     "method=2 other selected vertexes move to the 'Base' vertex position of the 1st tree-view selected 'frame', only applies to option=0."
 
     new_comp = comp.copy()
-    if option == 1:
+
+    if option == 0:
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            for listframe in editor.layout.explorer.sellist:
+                if compframe.name == listframe.name:
+                    old_vtxs = compframe.vertices
+                    if quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method1'] == "1":
+                        newpos = old_vtxs[vertexlist[0][0]]
+                    elif quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method2'] == "1":
+                        newpos = editor.layout.explorer.sellist[0].vertices[vertexlist[0][0]]
+                    else:
+                        newpos = old_vtxs[vertexlist[0][0]]
+                    for vtx in vertexlist:
+                        if vtx == vertexlist[0]:
+                            continue
+                        old_vtxs[vtx[0]] = newpos
+                        compframe.vertices = old_vtxs
+            compframe.compparent = new_comp # To allow frame relocation after editing.
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+
+    elif option == 1:
         tris = new_comp.triangles
         try:
             tex = comp.currentskin
@@ -870,23 +893,43 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
-    else: # option=0 section
+
+    elif option == 3:
+        tris = new_comp.triangles
+        oldindex = vertexlist[1][0]
+        newindex = vertexlist[0][0]
+        changeindex = len(comp.currentframe.vertices)-1
+        for triindex in range(len(tris)):
+            tri = tris[triindex]
+            newtriangle = tri
+            for v in range(len(tri)):
+                # This section replaces the old vert_index number for all triangles that use it
+                # with the vert_index number that this point of the triangles is being moved to.
+                if tri[v][0] == oldindex:
+                    if v == 0:
+                        newtriangle = ((newindex, tri[v][1], tri[v][2]), tri[1], tri[2])
+                    elif v == 1:
+                        newtriangle = (tri[0], (newindex, tri[v][1], tri[v][2]), tri[2])
+                    else:
+                        newtriangle = (tri[0], tri[1], (newindex, tri[v][1], tri[v][2]))
+                # This moves the last vert_index to the old vert_index position in the list
+                # and updates its vert_index number in all triangles that uses it.
+                # We do it this way so we don't half to change all of the triangles vert_indexes.
+                if tri[v][0] == changeindex:
+                    if v == 0:
+                        newtriangle = ((oldindex, tri[v][1], tri[v][2]), tri[1], tri[2])
+                    elif v == 1:
+                        newtriangle = (tri[0], (oldindex, tri[v][1], tri[v][2]), tri[2])
+                    else:
+                        newtriangle = (tri[0], tri[1], (oldindex, tri[v][1], tri[v][2]))
+            tris[triindex] = newtriangle
+        new_comp.triangles = tris
+
         compframes = new_comp.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
-            for listframe in editor.layout.explorer.sellist:
-                if compframe.name == listframe.name:
-                    old_vtxs = compframe.vertices
-                    if quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method1'] == "1":
-                        newpos = old_vtxs[vertexlist[0][0]]
-                    elif quarkx.setupsubset(SS_MODEL, "Options")['APVexs_Method2'] == "1":
-                        newpos = editor.layout.explorer.sellist[0].vertices[vertexlist[0][0]]
-                    else:
-                        newpos = old_vtxs[vertexlist[0][0]]
-                    for vtx in vertexlist:
-                        if vtx == vertexlist[0]:
-                            continue
-                        old_vtxs[vtx[0]] = newpos
-                        compframe.vertices = old_vtxs
+            old_vtxs = compframe.vertices
+            vtxs = old_vtxs[:oldindex] + old_vtxs[changeindex:] + old_vtxs[oldindex+1:changeindex]
+            compframe.vertices = vtxs
             compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
@@ -2026,6 +2069,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.61  2007/11/16 18:48:23  cdunde
+#To update all needed files for fix by DanielPharos
+#to allow frame relocation after editing.
+#
 #Revision 1.60  2007/11/15 22:08:24  danielpharos
 #Fix the frame-won't-drag problem after a subdivide face action.
 #
