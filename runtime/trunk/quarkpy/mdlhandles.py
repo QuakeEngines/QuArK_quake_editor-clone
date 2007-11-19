@@ -729,7 +729,7 @@ class VertexHandle(qhandles.GenericHandle):
             from mdlmgr import savefacesel
             mdlmgr.savefacesel = 1
             if len(editor.ModelVertexSelList) == 2:
-                replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "merged 2 vertexes", 3)
+                replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "merged 2 vertexes", 2)
                 editor.ModelVertexSelList = []
 
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -755,33 +755,28 @@ class VertexHandle(qhandles.GenericHandle):
             AddVertex.state = qmenu.disabled
 
         try:
+            if len(editor.ModelVertexSelList) != 2:
+                Merge2Vertexes.state = qmenu.disabled
             if self.index is not None:
                 if len(editor.ModelVertexSelList) == 0:
                     AlignVertexes.state = qmenu.disabled
-                    Merge2Vertexes.state = qmenu.disabled
                     PickVertex.state = qmenu.disabled
                     ClearPicklist.state = qmenu.disabled
                     menu = [AddVertex, RemoveVertex, qmenu.sep, PickBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Merge2Vertexes, qmenu.sep, Forcetogrid]
                 else:
                     if len(editor.ModelVertexSelList) < 2:
                         AlignVertexes.state = qmenu.disabled
-                        Merge2Vertexes.state = qmenu.disabled
-                        if len(editor.ModelVertexSelList) > 2:
-                            Merge2Vertexes.state = qmenu.disabled
                     menu = [AddVertex, RemoveVertex, qmenu.sep, ChangeBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Merge2Vertexes, qmenu.sep, Forcetogrid]
             else:
                 if len(editor.ModelVertexSelList) < 2:
                     AlignVertexes.state = qmenu.disabled
-                    Merge2Vertexes.state = qmenu.disabled
-                    if len(editor.ModelVertexSelList) > 2:
-                        Merge2Vertexes.state = qmenu.disabled
                 menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Merge2Vertexes]
         except:
+            if len(editor.ModelVertexSelList) != 2:
+                Merge2Vertexes.state = qmenu.disabled
             if len(editor.ModelVertexSelList) < 2:
                 AlignVertexes.state = qmenu.disabled
                 Merge2Vertexes.state = qmenu.disabled
-                if len(editor.ModelVertexSelList) > 2:
-                    Merge2Vertexes.state = qmenu.disabled
             menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Merge2Vertexes]
 
         return menu
@@ -3061,6 +3056,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.115  2007/11/19 01:09:17  cdunde
+#Added new function "Merge 2 Vertexes" to the "Vertex Commands" menu.
+#
 #Revision 1.114  2007/11/19 00:08:39  danielpharos
 #Any supported picture can be used for a view background, and added two options: multiple, offset
 #

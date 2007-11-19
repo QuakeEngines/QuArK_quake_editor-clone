@@ -894,7 +894,7 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
 
-    elif option == 3:
+    elif option == 2:
         tris = new_comp.triangles
         oldindex = vertexlist[1][0]
         newindex = vertexlist[0][0]
@@ -2069,6 +2069,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.62  2007/11/19 01:09:17  cdunde
+#Added new function "Merge 2 Vertexes" to the "Vertex Commands" menu.
+#
 #Revision 1.61  2007/11/16 18:48:23  cdunde
 #To update all needed files for fix by DanielPharos
 #to allow frame relocation after editing.
