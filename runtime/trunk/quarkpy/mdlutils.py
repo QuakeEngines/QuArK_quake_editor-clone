@@ -896,9 +896,11 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
 
     elif option == 2:
         tris = new_comp.triangles
-        oldindex = vertexlist[1][0]
         newindex = vertexlist[0][0]
+        oldindex = vertexlist[1][0]
         changeindex = len(comp.currentframe.vertices)-1
+        if newindex == len(comp.currentframe.vertices)-1:
+            newindex = oldindex
         for triindex in range(len(tris)):
             tri = tris[triindex]
             newtriangle = tri
@@ -915,20 +917,28 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
                 # This moves the last vert_index to the old vert_index position in the list
                 # and updates its vert_index number in all triangles that uses it.
                 # We do it this way so we don't half to change all of the triangles vert_indexes.
-                if tri[v][0] == changeindex:
-                    if v == 0:
-                        newtriangle = ((oldindex, tri[v][1], tri[v][2]), tri[1], tri[2])
-                    elif v == 1:
-                        newtriangle = (tri[0], (oldindex, tri[v][1], tri[v][2]), tri[2])
-                    else:
-                        newtriangle = (tri[0], tri[1], (oldindex, tri[v][1], tri[v][2]))
+                if oldindex == len(comp.currentframe.vertices)-1:
+                    pass
+                else:
+                    if tri[v][0] == changeindex:
+                        if v == 0:
+                            newtriangle = ((oldindex, tri[v][1], tri[v][2]), tri[1], tri[2])
+                        elif v == 1:
+                            newtriangle = (tri[0], (oldindex, tri[v][1], tri[v][2]), tri[2])
+                        else:
+                            newtriangle = (tri[0], tri[1], (oldindex, tri[v][1], tri[v][2]))
             tris[triindex] = newtriangle
         new_comp.triangles = tris
 
         compframes = new_comp.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
             old_vtxs = compframe.vertices
-            vtxs = old_vtxs[:oldindex] + old_vtxs[changeindex:] + old_vtxs[oldindex+1:changeindex]
+            if newindex == len(comp.currentframe.vertices)-1:
+                vtxs = old_vtxs[:oldindex] + old_vtxs[changeindex:] + old_vtxs[newindex:]
+            if oldindex == len(comp.currentframe.vertices)-1:
+                vtxs = old_vtxs[:oldindex]
+            else:
+                vtxs = old_vtxs[:oldindex] + old_vtxs[changeindex:] + old_vtxs[oldindex+1:changeindex]
             compframe.vertices = vtxs
             compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
@@ -2069,6 +2079,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.63  2007/11/19 07:45:55  cdunde
+#Minor corrections for option number and activating menu item.
+#
 #Revision 1.62  2007/11/19 01:09:17  cdunde
 #Added new function "Merge 2 Vertexes" to the "Vertex Commands" menu.
 #
