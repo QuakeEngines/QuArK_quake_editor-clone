@@ -1919,7 +1919,7 @@ def viewsinglebezier(view, layout, patch):
 #            mainhandle.friends = mainhandle.friends + h1
 #            view.handles = h2 + h1
             view.handles = h2
-            view.background = tex, quarkx.vect(0,0,0), 1.0
+            view.background = tex, quarkx.vect(0,0,0), 1.0, 0, 1
             view.screencenter = mainhandle.getcenter()
             return 1
 
@@ -1984,6 +1984,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.65  2007/10/13 18:25:14  cdunde
+#Another fix for the face drag handle hint.
+#
 #Revision 1.64  2007/09/28 18:36:13  cdunde
 #To fix hint error on drag.
 #

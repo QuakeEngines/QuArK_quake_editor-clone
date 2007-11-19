@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2007/09/04 14:38:12  danielpharos
+Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
+
 Revision 1.34  2007/08/04 14:41:24  danielpharos
 Don't invalidate when not needed
 
@@ -307,7 +310,7 @@ var
 implementation
 
 uses PyCanvas, QkTextures, QkPixelSet, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
-     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails;
+     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects, QkImages;
 
 
 constructor TPyMapView.Create(AOwner: TComponent);
@@ -832,9 +835,10 @@ end;
 
 procedure TPyMapView.PaintBackground;
 var
- filename: PChar;
+ P: PChar;
  center: PyVect;
  scale: Single;
+ offset, multiple: Integer;
  S: String;
  R, Dest: TRect;
  P1: TPointProj;
@@ -842,8 +846,9 @@ var
  Q: QPixelSet;
  PSD: TPixelSetDescription;
  obj: PyObject;
+ F: QFileObject;
 begin
- if not PyArg_ParseTupleX(FBackground, 'OO!f:background', [@obj, @TyVect_Type, @center, @scale]) then
+ if not PyArg_ParseTupleX(FBackground, 'OO!fii:background', [@obj, @TyVect_Type, @center, @scale, @offset, @multiple]) then
   Exit;
  if obj^.ob_type = @TyObject_Type then
   begin
@@ -852,9 +857,9 @@ begin
   end
  else
   begin
-   filename:=PyString_AsString(obj);
-   if filename=Nil then Exit;
-   S:=StrPas(filename);
+   P:=PyString_AsString(obj);
+   if P=Nil then Exit;
+   S:=StrPas(P);
    Q:=Nil;
   end;
  if BackgroundImage=Nil then
@@ -862,25 +867,42 @@ begin
    New(BackgroundImage);
    FillChar(BackgroundImage^, SizeOf(TBackgroundImage), 0);
   end;
+ if scale<0 then
+  scale:=0;
  with BackgroundImage^ do
   begin
    if Filename <> S then
     begin
-     Bitmap.Free;
-     Bitmap:=Nil;
-     if Q<>Nil then
+     if Bitmap <> nil then
       begin
-       PSD:=Q.Description; try
-       Bitmap:=PSD.GetBitmapImage;
-       finally PSD.Done; end;
-      end
-     else
-      begin
-       Bitmap:=TBitmap.Create;
-       Bitmap.LoadFromFile(S);
+       Bitmap.Free;
+       Bitmap:=Nil;
       end;
+     F:=nil;
+     try
+      if Q=Nil then
+       begin
+        F:=ExactFileLink(S, nil, True);
+        if not (F is QImage) then
+         begin
+          //DanielPharos: Set the wrong filename anyway,
+          //so the error message only displays once!
+          Filename:=S;
+          raise EError(4621);
+         end;
+        Q:=QImage(F);
+       end;
+      PSD:=Q.Description; try
+      Bitmap:=PSD.GetBitmapImage;
+      finally PSD.Done; end;
+     finally
+      if F<>nil then
+       F.Free;
+     end;
      Filename:=S;
     end;
+   if Bitmap=Nil then
+    Exit;
    if MapViewProj=Nil then
     begin
      P1.X:=center^.V.X;
@@ -891,21 +913,37 @@ begin
      P1:=MapViewProj.Proj(center^.V);
      scale:=scale * MapViewProj.ScalingFactor(@center^.V);
     end;
-   if Q=Nil then
+   if scale=0 then
     begin
-     W:=scale * 0.5 * Bitmap.Width;
-     H:=scale * 0.5 * Bitmap.Height;
-     R.Left:=Round(P1.X - W);
-     R.Top:=Round(P1.Y - H);
-     R.Right:=Round(P1.X + W);
-     R.Bottom:=Round(P1.Y + H);
-     Canvas.StretchDraw(R, Bitmap);
+     W:=Bitmap.Width;
+     H:=Bitmap.Height;
+    end
+   else
+    begin
+     W:=scale * Bitmap.Width;
+     H:=scale * Bitmap.Height;
+    end;
+   if offset=1 then
+    begin
+     P1.X:=P1.X - W * 0.5;
+     P1.Y:=P1.Y - H * 0.5;
+    end;
+   if multiple=0 then
+    begin
+     if scale=0 then
+      Canvas.Draw(Round(P1.X), Round(P1.Y), Bitmap)
+     else
+      begin
+       R.Left:=Round(P1.X);
+       R.Top:=Round(P1.Y);
+       R.Right:=Round(P1.X + W);
+       R.Bottom:=Round(P1.Y + H);
+       Canvas.StretchDraw(R, Bitmap);
+      end;
     end
    else
     if GetClipBox(Canvas.Handle, Dest) <> ERROR then
      begin
-      W:=scale * Bitmap.Width;
-      H:=scale * Bitmap.Height;
       while P1.X > Dest.Left do P1.X:=P1.X-W;
       while P1.Y > Dest.Top  do P1.Y:=P1.Y-H;
       Y:=P1.Y;
@@ -914,11 +952,16 @@ begin
         X:=P1.X;
         while X < Dest.Right do
          begin
-          R.Left:=Round(X);
-          R.Top:=Round(Y);
-          R.Right:=Round(X+W);
-          R.Bottom:=Round(Y+H);
-          Canvas.StretchDraw(R, Bitmap);
+          if scale=0 then
+           Canvas.Draw(Round(X), Round(Y), Bitmap)
+          else
+           begin
+            R.Left:=Round(X);
+            R.Top:=Round(Y);
+            R.Right:=Round(X+W);
+            R.Bottom:=Round(Y+H);
+            Canvas.StretchDraw(R, Bitmap);
+           end;
           X:=X+W;
          end;
         Y:=Y+H;

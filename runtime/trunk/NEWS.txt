@@ -15,14 +15,18 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [DanielPharos]: Any supported picture can now be used for a view's background. Also added two options,
+          - which allow you to manipulate the way the picture appears a bit more.
+
 * [cdunde]: Added "Make hollow" option to dialog & end faces for Pyramid and Cylinder Quick Object Makers
           - to allow extrusion and vertex manipulation to create shapes such as arms and leg parts.
 
-* [cdunde/DanielPharos]: Fixed Linear Handle for selected faces and frames to draw face vertexes locations properly
-          - for animation movement.
+* [cdunde/DanielPharos]: Fixed Linear Handle for selected faces and frames to draw face vertexes locations
+          - properly for animation movement.
 
-* [cdunde/DanielPharos]: Started a new toolbar for the Model Editor to support "Editing Tools" along with four
-          - new functions: Extrude Selected Faces, Extrude with Bulkheads, Reverse face direction and Subdivide faces.
+* [cdunde/DanielPharos]: Started a new toolbar for the Model Editor to support "Editing Tools" along with
+          - four new functions: Extrude Selected Faces, Extrude with Bulkheads, Reverse face direction and
+          - Subdivide faces.
 
 * [cdunde]: Setup multiple selection drag lines for all editor views and the Skin-view with options.
 

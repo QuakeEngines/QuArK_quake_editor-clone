@@ -511,6 +511,7 @@ Strings = {
     4617: "\n\nPlease report this error to the QuArK development team, so that they can fix the issue promptly.",
     4618: "//Description of the invalid polygon :",
     4620: "Impossible to create the surface for a polygon//Three aligned points don't define a plane.",
+    4621: "Cannot set this as a background image: This is not a valid image file, or an unsupported format.",
 
     5119: "(new)",
     5120: "Explorer Group",
@@ -1025,6 +1026,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.110  2007/10/24 14:58:12  cdunde
+#To activate all Movement toolbar button functions for the Model Editor.
+#
 #Revision 1.109  2007/10/23 14:47:51  danielpharos
 #Fixed the filename being double in the not-found error message.
 #

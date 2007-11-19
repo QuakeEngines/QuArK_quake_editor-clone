@@ -1676,7 +1676,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
             view.ondraw = draw1
             view.onmouse = layout.editor.mousemap
                ### This sets the texture, its location and scale size in the Skin-view.
-            view.background = tex, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0), 1.0
+            view.background = tex, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0), 1.0, 0, 1
     else:
            ### This handles models without any skin(s).
         texWidth,texHeight = view.clientarea
@@ -3031,6 +3031,11 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.113  2007/11/14 00:11:13  cdunde
+#Corrections for face subdivision to stop models from drawing broken apart,
+#update Skin-view "triangles" amount displayed and proper full redraw
+#of the Skin-view when a component is un-hidden.
+#
 #Revision 1.112  2007/11/11 11:41:54  cdunde
 #Started a new toolbar for the Model Editor to support "Editing Tools".
 #
