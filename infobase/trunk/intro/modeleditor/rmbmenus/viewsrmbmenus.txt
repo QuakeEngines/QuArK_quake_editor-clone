@@ -101,6 +101,18 @@ please click on the menu link for this functions full description and use.
 
 <i>Clear Pick list </i>&nbsp;: This funciton is also located on the
 <a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description.
+
+<i>Align mesh vertex </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Align Vertex Options </i>&nbsp;: This <g>sub-menu</g> list is also located on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Merge 2 Vertexes </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
 please click on the menu link for this functions full description and use.
 
 <table border=0 cellspacing=0>
