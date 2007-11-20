@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2007/11/20 18:28:06  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
 Revision 1.16  2006/05/05 06:04:44  cdunde
 To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
 handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
@@ -506,7 +509,7 @@ begin
   Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
   Height:=TBitmapInfo(BitmapInfo).bmiHeader.biHeight;
   ScanWidth:=(((Width * 3) + 3) div 4) * 4;  //Scanline size in bytes, with padding
-  if ScanWidth - Width * 3 = 0 then
+  if (TBitmapInfo(BitmapInfo).bmiHeader.biBitCount <> 24) or (ScanWidth - Width * 3 = 0) then
     Result:=CreateDIBitmap(DC, TBitmapInfo(BitmapInfo).bmiHeader, CBM_INIT, Data, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS)
   else
   begin
@@ -543,7 +546,7 @@ begin
     Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
     Height:=TBitmapInfo(BitmapInfo).bmiHeader.biHeight;
     ScanWidth:=(((Width * 3) + 3) div 4) * 4;  //Scanline size in bytes, with padding
-    if ScanWidth - Width * 3 = 0 then
+    if (TBitmapInfo(BitmapInfo).bmiHeader.biBitCount <> 24) or (ScanWidth - Width * 3 = 0) then
     begin
       CopyMemory(Bits, Data, ScanWidth * Height);
       if SetDIBitsToDevice(DC, Left, Top, Width, Height, 0, 0, 0, Height, Bits,
