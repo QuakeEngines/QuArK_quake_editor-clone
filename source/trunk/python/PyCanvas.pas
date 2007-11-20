@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.9  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -336,8 +339,7 @@ begin
          end;
         Y:=R.Top;
         repeat
-         SetDIBitsToDevice(DC, R.Left+X,Y,W,H, 0,0,0,H,
-           LightPatch.Data, BitmapInfo^, dib_RGB_Colors);
+         DrawToDC(DC, BitmapInfo^, LightPatch.Data, R.Left+X, Y);
          Inc(Y, H);
         until Y>=R.Bottom;
         Inc(X, W);
