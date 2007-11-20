@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/11/20 17:14:49  danielpharos
+A lot of small and large fixes, so all DevIL/FreeImage images should load and display correctly.
+
 Revision 1.14  2007/05/05 22:17:53  cdunde
 To add .dds Texture Browser loading from .pk3 files.
 
@@ -147,7 +150,7 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 implementation
 
 uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF,QkVTF, TbPalette, qmath,
-     Quarkx, CCode, Undo, Travail, Logging;
+     Quarkx, CCode, Undo, Travail;
 
 {$R *.DFM}
 
@@ -639,14 +642,9 @@ end;
 procedure QImage.CopyImageToDC(DC: HDC; Left, Top: Integer);
 var
  Size: TPoint;
- ScanWidth: Integer;
- I: Integer;
  Lmp: TPaletteLmp;
  BitmapInfo: TBitmapInfo256;
  Palette, Pal1: HPalette;
- ImagePtr, ImagePtr2: PChar;
- DIBSection: HGDIOBJ;
- Bits, Bits2: Pointer;
 begin
  if IsTrueColor then
   begin
@@ -665,9 +663,6 @@ begin
     biWidth:=Size.X;
     biHeight:=Size.Y;
    end;
-  DIBSection:=CreateDIBSection(DC, PBitmapInfo(@BitmapInfo)^, DIB_RGB_COLORS, Bits, 0, 0);
-  if DIBSection = 0 then
-    Raise exception.Create('CreateDIBSection failed!');
   if Palette=0 then
    Pal1:=0
   else
@@ -676,32 +671,7 @@ begin
     RealizePalette(DC);
    end;
   try
-   ScanWidth:=(((Size.X * 3) + 3) div 4) * 4;
-   if ScanWidth - Size.X * 3 = 0 then
-   begin
-     CopyMemory(Bits, GetImagePtr1, ScanWidth * Size.Y);
-     if SetDIBitsToDevice(DC, Left, Top,
-      Size.X, Size.Y, 0,0,0,Size.Y, Bits,
-      PBitmapInfo(@BitmapInfo)^, dib_RGB_Colors) = 0 then
-       Log(LOG_WARNING, 'SetDIBitsToDevice: Returned zero!');
-   end
-   else
-   begin
-    ImagePtr:=GetImagePtr1;
-    FillChar(Bits^, Size.Y * ScanWidth, 0);
-    ImagePtr2:=ImagePtr;
-    Bits2:=Bits;
-    for I:=0 to Size.Y-1 do
-    begin
-      CopyMemory(Bits2, ImagePtr2, Size.X * 3);
-      Inc(ImagePtr2, Size.X * 3);
-      Bits2:=PChar(Bits2)+ScanWidth;
-    end;
-    if SetDIBitsToDevice(DC, Left, Top,
-     Size.X, Size.Y, 0,0,0,Size.Y, Bits,
-     PBitmapInfo(@BitmapInfo)^, dib_RGB_Colors) = 0 then
-      Log(LOG_WARNING, 'SetDIBitsToDevice: Returned zero!');
-   end;
+    DrawToDC(DC, PBitmapInfo(@BitmapInfo)^, GetImagePtr1, Left, Top);
   finally
    if Pal1<>0 then
     SelectPalette(DC, Pal1, False);
@@ -710,7 +680,6 @@ begin
   if Palette<>0 then
    DeleteObject(Palette);
  end;
- DeleteObject(DIBSection);
 end;
 
 {function QImage.MakeDIBSection(DC: HDC) : HBitmap;

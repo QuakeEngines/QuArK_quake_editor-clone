@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2007/09/13 14:34:52  danielpharos
+The name of a pakfile containing a texture can now be specified per texture
+
 Revision 1.57  2007/09/12 15:39:51  danielpharos
 Small file cleanup.
 
@@ -2169,8 +2172,7 @@ begin
          biWidth:=W;
          biHeight:=H;
 *        end;
-       SetDIBitsToDevice(DC, X, (CH-H) div 2,
-        W, H, 0,0,0,H, Data, Info^.BmpInfo, dib_RGB_Colors);
+       DrawToDC(DC, Info^.BmpInfo, Data, X, (CH-H) div 2);
        Inc(X, W + Step);
        if not ScaleDown(W,H) then Break;
       end;
