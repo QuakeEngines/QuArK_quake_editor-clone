@@ -730,7 +730,6 @@ class VertexHandle(qhandles.GenericHandle):
             mdlmgr.savefacesel = 1
             if len(editor.ModelVertexSelList) == 2:
                 replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "merged 2 vertexes", 2)
-                editor.ModelVertexSelList = []
 
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AddVertex = qmenu.item("&Add Vertex Here", add_vertex_click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -3056,6 +3055,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.116  2007/11/19 07:45:56  cdunde
+#Minor corrections for option number and activating menu item.
+#
 #Revision 1.115  2007/11/19 01:09:17  cdunde
 #Added new function "Merge 2 Vertexes" to the "Vertex Commands" menu.
 #

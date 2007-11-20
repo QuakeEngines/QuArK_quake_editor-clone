@@ -899,6 +899,7 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
         newindex = vertexlist[0][0]
         oldindex = vertexlist[1][0]
         changeindex = len(comp.currentframe.vertices)-1
+        checkindex = newindex
         if newindex == len(comp.currentframe.vertices)-1:
             newindex = oldindex
         for triindex in range(len(tris)):
@@ -909,10 +910,20 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
                 # with the vert_index number that this point of the triangles is being moved to.
                 if tri[v][0] == oldindex:
                     if v == 0:
+                        if checkindex == tri[1][0] or checkindex == tri[2][0]:
+                            quarkx.msgbox("Improper Selection!\n\nYou can not merge two\nvertexes of the same triangle.", MT_ERROR, MB_OK)
+                            return None, None
+
                         newtriangle = ((newindex, tri[v][1], tri[v][2]), tri[1], tri[2])
                     elif v == 1:
+                        if checkindex == tri[0][0] or checkindex == tri[2][0]:
+                            quarkx.msgbox("Improper Selection!\n\nYou can not merge two\nvertexes of the same triangle.", MT_ERROR, MB_OK)
+                            return None, None
                         newtriangle = (tri[0], (newindex, tri[v][1], tri[v][2]), tri[2])
                     else:
+                        if checkindex == tri[0][0] or checkindex == tri[1][0]:
+                            quarkx.msgbox("Improper Selection!\n\nYou can not merge two\nvertexes of the same triangle.", MT_ERROR, MB_OK)
+                            return None, None
                         newtriangle = (tri[0], tri[1], (newindex, tri[v][1], tri[v][2]))
                 # This moves the last vert_index to the old vert_index position in the list
                 # and updates its vert_index number in all triangles that uses it.
@@ -941,6 +952,7 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
                 vtxs = old_vtxs[:oldindex] + old_vtxs[changeindex:] + old_vtxs[oldindex+1:changeindex]
             compframe.vertices = vtxs
             compframe.compparent = new_comp # To allow frame relocation after editing.
+        editor.ModelVertexSelList = []
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -2079,6 +2091,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.64  2007/11/19 20:17:03  cdunde
+#To try and stop vertex merging from crashing if last vertex is the base vertex.
+#
 #Revision 1.63  2007/11/19 07:45:55  cdunde
 #Minor corrections for option number and activating menu item.
 #
