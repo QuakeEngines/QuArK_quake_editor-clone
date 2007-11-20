@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/07/05 10:18:26  danielpharos
+Moved a string to the dictionary.
+
 Revision 1.6  2007/06/13 11:56:25  danielpharos
 Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
 
@@ -115,8 +118,8 @@ var
   FIBuffer: FIMEMORY;
   FIImage, FIConvertedImage: FIBITMAP;
   Pitch: Cardinal;
+  PaddingBytes: Integer;
 
-  ImageFormat: DevILFormat;
   Width, Height: Cardinal;
   NumberOfPixels: Integer;
   V: array[1..2] of Single;
@@ -144,11 +147,17 @@ begin
       ilBindImage(DevILImage);
       CheckDevILError(ilGetError);
 
+      ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+      CheckDevILError(ilGetError);
+      ilEnable(IL_ORIGIN_SET);
+      CheckDevILError(ilGetError);
+
       if ilLoadL(IL_DDS, Pointer(RawBuffer), Length(RawBuffer))=false then
       begin
         ilDeleteImages(1, @DevILImage);
         Fatal('Unable to load DDS file. Call to ilLoadL failed. Please make sure the file is a valid DDS file, and not damaged or corrupt.');
       end;
+      CheckDevILError(ilGetError);
 
       Width:=ilGetInteger(IL_IMAGE_WIDTH);
       CheckDevILError(ilGetError);
@@ -165,9 +174,7 @@ begin
       V[2]:=Height;
       SetFloatsSpec('Size', V);
 
-      ImageFormat:=ilGetInteger(IL_IMAGE_FORMAT);
-      CheckDevILError(ilGetError);
-      if (ImageFormat=IL_RGBA) or (ImageFormat=IL_BGRA) or (ImageFormat=IL_LUMINANCE_ALPHA) then
+      if ilHasAlpha then
       begin
         //Allocate quarks image buffers
         ImgData:=Spec1;
@@ -182,11 +189,8 @@ begin
         DestImg:=PChar(ImgData) + Length(Spec1);
         DestAlpha:=PChar(AlphaData) + Length(Spec3);
         Source2:=Source;
-        Inc(Source2, NumberOfPixels*4);
-        Inc(Source2, Width*4);
-        for J:=Height-1 downto 0 do
+        for J:=0 to Height-1 do
         begin
-          Dec(Source2, 2*Width*4);
           for I:=0 to Width-1 do
           begin
             PRGB(DestImg)^[2]:=Source2^;
@@ -201,6 +205,7 @@ begin
             Inc(DestAlpha, 1);
           end;
         end;
+        FreeMem(Source);
 
         Specifics.Add(AlphaData);
         Specifics.Add(ImgData);
@@ -217,11 +222,8 @@ begin
 
         DestImg:=PChar(ImgData) + Length(Spec1);
         Source2:=Source;
-        Inc(Source2, NumberOfPixels*3);
-        Inc(Source2, Width*3);
-        for J:=Height-1 downto 0 do
+        for J:=0 to Height-1 do
         begin
-          Dec(Source2, 2*Width*3);
           for I:=0 to Width-1 do
           begin
             PRGB(DestImg)^[2]:=Source2^;
@@ -233,12 +235,13 @@ begin
             Inc(DestImg, 3);
           end;
         end;
+        FreeMem(Source);
 
         Specifics.Add(ImgData);
       end;
 
-      FreeMem(Source);
-
+      ilDisable(IL_ORIGIN_SET);
+      CheckDevILError(ilGetError);
       ilDeleteImages(1, @DevILImage);
       CheckDevILError(ilGetError);
 
@@ -285,11 +288,12 @@ begin
         Pitch:=FreeImage_GetPitch(FIConvertedImage);
         GetMem(Source,Height * Pitch);
         FreeImage_ConvertToRawBits(Source, FIConvertedImage, Pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
+        PaddingBytes:=Pitch-Width*4;
 
         DestImg:=PChar(ImgData) + Length(Spec1);
         DestAlpha:=PChar(AlphaData) + Length(Spec3);
         Source2:=Source;
-        for J:=Height-1 downto 0 do
+        for J:=0 to Height-1 do
         begin
           for I:=0 to Width-1 do
           begin
@@ -304,6 +308,7 @@ begin
             Inc(DestImg, 3);
             Inc(DestAlpha, 1);
           end;
+          Inc(Source2, PaddingBytes);
         end;
 
         Specifics.Add(AlphaData);
@@ -319,10 +324,11 @@ begin
         Pitch:=FreeImage_GetPitch(FIConvertedImage);
         GetMem(Source,Height * Pitch);
         FreeImage_ConvertToRawBits(Source, FIConvertedImage, Pitch, 24, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
+        PaddingBytes:=Pitch-Width*3;
 
         DestImg:=PChar(ImgData) + Length(Spec1);
         Source2:=Source;
-        for J:=Height-1 downto 0 do
+        for J:=0 to Height-1 do
         begin
           for I:=0 to Width-1 do
           begin
@@ -334,6 +340,7 @@ begin
             Inc(Source2, 1);
             Inc(DestImg, 3);
           end;
+          Inc(Source2, PaddingBytes);
         end;
 
         Specifics.Add(ImgData);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/05/05 22:17:53  cdunde
+To add .dds Texture Browser loading from .pk3 files.
+
 Revision 1.13  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -143,7 +146,8 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF,QkVTF, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
+uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF,QkVTF, TbPalette, qmath,
+     Quarkx, CCode, Undo, Travail, Logging;
 
 {$R *.DFM}
 
@@ -293,13 +297,15 @@ begin
 end;
 
 procedure QImage.GetPalette1(var Data: TPaletteLmp);
+const
+ Spec2 = 'Pal';
 var
  Pal: String;
 begin
- Pal:=GetSpecArg('Pal');
- if Length(Pal)-Length('Pal=') < SizeOf(TPaletteLmp) then
-  Raise EErrorFmt(5534, ['Pal']);
- Move((PChar(Pal)+Length('Pal='))^, Data, SizeOf(TPaletteLmp));
+ Pal:=GetSpecArg(Spec2);
+ if Length(Pal)-(Length(Spec2)+1) < SizeOf(TPaletteLmp) then
+  Raise EErrorFmt(5534, [Spec2]);
+ Move((PChar(Pal)+(Length(Spec2)+1))^, Data, SizeOf(TPaletteLmp));
 end;
 
 function QImage.GetPalettePtr1 : PPaletteLmp;
@@ -633,9 +639,14 @@ end;
 procedure QImage.CopyImageToDC(DC: HDC; Left, Top: Integer);
 var
  Size: TPoint;
+ ScanWidth: Integer;
+ I: Integer;
  Lmp: TPaletteLmp;
  BitmapInfo: TBitmapInfo256;
  Palette, Pal1: HPalette;
+ ImagePtr, ImagePtr2: PChar;
+ DIBSection: HGDIOBJ;
+ Bits, Bits2: Pointer;
 begin
  if IsTrueColor then
   begin
@@ -654,6 +665,9 @@ begin
     biWidth:=Size.X;
     biHeight:=Size.Y;
    end;
+  DIBSection:=CreateDIBSection(DC, PBitmapInfo(@BitmapInfo)^, DIB_RGB_COLORS, Bits, 0, 0);
+  if DIBSection = 0 then
+    Raise exception.Create('CreateDIBSection failed!');
   if Palette=0 then
    Pal1:=0
   else
@@ -662,9 +676,32 @@ begin
     RealizePalette(DC);
    end;
   try
-   SetDIBitsToDevice(DC, Left, Top,
-    Size.X, Size.Y, 0,0,0,Size.Y, GetImagePtr1,
-    PBitmapInfo(@BitmapInfo)^, dib_RGB_Colors);
+   ScanWidth:=(((Size.X * 3) + 3) div 4) * 4;
+   if ScanWidth - Size.X * 3 = 0 then
+   begin
+     CopyMemory(Bits, GetImagePtr1, ScanWidth * Size.Y);
+     if SetDIBitsToDevice(DC, Left, Top,
+      Size.X, Size.Y, 0,0,0,Size.Y, Bits,
+      PBitmapInfo(@BitmapInfo)^, dib_RGB_Colors) = 0 then
+       Log(LOG_WARNING, 'SetDIBitsToDevice: Returned zero!');
+   end
+   else
+   begin
+    ImagePtr:=GetImagePtr1;
+    FillChar(Bits^, Size.Y * ScanWidth, 0);
+    ImagePtr2:=ImagePtr;
+    Bits2:=Bits;
+    for I:=0 to Size.Y-1 do
+    begin
+      CopyMemory(Bits2, ImagePtr2, Size.X * 3);
+      Inc(ImagePtr2, Size.X * 3);
+      Bits2:=PChar(Bits2)+ScanWidth;
+    end;
+    if SetDIBitsToDevice(DC, Left, Top,
+     Size.X, Size.Y, 0,0,0,Size.Y, Bits,
+     PBitmapInfo(@BitmapInfo)^, dib_RGB_Colors) = 0 then
+      Log(LOG_WARNING, 'SetDIBitsToDevice: Returned zero!');
+   end;
   finally
    if Pal1<>0 then
     SelectPalette(DC, Pal1, False);
@@ -673,6 +710,7 @@ begin
   if Palette<>0 then
    DeleteObject(Palette);
  end;
+ DeleteObject(DIBSection);
 end;
 
 {function QImage.MakeDIBSection(DC: HDC) : HBitmap;

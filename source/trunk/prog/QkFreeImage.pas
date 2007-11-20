@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2007/07/05 10:18:26  danielpharos
+Moved a string to the dictionary.
+
 Revision 1.1  2007/06/13 11:56:23  danielpharos
 Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
 
@@ -195,6 +198,7 @@ var
   FreeImage_GetHeight: function (dib : FIBITMAP) : Cardinal; stdcall;
   FreeImage_GetWidth: function (dib : FIBITMAP) : Cardinal; stdcall;
   FreeImage_GetPitch: function (dib : FIBITMAP) : Cardinal; stdcall;
+  //FreeImage_GetLine: function(dib: FIBITMAP) : Cardinal; stdcall;
   FreeImage_GetColorType: function (dib : FIBITMAP) : FREE_IMAGE_COLOR_TYPE; stdcall;
   FreeImage_GetImageType: function (dib : FIBITMAP) : FREE_IMAGE_TYPE; stdcall;
   FreeImage_ConvertTo24Bits: function (dib : FIBITMAP) : FIBITMAP; stdcall;
@@ -270,6 +274,7 @@ begin
       FreeImage_GetHeight    := InitDllPointer(HFreeImage, '_FreeImage_GetHeight@4');
       FreeImage_GetWidth     := InitDllPointer(HFreeImage, '_FreeImage_GetWidth@4');
       FreeImage_GetPitch     := InitDllPointer(HFreeImage, '_FreeImage_GetPitch@4');
+      //FreeImage_GetLine      := InitDllPointer(HFreeImage, '_FreeImage_GetLine@4');
       FreeImage_GetColorType := InitDllPointer(HFreeImage, '_FreeImage_GetColorType@4');
       FreeImage_GetImageType := InitDllPointer(HFreeImage, '_FreeImage_GetImageType@4');
       FreeImage_ConvertTo24Bits := InitDllPointer(HFreeImage, '_FreeImage_ConvertTo24Bits@4');
@@ -327,6 +332,7 @@ begin
       FreeImage_GetHeight             := nil;
       FreeImage_GetWidth              := nil;
       FreeImage_GetPitch              := nil;
+      //FreeImage_GetLine               := nil;
       FreeImage_GetColorType          := nil;
       FreeImage_GetImageType          := nil;
       FreeImage_ConvertTo24Bits       := nil;

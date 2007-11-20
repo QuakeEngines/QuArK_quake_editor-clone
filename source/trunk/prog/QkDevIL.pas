@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2007/07/05 10:18:30  danielpharos
+Moved a string to the dictionary.
+
 Revision 1.5  2007/06/13 11:56:24  danielpharos
 Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
 
@@ -48,6 +51,15 @@ interface
 uses Windows, SysUtils, QkObjects;
 
 const
+// Palette types
+  IL_PAL_NONE   =0400;
+  IL_PAL_RGB24  =0401;
+  IL_PAL_RGB32  =0402;
+  IL_PAL_RGBA32 =0403;
+  IL_PAL_BGR24  =0404;
+  IL_PAL_BGR32  =0405;
+  IL_PAL_BGRA32 =0406;
+
 // Image types
   IL_TYPE_UNKNOWN= 0;
   IL_BMP= 1056;
@@ -86,39 +98,48 @@ const
   IL_JASC_PAL= 1141;
 
 // Mode types
-  IL_ORIGIN_SET= $0600;
-  IL_ORIGIN_MODE= $0603;
-  IL_ORIGIN_LOWER_LEFT= $0601;
-  IL_ORIGIN_UPPER_LEFT= $0602;
-  IL_FORMAT_SET= $0610;
-  IL_FORMAT_MODE= $0611;
-  IL_TYPE_SET= $0612;
-  IL_TYPE_MODE= $0613;
-  IL_FILE_MODE= $0621;
-  IL_CONV_PAL= $0630;
-  IL_USE_KEY_COLOUR= $0635;
-  IL_USE_KEY_COLOR= $0635;
-  IL_VERSION_NUM= $0DE2;
-  IL_IMAGE_WIDTH= $0DE4;
-  IL_IMAGE_HEIGHT= $0DE5;
-  IL_IMAGE_DEPTH= $0DE6;
-  IL_IMAGE_SIZE_OF_DATA= $0DE7;
-  IL_IMAGE_BPP= $0DE8;
-  IL_IMAGE_BYTES_PER_PIXEL= $0DE8;
-  IL_IMAGE_BITS_PER_PIXEL= $0DE9;
-  IL_IMAGE_FORMAT= $0DEA;
-  IL_IMAGE_TYPE= $0DEB;
-  IL_PALETTE_TYPE= $0DEC;
-  IL_PALETTE_SIZE= $0DED;
-  IL_PALETTE_BPP= $0DEE;
-  IL_PALETTE_NUM_COLS= $0DEF;
-  IL_NUM_IMAGES= $0DF1;
-  IL_NUM_MIPMAPS= $0DF2;
-  IL_NUM_LAYERS= $0DF3;
-  IL_ACTIVE_IMAGE= $0DF4;
-  IL_ACTIVE_MIPMAP= $0DF5;
-  IL_ACTIVE_LAYER= $0DF6;
-  IL_CUR_IMAGE= $0DF7;
+  IL_ORIGIN_SET            =$0600;
+  IL_ORIGIN_MODE           =$0603;
+  IL_ORIGIN_LOWER_LEFT     =$0601;
+  IL_ORIGIN_UPPER_LEFT     =$0602;
+  IL_FORMAT_SET            =$0610;
+  IL_FORMAT_MODE           =$0611;
+  IL_TYPE_SET              =$0612;
+  IL_TYPE_MODE             =$0613;
+  IL_FILE_MODE             =$0621;
+  IL_CONV_PAL              =$0630;
+  IL_USE_KEY_COLOUR        =$0635;
+  IL_USE_KEY_COLOR         =$0635;
+  IL_VERSION_NUM           =$0DE2;
+  IL_IMAGE_WIDTH           =$0DE4;
+  IL_IMAGE_HEIGHT          =$0DE5;
+  IL_IMAGE_DEPTH           =$0DE6;
+  IL_IMAGE_SIZE_OF_DATA    =$0DE7;
+  IL_IMAGE_BPP             =$0DE8;
+  IL_IMAGE_BYTES_PER_PIXEL =$0DE8;
+  IL_IMAGE_BITS_PER_PIXEL  =$0DE9;
+  IL_IMAGE_FORMAT          =$0DEA;
+  IL_IMAGE_TYPE            =$0DEB;
+  IL_PALETTE_TYPE          =$0DEC;
+  IL_PALETTE_SIZE          =$0DED;
+  IL_PALETTE_BPP           =$0DEE;
+  IL_PALETTE_NUM_COLS      =$0DEF;
+  IL_PALETTE_BASE_TYPE     =$0DF0;
+  IL_NUM_IMAGES            =$0DF1;
+  IL_NUM_MIPMAPS           =$0DF2;
+  IL_NUM_LAYERS            =$0DF3;
+  IL_ACTIVE_IMAGE          =$0DF4;
+  IL_ACTIVE_MIPMAP         =$0DF5;
+  IL_ACTIVE_LAYER          =$0DF6;
+  IL_CUR_IMAGE             =$0DF7;
+  IL_IMAGE_DURATION        =$0DF8;
+  IL_IMAGE_PLANESIZE       =$0DF9;
+  IL_IMAGE_BPC             =$0DFA;
+  IL_IMAGE_OFFX            =$0DFB;
+  IL_IMAGE_OFFY            =$0DFC;
+  IL_IMAGE_CUBEFLAGS       =$0DFD;
+  IL_IMAGE_ORIGIN          =$0DFE;
+  IL_IMAGE_CHANNELS        =$0DFF;
 
 // Mode types (file specific):
   IL_TGA_CREATE_STAMP        =$0710;
@@ -196,6 +217,7 @@ type
   DevILError = Integer;
   DevILFormat = Integer;
   DevILFormatType = Integer;
+  DevILPaletteType = Integer;
 
 var
   ilInit: procedure; stdcall;
@@ -224,13 +246,17 @@ var
   //ilGetData: function : PByte; stdcall;
   //ilSetData: function (Data : PByte) : Boolean; stdcall;
   ilCopyPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
-
   //ilSetPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
   ilTexImage: function (Width : Cardinal; Height : Cardinal; Depth : Cardinal; Bpp : Byte; Format : DevILFormat; xType : DevILType; Data : PByte) : Boolean; stdcall;
+  ilDisable: function (Mode : DevILMode) : Boolean; stdcall;
+  ilEnable: function (Mode : DevILMode) : Boolean; stdcall;
+  //ilFormatFunc: function (Mode : DevILMode) : Boolean; stdcall;
+  ilOriginFunc: function (Mode : DevILMode) : Boolean; stdcall;
 
 
 function LoadDevIL : Boolean;
 procedure UnloadDevIL(ForceUnload: boolean);
+function ilHasAlpha: Boolean;
 procedure CheckDevILError(DevILError: DevILError);
 
 {-------------------}
@@ -295,6 +321,10 @@ begin
       ilCopyPixels      := InitDllPointer(HDevIL, 'ilCopyPixels');
       //ilSetPixels       := InitDllPointer(HDevIL, 'ilSetPixels');
       ilTexImage        := InitDllPointer(HDevIL, 'ilTexImage');
+      ilDisable         := InitDllPointer(HDevIL, 'ilDisable');
+      ilEnable          := InitDllPointer(HDevIL, 'ilEnable');
+      //ilFormatFunc      := InitDllPointer(HDevIL, 'ilFormatFunc');
+      ilOriginFunc      := InitDllPointer(HDevIL, 'ilOriginFunc');
       //DanielPharos: If one of the API func's fails, we should stop loading, and return False!
 
       if ilGetInteger(IL_VERSION_NUM) < 168 then
@@ -352,6 +382,10 @@ begin
       ilCopyPixels          := nil;
       //ilSetPixels           := nil;
       ilTexImage            := nil;
+      ilDisable             := nil;
+      ilEnable              := nil;
+      //ilFormatFunc          := nil;
+      ilOriginFunc          := nil;
     end;
 
     TimesLoaded := 0;
@@ -363,38 +397,65 @@ end;
 
 {-------------------}
 
+function ilHasAlpha: Boolean;
+var
+  ImageFormat: DevILFormat;
+  PaletteType: DevILPaletteType;
+begin
+  ImageFormat:=ilGetInteger(IL_IMAGE_FORMAT);
+  CheckDevILError(ilGetError);
+  case ImageFormat of
+  IL_RGBA, IL_BGRA, IL_LUMINANCE_ALPHA:
+    Result:=True;
+  IL_COLOUR_INDEX:
+  begin
+    PaletteType:=ilGetInteger(IL_PALETTE_TYPE);
+    CheckDevILError(ilGetError);
+    if (PaletteType = IL_PAL_RGBA32) or (PaletteType = IL_PAL_BGRA32) then
+      Result:=True
+    else
+      Result:=False;
+  end;
+  else
+    Result:=False;
+  end;
+end;
+
 procedure CheckDevILError(DevILError: DevILError);
 begin
-  case DevILError of
-  IL_NO_ERROR: ;
-  IL_INVALID_ENUM: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_ENUM']);
-  IL_OUT_OF_MEMORY: Raise EErrorFmt(5731, ['DevIL library', 'IL_OUT_OF_MEMORY']);
-  IL_FORMAT_NOT_SUPPORTED: Raise EErrorFmt(5731, ['DevIL library', 'IL_FORMAT_NOT_SUPPORTED']);
-  IL_INTERNAL_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_INTERNAL_ERROR']);
-  IL_INVALID_VALUE: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_VALUE']);
-  IL_ILLEGAL_OPERATION: Raise EErrorFmt(5731, ['DevIL library', 'IL_ILLEGAL_OPERATION']);
-  IL_ILLEGAL_FILE_VALUE: Raise EErrorFmt(5731, ['DevIL library', 'IL_ILLEGAL_FILE_VALUE']);
-  IL_INVALID_FILE_HEADER: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_FILE_HEADER']);
-  IL_INVALID_PARAM: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_PARAM']);
-  IL_COULD_NOT_OPEN_FILE: Raise EErrorFmt(5731, ['DevIL library', 'IL_COULD_NOT_OPEN_FILE']);
-  IL_INVALID_EXTENSION: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_EXTENSION']);
-  IL_FILE_ALREADY_EXISTS: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_ALREADY_EXISTS']);
-  IL_OUT_FORMAT_SAME: Raise EErrorFmt(5731, ['DevIL library', 'IL_OUT_FORMAT_SAME']);
-  IL_STACK_OVERFLOW: Raise EErrorFmt(5731, ['DevIL library', 'IL_STACK_OVERFLOW']);
-  IL_STACK_UNDERFLOW: Raise EErrorFmt(5731, ['DevIL library', 'IL_STACK_UNDERFLOW']);
-  IL_INVALID_CONVERSION: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_CONVERSION']);
-  IL_BAD_DIMENSIONS: Raise EErrorFmt(5731, ['DevIL library', 'IL_BAD_DIMENSIONS']);
-  IL_FILE_READ_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_READ_ERROR or IL_FILE_WRITE_ERROR']);
-//  IL_FILE_READ_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_READ_ERROR']);
-//  IL_FILE_WRITE_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_WRITE_ERROR']);
-  IL_LIB_GIF_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_GIF_ERROR']);
-  IL_LIB_JPEG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_JPEG_ERROR']);
-  IL_LIB_PNG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_PNG_ERROR']);
-  IL_LIB_TIFF_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_TIFF_ERROR']);
-  IL_LIB_MNG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_MNG_ERROR']);
-  IL_UNKNOWN_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_UNKNOWN_ERROR']);
-  else
-    Raise EErrorFmt(5731, ['DevIL library', 'Unknown error code']);
+  while DevILError<>IL_NO_ERROR do
+  begin
+    case DevILError of
+    IL_INVALID_ENUM: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_ENUM']);
+    IL_OUT_OF_MEMORY: Raise EErrorFmt(5731, ['DevIL library', 'IL_OUT_OF_MEMORY']);
+    IL_FORMAT_NOT_SUPPORTED: Raise EErrorFmt(5731, ['DevIL library', 'IL_FORMAT_NOT_SUPPORTED']);
+    IL_INTERNAL_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_INTERNAL_ERROR']);
+    IL_INVALID_VALUE: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_VALUE']);
+    IL_ILLEGAL_OPERATION: Raise EErrorFmt(5731, ['DevIL library', 'IL_ILLEGAL_OPERATION']);
+    IL_ILLEGAL_FILE_VALUE: Raise EErrorFmt(5731, ['DevIL library', 'IL_ILLEGAL_FILE_VALUE']);
+    IL_INVALID_FILE_HEADER: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_FILE_HEADER']);
+    IL_INVALID_PARAM: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_PARAM']);
+    IL_COULD_NOT_OPEN_FILE: Raise EErrorFmt(5731, ['DevIL library', 'IL_COULD_NOT_OPEN_FILE']);
+    IL_INVALID_EXTENSION: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_EXTENSION']);
+    IL_FILE_ALREADY_EXISTS: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_ALREADY_EXISTS']);
+    IL_OUT_FORMAT_SAME: Raise EErrorFmt(5731, ['DevIL library', 'IL_OUT_FORMAT_SAME']);
+    IL_STACK_OVERFLOW: Raise EErrorFmt(5731, ['DevIL library', 'IL_STACK_OVERFLOW']);
+    IL_STACK_UNDERFLOW: Raise EErrorFmt(5731, ['DevIL library', 'IL_STACK_UNDERFLOW']);
+    IL_INVALID_CONVERSION: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_CONVERSION']);
+    IL_BAD_DIMENSIONS: Raise EErrorFmt(5731, ['DevIL library', 'IL_BAD_DIMENSIONS']);
+    IL_FILE_READ_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_READ_ERROR or IL_FILE_WRITE_ERROR']);
+//    IL_FILE_READ_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_READ_ERROR']);
+//    IL_FILE_WRITE_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_WRITE_ERROR']);
+    IL_LIB_GIF_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_GIF_ERROR']);
+    IL_LIB_JPEG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_JPEG_ERROR']);
+    IL_LIB_PNG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_PNG_ERROR']);
+    IL_LIB_TIFF_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_TIFF_ERROR']);
+    IL_LIB_MNG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_MNG_ERROR']);
+    IL_UNKNOWN_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_UNKNOWN_ERROR']);
+    else
+      Raise EErrorFmt(5731, ['DevIL library', 'Unknown error code']);
+    end;
+    DevILError:=ilGetError;
   end;
 end;
 
