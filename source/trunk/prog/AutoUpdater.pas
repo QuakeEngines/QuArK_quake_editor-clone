@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2007/09/12 15:35:40  danielpharos
+Moved update settings to seperate config section and added beginnings of online update check.
+
 
 }
 
@@ -52,7 +55,7 @@ var
   ResourceBuffer, Dest, OldDest: PChar;
   ResourceSize: Integer;
   Buffer: PChar;
-  cBufferLength, BufferLength: DWORD;
+  cBufferLength, BufferLength, ReadBufferLength: DWORD;
   IndexParse: String;
   ParsePos: Integer;
 
@@ -152,9 +155,8 @@ begin
       if Int(BufferLength)>ResourceSize then
         BufferLength:=ResourceSize;
       GetMem(Buffer, BufferLength);
-      while BufferLength>0 do
-      begin
-        if InternetReadFile(InetResource, Buffer, cBufferLength, BufferLength)=false then
+      repeat
+        if InternetReadFile(InetResource, Buffer, BufferLength, ReadBufferLength)=false then
         begin
           FreeMem(Buffer);
           FreeMem(ResourceBuffer);
@@ -165,12 +167,12 @@ begin
           Result:=false;
           Exit;
         end;
-        if BufferLength>0 then
+        if ReadBufferLength>0 then
         begin
-          CopyMemory(Dest, Buffer, BufferLength);
-          Inc(Dest, BufferLength);
+          CopyMemory(Dest, Buffer, ReadBufferLength);
+          Inc(Dest, ReadBufferLength);
         end;
-      end;
+      until ReadBufferLength=0;
       FreeMem(Buffer);
 
       Dest:=ResourceBuffer;

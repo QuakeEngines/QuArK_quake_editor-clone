@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.368  2007/11/21 16:07:19  danielpharos
+//Another bunch of hugh image fixes: everything should work again!
+//
 //Revision 1.367  2007/11/21 00:06:12  danielpharos
 //BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
 //
@@ -1339,7 +1342,7 @@ QQRKSRC1
       Update:config =
       {
         UpdateCheck = "1"
-        UpdateCheckOnline = "1"
+        UpdateCheckOnline = "0"
         Form = "GeneralUpdate"
       }
       QuakeC:config =
@@ -7198,7 +7201,7 @@ QQRKSRC1
     {
       Style = "3"
       UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
-      UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
+      //UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
     }
     externaledit:incl = {
       Typ = "EP"
