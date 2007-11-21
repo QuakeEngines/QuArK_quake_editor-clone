@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/11/20 17:14:50  danielpharos
+A lot of small and large fixes, so all DevIL/FreeImage images should load and display correctly.
+
 Revision 1.6  2007/07/05 10:18:30  danielpharos
 Moved a string to the dictionary.
 
@@ -257,6 +260,7 @@ var
 function LoadDevIL : Boolean;
 procedure UnloadDevIL(ForceUnload: boolean);
 function ilHasAlpha: Boolean;
+function ilHasPalette: Boolean;
 procedure CheckDevILError(DevILError: DevILError);
 
 {-------------------}
@@ -419,6 +423,18 @@ begin
   else
     Result:=False;
   end;
+end;
+
+function ilHasPalette: Boolean;
+var
+  ImageFormat: DevILFormat;
+begin
+  ImageFormat:=ilGetInteger(IL_IMAGE_FORMAT);
+  CheckDevILError(ilGetError);
+  if ImageFormat=IL_COLOUR_INDEX then
+    Result:=True
+  else
+    Result:=False;
 end;
 
 procedure CheckDevILError(DevILError: DevILError);

@@ -15,6 +15,11 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [DanielPharos]: Another bunch of hugh image fixes: everything should work again! The DevIL
+          - implementation currently doesn't support loading palette files, and saving them
+          - isn't supported by either. But the rest works perfectly! Also, TGA files now also
+          - use DevIL and FreeImage.
+
 * [DanielPharos]: BMP and PCX files are now also using DevIL and FreeImage to load and save.
 
 * [cdunde]: Added new function "Merge 2 Vertexes" to the "Vertex Commands" menu.

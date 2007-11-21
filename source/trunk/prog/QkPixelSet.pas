@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/11/21 00:06:22  danielpharos
+BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
+
 Revision 1.18  2007/11/20 21:36:58  danielpharos
 Fix paletted pictures not working correctly after prev. rev.
 
@@ -504,51 +507,20 @@ end;
 
 function CreateToDC(DC: HDC; var BitmapInfo; Data: Pointer) : HBitmap;
 var
-  Width, Height, BBP, ScanWidth, CopyWidth: Integer;
-  I: Integer;
-  Data2: PByte;
-  Bits, Bits2: Pointer;
+  Width, Height: Integer;
 begin
   Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
   Height:=TBitmapInfo(BitmapInfo).bmiHeader.biHeight;
-  BBP:=TBitmapInfo(BitmapInfo).bmiHeader.biBitCount;
-  ScanWidth:=(((Width * BBP) + 31) div 32) * 32;  //Scanline size in bits, with padding
   Result:=CreateCompatibleBitmap(DC, Width, Height);
-  if ScanWidth - (Width * BBP) = 0 then
-  begin
-    if SetDiBits(DC, Result, 0, Height, Data, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
-      Log(LOG_WARNING, 'SetDiBits: Returned zero!');
-  end
-  else
-  begin
-    ScanWidth:=ScanWidth div 8;
-    Bits:=PChar(GlobalAlloc(0, Height * ScanWidth));
-    try
-      FillChar(Bits^, Height * ScanWidth, 0);
-      Data2:=Data;
-      Bits2:=Bits;
-      CopyWidth:=((Width * BBP) + 7) div 8;
-      for I:=0 to Height-1 do
-      begin
-        CopyMemory(Bits2, Data2, CopyWidth);
-        Inc(Data2, CopyWidth);
-        PChar(Bits2):=PChar(Bits2) + ScanWidth;
-      end;
-      if SetDiBits(DC, Result, 0, Height, Bits, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
-        Log(LOG_WARNING, 'SetDiBits: Returned zero!');
-    finally
-      GlobalFree(Cardinal(Bits));
-    end;
-  end;
+  if SetDiBits(DC, Result, 0, Height, Data, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
+    Log(LOG_WARNING, 'SetDiBits: Returned zero!');
 end;
 
 procedure DrawToDC(DC: HDC; var BitmapInfo; Data: Pointer; Left, Top: Integer);
 var
-  Width, Height, BBP, ScanWidth, CopyWidth: Integer;
-  I: Integer;
-  Data2: PByte;
+  Width, Height, BBP, ScanWidth: Integer;
   DIBSection: HGDIOBJ;
-  Bits, Bits2: Pointer;
+  Bits: Pointer;
 begin
   DIBSection:=CreateDIBSection(DC, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS, Bits, 0, 0);
   if DIBSection = 0 then
@@ -557,32 +529,11 @@ begin
     Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
     Height:=TBitmapInfo(BitmapInfo).bmiHeader.biHeight;
     BBP:=TBitmapInfo(BitmapInfo).bmiHeader.biBitCount;
-    ScanWidth:=(((Width * BBP) + 31) div 32) * 32;  //Scanline size in bits, with padding
-    if ScanWidth - (Width * BBP) = 0 then
-    begin
-      ScanWidth:=ScanWidth div 8;
-      CopyMemory(Bits, Data, ScanWidth * Height);
-      if SetDIBitsToDevice(DC, Left, Top, Width, Height, 0, 0, 0, Height, Bits,
-       tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
-        Log(LOG_WARNING, 'SetDIBitsToDevice: Returned zero!');
-    end
-    else
-    begin
-      ScanWidth:=ScanWidth div 8;
-      FillChar(Bits^, Height * ScanWidth, 0);
-      Data2:=Data;
-      Bits2:=Bits;
-      CopyWidth:=((Width * BBP) + 7) div 8;
-      for I:=0 to Height-1 do
-      begin
-        CopyMemory(Bits2, Data2, CopyWidth);
-        Inc(Data2, CopyWidth);
-        PChar(Bits2):=PChar(Bits2) + ScanWidth;
-      end;
-      if SetDIBitsToDevice(DC, Left, Top, Width, Height, 0, 0, 0, Height, Bits,
-       tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
-        Log(LOG_WARNING, 'SetDIBitsToDevice: Returned zero!');
-     end;
+    ScanWidth:=(((Width * BBP) + 31) div 32) * 4;  //Scanline size in bytes, with padding
+    CopyMemory(Bits, Data, ScanWidth * Height);
+    if SetDIBitsToDevice(DC, Left, Top, Width, Height, 0, 0, 0, Height, Bits,
+     tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
+      Log(LOG_WARNING, 'SetDIBitsToDevice: Returned zero!');
   finally
     DeleteObject(DIBSection);
   end;

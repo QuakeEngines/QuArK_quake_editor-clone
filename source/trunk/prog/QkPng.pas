@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/11/20 17:14:49  danielpharos
+A lot of small and large fixes, so all DevIL/FreeImage images should load and display correctly.
+
 Revision 1.13  2007/07/05 10:18:29  danielpharos
 Moved a string to the dictionary.
 
@@ -116,6 +119,8 @@ const
 type
   PRGB = ^TRGB;
   TRGB = array[0..2] of Byte;
+  PRGBA = ^TRGBA;
+  TRGBA = array[0..3] of Byte;
 var
   RawBuffer: String;
   Source, Source2: PByte;
@@ -131,11 +136,10 @@ var
   //FreeImage:
   FIBuffer: FIMEMORY;
   FIImage, FIConvertedImage: FIBITMAP;
-  Pitch: Cardinal;
-  PaddingBytes: Integer;
+  Pitch: Integer;
 
-  Width, Height: Cardinal;
-  NumberOfPixels: Integer;
+  Width, Height: Integer;
+  PaddingSource, PaddingDest: Integer;
   V: array[1..2] of Single;
 begin
   Log(LOG_VERBOSE,'Loading PNG file: %s',[self.name]);;
@@ -183,22 +187,25 @@ begin
         ilDeleteImages(1, @DevILImage);
         Fatal('Unable to load PNG file. Picture is too large.');
       end;
-      NumberOfPixels:=Width * Height;
       V[1]:=Width;
       V[2]:=Height;
       SetFloatsSpec('Size', V);
+
+      //This is the padding for the 'Image1'-RGB array
+      PaddingDest:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
 
       if ilHasAlpha then
       begin
         //Allocate quarks image buffers
         ImgData:=Spec1;
         AlphaData:=Spec3;
-        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
-        Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
+        SetLength(ImgData,   Length(Spec1) + ((Width * 3) + PaddingDest) * Height); //RGB buffer
+        SetLength(AlphaData, Length(Spec3) + (Width * Height)); //alpha buffer
 
-        GetMem(Source,NumberOfPixels*4);
+        GetMem(Source, Width * Height * 4);
         ilCopyPixels(0, 0, 0, Width, Height, 1, IL_RGBA, IL_UNSIGNED_BYTE, Source);
         CheckDevILError(ilGetError);
+        PaddingSource:=0;
 
         DestImg:=PChar(ImgData) + Length(Spec1);
         DestAlpha:=PChar(AlphaData) + Length(Spec3);
@@ -207,16 +214,19 @@ begin
         begin
           for I:=0 to Width-1 do
           begin
-            PRGB(DestImg)^[2]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[1]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[0]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestAlpha)^[0]:=Source2^;
-            Inc(Source2, 1);
+            PRGB(DestImg)^[2]:=PRGBA(Source2)^[0];
+            PRGB(DestImg)^[1]:=PRGBA(Source2)^[1];
+            PRGB(DestImg)^[0]:=PRGBA(Source2)^[2];
+            PByte(DestAlpha)^:=PRGBA(Source2)^[3];
+            Inc(Source2, 4);
             Inc(DestImg, 3);
             Inc(DestAlpha, 1);
+          end;
+          Inc(Source2, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            DestImg^:=#0;
+            Inc(DestImg, 1);
           end;
         end;
         FreeMem(Source);
@@ -228,11 +238,12 @@ begin
       begin
         //Allocate quarks image buffers
         ImgData:=Spec1;
-        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+        SetLength(ImgData,   Length(Spec1) + ((Width * 3) + PaddingDest) * Height); //RGB buffer
 
-        GetMem(Source,NumberOfPixels*3);
+        GetMem(Source, Width * Height * 3);
         ilCopyPixels(0, 0, 0, Width, Height, 1, IL_RGB, IL_UNSIGNED_BYTE, Source);
         CheckDevILError(ilGetError);
+        PaddingSource:=0;
 
         DestImg:=PChar(ImgData) + Length(Spec1);
         Source2:=Source;
@@ -240,13 +251,17 @@ begin
         begin
           for I:=0 to Width-1 do
           begin
-            PRGB(DestImg)^[2]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[1]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[0]:=Source2^;
-            Inc(Source2, 1);
+            PRGB(DestImg)^[2]:=PRGB(Source2)^[0];
+            PRGB(DestImg)^[1]:=PRGB(Source2)^[1];
+            PRGB(DestImg)^[0]:=PRGB(Source2)^[2];
+            Inc(Source2, 3);
             Inc(DestImg, 3);
+          end;
+          Inc(Source2, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            DestImg^:=#0;
+            Inc(DestImg, 1);
           end;
         end;
         FreeMem(Source);
@@ -285,24 +300,26 @@ begin
         FreeImage_CloseMemory(FIBuffer);
         Fatal('Unable to load PNG file. Picture is too large.');
       end;
-      NumberOfPixels:=Width * Height;
       V[1]:=Width;
       V[2]:=Height;
       SetFloatsSpec('Size', V);
+
+      //This is the padding for the 'Image1'-RGB array
+      PaddingDest:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
 
       if FreeImage_IsTransparent(FIImage) then
       begin
         //Allocate quarks image buffers
         ImgData:=Spec1;
         AlphaData:=Spec3;
-        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
-        Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
+        SetLength(ImgData,   Length(Spec1) + ((Width * 3) + PaddingDest) * Height); //RGB buffer
+        SetLength(AlphaData, Length(Spec3) + (Width * Height)); //alpha buffer
 
         FIConvertedImage:=FreeImage_ConvertTo32Bits(FIImage);
         Pitch:=FreeImage_GetPitch(FIConvertedImage);
-        GetMem(Source,Height * Pitch);
+        GetMem(Source, Height * Pitch);
         FreeImage_ConvertToRawBits(Source, FIConvertedImage, Pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
-        PaddingBytes:=Pitch-Width*4;
+        PaddingSource:=Pitch - (Width * 4);
 
         DestImg:=PChar(ImgData) + Length(Spec1);
         DestAlpha:=PChar(AlphaData) + Length(Spec3);
@@ -311,18 +328,20 @@ begin
         begin
           for I:=0 to Width-1 do
           begin
-            PRGB(DestImg)^[0]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[1]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[2]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestAlpha)^[0]:=Source2^;
-            Inc(Source2, 1);
+            PRGB(DestImg)^[0]:=PRGBA(Source2)^[0];
+            PRGB(DestImg)^[1]:=PRGBA(Source2)^[1];
+            PRGB(DestImg)^[2]:=PRGBA(Source2)^[2];
+            PByte(DestAlpha)^:=PRGBA(Source2)^[3];
+            Inc(Source2, 4);
             Inc(DestImg, 3);
             Inc(DestAlpha, 1);
           end;
-          Inc(Source2, PaddingBytes);
+          Inc(Source2, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            DestImg^:=#0;
+            Inc(DestImg, 1);
+          end;
         end;
 
         Specifics.Add(AlphaData);
@@ -332,13 +351,13 @@ begin
       begin
         //Allocate quarks image buffers
         ImgData:=Spec1;
-        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
+        SetLength(ImgData,   Length(Spec1) + ((Width * 3) + PaddingDest) * Height); //RGB buffer
 
         FIConvertedImage:=FreeImage_ConvertTo24Bits(FIImage);
         Pitch:=FreeImage_GetPitch(FIConvertedImage);
-        GetMem(Source,Height * Pitch);
+        GetMem(Source, Height * Pitch);
         FreeImage_ConvertToRawBits(Source, FIConvertedImage, Pitch, 24, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
-        PaddingBytes:=Pitch-Width*3;
+        PaddingSource:=Pitch - (Width * 3);
 
         DestImg:=PChar(ImgData) + Length(Spec1);
         Source2:=Source;
@@ -346,15 +365,18 @@ begin
         begin
           for I:=0 to Width-1 do
           begin
-            PRGB(DestImg)^[0]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[1]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[2]:=Source2^;
-            Inc(Source2, 1);
+            PRGB(DestImg)^[0]:=PRGB(Source2)^[0];
+            PRGB(DestImg)^[1]:=PRGB(Source2)^[1];
+            PRGB(DestImg)^[2]:=PRGB(Source2)^[2];
+            Inc(Source2, 3);
             Inc(DestImg, 3);
           end;
-          Inc(Source2, PaddingBytes);
+          Inc(Source2, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            DestImg^:=#0;
+            Inc(DestImg, 1);
+          end;
         end;
 
         Specifics.Add(ImgData);
@@ -376,6 +398,11 @@ begin
 end;
 
 procedure QPng.SaveFile(Info: TInfoEnreg1);
+type
+  PRGB = ^TRGB;
+  TRGB = array[0..2] of Byte;
+  PRGBA = ^TRGBA;
+  TRGBA = array[0..3] of Byte;
 var
   PSD: TPixelSetDescription;
   RawBuffer: String;
@@ -392,10 +419,11 @@ var
   //FreeImage:
   FIBuffer: FIMEMORY;
   FIImage: FIBITMAP;
-  Pitch: Cardinal;
+  Pitch: Integer;
   FIbpp: Cardinal;
 
   Width, Height: Integer;
+  PaddingSource, PaddingDest: Integer;
   I, J: Integer;
   OutputSize: Cardinal;
 begin
@@ -417,11 +445,17 @@ begin
       PSD:=Description;
       Width:=PSD.size.x;
       Height:=PSD.size.y;
+
+      //This is the padding for the 'Image1'-RGB array
+      PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
       if PSD.AlphaBits=psa8bpp then
       begin
         ImageBpp:=4;
-        ImageFormat:=IL_BGRA;
-        GetMem(RawData, Width*Height*4);
+        ImageFormat:=IL_RGBA;
+        PaddingDest:=0;
+
+        GetMem(RawData, ((Width * 4) + PaddingDest) * Height);
         RawData2:=RawData;
 
         SourceImg:=PChar(PSD.Data);
@@ -432,26 +466,29 @@ begin
         begin
           for I:=0 to Width-1 do
           begin
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceAlpha^;
-            Inc(pSourceAlpha);
-            Inc(RawData2);
+            PRGBA(RawData2)^[2]:=PRGB(pSourceImg)^[0];
+            PRGBA(RawData2)^[1]:=PRGB(pSourceImg)^[1];
+            PRGBA(RawData2)^[0]:=PRGB(pSourceImg)^[2];
+            PRGBA(RawData2)^[3]:=PByte(pSourceAlpha)^;
+            Inc(pSourceImg, 3);
+            Inc(pSourceAlpha, 1);
+            Inc(RawData2, 4);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            RawData2^:=0;
+            Inc(RawData2, 1);
           end;
         end;
       end
       else
       begin
         ImageBpp:=3;
-        ImageFormat:=IL_BGR;
-        GetMem(RawData, Width*Height*3);
+        ImageFormat:=IL_RGB;
+        PaddingDest:=0;
+
+        GetMem(RawData, ((Width * 3) + PaddingDest) * Height);
         RawData2:=RawData;
 
         SourceImg:=PChar(PSD.Data);
@@ -460,15 +497,17 @@ begin
         begin
           for I:=0 to Width-1 do
           begin
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
+            PRGB(RawData2)^[2]:=PRGB(pSourceImg)^[0];
+            PRGB(RawData2)^[1]:=PRGB(pSourceImg)^[1];
+            PRGB(RawData2)^[0]:=PRGB(pSourceImg)^[2];
+            Inc(pSourceImg, 3);
+            Inc(RawData2, 3);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            RawData2^:=0;
+            Inc(RawData2, 1);
           end;
         end;
       end;
@@ -515,10 +554,16 @@ begin
       PSD:=Description;
       Width:=PSD.size.x;
       Height:=PSD.size.y;
+
+      //This is the padding for the 'Image1'-RGB array
+      PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
       if PSD.AlphaBits=psa8bpp then
       begin
         FIBpp:=32;
-        GetMem(RawData, Width*Height*4);
+        PaddingDest:=((((Width * 32) + 31) div 32) * 4) - (Width * 4);
+
+        GetMem(RawData, ((Width * 4) + PaddingDest) * Height);
         RawData2:=RawData;
 
         SourceImg:=PChar(PSD.Data);
@@ -529,25 +574,28 @@ begin
         begin
           for I:=0 to Width-1 do
           begin
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceAlpha^;
-            Inc(pSourceAlpha);
-            Inc(RawData2);
+            PRGBA(RawData2)^[0]:=PRGB(pSourceImg)^[0];
+            PRGBA(RawData2)^[1]:=PRGB(pSourceImg)^[1];
+            PRGBA(RawData2)^[2]:=PRGB(pSourceImg)^[2];
+            PRGBA(RawData2)^[3]:=PByte(pSourceAlpha)^;
+            Inc(pSourceImg, 3);
+            Inc(pSourceAlpha, 1);
+            Inc(RawData2, 4);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            RawData2^:=0;
+            Inc(RawData2, 1);
           end;
         end;
       end
       else
       begin
         FIBpp:=24;
-        GetMem(RawData, Width*Height*3);
+        PaddingDest:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
+        GetMem(RawData, ((Width * 3) + PaddingDest) * Height);
         RawData2:=RawData;
 
         SourceImg:=PChar(PSD.Data);
@@ -556,20 +604,22 @@ begin
         begin
           for I:=0 to Width-1 do
           begin
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
-            PChar(RawData2)^:=pSourceImg^;
-            Inc(pSourceImg);
-            Inc(RawData2);
+            PRGB(RawData2)^[0]:=PRGB(pSourceImg)^[0];
+            PRGB(RawData2)^[1]:=PRGB(pSourceImg)^[1];
+            PRGB(RawData2)^[2]:=PRGB(pSourceImg)^[2];
+            Inc(pSourceImg, 3);
+            Inc(RawData2, 3);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            RawData2^:=0;
+            Inc(RawData2, 1);
           end;
         end;
       end;
 
-      Pitch:=Cardinal(Width)*(FIBpp div 8);
+      Pitch:=Width*Integer(FIBpp div 8) + PaddingDest;
       FIImage:=FreeImage_ConvertFromRawBits(RawData, width, height, pitch, FIBpp, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
 
       FreeMem(RawData);

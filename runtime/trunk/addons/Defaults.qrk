@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.367  2007/11/21 00:06:12  danielpharos
+//BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
+//
 //Revision 1.366  2007/10/30 20:20:04  danielpharos
 //Fix a typo
 //
@@ -3103,8 +3106,8 @@ QQRKSRC1
       }
       JPG:config =
       {
-        LoadLibrary = "DevIL"
-        SaveLibrary = "DevIL"
+        LoadLibrary = "FreeImage"
+        SaveLibrary = "FreeImage"
         LoadQualityFreeImage = "2"
         SaveQualityFreeImage = "4"
         SaveProgressiveFreeImage = ""
@@ -3119,7 +3122,7 @@ QQRKSRC1
       PNG:config =
       {
         LoadLibrary = "FreeImage"
-        SaveLibrary = "DevIL"
+        SaveLibrary = "FreeImage"
         Form = "FilesPNG"
       }
       VTF:config =
