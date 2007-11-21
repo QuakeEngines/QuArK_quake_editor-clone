@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.369  2007/11/21 18:19:41  danielpharos
+//Fix a problem downloading files in the AutoUpdater, and disabled it and hidden it per default (since it's not yet functional).
+//
 //Revision 1.368  2007/11/21 16:07:19  danielpharos
 //Another bunch of hugh image fixes: everything should work again!
 //
@@ -3127,6 +3130,12 @@ QQRKSRC1
         LoadLibrary = "FreeImage"
         SaveLibrary = "FreeImage"
         Form = "FilesPNG"
+      }
+      TGA:config =
+      {
+        LoadLibrary = "FreeImage"
+        SaveLibrary = "FreeImage"
+        Form = "FilesTGA"
       }
       VTF:config =
       {
@@ -6434,6 +6443,27 @@ QQRKSRC1
       SaveLibrary: =
       {
         Txt="Select library for saving PNG files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+    }
+    FilesTGA:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading TGA files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving TGA files"
         Typ="CL"
         Items  = "DevIL" $0D "FreeImage"
         Values = "DevIL" $0D "FreeImage"
