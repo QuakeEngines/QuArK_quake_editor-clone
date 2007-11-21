@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2007/09/12 16:21:41  danielpharos
+Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
+
 
 }
 
@@ -43,7 +46,6 @@ implementation
 uses Setup, Quarkx, Logging;
 
 var
-  //@ Aren't these stdlib's too?
   GetFileMd5: function(szFileName: LPSTR): LPSTR; cdecl;
   GetBenchmarkMd5: function(szFileName: LPSTR): double; cdecl;
   GetStringMd5: function(szString: LPSTR): LPSTR; cdecl;
@@ -63,7 +65,7 @@ function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
-     LogError('API Func "'+APIFuncname+ '" not found in dlls/DevIL.dll');
+     LogError('API Func "'+APIFuncname+ '" not found in dlls/md5dll.dll');
 end;
 
 function LoadMd5Hash : Boolean;
