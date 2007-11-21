@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/11/20 21:36:58  danielpharos
+Fix paletted pictures not working correctly after prev. rev.
+
 Revision 1.17  2007/11/20 18:28:06  danielpharos
 Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
 
@@ -501,39 +504,47 @@ end;
 
 function CreateToDC(DC: HDC; var BitmapInfo; Data: Pointer) : HBitmap;
 var
-  Width, Height, ScanWidth: Integer;
+  Width, Height, BBP, ScanWidth, CopyWidth: Integer;
   I: Integer;
   Data2: PByte;
   Bits, Bits2: Pointer;
 begin
   Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
   Height:=TBitmapInfo(BitmapInfo).bmiHeader.biHeight;
-  ScanWidth:=(((Width * 3) + 3) div 4) * 4;  //Scanline size in bytes, with padding
-  if (TBitmapInfo(BitmapInfo).bmiHeader.biBitCount <> 24) or (ScanWidth - Width * 3 = 0) then
-    Result:=CreateDIBitmap(DC, TBitmapInfo(BitmapInfo).bmiHeader, CBM_INIT, Data, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS)
+  BBP:=TBitmapInfo(BitmapInfo).bmiHeader.biBitCount;
+  ScanWidth:=(((Width * BBP) + 31) div 32) * 32;  //Scanline size in bits, with padding
+  Result:=CreateCompatibleBitmap(DC, Width, Height);
+  if ScanWidth - (Width * BBP) = 0 then
+  begin
+    if SetDiBits(DC, Result, 0, Height, Data, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
+      Log(LOG_WARNING, 'SetDiBits: Returned zero!');
+  end
   else
   begin
-    GetMem(Bits, ScanWidth * Height);
+    ScanWidth:=ScanWidth div 8;
+    Bits:=PChar(GlobalAlloc(0, Height * ScanWidth));
     try
       FillChar(Bits^, Height * ScanWidth, 0);
       Data2:=Data;
       Bits2:=Bits;
+      CopyWidth:=((Width * BBP) + 7) div 8;
       for I:=0 to Height-1 do
       begin
-        CopyMemory(Bits2, Data2, Width * 3);
-        Inc(Data2, Width * 3);
-        Bits2:=PChar(Bits2) + ScanWidth;
+        CopyMemory(Bits2, Data2, CopyWidth);
+        Inc(Data2, CopyWidth);
+        PChar(Bits2):=PChar(Bits2) + ScanWidth;
       end;
-      Result:=CreateDIBitmap(DC, TBitmapInfo(BitmapInfo).bmiHeader, CBM_INIT, Bits, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS);
+      if SetDiBits(DC, Result, 0, Height, Bits, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
+        Log(LOG_WARNING, 'SetDiBits: Returned zero!');
     finally
-      FreeMem(Bits);
+      GlobalFree(Cardinal(Bits));
     end;
   end;
 end;
 
 procedure DrawToDC(DC: HDC; var BitmapInfo; Data: Pointer; Left, Top: Integer);
 var
-  Width, Height, ScanWidth: Integer;
+  Width, Height, BBP, ScanWidth, CopyWidth: Integer;
   I: Integer;
   Data2: PByte;
   DIBSection: HGDIOBJ;
@@ -545,9 +556,11 @@ begin
   try
     Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
     Height:=TBitmapInfo(BitmapInfo).bmiHeader.biHeight;
-    ScanWidth:=(((Width * 3) + 3) div 4) * 4;  //Scanline size in bytes, with padding
-    if (TBitmapInfo(BitmapInfo).bmiHeader.biBitCount <> 24) or (ScanWidth - Width * 3 = 0) then
+    BBP:=TBitmapInfo(BitmapInfo).bmiHeader.biBitCount;
+    ScanWidth:=(((Width * BBP) + 31) div 32) * 32;  //Scanline size in bits, with padding
+    if ScanWidth - (Width * BBP) = 0 then
     begin
+      ScanWidth:=ScanWidth div 8;
       CopyMemory(Bits, Data, ScanWidth * Height);
       if SetDIBitsToDevice(DC, Left, Top, Width, Height, 0, 0, 0, Height, Bits,
        tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
@@ -555,14 +568,16 @@ begin
     end
     else
     begin
+      ScanWidth:=ScanWidth div 8;
       FillChar(Bits^, Height * ScanWidth, 0);
       Data2:=Data;
       Bits2:=Bits;
+      CopyWidth:=((Width * BBP) + 7) div 8;
       for I:=0 to Height-1 do
       begin
-        CopyMemory(Bits2, Data2, Width * 3);
-        Inc(Data2, Width * 3);
-        Bits2:=PChar(Bits2) + ScanWidth;
+        CopyMemory(Bits2, Data2, CopyWidth);
+        Inc(Data2, CopyWidth);
+        PChar(Bits2):=PChar(Bits2) + ScanWidth;
       end;
       if SetDIBitsToDevice(DC, Left, Top, Width, Height, 0, 0, 0, Height, Bits,
        tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
@@ -604,16 +619,16 @@ end;
 function TPixelSetDescription.GetBitmapImage : TBitmap;
 var
  BmpInfo: TBitmapInfo256;
- BitmapInfo: PBitmapInfo;
+ BitmapInfo: TBitmapInfo256;
  NewPSD: TPixelSetDescription;
  DC: HDC;
 begin
  NewPSD:=PSDToDIB(Self, True);
  DC:=GetDC(GetDesktopWindow);
  try
-  BitmapInfo:=PBitmapInfo(NewPSD.GetBitmapInfo(BmpInfo, Nil));
+  BitmapInfo:=NewPSD.GetBitmapInfo(BmpInfo, Nil)^;
   Result:=TBitmap.Create;
-  Result.Handle:=CreateToDC(DC, BitmapInfo^, NewPSD.Data);
+  Result.Handle:=CreateToDC(DC, BitmapInfo, NewPSD.Data);
  finally
   ReleaseDC(GetDesktopWindow, DC);
   NewPSD.Done;

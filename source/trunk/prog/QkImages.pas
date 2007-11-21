@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/11/20 18:28:07  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
 Revision 1.15  2007/11/20 17:14:49  danielpharos
 A lot of small and large fixes, so all DevIL/FreeImage images should load and display correctly.
 
@@ -671,7 +674,7 @@ begin
     RealizePalette(DC);
    end;
   try
-    DrawToDC(DC, PBitmapInfo(@BitmapInfo)^, GetImagePtr1, Left, Top);
+    DrawToDC(DC, BitmapInfo, GetImagePtr1, Left, Top);
   finally
    if Pal1<>0 then
     SelectPalette(DC, Pal1, False);

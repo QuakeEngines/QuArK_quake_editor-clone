@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.366  2007/10/30 20:20:04  danielpharos
+//Fix a typo
+//
 //Revision 1.365  2007/10/24 14:55:50  cdunde
 //Reset a toolbar location.
 //
@@ -3083,6 +3086,12 @@ QQRKSRC1
 
     Files:config =
     {
+      BMP:config =
+      {
+        LoadLibrary = "FreeImage"
+        SaveLibrary = "FreeImage"
+        Form = "FilesBMP"
+      }
       DDS:config =
       {
         LoadLibrary = "DevIL"
@@ -3100,6 +3109,12 @@ QQRKSRC1
         SaveQualityFreeImage = "4"
         SaveProgressiveFreeImage = ""
         Form = "FilesJPG"
+      }
+      PCX:config =
+      {
+        LoadLibrary = "FreeImage"
+        SaveLibrary = "FreeImage"
+        Form = "FilesPCX"
       }
       PNG:config =
       {
@@ -6240,6 +6255,27 @@ QQRKSRC1
       t_GameBuildPgms=!
     }
 
+    FilesBMP:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading BMP files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving BMP files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+    }
     FilesDDS:form =
     {
       Style = "7"
@@ -6355,6 +6391,27 @@ QQRKSRC1
         Hint = "The quality the JPG texture will be saved with when using the FreeImage library"
       }
       SaveProgressiveFreeImage: = { Typ="X" Txt="Save Progressive" Cap="Enabled" Hint="Save the JPG texture as a progressive image."}
+    }
+    FilesPCX:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading PCX files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving PCX files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
     }
     FilesPNG:form =
     {
