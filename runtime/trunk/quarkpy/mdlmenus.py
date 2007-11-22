@@ -135,7 +135,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 vertexpop.state = qmenu.disabled
             def backbmp1click(m, view=view, form=editor.form):
                 import qbackbmp
-                qbackbmp.BackBmpDlg(form, view)
+                qbackbmp.MdlBackBmpDlg(form, view)
             backbmp1 = qmenu.item("Background image...", backbmp1click, "|Background image:\n\nWhen selected, this will open a dialog box where you can choose a .bmp image file to place and display in the 2D view that the cursor was in when the RMB was clicked.\n\nClick on the 'InfoBase' button below for full detailed information about its functions and settings.|intro.mapeditor.rmb_menus.noselectionmenu.html#background")
             if editor.ModelFaceSelList != []:
                 extra = extra + [qmenu.sep] + [mdlfacepop] + [vertexpop] + [Commands1] + [qmenu.sep] + [FaceSelOptions] + [VertexSelOptions] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
@@ -191,6 +191,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.23  2007/10/06 20:15:00  cdunde
+#Added Ruler Guides to Options menu for Model Editor.
+#
 #Revision 1.22  2007/10/04 01:50:48  cdunde
 #To fix error if RMB is clicked in a view for the popup menu
 #but nothing is selected in the tree-view.

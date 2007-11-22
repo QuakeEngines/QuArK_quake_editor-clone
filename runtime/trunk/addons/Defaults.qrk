@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.370  2007/11/21 22:12:56  danielpharos
+//Another bunch of hugh image fixes: everything should work again!
+//
 //Revision 1.369  2007/11/21 18:19:41  danielpharos
 //Fix a problem downloading files in the AutoUpdater, and disabled it and hidden it per default (since it's not yet functional).
 //
@@ -3243,6 +3246,11 @@ QQRKSRC1
         BBoxSelected            = "1"
         DeleteFaces             = "1"
         AutoAdjustNormal        = ""
+        BGImage_filename        = ""
+        BGImage_center          = '0 0 0'
+        BGImage_scale           = '1'
+        BGImage_offset          = ""
+        BGImage_multiple        = ""
         PolySelectNoFill        = ""
       //ViewModels              = "1"
         NoScrollBars            = "1"
@@ -3386,6 +3394,11 @@ QQRKSRC1
         AnimateY2Dview     = "1"
         AnimateZ2Dview     = "1"
         AnimateFloat3Dview = "1"
+        BGImage_filename   = ""
+        BGImage_center     = '0 0 0'
+        BGImage_scale      = '.2'
+        BGImage_offset     = ""
+        BGImage_multiple   = ""
         setLock_X          = "0"
         setLock_Y          = "0"
         setLock_Z          = "0"
