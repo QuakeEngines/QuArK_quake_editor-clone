@@ -896,62 +896,43 @@ def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, me
 
     elif option == 2:
         tris = new_comp.triangles
-        newindex = vertexlist[0][0]
-        oldindex = vertexlist[1][0]
-        changeindex = len(comp.currentframe.vertices)-1
-        checkindex = newindex
-        if newindex == len(comp.currentframe.vertices)-1:
-            newindex = oldindex
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        unusedvtxs = []
+        for vtx in range(len(vertexlist)):
+            if vtx == 0:
+                continue
+            unusedvtxs = unusedvtxs + [vertexlist[vtx][0]]
+        newvertnumbers = []
+        newvertoffset = 0
+        old_vtxs = comp.currentframe.vertices
+        for v in range(len(old_vtxs)):
+            if v == vertexlist[0][0]:
+                newindex = v + newvertoffset
+            if v in unusedvtxs:
+                newvertoffset = newvertoffset - 1
+            newvertnumbers = newvertnumbers + [v + newvertoffset]
+        for v in range(len(vertexlist)):
+            newvertnumbers[vertexlist[v][0]] = newindex
         for triindex in range(len(tris)):
             tri = tris[triindex]
-            newtriangle = tri
-            for v in range(len(tri)):
-                # This section replaces the old vert_index number for all triangles that use it
-                # with the vert_index number that this point of the triangles is being moved to.
-                if tri[v][0] == oldindex:
-                    if v == 0:
-                        if checkindex == tri[1][0] or checkindex == tri[2][0]:
-                            quarkx.msgbox("Improper Selection!\n\nYou can not merge two\nvertexes of the same triangle.", MT_ERROR, MB_OK)
-                            return None, None
-
-                        newtriangle = ((newindex, tri[v][1], tri[v][2]), tri[1], tri[2])
-                    elif v == 1:
-                        if checkindex == tri[0][0] or checkindex == tri[2][0]:
-                            quarkx.msgbox("Improper Selection!\n\nYou can not merge two\nvertexes of the same triangle.", MT_ERROR, MB_OK)
-                            return None, None
-                        newtriangle = (tri[0], (newindex, tri[v][1], tri[v][2]), tri[2])
-                    else:
-                        if checkindex == tri[0][0] or checkindex == tri[1][0]:
-                            quarkx.msgbox("Improper Selection!\n\nYou can not merge two\nvertexes of the same triangle.", MT_ERROR, MB_OK)
-                            return None, None
-                        newtriangle = (tri[0], tri[1], (newindex, tri[v][1], tri[v][2]))
-                # This moves the last vert_index to the old vert_index position in the list
-                # and updates its vert_index number in all triangles that uses it.
-                # We do it this way so we don't half to change all of the triangles vert_indexes.
-                if oldindex == len(comp.currentframe.vertices)-1:
-                    pass
-                else:
-                    if tri[v][0] == changeindex:
-                        if v == 0:
-                            newtriangle = ((oldindex, tri[v][1], tri[v][2]), tri[1], tri[2])
-                        elif v == 1:
-                            newtriangle = (tri[0], (oldindex, tri[v][1], tri[v][2]), tri[2])
-                        else:
-                            newtriangle = (tri[0], tri[1], (oldindex, tri[v][1], tri[v][2]))
+            newtriangle = ((newvertnumbers[tri[0][0]], tri[0][1], tri[0][2]), (newvertnumbers[tri[1][0]], tri[1][1], tri[1][2]), (newvertnumbers[tri[2][0]], tri[2][1], tri[2][2]))
+            if newtriangle[0][0] == newtriangle[1][0] or newtriangle[1][0] == newtriangle[2][0] or newtriangle[2][0] == newtriangle[0][0]:
+                quarkx.msgbox("Improper Selection!\n\nYou can not merge two\nvertexes of the same triangle.", MT_ERROR, MB_OK)
+                return None, None
             tris[triindex] = newtriangle
-        new_comp.triangles = tris
-
-        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        unusedvtxs.sort()
+        unusedvtxs.reverse()
+        vtxs = []
         for compframe in compframes:
             old_vtxs = compframe.vertices
-            if newindex == len(comp.currentframe.vertices)-1:
-                vtxs = old_vtxs[:oldindex] + old_vtxs[changeindex:] + old_vtxs[newindex:]
-            if oldindex == len(comp.currentframe.vertices)-1:
-                vtxs = old_vtxs[:oldindex]
-            else:
-                vtxs = old_vtxs[:oldindex] + old_vtxs[changeindex:] + old_vtxs[oldindex+1:changeindex]
+            for index in range(len(unusedvtxs)):
+                vtxs = old_vtxs[:unusedvtxs[index]] + old_vtxs[unusedvtxs[index]+1:]
+                old_vtxs = vtxs
+
             compframe.vertices = vtxs
             compframe.compparent = new_comp # To allow frame relocation after editing.
+
+        new_comp.triangles = tris
         editor.ModelVertexSelList = []
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
@@ -2091,6 +2072,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.65  2007/11/20 02:27:55  cdunde
+#Added check to stop merging of two vertexes of the same triangle.
+#
 #Revision 1.64  2007/11/19 20:17:03  cdunde
 #To try and stop vertex merging from crashing if last vertex is the base vertex.
 #

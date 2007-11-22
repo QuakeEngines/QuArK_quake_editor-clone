@@ -435,7 +435,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
         if view.info["viewname"] == "XY":
             s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.y) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.y+delta.y)
         elif view.info["viewname"] == "XZ":
-            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + " " + ftoss(self.pos.z+delta.z)
+            s = "was " + ftoss(self.pos.x) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.x+delta.x) + " " + ftoss(self.pos.z+delta.z)
         elif view.info["viewname"] == "YZ":
             s = "was " + ftoss(self.pos.y) + " " + ftoss(self.pos.z) + " now " + ftoss(self.pos.y+delta.y) + " " + ftoss(self.pos.z+delta.z)
         else:
@@ -713,7 +713,7 @@ class VertexHandle(qhandles.GenericHandle):
         else:
             AlignText = "&Align mesh vertex"
 
-        def merge_2_vertexes_click(m, self=self, editor=editor, view=view):
+        def merge_vertexes_click(m, self=self, editor=editor, view=view):
             if editor.Root.currentcomponent is None:
                 return
             else:
@@ -728,8 +728,7 @@ class VertexHandle(qhandles.GenericHandle):
             import mdlmgr
             from mdlmgr import savefacesel
             mdlmgr.savefacesel = 1
-            if len(editor.ModelVertexSelList) == 2:
-                replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "merged 2 vertexes", 2)
+            replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "merged 2 vertexes", 2)
 
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AddVertex = qmenu.item("&Add Vertex Here", add_vertex_click, "|Add Vertex Here:\n\nThis will add a single vertex to the currently selected model component (and all of its animation frames) to make a new triangle.\n\nYou need 3 new vertexes to make a triangle.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -740,7 +739,7 @@ class VertexHandle(qhandles.GenericHandle):
         AlignVertexes = qmenu.item(AlignText, align_vertexes_click,"|Align mesh vertex(s):\n\nOnce a set of vertexes have been 'Picked' in one of the editor views all of those vertexes will be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned with that 'Base' vertex. It also works in conjunction with the 'Clear Pick list' above it.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         ClearPicklist = qmenu.item("&Clear Pick list", pick_cleared, "|Clear Pick list:\n\nThis Clears the 'Pick Vertex' list of all vertexes and it becomes active when one or more vertexes have been selected.\n\nClick on the InfoBase button below for more detail on its use.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
         AlignVertOpsPop = qmenu.popup("Align Vertex Options", [], align_vert_ops_click, "|Align Vertex Options:\n\nThis menu gives different methods of aligning 'Picked' vertexes to the 'Base' vertex.\n\nSee the help for each method for detail on how they work.", "intro.modeleditor.rmbmenus.html#vertexrmbmenu")
-        Merge2Vertexes = qmenu.item("&Merge 2 Vertexes", merge_2_vertexes_click,"|Merge 2 Vertexes:\n\nWhen two vertexes have been 'Picked' in one of the editor views this function becomes active allowing the 'picked' vertex be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned with that 'Base' vertex where it will then merge the two vertexes into one. It also works in conjunction with the 'Clear Pick list' above it.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
+        MergeVertexes = qmenu.item("&Merge Vertexes", merge_vertexes_click,"|Merge Vertexes:\n\nWhen two or more vertexes have been 'Picked' in one of the editor views this function becomes active allowing the 'picked' vertexes be moved to the 'Base' (stationary) vertex (the first one selected) location and aligned with that 'Base' vertex where they will then be merged into the one 'Base' vertex.\n\nTwo vertexes of the same face (triangle) can not be selected.\n\nThis function also works in conjunction with the 'Clear Pick list' above it.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
 
         if not MldOption("GridActive") or editor.gridstep <= 0:
             Forcetogrid.state = qmenu.disabled
@@ -754,29 +753,29 @@ class VertexHandle(qhandles.GenericHandle):
             AddVertex.state = qmenu.disabled
 
         try:
-            if len(editor.ModelVertexSelList) != 2:
-                Merge2Vertexes.state = qmenu.disabled
+            if len(editor.ModelVertexSelList) <= 1:
+                MergeVertexes.state = qmenu.disabled
             if self.index is not None:
                 if len(editor.ModelVertexSelList) == 0:
                     AlignVertexes.state = qmenu.disabled
                     PickVertex.state = qmenu.disabled
                     ClearPicklist.state = qmenu.disabled
-                    menu = [AddVertex, RemoveVertex, qmenu.sep, PickBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Merge2Vertexes, qmenu.sep, Forcetogrid]
+                    menu = [AddVertex, RemoveVertex, qmenu.sep, PickBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, MergeVertexes, qmenu.sep, Forcetogrid]
                 else:
                     if len(editor.ModelVertexSelList) < 2:
                         AlignVertexes.state = qmenu.disabled
-                    menu = [AddVertex, RemoveVertex, qmenu.sep, ChangeBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Merge2Vertexes, qmenu.sep, Forcetogrid]
+                    menu = [AddVertex, RemoveVertex, qmenu.sep, ChangeBaseVertex, PickVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, MergeVertexes, qmenu.sep, Forcetogrid]
             else:
                 if len(editor.ModelVertexSelList) < 2:
                     AlignVertexes.state = qmenu.disabled
-                menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Merge2Vertexes]
+                menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, MergeVertexes]
         except:
-            if len(editor.ModelVertexSelList) != 2:
-                Merge2Vertexes.state = qmenu.disabled
+            if len(editor.ModelVertexSelList) <= 1:
+                MergeVertexes.state = qmenu.disabled
             if len(editor.ModelVertexSelList) < 2:
                 AlignVertexes.state = qmenu.disabled
-                Merge2Vertexes.state = qmenu.disabled
-            menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, Merge2Vertexes]
+                MergeVertexes.state = qmenu.disabled
+            menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, MergeVertexes]
 
         return menu
 
@@ -2260,20 +2259,21 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         ### vertexes were created in a clockwise direction (facing outwards, towards the 2D view)
         ### or a counter clockwise direction (facing inwards, away from the 2D view).
         ### The direction of the selection makes no difference. It's all in the order the vertexes were made.
-        if editor.ModelVertexSelList != [] and len(editor.ModelVertexSelList) == 3:
-            templist = editor.ModelVertexSelList
-            if templist[1][0] > templist[0][0] and templist[1][0] > templist[2][0]:
-                if templist[0][0] > templist[2][0]:
-                    editor.ModelVertexSelList = [templist[1], templist[2], templist[0]]
-                else:
-                    editor.ModelVertexSelList = [templist[1], templist[0], templist[2]]
-            elif templist[2][0] > templist[0][0] and templist[2][0] > templist[1][0]:
-                if templist[0][0] > templist[1][0]:
-                    editor.ModelVertexSelList = [templist[2], templist[1], templist[0]]
-                else:
-                    editor.ModelVertexSelList = [templist[2], templist[0], templist[1]]
-            else:
-                pass
+  # Commented out this function for now, conflicts with multiple vertex merging function.
+  #      if editor.ModelVertexSelList != [] and len(editor.ModelVertexSelList) == 3:
+  #          templist = editor.ModelVertexSelList
+  #          if templist[1][0] > templist[0][0] and templist[1][0] > templist[2][0]:
+  #              if templist[0][0] > templist[2][0]:
+  #                  editor.ModelVertexSelList = [templist[1], templist[2], templist[0]]
+  #              else:
+  #                  editor.ModelVertexSelList = [templist[1], templist[0], templist[2]]
+  #          elif templist[2][0] > templist[0][0] and templist[2][0] > templist[1][0]:
+  #              if templist[0][0] > templist[1][0]:
+  #                  editor.ModelVertexSelList = [templist[2], templist[1], templist[0]]
+  #              else:
+  #                  editor.ModelVertexSelList = [templist[2], templist[0], templist[1]]
+  #          else:
+  #              pass
 
 
 #
@@ -3055,6 +3055,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.117  2007/11/20 02:27:55  cdunde
+#Added check to stop merging of two vertexes of the same triangle.
+#
 #Revision 1.116  2007/11/19 07:45:56  cdunde
 #Minor corrections for option number and activating menu item.
 #
