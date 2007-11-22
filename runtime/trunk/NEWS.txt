@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Separated editors background image dialogs and setup to save all of their settings.
+
 * [DanielPharos]: Another bunch of hugh image fixes: everything should work again! The DevIL
           - implementation currently doesn't support loading palette files, and saving them
           - isn't supported by either. But the rest works perfectly! Also, TGA files now also
