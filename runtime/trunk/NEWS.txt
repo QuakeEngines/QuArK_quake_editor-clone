@@ -24,7 +24,8 @@ $Id$
 
 * [DanielPharos]: BMP and PCX files are now also using DevIL and FreeImage to load and save.
 
-* [cdunde]: Added new function "Merge 2 Vertexes" to the "Vertex Commands" menu.
+* [cdunde/DanielPharos]: Added new function "Merge Vertexes" to the "Vertex Commands" menu.
+          - Setup to allow merging of a base vertex and other multiple selected vertexes.
 
 * [DanielPharos]: Any supported picture can now be used for a view's background. Also added two options,
           - which allow you to manipulate the way the picture appears a bit more.
