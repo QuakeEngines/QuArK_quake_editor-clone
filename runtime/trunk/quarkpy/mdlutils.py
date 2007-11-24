@@ -346,24 +346,22 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
         comp = editor.Root.currentcomponent
         new_comp = comp.copy()
         compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-        for compframe in compframes:
-            for listframe in editor.layout.explorer.sellist:
-                if compframe.name == listframe.name:
-                    old_vtxs = compframe.vertices
-                    for poly in newobjectslist[0].subitems:
+        for poly in range(len(newobjectslist[0].subitems)):
+            for compframe in compframes:
+                for listframe in editor.layout.explorer.sellist:
+                    if compframe.name == listframe.name:
+                        old_vtxs = compframe.vertices
                         if listframe == editor.layout.explorer.sellist[0]:
-                            vtxnbr = int(poly.shortname)
-                            face = poly.subitems[0]
+                            vtxnbr = int(newobjectslist[0].subitems[poly].shortname)
+                            face = newobjectslist[0].subitems[poly].subitems[0]
                             vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
                             delta = vertex - old_vtxs[vtxnbr]
                             old_vtxs[vtxnbr] = vertex
                         else:
-                            vtxnbr = int(poly.shortname)
-                            face = poly.subitems[0]
-                            vertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+                            vtxnbr = int(newobjectslist[0].subitems[poly].shortname)
                             old_vtxs[vtxnbr] = old_vtxs[vtxnbr] + delta
-                    compframe.vertices = old_vtxs
-            compframe.compparent = new_comp # To allow frame relocation after editing.
+                        compframe.vertices = old_vtxs
+                compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -553,8 +551,8 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
         comp = editor.Root.currentcomponent
         new_comp = comp.copy()
         compframes = new_comp.findallsubitems("", ':mf')   # get all frames
-        VertToMove = []
         for face in newobjectslist:
+            VertToMove = []
             tuplename = tuple(str(s) for s in face.shortname.split(','))
             compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
             VertToCheck0 = [int(ver_index0), quarkx.vect(face["v"][0], face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2]
@@ -566,18 +564,18 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
                 VertToMove = VertToMove + [VertToCheck1]
             if not (VertToCheck2 in VertToMove):
                 VertToMove = VertToMove + [VertToCheck2]
-        for compframe in compframes:
-            for listframe in editor.layout.explorer.sellist:
-                if compframe.name == listframe.name:
-                    old_vtxs = compframe.vertices
-                    for Vert in VertToMove:
-                        if listframe == editor.layout.explorer.sellist[0]:
-                            delta = Vert[1] - old_vtxs[Vert[0]]
-                            old_vtxs[Vert[0]] = Vert[1]
-                        else:
-                            old_vtxs[Vert[0]] = old_vtxs[Vert[0]] + delta
-                    compframe.vertices = old_vtxs
-            compframe.compparent = new_comp # To allow frame relocation after editing.
+            for Vert in VertToMove:
+                for compframe in compframes:
+                    for listframe in editor.layout.explorer.sellist:
+                        if compframe.name == listframe.name:
+                            old_vtxs = compframe.vertices
+                            if listframe == editor.layout.explorer.sellist[0]:
+                                delta = Vert[1] - old_vtxs[Vert[0]]
+                                old_vtxs[Vert[0]] = Vert[1]
+                            else:
+                                old_vtxs[Vert[0]] = old_vtxs[Vert[0]] + delta
+                            compframe.vertices = old_vtxs
+                    compframe.compparent = new_comp # To allow frame relocation after editing.
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
@@ -2072,6 +2070,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.66  2007/11/22 07:31:04  cdunde
+#Setup to allow merging of a base vertex and other multiple selected vertexes.
+#
 #Revision 1.65  2007/11/20 02:27:55  cdunde
 #Added check to stop merging of two vertexes of the same triangle.
 #
