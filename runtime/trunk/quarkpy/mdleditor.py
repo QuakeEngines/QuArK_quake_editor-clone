@@ -99,7 +99,7 @@ class ModelEditor(BaseEditor):
 
     EditorObjectList = []
     # (various items)     (QuArK Internal Objects)
-    #                               Use:    
+    #                               Use:    (various functions in the mdlutils.py file)
     #                     Created using:    The mdlutils.py file "MakeEditorFaceObject" function which in turn
     #                                       can use any of the above 4 list to create and return this list of
     #                                       "QuArK Internal Objects" that can be used for other QuArK Object
@@ -112,10 +112,22 @@ class ModelEditor(BaseEditor):
     #                     Created using:    ModelFaceSelList above created by the RectSelDragObject, rectanglesel function and class FaceHandle, selection function in mdlhandles.py.
 
     SelCommonTriangles = []
-    # A list of triangles [see mdlutils.py findTrianglesAndIndexes function for item listing]
+    # A list of Editor    (frame_vertices_index, view.proj(pos), tri_index, ver_index_order_pos, (tri_vert0,tri_vert1,tri_vert2))
+    # triangles and vertexes
     #                               Use:    A list of actual component triangles that have a common ver_index of selected editor model mesh faces
     #                                       that will be used to draw all the drag lines in the editor's views for those triangles. Can also be used for anything else.
     #                     Created using:    ModelFaceSelList above created by the RectSelDragObject, rectanglesel function and class FaceHandle, selection function in mdlhandles.py.
+    #                                       Also (see the mdlutils.py findTrianglesAndIndexes function for its creation and use there)
+    #                     Created using:    editor.Root.currentcomponent.currentframe.vertices
+    #                                          (see Infobase docs help/src.quarkx.html#objectsmodeleditor)
+    #                               item 0: Its "Frame" "vertices" number, which is the same number as a triangles "ver_index" number.
+    #                               item 1: Its 3D grid pos "projected" to a x,y 2D view position.
+    #                                       The "pos" needs to be a projected position for a decent size application
+    #                                       to the "Skin-view" when a new triangle is made in the editor.
+    #                               item 2: The Model component mesh triangle number this vertex is used in (usually more then one triangle).
+    #                               item 3: The ver_index_order_pos number is its order number position of the triangle points, either 0, 1 or 2.
+    #                               item 4: All 3 of the triangles vertexes data (ver_index, u and v (or x,y) projected texture 2D Skin-view positions)
+    # 
 
 
     def OpenRoot(self):
@@ -1420,6 +1432,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.80  2007/11/11 11:41:53  cdunde
+#Started a new toolbar for the Model Editor to support "Editing Tools".
+#
 #Revision 1.79  2007/11/04 00:33:33  cdunde
 #To make all of the Linear Handle drag lines draw faster and some selection color changes.
 #
