@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2007/10/16 22:30:48  danielpharos
+Stop the texture-loading bar from drawing (temporary), for the model editor animation.
+
 Revision 1.35  2007/09/04 14:38:12  danielpharos
 Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
 
@@ -1751,9 +1754,7 @@ begin
    S:=Q.GetTexImage(0)
   else
    S:=Image1.GetImage;
-  SetDIBitsToDevice(SrcDC, 0, 0,
-   Size.X, Size.Y, 0,0,0,Size.Y, PChar(S),
-   GameInfo^.BmpInfo, dib_RGB_Colors);
+  CopyToDC(Src, GameInfo^.BmpInfo, PChar(S), 0, 0);
 
   Dest:=PChar(info.data);
   MemSize:=w1*h1;
