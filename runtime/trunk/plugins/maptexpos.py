@@ -110,6 +110,7 @@ def PosTexClick(m):
   pack.o = m.o
   
   def setup(self, pack=pack):
+    editor.findtargetdlg=self
     src = self.src
     face = pack.o
     p0, p1, p2 = face.threepoints(2)
@@ -177,6 +178,9 @@ quarkpy.mapentities.FaceType.menu = texmenu
 #
 #
 # $Log$
+# Revision 1.10  2005/10/15 00:51:56  cdunde
+# To reinstate headers and history
+#
 # Revision 1.7  2005/09/16 18:09:13  cdunde
 # Set dialog box to remain open
 #

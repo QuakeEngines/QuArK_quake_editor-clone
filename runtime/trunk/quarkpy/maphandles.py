@@ -1605,6 +1605,16 @@ def MouseClicked(self, view, x, y, s, handle):
 
     flags = qhandles.MouseClicked(self, view, x, y, s, handle)
 #    debug('flagz: '+s)
+    try:
+        editor = mapeditor()
+        if editor is not None:
+            if isinstance(handle, PFaceHandle) and isinstance(editor.findtargetdlg, plugins.maptexpos.TexPosDlg):
+                o = editor.layout.explorer.uniquesel
+                m = qmenu.item("Dummy", None, "")
+                m.o = o
+                plugins.maptexpos.PosTexClick(m)
+    except:
+        pass
     if view.info["type"]=="3D":
         self.last3DView = view
     if "1" in flags:
@@ -1984,6 +1994,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.66  2007/11/19 00:08:39  danielpharos
+#Any supported picture can be used for a view background, and added two options: multiple, offset
+#
 #Revision 1.65  2007/10/13 18:25:14  cdunde
 #Another fix for the face drag handle hint.
 #
