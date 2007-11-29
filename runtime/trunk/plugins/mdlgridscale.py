@@ -450,7 +450,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=mdltools.gridfinishdrawing):
 # Now set our new function as the finishdrawing method.
 #
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = gridfinishdrawing
+quarkpy.mdleditor.ModelEditor.finishdrawing = gridfinishdrawing
 
 
 # ********* This creates the Options menu 2D grid items ***************
@@ -666,6 +666,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.13  2007/10/31 03:47:52  cdunde
+#Infobase button link updates.
+#
 #Revision 1.12  2007/10/25 21:18:17  cdunde
 #To stop lagging of redraws during 2D view panning drags.
 #

@@ -358,7 +358,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor
 # Now set our new function as the finishdrawing method.
 #
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = gridfinishdrawing
+quarkpy.mdleditor.ModelEditor.finishdrawing = gridfinishdrawing
 
 
 # ********* This creates the Options menu 2D grid items ***************
@@ -601,6 +601,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.15  2007/11/18 02:40:57  cdunde
+#To fix error in mdltools.py with rulers when a single new triangle is created.
+#
 #Revision 1.14  2007/10/22 02:22:27  cdunde
 #To remove use of the "dictspec" function which at this time causes a memory leak in the source code.
 #
