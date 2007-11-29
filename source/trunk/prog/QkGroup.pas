@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/10/14 21:48:56  danielpharos
+Fix the frame-dragging in the Model Editor.
+
 Revision 1.13  2007/09/10 10:24:18  danielpharos
 Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 
@@ -463,7 +466,7 @@ begin
   for I:=0 to SubElements.Count-1 do
   begin
     Q:=SubElements[I];
-    if (Q.ClassType <> Target.ClassType) and (Q.IsAllowedParent(Target) = false) then
+    if ((Target=nil) or (Q.ClassType <> Target.ClassType)) and (Q.IsAllowedParent(Target) = false) then
     begin
       Result:=False;
       Exit;
