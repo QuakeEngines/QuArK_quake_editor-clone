@@ -431,7 +431,8 @@ class BaseEditor:
                         if MapOption("SkinGridVisible", self.MODE):
                             setup = quarkx.setupsubset(self.MODE, "Display")
                             skingridstep = setup["SkinGridStep"][0]
-                            view.drawgrid(quarkx.vect((skingridstep*skingridstep*(texWidth/skingridstep)/texWidth*view.info["scale"]),0,0), quarkx.vect(0,(skingridstep*skingridstep*(texHeight/skingridstep)/texHeight*view.info["scale"]),0), MapColor("SkinGridDots", SS_MODEL))
+                            if skingridstep>0.0:
+                                view.drawgrid(quarkx.vect((skingridstep*skingridstep*(texWidth/skingridstep)/texWidth*view.info["scale"]),0,0), quarkx.vect(0,(skingridstep*skingridstep*(texHeight/skingridstep)/texHeight*view.info["scale"]),0), MapColor("SkinGridDots", SS_MODEL))
                         # Method 2, Ticks drawn during RecSelDrag.
                         if (flagsmouse == 1032 and isinstance(self.dragobject, mdlhandles.RectSelDragObject) and quarkx.setupsubset(SS_MODEL, "Options")["RDT_M2"] == "1"):
                             cv.pencolor = MapColor("Vertices", SS_MODEL)
@@ -1435,6 +1436,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.102  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
 #Revision 1.101  2007/10/21 04:51:53  cdunde
 #To fix a problem with fillcolor when Skin-view is currentview and
 #some of the editor's views are not in wire mode.
