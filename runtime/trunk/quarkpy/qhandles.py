@@ -1303,7 +1303,6 @@ def refreshtimer(self):
                         reccolor = MapColor("Drag3DLines", SS_MODEL)
                         for r in self.redimages:
                             self.view.drawmap(r, mode, reccolor)
-  # GOT IT! ^
             else:
                 if not isinstance(self.editor.dragobject, mdlhandles.LinearHandle):
                     return
@@ -1315,7 +1314,7 @@ def refreshtimer(self):
             for v in self.views:
                 v.invalidate()
         except:
-            for v in self.editor.views:
+            for v in self.editor.layout.views:
                 v.invalidate()
 
 def refreshtimertex(self):
@@ -2154,6 +2153,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.64  2007/11/16 18:48:23  cdunde
+#To update all needed files for fix by DanielPharos
+#to allow frame relocation after editing.
+#
 #Revision 1.63  2007/11/04 00:33:33  cdunde
 #To make all of the Linear Handle drag lines draw faster and some selection color changes.
 #
