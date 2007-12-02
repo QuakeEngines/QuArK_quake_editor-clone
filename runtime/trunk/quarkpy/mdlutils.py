@@ -112,7 +112,7 @@ def findTriangles(comp, index):
 #                               item 2: The Model component mesh triangle number this vertex is used in (usually more then one triangle).
 #                               item 3: The ver_index_order_pos number is its order number position of the triangle points, either 0, 1 or 2.
 #                               item 4: All 3 of the triangles vertexes data (ver_index, u and v (or x,y) projected texture 2D Skin-view positions)
-# 
+#
 def findTrianglesAndIndexes(comp, vert_index, vert_pos):
     tris = comp.triangles
     tris_out = [ ]
@@ -333,14 +333,20 @@ def MakeEditorVertexPolyObject(editor, option=0):
         return polylist
 
 
+#
+# Does the opposite of the 'MakeEditorVertexPolyObject' (just above this function) to convert a list
+#   of a group of polys that have been manipulated by some function using QuArK Internal Poly Objects.
+# The 'new' objects list in the functions 'ok' section is passed to here where it is converted back to
+# usable model component mesh vertexes and the final 'ok' function is performed.
+# option=0 does the conversion for the Editor.
+# option=1 does the conversion for the Skin-view.
+# option=2, called from mdlhandles.py class LinRedHandle, ok function
+#   is for the editor's selected edges vertexes extrusion function.
+#
 
 def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option=0):
     "Does the opposite of the 'MakeEditorVertexPolyObject' (just above this function) to convert a list"
     "of a group of polys that have been manipulated by some function using QuArK Internal Poly Objects."
-    "The 'new' objects list in the functions 'ok' section is passed to here where it is converted back to"
-    "usable model component mesh vertexes and the final 'ok' function is performed."
-    "option=0 does the conversion for the Editor."
-    "option=1 does the conversion for the Skin-view."
     
     if option == 0:
         comp = editor.Root.currentcomponent
@@ -404,6 +410,107 @@ def ConvertVertexPolyObject(editor, newobjectslist, flags, view, undomsg, option
         undo = quarkx.action()
         undo.exchange(comp, new_comp)
         editor.ok(undo, undomsg)
+    
+    if option == 2:
+        comp = editor.Root.currentcomponent
+        new_comp = comp.copy()
+        newtris = new_comp.triangles
+        newtri_index = len(comp.triangles)
+        newvertexselection = []
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        currentvertices = len(compframes[0].vertices)
+        for compframe in range(len(compframes)):
+            if compframes[compframe].name == comp.currentframe.name:
+                current = compframe
+                break
+        for poly in range(len(newobjectslist[0].subitems)):
+            old_vtxs = compframes[current].vertices
+            vtxnbr = int(newobjectslist[0].subitems[poly].shortname)
+            newver_index = currentvertices + poly
+            face = newobjectslist[0].subitems[poly].subitems[0]
+            newvertex = quarkx.vect(face["v"][0] , face["v"][1], face["v"][2]) - quarkx.vect(1.0,0.0,0.0)/view.info["scale"]*2
+            delta = newvertex - old_vtxs[vtxnbr]
+            newvertexselection = newvertexselection + [(newver_index, view.proj(newvertex))]
+            for compframe in compframes:
+                old_vtxs = compframe.vertices
+                newvertex = old_vtxs[vtxnbr] + delta
+                old_vtxs = old_vtxs + [newvertex]
+                compframe.vertices = old_vtxs
+                compframe.compparent = new_comp # To allow frame relocation after editing.
+
+        from mdlhandles import SkinView1
+        if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+            for v in editor.layout.views:
+                if v.info["viewname"] == "editors3Dview":
+                    cordsview = v
+        else:
+            try:
+                tex = comp.currentskin
+                texWidth,texHeight = tex["Size"]
+                if quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] == "1":
+                    SkinViewScale = SkinView1.info["scale"]
+                else:
+                    SkinViewScale = 1
+            except:
+                texWidth,texHeight = SkinView1.clientarea
+                SkinViewScale = 1
+        for tri in editor.SelCommonTriangles:
+            if len(tri) == 3:
+                oldtri, oldver1 ,oldver0 = tri
+            else:
+                oldtri, oldver1 ,oldver0 ,oldver2 = tri
+            for poly in range(len(newobjectslist[0].subitems)):
+                if int(newobjectslist[0].subitems[poly].shortname) == oldver1:
+                    newver_index0 = currentvertices + poly
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                        newuv0u = int(cordsview.proj(compframes[current].vertices[newver_index0]).tuple[0])
+                        newuv0v = int(cordsview.proj(compframes[current].vertices[newver_index0]).tuple[1])
+                        olduv0u = int(cordsview.proj(compframes[current].vertices[oldver0]).tuple[0])
+                        olduv0v = int(cordsview.proj(compframes[current].vertices[oldver0]).tuple[1])
+                    else:
+                        newuv0u = int(compframes[current].vertices[newver_index0].tuple[0]-int(texWidth*.5))*SkinViewScale
+                        newuv0v = int(compframes[current].vertices[newver_index0].tuple[1]-int(texHeight*.5))*SkinViewScale
+                        olduv0u = int(compframes[current].vertices[oldver0].tuple[0]+int(texWidth*.5))*SkinViewScale
+                        olduv0v = int(compframes[current].vertices[oldver0].tuple[1]+int(texHeight*.5))*SkinViewScale
+                if int(newobjectslist[0].subitems[poly].shortname) == oldver0:
+                    newver_index1 = currentvertices + poly
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                        newuv1u = int(cordsview.proj(compframes[current].vertices[newver_index1]).tuple[0])
+                        newuv1v = int(cordsview.proj(compframes[current].vertices[newver_index1]).tuple[1])
+                        olduv1u = int(cordsview.proj(compframes[current].vertices[oldver1]).tuple[0])
+                        olduv1v = int(cordsview.proj(compframes[current].vertices[oldver1]).tuple[1])
+                    else:
+                        newuv1u = int(compframes[current].vertices[newver_index1].tuple[0]+int(texWidth*.5))*SkinViewScale
+                        newuv1v = int(compframes[current].vertices[newver_index1].tuple[1]-int(texHeight*.5))*SkinViewScale
+                        olduv1u = int(compframes[current].vertices[oldver1].tuple[0]-int(texWidth*.5))*SkinViewScale
+                        olduv1v = int(compframes[current].vertices[oldver1].tuple[1]+int(texHeight*.5))*SkinViewScale
+                if len(tri) == 4:
+                    if int(newobjectslist[0].subitems[poly].shortname) == oldver2:
+                        newver_index2 = currentvertices + poly
+                        if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                            newuv2u = int(cordsview.proj(compframes[current].vertices[newver_index2]).tuple[0])
+                            newuv2v = int(cordsview.proj(compframes[current].vertices[newver_index2]).tuple[1])
+                            olduv2u = int(cordsview.proj(compframes[current].vertices[oldver2]).tuple[0])
+                            olduv2v = int(cordsview.proj(compframes[current].vertices[oldver2]).tuple[1])
+                        else:
+                            newuv2u = int(compframes[current].vertices[newver_index2].tuple[0]+int(texWidth*.5))*SkinViewScale
+                            newuv2v = int(compframes[current].vertices[newver_index2].tuple[1]-int(texHeight*.5))*SkinViewScale
+                            olduv2u = int(compframes[current].vertices[oldver2].tuple[0]-int(texWidth*.5))*SkinViewScale
+                            olduv2v = int(compframes[current].vertices[oldver2].tuple[1]+int(texHeight*.5))*SkinViewScale
+
+            newtris = newtris + [((newver_index0, newuv0u, newuv0v), (newver_index1, newuv1u, newuv1v), (oldver0, olduv0u, olduv0v))]
+            newtris = newtris + [((newver_index0, newuv0u, newuv0v), (oldver0, olduv0u, olduv0v), (oldver1, olduv1u, olduv1v))]
+        new_comp.triangles = newtris
+
+        if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None:
+            undomsg = "editor-linear all edges extrusion"
+        else:
+            undomsg = "editor-linear outside edges extrusion"
+
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.ok(undo, undomsg)
+        editor.ModelVertexSelList = newvertexselection
 
 
 
@@ -714,9 +821,10 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
             newtri_index = newtri_index + 1
 
         if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None:
-            pass
+            undomsg = "editor-linear face extrusion w/bulkheads"
         else:
             # These lines, and the one noted above, remove the 'bulkheads' between extrusion drags.
+            undomsg = "editor-linear face extrusion"
             for tri_index in reversed(editor.ModelFaceSelList):
                 newtris = newtris[:tri_index] + newtris[tri_index+1:]
 
@@ -1037,21 +1145,37 @@ def addtriangle(editor):
     v2 = editor.ModelVertexSelList[1][0]
     v3 = editor.ModelVertexSelList[2][0]
 
-    try:
-        tex = comp.currentskin
-        texWidth,texHeight = tex["Size"]
-    except:
-        from qbaseeditor import currentview
-        view = currentview
-        texWidth,texHeight = view.clientarea
+    from mdlhandles import SkinView1
+    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+        for v in editor.layout.views:
+            if v.info["viewname"] == "editors3Dview":
+                cordsview = v
+    else:
 
-### Method 1 with proj (same in mdlhandles.py file)
-    s1 = int(editor.ModelVertexSelList[0][1].tuple[0]+int(texWidth*.5))
-    t1 = int(editor.ModelVertexSelList[0][1].tuple[1]-int(texHeight*.5))
-    s2 = int(editor.ModelVertexSelList[1][1].tuple[0]+int(texWidth*.5))
-    t2 = int(editor.ModelVertexSelList[1][1].tuple[1]-int(texHeight*.5))
-    s3 = int(editor.ModelVertexSelList[2][1].tuple[0]+int(texWidth*.5))
-    t3 = int(editor.ModelVertexSelList[2][1].tuple[1]-int(texHeight*.5))
+        try:
+            tex = comp.currentskin
+            texWidth,texHeight = tex["Size"]
+            if quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] == "1":
+                SkinViewScale = SkinView1.info["scale"]
+            else:
+                SkinViewScale = 1
+        except:
+            texWidth,texHeight = SkinView1.clientarea
+            SkinViewScale = 1
+    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+        s1 = int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[0])*.025
+        t1 = -int(cordsview.proj(editor.ModelVertexSelList[0][1]).tuple[1])*.025
+        s2 = int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[0])*.025
+        t2 = -int(cordsview.proj(editor.ModelVertexSelList[1][1]).tuple[1])*.025
+        s3 = int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[0])*.025
+        t3 = -int(cordsview.proj(editor.ModelVertexSelList[2][1]).tuple[1])*.025
+    else:
+        s1 = int(editor.ModelVertexSelList[0][1].tuple[0]+int(texWidth*.5))*SkinViewScale
+        t1 = int(editor.ModelVertexSelList[0][1].tuple[1]-int(texHeight*.5))*SkinViewScale
+        s2 = int(editor.ModelVertexSelList[1][1].tuple[0]+int(texWidth*.5))*SkinViewScale
+        t2 = int(editor.ModelVertexSelList[1][1].tuple[1]-int(texHeight*.5))*SkinViewScale
+        s3 = int(editor.ModelVertexSelList[2][1].tuple[0]+int(texWidth*.5))*SkinViewScale
+        t3 = int(editor.ModelVertexSelList[2][1].tuple[1]-int(texHeight*.5))*SkinViewScale
 
     if findTriangle(comp, v1, v2, v3) is not None:
         quarkx.msgbox("Improper Selection!\n\nA triangle using these 3 vertexes already exist.\n\nSelect at least one different vertex\nto make a new triangle with.\n\nTo 'Un-pick' a vertex from the 'Pick' list\nplace your cursor over that vertex,\nRMB click and select 'Pick Vertex'.\nThen you can pick another vertex to replace it.", MT_ERROR, MB_OK)
@@ -1072,6 +1196,8 @@ def addtriangle(editor):
     undo.exchange(comp, new_comp)
     editor.Root.currentcomponent = new_comp
     editor.ok(undo, "add triangle")
+    if SkinView1 is not None:
+        SkinView1.invalidate()
 
 
 #
@@ -2070,6 +2196,10 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.67  2007/11/24 01:46:01  cdunde
+#To get all of the vertex and face Linear Handle movements
+#to work properly for selected frames with animation differences.
+#
 #Revision 1.66  2007/11/22 07:31:04  cdunde
 #Setup to allow merging of a base vertex and other multiple selected vertexes.
 #

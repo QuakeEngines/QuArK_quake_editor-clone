@@ -315,7 +315,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
                         pass
                     else:
                         editor.SelVertexes = editor.SelVertexes + [comp.triangles[tri][vtx][0]] 
-                    editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
+                        editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
         if quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
             if SkinView1 is not None:
                 if quarkx.setupsubset(SS_MODEL, "Options")['PFSTSV'] == "1":
@@ -1260,8 +1260,17 @@ class SkinHandle(qhandles.GenericHandle):
         def mSF3DV(m, self=self, editor=editor, view=view):
             if not MldOption("SkinFrom3Dview"):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = "1"
+                quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] = None
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = None
+
+        # When taking Skin-view coors from the Skin-view, turns using its "scale" factor on or off.
+        def mUSVS(m, self=self, editor=editor, view=view):
+            if not MldOption("UseSkinViewScale"):
+                quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] = "1"
+                quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] = None
+            else:
+                quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] = None
 
         # Turn Model Options function SkinGridVisible on or off.
         def mSGV(m, self=self, editor=editor, view=view):
@@ -1294,17 +1303,19 @@ class SkinHandle(qhandles.GenericHandle):
         Xpvstev = qmenu.item("&Pass selection to Editor views", mPVSTEV, "|Pass selection to Editor views:\n\nThis function will pass selected Skin-view mesh vertexes and select the coordinated 'Model mesh' vertexes in the Editors views, along with any others currently selected, where they can be used for editing purposes.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in the Editor for its use there.\n\nThe 'Skin-view' selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         Xcsf = qmenu.item("&Clear Selected Faces", mCSF, "|Clear Selected Faces:\n\nThis function will clear all faces in the Skin-view that have been drawn as 'Selected' or 'Show' but any related selected vertexes will remain that way for editing purposes.\n\nThe 'Skin-view' selected face, show face and selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.skinview.html#funcsnmenus")
         TicksViewing = qmenu.popup("Draw Ticks During Drag", [], TicksViewingClick, "|Draw Ticks During Drag:\n\nThese functions give various methods for drawing the Models Skin Mesh Vertex Ticks while doing a drag.\n\nPress the 'F1' key again or click the button below for further details.", "intro.modeleditor.skinview.html#funcsnmenus")
-        Xsf3Dv = qmenu.item("Skin From 3D view", mSF3DV, "|Skin From 3D view:\n\nThis turns the function on or off to take co-ordnances for the 'Skin-view' from the editors 3D view when new objects are created using the 'Quick Object Maker'\n\nIt will place that object on the skin exactly the same way you see it in the 3D view when the object is created.|intro.modeleditor.skinview.html#funcsnmenus")
+        Xsf3Dv = qmenu.item("Skin From 3D view", mSF3DV, "|Skin From 3D view:\n\nThis turns the function on or off to take co-ordnances for the 'Skin-view' from the editors 3D view when new objects are created using the 'Quick Object Maker'\n\nIt will place that object on the skin exactly the same way you see it in the 3D view when the object is created. Because the 3D view uses its own 'scale' factor, activating this function will also turn off the 'Use Skin-view scale' function.|intro.modeleditor.skinview.html#funcsnmenus")
+        Xusvs = qmenu.item("Use Skin-view scale", mUSVS, "|Use Skin-view scale:\n\nThis turns the function on or off for applying of the views 'zoom' or 'scale' factor when taking co-ordnances from the 'Skin-view' and which works in reverse.\n\nMeaning, when this option is checked, if the Skin-view is zoomed out (skin looks small) it will skin new triangles with fewer repetitions (skin looks larger) of that image and visa-versa. Because the 3D view uses its own 'scale' factor, activating this function will also turn off the 'Skin From 3D view' function.|intro.modeleditor.skinview.html#funcsnmenus")
         Xsgv = qmenu.item("Skin Grid Visible", mSGV, "|Skin Grid Visible:\n\nThis function gives quick access to the Model Options setting to turn the Skin-view grid on or off so that it is not visible, but it is still active for all functions that use it, such as 'Snap to grid'.|intro.modeleditor.skinview.html#funcsnmenus")
         Xsga = qmenu.item("Skin Grid Active", mSGA, "|Skin Grid Active:\n\nThis function gives quick access to the Model Options setting to make the Skin-view grid Active or Inactive making it available or unavailable for all functions that use it, such as 'Snap to grid', even though it will still be displayed in the Skin-view.|intro.modeleditor.skinview.html#funcsnmenus")
         Xssdl = qmenu.item("Single Sel Drag Lines", mSSDL, "|Single Sel Drag Lines:\n\nThis function stops the multiple selection drag lines of the 'Linear Handle' from being drawn in the Skin-view to speed up the Skin-view selection and handle creation.|intro.modeleditor.skinview.html#funcsnmenus")
 
-        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, Xsf3Dv, Xsgv, Xsga, Xssdl, qmenu.sep, TicksViewing]
+        opsmenulist = [Xsync_edwsv, Xpvstev, Xcsf, qmenu.sep, Xsf3Dv, Xusvs, Xsgv, Xsga, Xssdl, qmenu.sep, TicksViewing]
 
         items = opsmenulist
         Xsync_edwsv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SYNC_EDwSV")
         Xpvstev.state = quarkx.setupsubset(SS_MODEL,"Options").getint("PVSTEV")
         Xsf3Dv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinFrom3Dview")
+        Xusvs.state = quarkx.setupsubset(SS_MODEL,"Options").getint("UseSkinViewScale")
         Xsgv.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinGridVisible")
         Xsga.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SkinGridActive")
         Xssdl.state = quarkx.setupsubset(SS_MODEL,"Options").getint("SingleSelDragLines")
@@ -2145,7 +2156,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                                 pass
                             else:
                                 editor.SelVertexes = editor.SelVertexes + [comp.triangles[tri][vtx][0]] 
-                            editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
+                                editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
 
                 MakeEditorFaceObject(editor)
                 if quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] == "1" and SkinView1 is not None:
@@ -2278,7 +2289,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
 
 #
 # Classes that manage and create the linear handle, its center box, corner & side handles and its circle.
-# The normal redimages drawn in the Map Editor need to be stopped for the Model Editor since we use triangles.
+# The normal redimages, drawn in the Map Editor, needed to be stopped for the Model Editor since we use triangles
 #   instead of rectangles and that is all it will draw until a new drawing function can be added to the source code.
 # The redimages drawing is stopped in the qhandels.py "def drawredimages" function for the "class RedImageDragObject".
 # Each Linear handle must be stopped there using that handles class name specifically. See the qhandels code that does that.
@@ -2608,7 +2619,7 @@ class LinRedHandle(LinearHandle):
                 if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] is not None or quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None:
                     pass
                 else:
-                    if quarkx.setupsubset(SS_MODEL, "Options")["NFDL"] is None:
+                    if quarkx.setupsubset(SS_MODEL, "Options")["NFDL"] is None: # NFDL = no face drag lines.
                         # This draws the selected faces drag lines for a regular Linear Center Handle drag.
                         for tri in editor.SelCommonTriangles:
                             dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
@@ -2622,25 +2633,51 @@ class LinRedHandle(LinearHandle):
                                         projvtx = view.proj(framevtxs[tri[4][vtx][0]])
                                     cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
             else:
-                if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None:
-                    for tri in self.mgr.tristodrawlist:
-                        dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
-                        for vtx in range(len(tri[4])):
-                            if tri[4][vtx][0] == tri[0]:
-                                continue
-                            else:
-                                if tri[4][vtx][0] in self.mgr.selvtxlist:
-                                    projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
+                if (quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] is not None or quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None):
+                    pass
+                else:
+                    if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None: # NVDL = no vertex drag lines.
+                        for tri in self.mgr.tristodrawlist:
+                            dragprojvtx = view.proj(framevtxs[tri[0]]+delta)
+                            for vtx in range(len(tri[4])):
+                                if tri[4][vtx][0] == tri[0]:
+                                    continue
                                 else:
-                                    projvtx = view.proj(framevtxs[tri[4][vtx][0]])
-                                cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
+                                    if tri[4][vtx][0] in self.mgr.selvtxlist:
+                                        projvtx = view.proj(framevtxs[tri[4][vtx][0]]+delta)
+                                    else:
+                                        projvtx = view.proj(framevtxs[tri[4][vtx][0]])
+                                    cv.line(int(dragprojvtx.tuple[0]), int(dragprojvtx.tuple[1]), int(projvtx.tuple[0]), int(projvtx.tuple[1]))
 
         for obj in list: # Draws the models triangles or vertexes, that are being dragged, correctly during a drag in all views.
             obj.translate(delta)
             if obj.name.endswith(":g"):
+                if view.info["viewname"] != "skinview" and (quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] is not None or quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None) and quarkx.setupsubset(SS_MODEL, "Options")["NVDL"] is None: # NVDL = no vertex drag lines.
+                    # If Extruding faces this section draws the drag lines.
+                    oldvtxs = comp.currentframe.vertices
+                    cv.pencolor = MapColor("Drag3DLines", SS_MODEL)
+                    for tri in editor.SelCommonTriangles:
+                        if len(tri) == 3:
+                            oldtri, oldver1 ,oldver0 = tri
+                        else:
+                            oldtri, oldver1 ,oldver0 ,oldver2 = tri
+                        for poly in range(len(obj.subitems)):
+                            if int(obj.subitems[poly].shortname) == oldver1:
+                                oldver0X ,oldver0Y, oldver0Z = view.proj(oldvtxs[oldver0]).tuple
+                                ver0X ,ver0Y, ver0Z = view.proj(obj.subitems[poly].subitems[0]["v"][0], obj.subitems[poly].subitems[0]["v"][1], obj.subitems[poly].subitems[0]["v"][2]).tuple
+                            if int(obj.subitems[poly].shortname) == oldver0:
+                                oldver1X ,oldver1Y, oldver1Z = view.proj(oldvtxs[oldver1]).tuple
+                                ver1X ,ver1Y, ver1Z = view.proj(obj.subitems[poly].subitems[0]["v"][0] ,obj.subitems[poly].subitems[0]["v"][1], obj.subitems[poly].subitems[0]["v"][2]).tuple
+                            if len(tri) == 4:
+                                if int(obj.subitems[poly].shortname) == oldver2:
+                                    oldver2X ,oldver2Y, oldver2Z = view.proj(oldvtxs[oldver2]).tuple
+                                    ver2X ,ver2Y, ver2Z = view.proj(obj.subitems[poly].subitems[0]["v"][0] ,obj.subitems[poly].subitems[0]["v"][1], obj.subitems[poly].subitems[0]["v"][2]).tuple
+                        cv.line(ver0X, ver0Y, int(ver1X), int(ver1Y)) # Top line
+                        cv.line(int(ver1X), int(ver1Y), oldver0X, oldver0Y) # right line
+                        cv.line(oldver1X, oldver1Y, ver0X, ver0Y) # left line
+
+                # This section draws the selected vertexes that are being dragged.
                 dragcolor = vertexsellistcolor
-                # This section draws the vertex drag lines.
-                # We can take this line out if we don't want the vertex cubes drawn durning drags.
                 view.drawmap(obj, DM_OTHERCOLOR, dragcolor)
             else:
                 # This section draws the selected faces that are being dragged.
@@ -2754,7 +2791,12 @@ class LinRedHandle(LinearHandle):
                         view.invalidate(1)
             else:
                 undomsg = "editor-linear vertex movement"
-                ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
+                if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] is not None or quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] is not None:
+                    # This call handles the editor's selected vertexes extrusion functions.
+                    ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 2)
+                else:
+                    # This call handles a normal editor selected vertexes drag.
+                    ConvertVertexPolyObject(editor, newobjectslist, currentview.flags, currentview, undomsg, 0)
 
 
 class LinSideHandle(LinearHandle):
@@ -3055,6 +3097,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.118  2007/11/22 07:31:05  cdunde
+#Setup to allow merging of a base vertex and other multiple selected vertexes.
+#
 #Revision 1.117  2007/11/20 02:27:55  cdunde
 #Added check to stop merging of two vertexes of the same triangle.
 #

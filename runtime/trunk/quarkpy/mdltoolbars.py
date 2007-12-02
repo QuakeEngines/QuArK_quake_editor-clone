@@ -62,6 +62,89 @@ def extrudeclick(m):
             b.state = qtoolbar.normal
         tb2.tb.buttons[1].state = qtoolbar.selected
         quarkx.update(editor.form)
+        # All code below in this section checks for proper selection if in vertex mode.
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
+            if len(editor.ModelVertexSelList) > 1:
+                editor.SelVertexes = []
+                editor.SelCommonTriangles = []
+                comp = editor.Root.currentcomponent
+                for vtx in editor.ModelVertexSelList:
+                    if vtx[0] in editor.SelVertexes:
+                        pass
+                    else:
+                        editor.SelVertexes = editor.SelVertexes + [vtx[0]]
+                for vtx in editor.SelVertexes:
+                    checktris = findTrianglesAndIndexes(comp, vtx, None)
+                    for tri in checktris:
+                        if editor.SelCommonTriangles == []:
+                            editor.SelCommonTriangles = editor.SelCommonTriangles + [tri]
+                            continue
+                        for comtri in range(len(editor.SelCommonTriangles)):
+                            if tri[2] == editor.SelCommonTriangles[comtri][2]:
+                                break
+                            if comtri == len(editor.SelCommonTriangles)-1:
+                                editor.SelCommonTriangles = editor.SelCommonTriangles + [tri]
+                templist = []
+                keepvtx = []
+                for tri in editor.SelCommonTriangles:
+                    vtxcount = 0
+                    keep1 = keep2 = keep3 = None
+                    for vtx in editor.SelVertexes:
+                        if vtx == tri[4][0][0] or vtx == tri[4][1][0] or vtx == tri[4][2][0]:
+                            vtxcount = vtxcount + 1
+                            if keep1 is None:
+                                keep1 = vtx
+                            elif keep2 is None:
+                                keep2 = vtx
+                            else:
+                                keep3 = vtx
+                    if vtxcount > 1:
+                        templist = templist + [tri]
+                        if not (keep1 in keepvtx):
+                            keepvtx = keepvtx + [keep1]
+                        if not (keep2 in keepvtx):
+                            keepvtx = keepvtx + [keep2]
+                        if keep3 is not None and not (keep3 in keepvtx):
+                            keepvtx = keepvtx + [keep3]
+
+                perimeter_edge = []
+                for tri in range(len(templist)):
+                    if (templist[tri][4][0][0] in keepvtx) and (templist[tri][4][1][0] in keepvtx) and not (templist[tri][4][2][0] in keepvtx):
+                        temp = (templist[tri][2], templist[tri][4][0][0], templist[tri][4][1][0])
+                        if not (temp in perimeter_edge):
+                            perimeter_edge = perimeter_edge + [temp]
+                    if (templist[tri][4][1][0] in keepvtx) and (templist[tri][4][2][0] in keepvtx) and not (templist[tri][4][0][0] in keepvtx):
+                        temp = (templist[tri][2], templist[tri][4][1][0], templist[tri][4][2][0])
+                        if not (temp in perimeter_edge):
+                            perimeter_edge = perimeter_edge + [temp]
+                    if (templist[tri][4][2][0] in keepvtx) and (templist[tri][4][0][0] in keepvtx) and not (templist[tri][4][1][0] in keepvtx):
+                        temp = (templist[tri][2], templist[tri][4][2][0], templist[tri][4][0][0])
+                        if not (temp in perimeter_edge):
+                            perimeter_edge = perimeter_edge + [temp]
+
+                edgevtxs = []
+                for edge in perimeter_edge:
+                    if not (edge[1] in edgevtxs):
+                        edgevtxs = edgevtxs + [edge[1]]
+                    if not (edge[2] in edgevtxs):
+                        edgevtxs = edgevtxs + [edge[2]]
+
+                editor.SelCommonTriangles = perimeter_edge
+                if editor.SelCommonTriangles == [] and editor.ModelVertexSelList != []:
+                    quarkx.msgbox("Improper Selection !\n\nYou must select the two\nvertexes of each triangle's edge\nthat is to be extruded.\n\nOnly one vertex of a triangle\nis in your selection.", MT_ERROR, MB_OK)
+                    editor.SelVertexes = []
+                    editor.SelCommonTriangles = []
+                    return
+                if len(editor.SelVertexes) != len(edgevtxs):
+                    editor.SelVertexes = edgevtxs
+                    templist = []
+                    for vtx in editor.ModelVertexSelList:
+                       if not (vtx[0] in editor.SelVertexes):
+                           pass
+                       else:
+                           templist = templist + [vtx]
+                    editor.ModelVertexSelList = templist
+                    Update_Editor_Views(editor)
     else:
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
         tb1.tb.buttons[0].state = qtoolbar.normal
@@ -73,7 +156,8 @@ def extrudeclick(m):
                     pass
                 else:
                     editor.SelVertexes = editor.SelVertexes + [comp.triangles[tri][vtx][0]] 
-                editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
+                    editor.SelCommonTriangles = editor.SelCommonTriangles + findTrianglesAndIndexes(comp, comp.triangles[tri][vtx][0], None)
+
 
 
 # Extrude selected faces in the ModelFaceSelList with bulkheads function.
@@ -91,6 +175,68 @@ def extrudebulkheadsclick(m):
             b.state = qtoolbar.normal
         tb2.tb.buttons[1].state = qtoolbar.selected
         quarkx.update(editor.form)
+        # All code below in this section checks for proper selection if in vertex mode.
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
+            if len(editor.ModelVertexSelList) > 1:
+                editor.SelVertexes = []
+                editor.SelCommonTriangles = []
+                comp = editor.Root.currentcomponent
+                for vtx in editor.ModelVertexSelList:
+                    if vtx[0] in editor.SelVertexes:
+                        pass
+                    else:
+                        editor.SelVertexes = editor.SelVertexes + [vtx[0]]
+                for vtx in editor.SelVertexes:
+                    checktris = findTrianglesAndIndexes(comp, vtx, None)
+                    for tri in checktris:
+                        if editor.SelCommonTriangles == []:
+                            editor.SelCommonTriangles = editor.SelCommonTriangles + [tri]
+                            continue
+                        for comtri in range(len(editor.SelCommonTriangles)):
+                            if tri[2] == editor.SelCommonTriangles[comtri][2]:
+                                break
+                            if comtri == len(editor.SelCommonTriangles)-1:
+                                editor.SelCommonTriangles = editor.SelCommonTriangles + [tri]
+                templist = []
+                keepvtx = []
+                for tri in editor.SelCommonTriangles:
+                    vtxcount = 0
+                    keep1 = keep2 = keep3 = None
+                    for vtx in editor.SelVertexes:
+                        if vtx == tri[4][0][0] or vtx == tri[4][1][0] or vtx == tri[4][2][0]:
+                            vtxcount = vtxcount + 1
+                            if keep1 is None:
+                                keep1 = vtx
+                            elif keep2 is None:
+                                keep2 = vtx
+                            else:
+                                keep3 = vtx
+                    if vtxcount > 1:
+                        if not (keep1 in keepvtx):
+                            keepvtx = keepvtx + [keep1]
+                        if not (keep2 in keepvtx):
+                            keepvtx = keepvtx + [keep2]
+                        if keep3 is not None and not (keep3 in keepvtx):
+                            keepvtx = keepvtx + [keep3]
+                            templist = templist + [(tri[2], keep1, keep2, keep3)]
+                        else:
+                            templist = templist + [(tri[2], keep1, keep2)]
+                editor.SelCommonTriangles = templist
+                if editor.SelCommonTriangles == [] and editor.ModelVertexSelList != []:
+                    quarkx.msgbox("Improper Selection !\n\nYou must select at least two\nvertexes of each triangle's edge\nthat is to be extruded.\n\nOnly one vertex of a triangle\nis in your selection.", MT_ERROR, MB_OK)
+                    editor.SelVertexes = []
+                    editor.SelCommonTriangles = []
+                    return
+                if len(editor.SelVertexes) != len(keepvtx):
+                    editor.SelVertexes = keepvtx
+                    templist = []
+                    for vtx in editor.ModelVertexSelList:
+                       if not (vtx[0] in editor.SelVertexes):
+                           pass
+                       else:
+                           templist = templist + [vtx]
+                    editor.ModelVertexSelList = templist
+                    Update_Editor_Views(editor)
     else:
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
         tb1.tb.buttons[1].state = qtoolbar.normal
@@ -137,8 +283,8 @@ class EditToolsBar(ToolBar):
     DefaultPos = ((0,0,0,0), "topdock", 0, 0, 1)
 
     def buildbuttons(self, layout):
-        extrude = qtoolbar.button(extrudeclick, "Extrude Selected Faces||Extrude Selected Faces:\n\nThis function only works with selected faces in the Editor's views and the 'Linear Drag Handles' button active.\n\nOnce selected click this button to extrude those faces in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.", ico_mdltools, 0, infobaselink="intro.modeleditor.toolpalettes.edittools.html#extrudeselectedfaces")
-        extrudebulkheads = qtoolbar.button(extrudebulkheadsclick, "Extrude with Bulk Heads||Extrude with Bulk Heads: This does the same function as the 'Extrude' but leaves 'bulkheads' between each extrusion drag.\n\nThis function only works with selected faces in the Editor's views and the 'Linear Drag Handles' button active.\n\nOnce selected click this button to extrude those faces in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.", ico_mdltools, 1, infobaselink="intro.modeleditor.toolpalettes.edittools.html#extrudewithbulkheads")
+        extrude = qtoolbar.button(extrudeclick, "Face mode:\n  Extrude Selected Faces\nVertex mode:\n  Extrude outside edges||Face mode:  Extrude Selected Faces\nVertex mode:  Extrude outside edges:\n\nIn Face mode - this function only works with selected faces in the Editor's views. No 'bulkheads' we be created.\nThe faces can be extruded in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\nSwitching from view to view between drags will change the extruded drag direction.\n\nIn Vertex mode - it will perform the same function for all 'outside' edges (do not share two common vertexes) that have been selected.\n\nTwo vertexes of the same triangle must be selected. If an improper vertex selection has been made it will attempt to correct that selection or notify you if it can not.", ico_mdltools, 0, infobaselink="intro.modeleditor.toolpalettes.edittools.html#extrudeselectedfaces")
+        extrudebulkheads = qtoolbar.button(extrudebulkheadsclick, "Face mode:\n  Extrude with bulkheads\nVertex mode:\n  Extrude all edges||Face mode:  Extrude with bulkheads\nVertex mode:  Extrude all edges\n\nIn Face mode - this does the same function as the 'Extrude' but leaves 'bulkheads' between each drag.\nThe faces can be extruded in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.\n\nIn Vertex mode - it will perform the same function for all edges that have been selected, including ones that share two common vertexes.\n\nAt least two vertexes of the same triangle must be selected. If an improper vertex selection has been made it will attempt to correct that selection or notify you if it can not.", ico_mdltools, 1, infobaselink="intro.modeleditor.toolpalettes.edittools.html#extrudewithbulkheads")
         revface = qtoolbar.button(ReverseFaceClick, "Reverse face direction||Reverse face direction:\n\nIf faces of a model component have been selected, the direction they face will be reversed by clicking this button.", ico_mdltools, 2, infobaselink="intro.modeleditor.toolpalettes.edittools.html#reversefacedirection")
         subdivide2 = qtoolbar.button(Subdivide2Click, "Subdivide 2||Subdivide 2:\n\nIf faces of a model component have been selected, those faces will be split into 2 new triangles when this button is clicked.", ico_mdltools, 3,  infobaselink="intro.modeleditor.toolpalettes.edittools.html#subdivide2")
      #   subdivide3 = qtoolbar.button(Subdivide3Click, "Subdivide 3||Subdivide 3:\n\nIf faces of a model component have been selected, those faces will be split into 3 new triangles when this button is clicked.", ico_mdltools, 4, infobaselink="intro.modeleditor.toolpalettes.display.html#lockviews")
@@ -164,6 +310,9 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.8  2007/11/14 05:46:18  cdunde
+#To link new "Editing tools" toolbar button to Infobase sections.
+#
 #Revision 1.7  2007/11/11 11:41:52  cdunde
 #Started a new toolbar for the Model Editor to support "Editing Tools".
 #

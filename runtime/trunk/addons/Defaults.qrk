@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.371  2007/11/22 05:13:47  cdunde
+//Separated editors background image dialogs and setup to save all of their settings.
+//
 //Revision 1.370  2007/11/21 22:12:56  danielpharos
 //Another bunch of hugh image fixes: everything should work again!
 //
@@ -3409,6 +3412,7 @@ QQRKSRC1
         GridActive         = "1"
         GridVisibleTex     = ""
         SkinFrom3Dview     = ""
+        UseSkinViewScale   = ""
         SkinGridVisible    = "1"
         SkinGridActive     = "1"
         CompassNumbers     = "1"
@@ -7420,7 +7424,8 @@ QQRKSRC1
         Typ="S"
         Txt = "Skin-view:"
       }
-      SkinFrom3Dview:           = {Typ="X" Txt="Co-ordnances"                    Cap="Cords from 3D view"                         }
+      SkinFrom3Dview:           = {Typ="X" Txt="Co-ordnances"                    Cap="Cords from 3D view"                   }
+      UseSkinViewScale:         = {Typ="X" Txt="Apply scale"                     Cap="Apply Skin-view scale"                }
       SkinGridVisible:          = {Typ="X" Txt="Grid"                            Cap="Grid visible"                         }
       SkinGridActive:           = {Typ="X" Txt="   ``"                           Cap="Grid active"                          }
     }

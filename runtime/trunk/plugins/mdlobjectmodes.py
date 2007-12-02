@@ -4778,7 +4778,16 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 if v.info["viewname"] == "editors3Dview":
                     cordsview = v
         else:
-            cordsview = SkinView1
+            try:
+                tex = comp.currentskin
+                texWidth,texHeight = tex["Size"]
+                if quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] == "1":
+                    SkinViewScale = SkinView1.info["scale"]
+                else:
+                    SkinViewScale = 1
+            except:
+                texWidth,texHeight = SkinView1.clientarea
+                SkinViewScale = 1
 
         newtris = []
         if undomsg.startswith('new dome'):
@@ -4947,23 +4956,39 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                             bottomvtx1 = bottomvtx0-2
                         topvtx2 = 1
                         bottomvtx2 = 4
-                topuv0 = cordsview.proj(new_vtxs[topvtx0])
-                topuv1 = cordsview.proj(new_vtxs[topvtx1])
-                topuv2 = cordsview.proj(new_vtxs[topvtx2])
+                if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                    topuv0 = cordsview.proj(new_vtxs[topvtx0])
+                    topuv1 = cordsview.proj(new_vtxs[topvtx1])
+                    topuv2 = cordsview.proj(new_vtxs[topvtx2])
+                else:
+                    print "scale is",SkinView1.info["scale"]
+                    topuv0 = quarkx.vect(new_vtxs[topvtx0].tuple[1], -new_vtxs[topvtx0].tuple[2], 0)/SkinViewScale*10
+                    topuv1 = quarkx.vect(new_vtxs[topvtx1].tuple[1], -new_vtxs[topvtx1].tuple[2], 0)/SkinViewScale*10
+                    topuv2 = quarkx.vect(new_vtxs[topvtx2].tuple[1], -new_vtxs[topvtx2].tuple[2], 0)/SkinViewScale*10
                 toptri = ((extvtx+topvtx0,int(topuv0.tuple[0]),int(topuv0.tuple[1])), (extvtx+topvtx1,int(topuv1.tuple[0]),int(topuv1.tuple[1])), (extvtx+topvtx2,int(topuv2.tuple[0]),int(topuv2.tuple[1])))
                 if undomsg.startswith('new pyramid'):
                     newtris = newtris + [toptri]
                   ## This section is for the option to make the end faces or not.
                     if quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] != "1":
-                        topuv0 = cordsview.proj(new_vtxs[topvtx0])
-                        topuv1 = cordsview.proj(new_vtxs[topvtx1])
-                        topuv2 = cordsview.proj(new_vtxs[topvtx2])
+                        if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                            topuv0 = cordsview.proj(new_vtxs[topvtx0])
+                            topuv1 = cordsview.proj(new_vtxs[topvtx1])
+                            topuv2 = cordsview.proj(new_vtxs[topvtx2])
+                        else:
+                            topuv0 = quarkx.vect(new_vtxs[topvtx0].tuple[1], -new_vtxs[topvtx0].tuple[2], 0)/SkinViewScale*10
+                            topuv1 = quarkx.vect(new_vtxs[topvtx1].tuple[1], -new_vtxs[topvtx1].tuple[2], 0)/SkinViewScale*10
+                            topuv2 = quarkx.vect(new_vtxs[topvtx2].tuple[1], -new_vtxs[topvtx2].tuple[2], 0)/SkinViewScale*10
                         endtri = ((baseface_index,int(topuv1.tuple[0]),int(topuv1.tuple[1])), (extvtx+topvtx0,int(topuv0.tuple[0]),int(topuv0.tuple[1])), (extvtx+topvtx2,int(topuv2.tuple[0]),int(topuv2.tuple[1])))
                         newtris = newtris + [endtri]
                 else:
-                    bottomuv0 = cordsview.proj(new_vtxs[bottomvtx0])
-                    bottomuv1 = cordsview.proj(new_vtxs[bottomvtx1])
-                    bottomuv2 = cordsview.proj(new_vtxs[bottomvtx2])
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                        bottomuv0 = cordsview.proj(new_vtxs[bottomvtx0])
+                        bottomuv1 = cordsview.proj(new_vtxs[bottomvtx1])
+                        bottomuv2 = cordsview.proj(new_vtxs[bottomvtx2])
+                    else:
+                        bottomuv0 = quarkx.vect(new_vtxs[bottomvtx0].tuple[1], -new_vtxs[bottomvtx0].tuple[2], 0)/SkinViewScale*10
+                        bottomuv1 = quarkx.vect(new_vtxs[bottomvtx1].tuple[1], -new_vtxs[bottomvtx1].tuple[2], 0)/SkinViewScale*10
+                        bottomuv2 = quarkx.vect(new_vtxs[bottomvtx2].tuple[1], -new_vtxs[bottomvtx2].tuple[2], 0)/SkinViewScale*10
                     bottomtri = ((extvtx+bottomvtx0,int(bottomuv0.tuple[0]),int(bottomuv0.tuple[1])), (extvtx+bottomvtx1,int(bottomuv1.tuple[0]),int(bottomuv1.tuple[1])), (extvtx+bottomvtx2,int(bottomuv2.tuple[0]),int(bottomuv2.tuple[1])))
                     newtris = newtris + [toptri] + [bottomtri]
                 columncount = columncount + 1
@@ -5125,84 +5150,92 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 elif ringcount == rings:
                     # This part does the last "ring".
                     if face == 1:
-                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face #31, 7faces ring 2
-                        vtx11 = vtx10-1 #30
-                        vtx12 = 5 #5
-                        vtx20 = vtx11 #30
-                        vtx21 = 6+((nbroffaces-face-2)*2)+1 #15
-                        vtx22 = 5 #5
+                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face
+                        vtx11 = vtx10-1
+                        vtx12 = 5
+                        vtx20 = vtx11
+                        vtx21 = 6+((nbroffaces-face-2)*2)+1
+                        vtx22 = 5
                     elif face == 2:
-                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face #32
-                        vtx11 = 6+((nbroffaces-face-2)*2)+3 #15
-                        vtx12 = vtx10-2 #30
-                        vtx20 = base+nbroffaces+((ringcount-3)*nbroffaces)+face #32
-                        vtx21 = vtx11-2 #13
-                        vtx22 = vtx11 #15
+                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face
+                        vtx11 = 6+((nbroffaces-face-2)*2)+3
+                        vtx12 = vtx10-2
+                        vtx20 = base+nbroffaces+((ringcount-3)*nbroffaces)+face
+                        vtx21 = vtx11-2
+                        vtx22 = vtx11
                     elif face == nbroffaces:
-                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face-1 #36
-                        vtx11 = vtx10-nbroffaces+2 #31
-                        vtx12 = 3 #3
-                        vtx20 = vtx11 #31
-                        vtx21 = 5 #5
-                        vtx22 = 3 #3
+                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face-1
+                        vtx11 = vtx10-nbroffaces+2
+                        vtx12 = 3
+                        vtx20 = vtx11
+                        vtx21 = 5
+                        vtx22 = 3
                     elif face == nbroffaces-1:
-                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face #33
-                        vtx11 = 6+((nbroffaces-face-2)*2)+3 #13
-                        vtx12 = vtx10-1 #32
+                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face
+                        vtx11 = 6+((nbroffaces-face-2)*2)+3
+                        vtx12 = vtx10-1
                         vtx20 = vtx10
-                        vtx21 = 3 #3
-                        vtx22 = 7 #7
+                        vtx21 = 3
+                        vtx22 = 7
                     else:
-                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face #33
-                        vtx11 = 6+((nbroffaces-face-2)*2)+3 #13
-                        vtx12 = vtx10-1 #32
-                        vtx20 = base+nbroffaces+((ringcount-3)*nbroffaces)+face #33
-                        vtx21 = vtx11-2 #11
-                        vtx22 = vtx11 #13
+                        vtx10 = base+nbroffaces+((ringcount-3)*nbroffaces)+face
+                        vtx11 = 6+((nbroffaces-face-2)*2)+3
+                        vtx12 = vtx10-1
+                        vtx20 = base+nbroffaces+((ringcount-3)*nbroffaces)+face
+                        vtx21 = vtx11-2
+                        vtx22 = vtx11
                 else:
                     # This part does the rest of the rings.
                     if face == 1:
-                        vtx10 = base+nbroffaces+((ringcount-2)*nbroffaces)+face #24, 7faces ring 2
-                        vtx11 = vtx10-nbroffaces #17
-                        vtx12 = vtx11-1 #16
-                        vtx20 = vtx10 #24
-                        vtx21 = vtx12 #16
-                        vtx22 = vtx10-1 #23
+                        vtx10 = base+nbroffaces+((ringcount-2)*nbroffaces)+face
+                        vtx11 = vtx10-nbroffaces
+                        vtx12 = vtx11-1
+                        vtx20 = vtx10
+                        vtx21 = vtx12
+                        vtx22 = vtx10-1
                     elif face == 2:
-                        vtx10 = base+nbroffaces+((ringcount-2)*nbroffaces) #23
-                        vtx11 = vtx10-nbroffaces #16
-                        vtx12 = vtx11+face #18
-                        vtx20 = vtx10 #23
-                        vtx21 = vtx12 #18
-                        vtx22 = vtx10+face #25
+                        vtx10 = base+nbroffaces+((ringcount-2)*nbroffaces)
+                        vtx11 = vtx10-nbroffaces
+                        vtx12 = vtx11+face
+                        vtx20 = vtx10
+                        vtx21 = vtx12
+                        vtx22 = vtx10+face
                     elif face == nbroffaces:
-                        vtx20 = base+nbroffaces+((ringcount-2)*nbroffaces)+face-1 #29, 7faces ring 2
-                        vtx21 = vtx20-nbroffaces+2-nbroffaces #17
-                        vtx22 = vtx20-nbroffaces+2 #24
-                        vtx10 = vtx20 #29
-                        vtx11 = vtx20-nbroffaces #22
-                        vtx12 = vtx21 #17
+                        vtx20 = base+nbroffaces+((ringcount-2)*nbroffaces)+face-1
+                        vtx21 = vtx20-nbroffaces+2-nbroffaces
+                        vtx22 = vtx20-nbroffaces+2
+                        vtx10 = vtx20
+                        vtx11 = vtx20-nbroffaces
+                        vtx12 = vtx21
                     else:
-                        vtx20 = base+nbroffaces+((ringcount-2)*nbroffaces)+face #29, 7faces ring 2
-                        vtx21 = vtx20-1 #28
-                        vtx22 = vtx20-nbroffaces #22
-                        vtx10 = vtx21 #28
-                        vtx11 = vtx21-nbroffaces #21
-                        vtx12 = vtx20-nbroffaces #22
+                        vtx20 = base+nbroffaces+((ringcount-2)*nbroffaces)+face
+                        vtx21 = vtx20-1
+                        vtx22 = vtx20-nbroffaces
+                        vtx10 = vtx21
+                        vtx11 = vtx21-nbroffaces
+                        vtx12 = vtx20-nbroffaces
 
-                uv10 = cordsview.proj(new_vtxs[vtx10])
-                uv11 = cordsview.proj(new_vtxs[vtx11])
-                uv12 = cordsview.proj(new_vtxs[vtx12])
-                uv20 = cordsview.proj(new_vtxs[vtx20])
-                uv21 = cordsview.proj(new_vtxs[vtx21])
-                uv22 = cordsview.proj(new_vtxs[vtx22])
+                if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                    uv10 = cordsview.proj(new_vtxs[vtx10])
+                    uv11 = cordsview.proj(new_vtxs[vtx11])
+                    uv12 = cordsview.proj(new_vtxs[vtx12])
+                    uv20 = cordsview.proj(new_vtxs[vtx20])
+                    uv21 = cordsview.proj(new_vtxs[vtx21])
+                    uv22 = cordsview.proj(new_vtxs[vtx22])
+                else:
+                    uv10 = quarkx.vect(new_vtxs[vtx10].tuple[1], -new_vtxs[vtx10].tuple[2], 0)/SkinViewScale*10
+                    uv11 = quarkx.vect(new_vtxs[vtx11].tuple[1], -new_vtxs[vtx11].tuple[2], 0)/SkinViewScale*10
+                    uv12 = quarkx.vect(new_vtxs[vtx12].tuple[1], -new_vtxs[vtx12].tuple[2], 0)/SkinViewScale*10
+                    uv20 = quarkx.vect(new_vtxs[vtx20].tuple[1], -new_vtxs[vtx20].tuple[2], 0)/SkinViewScale*10
+                    uv21 = quarkx.vect(new_vtxs[vtx21].tuple[1], -new_vtxs[vtx21].tuple[2], 0)/SkinViewScale*10
+                    uv22 = quarkx.vect(new_vtxs[vtx22].tuple[1], -new_vtxs[vtx22].tuple[2], 0)/SkinViewScale*10
                 tri1 = ((extvtx+vtx10,int(uv10.tuple[0]),int(uv10.tuple[1])), (extvtx+vtx11,int(uv11.tuple[0]),int(uv11.tuple[1])), (extvtx+vtx12,int(uv12.tuple[0]),int(uv12.tuple[1])))
                 tri2 = ((extvtx+vtx20,int(uv20.tuple[0]),int(uv20.tuple[1])), (extvtx+vtx21,int(uv21.tuple[0]),int(uv21.tuple[1])), (extvtx+vtx22,int(uv22.tuple[0]),int(uv22.tuple[1])))
                 newtris = newtris + [tri1] + [tri2]
 
               ## This section is for the option to make the end faces or not.
                 if poly.name == "cylinder:p" and quarkx.setupsubset(SS_MODEL, "Options")["QuickObjects_makehollow"] != "1":
-                    if face == 1: # and rings == 1:
+                    if face == 1:
                         toptri = ((topface_index,int(uv10.tuple[0]),int(uv10.tuple[1])), (extvtx+vtx12,int(uv12.tuple[0]),int(uv12.tuple[1])), (extvtx+vtx11,int(uv11.tuple[0]),int(uv11.tuple[1])))
                         endtri = ((baseface_index,int(uv21.tuple[0]),int(uv21.tuple[1])), (extvtx+vtx20,int(uv20.tuple[0]),int(uv20.tuple[1])), (extvtx+vtx22,int(uv22.tuple[0]),int(uv22.tuple[1])))
                     elif face == nbroffaces:
@@ -5286,7 +5319,16 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 if v.info["viewname"] == "editors3Dview":
                     cordsview = v
         else:
-            cordsview = SkinView1
+            try:
+                tex = comp.currentskin
+                texWidth,texHeight = tex["Size"]
+                if quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] == "1":
+                    SkinViewScale = SkinView1.info["scale"]
+                else:
+                    SkinViewScale = 1
+            except:
+                texWidth,texHeight = SkinView1.clientarea
+                SkinViewScale = 1
 
         newtris = []
         polycount = 1
@@ -5301,10 +5343,16 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 lastpolycount = vtxperface + addedsections
                 facecount = len(new_vtxs) - vtxperface
                 while lastpolycount > 0:
-                    uv1 = cordsview.proj(new_vtxs[facecount])
-                    uv2 = cordsview.proj(new_vtxs[facecount+1])
-                    uv5 = cordsview.proj(new_vtxs[facecount+vtxperface-len(new_vtxs)])
-                    uv6 = cordsview.proj(new_vtxs[facecount+vtxperface-len(new_vtxs)+1])
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                        uv1 = cordsview.proj(new_vtxs[facecount])
+                        uv2 = cordsview.proj(new_vtxs[facecount+1])
+                        uv5 = cordsview.proj(new_vtxs[facecount+vtxperface-len(new_vtxs)])
+                        uv6 = cordsview.proj(new_vtxs[facecount+vtxperface-len(new_vtxs)+1])
+                    else:
+                        uv1 = quarkx.vect(new_vtxs[facecount].tuple[1], -new_vtxs[facecount].tuple[2], 0)/SkinViewScale*10
+                        uv2 = quarkx.vect(new_vtxs[facecount+1].tuple[1], -new_vtxs[facecount+1].tuple[2], 0)/SkinViewScale*10
+                        uv5 = quarkx.vect(new_vtxs[facecount+vtxperface-len(new_vtxs)].tuple[1], -new_vtxs[facecount+vtxperface-len(new_vtxs)].tuple[2], 0)/SkinViewScale*10
+                        uv6 = quarkx.vect(new_vtxs[facecount+vtxperface-len(new_vtxs)+1].tuple[1], -new_vtxs[facecount+vtxperface-len(new_vtxs)+1].tuple[2], 0)/SkinViewScale*10
                     tri1 = ((extvtx+facecount,int(uv1.tuple[0]),int(uv1.tuple[1])), (extvtx+facecount+1,int(uv2.tuple[0]),int(uv2.tuple[1])), (extvtx+facecount+vtxperface-len(new_vtxs),int(uv5.tuple[0]),int(uv5.tuple[1])))
                     tri2 = ((extvtx+facecount+vtxperface-len(new_vtxs),int(uv5.tuple[0]),int(uv5.tuple[1])), (extvtx+facecount+1,int(uv2.tuple[0]),int(uv2.tuple[1])), (extvtx+facecount+vtxperface-len(new_vtxs)+1,int(uv6.tuple[0]),int(uv6.tuple[1])))
                     newtris = newtris + [tri1] + [tri2]
@@ -5315,17 +5363,27 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 lastpolycount = vtxperface + addedsections
                 facecount = vtxperface -1
                 while lastpolycount > 0:
-                    uv1 = cordsview.proj(new_vtxs[facecount])
-                    uv7 = cordsview.proj(new_vtxs[facecount+1-vtxperface])
-                    uv8 = cordsview.proj(new_vtxs[vtxperface-1])
-                    uv9 = cordsview.proj(new_vtxs[facecount-facecount])
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                        uv1 = cordsview.proj(new_vtxs[facecount])
+                        uv7 = cordsview.proj(new_vtxs[facecount+1-vtxperface])
+                        uv8 = cordsview.proj(new_vtxs[vtxperface-1])
+                        uv9 = cordsview.proj(new_vtxs[facecount-facecount])
+                    else:
+                        uv1 = quarkx.vect(new_vtxs[facecount].tuple[1], -new_vtxs[facecount].tuple[2], 0)/SkinViewScale*10
+                        uv7 = quarkx.vect(new_vtxs[facecount+1-vtxperface].tuple[1], -new_vtxs[facecount+1-vtxperface].tuple[2], 0)/SkinViewScale*10
+                        uv8 = quarkx.vect(new_vtxs[vtxperface-1].tuple[1], -new_vtxs[vtxperface-1].tuple[2], 0)/SkinViewScale*10
+                        uv9 = quarkx.vect(new_vtxs[facecount-facecount].tuple[1], -new_vtxs[facecount-facecount].tuple[2], 0)/SkinViewScale*10
                     if facecount >= len(new_vtxs)-1:
                         tri1 = ((extvtx+facecount,int(uv1.tuple[0]),int(uv1.tuple[1])), (extvtx+facecount+1-vtxperface,int(uv7.tuple[0]),int(uv7.tuple[1])), (extvtx+vtxperface-1,int(uv8.tuple[0]),int(uv8.tuple[1])))
                         tri2 = ((extvtx+vtxperface-1,int(uv8.tuple[0]),int(uv8.tuple[1])), (extvtx+facecount+1-vtxperface,int(uv7.tuple[0]),int(uv7.tuple[1])), (extvtx+facecount-facecount,int(uv9.tuple[0]),int(uv9.tuple[1])))
                         newtris = newtris + [tri1] + [tri2]
                         break
-                    uv2 = cordsview.proj(new_vtxs[facecount+1])
-                    uv3 = cordsview.proj(new_vtxs[facecount+vtxperface])
+                    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                        uv2 = cordsview.proj(new_vtxs[facecount+1])
+                        uv3 = cordsview.proj(new_vtxs[facecount+vtxperface])
+                    else:
+                        uv2 = quarkx.vect(new_vtxs[facecount+1].tuple[1], -new_vtxs[facecount+1].tuple[2], 0)/SkinViewScale*10
+                        uv3 = quarkx.vect(new_vtxs[facecount+vtxperface].tuple[1], -new_vtxs[facecount+vtxperface].tuple[2], 0)/SkinViewScale*10
                     tri1 = ((extvtx+facecount,int(uv1.tuple[0]),int(uv1.tuple[1])), (extvtx+facecount+1-vtxperface,int(uv7.tuple[0]),int(uv7.tuple[1])), (extvtx+facecount+vtxperface,int(uv3.tuple[0]),int(uv3.tuple[1])))
                     tri2 = ((extvtx+facecount+vtxperface,int(uv3.tuple[0]),int(uv3.tuple[1])), (extvtx+facecount+1-vtxperface,int(uv7.tuple[0]),int(uv7.tuple[1])), (extvtx+facecount+1,int(uv2.tuple[0]),int(uv2.tuple[1])))
                     newtris = newtris + [tri1] + [tri2]
@@ -5333,10 +5391,16 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                     lastpolycount = lastpolycount -1
                 break
             else:
-                uv1 = cordsview.proj(new_vtxs[facecount])
-                uv2 = cordsview.proj(new_vtxs[facecount+1])
-                uv3 = cordsview.proj(new_vtxs[facecount+vtxperface])
-                uv4 = cordsview.proj(new_vtxs[facecount+vtxperface+1])
+                if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                    uv1 = cordsview.proj(new_vtxs[facecount])
+                    uv2 = cordsview.proj(new_vtxs[facecount+1])
+                    uv3 = cordsview.proj(new_vtxs[facecount+vtxperface])
+                    uv4 = cordsview.proj(new_vtxs[facecount+vtxperface+1])
+                else:
+                    uv1 = quarkx.vect(new_vtxs[facecount].tuple[1], -new_vtxs[facecount].tuple[2], 0)/SkinViewScale*10
+                    uv2 = quarkx.vect(new_vtxs[facecount+1].tuple[1], -new_vtxs[facecount+1].tuple[2], 0)/SkinViewScale*10
+                    uv3 = quarkx.vect(new_vtxs[facecount+vtxperface].tuple[1], -new_vtxs[facecount+vtxperface].tuple[2], 0)/SkinViewScale*10
+                    uv4 = quarkx.vect(new_vtxs[facecount+vtxperface+1].tuple[1], -new_vtxs[facecount+vtxperface+1].tuple[2], 0)/SkinViewScale*10
                 tri1 = ((extvtx+facecount,int(uv1.tuple[0]),int(uv1.tuple[1])), (extvtx+facecount+1,int(uv2.tuple[0]),int(uv2.tuple[1])), (extvtx+facecount+vtxperface,int(uv3.tuple[0]),int(uv3.tuple[1])))
                 tri2 = ((extvtx+facecount+vtxperface,int(uv3.tuple[0]),int(uv3.tuple[1])), (extvtx+facecount+1,int(uv2.tuple[0]),int(uv2.tuple[1])), (extvtx+facecount+vtxperface+1,int(uv4.tuple[0]),int(uv4.tuple[1])))
                 newtris = newtris + [tri1] + [tri2]
@@ -5385,7 +5449,16 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                 if v.info["viewname"] == "editors3Dview":
                     cordsview = v
         else:
-            cordsview = SkinView1
+            try:
+                tex = comp.currentskin
+                texWidth,texHeight = tex["Size"]
+                if quarkx.setupsubset(SS_MODEL, "Options")['UseSkinViewScale'] == "1":
+                    SkinViewScale = SkinView1.info["scale"]
+                else:
+                    SkinViewScale = 1
+            except:
+                texWidth,texHeight = SkinView1.clientarea
+                SkinViewScale = 1
 
         # This part compairs each of the poly's faces vertexes to find them in the
         #    new_vtxs to setup up their vert_index for making the new triangles.
@@ -5412,12 +5485,20 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                                 tri2 = vertex
                                 count = 0
                                 break
-                uv0u = int(cordsview.proj(new_vtxs[tri0]).tuple[0])
-                uv0v = int(cordsview.proj(new_vtxs[tri0]).tuple[1])
-                uv1u = int(cordsview.proj(new_vtxs[tri1]).tuple[0])
-                uv1v = int(cordsview.proj(new_vtxs[tri1]).tuple[1])
-                uv2u = int(cordsview.proj(new_vtxs[tri2]).tuple[0])
-                uv2v = int(cordsview.proj(new_vtxs[tri2]).tuple[1])
+                if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                    uv0u = int(cordsview.proj(new_vtxs[tri0]).tuple[0])
+                    uv0v = int(cordsview.proj(new_vtxs[tri0]).tuple[1])
+                    uv1u = int(cordsview.proj(new_vtxs[tri1]).tuple[0])
+                    uv1v = int(cordsview.proj(new_vtxs[tri1]).tuple[1])
+                    uv2u = int(cordsview.proj(new_vtxs[tri2]).tuple[0])
+                    uv2v = int(cordsview.proj(new_vtxs[tri2]).tuple[1])
+                else:
+                    uv0u = new_vtxs[tri0].tuple[1]/SkinViewScale*10
+                    uv0v = -new_vtxs[tri0].tuple[2]/SkinViewScale*10
+                    uv1u = new_vtxs[tri1].tuple[1]/SkinViewScale*10
+                    uv1v = -new_vtxs[tri1].tuple[2]/SkinViewScale*10
+                    uv2u = new_vtxs[tri2].tuple[1]/SkinViewScale*10
+                    uv2v = -new_vtxs[tri2].tuple[2]/SkinViewScale*10
                 tris = ((extvtx+tri0,uv0u,uv0v), (extvtx+tri1,uv1u,uv1v), (extvtx+tri2,uv2u,uv2v))
                 newtris = newtris + [tris]
 
@@ -5442,14 +5523,24 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                                 tri3 = vertex
                                 count = 0
                                 break
-                uv0u = int(cordsview.proj(new_vtxs[tri0]).tuple[0])
-                uv0v = int(cordsview.proj(new_vtxs[tri0]).tuple[1])
-                uv1u = int(cordsview.proj(new_vtxs[tri1]).tuple[0])
-                uv1v = int(cordsview.proj(new_vtxs[tri1]).tuple[1])
-                uv2u = int(cordsview.proj(new_vtxs[tri2]).tuple[0])
-                uv2v = int(cordsview.proj(new_vtxs[tri2]).tuple[1])
-                uv3u = int(cordsview.proj(new_vtxs[tri3]).tuple[0])
-                uv3v = int(cordsview.proj(new_vtxs[tri3]).tuple[1])
+                if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                    uv0u = int(cordsview.proj(new_vtxs[tri0]).tuple[0])
+                    uv0v = int(cordsview.proj(new_vtxs[tri0]).tuple[1])
+                    uv1u = int(cordsview.proj(new_vtxs[tri1]).tuple[0])
+                    uv1v = int(cordsview.proj(new_vtxs[tri1]).tuple[1])
+                    uv2u = int(cordsview.proj(new_vtxs[tri2]).tuple[0])
+                    uv2v = int(cordsview.proj(new_vtxs[tri2]).tuple[1])
+                    uv3u = int(cordsview.proj(new_vtxs[tri3]).tuple[0])
+                    uv3v = int(cordsview.proj(new_vtxs[tri3]).tuple[1])
+                else:
+                    uv0u = new_vtxs[tri0].tuple[1]/SkinViewScale*10
+                    uv0v = -new_vtxs[tri0].tuple[2]/SkinViewScale*10
+                    uv1u = new_vtxs[tri1].tuple[1]/SkinViewScale*10
+                    uv1v = -new_vtxs[tri1].tuple[2]/SkinViewScale*10
+                    uv2u = new_vtxs[tri2].tuple[1]/SkinViewScale*10
+                    uv2v = -new_vtxs[tri2].tuple[2]/SkinViewScale*10
+                    uv3u = new_vtxs[tri3].tuple[1]/SkinViewScale*10
+                    uv3v = -new_vtxs[tri3].tuple[2]/SkinViewScale*10
                 tris1 = ((extvtx+tri0,uv0u,uv0v), (extvtx+tri1,uv1u,uv1v), (extvtx+tri2,uv2u,uv2v))
                 tris2 = ((extvtx+tri3,uv3u,uv3v), (extvtx+tri0,uv0u,uv0v), (extvtx+tri2,uv2u,uv2v))
                 newtris = newtris + [tris1] + [tris2]
@@ -5479,12 +5570,20 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                                     tri2 = vertex
                                     count = count +1
                                 if count >= 2:
-                                    uv0u = int(cordsview.proj(new_vtxs[tri0]).tuple[0])
-                                    uv0v = int(cordsview.proj(new_vtxs[tri0]).tuple[1])
-                                    uv1u = int(cordsview.proj(new_vtxs[tri1]).tuple[0])
-                                    uv1v = int(cordsview.proj(new_vtxs[tri1]).tuple[1])
-                                    uv2u = int(cordsview.proj(new_vtxs[tri2]).tuple[0])
-                                    uv2v = int(cordsview.proj(new_vtxs[tri2]).tuple[1])
+                                    if quarkx.setupsubset(SS_MODEL, "Options")['SkinFrom3Dview'] == "1" or SkinView1 is None:
+                                        uv0u = int(cordsview.proj(new_vtxs[tri0]).tuple[0])
+                                        uv0v = int(cordsview.proj(new_vtxs[tri0]).tuple[1])
+                                        uv1u = int(cordsview.proj(new_vtxs[tri1]).tuple[0])
+                                        uv1v = int(cordsview.proj(new_vtxs[tri1]).tuple[1])
+                                        uv2u = int(cordsview.proj(new_vtxs[tri2]).tuple[0])
+                                        uv2v = int(cordsview.proj(new_vtxs[tri2]).tuple[1])
+                                    else:
+                                        uv0u = new_vtxs[tri0].tuple[1]/SkinViewScale*10
+                                        uv0v = -new_vtxs[tri0].tuple[2]/SkinViewScale*10
+                                        uv1u = new_vtxs[tri1].tuple[1]/SkinViewScale*10
+                                        uv1v = -new_vtxs[tri1].tuple[2]/SkinViewScale*10
+                                        uv2u = new_vtxs[tri2].tuple[1]/SkinViewScale*10
+                                        uv2v = -new_vtxs[tri2].tuple[2]/SkinViewScale*10
                                     tris1 = ((extvtx+tri0,uv0u,uv0v), (extvtx+tri1,uv1u,uv1v), (extvtx+tri2,uv2u,uv2v))
                                     newtris = newtris + [tris1]
                                     prevvtx = tri2
@@ -5513,6 +5612,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2007/11/19 01:08:45  cdunde
+# To fix needed face definition and use the fastest way to get it.
+#
 # Revision 1.8  2007/11/18 02:40:31  cdunde
 # Added "Make hollow" option to dialog & end faces for Pyramid and Cylinder Quick Object Makers
 # to allow extrusion and vertex manipulation to create shapes such as arms and leg parts.
