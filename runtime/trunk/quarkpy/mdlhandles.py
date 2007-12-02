@@ -2345,6 +2345,127 @@ class ModelEditorLinHandlesManager:
                         else:
                             self.selvtxlist = self.selvtxlist + [vtx[0]] 
                         self.tristodrawlist = self.tristodrawlist + findTrianglesAndIndexes(comp, vtx[0], vtx[1])
+                # From here down handles the vertex "face edge" extrusion.
+                if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] == "1" and len(self.editor.ModelVertexSelList) > 1:
+                    if len(self.editor.ModelVertexSelList) > 1:
+                        self.editor.SelVertexes = []
+                        self.editor.SelCommonTriangles = []
+                        for vtx in self.editor.ModelVertexSelList:
+                            if vtx[0] in self.editor.SelVertexes:
+                                pass
+                            else:
+                                self.editor.SelVertexes = self.editor.SelVertexes + [vtx[0]]
+                        for vtx in self.editor.SelVertexes:
+                            checktris = findTrianglesAndIndexes(comp, vtx, None)
+                            for tri in checktris:
+                                if self.editor.SelCommonTriangles == []:
+                                    self.editor.SelCommonTriangles = self.editor.SelCommonTriangles + [tri]
+                                    continue
+                                for comtri in range(len(self.editor.SelCommonTriangles)):
+                                    if tri[2] == self.editor.SelCommonTriangles[comtri][2]:
+                                        break
+                                    if comtri == len(self.editor.SelCommonTriangles)-1:
+                                        self.editor.SelCommonTriangles = self.editor.SelCommonTriangles + [tri]
+                        templist = []
+                        keepvtx = []
+                        if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] == "1":
+                            for tri in self.editor.SelCommonTriangles:
+                                vtxcount = 0
+                                keep1 = keep2 = keep3 = None
+                                for vtx in self.editor.SelVertexes:
+                                    if vtx == tri[4][0][0] or vtx == tri[4][1][0] or vtx == tri[4][2][0]:
+                                        vtxcount = vtxcount + 1
+                                        if keep1 is None:
+                                            keep1 = vtx
+                                        elif keep2 is None:
+                                            keep2 = vtx
+                                        else:
+                                            keep3 = vtx
+                                if vtxcount > 1:
+                                    templist = templist + [tri]
+                                    if not (keep1 in keepvtx):
+                                        keepvtx = keepvtx + [keep1]
+                                    if not (keep2 in keepvtx):
+                                        keepvtx = keepvtx + [keep2]
+                                    if keep3 is not None and not (keep3 in keepvtx):
+                                        keepvtx = keepvtx + [keep3]
+
+                            perimeter_edge = []
+                            for tri in range(len(templist)):
+                                if (templist[tri][4][0][0] in keepvtx) and (templist[tri][4][1][0] in keepvtx) and not (templist[tri][4][2][0] in keepvtx):
+                                    temp = (templist[tri][2], templist[tri][4][0][0], templist[tri][4][1][0])
+                                    if not (temp in perimeter_edge):
+                                        perimeter_edge = perimeter_edge + [temp]
+                                if (templist[tri][4][1][0] in keepvtx) and (templist[tri][4][2][0] in keepvtx) and not (templist[tri][4][0][0] in keepvtx):
+                                    temp = (templist[tri][2], templist[tri][4][1][0], templist[tri][4][2][0])
+                                    if not (temp in perimeter_edge):
+                                        perimeter_edge = perimeter_edge + [temp]
+                                if (templist[tri][4][2][0] in keepvtx) and (templist[tri][4][0][0] in keepvtx) and not (templist[tri][4][1][0] in keepvtx):
+                                    temp = (templist[tri][2], templist[tri][4][2][0], templist[tri][4][0][0])
+                                    if not (temp in perimeter_edge):
+                                        perimeter_edge = perimeter_edge + [temp]
+
+                            edgevtxs = []
+                            for edge in perimeter_edge:
+                                if not (edge[1] in edgevtxs):
+                                    edgevtxs = edgevtxs + [edge[1]]
+                                if not (edge[2] in edgevtxs):
+                                    edgevtxs = edgevtxs + [edge[2]]
+
+                            self.editor.SelCommonTriangles = perimeter_edge
+                            if self.editor.SelCommonTriangles == [] and self.editor.ModelVertexSelList != [] and view is not None:
+                                quarkx.msgbox("Improper Selection !\nFunction will falter !\n\nYou should select the two\nvertexes of each triangle's edge\nthat is to be extruded.\n\nOnly one vertex of a triangle\nis in your selection.", MT_ERROR, MB_OK)
+                                self.editor.SelVertexes = []
+                                self.editor.SelCommonTriangles = []
+
+                            if len(self.editor.SelVertexes) != len(edgevtxs):
+                                self.editor.SelVertexes = edgevtxs
+                                templist = []
+                                for vtx in self.editor.ModelVertexSelList:
+                                   if not (vtx[0] in self.editor.SelVertexes):
+                                       pass
+                                   else:
+                                       templist = templist + [vtx]
+                                self.editor.ModelVertexSelList = templist
+
+                        else:
+                            for tri in self.editor.SelCommonTriangles:
+                                vtxcount = 0
+                                keep1 = keep2 = keep3 = None
+                                for vtx in self.editor.SelVertexes:
+                                    if vtx == tri[4][0][0] or vtx == tri[4][1][0] or vtx == tri[4][2][0]:
+                                        vtxcount = vtxcount + 1
+                                        if keep1 is None:
+                                            keep1 = vtx
+                                        elif keep2 is None:
+                                            keep2 = vtx
+                                        else:
+                                            keep3 = vtx
+                                if vtxcount > 1:
+                                    if not (keep1 in keepvtx):
+                                        keepvtx = keepvtx + [keep1]
+                                    if not (keep2 in keepvtx):
+                                        keepvtx = keepvtx + [keep2]
+                                    if keep3 is not None and not (keep3 in keepvtx):
+                                        keepvtx = keepvtx + [keep3]
+                                        templist = templist + [(tri[2], keep1, keep2, keep3)]
+                                    else:
+                                        templist = templist + [(tri[2], keep1, keep2)]
+                            self.editor.SelCommonTriangles = templist
+                            if self.editor.SelCommonTriangles == [] and self.editor.ModelVertexSelList != [] and view is not None:
+                                quarkx.msgbox("Improper Selection !\nFunction will falter !\n\nYou should select at least two\nvertexes of each triangle's edge\nthat is to be extruded.\n\nOnly one vertex of a triangle\nis in your selection.", MT_ERROR, MB_OK)
+                                self.editor.SelVertexes = []
+                                self.editor.SelCommonTriangles = []
+
+                            if len(self.editor.SelVertexes) != len(keepvtx):
+                                self.editor.SelVertexes = keepvtx
+                                templist = []
+                                for vtx in self.editor.ModelVertexSelList:
+                                   if not (vtx[0] in self.editor.SelVertexes):
+                                       pass
+                                   else:
+                                       templist = templist + [vtx]
+                                self.editor.ModelVertexSelList = templist
 
     def BuildHandles(self, center=None, minimal=None):
         "Build a list of handles to put around the circle for linear distortion."
@@ -3097,6 +3218,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.119  2007/12/02 06:47:12  cdunde
+#Setup linear center handle selected vertexes edge extrusion function.
+#
 #Revision 1.118  2007/11/22 07:31:05  cdunde
 #Setup to allow merging of a base vertex and other multiple selected vertexes.
 #
