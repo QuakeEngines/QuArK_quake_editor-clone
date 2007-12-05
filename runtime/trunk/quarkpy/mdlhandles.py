@@ -2145,7 +2145,8 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                 for tri in range(len(tris)):
                     for vtx in range(len(sellist)):
                         if (sellist[vtx][0] == tris[tri][0][0]) or (sellist[vtx][0] == tris[tri][1][0]) or (sellist[vtx][0] == tris[tri][2][0]):
-                            editor.ModelFaceSelList = editor.ModelFaceSelList + [tri]
+                            if not (tri in editor.ModelFaceSelList):
+                                editor.ModelFaceSelList = editor.ModelFaceSelList + [tri]
                 # Sets these lists up for the Linear Handle drag lines to be drawn.
                 editor.SelCommonTriangles = []
                 editor.SelVertexes = []
@@ -2814,9 +2815,9 @@ class LinRedHandle(LinearHandle):
                     ver1X ,ver1Y, ver1Z = view.proj(framevtxs[int(ver_index1)]).tuple
                     ver2X ,ver2Y, ver2Z = view.proj(framevtxs[int(ver_index2)]).tuple
                     cv.pencolor = dragcolor
-                    cv.line(ver0X ,ver0Y, int(vect0X), int(vect0Y))
-                    cv.line(ver1X ,ver1Y, int(vect1X), int(vect1Y))
-                    cv.line(ver2X ,ver2Y, int(vect2X), int(vect2Y))
+                    cv.line( int(ver0X), int(ver0Y), int(vect0X), int(vect0Y))
+                    cv.line( int(ver1X), int(ver1Y), int(vect1X), int(vect1Y))
+                    cv.line( int(ver2X), int(ver2Y), int(vect2X), int(vect2Y))
                 cv.pencolor = MapColor("FaceSelOutline", SS_MODEL)
                 cv.line(int(vect0X), int(vect0Y), int(vect1X), int(vect1Y))
                 cv.line(int(vect1X), int(vect1Y), int(vect2X), int(vect2Y))
@@ -3218,6 +3219,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.120  2007/12/02 07:02:25  cdunde
+#Some selected vertexes edge extrusion function code missed in last change.
+#
 #Revision 1.119  2007/12/02 06:47:12  cdunde
 #Setup linear center handle selected vertexes edge extrusion function.
 #

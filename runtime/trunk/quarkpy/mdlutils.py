@@ -755,17 +755,17 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
             if ver_index0 in old_vtx_nbrs:
                 pass
             else:
-                old_vtxs = old_vtxs + [quarkx.vect(face["v"][0] , face["v"][1], face["v"][2])]
+                old_vtxs = old_vtxs + [quarkx.vect(face["v"][0], face["v"][1], face["v"][2])]
                 old_vtx_nbrs = old_vtx_nbrs + [ver_index0]
             if ver_index1 in old_vtx_nbrs:
                 pass
             else:
-                old_vtxs = old_vtxs + [quarkx.vect(face["v"][3] , face["v"][4], face["v"][5])]
+                old_vtxs = old_vtxs + [quarkx.vect(face["v"][3], face["v"][4], face["v"][5])]
                 old_vtx_nbrs = old_vtx_nbrs + [ver_index1]
             if ver_index2 in old_vtx_nbrs:
                 pass
             else:
-                old_vtxs = old_vtxs + [quarkx.vect(face["v"][6] , face["v"][7], face["v"][8])]
+                old_vtxs = old_vtxs + [quarkx.vect(face["v"][6], face["v"][7], face["v"][8])]
                 old_vtx_nbrs = old_vtx_nbrs + [ver_index2]
 
             # This section calculates the new selected triangle's (face) vertex index numbers.
@@ -2190,12 +2190,148 @@ def SubdivideFaces(editor, pieces=None):
             q["triangles"] = str(len(editor.Root.currentcomponent.triangles))
             editor.layout.skinform.setdata(q, editor.layout.skinform.form)
             SkinView1.invalidate()
-        
+
+    elif pieces == 3:
+        # This updates (adds) the new vertices to each frame.
+        for tri_index in editor.ModelFaceSelList:
+            currentvertices = currentvertices + 1
+            for compframe in compframes:
+                old_vtxs = compframe.vertices
+                faceCenter = (old_vtxs[new_tris[tri_index][0][0]] + old_vtxs[new_tris[tri_index][1][0]] + old_vtxs[new_tris[tri_index][2][0]]) / 3
+                compframe.vertices = old_vtxs + [faceCenter]
+                compframe.compparent = new_comp
+            faceCenterU = int((new_tris[tri_index][0][1] + new_tris[tri_index][1][1] + new_tris[tri_index][2][1]) / 3)
+            faceCenterV = int((new_tris[tri_index][0][2] + new_tris[tri_index][1][2] + new_tris[tri_index][2][2]) / 3)
+            newtri1 = ((currentvertices, faceCenterU, faceCenterV), (new_tris[tri_index][1][0], new_tris[tri_index][1][1], new_tris[tri_index][1][2]), (new_tris[tri_index][2][0], new_tris[tri_index][2][1], new_tris[tri_index][2][2]))
+            newtri2 = ((currentvertices, faceCenterU, faceCenterV), (new_tris[tri_index][2][0], new_tris[tri_index][2][1], new_tris[tri_index][2][2]), (new_tris[tri_index][0][0], new_tris[tri_index][0][1], new_tris[tri_index][0][2]))
+            new_tris[tri_index] = ((currentvertices, faceCenterU, faceCenterV), (new_tris[tri_index][0][0], new_tris[tri_index][0][1], new_tris[tri_index][0][2]), (new_tris[tri_index][1][0], new_tris[tri_index][1][1], new_tris[tri_index][1][2]))
+            new_tris = new_tris + [newtri1] + [newtri2]
+            newfaceselection = newfaceselection + [newtri_index+1] + [newtri_index+2]
+            newtri_index = newtri_index+2
+
+        # This updates (adds) the new triangles to the component.
+        new_comp.triangles = new_tris
+        new_comp.currentskin = editor.Root.currentcomponent.currentskin
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        new_comp.currentframe = compframes[curframeNR]
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.Root.currentcomponent = new_comp
+        editor.ok(undo, "face Subdivision 3")
+        editor.ModelFaceSelList = editor.ModelFaceSelList + newfaceselection
+        newfaceselection = []
+        import mdlhandles
+        from mdlhandles import SkinView1
+        if SkinView1 is not None:
+            q = editor.layout.skinform.linkedobjects[0]
+            q["triangles"] = str(len(editor.Root.currentcomponent.triangles))
+            editor.layout.skinform.setdata(q, editor.layout.skinform.form)
+            SkinView1.invalidate()
+
+    elif pieces == 4:
+        # This updates (adds) the new vertices to each frame.
+        commonvtxs = []
+        commonvtxnbr = []
+        for tri in editor.ModelFaceSelList:
+            for vtx in comp.triangles[tri]:
+                if not (curframe.vertices[vtx[0]] in commonvtxs):
+                    commonvtxs = commonvtxs + [curframe.vertices[vtx[0]]]
+                    commonvtxnbr = commonvtxnbr + [vtx[0]]
+        for tri in editor.ModelFaceSelList:
+            newsidecenter = []
+            trivtxs = comp.triangles[tri]
+            side01center = (curframe.vertices[trivtxs[0][0]] + curframe.vertices[trivtxs[1][0]])*.5
+            newvtx3u = (trivtxs[0][1] + trivtxs[1][1])*.5
+            newvtx3v = (trivtxs[0][2] + trivtxs[1][2])*.5
+            for vtx in range(len(commonvtxs)):
+                if str(side01center) == str(commonvtxs[vtx]):
+                    newvtx_index3 = commonvtxnbr[vtx]
+                    break
+                if vtx == len(commonvtxs)-1:
+                    currentvertices = currentvertices + 1
+                    newvtx_index3 = currentvertices
+                    commonvtxs = commonvtxs + [side01center]
+                    commonvtxnbr = commonvtxnbr + [newvtx_index3]
+                    newsidecenter = newsidecenter + [0]
+            newvtx3 = (newvtx_index3,newvtx3u,newvtx3v)
+            side12center = (curframe.vertices[trivtxs[1][0]] + curframe.vertices[trivtxs[2][0]])*.5
+            newvtx4u = (trivtxs[1][1] + trivtxs[2][1])*.5
+            newvtx4v = (trivtxs[1][2] + trivtxs[2][2])*.5
+            for vtx in range(len(commonvtxs)):
+                if str(side12center) == str(commonvtxs[vtx]):
+                    newvtx_index4 = commonvtxnbr[vtx]
+                    break
+                if vtx == len(commonvtxs)-1:
+                    currentvertices = currentvertices + 1
+                    newvtx_index4 = currentvertices
+                    commonvtxs = commonvtxs + [side12center]
+                    commonvtxnbr = commonvtxnbr + [newvtx_index4]
+                    newsidecenter = newsidecenter + [1]
+            newvtx4 = (newvtx_index4,newvtx4u,newvtx4v)
+            side20center = (curframe.vertices[trivtxs[2][0]] + curframe.vertices[trivtxs[0][0]])*.5
+            newvtx5u = (trivtxs[2][1] + trivtxs[0][1])*.5
+            newvtx5v = (trivtxs[2][2] + trivtxs[0][2])*.5
+            for vtx in range(len(commonvtxs)):
+                if str(side20center) == str(commonvtxs[vtx]):
+                    newvtx_index5 = commonvtxnbr[vtx]
+                    break
+                if vtx == len(commonvtxs)-1:
+                    currentvertices = currentvertices + 1
+                    newvtx_index5 = currentvertices
+                    commonvtxs = commonvtxs + [side20center]
+                    commonvtxnbr = commonvtxnbr + [newvtx_index5]
+                    newsidecenter = newsidecenter + [2]
+            newvtx5 = (newvtx_index5,newvtx5u,newvtx5v)
+
+            new_tris[tri] = (newvtx5, trivtxs[0], newvtx3)
+            new_tri1 = (newvtx4, newvtx3, trivtxs[1])
+            new_tri2 = (newvtx5, newvtx3, newvtx4)
+            new_tri3 = (newvtx5, newvtx4, trivtxs[2])
+            new_tris = new_tris + [new_tri1] + [new_tri2] + [new_tri3]
+            newfaceselection = newfaceselection + [newtri_index+1] + [newtri_index+2] + [newtri_index+3]
+            newtri_index = newtri_index+3
+
+            for compframe in compframes:
+                old_vtxs = compframe.vertices
+                if 0 in newsidecenter:
+                    side01center = (compframe.vertices[trivtxs[0][0]] + compframe.vertices[trivtxs[1][0]])*.5
+                    old_vtxs = old_vtxs + [side01center]
+                if 1 in newsidecenter:
+                    side12center = (compframe.vertices[trivtxs[1][0]] + compframe.vertices[trivtxs[2][0]])*.5
+                    old_vtxs = old_vtxs + [side12center]
+                if 2 in newsidecenter:
+                    side20center = (compframe.vertices[trivtxs[2][0]] + compframe.vertices[trivtxs[0][0]])*.5
+                    old_vtxs = old_vtxs + [side20center]
+                compframe.vertices = old_vtxs
+                compframe.compparent = new_comp
+
+        # This updates (adds) the new triangles to the component.
+        new_comp.triangles = new_tris
+        new_comp.currentskin = editor.Root.currentcomponent.currentskin
+        compframes = new_comp.findallsubitems("", ':mf')   # get all frames
+        new_comp.currentframe = compframes[curframeNR]
+        undo = quarkx.action()
+        undo.exchange(comp, new_comp)
+        editor.Root.currentcomponent = new_comp
+        editor.ok(undo, "face Subdivision 4")
+        editor.ModelFaceSelList = editor.ModelFaceSelList + newfaceselection
+        newfaceselection = []
+        import mdlhandles
+        from mdlhandles import SkinView1
+        if SkinView1 is not None:
+            q = editor.layout.skinform.linkedobjects[0]
+            q["triangles"] = str(len(editor.Root.currentcomponent.triangles))
+            editor.layout.skinform.setdata(q, editor.layout.skinform.form)
+            SkinView1.invalidate()
+
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.68  2007/12/02 06:47:11  cdunde
+#Setup linear center handle selected vertexes edge extrusion function.
+#
 #Revision 1.67  2007/11/24 01:46:01  cdunde
 #To get all of the vertex and face Linear Handle movements
 #to work properly for selected frames with animation differences.
