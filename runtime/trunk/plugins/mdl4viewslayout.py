@@ -53,6 +53,9 @@ class FourViewsLayout(ModelLayout):
         self.ViewXZ.viewtype="editor"
         self.ViewYZ.viewtype="editor"
         self.View3D.viewtype="editor"
+        self.ViewXY.showprogress=0
+        self.ViewXZ.showprogress=0
+        self.ViewYZ.showprogress=0
         self.View3D.showprogress=0
 
         #
@@ -311,6 +314,9 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.11  2007/12/06 00:59:21  danielpharos
+# Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
+#
 # Revision 1.10  2007/06/05 22:42:26  cdunde
 # To set the qbaseeditor's global currentview for proper creation and
 # drawing of handles when switching from one layout to another.
