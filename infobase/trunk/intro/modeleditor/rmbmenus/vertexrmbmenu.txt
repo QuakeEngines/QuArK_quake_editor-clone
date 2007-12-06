@@ -60,10 +60,11 @@ to the <g>Base</g> vertex position<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 of the <g>1st</g> tree-view selected <g>frame</g>.
 
-<i>Merge 2 Vertexes </i>&nbsp;: When two vertexes have been <g>Picked</g> in one of the editor views this function
-becomes active allowing the <g>picked</g> vertex be moved to the <g>Base</g> (stationary) vertex
-(the first one selected) location and aligned with that <g>Base</g> vertex where it will then merge the two
-vertexes into one. It also works in conjunction with the 'Clear Pick list' above it.
+<i>Merge Vertexes </i>&nbsp;: When two or more vertexes have been <g>Picked</g> in one of the editor views this function
+becomes active allowing the <g>picked</g> vertexes be moved to the <g>Base</g> (stationary) vertex
+(the first one selected) location and aligned with that <g>Base</g> vertex where they will then be merged into
+the one 'Base' vertex. Two vertexes of the same face (triangle) can not be selected.
+This function also works in conjunction with the 'Clear Pick list' above it.
 
 <i>Force to grid </i>&nbsp;: This will cause any vertex to 'snap' to the nearest location on the editor's
 grid for the view that the RMB click was made in.

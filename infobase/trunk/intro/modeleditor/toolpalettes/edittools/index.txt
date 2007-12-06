@@ -3,7 +3,7 @@ desc: extrudeselectedfaces
 desc: extrudewithbulkheads
 desc: reversefacedirection
 desc: subdivide2
+desc: subdivide3
+desc: subdivide4
 
 <img border=1>edittools.png</img>
-&nbsp;The two buttons on the far right of the toolbar are not operational at this time
-and are reserved for future functions for this toolbar.

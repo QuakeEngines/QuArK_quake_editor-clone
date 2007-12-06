@@ -76,6 +76,13 @@ show face and selected vertex colors can be changed in the 'Configuration Model 
 <i>Skin From 3D view </i>&nbsp;: This turns the function on or off to take co-ordnances for the 'Skin-view' from the
 editors 3D view when new objects are created using the 'Quick Object Maker'. It will place that object on the skin exactly
 the same way you see it in the 3D view when the object is created. This same process applies to selected faces in the editor.
+Because the 3D view uses its own 'scale' factor, activating this function will also turn off the <g>Use Skin-view scale</g> function.
+
+<i>Use Skin-view scale </i>&nbsp;: This turns the function on or off for applying of the views 'zoom' or 'scale' factor when
+taking co-ordnances from the 'Skin-view' and which works in reverse. Meaning, when this option is checked,
+if the Skin-view is zoomed out (skin looks small) it will skin new triangles with fewer repetitions (skin looks larger)
+of that image and visa-versa. Because the 3D view uses its own 'scale' factor, activating this function will also turn
+off the <g>Skin From 3D view</g> function.
 
 <i>Skin Grid Visible </i>&nbsp;: (Also located in the Model Editor Configuration Options section) This function gives
 quick access to turn the Skin-view Grid on and off, but it will still be active for functions that use it such as

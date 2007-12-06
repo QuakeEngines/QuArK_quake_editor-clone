@@ -49,8 +49,8 @@ This means that you won't be able to 'see-through' the model once it is in view.
 
 <i>Textured </i>&nbsp;: The model is displayed with its full texture applied for the finished "skinned" look.
 
-<i>Background image... </i>&nbsp;: When selected, this will open a dialog box where you can choose a .bmp image
-file to place and display in the 2D view that the cursor was in when the RMB was clicked.
+<i>Background image... </i>&nbsp;: When selected, this will open a dialog box where you can choose any image
+file the <g>QuArK</g> supports to place and display in the 2D view that the cursor was in when the RMB was clicked.
 Click <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#background">here</a> for full detailed information
 about its functions and settings.
 
@@ -111,7 +111,7 @@ please click on the menu link for this functions full description and use.
 <a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
 please click on the menu link for this functions full description and use.
 
-<i>Merge 2 Vertexes </i>&nbsp;: This funciton is also located on the
+<i>Merge Vertexes </i>&nbsp;: This funciton is also located on the
 <a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
 please click on the menu link for this functions full description and use.
 
