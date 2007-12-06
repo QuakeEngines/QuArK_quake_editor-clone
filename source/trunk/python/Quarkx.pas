@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2007/09/17 23:06:42  danielpharos
+Stop the disclaimer for disappearing sometimes, and move the splashscreen out of QuarkX.
+
 Revision 1.48  2007/08/21 10:26:40  danielpharos
 Small changes to let HL2 build again.
 
@@ -169,11 +172,7 @@ uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
      Menus;
 
 const
-{$IFDEF PYTHON_SDK}
- PythonSetupString = 'import sys'#10'sys.path[:0] = ["%s"]'#10'import quarkpy';
-{$ELSE}
  PythonSetupString = 'import sys'#10'sys.path = ["%s"]'#10'import quarkpy';
-{$ENDIF}
  PythonRunPackage  = 'quarkpy.RunQuArK()';
  FatalErrorText    = 'Cannot initialize the Python interpreter. QuArK cannot start. Be sure QuArK is correctly installed; reinstall it if required.';
  FatalErrorCaption = 'QuArK Python';
@@ -3018,20 +3017,15 @@ begin
  S:=GetApplicationPath();
  if (Length(S)>0) and (S[Length(S)]=PathDelim) then
   SetLength(S, Length(S)-1);
- for I:=Length(S) downto 1 do
-  if S[I]='\' then
-   System.Insert('\', S, I);
- S:=Format(PythonSetupString, [S, S]);
- { tiglari, peter-b:
-   S will now be the python commands:
+ S:=Format(PythonSetupString, [StringReplace(S,'\','\\',[rfReplaceAll])]);
+ { S will now be the python commands:
     import sys
-    sys.path=["<the path to the quark exe>", "<the path to the quark lib directory>"]
+    sys.path=["<the path to the quark exe>"]
     import quarkpy
  }
  if PyRun_SimpleString(PChar(S))<>0 then FatalError(-8);
  InitSetup;
- { tiglari:
-   runs quarkpy.RunQuArK(), defined in quarkpy.__init__.py;
+ { runs quarkpy.RunQuArK(), defined in quarkpy.__init__.py;
    mostly sets up icons and stuff like that.}
  if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
  PythonCodeEnd;
