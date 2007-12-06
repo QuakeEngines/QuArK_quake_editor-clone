@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2007/09/24 00:15:55  danielpharos
+Made MaxRecentFiles a configurable option.
+
 Revision 1.41  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -1880,6 +1883,8 @@ begin
            FilterIndex:=SavingAsText;
           Inc(SavingAsText);
          end;
+        Info1.FileObjectDescriptionText:='';
+        Info1.DefaultExt:='';
        end;
       Inc(I);
      until False;
