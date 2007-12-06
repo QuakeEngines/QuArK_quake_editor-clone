@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/09/12 15:38:02  danielpharos
+Removed unused function in PyMath, and it will now use the SystemDetails Windows check result.
+
 Revision 1.19  2007/06/12 11:26:37  cdunde
 Added section to handle drawing all the lines of a models mesh
 which needs to be done differently that drawing lines for the map editor.
@@ -70,8 +73,6 @@ Revision 1.8  2001/03/20 21:34:49  decker_dk
 Updated copyright-header
 }
 
-
-{$INCLUDE PYVERSIONS.INC}
 
 unit PyMath;
 
