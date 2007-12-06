@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.372  2007/12/02 06:47:09  cdunde
+//Setup linear center handle selected vertexes edge extrusion function.
+//
 //Revision 1.371  2007/11/22 05:13:47  cdunde
 //Separated editors background image dialogs and setup to save all of their settings.
 //
@@ -3127,8 +3130,8 @@ QQRKSRC1
       }
       PCX:config =
       {
-        LoadLibrary = "FreeImage"
-        SaveLibrary = "FreeImage"
+        LoadLibrary = "DevIL"
+        SaveLibrary = "QuArK"
         Form = "FilesPCX"
       }
       PNG:config =
@@ -6440,8 +6443,8 @@ QQRKSRC1
       {
         Txt="Select library for saving PCX files"
         Typ="CL"
-        Items  = "DevIL" $0D "FreeImage"
-        Values = "DevIL" $0D "FreeImage"
+        Items  = "QuArK"   //DevIL and FreeImage don't support PCX file saving!
+        Values = "QuArK"
         Hint="Select the library QuArK will use to save files of this type."
       }
     }

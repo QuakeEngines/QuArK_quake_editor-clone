@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/11/21 16:07:32  danielpharos
+Another bunch of hugh image fixes: everything should work again!
+
 Revision 1.7  2007/11/20 17:14:50  danielpharos
 A lot of small and large fixes, so all DevIL/FreeImage images should load and display correctly.
 
@@ -55,13 +58,13 @@ uses Windows, SysUtils, QkObjects;
 
 const
 // Palette types
-  IL_PAL_NONE   =0400;
-  IL_PAL_RGB24  =0401;
-  IL_PAL_RGB32  =0402;
-  IL_PAL_RGBA32 =0403;
-  IL_PAL_BGR24  =0404;
-  IL_PAL_BGR32  =0405;
-  IL_PAL_BGRA32 =0406;
+  IL_PAL_NONE   =$0400;
+  IL_PAL_RGB24  =$0401;
+  IL_PAL_RGB32  =$0402;
+  IL_PAL_RGBA32 =$0403;
+  IL_PAL_BGR24  =$0404;
+  IL_PAL_BGR32  =$0405;
+  IL_PAL_BGRA32 =$0406;
 
 // Image types
   IL_TYPE_UNKNOWN= 0;
@@ -220,7 +223,7 @@ type
   DevILError = Integer;
   DevILFormat = Integer;
   DevILFormatType = Integer;
-  DevILPaletteType = Integer;
+  DevILFormatPalette = Integer;
 
 var
   ilInit: procedure; stdcall;
@@ -245,16 +248,20 @@ var
   ilSave: function (xType : DevILType; FileName : PChar) : Boolean; stdcall;
   ilLoadL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Boolean; stdcall;
   ilSaveL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Integer; stdcall;
-  //ilConvertImage: function (DestFormat : DevILFormat; DestType : DevILFormatType) : Boolean; stdcall;
-  //ilGetData: function : PByte; stdcall;
+  ilConvertImage: function (DestFormat : DevILFormat; DestType : DevILFormatType) : Boolean; stdcall;
+  ilConvertPal: function (DestFormat : DevILFormatPalette) : Boolean; stdcall;
+  ilGetData: function : PByte; stdcall;
   //ilSetData: function (Data : PByte) : Boolean; stdcall;
-  ilCopyPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
+  ilGetPalette: function : PByte; stdcall;
+  //ilCopyPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
   //ilSetPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
   ilTexImage: function (Width : Cardinal; Height : Cardinal; Depth : Cardinal; Bpp : Byte; Format : DevILFormat; xType : DevILType; Data : PByte) : Boolean; stdcall;
   ilDisable: function (Mode : DevILMode) : Boolean; stdcall;
   ilEnable: function (Mode : DevILMode) : Boolean; stdcall;
   //ilFormatFunc: function (Mode : DevILMode) : Boolean; stdcall;
   ilOriginFunc: function (Mode : DevILMode) : Boolean; stdcall;
+  ilClearImage: function : Boolean; stdcall;
+  ilRegisterPal: procedure (Pal : PByte; Size : Cardinal; xType : DevILFormatPalette); stdcall;
 
 
 function LoadDevIL : Boolean;
@@ -319,16 +326,20 @@ begin
       ilSave            := InitDllPointer(HDevIL, 'ilSave');
       ilLoadL           := InitDllPointer(HDevIL, 'ilLoadL');
       ilSaveL           := InitDllPointer(HDevIL, 'ilSaveL');
-      //ilConvertImage    := InitDllPointer(HDevIL, 'ilConvertImage');
-      //ilGetData         := InitDllPointer(HDevIL, 'ilGetData');
+      ilConvertImage    := InitDllPointer(HDevIL, 'ilConvertImage');
+      ilConvertPal      := InitDllPointer(HDevIL, 'ilConvertPal');
+      ilGetData         := InitDllPointer(HDevIL, 'ilGetData');
       //ilSetData         := InitDllPointer(HDevIL, 'ilSetData');
-      ilCopyPixels      := InitDllPointer(HDevIL, 'ilCopyPixels');
+      ilGetPalette      := InitDllPointer(HDevIL, 'ilGetPalette');
+      //ilCopyPixels      := InitDllPointer(HDevIL, 'ilCopyPixels');
       //ilSetPixels       := InitDllPointer(HDevIL, 'ilSetPixels');
       ilTexImage        := InitDllPointer(HDevIL, 'ilTexImage');
       ilDisable         := InitDllPointer(HDevIL, 'ilDisable');
       ilEnable          := InitDllPointer(HDevIL, 'ilEnable');
       //ilFormatFunc      := InitDllPointer(HDevIL, 'ilFormatFunc');
       ilOriginFunc      := InitDllPointer(HDevIL, 'ilOriginFunc');
+      ilClearImage      := InitDllPointer(HDevIL, 'ilClearImage');
+      ilRegisterPal     := InitDllPointer(HDevIL, 'ilRegisterPal');
       //DanielPharos: If one of the API func's fails, we should stop loading, and return False!
 
       if ilGetInteger(IL_VERSION_NUM) < 168 then
@@ -380,16 +391,20 @@ begin
       ilSave                := nil;
       ilLoadL               := nil;
       ilSaveL               := nil;
-      //ilConvertImage        := nil;
-      //ilGetData             := nil;
+      ilConvertImage        := nil;
+      ilConvertPal          := nil;
+      ilGetData             := nil;
       //ilSetData             := nil;
-      ilCopyPixels          := nil;
+      ilGetPalette          := nil;
+      //ilCopyPixels          := nil;
       //ilSetPixels           := nil;
       ilTexImage            := nil;
       ilDisable             := nil;
       ilEnable              := nil;
       //ilFormatFunc          := nil;
       ilOriginFunc          := nil;
+      ilClearImage          := nil;
+      ilRegisterPal         := nil;
     end;
 
     TimesLoaded := 0;
@@ -404,7 +419,7 @@ end;
 function ilHasAlpha: Boolean;
 var
   ImageFormat: DevILFormat;
-  PaletteType: DevILPaletteType;
+  PaletteType: DevILFormatPalette;
 begin
   ImageFormat:=ilGetInteger(IL_IMAGE_FORMAT);
   CheckDevILError(ilGetError);
