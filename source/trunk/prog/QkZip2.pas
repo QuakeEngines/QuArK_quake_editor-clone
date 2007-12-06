@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2007/03/28 22:13:00  danielpharos
+Updated the crc32-unit.
+
 Revision 1.25  2007/01/31 15:01:02  danielpharos
 Fix a memory leak
 
@@ -483,7 +486,7 @@ begin
       files.CopyFrom(f, eocd.size_cd); {read in central dir}
       files.seek(0, sofrombeginning);
 
-      ProgressIndicatorStart(5450, eocd.no_entries);
+      ProgressIndicatorStart(5461, eocd.no_entries);
       try
         for i:=1 to eocd.no_entries do
         begin

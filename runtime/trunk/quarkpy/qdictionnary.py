@@ -688,6 +688,7 @@ Strings = {
     5458: "Searching add-ons...",
     5459: "preparing Faces...",
     5460: "preparing Models...",
+    5461: "Loading from pak file...",
 
     5502: "Sprite object not found!",
     5503: "'%s' is a Half-Life Model which cannot be read (yet)",
@@ -1026,6 +1027,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.111  2007/11/19 00:08:39  danielpharos
+#Any supported picture can be used for a view background, and added two options: multiple, offset
+#
 #Revision 1.110  2007/10/24 14:58:12  cdunde
 #To activate all Movement toolbar button functions for the Model Editor.
 #
