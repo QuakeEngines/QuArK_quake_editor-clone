@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/09/04 14:38:12  danielpharos
+Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
+
 Revision 1.18  2007/03/29 17:26:54  danielpharos
 Fixed a typo.
 
@@ -953,6 +956,7 @@ begin
   end;
   if (OldPos<>Length(S)) and (OldPos<>0) then
     GLExtentions.Add(RightStr(S, Length(S) - OldPos));
+  ExtentionListLoaded:=True;
   Result:=True;
 end;
 
