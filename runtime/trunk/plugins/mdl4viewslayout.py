@@ -53,6 +53,7 @@ class FourViewsLayout(ModelLayout):
         self.ViewXZ.viewtype="editor"
         self.ViewYZ.viewtype="editor"
         self.View3D.viewtype="editor"
+        self.View3D.showprogress=0
 
         #
         # Put these 4 views in the view lists.
@@ -310,6 +311,10 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.10  2007/06/05 22:42:26  cdunde
+# To set the qbaseeditor's global currentview for proper creation and
+# drawing of handles when switching from one layout to another.
+#
 # Revision 1.9  2007/06/05 01:01:16  cdunde
 # To try and stop model editor "loosing" itself when the Skin-view is the currentview and other stuff.
 #

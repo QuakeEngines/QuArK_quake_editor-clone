@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2007/11/19 00:08:48  danielpharos
+Any supported picture can be used for a view background, and added two options: multiple, offset
+
 Revision 1.35  2007/09/04 14:38:12  danielpharos
 Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
 
@@ -224,6 +227,7 @@ type
                  Animation: PAnimationSeq;
                  OldCameraPos: PyObject;
                  ClipRect: TRect;
+                 ShowProgress: Boolean;
                  procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                  procedure Paint(Sender: TObject; DC: {HDC}Integer; const rcPaint: TRect);
                  procedure Render;
@@ -351,6 +355,7 @@ begin
  SceneConfigSrc:=Nil;
  Hint:=BlueHintPrefix;
  TabStop:=True;
+ ShowProgress:=True;
 end;
 
 destructor TPyMapView.Destroy;
@@ -642,6 +647,7 @@ begin
       else
         raise EErrorFmt(6000, ['Invalid ViewType']);
 
+      Scene.ShowProgress:=ShowProgress;
       Scene.Init(Self.Handle, MapViewProj, DisplayMode, DisplayType,
        Specifics.Values['Lib'], AllowsGDI);
 
@@ -797,6 +803,8 @@ begin
   Canvas.Handle:=DC;
 
  ClipRect:=rcPaint;
+ if (ClipRect.Left = 0) and (ClipRect.Right = 0) and (ClipRect.Top = 0) and (ClipRect.Bottom = 0) then
+   ClipRect:=GetClientRect;
 
  try
   Render;
@@ -1761,6 +1769,7 @@ begin
      else
       begin
        Scene.SetViewDC(DC);
+       ClipRect:=GetClientRect;
        Scene.SetDrawRect(ClipRect);
        Scene.Render3DView;
        if FullScreen then
@@ -3175,6 +3184,15 @@ begin
             with QkControl as TPyMapView do
              Result:=GetPyObj(ConfigSrc);
            Exit;
+          end
+         else
+         if StrComp(attr, 'showprogress')=0 then
+          begin
+           if (QkControl as TPyMapView).ShowProgress then
+            Result:=PyInt_FromLong(1)
+           else
+            Result:=PyInt_FromLong(0);
+           Exit;
           end;
     'v': if StrComp(attr, 'viewmode')=0 then
           begin
@@ -3432,6 +3450,18 @@ begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
              CentreEcran:=PyVect(value)^.V;
+           Result:=0;
+           Exit;
+          end
+         else
+         if StrComp(attr, 'showprogress')=0 then
+          begin
+           if PyInt_AsLong(value)=0 then
+            (QkControl as TPyMapView).ShowProgress:=False
+           else
+            (QkControl as TPyMapView).ShowProgress:=True;
+           if (QkControl as TPyMapView).Scene<>nil then
+            (QkControl as TPyMapView).Scene.ShowProgress:=(QkControl as TPyMapView).ShowProgress;
            Result:=0;
            Exit;
           end;

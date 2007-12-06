@@ -38,6 +38,7 @@ class Full3DLayout(ModelLayout):
         self.baseviews = self.views[:]
         self.View3D.info = {"type": "3D", "viewname": "editors3Dview"}
         self.View3D.viewmode = "tex"
+        self.View3D.showprogress=0
 
     ### Calling this function causes the 3D view mouse maneuvering to change,
     ### rotation is based on the center of the editor view or the model (0,0,0).
@@ -58,6 +59,10 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.8  2007/06/05 22:42:26  cdunde
+# To set the qbaseeditor's global currentview for proper creation and
+# drawing of handles when switching from one layout to another.
+#
 # Revision 1.7  2006/11/30 01:17:47  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
