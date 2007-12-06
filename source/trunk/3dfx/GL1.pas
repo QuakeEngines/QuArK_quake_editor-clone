@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/12/06 01:29:33  danielpharos
+Fix a boolean not being set, resulting in a small memory-leak and a constant enumeration of the OpenGL extentions.
+
 Revision 1.19  2007/09/04 14:38:12  danielpharos
 Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
 
@@ -847,6 +850,8 @@ var
   OpenGL32Lib: THandle;
   Glu32Lib: THandle;
 
+  GLExtentions: TStringList = nil;
+
  { ----------------- }
 
 function LoadOpenGl : Boolean;
@@ -915,15 +920,18 @@ begin
     if Glu32Lib<>0 then
       FreeLibrary(Glu32Lib);
     Glu32Lib := 0;
+
+    if GLExtentions<>nil then
+    begin
+      GLExtentions.Free;
+      GlExtentions:=nil;
+    end;
+
     TimesLoaded := 0;
   end
   else
     TimesLoaded := TimesLoaded - 1;
 end;
-
-var
- ExtentionListLoaded: Boolean;
- GLExtentions: TStringList;
 
 function LoadExtentionList : Boolean;
 var
@@ -956,13 +964,12 @@ begin
   end;
   if (OldPos<>Length(S)) and (OldPos<>0) then
     GLExtentions.Add(RightStr(S, Length(S) - OldPos));
-  ExtentionListLoaded:=True;
   Result:=True;
 end;
 
 function LoadSwapHint : Pointer;
 begin
- if not ExtentionListLoaded then
+ if GLExtentions=nil then
    if not LoadExtentionList then
    begin
      Log(LOG_WARNING, LoadStr1(6304));
@@ -985,6 +992,9 @@ initialization
   Glu32Lib := 0;
 
 finalization
-  if ExtentionListLoaded then
+  if GLExtentions<>nil then
+  begin
     GLExtentions.Free;
+    GLExtentions:=nil;
+  end;
 end.
