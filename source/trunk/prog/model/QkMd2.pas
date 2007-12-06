@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2006/02/19 00:13:10  cdunde
+To add support for md2 model file saving functions.
+
 Revision 1.8  2005/09/28 10:49:02  peter-b
 Revert removal of Log and Header keywords
 
@@ -498,7 +501,7 @@ begin
 
       Root:=Saving_Root;
       Info.TempObject:=Root;
-      Components:=Root.BuildCOmponentList;
+      Components:=Root.BuildComponentList;
       try
         for I:=0 to Components.Count-1 do
          begin
@@ -589,7 +592,7 @@ begin
        L:=TList.Create;
        Skins:=TQList.Create;
 
-    for I:=0 to mdl.num_tris-1 do
+       for I:=0 to mdl.num_tris-1 do
         begin
          for K:=0 to 2 do
           begin
