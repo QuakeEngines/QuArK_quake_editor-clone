@@ -953,7 +953,7 @@ def addvertex(editor, comp, pos):
 def replacevertexes(editor, comp, vertexlist, flags, view, undomsg, option=1, method=1):
     "option=0 uses the ModelVertexSelList for the editor."
     "option=1 uses the SkinVertexSelList for the Skin-view."
-    "option=2 uses the ModelVertexSelList for the editor and merges two selected vertexes."
+    "option=2 uses the ModelVertexSelList for the editor and merges two, or more, selected vertexes."
     "method=1 other selected vertexes move to the 'Base' vertex position of each tree-view selected 'frame', only applies to option=0."
     "method=2 other selected vertexes move to the 'Base' vertex position of the 1st tree-view selected 'frame', only applies to option=0."
 
@@ -2344,6 +2344,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.70  2007/12/08 07:20:56  cdunde
+#To get the face extrusion functions to apply movement based on frame animation positions.
+#
 #Revision 1.69  2007/12/05 04:45:57  cdunde
 #Added two new function methods to Subdivide selected faces into 3 and 4 new triangles each.
 #
