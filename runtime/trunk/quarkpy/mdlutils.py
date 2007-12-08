@@ -743,6 +743,14 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
         old_vtx_nbrs = []
         editor.ModelFaceSelList.sort()
 
+        # This section computes the net delta vertex movement for the extrusion drag.
+        face = newobjectslist[0]
+        tuplename = tuple(str(s) for s in face.shortname.split(','))
+        compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
+        old_ver0 = comp.currentframe.vertices[int(ver_index0)]
+        new_ver0 = quarkx.vect(face["v"][0], face["v"][1], face["v"][2])
+        delta = new_ver0 - old_ver0
+
         for face in newobjectslist:
             tuplename = tuple(str(s) for s in face.shortname.split(','))
             compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
@@ -830,8 +838,15 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
 
         # This updates (adds) the new vertices to each frame.
         for compframe in compframes:
-            compframe.vertices = compframe.vertices + old_vtxs
+            if compframe.name == comp.currentframe.name:
+                compframe.vertices = compframe.vertices + old_vtxs
+            else:
+                new_vtxs = []
+                for old_nbr in old_vtx_nbrs:
+                    new_vtxs = new_vtxs + [compframe.vertices[old_nbr] + delta]
+                compframe.vertices = compframe.vertices + new_vtxs
             compframe.compparent = new_comp # To allow frame relocation after editing.
+
         # This updates (adds) the new triangles to the component.
         new_comp.triangles = newtris
 
@@ -2329,6 +2344,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.69  2007/12/05 04:45:57  cdunde
+#Added two new function methods to Subdivide selected faces into 3 and 4 new triangles each.
+#
 #Revision 1.68  2007/12/02 06:47:11  cdunde
 #Setup linear center handle selected vertexes edge extrusion function.
 #
