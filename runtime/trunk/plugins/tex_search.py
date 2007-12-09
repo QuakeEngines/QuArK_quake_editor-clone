@@ -38,7 +38,7 @@ def findsearchtoolbox():
     tbx_list = quarkx.findtoolboxes("Texture Browser...")
     for tbx in tbx_list:
         if (tbx[1].name == "Searched.qtxfolder") and (tbx[1]["SearchBox"]=="1"):
-            return tbx[1].findname("Searched Texures.txlist")
+            return tbx[1].findname("Searched Textures.txlist")
     return None
 
 def tex_doit(s):
@@ -100,6 +100,9 @@ def openbox():
     TextureSearchDlg(f)
 
 # $Log$
+# Revision 1.8  2005/10/15 00:51:56  cdunde
+# To reinstate headers and history
+#
 # Revision 1.5  2003/12/17 13:58:59  peter-b
 # - Rewrote defines for setting Python version
 # - Removed back-compatibility with Python 1.5

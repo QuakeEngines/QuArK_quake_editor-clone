@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.373  2007/12/06 23:01:20  danielpharos
+//Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+//
 //Revision 1.372  2007/12/02 06:47:09  cdunde
 //Setup linear center handle selected vertexes edge extrusion function.
 //
@@ -9206,7 +9209,7 @@ QQRKSRC1
     Searched.qtxfolder =
     {
       SearchBox = "1"
-      Searched Texures.txlist =
+      Searched Textures.txlist =
       {
       }
     }
