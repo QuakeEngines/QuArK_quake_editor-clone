@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2007/10/23 14:47:56  danielpharos
+Fixed the filename being double in the not-found error message.
+
 Revision 1.48  2007/09/13 14:34:53  danielpharos
 The name of a pakfile containing a texture can now be specified per texture
 
@@ -355,13 +358,11 @@ begin
   end;*)
 end;
 
-procedure SizeDownGameFiles;
+procedure ClearGBList;
 var
  I: Integer;
  B: PGameBuffer;
 begin
- {SizeDownTextureList(}InternalSizeDown{)};
-
  if FreeGBList<>Nil then
   try
    for I:=FreeGBList.Count-1 downto 0 do
@@ -380,6 +381,13 @@ begin
    FreeGBList.Free;
    FreeGBList:=Nil;
   end;
+end;
+
+procedure SizeDownGameFiles;
+begin
+ {SizeDownTextureList(}InternalSizeDown{)};
+
+ ClearGBList;
 end;
 
 function DuplicateGameBuffer(Source: PGameBuffer) : PGameBuffer;
@@ -1553,5 +1561,5 @@ end;
 initialization
 
 finalization
-  FreeGBList.Free;
+  ClearGBList;
 end.
