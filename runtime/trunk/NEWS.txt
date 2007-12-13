@@ -15,6 +15,10 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [DanielPharos]: Updated the miter edge function with some error messages, fixed a division
+          - by 0 in it, and made the option disable correctly. Also, added some InfoBase
+          - documentation about it.
+
 * [cdunde/DanielPharos]: Added two new function methods to Subdivide selected faces
           - into 3 and 4 new triangles each.
 

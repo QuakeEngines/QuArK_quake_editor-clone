@@ -30,9 +30,6 @@ import mapdups
 import mapextruder
 import tagging
 
-#
-# These should go to maputils someday
-#
 
 SMALL = .1
 SMALLER = .001
@@ -44,7 +41,7 @@ SMALLER = .001
 def colinear(list):
     "first 2 should not be coincident"
     if len(list) < 3:
-       return 1
+        return 1
     norm = (list[1]-list[0]).normalized
     v0 = list[0]
     for v in list[2:]:
@@ -57,7 +54,7 @@ def colinear(list):
         else:
             return 1
     return 0
-    
+
 def flatContainedWithin(list1, list2):
     "every vertex in list1 lies on the face defined by list2"
     len1 = len(list1)
@@ -87,7 +84,7 @@ def perpFromVtx(i, face, poly):
     vtxes = face.verticesof(poly)
     vtx = vtxes[i]
     vtx2 = vtxes[(i+1)%len(vtxes)]
-    return (face.normal^(vtx2-vtx)).normalized    
+    return (face.normal^(vtx2-vtx)).normalized
 
 def parentnames(o):
 #    debug('p1')
@@ -114,7 +111,7 @@ def overlapEdge(v1, v2, v3, v4):
     if math.fabs(diff-abs(v4-v1)-abs(v2-v4))<SMALL:
         return 1
     return 0
-        
+
 #
 # Assumes points are colinear
 #
@@ -124,7 +121,7 @@ def overlapEdge(v1, v2, v3, v4):
     if (v1-v2)*(v4-v2)>SMALL:
         return 1
     return 0
-    
+
 #
 # Every 'facet' (face of a poly) of face2 is contained
 #   within some facet of face1
@@ -135,7 +132,7 @@ def facetsContained(face1, face2):
             if not flatContainedWithin(vtxes2, vtxes1):
                 return 0
     return 1
-        
+
 
 #
 # The two faces share an edge, and the shared vertices are
@@ -144,7 +141,7 @@ def facetsContained(face1, face2):
 #
 def findEdgePoints(f1, f2):
     if f2 is None:
-        return 0
+        return None
     for poly1 in f1.faceof:
         vtxlist1 = f1.verticesof(poly1)
         for poly2 in f2. faceof:
@@ -162,12 +159,11 @@ def findEdgePoints(f1, f2):
                                 return (poly1, i), (poly2, (j-1)%len(vtxlist2))
 #                            else:
 #                                debug('no overlap: '+parentnames(f1)+' '+parentnames(f2))
-                                
-
+    return None
 
 def findAdjoiningFace(poly, face, i):
     vtxes = face.verticesof(poly)
-    vtx=vtxes[i]
+    vtx = vtxes[i]
     for face2 in poly.faces:
         if face2 is face:
             continue
@@ -202,12 +198,15 @@ def faceCenter(face, poly):
 #
 def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
     face1 = findAdjoiningFace(poly1, f1, i1)
-    face2 = findAdjoiningFace(poly2, f2, i2) 
-    if face1 is None or face2 is None:
-#        debug('no adjoining')
-        return
+    face2 = findAdjoiningFace(poly2, f2, i2)
+    if face1 is None:
+        quarkx.msgbox("No adjoining face for selected poly found!\nPlease use valid a poly to be mitered.", MT_WARNING, MB_OK)
+        return None, None
+    if face2 is None:
+        quarkx.msgbox("No adjoining face for tagged poly found!\nPlease use valid a poly to be mitered.", MT_WARNING, MB_OK)
+        return None, None
     #
-    # We're looking for paralell faces on the opposite side to
+    # We're looking for parallel faces on the opposite side to
     #   make a smooth join on that side if possible
     #
     oppface1 = findOppositeFace(poly1, f1)
@@ -236,6 +235,10 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
             # find a point where the two opposite faces intersect
             #
             center=faceCenter(oppface1, poly1)
+            if (sharedvtx-center)*oppface2.normal == 0:
+                # normals point along the same direction: this can't be mitered...
+                quarkx.msgbox("Cannot miter selected faces: they have parallel normals.", MT_WARNING, MB_OK)
+                return None, None
             point = projectpointtoplane(center, sharedvtx-center,
                      oppface2.dist*oppface2.normal,oppface2.normal)
             oldlist = [face1, face2]+ext2
@@ -263,8 +266,8 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
         edge = (vtx2-vtx)
         plane1 = edge^f1.normal
         plane2 = edge^f2.normal
-        mitredir = mapextruder.make_edge(plane2, -plane1)
-        mat = matrix_rot_u2v(mitredir, plane1)
+        miterdir = mapextruder.make_edge(plane2, -plane1)
+        mat = matrix_rot_u2v(miterdir, plane1)
         if mat is None:
             return [face1, face2], [face1, face2]
         newnormal = mat*f1.normal
@@ -285,39 +288,38 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
 
 def miterEdge(f1, f2, edgepoints, editor):
     oldlist, newlist = miterEdgeFaces(f1, f2, edgepoints, editor.Root.findallsubitems("",":f"))
+    if oldlist is None and newlist is None:
+        return
     undo = quarkx.action()
     for i in range(len(oldlist)):
         if newlist[i].normal*oldlist[i].normal<0:
             newlist[i].swapsides()
         undo.exchange(oldlist[i], newlist[i])
-    editor.ok(undo, "mitre edge")
+    editor.ok(undo, "miter edge")
 #    editor.layout.explorer.sellist=[f1]
     editor.layout.explorer.sellist=newlist
-    
 
 
 
-def mitrefacemenu(o, editor, oldmenu=quarkpy.mapentities.FaceType.menu.im_func):
-    "the new right-mouse menu for polys"
+def miterfacemenu(o, editor, oldmenu=quarkpy.mapentities.FaceType.menu.im_func):
+    "the new right-mouse item for miter function"
     menu = oldmenu(o, editor)
     
     tagged = tagging.gettagged(editor)
-    
     edgepoints = findEdgePoints(o, tagged)
     
     def miterEdgeClick(m, o=o, editor=editor, tagged=tagged, edgepoints=edgepoints):
         miterEdge(o, tagged, edgepoints, editor)
     
-    mitreitem = qmenu.item("Mitre Edge",miterEdgeClick)
+    miteritem = qmenu.item("Miter Edge", miterEdgeClick, "|Miter Edge:\n\nMiter edge takes two adjoining faces of two different poly's, and closes the gap 'behind' the corner these faces make.|maped.plugins.miteredge.html")
     
     if edgepoints is None:
-        mitreitem.state=qmenu.disabled
+        miteritem.state=qmenu.disabled
+    menu[:0] = [miteritem]
 
-    menu[:0] = [mitreitem]
-    
     return menu
-    
-quarkpy.mapentities.FaceType.menu = mitrefacemenu
+
+quarkpy.mapentities.FaceType.menu = miterfacemenu
 
 
 def match_vertices(vtxes1, vtxes2):
@@ -332,8 +334,8 @@ def match_vertices(vtxes1, vtxes2):
                     else:
                         return 1
     return 0
-                     
-def makePrism(f, p, wallwidth):                        
+
+def makePrism(f, p, wallwidth):
     walls = f.extrudeprism(p)
     for wall in walls:
         wall.texturename=f.texturename
@@ -361,7 +363,7 @@ def makePrism(f, p, wallwidth):
         for poly in face.faceof:
            poly.rebuildall()
     return newp
-                        
+
 
 #
 # copied from plugins.csg, with modifications
@@ -426,7 +428,7 @@ def setViewFlag(group, flag):
     viewflags = viewflags | flag
     group[';view'] = str(viewflags)
 
-        
+
 def buildwallmakerimages(self, singleimage=None):
         if not (self.dup["miter"] or self.dup["extrude"] or self.dup["solid"]):
             return mapdups.DepthDuplicator.buildimages(self,singleimage)
@@ -444,7 +446,7 @@ def buildwallmakerimages(self, singleimage=None):
         #      immediately contained within the duplicator
         #   We make a list of copies of its elements, and add these to
         #      a new group (wallgroup)
-        #   The we do all kinds of complicated stuff to the elements of the
+        #   Then we do all kinds of complicated stuff to the elements of the
         #      list and their subitems, and since these things are all subitems
         #      of wallgroup, the effects show up there.
         #   Finally, the subitems of wallgroup are returned as the images, so
@@ -597,7 +599,7 @@ def buildwallmakerimages(self, singleimage=None):
 #                        debug('angles %.2f, %.2f'%(newang/deg2rad,oldang/deg2rad))
                         if newang<oldang: # don't do this replacement
                             return 0
-                    donefaces[(face, vi)]=new[i]            
+                    donefaces[(face, vi)]=new[i]
                     return 1
                 
                 faces = (face1, face2)
@@ -705,7 +707,6 @@ def buildwallmakerimages(self, singleimage=None):
                    if plug['neg']!=1:
                       parent.appenditem(plug.copy())
         
-        
         #
         # if relevant, build the hull and detail groups
         #
@@ -739,9 +740,9 @@ def buildwallmakerimages(self, singleimage=None):
             list.append(sourcegroup)
         return list
 
- 
+
 mapdups.WallMaker.buildimages = buildwallmakerimages
-        
+
 
 
 def groupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
@@ -765,25 +766,26 @@ def groupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
             editor.ok(undo,'revert to wall maker')
         
         revertitem = qmenu.item('Revert Walls to Duplicator',revertClick,"|This group was created from a wall maker duplicator.\nThis menu item will restore the original ducplicator and its data,\nfor convenient editing")
-        menu = [revertitem]+menu   
+        menu = [revertitem]+menu
 
     return menu
 
 quarkpy.mapentities.GroupType.menu = groupmenu
-        
-    
-    
+
 
 
 #
 #quarkpy.mapduplicator.DupCodes.update({
 #  "new wall maker":       NewWallMaker,})
-  
+
 
 
 
 #
 # $Log$
+# Revision 1.15  2007/07/11 19:15:35  cdunde
+# File cleanup.
+#
 # Revision 1.14  2005/10/15 00:51:24  cdunde
 # To reinstate headers and history
 #
