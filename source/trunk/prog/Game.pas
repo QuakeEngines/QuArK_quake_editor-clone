@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2007/12/11 23:52:28  danielpharos
+Fixed a memory leak that occurred on exit in some gamemodes.
+
 Revision 1.49  2007/10/23 14:47:56  danielpharos
 Fixed the filename being double in the not-found error message.
 
@@ -241,7 +244,7 @@ type
 procedure ClearGameBuffers(CanCancel: Boolean);
 procedure ClearGameBuffer1;
 procedure SizeDownGameFiles;
-procedure DestroyGameBuffers;
+procedure ReleaseGameFiles;
 procedure ListSourceDirs(Dirs: TStrings);
 function NeedGameFile(const FileName, PakFile: String) : QFileObject;
 function NeedGameFileBase(const BaseDir, FileName, PakFile: String) : QFileObject;
@@ -302,7 +305,7 @@ function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD:
 
  {------------------------}
 
-procedure DestroyGameBuffers;
+procedure ReleaseGameFiles;
 begin
  g_Form1.SavePendingFiles(True);
  GameFiles.Free;
@@ -327,7 +330,7 @@ begin
   GameFiles.Delete(I);*)
  if GameFiles.Count>Reste then
   begin
-   DestroyGameBuffers;
+   ReleaseGameFiles;
    Exit;
   end;
 
@@ -336,7 +339,7 @@ begin
    Dec(Result, GameFiles[I].GetObjectSize(Nil, False));
    if Result<=0 then
     begin
-     DestroyGameBuffers;
+     ReleaseGameFiles;
      Exit;
     end;
   end;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2007/09/24 00:15:55  danielpharos
+Made MaxRecentFiles a configurable option.
+
 Revision 1.50  2007/09/18 18:18:43  danielpharos
 Kill another disclaimer redraw, and add history to About.pas
 
@@ -1775,7 +1778,7 @@ procedure TForm1.FreeNonUsedObjects;
 begin
  TTextureManager.FreeNonVisibleTextures;
  FreeNonVisibleForms(Nil);
- DestroyGameBuffers;
+ ReleaseGameFiles;
 end;
 
 var
