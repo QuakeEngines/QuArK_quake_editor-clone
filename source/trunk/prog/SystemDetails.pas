@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2007/09/23 22:32:25  danielpharos
+Fix some wrong detections of Windows versions.
+
 Revision 1.30  2007/09/23 21:33:39  danielpharos
 Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
 
@@ -1712,7 +1715,7 @@ begin
       if ValueExists(rvVideoBIOSVersion) then
       begin
         try
-          readbinarydata(rvVideoBIOSVersion,bdata^,151);
+          readbinarydata(rvVideoBIOSVersion,bdata^,255);
           FBIOSVersion:=strpas(pchar(bdata));
         except
         end;
