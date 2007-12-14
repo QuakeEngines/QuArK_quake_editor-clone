@@ -47,7 +47,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=.;.\components;.\components\direct3d;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\3dfx;$(DELPHI)\Source\Samples;$(DELPHI)\Lib
 Packages=VCL50;VCLX50;VCLSMP50;QRPT50;VCLDB50;VCLBDE50;ibevnt50;VCLDBX50;TEEUI50;TEEDB50;TEE50;TEEQR50;VCLIB50;VCLIE50;INETDB50;INET50;NMFAST50;dclocx50;dclaxserver50;vcl;vclx;rtl
-Conditionals=PYTHON_BUNDLED
+Conditionals=
 DebugSourceDirs=$(DELPHI)\Lib\Debug;.;.\components;.\components\direct3d;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
 UsePackages=0
 [Parameters]
@@ -86,11 +86,9 @@ Homepage=http://www.sourceforge.net/projects/quark
 Count=1
 Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
 [HistoryLists\hlConditionals]
-Count=4
+Count=2
 Item0=PYTHON_BUNDLED
-Item1=PYTHON_BUNDLED;
-Item2=PYTHON22_OR_HIGHER
-Item3=PYTHON_BUNDLED;QUARK_DIRECT3D
+Item1=PYTHON_BUNDLED;QUARK_DIRECT3D
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
@@ -99,23 +97,8 @@ Count=2
 Item0=.;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\3dfx;$(DELPHI)\Source\Samples;$(DELPHI)\Lib
 Item1=$(DELPHI)\Lib\Debug;.;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
 [HistoryLists\hlUnitOutputDirectory]
-Count=8
+Count=1
 Item0=C:\QuArK cvs\trash
-Item1=F:\QuArK cvs\trash
-Item2=d:\QuArK
-Item3=.\rubbish
-Item4=C:\rubbish
-Item5=D:\rubbish
-Item6=%temp%
-Item7=C:\Recycled
 [HistoryLists\hlOutputDirectorry]
-Count=9
+Count=1
 Item0=C:\QuArK cvs\new HEAD temp
-Item1=C:\QuArK cvs\temp
-Item2=F:\QuArK cvs\temp
-Item3=d:\QuArK
-Item4=c:\progra~1\QuArK
-Item5=..\Runtime
-Item6=c:\QuArK
-Item7=c:\progra~1\GNU\QuArK
-Item8=c:\Quake\QuArK
