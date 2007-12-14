@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde]: Added many new beizer shapes and functions developed by our friends in Russia,
+          - the Shine team, Nazar and vodkins.
+
 * [DanielPharos]: Updated the miter edge function with some error messages, fixed a division
           - by 0 in it, and made the option disable correctly. Also, added some InfoBase
           - documentation about it.
