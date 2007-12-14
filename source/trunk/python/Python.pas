@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2007/12/06 01:02:26  danielpharos
+Changed some of the Python version checking, and removed some redundant library-paths.
+
 Revision 1.24  2007/03/11 12:03:11  danielpharos
 Big changes to Logging. Simplified the entire thing.
 
@@ -621,15 +624,15 @@ begin
         {$ENDIF}
        {$ENDIF}
       {$ENDIF}
-    end;
 
-    if PythonDll<>'' then
-      PythonLib:=LoadLibrary(PChar(PythonDll));
+      if PythonDll<>'' then
+        PythonLib:=LoadLibrary(PChar(PythonDll));
 
-    if PythonLib=0 then
-    begin
-      Exit;  {This is handled manually}
-      {Raise InternalE('Unable to load dlls/PythonLib.dll');}
+      if PythonLib=0 then
+      begin
+        Exit;  {This is handled manually}
+        {Raise InternalE('Unable to load dlls/PythonLib.dll');}
+      end;
     end;
   end;
   Result:=2;
