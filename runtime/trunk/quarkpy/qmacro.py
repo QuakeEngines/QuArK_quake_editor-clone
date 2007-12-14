@@ -54,9 +54,18 @@ def MACRO_displaymdl(self):
 
 def MACRO_duplicator(dup):
     "Computes Duplicator images."
+
+    if quarkx.setupsubset(2, "Options")["IgnoreDup"]:
+        return []
+
     qutils.loadmapeditor()
     import mapduplicator
-    return mapduplicator.DupManager(dup).buildimages()
+    import mapquakemenu
+    items = mapduplicator.DupManager(dup).buildimages()
+    if (dup["MapObjectName"] is not None):
+        ObjectName = dup["MapObjectName"]
+        mapquakemenu.recursivelycreateierarchy(items, ObjectName)
+    return items
 
 
 #
@@ -305,6 +314,9 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.23  2006/11/30 01:19:34  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.22  2006/11/29 07:00:28  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

@@ -529,6 +529,84 @@ def CallManager(fn, *args):
 #   Notice that here Arrow() now sends an extra argument, a text, so the Arrow() function should be modified to take this, but
 #    does not need to do anything with it, yet!
 
+def ParseCompoundVolume(CVString):
+
+    nNumSpheres = 0
+
+    iChar = 0
+    while iChar < len(CVString) and CVString[iChar] != ' ':
+        iChar = iChar + 1
+
+    if iChar == len(CVString):
+        return []
+
+    nNumSpheres = int(CVString[:iChar])
+
+    ParseList = []
+
+    for iSphere in range(nNumSpheres):
+        while iChar < len(CVString) and CVString[iChar] == ' ':
+            iChar = iChar + 1
+
+        if iChar == len(CVString):
+            return []
+
+        SphereInfoStart = iChar
+
+        # X
+        while iChar < len(CVString) and CVString[iChar] != ' ':
+            iChar = iChar + 1
+
+        if iChar == len(CVString):
+            return []
+
+        # Space
+        while iChar < len(CVString) and CVString[iChar] == ' ':
+            iChar = iChar + 1
+
+        if iChar == len(CVString):
+            return []
+
+        # Y
+        while iChar < len(CVString) and CVString[iChar] != ' ':
+            iChar = iChar + 1
+
+        if iChar == len(CVString):
+            return []
+
+        # Space
+        while iChar < len(CVString) and CVString[iChar] == ' ':
+            iChar = iChar + 1
+
+        if iChar == len(CVString):
+            return []
+
+        # Z
+        while iChar < len(CVString) and CVString[iChar] != ' ':
+            iChar = iChar + 1
+
+        if iChar == len(CVString):
+            return []
+
+        iSphereOrigin = quarkx.vect(CVString[SphereInfoStart:iChar])
+
+        # Space
+        while iChar < len(CVString) and CVString[iChar] == ' ':
+            iChar = iChar + 1
+
+        if iChar == len(CVString):
+            return []
+
+        # Radius
+        SphereInfoStart = iChar
+        while iChar < len(CVString) and CVString[iChar] != ' ':
+            iChar = iChar + 1
+
+        iSphereRadius = float(CVString[SphereInfoStart:iChar])
+
+        ParseList = ParseList + [(iSphereOrigin, iSphereRadius)]
+
+    return ParseList
 
 class DefaultDrawEntityLines:
 
@@ -607,7 +685,7 @@ class DefaultDrawEntityLines:
                         lightfactor, = quarkx.setupsubset()["LightFactor"]
                     except:
                         lightfactor = 0.9 # linux issue with single quote
-	
+
                     radius = radius * view.scale(org) * lightfactor
                     radius = int(radius)   #py2.4
                     cv = view.canvas()
@@ -700,6 +778,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.54  2007/01/31 15:12:16  danielpharos
+#Removed bogus OpenGL texture mode
+#
 #Revision 1.53  2006/12/13 03:17:46  cdunde
 #Changed Specifics so multiple selections of the same entity can be set together.
 #

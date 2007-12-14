@@ -47,7 +47,7 @@ def rowofcp(cp, i):
     
 def colofcp(cp, j):
     return map(lambda row,j=j:row[j], cp)
-    
+
 def lengthof(line, divs):
     if divs<0:
       return
@@ -56,7 +56,7 @@ def lengthof(line, divs):
       k = 2*i
       sum=sum+lengthofseg(line[k], line[k+1], line[k+2], divs)
     return sum
-    
+
 #
 # If this were going to get out into generally applying non-UI
 #   routines, it might be worth shifting it into delphi.
@@ -154,7 +154,7 @@ def listCp(cp):
 #
 def texcpFromFace(cp, face, editor):
     "returns a copy of cp with the texture-scale of the face projected"
-    #    
+    #
     # Note special code, which inhibits recentering threepoints
     #
     p0, p1, p2 = face.threepoints(6)
@@ -247,13 +247,66 @@ def undistortColumns(cp):
             s, t, x = (texstart + (lengths[i-1]/sum)*texgap).tuple
             ncp[i][j]=quarkx.vect(cp[i][j].xyz+(s, t))
 #    squawk(`nbcp`)
-    return ncp      
+    return ncp
       
 def undistortRows(cp):
     cp = transposeCp(cp)
     cp = undistortColumns(cp)
     return transposeCp(cp)
 
+# 2 case of working
+def undistortColumnsCaseB(cp):
+    ncp = copyCp(cp)   # this is what we return, after diddling it
+    h, w = len(cp), len(cp[0])
+
+    length = []
+    bestlength = 0
+
+    for j in range(w):  # for each column
+        Locallengths = []
+        sum = 0
+        for i in range(1, h):
+            dist = abs(cp[i][j]-cp[i-1][j])
+            sum = sum + dist
+            Locallengths.append(sum)
+        if sum > bestlength:
+            bestlength = sum
+            length = Locallengths
+
+    for j in range(w):  # for each column
+        start, end = cp[0][j], cp[h-1][j]
+        texstart, texend = map(lambda v:quarkx.vect(v.s, v.t, 0), (start,end))
+        texgap = texend-texstart
+        for i in range(1,h-1):
+            s, t, x = (texstart + (length[i-1]/bestlength)*texgap).tuple
+            ncp[i][j]=quarkx.vect(cp[i][j].xyz+(s, t))
+
+    return ncp      
+      
+def undistortRowsCaseB(cp):
+    cp = transposeCp(cp)
+    cp = undistortColumnsCaseB(cp)
+    return transposeCp(cp)
+
+# 3 case of working
+def UniformWrapCollumns(cp):
+    ncp = copyCp(cp)   # this is what we return, after diddling it
+    h, w = len(cp), len(cp[0])
+
+    for j in range(w):  # for each column
+        start, end = cp[0][j], cp[h-1][j]
+        texstart, texend = map(lambda v:quarkx.vect(v.s, v.t, 0), (start,end))
+        texgap = texend-texstart
+        for i in range(1,h-1):
+            s, t, x = (texstart + (float(i)/(h-1))*texgap).tuple
+            ncp[i][j]=quarkx.vect(cp[i][j].xyz+(s, t))
+
+    return ncp
+
+def UniformWrapRows(cp):
+    cp = transposeCp(cp)
+    cp = UniformWrapCollumns(cp)
+    return transposeCp(cp)
 #
 # Getting approximate tangent planes at control points.
 #
@@ -262,7 +315,7 @@ def undistortRows(cp):
 # The idea here is that at odd-numbered and quilt-end points, you
 #  take the actual derivatives, at intermedient end points you
 #  take the average of the derivative in and the derivative out.
-#  
+#
 def dpdu(cp, i, j):
   h = len(cp)
   if i==0:
@@ -271,7 +324,7 @@ def dpdu(cp, i, j):
     return 2*(cp[i][j]-cp[i-1][j])
   else:
     return (cp[i+1][j]-cp[i-1][j])
-    
+
 def dpdv(cp, i, j):
   w = len(cp[0])
   if j==0:
@@ -280,10 +333,10 @@ def dpdv(cp, i, j):
     return 2*(cp[i][j]-cp[i][j-1])
   else:
     return cp[i][j+1]-cp[i][j-1]
-    
+
 def tanAxes(cp, i, j):
   return dpdu(cp, i, j).normalized, dpdv(cp, i, j).normalized
-  
+
 #
 #  Derivative matrix for parameter->space mappings and
 #    parameter->plane mappings, at corners.
@@ -301,7 +354,7 @@ def d5(cp, (i, j)):
     elif j==len(cp[0])-1:
         dSdv = cp[i][j]-cp[i][j-1]
     return dSdu, dSdv  
-    
+
 
 #def faceTexFromCph(cph, face, editor):
 def texPlaneFromCph(cph, editor):
@@ -391,8 +444,8 @@ def twistedRows(cp1, cp2):
     if abs(e1-b1)>abs(e1-b2) and abs(e2-b2)>abs(e2-b1):
        return 1
     return 0
-      
-      
+
+
 def joinCp((tp1,X), cp1, (tp2,Y), cp2):
     "returns cp1 extended to include cp2, assumes preconditions"
 #    squawk(`tp1-P_BACK`)
@@ -426,11 +479,11 @@ def knitCp((tp1,X), cp1, (tp2,Y), cp2):
       cp1.reverse()
     squawk('done')
     return RotateCpCounter(tp1-P_BACK, cp1)
-    
+
 def b2Point(u, p0, p1, p2):
     return u*u*(p0-2*p1+p2)+u*(-2*p0+2*p1)+p0
 #    return (1-u)*(1-u)*p0 + 2*u*(1-u)*p1 + p2*u*u
-    
+
 #
 # This does 1 seg with 3 cp's, the crappy way.
 #
@@ -466,7 +519,7 @@ def subdivideRow(n, row, subfunc=None):
        result = result + subfunc(n, row[i], row[i+1], row[i+2])[1:]
 #    squawk(`result`)
     return  result
-    
+
 
 def subdivideRows(n, cp, func=None):
     return map(lambda row,n=n,f=func:subdivideRow(n, row,f),cp)
@@ -474,7 +527,7 @@ def subdivideRows(n, cp, func=None):
 
 def subdivideColumns(n, cp, func=None):
     return transposeCp(subdivideRows(n,transposeCp(cp),func))
-    
+
 
 #
 # Attempt at a better circle approximation.
@@ -500,7 +553,7 @@ def arcSubdivideLine(n, p0, p1, p2):
         lastdir = nextdir
     points = map (lambda v,mat=mat,d=p1:d+mat*v, points)
     return points
-    
+
 #
 # get i, j from index position (row-after-row listing)
 #   think of a better name for this
@@ -526,6 +579,9 @@ def writecps(cp):
 #
 #
 #$Log$
+#Revision 1.21  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.18  2002/12/29 04:18:33  tiglari
 #transfer fixes from 6.3
 #

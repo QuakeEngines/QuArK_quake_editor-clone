@@ -17,7 +17,7 @@ import qtoolbar
 from qdictionnary import Strings
 from maputils import *
 from b2utils import *
-
+import qutils
 
 
 #
@@ -376,7 +376,24 @@ def texturebrowser(reserved=None):
     #
     # Open the Texture Browser tool box.
     #
+    tbx_list = quarkx.findtoolboxes("Texture Browser...");
+    ToolBoxName, ToolBox = tbx_list[0]
+    for ToolBoxFolder in ToolBox.subitems:
+        if ToolBoxFolder.name == "Used Textures.txlist":
+            ToolBoxFolder.parent.removeitem(ToolBoxFolder)			
+            break
 
+    Folder = quarkx.newobj("Used Textures.txlist")
+    Folder.flags = quarkpy.qutils.OF_TVSUBITEM
+
+    UsedTexturesList = quarkx.texturesof([editor.Root])
+    for UsedTextureName in UsedTexturesList:
+        UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
+        UsedTexture["a"] = "../"
+        UsedTexture.flags = UsedTexture.flags | quarkpy.qutils.OF_TVSUBITEM
+        Folder.appenditem(UsedTexture)
+
+    ToolBox.appenditem(Folder)
     quarkx.opentoolbox("", seltex)
 
 
@@ -714,6 +731,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.28  2007/09/10 10:24:25  danielpharos
+#Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+#
 #Revision 1.27  2007/04/03 15:17:44  danielpharos
 #Read the recenter option for the correct editor mode.
 #
