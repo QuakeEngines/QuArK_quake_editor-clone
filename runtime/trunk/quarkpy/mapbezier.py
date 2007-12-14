@@ -390,7 +390,7 @@ class CPHandle(qhandles.GenericHandle):
 
         patchmenu = mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
 
-        texcp = qmenu.item("Texture Coordinates",texcpclick, "|Gives the position of the texture on the selected beizer patch.|maped.curves.html#texmanag)
+        texcp = qmenu.item("Texture Coordinates",texcpclick, "|Gives the position of the texture on the selected beizer patch.|maped.curves.html#texmanag")
         texcp.h, texcp.editor = self, editor
         texpop = findlabelled(patchmenu,'texpop')
         texpop.items[:0] = [texcp, qmenu.sep]
@@ -715,16 +715,16 @@ class CPHandle(qhandles.GenericHandle):
             editor.invalidateviews()
 
         pickItem = qmenu.item("Pick CP", pickClick,"|When one or more CPs are picked `picked', dragging one of them drags all, and movement palette operations applied to a patch are applied only to the picked CPs.\n\nPatches remember which of their CPs are picked.|maped.curves.html")
-        unPickItem = qmenu.item("Unpick CP", unPickClick)
+        unPickItem = qmenu.item("Unpick CP", unPickClick, "|Unselects a specific selected bezier control point.|maped.curves.html")
 
-        pickRowItem = qmenu.item("Pick Ro&w", pickRowClick, "Selects the entire row that the control point is in.|maped.curves.html")
-        unPickRowItem = qmenu.item("Unpick Ro&w", unPickRowClick, "Unselects the entire row that the control point is in.|maped.curves.html")
+        pickRowItem = qmenu.item("Pick Ro&w", pickRowClick, "|Selects the entire row that the control point is in.|maped.curves.html")
+        unPickRowItem = qmenu.item("Unpick Ro&w", unPickRowClick, "|Unselects the entire row that the control point is in.|maped.curves.html")
 
-        pickColItem = qmenu.item("Pick Col&umns", pickColClick, "Selects the entire column that the control point is in.|maped.curves.html")
-        unPickColItem = qmenu.item("Unpick Col&umns", unPickColClick, "Unselects the entire column that the control point is in.|maped.curves.html")
+        pickColItem = qmenu.item("Pick Col&umns", pickColClick, "|Selects the entire column that the control point is in.|maped.curves.html")
+        unPickColItem = qmenu.item("Unpick Col&umns", unPickColClick, "|Unselects the entire column that the control point is in.|maped.curves.html")
 
-        pickAllItem = qmenu.item("Pick All", pickAllClick, "Selects all control points.|maped.curves.html")
-        unPickAllItem = qmenu.item("Unpick All", unPickAllClick, "Unselects all control points.|maped.curves.html")
+        pickAllItem = qmenu.item("Pick All", pickAllClick, "|Selects all control points.|maped.curves.html")
+        unPickAllItem = qmenu.item("Unpick All", unPickAllClick, "|Unselects all control points.|maped.curves.html")
 
         picklist = [qmenu.sep]
         found = 0
@@ -1156,6 +1156,10 @@ qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.42  2007/12/14 21:48:00  cdunde
+#Added many new beizer shapes and functions developed by our friends in Russia,
+#the Shine team, Nazar and vodkins.
+#
 #Revision 1.41  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
