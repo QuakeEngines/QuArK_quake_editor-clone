@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2007/11/15 20:37:38  danielpharos
+Fix the shared faces from crashing the .map export.
+
 Revision 1.3  2007/09/16 20:11:21  danielpharos
 Fixed specifics with pound sign not saving.
 
@@ -2381,6 +2384,9 @@ begin
   end;
   if ObjectToSave is TTreeMapBrush then
     SaveAsMapTextTTreeMapBrush(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
+  else if ObjectToSave is TDuplicator then
+    //TDuplicator needs to be checked before TTreeMapEntity, because it is a child of it!
+    SaveAsMapTextTDuplicator(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TTreeMapEntity then
     SaveAsMapTextTTreeMapEntity(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
   else if ObjectToSave is TTreeMapGroup then
@@ -2391,8 +2397,6 @@ begin
     //SaveAsMapTextTFace(ObjectToSave, GameCode, MapVersion, Texte, OriginBrush, Flags2, MapFormat)
   else if ObjectToSave is TBezier then
     //SaveAsMapTextTBezier(ObjectToSave, GameCode, MapVersion, Texte)
-  else if ObjectToSave is TDuplicator then
-    SaveAsMapTextTDuplicator(ObjectToSave, GameCode, MapVersion, Negatif, Texte, Flags2, HxStrings)
   else
     raise InternalE(LoadStr1(5525));
 end;
