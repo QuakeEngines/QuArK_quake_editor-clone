@@ -52,6 +52,7 @@ class MapEditor(BaseEditor):
     ObjectMgr = mapentities.CallManager
     HandlesModule = maphandles
     MouseDragMode = maphandles.RectSelDragObject
+    Portals = []
 
     def OpenRoot(self):
         self.tmpsaved = None
@@ -362,6 +363,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.12  2007/04/02 22:17:08  danielpharos
+#Fix a float-integer problem
+#
 #Revision 1.11  2007/03/31 14:32:53  danielpharos
 #Fixed a typo
 #
