@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2007/12/14 11:33:44  danielpharos
+Use the entire buffer for loading of VideoBiosVersion, to prevent weird errors from happening.
+
 Revision 1.31  2007/09/23 22:32:25  danielpharos
 Fix some wrong detections of Windows versions.
 
@@ -385,7 +388,7 @@ type
 
 implementation
 
-uses ShlObj, TlHelp32, Logging, Qk1;
+uses ShlObj, TlHelp32, Psapi, Logging, Qk1;
 
 type
   TPlatformType = (osWin95Comp, osWinNTComp);
@@ -1967,31 +1970,89 @@ function ProcessExists(exeFileName: string): Boolean;
 var 
   ContinueLoop: BOOL; 
   FSnapshotHandle: THandle; 
-  FProcessEntry32: TProcessEntry32; 
+  FProcessEntry32: TProcessEntry32;
+  ProcessNumber: Integer;
+  ProcessSize, BytesReturned: DWORD;
+  ProcessList, ProcessList2: PDWORD;
+  ProcessHandle: THandle;
+  ProcessModule: HMODULE;
+  SizeNeeded: DWORD;
+  ProcessName: String;
+  ProcessNameBuffer: PChar;
+  ProcessNameBufferSize: Cardinal;
+  RealProcessNameSize: Cardinal;
+  I: Integer;
 begin
   Result := False;
-
-  //The following check only works on non-NT4 systems...
-  if WindowsPlatform=osWinNT4 then
+  if WindowsPlatformCompatibility=osWin95Comp then
   begin
-    Log(LOG_WARNING, 'Unable to determine if '+exeFileName+' is running. (Windows NT 4)');
-    Exit;
+    FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+    ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+    while ContinueLoop <> false do
+    begin
+      if (ExtractFileName(FProcessEntry32.szExeFile) = ExeFileName)
+        or (FProcessEntry32.szExeFile = ExeFileName) then
+      begin
+        Result := True;
+        break;
+      end;
+      ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+    end;
+    CloseHandle(FSnapshotHandle);
+  end
+  else
+  begin
+    ProcessNumber := 16;
+    GetMem(ProcessList, ProcessNumber * SizeOf(DWORD));
+    try
+      repeat
+        ProcessNumber := ProcessNumber * 2;
+        ReallocMem(ProcessList, ProcessNumber * SizeOf(DWORD));
+        BytesReturned := 0;
+        ProcessSize := ProcessNumber * SizeOf(DWORD);
+        if EnumProcesses(ProcessList, ProcessSize, BytesReturned) = false then
+          raise exception.Create('Unable to enumerate processes!');
+      until BytesReturned < ProcessSize;
+      ProcessNumber := BytesReturned div SizeOf(DWORD);
+      ProcessList2 := ProcessList;
+      for I:=0 to ProcessNumber-1 do
+      begin
+        ProcessHandle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, ProcessList2^);
+        if ProcessHandle <> 0 then
+        begin
+          if EnumProcessModules(ProcessHandle, @ProcessModule, SizeOf(ProcessModule), SizeNeeded) <> false then
+          begin
+            ProcessNameBufferSize := 128;
+            GetMem(ProcessNameBuffer, ProcessNameBufferSize * SizeOf(Char));
+            try
+              repeat
+                ProcessNameBufferSize := ProcessNameBufferSize * 2;
+                ReallocMem(ProcessNameBuffer, ProcessNameBufferSize * SizeOf(Char));
+                RealProcessNameSize := GetModuleBaseName(ProcessHandle, ProcessModule, ProcessNameBuffer, ProcessNameBufferSize);
+              until RealProcessNameSize < ProcessNameBufferSize;
+              if RealProcessNameSize > 0 then
+              begin
+                SetLength(ProcessName, RealProcessNameSize);
+                ProcessName := PChar(ProcessNameBuffer);
+                if CompareStr(ProcessName, exeFileName) = 0 then
+                begin
+                  Result:=True;
+                  break;
+                end;
+              end;
+            finally
+              FreeMem(ProcessNameBuffer);
+            end;
+          end;
+          CloseHandle(ProcessHandle);
+        end;
+        Inc(ProcessList2);
+      end;
+    finally
+      FreeMem(ProcessList);
+    end;
   end;
-
-  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
-  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
-  while ContinueLoop <> false do
-  begin 
-    if (ExtractFileName(FProcessEntry32.szExeFile) = ExeFileName)
-      or (FProcessEntry32.szExeFile = ExeFileName) then
-    begin 
-      Result := True;
-      break;
-    end; 
-    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32); 
-  end; 
-  CloseHandle(FSnapshotHandle); 
 end;
 
 function WindowExists(WindowName: String): Boolean;

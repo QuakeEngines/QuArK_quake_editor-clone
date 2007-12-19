@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2007/09/12 16:21:41  danielpharos
+Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
+
 Revision 1.22  2007/08/23 21:09:43  danielpharos
 No clearcache-warning when the Steam cache was not used.
 
@@ -246,6 +249,7 @@ end;
 function RunSteam: Boolean;
 var
   Setup: QObject;
+  SteamEXEName: String;
   SteamDirectory: String;
   SteamStartupInfo: StartUpInfo;
   SteamProcessInformation: Process_Information;
@@ -255,14 +259,17 @@ var
 begin
   Setup := SetupSubSet(ssGames, 'Steam');
   WaitForSteam := False;
-  Result := ProcessExists('steam.exe');
+  SteamEXEName := Setup.Specifics.Values['SteamEXEName'];
+  if SteamEXEName = '' then
+    SteamEXEName := 'steam.exe';
+  Result := ProcessExists(SteamEXEName);
   if (not Result) and (Setup.Specifics.Values['Autostart']='1') then
   begin
     FillChar(SteamStartupInfo, SizeOf(SteamStartupInfo), 0);
     FillChar(SteamProcessInformation, SizeOf(SteamProcessInformation), 0);
     SteamStartupInfo.cb:=SizeOf(SteamStartupInfo);
     SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
-    if Windows.CreateProcess(nil, PChar(SteamDirectory+'steam.exe'), nil, nil, false, 0, nil, nil, SteamStartupInfo, SteamProcessInformation)=true then
+    if Windows.CreateProcess(nil, PChar(SteamDirectory+SteamEXEName), nil, nil, false, 0, nil, nil, SteamStartupInfo, SteamProcessInformation)=true then
     begin
       CloseHandle(SteamProcessInformation.hThread);
       CloseHandle(SteamProcessInformation.hProcess);
@@ -279,7 +286,7 @@ begin
     if I>50 then
     begin
       //We've been waiting for 10 SECONDS! Let's assume something went terribly wrong...!
-      if MessageBox(0, PChar('10 Seconds have passed, and QuArk cannot detect Steam as having started up... Please start it manually now (if it has not yet done so) and press YES. Otherwise, press NO.'), PChar('QuArK'), MB_YESNO) = IDNO then
+      if MessageBox(0, PChar('10 Seconds have passed, and QuArk cannot detect Steam as having started up... Please start it manually now (if it has not yet done so) and press YES when you are logged in. Otherwise, press NO.'), PChar('QuArK'), MB_YESNO) = IDNO then
       begin
         Result:=False;
         WaitForSteam:=False;
@@ -288,6 +295,7 @@ begin
     else
       I:=I+1;
   end;
+  //@Do we also need to check if Steam is running in this USER ACCOUNT?!?
 end;
 
 function RunSteamExtractor(const Filename : String) : Boolean;

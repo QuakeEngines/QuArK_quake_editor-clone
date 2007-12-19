@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.375  2007/12/19 12:38:46  danielpharos
+//Made an option to set the amount of lines of text in the console.
+//
 //Revision 1.374  2007/12/09 23:36:36  danielpharos
 //Fixed a typo.
 //
@@ -2845,6 +2848,7 @@ QQRKSRC1
         ClearcacheGCF = ""
         Clearcache = "1"
 
+        SteamEXEName = "steam.exe"
         CacheDirectory = "QuArKApps"
         Form = "GameSteam"
       }
