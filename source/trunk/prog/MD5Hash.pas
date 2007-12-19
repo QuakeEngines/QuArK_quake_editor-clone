@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2007/11/21 18:46:14  danielpharos
+Fixed a typo and removed a wrong comment.
+
 Revision 1.1  2007/09/12 16:21:41  danielpharos
 Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
 
@@ -34,9 +37,9 @@ unit MD5Hash;
 interface
 uses Windows, SysUtils, QkObjects;
 
-function Md5GetFileHash(Filename: string): string;
-function Md5GetBenchmarkHash(Filename: string): double;
-function Md5GetStringHash(Text: string): string;
+function Md5GetFileHash(const Filename: string): string;
+function Md5GetBenchmarkHash(const Filename: string): double;
+function Md5GetStringHash(const Text: string): string;
 function Md5GetRandomHash: string;
 
 {-------------------}
@@ -122,21 +125,21 @@ begin
       TimesLoaded := TimesLoaded - 1;
 end;
 
-function Md5GetFileHash(Filename: string): string;
+function Md5GetFileHash(const Filename: string): string;
 begin
   if (TimesLoaded=0) then
     LoadMd5Hash;
   Result:=GetFileMd5(PChar(Filename));
 end;
 
-function Md5GetBenchmarkHash(Filename: string): double;
+function Md5GetBenchmarkHash(const Filename: string): double;
 begin
   if (TimesLoaded=0) then
     LoadMd5Hash;
   Result:=GetBenchmarkMd5(PChar(Filename));
 end;
 
-function Md5GetStringHash(Text: string): string;
+function Md5GetStringHash(const Text: string): string;
 begin
   if (TimesLoaded=0) then
     LoadMd5Hash;
