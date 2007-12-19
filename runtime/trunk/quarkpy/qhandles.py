@@ -1001,7 +1001,6 @@ class RedImageDragObject(DragObject):
             if isinstance(editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(editor.dragobject.handle, mdlhandles.LinCornerHandle):
                 ### Stops Model Editor Linear drag handles from drawing redline drag objects incorrectly.
                 return
-            from qbaseeditor import currentview
             # Draws rectangle selector and Skin-view lines much faster this way.
             if view.info["viewname"] == "skinview":
                 if isinstance(editor.dragobject.handle, mdlhandles.SkinHandle):
@@ -1175,7 +1174,6 @@ class RedImageDragObject(DragObject):
 ## Deals with Model Editor Skin-view movement, face drawing is in python\mdlhandles.py class SkinHandle section
 
         if isinstance(editor, mdleditor.ModelEditor) and old is not None and self.redimages is not None:
-            from qbaseeditor import currentview, flagsmouse
             try:
                 if self.redimages[0].type == ":mc":
                     compframes = self.redimages[0].findallsubitems("", ':mf')   # get all frames
@@ -1191,6 +1189,7 @@ class RedImageDragObject(DragObject):
                         compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
             except:
                 pass
+            from qbaseeditor import currentview
             if currentview.info["viewname"] == "skinview":
                 pass
             else:
@@ -1226,7 +1225,7 @@ def refreshtimer(self):
     if self.editor is None:
         self.editor = mdleditor.mdleditor
     if isinstance(self.editor, mdleditor.ModelEditor):
-        from qbaseeditor import flagsmouse, currentview
+        from qbaseeditor import flagsmouse
         if flagsmouse == 16384:
             self.editor.dragobject = None
             return
@@ -2153,6 +2152,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.65  2007/11/29 22:14:23  cdunde
+#To stop view error when both editors are open.
+#
 #Revision 1.64  2007/11/16 18:48:23  cdunde
 #To update all needed files for fix by DanielPharos
 #to allow frame relocation after editing.

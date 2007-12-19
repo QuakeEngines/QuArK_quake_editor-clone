@@ -84,7 +84,6 @@ class BaseEditor:
 
     def drawmap(self, view):
         "Draws the map/model on the given view."
-        import mdleditor
         try:
             list = self.list
         except:
@@ -108,6 +107,7 @@ class BaseEditor:
         scale1 = self.lastscale
         if scale1<=0:
             scale1=1.0
+        import mdleditor
         if isinstance(self, mdleditor.ModelEditor):
             # Stops duplicate drawing of handles in all views after a zoom in a 3D view.
             if view.info["type"] != "3D" and (view.info["viewname"] != "editors3Dview" and view.info["viewname"] != "3Dwindow"):
@@ -566,7 +566,7 @@ class BaseEditor:
         v.onkey = self.keymap
         v.ondrop = self.dropmap
         v.flags = v.flags | flags
-        if self.MODE == 3:
+        if self.MODE == SS_MODEL:
             if v.info["viewname"] == "3Dwindow":
                 import mdlhandles
                 v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
@@ -1436,6 +1436,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.103  2007/11/29 22:58:41  cdunde
+#Dan fixed the Model Editor Skin-view from crashing if there is no grid.
+#
 #Revision 1.102  2007/11/04 00:33:33  cdunde
 #To make all of the Linear Handle drag lines draw faster and some selection color changes.
 #

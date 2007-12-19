@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/12/06 22:57:40  danielpharos
+Fix typo and indentation mistake.
+
 Revision 1.9  2006/02/19 00:13:10  cdunde
 To add support for md2 model file saving functions.
 
@@ -525,10 +528,6 @@ begin
 
     1: begin  { write the .md2 file and skin .pcx file(s) }
 
-{$IFDEF xx}
- Raise InternalE('xx');
-{$ELSE}
-
       if Info.TempObject=Nil then
        Root:=Saving_Root
       else
@@ -537,17 +536,15 @@ begin
         Info.TempObject:=Nil;
        end;
 
-          if Root.CurrentComponent = nil
-           then
-            Root.CurrentComponent := Root.GetComponentFromIndex(0);
-          Comp := Root.CurrentComponent;
-          if Comp = nil
-           then
-            raise Exception.Create('Nothing to save! (Root.CurrentComponent = nil [QMDLFILE.ENREGISTRER])');
+      if Root.CurrentComponent = nil then
+       Root.CurrentComponent := Root.GetComponentFromIndex(0);
+      Comp := Root.CurrentComponent;
+      if Comp = nil then
+       raise Exception.Create('Nothing to save! (Root.CurrentComponent = nil [QKMD2.SAVEFILE])');
 
-          Components := Comp.BuildFrameList;
-          Skins := Comp.BuildSkinList;
-          ProgressIndicatorStart(502, Components.Count + Skins.Count);
+      Components := Comp.BuildFrameList;
+      Skins := Comp.BuildSkinList;
+      ProgressIndicatorStart(502, Components.Count + Skins.Count);
 
       try
        Position0:=F.Position;
@@ -756,8 +753,7 @@ begin
       F.Position:=Position0;
       F.WriteBuffer(mdl, SizeOf(mdl));
       F.Position:=Position0+mdl.ofs_end;
-      
-{$ENDIF}
+
     end;
   else
     inherited;

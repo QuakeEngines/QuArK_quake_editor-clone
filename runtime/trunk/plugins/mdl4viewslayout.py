@@ -20,9 +20,8 @@ Info = {
    "quark":         "Version 5.3" }
 
 
-import quarkpy.qhandles   
+import quarkpy.qhandles
 from quarkpy.mdlmgr import *
-import quarkpy.mdleditor
 
 #
 # See comments in map4viewslayout.py.
@@ -32,7 +31,6 @@ class FourViewsLayout(ModelLayout):
     "The 4-views layout, abstract class for FourViewsLayout1 and FourViewsLayout2."
 
     def buildbase(self, form):
-        self.editor = mdleditor.mdleditor
 
         #
         # We put the standard left panel first.
@@ -314,6 +312,9 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.12  2007/12/06 04:57:14  cdunde
+# To stop the progressbars in all of the Model Editors views.
+#
 # Revision 1.11  2007/12/06 00:59:21  danielpharos
 # Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
 #
