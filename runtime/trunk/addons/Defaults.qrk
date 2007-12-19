@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.374  2007/12/09 23:36:36  danielpharos
+//Fixed a typo.
+//
 //Revision 1.373  2007/12/06 23:01:20  danielpharos
 //Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
 //
@@ -1251,6 +1254,8 @@ QQRKSRC1
         IconPath = "images\\"
         TextureNameCheck = "1"
         MaxRecentFiles = '5'
+        ConsoleWidth = '80'
+        ConsoleHeight = '60'
         Form = "GeneralDisplay"
       }
       3D view:config =
@@ -7031,6 +7036,8 @@ QQRKSRC1
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
       TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
       MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 5)"}
+      //ConsoleWidth = {Txt="Width of console" Typ="EF1" Hint="Amount of character per line in the console (80 .. 80)"}
+      ConsoleHeight = {Txt="Height of console" Typ="EF1" Hint="Maximum amount of lines in the console (60 .. 600)"}
     }
     General3DView:form =
     {

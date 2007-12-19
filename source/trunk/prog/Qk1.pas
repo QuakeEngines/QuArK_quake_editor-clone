@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2007/12/13 12:32:36  danielpharos
+Change a procedure name to something much less confusing.
+
 Revision 1.51  2007/09/24 00:15:55  danielpharos
 Made MaxRecentFiles a configurable option.
 
@@ -569,6 +572,9 @@ begin
  Application.UpdateFormatSettings:=False;
  DecimalSeparator:='.';
  g_Form1Handle:=Handle;
+
+  // Set-up the console
+ InitConsole;
 
  // DanielPharos: This processes the commandline and prepares it for further use
  g_CmdOptions.DoSplash := true; //These are the defaults
@@ -1699,6 +1705,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  ClearPool(True);
  ClearSteamCache;
 // QObjectClassList.Free;
+ FreeConsole;
  st:='hi';
  s:=PyString_FromString(PChar(st));
  CallMacro(s, 'shutdown');

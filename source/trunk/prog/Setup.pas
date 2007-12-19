@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2007/09/24 00:15:55  danielpharos
+Made MaxRecentFiles a configurable option.
+
 Revision 1.59  2007/08/16 11:10:34  danielpharos
 Forgot to commit a few lines   :|
 
@@ -384,7 +387,7 @@ function InternalVersion : Single;
 
 implementation
 
-uses QkMapObjects, Travail, Game, QkGroup, QkForm, Qk1,
+uses QkMapObjects, Travail, Game, Console, QkGroup, QkForm, Qk1,
      ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, Python, PyMapView,
      PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths;
 
@@ -703,7 +706,7 @@ begin
  SetupChanged({scMaximal} {scMinimal} scInit);
 end;
 
-procedure SetupChanged;
+procedure SetupChanged(Level: Integer);
 var
  fnt: PyObject;
  S: String;
@@ -717,13 +720,13 @@ begin
 
  if Level>=scMinimal then
   ResizeRecentFiles;
-  
+
  for I:=0 to Screen.FormCount-1 do
   with Screen.Forms[I] do
    for J:=0 to ComponentCount-1 do
     if Components[J] is TPyMapView then
      TPyMapView(Components[J]).DeleteScene;
-  
+
  if (Level>=scAddOns) or (Level=scGame) then
   TTextureManager.FreeNonVisibleTextures;
 
@@ -744,6 +747,7 @@ begin
    SetupSubSet(ssGeneral, 'Display').Specifics.Values['MarsCaption']:=S;
   end;
  SetMarsCapActive(S<>'');
+ ResizeConsole;
 
   { stores the setup infos into the Quarkx Python module }
 (*SetupInfo:=PyList_New(Ord(High(T))+1); try
@@ -1127,7 +1131,8 @@ begin
     ClearGameBuffers(True);
     g_SetupSet[ssGames].Specifics.Values['GameCfg']:=nMode;
    {SetupModified:=True;}
-    PosteMessageFiches(wp_SetupChanged, scGame);
+    SetupChanged(scGame);
+    //PosteMessageFiches(wp_SetupChanged, scGame);
    end;
 end;
 

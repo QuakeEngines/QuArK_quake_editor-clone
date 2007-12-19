@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2001/06/05 18:38:06  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -44,10 +47,6 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Python, CursorScrollBox, StdCtrls, ExtCtrls, TB97, QkForm, EnterEditCtrl;
-
-const
-  ConsoleWidth  = 80;
-  ConsoleHeight = 140;
 
 type
   TConsoleForm = class(TQkForm)
@@ -73,6 +72,7 @@ type
     procedure DisplayMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure Timer1Timer(Sender: TObject);
+    destructor Destroy; override;
   private
     ConsoleFont: HFont;
     LineHeight: Integer;
@@ -92,7 +92,9 @@ procedure ShowConsole(Show: Boolean);
 procedure WriteConsole(Src: PyObject; Text: String);
 procedure UpdateRunningProcesses;
 
-{var coflhack: THandle;}
+procedure InitConsole;
+procedure FreeConsole;
+procedure ResizeConsole;
 
  {-------------------}
 
@@ -100,22 +102,183 @@ implementation
 
 {$R *.DFM}
 
-uses Qk1, QkObjects, Quarkx, PyProcess;
+uses Qk1, QkObjects, Quarkx, PyProcess, Setup;
 
  {-------------------}
+
+
+const
+  MinConsoleWidth  = 80;
+  MaxConsoleWidth  = 80;
+  MinConsoleHeight = 60;
+  MaxConsoleHeight = 600;
 
 type
  TPipeLine = record
               Src: PyObject;
+              EndLine: Boolean;
               DataLength: Byte;
-              Data: array[0..ConsoleWidth-1] of Char;
+              Data: array of Char;
              end;
+ TPipeBuffer = array of TPipeLine;
+ PPipeBuffer = ^TPipeBuffer;
 
 var
- PipeBuffer: array[0..ConsoleHeight-1] of TPipeLine;
+ PipeBuffer: PPipeBuffer;
  PipeBufPos: Integer;
+ ConsoleWidth: Integer = MinConsoleWidth;
+ ConsoleHeight: Integer = MinConsoleHeight;
+ ConsoleReady: Boolean = False;
 
  {-------------------}
+
+procedure InitBuffer(var Buffer: PPipeBuffer; Width: Integer; Height: Integer);
+var
+  I: Integer;
+begin
+  if Buffer<>nil then
+    raise exception.create('InitBuffer: Buffer not nil!');
+  New(Buffer);
+  SetLength(Buffer^, Height);
+  for I:=0 to Height-1 do
+  begin
+    SetLength(Buffer^[I].Data, Width);
+    Buffer^[I].DataLength:=0;
+  end;
+end;
+
+procedure FreeBuffer(var Buffer: PPipeBuffer; DeRefPyObj: Boolean);
+var
+  I: Integer;
+begin
+  for I:=0 to ConsoleHeight-1 do
+  begin
+    SetLength(Buffer^[I].Data, 0);
+    if (Buffer^[I].Src<>nil) and DeRefPyObj then
+    begin
+      Py_XDECREF(Buffer^[I].Src);
+      Buffer^[I].Src:=nil;
+    end;
+  end;
+  SetLength(Buffer^, 0);
+  Dispose(Buffer);
+  Buffer:=nil;
+end;
+
+procedure InitConsole;
+begin
+  if ConsoleReady then Exit;
+  InitBuffer(PipeBuffer, ConsoleWidth, ConsoleHeight);
+  ConsoleReady:=True;
+end;
+
+procedure FreeConsole;
+begin
+  if not ConsoleReady then Exit;
+  ConsoleReady:=False;
+  FreeBuffer(PipeBuffer, True);
+  PipeBuffer:=nil;
+end;
+
+procedure ResizeConsole;
+var
+  Setup: QObject;
+  NewConsoleWidth, NewConsoleHeight: Integer;
+  I, J, P: Integer;
+  BufLine, BufChar: Integer;
+  NewBuffer: PPipeBuffer;
+begin
+  if not ConsoleReady then Exit;
+  Setup:=SetupSubSet(ssGeneral, 'Display');
+  try
+    NewConsoleWidth:=Round(Setup.GetFloatSpec('ConsoleWidth', 0));
+  except
+    NewConsoleWidth:=0;
+  end;
+  try
+    NewConsoleHeight:=Round(Setup.GetFloatSpec('ConsoleHeight', 0));
+  except
+    NewConsoleHeight:=0;
+  end;
+  if NewConsoleWidth=0 then
+    NewConsoleWidth:=ConsoleWidth;
+  if NewConsoleHeight=0 then
+    NewConsoleHeight:=ConsoleHeight;
+  if NewConsoleWidth<MinConsoleWidth then
+    NewConsoleWidth:=MinConsoleWidth;
+  if NewConsoleHeight<MinConsoleHeight then
+    NewConsoleHeight:=MinConsoleHeight;
+  if NewConsoleWidth>MaxConsoleWidth then
+    NewConsoleWidth:=MaxConsoleWidth;
+  if NewConsoleHeight>MaxConsoleHeight then
+    NewConsoleHeight:=MaxConsoleHeight;
+  if (NewConsoleHeight<>ConsoleHeight) or (NewConsoleHeight<>ConsoleHeight) then
+  begin
+    NewBuffer:=nil;
+    InitBuffer(NewBuffer, NewConsoleWidth, NewConsoleHeight);
+
+    BufLine:=NewConsoleHeight-1;
+    BufChar:=0;
+    P:=PipeBufPos-1;
+    if P=-1 then
+      Inc(P, ConsoleHeight);
+    for I:=ConsoleHeight-1 downto 0 do
+    begin
+      NewBuffer^[BufLine].Src:=PipeBuffer^[P].Src;
+      //FIXME
+      //Resizing the width causes weird line-breaks right now...
+      //We need some better scheme to copy the data from one buffer
+      //to the other...
+      for J:=0 to PipeBuffer^[P].DataLength-1 do
+      begin
+        NewBuffer^[BufLine].Data[BufChar]:=PipeBuffer^[P].Data[J];
+        Inc(BufChar);
+        if (BufChar=NewConsoleWidth) and (J<PipeBuffer^[P].DataLength-1) then
+        begin
+          NewBuffer^[BufLine].DataLength:=BufChar;
+          Dec(BufLine);
+          if BufLine=0 then
+            break;
+          BufChar:=0;
+          NewBuffer^[BufLine].Src:=PipeBuffer^[P].Src;
+        end;
+      end;
+      NewBuffer^[BufLine].DataLength:=BufChar;
+      if BufLine=0 then
+        break;
+
+      if I>0 then
+      begin
+        Dec(P);
+        if P=-1 then
+          Inc(P, ConsoleHeight);
+
+        if PipeBuffer^[P].EndLine then
+        begin
+          Dec(BufLine);
+          if BufLine=0 then
+            break;
+          BufChar:=0;
+          NewBuffer^[BufLine].EndLine:=True;
+        end;
+      end;
+    end;
+
+    FreeBuffer(PipeBuffer, False);
+    PipeBuffer:=NewBuffer;
+    NewBuffer:=nil;
+    PipeBufPos:=0;
+
+    ConsoleHeight:=NewConsoleHeight;
+    ConsoleWidth:=NewConsoleWidth;
+    if g_ConsoleForm<>nil then
+      if g_ConsoleForm.ConsoleFont<>0 then
+      begin
+        DeleteObject(g_ConsoleForm.ConsoleFont);
+        g_ConsoleForm.ConsoleFont:=0;
+      end;
+  end;
+end;
 
 procedure NewLine(Src: PyObject);
 var
@@ -123,10 +286,10 @@ var
 begin
  I:=PipeBufPos+1;
  if I=ConsoleHeight then I:=0;
- Py_XDECREF(PipeBuffer[I].Src);
- PipeBuffer[I].Src:=Src;
+ Py_XDECREF(PipeBuffer^[I].Src);
+ PipeBuffer^[I].Src:=Src;
  Py_INCREF(Src);
- PipeBuffer[I].DataLength:=0;
+ PipeBuffer^[I].DataLength:=0;
  PipeBufPos:=I;
 end;
 
@@ -135,17 +298,24 @@ var
  I: Integer;
  Line: ^TPipeLine;
 begin
+ if not ConsoleReady then Exit;
  if Length(Text)>0 then
   begin
-   if PipeBuffer[PipeBufPos].Src<>Src then
-    NewLine(Src);
-   Line:=@PipeBuffer[PipeBufPos];
+   if PipeBuffer^[PipeBufPos].Src<>Src then
+    begin
+     Line:=@PipeBuffer^[PipeBufPos];
+     Line^.EndLine:=True;
+     NewLine(Src);
+    end;
+   Line:=@PipeBuffer^[PipeBufPos];
+   Line^.EndLine:=False;
    for I:=1 to Length(Text) do
     case Text[I] of
      #0, #13: ;
      #10: begin
+           Line^.EndLine:=True;
            NewLine(Src);
-           Line:=@PipeBuffer[PipeBufPos];
+           Line:=@PipeBuffer^[PipeBufPos];
           end;
      #8: if Line^.DataLength>0 then
           Dec(Line^.DataLength);
@@ -154,7 +324,7 @@ begin
       if Line^.DataLength=ConsoleWidth then
        begin
         NewLine(Src);
-        Line:=@PipeBuffer[PipeBufPos];
+        Line:=@PipeBuffer^[PipeBufPos];
        end;
       Line^.Data[Line^.DataLength]:=Text[I];
       Inc(Line^.DataLength);
@@ -196,111 +366,39 @@ end;
 
  {-------------------}
 
-(*type
-  TPipe = record
-           Color: TColorRef;
-           hRead, hWrite: THandle;
-           hThread: THandle;
-          end;
-
-procedure PipeProc(var Pipe: TPipe); stdcall;
-var
- Buffer: array[0..0] of Char;
- Count, I: Integer;
- Line: ^TPipeLine;
-begin
- repeat
-  Count:=0;
-  ReadFile(Pipe.hRead, Buffer, SizeOf(Buffer), Count, Nil);
-  if Count>0 then
-   begin
-    EnterCriticalSection(CriticalSection); try
-    if PipeBuffer[PipeBufPos].Id<>Pipe.Id then
-     NewLine(Pipe.Id);
-    Line:=@PipeBuffer[PipeBufPos];
-    for I:=0 to Count-1 do
-     case Buffer[I] of
-      #0, #13: ;
-      #10: begin
-            NewLine(Pipe.Id);
-            Line:=@PipeBuffer[PipeBufPos];
-           end;
-      #8: if Line^.DataLength>0 then
-           Dec(Line^.DataLength);
-     else
-      begin
-       if Line^.DataLength=ConsoleWidth then
-        begin
-         NewLine(Pipe.Id);
-         Line:=@PipeBuffer[PipeBufPos];
-        end;
-       Line^.Data[Line^.DataLength]:=Buffer[I];
-       Inc(Line^.DataLength);
-      end;
-     end;
-    finally LeaveCriticalSection(CriticalSection); end;
-   {PostMessage(g_Form1Handle, wm_InternalMessage, wp_ConsoleWrite, 0);}
-    if ConsoleWnd<>0 then
-     InvalidateRect(ConsoleWnd, Nil, False);
-   end;
- until False;
-end;
-
- {-------------------}
-
-procedure InitConsole;
-var
- P: TPipeList;
- SA: TSecurityAttributes;
- Dummy: Integer;
-begin
- InitializeCriticalSection(CriticalSection);
- PipeBufPos:=0;
- FillChar(PipeBuffer, SizeOf(PipeBuffer), 0);
- FillChar(SA, Sizeof(SA), 0);
- SA.nLength:=SizeOf(SA);
- for P:=Low(P) to High(P) do
-  begin
-   Pipes[P].Id:=P;
-   if not CreatePipe(Pipes[P].hRead, Pipes[P].hWrite, @SA, 0) then
-    Raise InternalE('CreatePipe failed');
-   Pipes[P].hThread:=CreateThread(Nil, 1024, @PipeProc, @Pipes[P], 0, Dummy);
-   if Pipes[P].hThread=0 then
-    Raise InternalE('CreateThread failed');
-  end;
- SetStdHandle(STD_OUTPUT_HANDLE, {Pipes[plPythonOut].hWrite);}
-  CreateFile('c:\temp\output.txt', GENERIC_READ or GENERIC_WRITE,
-  FILE_SHARE_READ, @SA, CREATE_ALWAYS, 0, 0));
- Writeln('Hello!');
- SetStdHandle(STD_ERROR_HANDLE, Pipes[plError].hWrite);
- DuplicateHandle(GetCurrentProcess, Pipes[plProgramOut].hWrite, GetCurrentProcess, @ProcessStdOut, STANDARD_RIGHTS_REQUIRED, True, 0);
- DuplicateHandle(GetCurrentProcess,  Pipes[plError].hWrite,  GetCurrentProcess,  @ProcessStdError, STANDARD_RIGHTS_REQUIRED, True, 0);
-end;*)
-
- {-------------------}
-
 const
  VMargin    = 7;
  LeftMargin = 2;
  HMargin    = LeftMargin * 2;
 
+destructor TConsoleForm.Destroy;
+begin
+  if ConsoleFont<>0 then
+  begin
+    DeleteObject(ConsoleFont);
+    ConsoleFont:=0;
+  end;
+  inherited;
+end;
+
 procedure TConsoleForm.DisplayPaint(Sender: TObject; DC: Integer; const rcPaint: TRect);
 var
- Str: array[0..ConsoleWidth-1] of Char;
+ Str: String;
  Size: TSize;
  Font: HFont;
- X, Y, I, J, Top, Bottom: Integer;
+ X, Y, I, Top, Bottom: Integer;
  Color: TColorRef;
  P: Integer;
  obj: PyObject;
- LineBuf: array[0..ConsoleWidth-1] of Char;
+ LineBuf: String;
 begin
+ if not ConsoleReady then Exit;
  if ConsoleFont=0 then
   begin
    ConsoleFont:=CreateFont(15, 0, 0, 0, 0, 0, 0, 0, OEM_CHARSET, 0, 0, 0, FIXED_PITCH, Nil);
-   FillChar(Str, SizeOf(Str), 'M');
+   Str:=StringOfChar('M', ConsoleWidth);
    Font:=SelectObject(DC, ConsoleFont); try
-   if GetTextExtentPoint32(DC, Str, ConsoleWidth, Size) then
+   if GetTextExtentPoint32(DC, PChar(Str), ConsoleWidth, Size) then
     begin
      LineHeight:=Size.cy;
      Display.Invalidate;
@@ -324,6 +422,7 @@ begin
  Font:=SelectObject(DC, ConsoleFont);
  SetBkColor(DC, clBlack);
 
+ SetLength(LineBuf, ConsoleWidth);
  X:=LeftMargin-X;
  P:=PipeBufPos+Top+1;
  if P>=ConsoleHeight then Dec(P, ConsoleHeight);
@@ -338,13 +437,13 @@ begin
    else
     if P=Clipboard2 then
      SetBkColor(DC, clBlack);
-   if PipeBuffer[P].Src<>Nil then
+   if PipeBuffer^[P].Src<>Nil then
     begin
-     if PipeBuffer[P].Src = @g_Ty_InternalConsole then
+     if PipeBuffer^[P].Src = @g_Ty_InternalConsole then
       Color:=clLime
      else
       begin
-       obj:=PyObject_GetAttrString(PipeBuffer[P].Src, 'color');
+       obj:=PyObject_GetAttrString(PipeBuffer^[P].Src, 'color');
        if obj=Nil then
         Color:=clSilver
        else
@@ -354,10 +453,9 @@ begin
         end;
       end;
      SetTextColor(DC, Color);
-     J:=PipeBuffer[P].DataLength;
-     Move(PipeBuffer[P].Data, LineBuf, J);
-     FillChar(LineBuf[J], ConsoleWidth-J, ' ');
-     TextOut(DC, X, Y, LineBuf, ConsoleWidth);
+     LineBuf:=StringOfChar(' ', ConsoleWidth);
+     StrMove(PChar(LineBuf), PChar(PipeBuffer^[P].Data), PipeBuffer^[P].DataLength);
+     TextOut(DC, X, Y, PChar(LineBuf), ConsoleWidth);
     end;
    Inc(Y, LineHeight);
    Inc(P);
@@ -384,17 +482,6 @@ begin
  MarsCap.ActiveEndColor:=clGreen;
  SetFormIcon(iiPython);
 end;
-
-(*procedure TConsoleForm.Button1Click(Sender: TObject);
-var
- I: Integer;
- Zero: Char;
- Count: Integer;
-begin
- Zero:=#0;
- for I:=1 to 500 do
-  WriteFile(coflhack, Zero, 1, Count, Nil);
-end;*)
 
 procedure TConsoleForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -526,16 +613,17 @@ var
  I, J: Integer;
  H: HGlobal;
 begin
+ if not ConsoleReady then Exit;
  if Clipboard1=Clipboard2 then Exit;
  if ((Integer(GetTickCount)<More) or (Integer(GetTickCount)>More+200))
  and (MessageDlg(LoadStr1(4456), mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
   begin
    I:=Clipboard1;
    repeat
-    if PipeBuffer[I].Src<>Nil then
+    if PipeBuffer^[I].Src<>Nil then
      begin
-      J:=PipeBuffer[I].DataLength;
-      SetString(S, PipeBuffer[I].Data, J);
+      J:=PipeBuffer^[I].DataLength;
+      SetString(S, PChar(PipeBuffer^[I].Data), J);
       Text:=Text+S+#13#10;
      end;
     Inc(I);
