@@ -1414,7 +1414,7 @@ def rectrel2abs(x1,y1,x2,y2):
 
 
 #
-# Call this to retrive to current map or model editor.
+# Call this to retrieve to current map or model editor.
 #
 
 def mapeditor(mode=None):
@@ -1473,10 +1473,6 @@ def TexModeMenu(editor, view):
                 view.screencenter = center
                 setprojmode(view)
 
-    #if view.viewmode == "opengl":
-        #modhint = "the mode is fixed to OpenGL"
-        #infobaselink = "intro.mapeditor.menu.html#layoutmenu"
-    #else:
     import qbasemgr
     modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
     infobaselink = "intro.mapeditor.menu.html#layoutmenu"
@@ -1488,9 +1484,6 @@ def TexModeMenu(editor, view):
     Mod3.mode = "tex"
     List = [Mod1, Mod2, Mod3]
     for menu in List:
-        #if view.viewmode == "opengl":
-            #menu.state = qmenu.disabled
-        #else:
         menu.state = menu.mode==view.viewmode and qmenu.radiocheck
     import mdleditor
     if isinstance(editor, mdleditor.ModelEditor):
@@ -1573,6 +1566,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.40  2007/11/11 11:41:53  cdunde
+#Started a new toolbar for the Model Editor to support "Editing Tools".
+#
 #Revision 1.39  2007/09/08 01:01:13  cdunde
 #One more item for the last change of:
 #Fixed redrawing of handles in areas that hints show once they are gone.
