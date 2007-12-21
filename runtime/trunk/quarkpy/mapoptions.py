@@ -25,8 +25,13 @@ def ToggleOption(item):
     setup = apply(quarkx.setupsubset, item.sset)
     newvalue = not setup[tag]
     setup[tag] = "1"[:newvalue]
-    if item.sendupdate[newvalue]:
-        quarkx.reloadsetup()
+    # We don't need to reloadsetup for the Duplicators.
+    # This speeds up redrawing 3 times faster and keeps the 2D views from going blank.
+    if item.text == "&Ignore Duplicators":
+        pass
+    else:
+        if item.sendupdate[newvalue]:
+            quarkx.reloadsetup()
 
 def IgnoreDupClick(item):
     # DanielPharos: A big hack. We need to call UNDO on all the duplicators to apply the changes...
@@ -236,6 +241,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.16  2007/12/21 20:39:23  cdunde
+#Added new Templates functions and Templates.
+#
 #Revision 1.15  2007/12/14 21:48:00  cdunde
 #Added many new beizer shapes and functions developed by our friends in Russia,
 #the Shine team, Nazar and vodkins.
