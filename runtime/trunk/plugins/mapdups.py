@@ -136,6 +136,56 @@ class SymXYZDuplicator(StandardDuplicator):
             z = -1
         self.matrix = quarkx.matrix((x,0,0),(0,y,0),(0,0,z))
 
+class MirrorEnhanced(StandardDuplicator):
+    "Enhanced Mirror."
+
+    def readvalues(self):
+        StandardDuplicator.readvalues(self)
+        self.matrix = quarkx.matrix((-1,0,0),(0,1,0),(0,0,1))
+
+        szmangle = self.dup["mangle"]
+        angles = quarkx.vect(szmangle)
+        pitch = -angles.x*deg2rad
+        yaw = angles.y*deg2rad
+        roll = angles.z*deg2rad
+
+        mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
+        self.matrix = mat * self.matrix * (~mat)
+
+    def applylinear(self, matrix, direct=0):
+        StandardDuplicator.applylinear(self, matrix, direct)
+
+        szmangle = self.dup["mangle"]
+        angles = quarkx.vect(szmangle)
+        pitch = -angles.x*deg2rad
+        yaw = angles.y*deg2rad
+        roll = angles.z*deg2rad
+
+        mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
+        linear = matrix*mat
+        cols = linear.cols
+        #
+        # get scale
+        #
+        scale=tuple(map(lambda v:abs(v), cols))
+        cols = tuple(map(lambda v:v.normalized, cols))
+        #
+        # get rotations, cols[0] is 'rotated X axis, compute the others
+        #
+        axes = quarkx.matrix('1 0 0 0 1 0 0 0 1').cols
+        yrot = cols[2]^cols[0]
+        zrot = cols[0]^yrot
+        pitch = math.asin(cols[0]*axes[2])
+        if abs(pitch)<89.99:
+            p = projectpointtoplane(cols[0],axes[2],
+                quarkx.vect(0,0,0), axes[2]).normalized
+            yaw = math.atan2(p.y, p.x)
+        else:
+            yaw = 0
+        y2 = matrix_rot_y(-pitch)*matrix_rot_z(-yaw)*yrot
+        roll = math.atan2(y2*axes[2], y2*axes[1])
+        self.dup["mangle"] = str(-pitch/deg2rad) + " " + str(yaw/deg2rad) + " " + str(roll/deg2rad)
+
 
 class DiggingDuplicator(StandardDuplicator):
     "For what is a Digger rather than a Duplicator. (abstract)"
@@ -241,6 +291,47 @@ def dissociate1click(m):
 
 dissociate = quarkpy.qmenu.item("Dissociate Duplicator images", dissociate1click,"|Dissociate Duplicator images:\n\nOnly active when you have selected a duplicator. This will create actural copies of the duplicator-object(s), and remove the duplicator itself.\n\nIf the duplicator is an 'out' duplicator, and there are others (immediately) in the group, they will all be dissociated together.|intro.mapeditor.menu.html#disdupimages")
 
+def dissociateGroupClick(m):
+    editor = mapeditor()
+    if editor is None: return
+    getmgr = quarkpy.mapduplicator.DupManager
+    list = editor.layout.explorer.sellist
+    grouplist = []
+    for group in list:
+        if group.type == ":g":
+            while 1:
+                undo = quarkx.action()
+
+                objlist1 = group.findallsubitems("", ":d")
+                if len(objlist1) == 0:
+                    break
+                obj = objlist1[-1]
+
+                list2=[obj]
+                if obj["out"] and obj.parent is not None:
+                    for item in obj.parent.subitems:
+                        if item!=obj and item.type==':d' and item["out"]:
+                            list2.append(item)
+
+                for obj in list2:
+                    mgr = getmgr(obj)
+                    image = 0
+                    insertbefore = obj.nextingroup()
+                    while 1:
+                        objlist = mgr.buildimages(image)
+                        if len(objlist)==0:
+                            break
+                        image = image + 1
+                        new = quarkx.newobj("%s (%d):g" % (obj.shortname, image))
+                        for o in objlist:
+                            new.appenditem(o)
+                        undo.put(obj.parent, new, insertbefore)
+                    undo.exchange(obj, None)    # removes the duplicator
+                editor.ok(undo, "dissociate images in group")
+
+
+DissociateGroupItem = quarkpy.qmenu.item("Dissociate Duplicator images", dissociateGroupClick,"|Dissociate Duplicator images:\n\nOnly active when you have selected a duplicator. This will create actural copies of the duplicator-object(s), and remove the duplicator itself.\n\nIf the duplicator is an 'out' duplicator, and there are others (immediately) in the group, they will all be dissociated together.|intro.mapeditor.menu.html#disdupimages")
+
 
 #
 # Add item to the Commands menu.
@@ -275,22 +366,29 @@ def DuplicatorMenu(o, editor, oldmenu = quarkpy.mapentities.DuplicatorType.menub
 
 quarkpy.mapentities.DuplicatorType.menubegin = DuplicatorMenu
 
+def DupGroupMenu(o, editor, oldmenu = quarkpy.mapentities.GroupType.menubegin.im_func):	
+    return oldmenu(o, editor) + [DissociateGroupItem, quarkpy.qmenu.sep]
+
+quarkpy.mapentities.GroupType.menubegin = DupGroupMenu
+
+
 
 #
 # Register the duplicator types from this plug-in.
 #
 
 quarkpy.mapduplicator.DupCodes.update({
-  "dup basic":       BasicDuplicator,
-  "dup lin":         LinearDuplicator,
-  "dup symx":        SymXDuplicator,
-  "dup symy":        SymYDuplicator,
-  "dup symz":        SymZDuplicator,
-  "dup symxy":       SymXYDuplicator,
-  "dup symxyz":      SymXYZDuplicator,
-  "digger":          Digger,
-  "hollow maker":    HollowMaker,
-  "wall maker":      WallMaker,
+  "dup basic":           BasicDuplicator,
+  "dup lin":             LinearDuplicator,
+  "dup symx":            SymXDuplicator,
+  "dup symy":            SymYDuplicator,
+  "dup symz":            SymZDuplicator,
+  "dup symxy":           SymXYDuplicator,
+  "dup symxyz":          SymXYZDuplicator,
+  "dup enhancedmirror":  MirrorEnhanced,
+  "digger":              Digger,
+  "hollow maker":        HollowMaker,
+  "wall maker":          WallMaker,
 })
 
 #
@@ -307,6 +405,9 @@ quarkpy.mapcommands.items.append(qmenu.item("Reset Texture Cycle",resetTextureCy
 #
 #
 # $Log$
+# Revision 1.15  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.12  2003/03/24 08:57:15  cdunde
 # To update info and link to infobase
 #

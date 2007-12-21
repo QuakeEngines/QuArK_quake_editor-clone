@@ -158,6 +158,11 @@ class MapEditor(BaseEditor):
         "Update the setup-dependant parameters."
         quarkx.setpoolobj("BoundingBoxes", None)
         BaseEditor.setupchanged(self, level)
+        try:
+            self.initmenu(self.form)
+            quarkx.update(self.form)
+        except:
+            pass
         import mapmenus
         self.initquickkeys(mapmenus.QuickKeys)
         self.AutoSave(None)
@@ -363,6 +368,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.13  2007/12/17 00:50:00  danielpharos
+#Fix the map portals not drawing anymore.
+#
 #Revision 1.12  2007/04/02 22:17:08  danielpharos
 #Fix a float-integer problem
 #

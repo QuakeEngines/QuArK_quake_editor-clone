@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.377  2007/12/20 23:26:59  danielpharos
+//Fix a small default value mistake in HL2
+//
 //Revision 1.376  2007/12/19 13:56:25  danielpharos
 //Some changes to process-detection: Should work on Windows NT4 now too, and made the Steam executable filename configurable (but hidden).
 //
@@ -3862,6 +3865,12 @@ QQRKSRC1
     //  Hint = "If you installed 6DX minimally, this is the drive of the CD-ROM."
     //  CheckFile = "INSTALL\DATA\BASE\PAK0.PAK"
     //}
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -3952,6 +3961,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = ""
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =
       {
         Typ = "+"
@@ -4022,6 +4037,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "DOOM3.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -4122,6 +4143,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "EF2.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       CD: =
       {
         Txt = "Star Trek: Elite Force 2 CD-ROM drive"
@@ -4220,6 +4247,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "HL.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -4358,6 +4391,12 @@ QQRKSRC1
              $0D"cstrike"
              $0D"hl2mp"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -4458,6 +4497,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "HERETIC2.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       CD: =
       {
         Txt = "Heretic II CD-ROM drive"
@@ -4549,6 +4594,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "H2.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -4638,6 +4689,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "JASP.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -4729,6 +4786,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "JK2MP.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -4823,6 +4886,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "kingpin.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =
       {
         Typ = "+"
@@ -4914,6 +4983,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "MOHAA.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -5012,6 +5087,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "QUAKE.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -5092,6 +5173,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "QUAKE2.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -5186,6 +5273,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         //CheckFile = "QUAKE3.EXE"
         CheckFile = "*.EXE" // with so many mods should not be tided to only one exe file.
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -5285,6 +5378,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "quake4.exe"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -5392,6 +5491,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "*.EXE" // with so many mods should not be tided to only one exe file.
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       CD: =
       {
         Txt = "RTCW CD-ROM drive"
@@ -5496,6 +5601,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "*.EXE" // not sure if it should be tided to only one exe file.
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       CD: =
       {
         Txt = "RTCW-ET CD-ROM drive"
@@ -5594,6 +5705,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "SIN.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       CD: =
       {
         Txt = "Sin CD-ROM drive"
@@ -5683,6 +5800,12 @@ QQRKSRC1
         Typ = "ED"
         Hint = "Path to the game executable"
         CheckFile = "sof.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =
       {
@@ -5775,6 +5898,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "SoF2MP.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -5935,6 +6064,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "STVOY.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       CD: =
       {
         Txt = "Star Trek: Voyager - Elite Force CD-ROM drive"
@@ -6044,6 +6179,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "sylphis.exe"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       ShadersPath: =
       {
         Txt = "Shader directory"
@@ -6148,6 +6289,12 @@ QQRKSRC1
         Hint = "Path to the converter executable"
         CheckFile = ""
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =
       {
         Typ = "+"
@@ -6230,6 +6377,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "WildWest.exe"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -7689,6 +7842,17 @@ QQRKSRC1
       ;view: = {Txt="&" Typ="X08"  Cap="Hidden on textured" Hint="the group is hidden from textured views"}
       ;view: = {Txt="&" Typ="X016" Cap="Can't select"       Hint="can't select objects in this group with mouse clicks"}
       ;view: = {Txt="&" Typ="X04"  Cap="Ignore to build"    Hint="ignored while building the map"}
+      sep1: =
+      {
+        Typ = "S"
+        Txt = ""
+      }
+      Description: =
+      {
+        Txt = "Description"
+        Hint = "Description of the group,"$0D
+               "primarily used for 'Templates'."
+      }
     }
     outform:incl = // include for dups with out
     {
@@ -7733,23 +7897,36 @@ QQRKSRC1
       serialform = !
     }
     dup symx:form =
-    {
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
       serialform = !
     }
     dup symy:form =
-    {
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
       serialform = !
     }
     dup symz:form =
-    {
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
       serialform = !
     }
     dup symxyz:form =
-    {
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
       x: = { txt="&" typ="X" cap="Flip X-axis" }
       y: = { txt="&" typ="X" cap="Flip Y-axis" }
       z: = { txt="&" typ="X" cap="Flip Z-axis" }
       serialform = !
+    }
+    dup symxy:form =
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
+      serialform = !
+    }
+    dup enhancedmirror:form =
+    { Help = "This duplicator is the one"$0D
+             "that should be used for 'Templates'."$0D
+             "But it will also work in any map."$0D
+             "Place cursor over items for their help."
+      out:    = {Txt="&"  Hint="If set to a value of 1 this duplicator will be 'Dissociated'"$0D"along with others that are in a 'group' folder."}
+      origin: = {Txt="&"  Hint="This duplicators placement in the map."$0D"You must enter three values here."}
+      mangle: = {Txt="&"  Hint="This duplicators rotation in the map."$0D"You must enter three values here."}
     }
     dup basic:form =
     {
@@ -8918,6 +9095,14 @@ QQRKSRC1
           origin = "0 0 0"
           macro = "dup symxy"
         }
+        Enhanced Mirror:d =
+        {
+          ;desc = "Custom axis mirror"
+          out = "1"
+          origin = "0 0 0"
+          mangle = "0 0 0"
+          macro = "dup enhancedmirror"
+        }
         Radial:d =
         {
           ;desc = "Copies around an axis"
@@ -8927,40 +9112,39 @@ QQRKSRC1
           spiral = '0 0'
           axis = '0 0 1'
           macro = "dup radial"
-  new cube:p =
-  {
-    east:f =
-    {
-      v = '192 0 0 192 128 0 192 0 128'
-      tex = "[auto]"
-    }
-    west:f =
-    {
-      v = '64 0 0 64 -128 0 64 0 128'
-      tex = "[auto]"
-    }
-    north:f =
-    {
-      v = '128 64 0 0 64 0 128 64 128'
-      tex = "[auto]"
-    }
-    south:f =
-    {
-      v = '128 -64 0 256 -64 0 128 -64 128'
-      tex = "[auto]"
-    }
-    up:f =
-    {
-      v = '128 0 64 256 0 64 128 128 64'
-      tex = "[auto]"
-    }
-    down:f =
-    {
-      v = '128 0 -64 256 0 -64 128 -128 -64'
-      tex = "[auto]"
-    }
-  }
-
+          new cube:p =
+          {
+            east:f =
+            {
+              v = '192 0 0 192 128 0 192 0 128'
+              tex = "[auto]"
+            }
+            west:f =
+            {
+              v = '64 0 0 64 -128 0 64 0 128'
+              tex = "[auto]"
+            }
+            north:f =
+            {
+              v = '128 64 0 0 64 0 128 64 128'
+              tex = "[auto]"
+            }
+            south:f =
+            {
+              v = '128 -64 0 256 -64 0 128 -64 128'
+              tex = "[auto]"
+            }
+            up:f =
+            {
+              v = '128 0 64 256 0 64 128 128 64'
+              tex = "[auto]"
+            }
+            down:f =
+            {
+              v = '128 0 -64 256 0 -64 128 -128 -64'
+              tex = "[auto]"
+            }
+          }
         }
         Digger:d =
         {

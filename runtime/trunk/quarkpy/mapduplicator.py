@@ -26,7 +26,6 @@ import mapentities
 # Variable icons for Duplicator objects
 ico_dict['ico_mapdups'] = LoadIconSet("images\\mapdups", 16)
 
-
 class DuplicatorManager:
     "Abstract base class for Duplicators."
 
@@ -142,7 +141,7 @@ class StandardDuplicator(DuplicatorManager):
                self.sourcecenter = 0.5*(box[0]+box[1])
            else:
                self.sourcecenter = None
-
+        
         s = self.dup["offset"]
         if s:
             self.offset = quarkx.vect(s)
@@ -167,7 +166,7 @@ class StandardDuplicator(DuplicatorManager):
                     if spec.find("target")>=0:
                         incrementable.append(spec)
             else:
-                incrementable = ["target", "targetname", "killtarget"]
+                incrementable = ["target", "targetname", "killtarget", "Data.KeyPointName"]
             #
             # Final values and custom increments
             #
@@ -314,7 +313,7 @@ class StandardDuplicator(DuplicatorManager):
 #                                debug('   '+surf.texturename)
                             except:
                                 pass
-
+                
             if self.dup["increment suffix"]:
                 if i==count-1:
                     for item in list:
@@ -357,7 +356,7 @@ class StandardDuplicator(DuplicatorManager):
 
 class OriginDuplicator(DuplicatorManager):
     "Origin for centering of groups"
-
+    
     Icon = (ico_dict['ico_mapdups'], 0)
 
     def buildimages(self, singleimage=None):
@@ -427,8 +426,267 @@ class DupOffsetHandle(maphandles.CenterHandle):
             new = None
         return [self.centerof], new
 
+class DupTemplate(StandardDuplicator):
+    "Brush template"
+
+    Icon = (ico_objects, 27)
+    BuildItem = None
+
+    def applylinear(self, matrix, direct=0):
+        szmangle = self.dup["mangle"]
+        angles = quarkx.vect(szmangle)
+        pitch = -angles.x*deg2rad
+        yaw = angles.y*deg2rad
+        roll = angles.z*deg2rad
+
+        mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
+        linear = matrix*mat
+        cols = linear.cols
+        #
+        # get scale
+        #
+        scale=tuple(map(lambda v:abs(v), cols))
+        cols = tuple(map(lambda v:v.normalized, cols))    
+        #
+        # get rotations, cols[0] is 'rotated X axis, compute the others
+        #
+        axes = quarkx.matrix('1 0 0 0 1 0 0 0 1').cols
+        yrot = cols[2]^cols[0]
+        zrot = cols[0]^yrot
+        pitch = math.asin(cols[0]*axes[2])
+        if abs(pitch)<89.99:
+            p = projectpointtoplane(cols[0],axes[2],
+              quarkx.vect(0,0,0), axes[2]).normalized
+            yaw = math.atan2(p.y, p.x)
+        else:
+            yaw = 0
+        y2 = matrix_rot_y(-pitch)*matrix_rot_z(-yaw)*yrot
+        roll = math.atan2(y2*axes[2], y2*axes[1])
+        self.dup["mangle"] = str(-pitch/deg2rad) + " " + str(yaw/deg2rad) + " " + str(roll/deg2rad)
+
+        originalscale = quarkx.vect("1 1 1")
+        if self.dup["scale"] is not None:
+            try:
+                originalscale = quarkx.vect(self.dup["scale"])
+            except:
+                simplescale = float(self.dup["scale"])
+                originalscale = quarkx.vect(simplescale, simplescale, simplescale)
+
+        self.dup["scale"] = str(originalscale.x*scale[0]) + " " + str(originalscale.y*scale[1]) + " " + str(originalscale.z*scale[2])
+
+    def buildimages(self, singleimage=None):
+        def finditem(self):
+            editor = None
+            forms = quarkx.forms(2)
+            for form in forms:
+                if (form is not None) and (form.info is not None):
+                    Root = None
+                    try:
+                        Root = form.info.Root
+                    except:
+                        pass
+                    if(Root is not None and Root.shortname.lower() == "worldspawn"):
+                        editor = form.info
+                        break
+                    
+            if editor is None:
+                return
+
+            worldspawn = editor.Root
+
+            founditem = None
+
+            for key in worldspawn.dictspec.keys():
+                p = key.find("TemplateFile")
+                if not (p == -1):
+                    mapfullname = worldspawn[key]
+                    try:
+                        m = quarkx.openfileobj(mapfullname)
+                    except:
+                        quarkx.msgbox("Unable to load '" + mapfullname + "'.", MT_ERROR, MB_OK)
+                        return None
+
+                    TemplateWorldspawnFound = None
+                    for TemplateWorldspawn in m.subitems:
+                        if TemplateWorldspawn.shortname == "worldspawn":
+                            TemplateWorldspawnFound = TemplateWorldspawn
+                            break
+
+                    if TemplateWorldspawnFound is None:
+                        continue
+
+                    for newitem in TemplateWorldspawnFound.subitems:
+                        if (newitem.shortname == self.dup.shortname):
+                            founditem = newitem.copy()
+                            break
+                    del m
+                    if founditem is not None:
+                        return founditem
+
+            # Find next available TemplateFile* key
+            i = 0
+            while 1:
+                NewName = "TemplateFile" + str(i)
+                if worldspawn[NewName] is None:
+                    break;
+                i = i + 1
+
+            worldspawn[NewName] = self.dup["templatefilename"]
+            return finditem(self)
+
+        if (singleimage is not None and not(singleimage==0)):
+            return []
+
+        if self.BuildItem is None:
+            self.BuildItem = finditem(self)
+
+        item = self.BuildItem
+        if (item is None):
+            return []
+
+        subitems = item.findallsubitems("", ":e")
+        
+        correctlist = []
+        for subitem in subitems:
+            if subitem["mangle"] is not None:
+                correctlist = correctlist + [subitem]
+                subitem["prev_mangle"] = subitem["mangle"]
+
+        origin = self.dup.origin
+        if origin is None:
+            origin = quarkx.vect(0,0,0)
 
 
+        szmangle = self.dup["mangle"]
+        angles = quarkx.vect(szmangle)
+        pitch = -angles.x*deg2rad
+        yaw = angles.y*deg2rad
+        roll = angles.z*deg2rad
+
+        mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
+
+        translate = origin;
+        if item["usercenter"]:
+            translate = translate - quarkx.vect(item["usercenter"])        
+
+        scale = quarkx.vect("1 1 1")
+        if self.dup["scale"] is not None:
+            try:
+                scale = quarkx.vect(self.dup["scale"])
+            except:
+                simplescale = float(self.dup["scale"])
+                scale = quarkx.vect(simplescale, simplescale, simplescale)
+
+        cols = mat.cols
+        mat = quarkx.matrix(cols[0] * scale.x, cols[1] * scale.y, cols[2] * scale.z)
+        item.translate(translate)
+        item.linear(origin, mat)
+
+        for correctitem in correctlist:
+            szmangle = correctitem["prev_mangle"]            
+            angles = quarkx.vect(szmangle)
+            pitch = -angles.x*deg2rad
+            yaw = angles.y*deg2rad
+            roll = angles.z*deg2rad
+
+            ItemMat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
+            linear = mat*ItemMat
+            cols = linear.cols
+            #
+            # get scale
+            #
+            scale=tuple(map(lambda v:abs(v), cols))
+            cols = tuple(map(lambda v:v.normalized, cols))    
+            #
+            # get rotations, cols[0] is 'rotated X axis, compute the others
+            #
+            axes = quarkx.matrix('1 0 0 0 1 0 0 0 1').cols
+            yrot = cols[2]^cols[0]
+            zrot = cols[0]^yrot
+            pitch = math.asin(cols[0]*axes[2])
+            if abs(pitch)<89.99:
+                p = projectpointtoplane(cols[0],axes[2],
+                  quarkx.vect(0,0,0), axes[2]).normalized
+                yaw = math.atan2(p.y, p.x)
+            else:
+                yaw = 0
+            y2 = matrix_rot_y(-pitch)*matrix_rot_z(-yaw)*yrot
+            roll = math.atan2(y2*axes[2], y2*axes[1])
+            correctitem["mangle"] = str(-pitch/deg2rad) + " " + str(yaw/deg2rad) + " " + str(roll/deg2rad)
+            correctitem["prev_mangle"] = ""
+
+        #ArgReplacer function
+
+        def filterspecs(self, specs):
+            "Removes MACRO and ORIGIN if they exists in the dictspec.keys() array"
+            replacerspecs = []
+            for i in specs:
+               if (not ((i == "macro") or (i == "origin") or (i == "mangle"))):
+                  replacerspecs = replacerspecs + [i]
+            return replacerspecs
+
+        def searchandreplace(self, item, replacerspecs):
+            for key in item.dictspec.keys():                
+                szValue = item[key]
+                nReplaceStart = -1
+                try:
+                    nReplaceStart = szValue.find("%")
+                except:
+                    pass
+
+                if nReplaceStart < 0 or nReplaceStart == (len(szValue)-1):
+                    continue
+
+                nReplaceEnd = szValue[nReplaceStart+1:].find("%")
+
+                if nReplaceEnd < 0:
+                    continue
+
+                nReplaceEnd = nReplaceEnd + nReplaceStart+1
+
+                szReplaceStr = szValue[nReplaceStart+1:nReplaceEnd]
+
+                nDefaultStart = szReplaceStr.find("[")
+                if nDefaultStart < 0 :
+                    nDefaultStart = len(szReplaceStr)
+
+                #Replace from specs
+                bWasReplaced = 0
+                for ReplaceSpec in replacerspecs:
+                    if ReplaceSpec == szReplaceStr[:nDefaultStart]:
+                        szValue = szValue[:nReplaceStart] + self.dup.dictspec[ReplaceSpec] + szValue[nReplaceEnd+1:]
+                        item[key] = szValue
+                        bWasReplaced = 1
+                        break
+
+                if (bWasReplaced == 1):
+                    continue;
+
+                #Set default
+                if nDefaultStart >= (len(szReplaceStr)-1):
+                    continue;
+
+                nDefaultEnd = szReplaceStr[nDefaultStart+1:].find("]")
+                if nDefaultEnd < 0:
+                    continue
+
+                nDefaultEnd = nDefaultEnd + nDefaultStart+1
+                szValue = szValue[:nReplaceStart] + szReplaceStr[nDefaultStart+1 : nDefaultEnd] + szValue[nReplaceEnd+1:]
+                item[key] = szValue
+
+        subitems = item.findallsubitems("", ":e")
+        subitems = subitems + item.findallsubitems("", ":b")
+        subitems = subitems + item.findallsubitems("", ":d")
+        subitems = subitems + item.findallsubitems("", ":b2")
+        subitems = subitems + item.findallsubitems("", ":p")
+        subitems = subitems + item.findallsubitems("", ":f")
+
+        replacerspecs = filterspecs(self, self.dup.dictspec.keys())
+
+        for subitem in subitems:
+            searchandreplace(self, subitem, replacerspecs)
+
+        return [item]
 
 def DupManager(dup):
 
@@ -449,10 +707,15 @@ def DupManager(dup):
     return mgr
 
 
-DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
+DupCodes = {"dup origin" : OriginDuplicator,
+            "Template" : DupTemplate
+             }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.28  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.25  2005/08/12 21:02:31  cdunde
 #To reverse last entry allowing entities to be included
 #
