@@ -507,7 +507,7 @@ def buildwallmakerimages(self, singleimage=None):
                 negatives.append(item)
             else:
                 polys.append(item)
-        depth=int(self.dup["depth"])
+        depth=float(self.dup["depth"])
         #
         # make the walls
         #
@@ -783,6 +783,9 @@ quarkpy.mapentities.GroupType.menu = groupmenu
 
 #
 # $Log$
+# Revision 1.16  2007/12/13 11:54:53  danielpharos
+# Updated the miter edge function with some error messages, fixed a division by 0 in it, and made the option disable correctly. Also, added some InfoBase documentation about it.
+#
 # Revision 1.15  2007/07/11 19:15:35  cdunde
 # File cleanup.
 #
