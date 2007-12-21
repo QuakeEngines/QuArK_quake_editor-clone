@@ -1965,12 +1965,15 @@ def macro_usercenter(self):
     if editor is None: return
     dup = editor.layout.explorer.uniquesel
     if dup is None: return
-    undo = quarkx.action()
     from mapentities import ObjectOrigin
-    tup = ObjectOrigin(dup).tuple
-    undo.setspec(dup,'usercenter',tup)
-    editor.ok(undo,'add usercenter')
-    editor.invalidateviews()
+    try:
+        undo = quarkx.action()
+        tup = ObjectOrigin(dup).tuple
+        undo.setspec(dup,'usercenter',tup)
+        editor.ok(undo,'add usercenter')
+        editor.invalidateviews()
+    except:
+        return
 
 qmacro.MACRO_usercenter = macro_usercenter
 
@@ -1994,6 +1997,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.67  2007/11/29 23:39:00  cdunde
+#Changed to keep Texture Position dialog open and update dynamically.
+#
 #Revision 1.66  2007/11/19 00:08:39  danielpharos
 #Any supported picture can be used for a view background, and added two options: multiple, offset
 #
