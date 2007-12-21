@@ -4,6 +4,10 @@ author: Decker, tiglari
 <img border=0 align=right>commands.png</img>
 <i>Insert map item.</i> Activating this, will open the New map items window.
 
+<i>Build templates list.</i> Creates a list of
+<a href="intro.mapeditor.misctools.html#templates">Templates</a> for the current game mode
+that can be used if any exist.
+
 <i>Tricky force to grid.</i> Repairs maps that are off-the-grid.
 
 <i>Tag side.</i> This menuitem are created by a <g>plug-in</g>. It allows you

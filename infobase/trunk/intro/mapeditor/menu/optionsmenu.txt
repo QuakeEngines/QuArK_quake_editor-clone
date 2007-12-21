@@ -31,6 +31,8 @@ the FPS-game. Uncheck this if you want your entire map build.
 
 <i>Negative polys really dig in 3D views</i>. If this option is off, negative polyhedrons are shown as normal polyhedrons in textured view so that you can easily edit them. When this option is on, digging is performed and you don't see the negative polyhedron at all, but only the hole it made.
 
+<i>Ignore Duplicators</i>. Hides all duplicators and templates from being seen in the editors views.
+
 <i>Default/Sticky/Axis-sticky texture</i>. In QuArK, the textures are attached to polyhedrons in such a way that they follow all its movements. However, for easier texture alignment, you can set these options that only apply when scrolling polyhedrons (not rotating nor zooming).
 
 <i>Sticky textures</i>. The textures don't move when you look at it standing in front of the face.

@@ -15,6 +15,11 @@ $Id$
 6.5.0 Beta 4
 ============
 
+* [cdunde/DanielPharos]: Added new Templates functions and Templates. This is a very powerful new element
+          - with a whole array of capabilities. See the entire section in the Infobase Docs on Templates,
+          - which is also linked to new functions in the editor. Developed by our friends in Russia,
+          - the Shine team, Nazar and vodkins. Adapted to all QuArK supported games by cdunde and DanielPharos.
+
 * [DanielPharos]: Made a rudimentary, but functional MD3 file saving code. You can now save MD3 models!
 
 * [DanielPharos]: Made an option to set the amount of lines of text in the console.

@@ -1,0 +1,152 @@
+title: Templates
+author: cdunde
+
+This is a very powerful tool that also has its own functions and setting in QuArK and because of this,
+even though they are somewhat like <g>prefabs</g>, require its own section to help inform you of their
+configuration and functionality features.
+
+<i><b>What are templates </b></i>: Basically a template can be any QuArK .qkm map (work) file that can consist of a single
+<g>poly</g>, <g>entity</g>, <a href="maped.curves.html">bezier</a>, <g>group</g> or anything else QuArK has to offer.
+The .qkm map file can also consist of an entire map full of these kinds of items as well.
+
+<i><b>How to setup templates </b></i>: First you must select a location folder to store the .qrk map files you wish to use
+as templates. This is done by going to the <a href="intro.configuration.games.regaddons.html">Games Configuration</a>
+section for each game that you want to have templates for and select a location folder for that game.
+Until that is done you will not be able to use any templates. You can have as many .qrk map files in that folder as you wish.
+Other things can also be done with the folder setting as well as the files them selves.
+
+
+Once a folder location has be set then these are the steps that can take place:
+
+<ul>
+<li> A list of these .qkm map files is created by clicking on the
+<a href="intro.mapeditor.menu.html#commandsmenu">Build templates list</a> function on the main
+<a href="intro.mapeditor.menu.html">QuArK Commands menu</a>.
+
+<li> This will automatically create a QuArK .qrk file
+containing this list and place that file in the <g>addons folder</g> of the game you are currently mapping for.
+
+<li> It will also name that .qrk file starting with the name of the game you are currently mapping for and
+adding <g>Templates.qrk</g> to it.
+<br>For example if you are in the <g>Quake 2</g> game mode you would find
+the file <g>Quake 2Templates.qrk</g> file in the Quake_2 addons folder.
+
+<li> This .qrk file must then be added, or <a href="intro.configuration.games.regaddons.html">registered</a>,
+with QuArK in the <a href="intro.configuration.games.specificgames.html">Games Configuration</a>
+section for <a href="intro.configuration.games.specificgames.html">Quake 2</a>, by clicking on the
+<a href="intro.configuration.games.regaddons.html">Add-ons...</a> button.
+</ul>
+
+Once <a href="intro.configuration.games.regaddons.html">registered</a> you will see that list of template files on the
+<a href="intro.mapeditor.misctools.html#newmapitem">New map items...</a> list.
+Double clicking on a template will place it into the map you are currently editing.
+If you completely close QuArK and restart it again, a small blue box icon will also be placed in the area
+above the <g>Compass</g> that you can click on for quick access to your templates.
+
+<img border=0 align=right>templates1.png</img>
+
+As you can see in the screen shot to the right, a template can become very detailed, and this is just a small example.
+
+<i><b>How to use templates </b></i>:<br>
+The power of using templates is that any changes that you make to the template.qkm file itself, are passed on to any
+edited map file that you use that template in. You will need to reopen that edited map file in order for any changed
+templates to update them selves, which they will do automatically.
+
+Individual items in a template can not be changed in the edited map file. However, if a template is <g>Dissociated</g>
+within the edited map file, by doing a <g>RMB</g> click over the template in the tree-view and selecting
+<g>Dissociate Duplicator images</g> from the popup menu, every part of that template will be reconstructed as
+individual items and can then be changed within that edited map file. Once a template is <g>Dissociated</g>
+it can not be replaced back as a template.
+
+If several templates are used within a <g>group folder</g> all of those templates can be <g>Dissociated</g> at the same
+time by doing a <g>RMB</g> click over the <g>group folder</g>, selecting <g>Edit</g> then <g>Dissociate Duplicator images</g>
+from its popup menu. You can also <g>Dissociated</g> individual templates within that <g>group folder</g> as described above.
+
+<i><b>Template Specifics/Args </b></i>:<br>
+A template only has three <g>Specifics</g> that can be set. These are:
+
+<ul>
+<li><b> origin</b> : This can be preset in the templates .qkm file and gives the location of
+its <g>drag handle</g> when placed into a map you are editing. This setting will change as you
+move the template around in the map or you can change its three values for x,y and z by hand.
+
+<li><b> scale</b> : This will cause the template to become larger or smaller in size for its
+three x,y and z values. For example you can enter values such as <g>2 2 2</g> or <g>1.75 3.54 2.65</g> something long those lines.
+These values can only be changed by hand. When the template is <g>Dissociated</g> it will remain
+that scaled size in your map.
+
+<li><b> mangle</b> : This stands for <g>map angle</g> and is used for tilting and\or rotating
+the template by using the little ball handle that is attached to its drag handle.
+Just <g>LMB</g> click on that ball and drag the handle around to change this setting or again
+you can do it by hand.
+</ul>
+
+<i><b>Making templates </b></i>:<br>
+This is a fairly simple process but it does have a number of steps you need to go through which are:
+
+<b> 1) </b> Start a <g>New map</g> in QuArK. You can save that new map, naming it anything you wish,
+now or later as either a <g>Hand editable</g> or regular .<g>qkm</g> file. It can be saved any place
+you wish, but to work, you must have it in the
+<a href="intro.configuration.games.regaddons.html">Directory of Templates</a>
+folder you selected for your template .qkm files to be located for that game.
+
+<b> 2) </b> Now create any objects you wish to have in that template map using any of the items that
+QuArK has to offer and that game can use such as <g>polys</g>, <g>entities</g>, <g>lights</g>,
+<g>monsters</g>, <g>weapons</g>, <a href="maped.curves.html">beziers</a>, even other templates. You can
+also do your special <g>flag</g> settings in this map as well as apply your textures and position them.
+
+<b> 3) </b> This is where <g>organization</g> takes place. The map .qmk file you are working on actually
+becomes a <g>Library</g> of templates if you wish. Either way you <b>MUST</b> have at least one
+<g>Group folder</g> in which you place some or all of the items in that map. You can have several
+<g>Group folders</g>, placing objects in different ones.
+
+<b> 4) </b> Rename all <g>Group folders</g> to anything you wish. Clicking on a <g>Group folder</g> and
+then going to its <a href="intro.mapeditor.dataforms.html#specsargsview">Specifics\Arg page</a>
+you can enter a <g>Description</g> for that folder. Later,
+you will see that <b>each folder</b> will become a <g>Template</g> and its <g>Description</g> will
+appear in the <a href="intro.mapeditor.misctools.html#newmapitem">New map items...</a>
+when you open this <g>Library</g> that is listed there.
+
+<b> 5) </b> Not critical but a helpful thing is adding a <g>usercenter</g> for that group.
+The <g>usercenter</g> is used as a point of rotation/scale operations of the group.
+For example:
+For a wall lantern - it's better that the <g>usercenter</g> is set at the <g>base</g> of a wall.<br>
+For a floor lantern - at the <g>base</g> of the floor lantern and in its center on the floor.<br>
+This makes it easyer to align the template object onto other real geometry.
+This is similar for an added prefab. So adding a <g>usercenter</g> is highly recommended.
+
+<b> 6) </b> Now save your file, click on your
+<a href="intro.mapeditor.menu.html#commandsmenu">Commands menu</a> function
+<a href="intro.mapeditor.menu.html#commandsmenu">Build templates list</a>, then
+<a href="intro.configuration.games.regaddons.html">register that list</a> and you're done!
+
+<a name="refreshtemplate"></a>
+<i><b>Refresh Template </b></i>:<br>
+If a template has changed, holding your cursor over that template in the map you are editing and doing
+a <g>RMB</g> will bring up a menu with the <g>Refresh Template</g> function on it.
+Clicking this function will update those changes to your current map where that
+template is used. It may also update other templates in this same map if they have been changed also.
+In addition it will be posted to the editor's
+<a href="intro.mapeditor.menu.html#editmenu">Undo / Redo</a> list on the main
+<a href="intro.mapeditor.menu.html#editmenu">Edit</a> menu.
+
+Using the <g>Refresh Template</g> function is not always necessary, simply by moving something in the
+<g>tree-view</g> or any object in one of the editor's views will also update any templates that have changed.
+
+<i><b>Templates list rebuild & placement </b></i>:<br>
+Just a few final things you should know. The only time you need to rebuild the
+<a href="intro.mapeditor.menu.html#commandsmenu">Templates list</a>
+would be if you added or removed a .qkm file from the templates folder location. Any changes made to
+those files does not require a rebuilding of the list. Just make your changes to those files and save them.
+Those changes will show up in all of the maps you have used those templates in the next time you open them.
+
+As far as the placement of those .qkm template library files, that can even be in one single folder that
+you can use for all of the games you map for. Which means you can pass those templates from one game to
+the next. The only thing to remember about doing that is to be sure you do not use entities that will not
+work in another game and that you add all of the textures you use to the
+<a href="intro.texturebrowser.overview.html">Texture Browser</a> by
+creating links to those textures or importing them into a
+<a href="intro.texturebrowser.tutorials.html#texturelinks">CustomTextures.qrk</a> file and adding
+that file to your addons for each game you want to use them in.
+
+
