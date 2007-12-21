@@ -1,0 +1,20 @@
+title: Misc. Info.
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Command-line arguments</b>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0 align=middle>
+<tr><td valign=top align=left>
+If you used the DOS Command Prompt to run the map2dif_DEBUG.exe file you would see the settings that are used in the<br>"...fixed command-line arguments"<br>for each program setting above in the <a href="intro.configuration.games.specificgames.torque.html#config">Configuration</a> section.
+
+There is really nothing you need to change, but it is a good way to learn how these effect what steps QuArK is being instucted to perform.
+
+You will also notice that it displays the Program version and Built date so that you know exactly what version you are currently running.
+</td><td valign=top>
+<img border=1 valign=top align=right>torque_misc1.png</img>
+</td></tr>
+</table>

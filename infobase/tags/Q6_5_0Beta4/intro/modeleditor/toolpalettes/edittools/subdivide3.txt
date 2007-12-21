@@ -1,0 +1,6 @@
+title: Subdivide 3
+author: cdunde
+
+<img border=1 align=right>subdivide3.png</img>
+If faces of a model component have been selected, those faces will be split, from the center to all 3 points
+of each selected face, into 3 new triangles when this button is clicked.

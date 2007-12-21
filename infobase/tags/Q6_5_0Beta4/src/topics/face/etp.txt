@@ -1,0 +1,72 @@
+title: Enhanced Texture Positioning
+author: tiglari
+
+So Armin came
+up with a different idea, which was to use the three points to specify the
+texture scale as well as the face plane.  The basic idea is that the first point
+is the origin of the texture (lower left corner), the second point the lower
+right corner (end of texture x/s axis), and the third point the upper left
+(end of y/t axis).  So when you move the ends of the texture L around in the
+face page, you're actually manipulating the threepoints.  But there are
+three twists in this, and then a problem.
+
+Twist 1: due to the screwy way in which graphics are represented, sometimes
+the sign of the third threepoint has to be flipped to get the right result
+(Armin told me that even he had to check this empirically).
+
+Twist 2: to prevent the size of the texture itself from influencing the
+distance between the threepoints, their location is normalized as if the
+size of the texture was 128x128.  This is what is retrieved by the
+TFace.GetThreePoints method, which is accessed in Python via
+threepoints(0) and setthreepoints(tp,0).  To get the actual locations
+of the texture upper-left and lower right-corners, use
+TFace.Get/SetThreePointsUserTex, which correct for the texture scale
+(EchelleTexture), and also for one more thing:
+
+Twist 3: Three numbers do indeed specify a plane, but for efficient computations
+in working with brushes we want to do a bit more, which is to code what side
+of the plane is going to be inside the brush and what outside of it.  Happily
+there is a nice math operation which does this, the cross-product
+(<ref>src/math/vectors/cross</ref>).  If <B>u</b> and <b>v</b> are vectors, then
+<b>u x v</b> (which can be computed by a rather complicated procedure that's
+invoked in QuArK Python by the '^' operation on vectors)
+is a vector that is perpendicular to both <b>u</b> and <b>v</b>, and so
+naturally adapted to point to the outside of the plane containing in which
+<b>u</b> and <b>v</b> lie.  So the basic idea is that if p1, p2 and p3
+are the threepoints of the face, then <b>(p2-p1) x (p3-p1)</b> points to the
+outside of the face's poly.  This vector is called a 'normal', and when
+build tools complain about bad normals, they have failed to compute a satisfactory
+value for this cross-product, for some reason or other.
+
+So now what if we want to mirror-flip a texture so that the lower right
+corner of the texture is to the left rather than the right of the origin
+in the map (the L is a L-mirror-image not an all).  The result of this
+is that the normal will point in the wrong direction, so the final twist is
+the 'mirror bit', the face attribute 'm' that sometimes appears with the
+value of '1'.  There's a useful math fact about cross products that:
+<code>
+u x v = - (v x u)
+</code>
+That is if we take the inputs to the cross product in the opposite order,
+we get a normal pointing in the opposite direction.  So, when the mirror
+bit is 1, then the texture scale is gotten by swapping p3 and p2 of the
+actual threepoints.  This is what is done by the TFace.Get/SetThreePointsT
+methods called by Get/SetThreePointsUserTex.
+
+So for the full QuArK 'enhanced texture positioning' scheme, the
+face threepoints are used plus this additional information about
+the mirror-bit, which is coded in QuArK maps as TX1 or TX2 right
+after the games comment-delimiter, so the standard Quark etp version
+of the face we started with is:
+<code>
+  ( 432 0 96 ) ( 432 128 96 ) ( 560 0 96 ) bricka2_2 -432 0 0 1 1 //TX1
+</code>
+So that's how it works.
+
+The problem is this: by coding the texture-scale information into the
+threepoints, we are cast out of the Garden of Integers created for us by
+John Carmack, into the floating point wilderness.  This is reflected in
+the phenomenon whereby vertexes sometimes drift off the grid by a tiny
+amount and can't be put back on.  I'm not convinced that this really causes
+terrible things to happen, but mappers hate it so it must be fixed,
+requiring a different representation of texture scale info.

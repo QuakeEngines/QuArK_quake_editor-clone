@@ -1,0 +1,11 @@
+title: Texture
+author: cdunde
+desc: general
+desc: paintbrush
+
+Now that you have created your terrain surface, it is time to do some texturing to it. The texture that it starts with is the <b>Standard</b> default texture that is set in <a href="intro.configuration.games.specificgames.html">QuArK's Configuration Settings</a> <b>unless</b> you have set its <b>own</b> default texture in the same area. You could, just as easily selected your texture prior to creating the terrain all together. Sometimes this may be desirable as a base and other times it may be better to reapply it or use a different texture last or even <b>during</b> the creation process. Here we started with just the Standard default texture and will apply our actual terrain texture now that the <ref>../shaping</ref> has been completed.
+
+As a general note, <b>none</b> of the <a href="intro.terraingenerator.selection.html">Terrain Generator Selectors</a> or the <a href="intro.terraingenerator.selection.html#paintbrush">Texture Applicator</a> will have any effect on terrain surface areas that are placed in a separate folder that is <b>hidden</b> by using that function which can be accessed using the 
+<a href="intro.mapeditor.menu.html#editmenu">Edit menu-View Group</a> on QuArK's main Menubar or by clicking the <g>LMB,</g> with the mouse cursor over that particular folder and selecting <b>Group is hidden</b> from the pop-up menu.
+
+This feature is especially useful when working on terrain areas that are close to, above or below other sections of terrain.

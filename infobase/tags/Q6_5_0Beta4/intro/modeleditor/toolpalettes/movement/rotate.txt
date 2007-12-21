@@ -1,0 +1,20 @@
+title: Rotate selection
+author: cdunde
+
+<img border=1 align=right>rotate.png</img>
+These buttons will rotate your selection, the amount of degrees specified in
+the <ref> ./configuration </ref>, around its common center. To see the common
+center of your selected object(s), you must be able to see the linear handles
+of the selection.
+
+The icons from left to right:
+<ul>
+<li><i>Clockwise X-axis rotation</i>. Rotate clockwise around the selection's common X-axis.
+<li><i>Anticlockwise X-axis rotation</i>. Rotate anticlockwise around the selection's common X-axis.
+<br><br>
+<li><i>Clockwise Y-axis rotation</i>. Rotate clockwise around the selection's common Y-axis.
+<li><i>Anticlockwise Y-axis rotation</i>. Rotate anticlockwise around the selection's common Y-axis.
+<br><br>
+<li><i>Clockwise Z-axis rotation</i>. Rotate clockwise around the selection's common Z-axis.
+<li><i>Anticlockwise Z-axis rotation</i>. Rotate anticlockwise around the selection's common Z-axis.
+</ul>

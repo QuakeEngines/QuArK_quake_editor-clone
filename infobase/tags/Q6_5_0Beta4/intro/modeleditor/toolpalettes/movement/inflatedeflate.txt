@@ -1,0 +1,10 @@
+title: Shift Left/Right selection
+author: cdunde
+
+<img border=1 align=right>inflatedeflate.png</img>
+
+Shift the selected vertexes or faces (not dependable for faces) Left or Right by an
+amount specified in the <ref> ./configuration </ref> (last button of this toolbar).
+
+Shifting Left or Right means moving the selected items by a fixed amount of pixels,
+negative values shifts the selection to the left, positive values shifts the selection to the right.

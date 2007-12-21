@@ -1,0 +1,23 @@
+title: Extrude with\all
+author: cdunde
+
+<img border=1 align=right>extrudewithbulkheads.png</img>
+Once selected, click this button to extrude in any of the editor's views,
+but the best control is done in one of its <g>2D views</g>.
+Each time a new drag is made a new set of faces, or vertexes, will be created from that starting position
+to the position at the end of the drag with the new faces, or vertexes, selected.
+Switching from view to view between drags will change the extruded drag direction.
+
+<i><u><g>Face mode </i></u></g>:  Extrude with bulkheads
+This does the same function as the <ref> ./extrudeselectedfaces </ref> but leaves <g>bulkheads</g>
+between each extrusion drag.
+This function only works with selected <g>faces</g> in the Editor's views and the
+<a href="intro.modeleditor.toolpalettes.display.html#linear">Linear Drag Handles</a> button <b>is</b> active.<br>
+
+<i><u><g>Vertex mode </i></u></g>:  Extrude all edges
+This function only works with selected <g>vertexes</g> in the Editor's views and the
+<a href="intro.modeleditor.toolpalettes.display.html#linear">Linear Drag Handles</a> button <b>is not</b> active.<br>
+It will perform the same function for all edges that have been selected,
+including ones that share two common vertexes.At least two vertexes of the same triangle must be selected.
+If an improper vertex selection has been made it will attempt to correct that selection or notify you
+if it can not.

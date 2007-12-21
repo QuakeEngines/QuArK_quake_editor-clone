@@ -1,0 +1,18 @@
+title: Train Effect
+author:
+
+<b>Question:</b><br>
+In level 2 of SoF you're on a train and it looks like you're moving.
+Can you please tell me how to do it.
+
+<b>Answer:</b><br>
+Add the following keys to the worldspawn entity:
+
+<code>
+"screeneffect"  "1"
+"musicset"      "trn1"
+"terrainset"    "train"
+"distcull"      "2000"
+</code>
+
+<i>les@downlands.freeserve.co.uk</i>

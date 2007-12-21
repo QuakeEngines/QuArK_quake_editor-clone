@@ -1,0 +1,326 @@
+title: Floating Windows
+author: Tiglari
+
+A QuArK dialog box is just a restricted kind of floating
+window; so now it's time to look into the code that
+defines them and see how floating windows work in general.
+
+dialog boxes are defined as a class in quarkpy.qmacro;
+the definition starts out like this:
+
+<code>
+class dialogbox:
+
+    dlgdef = ""
+    size = (300,170)
+    begincolor = None
+    endcolor = None
+    name = None
+    dfsep = 0.6
+    dlgflags = qutils.FWF_KEEPFOCUS | qutils.FWF_POPUPCLOSE
+</code>
+
+Here we're just providing default values for the various
+things that can be defined when a more specific type of
+dialog is created as a subclass.
+
+Now comes the most important method of this class, its
+constructor (which we have already invoked as part of the
+constructor of the texture multiplier dialag):
+
+<code>
+    def __init__(self, form, src, **buttons):
+        name = self.name or self.__class__.__name__
+        closedialogbox(name)
+        f = quarkx.newobj("Dlg:form")
+        f.loadtext(self.dlgdef)
+</code>
+
+The first three parameters are self-explanatory (if you've
+read through dialogs.txt), the last is the magic for dealing
+with the buttons, don't worry about it now.  Next we derive
+a name for the box, and close any already opened one with the
+same name (closedialogbox() is defined elsewhere in
+quarkpy.qmacro).  And now something interesting happens;
+we create an actual form object, and then load in whatever
+text has wound up assigned to dlgdef.  loadtext is actually
+one of the methods of QObjects (QuArK internal objects);
+it would not be amiss to look it up in Quarkx.rtf.
+
+And so here's our next chunk of code:
+
+<code>
+        self.f = f
+        for pybtn in f.findallsubitems("", ':py'):
+            pybtn["sendto"] = name
+        self.buttons = buttons
+        dlg = form.newfloating(self.dlgflags, f["Caption"])
+</code>
+
+The first line simply stores the form we've made as a data
+member of the dialog, the next three are button-processing
+magic, and finally we create our new floating window.
+If you look up newfloating() in quarkx.rtf, you'll see that
+it's a method of window objects (the one that was passed
+as the form argument), which takes as first argument
+a bunch of flags, and second a string to use as a caption.
+f["Caption"] is just an instance of the syntax whereby
+the value of a specific ("Caption") of a QObject (f), is
+fetched, so the net result is that whatever we put
+in as value of the Caption specific of the dlgdef gets
+passed to the new floating window as its caption.
+
+Next comes assorted housekeeping.
+
+<code>
+        dialogboxes[name] = dlg
+        dlg.windowrect = self.windowrect()
+        if self.begincolor is not None: dlg.begincolor = self.begincolor
+        if self.endcolor is not None: dlg.endcolor = self.endcolor
+        dlg.onclose = self.onclose
+        dlg.info = self
+        self.dlg = dlg
+        self.src = src
+</code>
+
+dialogboxes is a global variable of quarkpy.qmacros, so this
+registers our current dialog box as one that is open.
+Next we set the dimensions of  the new floating window
+(check the qmacro code for how windowrect() works), and attach
+various further data members to the floating window and the
+dialog box object.  It would be good to look up the things
+attributed to dlg (the floating window) in Quarkx.rtf.
+
+But a warning about some terminological confustion:  windows
+sometimes get called `forms' and are thereby subject to betting
+confuse with :form objects, but these are inherently
+different!
+
+And now some more interesting stuff:
+
+<code>
+        df = dlg.mainpanel.newdataform()
+        self.df = df
+        df.header = 0
+        df.sep = self.dfsep
+</code>
+
+ When floating windows are created, they automatically
+ get a panel, which is accessed as `mainpanel'.  And
+ then a panel's newdataform() method will create a new
+ dataform in the panel, the first line gives us the dataform
+ df, a child of the window dlg's main panel.  So we've
+ now built the three-level structure mentioned at the
+ beginning of the dialogs tutorial.  Now we set some
+ dataform attributes; setting the header to 0 supresses
+ the `specific' and `arg' headers that you see at the top
+ of the columns when entity specifics are displayed in
+ the multi-page panel, then the dfsep attribute of the
+ dialog object is applied to the dataform, where it does
+ its real work.
+
+ And finally comes the essential setdata method:
+
+<code>
+        df.setdata(src, f)
+</code>
+
+This establishes the connection between the screen and the
+src object we created earlier.  The contents of src are
+displayed in the dataform df, in accordance with the layout
+specified in the form f.  And we conclude with a few more
+details:
+
+<code>
+        df.onchange = self.datachange
+        df.flags = 8   # DF_AUTOFOCUS
+        dlg.show()
+</code>
+
+The onchange method of a dataform is a method that gets
+executed when the data is changed.  So if you want something
+to happen whenever the data is changed, as in the texture
+positioning dialog or the `slider' dialog (mapslide), you
+organize this, for a dialog box, by providing a datachange
+method.  The flags determine aspects of the presentation
+of the dataform, the available ones are:
+
+<code>
+# dataform flags
+DF_LOCAL        = 1    # prevents screen flashes if changes in this box don't affect anything else
+DF_AUTOFOCUS    = 8    # gets focus when mouse cursor enters
+</code>
+
+And finally, the last line makes it show up on the screen;
+in GUI programming, things are normally kept hidden until
+their finished being built, to make things look polished.
+
+So here are the remaining methods:
+
+<code>
+    def datachange(self, df):
+        pass   # abstract
+
+    def onclose(self, dlg):
+        dlg.info = None
+        dlg.onclose = None   # clear refs
+        if self.df is not None:
+            self.df.onchange = None
+            self.df = None
+        self.dlg = None
+        del self.buttons
+
+    def close(self, reserved=None):
+        self.dlg.close()
+</code>
+
+datachange is defined here in a content-free manner so that
+there's something to be assigned as the df's onchange method,
+regardless of whether it's really needed or not.  The
+onclose method sets lots of things to None, in order to
+prevent circular references from causing memory leaks (see
+the discussion in Quarkx.rtf).  You should have noticed
+the lines whereby these are passed as callbacks to the
+floating window and the dataform.  close() on the other
+hand, is not a callback, but calls the floating window's
+own close() method.
+
+Once you understand how dialog boxes are built, you can
+meddle with them in various ways; so in quarkpy.dlgclasses.py
+there is defined placepersistent_dialogbox, which remembers
+where it was last opened (basically by fiddling with
+windowrect()).  And from that is defined LiveEditDlg,
+which is specialized for controlling things that move in
+the views as you change the data.
+
+And dialog boxes are far from being the only kind of
+floating window, the face flags window that is obtained
+for Q2 engine games by RMB|Texture Flags|Flags ...
+is a substantially different one.  Its code is produced
+by the MapLayout.flagsclick method in quarkpy.mapgr.
+
+I won't go over it in detail but just mention a few things.
+This window doesn't just appear for a while and vanish
+when you change the selection, but persists, and fills
+up with appropriate face flag data whenever you select
+something that has faces.
+
+The setup code is bracketted by some bookkeeping that
+makes sure that there's only one face flags window
+open at any one time, and then it gets its form from
+the .qrk files, by code which has the effect that
+the last .qrk to load that defines a TextureFlag form
+is the one whose TextureFlag form gets used (so an
+addon for a game would overrule the basic data for the
+game).  Note that `flist[-1]' designates the last element
+of flist (think of flist as a circular list, first element
+being 0).
+
+Things should look routine until:
+
+<code>
+            df.actionchanging = 596
+</code>
+
+Part of the df magic is that if a dataform changes
+any QObject that comes from a file, this change is
+registered in the undo mechanism, and the actionchanging
+number is the index of the undo string, defined in
+quarkpy.qdictionnary.
+
+So things burble along thru:
+
+<code>
+        self.loadfaceflags(form)
+        ff.show()
+</code>
+
+ff.show()?  Well remember that ff is a floating window, not
+a dialog object, and windows are shown.  ff probably for
+`floating form', because of the window/form terminology
+confusion mentioned earlier.
+
+And we should be able to guess that loadfaceflags is the
+function that's going to load the face data into ff's
+dataform, under the control of the TextureFlags form.
+And if you look at its definition, it's clear that it does
+this, except there's a bit of a surprise at the end:
+
+<code>
+        df.setdata(self.loadtfflist(), form)
+</code>
+
+When you look at loadtfflist(), you find a rather
+complicated function!  Which, in brief, is doing this:
+The faces in the current selection are gathered into a list.
+Then the names of the textures in the list are made to be
+keys for a dictionary, whose values are the textures,
+and each member of the face list flist is replaced by
+a pair with the original member first and its texture
+second.  And that's what's returned to be the first argument
+of setdata.
+
+Which is thereby revealed to be even more subtle than
+suggested so far: it can operate on many objects at once,
+and display in the form default information provided from
+a default object rather than the thing being edited itself.
+
+Here's what it says in <ref> src/quarkx </ref>:
+
+<code>
+setdata(objs) setdata(objs, formobj):
+</code>
+<ul>
+<li>Select the object(s) whose Specifics/Args are to be
+  displayed in the data form. objs can be either a single
+  " objspec " or a list of " objspecs ". An " objspec " i
+  either a single object or a tuple of two objects : the
+  actual object and another one with default values.
+  If a Specific is not found in the object, the data
+  form displays the one from its default value. The
+  optional argument formobj gives a :form Internal object
+  to use.
+</ul>
+
+So for example for a face, if the face doesn't have
+some property but the face's texture specifies a default
+for that property, the default will be shown in the window.
+And, automagically, if you edit the specific, the change
+will be registered undoably in all of the (non-default)
+objects that have been presented to setdata.  Whew.
+
+So, finally, how does the form load with data for a new
+face when the selection changes?  Via this method
+of MapLayout:
+
+<code>
+    def selchange(self):
+        if self.faceflags is not None:
+            self.loadfaceflags()
+        self.mpp.resetpage()
+</code>
+
+To finish off, a bit more about panels.  Panels can contain
+more than one control, by being divided into sections.
+To see how it's done, study panels in Quarkx.rtf, and
+look at plugins/map3viewslayout.py, which is quite well
+commented.  The basic idea is to divide panels into sectons
+with statements like:
+
+<code>
+        self.mainpanel.sections = ((), (0.4,))
+</code>
+
+Which says one column, two rows with the top taking up
+40% of the space, and:
+
+<code>
+        self.ViewXY = self.mainpanel.newmapview()
+        self.ViewXY.section = (0,1)
+</code>
+
+Which creates a map view (another kind of control) in the
+main panel, and then puts it in the first column (there's
+only one) of the lower row.  Then the code goes on to put
+a panel in the upper row, and put two more map views into
+that.

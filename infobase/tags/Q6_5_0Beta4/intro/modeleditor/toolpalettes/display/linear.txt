@@ -1,0 +1,30 @@
+title: Linear Drag Handles
+author: cdunde
+
+<img border=1 align=right>linearcircle.png</img>
+<img border=1 align=right>linear.png</img>
+This button is always active in one way or another and performs various ways in different modes
+in the Model Editor, depending on what is selected, and the Skin-view.
+When more then one item is selected it will display a 'Linear Drag Handle' circle around those
+selected objects for editing purposes.
+
+This circle and its attached handles let you apply 'linear movement' to the objects.
+'Linear movement' means any transformation such as group movement, rotation,
+enlarging/shrinking and distortion/shearing. When you use the rotate, enlarge, shrink,
+and symmetry buttons of the movement tool palette, you actually apply a linear movement
+on the selected objects.
+
+In the main editor when any 'faces' have been selected, clicking on the <g>Linear Drag Handles</g>
+button will activate its handles for those faces only, turning off the individual vertex handles
+and the Linear Handle for any selected group of them. Clicking the button off will
+reactive the handles back to the selected vertex group and turn all of the individual vertex handles back on.
+Unselected vertex handles can still be dragged for editing without disturbing the linear group selection
+or they can be 'picked' using the <g>RMB</g> menu, when your cursor is over a vertex handle, to add or remove
+from the selected linear group of vertex handles.
+
+At any time if you wish to <g>cancel</g> a move you are performing, simply hold down your <g>LMB</g>
+and <g>RMB</g> together and continue to do a very slight drag, then let go of both buttons together.
+
+These Linear Drag Handles are the main source of larger group productive editing movements and
+manipulative functions. Holding the mouse-cursor steady for a moment on one of the many small
+handles in the circle, will bring up a little 'flyover' help.

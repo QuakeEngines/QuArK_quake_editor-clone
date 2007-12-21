@@ -1,0 +1,17 @@
+title: T...
+author: Decker
+
+<dl>
+<dt><a name="teamfortress">             </a>Team Fortress               <dd>[TF] (modification) A teambased multiplayer game, which expands the <a href="#capturetheflag">Capture The Flag</a> concept with unique features like; specialized playerclasses, multiple and/or different map objectives. Team Fortress exists only for Quake/QuakeWorld. See also <a href="http://www.teamfortress.com">http://www.teamfortress.com</a>.
+<dt><a name="teamfortress2">            </a>Team Fortress 2             <dd>[TF2] (game) A commercial game, based on the same concept as Team Fortress, but greatly expanded. See <a href="http://www.sierra.com">http://www.sierra.com</a>.
+<dt><a name="teamfortressclassic">      </a>Team Fortress Classic       <dd>[TFC] (modification) The same as Team Fortress, but for Half-Life. <a href="http://www.teamfortressclassic.com">http://www.teamfortressclassic.com</a>.
+<dt><a name="terraingenerator">         </a>Terrain Generator           <dd><a href="intro.terraingenerator.html">QuArK's Terrain  Generator</a> creates terrain in the editor and can convert other imported terrain for editing as well.
+<dt><a name="texture">                  </a>Texture                     <dd>A rectangular graphics image, that is put on a <a href="#face">face</a>. Some games uses their own graphics formats, like <a href="#.WAL">.WAL</a> or <a href="#.WAD">.WAD</a>, others uses the more paint-program friendly <a href="#.TGA">.TGA</a> or <a href="#.PCX">.PCX</a> formats. Typically the X and Y sizes of the texture-image, must be in power of 16. See also <a href="#wally">Wally</a>.
+<dt><a name="thirdperson">              </a>Third person                <dd>Instead of looking through the eyes of your character like with <a href="#firstpersonshooter">first person mode</a>, you're looking over his/her head, and can see his/her back.
+<dt><a name="tile">                     </a>Tile or Tiling              <dd>The process of repeating a <a href="#texture">texture</a> image indefinitely.
+<dt><a name="totalconversion">          </a>Total conversion            <dd>[TC] A total conversion is a complete change of game-flow <u>and</u> game-rules. There are new levels, weapons, models, sounds, graphics and it might even not be the <a href="#fps">FPS-game</a> you used to know. An example of a TC is 'Quake Rally', though it uses the <a href="#quake1">Quake-1</a> program it is actually a racing game. See also <a href="#partialconversion">Partial conversion</a>, <a href="#modification">Modification</a>.
+<dt><a name="treeview">                 </a>Tree-view                   <dd>A display in QuArK which looks like a hierarki-tree or Windows' File-Explorer. Usually its the <a href="intro.mapeditor.dataforms.html#treeview">display</a> of the first type in the panel below the compass in the map-editor and the model-editor.
+<dt><a name="tris">                     </a>Tris                        <dd>(model editor item) Abbreviation for triangles that make up a model's shape, or <a href="#component">component</a>.
+<dt><a name="tuple">                    </a>Tuple                       <dd>A specific kind of list of more than one item within open and closed brackets <g>( )</g> that is used in the Python programming code.
+<dt><a name="type">                     </a>Type                        <dd>A specific kind of item that can be identified with, and assigned to, a <g>key</g> in the Python programming code.
+</dl>

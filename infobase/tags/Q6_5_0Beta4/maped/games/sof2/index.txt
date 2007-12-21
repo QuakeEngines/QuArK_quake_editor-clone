@@ -1,0 +1,17 @@
+title: Soldier of Fortune II
+author: tiglari
+
+Support needs a lot more cleaning up.  One issue is that many of the misc_models
+come up black, about which Doug Abele (CHK Shoot) has this to say:
+<code>
+   There are 2 forms of models - one static and one misc. In some instances
+   both of them show perfectly - in others the misc_model shows up as black. It
+   has to do with the original shader that is for that particular model. Seems
+   there is some coding in there - don't remember the line - think it was a
+   lightmap line - anyway - the shader wasnt designed for the misc_model and
+   the model shows up black. The fix is to watch which one you use and switch
+   to the other form of the model. Wish I could tell ya more.
+     [Doug Abele/CHK Shoot]
+</code>
+The cure would be for someone to edit the addons, especially SoF2Models.qrk,
+which sets up the models with clip brushes to serve as bounding boxes.

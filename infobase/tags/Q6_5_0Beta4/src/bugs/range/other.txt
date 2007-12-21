@@ -1,0 +1,15 @@
+title: Other modules and files
+author: DanielPharos
+
+<UL>
+<LI>prog/UNZIP.pas (rev 1.7):
+<UL>
+<LI>Line 1370: A range check error sometimes occurs, for instance
+in STVEF game mode. e is always between 0 and 15, so the range error
+doesn't occur in mask_bits[e]. I'm not sure what exactly is causing
+it, but the error appears to be non-critical.
+</UL>
+
+Remark: The ZIP and UNZIP modules are a mess. Somebody should replace
+these with more up-to-date libraries that have the same (or more)
+functionality.

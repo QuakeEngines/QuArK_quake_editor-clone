@@ -1,0 +1,36 @@
+title: Advanced Basic Duplicators
+author: tiglari
+
+Two quick observations.  The first of the two
+duplicators named Duplicator, with macro 'dup basic',
+has an angle specific which seems to twist and
+displace the copies in a manner which I have yet
+to find any use for (if someone has a use for this,
+they should submit the appropriate revision to
+the help here).
+
+The second, with macro 'dup linear', has a specific
+'linear' consisting of 9 numbers, being by default
+<table><tr><td>
+1 0 0 0 1 0 0 0 1
+</td></tr></table>
+This is a 'linear matrix' (written as one row of 9
+rather than 3 of 3), a mathematical technique
+for specifying deformations in space, the idea is
+that each copy is deformed from the previous one
+as specified by the matrix.  Most mappers aren't likely
+to be able to do much with raw matrices, but one
+trick is to scale the images.  For example if we
+replace all the 1's with, say, .9, then each copy
+will by .9 times the size of the one before it:
+<table><tr><td>
+.9 0 0 0 .9 0 0 .9
+</td></tr></table>
+You can also scale by different factors in each
+dimension by replacing the 1's with different numbers,
+for the X, Y and Z scales in that order.
+
+Matrices can do much more than this (especially
+rotations), but somebody would probably have to write
+a convenient GUI editing tool in order for mappers
+to get much use out of them.

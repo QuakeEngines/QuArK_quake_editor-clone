@@ -1,0 +1,100 @@
+title: Misc. Info.
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Installing the q3map_2.5.16_win32_x86 build tool</b>
+
+When you install this program you will need to direct it to the
+<a href="intro.configuration.games.specificgames.rtcw.html#config">QuArK files</a> folder as shown
+earlier in the <a href="intro.configuration.games.specificgames.rtcw.html#config">Configuration section</a>.
+That is really all you need to verify.
+
+<b>Changing and re-running a map</b>
+
+Normally, I run RTCW in a separate window, instead of its "Full Screen" mode when working on
+a map, for a couple of reasons.<br>
+First it's a lot easer to see around to view something in the
+editor that you might be concentrating on with your work.<br>
+The other is being able to jump back
+and forth between the editor and the game running by simply holding down the Alt key and
+pressing the Tab key to switch.<br>
+It seems less confusing that way.
+
+Unfortunately it does not have the ability to make changes in your map while the game is still running
+and then rebuild and reload the map.<br>
+To do this you will need to close the game and go through the normal process once again.<br>
+But basically all you need to do is just click the QuArK menu item and off you go.
+
+To close the game, press the Esc key and select "Exit" from its menu.
+
+<b>Custom textures or models not showing Textures</b>
+
+Open the model .mdc or md3 file with a text editor such as NotePad or WordPad,
+Do a search for "tga" to find the textures that the model uses, you will see the full path.
+Extract those textures and make new folders, with the exact same name and additional
+sub-folder(s), in your "Main" folder and place them in those folders.
+
+Or you can just extract the entire "textures" folder from the .pak file and place that,
+with all the textures, inside the "Main" folder. BUT...if you use this method it could
+over write some of the QuArK_RTCW support textures image files. So it would be a good
+idea to re-install those afterwards, just to be sure everything is the way it should be.
+
+This will also add those textures to the QuArK Texture Browser causing them to show up twice.
+The original ones are most likely "shaders" but the new ones will only be "standard" textures.
+
+If a model is not displaying all of its "skin" textures and the texture image file (.tga or .jpg)
+is already in the proper folder location then it is very likely that it is a "script\shader"
+type of texture. Use its full path and name but without its suffix (.tga or .jpg) and do a
+search for it in the "scripts" folder and .pak files. Once you have located it look to see if
+it has a code line something like this:
+
+	rgbGen lightingdiffuse
+
+If it does then that could be causing the problem. Copy that entire section of that shader code
+that starts with the full path and name along with, and including, the starting "left curly
+bracket" { and ending with the "right curly bracket" } and add it to the quarkcharacters.shader
+file in the "scripts" folder in your "Main" RTCW directory. Then comment that line out like this:
+
+   // rgbGen lightingdiffuse
+
+This will turn off that particular code function and the model skin texture should now show up.
+
+<b>Texture Loading Game Error</b>
+
+It has come to our attention while setting up the QuArK_RTCW.zip file that there is at least
+one texture in the original RTCW pak0.pk3 file (textures\common\blackish.jpg) that causes RTCW
+to give an error in the game console that says:
+
+Error: LoadTGA: Only type 2 (RGB), 3 (gray), and 10 (RGB) TGA images supported
+
+and stops the game map from loading. The texture file itself is not bad, but for some unknown
+reason when this texture is used in QuArK and is opened in an "external editor", like PaintShopPro,
+it shows as a .pcx file and not a .jpg uncompressed file. When it is exported for the map file
+by QuArK, it is created as a .tga file, which is not the case at all, and causes this error.
+
+So if you should receive this game error message this is what you should do.
+Clear out your "tmpQuArK\textures" folder, have QuArK "Prepare all textures and scripts", which is
+on the RTCW main menu in QuArK, then open each .tga and .jpg texture in the textures folder directly
+into PSP or Photo Shop. You are looking for two things:
+
+1) That is IS a valid .jpg or .tga file.
+
+2) And, that it is NOT a "compressed" image file.
+   RTCW will give the same error is one is.
+
+Once you find the offending file(s), create an uncompressed .tga file of it and place that new file
+in a folder called "textures" in your RTCW\Main folder. That will solve all the problems for both
+QuArK and RTCW, allowing you to continue to use that texture in the future.
+Please notify us so we can make the same correction.
+
+
+<b>Other Comments</b>
+
+Some entities and\or models do not work properly or at all. These are erroneous items that were not
+done correctly by other parties and is not a bug with QuArK. However, other entities may not have
+been fully understood as to their proper needs and settings which could be an item to bring to our
+attention for correction.
+</td></tr>
+</table>
+

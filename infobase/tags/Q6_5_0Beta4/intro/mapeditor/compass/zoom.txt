@@ -1,0 +1,8 @@
+title: Zoom
+author: Decker
+
+<img border=0 align=right>zoom.png</img>
+Zooms the map-views.
+
+You can also use the mouse or keys to zoom with. See the
+<ref>intro/configuration/map/keys</ref> options for these settings.

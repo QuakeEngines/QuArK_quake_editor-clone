@@ -1,0 +1,7 @@
+title: Animation tool-palette
+desc: animate
+desc: fps
+desc: pause
+desc: viewselector
+
+<img border=1>animation.png</img>

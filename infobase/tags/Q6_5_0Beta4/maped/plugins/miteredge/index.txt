@@ -1,0 +1,22 @@
+title: Miter Edge
+author: DanielPharos
+
+Miter edge takes two adjoining faces of two different poly's, and closes the gap 'behind' the corner these faces make. This function is useful to create corners, since there's less texture-alignment to do on the outside of the corner, you can caulk the two faces in the corner because they're not visible, and the less faces a map has, the faster it will run ingame.
+
+To use this function, tag the first face, and then select Miter Edge on the second face. It's best explained with some pictures.
+
+Take two poly's, with two adjoining faces.
+
+<img>miteredge1.png</img>
+
+Tag one of the faces on the 'inside'-side of the corner to create.
+
+<img>miteredge2.png</img>
+
+Select the other face, and use Miter Edge.
+
+<img>miteredge3.png</img>
+
+If everything is OK, you'll now have mitered the faces!
+
+<img>miteredge4.png</img>

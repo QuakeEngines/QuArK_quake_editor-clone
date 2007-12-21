@@ -1,0 +1,7 @@
+title: New texture list
+author: Rowdy
+
+<img border=0 align=right>newtexturelist.png</img>
+This creates a new folder which can store a list of textures, and which also
+shows you a preview of the textures when you select the group.  Once you have
+added a new texture-list, click once on the name to rename it.

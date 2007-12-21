@@ -1,0 +1,6 @@
+title: Misc tools
+desc: newmapitem
+desc: trashcan
+desc: undoredo
+desc: newgroup
+desc: templates

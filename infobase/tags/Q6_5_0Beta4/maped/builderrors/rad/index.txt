@@ -1,0 +1,88 @@
+title: RAD - Lights/Radiosity
+author: Decker
+
+This page lists various encountered errors, that may occur during the RAD .bsp-lighting phase.
+
+All QuArK supported games, are know to use a RAD .bsp-lighting phase:
+
+<center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
+
+<tr><td>
+Quake-1
+</td><td>
+LIGHT.EXE, ARGHLITH.EXE
+</td></tr>
+
+<tr><td>
+Hexen-2
+</td><td>
+LIGHT.EXE
+</td></tr>
+
+<tr><td>
+Quake-2
+</td><td>
+QRAD3.EXE, ARGHRAD.EXE
+</td></tr>
+
+<tr><td>
+Heretic-2
+</td><td>
+QRAD3.EXE, ARGHRAD.EXE
+</td></tr>
+
+<tr><td>
+Half-Life
+</td><td>
+QRAD.EXE, HLRAD.EXE
+</td></tr>
+
+<tr><td>
+Sin
+</td><td>
+QRAD3.EXE
+</td></tr>
+
+<tr><td>
+Kingpin
+</td><td>
+KPRAD.EXE
+</td></tr>
+
+<tr><td>
+Soldier of Fortune
+</td><td>
+SOFARGHRAD.EXE
+</td></tr>
+
+<tr><td>
+Soldier of Fortune 2
+</td><td>
+"Q3MAP.EXE -light", "Q3MAP2.EXE -light"
+</td></tr>
+
+<tr><td>
+Quake-3: Arena
+</td><td>
+"Q3MAP.EXE -light", "Q3MAP2.EXE -light"
+</td></tr>
+
+<tr><td>
+Return to Castle Wolfenstein
+</td><td>
+"Q3MAP.EXE -light", "Q3MAP2.EXE -light"
+</td></tr>
+
+<tr><td>
+Star Trek: Voyager - Elite Force
+</td><td>
+"Q3MAP.EXE -light", "Q3MAP2.EXE -light"
+</td></tr>
+
+<tr><td>
+Star Trek: Elite Force 2
+</td><td>
+"UBERMAP.EXE -light"
+</td></tr>
+
+</table></center>
