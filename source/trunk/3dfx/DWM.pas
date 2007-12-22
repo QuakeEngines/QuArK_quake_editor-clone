@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2007/09/23 21:04:31  danielpharos
+Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+
 
 }
 
@@ -34,8 +37,8 @@ interface
 uses Windows;
 
 const
-  DWM_EC_ENABLECOMPOSITION  = $0;
-  DWM_EC_DISABLECOMPOSITION = $1;
+  DWM_EC_DISABLECOMPOSITION = $0;
+  DWM_EC_ENABLECOMPOSITION  = $1;
 
 var
   DwmIsCompositionEnabled: function (pfEnabled : PBool) : HRESULT; stdcall;
