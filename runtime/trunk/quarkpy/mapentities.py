@@ -634,6 +634,68 @@ class DefaultDrawEntityLines:
             if e[spec]==arg:
                 self.drawentityarrow(e, org, backarrow, color, view, processentities, text)
 
+
+############## SHINE support code start
+
+   def drawAABB(self, mins, maxs, color, view):
+        cv = view.canvas()
+        cv.pencolor = color
+# calculate aabb points
+        aabb_010 = view.proj(quarkx.vect(mins.x, maxs.y, mins.z))
+        aabb_110 = view.proj(quarkx.vect(maxs.x, maxs.y, mins.z))
+        aabb_100 = view.proj(quarkx.vect(maxs.x, mins.y, mins.z))
+        aabb_001 = view.proj(quarkx.vect(mins.x, mins.y, maxs.z))
+        aabb_011 = view.proj(quarkx.vect(mins.x, maxs.y, maxs.z))
+        aabb_101 = view.proj(quarkx.vect(maxs.x, mins.y, maxs.z))
+        aabb_000 = view.proj(mins)
+        aabb_111 = view.proj(maxs)
+
+# draw low level
+        cv.line(int(aabb_000.x), int(aabb_000.y), int(aabb_010.x), int(aabb_010.y))
+        cv.line(int(aabb_110.x), int(aabb_110.y), int(aabb_010.x), int(aabb_010.y))
+        cv.line(int(aabb_110.x), int(aabb_110.y), int(aabb_100.x), int(aabb_100.y))
+        cv.line(int(aabb_000.x), int(aabb_000.y), int(aabb_100.x), int(aabb_100.y))
+# draw high level
+        cv.line(int(aabb_001.x), int(aabb_001.y), int(aabb_011.x), int(aabb_011.y))
+        cv.line(int(aabb_111.x), int(aabb_111.y), int(aabb_011.x), int(aabb_011.y))
+        cv.line(int(aabb_111.x), int(aabb_111.y), int(aabb_101.x), int(aabb_101.y))
+        cv.line(int(aabb_001.x), int(aabb_001.y), int(aabb_101.x), int(aabb_101.y))
+# draw medium level
+        cv.line(int(aabb_000.x), int(aabb_000.y), int(aabb_001.x), int(aabb_001.y))
+        cv.line(int(aabb_010.x), int(aabb_010.y), int(aabb_011.x), int(aabb_011.y))
+        cv.line(int(aabb_110.x), int(aabb_110.y), int(aabb_111.x), int(aabb_111.y))
+        cv.line(int(aabb_100.x), int(aabb_100.y), int(aabb_101.x), int(aabb_101.y))
+
+
+   def drawonesphere(self, entity, sphereradius, org, OriginalOrigin, color, view):
+        try:
+            radius = sphereradius * view.scale(OriginalOrigin)
+            radius = int(radius)   #py2.4
+            cv = view.canvas()
+            cv.pencolor = color
+            cv.penwidth = 2
+            cv.brushstyle = BS_CLEAR
+            cv.ellipse(int(org.x)-radius, int(org.y)-radius, int(org.x)+radius, int(org.y)+radius)
+        except:
+            pass
+
+
+   def drawentityradius(self, entity, nameradius, org, color, view):
+        try:
+            if entity[nameradius] is not None:
+                radius = float(entity[nameradius]) * view.scale(org)
+                radius = int(radius)   #py2.4
+                cv = view.canvas()
+                cv.pencolor = color
+                cv.penwidth = 2
+                cv.brushstyle = BS_CLEAR
+                cv.ellipse(int(org.x)-radius, int(org.y)-radius, int(org.x)+radius, int(org.y)+radius)
+        except:
+            pass
+
+############## SHINE support code end
+
+
    def drawentitylines(self, entity, org, view, entities, processentities):
         color = MapColor("Axis")
         org1 = view.proj(org)
@@ -649,7 +711,13 @@ class DefaultDrawEntityLines:
             #        (maximum radius) for lights, and does not have a 'light' specific
                 try:
                     if L1:
-                        radius = float(L1)
+                        #### SHINE support code start
+                        if entity["radius"]:
+                            try:
+                                radius = float(entity["radius"])
+                            except:
+                        #### SHINE support code end
+                                radius = float(L1)
                         if entity["_color"]:
                             try:
                                 color = quakecolor(quarkx.vect(entity["_color"]))
@@ -697,6 +765,10 @@ class DefaultDrawEntityLines:
                     cv.ellipse(int(org1.x)-radius, int(org1.y)-radius, int(org1.x)+radius, int(org1.y)+radius)
                 except:
                     pass
+############ SHINE support code start
+        if entity["pivot"] is not None:
+           self.drawentityarrows("pivotname", entity["pivot"], org, 1, RED, view, entities, processentities)
+############ SHINE support code end
         if entity["target"] is not None:
            self.drawentityarrows("targetname", entity["target"], org, 0, color, view, entities, processentities)
            # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
@@ -704,11 +776,118 @@ class DefaultDrawEntityLines:
         if entity["targetname"] is not None:
            self.drawentityarrows("target", entity["targetname"], org, 1, color, view, entities, processentities)
            self.drawentityarrows("killtarget", entity["targetname"], org, 1, RED, view, entities, processentities)
+############ SHINE support code start
+        if entity["Activator.Target"] is not None:
+           self.drawentityarrows("Trigger.TargetName", entity["Activator.Target"], org, 0, color, view, entities, processentities)
+############ SHINE support code end
         if entity["name"] is not None:
            # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
            self.drawentityarrows("target", entity["name"], org, 1, color, view, entities, processentities)
         if entity["killtarget"] is not None:
            self.drawentityarrows("targetname", entity["killtarget"], org, 0, RED, view, entities, processentities)
+############ SHINE support code start
+#    pos = string.find(CVD, " ")
+#    if pos>-1:
+#          NV = CVD[:pos]
+#          debug(NV)
+#          i=0
+#          while i<NV:
+#            debug(i)
+#            i = i+1
+        try:
+            if entity["CollisionInfo.mins"] is not None:
+                if entity["CollisionInfo.maxs"] is not None:
+                    mins = org + quarkx.vect(entity["CollisionInfo.mins"])
+                    maxs = org + quarkx.vect(entity["CollisionInfo.maxs"])
+                    self.drawAABB(mins, maxs, color, view)
+        except:
+            pass
+            
+
+        try:
+            if entity["CollisionInfo.CompoundVolumeData"] is not None:
+                SpheresList = ParseCompoundVolume(entity["CollisionInfo.CompoundVolumeData"])
+                for Sphere in SpheresList:
+                    SphereOrigin, SphereRadius = Sphere
+
+                    ItemOrigin = quarkx.vect(entity["origin"])
+
+                    szmangle = "0 0 0"
+                    if entity["mangle"] is not None:
+                        szmangle = entity["mangle"]
+
+                    angles = quarkx.vect(szmangle)
+                    pitch = -angles.x*deg2rad
+                    yaw = angles.y*deg2rad
+                    roll = angles.z*deg2rad
+
+                    mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
+
+                    SphereOrigin = (mat*SphereOrigin)+ItemOrigin
+                    self.drawonesphere(entity, SphereRadius, view.proj(SphereOrigin),SphereOrigin, color, view)
+            else:
+                EntityForm = quarkx.getqctxlist(":form" , entity.shortname)
+                if EntityForm is not None and len(EntityForm) > 0:
+                    EntityForm = EntityForm[-1]
+                    for TestItem in EntityForm.subitems:
+                        if TestItem.shortname == "CompVolInfo":
+                            if TestItem["CVInfo"] is not None:
+                                SpheresList = ParseCompoundVolume(TestItem["CVInfo"])
+                                for Sphere in SpheresList:
+                                    SphereOrigin, SphereRadius = Sphere
+
+                                    ItemOrigin = quarkx.vect(entity["origin"])
+
+                                    szmangle = "0 0 0"
+                                    if entity["mangle"] is not None:
+                                        szmangle = entity["mangle"]
+
+                                    angles = quarkx.vect(szmangle)
+                                    pitch = -angles.x*deg2rad
+                                    yaw = angles.y*deg2rad
+                                    roll = angles.z*deg2rad
+
+                                    mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
+
+                                    SphereOrigin = (mat*SphereOrigin)+ItemOrigin
+                                    self.drawonesphere(entity, SphereRadius, view.proj(SphereOrigin),SphereOrigin, color, view)
+                            break;
+        except:
+            pass
+
+        self.drawentityradius(entity, "CollisionInfo.radius", org1, color, view)
+        self.drawentityradius(entity, "SkinMesh.VisibilityDistance", org1, color, view)
+        self.drawentityradius(entity, "Shadow.VisibilityDistance", org1, color, view) 
+        self.drawentityradius(entity, "BrushModel.VisibilityDistance", org1, color, view)
+        self.drawentityradius(entity, "Shadow.MaxDistance", org1, color, view)
+
+        self.drawentityradius(entity, "Sound.MinDistance", org1, BLUE, view)
+        self.drawentityradius(entity, "Sound.MaxDistance", org1, RED, view)
+
+        try:
+            if entity.shortname == "NavPoint" and entity.parent is not None:
+                self.drawentityradius(entity, "Location.radius", org1, RED, view)
+                radius = float(entity["Location.radius"])
+                worldspawn = entity.parent
+                while worldspawn.shortname <> "worldspawn" and worldspawn.parent is not None:
+                    worldspawn = worldspawn.parent
+                items = worldspawn.findallsubitems("NavPoint", ":e")
+                for item in items:
+                    if item <> entity and item["origin"] is not None:
+                        ItemOrigin = quarkx.vect(item["origin"])
+                        ItemRadius = float(item["Location.radius"])
+                        lenItem = abs(org - ItemOrigin)
+                        if lenItem < 2*(radius + ItemRadius)+300.0:
+                            OrgItem = view.proj(ItemOrigin)
+                            drawcolor = color
+                            if lenItem <= (radius + ItemRadius):
+                                drawcolor = YELLOW
+                            self.drawentityradius(item, "Location.radius", OrgItem, drawcolor, view)
+            else:
+                self.drawentityradius(entity, "Location.radius", org1, color, view)
+        except:
+            pass
+############ SHINE support code end
 
 #
 # EntityLines Manager list
@@ -752,7 +931,6 @@ def registerPyForm(name, formstring):
     formdict[name] = f
 
 def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
-
     formobj = f1 = None  # This will be our outputs
     if len(sl):  # Are there any objects in sl?
         f1 = CallManager("dataformname", sl[0])  # Gets the entity form-name (if one exist) of the first object
@@ -778,6 +956,10 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.55  2007/12/14 21:48:00  cdunde
+#Added many new beizer shapes and functions developed by our friends in Russia,
+#the Shine team, Nazar and vodkins.
+#
 #Revision 1.54  2007/01/31 15:12:16  danielpharos
 #Removed bogus OpenGL texture mode
 #
