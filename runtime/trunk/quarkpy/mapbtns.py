@@ -384,13 +384,13 @@ def texturebrowser(reserved=None):
             break
 
     Folder = quarkx.newobj("Used Textures.txlist")
-    Folder.flags = quarkpy.qutils.OF_TVSUBITEM
+    Folder.flags = qutils.OF_TVSUBITEM
 
     UsedTexturesList = quarkx.texturesof([editor.Root])
     for UsedTextureName in UsedTexturesList:
         UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
         UsedTexture["a"] = "../"
-        UsedTexture.flags = UsedTexture.flags | quarkpy.qutils.OF_TVSUBITEM
+        UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
         Folder.appenditem(UsedTexture)
 
     ToolBox.appenditem(Folder)
@@ -731,6 +731,10 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.29  2007/12/14 21:48:00  cdunde
+#Added many new beizer shapes and functions developed by our friends in Russia,
+#the Shine team, Nazar and vodkins.
+#
 #Revision 1.28  2007/09/10 10:24:25  danielpharos
 #Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
 #
