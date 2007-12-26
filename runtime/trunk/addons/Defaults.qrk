@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.378  2007/12/21 20:39:23  cdunde
+//Added new Templates functions and Templates.
+//
 //Revision 1.377  2007/12/20 23:26:59  danielpharos
 //Fix a small default value mistake in HL2
 //
@@ -1587,7 +1590,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = ""
         RunMapCmdLine = " %s"
-        AddOns = "DataCS.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataCS.qrk"
         AlwaysPak = ""
         PakExt = ".zip"
         LightFactor = '0.90000'
@@ -1647,7 +1650,7 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
-        AddOns = "DataD3.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataD3.qrk"
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"
@@ -1728,7 +1731,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataEF2.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataEF2.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -2069,7 +2072,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataJA.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataJA.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -2137,7 +2140,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataJK2.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataJK2.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -2264,7 +2267,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set developer 1 +set thereisnomonkey 1 +set cheats 1 +set ui_console 1 +set fs_game %s"
         RunMapCmdLine = " +map %s"
-        AddOns = "DataMOHAA.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataMOHAA.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -2443,7 +2446,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -2508,7 +2511,7 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
-        AddOns = "DataQ4.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataQ4.qrk"
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"
@@ -2587,7 +2590,7 @@ QQRKSRC1
         tmpQuArK = "tmpQuArK"
         MapLimit = '65536 65536 65536'
         Palette = ":pics/colormap.pcx"
-        AddOns = "DataRTCW.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataRTCW.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -2645,7 +2648,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         MapLimit = '65536 65536 65536'
 
-        AddOns = "DataET.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataET.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -2829,7 +2832,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataSoF2.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataSoF2.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -2917,7 +2920,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataSTVEF.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataSTVEF.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -3106,7 +3109,7 @@ QQRKSRC1
         ExtraCmdLine = ""
         RunMapCmdLine = " +devmap %s" // won't work, but open console and
                                       //   run the map by /spmap <mapname> in the console
-        AddOns = "DataWildWest.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataWildWest.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
