@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 5
 ============
 
+* [cdunde]: Setup of a full beizer library with over 30 prefab beizers to work with for games that can use beziers.
+
 * [cdunde]: Fixed a bug with the opening the Texture Browser window icon button.
 
 * [cdunde]: Added Special entity cv.canvas() line drawing for Shine engine, may also be useful for other games.
