@@ -74,6 +74,40 @@ class MapEditor(BaseEditor):
             quarkx.msgbox('there were errors reading the map; check the console',2,4)
         self.AutoSave(0)
 
+        import qutils
+        # Creates the "Used Textures.txlist" to display in the Texture Browser for the map that is opened in the editor.
+        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        ToolBoxName, ToolBox = tbx_list[0]
+        Folder = quarkx.newobj("Used Textures.txlist")
+        Folder.flags = qutils.OF_TVSUBITEM
+        UsedTexturesList = quarkx.texturesof([self.Root])
+     #   NoImageFile = None
+        for UsedTextureName in UsedTexturesList:
+            UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
+   #         UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #       if quarkx.setupsubset()["ShadersPath"] is not None:
+     #           try:
+     #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #               UsedTexture["a"] = (GameFilesPath+("/")+quarkx.setupsubset()["ShadersPath"]+("sky.shader")+("[textures/")+UsedTextureName+("]"))
+     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #           except:
+     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #       else:
+     #           UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #           try:
+     #               print "mapeditor line 106 the image path",(UsedTexture["a"]+("/")+quarkx.setupsubset()["TexturesPath"]+UsedTextureName)
+     #           except:
+     #               NoImageFile = 1
+            UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+            UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
+            Folder.appenditem(UsedTexture)
+   #     if NoImageFile is not None:
+   #         pass
+   #     else:
+   #         ToolBox.appenditem(Folder)
+        ToolBox.appenditem(Folder)
+        quarkx.opentoolbox("", None)
+
     def FrozenDragObject(self, view, x, y, s, redcolor):
         #
         # Some code to emulate Q3R drag behavior here.
@@ -368,6 +402,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.14  2007/12/21 20:39:23  cdunde
+#Added new Templates functions and Templates.
+#
 #Revision 1.13  2007/12/17 00:50:00  danielpharos
 #Fix the map portals not drawing anymore.
 #

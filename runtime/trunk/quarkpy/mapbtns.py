@@ -358,7 +358,9 @@ def edit_newgroup(editor, m=None):
 
 def texturebrowser(reserved=None):
     "Opens the texture browser."
-
+    editor = mapeditor()
+    if editor is None:
+        return
     #
     # Get the texture to select from the current selection.
     #
@@ -387,12 +389,27 @@ def texturebrowser(reserved=None):
     Folder.flags = qutils.OF_TVSUBITEM
 
     UsedTexturesList = quarkx.texturesof([editor.Root])
+ #   NoImageFile = None
     for UsedTextureName in UsedTexturesList:
         UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
-        UsedTexture["a"] = "../"
+ #       if quarkx.setupsubset()["ShadersPath"] is not None:
+ #           try:
+ #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+ #               UsedTexture["a"] = (GameFilesPath+("/")+quarkx.setupsubset()["ShadersPath"]+("sky.shader")+("[textures/")+UsedTextureName+("]"))
+ #           except:
+ #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+ #       else:
+ #           try:
+ #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+ #           except:
+ #               NoImageFile = 1
+        UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
         UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
         Folder.appenditem(UsedTexture)
-
+ #   if NoImageFile is not None:
+ #       pass
+ #   else:
+ #       ToolBox.appenditem(Folder)
     ToolBox.appenditem(Folder)
     quarkx.opentoolbox("", seltex)
 
@@ -731,6 +748,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.30  2007/12/25 08:13:40  cdunde
+#Fixed a bug with the opening the Texture Browser window icon button.
+#
 #Revision 1.29  2007/12/14 21:48:00  cdunde
 #Added many new beizer shapes and functions developed by our friends in Russia,
 #the Shine team, Nazar and vodkins.
