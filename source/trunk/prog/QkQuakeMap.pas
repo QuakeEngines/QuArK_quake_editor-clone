@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2007/12/16 23:46:13  danielpharos
+Fix duplicators not exporting in .map files properly
+
 Revision 1.4  2007/11/15 20:37:38  danielpharos
 Fix the shared faces from crashing the .map export.
 
@@ -2536,7 +2539,7 @@ begin
 
    // process untyped specifics
    hashpos:=Pos('#', S);
-   if (GetMapFormatType<>HL2Type) and ((hashpos=0) or (hashpos=1)) then
+   if (GetMapFormatType<>HL2Type) or ((hashpos=0) or (hashpos=1)) then
    begin
      if (S<>'') and (S[1]<>';') and (Ord(S[1])<chrFloatSpec) then
      begin
