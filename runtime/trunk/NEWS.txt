@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 5
 ============
 
+* [DanielPharos]: Partially build in and enabled the online update system. Still needs a lot of work, but it's
+          - downloading an index file and parsing it.
+
 * [cdunde/DanielPharos]: Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
 
 * [cdunde]: Setup of a full beizer library with over 30 prefab beizers to work with for games that can use beziers.

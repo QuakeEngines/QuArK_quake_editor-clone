@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.379  2007/12/26 06:01:45  cdunde
+//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
+//
 //Revision 1.378  2007/12/21 20:39:23  cdunde
 //Added new Templates functions and Templates.
 //
@@ -1374,7 +1377,8 @@ QQRKSRC1
       Update:config =
       {
         UpdateCheck = "1"
-        UpdateCheckOnline = "0"
+        UpdateCheckOnline = "1"
+        AutomaticInstall = ""
         Form = "GeneralUpdate"
       }
       QuakeC:config =
@@ -7424,7 +7428,8 @@ QQRKSRC1
     {
       Style = "3"
       UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
-      //UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
+      UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
+      AutomaticInstall: = {Typ="X" Txt="Automatically update" Cap="Enabled" Hint = "Automatically download and isntall any updates available."}
     }
     externaledit:incl = {
       Typ = "EP"
