@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2007/12/19 12:46:33  danielpharos
+Made a rudimentary, but functional MD3 file saving code. You can now save MD3 models!
+
 Revision 1.34  2007/08/14 16:33:00  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -695,8 +698,9 @@ begin
     O:=Self;
     While O.FParent<>nil do
     begin
+      if O<>Self then //Cut-off the PAK-filename
+        Result:=O.Name+PathDelim+Result;
       O:=O.FParent;
-      Result:=O.Name+PathDelim+Result;
     end;
   end
   else
@@ -746,7 +750,6 @@ begin
     begin
       tag:=QModelTag(TagList[i]);
       fname:=extractfilepath(GetFullFilename);
-      fname:=copy(fname, pos(PathDelim, fname)+1, length(fname)-pos(PathDelim,fname)+1);
       x:=TagNameToMd3FileName(tag.name, name);
       if x='' then
         continue;
