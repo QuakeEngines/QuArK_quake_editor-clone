@@ -162,6 +162,32 @@ class ModelLayout(BaseLayout):
             slist.append(None)
         return slist
 
+  ### To link Used Skin Textures of the current model being edited into the Texture Browser for displaying.
+    def putskinsintexturebrowser(self):
+        self.editor = mdleditor.mdleditor
+        import qutils
+        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        ToolBoxName, ToolBox = tbx_list[0]
+        # Removes the old Used Skin Textures ToolBoxFolder so duplicates of it are not displayed.
+        for ToolBoxFolder in ToolBox.subitems:
+            if ToolBoxFolder.name == "Used Skin Textures.qtxfolder":
+                ToolBoxFolder.parent.removeitem(ToolBoxFolder)
+                break
+        # Creates a dictionary list of the Used Skin Textures name and image to display in the Texture Browser for the model that is opened in the editor.
+        UsedTexturesList = {}
+        for item in self.editor.Root.subitems:
+            if item.name.endswith(":mc"):
+                for subitem in item.subitems:
+                    if subitem.name.endswith(":sg"):
+                        for skin in subitem.subitems:
+                            UsedTexturesList[skin.name] = subitem.dictitems[skin.name]
+        # Creates the "Used Skin Textures.qtxfolder" to display in the Texture Browser for the model that is opened in the editor.
+        UsedTexture = quarkx.newobj('Used Skin Textures.qtxfolder')
+        UsedTexture.flags = qutils.OF_TVSUBITEM
+        for UsedTextureName in UsedTexturesList:
+            UsedTexture.appenditem(UsedTexturesList[UsedTextureName].copy())
+        ToolBox.appenditem(UsedTexture)
+
   ### To setup the Animation Toolbar FPS (frames per second) function.
     def getFPSmenu(self, fpsbtn):
         setup = quarkx.setupsubset(self.editor.MODE, "Display")
@@ -699,6 +725,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.55  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
 #Revision 1.54  2007/10/31 03:47:52  cdunde
 #Infobase button link updates.
 #
