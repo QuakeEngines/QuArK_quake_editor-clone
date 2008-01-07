@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.380  2008/01/01 20:37:51  danielpharos
+//Partially build in and enabled the online update system. Still needs a lot of work, but it's downloading an index file and parsing it.
+//
 //Revision 1.379  2007/12/26 06:01:45  cdunde
 //Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
 //
@@ -4484,7 +4487,65 @@ QQRKSRC1
   //    }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      t_GameBuildPgms=!
+  //    t_GameBuildPgms=!
+      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
+      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
+      StupidBuildToolKludge:={Typ="X" Txt="Run tools from base directory" Hint="When this is checked, the tools are run in the base directory,"$0D" on maps in tmpquark"}
+      OutputMapFormat: = {
+        Txt = "Output Map Format"
+        Typ = "C"
+        Items = "HL2"
+               $0D "Classic Quake"
+               $0D "Quark etp"
+               $0D "Valve 220"
+               $0D "Brush Primitives"
+        Hint="These are set for the game's reccommended build tools.  If you don't have these," $0D " Classic Quake1/2/3 will function at a minimal level"
+      }
+//      Typ="X" Txt="Tools support brush primitives" Hint="When this is checked, if use brush primitives map option is also checked,"$0D" maps will be written in brush primitives format"}
+      sep:        = {Typ="S" Txt="1st program"}
+      BuildPgm1:  = {t_GameBuildPgm=!}
+      BuildArgs1: = {t_GameBuildArgs=!}
+      BuildCheck1:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="2nd program"}
+      BuildPgm2:  = {t_GameBuildPgm=!}
+      BuildArgs2: = {t_GameBuildArgs=!}
+      BuildCheck2:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="3rd program"}
+      BuildPgm3:  = {t_GameBuildPgm=!}
+      BuildArgs3: = {t_GameBuildArgs=!}
+      BuildCheck3:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="4th program"}
+      BuildPgm4:  = {t_GameBuildPgm=!}
+      BuildArgs4: = {t_GameBuildArgs=!}
+      BuildCheck4:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="5th program"}
+      BuildPgm5:  = {t_GameBuildPgm=!}
+      BuildArgs5: = {t_GameBuildArgs=!}
+      BuildCheck5:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="6th program"}
+      BuildPgm6:  = {t_GameBuildPgm=!}
+      BuildArgs6: = {t_GameBuildArgs=!}
+      BuildCheck6:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="7th program"}
+      BuildPgm7:  = {t_GameBuildPgm=!}
+      BuildArgs7: = {t_GameBuildArgs=!}
+      BuildCheck7:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="8th program"}
+      BuildPgm8:  = {t_GameBuildPgm=!}
+      BuildArgs8: = {t_GameBuildArgs=!}
+      BuildCheck8:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="9th program"}
+      BuildPgm9:  = {t_GameBuildPgm=!}
+      BuildArgs9: = {t_GameBuildArgs=!}
+      BuildCheck9:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt = ""}
+      MapCommentsPrefix: = {
+        Typ="E"
+        Txt=".MAP comments prefix"
+        Hint="Specify the character(s) that instruct the build-tools,"
+          $0D"which lines in the .MAP file, are end-of-line comments,"
+          $0D"and will be ignored."
+      }
     }
 
     GameHeretic2:form =
