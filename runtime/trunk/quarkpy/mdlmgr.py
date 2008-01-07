@@ -648,7 +648,8 @@ class ModelLayout(BaseLayout):
     def selchange(self):
         "This calls for what ever selection def you are using above."
         global treeviewselchanged
-
+        # To try and load the models textures into the Texture Browser to be displayed.
+        self.putskinsintexturebrowser()
         if self.explorer.sellist != []:
             fs = self.explorer.sellist[0]
         elif self.explorer.uniquesel is not None:
@@ -725,6 +726,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.56  2008/01/07 06:47:11  cdunde
+#Added Used Skin Textures for displaying in the Texture Browser.
+#But error if nothing is selected after applying skin needs to be fixed.
+#
 #Revision 1.55  2007/11/04 00:33:33  cdunde
 #To make all of the Linear Handle drag lines draw faster and some selection color changes.
 #
