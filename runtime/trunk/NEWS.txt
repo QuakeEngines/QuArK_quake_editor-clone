@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 5
 ============
 
+* [cdunde]: Added "newframe" to New files... toolbox for "Model" type for a new model to be made from.
+
 * [cdunde]: Added Used Skin Textures for displaying in the Texture Browser.
 
 * [DanielPharos]: Partially build in and enabled the online update system. Still needs a lot of work, but it's
