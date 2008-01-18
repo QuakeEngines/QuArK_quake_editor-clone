@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.381  2008/01/07 20:23:36  cdunde
+//To add HL2 setting to Default map output format dropdown list for that game only.
+//
 //Revision 1.380  2008/01/01 20:37:51  danielpharos
 //Partially build in and enabled the online update system. Still needs a lot of work, but it's downloading an index file and parsing it.
 //
@@ -8753,10 +8756,6 @@ QQRKSRC1
           Component:mc =
           {
             show = $01
-            Skeleton:bg =
-            {
-              type = $05
-            }
             Skins:sg =
             {
               type = $02
@@ -8768,6 +8767,14 @@ QQRKSRC1
             Frames:fg =
             {
               type = $01
+              newframe:mf =
+              {
+                Vertices = ''
+              }
+            }
+            Skeleton:bg =
+            {
+              type = $05
             }
           }
         }
