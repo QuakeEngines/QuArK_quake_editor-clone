@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.382  2008/01/18 05:22:33  cdunde
+//Added "newframe" to New files... toolbox for "Model" type for a new model to be made from.
+//
 //Revision 1.381  2008/01/07 20:23:36  cdunde
 //To add HL2 setting to Default map output format dropdown list for that game only.
 //
@@ -2375,7 +2378,9 @@ QQRKSRC1
         DefaultTextureOrigin = "e1u1/origin"
         DefaultTextureClip = "e1u1/clip"
 
-        TextureFormat = ".wal"
+    //    TextureFormat = ".wal"
+        TextureFormat = ".pcx"                  // primary texture fileextension, to save model textures properly.
+        TextureFileExtensions = ".pcx,.wal"     // possible texture fileextensions
         TextureWriteFormat = ".wal"
 
         BaseDir = "baseq2"
