@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2007/12/31 15:42:50  danielpharos
+Fix VMF entities missing most of their specifics on export.
+
 Revision 1.5  2007/12/16 23:46:13  danielpharos
 Fix duplicators not exporting in .map files properly
 
@@ -1885,6 +1888,10 @@ begin
      if CharModeJeu=mjSTVEF then
        Result:=CharModeJeu
      else if CharModeJeu=mjEF2 then
+       Result:=CharModeJeu
+     else if CharModeJeu=mjRTCW then
+       Result:=CharModeJeu
+     else if CharModeJeu=mjRTCWET then
        Result:=CharModeJeu;
     end;
   end;
