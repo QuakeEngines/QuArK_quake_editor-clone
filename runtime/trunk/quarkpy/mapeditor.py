@@ -78,6 +78,12 @@ class MapEditor(BaseEditor):
         # Creates the "Used Textures.txlist" to display in the Texture Browser for the map that is opened in the editor.
         tbx_list = quarkx.findtoolboxes("Texture Browser...");
         ToolBoxName, ToolBox = tbx_list[0]
+        # Removes the old Used Textures ToolBoxFolder so duplicates of it are not displayed.
+        for ToolBoxFolder in ToolBox.subitems:
+            if ToolBoxFolder.name == "Used Textures.txlist":
+                ToolBoxFolder.parent.removeitem(ToolBoxFolder)
+                break
+        # Creates the "Used Textures.txlist" to display in the Texture Browser.
         Folder = quarkx.newobj("Used Textures.txlist")
         Folder.flags = qutils.OF_TVSUBITEM
         UsedTexturesList = quarkx.texturesof([self.Root])
@@ -106,7 +112,7 @@ class MapEditor(BaseEditor):
    #     else:
    #         ToolBox.appenditem(Folder)
         ToolBox.appenditem(Folder)
-        quarkx.opentoolbox("", None)
+   #      quarkx.opentoolbox("", None)
 
     def FrozenDragObject(self, view, x, y, s, redcolor):
         #
@@ -402,6 +408,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.15  2007/12/28 23:22:41  cdunde
+#Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
+#
 #Revision 1.14  2007/12/21 20:39:23  cdunde
 #Added new Templates functions and Templates.
 #
