@@ -142,9 +142,17 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
             else:
                 extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + [FaceSelOptions] + [VertexSelOptions] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
+            def resetSkinview(menu, editor=editor, view=view):
+                texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
+                view.info["origin"] = quarkx.vect(view.clientarea[0]/2, view.clientarea[1]/2, 0)
+                view.info["scale"] = view.info["origin"].tuple[0] / (texWidth * .5)
+                view.info["center"] = view.screencenter = quarkx.vect(0,0,0)
+                setprojmode(view)
+
+            ResetSkinView = qmenu.item("&Reset Skin-view", resetSkinview, "|Reset Skin-view:\n\nIf the model skinning image becomes 'lost', goes out of the Skin-view, you can use this function to reset the view and bring the model back to its starting position.|intro.modeleditor.skinview.html#funcsnmenus")
             skinviewcommands = qmenu.popup("Vertex Commands", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).menu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
             skinviewoptions = qmenu.popup("Skin-view Options", mdlhandles.SkinHandle(origin, None, None, None, None, None, None).optionsmenu(editor, view), hint="clicked x,y,z pos %s"%str(editor.aligntogrid(origin)))
-            extra = [qmenu.sep] + [skinviewcommands, skinviewoptions]
+            extra = [qmenu.sep] + [ResetSkinView] + [qmenu.sep] + [skinviewcommands, skinviewoptions]
     return [Undo1] + extra
 
 
@@ -191,6 +199,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.24  2007/11/22 05:13:47  cdunde
+#Separated editors background image dialogs and setup to save all of their settings.
+#
 #Revision 1.23  2007/10/06 20:15:00  cdunde
 #Added Ruler Guides to Options menu for Model Editor.
 #
