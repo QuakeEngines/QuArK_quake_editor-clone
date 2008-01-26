@@ -143,9 +143,16 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 extra = extra + [qmenu.sep] + [vertexpop] + [Commands1] + [qmenu.sep] + [FaceSelOptions] + [VertexSelOptions] + [qmenu.sep] + TexModeMenu(editor, view) + [qmenu.sep, backbmp1]
         else:
             def resetSkinview(menu, editor=editor, view=view):
+                viewWidth, viewHeight = view.clientarea
                 texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
-                view.info["origin"] = quarkx.vect(view.clientarea[0]/2, view.clientarea[1]/2, 0)
-                view.info["scale"] = view.info["origin"].tuple[0] / (texWidth * .5)
+                if texWidth > texHeight:
+                    view.info["scale"] = viewWidth / texWidth
+                elif texWidth < texHeight:
+                    view.info["scale"] = viewHeight / texHeight
+                elif viewWidth > viewHeight:
+                    view.info["scale"] = viewHeight / texHeight
+                else:
+                    view.info["scale"] = viewWidth / texWidth
                 view.info["center"] = view.screencenter = quarkx.vect(0,0,0)
                 setprojmode(view)
 
@@ -199,6 +206,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.25  2008/01/25 20:58:03  cdunde
+#Setup function to reset Skin-view.
+#
 #Revision 1.24  2007/11/22 05:13:47  cdunde
 #Separated editors background image dialogs and setup to save all of their settings.
 #
