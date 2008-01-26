@@ -1680,6 +1680,9 @@ class BoneHandle(qhandles.GenericHandle):
 def buildskinvertices(editor, view, layout, component, skindrawobject):
     "builds a list of handles to display on the skinview"
     global SkinView1
+    from qbaseeditor import flagsmouse
+    if flagsmouse == 544 or flagsmouse == 552:
+        return
   ### begin code from maphandles def viewsinglebezier
     if skindrawobject is not None:
         view.viewmode = "tex" # Don't know why, but if model HAS skin, making this "wire" causes black lines on zooms.
@@ -1770,20 +1773,23 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
     n = quarkx.vect(1,1,1) 
     v = orthogonalvect(n, view)
     view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
- #   view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
-    view.info = {"type": "2D",
-                 "matrix": matrix_rot_z(pi2),
-                 "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
-                 "scale": oldscale, ###DECKER This method leaves the scale unchanged from the last zoom (which is what sets the "scale" factor).
-              #   "scale": viewscale, ###DECKER This method resets the texture size of a component to the size of the Skin-view
-                                      ### each time that component is re-selected, but not while any item within it is selected.
-                 "custom": singleskinzoom,
-                 "origin": origin,
-                 "noclick": None,
-                 "center": quarkx.vect(0,0,0),
-                 "viewname": "skinview",
-                 "mousemode": None
-                 }
+
+    # Line below to stop doautozoom.
+    if flagsmouse == 1056 or (flagsmouse == 16384 and view.info is None):
+     #   view.viewmode = "wire" # Don't know why, but making this "tex" causes it to mess up...bad!
+        view.info = {"type": "2D",
+                     "matrix": matrix_rot_z(pi2),
+                     "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
+                     "scale": oldscale, ###DECKER This method leaves the scale unchanged from the last zoom (which is what sets the "scale" factor).
+                  #   "scale": viewscale, ###DECKER This method resets the texture size of a component to the size of the Skin-view
+                                          ### each time that component is re-selected, but not while any item within it is selected.
+                     "custom": singleskinzoom,
+                     "origin": origin,
+                     "noclick": None,
+                     "center": quarkx.vect(0,0,0),
+                     "viewname": "skinview",
+                     "mousemode": None
+                     }
     SkinView1 = view
 
     if skindrawobject is None:
@@ -3219,6 +3225,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.122  2007/12/06 02:06:29  cdunde
+#Minor corrections.
+#
 #Revision 1.121  2007/12/05 04:45:57  cdunde
 #Added two new function methods to Subdivide selected faces into 3 and 4 new triangles each.
 #
