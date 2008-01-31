@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2007/09/23 21:04:31  danielpharos
+Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+
 Revision 1.46  2007/09/12 16:21:42  danielpharos
 Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
 
@@ -200,6 +203,7 @@ uses
   QkExplorer in 'prog\QkExplorer.pas',
   QkFileExplorer in 'prog\QkFileExplorer.pas',
   QkFileObjects in 'prog\QkFileObjects.pas' {QForm1},
+  QkFTX in 'prog\QkFTX.pas',
   QkForm in 'prog\QkForm.pas',
   QkFormCfg in 'prog\QkFormCfg.pas',
   QkFormVw in 'prog\QkFormVw.pas' {FQFormVw},

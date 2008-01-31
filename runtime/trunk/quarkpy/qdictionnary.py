@@ -278,6 +278,7 @@ Strings = {
     817: "Valve Map File (*.vmf)|*.vmf",
     818: "Steam FS (*.SteamFS)|*.SteamFS",
     819: "DDS image (*.dds)|*.dds",
+    820: "FTX image (*.ftx)|*.ftx",
 
     2368: "Skins",
     2369: "Frames",
@@ -614,6 +615,8 @@ Strings = {
     5223: "Internal error (%s) - this program is buggy !//Please report: %0:s",
     # 5224: "Cannot open file '%s' because it is already opened as file link",
     5225: "This file contains a link to the file '%s' which is already opened elsewhere. The link has been ignored (and deleted).",
+    5226: "FTX image",
+    5227: "Cannot save image as FTX file: it has a palette, which is not supported by FTX files. Please convert before saving.",
 
     5248: "Cancel",
     5249: "&Move here",
@@ -1027,6 +1030,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.112  2007/12/06 15:47:53  danielpharos
+#Fixed a wrong text.
+#
 #Revision 1.111  2007/11/19 00:08:39  danielpharos
 #Any supported picture can be used for a view background, and added two options: multiple, offset
 #
