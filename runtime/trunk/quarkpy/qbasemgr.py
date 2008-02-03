@@ -260,6 +260,8 @@ class BaseLayout:
         view.info = {"type": "3D", "viewname": "3Dwindow"}
         #view.info = {"type": "3D", "noclick": None, "viewname": "full3Dview"}
         view.viewmode = "tex"
+        if self.editor.MODE == 3:
+            view.showprogress=0
         view.viewtype = "window"
 
     ### Calling this function causes the 3D view mouse maneuvering to change,
@@ -607,6 +609,11 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.32  2007/10/11 09:58:34  cdunde
+#To keep the fillcolor correct for the editors 3D view after a
+#tree-view selection is made with the floating 3D view window open and
+#to stop numerous errors and dupe drawings when the floating 3D view window is closed.
+#
 #Revision 1.31  2007/07/28 23:11:58  cdunde
 #To open and close floating 3D window(s) in Model Editor and
 #try to keep all views 3D Options color settings correct.
