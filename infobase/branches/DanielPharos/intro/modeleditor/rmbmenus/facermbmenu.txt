@@ -1,0 +1,49 @@
+title: Face RMB menu
+author: cdunde
+
+<img border=1 align=right>facermbmenu1.png</img>
+
+<i>Empty Component </i>&nbsp;: This will create a new <g>Clean</g> Model component.
+To use this function you must select at least one face of another component and have the
+<a href="intro.modeleditor.toolpalettes.display.html">Linear Drag Handles</a> button active (clicked on).
+All Frames will be there but without any vertexes or triangle faces. Also the <g>Skins</g> and <g>Skeleton</g>
+sub-items will be empty as well for a fresh start. Skins or faces can then be moved or copied there from other
+components but do NOT change its name until you have at least one face (triangle) created or it will not appear
+on the <g>move\copy to</g> menus. Skin textures can also be selected from the
+<a href="intro.texturebrowser.overview.html#overview">Texture Browser</a> if you have those setup.
+
+<i>New Component </i>&nbsp;: This will create a new model component of currently selected Model Mesh faces only,
+including its Skins, Frames and Skeleton sub-items. The selected faces will also be removed from their current
+components group. Once created you can change the temporary name <g>new component</g> to something else by
+clicking on it.
+
+<img border=1 align=right>facermbmenu2.png</img>
+
+<i>Move Faces To </i>&nbsp;: This will move currently selected Model Mesh faces from one component to another
+(if NOT <a href="intro.modeleditor.rmbmenus.html#treeviewrmbmenus">Hidden</a>) by means of a menu
+(shown to the right here) that will appear listing all available components to choose from.
+If none others exist it will instruct you to create a <g>New Component</g> first, using the
+function above this one on the RMB menu.
+
+<i>Copy Faces To </i>&nbsp;: This will copy currently selected Model Mesh faces from one component to another
+(if NOT <a href="intro.modeleditor.rmbmenus.html#treeviewrmbmenus">Hidden</a>) by means of a menu
+(shown to the right here) that will appear listing all available components to choose from.
+If none others exist it will instruct you to create a <g>New Component</g> first, using the
+function above this one in the RMB menu.
+
+<i>Delete Faces </i>&nbsp;: This will delete currently selected Model Mesh faces from the currently
+selected component and any unused vertexes, by other faces (triangles), of those faces.
+
+<b><u>Special Notes:</u></b>
+
+Any new triangle(s) that are created will still need to be <b>Skinned</b> on the
+<a href="intro.modeleditor.model.html#mesh">Skin-view page</a> for proper viewing and completion of the
+triangle(s). Any triangles that are moved or copied to another component may not need to be <b>Skinned</b>
+if the new component is using the same skin as the component the triangles were moved or copied from.
+
+All of these functions actions will be specifically identified on the
+<a href="intro.modeleditor.menu.html#editmenu">Undo/Redo</a> dialog of the
+<a href="intro.modeleditor.menu.html#editmenu">Edit menu</a> and can easily be reversed.
+
+If all of the faces (triangles) are moved from one component to another, the original component
+becomes a <g>dead</g> component and can be deleted.

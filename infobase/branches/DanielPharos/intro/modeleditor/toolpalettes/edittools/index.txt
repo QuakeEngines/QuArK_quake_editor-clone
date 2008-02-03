@@ -1,0 +1,9 @@
+title: Editing Tools tool-palette
+desc: extrudeselectedfaces
+desc: extrudewithbulkheads
+desc: reversefacedirection
+desc: subdivide2
+desc: subdivide3
+desc: subdivide4
+
+<img border=1>edittools.png</img>

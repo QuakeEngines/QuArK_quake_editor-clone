@@ -24,14 +24,23 @@ a view when a zoom, pan or rotation in the view is being performed. In addition,
 <b>can</b> be done in that view when this option it active (checked).
 
 
-<I><u>Fill in Mesh</u></I>: and<br>
-<I><u>Fill in color</u></I>:<br>
-These two items work in conjunction with
-one another. When the <b>Fill in Mesh</b> item is checked it will give a solid color painting of the
-selected model component mesh. When it is inactive (unchecked) only the lines of the mesh will be displayed
-along with the models <b>skin texture</b> if the view is in <b>Texture</b> mode. The fill color can be
-changed for each particular view by clicking on the <b>Fill in color</b> button, which will open a color
-selection window, and the active color will be shown as the button color as well.
+<I><u>Mesh in Frames</u></I>: and<br>
+<I><u>Model mesh color</u></I>:<br>
+These two items work in conjunction with one another. When the <b>Mesh in Frames</b> item is checked
+it will draw the selected model component mesh when one of its animation frames is selected.
+When it is inactive (unchecked) none of these lines of the mesh will be displayed, only the models
+<b>skin texture</b> if the view is in <b>Texture</b> mode. The mesh color can be changed for each particular
+view by clicking on the <b>Fill in color</b> button, which will open a color selection window,
+and the active color will be shown as the button color as well.
+
+
+<I><u>Fill in Mesh</u></I>: and <I><u>Fill in color</u></I>:<br>
+These two items also work in conjunction with one another. When the <b>Fill in Mesh</b> item is checked
+it will give a solid color painting of the selected model component mesh. When it is inactive (unchecked)
+only the lines of the mesh will be displayed along with the models <b>skin texture</b> if the view is in
+<b>Texture</b> mode. The fill color can be changed for each particular view by clicking on the
+<b>Fill in color</b> button, which will open a color selection window, and the active color will be shown
+as the button color as well.
 </td></tr>
 </table>
 

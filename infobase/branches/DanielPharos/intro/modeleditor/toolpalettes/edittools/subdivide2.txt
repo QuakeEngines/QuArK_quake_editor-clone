@@ -1,0 +1,6 @@
+title: Subdivide 2
+author: cdunde
+
+<img border=1 align=right>subdivide2.png</img>
+If faces of a model component have been selected, those faces will be split, at the middle of the longest edge,
+into 2 new triangles when this button is clicked.

@@ -6,5 +6,6 @@ subdir: halflifeinfodecal
 subdir: argreplacer
 subdir: botwaypointer
 subdir: movevertex
+subdir: miteredge
 
 Hopefully here there will be a list of known plugins for QuArK, and their documentation / how-to-use-them.

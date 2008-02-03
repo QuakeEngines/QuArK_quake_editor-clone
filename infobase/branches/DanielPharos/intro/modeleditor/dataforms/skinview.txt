@@ -1,0 +1,67 @@
+title: Skin-view
+author: cdunde
+
+<img border=1 align=right>skinview.png</img>
+This is the view where the models <g>skinning</g> is done. More detail is covered in the
+<a href="intro.modeleditor.skinview.html">Skin-view page</a> section.
+
+
+<i><u>Triangles </u></i>: This give the number of triangles that make up the <g>skin mesh</g> or <g>Tris</g>
+Each triangle has tree <g>drag handles</g>, one at each of its points and that overlap other triangles <g>drag handles</g>.
+
+<i><u>Owned by </u></i>: This gives the name of the current component of the model that has been selected in the
+<g>Tree-view</g> of the model editor and is currently available for editing.
+
+<i><u>Skin </u></i>: This gives the name of the current component's <g>skin</g> of the model that has been selected in the
+<g>Tree-view</g> of the model editor and is currently being used for the model. A model can have a single <g>component</g>
+or multiple <g>components</g>. And each <g>component</g> can have a single <g>skin</g> or multiple <g>skins</g>
+that it can use.
+
+<i><u>Skin size </u></i>: This gives the actual size of the texture image displayed in <g>pixels</g> or sometimes known
+as <g>texels</g>.
+
+The icons above the texture from left to right:
+
+<table border=1 cellspacing=0 cellpadding=2>
+<tr>
+  <td valign=top align=center>
+    <i>Grid</i>
+  </td>
+  <td>
+    Changes and displays the Skin-view Grid, setting size, which is independent from the editor's.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>Zoom</i>
+  </td>
+  <td>
+    Zoom the skin texture-display. (You can also use the middle-mouse button to zoom
+    in/out with.)
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>Vertex drag mode</i>
+  </td>
+  <td>
+    When this button is deactivated a common vertex handle will move adjoining mesh faces,
+    when activated individual face vertexes can be moved.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>Remap Snapshot</i>
+  </td>
+  <td>
+    Pressing this icon, will reset the selected component's <g>skin mesh</g> using the angle of view
+    that is seen in the editor's 3D view when the button is clicked.
+  </td>
+</tr>
+</table>
+
+In the skin texture-view below the icons, there are a number of <g>vertex</g> handles,
+one for each point of each <g>skin mesh</g> triangle. These handles can be moved and
+manipulated a number of ways, see the <a href="intro.modeleditor.skinview.html">Skin-view page</a>
+section for more detail and available <g>RMB</g> menus.
+

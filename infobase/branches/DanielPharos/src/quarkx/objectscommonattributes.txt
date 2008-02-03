@@ -16,6 +16,13 @@ A dictionnary of all subitems with the format name:item. Modifying this dictionn
 </td></tr>
 
 <tr><td class="doccode">
+dictspec
+</td><td>
+A read-only dictionnary with all Specific/Arg pairs.<br>
+Note: known to cause memory leaks, see: <ref> src/bugs/leaks/dicts </ref>.
+</td></tr>
+
+<tr><td class="doccode">
 flags
 </td><td>
 OF_XXX flags. See qutils.py.
@@ -173,12 +180,6 @@ geticon()<br>
 geticon(selected)
 </td><td>
 Returns the icon used in tree views for this object. If selected is True, returns the selected version of the icon; otherwise, returns the unselected one. selected defaults to the current value of the object's attribute selected.
-</td></tr>
-
-<tr><td class="doccode">
-dictspec
-</td><td>
-A read-only dictionnary with all Specific/Arg pairs.
 </td></tr>
 
 </table>

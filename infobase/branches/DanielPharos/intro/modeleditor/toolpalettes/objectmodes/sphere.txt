@@ -1,0 +1,18 @@
+title: Sphere
+author: cdunde
+
+<img border=1 align=middle>objects3.png</img>
+<I><u>Quick sphere maker</u></I>:  After you click this button, you can draw spheres in the editor with the left
+mouse button and each sphere will be turned into an actual model object.
+
+Move the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make
+it smaller.<br>NOTE: Less than 3 faces will not draw anything.<br>
+Over 20 faces will 'freeze' QuArK but it will return.
+
+Because the Sphere object is a far more complicated item to compute, creating it will take longer then the
+other objects as the number of faces it is given increases. Although it can 'freeze' the program for a period
+of time for processing, it will return the object and become active again.
+
+Increasing the amount of its
+<a href="intro.mapeditor.toolpalettes.objectmodes.html#dialogboxes"><i>Object Distortion Dialog</i></a>
+will increase its height, making it more elongated.<br> Using a negative amount will make it wider or more oblong.

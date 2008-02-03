@@ -5,7 +5,7 @@ subdir: quake4
 subdir: rtcw
 subdir: rtcw-et
 subdir: stvef
-subdir: torgue
+subdir: torque
 author: Decker
 
 <img align=right>specificgames.png</img>

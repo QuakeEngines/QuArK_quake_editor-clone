@@ -9,7 +9,7 @@ in the 2D view that the cursor was in when the <g>RMB</g> was clicked.
 <img border=1 align=right valign=top>background1.png</img>
 
 <b>Background image file</b>: When the '<b>...</b>' File selection button is clicked a 'Background image
-file' window will open (shown further down) enabling you to easily browse and select the .bmp image file you
+file' window will open (shown further down) enabling you to easily browse and select the supported image file you
 wish to use.
 
 <b>Coordinates of the center</b>: The image will be centered at these coordinates in the 2D view that was
@@ -18,6 +18,10 @@ position the image to exactly where you need it and it will remain at that same 
 
 <b>Scale</b>: The size of the image can also be set to a proper scale that will fit your needs,
 1 is its full image size.
+
+<b>Center on picture center</b>: The center of the image will be used for its placement in the clicked view.
+
+<b>Copy picture</b>: This will cause the image to be <g>tiled</g>, repeated, over the entire clicked view area.
 
 <b>Poly No Fill</b>: As shown in the view shot to the right, a selected poly is normally filled solid with
 a predefined color (lower part shown), in this case blue. However, when working with a background image, this will

@@ -16,6 +16,16 @@ and select 'Commands' then 'Add Triangle'. This can be done from the editor's ma
 WARNING, if the vertex is part of an existing triangle it will ALSO remove that triangle as well.
 If this does happen and is an unwanted action, simply use the Undo function to reverse its removal.
 
+<i>Pick Base Vertex\Change Base Vertex </i>&nbsp;: This item performs two functions:<br>
+<g>1st</g> - This is used to pick, or remove, the <g>Base</g> vertex to align other vertexes to in one of
+the editor's views.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+It also works in conjunction with the <g>Clear Pick list</g> below it.<br>
+<g>2nd</g> - This is used to select another vertex as the <g>Base</g>
+vertex to align other vertexes to in one of the editor's views.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+It also works in conjunction with the <g>Clear Pick list</g> below it.
+
 <i>Pick Vertex </i>&nbsp;: This is used for picking 3 vertexes to create a triangle with. It also works in
 conjunction with the <b>Clear Pick list</b> below. You need 3 vertexes to make a triangle. Once all 3 have
 been 'picked' use the <b>Add Triangle</b> funciton on the
@@ -30,20 +40,40 @@ Once a vertex has been 'picked' it will be displayed in all views as a larger an
 then those not 'picked'. If a vertex that has been 'picked' is picked a second time it will be removed from the
 list and return to its normal appearance and another vertex can then be selected to take its place in the list.
 
+<i>Align mesh vertex </i>&nbsp;: Once a set of vertexes have been <g>Picked</g> in one of the editor views
+all of those vertexes will be moved to the <g>Base</g> (stationary) vertex (the first one selected) location
+and aligned with that <g>Base</g> vertex. It also works in conjunction with the <g>Clear Pick list</g> above it.
+
+<i>Align Vertex Options </i>&nbsp;: This menu gives different methods of aligning <g>Picked</g> vertexes to the
+<g>Base</g> vertex.
+<img border=1 align=right>vertexrmbmenu2.png</img><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<i><g>Align vertexes-method 1 </g></i>&nbsp;&nbsp;: This method will align, move, other selected vertexes
+to the <g>Base</g> vertex position<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+of <g>each</g> tree-view selected <g>frame</g>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<i><g>Align vertexes-method 2 </g></i>&nbsp;&nbsp;: This method will align, move, other selected vertexes
+to the <g>Base</g> vertex position<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+of the <g>1st</g> tree-view selected <g>frame</g>.
+
+<i>Merge Vertexes </i>&nbsp;: When two or more vertexes have been <g>Picked</g> in one of the editor views this function
+becomes active allowing the <g>picked</g> vertexes be moved to the <g>Base</g> (stationary) vertex
+(the first one selected) location and aligned with that <g>Base</g> vertex where they will then be merged into
+the one 'Base' vertex. Two vertexes of the same face (triangle) can not be selected.
+This function also works in conjunction with the 'Clear Pick list' above it.
 
 <i>Force to grid </i>&nbsp;: This will cause any vertex to 'snap' to the nearest location on the editor's
 grid for the view that the RMB click was made in.
-
-<i>Coordinates... </i>&nbsp;: Clicking on this menu item will open the coordinates <b>Enter position</b>
-dialog box which does two things, first it gives the view location of the vertex, and second you can enter
-a new set of coordinates to move the vertex that was under your cursor when the <g>RMB</g> click was made
-to relocate that vertex to an exact position on that views grid.
 
 <b><u>Special Notes:</u></b>
 
 Once a new triangle(s) has been created it still needs to be <b>Skinned</b> on the
 <a href="intro.modeleditor.model.html#mesh">Skin-view page</a> for proper viewing and completion of the
-triangle. At first, the new triangle(s) will not appear on the Skin-view, you will only see <b>ONE</b>
-new vertex located at the top left hand corner of the 'base' skin texture position. Click on the vertex
-and move it on the Skin-view. As you do you will see the next vertex of that triangle and so on until
-you have moved all of the new vertexes and triangles to their proper skinning location.
+triangle(s). At first, the new triangle(s) may appear at a distant position of the Skin-view,
+You can move the vertexes individually or do a <g>LMB</g> drag to select them, then using
+the Linear Movement Handle (which will appear automatically) relocate them all at once on the Skin-view.
+

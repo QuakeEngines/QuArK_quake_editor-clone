@@ -1,0 +1,78 @@
+title: Selection & Navigation Methods
+author: cdunde
+
+<i><b><u>Selection Methods </u></b></i>: Two different selection methods have been designed into the
+QuArK Model Editor for the <a href="intro.modeleditor.skinview.html">Skin-view page</a>. Also see the
+Model Editor's <a href="intro.modeleditor.overview.html">Overview</a> page
+<a href="intro.modeleditor.overview.html#selection">Selection & Navigation Methods</a> for the editor's particular methods.
+
+<i><g>LMB</g> Vertex Handle Drag</i> : This method is available when your cursor is directly over a model
+components <g>Skin</g> mesh <g>vertex</g> (point) <g>drag handle</g> and the cursor will change in appearance when it is.
+Holding down your <g>LMB</g> will allow you to <g>drag</g> that particular vertex to a new location in the view,
+changing the appearance of the model for that particular <g>component</g>. A specific <g>animation frame</g>
+<b>does not</b> need to be selected for this function to work.
+
+<i><g>LMB</g> Rectangle Selector</i> : This method is available when the cursor is <b>not</b> over a <g>vertex</g>.
+Holding down your <g>LMB</g> and moving your mouse will produce a <g>Red Rectangle</g> selector that you can
+drag across the Skin-view. This selector will allow you to make a multiple selection of a model components <g>Skin</g> mesh
+vertex points at one time. These vertexes can then be passed on to the
+<a href="intro.modeleditor.model.html#components">Editor views</a> or will be done so
+automatically if you have activated one of the options on the Skin-view
+<a href="intro.modeleditor.skinview.html#funcsnmenus">RMB menu</a>
+(which you can obtain by clicking your <g>RMB</g> in the Skin-view) or the main
+<a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>
+for <a href="intro.modeleditor.skinview.html#funcsnmenus">Skin-view Options</a>.
+As the Model Editor is developed, this selection method will be used to move and edit whole sections of the model's <g>Skin</g>
+mesh by use of its selected <g>vertexes</g>.
+To <g>de-select</g> any and all vertexes, simply do another small <g>Rectangle drag</g> in any unused area of the Skin-view.
+
+<i><g>LMB</g> & <g>RMB</g> Selector</i> : (not activated at this time, reserved for future use and functions.)
+
+<img border=1 align=right>selection1.png</img>
+<img border=1 align=right>selection2.png</img>
+<b><u>Skin-view's button section</u></b>
+
+<i><u>Skin-view Grid button </u></i>: (far left button) Because the Model Editor and the Skin-view work on different aspects of
+a model, they require their own distinct and independent <g>Grids</g>, which is the first button to the far left.
+Each have their own <g>grid menu</g> with pre-set amounts, but any amount can be entered by clicking on the <g>Other</g>
+item shown at the very bottom of the menu. In addition, for the Skin-view, there are two
+<a href="intro.modeleditor.skinview.html#funcsnmenus">RMB menu</a> items for the <g> Skin-view grid</g> (see below).
+
+<i><u>Skin-view Zoom button </u></i>: (2nd button) This allows you to zoom in and out from the skin with some pre-set factors
+as well as a setting for a 'custom' zoom amount. It only applies to the Skin-view and not to any other view
+of the Model Editor.
+
+<i><u>Vertex drag mode </u></i>: (3rd button) This is a special feature of the Skin-view. It allows you to choose to make
+either a <b>multiple drag</b> (the default setting) using a single drag handle, meaning all other handles in the same location will be
+dragged also automatically keeping the <g>skin mesh</g> together, or a <b>single drag</b> only dragging the
+handle on top which will pull the <g>skin mesh</g> apart for individual placement. This button also works
+in conjunction with the <g>RMB</g> menus that we will cover further on.
+
+<i><u>Remap Snapshot button </u></i>: (far right button) Pressing this icon, will reset the selected component's <g>skin mesh</g> using
+the angle of view that is seen in the editor's 3D view when the button is clicked. Doing it this way allows you to re-map any selected
+faces, of any component, at any angle or direction for complete control of that process. So if you originally skin from the side and the
+top faces are distorted, you can select those faces, rotate the editor's 3D view to look from the top and click this button to re-skin them.
+There is also an option on the Skin-view <g>RMB</g> menu, shown below, to turn off the 3D view and re-skin from the Skin-view 2D perspective instead.
+If the outcome does not go as planed, just use the <g>RMB</g> menu or editor's <a href="intro.modeleditor.menu.html#editmenu">undo function</a>
+to reverse the action.
+
+A couple of other issues about all of the selection methods described at the beginning:
+
+1) Once a selection is made the Skin-view <a href="intro.modeleditor.skinview.html#funcsnmenus">RMB menu, 'Vertex Commands'</a>
+will become active for its items use.
+
+2) How and what a selection will select is also linked to the
+<a href="intro.modeleditor.skinview.html#funcsnmenus">Vertex drag mode</a> button above the actual viewing area.
+Meaning, either single depth or full depth selection of the vertexes can be made depending on the mode that button
+is set to at the time. Once a selection has been made,
+the <a href="intro.modeleditor.skinview.html#funcsnmenus">Vertex drag mode</a> can be changed to work with your
+selection in various different ways. A little experimentation will assist you in learning these differences.
+
+<i><b><u>Navigation Methods </u></b></i>: The <a href="intro.modeleditor.skinview.html">Skin-view</a> navigates
+much like it does in the rest of the Model Editor,
+<a href="intro.modeleditor.model.html#components">2D views</a> and is covered in detail below.
+
+<i>Skin-view viewing area</i> : Using your <g>MMB</g> you can <g>Zoom</g> in and out for the 2D viewing area.
+Press and holding your <g>RMB</g> will allow you to <g>Scroll</g> or <g>Pan</g> in that same view.
+All other combinations are used as described above in the
+<a href="intro.modeleditor.skinview.html#selection">Selection Methods</a> section.
