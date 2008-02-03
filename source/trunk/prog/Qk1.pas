@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2007/12/19 12:38:32  danielpharos
+Made an option to set the amount of lines of text in the console.
+
 Revision 1.52  2007/12/13 12:32:36  danielpharos
 Change a procedure name to something much less confusing.
 
@@ -212,7 +215,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkGroup, StdCtrls, ExtCtrls, CommCtrl, QkExplorer, QkObjects,
   QkFileObjects, Menus, TB97, QkFileExplorer, ShellApi,
-  QkForm, ComCtrls, Buttons, DateUtils;
+  QkForm, ComCtrls, Buttons;
 
 const
   BlueHintPrefix = '?';
@@ -563,7 +566,6 @@ var
  C: TColor;
  Splash: TForm;
  Disclaimer: THandle;
- Setup: QObject;
 begin
  // This next line is done so that the G_ standard carries through for all of
  // the global variables.
@@ -573,7 +575,8 @@ begin
  DecimalSeparator:='.';
  g_Form1Handle:=Handle;
 
-  // Set-up the console
+ // Set-up the console
+ Log(LOG_VERBOSE, 'Setting up console...');
  InitConsole;
 
  // DanielPharos: This processes the commandline and prepares it for further use
@@ -599,45 +602,13 @@ begin
  PythonLoadMain;
 
  { DanielPharos: It's safer to do the update-check BEFORE loading Python,
-   but then then option in the Default will have to be removed, since it
+   but then then option in the Defaults will have to be removed, since it
    won't be loaded yet. Change this when the update-screen isn't a nag-screen
    anymore! (Store data in registry?) }
  //Check for updates...
  if g_CmdOptions.DoUpdate then
- begin
-   Setup:=SetupSubSet(ssGeneral, 'Update');
-   if Setup.Specifics.Values['UpdateCheck']<>'' then
-   begin
-     if g_CmdOptions.OnlineUpdate then
-     begin
-       if Setup.Specifics.Values['UpdateCheckOnline']<>'' then
-       begin
-         //Online update
-         if AutoUpdate=false then
-         begin
-           //Something went wrong, let's fall back to the offline 'update'
-           Log(LOG_WARNING, 'Unable to check for updates online! Using offline update routine.');
-           g_CmdOptions.OnlineUpdate:=false;
-         end;
-       end;
-     end
-     else
-       g_CmdOptions.OnlineUpdate:=false;
-     if not g_CmdOptions.OnlineUpdate then
-     begin
-       //Offline 'update'
-       if DaySpan(Now, QuArKCompileDate) >= QuArKDaysOld then
-       begin
-         Log(LOG_WARNING, 'Offline update: Old version of QuArK detected!');
-         if MessageBox(0, 'This version of QuArK is rather old. Do you want to open the QuArK website to check for updates?', 'QuArK', MB_YESNO) = IDYES then
-         begin
-           if ShellExecute(0, 'open', QuArKWebsite, nil, nil, SW_SHOWDEFAULT) <= 32 then
-             MessageBox(0, 'Unable to open website: Call to ShellExecute failed!' + #13#10#13#10 + 'Please manually go to: ' + QuArKWebsite, 'QuArK', MB_OK);
-         end;
-       end;
-     end;
-   end;
- end;
+   if SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheck']<>'' then
+     DoUpdate(g_CmdOptions.OnlineUpdate);
 
  if g_CmdOptions.DoSplash then
  begin
@@ -1711,7 +1682,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  CallMacro(s, 'shutdown');
  Py_Finalize;
  Application.UnHookMainWindow(WindowHook);
- end;
+end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
 var

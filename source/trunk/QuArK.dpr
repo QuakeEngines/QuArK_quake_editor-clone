@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2008/01/31 16:07:18  danielpharos
+Added FTX file loading and saving support (Heavy Metal: F.A.K.K. 2 textures).
+
 Revision 1.47  2007/09/23 21:04:31  danielpharos
 Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
 
@@ -167,7 +170,8 @@ uses
   qkskindrawobject in 'prog\model\qkskindrawobject.pas',
   QkSkinGroup in 'prog\model\QkSkinGroup.pas',
   About in 'prog\About.pas' {AboutBox},
-  AutoUpdater in 'prog\AutoUpdater.pas',
+  AutoUpdater in 'prog\AutoUpdater.pas' {AutoUpdater},
+  AutoUpdateInstaller in 'prog\AutoUpdateInstaller.pas' {AutoUpdateInstaller},
   Bezier in 'prog\Bezier.pas',
   CCode in 'prog\CCode.pas',
   Config in 'prog\Config.pas' {ConfigDlg},
@@ -180,6 +184,7 @@ uses
   Game in 'prog\Game.pas' {GameCfgDlg},
   Game2 in 'prog\Game2.pas' {AddOnsAddDlg},
   HelpPopup1 in 'prog\HelpPopup1.pas' {HelpPopup},
+  HTTP in 'prog\HTTP.pas',
   Keys in 'prog\Keys.pas' {KeyDlg},
   KeySel in 'prog\KeySel.pas' {KeySelDlg},
   Logging in 'prog\Logging.pas',

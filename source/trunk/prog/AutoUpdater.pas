@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2008/01/01 20:37:44  danielpharos
+Partially build in and enabled the online update system. Still needs a lot of work, but it's downloading an index file and parsing it.
+
 Revision 1.2  2007/11/21 18:19:50  danielpharos
 Fix a problem downloading files in the AutoUpdater, and disabled it and hidden it per default (since it's not yet functional).
 
@@ -35,7 +38,8 @@ unit AutoUpdater;
 
 interface
 
-uses Windows, Classes, Forms, StdCtrls, Controls, Graphics, CheckLst;
+uses Windows, ShellApi, Classes, Forms, StdCtrls, Controls, Graphics, CheckLst,
+  HTTP;
 
 type
   TAutoUpdater = class(TForm)
@@ -44,20 +48,13 @@ type
     OKBtn: TButton;
     CancelBtn: TButton;
     CheckListBox1: TCheckListBox;
+    Label2: TLabel;
     procedure CancelBtnClick(Sender: TObject);
     procedure OKBtnClick(Sender: TObject);
     procedure CheckListBox1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   end;
 
-function AutoUpdate: Boolean;
-
- {------------------------}
-
-implementation
-
-uses WinInet, StrUtils, SysUtils, QkObjects, Setup;
-type
   TUpdatePackage = record
     Name: String;
     Date: String; //@ Make this an integer: Days after ... Like offline update!
@@ -66,6 +63,8 @@ type
     Priority: Integer;
     QUPfilename: String;
     Dependencies: String;
+    Install: Boolean;
+    InstallSuccessful: Boolean;
   end;
 
 var
@@ -80,15 +79,26 @@ const
   upBeta      = 3;
   upMax       = 3; //The higher priority number possible
 
+procedure DoUpdate(AllowOnline: Boolean);
+
+ {------------------------}
+
+implementation
+
+uses StrUtils, SysUtils, DateUtils, QkObjects, Setup, Logging,
+  AutoUpdateInstaller;
+
 {$R *.DFM}
 
  {------------------------}
 
-function GetLine(IndexFile: PChar; IndexFileSize: Cardinal; var CurrentIndex: Cardinal; var OutputLine: String) : Boolean;
+function GetLine(const IndexFile: String; var CurrentIndex: Cardinal; var OutputLine: String) : Boolean;
 var
+  IndexFileSize: Cardinal;
   Dest: PChar;
 begin
-  Dest:=IndexFile+CurrentIndex;
+  IndexFileSize:=Length(IndexFile);
+  Dest:=PChar(IndexFile)+CurrentIndex;
   OutputLine:='';
   if (CurrentIndex>=IndexFileSize) then
   begin
@@ -117,18 +127,18 @@ begin
   Result:=true;
 end;
 
-function ParseIndexFile(IndexFile: PChar; IndexFileSize: Cardinal) : Boolean;
+function ParseIndexFile(const IndexFile: String) : Boolean;
 var
   Dest, OldDest: PChar;
   ParseLine: String;
   ParsePos: Cardinal;
   I: Integer;
 begin
-  Dest:=IndexFile;
+  Dest:=PChar(IndexFile);
   OldDest:=Dest;
   ParsePos:=0;
 
-  if GetLine(IndexFile, IndexFileSize, ParsePos, ParseLine) = false then
+  if GetLine(IndexFile, ParsePos, ParseLine) = false then
   begin
     MessageBox(0, PChar('Unable to parse header online update file. Online update failed.'), PChar('QuArK'), MB_OK);
     Result:=false;
@@ -142,7 +152,7 @@ begin
     Exit;
   end;
 
-  if GetLine(IndexFile, IndexFileSize, ParsePos, ParseLine) = false then
+  if GetLine(IndexFile, ParsePos, ParseLine) = false then
   begin
     MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
     Result:=false;
@@ -170,7 +180,7 @@ begin
     SetLength(UpdatePackages, UpdatePackagesNR);
     for I:=0 to UpdatePackagesNR-1 do
     begin
-      if GetLine(IndexFile, IndexFileSize, ParsePos, ParseLine) = false then
+      if GetLine(IndexFile, ParsePos, ParseLine) = false then
       begin
         MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
         Result:=false;
@@ -178,7 +188,7 @@ begin
       end;
       UpdatePackages[I].Name:=ParseLine;
 
-      if GetLine(IndexFile, IndexFileSize, ParsePos, ParseLine) = false then
+      if GetLine(IndexFile, ParsePos, ParseLine) = false then
       begin
         MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
         Result:=false;
@@ -186,7 +196,7 @@ begin
       end;
       UpdatePackages[I].Date:=ParseLine;
 
-      if GetLine(IndexFile, IndexFileSize, ParsePos, ParseLine) = false then
+      if GetLine(IndexFile, ParsePos, ParseLine) = false then
       begin
         MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
         Result:=false;
@@ -194,7 +204,7 @@ begin
       end;
       UpdatePackages[I].Description:=ParseLine;
 
-      if GetLine(IndexFile, IndexFileSize, ParsePos, ParseLine) = false then
+      if GetLine(IndexFile, ParsePos, ParseLine) = false then
       begin
         MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
         Result:=false;
@@ -202,7 +212,7 @@ begin
       end;
       UpdatePackages[I].Version:=ParseLine;
 
-      if GetLine(IndexFile, IndexFileSize, ParsePos, ParseLine) = false then
+      if GetLine(IndexFile, ParsePos, ParseLine) = false then
       begin
         MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
         Result:=false;
@@ -221,7 +231,7 @@ begin
         Exit;
       end;
 
-      if GetLine(IndexFile, IndexFileSize, ParsePos, ParseLine) = false then
+      if GetLine(IndexFile, ParsePos, ParseLine) = false then
       begin
         MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
         Result:=false;
@@ -229,7 +239,7 @@ begin
       end;
       UpdatePackages[I].QUPfilename:=ParseLine;
 
-      if GetLine(IndexFile, IndexFileSize, ParsePos, ParseLine) = false then
+      if GetLine(IndexFile, ParsePos, ParseLine) = false then
       begin
         MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
         Result:=false;
@@ -246,209 +256,123 @@ begin
   Result:=true;
 end;
 
-function AutoUpdate: Boolean;
+function AutoUpdateOnline: Boolean;
 var
-  InetHandle, InetConnection, InetResource: HINTERNET;
-  StatusValue: Integer;
-  StatusBuffer: PChar;
-  cStatusBufferLength, StatusBufferLength: DWORD;
-  HeaderIndex: DWORD;
-  ResourceBuffer, Dest: PChar;
-  ResourceSize: Cardinal;
-  Buffer: PChar;
-  cBufferLength, BufferLength, ReadBufferLength: DWORD;
+  UpdateConnection: THTTPConnection;
+  IndexFile: string;
   Setup: QObject;
   UpdateWindow: TAutoUpdater;
   I: Integer;
-
-  function GetIntInfo(Flag: DWORD; Default: Integer = 0): Integer;
-  begin
-    cStatusBufferLength:=256;
-    StatusBufferLength:=cStatusBufferLength;
-    GetMem(StatusBuffer, StatusBufferLength);
-    HeaderIndex:=0;
-
-    if HttpQueryInfo(InetResource, Flag, StatusBuffer, StatusBufferLength, HeaderIndex)=false then
-      raise exception.create('HttpQueryInfo failed!');
-
-    try
-      Result:=StrToInt(LeftStr(StatusBuffer, StatusBufferLength));
-    except
-      Result:=Default;
-    end;
-
-    FreeMem(StatusBuffer);
-  end;
-
 begin
-  Result:=true;
-  
-  InetHandle:=InternetOpen(PChar('QuArK'), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
-  if InetHandle=nil then
-  begin
-    MessageBox(0, PChar('Unable to open internet connection. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
+  Result:=false;
+
+  UpdateConnection:=THTTPConnection.Create;
   try
-
-  InetConnection:=InternetConnect(InetHandle, PChar(QuArKUpdateSite), INTERNET_DEFAULT_HTTP_PORT, nil, nil, INTERNET_SERVICE_HTTP, 0, 0);
-  if InetConnection=nil then
-  begin
-    MessageBox(0, PChar('Unable to open internet connection. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-  try
-
-  //We might need to set this as accepted type: 'binary/octet-stream'
-  InetResource:=HttpOpenRequest(InetConnection, PChar('GET'), PChar(QuArKUpdateFile), nil, nil, nil, INTERNET_FLAG_RELOAD + INTERNET_FLAG_NO_CACHE_WRITE, 0);
-  if InetResource=nil then
-  begin
-    MessageBox(0, PChar('Can not find online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-  try
-
-  if HttpSendRequest(InetResource, nil, 0, nil, 0)=false then
-  begin
-    MessageBox(0, PChar('Can not find online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-
-  try
-    StatusValue:=GetIntInfo(HTTP_QUERY_STATUS_CODE, 200);
-  except
-    MessageBox(0, PChar('Can not find online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-
-  if StatusValue<>200 then
-  begin
-    //@Proces StatusValue!
-    MessageBox(0, PChar('Can not find online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-
-  //Retrieve the index-filesize...
-  try
-    ResourceSize:=GetIntInfo(HTTP_QUERY_CONTENT_LENGTH, 0);
-  except
-    MessageBox(0, PChar('Can not retrieve size of online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-
-  if ResourceSize=0 then
-  begin
-    //@
-    Result:=false;
-    Exit;
-  end;
-
-  //We can use this to start reading with an offset, if ever needed...
-  //InternetSetFilePointer
-
-  GetMem(ResourceBuffer, ResourceSize);
-  try
-    Dest:=ResourceBuffer;
-
-    cBufferLength:=65536;
-    BufferLength:=cBufferLength;
-    if Int(BufferLength)>ResourceSize then
-      BufferLength:=ResourceSize;
-    GetMem(Buffer, BufferLength);
-    try
-      repeat
-        if InternetReadFile(InetResource, Buffer, BufferLength, ReadBufferLength)=false then
-        begin
-          MessageBox(0, PChar('Can not download online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-          Result:=false;
-          Exit;
-        end;
-        if ReadBufferLength>0 then
-        begin
-          CopyMemory(Dest, Buffer, ReadBufferLength);
-          Inc(Dest, ReadBufferLength);
-        end;
-      until ReadBufferLength=0;
-    finally
-      FreeMem(Buffer);
-    end;
-
-    if ParseIndexFile(ResourceBuffer, ResourceSize) = false then
+    if UpdateConnection.GoOnline = false then
     begin
       //@
-      Result:=false;
       Exit;
     end;
-  finally
-    FreeMem(ResourceBuffer);
-  end;
 
-  //@
-  Setup:=SetupSubSet(ssGeneral, 'Update');
-  if Setup.Specifics.Values['AutomaticInstall']='' then
-  begin
-    UpdateWindow:=TAutoUpdater.Create(nil);
-    try
-      for I:=0 to UpdatePackagesNR-1 do
-        with UpdateWindow.CheckListBox1 do
-        begin
-          AddItem(UpdatePackages[I].Name, nil);
-          case UpdatePackages[I].Priority of
-          upCritical:  Checked[I]:=true;
-          upImportant: Checked[I]:=true;
-          upOptional:  Checked[I]:=false;
-          upBeta:      Checked[I]:=false;
-          else
-          begin
-            //Shouldn't happen!
-            //@
-            Checked[I]:=false;
-          end;
-          end;
-        end;
-      UpdateWindow.ShowModal;
+    if UpdateConnection.ConnectTo(QuArKUpdateSite) = false then
+    begin
       //@
-    finally
-      UpdateWindow.Free;
+      Exit;
+    end;
+
+    if UpdateConnection.GetFile(QuArKUpdateFile, IndexFile) = false then
+    begin
+      //@
+      Exit;
+    end;
+
+    if ParseIndexFile(IndexFile) = false then
+    begin
+      //@
+      Exit;
+    end;
+
+    //@
+    Setup:=SetupSubSet(ssGeneral, 'Update');
+    if Setup.Specifics.Values['AutomaticInstall']='' then
+    begin
+      UpdateWindow:=TAutoUpdater.Create(nil);
+      try
+        for I:=0 to UpdatePackagesNR-1 do
+          with UpdateWindow.CheckListBox1 do
+          begin
+            AddItem(UpdatePackages[I].Name, nil);
+            case UpdatePackages[I].Priority of
+            upCritical:  Checked[I]:=true;
+            upImportant: Checked[I]:=true;
+            upOptional:  Checked[I]:=false;
+            upBeta:      Checked[I]:=false;
+            else
+            begin
+              //Shouldn't happen!
+              //@
+              Checked[I]:=false;
+            end;
+            end;
+          end;
+        UpdateWindow.ShowModal;
+        //@
+      finally
+        UpdateWindow.Free;
+      end;
+    end
+    else
+      if DoInstall = false then
+        Exit;
+        
+      //@ Automatically install default checked updates, ask for others!!!
+
+    UpdateConnection.GoOffline;
+  finally
+    UpdateConnection.Free;
+  end;
+  Result:=true;
+end;
+
+procedure DoUpdate(AllowOnline: Boolean);
+var
+  DoOfflineUpdate: Boolean;
+begin
+  if AllowOnline then
+  begin
+    if SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheckOnline']<>'' then
+    begin
+      //Online update
+      DoOfflineUpdate:=False;
+      if AutoUpdateOnline=false then
+      begin
+        //Something went wrong, let's fall back to the offline 'update'
+        Log(LOG_WARNING, 'Unable to check for updates online! Using offline update routine.');
+        DoOfflineUpdate:=True;
+      end;
+    end
+    else
+      DoOfflineUpdate:=True;
+  end
+  else
+    DoOfflineUpdate:=True;
+
+  if DoOfflineUpdate then
+  begin
+    //Offline 'update'
+    if DaySpan(Now, QuArKCompileDate) >= QuArKDaysOld then
+    begin
+      Log(LOG_WARNING, 'Offline update: Old version of QuArK detected!');
+      if MessageBox(0, 'This version of QuArK is rather old. Do you want to open the QuArK website to check for updates?', 'QuArK', MB_YESNO) = IDYES then
+      begin
+        if ShellExecute(0, 'open', QuArKWebsite, nil, nil, SW_SHOWDEFAULT) <= 32 then
+          MessageBox(0, 'Unable to open website: Call to ShellExecute failed!' + #13#10#13#10 + 'Please manually go to: ' + QuArKWebsite, 'QuArK', MB_OK);
+      end;
     end;
   end;
-
-  //@
-
-  finally
-  if InternetCloseHandle(InetResource)=false then
-  begin
-    //This is not really a critical error, so let's ignore it...
-    {Result:=true;
-    Exit;}
-  end;
-  end;
-
-  finally
-  if InternetCloseHandle(InetConnection)=false then
-  begin
-    //This is not really a critical error, so let's ignore it...
-    {Result:=true;
-    Exit;}
-  end;
-  end;
-
-  finally
-  if InternetCloseHandle(InetHandle)=false then
-  begin
-    //This is not really a critical error, so let's ignore it...
-    {Result:=true;
-    Exit;}
-  end;
-  end;
 end;
+
+ {------------------------}
 
 procedure TAutoUpdater.CancelBtnClick(Sender: TObject);
 begin
@@ -456,8 +380,24 @@ begin
 end;
 
 procedure TAutoUpdater.OKBtnClick(Sender: TObject);
+var
+  I: Integer;
+  PackageSelected: Boolean;
 begin
-  //@
+  PackageSelected:=False;
+  for I:=0 to CheckListBox1.Count-1 do
+  begin
+    UpdatePackages[I].Install:=CheckListBox1.Checked[I];
+    if CheckListBox1.Checked[I] then
+      PackageSelected:=true;
+  end;
+  if not PackageSelected then
+  begin
+    MessageBox(0, PChar('No packages selected. Please first select packages to install, or click "Cancel".'), PChar('QuArK'), MB_OK);
+    Exit;
+  end;
+  Close;
+  DoInstall;
 end;
 
 procedure TAutoUpdater.CheckListBox1Click(Sender: TObject);

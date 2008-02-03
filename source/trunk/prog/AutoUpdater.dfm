@@ -17,6 +17,13 @@ object AutoUpdater: TAutoUpdater
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Label2: TLabel
+    Left = 24
+    Top = 16
+    Width = 98
+    Height = 13
+    Caption = 'Update found@@@'
+  end
   object GroupBox1: TGroupBox
     Left = 256
     Top = 48
