@@ -22,12 +22,302 @@ QQRKSRC1
 
 // Main configuration file for QuArK.
 
-// Please see file TECHINFO.TXT for more information
-// about this file format.
+// Please see infobase/help for more information about this file format.
 
 //$Header$
 
 //$Log$
+//Revision 1.383  2008/01/19 00:24:52  cdunde
+//Changed Quake 2 "TextureFormat" to save .md2 model skin textures as .pcx proper format.
+//
+//Revision 1.382  2008/01/18 05:22:33  cdunde
+//Added "newframe" to New files... toolbox for "Model" type for a new model to be made from.
+//
+//Revision 1.381  2008/01/07 20:23:36  cdunde
+//To add HL2 setting to Default map output format dropdown list for that game only.
+//
+//Revision 1.380  2008/01/01 20:37:51  danielpharos
+//Partially build in and enabled the online update system. Still needs a lot of work, but it's downloading an index file and parsing it.
+//
+//Revision 1.379  2007/12/26 06:01:45  cdunde
+//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
+//
+//Revision 1.378  2007/12/21 20:39:23  cdunde
+//Added new Templates functions and Templates.
+//
+//Revision 1.377  2007/12/20 23:26:59  danielpharos
+//Fix a small default value mistake in HL2
+//
+//Revision 1.376  2007/12/19 13:56:25  danielpharos
+//Some changes to process-detection: Should work on Windows NT4 now too, and made the Steam executable filename configurable (but hidden).
+//
+//Revision 1.375  2007/12/19 12:38:46  danielpharos
+//Made an option to set the amount of lines of text in the console.
+//
+//Revision 1.374  2007/12/09 23:36:36  danielpharos
+//Fixed a typo.
+//
+//Revision 1.373  2007/12/06 23:01:20  danielpharos
+//Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+//
+//Revision 1.372  2007/12/02 06:47:09  cdunde
+//Setup linear center handle selected vertexes edge extrusion function.
+//
+//Revision 1.371  2007/11/22 05:13:47  cdunde
+//Separated editors background image dialogs and setup to save all of their settings.
+//
+//Revision 1.370  2007/11/21 22:12:56  danielpharos
+//Another bunch of hugh image fixes: everything should work again!
+//
+//Revision 1.369  2007/11/21 18:19:41  danielpharos
+//Fix a problem downloading files in the AutoUpdater, and disabled it and hidden it per default (since it's not yet functional).
+//
+//Revision 1.368  2007/11/21 16:07:19  danielpharos
+//Another bunch of hugh image fixes: everything should work again!
+//
+//Revision 1.367  2007/11/21 00:06:12  danielpharos
+//BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
+//
+//Revision 1.366  2007/10/30 20:20:04  danielpharos
+//Fix a typo
+//
+//Revision 1.365  2007/10/24 14:55:50  cdunde
+//Reset a toolbar location.
+//
+//Revision 1.364  2007/10/18 23:53:43  cdunde
+//To setup Custom Animation FPS Dialog, remove possibility of using 0, causing a crash and Defaults.
+//
+//Revision 1.363  2007/10/18 02:31:53  cdunde
+//Setup the Model Editor Animation system, functions and toolbar.
+//
+//Revision 1.362  2007/10/05 20:47:49  cdunde
+//Creation and setup of the Quick Object Makers for the Model Editor.
+//
+//Revision 1.361  2007/09/24 00:16:07  danielpharos
+//Made MaxRecentFiles a configurable option.
+//
+//Revision 1.360  2007/09/18 19:52:07  cdunde
+//Cleaned up some of the Defaults.qrk item alignment and
+//changed a color name from GrayImage to DragImage for clarity.
+//Fixed Rectangle Selector from redrawing all views handles if nothing was selected.
+//
+//Revision 1.359  2007/09/16 02:20:39  cdunde
+//Setup Skin-view with its own grid button and scale, from the Model Editor's,
+//and color setting for the grid dots to be drawn in it.
+//Also Skin-view RMB menu additions of "Grid visible" and Grid active".
+//
+//Revision 1.358  2007/09/13 14:35:57  danielpharos
+//The name of a pakfile containing a texture can now be specified per texture
+//
+//Revision 1.357  2007/09/12 15:41:00  danielpharos
+//Moved a few sections around to match order.
+//
+//Revision 1.356  2007/09/12 15:35:28  danielpharos
+//Moved update settings to seperate config section and added beginnings of online update check.
+//
+//Revision 1.355  2007/09/12 15:23:09  danielpharos
+//Added option to stop texturename checks
+//
+//Revision 1.354  2007/09/01 20:32:06  cdunde
+//Setup Model Editor views vertex "Pick and Move" functions with two different movement methods.
+//
+//Revision 1.353  2007/08/26 19:56:21  danielpharos
+//Added extra options so HL2 mode can be used for CSS again
+//
+//Revision 1.352  2007/08/22 20:09:49  cdunde
+//Update of command line variables not listed.
+//
+//Revision 1.351  2007/08/21 23:43:39  danielpharos
+//Another fix to the HL2 building process.
+//
+//Revision 1.350  2007/08/20 19:58:25  cdunde
+//Added Linear Handle to the Model Editor's Skin-view page
+//and setup color selection and drag options for it and other fixes.
+//
+//Revision 1.349  2007/08/16 14:28:40  danielpharos
+//Fixed (another) typo :|
+//
+//Revision 1.348  2007/08/16 12:43:19  danielpharos
+//Change the name of HL2 back for backwards compatibility reasons.
+//
+//Revision 1.347  2007/08/15 22:35:48  danielpharos
+//Change the name of HL2 back for backwards compatibility reasons.
+//
+//Revision 1.346  2007/08/15 15:43:55  danielpharos
+//Fixed two default-settings typo's in the Steam config concerning the cache.
+//
+//Revision 1.345  2007/08/14 16:33:33  danielpharos
+//HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+//
+//Revision 1.344  2007/08/10 12:24:29  danielpharos
+//Added a BaseMenu item. Now games from the same series can be grouped together in the Games-menu!
+//
+//Revision 1.343  2007/08/10 12:16:15  danielpharos
+//Updated the update-check. You can disable it in the Config, and it now asks if you want to go to the website.
+//
+//Revision 1.342  2007/08/01 06:09:23  cdunde
+//Setup variable setting for Model Editor 'Linear Handle (size) Setting' and
+//'Rotation Speed' using the 'cfg' button on the movement toolbar.
+//
+//Revision 1.341  2007/07/28 23:12:51  cdunde
+//Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
+//to use for editing movement of model faces, vertexes and bones (in the future).
+//
+//Revision 1.340  2007/07/24 15:58:24  danielpharos
+//DevIL seems to have trouble with 8-bit PNG loading. Switching to FreeImage instead.
+//
+//Revision 1.339  2007/07/02 22:49:44  cdunde
+//To change the old mdleditor "picked" list name to "ModelVertexSelList"
+//and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
+//Also start of function to pass vertex selection from the Skin-view to the Editor.
+//
+//Revision 1.338  2007/06/20 22:04:09  cdunde
+//Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
+//and start of face selection capabilities in the Skin-view for future functions there.
+//
+//Revision 1.337  2007/06/19 06:16:06  cdunde
+//Added a model axis indicator with direction letters for X, Y and Z with color selection ability.
+//Added model mesh face selection using RMB and LMB together along with various options
+//for selected face outlining, color selections and face color filltris but this will not fill the triangles
+//correctly until needed corrections are made to either the QkComponent.pas or the PyMath.pas
+//file (for the TCoordinates.Polyline95f procedure).
+//Also setup passing selected faces from the editors views to the Skin-view on Options menu.
+//
+//Revision 1.336  2007/06/13 11:57:34  danielpharos
+//Added FreeImage as an alternative for DevIL. PNG and JPEG file handling now also uses these two libraries. Set-up a new section in the Configuration for all of this.
+//
+//Revision 1.335  2007/06/07 04:23:20  cdunde
+//To setup selected model mesh face colors, remove unneeded globals
+//and correct code for model colors.
+//
+//Revision 1.334  2007/06/04 12:27:01  cdunde
+//To update some default settings.
+//
+//Revision 1.333  2007/05/29 13:05:03  danielpharos
+//Added some quality settings for DDS file saving.
+//
+//Revision 1.332  2007/05/15 15:00:58  danielpharos
+//Added a vertical mirror/flip options for Glide, and changed the caption of the 3Dfx name.
+//
+//Revision 1.331  2007/05/06 21:12:52  danielpharos
+//Fixed the name of the scripts folder for EF2.
+//DecimalPlaces now also applies to beziers.
+//
+//Revision 1.330  2007/05/05 22:33:31  cdunde
+//Added support for EF2 and its .dds texture loading to the Texture Browser.
+//
+//Revision 1.329  2007/04/27 17:27:42  cdunde
+//To setup Skin-view RMB menu functions and possable future MdlQuickKeys.
+//Added new functions for aligning, single and multi selections, Skin-view vertexes.
+//To establish the Model Editors MdlQuickKeys for future use.
+//
+//Revision 1.328  2007/04/16 11:35:43  danielpharos
+//Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+//
+//Revision 1.327  2007/04/12 03:50:22  cdunde
+//Added new selector button icons image set for the Skin-view, selection for mesh or vertex drag
+//and advanced Skin-view vertex handle positioning and coordinates output data to hint box.
+//Also activated the 'Hints for handles' function for the Skin-view.
+//
+//Revision 1.326  2007/04/09 21:44:14  danielpharos
+//Started work on Doom 3 map version 2 and Quake 4 map version 3.
+//
+//Revision 1.325  2007/04/04 21:34:17  cdunde
+//Completed the initial setup of the Model Editors Multi-fillmesh and color selection function.
+//
+//Revision 1.324  2007/04/04 21:06:19  danielpharos
+//Changed a few descriptions.
+//
+//Revision 1.323  2007/04/03 13:08:46  danielpharos
+//Added a back buffer format selection option.
+//
+//Revision 1.322  2007/04/02 22:21:53  danielpharos
+//Changed the hotkey of the rebuild 3D views option to F2.
+//
+//Revision 1.321  2007/03/31 14:32:42  danielpharos
+//Should fix the Screen Center behaviour
+//
+//Revision 1.320  2007/03/30 03:57:25  cdunde
+//Changed Model Editor's FillMesh function to individual view settings on Views Options Dialog.
+//
+//Revision 1.319  2007/03/29 21:02:00  danielpharos
+//Made a Stencil Buffer Bits selection option
+//
+//Revision 1.318  2007/03/27 22:28:43  danielpharos
+//Fixed a stupid bug with some new options. CloseOnSetup is now enabled by default too.
+//
+//Revision 1.317  2007/03/27 15:48:58  danielpharos
+//Re-added the ability to open multiple floating 3D windows! This time there's an option to toggle it on and off in the options.
+//
+//Revision 1.316  2007/03/22 19:21:40  cdunde
+//To add skin texture size to the Skin-view page top section.
+//
+//Revision 1.315  2007/03/18 22:47:32  danielpharos
+//Changed the file header comments a bit.
+//
+//Revision 1.314  2007/03/18 22:25:11  danielpharos
+//Added a 'new texture' button to the toolbar for VTF textures. Also fixed a few descriptions.
+//
+//Revision 1.313  2007/03/15 22:17:07  danielpharos
+//Added an option to set the number of game files loaded, and made VMT files the default for HL2.
+//
+//Revision 1.312  2007/03/11 10:59:26  danielpharos
+//Added the word 'Direct3D' to DirectX, so more people might recognize what it is.
+//
+//Revision 1.311  2007/03/01 17:34:11  danielpharos
+//Changed the default gamma, and did a bit of formatting to a few hints in the OpenGL section.
+//
+//Revision 1.310  2007/02/28 08:51:16  danielpharos
+//Forgot to add the default settings for png images.
+//
+//Revision 1.309  2007/02/27 22:42:05  danielpharos
+//Changed a few words here and there.
+//
+//Revision 1.308  2007/02/27 21:44:50  danielpharos
+//Updated a few hints in the OpenGL page, and changed the name of the GLLists item to its actual name, Display Lists.
+//
+//Revision 1.307  2007/02/20 14:59:26  danielpharos
+//Added missing HL2 texture formats. Also moved them to a separate location, to prevent people thinking they need to change them.
+//
+//Revision 1.306  2007/02/07 14:09:06  danielpharos
+//Fix a lot of syntax typo's
+//
+//Revision 1.305  2007/02/02 21:04:23  danielpharos
+//Change the term 'Software lighting' to a less confusing term, namely 'Basic lighting'
+//
+//Revision 1.304  2007/02/02 00:51:18  danielpharos
+//The tier0 and vstdlib dll files for HL2 can now be pointed to using the configuration, so you don't need to copy them to the local QuArK directory anymore!
+//
+//Revision 1.303  2007/01/31 15:11:01  danielpharos
+//HUGH changes: OpenGL lighting, OpenGL transparency, OpenGL culling, OpenGL speedups, and several smaller changes
+//
+//Revision 1.302  2007/01/30 06:43:20  cdunde
+//Added more options to the Model Editor View Modes dialog.
+//
+//Revision 1.301  2007/01/21 19:40:00  cdunde
+//To add new Model Editor Views Options button and functions
+//and changed file name from mdllocking.py for future items.
+//
+//Revision 1.300  2006/12/26 22:49:38  danielpharos
+//Splitted the Ed3DFX file into two separate renderers: Software and Glide
+//Also renamed all the 3DFX-stuff to Glide (3DFX is the name of the company behind Glide)
+//
+//Revision 1.299  2006/12/21 21:56:45  cdunde
+//Changed Half-Life2 files to work with QuArK Beta using vtf files instead of vmt files.
+//
+//Revision 1.298  2006/12/18 05:38:14  cdunde
+//Added color setting options for various Model Editor mesh and drag lines.
+//
+//Revision 1.297  2006/11/30 01:15:25  cdunde
+//To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+//
+//Revision 1.296  2006/11/29 06:56:20  cdunde
+//To merge all runtime files that had changes from DanielPharos branch
+//to HEAD cvs for QuArK 6.5.0 Beta 1.
+//
+//Revision 1.295.2.13  2006/11/29 05:00:37  cdunde
+//For version change to 6.5 Beta.
+//
 //Revision 1.295.2.12  2006/11/27 16:43:37  danielpharos
 //Renamed Software to Software 3D
 //
@@ -982,15 +1272,17 @@ QQRKSRC1
       RecentFiles = ""
       Display:config =
       {
-        //Gamma = '1.35'
-        //Gamma = '2.0'
-        Gamma = '1.6'
+        Gamma = '1.3'
         MarsCaption = "?"
         AutoFocus = "1"
         Unsel = ""
         Sel = "1"
         MppTopBtns = "1"
         IconPath = "images\\"
+        TextureNameCheck = "1"
+        MaxRecentFiles = '5'
+        ConsoleWidth = '80'
+        ConsoleHeight = '60'
         Form = "GeneralDisplay"
       }
       3D view:config =
@@ -1004,7 +1296,7 @@ QQRKSRC1
         VAngle = '30'
         FogColor = $000000
         FrameColor = $000000
-        TextureMaxDimension="7"
+        TextureMaxDimension = "7"
         MouseHLook = '10'
         MouseVLook = '10'
         MouseWalk = '10'
@@ -1030,6 +1322,8 @@ QQRKSRC1
         RunAccelDelay = '0.2'
         Warning3D = "1"
         CloseOnGame = "1"
+        CloseOnSetup = "1"
+        AllowMultiple = ""
         // The following options are currently hidden:
         DarkFactor = '0.67'   // only 67% of the FarDistance is considered really visible
         SelGroupColor = $FF80FF
@@ -1039,25 +1333,27 @@ QQRKSRC1
       }
       Software 3D:config =
       {
-        SoftQuality = "0"
-        DynamicQuality = "2"
+        StillQuality = "0"
+        MovingQuality = "2"
         Form = "GeneralSoftware3D"
       }
-      3DFX:config =
+      Glide (3Dfx):config =
       {
-        //3DFXLogo = ""
+        //3DfxLogo = ""
         //FullScreen = ""
         TwoMonitors = ""
         FullScreenGamma = '1.3'
         FullScreenSize = '560 420'
-        TranspFactor = '0.3'  // in isometric views, an additionnal 30% of the normal depth is visible but transparent
+        TranspFactor = '0.3'  // in isometric views, an additional 30% of the normal depth is visible but transparent
         Fog = "1"
-        Form = "General3DFX"
+        Resolution = "7"
+        Mirror = "0"
+        Form = "GeneralGlide"
       }
       OpenGL:config =
       {
         Fog = "1"
-        Transparency = ""
+        Transparency = "1"
         Lights = "1"
         Bilinear = "1"
         DoubleBuffer = "1"
@@ -1067,11 +1363,16 @@ QQRKSRC1
         DepthBits = '16'
         VCorrection = '0.92'
         GLLists = "1"
-        Ambient = '0.4'  //Why is this hidden?
+        Culling = "1"
+        Ambient = '0.4'
+        StillQuality = "0"
+        MovingQuality = "2"
         Form = "GeneralOpenGL"
       }
       DirectX:config =
       {
+        BackBufferFormat = "1"
+        StencilBufferBits = "0"
         Form = "GeneralDirectX"
       }
       Memory:config =
@@ -1084,6 +1385,13 @@ QQRKSRC1
         CompressionBufferSize = '16' // KBytes
         CompressionLevel = '9' // Where else to put this?
         Form = "GeneralMemory"
+      }
+      Update:config =
+      {
+        UpdateCheck = "1"
+        UpdateCheckOnline = "1"
+        AutomaticInstall = ""
+        Form = "GeneralUpdate"
       }
       QuakeC:config =
       {
@@ -1128,6 +1436,7 @@ QQRKSRC1
         .bmp = ""      ibmp = '7'
         .tga = ""      itga = '7'
         .jpg = ""      ijpg = '7'
+        .png = ""
         .cin = "1"     icin = '6'
         .wav = ""
         .cfg = ""      icfg = '11'
@@ -1142,6 +1451,7 @@ QQRKSRC1
         .tga = ""
         .bmp = "<open>"
         .jpg = "" //DECKER
+        .png = ""
         .wav = "<edit>"
         .cin = "<open>"
         .mdl = "<open>"
@@ -1197,7 +1507,7 @@ QQRKSRC1
         Unfreeze Selection = "Alt+U"
         Make Detail = "Alt+D"
         AxisXYZ = "Alt+A"
-        Rebuild3D = "Tab"
+        Rebuild3D = "F2"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
@@ -1226,6 +1536,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
 
         TexturesPath = "textures/"
         Q2TexFlags = "1"
@@ -1255,7 +1566,7 @@ QQRKSRC1
         Form = "Game6DX"
         LightFactor = '0.9'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Crystal Space:config =
@@ -1269,7 +1580,8 @@ QQRKSRC1
         CheckDirectory = "WALKTEST.EXE"
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
 
         BuildPgm1 = "MAP2CS.EXE"
         BuildArgs1 = "%mapfile% %file%.zip c:\map2cs\map2cs.cfg"
@@ -1294,7 +1606,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = ""
         RunMapCmdLine = " %s"
-        AddOns = "DataCS.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataCS.qrk"
         AlwaysPak = ""
         PakExt = ".zip"
         LightFactor = '0.90000'
@@ -1302,7 +1614,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameCrystalSpace"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Doom 3:config =
@@ -1322,12 +1634,13 @@ QQRKSRC1
         DefaultTextureOrigin = "Does not use an origin texture"
         DefaultTextureCaulk = "common/caulk"
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
         BuildPgmsDir = "nothing needed, preset in Defaults.qrk file"
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
         OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         SupportsBrushPrim = "1"        // hidden setting
         AlwaysWriteThreeFields = "1"   // hidden setting
 
@@ -1353,7 +1666,7 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
-        AddOns = "DataD3.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataD3.qrk"
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"
@@ -1376,6 +1689,77 @@ QQRKSRC1
         Form = "GameDoom3"
       }
 
+      EF2:config =
+      {
+        Game = "EF2"
+        Code = "o" // Hardcoded value in Setup.PAS
+
+        BaseMenu = "Star Trek: Elite Force"
+
+        Program = "EF2.EXE +set sv_pure 0"
+        Directory = "C:\Program Files\Activision\EF2"
+        CheckDirectory = "EF2.EXE"   // hidden setting
+
+        CD = ""
+        CDDir = "Setup\base"   // hidden setting
+
+        DefaultTexture = "attrexian-colony/acwall5"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+
+        Console = "1"
+        BuildPgmsDir = "C:\Program Files\Activision\EF2\QuArk files\bspc"
+        StupidBuildToolKludge = "1" // Run tools from base directory setting
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = "1"
+        AlwaysWriteThreeFields = "1"
+        BuildPgm1  = "UBERMAP.EXE"
+        BuildArgs1 = ""
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "UBERMAP.EXE"
+        BuildArgs2 = "-vis"
+        BuildPgm3  = "UBERMAP.EXE"
+        BuildArgs3 = "-light"
+        BuildPgm4  = "BSPC.EXE"
+        BuildArgs4 = "-bsp2aas"
+        BuildCheck4= "+AAS"
+
+        MapCommentsPrefix = "//"
+
+        TexturesPath = "textures/"
+        ShadersPath = "shaders/"
+        Q2TexFlags = "1"
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        TextureFormat = ".dds"                  // primary texture fileextension
+        TextureFileExtensions = ".dds,.tga,.jpg"     // possible texture fileextensions
+        TextureWriteFormat = ".dds"
+        TextureShaders = "shaders/quark.shader"
+
+        BaseDir = "base"
+        tmpQuArK = "base"
+    //    MapLimit = '65536 65536 65536'
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %s"
+        RunMapCmdLine = " +devmap %s"
+        AddOns = "Bezier_Library.qrk"$0D"DataEF2.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk3"
+        PakFormat = "*.PK3"
+        PakMaxNumber = "99"
+        LightFactor = '0.9'
+        3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        DecimalPlaces = '5'
+
+        Form = "GameEF2"
+      }
+
       Genesis3D:config =
       {
         Game = "Genesis3D"
@@ -1389,6 +1773,7 @@ QQRKSRC1
         MapCommentsPrefix = "//"
 
         OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
         BuildPgm1  = "TXQBSP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,+PRT"
@@ -1423,7 +1808,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameQuake1"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Half-Life:config =
@@ -1431,13 +1816,15 @@ QQRKSRC1
         Game = "Half-Life"
         Code = "3" // Hardcoded value in Setup.PAS
 
-        Program = "HL.EXE -console -dev -zone 1024 +set sv_cheats 1"
+        BaseMenu = "Half Life"
 
+        Program = "HL.EXE -console -dev -zone 1024 +set sv_cheats 1"
         Directory = "\Sierra\Half-Life"
         CheckDirectory = "HL.EXE"
 
         MapCommentsPrefix = "//"
         OutputMapFormat = "Valve 220"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "HLCSG.EXE"
         BuildArgs1 = ""
@@ -1482,7 +1869,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameHalfLife"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Half-Life2:config =
@@ -1490,15 +1877,15 @@ QQRKSRC1
         Game = "Half-Life2"
         Code = "k" // Hardcoded value in Setup.PAS
 
+        BaseMenu = "Half Life"
 
-        SteamFSModule = ""
-        Directory = "C:/Program Files/Valve/Steam"
-        SteamAppUser = "<Your Steam Account>"
-        SteamAppId = ""
-
+        Steam = "1" //This game uses Steam
+        SteamAppID = "220"
         BaseDir = "hl2"
+        tmpQuArK = "SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
+        ForceFaceFlags = ""
         AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"$0D"models-hl2.qrk"$0D"soundscapes-hl2.qrk"$0D
         "gamesounds-hl2.qrk"$0D"textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
         "halflife2.qrk"$0D"hl2mp.qrk"$0D"prefabs-hl2.qrk"
@@ -1520,7 +1907,6 @@ QQRKSRC1
         BuildArgs5 = ""
         BuildCheck5= ""
 
-
         DefaultTexture = "Dev/dev_measuregeneric01b"
         DefaultTextureTrigger = "Tools/toolstrigger"
         DefaultTextureOrigin = "Tools/toolsorigin"
@@ -1528,17 +1914,14 @@ QQRKSRC1
         DefaultTextureScale = "0.25"
     //    EnableTransparency = ""
         WateryTex = "!"
-        TextureFormat = ".vmt"
+        TextureFormat = ".vmt"                  // primary texture fileextension
+     //   TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
-        TextureWriteSubFormat = "3"
-        TextureWriteSubFormatA = "15"
         TexturesPath = "materials/"
-
 
         MapHoles = ".pts"
        // ExtraCmdLine = "-game %s"
         RunMapCmdLine = " +map %s"
-
 
         PakExt = ".gcf"
         PakFormat = "*.gcf"
@@ -1547,7 +1930,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameHalfLife2"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Heretic II:config =
@@ -1596,7 +1979,7 @@ QQRKSRC1
         Form = "GameHeretic2"
         LightFactor = '0.9'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Hexen II:config =
@@ -1611,6 +1994,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "QBSP.EXE"
         BuildArgs1 = ""
@@ -1649,7 +2033,7 @@ QQRKSRC1
         3DLight = '640'
         HxStrings = "strings.txt"
         PlayerClass = "1"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       JA:config =
@@ -1667,7 +2051,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
@@ -1703,16 +2088,17 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataJA.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataJA.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameJA"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       JK2:config =
@@ -1730,7 +2116,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
@@ -1769,16 +2156,17 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataJK2.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataJK2.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameJK2"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       KingPin:config =
@@ -1796,6 +2184,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "KPBSP.EXE"
         BuildArgs1 = ""
@@ -1833,7 +2222,7 @@ QQRKSRC1
         Form = "GameKingPin"
         LightFactor = '0.90000' //adjust radius around light that it shows how far the light goes
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       MOHAA:config =
@@ -1852,7 +2241,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = "1"
         AlwaysWriteThreeFields = "1"
         EditableSurfaceParms="1"
 
@@ -1893,31 +2283,33 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set developer 1 +set thereisnomonkey 1 +set cheats 1 +set ui_console 1 +set fs_game %s"
         RunMapCmdLine = " +map %s"
-        AddOns = "DataMOHAA.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataMOHAA.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameMOHAA"
         LightFactor = '0.9'
         3DLight = '512'
       //PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Quake 1:config =
       {
         Game = "Quake 1"
         Code = "1" // Hardcoded value in Setup.PAS
+        BaseMenu = "Quake"
 
         Program = "Quake.EXE"
-
         Directory = "\Quake"
         CheckDirectory = "QUAKE.EXE"
 
         MapCommentsPrefix = "//"
 
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
         BuildPgm1  = "TXQBSP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,+PRT,-PTS{LoadLinFile}"
@@ -1952,7 +2344,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameQuake1"
         PlayerClass = "X"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Quake 2:config =
@@ -1960,9 +2352,10 @@ QQRKSRC1
         Game = "Quake 2"
         Code = "A" // Hardcoded value in Setup.PAS
 
-        Program = "Quake2.EXE"
+        BaseMenu = "Quake"
 
-        Directory = "\Quake2"
+        Program = "Quake2.EXE"
+        Directory = "C:\Quake2"
         CheckDirectory = "QUAKE2.EXE"
 
         CD = ""
@@ -1970,6 +2363,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "TXQBSP3.EXE"
         BuildArgs1 = ""
@@ -1987,7 +2381,9 @@ QQRKSRC1
         DefaultTextureOrigin = "e1u1/origin"
         DefaultTextureClip = "e1u1/clip"
 
-        TextureFormat = ".wal"
+    //    TextureFormat = ".wal"
+        TextureFormat = ".pcx"                  // primary texture fileextension, to save model textures properly.
+        TextureFileExtensions = ".pcx,.wal"     // possible texture fileextensions
         TextureWriteFormat = ".wal"
 
         BaseDir = "baseq2"
@@ -2006,16 +2402,18 @@ QQRKSRC1
         Form = "GameQuake2"
         LightFactor = '0.9'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Quake 3:config =
       {
         Game = "Quake 3"
         Code = "a" // Hardcoded value in Setup.PAS
-        Program = "Quake3.EXE +set sv_pure 0"
 
-        Directory = "\Quake3"
+        BaseMenu = "Quake"
+
+        Program = "Quake3.EXE +set sv_pure 0"
+        Directory = "C:\Program Files\Quake III Arena"
         //CheckDirectory = "QUAKE3.EXE"
         CheckDirectory = "*.EXE"
 
@@ -2026,6 +2424,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         StupidBuildToolKludge = "1" //those guys should get shot for that
         AlwaysWriteThreeFields = "1"
         SupportsBrushPrim = "1"
@@ -2054,9 +2453,9 @@ QQRKSRC1
         DefaultTextureCaulk = "common/caulk"
         DefaultTextureScale = "0.5"
 
-        TextureFormat = ".tga"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
+        TextureFormat = ".jpg"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg,.png"     // possible texture fileextensions
+        TextureWriteFormat = ".jpg"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "baseq3"
@@ -2065,22 +2464,26 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameQuake3"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Quake 4:config =
       {
         Game = "Quake 4"
         Code = "m" // Hardcoded value in Setup.PAS
+
+        BaseMenu = "Quake"
+
         Program = "quake4.exe +seta com_allowconsole 1 +dmap %filename%"
         Directory = "C:\Program Files\Quake 4"
         CheckDirectory = "quake4.exe"   // hidden setting
@@ -2094,12 +2497,13 @@ QQRKSRC1
         DefaultTextureOrigin = "Does not use an origin texture"
         DefaultTextureCaulk = "common/caulk"
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
         BuildPgmsDir = "nothing needed, preset in Defaults.qrk file"
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
         OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         SupportsBrushPrim = "1"        // hidden setting
         AlwaysWriteThreeFields = "1"   // hidden setting
 
@@ -2125,7 +2529,7 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
-        AddOns = "DataQ4.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataQ4.qrk"
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"
@@ -2169,7 +2573,8 @@ QQRKSRC1
         Console = "1"
         BuildPgmsDir = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\bspc"
         StupidBuildToolKludge = "" // Run tools from base directory setting
-        OutputMapFormat="Brush Primitives"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
         BuildPgm1  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22""
@@ -2179,9 +2584,9 @@ QQRKSRC1
         BuildPgm3  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22""
         BuildPgm4 = "BSPC.EXE"
-        BuildArgs4 = "-threads 2 -ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
+        BuildArgs4 = "-ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
         BuildPgm5 = "BSPC.EXE"
-        BuildArgs5 = "-threads 2 -ext _b1 -cfg "$22"%buildpgmsdir%\aascfg_sm.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
+        BuildArgs5 = "-ext _b1 -cfg "$22"%buildpgmsdir%\aascfg_sm.c"$22" -bsp2aas "$22"%basepath%\%output%\%file%.bsp"$22""
         BuildPgm6 = "Rename.bat"
         BuildArgs6 = "%filename% "$22"%mappath%"$22""
 
@@ -2203,14 +2608,15 @@ QQRKSRC1
         tmpQuArK = "tmpQuArK"
         MapLimit = '65536 65536 65536'
         Palette = ":pics/colormap.pcx"
-        AddOns = "DataRTCW.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataRTCW.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Form = "GameRTCW"
       }
@@ -2233,12 +2639,13 @@ QQRKSRC1
         DefaultTextureOrigin = "common/origin"
         DefaultTextureCaulk = "common/caulk"
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
         BuildPgmsDir = ""
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
-        OutputMapFormat="Brush Primitives"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"   // hidden setting
 
         BuildPgm1  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
@@ -2259,10 +2666,11 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         MapLimit = '65536 65536 65536'
 
-        AddOns = "DataET.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataET.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         LightFactor = '0.9'
     //    PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas),  does not use aas files.
 
@@ -2296,6 +2704,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Quark etp"
+        ForceFaceFlags = ""
 
         BuildPgm1  = "QBSP3.EXE"
         BuildArgs1 = ""
@@ -2330,7 +2739,7 @@ QQRKSRC1
         Form = "GameSin"
         LightFactor = '0.9'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       SOF:config =
@@ -2348,6 +2757,7 @@ QQRKSRC1
 
         MapCommentsPrefix = ";"
         OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
 
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "SOFBSP.EXE"
@@ -2382,7 +2792,7 @@ QQRKSRC1
         Form = "GameSOF"
         LightFactor = '0.90000'
         3DLight = '512'
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       SoF2:config =
@@ -2400,7 +2810,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat = "Classic Quake"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
@@ -2439,16 +2850,34 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataSoF2.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataSoF2.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameSoF2"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
+      }
+
+      Steam:config =
+      {
+        SteamUser = "<Your Steam Account>"
+        Directory = "C:/Program Files/Valve/Steam"
+        ExtractorParameters = ""
+        Autostart = "1"
+        CopyGCF = "1"
+        WarnBeforeClear = "1"
+        AllowRecycle = ""
+        ClearcacheGCF = ""
+        Clearcache = "1"
+
+        SteamEXEName = "steam.exe"
+        CacheDirectory = "QuArKApps"
+        Form = "GameSteam"
       }
 
       STVEF:config =
@@ -2456,8 +2885,10 @@ QQRKSRC1
         Game = "STVEF"
         Code = "b" // Hardcoded value in Setup.PAS
 
+        BaseMenu = "Star Trek: Elite Force"
+
         Program = "STVoy.EXE +set sv_pure 0"
-        Directory = "\StarTrek Voyager Elite Force"
+        Directory = "C:\Program Files\Raven\Star Trek Voyager Elite Force"
         CheckDirectory = "STVOY.EXE"   // hidden setting
 
         CD = ""
@@ -2471,9 +2902,10 @@ QQRKSRC1
         DefaultTextureScale = "0.5"
 
         Console = "1"
-        BuildPgmsDir = "C:\Program Files\STVEF\QuArk files\bspc"
+        BuildPgmsDir = "C:\Program Files\Raven\Star Trek Voyager Elite Force\QuArk files\bspc"
         StupidBuildToolKludge = "" // Run tools from base directory setting
-        OutputMapFormat="Brush Primitives"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = "-qdir stvef"
@@ -2506,14 +2938,15 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataSTVEF.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataSTVEF.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
 
         Form = "GameSTVEF"
       }
@@ -2529,7 +2962,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
-	  BuildPgmsDir = "c:\sylphis\tools"
+        BuildPgmsDir = "c:\sylphis\tools"
         BuildPgm1 = "mc.exe"
         BuildArgs1 = "-read %mapfile% -write"
         DefaultTexture = "none"
@@ -2543,7 +2976,7 @@ QQRKSRC1
         TextureFileExtensions = ".png,.tga,.jpg"
         TextureWriteFormat = ".jpg"
         TextureShaders = "scripts/quark.shader"
-	WateryTex = ")"
+        WateryTex = ")"
         BaseDir = "base"
         tmpQuArK = "tmpQuArK"
         Palette = ""
@@ -2554,7 +2987,7 @@ QQRKSRC1
         AddOns = "DataSylphis.qrk"$0D"Sylphis_autogen.qrk"
         Console = "1"
         Form = "GameSylphis"
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
       }
 
       Torque:config =
@@ -2572,12 +3005,13 @@ QQRKSRC1
         //   DefaultTextureOrigin = "origin"
         //   DefaultTextureCaulk = "caulk"
         3DLight = '512'
-        BrushDecimalPlaces = '16'
+        DecimalPlaces = '16'
 
         Console = "1"                  // "Run these build-programs..." setting
 
         //   StupidBuildToolKludge = "1"     // "Run tools from base directory" setting
         OutputMapFormat = "Valve 220"
+        ForceFaceFlags = ""
         UseQrkGroupFolder = ""
 
         // 220 MAPVERSION
@@ -2621,6 +3055,7 @@ QQRKSRC1
         //   AlwaysPak = ""
         //   PakExt = ".pk3"
         //   PakFormat = "*.PK3"
+        //   PakMaxNumber = "99"
         LightFactor = '0.9'
         //   PlayerClass = "X"
 
@@ -2649,7 +3084,8 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Brush Primitives"
+        OutputMapFormat = "Brush Primitives"
+        ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
         StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgmsDir = "c:\Progra~1\Return~1\Radiant"
@@ -2691,16 +3127,71 @@ QQRKSRC1
         ExtraCmdLine = ""
         RunMapCmdLine = " +devmap %s" // won't work, but open console and
                                       //   run the map by /spmap <mapname> in the console
-        AddOns = "DataWildWest.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataWildWest.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
+        PakMaxNumber = "99"
         Console = "1"
         Form = "GameWildWest"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-        BrushDecimalPlaces = '5'
+        DecimalPlaces = '5'
+      }
+    }
+
+    Files:config =
+    {
+      BMP:config =
+      {
+        LoadLibrary = "FreeImage"
+        SaveLibrary = "FreeImage"
+        Form = "FilesBMP"
+      }
+      DDS:config =
+      {
+        LoadLibrary = "DevIL"
+        SaveLibrary = "NVDXT"
+        SaveFormat  = "2"
+        SaveFormatA = "2"
+        SaveQuality = "2"
+        Form = "FilesDDS"
+      }
+      JPG:config =
+      {
+        LoadLibrary = "FreeImage"
+        SaveLibrary = "FreeImage"
+        LoadQualityFreeImage = "2"
+        SaveQualityFreeImage = "4"
+        SaveProgressiveFreeImage = ""
+        Form = "FilesJPG"
+      }
+      PCX:config =
+      {
+        LoadLibrary = "DevIL"
+        SaveLibrary = "QuArK"
+        Form = "FilesPCX"
+      }
+      PNG:config =
+      {
+        LoadLibrary = "FreeImage"
+        SaveLibrary = "FreeImage"
+        Form = "FilesPNG"
+      }
+      TGA:config =
+      {
+        LoadLibrary = "FreeImage"
+        SaveLibrary = "FreeImage"
+        Form = "FilesTGA"
+      }
+      VTF:config =
+      {
+        LoadLibrary = "VTFLib"
+        SaveLibrary = "VTFLib"
+        SaveFormat  = "3"
+        SaveFormatA = "15"
+        Form = "FilesVTF"
       }
     }
 
@@ -2708,15 +3199,15 @@ QQRKSRC1
     {
       Mouse:config =
       {
-        Left        = "S"
-        LeftShift   = "FS"
-        LeftCtrl    = "ST"
-        Right       = "SM"
-        RightShift  = "M"
-        RightCtrl   = "STM"
-        Middle      = "+"
-        MiddleShift = ""
-        MiddleCtrl  = "-"
+        Left            = "S"
+        LeftShift       = "FS"
+        LeftCtrl        = "ST"
+        Right           = "SM"
+        RightShift      = "M"
+        RightCtrl       = "STM"
+        Middle          = "+"
+        MiddleShift     = ""
+        MiddleCtrl      = "-"
         LeftDrag        = "RS"
         LeftDragShift   = "C"
         LeftDragCtrl    = "RST"
@@ -2730,57 +3221,58 @@ QQRKSRC1
       }
       Keys:config =
       {
-        GridPlus = $C0
+        GridPlus  = $C0
         GridMinus = $BA
-        ZoomIn = "k"
-        ZoomOut = "m"
-        MoveLeft = "%"
+        ZoomIn    = "k"
+        ZoomOut   = "m"
+        MoveLeft  = "%"
         MoveRight = "'"
-        MoveUp = "&"
-        MoveDown = "("
+        MoveUp    = "&"
+        MoveDown  = "("
         Form = "MapKeys"
       }
       Options:config =
       {
-        QuickObjects_distortion = "0"
-        QuickObjects_makehollow = "0"
-        QuickObjects_torus_segs_faces = "0 0"
-        QuickObjects_torus_radiuses = "2 1"
-        QuickObjects_torus_xydistort = "2 2"
-        QuickObjects_torus_zupdistort = "2 0"
+        QuickObjects_distortion           = "0"
+        QuickObjects_makehollow           = "0"
+        QuickObjects_torus_segs_faces     = "0 0"
+        QuickObjects_torus_radiuses       = "2 1"
+        QuickObjects_torus_xydistort      = "2 2"
+        QuickObjects_torus_zupdistort     = "2 0"
         QuickObjects_torus_ring_seg_edges = "2 2"
-        QuickObjects_torus_hollowtorus = "0"
-        QuickObjects_torus_nobulkheads = "0"
-        PaintBrush_tex = "Select a texture"
-        PaintBrush_origin = "0 0 -32"
-        PaintBrush_retain = "1"
-        PaintBrush_scale = "100 100"
-        PaintBrush_angles = "0 90"
-        PaintBrush_color = "1"
-        PaintBrush_sidestoo = "0"
+        QuickObjects_torus_hollowtorus    = "0"
+        QuickObjects_torus_nobulkheads    = "0"
+        PaintBrush_tex       = "Select a texture"
+        PaintBrush_origin    = "0 0 -32"
+        PaintBrush_retain    = "1"
+        PaintBrush_scale     = "100 100"
+        PaintBrush_angles    = "0 90"
+        PaintBrush_color     = "1"
+        PaintBrush_sidestoo  = "0"
         PaintBrush_sidesonly = "0"
-        PaintBrush_variance = "0.0001"
-        Options3Dviews_noicons0 = "0"
-        Options3Dviews_drag0 = "1"
-        Options3Dviews_redfaces0 = "1"
-        Options3Dviews_color0 = "1"
-        Options3Dviews_noicons1 = "0"
-        Options3Dviews_drag1 = "1"
-        Options3Dviews_redfaces1 = "1"
-        Options3Dviews_color1 = "1"
-        Options3Dviews_noicons2 = "0"
-        Options3Dviews_drag2 = "1"
-        Options3Dviews_redfaces2 = "1"
-        Options3Dviews_color2 = "1"
-        Options3Dviews_noicons3 = "0"
-        Options3Dviews_drag3 = "1"
-        Options3Dviews_redfaces3 = "1"
-        Options3Dviews_color3 = "1"
-        Options3Dviews_noicons4 = "0"
-        Options3Dviews_drag4 = "1"
-        Options3Dviews_redfaces4 = "1"
-        Options3Dviews_color4 = "1"
+        PaintBrush_variance  = "0.0001"
+        Options3Dviews_noicons0    = "0"
+        Options3Dviews_drag0       = "1"
+        Options3Dviews_redfaces0   = "1"
+        Options3Dviews_color0      = "1"
+        Options3Dviews_noicons1    = "0"
+        Options3Dviews_drag1       = "1"
+        Options3Dviews_redfaces1   = "1"
+        Options3Dviews_color1      = "1"
+        Options3Dviews_noicons2    = "0"
+        Options3Dviews_drag2       = "1"
+        Options3Dviews_redfaces2   = "1"
+        Options3Dviews_color2      = "1"
+        Options3Dviews_noicons3    = "0"
+        Options3Dviews_drag3       = "1"
+        Options3Dviews_redfaces3   = "1"
+        Options3Dviews_color3      = "1"
+        Options3Dviews_noicons4    = "0"
+        Options3Dviews_drag4       = "1"
+        Options3Dviews_redfaces4   = "1"
+        Options3Dviews_color4      = "1"
         DrawAxis                = "1"
+        EntityLinesDispersion   = "1"
         SolidGrid               = ""
         GridVisible             = "1"
         GridActive              = "1"
@@ -2799,6 +3291,11 @@ QQRKSRC1
         BBoxSelected            = "1"
         DeleteFaces             = "1"
         AutoAdjustNormal        = ""
+        BGImage_filename        = ""
+        BGImage_center          = '0 0 0'
+        BGImage_scale           = '1'
+        BGImage_offset          = ""
+        BGImage_multiple        = ""
         PolySelectNoFill        = ""
       //ViewModels              = "1"
         NoScrollBars            = "1"
@@ -2806,16 +3303,15 @@ QQRKSRC1
         HideFaces               = ""
         AutoClosePoly           = ""
         Recenter                = "1"
+        AutoCheckMap            = ""
         HandleHints             = "1"
         TreeKeybDelay           = "1"
         IgnoreToBuild           = "1"
         DisableMapComments      = ""
-//        DisableEnhTex           = ""
+      //DisableEnhTex           = ""
         DisableFPCoord          = ""
-// Experimental; disable in distributions:
-//        UseIntetralVertices     = ""
-        AutoCheckMap            = ""
-        EntityLinesDispersion   = "1"
+        UseIntetralVertices     = ""
+        SaveMapVersion          = "2"
         CompassNumbers          = "1"
         ComputePolys            = "1"
         HideMouseDrag           = "1"
@@ -2823,15 +3319,15 @@ QQRKSRC1
       }
       Building:config =
       {
-        DefPoly = "128x128x128"
-        WallWidth = '-8'
-        mpOffset = '0 0 64'
-        mpZoom = '2'
-        mpRotate = '15'
-        ForceAngleStep = '15'
-        AutoSave = '10'
-        AutoSaveRun = "1"
-        LinearWarning = "1"
+        DefPoly         = "128x128x128"
+        WallWidth       = '-8'
+        mpOffset        = '0 0 64'
+        mpZoom          = '2'
+        mpRotate        = '15'
+        ForceAngleStep  = '15'
+        AutoSave        = '10'
+        AutoSaveRun     = "1"
+        LinearWarning   = "1"
         //BezierCenterX = '-32'
         //BezierCenterY = '-32'
         Form = "MapBuilding"
@@ -2842,17 +3338,17 @@ QQRKSRC1
       }
       Display:config =
       {
-        NormalVector = '40'
-        GridStep = '32'
-        GridMinStep = '5'
-        MapLimit = '4096 4096 4096'
+        NormalVector  = '40'
+        GridStep      = '16'
+        GridMinStep   = '5'
+        MapLimit      = '4096 4096 4096'
         GridHighlight = "8"
-        GridHFactor = '2'
-        // Rotate3D = '80 2'     // 80 degrees per second during 2 seconds
-        FreeZoom = '1'
-        ViewMode = $01      // gray out of view by default
-        ArrowSize = '40 27'
-        Form = "MapDisplay"
+        GridHFactor   = '2'
+        // Rotate3D   = '80 2'     // 80 degrees per second during 2 seconds
+        FreeZoom      = '1'
+        ViewMode      = $01      // gray out of view by default
+        ArrowSize     = '40 27'
+        Form          = "MapDisplay"
       }
       Colors:config =
       {
@@ -2869,7 +3365,7 @@ QQRKSRC1
         BrEnt      = $800000
         Duplicator = $0000FF
         Tag        = $FF0000
-        GrayImage  = $FF0000
+        DragImage  = $FF0000
         BSP        = $008080
         Digger     = $FF00FF
         Bezier     = $008080
@@ -2882,15 +3378,15 @@ QQRKSRC1
     {
       Mouse:config =
       {
-        Left        = "S"
-        LeftShift   = ""
-        LeftCtrl    = "ST"
-        Right       = "SM"
-        RightShift  = "M"
-        RightCtrl   = "STM"
-        Middle      = "+"
-        MiddleShift = ""
-        MiddleCtrl  = "-"
+        Left            = "S"
+        LeftShift       = ""
+        LeftCtrl        = "ST"
+        Right           = "SM"
+        RightShift      = "M"
+        RightCtrl       = "STM"
+        Middle          = "+"
+        MiddleShift     = ""
+        MiddleCtrl      = "-"
         LeftDrag        = "RS"
         LeftDragShift   = "C"
         LeftDragCtrl    = "RST"
@@ -2902,24 +3398,72 @@ QQRKSRC1
         MiddleDragCtrl  = "R+"
         Form = "MapMouse"
       }
+      Keys:config =
+      {
+      }
       Options:config =
       {
+        QuickObjects_distortion           = "0"
+        QuickObjects_makehollow           = "0"
+        QuickObjects_torus_segs_faces     = "0 0"
+        QuickObjects_torus_radiuses       = "2 1"
+        QuickObjects_torus_xydistort      = "2 2"
+        QuickObjects_torus_zupdistort     = "2 0"
+        QuickObjects_torus_ring_seg_edges = "2 2"
+        QuickObjects_torus_hollowtorus    = "0"
+        QuickObjects_torus_nobulkheads    = "0"
+        Options3Dviews_nohandles1     = "0"
+        Options3Dviews_drawnohandles1 = "0"
+        Options3Dviews_framemesh1     = "0"
+        Options3Dviews_fillmesh1      = "0"
+        Options3Dviews_nohandles2     = "0"
+        Options3Dviews_drawnohandles2 = "0"
+        Options3Dviews_framemesh2     = "1"
+        Options3Dviews_fillmesh2      = "0"
+        Options3Dviews_nohandles3     = "0"
+        Options3Dviews_drawnohandles3 = "0"
+        Options3Dviews_framemesh3     = "1"
+        Options3Dviews_fillmesh3      = "0"
+        Options3Dviews_nohandles4     = "0"
+        Options3Dviews_drawnohandles4 = "0"
+        Options3Dviews_framemesh4     = "1"
+        Options3Dviews_fillmesh4      = "0"
+        Options3Dviews_nohandles5     = "0"
+        Options3Dviews_drawnohandles5 = "0"
+        Options3Dviews_framemesh5     = "0"
+        Options3Dviews_fillmesh5      = "0"
+        AnimationActive    = ""
+        AnimationPaused    = ""
+        AnimateEd3Dview    = "1"
+        AnimateX2Dview     = "1"
+        AnimateY2Dview     = "1"
+        AnimateZ2Dview     = "1"
+        AnimateFloat3Dview = "1"
+        BGImage_filename   = ""
+        BGImage_center     = '0 0 0'
+        BGImage_scale      = '.2'
+        BGImage_offset     = ""
+        BGImage_multiple   = ""
         setLock_X          = "0"
         setLock_Y          = "0"
         setLock_Z          = "0"
-        SolidFrame         = ""
         DrawAxis           = "1"
         DrawMapLimit       = "1"
         SolidGrid          = ""
         GridVisible        = "1"
         GridActive         = "1"
         GridVisibleTex     = ""
+        SkinFrom3Dview     = ""
+        UseSkinViewScale   = ""
+        SkinGridVisible    = "1"
+        SkinGridActive     = "1"
         CompassNumbers     = "1"
         NoScrollBars       = "1"
         CrossCursor        = ""
         HideMouseDrag      = ""
         AutoAdjustNormal   = ""
         PagesLocked        = ""
+        Recenter           = "1"
         HandleHints        = "1"
         LinearBox          = ""
         TreeKeybDelay      = ""
@@ -2927,57 +3471,101 @@ QQRKSRC1
       }
       Building:config =
       {
-        WallWidth = '-8'
-        mpOffset = '0 0 64'
-        mpZoom = '2'
-        mpRotate = '15'
-        ForceAngleStep = '15'
-        LinearWarning = "1"
+        WallWidth         = '-8'
+        mpOffset          = '0 0 64'
+        mpZoom            = '2'
+        mpRotate          = '15'
+        ForceAngleStep    = '15'
+        LinearWarning     = "1"
+        LinearSetting     = '4'
+        LinRotationSpeed  = '.057'
+        SkinLinearSetting = '4'
         Form = "MdlBuilding"
       }
       Display:config =
       {
-        NormalVector = '40'
-        GridStep = '16'
-        GridMinStep = '5'
-        MapLimit = '512 512 512'
-        GridHighlight = "8"
-        GridHFactor = '2'
-        FreeZoom = '1'
-        ViewMode = $01      // gray out of view by default
-        ArrowSize = '40 27'
-        HandlesDelay = '0.5'
+        NormalVector      = '40'
+        GridStep          = '2'
+        GridMinStep       = '5'
+        MapLimit          = '512 512 512'
+        GridHighlight     = "8"
+        GridHFactor       = '2'
+        AnimationFPS      = '16'
+        SkinGridStep      = '16'
+        SkinGridMinStep   = '5'
+        SkinGridHighlight = "8"
+        SkinGridHFactor   = '2'
+        FreeZoom          = '1'
+        ViewMode          = $01      // gray out of view by default
+        ArrowSize         = '40 27'
+        HandlesDelay      = '0.5'
         Form = "MdlDisplay"
       }
       Colors:config =
       {
-        InvertedColors = ""
-        FillColor  = $FFFFFF
-        ViewXZ     = $E8E8B8
-        ViewXY     = $E8DCB8
-        SelXZ      = $0080C0
-        SelXY      = $0090C0
-        Gray       = $BABABA
-        Axis       = $A6CAF0
-        GridXZ     = $008000
-        GridXY     = $808000
-        GridLines  = $D0D0FF
-        Tag        = $FF0000
-        GrayImage  = $FF0000
-        Linear     = $FF0080
-        Vertices   = $FF0000
+        InvertedColors              = ""
+        Options3Dviews_frameColor1  = $FFFFFF
+        Options3Dviews_fillColor1   = $FF8080
+        Options3Dviews_frameColor2  = $FFFFFFFF
+        Options3Dviews_fillColor2   = $FF8080
+        Options3Dviews_frameColor3  = $FFFFFFFF
+        Options3Dviews_fillColor3   = $FF8080
+        Options3Dviews_frameColor4  = $FFFFFFFF
+        Options3Dviews_fillColor4   = $FF8080
+        Options3Dviews_frameColor5  = $FFFFFF
+        Options3Dviews_fillColor5   = $FF8080
+        ViewXZ                      = $E8E8B8
+        ViewXY                      = $E8DCB8
+        Gray                        = $BABABA
+        Axis                        = $A6CAF0
+        GridXZ                      = $008000
+        GridXY                      = $808000
+        GridLines                   = $D0D0FF
+        LinearHandleCircle          = $FF0080
+        LinearHandleCenter          = $00FF
+        LinearHandleCorners         = $FFFF
+        LinearHandleSides           = $8000FF
+        LinearHandleOutline         = $FFFFFFFF
+        ModelAxisX                  = $FF
+        ModelAxisY                  = $00FF
+        ModelAxisZ                  = $FF00FF
+        DragImage                   = $FF0000
+        Drag3DLines                 = $00F000
+        Vertices                    = $FF0000
+        VertexSelListColor          = $0080C0
+        FaceSelOutline              = $0080FF
+        BackFaceColor1              = $FFFFFF
+        BackFaceColor2              = $BABABA
+        SkinLines                   = $FF0000
+        SkinDragLines               = $00F000
+        SkinVertexSelListColor      = $0080C0
+        SkinViewFaceOutline         = $FFFFFF
+        SkinViewFaceSelected        = $00FF00
+        SkinGridDots                = $00F000
         Form = "MdlColors"
       }
       Layouts:config =
       {
-        _layout = "Classic"
+        _layout = "4 views"
+        4 views:config =
+        {
+          LeftPanel = $B4
+          LeftPanelV = '0.37000'
+          ViewMode = "wwwt"
+          secs = '0.50000 0.50000'
+          tb_animation = "((208, 102, 429, 152), 'topdock', 0, 1, 1)"
+          tb_movepal = "((0, 0, 0, 0), 'topdock', 341, 0, 1)"
+          tb_AxisLock = "((0, 0, 0, 0), 'topdock', 218, 0, 1)"
+          tb_display = "((0, 0, 0, 0), 'topdock', 0, 0, 1)"
+          tb_objmodes = "((0, 0, 0, 0), 'topdock', 674, 0, 1)"
+        }
       }
     }
     Toolbars and Menus:config =
     {
       Texture Browser:config =
       {
-        ImageListTextureDimension = "64"
+        ImageListTextureDimension      = "64"
         ImageListLoadNoOfTexAtEachCall = "3"
         Form = "Toolbars_TextureBrowser"
       }
@@ -3030,6 +3618,11 @@ QQRKSRC1
     MdlDisplay:form =
     {
       style = "7"
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = "Editor views:"
+      }
       GridStep: =
       {
         Txt = "Grid step"
@@ -3054,7 +3647,54 @@ QQRKSRC1
         Typ = "EF1"
         Min = '0'
         Max = '10'
-        Hint = "How much highlighted are the highlighted dots or lines ? (more or less than 1 to mean more or less visible than others)"
+        Hint = "How much highlighted are the highlighted dots or lines ?"$0D"(more or less than 1 to mean more or less visible than others)"
+      }
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = "Animation:"
+      }
+      AnimationFPS: =
+      {
+        Txt = "Fames Per Second"
+        Typ = "EF1"    // Edit Float, 1 value
+        Min = '0'
+      }
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = "Skin-view:"
+      }
+      SkinGridStep: =
+      {
+        Txt = "Grid step"
+        Typ = "EF1"    // Edit Float, 1 value
+        Min = '0'
+      }
+      SkinGridMinStep: =
+      {
+        Txt = "Hide grid dots if denser than"
+        Typ = "EF1"    // Edit Float, 1 value
+        Min = '0'
+      }
+      SkinGridHighlight: =
+      {
+        Txt = "Highlight every ...th grid line"
+        Typ = "E"
+        Hint = "Highlight grid dots or lines periodically (no value disables this feature)"
+      }
+      SkinGridHFactor: =
+      {
+        Txt = "Highlight them by a factor of"
+        Typ = "EF1"
+        Min = '0'
+        Max = '10'
+        Hint = "How much highlighted are the highlighted dots or lines ?"$0D"(more or less than 1 to mean more or less visible than others)"
+      }
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = ""
       }
       FreeZoom: =
       {
@@ -3062,12 +3702,11 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "By default, Mouse Free Zoom is Shift-Middle-mouse-button"$0D"Enter a negative value to reverse 'In' and 'Out' directions"
       }
-      sep: = {Typ="S" Txt = ""}
       HandlesDelay: =
       {
         Txt = "Delay to display handles"
         Typ = "EF1"
-        Hint = "If non-zero, some handles are not displayed immediately but after this delay (seconds)"
+        Hint = "If non-zero, some handles are not displayed immediately,"$0D"but are after this delay in seconds."
       }
     }
 
@@ -3096,11 +3735,13 @@ QQRKSRC1
         $0D"will _not_ append a '<path>/<mapfile>' to the command-line arg.,"
         $0D"so you better remember to do this yourself."
         $0D
+        $0D"%filename% - Gives the map's filename only, without extension"
         $0D"%file%     - Gives the map's path and filename without extension"
         $0D"%mappath%  - Gives the map's path with ending backslash"
         $0D"%mapfile%  - Gives the map's path and filename with .MAP extension"
         $0D"%basepath% - Gives the base directory of the game (see Game Settings above)"
         $0D"%gamedir%  - Gives the game directory of the game (see Game Settings above)"
+        $0D"%buildpgmsdir% - Gives the Default directory of the build program(s)"
         $0D
         $0D"Examples:"
         $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
@@ -3245,6 +3886,12 @@ QQRKSRC1
     //  Hint = "If you installed 6DX minimally, this is the drive of the CD-ROM."
     //  CheckFile = "INSTALL\DATA\BASE\PAK0.PAK"
     //}
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -3295,12 +3942,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3334,6 +3981,12 @@ QQRKSRC1
         Typ = "ED"
         Hint = "Path to the game executable"
         CheckFile = ""
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =
       {
@@ -3375,12 +4028,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3406,11 +4059,17 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "DOOM3.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       CD: =
       {
         Txt = "Doom 3 CD-ROM drive"
         Typ = "ED"      // Edit Directory
-        Hint = "If you installed Quake 3 minimally, this is the drive of the CD-ROM."
+        Hint = "If you installed Doom 3 minimally, this is the drive of the CD-ROM."
         CheckFile = "base\pak00.pk4"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
@@ -3473,12 +4132,117 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
+        Min = '1'
+        Max = '40'
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
+    GameEF2:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Star Trek: Elite Force 2 command-line"
+        Items = "EF2.EXE +set sv_pure 0"
+             $0D"EF2HM.EXE +set sv_pure 0"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Star Trek: Elite Force 2"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "EF2.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
+      CD: =
+      {
+        Txt = "Star Trek: Elite Force 2 CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed EF2 minimally, this is the drive of the CD-ROM."
+        CheckFile = "PAK15.PK3"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMo"}    // switches to EF2 (cmd=GAM, game=o)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMo"}    // switches to EF2 (cmd=GAM, game=o)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureTerrain: =
+      {
+        t_DefaultTextureTerrain = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "EF2"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "EF2"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+      }
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
+        Typ = "EF1"
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3505,6 +4269,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "HL.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -3560,12 +4330,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3591,114 +4361,63 @@ QQRKSRC1
     {
       Style = "3"
       sep: = {Typ="S" Txt="---- Game Settings ----"}
+      L0: = {Typ="S" Bold="0" Txt="Note: Don't forget to also configure the settings in the Steam-game section on the left!"}
       Program: =
       {
-        Txt = "Half-Life2 command-line"
+        Txt = "Half-Life 2 command-line"
         Typ = "C"     // combo box
         t_ProgramHint=!
         Items = "C:/Program Files/Valve/Steam/steam.exe -applaunch 220 -dev -console -window -width 800 -height 600"
                 $0D"C:/Program Files/Valve/Steam/steam.exe -applaunch 240 -dev -console -window -width 800 -height 600"
                 $0D"C:/Program Files/Valve/Steam/steam.exe -applaunch 320 -dev -console -window -width 800 -height 600"
       }
-      SteamFSModule =
+      tmpQuArK: =
       {
-        Txt = "Steam Filesystem Dll"
-        Typ = "EP"
-        DefExt="dll"
-        Hint = "select the FileSystem_Steam.dll in your sourcesdk/bin folder"
-        CheckFile = "FileSystem_Steam.dll"
+        Txt = "Game Directory"
+        Typ = "C"   // combo box
+        Hint = "relative to steam install directory, e.g. SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
+        Items = "SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
+             $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
+             $0D"SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
       }
-      SteamAppUser =
-      {
-        Txt = "Steam Account Name"
-        Hint = "The Name you logon into steam with"
-      }
-      SteamAppId =
+      SteamAppId: =
       {
         Txt = "Steam App Id"
         Typ = "C"     // combo box
         Hint = "set to 211 for Source SDK"$0D
-               "220 for Half-Life2"$0D
+               "220 for Half-Life 2"$0D
                "240 for Counter-Strike: Source"$0D
-               "320 for Half-Life2 Death Match"
+               "280 for Half-Life: Source"$0D
+               "320 for Half-Life 2: Deathmatch"$0D
+               "340 for Half-Life 2: Lost Coast"$0D
+               "360 for Half-Life Deathmatch: Source"$0D
+               "380 for Half-Life 2: Episode One"
         Items = "211"$0D
                "220"$0D
                "240"$0D
-               "320"
+               "280"$0D
+               "320"$0D
+               "340"$0D
+               "360"$0D
+               "380"
       }
-      Directory: =
+      BaseDir: =
       {
-        Txt = "Steam Directory"
-        Typ = "ED"      // Edit Directory
-        Hint = "Steam Install Directory folder"
-        CheckFile = "steam.exe"
+        Txt = "Game data directory"
+        Typ = "C"   // combo box
+        Hint = "Set this to the directory containing the game data, e.g. hl2 for Half-Life 2"
+            $0D"cstrike for Counter-Strike Source"
+            $0D"hl2mp for Half-Life 2: Deathmatch"
+        Items = "hl2"
+             $0D"cstrike"
+             $0D"hl2mp"
       }
-      tmpQuArK: =
+      Templates: =
       {
-        Txt = "Game Directory"
-        Typ = "C"   // combo box    
-        Hint = "relative to steam install directory, e.g. SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
-        Items = "SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
-                $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
-                $0D"SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
-      TextureWriteSubFormatA: = {
-        Typ = "CL"
-        Txt = "Format of exported alpha Textures"
-        Values = "0"$0D"1"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D
-                 "11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D"20"$0D
-                 "21"$0D"22"$0D"23"$0D"24"$0D"25"
-        Items = "RGBA8888"
-             $0D "ABGR8888"
-             $0D "IA88"
-             $0D "P8"
-             $0D "A8"
-             $0D "RGB888_BLUESCREEN"
-             $0D "BGR888_BLUESCREEN"
-             $0D "ARGB8888"
-             $0D "BGRA8888"
-             $0D "DXT1"
-             $0D "DXT3"
-             $0D "DXT5"
-             $0D "BGRX8888"
-             $0D "BGR565"
-             $0D "BGRX5551"
-             $0D "BGRA4444"
-             $0D "DXT1_ONEBITALPHA"
-             $0D "BGRA5551"
-             $0D "UV88"
-             $0D "UVWQ8888"
-             $0D "RGBA16161616F"
-             $0D "RGBA16161616"
-             $0D "UVLX8888"
-      }
-
-      TextureWriteSubFormat: = {
-        Typ = "CL"
-        Txt = "Format of exported non alpha Textures"
-        Values = "2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D
-                 "13"$0D"14"$0D"15"$0D"16"$0D"17"$0D
-                 "21"$0D"22"$0D"25"
-        Items = "RGB888"
-             $0D "BGR888"
-             $0D "RGB565"
-             $0D "I8"
-             $0D "IA88"
-             $0D "P8"
-             $0D "A8"
-             $0D "RGB888_BLUESCREEN"
-             $0D "BGR888_BLUESCREEN"
-             $0D "DXT1"
-             $0D "DXT3"
-             $0D "DXT5"
-             $0D "BGRX8888"
-             $0D "BGR565"
-             $0D "BGRX5551"
-             $0D "UV88"
-             $0D "UVWQ8888"
-             $0D "UVLX8888"
-      }
-      
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -3708,7 +4427,7 @@ QQRKSRC1
                $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
                $666000407787877866608777777777784448444844487F785C77CF77CC487778
                $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life 2
         cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
       }
       Outp:tbbtn =
@@ -3720,7 +4439,7 @@ QQRKSRC1
                $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
                $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
                $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life 2
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
       sep: = {Typ="S" Txt = ""}
@@ -3754,15 +4473,16 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
+      
   //    EnableTransparency: =
   //    {
   //      Txt = "In OpenGL window, enable transparency (slow!)"
@@ -3778,7 +4498,65 @@ QQRKSRC1
   //    }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      t_GameBuildPgms=!
+  //    t_GameBuildPgms=!
+      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
+      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
+      StupidBuildToolKludge:={Typ="X" Txt="Run tools from base directory" Hint="When this is checked, the tools are run in the base directory,"$0D" on maps in tmpquark"}
+      OutputMapFormat: = {
+        Txt = "Output Map Format"
+        Typ = "C"
+        Items = "HL2"
+               $0D "Classic Quake"
+               $0D "Quark etp"
+               $0D "Valve 220"
+               $0D "Brush Primitives"
+        Hint="These are set for the game's reccommended build tools.  If you don't have these," $0D " Classic Quake1/2/3 will function at a minimal level"
+      }
+//      Typ="X" Txt="Tools support brush primitives" Hint="When this is checked, if use brush primitives map option is also checked,"$0D" maps will be written in brush primitives format"}
+      sep:        = {Typ="S" Txt="1st program"}
+      BuildPgm1:  = {t_GameBuildPgm=!}
+      BuildArgs1: = {t_GameBuildArgs=!}
+      BuildCheck1:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="2nd program"}
+      BuildPgm2:  = {t_GameBuildPgm=!}
+      BuildArgs2: = {t_GameBuildArgs=!}
+      BuildCheck2:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="3rd program"}
+      BuildPgm3:  = {t_GameBuildPgm=!}
+      BuildArgs3: = {t_GameBuildArgs=!}
+      BuildCheck3:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="4th program"}
+      BuildPgm4:  = {t_GameBuildPgm=!}
+      BuildArgs4: = {t_GameBuildArgs=!}
+      BuildCheck4:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="5th program"}
+      BuildPgm5:  = {t_GameBuildPgm=!}
+      BuildArgs5: = {t_GameBuildArgs=!}
+      BuildCheck5:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="6th program"}
+      BuildPgm6:  = {t_GameBuildPgm=!}
+      BuildArgs6: = {t_GameBuildArgs=!}
+      BuildCheck6:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="7th program"}
+      BuildPgm7:  = {t_GameBuildPgm=!}
+      BuildArgs7: = {t_GameBuildArgs=!}
+      BuildCheck7:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="8th program"}
+      BuildPgm8:  = {t_GameBuildPgm=!}
+      BuildArgs8: = {t_GameBuildArgs=!}
+      BuildCheck8:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="9th program"}
+      BuildPgm9:  = {t_GameBuildPgm=!}
+      BuildArgs9: = {t_GameBuildArgs=!}
+      BuildCheck9:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt = ""}
+      MapCommentsPrefix: = {
+        Typ="E"
+        Txt=".MAP comments prefix"
+        Hint="Specify the character(s) that instruct the build-tools,"
+          $0D"which lines in the .MAP file, are end-of-line comments,"
+          $0D"and will be ignored."
+      }
     }
 
     GameHeretic2:form =
@@ -3797,6 +4575,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "HERETIC2.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -3855,12 +4639,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3888,6 +4672,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "H2.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -3948,12 +4738,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -3979,6 +4769,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "JASP.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -4039,12 +4835,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4070,6 +4866,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "JK2MP.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -4130,12 +4932,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4162,6 +4964,12 @@ QQRKSRC1
         Typ = "ED"
         Hint = "Path to the game executable"
         CheckFile = "kingpin.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =
       {
@@ -4218,12 +5026,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4254,6 +5062,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "MOHAA.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -4315,12 +5129,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4351,6 +5165,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "QUAKE.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -4402,12 +5222,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4432,6 +5252,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "QUAKE2.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -4495,12 +5321,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4526,6 +5352,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         //CheckFile = "QUAKE3.EXE"
         CheckFile = "*.EXE" // with so many mods should not be tided to only one exe file.
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -4595,12 +5427,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4625,6 +5457,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "quake4.exe"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -4693,12 +5531,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4731,6 +5569,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "*.EXE" // with so many mods should not be tided to only one exe file.
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -4799,12 +5643,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4835,6 +5679,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "*.EXE" // not sure if it should be tided to only one exe file.
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -4903,12 +5753,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -4933,6 +5783,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "SIN.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       CD: =
       {
@@ -4991,12 +5847,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5023,6 +5879,12 @@ QQRKSRC1
         Typ = "ED"
         Hint = "Path to the game executable"
         CheckFile = "sof.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =
       {
@@ -5079,12 +5941,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5116,6 +5978,12 @@ QQRKSRC1
         Hint = "Path to the game executable"
         CheckFile = "SoF2MP.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
         Typ = "+"
@@ -5176,12 +6044,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5190,29 +6058,102 @@ QQRKSRC1
       t_GameBuildPgms=!
     }
 
+    GameSteam:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Steam Settings ----"}
+      SteamUser: =
+      {
+        Txt = "Steam Account Name"
+        Hint = "The name you logon into steam with"
+            $0D"(actually, the name under which all the apps are installed in the steamapps folder)"
+      }
+      Directory: =
+      {
+        Txt = "Steam Directory"
+        Typ = "ED"      // Edit Directory
+        Hint = "Steam directory"
+        CheckFile = "steam.exe"
+      }
+      ExtractorParameters: =
+      {
+        Txt = "QuArKSAS Parameters"
+        Hint = "Any additional parameters to send to the QuArKSAS extractor"
+      }
+      Autostart: = {
+        Txt="Autostart"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables autostart. This will start Steam if it's needed, but isn't running."
+      }
+      CopyGCF: = {
+        Txt="Cache GCF files"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables caching for GCF files. This will copy GCF files to the cache location,"
+            $0D"so they can be accessed even when Steam is running."
+            $0D"The copying will probably only succeed when Steam is not running."
+      }
+      WarnBeforeClear: = {
+        Txt="Warn Before Clearing Cache"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables a warning before QuArK clears the cache. This will allow you to cancel the clearing."
+      }
+      AllowRecycle: = {
+        Txt="Allow Deletion to Recycle Bin"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "This will delete the files to the recycle bin (if set in Windows), so they can be restored."
+            $0D"You will have to manually delete them from the bin."
+      }
+      ClearcacheGCF: = {
+        Txt="Clear Cache GCF"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables clearing the cache of GCF files. This will clear the Steam cache of GCF files when QuArK shutsdown,"
+            $0D"saving disc space. However, next time the files will have to be copied again,"
+            $0D"which is a slow process."
+      }
+      Clearcache: = {
+        Txt="Clear Cache other files"
+        Typ="X"
+        Cap="Enabled"
+        Hint = "Enables clearing the cache. This will clear the Steam cache when QuArK shutsdown,"
+            $0D"saving disc space. However, next time the files will have to be extracted again,"
+            $0D"which is a (relatively) slow process."
+      }
+    }
+
     GameSTVEF:form =
     {
       Style = "3"
       sep: = {Typ="S" Txt="---- Game Settings ----"}
       Program: = {
         Typ = "C"     // combo box
-        Txt = "StarTrek Voyager Elite Force command-line"
+        Txt = "Star Trek: Voyager - Elite Force command-line"
         Items = "STVoy.EXE +set sv_pure 0"
              $0D"STVoyHM.EXE +set sv_pure 0"
         t_ProgramHint=!
       }
       Directory: =
       {
-        Txt = "Directory of StarTrek Voyager Elite Force"
+        Txt = "Directory of Star Trek: Voyager - Elite Force"
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "STVOY.EXE"
       }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
       CD: =
       {
-        Txt = "StarTrek Voyager Elite Force CD-ROM drive"
+        Txt = "Star Trek: Voyager - Elite Force CD-ROM drive"
         Typ = "ED"      // Edit Directory
-        Hint = "If you installed StarTrek minimally, this is the drive of the CD-ROM."
+        Hint = "If you installed Star Trek: Voyager - Elite Force minimally, this is the drive of the CD-ROM."
         CheckFile = "SETUP\BASEEF\PAK0.PK3"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
@@ -5224,7 +6165,7 @@ QQRKSRC1
                $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
                $666000407787877866608777777777784448444844487F785C77CF77CC487778
                $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to StarTrek (cmd=GAM, game=b)
+        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to Star Trek: Voyager - Elite Force (cmd=GAM, game=b)
         cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
       }
       Outp:tbbtn =
@@ -5236,7 +6177,7 @@ QQRKSRC1
                $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
                $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
                $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to StarTrek (cmd=GAM, game=b)
+        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to Star Trek: Voyager - Elite Force (cmd=GAM, game=b)
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
       sep: = {Typ="S" Txt = ""}
@@ -5275,12 +6216,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5302,7 +6243,7 @@ QQRKSRC1
         Typ = "C"
         Txt = "Sylphis command line"
         Items = "sylphis.exe"
-	t_ProgramHint=!
+        t_ProgramHint=!
       }
       ExtraCmdLine: =
       {
@@ -5316,6 +6257,12 @@ QQRKSRC1
         Typ = "ED"
         Hint = "Path to the game executable"
         CheckFile = "sylphis.exe"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       ShadersPath: =
       {
@@ -5389,13 +6336,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darke"
-         "r scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
@@ -5421,6 +6367,12 @@ QQRKSRC1
         Typ = "ED"
         Hint = "Path to the converter executable"
         CheckFile = ""
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =
       {
@@ -5462,12 +6414,12 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 16 places."
         Min = '1'
         Max = '40'
       }
@@ -5504,6 +6456,12 @@ QQRKSRC1
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
         CheckFile = "WildWest.exe"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -5565,18 +6523,315 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
       }
-      BrushDecimalPlaces: = {
-        Txt = "No. of Decimal Places for Brushes"
+      DecimalPlaces: = {
+        Txt = "No. of decimal places for brushes and beziers."
         Typ = "EF1"
-        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Hint="Set for the number of decimals to write to the map file."$0D"The default is for this game is 5 places."
         Min = '1'
         Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
+    }
+
+    FilesBMP:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading BMP files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving BMP files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+    }
+    FilesDDS:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading DDS files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving DDS files"
+        Typ="CL"
+        Items  = "NVDXT"
+        Values = "NVDXT"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+      sep: = {Typ="S" Txt="---- Advanced Saving Settings ----"}
+      SaveFormat: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported non-alpha DDS textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"
+        Items = "DXT1c"
+             $0D "DXT1a"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "U1555"
+             $0D "U4444"
+             $0D "U565"
+             $0D "U8888"
+             $0D "U888"
+             $0D "U555"
+             $0D "L8"
+             $0D "A8"
+      }
+      SaveFormatA: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported alpha DDS textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"
+        Items = "DXT1c"
+             $0D "DXT1a"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "U1555"
+             $0D "U4444"
+             $0D "U565"
+             $0D "U8888"
+             $0D "U888"
+             $0D "U555"
+             $0D "L8"
+             $0D "A8"
+      }
+      SaveQuality: =
+      {
+        Typ = "CL"
+        Txt = "Quality of exported DDS textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"
+        Items = "Quick"
+             $0D "Normal"
+             $0D "Production"
+             $0D "Highest"
+      }
+    }
+    FilesJPG:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading JPG files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving JPG files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+      sep: = {Typ="S" Txt="---- Advanced FreeImage Settings ----"}
+      LoadQualityFreeImage: =
+      {
+        Typ = "CL"
+        Txt = "Loading quality"
+        Values =  "0"$0D "1"$0D "2"
+        Items = "Default"
+             $0D "Fast"
+             $0D "Accurate"
+        Hint = "The quality the JPG texture will be loaded with when using the FreeImage library"
+      }
+      SaveQualityFreeImage: =
+      {
+        Typ = "CL"
+        Txt = "Saving quality"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"
+        Items = "Default"
+             $0D "Bad (10:1)"
+             $0D "Average (25:1)"
+             $0D "Normal (50:1)"
+             $0D "Good (75:1)"
+             $0D "Superb (100:1)"
+        Hint = "The quality the JPG texture will be saved with when using the FreeImage library"
+      }
+      SaveProgressiveFreeImage: = { Typ="X" Txt="Save Progressive" Cap="Enabled" Hint="Save the JPG texture as a progressive image."}
+    }
+    FilesPCX:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading PCX files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving PCX files"
+        Typ="CL"
+        Items  = "QuArK"   //DevIL and FreeImage don't support PCX file saving!
+        Values = "QuArK"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+    }
+    FilesPNG:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading PNG files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving PNG files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+    }
+    FilesTGA:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading TGA files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving TGA files"
+        Typ="CL"
+        Items  = "DevIL" $0D "FreeImage"
+        Values = "DevIL" $0D "FreeImage"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+    }
+    FilesVTF:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Library Settings ----"}
+      LoadLibrary: =
+      {
+        Txt="Select library for loading VTF files"
+        Typ="CL"
+        Items  = "VTFLib"
+        Values = "VTFLib"
+        Hint="Select the library QuArK will use to load files of this type."
+      }
+      SaveLibrary: =
+      {
+        Txt="Select library for saving VTF files"
+        Typ="CL"
+        Items  = "VTFLib"
+        Values = "VTFLib"
+        Hint="Select the library QuArK will use to save files of this type."
+      }
+      sep: = {Typ="S" Txt="---- Advanced Saving Settings ----"}
+      SaveFormat: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported non-alpha VTF textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+        Items = "RGBA8888"
+             $0D "ABGR8888"
+             $0D "RGB888"
+             $0D "BGR888"
+             $0D "RGB565"
+             $0D "I8"
+             $0D "IA88"
+             $0D "P8"
+             $0D "A8"
+             $0D "RGB888_BLUESCREEN"
+             $0D "BGR888_BLUESCREEN"
+             $0D "ARGB8888"
+             $0D "BGRA8888"
+             $0D "DXT1"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "BGRX8888"
+             $0D "BGR565"
+             $0D "BGRX5551"
+             $0D "BGRA4444"
+             $0D "DXT1_ONEBITALPHA"
+             $0D "BGRA5551"
+             $0D "UV88/UVWQ8888"
+             $0D "RGBA16161616F"
+             $0D "RGBA16161616"
+             $0D "UVLX8888"
+             $0D "I32F"
+             $0D "RGB323232F"
+             $0D "RGBA32323232F"
+      }
+      SaveFormatA: =
+      {
+        Typ = "CL"
+        Txt = "Format of exported alpha VTF textures"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                 "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
+                 "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"27"$0D"28"
+        Items = "RGBA8888"
+             $0D "ABGR8888"
+             $0D "RGB888"
+             $0D "BGR888"
+             $0D "RGB565"
+             $0D "I8"
+             $0D "IA88"
+             $0D "P8"
+             $0D "A8"
+             $0D "RGB888_BLUESCREEN"
+             $0D "BGR888_BLUESCREEN"
+             $0D "ARGB8888"
+             $0D "BGRA8888"
+             $0D "DXT1"
+             $0D "DXT3"
+             $0D "DXT5"
+             $0D "BGRX8888"
+             $0D "BGR565"
+             $0D "BGRX5551"
+             $0D "BGRA4444"
+             $0D "DXT1_ONEBITALPHA"
+             $0D "BGRA5551"
+             $0D "UV88/UVWQ8888"
+             $0D "RGBA16161616F"
+             $0D "RGBA16161616"
+             $0D "UVLX8888"
+             $0D "I32F"
+             $0D "RGB323232F"
+             $0D "RGBA32323232F"
+      }
     }
 
     MapColors:form =
@@ -5603,7 +6858,7 @@ QQRKSRC1
           BrEnt      = $800000
           Duplicator = $0000FF
           Tag        = $FF0000
-          GrayImage  = $FF0000
+          DragImage  = $FF0000
           BSP        = $008080
           Digger     = $FF00FF
           Bezier     = $008080
@@ -5631,7 +6886,7 @@ QQRKSRC1
           BrEnt      = $800000
           Duplicator = $0000FF
           Tag        = $FF0000
-          GrayImage  = $FF0000
+          DragImage  = $FF0000
           BSP        = $008080
           Digger     = $FF00FF
           Bezier     = $008080
@@ -5659,7 +6914,7 @@ QQRKSRC1
           BrEnt      = $800000
           Duplicator = $008000
           Tag        = $FF8040
-          GrayImage  = $0000FF
+          DragImage  = $0000FF
           BSP        = $8080FF
           Digger     = $FF00FF
           Bezier     = $008080
@@ -5687,7 +6942,7 @@ QQRKSRC1
           BrEnt      = $FFFF80
           Duplicator = $C000C0
           Tag        = $FF0000
-          GrayImage  = $C1DEFF
+          DragImage  = $C1DEFF
           BSP        = $419AFF
           Digger     = $FF00FF
           Bezier     = $008080
@@ -5711,14 +6966,14 @@ QQRKSRC1
       SelXZ:      = { Txt="Selected brushes, side view" Typ="LI" }
       SelXY:      = { Txt="Selected brushes, top view"  Typ="LI" }
       Gray:       = { Txt="Out-of-view grayed parts"    Typ="LI" }
-      Axis:       = { Txt="Axis"                        Typ="LI" }
+      Axis:       = { Txt="Editors Axis"                Typ="LI" }
       GridXZ:     = { Txt="Grid dots, side view"        Typ="LI" }
       GridXY:     = { Txt="Grid dots, top view"         Typ="LI" }
       GridLines:  = { Txt="Grid lines"                  Typ="LI" }
       BrEnt:      = { Txt="Brush entities (doors,...)"  Typ="LI" }
       Duplicator: = { Txt="Duplicator images"           Typ="LI" }
       Tag:        = { Txt="Tagged point / group handle" Typ="LI" }
-      GrayImage:  = { Txt="While dragging"              Typ="LI" }
+      DragImage:  = { Txt="While dragging"              Typ="LI" }
       BSP:        = { Txt="BSP map"                     Typ="LI" }
       Digger:     = { Txt="Digging polyhedrons"         Typ="LI" }
       Bezier:     = { Txt="Bezier patches"              Typ="LI" }
@@ -5737,20 +6992,39 @@ QQRKSRC1
         Data: =       // the data that this button puts in the object when you click it
         {
           InvertedColors = ""
-          FillColor  = $FFFFFF
-          ViewXZ     = $E8E8B8
-          ViewXY     = $E8DCB8
-          SelXZ      = $0080C0
-          SelXY      = $0090C0
-          Gray       = $BABABA
-          Axis       = $A6CAF0
-          GridXZ     = $008000
-          GridXY     = $808000
-          GridLines  = $D0D0FF
-          Tag        = $FF0000
-          GrayImage  = $FF0000
-          Linear     = $FF0080
-          Vertices   = $FF0000
+          Options3Dviews_fillColor1  = $FF8080
+          Options3Dviews_fillColor2  = $FF8080
+          Options3Dviews_fillColor3  = $FF8080
+          Options3Dviews_fillColor4  = $FF8080
+          Options3Dviews_fillColor5  = $FF8080
+          ViewXZ                     = $E8E8B8
+          ViewXY                     = $E8DCB8
+          Gray                       = $BABABA
+          Axis                       = $A6CAF0
+          GridXZ                     = $008000
+          GridXY                     = $808000
+          GridLines                  = $D0D0FF
+          LinearHandleCircle         = $FF0080
+          LinearHandleCenter         = $00FF
+          LinearHandleCorners        = $FFFF
+          LinearHandleSides          = $8000FF
+          LinearHandleOutline        = $FFFFFFFF
+          ModelAxisX                 = $FF
+          ModelAxisY                 = $00FF
+          ModelAxisZ                 = $FF00FF
+          DragImage                  = $00F000
+          Drag3DLines                = $00F000
+          Vertices                   = $FF0000
+          VertexSelListColor         = $0080C0
+          FaceSelOutline             = $0080FF
+          BackFaceColor1             = $FFFFFF
+          BackFaceColor2             = $BABABA
+          SkinLines                  = $FF0000
+          SkinDragLines              = $00F000
+          SkinVertexSelListColor     = $0080C0
+          SkinViewFaceOutline        = $FFFFFF
+          SkinViewFaceSelected       = $00FF00
+          SkinGridDots               = $00F000
         }
       }
       Sep1: =
@@ -5764,20 +7038,54 @@ QQRKSRC1
         Typ = "X"     // checkboX
         Cap = "white on black"
       }
-      FillColor:  = { Txt = "Model fill color (requires file reload)" Typ = "LI" } // coLor selection, Integer
-      ViewXZ:     = { Txt = "Side map view (XZ)" Typ = "LI" }
-      ViewXY:     = { Txt = "Top map view (XY)" Typ = "LI" }
-      SelXZ:      = { Txt = "Selected brushes, side view" Typ = "LI" }
-      SelXY:      = { Txt = "Selected brushes, top view" Typ = "LI" }
-      Gray:       = { Txt = "Out-of-view grayed parts" Typ = "LI" }
-      Axis:       = { Txt = "Axis" Typ = "LI" }
-      GridXZ:     = { Txt = "Grid dots, side view" Typ = "LI" }
-      GridXY:     = { Txt = "Grid dots, top view" Typ = "LI" }
-      GridLines:  = { Txt = "Grid lines" Typ = "LI" }
-      Tag:        = { Txt = "Tagged point / group handle" Typ = "LI" }
-      GrayImage:  = { Txt = "While dragging" Typ = "LI" }
-      Linear:     = { Txt = "Linear Mapping box" Typ = "LI" }
-      Vertices:   = { Txt = "Vertex dots" Typ = "LI" }
+      Sep2: =
+      {
+        Typ = "S"    // Separator
+        Txt = ""
+      }
+      Sep3: =
+      {
+        Typ = "S"    // Separator
+        Txt = "Editor Views:"
+      }
+      ViewXZ:                  = { Txt = "Side map view (XZ)" Typ = "LI" }
+      ViewXY:                  = { Txt = "Top map view (XY)" Typ = "LI" }
+      Gray:                    = { Txt = "Out-of-view grayed parts" Typ = "LI" }
+      Axis:                    = { Txt = "Editors Axis" Typ = "LI" }
+      GridXZ:                  = { Txt = "Grid dots, side view" Typ = "LI" }
+      GridXY:                  = { Txt = "Grid dots, top view" Typ = "LI" }
+      GridLines:               = { Txt = "Grid lines" Typ = "LI" }
+      LinearHandleCircle:      = { Txt = "Linear Handle Circle" Typ = "LI" }
+      LinearHandleCenter:      = { Txt = "Linear Handle Center" Typ = "LI" }
+      LinearHandleCorners:     = { Txt = "Linear Handle Corners" Typ = "LI" }
+      LinearHandleSides:       = { Txt = "Linear Handle Sides" Typ = "LI" }
+      LinearHandleOutline:     = { Txt = "Linear Handle Outline" Typ = "LI" }
+      ModelAxisX:              = { Txt = "Models X Axis" Typ = "LI" }
+      ModelAxisY:              = { Txt = "Models Y Axis" Typ = "LI" }
+      ModelAxisZ:              = { Txt = "Models Z Axis" Typ = "LI" }
+      DragImage:               = { Txt = "While dragging in Object Maker" Typ = "LI" }
+      Drag3DLines:             = { Txt = "Drag Lines/ Rec Selector / Base Vertex pick" Typ = "LI" }
+      Vertices:                = { Txt = "Vertex dots" Typ = "LI" }
+      VertexSelListColor:      = { Txt = "Picked Vertexes" Typ = "LI" }
+      FaceSelOutline:          = { Txt = "Selected Faces Outline Color" Typ = "LI" }
+      BackFaceColor1:          = { Txt = "Back Faces Pattern - color 1" Typ = "LI" }
+      BackFaceColor2:          = { Txt = "Back Faces Pattern - color 2" Typ = "LI" }
+      Sep4: =
+      {
+        Typ = "S"    // Separator
+        Txt = ""
+      }
+      Sep5: =
+      {
+        Typ = "S"    // Separator
+        Txt = "Skin-view:"
+      }
+      SkinGridDots:            = { Txt = "Grid dots" Typ = "LI" }
+      SkinLines:               = { Txt = "Skin Mesh Lines" Typ = "LI" }
+      SkinDragLines:           = { Txt = "Drag Lines/ Rec Selector / Base Vertex pick" Typ = "LI" }
+      SkinVertexSelListColor:  = { Txt = "Skin Vertex picks" Typ = "LI" }
+      SkinViewFaceOutline:     = { Txt = "Face Outline" Typ = "LI" }
+      SkinViewFaceSelected:    = { Txt = "Face Selected" Typ = "LI" }
     }
     HotKeyForm:incl =
     {
@@ -5857,7 +7165,7 @@ QQRKSRC1
        Select Child: = {HotKeyForm = !}
        Select Next: = {HotKeyForm = !}
        Select Previous: = {HotKeyForm = !}
-       Same Type = {AlphaKeyForm = ! Hint="When this key is depressed, prev/next selection must be of same type" $0D
+       Same Type: = {AlphaKeyForm = ! Hint="When this key is depressed, prev/next selection must be of same type" $0D
                      " Must be an ordinary alphabetic key, not used by 3DView|Keyboard Settings."}
        sep:={Typ="S" Txt = ""}
        Insert: = {HotKeyForm = !}
@@ -5873,7 +7181,7 @@ QQRKSRC1
        Restrict to Selection: = {HotKeyForm = !}
        Zoom to Selection: = {HotKeyForm = !}
        Brush Subtraction: = {HotKeyForm = !}
-       Browse Multiple Selection = {HotKeyForm = !}
+       Browse Multiple Selection: = {HotKeyForm = !}
        Freeze Selection: = {HotKeyForm = !}
        Unfreeze Selection: = {HotKeyForm = !}
        Invert Face Selection: = {HotKeyForm = !}
@@ -5940,14 +7248,14 @@ QQRKSRC1
     }
     MapKeys:form = {
       Style = "7"
-      GridPlus    = {Typ="K" Txt="Increase grid step (*2)"}
-      GridMinus   = {Typ="K" Txt="Decrease grid step (/2)"}
-      ZoomIn      = {Typ="K" Txt="Zoom in"}
-      ZoomOut     = {Typ="K" Txt="Zoom out"}
-      MoveLeft    = {Typ="K" Txt="Move objects to the left"}
-      MoveRight   = {Typ="K" Txt="Move objects to the right"}
-      MoveUp      = {Typ="K" Txt="Move objects up"}
-      MoveDown    = {Typ="K" Txt="Move objects down"}
+      GridPlus:    = {Typ="K" Txt="Increase grid step (*2)"}
+      GridMinus:   = {Typ="K" Txt="Decrease grid step (/2)"}
+      ZoomIn:      = {Typ="K" Txt="Zoom in"}
+      ZoomOut:     = {Typ="K" Txt="Zoom out"}
+      MoveLeft:    = {Typ="K" Txt="Move objects to the left"}
+      MoveRight:   = {Typ="K" Txt="Move objects to the right"}
+      MoveUp:      = {Typ="K" Txt="Move objects up"}
+      MoveDown:    = {Typ="K" Txt="Move objects down"}
     }
     GeneralDisplay:form =
     {
@@ -5965,58 +7273,10 @@ QQRKSRC1
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
       sep: = {Typ="S" Txt = ""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
-    }
-    GeneralMemory:form =
-    {
-      Style = "3"
-      MaxUndo: = {Txt="Max. undo levels" Typ="EF1" Hint="Maximum number of consecutive undos allowed"}
-      MinUndo: = {Txt="Min. undo levels" Typ="EF1" Hint="Minimum number of consecutive undos allowed (warn if not enough memory for this number)"}
-      UndoBufferSize: = {Txt="Size of undo buffer (MB)" Typ="EF1" Hint="Deletes older undo levels if it would take more memory than this"}
-      GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files from Quake (e.g. textures)"}
-      CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of Compression to use for zip files (0 .. 9)"}
-      CompressionBufferSize: = {Txt="Size of compression buffer (KB)" Typ="EF1" Hint="Size of memory buffer to allocate when compressing files"}
-    }
-    externaledit:incl = {
-      Typ = "EP"
-      DefExt = "exe"
-      Hint = "the program to use to edit files of this type, or <open> or <edit>"
-    }
-    GeneralExternalEditors:form =
-    {
-      Style = "3"
-      Info: = {Typ="S" Txt="External editors to called from QuArK"}
-      Info2: = {Typ="S" Txt = ""}
-      .pcx: = { Txt="PCX images" externaledit = ! }
-      .tga: = { Txt="TGA images" externaledit = ! }
-      .bmp: = { Txt="BMP images" externaledit = ! }
-      .jpg: = { Txt="JPG images" externaledit = ! }
-      .wav: = { Txt="WAV sounds" externaledit = ! }
-      .cin: = { Txt="CIN videos" externaledit = ! }
-      .mdl: = { Txt="MDL models" externaledit = ! }
-      .md2: = { Txt="MD2 models" externaledit = ! }
-      .map: = { Txt="MAP text files" externaledit = ! }
-      .wal: = { Txt="WAL textures" externaledit = ! }
-      .swl: = { Txt="SWL Sin textures" externaledit = ! }
-      .m8:  = { Txt="M8 textures" externaledit = ! }
-      .pak: = { Txt="PAK archives" externaledit = ! }
-      .pk3: = { Txt="PK3 archives" externaledit = ! }
-      .pk4: = { Txt="PK4 archives" externaledit = ! }
-      .sin: = { Txt="SIN Pak archives" externaledit = ! }
-      .bsp: = { Txt="BSP compiled maps" externaledit = ! }
-      .wad: = { Txt="WAD texture lists" externaledit = ! }
-    }
-    GeneralQuakeC:form =
-    {
-      Style = "3"
-      Font0: = {Typ="F" Txt="Plain text" Cap="Plain text sample"}
-      Font5: = {Typ="F" Txt="Reserved words" Cap="if else float"}
-      Font1: = {Typ="F" Txt="Vectors" Cap="'100 -50 20'"}
-      Font3: = {Typ="F" Txt="Strings" Cap=$22"String sample"$22}
-      Font2: = {Typ="F" Txt="Operators" Cap="+ - * / < > = !"}
-      Font4: = {Typ="F" Txt="Comments" Cap="// Comments"}
-      Font6: = {Typ="F" Txt="Brackets" Cap="{   }"}
-      Sep1: = {Typ="S" Txt = ""}
-      Enabled: = {Typ="X" Txt="Code Syntax Highlighting" Cap="Enabled"}
+      TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
+      MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 5)"}
+      //ConsoleWidth = {Txt="Width of console" Typ="EF1" Hint="Amount of character per line in the console (80 .. 80)"}
+      ConsoleHeight = {Txt="Height of console" Typ="EF1" Hint="Maximum amount of lines in the console (60 .. 600)"}
     }
     General3DView:form =
     {
@@ -6024,7 +7284,7 @@ QQRKSRC1
       Lib: = {
         Txt="Select 3D viewer"
         Typ="CL"
-        Items  = "Software 3D only" $0D "3DFX (Glide)" $0D "OpenGL" $0D "DirectX"
+        Items  = "Software 3D" $0D "Glide (3Dfx)" $0D "OpenGL" $0D "DirectX (Direct3D)"
         Values = "qrksoftg.dll" $0D "glide2x.dll" $0D "OpenGL32.dll" $0D "d3d9.dll"
         Hint="see also the viewers configuration pages"
       }
@@ -6074,84 +7334,217 @@ QQRKSRC1
       L2: = {Typ="S" Txt="Additional settings"}
       Warning3D: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
       CloseOnGame: = {Typ="X" Txt="Close views when the game is run" Cap="Enabled" Hint="If checked, this can save system resources so the game runs smoother"}
+      CloseOnSetup: = {Typ="X" Txt="Close views when the configurations are changed" Cap="Enabled" Hint="If checked, this could prevent problems when changing renderers"}
+      AllowMultiple: = {Typ="X" Txt="Allow multiple 3D windows" Cap="Enabled" Hint="If checked, this allows multiple 3D windows to be opened"}
     }
     GeneralSoftware3D:form =
     {
       Style = "3"
       L1: = {Typ="S" Txt="---- Software 3D driver only ----"}
-      SoftQuality: = {
+      StillQuality: = {
         Txt="Image quality"
         Typ="CL"
         Items  = "High details" $0D "Low details" $0D "Low details, smoothed"
         Values =     "0"        $0D     "1"       $0D     "2"
         Hint = "Slowest: High details   Fastest: Low details"
       }
-      DynamicQuality: = {
-        Txt="Quality while walking"
+      MovingQuality: = {
+        Txt="Quality while moving"
         Typ="CL"
         Items  = "High details" $0D "Low details" $0D "Low details, smoothed"
         Values =     "0"        $0D     "1"       $0D     "2"
         Hint = "Slowest: High details   Fastest: Low details"
       }
     }
-    General3DFX:form =
+    GeneralGlide:form =
     {
       Style = "3"
-      L0: = {Typ="S" Txt="---- 3DFX card owners only ----"}
-      //FullScreen: = {Txt="3DFX Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the 3DFX card display is copied in a window"}
+      L0: = {Typ="S" Txt="---- Glide 2.4 card owners only ----"}
+      //FullScreen: = {Txt="Glide Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the Glide card display is copied in a window"}
       TwoMonitors: = {
-        Txt="Second monitor on 3DFX"
+        Txt="Second monitor on Glide"
         Typ="CL"
-        Items  = "I've only one monitor" $0D "3DFX monitor at left" $0D "3DFX monitor at right"
+        Items  = "I've only one monitor" $0D "Glide monitor at left" $0D "Glide monitor at right"
         Values = "" $0D "1" $0D "2"
-        Hint="If you have two monitors (two screens), you can connect one on the 3DFX card and one on the 2D card"
+        Hint="If you have two monitors (two screens), you can connect one on the Glide card and one on the 2D card"
       }
-      FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen 3DFX mode only"}
-      FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="resolution is always 640x480, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
+      FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen Glide mode only"}
+      FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="Rendering resolution is set below, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
       TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
+      Sep0: = {Typ="S" Txt = ""}
+      L1: = {Typ="S" Txt="---- additional options ----"}
       Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
+      Resolution: = {
+        Txt="Resolution"
+        Typ="CL"
+        Items  = "320x200" $0D "400x300" $0D "640x480" $0D "800x600" $0D "1024x768" $0D "1280x1024" $0D "1600x1200"
+        Values =       "0" $0D      "15" $0D       "7" $0D       "8" $0D       "12" $0D        "13" $0D        "14"
+        Hint = "The lower the faster, but the quality may suffer"
+      }
+      Mirror: = {
+        Txt="Mirroring"
+        Typ="CL"
+        Items  = "No mirroring" $0D "Vertical mirroring"
+        Values = "0"            $0D "1"
+        Hint = "Flips the screen around. Change this option if your view is upside down"
+      }
     }
     GeneralOpenGL:form =
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- OpenGL 1.1 hardware owners only ----"}
-      Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
+      Fog: = {Typ="X" Txt="Fade" Cap="Enabled" Hint = "Enables fading for distant objects."}
       Transparency: = {
         Txt="Transparency"
         Typ="X"
         Cap="Enabled"
-        Hint = "For Half-Life and Half-Life 2:"
+        Hint = "Enables transparency."
+            $0D
+            $0D"For Half-Life and Half-Life 2:"
             $0D"When checked brush-entities that have their"
             $0D"'rendermode'and 'renderamt' set to transparency"
             $0D"will be drawn transparent in the OpenGL window all"
             $0D"though NOT exactly drawn as they will be in the game."
-            $0D
-            $0D"After resetting here close and reopen the OpenGL window."
       }
       Lights: = {
-        Txt="Lights"
+        Txt="Lighting"
         Typ="X"
         Cap="Enabled"
-        Hint="Levels with few lights will look black -- turn off lighting in this case"
+        Hint="Levels with few lights will look black -- turn off lighting in this case."
+          $0D"For more options, see the lighting quality settings below."
       }
-      L0: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
-      L0: = {Typ="S" Bold="0" Txt="configuration page for each game."}
+      L1: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
+      L2: = {Typ="S" Bold="0" Txt="configuration page for each game."}
       Sep0: = {Typ="S" Txt = ""}
-      L0: = {Typ="S" Txt="---- troubleshooting options ----"}
-      Bilinear: = { Typ="X" Txt="Bilinear Filtering" Cap="Enabled" }
-      DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" }
+      L3: = {Typ="S" Txt="---- additional options ----"}
+      Bilinear: = { Typ="X" Txt="Bilinear filtering" Cap="Enabled" }
+      DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" Hint="Reduces the flickering noticed when the view redraws."}
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
       AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
-      ColorBits: = { Typ="EF1" Txt="Color bits (0=current)" }
-      DepthBits: = { Typ="EF1" Txt="Depth buffer bits" }
-      VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it. For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1; otherwise, the textured images are smaller than the wireframes." }
-      GLLists: = { Typ="X" Txt="GL Lists" Cap="Enabled" Hint="Speeds up rendering when lights are enabled"}
+      ColorBits: = { Typ="EF1" Txt="Color bits (0=current)" Hint="The amount of bits per pixel. The higher, the better the quality."
+                                $0D"Not all numbers are supported. Most common are 16, 24 and 32." }
+      DepthBits: = { Typ="EF1" Txt="Depth buffer bits" Hint="The amount of bits per pixel in the depth buffer. The higher,"
+                                $0D"the smaller the chance of non-overlapping faces starting to flicker at a distance."
+                                $0D"Not all numbers are supported. Most common are 16 and 24." }
+      VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it."
+                                                         $0D"For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1;"
+                                                         $0D"otherwise, the textured images are smaller than the wireframes." }
+      GLLists: = { Typ="X" Txt="Display lists" Cap="Enabled" Hint="Speeds up rendering. However, slight slowdowns might be noticed when changes to the map/model are made,"
+                                                               $0D"because the list then needs to be rebuild with the updated information." }
+      Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
+                                                             $0D"This doesn't apply to transparent faces." }
+      Ambient: = {Txt="Ambient lighting brightness" Typ="EF1" Min="-10" Max="10" Hint="The brightness of the ambient lighting." }
+      StillQuality: = {
+        Txt="Lighting quality when not moving"
+        Typ="CL"
+        Items  = "OpenGL lighting" $0D "Basic lighting" $0D "No lighting"
+        Values =     "0"        $0D     "1"       $0D     "2"
+        Hint = "Slowest: OpenGL lighting   Fastest: No lighting"
+            $0D"(Lighting needs to be enabled for this options to be effective)"
+      }
+      MovingQuality: = {
+        Txt="Lighting quality while moving"
+        Typ="CL"
+        Items  = "OpenGL lighting" $0D "Basic lighting" $0D "No lighting"
+        Values =     "0"        $0D     "1"       $0D     "2"
+        Hint = "Slowest: OpenGL lighting   Fastest: No lighting"
+            $0D"(Lighting needs to be enabled for this options to be effective)"
+      }
     }
     GeneralDirectX:form =
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- DirectX 9.0c hardware owners only ----"}
-      L1: = {Typ="S" Bold="0" Txt="This renderer is not available at the moment."}
+      L1: = {Typ="S" Bold="0" Txt="This renderer has not been fully implemented yet."}
+      BackBufferFormat: =
+      {
+        Typ = "CL"
+        Txt = "Back buffer format"
+        Values ="0"
+             $0D"1"
+             $0D"2"
+             $0D"3"
+             $0D"4"
+             $0D"5"
+        Items = "A2R10G10B10 (32 bits)"
+             $0D"A8R8G8B8 (32 bits)"
+             $0D"X8R8G8B8 (32 bits)"
+             $0D"A1R5G5B5 (16 bits)"
+             $0D"X1R5G5B5 (16 bits)"
+             $0D"R5G6B5 (16 bits)"
+        Hint="The amount of bits per pixel. The higher, the better the quality."
+          $0D"Some formats might not be supported."
+      }
+      StencilBufferBits: =
+      {
+        Typ = "CL"
+        Txt = "Depth buffer bits"
+        Values = "0"$0D"1"
+        Items = "16"$0D"32"
+        Hint="The amount of bits per pixel in the depth buffer. The higher,"
+          $0D"the smaller the chance of non-overlapping faces starting to flicker at a distance."
+      }
+    }
+    GeneralMemory:form =
+    {
+      Style = "3"
+      MaxUndo: = {Txt="Max. undo levels" Typ="EF1" Hint="Maximum number of consecutive undos allowed"}
+      MinUndo: = {Txt="Min. undo levels" Typ="EF1" Hint="Minimum number of consecutive undos allowed (warn if not enough memory for this number)"}
+      GameFiles: = {Txt="Number of game files" Typ="EF1" Hint="Number of game files to keep in memory (e.g. textures)"}
+      UndoBufferSize: = {Txt="Size of undo buffer (MB)" Typ="EF1" Hint="Deletes older undo levels if it would take more memory than this"}
+      GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files (e.g. textures)"}
+      CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of Compression to use for zip files (0 .. 9)"}
+      CompressionBufferSize: = {Txt="Size of compression buffer (KB)" Typ="EF1" Hint="Size of memory buffer to allocate when compressing files"}
+    }
+    GeneralUpdate:form =
+    {
+      Style = "3"
+      UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
+      UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
+      AutomaticInstall: = {Typ="X" Txt="Automatically update" Cap="Enabled" Hint = "Automatically download and isntall any updates available."}
+    }
+    externaledit:incl = {
+      Typ = "EP"
+      DefExt = "exe"
+      Hint = "the program to use to edit files of this type, or <open> or <edit>"
+    }
+    GeneralExternalEditors:form =
+    {
+      Style = "3"
+      Info: = {Typ="S" Txt="External editors to called from QuArK"}
+      Info2: = {Typ="S" Txt = ""}
+      .pcx: = { Txt="PCX images" externaledit = ! }
+      .tga: = { Txt="TGA images" externaledit = ! }
+      .bmp: = { Txt="BMP images" externaledit = ! }
+      .jpg: = { Txt="JPG images" externaledit = ! }
+      .png: = { Txt="PNG images" externaledit = ! }
+      .wav: = { Txt="WAV sounds" externaledit = ! }
+      .cin: = { Txt="CIN videos" externaledit = ! }
+      .mdl: = { Txt="MDL models" externaledit = ! }
+      .md2: = { Txt="MD2 models" externaledit = ! }
+      .map: = { Txt="MAP text files" externaledit = ! }
+      .wal: = { Txt="WAL textures" externaledit = ! }
+      .swl: = { Txt="SWL Sin textures" externaledit = ! }
+      .m8:  = { Txt="M8 textures" externaledit = ! }
+      .pak: = { Txt="PAK archives" externaledit = ! }
+      .pk3: = { Txt="PK3 archives" externaledit = ! }
+      .pk4: = { Txt="PK4 archives" externaledit = ! }
+      .sin: = { Txt="SIN Pak archives" externaledit = ! }
+      .bsp: = { Txt="BSP compiled maps" externaledit = ! }
+      .wad: = { Txt="WAD texture lists" externaledit = ! }
+    }
+    GeneralQuakeC:form =
+    {
+      Style = "3"
+      Font0: = {Typ="F" Txt="Plain text" Cap="Plain text sample"}
+      Font5: = {Typ="F" Txt="Reserved words" Cap="if else float"}
+      Font1: = {Typ="F" Txt="Vectors" Cap="'100 -50 20'"}
+      Font3: = {Typ="F" Txt="Strings" Cap=$22"String sample"$22}
+      Font2: = {Typ="F" Txt="Operators" Cap="+ - * / < > = !"}
+      Font4: = {Typ="F" Txt="Comments" Cap="// Comments"}
+      Font6: = {Typ="F" Txt="Brackets" Cap="{   }"}
+      Sep1: = {Typ="S" Txt = ""}
+      Enabled: = {Typ="X" Txt="Code Syntax Highlighting" Cap="Enabled"}
     }
     GeneralAssociations:form =
     {
@@ -6230,7 +7623,7 @@ QQRKSRC1
       BBoxSelected:             = {Typ="X" Txt="   ``"                          Cap="Dark box on selected"                 }
       DeleteFaces:              = {Typ="X" Txt="Unused faces && polys"          Cap="Delete unused faces"                  }
       AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                      }
-      PolySelectNoFill:         = {Typ="X" Txt="Polyhedron selection"           Cap="Not filled-see through"                      }
+      PolySelectNoFill:         = {Typ="X" Txt="Polyhedron selection"           Cap="Not filled-see through"               }
       PolySubtractMax:          = {Typ="X" Txt="Polyhedron subtraction"         Cap="Allow overlapping"                    }
       ComputePolys:             = {Typ="X" Txt="   ``"                          Cap="Dig in 3D views"                      }
       HideFaces:                = {Typ="X" Txt="Polyhedron faces"               Cap="Hide faces in tree"                   }
@@ -6240,14 +7633,22 @@ QQRKSRC1
       AutoCheckMap:             = {Typ="X" Txt="When building the map"          Cap="Perform checks first"                 }
       IgnoreToBuild:            = {Typ="X" Txt="   ``"                          Cap="Ignore groups marked so"              }
       DisableMapComments:       = {Typ="X" Txt="   ``"                          Cap="Don't write comments in .map files"   }
-//      DisableEnhTex:          = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
+    //DisableEnhTex:            = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
       DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
       UseIntegralVertices:      = {Typ="X" Txt="   ``"                          Cap="Use Integral Vertices as Threepoints" }
+      SaveMapVersion: = {
+        Typ = "CL"
+        Txt     = "Map version to use for Doom 3"
+        Items   = "Map version 1"
+               $0D"Map version 2"
+        Values =  "1"
+               $0D"2"
+        Hint    = "Doom 3 works with two different map versions. Map version 2 should be used."
+      }
     }
     MdlOptions:form =
     {
       Style = "1"
-      SolidFrame:               = {Typ="X" Txt="Model frame fill"               Cap="Frame filled in (requires file reload)" }
       DrawAxis:                 = {Typ="X" Txt="Model background"               Cap="Draw axis"                            }
       DrawMapLimit:             = {Typ="X" Txt="   ``"                          Cap="Draw model limits"                    }
       SolidGrid:                = {Typ="X" Txt="Grid"                           Cap="Grid as lines"                        }
@@ -6255,16 +7656,31 @@ QQRKSRC1
       GridActive:               = {Typ="X" Txt="   ``"                          Cap="Grid active"                          }
       GridVisibleTex:           = {Typ="X" Txt="   ``"                          Cap="Show it on textured views too"        }
       CompassNumbers:           = {Typ="X" Txt="Compass"                        Cap="Display angle values"                 }
-    //GrayOutOfView:            = {Typ="X" Txt="Model view mode"                  Cap="Gray out of view"                     }
+    //GrayOutOfView:            = {Typ="X" Txt="Model view mode"                Cap="Gray out of view"                     }
     //HideOutOfView:            = {Typ="X" Txt="   ``"                          Cap="Hide out of view"                     }
     //Textured:                 = {Typ="X" Txt="   ``"                          Cap="Textured view"                        }
     //ViewModels:               = {Typ="X" Txt="Textured view"                  Cap="...include Models"                    }
-      NoScrollBars:             = {Typ="X" Txt="Model view scroll"                Cap="Hide scroll bars"                     }
+      NoScrollBars:             = {Typ="X" Txt="Model view scroll"              Cap="Hide scroll bars"                     }
       CrossCursor:              = {Typ="X" Txt="Mouse cursor"                   Cap="Cross-like cursor"                    }
       HideMouseDrag:            = {Typ="X" Txt="   ``"                          Cap="Hidden while dragging"                }
-      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                       }
+      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                      }
       PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
-      HandleHints:              = {Typ="X" Txt="Hints (help rectangles)"        Cap="Hints for map handles"                }
+      HandleHints:              = {Typ="X" Txt="Hints (help rectangles)"        Cap="Hints for model handles"              }
+      Recenter:                 = {Typ="X" Txt="Position of new objects"        Cap="Screen center"                        }
+      Sep: =
+      {
+        Typ = "S"    // Separator
+        Txt = ""
+      }
+      sep: = 
+      {
+        Typ="S"
+        Txt = "Skin-view:"
+      }
+      SkinFrom3Dview:           = {Typ="X" Txt="Co-ordnances"                    Cap="Cords from 3D view"                   }
+      UseSkinViewScale:         = {Typ="X" Txt="Apply scale"                     Cap="Apply Skin-view scale"                }
+      SkinGridVisible:          = {Typ="X" Txt="Grid"                            Cap="Grid visible"                         }
+      SkinGridActive:           = {Typ="X" Txt="   ``"                           Cap="Grid active"                          }
     }
     MapBuilding:form =
     {
@@ -6333,22 +7749,41 @@ QQRKSRC1
       ImageListTextureDimension: = {
         Txt="Dimension of textures in texture-list"
         Hint="The bigger the dimension, more memory is needed, so make sure you don't overdo it."
-          $0D"Only dimensions 32 to 128 in steps of 16 are allowed: 32, 48, 64, 80, 96, 112, 128."
+          $0D"Only dimensions 16 to 256 in steps of 16 are allowed."
         Typ="C"
-        items  = "32  (32x32)"
+        items  = "16  (16x16)"
+              $0D"32  (32x32)"
               $0D"48  (48x48)"
               $0D"64  (64x64)"
               $0D"80  (80x80)"
               $0D"96  (96x96)"
               $0D"112  (112x112)"
               $0D"128  (128x128)"
-        values = "32"
+              $0D"144  (144x144)"
+              $0D"160  (160x160)"
+              $0D"176  (176x176)"
+              $0D"192  (192x192)"
+              $0D"208  (208x208)"
+              $0D"224  (224x224)"
+              $0D"240  (240x240)"
+              $0D"256  (256x256)"
+        values = "16"
+              $0D"32"
               $0D"48"
               $0D"64"
               $0D"80"
               $0D"96"
               $0D"112"
               $0D"128"
+              $0D"144"
+              $0D"160"
+              $0D"128"
+              $0D"176"
+              $0D"192"
+              $0D"208"
+              $0D"224"
+              $0D"240"
+              $0D"256"
       }
       ImageListLoadNoOfTexAtEachCall: = {
         Txt="No. of textures to load per update"
@@ -6487,6 +7922,17 @@ QQRKSRC1
       ;view: = {Txt="&" Typ="X08"  Cap="Hidden on textured" Hint="the group is hidden from textured views"}
       ;view: = {Txt="&" Typ="X016" Cap="Can't select"       Hint="can't select objects in this group with mouse clicks"}
       ;view: = {Txt="&" Typ="X04"  Cap="Ignore to build"    Hint="ignored while building the map"}
+      sep1: =
+      {
+        Typ = "S"
+        Txt = ""
+      }
+      Description: =
+      {
+        Txt = "Description"
+        Hint = "Description of the group,"$0D
+               "primarily used for 'Templates'."
+      }
     }
     outform:incl = // include for dups with out
     {
@@ -6497,10 +7943,10 @@ QQRKSRC1
       increment suffix: = {Txt="increment" Typ="X" Hint="If this is checked, target, targetname, killtarget values ending in a sequence of digits are incremented"}
       increment all target: ={Txt="incr. all targ." Typ="X" Hint="If this is checked, all specifics containing the word 'target' in their name are incremented"}
       incrementable specifics: = {Txt="incrementable" Typ="E" Hint="List here additional specifics to be incremented"}
-      final_target = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " add 'final_killtarget' etc. for other incrementable specifics"$0D"for different final values associated with different bases,"$0D"list them base1:val base2:val2"}
-      increment by = {Txt="&" Typ="E" Hint="size of increment" }
-      incre_lip = {Txt="&" Typ="E" Hint="a custom increment for the specific 'lip'.  Make more on this model" $0D "Overrides 'increment by', and the specific is automatically made incrementable" }
-      tex_sub = {Txt="&" Typ="E" Hint="Name of texture substitution file, which has a list of texturenames on each line, to be cycled thru" $0D " To block substitution on a face or patch, check the 'notexsub' specific."}
+      final_target: = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " add 'final_killtarget' etc. for other incrementable specifics"$0D"for different final values associated with different bases,"$0D"list them base1:val base2:val2"}
+      increment by: = {Txt="&" Typ="E" Hint="size of increment" }
+      incre_lip: = {Txt="&" Typ="E" Hint="a custom increment for the specific 'lip'.  Make more on this model" $0D "Overrides 'increment by', and the specific is automatically made incrementable" }
+      tex_sub: = {Txt="&" Typ="E" Hint="Name of texture substitution file, which has a list of texturenames on each line, to be cycled thru" $0D " To block substitution on a face or patch, check the 'notexsub' specific."}
     }
     Default:d:form =    // form that applies when editing duplicators
     {
@@ -6531,23 +7977,36 @@ QQRKSRC1
       serialform = !
     }
     dup symx:form =
-    {
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
       serialform = !
     }
     dup symy:form =
-    {
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
       serialform = !
     }
     dup symz:form =
-    {
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
       serialform = !
     }
     dup symxyz:form =
-    {
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
       x: = { txt="&" typ="X" cap="Flip X-axis" }
       y: = { txt="&" typ="X" cap="Flip Y-axis" }
       z: = { txt="&" typ="X" cap="Flip Z-axis" }
       serialform = !
+    }
+    dup symxy:form =
+    { Help = "For 'Templates' use the 'Enhanced Mirror' duplicator below."
+      serialform = !
+    }
+    dup enhancedmirror:form =
+    { Help = "This duplicator is the one"$0D
+             "that should be used for 'Templates'."$0D
+             "But it will also work in any map."$0D
+             "Place cursor over items for their help."
+      out:    = {Txt="&"  Hint="If set to a value of 1 this duplicator will be 'Dissociated'"$0D"along with others that are in a 'group' folder."}
+      origin: = {Txt="&"  Hint="This duplicators placement in the map."$0D"You must enter three values here."}
+      mangle: = {Txt="&"  Hint="This duplicators rotation in the map."$0D"You must enter three values here."}
     }
     dup basic:form =
     {
@@ -6586,9 +8045,9 @@ QQRKSRC1
     capdetails:form =
     {
       faceonly:  = {Txt="&" Typ="X" Hint="if checked, only the top and bottom faces are produced, no inner curve"}
-      nofront    = {Txt="&" Typ="X" Hint="if checked, front face is not produced"}
+      nofront:   = {Txt="&" Typ="X" Hint="if checked, front face is not produced"}
       noback:    = {Txt="&" Typ="X" Hint="if checked, back face is not produced"}
-      noinner    = {Txt="&" Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
+      noinner:   = {Txt="&" Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
       noouter:   = {Txt="&" Typ="X" Hint="if checked, outer face is not produced (thick bevels only)"}
       leftside:  = {Txt="&" Typ="X" Hint="if checked, left side is produced"}
       rightside: = {Txt="&" Typ="X" Hint="if checked, right side is produced"}
@@ -6622,9 +8081,9 @@ QQRKSRC1
     beveldetails:form =
     {
       faceonly: = {Txt="&" Typ="X" Hint="if checked, only the top and bottom faces are produced, no inner curve"}
-      notop     = {Txt="&" Typ="X" Hint="if checked, top face is not produced"}
+      notop:    = {Txt="&" Typ="X" Hint="if checked, top face is not produced"}
       nobottom: = {Txt="&" Typ="X" Hint="if checked, bottom face is not produced"}
-      noinner   = {Txt="&" Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
+      noinner:  = {Txt="&" Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
       noouter:  = {Txt="&" Typ="X" Hint="if checked, outer face is not produced (thick bevels only)"}
       leftend:  = {Txt="&" Typ="X" Hint="if checked, left end is produced"}
       rightend: = {Txt="&" Typ="X" Hint="if checked, right end is produced"}
@@ -7254,7 +8713,7 @@ QQRKSRC1
       triangles: = {
         Typ = "E-R"      // edit, read only
         Txt = "Triangles :"
-        Hint = "The number of triangle this component has|Number of triangles"
+        Hint = "The number of triangles this component has|Number of triangles"
       }
       ownedby: = {
         Typ = "E-R"
@@ -7264,7 +8723,13 @@ QQRKSRC1
       texture: = {
         Typ = "E-R"
         Txt = "Skin :"
-        Hint = "The 'current skin selected for this component"$0D
+        Hint = "The current skin selected for this component,"$0D
+               "if more than one exist or the 1st skin if none selected."
+      }
+      skinsize: = {
+        Typ = "E-R"
+        Txt = "Skin size:"
+        Hint = "The size of the current skin texture selected for this component,"$0D
                "if more than one exist or the 1st skin if none selected."
       }
     }
@@ -7299,10 +8764,6 @@ QQRKSRC1
           Component:mc =
           {
             show = $01
-            Skeleton:bg =
-            {
-              type = $05
-            }
             Skins:sg =
             {
               type = $02
@@ -7314,6 +8775,14 @@ QQRKSRC1
             Frames:fg =
             {
               type = $01
+              newframe:mf =
+              {
+                Vertices = ''
+              }
+            }
+            Skeleton:bg =
+            {
+              type = $05
             }
           }
         }
@@ -7710,6 +9179,14 @@ QQRKSRC1
           origin = "0 0 0"
           macro = "dup symxy"
         }
+        Enhanced Mirror:d =
+        {
+          ;desc = "Custom axis mirror"
+          out = "1"
+          origin = "0 0 0"
+          mangle = "0 0 0"
+          macro = "dup enhancedmirror"
+        }
         Radial:d =
         {
           ;desc = "Copies around an axis"
@@ -7719,40 +9196,39 @@ QQRKSRC1
           spiral = '0 0'
           axis = '0 0 1'
           macro = "dup radial"
-  new cube:p =
-  {
-    east:f =
-    {
-      v = '192 0 0 192 128 0 192 0 128'
-      tex = "[auto]"
-    }
-    west:f =
-    {
-      v = '64 0 0 64 -128 0 64 0 128'
-      tex = "[auto]"
-    }
-    north:f =
-    {
-      v = '128 64 0 0 64 0 128 64 128'
-      tex = "[auto]"
-    }
-    south:f =
-    {
-      v = '128 -64 0 256 -64 0 128 -64 128'
-      tex = "[auto]"
-    }
-    up:f =
-    {
-      v = '128 0 64 256 0 64 128 128 64'
-      tex = "[auto]"
-    }
-    down:f =
-    {
-      v = '128 0 -64 256 0 -64 128 -128 -64'
-      tex = "[auto]"
-    }
-  }
-
+          new cube:p =
+          {
+            east:f =
+            {
+              v = '192 0 0 192 128 0 192 0 128'
+              tex = "[auto]"
+            }
+            west:f =
+            {
+              v = '64 0 0 64 -128 0 64 0 128'
+              tex = "[auto]"
+            }
+            north:f =
+            {
+              v = '128 64 0 0 64 0 128 64 128'
+              tex = "[auto]"
+            }
+            south:f =
+            {
+              v = '128 -64 0 256 -64 0 128 -64 128'
+              tex = "[auto]"
+            }
+            up:f =
+            {
+              v = '128 0 64 256 0 64 128 128 64'
+              tex = "[auto]"
+            }
+            down:f =
+            {
+              v = '128 0 -64 256 0 -64 128 -128 -64'
+              tex = "[auto]"
+            }
+          }
         }
         Digger:d =
         {
@@ -7994,7 +9470,7 @@ QQRKSRC1
       Tools.qtxfolder =
       {
         plane duplicator:d = {
-          ;desc = "'duplicator' for making a 3 ponit plane"
+          ;desc = "'duplicator' for making a 3 point plane"
           P1 = '0 64 0'
           P2 = '64 -64 0'
           P3 = '-64 -64 0'
@@ -8015,7 +9491,7 @@ QQRKSRC1
     Searched.qtxfolder =
     {
       SearchBox = "1"
-      Searched Texures.txlist =
+      Searched Textures.txlist =
       {
       }
     }
@@ -8578,7 +10054,7 @@ QQRKSRC1
       3D:tbbtn = {
         Typ  = "M"
         Msg  = "3DED"
-        Hint = "open 3DFX viewer"
+        Hint = "open 3D viewer"
         Cap  = "3D"
       }
       group:tbbtn = {
@@ -8758,6 +10234,19 @@ QQRKSRC1
         NewTexture:incl =
         {
           texture.tga = { ;incl="EmptyImage" }
+        }
+      }
+      newtex:tbbtn = {
+        Typ   = "C"
+        Hint  = "new VTF texture (Half-Life 2)"
+        Icon  = $D00000000000000DD78888888888880DD7FFFFFFFFFFF80DD7FFFFFFFFFFF80D
+                $D70FF0F00000080DD70FF0F0FFF0F80DD70000F0FFFF080DD70FF0F0FF0F080D
+                $D70FF0F0FFF0F80DD7FFFFFFFFFFF80DD7FFFFFFFFFFF80DD7FFFFFFFFF0000D
+                $D7FFFFFFFFF8F7DDD7FFFFFFFFF87DDDD77777777777DDDDDDDDDDDDDDDDDDDD
+        Create = "NewTexture"
+        NewTexture:incl =
+        {
+          texture.vtf = { ;incl="EmptyImage" }
         }
       }
     }

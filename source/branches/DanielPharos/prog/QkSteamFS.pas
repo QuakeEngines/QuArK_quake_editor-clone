@@ -23,6 +23,30 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2007/12/19 13:56:35  danielpharos
+Some changes to process-detection: Should work on Windows NT4 now too, and made the Steam executable filename configurable (but hidden).
+
+Revision 1.23  2007/09/12 16:21:41  danielpharos
+Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
+
+Revision 1.22  2007/08/23 21:09:43  danielpharos
+No clearcache-warning when the Steam cache was not used.
+
+Revision 1.21  2007/08/17 10:33:41  danielpharos
+Fix an access violation.
+
+Revision 1.20  2007/08/15 22:34:14  danielpharos
+Simplified the DoFileOperation call.
+
+Revision 1.19  2007/08/15 22:18:57  danielpharos
+Forgot to uncomment a single line :|
+
+Revision 1.18  2007/08/15 16:28:08  danielpharos
+HUGE update to HL2: Took out some code that's now not needed anymore.
+
+Revision 1.17  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.16  2007/03/13 18:59:25  danielpharos
 Changed the interface to the Steam dll-files. Should prevent QuArK from crashing on HL2 files.
 
@@ -77,434 +101,398 @@ unit QkSteamFS;
 
 interface
 
-uses  Windows,  SysUtils, Classes, QkObjects, QkFileObjects, QkPak,Setup;
+uses Windows, Classes;
 
-procedure initdll;
-procedure uninitdll;
-
-type
- QSteamFSFolder = class(QPakFolder)
-              protected
-                steamfshandle  : Pointer;
-                procedure SaveFile(Info: TInfoEnreg1); override;
-                procedure LoadFile(F: TStream; FSize: Integer); override;
-              public
-                class function TypeInfo: String; override;
-                class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-                function FindFile(const PakPath: String) : QFileObject; override;
-              end;
-
- QSteamFS = class(QSteamFSFolder)
-        public
-          class function TypeInfo: String; override;
-          procedure ObjectState(var E: TEtatObjet); override;
-          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-        end;
+function GetGCFFile(const Filename : String) : String;
+function RunSteam: Boolean;
+function RunSteamExtractor(const Filename : String) : Boolean;
+procedure ClearSteamCache;
 
  {------------------------}
 
 implementation
 
-uses Quarkx, PyObjects, Game, QkObjectClassList, Logging;
-
-const RequiredSTEAMFSAPI=2;
-
-type
-qfileinfo = record
-  filename:string;
-  steamfshandle: Pointer;
-end;
+uses ShellAPI, SysUtils, StrUtils, Quarkx, Setup, Logging, SystemDetails,
+     ExtraFunctionality, QkObjects, Md5Hash;
 
 var
-// binding to c dll
-  Htier0  : HINST;
-  Hvstdlib  : HINST;
-  Hsteamfswrap  : HINST;
-  curTier0Module,curVstdlibModule:string;
-
-// c signatures
-
-//DLL_EXPORT unsigned long APIVersion(void)
-//DLL_EXPORT pfshandle SteamFSInit( const char* m_pFileSystemDLLName,
-//                                  unsigned long contentid,
-//                                  const char* pSteamAppUser,
-//                                  const char* pSteamUserPassphrase,
-//                                  const char* pSteamAppId,
-//                                  const char* pSteamPath)
-//DLL_EXPORT void SteamFSTerm(pfshandle pfs)
-//DLL_EXPORT psteamfile SteamFSOpen(pfshandle pfs, const char* name,const char* mode)
-//DLL_EXPORT void SteamFSClose(psteamfile pf)
-//DLL_EXPORT unsigned long SteamFSSize(psteamfile pf)
-//DLL_EXPORT unsigned long SteamFSRead(psteamfile pf, void* buffer, unsigned long size)
-//DLL_EXPORT psteamfindfile SteamFSFindFirst(pfshandle pfs, const char* pattern)
-//DLL_EXPORT psteamfindfile SteamFSFindNext(psteamfindfile pff)
-//DLL_EXPORT void SteamFSFindFinish(psteamfindfile pff)
-//DLL_EXPORT const char * SteamFSFindName(psteamfindfile pff)
-//DLL_EXPORT unsigned long  SteamFSFindIsDir(psteamfindfile pff)
-
-  APIVersion          : function    : Longword; cdecl;
-
-  SteamFSInit       : function  (FileSystemDLLName : PChar;
-                                 contentid : Longword ;
-                                 pSteamAppUser : PChar;
-                                 pSteamUserPassphrase : PChar;
-                                 pSteamAppId : PChar;
-                                 pSteamPath : PChar) : Pointer; cdecl;// returns pfs
-  SteamFSTerm       : procedure (pfs : Pointer);   cdecl;
-  SteamFSOpen       : function  (pfs : Pointer; name: PChar ; mode: PChar ): Pointer; cdecl;// returns pf
-  SteamFSClose      : procedure (pf  : Pointer); cdecl;
-  SteamFSSize       : function  (pf  : Pointer): Longword; cdecl;// returns file size
-  SteamFSRead       : function  (pf  : Pointer;  buffer: Pointer ; size: longword ): Longword; cdecl;// returns read data size
-  SteamFSFindFirst  : Function  (pfs : Pointer;   pattern : Pchar) : Pointer; cdecl;//returns pff
-  SteamFSFindNext   : Function  (pff : Pointer) : Pointer; cdecl;//returns pff
-  SteamFSFindFinish : procedure (pff : Pointer); cdecl;
-  SteamFSFindName   : function  (pff : Pointer): Pchar ; cdecl;//returns name
-  SteamFSFindIsDir  : function  (pff : Pointer): longword ; cdecl;//returns 0 if no dir
-
-
+  ClearCacheNeeded: Boolean;
+  CheckQuArKSAS: Boolean;
 
 procedure Fatal(x:string);
 begin
-  Log(LOG_CRITICAL,'init steam %s',[x]);
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  Raise InternalE(x);
+  Log(LOG_CRITICAL,'Error during operation on DDS file: %s',[x]);
+  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Raise Exception.Create(x);
 end;
 
+function DoFileOperation(Operation: Word; FilesFrom: TStringList; FilesTo: TStringList; FileOpFlags: Word): Boolean;
 
-function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
-begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKSteamFS.dll');
-end;
-
-procedure initdll;
-var
-  Tier0Module,VstdlibModule:string;
-begin
-  Tier0Module:=SetupGameSet.Specifics.Values['SteamTier0Module'];
-  VstdlibModule:=SetupGameSet.Specifics.Values['SteamVstdlibModule'];
-  if ((Tier0Module<>curTier0Module) and (curTier0Module<>'')) or ((VstdlibModule<>curVstdlibModule) and (curVstdlibModule<>'')) then
-    uninitdll;
-  curTier0Module:=Tier0Module;
-  curVstdlibModule:=VstdlibModule;
-
-  if Htier0 = 0 then
+  procedure ParseFiles(Files: TStringList; Target: Pointer);
+  var
+    Dest: PChar;
+    I: Integer;
   begin
-    Htier0 := LoadLibrary(PChar(Tier0Module));
-    if Htier0 = 0 then
-      Fatal('Unable to load '+Tier0Module);
-  end;
-
-  if Hvstdlib = 0 then
-  begin
-    Hvstdlib := LoadLibrary(PChar(VstdlibModule));
-    if Hvstdlib = 0 then
-      Fatal('Unable to load '+VstdlibModule);
-  end;
-
-  if Hsteamfswrap = 0 then
-  begin
-    Hsteamfswrap := LoadLibrary('dlls/QuArKSteamFS.dll');
-    if Hsteamfswrap = 0 then
-      Fatal('Unable to load dlls/QuArKSteamFS.dll')
-    else
+    Dest:=Target;
+    for I:=0 to Files.Count-1 do
     begin
-      APIVersion      := InitDllPointer(Hsteamfswrap, 'APIVersion');
-      if APIVersion <> RequiredSTEAMFSAPI then
-         Fatal('dlls/QuArKSteamFS.dll api version mismatch');
-      SteamFSInit            := InitDllPointer(Hsteamfswrap, 'SteamFSInit');
-      SteamFSTerm            := InitDllPointer(Hsteamfswrap, 'SteamFSTerm');
-      SteamFSOpen            := InitDllPointer(Hsteamfswrap, 'SteamFSOpen');
-      SteamFSClose           := InitDllPointer(Hsteamfswrap, 'SteamFSClose');
-      SteamFSSize            := InitDllPointer(Hsteamfswrap, 'SteamFSSize');
-      SteamFSRead            := InitDllPointer(Hsteamfswrap, 'SteamFSRead');
-      SteamFSFindFirst       := InitDllPointer(Hsteamfswrap, 'SteamFSFindFirst');
-      SteamFSFindNext        := InitDllPointer(Hsteamfswrap, 'SteamFSFindNext');
-      SteamFSFindFinish      := InitDllPointer(Hsteamfswrap, 'SteamFSFindFinish');
-      SteamFSFindName        := InitDllPointer(Hsteamfswrap, 'SteamFSFindName');
-      SteamFSFindIsDir       := InitDllPointer(Hsteamfswrap, 'SteamFSFindIsDir');
-    end
-  end;
-end;
-
-procedure uninitdll;
-begin
-  if Htier0 <> 0 then
-  begin
-    if FreeLibrary(Htier0) = false then
-      Fatal('Unable to unload tier0.dll');
-    Htier0 := 0;
-  end;
-  
-  if Hvstdlib <> 0 then
-  begin
-    if FreeLibrary(Hvstdlib) = false then
-      Fatal('Unable to unload vstdlib.dll');
-    Hvstdlib := 0;
+      StrPCopy(Dest, Files[I]);
+      Inc(Dest, Length(Files[I])+1);
+    end;
   end;
 
-  if Hsteamfswrap <> 0 then
-  begin
-    if FreeLibrary(Hsteamfswrap) = false then
-      Fatal('Unable to unload dlls/QuArKSteamFS.dll');
-    Hsteamfswrap := 0;
-
-    APIVersion      := nil;
-    SteamFSInit            := nil;
-    SteamFSTerm            := nil;
-    SteamFSOpen            := nil;
-    SteamFSClose           := nil;
-    SteamFSSize            := nil;
-    SteamFSRead            := nil;
-    SteamFSFindFirst       := nil;
-    SteamFSFindNext        := nil;
-    SteamFSFindFinish      := nil;
-    SteamFSFindName        := nil;
-    SteamFSFindIsDir       := nil;
-  end;
-end;
-
- {------------ QSteamFSFolder ------------}
-
-class function QSteamFSFolder.TypeInfo;
-begin
- Result:='.steamfolder';
-end;
-
-class procedure QSteamFSFolder.FileObjectClassInfo(var Info: TFileObjectClassInfo);
-begin
- inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5711);
- Info.WndInfo:=[wiSameExplorer];
-end;
-
-function MakeFileQObject(const FullName: String;  nParent: QObject) : QFileObject;
 var
-  i :integer;
+  PFilesFrom, PFilesTo: Pointer;
+  FileOp: TSHFileOpStruct;
+  FilesFromCharLength: Integer;
+  FilesToCharLength: Integer;
+  I: Integer;
 begin
-  {wraparound for a stupid function OpenFileObjectData having obsolete parameters }
-  {tbd: clean this up in QkFileobjects and at all referencing places}
- Result:=OpenFileObjectData(nil, FullName, i, nParent);
-end;
-
-Function GetFilePath(obj:QObject): string;
-var
-  o: QObject;
-  currentpath:string;
-begin
-  currentpath:='';
-  o := obj;
-  while (o <>nil) and not(o is QSteamFS) do
+  if (FilesFrom<>nil) and (FilesFrom.Count > 0) then
   begin
-    currentpath:=o.name+'/'+currentpath;
-    o:= o.TvParent;
-  end;
-  result:=currentpath;
-end;
-
-
-Function SteamFSAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
-var
-  mem: TMemoryStream;
-  read,filesize: Longword;
-  errstr:string;
-  pfileinfo : ^qfileinfo;
-  fh:Pointer;
-begin
-  Ref^.Self.Position:=Ref^.Position;
-  mem := TMemoryStream.Create;
-  pfileinfo := Ref^.PUserdata;
-  fh:=SteamFSOpen(pfileinfo^.steamfshandle, pchar(pfileinfo^.filename),'rb');
-  filesize := SteamFSSize(fh);
-  mem.SetSize(filesize);
-  if filesize=0 then
+    FilesFromCharLength := 1;
+    for I:=0 to FilesFrom.Count-1 do
+      FilesFromCharLength := FilesFromCharLength + Length(FilesFrom[I]) + 1;
+    GetMem(PFilesFrom, FilesFromCharLength+1);
+    ZeroMemory(PFilesFrom, FilesFromCharLength+1);
+    ParseFiles(FilesFrom, PFilesFrom);
+  end
+  else
+    PFilesFrom := nil;
+  if (FilesTo<>nil) and (FilesTo.Count > 0) then
   begin
-    errstr:='file '+pfileinfo^.filename+ 'does not contain data';
-    mem.write(errstr,Length(errstr));
+    FilesToCharLength := 1;
+    for I:=0 to FilesTo.Count-1 do
+      FilesToCharLength := FilesToCharLength + Length(FilesTo[I]) + 1;
+    GetMem(PFilesTo, FilesToCharLength+1);
+    ZeroMemory(PFilesTo, FilesToCharLength+1);
+    ParseFiles(FilesTo, PFilesTo);
+  end
+  else
+    PFilesTo := nil;
+  FillChar(FileOp, SizeOf(FileOp), 0);
+  FileOp.wFunc := Operation;
+  FileOp.pFrom := PFilesFrom;
+  FileOp.pTo := PFilesTo;
+  FileOp.fFlags := FileOpFlags;
+  if SHFileOperation(FileOp) <> 0 then
+  begin
+    if FileOp.fAnyOperationsAborted = false then
+      Log(LOG_WARNING, 'Warning: User aborted file operation!');
+    Result:=false;
   end
   else
   begin
-    read:= SteamFSRead(fh,mem.Memory,filesize);
-    if read<>filesize then
-      raise Exception.CreateFmt('Error reading %s from steam, got only%d',[pfileinfo^.filename,read]);
+    Log(LOG_WARNING, 'Warning: File operation failed!');
+    Result:=false;
   end;
-
-  Result:=mem.Size;
-  mem.Position:=0;
-  S:=mem;
+  if PFilesTo <> nil then
+    FreeMem(PFilesTo);
+  if PFilesFrom <> nil then
+    FreeMem(PFilesFrom);
 end;
 
-
-procedure QSteamFSFolder.LoadFile(F: TStream; FSize: Integer);
+function GetGCFFile(const Filename : String) : String;
 var
-//  steamfolderitem : pointer;
-  FSModule,SteamAppUser,SteamUserPassphrase,SteamAppId,SteamPath:String;
-  contentid: longword;
-
+  Setup: QObject;
+  SteamDirectory: String;
+  CacheDirectory: String;
+  FullFileName: String;
+  SteamGCFFile: String;
+  FilesToCopyFrom: TStringList;
+  FilesToCopyTo: TStringList;
+  FilesToCopyFlags: Word;
 begin
-  initdll;
-  case ReadFormat of
-    1: begin  { as stand-alone file }
-         try
-           if self is QSteamFS then
-             contentid:=strtoint(self.Name)
-           else
-             contentid:=211;
-         except
-           Raise EErrorFmt(5714, [self.Name]);
-         end;
-         FsModule:=SetupGameSet.Specifics.Values['SteamFSModule'];
-         SteamAppUser:=SetupGameSet.Specifics.Values['SteamAppUser'];
-         SteamAppId:=SetupGameSet.Specifics.Values['SteamAppId'];
-         SteamUserPassphrase:=SetupGameSet.Specifics.Values['SteamUserPassphrase'];
-         SteamPath:=SetupGameSet.Specifics.Values['Directory'];
-
-         steamfshandle:= SteamFSInit(PChar(FsModule),
-                                     contentid,
-                                     PChar(SteamAppUser),
-                                     nil{PChar(SteamUserPassphrase)},
-                                     PChar(SteamAppId),
-                                     PChar(SteamPath));
-         if steamfshandle=nil then
-           Raise EErrorFmt(5712, [LoadName]); {init steam}
-
-         self.Protocol:='steamaccess://';
-       end;
-    else
-      inherited;
-  end;
-end;
-
-procedure QSteamFSFolder.SaveFile(Info: TInfoEnreg1);
-begin
- with Info do case Format of
-  1: begin  { as stand-alone file }
-      {tbd: save to steam ??}
-     end;
- else inherited;
- end;
-end;
-
-function QSteamFSFolder.FindFile(const PakPath: String) : QFileObject;
-var
-  I: Integer;
-  Folder,qfile: QObject;
-  partialname,name,currentpath:string;
-  steamfolderitem : pointer;
-  mem: TMemoryStream;
-  pfileinfo : ^qfileinfo;
-begin
-  Acces;
-
-{ scanning the steam fs and creating a folder for every item on acces is too
-  slow. we have to do create the instances in the path "on demand"}
-
-  for I:=1 to Length(PakPath) do
+  Setup:=SetupSubSet(ssGames, 'Steam');
+  SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
+  CacheDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['CacheDirectory']);
+  FullFileName:=SteamDirectory + CacheDirectory + FileName;
+  if FileExists(FullFileName)=false then
   begin
-    if PakPath[I] in ['/','\'] then
+    //Try to copy original file...
+    ClearCacheNeeded:=true;
+
+    SteamGCFFile:=SteamDirectory+'steamapps\'+Filename;
+    if FileExists(SteamGCFFile) = false then
     begin
-      partialname:=Copy(PakPath, 1, I-1);
-      Folder:=SubElements.FindName( partialname+ '.steamfsfolder');
-      if folder=Nil then
+      Result:='';
+      Exit;
+    end;
+    if Setup.Specifics.Values['CopyGCF'] = '1' then
+    begin
+      if DirectoryExists(SteamDirectory+CacheDirectory) = false then
+        if CreateDir(SteamDirectory+CacheDirectory) = false then
+          Fatal('Unable to extract file from Steam. Cannot create cache directory.');
+
+      FilesToCopyFrom:=TStringList.Create;
+      FilesToCopyFrom.Add(SteamGCFFile);
+      FilesToCopyTo:=TStringList.Create;
+      FilesToCopyTo.Add(FullFileName);
+      FilesToCopyFlags:=0;
+      if DoFileOperation(FO_COPY, FilesToCopyFrom, FilesToCopyTo, FilesToCopyFlags) = false then
       begin
-        // not found try to access from steam
-        if self is QSteamFS then
-          steamfolderitem := SteamFSFindFirst(steamfshandle,pchar(partialname)) //returns pff
-        else
-        begin
-          currentpath:=GetFilePath(self);
-          steamfolderitem := SteamFSFindFirst(steamfshandle,pchar(currentpath+partialname)); //returns pff
-        end;
-        if SteamFSFindName (steamfolderitem) <>nil then
-        begin
-          //found in steam fs
-          name:= SteamFSFindName (steamfolderitem);
-          Folder:= QSteamFSFolder.Create( name, Self) as QSteamFSFolder;
-          Log(LOG_VERBOSE,'Made steam folder object :'+Folder.name);
-          QSteamFSFolder(folder).steamfshandle:= steamfshandle;
-          Self.SubElements.Add( Folder );
-          Folder.TvParent:= Self;
-        end;
-        SteamFSFindFinish(steamfolderitem);
+        Log(LOG_WARNING, 'Unable to copy GCF file to cache: CopyFile failed!');
+        Result:=SteamGCFFile;
+        FilesToCopyFrom.Free;
+        FilesToCopyTo.Free;
+        Exit;
       end;
-      if (Folder=Nil) or not (Folder is QSteamFSFolder) then
-        Result:=Nil
-      else
-        Result:=QSteamFSFolder(Folder).FindFile(Copy(PakPath, I+1, MaxInt));
-        if assigned(Result) then
-          Result.Protocol:=self.Protocol;
+      FilesToCopyFrom.Free;
+      FilesToCopyTo.Free;
+    end
+    else
+    begin
+      Result:=SteamGCFFile;
       Exit;
     end;
   end;
+  Result:=FullFileName;
+end;
 
-  qfile:=SubElements.FindName(PakPath) as QFileObject;
-  if qfile=Nil then
+function RunSteam: Boolean;
+var
+  Setup: QObject;
+  SteamEXEName: String;
+  SteamDirectory: String;
+  SteamStartupInfo: StartUpInfo;
+  SteamProcessInformation: Process_Information;
+  SteamWindowName: String;
+  WaitForSteam: Boolean;
+  I: Integer;
+begin
+  Setup := SetupSubSet(ssGames, 'Steam');
+  WaitForSteam := False;
+  SteamEXEName := Setup.Specifics.Values['SteamEXEName'];
+  if SteamEXEName = '' then
+    SteamEXEName := 'steam.exe';
+  Result := ProcessExists(SteamEXEName);
+  if (not Result) and (Setup.Specifics.Values['Autostart']='1') then
   begin
-    // not found try to access from steam
-    currentpath:=GetFilePath(self);
-    steamfolderitem := SteamFSFindFirst(steamfshandle,pchar(currentpath+PakPath)); //returns pff
-    if SteamFSFindName (steamfolderitem) <>nil then
+    FillChar(SteamStartupInfo, SizeOf(SteamStartupInfo), 0);
+    FillChar(SteamProcessInformation, SizeOf(SteamProcessInformation), 0);
+    SteamStartupInfo.cb:=SizeOf(SteamStartupInfo);
+    SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
+    if Windows.CreateProcess(nil, PChar(SteamDirectory+SteamEXEName), nil, nil, false, 0, nil, nil, SteamStartupInfo, SteamProcessInformation)=true then
     begin
-      qfile := MakeFileQObject(PakPath , self);
-      Log(LOG_VERBOSE,'Made steam file object :'+qfile.name);
-      self.SubElements.Add( qfile );
-      qfile.TvParent:= Self;
-      if qfile is QFileObject then
-        QFileObject(qfile).ReadFormat := rf_default
-      else
-        Raise InternalE('LoadedItem '+qfile.GetFullName+' '+IntToStr(rf_default));
-      mem := TMemoryStream.Create;
-      qfile.Open(TQStream(mem), 0);
-
-      //pass steam file system handle for file access
-      New(pfileinfo);
-      pfileinfo^.steamfshandle:=steamfshandle;
-      pfileinfo^.filename:= currentpath+PakPath;
-      qfile.FNode^.PUserdata:=pfileinfo;
-      qfile.FNode^.OnAccess:=SteamFSAddRef;
-
-      SteamFSFindFinish(steamfolderitem);
+      CloseHandle(SteamProcessInformation.hThread);
+      CloseHandle(SteamProcessInformation.hProcess);
+      Result := true;
+      WaitForSteam := true;
+      SteamWindowName := 'STEAM - '+Setup.Specifics.Values['SteamUser'];
     end;
   end;
-  Result:=SubElements.FindName(PakPath) as QFileObject;
-  if assigned(Result) then
-    Result.Protocol:=self.Protocol;
-
+  I:=0;
+  while WaitForSteam do
+  begin
+    Sleep(200);  //Let's give the system a little bit of time to boot Steam...
+    WaitForSteam:=not WindowExists(SteamWindowName);
+    if I>50 then
+    begin
+      //We've been waiting for 10 SECONDS! Let's assume something went terribly wrong...!
+      if MessageBox(0, PChar('10 Seconds have passed, and QuArk cannot detect Steam as having started up... Please start it manually now (if it has not yet done so) and press YES when you are logged in. Otherwise, press NO.'), PChar('QuArK'), MB_YESNO) = IDNO then
+      begin
+        Result:=False;
+        WaitForSteam:=False;
+      end;
+    end
+    else
+      I:=I+1;
+  end;
+  //@Do we also need to check if Steam is running in this USER ACCOUNT?!?
 end;
 
+function RunSteamExtractor(const Filename : String) : Boolean;
 
-class function QSteamFS.TypeInfo;
+  procedure RemoveTrailingSlash(var Path : String);
+  begin
+    if (RightStr(Path, 1) = '\') or (RightStr(Path, 1) = '/') then
+      Path:=LeftStr(Path, Length(Path) - 1);
+  end;
+
+var
+  Setup: QObject;
+  SteamDirectory: String;
+  SteamGameDirectory: String;
+  SteamCacheDirectory: String;
+  SteamUser: String;
+  SteamAppID: String;
+  GameIDDir: String;
+  FullFileName: String;
+  QSASMd5Hash, CurQSASMd5Hash: String;
+  QSASFile, QSASPath, QSASParameters: String;
+  QSASAdditionalParameters: String;
+  QSASStartupInfo: StartUpInfo;
+  QSASProcessInformation: Process_Information;
+  I, J: Integer;
 begin
- Result:='steamaccess://';
+  //This function uses QuArKSAS to extract files from Steam
+  ClearCacheNeeded:=true;
+  
+  I := Pos('\', Filename);
+  J := Pos('/', Filename);
+  if ((I > 0) and (I < J)) then
+  begin
+    GameIDDir := LeftStr(Filename, I-1);
+    FullFileName := RightStr(Filename, Length(Filename) - I);
+  end
+  else
+  begin
+    if (J > 0) then
+    begin
+      GameIDDir := LeftStr(Filename, J-1);
+      FullFileName := RightStr(Filename, Length(Filename) - J);
+    end
+    else
+      FullFileName := Filename;
+  end;
+
+  Setup:=SetupSubSet(ssGames, 'Steam');
+  SteamDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory']);
+  SteamUser:=Setup.Specifics.Values['SteamUser'];
+  SteamAppID:=SetupGameSet.Specifics.Values['SteamAppID'];
+  SteamGameDirectory:=SetupGameSet.Specifics.Values['tmpQuArK'];
+  SteamCacheDirectory:=Setup.Specifics.Values['CacheDirectory'];
+  QSASAdditionalParameters:=Setup.Specifics.Values['ExtractorParameters'];
+  if QSASAdditionalParameters<>'' then
+    QSASAdditionalParameters:=' '+QSASAdditionalParameters;
+
+  //Copy QSAS if it's not in the Steam directory yet
+  QSASPath := SteamDirectory + 'steamapps\' + SteamUser + '\sourcesdk\bin';
+  QSASFile := QSASPath + '\QuArKSAS.exe';
+
+  if DirectoryExists(SteamDirectory) = false then
+    Fatal('Unable to extract file from Steam. Cannot find Steam directory.');
+
+  if DirectoryExists(SteamDirectory+SteamCacheDirectory) = false then
+    if CreateDir(SteamDirectory+SteamCacheDirectory) = false then
+      Fatal('Unable to extract file from Steam. Cannot create cache directory.');
+
+  if DirectoryExists(SteamDirectory+SteamCacheDirectory+'\'+GameIDDir) = false then
+    if CreateDir(SteamDirectory+SteamCacheDirectory+'\'+GameIDDir) = false then
+      Fatal('Unable to extract file from Steam. Cannot create cache directory.');
+
+  if CheckQuArKSAS then
+  begin
+    if FileExists(QSASFile) = false then
+    begin
+      if FileExists('dlls/QuArKSAS.exe') = false then
+        Fatal('Unable to extract file from Steam. dlls/QuArKSAS.exe not found.');
+      if CopyFile(PChar('dlls/QuArKSAS.exe'), PChar(QSASFile), true) = false then
+        Fatal('Unable to extract file from Steam. Call to CopyFile failed.');
+    end
+    else
+    begin
+      //Check version!
+      QSASMd5Hash:=Md5GetFileHash('dlls/QuArKSAS.exe');
+      CurQSASMd5Hash:=Md5GetFileHash(QSASFile);
+      if QSASMd5Hash<>CurQSASMd5Hash then
+      begin
+        //Files do not match. The one in dlls is probably the most current one,
+        //so let's update the Steam one.
+        if CopyFile(PChar('dlls/QuArKSAS.exe'), PChar(QSASFile), false) = false then
+          Fatal('Unable to extract file from Steam. Call to CopyFile failed.');
+      end;
+    end;
+    CheckQuArKSAS:=false;
+  end;
+
+  //No trailing slashes in paths allowed!
+  RemoveTrailingSlash(SteamGameDirectory);
+  RemoveTrailingSlash(GameIDDir);
+
+  QSASParameters:='-g '+SteamAppID+' -gamedir "'+SteamDirectory+SteamGameDirectory+'" -o "'+SteamDirectory+SteamCacheDirectory+'\'+GameIDDir+'" -overwrite' + QSASAdditionalParameters;
+
+  FillChar(QSASStartupInfo, SizeOf(QSASStartupInfo), 0);
+  FillChar(QSASProcessInformation, SizeOf(QSASProcessInformation), 0);
+  QSASStartupInfo.cb:=SizeOf(QSASStartupInfo);
+  QSASStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
+  QSASStartupInfo.wShowWindow:=SW_SHOWMINNOACTIVE;
+  if Windows.CreateProcess(nil, PChar(QSASPath + '\QuArKSAS.exe ' + QSASParameters + ' ' + FullFilename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
+    Fatal('Unable to extract file from Steam. Call to CreateProcess failed.');
+
+  //DanielPharos: Waiting for INFINITE is rather dangerous,
+  //so let's wait only 10 seconds
+  if WaitForSingleObject(QSASProcessInformation.hProcess, 10000)=WAIT_FAILED then
+  begin
+    CloseHandle(QSASProcessInformation.hThread);
+    CloseHandle(QSASProcessInformation.hProcess);
+    Fatal('Unable to extract file from Steam. Call to WaitForSingleObject failed.');
+  end;
+  Result:=True;
 end;
 
-procedure QSteamFS.ObjectState(var E: TEtatObjet);
+procedure ClearSteamCache;
+var
+  Setup: QObject;
+  WarnBeforeClear, AllowRecycle, ClearCache, ClearCacheGCF: Boolean;
+  SteamFullCacheDirectory: String;
+  FilesToDelete: TStringList;
+  FilesToDeleteFlags: Word;
+  sr: TSearchRec;
 begin
- inherited;
- E.IndexImage:=iiPak;
+  if ClearCacheNeeded=false then
+    Exit;
+  ClearCacheNeeded:=false;
+  Setup:=SetupSubSet(ssGames, 'Steam');
+  ClearCache:=Setup.Specifics.Values['Clearcache']<>'';
+  ClearCacheGCF:=Setup.Specifics.Values['ClearcacheGCF']<>'';
+  SteamFullCacheDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory'])+Setup.Specifics.Values['CacheDirectory']+'\';
+  {$IFDEF LINUX}
+  SteamFullCacheDirectory:=StringReplace(SteamFullCacheDirectory,'\',PathDelim,[rfReplaceAll]);
+  {$ELSE}
+  SteamFullCacheDirectory:=StringReplace(SteamFullCacheDirectory,'/',PathDelim,[rfReplaceAll]);
+  {$ENDIF}
+  if ClearCache or ClearCacheGCF then
+  begin
+    WarnBeforeClear:=Setup.Specifics.Values['WarnBeforeClear']<>'';
+    AllowRecycle:=Setup.Specifics.Values['AllowRecycle']<>'';
+    if ClearCache then
+    begin
+      if FindFirst(SteamFullCacheDirectory + '*.*', faDirectory	, sr) = 0 then
+      begin
+        FilesToDelete := TStringList.Create;
+        repeat
+          if (sr.name <> '.') and (sr.name <> '..') then
+            if Lowercase(RightStr(sr.Name, 4)) <> '.gcf' then
+              FilesToDelete.Add(SteamFullCacheDirectory + sr.Name);
+        until FindNext(sr) <> 0;
+        FindClose(sr);
+        if FilesToDelete.Count > 0 then
+        begin
+          if WarnBeforeClear then
+          begin
+            if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_ICONWARNING+ MB_YESNO) = IDNO then
+               Exit;
+            WarnBeforeClear := false;    //So we don't show the warning multiple times!
+          end;
+          FilesToDeleteFlags := FOF_NOCONFIRMATION;
+          if AllowRecycle then
+            FilesToDeleteFlags := FilesToDeleteFlags or FOF_ALLOWUNDO;
+          if DoFileOperation(FO_DELETE, FilesToDelete, nil, FilesToDeleteFlags) = false then
+            Log(LOG_WARNING, 'Warning: Clearing of cache failed!');
+        end;
+        FilesToDelete.Free;
+      end;
+    end;
+    if ClearCacheGCF then
+    begin
+      if WarnBeforeClear then
+        if MessageBox(0, PChar(FmtLoadStr1(5712, [SteamFullCacheDirectory])), PChar('QuArK'), MB_ICONWARNING+ MB_YESNO) = IDNO then
+          Exit;
+      FilesToDelete := TStringList.Create;
+      FilesToDelete.Add(SteamFullCacheDirectory + '*.gcf');
+      FilesToDeleteFlags := FOF_NOCONFIRMATION;
+      if AllowRecycle then
+        FilesToDeleteFlags := FilesToDeleteFlags or FOF_ALLOWUNDO;
+      if DoFileOperation(FO_DELETE, FilesToDelete, nil, FilesToDeleteFlags) = false then
+        Log(LOG_WARNING, 'Warning: Clearing of GCF cache failed!');
+      FilesToDelete.Free;
+    end;
+  end;
 end;
-
-class procedure QSteamFS.FileObjectClassInfo(var Info: TFileObjectClassInfo);
-begin
- inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5713);
- Info.FileExt:=818;
- Info.WndInfo:=[wiOwnExplorer];
-end;
-
- {------------------------}
 
 initialization
-begin
-  {tbd is the code ok to be used ?  }
-  RegisterQObject(QSteamFS, 's');
-  RegisterQObject(QSteamFSFolder, 'a');
-  Hsteamfswrap:=0;
-  curTier0Module:='';
-  curVstdlibModule:='';
-end;
-
-finalization
-  uninitdll;
+  ClearCacheNeeded:=false;
+  CheckQuArKSAS:=true;
 end.
+

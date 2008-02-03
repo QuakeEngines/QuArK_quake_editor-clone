@@ -23,6 +23,14 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
+Revision 1.27  2006/05/05 06:04:44  cdunde
+To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
+handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
+increases causing prog crash, can not use scrole bar in TB.
+
 Revision 1.26  2006/04/06 19:28:06  nerdiii
 Texture memory wasn't freed because texture links had additional references to them.
 
@@ -804,8 +812,8 @@ begin
     TexDimension := 16 * (TexDimension div 16); { Allow only steps of 16 }
     if (TexDimension < 32) then
       TexDimension := 32; { Minimum dimension is 32x32 }
-    if (TexDimension > 128) then
-      TexDimension := 128; { Maximum dimension is 128x128 - so memory consumption is kept low }
+    if (TexDimension > 256) then
+      TexDimension := 256; { Maximum dimension is 128x128 - so memory consumption is kept low }
 
     ImageList1.Clear;
     ImageList1.Width:=TexDimension;  {DECKER - Ahh! So this is the place to change the scale of }

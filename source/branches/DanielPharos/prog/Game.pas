@@ -23,6 +23,27 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2007/12/13 12:32:36  danielpharos
+Change a procedure name to something much less confusing.
+
+Revision 1.50  2007/12/11 23:52:28  danielpharos
+Fixed a memory leak that occurred on exit in some gamemodes.
+
+Revision 1.49  2007/10/23 14:47:56  danielpharos
+Fixed the filename being double in the not-found error message.
+
+Revision 1.48  2007/09/13 14:34:53  danielpharos
+The name of a pakfile containing a texture can now be specified per texture
+
+Revision 1.47  2007/09/10 10:08:11  danielpharos
+Fix a comment-sign
+
+Revision 1.46  2007/08/21 23:43:44  danielpharos
+Another fix to the HL2 building process.
+
+Revision 1.45  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.44  2007/05/15 15:01:38  danielpharos
 Fixed a dirty looking check for Steam Access.
 
@@ -165,7 +186,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, qmath, QkForm, StdCtrls, TB97, ComCtrls, StrUtils;
+  QkObjects, QkFileObjects, qmath, QkForm, StdCtrls, TB97, ComCtrls, StrUtils, Logging;
 
 type
   TGameCfgDlg = class(TQkForm)
@@ -226,10 +247,10 @@ type
 procedure ClearGameBuffers(CanCancel: Boolean);
 procedure ClearGameBuffer1;
 procedure SizeDownGameFiles;
-procedure DestroyGameBuffers;
+procedure ReleaseGameFiles;
 procedure ListSourceDirs(Dirs: TStrings);
-function NeedGameFile(const FileName: String) : QFileObject;
-function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
+function NeedGameFile(const FileName, PakFile: String) : QFileObject;
+function NeedGameFileBase(const BaseDir, FileName, PakFile: String) : QFileObject;
 function PathAndFile(Path, FileName: String) : String;
 (*function GetDLLDirectory: String;*)
 procedure BuildCorrectFileName(var S: String);
@@ -265,7 +286,7 @@ implementation
 {$R *.DFM}
 
 uses QkPak, Setup, QkUnknown, QkTextures, Travail, ToolBox1, QkImages, Qk1,
-  Game2, QkQuakeCtx, Config, Output1, Quarkx, PyImages, QkApplPaths,QkSteamFS;
+  Game2, QkQuakeCtx, Config, PakFiles, Quarkx, PyImages, QkApplPaths, QkSteamFS;
 
 var
  GameFiles: TQList = Nil;
@@ -274,16 +295,20 @@ var
  FreeGBList: TList = Nil;
 
 {--CONVEX-begin--}
-  LastAliasName   : String; { last aliased filename }
-  LastAliasIndex  : Byte = 0; { last alias-extension index }
+type
+  TFileTypeAlias = (ftNone, ftTexture, ftPak);
+
+var
+  CurAliasName   : String; // current aliased filename
+  CurAliasIndex  : Byte; // current alias-extension index
+  CurAliasType   : TFileTypeAlias;
 {--CONVEX-end--}
 
-{ Non public-interface functions. }
-function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject; forward;
+function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD: Boolean) : QFileObject; forward;
 
  {------------------------}
 
-procedure DestroyGameBuffers;
+procedure ReleaseGameFiles;
 begin
  g_Form1.SavePendingFiles(True);
  GameFiles.Free;
@@ -308,7 +333,7 @@ begin
   GameFiles.Delete(I);*)
  if GameFiles.Count>Reste then
   begin
-   DestroyGameBuffers;
+   ReleaseGameFiles;
    Exit;
   end;
 
@@ -317,7 +342,7 @@ begin
    Dec(Result, GameFiles[I].GetObjectSize(Nil, False));
    if Result<=0 then
     begin
-     DestroyGameBuffers;
+     ReleaseGameFiles;
      Exit;
     end;
   end;
@@ -339,13 +364,11 @@ begin
   end;*)
 end;
 
-procedure SizeDownGameFiles;
+procedure ClearGBList;
 var
  I: Integer;
  B: PGameBuffer;
 begin
- {SizeDownTextureList(}InternalSizeDown{)};
-
  if FreeGBList<>Nil then
   try
    for I:=FreeGBList.Count-1 downto 0 do
@@ -364,6 +387,13 @@ begin
    FreeGBList.Free;
    FreeGBList:=Nil;
   end;
+end;
+
+procedure SizeDownGameFiles;
+begin
+ {SizeDownTextureList(}InternalSizeDown{)};
+
+ ClearGBList;
 end;
 
 function DuplicateGameBuffer(Source: PGameBuffer) : PGameBuffer;
@@ -441,13 +471,15 @@ end;
 
 function PathAndFile(Path, FileName: String) : String;
 begin
+ {$IFDEF LINUX}
+ Path:=StringReplace(Path,'\',PathDelim,[rfReplaceAll]);
+ FileName:=StringReplace(FileName,'\',PathDelim,[rfReplaceAll]);
+ {$ELSE}
+ Path:=StringReplace(Path,'/',PathDelim,[rfReplaceAll]);
+ FileName:=StringReplace(FileName,'/',PathDelim,[rfReplaceAll]);
+ {$ENDIF}
  if Path<>'' then Path:=IncludeTrailingPathDelimiter(Path);
  Result:=Path+FileName;
- {$IFDEF LINUX}
- Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
- {$ELSE}
- Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
- {$ENDIF}
  if (Result<>'') and (Result[Length(Result)]=PathDelim) then   { this is a path }
   begin
    Result:=ExpandFileName(Result);
@@ -486,11 +518,25 @@ begin
  Result:=SetupGameSet.Specifics.Values['tmpQuArK'];
  if Result='' then
   Result:='tmpQuArK';
+ {$IFDEF LINUX}
+ Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
+ {$ELSE}
+ Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
+ {$ENDIF}
 end;
 
 function QuakeDir : String;
 begin
-  QuakeDir:=SetupGameSet.Specifics.Values['Directory'];
+  Result:=SetupGameSet.Specifics.Values['Directory'];
+  if (Result = '') and (SetupGameSet.Specifics.Values['Steam'] = '1') then
+  begin
+    Result:=SetupSubSet(ssGames, 'Steam').Specifics.Values['Directory'];
+  end;
+  {$IFDEF LINUX}
+  Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
+  {$ELSE}
+  Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
+  {$ENDIF}
 end;
 
 function BaseOutputPath : String;
@@ -526,38 +572,6 @@ begin
  until I>=Length(Result);
 end;
 
-function CDRetry(FileName: String) : Boolean;
-var
- CurDir, NomChemin, Nom1: String;
-begin
- Result:=False;
- Nom1:=QuakeDir;
- GetDir(0, CurDir);
- try
-  ChDir(GetApplicationPath());
-  NomChemin:=ExpandFileName(Nom1);
- finally
-  ChDir(CurDir);
- end;
- if CompareText(NomChemin, Nom1) <> 0 then
- begin
-   SetupGameSet.Specifics.Values['Directory']:=NomChemin;
-   Result:=True;  { retry }
-   Exit;
- end;
- NomChemin:=SetupGameSet.Specifics.Values['CDDir'];
- if NomChemin='' then
-  Exit;   { no CD to look in }
- Nom1:=SetupGameSet.Specifics.Values['CD'];
- if Nom1='' then
-  Exit;   { no CD drive configured }
- if FileExists(PathAndFile(PathAndFile(PathAndFile(Nom1, NomChemin), SetupGameSet.Specifics.Values['BaseDir']), '*.*')) then
-  Exit;   { CD is already inserted }
- if MessageDlg(FmtLoadStr1(5559, [SetupGameSet.Name, FileName]), mtInformation, mbOkCancel, 0) <> mrOk then
-  Abort;
- Result:=True;
-end;
-
 function GetGameDir : String;
 var
   L: TQList;
@@ -582,6 +596,11 @@ begin
     GlobalWarning(FmtLoadStr1(5625, [SetupGameSet.Name, Error]));
   if Result='' then
     Result:=GettmpQuArK;
+  {$IFDEF LINUX}
+  Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
+  {$ELSE}
+  Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
+  {$ENDIF}
 end;
 
 procedure ListSourceDirs(Dirs: TStrings);
@@ -601,19 +620,11 @@ begin
 end;
 
 {--Convex-begin--}
-procedure RestartAliasing;
-begin
-  LastAliasName := '';
-  LastAliasIndex := 0;
-end;
-
 function IsTextureFile(const FileName: String) : Boolean;
 var
-  I : Byte;
+  I : Integer;
 begin
   Result := False;
-  if g_TexExtensions.Count=0 then
-    Exit;
   for I := 0 to g_TexExtensions.Count-1 do
   begin
     if (CompareText(ExtractFileExt(FileName), g_TexExtensions.Strings[i])=0) then
@@ -624,128 +635,184 @@ begin
   end;
 end;
 
-function FileAlias(const FileName: String) : String;
-begin   { returns an alternate file name to lookup this file }
-  if (IsTextureFile(FileName)) then { texture filename aliasing }
+function IsPakFile(const FileName: String) : Boolean;
+var
+  I : Integer;
+begin
+  Result := False;
+  for I := 0 to g_PakExtensions.Count-1 do
   begin
-    if (CompareText(FileName, LastAliasName)<>0) then
-    begin
-      LastAliasName := FileName;
-      LastAliasIndex := 0;
+    if (CompareText(ExtractFileExt(FileName), g_PakExtensions[i])=0) then
+    begin { file is a pak if its extension is listed in GameBuffer }
+      Result := True;
+      Exit;
     end;
-    if LastAliasIndex >= g_TexExtensions.Count then { no alias found }
-    begin
-      Result := '';
-      LastAliasIndex := 0;
-    end
+  end;
+end;
+
+procedure RestartAliasing(Filename: String);
+begin
+  CurAliasName := Filename;
+  CurAliasIndex := 0;
+  if IsTextureFile(Filename) then
+    CurAliasType := ftTexture
+  else if IsPakFile(Filename) then
+    CurAliasType := ftPak
+  else
+    CurAliasType := ftNone;
+end;
+
+function GetNextAlias: String;
+begin
+  if CurAliasType=ftTexture then
+  begin
+    if CurAliasIndex >= g_TexExtensions.Count then // no alias found
+      Result := ''
     else
     begin
-      Result := ChangeFileExt(FileName, g_TexExtensions.Strings[LastAliasIndex]);
-      Inc(LastAliasIndex);
+      Result := ChangeFileExt(CurAliasName, g_TexExtensions.Strings[CurAliasIndex]);
+      Inc(CurAliasIndex);
+    end;
+  end
+  else if CurAliasType=ftPak then
+  begin
+    if CurAliasIndex >= g_PakExtensions.Count then // no alias found
+      Result := ''
+    else
+    begin
+      Result := ChangeFileExt(CurAliasName, g_PakExtensions.Strings[CurAliasIndex]);
+      Inc(CurAliasIndex);
     end;
   end
   else
-  begin   { needed file is not a texture }
-    Result := '';
+  begin   // file is not a texture or pak
+    if CurAliasIndex=0 then
+      Result:=CurAliasName
+    else
+      Result := '';
+    Inc(CurAliasIndex);
   end;
-(*  { Alternate Texture File Type (.jpg / .tga)...}
- if (CharModeJeu>=mjQ3A) and (CompareText(ExtractFileExt(FileName), '.tga') = 0) then
-    { if its quake3 then a .tga file can exist as a .jpg file too }
-  Result:=ChangeFileExt(FileName,'.jpg')
- else
-  Result:='';   { no other aliases } *)
 end;
 {--Convex-end--}
 
-function DisplayAlias(const FileName: String) : String;
+function DisplayAllAlias(Filename: String) : String;
+var
+  AliasName: String;
 begin
-  Result := '';
-  while (Result <> '') do
-    Result:=FileAlias(FileName);
+  RestartAliasing(Filename);
+  AliasName := GetNextAlias;
+  Result := AliasName;
+  while (AliasName <> '') do
+  begin
+    AliasName := GetNextAlias;
+    if AliasName <> '' then
+      Result:=Result + LoadStr1(4204) + AliasName;
+  end;
   if Result='' then
-    Result:=FileName
-  else
-    Result:=FmtLoadStr1(5700, [FileName, Result]);    { "<filename> or <alias>" }
-   { FIXME: needs to be changed for multiple aliases }
+    Result:=FileName;
 end;
 
-function NeedGameFile(const FileName: String) : QFileObject;
+function NeedGameFile(const FileName, PakFile: String) : QFileObject;
 var
  L: TQList;
  I: Integer;
  SourceDir: String;
 begin
-  repeat
-    L:=GetQuakeContext;
-    for I:=L.Count-1 downto 0 do
+  L:=GetQuakeContext;
+  for I:=L.Count-1 downto 0 do
+  begin
+    SourceDir:=L[I].Specifics.Values['SourceDir'];
+    if SourceDir<>'' then
     begin
-      SourceDir:=L[I].Specifics.Values['SourceDir'];
-      if SourceDir<>'' then
-      begin
-        Result:=GetGameFileBase(SourceDir, FileName, False);
-        if Result<>Nil then
-          Exit;   { found it }
-      end;
+      Result:=GetGameFileBase(SourceDir, FileName, PakFile, False);
+      if Result<>Nil then
+        Exit;   { found it }
     end;
-    Result:=GetGameFileBase(SetupGameSet.Specifics.Values['BaseDir'], FileName, True);
-  until (Result<>Nil) or not CDRetry(FileName);
+  end;
+  Result:=GetGameFileBase(SetupGameSet.Specifics.Values['BaseDir'], FileName, PakFile, True);
   if Result=Nil then
-    Raise EErrorFmt(5560, [SetupGameSet.Name, DisplayAlias(FileName)]);
+    Raise EErrorFmt(5560, [SetupGameSet.Name, DisplayAllAlias(FileName)]);
 end;
 
-function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
+function NeedGameFileBase(const BaseDir, FileName, PakFile: String) : QFileObject;
 begin
-  repeat
-    Result:=GetGameFileBase(BaseDir, FileName, True);
-    if Result<>Nil then
-      Exit;
-  until not CDRetry(FileName);
-  Raise EErrorFmt(5561, [SetupGameSet.Name, DisplayAlias(FileName), BaseDir]);
+  Result:=GetGameFileBase(BaseDir, FileName, PakFile, True);
+  if Result=Nil then
+    Raise EErrorFmt(5561, [SetupGameSet.Name, DisplayAllAlias(FileName), BaseDir]);
 end;
 
 {--Convex-begin-- : multi-alias texture file search }
-function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
+function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD: Boolean) : QFileObject;
+
+ //Returns an alternative path (from the QuArK dir) is the given path was a relative path
+ function CheckForRelativePath(const Path: String) : String;
+ var
+   CurDir, NewPath: String;
+ begin
+   Result:='';
+   GetDir(0, CurDir);
+   try
+     ChDir(GetApplicationPath());
+     NewPath:=ExpandFileName(Path);
+   finally
+     ChDir(CurDir);
+   end;
+   if CompareText(NewPath, Path) <> 0 then
+     Result:=NewPath;
+ end;
+
+ function GetCDPath(const BaseDir, FileName: String): String;
+ var
+   CD, CDDir: String;
+ begin
+   Result:='';
+   CDDir:=SetupGameSet.Specifics.Values['CDDir'];
+   if CDDir='' then
+     Exit;  // no CD to look in
+   CD:=SetupGameSet.Specifics.Values['CD'];
+   if CD='' then
+     Exit; // no CD drive configured
+   Result:=PathAndFile(PathAndFile(CD, CDDir), BaseDir);
+   if DirectoryExists(Result) = false then
+     if MessageDlg(FmtLoadStr1(5559, [SetupGameSet.Name, FileName]), mtInformation, mbOkCancel, 0) <> mrOk then
+       Result:='';
+ end;
+
 var
+ SearchStage: Integer;
  AbsolutePath, AbsolutePathAndFilename: String;
- FilenameAlias,name,namerest: String;
+ FilenameAlias: String;
  PakFile: QFileObject;
+ PakRealFileName: String;
+ PakSearchPath: String;
  GetPakNames: TGetPakNames;
- CDSearch: Boolean;
- mem: TMemoryStream;
+ Setup: QObject;
+ SteamRunning: Boolean;
+ SteamCacheDir: String;
 begin
   Result := NIL;
   if (GameFiles=Nil) then
     GameFiles:=TQList.Create;
-  CDSearch := false;
-  while (true) do
-  begin
-    if (not CDSearch) then
-      AbsolutePath:=PathAndFile(QuakeDir, BaseDir)
-    else
-    begin
-      AbsolutePath:=SetupGameSet.Specifics.Values['CDDir'];
-      if (AbsolutePath='') then
-        Exit;
-      AbsolutePath:=PathAndFile(PathAndFile(SetupGameSet.Specifics.Values['CD'],  AbsolutePath), BaseDir);
-    end;
-
-    RestartAliasing;
-    FilenameAlias := FileName;
+  SearchStage:=0;
+  AbsolutePath:=PathAndFile(QuakeDir, BaseDir);
+  repeat
+    // Buffer search
+    RestartAliasing(FileName);
+    FilenameAlias := GetNextAlias;
     while (FilenameAlias <> '') do
     begin
-      { Buffer search }
       AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
       Result := SortedFindFileName(GameFiles, AbsolutePathAndFilename);
       if (Result <> NIL) then
         Exit; { found it }
-      FilenameAlias := FileAlias(FileName);
+      FilenameAlias := GetNextAlias;
     end;
 
-    RestartAliasing;
-    FilenameAlias := FileName;
+    //Disk search
+    RestartAliasing(FileName);
+    FilenameAlias := GetNextAlias;
     while (FilenameAlias <> '') do
     begin
-      { Disk search }
       AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
       if FileExists(AbsolutePathAndFilename) then
       begin
@@ -755,77 +822,37 @@ begin
         GameFiles.Sort(ByFileName);
         Exit; { found it }
       end;
-      FilenameAlias := FileAlias(FileName);
+      FilenameAlias := GetNextAlias;
     end;
 
-    {HL2 steam access}
-    if LeftStr(BaseDir,14)='steamaccess://' then
+    //Pak file search (this includes GCF's)
+    RestartAliasing(FileName);
+    FilenameAlias := GetNextAlias;
+    if SetupGameSet.Specifics.Values['Steam']='1' then
     begin
-      RestartAliasing;
-      name:= Copy(BaseDir,15,3);
-      namerest:= Copy(BaseDir,19,Length(Basedir)-18);
-      if namerest<>'' then
-        namerest :=namerest + '/';
-
-      PakFile:=SortedFindFileName(GameFiles, BaseDir);
-      if (PakFile=Nil) then
-      begin  { open steam  if not already opened }
-
-        PakFile:=QSteamFS.Create(name, nil) as QFileObject;
-        PakFile.Protocol:='steamaccess://';
-        PakFile.Filename:=BaseDir;
-        PakFile.ReadFormat:=rf_Default;
-        PakFile.Flags:=PakFile.Flags or ofFileLink;
-        PakFile.Flags:=PakFile.Flags or ofNotLoadedToMemory;
-        mem := TMemoryStream.Create;
-        PakFile.Open(TQStream(mem), 0);
-        PakFile.Acces;
-
-        PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
-        GameFiles.Add(PakFile);
-        GameFiles.Sort(ByFileName);
-      end;
-      Result:=PakFile.FindFile( namerest+FileName );
-      if (Result<>Nil) then
+      PakRealFileName:=GetGCFFile(PakFileName);
+      PakSearchPath:=ExtractFileDir(PakRealFileName);
+      PakRealFileName:=ExtractFileName(PakRealFileName);
+    end
+    else
+    begin
+      PakRealFileName:=PakFileName;
+      PakSearchPath:=AbsolutePath;
+    end;
+    GetPakNames:=TGetPakNames.Create;
+    try
+      GetPakNames.CreatePakList(PakSearchPath, PakRealFileName, True, False);
+      while (FilenameAlias <> '') do
       begin
-        Exit; { found it }
-      end;
-    end;
-
-
-    {HL2 gcf access}
-    if FileExists(AbsolutePath) and AnsiEndsStr('.gcf', AbsolutePath) then
-    begin
-      RestartAliasing;
-      PakFile:=SortedFindFileName(GameFiles, AbsolutePath);
-      if (PakFile=Nil) then
-      begin  { open the .gcf file if not already opened }
-        PakFile:=ExactFileLink(AbsolutePath, Nil, True);
-        PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
-        GameFiles.Add(PakFile);
-        GameFiles.Sort(ByFileName);
-      end;
-      Result:=PakFile.FindFile( FileName );
-      if (Result<>Nil) then
-        Exit; { found it }
-    end;
-
-    RestartAliasing;
-    FilenameAlias := FileName;
-    while (FilenameAlias <> '') do
-    begin
-      { PAKfile search }
-      AbsolutePathAndFilename:=ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
-      GetPakNames:=TGetPakNames.Create;
-      try
-        GetPakNames.CreatePakList(AbsolutePath, True);
-        while GetPakNames.GetPakName(True, AbsolutePathAndFilename, True) do
+        GetPakNames.ResetIter(True);
+        AbsolutePathAndFilename:=ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
+        while GetPakNames.GetNextPakName(True, AbsolutePathAndFilename, True) do
         begin
-          if (not IsPakTemp(AbsolutePathAndFilename)) then  { ignores QuArK's own temporary .pak's }
+          if (not IsPakTemp(AbsolutePathAndFilename)) then  // ignores QuArK's own temporary pak's
           begin
             PakFile:=SortedFindFileName(GameFiles, AbsolutePathAndFilename);
             if (PakFile=Nil) then
-            begin  { open the .pak file if not already opened }
+            begin  // open the pak file if not already opened
               PakFile:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
               PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
               GameFiles.Add(PakFile);
@@ -833,22 +860,64 @@ begin
             end;
             Result:=PakFile.FindFile(FilenameAlias);
             if (Result<>Nil) then
-              Exit; { found it }
+              Exit; // found it
           end;
         end;
-      finally
-        GetPakNames.Destroy;
+        FilenameAlias := GetNextAlias;
       end;
-      FilenameAlias := FileAlias(FileName);
+    finally
+      GetPakNames.Free;
     end;
 
-    if not LookInCD then
-      Exit;
+    //HL2 steam access
+    if SetupGameSet.Specifics.Values['Steam']='1' then
+    begin
+      SteamRunning := RunSteam;
 
-    { CD search }
-    LookInCD := false;
-    CDSearch := true;
-  end;
+      if not SteamRunning then
+        Log(LOG_WARNING, 'Steam is not running. Unable to extract files from it.')
+      else
+      begin
+        Setup:=SetupSubSet(ssGames, 'Steam');
+        SteamCacheDir:=PathAndFile(Setup.Specifics.Values['Directory'], Setup.Specifics.Values['CacheDirectory']);
+        RestartAliasing(FileName);
+        FilenameAlias := GetNextAlias;
+        while (FilenameAlias <> '') do
+        begin
+          if RunSteamExtractor(FilenameAlias) then
+            if FileExists(SteamCacheDir+'\'+FilenameAlias) then
+            begin
+              Result:=ExactFileLink(SteamCacheDir+'\'+FilenameAlias, Nil, True);
+              Result.Flags:=Result.Flags or ofWarnBeforeChange;
+              GameFiles.Add(Result);
+              GameFiles.Sort(ByFileName);
+              Exit; { found it }
+            end;
+
+          FilenameAlias := GetNextAlias;
+        end;
+      end;
+    end;
+
+    Inc(SearchStage);
+    if (SearchStage = 1) then
+    begin
+      if LookInCD then
+      begin
+        AbsolutePath:=GetCDPath(BaseDir, FileName);
+        if AbsolutePath='' then
+          Inc(SearchStage);  //Skip stage 1, goto stage 2
+      end
+      else
+        Inc(SearchStage);  //Skip stage 1, goto stage 2
+    end;
+    if (SearchStage = 2) then
+    begin
+      AbsolutePath:=CheckForRelativePath(BaseDir);
+      if AbsolutePath='' then
+        Inc(SearchStage);  //Skip stage 2, goto stage 3
+    end;
+  until SearchStage >= 3;
 end;
 {--Convex-end--}
 
@@ -1016,7 +1085,7 @@ begin
      end
      else
      begin
-       PaletteFile:=NeedGameFile(S);
+       PaletteFile:=NeedGameFile(S, '');
        PaletteFile.AddRef(+1);
        try
          PaletteFile.Acces;
@@ -1498,5 +1567,5 @@ end;
 initialization
 
 finalization
-  FreeGBList.Free;
+  ClearGBList;
 end.

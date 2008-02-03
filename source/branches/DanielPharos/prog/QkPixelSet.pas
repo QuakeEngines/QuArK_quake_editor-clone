@@ -23,6 +23,23 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/11/21 16:07:32  danielpharos
+Another bunch of hugh image fixes: everything should work again!
+
+Revision 1.19  2007/11/21 00:06:22  danielpharos
+BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
+
+Revision 1.18  2007/11/20 21:36:58  danielpharos
+Fix paletted pictures not working correctly after prev. rev.
+
+Revision 1.17  2007/11/20 18:28:06  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
+Revision 1.16  2006/05/05 06:04:44  cdunde
+To reverse Texture Memory changes. Cases problems with Quake 3 QkQ3.pas
+handling of textures in the Texture Browser, hour glass icon jitters and memeor usage
+increases causing prog crash, can not use scrole bar in TB.
+
 Revision 1.15  2006/04/06 19:28:02  nerdiii
 Texture memory wasn't freed because texture links had additional references to them.
 
@@ -141,12 +158,14 @@ function PSDToDIB(const Source: TPixelSetDescription; BottomUp: Boolean) : TPixe
 function PSDConvert(var Target: TPixelSetDescription;
                     const Source: TPixelSetDescription;
                     Flags: Integer) : Boolean;  { ccXXX }
+function CreateToDC(DC: HDC; var BitmapInfo; Data: Pointer) : HBitmap;
+procedure DrawToDC(DC: HDC; var BitmapInfo; Data: Pointer; Left, Top: Integer);
 
  {------------------------}
 
 implementation
 
-uses Controls, Dialogs, Quarkx, QkTextures, CCode, QkExplorer;
+uses Controls, Dialogs, Quarkx, QkTextures, CCode, QkExplorer, Logging;
 
  {------------------------}
 
@@ -291,8 +310,6 @@ begin
   DeleteObject(Pal);
 end;
 
- {---------------}
-
 function TPixelSetDescription.IsGamePalette(Game: Char) : Boolean;
 var
  GP: PPaletteLmp;
@@ -305,6 +322,8 @@ begin
    Result:=(ColorPalette=GP) or CompareMem(ColorPalette, GP, SizeOf(TPaletteLmp));
   end;
 end;
+
+ {---------------}
 
 (* PSDConvert will perform any necessary conversion automatically.
    Any field left to its default (null) value in the target object will
@@ -489,6 +508,42 @@ begin
  PSDConvert(Result, Source, ccTemporary);
 end;
 
+function CreateToDC(DC: HDC; var BitmapInfo; Data: Pointer) : HBitmap;
+var
+  Width, Height: Integer;
+begin
+  Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
+  Height:=TBitmapInfo(BitmapInfo).bmiHeader.biHeight;
+  Result:=CreateCompatibleBitmap(DC, Width, Height);
+  if SetDiBits(DC, Result, 0, Height, Data, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
+    Log(LOG_WARNING, 'SetDiBits: Returned zero!');
+end;
+
+procedure DrawToDC(DC: HDC; var BitmapInfo; Data: Pointer; Left, Top: Integer);
+var
+  Width, Height, BBP, ScanWidth: Integer;
+  DIBSection: HGDIOBJ;
+  Bits: Pointer;
+begin
+  DIBSection:=CreateDIBSection(DC, tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS, Bits, 0, 0);
+  if DIBSection = 0 then
+    Raise exception.Create('CreateDIBSection failed!');
+  try
+    Width:=TBitmapInfo(BitmapInfo).bmiHeader.biWidth;
+    Height:=TBitmapInfo(BitmapInfo).bmiHeader.biHeight;
+    BBP:=TBitmapInfo(BitmapInfo).bmiHeader.biBitCount;
+    ScanWidth:=(((Width * BBP) + 31) div 32) * 4;  //Scanline size in bytes, with padding
+    CopyMemory(Bits, Data, ScanWidth * Height);
+    if SetDIBitsToDevice(DC, Left, Top, Width, Height, 0, 0, 0, Height, Bits,
+     tagBITMAPINFO(BitmapInfo), DIB_RGB_COLORS) = 0 then
+      Log(LOG_WARNING, 'SetDIBitsToDevice: Returned zero!');
+  finally
+    DeleteObject(DIBSection);
+  end;
+end;
+
+ {---------------}
+
 procedure TPixelSetDescription.Paint(DC: HDC; X, Y: Integer);
 var
  BmpInfo: TBitmapInfo256;
@@ -506,8 +561,7 @@ begin
     Pal1:=SelectPalette(DC, Pal0, False);
     RealizePalette(DC);
    end;
-  SetDIBitsToDevice(DC, X, Y, NewPSD.Size.X, NewPSD.Size.Y, 0, 0,
-   0, NewPSD.Size.Y, NewPSD.Data, BitmapInfo^, dib_RGB_Colors);
+  DrawToDC(DC, BitmapInfo^, NewPSD.Data, X, Y);
  finally
   if Pal1<>0 then
    SelectPalette(DC, Pal1, False);
@@ -519,17 +573,16 @@ end;
 function TPixelSetDescription.GetBitmapImage : TBitmap;
 var
  BmpInfo: TBitmapInfo256;
- BitmapInfo: PBitmapInfo;
+ BitmapInfo: TBitmapInfo256;
  NewPSD: TPixelSetDescription;
  DC: HDC;
 begin
  NewPSD:=PSDToDIB(Self, True);
  DC:=GetDC(GetDesktopWindow);
  try
-  BitmapInfo:=PBitmapInfo(NewPSD.GetBitmapInfo(BmpInfo, Nil));
+  BitmapInfo:=NewPSD.GetBitmapInfo(BmpInfo, Nil)^;
   Result:=TBitmap.Create;
-  Result.Handle:=CreateDIBitmap(DC, BitmapInfo^.bmiHeader, CBM_INIT, NewPSD.Data,
-                                BitmapInfo^, dib_RGB_Colors);
+  Result.Handle:=CreateToDC(DC, BitmapInfo, NewPSD.Data);
  finally
   ReleaseDC(GetDesktopWindow, DC);
   NewPSD.Done;

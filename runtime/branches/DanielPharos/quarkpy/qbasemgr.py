@@ -260,6 +260,8 @@ class BaseLayout:
         view.info = {"type": "3D", "viewname": "3Dwindow"}
         #view.info = {"type": "3D", "noclick": None, "viewname": "full3Dview"}
         view.viewmode = "tex"
+        if self.editor.MODE == 3:
+            view.showprogress=0
         view.viewtype = "window"
 
     ### Calling this function causes the 3D view mouse maneuvering to change,
@@ -292,8 +294,15 @@ class BaseLayout:
                 floating.show()
         if not (view in self.views):
             self.views.append(view)
-        self.update3Dviews(view)
+            if self.editor.MODE == 3:
+                pass
+            else:
+                self.update3Dviews(view)
         BaseLayout.Floating3DWindows.append(floating)
+        if self.editor.MODE == 3:
+            pass
+        else:
+            self.editor.layout.explorer.selchanged()
 
     def closefull3Dview(self, floating):
         "Closes the 3D view."
@@ -306,11 +315,18 @@ class BaseLayout:
         setup["WndRect"] = r
         if view in self.views:
             self.views.remove(view)
-            self.update3Dviews()
+            if self.editor.MODE == 3:
+                pass
+            else:
+                self.update3Dviews()
         BaseLayout.Floating3DWindows.remove(floating)
         if not setup["AllowMultiple"]:
             self.buttons["3D"].state = 0
             quarkx.update(self.editor.form)
+        if self.editor.MODE == 3:
+            pass
+        else:
+            self.editor.layout.explorer.selchanged()
 
     def setupdepth(self, view):
         pass    # abstract
@@ -593,6 +609,18 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.33  2008/02/03 00:55:08  cdunde
+#To stop the progress bar from showing in the OpenGL window for the Model Editor
+#
+#Revision 1.32  2007/10/11 09:58:34  cdunde
+#To keep the fillcolor correct for the editors 3D view after a
+#tree-view selection is made with the floating 3D view window open and
+#to stop numerous errors and dupe drawings when the floating 3D view window is closed.
+#
+#Revision 1.31  2007/07/28 23:11:58  cdunde
+#To open and close floating 3D window(s) in Model Editor and
+#try to keep all views 3D Options color settings correct.
+#
 #Revision 1.30  2007/03/27 22:36:29  danielpharos
 #Fixed a stupid bug.
 #

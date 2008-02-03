@@ -278,6 +278,7 @@ Strings = {
     817: "Valve Map File (*.vmf)|*.vmf",
     818: "Steam FS (*.SteamFS)|*.SteamFS",
     819: "DDS image (*.dds)|*.dds",
+    820: "FTX image (*.ftx)|*.ftx",
 
     2368: "Skins",
     2369: "Frames",
@@ -291,6 +292,8 @@ Strings = {
     2433: "Internal error : Invalid packed model structure//Please report : %s",
     2434: "The current structure of this model is invalid. It cannot be saved in %s format.",
     2435: "The model contains no skin and the skin size is unspecified",
+
+    2549: "shift left / right",
 
     3001: "Esc",
     3002: "1",
@@ -457,6 +460,7 @@ Strings = {
     4201: "'$'",
     4202: "'['",
     4203: "']'",
+    4204: " or ",
 
     4416: "Cannot set this attribute to screen panel objects",
     4417: "QuArK file object expected",
@@ -508,6 +512,7 @@ Strings = {
     4617: "\n\nPlease report this error to the QuArK development team, so that they can fix the issue promptly.",
     4618: "//Description of the invalid polygon :",
     4620: "Impossible to create the surface for a polygon//Three aligned points don't define a plane.",
+    4621: "Cannot set this as a background image: This is not a valid image file, or an unsupported format.",
 
     5119: "(new)",
     5120: "Explorer Group",
@@ -610,6 +615,8 @@ Strings = {
     5223: "Internal error (%s) - this program is buggy !//Please report: %0:s",
     # 5224: "Cannot open file '%s' because it is already opened as file link",
     5225: "This file contains a link to the file '%s' which is already opened elsewhere. The link has been ignored (and deleted).",
+    5226: "FTX image",
+    5227: "Cannot save image as FTX file: it has a palette, which is not supported by FTX files. Please convert before saving.",
 
     5248: "Cancel",
     5249: "&Move here",
@@ -684,6 +691,7 @@ Strings = {
     5458: "Searching add-ons...",
     5459: "preparing Faces...",
     5460: "preparing Models...",
+    5461: "Loading from pak file...",
 
     5502: "Sprite object not found!",
     5503: "'%s' is a Half-Life Model which cannot be read (yet)",
@@ -746,8 +754,8 @@ Strings = {
     5557: "QuArK did not find the registered add-on '%s'.",
     5558: "This map is invalid and contains no data.",
     5559: "QuArK needs the file '%1:s' from %0:s and could not find it on your disk. Please insert the CD-ROM now.",
-    5560: "QuArK needs the file '%1:s' from %0:s and could not find it. You must set up the path(s) to %0:s in the Configuration dialog box",
-    5561: "QuArK needs the file '%1:s' from %0:s (directory '%2:s') and could not find it. You must set up the path(s) to %0:s in the Configuration dialog box",
+    5560: "QuArK needs the file '%1:s' from %0:s and could not find it. You must set up the correct path(s) to %0:s in the Configuration dialog box",
+    5561: "QuArK needs the file '%1:s' from %0:s (directory '%2:s') and could not find it. You must set up the correct path(s) to %0:s in the Configuration dialog box",
     # 5562: "The clipboard contains %d objects. Do you want to open them all ?",
     5563: "You must enter a Specific",
     5564: "A Specific cannot begin with the symbol '%s'",
@@ -816,9 +824,9 @@ Strings = {
     5625: "%s cannot run multiple TCs together :\n%s\nOnly the last one is used.",
     5626: "the temporary directory '%s'",
     5627: "The directory to %s seems to be wrong : could not find %s. Do you want to enter the correct path now ?",
-    5628: "Remove the temporary tag of file '%s' ? QuArK will no more consider it as a temporary file.",
+    5628: "Remove the temporary tag of file '%s' ? QuArK will then no more consider it a temporary file.",
     5629: "Always create pak files instead of writing files in '%s'",
-    5630: "Cannot create a new temporary .pak file. The names are in use up to '%s'",
+    5630: "Cannot create a new temporary pak file. The names are in use up to '%s'",
     5631: "There is an error in the definition of this button//Form '%s' not found",
     5632: "The WAVE file has bad formatted data at the end that will be ignored.",
     5633: "This object has been moved or deleted",
@@ -888,9 +896,9 @@ Strings = {
     5697: "Shader stage '%s' has no image to display",
     5698: "Shader '%s' not found in %s",
     5699: "(complex)",
-    5700: "%s or %s",
+    #5700: "%s or %s",
     5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
-    5702: "Files in this directory wont work. Select a file in a subdirectory please.",
+    #5702: "Unknown map format: %s\n",
 
     # alexander would like to reserve 5703 .. 5729 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
@@ -902,9 +910,7 @@ Strings = {
     5709: "VTF file",
     5710: "GCF file",
     5711: "GCF folder",
-    5712: "cannot initialize Steam Service filesystem Access, "+\
-          "please check the following QuArK configuration items \n"+\
-          " steam filesystem dll\n steam account name (case sensitive!)\n steam app id\n steam directory \n",
+    5712: "QuArK is about to clear the Steam cache in %s. Are you sure you want QuArK to do this?",
     5713: "steam file system",
     5714: "bad content id: %s",
     5715: "VMF file",
@@ -959,6 +965,7 @@ Strings = {
     6010: "Texture not loaded",
     6011: "Invalid value for %s found: %d. Using default",
     6012: "No valid value for %s found, defaulting to: %d",
+    6013: "Unable to load Desktop Window Manager (DWM).//Desktop Composition may be enabled, causing corruption in OpenGL and DirectX viewports",
 
     # DanielPharos would like to reserve 6100 .. 6199 for the software renderer
     6100: "Error with the Software 3D drivers//%s failed",
@@ -977,6 +984,7 @@ Strings = {
     6301: "Error in OpenGL initialization//'%s' failed",
     6302: "Error in OpenGL commands [Error code(s) %s step %d]",
     6303: "An error occurred in the OpenGL routines: %s",
+    6304: "Unable to load OpenGL extention list. All OpenGL extentions will be disabled",
 
     6310: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer",
     6311: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
@@ -1011,6 +1019,8 @@ Strings = {
     -103: "%d texture(s) could not be found. Are you sure you want to continue ?",
     -104: "This command uses the 3D viewer selected in options. Note that if you get a black screen it probably means you are looking at a part of your map where there is no light. In case of trouble (or to disable light computation) see the viewer section of the configuration dialog box and try again.\n\nIt is recommended to save your work first. Ok to load 3D viewer now ?",
     -105: "Note: when this button is pressed, the normal handles around the objects in your map are replaced by pink handles that let you do 'linear mapping' operations.\n\n'Linear mapping' operations include rotations, zooms, and various distortions.\n\nClick again on this button to get the normal handles.",
+    -106: "Cannot drop this item here.",
+    -151: "Cannot drop this item into model component.",
 
     -409: "Bezier",
 
@@ -1020,6 +1030,42 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.113  2008/01/31 16:07:24  danielpharos
+#Added FTX file loading and saving support (Heavy Metal: F.A.K.K. 2 textures).
+#
+#Revision 1.112  2007/12/06 15:47:53  danielpharos
+#Fixed a wrong text.
+#
+#Revision 1.111  2007/11/19 00:08:39  danielpharos
+#Any supported picture can be used for a view background, and added two options: multiple, offset
+#
+#Revision 1.110  2007/10/24 14:58:12  cdunde
+#To activate all Movement toolbar button functions for the Model Editor.
+#
+#Revision 1.109  2007/10/23 14:47:51  danielpharos
+#Fixed the filename being double in the not-found error message.
+#
+#Revision 1.108  2007/09/23 21:04:35  danielpharos
+#Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+#
+#Revision 1.107  2007/09/21 21:19:51  cdunde
+#To add message string that is model editor specific.
+#
+#Revision 1.106  2007/09/10 10:24:25  danielpharos
+#Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+#
+#Revision 1.105  2007/09/04 14:38:21  danielpharos
+#Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
+#
+#Revision 1.104  2007/08/15 16:28:11  danielpharos
+#HUGE update to HL2: Took out some code that's now not needed anymore.
+#
+#Revision 1.103  2007/08/14 16:33:33  danielpharos
+#HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+#
+#Revision 1.102  2007/08/05 19:55:55  danielpharos
+#Corrected and commented-out an unused and wrong line.
+#
 #Revision 1.101  2007/07/05 10:18:34  danielpharos
 #Moved a string to the dictionary.
 #

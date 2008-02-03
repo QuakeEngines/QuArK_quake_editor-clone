@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
+Revision 1.9  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2001/03/20 21:44:19  decker_dk
 Updated copyright-header
 
@@ -207,7 +213,7 @@ begin
   Q:=Q.TvParent;
  Q:=Q.FindSubObject(OutputProgsDat, QUnknown, Nil);
  if Q=Nil then
-  Q:=NeedGameFile(OutputProgsDat);
+  Q:=NeedGameFile(OutputProgsDat, '');
 
   { open streams }
  Source:=TMemoryStream.Create; try

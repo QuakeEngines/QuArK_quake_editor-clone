@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/09/10 10:24:17  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
+Revision 1.26  2007/07/20 01:31:10  cdunde
+To setup selected model mesh faces so they will draw correctly in all views.
+
 Revision 1.25  2007/06/12 11:23:49  cdunde
 Fixed what looks like a type error in vertex comparisons for line drawing.
 
@@ -132,6 +138,7 @@ type
     procedure CouleurDessin(var C: TColor);
   public
     class function TypeInfo: String; override;
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
     procedure ObjectState(var E: TEtatObjet); override;
     destructor Destroy; override;
     function Triangles(var P: PComponentTris) : Integer;
@@ -364,6 +371,14 @@ const
     (ml_name: 'addframe';      ml_meth: qAddFrame;      ml_flags: METH_VARARGS),
     (ml_name: 'setparentframes';ml_meth: qSetParentFrames; ml_flags: METH_VARARGS));
 
+function QComponent.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or (Parent is QModelRoot) then
+    Result:=true
+  else
+    Result:=false;
+end;
+
 function QComponent.FindRoot: QObject;
 var
   p: QObject;
@@ -540,7 +555,8 @@ function QComponent.GetFrameFromIndex(N: Integer) : QFrame;
 var
   L: TQList;
 begin
-  if N<0 then begin
+  if N<0 then
+  begin
     Result:=Nil;
     Exit;
   end;
@@ -565,7 +581,8 @@ function QComponent.GetSkinFromIndex(N: Integer) : QImage;
 var
   L: TQList;
 begin
-  if N<0 then begin
+  if N<0 then
+  begin
     Result:=Nil;
     Exit;
   end;
@@ -888,7 +905,7 @@ begin
           SourceCTris:=CTris;
           for K:=0 to 2 do begin
             J:=CTris^[K].VertexNo;
-            if J > FCurrentFrameCount then begin    { ignore the invalid triangle }
+            if J > FCurrentFrameCount then begin    // ignore the invalid triangle 
               Dec(TrisCount);
               Dec(Tris);
               Break;
@@ -914,10 +931,10 @@ begin
           L.Add(Tris);
           Inc(Tris);
         end;
-        L.Sort(ByOow);
+   //     L.Sort(ByOow);   draws all the filltris triangles wrong
         NewPen:=0;
         DeletePen:=0;
-        if g_DrawInfo.GreyBrush <> 0 then begin    { if color changes must be made now }
+        if g_DrawInfo.GreyBrush <> 0 then begin    // if color changes must be made now 
           if not Odd(SelMult) then begin
             C1:=clDefault;
             CouleurDessin(C1);

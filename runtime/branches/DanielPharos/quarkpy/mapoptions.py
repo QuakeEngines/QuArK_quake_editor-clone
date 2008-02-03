@@ -25,9 +25,38 @@ def ToggleOption(item):
     setup = apply(quarkx.setupsubset, item.sset)
     newvalue = not setup[tag]
     setup[tag] = "1"[:newvalue]
-    if item.sendupdate[newvalue]:
-        quarkx.reloadsetup()
+    # We don't need to reloadsetup for the Duplicators.
+    # This speeds up redrawing 3 times faster and keeps the 2D views from going blank.
+    if item.text == "&Ignore Duplicators":
+        pass
+    else:
+        if item.sendupdate[newvalue]:
+            quarkx.reloadsetup()
 
+def IgnoreDupClick(item):
+    # DanielPharos: A big hack. We need to call UNDO on all the duplicators to apply the changes...
+    # So we simply move the duplicators onto themselves! MUHAHA!
+    def UndoMoveDups(undo, RootItem):
+        import operator
+        list = RootItem.subitems
+        for item in list:
+            try:
+                if item.type==":d":
+                    listindex = operator.indexOf(list, item)
+                    if listindex == len(list)-1:
+                        undo.move(item, RootItem)
+                    else:
+                        undo.move(item, RootItem, list[listindex+1])
+            except:
+                pass
+            UndoMoveDups(undo, item)
+    ToggleOption(item)
+    editor = mapeditor()
+    if editor is None:
+        return
+    undo = quarkx.action()
+    UndoMoveDups(undo, editor.Root)
+    editor.ok(undo, "")
 
 def Config1Click(item):
     "Configuration Dialog Box."
@@ -70,10 +99,12 @@ def Options1Click(menu):
         if item == lineThicknessItem:
             item.thick = getLineThickness()
             item.text = "Set Line Thickness (%1.0f)"%item.thick
-        
 
-def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MAP,"Options"), hint=None):
-    item = qmenu.item(txt, ToggleOption, hint)
+def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MAP,"Options"), proc=None, hint=None):
+    if not proc is None:
+        item = qmenu.item(txt, proc, hint)
+    else:
+        item = qmenu.item(txt, ToggleOption, hint)
     item.tog = toggle
     item.sset = sset
     item.sendupdate = sendupdate
@@ -183,6 +214,10 @@ items = [
     toggleitem("&Negative polys really dig in 3D views", "ComputePolys", (1,1),
       hint="|Negative polys really dig in 3D views:\n\nIf this option is off, negative polyhedrons are shown as normal polyhedrons in textured view so that you can easily edit them. When this option is on, digging is performed and you don't see the negative polyhedron at all, but only the hole it made.\n\nIn non-software modes, in a future version of QuArK, the negative polyhedron itself should not be completely invisible, but transparent.|intro.mapeditor.menu.html#optionsmenu"),
 
+    toggleitem("&Ignore Duplicators", "IgnoreDup", (1,1), proc=IgnoreDupClick,
+      hint="|Ignore Duplicators:\n\nHides all duplicators and templates from being seen in the editors views.|intro.mapeditor.menu.html#optionsmenu"),
+
+
     qmenu.sep,
     texantiscroll("Default texture movement", 0),
     texantiscroll("Sticky textures", 1),
@@ -206,6 +241,19 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.17  2007/12/21 22:47:37  cdunde
+#To avoid unneeded reloadsetup for Duplicators for faster and better redraws.
+#
+#Revision 1.16  2007/12/21 20:39:23  cdunde
+#Added new Templates functions and Templates.
+#
+#Revision 1.15  2007/12/14 21:48:00  cdunde
+#Added many new beizer shapes and functions developed by our friends in Russia,
+#the Shine team, Nazar and vodkins.
+#
+#Revision 1.14  2006/05/01 05:34:32  cdunde
+#To link Configuration menu item directly to its Infobase section.
+#
 #Revision 1.13  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

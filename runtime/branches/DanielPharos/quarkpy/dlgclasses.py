@@ -48,7 +48,7 @@ class placepersistent_dialogbox(qmacro.dialogbox):
         dlg.show()
      
   def windowrect(self):
-    rect = quarkx.setupsubset(SS_MAP,"Options")['dlgdim_'+self.label]
+    rect = quarkx.setupsubset(self.editor.MODE,"Options")['dlgdim_'+self.label]
     if rect is not None:
       return rect
     x1,y1,x2,y2 = quarkx.screenrect()
@@ -60,7 +60,7 @@ class placepersistent_dialogbox(qmacro.dialogbox):
     return (cx-size[0]/2, cy-size[1]/2, cx+size[0]/2, cy+size[1]/2)
 
   def onclose(self, dlg):
-    quarkx.setupsubset(SS_MAP,"Options")['dlgdim_'+self.label] = self.dlg.windowrect
+    quarkx.setupsubset(self.editor.MODE,"Options")['dlgdim_'+self.label] = self.dlg.windowrect
     qmacro.dialogbox.onclose(self, dlg)
 
 class LiveEditDlg (placepersistent_dialogbox):
@@ -221,6 +221,10 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.14  2007/10/06 20:13:54  cdunde
+#Changed placepersistent_dialogbox class windowrect and onclose functions
+#to allow Model Editor to store its own settings separate from the Map Editor.
+#
 #Revision 1.13  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

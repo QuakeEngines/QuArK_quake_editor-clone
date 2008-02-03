@@ -110,6 +110,7 @@ var
  ValidStage: QPixelSet;
  Size: TPoint;
  V: array [1..2] of Single;
+ TexExt: String;
 begin
  Acces;
  Result:=Nil;
@@ -143,23 +144,14 @@ begin
  if Specifics.Values['bumpmap']<>'' then
    S:=Specifics.Values['bumpmap'];
 
+ TexExt:=SetupGameSet.Specifics.Values['TextureFormat'];
  if S<>'' then
  begin
    try
      if (ExtractFileExt(S)='') then
-     begin
-       try
-         Result:=NeedGameFile(S+'.tga') as QPixelSet;
-       except
-         try
-           Result:=NeedGameFile(S+'.jpg') as QPixelSet;
-         except
-           Result:=NeedGameFile(S+'.png') as QPixelSet;
-         end
-       end;
-     end
+       Result:=NeedGameFile(S+TexExt, '') as QPixelSet
      else
-       Result:=NeedGameFile(S) as QPixelSet;
+       Result:=NeedGameFile(S, '') as QPixelSet;
    except
      Result:=NIL
    end;
@@ -169,15 +161,7 @@ begin
  if Result=Nil then
  begin
    try
-     try
-       Result:=NeedGameFile(Name+'.tga') as QPixelSet;
-     except
-       try
-         Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
-       except
-         Result:=NeedGameFile(Name+'.png') as QPixelSet;
-       end
-     end;
+     Result:=NeedGameFile(Name+TexExt, '') as QPixelSet;
    except
      Result:=NIL
    end;
@@ -346,7 +330,7 @@ begin
   if Name=LoadStr1(5699) then   { complex stage }
    Result:=Nil   { to do: check for animated stages }
   else
-   Result:=NeedGameFile(Name) as QPixelSet;
+   Result:=NeedGameFile(Name, '') as QPixelSet;
  end;
 end;
 

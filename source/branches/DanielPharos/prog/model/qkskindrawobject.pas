@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/09/10 10:24:15  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
 Revision 1.9  2007/01/08 19:28:41  danielpharos
 Splitted the Ed3DFX file into two separate renderers: Software and Glide
 
@@ -59,6 +62,7 @@ type
   QSkinDrawObject = class(QMdlObject)
   public
     class function TypeInfo: String; override;
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
     procedure Dessiner; override;
     procedure CouleurDessin(var C: TColor);
   end;
@@ -66,6 +70,14 @@ type
 implementation
 
 uses EdSoftware, PyMapView, quarkx, travail, pyobjects, QkModelRoot, qkComponent, setup, QkObjectClassList;
+
+function QSkinDrawObject.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or (Parent is QComponent) then
+    Result:=true
+  else
+    Result:=false;
+end;
 
 procedure QSkinDrawObject.CouleurDessin;
 var

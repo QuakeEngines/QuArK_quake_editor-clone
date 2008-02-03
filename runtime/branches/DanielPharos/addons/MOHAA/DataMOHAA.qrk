@@ -4,6 +4,13 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.15  2007/12/26 06:01:40  cdunde
+//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
+//
+//Revision 1.14  2007/12/14 21:47:59  cdunde
+//Added many new beizer shapes and functions developed by our friends in Russia,
+//the Shine team, Nazar and vodkins.
+//
 //Revision 1.13  2007/05/06 22:28:57  cdunde
 //Added trigger_multiple, trigger_hurt and some things to the sound by OmnificienT.
 //

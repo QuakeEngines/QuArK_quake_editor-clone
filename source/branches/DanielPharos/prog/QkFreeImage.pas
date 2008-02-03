@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2007/12/06 23:01:30  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
+Revision 1.3  2007/11/20 17:14:48  danielpharos
+A lot of small and large fixes, so all DevIL/FreeImage images should load and display correctly.
+
 Revision 1.2  2007/07/05 10:18:26  danielpharos
 Moved a string to the dictionary.
 
@@ -195,16 +201,20 @@ var
   FreeImage_SeekMemory: function (stream : FIMEMORY; offset : integer; origin : integer) : Boolean; stdcall;
   FreeImage_TellMemory: function (stream : FIMEMORY) : integer; stdcall;
   FreeImage_GetBits: function (dib : FIBITMAP) : PByte; stdcall;
+  FreeImage_GetPalette: function (dib : FIBITMAP) : PByte; stdcall;
   FreeImage_GetHeight: function (dib : FIBITMAP) : Cardinal; stdcall;
   FreeImage_GetWidth: function (dib : FIBITMAP) : Cardinal; stdcall;
   FreeImage_GetPitch: function (dib : FIBITMAP) : Cardinal; stdcall;
+  //FreeImage_GetLine: function(dib: FIBITMAP) : Cardinal; stdcall;
   FreeImage_GetColorType: function (dib : FIBITMAP) : FREE_IMAGE_COLOR_TYPE; stdcall;
   FreeImage_GetImageType: function (dib : FIBITMAP) : FREE_IMAGE_TYPE; stdcall;
+  FreeImage_ConvertTo8Bits: function (dib : FIBITMAP) : FIBITMAP; stdcall;
   FreeImage_ConvertTo24Bits: function (dib : FIBITMAP) : FIBITMAP; stdcall;
   FreeImage_ConvertTo32Bits: function (dib : FIBITMAP) : FIBITMAP; stdcall;
   FreeImage_ConvertToRawBits: procedure (bits : PByte; dib : FIBITMAP; pitch : integer; bbp : Cardinal; red_mask : Cardinal; green_mask : Cardinal; blue_mask : Cardinal; topdown : Boolean); stdcall;
   FreeImage_ConvertFromRawBits: function (bits : PByte; width : integer; height : integer; pitch : integer; bbp : Cardinal; red_mask : Cardinal; green_mask : Cardinal; blue_mask : Cardinal; topdown : Boolean) : FIBITMAP; stdcall;
   FreeImage_IsTransparent: function (dib : FIBITMAP) : Boolean; stdcall;
+  FreeImage_Allocate: function (width : integer; height : integer; bbp : integer; red_mask : Cardinal; green_mask : Cardinal; blue_mask : Cardinal) : FIBITMAP; stdcall;
 
   
 function LoadFreeImage : Boolean;
@@ -270,16 +280,20 @@ begin
       FreeImage_SeekMemory   := InitDllPointer(HFreeImage, '_FreeImage_SeekMemory@12');
       FreeImage_TellMemory   := InitDllPointer(HFreeImage, '_FreeImage_TellMemory@4');
       FreeImage_GetBits      := InitDllPointer(HFreeImage, '_FreeImage_GetBits@4');
+      FreeImage_GetPalette   := InitDllPointer(HFreeImage, '_FreeImage_GetPalette@4');
       FreeImage_GetHeight    := InitDllPointer(HFreeImage, '_FreeImage_GetHeight@4');
       FreeImage_GetWidth     := InitDllPointer(HFreeImage, '_FreeImage_GetWidth@4');
       FreeImage_GetPitch     := InitDllPointer(HFreeImage, '_FreeImage_GetPitch@4');
+      //FreeImage_GetLine      := InitDllPointer(HFreeImage, '_FreeImage_GetLine@4');
       FreeImage_GetColorType := InitDllPointer(HFreeImage, '_FreeImage_GetColorType@4');
       FreeImage_GetImageType := InitDllPointer(HFreeImage, '_FreeImage_GetImageType@4');
+      FreeImage_ConvertTo8Bits := InitDllPointer(HFreeImage, '_FreeImage_ConvertTo8Bits@4');
       FreeImage_ConvertTo24Bits := InitDllPointer(HFreeImage, '_FreeImage_ConvertTo24Bits@4');
       FreeImage_ConvertTo32Bits := InitDllPointer(HFreeImage, '_FreeImage_ConvertTo32Bits@4');
       FreeImage_ConvertToRawBits   := InitDllPointer(HFreeImage, '_FreeImage_ConvertToRawBits@32');
       FreeImage_ConvertFromRawBits := InitDllPointer(HFreeImage, '_FreeImage_ConvertFromRawBits@36');
       FreeImage_IsTransparent      := InitDllPointer(HFreeImage, '_FreeImage_IsTransparent@4');
+      FreeImage_Allocate           := InitDllPointer(HFreeImage, '_FreeImage_Allocate@24');
       //DanielPharos: If one of the API func's fails, we should stop loading, and return False!
 
       //DanielPharos: This is an ugly string comparison, but it should work.
@@ -327,16 +341,20 @@ begin
       FreeImage_SeekMemory            := nil;
       FreeImage_TellMemory            := nil;
       FreeImage_GetBits               := nil;
+      FreeImage_GetPalette            := nil;
       FreeImage_GetHeight             := nil;
       FreeImage_GetWidth              := nil;
       FreeImage_GetPitch              := nil;
+      //FreeImage_GetLine               := nil;
       FreeImage_GetColorType          := nil;
       FreeImage_GetImageType          := nil;
+      FreeImage_ConvertTo8Bits        := nil;
       FreeImage_ConvertTo24Bits       := nil;
       FreeImage_ConvertTo32Bits       := nil;
       FreeImage_ConvertToRawBits      := nil;
       FreeImage_ConvertFromRawBits    := nil;
       FreeImage_IsTransparent         := nil;
+      FreeImage_Allocate              := nil;
     end;
 
     TimesLoaded := 0;

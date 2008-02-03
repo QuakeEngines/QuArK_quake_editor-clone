@@ -23,6 +23,21 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2007/12/19 12:38:32  danielpharos
+Made an option to set the amount of lines of text in the console.
+
+Revision 1.60  2007/09/24 00:15:55  danielpharos
+Made MaxRecentFiles a configurable option.
+
+Revision 1.59  2007/08/16 11:10:34  danielpharos
+Forgot to commit a few lines   :|
+
+Revision 1.58  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
+Revision 1.57  2007/08/02 16:06:45  danielpharos
+Reserved a gamecode for Prey.
+
 Revision 1.56  2007/06/24 20:43:26  danielpharos
 Changed the order of the SetupSet keyword for better backwards compatibility.
 
@@ -276,6 +291,7 @@ comparison between gamemodes.}
  mjEF2          = 'o';  { Star Trek: Elite Force 2 }
  mjCOD          = 'p';  { Call of Duty }
  mjCOD2         = 'q';  { Call of Duty 2 }
+ mjPrey         = 'r';  { Prey }
  mjWildWest     = 'w';  { WildWest }
 
  mjAny          = #1;
@@ -311,10 +327,11 @@ type
             end;
 
 var
-{DECKER ApplicationPath: String;}
  g_SetupSet: TSetupSetArray;
 {--CONVEX-- support for multiple texture formats}
  g_TexExtensions : TStringList = NIL;
+{DanielPharos: Support for multiple pak formats}
+ g_PakExtensions : TStringList = NIL;
 
 const  { for SetupChanged }
  scInit      = 0;
@@ -350,6 +367,7 @@ function AssociationWithQuArK(const FileExt: String) : Boolean;
 function UsesMiptex : boolean; overload;
 function UsesMiptex(mj : Char) : boolean; overload;
 procedure StoreTexExtensions; {--CONVEX--}
+procedure StorePakExtensions; {--CONVEX--}
 
  {------------------------}
 
@@ -372,7 +390,7 @@ function InternalVersion : Single;
 
 implementation
 
-uses QkMapObjects, Travail, Game, QkGroup, QkForm, Qk1,
+uses QkMapObjects, Travail, Game, Console, QkGroup, QkForm, Qk1,
      ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, Python, PyMapView,
      PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths;
 
@@ -460,6 +478,36 @@ begin
       Inc(Idx);
     end;
     g_TexExtensions.Add(SubStr);
+  end;
+end;
+
+procedure StorePakExtensions;
+var
+ C:Char;
+ Idx : Byte;
+ S, SubStr : String;
+begin
+  if g_PakExtensions<>NIL then
+   g_PakExtensions.Free;
+  g_PakExtensions := TStringList.Create;
+  try
+   S := SetupGameSet.Specifics.Values['PakFileExtensions'];
+  except
+   S := '';
+  end;
+  Idx := 1;
+  while (Idx <= Length(S)) do
+  begin
+    SubStr := '';
+    C := #0;
+    while ((C <> ' ') and (C <> ',') and (Idx <= Length(S))) do
+    begin
+      C := S[Idx];
+      if ((C <> ' ') and (C <> ',')) then
+        SubStr := SubStr + C;
+      Inc(Idx);
+    end;
+    g_PakExtensions.Add(SubStr);
   end;
 end;
 {--CONVEX-end--}
@@ -661,7 +709,7 @@ begin
  SetupChanged({scMaximal} {scMinimal} scInit);
 end;
 
-procedure SetupChanged;
+procedure SetupChanged(Level: Integer);
 var
  fnt: PyObject;
  S: String;
@@ -672,13 +720,16 @@ begin
   ClearGameBuffers(False)
  else
   ClearGameBuffer1;
-  
+
+ if Level>=scMinimal then
+  ResizeRecentFiles;
+
  for I:=0 to Screen.FormCount-1 do
   with Screen.Forms[I] do
    for J:=0 to ComponentCount-1 do
     if Components[J] is TPyMapView then
      TPyMapView(Components[J]).DeleteScene;
-  
+
  if (Level>=scAddOns) or (Level=scGame) then
   TTextureManager.FreeNonVisibleTextures;
 
@@ -699,6 +750,7 @@ begin
    SetupSubSet(ssGeneral, 'Display').Specifics.Values['MarsCaption']:=S;
   end;
  SetMarsCapActive(S<>'');
+ ResizeConsole;
 
   { stores the setup infos into the Quarkx Python module }
 (*SetupInfo:=PyList_New(Ord(High(T))+1); try
@@ -710,6 +762,7 @@ begin
   { sends the reset message to all windows }
  PosteMessageFiches(wp_SetupChanged, Level);
  StoreTexExtensions; {--Convex--}
+ StorePakExtensions; {--Convex--}
  if Level = scInit then Exit;
 
   { sends the reset message to Python }
@@ -1081,7 +1134,8 @@ begin
     ClearGameBuffers(True);
     g_SetupSet[ssGames].Specifics.Values['GameCfg']:=nMode;
    {SetupModified:=True;}
-    PosteMessageFiches(wp_SetupChanged, scGame);
+    SetupChanged(scGame);
+    //PosteMessageFiches(wp_SetupChanged, scGame);
    end;
 end;
 
@@ -1131,6 +1185,7 @@ begin
   Raise EErrorFmt(5542, [CharModeJeu+nMode]);
  ChangeGameModeStr(S, Confirm);
  StoreTexExtensions; {--Convex--}
+ StorePakExtensions; {--Convex--}
 end;
 
 function GameModeOk(nMode: Char) : Boolean;
@@ -1365,13 +1420,14 @@ end;
 
 initialization
   RegisterQObject(QConfig, 'a');
+
 finalization
   CloseSetupSet;
-{$IFDEF Debug}
-//  Clear_g_MemQObject;
-{$ENDIF}
 
-  if g_TexExtensions<>NIL then
+  if g_TexExtensions<>nil then
    g_TexExtensions.Free;
+
+  if g_PakExtensions<>nil then
+   g_PakExtensions.Free;
 
 end.

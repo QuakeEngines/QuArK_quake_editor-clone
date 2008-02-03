@@ -30349,47 +30349,81 @@ const
   ksUser  = 'Ksuser.dll';
   ksProxy = 'Ksproxy.ax';
 
-  function QzInitialize; external ole32 name 'CoInitialize';
-  procedure QzUninitialize; external ole32 name 'CoUninitialize';
-  procedure QzFreeUnusedLibraries; external ole32 name 'CoFreeUnusedLibraries';
+  var
+  QzInitialize: function ;
+  var
+  QzUninitialize: procedure ;
+  var
+  QzFreeUnusedLibraries: procedure ;
 
-  function QzGetMalloc; external ole32 name 'CoGetMalloc';
-  function QzTaskMemAlloc; external ole32 name 'CoTaskMemAlloc';
-  function QzTaskMemRealloc; external ole32 name 'CoTaskMemRealloc';
-  procedure QzTaskMemFree; external ole32 name 'CoTaskMemFree';
+  var
+  QzGetMalloc: function ;
+  var
+  QzTaskMemAlloc: function ;
+  var
+  QzTaskMemRealloc: function ;
+  var
+  QzTaskMemFree: procedure ;
 
-  function QzCreateFilterObject; external ole32 name 'CoCreateInstance';
-  function QzCLSIDFromString; external ole32 name 'CLSIDFromString';
-  function QzStringFromGUID2; external ole32 name 'StringFromGUID2';
+  var
+  QzCreateFilterObject: function ;
+  var
+  QzCLSIDFromString: function ;
+  var
+  QzStringFromGUID2: function ;
 
-  function AMGetErrorTextA; external quartz name 'AMGetErrorTextA';
-  function AMGetErrorTextW; external quartz name 'AMGetErrorTextW';
-  function AMGetErrorText; external quartz name 'AMGetErrorTextA';
+  var
+  AMGetErrorTextA: function ;
+  var
+  AMGetErrorTextW: function ;
+  var
+  AMGetErrorText: function ;
 
-  function DMORegister         ; external msdmo name 'DMORegister';
-  function DMOUnregister       ; external msdmo name 'DMOUnregister';
-  function DMOEnum             ; external msdmo name 'DMOEnum';
-  function DMOGetTypes         ; external msdmo name 'DMOGetTypes';
-  function DMOGetName          ; external msdmo name 'DMOGetName';
+  var
+  DMORegister         : function ;
+  var
+  DMOUnregister       : function ;
+  var
+  DMOEnum             : function ;
+  var
+  DMOGetTypes         : function ;
+  var
+  DMOGetName          : function ;
 
-  function MoInitMediaType     ; external msdmo name 'MoInitMediaType';
-  function MoFreeMediaType     ; external msdmo name 'MoFreeMediaType';
-  function MoCopyMediaType     ; external msdmo name 'MoCopyMediaType';
-  function MoCreateMediaType   ; external msdmo name 'MoCreateMediaType';
-  function MoDeleteMediaType   ; external msdmo name 'MoDeleteMediaType';
-  function MoDuplicateMediaType; external msdmo name 'MoDuplicateMediaType';
+  var
+  MoInitMediaType     : function ;
+  var
+  MoFreeMediaType     : function ;
+  var
+  MoCopyMediaType     : function ;
+  var
+  MoCreateMediaType   : function ;
+  var
+  MoDeleteMediaType   : function ;
+  var
+  MoDuplicateMediaType: function ;
 
-  function KsCreateAllocator   ; external ksuser name 'KsCreateAllocator';
-  function KsCreateClock       ; external ksuser name 'KsCreateClock';
-  function KsCreatePin         ; external ksuser name 'KsCreatePin';
-  function KsCreateTopologyNode; external ksuser name 'KsCreateTopologyNode';
+  var
+  KsCreateAllocator   : function ;
+  var
+  KsCreateClock       : function ;
+  var
+  KsCreatePin         : function ;
+  var
+  KsCreateTopologyNode: function ;
 
-  function KsGetMediaType              ; external ksproxy name 'KsGetMediaType';
-  function KsGetMediaTypeCount         ; external ksproxy name 'KsGetMediaTypeCount';
-  function KsGetMultiplePinFactoryItems; external ksproxy name 'KsGetMultiplePinFactoryItems';
-  function KsOpenDefaultDevice         ; external ksproxy name 'KsOpenDefaultDevice';
-  function KsResolveRequiredAttributes ; external ksproxy name 'KsResolveRequiredAttributes';
-  function KsSynchronousDeviceControl  ; external ksproxy name 'KsSynchronousDeviceControl';
+  var
+  KsGetMediaType              : function ;
+  var
+  KsGetMediaTypeCount         : function ;
+  var
+  KsGetMultiplePinFactoryItems: function ;
+  var
+  KsOpenDefaultDevice         : function ;
+  var
+  KsResolveRequiredAttributes : function ;
+  var
+  KsSynchronousDeviceControl  : function ;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -31055,4 +31089,305 @@ initialization
 
 finalization
 
+
+
+var
+  HOle32  : HMODULE;
+
+function LoadOle32: Boolean;
+begin
+  HOle32 := LoadLibrary('ole32.dll');
+  If HOle32 = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @QzUninitialize := GetProcAddress(HOle32, 'CoUninitialize');
+  If @QzUninitialize = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @QzFreeUnusedLibraries := GetProcAddress(HOle32, 'CoFreeUnusedLibraries');
+  If @QzFreeUnusedLibraries = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @QzGetMalloc := GetProcAddress(HOle32, 'CoGetMalloc');
+  If @QzGetMalloc = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @QzTaskMemAlloc := GetProcAddress(HOle32, 'CoTaskMemAlloc');
+  If @QzTaskMemAlloc = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @QzTaskMemRealloc := GetProcAddress(HOle32, 'CoTaskMemRealloc');
+  If @QzTaskMemRealloc = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @QzTaskMemFree := GetProcAddress(HOle32, 'CoTaskMemFree');
+  If @QzTaskMemFree = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @QzCreateFilterObject := GetProcAddress(HOle32, 'CoCreateInstance');
+  If @QzCreateFilterObject = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @QzCLSIDFromString := GetProcAddress(HOle32, 'CLSIDFromString');
+  If @QzCLSIDFromString = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @QzStringFromGUID2 := GetProcAddress(HOle32, 'StringFromGUID2');
+  If @QzStringFromGUID2 = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadOle32: Boolean;
+begin
+  If FreeLibrary(HOle32) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+
+var
+  HQuartz  : HMODULE;
+
+function LoadQuartz: Boolean;
+begin
+  HQuartz := LoadLibrary('quartz.dll');
+  If HQuartz = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @AMGetErrorTextW := GetProcAddress(HQuartz, 'AMGetErrorTextW');
+  If @AMGetErrorTextW = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @AMGetErrorText := GetProcAddress(HQuartz, 'AMGetErrorTextA');
+  If @AMGetErrorText = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadQuartz: Boolean;
+begin
+  If FreeLibrary(HQuartz) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+
+var
+  HMSDmo  : HMODULE;
+
+function LoadMSDmo: Boolean;
+begin
+  HMSDmo := LoadLibrary('msdmo.dll');
+  If HMSDmo = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DMOUnregister        := GetProcAddress(HMSDmo, 'DMOUnregister');
+  If @DMOUnregister        = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DMOEnum              := GetProcAddress(HMSDmo, 'DMOEnum');
+  If @DMOEnum              = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DMOGetTypes          := GetProcAddress(HMSDmo, 'DMOGetTypes');
+  If @DMOGetTypes          = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DMOGetName           := GetProcAddress(HMSDmo, 'DMOGetName');
+  If @DMOGetName           = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @MoInitMediaType      := GetProcAddress(HMSDmo, 'MoInitMediaType');
+  If @MoInitMediaType      = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @MoFreeMediaType      := GetProcAddress(HMSDmo, 'MoFreeMediaType');
+  If @MoFreeMediaType      = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @MoCopyMediaType      := GetProcAddress(HMSDmo, 'MoCopyMediaType');
+  If @MoCopyMediaType      = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @MoCreateMediaType    := GetProcAddress(HMSDmo, 'MoCreateMediaType');
+  If @MoCreateMediaType    = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @MoDeleteMediaType    := GetProcAddress(HMSDmo, 'MoDeleteMediaType');
+  If @MoDeleteMediaType    = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @MoDuplicateMediaType := GetProcAddress(HMSDmo, 'MoDuplicateMediaType');
+  If @MoDuplicateMediaType = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadMSDmo: Boolean;
+begin
+  If FreeLibrary(HMSDmo) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+
+var
+  HKsuser  : HMODULE;
+
+function LoadKsuser: Boolean;
+begin
+  HKsuser := LoadLibrary('Ksuser.dll');
+  If HKsuser = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @KsCreateClock        := GetProcAddress(HKsuser, 'KsCreateClock');
+  If @KsCreateClock        = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @KsCreatePin          := GetProcAddress(HKsuser, 'KsCreatePin');
+  If @KsCreatePin          = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @KsCreateTopologyNode := GetProcAddress(HKsuser, 'KsCreateTopologyNode');
+  If @KsCreateTopologyNode = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadKsuser: Boolean;
+begin
+  If FreeLibrary(HKsuser) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+
+var
+  HKsproxy  : HMODULE;
+
+function LoadKsproxy: Boolean;
+begin
+  HKsproxy := LoadLibrary('Ksproxy.ax');
+  If HKsproxy = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @KsGetMediaTypeCount          := GetProcAddress(HKsproxy, 'KsGetMediaTypeCount');
+  If @KsGetMediaTypeCount          = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @KsGetMultiplePinFactoryItems := GetProcAddress(HKsproxy, 'KsGetMultiplePinFactoryItems');
+  If @KsGetMultiplePinFactoryItems = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @KsOpenDefaultDevice          := GetProcAddress(HKsproxy, 'KsOpenDefaultDevice');
+  If @KsOpenDefaultDevice          = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @KsResolveRequiredAttributes  := GetProcAddress(HKsproxy, 'KsResolveRequiredAttributes');
+  If @KsResolveRequiredAttributes  = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @KsSynchronousDeviceControl   := GetProcAddress(HKsproxy, 'KsSynchronousDeviceControl');
+  If @KsSynchronousDeviceControl   = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadKsproxy: Boolean;
+begin
+  If FreeLibrary(HKsproxy) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
 end.
+

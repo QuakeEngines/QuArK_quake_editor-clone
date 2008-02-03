@@ -52,6 +52,7 @@ class MapEditor(BaseEditor):
     ObjectMgr = mapentities.CallManager
     HandlesModule = maphandles
     MouseDragMode = maphandles.RectSelDragObject
+    Portals = []
 
     def OpenRoot(self):
         self.tmpsaved = None
@@ -72,6 +73,46 @@ class MapEditor(BaseEditor):
                 debug(' '+error)
             quarkx.msgbox('there were errors reading the map; check the console',2,4)
         self.AutoSave(0)
+
+        import qutils
+        # Creates the "Used Textures.txlist" to display in the Texture Browser for the map that is opened in the editor.
+        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        ToolBoxName, ToolBox = tbx_list[0]
+        # Removes the old Used Textures ToolBoxFolder so duplicates of it are not displayed.
+        for ToolBoxFolder in ToolBox.subitems:
+            if ToolBoxFolder.name == "Used Textures.txlist":
+                ToolBoxFolder.parent.removeitem(ToolBoxFolder)
+                break
+        # Creates the "Used Textures.txlist" to display in the Texture Browser.
+        Folder = quarkx.newobj("Used Textures.txlist")
+        Folder.flags = qutils.OF_TVSUBITEM
+        UsedTexturesList = quarkx.texturesof([self.Root])
+     #   NoImageFile = None
+        for UsedTextureName in UsedTexturesList:
+            UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
+   #         UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #       if quarkx.setupsubset()["ShadersPath"] is not None:
+     #           try:
+     #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #               UsedTexture["a"] = (GameFilesPath+("/")+quarkx.setupsubset()["ShadersPath"]+("sky.shader")+("[textures/")+UsedTextureName+("]"))
+     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #           except:
+     #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #       else:
+     #           UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+     #           try:
+     #               print "mapeditor line 106 the image path",(UsedTexture["a"]+("/")+quarkx.setupsubset()["TexturesPath"]+UsedTextureName)
+     #           except:
+     #               NoImageFile = 1
+            UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+            UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
+            Folder.appenditem(UsedTexture)
+   #     if NoImageFile is not None:
+   #         pass
+   #     else:
+   #         ToolBox.appenditem(Folder)
+        ToolBox.appenditem(Folder)
+   #      quarkx.opentoolbox("", None)
 
     def FrozenDragObject(self, view, x, y, s, redcolor):
         #
@@ -157,6 +198,11 @@ class MapEditor(BaseEditor):
         "Update the setup-dependant parameters."
         quarkx.setpoolobj("BoundingBoxes", None)
         BaseEditor.setupchanged(self, level)
+        try:
+            self.initmenu(self.form)
+            quarkx.update(self.form)
+        except:
+            pass
         import mapmenus
         self.initquickkeys(mapmenus.QuickKeys)
         self.AutoSave(None)
@@ -362,6 +408,19 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.16  2008/01/23 01:40:19  cdunde
+#Couple of fixes to top the Texture Browser from opening all the time and
+#stop multiple creations of the Used Textures in the Texture Browser.
+#
+#Revision 1.15  2007/12/28 23:22:41  cdunde
+#Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
+#
+#Revision 1.14  2007/12/21 20:39:23  cdunde
+#Added new Templates functions and Templates.
+#
+#Revision 1.13  2007/12/17 00:50:00  danielpharos
+#Fix the map portals not drawing anymore.
+#
 #Revision 1.12  2007/04/02 22:17:08  danielpharos
 #Fix a float-integer problem
 #

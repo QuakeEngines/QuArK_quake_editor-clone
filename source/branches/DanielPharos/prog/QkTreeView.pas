@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/09/12 15:28:16  danielpharos
+Replaced redundant property.
+
+Revision 1.14  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.12  2002/12/30 18:02:47  decker_dk
 (Hopefully) A fix for the Plugins-Window missing a vertical scrollbar.
 
@@ -355,7 +361,7 @@ begin
  if (Source=Nil) and (I>=0) then
   begin
    Source:=QObject(L[I]);
-   L:=Source.SubElementsC;
+   L:=Source.SubElements;
    I:=L.Count-1;
   end;
  while I>=0 do
@@ -366,7 +372,7 @@ begin
      if Result.Flags and ofTreeViewExpanded = 0 then
       Exit;
      Source:=Result;
-     L:=Result.SubElementsC;
+     L:=Result.SubElements;
      I:=L.Count;
     end;
    Dec(I);
@@ -843,7 +849,7 @@ function TMyTreeView.EffacerSelection;
    Result:=Odd(Sm);
    T.SelMult:=smNonSel or smSousSelVide;
    if Sm and smSousSelVide = 0 then
-    with T.SubElementsC do
+    with T.SubElements do
      for I:=0 to Count-1 do
       begin
        Q:=Items[I];
@@ -902,8 +908,8 @@ var
      end;
     if Test.SelMult=smSpecial then
      begin
-      if (TTreeMapGroup(Test).SelectedIndex<Test.SubElementsC.Count)
-      and (Test.SubElementsC[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
+      if (TTreeMapGroup(Test).SelectedIndex<Test.SubElements.Count)
+      and (Test.SubElements[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
        Test:=TTreeMapGroup(Test).SelectedObject
       else
        begin
@@ -915,9 +921,9 @@ var
      Break;
    until False;
    Result:=ssiNoSelection;
-   for I:=0 to Test.SubElementsC.Count-1 do
+   for I:=0 to Test.SubElements.Count-1 do
     begin
-     Q:=Test.SubElementsC[I];
+     Q:=Test.SubElements[I];
      if Q.SelMult<>smSousSelVide then
       case Enum(Q) of
        -1: ;
@@ -935,7 +941,7 @@ var
     if (Result>0) and (Test is TTreeMapGroup) then
      begin
       TTreeMapGroup(Test).SelectedIndex:=Result-1;
-      TTreeMapGroup(Test).SelectedObject:=Test.SubElementsC[Result-1];
+      TTreeMapGroup(Test).SelectedObject:=Test.SubElements[Result-1];
       Test.SelMult:=smSpecial;
      end;
   end;
@@ -974,7 +980,7 @@ procedure TMyTreeView.CheckInternalState;
        Err('V')
       else
        Err('S');
-     RecEmptyCheck(Test.SubElementsC, Nil);
+     RecEmptyCheck(Test.SubElements, Nil);
     end;
   end;
   procedure RecCheck(L: TQList; TopLevel: Boolean);
@@ -995,19 +1001,19 @@ procedure TMyTreeView.CheckInternalState;
      while Test.SelMult = smSpecial do
       begin
        if not (Test is TTreeMapGroup) then Err('G');
-       if (TTreeMapGroup(Test).SelectedIndex<Test.SubElementsC.Count)
-       and (Test.SubElementsC[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
+       if (TTreeMapGroup(Test).SelectedIndex<Test.SubElements.Count)
+       and (Test.SubElements[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
         begin
-         RecEmptyCheck(Test.SubElementsC, TTreeMapGroup(Test).SelectedObject);
+         RecEmptyCheck(Test.SubElements, TTreeMapGroup(Test).SelectedObject);
          Test:=TTreeMapGroup(Test).SelectedObject;
         end
        else
         Break;
       end;
      if Test.SelMult and smSousSelVide <> 0 then
-      RecEmptyCheck(Test.SubElementsC, Nil)
+      RecEmptyCheck(Test.SubElements, Nil)
      else
-      RecCheck(Test.SubElementsC, False);
+      RecCheck(Test.SubElements, False);
     end;
   end;
 begin
@@ -1043,8 +1049,8 @@ begin
       I:=-1
      else
       if (Test.SelMult=smSpecial)
-      and (TTreeMapGroup(Test).SelectedIndex<Test.SubElementsC.Count)
-      and (Test.SubElementsC[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
+      and (TTreeMapGroup(Test).SelectedIndex<Test.SubElements.Count)
+      and (Test.SubElements[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
        if I>=TTreeMapGroup(Test).SelectedIndex then
         I:=-1
        else
@@ -1055,18 +1061,18 @@ begin
       else
        begin
         Test2:=Nil;
-        for J:=I+1 to Test.SubElementsC.Count-1 do
-         if Odd(Test.SubElementsC[J].SelMult) then
+        for J:=I+1 to Test.SubElements.Count-1 do
+         if Odd(Test.SubElements[J].SelMult) then
           if Test2=Nil then
            begin
             if I>=0 then   { another item was previously selected }
              begin
-              Q:=Test.SubElementsC[J];
+              Q:=Test.SubElements[J];
               Test.SelMult:=0;
               EnumSel:=True;
               Exit;
              end;
-            Test2:=Test.SubElementsC[J];
+            Test2:=Test.SubElements[J];
             TTreeMapGroup(Test).SelectedIndex:=J;
            end
           else
@@ -1092,12 +1098,12 @@ begin
      if Test.SelMult=0 then   { if neither smSel nor smSousElVide are set }
       repeat   { looking for an item in this group }
        Inc(I);
-       if I>=Test.SubElementsC.Count then
+       if I>=Test.SubElements.Count then
         begin
          I:=-1;
          Break;
         end;
-       Test2:=Test.SubElementsC[I];
+       Test2:=Test.SubElements[I];
       until Odd(Test2.Flags)   { ofTreeViewSubElement must be set }
      else
       I:=-1;   { we know there is no selected item in this group }
@@ -1116,7 +1122,7 @@ begin
    if Test=Nil then  { Test was top-level }
     TestList:=Roots
    else
-    TestList:=Test.SubElementsC;
+    TestList:=Test.SubElements;
    I:=TestList.IndexOf(Ancien);
   until False;
   Inc(Niveau);   { we entered a new subgroup }

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/10/30 20:43:35  danielpharos
+Fixed two weird-looking spaces
+
 Revision 1.13  2007/07/05 10:19:45  danielpharos
 Moved the Quake .map format code to a separate file.
 
@@ -460,7 +463,7 @@ begin
  Result.Specifics.Values['macro']:=Macro;
 end;
 
-procedure QQme1 .LoadFile;
+procedure QQme1.LoadFile;
 var
  T: TTransfertTreeMap;
  Q: QObject;
@@ -490,7 +493,7 @@ begin
   inherited;
 end;
 
-procedure QQme1. SaveFile;
+procedure QQme1.SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;

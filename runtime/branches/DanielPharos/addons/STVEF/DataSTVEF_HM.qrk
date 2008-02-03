@@ -4,12 +4,19 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2007/04/16 11:35:43  danielpharos
+//Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+//
+//Revision 1.1  2006/09/08 07:56:27  cdunde
+//Complete revamping of STVEF files and addition of HM addon
+//for multiplayer editing by DanielPharos.
+//
 //
 //template 2000-09-17
 //
 {
   QuArKProtected = "1"
-  Description = "Base StarTrek HM data"
+  Description = "Base STVEF HM data"
   Toolbox Folders.qtx =
   {
     Toolbox = "New map items..."

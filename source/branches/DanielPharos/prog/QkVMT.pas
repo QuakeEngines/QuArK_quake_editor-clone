@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/09/13 15:09:06  danielpharos
+Improved the find-texture-belonging-to-material-file
+
+Revision 1.14  2007/09/13 14:34:53  danielpharos
+The name of a pakfile containing a texture can now be specified per texture
+
+Revision 1.13  2007/08/15 16:28:09  danielpharos
+HUGE update to HL2: Took out some code that's now not needed anymore.
+
+Revision 1.12  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.11  2007/07/05 10:18:28  danielpharos
 Moved a string to the dictionary.
 
@@ -73,8 +85,8 @@ type
          end;
   QVMTFile = class(QPixelSet)
          private
-           DefaultImageName: String;
-           DefaultImageType: Integer;
+           DefaultImageName: array[0..7] of String;
+           DefaultImageIndex: Integer;
          protected
            DefaultImageCache : QPixelSet;
          public
@@ -192,21 +204,13 @@ end;
 
 function QVMTFile.DefaultImage : QPixelSet;
 var
- I: integer;
- GameDir: String;
- SteamAppsDir: String;
- SteamDirectory: String;
- SteamDirectoryLength: Integer;
- TexturePath: String;
- TexturePath2: String;
- TexturePath3: String;
  GCFFilename: String;
- GCFFile: QObject;
- GCFFileChild0: QObject;
- GCFFileChild1: QObject;
- GCFFileChild2: QObject;
+ TexturePath: String;
+ FullTextureFile: String;
+ ImageFileName: String;
  Size: TPoint;
  V: array [1..2] of Single;
+ TexExt: String;
 begin
   Acces;
   Result:=nil;
@@ -217,95 +221,51 @@ begin
   else
   begin}
 
-  if (self.Protocol<>'') then
+  if ReverseLink<>nil then
   begin
-    GCFFile:=self;
-    GCFFileChild0:=nil;
-    GCFFileChild1:=nil;
-    GCFFileChild2:=nil;
-    while GCFFile<>nil do
-    begin
-      GCFFilename:=GCFFile.name;
-      GCFFileChild2:=GCFFileChild1;
-      GCFFileChild1:=GCFFileChild0;
-      GCFFileChild0:=GCFFile;
-      GCFFile:=GCFFile.FParent;
-    end;
-    TexturePath2:=GCFFileChild1.name+'\'+GCFFileChild2.name+'\';
-
-    GameDir:=GetGameDir;
-    I:=pos('\',GameDir);
-    if I>0 then
-      SteamAppsDir:=LeftStr(GameDir, I)
-    else
-    begin
-      I:=pos('/',GameDir);
-      if I>0 then
-        SteamAppsDir:=LeftStr(GameDir, I)
-      else
-        SteamAppsDir:=GameDir+'\';
-    end;
+    GCFFilename:=ReverseLink.Specifics.Values['PakFile'];
+    TexturePath:=ReverseLink.Specifics.Values['path'];
+    {$IFDEF LINUX}
+    TexturePath:=StringReplace(TexturePath,'\',PathDelim,[rfReplaceAll]);
+    {$ELSE}
+    TexturePath:=StringReplace(TexturePath,'/',PathDelim,[rfReplaceAll]);
+    {$ENDIF}
   end
   else
   begin
-    SteamDirectory:=SetupSubSet(ssGames,'Half-Life2').Specifics.Values['Directory'];
-    if (RightStr(SteamDirectory,1)='\') or (RightStr(SteamDirectory,1)='/') then
-      SteamDirectoryLength:=Length(SteamDirectory)
-    else
-      SteamDirectoryLength:=Length(SteamDirectory)+1;
-    TexturePath:=RightStr(self.filename,Length(self.filename)-SteamDirectoryLength);
-
-    I:=pos('\',TexturePath);
-    if I>0 then
-      TexturePath:=LeftStr(TexturePath, I-1)
-    else
-    begin
-      I:=pos('/',GameDir);
-      if I>0 then
-        TexturePath:=LeftStr(TexturePath, I-1);
-    end;
-
-    TexturePath2:=RightStr(self.filename,length(self.filename)-SteamDirectoryLength-Length(TexturePath)-1);
-
-    I:=pos('\',TexturePath2);
-    if I=0 then
-      I:=pos('/',TexturePath2);
-    TexturePath3:=RightStr(TexturePath2,Length(TexturePath2)-I);
-
-    I:=pos('\',TexturePath3);
-    if I=0 then
-      I:=pos('/',TexturePath3);
-    TexturePath3:=RightStr(TexturePath3,Length(TexturePath3)-I);
-
-    TexturePath2:=LeftStr(TexturePath2,Length(TexturePath2)-Length(TexturePath3));
-
-    I:=pos('\',TexturePath3);
-    if I=0 then
-      I:=pos('/',TexturePath3);
-    TexturePath3:=LeftStr(TexturePath3,I);
+    GCFFilename:='';
+    TexturePath:='';
   end;
 
-  if (Result=nil) and (DefaultImageName<>'') then
+  //TexExt:=SetupGameSet.Specifics.Values['TextureFormat'];
+  TexExt:='.vtf';
+  while ((Result=nil) and (DefaultImageIndex<8)) do
   begin
-    Log(LOG_VERBOSE,'attempting to load '+DefaultImageName);
-    try
-      if (self.Protocol<>'') then
-        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + DefaultImageName + '.vtf') as QPixelSet
-      else
-        Result:=NeedGameFileBase(TexturePath, TexturePath2 + DefaultImageName + '.vtf') as QPixelSet;
-    except
-      Result:=nil;
+    if (DefaultImageName[DefaultImageIndex]<>'') then
+    begin
+      ImageFileName:=DefaultImageName[DefaultImageIndex]+TexExt;
+      FullTextureFile:=IncludeTrailingPathDelimiter(TexturePath) + ImageFileName;
+      Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
+      try
+        Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet
+      except
+        Result:=nil;
+      end;
     end;
+    if Result=nil then
+      DefaultImageIndex:=DefaultImageIndex+1;
   end;
 
   if (Result=nil) then
   begin
-    Log(LOG_VERBOSE,'attempting to load '+TexturePath2+TexturePath3+self.Name+'.vtf');
+    if ReverseLink<>nil then
+      ImageFileName:=ReverseLink.name + TexExt
+    else
+      ImageFileName:=self.name + TexExt;
+    FullTextureFile:=IncludeTrailingPathDelimiter(TexturePath) + ImageFileName;
+    Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
     try
-      if (self.Protocol<>'') then
-        Result:=NeedGameFileBase(SteamAppsDir+GCFFilename+'.gcf', TexturePath2 + self.name + '.vtf') as QPixelSet
-      else
-        Result:=NeedGameFileBase(TexturePath, TexturePath2 + TexturePath3 + self.name + '.vtf') as QPixelSet;
+      Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet;
     except
       Result:=nil;
     end;
@@ -317,7 +277,7 @@ begin
   shaders are being loaded }
   if Result<>Nil then
   begin
-    Log(LOG_VERBOSE, LoadStr1(5708), [DefaultImageName]);
+    Log(LOG_VERBOSE, LoadStr1(5708), [ImageFileName]);
     Size:=Result.GetSize;
     V[1]:=Size.X;
     V[2]:=Size.Y;
@@ -368,7 +328,6 @@ var
   ImageType: Integer;
   GroupEndWorkaround: Boolean;
   GroupEndWorkaroundName: String;
-  ReloadVTFLib: Boolean;
 
   NodeLevel: Cardinal;
   NodeType: VMTNodeType;
@@ -376,16 +335,13 @@ var
   NodeValueString: String;
   NodeValueInteger: Cardinal;
   NodeValueSingle: Single;
+  I: Integer;
 begin
   Log(LOG_VERBOSE,'load vmt %s',[self.name]);;
   case ReadFormat of
     1: begin  { as stand-alone file }
-
-      ReloadVTFLib:=ReloadNeededVTFLib;
-      if (not VMTLoaded) or ReloadVTFLib then
+      if not VMTLoaded then
       begin
-        if ReloadVTFLib then
-          VMTLoaded:=false;
         if not LoadVTFLib then
           Raise EErrorFmt(5718, [GetLastError]);
         VMTLoaded:=true;
@@ -415,8 +371,9 @@ begin
         vlDeleteMaterial(VMTMaterial);
         Fatal('Unable to load VMT file. Call to vlMaterialGetFirstNode failed.');
       end;
-      DefaultImageName:='';
-      DefaultImageType:=8;
+      for I:=0 to 7 do
+        DefaultImageName[I]:='';
+      DefaultImageIndex:=8;
       NodeLevel:=0;
       SetLength(StageList, NodeLevel+1);
       StageList[NodeLevel]:=Self;
@@ -470,11 +427,13 @@ begin
               ImageType:=7
             else
               ImageType:=8;
-
-            if DefaultImageType>ImageType then
+            if ImageType<8 then
             begin
-              DefaultImageType:=ImageType;
-              DefaultImageName:=NodeValueString;
+              DefaultImageName[ImageType]:=NodeValueString;
+              if ImageType<DefaultImageIndex then
+              begin
+                DefaultImageIndex:=ImageType;
+              end;
             end;
           end;
         NODE_TYPE_INTEGER:
@@ -511,18 +470,14 @@ var
   Q: QObject;
   RawBuffer: String;
   VMTMaterial, OutputSize: Cardinal;
-  ReloadVTFLib: Boolean;
 begin
  Log(LOG_VERBOSE,'save vmt %s',[self.name]);
  with Info do case Format of
   1:
   begin  { as stand-alone file }
 
-    ReloadVTFLib:=ReloadNeededVTFLib;
-    if (not VMTLoaded) or ReloadVTFLib then
+    if not VMTLoaded then
     begin
-      if ReloadVTFLib then
-        VMTLoaded:=false;
       if not LoadVTFLib then
         Raise EErrorFmt(5718, [GetLastError]);
       VMTLoaded:=true;

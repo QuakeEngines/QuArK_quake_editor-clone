@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
+Revision 1.11  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.9  2002/03/07 19:14:32  decker_dk
 Removed QLvFileObject, as it was just another name for QFileObject.
 Removed QImages, as it was just another name for QImage
@@ -124,7 +130,7 @@ type
 
 implementation
 
-uses Qk1, Undo, Quarkx, PyImages;
+uses Qk1, Undo, Quarkx, PyImages, Game;
 
 {$R *.DFM}
 
@@ -188,6 +194,8 @@ begin
     ListView1.Hide;
     Raise;
    end;
+   //To reduce memory usage:
+   SizeDownGameFiles;
   end;
  if Result<0 then
   Populating:=False;

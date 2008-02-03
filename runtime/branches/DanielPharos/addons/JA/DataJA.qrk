@@ -4,6 +4,13 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11  2007/12/26 06:01:41  cdunde
+//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
+//
+//Revision 1.10  2007/12/14 21:48:00  cdunde
+//Added many new beizer shapes and functions developed by our friends in Russia,
+//the Shine team, Nazar and vodkins.
+//
 //Revision 1.9  2006/09/27 02:54:54  cdunde
 //Minor update
 //

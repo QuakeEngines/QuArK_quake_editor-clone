@@ -219,22 +219,23 @@ class FaceHandle(qhandles.GenericHandle):
         if g1:
             delta = qhandles.aligntogrid(delta, 0)
 
+        s = ""
         if view.info["type"] == "XY":
-            if self.face.normal.tuple[0] <> 0:
-                s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
-            if self.face.normal.tuple[1] <> 0:
-                s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.y+delta.y)
+            if abs(self.face.normal.tuple[0]) > abs(self.face.normal.tuple[1]):
+                s = "was x: " + ftoss(v1.x) + " now x: " + ftoss(v1.x+delta.x)
+            else:
+                s = "was y: " + ftoss(v1.y) + " now y: " + ftoss(v1.y+delta.y)
         elif view.info["type"] == "XZ":
-            if self.face.normal.tuple[0] <> 0:
+            if abs(self.face.normal.tuple[0]) > abs(self.face.normal.tuple[2]):
                 s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
-            if self.face.normal.tuple[2] <> 0:
+            else:
                 s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
         elif view.info["type"] == "YZ":
-            if self.face.normal.tuple[1] <> 0:
+            if abs(self.face.normal.tuple[1]) > abs(self.face.normal.tuple[2]):
                 s = "was y: " + ftoss(self.pos.y) + " now y: " + ftoss(self.pos.x+delta.y)
-            if self.face.normal.tuple[2] <> 0:
+            else:
                 s = "was z: " + ftoss(self.pos.z) + " now z: " + ftoss(self.pos.z+delta.z)
-        else:
+        if s == "":
             if self.face.normal.tuple[0] == 1 or self.face.normal.tuple[0] == -1:
                 s = "was x: " + ftoss(self.pos.x) + " now x: " + ftoss(self.pos.x+delta.x)
             elif self.face.normal.tuple[1] == 1 or self.face.normal.tuple[1] == -1:
@@ -551,7 +552,14 @@ class VertexHandle(qhandles.GenericHandle):
             #
             # Force "n" to be perpendicular to the screen direction.
             #
-            vertical = view.vector(self.pos).normalized   # vertical vector at this point
+            vertical = view.vector("z").normalized   # vertical vector at this point
+            # Correction for 3D views, still needs some work though.
+            if view.info["type"] == "3D":
+                vertX, vertY, vertZ = vertical.tuple
+                vertX = round(vertX)
+                vertY = round(vertY)
+                vertZ = round(vertZ)
+                vertical = quarkx.vect(vertX, vertY, vertZ)
             n = (n - vertical * (n*vertical)).normalized
             #
             # Find a "model" face for the new one.
@@ -1562,7 +1570,7 @@ def MouseDragging(self, view, x, y, s, handle):
         if s and ("S" in s):
             self.layout.actionmpp()  # update the multi-pages-panel
 
-    return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("GrayImage"))
+    return qhandles.MouseDragging(self, view, x, y, s, handle, MapColor("DragImage"))
 
 
 def ClickOnView(editor, view, x, y):
@@ -1597,6 +1605,16 @@ def MouseClicked(self, view, x, y, s, handle):
 
     flags = qhandles.MouseClicked(self, view, x, y, s, handle)
 #    debug('flagz: '+s)
+    try:
+        editor = mapeditor()
+        if editor is not None:
+            if isinstance(handle, PFaceHandle) and isinstance(editor.findtargetdlg, plugins.maptexpos.TexPosDlg):
+                o = editor.layout.explorer.uniquesel
+                m = qmenu.item("Dummy", None, "")
+                m.o = o
+                plugins.maptexpos.PosTexClick(m)
+    except:
+        pass
     if view.info["type"]=="3D":
         self.last3DView = view
     if "1" in flags:
@@ -1911,7 +1929,7 @@ def viewsinglebezier(view, layout, patch):
 #            mainhandle.friends = mainhandle.friends + h1
 #            view.handles = h2 + h1
             view.handles = h2
-            view.background = tex, quarkx.vect(0,0,0), 1.0
+            view.background = tex, quarkx.vect(0,0,0), 1.0, 0, 1
             view.screencenter = mainhandle.getcenter()
             return 1
 
@@ -1947,12 +1965,15 @@ def macro_usercenter(self):
     if editor is None: return
     dup = editor.layout.explorer.uniquesel
     if dup is None: return
-    undo = quarkx.action()
     from mapentities import ObjectOrigin
-    tup = ObjectOrigin(dup).tuple
-    undo.setspec(dup,'usercenter',tup)
-    editor.ok(undo,'add usercenter')
-    editor.invalidateviews()
+    try:
+        undo = quarkx.action()
+        tup = ObjectOrigin(dup).tuple
+        undo.setspec(dup,'usercenter',tup)
+        editor.ok(undo,'add usercenter')
+        editor.invalidateviews()
+    except:
+        return
 
 qmacro.MACRO_usercenter = macro_usercenter
 
@@ -1976,6 +1997,39 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.68  2007/12/21 20:12:14  cdunde
+#To fix error for a group folder if nothing is in it sometimes.
+#
+#Revision 1.67  2007/11/29 23:39:00  cdunde
+#Changed to keep Texture Position dialog open and update dynamically.
+#
+#Revision 1.66  2007/11/19 00:08:39  danielpharos
+#Any supported picture can be used for a view background, and added two options: multiple, offset
+#
+#Revision 1.65  2007/10/13 18:25:14  cdunde
+#Another fix for the face drag handle hint.
+#
+#Revision 1.64  2007/09/28 18:36:13  cdunde
+#To fix hint error on drag.
+#
+#Revision 1.63  2007/09/18 19:52:07  cdunde
+#Cleaned up some of the Defaults.qrk item alignment and
+#changed a color name from GrayImage to DragImage for clarity.
+#Fixed Rectangle Selector from redrawing all views handles if nothing was selected.
+#
+#Revision 1.62  2007/08/21 03:38:09  cdunde
+#To reinstate this method for the 'Cut out corner' function that seems
+#to work better then not having this code added.
+#
+#Revision 1.61  2007/07/24 13:54:50  danielpharos
+#Revert maphandles 1.60: Fixed the underlying problem in PyMath3D.
+#
+#Revision 1.60  2007/07/23 20:45:43  cdunde
+#Added fix for cut corner in 3D views.
+#
+#Revision 1.59  2007/07/23 13:55:23  danielpharos
+#Fixed the 'cut out corner' function broken in Beta 1.
+#
 #Revision 1.58  2007/04/13 19:47:13  cdunde
 #Changed face and vertex dragging hint to give start and progressive drag positions based on grid location.
 #

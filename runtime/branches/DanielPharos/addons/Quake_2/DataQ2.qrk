@@ -4,21 +4,43 @@ QQRKSRC1
 //    This file contains :
 //
 //    * List of Quake 2 textures
-//	By: Akuma (AKUMA@BTinternet.com)
-//	http://www.btinternet.com/~akuma/
+//      By: Akuma (AKUMA@BTinternet.com)
+//      http://www.btinternet.com/~akuma/
 //
 //    * List of Quake 2 entities
 //      and formatting for Quake 2 entities' Specifics
 //      By: Kasper Kystol Andersen (SpaceDog) <spacedog@get2net.dk>
 //      Reviewed by: Richard Hatch <wernbowl@airmail.net>
 //
-//    Thanks to these three person.   - Armin -
+//    Thanks to these three persons.   - Armin -
 //
 //    See comments in file Defaults.qrk.
 
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.15  2007/04/15 19:39:46  danielpharos
+//Fixed a wrong type of _sun_ambient.
+//
+//Revision 1.14  2007/03/29 16:06:02  danielpharos
+//Added the _sun specifics. Thanks OmnificienT!
+//Also fixed a few typo's.
+//
+//Revision 1.13  2007/03/25 20:42:52  danielpharos
+//Added a missing target-specific to func_explosive.
+//
+//Revision 1.12  2007/03/21 23:22:00  danielpharos
+//Fixed a few typo's and removed the tabs
+//
+//Revision 1.11  2007/03/13 05:42:59  cdunde
+//Changed the trigger_push specific 'angle 360 into angles 0 0 0 - by OmnificienT
+//
+//Revision 1.10  2007/02/06 13:09:19  danielpharos
+//Changed the translucency setting to actually be visibly transparent in QuArK.
+//
+//Revision 1.9  2005/10/15 01:00:02  cdunde
+//To reinstate headers and history
+//
 //Revision 1.6  2002/04/07 12:43:48  decker_dk
 //Purified texture-flags
 //
@@ -39,7 +61,7 @@ QQRKSRC1
 //
 
 {
-  QuArKProtected = "1"       // Additionnal user warnings to prevents accidental change of this file
+  QuArKProtected = "1"       // Additional user warnings to prevents accidental change of this file
   Description = "Base Quake 2 data"
 
 //  RunGame:incl =
@@ -55,7 +77,7 @@ QQRKSRC1
     Game = "Quake 2"
     SFSkills = '256 512 1024 2048'   // must be 4 or 6 values : easy/medium/hard/deathm.[/coop/single]
     HTML = "help\index.html"
-    TexFlagsTransparent = '16 0.6667 32 0.3333'   // bit of value 16 (resp 32) means "66% transparent" (resp 33%)
+    TexFlagsTransparent = '16 0.6667 32 0.3333 268435456 0.5'   // bit of value 16 (resp 32) means "66% transparent" (resp 33%)
 //    DrawMap: =
 //    {
 //      Spec = "light"
@@ -226,61 +248,56 @@ QQRKSRC1
     //   ***   TEXTURES   ***   Thanks Akuma !
     //
 
-  Textures.qtx =		// the textures !
+  Textures.qtx =        // the textures !
   {
     ToolBox = "Texture Browser..."
     Root = "id Software Textures.qtxfolder"
-    Left = '170'		// this is needed because Quake 2 texture names can be quite wide
+    Left = '170'        // this is needed because Quake 2 texture names can be quite wide
     id Software Textures.qtxfolder =
     {
-				// "baseq2" is simply the source path under the
-  				// Quake 2 directory ("textures/" is implicit)
-				// Right now, just put "baseq2" everywhere.
-      Basic.txlist =	// each texture page is a ".txlist" object
-      {			// If you want to complete this list, I recommend
-				// you to use QuArK 4.07's existing texture pages
-		// basic	// (see indications in file DataQ1.qrk).
+      // "baseq2" is simply the source path under the
+      // Quake 2 directory ("textures/" is implicit)
+      // Right now, just put "baseq2" everywhere.
+      Basic.txlist =    // each texture page is a ".txlist" object
+      {                 // If you want to complete this list, I recommend
+                        // you to use QuArK 4.07's existing texture pages
+                        // basic    // (see indications in file DataQ1.qrk).
 
-		// If you are going to re-organise these texures then please use TAB instead
-		// of SPACE. Using TAB will keep the file size down, as it's already very large
-		// because of all these textures! I've only used TAB for the first few bits.
-		// so you can finish what I started :) (Keep that text aligned soldier!)
-
-		e1u2/basic1_2.wl	={w="baseq2"}
-		e1u2/basic1_3.wl	={w="baseq2"}
-		e1u2/basic1_4.wl	={w="baseq2"}
-		e1u2/basic1_5.wl	={w="baseq2"}
-		e1u2/basic1_7.wl	={w="baseq2"}
-		e1u2/basic1_8.wl	={w="baseq2"}
-		e2u1/blbk2_1.wl	={w="baseq2"}
-		e3u2/block1_5.wl	={w="baseq2"}
-		e3u2/block1_6.wl	={w="baseq2"}
-		e3u2/block1_7.wl	={w="baseq2"}
-		e2u2/bmetal12_1.wl={w="baseq2"}
-		e3u3/color1_2.wl	={w="baseq2"}
-		e3u3/color1_4.wl	={w="baseq2"}
-		e3u3/color1_5.wl	={w="baseq2"}
-		e3u3/color1_7.wl	={w="baseq2"}
-		e3u3/color1_8.wl	={w="baseq2"}
-		e3u3/c_met10_1.wl	={w="baseq2"}
-		e1u1/c_met11_2.wl	={w="baseq2"}
-		e2u1/c_met14_1.wl	={w="baseq2"}
-		e2u2/metal18_2.wl	={w="baseq2"}
-		e2u2/metal22_2.wl	={w="baseq2"}
-		e3u3/metal23_3.wl	={w="baseq2"}
-		e3u3/metal23_4.wl	={w="baseq2"}
-		e2u2/metal27_1.wl	={w="baseq2"}
-        e2u2/metal28_1.wl	={w="baseq2"}
-        e2u2/metal29_2.wl	={w="baseq2"}
-        e2u1/metal32_2.wl	={w="baseq2"}
-        e3u1/palmet1_1.wl	={w="baseq2"}
-        e3u1/palmet3_1.wl	={w="baseq2"}
-        e3u1/palmet3_2.wl	={w="baseq2"}
-        e3u1/palmet5_2.wl	={w="baseq2"}
-        e3u1/palmet7_1.wl	={w="baseq2"}
-        e1u1/wbasic1_1.wl	={w="baseq2"}
-        e1u1/wbasic1_4.wl	={w="baseq2"}
-        e1u1/wbasic1_7.wl	={w="baseq2"}
+        e1u2/basic1_2.wl   ={w="baseq2"}
+        e1u2/basic1_3.wl   ={w="baseq2"}
+        e1u2/basic1_4.wl   ={w="baseq2"}
+        e1u2/basic1_5.wl   ={w="baseq2"}
+        e1u2/basic1_7.wl   ={w="baseq2"}
+        e1u2/basic1_8.wl   ={w="baseq2"}
+        e2u1/blbk2_1.wl    ={w="baseq2"}
+        e3u2/block1_5.wl   ={w="baseq2"}
+        e3u2/block1_6.wl   ={w="baseq2"}
+        e3u2/block1_7.wl   ={w="baseq2"}
+        e2u2/bmetal12_1.wl ={w="baseq2"}
+        e3u3/color1_2.wl   ={w="baseq2"}
+        e3u3/color1_4.wl   ={w="baseq2"}
+        e3u3/color1_5.wl   ={w="baseq2"}
+        e3u3/color1_7.wl   ={w="baseq2"}
+        e3u3/color1_8.wl   ={w="baseq2"}
+        e3u3/c_met10_1.wl  ={w="baseq2"}
+        e1u1/c_met11_2.wl  ={w="baseq2"}
+        e2u1/c_met14_1.wl  ={w="baseq2"}
+        e2u2/metal18_2.wl  ={w="baseq2"}
+        e2u2/metal22_2.wl  ={w="baseq2"}
+        e3u3/metal23_3.wl  ={w="baseq2"}
+        e3u3/metal23_4.wl  ={w="baseq2"}
+        e2u2/metal27_1.wl  ={w="baseq2"}
+        e2u2/metal28_1.wl  ={w="baseq2"}
+        e2u2/metal29_2.wl  ={w="baseq2"}
+        e2u1/metal32_2.wl  ={w="baseq2"}
+        e3u1/palmet1_1.wl  ={w="baseq2"}
+        e3u1/palmet3_1.wl  ={w="baseq2"}
+        e3u1/palmet3_2.wl  ={w="baseq2"}
+        e3u1/palmet5_2.wl  ={w="baseq2"}
+        e3u1/palmet7_1.wl  ={w="baseq2"}
+        e1u1/wbasic1_1.wl  ={w="baseq2"}
+        e1u1/wbasic1_4.wl  ={w="baseq2"}
+        e1u1/wbasic1_7.wl  ={w="baseq2"}
 
       }
       Brick.txlist =      // each texture page is a ".txlist" object
@@ -2600,7 +2617,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "The is a Soldier gone insane (Player model)."
+          ;desc = "This is a soldier gone insane (Player model)."
         }
         misc_gib_arm:e =
         {
@@ -2793,20 +2810,20 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This is the Iron Maiden kind of sitting down (Just for Looks)."
+          ;desc = "This is the Iron Maiden kind of sitting down (just for looks)."
         }
         misc_easterchick2:e =
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This is the Iron Maiden a little different (also just for looks)."
+          ;desc = "This is the Iron Maiden a little different (just for looks)."
 //Armin a(all)sc
         }
         monster_commander_body:e =
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This is the tank commander's destroyed body just for looks)."
+          ;desc = "This is the tank commander's destroyed body (just for looks)."
         }
         monster_medic:e =
         {
@@ -2824,7 +2841,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This is the Tank sitting down (Just for looks)."
+          ;desc = "This is the Tank sitting down (just for looks)."
         }
         monster_tank_commander:e =
         {
@@ -3135,7 +3152,7 @@ QQRKSRC1
         func_conveyor:b =
         {
           ;incl = "defpoly"
-          ;desc = "This will push you, but the texture itself won't move."
+          ;desc = "This will push you, but the texture itself won't move. "
              "Never used in Quake2."
         }
         func_door:b =
@@ -3363,7 +3380,7 @@ QQRKSRC1
           ;incl = "defpoly"
           ;desc = "Just as in Q1 use it to push the player in a given direction."
 //Armin f(desc)sc
-          angle = "360"
+          angles = "0 0 0"
         }
         trigger_relay:e =
         {
@@ -3389,7 +3406,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "Predefined Light."
+          ;desc = "Predefined light."
         }
       }
     }
@@ -6055,8 +6072,7 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-        Hint = "How long to hold in the open position (default 5, -1 means hol"
-         "d)."
+        Hint = "How long to hold in the open position (default 5, -1 means hold)."
       }
     }
     func_explosive:form =
@@ -6067,6 +6083,11 @@ QQRKSRC1
       {
         Txt = "&"
         Hint = "If you set this, it won't be shootable unless you also set trigger_spawn."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Use this to trigger something when this goes off."
       }
       spawnflags: =
       {
@@ -7631,6 +7652,192 @@ QQRKSRC1
       {
         Txt = "&"
         Hint = "Text to print at user logon."
+      }
+      _ambient: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "The amount of ambient light."
+      }
+      _sun_light: =
+      {
+        txt = "&"
+        hint = "The amount of light sun1 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Controls sun1's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_target: =
+      {
+        txt = "&"
+        hint = "Sets sun1's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_angle: =
+      {
+        txt = "&"
+        hint = "Sets sun1's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_vector: =
+      {
+        txt = "&"
+        hint = "Sets sun1's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_diffuse: =
+      {
+        txt = "&"
+        hint = "Sets sun1's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_diffade: =
+      {
+        txt = "&"
+        hint = "Sets sun1's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun_ambient: =
+      {
+        txt = "&"
+        Hint = "This controls the amount of diffuse light in shadows,"$0D
+               "if set to 0, shadows will be completely unlit (good values are 50-200)."$0D
+               "Alternatively, you can also set three seperate values: red, green and blue."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_light: =
+      {
+        txt = "&"
+        hint = "The amount of light sun2 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Controls sun2's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_target: =
+      {
+        txt = "&"
+        hint = "Sets sun2's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_angle: =
+      {
+        txt = "&"
+        hint = "Sets sun2's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_vector: =
+      {
+        txt = "&"
+        hint = "Sets sun2's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_diffuse: =
+      {
+        txt = "&"
+        hint = "Sets sun2's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun2_diffade: =
+      {
+        txt = "&"
+        hint = "Sets sun2's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_light: =
+      {
+        txt = "&"
+        hint = "The amount of light sun3 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Controls sun3's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_target: =
+      {
+        txt = "&"
+        hint = "Sets sun3's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_angle: =
+      {
+        txt = "&"
+        hint = "Sets sun3's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_vector: =
+      {
+        txt = "&"
+        hint = "Sets sun3's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_diffuse: =
+      {
+        txt = "&"
+        hint = "Sets sun3's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun3_diffade: =
+      {
+        txt = "&"
+        hint = "Sets sun3's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_light: =
+      {
+        txt = "&"
+        hint = "The amount of light the sun4 should produce (800 is a nice value)."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Controls sun4's colour."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_target: =
+      {
+        txt = "&"
+        hint = "Set sun4's angle letting it point to a target, like a spotlight."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_angle: =
+      {
+        txt = "&"
+        hint = "Set sun4's angle by yaw/pitch."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_vector: =
+      {
+        txt = "&"
+        hint = "Set sun4's angle by a vector."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_diffuse: =
+      {
+        txt = "&"
+        hint = "Set sun4's diffuse light brightness."$0D
+               "(Only works with certain compilers, like ArghRad)"
+      }
+      _sun4_diffade: =
+      {
+        txt = "&"
+        hint = "Set sun4's diffuse light attenuation."$0D
+               "(Only works with certain compilers, like ArghRad)"
       }
     }
   }

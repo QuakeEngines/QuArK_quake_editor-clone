@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/12/06 23:01:31  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
+Revision 1.9  2007/11/21 16:07:32  danielpharos
+Another bunch of hugh image fixes: everything should work again!
+
+Revision 1.8  2007/11/20 17:14:48  danielpharos
+A lot of small and large fixes, so all DevIL/FreeImage images should load and display correctly.
+
 Revision 1.7  2007/07/05 10:18:26  danielpharos
 Moved a string to the dictionary.
 
@@ -52,33 +61,35 @@ unit QkDDS;
 
 interface
 
-uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects, QkDevIL, QkFreeImage;
+uses Windows, Classes, QkImages, QkPixelSet, QkObjects, QkFileObjects,
+     QkDevIL, QkFreeImage;
 
 type
   QDDS = class(QImage)
-  protected
-    procedure SaveFile(Info: TInfoEnreg1); override;
-    procedure LoadFile(F: TStream; FSize: Integer); override;
-  public
-    class function TypeInfo: String; override;
-    class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-  end;
+        protected
+          class function FileTypeDevIL : DevILType; override;
+          class function FileTypeFreeImage : FREE_IMAGE_FORMAT; override;
+          procedure LoadFileDevILSettings; override;
+          procedure SaveFileDevILSettings; override;
+          function LoadFileFreeImageSettings : Integer; override;
+          function SaveFileFreeImageSettings : Integer; override;
+          class function FormatName : String; override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
+        public
+          class function TypeInfo: String; override;
+          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+        end;
 
-{-------------------}
+ {--------------------}
 
 implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, QkApplPaths;
 
-var
-  DevILLoaded: Boolean;
-  FreeImageLoaded: Boolean;
-
-procedure Fatal(x:string);
+class function QDDS.FormatName : String;
 begin
-  Log(LOG_CRITICAL,'Error during operation on DDS file: %s',[x]);
-  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
-  Raise Exception.Create(x);
+ Result:='DDS';
 end;
 
 class function QDDS.TypeInfo: String;
@@ -94,268 +105,56 @@ begin
   Info.WndInfo:=[wiWindow];
 end;
 
+class function QDDS.FileTypeDevIL : DevILType;
+begin
+  Result:=IL_DDS;
+end;
+
+class function QDDS.FileTypeFreeImage : FREE_IMAGE_FORMAT;
+begin
+  Result:=FIF_DDS;
+end;
+
+procedure QDDS.LoadFileDevILSettings;
+begin
+end;
+
+procedure QDDS.SaveFileDevILSettings;
+begin
+end;
+
+function QDDS.LoadFileFreeImageSettings : Integer;
+begin
+  Result:=DDS_DEFAULT;
+end;
+
+function QDDS.SaveFileFreeImageSettings : Integer;
+begin
+  Result:=DDS_DEFAULT;
+end;
+
 procedure QDDS.LoadFile(F: TStream; FSize: Integer);
-const
-  Spec1 = 'Image1=';
-//  Spec2 = 'Pal=';
-  Spec3 = 'Alpha=';
-type
-  PRGB = ^TRGB;
-  TRGB = array[0..2] of Byte;
 var
-  RawBuffer: String;
-  Source, Source2: PByte;
-  AlphaData, ImgData: String;
-  DestAlpha, DestImg: PChar;
-  I, J: Integer;
   LibraryToUse: string;
-  Setup: QObject;
-
-  //DevIL:
-  DevILImage: Cardinal;
-
-  //FreeImage:
-  FIBuffer: FIMEMORY;
-  FIImage, FIConvertedImage: FIBITMAP;
-  Pitch: Cardinal;
-
-  ImageFormat: DevILFormat;
-  Width, Height: Cardinal;
-  NumberOfPixels: Integer;
-  V: array[1..2] of Single;
 begin
   Log(LOG_VERBOSE,'Loading DDS file: %s',[self.name]);;
   case ReadFormat of
   1: begin  { as stand-alone file }
-    Setup:=SetupSubSet(ssFiles, 'DDS');
-    LibraryToUse:=Setup.Specifics.Values['LoadLibrary'];
+    LibraryToUse:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['LoadLibrary'];
     if LibraryToUse='DevIL' then
-    begin
-      if (not DevILLoaded) then
-      begin
-        if not LoadDevIL then
-          Raise EErrorFmt(5730, ['DevIL library', GetLastError]);
-        DevILLoaded:=true;
-      end;
-
-      SetLength(RawBuffer, F.Size);
-      F.Seek(0, 0);
-      F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
-
-      ilGenImages(1, @DevILImage);
-      CheckDevILError(ilGetError);
-      ilBindImage(DevILImage);
-      CheckDevILError(ilGetError);
-
-      if ilLoadL(IL_DDS, Pointer(RawBuffer), Length(RawBuffer))=false then
-      begin
-        ilDeleteImages(1, @DevILImage);
-        Fatal('Unable to load DDS file. Call to ilLoadL failed. Please make sure the file is a valid DDS file, and not damaged or corrupt.');
-      end;
-
-      Width:=ilGetInteger(IL_IMAGE_WIDTH);
-      CheckDevILError(ilGetError);
-      Height:=ilGetInteger(IL_IMAGE_HEIGHT);
-      CheckDevILError(ilGetError);
-      //DanielPharos: 46340 squared is just below the integer max value.
-      if (Width>46340) or (Height>46340) then
-      begin
-        ilDeleteImages(1, @DevILImage);
-        Fatal('Unable to load DDS file. Picture is too large.');
-      end;
-      NumberOfPixels:=Width * Height;
-      V[1]:=Width;
-      V[2]:=Height;
-      SetFloatsSpec('Size', V);
-
-      ImageFormat:=ilGetInteger(IL_IMAGE_FORMAT);
-      CheckDevILError(ilGetError);
-      if (ImageFormat=IL_RGBA) or (ImageFormat=IL_BGRA) or (ImageFormat=IL_LUMINANCE_ALPHA) then
-      begin
-        //Allocate quarks image buffers
-        ImgData:=Spec1;
-        AlphaData:=Spec3;
-        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
-        Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
-
-        GetMem(Source,NumberOfPixels*4);
-        ilCopyPixels(0, 0, 0, Width, Height, 1, IL_RGBA, IL_UNSIGNED_BYTE, Source);
-        CheckDevILError(ilGetError);
-
-        DestImg:=PChar(ImgData) + Length(Spec1);
-        DestAlpha:=PChar(AlphaData) + Length(Spec3);
-        Source2:=Source;
-        Inc(Source2, NumberOfPixels*4);
-        Inc(Source2, Width*4);
-        for J:=Height-1 downto 0 do
-        begin
-          Dec(Source2, 2*Width*4);
-          for I:=0 to Width-1 do
-          begin
-            PRGB(DestImg)^[2]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[1]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[0]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestAlpha)^[0]:=Source2^;
-            Inc(Source2, 1);
-            Inc(DestImg, 3);
-            Inc(DestAlpha, 1);
-          end;
-        end;
-
-        Specifics.Add(AlphaData);
-        Specifics.Add(ImgData);
-      end
-      else
-      begin
-        //Allocate quarks image buffers
-        ImgData:=Spec1;
-        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
-
-        GetMem(Source,NumberOfPixels*3);
-        ilCopyPixels(0, 0, 0, Width, Height, 1, IL_RGB, IL_UNSIGNED_BYTE, Source);
-        CheckDevILError(ilGetError);
-
-        DestImg:=PChar(ImgData) + Length(Spec1);
-        Source2:=Source;
-        Inc(Source2, NumberOfPixels*3);
-        Inc(Source2, Width*3);
-        for J:=Height-1 downto 0 do
-        begin
-          Dec(Source2, 2*Width*3);
-          for I:=0 to Width-1 do
-          begin
-            PRGB(DestImg)^[2]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[1]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[0]:=Source2^;
-            Inc(Source2, 1);
-            Inc(DestImg, 3);
-          end;
-        end;
-
-        Specifics.Add(ImgData);
-      end;
-
-      FreeMem(Source);
-
-      ilDeleteImages(1, @DevILImage);
-      CheckDevILError(ilGetError);
-
-    end
+      LoadFileDevIL(F, FSize)
     else if LibraryToUse='FreeImage' then
-    begin
-      if (not FreeImageLoaded) then
-      begin
-        if not LoadFreeImage then
-          Raise EErrorFmt(5730, ['FreeImage library', GetLastError]);
-        FreeImageLoaded:=true;
-      end;
-
-      SetLength(RawBuffer, F.Size);
-      F.Seek(0, 0);
-      F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
-
-      FIBuffer := FreeImage_OpenMemory(Pointer(RawBuffer), Length(RawBuffer));
-      FIImage := FreeImage_LoadFromMemory(FIF_DDS, FIBuffer, DDS_DEFAULT);
-
-      Width:=FreeImage_GetWidth(FIImage);
-      Height:=FreeImage_GetHeight(FIImage);
-      //DanielPharos: 46340 squared is just below the integer max value.
-      if (Width>46340) or (Height>46340) then
-      begin
-        FreeImage_Unload(FIImage);
-        FreeImage_CloseMemory(FIBuffer);
-        Fatal('Unable to load DDS file. Picture is too large.');
-      end;
-      NumberOfPixels:=Width * Height;
-      V[1]:=Width;
-      V[2]:=Height;
-      SetFloatsSpec('Size', V);
-
-      if FreeImage_IsTransparent(FIImage) then
-      begin
-        //Allocate quarks image buffers
-        ImgData:=Spec1;
-        AlphaData:=Spec3;
-        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
-        Setlength(AlphaData,Length(Spec3) + NumberOfPixels);     {alpha buffer}
-
-        FIConvertedImage:=FreeImage_ConvertTo32Bits(FIImage);
-        Pitch:=FreeImage_GetPitch(FIConvertedImage);
-        GetMem(Source,Height * Pitch);
-        FreeImage_ConvertToRawBits(Source, FIConvertedImage, Pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
-
-        DestImg:=PChar(ImgData) + Length(Spec1);
-        DestAlpha:=PChar(AlphaData) + Length(Spec3);
-        Source2:=Source;
-        for J:=Height-1 downto 0 do
-        begin
-          for I:=0 to Width-1 do
-          begin
-            PRGB(DestImg)^[0]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[1]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[2]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestAlpha)^[0]:=Source2^;
-            Inc(Source2, 1);
-            Inc(DestImg, 3);
-            Inc(DestAlpha, 1);
-          end;
-        end;
-
-        Specifics.Add(AlphaData);
-        Specifics.Add(ImgData);
-      end
-      else
-      begin
-        //Allocate quarks image buffers
-        ImgData:=Spec1;
-        SetLength(ImgData , Length(Spec1) + NumberOfPixels * 3); {RGB buffer}
-
-        FIConvertedImage:=FreeImage_ConvertTo24Bits(FIImage);
-        Pitch:=FreeImage_GetPitch(FIConvertedImage);
-        GetMem(Source,Height * Pitch);
-        FreeImage_ConvertToRawBits(Source, FIConvertedImage, Pitch, 24, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
-
-        DestImg:=PChar(ImgData) + Length(Spec1);
-        Source2:=Source;
-        for J:=Height-1 downto 0 do
-        begin
-          for I:=0 to Width-1 do
-          begin
-            PRGB(DestImg)^[0]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[1]:=Source2^;
-            Inc(Source2, 1);
-            PRGB(DestImg)^[2]:=Source2^;
-            Inc(Source2, 1);
-            Inc(DestImg, 3);
-          end;
-        end;
-
-        Specifics.Add(ImgData);
-      end;
-
-      FreeMem(Source);
-      FreeImage_Unload(FIConvertedImage);
-      FreeImage_Unload(FIImage);
-      FreeImage_CloseMemory(FIBuffer);
-    end
+      LoadFileFreeImage(F, FSize)
     else
-    begin
-      Fatal('Unable to load DDS file. No valid loading library selected.');
-    end;
+      FatalFileError('Unable to load DDS file. No valid loading library selected.');
   end;
   else
     inherited;
   end;
 end;
+
+var
+  DevILLoaded: Boolean;
 
 procedure QDDS.SaveFile(Info: TInfoEnreg1);
 var
@@ -483,7 +282,7 @@ begin
     if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, RawData)=false then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to ilTexImage failed.');
+      FatalFileError('Unable to save DDS file. Call to ilTexImage failed.');
     end;
 
     FreeMem(RawData);
@@ -500,6 +299,8 @@ begin
         Quality := 2;
       end;
     end;
+
+    //@ Update with new DevIL Code!
 
     {DanielPharos: This is the code that should be used. It doesn't work however,
     because of limitations in the current versions of the DevIL library. We
@@ -530,14 +331,14 @@ begin
     if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=false then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to ilSave failed.');
+      FatalFileError('Unable to save DDS file. Call to ilSave failed.');
     end;
 
     //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
     if FileExists(GetApplicationDllPath+'nvdxt.exe')=false then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. dlls/nvdxt.exe not found.');
+      FatalFileError('Unable to save DDS file. dlls/nvdxt.exe not found.');
     end;
 
     case TexFormat of
@@ -569,7 +370,7 @@ begin
     if Windows.CreateProcess(nil, PChar('nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetApplicationDllPath), NVDXTStartupInfo, NVDXTProcessInformation)=false then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to CreateProcess failed.');
+      FatalFileError('Unable to save DDS file. Call to CreateProcess failed.');
     end;
 
     //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
@@ -578,24 +379,24 @@ begin
       ilDeleteImages(1, @DevILImage);
       CloseHandle(NVDXTProcessInformation.hThread);
       CloseHandle(NVDXTProcessInformation.hProcess);
-      Fatal('Unable to save DDS file. Call to WaitForSingleObject failed.');
+      FatalFileError('Unable to save DDS file. Call to WaitForSingleObject failed.');
     end;
 
     if CloseHandle(NVDXTProcessInformation.hThread)=false then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to CloseHandle(thread) failed.');
+      FatalFileError('Unable to save DDS file. Call to CloseHandle(thread) failed.');
     end;
     if CloseHandle(NVDXTProcessInformation.hProcess)=false then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to CloseHandle(process) failed.');
+      FatalFileError('Unable to save DDS file. Call to CloseHandle(process) failed.');
     end;
 
     if DeleteFile(DumpFileName+'.tga')=false then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to DeleteFile(tga) failed.');
+      FatalFileError('Unable to save DDS file. Call to DeleteFile(tga) failed.');
     end;
 
     //DanielPharos: Now let's read in that DDS file and be done!
@@ -605,7 +406,7 @@ begin
     if DeleteFile(DumpFileName+'.dds')=false then
     begin
       ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to DeleteFile(dds) failed.');
+      FatalFileError('Unable to save DDS file. Call to DeleteFile(dds) failed.');
     end;    
 
     ilDeleteImages(1, @DevILImage);
@@ -616,14 +417,12 @@ begin
   end;
 end;
 
-{-------------------}
+ {--------------------}
 
 initialization
   RegisterQObject(QDDS, 'k');
 
 finalization
   if DevILLoaded then
-    UnloadDevIl(false);
-  if FreeImageLoaded then
-    UnloadFreeImage(false);
+    UnloadDevIL(False);
 end.

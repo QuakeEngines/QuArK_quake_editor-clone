@@ -119,7 +119,7 @@ def LoadPortalFile(editor, filename):
     editor.invalidateviews()
 
 
-def DrawLines(view, editor, oldFinishDrawing = mapeditor.MapEditor.finishdrawing):
+def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing):
     try:
         Portals = editor.Portals
         cv = view.canvas()
@@ -133,13 +133,16 @@ def DrawLines(view, editor, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
                 pt0 = pt1
     except:
         pass
-    oldFinishDrawing(view, editor)
+    oldFinishDrawing(editor, view)
 
 
 mapeditor.MapEditor.finishdrawing = DrawLines
 
 
 #$Log$
+#Revision 1.11  2007/12/17 00:50:00  danielpharos
+#Fix the map portals not drawing anymore.
+#
 #Revision 1.10  2007/01/09 23:11:46  danielpharos
 #Fixed an annoying crash with map portals (for instance when you set the light-entity's color too high)
 #

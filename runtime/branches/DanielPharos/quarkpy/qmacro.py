@@ -54,9 +54,18 @@ def MACRO_displaymdl(self):
 
 def MACRO_duplicator(dup):
     "Computes Duplicator images."
+    mode = qutils.SS_MAP
+    if quarkx.setupsubset(mode, "Options")["IgnoreDup"]:
+        return []
+
     qutils.loadmapeditor()
     import mapduplicator
-    return mapduplicator.DupManager(dup).buildimages()
+    import mapquakemenu
+    items = mapduplicator.DupManager(dup).buildimages()
+    if (dup["MapObjectName"] is not None):
+        ObjectName = dup["MapObjectName"]
+        mapquakemenu.recursivelycreateierarchy(items, ObjectName)
+    return items
 
 
 #
@@ -305,6 +314,13 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.25  2007/12/21 20:39:23  cdunde
+#Added new Templates functions and Templates.
+#
+#Revision 1.24  2007/12/14 21:48:00  cdunde
+#Added many new beizer shapes and functions developed by our friends in Russia,
+#the Shine team, Nazar and vodkins.
+#
 #Revision 1.23  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

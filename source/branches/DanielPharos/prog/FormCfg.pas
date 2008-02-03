@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2007/08/04 14:42:29  danielpharos
+Use QuakeDir to retrieve the game directory. That's the way it should be, plus some planned upcoming changes to Steam-access will affect this.
+
 Revision 1.35  2007/06/13 11:44:40  danielpharos
 Changed a number of a string and removed an unused one.
 
@@ -1371,7 +1374,7 @@ end;
 procedure TFormCfg.BrowseButtonClick(Sender: TObject);
   procedure ConvertCodes(var S:String);
   begin
-    While pos('$Game',S)<>0 do S:=copy(S,1,pos('$Game',S)-1)+SetupGameSet.Specifics.Values['Directory']+copy(S,pos('$Game',S)+5,length(S));
+    While pos('$Game',S)<>0 do S:=copy(S,1,pos('$Game',S)-1)+QuakeDir+copy(S,pos('$Game',S)+5,length(S));
   end; {ConvertCodes}
 var
  Path0, Path, Title, S, FNCopy, Conv, ConvOriginal, SOriginal: String;

@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/12/06 23:01:31  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
+Revision 1.17  2007/11/21 00:06:22  danielpharos
+BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
+
+Revision 1.16  2007/11/20 18:28:07  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
+Revision 1.15  2007/11/20 17:14:49  danielpharos
+A lot of small and large fixes, so all DevIL/FreeImage images should load and display correctly.
+
 Revision 1.14  2007/05/05 22:17:53  cdunde
 To add .dds Texture Browser loading from .pk3 files.
 
@@ -67,11 +79,24 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, TB97, ExtCtrls, PaintPanel, Game,
-  QkForm, QkTextures, QkPixelSet, StdCtrls, EnterEditCtrl;
+  QkForm, QkTextures, QkPixelSet, StdCtrls, EnterEditCtrl,
+  QkDevIL, QkFreeImage;
 
 type
  QImage = class(QPixelSet)
            protected
+             procedure FatalFileError(x:string);
+             class function FileTypeDevIL : DevILType; virtual; abstract;
+             class function FileTypeFreeImage : FREE_IMAGE_FORMAT; virtual; abstract;
+             procedure LoadFileDevIL(F: TStream; FSize: Integer);
+             procedure SaveFileDevIL(Info: TInfoEnreg1);
+             procedure LoadFileFreeImage(F: TStream; FSize: Integer);
+             procedure SaveFileFreeImage(Info: TInfoEnreg1);
+             procedure LoadFileDevILSettings; virtual; abstract;
+             procedure SaveFileDevILSettings; virtual; abstract;
+             function LoadFileFreeImageSettings : Integer; virtual; abstract;
+             function SaveFileFreeImageSettings : Integer; virtual; abstract;
+             class function FormatName : String; virtual;
              function OpenWindow(nOwner: TComponent) : TQForm1; override;
             {procedure PasteImageDC(NeededGame: Char; DC: HDC; W,H: Integer);}
              procedure SetQuakeImageData(const Lmp: TPaletteLmp; const Data: String; W,H: Integer);
@@ -146,7 +171,8 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF,QkVTF, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
+uses QkPcx, QkBmp, QkTga, QkDDS, QkJpg, QkPng, QkSoF,QkVTF, TbPalette, qmath,
+     Quarkx, CCode, Undo, Travail, Logging;
 
 {$R *.DFM}
 
@@ -171,7 +197,7 @@ end;*)
 
 function TestConversionImages(var I: Integer) : QImageClass;
 const
- IntlImages: array[1..8] of QImageClass = (QPcx, QTga, QDDS, QBmp, QJPeg, QPng, QM32,QVTF);
+ IntlImages: array[1..8] of QImageClass = (QPcx, QTga, QDDS, QBmp, QJPeg, QPng, QM32, QVTF);
 begin
  if I>High(IntlImages) then
   begin
@@ -217,6 +243,819 @@ begin
 end;
 
  {------------------------}
+
+var
+  DevILLoaded: Boolean;
+  FreeImageLoaded: Boolean;
+
+procedure QImage.FatalFileError(x:string);
+begin
+  Log(LOG_CRITICAL,'Error during operation on %s file: %s', [FormatName, x]);
+  Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
+  Raise Exception.Create(x);
+end;
+
+class function QImage.FormatName : String;
+begin
+  Result:='*';
+end;
+
+procedure QImage.LoadFileDevIL(F: TStream; FSize: Integer);
+const
+  Spec1 = 'Image1=';
+  Spec2 = 'Pal=';
+  Spec3 = 'Alpha=';
+type
+  PRGB = ^TRGB;
+  TRGB = array[0..2] of Byte;
+  PRGBA = ^TRGBA;
+  TRGBA = array[0..3] of Byte;
+var
+  RawBuffer: String;
+  Source: PByte;
+  ImgData, PalData, AlphaData: String;
+  DestImg, DestPal, DestAlpha: PChar;
+  I, J: Integer;
+  Width, Height: Integer;
+  PaddingSource, PaddingDest: Integer;
+  V: array[1..2] of Single;
+
+  //DevIL:
+  DevILImage: Cardinal;
+  PaletteType: DevILFormatPalette;
+  PaletteSize: Integer;
+begin
+  if (not DevILLoaded) then
+  begin
+    if not LoadDevIL then
+      Raise EErrorFmt(5730, ['DevIL library', GetLastError]);
+    DevILLoaded:=true;
+  end;
+
+  SetLength(RawBuffer, F.Size);
+  F.Seek(0, 0);
+  F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
+
+  ilGenImages(1, @DevILImage);
+  CheckDevILError(ilGetError);
+  ilBindImage(DevILImage);
+  CheckDevILError(ilGetError);
+
+  ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+  CheckDevILError(ilGetError);
+  ilEnable(IL_ORIGIN_SET);
+  CheckDevILError(ilGetError);
+
+  if ilLoadL(FileTypeDevIL, Pointer(RawBuffer), Length(RawBuffer))=false then
+  begin
+    ilDeleteImages(1, @DevILImage);
+    FatalFileError(Format('Unable to load %s file. Call to ilLoadL failed. Please make sure the file is a valid %s file, and not damaged or corrupt.', [FormatName, FormatName]));
+  end;
+  CheckDevILError(ilGetError);
+
+  Width:=ilGetInteger(IL_IMAGE_WIDTH);
+  CheckDevILError(ilGetError);
+  Height:=ilGetInteger(IL_IMAGE_HEIGHT);
+  CheckDevILError(ilGetError);
+  //DanielPharos: 46340 squared is just below the integer max value.
+  if (Width>46340) or (Height>46340) then
+  begin
+    ilDeleteImages(1, @DevILImage);
+    FatalFileError(Format('Unable to load %s file. Picture is too large.', [FormatName]));
+  end;
+  V[1]:=Width;
+  V[2]:=Height;
+  SetFloatsSpec('Size', V);
+
+  if ilHasPalette then
+  begin
+    //DanielPharos: Currently, no alpha is supported in palette-mode,
+    //so no need to check for that.
+
+    //This is the padding for the 'Image1'-RGB array
+    PaddingDest:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
+
+    //Allocate quarks image buffers
+    ImgData:=Spec1;
+    PalData:=Spec2;
+    SetLength(ImgData,   Length(Spec1) + (Width + PaddingDest) * Height); //RGB buffer
+    SetLength(PalData,   Length(Spec2) + (256 * 3)); //palette buffer
+
+    ilConvertImage(IL_COLOUR_INDEX, IL_UNSIGNED_BYTE);
+    CheckDevILError(ilGetError);
+
+    PaletteType:=ilGetInteger(IL_PALETTE_TYPE);
+    CheckDevILError(ilGetError);
+    if PaletteType<>IL_PAL_RGB24 then
+    begin
+      ilConvertPal(IL_PAL_RGB24);
+      CheckDevILError(ilGetError);
+    end;
+
+    PaletteSize:=ilGetInteger(IL_PALETTE_NUM_COLS);
+    CheckDevILError(ilGetError);
+    if (PaletteSize=0) or (PaletteSize>256) then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      FatalFileError(Format('Unable to load %s file. Invalid palette.', [FormatName]));
+    end;
+
+    Source:=ilGetPalette;
+    CheckDevILError(ilGetError);
+
+    DestPal:=PChar(PalData) + Length(Spec2);
+    for I:=0 to PaletteSize-1 do
+    begin
+      PRGB(DestPal)^[0]:=PRGB(Source)^[0];
+      PRGB(DestPal)^[1]:=PRGB(Source)^[1];
+      PRGB(DestPal)^[2]:=PRGB(Source)^[2];
+      Inc(Source, 3);
+      Inc(DestPal, 3);
+    end;
+    for I:=PaletteSize to 255 do
+    begin
+      PRGB(DestPal)^[0]:=0;
+      PRGB(DestPal)^[1]:=0;
+      PRGB(DestPal)^[2]:=0;
+      Inc(DestPal, 3);
+    end;
+
+    Source:=ilGetData;
+    CheckDevILError(ilGetError);
+    PaddingSource:=0;
+
+    DestImg:=PChar(ImgData) + Length(Spec1);
+    for J:=0 to Height-1 do
+    begin
+      for I:=0 to Width-1 do
+      begin
+        PByte(DestImg)^:=Source^;
+        Inc(Source, 1);
+        Inc(DestImg, 1);
+      end;
+      Inc(Source, PaddingSource);
+      for I:=0 to PaddingDest-1 do
+      begin
+        DestImg^:=#0;
+        Inc(DestImg, 1);
+      end;
+    end;
+
+    Specifics.Add(ImgData);
+    Specifics.Add(PalData);
+  end
+  else
+  begin
+    //This is the padding for the 'Image1'-RGB array
+    PaddingDest:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
+    if ilHasAlpha then
+    begin
+      //Allocate quarks image buffers
+      ImgData:=Spec1;
+      AlphaData:=Spec3;
+      SetLength(ImgData,   Length(Spec1) + ((Width * 3) + PaddingDest) * Height); //RGB buffer
+      SetLength(AlphaData, Length(Spec3) + (Width * Height)); //alpha buffer
+
+      ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+      CheckDevILError(ilGetError);
+      Source:=ilGetData;
+      CheckDevILError(ilGetError);
+      PaddingSource:=0;
+
+      DestImg:=PChar(ImgData) + Length(Spec1);
+      DestAlpha:=PChar(AlphaData) + Length(Spec3);
+      for J:=0 to Height-1 do
+      begin
+        for I:=0 to Width-1 do
+        begin
+          PRGB(DestImg)^[2]:=PRGBA(Source)^[0];
+          PRGB(DestImg)^[1]:=PRGBA(Source)^[1];
+          PRGB(DestImg)^[0]:=PRGBA(Source)^[2];
+          PByte(DestAlpha)^:=PRGBA(Source)^[3];
+          Inc(Source, 4);
+          Inc(DestImg, 3);
+          Inc(DestAlpha, 1);
+        end;
+        Inc(Source, PaddingSource);
+        for I:=0 to PaddingDest-1 do
+        begin
+          DestImg^:=#0;
+          Inc(DestImg, 1);
+        end;
+      end;
+
+      Specifics.Add(AlphaData);
+      Specifics.Add(ImgData);
+    end
+    else
+    begin
+      //Allocate quarks image buffers
+      ImgData:=Spec1;
+      SetLength(ImgData,   Length(Spec1) + ((Width * 3) + PaddingDest) * Height); //RGB buffer
+
+      ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+      CheckDevILError(ilGetError);
+      Source:=ilGetData;
+      CheckDevILError(ilGetError);
+      PaddingSource:=0;
+
+      DestImg:=PChar(ImgData) + Length(Spec1);
+      for J:=0 to Height-1 do
+      begin
+        for I:=0 to Width-1 do
+        begin
+          PRGB(DestImg)^[2]:=PRGB(Source)^[0];
+          PRGB(DestImg)^[1]:=PRGB(Source)^[1];
+          PRGB(DestImg)^[0]:=PRGB(Source)^[2];
+          Inc(Source, 3);
+          Inc(DestImg, 3);
+        end;
+        Inc(Source, PaddingSource);
+        for I:=0 to PaddingDest-1 do
+        begin
+          DestImg^:=#0;
+          Inc(DestImg, 1);
+        end;
+      end;
+
+      Specifics.Add(ImgData);
+    end;
+  end;
+
+  ilDisable(IL_ORIGIN_SET);
+  CheckDevILError(ilGetError);
+  ilDeleteImages(1, @DevILImage);
+  CheckDevILError(ilGetError);
+end;
+
+procedure QImage.SaveFileDevIL(Info: TInfoEnreg1);
+const
+  Spec1 = 'Image1=';
+  Spec2 = 'Pal=';
+  Spec3 = 'Alpha=';
+type
+  PRGB = ^TRGB;
+  TRGB = array[0..2] of Byte;
+  PRGBA = ^TRGBA;
+  TRGBA = array[0..3] of Byte;
+var
+  PSD: TPixelSetDescription;
+  RawBuffer: String;
+  Dest: PByte;
+  SourceImg, SourceAlpha, SourcePal, pSourceImg, pSourceAlpha, pSourcePal: PChar;
+  Width, Height: Integer;
+  PaddingSource, PaddingDest: Integer;
+  I, J: Integer;
+  OutputSize: Cardinal;
+  RawPal: PByte;
+
+  //DevIL:
+  DevILImage: Cardinal;
+  ImageBpp: Byte;
+  ImageFormat: DevILFormat;
+begin
+  if (not DevILLoaded) then
+  begin
+    if not LoadDevIL then
+      Raise EErrorFmt(5730, ['DevIL library', GetLastError]);
+    DevILLoaded:=true;
+  end;
+
+  PSD:=Description;
+  Width:=PSD.size.x;
+  Height:=PSD.size.y;
+
+  if PSD.Format = psf8bpp then
+  begin
+    ImageBpp:=1;
+    ImageFormat:=IL_COLOUR_INDEX;
+    PaddingDest:=0;
+  end
+  else
+  begin
+    if PSD.AlphaBits=psa8bpp then
+    begin
+      ImageBpp:=4;
+      ImageFormat:=IL_RGBA;
+      PaddingDest:=0;
+    end
+    else
+    begin
+      ImageBpp:=3;
+      ImageFormat:=IL_RGB;
+      PaddingDest:=0;
+    end;
+  end;
+
+  ilGenImages(1, @DevILImage);
+  CheckDevILError(ilGetError);
+  ilBindImage(DevILImage);
+  CheckDevILError(ilGetError);
+
+  if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=false then
+  begin
+    ilDeleteImages(1, @DevILImage);
+    FatalFileError(Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
+  end;
+  CheckDevILError(ilGetError);
+
+  if ilClearImage=false then
+  begin
+    ilDeleteImages(1, @DevILImage);
+    FatalFileError(Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
+  end;
+  CheckDevILError(ilGetError);
+
+  if PSD.Format = psf8bpp then
+  begin
+    ilConvertPal(IL_PAL_RGB24);
+    CheckDevILError(ilGetError);
+  end;
+
+  //This is the padding for the 'Image1'-RGB array
+  PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
+  if PSD.Format = psf8bpp then
+  begin
+    GetMem(RawPal, 256*3);
+    try
+      ilRegisterPal(RawPal, 256*3, IL_PAL_RGB24);
+      CheckDevILError(ilGetError);
+    finally
+      FreeMem(RawPal);
+    end;
+
+    Dest:=ilGetPalette;
+    CheckDevILError(ilGetError);
+    SourcePal:=PChar(PSD.ColorPalette);
+    pSourcePal:=SourcePal;
+    for I:=0 to 255 do
+    begin
+      PRGB(Dest)^[0]:=PRGB(pSourcePal)^[0];
+      PRGB(Dest)^[1]:=PRGB(pSourcePal)^[1];
+      PRGB(Dest)^[2]:=PRGB(pSourcePal)^[2];
+      Inc(pSourcePal, 3);
+      Inc(Dest, 3);
+    end;
+
+    Dest:=ilGetData;
+    CheckDevILError(ilGetError);
+    SourceImg:=PChar(PSD.Data);
+    pSourceImg:=SourceImg;
+    for J:=0 to Height-1 do
+    begin
+      for I:=0 to Width-1 do
+      begin
+        Dest^:=PByte(pSourceImg)^;
+        Inc(pSourceImg, 1);
+        Inc(Dest, 1);
+      end;
+      Inc(pSourceImg, PaddingSource);
+      for I:=0 to PaddingDest-1 do
+      begin
+        Dest^:=0;
+        Inc(Dest, 1);
+      end;
+    end;
+  end
+  else
+  begin
+    if PSD.AlphaBits=psa8bpp then
+    begin
+      Dest:=ilGetData;
+      CheckDevILError(ilGetError);
+      SourceImg:=PChar(PSD.Data);
+      SourceAlpha:=PChar(PSD.AlphaData);
+      pSourceImg:=SourceImg;
+      pSourceAlpha:=SourceAlpha;
+      for J:=0 to Height-1 do
+      begin
+        for I:=0 to Width-1 do
+        begin
+          PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[0];
+          PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
+          PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[2];
+          PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
+          Inc(pSourceImg, 3);
+          Inc(pSourceAlpha, 1);
+          Inc(Dest, 4);
+        end;
+        Inc(pSourceImg, PaddingSource);
+        for I:=0 to PaddingDest-1 do
+        begin
+          Dest^:=0;
+          Inc(Dest, 1);
+        end;
+      end;
+    end
+    else
+    begin
+      Dest:=ilGetData;
+      CheckDevILError(ilGetError);
+      SourceImg:=PChar(PSD.Data);
+      pSourceImg:=SourceImg;
+      for J:=0 to Height-1 do
+      begin
+        for I:=0 to Width-1 do
+        begin
+          PRGB(Dest)^[2]:=PRGB(pSourceImg)^[0];
+          PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
+          PRGB(Dest)^[0]:=PRGB(pSourceImg)^[2];
+          Inc(pSourceImg, 3);
+          Inc(Dest, 3);
+        end;
+        Inc(pSourceImg, PaddingSource);
+        for I:=0 to PaddingDest-1 do
+        begin
+          Dest^:=0;
+          Inc(Dest, 1);
+        end;
+      end;
+    end;
+  end;
+
+  //DanielPharos: How do we retrieve the correct value of the lump?
+  OutputSize:=1000+Width*Height*8;
+  SetLength(RawBuffer, OutputSize);
+
+  OutputSize:=ilSaveL(FileTypeDevIL, Pointer(RawBuffer), OutputSize);
+  CheckDevILError(ilGetError);
+  if OutputSize=0 then
+  begin
+    ilDeleteImages(1, @DevILImage);
+    FatalFileError(Format('Unable to save %s file. Call to ilSaveL failed.', [FormatName]));
+  end;
+
+  Info.F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
+
+  ilDeleteImages(1, @DevILImage);
+  CheckDevILError(ilGetError);
+end;
+
+procedure QImage.LoadFileFreeImage(F: TStream; FSize: Integer);
+const
+  Spec1 = 'Image1=';
+  Spec2 = 'Pal=';
+  Spec3 = 'Alpha=';
+type
+  PRGB = ^TRGB;
+  TRGB = array[0..2] of Byte;
+  PRGBA = ^TRGBA;
+  TRGBA = array[0..3] of Byte;
+var
+  RawBuffer: String;
+  Source: PByte;
+  ImgData, PalData, AlphaData: String;
+  DestImg, DestPal, DestAlpha: PChar;
+  I, J: Integer;
+  Width, Height: Integer;
+  PaddingSource, PaddingDest: Integer;
+  V: array[1..2] of Single;
+
+  //FreeImage:
+  FIBuffer: FIMEMORY;
+  FIImage, FIConvertedImage: FIBITMAP;
+  Pitch: Integer;
+begin
+  if (not FreeImageLoaded) then
+  begin
+    if not LoadFreeImage then
+      Raise EErrorFmt(5730, ['FreeImage library', GetLastError]);
+    FreeImageLoaded:=true;
+  end;
+
+  SetLength(RawBuffer, F.Size);
+  F.Seek(0, 0);
+  F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
+
+  FIBuffer := FreeImage_OpenMemory(Pointer(RawBuffer), Length(RawBuffer));
+  FIImage := FreeImage_LoadFromMemory(FileTypeFreeImage, FIBuffer, LoadFileFreeImageSettings);
+
+  Width:=FreeImage_GetWidth(FIImage);
+  Height:=FreeImage_GetHeight(FIImage);
+  //DanielPharos: 46340 squared is just below the integer max value.
+  if (Width>46340) or (Height>46340) then
+  begin
+    FreeImage_Unload(FIImage);
+    FreeImage_CloseMemory(FIBuffer);
+    FatalFileError(Format('Unable to load %s file. Picture is too large.', [FormatName]));
+  end;
+  V[1]:=Width;
+  V[2]:=Height;
+  SetFloatsSpec('Size', V);
+
+  if FreeImage_GetColorType(FIImage)=FIC_PALETTE then
+  begin
+    //This is the padding for the 'Image1'-RGB array
+    PaddingDest:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
+
+    ImgData:=Spec1;
+    PalData:=Spec2;
+    SetLength(ImgData,   Length(Spec1) + (Width + PaddingDest) * Height); //RGB buffer
+    SetLength(PalData,   Length(Spec2) + (256 * 3)); //palette buffer
+
+    FIConvertedImage:=FreeImage_ConvertTo8Bits(FIImage);
+    Source:=FreeImage_GetPalette(FIConvertedImage);
+
+    DestPal:=PChar(PalData) + Length(Spec2);
+    for I:=0 to 255 do
+    begin
+      PRGB(DestPal)^[2]:=PRGB(Source)^[0];
+      PRGB(DestPal)^[1]:=PRGB(Source)^[1];
+      PRGB(DestPal)^[0]:=PRGB(Source)^[2];
+      Inc(Source, 4); //FreeImage's palette is a RGBQUAD
+      Inc(DestPal, 3);
+    end;
+
+    Source:=FreeImage_GetBits(FIConvertedImage);
+    Pitch:=FreeImage_GetPitch(FIConvertedImage);
+    PaddingSource:=Pitch - (Width * 1);
+
+    DestImg:=PChar(ImgData) + Length(Spec1);
+    for J:=0 to Height-1 do
+    begin
+      for I:=0 to Width-1 do
+      begin
+        PByte(DestImg)^:=Source^;
+        Inc(Source, 1);
+        Inc(DestImg, 1);
+      end;
+      Inc(Source, PaddingSource);
+      for I:=0 to PaddingDest-1 do
+      begin
+        DestImg^:=#0;
+        Inc(DestImg, 1);
+      end;
+    end;
+
+    Specifics.Add(ImgData);
+    Specifics.Add(PalData);
+  end
+  else
+  begin
+    //This is the padding for the 'Image1'-RGB array
+    PaddingDest:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
+    if FreeImage_IsTransparent(FIImage) then
+    begin
+      //Allocate quarks image buffers
+      ImgData:=Spec1;
+      AlphaData:=Spec3;
+      SetLength(ImgData,   Length(Spec1) + ((Width * 3) + PaddingDest) * Height); //RGB buffer
+      SetLength(AlphaData, Length(Spec3) + (Width * Height)); //alpha buffer
+
+      FIConvertedImage:=FreeImage_ConvertTo32Bits(FIImage);
+      Source:=FreeImage_GetBits(FIConvertedImage);
+      Pitch:=FreeImage_GetPitch(FIConvertedImage);
+      PaddingSource:=Pitch - (Width * 4);
+
+      DestImg:=PChar(ImgData) + Length(Spec1);
+      DestAlpha:=PChar(AlphaData) + Length(Spec3);
+      for J:=0 to Height-1 do
+      begin
+        for I:=0 to Width-1 do
+        begin
+          PRGB(DestImg)^[0]:=PRGBA(Source)^[0];
+          PRGB(DestImg)^[1]:=PRGBA(Source)^[1];
+          PRGB(DestImg)^[2]:=PRGBA(Source)^[2];
+          PByte(DestAlpha)^:=PRGBA(Source)^[3];
+          Inc(Source, 4);
+          Inc(DestImg, 3);
+          Inc(DestAlpha, 1);
+        end;
+        Inc(Source, PaddingSource);
+        for I:=0 to PaddingDest-1 do
+        begin
+          DestImg^:=#0;
+          Inc(DestImg, 1);
+        end;
+      end;
+
+      Specifics.Add(AlphaData);
+      Specifics.Add(ImgData);
+    end
+    else
+    begin
+      //Allocate quarks image buffers
+      ImgData:=Spec1;
+      SetLength(ImgData,   Length(Spec1) + ((Width * 3) + PaddingDest) * Height); //RGB buffer
+
+      FIConvertedImage:=FreeImage_ConvertTo24Bits(FIImage);
+      Source:=FreeImage_GetBits(FIConvertedImage);
+      Pitch:=FreeImage_GetPitch(FIConvertedImage);
+      PaddingSource:=Pitch - (Width * 3);
+
+      DestImg:=PChar(ImgData) + Length(Spec1);
+      for J:=0 to Height-1 do
+      begin
+        for I:=0 to Width-1 do
+        begin
+          PRGB(DestImg)^[0]:=PRGB(Source)^[0];
+          PRGB(DestImg)^[1]:=PRGB(Source)^[1];
+          PRGB(DestImg)^[2]:=PRGB(Source)^[2];
+          Inc(Source, 3);
+          Inc(DestImg, 3);
+        end;
+        Inc(Source, PaddingSource);
+        for I:=0 to PaddingDest-1 do
+        begin
+          DestImg^:=#0;
+          Inc(DestImg, 1);
+        end;
+      end;
+
+      Specifics.Add(ImgData);
+    end;
+  end;
+
+  FreeImage_Unload(FIConvertedImage);
+  FreeImage_Unload(FIImage);
+  FreeImage_CloseMemory(FIBuffer);
+end;
+
+procedure QImage.SaveFileFreeImage(Info: TInfoEnreg1);
+const
+  Spec1 = 'Image1=';
+  Spec2 = 'Pal=';
+  Spec3 = 'Alpha=';
+type
+  PRGB = ^TRGB;
+  TRGB = array[0..2] of Byte;
+  PRGBA = ^TRGBA;
+  TRGBA = array[0..3] of Byte;
+var
+  PSD: TPixelSetDescription;
+  RawBuffer: String;
+  Dest: PByte;
+  SourceImg, SourceAlpha, SourcePal, pSourceImg, pSourceAlpha, pSourcePal: PChar;
+  Width, Height: Integer;
+  PaddingSource, PaddingDest: Integer;
+  I, J: Integer;
+  OutputSize: Cardinal;
+
+  //FreeImage:
+  FIBuffer: FIMEMORY;
+  FIImage: FIBITMAP;
+  FIbpp: Cardinal;
+begin
+  if (not FreeImageLoaded) then
+  begin
+    if not LoadFreeImage then
+      Raise EErrorFmt(5730, ['FreeImage library', GetLastError]);
+    FreeImageLoaded:=true;
+  end;
+
+  PSD:=Description;
+  Width:=PSD.size.x;
+  Height:=PSD.size.y;
+
+  if PSD.Format = psf8bpp then
+  begin
+    FIBpp:=8;
+    PaddingDest:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
+  end
+  else
+  begin
+    if PSD.AlphaBits=psa8bpp then
+    begin
+      FIBpp:=32;
+      PaddingDest:=((((Width * 32) + 31) div 32) * 4) - (Width * 4);
+    end
+    else
+    begin
+      FiBpp:=24;
+      PaddingDest:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+    end;
+  end;
+
+  //FIImage:=FreeImage_Allocate(Width, Height, FIBpp, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK);
+  FIImage:=FreeImage_Allocate(Width, Height, FIBpp, 0, 0, 0);
+  if FIImage=nil then
+    FatalFileError(Format('Unable to save %s file. Call to FreeImage_Allocate failed.', [FormatName]));
+
+  //This is the padding for the 'Image1'-RGB array
+  PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
+  if PSD.Format = psf8bpp then
+  begin
+    Dest:=FreeImage_GetPalette(FIImage);
+    SourcePal:=PChar(PSD.ColorPalette);
+    pSourcePal:=SourcePal;
+    for I:=0 to 255 do
+    begin
+      PRGBA(Dest)^[0]:=PRGB(pSourcePal)^[0];
+      PRGBA(Dest)^[1]:=PRGB(pSourcePal)^[1];
+      PRGBA(Dest)^[2]:=PRGB(pSourcePal)^[2];
+      PRGBA(Dest)^[3]:=0;
+      Inc(pSourcePal, 3);
+      Inc(Dest, 4);
+    end;
+
+    Dest:=FreeImage_GetBits(FIImage);
+    SourceImg:=PChar(PSD.Data);
+    pSourceImg:=SourceImg;
+    for J:=0 to Height-1 do
+    begin
+      for I:=0 to Width-1 do
+      begin
+        Dest^:=PByte(pSourceImg)^;
+        Inc(pSourceImg, 1);
+        Inc(Dest, 1);
+      end;
+      Inc(pSourceImg, PaddingSource);
+      for I:=0 to PaddingDest-1 do
+      begin
+        Dest^:=0;
+        Inc(Dest, 1);
+      end;
+    end;
+  end
+  else
+  begin
+    if PSD.AlphaBits=psa8bpp then
+    begin
+      Dest:=FreeImage_GetBits(FIImage);
+
+      SourceImg:=PChar(PSD.Data);
+      SourceAlpha:=PChar(PSD.AlphaData);
+      pSourceImg:=SourceImg;
+      pSourceAlpha:=SourceAlpha;
+      for J:=0 to Height-1 do
+      begin
+        for I:=0 to Width-1 do
+        begin
+          PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[0];
+          PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
+          PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[2];
+          PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
+          Inc(pSourceImg, 3);
+          Inc(pSourceAlpha, 1);
+          Inc(Dest, 4);
+        end;
+        Inc(pSourceImg, PaddingSource);
+        for I:=0 to PaddingDest-1 do
+        begin
+          Dest^:=0;
+          Inc(Dest, 1);
+        end;
+      end;
+    end
+    else
+    begin
+      Dest:=FreeImage_GetBits(FIImage);
+      
+      SourceImg:=PChar(PSD.Data);
+      pSourceImg:=SourceImg;
+      for J:=0 to Height-1 do
+      begin
+        for I:=0 to Width-1 do
+        begin
+          PRGB(Dest)^[0]:=PRGB(pSourceImg)^[0];
+          PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
+          PRGB(Dest)^[2]:=PRGB(pSourceImg)^[2];
+          Inc(pSourceImg, 3);
+          Inc(Dest, 3);
+        end;
+        Inc(pSourceImg, PaddingSource);
+        for I:=0 to PaddingDest-1 do
+        begin
+          Dest^:=0;
+          Inc(Dest, 1);
+        end;
+      end;
+    end;
+  end;
+
+  FIBuffer := FreeImage_OpenMemory(nil, 0);
+  if FIBuffer = nil then
+    FatalFileError(Format('Unable to save %s file. Call to FreeImage_OpenMemory failed.', [FormatName]));
+
+  if FreeImage_SaveToMemory(FileTypeFreeImage, FIImage, FIBuffer, SaveFileFreeImageSettings)=false then
+  begin
+    FreeImage_CloseMemory(FIBuffer);
+    FatalFileError(Format('Unable to save %s file. Call to FreeImage_SaveToMemory failed.', [FormatName]));
+  end;
+  FreeImage_Unload(FIImage);
+
+  OutputSize:=FreeImage_TellMemory(FIBuffer);
+  SetLength(RawBuffer, OutputSize);
+  if FreeImage_SeekMemory(FIBuffer, 0, SEEK_SET)=false then
+  begin
+    FreeImage_CloseMemory(FIBuffer);
+    FatalFileError(Format('Unable to save %s file. Call to FreeImage_SeekMemory failed.', [FormatName]));
+  end;
+  OutputSize:=FreeImage_ReadMemory(Pointer(RawBuffer), 1, OutputSize, FIBuffer);
+  if OutputSize=0 then
+  begin
+    FreeImage_CloseMemory(FIBuffer);
+    FatalFileError(Format('Unable to save %s file. Call to FreeImage_ReadMemory failed.', [FormatName]));
+  end;
+
+  Info.F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
+
+  FreeImage_CloseMemory(FIBuffer);
+end;
 
 function QImage.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
@@ -296,13 +1135,15 @@ begin
 end;
 
 procedure QImage.GetPalette1(var Data: TPaletteLmp);
+const
+ Spec2 = 'Pal';
 var
  Pal: String;
 begin
- Pal:=GetSpecArg('Pal');
- if Length(Pal)-Length('Pal=') < SizeOf(TPaletteLmp) then
-  Raise EErrorFmt(5534, ['Pal']);
- Move((PChar(Pal)+Length('Pal='))^, Data, SizeOf(TPaletteLmp));
+ Pal:=GetSpecArg(Spec2);
+ if Length(Pal)-(Length(Spec2)+1) < SizeOf(TPaletteLmp) then
+  Raise EErrorFmt(5534, [Spec2]);
+ Move((PChar(Pal)+(Length(Spec2)+1))^, Data, SizeOf(TPaletteLmp));
 end;
 
 function QImage.GetPalettePtr1 : PPaletteLmp;
@@ -665,9 +1506,7 @@ begin
     RealizePalette(DC);
    end;
   try
-   SetDIBitsToDevice(DC, Left, Top,
-    Size.X, Size.Y, 0,0,0,Size.Y, GetImagePtr1,
-    PBitmapInfo(@BitmapInfo)^, dib_RGB_Colors);
+    DrawToDC(DC, BitmapInfo, GetImagePtr1, Left, Top);
   finally
    if Pal1<>0 then
     SelectPalette(DC, Pal1, False);
@@ -995,4 +1834,11 @@ begin
  UserConversion(NewPSD);
 end;
 
+initialization
+
+finalization
+  if DevILLoaded then
+    UnloadDevIl(false);
+  if FreeImageLoaded then
+    UnloadFreeImage(false);
 end.

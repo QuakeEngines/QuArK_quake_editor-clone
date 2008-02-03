@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2007/10/14 21:48:56  danielpharos
+Fix the frame-dragging in the Model Editor.
+
+Revision 1.6  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.4  2001/03/20 21:37:18  decker_dk
 Updated copyright-header
 
@@ -91,7 +97,13 @@ end;
 
 function QMdlObject.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
-  Result:=ieResult[not (Q is QSkinDrawObject)];
+  if (Q is QSkinDrawObject) then
+    Result:=[]
+  else
+    if Q.IsAllowedParent(Self) then
+      Result:=[ieDisplay, ieCanDrop]
+    else
+      Result:=[ieDisplay];
 end;
 
 {procedure QMdlObject.FixupReference;

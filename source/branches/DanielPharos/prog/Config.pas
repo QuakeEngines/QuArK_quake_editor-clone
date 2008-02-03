@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/11/09 10:55:00  danielpharos
+Fix the SaveConfig dialog not showing, and maybe fix the config-not-saved problem.
+
 Revision 1.14  2007/04/12 21:11:28  danielpharos
 Heroic attempt number 3: And stay down!
 
@@ -457,9 +460,9 @@ begin
  { DanielPharos: Another brave attempt to fix a sometimes-happening
  crash-on-exit bug. The ApplyBtn might already have been destroyed
  by the time we try to check it. My first attempt (counting my try-
- statement as zero :)  ) was with Timer1, so I'm going to use the
- same variable here: DisableTimer.}
- if DisableTimer then
+ statement as attempt zero :)  ) was with Timer1, so I'm going to
+ use the same variable here: DisableTimer.}
+ if not DisableTimer then
   begin
    if ApplyBtn.Enabled then
     begin

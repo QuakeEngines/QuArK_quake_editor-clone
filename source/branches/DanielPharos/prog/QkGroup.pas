@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/11/29 16:36:03  danielpharos
+Fix an access violation when trying to drag an item to an empty place in the treeview.
+
+Revision 1.14  2007/10/14 21:48:56  danielpharos
+Fix the frame-dragging in the Model Editor.
+
+Revision 1.13  2007/09/10 10:24:18  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
+Revision 1.12  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2001/06/05 18:39:33  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -74,6 +86,7 @@ type
                     procedure GO(Method: Integer);
                     procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
                     procedure RenderAsText;
+                    function AllowDrag(Target: QObject) : Boolean;
                   end;
 
 type
@@ -445,6 +458,23 @@ begin
    ProgressIndicatorIncrement;
   end;
  finally ProgressIndicatorStop; end;
+end;
+
+function QExplorerGroup.AllowDrag(Target: QObject) : Boolean;
+var
+  I: Integer;
+  Q: QObject;
+begin
+  Result:=True;
+  for I:=0 to SubElements.Count-1 do
+  begin
+    Q:=SubElements[I];
+    if ((Target=nil) or (Q.ClassType <> Target.ClassType)) and (Q.IsAllowedParent(Target) = false) then
+    begin
+      Result:=False;
+      Exit;
+    end;
+  end;
 end;
 
  {------------------------}

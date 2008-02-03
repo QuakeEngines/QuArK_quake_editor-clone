@@ -387,11 +387,9 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     missing = ""
     hxstr = ""
     hxstrfile = setup["HxStrings"]
-    setupdirectory = setup["Directory"]
+    setupdirectory = quarkx.getquakedir()
     setupbasedir = setup["BaseDir"]
-    setuptmpquark = setup["tmpQuArK"]
-    if setuptmpquark == "":
-        setuptmpquark = "tmpQuArK"
+    setuptmpquark = quarkx.gettmpquark()
     if hxstrfile and len(maplist):
         try:
             hxstr = quarkx.needgamefile(hxstrfile)["Data"]
@@ -494,12 +492,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     if setup["BuildPgmsDir"] is not None:
                        newcmdline = newcmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
                     newcmdline = newcmdline.replace("%output%", quarkx.outputfile())
-
-#                    debug('mappath: '+argument_mappath)
-#                    debug('mapfile: '+argument_mapfile)
-#                    debug('file: '+argument_file)
-#                    debug('basepath: '+setup["Directory"])
-#                    debug('output: '+quarkx.outputfile())
 
                     # If user-variable were not replaced, automatically append map-filename
                     if (newcmdline == cmdline):
@@ -695,6 +687,12 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.51  2007/08/21 20:34:35  danielpharos
+#Another of mine upload-mistakes. I think I should have my brains checked :|
+#
+#Revision 1.50  2007/08/21 10:26:34  danielpharos
+#Small changes to let HL2 build again.
+#
 #Revision 1.49  2007/04/16 11:24:15  danielpharos
 #Changed some directory routines: tmpQuArK isn't hardcoded anymore.
 #

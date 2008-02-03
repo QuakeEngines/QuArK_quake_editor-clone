@@ -158,7 +158,7 @@ def DefaultEditMenu(editor):
     Copy1.cmd = "copy"
     Paste1 = item("&Paste", editor.editcmdclick, "|paste a map object from the clipboard", infobaselink)
     Paste1.cmd = "paste"
-    Duplicate1 = item("Dup&licate", editor.editcmdclick, "|This makes a copy of the selected object(s). The copies are created at exactly the same position as the original, so don't be surprised if you don't see them : there are here, waiting to be moved elsewhere.", infobaselink)
+    Duplicate1 = item("Dup&licate", editor.editcmdclick, "|This makes a copy of the selected object(s). The copies are created at exactly the same position as the original, so don't be surprised if you don't see them : they are there, waiting to be moved elsewhere.", infobaselink)
     Duplicate1.cmd = "dup"
     Delete1 = item("&Delete", editor.editcmdclick, "|delete the selection", infobaselink)
     Delete1.cmd = "del"
@@ -187,6 +187,12 @@ def DefaultEditMenu(editor):
 #
 #
 #$Log$
+#Revision 1.10  2007/09/05 18:43:10  cdunde
+#Minor comment addition and grammar corrections.
+#
+#Revision 1.9  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.6  2003/03/21 05:57:05  cdunde
 #Update infobase and add links
 #

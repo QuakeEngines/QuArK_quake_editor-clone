@@ -1,6 +1,13 @@
 QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: DataWildWest.qrk
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.4  2007/12/26 06:01:46  cdunde
+//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
+//
+//
 
 {
   QuArKProtected = "1"

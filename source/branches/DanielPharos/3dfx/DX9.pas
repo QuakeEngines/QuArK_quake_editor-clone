@@ -60,10 +60,18 @@ begin
     //DanielPharos: We need to check for changes, and force a rebuild if needed!
     Result := False;
     try
+      if LoadDirect3D9=false then
+      begin
+        Log(LOG_WARNING, LoadStr1(6411));
+        Exit;
+      end;
 
       D3D := Direct3DCreate9(D3D_SDK_VERSION);
       if D3D=nil then
-        raise EError(6411);
+      begin
+        Log(LOG_WARNING, LoadStr1(6411));
+        Exit;
+      end;
 
       RenderingType:=D3DDEVTYPE_HAL;
       if D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DCaps) <> D3D_OK then
@@ -71,7 +79,8 @@ begin
         RenderingType:=D3DDEVTYPE_REF;
         if D3D.GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, D3DCaps) <> D3D_OK then
         begin
-          raise EError(6412);
+          Log(LOG_WARNING, LoadStr1(6412));
+          Exit;
         end;
       end;
 
@@ -79,23 +88,23 @@ begin
       BehaviorFlags:=0;
       if (D3DCaps.DevCaps and D3DDEVCAPS_HWTRANSFORMANDLIGHT)<>0 then
       begin
-        Log(LOG_VERBOSE,LoadStr1(6421));
+        Log(LOG_VERBOSE, LoadStr1(6421));
         BehaviorFlags:=BehaviorFlags or D3DCREATE_HARDWARE_VERTEXPROCESSING;
       end
       else
       begin
-        Log(LOG_VERBOSE,LoadStr1(6422));
+        Log(LOG_VERBOSE, LoadStr1(6422));
         BehaviorFlags:=BehaviorFlags or D3DCREATE_SOFTWARE_VERTEXPROCESSING;
       end;
 
       //Check for Pure Device
       if (D3DCaps.DevCaps and D3DDEVCAPS_PUREDEVICE)<>0 then
       begin
-        Log(LOG_VERBOSE,LoadStr1(6423));
+        Log(LOG_VERBOSE, LoadStr1(6423));
         BehaviorFlags:=BehaviorFlags or D3DCREATE_PUREDEVICE;
       end
       else
-        Log(LOG_VERBOSE,LoadStr1(6424));
+        Log(LOG_VERBOSE, LoadStr1(6424));
 
       Setup:=SetupSubSet(ssGeneral, 'DirectX');
       try
@@ -137,20 +146,22 @@ begin
       4: PresParm.BackBufferFormat := D3DFMT_X1R5G5B5;
       5: PresParm.BackBufferFormat := D3DFMT_R5G6B5;
       else
-        raise EErrorFmt(6400, ['BackBufferFormat']);
+        Log(LOG_WARNING, LoadStr1(6400), ['BackBufferFormat']);
+        Exit;
       end;
       PresParm.BackBufferCount := 1;
       PresParm.MultiSampleType := D3DMULTISAMPLE_NONE;
       PresParm.MultiSampleQuality := 0;
       PresParm.SwapEffect := D3DSWAPEFFECT_FLIP;
-      PresParm.hDeviceWindow := Form1.Handle;
+      PresParm.hDeviceWindow := g_Form1Handle;
       PresParm.Windowed := True;
       PresParm.EnableAutoDepthStencil := False;
       case StencilBufferBits of
       0: PresParm.AutoDepthStencilFormat := D3DFMT_D16;
       1: PresParm.AutoDepthStencilFormat := D3DFMT_D32;
       else
-        raise EErrorFmt(6400, ['StencilBufferBits']);
+        Log(LOG_WARNING, LoadStr1(6400), ['StencilBufferBits']);
+        Exit;
       end;
       PresParm.Flags := 0;
       PresParm.FullScreen_RefreshRateInHz := 0;
@@ -158,16 +169,25 @@ begin
 
       l_Res:=D3D.CreateDevice(D3DADAPTER_DEFAULT, RenderingType, 0, BehaviorFlags, @PresParm, D3DDevice);
       if (l_Res <> D3D_OK) then
-        raise EErrorFmt(6403, ['CreateDevice', DXGetErrorString9(l_Res)]);
+      begin
+        Log(LOG_WARNING, LoadStr1(6403), ['CreateDevice', DXGetErrorString9(l_Res)]);
+        Exit;
+      end;
 
       //The first parameter isn't necessarily 0!
       l_Res:=D3DDevice.GetSwapChain(0, OrigSwapChain);
       if (l_Res <> D3D_OK) then
-        raise EErrorFmt(6403, ['GetSwapChain', DXGetErrorString9(l_Res)]);
+      begin
+        Log(LOG_WARNING, LoadStr1(6403), ['GetSwapChain', DXGetErrorString9(l_Res)]);
+        Exit;
+      end;
 
       l_Res:=D3DDevice.SetRenderState(D3DRS_ZENABLE, 1);  //D3DZB_TRUE := 1
       if (l_Res <> D3D_OK) then
-        raise EErrorFmt(6403, ['SetRenderState(D3DRS_ZENABLE)', DXGetErrorString9(l_Res)]);
+      begin
+        Log(LOG_WARNING, LoadStr1(6403), ['SetRenderState(D3DRS_ZENABLE)', DXGetErrorString9(l_Res)]);
+        Exit;
+      end;
 
       TimesLoaded := 1;
       Result := True;
@@ -209,6 +229,9 @@ begin
       while (D3D._Release > 0) do;
       Pointer(D3D):=nil;
     end;
+
+    UnLoadDirect3D9;
+    //Ignoring failure here
 
     TimesLoaded := 0;
   end

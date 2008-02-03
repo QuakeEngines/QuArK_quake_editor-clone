@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/08/04 14:41:02  danielpharos
+Removed unused 'uses'
+
+Revision 1.13  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.11  2003/03/15 06:58:39  tiglari
 wmHelp parses an additional |-field as a url (relative to exepath+help/)
 
@@ -124,7 +130,7 @@ procedure PyFormsClickItem(Options: Integer; nForm: TPyForm);
 implementation
 
 uses PyMenus, PyToolbars, PyObjects, Setup, Qk1,
-     PyFloating, QkMap, QkBsp, PyExplorer, ComCtrls, QkTreeView,
+     PyFloating, PyExplorer, ComCtrls, QkTreeView,
      EnterEditCtrl, TbPalette, HelpPopup1, Travail;
 
 {$R *.DFM}

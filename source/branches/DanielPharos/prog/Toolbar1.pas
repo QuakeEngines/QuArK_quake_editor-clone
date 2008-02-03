@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/11/20 18:28:06  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
+Revision 1.14  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.12  2001/06/17 00:01:59  aiv
 'Code' specific in toolbarbuttons and python buttons will be executed when clicked.
 
@@ -135,7 +141,7 @@ procedure ExecuteObjectMacros(Sender: TComponent; Obj: QObject);
 implementation
 
 uses Game, Setup, QkExplorer, ToolBox1, QkMacro, QkInclude, Running,
-     FormCfg, Quarkx, QkObjectClassList, QkFormCfg, Python;
+     FormCfg, Quarkx, QkObjectClassList, QkFormCfg, Python, QkPixelSet;
 
 const
  typSeparator    = 'S';
@@ -222,8 +228,7 @@ begin
     end;
    BmpInfo.bmiColors:=Colors16;
    DC:=GetDC(GetDesktopWindow);
-   Result:=CreateDIBitmap(DC, BitmapInfo.bmiHeader, CBM_INIT,
-    PChar(S), BitmapInfo, dib_RGB_Colors);
+   Result:=CreateToDC(DC, BitmapInfo, PChar(S));
   {Result:=CreateBitmap(W, BitmapInfo.bmiHeader.biHeight, 1, 4, Nil);
    if Result<>0 then
     SetDIBits(DC, Result, 0, BitmapInfo.bmiHeader.biHeight, PChar(S),

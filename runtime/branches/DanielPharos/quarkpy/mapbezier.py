@@ -64,7 +64,7 @@ class CornerTexPos(dlgclasses.LiveEditDlg):
 
         fixed: ={Txt="fixed int." Typ="X"
                 }
-                
+
         sep: = { Typ="S" Txt=""}
 
 
@@ -97,7 +97,7 @@ class CPTexPos(dlgclasses.LiveEditDlg):
                    Hint = "If this is checked, texture movement applies to whole column (different colors)."}
         moveall: ={Txt="move all" Typ="X"
                    Hint = "If this is checked, whole texture is shifted"}
-        
+
         sep: = { Typ="S" Txt=""}
 
         exit:py = {Txt="" }
@@ -151,7 +151,7 @@ def texcpclick(m):
         self.editor.ok(undo,"move texture")
         pack.b2 = new
         self.editor.invalidateviews()
- 
+
     CPTexPos(quarkx.clickform, 'beztexpos', editor, setup, action)
 
 
@@ -167,22 +167,45 @@ def texcpclick(m):
 #  be added.
 #
 def quilt_addrow(cp,(i,j)):
-  "alters cp so that two patch-rows replace the ith one"
-  md, q1, q3 = [], [], []
-  #
-  # Should try to do this with maplist ...
-  #
-  # & We'll probably want a variant to do this to a whole list
-  #
-  for c in range(len(cp[0])):
-      arc = cp[i-1][c],cp[i][c],cp[i+1][c]
-      mid = apply(b2midpoint, arc)
-      md.append(mid)
-      qt1 = apply(b2qtpoint, arc)
-      qt3 = apply(b2qt3point, arc)
-      q1.append(b2midcp(cp[i-1][c],qt1, mid))
-      q3.append(b2midcp(mid,qt3,cp[i+1][c]))
-  cp[i:i+1] = [q1, md, q3]
+    "alters cp so that two patch-rows replace the ith one"
+    md, q1, q3 = [], [], []
+    #
+    # Should try to do this with maplist 
+    #
+    # & We'll probably want a variant to do this to a whole list
+    #
+    fFactor = 0.41421356
+    for c in range(len(cp[0])):
+        arc = cp[i-1][c],cp[i][c],cp[i+1][c]
+        mid = apply(b2midpoint, arc)
+        qt1 = apply(b2qtpoint, arc)
+        qt3 = apply(b2qt3point, arc)
+
+        qt11 = b2midcp(cp[i-1][c],qt1, mid)
+        qt22 = b2midcp(mid,qt3,cp[i+1][c])
+
+        p0 = cp[i-1][c]
+        p1 = cp[i][c]
+        p2 = cp[i+1][c]
+
+        qt11x = p0.x*(1-fFactor)+p1.x*fFactor
+        qt11y = p0.y*(1-fFactor)+p1.y*fFactor
+        qt11z = p0.z*(1-fFactor)+p1.z*fFactor
+        qt11 = quarkx.vect((qt11x, qt11y, qt11z) + qt11.st)
+
+        qt22x = p2.x*(1-fFactor)+p1.x*fFactor
+        qt22y = p2.y*(1-fFactor)+p1.y*fFactor
+        qt22z = p2.z*(1-fFactor)+p1.z*fFactor
+        qt22 = quarkx.vect((qt22x, qt22y, qt22z) + qt22.st)
+
+        midx = (qt11x+qt22x)/2
+        midy = (qt11y+qt22y)/2
+        midz = (qt11z+qt22z)/2
+        mid = quarkx.vect((midx, midy, midz) + mid.st)
+        md.append(mid)
+        q1.append(qt11)
+        q3.append(qt22)
+    cp[i:i+1] = [q1, md, q3]
 
 
 def doubleRowsOfQuilt(cp):
@@ -192,14 +215,39 @@ def doubleRowsOfQuilt(cp):
     return newcp
 
 def quilt_addcol(cp,(i,j)):
-  "alters cp so that two patch-rows replace the ith one"
-  for row in cp:
-     arc = row[j-1],row[j],row[j+1]
-     mid = apply(b2midpoint, arc)
-     qt1 = apply(b2qtpoint, arc)
-     qt3 = apply(b2qt3point, arc)
-     row[j:j+1]=[b2midcp(arc[0],qt1, mid),
-          mid,b2midcp(mid,qt3,arc[2])]
+    "alters cp so that two patch-rows replace the ith one"
+    fFactor = 0.41421356
+    for row in cp:
+        arc = row[j-1],row[j],row[j+1]
+
+        mid = apply(b2midpoint, arc)
+        qt1 = apply(b2qtpoint, arc)
+        qt3 = apply(b2qt3point, arc)
+
+        qt11 = b2midcp(arc[0],qt1, mid)
+        qt22 = b2midcp(mid,qt3,arc[2])
+
+
+        p0 = row[j-1]
+        p1 = row[j]
+        p2 = row[j+1]
+
+        qt11x = p0.x*(1-fFactor)+p1.x*fFactor
+        qt11y = p0.y*(1-fFactor)+p1.y*fFactor
+        qt11z = p0.z*(1-fFactor)+p1.z*fFactor
+        qt11 = quarkx.vect((qt11x, qt11y, qt11z) + qt11.st)
+
+        qt22x = p2.x*(1-fFactor)+p1.x*fFactor
+        qt22y = p2.y*(1-fFactor)+p1.y*fFactor
+        qt22z = p2.z*(1-fFactor)+p1.z*fFactor
+        qt22 = quarkx.vect((qt22x, qt22y, qt22z) + qt22.st)
+
+        midx = (qt11x+qt22x)/2
+        midy = (qt11y+qt22y)/2
+        midz = (qt11z+qt22z)/2
+        mid = quarkx.vect((midx, midy, midz) + mid.st)
+
+        row[j:j+1]=[qt11,mid,qt22]
 
 def doubleColsOfQuilt(cp):
     newcp = copyCp(cp)
@@ -207,21 +255,49 @@ def doubleColsOfQuilt(cp):
         quilt_addcol(newcp,(0,j))
     return newcp
 
-def quilt_delrow(cp,(i,j)):
+def quilt_delrow(b2, cp,(i,j)):
     md = []
     for c in range(len(cp[0])):
         arc = cp[i-2][c],cp[i][c],cp[i+2][c]
         mid = apply(b2midcp,arc)
         md.append(mid)
     cp[i-1:i+2]=[md]
-    
 
-def quilt_delcol(cp, (i,j)):
+
+def quilt_delcol(b2, cp, (i,j)):
     for row in cp:
         arc=row[j-2],row[j],row[j+2]
         mid = apply(b2midcp,arc)
         row[j-1:j+2]=[mid]
-        
+
+
+def quilt_cutcol(b2, cp, (i,j)):
+    newcp = copyCp(cp)
+    for row in newcp:
+        row[j+1:] = []
+
+    newb2 = b2.copy()
+    newb2.cp = newcp
+
+    for row in cp:
+        row[0:j] = []
+
+    return newb2
+
+
+
+def quilt_cutrow(b2, cp, (i,j)):
+    newcp = copyCp(cp)
+
+    newcp[i+1:] = []
+
+    newb2 = b2.copy()
+    newb2.cp = newcp
+
+    cp[0:i] = []
+
+    return newb2
+
 
 #
 # Handles for control points.
@@ -252,11 +328,23 @@ class CPHandle(qhandles.GenericHandle):
         p = view.proj(self.pos)
         if p.visible:
             cv.reset()
-            #cv.brushcolor = MapColor("Bezier")
-            #cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)   #py2.4
-            #cv.rectangle(p.x-0.501, p.y-0.501, p.x+2.499, p.y+2.499)
             cv.brushcolor = self.color #DECKER
-            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
+ #py2.4            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            cv.rectangle(int(p.x-3), int(p.y-3), int(p.x+4), int(p.y+4)) #py2.4
+
+            picked=self.b2["picked"]
+            if picked is not None:
+                i, j = self.ij
+                index = i*(self.b2.W)+j
+                for test in picked:
+                    if test == index:
+                        brushstyle = cv.brushstyle
+                        cv.pencolor = BLUE
+                        cv.brushstyle = BS_CLEAR
+ #py2.4                        cv.rectangle(p.x-5, p.y-5, p.x+6, p.y+6)
+                        cv.rectangle(int(p.x-5), int(p.y-5), int(p.x+6), int(p.y+6)) #py2.4
+                        #cv.brushstyle = brushstyle
+
 
     #
     # This is important because in general the derivative
@@ -269,7 +357,7 @@ class CPHandle(qhandles.GenericHandle):
         if not (j==0 or j==self.b2.W-1):
             return 0
         return 1
-        
+
     def edgeType(self):
         "(type, dim); type=P_FRONT etc"
         "None; not an edge"
@@ -286,7 +374,7 @@ class CPHandle(qhandles.GenericHandle):
             if i==0:
                 return P_BOTTOM, w
             if i==h-1:
-                return P_TOP, w            
+                return P_TOP, w
 
 
     #
@@ -302,7 +390,7 @@ class CPHandle(qhandles.GenericHandle):
 
         patchmenu = mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
 
-        texcp = qmenu.item("Texture Coordinates",texcpclick)
+        texcp = qmenu.item("Texture Coordinates",texcpclick, "|Gives the position of the texture on the selected beizer patch.|maped.curves.html#texmanag")
         texcp.h, texcp.editor = self, editor
         texpop = findlabelled(patchmenu,'texpop')
         texpop.items[:0] = [texcp, qmenu.sep]
@@ -331,7 +419,7 @@ class CPHandle(qhandles.GenericHandle):
           #
 
           ncp = copyCp(new.cp)
-          m.thin(ncp, self.ij)
+          otherb2 = m.thin(self.b2, ncp, self.ij)
           #
           # this setting of the cp attribute triggers a lot of stuff
           #   in the delphi
@@ -339,6 +427,8 @@ class CPHandle(qhandles.GenericHandle):
           new.cp = ncp
           undo = quarkx.action()
           undo.exchange(self.b2, new)
+          if (otherb2 is not None and self.b2.parent is not None):
+            undo.put(self.b2.parent, otherb2)
           editor.ok(undo,"thin mesh")
 
 
@@ -347,28 +437,37 @@ class CPHandle(qhandles.GenericHandle):
         #  point is hard to find, and for interior points either
         #  would be possible
         #
-        addrow = qmenu.item("Add Row",thickenclick,"|Adds a row to the mesh")
-        delrow = qmenu.item("Delete Row", thinclick,"|Removes a row from the mesh")
+        addrow = qmenu.item("Add Row",thickenclick,"|Adds a row to the mesh.|maped.curves.html")
+        delrow = qmenu.item("Delete Row", thinclick,"|Removes a row from the mesh.|maped.curves.html")
+        cutrow = qmenu.item("Cut Bezier By Row", thinclick,"|Cut bezier and create two its parts.|maped.curves.html")
         if iseven(i):
-          addrow.state=qmenu.disabled
-          delrow.thin=quilt_delrow
+            addrow.state=qmenu.disabled
+            delrow.thin=quilt_delrow
+            cutrow.thin=quilt_cutrow
         else:
-          addrow.thicken=quilt_addrow
-          delrow.state=qmenu.disabled
+            addrow.thicken=quilt_addrow
+            delrow.state=qmenu.disabled
+            cutrow.state=qmenu.disabled
+
         if len(cp)<4 or i==0 or i==len(cp)-1:
-          delrow.state=qmenu.disabled
-          
-        addcol = qmenu.item("Add Column",thickenclick,"|Adds a column to the mesh")
-        delcol = qmenu.item("Delete Column",thinclick,"|Removes a column from the mesh")
+            delrow.state=qmenu.disabled
+            cutrow.state=qmenu.disabled
+
+        addcol = qmenu.item("Add Column",thickenclick,"|Adds a column to the mesh.|maped.curves.html")
+        delcol = qmenu.item("Delete Column",thinclick,"|Removes a column from the mesh.|maped.curves.html")
+        cutcol = qmenu.item("Cut Bezier By Column", thinclick,"|Cut bezier and create two its parts.|maped.curves.html")
         if iseven(j):
           addcol.state=qmenu.disabled
           delcol.thin=quilt_delcol
+          cutcol.thin=quilt_cutcol
         else:
           addcol.thicken=quilt_addcol
           delcol.state=qmenu.disabled
+          cutcol.state=qmenu.disabled
         if len(cp[0])<4 or j==0 or j==len(cp[0])-1:
           delcol.state=qmenu.disabled
-          
+          cutcol.state=qmenu.disabled
+
         def meshclick(m, self=self, editor=editor):
             b2 = self.b2
             new = b2.copy()
@@ -376,18 +475,18 @@ class CPHandle(qhandles.GenericHandle):
             undo = quarkx.action()
             undo.exchange(b2, new)
             editor.ok(undo, "change mesh")
-        
-        
-        doublerow = qmenu.item("Double Rows", meshclick, "|Double the number of rows in the mesh")
+
+
+        doublerow = qmenu.item("Double Rows", meshclick, "|Double the number of rows in the mesh.|maped.curves.html")
         doublerow.action = doubleRowsOfQuilt
-        
-        doublecol = qmenu.item("Double Columns", meshclick, "|Double the number of columns in the mesh")
+
+        doublecol = qmenu.item("Double Columns", meshclick, "|Double the number of columns in the mesh.|maped.curves.html")
         doublecol.action = doubleColsOfQuilt
-        
-        mesh = qmenu.popup("Mesh",[addrow, addcol, delrow, delcol,
+
+        mesh = qmenu.popup("Mesh",[addrow, addcol, delrow, delcol, cutrow, cutcol,
                 qmenu.sep, doublerow, doublecol])
-        
-        
+
+
         tagpt = gettaggedpt(editor)
 
         #
@@ -407,15 +506,15 @@ class CPHandle(qhandles.GenericHandle):
             undo.exchange(b2, new)
             editor.ok(undo,"glue to tagged")
             editor.invalidateviews()
-   
-        glue = qmenu.item("&Glue to tagged point", glueclick)
+
+        glue = qmenu.item("&Glue to tagged point", glueclick,"|Glues the edge of the selected bezier patch to the tagged patch edge and these one into one quilt.|maped.curves.html")
         if tagpt is None:
             glue.state=qmenu.disabled
-        
+
         def JoinClick(m,self=self, editor=editor):
             b2 = self.b2
             tb2 = m.tagged.b2
-#            ncp = map(lambda row1, row2,b2=b2,tb2=tb2:row1+row2[1:],tb2.cp,b2.cp)
+    #            ncp = map(lambda row1, row2,b2=b2,tb2=tb2:row1+row2[1:],tb2.cp,b2.cp)
             ncp = joinCp(m.tagtype,tb2.cp,m.selftype,b2.cp)
             new =tb2.copy()
             new.cp = ncp
@@ -436,8 +535,8 @@ class CPHandle(qhandles.GenericHandle):
             editor.ok(undo,'Knit edges')
             editor.invalidateviews()
 
-        joinitem = qmenu.item("&Join patch to tagged",JoinClick,"|Combine tagged patch and this one into one quilt")
-        knititem = qmenu.item("&Knit edge to tagged",KnitClick,"|Attach this edge to tagged edge")
+        joinitem = qmenu.item("&Join patch to tagged",JoinClick,"|Combine tagged patch and this one into one quilt.|maped.curves.html")
+        knititem = qmenu.item("&Knit edge to tagged",KnitClick,"|Attach this edge to tagged edge.|maped.curves.html")
         joinitem.state=knititem.state=qmenu.disabled
         tagged = gettaggedb2cp(editor)
         for item in joinitem, knititem:
@@ -454,7 +553,7 @@ class CPHandle(qhandles.GenericHandle):
              item.hint=item.hint+morehint
 
         tagged = gettaggededge(editor)
-        
+
         def alignclick(m,self=self,tagged=tagged,editor=editor):
             b2 = self.b2.copy()
             cp = b2.cp
@@ -480,8 +579,8 @@ class CPHandle(qhandles.GenericHandle):
             b2.cp = cp2
             undo_exchange(editor,self.b2,b2,mess)
 
-        alignrow = qmenu.item('Align Row to tagged edge',alignclick,"|Aligns the row to paralell to tagged edge, passing thru this point")
-        aligncol = qmenu.item('Align Col to tagged edge',alignclick,"|Aligns the column to paralell to tagged edge, passing thru this point")
+        alignrow = qmenu.item('Align Row to tagged edge',alignclick,"|Aligns the row to paralell to tagged edge, passing thru this point.|maped.curves.html")
+        aligncol = qmenu.item('Align Col to tagged edge',alignclick,"|Aligns the column to paralell to tagged edge, passing thru this point.|maped.curves.html")
         if tagged is None:
             alignrow.state=qmenu.disabled
             aligncol.state=qmenu.disabled
@@ -489,24 +588,24 @@ class CPHandle(qhandles.GenericHandle):
             alignrow.col=0
             aligncol.col=1
 
-#
-# not sure why this was here, testing perhaps?
-#
-#        def subdivide(m,self=self,editor=editor):
-#            cp = copyCp(self.b2.cp)
-#            new = self.b2.copy()
-#            newcp = subdivideColumns(3,cp)
-#            new.cp = newcp
-#            undo=quarkx.action()
-#            undo.exchange(self.b2, new)
-#            editor.ok(undo,"subdivide")
-#
-#        subdiv = qmenu.item("subdivide",subdivide)
-#        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+    #
+    # not sure why this was here, testing perhaps?
+    #
+    #        def subdivide(m,self=self,editor=editor):
+    #            cp = copyCp(self.b2.cp)
+    #            new = self.b2.copy()
+    #            newcp = subdivideColumns(3,cp)
+    #            new.cp = newcp
+    #            undo=quarkx.action()
+    #            undo.exchange(self.b2, new)
+    #            editor.ok(undo,"subdivide")
+    #
+    #        subdiv = qmenu.item("subdivide",subdivide,"|Splits up the bezier mesh.|maped.curves.html")
+    #        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
 
         index = i*(self.b2.W)+j
         picked=self.b2["picked"] 
-        
+
         def pickClick(m,editor=editor,b2=self.b2,index=index, picked=picked):
             if picked is None:
                 picked = index,
@@ -515,7 +614,7 @@ class CPHandle(qhandles.GenericHandle):
             undo=quarkx.action()
             undo.setspec(b2,"picked",picked)
             editor.ok(undo,"Pick CP")
-        
+
         def unPickClick(m,editor=editor,b2=self.b2,index=index, picked=picked):
             if len(picked)==1:
                 picked=None
@@ -525,31 +624,160 @@ class CPHandle(qhandles.GenericHandle):
             undo=quarkx.action()
             undo.setspec(b2,"picked",picked)
             editor.ok(undo,"Unpick CP")
-        
+
+        def pickRowClick(m,editor=editor,b2=self.b2,index=index, picked=picked):
+            for iRow in range(b2.W):
+                newindex = i*(self.b2.W)+iRow
+                if picked is None:
+                    picked = newindex,
+                else:
+                    bFound = 0
+                    for ind in picked:
+                        if ind==newindex:
+                            bFound = 1
+                            break
+                    if bFound == 0:
+                        picked = picked + (newindex,)
+            undo=quarkx.action()
+            undo.setspec(b2,"picked",picked)
+            editor.ok(undo,"Pick Row")
+
+        def unPickRowClick(m,editor=editor,b2=self.b2,index=index, picked=picked):
+            newpicked = None
+            for ind in picked:
+                found = 0
+                for iRow in range(b2.W):
+                    newindex = i*(self.b2.W)+iRow
+                    if ind==newindex:
+                        found = 1
+                        break
+                if found == 0:
+                    if newpicked is None:
+                        newpicked = (int(ind),)
+                    else:
+                        newpicked = newpicked + (int(ind),)
+            undo=quarkx.action()
+            undo.setspec(b2,"picked", newpicked)
+            editor.ok(undo,"Unpick Row")
+
+        def pickColClick(m,editor=editor,b2=self.b2,index=index, picked=picked):
+            for iCol in range(b2.H):
+                newindex = iCol*(self.b2.W)+j
+                if picked is None:
+                    picked = newindex,
+                else:
+                    bFound = 0
+                    for ind in picked:
+                        if ind==newindex:
+                            bFound = 1
+                            break
+                    if bFound == 0:
+                        picked = picked + (newindex,)
+            undo=quarkx.action()
+            undo.setspec(b2,"picked",picked)
+            editor.ok(undo,"Pick Col")
+
+        def unPickColClick(m,editor=editor,b2=self.b2,index=index, picked=picked):
+            newpicked = None
+            for ind in picked:
+                found = 0
+                for iCol in range(b2.W):
+                    newindex = iCol*(self.b2.W)+j
+                    if ind==newindex:
+                        found = 1
+                        break
+                if found == 0:
+                    if newpicked is None:
+                        newpicked = (int(ind),)
+                    else:
+                        newpicked = newpicked + (int(ind),)
+            undo=quarkx.action()
+            undo.setspec(b2,"picked", newpicked)
+            editor.ok(undo,"Unpick Col")
+
+        def pickAllClick(m,editor=editor,b2=self.b2):
+            picked = None
+            for index in range(b2.W*b2.H):
+                if picked is None:
+                    picked = index,
+                else:
+                    picked = picked + (index, )
+
+            undo=quarkx.action()
+            undo.setspec(b2,"picked", picked)
+            editor.ok(undo,"Pick All")
+            editor.invalidateviews()
+
         def unPickAllClick(m,editor=editor,b2=self.b2):
             undo=quarkx.action()
             undo.setspec(b2,"picked",None)
             editor.ok(undo,"Unpick All")
             editor.invalidateviews()
-            
-        pickItem = qmenu.item("Pick CP", pickClick,"|When one or more CPs are picked `picked', dragging one of them drags all, and movement palette operations applied to a patch are applied only to the picked CPs.\n\nPatches remember which of their CPs are picked.")
-        unPickItem = qmenu.item("Unpick CP", unPickClick)
-        unPickAllItem = qmenu.item("Unpick All", unPickAllClick)
-      
-        unPickItem.state=qmenu.disabled
+
+        pickItem = qmenu.item("Pick CP", pickClick,"|When one or more CPs are picked `picked', dragging one of them drags all, and movement palette operations applied to a patch are applied only to the picked CPs.\n\nPatches remember which of their CPs are picked.|maped.curves.html")
+        unPickItem = qmenu.item("Unpick CP", unPickClick, "|Unselects a specific selected bezier control point.|maped.curves.html")
+
+        pickRowItem = qmenu.item("Pick Ro&w", pickRowClick, "|Selects the entire row that the control point is in.|maped.curves.html")
+        unPickRowItem = qmenu.item("Unpick Ro&w", unPickRowClick, "|Unselects the entire row that the control point is in.|maped.curves.html")
+
+        pickColItem = qmenu.item("Pick Col&umns", pickColClick, "|Selects the entire column that the control point is in.|maped.curves.html")
+        unPickColItem = qmenu.item("Unpick Col&umns", unPickColClick, "|Unselects the entire column that the control point is in.|maped.curves.html")
+
+        pickAllItem = qmenu.item("Pick All", pickAllClick, "|Selects all control points.|maped.curves.html")
+        unPickAllItem = qmenu.item("Unpick All", unPickAllClick, "|Unselects all control points.|maped.curves.html")
+
+        picklist = [qmenu.sep]
+        found = 0
         if picked is not None:
             for ind in picked:
                 if ind==index:
-                    pickItem.state=qmenu.disabled
-                    unPickItem.state=qmenu.normal
+                    picklist = picklist + [unPickItem]
+                    found = 1
                     break
-        else:
-            unPickAllItem.state=qmenu.disabled
-      
-        picklist = [qmenu.sep, pickItem, unPickItem, unPickAllItem]
-        
+        if found == 0:
+            picklist = picklist + [pickItem]
+
+        found = 0
+        if picked is not None:
+            for iRow in range(self.b2.W):
+                newindex = i*(self.b2.W)+iRow
+                for ind in picked:
+                    if ind==newindex:
+                        found = found + 1
+                        break
+
+        if found < self.b2.W:
+            picklist = picklist + [pickRowItem]
+
+        if found > 0:
+            picklist = picklist + [unPickRowItem]
+
+        found = 0
+        if picked is not None:
+            for iCol in range(self.b2.H):
+                newindex = iCol*(self.b2.W)+j
+                for ind in picked:
+                    if ind==newindex:
+                        found = found + 1
+                        break
+
+        if found < self.b2.H:
+            picklist = picklist + [pickColItem]
+
+        if found > 0:
+            picklist = picklist + [unPickColItem]
+
+
+        if picked is None or len(picked) < self.b2.W*self.b2.H:
+            picklist = picklist + [pickAllItem]
+
+        if picked is not None:
+            picklist = picklist + [unPickAllItem]
+
+        #picklist = [qmenu.sep, pickItem, unPickItem, unPickAllItem]
+
         return [mesh, joinitem, knititem, alignrow, aligncol] + picklist+[qmenu.sep] + patchmenu
-    
+
     def drawcpnet(self, view, cv, cp=None):
         #
         # This function draws the net joining the control points in a selected patch
@@ -609,7 +837,7 @@ class CPHandle(qhandles.GenericHandle):
                 indexes = map(lambda p,b2=self.b2:cpPos(p,b2),picked)
             else:
                 indexes = pointsToMove(moverow, movecol, i, j, self.h, self.w)        # tiglari, need to unswap 
-#            squawk(`indexes`)
+    #            squawk(`indexes`)
             td = (v2-v1)/128
             for m,n in indexes:
                 p = cp[m][n] + delta
@@ -623,7 +851,7 @@ class CPHandle(qhandles.GenericHandle):
                               q.s+td*yaxis, q.t+td*xaxis)
                 else:
                    cp[m][n] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
-#            if 0:
+    #            if 0:
             if quarkx.keydown('S')==1:
                     self.draghint="tex coords: %.2f, %.2f"%(cp[i][j].s, cp[i][j].t)
             else:
@@ -670,7 +898,8 @@ class CPTextureHandle(qhandles.GenericHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.color #DECKER
-            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+ #py2.4            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            cv.rectangle(int(p.x-3), int(p.y-3), int(p.x+4), int(p.y+4)) #py2.4
 
     #
     # This is important because in general the derivative
@@ -683,7 +912,7 @@ class CPTextureHandle(qhandles.GenericHandle):
         if not (j==0 or j==self.b2.W-1):
             return 0
         return 1
-        
+
     def edgeType(self):
         "(type, dim); type=P_FRONT etc"
         "None; not an edge"
@@ -701,7 +930,7 @@ class CPTextureHandle(qhandles.GenericHandle):
                 return P_BOTTOM, w
             if i==h-1:
                 return P_TOP, w            
-    
+
     # converting to standard ij
     def drag(self, v1, v2, flags, view):
         delta = v2-v1
@@ -749,7 +978,7 @@ def originmenu(self, editor, view, oldoriginmenu = quarkpy.qhandles.GenericHandl
           except (AttributeError):
               pass
   return menu
-  
+
 quarkpy.qhandles.GenericHandle.OriginItems = originmenu
 
 #
@@ -766,7 +995,7 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
         undo.exchange(o, new)
         editor.ok(undo,"project texture from tagged")
 
-    projtex = qmenu.item("&Project from tagged", projtexclick, "|Texture of a tagged face is projected onto the patch in a `flat' way (just like project texture from tagged face onto faces).")
+    projtex = qmenu.item("&Project from tagged", projtexclick, "|Texture of a tagged face is projected onto the patch in a `flat' way (just like project texture from tagged face onto faces).|maped.curves.html#texmanag")
     tagged = gettaggedface(editor)
     if tagged is None:
        projtex.state=qmenu.disabled
@@ -782,38 +1011,54 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
         editor.ok(undo,"Spin")
         editor.invalidateviews()
 
-    rotate = qmenu.item("Rotate",rotclick,"|`Rotates' control points without changeing patch shape\n(I'm not sure if it's useful on its own but it helps in the implementation of some things so here it is anyway.)")
-    
+    rotate = qmenu.item("Rotate",rotclick,"|`Rotates' control points without changeing patch shape\n(I'm not sure if it's useful on its own but it helps in the implementation of some things so here it is anyway.)|maped.curves.html")
+
     def unwarpclick(m,o=o,editor=editor):
         new=o.copy()
         new.cp = undistortColumns(undistortRows(o.cp))
         undo=quarkx.action()
         undo.exchange(o, new)
         editor.ok(undo,"unwarp")
-        
-    unwarp = qmenu.item("Unwarp", unwarpclick, "|Tries to reduce texture scale changes within patch, keeping corner points the same.")
-    
+
+    def unwarpclickB(m,o=o,editor=editor):
+        new=o.copy()
+        new.cp = undistortColumnsCaseB(undistortRowsCaseB(o.cp))
+        undo=quarkx.action()
+        undo.exchange(o, new)
+        editor.ok(undo,"unwarpEx")
+
+    def UniformWrapClick(m,o=o,editor=editor):
+        new=o.copy()
+        new.cp = UniformWrapCollumns(UniformWrapRows(o.cp))
+        undo=quarkx.action()
+        undo.exchange(o, new)
+        editor.ok(undo,"UniformWrap")
+
+    unwarp = qmenu.item("Unwarp", unwarpclick, "|Tries to reduce texture scale changes within the selected bezier patch, keeping corner points the same.|maped.curves.html#texmanag")
+    unwarpEx = qmenu.item("UnwarpEx", unwarpclickB, "|Unwraps the texture shown on the selected bezier patch.|maped.curves.html#texmanag")
+    UniformWrap = qmenu.item("UniformWrap", UniformWrapClick, "|Uniformly wraps the texture on the selected bezier patch.|maped.curves.html#texmanag")
+
     def cornertexclick(m,o=o,editor=editor):
 
         class pack:
             "a place to stick stuff"
         pack.o=o
         pack.fixed=""
-        
+
         def reset(self, pack=pack):
             cp = pack.o.cp
             m = len(cp)-1
             n = len(cp[0])-1
-               
+
             one = cp[0][0].s, cp[0][0].t, cp[m][n].s, cp[m][n].t
             two = cp[m][0].s, cp[0][n].t, cp[0][n].s ,cp[m][0].t
 #            squawk("1: %s; 2: %s"%(one, two))
             if one==two:
-                self.src["Corners"] = cp[0][0].s, cp[0][0].t, cp[m][n].s, cp[m][n].t, 
+                self.src["Corners"] = cp[0][0].s, cp[0][0].t, cp[m][n].s, cp[m][n].t,
             else:
                 self.src["Corners"] = None
             pack.oldcnr = self.src["Corners"]
-        
+
         def setup(self, pack=pack, reset=reset):
             src=self.src
             cp = pack.o.cp
@@ -824,7 +1069,7 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
             src["Corner3"]=cp[m][0].s, cp[m][0].t
             src["Corner4"]=cp[m][n].s, cp[m][n].t
             reset(self)
-        
+
         def action(self, pack=pack, reset=reset):
             src = self.src
             new = pack.o.copy()
@@ -860,14 +1105,14 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
             reset(self)
 
         CornerTexPos(quarkx.clickform,'cornertexpos',editor,setup,action)
-    
-    cornertex = qmenu.item("Position by &corners",cornertexclick,"|A dialog for positioning textures by specifying the texture coordinates of the corners of the patch")
-        
+
+    cornertex = qmenu.item("Position by &corners",cornertexclick,"|A dialog for positioning textures by specifying the texture coordinates of the corners of the selected bezier patch.|maped.curves.html#texmanag")
+
 
     old = oldmenu(o, editor)
     texpop = findlabelled(old,'texpop')
-    
-    texpop.items = texpop.items + [projtex, cornertex, unwarp]
+
+    texpop.items = texpop.items + [projtex, cornertex, unwarp, unwarpEx, UniformWrap]
 
     return old+[rotate]
 
@@ -891,7 +1136,7 @@ class CenterHandle(maphandles.CenterHandle):
 
         return mapentities.CallManager("menu", self.centerof, editor)
     # /tiglari
-    
+
 import qbaseeditor
 from plugins.tagging import drawsquare
 def pickfinishdrawing(editor, view, oldmore=qbaseeditor.BaseEditor.finishdrawing):
@@ -911,6 +1156,13 @@ qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.43  2007/12/14 22:30:53  cdunde
+#Minor corrections of new Infobase links.
+#
+#Revision 1.42  2007/12/14 21:48:00  cdunde
+#Added many new beizer shapes and functions developed by our friends in Russia,
+#the Shine team, Nazar and vodkins.
+#
 #Revision 1.41  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

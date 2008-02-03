@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2007/09/23 21:44:30  danielpharos
+Switch DirectX to dynamic explicit loading: it should work on WinNT4 again! Also fixed the access violations that popped up when loading of DirectX went wrong.
+
+Revision 1.25  2007/09/23 21:04:31  danielpharos
+Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+
+Revision 1.24  2007/09/04 14:38:12  danielpharos
+Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
+
+Revision 1.23  2007/08/05 19:53:30  danielpharos
+Fix an infinite loop due to rubbish transparency code.
+
 Revision 1.22  2007/06/06 22:31:19  danielpharos
 Fix a (recent introduced) problem with OpenGL not drawing anymore.
 
@@ -127,6 +139,7 @@ type
     Lighting: Boolean;
     Culling: Boolean;
     Direct3DLoaded: Boolean;
+    DWMLoaded: Boolean;
     MapLimit: TVect;
     MapLimitSmallest: Double;
     pPresParm: D3DPRESENT_PARAMETERS;
@@ -140,6 +153,7 @@ type
 //    m_pD3DX: ID3DXContext;
 
     m_CurrentAlpha, m_CurrentColor: Integer;
+    DrawRect: TRect;
     ScreenX, ScreenY: Integer;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
     procedure EndBuildScene; override;
@@ -163,7 +177,8 @@ type
  (*
     procedure ClearFrame; override;
  *)
-    procedure SetViewRect(SX, SY: Integer); override;
+    procedure SetDrawRect(NewRect: TRect); override;
+    procedure SetViewSize(SX, SY: Integer); override;
     procedure SetViewDC(DC: HDC); override;
     procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); override;
     procedure Render3DView; override;
@@ -190,7 +205,7 @@ var
 
 implementation
 
-uses Logging, Quarkx, Setup, SysUtils,
+uses Logging, Quarkx, Setup, SysUtils, DWM, SystemDetails,
      QkObjects, QkMapPoly, DXTypes, D3DX9, Direct3D, DXErr9;
 
 type
@@ -207,11 +222,16 @@ begin
   v[3]:=((Color shr 24) and $FF) * (1/255.0);
 end;
 
-procedure TDirect3DSceneObject.SetViewRect(SX, SY: Integer);
+procedure TDirect3DSceneObject.SetDrawRect(NewRect: TRect);
+begin
+  DrawRect:=NewRect;
+end;
+
+procedure TDirect3DSceneObject.SetViewSize(SX, SY: Integer);
 begin
   if SX<1 then SX:=1;
   if SY<1 then SY:=1;
-  if ((ScreenX <> SX) or (ScreenY <> SY)) then
+  if (SX<>ScreenX) or (SY<>ScreenY) then
   begin
     ScreenResized := True;
 
@@ -324,27 +344,30 @@ end;
 
 procedure TDirect3DSceneObject.ReleaseResources;
 begin
-  if not (DepthStencilSurface[ListIndex-1]=nil) then
+  if ListIndex<>0 then
   begin
-    while (DepthStencilSurface[ListIndex-1]._Release > 0) do;
-    Pointer(DepthStencilSurface[ListIndex-1]):=nil;
-  end;
+    if not (DepthStencilSurface[ListIndex-1]=nil) then
+    begin
+      while (DepthStencilSurface[ListIndex-1]._Release > 0) do;
+      Pointer(DepthStencilSurface[ListIndex-1]):=nil;
+    end;
 
-  if not (SwapChain[ListIndex-1]=nil) then
-  begin
-    while (SwapChain[ListIndex-1]._Release > 0) do;
-    Pointer(SwapChain[ListIndex-1]):=nil;
-  end;
+    if not (SwapChain[ListIndex-1]=nil) then
+    begin
+      while (SwapChain[ListIndex-1]._Release > 0) do;
+      Pointer(SwapChain[ListIndex-1]):=nil;
+    end;
 
-  if (Length(ListItemUsed)=ListIndex-1) then
-  begin
-    SetLength(SwapChain,Length(SwapChain)-1);
-    SetLength(DepthStencilSurface,Length(DepthStencilSurface)-1);
-    SetLength(ListItemUsed,Length(ListItemUsed)-1);
-  end
-  else
-    ListItemUsed[ListIndex-1]:=false;
-  ListIndex:=0;
+    if (Length(ListItemUsed)=ListIndex-1) then
+    begin
+      SetLength(SwapChain,Length(SwapChain)-1);
+      SetLength(DepthStencilSurface,Length(DepthStencilSurface)-1);
+      SetLength(ListItemUsed,Length(ListItemUsed)-1);
+    end
+    else
+      ListItemUsed[ListIndex-1]:=false;
+    ListIndex:=0;
+  end;
 
   if (ViewWnd<>0) and (ViewDC<>0) then
   begin
@@ -356,10 +379,15 @@ end;
 
 destructor TDirect3DSceneObject.Destroy;
 begin
-  ReleaseResources;
-  if Direct3DLoaded = True then
-    UnloadDirect3D;
   inherited;
+  ReleaseResources;
+  if Direct3DLoaded then
+    UnloadDirect3D;
+  if DWMLoaded then
+  begin
+    DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
+    UnloadDWM;
+  end;
 end;
 
 procedure TDirect3DSceneObject.Init(Wnd: HWnd;
@@ -373,7 +401,6 @@ var
   FogColor{, FrameColor}: TColorRef;
   Setup: QObject;
   l_Res: HResult;
-  WindowRect: TRect;
   I: Integer;
 begin
   ClearScene;
@@ -381,12 +408,24 @@ begin
   CurrentDisplayMode:=DisplayMode;
   CurrentDisplayType:=DisplayType;
 
-  { is the Direct3D object already loaded? }
+  if CheckWindowsVista then
+  begin
+    if not DWMLoaded then
+    begin
+      DWMLoaded:=LoadDWM;
+      if not DWMLoaded then
+        Log(LOG_WARNING, LoadStr1(6013));
+    end;
+    if DWMLoaded then
+      DwmEnableComposition(DWM_EC_DISABLECOMPOSITION);
+  end;
+
+  //Is the Direct3D object already loaded?
   if Direct3DLoaded = False then
   begin
     if LibName='' then
       Raise EError(6001);
-    { try to load the Direct3D object }
+    //Try to load the Direct3D object
     if not LoadDirect3D() then
       Raise EErrorFmt(6402, [GetLastError]);
     Direct3DLoaded := true;
@@ -456,10 +495,10 @@ begin
   end;
 
   SetViewWnd(Wnd);
-  if GetWindowRect(Wnd, WindowRect)=false then
+  if GetWindowRect(Wnd, DrawRect)=false then
     Raise EErrorFmt(6400, ['GetWindowRect']);
-  ScreenX:=WindowRect.Right-WindowRect.Left;
-  ScreenY:=WindowRect.Bottom-WindowRect.Top;
+  ScreenX:=DrawRect.Right-DrawRect.Left;
+  ScreenY:=DrawRect.Bottom-DrawRect.Top;
 
   pPresParm:=PresParm;
   pPresParm.BackBufferWidth:=ScreenX;
@@ -646,6 +685,8 @@ procedure TDirect3DSceneObject.Copy3DView;
 var
   l_Res: HResult;
 begin
+  if not Direct3DLoaded then
+    Exit;
   if SwapChain[ListIndex-1]=nil then
     Render3DView;
   l_Res:=SwapChain[ListIndex-1].Present(nil, nil, 0, nil, 0);
@@ -728,28 +769,18 @@ begin
   PList:=ListSurfaces;
   while Assigned(PList) do
   begin
-    if PList^.Transparent=False then
-    begin
-      if Transparency then
-      begin
-        if PList^.Transparent=False then
-          RenderPList(PList, False, Coord);
-      end
-      else
-        RenderPList(PList, False, Coord);
-      PList:=PList^.Next;
-    end;
-
     if Transparency then
     begin
-      PList:=FListSurfaces;
-      while Assigned(PList) do
-      begin
-        if PList^.Transparent=True then
-          RenderPList(PList, True, Coord);
-        PList:=PList^.Next;
-      end;
+      if (PList^.Transparent=False) then
+        RenderPList(PList, False, Coord);
+    end
+    else
+    begin
+      RenderPList(PList, False, Coord);
+      if PList^.NumberTransparentFaces>0 then
+        RenderPList(PList, True, Coord);
     end;
+    PList:=PList^.Next;
   end;
 
   l_Res:=D3DDevice.EndScene;

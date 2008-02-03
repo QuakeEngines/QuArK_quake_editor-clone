@@ -17,10 +17,9 @@ The original author of QuArK
 ----------------------------
 
 - Armin Rigo
-        e-mail:         arigo@planetquake.com
+        e-mail:         arigo@tunes.org
         snail mail:     Armin Rigo
-                        c/o Bernard Rigo
-                        Chemin du Chatelard 3
+                        Chemin des Payernettes 13
                         CH-1860 Aigle
                         Switzerland
 
@@ -90,6 +89,9 @@ The developers of used libraries/programs
                         Hervé Drolon
                         http://freeimage.sourceforge.net/
 
+- MD5DLL:
+                        "ckv"
+
 - NVDXT:
                         http://www.nvidia.com/
 
@@ -105,15 +107,21 @@ The developers of used libraries/programs
                         Jordan Russell
                         http://www.jrsoftware.org/
 
+- PASZLIB:
+                        NOMSSI NZALI Jacques H. C.
+                        http://www.nomssi.de/paszlib/paszlib.html
+
 - MarsCap:
                         Chen Ken
                         http://www.nease.net/~marspark (BROKEN)
 
-- Python:
-                        http://www.python.org/
-
 - Delphi:
                         http://www.borland.com/
 
+
+- Python:
+                        http://www.python.org/
+
 - NSIS:
+                        "kichik"
                         http://nsis.sourceforge.net/

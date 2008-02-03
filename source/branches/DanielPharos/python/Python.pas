@@ -29,6 +29,12 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2007/12/14 11:33:05  danielpharos
+Fix a double Python library loading bug introduced in 1.25
+
+Revision 1.25  2007/12/06 01:02:26  danielpharos
+Changed some of the Python version checking, and removed some redundant library-paths.
+
 Revision 1.24  2007/03/11 12:03:11  danielpharos
 Big changes to Logging. Simplified the entire thing.
 
@@ -117,7 +123,7 @@ uses QkApplPaths, Logging;
 
  {-------------------}
 
-{$INCLUDE PYVERSiONS.INC}
+{$INCLUDE PyVersions.inc}
 
 type
  PyObjectPtr = ^PyObject;
@@ -278,7 +284,7 @@ type
 
                  tp_as_buffer: Pointer;
 
-                 tp_xxx4: LongInt;
+                 tp_flags: LongInt;
 
                  tp_doc: PChar;
 
@@ -321,19 +327,44 @@ type
     tp_subclasses       : PyObject;
     tp_weaklist         : PyObject;
 {$ENDIF}
-    //More spares
-    tp_xxx7:        LongInt;
-    tp_xxx8:        LongInt;
       end;
 
 const
  // PYTHON_API_VERSION =
+ //   1001 for Python ?
+ //   1002 for Python ?
+ //   1002 for Python ?
+ //   1003 for Python ?
+ //   1004 for Python ?
+ //   1005 for Python ?
+ //   1006 for Python 1.4?
  //   1007 for Python 1.5.1?
- //   1008 for Python 1.5.2b1 (NO LONGER SUPPORTED!)
+ //   1008 for Python 1.5.2b1 (NO LONGER SUPPORTED!) or 1.6?
+ //   1009 for Python 2.0?
  //   1010 for Python 2.1a2 (and probably 2.1 as well)
  //   1011 for Python 2.2
- //   1012 for Python 2.3
- PYTHON_API_VERSION = 1012;
+ //   1012 for Python 2.3 (and 2.4?)
+ //   1013 for Python 2.5?
+ // Version info stored in here: http://svn.python.org/view/python/trunk/Include/modsupport.h
+{$IFDEF PYTHON20}
+ PYTHON_API_VERSION = 1009;
+{$ELSE}
+ {$IFDEF PYTHON21}
+  PYTHON_API_VERSION = 1010;
+ {$ELSE}
+  {$IFDEF PYTHON22}
+   PYTHON_API_VERSION = 1011;
+  {$ELSE}
+   {$IFDEF PYTHON23}
+    PYTHON_API_VERSION = 1012;
+   {$ELSE}
+    {$IFDEF PYTHON24}
+     PYTHON_API_VERSION = 1012;
+    {$ENDIF}
+   {$ENDIF}
+  {$ENDIF}
+ {$ENDIF}
+{$ENDIF}
  METH_VARARGS  = $0001;
  METH_KEYWORDS = $0002;
 
@@ -344,10 +375,18 @@ var
 Py_Initialize: procedure; cdecl;
 Py_Finalize: procedure; cdecl;
 Py_GetVersion: function : PChar; cdecl;
+//Py_GetBuildNumber: function : PChar; cdecl;
+//Py_GetPlatform: function : PChar; cdecl;
+//Py_GetCopyright: function : PChar; cdecl;
+//Py_GetCompiler: function : PChar; cdecl;
+//Py_GetBuildInfo: function : PChar; cdecl;
+
 PyRun_SimpleString: function (P: PChar) : Integer; cdecl;
 //PyRun_String: function (str: PChar; start: Integer; Globals, Locals: PyObject) : PyObject; cdecl;
 //Py_CompileString: function (str, filename: PChar; start: Integer) : PyObject; cdecl;
 
+//Py_InitModule: function (name: PChar; const MethodDef) : PyObject; cdecl;
+//Py_InitModule3: function (name: PChar; const MethodDef; r1: PChar) : PyObject; cdecl;
 Py_InitModule4: function (name: PChar; const MethodDef; r1: PChar; r2: PyObject; Version: Integer) : PyObject; cdecl;
 PyModule_GetDict: function (module: PyObject) : PyObject; cdecl;
 PyModule_New: function (name: PChar) : PyObject; cdecl;
@@ -415,6 +454,12 @@ PyString_Size: function (o: PyObject) : Integer; cdecl;
 PyInt_FromLong: function (Value: LongInt) : PyObject; cdecl;
 PyInt_AsLong: function (o: PyObject) : LongInt; cdecl;
 
+//NOT TESTED:
+//Long integers in Python are unlimited in size
+//(only limited by the amount of available memory)
+//PyLong_FromLong: function (Value : @) : PyObject; cdecl;
+//PyLong_FromDouble: function (Value : @) : PyObject; cdecl;
+
 PyFloat_FromDouble: function (Value: Double) : PyObject; cdecl;
 PyFloat_AsDouble: function (o: PyObject) : Double; cdecl;
 
@@ -423,6 +468,12 @@ PyObject_Init: function (o: PyObject; t: PyTypeObject) : PyObject; cdecl;
 // function _PyObject_NewVar(t: PyTypeObject; i: Integer; o: PyObject) : PyObject; cdecl;
 
 PyCFunction_New: function (const Def: TyMethodDef; self: PyObject) : PyObject; cdecl;
+
+//New in Python 2.3: (NOT TESTED)
+//PyBool_Check: function (o: PyObject) : Integer; cdecl;
+//Py_False: function : PyObject; cdecl;
+//Py_True: function : PyObject; cdecl;
+//PyBool_FromLong: function (Value: LongInt) : PyObject; cdecl;
 
  {-------------------}
 
@@ -476,6 +527,8 @@ const
     (Variable: @@Py_GetVersion;              Name: 'Py_GetVersion'             ),
     (Variable: @@PyRun_SimpleString;         Name: 'PyRun_SimpleString'        ),
 //  (Variable: @@Py_CompileString;           Name: 'Py_CompileString'          ),
+//  (Variable: @@Py_InitModule;              Name: 'Py_InitModule'             ), //Missing in DLL
+//  (Variable: @@Py_InitModule3;             Name: 'Py_InitModule3'            ), //Missing in DLL
     (Variable: @@Py_InitModule4;             Name: 'Py_InitModule4'            ),
     (Variable: @@PyModule_GetDict;           Name: 'PyModule_GetDict'          ),
     (Variable: @@PyModule_New;               Name: 'PyModule_New'              ),
@@ -546,37 +599,43 @@ begin
   Result:=3;
   if PythonLib=0 then
   begin
-    {$IFDEF PYTHON_BUNDLED}
-      PythonDll:='python.dll';
-    {$ELSE}
-     {$IFDEF PYTHON23}
-      PythonDll:='python23.dll';
-     {$ELSE}
-      {$IFDEF PYTHON22}
-       PythonDll:='python22.dll';
-      {$ELSE}
-       {$IFDEF PYTHON21}
-        PythonDll:='python21.dll';
-       {$ELSE}
-        {$IFDEF PYTHON20}
-         PythonDll:='python20.dll';
-         {$ELSE}
-         PythonDll:='';
-        {$ENDIF}
-       {$ENDIF}
-      {$ENDIF}
-     {$ENDIF}
-    {$ENDIF}
-
-    if PythonDll='' then
-      {Raise InternalE('No valid Python DLL file set!');}
-      Exit;
+    PythonDll:='python.dll';
 
     PythonLib:=LoadLibrary(PChar('dlls/'+PythonDll));
     if PythonLib=0 then
     begin
-      Exit;  {This is handled manually}
-      {Raise InternalE('Unable to load dlls/PythonLib.dll');}
+      //If the PythonDLL was not found in the dlls-dir,
+      //let's try to load from anywhere else...
+      {$IFDEF PYTHON24}
+       PythonDll:='python24.dll';
+      {$ELSE}
+       {$IFDEF PYTHON23}
+        PythonDll:='python23.dll';
+       {$ELSE}
+        {$IFDEF PYTHON22}
+         PythonDll:='python22.dll';
+        {$ELSE}
+         {$IFDEF PYTHON21}
+          PythonDll:='python21.dll';
+         {$ELSE}
+          {$IFDEF PYTHON20}
+           PythonDll:='python20.dll';
+           {$ELSE}
+           PythonDll:='';
+          {$ENDIF}
+         {$ENDIF}
+        {$ENDIF}
+       {$ENDIF}
+      {$ENDIF}
+
+      if PythonDll<>'' then
+        PythonLib:=LoadLibrary(PChar(PythonDll));
+
+      if PythonLib=0 then
+      begin
+        Exit;  {This is handled manually}
+        {Raise InternalE('Unable to load dlls/PythonLib.dll');}
+      end;
     end;
   end;
   Result:=2;
@@ -590,7 +649,7 @@ begin
   Py_Initialize;
   s:=Py_GetVersion;
   Log(LOG_PYTHON,'Version: '+s);
-  Log(LOG_PYTHON,'DLL: '+'dlls/'+PythonDll);  {DanielPharos: We should (somehow) retrieve the actual filename of the DLL loaded...}
+  Log(LOG_PYTHON,'DLL: '+'dlls/'+PythonDll);  //DanielPharos: We should (somehow) retrieve the actual filename of the DLL loaded...
   Log(LOG_PYTHON,'');
   Result:=1;
 
@@ -634,9 +693,12 @@ end;
 
 procedure UnInitializePython;
 begin
-  if FreeLibrary(PythonLib)=false then
-    raise InternalE('Unable to unload dlls/'+PythonDll); {DanielPharos: The path might be off this way!}
-  PythonLib:=0;
+  if PythonLib<>0 then
+  begin
+    if FreeLibrary(PythonLib)=false then
+      raise InternalE('Unable to unload dlls/'+PythonDll); //DanielPharos: The path might be off this way!
+    PythonLib:=0;
+  end;
 end;
 
 function PyObject_NEW(t: PyTypeObject) : PyObject;

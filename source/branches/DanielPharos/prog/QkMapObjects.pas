@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.48  2007/04/12 15:28:11  danielpharos
 Minor clean up.
 
@@ -1792,9 +1795,9 @@ begin
    { loads mdl }
    MdlBase:=Q.Specifics.Values['mdlbase'];
    if MdlBase='' then
-     FileObj1:=NeedGameFile(MdlPath)
+     FileObj1:=NeedGameFile(MdlPath, '')
    else
-     FileObj1:=NeedGameFileBase(MdlBase, MdlPath);
+     FileObj1:=NeedGameFileBase(MdlBase, MdlPath, '');
    if (FileObj1 = nil) or not (FileObj1 is QModel) then
      Exit;
 
@@ -1896,12 +1899,12 @@ begin
          { load skin from external file }
          if MdlBase='' then
          begin
-           FileObj1:=NeedGameFile(S);
+           FileObj1:=NeedGameFile(S, '');
            SkinDescr:=S;
          end
          else
          begin
-           FileObj1:=NeedGameFileBase(MdlBase, S);
+           FileObj1:=NeedGameFileBase(MdlBase, S, '');
            SkinDescr:=MdlBase+':'+S;
          end;
          if FileObj1 is QImage then

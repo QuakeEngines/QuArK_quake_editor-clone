@@ -73,6 +73,11 @@ types = {
 
 STASH_KEY = 'mapmadsel_stash'
 
+def stashitem(o):
+    item = qmenu.item('Mark '+types[o.type], StashMe, "mark for tree-restructuring")
+    item.object = o
+    return item
+
 def StashMe(m):
     editor = mapeditor()
     if editor is None: return
@@ -172,6 +177,33 @@ def navTreePopup(o,editor):
     parentSelPop = qmenu.popup("&Navigate Tree", hint = "|The submenu that appears comprises the currently selected object at the top, and below it, the map objects (polys, groups & brush entities) that are above it in the group tree-structure.\n\nIf you put the cursor over one of these, you will get a further sub-menu with relevant commands to select from.")
     return buildParentPopup(o,parentSelPop,navTreePopupItems,editor)
 
+
+# For templates
+
+def refreshTemplateClick(m):
+    editor=m.editor
+    item=m.item
+    editor.layout.explorer.uniquesel = item.parent
+    newitem = item.copy()
+    undo = quarkx.action()
+    undo.exchange(item, newitem)
+    undo.ok(editor.Root, "")
+
+def RefreshTemplate(item, editor):
+    if item is None:
+        return	
+
+    if item.type != ":d":
+        return
+
+    if item["macro"] is None or item["macro"]!="Template":
+        return
+
+    m = qmenu.item
+    m.editor = editor
+    m.item = item
+    refreshTemplateItem = qmenu.item("Refresh &Template", refreshTemplateClick, "|If a template is changed, clicking this function will update those changes to your current map where that template is used.\n\nIt may also update other templates in this same map if they have been changed also.\n\nPress F1 once more to see more details about updating templates in the Infobase. |intro.mapeditor.misctools.html#refreshtemplate")
+    return refreshTemplateItem
 
 def RestrictByMe(m):
   editor = mapeditor()
@@ -584,9 +616,16 @@ quarkpy.mapentities.BezierType.menu = madbezmenu
 def madentmenu(o, editor, oldmenu=quarkpy.mapentities.EntityType.menu.im_func):
   "point entity menu"
   menu = oldmenu(o, editor)
-  menu[:0] = [navTreePopup(o, editor),
+  if o["macro"] is None or o["macro"]!="Template":
+    menu[:0] = [navTreePopup(o, editor),
               restructurepopup(o),
 #              menrestsel,
+              qmenu.sep]
+  else:
+    menu[:0] = [navTreePopup(o, editor),
+              restructurepopup(o),
+#              menrestsel,
+              RefreshTemplate(o, editor),
               qmenu.sep]
   return menu
 
@@ -1088,6 +1127,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.40  2007/12/21 20:39:23  cdunde
+# Added new Templates functions and Templates.
+#
 # Revision 1.39  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

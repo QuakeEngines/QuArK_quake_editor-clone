@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.34  2007/05/06 21:21:43  danielpharos
 Changed DDS support to be EF2-specific.
 
@@ -253,6 +256,7 @@ var
  ValidStage: QPixelSet;
  Size: TPoint;
  V: array [1..2] of Single;
+ TexExt: String;
 begin
  Acces;
  Result:=Nil;
@@ -283,55 +287,25 @@ begin
   else
    { looks for 'qer_editorimage' }
     S:=Specifics.Values[EditorImageSpec];
+
+ TexExt:=SetupGameSet.Specifics.Values['TextureFormat'];
  if S<>'' then
- begin
    try
      if (ExtractFileExt(S)='') then
-     begin
-       if CharModeJeu=mjEF2 then
-         Result:=NeedGameFile(S+'.dds') as QPixelSet
-       else
-       begin
-         try
-           Result:=NeedGameFile(S+'.tga') as QPixelSet;
-         except
-           try
-             Result:=NeedGameFile(S+'.jpg') as QPixelSet;
-           except
-             Result:=NeedGameFile(S+'.png') as QPixelSet;
-           end
-         end;
-       end;
-     end
+       Result:=NeedGameFile(S+TexExt, '') as QPixelSet
      else
-       Result:=NeedGameFile(S) as QPixelSet;
+       Result:=NeedGameFile(S, '') as QPixelSet;
    except
      Result:=NIL
    end;
- end;
 
  { If no image could be found yet, try the shader-name itself }
  if Result=Nil then
- begin
-   if CharModeJeu=mjEF2 then
-     Result:=NeedGameFile(Name+'.dds') as QPixelSet
-   else
-   begin
-     try
-       try
-         Result:=NeedGameFile(Name+'.tga') as QPixelSet;
-       except
-         try
-           Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
-         except
-           Result:=NeedGameFile(Name+'.png') as QPixelSet;
-         end
-       end;
-     except
-       Result:=NIL
-     end;
+   try
+     Result:=NeedGameFile(Name+TexExt, '') as QPixelSet;
+   except
+     Result:=NIL
    end;
- end;
 
  { examines all shaderstages for existing images }
  if Result=Nil then
@@ -518,7 +492,7 @@ begin
   if Name=LoadStr1(5699) then   { complex stage }
    Result:=Nil   { to do: check for animated stages }
   else
-   Result:=NeedGameFile(Name) as QPixelSet;
+   Result:=NeedGameFile(Name, '') as QPixelSet;
  end;
 end;
 

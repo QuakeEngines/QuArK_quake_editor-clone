@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/07/24 13:54:47  danielpharos
+Revert maphandles 1.60: Fixed the underlying problem in PyMath3D.
+
 Revision 1.7  2006/11/30 00:44:55  cdunde
 To merge all source files that had changes from DanielPharos branch
 to HEAD for QuArK 6.5.0 Beta 1.
@@ -170,10 +173,10 @@ end;
 
 function T3DCoordinates.VectorZ;
 begin
- Result:=Eye;
+ Result:=Look;
 end;
 
-function T3DCoordinates.VectorEye;
+function T3DCoordinates.VectorEye(const Pt: TVect) : TVect;
 begin
  Result.X:=-Eye.X+Pt.X;
  Result.Y:=-Eye.Y+Pt.Y;

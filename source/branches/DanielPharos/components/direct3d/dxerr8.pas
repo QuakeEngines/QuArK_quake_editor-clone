@@ -74,13 +74,15 @@ const
   dxerr8dll = 'dxerr81ab.dll';
   {$EXTERNALSYM dxerr8dll}
 
-function DXGetErrorString8A(hr: HRESULT): PAnsiChar; stdcall; external dxerr8dll;
+var
+  DXGetErrorString8A: function (hr: HRESULT): PAnsiChar; stdcall;
 {$EXTERNALSYM DXGetErrorString8A}
-function DXGetErrorString8W(hr: HRESULT): PWideChar; stdcall; external dxerr8dll;
+var
+  DXGetErrorString8W: function (hr: HRESULT): PWideChar; stdcall;
 {$EXTERNALSYM DXGetErrorString8W}
 
-function DXGetErrorString8(hr: HRESULT): PChar;  stdcall; external dxerr8dll
-  name 'DXGetErrorString8A';
+var
+  DXGetErrorString8: function (hr: HRESULT): PChar;  stdcall;
 {$EXTERNALSYM DXGetErrorString8}
 
 //
@@ -99,13 +101,15 @@ function DXGetErrorString8(hr: HRESULT): PChar;  stdcall; external dxerr8dll
 //  Return: The hr that was passed in.
 //
 
-function DXTraceA(strFile: PAnsiChar; dwLine: DWORD; hr: HRESULT; strMsg: PAnsiChar; bPopMsgBox: BOOL): HRESULT; stdcall; external dxerr8dll;
+var
+  DXTraceA: function (strFile: PAnsiChar; dwLine: DWORD; hr: HRESULT; strMsg: PAnsiChar; bPopMsgBox: BOOL): HRESULT; stdcall;
 {$EXTERNALSYM DXTraceA}
-function DXTraceW(strFile: PWideChar; dwLine: DWORD; hr: HRESULT; strMsg: PWideChar; bPopMsgBox: BOOL): HRESULT; stdcall; external dxerr8dll;
+var
+  DXTraceW: function (strFile: PWideChar; dwLine: DWORD; hr: HRESULT; strMsg: PWideChar; bPopMsgBox: BOOL): HRESULT; stdcall;
 {$EXTERNALSYM DXTraceW}
 
-function DXTrace(strFile: PChar; dwLine: DWORD; hr: HRESULT; strMsg: PChar; bPopMsgBox: BOOL): HRESULT; stdcall; external dxerr8dll
-  name 'DXTraceA';
+var
+  DXTrace: function (strFile: PChar; dwLine: DWORD; hr: HRESULT; strMsg: PChar; bPopMsgBox: BOOL): HRESULT; stdcall;
 {$EXTERNALSYM DXTrace}
 
 //
@@ -125,4 +129,61 @@ function DXTrace(strFile: PChar; dwLine: DWORD; hr: HRESULT; strMsg: PChar; bPop
 
 implementation
 
+
+
+var
+  HDXErr81ab  : HMODULE;
+
+function LoadDXErr81ab: Boolean;
+begin
+  HDXErr81ab := LoadLibrary('dxerr81ab.dll');
+  If HDXErr81ab = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DXGetErrorString8W := GetProcAddress(HDXErr81ab, 'DXGetErrorString8W');
+  If @DXGetErrorString8W = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DXGetErrorString8 := GetProcAddress(HDXErr81ab, 'DXGetErrorString8A');
+  If @DXGetErrorString8 = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DXTraceA := GetProcAddress(HDXErr81ab, 'DXTraceA');
+  If @DXTraceA = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DXTraceW := GetProcAddress(HDXErr81ab, 'DXTraceW');
+  If @DXTraceW = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DXTrace := GetProcAddress(HDXErr81ab, 'DXTraceA');
+  If @DXTrace = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadDXErr81ab: Boolean;
+begin
+  If FreeLibrary(HDXErr81ab) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
 end.
+

@@ -454,8 +454,17 @@ SetupRoutines = []
 
 def SetupChanged(level):
     "Called by QuArK when the setup is modified."
-    for s in SetupRoutines:
-        s(level)
+    try:
+        import mdleditor
+        if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
+        for s in SetupRoutines:
+            s(level)
+    except:
+        for s in SetupRoutines:
+            s(level)
 
 
 #
@@ -732,6 +741,13 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.33  2007/09/09 18:34:39  cdunde
+#To stop quarkx.reloadsetup call (which just calls qutils.SetupChanged)
+#from duplicate handle drawing in the Model Editor and use quarkx.reloadsetup
+#in mdlmodes for setting "colors" Config. to stop the loss of settings during
+#a session when the "Apply" button is clicked which calls quarkx.reloadsetup,
+#wiping out all the settings if editor.layout.explorer.selchanged() is used instead.
+#
 #Revision 1.32  2007/06/24 20:43:29  danielpharos
 #Changed the order of the SetupSet keyword for better backwards compatibility.
 #

@@ -10,20 +10,7 @@ QQRKSRC1
     ToolBox = "Texture Browser..."
     Root = "HL2 Textures.qtxfolder"
 
-    //Allows Texture Browser and game to run but not needed except to compile map
-    //t_hl2:incl =      {  v="QuArKApps\source materials.gcf" path="hl2/materials/"}
-    t_hl2:incl =      {  v="QuArKApps" path="hl2/materials/"}  // current line used
-    //t_hl2:incl =      {  v="steamapps/source materials.gcf" path="hl2/materials/"}
-
-    //access via steam (steam must be running)
-    //t_hl2:incl =      {  v="220.SteamFS" path="hl2/materials/"}
-    //t_hl2:incl =      {  v="steamaccess://220" path="hl2/materials/"}
-
-    //access via gcf file loader (steam must not be running in online mode)
-    //t_hl2:incl =      {  v="steamapps/source materials.gcf" path="hl2/materials/"}
-
-    //plain file access
-    //t_hl2:incl =    {  v="tmpQuArK/materials_from_source_materials"}
+    t_hl2:incl =      {  v="QuArKApps" path="hl2/materials/" PakFile="source materials.gcf"}
 
     HL2 Textures.qtxfolder =
     {

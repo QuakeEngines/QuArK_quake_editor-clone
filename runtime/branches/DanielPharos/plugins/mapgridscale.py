@@ -55,12 +55,6 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
 
     gridoldfinish(editor, view)
 
-    #
-    # Below test if the grid is even on
-    #
-
-    if editor.grid == 0:return
-
     def MyMakeScroller(layout, view):
         sbviews = [None, None]
         for ifrom, linkfrom, ito, linkto in layout.sblinks:
@@ -682,6 +676,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.15  2007/09/16 00:38:46  cdunde
+#Fixed both editors from not drawing gridscale and ruler when grid is inactive.
+#
 #Revision 1.14  2006/11/30 01:17:48  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

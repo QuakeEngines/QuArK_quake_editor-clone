@@ -23,6 +23,45 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2008/02/03 13:12:45  danielpharos
+Update for the AutoUpdater. Beginning of the install-window.
+
+Revision 1.53  2007/12/19 12:38:32  danielpharos
+Made an option to set the amount of lines of text in the console.
+
+Revision 1.52  2007/12/13 12:32:36  danielpharos
+Change a procedure name to something much less confusing.
+
+Revision 1.51  2007/09/24 00:15:55  danielpharos
+Made MaxRecentFiles a configurable option.
+
+Revision 1.50  2007/09/18 18:18:43  danielpharos
+Kill another disclaimer redraw, and add history to About.pas
+
+Revision 1.49  2007/09/17 23:06:42  danielpharos
+Stop the disclaimer for disappearing sometimes, and move the splashscreen out of QuarkX.
+
+Revision 1.48  2007/09/12 15:35:40  danielpharos
+Moved update settings to seperate config section and added beginnings of online update check.
+
+Revision 1.47  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
+Revision 1.46  2007/08/11 13:20:45  danielpharos
+BaseMenu-items are now checked when a subitem is checked. That makes it WAY easier to find the selected gamemode if it's a subitem.
+
+Revision 1.45  2007/08/10 12:24:22  danielpharos
+Added a BaseMenu item. Now games from the same series can be grouped together in the Games-menu!
+
+Revision 1.44  2007/08/10 12:16:08  danielpharos
+Updated the update-check. You can disable it in the Config, and it now asks if you want to go to the website.
+
+Revision 1.43  2007/08/04 14:47:23  danielpharos
+Added a very basic update check when starting up QuArK.
+
+Revision 1.42  2007/08/02 16:15:56  danielpharos
+Added a commandline check, and an option in it to skip the splash screen. Also, some of the internal workings of the splash-screen were changed a bit.
+
 Revision 1.41  2007/03/01 22:16:03  danielpharos
 Big fix for the enormous slowdown.
 
@@ -194,6 +233,14 @@ type
               Next: PIdleJob;
               Working: Boolean;
              end;
+  
+  CmdLineOptions = record
+                    DoSplash: Boolean;
+                    DoUpdate: Boolean;
+                    OnlineUpdate: Boolean;
+                    FileNR: Cardinal;
+                    Files: array of string;
+                   end;
 
   TQrkExplorer = class(TFileExplorer)
   protected
@@ -332,7 +379,7 @@ type
     procedure SetGlobalModified(Value: Boolean);}
     procedure MenuCopyAs;
 {$IFDEF Debug} procedure DataDump1Click(Sender: TObject); {$ENDIF}
-    function ProcessCmdLine(Counter: Integer) : Integer;
+    function ExecuteCmdLine(Counter: Integer) : Integer;
     procedure FreeNonVisibleForms(Sender: TObject);
   protected
     procedure AppIdle(Sender: TObject; var Done: Boolean);
@@ -375,21 +422,53 @@ var
   Form1: TForm1;
   g_Form1: TForm1;
   g_Form1Handle: HWnd;
+  g_CmdOptions: CmdLineOptions;
 
  {------------------------}
 
 implementation
 
 uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
-  QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, About, Running,
-  Output1, QkTreeView, Quarkx, PyProcess, Console, Python,
+  QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, Running,
+  Output1, QkTreeView, PyProcess, Console, Python, Quarkx, About,
   {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D,
-  EdSceneObject, QkObjectClassList, QkApplPaths, QkQuakeCtx;
+  EdSceneObject, QkObjectClassList, QkApplPaths, QkQuakeCtx, QkSteamFS,
+  AutoUpdater, Logging;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
 
  {------------------------}
+
+procedure ProcessCmdLine;
+var
+ I: Integer;
+ S: String;
+begin
+ // ParamStr(0) is the executable name, so don't process it
+ for I := 1 to ParamCount do
+ begin
+  S := UpperCase(ParamStr(I));
+  if S = '/?' then
+   MessageBox(0, 'Available parameters:' + #13 + #10
+   + #13 + #10
+   + '/?: Displays this window' + #13 + #10
+   + '/NOSPLASH: Skips the splash-screen' + #13 + #10
+   + '/NOUPDATE: Skips the update check' + #13 + #10
+   + #13 + #10
+   + 'All other parameters will be interpreted as files to load.', 'QuArK', MB_OK)
+  else if S = '/NOSPLASH' then
+   g_CmdOptions.DoSplash := false
+  else if S = '/NOUPDATE' then
+   g_CmdOptions.DoUpdate := false
+  else
+  begin
+   g_CmdOptions.FileNR := g_CmdOptions.FileNR + 1;
+   SetLength(g_CmdOptions.Files, g_CmdOptions.FileNR);
+   g_CmdOptions.Files[g_CmdOptions.FileNR - 1] := ParamStr(I);
+  end;
+ end;
+end;
 
  (*procedure TForm1Button1Click(Sender: TObject);
 var
@@ -465,26 +544,85 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+
+ function FindAlphabeticInsert(NewCaption: String; List: TMenuItem; Count: Integer; Start: Integer = 0) : Integer;
+ var
+  I: Integer;
+ begin
+  for I:=Start to Count-1 do
+  begin
+   if (NewCaption < List[I].Caption) then
+   begin
+    Result:=I;
+    Exit;
+   end;
+  end;
+  Result:=Count;
+ end;
+
 var
- Item: TMenuItem;
- I, J: Integer;
- S: String;
+ Item, BaseItem: TMenuItem;
+ I: Integer;
+ ItemIndex: Integer;
+ S, T: String;
  L: TStringList;
  C: TColor;
+ Splash: TForm;
+ Disclaimer: THandle;
 begin
  // This next line is done so that the G_ standard carries through for all of
- // the global variables. 
+ // the global variables.
  g_Form1 := Self;
  Application.OnException:=AppException;
  Application.UpdateFormatSettings:=False;
  DecimalSeparator:='.';
  g_Form1Handle:=Handle;
 
- { comment by tiglari:
-   in quarkx: splash & nag screens,
-   python initialization,
-   loading defaults.qrk, setup.qrk }
+ // Set-up the console
+ Log(LOG_VERBOSE, 'Setting up console...');
+ InitConsole;
+
+ // DanielPharos: This processes the commandline and prepares it for further use
+ g_CmdOptions.DoSplash := true; //These are the defaults
+ g_CmdOptions.DoUpdate := true;
+ g_CmdOptions.OnlineUpdate := true;
+ g_CmdOptions.FileNR := 0;
+ ProcessCmdLine;
+
+ if g_CmdOptions.DoSplash then
+ begin
+   // splash & nag screens
+   Splash:=OpenSplashScreen;
+   Disclaimer:=DisclaimerThread(Splash);
+ end
+ else
+ begin
+   Splash:=nil;
+   Disclaimer:=0;
+ end;
+
+ // tiglari: in quarkx: python initialization, loading defaults.qrk, setup.qrk
  PythonLoadMain;
+
+ { DanielPharos: It's safer to do the update-check BEFORE loading Python,
+   but then then option in the Defaults will have to be removed, since it
+   won't be loaded yet. Change this when the update-screen isn't a nag-screen
+   anymore! (Store data in registry?) }
+ //Check for updates...
+ if g_CmdOptions.DoUpdate then
+   if SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheck']<>'' then
+     DoUpdate(g_CmdOptions.OnlineUpdate);
+
+ if g_CmdOptions.DoSplash then
+ begin
+   repeat
+     Application.ProcessMessages;
+     Sleep(200);
+   until ExitDisclaimer;
+   CloseHandle(Disclaimer);
+   Splash.Release;
+   Application.ProcessMessages;
+ end;
 
 (*ImageList1.Handle:=ImageList_LoadImage(HInstance, MakeIntResource(101),
   16, 2, clTeal, Image_Bitmap, 0);
@@ -521,34 +659,61 @@ begin
 {Application.OnHelp:=AppHelp;}
 {Application.OnRestore:=AppRestore;}     { MARSCAPFIX }
 
- J:=0;
+ ItemIndex:=0;
  with g_SetupSet[ssGames] do
-  for I:=0 to SubElements.Count-1 do
+   for I:=0 to SubElements.Count-1 do
    begin
-    S:=SubElements[I].Specifics.Values['Code'];
-    if S<>'' then
+     S:=SubElements[I].Specifics.Values['Code'];
+     if S<>'' then
      begin
-      Item:=TMenuItem.Create(Self);
-      Item.Caption:=SubElements[I].Name;
-      Item.OnClick:=GameSwitch1Click;
-      Item.Tag:=Ord(S[1]);
-      Item.RadioItem:=True;
-      GamesMenu.Items.Insert(J, Item);
-      Inc(J);
+       T:=SubElements[I].Specifics.Values['BaseMenu'];
+       if T<>'' then
+       begin
+         { DanielPharos: This entire idea comes tumbling down when somebody
+           adds a game with the same name as a BaseMenu. So don't do that! }
+         BaseItem:=GamesMenu.Items.Find(T);
+         if BaseItem=nil then
+         begin
+           BaseItem:=TMenuItem.Create(Self);
+           BaseItem.Caption:=T;
+           BaseItem.RadioItem:=True;
+           GamesMenu.Items.Insert(FindAlphabeticInsert(T, GamesMenu.Items, ItemIndex), BaseItem);
+           Inc(ItemIndex);
+         end;
+       end
+       else
+         BaseItem:=nil;
+       Item:=TMenuItem.Create(Self);
+       Item.Caption:=SubElements[I].Name;
+       Item.OnClick:=GameSwitch1Click;
+       Item.Tag:=Ord(S[1]);
+       Item.RadioItem:=True;
+       if BaseItem<>nil then
+         { DanielPharos: Can't use FindAlphabeticInsert here (technical reasons),
+           but it shouldn't be necessary here anyway. }
+         BaseItem.Add(Item)
+       else
+       begin
+         GamesMenu.Items.Insert(FindAlphabeticInsert(Item.Caption, GamesMenu.Items, ItemIndex), Item);
+         Inc(ItemIndex);
+       end;
      end;
    end;
 
- L:=TStringList.Create; try
- InitGamesMenu(L);
- for I:=0 to L.Count-1 do
-  begin
-   Item:=TMenuItem.Create(Self);
-   Item.Caption:=L[I];
-   Item.OnClick:=Go1Click;
-   Item.Tag:=I;
-   Go1.Add(Item);
-  end;
- finally L.Free; end;
+ L:=TStringList.Create;
+ try
+  InitGamesMenu(L);
+  for I:=0 to L.Count-1 do
+   begin
+    Item:=TMenuItem.Create(Self);
+    Item.Caption:=L[I];
+    Item.OnClick:=Go1Click;
+    Item.Tag:=I;
+    Go1.Add(Item);
+   end;
+ finally
+  L.Free;
+ end;
 
  {$IFDEF Debug}
  Item:=TMenuItem.Create(Self);
@@ -556,7 +721,7 @@ begin
  Item.OnClick:=DataDump1Click;
  HelpMenu.Items.Add(Item);
  Item:=TMenuItem.Create(Self);
- Item.Caption:='Free some memory (for DEBUG only)';
+ Item.Caption:='Free unused forms (for DEBUG only)';
  Item.OnClick:=FreeNonVisibleForms;
  HelpMenu.Items.Add(Item);
  {$ENDIF}
@@ -967,6 +1132,7 @@ var
  Q: QObject;
  L: TStringList;
  I: Integer;
+ MaxRecentFiles: Integer;
 begin
  F:=ValidParentForm(FileMenu.PopupComponent as TControl);
  QF1:=F is TQForm1;
@@ -1008,19 +1174,34 @@ begin
  else
   Info.FileObjectDescriptionText:=LoadStr1(5125);
  News1.Caption:=FmtLoadStr1(2, [Info.FileObjectDescriptionText]);
+
+ //FileMenu.Tag is used to flag if the RecentFiles need to be updated
  if FileMenu.Tag=0 then
   begin
-   L:=TStringList.Create; try
-   L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
-   FileSep1.Visible:=L.Count>0;
-   for I:=0 to MaxRecentFiles-1 do
-    with FileMenu.Items[FileSep1.MenuIndex+I+1] do
-     begin
-      Visible:=I<L.Count;
-      if I<L.Count then
-       Caption:=FmtLoadStr1(3, [I+1, ExtractFileName(L[I])]);
-     end;
-   finally L.Free; end;
+   L:=TStringList.Create;
+   try
+    L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
+    MaxRecentFiles:=Round(SetupSubSet(ssGeneral, 'Display').GetFloatSpec('MaxRecentFiles', 5));
+    FileSep1.Visible:=(MaxRecentFiles>0) and (L.Count>0);
+    for I:=0 to 4 do //Loop over all the RecentFile menu-items
+     with FileMenu.Items[FileSep1.MenuIndex+I+1] do
+      begin
+      if I <= MaxRecentFiles-1 then
+       begin
+        if I<L.Count then
+        begin
+         Visible:=True;
+         Caption:=FmtLoadStr1(3, [I+1, ExtractFileName(L[I])]);
+        end
+        else
+         Visible:=False;
+       end
+      else
+       Visible:=False;
+      end;
+   finally
+    L.Free;
+   end;
    FileMenu.Tag:=1;
   end;
   CallMacro(GetEmptyTuple,'loadentityplugins');
@@ -1496,13 +1677,15 @@ begin  { the link to FormDestroy is made in FormCreate }
  end;
  ClearGameBuffers(False);
  ClearPool(True);
+ ClearSteamCache;
 // QObjectClassList.Free;
+ FreeConsole;
  st:='hi';
  s:=PyString_FromString(PChar(st));
  CallMacro(s, 'shutdown');
  Py_Finalize;
  Application.UnHookMainWindow(WindowHook);
- end;
+end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
 var
@@ -1576,7 +1759,7 @@ procedure TForm1.FreeNonUsedObjects;
 begin
  TTextureManager.FreeNonVisibleTextures;
  FreeNonVisibleForms(Nil);
- DestroyGameBuffers;
+ ReleaseGameFiles;
 end;
 
 var
@@ -1805,13 +1988,13 @@ begin
  OnActivate:=Nil;
  DragAcceptFiles(Handle, True);
  if PyDict_GetItemString(QuarkxDict, 'setupchanged')<>Py_None then
-  StartIdleJob(ProcessCmdLine, Self);
+  StartIdleJob(ExecuteCmdLine, Self);
 end;
 
-function TForm1.ProcessCmdLine(Counter: Integer) : Integer;
+function TForm1.ExecuteCmdLine(Counter: Integer) : Integer;
 begin
  Inc(Counter);
- if Counter>ParamCount then
+ if Counter>Integer(g_CmdOptions.FileNR) then //DanielPharos: A little bit overflow dangerous...
   begin
    RefreshAssociations(False);
    RestoreAutoSaved('.qkm');
@@ -1819,7 +2002,7 @@ begin
   end
  else
   if Counter>0 then
-   OpenAFile(ParamStr(Counter), False);
+   OpenAFile(g_CmdOptions.Files[Counter - 1], False);
  Result:=Counter;
 end;
 
@@ -1882,10 +2065,13 @@ var
  FileName: String;
 begin
  I:=(Sender as TMenuItem).MenuIndex - FileSep1.MenuIndex - 1;
- L:=TStringList.Create; try
- L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
- FileName:=L[I];
- finally L.Free; end;
+ L:=TStringList.Create;
+ try
+  L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
+  FileName:=L[I];
+ finally
+  L.Free;
+ end;
 
  OpenAFile(FileName, False);
 end;
@@ -1897,13 +2083,21 @@ end;
 
 procedure TForm1.Games1Click(Sender: TObject);
 var
- I: Integer;
- C: Char;
+ I, J: Integer;
 begin
- C:=CharModeJeu;
  for I:=0 to GameSep1.MenuIndex-1 do
   with GamesMenu.Items[I] do
-   Checked:=Chr(Tag)=C;
+   begin
+    Checked:=Chr(Tag)=CharModeJeu;
+    for J:=0 to Count-1 do
+     if Chr(Items[J].Tag)=CharModeJeu then
+      begin
+       Checked:=True;
+       Items[J].Checked:=True;
+      end
+     else
+      Items[J].Checked:=False;
+   end;
  Go1.Enabled:=Explorer.Roots.Count>0;
 end;
 

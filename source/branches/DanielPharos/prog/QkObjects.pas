@@ -23,6 +23,30 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.94  2007/12/22 18:02:01  cdunde
+Update
+
+Revision 1.93  2007/09/12 16:24:29  danielpharos
+Moved update settings to seperate config section and added beginnings of online update check.
+
+Revision 1.92  2007/09/12 15:28:16  danielpharos
+Replaced redundant property.
+
+Revision 1.91  2007/09/10 10:24:19  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
+Revision 1.90  2007/08/29 20:23:04  cdunde
+To update date and version name for new release.
+
+Revision 1.89  2007/08/10 12:16:08  danielpharos
+Updated the update-check. You can disable it in the Config, and it now asks if you want to go to the website.
+
+Revision 1.88  2007/08/04 14:53:07  danielpharos
+Fixed a small mistake in comment from prev rev.
+
+Revision 1.87  2007/08/04 14:47:23  danielpharos
+Added a very basic update check when starting up QuArK.
+
 Revision 1.86  2007/03/17 15:43:12  danielpharos
 Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
 
@@ -308,6 +332,23 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 
 const
   QuArKVersion            = 'QuArK 6.5 Beta';
+  QuArKMinorVersion       = 'Beta 4';
+  QuArKCopyright          = 'Copyright (C) 1996-2007 Armin Rigo and others';
+  QuArKUsedCompiler       = 'Delphi 6.0';
+  QuArKCompileDate        = 39441;   //This is the compiled date
+  { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
+    You can use EncodeDate(Year, Month, Day) to compute it, but this value
+    really needs to be a constant, so put the resulting value in here.
+    The result can be checked in the About form. }
+  QuArKDaysOld            = 270;     //About a 9 month difference...
+  { This is the amount of days after which a certain build is considered
+    old by the update-check. }
+  QuArKWebsite            = 'http://quark.planetquake.gamespy.com/';
+  QuArKRepository         = 'http://sourceforge.net/projects/quark/';
+  QuArKForum              = 'http://www.dark-forge.com/';
+  QuArKUpdateSite         = 'quark.planetquake.gamespy.com';
+  QuArKUpdateFile         = 'update/index.dat';
+
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
@@ -521,7 +562,6 @@ type
     property Specifics: TStringList read {$IFDEF Debug} GetSpecifics; {$ELSE} FSpecifics; {$ENDIF}
     property SetSpecificsList: TStringList read FSpecifics write FSpecifics;
     property SubElements: TQList read {$IFDEF Debug} GetSubElements; {$ELSE} FSubElements; {$ENDIF}
-    property SubElementsC: TQList read FSubElements;
     function Ancestry: String;
     procedure AddRef(Delta: Integer);
     { incr/decr Py reference count, frees if 0 }
@@ -583,6 +623,7 @@ type
     { stuff that should be done when an object has been read in from text rep. }
     procedure FinalizeFromText; virtual;
     function WriteSubelements : Boolean; virtual;
+    function IsAllowedParent(Parent: QObject) : Boolean; virtual;
   end;
 
   TQList = class(TList)
@@ -700,7 +741,8 @@ implementation
 
 uses
   {$IFDEF Debug} MemTester, {$ENDIF}
-  QkObjectClassList, QkFileObjects, QkExplorer, Travail, PyObjects, PyImages, Quarkx, Qk1, Logging;
+  QkObjectClassList, QkFileObjects, QkExplorer, Travail,
+  PyObjects, PyImages, Quarkx, Qk1, Logging;
 
  {------------------------}
 
@@ -1368,6 +1410,9 @@ begin
 
   FSpecifics:=TStringList.Create;
   FSubElements:=TQList.Create;
+
+  if not IsAllowedParent(nParent) then
+    Log(LOG_VERBOSE, 'Object '+nName+' is being created in a non-allowed parent! This might produce errors!');
 end;
 
 destructor QObject.Destroy;
@@ -1766,9 +1811,9 @@ var
   Q: QObject;
 begin
   { no call to Acces }
-  for I:=Parent.SubElementsC.Count-1 downto 0
+  for I:=Parent.SubElements.Count-1 downto 0
   do begin
-    Q:=Parent.SubElementsC[I];
+    Q:=Parent.SubElements[I];
     if (Assigned(Q) and (Q.Name <> ''))
     then begin
       Q.FixupReference;
@@ -2234,6 +2279,11 @@ begin
 end;
 
 function QObject.WriteSubElements;
+begin
+  Result:=true;
+end;
+
+function QObject.IsAllowedParent(Parent: QObject) : Boolean;
 begin
   Result:=true;
 end;
@@ -3014,8 +3064,8 @@ var
 begin
   case Aj of
   asRetire:
-    for I:=0 to SubElementsC.Count-1 do
-      SubElementsC[I].OperationInScene(Aj, PosRel+1);
+    for I:=0 to SubElements.Count-1 do
+      SubElements[I].OperationInScene(Aj, PosRel+1);
   end;
 
   if PosRel=0 then
@@ -3031,14 +3081,14 @@ begin
   case Aj of
   asAjoute,
   asDeplace2:
-    for I:=0 to SubElementsC.Count-1 do
-      SubElementsC[I].OperationInScene(Aj, PosRel+1);
+    for I:=0 to SubElements.Count-1 do
+      SubElements[I].OperationInScene(Aj, PosRel+1);
 
   asModifieParent:
     if g_WorkingExplorer<>Nil then
     begin
-      for I:=0 to SubElementsC.Count-1 do
-        SubElementsC[I].OperationInScene(asModifieFrere, MaxInt);
+      for I:=0 to SubElements.Count-1 do
+        SubElements[I].OperationInScene(asModifieFrere, MaxInt);
       if PosRel = -1 then
         g_WorkingExplorer.ControlerEtatNoeud(Self);
     end;
@@ -3091,15 +3141,15 @@ procedure QObject.ClearAllSelection;
 var
   I: Integer;
 begin
-  for I:=0 to SubElementsC.Count-1 do
-    SubElementsC[I].ClearAllSelection;
+  for I:=0 to SubElements.Count-1 do
+    SubElements[I].ClearAllSelection;
   FSelMult:=smSousSelVide;
 end;
 
 function QObject.IsClosed: Boolean;
 begin
   Result:=Flags and ofTreeViewExpanded = 0;
-  if Result and (SubElementsC.Count = 0) then
+  if Result and (SubElements.Count = 0) then
   begin
     Flags:=Flags or ofTreeViewExpanded;
     Result:=False;
@@ -3413,5 +3463,8 @@ initialization
 
 finalization
   QFileList.Free;
+  {$IFDEF Debug}
+  g_MemQObject.Free;
+  {$ENDIF}
 
 end.

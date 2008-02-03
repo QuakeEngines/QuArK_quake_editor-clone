@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/11/15 22:08:12  danielpharos
+Fix the frame-won't-drag problem after a subdivide face action.
+
+Revision 1.14  2007/10/14 21:48:56  danielpharos
+Fix the frame-dragging in the Model Editor.
+
+Revision 1.13  2007/09/10 10:24:15  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
+Revision 1.12  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2001/03/20 21:37:33  decker_dk
 Updated copyright-header
 
@@ -55,8 +67,8 @@ unit QkFrame;
 
 interface
 
-uses Windows, SysUtils, Classes, QkObjects, Qk3D, PyMath, Python, QkMdlObject, QMath, QkModelBone,
-     qmatrices;
+uses Windows, SysUtils, Classes, QkObjects, Qk3D, PyMath, Python, QkMdlObject,
+     QMath, QkModelBone, qmatrices;
 
 type
   TBoneRec = packed record
@@ -70,6 +82,7 @@ type
     Component: QObject;
   public
     class function TypeInfo: String; override;
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
     destructor Destroy; override;
     procedure ObjectState(var E: TEtatObjet); override;
     function GetVertices(var P: vec3_p) : Integer;
@@ -86,7 +99,16 @@ type
 
 implementation
 
-uses Quarkx, QkObjectClassList, QkComponent, QkModelRoot, QkModelTag;
+uses Quarkx, PyObjects, QkObjectClassList, QkComponent, QkModelRoot, QkModelTag,
+     QkFrameGroup, QkMiscGroup;
+
+function QFrame.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or ((Parent is QFrameGroup) and (Parent.FParent = ParentComponent)) then
+    Result:=true
+  else
+    Result:=false;
+end;
 
 function QFrame.GetRoot(RootParent: Boolean): QObject;
 var
@@ -262,12 +284,15 @@ var
 //  sc: double;
 begin
   result:=0;
-  s_tag:=nil; o_tag:=nil;
-  bf:=nil; bf2:=nil;
+  s_tag:=nil;
+  o_tag:=nil;
+  bf:=nil;
+  bf2:=nil;
   myRoot:=QModelRoot(GetRoot(false));
   modelRoot:=QModelRoot(GetRoot(true));
   if myRoot<>modelRoot then
   begin
+    //This only happens if a model is loaded INSIDE another model using MD3-tagging.
     currentFrame:=modelRoot.GetComponentFromIndex(0).CurrentFrame;
     if currentFrame<>nil then begin
       bf:=QModelBone(modelRoot.getmisc.FindSubObject('Bone Frame '+inttostr(Round(currentFrame.GetFloatSpec('index',1))), QModelBone, nil));
@@ -381,6 +406,10 @@ begin
       end;
       Exit;
     end;   }
+    'c': if StrComp(attr, 'compparent')=0 then begin
+      Result:=GetPyObj(Component);
+      Exit;
+    end;
     'i': if StrComp(attr, 'info')=0 then begin
       if FInfo=Nil then
         Result:=Py_None
@@ -409,10 +438,21 @@ var
   P: PyVect;
   S, S0: String;
   Dest: vec3_p;
+  comp: QObject;
 begin
   Result:=inherited PySetAttr(attr, value);
   if not Result then begin
     case attr[0] of
+      'c': if StrComp(attr, 'compparent')=0 then begin
+        comp:=QkObjFromPyObj(value);
+        if comp=nil then
+         Exit;
+        if not (comp is QComponent) then
+         Exit;
+        Component:=QComponent(comp);
+        Result:=True;
+        Exit;
+      end;
       'i': if StrComp(attr, 'info')=0 then begin
         Py_XDECREF(FInfo);
         FInfo:=value;

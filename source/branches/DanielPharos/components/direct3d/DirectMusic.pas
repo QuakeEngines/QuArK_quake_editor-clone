@@ -3332,7 +3332,7 @@ const
                                         permanently stuck at the new value. *)
   {$EXTERNALSYM DMUS_CURVE_RESET}
   DMUS_CURVE_START_FROM_CURRENT = 2; (* Ignore Start, start the curve at the current value.
-                                        This only works for volume, expression, and pitchbend. *)
+                                        This only works for volume, expression, and pitchb*)
   {$EXTERNALSYM DMUS_CURVE_START_FROM_CURRENT}
 
 
@@ -8096,3 +8096,5 @@ begin
 end;
 
 end.
+end.
+

@@ -109,7 +109,12 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
         nparent, nib = droptarget(editor, newitem)
         if nparent is None:
             undo.cancel()    # not required, but it's better when it's done
-            msg = Strings[-101]
+            msg = Strings[-151]
+            quarkx.msgbox(msg, MT_ERROR, MB_OK)
+            return
+        if not newitem.isallowedparent(nparent):
+            undo.cancel()    # not required, but it's better when it's done
+            msg = Strings[-106]
             quarkx.msgbox(msg, MT_ERROR, MB_OK)
             return
         new = newitem.copy()
@@ -121,6 +126,10 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
             pass
         undo.put(nparent, new, nib)
     undo.ok(editor.Root, text)
+    if newlist[0].type == ":mf":
+        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+        for compframe in compframes:
+            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
     editor.layout.actionmpp()
     return 1
 
@@ -223,7 +232,7 @@ def edit_newgroup(editor, m=None):
         nib = None
 
     #
-    # Do it !
+    # The undo to perform this functions action
     #
 
     undo = quarkx.action()
@@ -272,10 +281,16 @@ def texturebrowser(reserved=None):
 def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=None):
     "Move the selection and/or apply a linear mapping on it."
 
+    import mdlutils
+    from qbaseeditor import currentview
     #
     # Get the list of selected items.
     #
-    items = editor.visualselection()
+    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+        items = editor.EditorObjectList
+        newlist = []
+    else:
+        items = mdlutils.MakeEditorVertexPolyObject(editor)
     if len(items):
         if matrix and (origin is None):
             #
@@ -288,7 +303,15 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
                     origin = quarkx.vect(0,0,0)
                 else:
                     origin = (bbox[0]+bbox[1])*0.5
-
+            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                if text == "symmetry":
+                    if items[0].type == ":f":
+                        matrix = matrix_rot_x(currentview.info["vangle"]) * matrix_rot_z(currentview.info["angle"])
+                else:
+                    pass
+            else:
+                if items[0].type == ":f":
+                    matrix = matrix_rot_x(currentview.info["vangle"]) * matrix_rot_z(currentview.info["angle"])
         undo = quarkx.action()
         for obj in items:
             new = obj.copy()
@@ -296,10 +319,35 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
                 new.translate(offset)     # offset the objects
             if matrix:
                 new.linear(origin, matrix)   # apply the linear mapping
+            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                if text == "symmetry":
+                    if obj.type == ":f":
+                        center = obj["usercenter"]
+                        if center is not None:
+                            newcenter = matrix*(quarkx.vect(center)-origin)+origin
+                            obj["usercenter"]=newcenter.tuple
+                else:
+                    pass
+            else:
+                if obj.type == ":f":
+                    center = obj["usercenter"]
+                    if center is not None:
+                        newcenter = matrix*(quarkx.vect(center)-origin)+origin
+                        obj["usercenter"]=newcenter.tuple
             if inflate:
                 new.inflate(inflate)    # inflate / deflate
-            undo.exchange(obj, new)
-        editor.ok(undo, text)
+
+            if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+                newlist = newlist + [new]
+        import mdlmgr
+        from mdlmgr import savefacesel
+        mdlmgr.savefacesel = 1
+        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
+            text = "face " + text
+            mdlutils.ConvertEditorFaceObject(editor, newlist, currentview.flags, currentview, text)
+        else:
+            text = "vertex " + text
+            mdlutils.ConvertVertexPolyObject(editor, [new], currentview.flags, currentview, text, 0)
 
     else:
         #
@@ -344,6 +392,22 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.18  2007/11/16 18:48:23  cdunde
+#To update all needed files for fix by DanielPharos
+#to allow frame relocation after editing.
+#
+#Revision 1.17  2007/10/24 14:58:12  cdunde
+#To activate all Movement toolbar button functions for the Model Editor.
+#
+#Revision 1.16  2007/09/21 21:19:51  cdunde
+#To add message string that is model editor specific.
+#
+#Revision 1.15  2007/09/12 19:47:39  cdunde
+#To update comment to a meaningful statement.
+#
+#Revision 1.14  2007/09/10 10:24:26  danielpharos
+#Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+#
 #Revision 1.13  2007/04/12 03:37:34  cdunde
 #Fixed error for dropitemsnow function when selecting a texture for a Model Skin.
 #

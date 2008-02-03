@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2007/11/20 21:29:39  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
+Revision 1.10  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
+Revision 1.9  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2002/03/07 19:13:57  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -259,7 +268,7 @@ begin
       try
        if lgr<>0 then
         begin
-         ColorMap:=NeedGameFile(SetupGameSet.Specifics.Values['Gradient']);
+         ColorMap:=NeedGameFile(SetupGameSet.Specifics.Values['Gradient'], '');
          ColorMap.Acces;
          if ColorMap is QImage then
           begin
@@ -333,8 +342,7 @@ begin
          end;
         Y:=R.Top;
         repeat
-         SetDIBitsToDevice(DC, R.Left+X,Y,W,H, 0,0,0,H,
-           LightPatch.Data, BitmapInfo^, dib_RGB_Colors);
+         DrawToDC(DC, BitmapInfo^, LightPatch.Data, R.Left+X, Y);
          Inc(Y, H);
         until Y>=R.Bottom;
         Inc(X, W);

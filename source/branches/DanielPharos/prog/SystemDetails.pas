@@ -23,6 +23,24 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/12/19 13:56:34  danielpharos
+Some changes to process-detection: Should work on Windows NT4 now too, and made the Steam executable filename configurable (but hidden).
+
+Revision 1.32  2007/12/14 11:33:44  danielpharos
+Use the entire buffer for loading of VideoBiosVersion, to prevent weird errors from happening.
+
+Revision 1.31  2007/09/23 22:32:25  danielpharos
+Fix some wrong detections of Windows versions.
+
+Revision 1.30  2007/09/23 21:33:39  danielpharos
+Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+
+Revision 1.29  2007/09/12 15:38:02  danielpharos
+Removed unused function in PyMath, and it will now use the SystemDetails Windows check result.
+
+Revision 1.28  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.27  2007/03/29 21:01:39  danielpharos
 Changed a few comments and error messages
 
@@ -110,13 +128,17 @@ uses
   SysUtils, Windows, Classes, Registry;
 
 const
-  SM_CXVIRTUALSCREEN   =	78;
-  SM_CYVIRTUALSCREEN   =  79;
+  SM_CXVIRTUALSCREEN = 78;
+  SM_CYVIRTUALSCREEN = 79;
 
 var
   g_CxScreen, g_CyScreen: Integer;
 
 Procedure LogSystemDetails;
+function CheckWindowsNT: Boolean;
+function CheckWindowsVista: Boolean;
+function ProcessExists(exeFileName: string): Boolean;
+function WindowExists(WindowName: String): Boolean;
 
 type
   {$IFDEF Delphi4orNewerCompiler}
@@ -369,15 +391,17 @@ type
 
 implementation
 
-uses ShlObj, Logging;
+uses ShlObj, TlHelp32, Psapi, Logging, Qk1;
 
 type
-  TPlatformType = (osWin95, osWinNT);
+  TPlatformType = (osWin95Comp, osWinNTComp);
+  TPlatform = (osWin95, osWin98, osWinME, osWinNT4, osWin2000, osWinXP, osWin2003, osWinVista, osWin2008);
 
 var
-  WindowsPlatformCompatibility: TPlatformType;
   VLevel, VFamily, VModel, VStepping, VTyp: Byte;
   VFeatures: LongInt;
+  WindowsPlatformCompatibility: TPlatformType;
+  WindowsPlatform: TPlatform;
 
 constructor TCPU.Create;
 begin
@@ -906,94 +930,138 @@ begin
     VER_PLATFORM_WIN32s:
      begin
       Platform:='Windows 32s';
-      WindowsPlatformCompatibility:=osWin95;
+      WindowsPlatformCompatibility:=osWin95Comp;
+      WindowsPlatform:=osWin95;
      end;
     VER_PLATFORM_WIN32_WINDOWS:
       case MajorVersion of
       4:
        begin
         case MinorVersion of
-        0: Platform:='Windows 95';
-        10: Platform:='Windows 98';
-        90: Platform:='Windows ME';
-        else Platform:='Unknown (Probably OK)';
+        0:
+         begin
+          Platform:='Windows 95';
+          WindowsPlatform:=osWin95;
+         end;
+        10:
+         begin
+          Platform:='Windows 98';
+          WindowsPlatform:=osWin98;
+         end;
+        90:
+         begin
+          Platform:='Windows ME';
+          WindowsPlatform:=osWinME;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWin95;
+         end;
         end;
-        WindowsPlatformCompatibility:=osWin95;
-       end;
-      5:
-       begin
-        case MinorVersion of
-        0: Platform:='Windows Vista or Windows Server "Longhorn"';
-        else Platform:='Unknown (Probably OK)';
-        end;
-        WindowsPlatformCompatibility:=osWinNT;
+        WindowsPlatformCompatibility:=osWin95Comp;
        end;
       else
        begin
-        if MajorVersion>5 then
+        if MajorVersion>4 then
         begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatformCompatibility:=osWin95;
+          WindowsPlatform:=osWinME;
         end
         else
         begin
           Platform:='Unknown';
-          WindowsPlatformCompatibility:=osWinNT;
+          WindowsPlatform:=osWin95;
         end;
        end;
+       WindowsPlatformCompatibility:=osWin95Comp;
       end;
     VER_PLATFORM_WIN32_NT:
       case MajorVersion of
       4:
        begin
         case MinorVersion of
-        0: Platform:='Windows NT4';
-        else Platform:='Unknown (Probably OK)';
+        0:
+         begin
+          Platform:='Windows NT4';
+          WindowsPlatform:=osWinNT4;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWinNT4;
+         end;
         end;
-        WindowsPlatformCompatibility:=osWinNT;
+        WindowsPlatformCompatibility:=osWinNTComp;
        end;
       5:
        begin
         case MinorVersion of
-        0: Platform:='Windows 2000';
-        1: Platform:='Windows XP';
-        2: Platform:='Windows 2003 or Windows XP 64-bit';
-        else Platform:='Unknown (Probably OK)';
+        0:
+         begin
+          Platform:='Windows 2000';
+          WindowsPlatform:=osWin2000;
+         end;
+        1:
+         begin
+          Platform:='Windows XP';
+          WindowsPlatform:=osWinXP;
+         end;
+        2:
+         begin
+          Platform:='Windows Server 2003 or Windows XP 64-bit';
+          WindowsPlatform:=osWin2003;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWin2000;
+         end;
         end;
-        WindowsPlatformCompatibility:=osWinNT;
+        WindowsPlatformCompatibility:=osWinNTComp;
        end;
       6:
        begin
         case MinorVersion of
-        0: Platform:='Windows Vista or Windows Server "Longhorn"';
-        else Platform:='Unknown (Probably OK)';
+        0:
+         begin
+          Platform:='Windows Vista or Windows Server 2008';
+          WindowsPlatform:=osWinVista;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWinVista;
+         end;
         end;
-        WindowsPlatformCompatibility:=osWinNT;
+        WindowsPlatformCompatibility:=osWinNTComp;
        end;
       else
        begin
         if MajorVersion>6 then
         begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatformCompatibility:=osWinNT;
+          WindowsPlatform:=osWinVista;
+          WindowsPlatformCompatibility:=osWinNTComp;
         end
         else
         begin
           Platform:='Unknown';
-          WindowsPlatformCompatibility:=osWin95;
+          WindowsPlatform:=osWin95;
+          WindowsPlatformCompatibility:=osWin95Comp;
         end;
        end;
       end;
   end;
   case WindowsPlatformCompatibility of
-  osWin95:
+  osWin95Comp:
    begin
     g_CxScreen:=sm_CxScreen;
     g_CyScreen:=sm_CyScreen;
     rkOSInfo:=rkOSInfo95;
     rvVersionName:=rvVersionName95;
    end;
-  osWinNT:
+  osWinNTComp:
    begin
     g_CxScreen:=SM_CXVIRTUALSCREEN;
     g_CyScreen:=SM_CYVIRTUALSCREEN;
@@ -1236,7 +1304,7 @@ begin
   FSystemUpTime:=GetSystemUpTime;
   FName:=GetMachine;
   FUser:=GetUser;
-  if WindowsPlatformCompatibility=osWinNT then
+  if WindowsPlatformCompatibility=osWinNTComp then
   begin
     with TRegistry.Create do
     begin
@@ -1312,7 +1380,7 @@ begin
             rclass:=UpperCase(ReadString(rvClass));
             if rclass=UpperCase(AClassName) then
             begin
-              if WindowsPlatformCompatibility=osWin95 then
+              if WindowsPlatformCompatibility=osWin95Comp then
               begin
                 s:=UpperCase(ReadString(rvLink));
                 CloseKey;
@@ -1547,7 +1615,7 @@ begin
 
   ReleaseDC(0, l_hdc);
 
-  if WindowsPlatformCompatibility=osWinNT then
+  if WindowsPlatformCompatibility=osWinNTComp then
     ClassKey:='SYSTEM\CurrentControlSet\Control\Class'
   else
     ClassKey:='SYSTEM\CurrentControlSet\Services\Class';
@@ -1653,7 +1721,7 @@ begin
       if ValueExists(rvVideoBIOSVersion) then
       begin
         try
-          readbinarydata(rvVideoBIOSVersion,bdata^,151);
+          readbinarydata(rvVideoBIOSVersion,bdata^,255);
           FBIOSVersion:=strpas(pchar(bdata));
         except
         end;
@@ -1899,6 +1967,116 @@ begin
     s.Add('Not Installed.');
   end;
   R.free;
+end;
+
+function ProcessExists(exeFileName: string): Boolean;
+var 
+  ContinueLoop: BOOL; 
+  FSnapshotHandle: THandle; 
+  FProcessEntry32: TProcessEntry32;
+  ProcessNumber: Integer;
+  ProcessSize, BytesReturned: DWORD;
+  ProcessList, ProcessList2: PDWORD;
+  ProcessHandle: THandle;
+  ProcessModule: HMODULE;
+  SizeNeeded: DWORD;
+  ProcessName: String;
+  ProcessNameBuffer: PChar;
+  ProcessNameBufferSize: Cardinal;
+  RealProcessNameSize: Cardinal;
+  I: Integer;
+begin
+  Result := False;
+  if WindowsPlatformCompatibility=osWin95Comp then
+  begin
+    FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+    ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+    while ContinueLoop <> false do
+    begin
+      if (ExtractFileName(FProcessEntry32.szExeFile) = ExeFileName)
+        or (FProcessEntry32.szExeFile = ExeFileName) then
+      begin
+        Result := True;
+        break;
+      end;
+      ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+    end;
+    CloseHandle(FSnapshotHandle);
+  end
+  else
+  begin
+    ProcessNumber := 16;
+    GetMem(ProcessList, ProcessNumber * SizeOf(DWORD));
+    try
+      repeat
+        ProcessNumber := ProcessNumber * 2;
+        ReallocMem(ProcessList, ProcessNumber * SizeOf(DWORD));
+        BytesReturned := 0;
+        ProcessSize := ProcessNumber * SizeOf(DWORD);
+        if EnumProcesses(ProcessList, ProcessSize, BytesReturned) = false then
+          raise exception.Create('Unable to enumerate processes!');
+      until BytesReturned < ProcessSize;
+      ProcessNumber := BytesReturned div SizeOf(DWORD);
+      ProcessList2 := ProcessList;
+      for I:=0 to ProcessNumber-1 do
+      begin
+        ProcessHandle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, ProcessList2^);
+        if ProcessHandle <> 0 then
+        begin
+          if EnumProcessModules(ProcessHandle, @ProcessModule, SizeOf(ProcessModule), SizeNeeded) <> false then
+          begin
+            ProcessNameBufferSize := 128;
+            GetMem(ProcessNameBuffer, ProcessNameBufferSize * SizeOf(Char));
+            try
+              repeat
+                ProcessNameBufferSize := ProcessNameBufferSize * 2;
+                ReallocMem(ProcessNameBuffer, ProcessNameBufferSize * SizeOf(Char));
+                RealProcessNameSize := GetModuleBaseName(ProcessHandle, ProcessModule, ProcessNameBuffer, ProcessNameBufferSize);
+              until RealProcessNameSize < ProcessNameBufferSize;
+              if RealProcessNameSize > 0 then
+              begin
+                SetLength(ProcessName, RealProcessNameSize);
+                ProcessName := PChar(ProcessNameBuffer);
+                if CompareStr(ProcessName, exeFileName) = 0 then
+                begin
+                  Result:=True;
+                  break;
+                end;
+              end;
+            finally
+              FreeMem(ProcessNameBuffer);
+            end;
+          end;
+          CloseHandle(ProcessHandle);
+        end;
+        Inc(ProcessList2);
+      end;
+    finally
+      FreeMem(ProcessList);
+    end;
+  end;
+end;
+
+function WindowExists(WindowName: String): Boolean;
+var
+  FoundWindow: HWND;
+begin
+  FoundWindow:=FindWindow(nil, PChar(WindowName));
+  if FoundWindow<>0 then
+    Result := True
+  else
+    Result := False;
+end;
+
+function CheckWindowsNT: Boolean;
+begin
+  Result:=(WindowsPlatformCompatibility=osWinNTComp);
+end;
+
+function CheckWindowsVista: Boolean;
+begin
+  Result:=((WindowsPlatform = osWinVista) or (WindowsPlatform = osWin2008));
 end;
 
 Procedure LogSystemDetails;

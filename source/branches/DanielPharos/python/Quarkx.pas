@@ -23,6 +23,21 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2007/12/06 01:02:27  danielpharos
+Changed some of the Python version checking, and removed some redundant library-paths.
+
+Revision 1.49  2007/09/17 23:06:42  danielpharos
+Stop the disclaimer for disappearing sometimes, and move the splashscreen out of QuarkX.
+
+Revision 1.48  2007/08/21 10:26:40  danielpharos
+Small changes to let HL2 build again.
+
+Revision 1.47  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
+Revision 1.46  2007/08/02 16:15:57  danielpharos
+Added a commandline check, and an option in it to skip the splash screen. Also, some of the internal workings of the splash-screen were changed a bit.
+
 Revision 1.45  2007/04/10 12:25:34  danielpharos
 A potential fix for the infobase-help not opening on non-IE browsers.
 
@@ -160,11 +175,7 @@ uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
      Menus;
 
 const
-{$IFDEF PYTHON_SDK}
- PythonSetupString = 'import sys'#10'sys.path[:0] = ["%s"]'#10'import quarkpy';
-{$ELSE}
  PythonSetupString = 'import sys'#10'sys.path = ["%s"]'#10'import quarkpy';
-{$ENDIF}
  PythonRunPackage  = 'quarkpy.RunQuArK()';
  FatalErrorText    = 'Cannot initialize the Python interpreter. QuArK cannot start. Be sure QuArK is correctly installed; reinstall it if required.';
  FatalErrorCaption = 'QuArK Python';
@@ -226,7 +237,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      PyMath, PyCanvas, PyUndo, qmatrices, QkMapObjects, QkTextures,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
-     Output1, About, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
+     PakFiles, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
      QkApplPaths, MapError, StrUtils;
 
@@ -945,6 +956,36 @@ begin
     Result:=GetPyObj(g_SetupSet[TSetupSet(SetIndex)])
    else
     Result:=GetPyObj(SetupGameSet);
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xGetQuakeDir(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  Result:=PyString_FromString(PChar(QuakeDir));
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xGetGameDir(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  Result:=PyString_FromString(PChar(GetGameDir));
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function xGettmpQuArK(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  Result:=PyString_FromString(PChar(GettmpQuArK));
  except
   EBackToPython;
   Result:=Nil;
@@ -2258,6 +2299,7 @@ function xGetMapError(self, args: PyObject) : PyObject; cdecl;
 begin
  try
   Result:=PyString_FromString(PChar(g_MapError.Text));
+  g_MapError.Clear;
  except
   EBackToUser;
   Result:=Nil;
@@ -2478,9 +2520,9 @@ begin
   if not PyArg_ParseTupleX(args, 's|s', [@f, @b]) then
    Exit;
   if b=Nil then
-   Q:=NeedGameFile(f)
+   Q:=NeedGameFile(f, '')
   else
-   Q:=NeedGameFileBase(b, f);
+   Q:=NeedGameFileBase(b, f, '');
   Result:=GetPyObj(Q);
  except
   EBackToPython;
@@ -2553,12 +2595,15 @@ begin
 end;
 
 const
- MethodTable: array[0..69] of TyMethodDef =
+ MethodTable: array[0..72] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
    (ml_name: 'openfileobj';     ml_meth: xOpenFileObj;    ml_flags: METH_VARARGS),
    (ml_name: 'setupsubset';     ml_meth: xSetupSubSet;    ml_flags: METH_VARARGS),
+   (ml_name: 'getquakedir';     ml_meth: xGetQuakeDir;    ml_flags: METH_VARARGS),
+   (ml_name: 'getgamedir';      ml_meth: xGetGameDir;     ml_flags: METH_VARARGS),
+   (ml_name: 'gettmpquark';     ml_meth: xGettmpQuArK;    ml_flags: METH_VARARGS),
    (ml_name: 'lines2list';      ml_meth: xLines2List;     ml_flags: METH_VARARGS),
    (ml_name: 'list2lines';      ml_meth: xList2Lines;     ml_flags: METH_VARARGS),
    (ml_name: 'truncstr';        ml_meth: xTruncStr;       ml_flags: METH_VARARGS),
@@ -2597,7 +2642,7 @@ const
    (ml_name: 'getqctxlist';     ml_meth: xGetQCtxList;    ml_flags: METH_VARARGS),
    (ml_name: 'listfileext';     ml_meth: xListFileExt;    ml_flags: METH_VARARGS),
    (ml_name: 'filedialogbox';   ml_meth: xFileDialogBox;  ml_flags: METH_VARARGS),
-   (ml_name: 'examine';         ml_meth: xExamine;     ml_flags: METH_VARARGS),
+   (ml_name: 'examine';         ml_meth: xExamine;        ml_flags: METH_VARARGS),
    (ml_name: 'loadimages';      ml_meth: xLoadImages;     ml_flags: METH_VARARGS),
    (ml_name: 'reloadsetup';     ml_meth: xReloadSetup;    ml_flags: METH_VARARGS),
    (ml_name: 'screenrect';      ml_meth: xScreenRect;     ml_flags: METH_VARARGS),
@@ -2617,7 +2662,7 @@ const
    (ml_name: 'sethint';         ml_meth: xSetHint;        ml_flags: METH_VARARGS),
    (ml_name: 'helppopup';       ml_meth: xHelpPopup;      ml_flags: METH_VARARGS),
    (ml_name: 'helpmenuitem';    ml_meth: xHelpMenuItem;   ml_flags: METH_VARARGS),
-   (ml_name: 'entitymenuitem';    ml_meth: xEntityMenuItem;   ml_flags: METH_VARARGS),
+   (ml_name: 'entitymenuitem';  ml_meth: xEntityMenuItem; ml_flags: METH_VARARGS),
    (ml_name: 'htmldoc';         ml_meth: xHTMLDoc;        ml_flags: METH_VARARGS),
    (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;   ml_flags: METH_VARARGS),
    (ml_name: 'wait';            ml_meth: xWait;           ml_flags: METH_VARARGS),
@@ -2919,27 +2964,6 @@ begin
   Result:=Result+'.';
 end;
 
- {-------------------}
-
-function OpenSplashScreen : TForm;
-var
- Image1: TImage;
-begin
- Result:=TForm.CreateNew(Application);
- Result.Position:=poScreenCenter;
- Result.BorderStyle:=bsNone;
- Result.Color:=clWhite;
- {Result.FormStyle:=fsStayOnTop;}
- Image1:=TImage.Create(Result);
- Image1.Parent:=Result;
- Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');
- Image1.AutoSize:=True;
- Result.ClientWidth:=Image1.Width;
- Result.ClientHeight:=Image1.Height;
- Result.Show;
- Result.Update;
-end;
-
 var ProbableCauseOfFatalError: array[-9..3] of PChar = (
    {-9}    ' (Unable to initialise Python module "Quarkx")',
    {-8}    ' (Unable to find "quarkpy" directory or incorrect file versions)',
@@ -2984,49 +3008,31 @@ procedure PythonLoadMain;
 var
  S: String;
  I: Integer;
- Splash: TForm;
- Disclaimer: THandle;
 begin
- Splash:=OpenSplashScreen;
- try
-  Disclaimer:=DisclaimerThread(Splash);
-  try
-  {InitConsole;}
-   I:=InitializePython;
-   if I>0 then FatalError(I);
+ {InitConsole;}
+ I:=InitializePython;
+ if I>0 then FatalError(I);
 
-   SetApplicationPath(ExtractFilePath(Application.Exename));
+ SetApplicationPath(ExtractFilePath(Application.Exename));
 
-   if not InitializeQuarkx then FatalError(-9);
+ if not InitializeQuarkx then FatalError(-9);
 
-   S:=GetApplicationPath();
-   if (Length(S)>0) and (S[Length(S)]=PathDelim) then
-    SetLength(S, Length(S)-1);
-   for I:=Length(S) downto 1 do
-    if S[I]='\' then
-     System.Insert('\', S, I);
-   S:=Format(PythonSetupString, [S, S]);
-   { tiglari, peter-b:
-     S will now be the python commands:
-      import sys
-      sys.path=["<the path to the quark exe>", "<the path to the quark lib directory>"]
-      import quarkpy
-   }
-   if PyRun_SimpleString(PChar(S))<>0 then FatalError(-8);
-   InitSetup;
-   { tiglari:
-     runs quarkpy.RunQuArK(), defined in quarkpy.__init__.py;
-     mostly sets up icons and stuff like that.}
-   if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
-   PythonCodeEnd;
-   PythonUpdateAll;
-   WaitForSingleObject(Disclaimer, 10000);
-  finally
-   CloseHandle(Disclaimer);
-  end;
- finally
-  Splash.Release;
- end;
+ S:=GetApplicationPath();
+ if (Length(S)>0) and (S[Length(S)]=PathDelim) then
+  SetLength(S, Length(S)-1);
+ S:=Format(PythonSetupString, [StringReplace(S,'\','\\',[rfReplaceAll])]);
+ { S will now be the python commands:
+    import sys
+    sys.path=["<the path to the quark exe>"]
+    import quarkpy
+ }
+ if PyRun_SimpleString(PChar(S))<>0 then FatalError(-8);
+ InitSetup;
+ { runs quarkpy.RunQuArK(), defined in quarkpy.__init__.py;
+   mostly sets up icons and stuff like that.}
+ if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
+ PythonCodeEnd;
+ PythonUpdateAll;
 end;
 
 procedure PythonCodeEnd;

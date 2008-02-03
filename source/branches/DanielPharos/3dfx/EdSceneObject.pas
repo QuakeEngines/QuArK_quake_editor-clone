@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2007/12/06 00:59:34  danielpharos
+Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
+
+Revision 1.37  2007/11/29 22:27:32  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
+Revision 1.36  2007/10/16 22:30:48  danielpharos
+Stop the texture-loading bar from drawing (temporary), for the model editor animation.
+
+Revision 1.35  2007/09/04 14:38:12  danielpharos
+Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
+
 Revision 1.34  2007/06/06 22:31:20  danielpharos
 Fix a (recent introduced) problem with OpenGL not drawing anymore.
 
@@ -290,6 +302,7 @@ type
    FarDistance: TDouble;
    FogDensity: Single;
    ViewMode: TMapViewMode;
+   ShowProgress: Boolean;
    constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
@@ -300,7 +313,8 @@ type
                   var AllowsGDI: Boolean); virtual; abstract;
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
-   procedure SetViewRect(SX, SY: Integer); virtual; abstract;
+   procedure SetDrawRect(NewRect: TRect); virtual; abstract;
+   procedure SetViewSize(SX, SY: Integer); virtual; abstract;
    procedure SetViewDC(DC: HDC); virtual; abstract;
    procedure SetViewWnd(Wnd: HWnd; ResetViewDC: Boolean=false); virtual; abstract;
    procedure SetCoords(nCoord: TCoordinates);
@@ -863,31 +877,32 @@ begin
      Gauche:=0;
      Brush:=0;
 
-     // needed to backup to version 1.09, due to version 1.10 causing constant editor lockups.
+     if ShowProgress then
      { Setup a progress-bar, depending on what type of device-context
        thats been rendering to }
-     if ProgressDC=HDC(-1) then
-       ProgressIndicatorStart(5454, NewTextures)
-     else
-     begin
-       if ProgressDC<>0 then
+       if ProgressDC=HDC(-1) then
+         ProgressIndicatorStart(5454, NewTextures)
+       else
        begin
-         GetClipBox(ProgressDC, R);
-         Gauche:=(R.Right+R.Left-cProgressBarWidth) div 2;
-         R.Left:=Gauche;
-         R.Right:=Gauche+cProgressBarWidth;
-         R.Top:=(R.Top+R.Bottom-cProgressBarHeight) div 2;
-         R.Bottom:=R.Top+cProgressBarHeight;
-         SetBkColor(ProgressDC, $FFFFFF);
-         SetTextColor(ProgressDC, $000000);
-         TextePreparation:=LoadStr1(5454);
-         ExtTextOut(ProgressDC, Gauche+38, R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
-         InflateRect(R, +1, +1);
-         FrameRect(ProgressDC, R, GetStockObject(Black_brush));
-         InflateRect(R, -1, -1);
-         GdiFlush;
-         R.Right:=R.Left;
-         Brush:=CreateSolidBrush($FF0000);
+         if ProgressDC<>0 then
+         begin
+           GetClipBox(ProgressDC, R);
+           Gauche:=(R.Right+R.Left-cProgressBarWidth) div 2;
+           R.Left:=Gauche;
+           R.Right:=Gauche+cProgressBarWidth;
+           R.Top:=(R.Top+R.Bottom-cProgressBarHeight) div 2;
+           R.Bottom:=R.Top+cProgressBarHeight;
+           SetBkColor(ProgressDC, $FFFFFF);
+           SetTextColor(ProgressDC, $000000);
+           TextePreparation:=LoadStr1(5454);
+           ExtTextOut(ProgressDC, Gauche+38, R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
+           InflateRect(R, +1, +1);
+           FrameRect(ProgressDC, R, GetStockObject(Black_brush));
+           InflateRect(R, -1, -1);
+           GdiFlush;
+           R.Right:=R.Left;
+           Brush:=CreateSolidBrush($FF0000);
+         end;
        end;
      end;
 
@@ -900,19 +915,22 @@ begin
        begin
          if PList^.Texture=Nil then
          begin
+           if ShowProgress then
+           begin
            { update progressbar }
-           if ProgressDC=HDC(-1) then
-           begin
-             ProgressIndicatorIncrement;
-           end
-           else
-           begin
-             if ProgressDC<>0 then
+             if ProgressDC=HDC(-1) then
              begin
-               Inc(NewTexCount);
-               R.Right:=Gauche + MulDiv(cProgressBarWidth, NewTexCount, NewTextures);
-               FillRect(ProgressDC, R, Brush);
-               R.Left:=R.Right;
+               ProgressIndicatorIncrement;
+             end
+             else
+             begin
+               if ProgressDC<>0 then
+               begin
+                 Inc(NewTexCount);
+                 R.Right:=Gauche + MulDiv(cProgressBarWidth, NewTexCount, NewTextures);
+                 FillRect(ProgressDC, R, Brush);
+                 R.Left:=R.Right;
+               end;
              end;
            end;
 
@@ -924,9 +942,11 @@ begin
        end;
 
      finally
+       if ShowProgress then
+       begin
        { clean up the progress-bar }
-       if ProgressDC=HDC(-1) then
-         ProgressIndicatorStop;
+         if ProgressDC=HDC(-1) then
+           ProgressIndicatorStop;
        if Brush<>0 then
          DeleteObject(Brush);
        EndBuildScene;
@@ -1747,9 +1767,7 @@ begin
    S:=Q.GetTexImage(0)
   else
    S:=Image1.GetImage;
-  SetDIBitsToDevice(SrcDC, 0, 0,
-   Size.X, Size.Y, 0,0,0,Size.Y, PChar(S),
-   GameInfo^.BmpInfo, dib_RGB_Colors);
+  CopyToDC(Src, GameInfo^.BmpInfo, PChar(S), 0, 0);
 
   Dest:=PChar(info.data);
   MemSize:=w1*h1;

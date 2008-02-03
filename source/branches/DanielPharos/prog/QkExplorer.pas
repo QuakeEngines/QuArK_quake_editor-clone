@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/09/12 15:28:16  danielpharos
+Replaced redundant property.
+
+Revision 1.18  2007/09/10 10:24:19  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
+Revision 1.17  2006/04/06 19:28:06  nerdiii
+Texture memory wasn't freed because texture links had additional references to them.
+
 Revision 1.16  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -256,7 +265,7 @@ begin
  FGetFunc:=GetFunc;
 end;
 
-function DragObject;
+function DragObject: QExplorerGroup;
 begin
  if (FDragObject=Nil) and Assigned(FGetFunc) then
   begin
@@ -264,7 +273,7 @@ begin
    FDragObject.AddRef(+1);
    FGetFunc:=Nil;
   end;
- DragObject:=FDragObject;
+ Result:=FDragObject;
 end;
 
 function DragFlags: Integer;
@@ -1018,7 +1027,7 @@ function TQkExplorer.EffacerSelection;
    Result:=Odd(Sm);
    T.SelMult:=smNonSel or smSousSelVide;
    if Sm and smSousSelVide = 0 then
-    with T.SubElementsC do
+    with T.SubElements do
      for I:=0 to Count-1 do
       begin
        Q:=Items[I];
@@ -1474,6 +1483,8 @@ end;
 procedure TQkExplorer.DragOverEvt;
 begin
  Accept:=(DragFlags<>0) and (AllowEditing<>aeNo);
+ if Accept and (DragObject<>nil) then
+   Accept:=DragObject.AllowDrag(DropTarget);
 {FDragTag:=0;}
 end;
 
@@ -1484,6 +1495,7 @@ var
  Popup: TPopupMenu;
  Item: TMenuItem;
  FInternalDrop: Integer;
+ TargetClosed: Boolean;
 begin
 {if Selected<>Nil then
   Selected.EndEdit(True);}
@@ -1552,8 +1564,14 @@ begin
       Popup.Items.Add(Item);
      end;
    end;
+  TargetClosed:=DropTarget.IsClosed;
+  if (Flags and dfInsertGr = dfInsertGr) and TargetClosed and DragObject.AllowDrag(DropTarget) then
+  begin
+    DropTarget.Flags:=DropTarget.Flags or ofTreeViewExpanded;
+    TargetClosed:=False;
+  end;
   B:=Ord((Flags and (dfInsertGr or dfMoveHere) = dfInsertGr or dfMoveHere)
-   and DropTarget.IsClosed);
+   and TargetClosed);
   if (FInternalDrop and dfCopyToOutside = 0)
   and not RightButtonDrag then
    begin  { no menu - choose the default item }

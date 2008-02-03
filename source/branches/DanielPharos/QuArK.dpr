@@ -23,6 +23,24 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2008/02/03 13:12:46  danielpharos
+Update for the AutoUpdater. Beginning of the install-window.
+
+Revision 1.48  2008/01/31 16:07:18  danielpharos
+Added FTX file loading and saving support (Heavy Metal: F.A.K.K. 2 textures).
+
+Revision 1.47  2007/09/23 21:04:31  danielpharos
+Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
+
+Revision 1.46  2007/09/12 16:21:42  danielpharos
+Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
+
+Revision 1.45  2007/09/12 15:35:40  danielpharos
+Moved update settings to seperate config section and added beginnings of online update check.
+
+Revision 1.44  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.43  2007/07/05 10:22:36  danielpharos
 Moved the Quake .map format code to a separate file.
 
@@ -123,6 +141,7 @@ uses
   {FastMM4 in 'prog\FastMM4.pas',}     {Enable for FastMM, copy the debug DLL to the runtime directory}
   {MemCheck in 'prog\MemCheck.pas',}     {Enable for MemCheck, also see below}
   Forms,
+  DWM in '3dfx\DWM.pas',
   DX9 in '3dfx\DX9.pas',
   EdDirect3D in '3dfx\EdDirect3D.pas',
   EdGlide in '3dfx\EdGlide.pas',
@@ -154,6 +173,8 @@ uses
   qkskindrawobject in 'prog\model\qkskindrawobject.pas',
   QkSkinGroup in 'prog\model\QkSkinGroup.pas',
   About in 'prog\About.pas' {AboutBox},
+  AutoUpdater in 'prog\AutoUpdater.pas' {AutoUpdater},
+  AutoUpdateInstaller in 'prog\AutoUpdateInstaller.pas' {AutoUpdateInstaller},
   Bezier in 'prog\Bezier.pas',
   CCode in 'prog\CCode.pas',
   Config in 'prog\Config.pas' {ConfigDlg},
@@ -166,14 +187,17 @@ uses
   Game in 'prog\Game.pas' {GameCfgDlg},
   Game2 in 'prog\Game2.pas' {AddOnsAddDlg},
   HelpPopup1 in 'prog\HelpPopup1.pas' {HelpPopup},
+  HTTP in 'prog\HTTP.pas',
   Keys in 'prog\Keys.pas' {KeyDlg},
   KeySel in 'prog\KeySel.pas' {KeySelDlg},
   Logging in 'prog\Logging.pas',
   MapError in 'prog\MapError.pas',
+  MD5Hash in 'prog\MD5Hash.pas',
   NewFolder in 'prog\NewFolder.pas' {NewFolderDlg},
   ObjProp in 'prog\ObjProp.pas' {FormObjProp},
   OsFolder in 'prog\OsFolder.pas',
   Output1 in 'prog\Output1.pas' {OutputDirDlg},
+  PakFiles in 'prog\PakFiles.pas',
   Qk1 in 'prog\Qk1.pas' {Form1},
   Qk3D in 'prog\Qk3D.pas',
   QkApplPaths in 'prog\QkApplPaths.pas',
@@ -187,6 +211,7 @@ uses
   QkExplorer in 'prog\QkExplorer.pas',
   QkFileExplorer in 'prog\QkFileExplorer.pas',
   QkFileObjects in 'prog\QkFileObjects.pas' {QForm1},
+  QkFTX in 'prog\QkFTX.pas',
   QkForm in 'prog\QkForm.pas',
   QkFormCfg in 'prog\QkFormCfg.pas',
   QkFormVw in 'prog\QkFormVw.pas' {FQFormVw},

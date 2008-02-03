@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2007/08/15 16:28:08  danielpharos
+HUGE update to HL2: Took out some code that's now not needed anymore.
+
 Revision 1.33  2007/07/05 10:18:28  danielpharos
 Moved a string to the dictionary.
 
@@ -198,17 +201,13 @@ var
   RawData, RawData2: PByte;
   HasAlpha: Boolean;
   V: array[1..2] of Single;
-  ReloadVTFLib: Boolean;
 begin
   Log(LOG_VERBOSE,'Loading VTF file: %s',[self.name]);;
   case ReadFormat of
     1: begin  { as stand-alone file }
 
-      ReloadVTFLib:=ReloadNeededVTFLib;
-      if (not VTFLoaded) or ReloadVTFLib then
+      if not VTFLoaded then
       begin
-        if ReloadVTFLib then
-          VTFLoaded:=false;
         if not LoadVTFLib then
           Raise EErrorFmt(5718, [GetLastError]);
         VTFLoaded:=true;
@@ -348,7 +347,6 @@ var
 
   VTFImage: Cardinal;
   TexFormat, ImageFormat: VTFImageFormat;
-  ReloadVTFLib: Boolean;
   I, J: Integer;
   OutputSize: Cardinal;
 begin
@@ -357,11 +355,8 @@ begin
   case Format of
   1:
   begin  { as stand-alone file }
-    ReloadVTFLib:=ReloadNeededVTFLib;
-    if (not VTFLoaded) or ReloadVTFLib then
+    if not VTFLoaded then
     begin
-      if ReloadVTFLib then
-        VTFLoaded:=false;
       if not LoadVTFLib then
         Raise EErrorFmt(5718, [GetLastError]);
       VTFLoaded:=true;

@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/09/10 10:24:15  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
+Revision 1.7  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2001/03/20 21:36:53  decker_dk
 Updated copyright-header
 
@@ -47,6 +53,7 @@ type
   QModelTag = class(QMdlObject)
   public
     class function TypeInfo: String; override;
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
     procedure ObjectState(var E: TEtatObjet); override;
     Procedure SetPosition(p: vec3_t);
     Function GetPosition: vec3_p;
@@ -56,7 +63,15 @@ type
 
 implementation
 
-uses QkObjectClassList;
+uses QkObjectClassList, QkModelRoot;
+
+function QModelTag.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or (Parent is QModelRoot) then
+    Result:=true
+  else
+    Result:=false;
+end;
 
 procedure QModelTag.SetPosition(P: vec3_t);
 const

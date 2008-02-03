@@ -20,9 +20,8 @@ Info = {
    "quark":         "Version 5.3" }
 
 
-import quarkpy.qhandles   
+import quarkpy.qhandles
 from quarkpy.mdlmgr import *
-import quarkpy.mdleditor
 
 #
 # See comments in map4viewslayout.py.
@@ -32,7 +31,6 @@ class FourViewsLayout(ModelLayout):
     "The 4-views layout, abstract class for FourViewsLayout1 and FourViewsLayout2."
 
     def buildbase(self, form):
-        self.editor = mdleditor.mdleditor
 
         #
         # We put the standard left panel first.
@@ -53,6 +51,10 @@ class FourViewsLayout(ModelLayout):
         self.ViewXZ.viewtype="editor"
         self.ViewYZ.viewtype="editor"
         self.View3D.viewtype="editor"
+        self.ViewXY.showprogress=0
+        self.ViewXZ.showprogress=0
+        self.ViewYZ.showprogress=0
+        self.View3D.showprogress=0
 
         #
         # Put these 4 views in the view lists.
@@ -310,6 +312,15 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.13  2007/12/19 12:41:11  danielpharos
+# Small code clean-up
+#
+# Revision 1.12  2007/12/06 04:57:14  cdunde
+# To stop the progressbars in all of the Model Editors views.
+#
+# Revision 1.11  2007/12/06 00:59:21  danielpharos
+# Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
+#
 # Revision 1.10  2007/06/05 22:42:26  cdunde
 # To set the qbaseeditor's global currentview for proper creation and
 # drawing of handles when switching from one layout to another.

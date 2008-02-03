@@ -249,13 +249,8 @@ def projTexClick(m):
 
 
 def chooseTexture(m):
-  editor = mapeditor()
-  texlist = quarkx.texturesof(editor.layout.explorer.sellist)
-  if len(texlist)==1:
-      seltex = quarkx.loadtexture(texlist[0], editor.TexSource)
-  else:
-      seltex = None
-  quarkx.opentoolbox("", seltex)
+  import quarkpy.mapbtns
+  quarkpy.mapbtns.texturebrowser()
 
 
 def posTexClick(m):
@@ -405,6 +400,12 @@ quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.12  2007/12/28 23:22:41  cdunde
+# Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
+#
+# Revision 1.11  2005/10/15 00:51:56  cdunde
+# To reinstate headers and history
+#
 # Revision 1.8  2005/08/26 02:19:11  cdunde
 # To fix error for games that do not use texture flags or the
 #  texture flags form had not been setup in the data.qrk file.

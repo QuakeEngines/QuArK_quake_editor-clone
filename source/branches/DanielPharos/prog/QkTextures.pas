@@ -23,6 +23,27 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2007/11/20 18:28:07  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
+Revision 1.58  2007/09/13 14:34:52  danielpharos
+The name of a pakfile containing a texture can now be specified per texture
+
+Revision 1.57  2007/09/12 15:39:51  danielpharos
+Small file cleanup.
+
+Revision 1.56  2007/09/12 15:23:28  danielpharos
+Added option to stop texturename checks
+
+Revision 1.55  2007/09/12 15:18:36  danielpharos
+Get the Steam pak-file name from the Defaults.
+
+Revision 1.54  2007/09/04 15:26:36  danielpharos
+Fix for the 'Unknown attribute' error when ShadersPath is not defined for the current game mode.
+
+Revision 1.53  2007/08/14 16:33:00  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.52  2007/03/17 15:43:12  danielpharos
 Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
 
@@ -245,6 +266,20 @@ const
  {TEX_FLAGS_TRANSPARENT33 = 16;
   TEX_FLAGS_TRANSPARENT66 = 32;}
 
+{
+  QFileObject
+   +-- QTexture
+   |    +-- QTextureFile
+   |         +-- QTexture1
+   |         +-- QTexture2
+   |         +-- QTextureSin
+   |         +-- QTextureKP
+   +-- QImage
+        +-- QBmp
+        +-- QPcx
+        +-- QTga
+}
+
 type
 {TTexture3D = record
                TexW, TexH: LongInt;
@@ -267,7 +302,6 @@ type
               function BaseGame : Char; virtual; abstract;
               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
               function TestConversionType(I: Integer) : QFileObjectClass; override;
-             {function PyGetAttr(attr: PChar) : PyObject; override;}
             end;
  QTextureLnk = class(QTexture)  { link to a QPixelSet object in the game's directories }
                protected
@@ -394,8 +428,8 @@ implementation
 
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
-  CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkFormCfg,
-  QkQ1, QkQ2, QkObjectClassList, QkD3;
+  CCode, PyObjects, QkHr2, QkHL, QkSin, QkFormCfg,
+  QkQ1, QkQ2, QkQ3, QkObjectClassList, QkD3;
 
 {$R *.DFM}
 
@@ -442,7 +476,7 @@ function GameShadersPath : String;
 begin
   Result:=SetupGameSet.Specifics.Values['ShadersPath'];
   if Result='' then
-    Raise EError(4429);
+    Result:=GameTexturesPath;
 end;
 
 function ScaleDown(var W, H: Integer) : Boolean;
@@ -625,7 +659,7 @@ var
               else   { #255 means direct file name }
               begin
                 try
-                  Tex1:=NeedGameFile(Copy(TexName,2,MaxInt)) as QPixelSet;
+                  Tex1:=NeedGameFile(Copy(TexName,2,MaxInt), '') as QPixelSet;
                 except
                   Tex1:=Nil;  { file not found, silently ignore }
                 end;
@@ -730,7 +764,7 @@ var
           end
           else
           begin
-            Q:=NeedGameFile(WriteTo);
+            Q:=NeedGameFile(WriteTo, '');
             Q.AddRef(+1);
             try
               Q.SaveInFile(rf_Default, OutputFile(WriteTo));
@@ -1162,21 +1196,20 @@ begin
       S:=Specifics.Values[StdGameTextureLinks[I].LinkSpecificChar];
       if S<>'' then
       begin   { standard link }
-        // for hl2 we need individual paths
         if CharModeJeu=mjHL2 then
         begin
           try // failing to load the textures produces an exception
-            Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
+            Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt, Specifics.Values['PakFile']) as QPixelSet;
           except
             // fall back to vtf file loading if default texture extension (vmt) fails
             if Link=Nil then
-              Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+'.vtf') as QPixelSet;
+              Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+'.vtf', Specifics.Values['PakFile']) as QPixelSet;
           end;
           if Link=Nil then
             Raise EErrorFmt(5755, [TexName, Arg]);
         end
         else
-          Link:=NeedGameFileBase(S, GameTexturesPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
+          Link:=NeedGameFileBase(S, GameTexturesPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt, '') as QPixelSet;
 
         Link.AddRef(+1);
         Link.Acces;  { we found the linked texture }
@@ -1211,7 +1244,7 @@ begin
             // Arg is the game's shader (Q3) or material (D3/Q4) full file name.
             // So the line below MaterialFile:= gives the game folder, file folder, full file name of the shader/material for the link
             // witch is (as a Doom 3 example): base + materials/alphalabs.mtr
-            MaterialFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['MaterialsPath']+Arg) as D3MaterialFile;
+            MaterialFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['MaterialsPath']+Arg, '') as D3MaterialFile;
             MaterialFile.Acces;  { load the .mtr file (if not already loaded), meaning this loads the entire .mtr file.}
 
             // GameTexturesPath is the IMAGE MAIN folder, for the link, with a forward slash, textures/ .
@@ -1236,7 +1269,7 @@ begin
           else
            begin
             // the original code (Quake 3 shader)
-            ShaderFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['ShadersPath']+Arg) as QShaderFile;
+            ShaderFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['ShadersPath']+Arg, '') as QShaderFile;
             ShaderFile.Acces;  { load the .shader file (if not already loaded) }
             Link:=ShaderFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
 
@@ -1250,7 +1283,7 @@ begin
            end;
         end
         else  { direct (non-shader) }
-          Link:=NeedGameFileBase(S, GameTexturesPath+TexName+'.tga') as QPixelSet;
+          Link:=NeedGameFileBase(S, GameTexturesPath+TexName+SetupGameSet.Specifics.Values['TextureFormat'], '') as QPixelSet;
 
         Link.AddRef(+1);
         Link.Acces;  { we found the linked texture }
@@ -1276,7 +1309,7 @@ begin
           if Arg='' then
             Raise EError(5518);
 
-          TexList:=NeedGameFileBase(Arg, GameTexturesPath+S+'.wad') as QWad;
+          TexList:=NeedGameFileBase(Arg, GameTexturesPath+S+'.wad', '') as QWad;
           TexList.AddRef(+1);
           try
             TexList.Acces;
@@ -1297,7 +1330,7 @@ begin
           if (S='') or (Arg='') then
             Raise EError(5518);
           ChangeGameMode(mjNotQuake2, True);
-          Bsp:=NeedGameFileBase(Arg, 'maps/'+S+'.bsp') as QBsp;
+          Bsp:=NeedGameFileBase(Arg, 'maps/'+S+'.bsp', '') as QBsp;
           Bsp.AddRef(+1);
           try
             TexList:=Bsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;
@@ -1931,7 +1964,8 @@ end;
 
 procedure QTextureFile.CheckTexName;
 begin
-  CheckForName(nName, GetTexName);
+  if SetupSubSet(ssGeneral, 'Display').Specifics.Values['TextureNameCheck']<>'' then
+    CheckForName(nName, GetTexName);
 end;
 
 function QTextureFile.GetTexName : String;
@@ -2141,8 +2175,7 @@ begin
          biWidth:=W;
          biHeight:=H;
 *        end;
-       SetDIBitsToDevice(DC, X, (CH-H) div 2,
-        W, H, 0,0,0,H, Data, Info^.BmpInfo, dib_RGB_Colors);
+       DrawToDC(DC, Info^.BmpInfo, Data, X, (CH-H) div 2);
        Inc(X, W + Step);
        if not ScaleDown(W,H) then Break;
       end;

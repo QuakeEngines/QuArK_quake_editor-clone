@@ -17,7 +17,7 @@ import qtoolbar
 from qdictionnary import Strings
 from maputils import *
 from b2utils import *
-
+import qutils
 
 
 #
@@ -93,6 +93,11 @@ def dropitemsnow(editor, newlist, text=Strings[544], center=quarkx.vect(0,0,0)):
             msg = Strings[-101]
             #if "Image" in newitem.classes:
             #    msg = msg + Strings[-102]
+            quarkx.msgbox(msg, MT_ERROR, MB_OK)
+            return
+        if not newitem.isallowedparent(nparent):
+            undo.cancel()    # not required, but it's better when it's done
+            msg = Strings[-106]
             quarkx.msgbox(msg, MT_ERROR, MB_OK)
             return
         new = newitem.copy()
@@ -353,7 +358,9 @@ def edit_newgroup(editor, m=None):
 
 def texturebrowser(reserved=None):
     "Opens the texture browser."
-
+    editor = mapeditor()
+    if editor is None:
+        return
     #
     # Get the texture to select from the current selection.
     #
@@ -371,7 +378,39 @@ def texturebrowser(reserved=None):
     #
     # Open the Texture Browser tool box.
     #
+    tbx_list = quarkx.findtoolboxes("Texture Browser...");
+    ToolBoxName, ToolBox = tbx_list[0]
+    for ToolBoxFolder in ToolBox.subitems:
+        if ToolBoxFolder.name == "Used Textures.txlist":
+            ToolBoxFolder.parent.removeitem(ToolBoxFolder)			
+            break
 
+    Folder = quarkx.newobj("Used Textures.txlist")
+    Folder.flags = qutils.OF_TVSUBITEM
+
+    UsedTexturesList = quarkx.texturesof([editor.Root])
+ #   NoImageFile = None
+    for UsedTextureName in UsedTexturesList:
+        UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
+ #       if quarkx.setupsubset()["ShadersPath"] is not None:
+ #           try:
+ #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+ #               UsedTexture["a"] = (GameFilesPath+("/")+quarkx.setupsubset()["ShadersPath"]+("sky.shader")+("[textures/")+UsedTextureName+("]"))
+ #           except:
+ #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+ #       else:
+ #           try:
+ #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+ #           except:
+ #               NoImageFile = 1
+        UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.setupsubset()["BaseDir"])
+        UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
+        Folder.appenditem(UsedTexture)
+ #   if NoImageFile is not None:
+ #       pass
+ #   else:
+ #       ToolBox.appenditem(Folder)
+    ToolBox.appenditem(Folder)
     quarkx.opentoolbox("", seltex)
 
 
@@ -709,6 +748,19 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.31  2007/12/28 23:22:41  cdunde
+#Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
+#
+#Revision 1.30  2007/12/25 08:13:40  cdunde
+#Fixed a bug with the opening the Texture Browser window icon button.
+#
+#Revision 1.29  2007/12/14 21:48:00  cdunde
+#Added many new beizer shapes and functions developed by our friends in Russia,
+#the Shine team, Nazar and vodkins.
+#
+#Revision 1.28  2007/09/10 10:24:25  danielpharos
+#Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+#
 #Revision 1.27  2007/04/03 15:17:44  danielpharos
 #Read the recenter option for the correct editor mode.
 #

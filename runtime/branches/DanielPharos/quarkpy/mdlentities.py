@@ -51,6 +51,7 @@ class EntityManager:
         "Called to draw the Model's Mesh for the 'Component' object 'o'"
         "when in 'Textured' or 'Solid' view mode, for each animation 'frame'."
 
+        import qhandles
         if view.info["viewname"] == "XY":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
                 if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
@@ -94,8 +95,10 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
-            if editor.ModelFaceSelList != []: # draws model mesh faces, if selected, during rotation and panning pauses
-                mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.ModelFaceSelList)
+            if editor.ModelFaceSelList != []:
+                # draws model mesh faces, if selected, while rotating, panning or zooming.
+                if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
+                    mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
 
         elif view.info["viewname"] == "3Dwindow":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
@@ -107,15 +110,18 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
-            if editor.ModelFaceSelList != []: # draws model mesh faces, if selected, during rotation and panning pauses
-                mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.ModelFaceSelList)
+            if editor.ModelFaceSelList != []:
+                # draws model mesh faces, if selected, while rotating, panning or zooming.
+                if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
+                    mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
         else:
             view.drawmap(o, mode)  # draws default color for model mesh lines
 
     def drawsel(o, view, mode):
         "Called to draw the Model's Mesh for the 'Component' object 'o'"
         "when in 'Wireframe' view mode, for each animation 'frame'."
- 
+
+        import qhandles
         from mdleditor import mdleditor
         editor = mdleditor
         if view.info["viewname"] == "XY":
@@ -161,6 +167,10 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor1", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            if editor.ModelFaceSelList != []:
+                # draws model mesh faces, if selected, while rotating, panning or zooming.
+                if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
+                    mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
 
         elif view.info["viewname"] == "3Dwindow":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh5"] == "1":
@@ -172,6 +182,10 @@ class EntityManager:
                 pass
             meshcolor = MapColor("Options3Dviews_frameColor5", SS_MODEL)
             view.drawmap(o, DM_OTHERCOLOR, meshcolor)  # draws selected color for model mesh lines
+            if editor.ModelFaceSelList != []:
+                # draws model mesh faces, if selected, while rotating, panning or zooming.
+                if isinstance(editor.dragobject, qhandles.Rotator2D) or isinstance(editor.dragobject, qhandles.ScrollViewDragObject) or isinstance(editor.dragobject, qhandles.FreeZoomDragObject):
+                    mdlhandles.ModelFaceHandle(mode).draw(editor, view, editor.EditorObjectList)
         else:
             view.drawmap(o, mode)  # draws default color for model mesh lines
 
@@ -218,11 +232,14 @@ def ShowHideComp(x):
     if editor is None: return
     import mdleditor
     editor.ModelFaceSelList = []
+    editor.EditorObjectList = []
     editor.SkinFaceSelList = []
+    editor.SelCommonTriangles = []
+    editor.SelVertexes = []
     obj = editor.layout.explorer.uniquesel
     if obj is None: return
     obj.showhide(x)
-  #  editor.invalidateviews(1)
+
     if x == 0:
         for view in editor.layout.views:
             view.handles = []
@@ -231,12 +248,25 @@ def ShowHideComp(x):
             else:
                 view.invalidate(1)
     else:
+        import mdlhandles
+        from mdlhandles import SkinView1
+        if SkinView1 is not None:
+            q = editor.layout.skinform.linkedobjects[0]
+            q["triangles"] = str(len(editor.Root.currentcomponent.triangles))
+            editor.layout.skinform.setdata(q, editor.layout.skinform.form)
+            SkinView1.invalidate()
+            try:
+                skindrawobject = editor.Root.currentcomponent.currentskin
+            except:
+                skindrawobject = None
+            mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
+            editor.finishdrawing(SkinView1)
+
         for view in editor.layout.views:
             if view.viewmode == "wire":
                 pass
             else:
                 view.invalidate(1)
-    #    mdleditor.commonhandles(editor)
             mdleditor.setsingleframefillcolor(editor, view)
             view.repaint()
 
@@ -253,8 +283,14 @@ class ComponentType(EntityManager):
         import qmenu
         SC1 = qmenu.item("&Show Component", ShowComp)
         HC1 = qmenu.item("&Hide Component", HideComp)
+
+        if len(o.triangles) == 0:
+            HC1.state = qmenu.disabled
+        else:
+            SC1.state = qmenu.disabled
+
         import mdlmenus
-        return CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor) + [SC1, HC1]
+        return CallManager("menubegin", o, editor) + mdlmenus.BaseMenu([o], editor) + [qmenu.sep, SC1, HC1]
  
 
     def handles(o, editor, view):
@@ -267,10 +303,10 @@ class ComponentType(EntityManager):
 
     def handlesopt(o, editor):
         "A Model's COMPONENT currentframe 'frame' MESH, each animation Frame has its own."
-        frame = o.currentframe
-        if frame is None:
+        if o.type != ':mf':
             return []
         else:
+            frame = o
             return CallManager("handlesopt", frame, editor)
 
 
@@ -399,6 +435,27 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.24  2007/11/14 00:11:13  cdunde
+#Corrections for face subdivision to stop models from drawing broken apart,
+#update Skin-view "triangles" amount displayed and proper full redraw
+#of the Skin-view when a component is un-hidden.
+#
+#Revision 1.23  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
+#Revision 1.22  2007/10/24 14:57:43  cdunde
+#Added disabled to Hide and Show Component menu items for easer distinction.
+#
+#Revision 1.21  2007/10/09 04:16:25  cdunde
+#To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
+#
+#Revision 1.20  2007/09/01 19:36:40  cdunde
+#Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
+#Changed selected face outline drawing method to greatly increase drawing speed.
+#
+#Revision 1.19  2007/08/01 07:37:30  cdunde
+#Changed to only allow model component frames to cause handles to be drawn, as should be the case.
+#
 #Revision 1.18  2007/06/20 22:04:08  cdunde
 #Implemented SkinFaceSelList for Skin-view for selection passing functions from the model editors views
 #and start of face selection capabilities in the Skin-view for future functions there.

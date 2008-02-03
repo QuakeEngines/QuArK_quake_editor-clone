@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2007/11/20 18:28:06  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
+Revision 1.10  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.8  2001/03/20 21:46:48  decker_dk
 Updated copyright-header
 
@@ -91,7 +97,7 @@ type
 
 implementation
 
-uses Quarkx, QkObjectClassList;
+uses Quarkx, QkObjectClassList, QkPixelSet;
 
 const
  EstimatedFrameSize = 20173;   { rough estimate based on Quake 2's "end.cin" }
@@ -398,9 +404,7 @@ begin
  GetClientRect(DestWnd, Rect);
  L:=((Rect.Right-FrameWidth) div 2) and not 3;
  T:=(Rect.Bottom-FrameHeight) div 2;
- SetDIBitsToDevice(DestDC, L,T, FrameWidth, FrameHeight,
-  0,0, 0,FrameHeight, ImageHdr[outHdr],
-  PBitmapInfo(@BmpInfo[outHdr])^, dib_RGB_Colors);
+ DrawToDC(DestDC, PBitmapInfo(@BmpInfo[outHdr])^, ImageHdr[outHdr], 0, 0);
  if not (Continous and NoBlackFrame) then
   begin
    R:=L+FrameWidth;

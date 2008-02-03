@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2007/12/06 22:58:00  danielpharos
+Workaround for a weird memory leak.
+
+Revision 1.42  2007/09/24 00:15:55  danielpharos
+Made MaxRecentFiles a configurable option.
+
+Revision 1.41  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.39  2005/07/04 18:53:20  alexander
 changed steam acces to be a protocol steamaccess://
 
@@ -156,11 +165,6 @@ const
   TagToDelete  = '~Qk';
   TagToDelete2 = 'SQk';
   TagAutoSave  = 'AQk';
-
-  MaxRecentFiles = 5;
-
-  AddonsPath = 'addons\';
-  CachedCompiledVersion = '.compiled';
 
 type
   TFileObjectWndState = (cmNone, cmWindow, cmOwnExplorer);
@@ -310,6 +314,7 @@ function SaveObject(FFileObject: QFileObject; AskName, Duplicate: Integer; Paren
 function GetFileRoot(Q: QObject) : QFileObject;
 procedure CheckForName(const Name1, Name2: String);
 procedure AddToRecentFiles(const FileName: String);
+procedure ResizeRecentFiles;
 procedure RestoreAutoSaved(const Ext: String);
 
 function ByName(Item1, Item2: Pointer) : Integer;
@@ -1881,6 +1886,8 @@ begin
            FilterIndex:=SavingAsText;
           Inc(SavingAsText);
          end;
+        Info1.FileObjectDescriptionText:='';
+        Info1.DefaultExt:='';
        end;
       Inc(I);
      until False;
@@ -2010,18 +2017,49 @@ procedure AddToRecentFiles(const FileName: String);
 var
  L: TStringList;
  J: Integer;
+ MaxRecentFiles: Integer;
 begin   { adds the file to the list of recently opened files }
- L:=TStringList.Create; try
- L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
- J:=L.IndexOf(FileName);
- if J>=0 then
-  L.Delete(J);
- L.Insert(0, FileName);
- while L.Count>MaxRecentFiles do
-  L.Delete(MaxRecentFiles);
- g_SetupSet[ssGeneral].Specifics.Values['RecentFiles']:=StringListConcatWithSeparator(L, $0D);
- UpdateSetup(scMinimal);
- finally L.Free; end;
+ L:=TStringList.Create;
+ try
+  L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
+  MaxRecentFiles:=Round(SetupSubSet(ssGeneral, 'Display').GetFloatSpec('MaxRecentFiles', 5));
+  J:=L.IndexOf(FileName);
+  if J>=0 then
+   L.Delete(J);
+  L.Insert(0, FileName);
+  while L.Count>MaxRecentFiles do
+   L.Delete(MaxRecentFiles);
+  g_SetupSet[ssGeneral].Specifics.Values['RecentFiles']:=StringListConcatWithSeparator(L, $0D);
+  UpdateSetup(scMinimal);
+ finally
+  L.Free;
+ end;
+end;
+
+procedure ResizeRecentFiles;
+var
+ L: TStringList;
+ MaxRecentFiles: Integer;
+ Resized: Boolean;
+begin   { resizes the list of recently opened files to the correct number of files }
+ L:=TStringList.Create;
+ try
+  L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
+  MaxRecentFiles:=Round(SetupSubSet(ssGeneral, 'Display').GetFloatSpec('MaxRecentFiles', 5));
+  Resized:=False;
+  while L.Count>MaxRecentFiles do
+  begin
+   L.Delete(MaxRecentFiles);
+   Resized:=True;
+  end;
+  if Resized then
+  begin
+    g_SetupSet[ssGeneral].Specifics.Values['RecentFiles']:=StringListConcatWithSeparator(L, $0D);
+    UpdateSetup(scMinimal);
+  end;
+ finally
+  L.Free;
+ end;
 end;
 
 procedure RestoreAutoSaved;

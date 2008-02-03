@@ -5716,32 +5716,39 @@ function UnLoadDirectDraw: Boolean;
 function LoadDirectDraw: Boolean;
 
 
-function DirectDrawEnumerateA(lpCallback: TDDEnumCallbackA; lpContext: Pointer): HResult; stdcall; external DirectDrawDll;
+var
+  DirectDrawEnumerateA: function (lpCallback: TDDEnumCallbackA; lpContext: Pointer): HResult; stdcall;
 {$EXTERNALSYM DirectDrawEnumerateA}
-function DirectDrawEnumerateW(lpCallback: TDDEnumCallbackW; lpContext: Pointer): HResult; stdcall; external DirectDrawDll;
+var
+  DirectDrawEnumerateW: function (lpCallback: TDDEnumCallbackW; lpContext: Pointer): HResult; stdcall;
 {$EXTERNALSYM DirectDrawEnumerateW}
-function DirectDrawEnumerate(lpCallback: TDDEnumCallback; lpContext: Pointer): HResult; stdcall;
-  external DirectDrawDll name 'DirectDrawEnumerateA';
+var
+  DirectDrawEnumerate: function (lpCallback: TDDEnumCallback; lpContext: Pointer): HResult; stdcall;
 {$EXTERNALSYM DirectDrawEnumerate}
 
-function DirectDrawEnumerateExA(lpCallback: TDDEnumCallbackExA; lpContext: Pointer; dwFlags: DWORD): HResult; stdcall; external DirectDrawDll;
+var
+  DirectDrawEnumerateExA: function (lpCallback: TDDEnumCallbackExA; lpContext: Pointer; dwFlags: DWORD): HResult; stdcall;
 {$EXTERNALSYM DirectDrawEnumerateExA}
-function DirectDrawEnumerateExW(lpCallback: TDDEnumCallbackExW; lpContext: Pointer; dwFlags: DWORD): HResult; stdcall; external DirectDrawDll;
+var
+  DirectDrawEnumerateExW: function (lpCallback: TDDEnumCallbackExW; lpContext: Pointer; dwFlags: DWORD): HResult; stdcall;
 {$EXTERNALSYM DirectDrawEnumerateExW}
-function DirectDrawEnumerateEx(lpCallback: TDDEnumCallbackEx; lpContext: Pointer; dwFlags: DWORD): HResult; stdcall;
-  external DirectDrawDll name 'DirectDrawEnumerateExA';
+var
+  DirectDrawEnumerateEx: function (lpCallback: TDDEnumCallbackEx; lpContext: Pointer; dwFlags: DWORD): HResult; stdcall;
 {$EXTERNALSYM DirectDrawEnumerateEx}
 
-function DirectDrawCreate(lpGUID: PGUID; out lplpDD: IDirectDraw;
-    pUnkOuter: IUnknown): HResult; stdcall; external DirectDrawDll;
+var
+  DirectDrawCreate: function (lpGUID: PGUID; out lplpDD: IDirectDraw;
+    pUnkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectDrawCreate}
 
-function DirectDrawCreateEx(lpGUID: PGUID; out lplpDD: IDirectDraw7;
-    const iid: TGUID; pUnkOuter: IUnknown): HResult; stdcall; external DirectDrawDll;
+var
+  DirectDrawCreateEx: function (lpGUID: PGUID; out lplpDD: IDirectDraw7;
+    const iid: TGUID; pUnkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectDrawCreateEx}
 
-function DirectDrawCreateClipper(dwFlags: DWORD; out lplpDDClipper: IDirectDrawClipper;
-    pUnkOuter: IUnknown): HResult; stdcall; external DirectDrawDll;
+var
+  DirectDrawCreateClipper: function (dwFlags: DWORD; out lplpDDClipper: IDirectDrawClipper;
+    pUnkOuter: IUnknown): HResult; stdcall;
 {$EXTERNALSYM DirectDrawCreateClipper}
 
 
@@ -6961,4 +6968,79 @@ begin // Stub function for static linking
 end;
 
 
+
+
+var
+  HDDraw  : HMODULE;
+
+function LoadDDraw: Boolean;
+begin
+  HDDraw := LoadLibrary('ddraw.dll');
+  If HDDraw = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectDrawEnumerateW := GetProcAddress(HDDraw, 'DirectDrawEnumerateW');
+  If @DirectDrawEnumerateW = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectDrawEnumerate := GetProcAddress(HDDraw, 'DirectDrawEnumerateA');
+  If @DirectDrawEnumerate = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectDrawEnumerateExA := GetProcAddress(HDDraw, 'DirectDrawEnumerateExA');
+  If @DirectDrawEnumerateExA = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectDrawEnumerateExW := GetProcAddress(HDDraw, 'DirectDrawEnumerateExW');
+  If @DirectDrawEnumerateExW = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectDrawEnumerateEx := GetProcAddress(HDDraw, 'DirectDrawEnumerateExA');
+  If @DirectDrawEnumerateEx = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectDrawCreate := GetProcAddress(HDDraw, 'DirectDrawCreate');
+  If @DirectDrawCreate = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectDrawCreateEx := GetProcAddress(HDDraw, 'DirectDrawCreateEx');
+  If @DirectDrawCreateEx = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  @DirectDrawCreateClipper := GetProcAddress(HDDraw, 'DirectDrawCreateClipper');
+  If @DirectDrawCreateClipper = nil Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadDDraw: Boolean;
+begin
+  If FreeLibrary(HDDraw) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
 end.
+

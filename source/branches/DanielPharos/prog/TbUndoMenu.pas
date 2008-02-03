@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/12/21 01:09:48  danielpharos
+Undo objects without any text are now invisible in the Undo menu
+
+Revision 1.7  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2001/06/05 18:42:10  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -120,6 +126,7 @@ var
  I: Integer;
  L: TStringList;
  R: PUndoRoot;
+ S: String;
 begin
  R:=CurrentUndoRoot;
  if R<>Nil then
@@ -129,7 +136,11 @@ begin
      begin
       L:=TStringList.Create; try
       for I:=UndoList.Count-1 downto UndoList.Count-Undone do
-       L.Add(TUndoObject(UndoList[I]).Text);
+       begin
+        S:=TUndoObject(UndoList[I]).Text;
+        if (S<>'') then
+         L.Add(S);
+       end;
       ListBox1.Items.Assign(L);
       finally L.Free; end;
      end;
@@ -143,7 +154,11 @@ begin
      begin
       ListBox2.Enabled:=True;
       for I:=UndoList.Count-1-Undone downto 0 do
-       L.Add(TUndoObject(UndoList[I]).Text);
+       begin
+        S:=TUndoObject(UndoList[I]).Text;
+        if (S<>'') then
+         L.Add(S);
+       end;
      end;
     ListBox2.Items.Assign(L);
     FormResize(Nil);

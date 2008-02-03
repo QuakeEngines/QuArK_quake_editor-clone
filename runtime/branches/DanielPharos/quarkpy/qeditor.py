@@ -599,8 +599,20 @@ def CustomZoom(views):
 
 def getzoommenu(zoombtn):
     def zoomclick(m, views=zoombtn.views):
+        editor = mapeditor()
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
         setviews(views, "scale", m.scale)
     def customzoom(m, views=zoombtn.views):
+        editor = mapeditor()
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
         CustomZoom(views)
     if zoombtn.near:
         # For mdl-editor
@@ -862,6 +874,12 @@ class ZoomBar:
 
 
     def Update(self, scale1):
+        editor = mapeditor()
+        import mdleditor
+        if isinstance(editor, mdleditor.ModelEditor):
+            import mdlmgr
+            from mdlmgr import treeviewselchanged
+            mdlmgr.treeviewselchanged = 1
         #
         # Compute the visual position corresponding to the new scale.
         #
@@ -1342,6 +1360,7 @@ def ToolsMenu(editor, toolbars):
 ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
 ico_mdled = LoadIconSet1("mdled", 1.0)
 ico_mdlskv = LoadIconSet1("mdlskv", 1.0)
+ico_mdltools = LoadIconSet1("mdltools", 1.0)
 ico_dict['ico_mapedsm'] = LoadIconSet1("mapedsm", 0.5)    # small
 ico_maped_y = ico_dict['ico_maped'][0][0].size[1] + 7
 
@@ -1395,7 +1414,7 @@ def rectrel2abs(x1,y1,x2,y2):
 
 
 #
-# Call this to retrive to current map or model editor.
+# Call this to retrieve to current map or model editor.
 #
 
 def mapeditor(mode=None):
@@ -1418,6 +1437,14 @@ def TexModeMenu(editor, view):
     "Menu items to set the textured mode of 'view'."
 
     def setviewmode(menu, editor=editor, view=view):
+        try:
+            import mdleditor
+            if isinstance(editor, mdleditor.ModelEditor):
+                import mdlmgr
+                from mdlmgr import treeviewselchanged
+                mdlmgr.treeviewselchanged = 1
+        except:
+            pass
         view.viewmode = menu.mode
         editor.lastscale = 0    # force a call to buildhandles()
 
@@ -1446,10 +1473,6 @@ def TexModeMenu(editor, view):
                 view.screencenter = center
                 setprojmode(view)
 
-    #if view.viewmode == "opengl":
-        #modhint = "the mode is fixed to OpenGL"
-        #infobaselink = "intro.mapeditor.menu.html#layoutmenu"
-    #else:
     import qbasemgr
     modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
     infobaselink = "intro.mapeditor.menu.html#layoutmenu"
@@ -1461,9 +1484,6 @@ def TexModeMenu(editor, view):
     Mod3.mode = "tex"
     List = [Mod1, Mod2, Mod3]
     for menu in List:
-        #if view.viewmode == "opengl":
-            #menu.state = qmenu.disabled
-        #else:
         menu.state = menu.mode==view.viewmode and qmenu.radiocheck
     import mdleditor
     if isinstance(editor, mdleditor.ModelEditor):
@@ -1546,6 +1566,23 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.41  2007/12/20 23:33:10  danielpharos
+#Small code clean-up
+#
+#Revision 1.40  2007/11/11 11:41:53  cdunde
+#Started a new toolbar for the Model Editor to support "Editing Tools".
+#
+#Revision 1.39  2007/09/08 01:01:13  cdunde
+#One more item for the last change of:
+#Fixed redrawing of handles in areas that hints show once they are gone.
+#
+#Revision 1.38  2007/09/07 23:55:29  cdunde
+#1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
+#     model component from selected Model Mesh faces and remove them from their current component.
+#2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
+#     before the Skin-view is opened at least once in that session.
+#3) Fixed redrawing of handles in areas that hints show once they are gone.
+#
 #Revision 1.37  2007/04/13 19:46:57  cdunde
 #Added new function vtoposhint to give only x, y and z position without added hint text.
 #

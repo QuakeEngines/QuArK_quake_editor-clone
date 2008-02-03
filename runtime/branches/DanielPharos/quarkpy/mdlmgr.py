@@ -36,6 +36,7 @@ startup = 0
 saveskin = None
 savedskins = {}
 skincount = 0
+savefacesel = 0
 treeviewselchanged = 0 ### This global is set to 1 when any new item is selected in the Tree-view.
                        ### 1) Use it like this in any file: from mdlmgr import treeviewselchanged
                        ### 2) Test for its value of 0 or 1:     if treeviewselchanged == 1:
@@ -161,6 +162,150 @@ class ModelLayout(BaseLayout):
             slist.append(None)
         return slist
 
+  ### To link Used Skin Textures of the current model being edited into the Texture Browser for displaying.
+    def putskinsintexturebrowser(self):
+        self.editor = mdleditor.mdleditor
+        import qutils
+        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        ToolBoxName, ToolBox = tbx_list[0]
+        # Removes the old Used Skin Textures ToolBoxFolder so duplicates of it are not displayed.
+        for ToolBoxFolder in ToolBox.subitems:
+            if ToolBoxFolder.name == "Used Skin Textures.qtxfolder":
+                ToolBoxFolder.parent.removeitem(ToolBoxFolder)
+                break
+        # Creates a dictionary list of the Used Skin Textures name and image to display in the Texture Browser for the model that is opened in the editor.
+        UsedTexturesList = {}
+        for item in self.editor.Root.subitems:
+            if item.name.endswith(":mc"):
+                for subitem in item.subitems:
+                    if subitem.name.endswith(":sg"):
+                        for skin in subitem.subitems:
+                            UsedTexturesList[skin.name] = subitem.dictitems[skin.name]
+        # Creates the "Used Skin Textures.qtxfolder" to display in the Texture Browser for the model that is opened in the editor.
+        UsedTexture = quarkx.newobj('Used Skin Textures.qtxfolder')
+        UsedTexture.flags = qutils.OF_TVSUBITEM
+        for UsedTextureName in UsedTexturesList:
+            UsedTexture.appenditem(UsedTexturesList[UsedTextureName].copy())
+        ToolBox.appenditem(UsedTexture)
+
+  ### To setup the Animation Toolbar FPS (frames per second) function.
+    def getFPSmenu(self, fpsbtn):
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        animationFPS = setup["AnimationFPS"]
+        animationfpsmenu = []
+        for g in (64,32,16,8,4,2,1):
+            if g:
+                cap = "fps \t%s" % g
+            item = qmenu.item(cap, self.animationfpsmenuclick)
+            item.animationFPS = g
+            item.state = g==animationFPS and qmenu.radiocheck
+            animationfpsmenu.append(item)
+        animationfpsmenu.append(qmenu.sep)
+        txt = "&Other...\t%s" % quarkx.ftos(animationFPS[0])
+        animationfpsmenu.append(qmenu.item(txt, self.animationfpscustom))
+        return animationfpsmenu
+
+    def animationfpsmenuclick(self, sender):
+        self.setanimationfps(sender.animationFPS)
+
+    def setanimationfps(self, FPS):
+        if (self.editor.animationFPS == FPS) and (self.editor.animationFPSstep == FPS):
+            return
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        setup["AnimationFPS"] = (FPS,)
+        self.editor.animationFPS = self.editor.animationFPSstep = FPS
+        self.setanimationfpschanged()
+
+    def setanimationfpschanged(self):
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        setup["AnimationFPS"] = (self.editor.animationFPSstep,)
+        
+        # Update the display on the 'fps' button.
+        try:
+            fpsbtn = self.buttons["fps"]
+        except:
+            return
+        if self.editor.animationFPSstep:
+            fpsbtn.caption = quarkx.ftos(self.editor.animationFPSstep)
+        else:
+            fpsbtn.caption = "off"
+        fpsbtn.state = self.editor.animationFPS and qtoolbar.selected
+        quarkx.update(self.editor.form)
+
+    def toggleanimationfps(self, sender):
+        self.editor.animationFPS = not self.editor.animationFPS and self.editor.animationFPSstep
+        self.setanimationfpschanged()
+
+    def animationfpscustom(self, m):
+        import mdleditor
+        mdleditor.AnimationCustomFPS(self.editor)
+
+
+  ### To setup the Skin-view grid independent from the editor grid.
+    def skingetgridmenu(self, gridbtn):
+        skingrid = self.editor.skingridstep
+        skingridmenu = []
+        for g in (0,256,128,64,32,16,8,4,2,1,.5,.25,.1):
+            if g:
+                cap = "grid \t%s" % g
+            else:
+                cap = "no grid"
+            item = qmenu.item(cap, self.skingridmenuclick)
+            item.skingrid = g
+            item.state = g==skingrid and qmenu.radiocheck
+            skingridmenu.append(item)
+        skingridmenu.append(qmenu.sep)
+        if skingrid==0:
+            txt = "&Other..."
+        else:
+            txt = "&Other...\t%s" % quarkx.ftos(skingrid)
+        skingridmenu.append(qmenu.item(txt, self.skincustomgrid))
+        return skingridmenu
+
+    def skingridmenuclick(self, sender):
+        self.skinsetgrid(sender.skingrid)
+
+    def skinsetgrid(self, ngrid):
+        if (self.editor.skingrid == ngrid) and (self.editor.skingridstep == ngrid):
+            return
+        self.editor.skingrid = self.editor.skingridstep = ngrid
+        self.skingridchanged()
+
+    def skingridchanged(self):
+        setup = quarkx.setupsubset(self.editor.MODE, "Display")
+        setup["SkinGridStep"] = (self.editor.skingridstep,)
+        
+        # Update the display on the 'grid' button.
+        try:
+            gridbtn = self.buttons["skingrid"]
+        except:
+            return
+        if self.editor.skingridstep:
+            gridbtn.caption = quarkx.ftos(self.editor.skingridstep)
+        else:
+            gridbtn.caption = "off"
+        gridbtn.state = self.editor.skingrid and qtoolbar.selected
+        quarkx.update(self.editor.form)
+        self.skinview.invalidate()
+
+    def skintogglegrid(self, sender):
+        self.editor.skingrid = not self.editor.skingrid and self.editor.skingridstep
+        self.skingridchanged()
+
+    def skincustomgrid(self, m):
+        import mdleditor
+        mdleditor.SkinCustomGrid(self.editor)
+
+    def skinaligntogrid(self, v):
+        import mdlhandles
+        return mdlhandles.alignskintogrid(v, 0)
+
+    def reskin(self, m):
+        global savefacesel
+        savefacesel = 1
+        import mdlutils
+        mdlutils.skinremap(self.editor)
+
   ### Used to setup the skinview.
   ### copied from mapmgr.py def polyviewdraw
     def skinviewdraw(self, view):
@@ -173,15 +318,18 @@ class ModelLayout(BaseLayout):
     def bs_skinform(self, panel):  ### This is the Skin-view setup items (form, buttons & view).
         ico_maped=ico_dict['ico_maped']
         fp = panel.newpanel()
+        skingridbtn = qtoolbar.doublebutton(self.skintogglegrid, self.skingetgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it.", ico_maped, 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
+        skingridbtn.caption = str(self.editor.skingridstep)  # To show the setting value on the button.
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
-        self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.skinview.html#overview')
+        self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.skinview.html#selection')
         self.Vertexdragmode.mode = self.MODE
         self.Vertexdragmode.tag = "SingleVertexDrag"
         self.Vertexdragmode.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
-        self.buttons.update({"skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode})
+        self.skinremapbtn = qtoolbar.button(self.reskin, "Remap Snapshot||Remap Snapshot:\n\nClick this button when you have selected some faces in any of the editor's views and it will 'Re-map' those faces on the current Face-view skin for that component using the angle of view that is seen in the editor's 3D view when the button is clicked.\n\nChanging the angle, panning or zooming in the editor's 3D view and clicking the button again will change the size and re-mapping of those same faces once more.\n\nTo reverse what has been done use the 'Undo/Redo' list on the Edit menu.", ico_mdlskv, 1, "Skin-view", infobaselink="intro.modeleditor.skinview.html#selection")
+        self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode, "skinremap": self.skinremapbtn})
         tp = fp.newtoppanel(123,0) # Sets the height of the top panel.
-        btnp = tp.newbottompanel(23,0).newbtnpanel([skinzoombtn, self.Vertexdragmode])
+        btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, self.Vertexdragmode, self.skinremapbtn])
         btnp.margins = (0,0)
         self.skinform = tp.newdataform()
         self.skinform.header = 0
@@ -191,6 +339,7 @@ class ModelLayout(BaseLayout):
         self.skinview = fp.newmapview()  ### This is the skin view where it should show.
         self.skinview.color = BLACK
         self.skinview.viewtype = "panel"
+        skingridbtn.views = [self.skinview]
         skinzoombtn.views = [self.skinview]
    #     self.skinview.ondraw = self.skinviewdraw
 #        self.skinview.onmouse = self.skinviewmouse   ### This may be needed later.
@@ -364,21 +513,55 @@ class ModelLayout(BaseLayout):
 
     def selectcomponent(self, comp):
         "This is when you select a particular 'Component' or any 'Group' within it in the Tree-view."
-        global savedskins
-        from qbaseeditor import currentview
+        global savedskins, savefacesel
+        from qbaseeditor import currentview, flagsmouse
 
         if comp != self.editor.Root.currentcomponent:
             self.reset()
             if currentview.info["viewname"] == "skinview":
-                if self.editor.dragobject is not None and isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle):
+                if self.editor.dragobject is not None and (isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
                     pass
                 else:
-                    self.editor.SkinVertexSelList = []
+                    if savefacesel == 1:
+                        savefacesel = 0
+                    else:
+                        savefacesel = 0
+                        self.editor.ModelVertexSelList = []
+                        self.editor.SkinVertexSelList = []
+                        self.editor.ModelFaceSelList = []
+                        self.editor.EditorObjectList = []
+                        self.editor.SkinFaceSelList = []
+                        self.editor.SelCommonTriangles = []
+                        self.editor.SelVertexes = []
+                        self.editor.Root.currentcomponent.filltris = []
             else:
-                self.editor.SkinVertexSelList = []
-                self.editor.ModelFaceSelList = []
-                self.editor.Root.currentcomponent.filltris = []
-                self.editor.SkinFaceSelList = []
+                if flagsmouse == 2056:
+                    pass
+                else:
+                    try:
+                        if flagsmouse == 2060 and (isinstance(self.editor.dragobject.handle, mdlhandles.LinRedHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinSideHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.LinCornerHandle)):
+                            pass
+                        else:
+                            if savefacesel == 1:
+                                savefacesel = 0
+                            else:
+                                savefacesel = 0
+                                self.editor.SkinVertexSelList = []
+                                self.editor.ModelVertexSelList = []
+                                self.editor.ModelFaceSelList = []
+                                self.editor.EditorObjectList = []
+                                self.editor.SkinFaceSelList = []
+                                self.editor.SelCommonTriangles = []
+                                self.editor.SelVertexes = []
+                    except:
+                        self.editor.SkinVertexSelList = []
+                        self.editor.ModelVertexSelList = []
+                        self.editor.ModelFaceSelList = []
+                        self.editor.EditorObjectList = []
+                        self.editor.SkinFaceSelList = []
+                        self.editor.SelCommonTriangles = []
+                        self.editor.SelVertexes = []
+                    self.editor.Root.currentcomponent.filltris = []
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
                     view.invalidate()
@@ -418,6 +601,17 @@ class ModelLayout(BaseLayout):
         "This is when you select a particular bone(s) in the 'Misc' group of the Tree-view."
         global startup
         startup = 0
+        self.editor.ModelVertexSelList = []
+        self.editor.SkinVertexSelList = []
+        self.editor.ModelFaceSelList = []
+        self.editor.EditorObjectList = []
+        self.editor.SkinFaceSelList = []
+        self.editor.SelCommonTriangles = []
+        self.editor.SelVertexes = []
+        self.editor.Root.currentcomponent.filltris = []
+        from mdlhandles import SkinView1
+        if SkinView1 is not None:
+            SkinView1.invalidate()
 
     def selectframe(self, frame):
         "This is when you select a particular frame in the 'Frames' group of the Tree-view."
@@ -447,13 +641,19 @@ class ModelLayout(BaseLayout):
             c.currentskin = skin
             saveskin = skin
             self.selectcomponent(c)
+            
+        if c != self.editor.Root.currentcomponent:
+            self.selectcomponent(c)
 
     def selchange(self):
         "This calls for what ever selection def you are using above."
         global treeviewselchanged
-
+        # To try and load the models textures into the Texture Browser to be displayed.
+        self.putskinsintexturebrowser()
         if self.explorer.sellist != []:
             fs = self.explorer.sellist[0]
+        elif self.explorer.uniquesel is not None:
+            fs = self.explorer.uniquesel
         else:
             fs = None
 
@@ -478,11 +678,30 @@ class ModelLayout(BaseLayout):
             elif fs.type == '.tga':    # skin
                 self.selectskin(fs)
             else:
+                self.editor.ModelVertexSelList = []
+                self.editor.SkinVertexSelList = []
                 self.editor.ModelFaceSelList = []
+                self.editor.EditorObjectList = []
                 self.editor.SkinFaceSelList = []
+                self.editor.SelCommonTriangles = []
+                self.editor.SelVertexes = []
+                from mdlhandles import SkinView1
+                if SkinView1 is not None:
+                    SkinView1.invalidate()
         else:
-            self.editor.ModelFaceSelList = []
-            self.editor.SkinFaceSelList = []
+            if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
+                pass
+            else:
+                self.editor.ModelVertexSelList = []
+                self.editor.SkinVertexSelList = []
+                self.editor.ModelFaceSelList = []
+                self.editor.EditorObjectList = []
+                self.editor.SkinFaceSelList = []
+                self.editor.SelCommonTriangles = []
+                self.editor.SelVertexes = []
+                from mdlhandles import SkinView1
+                if SkinView1 is not None:
+                    SkinView1.invalidate()
 
 
     def NewItem1Click(self, m):
@@ -507,6 +726,67 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.57  2008/01/07 06:53:18  cdunde
+#Part of last change code left out.
+#
+#Revision 1.56  2008/01/07 06:47:11  cdunde
+#Added Used Skin Textures for displaying in the Texture Browser.
+#But error if nothing is selected after applying skin needs to be fixed.
+#
+#Revision 1.55  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
+#Revision 1.54  2007/10/31 03:47:52  cdunde
+#Infobase button link updates.
+#
+#Revision 1.53  2007/10/21 04:52:27  cdunde
+#Added a "Snap Shot" function and button to the Skin-view to allow the re-skinning
+#of selected faces in the editor based on their position in the editor's 3D view.
+#
+#Revision 1.52  2007/10/18 23:53:43  cdunde
+#To setup Custom Animation FPS Dialog, remove possibility of using 0, causing a crash and Defaults.
+#
+#Revision 1.51  2007/10/18 02:31:54  cdunde
+#Setup the Model Editor Animation system, functions and toolbar.
+#
+#Revision 1.50  2007/10/09 04:16:25  cdunde
+#To clear the EditorObjectList when the ModelFaceSelList is cleared for the "rulers" function.
+#
+#Revision 1.49  2007/09/17 06:10:17  cdunde
+#Update for Skin-view grid button and forcetogrid functions.
+#
+#Revision 1.48  2007/09/16 07:09:55  cdunde
+#To comment out print statement.
+#
+#Revision 1.47  2007/09/16 02:39:25  cdunde
+#Needed to comment out some work stuff.
+#
+#Revision 1.46  2007/09/16 02:20:39  cdunde
+#Setup Skin-view with its own grid button and scale, from the Model Editor's,
+#and color setting for the grid dots to be drawn in it.
+#Also Skin-view RMB menu additions of "Grid visible" and Grid active".
+#
+#Revision 1.45  2007/08/20 19:58:23  cdunde
+#Added Linear Handle to the Model Editor's Skin-view page
+#and setup color selection and drag options for it and other fixes.
+#
+#Revision 1.44  2007/08/11 02:38:19  cdunde
+#To stop "editor.ok" function calls in mdlutils.py from loosing the
+#selection when Ctrl key is used in Linear Handle drags.
+#
+#Revision 1.43  2007/08/08 21:07:47  cdunde
+#To setup red rectangle selection support in the Model Editor for the 3D views using MMB+RMB
+#for vertex selection in those views.
+#Also setup Linear Handle functions for multiple vertex selection movement using same.
+#
+#Revision 1.42  2007/07/28 23:12:52  cdunde
+#Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
+#to use for editing movement of model faces, vertexes and bones (in the future).
+#
+#Revision 1.41  2007/07/09 19:06:14  cdunde
+#Setup to clear all Editor and Skin-view selection lists when something outside the
+#currentcomponent is selected to start clean and avoid crossing of list items.
+#
 #Revision 1.40  2007/07/02 22:49:43  cdunde
 #To change the old mdleditor "picked" list name to "ModelVertexSelList"
 #and "skinviewpicked" to "SkinVertexSelList" to make them more specific.

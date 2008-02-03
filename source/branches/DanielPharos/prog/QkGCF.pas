@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.15  2007/03/13 18:59:25  danielpharos
 Changed the interface to the Steam dll-files. Should prevent QuArK from crashing on HL2 files.
 
@@ -315,7 +318,7 @@ begin
            subgcfelement:= GCFGetSubElement(gcfelement,i);
            AddTree(Self,subgcfelement,False,F);
          end;
-         self.Protocol:='gcffile://';
+         //self.Protocol:='gcffile://';
        end;
     else
       inherited;

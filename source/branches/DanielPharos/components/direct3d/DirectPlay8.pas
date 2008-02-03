@@ -3451,4 +3451,6 @@ begin
   Result:= DWord((1 shl 31) or (_DPN_FACILITY_CODE shl 16)) or (Code + _DPNHRESULT_BASE);
 end;
 
+
 end.
+

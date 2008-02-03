@@ -1005,9 +1005,9 @@ def OptionsViewsClick(m):
         self.src["fillmesh5"] = fivefillmesh
         self.src["fillColor5"] = fivefillColor
 
-        for view in editor.layout.views:
-            view.invalidate(1)
-        editor.layout.explorer.selchanged()
+        from quarkpy.mdlmgr import treeviewselchanged
+        quarkpy.mdlmgr.treeviewselchanged = 1
+        quarkpy.mdlutils.Update_Editor_Views(editor)
 
 
     def onclosing(self,editor=editor):
@@ -1081,6 +1081,16 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.19  2007/10/31 05:36:56  cdunde
+# Replaced quarkx.reloadsetup() with call to invalidate views using correct filltris call.
+#
+# Revision 1.18  2007/09/09 18:34:39  cdunde
+# To stop quarkx.reloadsetup call (which just calls qutils.SetupChanged)
+# from duplicate handle drawing in the Model Editor and use quarkx.reloadsetup
+# in mdlmodes for setting "colors" Config. to stop the loss of settings during
+# a session when the "Apply" button is clicked which calls quarkx.reloadsetup,
+# wiping out all the settings if editor.layout.explorer.selchanged() is used instead.
+#
 # Revision 1.17  2007/06/04 12:27:01  cdunde
 # To update some default settings.
 #

@@ -23,6 +23,18 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/12/06 23:01:31  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
+Revision 1.17  2007/11/21 16:07:32  danielpharos
+Another bunch of hugh image fixes: everything should work again!
+
+Revision 1.16  2007/11/21 00:06:22  danielpharos
+BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
+
+Revision 1.15  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.13  2002/03/07 19:15:38  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -53,49 +65,31 @@ unit QkBmp;
 
 interface
 
-uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
-     QkObjects, QkFileObjects, QkImages, Game;
+uses Windows, Classes, Qk1, QkImages, QkPixelSet, QkObjects, QkFileObjects,
+     QkDevIL, QkFreeImage;
 
 type
  QBmp = class(QImage)
         protected
+          class function FileTypeDevIL : DevILType; override;
+          class function FileTypeFreeImage : FREE_IMAGE_FORMAT; override;
+          procedure LoadFileDevILSettings; override;
+          procedure SaveFileDevILSettings; override;
+          function LoadFileFreeImageSettings : Integer; override;
+          function SaveFileFreeImageSettings : Integer; override;
+          class function FormatName : String; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
-          function ReadDIBData(F: TStream; Taille: Integer) : Boolean;
         public
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
         end;
 
- {------------------------}
-
-procedure BmpInfoToPaletteLmp(const BmpInfo: TBitmapInfo256;
-           Lmp: PPaletteLmp);
+ {--------------------}
 
 implementation
 
-uses Setup, Quarkx, Qk1, QkObjectClassList;
-
-const
- bmpSignature = $4D42;
- bmpTaillePalette = 256*SizeOf(TRGBQuad);
-
-procedure BmpInfoToPaletteLmp(const BmpInfo: TBitmapInfo256;
-           Lmp: PPaletteLmp);
-var
- I: Integer;
- P: PChar;
-begin
- P:=PChar(Lmp);
- for I:=0 to 255 do
-  with BmpInfo.bmiColors[I] do
-   begin
-    P[0]:=Chr(rgbRed);
-    P[1]:=Chr(rgbGreen);
-    P[2]:=Chr(rgbBlue);
-    Inc(P,3);
-   end;
-end;
+uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging;
 
 var
  Chain1: TClipboardHandler;
@@ -132,7 +126,8 @@ begin
     begin
      Image:=QBmp.Create(LoadStr1(5138), PasteNow);
      Image.AddRef(+1);
-     Image.ReadDIBData(Source, SourceTaille);
+     Image.ReadFormat:=rf_Default;
+     Image.LoadFile(Source, SourceTaille);
      PasteNow.SubElements.Add(Image);
     end;
    finally Source.Free; Image.AddRef(-1); end;
@@ -140,7 +135,12 @@ begin
  Result:=Result or Chain1(PasteNow);
 end;
 
- {------------------------}
+class function QBmp.FormatName : String;
+begin
+ Result:='BMP';
+end;
+
+ {--------------------}
 
 class function QBmp.TypeInfo: String;
 begin
@@ -155,137 +155,76 @@ begin
  Info.WndInfo:=[wiWindow];
 end;
 
-function QBmp.ReadDIBData(F: TStream; Taille: Integer) : Boolean;
-const
- Spec1 = 'Image1=';
- Spec2 = 'Pal=';
-var
- BmpInfo: TBitmapInfo256;
- V: array[1..2] of Single;
- Data: String;
- ImageSize: LongInt;
+class function QBmp.FileTypeDevIL : DevILType;
 begin
- if Taille>SizeOf(TBitmapInfoHeader) then
-  begin
-   F.ReadBuffer(BmpInfo, SizeOf(TBitmapInfoHeader));
-   if (BmpInfo.bmiHeader.biSize>=SizeOf(TBitmapInfoHeader))
-   and (Integer(BmpInfo.bmiHeader.biSize)<Taille)
-   and (BmpInfo.bmiHeader.biPlanes=1)
-   and ((BmpInfo.bmiHeader.biBitCount=8) or (BmpInfo.bmiHeader.biBitCount=24))
-   and (BmpInfo.bmiHeader.biCompression=bi_RGB)
-   and ((BmpInfo.bmiHeader.biClrUsed=0) or (BmpInfo.bmiHeader.biClrUsed=256)) then
-    begin
-     Dec(Taille, BmpInfo.bmiHeader.biSize);
-     if BmpInfo.bmiHeader.biBitCount=24 then
-      ImageSize:=((BmpInfo.bmiHeader.biWidth*3+3) and not 3)*BmpInfo.bmiHeader.biHeight
-     else
-      begin
-       ImageSize:=((BmpInfo.bmiHeader.biWidth+3) and not 3)*BmpInfo.bmiHeader.biHeight;
-        Dec(Taille, bmpTaillePalette);
-      end;
-     if (ImageSize<0) or (ImageSize>Taille) then
-      Raise EErrorFmt(5509, [21]);
-     F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), soFromCurrent);
+  Result:=IL_BMP;
+end;
 
-     if BmpInfo.bmiHeader.biBitCount=8 then
-      begin
-        { reads the palette }
-       F.ReadBuffer(BmpInfo.bmiColors, bmpTaillePalette);
-       Data:=Spec2;
-       SetLength(Data, Length(Spec2)+SizeOf(TPaletteLmp));
-       BmpInfoToPaletteLmp(BmpInfo,
-        PPaletteLmp(@Data[Length(Spec2)+1]));
-       SpecificsAdd(Data);  { "Pal=xxxxx" }
-      end;
+class function QBmp.FileTypeFreeImage : FREE_IMAGE_FORMAT;
+begin
+  Result:=FIF_BMP;
+end;
 
-     { reads the image data }
-     V[1]:=BmpInfo.bmiHeader.biWidth;
-     V[2]:=BmpInfo.bmiHeader.biHeight;
-     SetFloatsSpec('Size', V);
-     Data:=Spec1;
-     SetLength(Data, Length(Spec1)+ImageSize);
-     F.ReadBuffer(Data[Length(Spec1)+1], ImageSize);
-     Specifics.Add(Data);   { Image1= }
+procedure QBmp.LoadFileDevILSettings;
+begin
+end;
 
-     Result:=True;
-     Exit;
-    end;
-  end;
- Result:=False;
+procedure QBmp.SaveFileDevILSettings;
+begin
+end;
+
+function QBmp.LoadFileFreeImageSettings : Integer;
+begin
+  Result:=BMP_DEFAULT;
+end;
+
+function QBmp.SaveFileFreeImageSettings : Integer;
+begin
+  Result:=BMP_DEFAULT;
 end;
 
 procedure QBmp.LoadFile(F: TStream; FSize: Integer);
 var
- Header: TBitmapFileHeader;
- Origine, Taille0: LongInt;
- Bitmap: TBitmap;
+  LibraryToUse: string;
 begin
- case ReadFormat of
+  Log(LOG_VERBOSE,'Loading BMP file: %s',[self.name]);;
+  case ReadFormat of
   1: begin  { as stand-alone file }
-      if FSize<=SizeOf(Header)+SizeOf(TBitmapCoreHeader) then
-       Raise EError(5519);
-      Origine:=F.Position;
-      Taille0:=FSize;
-      F.ReadBuffer(Header, SizeOf(Header));
-      Dec(FSize, SizeOf(Header));
-      if Header.bfType<>bmpSignature then
-       Raise EErrorFmt(5535, [LoadName, Header.bfType, bmpSignature]);
-
-      if not ReadDIBData(F, FSize) then
-       begin
-        F.Position:=Origine;
-        case MessageDlg(FmtLoadStr1(5536, [LoadName, SetupGameSet.Name]),
-         mtConfirmation, mbYesNoCancel, 0) of
-          mrYes:begin
-                 Bitmap:=TBitmap.Create; try
-                 Bitmap.LoadFromStream(F);
-                 PasteBitmap(GameBuffer(mjAny), Bitmap);
-                 finally Bitmap.Free; end;
-                end;
-          mrNo: ReadUnformatted(F, Taille0);
-         else Abort;
-        end;
-       end;
-     end;
- else inherited;
- end;
+    LibraryToUse:=SetupSubSet(ssFiles, 'BMP').Specifics.Values['LoadLibrary'];
+    if LibraryToUse='DevIL' then
+      LoadFileDevIL(F, FSize)
+    else if LibraryToUse='FreeImage' then
+      LoadFileFreeImage(F, FSize)
+    else
+      FatalFileError('Unable to load BMP file. No valid loading library selected.');
+  end;
+  else
+    inherited;
+  end;
 end;
 
 procedure QBmp.SaveFile(Info: TInfoEnreg1);
 var
- Header: TBitmapFileHeader;
- BmpInfo: TBitmapInfo256;
- Data: String;
+  LibraryToUse: string;
 begin
- with Info do case Format of
-  1: begin  { as stand-alone file }
-      FillChar(Header, SizeOf(Header), 0);
-      try
-       Header.bfOffBits:=SizeOf(TBitmapFileHeader)+GetBitmapInfo1(BmpInfo);
-      except
-       if Specifics.Values['Data']='' then
-        Raise;
-       SaveUnformatted(F);
-       Exit;
-      end;
-      Header.bfType:=bmpSignature;
-      Header.bfSize:=Header.bfOffBits+BmpInfo.bmiHeader.biSizeImage;
-      F.WriteBuffer(Header, SizeOf(Header));
-
-       { writes the header and the palette }
-      F.WriteBuffer(BmpInfo, Header.bfOffBits-SizeOf(TBitmapFileHeader));
-
-       { writes the image data }
-      Data:=GetSpecArg('Image1');
-      if Length(Data)-Length('Image1=') <> Integer(BmpInfo.bmiHeader.biSizeImage) then
-       Raise EErrorFmt(5534, ['Image1']);
-      F.WriteBuffer(PChar(Data)[Length('Image1=')], BmpInfo.bmiHeader.biSizeImage);
-     end;
- else inherited;
- end;
+ Log(LOG_VERBOSE,'Saving BMP file: %s',[self.name]);
+ with Info do
+  case Format of
+  1:  begin  { as stand-alone file }
+    LibraryToUse:=SetupSubSet(ssFiles, 'BMP').Specifics.Values['SaveLibrary'];
+    if LibraryToUse='DevIL' then
+      SaveFileDevIL(Info)
+    else if LibraryToUse='FreeImage' then
+      SaveFileFreeImage(Info)
+    else
+      FatalFileError('Unable to save BMP file. No valid saving library selected.');
+  end
+  else
+    inherited;
+  end;
 end;
 
- {------------------------}
+ {--------------------}
 
 initialization
   RegisterQObject(QBmp, 'k');

@@ -4,6 +4,13 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2007/12/26 06:01:40  cdunde
+//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
+//
+//Revision 1.5  2007/12/14 21:47:59  cdunde
+//Added many new beizer shapes and functions developed by our friends in Russia,
+//the Shine team, Nazar and vodkins.
+//
 //Revision 1.4  2007/05/06 21:10:58  danielpharos
 //Changed the texture folder name to match MOHAA.
 //Fixed the name of the scripts folder.

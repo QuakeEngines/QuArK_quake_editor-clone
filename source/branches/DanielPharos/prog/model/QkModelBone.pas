@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2007/09/10 10:24:15  danielpharos
+Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
+
+Revision 1.11  2005/09/28 10:49:02  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.9  2001/06/05 18:42:41  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -94,6 +100,7 @@ type
   private
     Component: QObject;
   public
+    function IsAllowedParent(Parent: QObject) : Boolean; override;
     Function Tag(nname: string): QModelTag;
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
@@ -118,7 +125,15 @@ type
 
 implementation
 
-uses qk3d, pymath, quarkx, QkObjectClassList;
+uses qk3d, pymath, quarkx, QkObjectClassList, QkMiscGroup;
+
+function QModelBone.IsAllowedParent(Parent: QObject) : Boolean;
+begin
+  if (Parent=nil) or (Parent is QMiscGroup) then
+    Result:=true
+  else
+    Result:=false;
+end;
 
 function QModelBone.Tag(nname: String): QModelTag;
 begin

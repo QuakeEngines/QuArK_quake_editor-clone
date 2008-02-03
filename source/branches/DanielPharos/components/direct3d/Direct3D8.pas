@@ -3725,7 +3725,8 @@ begin // Stub function for static linking
   Result:= True;
 end;
 
-function _Direct3DCreate8(SDKVersion: LongWord): Pointer; external Direct3D8dll name 'Direct3DCreate8';
+var
+  _Direct3DCreate8: function (SDKVersion: LongWord): Pointer;
 
 function Direct3DCreate8(SDKVersion: LongWord): IDirect3D8;
 begin
@@ -3733,4 +3734,31 @@ begin
   if Assigned(Result) then Result._Release; // Delphi autoincrement reference count
 end;
 
+
+
+var
+  HD3D8  : HMODULE;
+
+function LoadD3D8: Boolean;
+begin
+  HD3D8 := LoadLibrary('d3d8.dll');
+  If HD3D8 = 0 Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
+function UnloadD3D8: Boolean;
+begin
+  If FreeLibrary(HD3D8) = False Then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Result := True;
+end;
+
 end.
+
