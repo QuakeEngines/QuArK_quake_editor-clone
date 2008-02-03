@@ -4961,7 +4961,6 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
                     topuv1 = cordsview.proj(new_vtxs[topvtx1])
                     topuv2 = cordsview.proj(new_vtxs[topvtx2])
                 else:
-                    print "scale is",SkinView1.info["scale"]
                     topuv0 = quarkx.vect(new_vtxs[topvtx0].tuple[1], -new_vtxs[topvtx0].tuple[2], 0)/SkinViewScale*10
                     topuv1 = quarkx.vect(new_vtxs[topvtx1].tuple[1], -new_vtxs[topvtx1].tuple[2], 0)/SkinViewScale*10
                     topuv2 = quarkx.vect(new_vtxs[topvtx2].tuple[1], -new_vtxs[topvtx2].tuple[2], 0)/SkinViewScale*10
@@ -5612,6 +5611,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2007/12/02 06:47:12  cdunde
+# Setup linear center handle selected vertexes edge extrusion function.
+#
 # Revision 1.9  2007/11/19 01:08:45  cdunde
 # To fix needed face definition and use the fastest way to get it.
 #
