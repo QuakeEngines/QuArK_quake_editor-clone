@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2008/01/23 01:39:04  cdunde
+Fixed 6DX, Crystal Space and SOF maps from being identified incorrectly.
+
 Revision 1.7  2008/01/22 15:32:16  danielpharos
 Fix RTCW maps being identified as Quake 3 maps.
 
@@ -1874,24 +1877,24 @@ begin
     Result:=CurrentQuake2Mode;
   mjQuake:
     begin
-      Result:=CurrentQuake1Mode;   
+      Result:=CurrentQuake1Mode;
       if Result=mjHexen then
-        Result:=mjQuake;
-      if CharModeJeu=mj6DX then
-        Result:=mj6DX;   
-      if CharModeJeu=mjCrystalSpace then
-        Result:=mjCrystalSpace;
-      if CharModeJeu=mjTorque then
-        Result:=mjTorque; 
-      if CharModeJeu=mjSylphis then
-       Result:=mjSylphis
+        Result:=mjQuake
+      else if CharModeJeu=mj6DX then
+        Result:=mj6DX
+      else if CharModeJeu=mjCrystalSpace then
+        Result:=mjCrystalSpace
+      else if CharModeJeu=mjTorque then
+        Result:=mjTorque 
+      else if CharModeJeu=mjSylphis then
+        Result:=mjSylphis;
 
     end;
     mjQ3A:
     { FIXME:  barf coding, the idea is that  if Q3a mode
       is detected, we stay in the current game mode if it's
       one of the Q3A-format games, otherwise switch to Q3A }
-    begin                       
+    begin
      if CharModeJeu=mjEF2 then
        Result:=CharModeJeu
      else if CharModeJeu=mjSOF then
