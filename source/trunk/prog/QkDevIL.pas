@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/12/06 23:01:31  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
 Revision 1.8  2007/11/21 16:07:32  danielpharos
 Another bunch of hugh image fixes: everything should work again!
 
@@ -289,9 +292,9 @@ end;
 
 function InitDllPointer(DLLHandle: HMODULE;APIFuncname:PChar):Pointer;
 begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     LogError('API Func "'+APIFuncname+ '" not found in dlls/DevIL.dll');
+  result:=GetProcAddress(DLLHandle, APIFuncname);
+  if result=Nil then
+    LogError('API Func "'+APIFuncname+ '" not found in dlls/DevIL.dll');
 end;
 
 function LoadDevIL : Boolean;
