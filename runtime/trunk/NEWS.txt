@@ -15,6 +15,11 @@ $Id$
 6.5.0 Beta 5
 ============
 
+* [cdunde]: Made toolbars interactive with one another to
+          - turn off buttons when needed, avoiding errors and crashes.
+
+* [cdunde]: To stop doautozoom in Skin-view, causing unexpected view jumps.
+
 * [DanielPharos]: Added FTX file loading and saving support (Heavy Metal: F.A.K.K. 2 textures).
 
 * [cdunde]: Setup function to reset Skin-view.
