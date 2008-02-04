@@ -1138,8 +1138,8 @@ class BaseEditor:
 
             if flags & MB_CLICKED:
                 if isinstance(self, mdleditor.ModelEditor):
-                    # To stop L & RMB click from causing zooming in all views including Skin-view.
-                    if flagsmouse == 280 or flagsmouse == 344:
+                    # To stop mouse button(s) click from causing zooming in all views including Skin-view.
+                    if flagsmouse == 280 or flagsmouse == 288 or flagsmouse == 296 or flagsmouse == 344 or flagsmouse == 352:
                         return
                     # This takes you directly to (selects) the main model component folder for the
                     #    component that was LMB clicked on if there was one under the
@@ -1436,6 +1436,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.104  2007/12/19 12:39:53  danielpharos
+#Small code clean-up
+#
 #Revision 1.103  2007/11/29 22:58:41  cdunde
 #Dan fixed the Model Editor Skin-view from crashing if there is no grid.
 #
