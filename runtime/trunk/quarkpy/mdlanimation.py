@@ -49,7 +49,10 @@ def drawanimation(self):
             pass
         return FPS
     else:
-        frame = playlist[playNR]
+        try:
+            frame = playlist[playNR]
+        except:
+            return
         if playNR == len(playlist) - 1:
             playNR = 0
         else:
@@ -127,7 +130,7 @@ def selectmode(btn):
     except:
         return
     for b in tb1.tb.buttons:
-        b.state = quarkpy.qtoolbar.normal
+        b.state = qtoolbar.normal
     select1(btn, tb1, editor)
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MODEL, "Building").setint("AnimationMode", btn.i)
@@ -135,13 +138,6 @@ def selectmode(btn):
 def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = AnimationModes[btn.i]
     btn.state = qtoolbar.selected
-    for view in editor.layout.views:
-        if MapOption("CrossCursor", SS_MODEL):
-            view.cursor = CR_CROSS
-            view.handlecursor = CR_ARROW
-        else:
-            view.cursor = CR_ARROW
-            view.handlecursor = CR_CROSS
 
 ##### Below makes the toolbar and arainges its buttons #####
 
@@ -189,6 +185,29 @@ class AnimationBar(ToolBar):
             # This terminates the animation timer stopping the repeditive drawing function.
             quarkx.settimer(drawanimation, self, 0)
             editor.layout.explorer.sellist = playlist
+        try:
+            tb2 = editor.layout.toolbars["tb_objmodes"]
+  #          tb3 = editor.layout.toolbars["tb_paintmodes"]
+        except:
+            return
+        for b in range(len(tb2.tb.buttons)):
+            if b == 1:
+                tb2.tb.buttons[b].state = qtoolbar.selected
+            else:
+                tb2.tb.buttons[b].state = qtoolbar.normal
+  #      for b in tb3.tb.buttons:
+  #          b.state = qtoolbar.normal
+        quarkx.update(editor.form)
+        quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
+  #      quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
+        for view in editor.layout.views:
+            if MapOption("CrossCursor", SS_MODEL):
+                view.cursor = CR_CROSS
+                view.handlecursor = CR_ARROW
+            else:
+                view.cursor = CR_ARROW
+                view.handlecursor = CR_CROSS
+
 
     def incrementFPS(self, btn):
         "Implements the increase and decrease FPS (frames per second) buttons."
@@ -387,6 +406,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.6  2007/10/31 09:24:24  cdunde
+#To stop errors and crash if editor or QuArK is closed while animation is running.
+#
 #Revision 1.5  2007/10/31 03:47:52  cdunde
 #Infobase button link updates.
 #

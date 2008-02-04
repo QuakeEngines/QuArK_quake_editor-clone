@@ -4630,28 +4630,36 @@ ObjectModes = [(DeactivateDragObject                ,8)
               ]                                         # be sure to also change it in the plugins\mapcsg.py file
                                                         # or the Hollow-No bulkheads dialog option will not work.
 ### This part effects each buttons selection mode and
-### interacts with the Dragmodes and Terrainmodes toolbar buttons
+### interacts with other toolbar buttons
 
 def selectmode(btn):
     editor = mapeditor(SS_MODEL)
     if editor is None: return
     try:
         tb1 = editor.layout.toolbars["tb_objmodes"]
-  #      tb2 = editor.layout.toolbars["tb_terrmodes"]
-  #      tb3 = editor.layout.toolbars["tb_dragmodes"]
+  #      tb2 = editor.layout.toolbars["tb_paintmodes"]
+        tb3 = editor.layout.toolbars["tb_animation"]
     except:
         return
     for b in tb1.tb.buttons:
         b.state = quarkpy.qtoolbar.normal
     select1(btn, tb1, editor)
-  #  for b in tb2.tb.buttons:
-  #      b.state = quarkpy.qtoolbar.normal
-  #  for b in tb3.tb.buttons:
-  #      b.state = quarkpy.qtoolbar.normal
+ #   for b in tb2.tb.buttons:
+ #       b.state = quarkpy.qtoolbar.normal
+    for b in range(len(tb3.tb.buttons)):
+        if b == 0 or b == 5:
+            tb3.tb.buttons[b].state = quarkpy.qtoolbar.normal
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", btn.i)
-  #  quarkx.setupsubset(SS_MODEL, "Building").setint("DragMode", 5)
-  #  quarkx.setupsubset(SS_MODEL, "Building").setint("TerrMode", 20)
+ #   quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
+    from quarkpy.mdlanimation import playlist, playNR
+    if quarkpy.mdlanimation.playlist != []:
+        editor.layout.explorer.sellist = quarkpy.mdlanimation.playlist
+        quarkpy.mdlanimation.playNR = 0
+        quarkpy.mdlanimation.playlist = []
+    quarkx.settimer(quarkpy.mdlanimation.drawanimation, editor, 0)
+    quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] = None
+    quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
 
 def select1(btn, toolbar, editor):
     editor.MouseDragMode, dummyicon = ObjectModes[btn.i]
@@ -4687,12 +4695,6 @@ class ObjectModesBar(ToolBar):
             btn.i = i
             btns.append(btn)
         i = quarkx.setupsubset(SS_MODEL, "Building").getint("ObjectMode")
-     #   dm = quarkx.setupsubset(SS_MODEL, "Building").getint("DragMode")
-     #   tm = quarkx.setupsubset(SS_MODEL, "Building").getint("TerrMode")
-     #   if i == 20 or dm == 0 or tm == 0:
-     #       leave = 0
-     #   else:
-     #       select1(btns[i], self, layout.editor)
 
         select1(btns[i], self, layout.editor)
 
@@ -5611,6 +5613,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2008/02/03 17:51:22  cdunde
+# To remove test print statement.
+#
 # Revision 1.10  2007/12/02 06:47:12  cdunde
 # Setup linear center handle selected vertexes edge extrusion function.
 #
