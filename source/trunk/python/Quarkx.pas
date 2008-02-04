@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2007/12/06 01:02:27  danielpharos
+Changed some of the Python version checking, and removed some redundant library-paths.
+
 Revision 1.49  2007/09/17 23:06:42  danielpharos
 Stop the disclaimer for disappearing sometimes, and move the splashscreen out of QuarkX.
 
@@ -169,7 +172,7 @@ interface
 {$I DelphiVer.inc}
 
 uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
-     Menus;
+     Menus, Math;
 
 const
  PythonSetupString = 'import sys'#10'sys.path = ["%s"]'#10'import quarkpy';
@@ -236,7 +239,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      PakFiles, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
-     QkApplPaths, MapError, StrUtils;
+     QkApplPaths, MapError, StrUtils, QkImages;
 
  {-------------------}
 
@@ -1953,7 +1956,7 @@ begin
    end;
   finally
    if SI.hStdError<>0 then CloseHandle(SI.hStdError);
-   if SI.hStdOutput<>0 then CloseHandle(SI.hStdOutput);{coflhack:=SI.hStdOutput;}
+   if SI.hStdOutput<>0 then CloseHandle(SI.hStdOutput);
   end;
   Result:=GetProcessModule(PI, nstdout, nstderr, cmdline);
  except
@@ -2591,8 +2594,62 @@ begin
  end;
 end;
 
+function xSetPixel(self, args: PyObject) : PyObject; cdecl;
+var
+  texname: PChar;
+  AltTexSrc: PyObject;
+  X, Y, Color: Integer;
+  Q: QPixelSet;
+  Image: QImage;
+  P: PChar;
+  ImageSize: TPoint;
+  ScanlineWidth: Integer;
+begin
+  Result:=Nil;
+  try
+    if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y, @Color]) then
+     Exit;
+    Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
+    if not (Q is QImage) then
+     Exit;
+    Image:=QImage(Q);
+    P:=Image.GetImagePtr1;
+    ImageSize:=Image.GetSize;
+    if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
+     Exit;
+    if Image.IsTrueColor then
+    begin
+      //This is the scanline width for 'Image1' (24-bit)
+      ScanlineWidth:=(((ImageSize.X * 24) + 31) div 32) * 4;
+
+      Inc(P, (3 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
+      if Color > Power(2, 24) - 1 then
+       Exit;
+      PByte(P)^:=(Color and $FF0000) shr 16;
+      Inc(P);
+      PByte(P)^:=(Color and $00FF00) shr 8;
+      Inc(P);
+      PByte(P)^:=(Color and $0000FF);
+    end
+    else
+    begin
+      //This is the scanline width for 'Image1' (8-bit)
+      ScanlineWidth:=(((ImageSize.X * 8) + 31) div 32) * 4;
+
+      Inc(P, (1 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
+      if Color > 255 then
+       Exit;
+      PByte(P)^:=(Color and $0000FF);
+    end;
+    Result:=PyNoResult;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
 const
- MethodTable: array[0..72] of TyMethodDef =
+ MethodTable: array[0..73] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
@@ -2666,6 +2723,7 @@ const
    (ml_name: 'exit';            ml_meth: xExit;           ml_flags: METH_VARARGS),
    (ml_name: 'log';             ml_meth: xLog;            ml_flags: METH_VARARGS),{AiV}
    (ml_name: 'heapstatus';      ml_meth: xHeapStatus;     ml_flags: METH_VARARGS),{AiV}
+   (ml_name: 'setpixel';        ml_meth: xSetPixel;       ml_flags: METH_VARARGS),
    (ml_Name: Nil;               ml_meth: Nil));
 
  {-------------------}
@@ -3006,7 +3064,6 @@ var
  S: String;
  I: Integer;
 begin
- {InitConsole;}
  I:=InitializePython;
  if I>0 then FatalError(I);
 
