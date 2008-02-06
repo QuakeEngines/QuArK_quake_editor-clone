@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2007/11/21 16:07:32  danielpharos
+Another bunch of hugh image fixes: everything should work again!
+
 Revision 1.19  2007/11/21 00:06:22  danielpharos
 BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
 
@@ -116,7 +119,8 @@ type
                          procedure AllocPalette;
                          procedure FlipBottomUp;
                          function IsGamePalette(Game: Char) : Boolean;
-                         function GetBitmapImage : TBitmap;
+                         function GetNewDCImage : HDC;
+                         (*function GetBitmapImage : TBitmap;*)
                         end;
 
 const
@@ -567,7 +571,30 @@ begin
  end;
 end;
 
-function TPixelSetDescription.GetBitmapImage : TBitmap;
+function TPixelSetDescription.GetNewDCImage : HDC;
+var
+ BmpInfo: TBitmapInfo256;
+ BitmapInfo: TBitmapInfo256;
+ NewPSD: TPixelSetDescription;
+ DesktopWindow: HWND;
+ DC: HDC;
+begin
+ NewPSD:=PSDToDIB(Self, True);
+ try
+  DesktopWindow:=GetDesktopWindow;
+  DC:=GetDC(DesktopWindow);
+  try
+   BitmapInfo:=NewPSD.GetBitmapInfo(BmpInfo, Nil)^;
+   Result:=CreateToDC(DC, BitmapInfo, NewPSD.Data);
+  finally
+   ReleaseDC(DesktopWindow, DC);
+  end;
+ finally
+  NewPSD.Done;
+ end;
+end;
+
+(*function TPixelSetDescription.GetBitmapImage : TBitmap;
 var
  BmpInfo: TBitmapInfo256;
  BitmapInfo: TBitmapInfo256;
@@ -584,7 +611,7 @@ begin
   ReleaseDC(GetDesktopWindow, DC);
   NewPSD.Done;
  end;
-end;
+end;*)
 
  {------------------------}
 

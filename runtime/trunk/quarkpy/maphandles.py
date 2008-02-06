@@ -1929,7 +1929,8 @@ def viewsinglebezier(view, layout, patch):
 #            mainhandle.friends = mainhandle.friends + h1
 #            view.handles = h2 + h1
             view.handles = h2
-            view.background = tex, quarkx.vect(0,0,0), 1.0, 0, 1
+            view.background = quarkx.vect(0,0,0), 1.0, 0, 1
+            view.backgroundimage = tex,
             view.screencenter = mainhandle.getcenter()
             return 1
 
@@ -1997,6 +1998,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.68  2007/12/21 20:12:14  cdunde
+#To fix error for a group folder if nothing is in it sometimes.
+#
 #Revision 1.67  2007/11/29 23:39:00  cdunde
 #Changed to keep Texture Position dialog open and update dynamically.
 #

@@ -79,7 +79,7 @@ class BackBmpDlg(qmacro.dialogbox):
         #FIXME
         #DanielPharos: We should check if it's a 3D window. If so, don't allow a background!
         src = quarkx.newobj(":")
-        if view.background is None:
+        if view.backgroundimage is None:
             src["filename"] = quarkx.setupsubset(SS_MAP, "Options")["BGImage_filename"]
             src["center"] = quarkx.setupsubset(SS_MAP, "Options")["BGImage_center"]
             src["scale"] = quarkx.setupsubset(SS_MAP, "Options")["BGImage_scale"]
@@ -136,7 +136,8 @@ class BackBmpDlg(qmacro.dialogbox):
                 multiple = 1
             PolySelectNoFill = src["PolySelectNoFill"]
             NoFillSel = src["NoFillSel"]
-            self.view.background = filename, center, scale, offset, multiple
+            self.view.background = center, scale, offset, multiple
+            self.view.backgroundimage = filename,
           ### Save the settings...
             quarkx.setupsubset(SS_MAP, "Options")["BGImage_filename"] = src["filename"]
             quarkx.setupsubset(SS_MAP, "Options")["BGImage_center"] = src["center"]
@@ -158,7 +159,7 @@ class BackBmpDlg(qmacro.dialogbox):
 
     def remove(self, m):
         src = self.src
-        self.view.background = None
+        self.view.backgroundimage = None,
         filename = None
         src["filename"] = None
         center = src["BGImage_center"]
@@ -246,7 +247,7 @@ class MdlBackBmpDlg(qmacro.dialogbox):
         #FIXME
         #DanielPharos: We should check if it's a 3D window. If so, don't allow a background!
         src = quarkx.newobj(":")
-        if view.background is None:
+        if view.backgroundimage is None:
             src["filename"] = quarkx.setupsubset(SS_MODEL, "Options")["BGImage_filename"]
             src["center"] = quarkx.setupsubset(SS_MODEL, "Options")["BGImage_center"]
             src["scale"] = quarkx.setupsubset(SS_MODEL, "Options")["BGImage_scale"]
@@ -297,7 +298,8 @@ class MdlBackBmpDlg(qmacro.dialogbox):
                 multiple = 0
             else:
                 multiple = 1
-            self.view.background = filename, center, scale, offset, multiple
+            self.view.background = center, scale, offset, multiple
+            self.view.backgroundimage = filename,
           ### Save the settings...
             quarkx.setupsubset(SS_MODEL, "Options")["BGImage_filename"] = src["filename"]
             quarkx.setupsubset(SS_MODEL, "Options")["BGImage_center"] = src["center"]
@@ -315,7 +317,7 @@ class MdlBackBmpDlg(qmacro.dialogbox):
 
     def remove(self, m):
         src = self.src
-        self.view.background = None
+        self.view.backgroundimage = None,
         filename = None
         src["filename"] = None
         center = src["BGImage_center"]
@@ -350,6 +352,9 @@ class MdlBackBmpDlg(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.11  2007/11/22 05:13:47  cdunde
+#Separated editors background image dialogs and setup to save all of their settings.
+#
 #Revision 1.10  2007/11/19 00:08:39  danielpharos
 #Any supported picture can be used for a view background, and added two options: multiple, offset
 #

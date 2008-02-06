@@ -1713,7 +1713,8 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
             view.ondraw = draw1
             view.onmouse = layout.editor.mousemap
                ### This sets the texture, its location and scale size in the Skin-view.
-            view.background = tex, quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0), 1.0, 0, 1
+            view.background = quarkx.vect(-int(texWidth*.5),-int(texHeight*.5),0), 1.0, 0, 1
+            view.backgroundimage = tex,
     else:
            ### This handles models without any skin(s).
         texWidth,texHeight = view.clientarea
@@ -3225,6 +3226,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.123  2008/01/26 06:32:38  cdunde
+#To stop doautozoom in Skin-view, causing unexpected view jumps.
+#
 #Revision 1.122  2007/12/06 02:06:29  cdunde
 #Minor corrections.
 #

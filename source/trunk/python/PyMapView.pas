@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2007/12/06 00:59:34  danielpharos
+Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
+
 Revision 1.36  2007/11/19 00:08:48  danielpharos
 Any supported picture can be used for a view background, and added two options: multiple, offset
 
@@ -120,7 +123,7 @@ interface
 
 uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
      Dialogs, Quarkx, QkExplorer, Python, QkObjects, PyObjects,
-     PyControls, QkForm, CursorScrollBox, Qk3D, QkMapObjects,
+     PyControls, QkForm, CursorScrollBox, Qk3D, QkMapObjects, QkImages,
      qmath, PyMath, PyMath3D, Setup, Travail, ExtCtrls,
      EdSceneObject;
 
@@ -195,18 +198,20 @@ type
                    BackBuffer, OldBmp: HBitmap;
                    Brush: HBrush;
                   end;
-  PBackgroundImage = ^TBackgroundImage;
   TBackgroundImage = record
-                      Filename: String;
-                      Bitmap: TBitmap;
+                      NeedToFree: Boolean;
+                      Image: QImage;
+                      center: TyVect;
+                      scale: Single;
+                      offset, multiple: Integer;
                      end;
   TPyMapView = class(TCursorScrollBox)
                private
                  DisplayType: TDisplayType;
                  kDelta: TPoint;
                  FOnDraw, FBoundingBoxes, FOnMouse, FOnKey, FHandles,
-                 FOnCameraMove, FBackground: PyObject;
-                 BackgroundImage: PBackgroundImage;
+                 FOnCameraMove: PyObject;
+                 BackgroundImage: TBackgroundImage;
                  FEntityForms: TQList;
                  Flags: Byte;  { vfXXX }
                  Drawing: Byte;
@@ -314,7 +319,7 @@ var
 implementation
 
 uses PyCanvas, QkTextures, QkPixelSet, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
-     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects, QkImages;
+     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects;
 
 
 constructor TPyMapView.Create(AOwner: TComponent);
@@ -337,7 +342,6 @@ begin
  FOnMouse:=PyNoResult;
  FOnKey:=PyNoResult;
  FOnCameraMove:=PyNoResult;
- FBackground:=PyNoResult;
  FHandles:=PyList_New(0);
  CurrentHandle:=PyNoResult;
  FBoundingBoxes:=PyList_New(0);
@@ -368,18 +372,14 @@ begin
  MapViewObject^.Close;
  SceneConfigSrc.AddRef(-1);
  Scene.Free;
- if BackgroundImage<>Nil then
-  begin
-   BackgroundImage^.Bitmap.Free;
-   Dispose(BackgroundImage);
-  end;
+ if BackgroundImage.NeedToFree then
+  BackgroundImage.Image.Free;
  Py_DECREF(FHandles);
  Py_DECREF(CurrentHandle);
  Py_DECREF(FBoundingBoxes);
  Py_DECREF(FOnKey);
  Py_DECREF(FOnMouse);
  Py_DECREF(FOnDraw);
- Py_DECREF(FBackground);
  {Root.AddRef(-1);}
  MapViewProj.Free;
  inherited;
@@ -484,6 +484,7 @@ begin
                      if FullScreen then
                       begin
                        Canvas.Handle:=HDC(-1);
+                       //@ClipRect
                        try
                         Render;
                        finally
@@ -562,14 +563,6 @@ begin
   Invalidate;
  with ConfigSrc do
   begin
-   if Scene is TGlideSceneObject then   {DanielPharos: Renderer should take care of this}
-    begin
-     if Specifics.Values['3DfxLogo']='' then
-      SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', '1')
-     else
-      SetEnvironmentVariable('FX_GLIDE_NO_SPLASH', Nil);
-    end;
-
    if MapViewProj is TCameraCoordinates then
     begin
      DisplayType:=dt3D;
@@ -843,139 +836,90 @@ end;
 
 procedure TPyMapView.PaintBackground;
 var
- P: PChar;
- center: PyVect;
- scale: Single;
- offset, multiple: Integer;
- S: String;
+ PSD: TPixelSetDescription;
+ Bitmap: TBitmap;
  R, Dest: TRect;
  P1: TPointProj;
  X, Y, W, H: TDouble;
- Q: QPixelSet;
- PSD: TPixelSetDescription;
- obj: PyObject;
- F: QFileObject;
+ scaling: Single;
 begin
- if not PyArg_ParseTupleX(FBackground, 'OO!fii:background', [@obj, @TyVect_Type, @center, @scale, @offset, @multiple]) then
-  Exit;
- if obj^.ob_type = @TyObject_Type then
+ //@DanielPharos: Change to use StretchBlit, and no Bitmap-stuff anymore!
+ with BackgroundImage do
   begin
-   Q:=QkObjFromPyObj(obj) as QPixelSet;
-   S:='TEX?'+Q.Name+Q.TypeInfo;
-  end
- else
-  begin
-   P:=PyString_AsString(obj);
-   if P=Nil then Exit;
-   S:=StrPas(P);
-   Q:=Nil;
-  end;
- if BackgroundImage=Nil then
-  begin
-   New(BackgroundImage);
-   FillChar(BackgroundImage^, SizeOf(TBackgroundImage), 0);
-  end;
- if scale<0 then
-  scale:=0;
- with BackgroundImage^ do
-  begin
-   if Filename <> S then
-    begin
-     if Bitmap <> nil then
-      begin
-       Bitmap.Free;
-       Bitmap:=Nil;
-      end;
-     F:=nil;
-     try
-      if Q=Nil then
-       begin
-        F:=ExactFileLink(S, nil, True);
-        if not (F is QImage) then
-         begin
-          //DanielPharos: Set the wrong filename anyway,
-          //so the error message only displays once!
-          Filename:=S;
-          raise EError(4621);
-         end;
-        Q:=QImage(F);
-       end;
-      PSD:=Q.Description; try
-      Bitmap:=PSD.GetBitmapImage;
-      finally PSD.Done; end;
-     finally
-      if F<>nil then
-       F.Free;
-     end;
-     Filename:=S;
-    end;
-   if Bitmap=Nil then
-    Exit;
-   if MapViewProj=Nil then
-    begin
-     P1.X:=center^.V.X;
-     P1.Y:=center^.V.Y;
-    end
-   else
-    begin
-     P1:=MapViewProj.Proj(center^.V);
-     scale:=scale * MapViewProj.ScalingFactor(@center^.V);
-    end;
-   if scale=0 then
-    begin
-     W:=Bitmap.Width;
-     H:=Bitmap.Height;
-    end
-   else
-    begin
-     W:=scale * Bitmap.Width;
-     H:=scale * Bitmap.Height;
-    end;
-   if offset=1 then
-    begin
-     P1.X:=P1.X - W * 0.5;
-     P1.Y:=P1.Y - H * 0.5;
-    end;
-   if multiple=0 then
-    begin
-     if scale=0 then
-      Canvas.Draw(Round(P1.X), Round(P1.Y), Bitmap)
-     else
-      begin
-       R.Left:=Round(P1.X);
-       R.Top:=Round(P1.Y);
-       R.Right:=Round(P1.X + W);
-       R.Bottom:=Round(P1.Y + H);
-       Canvas.StretchDraw(R, Bitmap);
-      end;
-    end
-   else
-    if GetClipBox(Canvas.Handle, Dest) <> ERROR then
+   PSD:=Image.Description;
+   try
+    Bitmap:=TBitmap.Create;
+    Bitmap.Handle:=PSD.GetNewDCImage;
+    W:=PSD.Size.X;
+    H:=PSD.Size.Y;
+   finally
+    PSD.Done;
+   end;
+   try
+    scaling:=scale;
+    if MapViewProj=Nil then
      begin
-      while P1.X > Dest.Left do P1.X:=P1.X-W;
-      while P1.Y > Dest.Top  do P1.Y:=P1.Y-H;
-      Y:=P1.Y;
-      while Y < Dest.Bottom do
-       begin
-        X:=P1.X;
-        while X < Dest.Right do
-         begin
-          if scale=0 then
-           Canvas.Draw(Round(X), Round(Y), Bitmap)
-          else
-           begin
-            R.Left:=Round(X);
-            R.Top:=Round(Y);
-            R.Right:=Round(X+W);
-            R.Bottom:=Round(Y+H);
-            Canvas.StretchDraw(R, Bitmap);
-           end;
-          X:=X+W;
-         end;
-        Y:=Y+H;
-       end;
+      P1.X:=center.V.X;
+      P1.Y:=center.V.Y;
+     end
+    else
+     begin
+      P1:=MapViewProj.Proj(center.V);
+      scaling:=scaling * MapViewProj.ScalingFactor(@center.V);
      end;
-  end;
+    if scaling<>0 then
+     begin
+      W:=scaling * W;
+      H:=scaling * H;
+     end;
+    if offset=1 then
+     begin
+      P1.X:=P1.X - W * 0.5;
+      P1.Y:=P1.Y - H * 0.5;
+     end;
+    if multiple=0 then
+     begin
+      if scaling=0 then
+       Canvas.Draw(Round(P1.X), Round(P1.Y), Bitmap)
+      else
+       begin
+        R.Left:=Round(P1.X);
+        R.Top:=Round(P1.Y);
+        R.Right:=Round(P1.X + W);
+        R.Bottom:=Round(P1.Y + H);
+        Canvas.StretchDraw(R, Bitmap);
+       end;
+     end
+    else
+     if GetClipBox(Canvas.Handle, Dest) <> ERROR then
+      begin
+       while P1.X > Dest.Left do P1.X:=P1.X-W;
+       while P1.Y > Dest.Top  do P1.Y:=P1.Y-H;
+       Y:=P1.Y;
+       while Y < Dest.Bottom do
+        begin
+         X:=P1.X;
+         while X < Dest.Right do
+          begin
+           if scaling=0 then
+            Canvas.Draw(Round(X), Round(Y), Bitmap)
+           else
+            begin
+             R.Left:=Round(X);
+             R.Top:=Round(Y);
+             R.Right:=Round(X+W);
+             R.Bottom:=Round(Y+H);
+             Canvas.StretchDraw(R, Bitmap);
+            end;
+           X:=X+W;
+          end;
+         Y:=Y+H;
+        end;
+      end;
+   finally
+    Bitmap.Free;
+   end;
+ end;
 end;
 
 procedure TPyMapView.Render;
@@ -990,15 +934,8 @@ begin
  Drawing:=Drawing or dfDrawing;
  ExceptionMethod:=ClearPanel;
  try
-  if FBackground<>Py_None then
-   PaintBackground
-  else
-   if BackgroundImage<>Nil then
-    begin
-     BackgroundImage^.Bitmap.Free;
-     Dispose(BackgroundImage);
-     BackgroundImage:=Nil;
-    end;
+  if BackgroundImage.Image<>nil then
+   PaintBackground;
 
   if (ViewMode = vmWireframe) or (MapViewProj=Nil) then
    begin
@@ -3021,12 +2958,6 @@ begin
           if QkControl<>Nil then
            Result:=@(QkControl as TPyMapView).FBoundingBoxes;
           Exit;
-         end
-        else if StrComp(attr, 'background')=0 then
-         begin
-          if QkControl<>Nil then
-           Result:=@(QkControl as TPyMapView).FBackground;
-          Exit;
          end;
    'h': if StrComp(attr, 'handles')=0 then
          begin
@@ -3066,6 +2997,7 @@ var
  Attr1: PyObjectPtr;
  I: Integer;
  R: TRect;
+ centerX: PyVect;
 begin
  try
   for I:=Low(MethodTable) to High(MethodTable) do
@@ -3082,6 +3014,26 @@ begin
           begin
            if QkControl<>Nil then
             Result:=PyInt_FromLong(Ord((QkControl as TPyMapView).Animation<>Nil));
+           Exit;
+          end;
+    'b': if StrComp(attr, 'background')=0 then
+          begin
+           if QkControl<>Nil then
+            with (QkControl as TPyMapView).BackgroundImage do
+             begin
+              centerX:=@center;
+              Result:=Py_BuildValueX('O!fii', [@TyVect_Type, @centerX, @scale, @offset, @multiple]);
+             end;
+           Exit;
+          end
+         else if StrComp(attr, 'backgroundimage')=0 then
+          begin
+           if QkControl<>Nil then
+            with (QkControl as TPyMapView).BackgroundImage do
+             if Image<>nil then
+              Result:=Py_BuildValueX('O', [@Image])
+             else
+              Result:=Py_None;
            Exit;
           end;
     'c': if StrComp(attr, 'cameraposition')=0 then
@@ -3229,12 +3181,18 @@ var
  Attr1: PyObjectPtr;
  Vm: TMapViewMode;
  Vt: TMapViewType;
-{Q: QObject;}
+ Q: QObject;
  nFlags: Integer;
  P: PChar;
  f1, f2: Double;
  fl1, fl2: Single;
 { v1: PyVect; }
+ objX: PyObject;
+ centerX: PyVect;
+ scaleX: Single;
+ offsetX, multipleX: Integer;
+ S: String;
+ F: QFileObject;
 begin
  Result:=-1;
  try
@@ -3245,6 +3203,63 @@ begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
              SetAnimation(PyObject_IsTrue(value));
+           Result:=0;
+           Exit;
+          end;
+    'b': if StrComp(attr, 'background')=0 then
+          begin
+           if QkControl<>Nil then
+            begin
+             if not PyArg_ParseTupleX(value, 'O!fii', [@TyVect_Type, @centerX, @scaleX, @offsetX, @multipleX]) then
+              Exit;
+             with (QkControl as TPyMapView).BackgroundImage do
+              begin
+               center:=centerX^;
+               if scaleX<0 then
+                 scale:=0
+               else
+                 scale:=scaleX;
+               offset:=offsetX;
+               multiple:=multipleX;
+              end;
+            end;
+           Result:=0;
+           Exit;
+          end
+         else
+         if StrComp(attr, 'backgroundimage')=0 then
+          begin
+           if not PyArg_ParseTupleX(value, 'O', [@objX]) then
+            Exit;
+           with (QkControl as TPyMapView).BackgroundImage do
+            begin
+             if objX = Py_None then
+              begin
+               if NeedToFree then
+                Image.Free;
+               Image:=nil;
+               NeedToFree:=False;
+              end
+             else if objX^.ob_type = @TyObject_Type then
+              begin
+               Q:=QkObjFromPyObj(objX);
+               if not (Q is QImage) then
+                Exit;
+               Image:=QImage(Q);
+               NeedToFree:=False;
+              end
+             else
+              begin
+               P:=PyString_AsString(objX);
+               if P=Nil then Exit;
+               S:=StrPas(P);
+               F:=ExactFileLink(S, nil, True);
+               if not (F is QImage) then
+                raise EError(4621);
+               Image:=QImage(F);
+               NeedToFree:=True;
+              end;
+            end;
            Result:=0;
            Exit;
           end;
