@@ -1189,11 +1189,6 @@ class RedImageDragObject(DragObject):
                         compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
             except:
                 pass
-            from qbaseeditor import currentview
-            if currentview.info["viewname"] == "skinview":
-                pass
-            else:
-                return
 
 ## End of above section for Terrain Generator changes
 
@@ -1359,7 +1354,9 @@ class FreeZoomDragObject(DragObject):
             # To free up the L & CMB for other function use in the Model Editor.
             from qbaseeditor import flagsmouse
             if flagsmouse == 288 or flagsmouse == 296 or flagsmouse == 552 or flagsmouse == 800 or flagsmouse == 1064 or flagsmouse == 2088:
-                mapeditor(SS_MODEL).dragobject = None
+                editor = mapeditor(SS_MODEL)
+                if editor is None: return
+                editor.dragobject = None
                 return
 
      #   sensitivity, = quarkx.setupsubset(self.MODE, "Display")["FreeZoom"]
@@ -2165,6 +2162,10 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.67  2008/01/26 07:11:56  cdunde
+#To stop doautozoom in Skin-view, causing unexpected view jumps.
+#Increased zoom in amount in Model Editor views for closer work.
+#
 #Revision 1.66  2007/12/19 12:40:28  danielpharos
 #Small code clean-up
 #
