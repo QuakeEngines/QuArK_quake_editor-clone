@@ -356,7 +356,7 @@ class BaseEditor:
         import mdleditor
         if isinstance(self, mdleditor.ModelEditor):
             try:
-                if currentview.info["viewname"] == "skinview" or view.info["viewname"] == "skinview":
+                if view.info["viewname"] == "skinview":
                     if (flagsmouse != 536 or flagsmouse != 1048 or flagsmouse != 2072) and (view.info["viewname"] == "skinview"):
 
                         cv = view.canvas()
@@ -364,10 +364,7 @@ class BaseEditor:
                         if tex is not None:
                             texWidth,texHeight = tex["Size"]
                         else:
-                            if view.info["viewname"] != "skinview":
-                                texWidth,texHeight = currentview.clientarea
-                            else:
-                                texWidth,texHeight = view.clientarea
+                            texWidth,texHeight = view.clientarea
                         if flagsmouse == 520 or flagsmouse == 1032:
                             import mdlhandles # Needed for 'Ticks' drawing methods further below.
                             pass
@@ -1436,6 +1433,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.105  2008/02/04 04:39:42  cdunde
+#To stop doautozoom in Skin-view, causing unexpected view jumps.
+#
 #Revision 1.104  2007/12/19 12:39:53  danielpharos
 #Small code clean-up
 #
