@@ -20,7 +20,7 @@ Info = {
 
 import quarkx
 #
-# The style of import statement here makes it unnecessary tp
+# The style of import statement here makes it unnecessary to
 #  put 'quarkpy' into references to things in these modules.
 #  This would make it easier to shift this material directly
 #  into say the 'maphandles' module
@@ -42,7 +42,7 @@ import mapmadsel
 #  w/o qualification
 #
 from quarkpy.maphandles import *
-        
+
 
 #
 # Tries to find the last 3D view clicked on
@@ -87,7 +87,7 @@ def setView(o,editor):
     view = get3DView(editor,makeone=1)
     if view is None:
         return
-    view.cameraposition = o.origin, o["yaw"][0], o["pitch"][0]          
+    view.cameraposition = o.origin, o["yaw"][0], o["pitch"][0]
     editor.invalidateviews()
     editor.currentcampos=o
 
@@ -105,6 +105,7 @@ def storeView(o,editor):
     undo.setspec(o,"pitch",(pitch,))
     editor.ok(undo,"store camera position")
     editor.currentcampos=o
+
 #
 # The menu redefinition trick, as discussed in the plugin tutorial
 #  in the infobase.  'o' is the duplicator object
@@ -125,7 +126,7 @@ def camposmenu(o, editor, oldmenu=mapentities.DuplicatorType.menu.im_func):
     storeitem=qmenu.item("Store View",storeViewClick,"|Store 3D view position in this position item.")
     getitem=qmenu.item("Set View", setViewClick,"|Set 3D view position from this position item.\n\nThen use PgUp/Down with 'C' depressed to cycle prev/next camera positions in the same group as this one.\n\nThis won't work until a view has been set or stored in the group with the menu item")
     return [getitem, storeitem]
-  
+
 mapentities.DuplicatorType.menu = camposmenu
 
 #
@@ -248,8 +249,8 @@ def addPosition(view3D, editor):
                     if sel.type==":g":
                         pozzies = sel
                     else:
-                       pozzies=sel.treeparent # returns None if parent outside of tree                   
-            if pozzies is None:    
+                       pozzies=sel.treeparent # returns None if parent outside of tree
+            if pozzies is None:
                 pozzies = editor.Root.findname("Camera Positions:g")
             undo=quarkx.action()
             if pozzies is None:
@@ -369,8 +370,8 @@ class FindCameraPosDlg(dlgclasses.LiveEditDlg):
         if editor is None:
             quarkx.msgbox('oops no editor',2,4)
         storeView(self.pack.cameras[index],editor)
-                
-    
+
+
 #
 # Define the zapview macro here, put the definition into
 #  quarkpy.qmacro, which is where macros called from delphi
@@ -385,7 +386,7 @@ def macro_camerapos(self, index=0):
         editor.cameraposdlg.setview()
     elif index==3:
         editor.cameraposdlg.storeview()
-        
+
 qmacro.MACRO_camerapos = macro_camerapos
 
 def findClick(m):
@@ -415,7 +416,7 @@ def findClick(m):
        # note what's been chosen
        #
        self.chosen = src["cameras"]
-         
+
     FindCameraPosDlg(quarkx.clickform, 'findcamerapos', editor, setup, action)
 
 mapsearch.items.append(qmenu.item('Find Camera Positions', findClick,
@@ -452,6 +453,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.16  2006/11/30 01:17:47  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 # Revision 1.15  2006/11/29 06:58:35  cdunde
 # To merge all runtime files that had changes from DanielPharos branch
 # to HEAD for QuArK 6.5.0 Beta 1.
