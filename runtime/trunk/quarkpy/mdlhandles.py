@@ -1894,7 +1894,6 @@ def BuildCommonHandles(editor, explorer, option=1):
             MakeEditorFaceObject(editor)
         if len(editor.ModelVertexSelList) >= 2:
             option = 2
-            from qbaseeditor import currentview
             vtxlist = MakeEditorVertexPolyObject(editor)
         if option == 1:
             h = []
@@ -3226,6 +3225,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.124  2008/02/06 00:12:44  danielpharos
+#The skinview now properly updates to reflect changes made to textures.
+#
 #Revision 1.123  2008/01/26 06:32:38  cdunde
 #To stop doautozoom in Skin-view, causing unexpected view jumps.
 #
