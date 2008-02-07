@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2008/02/03 13:12:45  danielpharos
+Update for the AutoUpdater. Beginning of the install-window.
+
 Revision 1.3  2008/01/01 20:37:44  danielpharos
 Partially build in and enabled the online update system. Still needs a lot of work, but it's downloading an index file and parsing it.
 
@@ -85,7 +88,7 @@ procedure DoUpdate(AllowOnline: Boolean);
 
 implementation
 
-uses StrUtils, SysUtils, DateUtils, QkObjects, Setup, Logging,
+uses StrUtils, SysUtils, DateUtils, QkObjects, Setup, Logging, Travail,
   AutoUpdateInstaller;
 
 {$R *.DFM}
@@ -268,28 +271,37 @@ begin
 
   UpdateConnection:=THTTPConnection.Create;
   try
-    if UpdateConnection.GoOnline = false then
-    begin
-      //@
-      Exit;
-    end;
+    ProgressIndicatorStart(5462, 4);
+    try
+      if UpdateConnection.GoOnline = false then
+      begin
+        //@
+        Exit;
+      end;
+      ProgressIndicatorIncrement;
 
-    if UpdateConnection.ConnectTo(QuArKUpdateSite) = false then
-    begin
-      //@
-      Exit;
-    end;
+      if UpdateConnection.ConnectTo(QuArKUpdateSite) = false then
+      begin
+        //@
+        Exit;
+      end;
+      ProgressIndicatorIncrement;
 
-    if UpdateConnection.GetFile(QuArKUpdateFile, IndexFile) = false then
-    begin
-      //@
-      Exit;
-    end;
+      if UpdateConnection.GetFile(QuArKUpdateFile, IndexFile) = false then
+      begin
+        //@
+        Exit;
+      end;
+      ProgressIndicatorIncrement;
 
-    if ParseIndexFile(IndexFile) = false then
-    begin
-      //@
-      Exit;
+      if ParseIndexFile(IndexFile) = false then
+      begin
+        //@
+        Exit;
+      end;
+      //ProgressIndicatorIncrement;
+    finally
+      ProgressIndicatorStop;
     end;
 
     //@
@@ -397,7 +409,8 @@ begin
     Exit;
   end;
   Close;
-  DoInstall;
+  if DoInstall = false then
+    Exit;
 end;
 
 procedure TAutoUpdater.CheckListBox1Click(Sender: TObject);

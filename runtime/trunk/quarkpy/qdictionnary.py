@@ -692,6 +692,7 @@ Strings = {
     5459: "preparing Faces...",
     5460: "preparing Models...",
     5461: "Loading from pak file...",
+    5462: "Searching online for updates...",
 
     5502: "Sprite object not found!",
     5503: "'%s' is a Half-Life Model which cannot be read (yet)",
@@ -1030,6 +1031,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.113  2008/01/31 16:07:24  danielpharos
+#Added FTX file loading and saving support (Heavy Metal: F.A.K.K. 2 textures).
+#
 #Revision 1.112  2007/12/06 15:47:53  danielpharos
 #Fixed a wrong text.
 #
