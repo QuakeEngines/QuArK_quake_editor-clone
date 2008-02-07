@@ -48,13 +48,14 @@ def ProjectKeepingLength(A,C,L):
 #
 def checkTriangle(tri, index):
     for c in tri:
-        if ( c[0] == index): # c[0] is the 'vertexno'
+        if (c[0] == index): # c[0] is the 'vertexno'
             return 1
     return 0
 
 
 #
 #  Find a triangle based on the 3 vertex indexs that are given.
+#  DanielPharos: Make sure v1, v2 and v3 are different!
 #
 def findTriangle(comp, v1, v2, v3):
     tris = comp.triangles
@@ -62,13 +63,24 @@ def findTriangle(comp, v1, v2, v3):
     for tri in tris:
         index = index + 1
         b = 0
+        v1found = 0
+        v2found = 0
+        v3found = 0
         for c in tri:
-            if ((c[0] == v1) | (c[0] == v2) | (c[0] == v3)):
-                b = b + 1
-            else:
-                b = 0
-        if b==3:
-            return index
+            if v1found == 0:
+                if (v1 == c[0]):
+                    v1found = 1
+                    b = b + 1
+            if v2found == 0:
+                if (v2 == c[0]):
+                    v2found = 1
+                    b = b + 1
+            if v3found == 0:
+                if (v3 == c[0]):
+                    v3found = 1
+                    b = b + 1
+            if b == 3:
+                return index
     return None
 
 
@@ -2344,6 +2356,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.71  2007/12/08 07:40:01  cdunde
+#Minor comment update.
+#
 #Revision 1.70  2007/12/08 07:20:56  cdunde
 #To get the face extrusion functions to apply movement based on frame animation positions.
 #
