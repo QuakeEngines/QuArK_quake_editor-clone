@@ -25,7 +25,6 @@ from qeditor import *
 # Globals
 HoldObject = None
 NewSellist = []
-currentview = None
 mdleditor = None
 
 #py2.4 indicates upgrade change for python 2.4
@@ -931,7 +930,6 @@ def setframefillcolor(self, view):
 
 def paintframefill(self, v):
 
-
     if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
         componentnames = []
         for item in self.Root.dictitems:
@@ -1432,6 +1430,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.81  2007/11/24 22:23:48  cdunde
+#Some "lists" comment and description updates.
+#
 #Revision 1.80  2007/11/11 11:41:53  cdunde
 #Started a new toolbar for the Model Editor to support "Editing Tools".
 #
