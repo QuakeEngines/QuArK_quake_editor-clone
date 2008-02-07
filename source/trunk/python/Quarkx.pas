@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2008/02/07 14:01:53  danielpharos
+Added palette and alpha functions and functions to retrieve color values to QuarkX
+
 Revision 1.51  2008/02/04 04:03:58  cdunde
 To add new quarkx function setpixel by DanielPharos for changing the
 pixel color of a texture to be used for texture and model skin painting.
@@ -2612,7 +2615,7 @@ var
 begin
   Result:=Nil;
   try
-    if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y]) then
+    if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @X, @Y]) then
      Exit;
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
@@ -2721,7 +2724,7 @@ var
 begin
   Result:=Nil;
   try
-    if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @Index]) then
+    if not PyArg_ParseTupleX(args, 's|Oi', [@texname, @AltTexSrc, @Index]) then
      Exit;
     if (Index<0) or (Index>255) then
      Exit;
