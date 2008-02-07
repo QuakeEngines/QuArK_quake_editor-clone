@@ -66,6 +66,7 @@ function DoInstall: Boolean;
 var
   ThreadId: Cardinal; //Dummy variable
 begin
+  Result:=False;
   InstallWindow:=TAutoUpdateInstaller.Create(nil);
   try
     InstallWindow.Show;
@@ -89,6 +90,7 @@ begin
   finally
     InstallWindow.Free;
   end;
+  Result:=True;
 end;
 
 procedure InstallPackages; stdcall;
