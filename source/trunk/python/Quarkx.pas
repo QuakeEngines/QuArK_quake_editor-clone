@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2008/02/04 04:03:58  cdunde
+To add new quarkx function setpixel by DanielPharos for changing the
+pixel color of a texture to be used for texture and model skin painting.
+
 Revision 1.50  2007/12/06 01:02:27  danielpharos
 Changed some of the Python version checking, and removed some redundant library-paths.
 
@@ -2594,6 +2598,60 @@ begin
  end;
 end;
 
+function xGetPixel(self, args: PyObject) : PyObject; cdecl;
+var
+  texname: PChar;
+  AltTexSrc: PyObject;
+  X, Y, Color: Integer;
+  Q: QPixelSet;
+  Image: QImage;
+  P: PChar;
+  ImageSize: TPoint;
+  ScanlineWidth: Integer;
+  Red, Green, Blue: Byte;
+begin
+  Result:=Nil;
+  try
+    if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y]) then
+     Exit;
+    Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
+    if not (Q is QImage) then
+     Exit;
+    Image:=QImage(Q);
+    P:=Image.GetImagePtr1;
+    if P = nil then
+     Exit;
+    ImageSize:=Image.GetSize;
+    if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
+     Exit;
+    if Image.IsTrueColor then
+    begin
+      //This is the scanline width for 'Image1' (24-bit)
+      ScanlineWidth:=(((ImageSize.X * 24) + 31) div 32) * 4;
+
+      Inc(P, (3 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
+      Red:=PByte(P)^;
+      Inc(P);
+      Green:=PByte(P)^;
+      Inc(P);
+      Blue:=PByte(P)^;
+      Color:=Red * 65536 + Green * 256 + Blue;
+    end
+    else
+    begin
+      //This is the scanline width for 'Image1' (8-bit)
+      ScanlineWidth:=(((ImageSize.X * 8) + 31) div 32) * 4;
+
+      Inc(P, (1 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
+      Color:=PByte(P)^;
+    end;
+    Result:=PyInt_FromLong(Color);
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
 function xSetPixel(self, args: PyObject) : PyObject; cdecl;
 var
   texname: PChar;
@@ -2609,11 +2667,15 @@ begin
   try
     if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y, @Color]) then
      Exit;
+    if Color<0 then
+     Exit;
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
      Exit;
     Image:=QImage(Q);
     P:=Image.GetImagePtr1;
+    if P = nil then
+     Exit;
     ImageSize:=Image.GetSize;
     if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
      Exit;
@@ -2625,11 +2687,11 @@ begin
       Inc(P, (3 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
       if Color > Power(2, 24) - 1 then
        Exit;
-      PByte(P)^:=(Color and $FF0000) shr 16;
+      PByte(P)^:=Byte(Color and $FF0000) shr 16;
       Inc(P);
-      PByte(P)^:=(Color and $00FF00) shr 8;
+      PByte(P)^:=Byte(Color and $00FF00) shr 8;
       Inc(P);
-      PByte(P)^:=(Color and $0000FF);
+      PByte(P)^:=Byte(Color and $0000FF);
     end
     else
     begin
@@ -2639,7 +2701,7 @@ begin
       Inc(P, (1 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
       if Color > 255 then
        Exit;
-      PByte(P)^:=(Color and $0000FF);
+      PByte(P)^:=Byte(Color and $0000FF);
     end;
     Result:=PyNoResult;
   except
@@ -2648,8 +2710,144 @@ begin
   end;
 end;
 
+function xGetPixelPal(self, args: PyObject) : PyObject; cdecl;
+var
+  texname: PChar;
+  AltTexSrc: PyObject;
+  Index, Color: Integer;
+  Q: QPixelSet;
+  Image: QImage;
+  P: PChar;
+begin
+  Result:=Nil;
+  try
+    if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @Index]) then
+     Exit;
+    if (Index<0) or (Index>255) then
+     Exit;
+    Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
+    if not (Q is QImage) then
+     Exit;
+    Image:=QImage(Q);
+    P:=PChar(Image.GetPalettePtr1);
+    if P = nil then
+     Exit;
+    if Image.IsTrueColor then
+     Exit;
+    Inc(P, Index * 3);
+    Color:=PByte(P)^;
+    Result:=PyInt_FromLong(Color);
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
+function xSetPixelPal(self, args: PyObject) : PyObject; cdecl;
+var
+  texname: PChar;
+  AltTexSrc: PyObject;
+  Index, Color: Integer;
+  Q: QPixelSet;
+  Image: QImage;
+  P: PChar;
+begin
+  Result:=Nil;
+  try
+    if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @Index, @Color]) then
+     Exit;
+    if (Index<0) or (Index>255) then
+     Exit;
+    Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
+    if not (Q is QImage) then
+     Exit;
+    Image:=QImage(Q);
+    P:=PChar(Image.GetPalettePtr1);
+    if P = nil then
+     Exit;
+    if Image.IsTrueColor then
+     Exit;
+    Inc(P, Index * 3);
+    PByte(P)^:=Byte(Color and $0000FF);
+    Result:=PyNoResult;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
+function xGetPixelAlpha(self, args: PyObject) : PyObject; cdecl;
+var
+  texname: PChar;
+  AltTexSrc: PyObject;
+  X, Y, Color: Integer;
+  Q: QPixelSet;
+  Image: QImage;
+  P: PChar;
+  ImageSize: TPoint;
+begin
+  Result:=Nil;
+  try
+    if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @X, @Y]) then
+     Exit;
+    Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
+    if not (Q is QImage) then
+     Exit;
+    Image:=QImage(Q);
+    P:=Image.GetAlphaPtr1;
+    if P = nil then
+     Exit;
+    ImageSize:=Image.GetSize;
+    if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
+     Exit;
+    Inc(P, (1 * X) + ImageSize.X * ((ImageSize.Y - 1) - Y));
+    Color:=PByte(P)^;
+    Result:=PyInt_FromLong(Color);
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
+function xSetPixelAlpha(self, args: PyObject) : PyObject; cdecl;
+var
+  texname: PChar;
+  AltTexSrc: PyObject;
+  X, Y, Color: Integer;
+  Q: QPixelSet;
+  Image: QImage;
+  P: PChar;
+  ImageSize: TPoint;
+begin
+  Result:=Nil;
+  try
+    if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y, @Color]) then
+     Exit;
+    if Color<0 then
+     Exit;
+    Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
+    if not (Q is QImage) then
+     Exit;
+    Image:=QImage(Q);
+    P:=Image.GetAlphaPtr1;
+    if P = nil then
+     Exit;
+    ImageSize:=Image.GetSize;
+    if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
+     Exit;
+    Inc(P, (1 * X) + ImageSize.X * ((ImageSize.Y - 1) - Y));
+    if Color > 255 then
+     Exit;
+    PByte(P)^:=Byte(Color and $0000FF);
+    Result:=PyNoResult;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
 const
- MethodTable: array[0..73] of TyMethodDef =
+ MethodTable: array[0..78] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
@@ -2723,7 +2921,12 @@ const
    (ml_name: 'exit';            ml_meth: xExit;           ml_flags: METH_VARARGS),
    (ml_name: 'log';             ml_meth: xLog;            ml_flags: METH_VARARGS),{AiV}
    (ml_name: 'heapstatus';      ml_meth: xHeapStatus;     ml_flags: METH_VARARGS),{AiV}
+   (ml_name: 'getpixel';        ml_meth: xGetPixel;       ml_flags: METH_VARARGS),
+   (ml_name: 'getpixelpal';     ml_meth: xGetPixelPal;    ml_flags: METH_VARARGS),
+   (ml_name: 'getpixelalpha';   ml_meth: xGetPixelAlpha;  ml_flags: METH_VARARGS),
    (ml_name: 'setpixel';        ml_meth: xSetPixel;       ml_flags: METH_VARARGS),
+   (ml_name: 'setpixelpal';     ml_meth: xSetPixelPal;    ml_flags: METH_VARARGS),
+   (ml_name: 'setpixelalpha';   ml_meth: xSetPixelAlpha;  ml_flags: METH_VARARGS),
    (ml_Name: Nil;               ml_meth: Nil));
 
  {-------------------}

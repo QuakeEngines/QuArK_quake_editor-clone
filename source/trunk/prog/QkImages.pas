@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/12/06 23:01:31  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
 Revision 1.17  2007/11/21 00:06:22  danielpharos
 BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
 
@@ -109,6 +112,7 @@ type
             {function GetBitmapImage : TBitmap;}
              procedure GetPalette1(var Data: TPaletteLmp);
              function GetPalettePtr1 : PPaletteLmp;
+             function GetAlphaPtr1 : PChar;
              procedure PasteBitmap(Game: PGameBuffer; Bitmap: TBitmap);
             {procedure PasteBitmapH(NeededGame: Char; Handle: HBitmap);}
              procedure CopyImageToDC(DC: HDC; Left, Top: Integer);
@@ -683,11 +687,10 @@ begin
     ilDeleteImages(1, @DevILImage);
     FatalFileError(Format('Unable to save %s file. Call to ilSaveL failed.', [FormatName]));
   end;
-
-  Info.F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
-
   ilDeleteImages(1, @DevILImage);
   CheckDevILError(ilGetError);
+
+  Info.F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
 end;
 
 procedure QImage.LoadFileFreeImage(F: TStream; FSize: Integer);
@@ -1048,10 +1051,9 @@ begin
     FreeImage_CloseMemory(FIBuffer);
     FatalFileError(Format('Unable to save %s file. Call to FreeImage_ReadMemory failed.', [FormatName]));
   end;
+  FreeImage_CloseMemory(FIBuffer);
 
   Info.F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
-
-  FreeImage_CloseMemory(FIBuffer);
 end;
 
 function QImage.OpenWindow(nOwner: TComponent) : TQForm1;
@@ -1144,13 +1146,25 @@ begin
 end;
 
 function QImage.GetPalettePtr1 : PPaletteLmp;
+const
+ Spec2 = 'Pal';
 var
  S: String;
 begin
- S:=GetSpecArg('Pal');
- if Length(S)-Length('Pal=') < SizeOf(TPaletteLmp) then
+ S:=GetSpecArg(Spec2);
+ if Length(S)-(Length(Spec2)+1) < SizeOf(TPaletteLmp) then
   Raise EErrorFmt(5534, ['Pal']);
- PChar(Result):=PChar(S)+Length('Pal=');
+ PChar(Result):=PChar(S)+(Length(Spec2)+1);
+end;
+
+function QImage.GetAlphaPtr1 : PChar;
+const
+ Spec3 = 'Alpha';
+var
+ S: String;
+begin
+ S:=GetSpecArg(Spec3);
+ Result:=PChar(S)+(Length(Spec3)+1);
 end;
 
 {procedure QImage.GetAsTexture3D(var P: TTexture3D);
