@@ -230,7 +230,7 @@ def intersectionPoint2d(p0, d0, p1, d1):
             return None
     det = d0.x*d1.y-d1.x*d0.y
     if det==0.0:
-        return 0  # lines paralell
+        return 0  # lines parallel
     s = (p0.y*d1.x - p1.y*d1.x - d1.y*p0.x +d1.y*p1.x)/det
     return p0+s*d0
         
@@ -381,6 +381,9 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.25  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.22  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #
