@@ -155,7 +155,7 @@ Are we currently doing an animation? Change this attribute to start (1) or end (
 <tr><td class="doccode">
 background
 </td><td>
-Background image settings (center, scale), where center is the 3D position of the center of the image, and scale is the scale. (sorry, the image won’t rotate when you rotate the view!)
+Background image settings (center, scale, offset, multiple), where center is the 3D position of the center of the image, scale is the scale, offset to center the image, and multiple to fill the entire view with copies of the image. (sorry, the image won’t rotate when you rotate the view!)
 </td></tr>
 
 <tr><td class="doccode">
