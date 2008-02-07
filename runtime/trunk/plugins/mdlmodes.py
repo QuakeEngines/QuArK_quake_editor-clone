@@ -23,7 +23,6 @@ Info = {
 
 import quarkpy.qhandles
 from quarkpy.mdlmgr import *
-#from quarkpy.mdleditor import setframefillcolor
 
 
 def lockxclick(m):
@@ -1081,6 +1080,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.19  2007/10/31 05:36:56  cdunde
+# Replaced quarkx.reloadsetup() with call to invalidate views using correct filltris call.
+#
 # Revision 1.18  2007/09/09 18:34:39  cdunde
 # To stop quarkx.reloadsetup call (which just calls qutils.SetupChanged)
 # from duplicate handle drawing in the Model Editor and use quarkx.reloadsetup
