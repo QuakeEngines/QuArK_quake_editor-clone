@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2008/02/03 13:12:45  danielpharos
+Update for the AutoUpdater. Beginning of the install-window.
+
 Revision 1.53  2007/12/19 12:38:32  danielpharos
 Made an option to set the amount of lines of text in the console.
 
@@ -425,12 +428,11 @@ var
 
 implementation
 
-uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
-  QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, Running,
-  Output1, QkTreeView, PyProcess, Console, Python, Quarkx, About,
-  {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D,
-  EdSceneObject, QkObjectClassList, QkApplPaths, QkQuakeCtx, QkSteamFS,
-  AutoUpdater, Logging;
+uses Undo, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
+  ObjProp, qmath, QkInclude, Running, Output1, QkTreeView, PyProcess,
+  Console, Python, Quarkx, About, {$IFDEF Debug} MemTester, {$ENDIF}
+  PyMapView, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
+  QkQuakeCtx, QkSteamFS, AutoUpdater, Logging;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
