@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2008/02/06 00:12:55  danielpharos
+The skinview now properly updates to reflect changes made to textures.
+
 Revision 1.37  2007/12/06 00:59:34  danielpharos
 Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
 
@@ -173,8 +176,9 @@ const
   crLinearV      = 9;
   crLeftArrow    = 10;
   crRightArrow   = 11;
-  crBrush        = 12;
-  crCursorLast   = 12;
+  crBrush        = 12; 
+  crAirBrush     = 13;
+  crCursorLast   = 13;
 
 type
   TKey3D = (keyForward, keyBack, keyLeft, keyRight,

@@ -15,6 +15,7 @@ Q11 ICON "cfg.ico"
 10 CURSOR "curleft.cur"
 11 CURSOR "curright.cur"
 12 CURSOR "brush.cur"
+13 CURSOR "airbrush.cur"
 
 102 BITMAP "Specifics.bmp"
 107 BITMAP "Cb1.bmp"

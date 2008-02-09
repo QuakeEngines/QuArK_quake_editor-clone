@@ -88,6 +88,7 @@ CR_LINEARV     = 9
 CR_LEFTARROW   = 10
 CR_RIGHTARROW  = 11
 CR_BRUSH       = 12
+CR_AIRBRUSH    = 13
 CR_DEFAULT     = 0
 CR_NONE        = -1
 CR_ARROW       = -2
@@ -1566,6 +1567,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.41  2007/12/20 23:33:10  danielpharos
+#Small code clean-up
+#
 #Revision 1.40  2007/11/11 11:41:53  cdunde
 #Started a new toolbar for the Model Editor to support "Editing Tools".
 #
