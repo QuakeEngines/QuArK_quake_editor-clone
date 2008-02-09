@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2008/02/07 23:06:30  danielpharos
+Fix two stupid mistakes. I gotta learn to check my copy-paste code more careful.
+
 Revision 1.52  2008/02/07 14:01:53  danielpharos
 Added palette and alpha functions and functions to retrieve color values to QuarkX
 
@@ -2633,11 +2636,11 @@ begin
       ScanlineWidth:=(((ImageSize.X * 24) + 31) div 32) * 4;
 
       Inc(P, (3 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
-      Red:=PByte(P)^;
+      Blue:=PByte(P)^;
       Inc(P);
       Green:=PByte(P)^;
       Inc(P);
-      Blue:=PByte(P)^;
+      Red:=PByte(P)^;
       Color:=Red * 65536 + Green * 256 + Blue;
     end
     else
@@ -2688,11 +2691,11 @@ begin
       ScanlineWidth:=(((ImageSize.X * 24) + 31) div 32) * 4;
 
       Inc(P, (3 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
-      if Color > Power(2, 24) - 1 then
+      if Color > $FFFFFF then
        Exit;
-      PByte(P)^:=Byte(Color and $FF0000) shr 16;
+      PByte(P)^:=Byte((Color and $FF0000) shr 16);
       Inc(P);
-      PByte(P)^:=Byte(Color and $00FF00) shr 8;
+      PByte(P)^:=Byte((Color and $00FF00) shr 8);
       Inc(P);
       PByte(P)^:=Byte(Color and $0000FF);
     end
@@ -2721,6 +2724,7 @@ var
   Q: QPixelSet;
   Image: QImage;
   P: PChar;
+  Red, Green, Blue: Byte;
 begin
   Result:=Nil;
   try
@@ -2738,7 +2742,12 @@ begin
     if Image.IsTrueColor then
      Exit;
     Inc(P, Index * 3);
-    Color:=PByte(P)^;
+    Red:=PByte(P)^;
+    Inc(P);
+    Green:=PByte(P)^;
+    Inc(P);
+    Blue:=PByte(P)^;
+    Color:=Red * 65536 + Green * 256 + Blue;
     Result:=PyInt_FromLong(Color);
   except
     EBackToPython;
@@ -2761,6 +2770,8 @@ begin
      Exit;
     if (Index<0) or (Index>255) then
      Exit;
+    if (Color<0) or (Color > $FFFFFF) then
+     Exit;
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
      Exit;
@@ -2771,6 +2782,10 @@ begin
     if Image.IsTrueColor then
      Exit;
     Inc(P, Index * 3);
+    PByte(P)^:=Byte((Color and $FF0000) shr 16);
+    Inc(P);
+    PByte(P)^:=Byte((Color and $00FF00) shr 8);
+    Inc(P);
     PByte(P)^:=Byte(Color and $0000FF);
     Result:=PyNoResult;
   except
@@ -2826,7 +2841,7 @@ begin
   try
     if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y, @Color]) then
      Exit;
-    if Color<0 then
+    if (Color<0) or (Color > 255) then
      Exit;
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
@@ -2839,8 +2854,6 @@ begin
     if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
      Exit;
     Inc(P, (1 * X) + ImageSize.X * ((ImageSize.Y - 1) - Y));
-    if Color > 255 then
-     Exit;
     PByte(P)^:=Byte(Color and $0000FF);
     Result:=PyNoResult;
   except
