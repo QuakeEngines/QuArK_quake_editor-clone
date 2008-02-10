@@ -542,6 +542,23 @@ def hintPlusInfobaselink(hint, url):
     return hint
 
 
+
+#
+# Texture and Color Utilities
+# that can be used in both editors.
+#
+
+# Converts separate Red, Green, Blue color components into a long integer color.
+def RGBToColor(RGB):
+    return (65536 * RGB[0]) + (256 * RGB[1]) + RGB[2]
+
+# Converts long integer color number into separate color components Red Green Blue (RGB)
+# Returns those components as a list of three intiger numbers but backwards BGR
+#   because that is how Windows and other image editing programs draw them.
+def ColorToRGB(Color):
+    return (int(round(Color / 65536)) & 255, int(round(Color / 256)) & 255, int(Color) & 255)
+
+
 #---- import the plug-ins ----
 import plugins
 plugins.LoadPlugins("Q_")
@@ -741,6 +758,13 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.33  2007/09/09 18:34:39  cdunde
+#To stop quarkx.reloadsetup call (which just calls qutils.SetupChanged)
+#from duplicate handle drawing in the Model Editor and use quarkx.reloadsetup
+#in mdlmodes for setting "colors" Config. to stop the loss of settings during
+#a session when the "Apply" button is clicked which calls quarkx.reloadsetup,
+#wiping out all the settings if editor.layout.explorer.selchanged() is used instead.
+#
 #Revision 1.32  2007/06/24 20:43:29  danielpharos
 #Changed the order of the SetupSet keyword for better backwards compatibility.
 #
