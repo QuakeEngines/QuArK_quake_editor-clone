@@ -2425,6 +2425,10 @@ def TexturePixelLocation(editor, view, x, y, triangleface):
 #
 #
 #$Log$
+#Revision 1.73  2008/02/11 00:39:51  cdunde
+#Added new function to get the u, v texture position of any
+#triangle where the cursor is pointing in any view.
+#
 #Revision 1.72  2008/02/07 13:19:48  danielpharos
 #Fix findTriangle triggering on invalid triangles
 #
