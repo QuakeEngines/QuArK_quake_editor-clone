@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2008/02/09 10:47:38  danielpharos
+Fix some small issues with new drawing code
+
 Revision 1.53  2008/02/07 23:06:30  danielpharos
 Fix two stupid mistakes. I gotta learn to check my copy-paste code more careful.
 
@@ -2622,14 +2625,14 @@ begin
      Exit;
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
-     Exit;
+     raise EError(2600);
     Image:=QImage(Q);
     P:=Image.GetImagePtr1;
     if P = nil then
-     Exit;
+     raise EError(2601);
     ImageSize:=Image.GetSize;
     if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
-     Exit;
+     raise EError(2604);
     if Image.IsTrueColor then
     begin
       //This is the scanline width for 'Image1' (24-bit)
@@ -2641,7 +2644,7 @@ begin
       Green:=PByte(P)^;
       Inc(P);
       Red:=PByte(P)^;
-      Color:=Red * 65536 + Green * 256 + Blue;
+      Color:=Blue * 65536 + Green * 256 + Red;
     end
     else
     begin
@@ -2674,17 +2677,17 @@ begin
     if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y, @Color]) then
      Exit;
     if Color<0 then
-     Exit;
+     raise EError(2605);
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
-     Exit;
+     raise EError(2600);
     Image:=QImage(Q);
     P:=Image.GetImagePtr1;
     if P = nil then
-     Exit;
+     raise EError(2601);
     ImageSize:=Image.GetSize;
     if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
-     Exit;
+     raise EError(2604);
     if Image.IsTrueColor then
     begin
       //This is the scanline width for 'Image1' (24-bit)
@@ -2692,7 +2695,7 @@ begin
 
       Inc(P, (3 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
       if Color > $FFFFFF then
-       Exit;
+       raise EError(2605);
       PByte(P)^:=Byte((Color and $FF0000) shr 16);
       Inc(P);
       PByte(P)^:=Byte((Color and $00FF00) shr 8);
@@ -2706,7 +2709,7 @@ begin
 
       Inc(P, (1 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
       if Color > 255 then
-       Exit;
+       raise EError(2605);
       PByte(P)^:=Byte(Color and $0000FF);
     end;
     Result:=PyNoResult;
@@ -2731,23 +2734,23 @@ begin
     if not PyArg_ParseTupleX(args, 's|Oi', [@texname, @AltTexSrc, @Index]) then
      Exit;
     if (Index<0) or (Index>255) then
-     Exit;
+     raise EError(2606);
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
-     Exit;
+     raise EError(2600);
     Image:=QImage(Q);
     P:=PChar(Image.GetPalettePtr1);
     if P = nil then
-     Exit;
+     raise EError(2602);
     if Image.IsTrueColor then
-     Exit;
+     raise EError(2609);
     Inc(P, Index * 3);
-    Red:=PByte(P)^;
+    Blue:=PByte(P)^;
     Inc(P);
     Green:=PByte(P)^;
     Inc(P);
-    Blue:=PByte(P)^;
-    Color:=Red * 65536 + Green * 256 + Blue;
+    Red:=PByte(P)^;
+    Color:=Blue * 65536 + Green * 256 + Red;
     Result:=PyInt_FromLong(Color);
   except
     EBackToPython;
@@ -2769,18 +2772,18 @@ begin
     if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @Index, @Color]) then
      Exit;
     if (Index<0) or (Index>255) then
-     Exit;
+     raise EError(2606);
     if (Color<0) or (Color > $FFFFFF) then
-     Exit;
+     raise EError(2605);
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
-     Exit;
+     raise EError(2600);
     Image:=QImage(Q);
     P:=PChar(Image.GetPalettePtr1);
     if P = nil then
-     Exit;
+     raise EError(2602);
     if Image.IsTrueColor then
-     Exit;
+     raise EError(2609);
     Inc(P, Index * 3);
     PByte(P)^:=Byte((Color and $FF0000) shr 16);
     Inc(P);
@@ -2810,14 +2813,14 @@ begin
      Exit;
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
-     Exit;
+     raise EError(2600);
     Image:=QImage(Q);
     P:=Image.GetAlphaPtr1;
     if P = nil then
-     Exit;
+     raise EError(2603);
     ImageSize:=Image.GetSize;
     if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
-     Exit;
+     raise EError(2604);
     Inc(P, (1 * X) + ImageSize.X * ((ImageSize.Y - 1) - Y));
     Color:=PByte(P)^;
     Result:=PyInt_FromLong(Color);
@@ -2842,17 +2845,17 @@ begin
     if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y, @Color]) then
      Exit;
     if (Color<0) or (Color > 255) then
-     Exit;
+     raise EError(2605);
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
-     Exit;
+     raise EError(2600);
     Image:=QImage(Q);
     P:=Image.GetAlphaPtr1;
     if P = nil then
-     Exit;
+     raise EError(2603);
     ImageSize:=Image.GetSize;
     if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
-     Exit;
+     raise EError(2604);
     Inc(P, (1 * X) + ImageSize.X * ((ImageSize.Y - 1) - Y));
     PByte(P)^:=Byte(Color and $0000FF);
     Result:=PyNoResult;

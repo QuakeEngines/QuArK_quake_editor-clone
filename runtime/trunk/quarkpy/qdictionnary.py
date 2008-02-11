@@ -295,6 +295,17 @@ Strings = {
 
     2549: "shift left / right",
 
+    2600: "No valid image found",
+    2601: "No image data found",
+    2602: "No palette data found",
+    2603: "No alpha data found",
+    2604: "Invalid U,V coordinates",
+    2605: "Invalid color value",
+    2606: "Invalid palette index value",
+    2607: "Invalid alpha coordinate",
+    2608: "Invalid alpha value",
+    2609: "Image is not a paletted picture",
+
     3001: "Esc",
     3002: "1",
     3003: "2",
@@ -1031,6 +1042,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.114  2008/02/07 14:09:55  danielpharos
+#Display progressbar when searching for updates
+#
 #Revision 1.113  2008/01/31 16:07:24  danielpharos
 #Added FTX file loading and saving support (Heavy Metal: F.A.K.K. 2 textures).
 #
