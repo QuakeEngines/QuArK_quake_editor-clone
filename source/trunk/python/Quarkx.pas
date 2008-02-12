@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2008/02/11 13:56:13  danielpharos
+Added error messages, and fixed some RGB -> BGR
+
 Revision 1.54  2008/02/09 10:47:38  danielpharos
 Fix some small issues with new drawing code
 
@@ -2607,11 +2610,47 @@ begin
  end;
 end;
 
+function xStartConsoleLog(self, args: PyObject) : PyObject; cdecl;
+begin
+  Result:=Nil;
+  try
+    OpenConsoleFile;
+    Result:=PyNoResult;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
+function xStopConsoleLog(self, args: PyObject) : PyObject; cdecl;
+begin
+  Result:=Nil;
+  try
+    CloseConsoleFile;
+    Result:=PyNoResult;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
+function xClearConsoleLog(self, args: PyObject) : PyObject; cdecl;
+begin
+  Result:=Nil;
+  try
+    DelConsoleFile;
+    Result:=PyNoResult;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
 function xGetPixel(self, args: PyObject) : PyObject; cdecl;
 var
   texname: PChar;
   AltTexSrc: PyObject;
-  X, Y, Color: Integer;
+  U, V, Color: Integer;
   Q: QPixelSet;
   Image: QImage;
   P: PChar;
@@ -2621,7 +2660,7 @@ var
 begin
   Result:=Nil;
   try
-    if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @X, @Y]) then
+    if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @U, @V]) then
      Exit;
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
@@ -2631,14 +2670,14 @@ begin
     if P = nil then
      raise EError(2601);
     ImageSize:=Image.GetSize;
-    if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
+    if (U < 0) or (U > ImageSize.X - 1) or (V < 0) or (V > ImageSize.Y - 1) then
      raise EError(2604);
     if Image.IsTrueColor then
     begin
       //This is the scanline width for 'Image1' (24-bit)
       ScanlineWidth:=(((ImageSize.X * 24) + 31) div 32) * 4;
 
-      Inc(P, (3 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
+      Inc(P, (3 * U) + ScanlineWidth * ((ImageSize.Y - 1) - V));
       Blue:=PByte(P)^;
       Inc(P);
       Green:=PByte(P)^;
@@ -2651,7 +2690,7 @@ begin
       //This is the scanline width for 'Image1' (8-bit)
       ScanlineWidth:=(((ImageSize.X * 8) + 31) div 32) * 4;
 
-      Inc(P, (1 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
+      Inc(P, (1 * U) + ScanlineWidth * ((ImageSize.Y - 1) - V));
       Color:=PByte(P)^;
     end;
     Result:=PyInt_FromLong(Color);
@@ -2665,7 +2704,7 @@ function xSetPixel(self, args: PyObject) : PyObject; cdecl;
 var
   texname: PChar;
   AltTexSrc: PyObject;
-  X, Y, Color: Integer;
+  U, V, Color: Integer;
   Q: QPixelSet;
   Image: QImage;
   P: PChar;
@@ -2674,7 +2713,7 @@ var
 begin
   Result:=Nil;
   try
-    if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y, @Color]) then
+    if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @U, @V, @Color]) then
      Exit;
     if Color<0 then
      raise EError(2605);
@@ -2686,14 +2725,14 @@ begin
     if P = nil then
      raise EError(2601);
     ImageSize:=Image.GetSize;
-    if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
+    if (U < 0) or (U > ImageSize.X - 1) or (V < 0) or (V > ImageSize.Y - 1) then
      raise EError(2604);
     if Image.IsTrueColor then
     begin
       //This is the scanline width for 'Image1' (24-bit)
       ScanlineWidth:=(((ImageSize.X * 24) + 31) div 32) * 4;
 
-      Inc(P, (3 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
+      Inc(P, (3 * U) + ScanlineWidth * ((ImageSize.Y - 1) - V));
       if Color > $FFFFFF then
        raise EError(2605);
       PByte(P)^:=Byte((Color and $FF0000) shr 16);
@@ -2707,7 +2746,7 @@ begin
       //This is the scanline width for 'Image1' (8-bit)
       ScanlineWidth:=(((ImageSize.X * 8) + 31) div 32) * 4;
 
-      Inc(P, (1 * X) + ScanlineWidth * ((ImageSize.Y - 1) - Y));
+      Inc(P, (1 * U) + ScanlineWidth * ((ImageSize.Y - 1) - V));
       if Color > 255 then
        raise EError(2605);
       PByte(P)^:=Byte(Color and $0000FF);
@@ -2801,7 +2840,7 @@ function xGetPixelAlpha(self, args: PyObject) : PyObject; cdecl;
 var
   texname: PChar;
   AltTexSrc: PyObject;
-  X, Y, Color: Integer;
+  U, V, Color: Integer;
   Q: QPixelSet;
   Image: QImage;
   P: PChar;
@@ -2809,7 +2848,7 @@ var
 begin
   Result:=Nil;
   try
-    if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @X, @Y]) then
+    if not PyArg_ParseTupleX(args, 's|Oii', [@texname, @AltTexSrc, @U, @V]) then
      Exit;
     Q:=GlobalFindTexture(texname, QkObjFromPyObj(AltTexSrc));
     if not (Q is QImage) then
@@ -2819,9 +2858,9 @@ begin
     if P = nil then
      raise EError(2603);
     ImageSize:=Image.GetSize;
-    if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
+    if (U < 0) or (U > ImageSize.X - 1) or (V < 0) or (V > ImageSize.Y - 1) then
      raise EError(2604);
-    Inc(P, (1 * X) + ImageSize.X * ((ImageSize.Y - 1) - Y));
+    Inc(P, (1 * U) + ImageSize.X * ((ImageSize.Y - 1) - V));
     Color:=PByte(P)^;
     Result:=PyInt_FromLong(Color);
   except
@@ -2834,7 +2873,7 @@ function xSetPixelAlpha(self, args: PyObject) : PyObject; cdecl;
 var
   texname: PChar;
   AltTexSrc: PyObject;
-  X, Y, Color: Integer;
+  U, V, Color: Integer;
   Q: QPixelSet;
   Image: QImage;
   P: PChar;
@@ -2842,7 +2881,7 @@ var
 begin
   Result:=Nil;
   try
-    if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @X, @Y, @Color]) then
+    if not PyArg_ParseTupleX(args, 's|Oiii', [@texname, @AltTexSrc, @U, @V, @Color]) then
      Exit;
     if (Color<0) or (Color > 255) then
      raise EError(2605);
@@ -2854,9 +2893,9 @@ begin
     if P = nil then
      raise EError(2603);
     ImageSize:=Image.GetSize;
-    if (X < 0) or (X > ImageSize.X - 1) or (Y < 0) or (Y > ImageSize.Y - 1) then
+    if (U < 0) or (U > ImageSize.X - 1) or (V < 0) or (V > ImageSize.Y - 1) then
      raise EError(2604);
-    Inc(P, (1 * X) + ImageSize.X * ((ImageSize.Y - 1) - Y));
+    Inc(P, (1 * U) + ImageSize.X * ((ImageSize.Y - 1) - V));
     PByte(P)^:=Byte(Color and $0000FF);
     Result:=PyNoResult;
   except
@@ -2866,86 +2905,89 @@ begin
 end;
 
 const
- MethodTable: array[0..78] of TyMethodDef =
-  ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
-   (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
-   (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
-   (ml_name: 'openfileobj';     ml_meth: xOpenFileObj;    ml_flags: METH_VARARGS),
-   (ml_name: 'setupsubset';     ml_meth: xSetupSubSet;    ml_flags: METH_VARARGS),
-   (ml_name: 'getquakedir';     ml_meth: xGetQuakeDir;    ml_flags: METH_VARARGS),
-   (ml_name: 'getgamedir';      ml_meth: xGetGameDir;     ml_flags: METH_VARARGS),
-   (ml_name: 'gettmpquark';     ml_meth: xGettmpQuArK;    ml_flags: METH_VARARGS),
-   (ml_name: 'lines2list';      ml_meth: xLines2List;     ml_flags: METH_VARARGS),
-   (ml_name: 'list2lines';      ml_meth: xList2Lines;     ml_flags: METH_VARARGS),
-   (ml_name: 'truncstr';        ml_meth: xTruncStr;       ml_flags: METH_VARARGS),
-   (ml_name: 'getmaperror';     ml_meth: xGetMapError;    ml_flags: METH_VARARGS),
-   (ml_name: 'getshorthint';    ml_meth: xGetShortHint;   ml_flags: METH_VARARGS),
-   (ml_name: 'getlonghint';     ml_meth: xGetLongHint;    ml_flags: METH_VARARGS),
-   (ml_name: 'action';          ml_meth: xAction;         ml_flags: METH_VARARGS),
-   (ml_name: 'undostate';       ml_meth: xUndoState;      ml_flags: METH_VARARGS),
-   (ml_name: 'pasteobj';        ml_meth: xPasteObj;       ml_flags: METH_VARARGS),
-   (ml_name: 'copyobj';         ml_meth: xCopyObj;        ml_flags: METH_VARARGS),
-   (ml_name: 'settimer';        ml_meth: xSetTimer;       ml_flags: METH_VARARGS),
-   (ml_name: 'forms';           ml_meth: xForms;          ml_flags: METH_VARARGS),
-   (ml_name: 'rnd';             ml_meth: xRnd;            ml_flags: METH_VARARGS),
-   (ml_name: 'ftos';            ml_meth: xftos;           ml_flags: METH_VARARGS),
-   (ml_name: 'menuname';        ml_meth: xMenuName;       ml_flags: METH_VARARGS),
-   (ml_name: 'middlecolor';     ml_meth: xMiddleColor;    ml_flags: METH_VARARGS),
-   (ml_name: 'boundingboxof';   ml_meth: xBoundingBoxOf;  ml_flags: METH_VARARGS),
-   (ml_name: 'texturesof';      ml_meth: xTexturesOf;     ml_flags: METH_VARARGS),
-   (ml_name: 'extendcoplanar';  ml_meth: xExtendCoplanar; ml_flags: METH_VARARGS),
-   (ml_name: 'loadtexture';     ml_meth: xLoadTexture;    ml_flags: METH_VARARGS),
-   (ml_name: 'maptextures';     ml_meth: xMapTextures;    ml_flags: METH_VARARGS),
-   (ml_name: 'outputfile';      ml_meth: xOutputFile;     ml_flags: METH_VARARGS),
-   (ml_name: 'outputpakfile';   ml_meth: xOutputPakFile;  ml_flags: METH_VARARGS),
-   (ml_name: 'opentoolbox';     ml_meth: xOpenToolBox;    ml_flags: METH_VARARGS),
-   (ml_name: 'openconfigdlg';   ml_meth: xOpenConfigDlg;  ml_flags: METH_VARARGS),
-   (ml_name: 'progressbar';     ml_meth: xProgressBar;    ml_flags: METH_VARARGS),
-   (ml_name: 'clipline';        ml_meth: xClipLine;       ml_flags: METH_VARARGS),
-  {(ml_name: 'offscreenbitmap'; ml_meth: xOffscreenBitmap;ml_flags: METH_VARARGS),}
-   (ml_name: 'keydown';         ml_meth: xKeyDown;        ml_flags: METH_VARARGS),
-   (ml_name: 'poolobj';         ml_meth: xPoolObj;        ml_flags: METH_VARARGS),
-   (ml_name: 'setpoolobj';      ml_meth: xSetPoolObj;     ml_flags: METH_VARARGS),
-   (ml_name: 'vect';            ml_meth: xVect;           ml_flags: METH_VARARGS),
-   (ml_name: 'matrix';          ml_meth: xMatrix;         ml_flags: METH_VARARGS),
-   (ml_name: 'newform';         ml_meth: xNewForm;        ml_flags: METH_VARARGS),
-   (ml_name: 'update';          ml_meth: xUpdate;         ml_flags: METH_VARARGS),
-   (ml_name: 'getqctxlist';     ml_meth: xGetQCtxList;    ml_flags: METH_VARARGS),
-   (ml_name: 'listfileext';     ml_meth: xListFileExt;    ml_flags: METH_VARARGS),
-   (ml_name: 'filedialogbox';   ml_meth: xFileDialogBox;  ml_flags: METH_VARARGS),
-   (ml_name: 'examine';         ml_meth: xExamine;        ml_flags: METH_VARARGS),
-   (ml_name: 'loadimages';      ml_meth: xLoadImages;     ml_flags: METH_VARARGS),
-   (ml_name: 'reloadsetup';     ml_meth: xReloadSetup;    ml_flags: METH_VARARGS),
-   (ml_name: 'screenrect';      ml_meth: xScreenRect;     ml_flags: METH_VARARGS),
-   (ml_name: 'seticons';        ml_meth: xSetIcons;       ml_flags: METH_VARARGS),
-   (ml_name: 'msgbox';          ml_meth: xMsgBox;         ml_flags: METH_VARARGS),
-   (ml_name: 'beep';            ml_meth: xBeep;           ml_flags: METH_VARARGS),
-   (ml_name: 'console';         ml_meth: xConsole;        ml_flags: METH_VARARGS),
-   (ml_name: 'writeconsole';    ml_meth: xWriteConsole;   ml_flags: METH_VARARGS),
-   (ml_name: 'globalaccept';    ml_meth: xGlobalAccept;   ml_flags: METH_VARARGS),
-   (ml_name: 'runprogram';      ml_meth: xRunProgram;     ml_flags: METH_VARARGS),
-   (ml_name: 'getfileattr';     ml_meth: xGetFileAttr;    ml_flags: METH_VARARGS),
-   (ml_name: 'setfileattr';     ml_meth: xSetFileAttr;    ml_flags: METH_VARARGS),
-   (ml_name: 'listmapviews';    ml_meth: xListMapViews;   ml_flags: METH_VARARGS),
-   (ml_name: 'newfaceex';       ml_meth: xNewFaceEx;      ml_flags: METH_VARARGS),
-   (ml_name: 'searchforholes';  ml_meth: xSearchForHoles; ml_flags: METH_VARARGS),
-   (ml_name: 'findtoolboxes';   ml_meth: xFindToolBoxes;  ml_flags: METH_VARARGS),
-   (ml_name: 'sethint';         ml_meth: xSetHint;        ml_flags: METH_VARARGS),
-   (ml_name: 'helppopup';       ml_meth: xHelpPopup;      ml_flags: METH_VARARGS),
-   (ml_name: 'helpmenuitem';    ml_meth: xHelpMenuItem;   ml_flags: METH_VARARGS),
-   (ml_name: 'entitymenuitem';  ml_meth: xEntityMenuItem; ml_flags: METH_VARARGS),
-   (ml_name: 'htmldoc';         ml_meth: xHTMLDoc;        ml_flags: METH_VARARGS),
-   (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;   ml_flags: METH_VARARGS),
-   (ml_name: 'wait';            ml_meth: xWait;           ml_flags: METH_VARARGS),
-   (ml_name: 'exit';            ml_meth: xExit;           ml_flags: METH_VARARGS),
-   (ml_name: 'log';             ml_meth: xLog;            ml_flags: METH_VARARGS),{AiV}
-   (ml_name: 'heapstatus';      ml_meth: xHeapStatus;     ml_flags: METH_VARARGS),{AiV}
-   (ml_name: 'getpixel';        ml_meth: xGetPixel;       ml_flags: METH_VARARGS),
-   (ml_name: 'getpixelpal';     ml_meth: xGetPixelPal;    ml_flags: METH_VARARGS),
-   (ml_name: 'getpixelalpha';   ml_meth: xGetPixelAlpha;  ml_flags: METH_VARARGS),
-   (ml_name: 'setpixel';        ml_meth: xSetPixel;       ml_flags: METH_VARARGS),
-   (ml_name: 'setpixelpal';     ml_meth: xSetPixelPal;    ml_flags: METH_VARARGS),
-   (ml_name: 'setpixelalpha';   ml_meth: xSetPixelAlpha;  ml_flags: METH_VARARGS),
+ MethodTable: array[0..81] of TyMethodDef =
+  ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
+   (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
+   (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
+   (ml_name: 'openfileobj';     ml_meth: xOpenFileObj;     ml_flags: METH_VARARGS),
+   (ml_name: 'setupsubset';     ml_meth: xSetupSubSet;     ml_flags: METH_VARARGS),
+   (ml_name: 'getquakedir';     ml_meth: xGetQuakeDir;     ml_flags: METH_VARARGS),
+   (ml_name: 'getgamedir';      ml_meth: xGetGameDir;      ml_flags: METH_VARARGS),
+   (ml_name: 'gettmpquark';     ml_meth: xGettmpQuArK;     ml_flags: METH_VARARGS),
+   (ml_name: 'lines2list';      ml_meth: xLines2List;      ml_flags: METH_VARARGS),
+   (ml_name: 'list2lines';      ml_meth: xList2Lines;      ml_flags: METH_VARARGS),
+   (ml_name: 'truncstr';        ml_meth: xTruncStr;        ml_flags: METH_VARARGS),
+   (ml_name: 'getmaperror';     ml_meth: xGetMapError;     ml_flags: METH_VARARGS),
+   (ml_name: 'getshorthint';    ml_meth: xGetShortHint;    ml_flags: METH_VARARGS),
+   (ml_name: 'getlonghint';     ml_meth: xGetLongHint;     ml_flags: METH_VARARGS),
+   (ml_name: 'action';          ml_meth: xAction;          ml_flags: METH_VARARGS),
+   (ml_name: 'undostate';       ml_meth: xUndoState;       ml_flags: METH_VARARGS),
+   (ml_name: 'pasteobj';        ml_meth: xPasteObj;        ml_flags: METH_VARARGS),
+   (ml_name: 'copyobj';         ml_meth: xCopyObj;         ml_flags: METH_VARARGS),
+   (ml_name: 'settimer';        ml_meth: xSetTimer;        ml_flags: METH_VARARGS),
+   (ml_name: 'forms';           ml_meth: xForms;           ml_flags: METH_VARARGS),
+   (ml_name: 'rnd';             ml_meth: xRnd;             ml_flags: METH_VARARGS),
+   (ml_name: 'ftos';            ml_meth: xftos;            ml_flags: METH_VARARGS),
+   (ml_name: 'menuname';        ml_meth: xMenuName;        ml_flags: METH_VARARGS),
+   (ml_name: 'middlecolor';     ml_meth: xMiddleColor;     ml_flags: METH_VARARGS),
+   (ml_name: 'boundingboxof';   ml_meth: xBoundingBoxOf;   ml_flags: METH_VARARGS),
+   (ml_name: 'texturesof';      ml_meth: xTexturesOf;      ml_flags: METH_VARARGS),
+   (ml_name: 'extendcoplanar';  ml_meth: xExtendCoplanar;  ml_flags: METH_VARARGS),
+   (ml_name: 'loadtexture';     ml_meth: xLoadTexture;     ml_flags: METH_VARARGS),
+   (ml_name: 'maptextures';     ml_meth: xMapTextures;     ml_flags: METH_VARARGS),
+   (ml_name: 'outputfile';      ml_meth: xOutputFile;      ml_flags: METH_VARARGS),
+   (ml_name: 'outputpakfile';   ml_meth: xOutputPakFile;   ml_flags: METH_VARARGS),
+   (ml_name: 'opentoolbox';     ml_meth: xOpenToolBox;     ml_flags: METH_VARARGS),
+   (ml_name: 'openconfigdlg';   ml_meth: xOpenConfigDlg;   ml_flags: METH_VARARGS),
+   (ml_name: 'progressbar';     ml_meth: xProgressBar;     ml_flags: METH_VARARGS),
+   (ml_name: 'clipline';        ml_meth: xClipLine;        ml_flags: METH_VARARGS),
+  {(ml_name: 'offscreenbitmap'; ml_meth: xOffscreenBitmap; ml_flags: METH_VARARGS),}
+   (ml_name: 'keydown';         ml_meth: xKeyDown;         ml_flags: METH_VARARGS),
+   (ml_name: 'poolobj';         ml_meth: xPoolObj;         ml_flags: METH_VARARGS),
+   (ml_name: 'setpoolobj';      ml_meth: xSetPoolObj;      ml_flags: METH_VARARGS),
+   (ml_name: 'vect';            ml_meth: xVect;            ml_flags: METH_VARARGS),
+   (ml_name: 'matrix';          ml_meth: xMatrix;          ml_flags: METH_VARARGS),
+   (ml_name: 'newform';         ml_meth: xNewForm;         ml_flags: METH_VARARGS),
+   (ml_name: 'update';          ml_meth: xUpdate;          ml_flags: METH_VARARGS),
+   (ml_name: 'getqctxlist';     ml_meth: xGetQCtxList;     ml_flags: METH_VARARGS),
+   (ml_name: 'listfileext';     ml_meth: xListFileExt;     ml_flags: METH_VARARGS),
+   (ml_name: 'filedialogbox';   ml_meth: xFileDialogBox;   ml_flags: METH_VARARGS),
+   (ml_name: 'examine';         ml_meth: xExamine;         ml_flags: METH_VARARGS),
+   (ml_name: 'loadimages';      ml_meth: xLoadImages;      ml_flags: METH_VARARGS),
+   (ml_name: 'reloadsetup';     ml_meth: xReloadSetup;     ml_flags: METH_VARARGS),
+   (ml_name: 'screenrect';      ml_meth: xScreenRect;      ml_flags: METH_VARARGS),
+   (ml_name: 'seticons';        ml_meth: xSetIcons;        ml_flags: METH_VARARGS),
+   (ml_name: 'msgbox';          ml_meth: xMsgBox;          ml_flags: METH_VARARGS),
+   (ml_name: 'beep';            ml_meth: xBeep;            ml_flags: METH_VARARGS),
+   (ml_name: 'console';         ml_meth: xConsole;         ml_flags: METH_VARARGS),
+   (ml_name: 'writeconsole';    ml_meth: xWriteConsole;    ml_flags: METH_VARARGS),
+   (ml_name: 'globalaccept';    ml_meth: xGlobalAccept;    ml_flags: METH_VARARGS),
+   (ml_name: 'runprogram';      ml_meth: xRunProgram;      ml_flags: METH_VARARGS),
+   (ml_name: 'getfileattr';     ml_meth: xGetFileAttr;     ml_flags: METH_VARARGS),
+   (ml_name: 'setfileattr';     ml_meth: xSetFileAttr;     ml_flags: METH_VARARGS),
+   (ml_name: 'listmapviews';    ml_meth: xListMapViews;    ml_flags: METH_VARARGS),
+   (ml_name: 'newfaceex';       ml_meth: xNewFaceEx;       ml_flags: METH_VARARGS),
+   (ml_name: 'searchforholes';  ml_meth: xSearchForHoles;  ml_flags: METH_VARARGS),
+   (ml_name: 'findtoolboxes';   ml_meth: xFindToolBoxes;   ml_flags: METH_VARARGS),
+   (ml_name: 'sethint';         ml_meth: xSetHint;         ml_flags: METH_VARARGS),
+   (ml_name: 'helppopup';       ml_meth: xHelpPopup;       ml_flags: METH_VARARGS),
+   (ml_name: 'helpmenuitem';    ml_meth: xHelpMenuItem;    ml_flags: METH_VARARGS),
+   (ml_name: 'entitymenuitem';  ml_meth: xEntityMenuItem;  ml_flags: METH_VARARGS),
+   (ml_name: 'htmldoc';         ml_meth: xHTMLDoc;         ml_flags: METH_VARARGS),
+   (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;    ml_flags: METH_VARARGS),
+   (ml_name: 'wait';            ml_meth: xWait;            ml_flags: METH_VARARGS),
+   (ml_name: 'exit';            ml_meth: xExit;            ml_flags: METH_VARARGS),
+   (ml_name: 'log';             ml_meth: xLog;             ml_flags: METH_VARARGS),{AiV}
+   (ml_name: 'heapstatus';      ml_meth: xHeapStatus;      ml_flags: METH_VARARGS),{AiV}
+   (ml_name: 'startconsolelog'; ml_meth: xStartConsoleLog; ml_flags: METH_VARARGS),
+   (ml_name: 'stopconsolelog';  ml_meth: xStopConsoleLog;  ml_flags: METH_VARARGS),
+   (ml_name: 'clearconsolelog'; ml_meth: xClearConsoleLog; ml_flags: METH_VARARGS),
+   (ml_name: 'getpixel';        ml_meth: xGetPixel;        ml_flags: METH_VARARGS),
+   (ml_name: 'getpixelpal';     ml_meth: xGetPixelPal;     ml_flags: METH_VARARGS),
+   (ml_name: 'getpixelalpha';   ml_meth: xGetPixelAlpha;   ml_flags: METH_VARARGS),
+   (ml_name: 'setpixel';        ml_meth: xSetPixel;        ml_flags: METH_VARARGS),
+   (ml_name: 'setpixelpal';     ml_meth: xSetPixelPal;     ml_flags: METH_VARARGS),
+   (ml_name: 'setpixelalpha';   ml_meth: xSetPixelAlpha;   ml_flags: METH_VARARGS),
    (ml_Name: Nil;               ml_meth: Nil));
 
  {-------------------}

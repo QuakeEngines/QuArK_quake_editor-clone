@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2007/12/19 12:38:32  danielpharos
+Made an option to set the amount of lines of text in the console.
+
 Revision 1.7  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -96,6 +99,15 @@ procedure InitConsole;
 procedure FreeConsole;
 procedure ResizeConsole;
 
+procedure InitConsoleFile;
+procedure OpenConsoleFile;
+procedure CloseConsoleFile;
+procedure DelConsoleFile;
+procedure WriteConsoleFile(Text: String);
+
+const
+  CONSOLE_FILENAME = 'Console.txt';
+
  {-------------------}
 
 implementation
@@ -104,8 +116,10 @@ implementation
 
 uses Qk1, QkObjects, Quarkx, PyProcess, Setup;
 
- {-------------------}
-
+var
+  ConsoleFile: TextFile;
+  ConsoleFileOpened: boolean;
+  ConsoleFilename: string;
 
 const
   MinConsoleWidth  = 80;
@@ -131,6 +145,43 @@ var
  ConsoleReady: Boolean = False;
 
  {-------------------}
+
+procedure InitConsoleFile;
+begin
+  AssignFile(ConsoleFile, ConsoleFilename);
+end;
+
+procedure OpenConsoleFile;
+begin
+  if ConsoleFileOpened then
+    Exit;
+  Append(ConsoleFile);
+  ConsoleFileOpened:=True;
+end;
+
+procedure CloseConsoleFile;
+begin
+  if not ConsoleFileOpened then
+    Exit;
+  CloseFile(ConsoleFile);
+  ConsoleFileOpened:=False;
+end;
+
+procedure DelConsoleFile;
+begin
+  if not ConsoleFileOpened then
+    Exit;
+  CloseConsoleFile;
+  Erase(ConsoleFile);
+end;
+
+procedure WriteConsoleFile(Text: String);
+begin
+  if not ConsoleFileOpened then
+    Exit;
+  WriteLn(ConsoleFile, Text);
+  Flush(ConsoleFile);
+end;
 
 procedure InitBuffer(var Buffer: PPipeBuffer; Width: Integer; Height: Integer);
 var
@@ -298,6 +349,8 @@ var
  I: Integer;
  Line: ^TPipeLine;
 begin
+ if ConsoleFileOpened then
+   WriteConsoleFile(Text);
  if not ConsoleReady then Exit;
  if Length(Text)>0 then
   begin
@@ -689,4 +742,10 @@ begin
  DisplayMouseMove(Nil, [], 0, Y);
 end;
 
+initialization
+  ConsoleFileOpened:=False;
+  ConsoleFileName:=CONSOLE_FILENAME;
+  InitConsoleFile;
+finalization
+  CloseConsoleFile;
 end.
