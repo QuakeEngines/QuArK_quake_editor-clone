@@ -2,6 +2,7 @@ title: QuarkX
 desc: quarkandpython
 desc: quarkxspecificfunctions
 desc: quarkxspecialobjects
+desc: quarkxlogpurpose
 desc: quarkxgeneralpurpose
 desc: quarkxreadonlyvariables
 desc: quarkxreadwritevariables
@@ -38,4 +39,3 @@ desc: canvas
 desc: mapviewmethods
 desc: attributesmapview
 desc: objectsmodeleditor
-

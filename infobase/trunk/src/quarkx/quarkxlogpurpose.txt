@@ -1,0 +1,33 @@
+title: Logging functions of the module quarkx
+author: DanielPharos
+
+The default filename for the main log file is 'QUARK.LOG'.<br>
+The default filename for the console log file is 'Console.txt'.<br>
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+log(string)
+</td><td>
+Writes a line of text to the main log file. It'll be marked with 'PythonLog'.
+</td></tr>
+
+<tr><td class="doccode">
+startconsolelog()
+</td><td>
+Opens the console log file. Console output is automatically written to the log file if it is open.
+</td></tr>
+
+<tr><td class="doccode">
+stopconsolelog()
+</td><td>
+Closes the console log file. This stops any console output from being written to it.
+</td></tr>
+
+<tr><td class="doccode">
+clearconsolelog()
+</td><td>
+Deletes the console log file. Should be used with caution!
+</td></tr>
+
+</table>
