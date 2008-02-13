@@ -2474,14 +2474,23 @@ def TexturePixelLocation(editor, view, x, y, object=None):
                 else:
                     Ypos = 0
 
-        return [[pixU, pixV], [skinpixU, skinpixV]]
+        pixV = Ypos + (texHeight * .5)
+        while pixV >= texHeight:
+            pixV = pixV - 1
+        while pixV <= -texHeight:
+            pixV = pixV + 1
+        pixV = int(pixV)
 
+        return [pixU, pixV]
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.75  2008/02/13 08:49:29  cdunde
+#Extended the TexturePixelLocation function for special Skin-view needs.
+#
 #Revision 1.74  2008/02/11 00:47:30  cdunde
 #To fix text editor error.
 #
