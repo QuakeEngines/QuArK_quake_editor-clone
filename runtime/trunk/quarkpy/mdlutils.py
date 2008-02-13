@@ -2354,68 +2354,125 @@ def SubdivideFaces(editor, pieces=None):
 
 
 # view = current view that the cursor is in.
-# triangleface = a single item list containing the triangle face that the cursor is over.
+# If one of the editor's views:
+#    object = triangleface = a single item list containing the triangle face that the cursor is over.
+#    Returns TWO lists (of integers) WITHIN another list, of a texture's pixel u, v
+#        position on a triangle where the cursor is located at in any of the views.
+#    The first sub-list is used for any of the editor's views.
+#       It gives the actual pixel location on the skin texture itself.
+#       This sub-list is then used for any of the quarkx 'Texture Functions'
+#        to locate and\or change a pixel on a texture, or textures palette if one exist.
+#    The second sub-list is strictly used, if desired, to pass to and draw something
+#        in the Skin-view, using it's 'canvas()' function, at the same time and
+#        pixel location when the cursor is in one of the other editor's views.
+#      If the cursor is currently in the Skin-view use as described below.
+# If the Skin-view:
+#    object (not needed)
+#    Returns a single list containing two integers, the texture's pixel u, v position in the Skin-view.
 # x and y = the position where the cursor is at in the view as a 'projected' 2D screen view.
-# Returns TWO lists (of integers) WITHIN another list, of a texture's pixel u, v
-#     position on a triangle where the cursor is located at in any of the views.
-# The first sub-list is used for any of the editor's views and Skin-view.
-#     It gives the actual pixel location on the skin texture itself.
-#     This sub-list is then used for any of the quarkx 'Texture Functions'
-#     to locate and\or change a pixel on a texture, or textures palette if one exist.
-# The second sub-list is strictly used, if desired, to pass to and draw something
-#     in the Skin-view, using it's 'canvas()' function, at the same time and
-#     pixel location when the cursor is in one of the other editor's views.
-#     If the cursor is currently in the Skin-view just use the first sub-list.
 
-def TexturePixelLocation(editor, view, x, y, triangleface):
-    if triangleface != []:
-        trivtx0, trivtx1, trivtx2 = triangleface[0][1].triangles[triangleface[0][2]]
+def TexturePixelLocation(editor, view, x, y, object=None):
+    if view.info["viewname"] != "skinview":
+        triangleface = object
+        if triangleface != []:
+            trivtx0, trivtx1, trivtx2 = triangleface[0][1].triangles[triangleface[0][2]]
 
-        facevtx0 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][0][0]]
-        facevtx1 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][1][0]]
-        facevtx2 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][2][0]]
-        
-        pixpos = view.space(quarkx.vect(x, y, 0)) # Where the cursor is pointing in the view.
+            facevtx0 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][0][0]]
+            facevtx1 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][1][0]]
+            facevtx2 = triangleface[0][1].currentframe.vertices[triangleface[0][1].triangles[triangleface[0][2]][2][0]]
+            
+            pixpos = view.space(quarkx.vect(x, y, 0)) # Where the cursor is pointing in the view.
 
-        vectorZ = view.vector("z").normalized
-        facenormal = ((facevtx1 - facevtx0) ^ (facevtx2 - facevtx0)).normalized
-        pixpos = pixpos - ((((pixpos - facevtx0) * facenormal) / (vectorZ * facenormal)) * vectorZ)
+            vectorZ = view.vector("z").normalized
+            facenormal = ((facevtx1 - facevtx0) ^ (facevtx2 - facevtx0)).normalized
+            pixpos = pixpos - ((((pixpos - facevtx0) * facenormal) / (vectorZ * facenormal)) * vectorZ)
 
-        # Adapted from http://www.blackpawn.com/texts/pointinpoly/default.html
-        # Formula to compute u and v for a point on a triangle face:
-        # ==========================================================
-        # We use trivtx0 as our base, for it's U,V values to multiply our two factors by
-        # and get the U,V values for pixpos (where our cursor is at in the 3D view).
+            # Adapted from http://www.blackpawn.com/texts/pointinpoly/default.html
+            # Formula to compute u and v for a point on a triangle face:
+            # ==========================================================
+            # We use trivtx0 as our base, for it's U,V values to multiply our two factors by
+            # and get the U,V values for pixpos (where our cursor is at in the 3D view).
 
-        P = pixpos
-        A = facevtx0
-        B = facevtx1
-        C = facevtx2
-        # (what we are computing to get) u texture position value
-        # (what we are computing to get) v texture position value
+            P = pixpos
+            A = facevtx0
+            B = facevtx1
+            C = facevtx2
+            # (what we are computing to get) u texture position value
+            # (what we are computing to get) v texture position value
 
 
-        v0 = (C - A)
-        v1 = (B - A)
-        v2 = (P - A)
-        
-        dot00 = v0 * v0
-        dot01 = v0 * v1
-        dot02 = v0 * v2
-        dot11 = v1 * v1
-        dot12 = v1 * v2
+            v0 = (C - A)
+            v1 = (B - A)
+            v2 = (P - A)
+            
+            dot00 = v0 * v0
+            dot01 = v0 * v1
+            dot02 = v0 * v2
+            dot11 = v1 * v1
+            dot12 = v1 * v2
 
-        invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
-        V = (dot11 * dot02 - dot01 * dot12) * invDenom
-        U = (dot00 * dot12 - dot01 * dot02) * invDenom
+            invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
+            V = (dot11 * dot02 - dot01 * dot12) * invDenom
+            U = (dot00 * dot12 - dot01 * dot02) * invDenom
 
-        # To draw, by pixel location, in Skin-view using it's 'canvase()' function.
-        skinpixU = int((1 - U - V) * trivtx0[1] + U * trivtx1[1] + V * trivtx2[1])+.5
-        skinpixV = int((1 - U - V) * trivtx0[2] + U * trivtx1[2] + V * trivtx2[2])+.5
+            # To draw, by pixel location, in Skin-view using it's 'canvase()' function.
+            skinpixU = int((1 - U - V) * trivtx0[1] + U * trivtx1[1] + V * trivtx2[1])+.5
+            skinpixV = int((1 - U - V) * trivtx0[2] + U * trivtx1[2] + V * trivtx2[2])+.5
 
-        # The actual pixel location on the skin texture itself.
-        pixU = int(skinpixU-.5)
-        pixV = int(skinpixV-.5)
+            # The actual pixel location on the skin texture itself.
+            pixU = int(skinpixU-.5)
+            pixV = int(skinpixV-.5)
+
+            return [[pixU, pixV], [skinpixU, skinpixV]]
+
+    else:
+        # This section computes the proper pixU, pixV position values for tiling in the Skin-view.
+        texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
+        list = view.space(quarkx.vect(x, y, 0)).tuple
+        cursorXpos = int(list[0])
+        cursorYpos = int(list[1])
+        if cursorXpos >= (texWidth * .5):
+            Xstart = int((cursorXpos / texWidth) -.5)
+            Xpos = -texWidth + cursorXpos - (texWidth * Xstart)
+        elif cursorXpos <= (-texWidth * .5):
+            Xstart = int((cursorXpos / texWidth) +.5)
+            Xpos = texWidth + cursorXpos + (texWidth * -Xstart) - 1
+        else:
+            if cursorXpos > 0:
+                Xpos = cursorXpos
+            if cursorXpos < 0:
+                Xpos = cursorXpos - 1
+            if cursorXpos == 0:
+                cursorXpos = list[0]
+                if cursorXpos < 0:
+                    Xpos = -1
+                else:
+                    Xpos = 0
+
+        pixU = Xpos + (texWidth * .5)
+        while pixU >= texWidth:
+            pixU = pixU - 1
+        while pixU <= -texWidth:
+            pixU = pixU + 1
+        pixU = int(pixU)
+
+        if cursorYpos >= (texHeight * .5):
+            Ystart = int((cursorYpos / texHeight) -.5)
+            Ypos = -texHeight + cursorYpos - (texHeight * Ystart)
+        elif cursorYpos <= (-texHeight * .5):
+            Ystart = int((cursorYpos / texHeight) +.5)
+            Ypos = texHeight + cursorYpos + (texHeight * -Ystart) -1
+        else:
+            if cursorYpos > 0:
+                Ypos = cursorYpos
+            if cursorYpos < 0:
+                Ypos = cursorYpos - 1
+            if cursorYpos == 0:
+                cursorYpos = list[1]
+                if cursorYpos < 0:
+                    Ypos = -1
+                else:
+                    Ypos = 0
 
         return [[pixU, pixV], [skinpixU, skinpixV]]
 
@@ -2425,6 +2482,9 @@ def TexturePixelLocation(editor, view, x, y, triangleface):
 #
 #
 #$Log$
+#Revision 1.74  2008/02/11 00:47:30  cdunde
+#To fix text editor error.
+#
 #Revision 1.73  2008/02/11 00:39:51  cdunde
 #Added new function to get the u, v texture position of any
 #triangle where the cursor is pointing in any view.
