@@ -550,7 +550,7 @@ def hintPlusInfobaselink(hint, url):
 
 # Converts separate Red, Green, Blue color components into a long integer color.
 def RGBToColor(RGB):
-    return (65536 * RGB[0]) + (256 * RGB[1]) + RGB[2]
+    return (65536 * RGB[2]) + (256 * RGB[1]) + RGB[0]
 
 # Converts long integer color number into separate color components Red Green Blue (RGB)
 # Returns those components as a list of three intiger numbers but backwards BGR
@@ -758,6 +758,9 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.34  2008/02/10 19:20:43  cdunde
+#Added new texture color utilities that both editors can use.
+#
 #Revision 1.33  2007/09/09 18:34:39  cdunde
 #To stop quarkx.reloadsetup call (which just calls qutils.SetupChanged)
 #from duplicate handle drawing in the Model Editor and use quarkx.reloadsetup
