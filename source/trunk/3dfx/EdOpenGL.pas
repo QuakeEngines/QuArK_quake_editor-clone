@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2008/02/19 20:45:48  danielpharos
+Fix a big OpenGL texture leak.
+
 Revision 1.66  2008/02/19 16:23:34  danielpharos
 Possible fix for OpenGL hanging on shutdown. Also removes some hacks, and should fix some OpenGL leaks.
 
@@ -307,6 +310,7 @@ type
    procedure ReleaseResources;
    procedure BuildTexture(Texture: PTexture3); override;
  public
+   FlagDisplayLists: Boolean;
    constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
@@ -332,6 +336,7 @@ type  { this is the data shared by all existing TGLSceneObjects }
   public
     procedure ClearTexture(Tex: PTexture3);
     procedure ClearAllOpenGLTextures;
+    procedure FlagAllOpenGLDisplayLists;
   end;
   
 var
@@ -1353,6 +1358,7 @@ var
  PList: PSurfaces;
  CurrentPList: PSurfaces;
  RebuildDisplayList: Boolean;
+ I: Integer;
 begin
   if not OpenGlLoaded then
     Exit;
@@ -1622,6 +1628,20 @@ begin
   RebuildDisplayList:=False;
   if DisplayLists then
   begin
+    if FlagDisplayLists then
+    begin
+      for I:=0 to 2 do
+      begin
+        if OpenGLDisplayLists[I]<>0 then
+        begin
+          glDeleteLists(1, OpenGLDisplayLists[I]);
+          CheckOpenGLError(glGetError);
+          OpenGLDisplayLists[I]:=0;
+        end;
+      end;
+      FlagDisplayLists:=False;
+    end;
+
     if (OpenGLDisplayLists[LightingQuality]=0) then
     begin
       OpenGLDisplayLists[LightingQuality]:=glGenLists(1);
@@ -2389,9 +2409,13 @@ begin
   begin
     if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
       raise EError(6310);
-    glDeleteTextures(1, Tex^.OpenGLName);
-    CheckOpenGLError(glGetError);
-    Tex^.OpenGLName:=0;
+    try
+      glDeleteTextures(1, Tex^.OpenGLName);
+      CheckOpenGLError(glGetError);
+      Tex^.OpenGLName:=0;
+    finally
+      wglMakeCurrent(0, 0);
+    end;
   end;
 end;
 
@@ -2408,6 +2432,21 @@ begin
     if Tex<>Nil then
       if Tex^.OpenGLName<>0 then
         ClearTexture(Tex);
+  end;
+end;
+
+procedure TGLState.FlagAllOpenGLDisplayLists;
+var
+ TextureManager: TTextureManager;
+ I: Integer;
+ Scene: TObject;
+begin
+  TextureManager:=TTextureManager.GetInstance;
+  for I:=0 to TextureManager.Scenes.Count-1 do
+  begin
+    Scene:=TextureManager.Scenes[I];
+    if Scene is TGLSceneObject then
+      TGLSceneObject(Scene).FlagDisplayLists:=True;
   end;
 end;
 

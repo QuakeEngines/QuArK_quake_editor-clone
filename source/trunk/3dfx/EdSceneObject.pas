@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2008/02/19 20:45:48  danielpharos
+Fix a big OpenGL texture leak.
+
 Revision 1.38  2007/12/06 00:59:34  danielpharos
 Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
 
@@ -341,7 +344,7 @@ type
  TTextureManager = class
  private
    FTextures: TStringList;
-   Scenes: TList;
+   FScenes: TList;
   {CurrentPalettePtr: PGuPalette;}
    PaletteCache: TList;
    DefaultGamePalette: Integer;
@@ -371,6 +374,7 @@ type
    function UnifiedPalette: Boolean;
    function ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
    property Textures: TStringList read FTextures;
+   property Scenes: TList read FScenes;
  end;
 
 function ComputeMeanColor(const PSD: TPixelSetDescription) : FxU32;
@@ -1522,8 +1526,8 @@ begin
  with GetInstance do
   begin
    Init();
-   if Scenes.IndexOf(Scene)<0 then
-    Scenes.Add(Scene);
+   if FScenes.IndexOf(Scene)<0 then
+    FScenes.Add(Scene);
   end;
 end;
 
@@ -1531,14 +1535,14 @@ class procedure TTextureManager.RemoveScene(Scene: TSceneObject);
 begin
  if TextureManager<>Nil then
   begin
-   TextureManager.Scenes.Remove(Scene);
+   TextureManager.FScenes.Remove(Scene);
    TextureManager.FreeTextures(False);
   end;
 end;
 
 constructor TTextureManager.Create;
 begin
- Scenes:=TList.Create;
+ FScenes:=TList.Create;
  FTextures:=TStringList.Create;
  FTextures.Sorted:=True;
  GammaValue:=-1;
@@ -1573,7 +1577,7 @@ begin
    PaletteCache.Free;
   end;
  DeleteGameBuffer(DummyGameInfo);
- Scenes.Free;
+ FScenes.Free;
 end;
 
 function TTextureManager.ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
@@ -1622,25 +1626,19 @@ begin
 {CurrentPalettePtr:=Nil;}
 {PaletteLmp:=Nil;}
  for I:=0 to Textures.Count-1 do
-  begin
-   with PTexture3(Textures.Objects[I])^ do
-    begin
-     Used:=false;
-    end;
-  end;
+  with PTexture3(Textures.Objects[I])^ do
+   Used:=false;
  if not ForceAll then
-  begin
-   for I:=0 to Scenes.Count-1 do
-    begin
-     P:=TSceneObject(Scenes[I]).ListSurfaces;
-     while Assigned(P) do
-      begin
-       if P^.Texture<>Nil then
-        P^.Texture^.Used:=true;
-       P:=P^.Next;
-      end;
-    end;
-  end;
+  for I:=0 to FScenes.Count-1 do
+   begin
+    P:=TSceneObject(FScenes[I]).ListSurfaces;
+    while Assigned(P) do
+     begin
+      if P^.Texture<>Nil then
+       P^.Texture^.Used:=true;
+      P:=P^.Next;
+     end;
+   end;
  nPaletteCache:=Nil;
  for I:=Textures.Count-1 downto 0 do
   begin
@@ -1672,7 +1670,7 @@ end;
 
 function TTextureManager.CanFree;
 begin
- Result:=Scenes.Count=0;
+ Result:=FScenes.Count=0;
 end;
 
 {$IFDEF xxxNeverxxx}

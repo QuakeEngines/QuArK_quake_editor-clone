@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2008/02/19 20:45:49  danielpharos
+Fix a big OpenGL texture leak.
+
 Revision 1.23  2008/02/19 17:58:40  danielpharos
 Cleanup OpenGL before unloading its calls.
 
@@ -906,6 +909,10 @@ var
 begin
   if RC<>0 then
   begin
+    //DanielPharos: Apparently, displaylists get corrupt when deleting contexts
+    if qrkGLState<>nil then
+      qrkGLState.FlagAllOpenGLDisplayLists;
+
     if wglDeleteContext(RC) = false then
       raise EError(6312);
     I:=0;
