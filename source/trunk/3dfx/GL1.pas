@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2007/12/06 12:35:44  danielpharos
+Now clears the OpenGL extentions list when unloading OpenGL.
+
 Revision 1.20  2007/12/06 01:29:33  danielpharos
 Fix a boolean not being set, resulting in a small memory-leak and a constant enumeration of the OpenGL extentions.
 
@@ -92,7 +95,7 @@ unit GL1;
 
 interface
 
-uses Windows;
+uses Windows, SysUtils;
 
 (**************    GL.H    **************)
 
@@ -763,12 +766,20 @@ function LoadOpenGl : Boolean;
 procedure UnloadOpenGl;
 function LoadSwapHint : Pointer;
 
+function GetOpenGLDummyRC: HGLRC;
+function GetOpenGLDummyDC: HDC;
+function CreateNewRC(DC: HDC): HGLRC;
+procedure DeleteRC(RC: HGLRC);
+
+procedure SetPixelFormatOnDC(DC: HDC; PixelFormat: TPixelFormatDescriptor);
 
 implementation
 
-uses Classes, StrUtils, Quarkx, Logging;
+uses Classes, StrUtils, Quarkx, Logging, Qk1, Setup, QkObjects;
 
 const
+  DummyWindowClassName: string = 'QuArK Dummy Window Class';
+  
   OpenGL32DLL_FuncList : array[0..55] of
     record
       FuncPtr: Pointer;
@@ -852,7 +863,95 @@ var
 
   GLExtentions: TStringList = nil;
 
+  DummyWindowClass: WNDCLASSEX;
+  DummyWindowClassAtom: ATOM;
+  DummyWindow: HWND;
+  DummyDC: HDC;
+  DummyRC: HGLRC;
+  RCs: array of HGLRC;
+
  { ----------------- }
+
+function GetOpenGLDummyRC: HGLRC;
+begin
+  Result := DummyRC;
+end;
+
+function GetOpenGLDummyDC: HDC;
+begin
+  Result := DummyDC;
+end;
+
+function CreateNewRC(DC: HDC): HGLRC;
+begin
+  Result:=wglCreateContext(DC);
+  if Result <> 0 then
+  begin
+    if wglShareLists(DummyRC, Result)=false then
+      Raise EErrorFmt(6301, ['wglShareLists']);
+    SetLength(RCs,Length(RCs)+1);
+    RCs[Length(RCs)-1]:=Result;
+  end;
+end;
+
+procedure DeleteRC(RC: HGLRC);
+var
+ I: Integer;
+begin
+  if RC<>0 then
+  begin
+    if wglDeleteContext(RC) = false then
+      raise EError(6312);
+    I:=0;
+    while I<=Length(RCs)-1 do
+    begin
+      if RCs[I]=RC then
+      begin
+        RCs[I]:=RCs[Length(RCs)-1];
+        SetLength(RCs,Length(RCs)-1);
+      end
+      else
+        Inc(I);
+    end;
+  end;
+end;
+
+procedure SetPixelFormatOnDC(DC: HDC; PixelFormat: TPixelFormatDescriptor);
+var
+ CurrentPixelFormat, NewPixelFormat: Integer;
+ NewPixelFormatDesc: TPixelFormatDescriptor;
+begin
+  NewPixelFormatDesc:=PixelFormat;
+  NewPixelFormat:=ChoosePixelFormat(DC, @NewPixelFormatDesc);
+  CurrentPixelFormat:=GetPixelFormat(DC);
+  if CurrentPixelFormat<>NewPixelFormat then
+  begin
+    if not SetPixelFormat(DC, NewPixelFormat, @NewPixelFormatDesc) then
+      Raise EErrorFmt(6303, ['SetPixelFormat']);
+    {$IFDEF DebugGLErr}
+    Log(LOG_VERBOSE, 'OpenGL: Selected PixelFormat: ' + IntToStr(NewPixelFormat));
+    if DescribePixelFormat(DC, NewPixelFormat, SizeOf(NewPixelFormatDesc), NewPixelFormatDesc) = false then
+      Raise EErrorFmt(6303, ['DescribePixelFormat']);
+    if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_FORMAT) <> 0) then
+      if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
+        Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (MCD)')
+      else
+        Log(LOG_VERBOSE, 'OpenGL: Not hardware accelerated (software)')
+    else
+      if ((NewPixelFormatDesc.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
+        Log(LOG_VERBOSE, 'OpenGL: Unknown acceleration')
+      else
+        Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (ICD)');
+    Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Color Bits: ' + IntToStr(NewPixelFormatDesc.cColorBits));
+    Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Depth Bits: ' + IntToStr(NewPixelFormatDesc.cDepthBits));
+    {$ENDIF}
+  end;
+end;
+
+function WndMessageProc(hWnd: HWND; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
+begin
+  Result := DefWindowProc(hWnd,Msg,wParam,lParam);
+end;
 
 function LoadOpenGl : Boolean;
 type
@@ -860,6 +959,8 @@ type
 var
  I: Integer;
  P: Pointer;
+ Setup: QObject;
+ PixelFormat: TPixelFormatDescriptor;
 begin
   if TimesLoaded = 0 then
   begin
@@ -891,6 +992,47 @@ begin
           Exit;
         PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=P;
       end;
+
+      //Creating dummy Rendering Context
+      FillChar(DummyWindowClass, SizeOf(DummyWindowClass), 0);
+      DummyWindowClass.cbSize:=SizeOf(DummyWindowClass);
+      DummyWindowClass.style:=CS_NOCLOSE Or CS_HREDRAW Or CS_VREDRAW Or CS_OWNDC;
+      DummyWindowClass.hInstance:=hInstance;
+      DummyWindowClass.lpszClassName:=PChar(DummyWindowClassName);
+      DummyWindowClass.lpfnWndProc:=@WndMessageProc;
+      DummyWindowClassAtom:=RegisterClassEx(DummyWindowClass);
+      if DummyWindowClassAtom = 0 then
+        Raise EErrorFmt(6301, ['RegisterClassEx']);
+
+      DummyWindow := CreateWindow(DummyWindowClass.lpszClassName, PChar('QuArK - OpenGL Dummy Window'), WS_CLIPCHILDREN or WS_CLIPSIBLINGS or WS_DISABLED, Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT), 0, 0, hInstance, nil);
+      if DummyWindow = 0 then
+        Raise EErrorFmt(6301, ['CreateWindow']);
+      DummyDC := GetDC(DummyWindow);
+      if DummyDC = 0 then
+        Raise EErrorFmt(6301, ['GetDC']);
+
+      Setup:=SetupSubSet(ssGeneral, 'OpenGL');
+      FillChar(PixelFormat, SizeOf(PixelFormat), 0);
+      PixelFormat.nSize:=SizeOf(PixelFormat);
+      PixelFormat.nVersion:=1;
+      PixelFormat.dwFlags:=PFD_SUPPORT_OPENGL or PFD_DRAW_TO_WINDOW;
+      PixelFormat.iPixelType:=PFD_TYPE_RGBA;
+      if Setup.Specifics.Values['DoubleBuffer']<>'' then
+        PixelFormat.dwFlags:=PixelFormat.dwFlags or PFD_DOUBLEBUFFER;
+      if Setup.Specifics.Values['SupportsGDI']<>'' then
+        PixelFormat.dwFlags:=PixelFormat.dwFlags or PFD_SUPPORT_GDI;
+      PixelFormat.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
+      if PixelFormat.cColorBits<=0 then
+        PixelFormat.cColorBits:=GetDeviceCaps(DummyDC, BITSPIXEL);
+      PixelFormat.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
+      if PixelFormat.cDepthBits<=0 then
+        PixelFormat.cDepthBits:=0;
+      PixelFormat.iLayerType:=PFD_MAIN_PLANE;
+      SetPixelFormatOnDC(DummyDC, PixelFormat);
+
+      DummyRC := wglCreateContext(DummyDC);
+      if DummyRC = 0 then
+        Raise EErrorFmt(6301, ['wglCreateContext']);
 
       TimesLoaded := 1;
       Result := True;
@@ -926,6 +1068,22 @@ begin
       GLExtentions.Free;
       GlExtentions:=nil;
     end;
+
+    if wglDeleteContext(DummyRC) = false then
+      Raise EErrorFmt(6305, ['wglDeleteContext']);
+    DummyRC := 0;
+
+    if ReleaseDC(DummyWindow, DummyDC) = 0 then
+      Raise EErrorFmt(6305, ['ReleaseDC']);
+    DummyDC := 0;
+
+    if DestroyWindow(DummyWindow) = false then
+      Raise EErrorFmt(6305, ['DestroyWindow']);
+    DummyWindow := 0;
+
+    if Windows.UnregisterClass(DummyWindowClass.lpszClassName, hInstance) = false then
+      Raise EErrorFmt(6305, ['UnregisterClass']);
+    DummyWindowClassAtom := 0;
 
     TimesLoaded := 0;
   end

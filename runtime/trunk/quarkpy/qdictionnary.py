@@ -997,6 +997,7 @@ Strings = {
     6302: "Error in OpenGL commands [Error code(s) %s step %d]",
     6303: "An error occurred in the OpenGL routines: %s",
     6304: "Unable to load OpenGL extention list. All OpenGL extentions will be disabled",
+    6305: "Error in OpenGL finalization//'%s' failed",
 
     6310: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer",
     6311: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
@@ -1042,6 +1043,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.115  2008/02/11 13:56:09  danielpharos
+#Added error messages, and fixed some RGB -> BGR
+#
 #Revision 1.114  2008/02/07 14:09:55  danielpharos
 #Display progressbar when searching for updates
 #

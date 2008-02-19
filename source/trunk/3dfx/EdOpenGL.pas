@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2007/10/30 20:16:10  danielpharos
+Don't remember DepthBits
+
 Revision 1.64  2007/09/23 21:04:31  danielpharos
 Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
 
@@ -243,9 +246,6 @@ const
  kScaleCos = 0.5;
 
 var
- TexturesToDelete: array of Integer;
- DisplayListsToDelete: array of Integer;
- RCs: array of HGLRC;
  glAddSwapHintRectWIN: procedure (x: GLint; y: GLint; width: GLsizei; height: GLsizei) stdcall; {Daniel 2007.08.28 - Added}
 
 type
@@ -288,6 +288,7 @@ type
    MaxLights: GLint;
    LightingQuality: Integer;
    OpenGLDisplayLists: array[0..2] of Integer;
+   PixelFormat: TPixelFormatDescriptor;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
  protected
    Bilinear: boolean;
@@ -759,59 +760,13 @@ begin
 end;
 
 procedure TGLSceneObject.SetViewDC(DC: HDC);
-var
-  pfd: TPixelFormatDescriptor;
-  pfi: Integer;
-  Setup: QObject;
-  CurrentPixelFormat: Integer;
 begin
   if ViewDC<>DC then
   begin
     if (ViewWnd<>0) and (ViewDC<>0) then
       ReleaseDC(ViewWnd, ViewDC);
     ViewDC:=DC;
-    Setup:=SetupSubSet(ssGeneral, 'OpenGL');
-    DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
-    FillChar(pfd, SizeOf(pfd), 0);
-    pfd.nSize:=SizeOf(pfd);
-    pfd.nVersion:=1;
-    pfd.dwFlags:=PFD_SUPPORT_OPENGL or PFD_DRAW_TO_WINDOW;
-    pfd.iPixelType:=PFD_TYPE_RGBA;
-    if DoubleBuffered then
-      pfd.dwFlags:=pfd.dwFlags or pfd_DoubleBuffer;
-    if Setup.Specifics.Values['SupportsGDI']<>'' then
-      pfd.dwFlags:=pfd.dwFlags or PFD_SUPPORT_GDI;
-    pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
-    if pfd.cColorBits<=0 then
-      pfd.cColorBits:=GetDeviceCaps(ViewDC, BITSPIXEL);
-    pfd.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
-    if pfd.cDepthBits<=0 then
-      pfd.cDepthBits:=0;
-    pfd.iLayerType:=PFD_MAIN_PLANE;
-    pfi:=ChoosePixelFormat(ViewDC, @pfd);
-    CurrentPixelFormat:=GetPixelFormat(ViewDC);
-    if CurrentPixelFormat<>pfi then
-     begin
-      if not SetPixelFormat(ViewDC, pfi, @pfd) then
-        Raise EErrorFmt(6303, ['SetPixelFormat']);
-      {$IFDEF DebugGLErr}
-      Log(LOG_VERBOSE, 'OpenGL: Selected PixelFormat: ' + IntToStr(pfi));
-      if DescribePixelFormat(ViewDC, pfi, SizeOf(pfd), pfd) = false then
-        Raise EErrorFmt(6303, ['DescribePixelFormat']);
-      if ((pfd.dwFlags and PFD_GENERIC_FORMAT) <> 0) then
-        if ((pfd.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
-          Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (MCD)')
-        else
-          Log(LOG_VERBOSE, 'OpenGL: Not hardware accelerated (software)')
-      else
-        if ((pfd.dwFlags and PFD_GENERIC_ACCELERATED) <> 0) then
-          Log(LOG_VERBOSE, 'OpenGL: Unknown acceleration')
-        else
-          Log(LOG_VERBOSE, 'OpenGL: Hardware accelerated (ICD)');
-      Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Color Bits: ' + IntToStr(pfd.cColorBits));
-      Log(LOG_VERBOSE, 'OpenGL: PixelFormat: Depth Bits: ' + IntToStr(pfd.cDepthBits));
-      {$ENDIF}
-     end;
+    SetPixelFormatOnDC(ViewDC, PixelFormat);
   end;
 end;
 
@@ -902,6 +857,7 @@ procedure TGLSceneObject.ReleaseResources;
 var
  I: Integer;
 { NameArray, NameAreaWalker: ^GLuint;}
+ MadeRCCurrent: Boolean;
 begin
   RenderingTextureBuffer.Free;
   RenderingTextureBuffer:=Nil;
@@ -936,39 +892,37 @@ begin
     end;
   end;}
 
+  MadeRCCurrent:=False;
+  for I:=0 to 2 do
+  begin
+    if OpenGLDisplayLists[I]<>0 then
+    begin
+      if not MadeRCCurrent then
+      begin
+        if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
+          raise EError(6310);
+        MadeRCCurrent := True;
+      end;
+      glDeleteLists(1, OpenGLDisplayLists[I]);
+      CheckOpenGLError(glGetError);
+
+      OpenGLDisplayLists[I]:=0;
+    end;
+  end;
+  if MadeRCCurrent then
+    wglMakeCurrent(0, 0);
+
   if RC<>0 then
   begin
-    for I:=0 to 2 do
-    begin
-      if OpenGLDisplayLists[I]<>0 then
-      begin
-        SetLength(DisplayListsToDelete,Length(DisplayListsToDelete)+1);
-        DisplayListsToDelete[Length(DisplayListsToDelete)-1]:=OpenGLDisplayLists[I];
-        OpenGLDisplayLists[I]:=0;
-      end;
-    end;
     if OpenGLLoaded then
-      if wglDeleteContext(RC) = false then
-        raise EError(6312);
-
-    if (ViewWnd<>0) and (ViewDC<>0) then
-    begin
-      ReleaseDC(ViewWnd, ViewDC);
-      ViewDC:=0;
-    end;
-
-    I:=0;
-    while I<=Length(RCs)-1 do
-    begin
-      if RCs[I]=RC then
-      begin
-        RCs[I]:=RCs[Length(RCs)-1];
-        SetLength(RCs,Length(RCs)-1);
-      end
-      else
-        Inc(I);
-    end;
+      DeleteRC(RC);
     RC:=0;
+  end;
+
+  if (ViewWnd<>0) and (ViewDC<>0) then
+  begin
+    ReleaseDC(ViewWnd, ViewDC);
+    ViewDC:=0;
   end;
 end;
 
@@ -1007,7 +961,6 @@ var
  FogColor{, FrameColor}: TColorRef;
  Setup: QObject;
  LightParam: array[0..3] of GLfloat;
- I: Integer;
 begin
   ClearScene;
 
@@ -1120,29 +1073,36 @@ begin
   else
     MakeSections:=False;
 
+  DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
+  FillChar(PixelFormat, SizeOf(PixelFormat), 0);
+  PixelFormat.nSize:=SizeOf(PixelFormat);
+  PixelFormat.nVersion:=1;
+  PixelFormat.dwFlags:=PFD_SUPPORT_OPENGL or PFD_DRAW_TO_WINDOW;
+  PixelFormat.iPixelType:=PFD_TYPE_RGBA;
+  if DoubleBuffered then
+    PixelFormat.dwFlags:=PixelFormat.dwFlags or PFD_DOUBLEBUFFER;
+  if Setup.Specifics.Values['SupportsGDI']<>'' then
+    PixelFormat.dwFlags:=PixelFormat.dwFlags or PFD_SUPPORT_GDI;
+  PixelFormat.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
+  if PixelFormat.cColorBits<=0 then
+    PixelFormat.cColorBits:=GetDeviceCaps(ViewDC, BITSPIXEL);
+  PixelFormat.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
+  if PixelFormat.cDepthBits<=0 then
+    PixelFormat.cDepthBits:=0;
+  PixelFormat.iLayerType:=PFD_MAIN_PLANE;
+
   SetViewWnd(Wnd,true);
 
   if RC = 0 then
-   begin
-    RC:=wglCreateContext(ViewDC);
+  begin
+    RC:=CreateNewRC(ViewDC);
     if RC = 0 then
-     raise EError(6311);
-
-    for I:=0 to Length(RCs)-1 do
-    begin
-      if RCs[I]<>0 then
-      begin
-        if wglShareLists(RCs[I],RC)=false then
-          Raise EErrorFmt(6301, ['wglShareLists']);
-        break;
-      end;
-    end;
-    SetLength(RCs,Length(RCs)+1);
-    RCs[Length(RCs)-1]:=RC;
+      raise EError(6311);
    end;
 
-  if wglMakeCurrent(ViewDC,RC) = false then
+  if wglMakeCurrent(ViewDC, RC) = false then
     raise EError(6310);
+  try
 
   WinSwapHint:=LoadSwapHint;
 
@@ -1247,8 +1207,10 @@ begin
   if MaxLights<=0 then
     MaxLights:=8;
 
-  {$IFDEF DebugGLErr} DebugOpenGL(3, '', []); {$ENDIF}  
-  wglMakeCurrent(0,0);
+  {$IFDEF DebugGLErr} DebugOpenGL(3, '', []); {$ENDIF}
+  finally
+    wglMakeCurrent(0, 0);
+  end;
 end;
 
 procedure TGLSceneObject.Copy3DView;
@@ -1258,25 +1220,26 @@ begin
   if not OpenGlLoaded then
     Exit;
 
-  if wglMakeCurrent(ViewDC,RC) = false then
+  if wglMakeCurrent(ViewDC, RC) = false then
     raise EError(6310);
+  try
+    if WinSwapHint<>nil then
+    begin
+      glAddSwapHintRectWIN:=WinSwapHint;
+      Int4Array[0]:=DrawRect.Left;
+      Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
+      Int4Array[2]:=DrawRect.Right - DrawRect.Left;
+      Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
+      glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
+      CheckOpenGLError(glGetError);
+    end;
 
-  if WinSwapHint<>nil then
-  begin
-    glAddSwapHintRectWIN:=WinSwapHint;
-    Int4Array[0]:=DrawRect.Left;
-    Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
-    Int4Array[2]:=DrawRect.Right - DrawRect.Left;
-    Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
-    glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
-    CheckOpenGLError(glGetError);
+    if DoubleBuffered then
+      if Windows.SwapBuffers(ViewDC)=false then
+        raise exception.create(LoadStr1(6315));
+  finally
+    wglMakeCurrent(0, 0);
   end;
-  
-  if DoubleBuffered then
-    if Windows.SwapBuffers(ViewDC)=false then
-      raise exception.create(LoadStr1(6315));
-
-  wglMakeCurrent(0,0);
 end;
 
 procedure TGLSceneObject.ClearScene;
@@ -1331,30 +1294,21 @@ begin
   Result:=bmOpenGL;
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
-  for I:=0 to 2 do
-  begin
-    if OpenGLDisplayLists[I]<>0 then
-    begin
-      SetLength(DisplayListsToDelete,Length(DisplayListsToDelete)+1);
-      DisplayListsToDelete[Length(DisplayListsToDelete)-1]:=OpenGLDisplayLists[I];
-      OpenGLDisplayLists[I]:=0;
-    end;
-  end;
-  if wglMakeCurrent(ViewDC,RC) = false then
+  if wglMakeCurrent(ViewDC, RC) = false then
     raise EError(6310);
-  for I:=0 to Length(DisplayListsToDelete)-1 do
-  begin
-    glDeleteLists(1,DisplayListsToDelete[I]);
-    CheckOpenGLError(glGetError);
+  try
+    for I:=0 to 2 do
+    begin
+      if OpenGLDisplayLists[I]<>0 then
+      begin
+        glDeleteLists(1, OpenGLDisplayLists[I]);
+        CheckOpenGLError(glGetError);
+        OpenGLDisplayLists[I]:=0;
+      end;
+    end;
+  finally
+    wglMakeCurrent(0, 0);
   end;
-  SetLength(DisplayListsToDelete,0);
-  for I:=0 to Length(TexturesToDelete)-1 do
-  begin
-    glDeleteTextures(1,TexturesToDelete[I]);
-    CheckOpenGLError(glGetError);
-  end;
-  SetLength(TexturesToDelete,0);
-  wglMakeCurrent(0,0);
 end;
 
 procedure TGLSceneObject.EndBuildScene;
@@ -1397,8 +1351,10 @@ var
 begin
   if not OpenGlLoaded then
     Exit;
-  if wglMakeCurrent(ViewDC,RC) = false then
+  if wglMakeCurrent(ViewDC, RC) = false then
    raise EError(6310);
+  try
+
   {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
   SX:=ScreenX;
   SY:=ScreenY;
@@ -1767,7 +1723,9 @@ begin
   {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFinish', []); {$ENDIF}
   glFinish;
   {$IFDEF DebugGLErr} DebugOpenGL(55, '', []); {$ENDIF}
-  wglMakeCurrent(0,0);
+  finally
+   wglMakeCurrent(0, 0);
+  end;
 end;
 
 procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
@@ -1855,11 +1813,12 @@ begin
 
     {GetwhForTexture(Texture^.info, W, H);}
     
-    if wglMakeCurrent(ViewDC,RC) = false then
+    if wglMakeCurrent(ViewDC, RC) = false then
       raise EError(6310);
+    try
+
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, @MaxTexDim);
     CheckOpenGLError(glGetError);
-    wglMakeCurrent(0,0);
     if MaxTexDim<=0 then
       MaxTexDim:=256;
     W:=Texture^.LoadedTexW;
@@ -2047,8 +2006,6 @@ begin
       PSD2.Done;
     end;
 
-    if wglMakeCurrent(ViewDC,RC) = false then
-     raise EError(6310);
     {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     glGenTextures(1, Texture^.OpenGLName);
@@ -2080,9 +2037,10 @@ begin
     end;//paletted textures   *)
     CheckOpenGLError(glGetError);
 
-    wglMakeCurrent(0,0);
-
     {$IFDEF DebugGLErr} DebugOpenGL(107, '', []); {$ENDIF}
+    finally
+      wglMakeCurrent(0, 0);
+    end;
   end;
 end;
 
@@ -2420,50 +2378,15 @@ end;
  {------------------------}
 
 procedure TGLState.ClearTexture(Tex: PTexture3);
-{var
-  I: Integer;
-  UseRC: HGLRC;
-  UseViewDC: HDC;}
 begin
   //DanielPharos: How can you be sure OpenGL has been loaded?
   if (Tex^.OpenGLName<>0) then
   begin
-    SetLength(TexturesToDelete,Length(TexturesToDelete)+1);
-    TexturesToDelete[Length(TexturesToDelete)-1]:=Tex^.OpenGLName;
+    if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
+      raise EError(6310);
+    glDeleteTextures(1, Tex^.OpenGLName);
+    CheckOpenGLError(glGetError);
     Tex^.OpenGLName:=0;
-
-    {DanielPharos: OK, let me explain this hack:
-    At the moment, the Device Context (DC) of the window in with OpenGL renders
-    gets destroyed before the TextureManager gets the call to clean up. This
-    means we can't make the context that's going to be destroyed current,
-    because of the invalid DC we're using. So instead of hacking into the code
-    to make a call to delete the texture before deleting the DC, we're keeping
-    track of the textures that need to be destroyed, and destroy them when
-    StartBuildScene is called.
-    We're doing the same for DisplayLists.}
-    
-(*    UseRC:=0;
-    UseViewDC:=0;
-    for I:=0 to Length(RCs)-1 do
-    begin
-      if RCs[I]<>0 then
-      begin
-        UseRC:=RCs[I];
-        UseViewDC:=ViewDCs[I];
-        break;
-      end;
-    end;
-    if (UseRC<>0) and (UseViewDC<>0) then
-    begin
-      if wglMakeCurrent(UseViewDC,UseRC) = false then
-        raise EError(6310);
-      {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
-      glDeleteTextures(1, Tex^.OpenGLName);
-      {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
-      CheckOpenGLError(glGetError);
-      wglMakeCurrent(0,0);
-    end;
-    Tex^.OpenGLName:=0; *)
   end;
 end;
 
