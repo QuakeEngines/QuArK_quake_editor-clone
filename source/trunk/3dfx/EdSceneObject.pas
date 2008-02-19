@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2007/12/06 00:59:34  danielpharos
+Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
+
 Revision 1.37  2007/11/29 22:27:32  danielpharos
 Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
 
@@ -1545,7 +1548,8 @@ procedure TTextureManager.FreeTexture(Tex: PTexture3);
 begin
  //DanielPharos: How can you be sure OpenGL has been loaded?
  if Tex^.OpenGLName<>0 then
-   qrkGLState.ClearTexture(Tex);
+   if qrkGLState<>nil then
+     qrkGLState.ClearTexture(Tex);
  FreeMem(Tex^.info.data);
  Tex^.SourceTexture.AddRef(-1);
  Dispose(Tex);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2008/02/19 17:58:40  danielpharos
+Cleanup OpenGL before unloading its calls.
+
 Revision 1.22  2008/02/19 16:23:34  danielpharos
 Possible fix for OpenGL hanging on shutdown. Also removes some hacks, and should fix some OpenGL leaks.
 
@@ -778,7 +781,7 @@ procedure SetPixelFormatOnDC(DC: HDC; PixelFormat: TPixelFormatDescriptor);
 
 implementation
 
-uses Classes, StrUtils, Quarkx, Logging, Qk1, Setup, QkObjects;
+uses Classes, StrUtils, Quarkx, Logging, Qk1, Setup, QkObjects, EdOpenGL;
 
 const
   DummyWindowClassName: string = 'QuArK Dummy Window Class';
@@ -1065,6 +1068,9 @@ var
 begin
   if TimesLoaded = 1 then
   begin
+    if qrkGLState<>nil then
+      qrkGLState.ClearAllOpenGLTextures;
+
     if wglDeleteContext(DummyRC) = false then
       Raise EErrorFmt(6305, ['wglDeleteContext']);
     DummyRC := 0;

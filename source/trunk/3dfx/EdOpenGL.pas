@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2008/02/19 16:23:34  danielpharos
+Possible fix for OpenGL hanging on shutdown. Also removes some hacks, and should fix some OpenGL leaks.
+
 Revision 1.65  2007/10/30 20:16:10  danielpharos
 Don't remember DepthBits
 
@@ -328,7 +331,9 @@ type  { this is the data shared by all existing TGLSceneObjects }
   TGLState = class
   public
     procedure ClearTexture(Tex: PTexture3);
+    procedure ClearAllOpenGLTextures;
   end;
+  
 var
   qrkGLState: TGlState;
 
@@ -2390,6 +2395,22 @@ begin
   end;
 end;
 
+procedure TGLState.ClearAllOpenGLTextures;
+var
+ TextureManager: TTextureManager;
+ I: Integer;
+ Tex: PTexture3;
+begin
+  TextureManager:=TTextureManager.GetInstance;
+  for I:=0 to TextureManager.Textures.Count-1 do
+  begin
+    Tex:=PTexture3(TextureManager.Textures.Objects[I]);
+    if Tex<>Nil then
+      if Tex^.OpenGLName<>0 then
+        ClearTexture(Tex);
+  end;
+end;
+
  {------------------------}
 
 procedure CheckOpenGLError(GlError: GLenum);
@@ -2407,4 +2428,8 @@ begin
   end;
 end;
 
+initialization
+  qrkGLState:=TGLState.Create;
+finalization
+  qrkGLState.Free;
 end.
