@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2008/02/19 16:23:34  danielpharos
+Possible fix for OpenGL hanging on shutdown. Also removes some hacks, and should fix some OpenGL leaks.
+
 Revision 1.21  2007/12/06 12:35:44  danielpharos
 Now clears the OpenGL extentions list when unloading OpenGL.
 
@@ -966,16 +969,19 @@ begin
   begin
     Result := False;
     try
-      if OpenGL32Lib = 0 then  //DanielPharos: We don't want to load it twice, now do we?
-       begin
+      if OpenGL32Lib = 0 then
+      begin
         OpenGL32Lib := LoadLibrary('OPENGL32.DLL');
         if OpenGL32Lib=0 then
           Exit;
-       end;
+      end;
 
-      Glu32Lib := LoadLibrary('GLU32.DLL');
-      if Glu32Lib=0 then
-        Exit;
+      if Glu32Lib = 0 then
+      begin
+        Glu32Lib := LoadLibrary('GLU32.DLL');
+        if Glu32Lib=0 then
+          Exit;
+      end;
 
       for I:=Low(OpenGL32DLL_FuncList) to High(OpenGL32DLL_FuncList) do
       begin
@@ -1052,23 +1058,13 @@ begin
 end;
 
 procedure UnloadOpenGl;
+type
+ PPointer = ^Pointer;
+var
+ I: Integer;
 begin
   if TimesLoaded = 1 then
   begin
-    {if OpenGL32Lib<>0 then
-      FreeLibrary(OpenGL32Lib);
-    OpenGL32Lib := 0;}   //DanielPharos: This cannot be freed, because the pixel format will then fail!
-
-    if Glu32Lib<>0 then
-      FreeLibrary(Glu32Lib);
-    Glu32Lib := 0;
-
-    if GLExtentions<>nil then
-    begin
-      GLExtentions.Free;
-      GlExtentions:=nil;
-    end;
-
     if wglDeleteContext(DummyRC) = false then
       Raise EErrorFmt(6305, ['wglDeleteContext']);
     DummyRC := 0;
@@ -1084,6 +1080,32 @@ begin
     if Windows.UnregisterClass(DummyWindowClass.lpszClassName, hInstance) = false then
       Raise EErrorFmt(6305, ['UnregisterClass']);
     DummyWindowClassAtom := 0;
+
+    //DanielPharos: This cannot be freed, because the pixel format will then be forgotton,
+    //causing errors when OpenGL is restarted!
+    {if OpenGL32Lib<>0 then
+    begin
+      FreeLibrary(OpenGL32Lib);
+      OpenGL32Lib := 0;
+    end;}
+
+    for I:=Low(OpenGL32DLL_FuncList) to High(OpenGL32DLL_FuncList) do
+      PPointer(OpenGL32DLL_FuncList[I].FuncPtr)^:=nil;
+
+    if Glu32Lib<>0 then
+    begin
+      FreeLibrary(Glu32Lib);
+      Glu32Lib := 0;
+    end;
+
+    for I:=Low(Glu32DLL_FuncList) to High(Glu32DLL_FuncList) do
+      PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=nil;
+
+    if GLExtentions<>nil then
+    begin
+      GLExtentions.Free;
+      GlExtentions:=nil;
+    end;
 
     TimesLoaded := 0;
   end
