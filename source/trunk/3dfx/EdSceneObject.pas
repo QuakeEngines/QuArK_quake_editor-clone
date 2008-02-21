@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2008/02/21 21:15:24  danielpharos
+Huge OpenGL change: Should fix OpenGL hangs, and maybe speed up OpenGL a bit.
+
 Revision 1.40  2008/02/19 22:58:05  danielpharos
 Fix a OpenGL displaylist corruption.
 
@@ -1005,7 +1008,7 @@ begin
            VertexCount:=prvVertexCount;
            OpenGLLightList:=nil;
 
-           AlphaColor:=CurrentColor or (254 shl 24);
+           AlphaColor:=CurrentColor or (255 shl 24);
            TextureMode:=0;
            // if the texture has alpha channel its probably transparent
            if Assigned(PList^.Texture^.SourceTexture) then
@@ -2124,11 +2127,11 @@ begin
             for I:=0 to 255 do
              with pl[I] do
               begin
-               pr:=LongInt(Ord(P^));
+               pb:=LongInt(Ord(P^));
                Inc(P);
                pg:=LongInt(Ord(P^));
                Inc(P);
-               pb:=LongInt(Ord(P^));
+               pr:=LongInt(Ord(P^));
                Inc(P);
               end;
             P:=PSD.StartPointer;
