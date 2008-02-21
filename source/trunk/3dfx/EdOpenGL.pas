@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69  2008/02/21 21:07:20  danielpharos
+Removed redundant OpenGL code.
+
 Revision 1.68  2008/02/19 22:58:05  danielpharos
 Fix a OpenGL displaylist corruption.
 
@@ -273,7 +276,7 @@ type
  private
    ViewWnd: HWnd;
    ViewDC: HDC;
-   RC: HGLRC;
+//   RC: HGLRC;  //wglShareLists
    WinSwapHint: Pointer;
    CurrentAlpha: LongInt;
    Currentf: GLfloat4;
@@ -313,7 +316,7 @@ type
    procedure ReleaseResources;
    procedure BuildTexture(Texture: PTexture3); override;
  public
-   FlagDisplayLists: Boolean;
+//   FlagDisplayLists: Boolean; //wglShareLists
    constructor Create(nViewMode: TMapViewMode);
    destructor Destroy; override;
    procedure Init(Wnd: HWnd;
@@ -338,7 +341,7 @@ type  { this is the data shared by all existing TGLSceneObjects }
   public
     procedure ClearTexture(Tex: PTexture3);
     procedure ClearAllOpenGLTextures;
-    procedure FlagAllOpenGLDisplayLists;
+//    procedure FlagAllOpenGLDisplayLists; //wglShareLists
   end;
   
 var
@@ -905,31 +908,35 @@ begin
   end;}
 
   MadeRCCurrent:=False;
-  for I:=0 to 2 do
-  begin
-    if OpenGLDisplayLists[I]<>0 then
+  try
+    for I:=0 to 2 do
     begin
-      if not MadeRCCurrent then
+      if OpenGLDisplayLists[I]<>0 then
       begin
-        if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
-          raise EError(6310);
-        MadeRCCurrent := True;
+        if not MadeRCCurrent then
+        begin
+//          if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then //wglShareLists
+          if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
+            raise EError(6310);
+          MadeRCCurrent := True;
+        end;
+        glDeleteLists(1, OpenGLDisplayLists[I]);
+        CheckOpenGLError(glGetError);
+
+        OpenGLDisplayLists[I]:=0;
       end;
-      glDeleteLists(1, OpenGLDisplayLists[I]);
-      CheckOpenGLError(glGetError);
-
-      OpenGLDisplayLists[I]:=0;
     end;
+  finally
+    if MadeRCCurrent then
+      wglMakeCurrent(0, 0);
   end;
-  if MadeRCCurrent then
-    wglMakeCurrent(0, 0);
 
-  if RC<>0 then
+(*  if RC<>0 then //wglShareLists
   begin
     if OpenGLLoaded then
       DeleteRC(RC);
     RC:=0;
-  end;
+  end;*)
 
   if (ViewWnd<>0) and (ViewDC<>0) then
   begin
@@ -941,7 +948,7 @@ end;
 constructor TGLSceneObject.Create(nViewMode: TMapViewMode);
 begin
   inherited Create(nViewMode);
-  RC:=0;
+  //RC:=0; //wglShareLists
   ViewDC:=0;
   ViewWnd:=0;
 end;
@@ -1106,14 +1113,15 @@ begin
 
   SetViewWnd(Wnd,true);
 
-  if RC = 0 then
+(*  if RC = 0 then //wglShareLists
   begin
     RC:=CreateNewRC(ViewDC);
     if RC = 0 then
       raise EError(6311);
-   end;
+  end;*)
 
-  if wglMakeCurrent(ViewDC, RC) = false then
+//  if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
+  if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
     raise EError(6310);
   try
 
@@ -1214,7 +1222,8 @@ begin
   if not OpenGlLoaded then
     Exit;
 
-  if wglMakeCurrent(ViewDC, RC) = false then
+//  if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
+  if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
     raise EError(6310);
   try
     if WinSwapHint<>nil then
@@ -1281,6 +1290,7 @@ end;
 
 function TGLSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
 var
+  MadeRCCurrent: Boolean;
   I: Integer;
 begin
  {PW:=Nil;}
@@ -1288,167 +1298,53 @@ begin
   Result:=bmOpenGL;
   if RenderingTextureBuffer=Nil then
     RenderingTextureBuffer:=TMemoryStream.Create;
-  if wglMakeCurrent(ViewDC, RC) = false then
-    raise EError(6310);
+  MadeRCCurrent:=False;
   try
     for I:=0 to 2 do
     begin
       if OpenGLDisplayLists[I]<>0 then
       begin
+        if not MadeRCCurrent then
+        begin
+//          if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
+          if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+            raise EError(6310);
+          MadeRCCurrent := True;
+        end;
+
         glDeleteLists(1, OpenGLDisplayLists[I]);
         CheckOpenGLError(glGetError);
         OpenGLDisplayLists[I]:=0;
       end;
     end;
   finally
-    wglMakeCurrent(0, 0);
+    if MadeRCCurrent then
+      wglMakeCurrent(0, 0);
   end;
 end;
 
 procedure TGLSceneObject.EndBuildScene;
-begin
-  RenderingTextureBuffer.Free;
-  RenderingTextureBuffer:=Nil;
-end;
-
-procedure TGLSceneObject.Render3DView;
 var
- SX, SY: Integer;
- DX, DY, DZ: Double;
- VX, VY, VZ: TVect;
- Scaling: TDouble;
- LocX, LocY: GLdouble;
- TransX, TransY, TransZ: GLdouble;
- MatrixTransform: TMatrix4f;
  PS: PSurfaces;
  PO: POpenGLLightingList;
  Surf: PSurface3D;
  SurfEnd: PChar;
- PL: PLightList;
- PV: PVertex3D;
- Distance: Double;
- LargestDistance: Double;
- FirstItem: Boolean;
- DistanceList: array of Double;
+ SurfAveragePosition: vec3_t;
+ PAveragePosition: vec3_t;
  TempDistance: Double;
  TempLight: LongInt;
  VertexNR: Integer;
- SurfAveragePosition: vec3_t;
- PAveragePosition: vec3_t;
+ PV: PVertex3D;
+ Sz: Integer;
+ PL: PLightList;
+ DistanceList: array of Double;
  LightNR: LongInt;
  LightCurrent: LongInt;
  LightList: LongInt;
- Sz: Integer;
- PList: PSurfaces;
- CurrentPList: PSurfaces;
- RebuildDisplayList: Boolean;
- I: Integer;
+ Distance: Double;
 begin
-  if not OpenGlLoaded then
-    Exit;
-  if wglMakeCurrent(ViewDC, RC) = false then
-   raise EError(6310);
-  try
-
-  {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
-  SX:=ScreenX;
-  SY:=ScreenY;
-  glViewport(0, 0, SX, SY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
-  {$IFDEF DebugGLErr} DebugOpenGL(50, '', []); {$ENDIF}
-
-  CheckOpenGLError(glGetError);
-
-  if Coord.FlatDisplay then
-   begin
-    if CurrentDisplayType=dtXY then
-     begin
-      with TXYCoordinates(Coord) do
-       begin
-        Scaling:=ScalingFactor(Nil);
-        LocX:=pDeltaX-ScrCenter.X;
-        LocY:=-(pDeltaY-ScrCenter.Y);
-        VX:=VectorX;
-        VY:=VectorY;
-        VZ:=VectorZ;
-       end;
-     end
-    else if CurrentDisplayType=dtXZ then
-     begin
-      with TXZCoordinates(Coord) do
-       begin
-        Scaling:=ScalingFactor(Nil);
-        LocX:=pDeltaX-ScrCenter.X;
-        LocY:=-(pDeltaY-ScrCenter.Y);
-        VX:=VectorX;
-        VY:=VectorY;
-        VZ:=VectorZ;
-       end;
-     end
-    else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
-     begin
-      with T2DCoordinates(Coord) do
-       begin
-        Scaling:=ScalingFactor(Nil);
-        LocX:=pDeltaX-ScrCenter.X;
-        LocY:=-(pDeltaY-ScrCenter.Y);
-        VX:=VectorX;
-        VY:=VectorY;
-        VZ:=VectorZ;
-       end;
-     end;
-    DX:=(SX/2)/(Scaling*Scaling);
-    DY:=(SY/2)/(Scaling*Scaling);
-    {DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);}
-    DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
-    TransX:=LocX/(Scaling*Scaling);
-    TransY:=LocY/(Scaling*Scaling);
-    TransZ:=-MapLimitSmallest;
-    MatrixTransform[0,0]:=VX.X;
-    MatrixTransform[0,1]:=-VY.X;
-    MatrixTransform[0,2]:=-VZ.X;
-    MatrixTransform[0,3]:=0;
-    MatrixTransform[1,0]:=VX.Y;
-    MatrixTransform[1,1]:=-VY.Y;
-    MatrixTransform[1,2]:=-VZ.Y;
-    MatrixTransform[1,3]:=0;
-    MatrixTransform[2,0]:=VX.Z;
-    MatrixTransform[2,1]:=-VY.Z;
-    MatrixTransform[2,2]:=-VZ.Z;
-    MatrixTransform[2,3]:=0;
-    MatrixTransform[3,0]:=0;
-    MatrixTransform[3,1]:=0;
-    MatrixTransform[3,2]:=0;
-    MatrixTransform[3,3]:=1;
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity;
-    glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity;
-    glTranslated(TransX, TransY, TransZ);
-    glMultMatrixd(MatrixTransform);
-   end
-  else
-   begin
-    with TCameraCoordinates(Coord) do
-     begin
-      glMatrixMode(GL_PROJECTION);
-      glLoadIdentity;
-      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
-
-      glMatrixMode(GL_MODELVIEW);
-      glLoadIdentity;
-      glRotated(PitchAngle * (180/pi), -1,0,0);
-      glRotated(HorzAngle * (180/pi), 0,-1,0);
-      glRotated(120, -1,1,1);
-      TransX:=-Camera.X;
-      TransY:=-Camera.Y;
-      TransZ:=-Camera.Z;
-      glTranslated(TransX, TransY, TransZ);
-     end;
-   end;
-  CheckOpenGLError(glGetError);
+  RenderingTextureBuffer.Free;
+  RenderingTextureBuffer:=Nil;
 
   if (Lighting and (LightingQuality=0)) or Transparency then
   begin
@@ -1579,6 +1475,166 @@ begin
       PS:=PS^.Next;
     end;
   end;
+end;
+
+procedure TGLSceneObject.Render3DView;
+var
+ SX, SY: Integer;
+ DX, DY, DZ: Double;
+ VX, VY, VZ: TVect;
+ Scaling: TDouble;
+ LocX, LocY: GLdouble;
+ TransX, TransY, TransZ: GLdouble;
+ MatrixTransform: TMatrix4f;
+ FirstItem: Boolean;
+ PList: PSurfaces;
+ CurrentPList: PSurfaces;
+ RebuildDisplayList: Boolean;
+ Distance: Double;
+ LargestDistance: Double;
+begin
+  if not OpenGlLoaded then
+    Exit;
+//  if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
+  if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+   raise EError(6310);
+  try
+
+  {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
+  SX:=ScreenX;
+  SY:=ScreenY;
+  glViewport(0, 0, SX, SY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
+  CheckOpenGLError(glGetError);
+  {$IFDEF DebugGLErr} DebugOpenGL(50, '', []); {$ENDIF}
+
+  if Coord.FlatDisplay then
+   begin
+    if CurrentDisplayType=dtXY then
+     begin
+      with TXYCoordinates(Coord) do
+       begin
+        Scaling:=ScalingFactor(Nil);
+        LocX:=pDeltaX-ScrCenter.X;
+        LocY:=-(pDeltaY-ScrCenter.Y);
+        VX:=VectorX;
+        VY:=VectorY;
+        VZ:=VectorZ;
+       end;
+     end
+    else if CurrentDisplayType=dtXZ then
+     begin
+      with TXZCoordinates(Coord) do
+       begin
+        Scaling:=ScalingFactor(Nil);
+        LocX:=pDeltaX-ScrCenter.X;
+        LocY:=-(pDeltaY-ScrCenter.Y);
+        VX:=VectorX;
+        VY:=VectorY;
+        VZ:=VectorZ;
+       end;
+     end
+    else {if (CurrentDisplayType=dtYZ) or (CurrentDisplayType=dt2D) then}
+     begin
+      with T2DCoordinates(Coord) do
+       begin
+        Scaling:=ScalingFactor(Nil);
+        LocX:=pDeltaX-ScrCenter.X;
+        LocY:=-(pDeltaY-ScrCenter.Y);
+        VX:=VectorX;
+        VY:=VectorY;
+        VZ:=VectorZ;
+       end;
+     end;
+    DX:=(SX/2)/(Scaling*Scaling);
+    DY:=(SY/2)/(Scaling*Scaling);
+    {DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);}
+    DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
+    TransX:=LocX/(Scaling*Scaling);
+    TransY:=LocY/(Scaling*Scaling);
+    TransZ:=-MapLimitSmallest;
+    MatrixTransform[0,0]:=VX.X;
+    MatrixTransform[0,1]:=-VY.X;
+    MatrixTransform[0,2]:=-VZ.X;
+    MatrixTransform[0,3]:=0;
+    MatrixTransform[1,0]:=VX.Y;
+    MatrixTransform[1,1]:=-VY.Y;
+    MatrixTransform[1,2]:=-VZ.Y;
+    MatrixTransform[1,3]:=0;
+    MatrixTransform[2,0]:=VX.Z;
+    MatrixTransform[2,1]:=-VY.Z;
+    MatrixTransform[2,2]:=-VZ.Z;
+    MatrixTransform[2,3]:=0;
+    MatrixTransform[3,0]:=0;
+    MatrixTransform[3,1]:=0;
+    MatrixTransform[3,2]:=0;
+    MatrixTransform[3,3]:=1;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity;
+    glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity;
+    glTranslated(TransX, TransY, TransZ);
+    glMultMatrixd(MatrixTransform);
+   end
+  else
+   begin
+    with TCameraCoordinates(Coord) do
+     begin
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity;
+      gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
+
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity;
+      glRotated(PitchAngle * (180/pi), -1,0,0);
+      glRotated(HorzAngle * (180/pi), 0,-1,0);
+      glRotated(120, -1,1,1);
+      TransX:=-Camera.X;
+      TransY:=-Camera.Y;
+      TransZ:=-Camera.Z;
+      glTranslated(TransX, TransY, TransZ);
+     end;
+   end;
+  CheckOpenGLError(glGetError);
+
+  //wglShareList: DanielPharos: We've got to reset the state, since we're only using
+  //one rendering context now.
+  if (CurrentDisplayMode=dmPanel) then
+    glDisable(GL_DEPTH_TEST)
+  else
+    glEnable(GL_DEPTH_TEST);
+  CheckOpenGLError(glGetError);
+
+  if Fog then
+  begin
+    glEnable(GL_FOG);
+    {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
+    glFogf(GL_FOG_END, FarDistance);}
+    glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
+  end
+  else
+    glDisable(GL_FOG);
+  CheckOpenGLError(glGetError);
+  
+  if Lighting then
+    glEnable(GL_LIGHTING)
+  else
+    glDisable(GL_LIGHTING);
+  CheckOpenGLError(glGetError);
+
+  if Transparency then
+    glEnable(GL_BLEND)
+  else
+    glDisable(GL_BLEND);
+  CheckOpenGLError(glGetError);
+
+  if Culling then
+    glEnable(GL_CULL_FACE)
+  else
+    glDisable(GL_CULL_FACE);
+  CheckOpenGLError(glGetError);
 
   {$IFDEF DebugGLErr} DebugOpenGL(51, 'glClear', []); {$ENDIF}
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
@@ -1589,22 +1645,19 @@ begin
   vmWireframe:
     begin
       glDisable(GL_TEXTURE_2D);
-      glDisable(GL_COLOR_MATERIAL);
+//      glDisable(GL_COLOR_MATERIAL);
     end;
   vmSolidcolor:
     begin
       glDisable(GL_TEXTURE_2D);
-      glDisable(GL_COLOR_MATERIAL);
+//      glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+//      glEnable(GL_COLOR_MATERIAL);
     end;
-  vmTextured:
+  else //vmTextured:
     begin
       glEnable(GL_TEXTURE_2D);
-      glEnable(GL_COLOR_MATERIAL);
-    end;
-  else
-    begin
-      glEnable(GL_TEXTURE_2D);
-      glEnable(GL_COLOR_MATERIAL);
+//      glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+//      glEnable(GL_COLOR_MATERIAL);
     end;
   end;
   CheckOpenGLError(glGetError);
@@ -1612,7 +1665,7 @@ begin
   RebuildDisplayList:=False;
   if DisplayLists then
   begin
-    if FlagDisplayLists then
+(*    if FlagDisplayLists then //wglShareLists
     begin
       for I:=0 to 2 do
       begin
@@ -1624,7 +1677,7 @@ begin
         end;
       end;
       FlagDisplayLists:=False;
-    end;
+    end;*)
 
     if (OpenGLDisplayLists[LightingQuality]=0) then
     begin
@@ -1733,7 +1786,7 @@ begin
   glFinish;
   {$IFDEF DebugGLErr} DebugOpenGL(55, '', []); {$ENDIF}
   finally
-   wglMakeCurrent(0, 0);
+    wglMakeCurrent(0, 0);
   end;
 end;
 
@@ -1822,7 +1875,8 @@ begin
 
     {GetwhForTexture(Texture^.info, W, H);}
     
-    if wglMakeCurrent(ViewDC, RC) = false then
+//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
+    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
       raise EError(6310);
     try
 
@@ -2089,32 +2143,29 @@ begin
       NeedColor:=True;
       NeedTex:=False;
     end;
-  vmTextured:
-    begin
-      NeedColor:=False;
-      NeedTex:=True;
-    end;
-  else
+  else //vmTextured:
     begin
       NeedColor:=False;
       NeedTex:=True;
     end;
   end;
 
-  if (NumberOfLights<MaxLights) then
-    MaxLightNumber:=NumberOfLights
-  else
-    MaxLightNumber:=MaxLights;
-  for LightNR := 0 to MaxLights-1 do
-  begin
-    if (LightNR<NumberOfLights) then
-      glEnable(GL_LIGHT0+LightNR)
-    else
-      glDisable(GL_LIGHT0+LightNR);
-    CheckOpenGLError(glGetError);
-  end;
   if Lighting and (LightingQuality=0) then
-    glEnable(GL_LIGHTING)
+  begin
+    glEnable(GL_LIGHTING);
+    CheckOpenGLError(glGetError);
+    if (NumberOfLights<MaxLights) then
+      MaxLightNumber:=NumberOfLights
+    else
+      MaxLightNumber:=MaxLights;
+    for LightNR := 0 to MaxLights-1 do
+    begin
+      if (LightNR<NumberOfLights) then
+        glEnable(GL_LIGHT0+LightNR)
+      else
+        glDisable(GL_LIGHT0+LightNR);
+  end;
+  end
   else
     glDisable(GL_LIGHTING);
   CheckOpenGLError(glGetError);
@@ -2391,6 +2442,7 @@ begin
   //DanielPharos: How can you be sure OpenGL has been loaded?
   if (Tex^.OpenGLName<>0) then
   begin
+//    if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then //wglShareLists
     if wglMakeCurrent(GetOpenGLDummyDC, GetOpenGLDummyRC) = false then
       raise EError(6310);
     try
@@ -2419,7 +2471,7 @@ begin
   end;
 end;
 
-procedure TGLState.FlagAllOpenGLDisplayLists;
+(*procedure TGLState.FlagAllOpenGLDisplayLists; //wglShareLists
 var
  TextureManager: TTextureManager;
  I: Integer;
@@ -2432,7 +2484,7 @@ begin
     if Scene is TGLSceneObject then
       TGLSceneObject(Scene).FlagDisplayLists:=True;
   end;
-end;
+end;*)
 
  {------------------------}
 

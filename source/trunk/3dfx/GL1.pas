@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2008/02/19 22:58:06  danielpharos
+Fix a OpenGL displaylist corruption.
+
 Revision 1.24  2008/02/19 20:45:49  danielpharos
 Fix a big OpenGL texture leak.
 
@@ -777,8 +780,8 @@ function LoadSwapHint : Pointer;
 
 function GetOpenGLDummyRC: HGLRC;
 function GetOpenGLDummyDC: HDC;
-function CreateNewRC(DC: HDC): HGLRC;
-procedure DeleteRC(RC: HGLRC);
+(*function CreateNewRC(DC: HDC): HGLRC; //wglShareLists
+procedure DeleteRC(RC: HGLRC);*)
 
 procedure SetPixelFormatOnDC(DC: HDC; PixelFormat: TPixelFormatDescriptor);
 
@@ -789,7 +792,7 @@ uses Classes, StrUtils, Quarkx, Logging, Qk1, Setup, QkObjects, EdOpenGL;
 const
   DummyWindowClassName: string = 'QuArK Dummy Window Class';
   
-  OpenGL32DLL_FuncList : array[0..55] of
+  OpenGL32DLL_FuncList : array[0..54] of
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -798,7 +801,7 @@ const
    ,(FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
-   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //DanielPharos 2006.09.26 - Added
+//   ,(FuncPtr: @@wglShareLists;         FuncName: 'wglShareLists'         ) //DanielPharos 2006.09.26 - Added  //wglShareLists
    ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        ) //Decker 2002.02.26 - Added
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
@@ -872,12 +875,17 @@ var
 
   GLExtentions: TStringList = nil;
 
+  //DanielPharos: *sigh* The best way of having multiple viewports is using
+  //multiple Rendering Contexts. But the call to share resources between them,
+  //wglShareLists() is kinda broken on some NVIDIA, ATi and Intel drivers.
+  //So now we're using just one to do everything.
+  //Old code marked with: //wglShareLists
   DummyWindowClass: WNDCLASSEX;
   DummyWindowClassAtom: ATOM;
   DummyWindow: HWND;
   DummyDC: HDC;
   DummyRC: HGLRC;
-  RCs: array of HGLRC;
+(*  RCs: array of HGLRC;*)
 
  { ----------------- }
 
@@ -891,7 +899,7 @@ begin
   Result := DummyDC;
 end;
 
-function CreateNewRC(DC: HDC): HGLRC;
+(*function CreateNewRC(DC: HDC): HGLRC; //wglShareLists
 begin
   Result:=wglCreateContext(DC);
   if Result <> 0 then
@@ -927,7 +935,7 @@ begin
         Inc(I);
     end;
   end;
-end;
+end;*)
 
 procedure SetPixelFormatOnDC(DC: HDC; PixelFormat: TPixelFormatDescriptor);
 var

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2008/02/19 22:58:05  danielpharos
+Fix a OpenGL displaylist corruption.
+
 Revision 1.39  2008/02/19 20:45:48  danielpharos
 Fix a big OpenGL texture leak.
 
@@ -953,7 +956,6 @@ begin
            ProgressIndicatorStop;
        if Brush<>0 then
          DeleteObject(Brush);
-       EndBuildScene;
      end;
    end;  {end build and load new textures}
 
@@ -1500,12 +1502,9 @@ begin
        Inc(I);
      end;
    end;
-   EndBuildScene;
  finally
    TexNames.Free;
  end;
- {/end outer try block}
- PolyFaces.Clear;
  EndBuildScene;
 end;
 
