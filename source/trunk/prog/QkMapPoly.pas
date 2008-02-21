@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.90  2007/07/05 10:19:45  danielpharos
+Moved the Quake .map format code to a separate file.
+
 Revision 1.89  2007/05/10 13:55:19  danielpharos
 Added a comment about a crash that's happening.
 
@@ -4780,8 +4783,8 @@ const
    (ml_name: 'setthreepoints';ml_meth: fSetThreePoints;ml_flags: METH_VARARGS),
    (ml_name: 'swapsides';     ml_meth: fSwapSides;     ml_flags: METH_VARARGS),
    (ml_name: 'swapsides_leavetex';     ml_meth: fSwapSides_leavetex;     ml_flags: METH_VARARGS),
-   (ml_name: 'axisbase';     ml_meth: fAxisBase;  ml_flags: METH_VARARGS),
-   (ml_name: 'enhrevert';     ml_meth: fRevertToEnhTex;  ml_flags: METH_VARARGS),
+   (ml_name: 'axisbase';      ml_meth: fAxisBase;      ml_flags: METH_VARARGS),
+   (ml_name: 'enhrevert';     ml_meth: fRevertToEnhTex;ml_flags: METH_VARARGS),
    (ml_name: 'extrudeprism';  ml_meth: fExtrudePrism;  ml_flags: METH_VARARGS));
 
 function TFace.PyGetAttr(attr: PChar) : PyObject;
