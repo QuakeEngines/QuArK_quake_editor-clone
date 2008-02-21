@@ -129,6 +129,7 @@ Strings = {
 
     400: "Warning...",
     401: "Fatal Error",
+    402: "Unknown Error",
 
     501: "Checking map...",
     502: "Saving compiled model...",
@@ -1043,6 +1044,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.116  2008/02/19 16:23:30  danielpharos
+#Possible fix for OpenGL hanging on shutdown. Also removes some hacks, and should fix some OpenGL leaks.
+#
 #Revision 1.115  2008/02/11 13:56:09  danielpharos
 #Added error messages, and fixed some RGB -> BGR
 #

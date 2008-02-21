@@ -48,7 +48,7 @@ function DoInstall: Boolean;
 
 implementation
 
-uses QkObjects;
+uses SysUtils, QkObjects, QuarkX;
 
 procedure InstallPackages; stdcall; forward;
 
@@ -61,6 +61,15 @@ var
 {$R *.DFM}
 
  {------------------------}
+
+function GetExceptionMessage: String;
+begin
+  Result:=LoadStr1(402);
+  if Result='' then
+    Result:='Unknown error';
+  if (ExceptObject is Exception) then
+    Result:=Exception(ExceptObject).Message;
+end;
 
 function DoInstall: Boolean;
 var
@@ -99,69 +108,60 @@ var
   UpdateConnection: THTTPConnection;
   QUPfiledata: string;
 begin
-  //@ ON ERROR, SET: InstallError
   InstallError:='Unknown error';
   try
-    PackageNR:=0;
-    for I:=0 to UpdatePackagesNR-1 do
-      with UpdatePackages[I] do
-        if Install then
-          PackageNR:=PackageNR+1;
-    InstallWindow.pgbInstall.Max:=PackageNR*2;
-
-    UpdateConnection:=THTTPConnection.Create;
     try
-      if UpdateConnection.GoOnline = false then
-      begin
-        InstallError:=UpdateConnection.ErrorMessage;
-        Exit;
+      PackageNR:=0;
+      for I:=0 to UpdatePackagesNR-1 do
+        with UpdatePackages[I] do
+          if Install then
+            PackageNR:=PackageNR+1;
+      InstallWindow.pgbInstall.Max:=PackageNR*2;
+
+      UpdateConnection:=THTTPConnection.Create;
+      try
+        UpdateConnection.GoOnline;
+        UpdateConnection.ConnectTo(QuArKUpdateSite);
+
+        //Download new files
+        for I:=0 to UpdatePackagesNR-1 do
+        begin
+          with UpdatePackages[I] do
+            if Install then
+            begin
+              //@Open file for QUPfiledata...
+              UpdateConnection.GetFile(QUPfilename, QUPfiledata);
+              //@Save QUPfiledata to file...
+              //@
+              InstallWindow.pgbInstall.StepIt;
+              if StopUpdate then
+                Exit;
+            end;
+        end;
+      finally
+        UpdateConnection.Free;
       end;
 
-      if UpdateConnection.ConnectTo(QuArKUpdateSite) = false then
-      begin
-        InstallError:=UpdateConnection.ErrorMessage;
-        Exit;
-      end;
-
-      //Download new files
+      //Install new files
       for I:=0 to UpdatePackagesNR-1 do
       begin
         with UpdatePackages[I] do
           if Install then
           begin
-            //@Open file for QUPfiledata...
-            if UpdateConnection.GetFile(QUPfilename, QUPfiledata) = false then
-            begin
-              InstallError:=UpdateConnection.ErrorMessage;
-              Exit;
-            end;
-            //@Save QUPfiledata to file...
             //@
+            UpdatePackages[I].InstallSuccessful:=True;
             InstallWindow.pgbInstall.StepIt;
             if StopUpdate then
               Exit;
           end;
       end;
     finally
-      UpdateConnection.Free;
+      InstallWindow.StopBtn.Caption:='OK';
+      ThreadHandle:=0;
     end;
-
-    //Install new files
-    for I:=0 to UpdatePackagesNR-1 do
-    begin
-      with UpdatePackages[I] do
-        if Install then
-        begin
-          //@
-          UpdatePackages[I].InstallSuccessful:=True;
-          InstallWindow.pgbInstall.StepIt;
-          if StopUpdate then
-            Exit;
-        end;
-    end;
-  finally
-    InstallWindow.StopBtn.Caption:='OK';
-    ThreadHandle:=0;
+  except
+    InstallError:=GetExceptionMessage;
+    Exit;
   end;
   InstallError:='';
 end;

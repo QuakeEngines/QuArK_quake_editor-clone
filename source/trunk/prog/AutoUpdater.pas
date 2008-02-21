@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2008/02/07 14:10:05  danielpharos
+Display progressbar when searching for updates
+
 Revision 1.4  2008/02/03 13:12:45  danielpharos
 Update for the AutoUpdater. Beginning of the install-window.
 
@@ -273,25 +276,13 @@ begin
   try
     ProgressIndicatorStart(5462, 4);
     try
-      if UpdateConnection.GoOnline = false then
-      begin
-        //@
-        Exit;
-      end;
+      UpdateConnection.GoOnline;
       ProgressIndicatorIncrement;
 
-      if UpdateConnection.ConnectTo(QuArKUpdateSite) = false then
-      begin
-        //@
-        Exit;
-      end;
+      UpdateConnection.ConnectTo(QuArKUpdateSite);
       ProgressIndicatorIncrement;
 
-      if UpdateConnection.GetFile(QuArKUpdateFile, IndexFile) = false then
-      begin
-        //@
-        Exit;
-      end;
+      UpdateConnection.GetFile(QuArKUpdateFile, IndexFile);
       ProgressIndicatorIncrement;
 
       if ParseIndexFile(IndexFile) = false then

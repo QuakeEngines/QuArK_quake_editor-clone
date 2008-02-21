@@ -19,10 +19,13 @@ object AutoUpdater: TAutoUpdater
   TextHeight = 13
   object Label2: TLabel
     Left = 24
-    Top = 16
-    Width = 98
-    Height = 13
-    Caption = 'Update found@@@'
+    Top = 8
+    Width = 445
+    Height = 26
+    Caption = 
+      'One or more updates of QuArK were found online. Please select wh' +
+      'ich should be downloaded and installed.'
+    WordWrap = True
   end
   object GroupBox1: TGroupBox
     Left = 256

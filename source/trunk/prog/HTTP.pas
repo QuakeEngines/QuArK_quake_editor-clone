@@ -37,20 +37,18 @@ type
   private
     Online, Connected, Requesting: Boolean;
     InetHandle, InetConnection, InetResource: HINTERNET;
-    FErrorMessage: string;
   public
-    function GoOnline: boolean;
+    procedure GoOnline;
     procedure GoOffline;
-    function ConnectTo(const HostName: string): boolean;
+    procedure ConnectTo(const HostName: string);
     procedure CloseConnect;
-    function FileRequest(const FileName: string): boolean;
+    procedure FileRequest(const FileName: string);
     function FileQueryInfo(Flag: DWORD; Default: Integer = 0): Integer;
     procedure CloseRequest;
-    function ReadFile(var FileData: string; DataStart, DataLength: cardinal): boolean;
+    procedure ReadFile(var FileData: string; DataStart, DataLength: cardinal);
     //Easy-to-use function:
-    function GetFile(const FileName: string; var FileData: string): boolean;
+    procedure GetFile(const FileName: string; var FileData: string);
     destructor Destroy; override;
-    property ErrorMessage: string read FErrorMessage;
   end;
 
  {------------------------}
@@ -68,19 +66,14 @@ begin
   inherited;
 end;
 
-function THTTPConnection.GoOnline: boolean;
+procedure THTTPConnection.GoOnline;
 begin
-  Result:=False;
   if Online then
     GoOffline;
   InetHandle:=InternetOpen(PChar('QuArK'), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
   if InetHandle=nil then
-  begin
-    FErrorMessage:='Unable to open internet connection. Online update failed.';
-    Exit;
-  end;
+    raise exception.create('Unable to open internet connection. Online update failed.');
   Online:=True;
-  Result:=True;
 end;
 
 procedure THTTPConnection.GoOffline;
@@ -98,19 +91,14 @@ begin
   InetHandle:=nil;
 end;
 
-function THTTPConnection.ConnectTo(const HostName: string): boolean;
+procedure THTTPConnection.ConnectTo(const HostName: string);
 begin
-  Result:=False;
   if Connected then
     CloseConnect;
   InetConnection:=InternetConnect(InetHandle, PChar(HostName), INTERNET_DEFAULT_HTTP_PORT, nil, nil, INTERNET_SERVICE_HTTP, 0, 0);
   if InetConnection=nil then
-  begin
-    FErrorMessage:='Unable to open internet connection. Online update failed.';
-    Exit;
-  end;
+    raise exception.create('Unable to open internet connection. Online update failed.');
   Connected:=True;
-  Result:=True;
 end;
 
 procedure THTTPConnection.CloseConnect;
@@ -126,25 +114,17 @@ begin
   InetConnection:=nil;
 end;
 
-function THTTPConnection.FileRequest(const FileName: string): boolean;
+procedure THTTPConnection.FileRequest(const FileName: string);
 begin
-  Result:=False;
   if Requesting then
     CloseRequest;
   //We might need to set this as accepted type: 'binary/octet-stream'
   InetResource:=HttpOpenRequest(InetConnection, PChar('GET'), PChar(FileName), nil, nil, nil, INTERNET_FLAG_RELOAD + INTERNET_FLAG_NO_CACHE_WRITE, 0);
   if InetResource=nil then
-  begin
-    FErrorMessage:='Can not find online update file. Online update failed.';
-    Exit;
-  end;
+    raise exception.create('Can not find online update file. Online update failed.');
   if HttpSendRequest(InetResource, nil, 0, nil, 0)=false then
-  begin
-    FErrorMessage:='Can not find online update file. Online update failed.';
-    Exit;
-  end;
+    raise exception.create('Can not find online update file. Online update failed.');
   Requesting:=True;
-  Result:=True;
 end;
 
 procedure THTTPConnection.CloseRequest;
@@ -166,17 +146,13 @@ var
   cStatusBufferLength, StatusBufferLength: DWORD;
   HeaderIndex: DWORD;
 begin
-  Result:=Default;
   cStatusBufferLength:=256;
   StatusBufferLength:=cStatusBufferLength;
   GetMem(StatusBuffer, StatusBufferLength);
   HeaderIndex:=0;
 
   if HttpQueryInfo(InetResource, Flag, StatusBuffer, StatusBufferLength, HeaderIndex)=false then
-  begin
-    FErrorMessage:='HttpQueryInfo failed!';
-    Exit;
-  end;
+    raise exception.create('HttpQueryInfo failed!');
 
   try
     Result:=StrToInt(LeftStr(StatusBuffer, StatusBufferLength));
@@ -187,14 +163,12 @@ begin
   FreeMem(StatusBuffer);
 end;
 
-function THTTPConnection.ReadFile(var FileData: string; DataStart, DataLength: cardinal): boolean;
+procedure THTTPConnection.ReadFile(var FileData: string; DataStart, DataLength: cardinal);
 var
   ResourceBuffer, Dest: PChar;
   Buffer: PChar;
   cBufferLength, BufferLength, ReadBufferLength: DWORD;
 begin
-  Result:=false;
-
   if DataStart<>0 then
   begin
     //DanielPharos: A bug in Delphi? InternetSetFilePointer returns a cardinal,
@@ -219,10 +193,7 @@ begin
     try
       repeat
         if InternetReadFile(InetResource, Buffer, BufferLength, ReadBufferLength)=false then
-        begin
-          FErrorMessage:='Can not download online update file. Online update failed.';
-          Exit;
-        end;
+          raise exception.create('Can not download online update file. Online update failed.');
         if ReadBufferLength>0 then
         begin
           CopyMemory(Dest, Buffer, ReadBufferLength);
@@ -238,33 +209,23 @@ begin
   finally
     FreeMem(ResourceBuffer);
   end;
-  Result:=True;
 end;
 
-function THTTPConnection.GetFile(const FileName: string; var FileData: string): boolean;
+procedure THTTPConnection.GetFile(const FileName: string; var FileData: string);
 var
   StatusValue: Integer;
   ResourceSize: Cardinal;
 begin
-  Result:=False;
   if not Connected then
-  begin
-    FErrorMessage:='Cannot download file: not connected.';
-    Exit;
-  end;
+    raise exception.create('Cannot download file: not connected.');
 
-  if FileRequest(FileName) = false then
-  begin
-    FErrorMessage:='Cannot download file: request failed.';
-    Exit;
-  end;
+  FileRequest(FileName);
   try
     StatusValue:=FileQueryInfo(HTTP_QUERY_STATUS_CODE, 200);;
     if StatusValue<>200 then
     begin
       //@Proces StatusValue!
-      FErrorMessage:='Cannot download file: file info query failed.';
-      Exit;
+      raise exception.create('Cannot download file: file info query failed.');
     end;
 
     //Retrieve the index-filesize...
@@ -272,21 +233,14 @@ begin
     if ResourceSize=0 then
     begin
       //DanielPharos: This is not considered to be an error.
-      //FErrorMessage:='Cannot download file: Filesize is zero.';
-      Result:=True;
+      //raise exception.create('Cannot download file: Filesize is zero.');
       Exit;
     end;
 
-    if ReadFile(FileData, 0, ResourceSize) = false then
-    begin
-      //@ HE! THESE OVERWRITE THE OLD ERROR!
-      FErrorMessage:='Cannot download file: ReadFile failed.';
-      Exit;
-    end;
+    ReadFile(FileData, 0, ResourceSize);
   finally
     CloseRequest;
   end;
-  Result:=True;
 end;
 
 end.
