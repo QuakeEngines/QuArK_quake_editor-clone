@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2006/11/30 00:44:32  cdunde
+To merge all source files that had changes from DanielPharos branch
+to HEAD for QuArK 6.5.0 Beta 1.
+
 Revision 1.16.2.9  2006/11/23 20:12:22  danielpharos
 Removed now obsolete Ed3DEditors file
 
@@ -125,8 +129,6 @@ const
  wp_FormButtonChanged    = 134;
  wp_UpdateButtons        = 135;
  wp_ClickItem            = 136;
- wp_OpenGL               = 137;
- wp_Direct3D             = 138;
 
  tm_DoubleClick          = 91;
  tm_BeginDrag            = 92;

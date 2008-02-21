@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.68  2008/02/19 22:58:05  danielpharos
+Fix a OpenGL displaylist corruption.
+
 Revision 1.67  2008/02/19 20:45:48  danielpharos
 Fix a big OpenGL texture leak.
 
@@ -275,7 +278,7 @@ type
    CurrentAlpha: LongInt;
    Currentf: GLfloat4;
    RenderingTextureBuffer: TMemoryStream;
-   DoubleBuffered, FReady: Boolean;
+   DoubleBuffered: Boolean;
    Fog: Boolean;
    Transparency: Boolean;
    Lighting: Boolean;
@@ -323,7 +326,6 @@ type
    procedure Render3DView; override;
    procedure Copy3DView; override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
-   property Ready: Boolean read FReady write FReady;
    procedure SetDrawRect(NewRect: TRect); override;
    procedure SetViewSize(SX, SY: Integer); override;
    procedure SetViewDC(DC: HDC); override;
@@ -1076,6 +1078,7 @@ begin
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
   AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
   DisplayLists:=Setup.Specifics.Values['GLLists']<>'';
+  Bilinear:=Setup.Specifics.Values['Bilinear']<>'';
   if Lighting then
     MakeSections:=True
     {DanielPharos: Not configurable at the moment.
@@ -1121,19 +1124,20 @@ begin
   UnpackColor(FogColor, nFogColor);
   glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
  {glClearDepth(1);}
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+  glEnable(GL_NORMALIZE);
+  glEdgeFlag(0);
+  CheckOpenGLError(glGetError);
+
   if (DisplayMode=dmPanel) then
-  begin
-    glDisable(GL_DEPTH_TEST);
-  end
+    glDisable(GL_DEPTH_TEST)
   else
   begin
     glEnable(GL_DEPTH_TEST);
    {glDepthFunc(GL_LEQUAL);}
   end;
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-  glEnable(GL_NORMALIZE);  
-  glEdgeFlag(0);
+  CheckOpenGLError(glGetError);
   {$IFDEF DebugGLErr} DebugOpenGL(1, '', []); {$ENDIF}
 
   { set up texture parameters }  //DanielPharos: These are set per texture, in the BuildTexture procedure
@@ -1143,14 +1147,6 @@ begin
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);}
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);}
-  if Setup.Specifics.Values['Bilinear']<>'' then
-    Bilinear:=true
-  else
-    Bilinear:=false;
-
-  { at this point the scene object is more or less initialized }
-  if not Ready then
-    PostMessage(Wnd, wm_InternalMessage, wp_OpenGL, 0);
 
   { set up fog }
   if Fog then
@@ -1162,13 +1158,10 @@ begin
     glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
     glFogfv(GL_FOG_COLOR, nFogColor);
     glHint(GL_FOG_HINT, GL_NICEST);
-    CheckOpenGLError(glGetError);
   end
   else
-  begin
     glDisable(GL_FOG);
-    CheckOpenGLError(glGetError);
-  end;
+  CheckOpenGLError(glGetError);
   
   if Lighting then
   begin
@@ -1180,37 +1173,28 @@ begin
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, @LightParam);
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glShadeModel(GL_SMOOTH);
-    CheckOpenGLError(glGetError);
   end
   else
-  begin
     glDisable(GL_LIGHTING);
-    CheckOpenGLError(glGetError);
-  end;
+  CheckOpenGLError(glGetError);
 
   if Transparency then
   begin
     glEnable(GL_BLEND);
-    CheckOpenGLError(glGetError);
   end
   else
-  begin
     glDisable(GL_BLEND);
-    CheckOpenGLError(glGetError);
-  end;
+  CheckOpenGLError(glGetError);
   //DanielPharos: Things like normal maps, bump-maps etc. should be added in a similar way
 
   glFrontFace(GL_CW);
   if Culling then
   begin
     glEnable(GL_CULL_FACE);
-    CheckOpenGLError(glGetError);
   end
   else
-  begin
     glDisable(GL_CULL_FACE);
-    CheckOpenGLError(glGetError);
-  end;
+  CheckOpenGLError(glGetError);
 
   glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
   CheckOpenGLError(glGetError);

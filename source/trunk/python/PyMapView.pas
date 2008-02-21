@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2008/02/09 11:55:49  cdunde
+Added new airbrush cursor for model editor new paint toolbar and functions.
+
 Revision 1.38  2008/02/06 00:12:55  danielpharos
 The skinview now properly updates to reflect changes made to textures.
 
@@ -513,10 +516,6 @@ begin
                    RedLines[Ord(Msg.lParam<0)]:=Y/ClientHeight;
                    SetRedLines;
                   end;
-  wp_OpenGL: if Scene is TGLSceneObject then
-              TGLSceneObject(Scene).Ready:=True;
- {wp_Direct3D: if Scene is TDirect3DSceneObject then
-              TDirect3DSceneObject(Scene).Ready:=True;}  {DanielPharos: Can we combine these two?}
  {wp_ResetFullScreen: ResetFullScreen(lParam<>0);}
  else
   if not DefControlMessage(Msg) then
@@ -2914,28 +2913,10 @@ begin
  end;
 end;
 
-function mWaitForOpenGL(self, args: PyObject) : PyObject; cdecl;
-begin
- try
-  if PyControlF(self)^.QkControl<>Nil then
-   with PyControlF(self)^.QkControl as TPyMapView do
-    if Scene is TGLSceneObject then
-     begin
-      TGLSceneObject(Scene).Ready:=False;
-      PostMessage(Handle, wm_InternalMessage, wp_OpenGL, 0);
-      {DanielPharos: What does this do exactly?}
-     end;
-  Result:=PyNoResult;
- except
-  EBackToPython;
-  Result:=Nil;
- end;
-end;
-
  {------------------------}
 
 const
- MethodTable: array[0..14] of TyMethodDef =
+ MethodTable: array[0..13] of TyMethodDef =
   ((ml_name: 'proj';            ml_meth: mProj;            ml_flags: METH_VARARGS),
    (ml_name: 'space';           ml_meth: mSpace;           ml_flags: METH_VARARGS),
    (ml_name: 'vector';          ml_meth: mVector;          ml_flags: METH_VARARGS),
@@ -2949,8 +2930,7 @@ const
    (ml_name: 'drawgrid';        ml_meth: mDrawGrid;        ml_flags: METH_VARARGS),
    (ml_name: 'setrange';        ml_meth: mSetRange;        ml_flags: METH_VARARGS),
    (ml_name: 'setprojmode';     ml_meth: mSetProjMode;     ml_flags: METH_VARARGS),
-   (ml_name: 'full3Dview';      ml_meth: mFull3Dview;      ml_flags: METH_VARARGS),
-   (ml_name: 'waitforopengl';   ml_meth: mWaitForOpenGL;   ml_flags: METH_VARARGS));
+   (ml_name: 'full3Dview';      ml_meth: mFull3Dview;      ml_flags: METH_VARARGS));
 
 function GetMapViewObject(self: PyObject; attr: PChar) : PyObjectPtr;
 begin
