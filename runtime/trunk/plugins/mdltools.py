@@ -37,7 +37,7 @@ from quarkpy.mdlutils import *
 #  of the model editor, only the functions they define are.
 #
 
-def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mdleditor.ModelEditor.finishdrawing):
 
     #
     # execute the old method
@@ -601,6 +601,9 @@ RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMen
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.16  2007/11/29 16:34:35  danielpharos
+#Prevent some model editor functions from triggering in the map editor. This should fix some errors that that popped-up when switching from the model editor to the map editor.
+#
 #Revision 1.15  2007/11/18 02:40:57  cdunde
 #To fix error in mdltools.py with rulers when a single new triangle is created.
 #

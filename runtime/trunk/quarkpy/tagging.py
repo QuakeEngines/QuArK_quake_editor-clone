@@ -32,7 +32,7 @@ __all__ = ['cleartags', 'untag', 'istagged', 'tag',
            'uniquetag', 'gettaglist', 'getuniquetag',
            'tagdrawfunc']
 
-from quarkpy.qbaseeditor import BaseEditor, MapColor
+import qbaseeditor
 
 # -- Tagging ------------------------------------------------------- #
 class Tagging:
@@ -287,7 +287,7 @@ Callback functions are used for _all_ editors.
     _drawcallbacks[k] = function
 
 
-def _tagfinishdrawing(editor, view, oldmore=BaseEditor.finishdrawing):
+def _tagfinishdrawing(editor, view, oldmore=qbaseeditor.BaseEditor.finishdrawing):
   """Finishdrawing routine for handling tagged objects.
 
 Uses callback functions set using tagdrawfunc().
@@ -299,7 +299,7 @@ Uses callback functions set using tagdrawfunc().
   # Make the pen the correct colour, so callback functions don't
   # need to
   oldcolour = cv.pencolor
-  cv.pencolor = MapColor("Tag")
+  cv.pencolor = qbaseeditor.MapColor("Tag")
   
   for k in _drawcallbacks.keys():
     f = _drawcallbacks[k]
@@ -312,9 +312,12 @@ Uses callback functions set using tagdrawfunc().
   # Restore the pen colour
   cv.pencolor = oldcolour
   
-BaseEditor.finishdrawing = _tagfinishdrawing
+qbaseeditor.BaseEditor.finishdrawing = _tagfinishdrawing
 
 #$Log$
+#Revision 1.7  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.3  2005/09/19 00:23:45  peter-b
 #Fix more silly tagging errors
 #

@@ -662,12 +662,12 @@ def drawlinks(editor, view):
         drawredface(view,cv,face)
     
 
-def linkfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def linkfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdrawing):
   "the new finishdrawning routine"
   drawlinks(editor, view)
   oldmore(editor, view)
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = linkfinishdrawing
+quarkpy.mapeditor.MapEditor.finishdrawing = linkfinishdrawing
 
 
 # -----------------------------------------------------
@@ -1938,6 +1938,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.40  2006/11/30 01:17:47  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.39  2006/11/29 06:58:35  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

@@ -63,7 +63,7 @@ class TerrainDuplicator2(StandardDuplicator):
 
       global replygiven  # new Rowdys suggestion stops repeted error msgs
 
-      def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+      def newfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
           oldfinish(editor, view)
 
       loops = 0
@@ -109,7 +109,7 @@ class TerrainDuplicator2(StandardDuplicator):
                   replygiven = 1
                   response = quarkx.msgbox("This Grid will create a lot of polys !\n\nYou can select 'Cancel' and reset\nyour wedgeunits to a larger size\n\nor select 'OK' to continue to\nmake the Grid for detail work", MT_WARNING, MB_OK_CANCEL)
 
-                  quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                  quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                   editor = mapeditor()
                   editor.invalidateviews(1)
 
@@ -117,7 +117,7 @@ class TerrainDuplicator2(StandardDuplicator):
                       replygiven = 0
                       obj = editor.layout.explorer.uniquesel.parent
                       quarkx.undostate(obj)
-                      quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                      quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                       return
 
                   if response == MR_OK:
@@ -125,7 +125,7 @@ class TerrainDuplicator2(StandardDuplicator):
                       dupObject = o.parent                # new code by Rowdy
                       if dupObject.type == ":d":          # new code by Rowdy
                           dupObject["detailmesh"]="1"       # new code by Rowdy
-                      quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                      quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
           for loop in range(int(loops)):   #py2.4
               for wedge in range(int(wedges)):   #py2.4
@@ -230,7 +230,7 @@ class TerrainDuplicator2X(StandardDuplicator):
 
       global replygiven  # new Rowdys suggestion stops repeted error msgs
 
-      def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+      def newfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
           oldfinish(editor, view)
 
       loops = 0
@@ -275,7 +275,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                   replygiven = 1
                   response = quarkx.msgbox("This Grid will create a lot of polys !\n\nYou can select 'Cancel' and reset\nyour wedgeunits to a larger size\n\nor select 'OK' to continue to\nmake the Grid for detail work", MT_WARNING, MB_OK_CANCEL)
 
-                  quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                  quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                   editor = mapeditor()
                   editor.invalidateviews(1)
 
@@ -283,7 +283,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                       replygiven = 0
                       obj = editor.layout.explorer.uniquesel.parent
                       quarkx.undostate(obj)
-                      quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                      quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                       return
 
                   if response == MR_OK:
@@ -291,7 +291,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                       dupObject = o.parent                # new code by Rowdy
                       if dupObject.type == ":d":          # new code by Rowdy
                           dupObject["detailmesh"]="1"       # new code by Rowdy
-                      quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                      quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
           for loop in range(int(loops)):   #py2.4
 #1st pass of triangles
@@ -609,7 +609,7 @@ class TerrainDuplicator4(StandardDuplicator):
 
       global replygiven  # new Rowdys suggestion stops repeted error msgs
 
-      def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+      def newfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
           oldfinish(editor, view)
 
       loops = 0
@@ -655,7 +655,7 @@ class TerrainDuplicator4(StandardDuplicator):
                   replygiven = 1
                   response = quarkx.msgbox("This Grid will create a lot of polys !\n\nYou can select 'Cancel' and reset\nyour wedgeunits to a larger size\n\nor select 'OK' to continue to\nmake the Grid for detail work", MT_WARNING, MB_OK_CANCEL)
 
-                  quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                  quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                   editor = mapeditor()
                   editor.invalidateviews(1)
 
@@ -663,7 +663,7 @@ class TerrainDuplicator4(StandardDuplicator):
                       replygiven = 0
                       obj = editor.layout.explorer.uniquesel.parent
                       quarkx.undostate(obj)
-                      quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                      quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                       return
 
                   if response == MR_OK:
@@ -671,7 +671,7 @@ class TerrainDuplicator4(StandardDuplicator):
                       dupObject = o.parent                # new code by Rowdy
                       if dupObject.type == ":d":          # new code by Rowdy
                           dupObject["detailmesh"]="1"       # new code by Rowdy
-                      quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                      quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
           for loop in range(int(loops)):   #py2.4
 #1st pass of triangles
@@ -1009,6 +1009,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.6  2006/11/30 01:17:47  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.5  2006/11/29 06:58:35  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

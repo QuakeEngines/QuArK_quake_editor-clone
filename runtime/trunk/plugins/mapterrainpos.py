@@ -52,7 +52,7 @@ import quarkpy.qmacro            # from plugins\mapfacemenu.py
 
 ### General def's that can be used by any Dialog ###
 
-def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
     oldfinish(editor, view)
 
 
@@ -153,7 +153,7 @@ def Selector1Click(m):
     for view in editor.layout.views:
         type = view.info["type"]
         if type == "3D":
-            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+            quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
             view.invalidate(1)
     editor.layout.explorer.selchanged()
   
@@ -200,7 +200,7 @@ def Selector1Click(m):
         for view in editor.layout.views:
             type = view.info["type"]
             if type == "3D":
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                 view.invalidate(1)
 
 
@@ -555,12 +555,12 @@ def PaintBrushClick(m):
             for view in editor.layout.views:
                 type = view.info["type"]
                 if type == "3D" and view.viewmode == "tex":
-                    quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                    quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
         else:
             for view in editor.layout.views:
                 type = view.info["type"]
                 if type == "3D" and view.viewmode == "tex":
-                    quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                    quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
         curguide = quarkx.setupsubset(SS_MAP, "Options")["PaintBrush_color"]
         guide = (self.src["color"])
@@ -637,7 +637,7 @@ def PaintBrushClick(m):
 
     # This part gets the "Actual" texture image size.
                 tex = face.texturename
-                texobj = quarkx.loadtexture (tex, editor.TexSource)
+                texobj = quarkx.loadtexture(tex, editor.TexSource)
                 if texobj is not None:
                     try:
                         texobj = texobj.disktexture # this gets "linked"
@@ -670,7 +670,7 @@ def PaintBrushClick(m):
                     type = view.info["type"]
                     if type == "3D":
                         view.invalidate(1)
-                        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                        quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
 
     def onclosing(self, editor=editor):
@@ -678,7 +678,7 @@ def PaintBrushClick(m):
         for view in editor.layout.views:
             type = view.info["type"]
             if type == "3D":
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                 view.invalidate(1)
 
         plugins.mapterrainmodes.clickedbutton(editor)
@@ -922,7 +922,7 @@ def Options3DviewsClick(m):
             type = view.info["type"]
             if type == "3D":
                 view.invalidate(1)
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
         plugins.mapterrainmodes.clickedbutton(editor)
 
@@ -932,7 +932,7 @@ def Options3DviewsClick(m):
         for view in editor.layout.views:
             type = view.info["type"]
             if type == "3D":
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                 view.invalidate(1)
 
         plugins.mapterrainmodes.clickedbutton(editor)
@@ -945,6 +945,9 @@ def Options3DviewsClick(m):
 #
 #
 # $Log$
+# Revision 1.11  2007/01/31 15:12:16  danielpharos
+# Removed bogus OpenGL texture mode
+#
 # Revision 1.10  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

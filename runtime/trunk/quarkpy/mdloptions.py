@@ -19,7 +19,7 @@ import qbaseeditor
 import mdleditor
 
 
-def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=mdleditor.ModelEditor.finishdrawing):
 
     oldfinish(editor, view)
     MdlOption = quarkx.setupsubset(SS_MODEL, "Options")
@@ -561,7 +561,7 @@ def SkinViewOptionsMenu(editor):
             if quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] == "1":
                 quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
             editor.SkinFaceSelList = []
-            qbaseeditor.BaseEditor.finishdrawing(editor, SkinView1)
+            mdleditor.ModelEditor.finishdrawing(editor, SkinView1)
 
 
     Xsync_edwsv = qmenu.item("&Sync Editor views with Skin-view", mSYNC_EDwSV, "|Sync Editor views with Skin-view:\n\nThis function will turn off other related options and synchronize selected Skin-view mesh vertexes, passing and selecting the coordinated 'Model mesh' vertexes in the Editors views, where they can be used for editing purposes. Any selection changes in the Skin-view will be updated to the Editors views as well.\n\nOnce the selection has been passed, if this function is turned off, the selection will remain in both the Editor and the Skin-view for further use.\n\nThe 'Skin-view' and Editor views selected vertex colors can be changed in the 'Configuration Model Colors' section.\n\nPress the 'F1' key again or click the button below for further details.|intro.modeleditor.menu.html#optionsmenu")
@@ -618,7 +618,7 @@ ticks = toggleitem("Enlarge Vertices &Ticks", "Ticks", (1,1),
 items.append(ticks)
 
 
-qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+mdleditor.ModelEditor.finishdrawing = newfinishdrawing
 
 
 def OptionsMenu():
@@ -646,6 +646,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.29  2007/11/04 00:33:33  cdunde
+#To make all of the Linear Handle drag lines draw faster and some selection color changes.
+#
 #Revision 1.28  2007/10/06 05:24:56  cdunde
 #To add needed comments and finish setting up rectangle selection to work fully
 #with passing selected faces in the editors view to the Skin-view.

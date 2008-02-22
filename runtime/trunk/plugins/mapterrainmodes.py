@@ -324,7 +324,7 @@ def terrainWedgeRename(oldpoly, view):
 
     return newpoly
 
-def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
     oldfinish(editor, view)
 
 
@@ -511,7 +511,7 @@ def terrainpaint(editor, view, x, y, flags, facelist):
                             sum = sum + p2
                             cv.line(p1,p2)
 
-                        quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                        quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
                 if poly.findname("downmoves:f") is not None:
                     face = poly.findname("downmoves:f")
@@ -525,7 +525,7 @@ def terrainpaint(editor, view, x, y, flags, facelist):
                             p2 = view.proj(v)
                             sum = sum + p2
                             cv.line(p1,p2)
-                    quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                    quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
 
     type = view.info["type"]
@@ -1427,9 +1427,6 @@ class TerrainLinCenterHandle(TerrainLinearHandle):
 #====================================================
 # Below deals with the TerrainManager to pass mouse actions to specific buttons
 
-def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
-    oldfinish(editor, view)
-
 def TerrainManager(editor, view, x, y, flags, handle):
     global saveeditor, commonfaces, commonitems
     saveeditor = editor
@@ -2163,7 +2160,7 @@ class TerrainPaintClick(TerrainRectSelDragObject):
           ### This part changes the face texture.
           # This part gets the "Actual" texture image size.
                             tex = face.texturename
-                            texobj = quarkx.loadtexture (tex, editor.TexSource)
+                            texobj = quarkx.loadtexture(tex, editor.TexSource)
                             if texobj is not None:
                                 try:
                                     texobj = texobj.disktexture # this gets "linked"
@@ -2372,6 +2369,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.26  2007/01/31 15:12:16  danielpharos
+# Removed bogus OpenGL texture mode
+#
 # Revision 1.25  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

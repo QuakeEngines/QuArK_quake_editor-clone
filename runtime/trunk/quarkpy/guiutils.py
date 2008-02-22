@@ -1,7 +1,7 @@
 """   QuArK  -  Quake Army Knife
 
 Various utilities for making gui devices.
-    
+
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -45,7 +45,7 @@ def dlgNumberCheck(dlg, pack, attribute, defaultvalue, format="%.2f"):
             quarkx.setupsubset(SS_MAP, "Options")[attribute]=format%newvalue
         setattr(pack, attribute, format%newvalue)
         return (1, newvalue)
-    return (0, newvalue)    
+    return (0, newvalue)
 
 #
 # For an object o, uses the parentpopupitems function to
@@ -80,6 +80,9 @@ def buildParentPopupList(o, parentpopupitems, editor):
 
 
 # $Log$
+# Revision 1.5  2005/10/15 00:47:57  cdunde
+# To reinstate headers and history
+#
 # Revision 1.2  2003/01/01 10:08:16  tiglari
 # fix for console errors on RMB on vertex in restricted selection
 #

@@ -675,7 +675,7 @@ quarkpy.maphandles.VertexHandle.menu = vertexmenu
 #
 from tagging import drawredface # misnamed, oh well
 
-def lockfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def lockfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdrawing):
       cv = view.canvas()
       try:
          locks = editor.lockedVertices
@@ -717,7 +717,7 @@ def lockfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finis
       
       oldmore(editor, view)
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = lockfinishdrawing
+quarkpy.mapeditor.MapEditor.finishdrawing = lockfinishdrawing
 
 
 def vec2rads(v):
@@ -890,6 +890,9 @@ def circledragto(self, x, y, flags, olddragto=quarkpy.qhandles.SideStepDragObjec
 quarkpy.qhandles.SideStepDragObject.dragto = circledragto
 
 # $Log$
+# Revision 1.10  2005/10/15 00:51:24  cdunde
+# To reinstate headers and history
+#
 # Revision 1.7  2002/05/18 22:38:31  tiglari
 # remove debug statement
 #

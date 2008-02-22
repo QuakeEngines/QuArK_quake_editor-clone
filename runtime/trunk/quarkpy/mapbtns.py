@@ -382,7 +382,7 @@ def texturebrowser(reserved=None):
     ToolBoxName, ToolBox = tbx_list[0]
     for ToolBoxFolder in ToolBox.subitems:
         if ToolBoxFolder.name == "Used Textures.txlist":
-            ToolBoxFolder.parent.removeitem(ToolBoxFolder)			
+            ToolBoxFolder.parent.removeitem(ToolBoxFolder)
             break
 
     Folder = quarkx.newobj("Used Textures.txlist")
@@ -748,6 +748,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.31  2007/12/28 23:22:41  cdunde
+#Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
+#
 #Revision 1.30  2007/12/25 08:13:40  cdunde
 #Fixed a bug with the opening the Texture Browser window icon button.
 #

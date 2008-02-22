@@ -84,7 +84,7 @@ axisicons = quarkx.loadimages("images\\axisicons.bmp",32,(0,0))
 #
 
 
-def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finishdrawing):
     global saveeditor
     saveeditor = editor
     #
@@ -214,7 +214,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
 #
 
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+quarkpy.mdleditor.ModelEditor.finishdrawing = newfinishdrawing
 
 
 #
@@ -229,6 +229,9 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.15  2007/10/30 20:24:01  danielpharos
+#Change a wrong currentview into view
+#
 #Revision 1.14  2007/07/20 01:41:04  cdunde
 #To setup selected model mesh faces so they will draw correctly in all views.
 #

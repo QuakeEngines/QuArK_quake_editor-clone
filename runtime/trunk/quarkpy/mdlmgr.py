@@ -565,7 +565,7 @@ class ModelLayout(BaseLayout):
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
                     view.invalidate()
-        self.editor.Root.setcomponent(comp)
+            self.editor.Root.setcomponent(comp)
 
 ########## commenting out the lines below brakes Misc dragging
         if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
@@ -648,6 +648,7 @@ class ModelLayout(BaseLayout):
     def selchange(self):
         "This calls for what ever selection def you are using above."
         global treeviewselchanged
+
         # To try and load the models textures into the Texture Browser to be displayed.
         self.putskinsintexturebrowser()
         if self.explorer.sellist != []:
@@ -726,6 +727,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.57  2008/01/07 06:53:18  cdunde
+#Part of last change code left out.
+#
 #Revision 1.56  2008/01/07 06:47:11  cdunde
 #Added Used Skin Textures for displaying in the Texture Browser.
 #But error if nothing is selected after applying skin needs to be fixed.

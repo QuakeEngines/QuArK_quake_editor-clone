@@ -49,7 +49,7 @@ parent = quarkpy.qhandles.RectangleDragObject
 
 ### General def's that can be used by any Dialog ###
 
-def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
     oldfinish(editor, view)
 
 
@@ -167,7 +167,7 @@ def DistortionClick(m):
         for view in editor.layout.views:
             type = view.info["type"]
             if type == "3D":
-                quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                 view.invalidate(1)
 
 
@@ -505,7 +505,7 @@ def TorusDistortionClick(m):
         for view in editor.layout.views:
             type = view.info["type"]
             if type == "3D":
-                quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
                 view.invalidate(1)
 
 
@@ -4921,6 +4921,9 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2007/10/08 18:47:30  cdunde
+# To stop both editor's Quick Object Makers from braking when zoomed in close.
+#
 # Revision 1.11  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #

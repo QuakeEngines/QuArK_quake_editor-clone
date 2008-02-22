@@ -283,7 +283,7 @@ quarkpy.maphandles.VertexHandle.menu = vertexmenu
 #
 from tagging import drawredface # misnamed, oh well
 
-def pinfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def pinfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdrawing):
       cv = view.canvas()
       try:
          pins = editor.pinned
@@ -325,8 +325,11 @@ def pinfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
       
       oldmore(editor, view)
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = pinfinishdrawing
+quarkpy.mapeditor.MapEditor.finishdrawing = pinfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2005/11/10 18:03:04  cdunde
+#Activate history log
+#
 #

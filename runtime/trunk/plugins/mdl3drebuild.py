@@ -19,10 +19,7 @@ Info = {
    "quark":         "Version 6" }
 
 
-import quarkx
 import quarkpy.mdloptions
-from quarkpy.mdlutils import *
-from quarkpy.qhandles import *
 from quarkpy.qutils import *
 
 
@@ -34,17 +31,20 @@ for menitem, keytag in [(Rebuild3Ds, "Rebuild3D")]:
     MapHotKey(keytag,menitem,quarkpy.mdloptions)
 
 
-def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finishdrawing):
 
     oldfinish(editor, view)
   #  if not MapOption("Rebuild3D"):return
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+quarkpy.mdleditor.ModelEditor.finishdrawing = newfinishdrawing
 
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.6  2006/11/30 01:17:48  cdunde
+#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 #Revision 1.5  2006/11/29 06:58:35  cdunde
 #To merge all runtime files that had changes from DanielPharos branch
 #to HEAD for QuArK 6.5.0 Beta 1.

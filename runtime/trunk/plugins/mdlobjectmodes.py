@@ -47,7 +47,7 @@ parent = quarkpy.qhandles.RectangleDragObject
 
 ### General def's that can be used by any Dialog ###
 
-def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finishdrawing):
     oldfinish(editor, view)
 
 
@@ -163,7 +163,7 @@ def DistortionClick(m):
         for view in editor.layout.views:
             type = view.info["type"]
             if type == "3D":
-                quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                quarkpy.mdleditor.ModelEditor.finishdrawing = newfinishdrawing
                 view.invalidate(1)
 
 
@@ -405,7 +405,7 @@ def TorusDistortionClick(m):
         for view in editor.layout.views:
             type = view.info["type"]
             if type == "3D":
-                quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                quarkpy.mdleditor.ModelEditor.finishdrawing = newfinishdrawing
                 view.invalidate(1)
 
 
@@ -5613,6 +5613,10 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2008/02/04 05:07:41  cdunde
+# Made toolbars interactive with one another to
+# turn off buttons when needed, avoiding errors and crashes.
+#
 # Revision 1.11  2008/02/03 17:51:22  cdunde
 # To remove test print statement.
 #

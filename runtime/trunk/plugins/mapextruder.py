@@ -2106,7 +2106,7 @@ class ExtruderDuplicator(StandardDuplicator):
 # This stuff could have been stuck into n2dfinishdrawing, but I
 #  decided to keep it separate
 #
-def cortagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def cortagfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdrawing):
     oldmore(editor, view)
     dup = gettaggedcordup(editor)
     if dup is None: return
@@ -2120,7 +2120,7 @@ def cortagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.fin
       cv.line(prev_pos, pos)
       prev_pos = pos
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = cortagfinishdrawing
+quarkpy.mapeditor.MapEditor.finishdrawing = cortagfinishdrawing
 
 
 #
@@ -2548,7 +2548,7 @@ def view2ddup(editor, view, dup):
     return 1
 
 
-def n2dfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def n2dfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdrawing):
   "the new finishdrawning routine"
   oldmore(editor, view)
   
@@ -2614,7 +2614,7 @@ def n2dfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
         cv.line(p0, p)
       
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = n2dfinishdrawing
+quarkpy.mapeditor.MapEditor.finishdrawing = n2dfinishdrawing
 
 def new2dclick(self, m):
       global view2D
@@ -2921,6 +2921,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.28  2006/10/27 06:14:00  cdunde
+#Fixed extruder 2D view to Unrestricted other items when view is closed.
+#
 #Revision 1.27  2006/06/02 18:48:02  cdunde
 #To fix a couple of erroneous console errors.
 #

@@ -72,7 +72,7 @@ def alignskintogrid(v, mode):
 #     global skingrid
 #     skingrid = (0,0)
 
-#def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
+#def newfinishdrawing(editor, view, oldfinish=mdleditor.ModelEditor.finishdrawing):
 #    oldfinish(editor, view)
 
 #
@@ -1220,7 +1220,7 @@ class SkinHandle(qhandles.GenericHandle):
             if quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] == "1":
                 quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
             editor.SkinFaceSelList = []
-            qbaseeditor.BaseEditor.finishdrawing(editor, view)
+            mdleditor.ModelEditor.finishdrawing(editor, view)
 
         def TicksViewingMenu(editor):
             # Rectangle Drag Ticks_Method 1
@@ -1278,12 +1278,12 @@ class SkinHandle(qhandles.GenericHandle):
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = "1"
                 if SkinView1 is not None:
                     SkinView1.invalidate()
-                    qbaseeditor.BaseEditor.finishdrawing(editor, view)
+                    mdleditor.ModelEditor.finishdrawing(editor, view)
             else:
                 quarkx.setupsubset(SS_MODEL, "Options")['SkinGridVisible'] = None
                 if SkinView1 is not None:
                     SkinView1.invalidate()
-                    qbaseeditor.BaseEditor.finishdrawing(editor, view)
+                    mdleditor.ModelEditor.finishdrawing(editor, view)
 
         # Turn Model Options function SkinGridActive on or off.
         def mSGA(m, self=self, editor=editor, view=view):
@@ -1771,7 +1771,7 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
             else:
                 quarkx.msgbox("Component Hidden!\n\nYou must RMB click it\nand select 'Show Component'\nto edit this component again.", MT_ERROR, MB_OK)
 
-    n = quarkx.vect(1,1,1) 
+    n = quarkx.vect(1,1,1)
     v = orthogonalvect(n, view)
     view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
 
@@ -3225,6 +3225,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.125  2008/02/07 13:25:57  danielpharos
+#Removed redundant import-line
+#
 #Revision 1.124  2008/02/06 00:12:44  danielpharos
 #The skinview now properly updates to reflect changes made to textures.
 #

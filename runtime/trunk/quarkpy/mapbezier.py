@@ -1137,9 +1137,9 @@ class CenterHandle(maphandles.CenterHandle):
         return mapentities.CallManager("menu", self.centerof, editor)
     # /tiglari
 
-import qbaseeditor
+import mapeditor
 from plugins.tagging import drawsquare
-def pickfinishdrawing(editor, view, oldmore=qbaseeditor.BaseEditor.finishdrawing):
+def pickfinishdrawing(editor, view, oldmore=mapeditor.MapEditor.finishdrawing):
     cv = view.canvas()
     cv.pencolor = MapColor("Duplicator")
     for item in editor.layout.explorer.sellist:
@@ -1151,11 +1151,14 @@ def pickfinishdrawing(editor, view, oldmore=qbaseeditor.BaseEditor.finishdrawing
                 drawsquare(cv,p1,10)
     oldmore(editor,view)
 
-qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
+mapeditor.MapEditor.finishdrawing = pickfinishdrawing
 
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.43  2007/12/14 22:30:53  cdunde
+#Minor corrections of new Infobase links.
+#
 #Revision 1.42  2007/12/14 21:48:00  cdunde
 #Added many new beizer shapes and functions developed by our friends in Russia,
 #the Shine team, Nazar and vodkins.

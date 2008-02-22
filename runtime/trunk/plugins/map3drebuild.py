@@ -19,10 +19,7 @@ Info = {
    "quark":         "Version 6" }
 
 
-import quarkx
 import quarkpy.mapoptions
-from quarkpy.maputils import *
-from quarkpy.qhandles import *
 from quarkpy.qutils import *
 
 
@@ -34,17 +31,20 @@ for menitem, keytag in [(Rebuild3Ds, "Rebuild3D")]:
     MapHotKey(keytag,menitem,quarkpy.mapoptions)
 
 
-def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
 
     oldfinish(editor, view)
   #  if not MapOption("Rebuild3D"):return
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.5  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.2  2005/03/19 00:36:33  cdunde
 #Took out return item to make more responsive
 #
