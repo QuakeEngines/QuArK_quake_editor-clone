@@ -97,7 +97,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
 
     def checkUVs(pixU, pixV, editor=editor):
         texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
-        if (pixU < 0) or (pixU > texWidth-1) or (pixV < 0) or (pixU > texHeight-1):
+        if (pixU < 0) or (pixU > texWidth-1) or (pixV < 0) or (pixV > texHeight-1):
             return 0
         else:
             return 1
@@ -2824,4 +2824,8 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2008/02/23 04:41:11  cdunde
+# Setup new Paint modes toolbar and complete painting functions to allow
+# the painting of skin textures in any Model Editor textured and Skin-view.
+#
 #
