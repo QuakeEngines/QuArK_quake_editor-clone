@@ -2277,21 +2277,13 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         ### vertexes were created in a clockwise direction (facing outwards, towards the 2D view)
         ### or a counter clockwise direction (facing inwards, away from the 2D view).
         ### The direction of the selection makes no difference. It's all in the order the vertexes were made.
-  # Commented out this function for now, conflicts with multiple vertex merging function.
-  #      if editor.ModelVertexSelList != [] and len(editor.ModelVertexSelList) == 3:
-  #          templist = editor.ModelVertexSelList
-  #          if templist[1][0] > templist[0][0] and templist[1][0] > templist[2][0]:
-  #              if templist[0][0] > templist[2][0]:
-  #                  editor.ModelVertexSelList = [templist[1], templist[2], templist[0]]
-  #              else:
-  #                  editor.ModelVertexSelList = [templist[1], templist[0], templist[2]]
-  #          elif templist[2][0] > templist[0][0] and templist[2][0] > templist[1][0]:
-  #              if templist[0][0] > templist[1][0]:
-  #                  editor.ModelVertexSelList = [templist[2], templist[1], templist[0]]
-  #              else:
-  #                  editor.ModelVertexSelList = [templist[2], templist[0], templist[1]]
-  #          else:
-  #              pass
+            templist = editor.ModelVertexSelList
+            if templist[1][0] > templist[0][0] and templist[1][0] > templist[2][0]:
+                editor.ModelVertexSelList = [templist[1], templist[0], templist[2]]
+            elif templist[2][0] > templist[0][0] and templist[2][0] > templist[1][0]:
+                editor.ModelVertexSelList = [templist[2], templist[0], templist[1]]
+            else:
+                pass
 
 
 #
@@ -3225,6 +3217,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.127  2008/02/23 04:41:11  cdunde
+#Setup new Paint modes toolbar and complete painting functions to allow
+#the painting of skin textures in any Model Editor textured and Skin-view.
+#
 #Revision 1.126  2008/02/22 09:52:22  danielpharos
 #Move all finishdrawing code to the correct editor, and some small cleanups.
 #
