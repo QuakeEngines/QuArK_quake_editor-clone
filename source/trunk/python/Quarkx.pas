@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2008/02/23 19:25:21  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.56  2008/02/12 21:50:45  danielpharos
 Added ability to save console output to a text file.
 
@@ -3058,6 +3061,12 @@ begin
  if m=Nil then
   Exit;
  PyDict_SetItemString(QuarkxDict, 'exepath', m);
+ Py_DECREF(m);
+
+ m:=PyString_FromString(PChar(GetQPath(pQuArKHelp)));
+ if m=Nil then
+  Exit;
+ PyDict_SetItemString(QuarkxDict, 'helppath', m);
  Py_DECREF(m);
 
  m:=PyList_New(0);

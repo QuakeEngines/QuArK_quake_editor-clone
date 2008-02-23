@@ -1513,7 +1513,7 @@ def htmldoc(doc):
     if (doc[:7] == "http://" or doc[:7] == "HTTP://"):
         quarkx.htmldoc(doc)
     else:
-        quarkx.htmldoc(quarkx.exepath + doc)
+        quarkx.htmldoc(quarkx.helppath + doc)
 
 
 
@@ -1525,16 +1525,16 @@ def Help1():
         editor.layout.helpbtnclick(None)
 
 def Help2():
-    htmldoc("help/index.html") # Assumes the infobase have been installed in the ./HELP folder
+    htmldoc("index.html") # Assumes the infobase have been installed in the ./HELP folder
 
 def Help3():
-    htmldoc("help/intro.html") # Assumes the infobase have been installed in the ./HELP folder
+    htmldoc("intro.html") # Assumes the infobase have been installed in the ./HELP folder
 
 def Help4():
     htmldoc("http://quark.planetquake.gamespy.com/") # Takes the user to QuArK's official web page
 
 def Help5():
-    htmldoc("help/intro.mapeditor.overview.html") # Takes the user to the Overview page
+    htmldoc("intro.mapeditor.overview.html") # Takes the user to the Overview page
 
 def Help6():
     htmldoc("http://www.dark-forge.com/") # Takes the user to QuArK's Forums web page
@@ -1567,6 +1567,10 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.43  2008/02/23 04:41:11  cdunde
+#Setup new Paint modes toolbar and complete painting functions to allow
+#the painting of skin textures in any Model Editor textured and Skin-view.
+#
 #Revision 1.42  2008/02/09 11:56:28  cdunde
 #Added new airbrush cursor for model editor new paint toolbar and functions.
 #
