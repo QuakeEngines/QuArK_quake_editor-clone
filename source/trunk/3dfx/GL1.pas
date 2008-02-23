@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2008/02/23 18:25:06  danielpharos
+Fix a typo.
+
 Revision 1.26  2008/02/21 21:15:24  danielpharos
 Huge OpenGL change: Should fix OpenGL hangs, and maybe speed up OpenGL a bit.
 
@@ -788,7 +791,8 @@ procedure SetPixelFormatOnDC(DC: HDC; PixelFormat: TPixelFormatDescriptor);
 
 implementation
 
-uses Classes, StrUtils, Quarkx, Logging, Qk1, Setup, QkObjects, EdOpenGL;
+uses Classes, StrUtils, Quarkx, Logging, Qk1, Setup, QkObjects, EdOpenGL,
+     ExtraFunctionality;
 
 const
   DummyWindowClassName: string = 'QuArK Dummy Window Class';
@@ -1167,12 +1171,7 @@ begin
     Ext:=MidStr(S, OldPos+1, I - OldPos - 1);
     GLExtensions.Add(Ext);
     OldPos:=I;
-    //DanielPharos: PosEx doesn't exist in Delphi6-,
-    //so let's work-around (yet again!)
-    //I:=PosEx(' ', S, OldPos + 1);
-    I:=Pos(' ', RightStr(S, Length(S) - OldPos));
-    if I<>0 then
-      I:=I+OldPos;
+    I:=PosEx(' ', S, OldPos + 1);
   end;
   if (OldPos<>Length(S)) and (OldPos<>0) then
     GLExtensions.Add(RightStr(S, Length(S) - OldPos));
