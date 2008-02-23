@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2008/02/21 21:15:24  danielpharos
+Huge OpenGL change: Should fix OpenGL hangs, and maybe speed up OpenGL a bit.
+
 Revision 1.25  2008/02/19 22:58:06  danielpharos
 Fix a OpenGL displaylist corruption.
 
@@ -723,15 +726,13 @@ var
   glLoadIdentity: procedure; stdcall;
   glRotated: procedure (angle, x, y, z : GLdouble); stdcall;
   glTranslated: procedure (x, y, z : GLdouble); stdcall;
-{  glMultMatrixd: procedure (m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15 : GLdouble); stdcall;}
+//  glMultMatrixd: procedure (m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15 : GLdouble); stdcall;
   glMultMatrixd: procedure (const m : TMatrix4f); stdcall;
   glClear: procedure (mask: GLbitfield); stdcall;
   glBegin: procedure (mode: GLenum); stdcall;
   glEnd: procedure; stdcall;
-{DECKER 2003.03.13 - removed again
-  glColor3f: procedure (red, green, blue: GLfloat); stdcall; //Decker 2003.03.13 - Added
-  glColor4f: procedure (red, green, blue, alpha: GLfloat); stdcall; //Decker 2003.03.13 - Added
-/DECKER}
+//  glColor3f: procedure (red, green, blue: GLfloat); stdcall;
+//  glColor4f: procedure (red, green, blue, alpha: GLfloat); stdcall;
   glColor3fv: procedure (var v); stdcall;
   glColor4fv: procedure (var v); stdcall;
   glTexCoord2fv: procedure (var v); stdcall;
@@ -873,7 +874,7 @@ var
   OpenGL32Lib: THandle;
   Glu32Lib: THandle;
 
-  GLExtentions: TStringList = nil;
+  GLExtensions: TStringList = nil;
 
   //DanielPharos: *sigh* The best way of having multiple viewports is using
   //multiple Rendering Contexts. But the call to share resources between them,
@@ -1122,10 +1123,10 @@ begin
     for I:=Low(Glu32DLL_FuncList) to High(Glu32DLL_FuncList) do
       PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=nil;
 
-    if GLExtentions<>nil then
+    if GLExtensions<>nil then
     begin
-      GLExtentions.Free;
-      GlExtentions:=nil;
+      GLExtensions.Free;
+      GlExtensions:=nil;
     end;
 
     TimesLoaded := 0;
@@ -1141,6 +1142,11 @@ var
   I, OldPos: Integer;
   Ext: String;
 begin
+  if TimesLoaded = 0 then
+  begin
+    Result:=false;
+    Exit;
+  end;
   P:=glGetString(GL_EXTENSIONS);
   if P=nil then
   begin
@@ -1148,13 +1154,18 @@ begin
     Exit;
   end;
   S:=PChar(P);
-  GLExtentions:=TStringList.Create;
+  if GLExtensions<>nil then
+  begin
+    GLExtensions.Free;
+    GLExtensions:=nil;
+  end;
+  GLExtensions:=TStringList.Create;
   OldPos:=0;
   I:=Pos(' ', S);
   while I>0 do
   begin
     Ext:=MidStr(S, OldPos+1, I - OldPos - 1);
-    GLExtentions.Add(Ext);
+    GLExtensions.Add(Ext);
     OldPos:=I;
     //DanielPharos: PosEx doesn't exist in Delphi6-,
     //so let's work-around (yet again!)
@@ -1164,27 +1175,27 @@ begin
       I:=I+OldPos;
   end;
   if (OldPos<>Length(S)) and (OldPos<>0) then
-    GLExtentions.Add(RightStr(S, Length(S) - OldPos));
+    GLExtensions.Add(RightStr(S, Length(S) - OldPos));
   Result:=True;
 end;
 
 function LoadSwapHint : Pointer;
 begin
- if GLExtentions=nil then
-   if not LoadExtentionList then
-   begin
-     Log(LOG_WARNING, LoadStr1(6304));
-     Result:=nil;
-     Exit;
-   end;
+  if GLExtensions=nil then
+    if not LoadExtentionList then
+    begin
+      Log(LOG_WARNING, LoadStr1(6304));
+      Result:=nil;
+      Exit;
+    end;
 
- //We need to check for GL_WIN_swap_hint before loading...
- if GLExtentions.IndexOf('GL_WIN_swap_hint')=-1 then
- begin
-   Result:=nil;
-   Exit;
- end;
- Result:=wglGetProcAddress('glAddSwapHintRectWIN');
+  //We need to check for GL_WIN_swap_hint before loading...
+  if GLExtensions.IndexOf('GL_WIN_swap_hint')=-1 then
+  begin
+    Result:=nil;
+    Exit;
+  end;
+  Result:=wglGetProcAddress('glAddSwapHintRectWIN');
 end;
 
 initialization
@@ -1193,9 +1204,9 @@ initialization
   Glu32Lib := 0;
 
 finalization
-  if GLExtentions<>nil then
+  if GLExtensions<>nil then
   begin
-    GLExtentions.Free;
-    GLExtentions:=nil;
+    GLExtensions.Free;
+    GLExtensions:=nil;
   end;
 end.

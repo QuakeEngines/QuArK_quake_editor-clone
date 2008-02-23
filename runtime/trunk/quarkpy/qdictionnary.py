@@ -997,7 +997,7 @@ Strings = {
     6301: "Error in OpenGL initialization//'%s' failed",
     6302: "Error in OpenGL commands [Error code(s) %s step %d]",
     6303: "An error occurred in the OpenGL routines: %s",
-    6304: "Unable to load OpenGL extention list. All OpenGL extentions will be disabled",
+    6304: "Unable to load OpenGL extension list. All OpenGL extensions will be disabled",
     6305: "Error in OpenGL finalization//'%s' failed",
 
     6310: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer",
@@ -1044,6 +1044,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.117  2008/02/21 21:21:30  danielpharos
+#Small auto-update update: just some minor things.
+#
 #Revision 1.116  2008/02/19 16:23:30  danielpharos
 #Possible fix for OpenGL hanging on shutdown. Also removes some hacks, and should fix some OpenGL leaks.
 #
