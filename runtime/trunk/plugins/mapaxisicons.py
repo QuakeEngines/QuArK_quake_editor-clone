@@ -82,7 +82,7 @@ axisicons = quarkx.loadimages("images\\axisicons.bmp",32,(0,0))
 #  of the map editor, only the functions they define are.
 #
 
-def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
 
     #
     # execute the old method
@@ -159,7 +159,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
 #
 
 
-quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
 
 #
@@ -174,6 +174,9 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.9  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.6  2004/02/12 18:04:51  cdunde
 #To add log
 #
