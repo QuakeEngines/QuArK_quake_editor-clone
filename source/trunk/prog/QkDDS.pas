@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2008/02/23 19:44:40  danielpharos
+Updated with new DevIL code.
+
 Revision 1.11  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -437,7 +440,7 @@ begin
     NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
     NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
     //If you delete this, don't forget the implementation-link to QkApplPaths
-    if Windows.CreateProcess(nil, PChar('nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
+    if Windows.CreateProcess(nil, PChar(GetQPath(pQuArKDll)+'nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
       FatalFileError('Unable to save DDS file. Call to CreateProcess failed.');
 
     //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!

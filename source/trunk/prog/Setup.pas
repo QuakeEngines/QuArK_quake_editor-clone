@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.61  2007/12/19 12:38:32  danielpharos
 Made an option to set the amount of lines of text in the console.
 
@@ -821,7 +824,7 @@ begin
     SetupQrk:=LienFichierQObject(SetupFileName, Nil, False);
    except
     on EQObjectFileNotFound do  { creates a new setup file if not found }
-     SetupQrk:=BuildFileRoot(GetQPath(pUserGameData)+SetupFileName, Nil);
+     SetupQrk:=BuildFileRoot(GetQPath(pQuArK)+SetupFileName, Nil);
    end;
     { stores the new setup information }
    SetupQrk.AddRef(+1);
