@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2008/02/23 20:06:42  danielpharos
+Fix help files not being found
+
 Revision 1.57  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -221,7 +224,8 @@ var
 
  {-------------------}
 
-procedure PythonLoadMain;
+procedure InitPython;
+procedure ShutdownPython;
 function LoadStr1(I: Integer) : String;
 function FmtLoadStr1(I: Integer; Args: array of const) : String;
 function PyNoResult : PyObject;
@@ -2107,8 +2111,6 @@ end;
 function xReloadSetup(self, args: PyObject) : PyObject; cdecl;
 var
  i: Integer;
- s: PyObject;
- P: PChar;
 begin
  try
   Result:=Nil;
@@ -2116,18 +2118,7 @@ begin
   if not PyArg_ParseTupleX(args, '|i', [@i]) then
    Exit;
   if i=scInit then
-   begin
-    s:=PyDict_GetItemString(QuarkxDict, 'exepath');
-    if s<>Nil then
-     begin
-      P:=PyString_AsString(s);
-      if (P<>Nil) and (P^<>#0) then
-       begin
-        SetApplicationPath(P);
-       end;
-     end;
-    InitSetup;   { reload setup }
-   end
+   InitSetup   { reload setup }
   else
    SetupChanged(i);
   Result:=PyNoResult;
@@ -3295,7 +3286,7 @@ begin
   Result:=Result+'.';
 end;
 
-var ProbableCauseOfFatalError: array[-9..3] of PChar = (
+var ProbableCauseOfFatalError: array[-9..5] of PChar = (
    {-9}    ' (Unable to initialise Python module "Quarkx")',
    {-8}    ' (Unable to find "quarkpy" directory or incorrect file versions)',
    {-7}    ' (Unable to find or execute "quarkpy.__init__.py", function "RunQuArK()")',
@@ -3307,8 +3298,10 @@ var ProbableCauseOfFatalError: array[-9..3] of PChar = (
    {-1}    '',
    { 0}    ' (No Error)',
    { 1}    ' (Error setting up Python types)',
-   { 2}    ' (Error loading dll)',
-   { 3}    ' (Unable to find Python)');
+   { 2}    ' (Error loading version-specific Python functions)',
+   { 3}    ' (Unable to determine Python dll version)',
+   { 4}    ' (Error loading Python functions)',
+   { 5}    ' (Unable to find or load Python dll)');
 
 
 procedure FatalError(Err: Integer);
@@ -3335,15 +3328,14 @@ begin
  ExitProcess(Err);
 end;
 
-procedure PythonLoadMain;
+procedure InitPython;
 var
  S: String;
  I: Integer;
 begin
+ {InitConsole;}
  I:=InitializePython;
  if I>0 then FatalError(I);
-
- SetApplicationPath(ExtractFilePath(Application.Exename));
 
  if not InitializeQuarkx then FatalError(-9);
 
@@ -3363,6 +3355,17 @@ begin
  if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
  PythonCodeEnd;
  PythonUpdateAll;
+end;
+
+procedure ShutdownPython;
+var
+  s: PyObject;
+begin
+  s:=PyString_FromString(PChar('dummy')); //Just a dummy object...
+  CallMacro(s, 'shutdown');
+  Py_Finalize;
+  {This apparently creates problems...}
+  {UnInitializePython;}
 end;
 
 procedure PythonCodeEnd;

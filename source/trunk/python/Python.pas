@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2007/12/14 11:33:05  danielpharos
+Fix a double Python library loading bug introduced in 1.25
+
 Revision 1.25  2007/12/06 01:02:26  danielpharos
 Changed some of the Python version checking, and removed some redundant library-paths.
 
@@ -371,8 +374,9 @@ var
 
 Py_Initialize: procedure; cdecl;
 Py_Finalize: procedure; cdecl;
+Py_SetProgramName: procedure (name : PChar); cdecl;
 Py_GetVersion: function : PChar; cdecl;
-//Py_GetBuildNumber: function : PChar; cdecl;
+//Py_GetBuildNumber: function : PChar; cdecl; //New in Python 2.5
 //Py_GetPlatform: function : PChar; cdecl;
 //Py_GetCopyright: function : PChar; cdecl;
 //Py_GetCompiler: function : PChar; cdecl;
@@ -472,6 +476,8 @@ PyCFunction_New: function (const Def: TyMethodDef; self: PyObject) : PyObject; c
 //Py_True: function : PyObject; cdecl;
 //PyBool_FromLong: function (Value: LongInt) : PyObject; cdecl;
 
+PyGC_Collect: procedure; cdecl;
+
  {-------------------}
 
 function PyObject_NEW(t: PyTypeObject) : PyObject;
@@ -503,6 +509,8 @@ var
  PyTuple_Type:  PyTypeObject;
 
 function InitializePython : Integer;
+procedure UnInitializePython;
+procedure SizeDownPython;
 
  {-------------------}
 
@@ -510,77 +518,84 @@ implementation
 
 uses
  {$IFDEF Debug} QkObjects, {$ENDIF}
-  Windows, Registry, SysUtils, QkObjects;
+  Windows, Forms, Registry, SysUtils, StrUtils, QkObjects, SystemDetails,
+  ExtraFunctionality;
 
  {-------------------}
 
 const
-  PythonProcList: array[0..55] of record
+  PythonProcList: array[0..57] of record
                                     Variable: Pointer;
                                     Name: PChar;
+                                    MinimalVersion: Integer;
                                   end =
-  ( (Variable: @@Py_Initialize;              Name: 'Py_Initialize'             ),
-    (Variable: @@Py_Finalize;                Name: 'Py_Finalize'               ),
-    (Variable: @@Py_GetVersion;              Name: 'Py_GetVersion'             ),
-    (Variable: @@PyRun_SimpleString;         Name: 'PyRun_SimpleString'        ),
-//  (Variable: @@Py_CompileString;           Name: 'Py_CompileString'          ),
-//  (Variable: @@Py_InitModule;              Name: 'Py_InitModule'             ), //Missing in DLL
-//  (Variable: @@Py_InitModule3;             Name: 'Py_InitModule3'            ), //Missing in DLL
-    (Variable: @@Py_InitModule4;             Name: 'Py_InitModule4'            ),
-    (Variable: @@PyModule_GetDict;           Name: 'PyModule_GetDict'          ),
-    (Variable: @@PyModule_New;               Name: 'PyModule_New'              ),
-//  (Variable: @@PyImport_ImportModule;      Name: 'PyImport_ImportModule'     ),
-//  (Variable: @@PyEval_GetGlobals;          Name: 'PyEval_GetGlobals'         ),
-//  (Variable: @@PyEval_GetLocals;           Name: 'PyEval_GetLocals'          ),
-    (Variable: @@PyEval_CallObject;          Name: 'PyEval_CallObject'         ),
-    (Variable: @@PyCallable_Check;           Name: 'PyCallable_Check'          ),
-    (Variable: @@PyErr_Print;                Name: 'PyErr_Print'               ),
-    (Variable: @@PyErr_Clear;                Name: 'PyErr_Clear'               ),
-    (Variable: @@PyErr_Occurred;             Name: 'PyErr_Occurred'            ),
-    (Variable: @@PyErr_Fetch;                Name: 'PyErr_Fetch'               ),
-    (Variable: @@PyErr_NewException;         Name: 'PyErr_NewException'        ),
-    (Variable: @@PyErr_SetString;            Name: 'PyErr_SetString'           ),
-    (Variable: @@PyErr_ExceptionMatches;     Name: 'PyErr_ExceptionMatches'    ),
-    (Variable: @@PyObject_Length;            Name: 'PyObject_Length'           ),
-    (Variable: @@PyObject_GetItem;           Name: 'PyObject_GetItem'          ),
-    (Variable: @@PyObject_HasAttrString;     Name: 'PyObject_HasAttrString'    ),
-    (Variable: @@PyObject_GetAttrString;     Name: 'PyObject_GetAttrString'    ),
-    (Variable: @@PyObject_IsTrue;            Name: 'PyObject_IsTrue'           ),
-    (Variable: @@PyObject_Str;               Name: 'PyObject_Str'              ),
-    (Variable: @@PyObject_Repr;              Name: 'PyObject_Repr'             ),
-    (Variable: @@PySequence_GetItem;         Name: 'PySequence_GetItem'        ),
-    (Variable: @@PySequence_In;              Name: 'PySequence_In'             ),
-    (Variable: @@PySequence_Index;           Name: 'PySequence_Index'          ),
-    (Variable: @@PySequence_DelItem;         Name: 'PySequence_DelItem'        ),
-    (Variable: @@PyMapping_HasKey;           Name: 'PyMapping_HasKey'          ),
-    (Variable: @@PyMapping_HasKeyString;     Name: 'PyMapping_HasKeyString'    ),
-    (Variable: @@PyNumber_Float;             Name: 'PyNumber_Float'            ),
-    (Variable: @@Py_BuildValue;              Name: 'Py_BuildValue'             ),
-    (Variable: @@PyArg_ParseTuple;           Name: 'PyArg_ParseTuple'          ),
-    (Variable: @@PyTuple_New;                Name: 'PyTuple_New'               ),
-    (Variable: @@PyTuple_GetItem;            Name: 'PyTuple_GetItem'           ),
-    (Variable: @@PyTuple_SetItem;            Name: 'PyTuple_SetItem'           ),
-    (Variable: @@PyList_New;                 Name: 'PyList_New'                ),
-    (Variable: @@PyList_GetItem;             Name: 'PyList_GetItem'            ),
-    (Variable: @@PyList_SetItem;             Name: 'PyList_SetItem'            ),
-    (Variable: @@PyList_Insert;              Name: 'PyList_Insert'             ),
-    (Variable: @@PyList_Append;              Name: 'PyList_Append'             ),
-    (Variable: @@PyDict_New;                 Name: 'PyDict_New'                ),
-    (Variable: @@PyDict_SetItemString;       Name: 'PyDict_SetItemString'      ),
-    (Variable: @@PyDict_GetItemString;       Name: 'PyDict_GetItemString'      ),
-    (Variable: @@PyDict_GetItem;             Name: 'PyDict_GetItem'            ),
-    (Variable: @@PyDict_Keys;                Name: 'PyDict_Keys'               ),
-    (Variable: @@PyDict_Values;              Name: 'PyDict_Values'             ),
-    (Variable: @@PyString_FromString;        Name: 'PyString_FromString'       ),
-    (Variable: @@PyString_AsString;          Name: 'PyString_AsString'         ),
-    (Variable: @@PyString_FromStringAndSize; Name: 'PyString_FromStringAndSize'),
-    (Variable: @@PyString_Size;              Name: 'PyString_Size'             ),
-    (Variable: @@PyInt_FromLong;             Name: 'PyInt_FromLong'            ),
-    (Variable: @@PyInt_AsLong;               Name: 'PyInt_AsLong'              ),
-    (Variable: @@PyFloat_FromDouble;         Name: 'PyFloat_FromDouble'        ),
-    (Variable: @@PyFloat_AsDouble;           Name: 'PyFloat_AsDouble'          ),
-    (Variable: @@PyObject_Init;              Name: 'PyObject_Init'             ),
-    (Variable: @@PyCFunction_New;            Name: 'PyCFunction_New'           ) );
+  ( (Variable: @@Py_Initialize;              Name: 'Py_Initialize';              MinimalVersion: 0  ),
+    (Variable: @@Py_Finalize;                Name: 'Py_Finalize';                MinimalVersion: 0  ),
+    (Variable: @@Py_GetVersion;              Name: 'Py_GetVersion';              MinimalVersion: 0  ),
+    (Variable: @@Py_SetProgramName;          Name: 'Py_SetProgramName';          MinimalVersion: 0  ),
+    (Variable: @@PyRun_SimpleString;         Name: 'PyRun_SimpleString';         MinimalVersion: 0  ),
+//  (Variable: @@Py_CompileString;           Name: 'Py_CompileString';           MinimalVersion: 0  ),
+//  (Variable: @@Py_InitModule;              Name: 'Py_InitModule';              MinimalVersion: 0  ), //Missing in DLL
+//  (Variable: @@Py_InitModule3;             Name: 'Py_InitModule3';             MinimalVersion: 0  ), //Missing in DLL
+    (Variable: @@Py_InitModule4;             Name: 'Py_InitModule4';             MinimalVersion: 0  ),
+    (Variable: @@PyModule_GetDict;           Name: 'PyModule_GetDict';           MinimalVersion: 0  ),
+    (Variable: @@PyModule_New;               Name: 'PyModule_New';               MinimalVersion: 0  ),
+//  (Variable: @@PyImport_ImportModule;      Name: 'PyImport_ImportModule';      MinimalVersion: 0  ),
+//  (Variable: @@PyEval_GetGlobals;          Name: 'PyEval_GetGlobals';          MinimalVersion: 0  ),
+//  (Variable: @@PyEval_GetLocals;           Name: 'PyEval_GetLocals';           MinimalVersion: 0  ),
+    (Variable: @@PyEval_CallObject;          Name: 'PyEval_CallObject';          MinimalVersion: 0  ),
+    (Variable: @@PyCallable_Check;           Name: 'PyCallable_Check';           MinimalVersion: 0  ),
+    (Variable: @@PyErr_Print;                Name: 'PyErr_Print';                MinimalVersion: 0  ),
+    (Variable: @@PyErr_Clear;                Name: 'PyErr_Clear';                MinimalVersion: 0  ),
+    (Variable: @@PyErr_Occurred;             Name: 'PyErr_Occurred';             MinimalVersion: 0  ),
+    (Variable: @@PyErr_Fetch;                Name: 'PyErr_Fetch';                MinimalVersion: 0  ),
+    (Variable: @@PyErr_NewException;         Name: 'PyErr_NewException';         MinimalVersion: 0  ),
+    (Variable: @@PyErr_SetString;            Name: 'PyErr_SetString';            MinimalVersion: 0  ),
+    (Variable: @@PyErr_ExceptionMatches;     Name: 'PyErr_ExceptionMatches';     MinimalVersion: 0  ),
+    (Variable: @@PyObject_Length;            Name: 'PyObject_Length';            MinimalVersion: 0  ),
+    (Variable: @@PyObject_GetItem;           Name: 'PyObject_GetItem';           MinimalVersion: 0  ),
+    (Variable: @@PyObject_HasAttrString;     Name: 'PyObject_HasAttrString';     MinimalVersion: 0  ),
+    (Variable: @@PyObject_GetAttrString;     Name: 'PyObject_GetAttrString';     MinimalVersion: 0  ),
+    (Variable: @@PyObject_IsTrue;            Name: 'PyObject_IsTrue';            MinimalVersion: 0  ),
+    (Variable: @@PyObject_Str;               Name: 'PyObject_Str';               MinimalVersion: 0  ),
+    (Variable: @@PyObject_Repr;              Name: 'PyObject_Repr';              MinimalVersion: 0  ),
+    (Variable: @@PySequence_GetItem;         Name: 'PySequence_GetItem';         MinimalVersion: 0  ),
+    (Variable: @@PySequence_In;              Name: 'PySequence_In';              MinimalVersion: 0  ),
+    (Variable: @@PySequence_Index;           Name: 'PySequence_Index';           MinimalVersion: 0  ),
+    (Variable: @@PySequence_DelItem;         Name: 'PySequence_DelItem';         MinimalVersion: 0  ),
+    (Variable: @@PyMapping_HasKey;           Name: 'PyMapping_HasKey';           MinimalVersion: 0  ),
+    (Variable: @@PyMapping_HasKeyString;     Name: 'PyMapping_HasKeyString';     MinimalVersion: 0  ),
+    (Variable: @@PyNumber_Float;             Name: 'PyNumber_Float';             MinimalVersion: 0  ),
+    (Variable: @@Py_BuildValue;              Name: 'Py_BuildValue';              MinimalVersion: 0  ),
+    (Variable: @@PyArg_ParseTuple;           Name: 'PyArg_ParseTuple';           MinimalVersion: 0  ),
+    (Variable: @@PyTuple_New;                Name: 'PyTuple_New';                MinimalVersion: 0  ),
+    (Variable: @@PyTuple_GetItem;            Name: 'PyTuple_GetItem';            MinimalVersion: 0  ),
+    (Variable: @@PyTuple_SetItem;            Name: 'PyTuple_SetItem';            MinimalVersion: 0  ),
+    (Variable: @@PyList_New;                 Name: 'PyList_New';                 MinimalVersion: 0  ),
+    (Variable: @@PyList_GetItem;             Name: 'PyList_GetItem';             MinimalVersion: 0  ),
+    (Variable: @@PyList_SetItem;             Name: 'PyList_SetItem';             MinimalVersion: 0  ),
+    (Variable: @@PyList_Insert;              Name: 'PyList_Insert';              MinimalVersion: 0  ),
+    (Variable: @@PyList_Append;              Name: 'PyList_Append';              MinimalVersion: 0  ),
+    (Variable: @@PyDict_New;                 Name: 'PyDict_New';                 MinimalVersion: 0  ),
+    (Variable: @@PyDict_SetItemString;       Name: 'PyDict_SetItemString';       MinimalVersion: 0  ),
+    (Variable: @@PyDict_GetItemString;       Name: 'PyDict_GetItemString';       MinimalVersion: 0  ),
+    (Variable: @@PyDict_GetItem;             Name: 'PyDict_GetItem';             MinimalVersion: 0  ),
+    (Variable: @@PyDict_Keys;                Name: 'PyDict_Keys';                MinimalVersion: 0  ),
+    (Variable: @@PyDict_Values;              Name: 'PyDict_Values';              MinimalVersion: 0  ),
+    (Variable: @@PyString_FromString;        Name: 'PyString_FromString';        MinimalVersion: 0  ),
+    (Variable: @@PyString_AsString;          Name: 'PyString_AsString';          MinimalVersion: 0  ),
+    (Variable: @@PyString_FromStringAndSize; Name: 'PyString_FromStringAndSize'; MinimalVersion: 0  ),
+    (Variable: @@PyString_Size;              Name: 'PyString_Size';              MinimalVersion: 0  ),
+    (Variable: @@PyInt_FromLong;             Name: 'PyInt_FromLong';             MinimalVersion: 0  ),
+    (Variable: @@PyInt_AsLong;               Name: 'PyInt_AsLong';               MinimalVersion: 0  ),
+    (Variable: @@PyFloat_FromDouble;         Name: 'PyFloat_FromDouble';         MinimalVersion: 0  ),
+    (Variable: @@PyFloat_AsDouble;           Name: 'PyFloat_AsDouble';           MinimalVersion: 0  ),
+    (Variable: @@PyObject_Init;              Name: 'PyObject_Init';              MinimalVersion: 0  ),
+    (Variable: @@PyCFunction_New;            Name: 'PyCFunction_New';            MinimalVersion: 0  ),
+    (Variable: @@PyGC_Collect;               Name: 'PyGC_Collect';               MinimalVersion: 235));
+
+var
+  PythonCurrentVersion: Integer;
 
  {-------------------}
 
@@ -592,8 +607,12 @@ var
   I: Integer;
   P: Pointer;
   s: string;
+  Index, OldIndex: Integer;
+  VersionString: String;
+  VersionSubStrings: array[0..2] of string;
 begin
-  Result:=3;
+  //See ProbableCauseOfFatalError in QuarkX for return value meaning
+  Result:=5;
   if PythonLib=0 then
   begin
     PythonDll:='python.dll';
@@ -635,19 +654,77 @@ begin
       end;
     end;
   end;
-  Result:=2;
+  Result:=4;
+
+  //First load the all-version functions
   for I:=Low(PythonProcList) to High(PythonProcList) do
   begin
-    P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
-    if P=Nil then
-     Exit;
+    if (PythonProcList[I].MinimalVersion = 0) then
+    begin
+      P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
+      if P=Nil then
+       Exit;
+    end
+    else
+      P:=nil;
     PPointer(PythonProcList[I].Variable)^:=P;
   end;
+  Py_SetProgramName(PChar(Application.Exename));
   Py_Initialize;
   s:=Py_GetVersion;
   Log(LOG_PYTHON,'Version: '+s);
-  Log(LOG_PYTHON,'DLL: '+'dlls/'+PythonDll);  //DanielPharos: We should (somehow) retrieve the actual filename of the DLL loaded...
+  Log(LOG_PYTHON,'DLL: '+RetrieveModuleFilename(PythonLib));
   Log(LOG_PYTHON,'');
+  Result:=3;
+
+  //Process Py_GetVersion to find version number
+  //DanielPharos: We're going to assume the Python version numbers is
+  //either in ?.? or in ?.?.? format
+  Index:=Pos(' ', s);
+  if Index=0 then
+    Exit;
+  VersionString:=LeftStr(s, Index - 1);
+  Index:=Pos('.', VersionString);
+  if Index=0 then
+    Exit;
+  VersionSubStrings[0]:=LeftStr(VersionString, Index - 1);
+  OldIndex:=Index;
+  Index:=PosEx('.', VersionString, OldIndex + 1);
+  if Index=0 then
+  begin
+    VersionSubStrings[1]:=RightStr(VersionString, Length(VersionString) - OldIndex);
+    VersionSubStrings[2]:='';
+  end
+  else
+  begin
+    VersionSubStrings[1]:=MidStr(VersionString, OldIndex + 1, (Index - 1) - OldIndex);
+    VersionSubStrings[2]:=RightStr(VersionString, Length(VersionString) - Index);
+  end;
+  try
+    PythonCurrentVersion:=StrToInt(VersionSubStrings[0]+VersionSubStrings[1]+VersionSubStrings[2]);
+  except
+    Exit;
+  end;
+  Result:=2;
+
+  //DanielPharos: We're not supporting all versions of Python, so let's check that:
+  if (VersionSubStrings[0]<>'2') or ((VersionSubStrings[1]<>'3') and (VersionSubStrings[1]<>'4')) then
+  begin
+    Log(LOG_WARNING, 'Incompatible version of Python found: '+VersionString);
+    MessageBox(0, PChar('This version ('+VersionString+') of Python is not supported. QuArK might behave unpredictably!'), PChar('QuArK'), MB_TASKMODAL or MB_ICONWARNING or MB_OK);
+  end;
+
+  //Now that we know the Python version, load the version-specific fucntions
+  for I:=Low(PythonProcList) to High(PythonProcList) do
+  begin
+    if (PythonProcList[I].MinimalVersion > 0) and (PythonProcList[I].MinimalVersion < PythonCurrentVersion) then
+    begin
+      P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
+      if P=Nil then
+       Exit;
+      PPointer(PythonProcList[I].Variable)^:=P;
+    end;
+  end;
   Result:=1;
 
  { tiglari:
@@ -689,13 +766,24 @@ begin
 end;
 
 procedure UnInitializePython;
+var
+  I: Integer;
 begin
   if PythonLib<>0 then
   begin
     if FreeLibrary(PythonLib)=false then
-      raise InternalE('Unable to unload dlls/'+PythonDll); //DanielPharos: The path might be off this way!
+      raise InternalE('Unable to unload '+RetrieveModuleFilename(PythonLib));
     PythonLib:=0;
+
+    for I:=Low(PythonProcList) to High(PythonProcList) do
+      PPointer(PythonProcList[I].Variable)^:=nil;
   end;
+end;
+
+procedure SizeDownPython;
+begin
+  if Assigned(PyGC_Collect) then
+    PyGC_Collect;
 end;
 
 function PyObject_NEW(t: PyTypeObject) : PyObject;

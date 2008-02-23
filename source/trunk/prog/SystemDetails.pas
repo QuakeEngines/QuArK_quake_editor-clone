@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2007/12/19 13:56:34  danielpharos
+Some changes to process-detection: Should work on Windows NT4 now too, and made the Steam executable filename configurable (but hidden).
+
 Revision 1.32  2007/12/14 11:33:44  danielpharos
 Use the entire buffer for loading of VideoBiosVersion, to prevent weird errors from happening.
 
@@ -136,6 +139,7 @@ function CheckWindowsNT: Boolean;
 function CheckWindowsVista: Boolean;
 function ProcessExists(exeFileName: string): Boolean;
 function WindowExists(WindowName: String): Boolean;
+function RetrieveModuleFilename(ModuleHandle: Cardinal): String;
 
 type
   {$IFDEF Delphi4orNewerCompiler}
@@ -2064,6 +2068,22 @@ begin
     Result := True
   else
     Result := False;
+end;
+
+function RetrieveModuleFilename(ModuleHandle : Cardinal) : String;
+var
+  Buffer: PChar;
+  ReturnSize: Cardinal;
+begin
+  GetMem(Buffer, 255);
+  try
+    ReturnSize := GetModuleFileName(ModuleHandle, Buffer, 255);
+    if ReturnSize = 0 then
+      raise exception.create('Unable to retrieve filename of a module!');
+    Result := Copy(Buffer, 0, ReturnSize);
+  finally
+    FreeMem(Buffer);
+  end;
 end;
 
 function CheckWindowsNT: Boolean;

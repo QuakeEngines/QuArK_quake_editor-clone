@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2008/02/23 19:25:21  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.55  2008/02/07 14:09:29  danielpharos
 Removed some redundant uses.
 
@@ -603,8 +606,11 @@ begin
    Disclaimer:=0;
  end;
 
- // tiglari: in quarkx: python initialization, loading defaults.qrk, setup.qrk
- PythonLoadMain;
+ // Set the ApplicationPath variable (is actually already done in OpenLogFile...)
+ SetApplicationPath();
+
+ // Python initialization and Defaults.qrk and Setup.qrk loading
+ InitPython;
 
  { DanielPharos: It's safer to do the update-check BEFORE loading Python,
    but then then option in the Defaults will have to be removed, since it
@@ -1667,9 +1673,6 @@ begin
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
-var
-   s: PyObject;
-   st: string;
 begin  { the link to FormDestroy is made in FormCreate }
  try
   SaveSetupNow;
@@ -1682,10 +1685,8 @@ begin  { the link to FormDestroy is made in FormCreate }
  ClearSteamCache;
 // QObjectClassList.Free;
  FreeConsole;
- st:='hi';
- s:=PyString_FromString(PChar(st));
- CallMacro(s, 'shutdown');
- Py_Finalize;
+ ShutdownPython;
+ g_Form1:=nil;
  Application.UnHookMainWindow(WindowHook);
 end;
 

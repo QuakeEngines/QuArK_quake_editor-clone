@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.51  2007/12/13 12:32:36  danielpharos
 Change a procedure name to something much less confusing.
 
@@ -285,7 +288,7 @@ implementation
 
 uses QkPak, Setup, QkUnknown, QkTextures, Travail, ToolBox1, QkImages, Qk1,
   Game2, QkQuakeCtx, Config, PakFiles, Quarkx, PyImages, QkApplPaths, QkSteamFS,
-  ExtraFunctionality;
+  ExtraFunctionality, Python;
 
 var
  GameFiles: TQList = Nil;
@@ -395,6 +398,8 @@ begin
  {SizeDownTextureList(}InternalSizeDown{)};
 
  ClearGBList;
+
+ SizeDownPython;
 end;
 
 function DuplicateGameBuffer(Source: PGameBuffer) : PGameBuffer;
