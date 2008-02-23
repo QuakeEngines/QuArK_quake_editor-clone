@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.10  2007/12/06 23:01:31  danielpharos
 Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
 
@@ -157,20 +160,30 @@ var
   DevILLoaded: Boolean;
 
 procedure QDDS.SaveFile(Info: TInfoEnreg1);
+const
+  Spec1 = 'Image1=';
+  Spec2 = 'Pal=';
+  Spec3 = 'Alpha=';
+type
+  PRGB = ^TRGB;
+  TRGB = array[0..2] of Byte;
+  PRGBA = ^TRGBA;
+  TRGBA = array[0..3] of Byte;
 var
   PSD: TPixelSetDescription;
 //  TexSize : longword;
   //RawBuffer: String;
   S: String;
-  RawData, RawData2: PByte;
-  SourceImg, SourceAlpha, pSourceImg, pSourceAlpha: PChar;
+  Dest: PByte;
+  SourceImg, SourceAlpha, SourcePal, pSourceImg, pSourceAlpha, pSourcePal: PChar;
+  RawPal: PByte;
 
   DevILImage: Cardinal;
   ImageBpp: Byte;
   ImageFormat: DevILFormat;
   Width, Height: Integer;
+  PaddingSource, PaddingDest: Integer;
   I, J: Integer;
-  //OutputSize: Cardinal;
   TexFormat: Integer;
   TexFormatParameter: String;
   Quality: Integer;
@@ -180,6 +193,10 @@ var
   NVDXTStartupInfo: StartUpInfo;
   NVDXTProcessInformation: Process_Information;
 begin
+  {FIXME: DanielPharos: We should simply be using the DevIL functions, but they don't seem to work,
+  because of limitations in the current versions of the DevIL library. We
+  bypass this by saving it to a temporary file, and loading that.
+  I know this is dodgy and ugly, but I don't see any other (easy) way.}
  Log(LOG_VERBOSE,'Saving DDS file: %s',[self.name]);
  with Info do
   case Format of
@@ -192,100 +209,174 @@ begin
       DevILLoaded:=true;
     end;
 
+    PSD:=Description;
+    Width:=PSD.size.x;
+    Height:=PSD.size.y;
+
+    if PSD.Format = psf8bpp then
+    begin
+      ImageBpp:=1;
+      ImageFormat:=IL_COLOUR_INDEX;
+      PaddingDest:=0;
+    end
+    else
+    begin
+      if PSD.AlphaBits=psa8bpp then
+      begin
+        ImageBpp:=4;
+        ImageFormat:=IL_RGBA;
+        PaddingDest:=0;
+      end
+      else
+      begin
+        ImageBpp:=3;
+        ImageFormat:=IL_RGB;
+        PaddingDest:=0;
+      end;
+    end;
+
     ilGenImages(1, @DevILImage);
     CheckDevILError(ilGetError);
     ilBindImage(DevILImage);
     CheckDevILError(ilGetError);
 
-    TexFormat:=2;
-    PSD:=Description;
-    Width:=PSD.size.x;
-    Height:=PSD.size.y;
-    if PSD.AlphaBits=psa8bpp then
+    if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=false then
     begin
-      S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormatA'];
-      if S<>'' then
-      begin
-        try
-          TexFormat:=strtoint(S);
-          if (TexFormat < 0) or (TexFormat > 11) then
-            TexFormat := 2;
-        except
-          TexFormat := 2;
-        end;
-      end;
-      ImageBpp:=4;
-      ImageFormat:=IL_BGRA;
-      GetMem(RawData, Width*Height*4);
-      RawData2:=RawData;
+      ilDeleteImages(1, @DevILImage);
+      FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
+    end;
+    CheckDevILError(ilGetError);
 
+    if ilClearImage=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
+    end;
+    CheckDevILError(ilGetError);
+
+    if PSD.Format = psf8bpp then
+    begin
+      ilConvertPal(IL_PAL_RGB24);
+      CheckDevILError(ilGetError);
+    end;
+
+    //This is the padding for the 'Image1'-RGB array
+    PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
+    TexFormat:=2;
+    if PSD.AlphaBits=psa8bpp then
+      S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormatA']
+    else
+      S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormat'];
+    if S<>'' then
+    begin
+      try
+        TexFormat:=strtoint(S);
+        if (TexFormat < 0) or (TexFormat > 11) then
+          TexFormat := 2;
+      except
+        TexFormat := 2;
+      end;
+    end;
+
+    if PSD.Format = psf8bpp then
+    begin
+      GetMem(RawPal, 256*3);
+      try
+        ilRegisterPal(RawPal, 256*3, IL_PAL_RGB24);
+        CheckDevILError(ilGetError);
+      finally
+        FreeMem(RawPal);
+      end;
+
+      Dest:=ilGetPalette;
+      CheckDevILError(ilGetError);
+      SourcePal:=PChar(PSD.ColorPalette);
+      pSourcePal:=SourcePal;
+      for I:=0 to 255 do
+      begin
+        PRGB(Dest)^[0]:=PRGB(pSourcePal)^[0];
+        PRGB(Dest)^[1]:=PRGB(pSourcePal)^[1];
+        PRGB(Dest)^[2]:=PRGB(pSourcePal)^[2];
+        Inc(pSourcePal, 3);
+        Inc(Dest, 3);
+      end;
+
+      Dest:=ilGetData;
+      CheckDevILError(ilGetError);
       SourceImg:=PChar(PSD.Data);
-      SourceAlpha:=PChar(PSD.AlphaData);
       pSourceImg:=SourceImg;
-      pSourceAlpha:=SourceAlpha;
       for J:=0 to Height-1 do
       begin
         for I:=0 to Width-1 do
         begin
-          PChar(RawData2)^:=pSourceImg^;
-          Inc(pSourceImg);
-          Inc(RawData2);
-          PChar(RawData2)^:=pSourceImg^;
-          Inc(pSourceImg);
-          Inc(RawData2);
-          PChar(RawData2)^:=pSourceImg^;
-          Inc(pSourceImg);
-          Inc(RawData2);
-          PChar(RawData2)^:=pSourceAlpha^;
-          Inc(pSourceAlpha);
-          Inc(RawData2);
+          Dest^:=PByte(pSourceImg)^;
+          Inc(pSourceImg, 1);
+          Inc(Dest, 1);
+        end;
+        Inc(pSourceImg, PaddingSource);
+        for I:=0 to PaddingDest-1 do
+        begin
+          Dest^:=0;
+          Inc(Dest, 1);
         end;
       end;
     end
     else
     begin
-      S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormat'];
-      if S<>'' then
+      if PSD.AlphaBits=psa8bpp then
       begin
-        try
-          TexFormat:=strtoint(S);
-          if (TexFormat < 0) or (TexFormat > 11) then
-            TexFormat := 2;
-        except
-          TexFormat := 2;
-        end;
-      end;
-      ImageBpp:=3;
-      ImageFormat:=IL_BGR;
-      GetMem(RawData, Width*Height*3);
-      RawData2:=RawData;
-
-      SourceImg:=PChar(PSD.Data);
-      pSourceImg:=SourceImg;
-      for J:=0 to Height-1 do
-      begin
-        for I:=0 to Width-1 do
+        Dest:=ilGetData;
+        CheckDevILError(ilGetError);
+        SourceImg:=PChar(PSD.Data);
+        SourceAlpha:=PChar(PSD.AlphaData);
+        pSourceImg:=SourceImg;
+        pSourceAlpha:=SourceAlpha;
+        for J:=0 to Height-1 do
         begin
-          PChar(RawData2)^:=pSourceImg^;
-          Inc(pSourceImg);
-          Inc(RawData2);
-          PChar(RawData2)^:=pSourceImg^;
-          Inc(pSourceImg);
-          Inc(RawData2);
-          PChar(RawData2)^:=pSourceImg^;
-          Inc(pSourceImg);
-          Inc(RawData2);
+          for I:=0 to Width-1 do
+          begin
+            PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[0];
+            PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
+            PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[2];
+            PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
+            Inc(pSourceImg, 3);
+            Inc(pSourceAlpha, 1);
+            Inc(Dest, 4);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            Dest^:=0;
+            Inc(Dest, 1);
+          end;
+        end;
+      end
+      else
+      begin
+        Dest:=ilGetData;
+        CheckDevILError(ilGetError);
+        SourceImg:=PChar(PSD.Data);
+        pSourceImg:=SourceImg;
+        for J:=0 to Height-1 do
+        begin
+          for I:=0 to Width-1 do
+          begin
+            PRGB(Dest)^[2]:=PRGB(pSourceImg)^[0];
+            PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
+            PRGB(Dest)^[0]:=PRGB(pSourceImg)^[2];
+            Inc(pSourceImg, 3);
+            Inc(Dest, 3);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            Dest^:=0;
+            Inc(Dest, 1);
+          end;
         end;
       end;
     end;
-
-    if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, RawData)=false then
-    begin
-      ilDeleteImages(1, @DevILImage);
-      FatalFileError('Unable to save DDS file. Call to ilTexImage failed.');
-    end;
-
-    FreeMem(RawData);
 
     Quality:=2;
     S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveQuality'];
@@ -300,27 +391,6 @@ begin
       end;
     end;
 
-    //@ Update with new DevIL Code!
-
-    {DanielPharos: This is the code that should be used. It doesn't work however,
-    because of limitations in the current versions of the DevIL library. We
-    bypass this by saving it to a temporary file, and loading that into memory.
-    I know this is dodgy and ugly, but I don't see any other (easy) way.}
-    {//DanielPharos: How do we retrieve the correct value of the lump?
-    OutputSize:=Width*Height*10;
-    SetLength(RawBuffer,OutputSize);
-
-    OutputSize:=ilSaveL(IL_DDS, Pointer(RawBuffer), OutputSize);
-    CheckDevILError(ilGetError);
-    if OutputSize=0 then
-    begin
-      ilDeleteImages(1, @DevILImage);
-      Fatal('Unable to save DDS file. Call to ilSaveL failed.');
-    end;
-
-    F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);}
-
-    //DanielPharos: The bypass:
     DumpFileName:=GetQPath(pQuArK)+'0';
     while FileExists(DumpFileName+'.tga') or FileExists(DumpFileName+'.dds') do
     begin
@@ -334,12 +404,12 @@ begin
       FatalFileError('Unable to save DDS file. Call to ilSave failed.');
     end;
 
+    ilDeleteImages(1, @DevILImage);
+    CheckDevILError(ilGetError);
+
     //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
     if FileExists(GetQPath(pQuArKDll)+'nvdxt.exe')=false then
-    begin
-      ilDeleteImages(1, @DevILImage);
       FatalFileError('Unable to save DDS file. dlls/nvdxt.exe not found.');
-    end;
 
     case TexFormat of
     0: TexFormatParameter:='dxt1c';
@@ -368,49 +438,31 @@ begin
     NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
     //If you delete this, don't forget the implementation-link to QkApplPaths
     if Windows.CreateProcess(nil, PChar('nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
-    begin
-      ilDeleteImages(1, @DevILImage);
       FatalFileError('Unable to save DDS file. Call to CreateProcess failed.');
-    end;
 
     //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
     if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
     begin
-      ilDeleteImages(1, @DevILImage);
       CloseHandle(NVDXTProcessInformation.hThread);
       CloseHandle(NVDXTProcessInformation.hProcess);
       FatalFileError('Unable to save DDS file. Call to WaitForSingleObject failed.');
     end;
 
     if CloseHandle(NVDXTProcessInformation.hThread)=false then
-    begin
-      ilDeleteImages(1, @DevILImage);
       FatalFileError('Unable to save DDS file. Call to CloseHandle(thread) failed.');
-    end;
     if CloseHandle(NVDXTProcessInformation.hProcess)=false then
-    begin
-      ilDeleteImages(1, @DevILImage);
       FatalFileError('Unable to save DDS file. Call to CloseHandle(process) failed.');
-    end;
 
     if DeleteFile(DumpFileName+'.tga')=false then
-    begin
-      ilDeleteImages(1, @DevILImage);
       FatalFileError('Unable to save DDS file. Call to DeleteFile(tga) failed.');
-    end;
 
     //DanielPharos: Now let's read in that DDS file and be done!
     DumpBuffer:=TFileStream.Create(DumpFileName+'.dds',fmOpenRead);
     F.CopyFrom(DumpBuffer,DumpBuffer.Size);
     DumpBuffer.Free;
     if DeleteFile(DumpFileName+'.dds')=false then
-    begin
-      ilDeleteImages(1, @DevILImage);
       FatalFileError('Unable to save DDS file. Call to DeleteFile(dds) failed.');
-    end;    
 
-    ilDeleteImages(1, @DevILImage);
-    CheckDevILError(ilGetError);
   end
   else
     inherited;
