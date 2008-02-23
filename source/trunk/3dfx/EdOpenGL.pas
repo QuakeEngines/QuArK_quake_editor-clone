@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2008/02/21 21:15:24  danielpharos
+Huge OpenGL change: Should fix OpenGL hangs, and maybe speed up OpenGL a bit.
+
 Revision 1.69  2008/02/21 21:07:20  danielpharos
 Removed redundant OpenGL code.
 
@@ -349,7 +352,7 @@ var
 
  {------------------------}
 
-procedure CheckOpenGLError(GlError: GLenum);
+procedure CheckOpenGLError(const Location: String);
 
  {------------------------}
 
@@ -357,36 +360,6 @@ implementation
 
 uses SysUtils, Quarkx, Setup, Python, Logging, {Math,}
      QkObjects, QkMapPoly, QkPixelSet, QkForm, SystemDetails, DWM;
-
- {------------------------}
-
-{$IFDEF DebugGLErr}
-var
-  HackIgnoreErrors: Boolean = False;
-
-procedure DebugOpenGL(Pos: Integer; Text: string; Args: array of const);  { OpenGL error check }
-var
-  I, J: Integer;
-  S: String;
-begin
-  if HackIgnoreErrors then
-    Exit;
-  Log(LOG_VERBOSE,'EdOpenGL #%d %s', [Pos, Format(Text, Args)]);
-  S:='';
-  for I:=1 to 25 do   {DanielPharos: Why is it trying exactly 25 times?}
-  begin
-    J:=glGetError;
-    if J = GL_NO_ERROR then
-      Break;
-    S:=S+' '+IntToStr(J);
-  end;
-  if S<>'' then
-  begin
-    //Log(S);
-    Raise EErrorFmt(6302, [S, Pos]);
-  end
-end;
-{$ENDIF}
 
  {------------------------}
 
@@ -525,7 +498,6 @@ var
 begin
   if MakeSections=False then
   begin
-    {$IFDEF DebugGLErr} DebugOpenGL(-121, 'glBegin(GL_QUADS)', []); {$ENDIF}
     glBegin(GL_QUADS);
     light[0]:=LightParams.ZeroLight * Currentf[0];
     light[1]:=LightParams.ZeroLight * Currentf[1];
@@ -560,7 +532,6 @@ begin
       glVertex3fv(PV4^.xyz);
     end;
     glEnd;
-    {$IFDEF DebugGLErr} DebugOpenGL(121, 'glEnd', []); {$ENDIF}
   end
   else
   begin
@@ -594,7 +565,6 @@ begin
       LP:=LP^.Next;
     end;
 
-    {$IFDEF DebugGLErr} DebugOpenGL(-109, '', []); {$ENDIF}
     Points[0,        0        ].v:=PV4^;
     Points[0,        SectionsI].v:=PV3^;
     Points[SectionsJ,SectionsI].v:=PV2^;
@@ -683,7 +653,6 @@ begin
     J:=0;
     while J<SectionsJ do
     begin
-      {$IFDEF DebugGLErr} DebugOpenGL(-122, 'glBegin(GL_QUAD_STRIP)', []); {$ENDIF}
       glBegin(GL_QUAD_STRIP);
       NormalVector[0]:=NormalePlan[0];
       NormalVector[1]:=NormalePlan[1];
@@ -713,11 +682,10 @@ begin
       end;
 
       glEnd;
-      {$IFDEF DebugGLErr} DebugOpenGL(122, 'glEnd', []); {$ENDIF}
       Inc(J, StepJ);
     end;
-    {$IFDEF DebugGLErr} DebugOpenGL(109, '', []); {$ENDIF}
   end;
+  CheckOpenGLError('RenderQuad');
 end;
 
 procedure RenderQuadStrip(PV: PVertex3D;
@@ -757,6 +725,7 @@ begin
     glVertex3fv(Point.v.xyz);
   end;
   glEnd;
+  CheckOpenGLError('RenderQuadStrip');
 end;
 
  {------------------------}
@@ -897,11 +866,7 @@ begin
       end;
 
       if OpenGlLoaded and (NameAreaWalker<>NameArray) then
-      begin}
-        {$IFDEF DebugGLErr} DebugOpenGL(-102, 'glDeleteTextures(<%d>, <%d>)', [(PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^]); {$ENDIF}
-        {glDeleteTextures((PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);}
-        {$IFDEF DebugGLErr} DebugOpenGL(102, 'glDeleteTextures(<%d>, <%d>)', [(PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^]); {$ENDIF}
-      {end;
+        glDeleteTextures((PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);
     finally
       FreeMem(NameArray);
     end;
@@ -921,7 +886,7 @@ begin
           MadeRCCurrent := True;
         end;
         glDeleteLists(1, OpenGLDisplayLists[I]);
-        CheckOpenGLError(glGetError);
+        CheckOpenGLError('ReleaseResources: glDeleteLists');
 
         OpenGLDisplayLists[I]:=0;
       end;
@@ -955,7 +920,6 @@ end;
 
 destructor TGLSceneObject.Destroy;
 begin
-  {$IFDEF DebugGLErr} HackIgnoreErrors:=True; {$ENDIF}
   inherited;
   ReleaseResources;
   if OpenGLLoaded then
@@ -966,7 +930,6 @@ begin
     DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
     UnloadDWM;
   end;
-  {$IFDEF DebugGLErr} HackIgnoreErrors:=False; {$ENDIF}
 end;
 
 procedure TGLSceneObject.Init(Wnd: HWnd;
@@ -1128,7 +1091,6 @@ begin
   WinSwapHint:=LoadSwapHint;
 
   { set up OpenGL }
-  {$IFDEF DebugGLErr} DebugOpenGL(0, '', []); {$ENDIF}
   UnpackColor(FogColor, nFogColor);
   glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
  {glClearDepth(1);}
@@ -1136,7 +1098,7 @@ begin
   glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
   glEnable(GL_NORMALIZE);
   glEdgeFlag(0);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Init');
 
   if (DisplayMode=dmPanel) then
     glDisable(GL_DEPTH_TEST)
@@ -1145,8 +1107,7 @@ begin
     glEnable(GL_DEPTH_TEST);
    {glDepthFunc(GL_LEQUAL);}
   end;
-  CheckOpenGLError(glGetError);
-  {$IFDEF DebugGLErr} DebugOpenGL(1, '', []); {$ENDIF}
+  CheckOpenGLError('Init: GL_DEPTH_TEST');
 
   { set up texture parameters }  //DanielPharos: These are set per texture, in the BuildTexture procedure
   {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);}
@@ -1169,7 +1130,7 @@ begin
   end
   else
     glDisable(GL_FOG);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Init: GL_FOG');
   
   if Lighting then
   begin
@@ -1184,7 +1145,7 @@ begin
   end
   else
     glDisable(GL_LIGHTING);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Init: GL_LIGHTING');
 
   if Transparency then
   begin
@@ -1192,24 +1153,23 @@ begin
   end
   else
     glDisable(GL_BLEND);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Init: GL_BLEND');
   //DanielPharos: Things like normal maps, bump-maps etc. should be added in a similar way
 
-  glFrontFace(GL_CW);
   if Culling then
   begin
     glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CW);
   end
   else
     glDisable(GL_CULL_FACE);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Init: GL_CULL_FACE');
 
   glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Init: GL_MAX_LIGHTS');
   if MaxLights<=0 then
     MaxLights:=8;
 
-  {$IFDEF DebugGLErr} DebugOpenGL(3, '', []); {$ENDIF}
   finally
     wglMakeCurrent(0, 0);
   end;
@@ -1222,26 +1182,27 @@ begin
   if not OpenGlLoaded then
     Exit;
 
-//  if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
-  if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
-    raise EError(6310);
-  try
-    if WinSwapHint<>nil then
-    begin
-      glAddSwapHintRectWIN:=WinSwapHint;
-      Int4Array[0]:=DrawRect.Left;
-      Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
-      Int4Array[2]:=DrawRect.Right - DrawRect.Left;
-      Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
-      glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
-      CheckOpenGLError(glGetError);
-    end;
-
-    if DoubleBuffered then
+  if DoubleBuffered then
+  begin
+//    if wglMakeCurrent(ViewDC, RC) = false then //wglShareLists
+    if wglMakeCurrent(ViewDC, GetOpenGLDummyRC) = false then
+      raise EError(6310);
+    try
+      if WinSwapHint<>nil then
+      begin
+        glAddSwapHintRectWIN:=WinSwapHint;
+        Int4Array[0]:=DrawRect.Left;
+        Int4Array[1]:=ScreenY - DrawRect.Bottom; //These coords start LOWER left
+        Int4Array[2]:=DrawRect.Right - DrawRect.Left;
+        Int4Array[3]:=DrawRect.Bottom - DrawRect.Top;
+        glAddSwapHintRectWIN(Int4Array[0], Int4Array[1], Int4Array[2], Int4Array[3]);
+        CheckOpenGLError('WinSwapHint');
+      end;
       if Windows.SwapBuffers(ViewDC)=false then
         raise exception.create(LoadStr1(6315));
-  finally
-    wglMakeCurrent(0, 0);
+    finally
+      wglMakeCurrent(0, 0);
+    end;
   end;
 end;
 
@@ -1313,7 +1274,7 @@ begin
         end;
 
         glDeleteLists(1, OpenGLDisplayLists[I]);
-        CheckOpenGLError(glGetError);
+        CheckOpenGLError('StartBuildScene: glDeleteLists');
         OpenGLDisplayLists[I]:=0;
       end;
     end;
@@ -1500,12 +1461,10 @@ begin
    raise EError(6310);
   try
 
-  {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
   SX:=ScreenX;
   SY:=ScreenY;
   glViewport(0, 0, SX, SY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
-  CheckOpenGLError(glGetError);
-  {$IFDEF DebugGLErr} DebugOpenGL(50, '', []); {$ENDIF}
+  CheckOpenGLError('glViewPort');
 
   if Coord.FlatDisplay then
    begin
@@ -1597,7 +1556,7 @@ begin
       glTranslated(TransX, TransY, TransZ);
      end;
    end;
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Render3DView: Camera set-up');
 
   //wglShareList: DanielPharos: We've got to reset the state, since we're only using
   //one rendering context now.
@@ -1605,7 +1564,7 @@ begin
     glDisable(GL_DEPTH_TEST)
   else
     glEnable(GL_DEPTH_TEST);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Render3DView: GL_DEPTH_TEST');
 
   if Fog then
   begin
@@ -1616,28 +1575,29 @@ begin
   end
   else
     glDisable(GL_FOG);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Render3DView: GL_FOG');
   
   if Lighting then
     glEnable(GL_LIGHTING)
   else
     glDisable(GL_LIGHTING);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Render3DView: GL_LIGHTING');
 
   if Transparency then
     glEnable(GL_BLEND)
   else
     glDisable(GL_BLEND);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Render3DView: GL_BLEND');
 
   if Culling then
     glEnable(GL_CULL_FACE)
   else
     glDisable(GL_CULL_FACE);
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Render3DView: GL_CULL_FACE');
 
-  {$IFDEF DebugGLErr} DebugOpenGL(51, 'glClear', []); {$ENDIF}
-  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
+  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
+  CheckOpenGLError('Render3DView: glClear');
+
   CurrentAlpha:=0;
   FillChar(Currentf, SizeOf(Currentf), 0);
 
@@ -1660,7 +1620,7 @@ begin
 //      glEnable(GL_COLOR_MATERIAL);
     end;
   end;
-  CheckOpenGLError(glGetError);
+  CheckOpenGLError('Render3DView: ViewMode');
 
   RebuildDisplayList:=False;
   if DisplayLists then
@@ -1685,11 +1645,9 @@ begin
       if OpenGLDisplayLists[LightingQuality] = 0 then
         raise EError(6313);
 
-      {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE]); {$ENDIF}
       glNewList(OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE);
-      {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE]); {$ENDIF}
+      CheckOpenGLError('Render3DView: glNewList');
 
-      CheckOpenGLError(glGetError);
       RebuildDisplayList:=True;
     end;
   end;
@@ -1715,24 +1673,20 @@ begin
 
     if RebuildDisplayList then
     begin
-      {$IFDEF DebugGLErr} DebugOpenGL(-113, 'glEndList', []); {$ENDIF}
       glEndList;
-      {$IFDEF DebugGLErr} DebugOpenGL(113, 'glEndList', []); {$ENDIF}
-      CheckOpenGLError(glGetError);
+      CheckOpenGLError('Render3DView: glEndList');
     end;
   end
   else
   begin
-    {$IFDEF DebugGLErr} DebugOpenGL(-114, 'glCallList(<%d>)', [OpenGLDisplayLists[LightingQuality]]); {$ENDIF}
     glCallList(OpenGLDisplayLists[LightingQuality]);
-    {$IFDEF DebugGLErr} DebugOpenGL(114, 'glCallList(<%d>)', [OpenGLDisplayLists[LightingQuality]]); {$ENDIF}
-    CheckOpenGLError(glGetError);
+    CheckOpenGLError('Render3DView: glCallList');
   end;
 
   if Transparency then
   begin
     glDisable(GL_CULL_FACE);
-    CheckOpenGLError(glGetError);
+    CheckOpenGLError('Render3DView: GL_CULL_FACE (Transparency)');
 
     PList:=FListSurfaces;
     while Assigned(PList) do
@@ -1777,14 +1731,12 @@ begin
     if Culling then
     begin
       glEnable(GL_CULL_FACE);
-      glFrontFace(GL_CW);
-      CheckOpenGLError(glGetError);
+      CheckOpenGLError('Render3DView: GL_CULL_FACE (Transparency 2)');
     end;
   end;
 
-  {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFinish', []); {$ENDIF}
   glFinish;
-  {$IFDEF DebugGLErr} DebugOpenGL(55, '', []); {$ENDIF}
+  CheckOpenGLError('Render3DView: glFinish');
   finally
     wglMakeCurrent(0, 0);
   end;
@@ -1805,12 +1757,6 @@ var
 begin
   if Texture^.OpenGLName=0 then
   begin
-    {$IFDEF DebugGLErr}
-    if (Texture^.SourceTexture <> nil) then
-      DebugOpenGL(-104, 'BuildTexture(<%s>)', [Texture^.SourceTexture.Name])
-    else
-      DebugOpenGL(-104, 'BuildTexture(<Nil>)', []);
-    {$ENDIF}
 
  (*   // This broke OpenGL for odd sized textures in version 1.24 2004/12/14
     PSD:=GetTex3Description(Texture^);
@@ -1834,11 +1780,9 @@ begin
       //tbd: setup gamma at gl window setup}
 
       glGenTextures(1, Texture^.OpenGLName);
-      {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
       if Texture^.OpenGLName=0 then
         Raise InternalE(LoadStr(6314));
       glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
-      {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
 
       //making use of alpha channel of textures
       if PSD2.AlphaBits = psa8bpp then
@@ -1881,7 +1825,7 @@ begin
     try
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, @MaxTexDim);
-    CheckOpenGLError(glGetError);
+    CheckOpenGLError('GL_MAX_TEXTURE_SIZE');
     if MaxTexDim<=0 then
       MaxTexDim:=256;
     W:=Texture^.LoadedTexW;
@@ -2070,16 +2014,14 @@ begin
     end;
 
     {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
-    {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     glGenTextures(1, Texture^.OpenGLName);
-    CheckOpenGLError(glGetError);
+    CheckOpenGLError('glGenTextures');
 
     if Texture^.OpenGLName=0 then
       Raise InternalE(LoadStr(6314));
-    {$IFDEF DebugGLErr} DebugOpenGL(105, 'glBindTexture(GL_TEXTURE_2D, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
+    CheckOpenGLError('glBindTexture');
 
-    {$IFDEF DebugGLErr} DebugOpenGL(106, '', []); {$ENDIF}
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     if Bilinear then
@@ -2092,15 +2034,14 @@ begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     end;
-    CheckOpenGLError(glGetError);
+    CheckOpenGLError('glTexParameterf');
 
       // To reverse changes that broke OpenGL for odd sized textures in version 1.24 2004/12/14
     glTexImage2D(GL_TEXTURE_2D, 0, NumberOfComponents, W, H, 0, BufferType, GL_UNSIGNED_BYTE, TexData^);
   (*  glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
     end;//paletted textures   *)
-    CheckOpenGLError(glGetError);
+    CheckOpenGLError('glTexImage2D');
 
-    {$IFDEF DebugGLErr} DebugOpenGL(107, '', []); {$ENDIF}
     finally
       wglMakeCurrent(0, 0);
     end;
@@ -2153,7 +2094,8 @@ begin
   if Lighting and (LightingQuality=0) then
   begin
     glEnable(GL_LIGHTING);
-    CheckOpenGLError(glGetError);
+    CheckOpenGLError('RenderPList: GL_LIGHTING');
+
     if (NumberOfLights<MaxLights) then
       MaxLightNumber:=NumberOfLights
     else
@@ -2164,11 +2106,14 @@ begin
         glEnable(GL_LIGHT0+LightNR)
       else
         glDisable(GL_LIGHT0+LightNR);
-  end;
+      CheckOpenGLError('RenderPList: GL_LIGHT');
+    end;
   end
   else
+  begin
     glDisable(GL_LIGHTING);
-  CheckOpenGLError(glGetError);
+    CheckOpenGLError('RenderPList: GL_LIGHTING');
+  end;
 
   {if Transparency and TransparentFaces then
   begin}
@@ -2303,7 +2248,7 @@ begin
             LightParam[3]:=1.0;
 
             glLightfv(GL_LIGHT0+LightNR, GL_POSITION, @LightParam);
-            CheckOpenGLError(glGetError);
+            CheckOpenGLError('RenderPList: GL_LIGHT: GL_POSITION');
 
             UnpackColor(PL.Color, GLColor);
             LightParam[0]:=GLColor[0];
@@ -2312,12 +2257,12 @@ begin
             //LightParam[3]:=GLColor[3];
             LightParam[3]:=1.0;
             glLightfv(GL_LIGHT0+LightNR, GL_DIFFUSE, @LightParam);
-            CheckOpenGLError(glGetError);
+            CheckOpenGLError('RenderPList: GL_LIGHTING: glLightfv');
 
             glLightf(GL_LIGHT0+LightNR, GL_CONSTANT_ATTENUATION, 1.0);
             glLightf(GL_LIGHT0+LightNR, GL_LINEAR_ATTENUATION, 0.0);
             glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 5.0/PL.Brightness2);
-            CheckOpenGLError(glGetError);
+            CheckOpenGLError('RenderPList: GL_LIGHT: glLightf');
           end;
         end;
       end;
@@ -2352,30 +2297,27 @@ begin
         if PList^.Texture^.OpenGLName=0 then
           Raise InternalE(LoadStr1(6010));
         {$ENDIF}
-        {$IFDEF DebugGLErr} DebugOpenGL(-108, '', []); {$ENDIF}
         glBindTexture(GL_TEXTURE_2D, PList^.Texture^.OpenGLName);
-        {$IFDEF DebugGLErr} DebugOpenGL(108, '', []); {$ENDIF}
-        CheckOpenGLError(glGetError);
+        CheckOpenGLError('RenderPList: glBindTexture');
       end;
 
       PV:=PVertex3D(CurrentSurf);
 
       if Transparency and TransparentFaces then
       begin
-        {$IFDEF DebugGLErr} DebugOpenGL(-112, '', []); {$ENDIF}
         glColor4fv(Currentf);
-        {$IFDEF DebugGLErr} DebugOpenGL(112, '', []); {$ENDIF}
 
         Case TextureMode of
-        0:
-          glBlendFunc(GL_ONE, GL_ZERO);
+        //0, 4:
+          //glBlendFunc(GL_ONE, GL_ZERO);
         1,2,3:
           glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        4:
-          glBlendFunc(GL_ONE, GL_ZERO);
         5:
           glBlendFunc(GL_ONE, GL_ONE);
+        else //= 0, 4
+          glBlendFunc(GL_ONE, GL_ZERO);
         end;
+        CheckOpenGLError('RenderPList: glBlendFunc');
       end;
 
       if VertexCount>=0 then
@@ -2447,7 +2389,7 @@ begin
       raise EError(6310);
     try
       glDeleteTextures(1, Tex^.OpenGLName);
-      CheckOpenGLError(glGetError);
+      CheckOpenGLError('ClearTexture: glDeleteTextures');
       Tex^.OpenGLName:=0;
     finally
       wglMakeCurrent(0, 0);
@@ -2488,19 +2430,30 @@ end;*)
 
  {------------------------}
 
-procedure CheckOpenGLError(GlError: GLenum);
+procedure CheckOpenGLError(const Location: String);
+var
+  GlError: GLenum;
+  ErrorMessage: String;
 begin
-  case GlError of
-  GL_NO_ERROR: ;
-  GL_INVALID_VALUE: Raise EErrorFmt(6303, ['GL_INVALID_VALUE']);
-  GL_INVALID_ENUM: Raise EErrorFmt(6303, ['GL_INVALID_ENUM']);
-  GL_INVALID_OPERATION: Raise EErrorFmt(6303, ['GL_INVALID_OPERATION']);
-  GL_STACK_OVERFLOW: Raise EErrorFmt(6303, ['GL_STACK_OVERFLOW']);
-  GL_STACK_UNDERFLOW: Raise EErrorFmt(6303, ['GL_STACK_UNDERFLOW']);
-  GL_OUT_OF_MEMORY: Raise EErrorFmt(6303, ['GL_OUT_OF_MEMORY']);
-  else
-    Raise EErrorFmt(6303, ['Unknown error code']);
+  ErrorMessage:='';
+  GlError:=glGetError;
+  while GlError<>GL_NO_ERROR do
+  begin
+    case GlError of
+    GL_INVALID_VALUE: ErrorMessage:=FmtLoadStr1(6303, ['GL_INVALID_VALUE', Location]);
+    GL_INVALID_ENUM: ErrorMessage:=FmtLoadStr1(6303, ['GL_INVALID_ENUM', Location]);
+    GL_INVALID_OPERATION: ErrorMessage:=FmtLoadStr1(6303, ['GL_INVALID_OPERATION', Location]);
+    GL_STACK_OVERFLOW: ErrorMessage:=FmtLoadStr1(6303, ['GL_STACK_OVERFLOW', Location]);
+    GL_STACK_UNDERFLOW: ErrorMessage:=FmtLoadStr1(6303, ['GL_STACK_UNDERFLOW', Location]);
+    GL_OUT_OF_MEMORY: ErrorMessage:=FmtLoadStr1(6303, ['GL_OUT_OF_MEMORY', Location]);
+    else
+      ErrorMessage:=FmtLoadStr1(6303, ['Unknown error code', Location]);
+    end;
+    Log(LOG_WARNING, ErrorMessage);
+    GlError:=glGetError;
   end;
+  if ErrorMessage<>'' then
+    Raise Exception.Create(ErrorMessage);  
 end;
 
 initialization

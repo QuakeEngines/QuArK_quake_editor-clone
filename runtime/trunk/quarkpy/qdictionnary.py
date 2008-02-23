@@ -996,7 +996,7 @@ Strings = {
     6300: "Could not load the OpenGL drivers//Error code %d",
     6301: "Error in OpenGL initialization//'%s' failed",
     6302: "Error in OpenGL commands [Error code(s) %s step %d]",
-    6303: "An error occurred in the OpenGL routines: %s",
+    6303: "An error '%s' occurred in the OpenGL routine '%s'",
     6304: "Unable to load OpenGL extension list. All OpenGL extensions will be disabled",
     6305: "Error in OpenGL finalization//'%s' failed",
 
@@ -1044,6 +1044,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.118  2008/02/23 18:25:02  danielpharos
+#Fix a typo.
+#
 #Revision 1.117  2008/02/21 21:21:30  danielpharos
 #Small auto-update update: just some minor things.
 #
