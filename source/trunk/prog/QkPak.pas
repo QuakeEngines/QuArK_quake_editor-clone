@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.19  2003/08/12 15:53:44  silverpaladin
 Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
 
@@ -88,7 +91,7 @@ unit QkPak;
 interface
 
 uses
-  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, TB97, QkFileExplorer, QkListView, BrowseForFolder,
   ComCtrls, QkForm, QkGroup, Python;
 
@@ -172,7 +175,7 @@ type
 implementation
 
 uses Travail, QkExplorer, Quarkx, PyObjects, Game, QkSin,
- Qkzip2, qkq3, QkObjectClassList, QkBsp;
+ Qkzip2, qkq3, QkObjectClassList, QkBsp, ExtraFunctionality;
 
 {$R *.DFM}
 

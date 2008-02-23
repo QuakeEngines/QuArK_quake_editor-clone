@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2007/11/20 18:28:07  danielpharos
+Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
+
 Revision 1.58  2007/09/13 14:34:52  danielpharos
 The name of a pakfile containing a texture can now be specified per texture
 
@@ -426,7 +429,7 @@ implementation
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
   CCode, PyObjects, QkHr2, QkHL, QkSin, QkFormCfg,
-  QkQ1, QkQ2, QkQ3, QkObjectClassList, QkD3;
+  QkQ1, QkQ2, QkQ3, QkObjectClassList, QkD3, QkApplPaths;
 
 {$R *.DFM}
 
@@ -738,13 +741,13 @@ var
 
               for J:=DirsList.Count-1 downto 0 do
               begin
-                DosError:=FindFirst(PathAndFile(PathAndFile(QuakeDir, DirsList[J]), WriteTo), faAnyFile, SRec);
+                DosError:=FindFirst(AppendFileToPath(AppendFileToPath(QuakeDir, DirsList[J]), WriteTo), faAnyFile, SRec);
                 try
                   while DosError=0 do
                   begin
                     if SRec.Attr and faDirectory = 0 then
                     begin
-                      CopyFile(PChar(PathAndFile(PathAndFile(PathAndFile(QuakeDir, DirsList[J]), SourceDir), SRec.Name)),
+                      CopyFile(PChar(AppendFileToPath(AppendFileToPath(AppendFileToPath(QuakeDir, DirsList[J]), SourceDir), SRec.Name)),
                                PChar(OutputFile(SourceDir+SRec.Name)),
                                False);
                     end;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.11  2004/10/09 21:26:29  alexander
 fixed missing use
 
@@ -143,23 +146,21 @@ end;
 
 procedure TAddOnsAddDlg.FormActivate(Sender: TObject);
 var
+ searchPaths: QApplPaths;
+ somePath: String;
  I: Integer;
  Q: QFileObject;
 begin
  OnActivate:=Nil;
 
- { search root-directory of QuArK "<appl.path>\" }
- FindAndAddFilesOfMask(GetApplicationPath(), '*.qrk');
-(* possibility of an "<appl.path\UserData\<gamename>" directory?
- { search QuArK sub-directory for User Data. E.q. "<appl.path>\UserData" }
- FindAndAddFilesOfMask(GetApplicationUserdataPath(), '*.qrk');
- { search QuArK sub-directory named as the selected game. E.q. "<appl.path>\UserData\Quake_2" }
- FindAndAddFilesOfMask(GetApplicationUserdataGamePath(), '*.qrk');
-*)
- { search QuArK addons sub-directory. E.q. "<appl.path>\addons" }
- FindAndAddFilesOfMask(GetApplicationAddonsPath(), '*.qrk');
- { search QuArK addons sub-sub-directory named as the selected game. E.q. "<appl.path>\addons\Quake_2" }
- FindAndAddFilesOfMask(GetApplicationAddonsGamePath(), '*.qrk');
+ { search all QuArK's main directories }
+ searchPaths:=QApplPaths.Create;
+ try
+   while searchPaths.GetNextPath(somePath) do
+     FindAndAddFilesOfMask(somePath, '*.qrk');
+ finally
+   searchPaths.Free;
+ end;
 
  Update;
 

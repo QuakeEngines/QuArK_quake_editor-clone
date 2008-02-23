@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2007/12/13 12:32:36  danielpharos
+Change a procedure name to something much less confusing.
+
 Revision 1.50  2007/12/11 23:52:28  danielpharos
 Fixed a memory leak that occurred on exit in some gamemodes.
 
@@ -182,7 +185,7 @@ unit Game;
 interface
 
 uses
-  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, qmath, QkForm, StdCtrls, TB97, ComCtrls, StrUtils, Logging;
 
 type
@@ -248,8 +251,6 @@ procedure ReleaseGameFiles;
 procedure ListSourceDirs(Dirs: TStrings);
 function NeedGameFile(const FileName, PakFile: String) : QFileObject;
 function NeedGameFileBase(const BaseDir, FileName, PakFile: String) : QFileObject;
-function PathAndFile(Path, FileName: String) : String;
-(*function GetDLLDirectory: String;*)
 procedure BuildCorrectFileName(var S: String);
 function GettmpQuArK : String;
 function BaseOutputPath : String;
@@ -283,7 +284,8 @@ implementation
 {$R *.DFM}
 
 uses QkPak, Setup, QkUnknown, QkTextures, Travail, ToolBox1, QkImages, Qk1,
-  Game2, QkQuakeCtx, Config, PakFiles, Quarkx, PyImages, QkApplPaths, QkSteamFS;
+  Game2, QkQuakeCtx, Config, PakFiles, Quarkx, PyImages, QkApplPaths, QkSteamFS,
+  ExtraFunctionality;
 
 var
  GameFiles: TQList = Nil;
@@ -312,19 +314,20 @@ begin
  GameFiles:=Nil;
 end;
 
-function InternalSizeDown : Integer;  { result : free size }
+procedure InternalSizeDown;
 var
+ MemLeft: Integer;
  I, Reste: Integer;
 {FreeSize: Integer;
  Remove: Boolean;
  Q: QObject;}
+ Setup: QObject;
 begin
- Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 8) * (1024*1024));
-
  if GameFiles=Nil then
   Exit;
 
- Reste:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameFiles', 15));
+ Setup:=SetupSubSet(ssGeneral, 'Memory');
+ Reste:=Round(Setup.GetFloatSpec('GameFiles', 15));
 (*if Reste<0 then Reste:=0;
  for I:=GameFiles.Count-Reste-1 downto 0 do
   GameFiles.Delete(I);*)
@@ -334,10 +337,11 @@ begin
    Exit;
   end;
 
+ MemLeft:=Round(Setup.GetFloatSpec('GameBufferSize', 8)) * (1024*1024);
  for I:=GameFiles.Count-1 downto 0 do
   begin
-   Dec(Result, GameFiles[I].GetObjectSize(Nil, False));
-   if Result<=0 then
+   Dec(MemLeft, GameFiles[I].GetObjectSize(Nil, False));
+   if MemLeft<=0 then
     begin
      ReleaseGameFiles;
      Exit;
@@ -444,7 +448,7 @@ procedure ClearGameBuffers(CanCancel: Boolean);
 begin
  g_Form1.SavePendingFiles(CanCancel);
  CloseToolBoxes;
- ProgressIndicatorStart(0,0);
+ ProgressIndicatorStart(4415,0);
  try
   DelayDeleteGameBuffer(GameBuffer1);
   GameBuffer1:=Nil;
@@ -465,34 +469,6 @@ begin
  GameBuffer1:=Nil;
  UpdateAddOnsContent;
 end;
-
-function PathAndFile(Path, FileName: String) : String;
-begin
- {$IFDEF LINUX}
- Path:=StringReplace(Path,'\',PathDelim,[rfReplaceAll]);
- FileName:=StringReplace(FileName,'\',PathDelim,[rfReplaceAll]);
- {$ELSE}
- Path:=StringReplace(Path,'/',PathDelim,[rfReplaceAll]);
- FileName:=StringReplace(FileName,'/',PathDelim,[rfReplaceAll]);
- {$ENDIF}
- if Path<>'' then Path:=IncludeTrailingPathDelimiter(Path);
- Result:=Path+FileName;
- if (Result<>'') and (Result[Length(Result)]=PathDelim) then   { this is a path }
-  begin
-   Result:=ExpandFileName(Result);
-   if (Result[Length(Result)]=PathDelim) and (Result[Length(Result)-2]<>':') then
-    SetLength(Result, Length(Result)-1);
-  end;
-end;
-
-(*DECKER
-function GetDLLDirectory: String;
-const
- DLL_SUBDIRECTORY = 'dlls';
-begin
- Result:=PathAndFile(GetApplicationPath(), DLL_SUBDIRECTORY);
-end;
-/DECKER*)
 
 function GettmpQuArK : String;
 var
@@ -515,11 +491,7 @@ begin
  Result:=SetupGameSet.Specifics.Values['tmpQuArK'];
  if Result='' then
   Result:='tmpQuArK';
- {$IFDEF LINUX}
- Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
- {$ELSE}
- Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
- {$ENDIF}
+ Result:=ConvertPath(Result);
 end;
 
 function QuakeDir : String;
@@ -529,16 +501,12 @@ begin
   begin
     Result:=SetupSubSet(ssGames, 'Steam').Specifics.Values['Directory'];
   end;
-  {$IFDEF LINUX}
-  Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
-  {$ELSE}
-  Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
-  {$ENDIF}
+  Result:=ConvertPath(Result);
 end;
 
 function BaseOutputPath : String;
 begin
-  Result:=PathAndFile(QuakeDir, GettmpQuArK);
+  Result:=AppendFileToPath(QuakeDir, GettmpQuArK);
 end;
 
 function OutputFile(const FileName: String) : String;
@@ -548,12 +516,7 @@ var
 begin
  Result:=BaseOutputPath;
  I:=Length(Result);
- Result:=Result+PathDelim+FileName;
- {$IFDEF LINUX}
- Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
- {$ELSE}
- Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
- {$ENDIF}
+ Result:=ConvertPath(AppendFileToPath(Result, FileName));
  repeat
   Inc(I);
   if Result[I]=PathDelim then
@@ -593,11 +556,7 @@ begin
     GlobalWarning(FmtLoadStr1(5625, [SetupGameSet.Name, Error]));
   if Result='' then
     Result:=GettmpQuArK;
-  {$IFDEF LINUX}
-  Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
-  {$ELSE}
-  Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
-  {$ENDIF}
+  Result:=ConvertPath(Result);
 end;
 
 procedure ListSourceDirs(Dirs: TStrings);
@@ -749,7 +708,7 @@ function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD:
    Result:='';
    GetDir(0, CurDir);
    try
-     ChDir(GetApplicationPath());
+     ChDir(GetQPath(pQuArK));
      NewPath:=ExpandFileName(Path);
    finally
      ChDir(CurDir);
@@ -769,7 +728,7 @@ function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD:
    CD:=SetupGameSet.Specifics.Values['CD'];
    if CD='' then
      Exit; // no CD drive configured
-   Result:=PathAndFile(PathAndFile(CD, CDDir), BaseDir);
+   Result:=AppendFileToPath(AppendFileToPath(CD, CDDir), BaseDir);
    if DirectoryExists(Result) = false then
      if MessageDlg(FmtLoadStr1(5559, [SetupGameSet.Name, FileName]), mtInformation, mbOkCancel, 0) <> mrOk then
        Result:='';
@@ -791,14 +750,14 @@ begin
   if (GameFiles=Nil) then
     GameFiles:=TQList.Create;
   SearchStage:=0;
-  AbsolutePath:=PathAndFile(QuakeDir, BaseDir);
+  AbsolutePath:=AppendFileToPath(QuakeDir, BaseDir);
   repeat
     // Buffer search
     RestartAliasing(FileName);
     FilenameAlias := GetNextAlias;
     while (FilenameAlias <> '') do
     begin
-      AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
+      AbsolutePathAndFilename := ExpandFileName(AppendFileToPath(AbsolutePath, FilenameAlias));
       Result := SortedFindFileName(GameFiles, AbsolutePathAndFilename);
       if (Result <> NIL) then
         Exit; { found it }
@@ -810,7 +769,7 @@ begin
     FilenameAlias := GetNextAlias;
     while (FilenameAlias <> '') do
     begin
-      AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
+      AbsolutePathAndFilename := ExpandFileName(AppendFileToPath(AbsolutePath, FilenameAlias));
       if FileExists(AbsolutePathAndFilename) then
       begin
         Result:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
@@ -842,7 +801,7 @@ begin
       while (FilenameAlias <> '') do
       begin
         GetPakNames.ResetIter(True);
-        AbsolutePathAndFilename:=ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
+        AbsolutePathAndFilename:=ExpandFileName(AppendFileToPath(AbsolutePath, FilenameAlias));
         while GetPakNames.GetNextPakName(True, AbsolutePathAndFilename, True) do
         begin
           if (not IsPakTemp(AbsolutePathAndFilename)) then  // ignores QuArK's own temporary pak's
@@ -876,7 +835,7 @@ begin
       else
       begin
         Setup:=SetupSubSet(ssGames, 'Steam');
-        SteamCacheDir:=PathAndFile(Setup.Specifics.Values['Directory'], Setup.Specifics.Values['CacheDirectory']);
+        SteamCacheDir:=AppendFileToPath(Setup.Specifics.Values['Directory'], Setup.Specifics.Values['CacheDirectory']);
         RestartAliasing(FileName);
         FilenameAlias := GetNextAlias;
         while (FilenameAlias <> '') do
@@ -1375,11 +1334,11 @@ var
 begin
   SousRep:=TStringList.Create;
   try
-    if FindFirst(PathAndFile(Rep, '*.*'), faAnyFile, S) = 0 then
+    if FindFirst(AppendFileToPath(Rep, '*.*'), faAnyFile, S) = 0 then
     begin
       repeat
         if S.Attr and faDirectory = 0 then
-          DeleteFile(PathAndFile(Rep, S.Name))
+          DeleteFile(AppendFileToPath(Rep, S.Name))
         else
           if (S.Name<>'.') and (S.Name<>'..') then
             SousRep.Add(S.Name);
@@ -1387,7 +1346,7 @@ begin
     end;
     FindClose(S);
     for I:=0 to SousRep.Count-1 do
-      ClearAllFilesRec(PathAndFile(Rep, SousRep[I]));
+      ClearAllFilesRec(AppendFileToPath(Rep, SousRep[I]));
   finally
     SousRep.Free;
   end;
@@ -1424,7 +1383,7 @@ begin
     S2:=CheckDir;
     while (pos(#$D, S2) <> 0) do
     begin
-      CheckFile:=PathAndFile(QuakeDir, Copy(S2, 1, pos(#$D, S2)-1));
+      CheckFile:=AppendFileToPath(QuakeDir, Copy(S2, 1, pos(#$D, S2)-1));
       F:=FileExists(CheckFile);
       Result:=Result or F;
       if not F then TryingToFind:=TryingToFind+Copy(S2, 1, pos(#$D, S2)-1)+', or ';
@@ -1438,7 +1397,7 @@ begin
     S2:=CheckDir;
     while (pos(#$A, S2) <> 0) do
     begin
-      CheckFile:=PathAndFile(QuakeDir, Copy(S2, 1, pos(#$A, S2)-1));
+      CheckFile:=AppendFileToPath(QuakeDir, Copy(S2, 1, pos(#$A, S2)-1));
       F:=FileExists(CheckFile);
       Result:=Result and F;
       if not F then TryingToFind:=TryingToFind+Copy(S2, 1, pos(#$A, S2)-1)+', and ';
@@ -1448,7 +1407,7 @@ begin
   end
   else
   begin
-    Result:=FileExists(PathAndFile(QuakeDir, CheckDir));
+    Result:=FileExists(AppendFileToPath(QuakeDir, CheckDir));
     TryingToFind:=CheckDir;
   end;
 

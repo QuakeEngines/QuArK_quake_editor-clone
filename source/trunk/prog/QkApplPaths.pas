@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/03/10 21:56:10  danielpharos
+Fixed a backslash-linux problem.
+
 Revision 1.8  2006/11/30 01:21:02  cdunde
 To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 
@@ -52,25 +55,23 @@ unit QkApplPaths;
 
 interface
 
-procedure SetApplicationPath(const a_Path:String);
-
-function GetApplicationPath() : String;
-function GetApplicationAddonsPath() : String;
-function GetApplicationAddonsGamePath() : String;
-function GetApplicationDllPath(): String;
-
 type
+  TPathType = (
+      pQuArK, pQuArKAddon, pQuArKGameAddon, pQuArKDll, pQuArKHelp,  //QuArK's own paths
+      pUserData, pUserGameData  //The user paths
+    );
+
   { a priority search-order, in which QApplPaths.GetNextPath()
-    should return the paths. }
+    will return the paths. }
   ApplicationPaths_t =
-    (ApplicationRoot
-    ,ApplicationAddons
-    ,ApplicationAddonsGame
-(* reserved for future use
-    ,ApplicationUserdata
-    ,ApplicationUserdataGame
-/reserved for future use *)
-    ,None
+     (ApplicationRoot
+(* For future use:
+    , ApplicationUserdata
+    , ApplicationUserdataGame
+*)
+    , ApplicationAddons
+    , ApplicationAddonsGame
+    , None
     );
 
   QApplPaths =  class
@@ -83,18 +84,46 @@ type
                     function GetNextPath(var a_ReturnPath:String) : Boolean;
                 end;
 
+function ConvertPath(const S: string): string;
+function AppendFileToPath(Path, FileName: String) : String;
+procedure SetApplicationPath(const a_Path: String = '');
+function GetQPath(const PathToGet : TPathType) : String;
+
  { ------------------- }
 
 implementation
 
-uses SysUtils, ExtraFunctionality, Windows, Setup;
+uses SysUtils, Windows, Forms, Setup, ExtraFunctionality;
+
+const
+  ADDONS_SUBDIRECTORY = 'addons';
+  DLL_SUBDIRECTORY = 'dlls';
+  HELP_SUBDIRECTORY = 'help';
 
 var
-  ApplicationPath : String; {must always contain trailing backslash}
+  ApplicationPath : String; //must always contain trailing backslash
 
  { ------------------- }
 
-procedure SetApplicationPath(const a_Path:String);
+function ConvertPath(const S: string): string;
+begin
+  {$IFDEF LINUX}
+  result:=StringReplace(S,'\',PathDelim,[rfReplaceAll]);
+  {$ELSE}
+  result:=StringReplace(S,'/',PathDelim,[rfReplaceAll]);
+  {$ENDIF}
+end;
+
+//This function is also used to append paths to other paths
+function AppendFileToPath(Path, FileName: String) : String;
+begin
+ Path:=ConvertPath(Path);
+ FileName:=ConvertPath(FileName);
+ if Path<>'' then Path:=IncludeTrailingPathDelimiter(Path);
+ Result:=Path+FileName;
+end;
+
+procedure SetApplicationPath(const a_Path: String = '');
 { Sets application path, or in case there is a QUARKPATH
   environment-variable, it overrules the argument }
 var
@@ -104,52 +133,38 @@ begin
   environmentLength := GetEnvironmentVariable('QUARKPATH', environmentContents, SizeOf(environmentContents));
 
   if environmentLength = 0 then
-    ApplicationPath := a_Path
+  begin
+    if a_Path = '' then
+      ApplicationPath := ExtractFilePath(Application.Exename)
+    else
+      ApplicationPath := a_Path;
+  end
   else
     SetString(ApplicationPath, environmentContents, environmentLength);
 
   ApplicationPath := IncludeTrailingPathDelimiter(ApplicationPath);
 end;
 
-function GetApplicationPath() : String;
-{ Returns the application path }
-begin
-  Result := ApplicationPath;
-end;
-
-function GetApplicationAddonsPath() : String;
-{ Returns the application\ADDONS\ path }
-const
-  ADDONS_SUBDIRECTORY = 'Addons'+PathDelim;
-begin
-  Result := ApplicationPath + ADDONS_SUBDIRECTORY;
-end;
-
-function GetApplicationAddonsGamePath() : String;
-{ Returns the application\ADDONS\game_name path, where game_name's
-  spaces are replaced with underscores. }
-var
-  GamenameUnderscored: String;
-  I: Integer;
-begin
-  GamenameUnderscored := SetupGameSet.Name;
-
-  { If game-name contains spaces, convert them to underscores. }
-  for I:=Length(GamenameUnderscored) downto 1 do
+function GetQPath(const PathToGet : TPathType) : String;
+  function UnderscoredGamename : String;
   begin
-    if (GamenameUnderscored[I] = ' ') then
-      GamenameUnderscored[I] := '_';
+    { If game-name contains spaces, convert them to underscores. }
+    Result:=StringReplace(SetupGameSet.Name,' ','_',[rfReplaceAll]);
   end;
-
-  Result := GetApplicationAddonsPath() + IncludeTrailingPathDelimiter(GamenameUnderscored);
-end;
-
-function GetApplicationDllPath(): String;
-{ Returns the application\DLLS\ path }
-const
-  DLL_SUBDIRECTORY = 'Dlls'+PathDelim;
 begin
-  Result := ApplicationPath + DLL_SUBDIRECTORY;
+  if ApplicationPath = '' then
+    raise exception.create('Error: Application path not yet loaded!');
+
+  case PathToGet of
+  pQuArK: Result:=ApplicationPath;
+  pQuArKAddon: Result:=AppendFileToPath(GetQPath(pQuArK), ADDONS_SUBDIRECTORY);
+  pQuArKGameAddon: Result:=AppendFileToPath(GetQPath(pQuArKAddon), UnderscoredGamename);
+  pQuArKDll: Result:=AppendFileToPath(GetQPath(pQuArK), DLL_SUBDIRECTORY);
+  pQuArKHelp: Result:=AppendFileToPath(GetQPath(pQuArK), HELP_SUBDIRECTORY);
+  pUserData: Result:=''; //@
+  pUserGameData: Result:=''; //@
+  end;
+  Result:=IncludeTrailingPathDelimiter(Result);
 end;
 
  { ------------------- }
@@ -168,22 +183,22 @@ function QApplPaths.GetNextPath(var a_ReturnPath:String) : Boolean;
 { Returns true if there is a path, false if none. }
 begin
   case m_NextPathToTry of
-  ApplicationAddonsGame:
-    a_ReturnPath:=GetApplicationAddonsGamePath();
-
-  ApplicationAddons:
-    a_ReturnPath:=GetApplicationAddonsPath();
+  ApplicationRoot:
+    a_ReturnPath:=GetQPath(pQuArK);
 
 (* reserved for future use
-  ApplicationUserdataGame:
-    a_ReturnPath:=GetApplicationUserdataGamePath();
-
   ApplicationUserdata:
-    a_ReturnPath:=GetApplicationUserdataPath();
-/reserved for future use *)
+    a_ReturnPath:=GetQPath(pUserData);
+    
+  ApplicationUserdataGame:
+    a_ReturnPath:=GetQPath(pUserGameData);
+*)
 
-  ApplicationRoot:
-    a_ReturnPath:=GetApplicationPath();
+  ApplicationAddons:
+    a_ReturnPath:=GetQPath(pQuArKAddon);
+
+  ApplicationAddonsGame:
+    a_ReturnPath:=GetQPath(pQuArKGameAddon);
 
   else
     Init();

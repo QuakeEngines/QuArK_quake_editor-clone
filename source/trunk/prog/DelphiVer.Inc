@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.1  2003/08/13 04:23:36  silverpaladin
 Additional Delphi compiler version defines.
 
@@ -32,6 +35,7 @@ Additional Delphi compiler version defines.
 // forums out there I don't know the origin.
 // It was added because it is a misnomer that a compilier constant is defined for
 // that compiler and all newer versions. - SilverPaladin
+// DanielPharos: Here's the source: http://delphi.about.com/od/objectpascalide/a/compiler_ver.htm
 {$IFDEF VER80}
   {$DEFINE CompiledWithDelphi1}
   {$DEFINE Delphi1orNewerCompiler}

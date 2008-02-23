@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.7  2003/08/13 04:18:56  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -37,40 +40,57 @@ interface
 
 {$I DelphiVer.inc}
 
-uses SysUtils;
-function ConvertPath(const s: string):string;
+uses SysUtils, StrUtils;
 
 
-{$ifndef Delphi6Over} // Pre-dates Delphi 6
+{$ifndef Delphi6orNewerCompiler} // Pre-dates Delphi 6
+{ IsPathDelimiter returns True if the character at byte S[Index]
+  is a PathDelimiter ('\' or '/'), and it is not a MBCS lead or trail byte. }
+function IsPathDelimiter(const S: string; Index: Integer): Boolean;
 
-// IncludeTrailingPathDelimiter returns the path with a PathDelimiter
-//  ('/' or '\') at the end.  This function is MBCS enabled.
+{ IncludeTrailingPathDelimiter returns the path with a PathDelimiter
+  ('/' or '\') at the end.  This function is MBCS enabled. }
 function IncludeTrailingPathDelimiter(const S: string): string;
 
 const
   PathDelim  = {$IFDEF MSWINDOWS} '\'; {$ELSE} '/'; {$ENDIF}
   DriveDelim = {$IFDEF MSWINDOWS} ':'; {$ELSE} '';  {$ENDIF}
   PathSep    = {$IFDEF MSWINDOWS} ';'; {$ELSE} ':'; {$ENDIF}
+{$endif}
 
+{$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7
+{ PosEx searches for SubStr in S and returns the index position of
+  SubStr if found and 0 otherwise.  If Offset is not given then the result is
+  the same as calling Pos.  If Offset is specified and > 1 then the search
+  starts at position Offset within S.  If Offset is larger than Length(S)
+  then PosEx returns 0.  By default, Offset equals 1. }
+function PosEx(const SubStr, S: string; Offset: Cardinal = 1): Integer;
 {$endif}
 
 implementation
 
-function ConvertPath(const s: string):string;
+{$ifndef Delphi6orNewerCompiler} // Pre-dates Delphi 6
+function IsPathDelimiter(const S: string; Index: Integer): Boolean;
 begin
-  {$IFDEF LINUX}
-  result:=StringReplace(s,'\',PathDelim,[rfReplaceAll]);
-  {$ELSE}
-  result:=StringReplace(s,'/',PathDelim,[rfReplaceAll]);
-  {$ENDIF}
+  Result := (Index > 0) and (Index <= Length(S)) and (S[Index] = PathDelim)
+    and (ByteType(S, Index) = mbSingleByte);
 end;
 
-{$ifndef Delphi6Over} // Pre-dates Delphi 6
 function IncludeTrailingPathDelimiter(const S: string): string;
 begin
   Result := S;
   if not IsPathDelimiter(Result, Length(Result)) then
     Result := Result + PathDelim;
+end;
+{$endif}
+
+{$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7
+function PosEx(const SubStr, S: string; Offset: Cardinal = 1): Integer;
+begin
+  //This code is NOT copied from the StrUtils, so it MIGHT react differently!
+  Result := Pos(SubStr, RightStr(S, Length(S) - Offset));
+  if Result <> 0 then
+    Result := Result + Offset;
 end;
 {$endif}
 

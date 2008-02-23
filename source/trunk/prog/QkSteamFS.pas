@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2007/12/19 13:56:35  danielpharos
+Some changes to process-detection: Should work on Windows NT4 now too, and made the Steam executable filename configurable (but hidden).
+
 Revision 1.23  2007/09/12 16:21:41  danielpharos
 Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
 
@@ -110,7 +113,7 @@ procedure ClearSteamCache;
 implementation
 
 uses ShellAPI, SysUtils, StrUtils, Quarkx, Setup, Logging, SystemDetails,
-     ExtraFunctionality, QkObjects, Md5Hash;
+     QkObjects, Md5Hash, ExtraFunctionality, QkApplPaths;
 
 var
   ClearCacheNeeded: Boolean;
@@ -433,12 +436,7 @@ begin
   Setup:=SetupSubSet(ssGames, 'Steam');
   ClearCache:=Setup.Specifics.Values['Clearcache']<>'';
   ClearCacheGCF:=Setup.Specifics.Values['ClearcacheGCF']<>'';
-  SteamFullCacheDirectory:=IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory'])+Setup.Specifics.Values['CacheDirectory']+'\';
-  {$IFDEF LINUX}
-  SteamFullCacheDirectory:=StringReplace(SteamFullCacheDirectory,'\',PathDelim,[rfReplaceAll]);
-  {$ELSE}
-  SteamFullCacheDirectory:=StringReplace(SteamFullCacheDirectory,'/',PathDelim,[rfReplaceAll]);
-  {$ENDIF}
+  SteamFullCacheDirectory:=ConvertPath(IncludeTrailingPathDelimiter(Setup.Specifics.Values['Directory'])+Setup.Specifics.Values['CacheDirectory']+'\');
   if ClearCache or ClearCacheGCF then
   begin
     WarnBeforeClear:=Setup.Specifics.Values['WarnBeforeClear']<>'';

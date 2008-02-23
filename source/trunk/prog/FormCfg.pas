@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2007/08/04 14:42:29  danielpharos
+Use QuakeDir to retrieve the game directory. That's the way it should be, plus some planned upcoming changes to Steam-access will affect this.
+
 Revision 1.35  2007/06/13 11:44:40  danielpharos
 Changed a number of a string and removed an unused one.
 
@@ -127,7 +130,7 @@ interface
 uses SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
      QkObjects, qmath, Windows, ComCtrls, Messages, TB97, Dialogs,
      Menus, CommCtrl, EnterEditCtrl, QkForm, Game, BrowseForFolder,
-     CursorScrollBox, Spin, SmArrowBtn, QkFormCfg, ExtraFunctionality;
+     CursorScrollBox, Spin, SmArrowBtn, QkFormCfg, QkApplPaths;
 
 const
  wp_InternalEdit = 96;
@@ -264,7 +267,8 @@ implementation
 
 uses QkUnknown, Undo, TbPalette, QkFileObjects, Toolbar1, ToolBox1,
      Setup, QkInclude, QkMacro, QkImages, QkTextures,
-     Python, Quarkx, PyMacros, PyToolbars, PyForms, QkPixelSet, QkObjectClassList;
+     Python, Quarkx, PyMacros, PyToolbars, PyForms, QkPixelSet, QkObjectClassList,
+     ExtraFunctionality;
 
 const
  Differs = 5391;

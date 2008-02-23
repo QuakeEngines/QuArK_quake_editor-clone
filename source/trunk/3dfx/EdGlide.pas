@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2007/09/04 14:38:12  danielpharos
+Fix the white-line erasing after a tooltip disappears in OpenGL. Also fix an issue with quality settings in software mode.
+
 Revision 1.10  2007/06/06 22:31:21  danielpharos
 Fix a (recent introduced) problem with OpenGL not drawing anymore.
 
@@ -545,7 +548,7 @@ begin
   begin
    if LibName='' then
     Raise EError(6001);
-   if not LoadGlide(LibName, GetApplicationDllPath()) then
+   if not LoadGlide(LibName, GetQPath(pQuArKDll)) then
     Raise EErrorFmt(6002, [LibName, GetLastError]);
    try
     SetIntelPrecision;

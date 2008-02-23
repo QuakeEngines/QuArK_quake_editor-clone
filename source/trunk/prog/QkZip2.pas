@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2007/12/06 15:47:49  danielpharos
+Fixed a wrong text.
+
 Revision 1.26  2007/03/28 22:13:00  danielpharos
 Updated the crc32-unit.
 
@@ -194,7 +197,8 @@ const
 
 implementation
 
-uses Travail, QkExplorer, Quarkx, PyObjects, Game, crc32, UNZIP, ZIP, QkObjectClassList;
+uses Travail, QkExplorer, Quarkx, PyObjects, Game, crc32, UNZIP, ZIP, QkObjectClassList,
+     ExtraFunctionality;
 
 function BuildLFH(ver, bit, com, las, crc, cmp, unc, fil, ext:longint) : TLocalFileHeader;
 begin

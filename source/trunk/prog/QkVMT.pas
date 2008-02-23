@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/09/13 15:09:06  danielpharos
+Improved the find-texture-belonging-to-material-file
+
 Revision 1.14  2007/09/13 14:34:53  danielpharos
 The name of a pakfile containing a texture can now be specified per texture
 
@@ -103,7 +106,8 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, QkVTF, StrUtils;
+uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, Logging, QkVTF, StrUtils,
+     ExtraFunctionality, QkApplPaths;
 
 var
   VMTLoaded: Boolean;
@@ -221,12 +225,7 @@ begin
   if ReverseLink<>nil then
   begin
     GCFFilename:=ReverseLink.Specifics.Values['PakFile'];
-    TexturePath:=ReverseLink.Specifics.Values['path'];
-    {$IFDEF LINUX}
-    TexturePath:=StringReplace(TexturePath,'\',PathDelim,[rfReplaceAll]);
-    {$ELSE}
-    TexturePath:=StringReplace(TexturePath,'/',PathDelim,[rfReplaceAll]);
-    {$ENDIF}
+    TexturePath:=ConvertPath(ReverseLink.Specifics.Values['path']);
   end
   else
   begin

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.10  2003/03/15 06:56:09  tiglari
 fix problem with button appearing when no infobase link
 
@@ -197,7 +200,7 @@ end;
 {AiV/}
 procedure THelpPopup.SetInfoBaseLink(Link: String);
 begin
-  InfoBaseLink := GetApplicationPath+'help\'+Link;  // tiglari
+  InfoBaseLink := GetQPath(pQuArKHelp)+Link;
   Button1.Visible := (Link <> '');
 end;
 {/AiV}

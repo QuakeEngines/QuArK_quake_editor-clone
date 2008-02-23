@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2005/09/28 10:48:32  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.24  2003/08/12 15:57:33  silverpaladin
 Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
 
@@ -96,7 +99,7 @@ unit QkQuakeCtx;
 interface
 
 uses
-  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, TB97, QkFormVw, Python, PyObjects, Logging;
 
 type
@@ -128,7 +131,7 @@ implementation
 
 uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1,
      ToolBoxGroup, Game, QkMapObjects, FormCfg, QkExplorer,
-     QkForm, Travail, QkFormCfg;
+     QkForm, Travail, QkFormCfg, ExtraFunctionality;
 
  {------------------------}
 

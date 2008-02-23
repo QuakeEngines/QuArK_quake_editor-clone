@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2008/02/07 14:09:29  danielpharos
+Removed some redundant uses.
+
 Revision 1.54  2008/02/03 13:12:45  danielpharos
 Update for the AutoUpdater. Beginning of the install-window.
 
@@ -2458,7 +2461,7 @@ end;
 
 procedure TForm1.Registering1Click(Sender: TObject);
 begin
- HTMLDoc(GetApplicationPath()+'help\register.html');
+ HTMLDoc(GetQPath(pQuArKHelp)+'register.html');
 end;
 
 procedure TForm1.ConvertFrom1Item1Click(Sender: TObject);

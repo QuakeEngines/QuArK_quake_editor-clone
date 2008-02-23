@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.13  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -117,7 +120,7 @@ procedure OutputDirDlg;
 
 implementation
 
-uses FormCfg, Game, QkPak, Setup, Travail, Qk1, Quarkx, PakFiles;
+uses FormCfg, Game, QkPak, Setup, Travail, Qk1, Quarkx, PakFiles, QkApplPaths;
 
 {$R *.DFM}
 
@@ -258,7 +261,7 @@ begin
         begin
           GetPakNames := TGetPakNames.Create;
           try
-            GetPakNames.CreatePakList(PathAndFile(QD1, sr.Name), '', False, True);
+            GetPakNames.CreatePakList(AppendFileToPath(QD1, sr.Name), '', False, True);
             while GetPakNames.GetNextPakName(True, PakFilename, False) do
             begin
               if IsPakTemp(PakFilename) then

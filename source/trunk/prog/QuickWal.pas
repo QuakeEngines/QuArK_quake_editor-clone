@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2007/05/06 21:23:00  danielpharos
+Fixed the name of the scripts folder for EF2.
+Changed DDS support to be EF2-specific.
+
 Revision 1.41  2007/05/05 22:17:52  cdunde
 To add .dds Texture Browser loading from .pk3 files.
 
@@ -194,7 +198,7 @@ implementation
 
 uses QkGroup, Game, QkTextures, QkWad, QkExplorer,
   Quarkx, Travail, ToolBox1, QkPak, QkFileObjects, QkHL, ToolBoxGroup,
-  Setup, QkQ3, OsFolder, QkD3;
+  Setup, QkQ3, OsFolder, QkD3, QkApplPaths;
 
 {$R *.DFM}
 
@@ -220,7 +224,7 @@ begin
   List2:=TStringList.Create;
   List2.Sorted:=true;
 
-  FindError:=FindFirst(PathAndFile(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
+  FindError:=FindFirst(AppendFileToPath(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
   try
     while FindError=0 do
     begin
@@ -692,7 +696,7 @@ begin
   Result:=DestFolder;
   L:=TStringList.Create;
   try
-    FindError:=FindFirst(PathAndFile(Path, '*.*'), faAnyFile, F);
+    FindError:=FindFirst(AppendFileToPath(Path, '*.*'), faAnyFile, F);
     try
       while FindError=0 do
       begin
@@ -702,7 +706,7 @@ begin
           try
             while TryToLink1(Result, F.Name, FolderName, Base, Loaded) do
             begin
-              Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
+              Loaded:=ExactFileLink(AppendFileToPath(Path, F.Name), Nil, False);
               Loaded.AddRef(+1);
             end;
           finally
@@ -722,7 +726,7 @@ begin
     end;
     {parse found sub-folders}
     for I:=0 to L.Count-1 do
-      LinkFolder(ParseRec(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', nil), Result, FolderName);
+      LinkFolder(ParseRec(AppendFileToPath(Path, L[I]), Base, FolderName+L[I]+'/', nil), Result, FolderName);
   finally
     L.Free;
   end;
@@ -739,7 +743,7 @@ begin
   Result:=DestFolder;
   L:=TStringList.Create;
   try
-    FindError:=FindFirst(PathAndFile(Path, '*.*'), faAnyFile, F);
+    FindError:=FindFirst(AppendFileToPath(Path, '*.*'), faAnyFile, F);
     try
       Index:=0;
       while FindError=0 do
@@ -752,7 +756,7 @@ begin
             if  Previous=Nil then
               while TryToLink1(Result, F.Name, FolderName, Base, Loaded, Index) do
               begin
-                Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
+                Loaded:=ExactFileLink(AppendFileToPath(Path, F.Name), Nil, False);
                 Loaded.AddRef(+1);
               end;
           finally
@@ -777,11 +781,11 @@ begin
       SubFolder:=DestFolder.LocateSubElement(L[I],Index);
       if SubFolder=Nil then
       begin
-        SubFolder:= ParseTextureFolders(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder);
+        SubFolder:= ParseTextureFolders(AppendFileToPath(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder);
         LinkFolder(SubFolder, Result, FolderName,Index)
       end
       else
-        ParseTextureFolders(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder)
+        ParseTextureFolders(AppendFileToPath(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder)
     end;
   finally
     L.Free;
@@ -798,7 +802,7 @@ var
 begin
   Result:=DestFolder;
   try
-    FindError:=FindFirst(PathAndFile(Path, '*.shader'), faAnyFile, F);
+    FindError:=FindFirst(AppendFileToPath(Path, '*.shader'), faAnyFile, F);
     try
       while FindError=0 do
       begin
@@ -812,7 +816,7 @@ begin
               FoundShaders.Add(ShortName);
             while LinkShaderFolder(Result, F.Name, FolderName, Base, Loaded) do
             begin
-              Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
+              Loaded:=ExactFileLink(AppendFileToPath(Path, F.Name), Nil, False);
               Loaded.AddRef(+1);
             end;
           finally
@@ -942,18 +946,18 @@ var
  Pak: QPakFolder;
  DiskFolder: QObject;
 begin
-    Path:=PathAndFile(QuakeDir, Base);
+    Path:=AppendFileToPath(QuakeDir, Base);
     DiskFolder:=QTextureList.Create('Directories',Nil);
     try
      { Find Quake-3:Arena .shader files in directory }
-     S:=PathAndFile(Path, GameShadersPath);
+     S:=AppendFileToPath(Path, GameShadersPath);
      DiskFolder:=ParseRec(S, Base, '', DiskFolder);
     except
      (*do nothing*)
     end;
     try
      { Find 'game' textures in directory }
-     S:=PathAndFile(Path, GameTexturesPath);
+     S:=AppendFileToPath(Path, GameTexturesPath);
      DiskFolder:=ParseRec(S, Base, '', DiskFolder);
     except
      (*do nothing*)
@@ -969,11 +973,11 @@ begin
       DiskFolder.Free;
     end;
     
-    FindError:=FindFirst(PathAndFile(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
+    FindError:=FindFirst(AppendFileToPath(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
     try
      while FindError=0 do
       begin
-       Pak:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False) as QPakFolder;
+       Pak:=ExactFileLink(AppendFileToPath(Path, F.Name), Nil, False) as QPakFolder;
        Pak.AddRef(+1);
        try
         Pak.Acces;
@@ -1021,7 +1025,7 @@ var
   P : Integer;
   FileName,S : String;
 begin
-  FileName:=PathandFile(QuakeDir,Base+'/'+GameShaderList);
+  FileName:=AppendFileToPath(QuakeDir,Base+'/'+GameShaderList);
   List:=TStringList.Create;
   if not FileExists(FileName) then
     Exit;
@@ -1055,7 +1059,7 @@ var
   I: Integer;
   PakFilter, ShaderFilter, FolderFilter: boolean;
 begin
-  Path:=PathAndFile(QuakeDir, Base);
+  Path:=AppendFileToPath(QuakeDir, Base);
 
   PakFilter:=false;
   ShaderFilter:=false;
@@ -1100,13 +1104,13 @@ begin
 
   TexturesPath:=GameTexturesPath;
   if FolderFilter then
-    TexturesPath:=PathAndFile(GameTexturesPath,Filter);
+    TexturesPath:=AppendFileToPath(GameTexturesPath,Filter);
 
   if not (PakFilter or FolderFilter) then
   { Get Shaders }
   try
      { Find Quake-3:Arena .shader files in directory }
-     S:=PathAndFile(Path, GameShadersPath);
+     S:=AppendFileToPath(Path, GameShadersPath);
      Q:=ParseShaderFiles(S, Base, '', Q, ShaderList, FoundShaders);
   except
      (*do nothing*)
@@ -1115,7 +1119,7 @@ begin
   if not FolderFilter then
   for I:=PakList.Count-1 downto 0 do
   begin
-    Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
+    Pak:=ExactFileLink(AppendFileToPath(Path, PakList[I]), Nil, False) as QPakFolder;
     PakName:=Pak.Name;
     Pak.AddRef(+1);
     try
@@ -1146,9 +1150,9 @@ begin
   if not (PakFilter or ShaderFilter) then
   try
      { Find 'game' textures in directory }
-     S:=PathAndFile(Path, GameTexturesPath);
+     S:=AppendFileToPath(Path, GameTexturesPath);
      if FolderFilter then
-       S:=PathAndFile(S,Filter);
+       S:=AppendFileToPath(S,Filter);
      if Filter<>'' then
        Filter:=Filter+'/';
      Q:=ParseTextureFolders(S, Base, Filter, Q);
@@ -1159,7 +1163,7 @@ begin
   if not (ShaderFilter or FolderFilter) then
   for I:=PakList.Count-1 downto 0 do
   begin
-    Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
+    Pak:=ExactFileLink(AppendFileToPath(Path, PakList[I]), Nil, False) as QPakFolder;
     PakName:=Pak.Name;
     Pak.AddRef(+1);
     try
@@ -1195,7 +1199,7 @@ var
 begin
  OnActivate:=Nil;
  CheckQuakeDir;
- DosError:=FindFirst(PathAndFile(QuakeDir, '*.*'), faAnyFile, F);
+ DosError:=FindFirst(AppendFileToPath(QuakeDir, '*.*'), faAnyFile, F);
  try
   while DosError=0 do
    begin

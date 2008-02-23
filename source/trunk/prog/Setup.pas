@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2007/12/19 12:38:32  danielpharos
+Made an option to set the amount of lines of text in the console.
+
 Revision 1.60  2007/09/24 00:15:55  danielpharos
 Made MaxRecentFiles a configurable option.
 
@@ -344,7 +347,6 @@ const  { for SetupChanged }
  {------------------------}
 
 procedure InitSetup;
-(*procedure InitApplicationPath;*)
 procedure SetupChanged(Level: Integer);
 function SetupSubSet(Root: TSetupSet; SubSet: String) : QObject;
 function SetupSubSetEx(Root: TSetupSet; SubSet: String; Create: Boolean) : QObject;
@@ -389,14 +391,15 @@ implementation
 
 uses QkMapObjects, Travail, Game, Console, QkGroup, QkForm, Qk1,
      ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, Python, PyMapView,
-     PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths;
+     PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
+     ExtraFunctionality;
 
 const
  SetupFileName    = 'Setup.qrk';
  DefaultsFileName = 'Defaults.qrk';
 
 var
- {SetupFileName1,} DefaultsFileName1: String;
+ LoadedSetupFileName, LoadedDefaultsFileName: String;
  AddOns: QFileObject = Nil;
 {SetupModified: Boolean;}
 
@@ -612,23 +615,6 @@ begin
      end;
 end;
 
-(*DECKER
-procedure InitApplicationPath;
-var
- Z: array[0..MAX_PATH] of Char;
- I: Integer;
-begin
- I:=GetEnvironmentVariable('QUARKPATH', Z, SizeOf(Z));
- if I=0 then
-  ApplicationPath:=ExtractFilePath(Application.ExeName)
- else
-  begin
-   SetString(ApplicationPath, Z, I);
-   ApplicationPath:=IncludeTrailingPathDelimiter(ApplicationPath);
-  end;
-end;
-/DECKER*)
-
 procedure InitSetup;
 var
  SetupQrk: QFileObject;
@@ -644,15 +630,14 @@ begin
    end;
 {g_SetupSet[ssTempData]:=QConfig.Create(SetupSetName[ssTempData], Nil);
  g_SetupSet[ssTempData].AddRef(+1);}
- DefaultsFileName1:='';
-{ SetupFileName1:=GetApplicationPath()+SetupFileName;  { default }
+ LoadedDefaultsFileName:='';
 
   { loads Defaults.qrk }
  try
   SetupQrk:=LienFichierQObject(DefaultsFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
-   DefaultsFileName1:=SetupQrk.Filename;
+   LoadedDefaultsFileName:=SetupQrk.Filename;
    BrowseConfig(SetupQrk);  { copies this setup data into memory }
   finally
    SetupQrk.AddRef(-1);
@@ -690,7 +675,7 @@ begin
   SetupQrk:=LienFichierQObject(SetupFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
-  {SetupFileName1:=SetupQrk.Filename;}
+   LoadedSetupFileName:=SetupQrk.Filename;
    BrowseConfig(SetupQrk);  { copies this setup data into memory }
   finally
    SetupQrk.AddRef(-1);
@@ -811,19 +796,19 @@ begin
   Root.SubElements.Remove(Cfg);
 end;
 
-procedure SaveSetup(Format: Integer; AppPath: String);
+procedure SaveSetup(Format: Integer);
 var
  SetupQrk: QFileObject;
  T: TSetupSet;
  Q: QObject;
  SetupSet2: TSetupSetArray;
 begin
- if DefaultsFileName1='' then Exit;
+ if LoadedDefaultsFileName='' then Exit;
  SetupSet2:=g_SetupSet;
  try
   FillChar(g_SetupSet, SizeOf(g_SetupSet), 0);  { reset g_SetupSet }
   try
-   SetupQrk:=ExactFileLink(DefaultsFileName1, Nil, False);
+   SetupQrk:=ExactFileLink(LoadedDefaultsFileName, Nil, False);
    SetupQrk.AddRef(+1);
    try
     BrowseConfig(SetupQrk);  { loads the default setup data }
@@ -836,7 +821,7 @@ begin
     SetupQrk:=LienFichierQObject(SetupFileName, Nil, False);
    except
     on EQObjectFileNotFound do  { creates a new setup file if not found }
-     SetupQrk:=BuildFileRoot(AppPath+SetupFileName, Nil);
+     SetupQrk:=BuildFileRoot(GetQPath(pUserGameData)+SetupFileName, Nil);
    end;
     { stores the new setup information }
    SetupQrk.AddRef(+1);
@@ -875,22 +860,8 @@ end;
 
 procedure SaveSetupNow;
 begin
- SaveSetup(rf_AsText, GetApplicationPath());   { save as text }
+ SaveSetup(rf_AsText);   { save as text }
 end;
-(*var
- s: PyObject;
- Path: String;
- P: PChar;
-begin
- Path:=GetApplicationPath();
- s:=PyDict_GetItemString(QuarkxDict, 'exepath');
- if s<>Nil then
-  begin
-   P:=PyString_AsString(s);
-   if (P<>Nil) and (P^<>#0) then Path:=IncludeTrailingPathDelimiter(P);
-  end;
- SaveSetup(rf_AsText, Path);   { save as text }
-end;*)
 
 procedure UpdateForm1Root;
 begin
@@ -944,8 +915,8 @@ begin
    Result.AddRef(+1);
    try
     Result.Flags:=Result.Flags or ofFileLink;
-    Result.Filename:=DefaultsFileName1;
-    Result.SubElements.Add(ExactFileLink(DefaultsFileName1, Result, False));
+    Result.Filename:=LoadedDefaultsFileName;
+    Result.SubElements.Add(ExactFileLink(LoadedDefaultsFileName, Result, False));
   (*Result.SubElements.Add(LienFichierQObject(
      SetupGameSet.Specifics.Values['Base'], Result));*)
     L:=TStringList.Create;
@@ -1132,7 +1103,6 @@ begin
     g_SetupSet[ssGames].Specifics.Values['GameCfg']:=nMode;
    {SetupModified:=True;}
     SetupChanged(scGame);
-    //PosteMessageFiches(wp_SetupChanged, scGame);
    end;
 end;
 

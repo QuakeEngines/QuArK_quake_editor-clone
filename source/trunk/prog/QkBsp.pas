@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2007/07/05 10:19:45  danielpharos
+Moved the Quake .map format code to a separate file.
+
 Revision 1.62  2007/04/16 11:34:55  danielpharos
 Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
 
@@ -227,7 +230,7 @@ unit QkBsp;
 interface
 
 uses
-  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, QkObjects, QkFileObjects, QkForm, QkMapObjects, qmath,
   StdCtrls, Python, PyObjects, PyMath, Game, QkUnknown, TB97;
 

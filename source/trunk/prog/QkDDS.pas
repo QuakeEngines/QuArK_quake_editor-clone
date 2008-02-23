@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2007/12/06 23:01:31  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
 Revision 1.9  2007/11/21 16:07:32  danielpharos
 Another bunch of hugh image fixes: everything should work again!
 
@@ -318,11 +321,11 @@ begin
     F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);}
 
     //DanielPharos: The bypass:
-    DumpFileName:=GetApplicationPath+'0';
+    DumpFileName:=GetQPath(pQuArK)+'0';
     while FileExists(DumpFileName+'.tga') or FileExists(DumpFileName+'.dds') do
     begin
       //DanielPharos: Ugly way of creating a unique filename...
-      DumpFileName:=GetApplicationPath+IntToStr(Random(999999));
+      DumpFileName:=GetQPath(pQuArK)+IntToStr(Random(999999));
     end;
     //DanielPharos: Can't save to IL_DDS, DevIL gives an error.
     if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=false then
@@ -332,7 +335,7 @@ begin
     end;
 
     //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
-    if FileExists(GetApplicationDllPath+'nvdxt.exe')=false then
+    if FileExists(GetQPath(pQuArKDll)+'nvdxt.exe')=false then
     begin
       ilDeleteImages(1, @DevILImage);
       FatalFileError('Unable to save DDS file. dlls/nvdxt.exe not found.');
@@ -364,7 +367,7 @@ begin
     NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
     NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
     //If you delete this, don't forget the implementation-link to QkApplPaths
-    if Windows.CreateProcess(nil, PChar('nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetApplicationDllPath), NVDXTStartupInfo, NVDXTProcessInformation)=false then
+    if Windows.CreateProcess(nil, PChar('nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
     begin
       ilDeleteImages(1, @DevILImage);
       FatalFileError('Unable to save DDS file. Call to CreateProcess failed.');

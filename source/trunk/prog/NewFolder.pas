@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.6  2001/06/05 18:38:28  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -86,7 +89,7 @@ begin
  MarsCap.ActiveEndColor:=clYellow;
  UpdateMarsCap;
  OpenGlobalImageList(ListView1);
- SaveDialog1.FileName:=GetApplicationPath()+'*.qrk';
+ SaveDialog1.FileName:=GetQPath(pQuArK)+'*.qrk';
  DisplayAddOnsList(ListView1);
 end;
 
@@ -134,7 +137,7 @@ begin
    SaveDialog1.Filter:=LoadStr1(772)+'|'+LoadStr1(774);
    SaveDialog1.Title:=LoadStr1(5257);
    if not SaveDialog1.Execute then Exit;
-   if CompareText(ExtractFilePath(SaveDialog1.FileName), GetApplicationPath()) <> 0 then
+   if CompareText(ExtractFilePath(SaveDialog1.FileName), GetQPath(pQuArK)) <> 0 then
     Raise EError(5596);
    Target:=BuildFileRoot(SaveDialog1.FileName, Nil);
    Target.AddRef(+1);

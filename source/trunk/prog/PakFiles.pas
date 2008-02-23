@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2007/08/21 23:43:44  danielpharos
+Another fix to the HL2 building process.
+
 Revision 1.1  2007/08/14 16:32:59  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -33,7 +36,7 @@ unit PakFiles;
 
 interface
 
-uses  Windows, Classes;
+uses Windows, Classes;
 
 type
   TGetPakNames = class
@@ -57,7 +60,7 @@ function FindNextAvailablePakFilename(Force: Boolean) : String;
 
 implementation
 
-uses StrUtils, SysUtils, Setup, Game, QkPak, Quarkx;
+uses StrUtils, SysUtils, Setup, Game, QkPak, Quarkx, QkApplPaths;
 
 function IsPakTemp(const theFilename: String) : Boolean;
 var
@@ -151,20 +154,20 @@ begin
    for J:=0 to PakFileMaxNumber do
    begin
      S := LeftStr(PakFileFilter, I-1) + IntToStr(J) + RightStr(PakFileFilter, Length(PakFileFilter) - I);
-     StrList.Add(PathAndFile(Path, S));
+     StrList.Add(AppendFileToPath(Path, S));
    end;
  end
  else
  begin
    //Get the list of strings, by looking in the path for files matching the filefilter
-   if FindFirst(PathAndFile(Path, PakFileFilter), faAnyFile, sr) = 0 then
+   if FindFirst(AppendFileToPath(Path, PakFileFilter), faAnyFile, sr) = 0 then
    begin
-     S := PathAndFile(Path, sr.Name);
+     S := AppendFileToPath(Path, sr.Name);
      if (not SearchForTemp) or (SearchForTemp and IsPakTemp(S)) then
        StrList.Add(S);
      while FindNext(sr) = 0 do
      begin
-       S := PathAndFile(Path, sr.Name);
+       S := AppendFileToPath(Path, sr.Name);
        if (not SearchForTemp) or (SearchForTemp and IsPakTemp(S)) then
          StrList.Add(S);
      end;
@@ -209,7 +212,7 @@ begin
    FindNextAvailablePakFilename:='';  // no pak file to write
    Exit;
  end;
- GameModDir:=PathAndFile(QuakeDir, GameModDir);
+ GameModDir:=AppendFileToPath(QuakeDir, GameModDir);
  GetPakNames := TGetPakNames.Create;
  try
    //-- Find last existing package with QuArK-tag --
@@ -223,7 +226,7 @@ begin
      FoundFreeOne:=False;
      for I:=0 to PakFileMaxNumber do
      begin
-       AvailablePakFile:=PathAndFile(GameModDir,'tmpQuArK' + IntToStr(I) + PakFileExt);
+       AvailablePakFile:=AppendFileToPath(GameModDir,'tmpQuArK' + IntToStr(I) + PakFileExt);
        if FileExists(AvailablePakFile) = false then
        begin
          FoundFreeOne:=True;

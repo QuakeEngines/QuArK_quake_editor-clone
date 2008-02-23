@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2008/02/12 21:50:45  danielpharos
+Added ability to save console output to a text file.
+
 Revision 1.55  2008/02/11 13:56:13  danielpharos
 Added error messages, and fixed some RGB -> BGR
 
@@ -188,7 +191,7 @@ interface
 {$I DelphiVer.inc}
 
 uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
-     Menus, Math;
+     Menus;
 
 const
  PythonSetupString = 'import sys'#10'sys.path = ["%s"]'#10'import quarkpy';
@@ -721,7 +724,7 @@ begin
     end;
   Bitmap:=TBitmap.Create;
   try
-   S:=GetApplicationPath()+StrPas(FileName);
+   S:=GetQPath(pQuArK)+StrPas(FileName);
    Ok:=FileExists(S);
    if Ok then
     try
@@ -3051,7 +3054,7 @@ begin
  PyDict_SetItemString(QuarkxDict, 'version', m);
  Py_DECREF(m);
 
- m:=PyString_FromString(PChar(GetApplicationPath()));
+ m:=PyString_FromString(PChar(GetQPath(pQuArK)));
  if m=Nil then
   Exit;
  PyDict_SetItemString(QuarkxDict, 'exepath', m);
@@ -3335,7 +3338,7 @@ begin
 
  if not InitializeQuarkx then FatalError(-9);
 
- S:=GetApplicationPath();
+ S:=GetQPath(pQuArK);
  if (Length(S)>0) and (S[Length(S)]=PathDelim) then
   SetLength(S, Length(S)-1);
  S:=Format(PythonSetupString, [StringReplace(S,'\','\\',[rfReplaceAll])]);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2007/03/29 21:01:39  danielpharos
+Changed a few comments and error messages
+
 Revision 1.18  2007/03/12 13:21:58  danielpharos
 Fixed a few stupid bugs introduced in the last change.
 
@@ -79,7 +82,7 @@ unit Logging;
 
 interface
 
-uses Windows, Sysutils, Forms;
+uses Windows, Sysutils;
 
 type
   TLogName = (LOG_DEFAULT, LOG_PASCAL, LOG_PYTHON, LOG_SYS, LOG_DEBUG);
@@ -124,8 +127,7 @@ var
   PF: TextFile;
   filename: string;
 begin
-  SetApplicationPath(ExtractFilePath(Application.Exename));
-  filename:=GetApplicationPath()+LogPatchname;
+  filename:=GetQPath(pQuArK)+LogPatchname;
   if fileexists(filename) then
   begin
   {$I-}
@@ -148,8 +150,8 @@ begin
   if LogOpened then
     exit;
   {$I-}
-  SetApplicationPath(ExtractFilePath(Application.Exename));
-  AssignFile(LogFile, GetApplicationPath()+LogFilename);
+  SetApplicationPath();
+  AssignFile(LogFile, GetQPath(pQuArK)+LogFilename);
   rewrite(LogFile);
   {$I+}
   LogOpened:=true;

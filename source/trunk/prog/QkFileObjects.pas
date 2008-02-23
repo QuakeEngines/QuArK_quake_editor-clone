@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2007/12/06 22:58:00  danielpharos
+Workaround for a weird memory leak.
+
 Revision 1.42  2007/09/24 00:15:55  danielpharos
 Made MaxRecentFiles a configurable option.
 
@@ -142,7 +145,7 @@ unit QkFileObjects;
 interface
 
 uses
-  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, QkObjects, TB97, EnterEditCtrl, QkForm, ComCtrls, CommCtrl, Python;
 
 const
@@ -330,7 +333,7 @@ implementation
 
 uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
   QkFileExplorer, QkUnknown, Toolbar1, Quarkx, QkInclude, PyObjects,
-  PyForms, QkTreeView, Game, QkObjectClassList, QkApplPaths;
+  PyForms, QkTreeView, Game, QkObjectClassList, QkApplPaths, ExtraFunctionality;
 
 {$R *.DFM}
 
@@ -969,7 +972,8 @@ begin
    I:=1;
    while P[I] <> '=' do
     begin
-     if P[I] in [#13, #10, #0] then SyntaxError(5197);
+     if P[I] in [#13, #10, #0] then
+      SyntaxError(5197);
      Inc(I);
     end;
    J:=I+1;
@@ -1162,7 +1166,7 @@ begin
    I:=Length(Path);
    while (I>0) and (Path[I]<>'/') do
     Dec(I);
-   QFileObject(Obj).SaveInFile(rf_Default, PathAndFile(BasePath, Copy(Path, I+1, MaxInt)));
+   QFileObject(Obj).SaveInFile(rf_Default, AppendFileToPath(BasePath, Copy(Path, I+1, MaxInt)));
   end
  else
   inherited;
@@ -2073,7 +2077,7 @@ begin
  S[1]:=#0;
  GetTempPath(MAX_PATH, PChar(S));
  SetLength(S, StrLen(PChar(S)));
- DosError:=FindFirst(PathAndFile(S, Format('auto-save-*%s', [Ext])), faAnyFile, Rec);
+ DosError:=FindFirst(AppendFileToPath(S, Format('auto-save-*%s', [Ext])), faAnyFile, Rec);
  try
   while DosError=0 do
    begin
@@ -2094,7 +2098,7 @@ begin
         CloseHandle(H);
         if OldId=0 then
          begin
-          S1:=PathAndFile(S, Rec.Name);
+          S1:=AppendFileToPath(S, Rec.Name);
           case MessageDlg(FmtLoadStr1(5682, [S1]), mtInformation, mbYesNoCancel, 0) of
            mrYes: with TSaveDialog.Create(Application) do
                    try
@@ -2356,7 +2360,7 @@ begin
          S[1]:=#0;
          GetTempPath(MAX_PATH, PChar(S));
          SetLength(S, StrLen(PChar(S)));
-         S:=PathAndFile(S, Format('auto-save-%x-%x%s', [GetCurrentProcessId, LongInt(Self), TypeInfo]));
+         S:=AppendFileToPath(S, Format('auto-save-%x-%x%s', [GetCurrentProcessId, LongInt(Self), TypeInfo]));
          Result:=PyString_FromString(PChar(S));
          Exit;
         end;
