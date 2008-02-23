@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2008/02/23 19:56:12  danielpharos
+Fix stupid typo in prev rev.
+
 Revision 1.12  2008/02/23 19:44:40  danielpharos
 Updated with new DevIL code.
 
@@ -410,54 +413,58 @@ begin
     ilDeleteImages(1, @DevILImage);
     CheckDevILError(ilGetError);
 
-    //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
-    if FileExists(GetQPath(pQuArKDll)+'nvdxt.exe')=false then
-      FatalFileError('Unable to save DDS file. dlls/nvdxt.exe not found.');
+    try
+      //DanielPharos: Now convert the TGA to DDS with NVIDIA's DDS tool...
+      if FileExists(GetQPath(pQuArKDll)+'nvdxt.exe')=false then
+        FatalFileError('Unable to save DDS file. dlls/nvdxt.exe not found.');
 
-    case TexFormat of
-    0: TexFormatParameter:='dxt1c';
-    1: TexFormatParameter:='dxt1a';
-    2: TexFormatParameter:='dxt3';
-    3: TexFormatParameter:='dxt5';
-    4: TexFormatParameter:='u1555';
-    5: TexFormatParameter:='u4444';
-    6: TexFormatParameter:='u565';
-    7: TexFormatParameter:='u8888';
-    8: TexFormatParameter:='u888';
-    9: TexFormatParameter:='u555';
-    10: TexFormatParameter:='l8';
-    11: TexFormatParameter:='a8';
+      case TexFormat of
+      0: TexFormatParameter:='dxt1c';
+      1: TexFormatParameter:='dxt1a';
+      2: TexFormatParameter:='dxt3';
+      3: TexFormatParameter:='dxt5';
+      4: TexFormatParameter:='u1555';
+      5: TexFormatParameter:='u4444';
+      6: TexFormatParameter:='u565';
+      7: TexFormatParameter:='u8888';
+      8: TexFormatParameter:='u888';
+      9: TexFormatParameter:='u555';
+      10: TexFormatParameter:='l8';
+      11: TexFormatParameter:='a8';
+      end;
+
+      case Quality of
+      0: QualityParameter:='quick';
+      1: QualityParameter:='quality_normal';
+      2: QualityParameter:='quality_production';
+      3: QualityParameter:='quality_highest';
+      end;
+      FillChar(NVDXTStartupInfo, SizeOf(NVDXTStartupInfo), 0);
+      FillChar(NVDXTProcessInformation, SizeOf(NVDXTProcessInformation), 0);
+      NVDXTStartupInfo.cb:=SizeOf(NVDXTStartupInfo);
+      NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
+      NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
+      //FIXME: If you delete this, don't forget the implementation-link to QkApplPaths
+      if Windows.CreateProcess(nil, PChar(GetQPath(pQuArKDll)+'nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
+        FatalFileError('Unable to save DDS file. Call to CreateProcess failed.');
+
+      //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
+      if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
+      begin
+        CloseHandle(NVDXTProcessInformation.hThread);
+        CloseHandle(NVDXTProcessInformation.hProcess);
+        FatalFileError('Unable to save DDS file. Call to WaitForSingleObject failed.');
+      end;
+
+      if CloseHandle(NVDXTProcessInformation.hThread)=false then
+        FatalFileError('Unable to save DDS file. Call to CloseHandle(thread) failed.');
+      if CloseHandle(NVDXTProcessInformation.hProcess)=false then
+        FatalFileError('Unable to save DDS file. Call to CloseHandle(process) failed.');
+
+    finally
+      if DeleteFile(DumpFileName+'.tga')=false then
+        FatalFileError('Unable to save DDS file. Call to DeleteFile(tga) failed.');
     end;
-    case Quality of
-    0: QualityParameter:='quick';
-    1: QualityParameter:='quality_normal';
-    2: QualityParameter:='quality_production';
-    3: QualityParameter:='quality_highest';
-    end;
-    FillChar(NVDXTStartupInfo, SizeOf(NVDXTStartupInfo), 0);
-    FillChar(NVDXTProcessInformation, SizeOf(NVDXTProcessInformation), 0);
-    NVDXTStartupInfo.cb:=SizeOf(NVDXTStartupInfo);
-    NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
-    NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
-    //If you delete this, don't forget the implementation-link to QkApplPaths
-    if Windows.CreateProcess(nil, PChar(GetQPath(pQuArKDll)+'nvdxt.exe -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
-      FatalFileError('Unable to save DDS file. Call to CreateProcess failed.');
-
-    //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
-    if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
-    begin
-      CloseHandle(NVDXTProcessInformation.hThread);
-      CloseHandle(NVDXTProcessInformation.hProcess);
-      FatalFileError('Unable to save DDS file. Call to WaitForSingleObject failed.');
-    end;
-
-    if CloseHandle(NVDXTProcessInformation.hThread)=false then
-      FatalFileError('Unable to save DDS file. Call to CloseHandle(thread) failed.');
-    if CloseHandle(NVDXTProcessInformation.hProcess)=false then
-      FatalFileError('Unable to save DDS file. Call to CloseHandle(process) failed.');
-
-    if DeleteFile(DumpFileName+'.tga')=false then
-      FatalFileError('Unable to save DDS file. Call to DeleteFile(tga) failed.');
 
     //DanielPharos: Now let's read in that DDS file and be done!
     DumpBuffer:=TFileStream.Create(DumpFileName+'.dds',fmOpenRead);
