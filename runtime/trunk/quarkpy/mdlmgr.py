@@ -317,6 +317,7 @@ class ModelLayout(BaseLayout):
 
     def bs_skinform(self, panel):  ### This is the Skin-view setup items (form, buttons & view).
         ico_maped=ico_dict['ico_maped']
+        ico_mdlskv=ico_dict['ico_mdlskv']
         fp = panel.newpanel()
         skingridbtn = qtoolbar.doublebutton(self.skintogglegrid, self.skingetgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it.", ico_maped, 7, infobaselink="intro.modeleditor.toolpalettes.display.html#grid")
         skingridbtn.caption = str(self.editor.skingridstep)  # To show the setting value on the button.
@@ -326,7 +327,7 @@ class ModelLayout(BaseLayout):
         self.Vertexdragmode.mode = self.MODE
         self.Vertexdragmode.tag = "SingleVertexDrag"
         self.Vertexdragmode.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
-        self.skinremapbtn = qtoolbar.button(self.reskin, "Remap Snapshot||Remap Snapshot:\n\nClick this button when you have selected some faces in any of the editor's views and it will 'Re-map' those faces on the current Face-view skin for that component using the angle of view that is seen in the editor's 3D view when the button is clicked.\n\nChanging the angle, panning or zooming in the editor's 3D view and clicking the button again will change the size and re-mapping of those same faces once more.\n\nTo reverse what has been done use the 'Undo/Redo' list on the Edit menu.", ico_mdlskv, 1, "Skin-view", infobaselink="intro.modeleditor.skinview.html#selection")
+        self.skinremapbtn = qtoolbar.button(self.reskin, "Remap Snapshot||Remap Snapshot:\n\nClick this button when you have selected some faces in any of the editor's views and it will 'Re-map' those faces on the current Skin-view skin for that component using the angle of view that is seen in the editor's 3D view when the button is clicked.\n\nChanging the angle, panning or zooming in the editor's 3D view and clicking the button again will change the size and re-mapping of those same faces once more.\n\nTo reverse what has been done use the 'Undo/Redo' list on the Edit menu.", ico_mdlskv, 1, "Skin-view", infobaselink="intro.modeleditor.skinview.html#selection")
         self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode, "skinremap": self.skinremapbtn})
         tp = fp.newtoppanel(123,0) # Sets the height of the top panel.
         btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, self.Vertexdragmode, self.skinremapbtn])
@@ -568,11 +569,25 @@ class ModelLayout(BaseLayout):
             self.editor.Root.setcomponent(comp)
 
 ########## commenting out the lines below brakes Misc dragging
-        if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
-            slist = self.getskin()
-            comp.currentskin = slist[0]
+            if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
+                slist = self.getskin()
+                comp.currentskin = slist[0]
+            else:
+                comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
+##########
+
+            m = qmenu.item("Dummy", None, "")
+            plugins.mdlpaintmodes.ColorSelectorClick(m)
+
         else:
-            comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
+            self.editor.Root.setcomponent(comp)
+
+########## commenting out the lines below brakes Misc dragging
+            if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
+                slist = self.getskin()
+                comp.currentskin = slist[0]
+            else:
+                comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
 ##########
 
         from mdleditor import NewSellist
@@ -640,6 +655,9 @@ class ModelLayout(BaseLayout):
         if skin is not c.currentskin:
             c.currentskin = skin
             saveskin = skin
+            if quarkx.setupsubset(SS_MODEL, "Options")["SelectColorsDlg"] == "1":
+                m = qmenu.item("Dummy", None, "")
+                plugins.mdlpaintmodes.ColorSelectorClick(m)
             self.selectcomponent(c)
             
         if c != self.editor.Root.currentcomponent:
@@ -727,6 +745,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.58  2008/02/22 09:52:24  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.57  2008/01/07 06:53:18  cdunde
 #Part of last change code left out.
 #
@@ -909,10 +930,10 @@ mppages = []
 #Had to comment out one more line and move things around to avoid weird stuff.
 #
 #Revision 1.10.2.5  2006/11/22 23:31:52  cdunde
-#To setup Face-view click function to open Texture Browser for possible future use.
+#To setup Skin-view click function to open Texture Browser for possible future use.
 #
 #Revision 1.10.2.4  2006/11/16 00:20:07  cdunde
-#Added Model Editors Face-view own zoom button independent of all other views.
+#Added Model Editors Skin-view own zoom button independent of all other views.
 #
 #Revision 1.10.2.3  2006/11/15 23:50:16  cdunde
 #To show currentskin of a model component in Skin-view when any item

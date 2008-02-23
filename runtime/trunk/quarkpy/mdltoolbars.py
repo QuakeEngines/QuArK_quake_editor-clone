@@ -289,6 +289,9 @@ class EditToolsBar(ToolBar):
     DefaultPos = ((0,0,0,0), "topdock", 0, 0, 1)
 
     def buildbuttons(self, layout):
+        if not ico_dict.has_key('ico_mdltools'):
+            ico_dict['ico_mdltools']=LoadIconSet1("ico_mdltools", 1.0)
+        ico_mdltools=ico_dict['ico_mdltools']
         extrude = qtoolbar.button(extrudeclick, "Face mode:\n  Extrude Selected Faces\nVertex mode:\n  Extrude outside edges||Face mode:  Extrude Selected Faces\nVertex mode:  Extrude outside edges:\n\nIn Face mode - this function only works with selected faces in the Editor's views. No 'bulkheads' will be created.\nThe faces can be extruded in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\nSwitching from view to view between drags will change the extruded drag direction.\n\nIn Vertex mode - it will perform the same function for all 'outside' edges (do not share two common vertexes) that have been selected.\n\nTwo vertexes of the same triangle must be selected. If an improper vertex selection has been made it will attempt to correct that selection or notify you if it can not.", ico_mdltools, 0, infobaselink="intro.modeleditor.toolpalettes.edittools.html#extrudeselectedfaces")
         extrudebulkheads = qtoolbar.button(extrudebulkheadsclick, "Face mode:\n  Extrude with bulkheads\nVertex mode:\n  Extrude all edges||Face mode:  Extrude with bulkheads\nVertex mode:  Extrude all edges\n\nIn Face mode - this does the same function as the 'Extrude' but leaves 'bulkheads' between each drag.\nThe faces can be extruded in any of the editor's views, but the best control is done in one of its '2D' views.\n\nEach time a new drag is made a new set of faces will be created from that starting position to the position at the end of the drag with the new faces selected.\n\nSwitching from view to view between drags will change the extruded drag direction.\n\nIn Vertex mode - it will perform the same function for all edges that have been selected, including ones that share two common vertexes.\n\nAt least two vertexes of the same triangle must be selected. If an improper vertex selection has been made it will attempt to correct that selection or notify you if it can not.", ico_mdltools, 1, infobaselink="intro.modeleditor.toolpalettes.edittools.html#extrudewithbulkheads")
         revface = qtoolbar.button(ReverseFaceClick, "Reverse face direction||Reverse face direction:\n\nIf faces of a model component have been selected, the direction they face will be reversed by clicking this button.", ico_mdltools, 2, infobaselink="intro.modeleditor.toolpalettes.edittools.html#reversefacedirection")
@@ -314,6 +317,9 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.11  2007/12/06 02:06:29  cdunde
+#Minor corrections.
+#
 #Revision 1.10  2007/12/05 04:45:57  cdunde
 #Added two new function methods to Subdivide selected faces into 3 and 4 new triangles each.
 #

@@ -2364,7 +2364,18 @@ def SubdivideFaces(editor, pieces=None):
 #        to locate and\or change a pixel on a texture, or textures palette if one exist.
 #    The second sub-list is strictly used, if desired, to pass to and draw something
 #        in the Skin-view, using it's 'canvas()' function, at the same time and
-#        pixel location when the cursor is in one of the other editor's views.
+#        pixel location when the cursor is in one of the other editor's views, for example:
+#            returnedlist = [[pixU, pixV], [skinpixU, skinpixV]]
+#            skinpixU, skinpixV = returnedlist[1]
+#            if SkinView1 is not None:
+#                texWidth, texHeight = modelfacelist[0][1].currentskin["Size"]
+#                skinpix = quarkx.vect(skinpixU-int(texWidth*.5), skinpixV-int(texHeight*.5), 0)
+#                skinviewX, skinviewY, skinviewZ = SkinView1.proj(skinpix).tuple
+#                skincv = SkinView1.canvas()
+#                svs = round(SkinView1.info['scale']*.5)
+#                brushwidth = float(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
+#                svs = int(brushwidth * svs)
+#                skincv.rectangle(int(skinviewX)-svs,int(skinviewY)-svs,int(skinviewX)+svs,int(skinviewY)+svs)
 #      If the cursor is currently in the Skin-view use as described below.
 # If the Skin-view:
 #    object (not needed)
@@ -2422,6 +2433,51 @@ def TexturePixelLocation(editor, view, x, y, object=None):
             # The actual pixel location on the skin texture itself.
             pixU = int(skinpixU-.5)
             pixV = int(skinpixV-.5)
+
+            # This section corrects for texture tiling in the editor's views.
+            texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
+            cursorXpos = pixU
+            cursorYpos = pixV
+
+            if cursorXpos >= texWidth-1:
+                Xstart = int(cursorXpos / texWidth)
+                pixU = int(cursorXpos - (texWidth * Xstart))
+            elif cursorXpos < -texWidth:
+                Xstart = int(abs(cursorXpos / (texWidth+.5)))
+                pixU = int(cursorXpos + (texWidth * Xstart) + texWidth)
+            else:
+                if cursorXpos >= 1:
+                    pixU = cursorXpos
+                if cursorXpos <= -1:
+                    pixU = cursorXpos + texWidth
+                if cursorXpos == 0:
+                    pixU = 0
+
+            while pixU >= texWidth:
+                pixU = pixU - 1
+            while pixU <= -1:
+                pixU = texWidth - 1
+            pixU = int(pixU)
+
+            if cursorYpos >= texHeight-1:
+                Ystart = int(cursorYpos / texHeight)
+                pixV = int(cursorYpos - (texHeight * Ystart))
+            elif cursorYpos < -texHeight:
+                Ystart = int(abs(cursorYpos / (texHeight+.5)))
+                pixV = int(cursorYpos + (texHeight * Ystart) + texHeight)
+            else:
+                if cursorYpos >= 1:
+                    pixV = cursorYpos
+                if cursorYpos <= -1:
+                    pixV = cursorYpos + texHeight
+                if cursorYpos == 0:
+                    pixV = 0
+
+            while pixV >= texHeight:
+                pixV = pixV - 1
+            while pixV <= -1:
+                pixV = texHeight - 1
+            pixV = int(pixV)
 
             return [[pixU, pixV], [skinpixU, skinpixV]]
 
@@ -2488,6 +2544,9 @@ def TexturePixelLocation(editor, view, x, y, object=None):
 #
 #
 #$Log$
+#Revision 1.76  2008/02/13 08:55:24  cdunde
+#To replace lost code of last change due to text editor.
+#
 #Revision 1.75  2008/02/13 08:49:29  cdunde
 #Extended the TexturePixelLocation function for special Skin-view needs.
 #

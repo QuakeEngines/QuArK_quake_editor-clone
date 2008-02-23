@@ -794,6 +794,12 @@ class BaseEditor:
                         self.dragobject.view = view
 
             modelfacelist = mdlhandles.ClickOnView(self, view, x, y)
+            if self.layout.toolbars["tb_paintmodes"] is not None:
+                tb2 = self.layout.toolbars["tb_paintmodes"]
+                i = quarkx.setupsubset(SS_MODEL, "Building").getint("PaintMode")
+                if i < 20 and i != 0 and (flagsmouse == 552 or flagsmouse == 1064 or flagsmouse == 2088):
+                    self.dragobject = None
+                    plugins.mdlpaintmodes.PaintManager(self, view, x, y, flagsmouse, modelfacelist)
 
              # This clears the face selection list when both the LMB & RMB are pressed with the cursor in an open area of a view.
             if modelfacelist == [] and flagsmouse == 536 and currentview.info["viewname"] != "skinview":
@@ -882,7 +888,8 @@ class BaseEditor:
                     return
                 else:
                     if isinstance(editor, mdleditor.ModelEditor):
-                        pass # This allows the coors to be displayed in the 'Help Box'.
+                        if editor.layout.toolbars["tb_paintmodes"] is not None:
+                            plugins.mdlpaintmodes.paintcursor(editor)
                     elif editor.layout.toolbars["tb_terrmodes"] is not None:
                         tb2 = editor.layout.toolbars["tb_terrmodes"]
                         i = quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode")
@@ -1136,8 +1143,20 @@ class BaseEditor:
             if flags & MB_CLICKED:
                 if isinstance(self, mdleditor.ModelEditor):
                     # To stop mouse button(s) click from causing zooming in all views including Skin-view.
-                    if flagsmouse == 280 or flagsmouse == 288 or flagsmouse == 296 or flagsmouse == 344 or flagsmouse == 352:
-                        return
+                    if (flagsmouse == 264) or (flagsmouse == 280) or (flagsmouse == 288) or (flagsmouse == 296) or (flagsmouse == 344) or (flagsmouse == 352) or (flagsmouse == 552):
+                        if (flagsmouse == 264) or (flagsmouse == 288) and self.layout.toolbars["tb_paintmodes"] is not None:
+                            tb2 = self.layout.toolbars["tb_paintmodes"]
+                            if tb2.tb.buttons[4].state == 2:
+                                self.dragobject = None
+
+                                modelfacelist = mdlhandles.ClickOnView(self, view, x, y)
+                                plugins.mdlpaintmodes.ColorPicker(self, view, x, y, flagsmouse, modelfacelist)
+                                return
+                        else:
+                            if flagsmouse == 552:
+                                self.dragobject = None
+                            return
+
                     # This takes you directly to (selects) the main model component folder for the
                     #    component that was LMB clicked on if there was one under the
                     #    cursor, if not then nothing happens.
@@ -1433,6 +1452,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.106  2008/02/07 13:26:48  danielpharos
+#Fix drawing code using the wrong view
+#
 #Revision 1.105  2008/02/04 04:39:42  cdunde
 #To stop doautozoom in Skin-view, causing unexpected view jumps.
 #

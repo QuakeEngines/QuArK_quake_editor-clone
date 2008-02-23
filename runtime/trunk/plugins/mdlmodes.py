@@ -1037,6 +1037,9 @@ class AxisLockBar(ToolBar):
     Caption = "View Selection Modes"
 
     def buildbuttons(self, layout):
+        if not ico_dict.has_key('ico_mdled'):
+            ico_dict['ico_mdled']=LoadIconSet1("ico_mdled", 1.0)
+        ico_mdled=ico_dict['ico_mdled']
         LockXBtn = qtoolbar.button(lockxclick, "Lock X Axis", ico_mdled, 0)  # tb_AxisLock[0] button
         LockYBtn = qtoolbar.button(lockyclick, "Lock Y Axis", ico_mdled, 1)  # tb_AxisLock[1] button
         LockZBtn = qtoolbar.button(lockzclick, "Lock Z Axis", ico_mdled, 2)  # tb_AxisLock[2] button
@@ -1080,6 +1083,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.20  2008/02/07 13:20:23  danielpharos
+# Removed redundant comment line
+#
 # Revision 1.19  2007/10/31 05:36:56  cdunde
 # Replaced quarkx.reloadsetup() with call to invalidate views using correct filltris call.
 #

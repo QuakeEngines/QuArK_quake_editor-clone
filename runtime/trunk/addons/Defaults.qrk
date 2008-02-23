@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.383  2008/01/19 00:24:52  cdunde
+//Changed Quake 2 "TextureFormat" to save .md2 model skin textures as .pcx proper format.
+//
 //Revision 1.382  2008/01/18 05:22:33  cdunde
 //Added "newframe" to New files... toolbox for "Model" type for a new model to be made from.
 //
@@ -3400,6 +3403,7 @@ QQRKSRC1
       }
       Options:config =
       {
+        SelectColorsDlg                   = "1" // Do not change or remove this setting or it breaks proper opening of dlg when desired.
         QuickObjects_distortion           = "0"
         QuickObjects_makehollow           = "0"
         QuickObjects_torus_segs_faces     = "0 0"
@@ -3511,6 +3515,8 @@ QQRKSRC1
         Options3Dviews_fillColor4   = $FF8080
         Options3Dviews_frameColor5  = $FFFFFF
         Options3Dviews_fillColor5   = $FF8080
+        Paint_RGBPenColor           = $9C8370
+        Paint_RGBBrushColor         = $9C8370
         ViewXZ                      = $E8E8B8
         ViewXY                      = $E8DCB8
         Gray                        = $BABABA

@@ -3225,6 +3225,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.126  2008/02/22 09:52:22  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.125  2008/02/07 13:25:57  danielpharos
 #Removed redundant import-line
 #
@@ -3665,10 +3668,10 @@ def MouseClicked(self, view, x, y, s, handle):
 #and remove unneeded code at this time.
 #
 #Revision 1.12.2.7  2006/11/16 01:01:54  cdunde
-#Added code to activate the movement of the Face-view skin handles for skinning.
+#Added code to activate the movement of the Skin-view skin handles for skinning.
 #
 #Revision 1.12.2.6  2006/11/16 00:49:13  cdunde
-#Added code to draw skin mesh lines in Face-view.
+#Added code to draw skin mesh lines in Skin-view.
 #
 #Revision 1.12.2.5  2006/11/16 00:08:21  cdunde
 #To properly align model skin with its mesh movement handles and zooming function.

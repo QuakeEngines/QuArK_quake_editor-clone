@@ -187,7 +187,7 @@ class AnimationBar(ToolBar):
             editor.layout.explorer.sellist = playlist
         try:
             tb2 = editor.layout.toolbars["tb_objmodes"]
-  #          tb3 = editor.layout.toolbars["tb_paintmodes"]
+            tb3 = editor.layout.toolbars["tb_paintmodes"]
         except:
             return
         for b in range(len(tb2.tb.buttons)):
@@ -195,11 +195,11 @@ class AnimationBar(ToolBar):
                 tb2.tb.buttons[b].state = qtoolbar.selected
             else:
                 tb2.tb.buttons[b].state = qtoolbar.normal
-  #      for b in tb3.tb.buttons:
-  #          b.state = qtoolbar.normal
+        for b in range(len(tb3.tb.buttons)):
+            tb3.tb.buttons[b].state = qtoolbar.normal
         quarkx.update(editor.form)
         quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", 0)
-  #      quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
+        quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
         for view in editor.layout.views:
             if MapOption("CrossCursor", SS_MODEL):
                 view.cursor = CR_CROSS
@@ -319,37 +319,35 @@ class AnimationBar(ToolBar):
 
     def buildbuttons(self, layout):
               # to build the single click button
-        ico_dict['ico_animmodes'] = LoadIconSet1("mdlanim", 1.0)
-        ico_animmodes = ico_dict['ico_animmodes']
+        if not ico_dict.has_key('ico_mdlanim'):
+            ico_dict['ico_mdlanim']=LoadIconSet1("mdlanim", 1.0)
+        ico_mdlanim=ico_dict['ico_mdlanim']
               # to build the Mode buttons
         btns = []
         for i in range(len(AnimationModes)):
             obj, icon = AnimationModes[i]
-            btn = qtoolbar.button(selectmode, obj.Hint, ico_dict['ico_animmodes'], icon)
+            btn = qtoolbar.button(selectmode, obj.Hint, ico_mdlanim, icon)
             btn.i = i
             btns.append(btn)
         i = quarkx.setupsubset(SS_MODEL, "Building").getint("AnimationMode")
         select1(btns[i], self, layout.editor)
 
-        if not ico_dict.has_key('ico_mdlanim'):
-            ico_dict['ico_mdlanim']=LoadIconSet1("mdlanim", 1.0)
-        ico_mdlanim=ico_dict['ico_mdlanim']
-        animateonoff = qtoolbar.button(self.animate, "Animate on\off||Animate on\off:\n\nThis button will activate or de-activate the animation of the selected model component animation frames.\n\nYou must select two or more frames of the same component and no other sub-items for the animation to become available.\n\nTo return to regular operation mode you must click this button to turn 'Off' the animation function.", ico_dict['ico_mdlanim'], 0, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
+        animateonoff = qtoolbar.button(self.animate, "Animate on\off||Animate on\off:\n\nThis button will activate or de-activate the animation of the selected model component animation frames.\n\nYou must select two or more frames of the same component and no other sub-items for the animation to become available.\n\nTo return to regular operation mode you must click this button to turn 'Off' the animation function.", ico_mdlanim, 0, infobaselink="intro.modeleditor.toolpalettes.animation.html#animate")
         fpsbtn = qtoolbar.doublebutton(layout.toggleanimationfps, layout.getFPSmenu, "FPS||FPS or frames per second is the setting as to how fast or slow the selected model component animation frames will be drawn in the selected view(s) of the editor.\n\nYou can select a menu fps speed or use the arrows to the right to increase or decrease that speed while the frames are being animated.", ico_mdlanim, 1, infobaselink="intro.modeleditor.toolpalettes.animation.html#fps")
         setup = quarkx.setupsubset(SS_MODEL, "Display")
         animationFPS = setup["AnimationFPS"]
         fpsbtn.caption = quarkx.ftos(animationFPS[0])  # To determine the button width and show the current setting.
-        increasefps = qtoolbar.button(self.incrementFPS, "Increase FPS", ico_dict['ico_mdlanim'], 2)
+        increasefps = qtoolbar.button(self.incrementFPS, "Increase FPS", ico_mdlanim, 2)
         increasefps.delta = 1
-        decreasefps = qtoolbar.button(self.incrementFPS, "Decrease FPS", ico_dict['ico_mdlanim'], 3)
+        decreasefps = qtoolbar.button(self.incrementFPS, "Decrease FPS", ico_mdlanim, 3)
         decreasefps.delta = -1
 
-        animatepaused = qtoolbar.button(self.pauseanimation, "Play\Pause||Play\Pause:\n\nTo temporarily pause the chosen animation sequence on the particular frame that was drawn when this button was clicked. Click this button again to continue on with the animation from that frame.\n\nIf another frame of the chosen sequence is selected during the pause, it will continue from that point.\n\nThe entire frame sequence selection can also be changed during a pause.\n\nIf a component has more then one skin, the skin can be changed during the pause.", ico_dict['ico_mdlanim'], 4, infobaselink="intro.modeleditor.toolpalettes.animation.html#pause")
-        editor3dviewanimated = qtoolbar.button(self.animateeditor3dview, "Animate Editors 3D view||Animate Editors 3D view:\n\nActivate this button to animate in the Editor's 3D view.", ico_dict['ico_mdlanim'], 5, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
-        x2dviewanimated = qtoolbar.button(self.animatex2dview, "Animate X Back 2D view||Animate X Back 2D view:\n\nActivate this button to animate in the Editor's X Back 2D view.", ico_dict['ico_mdlanim'], 6, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
-        y2dviewanimated = qtoolbar.button(self.animatey2dview, "Animate Y Side 2D view||Animate Y Side 2D view:\n\nActivate this button to animate in the Editor's Y Side 2D view.", ico_dict['ico_mdlanim'], 7, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
-        z2dviewanimated = qtoolbar.button(self.animatez2dview, "Animate Z Top 2D view||Animate Z Top 2D view:\n\nActivate this button to animate in the Editor's Z Top 2D view.", ico_dict['ico_mdlanim'], 8, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
-        float3dviewanimated = qtoolbar.button(self.animatefloat3dview, "Animate Floating 3D view||Animate Floating 3D view:\n\nActivate this button to animate in the Editor's Floating 3D view.", ico_dict['ico_mdlanim'], 9, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        animatepaused = qtoolbar.button(self.pauseanimation, "Play\Pause||Play\Pause:\n\nTo temporarily pause the chosen animation sequence on the particular frame that was drawn when this button was clicked. Click this button again to continue on with the animation from that frame.\n\nIf another frame of the chosen sequence is selected during the pause, it will continue from that point.\n\nThe entire frame sequence selection can also be changed during a pause.\n\nIf a component has more then one skin, the skin can be changed during the pause.", ico_mdlanim, 4, infobaselink="intro.modeleditor.toolpalettes.animation.html#pause")
+        editor3dviewanimated = qtoolbar.button(self.animateeditor3dview, "Animate Editors 3D view||Animate Editors 3D view:\n\nActivate this button to animate in the Editor's 3D view.", ico_mdlanim, 5, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        x2dviewanimated = qtoolbar.button(self.animatex2dview, "Animate X Back 2D view||Animate X Back 2D view:\n\nActivate this button to animate in the Editor's X Back 2D view.", ico_mdlanim, 6, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        y2dviewanimated = qtoolbar.button(self.animatey2dview, "Animate Y Side 2D view||Animate Y Side 2D view:\n\nActivate this button to animate in the Editor's Y Side 2D view.", ico_mdlanim, 7, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        z2dviewanimated = qtoolbar.button(self.animatez2dview, "Animate Z Top 2D view||Animate Z Top 2D view:\n\nActivate this button to animate in the Editor's Z Top 2D view.", ico_mdlanim, 8, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
+        float3dviewanimated = qtoolbar.button(self.animatefloat3dview, "Animate Floating 3D view||Animate Floating 3D view:\n\nActivate this button to animate in the Editor's Floating 3D view.", ico_mdlanim, 9, infobaselink="intro.modeleditor.toolpalettes.animation.html#viewselector")
 
         if not MldOption("AnimationActive"):
             animateonoff.state = qtoolbar.normal
@@ -406,6 +404,10 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.7  2008/02/04 05:07:41  cdunde
+#Made toolbars interactive with one another to
+#turn off buttons when needed, avoiding errors and crashes.
+#
 #Revision 1.6  2007/10/31 09:24:24  cdunde
 #To stop errors and crash if editor or QuArK is closed while animation is running.
 #

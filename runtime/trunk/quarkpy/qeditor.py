@@ -1359,9 +1359,9 @@ def ToolsMenu(editor, toolbars):
 # Icons for the layout of the Map/Model Editor
 #
 ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
-ico_mdled = LoadIconSet1("mdled", 1.0)
-ico_mdlskv = LoadIconSet1("mdlskv", 1.0)
-ico_mdltools = LoadIconSet1("mdltools", 1.0)
+ico_dict['ico_mdled'] = LoadIconSet1("mdled", 1.0)
+ico_dict['ico_mdlskv'] = LoadIconSet1("mdlskv", 1.0)
+ico_dict['ico_mdltools'] = LoadIconSet1("mdltools", 1.0)
 ico_dict['ico_mapedsm'] = LoadIconSet1("mapedsm", 0.5)    # small
 ico_maped_y = ico_dict['ico_maped'][0][0].size[1] + 7
 
@@ -1567,6 +1567,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.42  2008/02/09 11:56:28  cdunde
+#Added new airbrush cursor for model editor new paint toolbar and functions.
+#
 #Revision 1.41  2007/12/20 23:33:10  danielpharos
 #Small code clean-up
 #

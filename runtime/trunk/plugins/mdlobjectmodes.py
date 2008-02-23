@@ -4637,21 +4637,21 @@ def selectmode(btn):
     if editor is None: return
     try:
         tb1 = editor.layout.toolbars["tb_objmodes"]
-  #      tb2 = editor.layout.toolbars["tb_paintmodes"]
+        tb2 = editor.layout.toolbars["tb_paintmodes"]
         tb3 = editor.layout.toolbars["tb_animation"]
     except:
         return
     for b in tb1.tb.buttons:
         b.state = quarkpy.qtoolbar.normal
     select1(btn, tb1, editor)
- #   for b in tb2.tb.buttons:
- #       b.state = quarkpy.qtoolbar.normal
+    for b in range(len(tb2.tb.buttons)):
+        tb2.tb.buttons[b].state = quarkpy.qtoolbar.normal
     for b in range(len(tb3.tb.buttons)):
         if b == 0 or b == 5:
             tb3.tb.buttons[b].state = quarkpy.qtoolbar.normal
     quarkx.update(editor.form)
     quarkx.setupsubset(SS_MODEL, "Building").setint("ObjectMode", btn.i)
- #   quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
+    quarkx.setupsubset(SS_MODEL, "Building").setint("PaintMode", 0)
     from quarkpy.mdlanimation import playlist, playNR
     if quarkpy.mdlanimation.playlist != []:
         editor.layout.explorer.sellist = quarkpy.mdlanimation.playlist
@@ -4682,7 +4682,8 @@ class ObjectModesBar(ToolBar):
 
     def buildbuttons(self, layout):
               # to build the single click button
-        ico_dict['ico_objectmodes'] = LoadIconSet1("mdlobjm", 1.0)
+        if not ico_dict.has_key('ico_objectmodes'):
+            ico_dict['ico_objectmodes']=LoadIconSet1("mdlobjm", 1.0)
         ico_objectmodes = ico_dict['ico_objectmodes']
 
         BuildDialogbtn = qtoolbar.button(DialogClick, "Object Dialog Input||Object Dialog Input:\n\nThis will open a dialog input box for the 'Object modes Toolbar' item currently in use. Not all objects will use the same dialog input box. Which ever object button is active at the time this button is clicked, will produce that objects dialog input box.\n\nThese dialogs will remain open until they are closed manually.\n\nIf a particular object has its own dialog then that objects name will appear in the title. Other wise the standard ' Object Distortion Dialog ' will be used for all other objects.\n\nYou can have one or more dialogs open and active at a time. But they will only effect the objects that use them.", ico_objectmodes, 0, infobaselink="intro.modeleditor.toolpalettes.objectmodes.html#dialog")
@@ -5613,6 +5614,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2008/02/22 09:52:22  danielpharos
+# Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 # Revision 1.12  2008/02/04 05:07:41  cdunde
 # Made toolbars interactive with one another to
 # turn off buttons when needed, avoiding errors and crashes.
