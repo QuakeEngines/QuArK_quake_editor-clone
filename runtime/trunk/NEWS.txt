@@ -15,7 +15,9 @@ $Id$
 6.5.0 Beta 5
 ============
 
-* [cdunde]: Added game support for Team Fortress 2. Entities by Japa, textures by Nax.
+* [cdunde/DanielPharos]: Started game support for Heavy Metal - FAKK2.
+
+* [cdunde/DanielPharos]: Added game support for Team Fortress 2. Entities by Japa, textures by Nax.
 
 * [cdunde/DanielPharos]: Setup new Paint modes toolbar and complete painting functions to allow
           - the painting of skin textures in any Model Editor textured and Skin-view.
