@@ -629,6 +629,7 @@ Strings = {
     5225: "This file contains a link to the file '%s' which is already opened elsewhere. The link has been ignored (and deleted).",
     5226: "FTX image",
     5227: "Cannot save image as FTX file: it has a palette, which is not supported by FTX files. Please convert before saving.",
+    5228: "Unable to open link: Cannot find file: '%s'",
 
     5248: "Cancel",
     5249: "&Move here",
@@ -1044,6 +1045,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.119  2008/02/23 18:54:02  danielpharos
+#A lot of improvements to the OpenGL error messages.
+#
 #Revision 1.118  2008/02/23 18:25:02  danielpharos
 #Fix a typo.
 #

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2008/02/23 20:22:20  danielpharos
+Small changes to Python loading and unloading
+
 Revision 1.58  2008/02/23 20:06:42  danielpharos
 Fix help files not being found
 
@@ -2150,7 +2153,7 @@ end;
 
 procedure HTMLDoc(const URL: String);
 var
- S1, S2: String;
+ S, FullFile, ProgramCall: String;
  Reg: TRegistry2;
  I: Integer;
  SI: TStartupInfo;
@@ -2162,57 +2165,48 @@ var
   end;
 
 begin
+ //FIXME: DanielPharos: We need a better, more general way of checking
+ //for known protocols...
+ if (LeftStr(URL,8)<>'file:///') and (LeftStr(URL,7)<>'http://') then
+   FullFile:='file:///'+URL
+ else
+   FullFile:=URL;
+
+ if (LeftStr(FullFile,8)='file:///') then
+   if FileExists(RightStr(FullFile, Length(FullFile)-8)) = false then
+     raise EErrorFmt(5228, [RightStr(FullFile, Length(FullFile)-8)]);
+
  Reg:=TRegistry2.Create;
  try
   Reg.RootKey:=HKEY_CLASSES_ROOT;
   if (not Reg.ReadOpenKey('.html') and not Reg.ReadOpenKey('.htm'))
-  or not Reg.ReadString('', S1) then
+  or not Reg.ReadString('', S) then
    OpenError(LoadStr1(5650));
-  S1:='\'+S1+'\shell\open\command';
-  if not Reg.ReadOpenKey(S1) or not Reg.ReadString('', S2) or (S2='') then
-   OpenError(FmtLoadStr1(5651, [S1]));
+  S:='\'+S+'\shell\open\command';
+  if not Reg.ReadOpenKey(S) or not Reg.ReadString('', ProgramCall) or (ProgramCall='') then
+   OpenError(FmtLoadStr1(5651, [S]));
  finally
   Reg.Free;
  end;
 
-// DanielPharos: Old method
-{ if S2[1]='"' then
-  begin
-   System.Delete(S2, 1, 1);
-   I:=Pos('"', S2);
-  end
- else
-  I:=Pos(' ', S2);
- if I>0 then
-  SetLength(S2, I-1);
- S2:=S2+' "'+URL+'"';}
-
-// DanielPharos: This new method should fix a few
-// problems people were having with Firefox and other
-// browsers.
- if LeftStr(URL,8)<>'file:///' then
-   S1:='file:///'+URL
- else
-   S1:=URL;
-
- I:=Pos('%1', S2);
+ I:=Pos('%1', ProgramCall);
  if I>0 then
  begin
-   System.Delete(S2,I,2);
-   System.Insert(S1,S2,I);
+   System.Delete(ProgramCall,I,2);
+   System.Insert(FullFile,ProgramCall,I);
  end
  else
-   S2:=S2+' "'+S1+'"';
+   ProgramCall:=ProgramCall+' "'+FullFile+'"';
 
  FillChar(SI, SizeOf(SI), 0);
  FillChar(PI, SizeOf(PI), 0);
- if CreateProcess(Nil, PChar(S2), Nil, Nil, False, 0, Nil, Nil, SI, PI) then
+ if CreateProcess(Nil, PChar(ProgramCall), Nil, Nil, False, 0, Nil, Nil, SI, PI) then
   begin
    DeleteObject(PI.hThread);
    DeleteObject(PI.hProcess);
   end
  else
-  OpenError(FmtLoadStr1(5652, [S2]));
+  OpenError(FmtLoadStr1(5652, [ProgramCall]));
 end;
 
 function xHTMLDoc(self, args: PyObject) : PyObject; cdecl;
