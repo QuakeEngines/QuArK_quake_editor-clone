@@ -1513,7 +1513,10 @@ def htmldoc(doc):
     if (doc[:7] == "http://" or doc[:7] == "HTTP://"):
         quarkx.htmldoc(doc)
     else:
-        quarkx.htmldoc(quarkx.helppath + doc)
+        if doc == "help/index.html":
+            quarkx.htmldoc(quarkx.exepath + doc)
+        else:
+            quarkx.htmldoc(quarkx.helppath + doc)
 
 
 
@@ -1567,6 +1570,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.44  2008/02/23 20:11:05  danielpharos
+#Fix help files not being found
+#
 #Revision 1.43  2008/02/23 04:41:11  cdunde
 #Setup new Paint modes toolbar and complete painting functions to allow
 #the painting of skin textures in any Model Editor textured and Skin-view.
