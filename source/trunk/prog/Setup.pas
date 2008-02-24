@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2008/02/23 19:55:17  danielpharos
+Fix stupid typo in prev rev.
+
 Revision 1.62  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -294,7 +297,8 @@ comparison between gamemodes.}
  mjEF2          = 'o';  { Star Trek: Elite Force 2 }
  mjCOD          = 'p';  { Call of Duty }
  mjCOD2         = 'q';  { Call of Duty 2 }
- mjPrey         = 'r';  { Prey }
+ mjPrey         = 'r';  { Prey } 
+ mjFAKK2        = 's';  { Heavy Metal - FAKK2 }
  mjWildWest     = 'w';  { WildWest }
 
  mjAny          = #1;
