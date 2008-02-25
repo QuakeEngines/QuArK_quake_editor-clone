@@ -5,6 +5,11 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/02/25 21:43:13  cdunde
+//Added version support.
+//
+//Revision 1.1  2008/02/25 20:38:14  cdunde
+//Started game support.
 //
 
 {
