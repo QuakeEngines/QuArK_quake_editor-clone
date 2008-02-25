@@ -12,7 +12,8 @@ In addition, other useful related functions can be found in the quarkpy\qutils.p
 <g>ColorToRGB(Color)</g> : Converts long integer color number into separate color components Red Green Blue (RGB).<br>
 
 As well as specific functions for the <a href="intro.modeleditor.toolpalettes.paintmodes.html">Model Editor</a> in its quarkpy/mdlutils.py file for:<br>
-<g>TexturePixelLocation(editor, view, x, y, triangleface)</g> : To get the u, v texture position of any triangle where the cursor is pointing in any view.
+<g>TexturePixelLocation(editor, view, x, y, triangleface)</g> : To get the
+<a href="triangleUV/triangleUV.htm">u, v texture position of any triangle</a> where the cursor is pointing in any view.
 
 <b><u>Argument Definitions and examples to use for these functions</u></b>:<br>
 <g>texshortname = editor.Root.currentcomponent.currentskin.shortname</g> (be SURE to use the <g>shortname</g> and not <g>name</g> or the function breaks!)<br>
