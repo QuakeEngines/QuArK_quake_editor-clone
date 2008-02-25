@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.386  2008/02/25 21:34:12  cdunde
+//Started game support for Heavy Metal - FAKK2.
+//
 //Revision 1.385  2008/02/23 04:49:35  cdunde
 //Items missed on last change.
 //
@@ -4344,7 +4347,9 @@ QQRKSRC1
         Typ = "C"     // combo box
         Txt = "Star Trek: Elite Force 2 command-line"
         Items = "EF2.EXE +set sv_pure 0"
+             $0D"EF2.EXE +set developer 0 + set console 0 +set cheats 1 +bind t "$22"toggle cg_3rd_person"$22" +bind g "$22"god"$22" + bind i "$22"give all"$22" + bind h "$22"health 80"$22" +set fs_homepath base +set fs_game  "$22"%file%"$22" +devmap  "$22"%file%"$22" +exec"
              $0D"EF2HM.EXE +set sv_pure 0"
+             $0D"EF2HM.EXE +set developer 0 + set console 0 +set cheats 1 +bind t "$22"toggle cg_3rd_person"$22" +bind g "$22"god"$22" + bind i "$22"give all"$22" + bind h "$22"health 80"$22" +set fs_homepath base +set fs_game  "$22"%file%"$22" +devmap  "$22"%file%"$22" +exec"
         t_ProgramHint=!
       }
       Directory: =
