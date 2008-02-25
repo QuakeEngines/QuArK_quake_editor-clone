@@ -12,7 +12,9 @@ Here are the attributes and methods of the Component objects.
 <tr><td class="doccode">
 currentskin
 </td><td>
-The current skin used for textured display.
+The current skin used for textured display. Also see <a href="#quarkxtexturefunctions">Texture functions of the module quarkx</a>
+above for functions to change these skin textures such as <g>Painting</g> them, as can now be done in the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html">Model Editor</a>.
 </td></tr>
 
 <tr><td class="doccode">

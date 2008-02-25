@@ -3,6 +3,7 @@ desc: quarkandpython
 desc: quarkxspecificfunctions
 desc: quarkxspecialobjects
 desc: quarkxlogpurpose
+desc: quarkxtexturefunctions
 desc: quarkxgeneralpurpose
 desc: quarkxreadonlyvariables
 desc: quarkxreadwritevariables
