@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2008/02/21 21:07:20  danielpharos
+Removed redundant OpenGL code.
+
 Revision 1.39  2008/02/09 11:55:49  cdunde
 Added new airbrush cursor for model editor new paint toolbar and functions.
 
@@ -129,9 +132,9 @@ interface
 
 uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
      Dialogs, Quarkx, QkExplorer, Python, QkObjects, PyObjects,
-     PyControls, QkForm, CursorScrollBox, Qk3D, QkMapObjects, QkImages,
+     PyControls, QkForm, CursorScrollBox, Qk3D, QkMapObjects,
      qmath, PyMath, PyMath3D, Setup, Travail, ExtCtrls,
-     EdSceneObject;
+     EdSceneObject, QkPixelSet;
 
 
 type
@@ -207,7 +210,7 @@ type
                   end;
   TBackgroundImage = record
                       NeedToFree: Boolean;
-                      Image: QImage;
+                      Image: QPixelSet;
                       center: TyVect;
                       scale: Single;
                       offset, multiple: Integer;
@@ -325,7 +328,7 @@ var
 
 implementation
 
-uses PyCanvas, QkTextures, QkPixelSet, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
+uses PyCanvas, QkTextures, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
      EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects;
 
 
@@ -3227,9 +3230,9 @@ begin
              else if objX^.ob_type = @TyObject_Type then
               begin
                Q:=QkObjFromPyObj(objX);
-               if not (Q is QImage) then
+               if not (Q is QPixelSet) then
                 Exit;
-               Image:=QImage(Q);
+               Image:=QPixelSet(Q);
                NeedToFree:=False;
               end
              else
@@ -3238,9 +3241,9 @@ begin
                if P=Nil then Exit;
                S:=StrPas(P);
                F:=ExactFileLink(S, nil, True);
-               if not (F is QImage) then
+               if not (F is QPixelSet) then
                 raise EError(4621);
-               Image:=QImage(F);
+               Image:=QPixelSet(F);
                NeedToFree:=True;
               end;
             end;
