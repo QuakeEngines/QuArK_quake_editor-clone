@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2005/10/15 01:00:23  cdunde
+//To reinstate headers and history
+//
 //Revision 1.4  2002/04/07 12:44:12  decker_dk
 //Purified texture-flags
 //
@@ -20,7 +23,7 @@ QQRKSRC1
   Sin setup.qctx =
   {
     Game = "Sin"
-    HTML = "help\index.html"
+    HTML = "index.html"
     SFSkills = '256 512 1024 2048'
     TexFlagsTransparent = '16 0.66670 32 0.33330'
     Palette = $0000000F0F0F1F1F1F2F2F2F3F3F3F4B4B4B5B5B5B6B6B6B7B7B7B8B8B8B9B9B9BAB

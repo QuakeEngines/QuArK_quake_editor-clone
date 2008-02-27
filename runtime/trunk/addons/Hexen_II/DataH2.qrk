@@ -24,6 +24,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2005/10/15 01:00:27  cdunde
+//To reinstate headers and history
+//
 //Revision 1.3  2005/06/17 01:36:53  cdunde
 //made correction pointed out by Bengt Jardrup
 //
@@ -47,7 +50,7 @@ QQRKSRC1
   {
     Game = "Hexen II"
     SFSkills = '4096 8192 16384 32768 65536 131072'   // must be 4 or 6 values : easy/medium/hard/deathm.[/coop/single]
-    HTML = "help\index.html"
+    HTML = "index.html"
     CreateFiles: =
     {
       Hexen.rc = {

@@ -8,7 +8,7 @@ QQRKSRC1
   Sylphis setup.qctx =
   {
     Game = "Sylphis"
-    HTML = "help\index.html"
+    HTML = "index.html"
     TextureFlags:form =
     {
       Style = "5"

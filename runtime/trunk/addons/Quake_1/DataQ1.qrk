@@ -18,6 +18,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2005/10/15 01:00:27  cdunde
+//To reinstate headers and history
+//
 //Revision 1.7  2005/08/08 04:56:27  cdunde
 //Additional updates by Bengt Jardrup
 //
@@ -55,7 +58,7 @@ QQRKSRC1
   Quake 1 setup.qctx =
   {
     Game = "Quake 1"
-    HTML = "help\index.html"
+    HTML = "index.html"
     SFSkills = '256 512 1024 2048'   // must be 4 or 6 values : easy/medium/hard/deathm.[/coop/single]
     CreateFiles: =
     {
@@ -2442,7 +2445,7 @@ QQRKSRC1
 	info_player_start:form =
 	{
 	Help = "The normal player start for a level."
-        //HTML = "help\q1\playerstarts.html#info_player_start"
+        //HTML = "q1\playerstarts.html#info_player_start"
 	bbox='-16 -16 -24 16 16 24'
 	mdl="progs/player.mdl"
    	angle:=

@@ -401,6 +401,6 @@ QQRKSRC1
   Half-Life2 setup.qctx =
   {
     Game = "Half-Life2"
-    HTML = "help/index.html"
+    HTML = "index.html"
   }
 }

@@ -19,6 +19,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.15  2007/04/15 19:39:46  danielpharos
+//Fixed a wrong type of _sun_ambient.
+//
 //Revision 1.14  2007/03/29 16:06:02  danielpharos
 //Added the _sun specifics. Thanks OmnificienT!
 //Also fixed a few typo's.
@@ -73,7 +76,7 @@ QQRKSRC1
   {
     Game = "Quake 2"
     SFSkills = '256 512 1024 2048'   // must be 4 or 6 values : easy/medium/hard/deathm.[/coop/single]
-    HTML = "help\index.html"
+    HTML = "index.html"
     TexFlagsTransparent = '16 0.6667 32 0.3333 268435456 0.5'   // bit of value 16 (resp 32) means "66% transparent" (resp 33%)
 //    DrawMap: =
 //    {

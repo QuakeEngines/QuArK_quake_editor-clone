@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.8  2007/12/26 06:01:46  cdunde
+//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
+//
 //Revision 1.7  2007/12/14 21:48:02  cdunde
 //Added many new beizer shapes and functions developed by our friends in Russia,
 //the Shine team, Nazar and vodkins.
@@ -25,7 +28,7 @@ QQRKSRC1
   Crystal Space setup.qctx =
   {
     Game = "Crystal Space"
-    HTML = "help\index.html"
+    HTML = "index.html"
     SFSkills = '256 512 1024 2048'
     TexFlagsTransparent = '16 0.66670 32 0.33330'
     SourceDir = "D:\q\QuArK511"

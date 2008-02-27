@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.18  2007/12/26 06:01:43  cdunde
+//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
+//
 //Revision 1.17  2007/12/14 21:48:01  cdunde
 //Added many new beizer shapes and functions developed by our friends in Russia,
 //the Shine team, Nazar and vodkins.
@@ -58,7 +61,7 @@ QQRKSRC1
   RTCW setup.qctx =
   {
     Game = "RTCW"
-    HTML = "help/index.html"
+    HTML = "index.html"
     Palette = $0000000F0F0F1F1F1F2F2F2F3F3F3F4B4B4B5B5B5B6B6B6B7B7B7B8B8B8B9B9B9BAB
      $ABABBBBBBBCBCBCBDBDBDBEBEBEB634B235B431F533F1F4F3B1B47371B3F2F173B2B1733
      $27132F23132B1F13271B0F23170F1B130B170F0B130F070F0B075F5F6F5B5B675B535F57

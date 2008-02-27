@@ -9,7 +9,7 @@ QQRKSRC1
   {
     Game = "6DX"
     SFSkills = '256 512 1024 2048 4096'
-    HTML = "help\index.html"
+    HTML = "index.html"
     TexFlagsTransparent = '16 0.66670 32 0.33330'
     TextureFlags:form =
     {

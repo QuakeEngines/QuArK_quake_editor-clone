@@ -1513,11 +1513,7 @@ def htmldoc(doc):
     if (doc[:7] == "http://" or doc[:7] == "HTTP://"):
         quarkx.htmldoc(doc)
     else:
-        if doc == "help/index.html":
-            quarkx.htmldoc(quarkx.exepath + doc)
-        else:
-            quarkx.htmldoc(quarkx.helppath + doc)
-
+        quarkx.htmldoc(quarkx.helppath + doc)
 
 
 def Help1():
@@ -1570,6 +1566,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.45  2008/02/24 19:40:33  cdunde
+#To fix Contextual help link.
+#
 #Revision 1.44  2008/02/23 20:11:05  danielpharos
 #Fix help files not being found
 #

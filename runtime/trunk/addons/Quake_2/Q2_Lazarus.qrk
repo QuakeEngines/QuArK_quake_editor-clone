@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.19  2007/03/29 16:05:48  danielpharos
+// Added the _sun specifics. Thanks OmnificienT!
+//
 // Revision 1.18  2007/03/13 05:50:05  cdunde
 // Changed the trigger_push specific 'angle 360 into angles 0 0 0 - by OmnificienT
 //
@@ -13512,7 +13515,7 @@ $0D"Used as additional actors. These models will move around in the"
 $0D"game and can be set to do different things with the flags below."
 $0D"For just special effect custom models use the model_spawn entity."
 $0D"Click on this Help Book for more details."
-      HTML = "help/intro.mapeditor.menu.html#optionsmenu"
+      HTML = "intro.mapeditor.menu.html#optionsmenu"
       3Dmodel: =
       {
         t_3Dmodelbrowser = !
@@ -14861,7 +14864,7 @@ $0D"For that use 3Dmodel above."
 $0D"Used for special effects, you can control which model frames"
 $0D"are used. But the models do not fight like misc_actor entities do."
 $0D"Click on this Help Book for more details."
-      HTML = "help/intro.mapeditor.menu.html#optionsmenu"
+      HTML = "intro.mapeditor.menu.html#optionsmenu"
 
       3Dmodel: =
       {
@@ -15218,7 +15221,7 @@ $0D"For that use 3Dmodel above."
 $0D"Used for special effects, you can control which model frames"
 $0D"are used. But the models do not fight like misc_actor entities do."
 $0D"Click on this Help Book for more details."
-      HTML = "help/intro.mapeditor.menu.html#optionsmenu"
+      HTML = "intro.mapeditor.menu.html#optionsmenu"
 
       3Dmodel: =
       {
