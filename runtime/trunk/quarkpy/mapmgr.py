@@ -666,6 +666,7 @@ class MapLayout(BaseLayout):
         blist = self.getbezierlists()
         # quarkx.update(self.editor.form)  -- done below
 
+        self.bezierview.backgroundimage = None,
         q = quarkx.newobj(':')   # internal object
         if len(blist)==0:
             cap = Strings[128]
@@ -898,6 +899,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.22  2007/01/18 02:04:35  cdunde
+#Stop the line, resizing bar, from drawing across the editors
+#when certain view pages were pulled out as floating windows.
+#
 #Revision 1.21  2006/11/30 01:19:34  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
