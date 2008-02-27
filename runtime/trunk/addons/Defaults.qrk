@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.387  2008/02/25 22:06:52  cdunde
+//Added EF2 developers commands.
+//
 //Revision 1.386  2008/02/25 21:34:12  cdunde
 //Started game support for Heavy Metal - FAKK2.
 //
@@ -1753,7 +1756,7 @@ QQRKSRC1
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
         TextureFormat = ".ftx"             // primary texture fileextension
-        TextureFileExtensions = ".ftx"     // possible texture fileextensions
+        TextureFileExtensions = ".ftx,.tga"     // possible texture fileextensions
         TextureWriteFormat = ".ftx"
         TextureShaders = "scripts/quark.shader"
 
