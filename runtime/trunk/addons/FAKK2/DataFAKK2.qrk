@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2008/02/27 00:17:48  danielpharos
+//Fix the contextual help files not being found anymore
+//
 //Revision 1.3  2008/02/25 22:00:39  cdunde
 //Update
 //
@@ -796,6 +799,80 @@ QQRKSRC1
         typ = "X8"
         cap = "NOISE"
       }
+      model: =
+      {
+        txt = "&"
+        hint = "Specifies the model to use as the beam"
+      }
+      overlap: =
+      {
+        txt = "&"
+        hint = "Specifies the amount of overlap each beam link should have. Use this to fill in the cracks "
+            $0D"when using electric on beams. (Default is 0)"
+      }
+      minoffset: =
+      {
+        txt = "&"
+        hint = "Minimum amount of electrical variation (Default is 0)"
+      }
+      maxoffset: =
+      {
+        txt = "&"
+        hint = "Maximum amount of electrical variation (Default is 5)"
+      }
+      color: =
+      {
+        txt = "&"
+        hint = "Vector specifiying the red,green, and blue components. (Default is "
+            $0D"1 1 1"
+            $0D")"
+      }
+      alpha: =
+      {
+        txt = "&"
+        hint = "Alpha of the beam (Default is 1.0)"
+      }
+      damage: =
+      {
+        txt = "&"
+        hint = "Amount of damage the beam inflicts if beam hits someone (Default is 0)"
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = " Sets the angle of the beam if no target is specified."
+      }
+      life: =
+      {
+        txt = "&"
+        hint = "Sets the life of the beam for use with the persist spawnflag.This is how long a beam will be "
+            $0D"displayed."
+      }
+      numsegments: =
+      {
+        txt = "&"
+        hint = "Number of segments in a beam (Default is 4)"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "Delay between beam updates.(i.e. slows the effect of the beam down)"
+      }
+      shader: =
+      {
+        txt = "&"
+        hint = " Set the shader of the beam"
+      }
+      scale: =
+      {
+        txt = "&"
+        hint = "Set the width of the beam START_ON- Starts the beam on PERSIST - Keeps the last few beams around "
+            $0D"and fades them out over the life of the beam WAVE  - Make the beam follow a sin wave pattern "
+            $0D"NOISE - Use a more computationally expensive random effect, but the results are smootherIf "
+            $0D"the model field is not set, then a renderer generated beam will be created using the color, "
+            $0D"minoffset, maxoffset, scale, and subdivisions fields If the targetname is set, it will use "
+            $0D"the target specified as the endpoint of the beam"
+      }
     }
     func_rotatingdoor:form =
     {
@@ -866,6 +943,72 @@ QQRKSRC1
         typ = "X128"
         cap = "TARGETED"
       }
+      message: =
+      {
+        txt = "&"
+        hint = "is printed when the door is touched if it is a trigger door and it hasn't been fired yet"
+      }
+      openangle: =
+      {
+        txt = "&"
+        hint = "how wide to open the door"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "determines the opening direction.point toward the middle of the door (away from the hinge)"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = " if set, no touch field will be spawned and a remote button or trigger field activates the "
+            $0D"door."
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "if set, door must be shot open"
+      }
+      time: =
+      {
+        txt = "&"
+        hint = "move time (0.3 default)"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "wait before returning (3 default, -1 = never return)"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "damage to inflict when blocked (0 default)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to open this door (default nothing)"
+      }
+      sound_stop: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door stops moving (default global door_stop)"
+      }
+      sound_move: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door opens or closes (default global door_moving)"
+      }
+      sound_message: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door displays a message"
+      }
+      sound_locked: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door is locked"
+      }
     }
     func_door:form =
     {
@@ -932,6 +1075,76 @@ QQRKSRC1
       {
         typ = "X128"
         cap = "TARGETED"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "is printed when the door is touched if it is a trigger door and it hasn't been fired yet"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "determines the opening direction.point toward the middle of the door (away from the hinge)"
+      }
+      targetname: =
+      {
+        txt = "&"
+            $0D"if set, no touch field will be spawned and a remote button or trigger field activates the door."
+      }
+      health: =
+      {
+        txt = "&"
+        hint = " if set, door must be shot open"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "move speed (100 default)"
+      }
+      time: =
+      {
+        txt = "&"
+        hint = "move time (1/speed default, overides speed)"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "wait before returning (3 default, -1 = never return)"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "lip remaining at end of move (8 default)"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "damage to inflict when blocked (0 default)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to open this door (default nothing)"
+      }
+      sound_stop: =
+      {
+        txt = "&"
+        hint = " Specify the sound that plays when the door stops moving (default global door_stop)"
+      }
+      sound_move: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door opens or closes (default global door_moving)"
+      }
+      sound_message: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door displays a message"
+      }
+      sound_locked: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door is locked"
       }
     }
     script_door:form =
@@ -1005,6 +1218,88 @@ QQRKSRC1
         typ = "X128"
         cap = "TARGETED"
       }
+      message: =
+      {
+        txt = "&"
+        hint = "is printed when the door is touched if it is a trigger door and it hasn't been fired yet"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "determines the opening direction.point toward the middle of the door (away from the hinge)"
+      }
+      targetname: =
+      {
+        txt = "&"
+            $0D"if set, no touch field will be spawned and a remote button or trigger field activates the door."
+      }
+      health: =
+      {
+        txt = "&"
+        hint = " if set, door must be shot open"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "move speed (100 default)"
+      }
+      time: =
+      {
+        txt = "&"
+        hint = "move time (1/speed default, overides speed)"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "wait before returning (3 default, -1 = never return)"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "damage to inflict when blocked (0 default)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to open this door (default nothing)"
+      }
+      initthread: =
+      {
+        txt = "&"
+        hint = "code to execute to setup the door (optional)"
+      }
+      openthread: =
+      {
+        txt = "&"
+        hint = "code to execute when opening the door (required) The openthread should send the "
+            $0D"'dooropened' event to the door, when it is completely open"
+      }
+      closethread: =
+      {
+        txt = "&"
+        hint = "code to execute when closing the door (required) The closethread should send the "
+            $0D"'doorclosed' event to the door, when it is completely closed"
+      }
+      sound_stop: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door stops moving (default global door_stop)"
+      }
+      sound_move: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door opens or closes (default global door_moving)"
+      }
+      sound_message: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door displays a message"
+      }
+      sound_locked: =
+      {
+        txt = "&"
+        hint = "Specify the sound that plays when the door is locked"
+      }
     }
     func_earthquake:form =
     {
@@ -1022,6 +1317,16 @@ QQRKSRC1
         typ = "X2"
         cap = "NO_RAMPDOWN"
       }
+      duration: =
+      {
+        txt = "&"
+        hint = "is the duration of the earthquake.Default is 0.8 seconds."
+      }
+      magnitude: =
+      {
+        txt = "&"
+        hint = "severity of the quake.Default 1.0"
+      }
     }
     func_exploder:form =
     {
@@ -1031,6 +1336,22 @@ QQRKSRC1
        "hread"$22" name of thread to trigger.  This can be in a different scri"
        "pt file as well\"$0D"by using the '::' notation."
       bbox = '0 0 0 8 8 8'
+      dmg: =
+      {
+        txt = "&"
+        hint = "specifies how much damage to cause. Default indicates 120."
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well\ by using the '::' "
+            $0D"notation."
+      }
     }
     func_multi_exploder:form =
     {
@@ -1068,6 +1389,52 @@ QQRKSRC1
       {
         typ = "X8"
         cap = "RANDOM_SCALE"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "specifies how much damage to cause from each explosion. (Default 120)"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "delay before exploding (Default 0 seconds)"
+      }
+      duration: =
+      {
+        txt = "&"
+        hint = "how long to explode for (Default 1 second)"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "time between each explosion (default 0.25 seconds)"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "random factor (default 0.25)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well\ by using the '::' "
+            $0D"notation."
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "makes the object damageable"
+      }
+      scale: =
+      {
+        txt = "&"
+        hint = "set the maximum size for spawned debris and explosions."
       }
     }
     func_explodeobject:form =
@@ -1137,6 +1504,71 @@ QQRKSRC1
         typ = "X128"
         cap = "NOTSOLID"
       }
+      dmg: =
+      {
+        txt = "&"
+        hint = "specifies how much damage to cause from each explosion. (Default 120)"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "delay before exploding (Default 0 seconds)"
+      }
+      duration: =
+      {
+        txt = "&"
+        hint = "how long to explode for (Default 1 second)"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "time between each explosion (default 0.25 seconds)"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "random factor (default 0.25)"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = " if specified, object must be damaged to trigger"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      severity: =
+      {
+        txt = "&"
+        hint = "how violent the debris should be ejected from the object( default 1.0 )"
+      }
+      debrismodel: =
+      {
+        txt = "&"
+        hint = "What kind of debris to spawn (default nothing)"
+      }
+      amount: =
+      {
+        txt = "&"
+        hint = "how much debris to spawn for each explosion (default 4)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger. This can be in a different script file as well by using the '::' notation."
+      }
+      health: =
+      {
+        txt = "&"
+        hint = " makes the object damageable"
+      }
+      scale: =
+      {
+        txt = "&"
+        hint = "set the maximum size for spawned debris and explosions"
+      }
     }
     info_grav_pathnode:form =
     {
@@ -1160,6 +1592,16 @@ QQRKSRC1
       {
         typ = "X4"
         cap = "PULL_UPWARDS"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = "Radius of the effect of the pull (Default is 256)"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed of the pull (Use negative for a repulsion) (Default is 100)"
       }
     }
     light:form =
@@ -1193,6 +1635,46 @@ QQRKSRC1
         typ = "X4"
         cap = "ENTITY_TRACE"
       }
+      no_entity_light: =
+      {
+        txt = "&"
+        hint = "- this light will not effect entities, just the world"
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "- the intensity of the light, default 300"
+      }
+      color: =
+      {
+        txt = "&"
+        hint = "- the color of the light"
+      }
+      falloff: =
+      {
+        txt = "&"
+        hint = "- if linear, specify the linear falloff (defaults to 1)"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = "- make this a spot light of the given radius"
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = " - make this a spot light centered on angles"
+      }
+      spot_angle: =
+      {
+        txt = "&"
+        hint = "- if this is a spot light, what angle to use (default 45)"
+      }
+      entity_trace: =
+      {
+        txt = "&"
+        hint = "- trace between the entity and the light"
+      }
     }
     detail:form =
     {
@@ -1210,6 +1692,11 @@ QQRKSRC1
     {
       help = $22"model"$22"     arbitrary .tik file to display"
       bbox = '0 0 0 0 0 0'
+      model: =
+      {
+        txt = "&"
+        hint = "arbitrary .tik file to display"
+      }
     }
     info_null:form =
     {
@@ -1282,6 +1769,42 @@ QQRKSRC1
         typ = "X128"
         cap = "TWOSTAGE"
       }
+      explosions: =
+      {
+        txt = "&"
+        hint = "   number of explosions to spawn ( default 1 )"
+      }
+      land_angles: =
+      {
+        txt = "&"
+        hint = "The angles you want this piece to\ orient to when it lands on the ground"
+      }
+      land_radius: =
+      {
+        txt = "&"
+        hint = "The distance of the ground the piece\ should be when on the ground ( default 16 )"
+      }
+      anglespeed: =
+      {
+        txt = "&"
+        hint = "Speed at which pieces rotate ( default 100 ) if RANDOMANGLES ( default is 600 )"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      base_velocity: =
+      {
+        txt = "&"
+        hint = "The speed that the debris will have when triggered.(default 0 0 280)"
+      }
+      random_velocity: =
+      {
+        txt = "&"
+        hint = "The variation of the velocity. x & y will be from -n < X,Y < n and z is 0 <= Z < n.(default "
+            $0D"140 140 140)"
+      }
     }
     trigger_teleport:form =
     {
@@ -1319,6 +1842,16 @@ QQRKSRC1
         typ = "X32"
         cap = "NO_EFFECTS"
       }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      teleportthread: =
+      {
+        txt = "&"
+        hint = "The thread that is run when the player is teleported"
+      }
     }
     func_teleportdest:form =
     {
@@ -1354,6 +1887,31 @@ QQRKSRC1
       {
         typ = "X4"
         cap = "CONTINUOUS"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = " - how many times this should trigger (default -1, infinite)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "- thread to fire when used"
+      }
+      triggertarget: =
+      {
+        txt = "&"
+        hint = "- what to trigger when used."
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "- how long it takes to be re-triggered ( default 3 seconds )"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "- item needed to activate this"
       }
     }
     func_useobject:form =
@@ -1400,12 +1958,79 @@ QQRKSRC1
       spawnflags: =
       {
         typ = "X1"
-        cap = "MULTI"
+        cap = "MULTI-STATE"
       }
-      spawnflags: =
+      activate: =
       {
-        typ = "X4"
-        cap = "STATE"
+        txt = "&"
+        hint = "- turns the useobject on"
+      }
+      deactivate: =
+      {
+        txt = "&"
+        hint = "- turns the useobject off"
+      }
+      offset: =
+      {
+        txt = "&"
+        hint = "- vector offset of where the player should stand"
+      }
+      state: =
+      {
+        txt = "&"
+        hint = "- state to go into when used"
+      }
+      state_backwards: =
+      {
+        txt = "&"
+        hint = "- what state to use when reversing the object"
+      }
+      yaw_offset: =
+      {
+        txt = "&"
+        hint = "- what direction the player should be facing when using the object"
+      }
+      cone: =
+      {
+        txt = "&"
+        hint = "- the cone in which the object can be used"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "- how many times this should trigger (default -1, infinite)"
+      }
+      move_thread: =
+      {
+        txt = "&"
+        hint = "- thread that is fired when the object has cycled one animation"
+      }
+      stop_thread: =
+      {
+        txt = "&"
+        hint = "- thread that is fired when the object has finished animating"
+      }
+      reset_thread: =
+      {
+        txt = "&"
+        hint = "- thread that is fired when the object is resetting itself"
+      }
+      reset_time: =
+      {
+        txt = "&"
+        hint = "- the time it takes for the object to reset, (default 0, it doesn't)"
+      }
+      triggertarget: =
+      {
+        txt = "&"
+        hint = "- target to trigger when finished animating, if reset_time is set, target will be fired again "
+            $0D"when resetting"
+      }
+      damage_type: =
+      {
+        txt = "&"
+        hint = "- if set, can be triggered by using a weapon to activate it.If set to all"
+            $0D", any damage will activate it."
       }
     }
     info_waypoint:form =
@@ -1454,6 +2079,31 @@ QQRKSRC1
         typ = "X4"
         cap = "REMOVE_ON_GROUND"
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "the path to follow."
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "how much damage to cause creatures it hits (default 20)."
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "how fast to move (default 200)."
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "how long to wait before falling when triggered (default 0)."
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "sound to play when rock touches the world"
+      }
     }
     func_supplywater:form =
     {
@@ -1481,6 +2131,21 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      wait: =
+      {
+        txt = "&"
+        hint = "- how long to wait before re-triggering ( default 0.1 seconds )"
+      }
+      amount: =
+      {
+        txt = "&"
+        hint = "- how much water to give player on each trigger ( default 1 unit )"
+      }
+      maxwater: =
+      {
+        txt = "&"
+        hint = "- what the maximum amount of water this supply should charge the player to ( default 50 )"
+      }
     }
     func_emitter:form =
     {
@@ -1488,8 +2153,12 @@ QQRKSRC1
     }
     func_rain:form =
     {
-      help = "This creates a raining effect in the brush"$0D22"emitter"$22" - "
-       "Name of emitter to use for the rain."
+      help = "This creates a raining effect in the brush"
+      emitter: =
+      {
+        txt = "&"
+        hint = "Name of emitter to use for the rain."
+      }
     }
     info_pathnode:form =
     {
@@ -1533,6 +2202,11 @@ QQRKSRC1
         typ = "X32"
         cap = "LADDER"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "the pathnode to jump to."
+      }
     }
     func_throwobject:form =
     {
@@ -1545,6 +2219,16 @@ QQRKSRC1
        "rection the player should face"$0D22"thread"$22" - the thread that sho"
        "uld be called when spawned at this position"
       bbox = '-16 -16 0 16 16 96'
+      angle: =
+      {
+        txt = "&"
+        hint = "- the direction the player should face"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "- the thread that should be called when spawned at this position"
+      }
     }
     info_player_deathmatch:form =
     {
@@ -1552,6 +2236,16 @@ QQRKSRC1
        " - the direction the player should face"$0D22"thread"$22" - the thread"
        " that should be called when spawned at this position"
       bbox = '-16 -16 0 16 16 96'
+      angle: =
+      {
+        txt = "&"
+        hint = " - the direction the player should face"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "- the thread that should be called when spawned at this position"
+      }
     }
     info_player_intermission:form =
     {
@@ -1580,6 +2274,11 @@ QQRKSRC1
         typ = "X2"
         cap = "fastrotate"
       }
+      roll: =
+      {
+        txt = "&"
+        hint = "an angle modifier to orient the camera around the target vector"
+      }
     }
     func_rope:form =
     {
@@ -1589,6 +2288,11 @@ QQRKSRC1
        "field in which the player will hang on to the rope when grabbing it."$0D
        $22"ropeshader"$22" : Name of the shader to use to render the rope (def"
        "ault is "$22"ropeshader"$22")"
+      ropeshader: =
+      {
+        txt = "&"
+        hint = "Name of the shader to use to render the rope (default is 'ropeshader')"
+      }
     }
     func_rope_piece:form =
     {
@@ -1619,6 +2323,35 @@ QQRKSRC1
         typ = "X2"
         cap = "ATT_WIGGLE"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "the 'targetname' of the next piece in the rope."
+            $0D"This should be blank if it's the last piece in the rope."
+            $0D"If a non-rope_piece entity is targeted, it will attach itself to it."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "used for the previous piece in the rope to find and link to this piece of the rope."
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = ": the targetname of the entity to attach this piece of the rope to. Any piece of a rope can "
+            $0D"be attached to something and be triggered at any time to detach it.Triggering the base of an "
+            $0D"attached rope will detach all attached points on that rope."
+      }
+      wigglemove: =
+      {
+        txt = "&"
+        hint = "the amount of force the random wiggling has. Default = 32"
+      }
+      wiggletime: =
+      {
+        txt = "&"
+        hint = "number of seconds between each time the rope wiggles. Default = 0.5"
+      }
     }
     func_rope_base:form =
     {
@@ -1648,6 +2381,53 @@ QQRKSRC1
       {
         typ = "X1"
         cap = "START_STILL"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "The name that the rope is triggered with."
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "The 'targetname' of the first rope_piece in the rope."
+      }
+      piecelength: =
+      {
+        txt = "&"
+        hint = "The distance between each piece of the rope. Default = 24"
+      }
+      piecemodel: =
+      {
+        txt = "&"
+        hint = "The model to use for the rope pieces."
+      }
+      ropedampener: =
+      {
+        txt = "&"
+        hint = "Horizontal velocity dampener for the rope. Default = 0.8"
+      }
+      stiffness: =
+      {
+        txt = "&"
+        hint = "Movement restricter on the amount that the rope can flex and bend.Valid values are from "
+            $0D"-1 (no restriction) to 1 (tried to be perfectly straight. The position of the first rope piece "
+            $0D"determines what direction the rope is pushed from the base of the rope. Default = -1"
+      }
+      strength: =
+      {
+        txt = "&"
+        hint = "How strongly a stiff rope goes to position. Default = 1"
+      }
+      attachmodel: =
+      {
+        txt = "&"
+        hint = "name of a model to attach onto this piece of rope"
+      }
+      ropeshader: =
+      {
+        txt = "&"
+        hint = "Name of the shader to use to render the rope (default is 'ropeshader')"
       }
     }
     script_object:form =
@@ -1687,6 +2467,36 @@ QQRKSRC1
        "eded to activate this. (default nothing)"$0D22"attackmode"$22" Attacki"
        "ng mode of the spawned actor (default 0)"
       bbox = '-8 -8 -8 8 8 8'
+      modelname: =
+      {
+        txt = "&"
+        hint = "The name of the TIKI file you wish to spawn. (Required)"
+      }
+      spawntargetname: =
+      {
+        txt = "&"
+        hint = "This will be the targetname of the spawned model. (default is null)"
+      }
+      spawntarget: =
+      {
+        txt = "&"
+        hint = "This will be the target of the spawned model. (default is null)"
+      }
+      pickup_thread: =
+      {
+        txt = "&"
+        hint = "passed on to the spawned model"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      attackmode: =
+      {
+        txt = "&"
+        hint = "Attacking mode of the spawned actor (default 0)"
+      }
     }
     func_randomspawn:form =
     {
@@ -1704,6 +2514,26 @@ QQRKSRC1
         typ = "X1"
         cap = "START_OFF"
       }
+      modelname: =
+      {
+        txt = "&"
+        hint = "The name of the TIKI file you wish to spawn. (Required)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      min_time: =
+      {
+        txt = "&"
+        hint = "The minimum time between spawns (default 0.2 seconds)"
+      }
+      max_time: =
+      {
+        txt = "&"
+        hint = "The maximum time between spawns (default 1 seconds)"
+      }
     }
     func_respawn:form =
     {
@@ -1712,6 +2542,16 @@ QQRKSRC1
        "ou wish to spawn. (Required)"$0D22"key"$22"         The item needed to"
        " activate this. (default nothing)"
       bbox = '-8 -8 -8 8 8 8'
+      modelname: =
+      {
+        txt = "&"
+        hint = "The name of the TIKI file you wish to spawn. (Required)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
     }
     func_spawnoutofsight:form =
     {
@@ -1722,6 +2562,26 @@ QQRKSRC1
        "f the spawned model. (default is null)"$0D22"key"$22"         The item"
        " needed to activate this. (default nothing)"
       bbox = '-8 -8 -8 8 8 8'
+      modelname: =
+      {
+        txt = "&"
+        hint = "The name of the TIKI file you wish to spawn. (Required)"
+      }
+      spawntargetname: =
+      {
+        txt = "&"
+        hint = "This will be the targetname of the spawned model. (default is null)"
+      }
+      spawntarget: =
+      {
+        txt = "&"
+        hint = "This will be the target of the spawned model. (default is null)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
     }
     func_spawnchain:form =
     {
@@ -1733,6 +2593,26 @@ QQRKSRC1
        "ault is null)"$0D22"key"$22"         The item needed to activate this."
        " (default nothing)"
       bbox = '-8 -8 -8 8 8 8'
+      modelname: =
+      {
+        txt = "&"
+        hint = "The name of the TIKI file you wish to spawn. (Required)"
+      }
+      spawntargetname: =
+      {
+        txt = "&"
+        hint = " This will be the targetname of the spawned model. (default is null)"
+      }
+      spawntarget: =
+      {
+        txt = "&"
+        hint = "This will be the target of the spawned model. (default is null)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
     }
     func_fulcrum:form =
     {
@@ -1755,6 +2635,31 @@ QQRKSRC1
         typ = "X2"
         cap = "Y_AXIS_ONLY"
       }
+      speed: =
+      {
+        txt = "&"
+        hint = "set the speed at which the fulcrum will operate (default is 48)"
+      }
+      resetspeed: =
+      {
+        txt = "&"
+        hint = "speed at whcih fulcrum resets, (default speed * 0.002)"
+      }
+      dampening: =
+      {
+        txt = "&"
+        hint = "dampen constant (default 0.95)"
+      }
+      limit: =
+      {
+        txt = "&"
+        hint = " limit the movement of the fulcrum (default 90 degrees)"
+      }
+      movesound: =
+      {
+        txt = "&"
+        hint = "sound to be played while fulcrum is moving"
+      }
     }
     func_runthrough:form =
     {
@@ -1768,6 +2673,36 @@ QQRKSRC1
        " default 3 )"$0D22"offset"$22" - vector offset oriented along velocity"
        " vector( default "$22"0 0 0"$22" )"$0D22"spawnmodel"$22" - thing to sp"
        "awn when triggered"
+      speed: =
+      {
+        txt = "&"
+        hint = "speed at which you have to be moving to trigger ( default 100 )"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "time between triggering ( default 0.1 )"
+      }
+      chance: =
+      {
+        txt = "&"
+        hint = "chance that the trigger will spawn something( default 0.5 )"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "how far below the surface of the trigger we should spawn these things ( default 3 )"
+      }
+      offset: =
+      {
+        txt = "&"
+        hint = "vector offset oriented along velocity vector( default '0 0 0')"
+      }
+      spawnmodel: =
+      {
+        txt = "&"
+        hint = "thing to spawn when triggered"
+      }
     }
     func_sinkobject:form =
     {
@@ -1795,6 +2730,56 @@ QQRKSRC1
       {
         typ = "X4"
         cap = "NO_RESET"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "- delay between when object starts reacting towards weight (default 0 seconds)"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "- set the speed at which sinkobject sinks (default is 50)"
+      }
+      resetspeed: =
+      {
+        txt = "&"
+        hint = "- speed at which sinkobject resets its position, (default speed * 0.1)"
+      }
+      dampening: =
+      {
+        txt = "&"
+        hint = "- dampening constant to mitigate acceleration (default 0.95)"
+      }
+      limit: =
+      {
+        txt = "&"
+        hint = "- limit the movement of the sinkobject how far down it should go (default 1000 units)"
+      }
+      resetdelay: =
+      {
+        txt = "&"
+        hint = "- time between player gets off platform, and platform starts resetting itself."
+      }
+      sinksound: =
+      {
+        txt = "&"
+        hint = "- sound to be played while platform is sinking."
+      }
+      resetsound: =
+      {
+        txt = "&"
+        hint = "- sound to be played while platform is resetting."
+      }
+      active: =
+      {
+        txt = "&"
+        hint = "- make the sink object active"
+      }
+      notactive: =
+      {
+        txt = "&"
+        hint = "- make the sink object not active"
       }
     }
     trigger_multiple:form =
@@ -1829,6 +2814,57 @@ QQRKSRC1
       {
         typ = "X16"
         cap = "PROJECTILES"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "if set, the trigger must be killed to activate each time."
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "if set, the trigger waits some time after activating before firing."
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well by using the '::' "
+            $0D"notation."
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "is set, the trigger will only fire when someone is facing the direction of the angle."
+      }
+      cone: =
+      {
+        txt = "&"
+        hint = "the cone in which a directed trigger can be triggered (default 60 degrees)"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Seconds between triggerings. (.2 default)"
+      }
+      cnt: =
+      {
+        txt = "&"
+        hint = "how many times it can be triggered (infinite default)"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "set to text string"
       }
     }
     trigger_once:form =
@@ -1872,6 +2908,62 @@ QQRKSRC1
       {
         typ = "X16"
         cap = "PROJECTILES"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "if set, the trigger must be killed to activate each time."
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "if set, the trigger waits some time after activating before firing."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ".If 'health' is set, the trigger must be killed to activate."
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well\ by using the '::' "
+            $0D"notation."
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "If set, any objects that have a matching 'target' will be removed when the trigger is fired."
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "If is set, the trigger will only fire when someone is facing the direction of the angle."
+      }
+      cone: =
+      {
+        txt = "&"
+        hint = "the cone in which a directed trigger can be triggered (default 60 degrees)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "set to text string"
       }
     }
     trigger_relay:form =
@@ -1937,6 +3029,42 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "if set, the trigger will only fire when someone is facing the direction of the angle."
+      }
+      cone: =
+      {
+        txt = "&"
+        hint = "the cone in which a directed trigger can be triggered (default 60 degrees)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.  This can be in a different script file as well by using the '::' "
+            $0D"notation.(defaults to 'global/universal_script.scr::secret')"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "set to text string"
+      }
     }
     trigger_setvariable:form =
     {
@@ -1993,6 +3121,75 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      variable: =
+      {
+        txt = "&"
+        hint = "- variable to set"
+      }
+      value: =
+      {
+        txt = "&"
+        hint = "- value to set in variable, value can also be one of the following reserved tokens."
+            $0D" - increment - add one to the variable"
+            $0D" - decrement - subtract one from the variable"
+            $0D" - toggle - if 1, then zero. If zero then 1."
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "If set, the trigger must be killed to activate it."
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "If set, the trigger waits some time after activating before firing."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "If 'health' is set, the trigger must be killed to activate."
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well by using the '::' "
+            $0D"notation."
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "if set, any objects that have a matching 'target' will be removed when the trigger is fired."
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "If set, the trigger will only fire when someone is facing the direction of the angle."
+      }
+      cone: =
+      {
+        txt = "&"
+        hint = "the cone in which a directed trigger can be triggered (default 60 degrees)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "set to text string"
+      }
     }
     trigger_push:form =
     {
@@ -2020,6 +3217,36 @@ QQRKSRC1
       {
         typ = "X16"
         cap = "NOT_PROJECTILES"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "indicates the rate that entities are pushed (default 1000)."
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "indicates the direction the wind is blowing (-1 is up, -2 is down)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "if target is set, then a velocity will be calculated based on speed"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
       }
     }
     trigger_pushany:form =
@@ -2049,6 +3276,36 @@ QQRKSRC1
         typ = "X16"
         cap = "NOT_PROJECTILES"
       }
+      speed: =
+      {
+        txt = "&"
+        hint = "indicates the rate that entities are pushed (default 1000)."
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = "indicates the direction of the push"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "if target is set, then a velocity will be calculated based on speed"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
     }
     sound_speaker:form =
     {
@@ -2072,42 +3329,59 @@ QQRKSRC1
       spawnflags: =
       {
         typ = "X1"
-        cap = "AMBIENT"
+        cap = "AMBIENT-ON"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "AMBIENT-OFF"
       }
       spawnflags: =
       {
         typ = "X4"
-        cap = "ON"
-      }
-      spawnflags: =
-      {
-        typ = "X8"
-        cap = "AMBIENT"
-      }
-      spawnflags: =
-      {
-        typ = "X32"
-        cap = "OFF"
-      }
-      spawnflags: =
-      {
-        typ = "X64"
         cap = "NOT_PLAYERS"
       }
       spawnflags: =
       {
-        typ = "X128"
+        typ = "X8"
         cap = "MONSTERS"
       }
       spawnflags: =
       {
-        typ = "X256"
+        typ = "X16"
         cap = "PROJECTILES"
       }
       spawnflags: =
       {
-        typ = "X512"
+        typ = "X32"
         cap = "TOGGLE"
+      }
+      volume: =
+      {
+        txt = "&"
+        hint = "how loud 0-4 (1 default full volume, ambients do not respond to volume)"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "sound to play"
+      }
+      channel: =
+      {
+        txt = "&"
+        hint = "channel on which to play sound (0 auto, 1 weapon, 2 voice, 3 item, 4 body, 8 don't use PHS)"
+            $0D"(voice is default)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well by using the '::'"
+            $0D"notation."
       }
     }
     sound_randomspeaker:form =
@@ -2139,6 +3413,42 @@ QQRKSRC1
       {
         typ = "X16"
         cap = "PROJECTILES"
+      }
+      mindelay: =
+      {
+        txt = "&"
+        hint = "minimum delay between sound triggers (default 3)"
+      }
+      maxdelay: =
+      {
+        txt = "&"
+        hint = "maximum delay between sound triggers (default 10)"
+      }
+      chance: =
+      {
+        txt = "&"
+        hint = "chance that sound will play when fired (default 1)"
+      }
+      volume: =
+      {
+        txt = "&"
+        hint = "how loud 0-4 (1 default full volume)"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "sound to play"
+      }
+      channel: =
+      {
+        txt = "&"
+        hint = "channel on which to play sound\ (0 auto, 1 weapon, 2 voice, 3 item, 4 body, 8 don't use PHS)"
+            $0D"(voice is default)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
       }
     }
     trigger_changelevel:form =
@@ -2175,6 +3485,32 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      spawnspot: =
+      {
+        txt = "&"
+        hint = "name of the spawn location to start at in next map."
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "This defaults to 'LevelComplete' and should point to"
+            $0D"a thread that is called just before the level ends."
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
     }
     trigger_use:form =
     {
@@ -2199,6 +3535,27 @@ QQRKSRC1
       {
         typ = "X8"
         cap = "MONSTERS"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "       The item needed to activate this. (default nothing)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = " name of thread to trigger.This can be in a different script file as well by using the '::' "
+            $0D"notation."
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
       }
     }
     trigger_useonce:form =
@@ -2225,6 +3582,30 @@ QQRKSRC1
         typ = "X8"
         cap = "MONSTERS"
       }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well by using the '::' "
+            $0D"notation."
+      }
+      triggerable: =
+      {
+        txt = "&"
+      }
+      turn trigger on: =
+      {
+        txt = "&"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
     }
     trigger_hurt:form =
     {
@@ -2250,6 +3631,31 @@ QQRKSRC1
       {
         typ = "X16"
         cap = "PROJECTILES"
+      }
+      damage: =
+      {
+        txt = "&"
+        hint = "amount of damage to cause. (default 10)"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      damagetype: =
+      {
+        txt = "&"
+        hint = "what kind of damage should be given to the player. (default CRUSH)"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
       }
     }
     trigger_damagetargets:form =
@@ -2283,6 +3689,27 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      damage: =
+      {
+        txt = "&"
+        hint = "amount of damage to cause. If no damage is specified,"
+            $0D"objects are damaged by the current health+1"
+      }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
     }
     trigger_camerause:form =
     {
@@ -2309,6 +3736,27 @@ QQRKSRC1
         typ = "X8"
         cap = "MONSTERS"
       }
+      key: =
+      {
+        txt = "&"
+        hint = "The item needed to activate this. (default nothing)"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well by using the '::' "
+            $0D"notation."
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = " turn trigger off"
+      }
     }
     trigger_exit:form =
     {
@@ -2316,6 +3764,16 @@ QQRKSRC1
        "his hud."$0D"This is to inform him that he is near an exit."$0D22"trig"
        "gerable"$22" turn trigger on"$0D22"nottriggerable"$22" turn trigger of"
        "f"
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = " turn trigger off"
+      }
     }
     trigger_music:form =
     {
@@ -2379,6 +3837,73 @@ QQRKSRC1
         typ = "X128"
         cap = "SURPRISE"
       }
+      delay: =
+      {
+        txt = "&"
+        hint = "If is set, the trigger waits some time after activating before firing."
+      }
+      current: =
+      {
+        txt = "&"
+        hint = "can be used to set the current mood"
+      }
+      fallback: =
+      {
+        txt = "&"
+        hint = "can be used to set the fallback mood"
+      }
+      altcurrent: =
+      {
+        txt = "&"
+        hint = "can be used to set the current mood of the opposite face, if multiFaceted"
+      }
+      altfallback: =
+      {
+        txt = "&"
+        hint = "can be used to set the fallback mood of the opposite face, if multiFaceted"
+      }
+      edgeTriggerable: =
+      {
+        txt = "&"
+        hint = "trigger only fires when entering a trigger"
+      }
+      multiFaceted: =
+      {
+        txt = "&"
+        hint = "if 1, then trigger is North/South separate triggerable if 2, then trigger East/West separate "
+            $0D"triggerable"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well by using the '::' "
+            $0D"notation."
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Seconds between triggerings. (1.0 default)"
+      }
+      cnt: =
+      {
+        txt = "&"
+        hint = "how many times it can be triggered (infinite default)"
+      }
+      oneshot: =
+      {
+        txt = "&"
+        hint = "make this a one time trigger"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
     }
     trigger_reverb:form =
     {
@@ -2415,6 +3940,73 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      delay: =
+      {
+        txt = "&"
+        hint = "If is set, the trigger waits some time after activating before firing."
+      }
+      reverbtype: =
+      {
+        txt = "&"
+        hint = "what kind of reverb should be used"
+      }
+      reverblevel: =
+      {
+        txt = "&"
+        hint = "how much of the reverb effect should be applied"
+      }
+      altreverbtype: =
+      {
+        txt = "&"
+        hint = "what kind of reverb should be used"
+      }
+      altreverblevel: =
+      {
+        txt = "&"
+        hint = "how much of the reverb effect should be applied"
+      }
+      edgeTriggerable: =
+      {
+        txt = "&"
+        hint = "trigger only fires when entering a trigger"
+      }
+      multiFaceted: =
+      {
+        txt = "&"
+        hint = "if 1, then trigger is North/South separate triggerable if 2, then trigger East/West separate"
+            $0D"triggerable"
+      }
+      thread: =
+      {
+        txt = "&"
+        hint = "name of thread to trigger.This can be in a different script file as well by using the '::' "
+            $0D"notation."
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ": Seconds between triggerings. (1.0 default)"
+      }
+      cnt: =
+      {
+        txt = "&"
+        hint = "how many times it can be triggered (infinite default)"
+      }
+      oneshot: =
+      {
+        txt = "&"
+        hint = "make this a one time trigger"
+      }
+      triggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger on"
+      }
+      nottriggerable: =
+      {
+        txt = "&"
+        hint = "turn trigger off"
+      }
     }
     trigger_pushobject:form =
     {
@@ -2422,6 +4014,16 @@ QQRKSRC1
        $22"triggername"$22" if set, trigger only responds to objects with a ta"
        "rgetname the same as triggername."$0D22"cnt"$22" how many times it can"
        " be triggered (default 1, use -1 for infinite)"
+      triggername: =
+      {
+        txt = "&"
+        hint = "if set, trigger only responds to objects with a targetname the same as triggername."
+      }
+      cnt: =
+      {
+        txt = "&"
+        hint = "how many times it can be triggered (default 1, use -1 for infinite)"
+      }
     }
     trigger_givepowerup:form =
     {
@@ -2439,6 +4041,16 @@ QQRKSRC1
       {
         typ = "X8"
         cap = "MONSTERS"
+      }
+      oneshot: =
+      {
+        txt = "&"
+        hint = "makes this triggerable only once"
+      }
+      powerupname: =
+      {
+        txt = "&"
+        hint = "sets the name of the powerup to give to the player"
       }
     }
     worldspawn:form =
@@ -2468,6 +4080,116 @@ QQRKSRC1
       {
         typ = "X1"
         cap = "CINEMATIC"
+      }
+      soundtrack: =
+      {
+        txt = "&"
+        hint = "the soundtrack to use on the map"
+      }
+      gravity: =
+      {
+        txt = "&"
+        hint = "800 is default gravity"
+      }
+      skipthread: =
+      {
+        txt = "&"
+        hint = "thread that is activated to skip this level (if cinematic)"
+      }
+      nextmap: =
+      {
+        txt = "&"
+        hint = "map to goto when player exits"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = " text to print at user logon"
+      }
+      script: =
+      {
+        txt = "&"
+        hint = "script to run on start of map"
+      }
+      watercolor: =
+      {
+        txt = "&"
+        hint = "view color when underwater"
+      }
+      wateralpha: =
+      {
+        txt = "&"
+        hint = "view alpha when underwater"
+      }
+      lavacolor: =
+      {
+        txt = "&"
+        hint = "view alpha when in lava"
+      }
+      lavaalpha: =
+      {
+        txt = "&"
+        hint = "view alpha when in lava"
+      }
+      farplane_color: =
+      {
+        txt = "&"
+        hint = "color to fade to when the far clip plane is on"
+      }
+      farplane_cull: =
+      {
+        txt = "&"
+        hint = "whether or not the far plane should cull, default is yes"
+      }
+      farplane: =
+      {
+        txt = "&"
+        hint = "distance from the viewer that the far clip plane is"
+      }
+      ambientlight: =
+      {
+        txt = "&"
+        hint = "ambient lighting to be applied to all entities"
+      }
+      ambient: =
+      {
+        txt = "&"
+        hint = "ambient lighting to be applied to all entities, use _color to specify color"
+      }
+      suncolor: =
+      {
+        txt = "&"
+        hint = "color of the sun in the level"
+      }
+      sunlight: =
+      {
+        txt = "&"
+        hint = "intensity of the sun in the level"
+      }
+      sundirection: =
+      {
+        txt = "&"
+        hint = "direction of the sun in the level"
+      }
+      sunflare: =
+      {
+        txt = "&"
+        hint = "worldspace position of the sun flare"
+      }
+      sunflare_inportalsky: =
+      {
+        txt = "&"
+        hint = "whether or not the flare is in the portal sky"
+      }
+      lightmapdensity: =
+      {
+        txt = "&"
+        hint = "default lightmap density to be used for all surfaces"
+      }
+      skyalpha: =
+      {
+        txt = "&"
+        hint = "initial value of the sky's alpha, defaults to 1"
       }
     }
   }
