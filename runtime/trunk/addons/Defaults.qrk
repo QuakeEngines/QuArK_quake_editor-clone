@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.388  2008/02/27 00:09:41  cdunde
+//To fix shaders to work for FAKK2.
+//
 //Revision 1.387  2008/02/25 22:06:52  cdunde
 //Added EF2 developers commands.
 //
@@ -1765,7 +1768,7 @@ QQRKSRC1
     //    MapLimit = '65536 65536 65536'
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "Bezier_Library.qrk"$0D"DataFAKK2.qrk"$0D"FAKK2textures.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataFAKK2.qrk"$0D"FAKK2textures.qrk"$0D"FAKK2Scripts.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
