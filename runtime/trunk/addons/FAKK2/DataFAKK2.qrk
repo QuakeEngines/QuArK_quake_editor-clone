@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2008/02/29 09:14:47  cdunde
+//Completely updated by hand.
+//
 //Revision 1.4  2008/02/27 00:17:48  danielpharos
 //Fix the contextual help files not being found anymore
 //
@@ -751,6 +754,22 @@ QQRKSRC1
   }
   Entity Forms.fctx =
   {
+    // Definition of "includes"
+
+    t_commonspecifics:incl =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."
+      }
+    }
+
     func_beam:form =
     {
       help = "This creates a beam effect from the origin to the target's origi"
@@ -770,6 +789,7 @@ QQRKSRC1
        "of segments in a beam (Default is 4)"$0D22"delay"$22" Delay between be"
        "am updates.  (i.e. slows the effect of the beam down)"$0D22"shader"$22
        " Set the shader of the beam"$0D22"scale"$22" Set the width of the beam"
+       $0D22"rendereffects"$22" special rendering effects"
        $0D"START_ON  - Starts the beam on"$0D"PERSIST   - Keeps the last few b"
        "eams around and fades them out over the life of the beam"$0D"WAVE     "
        " - Make the beam follow a sin wave pattern"$0D"NOISE     - Use a more "
@@ -799,10 +819,17 @@ QQRKSRC1
         typ = "X8"
         cap = "NOISE"
       }
+      t_commonspecifics = !
       model: =
       {
         txt = "&"
         hint = "Specifies the model to use as the beam"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
       overlap: =
       {
@@ -823,9 +850,8 @@ QQRKSRC1
       color: =
       {
         txt = "&"
-        hint = "Vector specifiying the red,green, and blue components. (Default is "
-            $0D"1 1 1"
-            $0D")"
+        Typ = "LN"
+        hint = "Vector specifiying the red,green, and blue components. (Default is '1 1 1')"
       }
       alpha: =
       {
@@ -866,12 +892,13 @@ QQRKSRC1
       scale: =
       {
         txt = "&"
-        hint = "Set the width of the beam START_ON- Starts the beam on PERSIST - Keeps the last few beams around "
-            $0D"and fades them out over the life of the beam WAVE  - Make the beam follow a sin wave pattern "
-            $0D"NOISE - Use a more computationally expensive random effect, but the results are smootherIf "
-            $0D"the model field is not set, then a renderer generated beam will be created using the color, "
-            $0D"minoffset, maxoffset, scale, and subdivisions fields If the targetname is set, it will use "
-            $0D"the target specified as the endpoint of the beam"
+        hint = "Set the width of the beam"
+      }
+      rendereffects: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "special rendering effects"
       }
     }
     func_rotatingdoor:form =
@@ -943,6 +970,17 @@ QQRKSRC1
         typ = "X128"
         cap = "TARGETED"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = " if set, no touch field will be spawned and a remote button or trigger field activates the "
+            $0D"door."
+      }
       message: =
       {
         txt = "&"
@@ -957,12 +995,6 @@ QQRKSRC1
       {
         txt = "&"
         hint = "determines the opening direction.point toward the middle of the door (away from the hinge)"
-      }
-      targetname: =
-      {
-        txt = "&"
-        hint = " if set, no touch field will be spawned and a remote button or trigger field activates the "
-            $0D"door."
       }
       health: =
       {
@@ -993,21 +1025,45 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Specify the sound that plays when the door stops moving (default global door_stop)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       sound_move: =
       {
         txt = "&"
         hint = "Specify the sound that plays when the door opens or closes (default global door_moving)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       sound_message: =
       {
         txt = "&"
         hint = "Specify the sound that plays when the door displays a message"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       sound_locked: =
       {
         txt = "&"
         hint = "Specify the sound that plays when the door is locked"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
     }
     func_door:form =
@@ -1076,6 +1132,16 @@ QQRKSRC1
         typ = "X128"
         cap = "TARGETED"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+            $0D"if set, no touch field will be spawned and a remote button or trigger field activates the door."
+      }
       message: =
       {
         txt = "&"
@@ -1085,11 +1151,6 @@ QQRKSRC1
       {
         txt = "&"
         hint = "determines the opening direction.point toward the middle of the door (away from the hinge)"
-      }
-      targetname: =
-      {
-        txt = "&"
-            $0D"if set, no touch field will be spawned and a remote button or trigger field activates the door."
       }
       health: =
       {
@@ -1130,21 +1191,45 @@ QQRKSRC1
       {
         txt = "&"
         hint = " Specify the sound that plays when the door stops moving (default global door_stop)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       sound_move: =
       {
         txt = "&"
         hint = "Specify the sound that plays when the door opens or closes (default global door_moving)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       sound_message: =
       {
         txt = "&"
         hint = "Specify the sound that plays when the door displays a message"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       sound_locked: =
       {
         txt = "&"
         hint = "Specify the sound that plays when the door is locked"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
     }
     script_door:form =
@@ -1218,6 +1303,16 @@ QQRKSRC1
         typ = "X128"
         cap = "TARGETED"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+            $0D"if set, no touch field will be spawned and a remote button or trigger field activates the door."
+      }
       message: =
       {
         txt = "&"
@@ -1227,11 +1322,6 @@ QQRKSRC1
       {
         txt = "&"
         hint = "determines the opening direction.point toward the middle of the door (away from the hinge)"
-      }
-      targetname: =
-      {
-        txt = "&"
-            $0D"if set, no touch field will be spawned and a remote button or trigger field activates the door."
       }
       health: =
       {
@@ -1284,21 +1374,45 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Specify the sound that plays when the door stops moving (default global door_stop)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       sound_move: =
       {
         txt = "&"
         hint = "Specify the sound that plays when the door opens or closes (default global door_moving)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       sound_message: =
       {
         txt = "&"
         hint = "Specify the sound that plays when the door displays a message"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       sound_locked: =
       {
         txt = "&"
         hint = "Specify the sound that plays when the door is locked"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
     }
     func_earthquake:form =
@@ -1317,6 +1431,7 @@ QQRKSRC1
         typ = "X2"
         cap = "NO_RAMPDOWN"
       }
+      t_commonspecifics = !
       duration: =
       {
         txt = "&"
@@ -1336,6 +1451,7 @@ QQRKSRC1
        "hread"$22" name of thread to trigger.  This can be in a different scri"
        "pt file as well\"$0D"by using the '::' notation."
       bbox = '0 0 0 8 8 8'
+      t_commonspecifics = !
       dmg: =
       {
         txt = "&"
@@ -1390,6 +1506,7 @@ QQRKSRC1
         typ = "X8"
         cap = "RANDOM_SCALE"
       }
+      t_commonspecifics = !
       dmg: =
       {
         txt = "&"
@@ -1504,6 +1621,7 @@ QQRKSRC1
         typ = "X128"
         cap = "NOTSOLID"
       }
+      t_commonspecifics = !
       dmg: =
       {
         txt = "&"
@@ -1548,6 +1666,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "What kind of debris to spawn (default nothing)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
       amount: =
       {
@@ -1593,6 +1717,7 @@ QQRKSRC1
         typ = "X4"
         cap = "PULL_UPWARDS"
       }
+      t_commonspecifics = !
       radius: =
       {
         txt = "&"
@@ -1635,6 +1760,7 @@ QQRKSRC1
         typ = "X4"
         cap = "ENTITY_TRACE"
       }
+      t_commonspecifics = !
       no_entity_light: =
       {
         txt = "&"
@@ -1645,9 +1771,10 @@ QQRKSRC1
         txt = "&"
         hint = "- the intensity of the light, default 300"
       }
-      color: =
+      _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "- the color of the light"
       }
       falloff: =
@@ -1692,21 +1819,30 @@ QQRKSRC1
     {
       help = $22"model"$22"     arbitrary .tik file to display"
       bbox = '0 0 0 0 0 0'
+      t_commonspecifics = !
       model: =
       {
         txt = "&"
         hint = "arbitrary .tik file to display"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
     }
     info_null:form =
     {
       help = "Used as a positional target for spotlights, etc."
       bbox = '-4 -4 -4 4 4 4'
+      t_commonspecifics = !
     }
     info_notnull:form =
     {
       help = "Used as a positional target for lightning."
       bbox = '-4 -4 -4 4 4 4'
+      t_commonspecifics = !
     }
     func_explodingwall:form =
     {
@@ -1769,6 +1905,7 @@ QQRKSRC1
         typ = "X128"
         cap = "TWOSTAGE"
       }
+      t_commonspecifics = !
       explosions: =
       {
         txt = "&"
@@ -1842,6 +1979,7 @@ QQRKSRC1
         typ = "X32"
         cap = "NO_EFFECTS"
       }
+      t_commonspecifics = !
       key: =
       {
         txt = "&"
@@ -1857,6 +1995,7 @@ QQRKSRC1
     {
       help = "Point trigger_teleport at these."
       bbox = '-32 -32 0 32 32 8'
+      t_commonspecifics = !
     }
     func_useanim:form =
     {
@@ -1888,6 +2027,7 @@ QQRKSRC1
         typ = "X4"
         cap = "CONTINUOUS"
       }
+      t_commonspecifics = !
       count: =
       {
         txt = "&"
@@ -1960,6 +2100,7 @@ QQRKSRC1
         typ = "X1"
         cap = "MULTI-STATE"
       }
+      t_commonspecifics = !
       activate: =
       {
         txt = "&"
@@ -2037,6 +2178,7 @@ QQRKSRC1
     {
       help = "Used as a positioning device for objects"
       bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
     }
     func_monkeybars:form =
     {
@@ -2051,6 +2193,22 @@ QQRKSRC1
       help = "Pushable object"$0D22"dmg"$22" how much damage to cause when blo"
        "cked.  (default 2)"$0D22"pushsound"$22" Sound to play when object is p"
        "ushed (default is none)"
+      dmg: =
+      {
+        txt = "&"
+        hint = "how much damage to cause when blocked.  (default 2)"
+      }
+      pushsound: =
+      {
+        txt = "&"
+        hint = "Sound to play when object is pushed (default is none)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
+      }
     }
     func_fallingrock:form =
     {
@@ -2079,6 +2237,11 @@ QQRKSRC1
         typ = "X4"
         cap = "REMOVE_ON_GROUND"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
       targetname: =
       {
         txt = "&"
@@ -2103,6 +2266,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "sound to play when rock touches the world"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
     }
     func_supplywater:form =
@@ -2131,6 +2300,7 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      t_commonspecifics = !
       wait: =
       {
         txt = "&"
@@ -2150,10 +2320,17 @@ QQRKSRC1
     func_emitter:form =
     {
       help = $22"emitter"$22" - Name of emitter to use."
+      t_commonspecifics = !
+      emitter: =
+      {
+        txt = "&"
+        hint = "Name of emitter to use."
+      }
     }
     func_rain:form =
     {
       help = "This creates a raining effect in the brush"
+      t_commonspecifics = !
       emitter: =
       {
         txt = "&"
@@ -2207,11 +2384,17 @@ QQRKSRC1
         txt = "&"
         hint = "the pathnode to jump to."
       }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."
+      }
     }
     func_throwobject:form =
     {
       help = "This is an object you can pickup and throw at people"
       bbox = '-16 -16 0 16 16 32'
+      t_commonspecifics = !
     }
     info_player_start:form =
     {
@@ -2257,6 +2440,7 @@ QQRKSRC1
       help = "The portal surface nearest this entity will show a view from the"
        " targeted portal_camera, or a mirror view if untargeted."
       bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
     }
     portal_camera:form =
     {
@@ -2274,6 +2458,7 @@ QQRKSRC1
         typ = "X2"
         cap = "fastrotate"
       }
+      t_commonspecifics = !
       roll: =
       {
         txt = "&"
@@ -2288,6 +2473,7 @@ QQRKSRC1
        "field in which the player will hang on to the rope when grabbing it."$0D
        $22"ropeshader"$22" : Name of the shader to use to render the rope (def"
        "ault is "$22"ropeshader"$22")"
+      t_commonspecifics = !
       ropeshader: =
       {
         txt = "&"
@@ -2382,15 +2568,15 @@ QQRKSRC1
         typ = "X1"
         cap = "START_STILL"
       }
-      targetname: =
-      {
-        txt = "&"
-        hint = "The name that the rope is triggered with."
-      }
       target: =
       {
         txt = "&"
         hint = "The 'targetname' of the first rope_piece in the rope."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "The name that the rope is triggered with."
       }
       piecelength: =
       {
@@ -2401,6 +2587,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "The model to use for the rope pieces."
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
       ropedampener: =
       {
@@ -2423,6 +2615,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "name of a model to attach onto this piece of rope"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
       ropeshader: =
       {
@@ -2437,6 +2635,7 @@ QQRKSRC1
         typ = "X1"
         cap = "NOT_SOLID"
       }
+      t_commonspecifics = !
     }
     script_model:form =
     {
@@ -2446,16 +2645,30 @@ QQRKSRC1
         typ = "X1"
         cap = "NOT_SOLID"
       }
+      t_commonspecifics = !
+      model: =
+      {
+        txt = "&"
+        hint = "model to use"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
+      }
     }
     script_origin:form =
     {
       help = "Used as an alternate origin for objects.  Bind the object to the"
        " script_origin"$0D"in order to simulate changing that object's origin."
       bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
     }
     script_skyorigin:form =
     {
       help = "Used to specify the origin of a portal sky"
+      t_commonspecifics = !
     }
     func_spawn:form =
     {
@@ -2471,16 +2684,22 @@ QQRKSRC1
       {
         txt = "&"
         hint = "The name of the TIKI file you wish to spawn. (Required)"
-      }
-      spawntargetname: =
-      {
-        txt = "&"
-        hint = "This will be the targetname of the spawned model. (default is null)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
       spawntarget: =
       {
         txt = "&"
         hint = "This will be the target of the spawned model. (default is null)"
+      }
+      spawntargetname: =
+      {
+        txt = "&"
+        hint = "This will be the targetname of the spawned model. (default is null)"
       }
       pickup_thread: =
       {
@@ -2514,10 +2733,17 @@ QQRKSRC1
         typ = "X1"
         cap = "START_OFF"
       }
+      t_commonspecifics = !
       modelname: =
       {
         txt = "&"
         hint = "The name of the TIKI file you wish to spawn. (Required)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
       key: =
       {
@@ -2542,10 +2768,17 @@ QQRKSRC1
        "ou wish to spawn. (Required)"$0D22"key"$22"         The item needed to"
        " activate this. (default nothing)"
       bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
       modelname: =
       {
         txt = "&"
         hint = "The name of the TIKI file you wish to spawn. (Required)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
       key: =
       {
@@ -2566,16 +2799,22 @@ QQRKSRC1
       {
         txt = "&"
         hint = "The name of the TIKI file you wish to spawn. (Required)"
-      }
-      spawntargetname: =
-      {
-        txt = "&"
-        hint = "This will be the targetname of the spawned model. (default is null)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
       spawntarget: =
       {
         txt = "&"
         hint = "This will be the target of the spawned model. (default is null)"
+      }
+      spawntargetname: =
+      {
+        txt = "&"
+        hint = "This will be the targetname of the spawned model. (default is null)"
       }
       key: =
       {
@@ -2597,16 +2836,22 @@ QQRKSRC1
       {
         txt = "&"
         hint = "The name of the TIKI file you wish to spawn. (Required)"
-      }
-      spawntargetname: =
-      {
-        txt = "&"
-        hint = " This will be the targetname of the spawned model. (default is null)"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
       spawntarget: =
       {
         txt = "&"
         hint = "This will be the target of the spawned model. (default is null)"
+      }
+      spawntargetname: =
+      {
+        txt = "&"
+        hint = " This will be the targetname of the spawned model. (default is null)"
       }
       key: =
       {
@@ -2635,6 +2880,7 @@ QQRKSRC1
         typ = "X2"
         cap = "Y_AXIS_ONLY"
       }
+      t_commonspecifics = !
       speed: =
       {
         txt = "&"
@@ -2659,6 +2905,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "sound to be played while fulcrum is moving"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
     }
     func_runthrough:form =
@@ -2671,8 +2923,9 @@ QQRKSRC1
        "hat the trigger will spawn something( default 0.5 )"$0D22"lip"$22" - h"
        "ow far below the surface of the trigger we should spawn these things ("
        " default 3 )"$0D22"offset"$22" - vector offset oriented along velocity"
-       " vector( default "$22"0 0 0"$22" )"$0D22"spawnmodel"$22" - thing to sp"
-       "awn when triggered"
+       " vector( default "$22"0 0 0"$22" )"$0D22"spawnmodel"$22" - model thing"
+       " to spawn when triggered"
+      t_commonspecifics = !
       speed: =
       {
         txt = "&"
@@ -2701,7 +2954,13 @@ QQRKSRC1
       spawnmodel: =
       {
         txt = "&"
-        hint = "thing to spawn when triggered"
+        hint = "model thing to spawn when triggered"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\models"
+        DefExt = "tik"
+        DirSep = "/"
+        AugPath = "models"
       }
     }
     func_sinkobject:form =
@@ -2731,6 +2990,7 @@ QQRKSRC1
         typ = "X4"
         cap = "NO_RESET"
       }
+      t_commonspecifics = !
       delay: =
       {
         txt = "&"
@@ -2765,11 +3025,23 @@ QQRKSRC1
       {
         txt = "&"
         hint = "- sound to be played while platform is sinking."
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       resetsound: =
       {
         txt = "&"
         hint = "- sound to be played while platform is resetting."
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       active: =
       {
@@ -2815,6 +3087,7 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      t_commonspecifics = !
       health: =
       {
         txt = "&"
@@ -2909,6 +3182,16 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ".If 'health' is set, the trigger must be killed to activate."
+      }
       health: =
       {
         txt = "&"
@@ -2918,11 +3201,6 @@ QQRKSRC1
       {
         txt = "&"
         hint = "if set, the trigger waits some time after activating before firing."
-      }
-      targetname: =
-      {
-        txt = "&"
-        hint = ".If 'health' is set, the trigger must be killed to activate."
       }
       thread: =
       {
@@ -2991,6 +3269,7 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      t_commonspecifics = !
     }
     trigger_secret:form =
     {
@@ -3029,6 +3308,7 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      t_commonspecifics = !
       key: =
       {
         txt = "&"
@@ -3121,6 +3401,16 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "If 'health' is set, the trigger must be killed to activate."
+      }
       variable: =
       {
         txt = "&"
@@ -3143,11 +3433,6 @@ QQRKSRC1
       {
         txt = "&"
         hint = "If set, the trigger waits some time after activating before firing."
-      }
-      targetname: =
-      {
-        txt = "&"
-        hint = "If 'health' is set, the trigger must be killed to activate."
       }
       thread: =
       {
@@ -3218,6 +3503,16 @@ QQRKSRC1
         typ = "X16"
         cap = "NOT_PROJECTILES"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "if target is set, then a velocity will be calculated based on speed"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."
+      }
       speed: =
       {
         txt = "&"
@@ -3232,11 +3527,6 @@ QQRKSRC1
       {
         txt = "&"
         hint = "The item needed to activate this. (default nothing)"
-      }
-      target: =
-      {
-        txt = "&"
-        hint = "if target is set, then a velocity will be calculated based on speed"
       }
       triggerable: =
       {
@@ -3276,6 +3566,16 @@ QQRKSRC1
         typ = "X16"
         cap = "NOT_PROJECTILES"
       }
+      target: =
+      {
+        txt = "&"
+        hint = "if target is set, then a velocity will be calculated based on speed"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."
+      }
       speed: =
       {
         txt = "&"
@@ -3290,11 +3590,6 @@ QQRKSRC1
       {
         txt = "&"
         hint = "The item needed to activate this. (default nothing)"
-      }
-      target: =
-      {
-        txt = "&"
-        hint = "if target is set, then a velocity will be calculated based on speed"
       }
       triggerable: =
       {
@@ -3356,6 +3651,7 @@ QQRKSRC1
         typ = "X32"
         cap = "TOGGLE"
       }
+      t_commonspecifics = !
       volume: =
       {
         txt = "&"
@@ -3365,6 +3661,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "sound to play"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       channel: =
       {
@@ -3414,6 +3716,7 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      t_commonspecifics = !
       mindelay: =
       {
         txt = "&"
@@ -3438,6 +3741,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "sound to play"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       channel: =
       {
@@ -3485,6 +3794,7 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      t_commonspecifics = !
       spawnspot: =
       {
         txt = "&"
@@ -3536,6 +3846,7 @@ QQRKSRC1
         typ = "X8"
         cap = "MONSTERS"
       }
+      t_commonspecifics = !
       key: =
       {
         txt = "&"
@@ -3582,6 +3893,7 @@ QQRKSRC1
         typ = "X8"
         cap = "MONSTERS"
       }
+      t_commonspecifics = !
       key: =
       {
         txt = "&"
@@ -3632,6 +3944,7 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      t_commonspecifics = !
       damage: =
       {
         txt = "&"
@@ -3689,6 +4002,7 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      t_commonspecifics = !
       damage: =
       {
         txt = "&"
@@ -3736,6 +4050,7 @@ QQRKSRC1
         typ = "X8"
         cap = "MONSTERS"
       }
+      t_commonspecifics = !
       key: =
       {
         txt = "&"
@@ -3764,6 +4079,7 @@ QQRKSRC1
        "his hud."$0D"This is to inform him that he is near an exit."$0D22"trig"
        "gerable"$22" turn trigger on"$0D22"nottriggerable"$22" turn trigger of"
        "f"
+      t_commonspecifics = !
       triggerable: =
       {
         txt = "&"
@@ -3837,6 +4153,7 @@ QQRKSRC1
         typ = "X128"
         cap = "SURPRISE"
       }
+      t_commonspecifics = !
       delay: =
       {
         txt = "&"
@@ -3940,6 +4257,7 @@ QQRKSRC1
         typ = "X16"
         cap = "PROJECTILES"
       }
+      t_commonspecifics = !
       delay: =
       {
         txt = "&"
@@ -4014,6 +4332,7 @@ QQRKSRC1
        $22"triggername"$22" if set, trigger only responds to objects with a ta"
        "rgetname the same as triggername."$0D22"cnt"$22" how many times it can"
        " be triggered (default 1, use -1 for infinite)"
+      t_commonspecifics = !
       triggername: =
       {
         txt = "&"
@@ -4042,6 +4361,7 @@ QQRKSRC1
         typ = "X8"
         cap = "MONSTERS"
       }
+      t_commonspecifics = !
       oneshot: =
       {
         txt = "&"
@@ -4085,6 +4405,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "the soundtrack to use on the map"
+        Typ = "EP"
+        BasePath = "$Game\fakk"
+        CutPath = "$Game\?\sound"
+        DefExt = "wav"
+        DirSep = "/"
+        AugPath = "sound"
       }
       gravity: =
       {
@@ -4134,6 +4460,7 @@ QQRKSRC1
       farplane_color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "color to fade to when the far clip plane is on"
       }
       farplane_cull: =
@@ -4156,9 +4483,16 @@ QQRKSRC1
         txt = "&"
         hint = "ambient lighting to be applied to all entities, use _color to specify color"
       }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "ambient color. (Default is '1 1 1')"
+      }
       suncolor: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "color of the sun in the level"
       }
       sunlight: =
