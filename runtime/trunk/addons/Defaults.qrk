@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.389  2008/02/29 05:15:39  cdunde
+//Added shader support for FAKK2.
+//
 //Revision 1.388  2008/02/27 00:09:41  cdunde
 //To fix shaders to work for FAKK2.
 //
@@ -1838,7 +1841,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "Bezier_Library.qrk"$0D"DataEF2.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"DataEF2.qrk"$0D"EF2Shaders.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
