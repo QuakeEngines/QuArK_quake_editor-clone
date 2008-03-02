@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2008/03/01 05:41:22  cdunde
+//Added more game support items.
+//
 //Revision 1.5  2008/02/29 09:14:47  cdunde
 //Completely updated by hand.
 //
@@ -3908,10 +3911,7 @@ QQRKSRC1
       triggerable: =
       {
         txt = "&"
-      }
-      turn trigger on: =
-      {
-        txt = "&"
+        hint = "turn trigger on"
       }
       nottriggerable: =
       {
