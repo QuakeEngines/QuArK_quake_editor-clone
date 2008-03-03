@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 5
 ============
 
+* [cdunde]: Added EF2 shader, weapon and model entity support.
+
 * [DanielPharos]: DanielPharos fix to stop bezier-view from causing errors.
 
 * [DanielPharos/cdunde]: Added various new functions for QuArK development, see QuarkX doc section.
