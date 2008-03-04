@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.391  2008/03/03 21:42:29  cdunde
+//Added EF2 weapon and model entity support.
+//
 //Revision 1.390  2008/03/02 21:17:33  cdunde
 //Added EF2 shader support.
 //
@@ -1774,7 +1777,7 @@ QQRKSRC1
     //    MapLimit = '65536 65536 65536'
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "Bezier_Library.qrk"$0D"DataFAKK2.qrk"$0D"FAKK2textures.qrk"$0D"FAKK2Scripts.qrk"$0D"Q3ArchLib.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataFAKK2.qrk"$0D"FAKK2Weapon-ModelEntities.qrk"$0D"FAKK2textures.qrk"$0D"FAKK2Scripts.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
