@@ -16,9 +16,8 @@ HEADER_BEGIN = """
   <title>%(title)s</title>
   <meta name="Description" content="QuArK Information Database - Page: %(classif)s%(title)s">
   <meta name="Keywords" content="QuArK InfoBase Quake Army Knife QRK QKM Python PY Map Editor Hexen Heretic Half-Life Sin Kingpin Soldier-of-Fortune Star-Trek-Voyager Elite-Force">
+  <link rel=stylesheet href="standard.css" type="text/css">
 </head>
-
-<link rel=stylesheet href="standard.css" type="text/css">
 
 <body>
 <a name="__top__"></a>
