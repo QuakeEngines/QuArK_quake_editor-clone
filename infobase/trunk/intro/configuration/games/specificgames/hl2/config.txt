@@ -3,7 +3,8 @@ author: cdunde/PuG
 
 In this short tutorial we will be showing you how to quickly setup Quark to compile maps
 for Valve's Half-Life 2. Please remember to be able to create maps for Half-Life 2, or any
-of its modifications you must have the latest version of the <a href="http://developer.valvesoftware.com/wiki/SDK_Docs">Source SDK</a> downloaded and installed for the necessary <g>build tools</g> & materials. This can be downloaded from Steam itself, under the Tools tab.
+of its modifications you must have the latest version of the <a href="http://developer.valvesoftware.com/wiki/SDK_Docs">Source SDK</a> downloaded and installed for the necessary <g>build tools</g> & materials. This can be downloaded from Steam itself, under the Tools tab. Also, here is a link that list all of the games entities and how to use them
+<a href="http://developer.valvesoftware.com/wiki/List_of_entities">HL2 Entities</a>.
 
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>
