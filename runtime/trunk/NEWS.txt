@@ -15,6 +15,11 @@ $Id$
 6.5.0 Beta 5
 ============
 
+* [cdunde]: Created and added new build tools in the cvs games folder to add Entity Specifics
+          - for better and easer QuArK game support .qrk file creation.
+
+* [cdunde]: Fixed FAKK2 and EF 2 worldspawn game music to play and added music list for each.
+
 * [cdunde]: Added FAKK2 shader, weapon and model entity support.
 
 * [cdunde]: Added EF2 shader, weapon and model entity support.
