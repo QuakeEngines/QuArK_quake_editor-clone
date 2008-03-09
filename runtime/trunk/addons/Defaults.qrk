@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.392  2008/03/04 05:56:33  cdunde
+//Added FAKK2 shader, weapon and model entity support.
+//
 //Revision 1.391  2008/03/03 21:42:29  cdunde
 //Added EF2 weapon and model entity support.
 //
@@ -1777,7 +1780,7 @@ QQRKSRC1
     //    MapLimit = '65536 65536 65536'
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataFAKK2.qrk"$0D"FAKK2Weapon-ModelEntities.qrk"$0D"FAKK2textures.qrk"$0D"FAKK2Scripts.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataFAKK2.qrk"$0D"FAKK2Entities.qrk"$0D"FAKK2Weapon-ModelEntities.qrk"$0D"FAKK2textures.qrk"$0D"FAKK2Scripts.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -1847,7 +1850,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataEF2.qrk"$0D"EF2Weapon-ModelEntities.qrk"$0D"EF2Shaders.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataEF2.qrk"$0D"EF2Entities.qrk"$0D"EF2Weapon-ModelEntities.qrk"$0D"EF2Shaders.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
