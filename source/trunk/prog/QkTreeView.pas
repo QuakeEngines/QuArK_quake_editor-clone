@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/09/12 15:28:16  danielpharos
+Replaced redundant property.
+
 Revision 1.14  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -244,6 +247,7 @@ destructor TMyTreeView.Destroy;
 begin
  Roots.Free;
  FFocusList.Free;
+ FFocusList:=nil;
  Dispose(DragInfo);
  if EditInfo<>Nil then
   begin
@@ -743,6 +747,8 @@ var
  Test: TObject;
 begin
  Result:=Nil;
+ if FFocusList = nil then
+   Exit;
  L:=Roots;
  I:=FFocusList.Count;
  while I>0 do
