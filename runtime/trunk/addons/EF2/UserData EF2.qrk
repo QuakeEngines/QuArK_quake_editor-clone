@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2007/05/29 00:36:08  cdunde
+//Since Dancing Dan now has full .dds saving support.
+//
 //Revision 1.4  2007/05/06 02:00:35  cdunde
 //Needed to comment out the saving of textures until that is implemented.
 //
@@ -87,7 +90,7 @@ QQRKSRC1
   {
     item: =
     {
-      Txt = "&GO ! (textures+scripts+build+STVEF)"
+      Txt = "&GO ! (textures+scripts+build+EF2)"
       Shortcut = "Ctrl+R"
       RunGame = "1"
       Textures = "1"
