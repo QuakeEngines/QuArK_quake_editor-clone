@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2008/02/24 14:41:35  danielpharos
+Fixed web-links not working anymore, and added a decent error message if a local file cannot be found.
+
 Revision 1.59  2008/02/23 20:22:20  danielpharos
 Small changes to Python loading and unloading
 
@@ -2173,8 +2176,14 @@ begin
    FullFile:=URL;
 
  if (LeftStr(FullFile,8)='file:///') then
-   if FileExists(RightStr(FullFile, Length(FullFile)-8)) = false then
-     raise EErrorFmt(5228, [RightStr(FullFile, Length(FullFile)-8)]);
+ begin
+   S:=RightStr(FullFile, Length(FullFile)-8);
+   I:=Pos('#', S);
+   if I>0 then
+     S:=LeftStr(S, I-1);
+   if FileExists(S) = false then
+     raise EErrorFmt(5228, [S]);
+ end;
 
  Reg:=TRegistry2.Create;
  try
