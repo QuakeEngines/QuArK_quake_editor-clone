@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/03/10 14:56:05  danielpharos
+Fix a big crash when exiting the explorer (or saving a map/model-file)
+
 Revision 1.15  2007/09/12 15:28:16  danielpharos
 Replaced redundant property.
 
@@ -245,16 +248,15 @@ end;
 
 destructor TMyTreeView.Destroy;
 begin
+ inherited;
  Roots.Free;
  FFocusList.Free;
- FFocusList:=nil;
  Dispose(DragInfo);
  if EditInfo<>Nil then
   begin
    EditInfo^.EditItem.AddRef(-1);
    Dispose(EditInfo);
   end;
- inherited;
 end;
 
 procedure TMyTreeView.CreateParams(var Params: TCreateParams);
@@ -747,8 +749,6 @@ var
  Test: TObject;
 begin
  Result:=Nil;
- if FFocusList = nil then
-   Exit;
  L:=Roots;
  I:=FFocusList.Count;
  while I>0 do
