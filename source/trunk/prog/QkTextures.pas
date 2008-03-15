@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.59  2007/11/20 18:28:07  danielpharos
 Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
 
@@ -1235,8 +1238,8 @@ begin
       begin   { Quake 3 }
         Arg:=Specifics.Values['b'];
         if Arg<>'' then
-        begin { shader (Q3) or material (D3) or material (D3 for Quake4) }
-          if (CharModeJeu=mjDoom3) or (CharModeJeu=mjQuake4) then
+        begin { shader (Q3) or material (D3) or material (D3 for Quake4) or material (D3 for Prey) }
+          if (CharModeJeu=mjDoom3) or (CharModeJeu=mjQuake4) or (CharModeJeu=mjPrey) then
            begin
             // the revised code (Doom 3 material)
             // S is the game's files folder (baseq3 for Quake 3, base for Doom 3, q4base for Quake 4)
