@@ -1,10 +1,10 @@
-# GetEntitiesList.py - Makes a list of all entities, their Specifics and ;desc\Help\hint data
+# GetQ3typeEntitiesList.py - Makes a list of all entities, their Specifics and ;desc\Help\hint data
 #                -   in each file by folder to use in creating the addon.qrk file.
 #            - cdunde March 4, 2008
 #            - Put this file and the main work folder (with its sub-folder[s]) in the same directory.
 #            - Change the "WorkDirectory", "WorkFolder", "FileType" and "OutPutList" below.
 #            - Start the "DOS Command Window", cd (change directory) to the "WorkDirectory" path location.
-#            - Type in "python GetEntitiesList.py" and hit Enter.
+#            - Type in "python GetQ3typeEntitiesList.py" and hit Enter.
 #            - The completed file will be created in the same location this file is at.
 #            - This program will go one sub-folder deep.
 

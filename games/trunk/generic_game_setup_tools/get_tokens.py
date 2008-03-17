@@ -3,11 +3,12 @@
 NUMBERS = '0123456789-.'
 ALPHAS  = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
 
+#        Token nbr, what it is
 T_EOF        = 1
 T_NUMBER     = 2
 T_COMMENT    = 3
 T_COMMENT    = 4
-T_QSTRING    = 5
+T_QSTRING    = 5  # specific and argument
 T_IDENTIFIER = 6
 T_SPECIAL    = 7
 

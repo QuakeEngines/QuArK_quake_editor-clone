@@ -3,7 +3,7 @@ import os, os.path, string
 # AddSpecificsList.py - Adds all entitie's Specifics to the "Newfile.qrk" file
 #                -   using the .spf file created earlier and rename the .qrk file properly.
 #            - cdunde March 6, 2008
-#            - Put this file in the work folder where the "GetEntitiesList.py", Newfile.qrk and .spf files are.
+#            - Put this file in the work folder where the "GetQ3typeEntitiesList.py", Newfile.qrk and .spf files are.
 #            - Change the "WorkDirectory" below. Do NOT change the name of any other files created so far.
 #            - Type in what you want for the file "Description" to show.
 #            - Start the "DOS Command Window", cd (change directory) to the "WorkDirectory" path location.
@@ -111,7 +111,7 @@ for name in range(len(names)):
         break
     if name == len(names)-1:
         print "No .spf file found !"
-        print "See & use the 'GetEntitiesList.py' file first to create the needed .spf file"
+        print "See & use the 'GetQ3typeEntitiesList.py' file first to create the needed .spf file"
         print "Operation Terminated !"
         print "\a" # Makes the computer "Beep" once if a file is not found.
 for name in range(len(names)):
@@ -119,7 +119,7 @@ for name in range(len(names)):
         break
     if name == len(names)-1:
         print "No Newfile.qrk file found !"
-        print "See & use the 'GetEntitiesList.py' file to create the needed .def and .spf files."
+        print "See & use the 'GetQ3typeEntitiesList.py' file to create the needed .def and .spf files."
         print "Then use QuArK to create the needed 'Newfile.qrk' file needed."
         print "Operation Terminated !"
         print "\a" # Makes the computer "Beep" once if a file is not found.
