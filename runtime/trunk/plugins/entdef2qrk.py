@@ -364,7 +364,7 @@ TYPE_NEWLINE            = 21 # \n
 
 CHARS_NUMERIC           = "0123456789"
 CHARS_NUMERIC_SYMBOLS   = "-."
-CHARS_ALFABETIC         = "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+CHARS_ALFABETIC         = "_-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 def getnexttoken(srcstring):
     # Remove heading spaces/tabs
@@ -545,6 +545,9 @@ quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def 
 
 #
 #$Log$
+#Revision 1.9  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.6  2003/12/17 13:58:59  peter-b
 #- Rewrote defines for setting Python version
 #- Removed back-compatibility with Python 1.5
