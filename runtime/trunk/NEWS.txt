@@ -15,6 +15,9 @@ $Id$
 6.5.0 Beta 5
 ============
 
+* [cdunde]: Added full game support for PREY. Including easy selectors for models, sound,
+          - color settings and much more along with close to 8MB of entities.
+
 * [cdunde]: Created and added new build tools in the cvs games folder to add Entity Specifics
           - for better and easer QuArK game support .qrk file creation.
 
