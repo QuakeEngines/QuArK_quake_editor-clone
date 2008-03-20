@@ -2645,7 +2645,7 @@ def DialogClick(m): # Not being used right now, maybe for Airbrush or Patterns l
 class SolidColorPaintClick(quarkpy.mdlhandles.RectSelDragObject):
     "This is just a place holder at this time."
 
-    Hint = hintPlusInfobaselink("Solid Color Paint||Solid Color Paint:\n\nAllows Solid Color Painting of the selected model's skin texture.", "intro.modeleditor.toolpalettes.paintmodes.html#solidcolorpaint")
+    Hint = hintPlusInfobaselink("Solid Color Paint||Solid Color Paint:\n\nAllows Solid Color Painting of the selected model's skin texture.", "intro.modeleditor.toolpalettes.paintmodes.html#solidcolor")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -2654,7 +2654,7 @@ class SolidColorPaintClick(quarkpy.mdlhandles.RectSelDragObject):
 class AirbrushPaintClick(quarkpy.mdlhandles.RectSelDragObject):
     "This is just a place holder at this time."
 
-    Hint = hintPlusInfobaselink("Airbrush Paint||Airbrush Paint:\n\nAllows Solid Color Painting of the selected model's skin texture.", "intro.modeleditor.toolpalettes.paintmodes.html#airbrushpaint")
+    Hint = hintPlusInfobaselink("Airbrush Paint||Airbrush Paint:\n\nAllows Multiple Color Painting of the selected model's skin texture.", "intro.modeleditor.toolpalettes.paintmodes.html#airbrush")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -2663,7 +2663,7 @@ class AirbrushPaintClick(quarkpy.mdlhandles.RectSelDragObject):
 class PatternPaintClick(quarkpy.mdlhandles.RectSelDragObject):
     "This is just a place holder at this time."
 
-    Hint = hintPlusInfobaselink("Pattern Paint||Pattern Paint:\n\nAllows Pattern Painting of the selected model's skin texture.\n\nNon-functional at this time, reserved for future use.", "intro.modeleditor.toolpalettes.paintmodes.html#patternpaint")
+    Hint = hintPlusInfobaselink("Pattern Paint||Pattern Paint:\n\nAllows Pattern Painting of the selected model's skin texture.\n\nNon-functional at this time, reserved for future use.", "intro.modeleditor.toolpalettes.paintmodes.html#pattern")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -2808,9 +2808,9 @@ class PaintModesBar(ToolBar):
         else:
             select1(btns[i], self, layout.editor)
 
-        BuildDialogbtn = qtoolbar.button(DialogClick, "Special Paint Functions Dialog||Special Paint Functions Dialog:\n\nNot functional at this time. Reserved for future use.", ico_paintmodes, 0, infobaselink="intro.modeleditor.toolpalettes.paintmodes.html")
-        ColorPicker = qtoolbar.button(self.ColorPickerClick, "Color Picker||Color Picker:\n\nWhen active along with one of the paint tools, such as the 'Solid Color Paint' tool, you can 'pick' a color to set the paint brush to use by clicking the LMB on a pixel in any of the editor's textured views or the Skin-view.\n\nIf the 'Airbrush Paint' tool is active, doing a click on a pixel using your middle mouse button will set the 'second color' of the airbrush as well.", ico_paintmodes, 4, infobaselink="intro.modeleditor.toolpalettes.paintmodes.html")
-        ColorSelector = qtoolbar.button(ColorSelectorClick, "Color Selector\n& Paint Settings||Color Selector & Paint Settings:\n\nThis button opens the dialog to select colors manually from either a palette, if the model uses one, or the RGB color selector.\n\nThere are also various settings for all of the paint tools.", ico_paintmodes, 5, infobaselink="intro.modeleditor.toolpalettes.paintmodes.html")
+        BuildDialogbtn = qtoolbar.button(DialogClick, "Special Paint Functions Dialog||Special Paint Functions Dialog:\n\nNot functional at this time. Reserved for future use.", ico_paintmodes, 0, infobaselink="intro.modeleditor.toolpalettes.paintmodes.html#dialog")
+        ColorPicker = qtoolbar.button(self.ColorPickerClick, "Color Picker||Color Picker:\n\nWhen active along with one of the paint tools, such as the 'Solid Color Paint' tool, you can 'pick' a color to set the paint brush to use by clicking the LMB on a pixel in any of the editor's textured views or the Skin-view.\n\nIf the 'Airbrush Paint' tool is active, doing a click on a pixel using your middle mouse button will set the 'second color' of the airbrush as well.", ico_paintmodes, 4, infobaselink="intro.modeleditor.toolpalettes.paintmodes.html#colorpicker")
+        ColorSelector = qtoolbar.button(ColorSelectorClick, "Color Selector\n& Paint Settings||Color Selector & Paint Settings:\n\nThis button opens the dialog to select colors manually from either a palette, if the model uses one, or the RGB color selector.\n\nThere are also various settings for all of the paint tools.", ico_paintmodes, 5, infobaselink="intro.modeleditor.toolpalettes.paintmodes.html#colorselector")
 
         return [BuildDialogbtn] + btns + [ColorPicker, ColorSelector]
 
@@ -2824,6 +2824,9 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2008/02/23 20:07:45  cdunde
+# To fix code error.
+#
 # Revision 1.1  2008/02/23 04:41:11  cdunde
 # Setup new Paint modes toolbar and complete painting functions to allow
 # the painting of skin textures in any Model Editor textured and Skin-view.
