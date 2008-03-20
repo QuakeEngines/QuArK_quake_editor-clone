@@ -1,0 +1,42 @@
+title: Skin-view Painting
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=0 align=right valign=top>paintskinview1.png</img>
+Painting in the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+works a little bit differently then in one of the editor's textured views.
+
+In one of the editor's views if you go outside of the models mesh area it will simply stop painting the texture.
+However, in the <a href="intro.modeleditor.skinview.html">Skin-view</a> this is not the case because this view
+gives you the <g>tiled</g> effect of the texture and will therefore continue to paint in that tiled section.
+
+You will also notice that what ever is painted in one tile is duplicated in all of the other tiles until infinity.
+This is the way texturing is really suppose to work but most other editor's do not display these tiles,
+which can be quite an asset when you want to duplicate a section without having to lay one part of the model's
+mesh over another and another and another making it very cumbersome, if not impossible, to relocate or paint
+those duplicated areas.
+
+You will also notice that when painting in the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+the speed at which the texture is painted is much faster then painting in one of the editor's views.
+Yet, what ever you paint in the <a href="intro.modeleditor.skinview.html">Skin-view</a> will also
+appear in the editor's view and visa-versa.
+
+This in its self is another nice feature in that you can jump back and forth from the editor and the
+<a href="intro.modeleditor.skinview.html">Skin-view</a> as you are working. It is especially fast
+if you are working with two monitors on your system, if not, it works just as well having the
+<a href="intro.modeleditor.skinview.html">Skin-view</a> pulled to one side which will remain on top
+of the editor and not constantly get lost behind it.
+
+Another difference between the <a href="intro.modeleditor.skinview.html">Skin-view</a> and the editor's
+views, especially in OpenGL mode, is that it gives only a <g>pixel</g> by <g>pixel</g> image to work with.
+Meaning that it will not be distorted or appear fuzzy, blend the pixels together, in any way.
+
+Again, this is an added feature that allows you to pretty much see how the painting of that texture will
+be effected when it is used in the game itself.
+
+Other then those few variations, everything else works pretty much the same.
+
+One vital point to remember is that when painting in the editor's views you always have the option to
+make one, or more, of its <g>2D views</g> a <g>Textured</g> view which will give you an additional perspective
+to work from.

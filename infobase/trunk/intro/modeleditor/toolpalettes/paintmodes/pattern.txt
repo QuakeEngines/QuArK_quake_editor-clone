@@ -1,0 +1,6 @@
+title: Pattern Paint
+author: cdunde
+
+<img  border=0 align=right>pattern1.png</img>
+Not functional at this time. Reserved for future use to allow Pattern Painting of the selected
+model's skin texture.

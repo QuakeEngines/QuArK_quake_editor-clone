@@ -1,0 +1,37 @@
+title: Saving a Skin Texture
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right valign=top>savingskin1.png</img>
+Saving an individual skin texture at any time takes three simple steps.
+
+<g>First step</g>: open the Texture Browser and, from the <g>Used Skin Textures</g> group,
+select the texture that you want to save.
+
+With your cursor over that texture do a <g>RMB</g> click to bring up a menu and select
+<g>Properties...</g>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr>
+<td valign=top>
+<img border=0 align=left valign=top>savingskin2.png</img>
+<g>Second step</g>: The <g>Object properties</g> window to the left here will open up with the current
+image type already selected.
+
+Now selected <g>Save as...</g>
+
+<g>Third step</g>: This will lead you to the saving of the texture file using the
+<g>Save file as...</g> window that appears on the right here.
+
+Select the location where you want to save the texture, rename it if you want and click <g>Save</g>.
+</td>
+<td align=right valign=top>
+<img border=1 align=right valign=top>savingskin3.png</img>
+</td></tr>
+</table>
+
+Of course, when you save the entire model using one of the <g>Main</g> menu's <g>File</g> items,
+any and all painted textures will also be saved with that model.
