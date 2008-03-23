@@ -4,6 +4,11 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.8  2008/03/09 20:31:06  cdunde
+//Pulled entities out of the EF2 and FAKK2 game Data.qrk files.
+//Game addons should never dump anything into their Data.qrk files.
+//Also fixed their worldspawn music to work now.
+//
 //Revision 1.7  2008/03/02 19:48:28  cdunde
 //Update
 //
@@ -141,6 +146,10 @@ QQRKSRC1
   {
     tex = "eden/edenfloor"
   }
+  caulktex:incl =
+  {
+    tex = "common/caulk"
+  }
   NewMap:incl =
   {
     Game = "FAKK2"
@@ -160,32 +169,32 @@ QQRKSRC1
           west:f =
           {
             v = '256 -80 -96 256 -208 -96 256 -80 32'
-            tex = "eden/basicwall"
+            walltex = !
           }
           east:f =
           {
             v = '272 0 272 272 128 272 272 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "common/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 96 560 0 96 432 128 96'
-            tex = "common/caulk"
+            caulktex = !
           }
         }
         West wall:p =
@@ -193,32 +202,32 @@ QQRKSRC1
           west:f =
           {
             v = '-272 0 272 -272 -128 272 -272 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '-256 -192 -96 -256 -64 -96 -256 -192 32'
-            tex = "eden/basicwall"
+            walltex = !
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "common/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 96 560 0 96 432 128 96'
-            tex = "common/caulk"
+            caulktex = !
           }
         }
         North wall:p =
@@ -226,32 +235,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '-256 192 -96 -128 192 -96 -256 192 32'
-            tex = "eden/basicwall"
+            walltex = !
           }
           north:f =
           {
             v = '432 208 272 304 208 272 432 208 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "common/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 96 560 0 96 432 128 96'
-            tex = "common/caulk"
+            caulktex = !
           }
         }
         South wall:p =
@@ -259,32 +268,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '432 -208 272 560 -208 272 432 -208 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '0 -192 -96 -128 -192 -96 0 -192 32'
-            tex = "eden/basicwall"
+            walltex = !
           }
           down:f =
           {
             v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "common/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 96 560 0 96 432 128 96'
-            tex = "common/caulk"
+            caulktex = !
           }
         }
         Sky:p =
@@ -292,32 +301,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 96 560 0 96 432 -128 96'
-            tex = "eden/edenfloor"
+            ceiltex = !
           }
           up:f =
           {
             v = '432 0 112 560 0 112 432 128 112'
-            tex = "common/caulk"
+            caulktex = !
           }
         }
         Floor:p =
@@ -325,32 +334,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "common/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 -112 560 0 -112 432 -128 -112'
-            tex = "common/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 -96 560 0 -96 432 128 -96'
-            tex = "eden/floortile"
+            floortex = !
           }
         }
       }
