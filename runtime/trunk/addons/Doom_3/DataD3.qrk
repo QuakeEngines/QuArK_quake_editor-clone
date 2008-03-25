@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11  2008/03/25 09:14:45  cdunde
+//To break down Doom3 file to separate files.
+//
 //Revision 1.10  2008/03/16 23:59:18  cdunde
 //An entity update to get it to work.
 //
@@ -23,48 +26,6 @@ QQRKSRC1
   Description = "Base Doom 3 data"
   Default forms.qctx =
   {
-    t_aas_e:incl =
-    {
-      allowFlyReachabilities = "0"
-      allowSwimReachabilities = "0"
-      gravity = "0 0 -1050"
-      maxBarrierHeight = "32"
-      maxFallHeight = "64"
-      maxStepHeight = "18"
-      maxWaterJumpHeight = "20"
-      minFloorCos = "0.6999999881"
-      playerFlood = "0"
-      tt_barrierJump = "100"
-      tt_startCrouching = "100"
-      tt_startWalkOffLedge = "100"
-      tt_waterJump = "100"
-      usePatches = "0"
-      writeBrushMap = "0"
-      origin = "0 0 0"
-    }
-    t_ammo_e:incl =
-    {
-      inv_item = "4"
-      size = "32 32 32"
-      origin = "0 0 0"
-      snd_respawn = "sound_item_respawn"
-    }
-    t_cinematic_e:incl =
-    {
-      blend_in = "0"
-      cycle = "1"
-      pose_frame = "1"
-      sound_bone = "origin"
-      wait = "-1"
-      origin = "0 0 0"
-    }
-    t_cinematic2_e:incl =
-    {
-      cycle = "1"
-      inherited = "func_animate"
-      wait = "-1"
-      origin = "0 0 0"
-    }
     dup arenafilemaker:form =
     {
       help = "put one in your map to create an .arena script automatically"
@@ -152,7 +113,7 @@ QQRKSRC1
       {
         Cap = "detail"
         Typ = "X134217728"
-        Hint = "for small, detail brushes that QVIS3 can ignore"
+        Hint = "for small, detail brushes that compiler can ignore"
       }
     }
   }
@@ -403,27 +364,6 @@ QQRKSRC1
         angle = "360"
         origin = "0 0 0"
       }
-    }
-  }
-
-  t_originpoly:incl = {
-    ORIGIN:p =
-    {
-      east:f = { v = '8 0 0 8 64 0 8 0 64' tex = "common/origin" }
-      west:f = { v = '-8 0 0 -8 -64 0 -8 0 64' tex = "common/origin" }
-      north:f = { v = '0 8 0 -64 8 0 0 8 64' tex = "common/origin" }
-      south:f = { v = '0 -8 0 64 -8 0 0 -8 64' tex = "common/origin" }
-      up:f = { v = '0 0 24 64 0 24 0 64 24' tex = "common/origin" }
-      down:f = { v = '0 0 -24 64 0 -24 0 -64 -24' tex = "common/origin" }
-    }
-    poly:p =
-    {
-      east:f = { v = '32 -32 -32 32 96 -32 32 -32 96' tex = "[auto]" }
-      west:f = { v = '-32 -32 -32 -32 -32 96 -32 96 -32' tex = "[auto]" m = "1" }
-      north:f = { v = '-32 32 -32 -32 32 96 96 32 -32' tex = "[auto]" m = "1" }
-      south:f = { v = '-32 -32 -32 96 -32 -32 -32 -32 96' tex = "[auto]" }
-      up:f = { v = '-32 -32 32 96 -32 32 -32 96 32' tex = "[auto]" }
-      down:f = { v = '-32 -32 -32 -32 96 -32 96 -32 -32' tex = "[auto]" m = "1" }
     }
   }
 }

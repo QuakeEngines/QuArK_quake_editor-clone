@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2008/03/25 09:11:08  cdunde
+//Minor file cleanup.
+//
 //Revision 1.9  2008/03/23 21:53:54  cdunde
 //To make this file the way all of them should be, using its include statements.
 //
@@ -126,7 +129,7 @@ QQRKSRC1
       {
         Cap = "detail"
         Typ = "X134217728"
-        Hint = "for small, detail brushes that Q3MAP can ignore"
+        Hint = "for small, detail brushes that compiler can ignore"
       }
     }
   }
@@ -380,6 +383,3 @@ QQRKSRC1
     }
   }
 }
-
-
-
