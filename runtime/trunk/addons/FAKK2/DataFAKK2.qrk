@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.9  2008/03/23 21:53:54  cdunde
+//To make this file the way all of them should be, using its include statements.
+//
 //Revision 1.8  2008/03/09 20:31:06  cdunde
 //Pulled entities out of the EF2 and FAKK2 game Data.qrk files.
 //Game addons should never dump anything into their Data.qrk files.
@@ -47,7 +50,7 @@ QQRKSRC1
       longname: =
       {
         Txt = "&"
-        Hint = "This name will be shown in StarTrek-EF"
+        Hint = "This name will be shown in FAKK2"
       }
       fraglimit: =
       {
@@ -92,15 +95,19 @@ QQRKSRC1
     {
       shaders/shaderlist.txt =
       {
-        Data = "// Created by QuArK"$0D0A"// All shaders are extracted to a si"
-         "ngle file called 'quark.shader'"$0D0A"quark"$0D0A
+        Data =
+            "// Created by QuArK"$0D0A
+            "// All shaders are extracted to a single file called 'quark.shader'"$0D0A
+            "quark"$0D0A
       }
       shaders/shaderlist.txt =
-      {
-        Data = "// Created by QuArK"$0D0A"// No shader in this map"$0D0A
+      {    // 2nd case: if there is no shader in the map
+        Data =
+            "// Created by QuArK"$0D0A
+            "// No shader in this map"$0D0A
       }
     }
-    TextureFlags:form =
+    TextureFlags:form =   // a form for setting flags on polyhedron faces
     {
       Style = "5"
       Reset: =
@@ -110,7 +117,7 @@ QQRKSRC1
         Hint = "Reset all flags to the texture's default"
         Delete: =
         {
-          Flags = ""
+          Flags = ""      // this button deletes these Specifics
           Contents = ""
           Value = ""
         }
@@ -154,11 +161,6 @@ QQRKSRC1
   {
     Game = "FAKK2"
     Root = "worldspawn:b"
-
-        // Maleficus: gotta show all those newbie mappers how to caulk! :)
-        // Its best to caulk ALL unseen faces! This reduces compile times, and the size
-        // of the .bsp file
-
     worldspawn:b =
     {
       farplane_cull = "1"
