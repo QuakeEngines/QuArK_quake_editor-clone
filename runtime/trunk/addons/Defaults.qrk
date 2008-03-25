@@ -27,6 +27,11 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.395  2008/03/25 06:43:12  cdunde
+//To standardize UserData files as much as possible based on their game engine type.
+//Moved entities out of them which were duplicated in their game Data files, should NEVER be allowed!
+//Changed all hard coded texturing to either auto or includes, also should NEVER be allowed.
+//
 //Revision 1.394  2008/03/19 02:26:56  cdunde
 //Added full game support for PREY.
 //
@@ -1692,7 +1697,7 @@ QQRKSRC1
         RunMapCmdLine = " +devmap %s"
         MapLimit = '65536 65536 65536'
 
-        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataD3.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataD3.qrk"$0D"Doom3Entities.qrk"$0D"Doom3Textures.qrk"
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"
