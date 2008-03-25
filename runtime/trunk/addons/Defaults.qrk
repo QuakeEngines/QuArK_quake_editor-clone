@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.394  2008/03/19 02:26:56  cdunde
+//Added full game support for PREY.
+//
 //Revision 1.393  2008/03/09 20:31:05  cdunde
 //Pulled entities out of the EF2 and FAKK2 game Data.qrk files.
 //Game addons should never dump anything into their Data.qrk files.
@@ -1678,15 +1681,7 @@ QQRKSRC1
         AlwaysWriteThreeFields = "1"   // hidden setting
 
         BuildPgm1  = "nothing needed, preset in Defaults.qrk file"
-        //BuildArgs1 = "-moddir .."
         BuildCheck1= ""
-        //BuildPgm2  = "Q3MAP.EXE"
-        //BuildArgs2 = "-vis -saveprt"
-        //BuildPgm3  = "Q3MAP.EXE"
-        //BuildArgs3 = "-light"
-        //BuildPgm4  = "BSPC.EXE"
-        //BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
-        //BuildCheck4= "+AAS"
         MapCommentsPrefix = "//"
 
    // Other hidden settings
@@ -1694,12 +1689,10 @@ QQRKSRC1
         tmpQuArK = "base" // base instead of tmpQuArK (for now, at least)
 
         Palette = ":pics/colormap.pcx"
-     //   ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
         MapLimit = '65536 65536 65536'
 
-        //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
-        AddOns = "Bezier_Library.qrk"$0D"DataD3.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataD3.qrk"
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"

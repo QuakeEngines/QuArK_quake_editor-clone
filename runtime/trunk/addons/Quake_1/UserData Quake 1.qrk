@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2005/10/15 01:00:27  cdunde
+//To reinstate headers and history
+//
 //Revision 1.2  2001/03/20 21:57:04  decker_dk
 //Added log-header / misc.
 //
@@ -104,8 +107,8 @@ QQRKSRC1
     {
       Txt = "&Complete rebuild"
       Pause = "1"
-      ExportMapFile = "1"
       Textures = "1"
+      ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"

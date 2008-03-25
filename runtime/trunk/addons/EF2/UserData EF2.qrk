@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2008/03/12 20:06:14  cdunde
+//Small menu correction.
+//
 //Revision 1.5  2007/05/29 00:36:08  cdunde
 //Since Dancing Dan now has full .dds saving support.
 //
@@ -68,7 +71,7 @@ QQRKSRC1
       {
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
           0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1 1'
-        tex = "attrexian-colony/acwall5"
+        tex = "[auto]"
       }
     }
     ArenaFileMaker: =
@@ -92,8 +95,8 @@ QQRKSRC1
     {
       Txt = "&GO ! (textures+scripts+build+EF2)"
       Shortcut = "Ctrl+R"
-      RunGame = "1"
       Textures = "1"
+      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
@@ -103,8 +106,8 @@ QQRKSRC1
     {
       Txt = "Quic&kGO ! (fast -vis)"
       Shortcut = "Ctrl+K"
-      RunGame = "1"
       Textures = "1"
+      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
@@ -142,11 +145,11 @@ QQRKSRC1
     {
       Txt = "&Complete rebuild"
       Pause = "1"
+      Textures = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"
-      Textures = "1"
     }
     item: =
     {
@@ -168,18 +171,21 @@ QQRKSRC1
     {
       Txt = "&UBERMAP -vis (visibility list)"
       Pause = "1"
+      ExportMapFile = "1"
       BuildPgm2 = "1"
     }
     item: =
     {
       Txt = "&UBERMAP -light (light projection)"
       Pause = "1"
+      ExportMapFile = "1"
       BuildPgm3 = "1"
     }
     item: =
     {
       Txt = "&BSPC -bsp2aas (bot nodelist)"
       Pause = "1"
+      ExportMapFile = "1"
       BuildPgm4 = "1"
     }
     item: =

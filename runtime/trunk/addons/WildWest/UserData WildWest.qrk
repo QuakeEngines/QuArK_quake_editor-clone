@@ -56,9 +56,9 @@ QQRKSRC1
       bezier:b2 =
       {
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
-          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
-          1'
-        tex = "base_wall/basewall03"
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1 1'
+        tex = "[auto]"
+
       }
     }
   }
@@ -68,17 +68,17 @@ QQRKSRC1
     {
       Txt = "&GO! (Fastest+Run)"
       Shortcut = "Ctrl+R"
-      BuildPgm4 = "1"
-      ExportMapFile = "1"
       RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm4 = "1"
     }
     item: =
     {
       Txt = "Slow Go (-vlight & Run)"
       Shortcut = "Ctrl+K"
+      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm5 = "1"
-      RunGame = "1"
     }
     item: =
     {
@@ -86,8 +86,8 @@ QQRKSRC1
       Shortcut = "Ctrl+F"
       Textures = "1"
       RunGame = "1"
-      BuildPgm4 = "1"
       ExportMapFile = "1"
+      BuildPgm4 = "1"
     }
     item: =
     {
@@ -95,8 +95,8 @@ QQRKSRC1
       Shortcut = "Ctrl+P"
       SelOnly = "1"
       RunGame = "1"
-      BuildPgm4 = "1"
       ExportMapFile = "1"
+      BuildPgm4 = "1"
     }
     item: =
     {
@@ -129,8 +129,8 @@ QQRKSRC1
     {
       Txt = "&Q3Map2 (-bsp -meta)"
       Pause = "1"
-      BuildPgm1 = "1"
       ExportMapFile = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
@@ -152,9 +152,9 @@ QQRKSRC1
     {
       Txt = "Q3Map2 -onlyents (only &entities)"
       Pause = "1"
+      ExportMapFile = "1"
       BuildPgm4 = "1"
       BuildArgs1 = "-onlyents"
-      ExportMapFile = "1"
     }
     item: =
     {

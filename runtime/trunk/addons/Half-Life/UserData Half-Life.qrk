@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2005/10/15 01:00:02  cdunde
+//To reinstate headers and history
+//
 //Revision 1.2  2001/03/20 21:52:46  decker_dk
 //Added log-header
 //
@@ -78,10 +81,11 @@ QQRKSRC1
       Shortcut = "Ctrl+K"
       Textures = "1"
       RunGame = "1"
+      ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm4 = "1"
-      ExportMapFile = "1"
+
     }
     item: =
     {
@@ -107,8 +111,8 @@ QQRKSRC1
     {
       Txt = "&Complete rebuild"
       Pause = "1"
-      ExportMapFile = "1"
       Textures = "1"
+      ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"

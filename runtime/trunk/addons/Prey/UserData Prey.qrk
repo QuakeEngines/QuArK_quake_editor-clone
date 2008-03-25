@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/19 02:26:37  cdunde
+//Added full game support for PREY.
+//
 //
 
 {
@@ -62,26 +65,10 @@ QQRKSRC1
       bezier:b2 =
       {
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
-          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
-          1'
-        tex = "tech_wall/kf_wall001"
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1 1'
+        tex = "[auto]"
       }
     }
-    // not strictly relevant, altho Prey does have mapDef files (sorta the same thing)
-    //ArenaFileMaker: =
-    //{
-    //  ArenaFileMaker:d =
-    //  {
-    //    ;desc = "Put one in your map and an arena script will be created autom"
-    //     "agically"
-    //    origin = "0 0 0"
-    //    bots = "ranger bones"
-    //    longname = "my very cool map"
-    //    fraglimit = "50"
-    //    type = "ffa"
-    //    macro = "dup arenafilemaker"
-    //  }
-    //}
   }
   Menu.qrk =
   {
@@ -104,7 +91,7 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&Prey"
+      Txt = "&Run Prey"
       RunGame = "1"
     }
     item: =
@@ -113,7 +100,7 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&PreyMAP (.proc file creation)"
+      Txt = "&Prey MAP (.proc file creation)"
       ExportMapFile = "1"
       RunGame = "1"
     }

@@ -5,6 +5,7 @@ QQRKSRC1
 {
   QuArKProtected = "1"
   Description = "Base 6DX data"
+
   6DX setup.qctx =
   {
     Game = "6DX"
@@ -86,9 +87,9 @@ QQRKSRC1
     //
     }
   }
-  NewMapItems.qtx =
+  Toolbox Folders.qtx =
   {
-    ToolBox = "New Entities..."
+    Toolbox = "New map items..."
     Root = "6DX Entities.qtxfolder"
     6DX Entities.qtxfolder =
     {
@@ -178,7 +179,7 @@ QQRKSRC1
           ;desc = "A repeatable trigger. The same as trigger_multiple"
         }
     }
-    Entity forms.qctx =
+    Entity forms.fctx =
     {
       6dx_cross_entity:form =
       {

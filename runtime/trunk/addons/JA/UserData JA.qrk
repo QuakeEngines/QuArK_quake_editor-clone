@@ -56,25 +56,8 @@ QQRKSRC1
       bezier:b2 =
       {
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
-          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
-          1'
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1 1'
         tex = "[auto]"
-      }
-    }
-    info_player_deathmatch: =
-    {
-      info_player_deathmatch:e =
-      {
-        origin = "0 0 0"
-        fixedscale = "1"
-      }
-    }
-    info_player_start: =
-    {
-      info_player_start:e =
-      {
-        origin = "0 0 0"
-        fixedscale = "1"
       }
     }
   }
@@ -84,16 +67,19 @@ QQRKSRC1
     {
       Txt = "&GO ! (textures+build+JA)"
       Shortcut = "Ctrl+R"
-      ExportMapFile = "1"
+      Textures = "1"
       RunGame = "1"
-      BuildPgm3 = "1"
-      BuildPgm2 = "1"
+      ExportMapFile = "1"
       BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
     }
     item: =
     {
       Txt = "Quic&kGO ! (fast -vis)"
       Shortcut = "Ctrl+K"
+      Textures = "1"
+      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
@@ -103,18 +89,20 @@ QQRKSRC1
     {
       Txt = "&Fastest (full bright)"
       Shortcut = "Ctrl+F"
+      Textures = "1"
       RunGame = "1"
-      BuildPgm1 = "1"
       ExportMapFile = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
       Txt = "Fastest on &selection only"
       Shortcut = "Ctrl+P"
       SelOnly = "1"
+      Textures = "1"
       RunGame = "1"
-      BuildPgm1 = "1"
       ExportMapFile = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
@@ -129,14 +117,17 @@ QQRKSRC1
     {
       Txt = "&Complete rebuild"
       Pause = "1"
+      Textures = "1"
       ExportMapFile = "1"
-      BuildPgm4 = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
     }
     item: =
     {
       Txt = "&Run JA"
-      RunGame = "1"
       Shortcut = "F12"
+      RunGame = "1"
     }
     item: =
     {
@@ -144,41 +135,45 @@ QQRKSRC1
     }
     item: =
     {
-      ExportMapFile = "1"
-      Pause = "1"
       Txt = "Export .MAP file"
       Shortcut = "F9"
+      Pause = "1"
+      ExportMapFile = "1"
+
     }
     item: =
     {
       Txt = "&Q3MAP2 (.bsp file creation)"
-      Pause = "1"
-      BuildPgm1 = "1"
-      ExportMapFile = "1"
       Shortcut = "F10"
+      Pause = "1"
       RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
       Txt = "&Q3MAP2 -vis (visibility list)"
       Pause = "1"
+      ExportMapFile = "1"
       BuildPgm2 = "1"
     }
     item: =
     {
       Txt = "&Q3MAP2 -light (light projection)"
       Pause = "1"
-      BuildPgm3 = "1"
       RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm3 = "1"
     }
     item: =
     {
       Txt = "Q3MAP2 -onlyents (only &entities)"
       Pause = "1"
+      RunGame = "1"
+      ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildArgs1 = "-onlyents"
-      ExportMapFile = "1"
-      RunGame = "1"
+
     }
   }
 }

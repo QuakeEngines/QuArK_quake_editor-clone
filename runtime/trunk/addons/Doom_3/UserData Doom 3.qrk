@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2006/04/27 06:40:00  cdunde
+//To change Doom3 config to build and run maps from within QuArK.
+//
 //Revision 1.5  2005/10/15 01:00:24  cdunde
 //To reinstate headers and history
 //
@@ -62,6 +65,7 @@ QQRKSRC1
     {
       light:e =
       {
+        name = "change me"
         origin = "0 0 0"
         light = "300"
         _color = "1 1 1"
@@ -72,94 +76,30 @@ QQRKSRC1
       bezier:b2 =
       {
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
-          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
-          1'
-        tex = "base_wall/a_sopanel1_d01b"
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1 1'
+        tex = "[auto]"
       }
     }
-    // not strictly relevant, altho Doom 3 does have mapDef files (sorta the same thing)
-    //ArenaFileMaker: =
-    //{
-    //  ArenaFileMaker:d =
-    //  {
-    //    ;desc = "Put one in your map and an arena script will be created autom"
-    //     "agically"
-    //    origin = "0 0 0"
-    //    bots = "ranger bones"
-    //    longname = "my very cool map"
-    //    fraglimit = "50"
-    //    type = "ffa"
-    //    macro = "dup arenafilemaker"
-    //  }
-    //}
   }
   Menu.qrk =
   {
     item: =
     {
-      Txt = "Export .map file only"
+      Txt = "&GO ! (textures+build+Doom 3)"
+      Shortcut = "Ctrl+R"
+      RunGame = "1"
+      Textures = "1"
       ExportMapFile = "1"
     }
-    // the rest don't work yet
-    //item: =
-    //{
-    //  Txt = "&GO ! (textures+build+Doom)"
-    //  Shortcut = "Ctrl+R"
-    //  RunGame = "1"
-    //  Textures = "1"
-    //  BuildPgm1 = "1"
-    //  BuildPgm2 = "1"
-    //  BuildPgm3 = "1"
-    //  ExportMapFile = "1"
-    //}
-    //item: =
-    //{
-    //  Txt = "Quic&kGO ! (fast -vis)"
-    //  Shortcut = "Ctrl+K"
-    //  Textures = "1"
-    //  ExportMapFile = "1"
-    //  BuildPgm1 = "1"
-    //  BuildPgm2 = "1"
-    //  BuildPgm3 = "1"
-    //}
-    //item: =
-    //{
-    //  Txt = "&Fastest (full bright)"
-    //  Shortcut = "Ctrl+F"
-    //  Textures = "1"
-    //  RunGame = "1"
-    //  BuildPgm1 = "1"
-    //  ExportMapFile = "1"
-    //}
-    //item: =
-    //{
-    //  Txt = "Fastest on &selection only"
-    //  Shortcut = "Ctrl+P"
-    //  SelOnly = "1"
-    //  Textures = "1"
-    //  RunGame = "1"
-    //  BuildPgm1 = "1"
-    //  ExportMapFile = "1"
-    //}
     item: =
     {
       Txt = "-"
     }
-    //item: =
-    //{
-    //  Txt = "&Prepare used textures"
-    //  Textures = "1"
-    //}
-    //item: =
-    //{
-    //  Txt = "&Complete rebuild"
-    //  Pause = "1"
-    //  Textures = "1"
-    //  ExportMapFile = "1"
-    //  BuildPgm1 = "1"
-    //  BuildPgm2 = "1"
-    //  BuildPgm3 = "1"
-    //}
+    item: =
+    {
+      Txt = "&Prepare used textures"
+      Textures = "1"
+    }
     item: =
     {
       Txt = "&Run Doom 3"
@@ -171,49 +111,9 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&DMAP (.proc file creation)"
- //     Pause = "1"
+      Txt = "&Doom 3 MAP (.proc file creation)"
       ExportMapFile = "1"
- //     BuildPgm1 = "1"
       RunGame = "1"
     }
-    //item: =
-    //{
-    //  Txt = "&DMAP -vis (visibility list)"
-    //  Pause = "1"
-    //  BuildPgm2 = "1"
-    //}
-    //item: =
-    //{
-    //  Txt = "&DMAP -light (light projection)"
-    //  Pause = "1"
-    //  BuildPgm3 = "1"
-    //}
-    //item: =
-    //{
-    //  Txt = "&BSPC -bsp2aas (bot nodelist)"
-    //  Pause = "1"
-    //  BuildPgm4 = "1"
-    //}
-    //item: =
-    //{
-    //  Txt = "-"
-    //}
-    //item: =
-    //{
-    //  Txt = "DMAP -onlyents (only &entities)"
-    //  Pause = "1"
-    //  BuildPgm1 = "1"
-    //  BuildArgs1 = "-onlyents"
-    //  ExportMapFile = "1"
-    //}
-    //item: =
-    //{
-    //  Txt = "&BSPC -reach (update entity reachability)"
-    //  Pause = "1"
-    //  ExportMapFile = "1"
-    //  BuildPgm4 = "1"
-    //  BuildArgs4 = "-reach"
-    //}
   }
 }

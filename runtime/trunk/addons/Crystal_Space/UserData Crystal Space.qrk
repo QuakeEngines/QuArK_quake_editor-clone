@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2005/10/15 01:00:27  cdunde
+//To reinstate headers and history
+//
 //Revision 1.2  2001/07/26 09:20:12  tiglari
 //Put bezier patch on panel
 //
@@ -72,12 +75,10 @@ QQRKSRC1
       bezier:b2 =
       {
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
-          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
-          1'
-        tex = "base_wall/basewall03"
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1 1'
+        tex = "[auto]"
       }
     }
-
   }
   Menu.qrk =
   {
@@ -85,10 +86,10 @@ QQRKSRC1
     {
       Txt = "&GO ! (build+Walktest)"
       Shortcut = "Ctrl+R"
+      Pause = "1"
+      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
-      RunGame = "1"
-      Pause = "1"
     }
     item: =
     {
@@ -97,15 +98,15 @@ QQRKSRC1
     item: =
     {
       Txt = "&Complete rebuild"
+      Pause = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
-      Pause = "1"
     }
     item: =
     {
       Txt = "&Run Walktest"
-      RunGame = "1"
       Pause = "1"
+      RunGame = "1"
     }
   }
 }

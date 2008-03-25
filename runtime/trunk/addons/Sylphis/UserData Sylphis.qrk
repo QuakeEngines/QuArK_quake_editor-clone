@@ -8,7 +8,7 @@ QQRKSRC1
   {
     cube: =
     {
-      poly:p =
+      new cube:p =
       {
         east:f =
         {
@@ -63,48 +63,51 @@ QQRKSRC1
     {
       Txt = "&ExportMapFile only"
       Shortcut = ""
-      BuildArgs1 = ""
-      ExportMapFile = "1"
       Pause = "1"
+      ExportMapFile = "1"
+      BuildArgs1 = ""
+
     }
     item: =
     {
       Txt = "&Prepare used textures"
-      Textures = "1"
       Pause = "1"
+      Textures = "1"
     }
     item: =
     {
       Txt = "&Build CMAP file"
       Shortcut = ""
+      Pause = "1"
+      Textures = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildArgs1 = ""
-      Textures = "1"
-      Pause = "1"
+
+
     }
     item: =
     {
-      BuildPgm1 = "1"
-      ExportMapFile = "1"
-      Textures = "1"
-      RunGame = "1"
       Txt = "Build CMAP and run Sylphis"
+      Textures = "1"
+      RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
-      ExportMapFile = "1"
+      Txt = "Quick CMAP and Sylphis"
       Textures = "1"
       RunGame = "1"
+      ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildArgs1 = "-nobsp"
-      Txt = "Quick CMAP and Sylphis"
     }
     item: =
     {
-      RunGame = "1"
       Txt = "Run Sylphis"
       Pause = "1"
+      RunGame = "1"
     }
   }
 }

@@ -56,25 +56,8 @@ QQRKSRC1
       bezier:b2 =
       {
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
-          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
-          1'
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1 1'
         tex = "[auto]"
-      }
-    }
-    info_player_deathmatch: =
-    {
-      info_player_deathmatch:e =
-      {
-        origin = "0 0 0"
-        fixedscale = "1"
-      }
-    }
-    info_player_start: =
-    {
-      info_player_start:e =
-      {
-        origin = "0 0 0"
-        fixedscale = "1"
       }
     }
   }
@@ -84,8 +67,8 @@ QQRKSRC1
     {
       Txt = "&GO ! (textures+build+SoF2)"
       Shortcut = "Ctrl+R"
-      RunGame = "1"
       Textures = "1"
+      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm4 = "1"
     }
@@ -94,6 +77,7 @@ QQRKSRC1
       Txt = "Quic&kGO ! (fast -vis)"
       Shortcut = "Ctrl+K"
       Textures = "1"
+      RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
@@ -105,8 +89,8 @@ QQRKSRC1
       Shortcut = "Ctrl+F"
       Textures = "1"
       RunGame = "1"
-      BuildPgm1 = "1"
       ExportMapFile = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
@@ -115,8 +99,8 @@ QQRKSRC1
       SelOnly = "1"
       Textures = "1"
       RunGame = "1"
-      BuildPgm1 = "1"
       ExportMapFile = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
@@ -148,8 +132,8 @@ QQRKSRC1
     {
       Txt = "&SOF2MAP (.bsp file creation)"
       Pause = "1"
-      BuildPgm1 = "1"
       ExportMapFile = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
@@ -167,9 +151,10 @@ QQRKSRC1
     {
       Txt = "SOF2MAP -onlyents (only &entities)"
       Pause = "1"
+      ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildArgs1 = "-onlyents"
-      ExportMapFile = "1"
+
     }
   }
 }
