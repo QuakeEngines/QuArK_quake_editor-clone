@@ -1,0 +1,25 @@
+QQRKSRC1
+// WildWest textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "WildWest Textures"
+
+  Textures.qtx =
+  {
+    ToolBox = "Texture Browser..."
+    Root = "WildWest Textures and Shaders.qtxfolder"
+    WildWest Textures and Shaders.qtxfolder =
+    {
+      Textures and Shaders.osfolder =
+      {
+        path = "WildWest"
+      }
+    }
+  }
+}

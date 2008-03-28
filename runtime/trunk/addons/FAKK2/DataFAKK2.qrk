@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11  2008/03/25 16:22:56  cdunde
+//Minor file cleanup.
+//
 //Revision 1.10  2008/03/25 09:11:08  cdunde
 //Minor file cleanup.
 //
@@ -139,9 +142,7 @@ QQRKSRC1
     Root = "FAKK2 file types.qtxfolder"
     FAKK2 file types.qtxfolder =
     {
-      Pk3.pk3 =
-      {
-      }
+      Pk3.pk3 = { }
     }
   }
   walltex:incl =
@@ -173,7 +174,7 @@ QQRKSRC1
         {
           west:f =
           {
-            v = '256 -80 -96 256 -208 -96 256 -80 32'
+            v = '256 0 272 256 -128 272 256 0 400'
             walltex = !
           }
           east:f =
@@ -211,7 +212,7 @@ QQRKSRC1
           }
           east:f =
           {
-            v = '-256 -192 -96 -256 -64 -96 -256 -192 32'
+            v = '-256 0 272 -256 128 272 -256 0 400'
             walltex = !
           }
           south:f =
@@ -249,7 +250,7 @@ QQRKSRC1
           }
           south:f =
           {
-            v = '-256 192 -96 -128 192 -96 -256 192 32'
+            v = '432 192 272 560 192 272 432 192 400'
             walltex = !
           }
           north:f =
@@ -287,7 +288,7 @@ QQRKSRC1
           }
           north:f =
           {
-            v = '0 -192 -96 -128 -192 -96 0 -192 32'
+            v = '432 -192 272 304 -192 272 432 -192 400'
             walltex = !
           }
           down:f =

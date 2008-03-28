@@ -1,0 +1,25 @@
+QQRKSRC1
+// RTCW-ET textures and Shaders file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "RTCW-ET Textures and Shaders"
+
+  Textures.qtx =
+  {
+    ToolBox = "Texture Browser..."
+    Root = "RTCW-ET Textures and Shaders.qtxfolder"
+    RTCW-ET Textures and Shaders.qtxfolder =
+    {
+      Textures & Shaders.osfolder =
+      {
+        path = "etmain"
+      }
+    }
+  }
+}

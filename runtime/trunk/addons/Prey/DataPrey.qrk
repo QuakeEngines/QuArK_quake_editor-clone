@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/19 02:26:37  cdunde
+//Added full game support for PREY.
+//
 //
 
 {
@@ -42,15 +45,19 @@ QQRKSRC1
     {
       shaders/shaderlist.txt =
       {
-        Data = "// Created by QuArK"$0D0A"// All shaders are extracted to a si"
-         "ngle file called 'quark.shader'"$0D0A"quark"$0D0A
+        Data =
+            "// Created by QuArK"$0D0A
+            "// All shaders are extracted to a single file called 'quark.shader'"$0D0A
+            "quark"$0D0A
       }
       shaders/shaderlist.txt =
-      {
-        Data = "// Created by QuArK"$0D0A"// No shader in this map"$0D0A
+      {    // 2nd case: if there is no shader in the map
+        Data =
+            "// Created by QuArK"$0D0A
+            "// No shader in this map"$0D0A
       }
     }
-    TextureFlags:form =
+    TextureFlags:form =   // a form for setting flags on polyhedron faces
     {
       Style = "5"
       Reset: =
@@ -60,7 +67,7 @@ QQRKSRC1
         Hint = "Reset all flags to the texture's default"
         Delete: =
         {
-          Flags = ""
+          Flags = ""      // this button deletes these Specifics
           Contents = ""
           Value = ""
         }
@@ -69,7 +76,7 @@ QQRKSRC1
       {
         Cap = "detail"
         Typ = "X134217728"
-        Hint = "for small, detail brushes that Prey can ignore"
+        Hint = "for small, detail brushes that compiler can ignore"
       }
     }
   }
@@ -79,9 +86,7 @@ QQRKSRC1
     Root = "Prey file types.qtxfolder"
     Prey file types.qtxfolder =
     {
-      Pk4.pk4 =
-      {
-      }
+      Pk4.pk4 = { }
     }
   }
   walltex:incl =
@@ -96,15 +101,14 @@ QQRKSRC1
   {
     tex = "roadhouse/wood_ceiling_01"
   }
+  caulktex:incl =
+  {
+    tex = "editor/caulk"
+  }
   NewMap:incl =
   {
     Game = "Prey"
     Root = "worldspawn:b"
-
-        // Maleficus: gotta show all those newbie mappers how to caulk! :)
-        // Its best to caulk ALL unseen faces! This reduces compile times, and the size
-        // of the .bsp file
-
     worldspawn:b =
     {
       farplane_cull = "1"
@@ -115,32 +119,32 @@ QQRKSRC1
           west:f =
           {
             v = '256 -80 -96 256 -208 -96 256 -80 32'
-            tex = "roadhouse/rh_bricks2"
+            walltex = !
           }
           east:f =
           {
             v = '272 0 272 272 128 272 272 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "editor/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 96 560 0 96 432 128 96'
-            tex = "editor/caulk"
+            caulktex = !
           }
         }
         West wall:p =
@@ -148,32 +152,32 @@ QQRKSRC1
           west:f =
           {
             v = '-272 0 272 -272 -128 272 -272 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '-256 -192 -96 -256 -64 -96 -256 -192 32'
-            tex = "roadhouse/rh_bricks2"
+            walltex = !
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "editor/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 96 560 0 96 432 128 96'
-            tex = "editor/caulk"
+            caulktex = !
           }
         }
         North wall:p =
@@ -181,32 +185,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '-256 192 -96 -128 192 -96 -256 192 32'
-            tex = "roadhouse/rh_bricks2"
+            walltex = !
           }
           north:f =
           {
             v = '432 208 272 304 208 272 432 208 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "editor/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 96 560 0 96 432 128 96'
-            tex = "editor/caulk"
+            caulktex = !
           }
         }
         South wall:p =
@@ -214,32 +218,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '432 -208 272 560 -208 272 432 -208 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '0 -192 -96 -128 -192 -96 0 -192 32'
-            tex = "roadhouse/rh_bricks2"
+            walltex = !
           }
           down:f =
           {
             v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "editor/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 96 560 0 96 432 128 96'
-            tex = "editor/caulk"
+            caulktex = !
           }
         }
         Sky:p =
@@ -247,32 +251,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 96 560 0 96 432 -128 96'
-            tex = "roadhouse/wood_ceiling_01"
+            ceiltex = !
           }
           up:f =
           {
             v = '432 0 112 560 0 112 432 128 112'
-            tex = "editor/caulk"
+            caulktex = !
           }
         }
         Floor:p =
@@ -280,32 +284,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "editor/caulk"
+            caulktex = !
           }
           down:f =
           {
             v = '432 0 -112 560 0 -112 432 -128 -112'
-            tex = "editor/caulk"
+            caulktex = !
           }
           up:f =
           {
             v = '432 0 -96 560 0 -96 432 128 -96'
-            tex = "roadhouse/concrete1"
+            floortex = !
           }
         }
       }
@@ -324,20 +328,4 @@ QQRKSRC1
       }
     }
   }
- // Toolbox Textures.qtx =
- // {
- //   Toolbox = "Texture Browser..."
- //   Root = "Prey Textures.qtxfolder"
- //   Prey Textures.qtxfolder =
- //   {
- //     Dynamically Found.osfolder =
- //     {
- //       path = "base"
- //       //build = "1"
- //     }
- //   }
- // }
 }
-
-
-

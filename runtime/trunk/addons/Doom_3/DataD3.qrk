@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.12  2008/03/25 16:22:56  cdunde
+//Minor file cleanup.
+//
 //Revision 1.11  2008/03/25 09:14:45  cdunde
 //To break down Doom3 file to separate files.
 //
@@ -123,9 +126,7 @@ QQRKSRC1
     Root = "Doom 3 file types.qtxfolder"
     Doom 3 file types.qtxfolder =
     {
-      Pk4.pk4 =
-      {
-      }
+      Pk4.pk4 = { }
     }
   }
   walltex:incl =
