@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2008/01/31 16:07:18  danielpharos
+Added FTX file loading and saving support (Heavy Metal: F.A.K.K. 2 textures).
+
 }
 
 
@@ -199,72 +202,76 @@ begin
  with Info do case Format of
   1: begin  { as stand-alone file }
       PSD:=Description;
-      Header.width:=PSD.size.x;
-      Header.height:=PSD.size.y;
-      if PSD.Format = psf8bpp then
-        raise EError(5227)
-      else
-        if PSD.AlphaBits=psa8bpp then
-          Header.has_alpha:=1
-        else
-          Header.has_alpha:=0;
-      F.WriteBuffer(Header, SizeOf(Header));
-
-      //This is the padding for the 'Image1'-RGB array
-      PaddingSource:=((((Header.width * 24) + 31) div 32) * 4) - (Header.width * 3);
-
-      GetMem(Dest, Header.width * Header.height * 4);
       try
-        if Header.has_alpha <> 0 then
-        begin
-          Dest2:=Dest;
-          Inc(Dest2, Header.width * Header.height * 4);
-          SourceImg:=PChar(PSD.Data);
-          SourceAlpha:=PChar(PSD.AlphaData);
-          pSourceImg:=SourceImg;
-          pSourceAlpha:=SourceAlpha;
-          for J:=0 to Header.height-1 do
-          begin
-            Dec(Dest2, Header.width * 4);
-            for I:=0 to Header.width-1 do
-            begin
-              PRGBA(Dest2)^[2]:=PRGB(pSourceImg)^[0];
-              PRGBA(Dest2)^[1]:=PRGB(pSourceImg)^[1];
-              PRGBA(Dest2)^[0]:=PRGB(pSourceImg)^[2];
-              PRGBA(Dest2)^[3]:=PByte(pSourceAlpha)^;
-              Inc(pSourceImg, 3);
-              Inc(pSourceAlpha, 1);
-              Inc(Dest2, 4);
-            end;
-            Dec(Dest2, Header.width * 4);
-            Inc(pSourceImg, PaddingSource);
-          end;
-        end
+        Header.width:=PSD.size.x;
+        Header.height:=PSD.size.y;
+        if PSD.Format = psf8bpp then
+          raise EError(5227)
         else
-        begin
-          Dest2:=Dest;
-          Inc(Dest2, Header.width * Header.height * 4);
-          SourceImg:=PChar(PSD.Data);
-          pSourceImg:=SourceImg;
-          for J:=0 to Header.height-1 do
+          if PSD.AlphaBits=psa8bpp then
+            Header.has_alpha:=1
+          else
+            Header.has_alpha:=0;
+        F.WriteBuffer(Header, SizeOf(Header));
+
+        //This is the padding for the 'Image1'-RGB array
+        PaddingSource:=((((Header.width * 24) + 31) div 32) * 4) - (Header.width * 3);
+
+        GetMem(Dest, Header.width * Header.height * 4);
+        try
+          if Header.has_alpha <> 0 then
           begin
-            Dec(Dest2, Header.width * 4);
-            for I:=0 to Header.width-1 do
+            Dest2:=Dest;
+            Inc(Dest2, Header.width * Header.height * 4);
+            SourceImg:=PChar(PSD.Data);
+            SourceAlpha:=PChar(PSD.AlphaData);
+            pSourceImg:=SourceImg;
+            pSourceAlpha:=SourceAlpha;
+            for J:=0 to Header.height-1 do
             begin
-              PRGBA(Dest2)^[2]:=PRGB(pSourceImg)^[0];
-              PRGBA(Dest2)^[1]:=PRGB(pSourceImg)^[1];
-              PRGBA(Dest2)^[0]:=PRGB(pSourceImg)^[2];
-              PRGBA(Dest2)^[3]:=0;
-              Inc(pSourceImg, 3);
-              Inc(Dest2, 4);
+              Dec(Dest2, Header.width * 4);
+              for I:=0 to Header.width-1 do
+              begin
+                PRGBA(Dest2)^[2]:=PRGB(pSourceImg)^[0];
+                PRGBA(Dest2)^[1]:=PRGB(pSourceImg)^[1];
+                PRGBA(Dest2)^[0]:=PRGB(pSourceImg)^[2];
+                PRGBA(Dest2)^[3]:=PByte(pSourceAlpha)^;
+                Inc(pSourceImg, 3);
+                Inc(pSourceAlpha, 1);
+                Inc(Dest2, 4);
+              end;
+              Dec(Dest2, Header.width * 4);
+              Inc(pSourceImg, PaddingSource);
             end;
-            Dec(Dest2, Header.width * 4);
-            Inc(pSourceImg, PaddingSource);
+          end
+          else
+          begin
+            Dest2:=Dest;
+            Inc(Dest2, Header.width * Header.height * 4);
+            SourceImg:=PChar(PSD.Data);
+            pSourceImg:=SourceImg;
+            for J:=0 to Header.height-1 do
+            begin
+              Dec(Dest2, Header.width * 4);
+              for I:=0 to Header.width-1 do
+              begin
+                PRGBA(Dest2)^[2]:=PRGB(pSourceImg)^[0];
+                PRGBA(Dest2)^[1]:=PRGB(pSourceImg)^[1];
+                PRGBA(Dest2)^[0]:=PRGB(pSourceImg)^[2];
+                PRGBA(Dest2)^[3]:=0;
+                Inc(pSourceImg, 3);
+                Inc(Dest2, 4);
+              end;
+              Dec(Dest2, Header.width * 4);
+              Inc(pSourceImg, PaddingSource);
+            end;
           end;
+          F.WriteBuffer(Pointer(Dest)^,Header.width * Header.height * 4);
+        finally
+          FreeMem(Dest);
         end;
-        F.WriteBuffer(Pointer(Dest)^,Header.width * Header.height * 4);
       finally
-        FreeMem(Dest);
+        PSD.Done;
       end;
      end;
  else inherited;

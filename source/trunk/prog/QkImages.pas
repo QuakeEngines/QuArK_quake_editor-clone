@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/02/07 14:01:54  danielpharos
+Added palette and alpha functions and functions to retrieve color values to QuarkX
+
 Revision 1.18  2007/12/06 23:01:31  danielpharos
 Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
 
@@ -524,123 +527,94 @@ begin
   end;
 
   PSD:=Description;
-  Width:=PSD.size.x;
-  Height:=PSD.size.y;
+  try
+    Width:=PSD.size.x;
+    Height:=PSD.size.y;
 
-  if PSD.Format = psf8bpp then
-  begin
-    ImageBpp:=1;
-    ImageFormat:=IL_COLOUR_INDEX;
-    PaddingDest:=0;
-  end
-  else
-  begin
-    if PSD.AlphaBits=psa8bpp then
+    if PSD.Format = psf8bpp then
     begin
-      ImageBpp:=4;
-      ImageFormat:=IL_RGBA;
+      ImageBpp:=1;
+      ImageFormat:=IL_COLOUR_INDEX;
       PaddingDest:=0;
     end
     else
     begin
-      ImageBpp:=3;
-      ImageFormat:=IL_RGB;
-      PaddingDest:=0;
+      if PSD.AlphaBits=psa8bpp then
+      begin
+        ImageBpp:=4;
+        ImageFormat:=IL_RGBA;
+        PaddingDest:=0;
+      end
+      else
+      begin
+        ImageBpp:=3;
+        ImageFormat:=IL_RGB;
+        PaddingDest:=0;
+      end;
     end;
-  end;
 
-  ilGenImages(1, @DevILImage);
-  CheckDevILError(ilGetError);
-  ilBindImage(DevILImage);
-  CheckDevILError(ilGetError);
-
-  if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=false then
-  begin
-    ilDeleteImages(1, @DevILImage);
-    FatalFileError(Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
-  end;
-  CheckDevILError(ilGetError);
-
-  if ilClearImage=false then
-  begin
-    ilDeleteImages(1, @DevILImage);
-    FatalFileError(Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
-  end;
-  CheckDevILError(ilGetError);
-
-  if PSD.Format = psf8bpp then
-  begin
-    ilConvertPal(IL_PAL_RGB24);
+    ilGenImages(1, @DevILImage);
     CheckDevILError(ilGetError);
-  end;
+    ilBindImage(DevILImage);
+    CheckDevILError(ilGetError);
 
-  //This is the padding for the 'Image1'-RGB array
-  PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+    if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      FatalFileError(Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
+    end;
+    CheckDevILError(ilGetError);
 
-  if PSD.Format = psf8bpp then
-  begin
-    GetMem(RawPal, 256*3);
-    try
-      ilRegisterPal(RawPal, 256*3, IL_PAL_RGB24);
+    if ilClearImage=false then
+    begin
+      ilDeleteImages(1, @DevILImage);
+      FatalFileError(Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
+    end;
+    CheckDevILError(ilGetError);
+
+    if PSD.Format = psf8bpp then
+    begin
+      ilConvertPal(IL_PAL_RGB24);
       CheckDevILError(ilGetError);
-    finally
-      FreeMem(RawPal);
     end;
 
-    Dest:=ilGetPalette;
-    CheckDevILError(ilGetError);
-    SourcePal:=PChar(PSD.ColorPalette);
-    pSourcePal:=SourcePal;
-    for I:=0 to 255 do
-    begin
-      PRGB(Dest)^[0]:=PRGB(pSourcePal)^[0];
-      PRGB(Dest)^[1]:=PRGB(pSourcePal)^[1];
-      PRGB(Dest)^[2]:=PRGB(pSourcePal)^[2];
-      Inc(pSourcePal, 3);
-      Inc(Dest, 3);
-    end;
+    //This is the padding for the 'Image1'-RGB array
+    PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
 
-    Dest:=ilGetData;
-    CheckDevILError(ilGetError);
-    SourceImg:=PChar(PSD.Data);
-    pSourceImg:=SourceImg;
-    for J:=0 to Height-1 do
+    if PSD.Format = psf8bpp then
     begin
-      for I:=0 to Width-1 do
-      begin
-        Dest^:=PByte(pSourceImg)^;
-        Inc(pSourceImg, 1);
-        Inc(Dest, 1);
+      GetMem(RawPal, 256*3);
+      try
+        ilRegisterPal(RawPal, 256*3, IL_PAL_RGB24);
+        CheckDevILError(ilGetError);
+      finally
+        FreeMem(RawPal);
       end;
-      Inc(pSourceImg, PaddingSource);
-      for I:=0 to PaddingDest-1 do
+
+      Dest:=ilGetPalette;
+      CheckDevILError(ilGetError);
+      SourcePal:=PChar(PSD.ColorPalette);
+      pSourcePal:=SourcePal;
+      for I:=0 to 255 do
       begin
-        Dest^:=0;
-        Inc(Dest, 1);
+        PRGB(Dest)^[0]:=PRGB(pSourcePal)^[0];
+        PRGB(Dest)^[1]:=PRGB(pSourcePal)^[1];
+        PRGB(Dest)^[2]:=PRGB(pSourcePal)^[2];
+        Inc(pSourcePal, 3);
+        Inc(Dest, 3);
       end;
-    end;
-  end
-  else
-  begin
-    if PSD.AlphaBits=psa8bpp then
-    begin
+
       Dest:=ilGetData;
       CheckDevILError(ilGetError);
       SourceImg:=PChar(PSD.Data);
-      SourceAlpha:=PChar(PSD.AlphaData);
       pSourceImg:=SourceImg;
-      pSourceAlpha:=SourceAlpha;
       for J:=0 to Height-1 do
       begin
         for I:=0 to Width-1 do
         begin
-          PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[0];
-          PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
-          PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[2];
-          PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
-          Inc(pSourceImg, 3);
-          Inc(pSourceAlpha, 1);
-          Inc(Dest, 4);
+          Dest^:=PByte(pSourceImg)^;
+          Inc(pSourceImg, 1);
+          Inc(Dest, 1);
         end;
         Inc(pSourceImg, PaddingSource);
         for I:=0 to PaddingDest-1 do
@@ -652,31 +626,64 @@ begin
     end
     else
     begin
-      Dest:=ilGetData;
-      CheckDevILError(ilGetError);
-      SourceImg:=PChar(PSD.Data);
-      pSourceImg:=SourceImg;
-      for J:=0 to Height-1 do
+      if PSD.AlphaBits=psa8bpp then
       begin
-        for I:=0 to Width-1 do
+        Dest:=ilGetData;
+        CheckDevILError(ilGetError);
+        SourceImg:=PChar(PSD.Data);
+        SourceAlpha:=PChar(PSD.AlphaData);
+        pSourceImg:=SourceImg;
+        pSourceAlpha:=SourceAlpha;
+        for J:=0 to Height-1 do
         begin
-          PRGB(Dest)^[2]:=PRGB(pSourceImg)^[0];
-          PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
-          PRGB(Dest)^[0]:=PRGB(pSourceImg)^[2];
-          Inc(pSourceImg, 3);
-          Inc(Dest, 3);
+          for I:=0 to Width-1 do
+          begin
+            PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[0];
+            PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
+            PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[2];
+            PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
+            Inc(pSourceImg, 3);
+            Inc(pSourceAlpha, 1);
+            Inc(Dest, 4);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            Dest^:=0;
+            Inc(Dest, 1);
+          end;
         end;
-        Inc(pSourceImg, PaddingSource);
-        for I:=0 to PaddingDest-1 do
+      end
+      else
+      begin
+        Dest:=ilGetData;
+        CheckDevILError(ilGetError);
+        SourceImg:=PChar(PSD.Data);
+        pSourceImg:=SourceImg;
+        for J:=0 to Height-1 do
         begin
-          Dest^:=0;
-          Inc(Dest, 1);
+          for I:=0 to Width-1 do
+          begin
+            PRGB(Dest)^[2]:=PRGB(pSourceImg)^[0];
+            PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
+            PRGB(Dest)^[0]:=PRGB(pSourceImg)^[2];
+            Inc(pSourceImg, 3);
+            Inc(Dest, 3);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            Dest^:=0;
+            Inc(Dest, 1);
+          end;
         end;
       end;
     end;
+  finally
+    PSD.Done;
   end;
 
-  //DanielPharos: How do we retrieve the correct value of the lump?
+  //FIXME: DanielPharos: How do we retrieve the correct value of the lump?
   OutputSize:=1000+Width*Height*8;
   SetLength(RawBuffer, OutputSize);
 
@@ -907,91 +914,62 @@ begin
   end;
 
   PSD:=Description;
-  Width:=PSD.size.x;
-  Height:=PSD.size.y;
+  try
+    Width:=PSD.size.x;
+    Height:=PSD.size.y;
 
-  if PSD.Format = psf8bpp then
-  begin
-    FIBpp:=8;
-    PaddingDest:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
-  end
-  else
-  begin
-    if PSD.AlphaBits=psa8bpp then
+    if PSD.Format = psf8bpp then
     begin
-      FIBpp:=32;
-      PaddingDest:=((((Width * 32) + 31) div 32) * 4) - (Width * 4);
+      FIBpp:=8;
+      PaddingDest:=((((Width * 8) + 31) div 32) * 4) - (Width * 1);
     end
     else
     begin
-      FiBpp:=24;
-      PaddingDest:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
-    end;
-  end;
-
-  //FIImage:=FreeImage_Allocate(Width, Height, FIBpp, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK);
-  FIImage:=FreeImage_Allocate(Width, Height, FIBpp, 0, 0, 0);
-  if FIImage=nil then
-    FatalFileError(Format('Unable to save %s file. Call to FreeImage_Allocate failed.', [FormatName]));
-
-  //This is the padding for the 'Image1'-RGB array
-  PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
-
-  if PSD.Format = psf8bpp then
-  begin
-    Dest:=FreeImage_GetPalette(FIImage);
-    SourcePal:=PChar(PSD.ColorPalette);
-    pSourcePal:=SourcePal;
-    for I:=0 to 255 do
-    begin
-      PRGBA(Dest)^[0]:=PRGB(pSourcePal)^[0];
-      PRGBA(Dest)^[1]:=PRGB(pSourcePal)^[1];
-      PRGBA(Dest)^[2]:=PRGB(pSourcePal)^[2];
-      PRGBA(Dest)^[3]:=0;
-      Inc(pSourcePal, 3);
-      Inc(Dest, 4);
-    end;
-
-    Dest:=FreeImage_GetBits(FIImage);
-    SourceImg:=PChar(PSD.Data);
-    pSourceImg:=SourceImg;
-    for J:=0 to Height-1 do
-    begin
-      for I:=0 to Width-1 do
+      if PSD.AlphaBits=psa8bpp then
       begin
-        Dest^:=PByte(pSourceImg)^;
-        Inc(pSourceImg, 1);
-        Inc(Dest, 1);
-      end;
-      Inc(pSourceImg, PaddingSource);
-      for I:=0 to PaddingDest-1 do
+        FIBpp:=32;
+        PaddingDest:=((((Width * 32) + 31) div 32) * 4) - (Width * 4);
+      end
+      else
       begin
-        Dest^:=0;
-        Inc(Dest, 1);
+        FiBpp:=24;
+        PaddingDest:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
       end;
     end;
-  end
-  else
-  begin
-    if PSD.AlphaBits=psa8bpp then
+
+    //FIImage:=FreeImage_Allocate(Width, Height, FIBpp, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK);
+    FIImage:=FreeImage_Allocate(Width, Height, FIBpp, 0, 0, 0);
+    if FIImage=nil then
+      FatalFileError(Format('Unable to save %s file. Call to FreeImage_Allocate failed.', [FormatName]));
+
+    //This is the padding for the 'Image1'-RGB array
+    PaddingSource:=((((Width * 24) + 31) div 32) * 4) - (Width * 3);
+
+    if PSD.Format = psf8bpp then
     begin
+      Dest:=FreeImage_GetPalette(FIImage);
+      SourcePal:=PChar(PSD.ColorPalette);
+      pSourcePal:=SourcePal;
+      for I:=0 to 255 do
+      begin
+        PRGBA(Dest)^[0]:=PRGB(pSourcePal)^[0];
+        PRGBA(Dest)^[1]:=PRGB(pSourcePal)^[1];
+        PRGBA(Dest)^[2]:=PRGB(pSourcePal)^[2];
+        PRGBA(Dest)^[3]:=0;
+        Inc(pSourcePal, 3);
+        Inc(Dest, 4);
+      end;
+
       Dest:=FreeImage_GetBits(FIImage);
-
       SourceImg:=PChar(PSD.Data);
-      SourceAlpha:=PChar(PSD.AlphaData);
       pSourceImg:=SourceImg;
-      pSourceAlpha:=SourceAlpha;
       for J:=0 to Height-1 do
       begin
         for I:=0 to Width-1 do
         begin
-          PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[0];
-          PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
-          PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[2];
-          PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
-          Inc(pSourceImg, 3);
-          Inc(pSourceAlpha, 1);
-          Inc(Dest, 4);
+          Dest^:=PByte(pSourceImg)^;
+          Inc(pSourceImg, 1);
+          Inc(Dest, 1);
         end;
         Inc(pSourceImg, PaddingSource);
         for I:=0 to PaddingDest-1 do
@@ -1003,28 +981,61 @@ begin
     end
     else
     begin
-      Dest:=FreeImage_GetBits(FIImage);
-      
-      SourceImg:=PChar(PSD.Data);
-      pSourceImg:=SourceImg;
-      for J:=0 to Height-1 do
+      if PSD.AlphaBits=psa8bpp then
       begin
-        for I:=0 to Width-1 do
+        Dest:=FreeImage_GetBits(FIImage);
+
+        SourceImg:=PChar(PSD.Data);
+        SourceAlpha:=PChar(PSD.AlphaData);
+        pSourceImg:=SourceImg;
+        pSourceAlpha:=SourceAlpha;
+        for J:=0 to Height-1 do
         begin
-          PRGB(Dest)^[0]:=PRGB(pSourceImg)^[0];
-          PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
-          PRGB(Dest)^[2]:=PRGB(pSourceImg)^[2];
-          Inc(pSourceImg, 3);
-          Inc(Dest, 3);
+          for I:=0 to Width-1 do
+          begin
+            PRGBA(Dest)^[0]:=PRGB(pSourceImg)^[0];
+            PRGBA(Dest)^[1]:=PRGB(pSourceImg)^[1];
+            PRGBA(Dest)^[2]:=PRGB(pSourceImg)^[2];
+            PRGBA(Dest)^[3]:=PByte(pSourceAlpha)^;
+            Inc(pSourceImg, 3);
+            Inc(pSourceAlpha, 1);
+            Inc(Dest, 4);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            Dest^:=0;
+            Inc(Dest, 1);
+          end;
         end;
-        Inc(pSourceImg, PaddingSource);
-        for I:=0 to PaddingDest-1 do
+      end
+      else
+      begin
+        Dest:=FreeImage_GetBits(FIImage);
+
+        SourceImg:=PChar(PSD.Data);
+        pSourceImg:=SourceImg;
+        for J:=0 to Height-1 do
         begin
-          Dest^:=0;
-          Inc(Dest, 1);
+          for I:=0 to Width-1 do
+          begin
+            PRGB(Dest)^[0]:=PRGB(pSourceImg)^[0];
+            PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
+            PRGB(Dest)^[2]:=PRGB(pSourceImg)^[2];
+            Inc(pSourceImg, 3);
+            Inc(Dest, 3);
+          end;
+          Inc(pSourceImg, PaddingSource);
+          for I:=0 to PaddingDest-1 do
+          begin
+            Dest^:=0;
+            Inc(Dest, 1);
+          end;
         end;
       end;
     end;
+  finally
+    PSD.Done;
   end;
 
   FIBuffer := FreeImage_OpenMemory(nil, 0);
