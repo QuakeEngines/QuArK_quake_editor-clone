@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.94  2007/12/22 18:02:01  cdunde
+Update
+
 Revision 1.93  2007/09/12 16:24:29  danielpharos
 Moved update settings to seperate config section and added beginnings of online update check.
 
@@ -705,7 +708,6 @@ function CharToPas(C: array of Byte) : String;
 procedure PasToChar(var C: array of Byte; const S: String);
 function IntToPackedStr(Value: Integer) : String;
 function PackedStrToInt(const S: String) : Integer;
-function CompareMem(P1, P2: Pointer; Length: Integer): Boolean;
 
 function InternalE(const Hint: String) : Exception;
 
@@ -739,7 +741,7 @@ implementation
 uses
   {$IFDEF Debug} MemTester, {$ENDIF}
   QkObjectClassList, QkFileObjects, QkExplorer, Travail,
-  PyObjects, PyImages, Quarkx, Qk1, Logging;
+  PyObjects, PyImages, Quarkx, Qk1, Logging{, ExtraFunctionality};
 
  {------------------------}
 
@@ -752,31 +754,7 @@ var
 {$ENDIF}
  {Deleted: TQList;}
  {_cs_count, _cs_size: Integer;}
-*)
 
-{ CompareMem is copied from Classes.pas - too bad it was private there }
-function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     ESI,P1
-        MOV     EDI,P2
-        MOV     EDX,ECX
-        XOR     EAX,EAX
-        AND     EDX,3
-        SHR     ECX,2
-        cld
-        REPE    CMPSD
-        JNE     @@2
-        MOV     ECX,EDX
-        REPE    CMPSB
-        JNE     @@2
-@@1:    INC     EAX
-@@2:    POP     EDI
-        POP     ESI
-end;
-
-(* DanielPharos: OLD CODE + NEW CODE
 procedure ClearObjectManager;
 {$IFNDEF ShareSpecMem}
 begin

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/02/23 19:25:21  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.9  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -42,6 +45,13 @@ interface
 
 uses SysUtils, StrUtils;
 
+{$ifndef Delphi5orNewerCompiler} // I'm not sure when this function was introduced;
+                                 // but it at least exists in Delphi 5
+{ CompareMem performs a binary compare of Length bytes of memory referenced
+  by P1 to that of P2.  CompareMem returns True if the memory referenced by
+  P1 is identical to that of P2. }
+function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
+{$endif}
 
 {$ifndef Delphi6orNewerCompiler} // Pre-dates Delphi 6
 { IsPathDelimiter returns True if the character at byte S[Index]
@@ -69,7 +79,30 @@ function PosEx(const SubStr, S: string; Offset: Cardinal = 1): Integer;
 
 implementation
 
-{$ifndef Delphi6orNewerCompiler} // Pre-dates Delphi 6
+{$ifndef Delphi5orNewerCompiler}
+function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
+asm
+        PUSH    ESI
+        PUSH    EDI
+        MOV     ESI,P1
+        MOV     EDI,P2
+        MOV     EDX,ECX
+        XOR     EAX,EAX
+        AND     EDX,3
+        SAR     ECX,2
+        JS      @@1     // Negative Length implies identity.
+        REPE    CMPSD
+        JNE     @@2
+        MOV     ECX,EDX
+        REPE    CMPSB
+        JNE     @@2
+@@1:    INC     EAX
+@@2:    POP     EDI
+        POP     ESI
+end;
+{$endif}
+
+{$ifndef Delphi6orNewerCompiler}
 function IsPathDelimiter(const S: string; Index: Integer): Boolean;
 begin
   Result := (Index > 0) and (Index <= Length(S)) and (S[Index] = PathDelim)
@@ -84,7 +117,7 @@ begin
 end;
 {$endif}
 
-{$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7
+{$ifndef Delphi7orNewerCompiler}
 function PosEx(const SubStr, S: string; Offset: Cardinal = 1): Integer;
 begin
   //This code is NOT copied from the StrUtils, so it MIGHT react differently!

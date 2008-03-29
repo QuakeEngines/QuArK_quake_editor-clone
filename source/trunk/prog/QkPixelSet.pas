@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2008/02/06 00:12:55  danielpharos
+The skinview now properly updates to reflect changes made to textures.
+
 Revision 1.20  2007/11/21 16:07:32  danielpharos
 Another bunch of hugh image fixes: everything should work again!
 
@@ -166,7 +169,7 @@ procedure DrawToDC(DC: HDC; var BitmapInfo; Data: Pointer; Left, Top: Integer);
 
 implementation
 
-uses Controls, Dialogs, Quarkx, QkTextures, CCode, QkExplorer, Logging;
+uses Controls, Dialogs, Quarkx, QkTextures, CCode, QkExplorer, Logging, ExtraFunctionality;
 
  {------------------------}
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2008/03/15 03:27:31  cdunde
+To add Prey materials support.
+
 Revision 1.60  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -432,7 +435,7 @@ implementation
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
   CCode, PyObjects, QkHr2, QkHL, QkSin, QkFormCfg,
-  QkQ1, QkQ2, QkQ3, QkObjectClassList, QkD3, QkApplPaths;
+  QkQ1, QkQ2, QkQ3, QkObjectClassList, QkD3, QkApplPaths{, ExtraFunctionality};
 
 {$R *.DFM}
 
