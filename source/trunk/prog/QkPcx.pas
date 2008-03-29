@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2007/12/06 23:01:30  danielpharos
+Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
+
 Revision 1.14  2007/11/21 16:07:32  danielpharos
 Another bunch of hugh image fixes: everything should work again!
 
@@ -156,10 +159,23 @@ begin
 end;
 
 procedure QPcx.LoadFile(F: TStream; FSize: Integer);
+const
+ Spec1 = 'Image1=';
+ Spec2 = 'Pal=';
 var
+ Header: TPcxHeader;
+ XSize, YSize, ScanW, I, J, K, L: Integer;
+ V: array[1..2] of Single;
+ Data: String;
+ ScanLine: PChar;
+ Byte1, Byte2: Byte;
+ InBuffer: String;
+ BufStart, BufEnd, BufMin: Integer;
+ Origine: LongInt;
+
   LibraryToUse: string;
 begin
-  Log(LOG_VERBOSE,'Loading PCX file: %s',[self.name]);;
+  Log(LOG_VERBOSE,'Loading PCX file: %s',[self.name]);
   case ReadFormat of
   1: begin  { as stand-alone file }
     LibraryToUse:=SetupSubSet(ssFiles, 'PCX').Specifics.Values['LoadLibrary'];
@@ -167,6 +183,108 @@ begin
       LoadFileDevIL(F, FSize)
     else if LibraryToUse='FreeImage' then
       LoadFileFreeImage(F, FSize)
+    else if LibraryToUse='' then
+    begin
+      if FSize<SizeOf(Header) then
+       Raise EError(5519);
+      F.ReadBuffer(Header, SizeOf(Header));
+      Origine:=F.Position;
+      Dec(FSize, SizeOf(Header));
+      if (Header.Signature<>pcxSignature)
+      or (Header.ColorPlanes<>pcxColorPlanes) then
+       Raise EErrorFmt(5532, [LoadName,
+        Header.Signature, Header.ColorPlanes,
+        pcxSignature,     pcxColorPlanes]);
+      if FSize<pcxPositionPalette then
+       Raise EErrorFmt(5533, [LoadName]);
+      Dec(FSize, pcxPositionPalette);
+
+      F.Position:=Origine+FSize;
+      F.ReadBuffer(Byte1, 1);
+      if Byte1<>pcxPalette256 then
+       Raise EErrorFmt(5533, [LoadName]);
+      F.Position:=Origine;
+
+      XSize:=Header.Xmax - Header.Xmin + 1;
+      YSize:=Header.Ymax - Header.Ymin + 1;
+      ProgressIndicatorStart(5448, YSize); try
+      V[1]:=XSize;
+      V[2]:=YSize;
+      SetFloatsSpec('Size', V);
+      ScanW:=(XSize+3) and not 3;
+      if Header.BytesPerLine > ScanW then
+       Raise EErrorFmt(5509, [34]);
+      Data:=Spec1;
+      I:=ScanW*YSize;   { 'Image1' byte count }
+      SetLength(Data, Length(Spec1)+I);
+      ScanLine:=PChar(Data)+Length(Data);
+      BufMin:=Header.BytesPerLine*2;  { one input line may need up to this count of bytes }
+      SetLength(InBuffer, BufMin*8);
+      BufStart:=1;
+      BufEnd:=1;
+      for J:=1 to YSize do
+       begin
+        Dec(ScanLine, ScanW);  { stores as bottom-up, 4-bytes aligned data }
+
+         { fills in the input buffer as needed }
+        if BufEnd-BufStart <= BufMin then
+         begin
+           { moves any remaining data back to the beginning }
+          Move(InBuffer[BufStart], InBuffer[1], BufEnd-BufStart);
+          BufEnd:=BufEnd+1-BufStart;
+          BufStart:=1;
+           { loads data }
+          I:=Length(InBuffer)+1-BufEnd;
+          if I>FSize then I:=FSize;
+          F.ReadBuffer(InBuffer[BufEnd], I);
+          Inc(BufEnd, I);
+          Dec(FSize, I);
+         end;
+
+         { decodes the line }
+        I:=0;
+        while I<Header.BytesPerLine do
+         begin
+          if BufStart=BufEnd then
+           Raise EErrorFmt(5509, [31]);
+          Byte1:=Ord(InBuffer[BufStart]);
+          Inc(BufStart);
+          if Byte1<$C0 then
+           begin
+            ScanLine[I]:=Chr(Byte1);
+            Inc(I);
+           end
+          else
+           begin
+            K:=Byte1 and not $C0;   { repeat count }
+            if I+K>Header.BytesPerLine then
+             Raise EErrorFmt(5509, [32]);
+            if BufStart=BufEnd then
+             Raise EErrorFmt(5509, [31]);
+            Byte2:=Ord(InBuffer[BufStart]);
+            Inc(BufStart);
+            for L:=I to I+K-1 do
+             ScanLine[L]:=Chr(Byte2);
+            Inc(I,K);
+           end;
+         end;
+        while I<ScanW do
+         begin
+          ScanLine[I]:=#0;  { fills with zeroes }
+          Inc(I);
+         end;
+        ProgressIndicatorIncrement;
+       end;
+      Specifics.Add(Data);  { "Data=xxxxx" }
+
+       { reads the palette }
+      F.Seek(FSize+1, soFromCurrent);  { skips remaining data if any (should not) }
+      Data:=Spec2;
+      SetLength(Data, Length(Spec2)+pcxTaillePalette);
+      F.ReadBuffer(Data[Length(Spec2)+1], pcxTaillePalette);
+      SpecificsAdd(Data);  { "Pal=xxxxx" }
+      finally ProgressIndicatorStop; end;
+    end
     else
       FatalFileError('Unable to load PCX file. No valid loading library selected.');
   end;

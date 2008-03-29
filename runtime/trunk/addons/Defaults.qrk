@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.397  2008/03/28 19:14:46  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //Revision 1.396  2008/03/25 09:14:43  cdunde
 //To break down Doom3 file to separate files.
 //
@@ -3339,7 +3342,7 @@ QQRKSRC1
       }
       PCX:config =
       {
-        LoadLibrary = "DevIL"
+        LoadLibrary = "QuArK"
         SaveLibrary = "QuArK"
         Form = "FilesPCX"
       }
@@ -7159,15 +7162,15 @@ QQRKSRC1
       {
         Txt="Select library for loading PCX files"
         Typ="CL"
-        Items  = "DevIL" $0D "FreeImage"
-        Values = "DevIL" $0D "FreeImage"
+        Items  = "QuArK" $0D "DevIL" $0D "FreeImage"   //DevIL and FreeImage aren't always loading PCX files correctly!
+        Values = "QuArK" $0D "DevIL" $0D "FreeImage"
         Hint="Select the library QuArK will use to load files of this type."
       }
       SaveLibrary: =
       {
         Txt="Select library for saving PCX files"
         Typ="CL"
-        Items  = "QuArK"   //DevIL and FreeImage don't support PCX file saving!
+        Items  = "QuArK"   //DevIL PCX file saving not working, and FreeImage doesn't support it!
         Values = "QuArK"
         Hint="Select the library QuArK will use to save files of this type."
       }
