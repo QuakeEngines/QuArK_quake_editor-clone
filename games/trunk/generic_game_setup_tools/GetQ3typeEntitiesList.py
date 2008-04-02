@@ -28,11 +28,13 @@ def HandleInput(input):
         while 1:
             line = input.readline()
             if line == '':
-                break
+                return
             if line.startswith('/*QUAKED') or line.startswith('/* QUAKED'):
                 if line.startswith('/* QUAKED'):
                     line = line.replace('/* QUAKED','/*QUAKED')
                 while 1:
+                    if line == '':
+                        return
                     while line.find("  ") != -1:
                         line = line.replace("  ", " ")
                     if line.startswith('/******') or line.startswith('******') or line.startswith('*/'):
