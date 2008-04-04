@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.2  2008/04/04 20:42:52  cdunde
+#To try and fix their system over writing internal code for logging....nice!
+#
 #Revision 1.1  2008/04/04 20:19:28  cdunde
 #Added a new Conversion Tools for making game support QuArK .qrk files.
 #
