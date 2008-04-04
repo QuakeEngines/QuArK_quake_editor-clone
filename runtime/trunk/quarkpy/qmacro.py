@@ -284,13 +284,15 @@ def MACRO_makeaddon_tex(self):
         i = i + 1
     a[i].maketexturesfromqctx();
 
-entfn = {}
-
 def MACRO_loadentityplugins(self):
     import plugins
     plugins.LoadPlugins("ENT")
     global MACRO_loadentityplugins
     MACRO_loadentityplugins = lambda x: None    # next calls to loadmdleditor() do nothing
+
+### A list, used below, to pass items to for the main QuArK menu Conversion section.
+### See the plugins files that start with "ent" for its use.
+entfn = {}
 
 def MACRO_ent_convertfrom(text):
     import qeditor
@@ -301,7 +303,7 @@ def MACRO_ent_convertfrom(text):
     # These '&'-characters has to be removed, for the entfn[text] to work properly.
     text = text.replace("&", "")
     entf = entfn[text]
-    if entf is not None:
+    if entf is not None and entf[0][0] is not None:
         files = quarkx.filedialogbox("Select File", text, entf[0], 0)
         if len(files) != 0:
             file = files[0]
@@ -310,10 +312,17 @@ def MACRO_ent_convertfrom(text):
                 gn = file
             entf[1](a[0].parent, file, gn)
 
+    if entf[0][0] is None and entf[1] is not None:
+        entf[1](a[0].parent) # This calls the function that is stored in the "entfn" list above.
+
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.27  2008/03/09 21:44:11  cdunde
+#To reinstate fix for error if Addons Delete item is opened and closed with no items to delete.
+#Over written by old file used for Revision 1.20.2.1 commit and Revision 1.22 file merging.
+#
 #Revision 1.26  2008/02/07 13:17:57  danielpharos
 #Removed redundant variable
 #

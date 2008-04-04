@@ -258,12 +258,12 @@ def CheckQUAKED(token):
         raise "Expected 'QUAKED' token, but found: "+token
 
 def CreateClass(token):
-    global currentclassname, currentspawnflagbit, currentsize
+    global currentclassname, currentsize, currentspawnflagbit
     CloseClass("--CloseByCreateClass--")
     # Create entity
     currentclassname = token
-    currentspawnflagbit = None
     currentsize = None
+    currentspawnflagbit = None
     currentcomment = None
 
 def CloseClass(token):
@@ -482,9 +482,18 @@ statediagram =                                                                  
 import quarkpy.qutils
 import quarkx
 
-def makeqrk(root, filename, gamename):
-    quarkx.msgbox("Please note, this is not always 100% accurate and will duplicate\nexisting entities and possibly miss some out.\n\nYou may need to handedit the .qrk file. For help with this,\nfeel free to ask questions at the QuArK forum:\n\nhttp://groups.yahoo.com/group/quark/messages\n", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
-    global currentclassname
+def makeqrk(root, filename, gamename, nomessage=0):
+    global theEntities, theEntity, theKey, currentclassname, currentsize, currentspawnflagbit, currentcomment
+
+    count = 0
+    for item in root.subitems:
+        if count == 0:
+            count = 1
+            continue
+        root.removeitem(item)
+
+    if nomessage == 0:
+        quarkx.msgbox("Please note, this is not always 100% accurate and will duplicate\nexisting entities and possibly miss some out.\n\nYou may need to handedit the .qrk file. For help with this,\nfeel free to ask questions at the QuArK forum:\n\nhttp://groups.yahoo.com/group/quark/messages\n", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
     srcstring = readentirefile(filename)
     state = 'STATE_UNKNOWN'
     while (len(srcstring) > 1):
@@ -504,11 +513,19 @@ def makeqrk(root, filename, gamename):
                 break
             expectedtypes = expectedtypes + [type]
         if newstate is None:
-            print "Parse error: Got type", token_is, "but expected type(s);", expectedtypes
-            print "Debug: Last classname was =", currentclassname
-            print "Debug:", srcstring[:64]
-            print "Debug - Associated function: ", func
-            raise "Parse error!"
+       #     print "Parse error: Got type", token_is
+       #     print "but expected type(s);", expectedtypes
+       #     print "Debug: Last classname was =", currentclassname
+       #     print "Debug:", srcstring[:64]
+       #     print "Debug - Associated function: ", func
+       #     raise "Parse error!"
+            if func == "None":
+                func_str = "None"
+            else:
+                func_str = str(func)
+            quarkx.beep()
+            quarkx.msgbox("PARSE ERROR !\nNon-supported Entity Definition file(s) format.\n\nGot type " + str(token_is) + "\nbut expected type(s): " + str(expectedtypes) + "\n\nDebug: Last classname was = " + str(currentclassname) + "\nDebug: " + str(srcstring[:64]) + "\nDebug - Associated function: " + func_str + "\n\nContact QuArK development team with copy of Entity file(s).", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_ABORT)
+            return None
         if (func is not None):
             # This state have a function attached to it. Call it giving it the found token.
             func(token)
@@ -538,13 +555,29 @@ def makeqrk(root, filename, gamename):
         ent.GenerateForm(f_tbx)
     root.refreshtv()
 
-    quarkx.msgbox("The .DEF file have now almost been converted to QuArK format.\n\nWhat remains is to save it as a 'Structured text for hand-editing (*.qrk)' file.\n\nIf you encounter any problems using this 'Convert from QeRadiant .DEF file' utility, please post a mail in the QuArK-forum.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+    if nomessage == 0:
+        quarkx.msgbox("The .DEF file have now almost been converted to QuArK format.\n\nWhat remains is to save it as a 'Structured text for hand-editing (*.qrk)' file.\n\nIf you encounter any problems using this 'Convert from QeRadiant .DEF file' utility, please post a mail in the QuArK-forum.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+
+    # To reset all the globals to avoid duplications if the file is called to be remade without closing QuArK.
+    theEntities = []
+    theEntity = None
+    theKey = None
+    currentclassname = None
+    currentsize = None
+    currentspawnflagbit = None
+    currentcomment = None
+
+    return root
 
 import quarkpy.qentbase
 quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def file", "*.def", makeqrk)
 
 #
 #$Log$
+#Revision 1.10  2008/03/19 06:05:16  cdunde
+#Added character to CHARS_ALFABETIC items
+#to stop spawnflags name from being spit up incorrectly.
+#
 #Revision 1.9  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #
