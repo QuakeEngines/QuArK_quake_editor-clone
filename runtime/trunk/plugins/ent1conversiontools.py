@@ -9,6 +9,13 @@ using the actual game files and other .qrk files as templates.
 #$Header$
 #
 
+#
+#$Log$
+#Revision 1.1  2008/04/04 20:19:28  cdunde
+#Added a new Conversion Tools for making game support QuArK .qrk files.
+#
+#
+
 import os, sys
 import quarkx
 import quarkpy.qmacro
@@ -1368,8 +1375,4 @@ def Intro(root):
 text = "Conversion Tool - use this first"
 import quarkpy.qentbase
 quarkpy.qentbase.RegisterEntityConverter(text, None, None, Intro)
-
-#
-#$Log$
-#
 

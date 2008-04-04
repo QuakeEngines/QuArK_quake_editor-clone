@@ -11,6 +11,13 @@ AddShaderList.py - Makes the GameShaders.qrk list of Shaders by folder to use as
 #$Header$
 #
 
+#
+#$Log$
+#Revision 1.1  2008/04/04 20:19:29  cdunde
+#Added a new Conversion Tools for making game support QuArK .qrk files.
+#
+#
+
 import os, os.path
 from ConvertToolGet_tokens import *
 
@@ -152,8 +159,4 @@ def AddShaders(QuArKpath, gamename, gamefileslocation, shadersfolder, shadersfil
     o.write('}\n')
 
     o.close()
-
-#
-#$Log$
-#
 

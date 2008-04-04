@@ -13,6 +13,13 @@
 #$Header$
 #
 
+#
+#$Log$
+#Revision 1.1  2008/04/04 20:19:27  cdunde
+#Added a new Conversion Tools for making game support QuArK .qrk files.
+#
+#
+
 import os, os.path
 
 def AddSpecifics(QuArKpath, gamename, gamefileslocation, gamepakfiletype,
@@ -333,6 +340,3 @@ def AddSpecifics(QuArKpath, gamename, gamefileslocation, gamepakfiletype,
     os.remove(WorkDirectory + '/' + gamename + 'Entities' + '.def') # Deletes this temp file.
     os.remove(WorkDirectory + '/' + gamename + 'Entities' + '.spf') # Deletes this temp file.
 
-#
-#$Log$
-#

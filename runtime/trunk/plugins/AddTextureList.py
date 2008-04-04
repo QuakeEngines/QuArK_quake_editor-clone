@@ -12,6 +12,13 @@
 #$Header$
 #
 
+#
+#$Log$
+#Revision 1.1  2008/04/04 20:19:27  cdunde
+#Added a new Conversion Tools for making game support QuArK .qrk files.
+#
+#
+
 import os, os.path
 
 def AddTextures(QuArKpath, gamename, gamefileslocation, texturesfolder, texturesfiletype):
@@ -78,7 +85,3 @@ def AddTextures(QuArKpath, gamename, gamefileslocation, texturesfolder, textures
     o.write("  }\n")
     o.write("}\n")
     o.close()
-
-#
-#$Log$
-#
