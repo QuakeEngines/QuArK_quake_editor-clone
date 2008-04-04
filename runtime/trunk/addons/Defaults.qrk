@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.398  2008/03/29 15:34:27  danielpharos
+//Build old PCX file loading code back in. DevIL and FreeImage were causing random trouble.
+//
 //Revision 1.397  2008/03/28 19:14:46  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -3342,7 +3345,7 @@ QQRKSRC1
       }
       PCX:config =
       {
-        LoadLibrary = "QuArK"
+        LoadLibrary = "DevIL"
         SaveLibrary = "QuArK"
         Form = "FilesPCX"
       }
