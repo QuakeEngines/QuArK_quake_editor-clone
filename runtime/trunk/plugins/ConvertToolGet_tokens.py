@@ -122,11 +122,14 @@ if __name__ == "__main__":
     print "You are not supposed to run this, usage is:"
     print ""
     print ">>> from get_tokens import *"
-    print ">>> tokens = getTokens(gamefileslocation + "\\" + filesfoldername + "\\" + name)
+    print '>>> tokens = getTokens(gamefileslocation + "\\" + filesfoldername + "\\" + name)'
     print ""
     print ">>> See plugins AddsShadersList.py for example of its usage."
 
 #
 #$Log$
+#Revision 1.1  2008/04/04 20:19:28  cdunde
+#Added a new Conversion Tools for making game support QuArK .qrk files.
+#
 #
 
