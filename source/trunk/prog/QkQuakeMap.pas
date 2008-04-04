@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2008/02/03 13:13:16  danielpharos
+Small code clean-up
+
 Revision 1.8  2008/01/23 01:39:04  cdunde
 Fixed 6DX, Crystal Space and SOF maps from being identified incorrectly.
 
@@ -1904,6 +1907,8 @@ begin
      else if CharModeJeu=mjRTCW then
        Result:=CharModeJeu
      else if CharModeJeu=mjRTCWET then
+       Result:=CharModeJeu
+     else if CharModeJeu=mjNEXUIZ then
        Result:=CharModeJeu;
     end;
   end;

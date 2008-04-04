@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2008/01/03 14:01:44  danielpharos
+Fix tags not working in a model not in a pak file.
+
 Revision 1.35  2007/12/19 12:46:33  danielpharos
 Made a rudimentary, but functional MD3 file saving code. You can now save MD3 models!
 
@@ -837,6 +840,8 @@ begin
         ObjectGameCode := mjEF2;
       if (head.id='IDP3') and (CharModeJeu=mjRTCWET) then
         ObjectGameCode := mjRTCWET;
+      if (head.id='IDP3') and (CharModeJeu=mjNEXUIZ) then
+        ObjectGameCode := mjNEXUIZ;
       if (head.id='IDP3') and (head.version=15) then
       begin
         if (CharModeJeu<mjQ3A) or (CharModeJeu=mjSTVEF) then
