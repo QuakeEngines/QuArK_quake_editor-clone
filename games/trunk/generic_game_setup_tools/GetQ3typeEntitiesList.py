@@ -25,8 +25,11 @@ names = os.listdir(dirname)
 # names.sort()
 
 def HandleInput(input):
+        def_format = 1
         while 1:
             line = input.readline()
+            if line.startswith("--") and FileType == ".def":
+                def_format = 2
             if line == '':
                 return
             if line.startswith('/*QUAKED') or line.startswith('/* QUAKED'):
@@ -35,6 +38,40 @@ def HandleInput(input):
                 while 1:
                     if line == '':
                         return
+
+                    if line.startswith("--") and FileType == ".def":
+                        def_format = 2
+
+                    if def_format == 2:
+                        if line.startswith('keys:') or line.startswith('flags:') or line.startswith('none'):
+                            line = input.readline()
+
+                    if def_format == 2:
+                        if line.startswith('/*QUAKED') and " ? " in line and " - " in line:
+                            line = line.replace("-", "x")
+
+                    if def_format == 2:
+                        if " : " in line:
+                            if (line[0].isalpha() or (line[0]=="_" and line[1].isalpha())):
+                                line = line.split(":", 1)
+                                line[0] = line[0].replace("\"", "")
+                                line[0] = line[0].strip()
+                                if "OR" in line[0]:
+                                    newline = line[0].split("OR")
+                                    line[0] = newline[1]
+                                    line[0] = line[0].strip()
+
+                                line[1] = line[1].strip()
+                                line[1] = line[1].replace("\"", "\'")
+                                if len(line[0]) > 0 and (line[0][0].islower() or line[0][1].islower()):
+                                    line = ("\"" + line[0] + "\" " + line[1] + "\n")
+                                else:
+                                    line = (line[0] + " " + line[1] + "\n")
+                            else:
+                                line = line.replace(" :", "", 1)
+                        else:
+                            pass
+
                     while line.find("  ") != -1:
                         line = line.replace("  ", " ")
                     if line.startswith('/******') or line.startswith('******') or line.startswith('*/'):
@@ -43,6 +80,12 @@ def HandleInput(input):
                         o.write('\n')
                         specifics.write('\n')
                         break
+                    if def_format == 2:
+                        if line.endswith('*/\n'):
+                            line = line.replace('*/\n', '\n*/\n')
+                            specifics.write('\n')
+                            spec = 0
+                            break
                          ### chr(32)=space, chr(9)=tab, chr(10)=newline, chr(92)=\
                     line = line.replace(chr(9), ' ')  ### chr(9) is one 'tab'.
 
@@ -72,7 +115,11 @@ def HandleInput(input):
                             line = line.replace("  ", " ")
                         spec = 1
                     else:
-                        line = line.replace("\"", "'")
+                        if def_format == 2:
+                            if len(line) >= 2 and line[1] == "_":
+                                pass
+                        else:
+                            line = line.replace("\"", "'")
 
                     if line.startswith('/*QUAKED'):
                         words = line.replace('(', ' ')
@@ -87,13 +134,32 @@ def HandleInput(input):
                         else:
                             while line.find("  ") != -1:
                                 line = line.replace("  ", " ")
-                            specifics.write(line)
+                            if def_format == 2:
+                                if line.startswith("\""):
+                                    specifics.write(line)
+                            else:
+                                specifics.write(line)
 
-                    o.write(line)
+                    if def_format == 2:
+                        if line.startswith("--") or line.startswith("("):
+                            pass
+                        else:
+                            if line.startswith("\""):
+                                if line[2].islower() is True:
+                                    line = line.replace("\"", "'")
+                                    line = line.replace("'", "\"", 2)
+                                else:
+                                    line = line.replace("\"", "")
+                            o.write(line)
+                    else:
+                        o.write(line)
                     line = input.readline()
 
                 if line.startswith('*/'):
                     line = "\n******************************************************************************/\n"
+                if def_format == 2:
+                    if not line.startswith("\"") and "\"" in line:
+                        line = line.replace("\"", "")
                 o.write(line)
                 o.write('\n')
 
