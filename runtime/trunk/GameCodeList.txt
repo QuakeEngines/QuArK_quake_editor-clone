@@ -54,6 +54,7 @@ Code    abbreviation            Name          or Screen name    taken
  r      Prey            Prey                  DanielPharos      07/05/07
  s      FAKK2           Heavy Metal - FAKK2   cdunde            02/23/08
  w      WildWest        WildWest              Silverpaladin     08/31/03
+ z      NEXUIZ          NEXUIZ                cdunde            04/03/08
 
 Note: Some of the above Authors and dates may not be correct
 due to full documentation was not available for older,
