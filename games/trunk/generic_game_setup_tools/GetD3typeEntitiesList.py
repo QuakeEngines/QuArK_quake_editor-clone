@@ -749,7 +749,7 @@ a few double-quotes in the manual one are single quotes in the progamatically cr
         }
       }
 
-  Entity forms.qctx =
+  Entity forms.fctx =
   {
     // Definition of "includes"
     t_player_size:incl = { bbox = '-16 -16 -24 16 16 32' }

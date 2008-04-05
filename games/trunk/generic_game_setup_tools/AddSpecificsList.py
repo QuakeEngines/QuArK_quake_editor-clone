@@ -33,8 +33,8 @@ commonspecificslist = ["target", "targetname"]
 
 #            - Does and operates the same as common specifics above but you also need to give the proper settings for:
 #            -     "GamePakFileType", "ModelFileType" and "GameFolderName".
-#            - The actual game file folder that those files make no difference, QuArK uses the folder selected.
-#            - But the files and their folder must be extracted from the game's "Pak" file and placed in the
+#            - The actual game file folder that those files are in makes no difference, QuArK uses the folder selected.
+#            - But the files and their folder and sub-folders must be extracted from the game's "Pak" file and placed in the
 #            -     proper location, which is usually the same place where the "Pak" files are located.
 #            - Some games use a "script" file instead of the actual model file. If this is the case then
 #            -    the type of script file, ex: cik, can be used as the setting for the "ModelFileType".
