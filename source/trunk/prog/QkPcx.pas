@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/03/29 15:34:21  danielpharos
+Build old PCX file loading code back in. DevIL and FreeImage were causing random trouble.
+
 Revision 1.15  2007/12/06 23:01:30  danielpharos
 Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
 
@@ -183,7 +186,7 @@ begin
       LoadFileDevIL(F, FSize)
     else if LibraryToUse='FreeImage' then
       LoadFileFreeImage(F, FSize)
-    else if LibraryToUse='' then
+    else if LibraryToUse='QuArK' then
     begin
       if FSize<SizeOf(Header) then
        Raise EError(5519);
