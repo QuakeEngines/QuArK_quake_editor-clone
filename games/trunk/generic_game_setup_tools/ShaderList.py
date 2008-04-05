@@ -1,7 +1,7 @@
 # ShaderList.py - Makes a games .qrk list of Shaders by folder to use as a QuArK addon game file.
 #            - cdunde Feb. 28, 2008
 #            - Put this file, the get_tokens.py file and the main "shaders", "scripts" or "materials" folder (with its sub-folders) in the same directory.
-#            - Change "dirname", "filesfoldername", "whatkind", "GameName", "GameFolder" and "TexFileType" below.
+#            - Change "dirname", "filesfoldername", "whatkind", "GameName", "GameFolder" and "FileType" below.
 #            - Start the "DOS Command Window", cd (change directory) to the path location.
 #            - Type in "python ShaderList.py" and hit Enter.
 #            - The completed file will be created in the same location as this file is.
