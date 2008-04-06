@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.3  2008/04/04 20:46:46  cdunde
+#Are you kidding me 8-\
+#
 #Revision 1.2  2008/04/04 20:42:52  cdunde
 #To try and fix their system over writing internal code for logging....nice!
 #
@@ -40,23 +43,50 @@ def MakeListFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                  modelfolder, modelfiletype, soundfolder, soundfiletype,
                  musicfolder, musicfiletype, hadfolder,
                  listfilefolder, listfiletype):
-    "Makes a new Data file for the gamename"
-    "using the Data file of the gameenginetype."
+    "Makes a new list file for the gamename"
+    "using the files in the listfilefolder."
 
     FilesDone(gamename, hadfolder)
+
+
+def MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
+                     gamepakfiletype,
+                     modelfolder, modelfiletype, soundfolder, soundfiletype,
+                     musicfolder, musicfiletype, hadfolder,
+                     mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype):
+    "Makes a new 'gamename'Weapon-ModelEntities.qrk file"
+    "using the files in the mdlentsfolder."
+
+    import AddModelEnts
+    AddModelEnts.AddMdlEnts(QuArKpath, gamename, gamefileslocation, modelfiletype, mdlentsfolder, mdlentsfiletype)
+
+    if makelistfile == "60":
+        MakeListFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
+                     gamepakfiletype,
+                     modelfolder, modelfiletype, soundfolder, soundfiletype,
+                     musicfolder, musicfiletype, hadfolder,
+                     listfilefolder, listfiletype)
+    else:
+        FilesDone(gamename, hadfolder)
 
 
 def MakeTexturesFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
                      texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                      musicfolder, musicfiletype, hadfolder,
-                     makelistfile, listfilefolder, listfiletype):
-    "Makes a new Data file for the gamename"
-    "using the Data file of the gameenginetype."
+                     makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype):
+    "Makes a new 'gamename'Textures.qrk file"
+    "using the files in the texturesfolder."
 
     import AddTextureList
     AddTextureList.AddTextures(QuArKpath, gamename, gamefileslocation, texturesfolder, texturesfiletype)
 
+    if makemdlentsfile == "51":
+        MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
+                     gamepakfiletype,
+                     modelfolder, modelfiletype, soundfolder, soundfiletype,
+                     musicfolder, musicfiletype, hadfolder,
+                     mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     if makelistfile == "60":
         MakeListFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
@@ -71,9 +101,9 @@ def MakeShadersFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                     gamepakfiletype, shadersfolder, shadersfiletype,
                     texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                     musicfolder, musicfiletype, hadfolder,
-                    maketexturesfile, makelistfile, listfilefolder, listfiletype):
-    "Makes a new Data file for the gamename"
-    "using the Data file of the gameenginetype."
+                    maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype):
+    "Makes a new 'gamename'Shaders.qrk file"
+    "using the files in the shadersfolder."
 
     import AddShaderList
     AddShaderList.AddShaders(QuArKpath, gamename, gamefileslocation, shadersfolder, shadersfiletype)
@@ -83,7 +113,13 @@ def MakeShadersFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                          gamepakfiletype,
                          texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                          musicfolder, musicfiletype, hadfolder,
-                         makelistfile, listfilefolder, listfiletype)
+                         makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
+    if makemdlentsfile == "51":
+        MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
+                     gamepakfiletype,
+                     modelfolder, modelfiletype, soundfolder, soundfiletype,
+                     musicfolder, musicfiletype, hadfolder,
+                     mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif makelistfile == "60":
         MakeListFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
@@ -255,7 +291,7 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
                  gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                  texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                  musicfolder, musicfiletype, hadfolder, makeshadersfile,
-                 maketexturesfile, makelistfile, listfilefolder, listfiletype):
+                 maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype):
         src = quarkx.newobj(":")
         src["WriteCommonSpecifics"] = "15"
         src["UseCommonSpecifics"] = "16"
@@ -365,8 +401,8 @@ def MakeEntitiesFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
             WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint, WriteSoundBrowser,
             UseSoundBrowser, UseDefaultSoundHint, SoundHint, WriteMusicBrowser, UseMusicBrowser,
             UseDefaultMusicHint, MusicHint, UseColorPicker):
-    "Makes a new Data file for the gamename"
-    "using the Data file of the gameenginetype."
+    "Makes a new 'gamename'Entities.qrk file"
+    "using the files in the entitiesfolder."
 
     if gameenginetype == "Quake 3":
         import ConvertToolQ3typeEnts
@@ -382,13 +418,19 @@ def MakeEntitiesFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
         gamepakfiletype, shadersfolder, shadersfiletype,
         texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
         musicfolder, musicfiletype, hadfolder,
-        maketexturesfile, makelistfile, listfilefolder, listfiletype)
+        maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif maketexturesfile == "50":
         MakeTexturesFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
         gamepakfiletype,
         texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
         musicfolder, musicfiletype, hadfolder,
-        makelistfile, listfilefolder, listfiletype)
+        makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
+    if makemdlentsfile == "51":
+        MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
+                     gamepakfiletype,
+                     modelfolder, modelfiletype, soundfolder, soundfiletype,
+                     musicfolder, musicfiletype, hadfolder,
+                     mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif makelistfile == "60":
         MakeListFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
@@ -403,9 +445,9 @@ def MakeUserDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
                      gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                      texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                      musicfolder, musicfiletype, hadfolder, makeentitiesfile, makeshadersfile,
-                     maketexturesfile, makelistfile, listfilefolder, listfiletype):
-    "Makes a new Data file for the gamename"
-    "using the Data file of the gameenginetype."
+                     maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype):
+    "Makes a new UserData' gamename'.qrk file"
+    "using the UserData file of the gameenginetype."
 
     newfilesfolderpath = QuArKpath + '\\' + gamename
 
@@ -449,19 +491,25 @@ def MakeUserDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
                         gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                         texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                         musicfolder, musicfiletype, hadfolder, makeshadersfile,
-                        maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                        maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif makeshadersfile == "40":
         MakeShadersFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                         gamepakfiletype, shadersfolder, shadersfiletype,
                         texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                         musicfolder, musicfiletype, hadfolder,
-                        maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                        maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif maketexturesfile == "50":
         MakeTexturesFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                          gamepakfiletype,
                          texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                          musicfolder, musicfiletype, hadfolder,
-                         makelistfile, listfilefolder, listfiletype)
+                         makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
+    if makemdlentsfile == "51":
+        MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
+                     gamepakfiletype,
+                     modelfolder, modelfiletype, soundfolder, soundfiletype,
+                     musicfolder, musicfiletype, hadfolder,
+                     mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif makelistfile == "60":
         MakeListFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
@@ -535,7 +583,7 @@ class DataFileDlg(quarkpy.qmacro.dialogbox):
                  gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                  texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                  musicfolder, musicfiletype, hadfolder, makeuserdatafile, makeentitiesfile, makeshadersfile,
-                 maketexturesfile, makelistfile, listfilefolder, listfiletype):
+                 maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype):
         src = quarkx.newobj(":")
         src["WallTexFile"] = None
         src["FloorTexFile"] = None
@@ -629,8 +677,8 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
                  gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                  texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                  musicfolder, musicfiletype, hadfolder, makeuserdatafile, makeentitiesfile, makeshadersfile,
-                 maketexturesfile, makelistfile, listfilefolder, listfiletype, defaulttexs):
-    "Makes a new Data file for the gamename"
+                 maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype, defaulttexs):
+    "Makes a new 'gamename'Data.qrk file"
     "using the Data file of the gameenginetype."
 
     for key in defaulttexs.keys():
@@ -735,26 +783,32 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
                          gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                          texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                          musicfolder, musicfiletype, hadfolder, makeentitiesfile, makeshadersfile,
-                         maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                         maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif makeentitiesfile == "30":
         entitiesfiledialog = quarkx.newform("entitiesdialogform")
         EntitiesFileDlg(entitiesfiledialog, root, QuArKpath, gamename, gameenginetype, gamefileslocation,
                         gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                         texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                         musicfolder, musicfiletype, hadfolder, makeshadersfile,
-                        maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                        maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif makeshadersfile == "40":
         MakeShadersFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                         gamepakfiletype, shadersfolder, shadersfiletype,
                         texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                         musicfolder, musicfiletype, hadfolder,
-                        maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                        maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif maketexturesfile == "50":
         MakeTexturesFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
         gamepakfiletype,
         texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
         musicfolder, musicfiletype, hadfolder,
-        makelistfile, listfilefolder, listfiletype)
+        makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
+    if makemdlentsfile == "51":
+        MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
+                     gamepakfiletype,
+                     modelfolder, modelfiletype, soundfolder, soundfiletype,
+                     musicfolder, musicfiletype, hadfolder,
+                     mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
     elif makelistfile == "60":
         MakeListFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
@@ -767,8 +821,8 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
 
 class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
     endcolor = AQUA
-    size = (300, 590)
-    dfsep = 0.4     # sets 40% for labels and the rest for edit boxes
+    size = (300, 650)
+    dfsep = 0.45     # sets 45% for labels and the rest for edit boxes
     dlgflags = FWF_KEEPFOCUS + FWF_NORESIZE
     dlgdef = """
         {
@@ -1074,6 +1128,42 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
                    "You can delete this folder once this process is done."
             }
 
+        MakeMdlEntsFile: =
+            {
+            Txt = "Make Mdl Entity file:"
+            Typ = "X51"
+            Hint = "To make a '(game name)Weapon-ModelEntities.qrk'"$0D
+                   "file check this box."$0D$0D
+                   "Some games such as 'EF2' and 'FAKK2' use special"$0D
+                   "entity classes for their game models and weapons."$0D
+                   "They are defined by text script files (.lst for the above)."$0D$0D
+                   "If checked, extract the game folder with these files now."$0D
+                   "Enter below the 'file type' and 'folder path' EXACTLY as shown."$0D$0D
+                   "You can delete this folder once this process is done."
+            }
+
+        MdlEntsFolder: =
+            {
+            Txt = "   Mdl Entity folder path:"
+            Typ = "ED"
+            Hint = "To insure the proper FULL path and folder name"$0D
+                   "Click the '...' button and select"$0D
+                   "the EXTRACTED folder containing the .lst"$0D
+                   "or equivalent files in it. DO NOT HAND ENTER."
+            }
+
+        MdlEntsFileType: =
+            {
+            Txt = "      Mdl Entity file type:"
+            Typ = "EP"
+            DefExt = "*"
+            Hint = "File(s) that define model type entities (ex: .lst files)."$0D
+                   "The files with their folder must be extracted."$0D
+                   "Select any one of these files with the '...' button"$0D
+                   "or enter this file's type suffix here by hand."$0D
+                   "For example: .lst"
+            }
+
         MakeListFile: =
             {
             Txt = "Make List file:"
@@ -1142,6 +1232,9 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
         src["MakeEntitiesFile"]  = None
         src["MakeShadersFile"]   = None
         src["MakeTexturesFile"]  = None
+        src["MakeMdlEntsFile"]   = None
+        src["MdlEntsFolder"]     = None
+        src["MdlEntsFileType"]   = None
         src["MakeListFile"]      = None
         src["ListFileFolder"]    = None
         src["ListFileType"]      = None
@@ -1167,6 +1260,8 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
             self.src["SoundFolder"] = self.src["GameFilesLocation"]
         if self.src["MusicFolder"] is None and self.src["GameFilesLocation"] is not None:
             self.src["MusicFolder"] = self.src["GameFilesLocation"]
+        if self.src["MdlEntsFolder"] is None and self.src["GameFilesLocation"] is not None:
+            self.src["MdlEntsFolder"] = self.src["GameFilesLocation"]
         if self.src["ListFileFolder"] is None and self.src["GameFilesLocation"] is not None:
             self.src["ListFileFolder"] = self.src["GameFilesLocation"]
 
@@ -1237,7 +1332,6 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
         if (soundfolder == gamefileslocation or soundfiletype is None or soundfolder is None):
             quarkx.msgbox("Sound items incomplete in Step 1.\nPlease correct and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
             return
-   #     soundfiletype = soundfiletype.rsplit(".")
         if soundfiletype.find(soundfolder) != -1:
             soundfiletype = soundfiletype.split(".", 1)
             soundfiletype = soundfiletype[len(soundfiletype)-1]
@@ -1248,7 +1342,6 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
         if (musicfolder == gamefileslocation or musicfiletype is None or musicfolder is None):
             quarkx.msgbox("Music items incomplete in Step 1.\nPlease correct and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
             return
-   #     musicfiletype = musicfiletype.rsplit(".")
         if musicfiletype.find(musicfolder) != -1:
             musicfiletype = musicfiletype.split(".", 1)
             musicfiletype = musicfiletype[len(musicfiletype)-1]
@@ -1260,9 +1353,20 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
         makeentitiesfile = self.src["MakeEntitiesFile"]
         makeshadersfile = self.src["MakeShadersFile"]
         maketexturesfile = self.src["MakeTexturesFile"]
+        makemdlentsfile = self.src["MakeMdlEntsFile"]
+        mdlentsfolder = self.src["MdlEntsFolder"]
+        mdlentsfiletype = self.src["MdlEntsFileType"]
         makelistfile = self.src["MakeListFile"]
         listfilefolder = self.src["ListFileFolder"]
         listfiletype = self.src["ListFileType"]
+        if (mdlentsfolder == gamefileslocation or mdlentsfiletype is None or mdlentsfolder is None) and (makemdlentsfile == "51"):
+            quarkx.msgbox("You entered something for Mdl Entity files,\nbut you did not do all three items.\nPlease correct and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+            return
+        if mdlentsfiletype is not None:
+            mdlentsfiletype = mdlentsfiletype.rsplit(".")
+            mdlentsfiletype = mdlentsfiletype[len(mdlentsfiletype)-1]
+        if mdlentsfiletype is not None and not mdlentsfiletype.startswith("."):
+            mdlentsfiletype = "." + mdlentsfiletype
         if (listfilefolder == gamefileslocation or listfiletype is None or listfilefolder is None) and (makelistfile == "60"):
             quarkx.msgbox("You entered something for List files,\nbut you did not do all three items.\nPlease correct and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
             return
@@ -1271,7 +1375,7 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
             listfiletype = listfiletype[len(listfiletype)-1]
         if listfiletype is not None and not listfiletype.startswith("."):
             listfiletype = "." + listfiletype
-        if makedatafile != "10" and makeuserdatafile != "20" and makeentitiesfile != "30" and makeshadersfile != "40" and maketexturesfile != "50" and makelistfile != "60":
+        if makedatafile != "10" and makeuserdatafile != "20" and makeentitiesfile != "30" and makeshadersfile != "40" and maketexturesfile != "50" and makemdlentsfile != "51" and makelistfile != "60":
             quarkx.msgbox("You did not check for any files to be created.\nPlease do so and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
             return
 
@@ -1287,32 +1391,38 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
                             gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                             texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                             musicfolder, musicfiletype, hadfolder, makeuserdatafile, makeentitiesfile, makeshadersfile,
-                            maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                            maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
             elif makeuserdatafile == "20":
                 MakeUserDataFile(root, self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                                  gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                                  texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                                  musicfolder, musicfiletype, hadfolder, makeentitiesfile, makeshadersfile,
-                                 maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                                 maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
             elif makeentitiesfile == "30":
                 entitiesfiledialog = quarkx.newform("entitiesdialogform")
                 EntitiesFileDlg(entitiesfiledialog, root, self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                                 gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                                 texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                                 musicfolder, musicfiletype, hadfolder, makeshadersfile,
-                                maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                                maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
             elif makeshadersfile == "40":
                 MakeShadersFile(self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                                 gamepakfiletype, shadersfolder, shadersfiletype,
                                 texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                                 musicfolder, musicfiletype, hadfolder,
-                                maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                                maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
             elif maketexturesfile == "50":
                 MakeTexturesFile(self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                                  gamepakfiletype,
                                  texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                                  musicfolder, musicfiletype, hadfolder,
-                                 makelistfile, listfilefolder, listfiletype)
+                                 makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
+            elif makemdlentsfile == "51":
+                MakeMdlEntsFile(self.QuArKpath, gamename, gameenginetype, gamefileslocation,
+                                 gamepakfiletype,
+                                 modelfolder, modelfiletype, soundfolder, soundfiletype,
+                                 musicfolder, musicfiletype, hadfolder,
+                                 mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
             elif makelistfile == "60":
                 MakeListFile(self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                              gamepakfiletype,
@@ -1331,32 +1441,38 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
                                 gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                                 texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                                 musicfolder, musicfiletype, hadfolder, makeuserdatafile, makeentitiesfile, makeshadersfile,
-                                maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                                maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
                 elif makeuserdatafile == "20":
                     MakeUserDataFile(root, self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                                      gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                                      texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                                      musicfolder, musicfiletype, hadfolder, makeentitiesfile, makeshadersfile,
-                                     maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                                     maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
                 elif makeentitiesfile == "30":
                     entitiesfiledialog = quarkx.newform("entitiesdialogform")
                     EntitiesFileDlg(entitiesfiledialog, root, self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                                     gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder, shadersfiletype,
                                     texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                                     musicfolder, musicfiletype, hadfolder, makeshadersfile,
-                                    maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                                    maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
                 elif makeshadersfile == "40":
                     MakeShadersFile(self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                                     gamepakfiletype, shadersfolder, shadersfiletype,
                                     texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                                     musicfolder, musicfiletype, hadfolder,
-                                    maketexturesfile, makelistfile, listfilefolder, listfiletype)
+                                    maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
                 elif maketexturesfile == "50":
                     MakeTexturesFile(self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                                      gamepakfiletype,
                                      texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                                      musicfolder, musicfiletype, hadfolder,
-                                     makelistfile, listfilefolder, listfiletype)
+                                     makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
+                elif makemdlentsfile == "51":
+                    MakeMdlEntsFile(self.QuArKpath, gamename, gameenginetype, gamefileslocation,
+                                     gamepakfiletype,
+                                     modelfolder, modelfiletype, soundfolder, soundfiletype,
+                                     musicfolder, musicfiletype, hadfolder,
+                                     mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
                 elif makelistfile == "60":
                     MakeListFile(self.QuArKpath, gamename, gameenginetype, gamefileslocation,
                                  gamepakfiletype,
