@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.400  2008/04/05 06:17:33  cdunde
+//Added full game support for NEXUIZ including .md3 model displaying.
+//
 //Revision 1.399  2008/04/04 20:04:39  cdunde
 //Reversed this default setting for the .pcx load lib, blows the Model Editor up.
 //
@@ -3416,7 +3419,7 @@ QQRKSRC1
       }
       PCX:config =
       {
-        LoadLibrary = "DevIL"
+        LoadLibrary = "QuArK"
         SaveLibrary = "QuArK"
         Form = "FilesPCX"
       }
