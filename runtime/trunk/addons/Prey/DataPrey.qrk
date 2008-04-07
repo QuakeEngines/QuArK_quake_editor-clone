@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/03/28 19:08:48  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //Revision 1.1  2008/03/19 02:26:37  cdunde
 //Added full game support for PREY.
 //
@@ -43,14 +46,14 @@ QQRKSRC1
      $1BEBD3C7C7AB9BA78B77876B579F5B53
     ShaderFiles: =
     {
-      shaders/shaderlist.txt =
+      materials/shaderlist.txt =
       {
         Data =
             "// Created by QuArK"$0D0A
             "// All shaders are extracted to a single file called 'quark.shader'"$0D0A
             "quark"$0D0A
       }
-      shaders/shaderlist.txt =
+      materials/shaderlist.txt =
       {    // 2nd case: if there is no shader in the map
         Data =
             "// Created by QuArK"$0D0A
