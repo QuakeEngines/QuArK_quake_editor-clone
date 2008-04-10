@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.36  2007/08/04 14:42:29  danielpharos
 Use QuakeDir to retrieve the game directory. That's the way it should be, plus some planned upcoming changes to Steam-access will affect this.
 
@@ -1978,8 +1981,21 @@ begin
                  ComboBox.ItemIndex:=MatchSpecItem(ComboBox, ArgValue, True); { "ComboBox.Tag" must be set to a value!!! }
             // Created step around to stop filling multiple dropdown list with erroneous data, like for misc_model entity
                  if Spec <> 'model' then
-                  if Spec <> 'model2' then
-                   ComboBox.Text:=ArgValue;
+                   if Spec <> 'model2' then
+                     if Spec <> 'editormodel' then
+                       if Spec <> 'head' then
+                         if Spec <> 'skin' then
+                           if Spec <> 'NPC_editor_model' then
+                             if Spec <> 'NPC_type' then
+                               if Spec <> 'spawnscript' then
+                                 if Spec <> 'sound' then
+                                   if Spec <> 'noise' then    
+                                     if Spec <> 'music' then
+                                       if Spec <> 's_shader' then
+                                         // All of these below are for HL2 alone.
+                                         if Spec <> 'message' then  
+                                           if Spec <> 'soundscape' then
+                                             ComboBox.Text:=ArgValue;
                  ComboBox.OnKeyDown:=ComboKeyDown;
                  ComboBox.OnChange:=EnterEditChange;
                  ComboBox.Hint:=HintMsg;
