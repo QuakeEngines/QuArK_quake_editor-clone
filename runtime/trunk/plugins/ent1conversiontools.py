@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.7  2008/04/11 18:33:20  cdunde
+#Changed code to try to adapt to proper version writing.
+#
 #Revision 1.6  2008/04/06 06:37:07  cdunde
 #Added file back without version control to stop overwriting of internal code.
 #
@@ -97,7 +100,7 @@ def MakeTexturesFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      modelfolder, modelfiletype, soundfolder, soundfiletype,
                      musicfolder, musicfiletype, hadfolder,
                      mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
-    if makelistfile == "60":
+    elif makelistfile == "60":
         MakeListFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
                      modelfolder, modelfiletype, soundfolder, soundfiletype,
@@ -124,7 +127,7 @@ def MakeShadersFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                          texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                          musicfolder, musicfiletype, hadfolder,
                          makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
-    if makemdlentsfile == "51":
+    elif makemdlentsfile == "51":
         MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
                      modelfolder, modelfiletype, soundfolder, soundfiletype,
@@ -143,7 +146,7 @@ def MakeShadersFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
 
 class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
     endcolor = AQUA
-    size = (300, 345)
+    size = (300, 465)
     dfsep = 0.5     # sets 50% for labels and the rest for edit boxes
     dlgflags = FWF_KEEPFOCUS + FWF_NORESIZE
     dlgdef = """
@@ -214,6 +217,47 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
                    "and type in your own hint here to use it."
             }
 
+        MakeModelList: =
+            {
+            Txt = "    Make Model List:"
+            Typ = "X28"
+            Hint = "Besides the 'Model browser', when checked this makes"$0D
+                   "a selection list, by folder, of all available game models."
+            }
+
+        MakeClipMdlList: =
+            {
+            Txt = "    Make Model Clip List:"
+            Typ = "X29"
+            Hint = "Some games (Doom 3 type) use text '.ase' files"$0D
+                   "to establish the collision boundaries of its models."$0D
+                   "When checked this makes a selection list of all"$0D
+                   "available 'Clip Models' from those type of files."
+            }
+
+        ClipMdlFileFolder: =
+            {
+            Txt = "        List folder:"
+            Typ = "ED"
+            Hint = "To insure the proper FULL path and folder name"$0D
+                   "Click the '...' button and select"$0D
+                   "the EXTRACTED folder or sub-folder"$0D
+                   "that these files are in. DO NOT HAND ENTER."
+            }
+
+        ClipMdlFileType: =
+            {
+            Txt = "        List file type:"
+            Typ = "EP"
+            DefExt = "*"
+            Hint = "Some games (Doom 3 type) use text '.ase' files"$0D
+                   "to establish the collision boundaries of its models."$0D
+                   "The files with their folder(s) must be extracted."$0D
+                   "Select any one of these files with the '...' button"$0D
+                   "or enter the file suffix here by hand."$0D
+                   "For example: .ase"
+            }
+
         WriteSoundBrowser: =
             {
             Txt = "Write Sound Browser:"
@@ -246,6 +290,39 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
             Typ = "E"
             Hint = "Un-check 'Use Default Hint' above"$0D
                    "and type in your own hint here to use it."
+            }
+
+        MakeSoundList: =
+            {
+            Txt = "    Make Sound List:"
+            Typ = "X38"
+            Hint = "Some games (Doom 3 type) use text '.sndshd'"$0D
+                   "sound shader files as well as regular sound files."$0D
+                   "When checked this makes a selection list of all"$0D
+                   "available sounds developed from those type of files."
+            }
+
+        SoundListFileFolder: =
+            {
+            Txt = "        List folder:"
+            Typ = "ED"
+            Hint = "To insure the proper FULL path and folder name"$0D
+                   "Click the '...' button and select"$0D
+                   "the EXTRACTED folder or sub-folder"$0D
+                   "that these files are in. DO NOT HAND ENTER."
+            }
+
+        SoundListFileType: =
+            {
+            Txt = "        List file type:"
+            Typ = "EP"
+            DefExt = "*"
+            Hint = "Some games (Doom 3 type) use text '.sndshd'"$0D
+                   "sound shader files as well as regular sound files."$0D
+                   "The files with their folder must be extracted."$0D
+                   "Select any one of these files with the '...' button"$0D
+                   "or enter the file suffix here by hand."$0D
+                   "For example: .sndshd"
             }
 
         WriteMusicBrowser: =
@@ -313,10 +390,17 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
         src["UseSoundBrowser"] = "36"
         src["UseDefaultSoundHint"] = "37"
         src["SoundHint"] = None
+        src["MakeSoundList"] = None
+        src["SoundListFileFolder"] = None
+        src["SoundListFileType"] = None
         src["WriteMusicBrowser"] = "45"
         src["UseMusicBrowser"] = "46"
         src["UseDefaultMusicHint"] = "47"
         src["MusicHint"] = None
+        src["MakeModelList"] = None
+        src["MakeClipMdlList"] = None
+        src["ClipMdlFileFolder"] = None
+        src["ClipMdlFileType"] = None
         src["UseColorPicker"] = "55"
         self.src = src
         self.root = root
@@ -340,6 +424,9 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
         self.hadfolder = hadfolder
         self.makeshadersfile = makeshadersfile
         self.maketexturesfile = maketexturesfile
+        self.makemdlentsfile = makemdlentsfile
+        self.mdlentsfolder = mdlentsfolder
+        self.mdlentsfiletype = mdlentsfiletype
         self.makelistfile = makelistfile
         self.listfilefolder = listfilefolder
         self.listfiletype = listfiletype
@@ -347,6 +434,12 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
         quarkpy.qmacro.dialogbox.__init__(self, entitiesfiledialog, src,
             UseTheseSelections = quarkpy.qtoolbar.button(self.UseTheseSelections,"Use These Selections",ico_editor, 3, "Use These Selections")
             )
+
+    def datachange(self, df):
+        if self.src["SoundListFileFolder"] is None and self.gamefileslocation is not None:
+            self.src["SoundListFileFolder"] = self.gamefileslocation
+        if self.src["ClipMdlFileFolder"] is None and self.gamefileslocation is not None:
+            self.src["ClipMdlFileFolder"] = self.gamefileslocation
 
     def UseTheseSelections(self, btn):
         "Accepts all entries and passes then to the MakeEntitiesFile function."
@@ -378,6 +471,17 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
         if SoundHint is not None and UseDefaultSoundHint == "37":
             quarkx.msgbox("You entered something for 'Sound Hint'\nbut 'Use Default Hint' is checked.\nIt needs to be un-checked to use your hint.\n\nPlease correct and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return
+        MakeSoundList = self.src["MakeSoundList"]
+        SoundListFileFolder = self.src["SoundListFileFolder"]
+        SoundListFileType = self.src["SoundListFileType"]
+        if (MakeSoundList != "38" or SoundListFileFolder is None or SoundListFileFolder == self.gamefileslocation or SoundListFileType is None) and (MakeSoundList == "38" or SoundListFileFolder != self.gamefileslocation or SoundListFileType is not None):
+            quarkx.msgbox("You entered something for Make Sound List,\nbut you did not do all three items.\nPlease correct and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+            return
+        if SoundListFileType is not None and SoundListFileType.find(SoundListFileFolder) != -1:
+            SoundListFileType = SoundListFileType.split(".", 1)
+            SoundListFileType = SoundListFileType[len(SoundListFileType)-1]
+        if SoundListFileType is not None and not SoundListFileType.startswith("."):
+            SoundListFileType = "." + SoundListFileType
         WriteMusicBrowser = self.src["WriteMusicBrowser"]
         UseMusicBrowser = self.src["UseMusicBrowser"]
         UseDefaultMusicHint = self.src["UseDefaultMusicHint"]
@@ -388,6 +492,18 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
         if MusicHint is not None and UseDefaultMusicHint == "47":
             quarkx.msgbox("You entered something for 'Music Hint'\nbut 'Use Default Hint' is checked.\nIt needs to be un-checked to use your hint.\n\nPlease correct and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return
+        MakeModelList = self.src["MakeModelList"]
+        MakeClipMdlList = self.src["MakeClipMdlList"]
+        ClipMdlFileFolder = self.src["ClipMdlFileFolder"]
+        ClipMdlFileType = self.src["ClipMdlFileType"]
+        if (MakeClipMdlList != "29" or ClipMdlFileFolder is None or ClipMdlFileFolder == self.gamefileslocation or ClipMdlFileType is None) and (MakeClipMdlList == "29" or ClipMdlFileFolder != self.gamefileslocation or ClipMdlFileType is not None):
+            quarkx.msgbox("You entered something for Make Model Clip List,\nbut you did not do all three items.\nPlease correct and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+            return
+        if ClipMdlFileType is not None and ClipMdlFileType.find(ClipMdlFileFolder) != -1:
+            ClipMdlFileType = ClipMdlFileType.split(".", 1)
+            ClipMdlFileType = ClipMdlFileType[len(ClipMdlFileType)-1]
+        if ClipMdlFileType is not None and not ClipMdlFileType.startswith("."):
+            ClipMdlFileType = "." + ClipMdlFileType
         UseColorPicker = self.src["UseColorPicker"]
 
         self.close(btn) # This will close this dialog.
@@ -395,22 +511,24 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
             self.gamepakfiletype, self.entitiesfolder, self.entitiesfiletype, self.shadersfolder,
             self.shadersfiletype, self.texturesfolder, self.texturesfiletype, self.modelfolder,
             self.modelfiletype, self.soundfolder, self.soundfiletype, self.musicfolder, self.musicfiletype,
-            self.hadfolder, self.makeshadersfile, self.maketexturesfile, self.makelistfile,
-            self.listfilefolder, self.listfiletype, WriteCommonSpecifics, UseCommonSpecifics,
-            WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint, WriteSoundBrowser,
-            UseSoundBrowser, UseDefaultSoundHint, SoundHint, WriteMusicBrowser, UseMusicBrowser,
-            UseDefaultMusicHint, MusicHint, UseColorPicker)
+            self.hadfolder, self.makeshadersfile, self.maketexturesfile, self.makemdlentsfile, self.mdlentsfolder, self.mdlentsfiletype,
+            self.makelistfile, self.listfilefolder, self.listfiletype, WriteCommonSpecifics, UseCommonSpecifics,
+            WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint,
+            WriteSoundBrowser, UseSoundBrowser, UseDefaultSoundHint, SoundHint, MakeSoundList, SoundListFileFolder, SoundListFileType,
+            WriteMusicBrowser, UseMusicBrowser, UseDefaultMusicHint, MusicHint, MakeModelList, MakeClipMdlList, ClipMdlFileFolder, ClipMdlFileType,
+            UseColorPicker)
 
 
 def MakeEntitiesFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
             gamepakfiletype, entitiesfolder, entitiesfiletype, shadersfolder,
             shadersfiletype, texturesfolder, texturesfiletype, modelfolder,
             modelfiletype, soundfolder, soundfiletype, musicfolder, musicfiletype,
-            hadfolder, makeshadersfile, maketexturesfile, makelistfile,
-            listfilefolder, listfiletype, WriteCommonSpecifics, UseCommonSpecifics,
-            WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint, WriteSoundBrowser,
-            UseSoundBrowser, UseDefaultSoundHint, SoundHint, WriteMusicBrowser, UseMusicBrowser,
-            UseDefaultMusicHint, MusicHint, UseColorPicker):
+            hadfolder, makeshadersfile, maketexturesfile, makemdlentsfile, mdlentsfolder, mdlentsfiletype,
+            makelistfile, listfilefolder, listfiletype, WriteCommonSpecifics, UseCommonSpecifics,
+            WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint,
+            WriteSoundBrowser, UseSoundBrowser, UseDefaultSoundHint, SoundHint, MakeSoundList, SoundListFileFolder, SoundListFileType,
+            WriteMusicBrowser, UseMusicBrowser, UseDefaultMusicHint, MusicHint, MakeModelList, MakeClipMdlList, ClipMdlFileFolder, ClipMdlFileType,
+            UseColorPicker):
     "Makes a new 'gamename'Entities.qrk file"
     "using the files in the entitiesfolder."
 
@@ -419,9 +537,20 @@ def MakeEntitiesFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
         ConvertToolQ3typeEnts.Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
             gamepakfiletype, entitiesfolder, entitiesfiletype,
             modelfiletype, soundfiletype, musicfiletype, WriteCommonSpecifics, UseCommonSpecifics,
-            WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint, WriteSoundBrowser,
-            UseSoundBrowser, UseDefaultSoundHint, SoundHint, WriteMusicBrowser, UseMusicBrowser,
-            UseDefaultMusicHint, MusicHint, UseColorPicker)
+            WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint,
+            WriteSoundBrowser, UseSoundBrowser, UseDefaultSoundHint, SoundHint,
+            WriteMusicBrowser, UseMusicBrowser, UseDefaultMusicHint, MusicHint,
+            UseColorPicker)
+
+    if gameenginetype == "Doom 3":
+        import ConvertToolD3typeEnts
+        ConvertToolD3typeEnts.D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
+            gamepakfiletype, entitiesfolder, entitiesfiletype, modelfolder,
+            modelfiletype, soundfiletype, musicfiletype, WriteCommonSpecifics, UseCommonSpecifics,
+            WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint,
+            WriteSoundBrowser, UseSoundBrowser, UseDefaultSoundHint, SoundHint, MakeSoundList, SoundListFileFolder, SoundListFileType,
+            WriteMusicBrowser, UseMusicBrowser, UseDefaultMusicHint, MusicHint, MakeModelList, MakeClipMdlList, ClipMdlFileFolder, ClipMdlFileType,
+            UseColorPicker)
 
     if makeshadersfile == "40":
         MakeShadersFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
@@ -435,7 +564,7 @@ def MakeEntitiesFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
         texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
         musicfolder, musicfiletype, hadfolder,
         makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
-    if makemdlentsfile == "51":
+    elif makemdlentsfile == "51":
         MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
                      modelfolder, modelfiletype, soundfolder, soundfiletype,
@@ -461,7 +590,20 @@ def MakeUserDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
 
     newfilesfolderpath = QuArKpath + '\\' + gamename
 
-    input = open(QuArKpath + '\\addons\\Quake_3\\UserData Quake 3.qrk')
+    if gameenginetype == "Half-Life":
+        input = open(QuArKpath + '\\addons\\Half-Life\\UserData Half-Life.qrk')
+    elif gameenginetype == "Half-Life2":
+        input = open(QuArKpath + '\\addons\\Half-Life2\\UserData Half-Life2.qrk')
+    elif gameenginetype == "Quake 1":
+        input = open(QuArKpath + '\\addons\\Quake_1\\UserData Quake 1.qrk')
+    elif gameenginetype == "Quake 2":
+        input = open(QuArKpath + '\\addons\\Quake_2\\UserData Quake 2.qrk')
+    elif gameenginetype == "Quake 3":
+        input = open(QuArKpath + '\\addons\\Quake_3\\UserData Quake 3.qrk')
+    elif gameenginetype == "Doom 3":
+        input = open(QuArKpath + '\\addons\\Doom_3\\UserData Doom 3.qrk')
+    else:
+        input = open(QuArKpath + '\\addons\\Quake_3\\UserData Quake 3.qrk')
     output = open(newfilesfolderpath + '\\' + ('UserData ' + gamename + '.qrk'), "w")
 
     while 1:
@@ -489,7 +631,18 @@ def MakeUserDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
             break
         if line.startswith('//'):
             continue
-        line = line.replace('Quake 3', gamename)
+        if gameenginetype == "Half-Life":
+            line = line.replace('Half-Life', gamename)
+        elif gameenginetype == "Half-Life2":
+            line = line.replace('Half-Life 2', gamename)
+        elif gameenginetype == "Quake 1":
+            line = line.replace('Quake 1', gamename)
+        elif gameenginetype == "Quake 2":
+            line = line.replace('Quake 2', gamename)
+        elif gameenginetype == "Quake 3":
+            line = line.replace('Quake 3', gamename)
+        elif gameenginetype == "Doom 3":
+            line = line.replace('Doom 3', gamename)
         output.write(line)
 
     input.close()
@@ -514,7 +667,7 @@ def MakeUserDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
                          texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
                          musicfolder, musicfiletype, hadfolder,
                          makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
-    if makemdlentsfile == "51":
+    elif makemdlentsfile == "51":
         MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
                      modelfolder, modelfiletype, soundfolder, soundfiletype,
@@ -623,6 +776,9 @@ class DataFileDlg(quarkpy.qmacro.dialogbox):
         self.makeentitiesfile = makeentitiesfile
         self.makeshadersfile = makeshadersfile
         self.maketexturesfile = maketexturesfile
+        self.makemdlentsfile = makemdlentsfile
+        self.mdlentsfolder = mdlentsfolder
+        self.mdlentsfiletype = mdlentsfiletype
         self.makelistfile = makelistfile
         self.listfilefolder = listfilefolder
         self.listfiletype = listfiletype
@@ -680,7 +836,7 @@ class DataFileDlg(quarkpy.qmacro.dialogbox):
                      self.gamepakfiletype, self.entitiesfolder, self.entitiesfiletype, self.shadersfolder, self.shadersfiletype,
                      self.texturesfolder, self.texturesfiletype, self.modelfolder, self.modelfiletype, self.soundfolder, self.soundfiletype,
                      self.musicfolder, self.musicfiletype, self.hadfolder, self.makeuserdatafile, self.makeentitiesfile, self.makeshadersfile,
-                     self.maketexturesfile, self.makelistfile, self.listfilefolder, self.listfiletype, defaulttexs)
+                     self.maketexturesfile, self.makemdlentsfile, self.mdlentsfolder, self.mdlentsfiletype, self.makelistfile, self.listfilefolder, self.listfiletype, defaulttexs)
 
 
 def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
@@ -724,7 +880,19 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
 
     newfilesfolderpath = QuArKpath + '\\' + gamename
 
-    input = open(QuArKpath + '\\addons\\FAKK2\\DataFAKK2.qrk')
+    if gameenginetype == "Half-Life":
+        input = open(QuArKpath + '\\addons\\Half-Life\\DataHL.qrk')
+    elif gameenginetype == "Half-Life2":
+        input = open(QuArKpath + '\\addons\\Half-Life2\\DataHL2.qrk')
+    elif gameenginetype == "Quake 1":
+        input = open(QuArKpath + '\\addons\\Quake_1\\DataQ1.qrk')
+    elif gameenginetype == "Quake 2":
+        input = open(QuArKpath + '\\addons\\Quake_2\\DataQ2.qrk')
+    elif gameenginetype == "Quake 3":
+        input = open(QuArKpath + '\\addons\\Quake_3\\DataQ3.qrk')
+    elif gameenginetype == "Doom 3":
+        input = open(QuArKpath + '\\addons\\Doom_3\\DataD3.qrk')
+
     output = open(newfilesfolderpath + '\\' + ('Data' + gamename + '.qrk'), "w")
 
     while 1:
@@ -753,7 +921,18 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
             break
         if line.startswith('//'):
             continue
-        line = line.replace('FAKK2', gamename)
+        if gameenginetype == "Half-Life":
+            line = line.replace('Half-Life', gamename)
+        elif gameenginetype == "Half-Life2":
+            line = line.replace('Half-Life2', gamename)
+        elif gameenginetype == "Quake 1":
+            line = line.replace('Quake 1', gamename)
+        elif gameenginetype == "Quake 2":
+            line = line.replace('Quake 2', gamename)
+        elif gameenginetype == "Quake 3":
+            line = line.replace('Quake 3', gamename)
+        elif gameenginetype == "Doom 3":
+            line = line.replace('Doom 3', gamename)
 
    ### Changes everything with "shader".
    #     if line.find("shader") != -1:
@@ -762,11 +941,17 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
    #         line = line.replace(shadertype + 's', shaderfolder)
 
    ### Only changes the folder name "shader".
-        if line.find('shaders/') != -1:
+        if line.find('scripts/') != -1:
+            line = line.replace('scripts/', shaderfolder + '/')
+        elif line.find('shaders/') != -1:
             line = line.replace('shaders/', shaderfolder + '/')
 
-        if line.find('Pk3.pk3') != -1:
+        if line.find('Wad.wad') != -1:
+            line = line.replace('Wad.wad', pakfile.capitalize() + '.' + pakfile)
+        elif line.find('Pk3.pk3') != -1:
             line = line.replace('Pk3.pk3', pakfile.capitalize() + '.' + pakfile)
+        elif line.find('Pk4.pk4') != -1:
+            line = line.replace('Pk4.pk4', pakfile.capitalize() + '.' + pakfile)
 
         for key in defaulttexs.keys():
             if line.find(key + ':incl') != -1:
@@ -813,7 +998,7 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
         texturesfolder, texturesfiletype, modelfolder, modelfiletype, soundfolder, soundfiletype,
         musicfolder, musicfiletype, hadfolder,
         makemdlentsfile, mdlentsfolder, mdlentsfiletype, makelistfile, listfilefolder, listfiletype)
-    if makemdlentsfile == "51":
+    elif makemdlentsfile == "51":
         MakeMdlEntsFile(QuArKpath, gamename, gameenginetype, gamefileslocation,
                      gamepakfiletype,
                      modelfolder, modelfiletype, soundfolder, soundfiletype,
