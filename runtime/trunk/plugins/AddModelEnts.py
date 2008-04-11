@@ -13,6 +13,12 @@
 
 #
 #$Log$
+#Revision 1.2  2008/04/11 17:08:37  cdunde
+#Changed code to try to adapt to proper version writing.
+#
+#Revision 1.1  2008/04/06 06:18:05  cdunde
+#Added making of game Weapon-ModelEntities.qrk file creation to Conversion Tools.
+#
 #
 
 import os, os.path
