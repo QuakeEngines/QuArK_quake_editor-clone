@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2008/02/23 20:33:04  danielpharos
+Forgot to remove a workaround for PosEx
+
 Revision 1.27  2008/02/23 18:25:06  danielpharos
 Fix a typo.
 
@@ -766,6 +769,7 @@ var
   glMaterialfv: procedure (face: GLenum; pname: GLenum; params: PGLfloat) stdcall; {Daniel 2007.01.15 - Added}
   glNormal3fv: procedure (v: PGLfloat) stdcall; {Daniel 2007.01.23 - Added}
   glFrontFace: procedure (mode: GLenum) stdcall; {Daniel 2007.01.30 - Added}
+  glDepthMask: procedure (flag: GLboolean) stdcall;  {Daniel 2008.04.11 - Added}
 
   (*
   ** Utility routines from OPENGL32.DLL - GL_WIN_swap_hint
@@ -797,7 +801,7 @@ uses Classes, StrUtils, Quarkx, Logging, Qk1, Setup, QkObjects, EdOpenGL,
 const
   DummyWindowClassName: string = 'QuArK Dummy Window Class';
   
-  OpenGL32DLL_FuncList : array[0..54] of
+  OpenGL32DLL_FuncList : array[0..55] of
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -862,6 +866,7 @@ const
    ,(FuncPtr: @@glMaterialfv;          FuncName: 'glMaterialfv'          ) //DanielPharos 2007.01.15 - Added
    ,(FuncPtr: @@glNormal3fv;           FuncName: 'glNormal3fv'           ) //DanielPharos 2007.01.23 - Added
    ,(FuncPtr: @@glFrontFace;           FuncName: 'glFrontFace'           ) //DanielPharos 2007.01.30 - Added
+   ,(FuncPtr: @@glDepthMask;           FuncName: 'glDepthMask'           ) //DanielPharos 2008.04.11 - Added
  );
 
   Glu32DLL_FuncList : array[0..0] of

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2008/02/23 18:54:05  danielpharos
+A lot of improvements to the OpenGL error messages.
+
 Revision 1.70  2008/02/21 21:15:24  danielpharos
 Huge OpenGL change: Should fix OpenGL hangs, and maybe speed up OpenGL a bit.
 
@@ -433,8 +436,6 @@ begin
           Incoming[1]:=LP^.Position[1]-Point1.v.xyz[1];
           Incoming[2]:=LP^.Position[2]-Point1.v.xyz[2];
           DistToSource:=Sqr(Incoming[0])+Sqr(Incoming[1])+Sqr(Incoming[2]);
-          //DanielPharos: Shouldn't it be this?
-          //DistToSource:=Sqr(Incoming[0]*Incoming[0]+Incoming[1]*Incoming[1]+Incoming[2]*Incoming[2]);
           if DistToSource<LP^.Brightness2 then
           begin
             if DistToSource < rien then
@@ -1686,7 +1687,10 @@ begin
   if Transparency then
   begin
     glDisable(GL_CULL_FACE);
-    CheckOpenGLError('Render3DView: GL_CULL_FACE (Transparency)');
+    CheckOpenGLError('Render3DView: GL_CULL_FACE (disable) (Transparency)');
+
+    glDepthMask(GL_FALSE);
+    CheckOpenGLError('Render3DView: glDepthMask (false)');
 
     PList:=FListSurfaces;
     while Assigned(PList) do
@@ -1694,7 +1698,10 @@ begin
       if (PList^.Transparent=True) or (PList^.NumberTransparentFaces>0) then
       begin
         PList^.TransparentDrawn:=false;
-        PList.OpenGLDistance:=(Plist.OpenGLAveragePosition[0]-TransX)*(Plist.OpenGLAveragePosition[0]-TransX)+(Plist.OpenGLAveragePosition[1]-TransY)*(Plist.OpenGLAveragePosition[1]-TransY)+(Plist.OpenGLAveragePosition[2]-TransZ)*(Plist.OpenGLAveragePosition[2]-TransZ);
+        PList^.OpenGLDistance:=Sqr(Plist.OpenGLAveragePosition[0]+TransX)+Sqr(Plist.OpenGLAveragePosition[1]+TransY)+Sqr(Plist.OpenGLAveragePosition[2]+TransZ);
+        //Note: Sqr is the square; Sqrt (note the 'T'!) is the square root
+        //Note: Trans(X/Y/Z) is the NEGATIVE coordinate, so we need to ADD instead of SUBSTRACT
+        //      the two values for the distance-calc.
       end
       else
         PList^.TransparentDrawn:=true;
@@ -1704,15 +1711,15 @@ begin
       FirstItem:=true;
       LargestDistance:=-1;
       CurrentPList:=nil;
-      //DanielPharos: Maybe we can make a list of only the transparent faces? That could be faster!
+      //FIXME: Maybe we can make a list of only the transparent faces? That could be faster!
       PList:=FListSurfaces;
       while Assigned(PList) do
       begin
         if PList^.TransparentDrawn=false then
         begin
-          Distance:=PList.OpenGLDistance;
+          Distance:=PList^.OpenGLDistance;
           //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
-          if (FirstItem or ((not FirstItem) and (Distance>LargestDistance))) then
+          if (FirstItem or (Distance>LargestDistance)) then
           begin
             FirstItem:=false;
             LargestDistance:=Distance;
@@ -1728,11 +1735,15 @@ begin
         CurrentPList^.TransparentDrawn:=true;
       end;
     until (CurrentPList=nil);
+    
     if Culling then
     begin
       glEnable(GL_CULL_FACE);
-      CheckOpenGLError('Render3DView: GL_CULL_FACE (Transparency 2)');
+      CheckOpenGLError('Render3DView: GL_CULL_FACE (enable) (Transparency)');
     end;
+
+    glDepthMask(GL_TRUE);
+    CheckOpenGLError('Render3DView: glDepthMask (true)');
   end;
 
   glFinish;
@@ -2115,6 +2126,8 @@ begin
     CheckOpenGLError('RenderPList: GL_LIGHTING');
   end;
 
+  //FIXME: Maybe we can store these values somewhere,
+  //so we don't need to recalculate them every time?
   {if Transparency and TransparentFaces then
   begin}
     if Coord.FlatDisplay then
@@ -2197,10 +2210,10 @@ begin
         begin
           if TransparentDrawn=false then
           begin
-            Distance:=(OpenGLAveragePosition[0]-TransX)*(OpenGLAveragePosition[0]-TransX)+(OpenGLAveragePosition[1]-TransY)*(OpenGLAveragePosition[1]-TransY)+(OpenGLAveragePosition[2]-TransZ)*(OpenGLAveragePosition[2]-TransZ);
+            Distance:=Sqr(OpenGLAveragePosition[0]+TransX)+Sqr(OpenGLAveragePosition[1]+TransY)+Sqr(OpenGLAveragePosition[2]+TransZ);
             //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
 
-            if (FirstItem or ((not FirstItem) and (Distance>LargestDistance))) then
+            if (FirstItem or (Distance>LargestDistance)) then
             begin
               FirstItem:=false;
               LargestDistance:=Distance;
