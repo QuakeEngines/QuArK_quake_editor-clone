@@ -11,7 +11,7 @@
 NUMBERS = '0123456789-.'
 ALPHAS  = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
 
-#        Token nbr, what it is
+# "tokenType" nbr,       what it is
 T_EOF        = 1
 T_NUMBER     = 2
 T_COMMENT    = 3
@@ -128,6 +128,9 @@ if __name__ == "__main__":
 
 #
 #$Log$
+#Revision 1.2  2008/04/04 23:20:08  cdunde
+#Needed correction.
+#
 #Revision 1.1  2008/04/04 20:19:28  cdunde
 #Added a new Conversion Tools for making game support QuArK .qrk files.
 #
