@@ -29,9 +29,9 @@ def AddMdlEnts(QuArKpath, gamename, gamefileslocation, modelfiletype, mdlentsfol
     o.write("QQRKSRC1\n")
     o.write("// " + gamename + " Weapon and Model Entities file for Quark\n")
     o.write("\n")
-    o.write("//$Header$\n")
+    o.write("//$" + "Header: Exp $" + "\n")
     o.write("// ----------- REVISION HISTORY ------------\n")
-    o.write("//$Log$\n")
+    o.write("//$" + "Log: " + gamename + "Weapon-ModelEntities.qrk,v $" + "\n")
     o.write("//\n")
 
     ### Writes the setup part for the Toolbox and Entities folders.
