@@ -14,6 +14,13 @@
 
 #
 #$Log$
+#Revision 1.5  2008/04/06 06:47:41  cdunde
+#Added file back without version control to stop overwriting of internal code.
+#
+#Revision 1.4  2008/04/06 06:46:50  cdunde
+#Trying to remove file from version control to get into cvs
+#system without overwriting internal file code.
+#
 #Revision 1.3  2008/04/04 20:46:45  cdunde
 #Are you kidding me 8-\
 #
@@ -41,9 +48,9 @@ def AddTextures(QuArKpath, gamename, gamefileslocation, texturesfolder, textures
     o.write("QQRKSRC1\n")
     o.write("// " + gamename + " Textures file for Quark\n")
     o.write("\n")
-    o.write("//$Header$\n")
+    o.write("//$" + "Header: Exp $" + "\n")
     o.write("// ----------- REVISION HISTORY ------------\n")
-    o.write("//$Log$\n")
+    o.write("//$" + "Log: " + gamename + "Textures.qrk,v $" + "\n")
     o.write("//\n")
 
     ### Writes the setup part for the Texture Browser folders and needed path "include".

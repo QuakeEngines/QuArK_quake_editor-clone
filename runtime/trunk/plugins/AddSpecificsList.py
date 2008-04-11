@@ -15,6 +15,13 @@
 
 #
 #$Log$
+#Revision 1.5  2008/04/06 06:47:41  cdunde
+#Added file back without version control to stop overwriting of internal code.
+#
+#Revision 1.4  2008/04/06 06:46:50  cdunde
+#Trying to remove file from version control to get into cvs
+#system without overwriting internal file code.
+#
 #Revision 1.3  2008/04/04 20:46:45  cdunde
 #Are you kidding me 8-\
 #
@@ -202,9 +209,9 @@ def AddSpecifics(QuArKpath, gamename, gamefileslocation, gamepakfiletype,
     output.write("QQRKSRC1\n")
     output.write("// " + Description + " file for Quark\n")
     output.write("\n")
-    output.write("//$Header$\n")
+    output.write("//$" + "Header: Exp $" + "\n")
     output.write("// ----------- REVISION HISTORY ------------\n")
-    output.write("//$Log$\n")
+    output.write("//$" + "Log: " + OutPutList + ",v $" + "\n")
     output.write("//\n")
     output.write("\n")
     output.write("{\n")

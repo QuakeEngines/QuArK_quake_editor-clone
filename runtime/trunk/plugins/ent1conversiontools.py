@@ -11,6 +11,13 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.6  2008/04/06 06:37:07  cdunde
+#Added file back without version control to stop overwriting of internal code.
+#
+#Revision 1.5  2008/04/06 06:34:00  cdunde
+#Trying to remove file from version control to get into cvs
+#system without overwriting internal file code.
+#
 #Revision 1.4  2008/04/06 06:20:29  cdunde
 #Added making of game Weapon-ModelEntities.qrk file creation to Conversion Tools.
 #
@@ -469,9 +476,9 @@ def MakeUserDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
         if line.startswith('QQRKSRC1'):
             output.write(line)
             output.write('\n')
-            output.write('//$Header$\n')
+            output.write('//$' + 'Header: Exp $' + '\n')
             output.write('// ----------- REVISION HISTORY ------------\n')
-            output.write('//$Log$\n')
+            output.write('//$' + 'Log: ' + ('UserData\\040' + gamename + '.qrk') + ',v $' + '\n')
             output.write('//\n')
             output.write('\n')
     while 1:
@@ -733,9 +740,9 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
             output.write(line)
             output.write('// ' + gamename + ' definition file for Quark\n')
             output.write('\n')
-            output.write('//$Header$\n')
+            output.write('//$' + 'Header: Exp $' + '\n')
             output.write('// ----------- REVISION HISTORY ------------\n')
-            output.write('//$Log$\n')
+            output.write('//$' + 'Log: ' + ('Data' + gamename + '.qrk') + ',v $' + '\n')
             output.write('//\n')
             output.write('\n')
     while 1:
