@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.401  2008/04/06 02:59:25  cdunde
+//Reinstated revision 1.398 pcx setting after pcx source code fix.
+//
 //Revision 1.400  2008/04/05 06:17:33  cdunde
 //Added full game support for NEXUIZ including .md3 model displaying.
 //
@@ -1435,9 +1438,9 @@ QQRKSRC1
       {
         MaxUndo = '50'
         MinUndo = '10'
-        UndoBufferSize = '30.0'     // MB
-        GameFiles = '30'
-        GameBufferSize = '30.0'     // MB
+        UndoBufferSize = '30.0'      // MB
+        GameFiles = '100'
+        GameBufferSize = '300.0'     // MB
         CompressionBufferSize = '16' // KBytes
         CompressionLevel = '9' // Where else to put this?
         Form = "GeneralMemory"

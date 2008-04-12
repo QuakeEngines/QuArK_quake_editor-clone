@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.95  2008/03/29 15:15:47  danielpharos
+Moved all the CompareMem stuff to ExtraFunctionality, where it belongs.
+
 Revision 1.94  2007/12/22 18:02:01  cdunde
 Update
 
@@ -1266,11 +1269,7 @@ procedure QStreamRelease(var Ref: PQStreamRef);
 begin
   if Ref<>Nil then
   begin
-    if Ref^.Self is TQStream then
-      Ref^.Self.Release
-    else
-      Ref^.Self.Free;
-
+    Ref^.Self.Release;
     Dispose(Ref);
     Ref:=Nil;
   end;
@@ -1330,19 +1329,6 @@ begin
  end;
 end;*)
 
- {------------------------}
-
-constructor TRawDataStream.Create(Source: PChar; Size: Longint);
-begin
-  inherited Create;
-  SetPointer(Source, Size);
-end;
-
-function TRawDataStream.Write(const Buffer; Count: Longint): Longint;
-begin
-  Raise InternalE('TRawDataStream.Write');
-end;
-
 procedure ReleaseStream(S: TStream);
 begin
   if S<>Nil then
@@ -1356,9 +1342,15 @@ end;
 
  {------------------------}
 
-function QObject.GetFullName: String;
+constructor TRawDataStream.Create(Source: PChar; Size: Longint);
 begin
-  Result:=Name+TypeInfo();
+  inherited Create;
+  SetPointer(Source, Size);
+end;
+
+function TRawDataStream.Write(const Buffer; Count: Longint): Longint;
+begin
+  Raise InternalE('TRawDataStream.Write');
 end;
 
  {------------------------}
@@ -1427,17 +1419,11 @@ begin
     Exit;
 
   Inc(PythonObj.ob_refcnt, Delta);
-{$IFDEF Debug}
-  if PythonObj.ob_refcnt>1 then
-  begin
-    Inc(PythonObj.ob_refcnt, 0); // Dummy statement just for breakpoint placement
-  end;
-{$ENDIF}
   if PythonObj.ob_refcnt<=0 then
   begin
     {$IFDEF Debug}
     if PythonObj.ob_refcnt<0 then
-      Raise InternalE('QObject.RefCount1');
+      Raise InternalE('QObject.AddRef');
     {$ENDIF}
 
     Free;
@@ -1520,12 +1506,7 @@ begin
 
   SourceSize:=QStreamAddRef(FNode, Source);
   try
-    FLoading:=True;
-    try
-      LoadFile(Source, SourceSize);
-    finally
-      FLoading:=False;
-    end;
+    LoadInternal(Source, SourceSize);
     FFlags:=FFlags and not ofNotLoadedToMemory;
     QStreamRelease(FNode);
   finally {AiV}
@@ -1534,6 +1515,11 @@ begin
     else
       Source.Free;
   end;
+end;
+
+function QObject.GetFullName: String;
+begin
+  Result:=Name+TypeInfo();
 end;
 
 {$IFDEF Debug}
@@ -1569,38 +1555,30 @@ end;
 {$ENDIF}
 
 function QObject.GetObjectSize(Loaded: TQStream; LoadNow: Boolean) : Integer;
-const
-  BaseSize = 64;     { approximately }
-  SpecSize = 16;     { just a guess, actually }
 var
   I: Integer;
  {F: TSearchRec;}
 begin
-  Result:=BaseSize;
+  Result:=SizeOf(QObject)+QObject.InstanceSize;
+
+  { adds the size of the loaded data }
+  for I:=0 to Specifics.Count-1 do
+    Inc(Result, SizeOf(String)+Length(Specifics[I]));
+
+  for I:=0 to SubElements.Count-1 do
+    Inc(Result, SubElements[I].GetObjectSize(Loaded, LoadNow));
 
   { adds the size of the data not yet loaded }
-  if FFlags and ofNotLoadedToMemory <> 0 then
+  if (FFlags and ofNotLoadedToMemory) <> 0 then
   begin
     if (Loaded<>Nil) and (FNode<>Nil) and (PQStreamRef(FNode)^.Self=Loaded) then
     begin
       if LoadNow then
         Acces   { load data }
       else
-      begin
         Inc(Result, PQStreamRef(FNode)^.StreamSize);  { size of not yet loaded data }
-        Exit;
-      end
-    end
-    else
-      Exit;
+    end;
   end;
-
-  { adds the size of the loaded data }
-  for I:=0 to Specifics.Count-1 do
-    Inc(Result, Length(Specifics[I])+SpecSize);
-
-  for I:=0 to SubElements.Count-1 do
-    Inc(Result, SubElements[I].GetObjectSize(Loaded, LoadNow));
 
 (*if (FFlags and ofNotLoadedToMemory <> 0) and Loaded then
   if FNode=Nil then  { add the size of the not already loaded data }
@@ -2120,7 +2098,6 @@ begin
     ReleaseStream(F);
   end;
 end;
-
 
 procedure QObject.LoadedFileLink(const nName: String; ErrorMsg: Integer);
 var
@@ -3198,6 +3175,7 @@ begin
       for I:=N-1 downto 0 do
       begin
         o:=@SubElements[I].PythonObj;
+        Py_INCREF(o);
         PyDict_SetItemString(Result, PChar(SubElements[I].GetFullName), o);
       end;
       Exit;
