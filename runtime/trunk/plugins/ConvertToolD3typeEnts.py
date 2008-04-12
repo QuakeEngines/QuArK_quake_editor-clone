@@ -69,14 +69,10 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
        #             print '        %s = %s' % (str(specificName), str(argValue))
 
                     # here are some specifics that we are going to skip
-                    # "editor_color"				"0 .5 .8"
-                    # "editor_mins"				"?"
-                    # "editor_maxs"				"?"
                     # "editor_mover"				"1"
                     # "editor_usage"				"Door."
                     # "spawnclass"				"idDoor"
-                    if specificName in ["editor_color",
-                                        "editor_combatnode",
+                    if specificName in ["editor_combatnode",
                                         "editor_copy1",
                                         "editor_copy2",
                                         "editor_copy3",
@@ -121,12 +117,23 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
                             specType = 'v'
                         elif c[0] == 'editor_bool':
                             specType = 'b'
+                        elif c[0] == 'editor_color':
+                            specType = 'c'
+                            specDesc = ''
                         elif c[0] == 'editor_snd':
                             specType = 's'
                         else:
          #                   print '            -- undefined type: %s' % specificName
                             specType = '?'
-                        specDefault = '' # the default might appear later
+                        if c[0] == 'editor_color' and argValue != "":
+                            test = deQuote(argValue).replace('.', "")
+                            test.strip()
+                            if not test[0].isalpha():
+                                specDefault = deQuote(argValue)
+                            else:
+                                specDefault = '' # the default might appear later
+                        else:
+                            specDefault = '' # the default might appear later
                         specDesc = specDesc.replace("\\n", "")
                         specificList[specName] = (specType, specDefault, specDesc)
                     else:
@@ -284,10 +291,12 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
                         continue
 
                     specType, specDefault, specDesc = thisEnt[specName]
-                    if specName.startswith('editor_'):
+                    if specName.startswith('editor_') and specName != 'editor_color':
                         continue
 
                     if specDefault != '':
+                        if specName == 'editor_color':
+                            specName = '_color'
                         eo.write('          %s = "%s"\n' % (specName, specDefault))
                         if specName == "origin":
                             done_origin = 1
@@ -360,14 +369,14 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
                     if specName == 'not_inherited':
                         continue
                     # These are items used above for "Help" and "bbox" and not specifics.
-                    if specName.startswith('editor_'):
+                    if specName.startswith('editor_') and specName != 'editor_color':
                         continue
 
                     specType, specDefault, specDesc = thisEnt[specName]
-                    if entName == 'light' and specName == 'color':
+                    if entName == 'light' and specName == 'color' or specName == 'editor_color':
                         specName = '_color'
                     # actually, it would appear that there are no bitmapped values (until Rowdy is proved wrong)
-                    if specType in ['v', 'b', 's', '?']:
+                    if specType in ['v', 'b', 'c', 's', '?']:
                         # value (variable?) and those with no type
                         if specName.startswith("music"):
                             fo.write('      s_shader: =\n')
@@ -866,5 +875,8 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     
 #
 #$Log$
+#Revision 1.1  2008/04/11 22:28:48  cdunde
+#To add Doom 3 type game engine support for ConvertTool.
+#
 #
 
