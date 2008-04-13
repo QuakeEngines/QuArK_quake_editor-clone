@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/09/28 10:48:31  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2003/09/06 00:54:19  silverpaladin
 Fixed an improper pointer cast
 
@@ -106,11 +109,16 @@ var
  pidlFolder: PITEMIDLIST;
  BrowseInfo: TBrowseInfo;
  S: String;
+ I: Integer;
 begin
  Result:=False;
  if not SUCCEEDED(CoGetMalloc(MEMCTX_TASK,g_pMalloc)) then
   Exit;
-
+ for I := 1 to Length(Title) do
+   begin
+     if Title[I] = ':' then
+       SetLength(Title, I);
+   end;
  FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
  BrowseInfo.hwndOwner:=hwnd;
  BrowseInfo.lpszTitle:=PChar(Title);
