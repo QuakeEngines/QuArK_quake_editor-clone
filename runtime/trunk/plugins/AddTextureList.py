@@ -5,7 +5,7 @@
             - This file is used by the QuArK ConvertionTool on the QuArK Explorer main Files menu.
             - The completed file will be created in the game's folder in QuArK's main folder.
             - The game's "textures" folder (with its sub-folders) must be extracted.
-            - This code will NOT process files in the main "textures" folder, only sub-folders.
+            - This code will process files in the main "textures" folder and all sub-folders on down.
 """
 
 #
@@ -14,6 +14,9 @@
 
 #
 #$Log$
+#Revision 1.6  2008/04/11 18:33:20  cdunde
+#Changed code to try to adapt to proper version writing.
+#
 #Revision 1.5  2008/04/06 06:47:41  cdunde
 #Added file back without version control to stop overwriting of internal code.
 #
@@ -39,10 +42,45 @@ def AddTextures(QuArKpath, gamename, gamefileslocation, texturesfolder, textures
     GameFolder = gamefileslocation.split('\\')
     GameFolder = GameFolder[len(GameFolder)-1]
 
-    o = open(WorkDirectory + "\\" + gamename + "Textures.qrk", "w")
+    TexFileTypeList = texturesfiletype
+    TexFileTypeList = TexFileTypeList.replace(" ","")
+    TexFileTypeList = TexFileTypeList.replace("*","")
+    TexFileTypeList = TexFileTypeList.split(";")
 
-    sub_foldernames = os.listdir(texturesfolder)
-    count = 0
+    ### Write the textures list:
+    def listfiles(basefolder, foldername, filenames):
+        count = 0
+        for name in filenames:
+            for filetype in TexFileTypeList:
+                if filetype.lower() in name.lower():
+                    if count == 0:
+                        if foldername == texturesfolder:
+                            mainfoldername = texturesfolder.replace(gamefileslocation + "\\", "")
+                            mainfoldername = mainfoldername.replace("\\", "/")
+                            o.write("      " + mainfoldername + ".txlist =\n")
+                        else:
+                            foldername = foldername.replace(texturesfolder + "\\", "")
+                            foldername = foldername.replace("\\", "/")
+                            o.write("      " + foldername + ".txlist =\n")
+                        o.write("      {\n")
+                        count = 1
+                    shortname = name.rsplit(".", 1)  ### This removes the file type suffix.
+                    if foldername == texturesfolder:
+                        o.write("        " + shortname[0] + ".wl")
+                        line = len("        " + shortname[0] + ".wl")
+                    else:
+                        o.write("        " + foldername + "/" + shortname[0] + ".wl")
+                        line = len("        " + foldername + "/" + shortname[0] + ".wl")
+                    while line < 51:
+                        o.write(" ")
+                        line = line + 1
+                    o.write("= { t_" + GameFolder + "=! }\n")
+        if count == 1:
+            o.write("      }\n")
+
+    filenames = []
+
+    o = open(WorkDirectory + "\\" + gamename + "Textures.qrk", "w")
 
     ### Writes the new .qrk file header.
     o.write("QQRKSRC1\n")
@@ -70,28 +108,7 @@ def AddTextures(QuArKpath, gamename, gamefileslocation, texturesfolder, textures
     o.write("    {\n")
 
     ### Writes all the texture sub-folders textures list here.
-    for foldername in sub_foldernames:
-        if "." in foldername:   ### Checks if "name" is a file name instead of a folder name, if so passes it up.
-            continue
-        currentdir = texturesfolder + "\\" + foldername
-        filenames = os.listdir(currentdir)
-        for file in filenames:
-            if file.endswith(texturesfiletype):
-                if count == 0:
-                    o.write("      " + foldername + ".txlist =\n")
-                    o.write("      {\n")
-                    count = 1
-
-                shortname = file.replace(texturesfiletype, "")  ### This removes the file type suffix.
-                o.write("        " + foldername + "/" + shortname + ".wl")
-                line = len("        " + foldername + "/" + shortname + ".wl")
-                while line < 51:
-                    o.write(" ")
-                    line = line + 1
-                o.write("= { t_" + GameFolder + "=! }\n")
-        if count == 1:
-            o.write("      }\n")
-            count = 0
+    os.path.walk(texturesfolder, listfiles, filenames)
 
     ### Finishes writing the closing part of the new .qrk file here and closes it.
     o.write("    }\n")

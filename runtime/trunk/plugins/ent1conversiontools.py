@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.8  2008/04/11 22:28:48  cdunde
+#To add Doom 3 type game engine support for ConvertTool.
+#
 #Revision 1.7  2008/04/11 18:33:20  cdunde
 #Changed code to try to adapt to proper version writing.
 #
@@ -1158,7 +1161,9 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
                    "The files with their folder must be extracted."$0D
                    "Select any one of these files with the '...' button"$0D
                    "or enter this file's type suffix here by hand."$0D
-                   "For example: .tga"
+                   "A single file example: tga"$0D
+                   "A multipal file example: tga; *.png"$0D
+                   "The ( ; *.png ) can be added at the end of a seleced file as well."
             }
 
         ModelFolder: =
@@ -1509,8 +1514,9 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
         if (texturesfolder == gamefileslocation or texturesfiletype is None or texturesfolder is None):
             quarkx.msgbox("Textures items incomplete in Step 1.\nPlease correct and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
             return
-        texturesfiletype = texturesfiletype.rsplit(".")
-        texturesfiletype = texturesfiletype[len(texturesfiletype)-1]
+        if texturesfiletype.find(texturesfolder) != -1:
+            texturesfiletype = texturesfiletype.split(".", 1)
+            texturesfiletype = texturesfiletype[len(texturesfiletype)-1]
         if texturesfiletype is not None and not texturesfiletype.startswith("."):
             texturesfiletype = "." + texturesfiletype
         modelfolder = self.src["ModelFolder"]

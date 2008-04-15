@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/04/05 06:17:32  cdunde
+//Added full game support for NEXUIZ including .md3 model displaying.
+//
 //
 
 {
@@ -19,6 +22,55 @@ QQRKSRC1
 
     NEXUIZ jpg Textures.qtxfolder =
     {
+      textures.txlist =
+      {
+        50hpskin_bump.wl                           = { t_data=! }
+        50hpskin_gloss.wl                          = { t_data=! }
+        bloodyskull.wl                             = { t_data=! }
+        bulletammoskin.wl                          = { t_data=! }
+        cellammoskin.wl                            = { t_data=! }
+        cellammoskin_glow.wl                       = { t_data=! }
+        cleanskull.wl                              = { t_data=! }
+        crylink_glow.wl                            = { t_data=! }
+        dmask.wl                                   = { t_data=! }
+        dmask1.wl                                  = { t_data=! }
+        evillight.wl                               = { t_data=! }
+        eye.wl                                     = { t_data=! }
+        eyeblood.wl                                = { t_data=! }
+        frontlig.wl                                = { t_data=! }
+        f_shotgun.wl                               = { t_data=! }
+        gib2.wl                                    = { t_data=! }
+        gib3.wl                                    = { t_data=! }
+        gib4.wl                                    = { t_data=! }
+        grenademodelskin.wl                        = { t_data=! }
+        grenademodelskin_glow.wl                   = { t_data=! }
+        grenskin.wl                                = { t_data=! }
+        invincible.wl                              = { t_data=! }
+        invincible_glow.wl                         = { t_data=! }
+        jumppad.wl                                 = { t_data=! }
+        jumppad_bump.wl                            = { t_data=! }
+        ldarl.wl                                   = { t_data=! }
+        light1.wl                                  = { t_data=! }
+        light2.wl                                  = { t_data=! }
+        light3.wl                                  = { t_data=! }
+        light4.wl                                  = { t_data=! }
+        reactor.wl                                 = { t_data=! }
+        rl_gloss.wl                                = { t_data=! }
+        rocketam.wl                                = { t_data=! }
+        rocketam_bump.wl                           = { t_data=! }
+        rrclip_d.wl                                = { t_data=! }
+        rrclip_d_bump.wl                           = { t_data=! }
+        rrfx_d.wl                                  = { t_data=! }
+        rrock_d.wl                                 = { t_data=! }
+        spawn.wl                                   = { t_data=! }
+        strength.wl                                = { t_data=! }
+        strength_glow.wl                           = { t_data=! }
+        uziflash.wl                                = { t_data=! }
+      }
+      amethyst7/purplenebula-cmp1.txlist =
+      {
+        amethyst7/purplenebula-cmp1/purplenebula.wl= { t_data=! }
+      }
       cmp1-dm8.txlist =
       {
         cmp1-dm8/ame7jp.wl                         = { t_data=! }
@@ -48,6 +100,10 @@ QQRKSRC1
         cmp1-dm8/e8_base1.wl                       = { t_data=! }
         cmp1-dm8/e8_mtlwall3b.wl                   = { t_data=! }
         cmp1-dm8/logo.wl                           = { t_data=! }
+      }
+      common.txlist =
+      {
+        common/caulk.wl                            = { t_data=! }
       }
       dsi_textures.txlist =
       {
@@ -1350,6 +1406,7 @@ QQRKSRC1
         evil6_trims/e6btrim_light.wl               = { t_data=! }
         evil6_trims/e6dtrimnd.wl                   = { t_data=! }
         evil6_trims/e6metalfan.wl                  = { t_data=! }
+        evil6_trims/e6metalfan_bump.wl             = { t_data=! }
         evil6_trims/e6strimlight.wl                = { t_data=! }
         evil6_trims/e6strimlight_glow.wl           = { t_data=! }
         evil6_trims/e6supptrim.wl                  = { t_data=! }
@@ -1989,6 +2046,15 @@ QQRKSRC1
         final_rage/mtltekfloor_gloss.wl            = { t_data=! }
         final_rage/mtltekfloor_glow.wl             = { t_data=! }
         final_rage/nd-lava.wl                      = { t_data=! }
+      }
+      harlequin_sky/env.txlist =
+      {
+        harlequin_sky/env/nebular_bk.wl            = { t_data=! }
+        harlequin_sky/env/nebular_dn.wl            = { t_data=! }
+        harlequin_sky/env/nebular_ft.wl            = { t_data=! }
+        harlequin_sky/env/nebular_lf.wl            = { t_data=! }
+        harlequin_sky/env/nebular_rt.wl            = { t_data=! }
+        harlequin_sky/env/nebular_up.wl            = { t_data=! }
       }
       kaznexctf2.txlist =
       {
