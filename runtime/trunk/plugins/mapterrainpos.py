@@ -400,7 +400,7 @@ def PaintBrushClick(m):
             pass
         else:
     #        src["origin"] = org.tuple
-            src["origin"] = str(org.tuple[0]+" "+org.tuple[1]+" "+org.tuple[2]) # fix for linux
+            src["origin"] = str(org.tuple[0]) + " " + str(org.tuple[1]) + " " + str(org.tuple[2]) # fix for linux
         if (sc is not None):
     #        src["scale"] = sc
             src["scale"] = str(str(sc[0])+" "+str(sc[1])) # fix for linux
@@ -945,6 +945,9 @@ def Options3DviewsClick(m):
 #
 #
 # $Log$
+# Revision 1.12  2008/02/22 09:52:22  danielpharos
+# Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 # Revision 1.11  2007/01/31 15:12:16  danielpharos
 # Removed bogus OpenGL texture mode
 #
