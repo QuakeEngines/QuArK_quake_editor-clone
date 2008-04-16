@@ -24,8 +24,9 @@ import quarkpy.mapoptions        # may not need
 from quarkpy.maputils import *   # may not need
 from quarkpy.qhandles import *   # may not need
 from quarkpy.qutils import *     # may not need
+from quarkpy.mapduplicator import *
 
-
+import quarkpy.mapentities
 import quarkpy.mapmenus
 StandardDuplicator = quarkpy.mapduplicator.StandardDuplicator
 from quarkpy.perspective import *
@@ -34,18 +35,7 @@ from quarkpy.perspective import *
 #  --- Duplicators ---
 #
 
-replygiven = 0   # new Rowdys suggestion stops repeted error msgs of size
-
-### Simple test function to get the active view.
-def MYview(self, o, view, type):
-    editor = mapeditor()   # may not need
-    type = ["type"]
-    if type == o.x:
-        print ("type is x view"), type
-        print ("went to view check")
-    else:
-        print ("type NOT x view"), type
-        return type
+replygiven = 0   # new Rowdys suggestion stops repeated error msgs of size
 
 class TerrainDuplicator2(StandardDuplicator):
 
@@ -1009,6 +999,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2008/02/22 09:52:21  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.6  2006/11/30 01:17:47  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
