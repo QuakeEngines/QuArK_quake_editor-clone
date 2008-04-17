@@ -2,6 +2,10 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2008/04/13 12:38:02  cdunde
+Provided a way to display a 'title' for the 'Browse for Folder' window
+and stop the entire 'Hint" from also being displayed.
+
 Revision 1.7  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -114,11 +118,9 @@ begin
  Result:=False;
  if not SUCCEEDED(CoGetMalloc(MEMCTX_TASK,g_pMalloc)) then
   Exit;
- for I := 1 to Length(Title) do
-   begin
-     if Title[I] = ':' then
-       SetLength(Title, I);
-   end;
+ I:=Pos(#13+#10, Title);
+ if I<>0 then
+  SetLength(Title, I-1);
  FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
  BrowseInfo.hwndOwner:=hwnd;
  BrowseInfo.lpszTitle:=PChar(Title);

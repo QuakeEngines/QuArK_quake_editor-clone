@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2008/04/10 22:35:04  cdunde
+Added clipmodel to the list.
+
 Revision 1.38  2008/04/10 06:45:10  cdunde
 To stop filling more multiple dropdown lists with erroneous data.
 
@@ -1412,10 +1415,10 @@ begin
           if (Length(Title)>2) and (Title[3]='L') then
           begin
            {Directory-Dialog, but only returns the _Last_ folder-name. Usefull for game-modification folders}
-           Title:=Specifics.Values['Hint'];
+           Title:=Specifics.Values['Txt'];
            if Title<>'' then
             Title:=#13#10+Title;
-           Title:=Specifics.Values['Txt']+Title;
+       //    Title:=Specifics.Values['Txt']+Title;
            Ok:=BrowseForFolderDlg(ValidParentForm(Self).Handle, Path, Title, Specifics.Values['CheckFile']);
            if Path<>'' then
            begin
@@ -1436,10 +1439,13 @@ begin
           else
           begin
 {/Decker}
-           Title:=Specifics.Values['Hint'];
-           if Title<>'' then
+           Title:=Specifics.Values['Txt'];
+         // Lines below cause Title to display twice.
+         // 'Hint' was being used causing that also to be displayed incorrectly.
+        {   if Title<>'' then
             Title:=#13#10+Title;
            Title:=Specifics.Values['Txt']+Title;
+        }
            Ok:=BrowseForFolderDlg(ValidParentForm(Self).Handle, Path, Title, Specifics.Values['CheckFile']);
            Title:=Specifics.Values['Append'];
            if (Title<>'') and (Path<>'') then
