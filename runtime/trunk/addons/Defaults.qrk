@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.402  2008/04/12 20:18:40  danielpharos
+//Possibly fixed the dictitems memory leak and fixed the miscounting of gamefiles-memory.
+//
 //Revision 1.401  2008/04/06 02:59:25  cdunde
 //Reinstated revision 1.398 pcx setting after pcx source code fix.
 //
@@ -1715,7 +1718,7 @@ QQRKSRC1
         RunMapCmdLine = " +devmap %s"
         MapLimit = '65536 65536 65536'
 
-        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataD3.qrk"$0D"Doom3Entities.qrk"$0D"Doom3Textures.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataD3.qrk"$0D"Doom3Entities.qrk"$0D"Doom3Materials.qrk"
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"

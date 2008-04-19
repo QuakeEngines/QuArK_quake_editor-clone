@@ -14,6 +14,9 @@ AddShaderList.py - Makes the GameShaders.qrk list of Shaders by folder to use as
 
 #
 #$Log$
+#Revision 1.7  2008/04/16 22:25:22  cdunde
+#Updated processing for Quake 4 type shaders.
+#
 #Revision 1.6  2008/04/11 18:33:20  cdunde
 #Changed code to try to adapt to proper version writing.
 #
@@ -73,7 +76,7 @@ def AddShaders(QuArKpath, gamename, gamefileslocation, shadersfolder, shadersfil
         for name in filenames:
             if not name.endswith(shadersfiletype):
                 continue
-            tokens = getTokens(foldername + "\\" + name)
+            tokens = getTokens(foldername + "\\" + name, 1)
             iToken = iter(tokens)
             tokenType, tokenValue = iToken.next()
             hastextures = 0
@@ -147,9 +150,11 @@ def AddShaders(QuArKpath, gamename, gamefileslocation, shadersfolder, shadersfil
         ### Writes the shader files list now for each folder.
         for name in filenames:
             hasitem = 0
+            tempname = [] # Holds the shader names in memory for sorting by 'filename'.txlist later.
+            templist = {} # Holds the shader data needed for writing later, used by 'tempname'.
             if not name.endswith(shadersfiletype):
                 continue
-            tokens = getTokens(foldername + "\\" + name)
+            tokens = getTokens(foldername + "\\" + name, 1)
             iToken = iter(tokens)
             tokenType, tokenValue = iToken.next()
             while tokenType != T_EOF:
@@ -173,7 +178,8 @@ def AddShaders(QuArKpath, gamename, gamefileslocation, shadersfolder, shadersfil
                             text = text + ('      %s.txlist =\n') % shortName(name)
                             text = text + '      {\n'
                             hasitem = 1
-                        text = text + ('        %s.wl    = { t_' + GameFolder + filesfoldername + '_%s=! }\n') % (material_name[9:], shortName(name))
+                        tempname = tempname + [material_name[9:]]
+                        templist[material_name[9:]] = ('        %s.wl    = { t_' + GameFolder + filesfoldername + '_%s=! }\n') % (material_name[9:], shortName(name))
                 # Quake 4 (a Doom3 based game) uses 'guide' as a keyword.
                 # If found does not use its include statment created above,
                 # it uses what it finds in the input file for the shader texture instead.
@@ -185,7 +191,8 @@ def AddShaders(QuArKpath, gamename, gamefileslocation, shadersfolder, shadersfil
                             text = text + '      {\n'
                             hasitem = 1
                         tokenValue = tokenValue.replace('textures/', "")
-                        text = text + ('        %s.wl    = { a="' + GameFolder + '" n="%s_d" }\n') % (tokenValue, tokenValue)
+                        tempname = tempname + [tokenValue]
+                        templist[tokenValue] = ('        %s.wl    = { a="' + GameFolder + '" n="%s_d" }\n') % (tokenValue, tokenValue)
 
                 if tokenType == T_IDENTIFIER:
                     material_name = tokenValue
@@ -193,6 +200,9 @@ def AddShaders(QuArKpath, gamename, gamefileslocation, shadersfolder, shadersfil
                 tokenType, tokenValue = iToken.next()
 
             if hasitem != 0:
+                tempname.sort()
+                for name in tempname:
+                    text = text + templist[name]
                 text = text + '      }\n'
             else:
                 skip = skip + [shortName(name)]

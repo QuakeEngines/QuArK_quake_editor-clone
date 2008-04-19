@@ -43,7 +43,13 @@ def getChar(infile):
     srcPos += 1
     return result
 
-def getToken(infile):
+def getToken(infile, shaders):
+    if shaders == 0:
+        nbrlist = '0123456789-.'
+        alphalist = '_/.'
+    else:
+        nbrlist = '0123456789.'
+        alphalist = '_/.-'
     result = ''
     ch = getChar(infile)
     while ch.isspace():
@@ -51,7 +57,7 @@ def getToken(infile):
     if ch == chr(4):
         return T_EOF, None
     # is it a number, ident, quoted string or special?
-    if ch in '0123456789-.':
+    if ch in nbrlist:
         result = ch
         ch = getChar(infile)
         while ch in '0123456789.':
@@ -98,7 +104,7 @@ def getToken(infile):
         # might also be a (UNIX) pathname
         result = ch
         ch = getChar(infile)
-        while (ch != chr(4)) and (ch.isalnum() or (ch in '_/.')):
+        while (ch != chr(4)) and (ch.isalnum() or (ch in alphalist)):
             result += ch
             ch = getChar(infile)
         unGetChar(ch)
@@ -106,11 +112,11 @@ def getToken(infile):
     # dunno what we've got, treat it as special
     return T_SPECIAL, ch
 
-def getTokens(inname):
+def getTokens(inname, shaders=0):
     infile = open(inname)
     result = []
     while 1:
-        tokenType, tokenValue = getToken(infile)
+        tokenType, tokenValue = getToken(infile, shaders)
         result.append((tokenType, tokenValue))
         if tokenType == T_EOF:
             break
@@ -128,6 +134,9 @@ if __name__ == "__main__":
 
 #
 #$Log$
+#Revision 1.3  2008/04/11 22:27:09  cdunde
+#Update
+#
 #Revision 1.2  2008/04/04 23:20:08  cdunde
 #Needed correction.
 #

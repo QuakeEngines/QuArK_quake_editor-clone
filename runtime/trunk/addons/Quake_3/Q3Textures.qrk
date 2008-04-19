@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:10:31  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -1434,7 +1437,7 @@ QQRKSRC1
         base_wall/comp3b_dark.wl                  = { t_q3shader_base_wall=! }
         base_wall/comp3c.wl                       = { t_q3shader_base_wall=! }
         base_wall/concrete_ow.wl                  = { t_q3shader_base_wall=! }
-        base_wall/c_met5_2_trans.wl               = { t_q3shader_base_wall=! }
+    //    base_wall/c_met5_2_trans.wl               = { t_q3shader_base_wall=! }
         base_wall/dooreye.wl                      = { t_q3shader_base_wall=! }
         base_wall/dooreye2.wl                     = { t_q3shader_base_wall=! }
         base_wall/dooreye3.wl                     = { t_q3shader_base_wall=! }
@@ -1535,9 +1538,9 @@ QQRKSRC1
         gothic_block/flicker_blocks10.wl          = { t_q3shader_gothic_block=! }
         gothic_block/gkc17d.wl                    = { t_q3shader_gothic_block=! }
         gothic_block/gkcspinemove.wl              = { t_q3shader_gothic_block=! }
-        gothic_block/killblock_i4b.wl             = { t_q3shader_gothic_block=! }
+    //    gothic_block/killblock_i4b.wl             = { t_q3shader_gothic_block=! }
         gothic_block/killblockgeomtrn.wl          = { t_q3shader_gothic_block=! }
-        gothic_block/killtrim_trans.wl            = { t_q3shader_gothic_block=! }
+    //    gothic_block/killtrim_trans.wl            = { t_q3shader_gothic_block=! }
         gothic_block/largerblock3blood.wl         = { t_q3shader_gothic_block=! }
         gothic_block/mkc_evil_e3window.wl         = { t_q3shader_gothic_block=! }
         gothic_block/wetwall.wl                   = { t_q3shader_gothic_block=! }
@@ -1569,7 +1572,7 @@ QQRKSRC1
       {
         gothic_light/border7_ceil39_6k.wl         = { t_q3shader_gothic_light=! }
         gothic_light/border7_ceil39b_10k.wl       = { t_q3shader_gothic_light=! }
-        gothic_light/flicker_light15k.wl          = { t_q3shader_gothic_light=! }
+    //    gothic_light/flicker_light15k.wl          = { t_q3shader_gothic_light=! }
         gothic_light/goth_lt2_lrg2k.wl            = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light2_1k.wl          = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light2_2K.wl          = { t_q3shader_gothic_light=! }
@@ -1659,7 +1662,7 @@ QQRKSRC1
         gothic_wall/iron01_m.wl                   = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_ndark.wl               = { t_q3shader_gothic_wall=! }
         gothic_wall/streetbricks10_shiny.wl       = { t_q3shader_gothic_wall=! }
-        gothic_wall/window_evil6a.wl              = { t_q3shader_gothic_wall=! }
+    //    gothic_wall/window_evil6a.wl              = { t_q3shader_gothic_wall=! }
         gothic_wall/xoct20c_shiney.wl             = { t_q3shader_gothic_wall=! }
         gothic_wall/xpipecolumn_gray_shiny.wl     = { t_q3shader_gothic_wall=! }
       }
@@ -1688,7 +1691,7 @@ QQRKSRC1
       }
       Organics.txlist =
       {
-        organics/dirt_trans.wl                    = { t_q3shader_organics=! }
+   //     organics/dirt_trans.wl                    = { t_q3shader_organics=! }
         organics/wire02a_f.wl                     = { t_q3shader_organics=! }
       }
       Sfx.txlist =
@@ -1751,7 +1754,7 @@ QQRKSRC1
         sfx/fog_timctf1.wl                        = { t_q3shader_sfx=! }
         sfx/fog_timdm1.wl                         = { t_q3shader_sfx=! }
         sfx/fog_timdm2.wl                         = { t_q3shader_sfx=! }
-        sfx/fog_timdm8.wl                         = { t_q3shader_sfx=! }
+    //    sfx/fog_timdm8.wl                         = { t_q3shader_sfx=! }
         sfx/healthfloor.wl                        = { t_q3shader_sfx=! }
         sfx/hellfog.wl                            = { t_q3shader_sfx=! }
         sfx/hellfog_1k.wl                         = { t_q3shader_sfx=! }
@@ -1769,7 +1772,7 @@ QQRKSRC1
         sfx/launchpad_diamond.wl                  = { t_q3shader_sfx=! }
         sfx/launchpad_metalbridge04d.wl           = { t_q3shader_sfx=! }
         sfx/lavabeam.wl                           = { t_q3shader_sfx=! }
-        sfx/lightmap.wl                           = { t_q3shader_sfx=! }
+    //    sfx/lightmap.wl                           = { t_q3shader_sfx=! }
         sfx/metalbridge06_bounce.wl               = { t_q3shader_sfx=! }
         sfx/metaltech12final_bounce.wl            = { t_q3shader_sfx=! }
         sfx/mkc_bigflame.wl                       = { t_q3shader_sfx=! }
@@ -1780,11 +1783,11 @@ QQRKSRC1
         sfx/omm.wl                                = { t_q3shader_sfx=! }
         sfx/pentagramfloor_red3test.wl            = { t_q3shader_sfx=! }
         sfx/pentfloor_diamond2c.wl                = { t_q3shader_sfx=! }
-        sfx/pj_a1_fog1.wl                         = { t_q3shader_sfx=! }
-        sfx/portal2_sfx.wl                        = { t_q3shader_sfx=! }
-        sfx/portal_sfx.wl                         = { t_q3shader_sfx=! }
+    //    sfx/pj_a1_fog1.wl                         = { t_q3shader_sfx=! }
+    //    sfx/portal2_sfx.wl                        = { t_q3shader_sfx=! }
+    //    sfx/portal_sfx.wl                         = { t_q3shader_sfx=! }
         sfx/portal_sfx_ring.wl                    = { t_q3shader_sfx=! }
-        sfx/proto_hellfog.wl                      = { t_q3shader_sfx=! }
+    //    sfx/proto_hellfog.wl                      = { t_q3shader_sfx=! }
         sfx/proto_zzztblu3.wl                     = { t_q3shader_sfx=! }
         sfx/pureblack.wl                          = { t_q3shader_sfx=! }
         sfx/q3dm14fog.wl                          = { t_q3shader_sfx=! }
@@ -1799,12 +1802,12 @@ QQRKSRC1
         sfx/testconstantfog.wl                    = { t_q3shader_sfx=! }
         sfx/x_conduit.wl                          = { t_q3shader_sfx=! }
         sfx/xblackfog.wl                          = { t_q3shader_sfx=! }
-        sfx/xbluefog.wl                           = { t_q3shader_sfx=! }
-        sfx/xbluefogx128.wl                       = { t_q3shader_sfx=! }
-        sfx/xdensegreyfog.wl                      = { t_q3shader_sfx=! }
-        sfx/xfinalfog.wl                          = { t_q3shader_sfx=! }
-        sfx/xfinalfog.wl                          = { t_q3shader_sfx=! }
-        sfx/xfinalfoginvert.wl                    = { t_q3shader_sfx=! }
+    //    sfx/xbluefog.wl                           = { t_q3shader_sfx=! }
+    //    sfx/xbluefogx128.wl                       = { t_q3shader_sfx=! }
+    //    sfx/xdensegreyfog.wl                      = { t_q3shader_sfx=! }
+    //    sfx/xfinalfog.wl                          = { t_q3shader_sfx=! }
+    //    sfx/xfinalfog.wl                          = { t_q3shader_sfx=! }
+    //    sfx/xfinalfoginvert.wl                    = { t_q3shader_sfx=! }
         sfx/xflame1.wl                            = { t_q3shader_sfx=! }
         sfx/xflame1side.wl                        = { t_q3shader_sfx=! }
         sfx/xflame2.wl                            = { t_q3shader_sfx=! }
@@ -1812,12 +1815,12 @@ QQRKSRC1
         sfx/xflame2_2250.wl                       = { t_q3shader_sfx=! }
         sfx/xflamebright.wl                       = { t_q3shader_sfx=! }
         sfx/xian_dm3padwall.wl                    = { t_q3shader_sfx=! }
-        sfx/xlightgreyfog.wl                      = { t_q3shader_sfx=! }
+    //    sfx/xlightgreyfog.wl                      = { t_q3shader_sfx=! }
         sfx/xmetalfloor_wall_14b.wl               = { t_q3shader_sfx=! }
         sfx/xmetalfloor_wall_5b.wl                = { t_q3shader_sfx=! }
         sfx/xmetalfloor_wall_9b.wl                = { t_q3shader_sfx=! }
         sfx/xq1metalbig_jumppad.wl                = { t_q3shader_sfx=! }
-        sfx/xredfog.wl                            = { t_q3shader_sfx=! }
+     //   sfx/xredfog.wl                            = { t_q3shader_sfx=! }
         sfx/zap_scroll.wl                         = { t_q3shader_sfx=! }
         sfx/zap_scroll1000.wl                     = { t_q3shader_sfx=! }
       }
@@ -1841,10 +1844,10 @@ QQRKSRC1
         skies/kc_dm10sky.wl                       = { t_q3shader_sky=! }
         skies/kcbasesky_arena1_sky.wl             = { t_q3shader_sky=! }
         skies/killsky.wl                          = { t_q3shader_sky=! }
-        skies/mkc_sky.wl                          = { t_q3shader_sky=! }
-        skies/nightsky_xian_dm1.wl                = { t_q3shader_sky=! }
-        skies/nightsky_xian_dm15.wl               = { t_q3shader_sky=! }
-        skies/nightsky_xian_dm4.wl                = { t_q3shader_sky=! }
+    //    skies/mkc_sky.wl                          = { t_q3shader_sky=! }
+    //    skies/nightsky_xian_dm1.wl                = { t_q3shader_sky=! }
+    //    skies/nightsky_xian_dm15.wl               = { t_q3shader_sky=! }
+    //    skies/nightsky_xian_dm4.wl                = { t_q3shader_sky=! }
         skies/pj_arena2sky.wl                     = { t_q3shader_sky=! }
         skies/pj_arena4_sky.wl                    = { t_q3shader_sky=! }
         skies/pj_ctf1sky.wl                       = { t_q3shader_sky=! }
@@ -1854,7 +1857,7 @@ QQRKSRC1
         skies/pjbasesky_arena1_sky.wl             = { t_q3shader_sky=! }
         skies/q3dm0.wl                            = { t_q3shader_sky=! }
         skies/skybox.wl                           = { t_q3shader_sky=! }
-        skies/stars_arena7.wl                     = { t_q3shader_sky=! }
+    //    skies/stars_arena7.wl                     = { t_q3shader_sky=! }
         skies/tim_dm14.wl                         = { t_q3shader_sky=! }
         skies/tim_dm14red.wl                      = { t_q3shader_sky=! }
         skies/tim_dm3_red.wl                      = { t_q3shader_sky=! }
