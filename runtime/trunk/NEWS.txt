@@ -15,6 +15,8 @@ $Id$
 6.5.0 Beta 5
 ============
 
+* [cdunde]: Made changes to sort material lists, cleanup dead ones and improved missing ones.
+
 * [cdunde]: Added full game support for NEXUIZ including .md3 model displaying.
 
 * [cdunde]: Added a new Conversion Tools for making game support QuArK .qrk files.
