@@ -654,8 +654,7 @@ Strings = {
     5380: "Angle Side view",
     5381: "Specific",
     5382: "Arg",
-    # 5383: "&Add a Specific\n&Delete Specific",
-    5383: "&Add a Specific\n&Delete Specific\nCop&y an Arg\n&Paste an Arg\n&Cut an Arg",
+    5383: "&Add a Specific\n&Delete Specific\nCop&y\n&Paste\n&Cut",
     5384: "Palette",
     5385: "%s palette",
     # 5386: "You cannot change this palette directly here. Do you want to open the file that contains the %s ?",
@@ -1045,6 +1044,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.120  2008/02/24 14:41:32  danielpharos
+#Fixed web-links not working anymore, and added a decent error message if a local file cannot be found.
+#
 #Revision 1.119  2008/02/23 18:54:02  danielpharos
 #A lot of improvements to the OpenGL error messages.
 #

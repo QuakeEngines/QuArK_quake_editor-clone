@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2008/04/17 15:19:05  cdunde
+Fixed 'Folder Browser' to stop displaying the 'Hint' and only show the 'Txt'.
+
 Revision 1.39  2008/04/10 22:35:04  cdunde
 Added clipmodel to the list.
 
@@ -2792,6 +2795,7 @@ procedure TFormCfg.PopupMenuPopup(Sender: TObject);
 var
  I: Integer;
  RowOk: Boolean;
+// RowOk, GetFocused1: Boolean;
 begin
  with Sender as TPopupMenu do
   begin
@@ -2801,12 +2805,15 @@ begin
     SelectRow(I, False)
    else
     SetFocus;
+ {  SetFocus;
+   RowOk:=GetFocused1(True);  }
+
    Items[cmd_AddSpec].Enabled:=AllowEdit and AddRemaining;
    Items[cmd_DeleteSpec].Enabled:=AllowEdit and RowOk;
    Items[cmd_DeleteSpec].Tag:=I;
-   Items[cmd_CopySpec].Enabled:=AllowEdit and RowOk;
-   Items[cmd_PasteSpec].Enabled:=AllowEdit and RowOk; 
-   Items[cmd_CutSpec].Enabled:=AllowEdit and RowOk;
+   Items[cmd_CopySpec].Enabled:=RowOk; // AllowEdit and RowOk;
+   Items[cmd_PasteSpec].Enabled:=RowOk; // AllowEdit and RowOk;
+   Items[cmd_CutSpec].Enabled:=RowOk; // AllowEdit and RowOk;
  { Items[cmd_etc].Caption:=IntToStr(I);  }
   end;
 end;
