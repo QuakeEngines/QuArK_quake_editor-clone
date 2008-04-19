@@ -1,47 +1,26 @@
 title: Uploading Files
-author: Rowdy / cdunde
+author: Rowdy / cdunde / DanielPharos
 
 <table width=100% cellspacing=0 cellpadding=0 border=0>
 <tr>
 <td align=left>
 <i>Committing Files:</i>
 
-<b>Commit</b> a file means that you are uploading it.
+<b>Committing</b> a file means that you are uploading it.
 
-To upload a file, right-click it, on the popup menu go to <b>Team</b> and then select <b>Commit...</b>.
+To upload a (changed) file, right-click it, on the popup menu go to <b>Team</b> and then select <b>Commit...</b>.
 
-Note also the <b>Synchronize with Repository</b> option - this compares your local files with the files on the CVS server and shows you graphically the differences.
+Note also the <b>Synchronize with Repository</b> option - this compares your local files with the files on the CVS server and shows you graphically the differences between them.
 
-Just to reiterate, before you commit anything using Eclipse, make sure you <b>ALWAYS</b> 
-go to the resource perspective, right-click on the modules you are 
-going to commit (you can hold down the Ctrl key on the keyboard and 
-left-click to select multiple files/directories), and <b>select Refresh</b>. 
-Eclipse doesn't know that you have changed anything outside of Eclipse 
-unless you tell it to refresh.
+Just to reiterate, before you commit anything using Eclipse, make sure you <b>ALWAYS</b> go to the resource perspective, right-click on the modules you are going to commit (you can hold down the Ctrl key on the keyboard and left-click to select multiple files/directories), and <b>refresh</b> them. Eclipse doesn't know that you have changed anything outside of Eclipse unless you tell it to refresh.
 
-When you see what has changed (a ">" will be added in front of the 
-directories and files that have changed), select everything that has 
-changed (you can select each module, e.g. "source", "infobase" if you 
-like), right-click again, select "Team" from the popup menu, and from 
-the submenu select "Synchronize with Repository...".
+Now switch to <b>Team Synchronizing</b> perspective. All changed files (marked with a ">" in the resource perspective) will be shown in the tree-view. A grey arrow to the right with the file indicates outgoing changes, and a blue arrow to the left incoming changes. Sometimes, you've changed a file but somebody else already updated another changed version. This will result in a <b>Conflict</b>, indicted with a red arrow going both ways. You'll first need to 'resolve' this conflict by manually importing the changed from the remote file into your own. After you've done that, refresh that file in the resource perspective, go back to the team synchronizing perspective and right-click it, and select <b>Mark as Merged</b>. This will tell Eclipse you really want to upload this file (note: this will OVERWRITE the remote file, so be careful you imported all changes correctly!).
 
-That will compare your files with those in the repository, and show you 
-any changes you have made that are outgoing, changes other people have 
-committed that are incoming, and any conflicts (where someone has 
-committed a file that you have also modified).
-
-You can then select to commit all your outgoing changes, update all 
-incoming changes, and you can double-click each conflicting file to see 
-where the conflicts are, and to update your local file with changes made 
-in the repository before you commit your file.
+Now select all the outgoing files/directories you want to upload, right-click, <b>Commit</b>. A window will pop up. Write a short but descriptive comment for the changes you made, and press Finish to start the upload.
 </td>
 <td align=right>
 <img>committing_a_new_file.png</img>
+
+<img>committing_a_new_file2.png</img>
 </td></tr>
 </table>
-
-<i>General Comments:</i>
-
-If this information is of use, and a positive response is received about using 
-Eclipse to access the QuArK source, Rowdy will probably expand on this with a 
-few more examples, and hints on using Eclipse.

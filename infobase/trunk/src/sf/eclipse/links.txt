@@ -1,6 +1,0 @@
-title: Program Links
-author: Rowdy / cdunde
-
-First, you will need to download and install <b>Java 2 Platform</b> (<a href="http://java.sun.com/j2se/1.4.2/download.html">http://java.sun.com/j2se/1.4.2/download.html</a>). You will only need the <b>Runtime Environment</b> version rather than the full <b>SDK</b> version. This program basically installs itself, so no configuration instructions are really needed here.
-
-Then download and install <b>Eclipse</b> (<a target=_blank href="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</a>).  You only need one file, for Eclipse 3.2.1 this would be eclipse-SDK-3.2.1-win32.zip (if you're running Windows 32 bit).  It is a zip file so you need a utility like WinZip.  The default and generally recommended directory to extract it to is c:\eclipse.
