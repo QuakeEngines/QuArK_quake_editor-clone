@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.9  2008/04/15 11:16:24  cdunde
+#To add main and all sub-folders level processing of texture listing.
+#
 #Revision 1.8  2008/04/11 22:28:48  cdunde
 #To add Doom 3 type game engine support for ConvertTool.
 #
@@ -477,7 +480,7 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
         MakeSoundList = self.src["MakeSoundList"]
         SoundListFileFolder = self.src["SoundListFileFolder"]
         SoundListFileType = self.src["SoundListFileType"]
-        if (MakeSoundList != "38" or SoundListFileFolder is None or SoundListFileFolder == self.gamefileslocation or SoundListFileType is None) and (MakeSoundList == "38" or SoundListFileFolder != self.gamefileslocation or SoundListFileType is not None):
+        if (MakeSoundList != "38" or SoundListFileFolder is None or SoundListFileFolder == self.gamefileslocation or SoundListFileType is None) and (MakeSoundList == "38" or (SoundListFileFolder is not None and SoundListFileFolder != self.gamefileslocation) or SoundListFileType is not None):
             quarkx.msgbox("You entered something for Make Sound List,\nbut you did not do all three items.\nPlease correct and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
             return
         if SoundListFileType is not None and SoundListFileType.find(SoundListFileFolder) != -1:
@@ -499,7 +502,7 @@ class EntitiesFileDlg(quarkpy.qmacro.dialogbox):
         MakeClipMdlList = self.src["MakeClipMdlList"]
         ClipMdlFileFolder = self.src["ClipMdlFileFolder"]
         ClipMdlFileType = self.src["ClipMdlFileType"]
-        if (MakeClipMdlList != "29" or ClipMdlFileFolder is None or ClipMdlFileFolder == self.gamefileslocation or ClipMdlFileType is None) and (MakeClipMdlList == "29" or ClipMdlFileFolder != self.gamefileslocation or ClipMdlFileType is not None):
+        if (MakeClipMdlList != "29" or ClipMdlFileFolder is None or ClipMdlFileFolder == self.gamefileslocation or ClipMdlFileType is None) and (MakeClipMdlList == "29" or (ClipMdlFileFolder is not None and ClipMdlFileFolder != self.gamefileslocation) or ClipMdlFileType is not None):
             quarkx.msgbox("You entered something for Make Model Clip List,\nbut you did not do all three items.\nPlease correct and try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
             return
         if ClipMdlFileType is not None and ClipMdlFileType.find(ClipMdlFileFolder) != -1:

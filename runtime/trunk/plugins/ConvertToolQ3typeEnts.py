@@ -35,8 +35,12 @@ def Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
 
     def HandleInput(input):
         def_format = 1
+     #   linecount = 0  # Do not remove, used for problem solving.
         while 1:
             line = input.readline()
+     #       linecount = linecount + 1  # Do not remove, used for problem solving.
+     #       print "linecount",linecount  # Do not remove, used for problem solving.
+     #       print line  # Do not remove, used for problem solving.
             if line.startswith("--") and entitiesfiletype == ".def":
                 def_format = 2
             if line == '':
@@ -46,6 +50,8 @@ def Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
                 if line.startswith('/* QUAKED'):
                     line = line.replace('/* QUAKED','/*QUAKED')
                 while 1:
+     #               print "linecount",linecount  # Do not remove, used for problem solving.
+     #               print line  # Do not remove, used for problem solving.
                     if line == '':
                         input.close()
                         return
@@ -67,13 +73,14 @@ def Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
                                 line = line.split(":", 1)
                                 line[0] = line[0].replace("\"", "")
                                 line[0] = line[0].strip()
-                                if "OR" in line[0]:
-                                    newline = line[0].split("OR")
+                                if " OR " in line[0]:
+                                    newline = line[0].split(" OR ")
                                     line[0] = newline[1]
                                     line[0] = line[0].strip()
 
                                 line[1] = line[1].strip()
                                 line[1] = line[1].replace("\"", "\'")
+      #                          print line  # Do not remove, used for problem solving.
                                 if len(line[0]) > 0 and (line[0][0].islower() or line[0][1].islower()):
                                     line = ("\"" + line[0] + "\" " + line[1] + "\n")
                                 else:
@@ -165,6 +172,7 @@ def Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
                     else:
                         o.write(line)
                     line = input.readline()
+      #              linecount = linecount + 1  # Do not remove, used for problem solving.
 
                 if line.startswith('*/'):
                     line = "\n******************************************************************************/\n"
@@ -218,6 +226,9 @@ def Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     
 #
 #$Log$
+#Revision 1.2  2008/04/04 23:20:48  cdunde
+#To add another read file format.
+#
 #Revision 1.1  2008/04/04 20:19:29  cdunde
 #Added a new Conversion Tools for making game support QuArK .qrk files.
 #
