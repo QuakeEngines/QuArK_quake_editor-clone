@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.403  2008/04/19 00:48:56  cdunde
+//Made changes to sort material lists, cleanup dead ones and improved missing ones.
+//
 //Revision 1.402  2008/04/12 20:18:40  danielpharos
 //Possibly fixed the dictitems memory leak and fixed the miscounting of gamefiles-memory.
 //
@@ -3324,6 +3327,70 @@ QQRKSRC1
         Form = "GameTorque"
       }
 
+      Warsow:config =
+      {
+        Game = "Warsow"
+        Code = "v" // Hardcoded value in Setup.PAS
+        Program = "warsow_x86.exe"
+
+        Directory = "C:\Program Files\Warsow"
+        CheckDirectory = "*.EXE"
+
+        CD = ""
+        CDDir = ""
+
+        MapLimit = '65536 65536 65536'
+
+        MapCommentsPrefix = "//"
+        OutputMapFormat = "Brush Primitives"
+        StupidBuildToolKludge = "1"
+        AlwaysWriteThreeFields = "1"
+        SupportsBrushPrim = "1"
+        BuildPgm1  = "q3map2.exe"
+        BuildArgs1 = ""
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "q3map2.exe"
+        BuildArgs2 = "-vis"
+        BuildPgm3  = "q3map2.exe"
+        BuildArgs3 = "-light"
+
+        TexturesPath = "textures/"
+        ShadersPath = "scripts/"
+        Q2TexFlags = "1"
+
+        BezierPatchSupport = "1"
+        BezierPatchPluginPrefixes = "MB2"
+
+        DefaultTexture = "vf/wall002"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.50"
+
+        TextureFormat = ".tga"
+        TextureFileExtensions = ".tga,.jpg"
+        TextureWriteFormat = ".tga"
+        TextureShaders = "scripts/quark.shader"
+
+        BaseDir = "basewsw"
+        tmpQuArK = "basewsw"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %s"
+        RunMapCmdLine = " +map %s"
+        AddOns = "DataWarsow.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataWarsow.qrk"$0D"WarsowEntities.qrk"$0D"WarsowTextures.qrk"$0D"WarsowScripts.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk3"
+        PakFormat = "*.PK3"
+        Console = "1"
+        LightFactor = '0.9'
+        3DLight = '512'
+        BrushDecimalPlaces = '5'
+        Form = "GameWarsow"
+      }
+
       WildWest:config =
       {
         // WildWest game add on by SilverPaladin (Capt. Queeg to WildWest folk)
@@ -3389,11 +3456,11 @@ QQRKSRC1
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
         Console = "1"
-        Form = "GameWildWest"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
+        Form = "GameWildWest"
       }
     }
 
@@ -7110,6 +7177,101 @@ QQRKSRC1
       t_GameBuildPgms=!
     }
 
+    GameWarsow:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"
+        Txt = "Warsow command-line"
+        Items = "warsow_x64.exe"
+             $0D"warsow_x64.exe +set developer 1"
+             $0D"warsow_x86.exe"
+             $0D"warsow_x86.exe +set developer 1"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Warsow"
+        Typ = "ED"
+        Hint = "Path to the game executable"
+        CheckFile = "*.EXE"
+      }
+      Templates: =
+      {
+        Txt = "Directory of Templates"
+        Typ = "ED"
+        Hint = "Path to the templates folder. A folder must be chosen"$0D"before any template functions can be used."
+      }
+      AddOns:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMv"}    // switches to Warsow (cmd=GAM, game=v)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMv"}    // switches to Warsow (cmd=GAM, game=v)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens Add-ons configuration dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "Warsow"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "Warsow"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "Warsow"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "Warsow"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "Warsow"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
     GameWildWest:form =
     {
       Style = "3"
@@ -9026,7 +9188,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Half-Life2"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"RTCW_ET"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"$0D"Quake 4"
+        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Half-Life2"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"RTCW_ET"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"$0D"Quake 4"$0D"Warsow"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {
