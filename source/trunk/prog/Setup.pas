@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2008/04/04 19:24:44  cdunde
+Setup a new game support for NEXUIZ with .md3 model displaying.
+
 Revision 1.64  2008/02/24 01:17:20  cdunde
 Started game support for Heavy Metal - FAKK2.
 
@@ -301,9 +304,10 @@ comparison between gamemodes.}
  mjCOD          = 'p';  { Call of Duty }
  mjCOD2         = 'q';  { Call of Duty 2 }
  mjPrey         = 'r';  { Prey } 
- mjFAKK2        = 's';  { Heavy Metal - FAKK2 }
+ mjFAKK2        = 's';  { Heavy Metal - FAKK2 } 
+ mjWarsow       = 'v';  { Warsow }
  mjWildWest     = 'w';  { WildWest }  
- mjNEXUIZ        = 'x';  { EXUIZ }
+ mjNEXUIZ       = 'x';  { EXUIZ }
 
  mjAny          = #1;
  mjNotQuake2    = #2;

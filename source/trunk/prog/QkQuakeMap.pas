@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/04/04 19:24:43  cdunde
+Setup a new game support for NEXUIZ with .md3 model displaying.
+
 Revision 1.9  2008/02/03 13:13:16  danielpharos
 Small code clean-up
 
@@ -1909,6 +1912,8 @@ begin
      else if CharModeJeu=mjRTCWET then
        Result:=CharModeJeu
      else if CharModeJeu=mjNEXUIZ then
+       Result:=CharModeJeu
+     else if CharModeJeu=mjWarsow then
        Result:=CharModeJeu;
     end;
   end;

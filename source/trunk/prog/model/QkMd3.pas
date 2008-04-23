@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2008/04/04 19:24:42  cdunde
+Setup a new game support for NEXUIZ with .md3 model displaying.
+
 Revision 1.36  2008/01/03 14:01:44  danielpharos
 Fix tags not working in a model not in a pak file.
 
@@ -842,6 +845,8 @@ begin
         ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (CharModeJeu=mjNEXUIZ) then
         ObjectGameCode := mjNEXUIZ;
+      if (head.id='IDP3') and (CharModeJeu=mjWarsow) then
+        ObjectGameCode := mjWarsow;
       if (head.id='IDP3') and (head.version=15) then
       begin
         if (CharModeJeu<mjQ3A) or (CharModeJeu=mjSTVEF) then
