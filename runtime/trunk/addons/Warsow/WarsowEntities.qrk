@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/04/23 20:51:45  cdunde
+//Setup for Warsow with .md3 model support.
+//
 //
 
 {
@@ -644,7 +647,7 @@ QQRKSRC1
        " delay for spawning the item once the map starts. Respawn item times d"
        "epend on the gametype and can't be selected by the mapper."$0D"model=m"
        "odels/v_weapons/shockwave/v_shockwave.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-4 -4 -12 24 4 8'
       mdl = "models/v_weapons/shockwave/v_shockwave.md3"
       spawnflags: =
       {
@@ -719,7 +722,7 @@ QQRKSRC1
        "or spawning the item once the map starts. Respawn item times depend on"
        " the gametype and can't be selected by the mapper."$0D"model=models/v_"
        "weapons/riotgun/v_riotgun.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-8 -4 0 24 4 8'
       mdl = "models/v_weapons/riotgun/v_riotgun.md3"
       spawnflags: =
       {
@@ -794,7 +797,7 @@ QQRKSRC1
        " delay for spawning the item once the map starts. Respawn item times d"
        "epend on the gametype and can't be selected by the mapper."$0D"model=m"
        "odels/v_weapons/glauncher/v_glauncher.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-8 -4 0 24 4 8'
       mdl = "models/v_weapons/glauncher/v_glauncher.md3"
       spawnflags: =
       {
@@ -869,7 +872,7 @@ QQRKSRC1
        " delay for spawning the item once the map starts. Respawn item times d"
        "epend on the gametype and can't be selected by the mapper."$0D"model=m"
        "odels/v_weapons/rlauncher/v_rlauncher.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-8 -4 0 32 4 12'
       mdl = "models/v_weapons/rlauncher/v_rlauncher.md3"
       spawnflags: =
       {
@@ -944,7 +947,7 @@ QQRKSRC1
        "or spawning the item once the map starts. Respawn item times depend on"
        " the gametype and can't be selected by the mapper."$0D"model=models/v_"
        "weapons/plasmagun/v_plasmagun.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-8 -4 0 20 4 8'
       mdl = "models/v_weapons/plasmagun/v_plasmagun.md3"
       spawnflags: =
       {
@@ -1019,7 +1022,7 @@ QQRKSRC1
        "or spawning the item once the map starts. Respawn item times depend on"
        " the gametype and can't be selected by the mapper."$0D"model=models/v_"
        "weapons/electrobolt/v_electrobolt.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-8 -4 0 32 4 12'
       mdl = "models/v_weapons/electrobolt/v_electrobolt.md3"
       spawnflags: =
       {
@@ -1094,7 +1097,7 @@ QQRKSRC1
        "or spawning the item once the map starts. Respawn item times depend on"
        " the gametype and can't be selected by the mapper."$0D"model=models/v_"
        "weapons/lasergun/v_lasergun.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -4 0 20 4 12'
       mdl = "models/v_weapons/lasergun/v_lasergun.md3"
       spawnflags: =
       {
@@ -1169,7 +1172,7 @@ QQRKSRC1
        " as delay for spawning the item once the map starts. Respawn item time"
        "s depend on the gametype and can't be selected by the mapper."$0D"mode"
        "l=models/items/ammo/ammobox/ammobox.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 -12 12 12 12'
       mdl = "models/items/ammo/ammobox/ammobox.md3"
       spawnflags: =
       {
@@ -1244,7 +1247,7 @@ QQRKSRC1
        " delay for spawning the item once the map starts. Respawn item times d"
        "epend on the gametype and can't be selected by the mapper."$0D"model=m"
        "odels/items/ammo/ammobox/ammobox.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 -12 12 12 12'
       mdl = "models/items/ammo/ammobox/ammobox.md3"
       spawnflags: =
       {
@@ -1319,7 +1322,7 @@ QQRKSRC1
        " for spawning the item once the map starts. Respawn item times depend "
        "on the gametype and can't be selected by the mapper."$0D"model=models/"
        "items/ammo/ammobox/ammobox.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 -12 12 12 12'
       mdl = "models/items/ammo/ammobox/ammobox.md3"
       spawnflags: =
       {
@@ -1394,7 +1397,7 @@ QQRKSRC1
        " as delay for spawning the item once the map starts. Respawn item time"
        "s depend on the gametype and can't be selected by the mapper."$0D"mode"
        "l=models/items/ammo/ammobox/ammobox.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 -12 12 12 12'
       mdl = "models/items/ammo/ammobox/ammobox.md3"
       spawnflags: =
       {
@@ -1469,7 +1472,7 @@ QQRKSRC1
        " delay for spawning the item once the map starts. Respawn item times d"
        "epend on the gametype and can't be selected by the mapper."$0D"model=m"
        "odels/items/ammo/ammobox/ammobox.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 -12 12 12 12'
       mdl = "models/items/ammo/ammobox/ammobox.md3"
       spawnflags: =
       {
@@ -1544,7 +1547,7 @@ QQRKSRC1
        " delay for spawning the item once the map starts. Respawn item times d"
        "epend on the gametype and can't be selected by the mapper."$0D"model=m"
        "odels/items/ammo/ammobox/ammobox.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 -12 12 12 12'
       mdl = "models/items/ammo/ammobox/ammobox.md3"
       spawnflags: =
       {
@@ -1619,7 +1622,7 @@ QQRKSRC1
        " delay for spawning the item once the map starts. Respawn item times d"
        "epend on the gametype and can't be selected by the mapper."$0D"model=m"
        "odels/items/ammo/ammobox/ammobox.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 -12 12 12 12'
       mdl = "models/items/ammo/ammobox/ammobox.md3"
       spawnflags: =
       {
@@ -1694,7 +1697,7 @@ QQRKSRC1
        " delay for spawning the item once the map starts. Respawn item times d"
        "epend on the gametype and can't be selected by the mapper."$0D"model=m"
        "odels/items/ammo/ammobox/ammobox.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 -12 12 12 12'
       mdl = "models/items/ammo/ammobox/ammobox.md3"
       spawnflags: =
       {
@@ -1769,7 +1772,7 @@ QQRKSRC1
        "y as delay for spawning the item once the map starts. Respawn item tim"
        "es depend on the gametype and can't be selected by the mapper."$0D"mod"
        "el=models/items/armor/shard/shard.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-8 -4 -4 8 4 12'
       mdl = "models/items/armor/shard/shard.md3"
       spawnflags: =
       {
@@ -1844,7 +1847,7 @@ QQRKSRC1
        "y as delay for spawning the item once the map starts. Respawn item tim"
        "es depend on the gametype and can't be selected by the mapper."$0D"mod"
        "el=models/items/armor/ga/ga.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-16 -12 -16 16 12 20'
       mdl = "models/items/armor/ga/ga.md3"
       spawnflags: =
       {
@@ -1919,7 +1922,7 @@ QQRKSRC1
        "y as delay for spawning the item once the map starts. Respawn item tim"
        "es depend on the gametype and can't be selected by the mapper."$0D"mod"
        "el=models/items/armor/ya/ya.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-20 -12 -16 20 12 24'
       mdl = "models/items/armor/ya/ya.md3"
       spawnflags: =
       {
@@ -1994,7 +1997,7 @@ QQRKSRC1
        "y as delay for spawning the item once the map starts. Respawn item tim"
        "es depend on the gametype and can't be selected by the mapper."$0D"mod"
        "el=models/items/armor/ra/ra.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-20 -12 -12 20 12 32'
       mdl = "models/items/armor/ra/ra.md3"
       spawnflags: =
       {
@@ -2070,7 +2073,7 @@ QQRKSRC1
        "y as delay for spawning the item once the map starts. Respawn item tim"
        "es depend on the gametype and can't be selected by the mapper."$0D"mod"
        "el=models/items/health/small/small_health.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 0 12 12 28'
       mdl = "models/items/health/small/small_health_ed.md3"
       spawnflags: =
       {
@@ -2146,7 +2149,7 @@ QQRKSRC1
        "tem once the map starts. Respawn item times depend on the gametype and"
        " can't be selected by the mapper."$0D"model=models/items/health/medium"
        "/medium_health.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 0 12 12 28'
       mdl = "models/items/health/medium/medium_health_ed.md3"
       spawnflags: =
       {
@@ -2222,7 +2225,7 @@ QQRKSRC1
        "tem once the map starts. Respawn item times depend on the gametype and"
        " can't be selected by the mapper."$0D"model=models/items/health/large/"
        "large_health.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 0 12 12 28'
       mdl = "models/items/health/large/large_health_ed.md3"
       spawnflags: =
       {
@@ -2295,7 +2298,7 @@ QQRKSRC1
        " the item once the map starts. Respawn item times depend on the gamety"
        "pe and can't be selected by the mapper."$0D"model=models/items/health/"
        "mega/mega_health.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-12 -12 0 12 12 28'
       mdl = "models/items/health/mega/mega_health.md3"
       spawnflags: =
       {
@@ -2365,7 +2368,7 @@ QQRKSRC1
        "e understood only as delay for spawning the item once the map starts. "
        "Respawn item times depend on the gametype and can't be selected by the"
        " mapper."$0D"model=models/powerups/instant/quad.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-16 -16 -8 16 16 28'
       mdl = "models/powerups/instant/quad.md3"
       spawnflags: =
       {
@@ -2438,7 +2441,7 @@ QQRKSRC1
        "0 and 100. Some example of real item equivalencies would be: rocketlau"
        "ncher = 80, mega = 100, ammo_rocketlauncher = 60, red armor = 90, ammo"
        "_plasma = 50."
-      bbox = '-8 -8 -8 8 8 8'
+      bbox = '-28 -28 -16 28 28 8'
       mdl = "models/objects/flag/flag_base_ed.md3"
       spawnflags: =
       {
@@ -2490,7 +2493,7 @@ QQRKSRC1
     {
       help = "Alpha team flag for CTF games."$0D
        "model=models/flags/y_flag.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-28 -12 -8 20 12 68'
       mdl = "models/flags/y_flag.md3"
       t_commonspecifics = !
     }
@@ -2498,7 +2501,7 @@ QQRKSRC1
     {
       help = "Beta team flag for CTF games."$0D
        "model=models/flags/b_flag.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-28 -12 -8 20 12 68'
       mdl = "models/flags/b_flag.md3"
       t_commonspecifics = !
     }
@@ -2506,7 +2509,7 @@ QQRKSRC1
     {
       help = "Gamma team flag for CTF games."$0D
        "model=models/flags/g_flag.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-28 -12 -8 20 12 68'
       mdl = "models/flags/g_flag.md3"
       t_commonspecifics = !
     }
@@ -2514,7 +2517,7 @@ QQRKSRC1
     {
       help = "Delta team flag for CTF games."$0D
        "model=models/flags/r_flag.md3"
-      bbox = '-16 -16 -16 16 16 48'
+      bbox = '-28 -12 -8 20 12 68'
       mdl = "models/flags/r_flag.md3"
       t_commonspecifics = !
     }
@@ -5942,7 +5945,7 @@ QQRKSRC1
       help = "Defines a capture area indicator for Warsow "$22"iTDM"$22" mode"$0D
        $22"arealetter"$22" which area this entity represents: A, B, C or D"$0D
        "model=models/objects/capture_a/capture_a.md3"
-      bbox = '-8 -8 -32 8 8 32'
+      bbox = '-36 -4 -36 36 4 36'
       mdl = "models/objects/capture_a/capture_a.md3"
       t_commonspecifics = !
       arealetter: =
