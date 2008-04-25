@@ -34,7 +34,7 @@ unit QkD3;
 interface
 
 uses
-  Types, Classes, SysUtils, Windows,
+  Types, Classes, SysUtils, StrUtils, Windows,
   QkZip2, QkFileObjects, Quarkx, QkObjectClassList, QkPixelSet, QkObjects, QkWad,
   Game, Setup, Travail;
 
@@ -371,6 +371,7 @@ var
  ComplexStage, Data: String;
  Source, NextStep: PChar;
  Material: D3Material;
+ MaterialName: String;
  Stage: D3MaterialStage;
  I, LineNumber, counter: Integer;
  SectionComment, Comment: Boolean;
@@ -545,7 +546,14 @@ begin
        SkipSpaces;
        if Source^=#0 then Break;    { end of file }
        counter:=0;
-       Material:=D3Material.Create(ReadLine, Self);    { new material object }
+       MaterialName:=ReadLine;
+       if LeftStr(MaterialName, 8) = 'material' then
+       begin
+         //FIXME: Anybody any idea what this 'material' means exactly? 
+         SkipSpaces;
+         MaterialName:=ReadLine;
+       end;
+       Material:=D3Material.Create(MaterialName, Self);    { new material object }
        SubElements.Add(Material);
        counter:=counter+1;
        SkipSpaces;
