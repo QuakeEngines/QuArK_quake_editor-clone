@@ -1,23 +1,12 @@
 QQRKSRC1
 // Genesis3d definition file for Quark
 
-
-//    This file contains :
-//
-//    * List of Quake 1 entities
-//      By: Kasper Kystol Andersen (SpaceDog) <spacedog@get2net.dk>
-//      And: Brian Wagener <bhw5401@garnet.acns.fsu.edu>
-//
-//    * List of Quake 1 textures
-//      By: Kasper Kystol Andersen (SpaceDog) <spacedog@get2net.dk>
-//
-//    Thanks, Kasper and Brian.   - Armin -
-//
-//    See comments in file Defaults.qrk.
-
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.9  2008/03/28 19:06:00  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //Revision 1.8  2008/03/25 06:43:13  cdunde
 //To standardize UserData files as much as possible based on their game engine type.
 //Moved entities out of them which were duplicated in their game Data files, should NEVER be allowed!
