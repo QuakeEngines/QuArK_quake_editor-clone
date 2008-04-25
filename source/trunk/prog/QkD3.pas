@@ -19,6 +19,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+
+}
+
 (*
  * stuff for Doom 3 - a lot (ok, most) of this was copied from QkQ3.pas as Quake 3
  * and Doom 3 have a lot in common, but it is the little differences that make for
@@ -34,7 +41,7 @@ unit QkD3;
 interface
 
 uses
-  Types, Classes, SysUtils, StrUtils, Windows,
+  Types, Classes, SysUtils, Windows,
   QkZip2, QkFileObjects, Quarkx, QkObjectClassList, QkPixelSet, QkObjects, QkWad,
   Game, Setup, Travail;
 
@@ -84,6 +91,8 @@ type
 
 implementation
 
+uses Logging;
+
 {------------------------}
 
 class function D3Pak.TypeInfo;
@@ -101,70 +110,61 @@ end;
 {------------------------}
 
 function D3Material.DefaultImage: QPixelSet;
-//const
-// EditorImageSpec = 'qer_editorimage';
 var
  Q: QObject;
  I: Integer;
- S: String;
  ValidStage: QPixelSet;
+ DefaultImageName: array[0..5] of String;
+ DefaultImageIndex: Integer;
+ ImageFileName: String;
  Size: TPoint;
  V: array [1..2] of Single;
  TexExt: String;
 begin
  Acces;
  Result:=Nil;
- {this function tries to guess what image should be displayed
-  for the shader. The priority is
-  1. the qer_editorimage
-  2. a texture named as the shader name itself
-  3. any "suitable" image from one of the shader stages
-  Note, that it is first tried to load as tga, then as jpeg
-  4. Shader Missing Texture texture
-  }
-
- if Specifics.Values['q']<>'' then
-        // look at the q specific (QTextureLnk.LoadPixelSet)
-         S:=Specifics.Values['q']
- else
- if Specifics.Values['map']<>'' then
-   S:=Specifics.Values['map']
- else
- // { looks for 'qer_editorimage' }  // ORG code
- // S:=Specifics.Values[EditorImageSpec];  // ORG code
- if Specifics.Values['diffusemap']<>'' then
-   S:=Specifics.Values['diffusemap']
- else
- if Specifics.Values['qer_editorimage']<>'' then
-   S:=Specifics.Values['qer_editorimage']
- else
- if Specifics.Values['specularmap']<>'' then
-   S:=Specifics.Values['specularmap']
- else
- if Specifics.Values['bumpmap']<>'' then
-   S:=Specifics.Values['bumpmap'];
 
  TexExt:=SetupGameSet.Specifics.Values['TextureFormat'];
- if S<>'' then
+ if ReverseLink<>nil then
+   DefaultImagename[0]:=ReverseLink.Specifics.Values['e'];
+ if DefaultImageName[0]<>'' then
  begin
-   try
-     if (ExtractFileExt(S)='') then
-       Result:=NeedGameFile(S+TexExt, '') as QPixelSet
-     else
-       Result:=NeedGameFile(S, '') as QPixelSet;
-   except
-     Result:=NIL
-   end;
- end;
+    ImageFileName:=Specifics.Values[DefaultImageName[0]];
+    Log(LOG_VERBOSE,'attempting to load '+ImageFileName);
+    try
+      Result:=NeedGameFile(ImageFileName, '') as QPixelSet
+    except
+      Result:=nil;
+    end;
+ end
+ else
+ begin
+   DefaultImageIndex:=0;
+   DefaultImageName[0]:=Specifics.Values['q']; // look at the q specific (QTextureLnk.LoadPixelSet)
+   DefaultImageName[1]:=Specifics.Values['qer_editorimage'];
+   DefaultImageName[2]:=Specifics.Values['map'];
+   DefaultImageName[3]:=Specifics.Values['diffusemap'];
+   DefaultImageName[4]:=Specifics.Values['specularmap'];
+   DefaultImageName[5]:=Specifics.Values['bumpmap']; //FIXME: Doesn't work!
 
- { If no image could be found yet, try the shader-name itself }
- if Result=Nil then
- begin
-   try
-     Result:=NeedGameFile(Name+TexExt, '') as QPixelSet;
-   except
-     Result:=NIL
-   end;
+   while ((Result=nil) and (DefaultImageIndex<6)) do
+   begin
+      if (DefaultImageName[DefaultImageIndex]<>'') then
+      begin
+        ImageFileName:=DefaultImageName[DefaultImageIndex];
+        Log(LOG_VERBOSE,'attempting to load '+ImageFileName);
+        try
+          if (ExtractFileExt(ImageFileName)='') then
+            Result:=NeedGameFile(ImageFileName+TexExt, '') as QPixelSet
+          else
+            Result:=NeedGameFile(ImageFileName, '') as QPixelSet;
+        except
+          Result:=nil;
+        end;
+      end;
+      if Result=nil then
+        DefaultImageIndex:=DefaultImageIndex+1;
+    end;
  end;
 
  { examines all shaderstages for existing images }
@@ -190,6 +190,16 @@ begin
          end;
        end;
      end;
+   end;
+ end;
+
+  { If no image could be found yet, try the shader-name itself }
+ if Result=Nil then
+ begin
+   try
+     Result:=NeedGameFile(Name+TexExt, '') as QPixelSet;
+   except
+     Result:=nil;
    end;
  end;
 
@@ -378,8 +388,8 @@ var
  V: array[1..2] of Single;
  masked: boolean; { Mohaa (tiglari): I'm guessing that this means that some
                     of the surfaceparms should be loaded into the editor as
-                    flags.  'surfaceparm' appears an various other contexts
-                    where it doesn't seem to set checks in the Mohraidant
+                    flags.  'surfaceparm' appears in various other contexts
+                    where it doesn't seem to set checks in the Mohradiant
                     surf inspector }
  EditableSurfaceParms : boolean;
 
@@ -491,17 +501,19 @@ begin
       // is removed by the comment filtering code below
       for I:=0 to FSize-5 do
        if (Source[I]='t') and (Source[I+1]='a') and (Source[I+2]='b') and (Source[I+3]='l') and (Source[I+4]='e') then
-        begin
-         Source[I]:='/';
-         Source[I+1]:='/';
-        end;
+        if (I=0) or (Source[I-1] in [#13, #10, #0, ' ', Chr(vk_Tab)]) then
+         begin
+          Source[I]:='/';
+          Source[I+1]:='/';
+         end;
       // cdunde: Do the same thing for "guide" that was causing "textures/" to get knocked out
       for I:=0 to FSize-5 do
        if (Source[I]='g') and (Source[I+1]='u') and (Source[I+2]='i') and (Source[I+3]='d') and (Source[I+4]='e') then
-        begin
-         Source[I]:='/';
-         Source[I+1]:='/';
-        end;
+        if (I=0) or (Source[I-1] in [#13, #10, #0, ' ', Chr(vk_Tab)]) then
+         begin
+          Source[I]:='/';
+          Source[I+1]:='/';
+         end;
 
       { preprocess (remove by converting to spaces) comments }
       Comment:=False;
@@ -547,9 +559,9 @@ begin
        if Source^=#0 then Break;    { end of file }
        counter:=0;
        MaterialName:=ReadLine;
-       if LeftStr(MaterialName, 8) = 'material' then
+       if MaterialName='material' then
        begin
-         //FIXME: Anybody any idea what this 'material' means exactly? 
+         //FIXME: Anybody any idea what this 'material' exactly means? 
          SkipSpaces;
          MaterialName:=ReadLine;
        end;
@@ -604,15 +616,15 @@ begin
             if Stage.Specifics.Values['diffusemap']<>'' then
               Stage.Name:=Stage.Specifics.Values['diffusemap']
           else
-            // cdunde - try 'specularmap' instead
+            // cdunde - try 'qer_editorimage' instead
             if Stage.Specifics.Values['qer_editorimage']<>'' then
               Stage.Name:=Stage.Specifics.Values['qer_editorimage']
           else
-            // cdunde - try 'qer_editorimage' instead
+            // cdunde - try 'specularmap' instead
             if Stage.Specifics.Values['specularmap']<>'' then
               Stage.Name:=Stage.Specifics.Values['specularmap']
           else
-            // cdunde - try 'map' instead
+            // cdunde - try 'bumpmap' instead
             if Stage.Specifics.Values['bumpmap']<>'' then
               Stage.Name:=Stage.Specifics.Values['bumpmap']
           else
