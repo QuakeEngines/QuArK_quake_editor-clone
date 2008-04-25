@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2008/02/23 19:25:21  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.15  2007/09/13 15:09:06  danielpharos
 Improved the find-texture-belonging-to-material-file
 
@@ -84,9 +87,6 @@ type
            class function TypeInfo: String; override;
          end;
   QVMTFile = class(QPixelSet)
-         private
-           DefaultImageName: array[0..7] of String;
-           DefaultImageIndex: Integer;
          protected
            DefaultImageCache : QPixelSet;
          public
@@ -208,6 +208,8 @@ var
  GCFFilename: String;
  TexturePath: String;
  FullTextureFile: String;
+ DefaultImageName: array[0..7] of String;
+ DefaultImageIndex: Integer;
  ImageFileName: String;
  Size: TPoint;
  V: array [1..2] of Single;
@@ -235,21 +237,45 @@ begin
 
   //TexExt:=SetupGameSet.Specifics.Values['TextureFormat'];
   TexExt:='.vtf';
-  while ((Result=nil) and (DefaultImageIndex<8)) do
+  if ReverseLink<>nil then
+    DefaultImageName[0]:=ReverseLink.Specifics.Values['e'];
+  if DefaultImageName[0]<>'' then
   begin
-    if (DefaultImageName[DefaultImageIndex]<>'') then
-    begin
-      ImageFileName:=DefaultImageName[DefaultImageIndex]+TexExt;
-      FullTextureFile:=IncludeTrailingPathDelimiter(TexturePath) + ImageFileName;
-      Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
-      try
-        Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet
-      except
-        Result:=nil;
-      end;
+    FullTextureFile:=Specifics.Values[DefaultImageName[0]];
+    Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
+    try
+      Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet
+    except
+      Result:=nil;
     end;
-    if Result=nil then
-      DefaultImageIndex:=DefaultImageIndex+1;
+  end
+  else
+  begin
+    DefaultImageIndex:=0;
+    DefaultImageName[0]:=Specifics.Values['%tooltexture'];
+    DefaultImageName[1]:=Specifics.Values['$basetexture'];
+    DefaultImageName[2]:=Specifics.Values['$material'];
+    DefaultImageName[3]:=Specifics.Values['$bumpmap'];
+    DefaultImageName[4]:=Specifics.Values['$normalmap'];
+    DefaultImageName[5]:=Specifics.Values['$dudvmap'];
+    DefaultImageName[6]:=Specifics.Values['$envmap'];
+    DefaultImageName[7]:=Specifics.Values['$parallaxmap'];
+    while ((Result=nil) and (DefaultImageIndex<8)) do
+    begin
+      if (DefaultImageName[DefaultImageIndex]<>'') then
+      begin
+        ImageFileName:=DefaultImageName[DefaultImageIndex]+TexExt;
+        FullTextureFile:=IncludeTrailingPathDelimiter(TexturePath) + ImageFileName;
+        Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
+        try
+          Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet
+        except
+          Result:=nil;
+        end;
+      end;
+      if Result=nil then
+        DefaultImageIndex:=DefaultImageIndex+1;
+    end;
   end;
 
   if (Result=nil) then
@@ -321,7 +347,6 @@ var
   VMTMaterial: Cardinal;
   Stage: QVMTStage;
   StageList: array of QObject;
-  ImageType: Integer;
   GroupEndWorkaround: Boolean;
   GroupEndWorkaroundName: String;
 
@@ -331,7 +356,6 @@ var
   NodeValueString: String;
   NodeValueInteger: Cardinal;
   NodeValueSingle: Single;
-  I: Integer;
 begin
   Log(LOG_VERBOSE,'load vmt %s',[self.name]);;
   case ReadFormat of
@@ -367,9 +391,7 @@ begin
         vlDeleteMaterial(VMTMaterial);
         Fatal('Unable to load VMT file. Call to vlMaterialGetFirstNode failed.');
       end;
-      for I:=0 to 7 do
-        DefaultImageName[I]:='';
-      DefaultImageIndex:=8;
+
       NodeLevel:=0;
       SetLength(StageList, NodeLevel+1);
       StageList[NodeLevel]:=Self;
@@ -404,33 +426,6 @@ begin
           begin
             NodeValueString:=vlMaterialGetNodeString;
             StageList[NodeLevel].Specifics.Add(NodeName+'='+NodeValueString);
-
-            if LowerCase(NodeName)='%tooltexture' then
-              ImageType:=0
-            else if LowerCase(NodeName)='$basetexture' then
-              ImageType:=1
-            else if LowerCase(NodeName)='$material' then
-              ImageType:=2
-            else if LowerCase(NodeName)='$bumpmap' then
-              ImageType:=3
-            else if LowerCase(NodeName)='$normalmap' then
-              ImageType:=4
-            else if LowerCase(NodeName)='$dudvmap' then
-              ImageType:=5
-            else if LowerCase(NodeName)='$envmap' then
-              ImageType:=6
-            else if LowerCase(NodeName)='$parallaxmap' then
-              ImageType:=7
-            else
-              ImageType:=8;
-            if ImageType<8 then
-            begin
-              DefaultImageName[ImageType]:=NodeValueString;
-              if ImageType<DefaultImageIndex then
-              begin
-                DefaultImageIndex:=ImageType;
-              end;
-            end;
           end;
         NODE_TYPE_INTEGER:
           begin
