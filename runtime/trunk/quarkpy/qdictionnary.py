@@ -518,6 +518,8 @@ Strings = {
     4457: "Are you sure you want to delete this item(s) ?",
     4458: "Invalid arguments to 'extendcoplanar'",
     4459: "positive integer expected",
+    4460: "Cannot find '%s', using '%s' instead",
+    4461: "Unknown value '%s' for setting '%s'",
 
     4614: "&More >>",
     4616: "                     *** EXCEPTION REPORT ***\n\n%s       Address in the program : %p (%p)\n",
@@ -1044,6 +1046,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.121  2008/04/19 14:28:36  cdunde
+#To activate RMB menu items.
+#
 #Revision 1.120  2008/02/24 14:41:32  danielpharos
 #Fixed web-links not working anymore, and added a decent error message if a local file cannot be found.
 #
