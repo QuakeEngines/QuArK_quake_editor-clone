@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.34  2007/05/06 21:21:43  danielpharos
 Changed DDS support to be EF2-specific.
 
@@ -182,7 +185,7 @@ type
 
 implementation
 
-uses Game, Travail, QkObjectClassList;
+uses Game, Travail, QkObjectClassList, Logging;
 
 procedure Q_HFile.ObjectState(var E: TEtatObjet);
 begin
@@ -244,13 +247,13 @@ begin
 end;
 
 function QShader.DefaultImage : QPixelSet;
-const
- EditorImageSpec = 'qer_editorimage';
 var
  Q: QObject;
  I: Integer;
- S: String;
  ValidStage: QPixelSet;
+ DefaultImageName: array[0..1] of String;
+ DefaultImageIndex: Integer;
+ ImageFileName: String;
  Size: TPoint;
  V: array [1..2] of Single;
  TexExt: String;
@@ -269,40 +272,45 @@ begin
  begin
  /alex}
  {/tiglari}
- {this function tries to guess what image should be displayed
-  for the shader. The priority is
-  1. the qer_editorimage
-  2. a texture named as the shader name itself
-  3. any "suitable" image from one of the shader stages
-  Note, that it is first tried to load as tga, then as jpeg
-  4. Shader Missing Texture texture
-  }
-
-  if Specifics.Values['q']<>'' then
-   { look at the q specific (QTextureLnk.LoadPixelSet) }
-    S:=Specifics.Values['q']
-  else
-   { looks for 'qer_editorimage' }
-    S:=Specifics.Values[EditorImageSpec];
 
  TexExt:=SetupGameSet.Specifics.Values['TextureFormat'];
- if S<>'' then
+ if ReverseLink<>nil then
+   DefaultImagename[0]:=ReverseLink.Specifics.Values['e'];
+ if DefaultImageName[0]<>'' then
+ begin
+   ImageFileName:=Specifics.Values[DefaultImageName[0]];
+   Log(LOG_VERBOSE,'attempting to load '+ImageFileName);
    try
-     if (ExtractFileExt(S)='') then
-       Result:=NeedGameFile(S+TexExt, '') as QPixelSet
-     else
-       Result:=NeedGameFile(S, '') as QPixelSet;
+     Result:=NeedGameFile(ImageFileName, '') as QPixelSet
    except
-     Result:=NIL
+     Result:=nil;
    end;
+ end
+ else
+ begin
+   DefaultImageIndex:=0;
+   DefaultImageName[0]:=Specifics.Values['q']; // look at the q specific (QTextureLnk.LoadPixelSet)
+   DefaultImageName[1]:=Specifics.Values['qer_editorimage'];
 
- { If no image could be found yet, try the shader-name itself }
- if Result=Nil then
-   try
-     Result:=NeedGameFile(Name+TexExt, '') as QPixelSet;
-   except
-     Result:=NIL
+   while ((Result=nil) and (DefaultImageIndex<2)) do
+   begin
+     if (DefaultImageName[DefaultImageIndex]<>'') then
+     begin
+       ImageFileName:=DefaultImageName[DefaultImageIndex];
+       Log(LOG_VERBOSE,'attempting to load '+ImageFileName);
+       try
+         if (ExtractFileExt(ImageFileName)='') then
+           Result:=NeedGameFile(ImageFileName+TexExt, '') as QPixelSet
+         else
+           Result:=NeedGameFile(ImageFileName, '') as QPixelSet;
+       except
+         Result:=nil;
+       end;
+     end;
+     if Result=nil then
+       DefaultImageIndex:=DefaultImageIndex+1;
    end;
+ end;
 
  { examines all shaderstages for existing images }
  if Result=Nil then
@@ -328,14 +336,25 @@ begin
        end;
      end;
    end;
+ end;
+   
+ { If no image could be found yet, try the shader-name itself }
+ if Result=Nil then
+ begin
+   Log(LOG_VERBOSE,'attempting to load '+Name+TexExt);
+   try
+     Result:=NeedGameFile(Name+TexExt, '') as QPixelSet;
+   except
+     Result:=nil;
+   end;
+ end;
+ 
  { tiglari }
  {alex
  end;
  DefaultImageCache:=Result;
  /alex}
  { /tiglari }
-
- end;
 
  {tiglari: giving shaders a size.  a presumably
   horrible place to do it, but doesn't work when
