@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2008/03/29 15:15:47  danielpharos
+Moved all the CompareMem stuff to ExtraFunctionality, where it belongs.
+
 Revision 1.61  2008/03/15 03:27:31  cdunde
 To add Prey materials support.
 
@@ -252,7 +255,6 @@ uses
   EnterEditCtrl, QkForm, Python, QkPixelSet;
 
 const
-  BitsFirst = Length('Image1=')+1;
  {CouleurGrise  = 3;}
   CouleurNoire  = 0;
   CouleurGrille = 0;
@@ -267,7 +269,6 @@ const
   cpFixedOpacity = $800;
   MaxImgCount  = 16;
   ImgCodes     : array[0..MaxImgCount-1] of Char = '123456789ABCDEFG';
- {PaletteTextureGames = [mjHeretic2];}
 
  {TEX_FLAGS_TRANSPARENT33 = 16;
   TEX_FLAGS_TRANSPARENT66 = 32;}
@@ -407,20 +408,20 @@ type
 
  {------------------------}
 
+function GameTexturesPath : String;
+function GameShadersPath : String;
+function GameMaterialsPath : String;
+
 {procedure Q1MiptexToQ2(const Source: TQ1Miptex; var Dest: TQ2Miptex);
 procedure Q2MiptexToQ1(const Source: TQ2Miptex; var Dest: TQ1Miptex);}
 {procedure TexImageToDIBits(W: Integer; const Image: String; var Bits);}
 
-{procedure SizeDownTextureList(FreeSize: Integer);
- procedure ClearTextureList;}
 function GlobalFindTexture(const TexName: String; AltSrc: QObject) : QPixelSet;
 {procedure GlobalLoadTexture3D(const TexName: String; var T: TTexture3D; AltSrc: QObject);
  procedure GetPlainTexture3D(var T: TTexture3D; Couleur: Char);}
 function WriteAllTextures(L: TStringList; Op: Integer; AltTexSrc: QObject) : TQList;
 
 function TestConversionTextures(var I: Integer) : QTextureFileClass;
-function GameTexturesPath : String;
-function GameShadersPath : String; {DECKER}
 function ScaleDown(var W, H: Integer) : Boolean;
 
 procedure RoundTextureSize(var Size: TPoint; cp: Integer);
@@ -434,7 +435,7 @@ implementation
 
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
-  CCode, PyObjects, QkHr2, QkHL, QkSin, QkFormCfg,
+  CCode, PyObjects, QkHr2, QkHL, QkSin, QkFormCfg, Logging,
   QkQ1, QkQ2, QkQ3, QkObjectClassList, QkD3, QkApplPaths{, ExtraFunctionality};
 
 {$R *.DFM}
@@ -482,7 +483,20 @@ function GameShadersPath : String;
 begin
   Result:=SetupGameSet.Specifics.Values['ShadersPath'];
   if Result='' then
+  begin
+    Log(LOG_WARNING, FmtLoadStr(4460, ['ShadersPath', 'TexturesPath']));
     Result:=GameTexturesPath;
+  end;
+end;
+
+function GameMaterialsPath : String;
+begin
+  Result:=SetupGameSet.Specifics.Values['MaterialsPath'];
+  if Result='' then
+  begin
+    Log(LOG_WARNING, FmtLoadStr(4460, ['MaterialsPath', 'ShadersPath']));
+    Result:=GameShadersPath;
+  end;
 end;
 
 function ScaleDown(var W, H: Integer) : Boolean;
@@ -538,43 +552,10 @@ end;*)
 
  {------------------------}
 
-(*var
- TextureList: TQList;
-
-procedure SizeDownTextureList(FreeSize: Integer);
-var
- I: Integer;
-begin
- if TextureList=Nil then Exit;
- for I:=0 to TextureList.Count-1 do
-  begin
-   Dec(FreeSize, TextureList[I].GetObjectSize(Nil, False));
-   if FreeSize<=0 then
-    begin
-     TextureList.Free;
-     TextureList:=Nil;
-     Exit;
-    end;
-  end;
-end;
-
-procedure ClearTextureList;
-begin
- TextureList.Free;
- TextureList:=Nil;
-end;*)
-
 function GlobalFindTexture(const TexName: String; AltSrc: QObject) : QPixelSet;
 var
   Q: QObject;
 begin
-(*if TextureList<>Nil then
-  begin
-   Result:=QTexture(SortedFindName(TextureList, TexName));
-   if Result<>Nil then
-    Exit;  { found it in buffer }
-  end;*)
-
   { we must search for the texture in the Texture Browser }
   if TexName='' then
     Result:=Nil
@@ -592,15 +573,6 @@ begin
     end;
     Result:=QPixelSet(OpenTextureBrowser.FindTbObject(TexName, QPixelSet, Nil));
   end;
-
-(*if Result<>Nil then
-  begin   { found it }
-   if TextureList=Nil then
-    TextureList:=TQList.Create;
-   TextureList.Add(Result);       { add it into the buffer }
-   TextureList.Sort(ByFileName);
-   Exit;
-  end;*)
 end;
 
 function TestConversionTextures(var I: Integer) : QTextureFileClass;
@@ -816,7 +788,8 @@ var
   procedure WriteColormapFile();
   const
     cDummySize : array[1..2] of Single = (1,1);
-    cPalEqual = 'Pal=';
+    Spec1 = 'Image1';
+    Spec2 = 'Pal';
   var
     S: String;
     WriteTo: String;
@@ -828,12 +801,12 @@ var
       Q:=QPcx.Create('', Nil);
       Q.AddRef(+1);
       try
-        S:=cPalEqual;
-        SetLength(S, Length(cPalEqual)+SizeOf(TPaletteLmp));
-        Move(GameBuffer(mjAny)^.PaletteLmp, PChar(S)[Length(cPalEqual)], SizeOf(TPaletteLmp));
+        S:=Spec2+'=';
+        SetLength(S, Length(Spec2)+1+SizeOf(TPaletteLmp));
+        Move(GameBuffer(mjAny)^.PaletteLmp, PChar(S)[Length(Spec2)+1], SizeOf(TPaletteLmp));
         Q.Specifics.Add(S);
         Q.SetFloatsSpec('Size', cDummySize);
-        Q.Specifics.Values['Image1']:=#0#0#0#0;
+        Q.Specifics.Values[Spec1]:=#0#0#0#0;
         Q.SaveInFile(rf_Default, OutputFile(Copy(WriteTo, 2, MaxInt)));
       finally
         Q.AddRef(-1);
@@ -990,9 +963,8 @@ begin
     finally
       ProgressIndicatorStop;
     end;
-  except
+  finally
     TexList.Free;
-    Raise;
   end;
 
   Result:=TexList;
@@ -1182,7 +1154,7 @@ end;
 
 function QTextureLnk.LoadPixelSet;
 var
-  S, Arg, TexName, Ext, DefaultImageName: String;
+  S, Arg, TexName, Ext, DefaultImageName, ShaderType: String;
   Bsp: QBsp;
   TexList: QWad;
   I: Integer;
@@ -1241,20 +1213,21 @@ begin
       begin   { Quake 3 }
         Arg:=Specifics.Values['b'];
         if Arg<>'' then
-        begin { shader (Q3) or material (D3) or material (D3 for Quake4) or material (D3 for Prey) }
-          if (CharModeJeu=mjDoom3) or (CharModeJeu=mjQuake4) or (CharModeJeu=mjPrey) then
+        begin { shader (Q3) or material (D3) or similar}
+          ShaderType:=SetupGameSet.Specifics.Values['ShadersType'];
+          if ShaderType=mjDoom3 then
            begin
             // the revised code (Doom 3 material)
             // S is the game's files folder (baseq3 for Quake 3, base for Doom 3, q4base for Quake 4)
-            // SetupGameSet.Specifics.Values[.... is the folder, or pak file folder, that the shader/material file is in.
+            // GameMaterialsPath is the folder, or pak file folder, that the shader/material file is in.
             // Arg is the game's shader (Q3) or material (D3/Q4) full file name.
             // So the line below MaterialFile:= gives the game folder, file folder, full file name of the shader/material for the link
             // witch is (as a Doom 3 example): base + materials/alphalabs.mtr
-            MaterialFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['MaterialsPath']+Arg, '') as D3MaterialFile;
+            MaterialFile:=NeedGameFileBase(S, GameMaterialsPath+Arg, '') as D3MaterialFile;
             MaterialFile.Acces;  { load the .mtr file (if not already loaded), meaning this loads the entire .mtr file.}
 
             // GameTexturesPath is the IMAGE MAIN folder, for the link, with a forward slash, textures/ .
-            // TexName is the IMAGE SUB folder, forward slach and texture name (without the file .tga suffex like alphalabs/a_1fwall21b)
+            // TexName is the IMAGE SUB folder, forward slash and texture name (without the file .tga suffex like alphalabs/a_1fwall21b)
             // So the "Link" line below is really TWO items linked togeather:
             // game folder/material folder/material file full name + IMAGE MAIN folder/IMAGE SUB folder/texture file (short) name.
             // for example, we want to link to the IMAGE file for the Doom3 alphalabs/a_1fwall21b material we would have:
@@ -1272,10 +1245,10 @@ begin
             if DefaultImageName<>'' then
               Link.Specifics.Values['q']:=DefaultImageName;
            end
-          else
+          else if ShaderType=mjQ3A then
            begin
             // the original code (Quake 3 shader)
-            ShaderFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['ShadersPath']+Arg, '') as QShaderFile;
+            ShaderFile:=NeedGameFileBase(S, GameShadersPath+Arg, '') as QShaderFile;
             ShaderFile.Acces;  { load the .shader file (if not already loaded) }
             Link:=ShaderFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
 
@@ -1286,7 +1259,9 @@ begin
 
             if DefaultImageName<>'' then
               Link.Specifics.Values['q']:=DefaultImageName;
-           end;
+           end
+          else
+           Raise EErrorFmt(4461, [ShaderType, 'ShadersType'])
         end
         else  { direct (non-shader) }
           Link:=NeedGameFileBase(S, GameTexturesPath+TexName+SetupGameSet.Specifics.Values['TextureFormat'], '') as QPixelSet;
