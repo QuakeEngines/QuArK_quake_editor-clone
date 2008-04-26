@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2008/04/25 20:42:14  danielpharos
+Added history, fixed two small material-file parsing bug, and added experimental 'e' shader keyword.
 
 }
 
@@ -196,6 +198,7 @@ begin
   { If no image could be found yet, try the shader-name itself }
  if Result=Nil then
  begin
+   Log(LOG_VERBOSE,'attempting to load '+Name+TexExt);
    try
      Result:=NeedGameFile(Name+TexExt, '') as QPixelSet;
    except
