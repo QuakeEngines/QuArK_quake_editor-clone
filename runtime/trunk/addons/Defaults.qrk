@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.404  2008/04/23 20:51:47  cdunde
+//Setup for Warsow with .md3 model support.
+//
 //Revision 1.403  2008/04/19 00:48:56  cdunde
 //Made changes to sort material lists, cleanup dead ones and improved missing ones.
 //
@@ -1735,6 +1738,8 @@ QQRKSRC1
         ShadersPath = "materials/"
         MaterialsPath = "materials/"
         Q2TexFlags = "1"
+        ShadersType = "j"                       // This game has Doom 3-type shaders
+
         TextureFormat = ".tga"                  // primary texture file extension
         TextureFileExtensions = ".tga,.jpg"     // possible texture file extensions
         TextureWriteFormat = ".tga"
@@ -1793,6 +1798,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -1862,6 +1868,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -2195,6 +2202,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -2263,6 +2271,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -2390,6 +2399,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -2467,6 +2477,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -2546,6 +2557,8 @@ QQRKSRC1
         ShadersPath = "materials/"
         MaterialsPath = "materials/"
         Q2TexFlags = "1"
+        ShadersType = "j"                       // This game has Doom 3-type shaders
+
         TextureFormat = ".dds"                  // primary texture file extension
         TextureFileExtensions = ".dds,.tga"     // possible texture file extensions
         TextureWriteFormat = ".dds"
@@ -2701,6 +2714,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -2802,6 +2816,8 @@ QQRKSRC1
         ShadersPath = "materials/"
         MaterialsPath = "materials/"
         Q2TexFlags = "1"
+        ShadersType = "j"                       // This game has Doom 3-type shaders
+
         TextureFormat = ".tga"                  // primary texture file extension
         TextureFileExtensions = ".tga,.jpg"     // possible texture file extensions
         TextureWriteFormat = ".tga"
@@ -2854,6 +2870,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -2939,6 +2956,8 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
+
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
         TextureWriteFormat = ".tga"
@@ -3087,6 +3106,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -3182,6 +3202,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -3214,28 +3235,34 @@ QQRKSRC1
       {
         Game = "Sylphis"
         Code = "i"
+
         Program = "sylphis.exe"
         Directory = "c:\sylphis"
         CheckDirectory = "sylphis.exe"
-        MapCommentsPrefix = "//"
-        TexturesPath = "textures/"
-        ShadersPath = "scripts/"
-        Q2TexFlags = "1"
-        BuildPgmsDir = "c:\sylphis\tools"
-        BuildPgm1 = "mc.exe"
-        BuildArgs1 = "-read %mapfile% -write"
+
         DefaultTexture = "none"
         DefaultTextureTrigger = "common/trigger"
         DefaultTextureOrigin = "common/origin"
         DefaultTextureClip = "common/clip"
         DefaultTextureCaulk = "common/caulk"
         DefaultTextureScale = "0.25"
+
+        BuildPgmsDir = "c:\sylphis\tools"
+        BuildPgm1 = "mc.exe"
+        BuildArgs1 = "-read %mapfile% -write"
         LightFactor = '0.90000'
         TextureFormat = ".jpg"
         TextureFileExtensions = ".png,.tga,.jpg"
         TextureWriteFormat = ".jpg"
         TextureShaders = "scripts/quark.shader"
         WateryTex = ")"
+
+        MapCommentsPrefix = "//"
+        TexturesPath = "textures/"
+        ShadersPath = "scripts/"
+        Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
+
         BaseDir = "base"
         tmpQuArK = "tmpQuArK"
         Palette = ""
@@ -3245,14 +3272,15 @@ QQRKSRC1
         RunMapCmdLine = " -map %s.cmap"
         AddOns = "DataSylphis.qrk"$0D"SylphisEntities.qrk"$0D"SylphisTextures.qrk"
         Console = "1"
-        Form = "GameSylphis"
         DecimalPlaces = '5'
+        Form = "GameSylphis"
       }
 
       Torque:config =
       {
         Game = "Torque"
         Code = "g" // Hardcoded value in Setup.PAS
+
         Program = "map2dif_DEBUG.exe"
         Directory = "C:\Torque"
         //CheckDirectory = "map2dif_DEBUG.exe"   // hidden setting
@@ -3357,6 +3385,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1"
         BezierPatchPluginPrefixes = "MB2"
@@ -3424,9 +3453,11 @@ QQRKSRC1
         BuildCheck4= "+BSP,-LIN{LoadLinFile}"
         BuildPgm5  = "Q3MAP2.EXE"
         BuildArgs5 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -vlight "$22"%mapfile%"$22
+
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        ShadersType = "a"                       // This game has Quake 3-type shaders
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
