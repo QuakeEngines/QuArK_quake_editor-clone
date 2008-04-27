@@ -1,5 +1,6 @@
 title: Advanced customization
 subdir: intro
+subdir: conversion
 subdir: newgame
 subdir: addons
 subdir: python
@@ -13,7 +14,11 @@ This mainly includes:
 
 <strong>Add-Ons</strong>:
 lists describing new entity types, new textures, etc. This is what you need to have QuArK support
-new Mods of the game or new games altogether.
+new Mods of the game or new games altogether.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Use of the <ref> adv/conversion \ QuArK Conversion Tools </ref> (see its section below) can help to create the
+needed addon .qrk files without having to copy files and write code.
 
 <strong>Python</strong>:
 The language which much of the map-editor is written, and the
