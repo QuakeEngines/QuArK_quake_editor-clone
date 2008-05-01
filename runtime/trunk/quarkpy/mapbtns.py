@@ -386,7 +386,7 @@ def texturebrowser(reserved=None):
             break
 
     Folder = quarkx.newobj("Used Textures.txlist")
-    Folder.flags = qutils.OF_TVSUBITEM
+    Folder.flags = Folder.flags | qutils.OF_TVSUBITEM
 
     UsedTexturesList = quarkx.texturesof([editor.Root])
  #   NoImageFile = None
@@ -748,6 +748,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.32  2008/02/22 09:52:24  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.31  2007/12/28 23:22:41  cdunde
 #Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
 #

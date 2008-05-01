@@ -168,7 +168,6 @@ class ModelLayout(BaseLayout):
 
   ### To link Used Skin Textures of the current model being edited into the Texture Browser for displaying.
     def putskinsintexturebrowser(self):
-        self.editor = mdleditor.mdleditor
         import qutils
         tbx_list = quarkx.findtoolboxes("Texture Browser...");
         ToolBoxName, ToolBox = tbx_list[0]
@@ -187,7 +186,7 @@ class ModelLayout(BaseLayout):
                             UsedTexturesList[skin.name] = subitem.dictitems[skin.name]
         # Creates the "Used Skin Textures.qtxfolder" to display in the Texture Browser for the model that is opened in the editor.
         UsedTexture = quarkx.newobj('Used Skin Textures.qtxfolder')
-        UsedTexture.flags = qutils.OF_TVSUBITEM
+        UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
         for UsedTextureName in UsedTexturesList:
             UsedTexture.appenditem(UsedTexturesList[UsedTextureName].copy())
         ToolBox.appenditem(UsedTexture)
@@ -744,6 +743,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.62  2008/05/01 13:52:32  danielpharos
+#Removed a whole bunch of redundant imports and other small fixes.
+#
 #Revision 1.61  2008/05/01 12:08:36  danielpharos
 #Fix several objects not being unloaded correctly.
 #

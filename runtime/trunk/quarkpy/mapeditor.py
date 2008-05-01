@@ -85,7 +85,7 @@ class MapEditor(BaseEditor):
                 break
         # Creates the "Used Textures.txlist" to display in the Texture Browser.
         Folder = quarkx.newobj("Used Textures.txlist")
-        Folder.flags = qutils.OF_TVSUBITEM
+        Folder.flags = Folder.flags | qutils.OF_TVSUBITEM
         UsedTexturesList = quarkx.texturesof([self.Root])
      #   NoImageFile = None
         for UsedTextureName in UsedTexturesList:
@@ -408,6 +408,10 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.16  2008/01/23 01:40:19  cdunde
+#Couple of fixes to top the Texture Browser from opening all the time and
+#stop multiple creations of the Used Textures in the Texture Browser.
+#
 #Revision 1.15  2007/12/28 23:22:41  cdunde
 #Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
 #
