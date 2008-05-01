@@ -38,7 +38,6 @@ class ModelEditor(BaseEditor):
     ObjectMgr = mdlentities.CallManager
     HandlesModule = mdlhandles
     MouseDragMode = mdlhandles.RectSelDragObject
-    dragobject = None
     findtargetdlg = None
 
     ### Different lists of the Model Editor.
@@ -152,8 +151,6 @@ class ModelEditor(BaseEditor):
      #   if Root is not None: # If you have to open a model to open the Model Editor, how could it be None?
         Root = self.fileobject.findname(Root)
         self.Root = Root
-        self.dragobject = None
-        self.list = ()
         if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
             componentnames = []
             for item in self.Root.dictitems:
@@ -176,9 +173,9 @@ class ModelEditor(BaseEditor):
             Lock_X = quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"]
             Lock_Y = quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"]
             Lock_Z = quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"]
-        self.lock_x = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_X"])
-        self.lock_y = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Y"])
-        self.lock_z = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
+        self.lock_x = int(Lock_X)
+        self.lock_y = int(Lock_Y)
+        self.lock_z = int(Lock_Z)
 
 
     def CloseRoot(self):
@@ -186,7 +183,6 @@ class ModelEditor(BaseEditor):
         HoldObject = None
         NewSellist = []
         mdleditor = None
-        self.dragobject = None
         self.findtargetdlg = None
 
         self.ModelVertexSelList = []
@@ -252,9 +248,9 @@ class ModelEditor(BaseEditor):
                 return
             elif (flagsmouse == 536 or flagsmouse == 544 or flagsmouse == 1056) and currentview.info["viewname"] != "skinview":
                 pass
-            elif currentview.info["viewname"] == "skinview" and flagsmouse == 2056:
-                for v in self.layout.views:
-                    v.handles = v.handles
+            #elif currentview.info["viewname"] == "skinview" and flagsmouse == 2056:
+            #    for v in self.layout.views:
+            #        v.handles = v.handles
             else:
             # This was killing the handles for the Skin-view,
             #    currentview.handles = mdlhandles.BuildHandles(self, self.layout.explorer, currentview)
@@ -421,9 +417,8 @@ class ModelEditor(BaseEditor):
         self.layout.selchange()
         self.buildhandles()
         try:
-            import mdlmgr
             from mdlmgr import treeviewselchanged
-            mdlmgr.treeviewselchanged = 1
+            treeviewselchanged = 1
         except:
             pass
         self.invalidateviews(1)
@@ -452,7 +447,7 @@ class ModelEditor(BaseEditor):
         editorview = self.layout.views[0]
         newhandles = []
         from mdlmgr import treeviewselchanged
-        mdlmgr.treeviewselchanged = 1
+        treeviewselchanged = 1
         if not self.linearbox:
             quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "1"
             setup = quarkx.setupsubset(self.MODE, "Building")
@@ -1078,7 +1073,7 @@ def commonhandles(self, redraw=1):
                     self.dragobject = None
             if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
                 if treeviewselchanged == 1:
-                    mdlmgr.treeviewselchanged = 0
+                    treeviewselchanged = 0
                     self.dragobject = None
                 else:
                     return
@@ -1434,7 +1429,7 @@ def commonhandles(self, redraw=1):
         pass
         
     if treeviewselchanged == 1:
-        mdlmgr.treeviewselchanged = 0
+        treeviewselchanged = 0
 
     if flagsmouse == 16384 and self.dragobject is not None:
         self.dragobject.handle = None
@@ -1445,6 +1440,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.84  2008/05/01 12:08:38  danielpharos
+#Fix several objects not being unloaded correctly.
+#
 #Revision 1.83  2008/02/23 04:41:11  cdunde
 #Setup new Paint modes toolbar and complete painting functions to allow
 #the painting of skin textures in any Model Editor textured and Skin-view.

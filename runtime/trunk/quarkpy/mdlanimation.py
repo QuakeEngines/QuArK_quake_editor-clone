@@ -29,7 +29,6 @@ def drawanimation(self):
     editor = mdleditor.mdleditor
     FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] == "1":
-        import mdlmgr
         from mdlmgr import treeviewselchanged
         if treeviewselchanged == 1:
             for v in editor.layout.views:
@@ -44,7 +43,7 @@ def drawanimation(self):
                     v.repaint()
                 else:
                     pass
-            mdlmgr.treeviewselchanged = 0
+            treeviewselchanged = 0
         else:
             pass
         return FPS
@@ -404,6 +403,10 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.8  2008/02/23 04:41:11  cdunde
+#Setup new Paint modes toolbar and complete painting functions to allow
+#the painting of skin textures in any Model Editor textured and Skin-view.
+#
 #Revision 1.7  2008/02/04 05:07:41  cdunde
 #Made toolbars interactive with one another to
 #turn off buttons when needed, avoiding errors and crashes.

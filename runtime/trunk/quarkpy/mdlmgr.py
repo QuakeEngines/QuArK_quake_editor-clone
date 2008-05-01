@@ -40,7 +40,7 @@ savefacesel = 0
 treeviewselchanged = 0 ### This global is set to 1 when any new item is selected in the Tree-view.
                        ### 1) Use it like this in any file: from mdlmgr import treeviewselchanged
                        ### 2) Test for its value of 0 or 1:     if treeviewselchanged == 1:
-                       ### 3) After using be SURE to reset:         mdlmgr.treeviewselchanged = 0
+                       ### 3) After using be SURE to reset:         treeviewselchanged = 0
                        ### 4) Then complete your function :         return
 
 class ModelLayout(BaseLayout):
@@ -58,6 +58,13 @@ class ModelLayout(BaseLayout):
         self.reset()
         from qbaseeditor import currentview
         currentview = None
+        from mdlhandles import mdleditorsave, mdleditorview, cursorposatstart, cursordragstartpos, lastmodelfaceremovedlist, SkinView1
+        mdleditorsave = None
+        mdleditorview = None
+        cursorposatstart = None
+        cursordragstartpos = None
+        lastmodelfaceremovedlist = []
+        SkinView1 = None
         BaseLayout.clearrefs(self)
         self.skinform = None
         self.skinview = None
@@ -392,12 +399,6 @@ class ModelLayout(BaseLayout):
 
     def fillskinform(self, reserved):
         global startup, saveskin, savedskins # Allows the skinform to fill the 1st time a model is loaded, to set it up.
-        from qbaseeditor import currentview
-
-     #   self.skinview.onmouse = self.polyviewmouse  ### was commented out, causes zoom to change when aother "component" folder is selected
-                                                     ### and the Texture Browser to open when a "component" folder is selected and the Skin-view is clicked.
-                                                     ### Commenting out due to conflict but possible future use.
-        self.editor = mdleditor.mdleditor
 
         if self.editor.Root.currentcomponent is not None:
             pass
@@ -418,6 +419,7 @@ class ModelLayout(BaseLayout):
             slist.append(savedskins[self.editor.Root.currentcomponent.shortname])
             self.editor.Root.currentcomponent.currentskin = slist[0]
 
+        from qbaseeditor import currentview
         if self.editor.Root.currentcomponent.currentskin is None:
             if startup == 1 and (currentview.info["viewname"] != "skinview"):
                 return # Stops redraw of Skin-view handles, for models with NO skins, when selecting in the Tree-view.
@@ -494,7 +496,7 @@ class ModelLayout(BaseLayout):
             quarkx.update(self.editor.form)
         startup = 1
 
-    def polyviewmouse(self, view, x, y, flags, handle):
+    def skinviewmouse(self, view, x, y, flags, handle):
         "Can't figure out what this one does."
         if flags&MB_CLICKED:
             quarkx.clickform = view.owner
@@ -742,6 +744,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.61  2008/05/01 12:08:36  danielpharos
+#Fix several objects not being unloaded correctly.
+#
 #Revision 1.60  2008/05/01 12:06:04  danielpharos
 #Fix a button being wrongfully saved in the layout object.
 #

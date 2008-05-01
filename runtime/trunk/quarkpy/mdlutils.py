@@ -2010,9 +2010,8 @@ def Update_Editor_Views(editor, option=4):
     import mdlhandles
     import qhandles
     try:
-        import mdlmgr
         from mdlmgr import treeviewselchanged
-        mdlmgr.treeviewselchanged = 1
+        treeviewselchanged = 1
     except:
         pass
     editorview = editor.layout.views[0]
@@ -2544,6 +2543,10 @@ def TexturePixelLocation(editor, view, x, y, object=None):
 #
 #
 #$Log$
+#Revision 1.77  2008/02/23 04:41:11  cdunde
+#Setup new Paint modes toolbar and complete painting functions to allow
+#the painting of skin textures in any Model Editor textured and Skin-view.
+#
 #Revision 1.76  2008/02/13 08:55:24  cdunde
 #To replace lost code of last change due to text editor.
 #

@@ -603,17 +603,15 @@ def getzoommenu(zoombtn):
         editor = mapeditor()
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
-            import mdlmgr
             from mdlmgr import treeviewselchanged
-            mdlmgr.treeviewselchanged = 1
+            treeviewselchanged = 1
         setviews(views, "scale", m.scale)
     def customzoom(m, views=zoombtn.views):
         editor = mapeditor()
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
-            import mdlmgr
             from mdlmgr import treeviewselchanged
-            mdlmgr.treeviewselchanged = 1
+            treeviewselchanged = 1
         CustomZoom(views)
     if zoombtn.near:
         # For mdl-editor
@@ -878,9 +876,8 @@ class ZoomBar:
         editor = mapeditor()
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
-            import mdlmgr
             from mdlmgr import treeviewselchanged
-            mdlmgr.treeviewselchanged = 1
+            treeviewselchanged = 1
         #
         # Compute the visual position corresponding to the new scale.
         #
@@ -1441,9 +1438,8 @@ def TexModeMenu(editor, view):
         try:
             import mdleditor
             if isinstance(editor, mdleditor.ModelEditor):
-                import mdlmgr
                 from mdlmgr import treeviewselchanged
-                mdlmgr.treeviewselchanged = 1
+                treeviewselchanged = 1
         except:
             pass
         view.viewmode = menu.mode
@@ -1566,6 +1562,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.46  2008/02/27 00:21:34  danielpharos
+#Fix the contextual help files not being found anymore
+#
 #Revision 1.45  2008/02/24 19:40:33  cdunde
 #To fix Contextual help link.
 #

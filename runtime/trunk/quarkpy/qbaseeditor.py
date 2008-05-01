@@ -534,6 +534,7 @@ class BaseEditor:
         self.form = None
         self.CloseRoot()
         self.Root = None
+        self.TexSource = None
         # self.savesetupinfos()
         self.fileobject = None
         self.dragobject = None
@@ -720,7 +721,7 @@ class BaseEditor:
                             if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
                                 try:
                                     from mdlmgr import treeviewselchanged
-                                    mdlmgr.treeviewselchanged = 1
+                                    treeviewselchanged = 1
                                 except:
                                     pass
                                 if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
@@ -1072,8 +1073,8 @@ class BaseEditor:
                         except:
                             pass
                     from mdlmgr import treeviewselchanged
-                    if mdlmgr.treeviewselchanged == 1:
-                        mdlmgr.treeviewselchanged = 0
+                    if treeviewselchanged == 1:
+                        treeviewselchanged = 0
                 else:
                     s = quarkx.getlonghint(handle.hint)
             self.showhint(s)
@@ -1452,6 +1453,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.108  2008/05/01 12:08:10  danielpharos
+#Fix init-type of flagsmouse.
+#
 #Revision 1.107  2008/02/23 04:41:11  cdunde
 #Setup new Paint modes toolbar and complete painting functions to allow
 #the painting of skin textures in any Model Editor textured and Skin-view.

@@ -1005,7 +1005,7 @@ def OptionsViewsClick(m):
         self.src["fillColor5"] = fivefillColor
 
         from quarkpy.mdlmgr import treeviewselchanged
-        quarkpy.mdlmgr.treeviewselchanged = 1
+        treeviewselchanged = 1
         quarkpy.mdlutils.Update_Editor_Views(editor)
 
 
@@ -1083,6 +1083,10 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.21  2008/02/23 04:41:11  cdunde
+# Setup new Paint modes toolbar and complete painting functions to allow
+# the painting of skin textures in any Model Editor textured and Skin-view.
+#
 # Revision 1.20  2008/02/07 13:20:23  danielpharos
 # Removed redundant comment line
 #

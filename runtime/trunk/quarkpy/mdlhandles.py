@@ -498,9 +498,8 @@ class VertexHandle(qhandles.GenericHandle):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
 
         def add_vertex_click(m, self=self, editor=editor, view=view):
-            import mdlmgr
             from mdlmgr import savefacesel
-            mdlmgr.savefacesel = 1
+            savefacesel = 1
             addvertex(editor, editor.Root.currentcomponent, self.pos)
 
         def remove_vertex_click(m, self=self, editor=editor, view=view):
@@ -631,9 +630,8 @@ class VertexHandle(qhandles.GenericHandle):
 
             pickedpos = editor.Root.currentcomponent.currentframe.vertices[editor.ModelVertexSelList[0][0]]
 
-            import mdlmgr
             from mdlmgr import savefacesel
-            mdlmgr.savefacesel = 1
+            savefacesel = 1
             if len(editor.ModelVertexSelList) > 1:
                 replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "multi Mesh vertex alignment", 0)
                 editor.ModelVertexSelList = []
@@ -725,9 +723,8 @@ class VertexHandle(qhandles.GenericHandle):
 
             pickedpos = editor.Root.currentcomponent.currentframe.vertices[editor.ModelVertexSelList[0][0]]
 
-            import mdlmgr
             from mdlmgr import savefacesel
-            mdlmgr.savefacesel = 1
+            savefacesel = 1
             replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "merged 2 vertexes", 2)
 
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -3217,6 +3214,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.128  2008/02/23 05:29:18  cdunde
+#Fixed conflicts with multiple vertex merging function.
+#
 #Revision 1.127  2008/02/23 04:41:11  cdunde
 #Setup new Paint modes toolbar and complete painting functions to allow
 #the painting of skin textures in any Model Editor textured and Skin-view.

@@ -84,9 +84,8 @@ shortcuts = { }
 
 def ToggleOption(item):
     "Toggle an option in the setup."
-    import mdlmgr
     from mdlmgr import treeviewselchanged
-    mdlmgr.treeviewselchanged = 1
+    treeviewselchanged = 1
     tag = item.tog
     setup = apply(quarkx.setupsubset, item.sset)
     newvalue = not setup[tag]
@@ -209,8 +208,8 @@ def setLineThick(m):
     if editor is None:
         return
     LineThickDlg(quarkx.clickform, editor, m)
-    
-    
+
+
 lineThicknessItem = qmenu.item("Set Line Thickness (2)",setLineThick,"|Set Line Thickness:\n\nThis lets you set the thickness of certain lines that are drawn on the Editor's views, such as the outlining of selected model mesh faces and the models axis lines.|intro.modeleditor.menu.html#optionsmenu")
 
 
@@ -299,9 +298,8 @@ def mNFDL(m):
 
 def mNFO(m):
     # No face outlines function.
-    import mdlmgr
     from mdlmgr import treeviewselchanged
-    mdlmgr.treeviewselchanged = 1
+    treeviewselchanged = 1
     if not MldOption("NFO"):
         quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = None
@@ -312,9 +310,8 @@ def mNFO(m):
 
 def mNFOWM(m):
     # No face outlines while moving in 2D views function.
-    import mdlmgr
     from mdlmgr import treeviewselchanged
-    mdlmgr.treeviewselchanged = 1
+    treeviewselchanged = 1
     if not MldOption("NFOWM"):
         quarkx.setupsubset(SS_MODEL, "Options")['NFOWM'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NFO'] = None
@@ -325,9 +322,8 @@ def mNFOWM(m):
 
 def mNOSF(m):
     # No selection fill function.
-    import mdlmgr
     from mdlmgr import treeviewselchanged
-    mdlmgr.treeviewselchanged = 1
+    treeviewselchanged = 1
     if not MldOption("NOSF"):
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
@@ -339,9 +335,8 @@ def mNOSF(m):
 
 def mFFONLY(m):
     # (draw) Front faces only function.
-    import mdlmgr
     from mdlmgr import treeviewselchanged
-    mdlmgr.treeviewselchanged = 1
+    treeviewselchanged = 1
     if not MldOption("FFONLY"):
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
@@ -353,9 +348,8 @@ def mFFONLY(m):
 
 def mBFONLY(m):
     # (draw) Back faces only function.
-    import mdlmgr
     from mdlmgr import treeviewselchanged
-    mdlmgr.treeviewselchanged = 1
+    treeviewselchanged = 1
     if not MldOption("BFONLY"):
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
@@ -646,6 +640,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.30  2008/02/22 09:52:24  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.29  2007/11/04 00:33:33  cdunde
 #To make all of the Linear Handle drag lines draw faster and some selection color changes.
 #

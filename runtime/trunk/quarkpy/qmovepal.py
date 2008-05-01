@@ -212,9 +212,8 @@ class MdlConfigDialog(qmacro.dialogbox):
             quarkx.globalaccept()
             setup = quarkx.setupsubset(self.mode, "Building")
             setup.copyalldata(self.src)
-            import mdlmgr
             from mdlmgr import treeviewselchanged
-            mdlmgr.treeviewselchanged = 1
+            treeviewselchanged = 1
             if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
                 quarkx.reloadsetup()
                 from mdlhandles import SkinView1
@@ -231,9 +230,8 @@ class MdlConfigDialog(qmacro.dialogbox):
             quarkx.globalaccept()
             setup = quarkx.setupsubset(self.mode, "Building")
             setup.copyalldata(self.src)
-            import mdlmgr
             from mdlmgr import treeviewselchanged
-            mdlmgr.treeviewselchanged = 1
+            treeviewselchanged = 1
             if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
                 quarkx.reloadsetup()
                 from mdlhandles import SkinView1
@@ -409,6 +407,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.18  2007/10/31 03:47:52  cdunde
+#Infobase button link updates.
+#
 #Revision 1.17  2007/10/24 14:58:12  cdunde
 #To activate all Movement toolbar button functions for the Model Editor.
 #

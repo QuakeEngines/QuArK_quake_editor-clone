@@ -457,9 +457,8 @@ def SetupChanged(level):
     try:
         import mdleditor
         if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
-            import mdlmgr
             from mdlmgr import treeviewselchanged
-            mdlmgr.treeviewselchanged = 1
+            treeviewselchanged = 1
         for s in SetupRoutines:
             s(level)
     except:
@@ -758,6 +757,9 @@ def WhatIsThisObject(obj=None, self=None, view=None, flags=None, openconsole=Non
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.35  2008/02/13 23:05:48  cdunde
+#Needed to reverse the order of the RGB color components for the RGBToColor function.
+#
 #Revision 1.34  2008/02/10 19:20:43  cdunde
 #Added new texture color utilities that both editors can use.
 #

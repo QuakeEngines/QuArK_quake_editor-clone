@@ -339,9 +339,8 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
 
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
                 newlist = newlist + [new]
-        import mdlmgr
         from mdlmgr import savefacesel
-        mdlmgr.savefacesel = 1
+        savefacesel = 1
         if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
             text = "face " + text
             mdlutils.ConvertEditorFaceObject(editor, newlist, currentview.flags, currentview, text)
@@ -392,6 +391,10 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.18  2007/11/16 18:48:23  cdunde
+#To update all needed files for fix by DanielPharos
+#to allow frame relocation after editing.
+#
 #Revision 1.17  2007/10/24 14:58:12  cdunde
 #To activate all Movement toolbar button functions for the Model Editor.
 #
