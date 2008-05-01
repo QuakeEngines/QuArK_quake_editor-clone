@@ -1,4 +1,3 @@
-
 """   QuArK  -  Quake Army Knife
 
 Python macros available for direct call by QuArK
@@ -250,6 +249,9 @@ class Entity:
     def TypeForm(self):
         return ":form"
 
+    def TypeIncl(self):
+        return ":incl"
+
     def GetFolderStuff(self, s):
         return ""
 
@@ -271,11 +273,15 @@ class Entity:
         self.GetFolderStuff(s)
         s[";desc"] = self.m_desc
         founddefaults = 0
+
         for key in self.m_keys:
             k = key.GenerateFolder(s)
 
-    def GenerateForm(self, indent):
-        s = quarkx.newobj(self.m_classname + self.TypeForm())
+    def GenerateForm(self, indent): # Changed 4/30/2008 - creates :incl with :form data so mods can build on top of all entities
+        if (self.m_classname.find("t_") == 0):                                    #Modified 4/30/2008 - If t_ exists dont put another
+            s = quarkx.newobj(self.m_classname + self.TypeIncl())                 #                     And put :incl instead of :form
+        else:                                                                     #Modified 4/30/2008 - Add t_ if it doesn't exist
+            s = quarkx.newobj(INHERITPREFIX + self.m_classname + self.TypeIncl()) #                     And put :incl instead of :form
         if (self.m_size is not None):
             s["bbox"] = self.m_size
         for key in self.m_keys:
@@ -284,6 +290,12 @@ class Entity:
         for inh in self.m_inherit:
             s.specificadd(inh+"=!")
         indent.appenditem(s)
+
+    def GenerateRealForm(self, indent):                            # Function added 4/30/2008
+        if (self.m_classname.find("t_") is not 0):                 #Adds the new :form -   entityname: =
+            s = quarkx.newobj(self.m_classname + self.TypeForm())  #(just link to :incl)   {
+            s[INHERITPREFIX + self.m_classname] = "!"              #                         t_entityname = !
+            indent.appenditem(s)                                   #                       }
 
 class BrushEntity(Entity):
     def __init__(self):
@@ -323,7 +335,7 @@ class InheritEntity(Entity):
         return
 
     def TypeForm(self):
-        return ":incl"
+        return ":"
 
 ## --------
 
@@ -561,6 +573,8 @@ def readentirefile(file):
             break
         line = line.strip()
         line = line.split("//")[0] # Remove end-of-line comments
+        line = line.split("@include")[0] # Added 4/30/2008 - Remove @include statements
+        line = line.split("@mapsize")[0] # Added 4/30/2008 - Remove @mapsize statements
         if line:
             filecontents = filecontents + line + "\n"
     f.close()
@@ -569,6 +583,8 @@ TYPE_UNKNOWN    = 0
 TYPE_NUMERIC    = 1
 TYPE_STRING     = 2
 TYPE_SYMBOL     = 3
+TYPE_HALFGRIDSNAP       = 4     # 'halfgridsnap' Added 4/30/2008 to fix 'halfgridsnap' error
+TYPE_READONLY           = 5     # 'readonly' Added 4/30/2008 to fix 'readonly' error
 TYPE_SPLITTER_AT        = 10    # '@'
 TYPE_SPLITTER_COLON     = 11    # ':'
 TYPE_SPLITTER_EQUAL     = 12    # '='
@@ -577,15 +593,19 @@ TYPE_SPLITTER_SQUARE_E  = 14    # ']'
 TYPE_SPLITTER_PRNTSHS_B = 15    # '('
 TYPE_SPLITTER_PRNTSHS_E = 16    # ')'
 TYPE_SPLITTER_COMMA     = 17    # ','
-TYPE_INPUT     = 18    # 'input'
-TYPE_OUTPUT     = 19    # 'input'
-TYPE_SPLITTER_PLUS     = 20    # '+'
+TYPE_INPUT              = 18    # 'input'
+TYPE_OUTPUT             = 19    # 'output'
+TYPE_SPLITTER_PLUS      = 20    # '+'
 
 toktypes={
 0  :'TYPE_UNKNOWN',        
 1  :'TYPE_NUMERIC',        
 2  :'TYPE_STRING',        
-3  :'TYPE_SYMBOL',        
+3  :'TYPE_SYMBOL',
+#Added 4/30/2008 to fix 'halfgridsnap' error ,
+4  :'TYPE_HALFGRIDSNAP',
+#Added 4/30/2008 to fix 'readonly' error ,
+5  :'TYPE_READONLY',
 10 :'TYPE_SPLITTER_AT',
 11 :'TYPE_SPLITTER_COLON',
 12 :'TYPE_SPLITTER_EQUAL',
@@ -662,6 +682,10 @@ def getnexttoken(srcstring):
           token_is = TYPE_INPUT
         elif (token == 'output'):
           token_is = TYPE_OUTPUT
+        elif (token == 'halfgridsnap'): # Added 4/30/2008
+          token_is = TYPE_HALFGRIDSNAP  # To fix 'halfgridsnap' error
+        elif (token == 'readonly'): # Added 4/30/2008
+          token_is = TYPE_READONLY  # To fix 'readonly' error
         else:
           token_is = TYPE_SYMBOL
     return token, token_is, srcstring
@@ -673,7 +697,9 @@ statediagram =                                                                  
  'STATE_UNKNOWN'        :[(TYPE_SPLITTER_AT        ,'STATE_CLASSBEGIN'     ,None)             ] \
                                                                                                 \
 ,'STATE_CLASSBEGIN'     :[(TYPE_SYMBOL             ,'STATE_CLASSINHERIT'   ,CreateClass)      ] \
-,'STATE_CLASSINHERIT'   :[(TYPE_SYMBOL             ,'STATE_INHERITBEGIN'   ,BeginInherit)       \
+# Added TYPE_HALFGRIDSNAP here 4/30/2008 to fix 'halfgridsnap' error                            \
+,'STATE_CLASSINHERIT'   :[(TYPE_HALFGRIDSNAP       ,'STATE_CLASSINHERIT'   ,None)               \
+                         ,(TYPE_SYMBOL             ,'STATE_INHERITBEGIN'   ,BeginInherit)       \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CLASSNAME'      ,None)             ] \
                                                                                                 \
 ,'STATE_INHERITBEGIN'   :[(TYPE_SPLITTER_PRNTSHS_B ,'STATE_INHERITMEDIUM'  ,None)             ] \
@@ -697,7 +723,7 @@ statediagram =                                                                  
 ,'STATE_KEYSBEGIN'      :[(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
                          ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)           \
-                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)             ] \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)        ] \
                                                                                                 \
 ,'STATE_INPUTBEGIN'     :[(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)         ] \
                                                                                                 \
@@ -708,9 +734,11 @@ statediagram =                                                                  
 ,'STATE_KEYTYPE'        :[(TYPE_SYMBOL             ,'STATE_KEYTYPE2'       ,AddKeyType)       ] \
                                                                                                 \
 ,'STATE_KEYTYPE2'       :[(TYPE_SPLITTER_PRNTSHS_E ,'STATE_KEYTYPE3'       ,None)             ] \
+# Added TYPE_READONLY here 4/30/2008 to fix 'readonly' error                                    \
 ,'STATE_KEYTYPE3'       :[(TYPE_SPLITTER_EQUAL     ,'STATE_VALUEFLAGS'     ,None)               \
-                         ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE'          ,None)               \
+                         ,(TYPE_READONLY           ,'STATE_KEYTYPE3'       ,None)               \
                          ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
+                         ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE'          ,None)               \
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,BeginKey)           \
                          ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,BeginKey)         ] \
@@ -734,8 +762,8 @@ statediagram =                                                                  
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE3'         ,None)               \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
-                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)               \
-                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)             ] \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)           \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)        ] \
                                                                                                 \
 ,'STATE_VALUE3'         :[(TYPE_NUMERIC            ,'STATE_VALUE4'         ,AddKeyDefa)         \
                          ,(TYPE_STRING             ,'STATE_VALUE4'         ,AddKeyDefa)         \
@@ -745,16 +773,16 @@ statediagram =                                                                  
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE5'         ,None)               \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
-                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)               \
-                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)             ] \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)           \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)        ] \
                                                                                                 \
 ,'STATE_VALUE5'         :[(TYPE_STRING             ,'STATE_VALUE5'         ,None)               \
                          ,(TYPE_SPLITTER_PLUS      ,'STATE_VALUE5'         ,None)               \
                          ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
-                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)               \
-                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)             ] \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)           \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)        ] \
                                                                                                 \
 ,'STATE_CHOICES'        :[(TYPE_SPLITTER_SQUARE_B  ,'STATE_CHOICES2'       ,None)             ] \
 ,'STATE_CHOICES2'       :[(TYPE_SPLITTER_SQUARE_E  ,'STATE_KEYSBEGIN'      ,EndKeyChoices)      \
@@ -774,11 +802,6 @@ def makeqrk(root, filename, gamename):
     """
     Please note, this is not always 100% accurate may duplicate
     existing entities and possibly miss some out.
-    for conversion of hammer fgd files:
-      - remove include directives
-      - remove readonly statements
-      - remove halfgridsnap statements
-    before converting !
     
     You may need to handedit the .qrk file. For help with this,
     feel free to ask questions at the QuArK forum:
@@ -832,9 +855,11 @@ def makeqrk(root, filename, gamename):
     f_tbx = quarkx.newobj("Entity Forms.fctx")
     f_tbx.flags = f_tbx.flags | quarkpy.qutils.OF_TVSUBITEM
     root.appenditem(f_tbx)
-
+  
     for ent in theEntities:
         ent.GenerateForm(f_tbx)
+        ent.GenerateRealForm(f_tbx) # Added 4/30/2008 - creates :form with link to associated :incl
+
     root.refreshtv()
 
     quarkx.msgbox("The .FGD file have now almost been converted to QuArK format.\n\nWhat remains is to save it as a 'Structured text for hand-editing (*.qrk)' file, then using a text-editor do a Search-Replace of   \"!\"   with   !\nE.g. replacing a double-quoted exclamation mark, with just a exclamation mark.\n\nIf you encounter any problems using this 'Convert from Worldcraft .FGD file' utility, please post a mail in the QuArK-forum.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
@@ -845,6 +870,9 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.14  2005/11/10 18:03:04  cdunde
+#Activate history log
+#
 #Revision 1.13  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #
