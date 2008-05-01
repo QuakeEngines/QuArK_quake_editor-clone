@@ -327,10 +327,10 @@ class ModelLayout(BaseLayout):
         self.Vertexdragmode.mode = self.MODE
         self.Vertexdragmode.tag = "SingleVertexDrag"
         self.Vertexdragmode.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
-        self.skinremapbtn = qtoolbar.button(self.reskin, "Remap Snapshot||Remap Snapshot:\n\nClick this button when you have selected some faces in any of the editor's views and it will 'Re-map' those faces on the current Skin-view skin for that component using the angle of view that is seen in the editor's 3D view when the button is clicked.\n\nChanging the angle, panning or zooming in the editor's 3D view and clicking the button again will change the size and re-mapping of those same faces once more.\n\nTo reverse what has been done use the 'Undo/Redo' list on the Edit menu.", ico_mdlskv, 1, "Skin-view", infobaselink="intro.modeleditor.skinview.html#selection")
-        self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode, "skinremap": self.skinremapbtn})
+        skinremapbtn = qtoolbar.button(self.reskin, "Remap Snapshot||Remap Snapshot:\n\nClick this button when you have selected some faces in any of the editor's views and it will 'Re-map' those faces on the current Skin-view skin for that component using the angle of view that is seen in the editor's 3D view when the button is clicked.\n\nChanging the angle, panning or zooming in the editor's 3D view and clicking the button again will change the size and re-mapping of those same faces once more.\n\nTo reverse what has been done use the 'Undo/Redo' list on the Edit menu.", ico_mdlskv, 1, "Skin-view", infobaselink="intro.modeleditor.skinview.html#selection")
+        self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode, "skinremap": skinremapbtn})
         tp = fp.newtoppanel(123,0) # Sets the height of the top panel.
-        btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, self.Vertexdragmode, self.skinremapbtn])
+        btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, self.Vertexdragmode, skinremapbtn])
         btnp.margins = (0,0)
         self.skinform = tp.newdataform()
         self.skinform.header = 0
@@ -745,6 +745,10 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.59  2008/02/23 04:41:11  cdunde
+#Setup new Paint modes toolbar and complete painting functions to allow
+#the painting of skin textures in any Model Editor textured and Skin-view.
+#
 #Revision 1.58  2008/02/22 09:52:24  danielpharos
 #Move all finishdrawing code to the correct editor, and some small cleanups.
 #
