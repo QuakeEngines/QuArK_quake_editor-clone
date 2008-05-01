@@ -4692,7 +4692,7 @@ class ObjectModesBar(ToolBar):
         btns = []
         for i in range(len(ObjectModes)):
             obj, icon = ObjectModes[i]
-            btn = qtoolbar.button(selectmode, obj.Hint, ico_dict['ico_objectmodes'], icon)
+            btn = qtoolbar.button(selectmode, obj.Hint, ico_objectmodes, icon)
             btn.i = i
             btns.append(btn)
         i = quarkx.setupsubset(SS_MODEL, "Building").getint("ObjectMode")
@@ -5614,6 +5614,10 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2008/02/23 04:41:11  cdunde
+# Setup new Paint modes toolbar and complete painting functions to allow
+# the painting of skin textures in any Model Editor textured and Skin-view.
+#
 # Revision 1.13  2008/02/22 09:52:22  danielpharos
 # Move all finishdrawing code to the correct editor, and some small cleanups.
 #
