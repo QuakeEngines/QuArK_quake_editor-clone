@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2008/02/12 21:50:45  danielpharos
+Added ability to save console output to a text file.
+
 Revision 1.8  2007/12/19 12:38:32  danielpharos
 Made an option to set the amount of lines of text in the console.
 
@@ -155,7 +158,10 @@ procedure OpenConsoleFile;
 begin
   if ConsoleFileOpened then
     Exit;
-  Append(ConsoleFile);
+  if not FileExists(ConsoleFilename) then
+    Rewrite(ConsoleFile)
+  else
+    Append(ConsoleFile);
   ConsoleFileOpened:=True;
 end;
 
