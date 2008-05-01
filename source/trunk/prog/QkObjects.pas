@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.96  2008/04/12 20:18:34  danielpharos
+Possibly fixed the dictitems memory leak and fixed the miscounting of gamefiles-memory.
+
 Revision 1.95  2008/03/29 15:15:47  danielpharos
 Moved all the CompareMem stuff to ExtraFunctionality, where it belongs.
 
@@ -3175,7 +3178,6 @@ begin
       for I:=N-1 downto 0 do
       begin
         o:=@SubElements[I].PythonObj;
-        Py_INCREF(o);
         PyDict_SetItemString(Result, PChar(SubElements[I].GetFullName), o);
       end;
       Exit;
@@ -3207,6 +3209,7 @@ begin
             S[1]:=Chr(Ord(S[1]) and not chrFloatSpec);
           end;
           PyDict_SetItemString(Result, PChar(S), o);
+          Py_DECREF(o);
         end;
       end;
       Exit;
