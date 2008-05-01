@@ -33,9 +33,6 @@ from quarkpy.qutils import *
 #  module, eliminating the need for a new qhandles.py file.
 #
 
-# Global
-saveeditor = None
-
 #
 # This attaches the item to the options menu; it's best for new
 #  facilities to redefine menus etc in the quarkpy modules rather
@@ -85,8 +82,6 @@ axisicons = quarkx.loadimages("images\\axisicons.bmp",32,(0,0))
 
 
 def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finishdrawing):
-    global saveeditor
-    saveeditor = editor
     #
     # execute the old method
     #
@@ -112,8 +107,8 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finis
             if linkto is view:
                 sbviews[ito] = (ifrom, linkfrom)
         def scroller(x, y, view=view, hlink=sbviews[0], vlink=sbviews[1]):
-            from quarkpy.qbaseeditor import flagsmouse
-            editor = saveeditor
+            import quarkpy.mdleditor
+            editor = quarkpy.mdleditor.mdleditor
             view.scrollto(x, y)
             try:
                 if (view.info["viewname"] == "skinview" or view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
@@ -165,11 +160,8 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finis
                     vlink[1].scrollto(y, None)
             if not MldOption("AxisXYZ"):
                 view.update()
-            else:
-                editor = saveeditor
-                if editor is None:
-                    pass
             ### This is the 2D views Textured mode scroller section
+            from quarkpy.qbaseeditor import flagsmouse
             if (flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056) and view.viewmode == "tex":
                 if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
                     quarkpy.mdleditor.paintframefill(editor, view)
@@ -229,6 +221,9 @@ quarkpy.mdleditor.ModelEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.16  2008/02/22 09:52:22  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.15  2007/10/30 20:24:01  danielpharos
 #Change a wrong currentview into view
 #
