@@ -326,14 +326,14 @@ class ModelLayout(BaseLayout):
         skingridbtn.caption = str(self.editor.skingridstep)  # To show the setting value on the button.
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
-        self.Vertexdragmode = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.skinview.html#selection')
-        self.Vertexdragmode.mode = self.MODE
-        self.Vertexdragmode.tag = "SingleVertexDrag"
-        self.Vertexdragmode.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
+        Vertexdragmodebtn = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.skinview.html#selection')
+        Vertexdragmodebtn.mode = self.MODE
+        Vertexdragmodebtn.tag = "SingleVertexDrag"
+        Vertexdragmodebtn.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
         skinremapbtn = qtoolbar.button(self.reskin, "Remap Snapshot||Remap Snapshot:\n\nClick this button when you have selected some faces in any of the editor's views and it will 'Re-map' those faces on the current Skin-view skin for that component using the angle of view that is seen in the editor's 3D view when the button is clicked.\n\nChanging the angle, panning or zooming in the editor's 3D view and clicking the button again will change the size and re-mapping of those same faces once more.\n\nTo reverse what has been done use the 'Undo/Redo' list on the Edit menu.", ico_mdlskv, 1, "Skin-view", infobaselink="intro.modeleditor.skinview.html#selection")
-        self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": self.Vertexdragmode, "skinremap": skinremapbtn})
+        self.buttons.update({"skingrid": skingridbtn, "skinzoom": skinzoombtn, "vtxdragmode": Vertexdragmodebtn, "skinremap": skinremapbtn})
         tp = fp.newtoppanel(123,0) # Sets the height of the top panel.
-        btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, self.Vertexdragmode, skinremapbtn])
+        btnp = tp.newbottompanel(23,0).newbtnpanel([skingridbtn, skinzoombtn, Vertexdragmodebtn, skinremapbtn])
         btnp.margins = (0,0)
         self.skinform = tp.newdataform()
         self.skinform.header = 0
@@ -743,6 +743,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.63  2008/05/01 17:22:09  danielpharos
+#Fix flags-overwriting.
+#
 #Revision 1.62  2008/05/01 13:52:32  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #
