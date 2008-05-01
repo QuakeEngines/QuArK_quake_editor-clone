@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2008/02/03 13:12:46  danielpharos
+Update for the AutoUpdater. Beginning of the install-window.
+
 Revision 1.48  2008/01/31 16:07:18  danielpharos
 Added FTX file loading and saving support (Heavy Metal: F.A.K.K. 2 textures).
 
@@ -173,6 +176,7 @@ uses
   AutoUpdater in 'prog\AutoUpdater.pas' {AutoUpdater},
   AutoUpdateInstaller in 'prog\AutoUpdateInstaller.pas' {AutoUpdateInstaller},
   Bezier in 'prog\Bezier.pas',
+  BrowseForFolder in 'prog\BrowseForFolder.pas',
   CCode in 'prog\CCode.pas',
   Config in 'prog\Config.pas' {ConfigDlg},
   Console in 'prog\Console.pas' {ConsoleForm},

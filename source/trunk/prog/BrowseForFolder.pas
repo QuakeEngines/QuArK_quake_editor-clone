@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2008/04/17 15:19:05  cdunde
+Fixed 'Folder Browser' to stop displaying the 'Hint' and only show the 'Txt'.
+
 Revision 1.8  2008/04/13 12:38:02  cdunde
 Provided a way to display a 'title' for the 'Browse for Folder' window
 and stop the entire 'Hint" from also being displayed.
@@ -124,7 +127,7 @@ begin
  FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
  BrowseInfo.hwndOwner:=hwnd;
  BrowseInfo.lpszTitle:=PChar(Title);
- BrowseInfo.lpfn:= BrowseCallback;
+ BrowseInfo.lpfn:=BrowseCallback;
  S:=Path;
  if (S<>'') and (S[Length(S)]<>'\') then
   S:=S+'\';
