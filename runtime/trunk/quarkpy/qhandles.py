@@ -1216,13 +1216,14 @@ class HandleDragObject(RedImageDragObject):
 
 
 def refreshtimer(self):
+    editor = self.editor
     import mdleditor
-    if self.editor is None:
-        self.editor = mdleditor.mdleditor
-    if isinstance(self.editor, mdleditor.ModelEditor):
+    if editor is None:
+        editor = mdleditor.mdleditor
+    if isinstance(editor, mdleditor.ModelEditor):
         from qbaseeditor import flagsmouse
         if flagsmouse == 16384:
-            self.editor.dragobject = None
+            editor.dragobject = None
             return
         if flagsmouse != 1032:
             # This area draws the rectangle selector and view handles
@@ -1245,21 +1246,21 @@ def refreshtimer(self):
             else:
                 if len(self.view.handles) == 0:
                     import mdlhandles
-                    self.view.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
+                    self.view.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
             if flagsmouse == 1072:
-                mdleditor.setsingleframefillcolor(self.editor, self.view)
+                mdleditor.setsingleframefillcolor(editor, self.view)
                 self.view.repaint()
                 try:
-                    if self.editor.ModelFaceSelList != []:
-                        mdlhandles.ModelFaceHandle(GenericHandle).draw(self.editor, self.view, self.editor.EditorObjectList)
+                    if editor.ModelFaceSelList != []:
+                        mdlhandles.ModelFaceHandle(GenericHandle).draw(editor, self.view, editor.EditorObjectList)
                 except:
                     pass
             cv = self.view.canvas()
             for h in self.view.handles:
                 h.draw(self.view, cv, self)
             try:
-                if self.editor.ModelVertexSelList != []:
-                    for vtx in self.editor.ModelVertexSelList:
+                if editor.ModelVertexSelList != []:
+                    for vtx in editor.ModelVertexSelList:
                         h = self.view.handles[vtx[0]]
                         h.draw(self.view, cv, h)
             except:
@@ -1273,7 +1274,7 @@ def refreshtimer(self):
             return
         if flagsmouse == 1032:
             import mdlhandles
-            if isinstance(self.editor.dragobject, mdlhandles.RectSelDragObject):
+            if isinstance(editor.dragobject, mdlhandles.RectSelDragObject):
                 # This area draws the rectangle selector and view handles
                 #   in the Model Editor 2D view or Skin-view when it pauses.
                 mode = DM_OTHERCOLOR|DM_BBOX
@@ -1286,19 +1287,19 @@ def refreshtimer(self):
                     else:
                         if len(self.view.handles) == 0:
                             import mdlhandles
-                            self.view.handles = mdlhandles.BuildCommonHandles(self.editor, self.editor.layout.explorer)
+                            self.view.handles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
                   # Line below stops the editor 2D view handles from drawing during rec drag after the timer
                   # goes off one time, but does not recreate the handles if nothing is selected at end of drag.
                   #      self.view.handles = []
-                        mdleditor.setsingleframefillcolor(self.editor, self.view)
+                        mdleditor.setsingleframefillcolor(editor, self.view)
                         self.view.repaint()
-                        if isinstance(self.editor.dragobject, mdlhandles.RectSelDragObject) and (self.view.info["viewname"] != "editors3dview" or self.view.info["viewname"] != "3Dwindow"):
-                            plugins.mdlgridscale.gridfinishdrawing(self.editor, self.view)
+                        if isinstance(editor.dragobject, mdlhandles.RectSelDragObject) and (self.view.info["viewname"] != "editors3dview" or self.view.info["viewname"] != "3Dwindow"):
+                            plugins.mdlgridscale.gridfinishdrawing(editor, self.view)
                         reccolor = MapColor("Drag3DLines", SS_MODEL)
                         for r in self.redimages:
                             self.view.drawmap(r, mode, reccolor)
             else:
-                if not isinstance(self.editor.dragobject, mdlhandles.LinearHandle):
+                if not isinstance(editor.dragobject, mdlhandles.LinearHandle):
                     return
                     
         else:
@@ -1308,7 +1309,7 @@ def refreshtimer(self):
             for v in self.views:
                 v.invalidate()
         except:
-            for v in self.editor.layout.views:
+            for v in editor.layout.views:
                 v.invalidate()
 
 def refreshtimertex(self):
@@ -2160,6 +2161,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.69  2008/02/16 09:12:20  cdunde
+#To stop error message.
+#
 #Revision 1.68  2008/02/07 13:25:25  danielpharos
 #Add an editor-check and removed some redundant code
 #
