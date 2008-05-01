@@ -27,7 +27,7 @@ from qeditor import *
 from qdictionnary import Strings
 
 # Globals
-flagsmouse = None
+flagsmouse = 0
 currentview = None
 cursorpos = None
 
@@ -1452,6 +1452,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.107  2008/02/23 04:41:11  cdunde
+#Setup new Paint modes toolbar and complete painting functions to allow
+#the painting of skin textures in any Model Editor textured and Skin-view.
+#
 #Revision 1.106  2008/02/07 13:26:48  danielpharos
 #Fix drawing code using the wrong view
 #
