@@ -179,6 +179,8 @@ class ModelEditor(BaseEditor):
 
 
     def CloseRoot(self):
+        import mdlanimation
+        quarkx.settimer(mdlanimation.drawanimation, self, 0)
         global HoldObject, NewSellist, mdleditor
         HoldObject = None
         NewSellist = []
@@ -416,11 +418,8 @@ class ModelEditor(BaseEditor):
     def explorerselchange(self, ex=None):
         self.layout.selchange()
         self.buildhandles()
-        try:
-            from mdlmgr import treeviewselchanged
-            treeviewselchanged = 1
-        except:
-            pass
+        import mdlmgr
+        mdlmgr.treeviewselchanged = 1
         self.invalidateviews(1)
 
 
@@ -446,8 +445,8 @@ class ModelEditor(BaseEditor):
 
         editorview = self.layout.views[0]
         newhandles = []
-        from mdlmgr import treeviewselchanged
-        treeviewselchanged = 1
+        import mdlmgr
+        mdlmgr.treeviewselchanged = 1
         if not self.linearbox:
             quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] = "1"
             setup = quarkx.setupsubset(self.MODE, "Building")
@@ -1048,7 +1047,7 @@ def commonhandles(self, redraw=1):
     from qbaseeditor import flagsmouse, currentview
     import qhandles
     import mdlhandles
-    from mdlmgr import treeviewselchanged
+    import mdlmgr
     try:
         if flagsmouse == 536:
             return
@@ -1072,8 +1071,8 @@ def commonhandles(self, redraw=1):
             if isinstance(self.dragobject, qhandles.ScrollViewDragObject):
                     self.dragobject = None
             if isinstance(self.dragobject, qhandles.FreeZoomDragObject):
-                if treeviewselchanged == 1:
-                    treeviewselchanged = 0
+                if mdlmgr.treeviewselchanged == 1:
+                    mdlmgr.treeviewselchanged = 0
                     self.dragobject = None
                 else:
                     return
@@ -1428,8 +1427,8 @@ def commonhandles(self, redraw=1):
     except:
         pass
         
-    if treeviewselchanged == 1:
-        treeviewselchanged = 0
+    if mdlmgr.treeviewselchanged == 1:
+        mdlmgr.treeviewselchanged = 0
 
     if flagsmouse == 16384 and self.dragobject is not None:
         self.dragobject.handle = None
@@ -1440,6 +1439,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.85  2008/05/01 13:52:32  danielpharos
+#Removed a whole bunch of redundant imports and other small fixes.
+#
 #Revision 1.84  2008/05/01 12:08:38  danielpharos
 #Fix several objects not being unloaded correctly.
 #

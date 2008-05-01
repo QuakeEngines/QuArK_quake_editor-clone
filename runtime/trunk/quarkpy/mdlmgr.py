@@ -588,12 +588,11 @@ class ModelLayout(BaseLayout):
                 comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
 ##########
 
-        from mdleditor import NewSellist
         try:
-            if NewSellist != [] and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
-                self.editor.layout.explorer.sellist = NewSellist
-                for item in editor.layout.explorer.sellist:
-                    editor.layout.explorer.expand(item.parent)
+            if mdleditor.NewSellist != [] and (mdleditor.NewSellist[0].name.endswith(":mr") or mdleditor.NewSellist[0].name.endswith(":mg") or mdleditor.NewSellist[0].name.endswith(":bone")):
+                self.editor.layout.explorer.sellist = mdleditor.NewSellist
+                for item in self.editor.layout.explorer.sellist:
+                    self.editor.layout.explorer.expand(item.parent)
                 mdleditor.NewSellist = []
                 return
         except:
@@ -743,6 +742,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.64  2008/05/01 17:23:52  danielpharos
+#Pulled another button out of self-object.
+#
 #Revision 1.63  2008/05/01 17:22:09  danielpharos
 #Fix flags-overwriting.
 #

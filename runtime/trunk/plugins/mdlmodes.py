@@ -1004,8 +1004,8 @@ def OptionsViewsClick(m):
         self.src["fillmesh5"] = fivefillmesh
         self.src["fillColor5"] = fivefillColor
 
-        from quarkpy.mdlmgr import treeviewselchanged
-        treeviewselchanged = 1
+        import quarkpy.mdlmgr
+        quarkpy.mdlmgr.treeviewselchanged = 1
         quarkpy.mdlutils.Update_Editor_Views(editor)
 
 
@@ -1081,6 +1081,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.23  2008/05/01 14:02:31  danielpharos
+# Removed redundant code (this is already done elsewhere).
+#
 # Revision 1.22  2008/05/01 13:52:32  danielpharos
 # Removed a whole bunch of redundant imports and other small fixes.
 #

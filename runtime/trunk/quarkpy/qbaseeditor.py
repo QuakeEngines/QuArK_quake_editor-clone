@@ -484,8 +484,8 @@ class BaseEditor:
                                 SkinView1.invalidate(1)
                         return
                  ### To fix the hint control redraw area.
-                    from mdlmgr import treeviewselchanged
-                    if flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2080 or treeviewselchanged != 0:
+                    import mdlmgr
+                    if flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2080 or mdlmgr.treeviewselchanged != 0:
                         # This stops dupe handle drawing from the hintcontrol redraw section below.
                         return
 
@@ -719,11 +719,8 @@ class BaseEditor:
                     if self.layout.selchange:
                         for v in self.layout.views:
                             if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.viewmode != "wire":
-                                try:
-                                    from mdlmgr import treeviewselchanged
-                                    treeviewselchanged = 1
-                                except:
-                                    pass
+                                import mdlmgr
+                                mdlmgr.treeviewselchanged = 1
                                 if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1":
                                     if v.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] != "1":
                                         pass
@@ -1072,9 +1069,9 @@ class BaseEditor:
                                 s = handle.name + " " + "%s "%handle.index + " x,y,z: %s"%handle.pos
                         except:
                             pass
-                    from mdlmgr import treeviewselchanged
-                    if treeviewselchanged == 1:
-                        treeviewselchanged = 0
+                    import mdlmgr
+                    if mdlmgr.treeviewselchanged == 1:
+                        mdlmgr.treeviewselchanged = 0
                 else:
                     s = quarkx.getlonghint(handle.hint)
             self.showhint(s)
@@ -1453,6 +1450,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.109  2008/05/01 13:52:32  danielpharos
+#Removed a whole bunch of redundant imports and other small fixes.
+#
 #Revision 1.108  2008/05/01 12:08:10  danielpharos
 #Fix init-type of flagsmouse.
 #

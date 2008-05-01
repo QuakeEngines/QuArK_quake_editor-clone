@@ -27,10 +27,12 @@ def drawanimation(self):
     global playNR
     import mdleditor
     editor = mdleditor.mdleditor
+    if editor is None:
+        return
     FPS = int(1000/quarkx.setupsubset(SS_MODEL, "Display")["AnimationFPS"][0])
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] == "1":
-        from mdlmgr import treeviewselchanged
-        if treeviewselchanged == 1:
+        import mdlmgr
+        if mdlmgr.treeviewselchanged == 1:
             for v in editor.layout.views:
                 if v.info["viewname"] == "XY" and v.viewmode == "wire" and quarkx.setupsubset(SS_MODEL, "Options")['AnimateZ2Dview'] == "1":
                     mdleditor.setsingleframefillcolor(editor, v)
@@ -43,9 +45,7 @@ def drawanimation(self):
                     v.repaint()
                 else:
                     pass
-            treeviewselchanged = 0
-        else:
-            pass
+            mdlmgr.treeviewselchanged = 0
         return FPS
     else:
         try:
@@ -59,6 +59,7 @@ def drawanimation(self):
         if editor.layout is None:
             quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] = None
             quarkx.settimer(drawanimation, self, 0)
+            return 0
         else:
             editor.layout.explorer.uniquesel = frame
             editor.layout.selchange
@@ -403,6 +404,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.9  2008/05/01 13:52:32  danielpharos
+#Removed a whole bunch of redundant imports and other small fixes.
+#
 #Revision 1.8  2008/02/23 04:41:11  cdunde
 #Setup new Paint modes toolbar and complete painting functions to allow
 #the painting of skin textures in any Model Editor textured and Skin-view.

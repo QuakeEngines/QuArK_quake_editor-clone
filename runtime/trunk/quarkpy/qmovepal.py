@@ -212,8 +212,8 @@ class MdlConfigDialog(qmacro.dialogbox):
             quarkx.globalaccept()
             setup = quarkx.setupsubset(self.mode, "Building")
             setup.copyalldata(self.src)
-            from mdlmgr import treeviewselchanged
-            treeviewselchanged = 1
+            import mdlmgr
+            mdlmgr.treeviewselchanged = 1
             if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
                 quarkx.reloadsetup()
                 from mdlhandles import SkinView1
@@ -230,8 +230,8 @@ class MdlConfigDialog(qmacro.dialogbox):
             quarkx.globalaccept()
             setup = quarkx.setupsubset(self.mode, "Building")
             setup.copyalldata(self.src)
-            from mdlmgr import treeviewselchanged
-            treeviewselchanged = 1
+            import mdlmgr
+            mdlmgr.treeviewselchanged = 1
             if len(self.editor.ModelVertexSelList) > 1 or len(self.editor.ModelFaceSelList) > 1 or len(self.editor.SkinVertexSelList) > 1:
                 quarkx.reloadsetup()
                 from mdlhandles import SkinView1
@@ -407,6 +407,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.19  2008/05/01 13:52:32  danielpharos
+#Removed a whole bunch of redundant imports and other small fixes.
+#
 #Revision 1.18  2007/10/31 03:47:52  cdunde
 #Infobase button link updates.
 #
