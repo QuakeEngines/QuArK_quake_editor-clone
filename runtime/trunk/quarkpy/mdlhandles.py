@@ -933,8 +933,7 @@ class SkinHandle(qhandles.GenericHandle):
 
     def __init__(self, pos, tri_index, ver_index, comp, texWidth, texHeight, triangle):
         qhandles.GenericHandle.__init__(self, pos)
-        from mdleditor import mdleditor
-        self.editor = mdleditor
+        self.editor = mdleditor.mdleditor
         self.cursor = CR_CROSSH
         self.tri_index = tri_index
         self.ver_index = ver_index
@@ -3214,6 +3213,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.129  2008/05/01 13:52:32  danielpharos
+#Removed a whole bunch of redundant imports and other small fixes.
+#
 #Revision 1.128  2008/02/23 05:29:18  cdunde
 #Fixed conflicts with multiple vertex merging function.
 #

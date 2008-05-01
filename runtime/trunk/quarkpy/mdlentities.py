@@ -122,8 +122,8 @@ class EntityManager:
         "when in 'Wireframe' view mode, for each animation 'frame'."
 
         import qhandles
-        from mdleditor import mdleditor
-        editor = mdleditor
+        import mdleditor
+        editor = mdleditor.mdleditor
         if view.info["viewname"] == "XY":
             if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_framemesh2"] == "1":
                 if (o.type == ":mr") or (o.type == ":mg") or( o.type == ":bone"):
@@ -435,6 +435,11 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.24  2007/11/14 00:11:13  cdunde
+#Corrections for face subdivision to stop models from drawing broken apart,
+#update Skin-view "triangles" amount displayed and proper full redraw
+#of the Skin-view when a component is un-hidden.
+#
 #Revision 1.23  2007/11/04 00:33:33  cdunde
 #To make all of the Linear Handle drag lines draw faster and some selection color changes.
 #
