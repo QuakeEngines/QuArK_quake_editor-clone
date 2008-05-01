@@ -1037,8 +1037,6 @@ class AxisLockBar(ToolBar):
     Caption = "View Selection Modes"
 
     def buildbuttons(self, layout):
-        if not ico_dict.has_key('ico_mdled'):
-            ico_dict['ico_mdled']=LoadIconSet1("ico_mdled", 1.0)
         ico_mdled=ico_dict['ico_mdled']
         LockXBtn = qtoolbar.button(lockxclick, "Lock X Axis", ico_mdled, 0)  # tb_AxisLock[0] button
         LockYBtn = qtoolbar.button(lockyclick, "Lock Y Axis", ico_mdled, 1)  # tb_AxisLock[1] button
@@ -1083,6 +1081,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.22  2008/05/01 13:52:32  danielpharos
+# Removed a whole bunch of redundant imports and other small fixes.
+#
 # Revision 1.21  2008/02/23 04:41:11  cdunde
 # Setup new Paint modes toolbar and complete painting functions to allow
 # the painting of skin textures in any Model Editor textured and Skin-view.
