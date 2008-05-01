@@ -52,18 +52,15 @@ class ModelLayout(BaseLayout):
     def clearrefs(self):
         global startup, saveskin, savedskins, skincount
         startup = 0
+        saveskin = None
         savedskins = {}
         skincount = 0
-  #      mdleditor.mdleditor.SkinVertexSelList = []
-        BaseLayout.clearrefs(self)
         self.reset()
-        slist = None
+        from qbaseeditor import currentview
+        currentview = None
+        BaseLayout.clearrefs(self)
         self.skinform = None
         self.skinview = None
-    #    self.dataform = None
-    #    self.faceform = None
-    #    self.faceview = None
-    #    self.faceflags = None
 
     def readtoolbars(self, config):
         readtoolbars(mdltoolbars.toolbars, self, self.editor.form, config)
@@ -745,6 +742,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.60  2008/05/01 12:06:04  danielpharos
+#Fix a button being wrongfully saved in the layout object.
+#
 #Revision 1.59  2008/02/23 04:41:11  cdunde
 #Setup new Paint modes toolbar and complete painting functions to allow
 #the painting of skin textures in any Model Editor textured and Skin-view.

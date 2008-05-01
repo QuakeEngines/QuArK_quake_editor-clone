@@ -85,6 +85,8 @@ class MapLayout(BaseLayout):
         self.faceform = None
         self.faceview = None
         self.faceflags = None
+        self.bezierform = None
+        self.bezierview = None
 
 
     def readtoolbars(self, config):
@@ -899,6 +901,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.23  2008/02/27 00:04:17  cdunde
+#DanielPharos fix to stop bezier-view from causing errors.
+#
 #Revision 1.22  2007/01/18 02:04:35  cdunde
 #Stop the line, resizing bar, from drawing across the editors
 #when certain view pages were pulled out as floating windows.

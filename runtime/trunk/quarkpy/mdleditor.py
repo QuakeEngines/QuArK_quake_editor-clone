@@ -21,6 +21,7 @@ import qmenu
 import qtoolbar
 import qmacro
 from qeditor import *
+#from qdictionnary import Strings
 
 # Globals
 HoldObject = None
@@ -181,8 +182,20 @@ class ModelEditor(BaseEditor):
 
 
     def CloseRoot(self):
-        ModelVertexSelList = []
+        global HoldObject, NewSellist, mdleditor
+        HoldObject = None
+        NewSellist = []
+        mdleditor = None
         self.dragobject = None
+        self.findtargetdlg = None
+
+        self.ModelVertexSelList = []
+        self.SkinVertexSelList = []
+        self.ModelFaceSelList = []
+        self.SkinFaceSelList = []
+        self.EditorObjectList = []
+        self.SelVertexes = []
+        self.SelCommonTriangles = []
         ### To stop crossing of skins from model to model when a new model, even with the same name,
         ### is opened in the Model Editor without closing QuArK completely.
         try:
@@ -196,7 +209,7 @@ class ModelEditor(BaseEditor):
         quarkx.setupsubset(SS_MODEL, "Options")["AnimationPaused"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] = None
         quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] = None
-                
+
     def ListComponents(self):
         return self.Root.findallsubitems("", ':mc')   # find all components
 
@@ -1432,6 +1445,10 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.83  2008/02/23 04:41:11  cdunde
+#Setup new Paint modes toolbar and complete painting functions to allow
+#the painting of skin textures in any Model Editor textured and Skin-view.
+#
 #Revision 1.82  2008/02/07 13:18:41  danielpharos
 #Removed unused and confusing global variable
 #
