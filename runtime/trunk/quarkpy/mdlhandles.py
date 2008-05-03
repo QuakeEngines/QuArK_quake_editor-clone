@@ -2273,13 +2273,14 @@ class RectSelDragObject(qhandles.RectangleDragObject):
         ### vertexes were created in a clockwise direction (facing outwards, towards the 2D view)
         ### or a counter clockwise direction (facing inwards, away from the 2D view).
         ### The direction of the selection makes no difference. It's all in the order the vertexes were made.
-            templist = editor.ModelVertexSelList
-            if templist[1][0] > templist[0][0] and templist[1][0] > templist[2][0]:
-                editor.ModelVertexSelList = [templist[1], templist[0], templist[2]]
-            elif templist[2][0] > templist[0][0] and templist[2][0] > templist[1][0]:
-                editor.ModelVertexSelList = [templist[2], templist[0], templist[1]]
-            else:
-                pass
+            if editor.ModelVertexSelList != [] and len(editor.ModelVertexSelList) == 3:
+                templist = editor.ModelVertexSelList
+                if templist[1][0] > templist[0][0] and templist[1][0] > templist[2][0]:
+                    editor.ModelVertexSelList = [templist[1], templist[0], templist[2]]
+                elif templist[2][0] > templist[0][0] and templist[2][0] > templist[1][0]:
+                    editor.ModelVertexSelList = [templist[2], templist[0], templist[1]]
+                else:
+                    pass
 
 
 #
@@ -3213,6 +3214,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.130  2008/05/01 15:39:51  danielpharos
+#Made an import more consistent with all others
+#
 #Revision 1.129  2008/05/01 13:52:32  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #
