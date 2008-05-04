@@ -1,11 +1,11 @@
 object AboutBox: TAboutBox
-  Left = 174
+  Left = 153
   Top = 130
   HelpContext = -1
   ActiveControl = Edit1
   BorderStyle = bsDialog
   ClientHeight = 352
-  ClientWidth = 705
+  ClientWidth = 753
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23,7 +23,7 @@ object AboutBox: TAboutBox
   object Panel1: TPanel
     Left = 8
     Top = 8
-    Width = 689
+    Width = 737
     Height = 337
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -156,7 +156,7 @@ object AboutBox: TAboutBox
     object WebsiteAddress: TLabel
       Left = 472
       Top = 256
-      Width = 162
+      Width = 2
       Height = 11
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -168,13 +168,13 @@ object AboutBox: TAboutBox
     object Copyright: TLabel
       Left = 408
       Top = 65
-      Width = 227
+      Width = 3
       Height = 13
     end
     object UsedCompilerLabel: TLabel
       Left = 454
       Top = 7
-      Width = 193
+      Width = 2
       Height = 11
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -186,7 +186,7 @@ object AboutBox: TAboutBox
     object RepositoryAddress: TLabel
       Left = 472
       Top = 272
-      Width = 156
+      Width = 2
       Height = 11
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -219,7 +219,7 @@ object AboutBox: TAboutBox
     object ForumAddress: TLabel
       Left = 536
       Top = 288
-      Width = 111
+      Width = 2
       Height = 11
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -231,7 +231,7 @@ object AboutBox: TAboutBox
     object Memo1: TMemo
       Left = 408
       Top = 83
-      Width = 265
+      Width = 313
       Height = 166
       ParentColor = True
       ReadOnly = True

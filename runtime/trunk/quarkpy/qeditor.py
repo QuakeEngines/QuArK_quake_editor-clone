@@ -1532,7 +1532,7 @@ def Help5():
     htmldoc("intro.mapeditor.overview.html") # Takes the user to the Overview page
 
 def Help6():
-    htmldoc("http://www.dark-forge.com/") # Takes the user to QuArK's Forums web page
+    htmldoc("http://quark.planetquake.gamespy.com/forums/") # Takes the user to QuArK's Forums web page
 
 #
 # Retrieves all objects with a given type, excluding VF_CANTSELECT groups.
@@ -1562,6 +1562,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.48  2008/05/01 19:15:24  danielpharos
+#Fix treeviewselchanged not updating.
+#
 #Revision 1.47  2008/05/01 13:52:32  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #

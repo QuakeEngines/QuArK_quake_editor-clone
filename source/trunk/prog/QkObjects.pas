@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.97  2008/05/01 12:12:49  danielpharos
+Revert previous update and do a correct fix.
+
 Revision 1.96  2008/04/12 20:18:34  danielpharos
 Possibly fixed the dictitems memory leak and fixed the miscounting of gamefiles-memory.
 
@@ -338,10 +341,10 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 
 const
   QuArKVersion            = 'QuArK 6.5 Beta';
-  QuArKMinorVersion       = 'Beta 4';
+  QuArKMinorVersion       = 'Beta 5';
   QuArKCopyright          = 'Copyright (C) 1996-2007 Armin Rigo and others';
   QuArKUsedCompiler       = 'Delphi 6.0';
-  QuArKCompileDate        = 39441;   //This is the compiled date
+  QuArKCompileDate        = 39573;   //This is the compiled date
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value
     really needs to be a constant, so put the resulting value in here.
@@ -351,7 +354,7 @@ const
     old by the update-check. }
   QuArKWebsite            = 'http://quark.planetquake.gamespy.com/';
   QuArKRepository         = 'http://sourceforge.net/projects/quark/';
-  QuArKForum              = 'http://www.dark-forge.com/';
+  QuArKForum              = 'http://quark.planetquake.gamespy.com/forums/';
   QuArKUpdateSite         = 'quark.planetquake.gamespy.com';
   QuArKUpdateFile         = 'update/index.dat';
 
