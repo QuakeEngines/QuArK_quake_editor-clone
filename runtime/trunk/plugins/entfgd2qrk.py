@@ -256,6 +256,14 @@ class Entity:
         return ""
 
     def GenerateFolder(self, indent):
+        def SortedAppendItem(obj, subitem):
+            i = 0
+            for s in obj.subitems:
+                if (s.shortname.lower() > subitem.shortname.lower()):
+                    break
+                i = i + 1
+            obj.insertitem(i, subitem)
+
         s = quarkx.newobj(self.m_classname + self.Type())
         folder = indent
         p = s.name.find("_")
@@ -263,17 +271,16 @@ class Entity:
             folder = indent.findname("other entities.qtxfolder")
             if (folder is None):
                 folder = quarkx.newobj("other entities.qtxfolder")
-                indent.appenditem(folder)
+                SortedAppendItem(indent, folder)
         else:
             folder = indent.findname(s.name[:p+1]+"* entities.qtxfolder")
             if (folder is None):
                 folder = quarkx.newobj(s.name[:p+1]+"* entities.qtxfolder")
-                indent.appenditem(folder)
-        folder.appenditem(s)
+                SortedAppendItem(indent, folder)
+        SortedAppendItem(folder, s)
         self.GetFolderStuff(s)
         s[";desc"] = self.m_desc
         founddefaults = 0
-
         for key in self.m_keys:
             k = key.GenerateFolder(s)
 
@@ -797,17 +804,18 @@ statediagram =                                                                  
 import quarkpy.qutils
 import quarkx
 
-def makeqrk(root, filename, gamename):
-    quarkx.msgbox(
-    """
-    Please note, this is not always 100% accurate may duplicate
-    existing entities and possibly miss some out.
-    
-    You may need to handedit the .qrk file. For help with this,
-    feel free to ask questions at the QuArK forum:
-    
-    http://groups.yahoo.com/group/quark/messages""", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
-    global currentclassname
+def makeqrk(root, filename, gamename, nomessage=0):
+    global theEntities, theEntity, theKey, currentclassname, currentkeyname, currentkeytype, currentinherit, currentinheritargs, currentkeyflag, currentkeychoice
+
+    count = 0
+    for item in root.subitems:
+        if count == 0:
+            count = 1
+            continue
+        root.removeitem(item)
+
+    if nomessage == 0:
+        quarkx.msgbox("Please note, this is not always 100% accurate may duplicate\nexisting entities and possibly miss some out.\n\nYou may need to handedit the .qrk file. For help with this,\nfeel free to ask questions at the QuArK forum:\n\nhttp://groups.yahoo.com/group/quark/messages", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
     srcstring = readentirefile(filename)
     state = 'STATE_UNKNOWN'
     while (len(srcstring) > 1):
@@ -827,10 +835,17 @@ def makeqrk(root, filename, gamename):
                 break
             expectedtypes = expectedtypes + [type]
         if newstate is None:
-            print "Parse error: Got type", toktypes[token_is], "but expected type(s);", [toktypes[i] for i in expectedtypes]
-            print "Debug: Last classname was =", currentclassname
-            print "Debug:", srcstring[:64]
-            raise "Parse error!"
+       #     print "Parse error: Got type", toktypes[token_is], "but expected type(s);", [toktypes[i] for i in expectedtypes]
+       #     print "Debug: Last classname was =", currentclassname
+       #     print "Debug:", srcstring[:64]
+       #     raise "Parse error!"
+            if func == "None":
+                func_str = "None"
+            else:
+                func_str = str(func)
+            quarkx.beep()
+            quarkx.msgbox("PARSE ERROR !\nNon-supported Entity Definition file(s) format.\n\nGot type " + str(toktypes[token_is]) + "\nbut expected type(s): " + str([toktypes[i] for i in expectedtypes]) + "\n\nDebug: Last classname was = " + str(currentclassname) + "\nDebug: " + str(srcstring[:64]) + "\nDebug - Associated function: " + func_str + "\n\nContact QuArK development team with copy of Entity file(s).", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_ABORT)
+            return None
         if (func is not None):
             # This state have a function attached to it. Call it giving it the found token.
             func(token)
@@ -843,8 +858,8 @@ def makeqrk(root, filename, gamename):
     r_tbx.flags = r_tbx.flags | quarkpy.qutils.OF_TVSUBITEM
     root.appenditem(r_tbx)
 
-    e_tbx = quarkx.newobj("Entities for "+gamename+".qtxfolder")
-    e_tbx[";desc"] = "Created from "+filename
+    e_tbx = quarkx.newobj("Entities for "+gamename.split("\\")[-1]+".qtxfolder")
+    e_tbx[";desc"] = "Created from "+filename.split("\\")[-1]
     r_tbx.appenditem(e_tbx)
 
     r_tbx["Root"] = e_tbx.name
@@ -862,14 +877,40 @@ def makeqrk(root, filename, gamename):
 
     root.refreshtv()
 
-    quarkx.msgbox("The .FGD file have now almost been converted to QuArK format.\n\nWhat remains is to save it as a 'Structured text for hand-editing (*.qrk)' file, then using a text-editor do a Search-Replace of   \"!\"   with   !\nE.g. replacing a double-quoted exclamation mark, with just a exclamation mark.\n\nIf you encounter any problems using this 'Convert from Worldcraft .FGD file' utility, please post a mail in the QuArK-forum.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+    if nomessage == 0:
+        quarkx.msgbox("The .FGD file have now almost been converted to QuArK format.\n\nWhat remains is to save it as a 'Structured text for hand-editing (*.qrk)' file, then using a text-editor do a Search-Replace of   \"!\"   with   !\nE.g. replacing a double-quoted exclamation mark, with just a exclamation mark.\n\nIf you encounter any problems using this 'Convert from Worldcraft .FGD file' utility, please post a mail in the QuArK-forum.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+
+    # To reset all the globals to avoid duplications if the file is called to be remade without closing QuArK.
+    theEntities = []
+    theEntity = None
+    theKey = None
+    currentclassname = None
+    currentkeyname = None
+    currentkeytype = None
+    currentinherit = None
+    currentinheritargs = None
+    currentkeyflag = None
+    currentkeychoice = None
+
+    return root
 
 import quarkpy.qentbase
 quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fgd file", "*.fgd", makeqrk)
 
-
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.15  2008/05/01 16:01:22  cdunde
+#Changes by 'Who Gives A Dam'
+#Look for comments dated 4/30/2008 in code.
+#Fixed 'readonly' and 'halfgridsnap' parsing
+#  didn't enable ER entry field functionality
+#  nor 'halfgridsnap' functionality
+#Now capable of removing @include and @mapsize
+#All entries in fgd now have an :incl statement
+#  and entities all have a :form that just links
+#  to the :incl so all future mods can base
+#  entities off other already defined entities
+#
 #Revision 1.14  2005/11/10 18:03:04  cdunde
 #Activate history log
 #
