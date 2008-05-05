@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.99  2008/05/05 01:26:16  cdunde
+Update for new release version.
+
 Revision 1.98  2008/05/04 16:17:54  cdunde
 Update for new release.
 
@@ -344,7 +347,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 
 const
   QuArKVersion            = 'QuArK 6.6 Beta';
-  QuArKMinorVersion       = 'Beta 5';
+  QuArKMinorVersion       = 'Beta 1';
   QuArKCopyright          = 'Copyright (C) 1996-2007 Armin Rigo and others';
   QuArKUsedCompiler       = 'Delphi 6.0';
   QuArKCompileDate        = 39573;   //This is the compiled date
