@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.98  2008/05/04 16:17:54  cdunde
+Update for new release.
+
 Revision 1.97  2008/05/01 12:12:49  danielpharos
 Revert previous update and do a correct fix.
 
@@ -340,7 +343,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 *)
 
 const
-  QuArKVersion            = 'QuArK 6.5 Beta';
+  QuArKVersion            = 'QuArK 6.6 Beta';
   QuArKMinorVersion       = 'Beta 5';
   QuArKCopyright          = 'Copyright (C) 1996-2007 Armin Rigo and others';
   QuArKUsedCompiler       = 'Delphi 6.0';
