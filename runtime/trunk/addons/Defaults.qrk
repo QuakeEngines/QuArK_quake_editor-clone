@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.406  2008/05/05 01:24:52  cdunde
+//Update for new release.
+//
 //Revision 1.405  2008/04/26 17:04:28  cdunde
 //Update for shader changes by Dan.
 //
@@ -1460,7 +1463,7 @@ QQRKSRC1
       Update:config =
       {
         UpdateCheck = "1"
-        UpdateCheckOnline = "1"
+        UpdateCheckOnline = ""
         AutomaticInstall = ""
         Form = "GeneralUpdate"
       }
