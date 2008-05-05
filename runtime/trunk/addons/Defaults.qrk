@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.405  2008/04/26 17:04:28  cdunde
+//Update for shader changes by Dan.
+//
 //Revision 1.404  2008/04/23 20:51:47  cdunde
 //Setup for Warsow with .md3 model support.
 //
@@ -1333,8 +1336,8 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.5 Beta"
-      InternalVersion = '6.2'
+      Version = "QuArK 6.6 Beta"
+      InternalVersion = '6.6'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
       RecentFiles = ""

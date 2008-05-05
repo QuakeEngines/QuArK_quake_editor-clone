@@ -14,7 +14,7 @@ Dictionary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.5 Beta",
+    0: "QuArK 6.6 Beta",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -1046,6 +1046,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.122  2008/04/26 15:44:42  danielpharos
+#Added a new game-specific: ShadersType. This is a gamecode-value indicating what game-style shaders a game uses.
+#
 #Revision 1.121  2008/04/19 14:28:36  cdunde
 #To activate RMB menu items.
 #
