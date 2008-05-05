@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2008/02/23 20:22:18  danielpharos
+Small changes to Python loading and unloading
+
 Revision 1.33  2007/12/19 13:56:34  danielpharos
 Some changes to process-detection: Should work on Windows NT4 now too, and made the Steam executable filename configurable (but hidden).
 
@@ -1318,6 +1321,7 @@ begin
         begin
           bdata:=stralloc(255);
           try
+            FillChar(bdata^,255,0);
             readbinarydata(rvBIOSVersion,bdata^,255);
             FBIOSCopyright:=strpas(pchar(bdata));
           except
@@ -1690,24 +1694,28 @@ begin
           begin
             if ValueExists(rvHardware+'.'+rvHWVideo) then
               try
+                FillChar(bdata^,255,0);
                 readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,255);
                 FAdapter.Add(getstrfrombuf(pchar(bdata)));
               except
               end;
             if ValueExists(rvHardware+'.'+rvHWDAC) then
               try
+                FillChar(bdata^,255,0);
                 readbinarydata(rvHardware+'.'+rvHWDAC,bdata^,255);
                 FDAC.Add(getstrfrombuf(pchar(bdata)));
               except
               end;
             if ValueExists(rvHardware+'.'+rvHWChip) then
               try
+                FillChar(bdata^,255,0);
                 readbinarydata(rvHardware+'.'+rvHWChip,bdata^,255);
                 FChipset.Add(getstrfrombuf(pchar(bdata)));
               except
               end;
             if ValueExists(rvHardware+'.'+rvHWMem) then
               try
+                FillChar(bdata^,255,0);
                 readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
                 FMemory.Add(inttostr(idata));
               except
@@ -1722,6 +1730,7 @@ begin
       if ValueExists(rvVideoBIOSVersion) then
       begin
         try
+          FillChar(bdata^,255,0);
           readbinarydata(rvVideoBIOSVersion,bdata^,255);
           FBIOSVersion:=strpas(pchar(bdata));
         except
@@ -1831,11 +1840,13 @@ begin
       begin
         if ValueExists(rvDXInstalledVersion) then
           try
+            FillChar(bdata^,255,0);
             readbinarydata(rvDXInstalledVersion,bdata^,4);
             FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
           except
             {$IFDEF Delphi4orNewerCompiler}
             try
+              FillChar(bdata^,255,0);
               readbinarydata(rvDXInstalledVersion,bdata^,8);
               FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
             except
