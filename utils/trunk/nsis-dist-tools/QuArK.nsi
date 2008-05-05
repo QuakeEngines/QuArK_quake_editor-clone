@@ -17,7 +17,7 @@
 ; 4) Create a folder named " QuArK_installer_files " in your C:\ directory.
 ; 5) Place the QuArK.exe, all runtime files and the help folder in the above folder.
 ; 6) Create a folder named " QuArK_installer_splash_image " in your C:\ directory.
-; 7) Copy the sinstall_header.bmp and install_splash.bmp files from utils\nsis-dist-tools folder to the above folder.
+; 7) Copy the install_header.bmp and install_splash.bmp files from utils\nsis-dist-tools folder to the above folder.
 ; 8) Click on NSIS.exe to start program, select "MakeNSISW (compiler interface)".
 ; 9) Drag this file, QuArK.nsi, into the compiler window, or use the "File > Load Script" method to open this file.
 ; 10) The finished QuArK installer will be place in the same location as this file, ready for distrubution!
@@ -28,11 +28,11 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 !define BUILDDIR "C:\QuArK_installer_files"
 !define SPLASHDIR "C:\QuArK_installer_splash_image"
-!define INSTALLER_EXENAME "quark-win32-6.5.0Beta3.0.exe"
+!define INSTALLER_EXENAME "quark-win32-6.6.0Beta1.exe"
 !define PRODUCT_NAME "QuArK"
-!define PRODUCT_VERSION "6.5.0 Beta 3.0"
+!define PRODUCT_VERSION "6.6.0 Beta 1"
 !define PRODUCT_WEB_SITE "http://quark.planetquake.gamespy.com/"
-!define PRODUCT_WEB_FORUM "http://www.dark-forge.com/forums/"     ; PuG's forum
+!define PRODUCT_WEB_FORUM "http://quark.planetquake.gamespy.com/forums/"     ; QuArK forum
 !define PRODUCT_INFOBASE "http://quark.planetquake.gamespy.com/infobase/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\QuArK.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -41,7 +41,7 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "${INSTALLER_EXENAME}"
-InstallDir "$PROGRAMFILES\QuArK 6.5.0 Beta 3.0"
+InstallDir "$PROGRAMFILES\QuArK 6.6.0 Beta 1"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -186,6 +186,8 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
   File "${BUILDDIR}\addons\Doom_3\*.*"
   SetOutPath "$INSTDIR\addons\EF2"
   File "${BUILDDIR}\addons\EF2\*.*"
+  SetOutPath "$INSTDIR\addons\FAKK2"
+  File "${BUILDDIR}\addons\FAKK2\*.*"
   SetOutPath "$INSTDIR\addons\Genesis3D"
   File "${BUILDDIR}\addons\Genesis3D\*.*"
   SetOutPath "$INSTDIR\addons\Half-Life"
@@ -204,6 +206,10 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
   File "${BUILDDIR}\addons\KingPin\*.*"
   SetOutPath "$INSTDIR\addons\MOHAA"
   File "${BUILDDIR}\addons\MOHAA\*.*"
+  SetOutPath "$INSTDIR\addons\NEXUIZ"
+  File "${BUILDDIR}\addons\NEXUIZ\*.*"
+  SetOutPath "$INSTDIR\addons\Prey"
+  File "${BUILDDIR}\addons\Prey\*.*"
   SetOutPath "$INSTDIR\addons\Quake_1"
   File "${BUILDDIR}\addons\Quake_1\*.*"
   SetOutPath "$INSTDIR\addons\Quake_2"
@@ -231,6 +237,8 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
   File "${BUILDDIR}\addons\Sylphis\*.*"
   SetOutPath "$INSTDIR\addons\Torque"
   File "${BUILDDIR}\addons\Torque\*.*"
+  SetOutPath "$INSTDIR\addons\Warsow"
+  File "${BUILDDIR}\addons\Warsow\*.*"
   SetOutPath "$INSTDIR\addons\WildWest"
   File "${BUILDDIR}\addons\WildWest\*.*"
   SetOutPath "$INSTDIR\addons"
@@ -283,6 +291,7 @@ SectionEnd
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\addons\WildWest\*.*"
+  Delete "$INSTDIR\addons\Warsow\*.*"
   Delete "$INSTDIR\addons\Torque\*.*"
   Delete "$INSTDIR\addons\Sylphis\*.*"
   Delete "$INSTDIR\addons\STVEF\*.*"
@@ -296,6 +305,8 @@ Section Uninstall
   Delete "$INSTDIR\addons\Quake_3\*.*"
   Delete "$INSTDIR\addons\Quake_2\*.*"
   Delete "$INSTDIR\addons\Quake_1\*.*"
+  Delete "$INSTDIR\addons\Prey\*.*"
+  Delete "$INSTDIR\addons\NEXUIZ\*.*"
   Delete "$INSTDIR\addons\MOHAA\*.*"
   Delete "$INSTDIR\addons\KingPin\*.*"
   Delete "$INSTDIR\addons\JK2\*.*"
@@ -305,6 +316,7 @@ Section Uninstall
   Delete "$INSTDIR\addons\Half-Life2\*.*"
   Delete "$INSTDIR\addons\Half-Life\*.*"
   Delete "$INSTDIR\addons\Genesis3D\*.*"
+  Delete "$INSTDIR\addons\FAKK2\*.*"
   Delete "$INSTDIR\addons\EF2\*.*"
   Delete "$INSTDIR\addons\Doom_3\*.*"
   Delete "$INSTDIR\addons\Crystal_Space\*.*"
@@ -324,6 +336,7 @@ Section Uninstall
 
 
   RMDir "$INSTDIR\addons\WildWest"
+  RMDir "$INSTDIR\addons\Warsow"
   RMDir "$INSTDIR\addons\Torque"
   RMDir "$INSTDIR\addons\Sylphis"
   RMDir "$INSTDIR\addons\STVEF"
@@ -338,6 +351,8 @@ Section Uninstall
   RMDir "$INSTDIR\addons\Quake_3"
   RMDir "$INSTDIR\addons\Quake_2"
   RMDir "$INSTDIR\addons\Quake_1"
+  RMDir "$INSTDIR\addons\Prey"
+  RMDir "$INSTDIR\addons\NEXUIZ"
   RMDir "$INSTDIR\addons\MOHAA"
   RMDir "$INSTDIR\addons\KingPin"
   RMDir "$INSTDIR\addons\JK2"
@@ -347,6 +362,7 @@ Section Uninstall
   RMDir "$INSTDIR\addons\Half-Life2"
   RMDir "$INSTDIR\addons\Half-Life"
   RMDir "$INSTDIR\addons\Genesis3D"
+  RMDir "$INSTDIR\addons\FAKK2"
   RMDir "$INSTDIR\addons\EF2"
   RMDir "$INSTDIR\addons\Doom_3"
   RMDir "$INSTDIR\addons\Crystal_Space"
