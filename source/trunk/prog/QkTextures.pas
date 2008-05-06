@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2008/04/26 15:33:24  danielpharos
+Added a new game-specific: ShadersType. This is a gamecode-value indicating what game-style shaders a game uses.
+
 Revision 1.62  2008/03/29 15:15:47  danielpharos
 Moved all the CompareMem stuff to ExtraFunctionality, where it belongs.
 
@@ -963,8 +966,9 @@ begin
     finally
       ProgressIndicatorStop;
     end;
-  finally
+  except
     TexList.Free;
+    Raise;
   end;
 
   Result:=TexList;
