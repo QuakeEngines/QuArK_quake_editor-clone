@@ -564,35 +564,29 @@ class ModelLayout(BaseLayout):
             for view in self.editor.layout.views:
                 if view.info["viewname"] == "skinview":
                     view.invalidate()
-            self.editor.Root.setcomponent(comp)
+        self.editor.Root.setcomponent(comp)
 
 ########## commenting out the lines below brakes Misc dragging
-            if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
-                slist = self.getskin()
-                comp.currentskin = slist[0]
-            else:
-                comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
-##########
-
-            m = qmenu.item("Dummy", None, "")
-            plugins.mdlpaintmodes.ColorSelectorClick(m)
+        if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
+            slist = self.getskin()
+            comp.currentskin = slist[0]
 
         else:
-            self.editor.Root.setcomponent(comp)
+            comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
 
-########## commenting out the lines below brakes Misc dragging
-            if self.editor.Root.currentcomponent is not None and not self.editor.Root.currentcomponent.shortname in savedskins:
-                slist = self.getskin()
-                comp.currentskin = slist[0]
-            else:
-                comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
+    # This SHOULD only allow the dialog to update when it's open already but nothing works right!
+    #    print "mdlmgr line 573 findtargetdlg", self.editor.findtargetdlg
+    #    if self.editor.findtargetdlg is not None and isinstance(self.editor.findtargetdlg, plugins.mdlpaintmodes.SelectColors):
+    #        m = qmenu.item("Dummy", None, "")
+    #        plugins.mdlpaintmodes.ColorSelectorClick(m)
 ##########
 
+        from mdleditor import NewSellist
         try:
-            if mdleditor.NewSellist != [] and (mdleditor.NewSellist[0].name.endswith(":mr") or mdleditor.NewSellist[0].name.endswith(":mg") or mdleditor.NewSellist[0].name.endswith(":bone")):
-                self.editor.layout.explorer.sellist = mdleditor.NewSellist
-                for item in self.editor.layout.explorer.sellist:
-                    self.editor.layout.explorer.expand(item.parent)
+            if NewSellist != [] and (NewSellist[0].name.endswith(":mr") or NewSellist[0].name.endswith(":mg") or NewSellist[0].name.endswith(":bone")):
+                self.editor.layout.explorer.sellist = NewSellist
+                for item in editor.layout.explorer.sellist:
+                    editor.layout.explorer.expand(item.parent)
                 mdleditor.NewSellist = []
                 return
         except:
@@ -665,7 +659,8 @@ class ModelLayout(BaseLayout):
         global treeviewselchanged
 
         # To try and load the models textures into the Texture Browser to be displayed.
-        self.putskinsintexturebrowser()
+        # But right now it brakes the model editor from working correctly.
+   #     self.putskinsintexturebrowser()
         if self.explorer.sellist != []:
             fs = self.explorer.sellist[0]
         elif self.explorer.uniquesel is not None:
@@ -742,6 +737,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.65  2008/05/01 19:15:23  danielpharos
+#Fix treeviewselchanged not updating.
+#
 #Revision 1.64  2008/05/01 17:23:52  danielpharos
 #Pulled another button out of self-object.
 #
