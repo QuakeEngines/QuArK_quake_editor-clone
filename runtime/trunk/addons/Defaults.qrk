@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.407  2008/05/05 10:17:04  danielpharos
+//Disabled Online Update for now.
+//
 //Revision 1.406  2008/05/05 01:24:52  cdunde
 //Update for new release.
 //
@@ -3381,12 +3384,12 @@ QQRKSRC1
         AlwaysWriteThreeFields = "1"
         SupportsBrushPrim = "1"
         BuildPgm1  = "q3map2.exe"
-        BuildArgs1 = ""
+        BuildArgs1 = "-game qfusion -fs_game basewsw"
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "q3map2.exe"
-        BuildArgs2 = "-vis"
+        BuildArgs2 = "-vis -game qfusion -fs_game basewsw"
         BuildPgm3  = "q3map2.exe"
-        BuildArgs3 = "-light"
+        BuildArgs3 = "-light -game qfusion -fs_game basewsw -deluxe"
 
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
