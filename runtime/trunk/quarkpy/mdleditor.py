@@ -177,6 +177,24 @@ class ModelEditor(BaseEditor):
         self.lock_y = int(Lock_Y)
         self.lock_z = int(Lock_Z)
 
+        # Creates a dictionary list of the Used Skin Textures name and image to display in the Texture Browser for the model that is opened in the editor.
+        import qutils
+        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        ToolBoxName, ToolBox = tbx_list[0]
+        UsedTexturesList = {}
+        for item in self.Root.subitems:
+            if item.name.endswith(":mc"):
+                for subitem in item.subitems:
+                    if subitem.name.endswith(":sg"):
+                        for skin in subitem.subitems:
+                            UsedTexturesList[skin.name] = subitem.dictitems[skin.name]
+        # Creates the "Used Skin Textures.qtxfolder" to display in the Texture Browser for the model that is opened in the editor.
+        UsedTexture = quarkx.newobj('Used Skin Textures.qtxfolder')
+        UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
+        for UsedTextureName in UsedTexturesList:
+            UsedTexture.appenditem(UsedTexturesList[UsedTextureName].copy())
+        ToolBox.appenditem(UsedTexture)
+
 
     def CloseRoot(self):
         import mdlanimation
@@ -1439,6 +1457,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.86  2008/05/01 19:15:24  danielpharos
+#Fix treeviewselchanged not updating.
+#
 #Revision 1.85  2008/05/01 13:52:32  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #

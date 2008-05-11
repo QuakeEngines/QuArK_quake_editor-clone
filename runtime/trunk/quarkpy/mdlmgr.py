@@ -653,14 +653,13 @@ class ModelLayout(BaseLayout):
             
         if c != self.editor.Root.currentcomponent:
             self.selectcomponent(c)
+        # Updates the models textures in the Texture Browser's 'Used Textures' to be displayed.
+        self.putskinsintexturebrowser()
 
     def selchange(self):
         "This calls for what ever selection def you are using above."
         global treeviewselchanged
 
-        # To try and load the models textures into the Texture Browser to be displayed.
-        # But right now it brakes the model editor from working correctly.
-   #     self.putskinsintexturebrowser()
         if self.explorer.sellist != []:
             fs = self.explorer.sellist[0]
         elif self.explorer.uniquesel is not None:
@@ -737,6 +736,11 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.66  2008/05/10 18:35:11  cdunde
+#Fixed animation zooming and handles dupe drawing,
+#but brakes Used Textures in the Texture Browser and
+#Color Selector Dialog. Those still need to be fixed correctly.
+#
 #Revision 1.65  2008/05/01 19:15:23  danielpharos
 #Fix treeviewselchanged not updating.
 #
