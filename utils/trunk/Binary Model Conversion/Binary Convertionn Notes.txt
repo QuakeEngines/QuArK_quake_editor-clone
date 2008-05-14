@@ -1,0 +1,182 @@
+
+Pentium166 says:
+numObj as integer
+name as char
+faces as integer
+vertices as integer
+numFrames as integer
+numTVerts as integer
+
+obj->27
+name->Box01
+faces->897
+verts->451
+frames->10
+texmap->1201
+
+texmap (0-1200) * 2 (floats)
+faces (897 * 3)  (integers)
+framevert (451 * 3) * 10 frames (floats)
+
+End of char carictor:
+====================
+
+Pentium166 says:
+'\o'
+
+
+
+=========== Using the array method with while ===========
+array('l', [27])
+array('c', 'Box')
+27
+array('l', [-2130693840])
+array('c', '\x03\x00\x00')
+-2130693840
+array('l', [451])
+
+
+b is 27 <type 'int'>  # the numObj
+string is Box01       # the name
+h is 897 <type 'int'> # the number of faces
+h is 451 <type 'int'> # the number of vertexes (per frame)
+Pentium166 says:
+26 bytes
+cdunde says:
+2+(5 * 4)+2+2 = 26
+
+GET THE NUMBER OF BITES FOR THE FILE HEADER ABOVE 26
+THEN USE:
+
+FILE.seek(26)
+
+to move the file pointer ahead that far,
+then read the block of data for the array
+
+l.read(FILE, 897*3) # This is the face list, 897 face x 3 vertexes per face.
+a = array.array('l')
+print a
+
+l.read(FILE, 451)   # This is the vertex list, one list per frame.
+b = array.array('l')
+print b
+
+
+===============================
+ frame |vert | vert
+  nbr  |index| position
+
+vert[0][0].x->83.887733
+vert[0][0].y->-5.206850
+vert[0][0].z->-70.248100
+vert[0][1].x->85.682953
+vert[0][1].y->-5.179767
+vert[0][1].z->-84.990494
+
+
+TO CONVERT BACK TO BINARY FOR 'Tris'
+====================================
+
+
+        data = struct.unpack(self.binary_format, temp_data)
+DanielPharos says:
+someString = struct.pack('Hhh', md2.faces[i].vertex_index[0], md2.tex_coords[md2.faces[i].texture_index[0]].u, md2.tex_coords[md2.faces[i].texture_index[0]].v)
+DanielPharos says:
+EndResult = ''
+for i in xrange(0,md2.num_faces):
+    someString = struct.pack('Hhh', md2.faces[i].vertex_index[0], md2.tex_coords[md2.faces[i].texture_index[0]].u, md2.tex_coords[md2.faces[i].texture_index[0]].v)
+    EndResult = EndResult + someString
+
+3
+THE 'show' MAY NEED TO BE THIS
+==============================
+Return a string of one character whose ASCII code is the integer i. For example, chr(97) returns the string 'a'. This is the inverse of ord(). The argument must be in the range [0..255], inclusive; ValueError will be raised if i is outside that range. 
+
+
+http://docs.python.org/lib/built-in-funcs.html
+DanielPharos says:
+Component['show'] = '\x01'
+DanielPharos says:
+Component['show'] = chr(1)
+
+
+
+TO READ IN THE SKIN PROPERLY FOR QUARK:
+======================================
+
+
+
+THIS MIGHT BE WHAT TO USE TO OPEN THE MODEL EDITOR
+===================================================
+
+DanielPharos says:
+def MACRO_displaymdl(self):
+    "Called when there is a model to display."
+
+
+TO OPEN THE MODEL EDIOTR WITH A MODEL (self is a new form like the dialog thingy)
+======================================
+In maphandles.py line 132
+
+DanielPharos says:
+obj=PointSpecHandle(pointpos ,o ,spec )
+DanielPharos says:
+class PointSpecHandle(qhandles.CenterHandle):
+    "3D point0 handle-like Specifics."
+
+    def __init__(self, pos, entity, spec):
+
+
+
+    def __init__(self, form):
+DanielPharos says:
+NewEditor = ModelEditor(form)
+DanielPharos says:
+def MACRO_displaymdl(self):
+    "Called when there is a model to display."
+    qutils.loadmdleditor()
+    import mdleditor
+    if isinstance(self.info, mdleditor.ModelEditor):
+        self.info.ReopenRoot(self)
+    else:
+        mdleditor.ModelEditor(self)   # new model editor
+DanielPharos says:
+        mdleditor.ModelEditor(self)   # new model editor
+DanielPharos says:
+f = quarkx.newform("temp")
+DanielPharos says:
+WhatEver = quarkx.newform("New Model Editor")
+MACRO_displaymdl(WhatEver)
+DanielPharos says:
+    def ReopenRoot(self, form):
+        self.gamecfg = quarkx.setupsubset().shortname
+        self.texflags = quarkx.setupsubset()["Q2TexFlags"]
+        self.fileobject = form.fileobject
+cdunde says:
+def OpenRoot(self, obj = None):
+DanielPharos says:
+Root = self.fileobject['Root']
+DanielPharos says:
+type
+  QModel = class(QFileObject)
+        Root = self.fileobject['Root']
+        if Root is not None:
+cdunde says:
+   Root = self.fileobject.findname(Root)
+   self.Root = Root
+else:
+self.Root = obj
+
+
+
+
+DanielPharos says:
+
+        self.fileobject = form.fileobject
+
+DanielPharos says:
+type
+  QModel = class(QFileObject)
+
+DanielPharos says:
+form.fileobject = quarkx.newobj('blaw blaw blaw')
