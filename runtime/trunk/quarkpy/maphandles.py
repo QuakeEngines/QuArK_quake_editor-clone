@@ -118,7 +118,7 @@ def CenterEntityHandle(o, view, handleclass=IconHandle, pos=None):
         #
         # Set the hint as the entity classname in blue ("?").
         #
-        new.hint = "?" + o.shortname + "||This point represents an entity, i.e. an object that appears and interacts in the game when you play the map. The exact kind of entity depends on its 'classname' (its name).\n\nThis handle lets you move the entity with the mouse. Normally, the mouvement is done by steps of the size of the grid : if the entity was not aligned on the grid before the movement, it will not be after it. Hold down Ctrl to force the entity to the grid.|maped.duplicators.extruder.html"
+        new.hint = "?" + o.shortname + "||This point represents an entity, i.e. an object that appears and interacts in the game when you play the map. The exact kind of entity depends on its 'classname' (its name).\n\nThis handle lets you move the entity with the mouse. Normally, the movement is done by steps of the size of the grid : if the entity was not aligned on the grid before the movement, it will not be after it. Hold down Ctrl to force the entity to the grid.|maped.duplicators.extruder.html"
 
         #
         # Compute a handle for aditional control points.
@@ -1998,6 +1998,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.69  2008/02/06 00:12:44  danielpharos
+#The skinview now properly updates to reflect changes made to textures.
+#
 #Revision 1.68  2007/12/21 20:12:14  cdunde
 #To fix error for a group folder if nothing is in it sometimes.
 #
