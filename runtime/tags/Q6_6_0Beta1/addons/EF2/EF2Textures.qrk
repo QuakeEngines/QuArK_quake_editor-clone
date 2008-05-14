@@ -1,0 +1,25 @@
+QQRKSRC1
+// EF2 textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "EF2 Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "EF2 Textures.qtxfolder"
+    EF2 Textures.qtxfolder =
+    {
+      Dynamically Found.osfolder =
+      {
+        path = "base"
+      }
+    }
+  }
+}

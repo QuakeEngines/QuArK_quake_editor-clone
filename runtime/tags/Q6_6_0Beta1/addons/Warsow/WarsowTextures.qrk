@@ -1,0 +1,25 @@
+QQRKSRC1
+// Warsow textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Warsow Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "Warsow Textures.qtxfolder"
+    Warsow Textures.qtxfolder =
+    {
+      Dynamically Found.osfolder =
+      {
+        path = "basewsw"
+      }
+    }
+  }
+}

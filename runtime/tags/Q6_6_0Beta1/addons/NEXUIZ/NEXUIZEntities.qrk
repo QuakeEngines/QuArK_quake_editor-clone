@@ -1,0 +1,2700 @@
+QQRKSRC1
+// NEXUIZ Entities file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.1  2008/04/05 06:17:32  cdunde
+//Added full game support for NEXUIZ including .md3 model displaying.
+//
+//
+
+{
+  QuArKProtected = "1"
+  Description = "NEXUIZ Entities"
+
+  Toolbox Folders.qtx =
+  {
+    Toolbox = "New map items..."
+    Root = "NEXUIZ Entities.qtxfolder"
+    NEXUIZ Entities.qtxfolder =
+    {
+      ;desc = "Created from NEXUIZEntities.def"
+      _* entities.qtxfolder =
+      {
+        _decal:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        _skybox:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      dom_* entities.qtxfolder =
+      {
+        dom_controlpoint:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        dom_team:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      func_* entities.qtxfolder =
+      {
+        func_bobbing:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_button:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_door:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_group:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_ladder:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_plat:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_rotating:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_snow:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_stardust:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        func_train:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
+      info_* entities.qtxfolder =
+      {
+        info_location:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_notnull:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_null:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_deathmatch:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_start:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_team1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_team2:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      item_* entities.qtxfolder =
+      {
+        item_armor1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_armor25:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_bullets:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_cells:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_flag_team1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_flag_team2:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health25:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health100:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_invincible:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_rockets:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_shells:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_slowmo:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_speed:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_strength:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      misc_* entities.qtxfolder =
+      {
+        misc_model:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_teleporter_dest:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      other entities.qtxfolder =
+      {
+        dynlight:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        light:e =
+        {
+          _color = "1 1 1"
+          light = "300"
+          angle = "360"
+          origin = "0 0 0"
+        }
+        worldspawn:b =
+        {
+        }
+      }
+      runematch_* entities.qtxfolder =
+      {
+        runematch_spawn_point:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      target_* entities.qtxfolder =
+      {
+        target_position:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_push:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_speaker:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_teleporter:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      trigger_* entities.qtxfolder =
+      {
+        trigger_cmd:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_hurt:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_multiple:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_push:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_teleport:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
+      weapon_* entities.qtxfolder =
+      {
+        weapon_crylink:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_electro:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_grenadelauncher:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_hagar:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_machinegun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_nex:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_rocketlauncher:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_shotgun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+    }
+  }
+  Entity Forms.fctx =
+  {
+    // Definition of includes
+
+    t_commonspecifics:incl =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."
+            $0D"Click the 'Help Book' above for more possible detail."
+      }
+    }
+
+    t_modelbrowser:incl =
+    {
+      hint = "Use this to select any .md3 file you want."$0D
+            "You must extract the folder with the .md3 files"$0D
+            "from the .pk3 file and put it in your 'data' folder."
+            $0D"Click the 'Help Book' above for more possible detail."
+      Typ = "EP"
+      BasePath = "$Game\data"
+      CutPath = "$Game\?\"
+      DefExt = "md3"
+      DirSep = "/"
+    }
+
+    t_soundbrowser:incl =
+    {
+      hint = "Use this to select any .ogg; *.wav file you want."$0D
+            "You must extract the folder with the .ogg; *.wav files"$0D
+            "from the .pk3 file and put it in your 'data' folder."
+            $0D"Click the 'Help Book' above for more possible detail."
+      Typ = "EP"
+      BasePath = "$Game\data"
+      CutPath = "$Game\?\"
+      DefExt = "ogg; *.wav"
+      DirSep = "/"
+    }
+
+    t_musicbrowser:incl =
+    {
+      hint = "Use this to select any .ogg; *.wav file you want."$0D
+            "You must extract the folder with the .ogg; *.wav files"$0D
+            "from the .pk3 file and put it in your 'data' folder."
+            $0D"Click the 'Help Book' above for more possible detail."
+      Typ = "EP"
+      BasePath = "$Game\data"
+      CutPath = "$Game\?\"
+      DefExt = "ogg; *.wav"
+      DirSep = "/"
+    }
+
+    _decal:form =
+    {
+      help = $22"target"$22" the name of the entity targetted at for projectio"
+       "n"$0D"Compiler-only entity that specifies a decal to be projected. Sho"
+       "uld contain 1 or more patch meshes (curves) and target an info_null en"
+       "tity. The distance between the center of the _decal entity and the tar"
+       "get is the axis and distance of projection."
+      t_commonspecifics = !
+    }
+    _skybox:form =
+    {
+      help = $22"angle"$22" rotation angle of the sky surfaces."$0D22"angles"$22
+       " Individual control of PITCH, YAW, and ROLL (default 0 0 0)."$0D22"_sc"
+       "ale"$22" scaling factor (default 64), good values are between 50 and 3"
+       "00, depending on the map."$0D"Compiler-only entity that specifies a th"
+       "e origin of a skybox (a wholly contained, seperate area of the map), s"
+       "imilar to some games' portal skies. When compiled with Q3Map2, the sky"
+       "box surfaces will be visible from any place where sky is normally visi"
+       "ble. It will cast shadows on the normal parts of the map, and can be u"
+       "sed with cloud layers and other effects."
+      bbox = '-4 -4 -4 4 4 4'
+      t_commonspecifics = !
+      angle: =
+      {
+        txt = "&"
+        hint = "rotation angle of the sky surfaces."
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = "Individual control of PITCH, YAW, and ROLL (default 0 0 0)."
+      }
+      _scale: =
+      {
+        txt = "&"
+        hint = "scaling factor (default 64), good values are between 50 and 300, depending on the map."
+      }
+    }
+    func_bobbing:form =
+    {
+      help = "Solid entity that oscillates back and forth in a linear motion. "
+       "By default, it will have an amount of displacement in either direction"
+       " equal to the dimension of the brush in the axis in which it's bobbing"
+       ". Entity bobs on the Z axis (up-down) by default. It can also emit sou"
+       "nd if the "$22"noise"$22" key is set. Will crush the player when block"
+       "ed."$0D22"speed"$22" amount of time in seconds for one complete oscill"
+       "ation cycle (default 4)."$0D22"height"$22" sets the amount of travel o"
+       "f the oscillation movement (default 32)."$0D22"phase"$22" sets the sta"
+       "rt offset of the oscillation cycle. Values must be 0 < phase < 1. Any "
+       "integer phase value is the same as no offset (default 0)."$0D22"noise"$22
+       " path/name of .wav file to play. Use looping sounds only (eg. sound/wo"
+       "rld/drone6.wav - See Notes)."$0D22"model2"$22" path/name of model to i"
+       "nclude (eg: models/mapobjects/jets/jets01.md3)."$0D22"origin"$22" alte"
+       "rnate method of setting XYZ origin of sound and .md3 model included wi"
+       "th entity (See Notes)."$0D22"light"$22" constantLight radius of .md3 m"
+       "odel included with entity. Has no effect on the entity's brushes (defa"
+       "ult 0)."$0D22"color"$22" constantLight color of .md3 model included wi"
+       "th entity. Has no effect on the entity's brushes (default 1 1 1)."$0D22
+       "notfree"$22" when set to 1, entity will not spawn in 'Free for all' an"
+       "d 'Tournament' modes."$0D22"notteam"$22" when set to 1, entity will no"
+       "t spawn in 'Teamplay' and 'CTF' modes."$0D22"notsingle"$22" when set t"
+       "o 1, entity will not spawn in Single Player mode (bot play mode)."$0D22
+       "_targetname"$22" Used to attach a misc_model entity to this entity."$0D
+       $22"_lightmapscale"$22" Floating point value scaling the resolution of "
+       "lightmaps on brushes/patches in this entity (default 1.0)."$0D22"_cast"
+       "shadows"$22" Allows per-entity control over shadow casting. Defaults t"
+       "o 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows o"
+       "n world. > 1 = cast shadows on entities with _rs (or _receiveshadows) "
+       "with the corresponding value, AND world. Negative values imply same, b"
+       "ut DO NOT cast shadows on world."$0D22"_receiveshadows"$22" Allows per"
+       "-entity control over shadow reception. Defaults to 1 on everything (wo"
+       "rld shadows). 0 = receives NO shadows. > 1 = receive shadows only from"
+       " corresponding keyed entities (see above) and world. < 1 = receive sha"
+       "dows ONLY from corresponding keyed entities."$0D22"_celshader"$22" Set"
+       "s the cel shader used for this geometry. Note: omit the 'textures/' pr"
+       "efix."$0D22"alphamap"$22" Path/name for the art file used to guide the"
+       " mapping of textures on the terrain surface."$0D22"layers"$22" Integer"
+       " value is the number unique root shaders that will be use on the terra"
+       "in."$0D22"shader"$22" Path to the metashader used to assign textures t"
+       "o the terrain entity. Note: Omit the 'textures/' prefix."$0D"X_AXIS en"
+       "tity will bob along the X axis."$0D"Y_AXIS entity will bob along the Y"
+       " axis."$0D"In order for the sound to be emitted from the entity, it is"
+       " recommended to include a brush with an origin shader at its center, o"
+       "therwise the sound will not follow the entity as it moves. Setting the"
+       " origin key is simply an alternate method to using an origin brush. Wh"
+       "en using the model2 key, the origin point of the model will correspond"
+       " to the origin point defined by either the origin brush or the origin "
+       "coordinate value."$0D"Target this entity with a misc_model to have the"
+       " model attached to the entity (set the model's target key to the same "
+       "value as this entity's targetname)."
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "Y_AXIS"
+      }
+      t_commonspecifics = !
+      speed: =
+      {
+        txt = "&"
+        hint = "amount of time in seconds for one complete oscillation cycle (default 4)."
+      }
+      height: =
+      {
+        txt = "&"
+        hint = "sets the amount of travel of the oscillation movement (default 32)."
+      }
+      phase: =
+      {
+        txt = "&"
+        hint = "sets the start offset of the oscillation cycle. Values must be 0 < phase < 1. Any integer phase value is the same as no offset (default 0)."
+      }
+      noise: =
+      {
+        t_soundbrowser = !
+        txt = "&"
+        hint = "path/name of .wav file to play. Use looping sounds only (eg. sound/world/drone6.wav - See Notes)."
+      }
+      model2: =
+      {
+        t_modelbrowser = !
+        txt = "&"
+        hint = "path/name of model to include (eg: models/mapobjects/jets/jets01.md3)."
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = "alternate method of setting XYZ origin of sound and .md3 model included with entity (See Notes)."
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "constantLight radius of .md3 model included with entity. Has no effect on the entity's brushes (default 0)."
+      }
+      color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+      _targetname: =
+      {
+        txt = "&"
+        hint = "Used to attach a misc_model entity to this entity."
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "Floating point value scaling the resolution of lightmaps on brushes/patches in this entity (default 1.0)."
+      }
+      _castshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or _receiveshadows) with the corresponding value, AND world. Negative values imply same, but DO NOT cast shadows on world."
+      }
+      _receiveshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow reception. Defaults to 1 on everything (world shadows). 0 = receives NO shadows. > 1 = receive shadows only from corresponding keyed entities (see above) and world. < 1 = receive shadows ONLY from corresponding keyed entities."
+      }
+      _celshader: =
+      {
+        txt = "&"
+        hint = "Sets the cel shader used for this geometry. Note: omit the 'textures/' prefix."
+      }
+      alphamap: =
+      {
+        txt = "&"
+        hint = "Path/name for the art file used to guide the mapping of textures on the terrain surface."
+      }
+      layers: =
+      {
+        txt = "&"
+        hint = "Integer value is the number unique root shaders that will be use on the terrain."
+      }
+      shader: =
+      {
+        txt = "&"
+        hint = "Path to the metashader used to assign textures to the terrain entity. Note: Omit the 'textures/' prefix."
+      }
+    }
+    func_button:form =
+    {
+      help = "When a button is touched by a player, it moves in the direction "
+       "set by the "$22"angle"$22" key, triggers all its targets, stays presse"
+       "d by an amount of time set by the "$22"wait"$22" key, then returns to "
+       "it's original position where it can be operated again."$0D22"angle"$22
+       " determines the direction in which the button will move (up = -1, down"
+       " = -2)."$0D22"target"$22" all entities with a matching targetname will"
+       " be triggered."$0D22"speed"$22" speed of button's displacement (defaul"
+       "t 40)."$0D22"wait"$22" number of seconds button stays pressed (default"
+       " 1, -1 = return immediately)."$0D22"lip"$22" lip remaining at end of m"
+       "ove (default 4 units)."$0D22"health"$22" (default 0) if set to any non"
+       "-zero value, the button must take damage (any amount) to activate."$0D
+       $22"light"$22" constantLight radius of .md3 model included with entity."
+       " Has no effect on the entity's brushes (default 0)."$0D22"color"$22" c"
+       "onstantLight color of .md3 model included with entity. Has no effect o"
+       "n the entity's brushes (default 1 1 1)."$0D22"model2"$22" path/name of"
+       " model to include (eg: models/mapobjects/pipe/pipe02.md3)."$0D22"origi"
+       "n"$22" alternate method of setting XYZ origin of .md3 model included w"
+       "ith entity (See Notes)."$0D22"notfree"$22" when set to 1, entity will "
+       "not spawn in 'Free for all' and 'Tournament' modes."$0D22"notteam"$22" "
+       "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."$0D
+       $22"notsingle"$22" when set to 1, entity will not spawn in Single Playe"
+       "r mode (bot play mode)."$0D22"_targetname"$22" Used to attach a misc_m"
+       "odel entity to this entity."$0D22"_lightmapscale"$22" Floating point v"
+       "alue scaling the resolution of lightmaps on brushes/patches in this en"
+       "tity (default 1.0)."$0D22"_castshadows"$22" Allows per-entity control "
+       "over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no sha"
+       "dow casting. 1 = cast shadows on world. > 1 = cast shadows on entities"
+       " with _rs (or _receiveshadows) with the corresponding value, AND world"
+       ". Negative values imply same, but DO NOT cast shadows on world."$0D22"_"
+       "receiveshadows"$22" Allows per-entity control over shadow reception. D"
+       "efaults to 1 on everything (world shadows). 0 = receives NO shadows. >"
+       " 1 = receive shadows only from corresponding keyed entities (see above"
+       ") and world. < 1 = receive shadows ONLY from corresponding keyed entit"
+       "ies."$0D22"_celshader"$22" Sets the cel shader used for this geometry."
+       " Note: omit the 'textures/' prefix."$0D22"alphamap"$22" Path/name for "
+       "the art file used to guide the mapping of textures on the terrain surf"
+       "ace."$0D22"layers"$22" Integer value is the number unique root shaders"
+       " that will be use on the terrain."$0D22"shader"$22" Path to the metash"
+       "ader used to assign textures to the terrain entity. Note: Omit the 'te"
+       "xtures/' prefix."$0D"Setting the origin key is simply an alternate met"
+       "hod to using an origin brush. When using the model2 key, the origin po"
+       "int of the model will correspond to the origin point defined by either"
+       " the origin brush or the origin coordinate value."$0D"Target this enti"
+       "ty with a misc_model to have the model attached to the entity (set the"
+       " model's target key to the same value as this entity's targetname)."
+      t_commonspecifics = !
+      angle: =
+      {
+        txt = "&"
+        hint = "determines the direction in which the button will move (up = -1, down = -2)."
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "speed of button's displacement (default 40)."
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "number of seconds button stays pressed (default 1, -1 = return immediately)."
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "lip remaining at end of move (default 4 units)."
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "(default 0) if set to any non-zero value, the button must take damage (any amount) to activate."
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "constantLight radius of .md3 model included with entity. Has no effect on the entity's brushes (default 0)."
+      }
+      color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
+      }
+      model2: =
+      {
+        t_modelbrowser = !
+        txt = "&"
+        hint = "path/name of model to include (eg: models/mapobjects/pipe/pipe02.md3)."
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = "alternate method of setting XYZ origin of .md3 model included with entity (See Notes)."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+      _targetname: =
+      {
+        txt = "&"
+        hint = "Used to attach a misc_model entity to this entity."
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "Floating point value scaling the resolution of lightmaps on brushes/patches in this entity (default 1.0)."
+      }
+      _castshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or _receiveshadows) with the corresponding value, AND world. Negative values imply same, but DO NOT cast shadows on world."
+      }
+      _receiveshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow reception. Defaults to 1 on everything (world shadows). 0 = receives NO shadows. > 1 = receive shadows only from corresponding keyed entities (see above) and world. < 1 = receive shadows ONLY from corresponding keyed entities."
+      }
+      _celshader: =
+      {
+        txt = "&"
+        hint = "Sets the cel shader used for this geometry. Note: omit the 'textures/' prefix."
+      }
+      alphamap: =
+      {
+        txt = "&"
+        hint = "Path/name for the art file used to guide the mapping of textures on the terrain surface."
+      }
+      layers: =
+      {
+        txt = "&"
+        hint = "Integer value is the number unique root shaders that will be use on the terrain."
+      }
+      shader: =
+      {
+        txt = "&"
+        hint = "Path to the metashader used to assign textures to the terrain entity. Note: Omit the 'textures/' prefix."
+      }
+    }
+    func_door:form =
+    {
+      help = "Normal sliding door entity. By default, the door will activate w"
+       "hen player walks close to it or when damage is inflicted to it."$0D22"a"
+       "ngle"$22" determines the opening direction of door (up = -1, down = -2"
+       ")."$0D22"speed"$22" determines how fast the door moves (default 100)."$0D
+       $22"wait"$22" number of seconds before door returns (default 2, -1 = re"
+       "turn immediately)"$0D22"lip"$22" lip remaining at end of move (default"
+       " 8)"$0D22"targetname"$22" if set, a func_button or trigger is required"
+       " to activate the door."$0D22"health"$22" (default 0) if set to any non"
+       "-zero value, the button must take damage (any amount) to activate."$0D
+       $22"dmg"$22" damage to inflict on player when he blocks operation of do"
+       "or (default 4). Door will reverse direction when blocked unless CRUSHE"
+       "R spawnflag is set."$0D"team: assign the same team name to multiple do"
+       "ors that should operate together (see Notes)."$0D22"light"$22" constan"
+       "tLight radius of .md3 model included with entity. Has no effect on the"
+       " entity's brushes (default 0)."$0D22"color"$22" constantLight color of"
+       " .md3 model included with entity. Has no effect on the entity's brushe"
+       "s (default 1 1 1)."$0D22"model2"$22" path/name of model to include (eg"
+       ": models/mapobjects/pipe/pipe02.md3)."$0D22"origin"$22" alternate meth"
+       "od of setting XYZ origin of .md3 model included with entity (See Notes"
+       ")."$0D22"notfree"$22" when set to 1, entity will not spawn in 'Free fo"
+       "r all' and 'Tournament' modes."$0D22"notteam"$22" when set to 1, entit"
+       "y will not spawn in 'Teamplay' and 'CTF' modes."$0D22"notsingle"$22" w"
+       "hen set to 1, entity will not spawn in Single Player mode (bot play mo"
+       "de)."$0D22"_targetname"$22" Used to attach a misc_model entity to this"
+       " entity."$0D22"_lightmapscale"$22" Floating point value scaling the re"
+       "solution of lightmaps on brushes/patches in this entity (default 1.0)."
+       $0D22"_castshadows"$22" Allows per-entity control over shadow casting. "
+       "Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast"
+       " shadows on world. > 1 = cast shadows on entities with _rs (or _receiv"
+       "eshadows) with the corresponding value, AND world. Negative values imp"
+       "ly same, but DO NOT cast shadows on world."$0D22"_receiveshadows"$22" "
+       "Allows per-entity control over shadow reception. Defaults to 1 on ever"
+       "ything (world shadows). 0 = receives NO shadows. > 1 = receive shadows"
+       " only from corresponding keyed entities (see above) and world. < 1 = r"
+       "eceive shadows ONLY from corresponding keyed entities."$0D22"_celshade"
+       "r"$22" Sets the cel shader used for this geometry. Note: omit the 'tex"
+       "tures/' prefix."$0D22"alphamap"$22" Path/name for the art file used to"
+       " guide the mapping of textures on the terrain surface."$0D22"layers"$22
+       " Integer value is the number unique root shaders that will be use on t"
+       "he terrain."$0D22"shader"$22" Path to the metashader used to assign te"
+       "xtures to the terrain entity. Note: Omit the 'textures/' prefix."$0D"S"
+       "TART_OPEN the door will spawn in the open state and operate in reverse"
+       "."$0D"CRUSHER door will not reverse direction when blocked and will ke"
+       "ep damaging player until he dies or gets out of the way."$0D"Unlike in"
+       " Quake 2, doors that touch are NOT automatically teamed. If you want d"
+       "oors to operate together, you have to team them manually by assigning "
+       "the same team name to all of them. Setting the origin key is simply an"
+       " alternate method to using an origin brush. When using the model2 key,"
+       " the origin point of the model will correspond to the origin point def"
+       "ined by either the origin brush or the origin coordinate value."$0D"Ta"
+       "rget this entity with a misc_model to have the model attached to the e"
+       "ntity (set the model's target key to the same value as this entity's t"
+       "argetname)."
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_OPEN"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "CRUSHER"
+      }
+      t_commonspecifics = !
+      angle: =
+      {
+        txt = "&"
+        hint = "determines the opening direction of door (up = -1, down = -2)."
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "determines how fast the door moves (default 100)."
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "number of seconds before door returns (default 2, -1 = return immediately)"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "lip remaining at end of move (default 8)"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "(default 0) if set to any non-zero value, the button must take damage (any amount) to activate."
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "damage to inflict on player when he blocks operation of door (default 4). Door will reverse direction when blocked unless CRUSHER spawnflag is set."
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "constantLight radius of .md3 model included with entity. Has no effect on the entity's brushes (default 0)."
+      }
+      color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
+      }
+      model2: =
+      {
+        t_modelbrowser = !
+        txt = "&"
+        hint = "path/name of model to include (eg: models/mapobjects/pipe/pipe02.md3)."
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = "alternate method of setting XYZ origin of .md3 model included with entity (See Notes)."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+      _targetname: =
+      {
+        txt = "&"
+        hint = "Used to attach a misc_model entity to this entity."
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "Floating point value scaling the resolution of lightmaps on brushes/patches in this entity (default 1.0)."
+      }
+      _castshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or _receiveshadows) with the corresponding value, AND world. Negative values imply same, but DO NOT cast shadows on world."
+      }
+      _receiveshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow reception. Defaults to 1 on everything (world shadows). 0 = receives NO shadows. > 1 = receive shadows only from corresponding keyed entities (see above) and world. < 1 = receive shadows ONLY from corresponding keyed entities."
+      }
+      _celshader: =
+      {
+        txt = "&"
+        hint = "Sets the cel shader used for this geometry. Note: omit the 'textures/' prefix."
+      }
+      alphamap: =
+      {
+        txt = "&"
+        hint = "Path/name for the art file used to guide the mapping of textures on the terrain surface."
+      }
+      layers: =
+      {
+        txt = "&"
+        hint = "Integer value is the number unique root shaders that will be use on the terrain."
+      }
+      shader: =
+      {
+        txt = "&"
+        hint = "Path to the metashader used to assign textures to the terrain entity. Note: Omit the 'textures/' prefix."
+      }
+    }
+    func_group:form =
+    {
+      help = "This is not an entity as such. It is strictly an editor utility "
+       "to group world brushes and patches together for convenience (selecting"
+       ", moving, copying, etc). You cannot group entities with this."$0D22"al"
+       "phamap"$22" this is the path/name for the art file used to guide the m"
+       "apping of textures on the terrain surface."$0D22"layers"$22" this inte"
+       "ger value is the number unique root shaders that will be use on the te"
+       "rrain."$0D22"shader"$22" this is the path to the metashader used to as"
+       "sign textures to the terrain entity."$0D22"terrain"$22" this is an on/"
+       "off flag. When set to 1, the entity becomes a terrain entity. Note: un"
+       "ecessary when compiling with Q3Map2. See Q3Map2 keys."$0D22"_lightmaps"
+       "cale"$22" Floating point value scaling the resolution of lightmaps on "
+       "brushes/patches in this entity (default 1.0)."$0D22"_castshadows"$22" "
+       "Allows per-entity control over shadow casting. Defaults to 0 on entiti"
+       "es, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 "
+       "= cast shadows on entities with _rs (or _receiveshadows) with the corr"
+       "esponding value, AND world. Negative values imply same, but DO NOT cas"
+       "t shadows on world."$0D22"_receiveshadows"$22" Allows per-entity contr"
+       "ol over shadow reception. Defaults to 1 on everything (world shadows)."
+       " 0 = receives NO shadows. > 1 = receive shadows only from correspondin"
+       "g keyed entities (see above) and world. < 1 = receive shadows ONLY fro"
+       "m corresponding keyed entities."$0D22"_celshader"$22" Sets the cel sha"
+       "der used for this geometry. Note: omit the 'textures/' prefix."$0D22"a"
+       "lphamap"$22" Path/name for the art file used to guide the mapping of t"
+       "extures on the terrain surface."$0D22"layers"$22" Integer value is the"
+       " number unique root shaders that will be use on the terrain."$0D22"sha"
+       "der"$22" Path to the metashader used to assign textures to the terrain"
+       " entity. Note: Omit the 'textures/' prefix."$0D"The TAB key can be use"
+       "d to flip through the component pieces of a selected func_group entity"
+       ", isolating individual components. To make a func_group into a terrain"
+       " entity, refer to the Terrain Construction documentation."
+      t_commonspecifics = !
+      alphamap: =
+      {
+        txt = "&"
+        hint = "this is the path/name for the art file used to guide the mapping of textures on the terrain surface."
+      }
+      layers: =
+      {
+        txt = "&"
+        hint = "this integer value is the number unique root shaders that will be use on the terrain."
+      }
+      shader: =
+      {
+        txt = "&"
+        hint = "this is the path to the metashader used to assign textures to the terrain entity."
+      }
+      terrain: =
+      {
+        txt = "&"
+        hint = "this is an on/off flag. When set to 1, the entity becomes a terrain entity. Note: unecessary when compiling with Q3Map2. See Q3Map2 keys."
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "Floating point value scaling the resolution of lightmaps on brushes/patches in this entity (default 1.0)."
+      }
+      _castshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or _receiveshadows) with the corresponding value, AND world. Negative values imply same, but DO NOT cast shadows on world."
+      }
+      _receiveshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow reception. Defaults to 1 on everything (world shadows). 0 = receives NO shadows. > 1 = receive shadows only from corresponding keyed entities (see above) and world. < 1 = receive shadows ONLY from corresponding keyed entities."
+      }
+      _celshader: =
+      {
+        txt = "&"
+        hint = "Sets the cel shader used for this geometry. Note: omit the 'textures/' prefix."
+      }
+      alphamap: =
+      {
+        txt = "&"
+        hint = "Path/name for the art file used to guide the mapping of textures on the terrain surface."
+      }
+      layers: =
+      {
+        txt = "&"
+        hint = "Integer value is the number unique root shaders that will be use on the terrain."
+      }
+      shader: =
+      {
+        txt = "&"
+        hint = "Path to the metashader used to assign textures to the terrain entity. Note: Omit the 'textures/' prefix."
+      }
+    }
+    func_plat:form =
+    {
+      help = "Rising platform the player can ride to reach higher places. Plat"
+       "s must always be drawn in the raised position, so they will operate an"
+       "d be lighted correctly but they spawn in the lowered position. The pla"
+       "t will stay in the raised position until the player steps off. There a"
+       "re no proper sounds for this entity, only beep noises. It will spawn i"
+       "n the game and work properly but it sounds silly (see Notes)."$0D22"sp"
+       "eed"$22" determines how fast the plat moves (default 150)."$0D22"lip"$22
+       " lip remaining at end of move (default 16). Has no effect if 'height' "
+       "is set."$0D22"height"$22" if set, this will determine the total amount"
+       " of vertical travel of the plat."$0D22"dmg"$22" damage to inflict on p"
+       "layer when he blocks operation of plat (default 4). Plat will reverse "
+       "direction when blocked."$0D22"targetname"$22" if set, the trigger that"
+       " points to this will raise the plat each time it fires. The plat raise"
+       "s and comes back down a second later if no player is on it."$0D22"ligh"
+       "t"$22" constantLight radius of .md3 model included with entity. Has no"
+       " effect on the entity's brushes (default 0)."$0D22"color"$22" constant"
+       "Light color of .md3 model included with entity. Has no effect on the e"
+       "ntity's brushes (default 1 1 1)."$0D22"model2"$22" path/name of model "
+       "to include (eg: models/mapobjects/pipe/pipe02.md3)."$0D22"origin"$22" "
+       "alternate method of setting XYZ origin of .md3 model included with ent"
+       "ity (See Notes)."$0D22"notfree"$22" when set to 1, entity will not spa"
+       "wn in 'Free for all' and 'Tournament' modes."$0D22"notteam"$22" when s"
+       "et to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."$0D22"no"
+       "tsingle"$22" when set to 1, entity will not spawn in Single Player mod"
+       "e (bot play mode)."$0D22"_targetname"$22" Used to attach a misc_model "
+       "entity to this entity."$0D22"_lightmapscale"$22" Floating point value "
+       "scaling the resolution of lightmaps on brushes/patches in this entity "
+       "(default 1.0)."$0D22"_castshadows"$22" Allows per-entity control over "
+       "shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow c"
+       "asting. 1 = cast shadows on world. > 1 = cast shadows on entities with"
+       " _rs (or _receiveshadows) with the corresponding value, AND world. Neg"
+       "ative values imply same, but DO NOT cast shadows on world."$0D22"_rece"
+       "iveshadows"$22" Allows per-entity control over shadow reception. Defau"
+       "lts to 1 on everything (world shadows). 0 = receives NO shadows. > 1 ="
+       " receive shadows only from corresponding keyed entities (see above) an"
+       "d world. < 1 = receive shadows ONLY from corresponding keyed entities."
+       $0D22"_celshader"$22" Sets the cel shader used for this geometry. Note:"
+       " omit the 'textures/' prefix."$0D22"alphamap"$22" Path/name for the ar"
+       "t file used to guide the mapping of textures on the terrain surface."$0D
+       $22"layers"$22" Integer value is the number unique root shaders that wi"
+       "ll be use on the terrain."$0D22"shader"$22" Path to the metashader use"
+       "d to assign textures to the terrain entity. Note: Omit the 'textures/'"
+       " prefix."$0D"By default, the total amount of vertical travel of a plat"
+       "form is implicitly determined by the overall vertical size of the brus"
+       "hes of which it's made minus the lip value. But if the "$22"height"$22
+       " key is used, then the total amount of vertical travel of the plat wil"
+       "l be exactly that value regardless of the shape and size of the plat a"
+       "nd regardless of the value of the "$22"lip"$22" key. Using the "$22"he"
+       "ight"$22" key is the best method for any kind of platforms and the onl"
+       "y possible one for thin plats which need to travel vertical distances "
+       "many times their own thickness. Setting the origin key is simply an al"
+       "ternate method to using an origin brush. When using the model2 key, th"
+       "e origin point of the model will correspond to the origin point define"
+       "d by either the origin brush or the origin coordinate value."$0D"There"
+       " is a way to make plats play proper sounds. Just create a sound\movers"
+       "\plats folder under baseq3 and put 2 sounds named pt1_strt.wav and pt1"
+       "_end.wav in it. Those can be the renamed sounds from the Q2 plats or r"
+       "enamed copies of the sound\movers\doors sounds you can extract from yo"
+       "ur pak0.pk3 file or new custom sounds if you're up to it. Thanks to Fr"
+       "agzilla for the tip."$0D"Target this entity with a misc_model to have "
+       "the model attached to the entity (set the model's target key to the sa"
+       "me value as this entity's targetname)."
+      t_commonspecifics = !
+      speed: =
+      {
+        txt = "&"
+        hint = "determines how fast the plat moves (default 150)."
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "lip remaining at end of move (default 16). Has no effect if 'height' is set."
+      }
+      height: =
+      {
+        txt = "&"
+        hint = "if set, this will determine the total amount of vertical travel of the plat."
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "damage to inflict on player when he blocks operation of plat (default 4). Plat will reverse direction when blocked."
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "constantLight radius of .md3 model included with entity. Has no effect on the entity's brushes (default 0)."
+      }
+      color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
+      }
+      model2: =
+      {
+        t_modelbrowser = !
+        txt = "&"
+        hint = "path/name of model to include (eg: models/mapobjects/pipe/pipe02.md3)."
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = "alternate method of setting XYZ origin of .md3 model included with entity (See Notes)."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+      _targetname: =
+      {
+        txt = "&"
+        hint = "Used to attach a misc_model entity to this entity."
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "Floating point value scaling the resolution of lightmaps on brushes/patches in this entity (default 1.0)."
+      }
+      _castshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or _receiveshadows) with the corresponding value, AND world. Negative values imply same, but DO NOT cast shadows on world."
+      }
+      _receiveshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow reception. Defaults to 1 on everything (world shadows). 0 = receives NO shadows. > 1 = receive shadows only from corresponding keyed entities (see above) and world. < 1 = receive shadows ONLY from corresponding keyed entities."
+      }
+      _celshader: =
+      {
+        txt = "&"
+        hint = "Sets the cel shader used for this geometry. Note: omit the 'textures/' prefix."
+      }
+      alphamap: =
+      {
+        txt = "&"
+        hint = "Path/name for the art file used to guide the mapping of textures on the terrain surface."
+      }
+      layers: =
+      {
+        txt = "&"
+        hint = "Integer value is the number unique root shaders that will be use on the terrain."
+      }
+      shader: =
+      {
+        txt = "&"
+        hint = "Path to the metashader used to assign textures to the terrain entity. Note: Omit the 'textures/' prefix."
+      }
+    }
+    func_rotating:form =
+    {
+      help = "Solid entity that rotates continuously. Rotates on the Z axis by"
+       " default and requires an origin brush. It will always start on in the "
+       "game and is not targetable."$0D22"speed"$22" determines how fast entit"
+       "y rotates (default 100)."$0D22"noise"$22" path/name of .wav file to pl"
+       "ay. Use looping sounds only (eg. sound/world/drone6.wav)."$0D22"model2"
+       $22" path/name of model to include (eg: models/mapobjects/bitch/fembotb"
+       "ig.md3)."$0D22"origin"$22" alternate method of setting XYZ origin of e"
+       "ntity's rotation axis and .md3 model included with entity (default '0 "
+       "0 0' - See Notes)."$0D22"light"$22" constantLight radius of .md3 model"
+       " included with entity. Has no effect on the entity's brushes (default "
+       "0)."$0D22"color"$22" constantLight color of .md3 model included with e"
+       "ntity. Has no effect on the entity's brushes (default 1 1 1)."$0D22"no"
+       "tfree"$22" when set to 1, entity will not spawn in 'Free for all' and "
+       "'Tournament' modes."$0D22"notteam"$22" when set to 1, entity will not "
+       "spawn in 'Teamplay' and 'CTF' modes."$0D22"notsingle"$22" when set to "
+       "1, entity will not spawn in Single Player mode (bot play mode)."$0D22"_"
+       "targetname"$22" Used to attach a misc_model entity to this entity."$0D
+       $22"_lightmapscale"$22" Floating point value scaling the resolution of "
+       "lightmaps on brushes/patches in this entity (default 1.0)."$0D22"_cast"
+       "shadows"$22" Allows per-entity control over shadow casting. Defaults t"
+       "o 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows o"
+       "n world. > 1 = cast shadows on entities with _rs (or _receiveshadows) "
+       "with the corresponding value, AND world. Negative values imply same, b"
+       "ut DO NOT cast shadows on world."$0D22"_receiveshadows"$22" Allows per"
+       "-entity control over shadow reception. Defaults to 1 on everything (wo"
+       "rld shadows). 0 = receives NO shadows. > 1 = receive shadows only from"
+       " corresponding keyed entities (see above) and world. < 1 = receive sha"
+       "dows ONLY from corresponding keyed entities."$0D22"_celshader"$22" Set"
+       "s the cel shader used for this geometry. Note: omit the 'textures/' pr"
+       "efix."$0D22"alphamap"$22" Path/name for the art file used to guide the"
+       " mapping of textures on the terrain surface."$0D22"layers"$22" Integer"
+       " value is the number unique root shaders that will be use on the terra"
+       "in."$0D22"shader"$22" Path to the metashader used to assign textures t"
+       "o the terrain entity. Note: Omit the 'textures/' prefix."$0D"X_AXIS en"
+       "tity will rotate along the X axis."$0D"Y_AXIS entity will rotate along"
+       " the Y axis."$0D"You need to have an origin brush as part of this enti"
+       "ty. The center of that brush will be the point through which the rotat"
+       "ion axis passes. Setting the origin key is simply an alternate method "
+       "to using an origin brush. It will rotate along the Z axis by default. "
+       "You can check either the X_AXIS or Y_AXIS box to change that. When usi"
+       "ng the model2 key, the origin point of the model will correspond to th"
+       "e origin point defined by either the origin brush or the origin coordi"
+       "nate value."$0D"Target this entity with a misc_model to have the model"
+       " attached to the entity (set the model's target key to the same value "
+       "as this entity's targetname)."
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        typ = "X8"
+        cap = "Y_AXIS"
+      }
+      t_commonspecifics = !
+      speed: =
+      {
+        txt = "&"
+        hint = "determines how fast entity rotates (default 100)."
+      }
+      noise: =
+      {
+        t_soundbrowser = !
+        txt = "&"
+        hint = "path/name of .wav file to play. Use looping sounds only (eg. sound/world/drone6.wav)."
+      }
+      model2: =
+      {
+        t_modelbrowser = !
+        txt = "&"
+        hint = "path/name of model to include (eg: models/mapobjects/bitch/fembotbig.md3)."
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = "alternate method of setting XYZ origin of entity's rotation axis and .md3 model included with entity (default '0 0 0' - See Notes)."
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "constantLight radius of .md3 model included with entity. Has no effect on the entity's brushes (default 0)."
+      }
+      color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+      _targetname: =
+      {
+        txt = "&"
+        hint = "Used to attach a misc_model entity to this entity."
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "Floating point value scaling the resolution of lightmaps on brushes/patches in this entity (default 1.0)."
+      }
+      _castshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or _receiveshadows) with the corresponding value, AND world. Negative values imply same, but DO NOT cast shadows on world."
+      }
+      _receiveshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow reception. Defaults to 1 on everything (world shadows). 0 = receives NO shadows. > 1 = receive shadows only from corresponding keyed entities (see above) and world. < 1 = receive shadows ONLY from corresponding keyed entities."
+      }
+      _celshader: =
+      {
+        txt = "&"
+        hint = "Sets the cel shader used for this geometry. Note: omit the 'textures/' prefix."
+      }
+      alphamap: =
+      {
+        txt = "&"
+        hint = "Path/name for the art file used to guide the mapping of textures on the terrain surface."
+      }
+      layers: =
+      {
+        txt = "&"
+        hint = "Integer value is the number unique root shaders that will be use on the terrain."
+      }
+      shader: =
+      {
+        txt = "&"
+        hint = "Path to the metashader used to assign textures to the terrain entity. Note: Omit the 'textures/' prefix."
+      }
+    }
+    func_train:form =
+    {
+      help = "Trains are moving solids that follow a string of path_corner ent"
+       "ities. Trains in Q3A are very basic, they also require an origin brush"
+       " (see Notes)."$0D22"speed"$22" speed of displacement of train (default"
+       " 100 or overridden by speed value of path)."$0D22"target"$22" this poi"
+       "nts to the first path_corner of the path which is also the spawn locat"
+       "ion of the train's origin."$0D22"model2"$22" path/name of model to inc"
+       "lude (eg: models/mapobjects/pipe/pipe02.md3)."$0D22"origin"$22" altern"
+       "ate method of setting XYZ origin of the train's brush(es) and .md3 mod"
+       "el included with entity (See Notes)."$0D22"light"$22" constantLight ra"
+       "dius of .md3 model included with entity. Has no effect on the entity's"
+       " brushes (default 0)."$0D22"color"$22" constantLight color of .md3 mod"
+       "el included with entity. Has no effect on the entity's brushes (defaul"
+       "t 1 1 1)."$0D22"notfree"$22" when set to 1, entity will not spawn in '"
+       "Free for all' and 'Tournament' modes."$0D22"notteam"$22" when set to 1"
+       ", entity will not spawn in 'Teamplay' and 'CTF' modes."$0D22"notsingle"
+       $22" when set to 1, entity will not spawn in Single Player mode (bot pl"
+       "ay mode)."$0D22"_targetname"$22" Used to attach a misc_model entity to"
+       " this entity."$0D22"_lightmapscale"$22" Floating point value scaling t"
+       "he resolution of lightmaps on brushes/patches in this entity (default "
+       "1.0)."$0D22"_castshadows"$22" Allows per-entity control over shadow ca"
+       "sting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1"
+       " = cast shadows on world. > 1 = cast shadows on entities with _rs (or "
+       "_receiveshadows) with the corresponding value, AND world. Negative val"
+       "ues imply same, but DO NOT cast shadows on world."$0D22"_receiveshadow"
+       "s"$22" Allows per-entity control over shadow reception. Defaults to 1 "
+       "on everything (world shadows). 0 = receives NO shadows. > 1 = receive "
+       "shadows only from corresponding keyed entities (see above) and world. "
+       "< 1 = receive shadows ONLY from corresponding keyed entities."$0D22"_c"
+       "elshader"$22" Sets the cel shader used for this geometry. Note: omit t"
+       "he 'textures/' prefix."$0D22"alphamap"$22" Path/name for the art file "
+       "used to guide the mapping of textures on the terrain surface."$0D22"la"
+       "yers"$22" Integer value is the number unique root shaders that will be"
+       " use on the terrain."$0D22"shader"$22" Path to the metashader used to "
+       "assign textures to the terrain entity. Note: Omit the 'textures/' pref"
+       "ix."$0D"1. Trains always start on in the game."$0D"2. Trains do not da"
+       "mage the played when blocked."$0D"3. Trains cannot emit sound."$0D"4. "
+       "Trains are not triggerable or toggle-able."$0D"5. Trains cannot be blo"
+       "ck-stopped just by getting in their way, the player must be wedged bet"
+       "ween the train and another obstacle to block it."$0D"Setting the origi"
+       "n key is simply an alternate method to using an origin brush. When usi"
+       "ng the model2 key, the origin point of the model will correspond to th"
+       "e origin point defined by either the origin brush or the origin coordi"
+       "nate value."$0D"Target this entity with a misc_model to have the model"
+       " attached to the entity (set the model's target key to the same value "
+       "as this entity's targetname)."
+      t_commonspecifics = !
+      speed: =
+      {
+        txt = "&"
+        hint = "speed of displacement of train (default 100 or overridden by speed value of path)."
+      }
+      model2: =
+      {
+        t_modelbrowser = !
+        txt = "&"
+        hint = "path/name of model to include (eg: models/mapobjects/pipe/pipe02.md3)."
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = "alternate method of setting XYZ origin of the train's brush(es) and .md3 model included with entity (See Notes)."
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "constantLight radius of .md3 model included with entity. Has no effect on the entity's brushes (default 0)."
+      }
+      color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+      _targetname: =
+      {
+        txt = "&"
+        hint = "Used to attach a misc_model entity to this entity."
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "Floating point value scaling the resolution of lightmaps on brushes/patches in this entity (default 1.0)."
+      }
+      _castshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or _receiveshadows) with the corresponding value, AND world. Negative values imply same, but DO NOT cast shadows on world."
+      }
+      _receiveshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow reception. Defaults to 1 on everything (world shadows). 0 = receives NO shadows. > 1 = receive shadows only from corresponding keyed entities (see above) and world. < 1 = receive shadows ONLY from corresponding keyed entities."
+      }
+      _celshader: =
+      {
+        txt = "&"
+        hint = "Sets the cel shader used for this geometry. Note: omit the 'textures/' prefix."
+      }
+      alphamap: =
+      {
+        txt = "&"
+        hint = "Path/name for the art file used to guide the mapping of textures on the terrain surface."
+      }
+      layers: =
+      {
+        txt = "&"
+        hint = "Integer value is the number unique root shaders that will be use on the terrain."
+      }
+      shader: =
+      {
+        txt = "&"
+        hint = "Path to the metashader used to assign textures to the terrain entity. Note: Omit the 'textures/' prefix."
+      }
+    }
+    func_snow:form =
+    {
+      help = "This is an invisible area like a trigger, which snow falls insid"
+       "e of."$0D22"velocity"$220D"falling direction (should be something like"
+       " '0 0 -300', use the X and Y velocity for wind)"$0D22"cnt"$220D"sets c"
+       "olor of rain (default 12 - white)"$0D22"count"$220D"adjusts snow densi"
+       "ty, this many particles fall every second, experiment to see the effec"
+       "ts (default is based on area size)"
+      t_commonspecifics = !
+      velocity: =
+      {
+        txt = "&"
+        hint = ""
+      }
+      cnt: =
+      {
+        txt = "&"
+        hint = ""
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+      }
+    }
+    info_player_team1:form =
+    {
+      help = "CTF Spawn Points for Nexuiz"$0D22"angle"$22" direction in which "
+       "player will look when spawning in the game. Does not apply to bots."$0D
+       "INITIAL makes the spawnpoint the initial place for the player to spawn"
+       " at the beginning of the game."
+      bbox = '-16 -16 -24 16 16 45'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "INITIAL"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "direction in which player will look when spawning in the game. Does not apply to bots."
+      }
+    }
+    info_player_team2:form =
+    {
+      help = "CTF Spawn Points for Nexuiz"$0D22"angle"$22" direction in which "
+       "player will look when spawning in the game. Does not apply to bots."$0D
+       "INITIAL makes the spawnpoint the initial place for the player to spawn"
+       " at the beginning of the game."
+      bbox = '-16 -16 -24 16 16 45'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "INITIAL"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "direction in which player will look when spawning in the game. Does not apply to bots."
+      }
+    }
+    info_notnull:form =
+    {
+      help = "Used as a positional target for entities that can use directiona"
+       "l pointing. A target_position can be used instead of this but was kept"
+       " in Q3A for legacy purposes."$0D22"targetname"$22" must match the targ"
+       "et key of entity that uses this for pointing."$0D22"notfree"$22" when "
+       "set to 1, entity will not spawn in 'Free for all' and 'Tournament' mod"
+       "es."$0D22"notteam"$22" when set to 1, entity will not spawn in 'Teampl"
+       "ay' and 'CTF' modes."$0D22"notsingle"$22" when set to 1, entity will n"
+       "ot spawn in Single Player mode (bot play mode)."
+      bbox = '-8 -8 -8 8 8 8'
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+    }
+    info_null:form =
+    {
+      help = "Used as a positional target for light entities to create a spotl"
+       "ight effect. A target_position can be used instead of this but was kep"
+       "t in Q3A for legacy purposes."$0D22"targetname"$22" must match the tar"
+       "get key of entity that uses this for pointing."$0D22"notfree"$22" when"
+       " set to 1, entity will not spawn in 'Free for all' and 'Tournament' mo"
+       "des."$0D22"notteam"$22" when set to 1, entity will not spawn in 'Teamp"
+       "lay' and 'CTF' modes."$0D22"notsingle"$22" when set to 1, entity will "
+       "not spawn in Single Player mode (bot play mode)."
+      bbox = '-8 -8 -8 8 8 8'
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+    }
+    info_player_deathmatch:form =
+    {
+      help = "Normal player spawning location for Q3A levels."$0D22"angle"$22" "
+       "direction in which player will look when spawning in the game. Does no"
+       "t apply to bots."$0D22"target"$22" this can point at a target_give ent"
+       "ity for respawn freebies."$0D22"nobots"$22" when set to 1, bots will n"
+       "ever use this spawn point to respawn in the game."$0D22"nohumans"$22" "
+       "when set to 1, human players will never use this spawn point to respaw"
+       "n in the game."$0D22"notfree"$22" when set to 1, entity will not spawn"
+       " in 'Free for all' and 'Tournament' modes."$0D22"notteam"$22" when set"
+       " to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."$0D22"nots"
+       "ingle"$22" when set to 1, entity will not spawn in Single Player mode "
+       "(bot play mode)."$0D"INITIAL makes the spawnpoint the initial place fo"
+       "r the player to spawn at the beginning of the game."
+      bbox = '-16 -16 -24 16 16 45'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "INITIAL"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "direction in which player will look when spawning in the game. Does not apply to bots."
+      }
+      nobots: =
+      {
+        txt = "&"
+        hint = "when set to 1, bots will never use this spawn point to respawn in the game."
+      }
+      nohumans: =
+      {
+        txt = "&"
+        hint = "when set to 1, human players will never use this spawn point to respawn in the game."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+    }
+    info_player_start:form =
+    {
+      help = "Player spawn location. It works in Quake III Arena, but it is no"
+       "t used in the Id maps. Use info_player_deathmatch instead."$0D22"angle"
+       $22" direction in which player will look when spawning in the game."$0D
+       $22"target"$22" this can point at a target_give entity for respawn free"
+       "bies."
+      bbox = '-16 -16 -24 16 16 45'
+      angle: =
+      {
+        txt = "&"
+        hint = "direction in which player will look when spawning in the game."
+      }
+    }
+    item_shells:form =
+    {
+      help = "model="$22"models/items/a_shells.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/a_shells.md3"
+      t_commonspecifics = !
+    }
+    item_rockets:form =
+    {
+      help = "model="$22"models/items/a_rockets.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/a_rockets.md3"
+      t_commonspecifics = !
+    }
+    item_cells:form =
+    {
+      help = "model="$22"models/items/a_cells.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/a_cells.md3"
+      t_commonspecifics = !
+    }
+    item_bullets:form =
+    {
+      help = "ammo get over it, shall i say no more"$0D"model="$22"models/item"
+       "s/a_bullets.mdl"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/a_bullets.md3"
+      t_commonspecifics = !
+    }
+    item_speed:form =
+    {
+      help = "haste clone"$0D"makes user faster, and jump higher"
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+    }
+    item_strength:form =
+    {
+      help = "gibs are funny"$0D"quad damage clone"
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/g_strength.md3"
+      t_commonspecifics = !
+    }
+    item_invincible:form =
+    {
+      help = "who touched my ass"
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/g_invincible.md3"
+      t_commonspecifics = !
+    }
+    item_slowmo:form =
+    {
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+    }
+    item_health1:form =
+    {
+      help = "model="$22"models/items/g_h1.md3"$220D"health small"
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/g_h1.md3"
+      t_commonspecifics = !
+    }
+    item_health25:form =
+    {
+      help = "model="$22"models/items/g_h25.md3"$220D"health 25 points"
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/g_h25.md3"
+      t_commonspecifics = !
+    }
+    item_health100:form =
+    {
+      help = "health 100 points"$0D"model="$22"models/items/g_h100.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/g_h100_editor.md3"
+      t_commonspecifics = !
+    }
+    item_armor1:form =
+    {
+      help = "model="$22"models/items/g_a1.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/g_a1.md3"
+      t_commonspecifics = !
+    }
+    item_armor25:form =
+    {
+      help = "armor ? points"$0D"model="$22"models/items/g_a25.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/items/g_a25.md3"
+      t_commonspecifics = !
+    }
+    item_flag_team1:form =
+    {
+      help = "Team a CTF flag"$0D"angle : direction the flag will point"$0D"mo"
+       "del : model of the flag (default: models/ctf/flag_red.md3 or models/ct"
+       "f/flag_blue.md3)"$0D"noise : sound played when flag is stolen (default"
+       ": "$22"ctf/take.wav"$22")"$0D"noise1 : sound played when flag is retur"
+       "ned by a teammate (default: "$22"ctf/return.wav"$22")"$0D"noise2 : sou"
+       "nd played when flag is captured (default: "$22"ctf/capture.wav"$22")"$0D
+       "noise3 : sound played when flag returns itself (default: "$22"ctf/resp"
+       "awn.wav"$22")"$0D"Team 1 flag"
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/ctf/flag_blue.md3"
+      t_commonspecifics = !
+    }
+    item_flag_team2:form =
+    {
+      help = "Team 2 CTF flag"$0D"angle : direction the flag will point"$0D"mo"
+       "del : model of the flag (default: models/ctf/flag_red.md3 or models/ct"
+       "f/flag_blue.md3)"$0D"noise : sound played when flag is stolen (default"
+       ": "$22"ctf/take.wav"$22")"$0D"noise1 : sound played when flag is retur"
+       "ned by a teammate (default: "$22"ctf/return.wav"$22")"$0D"noise2 : sou"
+       "nd played when flag is captured (default: "$22"ctf/capture.wav"$22")"$0D
+       "noise3 : sound played when flag returns itself (default: "$22"ctf/resp"
+       "awn.wav"$22")"$0D"Team 2 flag"
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/ctf/flag_red.md3"
+      t_commonspecifics = !
+    }
+    light:form =
+    {
+      help = "Non-displayed point light source. The -pointscale and -scale arg"
+       "uments to Q3Map2 affect the brightness of these lights. The -skyscale "
+       "argument affects brightness of entity sun lights."$0D"_light OR light:"
+       " overrides the default 300 intensity."$0D22"_color"$22" weighted RGB v"
+       "alue of light color (default white - 1.0 1.0 1.0)."$0D22"target"$22" L"
+       "ights pointed at a target will be spotlights."$0D"radius: overrides th"
+       "e default 64 unit radius of a spotlight at the target point."$0D22"_su"
+       "n"$22" Set this key to 1 on a spotlight to make an infinite sun light."
+       $0D22"fade"$22" Fades light attenuation. Only affects linear lights."$0D
+       $22"scale"$22" Scales light attentation, from SOF2/JK2. Scales the 'lig"
+       "ht' value."$0D"LINEAR Use a linear falloff. Default is inverse distanc"
+       "e squared (more realistic)."$0D"NOANGLE Ignore angle attenuation."$0D"N"
+       "OGRIDLIGHT Do not affect the lightgrid (dynamic entity lighting)."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "LINEAR"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "NOANGLE"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "UNUSED1"
+      }
+      spawnflags: =
+      {
+        typ = "X8"
+        cap = "UNUSED2"
+      }
+      spawnflags: =
+      {
+        typ = "X16"
+        cap = "NOGRIDLIGHT"
+      }
+      t_commonspecifics = !
+      _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
+      _sun: =
+      {
+        txt = "&"
+        hint = "Set this key to 1 on a spotlight to make an infinite sun light."
+      }
+      fade: =
+      {
+        txt = "&"
+        hint = "Fades light attenuation. Only affects linear lights."
+      }
+      scale: =
+      {
+        txt = "&"
+        hint = "Scales light attentation, from SOF2/JK2. Scales the 'light' value."
+      }
+    }
+    misc_model:form =
+    {
+      help = "Generic placeholder for inserting MD3 models in game. Requires c"
+       "ompilation of map geometry to be added to level. If the map is compile"
+       "d with Q3Map2, then ASE, 3DS, OBJ and other model formats are supporte"
+       "d."$0D"angle: direction in which model will be oriented."$0D22"model"$22
+       " path/name of model to use (eg: models/mapobjects/teleporter/teleporte"
+       "r.md3)."$0D22"angles"$22" Individual control of PITCH, YAW, and ROLL ("
+       "default 0 0 0)."$0D22"modelscale"$22" Floating-point value used to sca"
+       "le a model up or down (default 1.0)."$0D22"modelscale_vec"$22" Floatin"
+       "g-point vector used to scale a model's axes individually (default 1.0 "
+       "1.0 1.0)."$0D22"_remap"$22" Used to remap textures/shaders in the mode"
+       "l. To remap all shaders to a given shader, use '*;models/mymodel/mytex"
+       "ture'. To remap a specific shader, use 'models/mymodel/old;models/mymo"
+       "del/new'."$0D22"target"$22" Used to attach the misc_model to a brush e"
+       "ntity, where its 'targetname' key is the same value."$0D22"_lightmapsc"
+       "ale"$22" Floating point value scaling the resolution of lightmaps on t"
+       "his model (if model is using lightmapped shaders) (default 1.0)."$0D22
+       "_castshadows"$22" Allows per-entity control over shadow casting. Defau"
+       "lts to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shad"
+       "ows on world. > 1 = cast shadows on entities with _rs (or _receiveshad"
+       "ows) with the corresponding value, AND world. Negative values imply sa"
+       "me, but DO NOT cast shadows on world."$0D22"_receiveshadows"$22" Allow"
+       "s per-entity control over shadow reception. Defaults to 1 on everythin"
+       "g (world shadows). 0 = receives NO shadows. > 1 = receive shadows only"
+       " from corresponding keyed entities (see above) and world. < 1 = receiv"
+       "e shadows ONLY from corresponding keyed entities."$0D22"_celshader"$22
+       " Sets the cel shader used for this geometry. Note: omit the 'textures/"
+       "' prefix."
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+      model: =
+      {
+        t_modelbrowser = !
+        txt = "&"
+        hint = "path/name of model to use (eg: models/mapobjects/teleporter/teleporter.md3)."
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = "Individual control of PITCH, YAW, and ROLL (default 0 0 0)."
+      }
+      modelscale: =
+      {
+        txt = "&"
+        hint = "Floating-point value used to scale a model up or down (default 1.0)."
+      }
+      modelscale_vec: =
+      {
+        txt = "&"
+        hint = "Floating-point vector used to scale a model's axes individually (default 1.0 1.0 1.0)."
+      }
+      _remap: =
+      {
+        txt = "&"
+        hint = "Used to remap textures/shaders in the model. To remap all shaders to a given shader, use '*;models/mymodel/mytexture'. To remap a specific shader, use 'models/mymodel/old;models/mymodel/new'."
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "Floating point value scaling the resolution of lightmaps on this model (if model is using lightmapped shaders) (default 1.0)."
+      }
+      _castshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or _receiveshadows) with the corresponding value, AND world. Negative values imply same, but DO NOT cast shadows on world."
+      }
+      _receiveshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow reception. Defaults to 1 on everything (world shadows). 0 = receives NO shadows. > 1 = receive shadows only from corresponding keyed entities (see above) and world. < 1 = receive shadows ONLY from corresponding keyed entities."
+      }
+      _celshader: =
+      {
+        txt = "&"
+        hint = "Sets the cel shader used for this geometry. Note: omit the 'textures/' prefix."
+      }
+    }
+    misc_teleporter_dest:form =
+    {
+      help = "Teleport destination location point for trigger_teleporter entit"
+       "ies."$0D22"angle"$22" direction in which player will look when telepor"
+       "ted."$0D22"targetname"$22" make the trigger_teleporter point to this."$0D
+       $22"notfree"$22" when set to 1, entity will not spawn in 'Free for all'"
+       " and 'Tournament' modes."$0D22"notteam"$22" when set to 1, entity will"
+       " not spawn in 'Teamplay' and 'CTF' modes."$0D22"notsingle"$22" when se"
+       "t to 1, entity will not spawn in Single Player mode (bot play mode)."
+      bbox = '-32 -32 -24 32 32 -16'
+      t_commonspecifics = !
+      angle: =
+      {
+        txt = "&"
+        hint = "direction in which player will look when teleported."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+    }
+    target_position:form =
+    {
+      help = "Aiming target for entities like light, misc_portal_camera and tr"
+       "igger_push (jump pads) in particular."$0D22"targetname"$22" the entity"
+       " that requires an aiming direction points to this."$0D22"notfree"$22" "
+       "when set to 1, entity will not spawn in 'Free for all' and 'Tournament"
+       "' modes."$0D22"notteam"$22" when set to 1, entity will not spawn in 'T"
+       "eamplay' and 'CTF' modes."$0D22"notsingle"$22" when set to 1, entity w"
+       "ill not spawn in Single Player mode (bot play mode)."$0D"To make a jum"
+       "p pad, place this entity at the highest point of the jump and target i"
+       "t with a trigger_push entity."
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+    }
+    target_push:form =
+    {
+      help = "This can be used to create jump pads and launch ramps. The direc"
+       "tion of push can be set by the "$22"angles"$22" key or pointing to a t"
+       "arget_position or info_notnull entity. Unlike trigger_push, this is NO"
+       "T client side predicted and must be activated by a trigger."$0D"angles"
+       ": this sets the pitch and yaw aiming angles of push entity (default 0 "
+       "0). The roll angle does not apply."$0D22"speed"$22" speed of push (def"
+       "ault 1000). Has no effect if entity targets an aiming entity."$0D22"ta"
+       "rgetname"$22" the activating trigger points to this. Push originates f"
+       "rom the location of the trigger."$0D22"target"$22" this points to the "
+       "aiming entity to which the player will jump."$0D22"notfree"$22" when s"
+       "et to 1, entity will not spawn in 'Free for all' and 'Tournament' mode"
+       "s."$0D22"notteam"$22" when set to 1, entity will not spawn in 'Teampla"
+       "y' and 'CTF' modes."$0D22"notsingle"$22" when set to 1, entity will no"
+       "t spawn in Single Player mode (bot play mode)."$0D"BOUNCEPAD if set, t"
+       "rigger will play bounce noise instead of beep noise when activated (re"
+       "commended)."$0D"To make a jump pad or launch ramp, create a trigger_mu"
+       "ltiple where the jump must originate. Place the target_push directly a"
+       "bove the trigger_multiple and place the target_position entity at the "
+       "highest point of the jump. Target the trigger_multiple to the target_p"
+       "ush and target the target_push to the target_position/info_notnull (or"
+       " set the target_push's angles key). Note that the angle key also works"
+       "."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "BOUNCEPAD"
+      }
+      t_commonspecifics = !
+      speed: =
+      {
+        txt = "&"
+        hint = "speed of push (default 1000). Has no effect if entity targets an aiming entity."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+    }
+    target_speaker:form =
+    {
+      help = "Sound generating entity that plays .wav files. Normal non-loopin"
+       "g sounds play each time the target_speaker is triggered. Looping sound"
+       "s can be set to play by themselves (no activating trigger) or be toggl"
+       "ed on/off by a trigger."$0D22"noise"$22" path/name of .wav file to pla"
+       "y (eg. sound/world/growl1.wav - see Notes)."$0D22"wait"$22" delay in s"
+       "econds between each time the sound is played ('random' key must be set"
+       " - see Notes)."$0D22"random"$22" random time variance in seconds added"
+       " or subtracted from 'wait' delay ('wait' key must be set - see Notes)."
+       $0D22"targetname"$22" the activating button or trigger points to this."$0D
+       $22"notfree"$22" when set to 1, entity will not spawn in 'Free for all'"
+       " and 'Tournament' modes."$0D22"notteam"$22" when set to 1, entity will"
+       " not spawn in 'Teamplay' and 'CTF' modes."$0D22"notsingle"$22" when se"
+       "t to 1, entity will not spawn in Single Player mode (bot play mode)."$0D
+       "LOOPED_ON sound will loop and initially start on in level (will toggle"
+       " on/off when triggered)."$0D"LOOPED_OFF sound will loop and initially "
+       "start off in level (will toggle on/off when triggered)."$0D"GLOBAL sou"
+       "nd will play full volume throughout the level."$0D"sound will play onl"
+       "y for the player that activated the target."$0D"The path portion value"
+       " of the "$22"noise"$22" key can be replaced by the implicit folder cha"
+       "racter "$22"*"$22" for triggered sounds that belong to a particular pl"
+       "ayer model. For example, if you want to create a "$22"bottomless pit"$22
+       " in which the player screams and dies when he falls into, you would pl"
+       "ace a trigger_multiple over the floor of the pit and target a target_s"
+       "peaker with it. Then, you would set the "$22"noise"$22" key to "$22"*f"
+       "alling1.wav"$22". The * character means the current player model's sou"
+       "nd folder. So if your current player model is Visor, * = sound/player/"
+       "visor, if your current player model is Sarge, * = sound/player/sarge, "
+       "etc. This cool feature provides an excellent way to create "$22"player"
+       "-specific"$22" triggered sounds in your levels."$0D"The combination of"
+       " the wait and random keys can be used to play non-looping sounds witho"
+       "ut requiring an activating trigger but both keys must be used together"
+       ". The value of the random key is used to calculate a minimum and a max"
+       "imum delay. The final time delay will be a random value anywhere betwe"
+       "en the minimum and maximum values: (min delay = wait - random) (max de"
+       "lay = wait + random)."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "LOOPED_ON"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "LOOPED_OFF"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "GLOBAL"
+      }
+      spawnflags: =
+      {
+        typ = "X8"
+        cap = "ACTIVATOR"
+      }
+      t_commonspecifics = !
+      noise: =
+      {
+        t_soundbrowser = !
+        txt = "&"
+        hint = "path/name of .wav file to play (eg. sound/world/growl1.wav - see Notes)."
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "delay in seconds between each time the sound is played ('random' key must be set - see Notes)."
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "random time variance in seconds added or subtracted from 'wait' delay ('wait' key must be set - see Notes)."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+    }
+    target_teleporter:form =
+    {
+      help = "Activating this will teleport players to the location of the tar"
+       "geted misc_teleporter_dest entity. Unlike trigger_teleport, this entit"
+       "y must be activated by a trigger and does NOT allow client prediction "
+       "of events."$0D22"targetname"$22" activating trigger points to this."$0D
+       $22"target"$22" this must point to a misc_teleporter_dest entity."$0D22
+       "notfree"$22" when set to 1, entity will not spawn in 'Free for all' an"
+       "d 'Tournament' modes."$0D22"notteam"$22" when set to 1, entity will no"
+       "t spawn in 'Teamplay' and 'CTF' modes."$0D22"notsingle"$22" when set t"
+       "o 1, entity will not spawn in Single Player mode (bot play mode)."
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+    }
+    trigger_hurt:form =
+    {
+      help = "Any player that touches this will be hurt by "$22"dmg"$22" point"
+       "s of damage once per server frame (very fast). A sizzling sound is als"
+       "o played while the player is being hurt."$0D22"dmg"$22" number of poin"
+       "ts of damage inflicted to player per server frame (default 5 - integer"
+       " values only)."$0D22"notfree"$22" when set to 1, entity will not spawn"
+       " in 'Free for all' and 'Tournament' modes."$0D22"notteam"$22" when set"
+       " to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."$0D22"nots"
+       "ingle"$22" when set to 1, entity will not spawn in Single Player mode "
+       "(bot play mode)."$0D"START_OFF needs to be triggered (toggle) for dama"
+       "ge"$0D"SILENT supresses the sizzling sound while player is being hurt."
+       $0D"NO_PROTECTION player will be hurt regardless of protection (see Not"
+       "es)."$0D"SLOW changes the damage rate to once per second."$0D"The invu"
+       "lnerability power-up (item_enviro) does not protect the player from da"
+       "mage caused by this entity regardless of whether the NO_PROTECTION spa"
+       "wnflag is set or not. Triggering a trigger_hurt will have no effect if"
+       " the START_OFF spawnflag is not set. A trigger_hurt always starts on i"
+       "n the game."
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_OFF"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "SILENT"
+      }
+      spawnflags: =
+      {
+        typ = "X8"
+        cap = "NO_PROTECTION"
+      }
+      spawnflags: =
+      {
+        typ = "X16"
+        cap = "SLOW"
+      }
+      t_commonspecifics = !
+      dmg: =
+      {
+        txt = "&"
+        hint = "number of points of damage inflicted to player per server frame (default 5 - integer values only)."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+    }
+    trigger_multiple:form =
+    {
+      help = "Variable size repeatable trigger. It will fire the entities it t"
+       "argets when touched by player. Can be made to operate like a trigger_o"
+       "nce entity by setting the "$22"wait"$22" key to -1. It can also be act"
+       "ivated by another trigger that targets it."$0D22"target"$22" this poin"
+       "ts to the entity to activate."$0D22"targetname"$22" activating trigger"
+       " points to this."$0D22"wait"$22" time in seconds until trigger becomes"
+       " re-triggerable after it's been touched (default 0.2, -1 = trigger onc"
+       "e)."$0D22"random"$22" random time variance in seconds added or subtrac"
+       "ted from 'wait' delay (default 0 - see Notes)."$0D22"notfree"$22" when"
+       " set to 1, entity will not spawn in 'Free for all' and 'Tournament' mo"
+       "des."$0D22"notteam"$22" when set to 1, entity will not spawn in 'Teamp"
+       "lay' and 'CTF' modes."$0D22"notsingle"$22" when set to 1, entity will "
+       "not spawn in Single Player mode (bot play mode)."$0D"When the random k"
+       "ey is set, its value is used to calculate a minimum and a maximum dela"
+       "y. The final time delay will be a random value anywhere between the mi"
+       "nimum and maximum values: (min delay = wait - random) (max delay = wai"
+       "t + random)."
+      t_commonspecifics = !
+      wait: =
+      {
+        txt = "&"
+        hint = "time in seconds until trigger becomes re-triggerable after it's been touched (default 0.2, -1 = trigger once)."
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "random time variance in seconds added or subtracted from 'wait' delay (default 0 - see Notes)."
+      }
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+    }
+    trigger_push:form =
+    {
+      help = "This is used to create jump pads and launch ramps. It MUST point"
+       " to a target_position or info_notnull entity to work. Unlike target_pu"
+       "sh, this is client side predicted."$0D22"target"$22" this points to th"
+       "e target_position to which the player will jump."$0D22"notfree"$22" wh"
+       "en set to 1, entity will not spawn in 'Free for all' and 'Tournament' "
+       "modes."$0D22"notteam"$22" when set to 1, entity will not spawn in 'Tea"
+       "mplay' and 'CTF' modes."$0D22"notsingle"$22" when set to 1, entity wil"
+       "l not spawn in Single Player mode (bot play mode)."$0D"To make a jump "
+       "pad or launch ramp, place the target_position/info_notnull entity at t"
+       "he highest point of the jump and target it with this entity."
+      t_commonspecifics = !
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+      notsingle: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in Single Player mode (bot play mode)."
+      }
+    }
+    trigger_teleport:form =
+    {
+      help = "Touching this will teleport players to the location of the targe"
+       "ted misc_teleporter_dest entity. This entity allows client prediction "
+       "of events."$0D22"target"$22" this must point to a misc_teleporter_dest"
+       " entity."$0D22"notfree"$22" when set to 1, entity will not spawn in 'F"
+       "ree for all' and 'Tournament' modes."$0D22"notteam"$22" when set to 1,"
+       " entity will not spawn in 'Teamplay' and 'CTF' modes."$0D22"notsingle"$22
+       " when set to 1, entity will not spawn in Single Player mode (bot play "
+       "mode)."
+      t_commonspecifics = !
+      notfree: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Free for all' and 'Tournament' modes."
+      }
+      notteam: =
+      {
+        txt = "&"
+        hint = "when set to 1, entity will not spawn in 'Teamplay' and 'CTF' modes."
+      }
+    }
+    weapon_shotgun:form =
+    {
+      help = "shot gun, shall i say no more"$0D"a weapon how hard can it be"$0D
+       "model="$22"models/weapons/g_shotgun.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/weapons/g_shotgun.md3"
+      t_commonspecifics = !
+    }
+    weapon_machinegun:form =
+    {
+      help = "machinegun, shall i say no more"$0D"a weapon how hard can it be"$0D
+       "model="$22"models/weapons/g_uzi.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/weapons/g_uzi.md3"
+      t_commonspecifics = !
+    }
+    weapon_grenadelauncher:form =
+    {
+      help = "grenade launcher, shall i say no more"$0D"a weapon how hard can "
+       "it be"$0D"model="$22"models/weapons/g_gl.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/weapons/g_gl.md3"
+      t_commonspecifics = !
+    }
+    weapon_electro:form =
+    {
+      help = "electro, shall i say no more"$0D"a weapon how hard can it be"$0D
+       "model="$22"models/weapons/g_electro.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/weapons/g_electro.md3"
+      t_commonspecifics = !
+    }
+    weapon_crylink:form =
+    {
+      help = "crylink, shall i say no more"$0D"a weapon how hard can it be"$0D
+       "model="$22"models/weapons/g_crylink.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/weapons/g_crylink.md3"
+      t_commonspecifics = !
+    }
+    weapon_hagar:form =
+    {
+      help = "hagar, shall i say no more"$0D"a weapon how hard can it be"$0D"m"
+       "odel="$22"models/weapons/g_hagar.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/weapons/g_hagar.md3"
+      t_commonspecifics = !
+    }
+    weapon_rocketlauncher:form =
+    {
+      help = "rocketlauncher, shall i say no more"$0D"a weapon how hard can it"
+       " be"$0D"model="$22"models/weapons/g_rl.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/weapons/g_rl.md3"
+      t_commonspecifics = !
+    }
+    weapon_nex:form =
+    {
+      help = "nexgun launcher, shall i say no more"$0D"a weapon how hard can i"
+       "t be"$0D"model="$22"models/weapons/g_nex.md3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      mdl = "models/weapons/g_nex.md3"
+      t_commonspecifics = !
+    }
+    worldspawn:form =
+    {
+      help = "Only used for the world."$0D22"message"$22" text to print at use"
+       "r logon. Used for name of level."$0D22"music"$22" path/name of looping"
+       " .wav file used for level's music (eg. music/sonic5.wav)."$0D22"ambien"
+       "t"$22" Adds a constant value to overall lighting. Use is not recommend"
+       "ed. Ambient light will have a tendency to flatten out variations in li"
+       "ght and shade."$0D22"_color"$22" RGB value for ambient light color (de"
+       "fault is 0 0 0)."$0D22"gravity"$22" gravity of level (default is norma"
+       "l gravity: 800)."$0D22"gridsize"$22" granularity of the lightgrid crea"
+       "ted by q3map. Value is three integers separated by spaces, representin"
+       "g number of units between grid points in X Y Z. Default gridsize value"
+       " is 128 128 256. Use larger powers of 2 to reduce BSP size and compile"
+       " time on very large maps."$0D22"_blocksize"$22" q3map always splits th"
+       "e BSP tree along the planes X=_blocksize*n and Y=_blocksize*n. Default"
+       " _blocksize value is 1024. Increase the blocksize using larger powers "
+       "of 2 to reduce compile times on very large maps with a low structural "
+       "brush density."$0D22"_minlight"$22" Minimum light value, levelwide. Us"
+       "es the _color key to set color. Does not add unlike ambient."$0D22"_mi"
+       "nvertexlight"$22" Minimum vertex lighting, levelwide."$0D22"_mingridli"
+       "ght"$22" Minimum lightgrid (dynamic entity lighting) levelwide."$0D22"_"
+       "keeplights"$22" Keep light entities in the BSP. Normally stripped out "
+       "by the BSP process and read from the .map file by the lighting phase."$0D
+       $22"_noshadersun"$22" Ignore q3map_sun/sun directives in sky shaders an"
+       "d ONLY use entity sun lights."$0D22"_farplanedist"$22" Limit on how ma"
+       "ny units the vis phase of compilation can see. Used in combination wit"
+       "h level-wide fog, it can help reduce r_speeds on large, open maps."$0D
+       $22"_foghull"$22" Shader to use for 'fog hull.' Foghull shader should b"
+       "e a sky shader. Omit the 'textures/' prefix."$0D22"_lightmapscale"$22" "
+       "Floating point value scaling the resolution of lightmaps on brushes/pa"
+       "tches in the world. Can be overridden in func_group (or other entities"
+       ") (default 1.0)."$0D22"_castshadows"$22" Allows per-entity control ove"
+       "r shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow"
+       " casting. 1 = cast shadows on world. > 1 = cast shadows on entities wi"
+       "th _rs (or _receiveshadows) with the corresponding value, AND world. N"
+       "egative values imply same, but DO NOT cast shadows on world."$0D22"_re"
+       "ceiveshadows"$22" Allows per-entity control over shadow reception. Def"
+       "aults to 1 on everything (world shadows). 0 = receives NO shadows. > 1"
+       " = receive shadows only from corresponding keyed entities (see above) "
+       "and world. < 1 = receive shadows ONLY from corresponding keyed entitie"
+       "s."$0D22"_celshader"$22" Sets the cel shader used for this geometry. N"
+       "ote: omit the 'textures/' prefix. Overridable in entities."$0D22"alpha"
+       "map"$22" Path/name for the art file used to guide the mapping of textu"
+       "res on the terrain surface."$0D22"layers"$22" Integer value is the num"
+       "ber unique root shaders that will be use on the terrain."$0D22"shader"$22
+       " Path to the metashader used to assign textures to the terrain entity."
+       " Note: Omit the 'textures/' prefix."
+      message: =
+      {
+        txt = "&"
+        hint = "text to print at user logon. Used for name of level."
+      }
+      music: =
+      {
+        txt = "&"
+        hint = "path/name of looping .wav file used for level's music (eg. music/sonic5.wav)."
+      }
+      ambient: =
+      {
+        txt = "&"
+        hint = "Adds a constant value to overall lighting. Use is not recommended. Ambient light will have a tendency to flatten out variations in light and shade."
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "RGB value for ambient light color (default is 0 0 0)."
+      }
+      gravity: =
+      {
+        txt = "&"
+        hint = "gravity of level (default is normal gravity: 800)."
+      }
+      gridsize: =
+      {
+        txt = "&"
+        hint = "granularity of the lightgrid created by q3map. Value is three integers separated by spaces, representing number of units between grid points in X Y Z. Default gridsize value is 128 128 256. Use larger powers of 2 to reduce BSP size and compile time on very large maps."
+      }
+      _blocksize: =
+      {
+        txt = "&"
+        hint = "q3map always splits the BSP tree along the planes X=_blocksize*n and Y=_blocksize*n. Default _blocksize value is 1024. Increase the blocksize using larger powers of 2 to reduce compile times on very large maps with a low structural brush density."
+      }
+      _minlight: =
+      {
+        txt = "&"
+        hint = "Minimum light value, levelwide. Uses the _color key to set color. Does not add unlike ambient."
+      }
+      _minvertexlight: =
+      {
+        txt = "&"
+        hint = "Minimum vertex lighting, levelwide."
+      }
+      _mingridlight: =
+      {
+        txt = "&"
+        hint = "Minimum lightgrid (dynamic entity lighting) levelwide."
+      }
+      _keeplights: =
+      {
+        txt = "&"
+        hint = "Keep light entities in the BSP. Normally stripped out by the BSP process and read from the .map file by the lighting phase."
+      }
+      _noshadersun: =
+      {
+        txt = "&"
+        hint = "Ignore q3map_sun/sun directives in sky shaders and ONLY use entity sun lights."
+      }
+      _farplanedist: =
+      {
+        txt = "&"
+        hint = "Limit on how many units the vis phase of compilation can see. Used in combination with level-wide fog, it can help reduce r_speeds on large, open maps."
+      }
+      _foghull: =
+      {
+        txt = "&"
+        hint = "Shader to use for 'fog hull.' Foghull shader should be a sky shader. Omit the 'textures/' prefix."
+      }
+      _lightmapscale: =
+      {
+        txt = "&"
+        hint = "Floating point value scaling the resolution of lightmaps on brushes/patches in the world. Can be overridden in func_group (or other entities) (default 1.0)."
+      }
+      _castshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow casting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or _receiveshadows) with the corresponding value, AND world. Negative values imply same, but DO NOT cast shadows on world."
+      }
+      _receiveshadows: =
+      {
+        txt = "&"
+        hint = "Allows per-entity control over shadow reception. Defaults to 1 on everything (world shadows). 0 = receives NO shadows. > 1 = receive shadows only from corresponding keyed entities (see above) and world. < 1 = receive shadows ONLY from corresponding keyed entities."
+      }
+      _celshader: =
+      {
+        txt = "&"
+        hint = "Sets the cel shader used for this geometry. Note: omit the 'textures/' prefix. Overridable in entities."
+      }
+      alphamap: =
+      {
+        txt = "&"
+        hint = "Path/name for the art file used to guide the mapping of textures on the terrain surface."
+      }
+      layers: =
+      {
+        txt = "&"
+        hint = "Integer value is the number unique root shaders that will be use on the terrain."
+      }
+    }
+    func_ladder:form =
+    {
+      help = "a ladder, need i say no more"$0D"graba trigger brush and put it "
+       "infront of the part that you want the player to climb"
+      t_commonspecifics = !
+    }
+    dynlight:form =
+    {
+      help = "Dynamic light."$0D"Can do one of these things: sit still and be "
+       "just a silly light, travel along a path, follow an entity around, atta"
+       "ch to a tag on an entity."$0D"It can spin around it's own axis in all "
+       "the above cases."$0D"If targeted, it will toggle between on or off."$0D
+       $22"light_lev"$22" light radius, default 200"$0D22"color"$22" light col"
+       "or in rgb and brightness, 1 1 1 produces bright white, up to 255 255 2"
+       "55 (nuclear blast), recommended values up to 1 1 1, default 1 1 1"$0D22
+       "style"$22" lightstyle, same as for static lights"$0D22"angles"$22" ini"
+       "tial orientation"$0D22"avelocity"$22" a vector value, the direction an"
+       "d speed it rotates in"$0D22"skin"$22" cubemap number, must be 16 or ab"
+       "ove"$0D22"dtagname"$22" will attach to this tag on the entity which 't"
+       "argetname' matches 'target'. If the 'target' is either not an md3 mode"
+       "l or is missing tags, it will attach to the targets origin. Note that "
+       "the 'target' must be visible to the light"$0D22"targetname"$22" will t"
+       "oggle on and off when triggered"$0D22"target"$22" if issued with a tar"
+       "get, preferrably path_corner, it will move along the path. If also iss"
+       "ued with the FOLLOW spawnflag, then this is the entity it will follow."
+       " If issued with the 'tagname' key it will attach it to this targets ta"
+       "g called 'tagname', does not work together with FOLLOW or path movemen"
+       "t"$0D22"speed"$22" the speed it will travel along the path, default 10"
+       "0"$0D"START_OFF light will be in off state until targeted"$0D"NOSHADOW"
+       " will not cast shadows in realtime lighting mode"$0D"FOLLOW will follo"
+       "w the entity which 'targetname' matches 'target'"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_OFF"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "NOSHADOW"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "FOLLOW"
+      }
+      t_commonspecifics = !
+      light_lev: =
+      {
+        txt = "&"
+        hint = "light radius, default 200"
+      }
+      color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "light color in rgb and brightness, 1 1 1 produces bright white, up to 255 255 255 (nuclear blast), recommended values up to 1 1 1, default 1 1 1"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "lightstyle, same as for static lights"
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = "initial orientation"
+      }
+      avelocity: =
+      {
+        txt = "&"
+        hint = "a vector value, the direction and speed it rotates in"
+      }
+      skin: =
+      {
+        txt = "&"
+        hint = "cubemap number, must be 16 or above"
+      }
+      dtagname: =
+      {
+        txt = "&"
+        hint = "will attach to this tag on the entity which 'targetname' matches 'target'. If the 'target' is either not an md3 model or is missing tags, it will attach to the targets origin. Note that the 'target' must be visible to the light"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "the speed it will travel along the path, default 100"
+      }
+    }
+    trigger_cmd:form =
+    {
+      help = "Any player that touches this will have the .cdm command executed"
+       $0D22"cmd"$22" the command"
+      t_commonspecifics = !
+      cmd: =
+      {
+        txt = "&"
+        hint = "the command"
+      }
+    }
+    runematch_spawn_point:form =
+    {
+      help = "Spawnpoiny for runes in a runematch."$0D"rune spwanpoint."
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+    }
+    dom_team:form =
+    {
+      help = "Domination team"$0D22"netname"$22" name of team (Red Team). Set "
+       "to '' or don't define for the required blank team."$0D22"cnt"$22" colo"
+       "r of the team. See the 'Helpful Extras' section for info."$0D22"model"$22
+       " When this team captures control points, the points turn to this model"
+       ". If this is the neutral team, points start out as this model."$0D22"n"
+       "oise"$22" Sound to be played on the control point when it's captured. "
+       "Only players nearby will hear it."$0D22"noise1"$22" Sound to be played"
+       " to all players when the control point is captured. Also good for an a"
+       "nnoncer voice ('Red Team has captured a control point')"$0D"In order t"
+       "o get Domination working well in your map, you need to place dom_team "
+       "and dom_controlpoint entites. You *must* have at least 3 dom_team enti"
+       "ties - 2 minimum teams and one blank one (empty netname and no team). "
+       "You can have up to 4 teams (5 dom_team entities)."
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+      netname: =
+      {
+        txt = "&"
+        hint = "name of team (Red Team). Set to '' or don't define for the required blank team."
+      }
+      cnt: =
+      {
+        txt = "&"
+        hint = "color of the team. See the 'Helpful Extras' section for info."
+      }
+      model: =
+      {
+        t_modelbrowser = !
+        txt = "&"
+        hint = "When this team captures control points, the points turn to this model. If this is the neutral team, points start out as this model."
+      }
+      noise: =
+      {
+        t_soundbrowser = !
+        txt = "&"
+        hint = "Sound to be played on the control point when it's captured. Only players nearby will hear it."
+      }
+      noise1: =
+      {
+        t_soundbrowser = !
+        txt = "&"
+        hint = "Sound to be played to all players when the control point is captured. Also good for an annoncer voice ('Red Team has captured a control point')"
+      }
+    }
+    dom_controlpoint:form =
+    {
+      help = "Domination controlpoint"$0D22"message"$22" message to be display"
+       "ed to all players when this point is captured, preceded by the team's "
+       "name. This defaults to ' has captured a control point'. You can specif"
+       "y different names for each point, for example ' has captured the Lava "
+       "Room'."$0D22"origin"$22" where in the map this point is"$0D22"wait"$22
+       " How often this point gives its controlling team frags."$0D22"frags"$22
+       " How many frags this point gives each wait cycle."$0D"In order to get "
+       "Domination working well in your map, you need to place dom_team and do"
+       "m_controlpoint entites. You *must* have at least 3 dom_team entities -"
+       " 2 minimum teams and one blank one (empty netname and no team). You ca"
+       "n have up to 4 teams (5 dom_team entities)."
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+      message: =
+      {
+        txt = "&"
+        hint = "message to be displayed to all players when this point is captured, preceded by the team's name. This defaults to ' has captured a control point'. You can specify different names for each point, for example ' has captured the Lava Room'."
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = "where in the map this point is"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "How often this point gives its controlling team frags."
+      }
+      frags: =
+      {
+        txt = "&"
+        hint = "How many frags this point gives each wait cycle."
+      }
+    }
+    info_location:form =
+    {
+      help = "Indicates a location name, for use with say macros"$0D22"netname"
+       $22" Name of the place (ex ' the upper ledge')"
+      bbox = '-8 -8 -8 8 8 8'
+      netname: =
+      {
+        txt = "&"
+        hint = "Name of the place (ex ' the upper ledge')"
+      }
+    }
+    func_stardust:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+  }
+}

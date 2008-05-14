@@ -1,0 +1,25 @@
+QQRKSRC1
+// SoF2 textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "SoF2 Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "SoF2 Textures.qtxfolder"
+    SoF2 Textures.qtxfolder =
+    {
+      Raven Textures and Shaders.osfolder =
+      {
+        path = "base"
+      }
+    }
+  }
+}

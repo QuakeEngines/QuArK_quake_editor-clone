@@ -1,0 +1,26 @@
+QQRKSRC1
+// STVEF textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "STVEF Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "STVEF Textures and Shaders.qtxfolder"
+    STVEF Textures and Shaders.qtxfolder =
+    {
+      Dynamically Found.osfolder =
+      {
+        path = "BaseEF"
+        //build = "1"
+      }
+    }
+  }
+}
