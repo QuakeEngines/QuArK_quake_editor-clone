@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:08:47  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -1558,25 +1561,35 @@ QQRKSRC1
         }
         light:e =
         {
-          origin = "0 0 0"
-          ;desc = "Non-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+          light = "300"
+          _color = "1 1 1"
           angle = "360"
+          origin = "0 0 0"
+          ;desc = "Non-displayed light."
         }
         light_bulb:e =
         {
+          light = "300"
+          _color = "1 1 1"
+          angle = "360"
           origin = "0 0 0"
-          ;desc = "A bulb that outputs lightNon-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+          ;desc = "A bulb that outputs light."
         }
         light_pendant:e =
         {
+          light = "300"
+          _color = "1 1 1"
+          angle = "360"
           origin = "0 0 0"
-          ;desc = "A pendant lightNon-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+          ;desc = "A pendant light."
         }
         light_deco_sconce:e =
         {
-          origin = "0 0 0"
-          ;desc = "A deco sconceNon-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+          light = "300"
+          _color = "1 1 1"
           angle = "360"
+          origin = "0 0 0"
+          ;desc = "A deco sconce light."
         }
         light_fire_lg:e =
         {
@@ -1596,14 +1609,19 @@ QQRKSRC1
         }
         lightflare:e =
         {
-          origin = "0 0 0"
-          ;desc = "Non-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+          light = "300"
+          _color = "1 1 1"
           angle = "360"
+          origin = "0 0 0"
+          ;desc = "Non-displayed light."
         }
         light_chandelier:e =
         {
+          light = "300"
+          _color = "1 1 1"
+          angle = "360"
           origin = "0 0 0"
-          ;desc = "A chandelierNon-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+          ;desc = "A chandelier light."
         }
         light_fire_sm:e =
         {
@@ -5060,13 +5078,18 @@ QQRKSRC1
     }
     light:form =
     {
-      help ="Non-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+      help ="Non-displayed light.Default light value is 300."$0D
+            "Default style is 0.If targeted, will toggle between"$0D
+            "on and off. Default _cone value is 10 (used to set size of light for spotlights)"$0D
+            "movedir will be the color of the flare health is size for lightflare dmg will"$0D
+            "specify the flare type"$0D
+            "FLARE_WHITE    0"$0D
+            "FLARE_SUN      1"$0D
+            "FLARE_AMBER    2"$0D
+            "FLARE_RED      3"$0D
+            "FLARE_BLUE     4"$0D
+            "FLARE_GREEN    5"
       bbox ='-8 -8 -8 8 8 8'
-      _FADE: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
       spawnflags: =
       {
         Typ = "X1"
@@ -5091,26 +5114,41 @@ QQRKSRC1
         Txt = "&"
         Cap=  "DYNAMIC"
       }
-      _color: =
+      targetname: =
       {
         Txt = "&"
-        Hint = "(R G B intensity)"
+        Hint = "If targeted, will toggle between on and off."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      light: =
+      {
+        Txt = "&"
+        Hint = "light value, default 300"
       }
       _color: =
       {
-        Typ="L 3"
-        Txt="&"
-        Hint = "Click here to pick the light color"
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
       }
       _cone: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
       }
       _fade: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "a decimal value to fade to."
       }
       _minlight: =
       {
@@ -5125,40 +5163,91 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "specifies the flare type."
+        Typ = "C"
+        Items = "FLARE_WHITE"$0D
+                "FLARE_SUN"$0D
+                "FLARE_AMBER"$0D
+                "FLARE_RED"$0D
+                "FLARE_BLUE"$0D
+                "FLARE_GREEN"
+        Values = "0"$0D
+                "1"$0D
+                "2"$0D
+                "3"$0D
+                "4"$0D
+                "5"
       }
       health: =
       {
         Txt = "&"
-        Hint = ""
-      }
-      light: =
-      {
-        Txt = "&"
-        Hint = ""
+        Hint = "any value larger then 0 sets the size for lightflare."
       }
       style: =
       {
         Txt = "&"
         Hint = ""
         Typ = "C"
-        Items = "0"$0D"1"$0D"10"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"2"$0D"32"$0D"33"$0D"34"$0D"35"$0D"36"$0D"37"$0D"38"$0D"39"$0D"40"$0D"41"$0D"6"$0D"7"$0D"8"$0D"9"
-        values = "0"$0D"1"$0D"10"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"2"$0D"32"$0D"33"$0D"34"$0D"35"$0D"36"$0D"37"$0D"38"$0D"39"$0D"40"$0D"41"$0D"6"$0D"7"$0D"8"$0D"9"
-      }
-      target: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      targetname: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
+        Items = "Normal"$0D
+                "Flourescent Flicker 1"$0D
+                "Flourescent Flicker 2-13"$0D
+                "Flourescent Flicker 3-14"$0D
+                "Flourescent Flicker 4-15"$0D
+                "Flourescent Flicker 5-16"$0D
+                "Flicker"$0D
+                "Flicker 2"$0D
+                "Slow Strong Pulse"$0D
+                "Slow Full Pulse"$0D
+                "Slow Strobe"$0D
+                "Fast Strobe"$0D
+                "Gentle Pulse"$0D
+                "Candle 1"$0D
+                "Candle 2"$0D
+                "Candle 3"$0D
+                "Candle 4"$0D
+                "Blink 1"$0D
+                "Blink 2"$0D
+                "Blink 3"$0D
+                "Blink 4"
+        values = "0"$0D
+                "10"$0D
+                "13"$0D
+                "14"$0D
+                "15"$0D
+                "16"$0D
+                "1"$0D
+                "6"$0D
+                "2"$0D
+                "11"$0D
+                "9"$0D
+                "4"$0D
+                "5"$0D
+                "3"$0D
+                "7"$0D
+                "8"$0D
+                "12"$0D
+                "17"$0D
+                "18"$0D
+                "19"$0D
+                "20"
+        }
     }
     light_bulb:form =
     {
-      help ="A bulb that outputs lightNon-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+      help ="A bulb that outputs light."$0D
+            "Default light value is 300."$0D
+            "Default style is 0."$0D
+            "If targeted, will toggle between on and off."$0D
+            "Default _cone value is 10 (used to set size of light for spotlights)"$0D
+            "movedir will be the color of the flare"$0D
+            "health is size for lightflare"$0D
+            "dmg will specify the flare type"$0D
+            "FLARE_WHITE    0"$0D
+            "FLARE_SUN      1"$0D
+            "FLARE_AMBER    2"$0D
+            "FLARE_RED      3"$0D
+            "FLARE_BLUE     4"$0D
+            "FLARE_GREEN    5"
       bbox ='-2 -2 -5 2 2 5'
       spawnflags: =
       {
@@ -5184,23 +5273,48 @@ QQRKSRC1
         Txt = "&"
         Cap=  "DYNAMIC"
       }
-      _color: =
+      targetname: =
       {
         Txt = "&"
-        Hint = "(R G B intensity)"
+        Hint = "If targeted, will toggle between on and off."
       }
-      _color: =
-      {
-        Typ="L 3"
-        Txt="&"
-        Hint = "Click here to pick the light color"
-      }
-      _cone: =
+      target: =
       {
         Txt = "&"
         Hint = ""
       }
+      light: =
+      {
+        Txt = "&"
+        Hint = "light value, default 300"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
+      _cone: =
+      {
+        Txt = "&"
+        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
+      }
       _fade: =
+      {
+        Txt = "&"
+        Hint = "a decimal value to fade to."
+      }
+      _minlight: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
       {
         Txt = "&"
         Hint = ""
@@ -5208,31 +5322,93 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "specifies the flare type."
+        Typ = "C"
+        Items = "FLARE_WHITE"$0D
+                "FLARE_SUN"$0D
+                "FLARE_AMBER"$0D
+                "FLARE_RED"$0D
+                "FLARE_BLUE"$0D
+                "FLARE_GREEN"
+        Values = "0"$0D
+                "1"$0D
+                "2"$0D
+                "3"$0D
+                "4"$0D
+                "5"
       }
       health: =
       {
         Txt = "&"
-        Hint = ""
-      }
-      light: =
-      {
-        Txt = "&"
-        Hint = ""
+        Hint = "any value larger then 0 sets the size for lightflare."
       }
       style: =
       {
         Txt = "&"
         Hint = ""
         Typ = "C"
-        Items = "0"
-        values = "0"
-      }
+        Items = "Normal"$0D
+                "Flourescent Flicker 1"$0D
+                "Flourescent Flicker 2-13"$0D
+                "Flourescent Flicker 3-14"$0D
+                "Flourescent Flicker 4-15"$0D
+                "Flourescent Flicker 5-16"$0D
+                "Flicker"$0D
+                "Flicker 2"$0D
+                "Slow Strong Pulse"$0D
+                "Slow Full Pulse"$0D
+                "Slow Strobe"$0D
+                "Fast Strobe"$0D
+                "Gentle Pulse"$0D
+                "Candle 1"$0D
+                "Candle 2"$0D
+                "Candle 3"$0D
+                "Candle 4"$0D
+                "Blink 1"$0D
+                "Blink 2"$0D
+                "Blink 3"$0D
+                "Blink 4"
+        values = "0"$0D
+                "10"$0D
+                "13"$0D
+                "14"$0D
+                "15"$0D
+                "16"$0D
+                "1"$0D
+                "6"$0D
+                "2"$0D
+                "11"$0D
+                "9"$0D
+                "4"$0D
+                "5"$0D
+                "3"$0D
+                "7"$0D
+                "8"$0D
+                "12"$0D
+                "17"$0D
+                "18"$0D
+                "19"$0D
+                "20"
+        }
     }
     light_chandelier:form =
     {
-      help ="A chandelierNon-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+      help ="Non-displayed light."$0D
+            "Default light value is 300."$0D
+            "Default style is 0."$0D
+            "If targeted, will toggle between on and off."$0D
+            "Default _cone value is 10 (used to set size of light for spotlights)"$0D
+            "movedir will be the color of the flare"$0D
+            "health is size for lightflare"$0D
+            "dmg will specify the flare type"$0D
+            "FLARE_WHITE    0"$0D
+            "FLARE_SUN      1"$0D
+            "FLARE_AMBER    2"$0D
+            "FLARE_RED      3"$0D
+            "FLARE_BLUE     4"$0D
+            "FLARE_GREEN    5"
       bbox ='-36 -34 -32 36 34 32'
+      mdl = "models/props/chandelier/tris.md2"
       spawnflags: =
       {
         Typ = "X1"
@@ -5257,66 +5433,284 @@ QQRKSRC1
         Txt = "&"
         Cap=  "DYNAMIC"
       }
-      light: =
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "If targeted, will toggle between on and off."
+      }
+      target: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
+      light: =
       {
         Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\chandelier\tris.md2"
-        values = "models\props\chandelier\tris.md2"
+        Hint = "light value, default 300"
       }
-    }
-    light_deco_sconce:form =
-    {
-      help ="A deco sconceNon-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
-      bbox ='-8 -8 -12 8 8 12'
-      spawnflags: =
+      _color: =
       {
-        Typ = "X1"
         Txt = "&"
-        Cap=  "START_OFF"
+        Hint = "light color (not the intensity, only the color)"
       }
-      spawnflags: =
+      _color: =
       {
-        Typ = "X2"
         Txt = "&"
-        Cap=  "FLARE"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
       }
-      spawnflags: =
+      _cone: =
       {
-        Typ = "X4"
         Txt = "&"
-        Cap=  "NORESIZE"
+        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
       }
-      spawnflags: =
+      _fade: =
       {
-        Typ = "X8"
         Txt = "&"
-        Cap=  "DYNAMIC"
+        Hint = "a decimal value to fade to."
+      }
+      _minlight: =
+      {
+        Txt = "&"
+        Hint = ""
       }
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      light: =
+      dmg: =
+      {
+        Txt = "&"
+        Hint = "specifies the flare type."
+        Typ = "C"
+        Items = "FLARE_WHITE"$0D
+                "FLARE_SUN"$0D
+                "FLARE_AMBER"$0D
+                "FLARE_RED"$0D
+                "FLARE_BLUE"$0D
+                "FLARE_GREEN"
+        Values = "0"$0D
+                "1"$0D
+                "2"$0D
+                "3"$0D
+                "4"$0D
+                "5"
+      }
+      health: =
+      {
+        Txt = "&"
+        Hint = "any value larger then 0 sets the size for lightflare."
+      }
+      style: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "Normal"$0D
+                "Flourescent Flicker 1"$0D
+                "Flourescent Flicker 2-13"$0D
+                "Flourescent Flicker 3-14"$0D
+                "Flourescent Flicker 4-15"$0D
+                "Flourescent Flicker 5-16"$0D
+                "Flicker"$0D
+                "Flicker 2"$0D
+                "Slow Strong Pulse"$0D
+                "Slow Full Pulse"$0D
+                "Slow Strobe"$0D
+                "Fast Strobe"$0D
+                "Gentle Pulse"$0D
+                "Candle 1"$0D
+                "Candle 2"$0D
+                "Candle 3"$0D
+                "Candle 4"$0D
+                "Blink 1"$0D
+                "Blink 2"$0D
+                "Blink 3"$0D
+                "Blink 4"
+        values = "0"$0D
+                "10"$0D
+                "13"$0D
+                "14"$0D
+                "15"$0D
+                "16"$0D
+                "1"$0D
+                "6"$0D
+                "2"$0D
+                "11"$0D
+                "9"$0D
+                "4"$0D
+                "5"$0D
+                "3"$0D
+                "7"$0D
+                "8"$0D
+                "12"$0D
+                "17"$0D
+                "18"$0D
+                "19"$0D
+                "20"
+        }
+    }
+    light_deco_sconce:form =
+    {
+      help ="A deco sconce"$0D
+            "Non-displayed light."$0D
+            "Default light value is 300."$0D
+            "Default style is 0."$0D
+            "If targeted, will toggle between on and off."$0D
+            "Default _cone value is 10 (used to set size of light for spotlights)"$0D
+            "movedir will be the color of the flare"$0D
+            "health is size for lightflare"$0D
+            "dmg will specify the flare type"$0D
+            "FLARE_WHITE    0"$0D
+            "FLARE_SUN      1"$0D
+            "FLARE_AMBER    2"$0D
+            "FLARE_RED      3"$0D
+            "FLARE_BLUE     4"$0D
+            "FLARE_GREEN    5"
+      bbox ='-8 -8 -12 8 8 12'
+      mdl = "models/props/decosconce/tris.md2"
+      spawnflags: =
+      {
+        Typ = "X1"
+        Txt = "&"
+        Cap=  "START_OFF"
+      }
+      spawnflags: =
+      {
+        Typ = "X2"
+        Txt = "&"
+        Cap=  "FLARE"
+      }
+      spawnflags: =
+      {
+        Typ = "X4"
+        Txt = "&"
+        Cap=  "NORESIZE"
+      }
+      spawnflags: =
+      {
+        Typ = "X8"
+        Txt = "&"
+        Cap=  "DYNAMIC"
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "If targeted, will toggle between on and off."
+      }
+      target: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
+      light: =
       {
         Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\decosconce\tris.md2"
-        values = "models\props\decosconce\tris.md2"
+        Hint = "light value, default 300"
       }
+      _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
+      _cone: =
+      {
+        Txt = "&"
+        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
+      }
+      _fade: =
+      {
+        Txt = "&"
+        Hint = "a decimal value to fade to."
+      }
+      _minlight: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      dmg: =
+      {
+        Txt = "&"
+        Hint = "specifies the flare type."
+        Typ = "C"
+        Items = "FLARE_WHITE"$0D
+                "FLARE_SUN"$0D
+                "FLARE_AMBER"$0D
+                "FLARE_RED"$0D
+                "FLARE_BLUE"$0D
+                "FLARE_GREEN"
+        Values = "0"$0D
+                "1"$0D
+                "2"$0D
+                "3"$0D
+                "4"$0D
+                "5"
+      }
+      health: =
+      {
+        Txt = "&"
+        Hint = "any value larger then 0 sets the size for lightflare."
+      }
+      style: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "Normal"$0D
+                "Flourescent Flicker 1"$0D
+                "Flourescent Flicker 2-13"$0D
+                "Flourescent Flicker 3-14"$0D
+                "Flourescent Flicker 4-15"$0D
+                "Flourescent Flicker 5-16"$0D
+                "Flicker"$0D
+                "Flicker 2"$0D
+                "Slow Strong Pulse"$0D
+                "Slow Full Pulse"$0D
+                "Slow Strobe"$0D
+                "Fast Strobe"$0D
+                "Gentle Pulse"$0D
+                "Candle 1"$0D
+                "Candle 2"$0D
+                "Candle 3"$0D
+                "Candle 4"$0D
+                "Blink 1"$0D
+                "Blink 2"$0D
+                "Blink 3"$0D
+                "Blink 4"
+        values = "0"$0D
+                "10"$0D
+                "13"$0D
+                "14"$0D
+                "15"$0D
+                "16"$0D
+                "1"$0D
+                "6"$0D
+                "2"$0D
+                "11"$0D
+                "9"$0D
+                "4"$0D
+                "5"$0D
+                "3"$0D
+                "7"$0D
+                "8"$0D
+                "12"$0D
+                "17"$0D
+                "18"$0D
+                "19"$0D
+                "20"
+        }
     }
     light_fire_esm:form =
     {
@@ -5538,8 +5932,23 @@ QQRKSRC1
     }
     light_pendant:form =
     {
-      help ="A pendant lightNon-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+      help ="A pendant light"$0D
+            "Non-displayed light."$0D
+            "Default light value is 300."$0D
+            "Default style is 0."$0D
+            "If targeted, will toggle between on and off."$0D
+            "Default _cone value is 10 (used to set size of light for spotlights)"$0D
+            "movedir will be the color of the flare"$0D
+            "health is size for lightflare"$0D
+            "dmg will specify the flare type"$0D
+            "FLARE_WHITE    0"$0D
+            "FLARE_SUN      1"$0D
+            "FLARE_AMBER    2"$0D
+            "FLARE_RED      3"$0D
+            "FLARE_BLUE     4"$0D
+            "FLARE_GREEN    5"
       bbox ='-16 -16 -4 16 16 4'
+      mdl = "models/props/pendant/tris.md2"
       spawnflags: =
       {
         Typ = "X1"
@@ -5564,7 +5973,12 @@ QQRKSRC1
         Txt = "&"
         Cap=  "DYNAMIC"
       }
-      health: =
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "If targeted, will toggle between on and off."
+      }
+      target: =
       {
         Txt = "&"
         Hint = ""
@@ -5572,21 +5986,130 @@ QQRKSRC1
       light: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "light value, default 300"
       }
-      model: =
+      _color: =
       {
         Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\pendant\tris.md2"
-        values = "models\props\pendant\tris.md2"
+        Hint = "light color (not the intensity, only the color)"
       }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
+      _cone: =
+      {
+        Txt = "&"
+        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
+      }
+      _fade: =
+      {
+        Txt = "&"
+        Hint = "a decimal value to fade to."
+      }
+      _minlight: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      dmg: =
+      {
+        Txt = "&"
+        Hint = "specifies the flare type."
+        Typ = "C"
+        Items = "FLARE_WHITE"$0D
+                "FLARE_SUN"$0D
+                "FLARE_AMBER"$0D
+                "FLARE_RED"$0D
+                "FLARE_BLUE"$0D
+                "FLARE_GREEN"
+        Values = "0"$0D
+                "1"$0D
+                "2"$0D
+                "3"$0D
+                "4"$0D
+                "5"
+      }
+      health: =
+      {
+        Txt = "&"
+        Hint = "any value larger then 0 sets the size for lightflare."
+      }
+      style: =
+      {
+        Txt = "&"
+        Hint = ""
+        Typ = "C"
+        Items = "Normal"$0D
+                "Flourescent Flicker 1"$0D
+                "Flourescent Flicker 2-13"$0D
+                "Flourescent Flicker 3-14"$0D
+                "Flourescent Flicker 4-15"$0D
+                "Flourescent Flicker 5-16"$0D
+                "Flicker"$0D
+                "Flicker 2"$0D
+                "Slow Strong Pulse"$0D
+                "Slow Full Pulse"$0D
+                "Slow Strobe"$0D
+                "Fast Strobe"$0D
+                "Gentle Pulse"$0D
+                "Candle 1"$0D
+                "Candle 2"$0D
+                "Candle 3"$0D
+                "Candle 4"$0D
+                "Blink 1"$0D
+                "Blink 2"$0D
+                "Blink 3"$0D
+                "Blink 4"
+        values = "0"$0D
+                "10"$0D
+                "13"$0D
+                "14"$0D
+                "15"$0D
+                "16"$0D
+                "1"$0D
+                "6"$0D
+                "2"$0D
+                "11"$0D
+                "9"$0D
+                "4"$0D
+                "5"$0D
+                "3"$0D
+                "7"$0D
+                "8"$0D
+                "12"$0D
+                "17"$0D
+                "18"$0D
+                "19"$0D
+                "20"
+        }
     }
     light_sconce:form =
     {
-      help ="A cage light modelNon-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+      help ="A cage light model"$0D
+            "Non-displayed light."$0D
+            "Default light value is 300."$0D
+            "Default style is 0."$0D
+            "If targeted, will toggle between on and off."$0D
+            "Default _cone value is 10 (used to set size of light for spotlights)"$0D
+            "movedir will be the color of the flare"$0D
+            "health is size for lightflare"$0D
+            "dmg will specify the flare type"$0D
+            "FLARE_WHITE    0"$0D
+            "FLARE_SUN      1"$0D
+            "FLARE_AMBER    2"$0D
+            "FLARE_RED      3"$0D
+            "FLARE_BLUE     4"$0D
+            "FLARE_GREEN    5"
       bbox ='-4 -4 -8 4 4 8'
+      mdl = "models/props/sconce/light.md2"
       _FADE: =
       {
         Txt = "&"
@@ -5640,28 +6163,12 @@ QQRKSRC1
         Txt = "&"
         Cap=  "LYELLOW"
       }
-      _color: =
+      targetname: =
       {
         Txt = "&"
-        Hint = "(R G B intensity)"
+        Hint = "If targeted, will toggle between on and off."
       }
-      _color: =
-      {
-        Typ="L 3"
-        Txt="&"
-        Hint = "Click here to pick the light color"
-      }
-      _fade: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      dmg: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
-      health: =
+      target: =
       {
         Txt = "&"
         Hint = ""
@@ -5669,28 +6176,127 @@ QQRKSRC1
       light: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "light value, default 300"
       }
-      model: =
+      _color: =
       {
         Txt = "&"
-        Hint = "The model"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
+      _cone: =
+      {
+        Txt = "&"
+        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
+      }
+      _fade: =
+      {
+        Txt = "&"
+        Hint = "a decimal value to fade to."
+      }
+      _minlight: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      angle: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      dmg: =
+      {
+        Txt = "&"
+        Hint = "specifies the flare type."
         Typ = "C"
-        Items = "models\props\sconce\light.md2"
-        values = "models\props\sconce\light.md2"
+        Items = "FLARE_WHITE"$0D
+                "FLARE_SUN"$0D
+                "FLARE_AMBER"$0D
+                "FLARE_RED"$0D
+                "FLARE_BLUE"$0D
+                "FLARE_GREEN"
+        Values = "0"$0D
+                "1"$0D
+                "2"$0D
+                "3"$0D
+                "4"$0D
+                "5"
+      }
+      health: =
+      {
+        Txt = "&"
+        Hint = "any value larger then 0 sets the size for lightflare."
       }
       style: =
       {
         Txt = "&"
         Hint = ""
         Typ = "C"
-        Items = "13"$0D"6"
-        values = "13"$0D"6"
-      }
+        Items = "Normal"$0D
+                "Flourescent Flicker 1"$0D
+                "Flourescent Flicker 2-13"$0D
+                "Flourescent Flicker 3-14"$0D
+                "Flourescent Flicker 4-15"$0D
+                "Flourescent Flicker 5-16"$0D
+                "Flicker"$0D
+                "Flicker 2"$0D
+                "Slow Strong Pulse"$0D
+                "Slow Full Pulse"$0D
+                "Slow Strobe"$0D
+                "Fast Strobe"$0D
+                "Gentle Pulse"$0D
+                "Candle 1"$0D
+                "Candle 2"$0D
+                "Candle 3"$0D
+                "Candle 4"$0D
+                "Blink 1"$0D
+                "Blink 2"$0D
+                "Blink 3"$0D
+                "Blink 4"
+        values = "0"$0D
+                "10"$0D
+                "13"$0D
+                "14"$0D
+                "15"$0D
+                "16"$0D
+                "1"$0D
+                "6"$0D
+                "2"$0D
+                "11"$0D
+                "9"$0D
+                "4"$0D
+                "5"$0D
+                "3"$0D
+                "7"$0D
+                "8"$0D
+                "12"$0D
+                "17"$0D
+                "18"$0D
+                "19"$0D
+                "20"
+        }
     }
     lightflare:form =
     {
-      help ="Non-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
+      help ="Non-displayed light."$0D
+            "Default light value is 300."$0D
+            "Default style is 0."$0D
+            "If targeted, will toggle between on and off."$0D
+            "Default _cone value is 10 (used to set size of light for spotlights)"$0D
+            "movedir will be the color of the flare"$0D
+            "health is size for lightflare"$0D
+            "dmg will specify the flare type"$0D
+            "FLARE_WHITE    0"$0D
+            "FLARE_SUN      1"$0D
+            "FLARE_AMBER    2"$0D
+            "FLARE_RED      3"$0D
+            "FLARE_BLUE     4"$0D
+            "FLARE_GREEN    5"
       bbox ='-2 -2 -2 2 2 2'
       spawnflags: =
       {
@@ -5716,18 +6322,43 @@ QQRKSRC1
         Txt = "&"
         Cap=  "DYNAMIC"
       }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "If targeted, will toggle between on and off."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = ""
+      }
+      light: =
+      {
+        Txt = "&"
+        Hint = "light value, default 300"
+      }
       _color: =
       {
         Txt = "&"
-        Hint = "(R G B intensity)"
+        Hint = "light color (not the intensity, only the color)"
       }
       _color: =
       {
-        Typ="L 3"
-        Txt="&"
-        Hint = "Click here to pick the light color"
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
+      _cone: =
+      {
+        Txt = "&"
+        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
       }
       _fade: =
+      {
+        Txt = "&"
+        Hint = "a decimal value to fade to."
+      }
+      _minlight: =
       {
         Txt = "&"
         Hint = ""
@@ -5740,18 +6371,74 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "specifies the flare type."
+        Typ = "C"
+        Items = "FLARE_WHITE"$0D
+                "FLARE_SUN"$0D
+                "FLARE_AMBER"$0D
+                "FLARE_RED"$0D
+                "FLARE_BLUE"$0D
+                "FLARE_GREEN"
+        Values = "0"$0D
+                "1"$0D
+                "2"$0D
+                "3"$0D
+                "4"$0D
+                "5"
       }
       health: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "any value larger then 0 sets the size for lightflare."
       }
-      light: =
+      style: =
       {
         Txt = "&"
         Hint = ""
-      }
+        Typ = "C"
+        Items = "Normal"$0D
+                "Flourescent Flicker 1"$0D
+                "Flourescent Flicker 2-13"$0D
+                "Flourescent Flicker 3-14"$0D
+                "Flourescent Flicker 4-15"$0D
+                "Flourescent Flicker 5-16"$0D
+                "Flicker"$0D
+                "Flicker 2"$0D
+                "Slow Strong Pulse"$0D
+                "Slow Full Pulse"$0D
+                "Slow Strobe"$0D
+                "Fast Strobe"$0D
+                "Gentle Pulse"$0D
+                "Candle 1"$0D
+                "Candle 2"$0D
+                "Candle 3"$0D
+                "Candle 4"$0D
+                "Blink 1"$0D
+                "Blink 2"$0D
+                "Blink 3"$0D
+                "Blink 4"
+        values = "0"$0D
+                "10"$0D
+                "13"$0D
+                "14"$0D
+                "15"$0D
+                "16"$0D
+                "1"$0D
+                "6"$0D
+                "2"$0D
+                "11"$0D
+                "9"$0D
+                "4"$0D
+                "5"$0D
+                "3"$0D
+                "7"$0D
+                "8"$0D
+                "12"$0D
+                "17"$0D
+                "18"$0D
+                "19"$0D
+                "20"
+        }
     }
     misc_alarm:form =
     {

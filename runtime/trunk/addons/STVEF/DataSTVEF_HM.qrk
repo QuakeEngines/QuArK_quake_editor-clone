@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2007/04/16 11:35:43  danielpharos
+//Added begin of support for EF2. Changed STVEF naming to be more consistent. Added ForceFaceFlags option.
+//
 //Revision 1.1  2006/09/08 07:56:27  cdunde
 //Complete revamping of STVEF files and addition of HM addon
 //for multiplayer editing by DanielPharos.
@@ -1645,16 +1648,21 @@ QQRKSRC1
         cap = "noIncidence"
       }
       t_commonspecifics = !
-      _color: =
-      {
-        txt = "&"
-        hint = ""
-        Typ = "LN"
-      }
       light: =
       {
         txt = "&"
-        hint = "overrides the default 300 intensity"
+        hint = "constantLight radius"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "Click here to pick the light color."
+        Typ = "LN"
       }
       radius: =
       {

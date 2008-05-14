@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:03:55  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -200,6 +203,7 @@ QQRKSRC1
 	}
     light:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
 	  cs_name: =
 	  {
 		Txt = "&"
@@ -212,6 +216,17 @@ QQRKSRC1
         Hint = "attenuation"
         Items = "realistic"$0D"linear"$0D"inverse"$0D"none"
         Values = "realistic"$0D"linear"$0D"inverse"$0D"none"
+      }
+      _light: =
+      {
+        Txt = "&"
+        Hint = "light color and the intensity (its last value)."
+      }
+      _light: =
+      {
+        Txt = "&"
+        Typ = "LN4"
+        Hint = "Click here to pick the light color."
       }
       dynamic: =
       {

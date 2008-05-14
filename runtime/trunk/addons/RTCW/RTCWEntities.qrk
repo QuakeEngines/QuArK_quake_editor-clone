@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:11:49  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -595,21 +598,29 @@ QQRKSRC1
         ;desc = "Light and Worldspawn entities."
         corona:e =
         {
+          _color = "1 1 1"
+          light = "300"
           angle = "360"
           origin = "0 0 0"
         }
         dlight:e =
         {
+          _color = "1 1 1"
+          light = "300"
           angle = "360"
           origin = "0 0 0"
         }
         light:e =
         {
+          _color = "1 1 1"
+          light = "300"
           angle = "360"
-          origin = "0 0 0"
+          origin = "144 0 0"
         }
         lightJunior:e =
         {
+          _color = "1 1 1"
+          light = "300"
           angle = "360"
           origin = "0 0 0"
         }
@@ -8221,8 +8232,13 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
-        Typ = "LN"
         hint = "Light color (not the intensity, only the color)."
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Click here to pick the light color."
       }
       scale: =
       {
@@ -8337,8 +8353,13 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
-        Typ = "LN"
         hint = "Light color (not the intensity, only the color)."
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Click here to pick the light color."
       }
       style: =
       {
@@ -8467,8 +8488,13 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
-        Typ = "LN"
         hint = "Light color (not the intensity, only the color)."
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Click here to pick the light color."
       }
     }
     lightJunior:form =
@@ -8543,8 +8569,13 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
-        Typ = "LN"
         hint = "Light color (not the intensity, only the color)."
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Click here to pick the light color."
       }
     }
     worldspawn:form =

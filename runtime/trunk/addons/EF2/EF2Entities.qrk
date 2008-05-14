@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/03/12 09:32:17  cdunde
+//Removed all unrelated game stuff when copied from STVEF.
+//
 //Revision 1.1  2008/03/09 20:31:03  cdunde
 //Pulled entities out of the EF2 and FAKK2 game Data.qrk files.
 //Game addons should never dump anything into their Data.qrk files.
@@ -313,11 +316,11 @@ QQRKSRC1
         }
         light:e =
         {
-          _color = "1 1 1"
-          light = "300"
-          angle = "360"
-          origin = "0 0 0"
           ;desc = "Non-displayed light."
+          light = "300"
+          _color = "1 1 1"
+          angles = "0 0 0"
+          origin = "0 0 0"
         }
         worldspawn:b =
         {
@@ -4786,9 +4789,14 @@ QQRKSRC1
       }
       _color: =
       {
-        Typ = "LN"
         txt = "&"
         hint = "constantLight color"
+      }
+      _color: =
+      {
+        Typ = "LN"
+        txt = "&"
+        hint = "Click here to pick the light color."
       }
       falloff: =
       {

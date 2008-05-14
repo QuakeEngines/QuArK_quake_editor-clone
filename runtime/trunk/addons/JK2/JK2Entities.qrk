@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:08:17  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -496,13 +499,13 @@ QQRKSRC1
         {
           origin = "0 0 0"
           light = "300"
-          _color = "1.0 1.0 1.0"
+          _color = "1 1 1"
         }
         misc_spotlight:e =
         {
           ;desc = "Spotlight"
-          Origin = "0 0 0"
-          Angle = "360"
+          origin = "0 0 0"
+          angle = "360"
         }
         misc_dlight:e =
         {
@@ -14700,6 +14703,7 @@ QQRKSRC1
     }
     light:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
       light: =
       {
         Txt = "&"

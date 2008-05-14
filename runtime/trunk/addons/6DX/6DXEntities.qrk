@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:03:54  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -18,22 +21,30 @@ QQRKSRC1
     {
         6dx_cross_entity:e =
         {
-          width = "128"
           ;desc = "A sprite constructed from a number of crossing sprites. Typically "
            "used for trees & bushes"
+          width = "128"
+          origin = "0 0 0"
+          angle = "360"
         }
         6dx_mdl:e =
         {
-          MDL = "model.md2"
           ;desc = "A MD2 Actor/Model. MD3 actor/models cannot be added as an entity."
+          MDL = "model.md2"
+          origin = "0 0 0"
+          angle = "360"
         }
         6dx_particles:e =
         {
           ;desc = "A simple particle generator"
+          origin = "0 0 0"
+          angle = "360"
         }
         entity_custom:e =
         {
           ;desc = "A sample custom entity."
+          origin = "0 0 0"
+          angle = "360"
         }
         func_button:b =
         {
@@ -75,23 +86,34 @@ QQRKSRC1
         info_player_start:e =
         {
           ;desc = "The normal starting point for a level."
+          origin = "0 0 0"
+          angle = "360"
         }
         light:e =
         {
           ;desc = "Light-source with no model"
+          light = "300"
+          _color = "1 1 1"
+          origin = "0 0 0"
         }
         lstart:e =
         {
           ;desc = "A starting point for a 3D line"
+          origin = "0 0 0"
+          angle = "360"
         }
         lend:e =
         {
           ;desc = "A end point for a 3D line. Link 'start' to 'number' of lsta"
            "rt (or another lend)"
+          origin = "0 0 0"
+          angle = "360"
         }
         path_corner:e =
         {
           ;desc = "Path point for func_train or for actor auto moving"
+          origin = "0 0 0"
+          angle = "360"
         }
         trigger_multiple:b =
         {
@@ -108,6 +130,7 @@ QQRKSRC1
     6dx_cross_entity:form =
     {
       Help = "A sprite that can be crossed by itself multiple times."
+      bbox = '-16 -16 -16 16 16 16'
       origin: =
       {
         Txt = "&"
@@ -237,7 +260,7 @@ QQRKSRC1
     6dx_mdl:form =
     {
       Help = "A actor using an MD2 model"
-      bbox = '-24 -24 -32 24 24 32 1'
+      bbox = '-24 -24 -32 24 24 32'
       origin: =
       {
         Txt = "&"
@@ -305,6 +328,7 @@ QQRKSRC1
     6dx_particles:form =
     {
       Help = "A simple particle generator."
+      bbox = '-16 -16 -16 16 16 16'
       count: =
       {
         Txt = "&"
@@ -389,7 +413,9 @@ QQRKSRC1
     }
     entity_custom:form =
     {
-      Help = "An example entity whose keys and values can be read from 6DX OnEntity. See the general information about entities for more info."
+      Help = "An example entity whose keys and values can be read from 6DX OnEntity."$0D
+             "See the general information about entities for more info."
+      bbox = '-16 -16 -16 16 16 16'
       origin: =
       {
         Txt = "&"
@@ -947,7 +973,7 @@ QQRKSRC1
     info_player_start:form =
     {
       Help = "The player starting point for a level. Only include one on each map."
-      bbox = '-16 -16 -24 16 16 32 1'
+      bbox = '-16 -16 -24 16 16 32'
       origin: =
       {
         Txt = "&"
@@ -962,7 +988,7 @@ QQRKSRC1
     light:form =
     {
       Help = "Point light-source with no model."
-      bbox = '-8 -8 -8 8 8 8 1'
+      bbox = '-8 -8 -8 8 8 8'
       origin: =
       {
         Txt = "&"
@@ -992,8 +1018,8 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Typ = "L"
-        Hint = "color-selection button"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
       }
       targetname: =
       {
@@ -1011,6 +1037,7 @@ QQRKSRC1
     lstart:form =
     {
       Help = "The starting point of a 3D line."
+      bbox = '-16 -16 -16 16 16 16'
       origin: =
       {
         Txt = "&"
@@ -1030,6 +1057,7 @@ QQRKSRC1
     lend:form =
     {
       Help = "The ending point of a 3D line."
+      bbox = '-16 -16 -16 16 16 16'
       origin: =
       {
         Txt = "&"
@@ -1054,6 +1082,7 @@ QQRKSRC1
     path_corner:form =
     {
       Help = "A waypoint for use with actor or func_train movement."
+      bbox = '-16 -16 -16 16 16 16'
       origin: =
       {
         Txt = "&"

@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2008/04/11 09:23:04  danielpharos
+//To reinstate headers and history
+//
 
 {
   Description = "Custom configuration file for WildWest"
@@ -50,9 +53,10 @@ QQRKSRC1
     {
       light:e =
       {
-        origin = "0 0 0"
         light = "300"
         _color = "1 1 1"
+        angle = "360"
+        origin = "0 0 0"
       }
     }
     bezier: =

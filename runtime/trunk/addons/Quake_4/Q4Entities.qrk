@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:10:42  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -16002,7 +16005,7 @@ QQRKSRC1
         light:e =
         {
           spawnclass = "idLight"
-          name = "change me"
+          name = "renameme"
           light = "300"
           _color = "1 1 1"
           health = "0"
@@ -52318,8 +52321,13 @@ QQRKSRC1
        _color: =
       {
         Txt = "&"
-        Typ = "L"
         Hint = "light color (not the intensity, only the color)"
+      }
+       _color: =
+      {
+        Txt = "&"
+        Typ = "L"
+        Hint = "Click here to pick the light color."
       }
       light: =
       {

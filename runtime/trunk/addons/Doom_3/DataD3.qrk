@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.14  2008/04/07 20:40:30  cdunde
+//Added missing setting.
+//
 //Revision 1.13  2008/03/28 19:05:06  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -364,9 +367,13 @@ QQRKSRC1
       light:e =
       {
         name = "renameme"
-        _color = "1 1 1"
         light = "300"
-        angle = "360"
+        _color = "1 1 1"
+        break = "0"
+        count = "1"
+        health = "0"
+        levels = "1"
+        start_off = "0"
         origin = "0 0 0"
       }
     }

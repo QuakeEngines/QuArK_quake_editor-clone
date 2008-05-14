@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:14:05  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -121,19 +124,19 @@ QQRKSRC1
       light:e = 
       {
         ;desc = "A light"
-        radius = "300.0"
-        light_center = "0.000000 0.000000 0.000000"
-        color = "1.000000 1.000000 1.000000"
+        name = ""
+        radius = "300"
+        color = "1 1 1"
+        light_center = "0 0 0"
         intensity = "1.0"
         type = "0"
-        freq = "1.0"
+        freq = "2.0"
         phase = "0.0"
         specular = "1"
         shadows = "1"
         attenuation = ""
         filter = "nofilter"
-        name = ""
-        origin = "0.000000 0.000000 0.000000"
+        origin = "0 0 0"
       }
       misc_model:e = 
       {
@@ -564,6 +567,12 @@ QQRKSRC1
     light:form = 
     {
       Help = "A light"
+      bbox = '-8 -8 -8 8 8 8'
+      name: =
+      {
+        Txt = "&"
+        Hint = "The name of the actor"
+      }
       radius: =
       {
         Txt = "&"
@@ -574,16 +583,21 @@ QQRKSRC1
         Txt = "&"
         Hint = "The light emition point in the lights volume"
       }
-      color: =
-      {
-        Txt = "&"
-        Hint = "light color (not the intensity, only the color)"
-        Typ = "L"
-      }
       intensity: =
       {
         Txt = "&"
         Hint = "The lights intensity"
+      }
+      color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      color: =
+      {
+        Txt = "&"
+        Hint = "Click here to pick the light color."
+        Typ = "L"
       }
       type: =
       {
@@ -624,11 +638,6 @@ QQRKSRC1
       {
         Txt = "&"
         Hint = "The color filter to apply on the light"
-      }
-      name: =
-      {
-        Txt = "&"
-        Hint = "The name of the actor"
       }
       origin: =
       {

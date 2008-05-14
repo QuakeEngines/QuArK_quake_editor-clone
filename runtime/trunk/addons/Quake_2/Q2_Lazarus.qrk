@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.20  2008/02/27 00:19:44  danielpharos
+// Fix the contextual help files not being found anymore
+//
 // Revision 1.19  2007/03/29 16:05:48  danielpharos
 // Added the _sun specifics. Thanks OmnificienT!
 //
@@ -688,8 +691,8 @@ QQRKSRC1
         {
           angle = "360"
           origin = "0 0 0"
-          ;desc = "Light"
-          light = "250"
+          _color = "1 1 1"
+          light = "300"
           _falloff = "0"
           _fade = "1"
           _angfade = "1"
@@ -700,14 +703,18 @@ QQRKSRC1
         }
         light_mine1:e =
         {
-          origin = "0 0 0"
           angle = "360"
+          origin = "0 0 0"
+          light = "300"
+          _color = "1 1 1"
           ;desc = "Predefined light. Dusty fluorescent light fixture."
         }
         light_mine2:e =
         {
-          origin = "0 0 0"
           angle = "360"
+          origin = "0 0 0"
+          light = "300"
+          _color = "1 1 1"
           ;desc = "Predefined Light. Clean fluorescent light fixture."
         }
       }
@@ -13202,8 +13209,13 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
-        Typ = "LN"
         hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Click here to pick the light color."
       }
       style: =
       {
@@ -13328,9 +13340,14 @@ QQRKSRC1
       }
       _color: =
       {
-        txt = "&"
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
         Typ = "LN"
-        hint = "_color>RGB color"
+        Hint = "Click here to pick the light color."
       }
       style: =
       {
@@ -13457,9 +13474,14 @@ QQRKSRC1
       }
       _color: =
       {
-        txt = "&"
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
         Typ = "LN"
-        hint = "_color>RGB color"
+        Hint = "Click here to pick the light color."
       }
       style: =
       {

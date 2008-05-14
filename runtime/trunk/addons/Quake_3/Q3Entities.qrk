@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.3  2008/04/24 16:16:55  cdunde
+//Oops, took to much out.
+//
 //Revision 1.2  2008/04/24 07:55:35  cdunde
 //Minor improvements.
 //
@@ -414,9 +417,9 @@ QQRKSRC1
         light:e =
         {
           origin = "0 0 0"
-          ;desc = "Point of light"
           light = "300"
-          _color = "1.0 1.0 1.0"
+          _color = "1 1 1"
+          ;desc = "Point of light"
         }
       }
       Shooter Entities.qtxfolder =
@@ -5792,7 +5795,7 @@ QQRKSRC1
       {
         Txt = "&"
         Typ = "L"
-        Hint = "light color (not the intensity, only the color)"
+        Hint = "Click here to pick the light color."
       }
       radius: =
       {

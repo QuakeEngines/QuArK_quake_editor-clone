@@ -85,6 +85,17 @@ QQRKSRC1
     //
     // no default room for 6DX
     //
+      info_player_start:e =
+      {
+        origin = "-144 0 -72"
+        angle = "360"
+      }
+      light:e =
+      {
+        origin = "0 0 0"
+        light = "300"
+        _color = "1 1 1"
+      }
     }
   }
 }

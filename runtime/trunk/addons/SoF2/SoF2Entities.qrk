@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:12:43  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -170,6 +173,13 @@ QQRKSRC1
       }
       other entities.qtxfolder =
       {
+        light:e =
+        {
+          _color = "1 1 1"
+          light = "300"
+          angle = "360"
+          origin = "0 0 0"
+        }
         terrain:b =
         {
           angle = "360"
@@ -2805,6 +2815,8 @@ QQRKSRC1
     }
     light:form =
     {
+      Help = "invisible light source"
+      bbox = '-8 -8 -8 8 8 8'
       light: =
       {
         Txt = "&"
@@ -2814,13 +2826,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = "sets the light's color"
+        Hint = "light color (not the intensity, only the color)"
       }
       _color: =
       {
         Txt = "&"
         Typ = "L"
-        Hint = "sets the light's color"
+        Hint = "Click here to pick the light color."
       }
       radius: =
       {

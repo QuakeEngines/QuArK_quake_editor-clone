@@ -1,14 +1,17 @@
 QQRKSRC1
-// Half-Life textures file for Quark
+// Half-Life Textures file for Quark
 
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:05:50  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
   QuArKProtected = "1"
-  Description = "KingPin Textures"
+  Description = "Half-Life Textures"
 
   Textures.qtx =
   {

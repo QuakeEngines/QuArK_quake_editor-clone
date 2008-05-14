@@ -5,6 +5,11 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2008/03/25 06:43:12  cdunde
+//To standardize UserData files as much as possible based on their game engine type.
+//Moved entities out of them which were duplicated in their game Data files, should NEVER be allowed!
+//Changed all hard coded texturing to either auto or includes, also should NEVER be allowed.
+//
 //Revision 1.6  2006/04/27 06:40:00  cdunde
 //To change Doom3 config to build and run maps from within QuArK.
 //
@@ -65,10 +70,15 @@ QQRKSRC1
     {
       light:e =
       {
-        name = "change me"
-        origin = "0 0 0"
+        name = "renameme"
         light = "300"
         _color = "1 1 1"
+        break = "0"
+        count = "1"
+        health = "0"
+        levels = "1"
+        start_off = "0"
+        origin = "0 0 0"
       }
     }
     bezier: =

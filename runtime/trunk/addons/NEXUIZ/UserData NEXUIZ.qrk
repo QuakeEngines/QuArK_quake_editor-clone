@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/04/05 06:17:32  cdunde
+//Added full game support for NEXUIZ including .md3 model displaying.
+//
 //
 
 {
@@ -49,9 +52,10 @@ QQRKSRC1
     {
       light:e =
       {
-        origin = "0 0 0"
-        light = "300"
         _color = "1 1 1"
+        light = "300"
+        angle = "360"
+        origin = "0 0 0"
       }
     }
     bezier: =

@@ -2,9 +2,10 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: base.qrk
 
-// common hl2-source entities. last changes august/5/2005 by cbxpm.
+// Common HL2-Source Entities. last changes august/5/2005 by cbxpm.
 
 {
+  Description = "Common HL2-Source Entities"
   t_player_size:incl = { bbox = '-16 -16 -24 16 16 32' }
   Toolbox Folders.qtx =
   {
@@ -1161,9 +1162,10 @@ QQRKSRC1
       {
         light:e =
         {
+          style = "Normal"
+          _light = "255 255 255 300"
           origin = "0 0 0"
           ;desc = "An invisible omnidirectional lightsource."
-          _distance = "0"
         }
         light_dynamic:e =
         {
@@ -7810,6 +7812,7 @@ QQRKSRC1
     }
     light:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
       t_Targetname = !
       t_Light = !
       target: =
@@ -7846,6 +7849,7 @@ QQRKSRC1
     }
     light_environment:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
       t_Angles = !
       pitch: =
       {
@@ -7879,6 +7883,11 @@ QQRKSRC1
         txt = "&"
         hint = "use -1 -1 -1 1 as the argument"
       }
+      angles: =
+      {
+        txt = "&"
+        hint = "Angle"
+      }
       _lightHDR: =
       {
         txt = "&"
@@ -7887,6 +7896,8 @@ QQRKSRC1
     }
     light_spot:form =
     {
+      bbox = '-4 -4 -4 4 4 4
+      '
       t_Targetname = !
       t_Angles = !
       t_Light = !
@@ -7914,6 +7925,11 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Maximum distance"
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = "Angle"
       }
       pitch: =
       {
@@ -7961,7 +7977,7 @@ QQRKSRC1
       _light: =
       {
         Txt = "&"
-        Typ = "LU3"
+        Typ = "LU4"
         Hint = "light color (not the intensity, only the color)"
       }
       brightness: =

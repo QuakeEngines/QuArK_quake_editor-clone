@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:05:52  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -159,9 +162,11 @@ QQRKSRC1
       {
         light:e =
         {
-        origin = "0 0 0"
-            light = "200"
-        ;desc = "A projected light (no visible light source)"
+          ;desc = "A projected light (no visible light source)"
+          light = "300"
+          _color = "1 1 1"
+          angle = "360"
+          origin = "0 0 0"
         }
         light_torch_small_walltorch:e =
         {
@@ -1154,6 +1159,7 @@ QQRKSRC1
       light:form =
       {
         help = "Non-displayed light" $0D "Default light value is 300" $0D "If targeted it will toggle between on or off" $0D "If 'target' and 'angle' is set, the light is projected" $0D "In the directionof the target as a cone of the size" $0D "set by angle"
+        bbox = '-8 -8 -8 8 8 8'
         style: =
         {Txt="&"
         Typ="C"
@@ -1170,6 +1176,17 @@ QQRKSRC1
         {Txt="&"
         Typ="E"
         Hint="Light Value"
+        }
+        _color: =
+        {
+          Txt = "&"
+          Hint = "light color (not the intensity, only the color)"
+        }
+        _color: =
+        {
+          Txt = "&"
+          Typ = "LN"
+          Hint = "Click here to pick the light color."
         }
         target:=
         {Txt="&"

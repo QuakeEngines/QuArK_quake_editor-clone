@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:11:47  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -231,6 +234,7 @@ QQRKSRC1
       {
         corona:e =
         {
+          _color = "1 1 1"
           light = "200"
           angle = "360"
           origin = "0 0 0"
@@ -238,6 +242,7 @@ QQRKSRC1
         }
         dlight:e =
         {
+          _color = "1 1 1"
           light = "25"
           angle = "360"
           origin = "0 0 0"
@@ -245,6 +250,7 @@ QQRKSRC1
         }
         light:e =
         {
+          _color = "1 1 1"
           light = "300"
           angle = "360"
           origin = "0 0 0"
@@ -2940,8 +2946,13 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
-        Typ = "LN"
         hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Click here to pick the light color."
       }
     }
     lightJunior:form =
@@ -2986,8 +2997,13 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
-        Typ = "LN"
         hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Click here to pick the light color."
       }
       radius: =
       {
@@ -3333,17 +3349,27 @@ QQRKSRC1
         typ = "X1"
         cap = "START_OFF"
       }
-      scale: =
+      light: =
       {
         txt = "&"
-        hint = "will designate a multiplier to the default size."$0D"(so 2.0 i"
-         "s 2xdefault size, 0.5 is half)."
+        hint = "overrides the default 300 intensity."
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "light color (not the intensity, only the color)"
       }
       _color: =
       {
         txt = "&"
         Typ = "LN"
-        hint = "light color (not the intensity, only the color)"
+        hint = "Click here to pick the light color."
+      }
+      scale: =
+      {
+        txt = "&"
+        hint = "will designate a multiplier to the default size."$0D"(so 2.0 i"
+         "s 2xdefault size, 0.5 is half)."
       }
     }
     dlight:form =
@@ -3383,11 +3409,21 @@ QQRKSRC1
         typ = "X4"
         cap = "ONETIME"
       }
+      light: =
+      {
+        txt = "&"
+        hint = "overrides the default 300 intensity."
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "light color (not the intensity, only the color)"
+      }
       _color: =
       {
         txt = "&"
         Typ = "LN"
-        hint = "light color (not the intensity, only the color)"
+        hint = "Click here to pick the light color."
       }
       style: =
       {

@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:10:37  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -838,20 +841,26 @@ QQRKSRC1
       {
         light:e =
         {
-          light = "300"
+          angle = "360"
           origin = "0 0 0"
+          light = "300"
+          _color = "1 1 1"
           ;desc = "Light up the map."
         }
         light_mine1:e =
         {
-          origin = "0 0 0"
           angle = "360"
+          origin = "0 0 0"
+          light = "300"
+          _color = "1 1 1"
           ;desc = "Predefined light."
         }
         light_mine2:e =
         {
-          origin = "0 0 0"
           angle = "360"
+          origin = "0 0 0"
+          light = "300"
+          _color = "1 1 1"
           ;desc = "Predefined light."
         }
       }
@@ -4867,9 +4876,14 @@ QQRKSRC1
       }
       _color: =
       {
-        Txt = "&"
+        txt = "&"
+        hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        txt = "&"
         Typ = "LN"
-        Hint = "light color (not the intensity, only the color)"
+        hint = "Click here to pick the light color."
       }
       Spawnflags: =
       {
@@ -4907,6 +4921,17 @@ QQRKSRC1
          "7"$0D"8"
         Hint = "The style for the light."
       }
+      _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
     }
     light_mine2:form =
     {
@@ -4934,6 +4959,17 @@ QQRKSRC1
         Values = "0"$0D"10"$0D"1"$0D"6"$0D"2"$0D"11"$0D"9"$0D"4"$0D"5"$0D"3"$0D
          "7"$0D"8"
         Hint = "The style for the light."
+      }
+      _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
       }
     }
     path_corner:form =

@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/04/05 06:17:32  cdunde
+//Added full game support for NEXUIZ including .md3 model displaying.
+//
 //
 
 {
@@ -234,6 +237,8 @@ QQRKSRC1
         }
         light:e =
         {
+          _color = "1 1 1"
+          light = "300"
           angle = "360"
           origin = "0 0 0"
         }
@@ -1787,6 +1792,17 @@ QQRKSRC1
         cap = "NOGRIDLIGHT"
       }
       t_commonspecifics = !
+      _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
       _sun: =
       {
         txt = "&"

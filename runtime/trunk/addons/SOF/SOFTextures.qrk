@@ -4,11 +4,14 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:12:46  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
   QuArKProtected = "1"
-  Description = "SOFTextures.qrk Textures"
+  Description = "SOFTextures.qrk"
 
   Textures.qtx =
   {

@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:14:22  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -254,11 +257,15 @@ QQRKSRC1
         }
         light:e =
         {
+          light = "300"
+          _color = "1 1 1"
           angle = "360"
           origin = "0 0 0"
         }
         lightJunior:e =
         {
+          light = "300"
+          _color = "1 1 1"
           angle = "360"
           origin = "0 0 0"
         }
@@ -1390,6 +1397,22 @@ QQRKSRC1
         typ = "X64"
         cap = "dynamic"
       }
+      light: =
+      {
+        Txt = "&"
+        Hint = "the light  intensity"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
     }
     lightJunior:form =
     {
@@ -1422,6 +1445,22 @@ QQRKSRC1
       {
         typ = "X8"
         cap = "negative_point"
+      }
+      light: =
+      {
+        Txt = "&"
+        Hint = "the light  intensity"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
       }
     }
     misc_teleporter_dest:form =

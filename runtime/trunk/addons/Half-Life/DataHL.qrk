@@ -6,6 +6,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.30  2008/05/13 01:22:10  cdunde
+//To fix broken light color selection.
+//
 //Revision 1.29  2008/03/28 19:05:51  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -459,9 +462,9 @@ QQRKSRC1
       }
       light:e =
       {
-        angle = "360"
-        origin = "0 0 0"
         _light = "255 255 255 300"
+        origin = "0 0 0"
+        angle = "360"
       }
     }
   }

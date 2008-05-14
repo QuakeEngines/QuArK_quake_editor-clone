@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.13  2008/03/28 19:06:17  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //Revision 1.12  2008/02/27 00:25:49 danielpharos
 //Fix the contextual help files not being found anymore
 //
@@ -343,7 +346,6 @@ QQRKSRC1
       {
         style = "Normal"
         _light = "255 255 255 300"
-        angle = "360"
         origin = "0 0 0"
       }
     }

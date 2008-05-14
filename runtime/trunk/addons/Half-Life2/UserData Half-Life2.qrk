@@ -540,9 +540,9 @@ QQRKSRC1
     {
       light:e =
       {
-        origin = "0 0 0"
-        _light = "255 255 255 300"
         fixedscale = "1"
+        _light = "255 255 255 300"
+        origin = "0 0 0"
       }
     }
     light_spot: =

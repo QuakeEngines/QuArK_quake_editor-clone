@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.23  2008/04/06 07:09:32  cdunde
+//To make this file consistent with other Quake 3 engine base games.
+//
 //Revision 1.22  2008/03/28 19:10:31  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -457,10 +460,9 @@ QQRKSRC1
       }
       light:e =
       {
-        _color = "1 1 1"
-        light = "300"
-        angle = "360"
         origin = "0 0 0"
+        light = "300"
+        _color = "1 1 1"
       }
     }
   }

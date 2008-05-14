@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:11:46  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -2022,11 +2025,17 @@ QQRKSRC1
      light.qtxfolder = {
        light:e =
        {
+         light = "300"
+         _color = "1 1 1"
+         angle = "360"
          origin = "0 0 0"
          ;desc = "Can't get "$22"on_style"$22" and "$22"off_style"$22" to work .." $0D "  "$22"and I don't know why Capteen!"$22""
        }
        light_ramp:e =
        {
+         light = "300"
+         _color = "1 1 1"
+         angle = "360"
          origin = "0 0 0"
        }
      }
@@ -8336,30 +8345,49 @@ QQRKSRC1
     }
     light:form =
     {
-     Help = "Y@hi ?or."
-     bbox = '-8 -8 -8 8 8 8 1'
-     _color: =
-        {Txt = "&" Hint = "RGB color of light (default 1 1 1)."
-       }
-     _color: = { Typ="L" Txt="&" Hint="Click here to pick the light color" }
-     _cone: =
-        {Txt = "&" Hint = "sets size of light cone for spotlights (default 10)."
-       }
-     color: =
-        {Txt = "&" Hint = "no hint yet1"
-       }
-     color: = { Typ="L" Txt="&" Hint="Click here to pick the light color" }
-     light: =
-        {Txt = "&" Hint = "light intensity value (default 300)."
-       }
+     Help = "invisible light source"
+     bbox = '-8 -8 -8 8 8 8'
+     spawnflags: =
+      {
+        Txt="&"
+        Typ="X1"
+        Cap="START_OFF"
+        Hint="light will spawn in the "$22"off"$22" state"
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "If targeted, will toggle between on and off."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Aim this at an info_null to make a spotlight."
+      }
+      light: =
+      {
+        Txt = "&"
+        Hint = "light value, default 300"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Hint = "RGB color of light (default 1 1 1)."
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
+      _cone: =
+      {
+        Txt = "&"
+        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
+      }
      onstyle: =
         {Txt = "&" Hint = "no hint yet1"
        }
-     spawnflags: =
-       {Txt="&"
-        Typ="X1"
-        Cap="START_OFF"
-        Hint="light will spawn in the "$22"off"$22" state"}
      speed: =
         {Txt = "&" Hint = "speed of movement"
        }
@@ -8401,26 +8429,45 @@ QQRKSRC1
     {
      Help = "No help yet"
      bbox = '-8 -8 -8 8 8 8 1'
-     light: =
-        {Txt = "&" Hint = "maximum light intensity value on which level 2.0 is based (default 300)."
-       }
+     spawnflags: =
+      {
+        Txt="&"
+        Typ="X1"
+        Cap="TOGGLE"
+        Hint="light source will alternately ramp up and ramp down each time it's triggered"
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "name used by trigger or script to activate this."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Aim this at an info_null to make a spotlight."
+      }
+      light: =
+      {
+        Txt = "&"
+        Hint = "maximum light intensity value on which level 2.0 is based (default 300)."
+      }
+      _color: =
+      {
+        Txt = "&"
+        Hint = "RGB color of light (default 1 1 1)."
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
      style: =
         {Txt = "&" Hint = "no hint yet1"
-       }
-     targetname: =
-        {Txt = "&" Hint = "name used by trigger or script to activate this."
-       }
-     _color: =
-        {Txt = "&" Hint = "RGB color of light (default 1 1 1)."
        }
      endlevel: =
         {Txt = "&" Hint = "value between 0 and 2.0 (default 0)."
        }
-     spawnflags: =
-       {Txt="&"
-        Typ="X1"
-        Cap="TOGGLE"
-        Hint="light source will alternately ramp up and ramp down each time it's triggered"}
      startlevel: =
         {Txt = "&" Hint = "value between 0 and 2.0 (default 1.0)."
        }

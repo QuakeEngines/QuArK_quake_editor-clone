@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2008/03/28 19:14:22  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //Revision 1.5  2008/02/27 00:21:34  danielpharos
 //Fix the contextual help files not being found anymore
 //
@@ -100,19 +103,19 @@ QQRKSRC1
       spawnflags = "8"
       Delete this to start fresh:g =
       {
-        light-Sky-West:e =
+        light:e =
         {
           origin = "-984.2 104 460"
           light = "600"
           _color = "1 1 1"
         }
-        light-Sky-Center:e =
+        light:e =
         {
           origin = "32.8 -4 398"
           light = "600"
           _color = "1 1 1"
         }
-        light-Sky-East:e =
+        light:e =
         {
           origin = "907.8 60 344"
           light = "600"
@@ -360,13 +363,13 @@ QQRKSRC1
             origin = "144 4 64"
             angle = "0"
           }
-          light- Player Start:e =
+          light:e =
           {
             origin = "-144 4 128"
             light = "300"
             _color = "1 1 1"
           }
-          light- Deathmatch:e =
+          light:e =
           {
             origin = "144 4 128"
             light = "300"

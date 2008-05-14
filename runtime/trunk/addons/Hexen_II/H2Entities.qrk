@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:08:14  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -354,53 +357,64 @@ QQRKSRC1
      Lights.qtxfolder = {
        light:e =
        {
-         origin = "0 0 0"
          ;desc = "Non-displayed fading light."
+         light = "300"
+         _color = "1 1 1"
+         angle = "360"
+         origin = "0 0 0"
        }
        light_flame_large_yellow:e =
        {
+         light = "200"
          origin = "0 0 0"
          ;desc = "Large yellow flame"
          angle = "360"
        }
        light_flame_small_yellow:e =
        {
+         light = "200"
          origin = "0 0 0"
          ;desc = "Small yellow flame ball"
          angle = "360"
        }
        light_gem:e =
        {
+         light = "200"
          origin = "0 0 0"
          ;desc = "A gem that displays light."
          angle = "360"
        }
        light_torch_castle:e =
        {
+         light = "200"
          origin = "0 0 0"
          ;desc = "The Castle style torch that displays light"
          angle = "360"
        }
        light_torch_eqypt:e =
        {
+         light = "200"
          origin = "0 0 0"
          ;desc = "An Egyptian style torch that displays light"
          angle = "360"
        }
        light_torch_meso:e =
        {
+         light = "200"
          origin = "0 0 0"
          ;desc = "The Meso style torch that displays light"
          angle = "360"
        }
        light_torch_rome:e =
        {
+         light = "200"
          origin = "0 0 0"
          ;desc = "The Roman style torch that displays light"
          angle = "360"
        }
        light_torch_small_walltorch:e =
        {
+         light = "200"
          origin = "0 0 0"
          ;desc = "Short wall torch"
          angle = "360"
@@ -3006,6 +3020,18 @@ QQRKSRC1
         Typ="X1"
         Cap="STARTLOW"
         Hint="light starts off"}
+
+      _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LN"
+        Hint = "Click here to pick the light color."
+      }
     }
     light_flame_large_yellow:form =
     {

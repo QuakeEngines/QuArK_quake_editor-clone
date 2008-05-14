@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2005/10/15 01:00:27  cdunde
+//To reinstate headers and history
+//
 //Revision 1.2  2001/03/20 21:55:32  decker_dk
 //Added log-header / misc.
 //
@@ -71,8 +74,9 @@ QQRKSRC1
     {
       light:e =
       {
-        origin = "0 0 0"
         _light = "255 255 255 300"
+        angle = "360"
+        origin = "0 0 0"
       }
     }
   }

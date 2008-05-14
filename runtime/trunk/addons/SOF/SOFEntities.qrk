@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:12:47  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -669,6 +672,12 @@ QQRKSRC1
       }
       light.qtxfolder =
       {
+        light:e =
+        {
+          _light = "255 255 255 300"
+          angle = "360"
+          origin = "0 0 0"
+        }
         light_generic_alley_wall_old:e =
         {
           origin = "0 0 0"
@@ -4813,10 +4822,16 @@ QQRKSRC1
         Txt = "&"
         Hint = "default value is 10 (used to set size of light for spotlights)"
       }
-      light: =
+      _light: =
       {
         Txt = "&"
-        Hint = "- default value is 300."
+        Hint = "light color (not the intensity, only the color)"
+      }
+      _light: =
+      {
+        Txt = "&"
+        Typ = "L 4"
+        Hint = "Click here to pick the light color."
       }
       style: =
       {

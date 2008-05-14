@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:08:11  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -600,84 +603,108 @@ QQRKSRC1
       {
         light:e =
         {
+          light = "300"
+          _color = "1 1 1"
           origin = "0 0 0"
           ;desc = "Light-source with no model"
         }
         light_buglight:e =
         {
+          light = "200"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
           ;desc = "A light shaped like a bug"
-          angle = "0"
         }
         light_chandelier1:e =
         {
+          light = "200"
+          _color = "1 1 1"
           origin = "0 0 0"
           ;desc = "A big gold chandelier for the great hall"
         }
         light_chandelier2:e =
         {
+          abslight = ""
+          light = "200"
+          _color = "1 1 1"
           origin = "0 0 0"
           ;desc = "A very heavy chandelier that doesn't have a skin yet."
-          abslight = ""
         }
         light_chandelier3:e =
         {
+          light = "200"
+          _color = "1 1 1"
           origin = "0 0 0"
           ;desc = "A  thin gold chandelier"
         }
         light_floortorch:e =
         {
+          light = "200"
+          _color = "1 1 1"
           origin = "0 0 0"
           ;desc = "A stand for a torch that sits on the floor."
-          _color = ""
         }
         light_gem2:e =
         {
+          light = "200"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
-          light = "300"
           ;desc = "A yellow gem in an octogonal frame"
-          angle = "0"
         }
         light_lantern1:e =
         {
+          light = "200"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
           ;desc = "lantern on a wooden arm"
-          angle = "0"
         }
         light_lantern2:e =
         {
+          light = "200"
+          _color = "1 1 1"
           origin = "0 0 0"
           ;desc = "Lanern on a chain"
         }
         light_lantern3:e =
         {
+          light = "200"
+          _color = "1 1 1"
           origin = "0 0 0"
           ;desc = "Ceiling lantern"
         }
         light_lantern4:e =
         {
+          light = "200"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
           ;desc = "Wall lantern"
-          _color = ""
-          angle = "0"
-          light = ""
         }
         light_lantern5:e =
         {
+          light = "200"
+          _color = "1 1 1"
           origin = "0 0 0"
           ;desc = "Lantern to place on a table"
         }
         light_torch1:e =
         {
+          light = "200"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
           ;desc = "Wall torch that uses a blue gem"
-          angle = "0"
         }
         light_walltorch:e =
         {
+          light = "200"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
           ;desc = "A torch that sticks out of a wall"
-          angle = "0"
         }
       }
       Furniture and Indoor Stuff.qtxfolder =
@@ -5523,7 +5550,7 @@ QQRKSRC1
          "   Default style is 0"$0D"   If targeted, will toggle between on and"
          " off"$0D"   Default _cone value is 10 (used to set size of light for"
          " spotlights)"
-        bbox = '-8 -8 -8 8 8 8 1'
+        bbox = '-8 -8 -8 8 8 8'
         HTML = "hr2/g_light.htm#light"
         _color: =
         {
@@ -5542,7 +5569,7 @@ QQRKSRC1
           Txt = "&"
           Hint = "Spread of spotlight cone in degrees"$0D"(Target an INFO_NULL)"
         }
-        angle: =
+        angles: =
         {
           Txt = "&"
           Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
@@ -5581,10 +5608,10 @@ QQRKSRC1
       light_buglight:form =
       {
         Help = "A light shaped like a bug"
-        bbox = '-7 -7 -7 7 7 25 1'
+        bbox = '-7 -7 -7 7 7 25'
         HTML = "hr2/g_light.htm#light_buglight"
         mdl = "models/objects/lights/bug/tris.fm"
-        angle: =
+        angles: =
         {
           Txt = "&"
           Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
@@ -5623,7 +5650,7 @@ QQRKSRC1
       light_chandelier1:form =
       {
         Help = "A big gold chandelier for the great hall"
-        bbox = '-36 -36 -43 34 34 43 1'
+        bbox = '-36 -36 -43 34 34 43'
         HTML = "hr2/g_light.htm#light_chandelier1"
         mdl = "models/objects/chandelier/chan1/tris.fm"
         spawnflags: =
@@ -5674,7 +5701,7 @@ QQRKSRC1
       light_chandelier2:form =
       {
         Help = "A very heavy chandelier that doesn't have a skin yet."
-        bbox = '-18 -18 -40 18 18 40 1'
+        bbox = '-18 -18 -40 18 18 40'
         HTML = "hr2/g_light.htm#light_chandelier2"
         mdl = "models/objects/chandelier/chan2/tris.fm"
         abslight: =
@@ -5737,7 +5764,7 @@ QQRKSRC1
       light_chandelier3:form =
       {
         Help = "A  thin gold chandelier"
-        bbox = '-34 -34 -80 34 34 0 1'
+        bbox = '-34 -34 -80 34 34 0'
         HTML = "hr2/g_light.htm#light_chandelier3"
         mdl = "models/objects/chandelier/chan3/tris.fm"
         _color: =
@@ -5774,7 +5801,7 @@ QQRKSRC1
       light_floortorch:form =
       {
         Help = "A stand for a torch that sits on the floor."
-        bbox = '-22 -22 -19 22 22 17 1'
+        bbox = '-22 -22 -19 22 22 17'
         HTML = "hr2/g_light.htm#light_floortorch"
         mdl = "models/objects/lights/floortorch/tris.fm"
         _color: =
@@ -5826,7 +5853,7 @@ QQRKSRC1
       light_gem2:form =
       {
         Help = "A yellow gem in an octogonal frame"
-        bbox = '-1 -6 -8 4 6 8 1'
+        bbox = '-1 -6 -8 4 6 8'
         HTML = "hr2/g_light.htm#light_gem2"
         mdl = "models/objects/lights/sinkcity/light-2/tris.fm"
         angle: =
@@ -5897,7 +5924,7 @@ QQRKSRC1
       light_lantern1:form =
       {
         Help = "lantern on a wooden arm"
-        bbox = '-28 -8 -22 4 8 22 1'
+        bbox = '-28 -8 -22 4 8 22'
         HTML = "hr2/g_light.htm#light_lantern1"
         mdl = "models/objects/lights/lantern-1/tris.fm"
         angle: =
@@ -5932,7 +5959,7 @@ QQRKSRC1
       light_lantern2:form =
       {
         Help = "Lanern on a chain"
-        bbox = '-6 -6 -24 6 6 40 1'
+        bbox = '-6 -6 -24 6 6 40'
         HTML = "hr2/g_light.htm#light_lantern2"
         mdl = "models/objects/lights/lantern-2/tris.fm"
         _color: =
@@ -5990,7 +6017,7 @@ QQRKSRC1
       light_lantern3:form =
       {
         Help = "Ceiling lantern"
-        bbox = '-6 -6 -12 6 6 11 1'
+        bbox = '-6 -6 -12 6 6 11'
         HTML = "hr2/g_light.htm#light_lantern3"
         mdl = "models/objects/lights/lantern-3/tris.fm"
         _color: =
@@ -6014,7 +6041,7 @@ QQRKSRC1
       light_lantern4:form =
       {
         Help = "Wall lantern"
-        bbox = '-18 -7 -7 7 7 14 1'
+        bbox = '-18 -7 -7 7 7 14'
         HTML = "hr2/g_light.htm#light_lantern4"
         mdl = "models/objects/lights/lantern-4/tris.fm"
         _color: =
@@ -6044,7 +6071,7 @@ QQRKSRC1
       light_lantern5:form =
       {
         Help = "Lantern to place on a table"
-        bbox = '-7 -7 -7 7 7 14 1'
+        bbox = '-7 -7 -7 7 7 14'
         HTML = "hr2/g_light.htm#light_lantern5"
         mdl = "models/objects/lights/lantern-4/tris.fm"
         _color: =
@@ -6102,7 +6129,7 @@ QQRKSRC1
       light_torch1:form =
       {
         Help = "Wall torch that uses a blue gem"
-        bbox = '-4 -6 -5 6 6 20 1'
+        bbox = '-4 -6 -5 6 6 20'
         HTML = "hr2/g_light.htm#light_torch1"
         mdl = "models/objects/lights/sinkcity/light-3/tris.fm"
         angle: =
@@ -6171,7 +6198,7 @@ QQRKSRC1
       light_walltorch:form =
       {
         Help = "A torch that sticks out of a wall"
-        bbox = '-16 -10 -12 10 10 12 1'
+        bbox = '-16 -10 -12 10 10 12'
         HTML = "hr2/g_light.htm#light_walltorch"
         mdl = "models/objects/lights/walltorch/tris.fm"
         angle: =
@@ -6236,7 +6263,7 @@ QQRKSRC1
       {
         Help = "Fires off sparks when used.."$0D"  use a second time to remove"
          " it"
-        bbox = '-4 -4 0 4 4 8 1'
+        bbox = '-4 -4 0 4 4 8'
         HTML = "hr2/g_misc.htm#misc_fire_sparker"
         targetname: =
         {

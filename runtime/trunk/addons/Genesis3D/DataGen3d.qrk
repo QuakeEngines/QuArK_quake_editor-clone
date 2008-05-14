@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2008/04/25 20:35:31  danielpharos
+//Removed rubbish copy-paste comment.
+//
 //Revision 1.9  2008/03/28 19:06:00  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -165,7 +168,8 @@ QQRKSRC1
       }
       light:e =
       {
-        light = "400"
+        light = "300"
+        _color = "1 1 1"
         angle = "360"
         origin = "0 0 0"
       }

@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:08:47  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -191,6 +194,8 @@ QQRKSRC1
         }
         light:e =
         {
+          _color = "1 1 1"
+          light = "300"
           angle = "360"
           origin = "0 0 0"
         }
@@ -1137,11 +1142,16 @@ QQRKSRC1
       Txt = "&"
       Hint = "The intensity of the light (default 300)."
       }
-      color: =
+      _color: =
+      {
+      Txt = "&"
+      Hint = "The color of the light."
+      }
+      _color: =
       {
       Txt = "&"
       Typ = "LN"
-      Hint = "The color of the light."
+      Hint = "Click here to pick the light color."
       }
       falloff: =
       {

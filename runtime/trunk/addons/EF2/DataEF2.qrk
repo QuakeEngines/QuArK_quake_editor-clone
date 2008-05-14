@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2008/03/28 19:04:51  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //Revision 1.9  2008/03/09 20:31:00  cdunde
 //Pulled entities out of the EF2 and FAKK2 game Data.qrk files.
 //Game addons should never dump anything into their Data.qrk files.
@@ -366,9 +369,9 @@ QQRKSRC1
       }
       light:e =
       {
-        _color = "1 1 1"
         light = "300"
-        angle = "360"
+        _color = "1 1 1"
+        angles = "0 0 0"
         origin = "0 0 0"
       }
     }

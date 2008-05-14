@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2008/04/24 09:37:51  cdunde
+//Minor improvements.
+//
 //Revision 1.3  2008/04/24 07:55:35  cdunde
 //Minor improvements.
 //
@@ -283,6 +286,8 @@ QQRKSRC1
       {
         light:e =
         {
+          _color = "1 1 1"
+          light = "300"
           angle = "360"
           origin = "0 0 0"
         }
@@ -4837,11 +4842,21 @@ QQRKSRC1
         cap = "LAAT_DOUBLE_QUADRATIC"
       }
       t_commonspecifics = !
+      light: =
+      {
+        txt = "&"
+        hint = "the light intensity"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "light color (not the intensity, only the color)"
+      }
       _color: =
       {
         txt = "&"
         Typ="LN"
-        hint = "choose lightstyle"
+        hint = "Click here to pick the light color."
       }
       style: =
       {

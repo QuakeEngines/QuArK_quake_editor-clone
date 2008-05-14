@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.408  2008/05/11 16:50:35  cdunde
+//Update for Warsow settings.
+//
 //Revision 1.407  2008/05/05 10:17:04  danielpharos
 //Disabled Online Update for now.
 //
@@ -8375,7 +8378,7 @@ QQRKSRC1
       Style = "3"
       UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
       UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
-      AutomaticInstall: = {Typ="X" Txt="Automatically update" Cap="Enabled" Hint = "Automatically download and isntall any updates available."}
+      AutomaticInstall: = {Typ="X" Txt="Automatically update" Cap="Enabled" Hint = "Automatically download and install any updates available."}
     }
     externaledit:incl = {
       Typ = "EP"

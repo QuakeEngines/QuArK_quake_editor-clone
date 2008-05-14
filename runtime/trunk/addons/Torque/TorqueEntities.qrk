@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:14:23  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -436,11 +439,17 @@ QQRKSRC1
     }
     light_omni:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
+      color: =
+      {
+        txt = "&"
+        hint = "Color (R G B)"
+      }
       color: =
       {
         txt = "&"
         Typ = "L[3]"
-        hint = "Color (R G B)"
+        hint = "Click here to pick the light color."
       }
       alarm_type: =
       {
@@ -463,6 +472,7 @@ QQRKSRC1
     }
     light_spot:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
       target: =
       {
         txt = "&"
@@ -471,8 +481,13 @@ QQRKSRC1
       color: =
       {
         txt = "&"
-        Typ = "L[3]"
         hint = "Color (R G B)"
+      }
+      color: =
+      {
+        txt = "&"
+        Typ = "L[3]"
+        hint = "Click here to pick the light color."
       }
       alarm_type: =
       {
@@ -505,6 +520,7 @@ QQRKSRC1
     }
     light_strobe:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
       name: =
       {
         txt = "&"
@@ -553,14 +569,24 @@ QQRKSRC1
       color1: =
       {
         txt = "&"
-        Typ = "L[3]"
         hint = "Color1 (R G B)"
+      }
+      color1: =
+      {
+        txt = "&"
+        Typ = "L[3]"
+        hint = "Click here to pick the light color."
+      }
+      color2: =
+      {
+        txt = "&"
+        hint = "Color2 (R G B)"
       }
       color2: =
       {
         txt = "&"
         Typ = "L[3]"
-        hint = "Color2 (R G B)"
+        hint = "Click here to pick the light color."
       }
       falloff1: =
       {
@@ -575,6 +601,7 @@ QQRKSRC1
     }
     light_pulse:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
       name: =
       {
         txt = "&"
@@ -605,14 +632,24 @@ QQRKSRC1
       color1: =
       {
         txt = "&"
-        Typ = "L[3]"
         hint = "Color1 (R G B)"
+      }
+      color1: =
+      {
+        txt = "&"
+        Typ = "L[3]"
+        hint = "Click here to pick the light color."
+      }
+      color2: =
+      {
+        txt = "&"
+        hint = "Color2 (R G B)"
       }
       color2: =
       {
         txt = "&"
         Typ = "L[3]"
-        hint = "Color2 (R G B)"
+        hint = "Click here to pick the light color."
       }
       falloff1: =
       {
@@ -627,6 +664,7 @@ QQRKSRC1
     }
     light_pulse2:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
       name: =
       {
         txt = "&"
@@ -649,14 +687,24 @@ QQRKSRC1
       color1: =
       {
         txt = "&"
-        Typ = "L[3]"
         hint = "Color1 (R G B)"
+      }
+      color1: =
+      {
+        txt = "&"
+        Typ = "L[3]"
+        hint = "Click here to pick the light color."
+      }
+      color2: =
+      {
+        txt = "&"
+        hint = "Color2 (R G B)"
       }
       color2: =
       {
         txt = "&"
         Typ = "L[3]"
-        hint = "Color2 (R G B)"
+        hint = "Click here to pick the light color."
       }
       falloff1: =
       {
@@ -691,6 +739,7 @@ QQRKSRC1
     }
     light_flicker:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
       name: =
       {
         txt = "&"
@@ -721,32 +770,57 @@ QQRKSRC1
       color1: =
       {
         txt = "&"
-        Typ = "L[3]"
         hint = "Color1 (R G B)"
+      }
+      color1: =
+      {
+        txt = "&"
+        Typ = "L[3]"
+        hint = "Click here to pick the light color."
+      }
+      color2: =
+      {
+        txt = "&"
+        hint = "Color2 (R G B)"
       }
       color2: =
       {
         txt = "&"
         Typ = "L[3]"
-        hint = "Color2 (R G B)"
+        hint = "Click here to pick the light color."
+      }
+      color3: =
+      {
+        txt = "&"
+        hint = "Color3 (R G B)"
       }
       color3: =
       {
         txt = "&"
         Typ = "L[3]"
-        hint = "Color3 (R G B)"
+        hint = "Click here to pick the light color."
+      }
+      color4: =
+      {
+        txt = "&"
+        hint = "Color4 (R G B)"
       }
       color4: =
       {
         txt = "&"
         Typ = "L[3]"
-        hint = "Color4 (R G B)"
+        hint = "Click here to pick the light color."
+      }
+      color5: =
+      {
+        txt = "&"
+        hint = "Color5 (R G B)"
       }
       color5: =
       {
         txt = "&"
         Typ = "L[3]"
-        hint = "Color5 (R G B)"
+        hint = "Click here to pick the light color."
       }
       falloff1: =
       {
@@ -761,6 +835,7 @@ QQRKSRC1
     }
     light_runway:form =
     {
+      bbox = '-8 -8 -8 8 8 8'
       name: =
       {
         txt = "&"
@@ -782,8 +857,13 @@ QQRKSRC1
       color: =
       {
         txt = "&"
-        Typ = "L[3]"
         hint = "Color (R G B)"
+      }
+      color: =
+      {
+        txt = "&"
+        Typ = "L[3]"
+        hint = "Click here to pick the light color."
       }
       spawnflags: =
       {

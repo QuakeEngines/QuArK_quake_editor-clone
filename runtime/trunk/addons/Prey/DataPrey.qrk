@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.3  2008/04/07 21:46:26  cdunde
+//Small correction.
+//
 //Revision 1.2  2008/03/28 19:08:48  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -328,6 +331,11 @@ QQRKSRC1
         light = "300"
         angle = "360"
         origin = "0 0 0"
+        break = "0"
+        count = "1"
+        health = "0"
+        levels = "1"
+        start_off = "0"
       }
     }
   }

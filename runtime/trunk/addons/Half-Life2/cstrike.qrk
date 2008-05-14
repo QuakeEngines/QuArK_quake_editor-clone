@@ -2,9 +2,10 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: cstrike.qrk
 
-// CS Source entities. updated july/11/2005 by cbxpm.
+// CS Source Entities. updated july/11/2005 by cbxpm.
 
 {
+  Description = "CS Source Entities"
   Toolbox Folders.qtx =
   {
     Toolbox = "New map items..."

@@ -46,8 +46,10 @@ QQRKSRC1
     {
       light:e =
       {
-        origin = "0 0 0"
         light = "300"
+        _color = "1 1 1"
+        angle = "360"
+        origin = "0 0 0"
       }
     }
   }

@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/03/11 22:24:10  cdunde
+//Update to add Specific include selectors and correct other stuff.
+//
 //Revision 1.1  2008/03/09 20:31:07  cdunde
 //Pulled entities out of the EF2 and FAKK2 game Data.qrk files.
 //Game addons should never dump anything into their Data.qrk files.
@@ -245,7 +248,10 @@ QQRKSRC1
         }
         light:e =
         {
-          angle = "360"
+          ;desc = "Light up the map."
+          light = "300"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
         }
         worldspawn:b =
@@ -1348,43 +1354,48 @@ QQRKSRC1
       no_entity_light: =
       {
         txt = "&"
-        hint = "- this light will not effect entities, just the world"
+        hint = "this light will not effect entities, just the world"
       }
       light: =
       {
         txt = "&"
-        hint = "- the intensity of the light, default 300"
+        hint = "the intensity of the light, default 300"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "light color (not the intensity, only the color)"
       }
       _color: =
       {
         txt = "&"
         Typ = "LN"
-        hint = "- the color of the light"
+        hint = "Click here to pick the light color."
       }
       falloff: =
       {
         txt = "&"
-        hint = "- if linear, specify the linear falloff (defaults to 1)"
+        hint = "if linear, specify the linear falloff (defaults to 1)"
       }
       radius: =
       {
         txt = "&"
-        hint = "- make this a spot light of the given radius"
+        hint = "make this a spot light of the given radius"
       }
       angles: =
       {
         txt = "&"
-        hint = "- make this a spot light centered on angles"
+        hint = "make this a spot light centered on angles"
       }
       spot_angle: =
       {
         txt = "&"
-        hint = "- if this is a spot light, what angle to use (default 45)"
+        hint = "if this is a spot light, what angle to use (default 45)"
       }
       entity_trace: =
       {
         txt = "&"
-        hint = "- trace between the entity and the light"
+        hint = "trace between the entity and the light"
       }
     }
     detail:form =

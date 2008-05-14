@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/04/23 20:51:45  cdunde
+//Setup for Warsow with .md3 model support.
+//
 //
 
 {
@@ -49,9 +52,10 @@ QQRKSRC1
     {
       light:e =
       {
-        origin = "0 0 0"
         light = "300"
         _color = "1 1 1"
+        angle = "360"
+        origin = "0 0 0"
       }
     }
     bezier: =

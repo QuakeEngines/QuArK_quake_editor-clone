@@ -4,17 +4,20 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:05:59  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
   QuArKProtected = "1"
-  Description = "Quake 1 Textures"
+  Description = "Genesis3D Textures"
 
   Textures.qtx =
   {
     ToolBox = "Texture Browser..."
-    Root = "Quake 1 Textures.qtxfolder"
-    Quake 1 Textures.qtxfolder =
+    Root = "Genesis3D Textures.qtxfolder"
+    Genesis3D Textures.qtxfolder =
     {
       Base.wad =        // ".wad" files ? Yes but it's only for the display
       {

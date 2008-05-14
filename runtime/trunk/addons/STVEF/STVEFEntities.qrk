@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2008/03/28 19:12:44  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //
 
 {
@@ -827,6 +830,8 @@ QQRKSRC1
       {
         light:e =
         {
+          _color = "1 1 1"
+          light = "300"
           angle = "360"
           origin = "0 0 0"
         }
@@ -9781,6 +9786,22 @@ QQRKSRC1
         cap = "noIncidence"
       }
       t_commonspecifics = !
+      light: =
+      {
+        txt = "&"
+        hint = "constantLight radius"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "Click here to pick the light color."
+        Typ = "LN"
+      }
       radius: =
       {
         txt = "&"
@@ -9790,17 +9811,6 @@ QQRKSRC1
       {
         txt = "&"
         hint = "multiplier for the light intensity - does not affect size"
-      }
-      _color: =
-      {
-        txt = "&"
-        hint = "constantLight color"
-        Typ = "LN"
-      }
-      light: =
-      {
-        txt = "&"
-        hint = "constantLight radius"
       }
     }
 
