@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2008/02/23 20:22:20  danielpharos
+Small changes to Python loading and unloading
+
 Revision 1.52  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -380,7 +383,7 @@ begin
      B:=PGameBuffer(FreeGBList[I]);
 {$IFDEF Debug}
      if B^.RefCount<>0 then
-      Raise InternalE('SizeDownGameFiles');
+      Raise InternalE('ClearGBList');
 {$ENDIF}
      DeleteObject(B^.Palette);
      DeleteObject(B^.PaletteReelle);
