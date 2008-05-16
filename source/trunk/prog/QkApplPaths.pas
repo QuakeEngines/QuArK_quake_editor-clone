@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/02/23 19:25:21  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.9  2007/03/10 21:56:10  danielpharos
 Fixed a backslash-linux problem.
 
@@ -56,7 +59,7 @@ unit QkApplPaths;
 interface
 
 type
-  TPathType = (
+  TQPathType = (
       pQuArK, pQuArKAddon, pQuArKGameAddon, pQuArKDll, pQuArKHelp,  //QuArK's own paths
       pUserData, pUserGameData  //The user paths
     );
@@ -87,7 +90,7 @@ type
 function ConvertPath(const S: string): string;
 function AppendFileToPath(Path, FileName: String) : String;
 procedure SetApplicationPath(const a_Path: String = '');
-function GetQPath(const PathToGet : TPathType) : String;
+function GetQPath(const PathToGet : TQPathType) : String;
 
  { ------------------- }
 
@@ -145,7 +148,7 @@ begin
   ApplicationPath := IncludeTrailingPathDelimiter(ApplicationPath);
 end;
 
-function GetQPath(const PathToGet : TPathType) : String;
+function GetQPath(const PathToGet : TQPathType) : String;
   function UnderscoredGamename : String;
   begin
     { If game-name contains spaces, convert them to underscores. }
