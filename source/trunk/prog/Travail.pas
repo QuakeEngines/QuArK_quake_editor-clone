@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2007/11/09 11:17:34  danielpharos
+Made the progress-indicator topmost, and changed some weird conversions.
+
 Revision 1.8  2005/09/28 10:48:32  peter-b
 Revert removal of Log and Header keywords
 
@@ -224,6 +227,7 @@ begin
           PositionInt:=nPos;
           ProgressBar1.Position:=nPos;
           Label1.Caption:=IntToStr(nPos)+'%';
+          BringToFront;
           Update;
         end;
       end;
