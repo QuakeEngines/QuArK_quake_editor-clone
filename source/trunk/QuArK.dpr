@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2008/05/01 12:57:40  danielpharos
+Moved BrowseForFolder to a better place.
+
 Revision 1.49  2008/02/03 13:12:46  danielpharos
 Update for the AutoUpdater. Beginning of the install-window.
 
@@ -305,14 +308,14 @@ uses
   Quarkx in 'Python\Quarkx.pas';
 
 
-{DanielPharos: Set the support-for-larger-than-2GB-flag, so we can use up to 4 GB!}
+(*DanielPharos: Set the support-for-larger-than-2GB-flag, so we can use up to 4 GB!*)
 {.$IFDEF Delphi7orNewerCompiler}
   {.$SetPEFlags $20}
 {.$ENDIF}
 {$R *.RES}
 
 begin
-  {MemChk;}     {Enable for MemCheck}
+  (*MemChk;*)     (*Enable for MemCheck*)
   Application.Initialize;
   Application.Title:='Quake Army Knife';
   Application.CreateForm(TForm1, Form1);
