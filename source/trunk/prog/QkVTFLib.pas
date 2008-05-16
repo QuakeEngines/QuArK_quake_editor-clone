@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2007/08/15 16:28:08  danielpharos
+HUGE update to HL2: Took out some code that's now not needed anymore.
+
 Revision 1.16  2007/08/10 12:23:38  danielpharos
 Don't call SetupSubSet so often!
 
@@ -406,7 +409,7 @@ var
 
 implementation
 
-uses Setup, Quarkx, Logging;
+uses Setup, Quarkx, Logging, QkApplPaths;
 
 var
   TimesLoaded: Integer;
@@ -434,7 +437,7 @@ begin
 
     if HVTFLib = 0 then
     begin
-      HVTFLib := LoadLibrary('dlls/VTFLib.dll');
+      HVTFLib := LoadLibrary(PChar(GetQPath(pQuArKDll)+'VTFLib.dll'));
       if HVTFLib = 0 then
       begin
         LogError('Unable to load dlls/VTFLib.dll');

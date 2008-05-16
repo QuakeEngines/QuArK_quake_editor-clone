@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2008/02/23 20:22:20  danielpharos
+Small changes to Python loading and unloading
+
 Revision 1.26  2007/12/14 11:33:05  danielpharos
 Fix a double Python library loading bug introduced in 1.25
 
@@ -617,7 +620,7 @@ begin
   begin
     PythonDll:='python.dll';
 
-    PythonLib:=LoadLibrary(PChar('dlls/'+PythonDll));
+    PythonLib:=LoadLibrary(PChar(GetQPath(pQuArKDll)+PythonDll));
     if PythonLib=0 then
     begin
       //If the PythonDLL was not found in the dlls-dir,

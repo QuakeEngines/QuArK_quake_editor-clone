@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2008/02/23 19:25:20  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.24  2007/12/19 13:56:35  danielpharos
 Some changes to process-detection: Should work on Windows NT4 now too, and made the Steam executable filename configurable (but hidden).
 
@@ -375,21 +378,21 @@ begin
   begin
     if FileExists(QSASFile) = false then
     begin
-      if FileExists('dlls/QuArKSAS.exe') = false then
+      if FileExists(GetQPath(pQuArKDll)+'QuArKSAS.exe') = false then
         Fatal('Unable to extract file from Steam. dlls/QuArKSAS.exe not found.');
-      if CopyFile(PChar('dlls/QuArKSAS.exe'), PChar(QSASFile), true) = false then
+      if CopyFile(PChar(GetQPath(pQuArKDll)+'QuArKSAS.exe'), PChar(QSASFile), true) = false then
         Fatal('Unable to extract file from Steam. Call to CopyFile failed.');
     end
     else
     begin
       //Check version!
-      QSASMd5Hash:=Md5GetFileHash('dlls/QuArKSAS.exe');
+      QSASMd5Hash:=Md5GetFileHash(GetQPath(pQuArKDll)+'QuArKSAS.exe');
       CurQSASMd5Hash:=Md5GetFileHash(QSASFile);
       if QSASMd5Hash<>CurQSASMd5Hash then
       begin
         //Files do not match. The one in dlls is probably the most current one,
         //so let's update the Steam one.
-        if CopyFile(PChar('dlls/QuArKSAS.exe'), PChar(QSASFile), false) = false then
+        if CopyFile(PChar(GetQPath(pQuArKDll)+'QuArKSAS.exe'), PChar(QSASFile), false) = false then
           Fatal('Unable to extract file from Steam. Call to CopyFile failed.');
       end;
     end;

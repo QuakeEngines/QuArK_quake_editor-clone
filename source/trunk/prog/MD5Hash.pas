@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2007/12/19 12:41:26  danielpharos
+Constantified some variables
+
 Revision 1.2  2007/11/21 18:46:14  danielpharos
 Fixed a typo and removed a wrong comment.
 
@@ -46,7 +49,7 @@ function Md5GetRandomHash: string;
 
 implementation
 
-uses Setup, Quarkx, Logging;
+uses Setup, Quarkx, Logging, QkApplPaths;
 
 var
   GetFileMd5: function(szFileName: LPSTR): LPSTR; cdecl;
@@ -79,7 +82,7 @@ begin
 
     if (HMd5Hash = 0) then
     begin
-      HMd5Hash := LoadLibrary('dlls/md5dll.dll');
+      HMd5Hash := LoadLibrary(PChar(GetQPath(pQuArKDll)+'md5dll.dll'));
       if HMd5Hash = 0 then
       begin
         LogError('Unable to load dlls/md5dll.dll');

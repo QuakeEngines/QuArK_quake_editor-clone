@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2007/08/14 16:32:59  danielpharos
+HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
+
 Revision 1.15  2007/03/13 18:59:25  danielpharos
 Changed the interface to the Steam dll-files. Should prevent QuArK from crashing on HL2 files.
 
@@ -105,7 +108,7 @@ type
 
 implementation
 
-uses Quarkx, PyObjects, Game, QkObjectClassList,Logging;
+uses Quarkx, PyObjects, Game, QkObjectClassList, Logging, QkApplPaths;
 
 const RequiredGCFAPI=1;
 var
@@ -153,7 +156,7 @@ procedure initdll;
 begin
   if Hgcfwrap = 0 then
   begin
-    Hgcfwrap := LoadLibrary('dlls/QuArKGCF.dll');
+    Hgcfwrap := LoadLibrary(PChar(GetQPath(pQuArKDll)+'QuArKGCF.dll'));
     if Hgcfwrap = 0 then
       Fatal('Unable to load dlls/QuArKGCF.dll')
     else
