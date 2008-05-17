@@ -7,6 +7,7 @@
 import string, htmlentitydefs, time, os, sys
 
 EXTENSION = ".txt"
+OutputPath = "output"
 
 
 #
@@ -45,12 +46,14 @@ def path2html(path):
 
 def climbpath(curpath, relpath):
     if relpath[:3] == "../" :
-       return climbpath(curpath[:-1], relpath[3:])
+        return climbpath(curpath[:-1], relpath[3:])
     else:
-#      print 'CURPATH ' + `curpath`
-       newpath = string.join(curpath, '/') + relpath
-#      print 'NEWPATH ' + `newpath`
-       return newpath
+        if verboseMode:
+            print 'CURPATH ' + `curpath`
+        newpath = string.join(curpath, '/') + relpath
+        if verboseMode:
+            print 'NEWPATH ' + `newpath`
+        return newpath
 
 
 def relpath(curpath, relpath):
@@ -63,7 +66,8 @@ def relpath(curpath, relpath):
        return climbpath(track[:-2], relpath[2:])
 
 def findref(root, path, name, fkw, extraargs):
-#   print 'FKW: ' + `fkw["path"]`
+    if verboseMode:
+        print 'FKW: ' + `fkw["path"]`
 
 #    def ref(refnormal, refwithname, kw, name=name, extraargs):
     def ref(refnormal, refwithname, kw, name=name):
@@ -74,8 +78,9 @@ def findref(root, path, name, fkw, extraargs):
             return refwithname % kw
 
     path = relpath(fkw["path"], path)
-#   print 'PATH: ' + `path`
-#   print 'name: ' + `name`
+    if verboseMode:
+        print 'PATH: ' + `path`
+        print 'name: ' + `name`
     path0 = path
     path = string.split(path, "/")
     path1 = ""
@@ -114,7 +119,7 @@ def procpic(kw, path, extraargs):  #tiglari
         data = open(kw["path"]+path, "rb").read()
     except:
         raise "open-error for file \"%s\"" % (kw["path"]+path)
-    f = open("output/"+picrl, "wb")
+    f = open(OutputPath+"/"+picrl, "wb")
     f.write(data)
     f.close()
 #    kw["forgotten"].remove(path)
@@ -123,7 +128,7 @@ def procpic(kw, path, extraargs):  #tiglari
 def procrsc(kw, path):  #tiglari
     rscrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
     data = open(kw["path"]+path, "rb").read()
-    f = open("output/"+rscrl, "wb")
+    f = open(OutputPath+"/"+rscrl, "wb")
     f.write(data)
     f.close()
 #    kw["forgotten"].remove(path)
@@ -132,9 +137,9 @@ def procrsc(kw, path):  #tiglari
 def proczip(kw, path):  #tiglari
     if localMode:
         data = open("zips/"+path, "rb").read()
-        if not os.path.exists("output/zips"):
-            os.mkdir("output/zips")
-        f = open("output/zips/"+path, "wb")
+        if not os.path.exists(OutputPath+"/zips"):
+            os.mkdir(OutputPath+"/zips")
+        f = open(OutputPath+"/zips/"+path, "wb")
         f.write(data)
         f.close()
         return '<a href="%s">%s</a>' % (path, path)
@@ -346,7 +351,7 @@ def parse(file):
             kw[key] = value
         else:
             kw[key] = data+"\n"+value
-    return kw, f.readlines(), os.stat(file)[8] # Decker - changed from [9] to [8] to get the right file-modification-date on Win2K
+    return kw, f.readlines(), os.stat(file).st_mtime
 
 class Folder:
 
@@ -354,16 +359,19 @@ class Folder:
         self.prev = prev
         self.parents = parents
         self.path = path
-#        print 'Path: '+self.path
+        if verboseMode:
+            print 'Path: '+self.path
         self.classif = classif
         if classif: # Decker
             shortname = string.join(map(lambda s: s+".", classif), "") + "&nbsp;"
         else: # Decker
             shortname = "" # Decker - Make the 'index.html' title _not_ prefixed with a single space
-#       print shortname,
+        if verboseMode:
+            print shortname,
         self.kw, self.text, lastmodifydate = parse(self.path + "index" + EXTENSION)
         s = self.kw["title"]
-#       print s
+        if verboseMode:
+            print s
         self.kw["htmltitle"] = text2html_nbsp(s)
         self.kw["htmltitleshort"] = text2html_nbsp(s, 25) # Decker - Try to prevent text-wrapping, so make it max 25 characters long
         self.kw["classif"] = shortname
@@ -384,7 +392,7 @@ class Folder:
         self.forgotten = map(string.lower, os.listdir("./" + self.path))
         self.forgotten.remove("index" + EXTENSION)
         self.kw["forgotten"] = self.forgotten
-        self.kw["next"]=""
+        self.kw["next"] = ""
         self.kw["nextfooter"] = ""
         htmlpath = path2html(path)
         previous = None
@@ -436,7 +444,8 @@ class Folder:
             folder.navigation()
 
     def writefiles(self, root, filewriter):
-#       print self.kw["htmlfile"], "  [%s]" % self.kw["title"]
+        if verboseMode:
+            print 'writing file: ' + self.kw["htmlfile"], "  [%s]" % self.kw["title"]
         filewriter(self.kw["htmlfile"], self.makefile(root))
         for folder in self.folders:
             folder.writefiles(root, filewriter)
@@ -507,7 +516,7 @@ class Folder:
 
     def viewforgotten(self):
         for s in self.forgotten:
-            if s[-1:]!="~" and s!="cvs" and string.find(s,'.png')==-1 and string.find(s,'.jpg')==-1 and string.find(s,'.gif')==-1:
+            if s[-1:]!="~" and s!="cvs"  and string.find(s,'.png')==-1 and string.find(s,'.jpg')==-1 and string.find(s,'.gif')==-1:
                 print "*** NOTE: file '%s' not found in index" % (self.path+s)
         for folder in self.folders:
             folder.viewforgotten()
@@ -515,41 +524,53 @@ class Folder:
 
 def defaultwriter(filename, data, writemode="w"):
     # write the target file
-    f = open("output/"+filename, writemode)
+    f = open(OutputPath+"/"+filename, writemode)
     f.writelines(data)
     f.close()
 
 def run(filewriter):
+    def printline(text):
+        if len(text)>77-3-1:
+            print text
+        else:
+            print "---" + text + "-"*(80-len(text)-3-1)
     # load format file
-    execfile("format"+EXTENSION, globals(), globals())
+    execfile("format.py", globals(), globals())
     # recursively load everything in memory
+    printline("FINDING ALL FILES")
     root = Folder("", (), ())
-    print "-"*50
     # recursively set navigation links
+    printline("SETTING UP NAVIGATION")
     root.navigation() # Decker
-    print "-"*50
+    
     # recursively write everything to disk
+    printline("WRITING FILES TO DISK")
     root.writefiles(root, filewriter)
-    print "-"*50
     for filename in string.split(root.kw.get("extrafiles_text", "")):
         filewriter(filename, [open(filename, "r").read()])
     for filename in string.split(root.kw.get("extrafiles_binary", "")):
         filewriter(filename, [open(filename, "rb").read()], "wb")
-    print "-"*50
+    printline("PRINTING FORGOTTEN FILES")
     root.forgotten = []
     root.viewforgotten()
 
 localMode=0
+verboseMode=0
 for flag in sys.argv:
     if flag=='-local':
         localMode=1
-if not os.path.exists('output'):
-    os.mkdir('output')
+    if flag=='-verbose':
+        verboseMode=1
+if not os.path.exists(OutputPath):
+    os.mkdir(OutputPath)
 
 run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.20  2003/07/09 21:47:45  cdunde
+# To correct case setting of web page links.
+#
 # Revision 1.19  2003/01/02 06:36:32  rowdy
 # do not warn about pictures which are not in the index
 #
