@@ -6,7 +6,7 @@ Map compiling is the process of translating a map you made in the editor into so
 whatever the game is). This is what occurs in the black window with scrolling text. The map compilers are programs written by
 the authors of the game (e.g. id Software) and not by the QuArK developers, so our knowledge about them is limited. (These
 tools are found in the "Build Pack" corresponding to your game; see the
-<a href="http://www.planetquake.com/quark/download.shtml">download page</a> on the web site.)
+<a href="http://www.planetquake.com/quark/download.php3">download page</a> on the web site.)
 
 There are tons of problems that can occur at map compiling time. You will often get a cryptic error message at the bottom of
 the black window. This is 99% of the time not related to QuArK itself; either you made an "error" in your map, or you ran into
