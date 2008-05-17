@@ -10,7 +10,7 @@ $Id$
   ####  ####   ####   #### ####    #### ####         ####   ####
    ########     ########## ####    #### ####         ####    ####
        #####
-        #####    Quake Army Knife 6.4 Infobase Readme
+        #####    Quake Army Knife 6.6 Infobase Readme
 
 
 The Infobase is the central repository for the QuArK documentation,
@@ -27,5 +27,6 @@ build.py -local` in order to have the examples files locally
 available.
 
 Should you not wish to have to compile the Infobase yourself, you can
-view it online at http://quark.sf.net/infobase/ or you can download a
-compiled version as an archive from http://quark.sf.net/.
+view it online at http://quark.planetquake.gamespy.com/infobase/ or
+you can download a compiled version as an archive from
+http://quark.planetquake.gamespy.com/download.php3#help.
