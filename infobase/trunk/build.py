@@ -93,9 +93,9 @@ def findref(root, path, name, fkw, extraargs):
                 break
         else:
             if len(path) == 1:
-                for kw, text in root.files:
-                    if kw["hrefaname"] == path[0]:
-                        return ref(REFFILE, REFFILE_NAME, kw)
+                for subfiles in root.files:
+                    if subfiles.kw["hrefaname"] == path[0]:
+                        return ref(REFFILE, REFFILE_NAME, subfiles.kw)
             raise "Reference not found to " + path0 + " in " + fkw["htmlfile"]
     return ref(REFDIR, REFDIR_NAME, root.kw)
 
@@ -155,7 +155,7 @@ def procact(kw, actionstring):
     return ACT_HTML % actionstring
 
 
-def processtext(root, text, data, kw):
+def processtext(root, self, data):
 
     def perform_tag_action(tag, line, flags, root, kw):
 
@@ -269,7 +269,7 @@ def processtext(root, text, data, kw):
     flags["preformatmode"] = 0
     flags["inhtmlcomment"] = 0
 
-    for line in text:
+    for line in self.text:
         correctedline = ""
         trimmedline = string.strip(line)
         if not trimmedline:
@@ -310,13 +310,13 @@ def processtext(root, text, data, kw):
                             endchar_tag_found = string.find(line, ">")
                             if endchar_tag_found == -1:
                                 # there must exist an endchar_tag on the same line!
-                                raise "'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], kw["title"])
+                                raise "'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], self.kw["title"])
                             else:
                                 tag = (line[:endchar_tag_found+1])
                                 if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html"):
                                     # do now allow these tags anymore!
-                                    raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, kw["title"])
-                                correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, kw)
+                                    raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, self.kw["title"])
+                                correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, self.kw)
 
                         correctedline = correctedline + correctedappend
 
@@ -337,7 +337,7 @@ def parse(file):
     try:
         f = open(file, "r")
     except:
-        raise "File missing: ", file
+        raise "File missing: %s" % file
     try:
         kw = { }
         # Read the beginning non-empty lines, which should contain "key: value"'s
@@ -361,8 +361,12 @@ def parse(file):
         f.close()
     return kw, restdata, os.stat(file).st_mtime
 
-class Folder:
+class File:
+    def __init__(self, filename):
+        self.filename = filename
+        self.kw, self.text, self.lastmodifydate = parse(filename)
 
+class Folder:
     def __init__(self, path, classif, parents, prev=None):
         self.prev = prev
         self.parents = parents
@@ -412,14 +416,14 @@ class Folder:
             previous = folder
         self.files = []
         for filename in string.split(self.kw.get("desc", "")):
-            kw, text, lastmodifydate1 = parse(self.path + filename + EXTENSION)
-            if lastmodifydate1 > lastmodifydate:
-                lastmodifydate = lastmodifydate1
-            kw["htmlfile"] = shortname
-            kw["hrefaname"] = filename
-            kw["updateday"] = time.strftime("%d %b %Y", time.localtime(lastmodifydate1))
-            kw["path"] = path  # tiglari
-            self.files.append((kw, text))
+            file = File(self.path + filename + EXTENSION)
+            if file.lastmodifydate > lastmodifydate:
+                lastmodifydate = file.lastmodifydate
+            file.kw["htmlfile"] = shortname
+            file.kw["hrefaname"] = filename
+            file.kw["updateday"] = time.strftime("%d %b %Y", time.localtime(file.lastmodifydate))
+            file.kw["path"] = path  # tiglari         @: Gotta go away!
+            self.files.append(file)  #@(kw, text)
             self.forgotten.remove(filename + EXTENSION)
         self.lastmodifydate = lastmodifydate
         self.kw["updateday"] = time.strftime("%d %b %Y", time.localtime(lastmodifydate))
@@ -459,7 +463,7 @@ class Folder:
 
     def makefile(self, root):
         data = [ HEADER_BEGIN % self.kw ]
-        processtext(root, self.text, data, self.kw)
+        processtext(root, self, data)
         data.append(HEADER_END)
         if self.folders:
             data.append(SUBDIR_BEGIN % self.kw)
@@ -474,7 +478,7 @@ class Folder:
                     if len(folder.files) < 11:
                         data.append(SUBFILES_BEGIN % folder.kw)
                         for subfiles in folder.files:
-                            data.append(SUBFILES_ITEM % subfiles[0])
+                            data.append(SUBFILES_ITEM % subfiles.kw)
                         data.append(SUBFILES_END % folder.kw)
                     else:
                         # If more than 10 files, put into two columns
@@ -486,7 +490,7 @@ class Folder:
                                 data.append(SUBFILES_END % folder.kw)
                                 data.append(SUBFILES_TABLEMIDDLE);
                                 data.append(SUBFILES_BEGIN % folder.kw)
-                            data.append(SUBFILES_ITEM % subfiles[0])
+                            data.append(SUBFILES_ITEM % subfiles.kw)
                             cnt = cnt + 1
                         data.append(SUBFILES_END % folder.kw)
                         data.append(SUBFILES_TABLEEND);
@@ -495,28 +499,28 @@ class Folder:
             data.append(FILES_BEGIN % self.kw)
             if len(self.files) < 11:
                 data.append(FILES_ITEMBEGIN % self.kw)
-                for kw, text in self.files:
-                    data.append(FILES_ITEM % kw)
+                for subfiles in self.files:
+                    data.append(FILES_ITEM % subfiles.kw)
                 data.append(FILES_ITEMEND % self.kw)
             else:
                 # If more than 10 files, put into two columns
                 data.append(SUBFILES_TABLEBEGIN);
                 data.append(FILES_ITEMBEGIN % self.kw)
                 cnt = 0
-                for kw, text in self.files:
+                for subfiles in self.files:
                     if cnt == ((len(self.files)+1) / 2):
                         data.append(FILES_ITEMEND % self.kw)
                         data.append(SUBFILES_TABLEMIDDLE);
                         data.append(FILES_ITEMBEGIN % self.kw)
-                    data.append(FILES_ITEM % kw)
+                    data.append(FILES_ITEM % subfiles.kw)
                     cnt = cnt + 1
                 data.append(FILES_ITEMEND % self.kw)
                 data.append(SUBFILES_TABLEEND);
             data.append(FILES_MIDDLE % self.kw)
-            for kw, text in self.files:
-                data.append(FILE_BEGIN % kw)
-                processtext(root, text, data, kw)
-                data.append(FILE_END % kw)
+            for subfiles in self.files:
+                data.append(FILE_BEGIN % subfiles.kw)
+                processtext(root, subfiles, data)
+                data.append(FILE_END % subfiles.kw)
             data.append(FILES_END % self.kw)
         data.append(FOOTER % self.kw)
         return data
@@ -575,6 +579,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.22  2008/05/18 12:17:33  danielpharos
+# Nicely close file handle after parsing the file + possibly faster keyword-parsing
+#
 # Revision 1.21  2008/05/17 22:22:21  danielpharos
 # Small internal changes.
 #
