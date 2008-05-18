@@ -122,7 +122,7 @@ def procpic(kw, path, extraargs):  #tiglari
     f = open(OutputPath+"/"+picrl, "wb")
     f.write(data)
     f.close()
-#    kw["forgotten"].remove(path)
+#    self.forgotten.remove(path)
     return img
 
 def procrsc(kw, path):  #tiglari
@@ -131,10 +131,11 @@ def procrsc(kw, path):  #tiglari
     f = open(OutputPath+"/"+rscrl, "wb")
     f.write(data)
     f.close()
-#    kw["forgotten"].remove(path)
+#    self.forgotten.remove(path)
     return '"%s"' % rscrl
 
 def proczip(kw, path):  #tiglari
+#    self.forgotten.remove(path)
     if localMode:
         data = open("zips/"+path, "rb").read()
         if not os.path.exists(OutputPath+"/zips"):
@@ -336,22 +337,29 @@ def parse(file):
     try:
         f = open(file, "r")
     except:
-        raise "File missing:", file
-    kw = { }
-    # Read the beginning non-empty lines, which should contain "key: value"'s
-    while 1:
-        line = string.strip(f.readline())
-        if not line: # empty line found, stop reading for "key: value"'s
-            break
-        key = string.split(line, ":")[0]
-        value = string.strip(line[len(key)+1:])
-        try:
-            data = kw[key]
-        except:
-            kw[key] = value
-        else:
-            kw[key] = data+"\n"+value
-    return kw, f.readlines(), os.stat(file).st_mtime
+        raise "File missing: ", file
+    try:
+        kw = { }
+        # Read the beginning non-empty lines, which should contain "key: value"'s
+        while 1:
+            line = string.strip(f.readline())
+            if not line: # empty line found, stop reading for "key: value"'s
+                break
+            keysplit = line.find(":")
+            if keysplit == -1: # not a valid keypair; we're probably done
+                break
+            key = string.strip(line[:keysplit])
+            value = string.strip(line[keysplit+1:])
+            try:
+                data = kw[key]
+            except KeyError:
+                kw[key] = value
+            else:
+                kw[key] = data+"\n"+value
+        restdata = f.readlines()
+    finally:
+        f.close()
+    return kw, restdata, os.stat(file).st_mtime
 
 class Folder:
 
@@ -391,7 +399,6 @@ class Folder:
         self.folders = []
         self.forgotten = map(string.lower, os.listdir("./" + self.path))
         self.forgotten.remove("index" + EXTENSION)
-        self.kw["forgotten"] = self.forgotten
         self.kw["next"] = ""
         self.kw["nextfooter"] = ""
         htmlpath = path2html(path)
@@ -516,7 +523,7 @@ class Folder:
 
     def viewforgotten(self):
         for s in self.forgotten:
-            if s[-1:]!="~" and s!="cvs"  and string.find(s,'.png')==-1 and string.find(s,'.jpg')==-1 and string.find(s,'.gif')==-1:
+            if s[-1:]!="~" and s!="cvs" and string.find(s,'.png')==-1 and string.find(s,'.jpg')==-1 and string.find(s,'.gif')==-1:
                 print "*** NOTE: file '%s' not found in index" % (self.path+s)
         for folder in self.folders:
             folder.viewforgotten()
@@ -568,6 +575,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.21  2008/05/17 22:22:21  danielpharos
+# Small internal changes.
+#
 # Revision 1.20  2003/07/09 21:47:45  cdunde
 # To correct case setting of web page links.
 #
