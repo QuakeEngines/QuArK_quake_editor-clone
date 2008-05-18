@@ -313,11 +313,10 @@ def processtext(root, self, data):
                                 raise "'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], self.kw["title"])
                             else:
                                 tag = (line[:endchar_tag_found+1])
-                                if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html"):
-                                    # do now allow these tags anymore!
+                                if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html") or (tag[:6] == "</html"):
+                                    # do not allow these tags!
                                     raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, self.kw["title"])
                                 correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, self.kw)
-
                         correctedline = correctedline + correctedappend
 
             if flags["prevlineempty"] == 1:
@@ -352,7 +351,7 @@ def parse(file):
             value = string.strip(line[keysplit+1:])
             try:
                 data = kw[key]
-            except KeyError:
+            except (KeyError):
                 kw[key] = value
             else:
                 kw[key] = data+"\n"+value
@@ -579,6 +578,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.23  2008/05/18 12:44:59  danielpharos
+# Made a class out of files to make it all more readable
+#
 # Revision 1.22  2008/05/18 12:17:33  danielpharos
 # Nicely close file handle after parsing the file + possibly faster keyword-parsing
 #
