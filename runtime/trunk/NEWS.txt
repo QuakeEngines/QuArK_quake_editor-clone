@@ -15,6 +15,10 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde]: Fixed "Color Selector Dialog" to update correctly when needed.
+
+* [cdunde]: Fixed the loss of the model editor causing the Skin-view to not work properly.
+
 6.6.0 Beta 1
 ============
 
