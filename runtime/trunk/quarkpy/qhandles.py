@@ -936,6 +936,9 @@ class RedImageDragObject(DragObject):
         else:
             quarkx.clickform = view.owner  # Rowdys -important, gets the editor
             editor = mapeditor()
+            if editor is None:
+                import mdleditor
+                editor = mdleditor.mdleditor
         self.editor = editor
 ## the lines above where added for the Terrain Generator
 
@@ -957,7 +960,6 @@ class RedImageDragObject(DragObject):
        ### This is for the Model Editor Skin-view RedImageDragObject use only.
             try:
                 if self.view.info["viewname"] == "skinview":
-                    import mdlhandles
                     if isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle):
                         ### To stop the Model Editor from drawing incorrect component image in Skin-view.
                         pass
@@ -2161,6 +2163,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.70  2008/05/01 15:38:16  danielpharos
+#Don't overwrite self.editor
+#
 #Revision 1.69  2008/02/16 09:12:20  cdunde
 #To stop error message.
 #
