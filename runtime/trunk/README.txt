@@ -10,7 +10,7 @@ $Id$
   ####  ####   ####   #### ####    #### ####         ####   ####
    ########     ########## ####    #### ####         ####    ####
        #####
-        #####    Quake Army Knife 6.5 Readme
+        #####    Quake Army Knife Readme
 
 
 Contents
