@@ -573,13 +573,21 @@ class ModelLayout(BaseLayout):
 
         else:
             comp.currentskin = savedskins[self.editor.Root.currentcomponent.shortname]
-
-    # This SHOULD only allow the dialog to update when it's open already but nothing works right!
-    #    print "mdlmgr line 573 findtargetdlg", self.editor.findtargetdlg
-    #    if self.editor.findtargetdlg is not None and isinstance(self.editor.findtargetdlg, plugins.mdlpaintmodes.SelectColors):
-    #        m = qmenu.item("Dummy", None, "")
-    #        plugins.mdlpaintmodes.ColorSelectorClick(m)
 ##########
+
+        # This section updates the skin in the "Color Selector Dialog" if it is opened and needs to update.
+        formlist = quarkx.forms(1)
+        for f in formlist:
+            try:
+                if f.caption == "Color Selector & Paint Settings":
+                    panel = f.mainpanel.controls()
+                    paintdataform = panel[0].linkedobjects[0]
+                    if paintdataform["SkinName"] != comp.currentskin.name:
+                        paintdataform["SkinName"] = comp.currentskin.name
+                        m = qmenu.item("Dummy", None, "")
+                        plugins.mdlpaintmodes.ColorSelectorClick(m)
+            except:
+                pass
 
         from mdleditor import NewSellist
         try:
@@ -736,6 +744,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.67  2008/05/11 18:33:28  cdunde
+#Fixed Used Textures in the Texture Browser properly without breaking other functions.
+#
 #Revision 1.66  2008/05/10 18:35:11  cdunde
 #Fixed animation zooming and handles dupe drawing,
 #but brakes Used Textures in the Texture Browser and
