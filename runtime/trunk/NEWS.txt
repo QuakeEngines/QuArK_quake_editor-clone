@@ -15,6 +15,13 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde]: Added new functions and handles for Half-Life 2 and other games
+          - with the use of original code by Alexander, previous team member.
+          - 1) New handle and line drawing for spotlight inter and outer cones.
+          - 2) HL2 only, added handels for setting func_useableladder function (point0 & point1).
+          - 3) HL2 only, added handels for setting func_breakable_glass and func_breakable_surf,
+          -       (lowerleft, upperleft, lowerright and upperright).
+
 * [cdunde]: Complete update of the WarsowEntities by X7, good job and thanks.
 
 * [cdunde]: Fixed "Color Selector Dialog" to update correctly when needed.
