@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.21  2008/03/28 19:12:46  cdunde
+//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
+//
 //Revision 1.20  2008/02/27 00:22:34  danielpharos
 //Fix the contextual help files not being found anymore
 //
@@ -419,9 +422,9 @@ QQRKSRC1
       }
       light:e =
       {
-        _color = "1 1 1"
         light = "300"
-        angle = "360"
+        _color = "1 1 1"
+        angles = "0 0 0"
         origin = "0 0 0"
       }
     }

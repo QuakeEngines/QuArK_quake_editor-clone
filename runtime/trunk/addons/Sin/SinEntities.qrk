@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:38:11  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/03/28 19:11:46  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -2027,7 +2030,7 @@ QQRKSRC1
        {
          light = "300"
          _color = "1 1 1"
-         angle = "360"
+         angles = "0 0 0"
          origin = "0 0 0"
          ;desc = "Can't get "$22"on_style"$22" and "$22"off_style"$22" to work .." $0D "  "$22"and I don't know why Capteen!"$22""
        }
@@ -2035,7 +2038,7 @@ QQRKSRC1
        {
          light = "300"
          _color = "1 1 1"
-         angle = "360"
+         angles = "0 0 0"
          origin = "0 0 0"
        }
      }
@@ -8357,12 +8360,16 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-        Hint = "If targeted, will toggle between on and off."
+        Hint = "If targeted, will toggle between on and off when triggered."
       }
-      target: =
+     target: =
       {
         Txt = "&"
-        Hint = "Aim this at an info_null to make a spotlight."
+        Hint = "point this to an info_null entity to make a spotlight effect."$0D
+               "The distance between the light and the info_null affect the size"$0D
+               "and intensity of the light cone. This can also target a triggerable"$0D
+               "entity which will be used both as an aiming point for the light and"$0D
+               "be activated when the light is itself triggered."
       }
       light: =
       {
@@ -8396,12 +8403,6 @@ QQRKSRC1
       Typ="C"
       Items="0) normal (default)" $0D "1) flicker (first variety)" $0D "2) slow strong pulse" $0D "3) candle (first variety)" $0D "4) fast strobe" $0D "5) gentle pulse 1" $0D "6) flicker (second variety)" $0D "7) candle (second variety)" $0D "8) candle (third variety)" $0D "9) slow strobe (fourth variety)" $0D "10) fluorescent flicker" $0D "11) slow pulse not fade to black"
       values="0" $0D "1" $0D "2" $0D "3" $0D "4" $0D "5" $0D "6" $0D "7" $0D "8" $0D "9" $0D "10" $0D "11"
-       }
-     target: =
-        {Txt = "&" Hint = "point this to an info_null entity to make a spotlight effect. The distance between the light and the info_null affect the size and intensity of the light cone. This can also target a triggerable entity which will be used both as an aiming point for the light and be activated when the light is itself triggered."
-       }
-     targetname: =
-        {Txt = "&" Hint = "if targeted, will toggle between on and off when triggered."
        }
      key: =
         {Txt = "&" Hint = "item needed to toggle light when targeted (default nothing). This can be any Inventory_* type entity. Use the last part of the entity name (after "$22"Inventory_"$22"). The only exceptions are:"
@@ -8441,10 +8442,14 @@ QQRKSRC1
         Txt = "&"
         Hint = "name used by trigger or script to activate this."
       }
-      target: =
+     target: =
       {
         Txt = "&"
-        Hint = "Aim this at an info_null to make a spotlight."
+        Hint = "point this to an info_null entity to make a spotlight effect."$0D
+               "The distance between the light and the info_null affect the size"$0D
+               "and intensity of the light cone. This can also target a triggerable"$0D
+               "entity which will be used both as an aiming point for the light"$0D
+               "and be activated when the light is itself triggered."
       }
       light: =
       {
@@ -8476,9 +8481,6 @@ QQRKSRC1
        }
      _cone: =
         {Txt = "&" Hint = "sets size of light cone for spotlights (default 10)."
-       }
-     target: =
-        {Txt = "&" Hint = "point this to an info_null entity to make a spotlight effect. The distance between the light and the info_null affect the size and intensity of the light cone. This can also target a triggerable entity which will be used both as an aiming point for the light and be activated when the light is itself triggered."
        }
      key: =
         {Txt = "&" Hint = "item needed to activate this (default nothing). This can be any Inventory_* type entity. Use the last part of the entity name (after "$22"Inventory_"$22"). The only exceptions are:"

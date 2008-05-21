@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.18  2008/05/14 20:38:49  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.17  2008/03/28 19:10:37  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -213,10 +216,10 @@ QQRKSRC1
       }
       light:e =
       {
-        angle = "360"
-        origin = "0 0 0"
         light = "300"
         _color = "1 1 1"
+        angles = "0 0 0"
+        origin = "0 0 0"
       }
     }
   }

@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:37:43  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/03/28 19:08:11  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -605,6 +608,7 @@ QQRKSRC1
         {
           light = "300"
           _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
           ;desc = "Light-source with no model"
         }
@@ -5552,6 +5556,28 @@ QQRKSRC1
          " spotlights)"
         bbox = '-8 -8 -8 8 8 8'
         HTML = "hr2/g_light.htm#light"
+        spawnflags: =
+        {
+          Txt = "&"
+          Typ = "X1"
+          Cap = "START_OFF"
+          Hint = "Light starts off (trigger to start)"
+        }
+        targetname: =
+        {
+          Txt = "&"
+          Hint = "If START_OFF, triggers light on"
+        }
+        target: =
+        {
+          Txt = "&"
+          Hint = "Target an INFO_NULL for spotlight"
+        }
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 300 (200 is dim, max = 800)"
+        }
         _color: =
         {
           Txt = "&"
@@ -5569,24 +5595,6 @@ QQRKSRC1
           Txt = "&"
           Hint = "Spread of spotlight cone in degrees"$0D"(Target an INFO_NULL)"
         }
-        angles: =
-        {
-          Txt = "&"
-          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
-           "for a 3D angle"
-        }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 300 (200 is dim, max = 800)"
-        }
-        spawnflags: =
-        {
-          Txt = "&"
-          Typ = "X1"
-          Cap = "START_OFF"
-          Hint = "Light starts off (trigger to start)"
-        }
         style: =
         {
           Txt = "&"
@@ -5594,15 +5602,11 @@ QQRKSRC1
            "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
            " share style-value"
         }
-        targetname: =
+        angles: =
         {
           Txt = "&"
-          Hint = "If START_OFF, triggers light on"
-        }
-        target: =
-        {
-          Txt = "&"
-          Hint = "Target an INFO_NULL for spotlight"
+          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
+           "for a 3D angle"
         }
       }
       light_buglight:form =
@@ -5611,11 +5615,10 @@ QQRKSRC1
         bbox = '-7 -7 -7 7 7 25'
         HTML = "hr2/g_light.htm#light_buglight"
         mdl = "models/objects/lights/bug/tris.fm"
-        angles: =
+        light: =
         {
           Txt = "&"
-          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
-           "for a 3D angle"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
         }
         _color: =
         {
@@ -5641,10 +5644,11 @@ QQRKSRC1
           Typ = "L 3"
           Hint = "color-selection button"
         }
-        light: =
+        angles: =
         {
           Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
+           "for a 3D angle"
         }
       }
       light_chandelier1:form =
@@ -5667,6 +5671,17 @@ QQRKSRC1
           Cap = "STARTOFF"
           Hint = "Light will start off if targeted (default is on)"
         }
+        targetname: =
+        {
+          Txt = "&"
+          Hint = "is triggered if entity with matching target fires, or delete"
+           "d if entity with matching killtarget fires."
+        }
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+        }
         _color: =
         {
           Txt = "&"
@@ -5679,23 +5694,12 @@ QQRKSRC1
           Typ = "L"
           Hint = "color-selection button"
         }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
         style: =
         {
           Txt = "&"
           Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
            "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
            " share style-value."
-        }
-        targetname: =
-        {
-          Txt = "&"
-          Hint = "is triggered if entity with matching target fires, or delete"
-           "d if entity with matching killtarget fires."
         }
       }
       light_chandelier2:form =
@@ -5704,18 +5708,6 @@ QQRKSRC1
         bbox = '-18 -18 -40 18 18 40'
         HTML = "hr2/g_light.htm#light_chandelier2"
         mdl = "models/objects/chandelier/chan2/tris.fm"
-        abslight: =
-        {
-          Txt = "&"
-          Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays and selects visually."
-        }
-        abslight: =
-        {
-          Txt = "&"
-          Typ = "L 3"
-          Hint = "color-selection button"
-        }
         spawnflags: =
         {
           Txt = "&"
@@ -5730,6 +5722,29 @@ QQRKSRC1
           Cap = "STARTOFF"
           Hint = "Light will start off if targeted (default is on)"
         }
+        targetname: =
+        {
+          Txt = "&"
+          Hint = "is triggered if entity with matching target fires, or delete"
+           "d if entity with matching killtarget fires."
+        }
+        abslight: =
+        {
+          Txt = "&"
+          Hint = "colored inherent glow for models, a triple of numbers 0-255,"
+           " R B G"$0D"  color button below displays and selects visually."
+        }
+        abslight: =
+        {
+          Txt = "&"
+          Typ = "L 3"
+          Hint = "color-selection button"
+        }
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+        }
         _color: =
         {
           Txt = "&"
@@ -5742,23 +5757,12 @@ QQRKSRC1
           Typ = "L"
           Hint = "color-selection button"
         }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
         style: =
         {
           Txt = "&"
           Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
            "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
            " share style-value."
-        }
-        targetname: =
-        {
-          Txt = "&"
-          Hint = "is triggered if entity with matching target fires, or delete"
-           "d if entity with matching killtarget fires."
         }
       }
       light_chandelier3:form =
@@ -5767,6 +5771,17 @@ QQRKSRC1
         bbox = '-34 -34 -80 34 34 0'
         HTML = "hr2/g_light.htm#light_chandelier3"
         mdl = "models/objects/chandelier/chan3/tris.fm"
+        targetname: =
+        {
+          Txt = "&"
+          Hint = "is triggered if entity with matching target fires, or delete"
+           "d if entity with matching killtarget fires."
+        }
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+        }
         _color: =
         {
           Txt = "&"
@@ -5779,23 +5794,12 @@ QQRKSRC1
           Typ = "L"
           Hint = "color-selection button"
         }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
         style: =
         {
           Txt = "&"
           Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
            "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
            " share style-value."
-        }
-        targetname: =
-        {
-          Txt = "&"
-          Hint = "is triggered if entity with matching target fires, or delete"
-           "d if entity with matching killtarget fires."
         }
       }
       light_floortorch:form =
@@ -5804,30 +5808,6 @@ QQRKSRC1
         bbox = '-22 -22 -19 22 22 17'
         HTML = "hr2/g_light.htm#light_floortorch"
         mdl = "models/objects/lights/floortorch/tris.fm"
-        _color: =
-        {
-          Txt = "&"
-          Hint = "color of light radiated; triple of RGB vals 0-1"$0D"  Or use"
-           " color-selection button below to select visually."
-        }
-        _color: =
-        {
-          Txt = "&"
-          Typ = "L"
-          Hint = "color-selection button"
-        }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
-        style: =
-        {
-          Txt = "&"
-          Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
-           "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
-           " share style-value."
-        }
         spawnflags: =
         {
           Txt = "&"
@@ -5849,18 +5829,10 @@ QQRKSRC1
           Cap = "STARTOFF"
           Hint = "Light will start off if targeted (default is on)"
         }
-      }
-      light_gem2:form =
-      {
-        Help = "A yellow gem in an octogonal frame"
-        bbox = '-1 -6 -8 4 6 8'
-        HTML = "hr2/g_light.htm#light_gem2"
-        mdl = "models/objects/lights/sinkcity/light-2/tris.fm"
-        angle: =
+        light: =
         {
           Txt = "&"
-          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
-           "for a 3D angle"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
         }
         _color: =
         {
@@ -5874,17 +5846,20 @@ QQRKSRC1
           Typ = "L"
           Hint = "color-selection button"
         }
-        angles: =
+        style: =
         {
           Txt = "&"
-          Hint = "a triple of numbers, rotates 3d orientation of entit"$0D" ar"
-           "ound axes in order (Y, Z, X)"
+          Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
+           "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
+           " share style-value."
         }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
+      }
+      light_gem2:form =
+      {
+        Help = "A yellow gem in an octogonal frame"
+        bbox = '-1 -6 -8 4 6 8'
+        HTML = "hr2/g_light.htm#light_gem2"
+        mdl = "models/objects/lights/sinkcity/light-2/tris.fm"
         spawnflags: =
         {
           Txt = "&"
@@ -5898,6 +5873,29 @@ QQRKSRC1
           Typ = "X16"
           Cap = "NOHALO"
           Hint = "turns off halo effect                         "
+        }
+        targetname: =
+        {
+          Txt = "&"
+          Hint = "is triggered if entity with matching target fires, or delete"
+           "d if entity with matching killtarget fires."
+        }
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+        }
+        _color: =
+        {
+          Txt = "&"
+          Hint = "color of light radiated; triple of RGB vals 0-1"$0D"  Or use"
+           " color-selection button below to select visually."
+        }
+        _color: =
+        {
+          Txt = "&"
+          Typ = "L"
+          Hint = "color-selection button"
         }
         style: =
         {
@@ -5914,11 +5912,17 @@ QQRKSRC1
           Items = "0) Yellow Gem"$0D"1) Green Gem"
           values = "0"$0D"1"
         }
-        targetname: =
+        angle: =
         {
           Txt = "&"
-          Hint = "is triggered if entity with matching target fires, or delete"
-           "d if entity with matching killtarget fires."
+          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
+           "for a 3D angle"
+        }
+        angles: =
+        {
+          Txt = "&"
+          Hint = "a triple of numbers, rotates 3d orientation of entit"$0D" ar"
+           "ound axes in order (Y, Z, X)"
         }
       }
       light_lantern1:form =
@@ -5927,11 +5931,10 @@ QQRKSRC1
         bbox = '-28 -8 -22 4 8 22'
         HTML = "hr2/g_light.htm#light_lantern1"
         mdl = "models/objects/lights/lantern-1/tris.fm"
-        angle: =
+        light: =
         {
           Txt = "&"
-          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
-           "for a 3D angle"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
         }
         _color: =
         {
@@ -5950,10 +5953,11 @@ QQRKSRC1
           Txt = "&"
           Hint = "inherent glow for brushes, values from 0 to 1.5"
         }
-        light: =
+        angle: =
         {
           Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
+           "for a 3D angle"
         }
       }
       light_lantern2:form =
@@ -5962,36 +5966,6 @@ QQRKSRC1
         bbox = '-6 -6 -24 6 6 40'
         HTML = "hr2/g_light.htm#light_lantern2"
         mdl = "models/objects/lights/lantern-2/tris.fm"
-        _color: =
-        {
-          Txt = "&"
-          Hint = "color of light radiated; triple of RGB vals 0-1"$0D"  Or use"
-           " color-selection button below to select visually."
-        }
-        _color: =
-        {
-          Txt = "&"
-          Typ = "L"
-          Hint = "color-selection button"
-        }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
-        style: =
-        {
-          Txt = "&"
-          Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
-           "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
-           " share style-value."
-        }
-        targetname: =
-        {
-          Txt = "&"
-          Hint = "is triggered if entity with matching target fires, or delete"
-           "d if entity with matching killtarget fires."
-        }
         spawnflags: =
         {
           Txt = "&"
@@ -6012,6 +5986,36 @@ QQRKSRC1
           Typ = "X16"
           Cap = "NOHALO"
           Hint = "turns off halo effec"
+        }
+        targetname: =
+        {
+          Txt = "&"
+          Hint = "is triggered if entity with matching target fires, or delete"
+           "d if entity with matching killtarget fires."
+        }
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+        }
+        _color: =
+        {
+          Txt = "&"
+          Hint = "color of light radiated; triple of RGB vals 0-1"$0D"  Or use"
+           " color-selection button below to select visually."
+        }
+        _color: =
+        {
+          Txt = "&"
+          Typ = "L"
+          Hint = "color-selection button"
+        }
+        style: =
+        {
+          Txt = "&"
+          Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
+           "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
+           " share style-value."
         }
       }
       light_lantern3:form =
@@ -6020,6 +6024,11 @@ QQRKSRC1
         bbox = '-6 -6 -12 6 6 11'
         HTML = "hr2/g_light.htm#light_lantern3"
         mdl = "models/objects/lights/lantern-3/tris.fm"
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+        }
         _color: =
         {
           Txt = "&"
@@ -6032,11 +6041,6 @@ QQRKSRC1
           Typ = "L"
           Hint = "color-selection button"
         }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
       }
       light_lantern4:form =
       {
@@ -6044,6 +6048,11 @@ QQRKSRC1
         bbox = '-18 -7 -7 7 7 14'
         HTML = "hr2/g_light.htm#light_lantern4"
         mdl = "models/objects/lights/lantern-4/tris.fm"
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+        }
         _color: =
         {
           Txt = "&"
@@ -6062,11 +6071,6 @@ QQRKSRC1
           Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
            "for a 3D angle"
         }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
       }
       light_lantern5:form =
       {
@@ -6074,36 +6078,6 @@ QQRKSRC1
         bbox = '-7 -7 -7 7 7 14'
         HTML = "hr2/g_light.htm#light_lantern5"
         mdl = "models/objects/lights/lantern-4/tris.fm"
-        _color: =
-        {
-          Txt = "&"
-          Hint = "color of light radiated; triple of RGB vals 0-1"$0D"  Or use"
-           " color-selection button below to select visually."
-        }
-        _color: =
-        {
-          Txt = "&"
-          Typ = "L"
-          Hint = "color-selection button"
-        }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
-        style: =
-        {
-          Txt = "&"
-          Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
-           "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
-           " share style-value."
-        }
-        targetname: =
-        {
-          Txt = "&"
-          Hint = "is triggered if entity with matching target fires, or delete"
-           "d if entity with matching killtarget fires."
-        }
         spawnflags: =
         {
           Txt = "&"
@@ -6125,18 +6099,16 @@ QQRKSRC1
           Cap = "NOHALO"
           Hint = "turns off halo effec"
         }
-      }
-      light_torch1:form =
-      {
-        Help = "Wall torch that uses a blue gem"
-        bbox = '-4 -6 -5 6 6 20'
-        HTML = "hr2/g_light.htm#light_torch1"
-        mdl = "models/objects/lights/sinkcity/light-3/tris.fm"
-        angle: =
+        targetname: =
         {
           Txt = "&"
-          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
-           "for a 3D angle"
+          Hint = "is triggered if entity with matching target fires, or delete"
+           "d if entity with matching killtarget fires."
+        }
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
         }
         _color: =
         {
@@ -6150,29 +6122,20 @@ QQRKSRC1
           Typ = "L"
           Hint = "color-selection button"
         }
-        abslight: =
+        style: =
         {
           Txt = "&"
-          Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays and selects visually."
+          Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
+           "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
+           " share style-value."
         }
-        abslight: =
-        {
-          Txt = "&"
-          Typ = "L 3"
-          Hint = "color-selection button"
-        }
-        angles: =
-        {
-          Txt = "&"
-          Hint = "a triple of numbers, rotates 3d orientation of entit"$0D" ar"
-           "ound axes in order (Y, Z, X)"
-        }
-        light: =
-        {
-          Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
-        }
+      }
+      light_torch1:form =
+      {
+        Help = "Wall torch that uses a blue gem"
+        bbox = '-4 -6 -5 6 6 20'
+        HTML = "hr2/g_light.htm#light_torch1"
+        mdl = "models/objects/lights/sinkcity/light-3/tris.fm"
         spawnflags: =
         {
           Txt = "&"
@@ -6194,18 +6157,10 @@ QQRKSRC1
           Cap = "NOHALO"
           Hint = "turns off halo effec"
         }
-      }
-      light_walltorch:form =
-      {
-        Help = "A torch that sticks out of a wall"
-        bbox = '-16 -10 -12 10 10 12'
-        HTML = "hr2/g_light.htm#light_walltorch"
-        mdl = "models/objects/lights/walltorch/tris.fm"
-        angle: =
+        light: =
         {
           Txt = "&"
-          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
-           "for a 3D angle"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
         }
         _color: =
         {
@@ -6219,24 +6174,37 @@ QQRKSRC1
           Typ = "L"
           Hint = "color-selection button"
         }
-        light: =
+        abslight: =
         {
           Txt = "&"
-          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+          Hint = "colored inherent glow for models, a triple of numbers 0-255,"
+           " R B G"$0D"  color button below displays and selects visually."
         }
-        style: =
+        abslight: =
         {
           Txt = "&"
-          Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
-           "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
-           " share style-value."
+          Typ = "L 3"
+          Hint = "color-selection button"
         }
-        targetname: =
+        angle: =
         {
           Txt = "&"
-          Hint = "is triggered if entity with matching target fires, or delete"
-           "d if entity with matching killtarget fires."
+          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
+           "for a 3D angle"
         }
+        angles: =
+        {
+          Txt = "&"
+          Hint = "a triple of numbers, rotates 3d orientation of entit"$0D" ar"
+           "ound axes in order (Y, Z, X)"
+        }
+      }
+      light_walltorch:form =
+      {
+        Help = "A torch that sticks out of a wall"
+        bbox = '-16 -10 -12 10 10 12'
+        HTML = "hr2/g_light.htm#light_walltorch"
+        mdl = "models/objects/lights/walltorch/tris.fm"
         spawnflags: =
         {
           Txt = "&"
@@ -6257,6 +6225,42 @@ QQRKSRC1
           Typ = "X8"
           Cap = "STARTOFF"
           Hint = "Light will start off if targeted (default is on)"
+        }
+        targetname: =
+        {
+          Txt = "&"
+          Hint = "is triggered if entity with matching target fires, or delete"
+           "d if entity with matching killtarget fires."
+        }
+        light: =
+        {
+          Txt = "&"
+          Hint = "intensity, default = 200 (pretty dim, max = 800)"
+        }
+        _color: =
+        {
+          Txt = "&"
+          Hint = "color of light radiated; triple of RGB vals 0-1"$0D"  Or use"
+           " color-selection button below to select visually."
+        }
+        _color: =
+        {
+          Txt = "&"
+          Typ = "L"
+          Hint = "color-selection button"
+        }
+        style: =
+        {
+          Txt = "&"
+          Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 errat"
+           "ic flicke"$0D"  32-63 for linking banks of lights.  Trigger should"
+           " share style-value."
+        }
+        angle: =
+        {
+          Txt = "&"
+          Hint = "the direction it starts out pointing"$0D"  use angles Y Z X "
+           "for a 3D angle"
         }
       }
       misc_fire_sparker:form =

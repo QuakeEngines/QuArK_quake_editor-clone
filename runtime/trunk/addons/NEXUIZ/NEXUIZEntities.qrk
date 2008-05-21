@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:38:52  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/04/05 06:17:32  cdunde
 //Added full game support for NEXUIZ including .md3 model displaying.
 //
@@ -239,7 +242,7 @@ QQRKSRC1
         {
           _color = "1 1 1"
           light = "300"
-          angle = "360"
+          angles = "0 0 0"
           origin = "0 0 0"
         }
         worldspawn:b =
@@ -1802,6 +1805,12 @@ QQRKSRC1
         Txt = "&"
         Typ = "LN"
         Hint = "Click here to pick the light color."
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = "Set this for the size of a spotlight, ex: 20"$0D
+               "and it must target something to work."
       }
       _sun: =
       {

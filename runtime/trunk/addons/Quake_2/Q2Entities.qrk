@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:38:50  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/03/28 19:10:37  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -841,10 +844,10 @@ QQRKSRC1
       {
         light:e =
         {
-          angle = "360"
-          origin = "0 0 0"
           light = "300"
           _color = "1 1 1"
+          angles = "0 0 0"
+          origin = "0 0 0"
           ;desc = "Light up the map."
         }
         light_mine1:e =
@@ -4842,22 +4845,14 @@ QQRKSRC1
     light:form =
     {
       Help = "invisible light source"
-      //bbox = '-8 -8 -8 8 8 8'
-      light: =
+      bbox = '-8 -8 -8 8 8 8'
+      Spawnflags: =
       {
         Txt = "&"
-        Hint = "light value, default 300"
-      }
-      style: =
-      {
-        Txt = "&"
-        Typ = "C"
-        Items = "Normal"$0D"Flourescent Flicker"$0D"Flicker"$0D"Flicker 2"$0D"S"
-         "low Strong Pulse"$0D"Slow Pulse (never to full)"$0D"Slow Strobe"$0D"F"
-         "ast Strobe"$0D"Gentle Pulse"$0D"Candle 1"$0D"Candle 2"$0D"Candle 3"
-        Values = "0"$0D"10"$0D"1"$0D"6"$0D"2"$0D"11"$0D"9"$0D"4"$0D"5"$0D"3"$0D
-         "7"$0D"8"
-        Hint = "The style for the light."
+        Typ = "X1"
+        Cap = "START_OFF"
+        Hint = "Starts off (if you check this, you must set a targetname so th"
+         "at the light can be turned on)"
       }
       targetname: =
       {
@@ -4869,10 +4864,10 @@ QQRKSRC1
         Txt = "&"
         Hint = "Aim this at an info_null to make a spotlight."
       }
-      _cone: =
+      light: =
       {
         Txt = "&"
-        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
+        Hint = "light value, default 300"
       }
       _color: =
       {
@@ -4885,13 +4880,21 @@ QQRKSRC1
         Typ = "LN"
         hint = "Click here to pick the light color."
       }
-      Spawnflags: =
+      style: =
       {
         Txt = "&"
-        Typ = "X1"
-        Cap = "START_OFF"
-        Hint = "Starts off (if you check this, you must set a targetname so th"
-         "at the light can be turned on)"
+        Typ = "C"
+        Items = "Normal"$0D"Flourescent Flicker"$0D"Flicker"$0D"Flicker 2"$0D"S"
+         "low Strong Pulse"$0D"Slow Pulse (never to full)"$0D"Slow Strobe"$0D"F"
+         "ast Strobe"$0D"Gentle Pulse"$0D"Candle 1"$0D"Candle 2"$0D"Candle 3"
+        Values = "0"$0D"10"$0D"1"$0D"6"$0D"2"$0D"11"$0D"9"$0D"4"$0D"5"$0D"3"$0D
+         "7"$0D"8"
+        Hint = "The style for the light."
+      }
+      _cone: =
+      {
+        Txt = "&"
+        Hint = "Default _cone value is 10 (used to set size of light for spotlights)"
       }
     }
     light_mine1:form =

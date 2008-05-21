@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2008/05/14 20:38:20  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.6  2008/03/25 06:43:13  cdunde
 //To standardize UserData files as much as possible based on their game engine type.
 //Moved entities out of them which were duplicated in their game Data files, should NEVER be allowed!
@@ -63,7 +66,7 @@ QQRKSRC1
       {
         light = "300"
         _color = "1 1 1"
-        angle = "360"
+        angles = "0 0 0"
         origin = "0 0 0"
       }
     }

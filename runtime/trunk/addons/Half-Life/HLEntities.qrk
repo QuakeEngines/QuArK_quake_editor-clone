@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:38:10  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/03/28 19:05:51  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -153,9 +156,9 @@ QQRKSRC1
                 world_items:e                   = { t_orig_ang=! ;desc = "World Items" }
         }
         Light_ entities.qtxfolder = {
-                light:e                         = { angle = "360" origin="0 0 0" ;desc = "Invisible lightsource" _light = "255 255 255 300"}
+                light:e                         = { origin="0 0 0" ;desc = "Invisible lightsource" _light = "255 255 255 300"}
                 light_environment:e             = { angles = "0 0 0" origin="0 0 0" ;desc = "Environmental Lighting (Sky light)" _light = "255 255 255 300" }
-                light_spot:e                    = { angles = "0 0 0" origin="0 0 0" ;desc = "Spotlight" _light = "255 255 255 300" _light = "255 255 255 300" }
+                light_spot:e                    = { angles = "0 0 0" _cone = "15" pitch = "0" _cone2 = "45" origin="0 0 0" ;desc = "Spotlight" _light = "255 255 255 300" _light = "255 255 255 300" }
         }
         Monster_ entities.qtxfolder = {
                 monster_generic:e               = { t_orig_ang=! ;desc = "Generic Script Monster" }
@@ -8880,7 +8883,6 @@ $0D"for experienced mappers. Use with caution."
                 t_light = !
                 spawnflags: = { Txt="&" Typ="X1" Cap="Initially dark" }
                 t_lightentity = !
-                angle = { Txt="&" }
                 origin = { Txt="&" }
         }
         light_environment:form = {

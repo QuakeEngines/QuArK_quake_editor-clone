@@ -262,7 +262,9 @@ QQRKSRC1
         }
         light:e =
         {
-          angle = "360"
+          light = "300"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
           ;desc = "Used for Non-displayed light settings."
         }
@@ -748,11 +750,23 @@ QQRKSRC1
         txt = "&"
         hint = "overrides the default 300 intensity."
       }
+      _color: =
+      {
+        txt = "&"
+        hint = "light color (not the intensity, only the color)"
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        hint = "Click here to select the color."
+      }
       radius: =
       {
         txt = "&"
-        hint = "overrides the default 64 unit radius of a spotlight at the tar"
-         "get point."
+        hint = "overrides the default 64 unit radius"$0D
+               "of a spotlight at the target point"$0D
+               "and it must target something to work."
       }
       fade: =
       {

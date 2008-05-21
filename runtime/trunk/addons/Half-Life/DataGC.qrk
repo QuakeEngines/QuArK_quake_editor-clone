@@ -52,7 +52,6 @@ QQRKSRC1
         }
         light:e =
         {
-          angle = "360"
           origin = "0 0 0"
           ;desc = "Invisible lightsource"
         }
@@ -1071,7 +1070,7 @@ QQRKSRC1
       {
         light_spot:e =
         {
-          angle = "360"
+          angles = "0 0 0"
           origin = "0 0 0"
           ;desc = "Spotlight"
           _cone = "30"
@@ -5575,7 +5574,13 @@ QQRKSRC1
       _light: =
       {
         txt = "&"
-        hint = "Brightness"
+        hint = "Color and Brightness"
+      }
+      _light: =
+      {
+        txt = "&"
+        Typ="L[4]"
+        hint = "Click here to select color"
       }
       _sky: =
       {

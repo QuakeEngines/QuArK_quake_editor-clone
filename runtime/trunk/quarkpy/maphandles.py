@@ -446,13 +446,30 @@ class EdgeHandle(qhandles.GenericHandle):
             cv.ellipse(int(p.x)-radius, int(p.y)-radius, int(p.x)+radius+1, int(p.y)+radius+1)
 #            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
 
-class SpecialHandle(FaceHandle):
+#1class SpecialHandle(FaceHandle):
+#2class SpecialHandle(PointSpecHandle):
+class SpecialHandle(Angles3DHandle):
+    "Used to create a Half-Life 2 face displacement"
+    "in mapentities class FaceType."
     undomsg = "drag edge"
     hint = "control point for height"
 
-    def __init__(self, base, face):
-        pos = base
-        FaceHandle.__init__(self, pos,face)
+  #1  def __init__(self, base, face):
+  #1      pos = base
+  #1      FaceHandle.__init__(self, pos, face)
+
+  #2  def __init__(self, base, face):
+  #2      pos = base
+  #2      PointSpecHandle.__init__(self, pos, entity, spec)
+
+    def __init__(self, pos, normal, scale1, entity, spec):
+  #3      normal = None
+  #3      scale1 = None
+  #3      entity = None
+  #3      spec = None
+  #3      face = spec
+        pos = pos
+        Angles3DHandle.__init__(self, pos, normal, scale1, entity, spec)
 
     def menu(self, editor, view):
         self.click(editor)
@@ -460,7 +477,9 @@ class SpecialHandle(FaceHandle):
         return self.OriginItems(editor, view)
 
     def draw(self, view, cv, draghandle=None):
+        self.cv = cv
         p = view.proj(self.pos)
+        print "maphandles SpecialHandle line 490 p in draw",p
         oldcolor = cv.pencolor
 #        p1 = view.proj(self.vtx1)
 #        p2 = view.proj(self.vtx2)
@@ -470,13 +489,16 @@ class SpecialHandle(FaceHandle):
             cv.brushcolor = 0xF000F0
             radius = 9
 #py2.4            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
+            cv.ellipse(int(p.x)-radius, int(p.y)-radius, int(p.x)+radius+1, int(p.y)+radius+1)
             cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def drag(self, v1, v2, flags, view):
+        cv = self.cv
         delta = v2-v1
         g1 = 1
         if flags&MB_CTRL:
-            pos0 = self.face.origin
+    #1        pos0 = self.face.origin
+            pos0 = self.entity.origin
             if pos0 is not None:
                 pos1 = qhandles.aligntogrid(pos0+delta, 1)
                 delta = pos1 - pos0
@@ -485,7 +507,8 @@ class SpecialHandle(FaceHandle):
             delta = qhandles.aligntogrid(delta, 0)
         self.draghint = vtohint(delta)
         if delta or (flags&MB_REDIMAGE):
-           # print "moved",delta
+          print "in maphandles.py file, class SpecialHandle line 514, light handle moved ",delta
+
            # new = self.face.copy()
            # if self.face.faceof[0].type == ":p":
            #     delta = self.face.normal * (self.face.normal*delta)  # projection of 'delta' on the 'normal' line
@@ -494,9 +517,11 @@ class SpecialHandle(FaceHandle):
            #     new = completeredimage(self.face, new)
            # else:
            #     new = [new]
-   #     else:
+        else:
             new = None
-        return [self.face], None #new
+    #1    return [self.face], None #new
+        print "self.cv",self.cv
+        return [self.cv], None #new
 
 
 class VertexHandle(qhandles.GenericHandle):
@@ -1998,6 +2023,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.70  2008/05/14 20:40:40  cdunde
+#To fix small typo error.
+#
 #Revision 1.69  2008/02/06 00:12:44  danielpharos
 #The skinview now properly updates to reflect changes made to textures.
 #

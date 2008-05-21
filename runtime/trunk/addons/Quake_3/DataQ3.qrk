@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.24  2008/05/14 20:38:57  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.23  2008/04/06 07:09:32  cdunde
 //To make this file consistent with other Quake 3 engine base games.
 //
@@ -460,9 +463,10 @@ QQRKSRC1
       }
       light:e =
       {
-        origin = "0 0 0"
         light = "300"
         _color = "1 1 1"
+        angles = "0 0 0"
+        origin = "0 0 0"
       }
     }
   }

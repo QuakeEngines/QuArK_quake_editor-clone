@@ -48,7 +48,7 @@ QQRKSRC1
       {
         _color = "1 1 1"
         light = "300"
-        angle = "360"
+        angles = "0 0 0"
         origin = "0 0 0"
       }
     }

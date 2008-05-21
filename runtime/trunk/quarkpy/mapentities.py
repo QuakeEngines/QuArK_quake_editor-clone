@@ -11,10 +11,14 @@ Map Editor Entities manager
 #$Header$
 
 
-import quarkx
+import quarkx,sys,math
+
 from maputils import *
 import maphandles
 import mapoptions
+import qhandles
+
+
 
 #py2.4 indicates upgrade change for python 2.4
 
@@ -118,6 +122,9 @@ def ListAngleSpecs(entity):
 
 # tbd : this should be configured in the game addon file !
 def ListAddPointSpecs(entity):
+    "Called from maphandles CenterEntityHandle funciton"
+    "to create extra Specifics setting handles"
+    "for Half-Life 2 functions commented below."
     h=[]
     h.append("point0")   # HL2 ladder point
     h.append("point1")   # HL2 ladder point
@@ -314,8 +321,58 @@ class PolyhedronType(EntityManager):
         Tex1 = qmenu.item("&Texture...", mapbtns.texturebrowser, "choose texture of polyhedron")
         return h + [Tex1] + mapmenus.MenuTexFlags(editor) + [qmenu.sep]
 
+def line(u,p0,p1):
+    "Used in drawdistnet function below to"
+    "draw a face displacement net lines."
+    f0=1-u
+    res=quarkx.vect( p0.x*f0 + p1.x*u , p0.y*f0 + p1.y*u , p0.z*f0 + p1.z*u)
+    return res
 
+def drawdistnet(o,view): # NOTE: this function needs to handle the selected face like a bezier.
+  "Makes a face displacement net for Half-Life 2"
+  for vtx in o.vertices:
+    pass
+    #print 'vtx',vtx
+  try:
+    cp=[]
+    if len(o.dists)!=0: # o.dists is causing the "grey views" problem, what is it suppose to be?
+      #print "dists"
+      delta=1.0/len(o.dists)
+      #print delta
+      u=delta/2.0
+      for dists in o.dists:
+        cc=[]
+        cp.append(cc)
+        pa=line(u,vtx[2],vtx[1])
+        pb=line(u,vtx[3],vtx[0])
+        #print u,pa,pb
+        u=u+delta
+        #print dists
+        v=delta/2.0
+        oldpointpos=pa
+        for d in dists:
+          p=line(v,pa,pb)
+          #print u,v,p,d
+          pointpos= d*o.normal+p               
+          cc.append(pointpos)
+          v=v+delta
 
+      cp = map(lambda cpline, proj=view.proj: map(proj, cpline), cp)
+      cv=view.canvas()
+      for cpline in cp:
+        for j in range(len(cpline)-1):
+          cv.line(cpline[j], cpline[j+1])
+      
+      cp = apply(map, (None,)+tuple(cp))
+      
+      for cpline in cp:
+        for i in range(len(cpline)-1):
+            cv.line(cpline[i], cpline[i+1])
+
+  except:
+    exctype, value = sys.exc_info()[:2]
+  #  print exctype, value
+  
 class FaceType(EntityManager):
     "Polyhedron Faces"
 
@@ -325,11 +382,19 @@ class FaceType(EntityManager):
         #
         for src in o.faceof:
             view.drawmap(src, mode)
+        ### Makes a face displacement net for Half-Life 2
+  #      drawdistnet(o,view) # o.dists in this function is causing the problem
 
     def drawsel(o, view, mode):
         view.drawmap(o, mode | DM_SELECTED, view.setup.getint("SelFaceColor"))
+        ### Makes a face displacement net for Half-Life 2
+  #      drawdistnet(o,view) # o.dists in this function is causing the problem
 
     def handles(o, editor, view):
+  #      print "mapentities line 344 FaceType o",o.name
+  #      print "mapentities line 345 FaceType o.dictspec",o.dictspec
+  #      print "mapentities line 346 FaceType o.subitems",o.subitems
+  #      print "mapentities line 347 EntityType o.Origin",ObjectOrigin(o)
         #
         # Face handles
         #
@@ -368,6 +433,61 @@ class FaceType(EntityManager):
             # Add these new handles to the list.
             #
             h = h + [h2, h1]
+ ### NEW SpecialHandle code start, only for Half-Life2 at this time.
+ ### Used to create a Half-Life 2 face displacement. Activate by changing to "Half-Life2" below.
+        if quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Maybe Future Half-Life2":
+            try:
+              print "mapentities line 388 vtx"
+              for vtx in o.vertices:
+                 print vtx
+                 print "mapentities line 391 o.name is ",o.name
+                 print "mapentities line 392 took o"
+        #1      if len(o.dists)!=0:
+              if len(o.vertices)!=0:
+                print "mapentities line 395 dists"
+         #2       delta=1.0/len(o.dists)
+                delta=1.0/len(o.vertices)
+                print "mapentities line 398 delta is ",delta
+                u=delta/2.0
+         #3       for dists in o.dists:
+                for dists in o.vertices:
+                  pa=line(u,vtx[0],vtx[3])
+                  pb=line(u,vtx[1],vtx[2])
+                  print "mapentities line 404 u,pa,pb are "
+                  print u
+                  print pa
+                  print pb
+                  u=u+delta
+                  print "mapentities line 409 u is ",u
+                  v=delta/2.0
+                  oldpointpos=pa
+                  for d in dists:
+                    p=line(v,pa,pb)
+                    print "mapentities line 414 u,v,p,d are "
+                    print u
+                    print v
+                    print p,type(p)
+                    print d,type(d)
+                    print "mapentities line 419 o.normal ",o.normal,type(o.normal)
+              #4      pointpos= d*o.normal+p # just needs dif. method of doing this.
+
+                    pointpos=o.normal+p
+                    print "mapentities line 423 pointpos is ",pointpos
+              #5      h=h+ [maphandles.SpecialHandle(pointpos,100)]
+         #works           h=h+ [maphandles.SpecialHandle(pointpos,o)] # Use the one below
+         # new test area
+                    scale1 = 1.0
+                    spec = "angles"
+                    print "mapentities line 429 o.name",o.name
+                    h=h+ [maphandles.SpecialHandle(pointpos,o.normal,scale1,o,spec)] # Use this one
+
+                    v=v+delta
+              else:
+                  print "mapentities line 434 skipped len section"
+            except:
+              exctype, value = sys.exc_info()[:2]
+              print "mapentities line 437 exctype, value",exctype, value
+ ### NEW SpecialHandle code end, only for Half-Life2 at this time.
         return h
 
     def menu(o, editor):
@@ -610,7 +730,7 @@ def ParseCompoundVolume(CVString):
 
 class DefaultDrawEntityLines:
 
-   def drawentityarrow(self, entity, org, backarrow, color, view, processentities, text=None):
+    def drawentityarrow(self, entity, org, backarrow, color, view, processentities, text=None):
         org2 = ObjectOrigin(entity)
         if org2 is not None:
             cv = view.canvas()
@@ -629,7 +749,7 @@ class DefaultDrawEntityLines:
                 if not (entity in processentities):   # remove this to remove
                     processentities.append(entity)    #  recurrence in entity lines
 
-   def drawentityarrows(self, spec, arg, org, backarrow, color, view, entities, processentities, text=None):
+    def drawentityarrows(self, spec, arg, org, backarrow, color, view, entities, processentities, text=None):
         for e in tuple(entities):
             if e[spec]==arg:
                 self.drawentityarrow(e, org, backarrow, color, view, processentities, text)
@@ -637,7 +757,7 @@ class DefaultDrawEntityLines:
 
 ############## SHINE support code start
 
-   def drawAABB(self, mins, maxs, color, view):
+    def drawAABB(self, mins, maxs, color, view):
         cv = view.canvas()
         cv.pencolor = color
 # calculate aabb points
@@ -667,7 +787,7 @@ class DefaultDrawEntityLines:
         cv.line(int(aabb_100.x), int(aabb_100.y), int(aabb_101.x), int(aabb_101.y))
 
 
-   def drawonesphere(self, entity, sphereradius, org, OriginalOrigin, color, view):
+    def drawonesphere(self, entity, sphereradius, org, OriginalOrigin, color, view):
         try:
             radius = sphereradius * view.scale(OriginalOrigin)
             radius = int(radius)   #py2.4
@@ -680,7 +800,7 @@ class DefaultDrawEntityLines:
             pass
 
 
-   def drawentityradius(self, entity, nameradius, org, color, view):
+    def drawentityradius(self, entity, nameradius, org, color, view):
         try:
             if entity[nameradius] is not None:
                 radius = float(entity[nameradius]) * view.scale(org)
@@ -696,7 +816,10 @@ class DefaultDrawEntityLines:
 ############## SHINE support code end
 
 
-   def drawentitylines(self, entity, org, view, entities, processentities):
+    def drawentitylines(self, entity, org, view, entities, processentities):
+        # "entity" and "processentities" is the current selected entity.
+        # "entities" is a list of all other entities EXCLUDING the selected entity.
+
         color = MapColor("Axis")
         org1 = view.proj(org)
         if org1.visible:
@@ -706,11 +829,19 @@ class DefaultDrawEntityLines:
             #        (maximum radius) for lights, and does not have a 'light' specific
             L3 = entity["distance2"]
             L4 = entity["falloff2"]
-            if L1 or L2 or L3 or L4:
+            L5 = entity["spotlightlength"]
+            if L1 or L2 or L3 or L4 or L5:
             # Rowdy: cdunde reported that Torque uses falloff1 (minimum radius) and falloff2
             #        (maximum radius) for lights, and does not have a 'light' specific
                 try:
-                    if L1:
+                    if L5:
+                         radius = float(L5)
+                         if entity["rendercolor"]:
+                             try:
+                                 color = vectorRGBcolor(quarkx.vect(entity["rendercolor"]))
+                             except:
+                                 pass
+                    elif L1:
                         #### SHINE support code start
                         if entity["radius"] and quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Shine":
                             try:
@@ -759,12 +890,76 @@ class DefaultDrawEntityLines:
                     radius = radius * view.scale(org) * lightfactor
                     radius = int(radius)   #py2.4
                     cv = view.canvas()
-                    cv.pencolor = color
-#                    cv.penwidth = 2 # DECKER - Make this a configurable size
+                    if entity["rendercolor"]:
+                        color = vectorRGBcolor(quarkx.vect(entity["rendercolor"]))
+                        cv.pencolor = color
+                    elif entity["_inner_cone"] or entity['_cone2']:
+                        cv.pencolor = color + (color*.5)
+                    else:
+                        cv.pencolor = color
                     cv.penwidth = mapoptions.getThinLineThickness()
                     cv.brushstyle = BS_CLEAR
-#py2.4                    cv.ellipse(org1.x-radius, org1.y-radius, org1.x+radius, org1.y+radius)
-                    cv.ellipse(int(org1.x)-radius, int(org1.y)-radius, int(org1.x)+radius, int(org1.y)+radius)
+
+                    ### Section below draws the cone(s) for "light" spot entities.
+                    if entity["target"] and entity["angles"] and entity["origin"]:
+                        editor = mapeditor()
+                        for e in tuple(entities):
+                            if e["targetname"] == entity["target"] and e["origin"]:
+                                u = 1
+                                p0 = entity["origin"].split(" ")
+                                p0 = quarkx.vect(float(p0[0]), float(p0[1]), float(p0[2]))
+                                p1 = e["origin"].split(" ")
+                                p1 = quarkx.vect(float(p1[0]), float(p1[1]), float(p1[2]))
+                                # Line below converts single vector to "angles" specific values as a string.
+                                netangles = qhandles.vec2angles(p1-p0)
+
+                                if netangles != entity["angles"]:
+                                    entity["angles"] = netangles
+                                    entityform = editor.layout.dataform.linkedobjects[0] # A list of "dictspec" items, the Specifics and their Arguments.
+                                    editor.layout.dataform.setdata(entityform, editor.layout.dataform.form)
+                                    editor.buildhandles()
+
+                    ### '_cone2' below for HL, rest for HL2.
+                    if entity["angles"] and (entity['radius'] or entity['_cone'] or entity['_cone2'] or entity["spotlightwidth"] or entity['_inner_cone']):
+                        direct = quarkx.vect(entity["angles"])
+                        # 'pitch' below for HL2 only.
+                        if entity['pitch']:
+                            entity['pitch'] = '%f' % - direct.x
+                        ### Draws the outer cone lines.
+                        if entity['radius'] or entity['_cone'] or entity['_cone2'] or entity['spotlightwidth']:
+                            if entity['_cone2']:
+                                cone = float(entity['_cone2'])
+                                if not entity['_cone']:
+                                    cv.pencolor = color
+                            elif entity['radius'] or entity['_cone']:
+                                if entity['_cone']:
+                                    cone = float(entity['_cone'])
+                                else:
+                                    cone = float(entity['radius'])
+                            elif entity['spotlightwidth']:
+                                cone = float(entity['spotlightwidth'])/2.0
+                            for i in range(18):
+                                phi = i*2.0*3.14159/18
+                                dirvectn=qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
+                                cv.line(view.proj(org+dirvectn*radius * lightfactor),org1)
+                        ### Draws the inner cone lines.
+                        if entity['_inner_cone'] or entity['_cone2']:
+                            # '_inner_cone' below for HL2 only.
+                            if entity['_inner_cone']:
+                                cone = float(entity['_inner_cone'])
+                            # '_cone' below NOT for HL2, applies to HL and other games.
+                            elif entity['_cone']:
+                                cone = float(entity['_cone'])
+                            cv.pencolor = color
+                            for i in range(9):
+                                phi = i*2.0*3.14159/9
+                                dirvectn = qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
+                                cv.line(view.proj(org+dirvectn*radius * lightfactor),org1)
+                     # Line below draws normal light full radius but does not look good.
+                     #   cv.ellipse(int(org1.x)-radius, int(org1.y)-radius, int(org1.x)+radius, int(org1.y)+radius)
+                    ### Section above draws the cone(s) for "light" spot entities.
+                    else:
+                        cv.ellipse(int(org1.x)-radius, int(org1.y)-radius, int(org1.x)+radius, int(org1.y)+radius)
                 except:
                     pass
 ############ SHINE support code start
@@ -959,6 +1154,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.57  2008/05/12 13:08:13  cdunde
+#Fixed light radius not showing for other games due to game support for Shine changes.
+#
 #Revision 1.56  2007/12/24 21:33:58  cdunde
 #Added Special entity cv.canvas() line drawing for Shine engine, may also be useful for other games.
 #

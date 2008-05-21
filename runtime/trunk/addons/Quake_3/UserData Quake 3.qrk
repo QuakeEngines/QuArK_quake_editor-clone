@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.7  2008/03/28 23:47:55  cdunde
+//Minor update to menu item for future ConversionTool coding.
+//
 //Revision 1.6  2008/03/25 06:43:13  cdunde
 //To standardize UserData files as much as possible based on their game engine type.
 //Moved entities out of them which were duplicated in their game Data files, should NEVER be allowed!
@@ -61,9 +64,10 @@ QQRKSRC1
     {
       light:e =
       {
-        origin = "0 0 0"
         light = "300"
         _color = "1 1 1"
+        angles = "0 0 0"
+        origin = "0 0 0"
       }
     }
     bezier: =

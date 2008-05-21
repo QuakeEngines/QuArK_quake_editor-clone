@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2008/05/20 22:52:05  cdunde
+//Complete update of the WarsowEntities by X7, good job and thanks.
+//
 //Revision 1.5  2008/05/14 20:38:49  cdunde
 //Fixed basic lighting in all games and a few other small typo errors.
 //
@@ -346,9 +349,10 @@ QQRKSRC1
       {
         light:e =
         {
-          origin = "0 0 0"
-          _color = "1 1 1"
           light = "300"
+          _color = "1 1 1"
+          angles = "0 0 0"
+          origin = "0 0 0"
           ;desc = "Non-displayed point light source."
         }
       }
@@ -6468,66 +6472,6 @@ QQRKSRC1
        "3map -vlight. Also, q3map -light does not support linear falloff on sp"
        "otlights."
       bbox = '-8 -8 -8 8 8 8'
-      atten_anglescale: =
-      {
-        txt = "&"
-        hint = "angle falloff."
-      }
-      atten_distscale: =
-      {
-        txt = "&"
-        hint = "falloff for light ents."$0D".25 will give you 4x the falloff d"
-         "istance,"$0D".5 will give twice the distance, etc."
-      }
-      _color: =
-      {
-        txt = "&"
-        Typ = "LN"
-        Hint = "RGB value of light color (default white - 1.0 1.0 1.0)."
-      }
-      _color: =
-      {
-        txt = "&"
-        Typ = ""
-        Hint = "RGB value of light color (default white - 1.0 1.0 1.0)."
-      }
-      light: =
-      {
-        Txt = "&"
-        Hint = "light value, default 300"
-      }
-      style: =
-      {
-        Typ = "C"
-        Txt = "&"
-        Hint = "Specifies lightstyle Type. (Default=0)."$0D"Ignored when death"
-         "match=1."$0D"styles 32-62 are assigned by the light program for swit"
-         "chable lights."$0D"63 is for testing."
-        Items = "0) Normal"$0D"1) Flicker (first variety)"$0D"2) Slow Strong S"
-         "trobe"$0D"3) Candle (first variety)"$0D"4) Fast Strobe"$0D"5) Gentle"
-         " Pulse"$0D"6) Flicker (second variety)"$0D"7) Candle (second variety"
-         ")"$0D"8) Candle (third variety)"$0D"9) Slow Strobe (fourth variety)"$0D
-         "10) Flourescent Flicker"$0D"11) Slow Pulse (never to full)"
-        Values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"1"
-         "0"$0D"11"
-      }
-      radius: =
-      {
-        txt = "&"
-        hint = "overrides the default 64 unit radius of a spotlight at the tar"
-         "get point."
-      }
-      target: =
-      {
-        txt = "&"
-        hint = "Name of the entity that this one targets."
-      }
-      targetname: =
-      {
-        txt = "&"
-        hint = "Name of this entity, used as a target by another entity."$0D"C"
-         "lick the 'Help Book' above for more possible detail."
-      }
       spawnflags: =
       {
         typ = "X1"
@@ -6551,6 +6495,67 @@ QQRKSRC1
         typ = "X8"
         cap = "LAAT_DOUBLE_QUADRATIC"
         Txt = "&"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."$0D"C"
+         "lick the 'Help Book' above for more possible detail."
+      }
+      light: =
+      {
+        Txt = "&"
+        Hint = "light value, default 300"
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = ""
+        Hint = "RGB value of light color (default white - 1.0 1.0 1.0)."
+      }
+      _color: =
+      {
+        txt = "&"
+        Typ = "LN"
+        Hint = "Click here to select a color."
+      }
+      atten_anglescale: =
+      {
+        txt = "&"
+        hint = "angle falloff."
+      }
+      atten_distscale: =
+      {
+        txt = "&"
+        hint = "falloff for light ents."$0D".25 will give you 4x the falloff d"
+         "istance,"$0D".5 will give twice the distance, etc."
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = "Overrides the default 64 unit radius"$0D
+               "of a spotlight at the target point"$0D
+               "and it must target something to work."
+      }
+      style: =
+      {
+        Typ = "C"
+        Txt = "&"
+        Hint = "Specifies lightstyle Type. (Default=0)."$0D"Ignored when death"
+         "match=1."$0D"styles 32-62 are assigned by the light program for swit"
+         "chable lights."$0D"63 is for testing."
+        Items = "0) Normal"$0D"1) Flicker (first variety)"$0D"2) Slow Strong S"
+         "trobe"$0D"3) Candle (first variety)"$0D"4) Fast Strobe"$0D"5) Gentle"
+         " Pulse"$0D"6) Flicker (second variety)"$0D"7) Candle (second variety"
+         ")"$0D"8) Candle (third variety)"$0D"9) Slow Strobe (fourth variety)"$0D
+         "10) Flourescent Flicker"$0D"11) Slow Pulse (never to full)"
+        Values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"1"
+         "0"$0D"11"
       }
     }
     misc_explobox:form =

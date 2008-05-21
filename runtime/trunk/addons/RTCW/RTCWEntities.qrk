@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:38:14  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/03/28 19:11:49  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -612,16 +615,16 @@ QQRKSRC1
         }
         light:e =
         {
-          _color = "1 1 1"
           light = "300"
-          angle = "360"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "144 0 0"
         }
         lightJunior:e =
         {
-          _color = "1 1 1"
           light = "300"
-          angle = "360"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
         }
         worldspawn:b =
@@ -8468,18 +8471,6 @@ QQRKSRC1
         txt = "&"
         hint = "Name of this entity, used as a target by another entity."
       }
-      radius: =
-      {
-        txt = "&"
-        hint = "Overrides the default 64 unit radius"$0D
-               "of a spotlight at the target point."
-      }
-      fade: =
-      {
-        txt = "&"
-        hint = "falloff/radius adjustment value."$0D
-               "Click the 'help book' above for more detail."
-      }
       light: =
       {
         txt = "&"
@@ -8495,6 +8486,19 @@ QQRKSRC1
         txt = "&"
         Typ = "LN"
         hint = "Click here to pick the light color."
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = "Overrides the default 64 unit radius"$0D
+               "of a spotlight at the target point"$0D
+               "and it must target something to work."
+      }
+      fade: =
+      {
+        txt = "&"
+        hint = "falloff/radius adjustment value."$0D
+               "Click the 'help book' above for more detail."
       }
     }
     lightJunior:form =
@@ -8549,18 +8553,6 @@ QQRKSRC1
         txt = "&"
         hint = "Name of this entity, used as a target by another entity."
       }
-      radius: =
-      {
-        txt = "&"
-        hint = "Overrides the default 64 unit radius"$0D
-               "of a spotlight at the target point."
-      }
-      fade: =
-      {
-        txt = "&"
-        hint = "falloff/radius adjustment value."$0D
-               "Click the 'help book' above for more detail."
-      }
       light: =
       {
         txt = "&"
@@ -8576,6 +8568,19 @@ QQRKSRC1
         txt = "&"
         Typ = "LN"
         hint = "Click here to pick the light color."
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = "Overrides the default 64 unit radius"$0D
+               "of a spotlight at the target point"$0D
+               "and it must target something to work."
+      }
+      fade: =
+      {
+        txt = "&"
+        hint = "falloff/radius adjustment value."$0D
+               "Click the 'help book' above for more detail."
       }
     }
     worldspawn:form =

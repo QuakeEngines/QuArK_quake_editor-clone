@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.23  2008/05/14 20:37:43  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.22  2008/03/28 19:08:13  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -703,6 +706,7 @@ QQRKSRC1
       {
         light = "300"
         _color = "1 1 1"
+        angles = "0 0 0"
         origin = "0 0 0"
       }
     }

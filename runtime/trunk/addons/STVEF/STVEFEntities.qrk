@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:38:16  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/03/28 19:12:44  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -830,9 +833,9 @@ QQRKSRC1
       {
         light:e =
         {
-          _color = "1 1 1"
           light = "300"
-          angle = "360"
+          _color = "1 1 1"
+          angles = "0 0 0"
           origin = "0 0 0"
         }
         waypoint:e =
@@ -9805,7 +9808,9 @@ QQRKSRC1
       radius: =
       {
         txt = "&"
-        hint = "overrides the default 64 unit radius of a spotlight at the target point."
+        hint = "Overrides the default 64 unit radius"$0D
+               "of a spotlight at the target point"$0D
+               "and it must target something to work."
       }
       scale: =
       {
