@@ -11,7 +11,7 @@ E.g.
 This is Quake; other games elaborate on this by putting various things
 after the five numbers, such as in Q2/3 the three fields (Content, Flags,
 Value) etc. (you can get an idea of the variations by studying the
-WriteFace sub-procedure in QkMapPoly:TPolyhedron.SaveAsTextPolyhedron).
+SaveAsMapTextTFace procedure in QkQuakeMap).
 The way the five numbers work is that one imagines the texture as being
 plastered onto whatever of the three axis-planes is closest to parallel
 to the face, and then as being projected on the face, after being shifted,
