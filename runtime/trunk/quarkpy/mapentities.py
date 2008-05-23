@@ -893,7 +893,7 @@ class DefaultDrawEntityLines:
                     if entity["rendercolor"]:
                         color = vectorRGBcolor(quarkx.vect(entity["rendercolor"]))
                         cv.pencolor = color
-                    elif entity["_inner_cone"] or entity['_cone2']:
+                    elif quarkx.setupsubset()["LightingOuterConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingOuterConeKeyword"]]:
                         cv.pencolor = color + (color*.5)
                     else:
                         cv.pencolor = color
@@ -919,46 +919,36 @@ class DefaultDrawEntityLines:
                                     editor.layout.dataform.setdata(entityform, editor.layout.dataform.form)
                                     editor.buildhandles()
 
-                    ### '_cone2' below for HL, rest for HL2.
-                    if entity["angles"] and (entity['radius'] or entity['_cone'] or entity['_cone2'] or entity["spotlightwidth"] or entity['_inner_cone']):
+                    if entity["angles"] and ((quarkx.setupsubset()["LightingInnerConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingInnerConeKeyword"]]) or (quarkx.setupsubset()["LightingOuterConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingOuterConeKeyword"]])):
                         direct = quarkx.vect(entity["angles"])
                         # 'pitch' below for HL2 only.
                         if entity['pitch']:
                             entity['pitch'] = '%f' % - direct.x
                         ### Draws the outer cone lines.
-                        if entity['radius'] or entity['_cone'] or entity['_cone2'] or entity['spotlightwidth']:
-                            if entity['_cone2']:
-                                cone = float(entity['_cone2'])
-                                if not entity['_cone']:
-                                    cv.pencolor = color
-                            elif entity['radius'] or entity['_cone']:
-                                if entity['_cone']:
-                                    cone = float(entity['_cone'])
-                                else:
-                                    cone = float(entity['radius'])
-                            elif entity['spotlightwidth']:
-                                cone = float(entity['spotlightwidth'])/2.0
+                        if quarkx.setupsubset()["LightingOuterConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingOuterConeKeyword"]]:
+                            cone = float(entity[quarkx.setupsubset()["LightingOuterConeKeyword"]])
+                            if not entity[quarkx.setupsubset()["LightingInnerConeKeyword"]]:
+                                cv.pencolor = color
+                        elif entity['spotlightwidth']:
+                            cone = float(entity['spotlightwidth'])/2.0
+                        try:
                             for i in range(18):
                                 phi = i*2.0*3.14159/18
                                 dirvectn=qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
                                 cv.line(view.proj(org+dirvectn*radius * lightfactor),org1)
+                        except:
+                            pass
                         ### Draws the inner cone lines.
-                        if entity['_inner_cone'] or entity['_cone2']:
-                            # '_inner_cone' below for HL2 only.
-                            if entity['_inner_cone']:
-                                cone = float(entity['_inner_cone'])
-                            # '_cone' below NOT for HL2, applies to HL and other games.
-                            elif entity['_cone']:
-                                cone = float(entity['_cone'])
+                        if quarkx.setupsubset()["LightingInnerConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingInnerConeKeyword"]]:
+                            cone = float(entity[quarkx.setupsubset()["LightingInnerConeKeyword"]])
                             cv.pencolor = color
                             for i in range(9):
                                 phi = i*2.0*3.14159/9
                                 dirvectn = qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
                                 cv.line(view.proj(org+dirvectn*radius * lightfactor),org1)
-                     # Line below draws normal light full radius but does not look good.
-                     #   cv.ellipse(int(org1.x)-radius, int(org1.y)-radius, int(org1.x)+radius, int(org1.y)+radius)
                     ### Section above draws the cone(s) for "light" spot entities.
                     else:
+                        ### Line below draws normal light full radius.
                         cv.ellipse(int(org1.x)-radius, int(org1.y)-radius, int(org1.x)+radius, int(org1.y)+radius)
                 except:
                     pass
@@ -1154,6 +1144,15 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.58  2008/05/21 18:14:56  cdunde
+#To add and\or activate Half-Life 2 functions: (all original code by Alexander)
+#1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
+#      func_breakable_glass and func_breakable_surf functions
+#      (lowerleft, upperleft, lowerright and upperright)
+#2) to draw special light entity lines for functions like light_spot that have the Specifics
+#      (angles, _cone, spotlightwidth and\or _inner_cone)
+#3) face displacement. Commented out at this time. believe bezier type code should be used instead.
+#
 #Revision 1.57  2008/05/12 13:08:13  cdunde
 #Fixed light radius not showing for other games due to game support for Shine changes.
 #
