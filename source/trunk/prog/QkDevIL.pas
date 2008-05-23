@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2008/02/03 13:13:01  danielpharos
+Small code indentation clean-up
+
 Revision 1.9  2007/12/06 23:01:31  danielpharos
 Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
 
@@ -60,6 +63,9 @@ interface
 uses Windows, SysUtils, QkObjects;
 
 const
+  IL_FALSE =$0;
+  IL_TRUE  =$1;
+
 // Palette types
   IL_PAL_NONE   =$0400;
   IL_PAL_RGB24  =$0401;
@@ -221,51 +227,49 @@ const
   IL_DOUBLE         =$140A;
 
 type
-  DevILType = Integer;
-  DevILMode = Integer;
-  DevILError = Integer;
-  DevILFormat = Integer;
-  DevILFormatType = Integer;
-  DevILFormatPalette = Integer;
+  DevILType = Cardinal;
+  DevILMode = Cardinal;
+  DevILError = Cardinal;
+  DevILFormat = Cardinal;
+  DevILFormatType = Cardinal;
+  DevILFormatPalette = Cardinal;
 
 var
   ilInit: procedure; stdcall;
   ilShutDown: procedure; stdcall;
   ilGetError: function : DevILError; stdcall;
-  ilGetBoolean: function (Mode : DevILMode) : Boolean; stdcall;
-  //ilGetBooleanv: procedure (Mode : DevILMode; Param : PBoolean); stdcall;
+  ilGetBoolean: function (Mode : DevILMode) : SmallInt; stdcall;
+  //ilGetBooleanv: procedure (Mode : DevILMode; Param : PSmallInt); stdcall;
   ilGetInteger: function (Mode : DevILMode) : Integer; stdcall;
   //ilGetIntegerv: procedure (Mode : DevILMode; Param : PInteger); stdcall;
   ilSetInteger: procedure (Mode : DevILMode; Param : Integer); stdcall;
 
-  //DanielPharos: I'm guessing this is a mistake in DevIL. The return should be a Cardinal!
-  //ilGenImage: function : Integer; stdcall;
+  //ilGenImage: function : Integer; stdcall; //DanielPharos: I'm guessing this is a mistake in DevIL. The return should be a Cardinal!
   ilGenImages: procedure (Num : Integer; Images : PCardinal); stdcall;
   ilBindImage: procedure (Image : Cardinal); stdcall;
-  //ilDeleteImage: procedure (Num : Integer); stdcall;
-  ilDeleteImages: procedure (Num : Integer; Images : PCardinal); stdcall;
+  //ilDeleteImage: procedure (const Num : Cardinal); stdcall;
+  ilDeleteImages: procedure (const Num : Integer; Images : PCardinal); stdcall;
 
   { DanielPharos: The first parameter should be named Type, but since this is
   a statement in Delphi, we can't use that name }
   //ilLoad: function (xType : DevILType; const FileName : PChar) : Boolean; stdcall;
-  ilSave: function (xType : DevILType; FileName : PChar) : Boolean; stdcall;
-  ilLoadL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Boolean; stdcall;
-  ilSaveL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Integer; stdcall;
-  ilConvertImage: function (DestFormat : DevILFormat; DestType : DevILFormatType) : Boolean; stdcall;
-  ilConvertPal: function (DestFormat : DevILFormatPalette) : Boolean; stdcall;
+  ilSave: function (xType : DevILType; FileName : PChar) : SmallInt; stdcall;
+  ilLoadL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : SmallInt; stdcall;
+  ilSaveL: function (xType : DevILType; Lump : PByte; Size : Cardinal) : Cardinal; stdcall;
+  ilConvertImage: function (DestFormat : DevILFormat; DestType : DevILFormatType) : SmallInt; stdcall;
+  ilConvertPal: function (DestFormat : DevILFormatPalette) : SmallInt; stdcall;
   ilGetData: function : PByte; stdcall;
-  //ilSetData: function (Data : PByte) : Boolean; stdcall;
+  //ilSetData: function (Data : PByte) : SmallInt; stdcall;
   ilGetPalette: function : PByte; stdcall;
   //ilCopyPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
-  //ilSetPixels: procedure (XOff : Cardinal; YOff : Cardinal; ZOff : Cardinal; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall;
-  ilTexImage: function (Width : Cardinal; Height : Cardinal; Depth : Cardinal; Bpp : Byte; Format : DevILFormat; xType : DevILType; Data : PByte) : Boolean; stdcall;
-  ilDisable: function (Mode : DevILMode) : Boolean; stdcall;
-  ilEnable: function (Mode : DevILMode) : Boolean; stdcall;
-  //ilFormatFunc: function (Mode : DevILMode) : Boolean; stdcall;
-  ilOriginFunc: function (Mode : DevILMode) : Boolean; stdcall;
-  ilClearImage: function : Boolean; stdcall;
+  //ilSetPixels: procedure (XOff : Integer; YOff : Integer; ZOff : Integer; Width : Cardinal; Height : Cardinal; Depth : Cardinal; Format : DevILFormat; xType : DevILFormatType; Data : PByte); stdcall; //DanielPharos: I suspect these should be unsigned integers too! 
+  ilTexImage: function (Width : Cardinal; Height : Cardinal; Depth : Cardinal; numChannels : Byte; Format : DevILFormat; xType : DevILType; Data : PByte) : SmallInt; stdcall;
+  ilDisable: function (Mode : DevILMode) : SmallInt; stdcall;
+  ilEnable: function (Mode : DevILMode) : SmallInt; stdcall;
+  //ilFormatFunc: function (Mode : DevILMode) : SmallInt; stdcall;
+  ilOriginFunc: function (Mode : DevILMode) : SmallInt; stdcall;
+  ilClearImage: function : SmallInt; stdcall;
   ilRegisterPal: procedure (Pal : PByte; Size : Cardinal; xType : DevILFormatPalette); stdcall;
-
 
 function LoadDevIL : Boolean;
 procedure UnloadDevIL(ForceUnload: boolean);

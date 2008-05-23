@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2008/02/23 20:15:11  danielpharos
+Fix temporary tga file not being deleted after an error during dds-file saving
+
 Revision 1.13  2008/02/23 19:56:12  danielpharos
 Fix stupid typo in prev rev.
 
@@ -246,14 +249,14 @@ begin
     ilBindImage(DevILImage);
     CheckDevILError(ilGetError);
 
-    if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=false then
+    if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=IL_FALSE then
     begin
       ilDeleteImages(1, @DevILImage);
       FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
     end;
     CheckDevILError(ilGetError);
 
-    if ilClearImage=false then
+    if ilClearImage=IL_FALSE then
     begin
       ilDeleteImages(1, @DevILImage);
       FatalFileError(SysUtils.Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
@@ -404,7 +407,7 @@ begin
       DumpFileName:=GetQPath(pQuArK)+IntToStr(Random(999999));
     end;
     //DanielPharos: Can't save to IL_DDS, DevIL gives an error.
-    if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=false then
+    if ilSave(IL_TGA, PChar(DumpFileName+'.tga'))=IL_FALSE then
     begin
       ilDeleteImages(1, @DevILImage);
       FatalFileError('Unable to save DDS file. Call to ilSave failed.');
