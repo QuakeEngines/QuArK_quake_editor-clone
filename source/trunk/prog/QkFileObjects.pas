@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2008/05/24 18:52:46  danielpharos
+Fix #10#10 being counted as only one line. This should fix the line-numbering being off.
+
 Revision 1.44  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -1316,7 +1319,7 @@ begin
  try
    SaveInFile(RecommendFormat, '');
  except
-   ShowMessage('The file ' + Filename + '''s "save" support has not yet been added.  File ignored.".')
+   ShowMessage(FmtLoadStr1(5219, [Filename]));
  end;
 {while EnumObjectWindow(F) do
   SendMessage(F.Handle, wm_InternalMessage, wp_SetModify, 0);

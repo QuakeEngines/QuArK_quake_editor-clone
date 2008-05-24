@@ -622,7 +622,7 @@ Strings = {
     5216: "QuArK has left %d temporary file(s) in path %s, probably because it crashed or because of a bug. Do you want to delete this(these) file(s) now ?",
     5217: "'%s' : Cannot (un)do this operation any more because the file has been closed",
     # 5218: "Warning: the tree view you see is incomplete, because the Explorer views of QuArK cannot display the same objects more than once.",
-
+    5219: "The file %s's \"save\" support has not (yet) been added. File ignored.",
     5220: "'%s' : Invalid file size. The file is %d bytes length instead of %d",
     5221: "Cannot display '%s' in the tree view, because it is already visible in another Explorer views in QuArK.",
     5222: "This file contains a link to the file '%s' which cannot be found. The link has been ignored (and deleted).",
@@ -1046,6 +1046,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.123  2008/05/05 01:24:52  cdunde
+#Update for new release.
+#
 #Revision 1.122  2008/04/26 15:44:42  danielpharos
 #Added a new game-specific: ShadersType. This is a gamecode-value indicating what game-style shaders a game uses.
 #
