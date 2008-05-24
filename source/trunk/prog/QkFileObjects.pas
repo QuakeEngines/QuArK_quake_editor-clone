@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2008/02/23 19:25:21  danielpharos
+Moved a lot of path/file code around: should make it easier to use
+
 Revision 1.43  2007/12/06 22:58:00  danielpharos
 Workaround for a weird memory leak.
 
@@ -820,9 +823,21 @@ var
    repeat
     while P^ in cSeperators do
      begin
-      if P^ in [#13, #10] then Inc(Ligne);
-      Inc(P);
-      if P^=#10 then Inc(P);
+      case P^ of
+      #13:
+       begin
+        Inc(Ligne);
+        Inc(P);
+        if P^=#10 then Inc(P);
+       end;
+      #10:
+       begin
+        Inc(Ligne);
+        Inc(P);
+       end;
+      else
+       Inc(P);
+      end;
      end;
     if (P[0]<>'/') or (P[1]<>'/') then Exit;
     while not (P^ in [#13, #10, #0]) do
@@ -851,6 +866,7 @@ var
 
   function StringVal() : string;
   var
+    StringPart: String;
     P1: PChar;
   begin
    Result:='';
@@ -875,8 +891,8 @@ var
       #13, #10, #0: SyntaxError(5198);
      end;
     until False;
-    SetString(A1, P1+1, P-P1-1);
-    Result:=Result+A1;
+    SetString(StringPart, P1+1, P-P1-1);
+    Result:=Result+StringPart;
     Lu(1);
    until False;
   end;
