@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2008/05/24 19:20:31  danielpharos
+Fix access violation if OnClose was called before the Explorer was loaded. Happened when there was a Python loading error.
+
 Revision 1.57  2008/02/23 20:22:19  danielpharos
 Small changes to Python loading and unloading
 
@@ -1668,12 +1671,9 @@ begin
       end;
     end;
   end;
- if Explorer<>nil then
-  begin
-   ClearExplorer;
-   SavePendingFiles(True);
-   SavePositionTb('Main', False, Explorer);
-  end;
+ ClearExplorer;
+ SavePendingFiles(True);
+ SavePositionTb('Main', False, Explorer);
  if not FNoTempDelete then
   DeleteTempFiles;
 end;
