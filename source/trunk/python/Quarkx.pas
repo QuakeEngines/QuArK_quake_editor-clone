@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2008/03/14 10:06:09  danielpharos
+Fix certain helpfiles being wrongfully detected as not existing.
+
 Revision 1.60  2008/02/24 14:41:35  danielpharos
 Fixed web-links not working anymore, and added a decent error message if a local file cannot be found.
 
@@ -3289,7 +3292,7 @@ begin
   Result:=Result+'.';
 end;
 
-var ProbableCauseOfFatalError: array[-9..5] of PChar = (
+var ProbableCauseOfFatalError: array[-9..5] of String = (
    {-9}    ' (Unable to initialise Python module "Quarkx")',
    {-8}    ' (Unable to find "quarkpy" directory or incorrect file versions)',
    {-7}    ' (Unable to find or execute "quarkpy.__init__.py", function "RunQuArK()")',
@@ -3310,7 +3313,7 @@ var ProbableCauseOfFatalError: array[-9..5] of PChar = (
 procedure FatalError(Err: Integer);
 var
   P: PChar;
-  X: Array[0..65535] of char;
+  S: String;
 begin
  while Screen.FormCount>0 do
   Screen.Forms[0].Free;
@@ -3323,11 +3326,11 @@ begin
     PythonCodeEnd;
    P:=FatalErrorText;
   end;
- StrCat(X, P);
- StrCat(X, ProbableCauseOfFatalError[err]);
+ S:=strPas(P);
+ S:=S+ProbableCauseOfFatalError[err];
  ShowConsole(True);
- Windows.MessageBox(0, X, FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
- Log(strPas(x)+ ' Error Code '+IntToStr(Err));
+ Log(S + ' Error Code: ' + IntToStr(Err));
+ Windows.MessageBox(0, PChar(S), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
  ExitProcess(Err);
 end;
 
