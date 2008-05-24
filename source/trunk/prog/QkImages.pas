@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2008/03/29 15:25:58  danielpharos
+Fix some possible PSD leaks.
+
 Revision 1.19  2008/02/07 14:01:54  danielpharos
 Added palette and alpha functions and functions to retrieve color values to QuarkX
 
@@ -310,7 +313,7 @@ begin
   ilEnable(IL_ORIGIN_SET);
   CheckDevILError(ilGetError);
 
-  if ilLoadL(FileTypeDevIL, Pointer(RawBuffer), Length(RawBuffer))=false then
+  if ilLoadL(FileTypeDevIL, Pointer(RawBuffer), Length(RawBuffer))=IL_FALSE then
   begin
     ilDeleteImages(1, @DevILImage);
     FatalFileError(Format('Unable to load %s file. Call to ilLoadL failed. Please make sure the file is a valid %s file, and not damaged or corrupt.', [FormatName, FormatName]));
@@ -558,14 +561,14 @@ begin
     ilBindImage(DevILImage);
     CheckDevILError(ilGetError);
 
-    if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=false then
+    if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=IL_FALSE then
     begin
       ilDeleteImages(1, @DevILImage);
       FatalFileError(Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
     end;
     CheckDevILError(ilGetError);
 
-    if ilClearImage=false then
+    if ilClearImage=IL_FALSE then
     begin
       ilDeleteImages(1, @DevILImage);
       FatalFileError(Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
@@ -713,6 +716,7 @@ type
 var
   RawBuffer: String;
   Source: PByte;
+  SourcePalette: PRGBQuad;
   ImgData, PalData, AlphaData: String;
   DestImg, DestPal, DestAlpha: PChar;
   I, J: Integer;
@@ -763,15 +767,15 @@ begin
     SetLength(PalData,   Length(Spec2) + (256 * 3)); //palette buffer
 
     FIConvertedImage:=FreeImage_ConvertTo8Bits(FIImage);
-    Source:=FreeImage_GetPalette(FIConvertedImage);
+    SourcePalette:=FreeImage_GetPalette(FIConvertedImage);
 
     DestPal:=PChar(PalData) + Length(Spec2);
     for I:=0 to 255 do
     begin
-      PRGB(DestPal)^[2]:=PRGB(Source)^[0];
-      PRGB(DestPal)^[1]:=PRGB(Source)^[1];
-      PRGB(DestPal)^[0]:=PRGB(Source)^[2];
-      Inc(Source, 4); //FreeImage's palette is a RGBQUAD
+      PRGB(DestPal)^[2]:=PRGB(SourcePalette)^[0];
+      PRGB(DestPal)^[1]:=PRGB(SourcePalette)^[1];
+      PRGB(DestPal)^[0]:=PRGB(SourcePalette)^[2];
+      Inc(SourcePalette, 4); //FreeImage's palette is a RGBQUAD
       Inc(DestPal, 3);
     end;
 
@@ -895,6 +899,7 @@ var
   PSD: TPixelSetDescription;
   RawBuffer: String;
   Dest: PByte;
+  DestPalette: PRGBQuad;
   SourceImg, SourceAlpha, SourcePal, pSourceImg, pSourceAlpha, pSourcePal: PChar;
   Width, Height: Integer;
   PaddingSource, PaddingDest: Integer;
@@ -947,17 +952,17 @@ begin
 
     if PSD.Format = psf8bpp then
     begin
-      Dest:=FreeImage_GetPalette(FIImage);
+      DestPalette:=FreeImage_GetPalette(FIImage);
       SourcePal:=PChar(PSD.ColorPalette);
       pSourcePal:=SourcePal;
       for I:=0 to 255 do
       begin
-        PRGBA(Dest)^[0]:=PRGB(pSourcePal)^[0];
-        PRGBA(Dest)^[1]:=PRGB(pSourcePal)^[1];
-        PRGBA(Dest)^[2]:=PRGB(pSourcePal)^[2];
-        PRGBA(Dest)^[3]:=0;
+        PRGBA(DestPalette)^[0]:=PRGB(pSourcePal)^[0];
+        PRGBA(DestPalette)^[1]:=PRGB(pSourcePal)^[1];
+        PRGBA(DestPalette)^[2]:=PRGB(pSourcePal)^[2];
+        PRGBA(DestPalette)^[3]:=0;
         Inc(pSourcePal, 3);
-        Inc(Dest, 4);
+        Inc(DestPalette, 4);
       end;
 
       Dest:=FreeImage_GetBits(FIImage);
