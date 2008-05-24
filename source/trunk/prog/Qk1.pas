@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2008/02/23 20:22:19  danielpharos
+Small changes to Python loading and unloading
+
 Revision 1.56  2008/02/23 19:25:21  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -1665,9 +1668,12 @@ begin
       end;
     end;
   end;
- ClearExplorer;
- SavePendingFiles(True);
- SavePositionTb('Main', False, Explorer);
+ if Explorer<>nil then
+  begin
+   ClearExplorer;
+   SavePendingFiles(True);
+   SavePositionTb('Main', False, Explorer);
+  end;
  if not FNoTempDelete then
   DeleteTempFiles;
 end;
