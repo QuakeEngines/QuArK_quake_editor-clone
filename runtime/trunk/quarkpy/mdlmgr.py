@@ -168,6 +168,7 @@ class ModelLayout(BaseLayout):
 
   ### To link Used Skin Textures of the current model being edited into the Texture Browser for displaying.
     def putskinsintexturebrowser(self):
+        return
         import qutils
         tbx_list = quarkx.findtoolboxes("Texture Browser...");
         ToolBoxName, ToolBox = tbx_list[0]
@@ -654,20 +655,18 @@ class ModelLayout(BaseLayout):
         if skin is not c.currentskin:
             c.currentskin = skin
             saveskin = skin
-            if quarkx.setupsubset(SS_MODEL, "Options")["SelectColorsDlg"] == "1":
-                m = qmenu.item("Dummy", None, "")
-                plugins.mdlpaintmodes.ColorSelectorClick(m)
             self.selectcomponent(c)
             
         if c != self.editor.Root.currentcomponent:
             self.selectcomponent(c)
-        # Updates the models textures in the Texture Browser's 'Used Textures' to be displayed.
-        self.putskinsintexturebrowser()
+
 
     def selchange(self):
         "This calls for what ever selection def you are using above."
         global treeviewselchanged
 
+        # Updates the models textures in the Texture Browser's 'Used Textures' to be displayed.
+        self.putskinsintexturebrowser()
         if self.explorer.sellist != []:
             fs = self.explorer.sellist[0]
         elif self.explorer.uniquesel is not None:
@@ -744,6 +743,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.68  2008/05/19 00:10:00  cdunde
+#Fixed "Color Selector Dialog" to update correctly when needed.
+#
 #Revision 1.67  2008/05/11 18:33:28  cdunde
 #Fixed Used Textures in the Texture Browser properly without breaking other functions.
 #
