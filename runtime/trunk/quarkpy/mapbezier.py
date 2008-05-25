@@ -963,7 +963,8 @@ class CPTextureHandle(qhandles.GenericHandle):
 # getting tag point to actually tag the bezier control point.
 #
 def tagB2CpClick(m):
-    editor = mapeditor()
+    import qeditor
+    editor = qeditor.mapeditor()
     if editor is None: return
     tagb2cp(m.o, editor)
 
@@ -1156,6 +1157,9 @@ mapeditor.MapEditor.finishdrawing = pickfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.44  2008/02/22 09:52:24  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.43  2007/12/14 22:30:53  cdunde
 #Minor corrections of new Infobase links.
 #
