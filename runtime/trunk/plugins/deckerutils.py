@@ -28,6 +28,21 @@ def FindOriginTexPolyPos(entity):
             return ObjectOrigin(i) # give me the origin of the poly
     return None
 
+def FindOriginTexPolyPos2(entity):
+    "Find origin by searching for poly under entity which has the common/origin texture"
+    subpolys = entity.findallsubitems("", ":p", ":g")
+    for i in subpolys:
+        subfaces = i.findallsubitems("",":f",":g");
+        # Make sure that all faces on poly contains the common/origin texture
+        foundoriginpoly=1
+        for j in subfaces:
+            if not j["tex"]=="common/origin": # If just one face does not contain the common/origin texture, its not an origin-poly
+                foundoriginpoly=0
+                break
+        if foundoriginpoly==1:
+            return ObjectOrigin(i) # give me the origin of the poly
+    return None
+
 def FindOriginFlagPolyPos(entity):
     "Find origin by searching for poly under entity which has the Origin-texture-flag set"
     subpolys = entity.findallsubitems("", ":p", ":g")
@@ -130,6 +145,9 @@ def RegisterInToolbox(toolboxname, qtxfolder, obj):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.9  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.6  2001/01/06 18:33:52  decker_dk
 #Use 4-spaces instead of 8-spaces 'tabs'
 #

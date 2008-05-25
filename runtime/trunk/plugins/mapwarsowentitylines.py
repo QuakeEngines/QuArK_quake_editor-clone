@@ -9,7 +9,7 @@
 #$Header$
 
 Info = {
-   "plug-in":       "Quake-3 Arrow Extensions",
+   "plug-in":       "Warsow Arrow Extensions",
    "desc":          "Displays axis for rotating entities and jump-archs for push-entities. Note: RED-colored jump-archs indicates that the jump isn't correctly calculated, due to either non-default gravity or too low an arch.",
    "date":          "20 may 2008",
    "author":        "Decker, X7",
@@ -29,7 +29,7 @@ ObjectOrigin = quarkpy.mapentities.ObjectOrigin
 import plugins.deckerutils
 FindOriginFlagPolyPos = plugins.deckerutils.FindOriginTexPolyPos2
 
-class Quake3DrawEntityLines(DefaultDrawEntityLines):
+class WarsowDrawEntityLines(DefaultDrawEntityLines):
 
    # - Decker. Trying to calculate a more correct jump-arch, using the math from Q3's GameSource,
    #   but I simply can't figure out how to do that.
@@ -210,6 +210,8 @@ class Quake3DrawEntityLines(DefaultDrawEntityLines):
                 self.showoriginline(entity, 1, 2, view, rotcolor)
             elif entity.name == "func_rotating:b":
                 self.showoriginline(entity, 4, 8, view, rotcolor) # func_rotating has different bitvalues for X-axis and Y-axis
+            elif entity.name == "func_door_rotating:b":
+                self.showoriginline(entity, 64, 128, view, rotcolor)
             elif entity.name == "func_pendulum:b":
                 self.showoriginline(entity, 0, 0, view, rotcolor)
             elif entity.name == "trigger_push:b":
@@ -221,22 +223,13 @@ class Quake3DrawEntityLines(DefaultDrawEntityLines):
 # Register this class with its gamename
 #
 quarkpy.mapentities.EntityLinesMapping.update({
-  "Quake 3": Quake3DrawEntityLines()
+  "Warsow": WarsowDrawEntityLines()
 })
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
-# Revision 1.6  2005/10/15 00:51:24  cdunde
-# To reinstate headers and history
 #
-# Revision 1.3  2002/12/29 12:45:17  decker_dk
-# A description in the plugin-infoarea, about what the black/red colors of the jump-archs mean.
-#
-# Revision 1.2  2002/12/28 14:03:54  decker_dk
-# Added some jump-arch kindof entity-lines for 'trigger_push' and 'target_push'. Some of the math ain't correct.
-#
-# Revision 1.1  2001/01/30 19:20:30  decker_dk
-# Basically a copy of mapquake2entitylines.py
+# Basically a copy of mapquake3entitylines.py
 #
 #

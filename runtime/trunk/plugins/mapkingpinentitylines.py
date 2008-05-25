@@ -9,10 +9,10 @@
 #$Header$
 
 Info = {
-   "plug-in":       "Quake-2 Arrow Extensions",
-   "desc":          "Displays axis for rotating entities, func_rotating, func_door_rotating, and  Lazarus, func_rotating_dh, func_door_rot_dh, func_door_swinging, func_trackchange",
+   "plug-in":       "KingPin Arrow Extensions",
+   "desc":          "Displays axis for rotating entities",
    "date":          "17 may 2008",
-   "author":        "Decker",
+   "author":        "Decker, X7",
    "author e-mail": "decker@post1.tele.dk",
    "quark":         "Version 6.0 Beta 1" }
 
@@ -27,7 +27,7 @@ ObjectOrigin = quarkpy.mapentities.ObjectOrigin
 import plugins.deckerutils
 FindOriginFlagPolyPos = plugins.deckerutils.FindOriginFlagPolyPos
 
-class Quake2DrawEntityLines(DefaultDrawEntityLines):
+class KingPinDrawEntityLines(DefaultDrawEntityLines):
 
    def showoriginline(self, entity, xaxisbitvalue, yaxisbitvalue, view, color):
         orgpos = FindOriginFlagPolyPos(entity)
@@ -60,14 +60,6 @@ class Quake2DrawEntityLines(DefaultDrawEntityLines):
         if org1.visible:
             if entity.name == "func_rotating:b":
                 self.showoriginline(entity, 4, 8, view, rotcolor) # func_rotating has different bitvalues for X-axis and Y-axis
-            elif entity.name == "func_rotating_dh:b":
-                self.showoriginline(entity, 4, 8, view, rotcolor)
-            elif entity.name == "func_door_swinging:b":
-                self.showoriginline(entity, 64, 128, view, rotcolor)
-            elif entity.name == "func_trackchange:b":
-                self.showoriginline(entity, 64, 128, view, rotcolor)
-            elif entity.name == "func_door_rot_dh:b":
-                self.showoriginline(entity, 64, 128, view, rotcolor)
             elif entity.name == "func_door_rotating:b":
                 self.showoriginline(entity, 64, 128, view, rotcolor)
 
@@ -75,16 +67,13 @@ class Quake2DrawEntityLines(DefaultDrawEntityLines):
 # Register this class with its gamename
 #
 quarkpy.mapentities.EntityLinesMapping.update({
-  "Quake 2": Quake2DrawEntityLines()
+  "KingPin": KingPinDrawEntityLines()
 })
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
-# Revision 1.4  2005/10/15 00:51:24  cdunde
-# To reinstate headers and history
 #
-# Revision 1.1  2001/01/06 18:34:22  decker_dk
-# Was in quark 5.10
+# Basically a copy of mapquake2entitylines.py
 #
 #
