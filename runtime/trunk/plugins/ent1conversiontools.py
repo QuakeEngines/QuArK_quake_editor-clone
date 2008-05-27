@@ -41,7 +41,7 @@ using the actual game files and other .qrk files as templates.
 #
 #
 
-import os, sys
+import os, os.path
 import quarkx
 import quarkpy.qmacro
 from quarkpy.qutils import *
