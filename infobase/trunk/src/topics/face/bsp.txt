@@ -10,13 +10,13 @@ of course):
    v = x * v_axis.x + y * v_axis.y + z * v_axis.z + v_offset
 </code>
 (from
-<a href=http://www.flipcode.com/tutorials/tut_q2levels.shtml>
+<a href="http://www.flipcode.com/tutorials/tut_q2levels.shtml">
 Max McGuire's Quake2 BSP file format tutorial</a> on www.flipcode.com)
 
 With Q3 otoh, the texture-coordinates of each vertex of the face are
 given, as a five-vector, along with the spatial coordinates (5-space
 math, for L.M.Bujold fans!).  See
-<a href=http://graphics.stanford.edu/~kekoa/q3/>  
+<a href="http://graphics.stanford.edu/~kekoa/q3/"> 
 Kekoa Proudfoot Unofficial Quake3 Map Specs</a>.  This representation
 is rather redundant for brush-faces, but extends gracefully to patches.
 
