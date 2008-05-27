@@ -262,7 +262,6 @@ class ModelFaceHandle(qhandles.GenericHandle):
         menu = [CleanComponent, NewComponent, MoveFaces, CopyFaces, DeleteFaces]
         return menu
 
-
     def selection(self, editor, view, modelfacelist, flagsmouse, draghandle=None):
         global lastmodelfaceremovedlist
         comp = editor.Root.currentcomponent
@@ -498,8 +497,8 @@ class VertexHandle(qhandles.GenericHandle):
             self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
 
         def add_vertex_click(m, self=self, editor=editor, view=view):
-            from mdlmgr import savefacesel
-            savefacesel = 1
+            import mdlmgr
+            mdlmgr.savefacesel = 1
             addvertex(editor, editor.Root.currentcomponent, self.pos)
 
         def remove_vertex_click(m, self=self, editor=editor, view=view):
@@ -630,8 +629,8 @@ class VertexHandle(qhandles.GenericHandle):
 
             pickedpos = editor.Root.currentcomponent.currentframe.vertices[editor.ModelVertexSelList[0][0]]
 
-            from mdlmgr import savefacesel
-            savefacesel = 1
+            import mdlmgr
+            mdlmgr.savefacesel = 1
             if len(editor.ModelVertexSelList) > 1:
                 replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "multi Mesh vertex alignment", 0)
                 editor.ModelVertexSelList = []
@@ -723,8 +722,8 @@ class VertexHandle(qhandles.GenericHandle):
 
             pickedpos = editor.Root.currentcomponent.currentframe.vertices[editor.ModelVertexSelList[0][0]]
 
-            from mdlmgr import savefacesel
-            savefacesel = 1
+            import mdlmgr
+            mdlmgr.savefacesel = 1
             replacevertexes(editor, comp, editor.ModelVertexSelList, 0, view, "merged 2 vertexes", 2)
 
         Forcetogrid = qmenu.item("&Force to grid", force_to_grid_click,"|Force to grid:\n\nThis will cause any vertex to 'snap' to the nearest location on the editor's grid for the view that the RMB click was made in.|intro.modeleditor.rmbmenus.html#vertexrmbmenu")
@@ -775,7 +774,6 @@ class VertexHandle(qhandles.GenericHandle):
             menu = [AddVertex, qmenu.sep, ClearPicklist, qmenu.sep, AlignVertexes, AlignVertOpsPop, qmenu.sep, MergeVertexes]
 
         return menu
-
 
     def draw(self, view, cv, draghandle=None):
         from qbaseeditor import flagsmouse, currentview # To stop all drawing, causing slowdown, during a zoom.
@@ -1353,7 +1351,6 @@ class SkinHandle(qhandles.GenericHandle):
 
         p = view.proj(self.pos)
         if p.visible:
-                
             cv.pencolor = skinviewmesh
             pv2 = p.tuple
             if flagsmouse == 16384 and editor.SkinVertexSelList == []:
@@ -3214,6 +3211,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.131  2008/05/03 21:48:25  cdunde
+#To fix multiple face selection error while keeping multiple vertex merging function working.
+#
 #Revision 1.130  2008/05/01 15:39:51  danielpharos
 #Made an import more consistent with all others
 #

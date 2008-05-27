@@ -322,8 +322,8 @@ def mNFOWM(m):
 
 def mNOSF(m):
     # No selection fill function.
-    from mdlmgr import treeviewselchanged
-    treeviewselchanged = 1
+    import mdlmgr
+    mdlmgr.treeviewselchanged = 1
     if not MldOption("NOSF"):
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = None
@@ -335,8 +335,8 @@ def mNOSF(m):
 
 def mFFONLY(m):
     # (draw) Front faces only function.
-    from mdlmgr import treeviewselchanged
-    treeviewselchanged = 1
+    import mdlmgr
+    mdlmgr.treeviewselchanged = 1
     if not MldOption("FFONLY"):
         quarkx.setupsubset(SS_MODEL, "Options")['FFONLY'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
@@ -348,8 +348,8 @@ def mFFONLY(m):
 
 def mBFONLY(m):
     # (draw) Back faces only function.
-    from mdlmgr import treeviewselchanged
-    treeviewselchanged = 1
+    import mdlmgr
+    mdlmgr.treeviewselchanged = 1
     if not MldOption("BFONLY"):
         quarkx.setupsubset(SS_MODEL, "Options")['BFONLY'] = "1"
         quarkx.setupsubset(SS_MODEL, "Options")['NOSF'] = None
@@ -640,6 +640,9 @@ def OptionsMenuRMB():
 #
 #
 #$Log$
+#Revision 1.32  2008/05/01 19:15:22  danielpharos
+#Fix treeviewselchanged not updating.
+#
 #Revision 1.31  2008/05/01 13:52:31  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #
