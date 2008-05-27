@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [DanielPharos]: Fix errors when clicking menu items not being shown/reported.
+
 * [cdunde]: Fixes and additions by X7 for rotation entities that use an origin brush.
 
 * [cdunde]: Added new functions and handles for Half-Life 2 and other games

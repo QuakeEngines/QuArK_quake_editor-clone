@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/08/04 14:41:02  danielpharos
+Removed unused 'uses'
+
 Revision 1.13  2005/09/28 10:49:03  peter-b
 Revert removal of Log and Header keywords
 
@@ -155,12 +158,20 @@ begin
       if Options and cioHourglass <> 0 then
        ProgressIndicatorStart(0,0);
       try
-       callresult:=PyEval_CallObject(callback, arglist);
+       try
+        callresult:=PyEval_CallObject(callback, arglist);
+       finally
+        Py_DECREF(arglist);
+       end;
+       if callresult=nil then
+        begin
+         PythonCodeEnd;
+         Exit;
+        end;
        Py_XDECREF(callresult);
       finally
        if Options and cioHourglass <> 0 then
         ProgressIndicatorStop;
-       Py_DECREF(arglist);
       end;
      end;
    finally
