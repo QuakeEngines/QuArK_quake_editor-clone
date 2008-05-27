@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2008/05/24 19:21:18  danielpharos
+Changed some Char-arrays into Strings and fixed some usage of uninitialized memory.
+
 Revision 1.61  2008/03/14 10:06:09  danielpharos
 Fix certain helpfiles being wrongfully detected as not existing.
 
@@ -431,8 +434,17 @@ begin
  arglist:=Py_BuildValueX('(O)', [Info]);
  if arglist=Nil then Exit;
  try
-  InCall:=True;
-  callresult:=PyEval_CallObject(Call, arglist);
+  try
+   InCall:=True;
+   callresult:=PyEval_CallObject(Call, arglist);
+  finally
+   Py_DECREF(arglist);
+  end;
+  if callresult=nil then
+   begin
+    PythonCodeEnd;
+    Exit;
+   end;
   if callresult<>Nil then
    begin
     if callresult <> Py_None then
@@ -441,7 +453,6 @@ begin
    end;
  finally
   InCall:=False;
-  Py_DECREF(arglist);
   if nInterval>0 then
    begin
     Interval:=nInterval;
@@ -3147,13 +3158,21 @@ begin
    if Hourglass then
     ProgressIndicatorStart(0,0);
    try
-    callresult:=PyEval_CallObject(fnt, arglist);
+    try
+     callresult:=PyEval_CallObject(fnt, arglist);
+    finally
+     Py_DECREF(arglist);
+    end;
+    if callresult=nil then
+     begin
+      PythonCodeEnd;
+      Exit;
+     end;
     Result:=callresult<>Nil;
     Py_XDECREF(callresult);
    finally
     if Hourglass then
      ProgressIndicatorStop;
-    Py_DECREF(arglist);
    end;
    PythonCodeEnd;
   end;
@@ -3167,30 +3186,30 @@ begin
    PythonCodeEnd;
    Exit;
   end;
- try
-  if value=Nil then
-   PythonCodeEnd
-  else
-   if PyCallable_Check(value) then
-    begin
-     if Hourglass then
-      ProgressIndicatorStart(0,0);
+ if value=Nil then
+  PythonCodeEnd
+ else
+  if PyCallable_Check(value) then
+   begin
+    if Hourglass then
+     ProgressIndicatorStart(0,0);
+    try
      try
       Result:=PyEval_CallObject(value, args);
      finally
-      if Hourglass then
-       ProgressIndicatorStop;
+      Py_DECREF(args);
      end;
-     PythonCodeEnd;
-    end
-   else
-    begin
-     Result:=value;
-     Py_INCREF(Result);
+    finally
+     if Hourglass then
+      ProgressIndicatorStop;
     end;
- finally
-  Py_DECREF(args);
- end;
+    PythonCodeEnd;
+   end
+  else
+   begin
+    Result:=value;
+    Py_INCREF(Result);
+   end;
 end;
 
 function CallMacro(self: PyObject; const fntname: String) : PyObject;
@@ -3215,11 +3234,15 @@ begin
   if fnt=Nil then Exit;
   if Hourglass then
    ProgressIndicatorStart(0,0);
-  Result:=PyEval_CallObject(fnt, args);
+  try
+   Result:=PyEval_CallObject(fnt, args);
+  finally
+   Py_DECREF(args);
+  end;
+  PythonCodeEnd;
  finally
   if Hourglass then
    ProgressIndicatorStop;
-  Py_DECREF(args);
  end;
 end;
 
@@ -3326,8 +3349,7 @@ begin
     PythonCodeEnd;
    P:=FatalErrorText;
   end;
- S:=strPas(P);
- S:=S+ProbableCauseOfFatalError[err];
+ S:=strPas(P)+ProbableCauseOfFatalError[err];
  ShowConsole(True);
  Log(S + ' Error Code: ' + IntToStr(Err));
  Windows.MessageBox(0, PChar(S), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
@@ -3481,12 +3503,16 @@ begin
       if args=Nil then Exit;
       try
        li:=PyEval_CallObject(MenuItemCls, args);
-       if li=Nil then Exit;
-       PyList_Append(LItems, li);
-       Py_DECREF(li);
       finally
        Py_DECREF(args);
       end;
+      if li=Nil then
+       begin
+        PythonCodeEnd;
+        Exit;
+       end;
+      PyList_Append(LItems, li);
+      Py_DECREF(li);
 
       if L.Count<Result then
        Item:=WindowMenu.Items[L.Count]

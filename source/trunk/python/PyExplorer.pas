@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/09/28 10:49:03  peter-b
+Revert removal of Log and Header keywords
+
 Revision 1.5  2001/03/20 21:35:21  decker_dk
 Updated copyright-header
 
@@ -158,11 +161,16 @@ begin
    if arglist=Nil then Exit;
    try
     callresult:=PyEval_CallObject(fnt, arglist);
-    Result:=callresult<>Nil;
-    Py_XDECREF(callresult);
    finally
     Py_DECREF(arglist);
    end;
+   if callresult=nil then
+    begin
+     PythonCodeEnd;
+     Exit;
+    end;
+   Py_XDECREF(callresult);
+   Result:=True;
    PythonCodeEnd;
   end;
 end;

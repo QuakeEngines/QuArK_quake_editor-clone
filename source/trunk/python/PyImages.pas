@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2008/05/27 12:49:58  danielpharos
+Fix an icon memory leak
+
 Revision 1.18  2007/02/19 12:06:20  danielpharos
 Fixed an access violation with disabled button bitmaps
 
@@ -693,20 +696,25 @@ begin
  if arglist=Nil then Exit;
  try
   rslt:=PyEval_CallObject(FOnClick, arglist);
-  if (rslt<>Nil) and PyObject_IsTrue(rslt) then
-   begin
-    MouseCapture:=True;
-    OnMouseMove:=MouseMoveEvt;
-   end
-  else
-   begin
-    MouseCapture:=False;
-    OnMouseMove:=Nil;
-   end;
-  Py_XDECREF(rslt);
  finally
   Py_DECREF(arglist);
  end;
+ if rslt=nil then
+  begin
+   PythonCodeEnd;
+   Exit;
+  end;
+ if (rslt<>Nil) and PyObject_IsTrue(rslt) then
+  begin
+   MouseCapture:=True;
+   OnMouseMove:=MouseMoveEvt;
+  end
+ else
+  begin
+   MouseCapture:=False;
+   OnMouseMove:=Nil;
+  end;
+ Py_XDECREF(rslt);
  PythonCodeEnd;
 end;
 

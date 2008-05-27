@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2007/04/12 15:04:42  danielpharos
+BIG moving around of code. All the .map save routines should now be in QkMap. This will allow easy changes, and will simplify future map format support.
+
 Revision 1.13  2005/09/28 10:48:31  peter-b
 Revert removal of Log and Header keywords
 
@@ -167,22 +170,22 @@ var
 begin
  Result:=Nil;
  if args=Nil then Exit;
+ dupclass:=CallMacro(@PythonObj, 'duplicator');
+ if dupclass=Nil then Exit;
  try
-  dupclass:=CallMacro(@PythonObj, 'duplicator');
-  if dupclass=Nil then Exit;
+  dupmethod:=PyObject_GetAttrString(dupclass, PChar(MethodName));
+  if dupmethod=Nil then Exit;
   try
-   dupmethod:=PyObject_GetAttrString(dupclass, PChar(MethodName));
-   if dupmethod=Nil then Exit;
    try
     Result:=PyEval_CallObject(dupmethod, args);
    finally
-    Py_DECREF(dupmethod);
+    Py_DECREF(args);
    end;
   finally
-   Py_DECREF(dupclass);
+   Py_DECREF(dupmethod);
   end;
  finally
-  Py_DECREF(args);
+  Py_DECREF(dupclass);
  end;
  PythonCodeEnd;
 end;*)

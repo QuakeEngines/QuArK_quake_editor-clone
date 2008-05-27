@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2008/02/27 00:08:24  danielpharos
+Shaders are legal view.backgroundimages too.
+
 Revision 1.40  2008/02/21 21:07:20  danielpharos
 Removed redundant OpenGL code.
 
@@ -1085,12 +1088,17 @@ begin
    if arglist=Nil then Exit;
    try
     callresult:=PyEval_CallObject(fnt, arglist);
-    if (callresult<>Nil) and (callresult<>Py_None) then
-     Result:=PyInt_AsLong(callresult);
-    Py_XDECREF(callresult);
    finally
     Py_DECREF(arglist);
    end;
+   if callresult=nil then
+    begin
+     PythonCodeEnd;
+     Exit;
+    end;
+   if (callresult<>Nil) and (callresult<>Py_None) then
+    Result:=PyInt_AsLong(callresult);
+   Py_XDECREF(callresult);
    PythonCodeEnd;
   end;
 end;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2008/05/27 10:39:32  danielpharos
+Fix errors when clicking menu items not being shown/reported
+
 Revision 1.14  2007/08/04 14:41:02  danielpharos
 Removed unused 'uses'
 
@@ -248,10 +251,15 @@ begin
    if arglist=Nil then Exit;
    try
     result:=PyEval_CallObject(FCallback, arglist);
-    Py_XDECREF(result);
    finally
     Py_DECREF(arglist);
    end;
+   if result=nil then
+    begin
+     PythonCodeEnd;
+     Exit;
+    end;
+   Py_XDECREF(result);
   end;
 end;*)
 
