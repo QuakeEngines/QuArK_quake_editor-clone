@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2008/05/01 12:18:45  danielpharos
+Fix wrong NEXUIZ gamecode.
+
 Revision 1.66  2008/04/23 20:12:38  cdunde
 Setup for Warsow with .md3 model support.
 
@@ -1218,19 +1221,21 @@ begin
  Result:=g_SetupSet[ssGeneral].GetFloatSpec('InternalVersion', 0);
 end;
 
-const
- RegFileAssocFormat = 'QuArK_%s_file';
-
 function MakeAssociation({Reg: TRegistry2;} const Ext, Command: String) : Boolean;
+const
+ RegFileDescrFormat = 'QuArK %s';
+ RegFileAssocFormat = 'QuArK_%s_file';
 var
  Reg: TRegistry2;
  S1, S: String;
  QClassPtr: QObjectClass;
  QClassInfo: TFileObjectClassInfo;
  Description: String;
+ ClassKey: String;
 begin
  QClassPtr:=RequestClassOfType('.'+Ext);
  Description:=Ext;
+ ClassKey:=Format(RegFileAssocFormat, [Ext]);
  if (QClassPtr<>Nil) and (QClassPtr.InheritsFrom(QFileObject)) then
   begin
    QFileObjectClass(QClassPtr).FileObjectClassInfo(QClassInfo);
@@ -1238,22 +1243,37 @@ begin
   end;
 
  Result:=False;
- Reg:=TRegistry2.Create; try
- Reg.RootKey:=HKEY_CLASSES_ROOT;
- if not Reg.OpenKey('\.'+Ext, True) then Exit;
-{if not Reg.ReadString('', S1) or (S1='') then
-  begin}
-   S1:=Format(RegFileAssocFormat, [Ext]);
-   if not Reg.WriteString('', S1) then Exit;
- {end;}
- if not Reg.OpenKey('\'+S1, True) then Exit;
- if not Reg.ReadString('', S) or (S='') then
-  Reg.WriteString('', Description);
- if not Reg.OpenKey('shell\open\command', True) then Exit;
- if not Reg.WriteString('', Command) then Exit;
-{if (Icon>=0) and Reg.OpenKey('\'+S1+'\DefaultIcon', True) then
-  Reg.WriteString('', Format('%s,%d', [Application.ExeName, Icon]));}
- finally Reg.Free; end;
+ Reg:=TRegistry2.Create;
+ try
+  Reg.RootKey:=HKEY_CLASSES_ROOT;
+  if not Reg.OpenKey('\.'+Ext, True) then Exit;
+  try
+   S:=Format(RegFileAssocFormat, [Ext]);
+   if not Reg.ReadString('', S1) or (S=S1) then
+    if not Reg.WriteString('', S) then Exit;
+  finally
+   Reg.CloseKey;
+  end;
+  if not Reg.OpenKey('\'+ClassKey, True) then Exit;
+  try
+   S:=Format(RegFileDescrFormat, [Description]);
+   if not Reg.ReadString('', S1) or (S=S1) then
+    Reg.WriteString('', S);
+  finally
+   Reg.CloseKey;
+  end;
+  if not Reg.OpenKey('\'+ClassKey+'\shell\open\command', True) then Exit;
+  try
+   if not Reg.ReadString('', S) or (S=Command) then
+    if not Reg.WriteString('', Command) then Exit;
+   {if (Icon>=0) and Reg.OpenKey('\'+S1+'\DefaultIcon', True) then
+    Reg.WriteString('', Format('%s,%d', [Application.ExeName, Icon]));}
+  finally
+   Reg.CloseKey;
+  end;
+ finally
+  Reg.Free;
+ end;
  Result:=True;
 end;
 
@@ -1291,63 +1311,65 @@ var
  S, S1, Ext, Command: String;
  Active, Activate: Boolean;
  Reg: TRegistry2;
-
-  procedure OpenReg;
-  begin
-   if Reg=Nil then
-    begin
-     Reg:=TRegistry2.Create;
-     Reg.RootKey:=HKEY_CLASSES_ROOT;
-    end;
-  end;
-
 begin
  Command:=GetRegCommand;
  with SetupSubSet(ssGeneral, 'File Associations') do
   begin
-   Reg:=Nil; try
-   for I:=0 to Specifics.Count-1 do
-    begin
-     S:=Specifics[I];
-     P:=Pos('=',S);
-     if (P>1) and (S[1]='.') then
-      begin
-       Activate:=Copy(S,P+1,MaxInt)='!';
-       Ext:=Copy(S, 2, P-2);
-       OpenReg;
-       Active:=Reg.OpenKey('\.'+Ext, False)
-        and Reg.ReadString('', S1)
-        and (S1<>'') and Reg.OpenKey('\'+S1+'\shell\open\command', False)
+   Reg:=Nil;
+   try
+    for I:=0 to Specifics.Count-1 do
+     begin
+      S:=Specifics[I];
+      P:=Pos('=',S);
+      if (P=1) or not (S[1]='.') then continue;
+
+      Activate:=Copy(S,P+1,MaxInt)='!';
+      Ext:=Copy(S, 2, P-2);
+      if Reg=Nil then
+       begin
+        Reg:=TRegistry2.Create;
+        Reg.RootKey:=HKEY_CLASSES_ROOT;
+       end;
+
+      Active:=Reg.OpenKey('\.'+Ext, False)
+        and Reg.ReadString('', S1) and (S1<>'')
+        and Reg.OpenKey('\'+S1+'\shell\open\command', False)
         and Reg.ReadString('', S)
         and (CompareText(S, Command) = 0);
+      Reg.CloseKey;
 
-       if not Active and Activate then   { auto-associate }
-        begin
-         Reg.Free;
-         Reg:=Nil;
-         Active:=MakeAssociation({Reg,} Ext, Command);
-        end;
-       if Active or (Activate and Forced) then   { set icon and always show icon }
-        begin
-         OpenReg;
-         if Reg.OpenKey('\'+S1, True) then
-          begin
-           Reg.WriteString('AlwaysShowExt', '');
-           P:=Round(GetFloatSpec('i'+Ext, -1));
-           if (P>=0) and Reg.OpenKey('DefaultIcon', True) then
-            Reg.WriteString('', Format('%s,%d', [Application.ExeName, P]));
-           Reg.CloseKey;
-          end;
-        end;
-
-        {if not Reg.OpenKey('\', False)
-         or not Reg.DeleteKey(S1)
-         or not Reg.DeleteKey('.'+Ext) then
-          GlobalWarning(FmtLoadStr1(5613, [Ext]));}
-
+      if not Active and Activate then   { auto-associate }
+       begin
+        Reg.Free;
+        Reg:=Nil;
+        Active:=MakeAssociation({Reg,} Ext, Command);
        end;
+      if Active or (Activate and Forced) then   { set icon and always show icon }
+       begin
+        if Reg=Nil then
+         begin
+          Reg:=TRegistry2.Create;
+          Reg.RootKey:=HKEY_CLASSES_ROOT;
+         end;
+        if Reg.OpenKey('\'+S1, True) then
+         begin
+          Reg.WriteString('AlwaysShowExt', ''); //FIXME: Add an option for this!
+          P:=Round(GetFloatSpec('i'+Ext, -1));
+          if (P>=0) and Reg.OpenKey('\'+S1+'\DefaultIcon', True) then
+           Reg.WriteString('', Format('%s,%d', [Application.ExeName, P]));
+          Reg.CloseKey;
+         end;
+       end;
+
+       {if not Reg.OpenKey('\', False)
+        or not Reg.DeleteKey(S1)
+        or not Reg.DeleteKey('.'+Ext) then
+         GlobalWarning(FmtLoadStr1(5613, [Ext]));}
+
     end;
-   finally Reg.Free; end;
+   finally
+    Reg.Free;
+   end;
   end;
 end;
 
