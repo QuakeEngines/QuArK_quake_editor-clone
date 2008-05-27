@@ -358,16 +358,15 @@ def edit_newgroup(editor, m=None):
 
 def texturebrowser(reserved=None):
     "Opens the texture browser."
-    editor = mapeditor()
-    if editor is None:
-        return
+
     #
     # Get the texture to select from the current selection.
     #
 
     editor = mapeditor()
     if editor is None:
-        seltex = None
+        #seltex = None
+        return
     else:
         texlist = quarkx.texturesof(editor.layout.explorer.sellist)
         if len(texlist)==1:
@@ -412,7 +411,6 @@ def texturebrowser(reserved=None):
  #       ToolBox.appenditem(Folder)
     ToolBox.appenditem(Folder)
     quarkx.opentoolbox("", seltex)
-
 
 
 #def warninginvfaces(editor):
@@ -748,6 +746,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.33  2008/05/01 17:22:09  danielpharos
+#Fix flags-overwriting.
+#
 #Revision 1.32  2008/02/22 09:52:24  danielpharos
 #Move all finishdrawing code to the correct editor, and some small cleanups.
 #

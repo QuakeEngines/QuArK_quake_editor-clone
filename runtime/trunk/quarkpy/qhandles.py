@@ -930,10 +930,9 @@ class RedImageDragObject(DragObject):
         self.z = z        ## Added this for Terrain objects - cdunde 05-14-05
         self.redcolor = redcolor
         self.redhandledata = None
-## the lines below where added for the Terrain Generator
-        if mapeditor() is not None:
-            editor = mapeditor()
-        else:
+## the lines below were added for the Terrain Generator
+        editor = mapeditor()
+        if editor is None:
             quarkx.clickform = view.owner  # Rowdys -important, gets the editor
             editor = mapeditor()
             if editor is None:
@@ -1255,6 +1254,7 @@ def refreshtimer(self):
                 self.view.repaint()
                 try:
                     if editor.ModelFaceSelList != []:
+                        import mdlhandles
                         mdlhandles.ModelFaceHandle(GenericHandle).draw(editor, self.view, editor.EditorObjectList)
                 except:
                     pass
@@ -1304,7 +1304,6 @@ def refreshtimer(self):
             else:
                 if not isinstance(editor.dragobject, mdlhandles.LinearHandle):
                     return
-                    
         else:
             pass
     else:
@@ -2164,6 +2163,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.72  2008/05/25 23:19:34  cdunde
+#Fixed Model Editor Skin-view Linear vertex handles from not drawing.
+#
 #Revision 1.71  2008/05/19 00:09:42  cdunde
 #Fixed the loss of the model editor causing the Skin-view to not work properly.
 #
