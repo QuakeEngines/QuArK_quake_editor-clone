@@ -190,12 +190,6 @@ class GameConsole(BatchConsole):
             #
             # Run Quake !
             #
-            oldmapmodes = []
-            for p in quarkx.listmapviews():
-                if p.viewmode != "wire":
-                    oldmapmodes.append((p, p.viewmode))   # ready to restore the view modes
-            self.oldmapmodes = oldmapmodes
-
             formlist = quarkx.forms()
             if len(formlist):
                 try:    # free some memory and closes 3D views
@@ -209,8 +203,6 @@ class GameConsole(BatchConsole):
 
 
     def progexit(self, reserved):
-        for view, mode in self.oldmapmodes:
-            view.viewmode = mode
         self.close()
 
     def close(self):
@@ -219,15 +211,14 @@ class GameConsole(BatchConsole):
             del self.filelistdata
         except:
             pass
-        try:
-            del self.oldmapmodes
-        except:
-            pass
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.15  2007/08/21 10:26:35  danielpharos
+#Small changes to let HL2 build again.
+#
 #Revision 1.14  2007/03/22 22:27:31  danielpharos
 #Fixed a typo.
 #
