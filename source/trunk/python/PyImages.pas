@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2007/02/19 12:06:20  danielpharos
+Fixed an access violation with disabled button bitmaps
+
 Revision 1.17  2007/02/09 10:44:17  danielpharos
 Fixes for memory leaks
 
@@ -240,7 +243,6 @@ end;
 
 const
  ConstImageSize = 16;
- Placeholder    = Pointer(1);
 
 var
  GlobalImageList: TImageList = Nil;
@@ -253,7 +255,7 @@ begin
   begin
    GlobalImageList:=TImageList.Create(Application);
    GlobalImageList.Handle:=ImageList_Create(ConstImageSize, ConstImageSize,
-    ILC_COLORDDB or ILC_MASK, 16, 16);
+    ILC_COLORDDB or ILC_MASK, 0, 4);
   end;
  if ImageSources=Nil then
   ImageSources:=TList.Create;
@@ -282,6 +284,7 @@ begin
      ImageSources[I]:=Nil;
    finally Keeping.Free; end;
   end;
+ ListView1.SmallImages:=nil;
 end;
 
 function LoadGlobalImageList(Q: QObject) : Integer;
@@ -371,7 +374,7 @@ begin
   begin
    I:=ImageSources.IndexOf(o);
    if I>=0 then
-    ImageSources[I]:=Placeholder;
+    ImageSources[I]:=nil;
   end;
  try
   with PyImage1(o)^ do
@@ -934,5 +937,10 @@ initialization
 
 finalization
   FinalizeInternalImages;
-
+  {if GlobalImageList<>nil then  //Has parent Application, so it automatically destroyed
+    GlobalImageList.Free;}
+  if ImageSources<>nil then
+    ImageSources.Free;
+  if ListViews<>nil then
+    ListViews.Free;
 end.
