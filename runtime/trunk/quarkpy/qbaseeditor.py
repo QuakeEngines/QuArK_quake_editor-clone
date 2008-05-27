@@ -405,9 +405,9 @@ class BaseEditor:
                             trivertex0 = quarkx.vect(vertex0[1]-int(texWidth*.5), vertex0[2]-int(texHeight*.5), 0)
                             trivertex1 = quarkx.vect(vertex1[1]-int(texWidth*.5), vertex1[2]-int(texHeight*.5), 0)
                             trivertex2 = quarkx.vect(vertex2[1]-int(texWidth*.5), vertex2[2]-int(texHeight*.5), 0)
-                            vertex0X, vertex0Y,vertex0Z = view.proj(trivertex0).tuple
-                            vertex1X, vertex1Y,vertex1Z = view.proj(trivertex1).tuple
-                            vertex2X, vertex2Y,vertex2Z = view.proj(trivertex2).tuple
+                            vertex0X, vertex0Y, vertex0Z = view.proj(trivertex0).tuple
+                            vertex1X, vertex1Y, vertex1Z = view.proj(trivertex1).tuple
+                            vertex2X, vertex2Y, vertex2Z = view.proj(trivertex2).tuple
                             cv.line(int(vertex0X), int(vertex0Y), int(vertex1X), int(vertex1Y))
                             cv.line(int(vertex1X), int(vertex1Y), int(vertex2X), int(vertex2Y))
                             cv.line(int(vertex2X), int(vertex2Y), int(vertex0X), int(vertex0Y))
@@ -440,9 +440,9 @@ class BaseEditor:
                                 trivertex0 = quarkx.vect(vertex0[1]-int(texWidth*.5), vertex0[2]-int(texHeight*.5), 0)
                                 trivertex1 = quarkx.vect(vertex1[1]-int(texWidth*.5), vertex1[2]-int(texHeight*.5), 0)
                                 trivertex2 = quarkx.vect(vertex2[1]-int(texWidth*.5), vertex2[2]-int(texHeight*.5), 0)
-                                vertex0X, vertex0Y,vertex0Z = view.proj(trivertex0).tuple
-                                vertex1X, vertex1Y,vertex1Z = view.proj(trivertex1).tuple
-                                vertex2X, vertex2Y,vertex2Z = view.proj(trivertex2).tuple
+                                vertex0X, vertex0Y, vertex0Z = view.proj(trivertex0).tuple
+                                vertex1X, vertex1Y, vertex1Z = view.proj(trivertex1).tuple
+                                vertex2X, vertex2Y, vertex2Z = view.proj(trivertex2).tuple
                                 if MldOption("Ticks") == "1":
                                     cv.brushcolor = WHITE
                                     cv.ellipse(int(vertex0X)-2, int(vertex0Y)-2, int(vertex0X)+2, int(vertex0Y)+2)
@@ -1450,6 +1450,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.110  2008/05/01 19:15:24  danielpharos
+#Fix treeviewselchanged not updating.
+#
 #Revision 1.109  2008/05/01 13:52:32  danielpharos
 #Removed a whole bunch of redundant imports and other small fixes.
 #

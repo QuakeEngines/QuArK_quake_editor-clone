@@ -78,7 +78,7 @@ class MapUserDataPanel(UserDataPanel):
         Btns = []
         ico_maped=ico_dict['ico_maped']
         for tb, icon in (("New map items...", 25), ("Texture Browser...", 26)):
-            icons =  (ico_maped[0][icon], ico_maped[1][icon])
+            icons = (ico_maped[0][icon], ico_maped[1][icon])
             toolboxes = quarkx.findtoolboxes(tb)
             for toolbox, root in toolboxes:
                 new = quarkx.newobj(root.shortname + '.qtxfolder')
@@ -171,6 +171,7 @@ def set_sign(vec):
       return -vec
     else:
       return vec
+
 def ArbRotationMatrix(normal, angle):
      # qhandles.UserRotationMatrix with an angle added
      # normal: normal vector for the view plane
@@ -381,6 +382,9 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.26  2008/02/07 13:19:07  danielpharos
+#Fix typo in comment
+#
 #Revision 1.25  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

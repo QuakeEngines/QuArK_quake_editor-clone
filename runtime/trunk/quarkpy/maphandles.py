@@ -60,7 +60,6 @@ class IconHandle(qhandles.IconHandle):
         return mapentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
 
 
-
 class PointSpecHandle(qhandles.CenterHandle):
     "3D point0 handle-like Specifics."
 
@@ -103,7 +102,7 @@ def CenterEntityHandle(o, view, handleclass=IconHandle, pos=None):
         #
         for spec, cls in mapentities.ListAngleSpecs(o):
             s = o[spec]
-            if s:                
+            if s:
                 stov, vtos = cls.map
                 try:
                     normal = stov(s)
@@ -129,7 +128,7 @@ def CenterEntityHandle(o, view, handleclass=IconHandle, pos=None):
             s = o[spec]
             if s:
                 pointpos=quarkx.vect(s)
-                obj=PointSpecHandle(pointpos ,o ,spec )
+                obj=PointSpecHandle(pointpos, o, spec)
                 obj.hint=spec
                 hp.append(obj)
         #
@@ -2023,6 +2022,15 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.71  2008/05/21 18:14:55  cdunde
+#To add and\or activate Half-Life 2 functions: (all original code by Alexander)
+#1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
+#      func_breakable_glass and func_breakable_surf functions
+#      (lowerleft, upperleft, lowerright and upperright)
+#2) to draw special light entity lines for functions like light_spot that have the Specifics
+#      (angles, _cone, spotlightwidth and\or _inner_cone)
+#3) face displacement. Commented out at this time. believe bezier type code should be used instead.
+#
 #Revision 1.70  2008/05/14 20:40:40  cdunde
 #To fix small typo error.
 #
