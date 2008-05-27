@@ -125,7 +125,8 @@ def GetEntityChain(firsttargetname, list):
 
 def RegisterInToolbox(toolboxname, qtxfolder, obj):
 # FIXME - Make so ':form' also can be added somewhere.
-    for t in quarkx.findtoolboxes(toolboxname):
+    toolboxes = quarkx.findtoolboxes(toolboxname)
+    for t in toolboxes:
         for f in t[1].subitems:
             if (f.shortname == qtxfolder):
                 # If object already is in toolbox, don't put it in again!
@@ -145,6 +146,9 @@ def RegisterInToolbox(toolboxname, qtxfolder, obj):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.10  2008/05/25 21:55:04  cdunde
+#Fixes and additions by X7 for rotation entities that use an origin brush.
+#
 #Revision 1.9  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #
