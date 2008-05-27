@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2008/05/24 19:02:22  danielpharos
+Moved a string to the dictionary
+
 Revision 1.45  2008/05/24 18:52:46  danielpharos
 Fix #10#10 being counted as only one line. This should fix the line-numbering being off.
 
@@ -1254,7 +1257,7 @@ begin
      if not MoveFile(PChar(TempFile), PChar(AlternateFile)) then
       begin
        g_Form1.NoTempDelete:=True;
-       Raise EErrorFmt(5516, [AlternateFile, S, ExtractFileName(AlternateFile)]);
+   //    Raise EErrorFmt(5516, [AlternateFile, S, ExtractFileName(AlternateFile)]);
       end;
      S:=AlternateFile;
     finally

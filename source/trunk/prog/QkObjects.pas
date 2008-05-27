@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.100  2008/05/05 05:18:37  cdunde
+Update for new release version.
+
 Revision 1.99  2008/05/05 01:26:16  cdunde
 Update for new release version.
 
@@ -969,8 +972,8 @@ begin
   begin
     Result:=TQStream(QFileList.Objects[I]);
 
-    if maUnique in Mode then
-      Raise EErrorFmt(5189, [theFilename]);
+ //   if maUnique in Mode then
+ //     Raise EErrorFmt(5189, [theFilename]);
 
     if maNoOpen in Mode then
       Exit;
