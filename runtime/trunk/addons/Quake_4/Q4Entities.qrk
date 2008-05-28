@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:38:43  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/03/28 19:10:42  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -52191,12 +52194,24 @@ QQRKSRC1
       name: =
       {
         Txt = "&"
-        Hint = "Name of this entity, used as a target by another entity."
+        Hint = "This must have a distinct name to work."$0D
+               "Also used as a target by another entity."
       }
-      name: =
+      light: =
       {
         Txt = "&"
-        Hint = "This must have a distinct name to work"
+        Hint = "Its intensity, how bright it is, not its color"
+      }
+       _color: =
+      {
+        Txt = "&"
+        Hint = "light color (not the intensity, only the color)"
+      }
+       _color: =
+      {
+        Txt = "&"
+        Typ = "L"
+        Hint = "Click here to pick the light color."
       }
       editormodel: =
       {
@@ -52318,31 +52333,48 @@ QQRKSRC1
         Hint = "Sets this to a level-of-detail value where this"$0D
                "light is drawn only when >= r_lightDetailLevel"
       }
-       _color: =
-      {
-        Txt = "&"
-        Hint = "light color (not the intensity, only the color)"
-      }
-       _color: =
-      {
-        Txt = "&"
-        Typ = "L"
-        Hint = "Click here to pick the light color."
-      }
-      light: =
-      {
-        Txt = "&"
-        Hint = "Its intensity, how bright it is, not its color"
-      }
       origin: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "light location. Also used in spotlight settings below."
       }
-      angle: =
+      angle =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "spotlight setting, for direction of the light"
+      }
+      projected: =
+      {
+        Txt = "&"
+        Hint = "spotlight setting, for projected lighting set to 1"
+      }
+      falloff: =
+      {
+        Txt = "&"
+        Hint = "spotlight setting, for falloff set to 1"
+      }
+      noshadows: =
+      {
+        Txt = "&"
+        Hint = "spotlight setting, for noshadows set to 1"
+      }
+      light_target: =
+      {
+        Txt = "&"
+        Hint = "spotlight setting, the Z position of the light below its origin."$0D
+               " For example: 0 0 -56 will show on the floor when its origin is 0 0 40"
+      }
+      light_up: =
+      {
+        Txt = "&"
+        Hint = "spotlight setting, the Y area coverage of the light from its origin."$0D
+               " For example: 0 -64 0 will show a -Y 40 units out from its origin at 0 0 40"
+      }
+      light_right: =
+      {
+        Txt = "&"
+        Hint = "spotlight setting, the X area coverage of the light from its origin."$0D
+               " For example: -128 0 0 will show a -64 & + 64 units wide from its origin at 0 0 40"
       }
     }
     speaker:form =
