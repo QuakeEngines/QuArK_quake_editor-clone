@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2008/05/16 20:57:50  danielpharos
+Use centralized call to get correct directory
+
 Revision 1.16  2007/08/14 16:32:59  danielpharos
 HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
 
@@ -104,16 +107,20 @@ type
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
         end;
 
+procedure GCFDLLConversionTool(packagefile: PChar; textfile: PChar);
+
  {------------------------}
 
 implementation
 
 uses Quarkx, PyObjects, Game, QkObjectClassList, Logging, QkApplPaths;
 
-const RequiredGCFAPI=1;
+const RequiredGCFAPI = 2;
 var
 // binding to c dll
-  Hgcfwrap  : HINST;
+  Hhllibwrap : HMODULE;
+  Hgcfwrap : HMODULE;
+
 // c signatures
 //DLL_EXPORT DWORD APIVersion(void)
 //DLL_EXPORT p_packagehandle GCFOpen(char* PackageName)
@@ -126,6 +133,7 @@ var
 //DLL_EXPORT const char* GCFSubElementName(p_packagefile p )
 //DLL_EXPORT unsigned long GCFReadFile(p_packagefile p ,LPBYTE lpData)
 //DLL_EXPORT unsigned long GCFFileSize(p_packagefile p )
+//DLL_EXPORT char GCFPrepList(char* arg0, char* arg1)
 
   APIVersion          : function    : Longword; cdecl;
   GCFOpen             : function   (name: PChar) : PChar; cdecl;
@@ -138,9 +146,11 @@ var
   GCFNumSubElements   : function   (pkgfile: PChar): Integer; cdecl;
   GCFGetSubElement    : function   (pkgfile: PChar;index : Longword): PChar; cdecl;
   GCFSubElementName   : function   (pkgfile: PChar): PChar; cdecl;
+  GCFPrepList         : function   (packagefile: PChar; textfile: PChar) : Integer; cdecl;
 
 procedure Fatal(x:string);
 begin
+  Log(LOG_CRITICAL,'Error during operation on GCF file: %s',[x]);
   Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise InternalE(x);
 end;
@@ -156,6 +166,10 @@ procedure initdll;
 begin
   if Hgcfwrap = 0 then
   begin
+    Hhllibwrap := LoadLibrary(PChar(GetQPath(pQuArKDll)+'HLLib.dll'));
+    if Hhllibwrap = 0 then
+      Fatal('Unable to load dlls/HLLib.dll');
+
     Hgcfwrap := LoadLibrary(PChar(GetQPath(pQuArKDll)+'QuArKGCF.dll'));
     if Hgcfwrap = 0 then
       Fatal('Unable to load dlls/QuArKGCF.dll')
@@ -174,6 +188,7 @@ begin
       GCFNumSubElements   := InitDllPointer(Hgcfwrap, 'GCFNumSubElements');
       GCFGetSubElement    := InitDllPointer(Hgcfwrap, 'GCFGetSubElement');
       GCFSubElementName   := InitDllPointer(Hgcfwrap, 'GCFSubElementName');
+      GCFPrepList         := InitDllPointer(Hgcfwrap, 'GCFPrepList');
     end;
   end;
 end;
@@ -196,6 +211,14 @@ begin
     GCFNumSubElements   := nil;
     GCFGetSubElement    := nil;
     GCFSubElementName   := nil;
+    GCFPrepList         := nil;
+  end;
+
+  if Hhllibwrap <> 0 then
+  begin
+    if FreeLibrary(Hhllibwrap)=false then
+      Fatal('Unable to unload dlls/HLLib.dll');
+    Hhllibwrap := 0;
   end;
 end;
 
@@ -408,12 +431,31 @@ end;
 
  {------------------------}
 
+procedure GCFDLLConversionTool(packagefile: PChar; textfile: PChar);
+var
+  GCFResult: Integer;
+begin
+ if Hgcfwrap = 0 then
+ begin
+   initdll;
+   GCFResult:=GCFPrepList(packagefile, textfile);
+   //uninitdll;
+ end
+ else
+   GCFResult:=GCFPrepList(packagefile, textfile);
+ if GCFResult = 3 then
+   Fatal('Error Loading "' + packagefile + '": Unsupported package type.');
+end;
+
+ {------------------------}
+
 initialization
 begin
   {tbd is the code ok to be used ?  }
   RegisterQObject(QGCF, 's');
   RegisterQObject(QGCFFolder, 'a');
-  Hgcfwrap :=0;
+  Hgcfwrap := 0;
+  HHLLibwrap := 0;
 end;
 
 finalization
