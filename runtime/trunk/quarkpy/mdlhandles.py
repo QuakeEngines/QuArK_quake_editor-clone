@@ -2580,6 +2580,46 @@ class LinearHandle(qhandles.GenericHandle):
         qhandles.GenericHandle.__init__(self, pos)
         self.mgr = mgr    # a LinHandlesManager instance
 
+    def getvtxpos(self, view, new, item, count, item_vtx, tri_index, item_tri_index, projvtx0, projvtx1, projvtx2):
+        if item_vtx == 0 and tri_index == item_tri_index:
+            vtx0bbox = quarkx.boundingboxof([new[0].subitems[item]])
+            vtx0pos = (vtx0bbox[0] + vtx0bbox[1]) * .5
+            projvtx0 = view.proj(vtx0pos.tuple[0], vtx0pos.tuple[1], 0)
+            count = count + 1
+        if item_vtx == 1 and tri_index == item_tri_index:
+            vtx1bbox = quarkx.boundingboxof([new[0].subitems[item]])
+            vtx1pos = (vtx1bbox[0] + vtx1bbox[1]) * .5
+            projvtx1 = view.proj(vtx1pos.tuple[0], vtx1pos.tuple[1], 0)
+            count = count + 1
+        if item_vtx == 2 and tri_index == item_tri_index:
+            vtx2bbox = quarkx.boundingboxof([new[0].subitems[item]])
+            vtx2pos = (vtx2bbox[0] + vtx2bbox[1]) * .5
+            projvtx2 = view.proj(vtx2pos.tuple[0], vtx2pos.tuple[1], 0)
+            count = count + 1
+        return [count, projvtx0, projvtx1, projvtx2]
+
+    def drawface(self, view, cv, count, comp, tri_index, texWidth, texHeight, projvtx0, projvtx1, projvtx2):
+        if count != 3:
+            ###  Get missing vtx's
+            if projvtx0 is None:
+                projvtx0 = view.proj(quarkx.vect((comp.triangles[tri_index][0][1]-int(texWidth*.5), comp.triangles[tri_index][0][2]-int(texHeight*.5), 0)))
+            if projvtx1 is None:
+                projvtx1 = view.proj(quarkx.vect((comp.triangles[tri_index][1][1]-int(texWidth*.5), comp.triangles[tri_index][1][2]-int(texHeight*.5), 0)))
+            if projvtx2 is None:
+                projvtx2 = view.proj(quarkx.vect((comp.triangles[tri_index][2][1]-int(texWidth*.5), comp.triangles[tri_index][2][2]-int(texHeight*.5), 0)))
+            cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
+            cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
+            cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
+            count = 0
+            projvtx0 = projvtx1 = projvtx2 = None
+        else:
+            cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
+            cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
+            cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
+            count = 0
+            projvtx0 = projvtx1 = projvtx2 = None
+        return [count, projvtx0, projvtx1, projvtx2]
+
     def drag(self, v1, v2, flags, view):
         if view.info["viewname"] == "skinview":
             box = quarkx.boundingboxof(self.mgr.list)
@@ -2606,9 +2646,44 @@ class LinearHandle(qhandles.GenericHandle):
         else:
             new = None
 
-        # This draws the Linear handles for all views and the Skin-view problem starts for a drag.
+        # This draws the Linear handles for all views and
+        # the Skin-view drag lines except for center handle drags which is done in class LinRedHandle, linoperation function.
         self.mgr.drawbox(view)    # Draws the full circle and all handles during drag and Ctrl key is being held down.
         cv = view.canvas()
+        if new is not None and view.info["viewname"] == "skinview" and not isinstance(self, LinRedHandle):
+            dragcolor = MapColor("SkinDragLines", SS_MODEL)
+            cv.pencolor = dragcolor
+            comp = self.mgr.editor.Root.currentcomponent
+            tex = comp.currentskin
+            if tex is not None:
+                texWidth,texHeight = tex["Size"]
+            else:
+                texWidth,texHeight = view.clientarea
+            tri_index = vtx = -1
+            count = 0
+            projvtx0 = projvtx1 = projvtx2 = None
+            for item in range(len(new[0].subitems)):
+                item_tri_index, item_vtx = new[0].subitems[item].shortname.split(",")
+                item_tri_index = int(item_tri_index)
+                item_vtx = int(item_vtx)
+
+                if item_tri_index != tri_index and tri_index == -1:
+                    tri_index = item_tri_index
+
+                if item_tri_index != tri_index or count == 3 or item == len(new[0].subitems)-1:
+                    if item == len(new[0].subitems)-1:
+                        count, projvtx0, projvtx1, projvtx2 = self.getvtxpos(view, new, item, count, item_vtx, tri_index, item_tri_index, projvtx0, projvtx1, projvtx2)
+                    count, projvtx0, projvtx1, projvtx2 = self.drawface(view, cv, count, comp, tri_index, texWidth, texHeight, projvtx0, projvtx1, projvtx2)
+
+                    if item == len(new[0].subitems)-1 and item_tri_index != tri_index:
+                        tri_index = item_tri_index
+                        count, projvtx0, projvtx1, projvtx2 = self.getvtxpos(view, new, item, count, item_vtx, tri_index, item_tri_index, projvtx0, projvtx1, projvtx2)
+                        count, projvtx0, projvtx1, projvtx2 = self.drawface(view, cv, count, comp, tri_index, texWidth, texHeight, projvtx0, projvtx1, projvtx2)
+                        break
+
+                    tri_index = item_tri_index
+                count, projvtx0, projvtx1, projvtx2 = self.getvtxpos(view, new, item, count, item_vtx, tri_index, item_tri_index, projvtx0, projvtx1, projvtx2)
+
         for h in view.handles:
             h.draw(view, cv, h)
         return self.mgr.list, new
@@ -3211,6 +3286,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.132  2008/05/27 19:36:16  danielpharos
+#Fixed another bunch of wrong imports
+#
 #Revision 1.131  2008/05/03 21:48:25  cdunde
 #To fix multiple face selection error while keeping multiple vertex merging function working.
 #
