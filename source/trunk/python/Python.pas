@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2008/05/16 20:57:50  danielpharos
+Use centralized call to get correct directory
+
 Revision 1.27  2008/02/23 20:22:20  danielpharos
 Small changes to Python loading and unloading
 
@@ -121,8 +124,6 @@ Some layout changes. I like columns, specially when there is lots of data.
 unit Python;
 
 interface
-
-uses QkApplPaths, Logging;
 
  {-------------------}
 
@@ -522,7 +523,7 @@ implementation
 uses
  {$IFDEF Debug} QkObjects, {$ENDIF}
   Windows, Forms, Registry, SysUtils, StrUtils, QkObjects, SystemDetails,
-  ExtraFunctionality;
+  QkApplPaths, ExtraFunctionality, Logging;
 
  {-------------------}
 
