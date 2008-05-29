@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2008/05/27 15:09:54  danielpharos
+Fixed remaining of Python errors getting lost
+
 Revision 1.62  2008/05/24 19:21:18  danielpharos
 Changed some Char-arrays into Strings and fixed some usage of uninitialized memory.
 
@@ -277,7 +280,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      PakFiles, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
-     QkApplPaths, MapError, StrUtils, QkImages;
+     QkApplPaths, MapError, StrUtils, QkImages, QkGCF;
 
  {-------------------}
 
@@ -2511,28 +2514,31 @@ begin
 
   L:=TQList.Create;
   try
-   SetupQrk:=MakeAddOnsList; try
+   SetupQrk:=MakeAddOnsList;
+   try
     { looks for toolbox data in all add-ons }
-   BrowseToolBoxes(SetupQrk, P, L);
-  finally
-   SetupQrk.AddRef(-1);
-  end;
-
-  Result:=PyList_New(0);
-  for I:=0 to L.Count-1 do
-   begin
-    Q:=L[I];
-    S:=Q.Specifics.Values['Root'];
-    if S='' then Continue;   { no data }
-    T:=Q.SubElements.FindName(S);
-    if T=Nil then Continue;   { no data }
-    S:=Q.Specifics.Values['ToolBox'];
-    obj:=Py_BuildValueX('sO', [PChar(S), @T.PythonObj]);
-    if obj=Nil then Exit;
-    PyList_Append(Result, obj);
-    Py_DECREF(obj);
+    BrowseToolBoxes(SetupQrk, P, L);
+   finally
+    SetupQrk.AddRef(-1);
    end;
-  finally L.Free; end;
+
+   Result:=PyList_New(0);
+   for I:=0 to L.Count-1 do
+    begin
+     Q:=L[I];
+     S:=Q.Specifics.Values['Root'];
+     if S='' then Continue;   { no data }
+     T:=Q.SubElements.FindName(S);
+     if T=Nil then Continue;   { no data }
+     S:=Q.Specifics.Values['ToolBox'];
+     obj:=Py_BuildValueX('sO', [PChar(S), @T.PythonObj]);
+     if obj=Nil then Exit;
+     PyList_Append(Result, obj);
+     Py_DECREF(obj);
+    end;
+  finally
+   L.Free;
+  end;
  except
   EBackToPython;
   Result:=Nil;
@@ -2918,8 +2924,26 @@ begin
   end;
 end;
 
+function xGCFDLLConvTool(self, args: PyObject) : PyObject; cdecl;
+var
+  packagefile: PChar;
+  textfile: PChar;
+begin
+  Result:=Nil;
+  try
+    if not PyArg_ParseTupleX(args, 'ss', [@packagefile, @textfile]) then
+      Exit;
+    {if packagefile^<>#0 then}
+    GCFDLLConversionTool(packagefile, textfile);
+    Result:=PyNoResult;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
 const
- MethodTable: array[0..81] of TyMethodDef =
+ MethodTable: array[0..82] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3002,6 +3026,7 @@ const
    (ml_name: 'setpixel';        ml_meth: xSetPixel;        ml_flags: METH_VARARGS),
    (ml_name: 'setpixelpal';     ml_meth: xSetPixelPal;     ml_flags: METH_VARARGS),
    (ml_name: 'setpixelalpha';   ml_meth: xSetPixelAlpha;   ml_flags: METH_VARARGS),
+   (ml_name: 'GCFDLLConvTool';  ml_meth: xGCFDLLConvTool;  ml_flags: METH_VARARGS),
    (ml_Name: Nil;               ml_meth: Nil));
 
  {-------------------}
