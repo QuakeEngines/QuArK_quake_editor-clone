@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2008/05/16 20:57:49  danielpharos
+Use centralized call to get correct directory
+
 Revision 1.25  2008/02/23 19:25:20  danielpharos
 Moved a lot of path/file code around: should make it easier to use
 
@@ -124,7 +127,7 @@ var
 
 procedure Fatal(x:string);
 begin
-  Log(LOG_CRITICAL,'Error during operation on DDS file: %s',[x]);
+  Log(LOG_CRITICAL,'Error during operation on SteamFS file: %s',[x]);
   Windows.MessageBox(0, pchar(X), PChar(LoadStr1(401)), MB_TASKMODAL or MB_ICONERROR or MB_OK);
   Raise Exception.Create(x);
 end;
