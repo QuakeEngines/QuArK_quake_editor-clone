@@ -2646,19 +2646,22 @@ class LinearHandle(qhandles.GenericHandle):
         else:
             new = None
 
-        # This draws the Linear handles for all views and
-        # the Skin-view drag lines except for center handle drags which is done in class LinRedHandle, linoperation function.
+        # This draws all of the views, including the Skin-view, Linear handles and drag lines
+        # except for center handle drags which is done in class LinRedHandle, linoperation function.
         self.mgr.drawbox(view)    # Draws the full circle and all handles during drag and Ctrl key is being held down.
         cv = view.canvas()
+        # This section draws the Skin-view drag lines, except for the center Linear handle.
         if new is not None and view.info["viewname"] == "skinview" and not isinstance(self, LinRedHandle):
             dragcolor = MapColor("SkinDragLines", SS_MODEL)
             cv.pencolor = dragcolor
             comp = self.mgr.editor.Root.currentcomponent
             tex = comp.currentskin
+
             if tex is not None:
                 texWidth,texHeight = tex["Size"]
             else:
                 texWidth,texHeight = view.clientarea
+
             tri_index = vtx = -1
             count = 0
             projvtx0 = projvtx1 = projvtx2 = None
@@ -2666,7 +2669,6 @@ class LinearHandle(qhandles.GenericHandle):
                 item_tri_index, item_vtx = new[0].subitems[item].shortname.split(",")
                 item_tri_index = int(item_tri_index)
                 item_vtx = int(item_vtx)
-
                 if item_tri_index != tri_index and tri_index == -1:
                     tri_index = item_tri_index
 
@@ -2683,6 +2685,41 @@ class LinearHandle(qhandles.GenericHandle):
 
                     tri_index = item_tri_index
                 count, projvtx0, projvtx1, projvtx2 = self.getvtxpos(view, new, item, count, item_vtx, tri_index, item_tri_index, projvtx0, projvtx1, projvtx2)
+
+        # This section draws all the editor views drag lines, except for the center Linear handle.
+        if new is not None and view.info["viewname"] != "skinview" and not isinstance(self, LinRedHandle):
+            comp = self.mgr.editor.Root.currentcomponent
+            framevtxs = comp.currentframe.vertices
+            dragcolor = MapColor("Drag3DLines", SS_MODEL)
+            cv.pencolor = dragcolor
+            projvtx0 = projvtx1 = projvtx2 = None
+            for tri in self.mgr.tristodrawlist:
+                for tri_vtx in range(len(tri[4])):
+                    for item in new[0].subitems:
+                        if int(item.shortname) == tri[4][tri_vtx][0]:
+                            if tri_vtx == 0:
+                                vtx0bbox = quarkx.boundingboxof([item])
+                                vtx0pos = (vtx0bbox[0] + vtx0bbox[1]) * .5
+                                projvtx0 = view.proj(vtx0pos.tuple[0], vtx0pos.tuple[1], vtx0pos.tuple[2])
+                            if tri_vtx == 1:
+                                vtx1bbox = quarkx.boundingboxof([item])
+                                vtx1pos = (vtx1bbox[0] + vtx1bbox[1]) * .5
+                                projvtx1 = view.proj(vtx1pos.tuple[0], vtx1pos.tuple[1], vtx1pos.tuple[2])
+                            if tri_vtx == 2:
+                                vtx2bbox = quarkx.boundingboxof([item])
+                                vtx2pos = (vtx2bbox[0] + vtx2bbox[1]) * .5
+                                projvtx2 = view.proj(vtx2pos.tuple[0], vtx2pos.tuple[1], vtx2pos.tuple[2])
+                ###  Get stationary vtx's
+                if projvtx0 is None:
+                    projvtx0 = view.proj(framevtxs[tri[4][0][0]])
+                if projvtx1 is None:
+                    projvtx1 = view.proj(framevtxs[tri[4][1][0]])
+                if projvtx2 is None:
+                    projvtx2 = view.proj(framevtxs[tri[4][2][0]])
+                cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
+                cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
+                cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
+                projvtx0 = projvtx1 = projvtx2 = None
 
         for h in view.handles:
             h.draw(view, cv, h)
@@ -3286,6 +3323,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.133  2008/05/29 05:07:49  cdunde
+#Added Skin-view Linear rotation and distortion drag lines drawing.
+#
 #Revision 1.132  2008/05/27 19:36:16  danielpharos
 #Fixed another bunch of wrong imports
 #
