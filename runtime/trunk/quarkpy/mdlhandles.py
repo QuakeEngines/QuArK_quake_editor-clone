@@ -374,6 +374,10 @@ class ModelFaceHandle(qhandles.GenericHandle):
         if quarkx.setupsubset(SS_MODEL,"Options")['NFO'] == "1":
             return
         from qbaseeditor import flagsmouse, currentview
+        if (flagsmouse == 1032 or flagsmouse == 1036):
+            if ((isinstance(editor.dragobject.handle, LinSideHandle)) or (isinstance(editor.dragobject.handle, LinCornerHandle))) and quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is None:
+                return
+
         if (flagsmouse == 1040 or flagsmouse == 1056):
             if (currentview.info["viewname"] != "editors3Dview" and currentview.info["viewname"] != "3Dwindow"):
                 if quarkx.setupsubset(SS_MODEL,"Options")['NFOWM'] == "1":
@@ -2297,6 +2301,7 @@ class ModelEditorLinHandlesManager:
         self.editor = mdleditor.mdleditor
         self.color = color
         self.bbox = bbox
+        self.tristodrawlist = []
         bmin, bmax = bbox
         bmin1 = bmax1 = ()
         for dir in "xyz":
@@ -2327,17 +2332,24 @@ class ModelEditorLinHandlesManager:
             pass
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
-                pass
-            else:
                 self.tristodrawlist = []
                 self.selvtxlist = []
-                if quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is None:
-                    for vtx in self.editor.ModelVertexSelList:
+                for tri_index in self.editor.ModelFaceSelList:
+                    for vtx in self.editor.Root.currentcomponent.triangles[tri_index]:
                         if vtx[0] in self.selvtxlist:
                             pass
                         else:
                             self.selvtxlist = self.selvtxlist + [vtx[0]] 
                         self.tristodrawlist = self.tristodrawlist + findTrianglesAndIndexes(comp, vtx[0], vtx[1])
+            else:
+                self.tristodrawlist = []
+                self.selvtxlist = []
+                for vtx in self.editor.ModelVertexSelList:
+                    if vtx[0] in self.selvtxlist:
+                        pass
+                    else:
+                        self.selvtxlist = self.selvtxlist + [vtx[0]] 
+                    self.tristodrawlist = self.tristodrawlist + findTrianglesAndIndexes(comp, vtx[0], vtx[1])
                 # From here down handles the vertex "face edge" extrusion.
                 if quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeFaces"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["ExtrudeBulkHeads"] == "1" and len(self.editor.ModelVertexSelList) > 1:
                     if len(self.editor.ModelVertexSelList) > 1:
@@ -2651,7 +2663,7 @@ class LinearHandle(qhandles.GenericHandle):
         self.mgr.drawbox(view)    # Draws the full circle and all handles during drag and Ctrl key is being held down.
         cv = view.canvas()
         # This section draws the Skin-view drag lines, except for the center Linear handle.
-        if new is not None and view.info["viewname"] == "skinview" and not isinstance(self, LinRedHandle):
+        if new is not None and view.info["viewname"] == "skinview" and not isinstance(self, LinRedHandle) and quarkx.setupsubset(SS_MODEL, "Options")['SingleSelDragLines'] is None:
             dragcolor = MapColor("SkinDragLines", SS_MODEL)
             cv.pencolor = dragcolor
             comp = self.mgr.editor.Root.currentcomponent
@@ -2694,21 +2706,43 @@ class LinearHandle(qhandles.GenericHandle):
             cv.pencolor = dragcolor
             projvtx0 = projvtx1 = projvtx2 = None
             for tri in self.mgr.tristodrawlist:
+                if new[0].subitems != [] and quarkx.setupsubset(SS_MODEL, "Options")['NVDL'] is not None:
+                    break
+                if new[0].subitems == [] and quarkx.setupsubset(SS_MODEL, "Options")['NFDL'] is not None:
+                    break
                 for tri_vtx in range(len(tri[4])):
-                    for item in new[0].subitems:
-                        if int(item.shortname) == tri[4][tri_vtx][0]:
-                            if tri_vtx == 0:
-                                vtx0bbox = quarkx.boundingboxof([item])
-                                vtx0pos = (vtx0bbox[0] + vtx0bbox[1]) * .5
-                                projvtx0 = view.proj(vtx0pos.tuple[0], vtx0pos.tuple[1], vtx0pos.tuple[2])
-                            if tri_vtx == 1:
-                                vtx1bbox = quarkx.boundingboxof([item])
-                                vtx1pos = (vtx1bbox[0] + vtx1bbox[1]) * .5
-                                projvtx1 = view.proj(vtx1pos.tuple[0], vtx1pos.tuple[1], vtx1pos.tuple[2])
-                            if tri_vtx == 2:
-                                vtx2bbox = quarkx.boundingboxof([item])
-                                vtx2pos = (vtx2bbox[0] + vtx2bbox[1]) * .5
-                                projvtx2 = view.proj(vtx2pos.tuple[0], vtx2pos.tuple[1], vtx2pos.tuple[2])
+                    # This section draws the vertex drag lines.
+                    if new[0].subitems != []:
+                        for item in new[0].subitems:
+                            if int(item.shortname) == tri[4][tri_vtx][0]:
+                                if tri_vtx == 0:
+                                    vtx0bbox = quarkx.boundingboxof([item])
+                                    vtx0pos = (vtx0bbox[0] + vtx0bbox[1]) * .5
+                                    projvtx0 = view.proj(vtx0pos.tuple[0], vtx0pos.tuple[1], vtx0pos.tuple[2])
+                                if tri_vtx == 1:
+                                    vtx1bbox = quarkx.boundingboxof([item])
+                                    vtx1pos = (vtx1bbox[0] + vtx1bbox[1]) * .5
+                                    projvtx1 = view.proj(vtx1pos.tuple[0], vtx1pos.tuple[1], vtx1pos.tuple[2])
+                                if tri_vtx == 2:
+                                    vtx2bbox = quarkx.boundingboxof([item])
+                                    vtx2pos = (vtx2bbox[0] + vtx2bbox[1]) * .5
+                                    projvtx2 = view.proj(vtx2pos.tuple[0], vtx2pos.tuple[1], vtx2pos.tuple[2])
+                    # This section draws the face drag lines.
+                    if new[0].subitems == []:
+                        for face in new:
+                            for obj in self.mgr.editor.EditorObjectList:
+                                if face.name == obj.name:
+                                    objvtxs = obj["v"]
+                            vtxs = face.shortname.split(',')
+                            vtxs = [int(vtxs[2]), int(vtxs[3]), int(vtxs[4])]
+                            for vtx in vtxs:
+                                if vtx == tri[4][tri_vtx][0]:
+                                    if tri_vtx == 0:
+                                        projvtx0 = view.proj(quarkx.vect(objvtxs[0], objvtxs[1], objvtxs[2]))
+                                    if tri_vtx == 1:
+                                        projvtx1 = view.proj(quarkx.vect(objvtxs[3], objvtxs[4], objvtxs[5]))
+                                    if tri_vtx == 2:
+                                        projvtx2 = view.proj(quarkx.vect(objvtxs[6], objvtxs[7], objvtxs[8]))
                 ###  Get stationary vtx's
                 if projvtx0 is None:
                     projvtx0 = view.proj(framevtxs[tri[4][0][0]])
@@ -2719,8 +2753,29 @@ class LinearHandle(qhandles.GenericHandle):
                 cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
                 cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
                 cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
-                projvtx0 = projvtx1 = projvtx2 = None
 
+                # Section below draws the selected faces if any.
+                if self.mgr.editor.EditorObjectList != [] and quarkx.setupsubset(SS_MODEL,"Options")['NFO'] != 1:
+                    cv.pencolor = faceseloutline
+                    try:
+                        cv.penwidth = float(quarkx.setupsubset(SS_MODEL,"Options")['linethickness'])
+                    except:
+                        cv.penwidth = 2
+                    cv.brushcolor = faceseloutline
+                    cv.brushstyle = BS_SOLID
+                    for obj in self.mgr.editor.EditorObjectList:
+                        objvtxs = obj["v"]
+                        projvtx0 = view.proj(quarkx.vect(objvtxs[0], objvtxs[1], objvtxs[2]))
+                        projvtx1 = view.proj(quarkx.vect(objvtxs[3], objvtxs[4], objvtxs[5]))
+                        projvtx2 = view.proj(quarkx.vect(objvtxs[6], objvtxs[7], objvtxs[8]))
+                        cv.line(int(projvtx0.tuple[0]), int(projvtx0.tuple[1]), int(projvtx1.tuple[0]), int(projvtx1.tuple[1]))
+                        cv.line(int(projvtx1.tuple[0]), int(projvtx1.tuple[1]), int(projvtx2.tuple[0]), int(projvtx2.tuple[1]))
+                        cv.line(int(projvtx2.tuple[0]), int(projvtx2.tuple[1]), int(projvtx0.tuple[0]), int(projvtx0.tuple[1]))
+                    cv.pencolor = dragcolor
+                    cv.penwidth = 1
+
+                projvtx0 = projvtx1 = projvtx2 = None
+                        
         for h in view.handles:
             h.draw(view, cv, h)
         return self.mgr.list, new
@@ -2737,7 +2792,6 @@ class LinearHandle(qhandles.GenericHandle):
         plugins.mdlaxisicons.newfinishdrawing(editor, view)
         for obj in self.mgr.list: # Moves and draws the models triangles or vertexes correctly for the matrix handles.
             cv = view.canvas()
-            obj.linear(self.mgr.center, matrix)
             if obj.name.endswith(":g"):
                 if view.info["viewname"] == "skinview":
                     pass
@@ -2749,6 +2803,7 @@ class LinearHandle(qhandles.GenericHandle):
                         view.drawmap(newobj, DM_OTHERCOLOR, dragcolor)
                     except:
                         pass
+            obj.linear(self.mgr.center, matrix)
       # Below causes duplicate and incorrect drawing of selected faces for corner and side Linear Handles.
       #      else:
       #          vect0X ,vect0Y, vect0Z, vect1X ,vect1Y, vect1Z, vect2X ,vect2Y, vect2Z = obj["v"]
@@ -3323,6 +3378,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.134  2008/05/30 08:22:55  cdunde
+#Added full Linear Handles drag line drawing for all views in the Model Editor.
+#
 #Revision 1.133  2008/05/29 05:07:49  cdunde
 #Added Skin-view Linear rotation and distortion drag lines drawing.
 #
