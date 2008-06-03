@@ -8,6 +8,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2007/03/29 15:27:53  danielpharos
+//Cleaned up the tabs.
+//
 //Revision 1.4  2005/10/15 01:00:02  cdunde
 //To reinstate headers and history
 //
@@ -914,7 +917,7 @@ QQRKSRC1
         {
             Help = "Ammo for the Phalanx"
             bbox = '-16 -16 -16 16 16 16'
-            mdl = "modles/objects/ammo/tris.md2"
+            mdl = "models/objects/ammo/tris.md2"
         }
 
         ammo_trap:form =
