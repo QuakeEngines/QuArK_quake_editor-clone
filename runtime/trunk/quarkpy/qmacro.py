@@ -290,6 +290,12 @@ def MACRO_loadentityplugins(self):
     global MACRO_loadentityplugins
     MACRO_loadentityplugins = lambda x: None    # next calls to loadmdleditor() do nothing
 
+def MACRO_loadmdlimportexportplugins(self):
+    import plugins
+    plugins.LoadPlugins("IE_")
+    global MACRO_loadmdlimportexportplugins
+    MACRO_loadmdlimportexportplugins = lambda x: None    # next calls to loadmdleditor() do nothing
+
 ### A list, used below, to pass items to for the main QuArK menu Conversion section.
 ### See the plugins files that start with "ent" for its use.
 entfn = {}
@@ -311,14 +317,64 @@ def MACRO_ent_convertfrom(text):
             if (gn is None) or (gn == ""):
                 gn = file
             entf[1](a[0].parent, file, gn)
-
     if entf[0][0] is None and entf[1] is not None:
         entf[1](a[0].parent) # This calls the function that is stored in the "entfn" list above.
 
+### A list, used below, to pass items to for the main QuArK menu 'Model Importers' section.
+### See the plugins files that start with "ie_" for its use.
+mdlimport = {}
+
+def MACRO_mdl_pythonimporter(text):
+    import qeditor
+    import qutils
+    a = quarkx.getqctxlist()
+    a.reverse()
+    # Decker - Some menuitem-captions contains a '&'-character (you know, the one which tells what mnemonic-key can be used)
+    # These '&'-characters has to be removed, for the entfn[text] to work properly.
+    text = text.replace("&", "")
+    mdlf = mdlimport[text]
+    if mdlf is not None and mdlf[0][0] is not None:
+        files = quarkx.filedialogbox("Select File", text, mdlf[0], 0)
+        if len(files) != 0:
+            file = files[0]
+            gn = a[0]["GameDir"]
+            if (gn is None) or (gn == ""):
+                gn = file
+            mdlf[1](a[0].parent, file, gn)
+    if mdlf[0][0] is None and mdlf[1] is not None:
+        mdlf[1](a[0].parent) # This calls the function that is stored in the "entfn" list above.
+
+### A list, used below, to pass items to for the main QuArK menu 'Model Importers' section.
+### See the plugins files that start with "ie_" for its use.
+mdlexport = {}
+
+def MACRO_mdl_pythonexporter(text):
+    import qeditor
+    import qutils
+    a = quarkx.getqctxlist()
+    a.reverse()
+    # Decker - Some menuitem-captions contains a '&'-character (you know, the one which tells what mnemonic-key can be used)
+    # These '&'-characters has to be removed, for the entfn[text] to work properly.
+    text = text.replace("&", "")
+    mdlf = mdlexport[text]
+    if mdlf is not None and mdlf[0][0] is not None:
+        # See plugins\mapbotwaypointer.py file for example of line below for use.
+        files = quarkx.filedialogbox("Save file as...", text, mdlf[0], 1)
+        if len(files) != 0:
+            file = files[0]
+            gn = a[0]["GameDir"]
+            if (gn is None) or (gn == ""):
+                gn = file
+            mdlf[1](a[0].parent, file, gn)
+    if mdlf[0][0] is None and mdlf[1] is not None:
+        mdlf[1](a[0].parent) # This calls the function that is stored in the "entfn" list above.
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.28  2008/04/04 20:19:27  cdunde
+#Added a new Conversion Tools for making game support QuArK .qrk files.
+#
 #Revision 1.27  2008/03/09 21:44:11  cdunde
 #To reinstate fix for error if Addons Delete item is opened and closed with no items to delete.
 #Over written by old file used for Revision 1.20.2.1 commit and Revision 1.22 file merging.

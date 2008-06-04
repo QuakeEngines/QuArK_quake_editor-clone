@@ -17,7 +17,6 @@ from qdictionnary import Strings
 import qmenu
 from mdlutils import *
 import mdlcommands
-#import mapbtns
 
 ### Setup for future use. See mapmenus.py for examples
 MdlEditMenuCmds = []
@@ -38,6 +37,37 @@ MdlEditMenuShortcuts = {}
 MdlQuickKeys = []
 
 
+def runimporter(m):
+    from qmacro import mdlimport
+    try:
+        mdlf = mdlimport[m.text]
+    except:
+        return
+    editor = mapeditor()
+    files = quarkx.filedialogbox("Select File", m.text, mdlf[0], 0)
+    ### Line below just runs the importer, take out after model is actually being imported below.
+    mdlf[1](None, files[0], None)
+    ### Line below will load the model.
+  #  editor.Root = mdlf[1](None, files[0], None)
+  #  print "mdlmenus line 52 Root",editor.Root
+  #  model = mdlf[1](None, files[0], None)
+  #  editor.Root.appenditem(model)
+  #  for view in editor.layout.views:
+  #      view.drawmap(model)
+
+def runexporter(m):
+    from qmacro import mdlexport
+    try:
+        mdlf = mdlexport[m.text]
+    except:
+        return
+    editor = mapeditor()
+    # See plugins\mapbotwaypointer.py file for example of line below for use.
+    files = quarkx.filedialogbox("Save file as...", m.text, mdlf[0], 1)
+    ### Line below just runs the exporter, take out after model is actually being exported below.
+    mdlf[1](None, files[0], None)
+    ### Line below will export the model. (none yet)
+
 #
 # Menu bar builder
 #
@@ -47,7 +77,37 @@ def BuildMenuBar(editor):
     import mdltoolbars
     import mdloptions
 
+    def modelimporters():
+        from qmacro import mdlimport
+        mdlimportmenu = []
+        for menuitem in mdlimport:
+            mdlimportmenu = mdlimportmenu + [qmenu.item(menuitem, runimporter, "load an "+str(menuitem))] 
+        if mdlimportmenu == []:
+            mdlimportmenu = mdlimportmenu + [qmenu.item("none available", None, "no importers available")] 
+        return mdlimportmenu
+
+    def modelexporters():
+        from qmacro import mdlexport
+        mdlexportmenu = []
+        for menuitem in mdlexport:
+            mdlexportmenu = mdlexportmenu + [qmenu.item(menuitem, runexporter, "load an "+str(menuitem))] 
+        if mdlexportmenu == []:
+            mdlexportmenu = mdlexportmenu + [qmenu.item("none available", None, "no exporters available")] 
+        return mdlexportmenu
+        
     File1, sc1 = qmenu.DefaultFileMenu()
+    MdlImport = qmenu.popup("Model &Importers", modelimporters(), runimporter, "|Model Importers:\n\nList of all available Python plugins model importers to load a model.", "intro.modeleditor.menu.html#filemenu")
+    MdlExport = qmenu.popup("&Model Exporters", modelexporters(), runexporter, "|Model Exporters:\n\nList of all available Python plugins model exporters to save a model.", "intro.modeleditor.menu.html#filemenu")
+    NewFile1items = []
+    for item in range(len(File1.items)):
+        if File1.items[item] is None:
+            NewFile1items = NewFile1items + [qmenu.sep]
+        else:
+            if File1.items[item].text == "&Open...":
+                NewFile1items = NewFile1items + [File1.items[item]] + [qmenu.sep ,MdlImport, MdlExport, qmenu.sep]
+            else:
+                NewFile1items = NewFile1items + [File1.items[item]]
+    File1.items = NewFile1items
 
     if editor.layout is None:
         l1 = []
@@ -206,6 +266,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.26  2008/01/26 23:28:55  cdunde
+#To compute for different texture and Skin-view sizes for Reset Skin-view function.
+#
 #Revision 1.25  2008/01/25 20:58:03  cdunde
 #Setup function to reset Skin-view.
 #
