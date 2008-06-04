@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde]: Setup new QuArK Model Editor Python model import export system.
+
 * [cdunde]: Added full Linear Handles drag line drawing for all views in the Model Editor.
 
 * [DanielPharos]: Fix errors when clicking menu items not being shown/reported.
