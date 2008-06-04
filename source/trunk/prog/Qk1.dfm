@@ -146,6 +146,13 @@ object Form1: TForm1
       ShortCut = 16463
       OnClick = Open1Click
     end
+    object MdlImportFrom1: TMenuItem
+      Caption = 'Model Importers'
+      object mdlimpempty1: TMenuItem
+        Caption = '(mdlimpempty)'
+        Enabled = False
+      end
+    end
     object ConvertFrom1: TMenuItem
       Caption = 'Convert From'
       object empty1: TMenuItem

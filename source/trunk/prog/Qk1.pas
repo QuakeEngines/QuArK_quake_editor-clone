@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2008/05/24 19:45:35  danielpharos
+Removed prev change: redundant
+
 Revision 1.58  2008/05/24 19:20:31  danielpharos
 Fix access violation if OnClose was called before the Explorer was loaded. Happened when there was a Python loading error.
 
@@ -345,6 +348,8 @@ type
     Go1: TMenuItem;
     ConvertFrom1: TMenuItem;
     empty1: TMenuItem;
+    MdlImportFrom1: TMenuItem;
+    mdlimpempty1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure Close1Click(Sender: TObject);
     procedure Edit1Click(Sender: TObject);
@@ -428,6 +433,7 @@ type
     function GetEmptyMenu : TPopupMenu;
     function GetObjMenu(Control: TControl; Extra: Boolean) : TPopupMenu;
     procedure FreeNonUsedObjects;
+    procedure MdlImportFrom1Item1Click(Sender: TObject);
     procedure ConvertFrom1Item1Click(Sender: TObject);
   end;
 var
@@ -1219,6 +1225,7 @@ begin
    FileMenu.Tag:=1;
   end;
   CallMacro(GetEmptyTuple,'loadentityplugins');
+  CallMacro(GetEmptyTuple,'loadmdlimportexportplugins');
 end;
 
 procedure TForm1.WindowMenuPopup(Sender: TObject);
@@ -2469,6 +2476,27 @@ end;
 procedure TForm1.Registering1Click(Sender: TObject);
 begin
  HTMLDoc(GetQPath(pQuArKHelp)+'register.html');
+end;                                           
+
+procedure TForm1.MdlImportFrom1Item1Click(Sender: TObject);
+var
+  s: PyObject;
+  Q: QObject;
+begin
+ s:=Nil;
+ try
+  with Sender as TMenuItem do
+   s:=PyString_FromString(PChar(Caption));
+  if s=Nil then Exit;
+  News1Click(Sender);
+  Q:=QQuakeCtx.Create('Game Directories', NeedExplorerRoot);
+  Q.Flags := Q.Flags or ofTreeViewSubElement;
+  NeedExplorerRoot.Subelements.Add(Q);
+  CallMacro(s, 'mdl_pythonimporter');
+ finally
+  Py_XDECREF(s);
+  PythonCodeEnd;
+ end;
 end;
 
 procedure TForm1.ConvertFrom1Item1Click(Sender: TObject);
