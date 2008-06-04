@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2008/05/14 20:38:52  cdunde
+//Fixed basic lighting in all games and a few other small typo errors.
+//
 //Revision 1.1  2008/03/28 19:10:34  cdunde
 //Cleaned up, fixed if needed and brought into sync with all QuArK addons.
 //
@@ -1771,7 +1774,7 @@ QQRKSRC1
     {
     Help = "Player is invisible for 30 seconds."
     bbox='-16 -16 -24 16 16 32'
-    mdl="progs/invisbl.mdl"
+    mdl="progs/invisibl.mdl"
     }
 
     item_armor1:form =
