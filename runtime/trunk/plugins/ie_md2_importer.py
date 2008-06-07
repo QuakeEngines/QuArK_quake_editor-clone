@@ -412,80 +412,19 @@ def load_md2(md2_filename):
   #  md2.dump() # Comment out later, just to print the file Header to the console.
     file.close()
 
-    ######### Creates a new mesh
-  #  mesh = NMesh.New()
-    mesh = []
-
-    uv_coord=[]
-    uv_list=[]
     skinsize, skingroup = load_textures(md2) # Calls here to make the Skins Group.
 
-    ######### Make the verts, not sure what this is about.
-
-    for i in xrange(0,md2.num_vertices):
-        #use the first frame for the mesh vertices
-        x=(md2.frames[0].scale[0]*md2.frames[0].vertices[i].vertices[0]+md2.frames[0].translate[0])*g_scale
-        y=(md2.frames[0].scale[1]*md2.frames[0].vertices[i].vertices[1]+md2.frames[0].translate[1])*g_scale
-        z=(md2.frames[0].scale[2]*md2.frames[0].vertices[i].vertices[2]+md2.frames[0].translate[2])*g_scale
-    #    vertex=NMesh.Vert(y,-x,z)
-        vertex=(x,y,z) # QuArK needs them in this order.
-    #    mesh.verts.append(vertex)
-        mesh.append(vertex)
-
-    ######## Make the UV list
-
- #   mesh.hasFaceUV(1)  #turn on face UV coordinates for this mesh
-    for i in xrange(0, md2.num_tex_coords):
-        u=(float(md2.tex_coords[i].u)/float(md2.skin_width))
-        v=(float(md2.tex_coords[i].v)/float(md2.skin_height))
-        #for some reason quake2 texture maps are upside down, flip that
-        uv_coord=(u,1-v)
-        uv_list.append(uv_coord)
-
-    ######### Make the faces
-    ######### for QuArK the 'component.triangles'.
+    ######### Make the faces for QuArK, the 'component.triangles'.
 
     Tris = ''
-    faces = []
-    import struct
-
     for i in xrange(0, md2.num_faces):
         Tris = Tris + struct.pack("Hhh", md2.faces[i].vertex_index[0], md2.tex_coords[md2.faces[i].texture_index[0]].u, md2.tex_coords[md2.faces[i].texture_index[0]].v)
         Tris = Tris + struct.pack("Hhh", md2.faces[i].vertex_index[1], md2.tex_coords[md2.faces[i].texture_index[1]].u, md2.tex_coords[md2.faces[i].texture_index[1]].v)
         Tris = Tris + struct.pack("Hhh", md2.faces[i].vertex_index[2], md2.tex_coords[md2.faces[i].texture_index[2]].u, md2.tex_coords[md2.faces[i].texture_index[2]].v)
 
-     #   face = NMesh.Face()
-        face = []
-        #draw the triangles in reverse order so they show up (what's this suppose to mean....why flip around?)
-     #   face.v.append(mesh.verts[md2.faces[i].vertex_index[0]])
-     #   face.v.append(mesh.verts[md2.faces[i].vertex_index[2]])
-     #   face.v.append(mesh.verts[md2.faces[i].vertex_index[1]])
-        face.append(mesh[md2.faces[i].vertex_index[0]])
-        face.append(mesh[md2.faces[i].vertex_index[2]])
-        face.append(mesh[md2.faces[i].vertex_index[1]])
-        ### QuArK's way of making the 'Component.triangles'.
-        tri = ()
-        tri_index0 = ()
-        tri_index0 = (md2.faces[i].vertex_index[0], md2.tex_coords[md2.faces[i].texture_index[0]].u, md2.tex_coords[md2.faces[i].texture_index[0]].v)
-        tri_index1 = ()
-        tri_index1 = (md2.faces[i].vertex_index[1], md2.tex_coords[md2.faces[i].texture_index[1]].u, md2.tex_coords[md2.faces[i].texture_index[1]].v)
-        tri_index2 = ()
-        tri_index2 = (md2.faces[i].vertex_index[2], md2.tex_coords[md2.faces[i].texture_index[2]].u, md2.tex_coords[md2.faces[i].texture_index[2]].v)
-        tri = tri + (tri_index0, tri_index1, tri_index2)
         ### In QuArK writing:
         ### print editor.Root.dictitems['Component 1:mc'].triangles
-        ### will print that list of the components triangles.
-
-        #append the list of UV
-        #ditto in reverse order with the texture verts
-     #   face.uv.append(uv_list[md2.faces[i].texture_index[0]])
-     #   face.uv.append(uv_list[md2.faces[i].texture_index[2]])
-     #   face.uv.append(uv_list[md2.faces[i].texture_index[1]])
-        face.append(uv_list[md2.faces[i].texture_index[0]])
-        face.append(uv_list[md2.faces[i].texture_index[2]])
-        face.append(uv_list[md2.faces[i].texture_index[1]])
-
-        faces.append(face)
+        ### will print that list of the components triangles, which is also the 'Tris'.
 
     framesgroup = animate_md2(md2) # Calls here to make the Frames Group.
 
@@ -498,25 +437,6 @@ def load_md2(md2_filename):
 #Globals
 # g_scale=Create(1.0)
 g_scale = 1.0
-
-# Events
-EVENT_NOEVENT=1
-EVENT_LOAD_MD2=2
-EVENT_CHOOSE_FILENAME=3
-EVENT_CHOOSE_TEXTURE=4
-EVENT_SAVE_MD2=5
-EVENT_EXIT=100
-
-######################################################
-# Callbacks for Window functions
-######################################################
-def filename_callback(input_filename):
-    global g_md2_filename
-    g_md2_filename.val=input_filename
-
-def texture_callback(input_texture):
-    global g_texture_filename
-    g_texture_filename.val=input_texture
 
 ########################
 # To run this file
@@ -602,9 +522,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
-quarkpy.qmdlbase.RegisterMdlImporter("Quake2 .md2 Importer", ".md2 file", "*.md2", loadmodel)
+quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2", loadmodel)
 
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2008/06/04 03:56:40  cdunde
+# Setup new QuArK Model Editor Python model import export system.
+#
 #
