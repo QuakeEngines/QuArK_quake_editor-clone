@@ -26,6 +26,7 @@ Contents
 8. Who works on QuArK?
 9. What is the GameCodeList.txt file?
 
+
 1. What is QuArK?
 -----------------
 
@@ -41,9 +42,9 @@ QuArK is completely different from and not related to the desktop
 publishing program Quark.
 
 You can find out more about QuArK from the official website at
-http://www.planetquake.com/quark/.  See also the QuArK Infobase,
+http://quark.planetquake.gamespy.com/.  See also the QuArK Infobase,
 located at http://quark.planetquake.gamespy.com/infobase/, and the
-QuArK Resource Forums at http://www.dark-forge.com/forums/.
+QuArK Forums at http://quark.planetquake.gamespy.com/forums/.
 
 
 2. Where can I get QuArK?
@@ -68,7 +69,11 @@ to changes, you will need at least Windows 95 or compatible to run
 QuArK.  You will need about 40 MB of free disk space to install QuArK,
 and the minimum amount of RAM needed differs per game, but at least
 64 MB is advised.  Almost any CPU will be able to handle QuArK, but
-the slower the CPU, the slower QuArK will be.
+the slower the CPU, the slower QuArK will be.  Also, Internet Explorer
+4.0 or higher is needed.
+(Note: Although you do not actually need to use Internet Explorer to
+display the Infobase files, some components of Internet Explorer are
+used by QuArK, so you still need to have it installed.)
 
 
 4. How do I install QuArK?
@@ -144,7 +149,9 @@ same directory as this file, which is the folder that QuArK was installed in.
 A list of past and present developers of QuArK can be found in the 'AUTHORS.txt'
 file in the same directory as this file, which is the folder that QuArK was
 installed in. This file also tries to give their last known e-mail address.
-However, because some have moved on they may not always still be active.
+However, because some have moved on they may not always still be active, and
+might not want to be contacted about QuArK. Please don't bother people this way
+is you need help: see section 5.
 
 
 9. What is the GameCodeList.txt file?
