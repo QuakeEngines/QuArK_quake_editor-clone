@@ -45,8 +45,10 @@ def runimporter(m):
         return
     editor = mapeditor()
     files = quarkx.filedialogbox("Select File", m.text, mdlf[0], 0)
-    ### Line below just runs the importer, take out after model is actually being imported below.
-    mdlf[1](None, files[0], None)
+    try:
+        mdlf[1](None, files[0], None)
+    except:
+        pass
     ### Line below will load the model.
   #  editor.Root = mdlf[1](None, files[0], None)
   #  print "mdlmenus line 52 Root",editor.Root
@@ -266,6 +268,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.27  2008/06/04 03:56:40  cdunde
+#Setup new QuArK Model Editor Python model import export system.
+#
 #Revision 1.26  2008/01/26 23:28:55  cdunde
 #To compute for different texture and Skin-view sizes for Reset Skin-view function.
 #
