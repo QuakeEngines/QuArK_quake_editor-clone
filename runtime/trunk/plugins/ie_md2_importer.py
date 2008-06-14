@@ -25,6 +25,7 @@ Info = {
 import struct, sys, os
 from types import *
 import quarkx
+import ie_utils
 
 ######################################################
 # Main Body
@@ -502,6 +503,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
 
+    ### First we test for a valid (proper) model path.
+    basepath = ie_utils.validpath(filename)
+    if basepath is None:
+        return
+
     ### Line below just runs the importer without the editor being open.
     ### Need to figure out how to open the editor with it & complete the ModelRoot.
   #  import_md2_model(editor, filename)
@@ -527,6 +533,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2008/06/07 05:46:50  cdunde
+# Removed a lot of unused dead code.
+#
 # Revision 1.1  2008/06/04 03:56:40  cdunde
 # Setup new QuArK Model Editor Python model import export system.
 #
