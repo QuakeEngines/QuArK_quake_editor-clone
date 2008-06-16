@@ -27,6 +27,13 @@ from types import *
 import quarkx
 import ie_utils
 
+# Globals
+importername = "ie_md2_importer.py"
+textlog = "model_ie_log.txt"
+from ie_utils import tobj
+if tobj is None:
+    tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+
 ######################################################
 # Main Body
 ######################################################
@@ -444,6 +451,14 @@ g_scale = 1.0
 ########################
 
 def import_md2_model(editor, md2_filename):
+    from ie_utils import tobj
+
+    tobj.logcon ("#####################################################################")
+    tobj.logcon ("This is: %s" % importername)
+    tobj.logcon ("Importing file:")
+    tobj.logcon (md2_filename)
+    tobj.logcon ("#####################################################################")
+
 
     try:
         Tris, skinsize, skingroup, framesgroup = load_md2(md2_filename)
@@ -500,6 +515,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "and name of the .md2 file selected."
     "For example:  C:\Quake2\baseq2\models\monkey\tris.md2"
 
+    global textlog
+    from ie_utils import tobj
+    if tobj is None:
+        tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
 
@@ -508,16 +528,35 @@ def loadmodel(root, filename, gamename, nomessage=0):
     if basepath is None:
         return
 
+    # See QuArK's Defaults.qrk file for original additional setup code for IELogAll option.
+    # This MUST be in a 'try:' statement to avoid error at startup here and below (not dupe code).
+    try:
+        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+            tobj.txtobj.close()
+            tobj.txtobj = open(quarkx.exepath + textlog, "w")
+    except:
+        if int(quarkx.setupsubset(3, "Options")['IELogging']) != 0 and tobj.txtobj is None:
+            tobj.txtobj = open(quarkx.exepath + textlog, "w")
+
     ### Line below just runs the importer without the editor being open.
     ### Need to figure out how to open the editor with it & complete the ModelRoot.
   #  import_md2_model(editor, filename)
 
     ### Lines below here loads the model into the opened editor's current model.
     ModelRoot, Component = import_md2_model(editor, filename)
+
+    # This MUST be in a 'try:' statement to avoid error at startup here and above (not dupe code).
+    try:
+        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+            tobj.txtobj.close()
+    except:
+        pass
+
     if ModelRoot is None and Component is None:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
         quarkx.msgbox("Invalid .md2 model.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         return
+
     undo = quarkx.action()
     undo.put(editor.Root, Component)
     editor.Root.currentcomponent = Component
@@ -533,6 +572,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2008/06/14 08:17:29  cdunde
+# Added valid model path check.
+#
 # Revision 1.2  2008/06/07 05:46:50  cdunde
 # Removed a lot of unused dead code.
 #

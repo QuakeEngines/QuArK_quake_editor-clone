@@ -11,50 +11,58 @@ Various Model importer\exporter utility functions.
 #$Header$
 
 
-
+import os, os.path
 import quarkx
 import quarkpy.qutils
 
+# Globals
+textlog = "model_ie_log.txt"
+tobj = None
+
 """
+NOTE: ALL IMPORTERS AND EXPORTERS SHOULD INCLUDE THIS LOGGING CODE.
+
 1) To add logging to an importer or exporter put these lines near the top:
 import ie_utils
 
-textname = "lwo_log"
-# Global
-tobj = ie_utils.dotext(textname) # Calls the class to handle logging.
+# Globals
+importername = "(copy the file name here)"
+textlog = "model_ie_log.txt"
+from ie_utils import tobj
+if tobj is None:
+    tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
 
 2) Setup for a text file like this in TWO PLACES:
 def loadmodel(root, filename, gamename, nomessage=0):
-    global tobj
-    ie_utils.dotext # Calls to run the logging class.
+    global textlog
+    from ie_utils import tobj
+    if tobj is None:
+        tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
     try:
-        if quarkx.setupsubset(3, "Options")['IELogAll'] == "1":
-            pass
-        else:
+        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
             tobj.txtobj.close()
-            tobj.txtobj = open(quarkx.exepath + "lwo_log.txt", "w")
+            tobj.txtobj = open(quarkx.exepath + textlog, "w")
     except:
-        pass
+        if int(quarkx.setupsubset(3, "Options")['IELogging']) != 0 and tobj.txtobj is None:
+            tobj.txtobj = open(quarkx.exepath + textlog, "w")
     ### Line below here loads the model (just for this example---DO NOT COPY THIS).
-    ModelRoot, ComponentList, message = read(basepath, filename, editor)
+    ModelRoot, Component = import_md2_model(editor, filename)
 
     # This MUST be in a 'try:' statement to avoid error at startup here and above (not dupe code).
     try:
-        if quarkx.setupsubset(3, "Options")['IELogAll'] == "1":
-            pass
-        else:
+        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
             tobj.txtobj.close()
     except:
         pass
 
 3) Then in any function you want logging declair the global and call for tobj like this:
-def read(basepath, filename, editor):
-    global tobj
+def import_md2_model(editor, md2_filename):
+    from ie_utils import tobj
     tobj.logcon ("#####################################################################")
     tobj.logcon ("This is: %s" % importername)
     tobj.logcon ("Importing file:")
     tobj.logcon (filename)
-    tobj.pprint ("#####################################################################")
+    tobj.logcon ("#####################################################################")
 
 """
 
@@ -76,7 +84,8 @@ class dotext:
     LOG = 1    #write only to LOG
     CON = 2    #write to both LOG and CONSOLE
 
-    def __init__(self, tname, where=LOG):
+    def __init__(self, textlog, where=LOG):
+        self.textlog = textlog
         self.dwhere = where
         self.txtobj = None
 
@@ -84,7 +93,7 @@ class dotext:
         # Opens a text file in QuArK's main directory to log the .lwo file being imported.
         # See QuArK's Defaults.qrk file for additional setup code for IELogging option.
         if int(quarkx.setupsubset(3, "Options")['IELogging']) != 0 and self.txtobj == None:
-            self.txtobj = open(quarkx.exepath + "lwo_log.txt", "w")
+            self.txtobj = open(quarkx.exepath + self.textlog, "w")
         if (self.txtobj==None): return
         while (1):
             ll = len(wstring)
@@ -132,6 +141,20 @@ class dotext:
     def logcon(self, parg):
         self.pprint(parg, dotext.CON)
 
+"""
+NOTE: ALL IMPORTERS AND EXPORTERS SHOULD INCLUDE THIS PATH CHECKING CODE.
+
+1) To add path checking to an importer or exporter put this lines near the top:
+import ie_utils
+
+2) Call for the path check like this:
+def loadmodel(root, filename, gamename, nomessage=0):
+    ### First we test for a valid (proper) model path.
+    basepath = ie_utils.validpath(filename)
+    if basepath is None:
+        return
+
+"""
 
 def validpath(filename):
     "Tests for a proper model path."
@@ -154,6 +177,9 @@ def validpath(filename):
 #
 #
 #$Log$
+#Revision 1.2  2008/06/15 02:41:21  cdunde
+#Moved importer\exporter logging to utils file for global use.
+#
 #Revision 1.1  2008/06/14 07:52:15  cdunde
 #Started model importer exporter utilities file.
 #
