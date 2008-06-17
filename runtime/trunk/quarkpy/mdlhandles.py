@@ -1839,7 +1839,10 @@ def buildskinvertices(editor, view, layout, component, skindrawobject):
 
 def singleskinzoom(view):
     sc = view.screencenter
-    view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
+    try:
+        view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
+    except:
+        pass
     view.screencenter = sc
 
 
@@ -3378,6 +3381,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.135  2008/06/01 04:39:53  cdunde
+#Some Linear Handle fixes and added drag lines drawing.
+#
 #Revision 1.134  2008/05/30 08:22:55  cdunde
 #Added full Linear Handles drag line drawing for all views in the Model Editor.
 #

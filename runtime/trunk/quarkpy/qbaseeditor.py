@@ -565,9 +565,12 @@ class BaseEditor:
         v.ondrop = self.dropmap
         v.flags = v.flags | flags
         if self.MODE == SS_MODEL:
-            if v.info["viewname"] == "3Dwindow":
-                import mdlhandles
-                v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
+            try:
+                if v.info["viewname"] == "3Dwindow":
+                    import mdlhandles
+                    v.handles = mdlhandles.BuildHandles(self, self.layout.explorer, v)
+            except:
+                pass
         else:
             self.lastscale = 0    # force a handle rebuild
         if copycol and (self.layout is not None) and len(self.layout.views):
@@ -895,7 +898,10 @@ class BaseEditor:
                             plugins.mapterrainmodes.TerrainManager(editor, view, x, y, flags, handle)
 
             if handle is None:
-                min, max = view.depth
+                try:
+                    min, max = view.depth
+                except:
+                    min, max = (0, 0)
                 list = map(quarkx.ftos, self.aligntogrid(view.space(quarkx.vect(x, y, min))).tuple + self.aligntogrid(view.space(quarkx.vect(x, y, max))).tuple)
                 tag = 0
                 if list[0]==list[3]: tag = 1
@@ -1450,6 +1456,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.111  2008/05/27 19:35:23  danielpharos
+#Fix typo
+#
 #Revision 1.110  2008/05/01 19:15:24  danielpharos
 #Fix treeviewselchanged not updating.
 #

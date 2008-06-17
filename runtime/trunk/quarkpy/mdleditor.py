@@ -301,8 +301,11 @@ class ModelEditor(BaseEditor):
 
     def setupview(self, v, drawmap=None, flags=MV_AUTOFOCUS, copycol=1):
         BaseEditor.setupview(self, v, drawmap, flags, copycol)
-        if v.info["type"] == "3D":
-            v.cameraposition = (quarkx.vect(150,-100,25), 2.5, 0.0)
+        try:
+            if v.info["type"] == "3D":
+                v.cameraposition = (quarkx.vect(150,-100,25), 2.5, 0.0)
+        except:
+            pass
 
 
     def setlayout(self, form, nlayout):
@@ -1457,6 +1460,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.87  2008/05/11 18:33:28  cdunde
+#Fixed Used Textures in the Texture Browser properly without breaking other functions.
+#
 #Revision 1.86  2008/05/01 19:15:24  danielpharos
 #Fix treeviewselchanged not updating.
 #
