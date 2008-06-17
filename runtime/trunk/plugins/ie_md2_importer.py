@@ -31,8 +31,21 @@ import ie_utils
 importername = "ie_md2_importer.py"
 textlog = "model_ie_log.txt"
 from ie_utils import tobj
-if tobj is None:
-    tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+    if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
+        textlog = "model_ie_log.txt"
+        tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+    else:
+        textlog = "md2_ie_log.txt"
+        tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+else:
+    if tobj is None:
+        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
+            textlog = "model_ie_log.txt"
+            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+        else:
+            textlog = "md2_ie_log.txt"
+            tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
 
 ######################################################
 # Main Body
@@ -451,7 +464,7 @@ g_scale = 1.0
 ########################
 
 def import_md2_model(editor, md2_filename):
-    from ie_utils import tobj
+    global tobj
 
     tobj.logcon ("#####################################################################")
     tobj.logcon ("This is: %s" % importername)
@@ -515,10 +528,21 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "and name of the .md2 file selected."
     "For example:  C:\Quake2\baseq2\models\monkey\tris.md2"
 
-    global textlog
-    from ie_utils import tobj
-    if tobj is None:
-        tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+    global tobj, textlog
+
+    if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
+            from ie_utils import tobj
+            tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+        else:
+            tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+    else:
+        if tobj is None:
+            if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
+                from ie_utils import tobj
+                tobj = ie_utils.tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
+            else:
+                tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
 
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
@@ -572,6 +596,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2008/06/16 00:11:46  cdunde
+# Made importer\exporter logging corrections to work with others
+# and started logging function for md2 model importer.
+#
 # Revision 1.3  2008/06/14 08:17:29  cdunde
 # Added valid model path check.
 #
