@@ -15,6 +15,9 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde/DanielPharos]: To add lwo model importer, uv's still not correct though.
+          - Also added model import\export logging options for file types.
+
 * [cdunde]: Setup new QuArK Model Editor Python model import export system.
 
 * [cdunde]: Added full Linear Handles drag line drawing for all views in the Model Editor.
