@@ -213,9 +213,9 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
             break
         tobj.pprint(" ")
         if lwochunk.chunkname == "TAGS":                         # Tags
-            tobj.pprint("---- TAGS")
+            tobj.pprint("---- TAGS (Model Components\Textures)")
             tag_list.extend(read_tags(lwochunk))
-            tobj.pprint("tag_list")
+            tobj.pprint("tag_list (Model Components\Textures)")
             tobj.pprint(tag_list)
         elif lwochunk.chunkname == "SURF":                         # surfaces
             tobj.pprint("---- SURF")
@@ -271,20 +271,34 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
                 update_material(clip_list, objspec_list, surf_list) #give it all the object
             objspec_list = [objname, {}, [], [], {}, {}, 0, {}, {}]
         elif lwochunk.chunkname == "PNTS":                         # Verts
-            tobj.pprint("---- PNTS")
+            tobj.pprint("---- PNTS, objspec_list[2]")
+            tobj.pprint("('verts' SINGLE list of dicts, used by ALL comps. Keys are vert_index)")
             verts = read_verts(lwochunk)
             objspec_list[2] = verts
         elif lwochunk.chunkname == "VMAP":                         # MAPS (UV)
             tobj.pprint("---- VMAP")
             #objspec_list[7] = read_vmap(objspec_list[7], len(objspec_list[2]), lwochunk)
             uvcoords_dict = read_vmap(objspec_list[7], len(objspec_list[2]), lwochunk)
+            tobj.pprint("uvcoords_dict 1st in VMAP")
+            tobj.pprint("total uv's")
+            for key in objspec_list[7].keys():
+                tobj.pprint(len(objspec_list[7][key]))
+            tobj.pprint("")
+            tobj.pprint(objspec_list[7])
         elif lwochunk.chunkname == "VMAD":                         # MAPS (UV) per-face
             tobj.pprint("---- VMAD")
             #objspec_list[7], objspec_list[8] = read_vmad(objspec_list[7], objspec_list[8], len(objspec_list[3]), len(objspec_list[2]), lwochunk)
             uvcoords_dict, facesuv_dict = read_vmad(objspec_list[7], objspec_list[8], len(objspec_list[3]), len(objspec_list[2]), lwochunk)
+            tobj.pprint("total facesuv_dict")
+            for key in objspec_list[8].keys():
+                tobj.pprint(len(objspec_list[8][key]))
         elif lwochunk.chunkname == "POLS": # Faces v6.0
-            tobj.pprint("-------- POLS(6)")
+            tobj.pprint("-------- POLS(6), objspec_list[3] ('faces' list)")
+            tobj.pprint("STANDARD list of sub-lists, for all Components combined.")
+            tobj.pprint("Gives the three vertex_index numbers for each face.")
+            tobj.pprint("Use tri_index to get one set.")
             faces, flag = read_faces_6(lwochunk)
+            tobj.pprint(faces)
             #flag is 0 for regular polygon, 1 for patches (= subsurf), 2 for anything else to be ignored
             if flag<2:
                 if objspec_list[3] != []:
@@ -308,24 +322,37 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
                     objname = defaultname
             #end if processing a valid poly type
         elif lwochunk.chunkname == "PTAG":                         # PTags
-            tobj.pprint("---- PTAG")
+            tobj.pprint("---- PTAG, objspec_list[5] (polytag_dict) tri_index list")
+            tobj.pprint("(dict list, uses Component\Texture name as 'key'.)")
             polytag_dict = read_ptags(lwochunk, tag_list)
-            for kk in polytag_dict.keys(): objspec_list[5][kk] = polytag_dict[kk]
+            for kk in polytag_dict.keys():
+                 objspec_list[5][kk] = polytag_dict[kk]
         else:                                                       # Misc Chunks
             tobj.pprint("---- %s: skipping (definitely!)" % lwochunk.chunkname)
             lwochunk.skip()
         #uncomment here to log data structure as it is built
         #tobj.pprint(object_list)
     #last object read
-    tobj.pprint("in read_vmad function, uvcoords_dict")
+    tobj.pprint("in read_vmad function, objspec_list[7] (uvcoords_dict)")
+    tobj.pprint("dict list, uses ['UVNAME'] as key, of dict lists, uses uv_index as keys.")
+    tobj.pprint("u,v 2D texture positions, both VMAD & VMAP use this.")
+    tobj.pprint("total uv's")
+    for key in objspec_list[7].keys():
+        tobj.pprint(len(objspec_list[7][key]))
+    tobj.pprint("")
     tobj.pprint(uvcoords_dict)
     tobj.pprint("")
     tobj.pprint("")
-    tobj.pprint("in read_vmad function, facesuv_dict")
+    tobj.pprint("in read_vmad function, objspec_list[8] (facesuv_dict)")
+    tobj.pprint("dict list, uses ['UVNAME'] as key, list of [tri, vert, uv] indexes.")
+    tobj.pprint("VMAD only uses this.")
+    tobj.pprint("No sub-keys, itterate using:")
+    tobj.pprint("if tri_index = [0] and vert_index = [1]: uv_index = [2] (for objspec_list[7])")
     tobj.pprint(facesuv_dict)
     tobj.pprint("")
-    create_objects(clip_list, objspec_list, surf_list)
-    update_material(clip_list, objspec_list, surf_list) #give it all the object
+    ### The next two lines make it load 10 times slower and have no effect on the u,v problem.
+ #   create_objects(clip_list, objspec_list, surf_list)
+ #   update_material(clip_list, objspec_list, surf_list) #give it all the object
 
 ### This area is where we make the different elements of a QuArK Component, for each Component.
     # First we check for any other "Import Component"s,
@@ -449,13 +476,10 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
         frame = quarkx.newobj('Base Frame:mf')
         frame['index'] = (0,)
         mesh = ()
-
         vtxconvert = {}
         count = 0
         TexWidth, TexHeight = skinsize
-    #    for tri in range(len(polytag_dict[poly])): # tri is the tri_index
-    #        tri_index = polytag_dict[poly][tri]
-    #        face = faces[tri_index] # face is now the tri list of vert_index numbers
+
         for tri in range(len(objspec_list[5][poly])): # tri is the tri_index
             tri_index = objspec_list[5][poly][tri]
             face = objspec_list[3][tri_index] # face is now the tri list of vert_index numbers
@@ -466,36 +490,48 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
             for i in range(len(face)): # face[i] is the individual vert_index number in this "for" loop.
                 u, v = (0, 0)
                 if UVtype == "VMAD": # VMAD section
-               #     for index_group in facesuv_dict[polyuvname]:
                     for index_group in objspec_list[8][polyuvname]:
                         if tri_index == index_group[0] and face[i] == index_group[1]:
                             uv_index = index_group[2]
                             break
-              #      u, v = uvcoords_dict[polyuvname][uv_index] # VMAD section
                     u, v = objspec_list[7][polyuvname][uv_index] # VMAD section
                     u = TexWidth * u
                     v = TexHeight * v
                 else: # VMAP section
-                    try:
-              #          u, v = uvcoords_dict[polyuvname][face[i]] ### PROBLEM WRONG U,V PLACEMENT DATA
-                        u, v = objspec_list[7][polyuvname][face[i]] ### PROBLEM WRONG U,V PLACEMENT DATA
-                    except:
+                    if polyuvname is None:
+                        pass
+                    elif len(objspec_list[8][polyuvname]) == 0:
                         try:
-              #              for index_group in facesuv_dict[polyuvname]:
-                            for index_group in objspec_list[8][polyuvname]:
-                                if tri_index == index_group[0] and face[i] == index_group[1]:
-                                    uv_index = index_group[2]
-              #                      u, v = uvcoords_dict[polyuvname][uv_index]
-                                    u, v = objspec_list[7][polyuvname][uv_index]
-                                    break
+                            u, v = objspec_list[7][polyuvname][face[i]] ### PROBLEM WRONG U,V PLACEMENT DATA
                         except:
                             pass
-                    try:
-                        v = -v
-                        u = TexWidth * u
-                        v = (TexHeight * v) + TexHeight
-                    except:
-                        u, v = (0, 0)
+                    else:
+                        try:
+                            for index_group in range(len(objspec_list[8][polyuvname])):
+                                if tri_index == objspec_list[8][polyuvname][index_group][0] and face[i] == objspec_list[8][polyuvname][index_group][1]:
+                                    uv_index = objspec_list[8][polyuvname][index_group][2]
+                                    u, v = objspec_list[7][polyuvname][uv_index]
+                                    break
+                                elif index_group == len(objspec_list[8][polyuvname])-1:
+                                    u, v = objspec_list[7][polyuvname][face[i]]
+                        except:
+                            try:
+                                u, v = objspec_list[7][polyuvname][face[i]]
+                            except:
+                                try:
+                                    for index_group in objspec_list[8][polyuvname]:
+                                        if tri_index == index_group[0] and face[i] == index_group[1]:
+                                            uv_index = index_group[2]
+                                            u, v = objspec_list[7][polyuvname][uv_index]
+                                            break
+                                except:
+                                    pass
+                try:
+                    v = -v
+                    u = TexWidth * u
+                    v = (TexHeight * v) + TexHeight
+                except:
+                    u, v = (0, 0)
 
                 if vtxconvert.has_key(face[i]):
                     vert_index = vtxconvert[face[i]]
@@ -779,8 +815,13 @@ def read_ptags(lwochunk, tag_list):
         else:
             ptag_dict[tag_list[tag_index]].append(poln)
     tobj.logcon (ptag_dict)
+    tobj.pprint ("from tag_list (same as 'poly'):")
+    facecount = 0
     for i in ptag_dict.keys():
-        tobj.pprint ("read %d polygons belonging to TAG %s" % (len(ptag_dict[i]), i))
+        tobj.pprint ("    read %d faces for Comp.\Tex. %s" % (len(ptag_dict[i]), i))
+        facecount = facecount + len(ptag_dict[i])
+    tobj.pprint ("        ------")
+    tobj.pprint ("   total %d faces" % (facecount))
     return ptag_dict
 
 
@@ -1031,7 +1072,8 @@ def read_surfs(lwochunk, surf_list, tag_list):
         if parent_index >0:
             my_dict = surf_list[parent_index-1]
     my_dict['NAME'] = surf_name
-    tobj.pprint ("Surface data for TAG %s" % surf_name)
+    tobj.pprint ("Surface data for TAG (Model Component\Texture)")
+    tobj.pprint ("    %s" % surf_name)
     while(i < lwochunk.chunksize):
         subchunkname, = struct.unpack("4s", data.read(4))
         subchunklen, = struct.unpack(">H", data.read(2))
@@ -1989,7 +2031,7 @@ def read_faces_6(lwochunk):
             i += index_size
             facev.append(index)
         faces.append(facev)
-    tobj.pprint("read %s faces; type of block %d (0=FACE; 1=PATCH)" % (len(faces), subsurf))
+    tobj.pprint("read %s total faces for all Components; type of block %d (0=FACE; 1=PATCH)" % (len(faces), subsurf))
     return faces, subsurf
 
 
@@ -2086,4 +2128,8 @@ quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2008/06/17 20:39:13  cdunde
+# To add lwo model importer, uv's still not correct though.
+# Also added model import\export logging options for file types.
+#
 #
