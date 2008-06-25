@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2008/02/21 21:21:27  danielpharos
+Small auto-update update: just some minor things.
+
 Revision 1.5  2008/02/07 14:10:05  danielpharos
 Display progressbar when searching for updates
 
@@ -48,6 +51,49 @@ uses Windows, ShellApi, Classes, Forms, StdCtrls, Controls, Graphics, CheckLst,
   HTTP;
 
 type
+  TUpdateFileType = (uptIndex, uptPackage, uptNotification);
+  TUpdatePriority = (upCritical, upImportant, upOptional, upBeta);
+
+  TUpdateNotification = record
+    FileName: String; //@
+    BuildNumber: Cardinal; //@
+  end;
+
+  TUpdatePackage = record
+    InternalName: String;
+    FileName: String;
+    BuildNumber: Cardinal;
+  end;
+
+  TUpdateFile = class
+    ShouldBeFileType: TUpdateFileType;
+    FileHeader: String;
+    FileFormatVersion: String;
+    FileType: TUpdateFileType;
+  end;
+
+  TUpdateIndexFile = class(TUpdateFile)
+    NotificationNR: Cardinal;
+    Notifications: array of TUpdateNotification;
+    PackageNR: Cardinal;
+    Packages: array of TUpdatePackage;
+  end;
+
+//  TUpdateNotificationFile = class(TUpdateFile)
+//    //@
+//  end;
+
+  TUpdatePackageFile = class(TUpdateFile)
+    FileName: String;
+    Name: String;
+    Description: String;
+    BuildNumber: Cardinal;
+//@    Priority: TUpdatePriority;
+    //@
+    Install: Boolean;
+    InstallSuccessful: Boolean;
+  end;
+
   TAutoUpdater = class(TForm)
     GroupBox1: TGroupBox;
     Label1: TLabel;
@@ -61,31 +107,24 @@ type
     procedure FormCreate(Sender: TObject);
   end;
 
-  TUpdatePackage = record
-    Name: String;
-    Date: String; //@ Make this an integer: Days after ... Like offline update!
-    Description: String;
-    Version: String; //@
-    Priority: Integer;
-    QUPfilename: String;
-    Dependencies: String;
-    Install: Boolean;
-    InstallSuccessful: Boolean;
-  end;
-
 var
-  UpdatePackages: array of TUpdatePackage;
-  UpdatePackagesNR: Integer;
-
-//Update priorities
-const
-  upCritical  = 0;
-  upImportant = 1;
-  upOptional  = 2;
-  upBeta      = 3;
-  upMax       = 3; //The higher priority number possible
+  UpdateIndexFile: TUpdateIndexFile;
+//  UpdateNotificationsNR: Cardinal;
+//  UpdateNotifications: array of TUpdateNotificationFile;
+  UpdatePackagesNR: Cardinal;
+  UpdatePackages: array of TUpdatePackageFile;
 
 procedure DoUpdate(AllowOnline: Boolean);
+
+//Don't call these functions from outside this module!
+function GetLine(FileData: TMemoryStream; var OutputLine: String) : Boolean;
+
+procedure ParseString(FileData: TMemoryStream; var OutputVar: String);
+procedure ParseCardinal(FileData: TMemoryStream; var OutputVar: Cardinal);
+
+procedure ParseCommonHeader(CurrentFile: TUpdateFile; FileData: TMemoryStream);
+procedure ParseIndexFile(CurrentFile: TUpdateIndexFile; FileData: TMemoryStream);
+procedure ParsePackageFile(CurrentFile: TUpdatePackageFile; FileData: TMemoryStream);
 
  {------------------------}
 
@@ -98,243 +137,274 @@ uses StrUtils, SysUtils, DateUtils, QkObjects, Setup, Logging, Travail,
 
  {------------------------}
 
-function GetLine(const IndexFile: String; var CurrentIndex: Cardinal; var OutputLine: String) : Boolean;
+function GetLine(FileData: TMemoryStream; var OutputLine: String) : Boolean;
 var
-  IndexFileSize: Cardinal;
-  Dest: PChar;
+  Dest, OldDest: PChar;
 begin
-  IndexFileSize:=Length(IndexFile);
-  Dest:=PChar(IndexFile)+CurrentIndex;
-  OutputLine:='';
-  if (CurrentIndex>=IndexFileSize) then
+  Dest := PChar(FileData.Memory) + FileData.Position;
+  OldDest := Dest;
+  if (FileData.Position >= FileData.Size) then
   begin
-    Result:=false;
+    SetLength(OutputLine, 0);
+    Result := false;
     Exit;
   end;
-  while ((Dest^<>#13) and (Dest^<>#10)) do
+  while ((Dest^ <> #13) and (Dest^ <> #10)) do
   begin
-    OutputLine:=OutputLine+Dest^;  //@This is NOT the best way...!
+    FileData.Seek(1, soFromCurrent);
     Inc(Dest);
-    CurrentIndex:=CurrentIndex+1;
-    if (CurrentIndex=IndexFileSize) then
+    if (FileData.Position = FileData.Size) then
     begin
-      Result:=true;
+      SetString(OutputLine, OldDest, Dest - OldDest);
+      Result := true;
       Exit;
     end;
   end;
-  if ((Dest^=#13) and (CurrentIndex<IndexFileSize)) then
+  SetString(OutputLine, OldDest, Dest - OldDest);
+  if ((Dest^ = #13) and (FileData.Position < FileData.Size)) then
   begin
     Inc(Dest);
-    if (Dest^=#10) then
-      CurrentIndex:=CurrentIndex+1;
+    if (Dest^ = #10) then
+      FileData.Seek(1, soFromCurrent);
   end;
-  if (CurrentIndex<IndexFileSize) then
-    CurrentIndex:=CurrentIndex+1;
-  Result:=true;
+  if (FileData.Position <FileData.Size) then
+    FileData.Seek(1, soFromCurrent);
+  Result := true;
 end;
 
-function ParseIndexFile(const IndexFile: String) : Boolean;
+procedure ParseString(FileData: TMemoryStream; var OutputVar: String);
+begin
+  if GetLine(FileData, OutputVar) = false then
+    raise Exception.Create('Invalid String.');
+end;
+
+procedure ParseCardinal(FileData: TMemoryStream; var OutputVar: Cardinal);
 var
-  Dest, OldDest: PChar;
   ParseLine: String;
-  ParsePos: Cardinal;
+  Dummy: Int64;
+begin
+  if GetLine(FileData, ParseLine) = false then
+    raise Exception.Create('Invalid Cardinal number.');
+
+  //There is no Delphi StrToCardinal function, so we're going through Int64 instead
+  if TryStrToInt64(ParseLine, Dummy) = false then
+    raise Exception.Create('Invalid Cardinal number.');
+
+  if (Dummy < 0) or (Dummy > 4294967295) then
+    raise Exception.Create('Invalid Cardinal number.');
+
+  OutputVar := Cardinal(Dummy);
+end;
+
+procedure ParseCommonHeader(CurrentFile: TUpdateFile; FileData: TMemoryStream);
+var
+  ParseLine: String;
+begin
+  ParseString(FileData, CurrentFile.FileHeader);
+  if CurrentFile.FileHeader <> 'QuArK Update File' then
+    raise Exception.Create('Invalid header.');
+
+  ParseString(FileData, CurrentFile.FileFormatVersion);
+  if CurrentFile.FileFormatVersion <> 'Version 0.0' then
+    raise Exception.Create('Unknown file format version.');
+
+  ParseString(FileData, ParseLine);
+  if ParseLine = 'Index File' then
+    CurrentFile.FileType := uptIndex
+  else if ParseLine = 'Package File' then
+    CurrentFile.FileType := uptPackage
+  else if ParseLine = 'Notification File' then
+    CurrentFile.FileType := uptNotification
+  else
+    raise Exception.Create('Unknown file type.');
+
+  if CurrentFile.FileType <> CurrentFile.ShouldBeFileType then
+    raise Exception.Create('Wrong file type.');
+
+  //@ Store important data in LOG too!
+end;
+
+procedure ParseIndexFile(CurrentFile: TUpdateIndexFile; FileData: TMemoryStream);
+var
   I: Integer;
 begin
-  Dest:=PChar(IndexFile);
-  OldDest:=Dest;
-  ParsePos:=0;
+  CurrentFile.ShouldBeFileType := uptIndex;
+  ParseCommonHeader(CurrentFile, FileData);
 
-  if GetLine(IndexFile, ParsePos, ParseLine) = false then
+  ParseCardinal(FileData, CurrentFile.NotificationNR);
+
+  if CurrentFile.NotificationNR > 0 then
   begin
-    MessageBox(0, PChar('Unable to parse header online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-
-  if ParseLine<>'QuArK Update Index v1' then
-  begin
-    MessageBox(0, PChar('Header online update file not recognized. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-
-  if GetLine(IndexFile, ParsePos, ParseLine) = false then
-  begin
-    MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-
-  //@Make more clear error messages! Store important data in LOG too!
-
-  if TryStrToInt(ParseLine, UpdatePackagesNR) = false then
-  begin
-    MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-
-  if UpdatePackagesNR<0 then
-  begin
-    MessageBox(0, PChar('Invalid number of update packages. Online update failed.'), PChar('QuArK'), MB_OK);
-    Result:=false;
-    Exit;
-  end;
-
-  if UpdatePackagesNR>0 then
-  begin
-    SetLength(UpdatePackages, UpdatePackagesNR);
-    for I:=0 to UpdatePackagesNR-1 do
+    SetLength(CurrentFile.Notifications, CurrentFile.NotificationNR);
+    for I:=0 to CurrentFile.NotificationNR - 1 do
     begin
-      if GetLine(IndexFile, ParsePos, ParseLine) = false then
-      begin
-        MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-        Result:=false;
-        Exit;
-      end;
-      UpdatePackages[I].Name:=ParseLine;
-
-      if GetLine(IndexFile, ParsePos, ParseLine) = false then
-      begin
-        MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-        Result:=false;
-        Exit;
-      end;
-      UpdatePackages[I].Date:=ParseLine;
-
-      if GetLine(IndexFile, ParsePos, ParseLine) = false then
-      begin
-        MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-        Result:=false;
-        Exit;
-      end;
-      UpdatePackages[I].Description:=ParseLine;
-
-      if GetLine(IndexFile, ParsePos, ParseLine) = false then
-      begin
-        MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-        Result:=false;
-        Exit;
-      end;
-      UpdatePackages[I].Version:=ParseLine;
-
-      if GetLine(IndexFile, ParsePos, ParseLine) = false then
-      begin
-        MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-        Result:=false;
-        Exit;
-      end;
-      if TryStrToInt(ParseLine, UpdatePackages[I].Priority) = false then
-      begin
-        MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-        Result:=false;
-        Exit;
-      end;
-      if (UpdatePackages[I].Priority < 0) or (UpdatePackages[I].Priority > upMax) then
-      begin
-        //@
-        Result:=false;
-        Exit;
-      end;
-
-      if GetLine(IndexFile, ParsePos, ParseLine) = false then
-      begin
-        MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-        Result:=false;
-        Exit;
-      end;
-      UpdatePackages[I].QUPfilename:=ParseLine;
-
-      if GetLine(IndexFile, ParsePos, ParseLine) = false then
-      begin
-        MessageBox(0, PChar('Unable to parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-        Result:=false;
-        Exit;
-      end;
-      UpdatePackages[I].Dependencies:=ParseLine;
+      ParseString(FileData, CurrentFile.Notifications[I].FileName);
+      ParseCardinal(FileData, CurrentFile.Notifications[I].BuildNumber);
     end;
   end;
 
+  ParseCardinal(FileData, CurrentFile.PackageNR);
+
+  if CurrentFile.PackageNR > 0 then
+  begin
+    SetLength(CurrentFile.Packages, CurrentFile.PackageNR);
+    for I:=0 to CurrentFile.PackageNR - 1 do
+    begin
+      ParseString(FileData, CurrentFile.Packages[I].InternalName);
+      ParseString(FileData, CurrentFile.Packages[I].FileName);
+      ParseCardinal(FileData, CurrentFile.Packages[I].BuildNumber);
+    end;
+  end;
+end;
+
+procedure ParsePackageFile(CurrentFile: TUpdatePackageFile; FileData: TMemoryStream);
+begin
+  CurrentFile.ShouldBeFileType := uptPackage;
+  ParseCommonHeader(CurrentFile, FileData);
+
+  ParseString(FileData, CurrentFile.Name);
+  ParseString(FileData, CurrentFile.Description);
+  ParseCardinal(FileData, CurrentFile.BuildNumber);  
   //@
-
-//    MessageBox(0, PChar('Can not parse online update file. Online update failed.'), PChar('QuArK'), MB_OK);
-
-  Result:=true;
 end;
 
 function AutoUpdateOnline: Boolean;
 var
   UpdateConnection: THTTPConnection;
-  IndexFile: string;
   Setup: QObject;
   UpdateWindow: TAutoUpdater;
+  FileData: TMemoryStream;
   I: Integer;
+  Dummy: String;
+  BuildNumber: Cardinal;
+  AddThisPackage: Boolean;
 begin
-  Result:=false;
-
-  UpdateConnection:=THTTPConnection.Create;
+  Result := false;
+  UpdateIndexFile := TUpdateIndexFile.Create;
   try
-    ProgressIndicatorStart(5462, 4);
     try
-      UpdateConnection.GoOnline;
-      ProgressIndicatorIncrement;
-
-      UpdateConnection.ConnectTo(QuArKUpdateSite);
-      ProgressIndicatorIncrement;
-
-      UpdateConnection.GetFile(QuArKUpdateFile, IndexFile);
-      ProgressIndicatorIncrement;
-
-      if ParseIndexFile(IndexFile) = false then
-      begin
-        //@
-        Exit;
-      end;
-      //ProgressIndicatorIncrement;
-    finally
-      ProgressIndicatorStop;
-    end;
-
-    //@
-    Setup:=SetupSubSet(ssGeneral, 'Update');
-    if Setup.Specifics.Values['AutomaticInstall']='' then
-    begin
-      UpdateWindow:=TAutoUpdater.Create(nil);
+      UpdateConnection:=THTTPConnection.Create;
       try
-        for I:=0 to UpdatePackagesNR-1 do
-          with UpdateWindow.CheckListBox1 do
+        ProgressIndicatorStart(5462, 4);
+        try
+          UpdateConnection.GoOnline;
+          ProgressIndicatorIncrement;
+
+          UpdateConnection.ConnectTo(QuArKUpdateSite);
+          ProgressIndicatorIncrement;
+
+          FileData := TMemoryStream.Create;
+          try
+            UpdateConnection.GetFile(QuArKUpdateFile, FileData);
+            ProgressIndicatorIncrement;
+
+            FileData.Seek(0, soFromBeginning);
+
+            ParseIndexFile(UpdateIndexFile, FileData);
+            ProgressIndicatorIncrement;
+          finally
+            FileData.Free;
+          end;
+
+          Setup := SetupSubSet(ssGeneral, 'Update');
+          for I:=0 to UpdateIndexFile.PackageNR-1 do
           begin
-            AddItem(UpdatePackages[I].Name, nil);
-            case UpdatePackages[I].Priority of
-            upCritical:  Checked[I]:=true;
-            upImportant: Checked[I]:=true;
-            upOptional:  Checked[I]:=false;
-            upBeta:      Checked[I]:=false;
+            AddThisPackage := False;
+            Dummy := Setup.Specifics.Values['Package_'+UpdateIndexFile.Packages[I].InternalName];
+            if Dummy <> '' then
+              try
+                BuildNumber := StrToInt(Dummy);
+                if BuildNumber < UpdateIndexFile.Packages[I].BuildNumber then
+                  AddThisPackage := True;
+              except
+                AddThisPackage := True;
+              end
             else
+              AddThisPackage := True;
+
+            if AddThisPackage then
             begin
-              //Shouldn't happen!
-              //@
-              Checked[I]:=false;
-            end;
+              UpdatePackagesNR := UpdatePackagesNR + 1;
+              SetLength(UpdatePackages, UpdatePackagesNR);
+              UpdatePackages[UpdatePackagesNR - 1] := TUpdatePackageFile.Create;
+              UpdatePackages[UpdatePackagesNR - 1].FileName := UpdateIndexFile.Packages[I].FileName;
+
+              ProgressIndicatorStart(5462, 2);
+              try
+                FileData := TMemoryStream.Create;
+                try
+                  UpdateConnection.GetFile(UpdatePackages[UpdatePackagesNR - 1].FileName, FileData);
+                  ProgressIndicatorIncrement;
+
+                  FileData.Seek(0, soFromBeginning);
+
+                  ParsePackageFile(UpdatePackages[UpdatePackagesNR - 1], FileData);
+                  ProgressIndicatorIncrement;
+                finally
+                  FileData.Free;
+                end;
+              finally
+                ProgressIndicatorStop;
+              end;
             end;
           end;
-        UpdateWindow.ShowModal;
-        //@
-      finally
-        UpdateWindow.Free;
-      end;
-    end
-    else
-      if DoInstall = false then
-        Exit;
-        
-      //@ Automatically install default checked updates, ask for others!!!
+        finally
+          ProgressIndicatorStop;
+        end;
 
-    UpdateConnection.GoOffline;
+        if Setup.Specifics.Values['AutomaticInstall'] = '' then
+        begin
+          UpdateWindow := TAutoUpdater.Create(nil);
+          try
+            for I:=0 to UpdatePackagesNR-1 do
+              with UpdateWindow.CheckListBox1 do
+              begin
+                AddItem(UpdatePackages[I].Name, nil);
+(*                case UpdatePackages[I].Priority of
+                upCritical:  Checked[I] := true;
+                upImportant: Checked[I] := true;
+                upOptional:  Checked[I] := false;
+                upBeta:      Checked[I] := false;
+                else
+                begin
+                  //Shouldn't happen!
+                  //@
+                  Checked[I] := true;
+                end;
+                end; *)
+              end;
+            UpdateWindow.ShowModal;
+            //@
+          finally
+            UpdateWindow.Free;
+          end;
+        end
+        else
+          if DoInstall = false then
+            Exit; //@
+
+        //@ Automatically install default checked updates, ask for others!!!
+
+        UpdateConnection.GoOffline;
+      finally
+        UpdateConnection.Free;
+      end;
+      Result := true;
+    except
+      on E: Exception do
+        Application.MessageBox(PChar('The online update check has failed with the following error: '+E.Message+#13#10#13#10+'QuArK will not automatically fall back to offline update checking. If this error persists, please contact the QuArK development team via the forums.'), PChar('QuArK'), MB_OK);
+    end;
   finally
-    UpdateConnection.Free;
+    UpdateIndexFile.Free;
+//    for I:=0 to UpdateNotificationsNR-1 do
+//      UpdateNotifications[I].Free;
+//    SetLength(UpdateNotifications, 0);
+//    UpdateNotificationsNR := 0;
+    for I:=0 to UpdatePackagesNR-1 do
+      UpdatePackages[I].Free;
+    SetLength(UpdatePackages, 0);
+    UpdatePackagesNR := 0;
   end;
-  Result:=true;
 end;
 
 procedure DoUpdate(AllowOnline: Boolean);
@@ -343,22 +413,22 @@ var
 begin
   if AllowOnline then
   begin
-    if SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheckOnline']<>'' then
+    if SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheckOnline'] <> '' then
     begin
       //Online update
-      DoOfflineUpdate:=False;
-      if AutoUpdateOnline=false then
+      DoOfflineUpdate := False;
+      if AutoUpdateOnline = false then
       begin
         //Something went wrong, let's fall back to the offline 'update'
         Log(LOG_WARNING, 'Unable to check for updates online! Using offline update routine.');
-        DoOfflineUpdate:=True;
+        DoOfflineUpdate := True;
       end;
     end
     else
-      DoOfflineUpdate:=True;
+      DoOfflineUpdate := True;
   end
   else
-    DoOfflineUpdate:=True;
+    DoOfflineUpdate := True;
 
   if DoOfflineUpdate then
   begin
@@ -387,12 +457,12 @@ var
   I: Integer;
   PackageSelected: Boolean;
 begin
-  PackageSelected:=False;
+  PackageSelected := False;
   for I:=0 to CheckListBox1.Count-1 do
   begin
-    UpdatePackages[I].Install:=CheckListBox1.Checked[I];
+    UpdatePackages[I].Install := CheckListBox1.Checked[I];
     if CheckListBox1.Checked[I] then
-      PackageSelected:=true;
+      PackageSelected := true;
   end;
   if not PackageSelected then
   begin
@@ -401,7 +471,7 @@ begin
   end;
   Close;
   if DoInstall = false then
-    Exit;
+    Exit; //@
 end;
 
 procedure TAutoUpdater.CheckListBox1Click(Sender: TObject);
@@ -417,14 +487,14 @@ begin
   end
   else
   begin
-    case UpdatePackages[I].Priority of
+(*    case UpdatePackages[I].Priority of
     upCritical: S:='Priority: Critical';
     upImportant: S:='Priority: Important';
     upOptional: S:='Priority: Optional';
     upBeta: S:='Priority: Beta';
     else
       S:=''; //Shouldn't happen!
-    end;
+    end;   *)
     Label1.Caption:=S + #13 + #10 + UpdatePackages[I].Description;
     Label1.Font.Color:=clWindowText;
   end;

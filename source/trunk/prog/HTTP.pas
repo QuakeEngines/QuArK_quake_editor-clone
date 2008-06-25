@@ -30,7 +30,7 @@ unit HTTP;
 
 interface
 
-uses Windows, WinInet;
+uses Windows, WinInet, Classes;
 
 type
   THTTPConnection = class
@@ -45,9 +45,9 @@ type
     procedure FileRequest(const FileName: string);
     function FileQueryInfo(Flag: DWORD; Default: Integer = 0): Integer;
     procedure CloseRequest;
-    procedure ReadFile(var FileData: string; DataStart, DataLength: cardinal);
+    procedure ReadFile(FileData: TMemoryStream; DataStart, DataLength: cardinal);
     //Easy-to-use function:
-    procedure GetFile(const FileName: string; var FileData: string);
+    procedure GetFile(const FileName: string; FileData: TMemoryStream);
     destructor Destroy; override;
   end;
 
@@ -55,7 +55,11 @@ type
 
 implementation
 
-uses StrUtils, SysUtils;
+uses StrUtils, SysUtils, Logging;
+
+const
+  StatusBufferLength : DWORD = 256;
+  FileBufferLength : DWORD = 65536;
 
  {------------------------}
 
@@ -143,19 +147,18 @@ end;
 function THTTPConnection.FileQueryInfo(Flag: DWORD; Default: Integer = 0): Integer;
 var
   StatusBuffer: PChar;
-  cStatusBufferLength, StatusBufferLength: DWORD;
+  BufferLength: DWORD;
   HeaderIndex: DWORD;
 begin
-  cStatusBufferLength:=256;
-  StatusBufferLength:=cStatusBufferLength;
   GetMem(StatusBuffer, StatusBufferLength);
   HeaderIndex:=0;
+  BufferLength:=StatusBufferLength;
 
-  if HttpQueryInfo(InetResource, Flag, StatusBuffer, StatusBufferLength, HeaderIndex)=false then
+  if HttpQueryInfo(InetResource, Flag, StatusBuffer, BufferLength, HeaderIndex)=false then
     raise exception.create('HttpQueryInfo failed!');
 
   try
-    Result:=StrToInt(LeftStr(StatusBuffer, StatusBufferLength));
+    Result:=StrToInt(LeftStr(StatusBuffer, BufferLength));
   except
     Result:=Default;
   end;
@@ -163,11 +166,10 @@ begin
   FreeMem(StatusBuffer);
 end;
 
-procedure THTTPConnection.ReadFile(var FileData: string; DataStart, DataLength: cardinal);
+procedure THTTPConnection.ReadFile(FileData: TMemoryStream; DataStart, DataLength: cardinal);
 var
-  ResourceBuffer, Dest: PChar;
   Buffer: PChar;
-  cBufferLength, BufferLength, ReadBufferLength: DWORD;
+  BufferLength: DWORD;
 begin
   if DataStart<>0 then
   begin
@@ -181,37 +183,34 @@ begin
     InternetSetFilePointer(InetResource, DataStart, nil, FILE_BEGIN, 0);
   end;
 
-  GetMem(ResourceBuffer, DataLength);
-  try
-    Dest:=ResourceBuffer;
+  FileData.Seek(0, soFromBeginning);
+  FileData.SetSize(DataLength);
 
-    cBufferLength:=65536;
-    BufferLength:=cBufferLength;
-    if Int(BufferLength)>DataLength then
-      BufferLength:=DataLength;
-    GetMem(Buffer, BufferLength);
+  GetMem(Buffer, FileBufferLength);
+  try
+    repeat
+      if InternetReadFile(InetResource, Buffer, FileBufferLength, BufferLength)=false then
+        raise exception.create('Can not download online update file. Online update failed.');
+      if BufferLength>0 then
+        FileData.WriteBuffer(Buffer^, BufferLength);
+    until BufferLength=0;
+  finally
+    FreeMem(Buffer);
+  end;
+  if FileData.Position <> FileData.Size then
+  begin
+    Log(LOG_WARNING, 'Online Update: FileData does NOT fill buffer completely!');
+    GetMem(Buffer, FileData.Size - FileData.Position);
     try
-      repeat
-        if InternetReadFile(InetResource, Buffer, BufferLength, ReadBufferLength)=false then
-          raise exception.create('Can not download online update file. Online update failed.');
-        if ReadBufferLength>0 then
-        begin
-          CopyMemory(Dest, Buffer, ReadBufferLength);
-          Inc(Dest, ReadBufferLength);
-        end;
-      until ReadBufferLength=0;
+      FillChar(Buffer, FileData.Size - FileData.Position, 0);
+      FileData.WriteBuffer(Buffer, FileData.Size - FileData.Position);
     finally
       FreeMem(Buffer);
     end;
-
-    SetString(FileData, ResourceBuffer, DataLength);
-
-  finally
-    FreeMem(ResourceBuffer);
   end;
 end;
 
-procedure THTTPConnection.GetFile(const FileName: string; var FileData: string);
+procedure THTTPConnection.GetFile(const FileName: string; FileData: TMemoryStream);
 var
   StatusValue: Integer;
   ResourceSize: Cardinal;

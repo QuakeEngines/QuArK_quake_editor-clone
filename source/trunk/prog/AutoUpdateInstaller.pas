@@ -106,7 +106,7 @@ procedure InstallPackages; stdcall;
 var
   I, PackageNR: Integer;
   UpdateConnection: THTTPConnection;
-  QUPfiledata: string;
+  FileData: TMemoryStream;
 begin
   InstallError:='Unknown error';
   try
@@ -129,10 +129,16 @@ begin
           with UpdatePackages[I] do
             if Install then
             begin
-              //@Open file for QUPfiledata...
-              UpdateConnection.GetFile(QUPfilename, QUPfiledata);
-              //@Save QUPfiledata to file...
-              //@
+              FileData := TMemoryStream.Create;
+              try
+                //@Open file for QUPfiledata...
+                UpdateConnection.GetFile(FileName, FileData);
+                FileData.Seek(0, soFromBeginning);
+                //@Save QUPfiledata to file...
+                //@
+              finally
+                FileData.Free;
+              end;
               InstallWindow.pgbInstall.StepIt;
               if StopUpdate then
                 Exit;
