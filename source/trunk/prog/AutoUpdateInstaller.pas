@@ -23,6 +23,20 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2008/06/25 14:30:12  danielpharos
+Change to ASCII file property
+
+Revision 1.4  2008/06/25 14:23:41  danielpharos
+Major improvements in online update system.
+
+Revision 1.3  2008/02/21 21:21:27  danielpharos
+Small auto-update update: just some minor things.
+
+Revision 1.2  2008/02/07 14:09:44  danielpharos
+Add missing result.
+
+Revision 1.1  2008/02/03 13:12:45  danielpharos
+Update for the AutoUpdater. Beginning of the install-window.
 
 }
 
