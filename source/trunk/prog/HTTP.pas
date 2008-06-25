@@ -131,13 +131,13 @@ procedure THTTPConnection.CloseRequest;
 begin
   if not Requesting then
     Exit;
-  if InternetCloseHandle(InetConnection)=false then
+  if InternetCloseHandle(InetResource)=false then
   begin
     //@
     Exit;
   end;
   Requesting:=False;
-  InetConnection:=nil;
+  InetResource:=nil;
 end;
 
 function THTTPConnection.FileQueryInfo(Flag: DWORD; Default: Integer = 0): Integer;
