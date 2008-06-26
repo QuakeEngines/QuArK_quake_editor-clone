@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2008/06/25 14:23:41  danielpharos
+Major improvements in online update system.
+
 Revision 1.6  2008/02/21 21:21:27  danielpharos
 Small auto-update update: just some minor things.
 
@@ -57,12 +60,19 @@ type
   TUpdateNotification = record
     FileName: String; //@
     BuildNumber: Cardinal; //@
+    //@
   end;
 
   TUpdatePackage = record
     InternalName: String;
     FileName: String;
     BuildNumber: Cardinal;
+  end;
+
+  TPackageFile = record
+    FileName: String;
+    FileSize: Cardinal;
+    MD5: String;
   end;
 
   TUpdateFile = class
@@ -79,17 +89,20 @@ type
     Packages: array of TUpdatePackage;
   end;
 
-//  TUpdateNotificationFile = class(TUpdateFile)
-//    //@
-//  end;
+//@  TUpdateNotificationFile = class(TUpdateFile)
+//@    NotificationIndex: Integer;
+//@    ...
+//@  end;
 
   TUpdatePackageFile = class(TUpdateFile)
+    PackageIndex: Integer;
     FileName: String;
     Name: String;
     Description: String;
     BuildNumber: Cardinal;
 //@    Priority: TUpdatePriority;
-    //@
+    FileNR: Cardinal;
+    Files: array of TPackageFile;
     Install: Boolean;
     InstallSuccessful: Boolean;
   end;
@@ -109,8 +122,8 @@ type
 
 var
   UpdateIndexFile: TUpdateIndexFile;
-//  UpdateNotificationsNR: Cardinal;
-//  UpdateNotifications: array of TUpdateNotificationFile;
+//@  UpdateNotificationsNR: Cardinal;
+//@  UpdateNotifications: array of TUpdateNotificationFile;
   UpdatePackagesNR: Cardinal;
   UpdatePackages: array of TUpdatePackageFile;
 
@@ -125,6 +138,7 @@ procedure ParseCardinal(FileData: TMemoryStream; var OutputVar: Cardinal);
 procedure ParseCommonHeader(CurrentFile: TUpdateFile; FileData: TMemoryStream);
 procedure ParseIndexFile(CurrentFile: TUpdateIndexFile; FileData: TMemoryStream);
 procedure ParsePackageFile(CurrentFile: TUpdatePackageFile; FileData: TMemoryStream);
+//@procedure ParseNotificationFile(CurrentFile: TUpdateNotificationFile; FileData: TMemoryStream);
 
  {------------------------}
 
@@ -220,8 +234,6 @@ begin
 
   if CurrentFile.FileType <> CurrentFile.ShouldBeFileType then
     raise Exception.Create('Wrong file type.');
-
-  //@ Store important data in LOG too!
 end;
 
 procedure ParseIndexFile(CurrentFile: TUpdateIndexFile; FileData: TMemoryStream);
@@ -258,14 +270,29 @@ begin
 end;
 
 procedure ParsePackageFile(CurrentFile: TUpdatePackageFile; FileData: TMemoryStream);
+var
+  I: Integer;
 begin
   CurrentFile.ShouldBeFileType := uptPackage;
   ParseCommonHeader(CurrentFile, FileData);
 
   ParseString(FileData, CurrentFile.Name);
   ParseString(FileData, CurrentFile.Description);
-  ParseCardinal(FileData, CurrentFile.BuildNumber);  
-  //@
+  ParseCardinal(FileData, CurrentFile.BuildNumber);
+  if CurrentFile.BuildNumber <> UpdateIndexFile.Packages[CurrentFile.PackageIndex].BuildNumber then
+    raise exception.create('Build-numbers do not match.');
+
+  ParseCardinal(FileData, CurrentFile.FileNR);
+  if CurrentFile.FileNR > 0 then
+  begin
+    SetLength(CurrentFile.Files, CurrentFile.FileNR);
+    for I:=0 to CurrentFile.FileNR - 1 do
+    begin
+      ParseString(FileData, CurrentFile.Files[I].FileName);
+      ParseCardinal(FileData, CurrentFile.Files[I].FileSize);
+      ParseString(FileData, CurrentFile.Files[I].MD5);
+    end;
+  end;
 end;
 
 function AutoUpdateOnline: Boolean;
@@ -327,6 +354,7 @@ begin
               UpdatePackagesNR := UpdatePackagesNR + 1;
               SetLength(UpdatePackages, UpdatePackagesNR);
               UpdatePackages[UpdatePackagesNR - 1] := TUpdatePackageFile.Create;
+              UpdatePackages[UpdatePackagesNR - 1].PackageIndex := I;
               UpdatePackages[UpdatePackagesNR - 1].FileName := UpdateIndexFile.Packages[I].FileName;
 
               ProgressIndicatorStart(5462, 2);
@@ -392,7 +420,12 @@ begin
       Result := true;
     except
       on E: Exception do
-        Application.MessageBox(PChar('The online update check has failed with the following error: '+E.Message+#13#10#13#10+'QuArK will not automatically fall back to offline update checking. If this error persists, please contact the QuArK development team via the forums.'), PChar('QuArK'), MB_OK);
+      begin
+        //Recycle Dummy...
+        Dummy := 'The online update check has failed with the following error: '+E.Message+#13#10#13#10+'QuArK will not automatically fall back to offline update checking. If this error persists, please contact the QuArK development team via the forums.';
+        Log(LOG_WARNING, Dummy);
+        Application.MessageBox(PChar(Dummy), PChar('QuArK'), MB_OK);
+      end;
     end;
   finally
     UpdateIndexFile.Free;
@@ -505,8 +538,4 @@ begin
   CheckListBox1Click(CheckListBox1);
 end;
 
-initialization
-
-finalization
-  SetLength(UpdatePackages, 0); //@Do this earlier!
 end.
