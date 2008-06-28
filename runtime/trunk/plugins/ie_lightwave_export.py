@@ -591,7 +591,7 @@ def generate_surf(material_name):
     data.write(struct.pack(">fH", gloss, 0))
 
     data.write("CMNT")  # material comment
-    comment = material_name + ": Exported from QuArK"
+    comment = material_name + ": Exported from QuArk Model Editor"
     comment = generate_nstring(comment)
     data.write(struct.pack(">H", len(comment)))
     data.write(comment)
@@ -770,4 +770,7 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2008/06/28 14:52:35  cdunde
+# Added .lwo lightwave model export support and improved the importer.
+#
 #
