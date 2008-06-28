@@ -45,10 +45,9 @@ def runimporter(m):
         return
     editor = mapeditor()
     files = quarkx.filedialogbox("Select File", m.text, mdlf[0], 0)
-    try:
+    if len(files) != 0:
         mdlf[1](None, files[0], None)
-    except:
-        pass
+
     ### Line below will load the model.
   #  editor.Root = mdlf[1](None, files[0], None)
   #  print "mdlmenus line 52 Root",editor.Root
@@ -64,11 +63,10 @@ def runexporter(m):
     except:
         return
     editor = mapeditor()
-    # See plugins\mapbotwaypointer.py file for example of line below for use.
     files = quarkx.filedialogbox("Save file as...", m.text, mdlf[0], 1)
-    ### Line below just runs the exporter, take out after model is actually being exported below.
-    mdlf[1](None, files[0], None)
-    ### Line below will export the model. (none yet)
+    if len(files) != 0:
+        mdlf[1](None, files[0], None)
+
 
 #
 # Menu bar builder
@@ -206,7 +204,10 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
         else:
             def resetSkinview(menu, editor=editor, view=view):
                 viewWidth, viewHeight = view.clientarea
-                texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
+                try:
+                    texWidth, texHeight = editor.Root.currentcomponent.currentskin["Size"]
+                except:
+                    texWidth, texHeight = view.clientarea
                 if texWidth > texHeight:
                     view.info["scale"] = viewWidth / texWidth
                 elif texWidth < texHeight:
@@ -268,6 +269,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.28  2008/06/14 08:18:41  cdunde
+#Fixed error if model import file selection window is closed without selecting anything.
+#
 #Revision 1.27  2008/06/04 03:56:40  cdunde
 #Setup new QuArK Model Editor Python model import export system.
 #

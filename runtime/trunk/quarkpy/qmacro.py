@@ -342,9 +342,9 @@ def MACRO_mdl_pythonimporter(text):
                 gn = file
             mdlf[1](a[0].parent, file, gn)
     if mdlf[0][0] is None and mdlf[1] is not None:
-        mdlf[1](a[0].parent) # This calls the function that is stored in the "entfn" list above.
+        mdlf[1](a[0].parent) # This calls the function that is stored in the "mdlimport" list above.
 
-### A list, used below, to pass items to for the main QuArK menu 'Model Importers' section.
+### A list, used below, to pass items to for the main QuArK menu 'Model Exporters' section.
 ### See the plugins files that start with "ie_" for its use.
 mdlexport = {}
 
@@ -367,11 +367,14 @@ def MACRO_mdl_pythonexporter(text):
                 gn = file
             mdlf[1](a[0].parent, file, gn)
     if mdlf[0][0] is None and mdlf[1] is not None:
-        mdlf[1](a[0].parent) # This calls the function that is stored in the "entfn" list above.
+        mdlf[1](a[0].parent) # This calls the function that is stored in the "mdlexport" list above.
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.29  2008/06/04 03:56:39  cdunde
+#Setup new QuArK Model Editor Python model import export system.
+#
 #Revision 1.28  2008/04/04 20:19:27  cdunde
 #Added a new Conversion Tools for making game support QuArK .qrk files.
 #
