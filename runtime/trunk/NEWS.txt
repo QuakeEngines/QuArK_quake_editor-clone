@@ -15,6 +15,8 @@ $Id$
 6.6.0 Beta 2
 ============
 
+* [cdunde/DanielPharos]: Added .lwo lightwave model export support and improved the importer.
+
 * [cdunde/DanielPharos]: To add lwo model importer, uv's still not correct though.
           - Also added model import\export logging options for file types.
 
