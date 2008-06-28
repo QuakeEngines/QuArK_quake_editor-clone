@@ -11,9 +11,9 @@ QuArK Model Editor importer for Quake 2 .md2 model files.
 
 Info = {
    "plug-in":       "ie_md2_importer",
-   "desc":          "This script imports a .lwo Lightwave type LWOB and LWO2 (Doom 3) model file and textures into QuArK for editing. Original code from Blender, ightwave_import.py, authors - Alessandro Pirovano, Anthony D'Agostino (Scorpius).",
+   "desc":          "This script imports a .lwo Lightwave type LWOB and LWO2 (Doom 3) model file and textures into QuArK for editing. Original code from Blender, lightwave_import.py, authors - Alessandro Pirovano, Anthony D'Agostino (Scorpius).",
    "date":          "June 3 2008",
-   "author":        "cdunde",
+   "author":        "cdunde/DanielPharos",
    "author e-mail": "cdunde@sbcglobal.net",
    "quark":         "Version 6.6.0 Beta 2" }
 
@@ -66,6 +66,8 @@ import ie_utils
 # ===========================================================
 
 # Globals
+ie_editor = None
+
 importername = "ie_lightwave_import.py"
 from ie_utils import tobj
 if tobj is None:
@@ -91,7 +93,7 @@ def rlcopy(ll):
 # =============================
 # === Read LightWave Format ===
 # =============================
-def read(basepath, filename, editor):
+def read(basepath, filename):
     global tobj
 
     tobj.logcon ("#####################################################################")
@@ -103,34 +105,25 @@ def read(basepath, filename, editor):
     start = time.clock()
     file = open(filename, "rb")
 
-  #  editmode = Blender.Window.EditMode()    # are we in edit mode?  If so ...
-  #  if editmode: Blender.Window.EditMode(0) # leave edit mode before getting the mesh    # === LWO header ===
-
     form_id, form_size, form_type = struct.unpack(">4s1L4s",  file.read(12))
     if (form_type == "LWOB"):
-      #  read_lwob(file, filename)
-        ComponentList, message = read_lwob(file, basepath, filename, editor)
+        ComponentList, message = read_lwob(file, basepath, filename)
     elif (form_type == "LWO2"):
-      #  read_lwo2(file, filename)
-        ComponentList, message = read_lwo2(file, basepath, filename, editor)
+        ComponentList, message = read_lwo2(file, basepath, filename)
     else:
         tobj.logcon ("Can't read a file with the form_type: %s" %form_type)
-      #  return
         file.close()
         return [None, None, ""]
 
- #   Blender.Window.DrawProgressBar(1.0, "")    # clear progressbar
     file.close()
     end = time.clock()
     seconds = " in %.2f %s" % (end-start, "seconds")
     if form_type == "LWO2": fmt = " (v6.0 Format)"
     if form_type == "LWOB": fmt = " (v5.5 Format)"
     logmessage = "Successfully imported " + os.path.basename(filename) + fmt + seconds
-    #my_meshtools.print_boxed(message)
     tobj.pprint ("#####################################################################")
     tobj.logcon (logmessage)
     tobj.logcon ("#####################################################################")
- #   if editmode: Blender.Window.EditMode(1)  # optional, just being nice
 
     ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
     ModelRoot = quarkx.newobj('Model:mr')
@@ -142,8 +135,7 @@ def read(basepath, filename, editor):
 # =================================
 # === Read LightWave 5.5 format ===
 # =================================
-# def read_lwob(file, filename):
-def read_lwob(file, basepath, filename, editor):
+def read_lwob(file, basepath, filename):
     global tobj
 
     tobj.logcon("LightWave 5.5 format")
@@ -170,8 +162,7 @@ def read_lwob(file, basepath, filename, editor):
 # =============================
 # === Read LightWave Format ===
 # =============================
-# def read_lwo2(file, filename, typ="LWO2"):
-def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
+def read_lwo2(file, basepath, filename, typ="LWO2"):
     global tobj
 
     tobj.logcon("LightWave 6 (and above) format")
@@ -179,8 +170,6 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
     name = filename.split('\\')
     fname_part = name[len(name)-1]
     dir_part = filename.replace('\\'+ fname_part, '')
- #   dir_part = Blender.sys.dirname(filename)
- #   fname_part = Blender.sys.basename(filename)
     ask_weird = 1
 
     #first initialization of data structures
@@ -202,6 +191,32 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
     #7 - uvcoords_dict = {name}     #uvmap coordinates (mixed mode per vertex/per face)
     #8 - facesuv_dict = {name}      #vmad only coordinates associations poly & vertex -> uv tuples
 
+### This area is where we make the different elements of a QuArK Component, for each Component.
+    # First we check for any other "Import Component"s,
+    # if so we name the first component 1 more then the largest number
+    # and increase each following component by 1.
+    CompNbr = "None"
+    comparenbr = 0
+    for item in ie_editor.Root.dictitems:
+        if ie_editor.Root.dictitems[item].shortname.startswith('Import Component'):
+            getnbr = ie_editor.Root.dictitems[item].shortname
+            getnbr = getnbr.replace('Import Component', '')
+            if getnbr == "":
+               nbr = 0
+            else:
+                nbr = int(getnbr)
+            if nbr > comparenbr:
+                comparenbr = nbr
+            nbr = comparenbr + 1
+            CompNbr = nbr
+    if CompNbr != "None":
+        pass
+    else:
+        CompNbr = 1
+
+    ComponentList = []
+    message = ""
+
     #pass 1: look in advance for materials
     tobj.logcon ("#####################################################################")
     tobj.logcon ("Starting Pass 1: hold on tight")
@@ -212,7 +227,7 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
         except EOFError:
             break
         tobj.pprint(" ")
-        if lwochunk.chunkname == "TAGS":                         # Tags
+        if lwochunk.chunkname == "TAGS":                           # Tags
             tobj.pprint("---- TAGS (Model Components\Textures)")
             tag_list.extend(read_tags(lwochunk))
             tobj.pprint("tag_list (Model Components\Textures)")
@@ -232,9 +247,7 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
             if ask_weird:
                 ckname = ie_utils.safestring(lwochunk.chunkname)
                 if "#" in ckname:
-                  #  choice = Blender.Draw.PupMenu("WARNING: file could be corrupted.%t|Import anyway|Give up")
                     choice = quarkx.msgbox("WARNING: file could be corrupted.%t|Import anyway|Give up", quarkpy.qutils.MT_WARNING, quarkpy.qutils.MB_YES_NO_CANCEL)
-                  #  if choice != 1:
                     if choice != MR_YES:
                         tobj.logcon("---- %s: Maybe file corrupted. Terminated by user" % lwochunk.chunkname)
                         return None
@@ -267,9 +280,11 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
             objname = read_layr(lwochunk)
             tobj.pprint(objname)
             if objspec_list != None: #create the object
-                create_objects(clip_list, objspec_list, surf_list)
+                polynames = polytag_dict.keys()
+                ComponentList, message, CompNbr = create_objects(filename, polynames, clip_list, objspec_list, surf_list, basepath, ComponentList, message, CompNbr)
                 update_material(clip_list, objspec_list, surf_list) #give it all the object
             objspec_list = [objname, {}, [], [], {}, {}, 0, {}, {}]
+            object_index += 1
         elif lwochunk.chunkname == "PNTS":                         # Verts
             tobj.pprint("---- PNTS, objspec_list[2]")
             tobj.pprint("('verts' SINGLE list of dicts, used by ALL comps. Keys are vert_index)")
@@ -277,7 +292,6 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
             objspec_list[2] = verts
         elif lwochunk.chunkname == "VMAP":                         # MAPS (UV)
             tobj.pprint("---- VMAP")
-            #objspec_list[7] = read_vmap(objspec_list[7], len(objspec_list[2]), lwochunk)
             uvcoords_dict = read_vmap(objspec_list[7], len(objspec_list[2]), lwochunk)
             tobj.pprint("uvcoords_dict 1st in VMAP")
             tobj.pprint("total uv's")
@@ -287,7 +301,6 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
             tobj.pprint(objspec_list[7])
         elif lwochunk.chunkname == "VMAD":                         # MAPS (UV) per-face
             tobj.pprint("---- VMAD")
-            #objspec_list[7], objspec_list[8] = read_vmad(objspec_list[7], objspec_list[8], len(objspec_list[3]), len(objspec_list[2]), lwochunk)
             uvcoords_dict, facesuv_dict = read_vmad(objspec_list[7], objspec_list[8], len(objspec_list[3]), len(objspec_list[2]), lwochunk)
             tobj.pprint("total facesuv_dict")
             for key in objspec_list[8].keys():
@@ -303,7 +316,8 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
             if flag<2:
                 if objspec_list[3] != []:
                     #create immediately the object
-                    create_objects(clip_list, objspec_list, surf_list)
+                    polynames = polytag_dict.keys()
+                    ComponentList, message, CompNbr = create_objects(filename, polynames, clip_list, objspec_list, surf_list, basepath, ComponentList, message, CompNbr)
                     update_material(clip_list, objspec_list, surf_list) #give it all the object
                     #update with new data
                     objspec_list = [objspec_list[0],                  #update name
@@ -315,6 +329,7 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
                                     flag,                             #patch flag
                                     objspec_list[7],                  #same uvcoords
                                     {}]                               #no vmad mapping
+                    object_index += 1
                 #end if already has a face list
                 objspec_list[3] = faces
                 objname = objspec_list[0]
@@ -325,8 +340,8 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
             tobj.pprint("---- PTAG, objspec_list[5] (polytag_dict) tri_index list")
             tobj.pprint("(dict list, uses Component\Texture name as 'key'.)")
             polytag_dict = read_ptags(lwochunk, tag_list)
-            for kk in polytag_dict.keys():
-                 objspec_list[5][kk] = polytag_dict[kk]
+            for key in polytag_dict.keys():
+                objspec_list[5][key] = polytag_dict[key]
         else:                                                       # Misc Chunks
             tobj.pprint("---- %s: skipping (definitely!)" % lwochunk.chunkname)
             lwochunk.skip()
@@ -350,226 +365,11 @@ def read_lwo2(file, basepath, filename, editor, typ="LWO2"):
     tobj.pprint("if tri_index = [0] and vert_index = [1]: uv_index = [2] (for objspec_list[7])")
     tobj.pprint(facesuv_dict)
     tobj.pprint("")
+    polynames = polytag_dict.keys()
     ### The next two lines make it load 10 times slower and have no effect on the u,v problem.
- #   create_objects(clip_list, objspec_list, surf_list)
- #   update_material(clip_list, objspec_list, surf_list) #give it all the object
-
-### This area is where we make the different elements of a QuArK Component, for each Component.
-    # First we check for any other "Import Component"s,
-    # if so we name the first component 1 more then the largest number
-    # and increase each following component by 1.
-    CompNbr = "None"
-    comparenbr = 0
-    for item in editor.Root.dictitems:
-        if editor.Root.dictitems[item].shortname.startswith('Import Component'):
-            getnbr = editor.Root.dictitems[item].shortname
-            getnbr = getnbr.replace('Import Component', '')
-            if getnbr == "":
-               nbr = 0
-            else:
-                nbr = int(getnbr)
-            if nbr > comparenbr:
-                comparenbr = nbr
-            nbr = comparenbr + 1
-            CompNbr = nbr
-    if CompNbr != "None":
-        pass
-    else:
-        CompNbr = 1
-
-    ComponentList = []
-
-    # Now we start making the elements of each component or "poly".
-    message = ""
-    
-    polyuvname = None
-    UVtype = "VMAP"
-    for poly in polytag_dict:
-        object_index += 1 # Counter for how many components are created.
-        
-        ### For the Skins:sg group.
-        # Checks if the model has textures specified with it.
-        skinsize = (128, 128)
-        skingroup = quarkx.newobj('Skins:sg')
-        skingroup['type'] = chr(2)
-        polyname = poly.split(".")
-        polyname = polyname[0]
-        skinname = (polyname + '.tga')
-        skin = quarkx.newobj(skinname)
-        skinname = skinname.split('/')
-
-        polyuvlist = None
-        for list in surf_list:
-            if list['NAME'] == poly and list.has_key('BLOK'):
-                for item in list['BLOK']:
-                    if item.has_key('VMAP'):
-                        UVtype = "VMAP"
-            if list['NAME'] == poly and list.has_key('UVNAME'):
-                polyuvname = list['UVNAME']
-                if uvcoords_dict.has_key(polyuvname):
-                    polyuvlist = uvcoords_dict[polyuvname]
-                    break
-        if uvcoords_dict != {} and polyuvlist is None:
-            testname = skinname[len(skinname)-1].replace('.tga', "")
-            if len(uvcoords_dict) == 1:
-                if uvcoords_dict.keys()[0].find(testname) != -1:
-                    polyuvlist = uvcoords_dict[uvcoords_dict.keys()[0]]
-                    polyuvname = uvcoords_dict.keys()[0]
-            else:
-                for key in uvcoords_dict.keys():
-                    if key.find(testname) != -1:
-                        polyuvlist = uvcoords_dict[key]
-                        polyuvname = key
-        if polyuvlist == {}:
-            polyuvlist = None
-
-        polyname = poly.split(".")
-        if not os.path.exists(basepath  + polyname[0] + '.tga'):
-            if not os.path.exists(os.getcwd().replace("\\", "/") + "/" + skinname[len(skinname)-1]):
-                if message != "":
-                    message = message + "================================\n"
-                temppath = basepath
-                message = message + "Import Component " + str(CompNbr) + " needs the skin texture\n"
-                message = message + (temppath.replace("\\", "/") + polyname[0] + '.tga\n')
-                message = message + "But the texture is not in that location.\n"
-                message = message + "Look for:\n"
-                message = message + ('    ' + polyname[0] + '.tga\n')
-                polyuvlist = None
-            else:
-                temppath = filename
-                temppath = temppath.replace(basepath, "")
-                temppath = temppath.split("\\")
-                curfolder = ""
-                for item in range(len(temppath)-1):
-                    curfolder = curfolder + temppath[item] + "/"
-                skin = quarkx.newobj(curfolder + skinname[len(skinname)-1])
-                image = quarkx.openfileobj(os.getcwd() + "\\" + skinname[len(skinname)-1])
-                skin['Image1'] = image.dictspec['Image1']
-                skin['Size'] = image.dictspec['Size']
-                skingroup.appenditem(skin)
-                skinsize = skin['Size']
-        else:
-            image = quarkx.openfileobj(basepath  + polyname[0] + '.tga')
-            skin['Image1'] = image.dictspec['Image1']
-            skin['Size'] = image.dictspec['Size']
-            skingroup.appenditem(skin)
-            skinsize = skin['Size']
-
-        ### For the model's 'Tris', this needs to be in binary so we use the 'struct' function.
-        Tris = ''
-        for key in facesuv_dict.keys():
-            if key.find(skinname[len(skinname)-1].replace(".tga", "_0")) != -1: # We half to do it this way because some of these dummy’s can't get the path right! 8-\
-                keyname = key # Don't change this, we use the keyname again later so we don't have to go through this again.
-                uv_list = facesuv_dict[keyname] # Gets the u,v list for this poly using (as a 'key') its name with the _0 added at the end of its name.
-                break
-            elif key == 'texture':
-                keyname = key
-                uv_list = facesuv_dict[keyname] # Gets the u,v list for this poly using (as a 'key') its name with the _0 added at the end of its name.
-                break
-      
-        ### For the Frames:fg group and each "name:mf" frame.
-        framesgroup = quarkx.newobj('Frames:fg')
-
-        # Because .lwo models are "stagnat" models, (no animation), we only make 1 frame
-        # which is used to draw the maodel's 'mesh' (shape) in the editor's views.
-        # The Skin-view uses the model's 'Tris' to draw its nlines. 
-        frame = quarkx.newobj('Base Frame:mf')
-        frame['index'] = (0,)
-        mesh = ()
-        vtxconvert = {}
-        count = 0
-        TexWidth, TexHeight = skinsize
-
-        for tri in range(len(objspec_list[5][poly])): # tri is the tri_index
-            tri_index = objspec_list[5][poly][tri]
-            face = objspec_list[3][tri_index] # face is now the tri list of vert_index numbers
-            # First make the tri_index (vert_index, u pos, v pos)
-            # But since some models have more then one component
-            # we need to brake the one lone list of vertexes into individual smaller lists,
-            # one for each component which means we need to convert the old vertex_index to the new ones.
-            for i in range(len(face)): # face[i] is the individual vert_index number in this "for" loop.
-                u, v = (0, 0)
-                if UVtype == "VMAD": # VMAD section
-                    for index_group in objspec_list[8][polyuvname]:
-                        if tri_index == index_group[0] and face[i] == index_group[1]:
-                            uv_index = index_group[2]
-                            break
-                    u, v = objspec_list[7][polyuvname][uv_index] # VMAD section
-                    u = TexWidth * u
-                    v = TexHeight * v
-                else: # VMAP section
-                    if polyuvname is None:
-                        pass
-                    elif len(objspec_list[8][polyuvname]) == 0:
-                        try:
-                            u, v = objspec_list[7][polyuvname][face[i]] ### PROBLEM WRONG U,V PLACEMENT DATA
-                        except:
-                            pass
-                    else:
-                        try:
-                            for index_group in range(len(objspec_list[8][polyuvname])):
-                                if tri_index == objspec_list[8][polyuvname][index_group][0] and face[i] == objspec_list[8][polyuvname][index_group][1]:
-                                    uv_index = objspec_list[8][polyuvname][index_group][2]
-                                    u, v = objspec_list[7][polyuvname][uv_index]
-                                    break
-                                elif index_group == len(objspec_list[8][polyuvname])-1:
-                                    u, v = objspec_list[7][polyuvname][face[i]]
-                        except:
-                            try:
-                                u, v = objspec_list[7][polyuvname][face[i]]
-                            except:
-                                try:
-                                    for index_group in objspec_list[8][polyuvname]:
-                                        if tri_index == index_group[0] and face[i] == index_group[1]:
-                                            uv_index = index_group[2]
-                                            u, v = objspec_list[7][polyuvname][uv_index]
-                                            break
-                                except:
-                                    pass
-                try:
-                    v = -v
-                    u = TexWidth * u
-                    v = (TexHeight * v) + TexHeight
-                except:
-                    u, v = (0, 0)
-
-                if vtxconvert.has_key(face[i]):
-                    vert_index = vtxconvert[face[i]]
-                    try:
-                        Tris = Tris + struct.pack("Hhh", vert_index, u, v)
-                    except:
-                        u, v = (0, 0)
-                        Tris = Tris + struct.pack("Hhh", vert_index, u, v)
-                    # Since the vertex is already in the frame Vertices list we don't add them again.
-                    # So we use its new vert_index number and just continue.
-                else:
-                    vert_index = vtxconvert[face[i]] = count
-                    count = count + 1
-                    try:
-                        Tris = Tris + struct.pack("Hhh", vert_index, u, v)
-                    except:
-                        u, v = (0, 0)
-                        Tris = Tris + struct.pack("Hhh", vert_index, u, v)
-
-                    # This is a new vertex, so we add it to the frame['Vertices'] mesh
-                    x,y,z = (objspec_list[2][face[i]])
-                    mesh = mesh + (x,y,z)
-        frame['Vertices'] = mesh
-        framesgroup.appenditem(frame)
-
-        # Now we start creating our Import Component and name it.
-        Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
-        Component['skinsize'] = skinsize
-        Component['Tris'] = Tris
-        Component['show'] = chr(1)
-        sdogroup = quarkx.newobj('SDO:sdo')
-        Component.appenditem(sdogroup)
-        Component.appenditem(skingroup)
-        skeletongroup = quarkx.newobj('Skeleton:bg')
-        Component.appenditem(framesgroup)
-        Component.appenditem(skeletongroup)
-        ComponentList = ComponentList + [Component]
-        CompNbr = CompNbr + 1
+    ### But if commented out will NOT allow multiple component model importing.
+    ComponentList, message, CompNbr = create_objects(filename, polynames, clip_list, objspec_list, surf_list, basepath, ComponentList, message, CompNbr)
+    update_material(clip_list, objspec_list, surf_list) #give it all the object
 
     objspec_list = None
     surf_list = None
@@ -595,10 +395,8 @@ def read_verts(lwochunk):
     numverts = lwochunk.chunksize/12
     #$verts = []
     verts = [None] * numverts
+    # Makes QuArK component.currentframe.verteicies here.
     for i in xrange(numverts):
-  #      if not i%1000 and my_meshtools.show_progress:
-  #          Blender.Window.DrawProgressBar(float(i)/numverts, "Reading Verts")
-    # Make QuArK component.currentframe.verteicies here.
         x, y, z = struct.unpack(">fff", data.read(12))
         verts[i] = (x, z, y)
     tobj.logcon (verts)
@@ -644,8 +442,6 @@ def read_faces_5(lwochunk):
     faces = []
     i = 0
     while i < lwochunk.chunksize:
-  #      if not i%1000 and my_meshtools.show_progress:
-  #         Blender.Window.DrawProgressBar(float(i)/lwochunk.chunksize, "Reading Faces")
         facev = []
         numfaceverts, = struct.unpack(">H", data.read(2))
         for j in xrange(numfaceverts):
@@ -677,9 +473,40 @@ def read_vx(data):
     return index, index_size
 
 
-# ======================
-# === Read uvmapping === Quake 4 is using this
-# ======================
+# ==================================
+# ====== Read Color Map Float ======
+# ==================================
+def read_vcol(surf_list, lwochunk, data):
+    global tobj
+    tobj.pprint ("WE ARE IN ----- VCOL:")
+    '''intensity = struct.unpack(">f", data.read(4))
+    tobj.pprint ("intensity:")
+    tobj.pprint (intensity)
+    VCOL = {}    #start a brand new: this could be made more smart
+    i = 0
+    my_uv_dict = {}
+    while (i < lwochunk.chunksize - 6):      #4+2 header bytes already read
+        vertnum, vnum_size = read_vx(data)
+        tobj.pprint ("vertnum = %s, vnum_size = %s" % (vertnum, vnum_size))
+        u, v = struct.unpack(">ff", data.read(8))
+        print "line 701 u, v",u, v
+        my_uv_dict[vertnum] = (u, v)
+        print "line 705 my_uv_dict",my_uv_dict
+        i += 8 + vnum_size
+        print "line 707 i",i
+    #end loop on uv pairs
+    surf_list['VCOL'] = my_uv_dict
+    map_type = data.read(4)
+    name, i = read_name(data) #i initialized with string lenght + zeros
+    tobj.pprint ("map type = %s, name = %s" % (map_type, name))
+    tobj.pprint ("Now reading uv data below:")'''
+
+    return
+
+
+# ============================================
+# == Read uvmapping (Quake 4 is using this) ==
+# ============================================
 def read_vmap(uvcoords_dict, maxvertnum, lwochunk): # u,v per vertex point
     global tobj
     if maxvertnum == 0:
@@ -762,11 +589,11 @@ def read_vmad(uvcoords_dict, facesuv_dict, maxfacenum, maxvertnum, lwochunk):
     return [uvcoords_dict, facesuv_dict] # For VMAD
 
 
-# =================
-# === Read tags ===
-# tag_list is a list of textures used in the model, ex:
-#    ['models/mapobjects/chairs/kitchenchair/kitchenchair', 'textures/base_trim/bluetex4s_ed']
-# =================
+# ===============================================================================================
+# ======================================== Read tags ============================================
+# ================== tag_list is a list of textures used in the model, ex: ======================
+# == ['models/mapobjects/chairs/kitchenchair/kitchenchair', 'textures/base_trim/bluetex4s_ed'] ==
+# ===============================================================================================
 def read_tags(lwochunk):
     global tobj
     data = cStringIO.StringIO(lwochunk.read())
@@ -799,21 +626,22 @@ def read_ptags(lwochunk, tag_list):
         return {}
     ptag_dict = {}
     i = 0
+    testindex = 50
     while(i < lwochunk.chunksize-4): #4 bytes polygon type already read
-  #      if not i%1000 and my_meshtools.show_progress:
-  #         Blender.Window.DrawProgressBar(float(i)/lwochunk.chunksize, "Reading PTAGS")
         poln, poln_size = read_vx(data)
         i += poln_size
-        tag_index, = struct.unpack(">H", data.read(2))
-        if tag_index > (len(tag_list)):
+        surface_index, = struct.unpack(">H", data.read(2))
+        if surface_index > (len(tag_list)):
             tobj.pprint ("Reading PTAG: Surf belonging to undefined TAG: %d. Skipping" % tag_index)
             return {}
         i += 2
-        tag_key = tag_list[tag_index]
+        tag_key = tag_list[surface_index]
+        if surface_index != testindex:
+            testindex = surface_index
         if not(ptag_dict.has_key(tag_key)):
-            ptag_dict[tag_list[tag_index]] = [poln]
+            ptag_dict[tag_list[surface_index]] = [poln]
         else:
-            ptag_dict[tag_list[tag_index]].append(poln)
+            ptag_dict[tag_list[surface_index]].append(poln)
     tobj.logcon (ptag_dict)
     tobj.pprint ("from tag_list (same as 'poly'):")
     facecount = 0
@@ -846,10 +674,7 @@ def read_clip(lwochunk, dir_part):
             #now split text independently from platform
             #depend on the system where image was saved. NOT the one where the script is run
             no_sep = "\\"
-        #    if Blender.sys.sep == no_sep: no_sep ="/"
-        #    if (no_sep in clip_name):
             clip_name = clip_name.replace(no_sep, "/")
-        #    short_name = Blender.sys.basename(clip_name)
             short_name = clip_name.split("/")
             short_name = short_name[len(short_name)-1]
             if (clip_name == "") or (short_name == ""):
@@ -911,7 +736,7 @@ def read_surfblok(subchunkdata):
     subchunklen, = struct.unpack(">h", data.read(2))
     accumulate_i = subchunklen + 6
     if subchunkname != 'IMAP':
-        tobj.pprint("---------- SURF: BLOK: %s: block aborting" % subchunkname)
+        tobj.pprint("---------- SURF: BLOK: not IMAP, got %s: block aborting" % subchunkname)
         return {}, ""
     tobj.pprint ("---------- IMAP")
     ordinal, i = read_name(data)
@@ -962,7 +787,7 @@ def read_surfblok(subchunkdata):
     subchunklen, = struct.unpack(">h", data.read(2))
     accumulate_i += subchunklen + 6
     if subchunkname != 'TMAP':
-        tobj.pprint("---------- SURF: BLOK: %s: block aborting" % subchunkname)
+        tobj.pprint("---------- SURF: BLOK: not TMAP, got %s: block aborting" % subchunkname)
         return {}, ""
     tobj.pprint ("---------- TMAP")
     i = 0
@@ -1165,7 +990,11 @@ def read_surfs(lwochunk, surf_list, tag_list):
                     my_dict['g_IMAG'] = rr['IMAG']                 #do not set anything, just save image object for later assignment
             subchunklen = 0 #force ending
         else:                                                       # Misc Chunks
-            tobj.pprint("-------- SURF:%s: skipping" % subchunkname)
+            if subchunkname == "VCOL":                         # MAPS (UV color map)
+                tobj.pprint("---- SURF:VCOL")
+                read_vcol(surf_list, lwochunk, data)
+            else:
+                tobj.pprint("-------- SURF:%s: skipping" % subchunkname)
         if  subchunklen > 0:
             discard = data.read(subchunklen)
     #end loop on surf chunks
@@ -1677,10 +1506,12 @@ def obj_size_pos(obj):
 # =========================
 # === Create the object ===
 # =========================
-def create_objects(clip_list, objspec_list, surf_list):
+def create_objects(filename, polynames, clip_list, objspec_list, surf_list, basepath, ComponentList, message, CompNbr):
     nf = len(objspec_list[3])
     not_used_faces = range(nf)
     ptag_dict = objspec_list[5]
+    uvcoords_dict = objspec_list[7]
+    facesuv_dict = objspec_list[8]
     obj_dict = {}  #links tag names to object, used for material assignments
     obj_dim_dict = {}
     obj_list = []  #have it handy for parent association
@@ -1691,7 +1522,7 @@ def create_objects(clip_list, objspec_list, surf_list):
     for cur_tag in ptag_dict.keys():
         if ptag_dict[cur_tag] != []:
             cur_surf = get_surf(surf_list, cur_tag)
-            cur_obj, not_used_faces=  my_create_mesh(clip_list, cur_surf, objspec_list, ptag_dict[cur_tag], objspec_list[0][:9]+middlechar+cur_tag[:9], not_used_faces)
+            cur_obj, not_used_faces = my_create_mesh(clip_list, cur_surf, objspec_list, ptag_dict[cur_tag], objspec_list[0][:9]+middlechar+cur_tag[:9], not_used_faces)
             #does not work any more in 2.40 alpha 2
             #if objspec_list[6] == 1:
             #    set_subsurf(cur_obj)
@@ -1722,7 +1553,206 @@ def create_objects(clip_list, objspec_list, surf_list):
  #   scene.link (ob)                                       # link the object into the scene
  #   ob.makeParent(obj_list, 1, 0)                         # set the root for created objects (no inverse, update scene hyerarchy (slow))
  #   Blender.Redraw()
-    return
+
+### This area is where we make the different elements of a QuArK Component, for each Component.
+    # Now we start making the elements of each component or "poly".
+    polyuvname = None
+    UVtype = "VMAP"
+    for poly in polynames:
+        ### For the Skins:sg group.
+        # Checks if the model has textures specified with it.
+        skinsize = (128, 128)
+        skingroup = quarkx.newobj('Skins:sg')
+        skingroup['type'] = chr(2)
+        skinname = (poly + '.tga')
+        skin = quarkx.newobj(skinname)
+        skinname = skinname.split('/')
+
+        polyuvlist = None
+        for list in surf_list:
+            if list['NAME'] == poly and list.has_key('BLOK'):
+                for item in list['BLOK']:
+                    if item.has_key('VMAP'):
+                        UVtype = "VMAP"
+            if list['NAME'] == poly and list.has_key('UVNAME'):
+                polyuvname = list['UVNAME']
+                if uvcoords_dict.has_key(polyuvname):
+                    polyuvlist = uvcoords_dict[polyuvname]
+                    break
+        if polyuvname is None:
+            for list in surf_list:
+                if list.has_key('UVNAME'):
+                    polyuvname = list['UVNAME']
+                    break
+        if uvcoords_dict != {} and polyuvlist is None:
+            testname = skinname[len(skinname)-1].replace('.tga', "")
+            if len(uvcoords_dict) == 1:
+                if uvcoords_dict.keys()[0].find(testname) != -1:
+                    polyuvlist = uvcoords_dict[uvcoords_dict.keys()[0]]
+                    polyuvname = uvcoords_dict.keys()[0]
+            else:
+                for key in uvcoords_dict.keys():
+                    if key.find(testname) != -1:
+                        polyuvlist = uvcoords_dict[key]
+                        polyuvname = key
+        if polyuvlist == {}:
+            polyuvlist = None
+
+        polyname = poly.split(".")
+        name_list = load_image(basepath,polyname[0])
+        for file in range(len(name_list)):
+            if os.path.exists(name_list[file]) == 1:
+                image = quarkx.openfileobj(name_list[file])
+                skin['Image1'] = image.dictspec['Image1']
+                skin['Size'] = image.dictspec['Size']
+                skingroup.appenditem(skin)
+                skinsize = skin['Size']
+                break
+            if file == len(name_list)-1:
+                if not os.path.exists(os.getcwd().replace("\\", "/") + "/" + skinname[len(skinname)-1]):
+                    if message != "":
+                        message = message + "================================\n"
+                    temppath = basepath
+                    message = message + "Import Component " + str(CompNbr) + " needs the skin texture\n"
+                    message = message + (temppath.replace("\\", "/") + polyname[0] + '\n')
+                    message = message + "But the texture is not in that location.\n"
+                    message = message + "Look for:\n"
+                    message = message + ('    ' + polyname[0] + '\n')
+                    polyuvlist = None
+                else:
+                    temppath = filename
+                    temppath = temppath.replace(basepath, "")
+                    temppath = temppath.split("\\")
+                    curfolder = ""
+                    for item in range(len(temppath)-1):
+                        curfolder = curfolder + temppath[item] + "/"
+                    skin = quarkx.newobj(curfolder + skinname[len(skinname)-1])
+                    image = quarkx.openfileobj(os.getcwd() + "\\" + skinname[len(skinname)-1])
+                    skin['Image1'] = image.dictspec['Image1']
+                    skin['Size'] = image.dictspec['Size']
+                    skingroup.appenditem(skin)
+                    skinsize = skin['Size']
+
+        # setup a progress-indicator
+        progressbar = quarkx.progressbar(2454, len(objspec_list[5][poly]))
+        ### For the model's 'Tris', this needs to be in binary so we use the 'struct' function.
+        Tris = ''
+        for key in facesuv_dict.keys():
+            if key.find(skinname[len(skinname)-1].replace(".tga", "_0")) != -1: # We half to do it this way because some of these dummy’s can't get the path right! 8-\
+                keyname = key # Don't change this, we use the keyname again later so we don't have to go through this again.
+                uv_list = facesuv_dict[keyname] # Gets the u,v list for this poly using (as a 'key') its name with the _0 added at the end of its name.
+                break
+            elif key == 'texture':
+                keyname = key
+                uv_list = facesuv_dict[keyname] # Gets the u,v list for this poly using (as a 'key') its name with the _0 added at the end of its name.
+                break
+      
+        ### For the Frames:fg group and each "name:mf" frame.
+        framesgroup = quarkx.newobj('Frames:fg')
+
+        # Because .lwo models are "stagnat" models, (no animation), we only make 1 frame
+        # which is used to draw the maodel's 'mesh' (shape) in the editor's views.
+        # The Skin-view uses the model's 'Tris' to draw its nlines. 
+        frame = quarkx.newobj('Base Frame:mf')
+        frame['index'] = (0,)
+        mesh = ()
+        vtxconvert = {}
+        count = 0
+        TexWidth, TexHeight = skinsize
+        for tri in range(len(objspec_list[5][poly])): # tri is the tri_index
+            tri_index = objspec_list[5][poly][tri]
+            face = objspec_list[3][tri_index] # face is now the tri list of vert_index numbers
+            # First make the tri_index (vert_index, u pos, v pos)
+            # But since some models have more then one component
+            # we need to brake the one long list of vertexes into individual smaller lists,
+            # one for each component which means we need to convert the old vertex_index to new ones.
+            for i in range(len(face)): # face[i] is the individual vert_index number in this "for" loop.
+                u, v = (0, 0)
+                if UVtype == "VMAD": # VMAD section
+                    for index_group in objspec_list[8][polyuvname]:
+                        if tri_index == index_group[0] and face[i] == index_group[1]:
+                            uv_index = index_group[2]
+                            break
+                    u, v = objspec_list[7][polyuvname][uv_index] # VMAD section
+                    u = TexWidth * u
+                    v = TexHeight * v
+                else: # VMAP section
+                    if polyuvname is None:
+                        pass
+                    elif len(objspec_list[8][polyuvname]) == 0:
+                        try:
+                            u, v = objspec_list[7][polyuvname][face[i]]
+                        except:
+                            pass
+                    else:
+                        try:
+                            for index_group in range(len(objspec_list[8][polyuvname])):
+                                if tri_index == objspec_list[8][polyuvname][index_group][0] and face[i] == objspec_list[8][polyuvname][index_group][1]:
+                                    uv_index = objspec_list[8][polyuvname][index_group][2]
+                                    u, v = objspec_list[7][polyuvname][uv_index]
+                                    break
+                                elif index_group == len(objspec_list[8][polyuvname])-1:
+                                    u, v = objspec_list[7][polyuvname][face[i]]
+                        except:
+                            try:
+                                u, v = objspec_list[7][polyuvname][face[i]]
+                            except:
+                                try:
+                                    for index_group in objspec_list[8][polyuvname]:
+                                        if tri_index == index_group[0] and face[i] == index_group[1]:
+                                            uv_index = index_group[2]
+                                            u, v = objspec_list[7][polyuvname][uv_index]
+                                            break
+                                except:
+                                    pass
+                try:
+                    v = -v
+                    u = TexWidth * u
+                    v = (TexHeight * v) + TexHeight
+                except:
+                    u, v = (0, 0)
+
+                if vtxconvert.has_key(face[i]):
+                    vert_index = vtxconvert[face[i]]
+                    try:
+                        Tris = Tris + struct.pack("Hhh", vert_index, u, v)
+                    except:
+                        u, v = (0, 0)
+                        Tris = Tris + struct.pack("Hhh", vert_index, u, v)
+                    # Since the vertex is already in the frame Vertices list we don't add them again.
+                    # So we use its new vert_index number and just continue.
+                else:
+                    vert_index = vtxconvert[face[i]] = count
+                    count = count + 1
+                    try:
+                        Tris = Tris + struct.pack("Hhh", vert_index, u, v)
+                    except:
+                        u, v = (0, 0)
+                        Tris = Tris + struct.pack("Hhh", vert_index, u, v)
+
+                    # This is a new vertex, so we add it to the frame['Vertices'] mesh
+                    x,y,z = (objspec_list[2][face[i]])
+                    mesh = mesh + (x,y,z)
+            progressbar.progress()
+        frame['Vertices'] = mesh
+        framesgroup.appenditem(frame)
+
+        # Now we start creating our Import Component and name it.
+        Component = quarkx.newobj("Import Component " + str(CompNbr) + ':mc')
+        Component['skinsize'] = skinsize
+        Component['Tris'] = Tris
+        Component['show'] = chr(1)
+        sdogroup = quarkx.newobj('SDO:sdo')
+        Component.appenditem(sdogroup)
+        Component.appenditem(skingroup)
+        skeletongroup = quarkx.newobj('Skeleton:bg')
+        Component.appenditem(framesgroup)
+        Component.appenditem(skeletongroup)
+        ComponentList = ComponentList + [Component]
+        CompNbr = CompNbr + 1
+        progressbar.close()
+
+    return ComponentList, message, CompNbr
 
 
 # =====================
@@ -1730,29 +1760,14 @@ def create_objects(clip_list, objspec_list, surf_list):
 # =====================
 #extensively search for image name
 def load_image(dir_part, name):
-    img = None
-    nname = Blender.sys.splitext(name)
-    lname = [c.lower() for c in nname]
-    ext_list = []
-    if lname[1] != nname[1]:
-        ext_list.append(lname[1])
-    ext_list.extend(['.tga', '.png', '.jpg', '.gif', '.bmp'])  #order from best to worst (personal judgement) bmp last cause of nasty bug
-    #first round: original "case"
-    current = Blender.sys.join(dir_part, name)
-    name_list = [current]
-    name_list.extend([Blender.sys.makename(current, ext) for ext in ext_list])
-    #second round: lower "case"
-    if lname[0] != nname[0]:
-        current = Blender.sys.join(dir_part, lname[0])
-        name_list.extend([Blender.sys.makename(current, ext) for ext in ext_list])
-    for nn in name_list:
-        if Blender.sys.exists(nn) == 1:
-            break
-    try:
-        img = Blender.Image.Load(nn)
-        return img
-    except IOError:
-        return None
+    dir_part = dir_part.replace("\\", "/")
+    name = name.replace("\\", "/")
+    name_list = []
+    ext_list = ['.tga', '.dds', '.png', '.jpg', '.bmp', '.pcx']  # Order from best to worst (personal judgement).
+    # QuArK is not case sensitive for paths or file names, so we don't need to correct for that.
+    for ext in ext_list:
+        name_list = name_list + [dir_part + name + ext]
+    return name_list
 
 
 # ===========================================
@@ -1809,7 +1824,7 @@ def create_blok(surf, mat, clip_list, obj_size, obj_pos):
         tobj.pprint ("# Processing texture block no.%s for surf %s" % (ti,surf['NAME']))
         tobj.pprint ("#...................................................................#")
         tobj.pdict (blok)
-        if ti > 9: break                                    #only 8 channels 0..7 allowed for texture mapping
+        if ti > 9: break                       #only 8 channels 0..7 allowed for texture mapping
         if not blok['ENAB']:
             tobj.pprint (  "***Image is not ENABled! Quitting this block")
             break
@@ -2020,8 +2035,6 @@ def read_faces_6(lwochunk):
     if polygon_type == 'PTCH': subsurf = 1
     i = 0
     while(i < lwochunk.chunksize-4):
-  #      if not i%1000 and my_meshtools.show_progress:
-  #          Blender.Window.DrawProgressBar(float(i)/lwochunk.chunksize, "Reading Faces")
         facev = []
         numfaceverts, = struct.unpack(">H", data.read(2))
         i += 2
@@ -2043,16 +2056,15 @@ def read_faces_6(lwochunk):
 def fs_callback(filename):
     read(filename)
 
-# Blender.Window.FileSelector(fs_callback, "Import LWO")
-
-
-
-
 def loadmodel(root, filename, gamename, nomessage=0):
     "Loads the model file: root is the actual file,"
     "filename is the full path and name of the .lwo file selected."
     "gamename is None."
     "For example:  C:\Doom 3\base\models\mapobjects\chairs\kitchenchair\kitchenchair.lwo"
+
+    import quarkpy.mdleditor
+    global ie_editor
+    ie_editor = quarkpy.mdleditor.mdleditor
 
     global tobj, textlog
     if tobj is None:
@@ -2062,9 +2074,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
         else:
             tobj = ie_utils.dotext(textlog) # Calls the class to handle logging.
 
-    import quarkpy.mdleditor
-    editor = quarkpy.mdleditor.mdleditor
-
     ### First we test for a valid (proper) model path.
     basepath = ie_utils.validpath(filename)
     if basepath is None:
@@ -2072,7 +2081,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     ### Line below just runs the importer without the editor being open.
     ### Need to figure out how to open the editor with it & complete the ModelRoot.
-  #  import_md2_model(editor, filename)
+  #  import_md2_model(ie_editor, filename)
 
     ie_utils.dotext # Calls to run the logging class.
 
@@ -2087,7 +2096,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             tobj.txtobj = open(quarkx.exepath + textlog, "w")
 
     ### Lines below here loads the model into the opened editor's current model.
-    ModelRoot, ComponentList, message = read(basepath, filename, editor)
+    ModelRoot, ComponentList, message = read(basepath, filename)
 
     # This MUST be in a 'try:' statement to avoid error at startup here and above (not dupe code).
     try:
@@ -2103,13 +2112,14 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     undo = quarkx.action()
     for Component in ComponentList:
-        undo.put(editor.Root, Component)
-        editor.Root.currentcomponent = Component
-        compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+        undo.put(ie_editor.Root, Component)
+        ie_editor.Root.currentcomponent = Component
+        compframes = ie_editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
         for compframe in compframes:
-            compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
-    editor.ok(undo, str(len(ComponentList)) + " .lwo Components imported")
+            compframe.compparent = ie_editor.Root.currentcomponent # To allow frame relocation after editing.
+    ie_editor.ok(undo, str(len(ComponentList)) + " .lwo Components imported")
 
+    ie_editor = None   #Reset the global again
     if message != "":
         message = message + "================================\n\n"
         message = message + "You need to find and supply the proper texture(s) and folder(s) above.\n"
@@ -2128,6 +2138,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2008/06/20 05:54:24  cdunde
+# Improvements to uv placements.
+#
 # Revision 1.1  2008/06/17 20:39:13  cdunde
 # To add lwo model importer, uv's still not correct though.
 # Also added model import\export logging options for file types.

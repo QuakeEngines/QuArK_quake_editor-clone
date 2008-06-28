@@ -293,6 +293,11 @@ Strings = {
     2433: "Internal error : Invalid packed model structure//Please report : %s",
     2434: "The current structure of this model is invalid. It cannot be saved in %s format.",
     2435: "The model contains no skin and the skin size is unspecified",
+    2450: "Writing component vertex index data",
+    2451: "Writing component u,v texture data",
+    2452: "Writing component frame vertices data",
+    2453: "Writing component triangle index data",
+    2454: "Preparation data read...Importing model",
 
     2549: "shift left / right",
 
@@ -1046,6 +1051,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.124  2008/05/24 19:02:26  danielpharos
+#Moved a string to the dictionary
+#
 #Revision 1.123  2008/05/05 01:24:52  cdunde
 #Update for new release.
 #
